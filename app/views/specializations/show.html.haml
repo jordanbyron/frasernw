@@ -1,14 +1,16 @@
-/ - title "Specialization"
+/- title "Specialities - " + @specialization.name
 
 %h1= @specialization.name
 
-%h3 Specialists &amp; Clinics
+%h2 Specialists &amp; Clinics
+
+/ TODO separate clinics and specializsts, remove AOP
 
 %table{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'specialist_table'}
   %thead
     %tr{:class => 'tableheader'}
       / see tablesorter docx for sorters 
-      %th Name
+      %th{:class => "{sorter: 'bylastname'} name_coumn"} Name
       %th{:class => "{sorter: 'waittime'}"} Lag
       %th{:class => "{sorter: 'waittime'}"} Wait
       %th{:class => "{sorter: 'blanks_to_bottom'}"} City

@@ -1,4 +1,4 @@
-module ApplicationHelper  
+module ApplicationHelper
   def name_for(user)
     unless user.name.blank?
       if user.name.split(' ').length > 1

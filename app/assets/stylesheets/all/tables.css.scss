@@ -1,20 +1,63 @@
-td.name_column {
-  text-align: left;
-  min-width: 12em;
-  a {
-    text-decoration: none;
-  }
-  a.clinic {
-    color: purple;
-  }
-}
-  
-td.number_column {
-  text-align: right;
-  width: 9em;
+@import "_globals";
+
+table
+{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    
+    tr
+    {
+        border-bottom: 1px solid $FNW_BORDER;
+        
+        th 
+        {
+            color: $FNW_RED;
+            font-weight:normal;
+            background-color: $FNW_LIGHT_GRAY;
+        }
+        
+        th, td, caption 
+        {
+            padding-left: 12px;
+            line-height: 32px;
+        }
+        
+        td
+        {
+            vertical-align: top;
+            a, a:visited
+            {
+                color: $FNW_DARK_GRAY;
+                text-decoration: none;
+            }
+            
+            a:hover
+            {
+                color: $FNW_DARK_GRAY;
+                text-decoration: underline;
+            }
+        }
+        
+        .name_column 
+        {
+            text-align: left;
+        }
+        
+        .number_column 
+        {
+            text-align: right;
+        }
+        
+        .city_column 
+        {
+            text-align:left;
+        }
+        
+        tfoot 
+        {
+            font-style:italic;
+        }
+    }
 }
 
-td.city_column {
-  text-align:left;
-  width: 9em;
-}

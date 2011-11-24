@@ -6,7 +6,7 @@
 %table{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'specialist_table'}
   %thead
     %tr
-      %th Name
+      %th{:class => "{sorter: 'bylastname'} name_column"} Name
       %th{:class => "{sorter: 'waittime'}"} Lag
       %th{:class => "{sorter: 'waittime'}"} Wait
       %th City

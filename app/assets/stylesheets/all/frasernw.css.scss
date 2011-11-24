@@ -1,31 +1,95 @@
-a {
-  text-decoration:none;
+@import "_globals";
+
+body
+{
+    background-image: url(/images/background.png);
+    background-repeat: repeat-x;
 }
 
-#flash_notice {
+#flash_notice 
+{
   clear: both;
 }
 
-#flash_alert {
+#flash_alert 
+{
   clear: both;
 }
 
-/* Sortable tables */
-
-table.sortable {
-  font-size: 10px;
-  thead {
-      background-color:#eee;
-      color:#666666;
-      font-weight: bold;
-      cursor: default;
+#header 
+{
+  height: 95px;
+  text-align:right;
+  background:$FNW_DARK_GRAY;
+  border-bottom: 1px solid #FFFFFF;
+  #logo
+  {
+    line-height: 95px;
+    text-align: center;
+    font-size: 36px;
+    text-shadow: 0px 0px 10px #232930;
+    font-family: QuicksandDash, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    a
+    {
+      text-decoration: none;
+      color: $FNW_GREEN;
+    }
+    a:hover
+    {
+      text-shadow: 0px 0px 10px $FNW_GREEN;
+    }
+  }
+  #nav
+  {
+    margin-top: 65px;
+  }
+  #nav a
+  {
+    font-family: Quicksand;
+    font-size: 15px;
+    font-weight: lighter;
+    text-decoration:none;
+    color: $FNW_LIGHT;
+    text-shadow: 0px 0px 5px #232930;
+    margin-right: 15px;
+  }
+  #nav a:hover
+  {
+    color: $FNW_GREEN;
   }
 }
 
-#content{
-  border-left:1px solid #bbb;
-  border-right:1px solid #bbb;
-  box-shadow:0 0 5px #888;
-  background:#fff;
-  padding-top:.675em;
+#searchbox
+{
+    background-color: $FNW_LIGHT;
+    border-right: 1px solid #DDD;
+    overflow-y:hidden;
+    min-height: 80%;
+}
+
+#content
+{
+    font-size: 13px;
+    line-height: 20px;
+    background: $FNW_LIGHT;
+    border-left: 1px solid #FFF;
+    border-right: 1px solid #FFF;
+}
+
+#wrapper
+{
+    padding-top: 26px;
+}
+
+#container
+{
+    padding-right: 3.8%;
+    div
+    {
+      margin-top: 13px;
+    }
+    div.collapseup
+    {
+      margin-top: 0;
+    }
 }

@@ -90,5 +90,4 @@ class Clinic < ActiveRecord::Base
   def patient_can_book
     Specialist::BOOLEAN_HASH[patient_can_book_mask]
   end
-
 end
