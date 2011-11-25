@@ -2,16 +2,16 @@
   = f.error_messages
   %p
     = f.label :name
-    %br
     = f.text_field :name
   %p
-    = f.label :done_by_specialists
-    %br
     = f.check_box :done_by_specialists
+    = f.label :done_by_specialists
   %p
-    = f.label :done_by_clinics
-    %br
     = f.check_box :done_by_clinics
+    = f.label :done_by_clinics
+  %p
+    = f.check_box :show_in_navigation
+    = f.label :show_in_navigation
     = f.hidden_field :specialization_id
   %p
     = f.submit "Update Scope"
