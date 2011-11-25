@@ -52,6 +52,7 @@ end
   end
 
   specialization.procedures.each do |procedure|
+    next if not procedure.show_in_navigation
     options = {  
       :name => procedure.name,
       :breadcrumb => "", 

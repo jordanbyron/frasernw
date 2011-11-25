@@ -40,6 +40,7 @@
   end
   
   specialization.procedures.each do |procedure|
+    next if not procedure.show_in_navigation
     procedure_node = Array.new
     procedure_node[0] = procedure.name
     procedure_node[1] = url_for(procedure) #.gsub!(/^\//, '')    
