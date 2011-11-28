@@ -118,6 +118,11 @@
     = f.association :clinics, as: :check_boxes, label: false, collection: @specialization_clinics
     = link_to "Add a Clinic", new_specialization_clinic_path(@specialization), class: "button"
 
+  %fieldset
+    %h2 Languages
+    = f.association :languages, as: :check_boxes, label: false
+    = link_to "Add a Language", new_language_path, class: "button"
+
 
   -# FIXME - This shouldn't be in the view. Should be set by parent resource in controller.
   %p
