@@ -19,6 +19,7 @@ Frasernw::Application.routes.draw do
   resources :specialists
   resources :procedures
   resources :hospitals
+  resources :languages
 
   match "tracker" => 'tracker#index', :as => 'tracker'
   
