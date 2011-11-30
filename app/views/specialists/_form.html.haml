@@ -48,7 +48,7 @@
     = f.input :status_details, label: "Additional Details (if any)"
     = f.input :practise_limitations, label: "Other practice Limitations (if any)"
     = f.input :location_opened, label: "Practice opened at this location", as: :select, collection: ["Prior to 2010", 2010, 2011], prompt: "Select ..."
-    = f.association :languages, as: :check_boxes, label: "Languages spoken in your practice:", wrapper: false
+    = f.association :languages, as: :check_boxes, label: "Languages spoken in your practice", wrapper: false
     = link_to "Add a Language", new_language_path, class: "button"
 
   %fieldset
