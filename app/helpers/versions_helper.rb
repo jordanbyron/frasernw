@@ -14,8 +14,8 @@ module VersionsHelper
     klass = version.item_type.downcase
               .gsub('attachment', 'file')
               .gsub('privilege', 'hospital privileges')
-              .gsub('procedure', 'area of practise')
-              .gsub('capacity', 'area of practise')
+              .gsub('procedure', 'area of practice')
+              .gsub('capacity', 'area of practice')
               .gsub('office', 'office details')
     content_tag :span, class: ["type", klass] do
       klass.titlecase
