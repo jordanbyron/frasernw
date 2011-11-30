@@ -48,6 +48,8 @@
     = f.input :status_details, label: "Additional Details (if any)"
     = f.input :practise_limitations, label: "Other practice Limitations (if any)"
     = f.input :location_opened, label: "Practice opened at this location", as: :select, collection: ["Prior to 2010", 2010, 2011], prompt: "Select ..."
+    = f.association :languages, as: :check_boxes, label: "Languages spoken in your practice:", wrapper: false
+    = link_to "Add a Language", new_language_path, class: "button"
 
   %fieldset
     %h2 Areas of Practice
@@ -117,12 +119,6 @@
     %h2 Sub-Specialty Clinics
     = f.association :clinics, as: :check_boxes, label: false, collection: @specialization_clinics
     = link_to "Add a Clinic", new_specialization_clinic_path(@specialization), class: "button"
-
-  %fieldset
-    %h2 Languages
-    = f.association :languages, as: :check_boxes, label: false
-    = link_to "Add a Language", new_language_path, class: "button"
-
 
   -# FIXME - This shouldn't be in the view. Should be set by parent resource in controller.
   %p
