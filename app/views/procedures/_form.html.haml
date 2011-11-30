@@ -1,17 +1,16 @@
-= form_for @procedure do |f|
+= simple_form_for @procedure do |f|
   = f.error_messages
   %p
     = f.label :name
     = f.text_field :name
   %p
-    = f.check_box :done_by_specialists
     = f.label :done_by_specialists
+    = f.check_box :done_by_specialists
   %p
-    = f.check_box :done_by_clinics
     = f.label :done_by_clinics
+    = f.check_box :done_by_clinics
   %p
-    = f.check_box :show_in_navigation
-    = f.label :show_in_navigation
+    = f.input :show_in_navigation, as: :radio, :collection => [ ['Specialist', true], ['Physician', false] ] 
     = f.hidden_field :specialization_id
   %p
-    = f.submit "Update Scope"
+    = f.submit
