@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111125212530) do
+ActiveRecord::Schema.define(:version => 20111130181129) do
 
   create_table "attendances", :force => true do |t|
     t.integer   "specialist_id"
@@ -97,6 +97,12 @@ ActiveRecord::Schema.define(:version => 20111125212530) do
     t.timestamp "updated_at"
   end
 
+  create_table "languages", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "moderations", :force => true do |t|
     t.integer   "moderatable_id"
     t.string    "moderatable_type",               :null => false
@@ -129,13 +135,13 @@ ActiveRecord::Schema.define(:version => 20111125212530) do
   end
 
   create_table "procedures", :force => true do |t|
-    t.string    "name"
-    t.integer   "specialization_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.boolean   "done_by_clinics"
-    t.boolean   "done_by_specialists"
-    t.boolean   "show_in_navigation"
+    t.string   "name"
+    t.integer  "specialization_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "done_by_clinics"
+    t.boolean  "done_by_specialists"
+    t.boolean  "specialization_level"
   end
 
   create_table "reviews", :force => true do |t|
@@ -157,6 +163,13 @@ ActiveRecord::Schema.define(:version => 20111125212530) do
 
   add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
   add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
+
+  create_table "speaks", :force => true do |t|
+    t.integer  "specialist_id"
+    t.integer  "language_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "specialists", :force => true do |t|
     t.string    "firstname"

@@ -58,4 +58,4 @@ en:
         urgent_phone: "Accepts Urgent Referrals by Phone"
         urgent_other_details: "Other Methods for Urgent Referrals"
       procedure:
-        show_in_navigation: "Level"
+        specialization_level: "Level"

@@ -10,7 +10,7 @@
     = f.label :done_by_clinics
     = f.check_box :done_by_clinics
   %p
-    = f.input :show_in_navigation, as: :radio, :collection => [ ['Specialist', true], ['Physician', false] ] 
+    = f.input :specialization_level, as: :radio, :collection => [ ['Specialization', true], ['Physician', false] ] 
     = f.hidden_field :specialization_id
   %p
     = f.submit
