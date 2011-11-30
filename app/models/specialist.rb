@@ -28,6 +28,7 @@ class Specialist < ActiveRecord::Base
   has_many  :views
   has_many  :edits
 
+  MAX_OFFICES = 2
   has_many :offices
   accepts_nested_attributes_for :offices
 
