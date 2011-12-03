@@ -57,3 +57,5 @@ en:
         urgent_fax: "Accepts Urgent Referrals by Fax"
         urgent_phone: "Accepts Urgent Referrals by Phone"
         urgent_other_details: "Other Methods for Urgent Referrals"
+      procedure:
+        specialization_level: "Level"

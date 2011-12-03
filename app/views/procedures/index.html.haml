@@ -1,8 +1,8 @@
-/ - title "Scopes of practice - #{@specialization.name}"
+/ - title "Areas of Practice - #{@specialization.name}"
 
 %h1= @specialization.name
 %ul
   - @specialization.procedures.each do |procedure|
     %li= link_to procedure.name, procedure
 
-%p= link_to "New scope of practice", new_specialization_procedure_path(@specialization)
+%p= link_to "New Area of Practice", new_specialization_procedure_path(@specialization)

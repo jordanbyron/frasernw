@@ -58,7 +58,7 @@
     %br
     = f.number_field :waittime
   %p
-    = f.label :procedures, "Scope of practice"
+    = f.label :procedures, "Area of Practice"
     %br
     - @clinic.specialization.procedures.where(:done_by_clinics => true).each do |procedure|
       %br

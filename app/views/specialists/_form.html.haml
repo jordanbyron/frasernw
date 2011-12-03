@@ -20,8 +20,11 @@
 
   %fieldset.office
     %h2 Office / Contact Information
+    - location_number = 1
     = f.simple_fields_for :offices do |i|
-      %h4.location_header Location 1
+      %h4.location_header 
+        Location 
+        = location_number
       = i.input :phone1, label: "Phone"
       = i.input :fax
 
@@ -30,8 +33,11 @@
       = i.input :city
       = i.input :province
       = i.input :postalcode, label: "Postal Code"
-      %hr
-    = f.link_to_add "Add a second office", :offices, class: "button", id: "add_office"
+      - if location_number < Specialist::MAX_OFFICES
+        %hr
+      - location_number += 1
+    - if @specialist.offices.count < Specialist::MAX_OFFICES
+      = f.link_to_add "Add another office", :offices, class: "button", id: "add_office"
 
   - if current_user && current_user.admin?    
     %fieldset

@@ -26,7 +26,7 @@ class ProceduresController < ApplicationController
   def create
     @procedure = Procedure.new(params[:procedure])
     if @procedure.save
-      redirect_to @procedure, :notice => "Successfully created scope of practice."
+      redirect_to @procedure, :notice => "Successfully created area of practice."
     else
       render :action => 'new'
     end
@@ -39,7 +39,7 @@ class ProceduresController < ApplicationController
   def update
     @procedure = Procedure.find(params[:id])
     if @procedure.update_attributes(params[:procedure])
-      redirect_to @procedure, :notice  => "Successfully updated scope of practice."
+      redirect_to @procedure, :notice  => "Successfully updated area of practice."
     else
       render :action => 'edit'
     end
@@ -49,6 +49,6 @@ class ProceduresController < ApplicationController
     @procedure = Procedure.find(params[:id])
     @procedure.destroy
     # redirect_to '/specializations', :notice => "Successfully destroyed scope of practice."
-    redirect_to procedures_url, :notice => "Successfully destroyed procedure."
+    redirect_to procedures_url, :notice => "Successfully destroyed area of practice."
   end
 end
