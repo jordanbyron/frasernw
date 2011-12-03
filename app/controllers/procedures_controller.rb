@@ -34,6 +34,7 @@ class ProceduresController < ApplicationController
 
   def edit
     @procedure = Procedure.find(params[:id])
+    @procedure_ancestry = ancestry_options(Procedure.scoped.arrange(:order => 'name')) {|i| "#{'-' * i.depth} #{i.name}" }
   end
 
   def update
@@ -51,4 +52,16 @@ class ProceduresController < ApplicationController
     # redirect_to '/specializations', :notice => "Successfully destroyed scope of practice."
     redirect_to procedures_url, :notice => "Successfully destroyed area of practice."
   end
+    
+    def ancestry_options(items, &block)
+        return ancestry_options(items){ |i| "#{'-' * i.depth} #{i.name}" } unless block_given?
+        
+        result = []
+        items.map do |item, sub_items|
+            result << [yield(item), item.id]
+            #this is a recursive call:
+            result += ancestry_options(sub_items, &block)
+        end
+        result
+    end
 end

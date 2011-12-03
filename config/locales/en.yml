@@ -59,3 +59,4 @@ en:
         urgent_other_details: "Other Methods for Urgent Referrals"
       procedure:
         specialization_level: "Level"
+        parent_id: "Parent Area of Practice"
