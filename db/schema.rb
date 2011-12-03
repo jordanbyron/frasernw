@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111130182040) do
+ActiveRecord::Schema.define(:version => 20111203201549) do
 
   create_table "attendances", :force => true do |t|
     t.integer   "specialist_id"
@@ -142,7 +142,10 @@ ActiveRecord::Schema.define(:version => 20111130182040) do
     t.boolean  "done_by_clinics"
     t.boolean  "done_by_specialists"
     t.boolean  "specialization_level", :default => true
+    t.string   "ancestry"
   end
+
+  add_index "procedures", ["ancestry"], :name => "index_procedures_on_ancestry"
 
   create_table "reviews", :force => true do |t|
     t.string    "item_type",      :null => false
