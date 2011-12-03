@@ -69,3 +69,5 @@ gem "bcrypt-ruby", :require => "bcrypt"
 # Automated Heroku DB backups (to Google Storage)
 gem 'heroku_backup_task'
 gem 'heroku_cloud_backup'
+
+gem 'ancestry'
