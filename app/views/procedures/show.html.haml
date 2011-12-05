@@ -38,7 +38,7 @@
 /       = link_to listed_specialist(specialist), specialization_specialist_path(specialist.specialization, specialist)
 
 %p
-  = link_to "Edit", edit_procedure_path(@procedure)
+  = link_to "Edit", edit_specialization_procedure_path(@procedure.specialization)
   |
   = link_to "Destroy", @procedure, :confirm => 'Are you sure?', :method => :delete
   |
