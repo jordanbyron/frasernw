@@ -28,43 +28,36 @@ module ApplicationHelper
   
   alias :clinics_procedures :specialists_procedures
   
-  def grouped_procedures(specialist)
-    procedures = specialist.procedures.collect {|p| p.name}
-    procedures.group_by {|p| p.split(' - ')[0]}  
+  def procedure_ancestry(specialist)
+    specialist.procedures.arrange(:order => "name")
   end
   
   def compressed_procedures(specialist)
-    output = []
-    grouped_procedures(specialist).each do |key, values|
-      output << key + "("
-      values.each do |value|
-        if value.match("#{key} - ")
-          output << value.gsub("#{key} - ","")
-        end
-      end
-      output << ")"
+    return compressed_procedures_output( procedure_ancestry(specialist), "" )[0..-2]
+  end
+  
+  def compressed_procedures_output(items, prefix)
+    result = ""
+    items.map do |item, sub_items|
+      new_prefix = prefix.blank? ? item.name : prefix + " - " + item.name
+      result += new_prefix + ", " + compressed_procedures_output(sub_items, new_prefix)
     end
-    output.join(', ').gsub("(, ","(").gsub(", )", ")").gsub("()","").gsub(/\([G|g]eneral\)/,'')
+    result
   end
   
   def compressed_procedures_indented(specialist)
-    output = ["<ul class='procedure'>"]
-    grouped_procedures(specialist).each do |key,values|
-      if values.length > 1
-        output << "<li>#{key}</li>"
-        output << "<ul>"
-        values.each do |value|
-          if value.match("#{key} - ")
-            output << "<li>" + value.gsub("#{key} - ","") + "</li>"
-          end
-        end
-        output << "</ul>"
-      else
-        output << "<li>#{key}</li>"
-      end
+    return compressed_procedures_indented_output( procedure_ancestry(specialist) ) 
+  end
+  
+  def compressed_procedures_indented_output(items)
+    return "" if items.empty?
+    result = "<ul>"
+    items.map do |item, sub_items|
+      result += "<li>" + item.name + "</li>"
+      result += compressed_procedures_indented_output(sub_items)
     end
-    output << "</ul>"
-    output.join()
+    result += "</ul>"
+    result
   end
   
   def compressed_clinics(clinics)
