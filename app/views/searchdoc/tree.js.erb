@@ -1,5 +1,18 @@
 <% tree = Array.new 
 
+def add_procedure(procedure)
+    procedure_node = Array.new
+    procedure_node[0] = procedure.name
+    procedure_node[1] = url_for(procedure) #.gsub!(/^\//, '')    
+    procedure_node[2] = ""
+    procedure_node[3] = Array.new
+    procedure.children.each do |child_procedure|
+        next if not procedure.specialization_level
+        procedure_node[3] << add_procedure(child_procedure)
+    end
+    return procedure_node
+end
+
 @specializations.each do |specialization|
   next unless specialization
   specialization_node = Array.new 
@@ -39,14 +52,9 @@
     clinics_node[3] << clinic_node
   end
   
-  specialization.procedures.each do |procedure|
+  specialization.procedures.arrange(:order => 'name').each do |procedure, children|
     next if not procedure.specialization_level
-    procedure_node = Array.new
-    procedure_node[0] = procedure.name
-    procedure_node[1] = url_for(procedure) #.gsub!(/^\//, '')    
-    procedure_node[2] = ""
-    procedure_node[3] = Array.new
-    specialization_node[3] << procedure_node
+    specialization_node[3] << add_procedure(procedure)
   end
 
   tree << specialization_node
