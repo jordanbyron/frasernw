@@ -2,7 +2,7 @@
 
 / FIXME, this should iterate through @procedure's specializations
 %h1
-  = @procedure.name + ' - ' + @procedure.specialization.name
+  = compressed_ancestry(@procedure) + ' - ' + @procedure.specialization.name
 
   %table{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'specialist_table'}
     %thead

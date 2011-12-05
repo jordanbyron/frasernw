@@ -39,7 +39,7 @@ module ApplicationHelper
   def compressed_procedures_output(items, prefix)
     result = ""
     items.map do |item, sub_items|
-      new_prefix = prefix.blank? ? item.name : prefix + " - " + item.name
+      new_prefix = prefix.blank? ? item.name : prefix + " > " + item.name
       result += new_prefix + ", " + compressed_procedures_output(sub_items, new_prefix)
     end
     result
@@ -57,6 +57,15 @@ module ApplicationHelper
       result += compressed_procedures_indented_output(sub_items)
     end
     result += "</ul>"
+    result
+  end
+  
+  def compressed_ancestry(procedure)
+    result = ""
+    if procedure.parent
+       result += compressed_ancestry(procedure.parent) + " > "
+    end
+    result += procedure.name
     result
   end
   
