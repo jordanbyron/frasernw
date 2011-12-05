@@ -1,5 +1,5 @@
 class Procedure < ActiveRecord::Base
-  attr_accessible :name, :specialization_id, :done_by_specialists, :done_by_clinics, :specialization_level
+  attr_accessible :name, :specialization_id, :done_by_specialists, :done_by_clinics, :specialization_level, :parent_id
   has_paper_trail
   has_ancestry
 
