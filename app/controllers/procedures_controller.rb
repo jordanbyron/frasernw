@@ -21,6 +21,7 @@ class ProceduresController < ApplicationController
   def new
     @specialization = Specialization.find(params[:specialization_id])
     @procedure = Procedure.new :specialization_id => @specialization.id
+    @procedure_ancestry = [["~ No parent ~", nil]] + ancestry_options(@specialization.procedures.arrange(:order => 'name'), nil)
   end
   
   def create
