@@ -21,6 +21,7 @@
                 %a{:href => "#Clinics_" + specializationLinkName}= "Clinics"
 
         - for procedure in specialization.procedures
+            - next if not procedure.specialization_level
             - if procedure.name.include? " - "
                 - splitProcedureName = procedure.name[ 0, procedure.name.index(" - ") ]
                 - if not splitProcedureNames.include? splitProcedureName
