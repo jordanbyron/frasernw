@@ -134,14 +134,16 @@ class Specialist < ActiveRecord::Base
         elsif referral_phone and referral_fax
             return "phone or fax"
         elsif referral_phone
-            output = "phone"
             if referral_other_details.presence
-                return output + " or " + referral_other_details
+                return output + "phone or " + referral_other_details
+            else
+                return "phone"
             end
         elsif referral_fax
-            output = "fax"
             if referral_other_details.presence
-                return output + " or " + referral_other_details
+                return "fax or " + referral_other_details
+            else
+                return "fax"
             end
         elsif referral_other_details.presence
             return referral_other_details
