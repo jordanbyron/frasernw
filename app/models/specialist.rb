@@ -18,8 +18,8 @@ class Specialist < ActiveRecord::Base
   has_many   :hospitals, :through => :privileges
   
   # specialists "speak" many languages
-  has_many   :speaks
-  has_many   :languages, :through => :speaks
+  has_many   :specialist_speaks
+  has_many   :languages, :through => :specialist_speaks
   
   # specialists are favorited by users of the system
   has_many   :favorites
