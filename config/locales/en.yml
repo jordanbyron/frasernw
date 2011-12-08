@@ -14,7 +14,7 @@ en:
     models:
       procedure: "Area of Practice"
     attributes:
-      office:
+      address:
         phone1: "Phone"
         fax: "Fax"
         address1: "Street Address"
@@ -28,11 +28,11 @@ en:
       specialist:
         firstname: "First Name"
         lastname: "Last Name"
-        direct_phone: "Direct Number"
-        contact_name: "MOA Name"
-        contact_email: "MOA Email"
-        contact_phone: "MOA Phone"
-        contact_notes: "MOA Notes"
+        direct_phone: "Direct Number (for physician contact)"
+        contact_name: "Name"
+        contact_email: "Email"
+        contact_phone: "Phone"
+        contact_notes: "Notes"
         status_mask: "Current Status"
         status_details: "Additional Status Details"
         practise_limitations: "Other Practice Limitations"

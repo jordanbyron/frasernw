@@ -43,7 +43,7 @@ module VersionsHelper
         else
           link_to version.reify.name, show_version_path(version)
         end
-      when "Privilege", "Capacity", "Office"
+      when "Privilege", "Capacity", "Address"
         if version.event == "create"
           link_to version.item.specialist.name, specialist_path(version.item.specialist)
         elsif %w(update destroy).include? version.event

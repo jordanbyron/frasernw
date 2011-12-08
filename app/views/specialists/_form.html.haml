@@ -14,39 +14,39 @@
     %h2 
       Specialist: 
       =@specialization.name
-    = f.input :firstname, label: 'First Name'
-    = f.input :lastname, label: 'Last Name'
-    = f.input :direct_phone, label: "Direct Number (for physician contact)"
+    = f.input :firstname
+    = f.input :lastname
+    = f.input :direct_phone
 
-  %fieldset.office
+  %fieldset.address
     %h2 Office / Contact Information
-    - location_number = 1
-    = f.simple_fields_for :offices do |i|
+    - address_number = 1
+    = f.simple_fields_for :addresses do |i|
       %h4.location_header 
         Location 
-        = location_number
-      = i.input :phone1, label: "Phone"
+        = address_number
+      = i.input :phone1
       = i.input :fax
 
-      = i.input :address1, label: "Street Address"
-      = i.input :address2, label: "Suite"
+      = i.input :address1
+      = i.input :address2
       = i.input :city
       = i.input :province
-      = i.input :postalcode, label: "Postal Code"
-      - if location_number < Specialist::MAX_OFFICES
+      = i.input :postalcode
+      - if address_number < Specialist::MAX_ADDRESSES
         %hr
-      - location_number += 1
-    - if @specialist.offices.count < Specialist::MAX_OFFICES
-      = f.link_to_add "Add another office", :offices, class: "button", id: "add_office"
+      - address_number += 1
+    - if @specialist.addresses.count < Specialist::MAX_ADDRESSES
+      = f.link_to_add "Add another office", :addresses, class: "button", id: "add_address"
 
   - if current_user && current_user.admin?    
     %fieldset
       %h2 Senior MOA Contact Information
       %p Allows specialists to edit their own form. This information is only visible to admins.
-      = f.input :contact_name, label: "Name"
-      = f.input :contact_email, label: "Email"
-      = f.input :contact_phone, label: "Phone"
-      = f.input :contact_notes, label: "Notes", hint: "Include contact's role (MOA, etc.) and anything else we should know."
+      = f.input :contact_name
+      = f.input :contact_email
+      = f.input :contact_phone
+      = f.input :contact_notes, hint: "Include contact's role (MOA, etc.) and anything else we should know."
 
   %fieldset
     %h2 Status
