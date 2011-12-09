@@ -1,4 +1,6 @@
 class Capacity < ActiveRecord::Base
+  attr_accessible :investigation
+  
   belongs_to :specialist
   belongs_to :procedure
   has_paper_trail

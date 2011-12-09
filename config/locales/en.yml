@@ -25,6 +25,15 @@ en:
       capacity:
         procedure: "Area of Practice"
         investigation: "Required Investigations"
+      clinic:
+        contact_name: "Name"
+        contact_email: "Email"
+        contact_phone: "Phone"
+        contact_notes: "Notes"
+        status_mask: "Current status"
+        limitations: "Clinic limitations (if any)"
+        location_opened: "Clinic opened at this location"
+        languages: "Languages spoken in the clinic"
       specialist:
         firstname: "First Name"
         lastname: "Last Name"

@@ -21,6 +21,7 @@ class ClinicsController < ApplicationController
     else
       @specialization = Specialization.find(params[:specialization_id])
       @clinic = Clinic.new(:specialization_id => params[:specialization_id])
+      @clinic.focuses.build
     end
   end
 
@@ -36,6 +37,9 @@ class ClinicsController < ApplicationController
 
   def edit
     @clinic = Clinic.find(params[:id])
+    if @clinic.focuses.count == 0
+      @clinic.focuses.build
+    end
   end
 
   def update
