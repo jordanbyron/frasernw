@@ -1,5 +1,5 @@
 class Clinic < ActiveRecord::Base
-  attr_accessible :name, :address1, :address2, :postalcode, :city, :province, :phone1, :fax, :status, :interest, :waittime, :specialization_id, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :procedure_ids, :responds_via, :addresses_attributes, :language_ids, :focuses_attributes
+  attr_accessible :name, :address1, :address2, :postalcode, :city, :province, :phone1, :fax, :status, :interest, :waittime, :specialization_id, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_form, :lagtime, :lag_uom, :waitime, :wait_uom, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :procedure_ids, :responds_via, :addresses_attributes, :language_ids, :focuses_attributes
   has_paper_trail meta: { to_review: false }
   
   has_many :attendances
