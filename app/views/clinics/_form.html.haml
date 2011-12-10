@@ -1,38 +1,132 @@
-
-= form_for @clinic do |f|
+= simple_nested_form_for @clinic do |f|
   = f.error_messages
-  %p
-    = f.label :name
-    %br
-    = f.text_field :name
-  %p
-    = f.label :address1
-    %br
-    = f.text_field :address1
-  %p
-    = f.label :address2
-    %br
-    = f.text_field :address2
-  %p
-    = f.label :postalcode
-    %br
-    = f.text_field :postalcode
-  %p
-    = f.label :city
-    %br
-    = f.text_field :city
-  %p
-    = f.label :province
-    %br
-    = f.text_field :province
-  %p
-    = f.label :phone1
-    %br
-    = f.text_field :phone1
-  %p
-    = f.label :fax
-    %br
-    = f.text_field :fax
+
+  %fieldset
+    %h2 
+      Clinic: 
+      =@clinic.name
+    = f.input :name
+
+  %fieldset.address
+    %h2 Clinic Contact Information
+    - address_number = 1
+    = f.simple_fields_for :addresses do |i|
+      %h4.location_header 
+        Location 
+        = address_number
+      = i.input :address1
+      = i.input :address2
+      = i.input :city
+      = i.association :hospital, as: :select, collection: @hospitals, prompt: 'Select ...', wrapper: false, label: "Hospital clinic is located in (if applicable)"
+      = i.input :province
+      = i.input :postalcode
+      = i.input :phone1
+      = i.input :fax
+      - if address_number < Clinic::MAX_ADDRESSES
+        %hr
+      - address_number += 1
+    - if @clinic.addresses.count < Clinic::MAX_ADDRESSES
+      = f.link_to_add "Add another location", :addresses, class: "button", id: "add_address"
+    
+
+  - if current_user && current_user.admin?    
+    %fieldset
+      %h2 Senior MOA Contact Information
+      %p Allows specialists to edit their own form. This information is only visible to admins.
+      = f.input :contact_name
+      = f.input :contact_phone
+      = f.input :contact_email
+      = f.input :contact_notes, hint: "Include contact's role (MOA, etc.) and anything else we should know."
+
+  %fieldset
+    %h2 Status
+    = f.input :status_mask, as: :select, collection: Clinic::STATUS_HASH, label_method: :last, value_method: :first
+    = f.input :limitations
+    = f.input :location_opened, as: :select, collection: ["Prior to 2010", 2010, 2011], prompt: "Select ..."
+    = f.association :languages, as: :check_boxes, wrapper: false
+    = link_to "Create a new Language", new_language_path, class: "button"
+
+  %fieldset
+    %h2 Areas of Practice
+    %p
+      In addition to history, PH, meds, allergies and relevant imaging, lab reports & OR/consultation reports, we require the following specific information/ investigations for ALL patients.
+      %span.quiet eg. XRs, MRIs, scans, blood work, etc.
+    = f.input :required_investigations, label: false, input_html: { class: "full" }
+    
+    %div.nested
+      %p
+        %span.middle Referrals accepted in the following areas of practice.
+        %span.last Additional information/investigations required for the specified area of practice.
+
+      = f.simple_fields_for :focuses do |i|
+        = i.association :procedure, as: :select, label: false, collection: @clinic.specialization.procedures.done_by_clinics, prompt: 'Select ...', wrapper: false
+        = i.input :investigation, label: false, wrapper: false
+        = i.hidden_field :_destroy
+        = i.link_to_remove "remove"
+      = f.link_to_add "Add another area of practice", :focuses, class: "button"
+
+    %hr
+
+    = f.input :interest, as: :text, label: "Clinic is most interested in", input_html: { readonly: "readonly" }
+    = f.input :not_performed, as: :text, label: "Clinic does not see or do"
+
+  %fieldset.referral_details
+    %h2 Referral Details
+    .mechanisms
+      %span.label How does your clinic accept requests for standard referrals?
+      = f.input :referral_fax, as: :boolean, wrapper: false
+      = f.input :referral_phone, as: :boolean, wrapper: false
+      = f.input :referral_other_details, wrapper: false
+
+    = f.input :referral_form, label: "Does your clinic have a referral form?", as: :radio
+    .input.optional
+      = f.input :lagtime, label: "Average length of time to notify GP of a booking date", as: :integer, input_html: {min: 0}, wrapper: false
+      = f.input :lag_uom, label: false, wrapper: false, as: :select, collection: %w(days weeks months)
+    
+    .input.optional
+      = f.input :waittime, label: "Average wait time from request for consultation to appointment", as: :integer, input_html: {min: 0}, wrapper: false
+      = f.input :wait_uom, label: false, wrapper: false, as: :select, collection: %w(days weeks months)
+
+    .mechanisms
+      %span.label Our clinic will respond to referral requests
+      %span.inputs
+        To the referring office by:
+        = f.input :respond_by_fax, as: :boolean, wrapper: false
+        = f.input :respond_by_phone, as: :boolean, wrapper: false
+        = f.input :respond_by_mail, as: :boolean, wrapper: false
+        %br
+        = f.input :respond_to_patient, as: :boolean, wrapper: false
+    = f.input :patient_can_book, as: :radio, label: "After you receive our referral, will your clinic accept direct calls from patients to book their own appointments?"
+    = f.input :red_flags, label: "What conditions (red flags) does your clinic feel warrant urgent consultation?", as: :text, input_html: { class: "full" }
+    .mechanisms
+      %span.label Optimal method of referral for urgent appointments
+      = f.input :urgent_fax, as: :boolean, wrapper: false
+      = f.input :urgent_phone, as: :boolean, wrapper: false
+      = f.input :urgent_other_details, wrapper: false
+
+  %fieldset
+    %h2 Physicians Who See Patients at Your Clinic
+    %div.nested
+      %p
+        %span.first Is a Specialist
+        %span.middle Physician name
+        %span.last Area of focus (if not the same for all physicians working in your clinic).
+        
+      = f.simple_fields_for :attendances do |i|
+        = i.input :is_specialist, label: false, wrapper: false, input_html: { class: "is_specialist first" }
+        = i.association :specialist, as: :select, label: false, collection: @clinic.specialization.specialists, prompt: 'Select ...', wrapper: false, input_html: { class: "specialist_list" }
+        = i.input :freeform_firstname, label: false, wrapper: false, input_html: { class: "freeform", style: "display:none", value: "first name" }
+        = i.input :freeform_lastname, label: false, wrapper: false, input_html: { class: "freeform", style: "display:none", value: "last name" }
+        = i.input :area_of_focus, label: false, wrapper: false
+        = i.hidden_field :_destroy
+        = i.link_to_remove "remove"
+      = f.link_to_add "Add another physician", :attendances, class: "button"
+
+  %fieldset
+    %h2 Healthcare Providers Who See Patients at Your Clinic
+    = f.association :healthcare_providers, as: :check_boxes, label: false
+    = link_to "Create a new Healthcare Provider", new_healthcare_provider_path, class: "button"
+    
   %p
     = f.label :status
     %br
