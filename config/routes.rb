@@ -1,5 +1,7 @@
 Frasernw::Application.routes.draw do
 
+  resources :healthcare_providers
+
   resources :reviews, :only => [:index, :destroy] do
     put :accept
   end
