@@ -1,0 +1,19 @@
+%h1 Listing Healthcare Providers
+
+%table
+  %tr
+    %th Name
+    %th
+    %th
+    %th
+
+  - @healthcare_providers.each do |healthcare_provider|
+    %tr
+      %td= healthcare_provider.name
+      %td= link_to 'Show', healthcare_provider
+      %td= link_to 'Edit', edit_healthcare_provider_path(healthcare_provider)
+      %td= link_to 'Destroy', healthcare_provider, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Healthcare provider', new_healthcare_provider_path

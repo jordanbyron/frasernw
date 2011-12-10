@@ -1,0 +1,9 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @healthcare_provider.name
+
+= link_to 'Edit', edit_healthcare_provider_path(@healthcare_provider)
+\|
+= link_to 'Back', healthcare_providers_path
