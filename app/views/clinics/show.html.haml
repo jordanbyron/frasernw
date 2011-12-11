@@ -30,8 +30,11 @@
   = @clinic.referral_process
 %p
   %strong Attending physicians:
-  - @clinic.specialists.each do |specialist|
-    = link_to(specialist.name, url_for(specialist)) + raw("<br/>")
+  - @clinic.attendances.each do |attendance|
+    - if attendance.is_specialist
+      = link_to(attendance.specialist.name, url_for(attendance.specialist)) + raw("<br/>")
+    - else
+      = attendance.freeform_firstname + " " + attendance.freeform_lastname
 %p
   %strong Wait time (avg in weeks): #{@clinic.waittime}
 
