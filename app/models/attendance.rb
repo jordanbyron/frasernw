@@ -3,6 +3,6 @@ class Attendance < ActiveRecord::Base
   belongs_to :clinic
   
   def freeform_name
-    firstname + " " + lastname
+    (freeform_firstname or "") + " " + (freeform_lastname or "")
   end
 end

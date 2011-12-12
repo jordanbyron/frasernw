@@ -48,6 +48,18 @@ class Clinic < ActiveRecord::Base
     self.waittime.blank? ? "n/a" : self.waittime
   end
   
+  def wait_uom_or_blank
+    self.wait_uom.blank? ? "n/a" : self.wait_uom
+  end
+  
+  def lagtime_or_blank
+    self.lagtime.blank? ? "n/a" : self.lagtime
+  end
+  
+  def lag_uom_or_blank
+    self.lag_uom.blank? ? "n/a" : self.lag_uom
+  end
+  
   def waittime?
     self.waittime.blank? ? 'muted' : ''
   end
