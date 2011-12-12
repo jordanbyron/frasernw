@@ -72,10 +72,10 @@
   = @specialist.referral_form ? "yes" : "no"
   %br
   %strong Average length of time to notify GP of a booking date:
-  = @specialist.lagtime + " " + @specialist.lag_uom
+  = @specialist.lagtime_or_blank + " " + @specialist.lag_uom_or_blank
   %br
   %strong Average wait time from request for consultation to appointment:
-  = @specialist.waittime + " " + @specialist.wait_uom
+  = @specialist.waittime_or_blank + " " + @specialist.wait_uom_or_blank
   %br
   %strong Office responds to referrals by:
   = @specialist.respond_by_phone ? "phone, " : ""
