@@ -2,41 +2,85 @@
 
 %h1
   = @clinic.name
-%p
-  %i
-    = @clinic.address + ", "
-    = @clinic.city + ', ' + @clinic.province + ', ' +  @clinic.postalcode
-    %br
-    = @clinic.phone1 + ', '
-    = "fax: #{@clinic.fax}"
-%p
-  %strong Area of practice:
-  %br/
-  - @clinic.procedures.each do |procedure|
-    %span.light-highlight= procedure.name
-    %br/
+  
+- @clinic.addresses.each do |address|
+  - next if address.empty?
+  %p
+    %i
+      = address.address2 + ", " + address.address1 + ", " + address.city + ", " + address.province + ", " + address.postalcode
+      %br
+      = address.phone1 + ", fax: " + address.fax
+      
 %p
   %strong Status:
   = @clinic.status
+  %br
+  %strong Other practice Limitations (if any):
+  = @clinic.limitations
+  %br
+  %strong Practice opened at this location:
+  = @clinic.location_opened
+  %br
+  %strong Languages spoken at the practice:
+  = @clinic.languages.map{ |x| x.name }.join(", ")
+  
 %p
-  %strong Responds via:
-  = @clinic.responds_via
+  %strong Investigations required for all patients:
+  = @clinic.required_investigations
+  %br
+  %strong Area of practice:
+  = compressed_procedures_indented(@clinic).html_safe
+  %br
+  %strong Most interested in:
+  = @clinic.interest
+  %br
+  %strong Does not see or do:
+  = @clinic.not_performed
+  
 %p
-  %strong Referral Criteria:
-  = @clinic.referral_criteria
+  %strong Accepts referrals via:
+  = @clinic.referral_phone ? "phone, " : ""
+  = @clinic.referral_fax ? "fax, " : ""
+  = @clinic.referral_other_details
+  %br
+  %strong Has referral form:
+  = @clinic.referral_form ? "yes" : "no"
+  %br
+  %strong Average length of time to notify GP of a booking date:
+  = @clinic.lagtime_or_blank + " " + @clinic.lag_uom_or_blank
+  %br
+  %strong Average wait time from request for consultation to appointment:
+  = @clinic.waittime_or_blank + " " + @clinic.wait_uom_or_blank
+  %br
+  %strong Responds to referrals by:
+  = @clinic.respond_by_phone ? "phone, " : ""
+  = @clinic.respond_by_fax ? "fax, " : ""
+  = @clinic.respond_by_mail ? "mail, " : ""
+  = @clinic.respond_to_patient ? "directly to patient" : ""
+  %br
+  %strong Accepts direct calls from patients after referral to book their own appointments?
+  = @clinic.patient_can_book ? "yes" : "no"
+  %br
+  %strong Conditions (red flags) that clinic feels warrants urgent consultation:
+  = @clinic.red_flags
+  %br
+  %strong Optimal method of referral for urgent appointments:
+  = @clinic.urgent_phone ? "phone, " : ""
+  = @clinic.urgent_fax ? "fax, " : ""
+  = @clinic.urgent_other_details
 
 %p
-  %strong Referral Process:
-  = @clinic.referral_process
-%p
-  %strong Attending physicians:
+  %strong Physicians who see patients at the clinic:
   - @clinic.attendances.each do |attendance|
     - if attendance.is_specialist
-      = link_to(attendance.specialist.name, url_for(attendance.specialist)) + raw("<br/>")
+      - if attendance.specialist
+        = link_to(attendance.specialist.name, url_for(attendance.specialist)) + raw("<br/>")
     - else
-      = attendance.freeform_firstname + " " + attendance.freeform_lastname
+      = attendance.freeform_name
+      
 %p
-  %strong Wait time (avg in weeks): #{@clinic.waittime}
+  %strong Healthcare providers who see patients at the clinic:
+  = @clinic.healthcare_providers.map{ |x| x.name }.join(", ")
 
 %p
   = link_to "Edit", edit_specialization_clinic_path(@clinic.specialization, @clinic)
