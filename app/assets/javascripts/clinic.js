@@ -1,4 +1,5 @@
-$(".is_specialist").live("change", function() {
+var hideShowPhysicians = function() 
+{
   if ( $(this).is(":checked") )
   {
     //we have indicated a specialist
@@ -11,4 +12,6 @@ $(".is_specialist").live("change", function() {
     $(this).siblings(".specialist_list").hide();
     $(this).siblings(".freeform").show();
   }
-});
+}
+
+$(".is_specialist").live("change", hideShowPhysicians );
