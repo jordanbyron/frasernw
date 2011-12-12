@@ -22,41 +22,89 @@
   = @specialist.lastname + ' - '
   = @specialist.specialization.name
 %p
-  %i
-    -# = @specialist.address + ", "
-    -# = @specialist.city + ', ' + @specialist.province + ', ' +  @specialist.postalcode
-    %br
-    -# = @specialist.phone1 + ', '
-    -# = "fax: #{@specialist.fax}"
-%p
-  %strong Area of practice:
-  %br/
-  = compressed_procedures_indented(@specialist).html_safe
-  / .procedures.each do |procedure|
-  / %span.light-highlight= procedure.name
-  / %br/
+  %strong Direct number:
+  = @specialist.direct_phone
+  
+- @specialist.addresses.each do |address|
+  - next if address.empty?
+  %p
+    %i
+      = address.address2 + ", " + address.address1 + ", " + address.city + ", " + address.province + ", " + address.postalcode
+      %br
+      = address.phone1 + ", fax: " + address.fax
+      
 %p
   %strong Status:
   = @specialist.status
+  %br
+  %strong Additional details (if any):
+  = @specialist.status_details
+  %br
+  %strong Other practice Limitations (if any):
+  = @specialist.practise_limitations
+  %br
+  %strong Practice opened at this location:
+  = @specialist.location_opened
+  %br
+  %strong Languages spoken at the practice:
+  = @specialist.languages.map{ |x| x.name }.join(", ")
+  
 %p
-  %strong Responds via:
-  = @specialist.responds_via
-%p
-  %strong Referral criteria, required forms, and investigations
-  = @specialist.referral_criteria
-%p
-  %strong Interest:
+  %strong Investigations required for all patients:
+  = @specialist.required_investigations
+  %br
+  %strong Area of practice:
+  = compressed_procedures_indented(@specialist).html_safe
+  %br
+  %strong Most interested in:
   = @specialist.interest
+  %br
+  %strong Does not see or do:
+  = @specialist.not_performed
+  
 %p
-  %strong Red Flags (urgent situations, and process for having them addressed):
+  %strong Accepts referrals via:
+  = @specialist.referral_phone ? "phone, " : ""
+  = @specialist.referral_fax ? "fax, " : ""
+  = @specialist.referral_other_details
+  %br
+  %strong Has referral form:
+  = @specialist.referral_form ? "yes" : "no"
+  %br
+  %strong Average length of time to notify GP of a booking date:
+  = @specialist.lagtime + " " + @specialist.lag_uom
+  %br
+  %strong Average wait time from request for consultation to appointment:
+  = @specialist.waittime + " " + @specialist.wait_uom
+  %br
+  %strong Office responds to referrals by:
+  = @specialist.respond_by_phone ? "phone, " : ""
+  = @specialist.respond_by_fax ? "fax, " : ""
+  = @specialist.respond_by_mail ? "mail, " : ""
+  = @specialist.respond_to_patient ? "directly to patient" : ""
+  %br
+  %strong Accepts direct calls from patients after referral to book their own appointments?
+  = @specialist.patient_can_book ? "yes" : "no"
+  %br
+  %strong Conditions (red flags) that office feels warrants urgent consultation:
   = @specialist.red_flags
+  %br
+  %strong Optimal method of referral for urgent appointments:
+  = @specialist.urgent_phone ? "phone, " : ""
+  = @specialist.urgent_fax ? "fax, " : ""
+  = @specialist.urgent_other_details
+  
+%p
+  %strong Hospital Privileges:
+  - @specialist.hospitals.each do |hospitals|
+    = link_to(hospitals.name, url_for(hospitals))
+    %br
+  
 %p
   %strong Clinics:
   - @specialist.clinics.each do |clinic|
     = link_to(clinic.name, url_for(clinic))
-    %br/
-%p
-  %strong Wait time (avg in weeks): #{@specialist.waittime}
+    %br
 
 %p
   = link_to "History", show_versions_path(@specialist)
