@@ -16,7 +16,7 @@
       = i.input :address1
       = i.input :address2
       = i.input :city
-      = i.association :hospital, as: :select, collection: @hospitals, prompt: 'Select ...', wrapper: false, label: "Hospital clinic is located in (if applicable)"
+      = i.association :hospital, as: :select, collection: @hospitals, label: "Hospital clinic is located in (if applicable)", :include_blank => true
       = i.input :province
       = i.input :postalcode
       = i.input :phone1
