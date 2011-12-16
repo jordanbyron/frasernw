@@ -44,6 +44,8 @@ en:
         urgent_fax: "Fax"
         urgent_phone: "Phone"
         urgent_other_details: "Other"
+        lagtime: "On average, how long does it take your clinic to advise the GP office that an appointment has been booked for their patient?"
+        waittime: "On average, what is your clinic’s normal wait time from request for a consultation to the appointment itself?"
       specialist:
         firstname: "First Name"
         lastname: "Last Name"

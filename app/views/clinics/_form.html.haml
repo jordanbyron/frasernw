@@ -78,11 +78,11 @@
 
     = f.input :referral_form, label: "Does your clinic have a referral form?", as: :radio
     .input.optional
-      = f.input :lagtime, label: "On average, how long does it take your clinic to advise the GP office that an appointment has been booked for their patient?", as: :integer, input_html: {min: 0}, wrapper: false
+      = f.input :lagtime, as: :integer, input_html: {min: 0}, wrapper: false
       = f.input :lag_uom, label: false, wrapper: false, as: :select, collection: %w(days weeks months)
     
     .input.optional
-      = f.input :waittime, label: "On average, what is your clinic’s normal wait time from request for a consultation to the appointment itself?", as: :integer, input_html: {min: 0}, wrapper: false
+      = f.input :waittime, as: :integer, input_html: {min: 0}, wrapper: false
       = f.input :wait_uom, label: false, wrapper: false, as: :select, collection: %w(days weeks months)
 
     .mechanisms
@@ -135,7 +135,6 @@
     = f.input :responds_via
     = f.input :interest
     = f.input :referral_criteria
-    = f.input :waittime
   
   = f.hidden_field :specialization_id
 
