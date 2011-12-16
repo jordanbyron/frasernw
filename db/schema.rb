@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111212215800) do
+ActiveRecord::Schema.define(:version => 20111216175034) do
 
   create_table "addresses", :force => true do |t|
     t.string   "address1"
@@ -207,13 +207,11 @@ ActiveRecord::Schema.define(:version => 20111212215800) do
   end
 
   create_table "procedures", :force => true do |t|
-    t.string    "name"
-    t.integer   "specialization_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.boolean   "done_by_clinics"
-    t.boolean   "done_by_specialists"
-    t.boolean   "specialization_level", :default => true
+    t.string   "name"
+    t.integer  "specialization_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "specialization_level", :default => true
   end
 
   create_table "reviews", :force => true do |t|

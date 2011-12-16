@@ -1,5 +1,5 @@
 class Procedure < ActiveRecord::Base
-  attr_accessible :name, :specialization_id, :done_by_specialists, :done_by_clinics, :specialization_level, :parent_id
+  attr_accessible :name, :specialization_id, :specialization_level
   has_paper_trail
   has_ancestry
 
@@ -15,9 +15,6 @@ class Procedure < ActiveRecord::Base
 
   validates_presence_of :specialization_id, :on => :save, :message => "can't be blank"
   validates_presence_of :name, :on => :save, :message => "can't be blank"
-  
-  scope :done_by_specialists, where(:done_by_specialists  => true)
-  scope :done_by_clinics, where(:done_by_clinics  => true)
   
   def to_s
     self.name
