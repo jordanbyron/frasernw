@@ -31,9 +31,6 @@
   %strong Area of practice:
   = compressed_procedures_indented(@clinic).html_safe
   %br
-  %strong Most interested in:
-  = @clinic.interest
-  %br
   %strong Does not see or do:
   = @clinic.not_performed
   
@@ -47,10 +44,10 @@
   = @clinic.referral_form ? "yes" : "no"
   %br
   %strong Average length of time to notify GP of a booking date:
-  = @clinic.lagtime_or_blank + " " + @clinic.lag_uom_or_blank
+  = "#{@clinic.lagtime} #{@clinic.lag_uom}"
   %br
   %strong Average wait time from request for consultation to appointment:
-  = @clinic.waittime_or_blank + " " + @clinic.wait_uom_or_blank
+  = "#{@clinic.waittime} #{@clinic.wait_uom}"
   %br
   %strong Responds to referrals by:
   = @clinic.respond_by_phone ? "phone, " : ""
