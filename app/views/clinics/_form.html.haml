@@ -114,8 +114,8 @@
       = f.simple_fields_for :attendances do |i|
         = i.input :is_specialist, label: false, wrapper: false, input_html: { class: "is_specialist first" }
         = i.association :specialist, as: :select, label: false, collection: @clinic.specialization.specialists, prompt: 'Select ...', wrapper: false, input_html: { class: "specialist_list" }
-        = i.input :freeform_firstname, label: false, wrapper: false, input_html: { class: "freeform" }
-        = i.input :freeform_lastname, label: false, wrapper: false, input_html: { class: "freeform" }
+        = i.input :freeform_firstname, label: false, wrapper: false, input_html: { class: "freeform", style: "display:none" }
+        = i.input :freeform_lastname, label: false, wrapper: false, input_html: { class: "freeform", style: "display:none" }
         = i.input :area_of_focus, label: false, wrapper: false
         = i.hidden_field :_destroy
         = i.link_to_remove "remove"
