@@ -7,9 +7,9 @@
   - next if address.empty?
   %p
     %i
-      = address.address2 + ", " + address.address1 + ", " + address.city + ", " + address.province + ", " + address.postalcode
+      = "#{address.address2}, #{address.address1}, #{address.city}, #{address.province}, #{address.postalcode}"
       %br
-      = address.phone1 + ", fax: " + address.fax
+      = "#{address.phone1}, fax: #{address.fax}"
       
 %p
   %strong Status:
