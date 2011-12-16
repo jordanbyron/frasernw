@@ -21,6 +21,7 @@ class ClinicsController < ApplicationController
     else
       @specialization = Specialization.find(params[:specialization_id])
       @clinic = Clinic.new(:specialization_id => params[:specialization_id])
+      @clinic.addresses.build
       @clinic.focuses.build
       @hospitals = Hospital.all
     end
