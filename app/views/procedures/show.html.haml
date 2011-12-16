@@ -24,7 +24,7 @@
               - when 'clinic'
                 = link_to specialist.name, specialization_clinic_path(@procedure.specialization, specialist), :class => type_of_row
           %td{:class => "number_column"}
-          %td{:class => "number_column #{specialist.waittime?}"}= specialist.waittime_or_blank
+          %td{:class => "number_column #{specialist.waittime?}"}= specialist.waittime || "n\a"
           %td= specialist.city
           %td= compressed_clinics(specialist.hospitals) if type_of_row == 'specialist'
           %td= compressed_clinics(specialist.clinics) if type_of_row == 'specialist'

@@ -18,9 +18,7 @@
     = render @specialist.contacts
 
 %h1
-  = @specialist.firstname
-  = @specialist.lastname + ' - '
-  = @specialist.specialization.name
+  = "#{@specialist.firstname} #{@specialist.lastname} - #{@specialist.specialization.name}"
 %p
   %strong Direct number:
   = @specialist.direct_phone
@@ -29,9 +27,9 @@
   - next if address.empty?
   %p
     %i
-      = address.address2 + ", " + address.address1 + ", " + address.city + ", " + address.province + ", " + address.postalcode
+      = "#{address.address2}, #{address.address1}, #{address.city}, #{address.province}, #{address.postalcode}"
       %br
-      = address.phone1 + ", fax: " + address.fax
+      = "#{address.phone1}, fax: #{address.fax}"
       
 %p
   %strong Status:
@@ -72,10 +70,10 @@
   = @specialist.referral_form ? "yes" : "no"
   %br
   %strong Average length of time to notify GP of a booking date:
-  = @specialist.lagtime_or_blank + " " + @specialist.lag_uom_or_blank
+  = "#{@specialist.lagtime} #{@specialist.lag_uom}"
   %br
   %strong Average wait time from request for consultation to appointment:
-  = @specialist.waittime_or_blank + " " + @specialist.wait_uom_or_blank
+  = "#{@specialist.waittime} #{@specialist.wait_uom}"
   %br
   %strong Office responds to referrals by:
   = @specialist.respond_by_phone ? "phone, " : ""
