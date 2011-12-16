@@ -36,7 +36,7 @@ class ProceduresController < ApplicationController
   def edit
     @procedure = Procedure.find(params[:id])
     @specialization = Specialization.find(params[:specialization_id])
-    @procedure_ancestry = [["~ No parent ~", nil]] + ancestry_options(@specialization.procedures.arrange(:order => 'name'), @procedure)
+    @procedure_ancestry = [["~ No parent ~", nil]] + ancestry_options(@specialization.procedures.arrange(:order => 'name'), @procedure.subtree)
   end
   
   def update
@@ -55,15 +55,15 @@ class ProceduresController < ApplicationController
     redirect_to procedures_url, :notice => "Successfully destroyed area of practice."
   end
   
-  def ancestry_options(items, skip_item, &block)
-    return ancestry_options(items, skip_item){ |i| "#{'-' * i.depth} #{i.name}" } unless block_given?
+  def ancestry_options(items, skip_tree, &block)
+    return ancestry_options(items, skip_tree){ |i| "#{'-' * i.depth} #{i.name}" } unless block_given?
     
     result = []
     items.map do |item, sub_items|
-      next if item == skip_item
+      next if skip_tree.include? item
       result << [yield(item), item.id]
       #this is a recursive call:
-      result += ancestry_options(sub_items, skip_item, &block)
+      result += ancestry_options(sub_items, skip_tree, &block)
     end
     result
   end
