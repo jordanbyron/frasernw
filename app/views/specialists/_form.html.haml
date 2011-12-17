@@ -92,14 +92,6 @@
     = f.input :referral_form, label: "Does your office have a referral form?", as: :radio
     
     .input.optional
-      = f.input :lagtime_old, as: :integer, input_html: {min: 0}, wrapper: false
-      = f.input :lag_uom_old, label: false, wrapper: false, as: :select, collection: %w(days weeks months)
-    
-    .input.optional
-      = f.input :waittime_old, as: :integer, input_html: {min: 0}, wrapper: false
-      = f.input :wait_uom_old, label: false, wrapper: false, as: :select, collection: %w(days weeks months)
-    
-    .input.optional
       = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_HASH, label_method: :last, value_method: :first, wrapper: false
     
     .input.optional

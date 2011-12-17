@@ -70,13 +70,7 @@
   = @specialist.referral_form ? "yes" : "no"
   %br
   %strong Average length of time to notify GP of a booking date:
-  = "#{@specialist.lagtime_old} #{@specialist.lag_uom_old}"
-  %br
-  %strong Average length of time to notify GP of a booking date:
   = @specialist.lagtime
-  %br
-  %strong Average wait time from request for consultation to appointment:
-  = "#{@specialist.waittime_old} #{@specialist.wait_uom_old}"
   %br
   %strong Average wait time from request for consultation to appointment:
   = @specialist.waittime
