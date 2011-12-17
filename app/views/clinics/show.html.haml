@@ -44,10 +44,10 @@
   = @clinic.referral_form ? "yes" : "no"
   %br
   %strong Average length of time to notify GP of a booking date:
-  = "#{@clinic.lagtime} #{@clinic.lag_uom}"
+  = "#{@clinic.lagtime_old} #{@clinic.lag_uom_old}"
   %br
   %strong Average wait time from request for consultation to appointment:
-  = "#{@clinic.waittime} #{@clinic.wait_uom}"
+  = "#{@clinic.waittime_old} #{@clinic.wait_uom_old}"
   %br
   %strong Responds to referrals by:
   = @clinic.respond_by_phone ? "phone, " : ""

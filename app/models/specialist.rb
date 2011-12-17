@@ -1,5 +1,5 @@
 class Specialist < ActiveRecord::Base
-  attr_accessible :firstname, :lastname, :address1, :address2, :postalcode, :city, :province, :phone1, :fax, :practise_limitations, :interest, :waittime, :specialization_id, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :lagtime, :patient_can_book, :lag_uom, :wait_uom, :referral_form, :hospital_ids, :capacities_attributes, :offices_attributes, :language_ids, :addresses_attributes
+  attr_accessible :firstname, :lastname, :address1, :address2, :postalcode, :city, :province, :phone1, :fax, :practise_limitations, :interest, :waittime_old, :specialization_id, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :lagtime_old, :patient_can_book, :lag_uom_old, :wait_uom_old, :referral_form, :hospital_ids, :capacities_attributes, :offices_attributes, :language_ids, :addresses_attributes
   has_paper_trail ignore: :saved_token
   
   belongs_to :specialization
@@ -47,11 +47,29 @@ class Specialist < ActiveRecord::Base
   after_initialize :default_values
 
   default_scope order('lastname, firstname')
-
+  
   STATUS_HASH = { 1 => "Accepting new patients", 2 => "Only doing follow up on previous patients", 3 => "Semi-retired", 4 => "Retired"}
-
+  
   def status
     Specialist::STATUS_HASH[status_mask]
+  end
+  
+  WAITTIME_HASH = { 
+  1 => "Book by phone when office calls for referral", 
+  2 => "Within one week", 
+  3 => "1-2 weeks", 
+  4 => "2-4 weeks", 
+  5 => "1-2 months", 
+  5 => "2-4 months", 
+  5 => "4-6 months", 
+  5 => "6-9 months", 
+  5 => "9-12 months", 
+  5 => "12-18 months", 
+  5 => ">18 months"
+  }
+  
+  def waittime
+    Specialist::WAITTIME_HASH[waittime_mask]
   end
 
   def name
@@ -59,7 +77,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def waittime?
-    self.waittime.blank? ? 'muted' : ''
+    self.waittime_old.blank? ? 'muted' : ''
   end
 
   def token
@@ -75,8 +93,8 @@ class Specialist < ActiveRecord::Base
   private
 
     def default_values
-      self.lag_uom ||= "weeks"
-      self.wait_uom ||= "weeks"
+      self.lag_uom_old ||= "weeks"
+      self.wait_uom_old ||= "weeks"
     end
 
 end

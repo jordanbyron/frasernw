@@ -70,10 +70,10 @@
   = @specialist.referral_form ? "yes" : "no"
   %br
   %strong Average length of time to notify GP of a booking date:
-  = "#{@specialist.lagtime} #{@specialist.lag_uom}"
+  = "#{@specialist.lagtime_old} #{@specialist.lag_uom_old}"
   %br
   %strong Average wait time from request for consultation to appointment:
-  = "#{@specialist.waittime} #{@specialist.wait_uom}"
+  = "#{@specialist.waittime_old} #{@specialist.wait_uom_old}"
   %br
   %strong Office responds to referrals by:
   = @specialist.respond_by_phone ? "phone, " : ""

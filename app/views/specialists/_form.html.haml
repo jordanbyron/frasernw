@@ -92,12 +92,12 @@
     = f.input :referral_form, label: "Does your office have a referral form?", as: :radio
     
     .input.optional
-      = f.input :lagtime, as: :integer, input_html: {min: 0}, wrapper: false
-      = f.input :lag_uom, label: false, wrapper: false, as: :select, collection: %w(days weeks months)
+      = f.input :lagtime_old, as: :integer, input_html: {min: 0}, wrapper: false
+      = f.input :lag_uom_old, label: false, wrapper: false, as: :select, collection: %w(days weeks months)
     
     .input.optional
-      = f.input :waittime, as: :integer, input_html: {min: 0}, wrapper: false
-      = f.input :wait_uom, label: false, wrapper: false, as: :select, collection: %w(days weeks months)
+      = f.input :waittime_old, as: :integer, input_html: {min: 0}, wrapper: false
+      = f.input :wait_uom_old, label: false, wrapper: false, as: :select, collection: %w(days weeks months)
 
     .mechanisms
       %span.label Our office will respond to referral requests
