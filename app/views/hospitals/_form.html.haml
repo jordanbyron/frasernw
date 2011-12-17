@@ -1,36 +1,30 @@
-= form_for @hospital do |f|
+= simple_nested_form_for @hospital do |f|
   = f.error_messages
-  %p
-    = f.label :name
-    %br
-    = f.text_field :name
-  %p
-    = f.label :address1
-    %br
-    = f.text_field :address1
-  %p
-    = f.label :address2
-    %br
-    = f.text_field :address2
-  %p
-    = f.label :postalcode
-    %br
-    = f.text_field :postalcode
-  %p
-    = f.label :city
-    %br
-    = f.text_field :city
-  %p
-    = f.label :province
-    %br
-    = f.text_field :province
-  %p
-    = f.label :phone1
-    %br
-    = f.text_field :phone1
-  %p
-    = f.label :fax
-    %br
-    = f.text_field :fax
+
+  %fieldset
+    %h2 
+      Hospital Name 
+    = f.input :name
+
+  %fieldset.address
+    %h2 Hospital Contact Information
+    - address_number = 1
+    = f.simple_fields_for :addresses do |i|
+      %h4.location_header 
+        Location 
+        = address_number
+      = i.input :address1
+      = i.input :address2
+      = i.input :city
+      = i.input :province
+      = i.input :postalcode
+      = i.input :phone1
+      = i.input :fax
+      - if address_number < Hospital::MAX_ADDRESSES
+        %hr
+      - address_number += 1
+    - if @hospital.addresses.count < Hospital::MAX_ADDRESSES
+      = f.link_to_add "Add another location", :addresses, class: "button", id: "add_address"
+
   %p
     = f.submit
