@@ -58,13 +58,6 @@ class Specialist < ActiveRecord::Base
     firstname + ' ' + lastname
   end
 
-  def address
-    address = ''
-    address += self.address1 || ''
-    address += self.address2 || ''
-    address
-  end
-
   def waittime?
     self.waittime.blank? ? 'muted' : ''
   end

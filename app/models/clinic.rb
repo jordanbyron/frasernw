@@ -37,13 +37,6 @@ class Clinic < ActiveRecord::Base
     Clinic::STATUS_HASH[status_mask]
   end
   
-  def address
-    address = ''
-    address += self.address1 || ''
-    address += self.address2 || ''
-    address
-  end
-  
   def waittime?
     self.waittime.blank? ? 'muted' : ''
   end
