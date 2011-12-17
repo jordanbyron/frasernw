@@ -3,7 +3,7 @@
 %table
   %tr
     %th Name
-  - for clinic in @clinics
+  - for clinic in @specialization.clinics
     %tr
       %td= clinic.name
       %td= link_to 'Show', clinic
