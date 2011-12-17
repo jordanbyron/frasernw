@@ -23,6 +23,7 @@ class ClinicsController < ApplicationController
       @clinic = Clinic.new(:specialization_id => params[:specialization_id])
       @clinic.addresses.build
       @clinic.focuses.build
+      @clinic.attendances.build
       @hospitals = Hospital.all
     end
   end
