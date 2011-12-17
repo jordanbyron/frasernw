@@ -11,6 +11,7 @@ class HospitalsController < ApplicationController
 
   def new
     @hospital = Hospital.new
+    @hospital.addresses.build
   end
 
   def create
