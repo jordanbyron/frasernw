@@ -3,12 +3,12 @@ class AddWaitTimeToClinics < ActiveRecord::Migration
   def migrate_values(migrate_class)
     
     migrate_class.find(:all).each do |c|
-      next if c.waittime_old == "" or c.wait_uom_old == ""
+      next if (not c.waittime_old) or (c.waittime_old == "") or (not c.wait_uom_old) or (c.wait_uom_old == "")
       
       days = case c.wait_uom_old
-        when "days" then c.waittime_old
-        when "weeks" then c.waittime_old * 7
-        when "months" then c.waittime_old * 7 * 4
+        when "days" then c.waittime_old.to_i
+        when "weeks" then c.waittime_old.to_i * 7
+        when "months" then c.waittime_old.to_i * 7 * 4
         else 0
       end
       
@@ -30,12 +30,12 @@ class AddWaitTimeToClinics < ActiveRecord::Migration
     end
     
     migrate_class.find(:all).each do |c|
-      next if c.lagtime_old == "" or c.lag_uom_old == ""
+      next if (not c.lagtime_old) or (c.lagtime_old == "") or (not c.lag_uom_old) or (c.lag_uom_old == "")
       
       days = case c.lag_uom_old
-        when "days" then c.lagtime_old
-        when "weeks" then c.lagtime_old * 7
-        when "months" then c.lagtime_old * 7 * 4
+        when "days" then c.lagtime_old.to_i
+        when "weeks" then c.lagtime_old.to_i * 7
+        when "months" then c.lagtime_old.to_i * 7 * 4
         else 0
       end
       

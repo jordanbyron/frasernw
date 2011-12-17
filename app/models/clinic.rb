@@ -38,17 +38,16 @@ class Clinic < ActiveRecord::Base
   end
   
   WAITTIME_HASH = { 
-  1 => "Book by phone when office calls for referral", 
-  2 => "Within one week", 
-  3 => "1-2 weeks", 
-  4 => "2-4 weeks", 
-  5 => "1-2 months", 
-  6 => "2-4 months", 
-  7 => "4-6 months", 
-  8 => "6-9 months", 
-  9 => "9-12 months", 
-  10 => "12-18 months", 
-  11 => ">18 months"
+    1 => "Within one week", 
+    2 => "1-2 weeks", 
+    3 => "2-4 weeks", 
+    4 => "1-2 months", 
+    5 => "2-4 months", 
+    6 => "4-6 months", 
+    7 => "6-9 months", 
+    8 => "9-12 months", 
+    9 => "12-18 months", 
+    10 => ">18 months"
   }
   
   def waittime
@@ -56,16 +55,17 @@ class Clinic < ActiveRecord::Base
   end
   
   LAGTIME_HASH = { 
-  1 => "Within one week", 
-  2 => "1-2 weeks", 
-  3 => "2-4 weeks", 
-  4 => "1-2 months", 
-  5 => "2-4 months", 
-  6 => "4-6 months", 
-  7 => "6-9 months", 
-  8 => "9-12 months", 
-  9 => "12-18 months", 
-  10 => ">18 months"
+    1 => "Book by phone when office calls for referral", 
+    2 => "Within one week", 
+    3 => "1-2 weeks", 
+    4 => "2-4 weeks", 
+    5 => "1-2 months", 
+    6 => "2-4 months", 
+    7 => "4-6 months", 
+    8 => "6-9 months", 
+    9 => "9-12 months", 
+    10 => "12-18 months", 
+    11 => ">18 months"
   }
   
   def lagtime
