@@ -1,5 +1,5 @@
 class Specialist < ActiveRecord::Base
-  attr_accessible :firstname, :lastname, :address1, :address2, :postalcode, :city, :province, :phone1, :fax, :practise_limitations, :interest, :waittime_old, :specialization_id, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :lagtime_old, :patient_can_book, :lag_uom_old, :wait_uom_old, :referral_form, :hospital_ids, :capacities_attributes, :offices_attributes, :language_ids, :addresses_attributes
+  attr_accessible :firstname, :lastname, :address1, :address2, :postalcode, :city, :province, :phone1, :fax, :practise_limitations, :interest, :waittime_old, :specialization_id, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :lagtime_old, :patient_can_book, :lag_uom_old, :wait_uom_old, :lagtime_mask, :waittime_mask, :referral_form, :hospital_ids, :capacities_attributes, :offices_attributes, :language_ids, :addresses_attributes
   has_paper_trail ignore: :saved_token
   
   belongs_to :specialization
@@ -60,16 +60,33 @@ class Specialist < ActiveRecord::Base
   3 => "1-2 weeks", 
   4 => "2-4 weeks", 
   5 => "1-2 months", 
-  5 => "2-4 months", 
-  5 => "4-6 months", 
-  5 => "6-9 months", 
-  5 => "9-12 months", 
-  5 => "12-18 months", 
-  5 => ">18 months"
+  6 => "2-4 months", 
+  7 => "4-6 months", 
+  8 => "6-9 months", 
+  9 => "9-12 months", 
+  10 => "12-18 months", 
+  11 => ">18 months"
   }
   
   def waittime
     Specialist::WAITTIME_HASH[waittime_mask]
+  end
+  
+  LAGTIME_HASH = { 
+  1 => "Within one week", 
+  2 => "1-2 weeks", 
+  3 => "2-4 weeks", 
+  4 => "1-2 months", 
+  5 => "2-4 months", 
+  6 => "4-6 months", 
+  7 => "6-9 months", 
+  8 => "9-12 months", 
+  9 => "12-18 months", 
+  10 => ">18 months"
+  }
+  
+  def lagtime
+    Specialist::LAGTIME_HASH[lagtime_mask]
   end
 
   def name
