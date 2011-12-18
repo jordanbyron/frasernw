@@ -11,19 +11,20 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111217231241) do
+ActiveRecord::Schema.define(:version => 20111218201341) do
 
   create_table "addresses", :force => true do |t|
     t.string   "address1"
     t.string   "address2"
     t.string   "postalcode"
-    t.string   "city"
+    t.string   "city_old"
     t.string   "province"
     t.string   "phone1"
     t.string   "fax"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "hospital_id"
+    t.integer  "city_id"
   end
 
   create_table "attendances", :force => true do |t|

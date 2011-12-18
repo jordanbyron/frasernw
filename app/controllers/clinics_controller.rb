@@ -25,6 +25,7 @@ class ClinicsController < ApplicationController
       @clinic.focuses.build
       @clinic.attendances.build
       @hospitals = Hospital.all
+      @cities = City.all
     end
   end
 
@@ -44,6 +45,7 @@ class ClinicsController < ApplicationController
       @clinic.focuses.build
     end
     @hospitals = Hospital.all
+    @cities = City.all
   end
 
   def update
