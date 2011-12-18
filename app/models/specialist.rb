@@ -93,10 +93,6 @@ class Specialist < ActiveRecord::Base
     firstname + ' ' + lastname
   end
 
-  def waittime?
-    self.waittime_old.blank? ? 'muted' : ''
-  end
-
   def token
     if self.saved_token
       return self.saved_token

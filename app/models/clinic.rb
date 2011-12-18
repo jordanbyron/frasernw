@@ -78,9 +78,5 @@ class Clinic < ActiveRecord::Base
     address += self.address2 || ''
     address
   end
-  
-  def waittime?
-    self.waittime_old.blank? ? 'muted' : ''
-  end
 
 end
