@@ -1,0 +1,9 @@
+= simple_nested_form_for @province do |f|
+  = f.error_notification
+
+  = f.input :name
+  = f.input :abbreviation
+  = f.input :symbol
+    
+  %p
+    = f.button :submit

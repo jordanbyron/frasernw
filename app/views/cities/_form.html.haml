@@ -1,0 +1,8 @@
+= simple_nested_form_for @city do |f|
+  = f.error_notification
+
+  = f.input :name
+  = f.association :province, as: :select, collection: @provinces, :include_blank => true
+    
+  %p
+    = f.button :submit
