@@ -1,6 +1,15 @@
 %p#notice= notice
 
-
+%p
+  %strong Name:
+  = @province.name
+%p
+  %strong Abbreviation:
+  = @province.abbreviation
+%p
+  %strong Symbol:
+  = @province.symbol
+  
 = link_to 'Edit', edit_province_path(@province)
 \|
 = link_to 'Back', provinces_path
