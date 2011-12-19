@@ -5,10 +5,11 @@ class AddCityToAddresses < ActiveRecord::Migration
     
     Address.all.each { |address| 
       next if address.city_old.blank?
-      city_name = address.city_old
-      city_name = "Westminster" if city_name == "New Westminister"
+      city_name = address.city_old.strip
+      city_name = "New Westminster" if city_name == "New Westminister"
       city_name = "White Rock" if city_name == "White Rock (South Surrey)"
-      address.city = City.find_by_name( city_name.strip )
+      address.city = City.find_by_name( city_name )
+      address.save
     }
   end
 end
