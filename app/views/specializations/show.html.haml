@@ -13,7 +13,6 @@
       %th{:class => "{sorter: 'waittime'}"} Wait
       %th{:class => "{sorter: 'blanks_to_bottom'}"} City
       %th{:class => "{sorter: false}"} Area of practice
-      / %th Interests/Expertise
       / we're treating clinics as if they are specialists
   %tbody
     - (@specialization.specialists + @specialization.clinics).each do |specialist|
@@ -27,11 +26,8 @@
               = link_to specialist.name, specialization_clinic_path(@specialization, specialist), :class => type_of_row
         %td{:class => 'number_column'}= specialist.lagtime
         %td{:class => "number_column"}= specialist.waittime
-        / FIXME - make a clink to specialists from a certain city
-        / %td= link_to "#{specialist.city}", specialization_city_path(@specialization, specialist.city)
         %td{:class => 'city_column'}= specialist.city
         %td= compressed_procedures(specialist)
-        / %td= specialist.interest
 
 
 / %ul
