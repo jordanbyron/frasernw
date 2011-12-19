@@ -1,6 +1,7 @@
 class AddCityToAddresses < ActiveRecord::Migration
   def change
     rename_column :addresses, :city, :city_old
+    rename_column :addresses, :province, :province_old
     add_column :addresses, :city_id, :integer
     
     Address.all.each { |address| 
