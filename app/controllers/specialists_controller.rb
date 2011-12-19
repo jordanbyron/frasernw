@@ -18,8 +18,7 @@ class SpecialistsController < ApplicationController
     @specialist     = @specialization.specialists.build
     @specialist.capacities.build
     @specialist.addresses.build
-    @specialization_clinics = @specialization.clinics.collect { |clinic| [clinic.name, clinic.id] }.sort
-    @specialist_clinics = @specialist.clinics.collect {|c| c.id}    
+    @specialization_clinics = @specialization.clinics.collect { |clinic| [clinic.name, clinic.id] }.sort 
   end
 
   def create
@@ -38,7 +37,6 @@ class SpecialistsController < ApplicationController
       @specialist.capacities.build
     end
     @specialization_clinics = @specialization.clinics.collect { |clinic| [clinic.name, clinic.id] }.sort
-    @specialist_clinics = @specialist.clinics.collect {|c| c.id}
   end
 
   def update

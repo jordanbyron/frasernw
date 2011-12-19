@@ -29,14 +29,13 @@
       = i.input :fax
       = i.input :address1
       = i.input :address2
-      = i.input :city
-      = i.input :province
+      = i.association :city, as: :select, collection: City.all(:order => "name ASC").map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
       = i.input :postalcode
-      - if address_number < Specialist::MAX_ADDRESSES
-        %hr
+      %hr
       - address_number += 1
     - if @specialist.addresses.count < Specialist::MAX_ADDRESSES
-      = f.link_to_add "Add another office", :addresses, class: "button", id: "add_address"
+      = f.link_to_add "Add another location", :addresses, class: "button", id: "add_address"
+    = link_to "Create a new City", new_city_path, class: "button", id: "add_city"
 
   - if current_user && current_user.admin?    
     %fieldset
@@ -54,7 +53,7 @@
     = f.input :practise_limitations, label: "Other practice Limitations (if any)"
     = f.input :location_opened, label: "Practice opened at this location", as: :select, collection: ["Prior to 2010", 2010, 2011], prompt: "Select ..."
     = f.association :languages, as: :check_boxes, label: "Languages spoken in your practice", wrapper: false
-    = link_to "Add a Language", new_language_path, class: "button"
+    = link_to "Create a new Language", new_language_path, class: "button"
 
   %fieldset
     %h2 Areas of Practice
@@ -116,7 +115,7 @@
 
   %fieldset
     %h2 Hospital Privileges
-    = f.association :hospitals, as: :check_boxes, label: false
+    = f.association :hospitals, as: :check_boxes, label: false, collection: Hospital.all(:order => "name ASC") 
     = link_to "Add a Hospital", new_hospital_path, class: "button"
 
   %fieldset
