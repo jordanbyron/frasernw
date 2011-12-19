@@ -24,8 +24,6 @@ class ClinicsController < ApplicationController
       @clinic.addresses.build
       @clinic.focuses.build
       @clinic.attendances.build
-      @hospitals = Hospital.all
-      @cities = City.all
     end
   end
 
@@ -44,8 +42,6 @@ class ClinicsController < ApplicationController
     if @clinic.focuses.count == 0
       @clinic.focuses.build
     end
-    @hospitals = Hospital.all
-    @cities = City.all
   end
 
   def update

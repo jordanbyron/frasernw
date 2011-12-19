@@ -15,18 +15,16 @@
         = address_number
       = i.input :address1
       = i.input :address2
-      = i.input :city_old
-      = i.association :city, as: :select, collection: @cities, :include_blank => true
-      = i.association :hospital, as: :select, collection: @hospitals, label: "Hospital clinic is located in (if applicable)", :include_blank => true
-      = i.input :province
+      = i.association :city, as: :select, collection: City.all(:order => "name ASC").map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
+      = i.association :hospital, as: :select, collection: Hospital.all(:order => "name ASC"), label: "Hospital clinic is located in (if applicable)", :include_blank => true
       = i.input :postalcode
       = i.input :phone1
       = i.input :fax
-      - if address_number < Clinic::MAX_ADDRESSES
-        %hr
+      %hr
       - address_number += 1
     - if @clinic.addresses.count < Clinic::MAX_ADDRESSES
       = f.link_to_add "Add another location", :addresses, class: "button", id: "add_address"
+    = link_to "Create a new City", new_city_path, class: "button", id: "add_city"
     
 
   - if current_user && current_user.admin?    
