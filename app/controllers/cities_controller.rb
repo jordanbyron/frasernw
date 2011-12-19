@@ -19,13 +19,11 @@ class CitiesController < ApplicationController
       redirect_to @city, :notice => "Successfully created city."
       else
       render :action => 'new'
-      @provinces = Province.all(:order => "name ASC")
     end
   end
   
   def edit
     @city = City.find(params[:id])
-    @provinces = Province.all(:order => "name ASC")
   end
   
   def update
