@@ -5,4 +5,13 @@
   - for specialization in @specializations
     %li= link_to specialization.name, specialization
 
-%p= link_to "New Specialization", new_specialization_path
+%p
+  = link_to "New Specialization", new_specialization_path
+%p
+  = link_to "Hospitals", hospitals_path
+  = " | "
+  = link_to "Languages", languages_path
+  = " | "
+  = link_to "Healthcare Providers", healthcare_providers_path
+  = " | "
+  = link_to "Cities", cities_path
