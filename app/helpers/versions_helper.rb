@@ -43,7 +43,7 @@ module VersionsHelper
         else
           link_to version.reify.name, show_version_path(version)
         end
-      when "Privilege", "Capacity", "Attendance", "SpecialistAddress", "SpecialistSpeaks"
+      when "Privilege", "Capacity", "Attendance", "SpecialistAddress", "SpecialistSpeak"
         if version.event == "create"
           link_to version.item.specialist.name, specialist_path(version.item.specialist)
         elsif %w(update destroy).include? version.event
@@ -55,11 +55,11 @@ module VersionsHelper
         elsif version.event == "update"
           link_to version.reify.name, clinic_path(version.item_id)
         end
-      when "Focus", "ClinicAddress", "ClinicSpeaks", "ClinicHealthcareProvider"
+      when "Focus", "ClinicAddress", "ClinicSpeak", "ClinicHealthcareProvider"
         if version.event == "create"
-          link_to version.item.specialist.name, clinic_path(version.item.clinic)
+          link_to version.item.clinic.name, clinic_path(version.item.clinic)
         elsif %w(update destroy).include? version.event
-          link_to version.reify.specialist.name, clinic_path(version.reify.clinic)
+          link_to version.reify.clinic.name, clinic_path(version.reify.clinic)
         end
       when "Specialization"
         if version.event == "create"
