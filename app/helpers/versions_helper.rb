@@ -123,7 +123,7 @@ module VersionsHelper
       elsif %w(update destroy).include? version.event
         version.reify.procedure.name
       end
-    when "SpecialistSpeaks", "ClinicSpeaks"
+    when "SpecialistSpeak", "ClinicSpeak"
       if not version.item.language
         return
       elsif version.event == "create"
@@ -140,5 +140,7 @@ module VersionsHelper
         version.reify.address.name
       end
     end
+    rescue
+      return
   end
 end
