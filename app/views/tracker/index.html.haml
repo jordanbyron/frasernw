@@ -21,7 +21,7 @@
     - @specialists.each do |specialist|
       %tr
         %td{:class => 'name_column'}
-          = link_to specialist.name, specialization_specialist_path(specialist.specialization, specialist) if specialist.specialization
+          = link_to specialist.name, specialist_path(specialist) if specialist.specialization
         %td{:class => 'name_column'}= specialist.specialization.name if specialist.specialization
         %td{:class => 'city_column'}= specialist.city
         %td= specialist.contacts.last.created_at.strftime("%Y-%m-%d")  if specialist.contacts.last

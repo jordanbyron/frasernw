@@ -11,14 +11,16 @@
       %p= specialist_self_edit_path(@specialist, @specialist.token, :only_path => false)
       %p=link_to "Email #{@specialist.contact_email}", specialist_email_path(@specialist), :method => :post
     - else
-      %p To send this link with an invitation to #{link_to "edit", edit_specialization_specialist_path(@specialist.specialization, @specialist)} this specialist and add contact information
+      %p To send this link with an invitation to #{link_to "edit", edit_specialist_path(@specialist)} this specialist and add contact information
     %h4
       This specialist was contacted through the application
       = "never" if @specialist.contacts.length < 1
     = render @specialist.contacts
 
 %h1
-  = "#{@specialist.firstname} #{@specialist.lastname} - #{@specialist.specialization.name}"
+  = "#{@specialist.firstname} #{@specialist.lastname}"
+%h2
+  = "#{@specialist.specializations.collect(){ |s| s.name }.join(", ")}"
 %p
   %strong Direct number:
   = @specialist.direct_phone
@@ -114,11 +116,7 @@
   = link_to "History", show_versions_path(@specialist)
   |
   - if can? :update, @specialist
-    = link_to "Edit", edit_specialization_specialist_path(@specialist.specialization, @specialist)
+    = link_to "Edit", edit_specialist_path(@specialist)
     |
   - if can? :destroy, @specialist
     = link_to "Destroy", @specialist, :confirm => 'Are you sure?', :method => :delete
-    |
-  = link_to "View All #{@specialist.specialization.name}", specialization_path(@specialist.specialization)
-  / |
-  / # = link_to "View All Specialists", specialists_path

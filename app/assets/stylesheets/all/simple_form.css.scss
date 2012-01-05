@@ -117,6 +117,9 @@ form.simple_form {
       margin-bottom:5px;
       display:inline-block;
     }
+    select.parent {
+        width:350px;
+      }
     &.nested {
       & > p {
         margin:0;
@@ -238,7 +241,7 @@ form.simple_form {
     font-style: italic;
   }
   input{
-    &.radio{
+    &.radio, &.check{
       width:auto;
       margin:4px;
       display:inline;

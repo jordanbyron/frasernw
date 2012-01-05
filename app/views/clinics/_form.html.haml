@@ -58,7 +58,7 @@
         %span.last Additional information/investigations required for the specified area of practice.
 
       = f.simple_fields_for :focuses do |i|
-        = i.association :procedure, as: :select, label: false, collection: ancestry_options(@clinic.specialization.procedures.arrange(:order => 'name')), prompt: 'Select ...', wrapper: false
+        = i.association :procedure_specialization, as: :select, label: false, collection: ancestry_options(@clinic.specialization.procedure_specializations.arrange){ |ps| "#{'-' * ps.depth} #{ps.procedure.name}" }, prompt: 'Select ...', wrapper: false
         = i.input :investigation, label: false, wrapper: false
         = i.hidden_field :_destroy
         = i.link_to_remove "remove"

@@ -1,13 +1,22 @@
-= simple_form_for @procedure do |f|
+= simple_nested_form_for @procedure do |f|
   = f.error_messages
-  %p
-    = f.label :name
-    = f.text_field :name
-  %p
-    = f.label :parent_id
-    = f.select :parent_id, @procedure_ancestry
-  %p
+  
+  %fieldset
+    %h2 Area of Practice
+    = f.input :name
     = f.input :specialization_level, as: :radio, :collection => [ ['Specialization', true], ['Physician', false] ] 
-    = f.hidden_field :specialization_id
+ 
+  %fieldset
+    %h2 Specializations This Area of Practice Belongs To
+    - Specialization.all.each_with_index do |specialization, index|
+      %div.fields
+        - procedure_specialization = ProcedureSpecialization.find_by_procedure_id_and_specialization_id( @procedure.id, specialization.id )
+        - procedure_ancestry = [["~ No parent ~", nil]] + ancestry_options_limited(specialization.procedure_specializations.arrange, procedure_specialization.subtree)
+        = f.hidden_field procedure_specialization.id, :name => "procedure[all_procedure_specializations_attributes][#{index}][id]", :value => procedure_specialization.id
+        = label_tag "check_#{specialization.id}", specialization.name
+        = check_box_tag "check_#{specialization.id}", 1, procedure_specialization.mapped, :name => "procedure[all_procedure_specializations_attributes][#{index}][mapped]", :class => "check aop_active"
+        = select_tag "select_#{specialization.id}", options_for_select(procedure_ancestry, procedure_specialization.parent_id), :name => "procedure[all_procedure_specializations_attributes][#{index}][parent_id]", :class => "select parent", :hidden => !procedure_specialization.mapped
+    
   %p
     = f.submit
+    

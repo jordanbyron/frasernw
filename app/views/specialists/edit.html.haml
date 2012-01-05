@@ -1,4 +1,4 @@
-- title "Edit #{@specialist.name} - #{@specialist.specialization.name}"
+- title "Edit #{@specialist.name} - #{@specialist.specializations.collect(){ |s| s.name }.join(", ")}"
 
 = render 'specialists/form'
 = link_to "cancel", @specialist

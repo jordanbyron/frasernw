@@ -11,12 +11,19 @@
       %p This database exists to make our practices, and your practice more efficient. By providing the information requested below you are making it easier for family doctors to find your practice, ensure that they are providing you with the correct information, and that your scope of practice is fully understood.
 
   %fieldset
-    %h2 
-      Specialist: 
-      =@specialization.name
+    %h2 Specialist
     = f.input :firstname
     = f.input :lastname
     = f.input :direct_phone
+    
+  %fieldset
+    %h2 Specialties
+    %p When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics.
+    = f.simple_fields_for :specialist_specializations do |i|
+      = i.association :specialization, as: :select, label: false, include_blank: false, wrapper: false
+      = i.hidden_field :_destroy
+      = i.link_to_remove "remove"
+    = f.link_to_add "Add another specialization", :specialist_specializations, class: "button"
 
   %fieldset.address
     %h2 Office / Contact Information
@@ -72,7 +79,7 @@
         %span.last Additional information/investigations required for the specified area of practice.
 
       = f.simple_fields_for :capacities do |i|
-        = i.association :procedure, as: :select, label: false, collection: ancestry_options(@specialist.specialization.procedures.arrange(:order => 'name')), prompt: 'Select ...', wrapper: false
+        = i.association :procedure_specialization, as: :select, label: false, collection: @specializations_procedures, prompt: 'Select ...', wrapper: false
         = i.input :investigation, label: false, wrapper: false
         = i.hidden_field :_destroy
         = i.link_to_remove "remove"
@@ -123,11 +130,7 @@
 
   %fieldset
     %h2 Sub-Specialty Clinics
-    = f.association :clinics, as: :check_boxes, label: false, collection: @specialization_clinics
-    = link_to "Add a Clinic", new_specialization_clinic_path(@specialization), class: "button"
-
-  -# FIXME - This shouldn't be in the view. Should be set by parent resource in controller.
-  %p
-    = f.input :specialization_id, as: :hidden
+    = f.association :clinics, as: :check_boxes, label: false, collection: @specializations_clinics
+    = link_to "Create a new Clinic", new_clinic_path, class: "button"
 
   = f.submit

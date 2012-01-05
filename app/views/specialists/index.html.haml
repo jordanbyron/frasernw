@@ -1,7 +1,7 @@
-- title "Specialists - #{@specialization.name}"
+- Specialization.all.each do |specialization|
+  %h3= specialization.name
+  %ul
+    - specialization.specialists.each do |specialist|
+      %li= link_to specialist.name, specialist_path(specialist)
 
-%ul
-  - @specialization.specialists.each do |specialist|
-    %li= link_to listed_specialist(specialist), specialization_specialist_path(@specialization, specialist)
-
-%p= link_to "New Specialist", new_specialization_specialist_path
+%p= link_to "New Specialist", new_specialist_path

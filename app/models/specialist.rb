@@ -1,24 +1,27 @@
 class Specialist < ActiveRecord::Base
-  attr_accessible :firstname, :lastname, :address1, :address2, :postalcode, :city, :province, :phone1, :fax, :practise_limitations, :interest, :waittime_old, :specialization_id, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :lagtime_old, :patient_can_book, :lag_uom_old, :wait_uom_old, :lagtime_mask, :waittime_mask, :referral_form, :hospital_ids, :capacities_attributes, :offices_attributes, :language_ids, :addresses_attributes
+  attr_accessible :firstname, :lastname, :address1, :address2, :postalcode, :city, :province, :phone1, :fax, :practise_limitations, :interest, :waittime_old, :specialization_id, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :lagtime_old, :patient_can_book, :lag_uom_old, :wait_uom_old, :lagtime_mask, :waittime_mask, :referral_form, :hospital_ids, :specialist_specializations_attributes, :capacities_attributes, :offices_attributes, :language_ids, :addresses_attributes
   has_paper_trail ignore: :saved_token
   
-  belongs_to :specialization
+  # specialists can have multiple specializations
+  has_many :specialist_specializations, :dependent => :destroy
+  has_many :specializations, :through => :specialist_specializations
+  accepts_nested_attributes_for :specialist_specializations, :allow_destroy => true
 
   # specialists have the capacity to perform procedures
-  has_many   :capacities
-  has_many   :procedures, :through => :capacities
-  accepts_nested_attributes_for :capacities, :reject_if => lambda { |a| a[:procedure_id].blank? }, :allow_destroy => true
+  has_many   :capacities, :dependent => :destroy
+  has_many   :procedure_specializations, :through => :capacities
+  accepts_nested_attributes_for :capacities, :reject_if => lambda { |c| c[:procedure_specialization_id].blank? }, :allow_destroy => true
   
   # specialists attend clinics
-  has_many   :attendances
+  has_many   :attendances, :dependent => :destroy
   has_many   :clinics, :through => :attendances
   
   # specialists have "priviliges" at hospitals
-  has_many   :privileges
+  has_many   :privileges, :dependent => :destroy
   has_many   :hospitals, :through => :privileges
   
   # specialists "speak" many languages
-  has_many   :specialist_speaks
+  has_many   :specialist_speaks, :dependent => :destroy
   has_many   :languages, :through => :specialist_speaks
   
   # specialists are favorited by users of the system
@@ -42,9 +45,7 @@ class Specialist < ActiveRecord::Base
 
   validates_presence_of :firstname, :on => :save, :message => "can't be blank"
   validates_presence_of :lastname, :on => :save, :message => "can't be blank"
-  validates_presence_of :specialization_id, :on => :save, :message => "can't be blank"
-
-  after_initialize :default_values
+  validates_length_of :specialist_specializations, :minimum => 1, :message => "require at least one set"
 
   default_scope order('lastname, firstname')
   
@@ -102,12 +103,5 @@ class Specialist < ActiveRecord::Base
       return self.saved_token
     end
   end
-
-  private
-
-    def default_values
-      self.lag_uom_old ||= "weeks"
-      self.wait_uom_old ||= "weeks"
-    end
-
+  
 end

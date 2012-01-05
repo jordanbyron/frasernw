@@ -1,8 +1,9 @@
 / - title "Area of Practice"
 
-/ FIXME, this should iterate through @procedure's specializations
 %h1
-  = compressed_ancestry(@procedure) + ' - ' + @procedure.specialization.name
+  = "#{@procedure.name}"
+%h2
+  = "In #{@procedure.procedure_specializations.collect(){ |ps| compressed_ancestry(ps) }.join(", ")}"
 
   %table{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'specialist_table'}
     %thead
@@ -20,9 +21,9 @@
             - type_of_row = specialist.class.to_s.downcase
             - case type_of_row
               - when 'specialist'
-                = link_to specialist.name, specialization_specialist_path(@procedure.specialization, specialist), :class => type_of_row
+                = link_to specialist.name, specialist_path(specialist), :class => type_of_row
               - when 'clinic'
-                = link_to specialist.name, specialization_clinic_path(@procedure.specialization, specialist), :class => type_of_row
+                = link_to specialist.name, clinic_path(specialist), :class => type_of_row
           %td{:class => "number_column"}= specialist.lagtime
           %td{:class => "number_column"}= specialist.waittime
           %td= specialist.city
@@ -31,18 +32,12 @@
           / %td= link_to "#{specialist.interest}"
           / %td= specialists_procedures(specialist)
 
-
-/ %ul
-/   - @procedure.specialists.each do |specialist|
-/     %li
-/       = link_to listed_specialist(specialist), specialization_specialist_path(specialist.specialization, specialist)
-
 %p
-  = link_to "Edit", edit_specialization_procedure_path(@procedure.specialization)
+  = link_to "Edit", edit_procedure_path
   |
   = link_to "Destroy", @procedure, :confirm => 'Are you sure?', :method => :delete
-  |
-  = link_to "View All #{@procedure.specialization.name}", specialization_path(@procedure.specialization)
+  / |
+  / = link_to "View All #{@procedure.specialization.name}", specialization_path(@procedure.specialization)
   / |
   / |
   / #= link_to "View All", procedures_path

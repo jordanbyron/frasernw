@@ -30,7 +30,7 @@ class ClinicsController < ApplicationController
   def create
     @clinic = Clinic.new(params[:clinic])
     if @clinic.save
-      redirect_to specialization_clinic_path(@clinic.specialization, @clinic), :notice => "Successfully created clinic."
+      redirect_to clinic_path(@clinic), :notice => "Successfully created clinic."
     else
       @specialization = Specialization.find(params[:specialization_id])
       render :action => 'new'

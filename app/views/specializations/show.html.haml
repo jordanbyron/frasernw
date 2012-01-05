@@ -13,7 +13,6 @@
       %th{:class => "{sorter: 'waittime'}"} Wait
       %th{:class => "{sorter: 'blanks_to_bottom'}"} City
       %th{:class => "{sorter: false}"} Area of practice
-      / we're treating clinics as if they are specialists
   %tbody
     - (@specialization.specialists + @specialization.clinics).each do |specialist|
       %tr
@@ -21,35 +20,25 @@
           - type_of_row = specialist.class.to_s.downcase
           - case type_of_row
             - when 'specialist'
-              = link_to specialist.name, specialization_specialist_path(@specialization, specialist), :class => type_of_row
+              = link_to specialist.name, specialist_path(specialist), :class => type_of_row
             - when 'clinic'
-              = link_to specialist.name, specialization_clinic_path(@specialization, specialist), :class => type_of_row
+              = link_to specialist.name, clinic_path(specialist), :class => type_of_row
         %td{:class => 'number_column'}= specialist.lagtime
         %td{:class => "number_column"}= specialist.waittime
         %td{:class => 'city_column'}= specialist.city
         %td= compressed_procedures(specialist)
 
-
-/ %ul
-/   - @specialization.specialists.each do |specialist|
-/     %li= link_to listed_specialist(specialist), specialization_specialist_path(@specialization, specialist)
-
 %h3 Areas of Practice/Expertise
 %ul{:class => 'procedure_list'}
   - @specialization.procedures.each do |procedure|
-    %li= link_to listed_procedure(procedure), specialization_procedure_path(@specialization, procedure)
-
-/ %h3 Clinics
-/ %ul{:class => 'procedure_list'}
-/   - @specialization.clinics.each do |clinic|
-/     %li= link_to clinic.name, clinic_path(clinic)
+    %li= link_to listed_procedure(procedure), procedure_path(procedure)
 
 %p
-  = link_to "New clinic", new_specialization_clinic_path(@specialization)
+  = link_to "New clinic", new_clinic_path
   |
-  = link_to "New specialist", new_specialization_specialist_path(@specialization)
+  = link_to "New specialist", new_specialist_path
   |
-  = link_to "New area of practice", new_specialization_procedure_path(@specialization)
+  = link_to "New area of practice", new_procedure_path
 
 %p
   = link_to "Edit", edit_specialization_path(@specialization)

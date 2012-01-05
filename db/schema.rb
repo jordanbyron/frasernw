@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120106172935) do
+ActiveRecord::Schema.define(:version => 20111217212912) do
 
   create_table "addresses", :force => true do |t|
     t.string   "address1"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(:version => 20120106172935) do
     t.timestamp "created_at"
     t.timestamp "updated_at"
     t.string    "investigation"
+    t.integer   "procedure_specialization_id"
   end
 
   add_index "capacities", ["specialist_id", "procedure_id"], :name => "index_capacities_on_specialist_id_and_procedure_id"
@@ -158,6 +159,7 @@ ActiveRecord::Schema.define(:version => 20120106172935) do
     t.timestamp "created_at"
     t.timestamp "updated_at"
     t.string    "investigation"
+    t.integer   "procedure_specialization_id"
   end
 
   add_index "focuses", ["clinic_id", "procedure_id"], :name => "index_focuses_on_clinic_id_and_procedure_id"
@@ -225,6 +227,17 @@ ActiveRecord::Schema.define(:version => 20120106172935) do
     t.timestamp "updated_at"
   end
 
+  create_table "procedure_specializations", :force => true do |t|
+    t.integer  "procedure_id"
+    t.integer  "specialization_id"
+    t.string   "ancestry"
+    t.boolean  "mapped",            :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "procedure_specializations", ["ancestry"], :name => "index_procedure_specializations_on_ancestry"
+
   create_table "procedures", :force => true do |t|
     t.string    "name"
     t.integer   "specialization_id"
@@ -276,6 +289,13 @@ ActiveRecord::Schema.define(:version => 20120106172935) do
     t.integer   "language_id"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+  end
+
+  create_table "specialist_specializations", :force => true do |t|
+    t.integer  "specialist_id"
+    t.integer  "specialization_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "specialists", :force => true do |t|

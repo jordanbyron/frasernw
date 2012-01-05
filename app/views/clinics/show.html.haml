@@ -83,7 +83,7 @@
   = @clinic.healthcare_providers.map{ |x| x.name }.join(", ")
 
 %p
-  = link_to "Edit", edit_specialization_clinic_path(@clinic.specialization, @clinic)
+  = link_to "Edit", edit_clinic_path(@clinic)
   |
   = link_to "Destroy", @clinic, :confirm => 'Are you sure?', :method => :delete
   |

@@ -1,8 +1,6 @@
 class Capacity < ActiveRecord::Base
   belongs_to :specialist
-  belongs_to :procedure
+  belongs_to :procedure_specialization
   
   has_paper_trail
-
-  delegate :name, to: :procedure, allow_nil: true
 end

@@ -2,7 +2,9 @@ class SearchdocController < ApplicationController
   skip_authorization_check
 
   def tree
-    @specializations = Specialization.includes(:specialists, :clinics, :procedures)
+    #RPW TODO optimize by this?
+    #@specializations = Specialization.find(:all, :include => [ :specialists, :clinics, { :procedure_specializations => :procedure } ] )
+    @specializations = Specialization.all
     respond_to do |format|
       format.js
       # format.xml { render :xml => @specializations }
@@ -11,7 +13,7 @@ class SearchdocController < ApplicationController
   end
 
   def index
-    @specializations = Specialization.includes(:specialists, :clinics, :procedures)
+    @specializations = Specialization.all
     respond_to do |format|
       format.js
     end
