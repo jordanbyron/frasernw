@@ -1,11 +1,11 @@
 class Clinic < ActiveRecord::Base
-  attr_accessible :name, :address1, :address2, :postalcode, :city, :province, :phone1, :fax, :status, :interest, :waittime, :specialization_id, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_form, :lagtime_old, :lag_uom_old, :waittime_old, :wait_uom_old, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :responds_via, :addresses_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids
+  attr_accessible :name, :address1, :address2, :postalcode, :city, :province, :phone1, :fax, :status, :interest, :waittime, :specialization_id, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_form, :lagtime_old, :lag_uom_old, :waittime_old, :wait_uom_old, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :responds_via, :clinic_specializations_attributes, :addresses_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids
   has_paper_trail meta: { to_review: false }
   
-  belongs_to :specialization
-  
-  validates_presence_of :specialization_id, :on => :create, :message => "can't be blank"
-  validates_presence_of :name, :on => :create, :message => "can't be blank"
+  # clinics can have multiple specializations
+  has_many :clinic_specializations, :dependent => :destroy
+  has_many :specializations, :through => :clinic_specializations
+  accepts_nested_attributes_for :clinic_specializations, :allow_destroy => true
   
   # clinics can have more than one address
   MAX_ADDRESSES = 2
@@ -30,6 +30,9 @@ class Clinic < ActiveRecord::Base
   # clinics have many healthcare providers
   has_many   :clinic_healthcare_providers, :dependent => :destroy
   has_many   :healthcare_providers, :through => :clinic_healthcare_providers, :order => "name ASC"
+  
+  validates_presence_of :name, :on => :create, :message => "can't be blank"
+  validates_length_of :clinic_specializations, :minimum => 1, :message => "require at least one set"
   
   STATUS_HASH = { 1 => "Accepting new patients", 2 => "Only doing follow up on previous patients" }
   
