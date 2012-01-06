@@ -5,6 +5,15 @@
     %h2 
       Clinic Name 
     = f.input :name
+    
+  %fieldset
+    %h2 Specialties
+    %p When adding or removing specialities please save and then edit this clinic again to update the list of available areas of practices.
+    = f.simple_fields_for :clinic_specializations do |i|
+      = i.association :specialization, as: :select, label: false, include_blank: false, wrapper: false
+      = i.hidden_field :_destroy
+      = i.link_to_remove "remove"
+    = f.link_to_add "Add another specialization", :clinic_specializations, class: "button"
 
   %fieldset.address
     %h2 Clinic Contact Information
@@ -58,7 +67,7 @@
         %span.last Additional information/investigations required for the specified area of practice.
 
       = f.simple_fields_for :focuses do |i|
-        = i.association :procedure_specialization, as: :select, label: false, collection: ancestry_options(@clinic.specialization.procedure_specializations.arrange){ |ps| "#{'-' * ps.depth} #{ps.procedure.name}" }, prompt: 'Select ...', wrapper: false
+        = i.association :procedure_specialization, as: :select, label: false, collection: @clinic_procedures, prompt: 'Select ...', wrapper: false
         = i.input :investigation, label: false, wrapper: false
         = i.hidden_field :_destroy
         = i.link_to_remove "remove"
@@ -111,7 +120,7 @@
         
       = f.simple_fields_for :attendances do |i|
         = i.input :is_specialist, label: false, wrapper: false, input_html: { class: "is_specialist first" }
-        = i.association :specialist, as: :select, label: false, collection: @clinic.specialization.specialists, prompt: 'Select ...', wrapper: false, input_html: { class: "specialist_list" }
+        = i.association :specialist, as: :select, label: false, collection: @clinic_specialists, prompt: 'Select ...', wrapper: false, input_html: { class: "specialist_list" }
         = i.input :freeform_firstname, label: false, wrapper: false, input_html: { class: "freeform", style: "display:none" }
         = i.input :freeform_lastname, label: false, wrapper: false, input_html: { class: "freeform", style: "display:none" }
         = i.input :area_of_focus, label: false, wrapper: false

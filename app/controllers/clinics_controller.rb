@@ -2,12 +2,7 @@ class ClinicsController < ApplicationController
   load_and_authorize_resource
 
   def index
-    unless params[:specialization_id]
-      redirect_to specializations_path, :notice => "Need to specify a specialization" and return
-    else
-      @specialization = Specialization.find(params[:specialization_id])
-      @clinics = Clinic.all
-    end
+    @clinics = Clinic.all
   end
 
   def show
@@ -16,15 +11,16 @@ class ClinicsController < ApplicationController
   end
 
   def new
-    unless params[:specialization_id]
-      redirect_to specializations_path, :notice => "Need to specify a specialization" and return
-    else
-      @specialization = Specialization.find(params[:specialization_id])
-      @clinic = Clinic.new(:specialization_id => params[:specialization_id])
-      @clinic.addresses.build
-      @clinic.focuses.build
-      @clinic.attendances.build
-    end
+    @clinic = Clinic.new
+    @clinic.clinic_specializations.build( :specialization_id => Specialization.first.id )
+    @clinic.addresses.build
+    @clinic.focuses.build
+    @clinic.attendances.build
+    @clinic_procedures = procedure_specialization_ancestry_options( Specialization.first.procedure_specializations.arrange )
+    @clinic_specialists = []
+    Specialization.first.specialists.each { |specialist|
+      @clinic_specialists << [ specialist.name, specialist.id ]
+    }
   end
 
   def create
@@ -32,7 +28,6 @@ class ClinicsController < ApplicationController
     if @clinic.save
       redirect_to clinic_path(@clinic), :notice => "Successfully created clinic."
     else
-      @specialization = Specialization.find(params[:specialization_id])
       render :action => 'new'
     end
   end
@@ -42,6 +37,18 @@ class ClinicsController < ApplicationController
     if @clinic.focuses.count == 0
       @clinic.focuses.build
     end
+    @clinic_procedures = []
+    @clinic.specializations.each { |specialization| 
+      @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
+      @clinic_procedures += procedure_specialization_ancestry_options( specialization.procedure_specializations.arrange )
+    }
+    @clinic_specialists = []
+    @clinic.specializations.each { |specialization|
+      @clinic_specialists << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
+      specialization.specialists.each { |specialist|
+        @clinic_specialists << [ specialist.name, specialist.id ]
+      }
+    }
   end
 
   def update
@@ -49,8 +56,7 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.find(params[:id])
     if @clinic.update_attributes(params[:clinic])
       redirect_to @clinic, :notice  => "Successfully updated clinic."
-    else
-      @specialization = Specialization.find(params[:specialization_id])
+    else\
       render :action => 'edit'
     end
   end
@@ -59,5 +65,16 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.find(params[:id])
     @clinic.destroy
     redirect_to clinics_url, :notice => "Successfully destroyed clinic."
+  end
+  
+  def procedure_specialization_ancestry_options(items, &block)
+    return procedure_specialization_ancestry_options(items){ |i| "#{'-' * i.depth} #{i.procedure.name}" } unless block_given?
+    
+    result = []
+    items.map do |item, sub_items|
+      result << [yield(item), item.id]
+      result += procedure_specialization_ancestry_options(sub_items, &block)
+    end
+    result
   end
 end

@@ -2,6 +2,8 @@
 
 %h1
   = @clinic.name
+%h2
+  = "#{@clinic.specializations.collect(){ |s| s.name }.join(", ")}"
   
 - @clinic.addresses.each do |address|
   - next if address.empty?
@@ -86,8 +88,8 @@
   = link_to "Edit", edit_clinic_path(@clinic)
   |
   = link_to "Destroy", @clinic, :confirm => 'Are you sure?', :method => :delete
-  |
-  = link_to "View All #{@clinic.specialization.name}", specialization_path(@clinic.specialization)
+  / |
+  / = link_to "View All #{@clinic.specialization.name}", specialization_path(@clinic.specialization)
   / |
   / # = link_to "View All Specialists", specialists_path
 

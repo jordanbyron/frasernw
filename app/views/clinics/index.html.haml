@@ -1,13 +1,7 @@
-- title "Clinics"
-
-%table
-  %tr
-    %th Name
-  - for clinic in @specialization.clinics
-    %tr
-      %td= clinic.name
-      %td= link_to 'Show', clinic
-      %td= link_to 'Edit', edit_clinic_path(clinic)
-      %td= link_to 'Destroy', clinic, :confirm => 'Are you sure?', :method => :delete
+- Specialization.all.each do |specialization|
+  %h3= specialization.name
+  %ul
+    - specialization.clinics.each do |clinic|
+      %li= link_to clinic.name, clinic_path(clinic)
 
 %p= link_to "New Clinic", new_clinic_path
