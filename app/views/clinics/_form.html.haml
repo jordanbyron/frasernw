@@ -7,8 +7,8 @@
     = f.input :name
     
   %fieldset
-    %h2 Specialties
-    %p When adding or removing specialities please save and then edit this clinic again to update the list of available areas of practices.
+    %h2 Specialties This Clinic Works In
+    %p When adding or removing specialities please save and then edit this clinic again to update the list of available areas of practices and specialists.
     = f.simple_fields_for :clinic_specializations do |i|
       = i.association :specialization, as: :select, label: false, include_blank: false, wrapper: false
       = i.hidden_field :_destroy

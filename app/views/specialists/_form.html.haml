@@ -17,7 +17,7 @@
     = f.input :direct_phone
     
   %fieldset
-    %h2 Specialties
+    %h2 Specialties This Specialist Works In
     %p When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics.
     = f.simple_fields_for :specialist_specializations do |i|
       = i.association :specialization, as: :select, label: false, include_blank: false, wrapper: false
