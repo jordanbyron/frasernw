@@ -1,6 +1,7 @@
 class Address < ActiveRecord::Base
   has_paper_trail
   belongs_to :hospital
+  belongs_to :clinic
   belongs_to :city
   
   def address
