@@ -32,6 +32,8 @@
       = i.input :address2
       = i.association :city, as: :select, collection: City.all(:order => "name ASC").map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
       = i.input :postalcode
+      = i.association :hospital, as: :select, collection: Hospital.all(:order => "name ASC"), label: "Hospital office is located in (if applicable)", :include_blank => true
+      = i.association :clinic, as: :select, collection: Clinic.all(:order => "name ASC"), label: "Clinic office is located in (if applicable)", :include_blank => true
       %hr
       - address_number += 1
     - if @specialist.addresses.count < Specialist::MAX_ADDRESSES

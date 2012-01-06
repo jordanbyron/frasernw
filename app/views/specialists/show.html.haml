@@ -30,6 +30,12 @@
       = address.address
       %br
       = "#{address.phone1}, fax: #{address.fax}"
+      - if address.hospital
+        %br
+        = "In #{address.hospital.name}"
+      - if address.clinic
+        %br
+        = "In #{address.clinic.name}"
       
 %p
   %strong Status:
