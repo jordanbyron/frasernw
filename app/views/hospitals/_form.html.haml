@@ -13,14 +13,13 @@
       %h4.location_header 
         Location 
         = address_number
+      = i.input :phone1
+      = i.input :fax
       = i.input :suite
       = i.input :address1
       = i.input :address2
-      = i.input :city
-      = i.input :province
+      = i.association :city, as: :select, collection: City.all(:order => "name ASC").map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
       = i.input :postalcode
-      = i.input :phone1
-      = i.input :fax
       - if address_number < Hospital::MAX_ADDRESSES
         %hr
       - address_number += 1
