@@ -17,8 +17,9 @@ en:
       address:
         phone1: "Phone"
         fax: "Fax"
-        address1: "Street Address"
-        address2: "Suite"
+        address1: "Address line 1"
+        address2: "Address line 2"
+        suite: "Suite"
         city: "City"
         province: "Province"
         postalcode: "Postal Code"

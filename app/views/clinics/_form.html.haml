@@ -13,6 +13,7 @@
       %h4.location_header 
         Location 
         = address_number
+      = i.input :suite
       = i.input :address1
       = i.input :address2
       = i.association :city, as: :select, collection: City.all(:order => "name ASC").map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
