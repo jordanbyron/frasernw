@@ -6,13 +6,13 @@ class ProceduresController < ApplicationController
   
   def show
     @procedure = Procedure.find(params[:id])
-    if request.headers['X-PJAX']
-      render :layout => false
-    end
+    render :layout => false if request.headers['X-PJAX']
   end
   
   def new
+    @procedure = Procedure.new(params[:id])
     Specialization.all.each { |specialization| ProcedureSpecialization.find_or_create_by_procedure_id_and_specialization_id(params[:id], specialization.id) }
+    @specializations = [Specialization.find(params[:specialization_id])]
   end
   
   def create
@@ -26,6 +26,7 @@ class ProceduresController < ApplicationController
   
   def edit
     @procedure = Procedure.find(params[:id])
+    @specializations = @procedure.specializations
     Specialization.all.each { |specialization| ProcedureSpecialization.find_or_create_by_procedure_id_and_specialization_id(params[:id], specialization.id) }
   end
   

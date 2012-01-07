@@ -1,8 +1,7 @@
-/ - title "Areas of Practice - #{@specialization.name}"
+- Specialization.all.each do |specialization|
+  %h3= specialization.name
+  %h4= link_to "Add new Procedure", new_specialization_procedure_path(specialization)
+  %ul
+    - specialization.procedures.each do |procedure|
+      %li= link_to procedure.name, procedure_path(procedure)
 
-%h1 Areas of Practice
-%ul
-  - Procedure.all.sort_by{ |p| p.name }.each do |procedure|
-    %li= link_to "#{procedure.name} - #{procedure.specializations.collect(){ |s| s.name }.join(", ")}", procedure
-
-%p= link_to "New Area of Practice", new_procedure_path

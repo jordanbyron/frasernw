@@ -6,6 +6,7 @@ module ProceduresHelper
     result = []
     items.map do |item, sub_items|
       next if skip_tree and skip_tree.include? item
+      next if not item.procedure
       result << [yield(item), item.id]
       result += ancestry_options_limited(sub_items, skip_tree, &block)
     end
