@@ -1,7 +1,6 @@
 - Specialization.all.each do |specialization|
   %h3= specialization.name
+  %h4= link_to "Add new Specialist", new_specialization_specialist_path(specialization)
   %ul
     - specialization.specialists.each do |specialist|
       %li= link_to specialist.name, specialist_path(specialist)
-
-%p= link_to "New Specialist", new_specialist_path

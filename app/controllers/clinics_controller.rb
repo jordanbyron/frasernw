@@ -11,16 +11,14 @@ class ClinicsController < ApplicationController
   end
 
   def new
+    specialization = Specialization.find(params[:specialization_id])
     @clinic = Clinic.new
-    @clinic.clinic_specializations.build( :specialization_id => Specialization.first.id )
+    @clinic.clinic_specializations.build( :specialization_id => specialization.id )
     @clinic.addresses.build
     @clinic.focuses.build
     @clinic.attendances.build
-    @clinic_procedures = procedure_specialization_ancestry_options( Specialization.first.procedure_specializations.arrange )
-    @clinic_specialists = []
-    Specialization.first.specialists.each { |specialist|
-      @clinic_specialists << [ specialist.name, specialist.id ]
-    }
+    @clinic_procedures = procedure_specialization_ancestry_options( specialization.procedure_specializations.arrange )
+    @clinic_specialists = specialization.specialists.collect { |s| [s.name, s.id] }
   end
 
   def create
@@ -45,9 +43,7 @@ class ClinicsController < ApplicationController
     @clinic_specialists = []
     @clinic.specializations.each { |specialization|
       @clinic_specialists << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
-      specialization.specialists.each { |specialist|
-        @clinic_specialists << [ specialist.name, specialist.id ]
-      }
+      @clinic_specialists += specialization.specialists.collect { |s| [s.name, s.id] }
     }
   end
 

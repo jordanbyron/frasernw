@@ -34,9 +34,9 @@
     %li= link_to listed_procedure(procedure), procedure_path(procedure)
 
 %p
-  = link_to "New clinic", new_clinic_path
+  = link_to "New clinic", new_specialization_clinic_path(@specialization)
   |
-  = link_to "New specialist", new_specialist_path
+  = link_to "New specialist", new_specialization_specialist_path(@specialization)
   |
   = link_to "New area of practice", new_procedure_path
 

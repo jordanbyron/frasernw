@@ -1,7 +1,7 @@
 - Specialization.all.each do |specialization|
   %h3= specialization.name
+  %h4= link_to "Add new Clinic", new_specialization_clinic_path(specialization)
   %ul
     - specialization.clinics.each do |clinic|
       %li= link_to clinic.name, clinic_path(clinic)
 
-%p= link_to "New Clinic", new_clinic_path

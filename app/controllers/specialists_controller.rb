@@ -10,12 +10,13 @@ class SpecialistsController < ApplicationController
   end
 
   def new
+    specialization = Specialization.find(params[:specialization_id])
     @specialist = Specialist.new
-    @specialist.specialist_specializations.build( :specialization_id => Specialization.first.id )
+    @specialist.specialist_specializations.build( :specialization_id => specialization.id )
     @specialist.capacities.build
     @specialist.addresses.build
-    @specializations_clinics = []
-    @specializations_procedures = []
+    @specializations_clinics = specialization.clinics.collect { |c| [c.name, c.id] }
+    @specializations_procedures = procedure_specialization_ancestry_options( specialization.procedure_specializations.arrange )
   end
 
   def create

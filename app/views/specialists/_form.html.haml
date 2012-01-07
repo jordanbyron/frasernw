@@ -131,6 +131,6 @@
   %fieldset
     %h2 Sub-Specialty Clinics
     = f.association :clinics, as: :check_boxes, label: false, collection: @specializations_clinics
-    = link_to "Create a new Clinic", new_clinic_path, class: "button"
+    = link_to "Create a new Clinic", new_specialization_clinic_path(@specialist.specializations.first), class: "button"
 
   = f.submit
