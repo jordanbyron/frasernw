@@ -126,7 +126,7 @@
   %fieldset
     %h2 Hospital Privileges
     = f.association :hospitals, as: :check_boxes, label: false, collection: Hospital.all(:order => "name ASC") 
-    = link_to "Add a Hospital", new_hospital_path, class: "button"
+    = link_to "Create a new Hospital", new_hospital_path, class: "button"
 
   %fieldset
     %h2 Sub-Specialty Clinics
