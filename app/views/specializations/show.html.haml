@@ -34,11 +34,19 @@
     %li= link_to listed_procedure(procedure), procedure_path(procedure)
 
 %p
-  = link_to "New clinic", new_specialization_clinic_path(@specialization)
+  = link_to "New Clinic", new_specialization_clinic_path(@specialization)
   |
-  = link_to "New specialist", new_specialization_specialist_path(@specialization)
+  = link_to "New Specialist", new_specialization_specialist_path(@specialization)
   |
-  = link_to "New area of practice", new_specialization_procedure_path(@specialization)
+  = link_to "New Area of Practice", new_specialization_procedure_path(@specialization)
+  |
+  = link_to "New Hospital", new_hospital_path
+  |
+  = link_to "New Language", new_language_path
+  |
+  = link_to "New Healthcare Provider", new_healthcare_provider_path
+  |
+  = link_to "New City", new_city_path
 
 %p
   = link_to "Edit", edit_specialization_path(@specialization)

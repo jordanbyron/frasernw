@@ -1,17 +1,17 @@
 
-%h1 Supported Specializations
-
-%ul
-  - for specialization in @specializations
-    %li= link_to specialization.name, specialization
-
 %p
   = link_to "New Specialization", new_specialization_path
 %p
+  = link_to "Specialists", specialists_path
+  = " | "
+  = link_to "Clinics", clinics_path
+  = " | "
+  = link_to "Areas of Practice", procedures_path
+  = " | "
   = link_to "Hospitals", hospitals_path
   = " | "
-  = link_to "Languages", languages_path
-  = " | "
   = link_to "Healthcare Providers", healthcare_providers_path
+  = " | "
+  = link_to "Languages", languages_path
   = " | "
   = link_to "Cities", cities_path
