@@ -45,7 +45,6 @@
       - address_number += 1
     - if @specialist.addresses.count < Specialist::MAX_ADDRESSES
       = f.link_to_add "Add another location", :addresses, class: "button", id: "add_address"
-    = link_to "Create a new City", new_city_path, class: "button", id: "add_city"
 
   - if current_user && current_user.admin?    
     %fieldset
@@ -63,7 +62,6 @@
     = f.input :practise_limitations, label: "Other practice Limitations (if any)"
     = f.input :location_opened, label: "Practice opened at this location", as: :select, collection: ["Prior to 2010", 2010, 2011], prompt: "Select ..."
     = f.association :languages, as: :check_boxes, label: "Languages spoken in your practice", wrapper: false
-    = link_to "Create a new Language", new_language_path, class: "button"
 
   %fieldset
     %h2 Areas of Practice
@@ -126,11 +124,9 @@
   %fieldset
     %h2 Hospital Privileges
     = f.association :hospitals, as: :check_boxes, label: false, collection: Hospital.all(:order => "name ASC") 
-    = link_to "Create a new Hospital", new_hospital_path, class: "button"
 
   %fieldset
     %h2 Sub-Specialty Clinics
     = f.association :clinics, as: :check_boxes, label: false, collection: @specializations_clinics
-    = link_to "Create a new Clinic", new_specialization_clinic_path(@specialist.specializations.first), class: "button"
 
   = f.submit

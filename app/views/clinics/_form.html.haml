@@ -34,8 +34,6 @@
       - address_number += 1
     - if @clinic.addresses.count < Clinic::MAX_ADDRESSES
       = f.link_to_add "Add another location", :addresses, class: "button", id: "add_address"
-    = link_to "Create a new City", new_city_path, class: "button", id: "add_city"
-    
 
   - if current_user && current_user.admin?    
     %fieldset
@@ -52,7 +50,6 @@
     = f.input :limitations
     = f.input :location_opened, as: :select, collection: ["Prior to 2010", 2010, 2011], prompt: "Select ..."
     = f.association :languages, as: :check_boxes, wrapper: false
-    = link_to "Create a new Language", new_language_path, class: "button"
 
   %fieldset
     %h2 Areas of Practice
@@ -133,7 +130,6 @@
   %fieldset
     %h2 Healthcare Providers Who See Patients at Your Clinic
     = f.association :healthcare_providers, as: :check_boxes, label: false
-    = link_to "Create a new Healthcare Provider", new_healthcare_provider_path, class: "button"
     
   %fieldset
     %h2 Deprecated fields
