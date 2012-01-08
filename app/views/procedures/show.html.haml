@@ -1,7 +1,7 @@
 / - title "Area of Practice"
 
 %h1= "#{@procedure.name}"
-%h2= procedure.procedure_specializations.collect(){ |ps| compressed_ancestry(ps) }.join(", ")
+%h2= @procedure.procedure_specializations.collect(){ |ps| compressed_ancestry(ps) }.join(", ")
 
 %table{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'specialist_table'}
   %thead
