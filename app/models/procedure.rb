@@ -1,13 +1,11 @@
 class Procedure < ActiveRecord::Base
-  attr_accessible :name, :specialization_id, :specialization_level, :parent_id, :specialization_ids, :all_procedure_specializations_attributes
+  attr_accessible :name, :specialization_level, :parent_id, :specialization_ids, :all_procedure_specializations_attributes
   has_paper_trail
   has_ancestry
-
-  has_many :capacities, :dependent => :destroy
-  has_many :specialists, :through => :capacities
   
-  has_many :focuses, :dependent => :destroy
-  has_many :clinics, :through => :focuses
+  has_many :specialists, :finder_sql => proc { "SELECT DISTINCT s.* FROM specialists s JOIN capacities c ON c.specialist_id = s.id, procedure_specializations ps ON c.procedure_specialization_id = ps.id WHERE ps.procedure_id = #{self.id} ORDER BY s.lastname ASC, s.firstname ASC" }
+  
+  has_many :clinics, :finder_sql => proc { "SELECT DISTINCT cl.* FROM clinics cl JOIN capacities c ON c.specialist_id = cl.id, procedure_specializations ps ON c.procedure_specialization_id = ps.id WHERE ps.procedure_id = #{self.id} ORDER BY cl.name ASC" }
   
   has_many :all_procedure_specializations, :dependent => :destroy, :class_name => "ProcedureSpecialization"
   has_many :procedure_specializations, :dependent => :destroy, :conditions => { "mapped" => true }

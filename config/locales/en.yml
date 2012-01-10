@@ -47,8 +47,6 @@ en:
         urgent_other_details: "Other"
         lagtime_mask: "On average, how long does it take your clinic to advise the GP office that an appointment has been booked for their patient?"
         waittime_mask: "On average, what is your clinic’s normal wait time from request for a consultation to the appointment itself?"
-        lagtime_old: "On average, how long does it take your clinic to advise the GP office that an appointment has been booked for their patient?"
-        waittime_old: "On average, what is your clinic’s normal wait time from request for a consultation to the appointment itself?"
       specialist:
         firstname: "First Name"
         lastname: "Last Name"
@@ -70,8 +68,6 @@ en:
         referral_form: "Office Has Referral Form"
         lagtime_mask: "Average Length of Time to Notify GP of a Booking Date"
         waittime_mask: "Average Wait Time From Request for Consultation to Appointment"
-        lagtime_old: "Average Length of Time to Notify GP of a Booking Date"
-        waittime_old: "Average Wait Time From Request for Consultation to Appointment"
         respond_by_fax: "Responds to Referral Request by Fax"
         respond_by_phone: "Responds to Referral Request by Phone"
         respond_by_mail: "Responds to Referral Request by Mail"
