@@ -12,7 +12,7 @@ module ApplicationHelper
   end
   
   def listed_procedure(procedure)
-    "#{procedure.name} (#{procedure.specialists.length})"
+    "#{procedure.name}: #{procedure.specialists.length + procedure.clinics.length}"
   end
   
   def specialists_procedures(specialist)
