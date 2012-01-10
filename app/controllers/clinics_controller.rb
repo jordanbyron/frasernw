@@ -1,5 +1,6 @@
 class ClinicsController < ApplicationController
   load_and_authorize_resource
+  include ApplicationHelper
 
   def index
     @clinics = Clinic.all
@@ -17,7 +18,7 @@ class ClinicsController < ApplicationController
     @clinic.addresses.build
     @clinic.focuses.build
     @clinic.attendances.build
-    @clinic_procedures = procedure_specialization_ancestry_options( specialization.procedure_specializations.arrange )
+    @clinic_procedures = ancestry_options( specialization.procedure_specializations_arranged )
     @clinic_specialists = specialization.specialists.collect { |s| [s.name, s.id] }
   end
 
@@ -38,7 +39,7 @@ class ClinicsController < ApplicationController
     @clinic_procedures = []
     @clinic.specializations.each { |specialization| 
       @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
-      @clinic_procedures += procedure_specialization_ancestry_options( specialization.procedure_specializations.arrange )
+      @clinic_procedures += ancestry_options( specialization.procedure_specializations_arranged )
     }
     @clinic_specialists = []
     @clinic.specializations.each { |specialization|
@@ -61,16 +62,5 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.find(params[:id])
     @clinic.destroy
     redirect_to clinics_url, :notice => "Successfully destroyed clinic."
-  end
-  
-  def procedure_specialization_ancestry_options(items, &block)
-    return procedure_specialization_ancestry_options(items){ |i| "#{'-' * i.depth} #{i.procedure.name}" } unless block_given?
-    
-    result = []
-    items.map do |item, sub_items|
-      result << [yield(item), item.id]
-      result += procedure_specialization_ancestry_options(sub_items, &block)
-    end
-    result
   end
 end

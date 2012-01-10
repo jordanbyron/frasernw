@@ -1,5 +1,6 @@
 class SpecialistsController < ApplicationController
   load_and_authorize_resource
+  include ApplicationHelper
 
   def index
   end
@@ -16,7 +17,7 @@ class SpecialistsController < ApplicationController
     @specialist.capacities.build
     @specialist.addresses.build
     @specializations_clinics = specialization.clinics.collect { |c| [c.name, c.id] }
-    @specializations_procedures = procedure_specialization_ancestry_options( specialization.procedure_specializations.arrange )
+    @specializations_procedures = ancestry_options( specialization.procedure_specializations_arranged )
   end
 
   def create
@@ -41,7 +42,7 @@ class SpecialistsController < ApplicationController
     @specializations_procedures = []
     @specialist.specializations.each { |s| 
       @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations.count > 1
-      @specializations_procedures += procedure_specialization_ancestry_options( s.procedure_specializations.arrange )
+      @specializations_procedures += ancestry_options( s.procedure_specializations_arranged )
     }
   end
 
@@ -70,17 +71,6 @@ class SpecialistsController < ApplicationController
     @contact = @specialist.contacts.build(:user_id => current_user, :notes => @specialist.contact_email)
     @contact.save
     redirect_to @specialist, :notice => "Sent email to #{@specialist.contact_email}"
-  end
-  
-  def procedure_specialization_ancestry_options(items, &block)
-    return procedure_specialization_ancestry_options(items){ |i| "#{'-' * i.depth} #{i.procedure.name}" } unless block_given?
-    
-    result = []
-    items.map do |item, sub_items|
-      result << [yield(item), item.id]
-      result += procedure_specialization_ancestry_options(sub_items, &block)
-    end
-    result
   end
   
 end

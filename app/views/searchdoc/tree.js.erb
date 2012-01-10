@@ -1,14 +1,14 @@
 <% tree = Array.new 
 
-def add_procedure_specialization(ps)
+def add_procedure_specialization(ps, children)
     procedure_node = Array.new
     procedure_node[0] = ps.procedure.name
     procedure_node[1] = url_for(ps.procedure) #.gsub!(/^\//, '')    
     procedure_node[2] = ""
     procedure_node[3] = Array.new
-    ps.children.each do |child_ps|
+    children.each do |child_ps, child_children|
         next if not child_ps.procedure.specialization_level
-        procedure_node[3] << add_procedure_specialization(child_ps)
+        procedure_node[3] << add_procedure_specialization(child_ps, child_children)
     end
     return procedure_node
 end
@@ -52,9 +52,9 @@ end
     clinics_node[3] << clinic_node
   end
   
-  procedure_ancestry(specialization).each do |ps, children|
+  specialization.procedure_specializations_arranged.each do |ps, children|
     next if not ps.procedure.specialization_level
-    specialization_node[3] << add_procedure_specialization(ps)
+    specialization_node[3] << add_procedure_specialization(ps, children)
   end
 
   tree << specialization_node

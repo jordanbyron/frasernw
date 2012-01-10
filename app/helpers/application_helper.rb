@@ -37,7 +37,22 @@ module ApplicationHelper
       result.merge!(temp) { |key, a, b| a.merge(b) }
     end
     
-    return result
+    return sort_array_of_hashes( hash_to_array( result ) )
+  end
+  
+  def hash_to_array( h )
+    a = []
+    h.each do |k,v|
+      a << {:parent => k, :children => hash_to_array( v )}
+    end
+    a
+  end
+  
+  def sort_array_of_hashes( a )
+    a.sort!{ |x, y| x[:parent].procedure.name <=> y[:parent].procedure.name }
+    a.each do |entry|
+      sort_array_of_hashes( entry[:children] )
+    end
   end
   
   def compressed_procedures(specialist)
@@ -46,9 +61,9 @@ module ApplicationHelper
   
   def compressed_procedures_output(items, prefix)
     result = ""
-    items.map do |item, sub_items|
-      new_prefix = prefix.blank? ? item.procedure.name : prefix + " > " + item.procedure.name
-      result += new_prefix + ", " + compressed_procedures_output(sub_items, new_prefix)
+    items.each do |item|
+      new_prefix = prefix.blank? ? item[:parent].procedure.name : prefix + " > " + item[:parent].procedure.name
+      result += new_prefix + ", " + compressed_procedures_output(item[:children], new_prefix)
     end
     result
   end
@@ -60,9 +75,9 @@ module ApplicationHelper
   def compressed_procedures_indented_output(items)
     return "" if items.empty?
     result = "<ul>"
-    items.map do |item, sub_items|
-      result += "<li>" + item.procedure.name + "</li>"
-      result += compressed_procedures_indented_output(sub_items)
+    items.each do |item|
+      result += "<li>" + item[:parent].procedure.name + "</li>"
+      result += compressed_procedures_indented_output(item[:children])
     end
     result += "</ul>"
     result
@@ -86,7 +101,7 @@ module ApplicationHelper
   end
   
   def ancestry_options(items, &block)
-    return ancestry_options(items){ |i| "#{'-' * i.depth} #{i.name}" } unless block_given?
+    return ancestry_options(items){ |i| "#{'-' * i.depth} #{i.procedure.name}" } unless block_given?
     
     result = []
     items.map do |item, sub_items|
