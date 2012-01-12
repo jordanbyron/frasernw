@@ -13,3 +13,7 @@
       %td= link_to 'Show', procedure_path(procedure)
       %td= link_to 'Edit', edit_procedure_path(procedure)
       %td= link_to 'Delete', procedure, :confirm => "Delete #{procedure.name}?", :method => :delete
+
+- Specialization.all.each do |specialization|
+  %ul
+    %li= link_to "New area of practice in #{specialization.name}", new_specialization_procedure_path(specialization)
