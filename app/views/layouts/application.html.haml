@@ -17,15 +17,21 @@
   %body{:id => "#{params[:controller]}_page"}
     .container
       #header.row
-        / FIXME - nav should be a %ul for accessibility.
         #nav.twelvecol.last
           - if logged_in? and current_user.admin?
             = link_to "Track Specialists", tracker_path, class: "left button"
-            = link_to "Manage Users", users_path, class: "middle button"
             = link_to "Activity", all_versions_path, class: "middle button"
             = link_to "Review Queue (#{Review.count})", reviews_path, class: 'middle button'
+            = link_to "Users", users_path, class: "middle button"
+            = link_to "Specialities", specializations_path, class: "middle button"
+            = link_to "Specialists", specialists_path, class: "middle button"
+            = link_to "Clinics", clinics_path, class: "middle button"
+            = link_to "Hospitals", hospitals_path, class: "middle button"
+            = link_to "Areas of Practice", procedures_path, class: "middle button"
+            = link_to "Healthcare Providers", healthcare_providers_path, class: "middle button"
+            = link_to "Languages", languages_path, class: "middle button"
+            = link_to "Cities", cities_path, class: "middle button"
           - if logged_in?
-            = link_to "Home", '/', class: "middle button"
             = link_to "Logout", logout_url, class: "right button"
 
       #content.row
