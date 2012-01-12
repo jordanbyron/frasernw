@@ -31,6 +31,8 @@ class Clinic < ActiveRecord::Base
   has_many   :clinic_healthcare_providers, :dependent => :destroy
   has_many   :healthcare_providers, :through => :clinic_healthcare_providers, :order => "name ASC"
   
+  default_scope order('name')
+  
   validates_presence_of :name, :on => :create, :message => "can't be blank"
   validates_length_of :clinic_specializations, :minimum => 1, :message => "require at least one set"
   
