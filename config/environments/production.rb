@@ -5,7 +5,8 @@ Frasernw::Application.configure do
   config.middleware.use ExceptionNotifier,
     :email_prefix => "[mdpathway exception] ",
     :sender_address => %{"Fraser NW" <frasernw@gmail.com>},
-    :exception_recipients => %w{kalinh@gmail.com matthewlehner@gmail.com warneboldt@gmail.com}
+    #:exception_recipients => %w{kalinh@gmail.com matthewlehner@gmail.com warneboldt@gmail.com}
+    :exception_recipients => %w{warneboldt@gmail.com}
 
   # Code is not reloaded between requests
   config.cache_classes = true
