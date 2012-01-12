@@ -7,7 +7,7 @@
     = f.input :specialization_level, as: :radio, :collection => [ ['Specialization', true], ['Physician', false] ] 
  
   %fieldset
-    %h2 Specializations This Area of Practice Belongs To
+    %h2 Specialities This Area of Practice Belongs To
     - Specialization.all.each_with_index do |specialization, index|
       %div.fields
         - procedure_specialization = ProcedureSpecialization.find_by_procedure_id_and_specialization_id( @procedure.id, specialization.id )
