@@ -4,6 +4,8 @@ class City < ActiveRecord::Base
   
   belongs_to :province
   
+  default_scope order('name')
+  
   validates_presence_of :name, :on => :create, :message => "can't be blank"
   
   def to_s
