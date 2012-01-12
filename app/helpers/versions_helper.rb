@@ -12,11 +12,23 @@ module VersionsHelper
 
   def activity_badge(version)
     klass = version.item_type.downcase
-              .gsub('attachment', 'file')
-              .gsub('privilege', 'hospital privileges')
-              .gsub('procedure', 'area of practice')
-              .gsub('capacity', 'area of practice')
-              .gsub('office', 'office details')
+    .gsub('attachment', 'file')
+    .gsub('attendance', 'specialist works in clinic')
+    .gsub('capacity', 'specialist has area of practice')
+    .gsub('clinicaddress', 'clinic address')
+    .gsub('clinichealcareprovider', 'clinic healthcare provider')
+    .gsub('clinicspeak', 'clinic speaks language')
+    .gsub('clinicspecialization', 'clinic has speciality')
+    .gsub('focus', 'clinic has area of practice')
+    .gsub('healthcareprovider', 'healthcare provider')
+    .gsub('hospitaladdress', 'hospital address')
+    .gsub('privilege', 'specialist has hospital privileges')
+    .gsub('procedurespecialization', 'area of practice belongs to specialization')
+    .gsub('procedure', 'area of practice')
+    .gsub('specialist_address', 'specialist address')
+    .gsub('specialistspeak', 'specialist office speaks language')
+    .gsub('specialistspecialization', 'specialist has speciality')
+    .gsub('specialization', 'speciality')
     content_tag :span, class: ["type", klass] do
       klass.titlecase
     end
@@ -91,7 +103,7 @@ module VersionsHelper
         elsif version.event == "update"
           link_to version.reify.name, language_path(version.item_id)
         end
-      when "HealthcareProvicer"
+      when "HealthcareProvider"
         if version.event == "create"
           link_to version.item.name, healthcare_provider_path(version.item_id)
         elsif version.event == "update"
