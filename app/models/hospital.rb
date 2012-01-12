@@ -11,5 +11,7 @@ class Hospital < ActiveRecord::Base
   has_many :addresses, :through => :hospital_addresses
   accepts_nested_attributes_for :addresses
   
+  default_scope order('name')
+  
   validates_presence_of :name, :on => :create, :message => "can't be blank"
 end
