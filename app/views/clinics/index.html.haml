@@ -14,7 +14,7 @@
         %td= link_to 'Delete', clinic, :confirm => "Delete #{clinic.name}?", :method => :delete
         
     %tr
-      %td= link_to "New Clinic in #{specialization.name}", new_specialization_clinic_path(@specialization)
+      %td= link_to "New Clinic in #{specialization.name}", new_specialization_clinic_path(specialization)
       %td
       %td
       %td
