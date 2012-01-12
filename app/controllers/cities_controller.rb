@@ -38,6 +38,6 @@ class CitiesController < ApplicationController
   def destroy
     @city = City.find(params[:id])
     @city.destroy
-    redirect_to cities_path, :notice => "Successfully destroyed city."
+    redirect_to cities_path, :notice => "Successfully deleted city."
   end
 end

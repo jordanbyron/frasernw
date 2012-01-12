@@ -4,6 +4,8 @@
   %b Name:
   = @healthcare_provider.name
 
-= link_to 'Edit', edit_healthcare_provider_path(@healthcare_provider)
+= link_to 'Edit healthcare provider', edit_healthcare_provider_path(@healthcare_provider)
 \|
-= link_to 'Back', healthcare_providers_path
+= link_to 'Delete healthcare provider', @healthcare_provider, :confirm => "Delete #{@healthcare_provider.name}?", :method => :delete
+\|
+= link_to 'Show all healthcare providers', healthcare_providers_path

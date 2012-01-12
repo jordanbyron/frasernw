@@ -10,8 +10,8 @@
       = "#{address.phone1}, fax: #{address.fax}"
 
 %p
-  = link_to "Edit", edit_hospital_path(@hospital)
+  = link_to "Edit hospital", edit_hospital_path(@hospital)
   |
-  = link_to "Destroy", @hospital, :confirm => 'Are you sure?', :method => :delete
+  = link_to "Delete hospital", @hospital, :confirm => "Delete #{@hospital.name}?", :method => :delete
   |
-  = link_to "View All", hospitals_path
+  = link_to "Show all hospitals", hospitals_path

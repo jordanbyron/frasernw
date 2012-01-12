@@ -1,6 +1,21 @@
-- Specialization.all.each do |specialization|
-  %h3= specialization.name
-  %h4= link_to "Add new Specialist", new_specialization_specialist_path(specialization)
-  %ul
+%table
+  -Specialization.all.each do |specialization|
+    %tr
+      %th= specialization.name
+      %th
+      %th
+      %th
+
     - specialization.specialists.each do |specialist|
-      %li= link_to specialist.name, specialist_path(specialist)
+      %tr
+        %td= "#{specialist.name}"
+        %td= link_to 'Show', specialist_path(specialist)
+        %td= link_to 'Edit', edit_specialist_path(specialist)
+        %td= link_to 'Delete', specialist, :confirm => "Delete #{specialist.name}?", :method => :delete
+        
+    %tr
+      %td= link_to "New Specialist in #{specialization.name}", new_specialist_path
+      %td
+      %td
+      %td
+

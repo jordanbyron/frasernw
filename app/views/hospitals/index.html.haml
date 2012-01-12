@@ -8,6 +8,6 @@
       %td= hospital.name
       %td= link_to 'Show', hospital
       %td= link_to 'Edit', edit_hospital_path(hospital)
-      %td= link_to 'Destroy', hospital, :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Delete', hospital, :confirm => "Delete #{hospital.name}?", :method => :delete
 
 %p= link_to "New Hospital", new_hospital_path

@@ -29,9 +29,7 @@
         %td= compressed_procedures(specialist)
 
 %h3 Areas of Practice/Expertise
-%ul{:class => 'procedure_list'}
-  - @specialization.procedures.each do |procedure|
-    %li= link_to listed_procedure(procedure), procedure_path(procedure)
+= specialization_procedures_indented(@specialization).html_safe
 
 %p
   = link_to "New Clinic", new_specialization_clinic_path(@specialization)
@@ -49,8 +47,6 @@
   = link_to "New City", new_city_path
 
 %p
-  = link_to "Edit", edit_specialization_path(@specialization)
+  = link_to "Edit specialization", edit_specialization_path(@specialization)
   |
-  = link_to "Destroy", @specialization, :confirm => 'Are you sure?', :method => :delete
-  |
-  = link_to "View All", specializations_path
+  = link_to "Delete specialization", @specialization, :confirm => "Delete #{@specialization.name}?", :method => :delete

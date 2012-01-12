@@ -45,7 +45,7 @@ class Specialist < ActiveRecord::Base
 
   validates_presence_of :firstname, :on => :save, :message => "can't be blank"
   validates_presence_of :lastname, :on => :save, :message => "can't be blank"
-  validates_length_of :specialist_specializations, :minimum => 1, :message => "require at least one set"
+  #validates_length_of :specialist_specializations, :minimum => 1, :message => "require at least one set"
 
   default_scope order('lastname, firstname')
   

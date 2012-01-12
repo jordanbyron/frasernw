@@ -38,6 +38,6 @@ class ProvincesController < ApplicationController
   def destroy
     @province = Province.find(params[:id])
     @province.destroy
-    redirect_to provinces_url, :notice => "Successfully destroyed province."
+    redirect_to provinces_url, :notice => "Successfully deleted province."
   end
 end

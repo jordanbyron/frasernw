@@ -29,11 +29,8 @@
         %td= compressed_clinics(specialist.clinics) if type_of_row == 'specialist'
 
 %p
-  = link_to "Edit", edit_procedure_path
+  = link_to "Edit area of practice", edit_procedure_path
   |
-  = link_to "Destroy", @procedure, :confirm => 'Are you sure?', :method => :delete
-  / |
-  / = link_to "View All #{@procedure.specialization.name}", specialization_path(@procedure.specialization)
-  / |
-  / |
-  / #= link_to "View All", procedures_path
+  = link_to "Delete area of practice", @procedure, :confirm => "Delete #{@procedure.name}?", :method => :delete
+  |
+  = link_to "View all areas of practice", procedures_path

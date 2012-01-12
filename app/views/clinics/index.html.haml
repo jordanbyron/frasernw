@@ -1,7 +1,21 @@
-- Specialization.all.each do |specialization|
-  %h3= specialization.name
-  %h4= link_to "Add new Clinic", new_specialization_clinic_path(specialization)
-  %ul
+%table
+  -Specialization.all.each do |specialization|
+    %tr
+      %th= specialization.name
+      %th
+      %th
+      %th
+
     - specialization.clinics.each do |clinic|
-      %li= link_to clinic.name, clinic_path(clinic)
+      %tr
+        %td= "#{clinic.name}"
+        %td= link_to 'Show', clinic_path(clinic)
+        %td= link_to 'Edit', edit_clinic_path(clinic)
+        %td= link_to 'Delete', clinic, :confirm => "Delete #{clinic.name}?", :method => :delete
+        
+    %tr
+      %td= link_to "New Clinic in #{specialization.name}", new_clinic_path
+      %td
+      %td
+      %td
 

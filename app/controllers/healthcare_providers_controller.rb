@@ -38,6 +38,6 @@ class HealthcareProvidersController < ApplicationController
   def destroy
     @healthcare_provider = HealthcareProvider.find(params[:id])
     @healthcare_provider.destroy
-    redirect_to healthcare_providers_url, :notice => "Successfully destroyed healthcare_provider."
+    redirect_to healthcare_providers_url, :notice => "Successfully deleted healthcare_provider."
   end
 end

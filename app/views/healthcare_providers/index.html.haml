@@ -1,4 +1,4 @@
-%h1 Listing Healthcare Providers
+%h1 Healthcare Providers
 
 %table
   %tr
@@ -12,7 +12,7 @@
       %td= healthcare_provider.name
       %td= link_to 'Show', healthcare_provider
       %td= link_to 'Edit', edit_healthcare_provider_path(healthcare_provider)
-      %td= link_to 'Destroy', healthcare_provider, :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Delete', healthcare_provider, :confirm => "Delete #{healthcare_provider.name}?", :method => :delete
 
 %br
 

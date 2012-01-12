@@ -45,6 +45,6 @@ class SpecializationsController < ApplicationController
   def destroy
     @specialization = Specialization.find(params[:id])
     @specialization.destroy
-    redirect_to specializations_url, :notice => "Successfully destroyed specialization."
+    redirect_to specializations_url, :notice => "Successfully deleted specialization."
   end
 end

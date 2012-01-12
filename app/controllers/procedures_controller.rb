@@ -42,6 +42,6 @@ class ProceduresController < ApplicationController
   def destroy
     @procedure = Procedure.find(params[:id])
     @procedure.destroy
-    redirect_to procedures_url, :notice => "Successfully destroyed area of practice."
+    redirect_to procedures_url, :notice => "Successfully deleted area of practice."
   end
 end

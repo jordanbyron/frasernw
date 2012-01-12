@@ -39,6 +39,6 @@ class HospitalsController < ApplicationController
   def destroy
     @hospital = Hospital.find(params[:id])
     @hospital.destroy
-    redirect_to hospitals_url, :notice => "Successfully destroyed hospital."
+    redirect_to hospitals_url, :notice => "Successfully deleted hospital."
   end
 end

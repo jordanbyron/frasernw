@@ -7,6 +7,8 @@
   %strong Province:
   = link_to @city.province, province_path(@city.province)
   
-= link_to 'Edit', edit_city_path(@city)
+= link_to 'Edit city', edit_city_path(@city)
 \|
-= link_to 'Back', cities_path
+= link_to 'Delete city', @city, :confirm => "Delete #{@city.name}?", :method => :delete
+\|
+= link_to 'Show all cities', cities_path

@@ -11,10 +11,6 @@ module ApplicationHelper
     end
   end
   
-  def listed_procedure(procedure)
-    "#{procedure.name}: #{procedure.specialists.length + procedure.clinics.length}"
-  end
-  
   def specialists_procedures(specialist)
     list = ""
     specialist.procedure_specializations.each do |ps|
@@ -25,10 +21,10 @@ module ApplicationHelper
   
   alias :clinics_procedures :specialists_procedures
   
-  def procedure_ancestry(specialist)
+  def procedure_ancestry(specialist_or_specialization)
     result = {}
   
-    specialist.procedure_specializations.each do |ps| 
+    specialist_or_specialization.procedure_specializations.each do |ps| 
       temp = { ps => {} }
       while ps.parent
         temp = { ps.parent => temp }
@@ -98,6 +94,24 @@ module ApplicationHelper
       output += (clinic.name + ', ')
     end
     output.gsub(/\,\ $/,'')
+  end
+  
+  def specialization_procedures_indented(specialization)
+    return specialization_procedures_indented_output( procedure_ancestry(specialization) ) 
+  end
+  
+  def specialization_procedures_indented_output(items)
+    return "" if items.empty?
+    result = "<ul>"
+    items.each do |item|
+      procedure = item[:parent].procedure
+      result += "<li>"
+      result += link_to "#{procedure.name}: #{procedure.specialists.length + procedure.clinics.length}", procedure_path(procedure)
+      result += "</li>"
+      result += specialization_procedures_indented_output(item[:children])
+    end
+    result += "</ul>"
+    result
   end
   
   def ancestry_options(items, &block)

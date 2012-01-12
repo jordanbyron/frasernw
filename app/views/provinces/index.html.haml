@@ -1,4 +1,4 @@
-%h1 Listing provinces
+%h1 Provinces
 
 %table
   %tr
@@ -16,7 +16,7 @@
       %td= province.symbol
       %td= link_to 'Show', province
       %td= link_to 'Edit', edit_province_path(province)
-      %td= link_to 'Destroy', province, :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Delete', province, :confirm => "Delete #{province.name}?", :method => :delete
 
 %br
 

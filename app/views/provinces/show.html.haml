@@ -10,6 +10,8 @@
   %strong Symbol:
   = @province.symbol
   
-= link_to 'Edit', edit_province_path(@province)
+= link_to 'Edit province', edit_province_path(@province)
 \|
-= link_to 'Back', provinces_path
+= link_to 'Delete province', @province, :confirm => "Delete #{@province.name}?", :method => :delete
+\|
+= link_to 'Show all provinces', provinces_path

@@ -58,11 +58,11 @@ class SpecialistsController < ApplicationController
   def destroy
     @specialist = Specialist.find(params[:id])
     @specialist.destroy
-    redirect_to specialists_url, :notice => "Successfully destroyed specialist. #{undo_link}"
+    redirect_to specialists_url, :notice => "Successfully deleted specialist. #{undo_link}"
   end
 
   def undo_link
-    view_context.link_to("undo", revert_version_path(@specialist.versions.scoped.last), :method => :post).html_safe
+    #view_context.link_to("undo", revert_version_path(@specialist.versions.scoped.last), :method => :post).html_safe
   end
 
   def email

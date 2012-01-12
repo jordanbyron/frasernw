@@ -38,6 +38,6 @@ class LanguagesController < ApplicationController
     def destroy
         @language = Language.find(params[:id])
         @language.destroy
-        redirect_to languages_url, :notice => "Successfully destroyed language."
+        redirect_to languages_url, :notice => "Successfully deleted language."
     end
 end

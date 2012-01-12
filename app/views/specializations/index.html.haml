@@ -1,4 +1,3 @@
-
 %p
   = link_to "New Specialization", new_specialization_path
 %p
@@ -15,3 +14,10 @@
   = link_to "Languages", languages_path
   = " | "
   = link_to "Cities", cities_path
+  
+- Specialization.all.each do |specialization|
+  %h3= specialization.name
+  %p= link_to "Add new area of practice in #{specialization.name}", new_specialization_procedure_path(specialization)
+  = specialization_procedures_indented(specialization).html_safe
+
+

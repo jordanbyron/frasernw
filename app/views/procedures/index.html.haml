@@ -1,7 +1,15 @@
-- Specialization.all.each do |specialization|
-  %h3= specialization.name
-  %h4= link_to "Add new Procedure", new_specialization_procedure_path(specialization)
-  %ul
-    - specialization.procedures.each do |procedure|
-      %li= link_to procedure.name, procedure_path(procedure)
+%table
+  %tr
+    %th Area of Practice
+    %th Hierarchy
+    %th
+    %th
+    %th
 
+  - Procedure.all(:order => "name").each do |procedure|
+    %tr
+      %td= procedure.name
+      %td= procedure.procedure_specializations.map(){ |ps| compressed_ancestry(ps) }.join(", ")
+      %td= link_to 'Show', procedure_path(procedure)
+      %td= link_to 'Edit', edit_procedure_path(procedure)
+      %td= link_to 'Delete', procedure, :confirm => "Delete #{procedure.name}?", :method => :delete

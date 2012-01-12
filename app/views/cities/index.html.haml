@@ -1,4 +1,4 @@
-%h1 Listing cities
+%h1 Cities
 
 %table
   %tr
@@ -14,7 +14,7 @@
       %td= "#{city.province}"
       %td= link_to 'Show', city
       %td= link_to 'Edit', edit_city_path(city)
-      %td= link_to 'Destroy', city, :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Delete', city, :confirm => "Delete #{city.name}?", :method => :delete
 
 %br
 
