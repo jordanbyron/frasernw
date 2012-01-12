@@ -227,10 +227,7 @@ ActiveRecord::Schema.define(:version => 20120110175847) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "specialization_level", :default => true
-    t.string   "ancestry"
   end
-
-  add_index "procedures", ["ancestry"], :name => "index_procedures_on_ancestry"
 
   create_table "provinces", :force => true do |t|
     t.string   "name"

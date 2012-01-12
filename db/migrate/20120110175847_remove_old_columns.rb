@@ -48,5 +48,9 @@ class RemoveOldColumns < ActiveRecord::Migration
     #old capacity/focus on a procedure, instead of a procedure_specialization
     remove_column :capacities, :procedure_id
     remove_column :focuses, :procedure_id
+    
+    #old procedure ancestry data (lives on procedure_specializations)
+    remove_index :procedures, :column => :ancestry
+    remove_column :procedures, :ancestry
   end
 end
