@@ -4,6 +4,8 @@ class Province < ActiveRecord::Base
   
   has_many :cities, :order => "name ASC"
   
+  default_scope order('name')
+  
   validates_presence_of :name, :on => :create, :message => "can't be blank"
   validates_presence_of :abbreviation, :on => :create, :message => "can't be blank"
   validates_presence_of :symbol, :on => :create, :message => "can't be blank"
