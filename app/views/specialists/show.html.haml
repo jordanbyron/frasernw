@@ -113,11 +113,11 @@
     %br
 
 %p
-  = link_to "History of edits", show_versions_path(@specialist)
-  |
   - if can? :update, @specialist
     = link_to "Edit specialist", edit_specialist_path(@specialist)
     |
+  = link_to "History of edits", show_versions_path(@specialist)
+  |
   - if can? :destroy, @specialist
     = link_to "Delete specialist", @specialist, :confirm => "Delete #{@specialist.name}?", :method => :delete
     |
