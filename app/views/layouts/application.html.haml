@@ -32,6 +32,7 @@
             = link_to "Languages", languages_path, class: "middle button"
             = link_to "Cities", cities_path, class: "middle button"
           - if logged_in?
+            = link_to "Home", root_url, class: "middle button"
             = link_to "Logout", logout_url, class: "right button"
 
       #content.row
