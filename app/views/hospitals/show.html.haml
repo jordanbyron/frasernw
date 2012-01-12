@@ -7,7 +7,7 @@
     %i
       = address.address
       %br
-      = "#{address.phone1}, fax: #{address.fax}"
+      = address.phone_and_fax
 
 %p
   = link_to "Edit hospital", edit_hospital_path(@hospital)

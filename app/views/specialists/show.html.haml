@@ -31,7 +31,7 @@
     %i
       = address.address
       %br
-      = "#{address.phone1}, fax: #{address.fax}"
+      = address.phone_and_fax
       - if address.hospital
         %br
         = "In #{address.hospital.name}"
