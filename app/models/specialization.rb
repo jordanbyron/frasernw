@@ -14,7 +14,7 @@ class Specialization < ActiveRecord::Base
   default_scope order('name')
   
   def procedure_specializations_arranged
-    return procedure_specializations.arrange(:joins => "JOIN procedures ON procedure_specializations.procedure_id = procedures.id", :order => "procedures.name")
+    return procedure_specializations.arrange(:joins => "JOIN procedures ON procedure_specializations.procedure_id = procedures.id", :conditions => "procedure_specializations.specialization_id = #{self.id} AND procedure_specializations.mapped = 't'", :order => "procedures.name")
   end
 
 end
