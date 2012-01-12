@@ -1,11 +1,5 @@
 Frasernw::Application.routes.draw do
 
-  resources :cities
-
-  resources :provinces
-
-  resources :healthcare_providers
-
   resources :reviews, :only => [:index, :destroy] do
     put :accept
   end
@@ -26,6 +20,9 @@ Frasernw::Application.routes.draw do
   resources :procedures
   resources :hospitals
   resources :languages
+  resources :cities
+  resources :provinces
+  resources :healthcare_providers
 
   match "tracker" => 'tracker#index', :as => 'tracker'
   
