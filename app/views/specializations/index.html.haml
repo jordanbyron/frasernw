@@ -1,13 +1,13 @@
-%p
-  = link_to "Create new Specialization", new_specialization_path
-  
-- Specialization.all.each do |specialization|
-  %h3= specialization.name
-  %p
-    = link_to "New specialist", new_specialization_specialist_path(specialization)
-    |
-    = link_to "New clinic", new_specialization_clinic_path(specialization)
-    |
-    = link_to "New area of practice", new_specialization_procedure_path(specialization)
+- title "Specialities"
 
+%table
+  %tr
+    %th Name
+  - Specialization.all.each do |specialization|
+    %tr
+      %td= specialization.name
+      %td= link_to 'Show', specialization
+      %td= link_to 'Edit', edit_hospital_path(specialization)
+      %td= link_to 'Delete', specialization, :confirm => "Delete #{specialization.name}?", :method => :delete
 
+%p= link_to "New Speciality", new_specialization_path
