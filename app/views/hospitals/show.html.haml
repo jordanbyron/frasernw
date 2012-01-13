@@ -10,6 +10,12 @@
       = address.phone_and_fax
 
 %p
+  %strong Physicians who see patients at this hospital:
+  %ul
+    - @hospital.specialists.each do |specialist|
+      %li= link_to(specialist.name, url_for(specialist)) + raw("<br/>")
+
+%p
   = link_to "Edit hospital", edit_hospital_path(@hospital)
   |
   = link_to "Delete hospital", @hospital, :confirm => "Delete #{@hospital.name}?", :method => :delete
