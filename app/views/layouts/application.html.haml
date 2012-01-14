@@ -15,12 +15,16 @@
     = yield(:head)
 
   %body{:id => "#{params[:controller]}_page"}
-    .container
-      #header.row
-        #logo.fourcol 
-          = link_to "Pathways", root_url
-        #nav.twelvecol.last
-          - if logged_in? and current_user.admin?
+    #header_wrapper
+      #header
+        #logo
+          = link_to image_tag('/images/logo.png'), root_url
+        #nav
+          - if logged_in?
+            = link_to "Logout", logout_url
+      -#
+        - if logged_in? and current_user.admin?
+          #admin
             /= link_to "Track Specialists", tracker_path
             = link_to "Activity", all_versions_path
             = link_to "Review Queue (#{Review.count})", reviews_path
@@ -33,18 +37,14 @@
             = link_to "Healthcare Providers", healthcare_providers_path
             = link_to "Languages", languages_path
             = link_to "Cities", cities_path
-          - if logged_in?
-            = link_to "Home", root_url
-            = link_to "Logout", logout_url
 
-      #content.row
-        - unless params[:controller] == 'user_sessions'
-          %iframe#searchbox.fourcol{:src => "/navigation"}
+    #content_wrapper
+      - unless params[:controller] == 'user_sessions'
+        %iframe#searchbox{:src => "/navigation"}
 
-        #wrapper.eightcol.last
-          #container{:class => "container_#{params[:controller]}"}
-            - flash.each do |name, msg|
-              = content_tag :div, raw(msg), :id => "flash_#{name}"
-            - if show_title?
-              %h1= yield(:title)
-            = yield
+      #content{:class => "container_#{params[:controller]}"}
+        - flash.each do |name, msg|
+          = content_tag :div, raw(msg), :id => "flash_#{name}"
+        - if show_title?
+          %h1= yield(:title)
+        = yield

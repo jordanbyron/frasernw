@@ -19,7 +19,7 @@
                 xhr.setRequestHeader('X-PJAX', 'true');
               },
               success: function(data){
-                $('#container', window.parent.document).html(data);
+                $('#content', window.parent.document).html(data);
                 window.parent.history.pushState(null, $(data).filter('title').text(), src);
               }
             });

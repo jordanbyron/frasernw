@@ -2,8 +2,6 @@
 
 body
 {
-    background-image: url(/images/background.png);
-    background-repeat: repeat-x;
 }
 
 #flash_notice 
@@ -16,80 +14,76 @@ body
   clear: both;
 }
 
-#header 
+#header_wrapper
 {
-  height: 95px;
-  text-align:right;
+  width: 100%;
+  height: 77px;
   background:$FNW_DARK_GRAY;
   border-bottom: 1px solid #FFFFFF;
-  #logo
+  
+  #header 
   {
-    line-height: 95px;
-    text-align: center;
-    font-size: 36px;
-    text-shadow: 0px 0px 10px #232930;
-    font-family: QuicksandDash, "Helvetica Neue", Helvetica, Arial, sans-serif;
-    a
+    width: 1024px;
+    margin: 0 auto;
+    
+    #logo
     {
-      text-decoration: none;
+      width: 256px;
+      float: left;
+      
+      img
+      {
+        display: block;
+        margin: 2px auto 0 auto;
+      }
+    }
+    #nav
+    {
+      float: left;
+      width: 768px;
+      text-align:right;
+      margin-top: 55px;
+    }
+    #nav a
+    {
+      /*font-family: QuicksandDash, "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      text-decoration:none;
+      color: $FNW_LIGHT;
+      text-shadow: 0px 0px 5px #232930;
+      margin-right: 15px;
+    }
+    #nav a:hover
+    {
       color: $FNW_GREEN;
     }
-    a:hover
-    {
-      text-shadow: 0px 0px 10px $FNW_GREEN;
-    }
-  }
-  #nav
-  {
-    margin-top: 65px;
-  }
-  #nav a
-  {
-    font-family: Quicksand;
-    font-size: 15px;
-    font-weight: lighter;
-    text-decoration:none;
-    color: $FNW_LIGHT;
-    text-shadow: 0px 0px 5px #232930;
-    margin-right: 15px;
-  }
-  #nav a:hover
-  {
-    color: $FNW_GREEN;
   }
 }
 
-#searchbox
+#content_wrapper
 {
+  clear: both;
+  width: 1024px;
+  margin: 0 auto;
+  
+  #searchbox
+  {
+    float: left;
+    width: 255px;
     background-color: $FNW_LIGHT;
     border-right: 1px solid #DDD;
     overflow-y:hidden;
-    min-height: 80%;
-}
-
-#content
-{
+  }
+  
+  #content
+  {
+    float: left;
+    width: 766px;
     font-size: 13px;
     line-height: 20px;
     background: $FNW_LIGHT;
-    border-left: 1px solid #FFF;
-    border-right: 1px solid #FFF;
-}
-
-#wrapper
-{
-    padding-top: 26px;
-}
-
-#container
-{
-    padding-right: 3.8%;
-    div
-    {
-      margin-top: 13px;
-    }
-    div.collapseup
-    {
-      margin-top: 0;
-    }
+    border-left: 1px solid #EEE;
+    border-right: 1px solid #EEE;
+  }
 }

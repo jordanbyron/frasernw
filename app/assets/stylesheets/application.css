@@ -6,6 +6,5 @@
  *= require ./all/resets
  *= require ./all/normalize
  *= require ./all/typography
- *= require ./all/1140
  *= require_tree ./all 
 */

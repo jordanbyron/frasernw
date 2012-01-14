@@ -2,12 +2,12 @@
 
 body
 {
-    background-color: #FAFAF9;
+    background-color: #FDFDFD;
     font-family: "Helvetica Neue", Helvetica;
 }
 
 body > .toolbar {
-    background: none #FAFAF9 no-repeat;
+    background: none #FDFDFD no-repeat;
     border-top: 0 !important;
     border-bottom: 1px solid #DDD !important;
     text-shadow: none;
@@ -18,8 +18,8 @@ body.landscape > .toolbar > h1, body.portrait > .toolbar > h1
     position: static;
     float: left;
     font-size: 16px;
-    font-weight: normal;
-    color: #C44D58;
+    font-weight: bold;
+    color: #7cc0e6;
     text-shadow: none;
     padding-top: 12px;
     margin-left: 0;
@@ -30,11 +30,11 @@ body.landscape > .toolbar > h1, body.portrait > .toolbar > h1
 
 body > ul > li
 {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: normal;
-    border-bottom: 1px solid #DDD;
-    padding-top: 12px;
-    padding-bottom: 12px;
+  border-bottom: 1px solid #EEE;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 body > ul > li > a
@@ -51,11 +51,11 @@ body
 }
 
 li > a[selected], li > a:hover {
-    background-color: #C7F464 !important;
+    background-color: #7cc0e6 !important;
 }
 
 li > a[selected], li > a:active {
-    background-color: #C7F464 !important;
+    background-color: #7cc0e6 !important;
     background-image: url(listArrow.png), none !important;
     color: #424242 !important;
 }
