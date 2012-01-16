@@ -75,7 +75,7 @@ module ApplicationHelper
       result += "<li>"
       result += item[:parent].procedure.name
       investigation = item[:parent].investigation(root)
-      if investigation.length > 0
+      if investigation and investigation.length > 0
         result += ": #{investigation}"
       end
       result += "</li>"
