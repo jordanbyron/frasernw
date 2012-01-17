@@ -72,7 +72,7 @@
 
     %hr
 
-    = f.input :not_performed, as: :text, label: "Clinic does not see or do"
+    = f.input :not_performed, as: :text
 
   %fieldset.referral_details
     %h2 Referral Details
@@ -82,7 +82,7 @@
       = f.input :referral_phone, as: :boolean, wrapper: false
       = f.input :referral_other_details, wrapper: false
 
-    = f.input :referral_form, label: "Does your clinic have a referral form?", as: :radio
+    = f.input :referral_form_mask, as: :radio, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
     
     .input.optional
       = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_HASH, label_method: :last, value_method: :first, wrapper: false
@@ -99,8 +99,8 @@
         = f.input :respond_by_mail, as: :boolean, wrapper: false
         %br
         = f.input :respond_to_patient, as: :boolean, wrapper: false
-    = f.input :patient_can_book, as: :radio, label: "After you receive our referral, will your clinic accept direct calls from patients to book their own appointments?"
-    = f.input :red_flags, label: "What conditions (red flags) does your clinic feel warrant urgent consultation?", as: :text, input_html: { class: "full" }
+    = f.input :patient_can_book_mask, as: :radio, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
+    = f.input :red_flags, as: :text, input_html: { class: "full" }
     .mechanisms
       %span.label Optimal method of referral for urgent appointments
       = f.input :urgent_fax, as: :boolean, wrapper: false

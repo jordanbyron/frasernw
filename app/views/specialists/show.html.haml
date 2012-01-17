@@ -78,7 +78,7 @@
   = @specialist.referral_other_details
   %br
   %strong Has referral form:
-  = @specialist.referral_form ? "yes" : "no"
+  = @specialist.referral_form
   %br
   %strong Average length of time to notify GP of a booking date:
   = @specialist.lagtime
@@ -93,7 +93,7 @@
   = @specialist.respond_to_patient ? "directly to patient" : ""
   %br
   %strong Accepts direct calls from patients after referral to book their own appointments?
-  = @specialist.patient_can_book ? "yes" : "no"
+  = @specialist.patient_can_book
   %br
   %strong Conditions (red flags) that office feels warrants urgent consultation:
   = @specialist.red_flags

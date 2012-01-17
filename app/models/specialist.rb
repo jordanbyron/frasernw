@@ -1,5 +1,5 @@
 class Specialist < ActiveRecord::Base
-  attr_accessible :firstname, :lastname, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book, :lagtime_mask, :waittime_mask, :referral_form, :hospital_ids, :specialist_specializations_attributes, :capacities_attributes, :offices_attributes, :language_ids, :addresses_attributes
+  attr_accessible :firstname, :lastname, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :hospital_ids, :specialist_specializations_attributes, :capacities_attributes, :offices_attributes, :language_ids, :addresses_attributes
   has_paper_trail ignore: :saved_token
   
   # specialists can have multiple specializations
@@ -88,6 +88,20 @@ class Specialist < ActiveRecord::Base
   
   def lagtime
     Specialist::LAGTIME_HASH[lagtime_mask]
+  end
+  
+  BOOLEAN_HASH = { 
+    1 => "Yes", 
+    2 => "No", 
+    3 => "Didn't answer", 
+  }
+  
+  def referral_form
+    Specialist::BOOLEAN_HASH[referral_form_mask]
+  end
+  
+  def patient_can_book
+    Specialist::BOOLEAN_HASH[patient_can_book_mask]
   end
 
   def name

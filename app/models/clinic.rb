@@ -1,5 +1,5 @@
 class Clinic < ActiveRecord::Base
-  attr_accessible :name, :status, :interest, :waittime, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_form, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :responds_via, :clinic_specializations_attributes, :addresses_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids
+  attr_accessible :name, :status, :interest, :waittime, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :responds_via, :clinic_specializations_attributes, :addresses_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids
   has_paper_trail meta: { to_review: false }
   
   # clinics can have multiple specializations
@@ -77,11 +77,18 @@ class Clinic < ActiveRecord::Base
     Clinic::LAGTIME_HASH[lagtime_mask]
   end
   
-  def address
-    address = ''
-    address += self.address1 || ''
-    address += self.address2 || ''
-    address
+  BOOLEAN_HASH = { 
+  1 => "Yes", 
+  2 => "No", 
+  3 => "Didn't answer", 
+  }
+  
+  def referral_form
+    Specialist::BOOLEAN_HASH[referral_form_mask]
+  end
+  
+  def patient_can_book
+    Specialist::BOOLEAN_HASH[patient_can_book_mask]
   end
 
 end

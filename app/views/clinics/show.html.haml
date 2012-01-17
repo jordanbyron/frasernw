@@ -46,7 +46,7 @@
   = @clinic.referral_other_details
   %br
   %strong Has referral form:
-  = @clinic.referral_form ? "yes" : "no"
+  = @clinic.referral_form
   %br
   %strong Average length of time to notify GP of a booking date:
   = @clinic.lagtime
@@ -61,7 +61,7 @@
   = @clinic.respond_to_patient ? "directly to patient" : ""
   %br
   %strong Accepts direct calls from patients after referral to book their own appointments?
-  = @clinic.patient_can_book ? "yes" : "no"
+  = @clinic.patient_can_book
   %br
   %strong Conditions (red flags) that clinic feels warrants urgent consultation:
   = @clinic.red_flags
