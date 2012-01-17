@@ -11,20 +11,20 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120110175847) do
+ActiveRecord::Schema.define(:version => 20120117162324) do
 
   create_table "addresses", :force => true do |t|
-    t.string   "address1"
-    t.string   "suite"
-    t.string   "postalcode"
-    t.string   "phone1"
-    t.string   "fax"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "hospital_id"
-    t.integer  "city_id"
-    t.string   "address2"
-    t.integer  "clinic_id"
+    t.string    "address1"
+    t.string    "suite"
+    t.string    "postalcode"
+    t.string    "phone1"
+    t.string    "fax"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.integer   "hospital_id"
+    t.integer   "city_id"
+    t.string    "address2"
+    t.integer   "clinic_id"
   end
 
   create_table "attendances", :force => true do |t|
@@ -39,20 +39,18 @@ ActiveRecord::Schema.define(:version => 20120110175847) do
   end
 
   create_table "capacities", :force => true do |t|
-    t.integer  "specialist_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "investigation"
-    t.integer  "procedure_specialization_id"
+    t.integer   "specialist_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string    "investigation"
+    t.integer   "procedure_specialization_id"
   end
 
-  add_index "capacities", ["specialist_id"], :name => "index_capacities_on_specialist_id_and_procedure_id"
-
   create_table "cities", :force => true do |t|
-    t.string   "name"
-    t.integer  "province_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string    "name"
+    t.integer   "province_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "clinic_addresses", :force => true do |t|
@@ -77,45 +75,45 @@ ActiveRecord::Schema.define(:version => 20120110175847) do
   end
 
   create_table "clinic_specializations", :force => true do |t|
-    t.integer  "clinic_id"
-    t.integer  "specialization_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "clinic_id"
+    t.integer   "specialization_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "clinics", :force => true do |t|
-    t.string   "name"
-    t.text     "status"
-    t.text     "interest"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "referral_criteria"
-    t.text     "referral_process"
-    t.string   "responds_via"
-    t.string   "contact_name"
-    t.string   "contact_phone"
-    t.string   "contact_email"
-    t.string   "contact_notes"
-    t.integer  "status_mask"
-    t.text     "limitations"
-    t.text     "location_opened"
-    t.text     "required_investigations"
-    t.text     "not_performed"
-    t.boolean  "referral_fax"
-    t.boolean  "referral_phone"
-    t.string   "referral_other_details"
-    t.boolean  "referral_form"
-    t.boolean  "respond_by_fax"
-    t.boolean  "respond_by_phone"
-    t.boolean  "respond_by_mail"
-    t.boolean  "respond_to_patient"
-    t.boolean  "patient_can_book"
-    t.text     "red_flags"
-    t.boolean  "urgent_fax"
-    t.boolean  "urgent_phone"
-    t.string   "urgent_other_details"
-    t.integer  "waittime_mask"
-    t.integer  "lagtime_mask"
+    t.string    "name"
+    t.text      "status"
+    t.text      "interest"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.text      "referral_criteria"
+    t.text      "referral_process"
+    t.string    "responds_via"
+    t.string    "contact_name"
+    t.string    "contact_phone"
+    t.string    "contact_email"
+    t.string    "contact_notes"
+    t.integer   "status_mask"
+    t.text      "limitations"
+    t.text      "location_opened"
+    t.text      "required_investigations"
+    t.text      "not_performed"
+    t.boolean   "referral_fax"
+    t.boolean   "referral_phone"
+    t.string    "referral_other_details"
+    t.boolean   "referral_form"
+    t.boolean   "respond_by_fax"
+    t.boolean   "respond_by_phone"
+    t.boolean   "respond_by_mail"
+    t.boolean   "respond_to_patient"
+    t.boolean   "patient_can_book"
+    t.text      "red_flags"
+    t.boolean   "urgent_fax"
+    t.boolean   "urgent_phone"
+    t.string    "urgent_other_details"
+    t.integer   "waittime_mask"
+    t.integer   "lagtime_mask"
   end
 
   create_table "contacts", :force => true do |t|
@@ -146,14 +144,12 @@ ActiveRecord::Schema.define(:version => 20120110175847) do
   end
 
   create_table "focuses", :force => true do |t|
-    t.integer  "clinic_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "investigation"
-    t.integer  "procedure_specialization_id"
+    t.integer   "clinic_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string    "investigation"
+    t.integer   "procedure_specialization_id"
   end
-
-  add_index "focuses", ["clinic_id"], :name => "index_focuses_on_clinic_id_and_procedure_id"
 
   create_table "healthcare_providers", :force => true do |t|
     t.string    "name"
@@ -169,9 +165,9 @@ ActiveRecord::Schema.define(:version => 20120110175847) do
   end
 
   create_table "hospitals", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string    "name"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "languages", :force => true do |t|
@@ -212,29 +208,29 @@ ActiveRecord::Schema.define(:version => 20120110175847) do
   end
 
   create_table "procedure_specializations", :force => true do |t|
-    t.integer  "procedure_id"
-    t.integer  "specialization_id"
-    t.string   "ancestry"
-    t.boolean  "mapped",            :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "procedure_id"
+    t.integer   "specialization_id"
+    t.string    "ancestry"
+    t.boolean   "mapped",            :default => false
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   add_index "procedure_specializations", ["ancestry"], :name => "index_procedure_specializations_on_ancestry"
 
   create_table "procedures", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "specialization_level", :default => true
+    t.string    "name"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.boolean   "specialization_level", :default => true
   end
 
   create_table "provinces", :force => true do |t|
-    t.string   "name"
-    t.string   "abbreviation"
-    t.string   "symbol"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string    "name"
+    t.string    "abbreviation"
+    t.string    "symbol"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "reviews", :force => true do |t|
@@ -272,50 +268,51 @@ ActiveRecord::Schema.define(:version => 20120110175847) do
   end
 
   create_table "specialist_specializations", :force => true do |t|
-    t.integer  "specialist_id"
-    t.integer  "specialization_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "specialist_id"
+    t.integer   "specialization_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "specialists", :force => true do |t|
-    t.string   "firstname"
-    t.string   "lastname"
-    t.text     "practise_limitations"
-    t.text     "interest"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "direct_phone"
-    t.string   "contact_name"
-    t.string   "contact_phone"
-    t.string   "contact_email"
-    t.text     "red_flags"
-    t.string   "responds_via"
-    t.string   "referral_criteria"
-    t.string   "saved_token"
-    t.string   "contact_notes"
-    t.text     "not_interested"
-    t.text     "all_procedure_info"
-    t.string   "referral_other_details"
-    t.string   "referral_request"
-    t.boolean  "patient_can_book",        :default => false
-    t.string   "urgent_other_details"
-    t.text     "required_investigations"
-    t.text     "not_performed"
-    t.string   "status_details"
-    t.string   "location_opened"
-    t.integer  "status_mask"
-    t.boolean  "referral_fax"
-    t.boolean  "referral_phone"
-    t.boolean  "respond_by_fax"
-    t.boolean  "respond_by_phone"
-    t.boolean  "respond_by_mail"
-    t.boolean  "respond_to_patient"
-    t.boolean  "urgent_fax"
-    t.boolean  "urgent_phone"
-    t.boolean  "referral_form"
-    t.integer  "waittime_mask"
-    t.integer  "lagtime_mask"
+    t.string    "firstname"
+    t.string    "lastname"
+    t.text      "practise_limitations"
+    t.text      "interest"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string    "direct_phone"
+    t.string    "contact_name"
+    t.string    "contact_phone"
+    t.string    "contact_email"
+    t.text      "red_flags"
+    t.string    "responds_via"
+    t.string    "referral_criteria"
+    t.string    "saved_token"
+    t.string    "contact_notes"
+    t.text      "not_interested"
+    t.text      "all_procedure_info"
+    t.string    "referral_other_details"
+    t.string    "referral_request"
+    t.boolean   "patient_can_book",        :default => false
+    t.string    "urgent_other_details"
+    t.text      "required_investigations"
+    t.text      "not_performed"
+    t.string    "status_details"
+    t.string    "location_opened"
+    t.integer   "status_mask"
+    t.boolean   "referral_fax"
+    t.boolean   "referral_phone"
+    t.boolean   "respond_by_fax"
+    t.boolean   "respond_by_phone"
+    t.boolean   "respond_by_mail"
+    t.boolean   "respond_to_patient"
+    t.boolean   "urgent_fax"
+    t.boolean   "urgent_phone"
+    t.boolean   "referral_form"
+    t.integer   "waittime_mask"
+    t.integer   "lagtime_mask"
+    t.integer   "billing_number"
   end
 
   create_table "specializations", :force => true do |t|

@@ -24,6 +24,9 @@
 %p
   %strong Direct number:
   = @specialist.direct_phone
+  %br
+  %strong Billing number:
+  = @specialist.billing_number
   
 - @specialist.addresses.each do |address|
   - next if address.empty?
