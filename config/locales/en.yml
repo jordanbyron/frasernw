@@ -51,6 +51,7 @@ en:
         firstname: "First Name"
         lastname: "Last Name"
         direct_phone: "Direct Number (for physician contact)"
+        billing_number: "MSP Billing Number"
         contact_name: "Name"
         contact_email: "Email"
         contact_phone: "Phone"
