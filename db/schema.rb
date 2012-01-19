@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120118221000) do
+ActiveRecord::Schema.define(:version => 20120119175948) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -300,7 +300,7 @@ ActiveRecord::Schema.define(:version => 20120118221000) do
     t.string   "urgent_other_details"
     t.text     "required_investigations"
     t.text     "not_performed"
-    t.string   "status_details"
+    t.text     "status_details"
     t.string   "location_opened"
     t.integer  "status_mask"
     t.boolean  "referral_fax"
