@@ -54,6 +54,7 @@ en:
       specialist:
         firstname: "First Name"
         lastname: "Last Name"
+        responded: "Responded to Survey"
         direct_phone: "Direct Number (for physician contact)"
         billing_number: "MSP Billing Number"
         contact_name: "Name"
@@ -64,7 +65,7 @@ en:
         status_details: "Additional Details (if any)"
         practise_limitations: "Other practice Limitations (if any)"
         location_opened: "Practice Opened at This Location"
-        languages: "Languages spoken in your practice"
+        languages: "Languages Spoken in Your Practice"
         required_investigations: "Investigations Required for All Areas of Practice"
         interest: "I am most interested in"
         not_performed: "I do not see or do"
