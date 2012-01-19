@@ -55,7 +55,8 @@ class Specialist < ActiveRecord::Base
     3 => "Semi-retired", 
     4 => "Retired",
     5 => "Retiring as of",
-    6 => "Unavailable between"
+    6 => "Unavailable between",
+    7 => "Didn't answer"
   }
   
   def status
