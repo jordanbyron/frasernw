@@ -120,14 +120,12 @@ module ApplicationHelper
     result
   end
   
-  def ancestry_options(items, &block)
-    return ancestry_options(items){ |i| "#{'-' * i.depth} #{i.procedure.name}" } unless block_given?
-    
+  def ancestry_options(items, parent = "")
     result = []
     items.map do |item, sub_items|
-      result << [yield(item), item.id]
+      result << [ "#{parent} #{item.procedure.name}", item.id]
       #this is a recursive call:
-      result += ancestry_options(sub_items, &block)
+      result += ancestry_options(sub_items, "#{parent} #{item.procedure.name}")
     end
     result
   end
