@@ -123,9 +123,10 @@ module ApplicationHelper
   def ancestry_options(items, parent = "")
     result = []
     items.map do |item, sub_items|
-      result << [ "#{parent} #{item.procedure.name}", item.id]
+      item_text = parent.empty? ? "#{item.procedure.name}" : "#{parent} #{item.procedure.name}"
+      result << [ item_text, item.id]
       #this is a recursive call:
-      result += ancestry_options(sub_items, "#{parent} #{item.procedure.name}")
+      result += ancestry_options(sub_items, item_text)
     end
     result
   end
