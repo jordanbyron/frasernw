@@ -64,6 +64,8 @@ class Specialist < ActiveRecord::Base
       "Retiring as of #{unavailable_from.to_s(:long_ordinal)}"
     elsif status_mask == 6
       "Unavailable from #{unavailable_from.to_s(:long_ordinal)} through #{unavailable_to.to_s(:long_ordinal)}"
+    elsif status_mask == 7
+      "Unknown (didn't answer)"
     else
       Specialist::STATUS_HASH[status_mask]
     end
