@@ -67,6 +67,8 @@
       %span.unavailable_to{ style: "display:none" }
         to
       = f.input :unavailable_to, label: false, wrapper: false, input_html: { class: "unavailable_to", style: "display:none" }
+      :javascript
+        $("#specialist_status_mask").each( status_changed );
     = f.input :status_details
     = f.input :practise_limitations
     = f.input :location_opened, as: :select, collection: ["Prior to 2010", 2010, 2011], prompt: "Select ..."
