@@ -59,16 +59,44 @@ class Specialist < ActiveRecord::Base
     7 => "Didn't answer"
   }
   
-  def status
+def status
     if status_mask == 5
-      "Retiring as of #{unavailable_from.to_s(:long_ordinal)}"
+      if unavailable_from <= Date.today
+        #retiring as of date has passed, retired
+        Specialist::STATUS_HASH[4]
+      else
+        "Retiring as of #{unavailable_from.to_s(:long_ordinal)}"
+      end
     elsif status_mask == 6
-      "Unavailable from #{unavailable_from.to_s(:long_ordinal)} through #{unavailable_to.to_s(:long_ordinal)}"
+      if (unavailable_to < Date.today)
+        #inavailability date has passed, available again
+        Specialist::STATUS_HASH[1]
+      else
+        "Unavailable from #{unavailable_from.to_s(:long_ordinal)} through #{unavailable_to.to_s(:long_ordinal)}"
+      end
     elsif status_mask == 7
       "Unknown (didn't answer)"
     else
       Specialist::STATUS_HASH[status_mask]
     end
+  end
+  
+  def status_clean
+    if ((status_mask == 1) or ((status_mask == 6) and (unavailable_to < Date.today)))
+      #marked as available, or the "unavailable between" period has passed
+      return "available"
+    elsif ((status_mask == 2) or (status_mask == 4) or ((status_mask == 5) and (unavailable_from <= Date.today)) or ((status_mask == 6) and (unavailable_from <= Date.today) and (unavailable_to >= Date.today)))
+      #only seeing old patients, retired, "retiring as of" date has passed", or in midst of inavailability
+      return "unavailable"
+    elsif ((status_mask == 3) or (status_mask == 7))
+      return "unknown"
+    else
+      return "warning"
+    end
+  end
+  
+  def retired?
+    return ((status_mask == 4) or ((status_mask == 5) and (unavailable_from <= Date.today)))
   end
   
   WAITTIME_HASH = { 
@@ -124,85 +152,85 @@ class Specialist < ActiveRecord::Base
     firstname + ' ' + lastname
   end
     
-    def practice_limitations
-        return practise_limitations
+  def practice_limitations
+    return practise_limitations
+  end
+  
+  def accepts_referrals_via
+    if referral_phone and referral_fax and referral_other_details.presence
+      return "phone, fax, or " + referral_other_details
+    elsif referral_phone and referral_fax
+      return "phone or fax"
+    elsif referral_phone
+      if referral_other_details.presence
+        return output + "phone or " + referral_other_details
+      else
+        return "phone"
+      end
+    elsif referral_fax
+      if referral_other_details.presence
+        return "fax or " + referral_other_details
+      else
+        return "fax"
+      end
+    elsif referral_other_details.presence
+      return referral_other_details
+    else
+      return "unspecified"
     end
-    
-    def accepts_referrals_via
-        if referral_phone and referral_fax and referral_other_details.presence
-            return "phone, fax, or " + referral_other_details
-        elsif referral_phone and referral_fax
-            return "phone or fax"
-        elsif referral_phone
-            if referral_other_details.presence
-                return output + "phone or " + referral_other_details
-            else
-                return "phone"
-            end
-        elsif referral_fax
-            if referral_other_details.presence
-                return "fax or " + referral_other_details
-            else
-                return "fax"
-            end
-        elsif referral_other_details.presence
-            return referral_other_details
-        else
-            return "unspecified"
-        end
+  end
+  
+  def responds_via
+    if (not respond_by_phone) and (not respond_by_fax) and (not respond_by_mail) and (not respond_to_patient)
+      return ""
+    elsif (not respond_by_phone) and (not respond_by_fax) and (not respond_by_mail) and respond_to_patient
+      return "directly to patient"
+    else
+      if respond_by_phone and respond_by_fax and respond_by_mail
+        output = "phone, fax, or mail to referring office"
+      elsif respond_by_phone and respond_by_fax and (not respond_by_mail)
+        output = "phone or fax to referring office"
+      elsif respond_by_phone and (not respond_by_fax) and respond_by_mail
+        output = "phone or mail to referring office"
+      elsif respond_by_phone and (not respond_by_fax) and (not respond_by_mail)
+        output = "phone to referring office"
+      elsif (not respond_by_phone) and respond_by_fax and respond_by_mail
+        output = "fax or mail to referring office"
+      elsif (not respond_by_phone) and respond_by_fax and (not respond_by_mail)
+        output = "fax to referring office"
+      else # must be (not respond_by_phone) and (not respond_by_fax) and respond_by_mail
+        output = "mail to referring office"
+      end
+      
+      if respond_to_patient
+        return output + ", and directly to patient"
+      else
+        return output
+      end
     end
-    
-    def responds_via
-        if (not respond_by_phone) and (not respond_by_fax) and (not respond_by_mail) and (not respond_to_patient)
-            return "unspecified"
-        elsif (not respond_by_phone) and (not respond_by_fax) and (not respond_by_mail) and respond_to_patient
-            return "directly to patient"
-        else
-            if respond_by_phone and respond_by_fax and respond_by_mail
-                output = "phone, fax, or mail to referring office"
-            elsif respond_by_phone and respond_by_fax and (not respond_by_mail)
-                output = "phone or fax to referring office"
-            elsif respond_by_phone and (not respond_by_fax) and respond_by_mail
-                output = "phone or mail to referring office"
-            elsif respond_by_phone and (not respond_by_fax) and (not respond_by_mail)
-                output = "phone to referring office"
-            elsif (not respond_by_phone) and respond_by_fax and respond_by_mail
-                output = "fax or mail to referring office"
-            elsif (not respond_by_phone) and respond_by_fax and (not respond_by_mail)
-                output = "fax to referring office"
-            else # must be (not respond_by_phone) and (not respond_by_fax) and respond_by_mail
-                output = "mail to referring office"
-            end
-            
-            if respond_to_patient
-                return output + " (and directly to patient)"
-            else
-                return output
-            end
-        end
+  end
+  
+  def urgent_referrals_via
+    if urgent_phone and urgent_fax and urgent_other_details.presence
+      return "phone, fax, or " + urgent_other_details
+    elsif urgent_phone and urgent_fax
+      return "phone or fax"
+    elsif urgent_phone
+      output = "phone"
+      if urgent_other_details.presence
+        return output + " or " + urgent_other_details
+      end
+    elsif urgent_fax
+      output = "fax"
+      if urgent_other_details.presence
+        return output + " or " + urgent_other_details
+      end
+    elsif urgent_other_details.presence
+      return referral_other_details
+    else
+      return ""
     end
-    
-    def urgent_referrals_via
-        if urgent_phone and urgent_fax and urgent_other_details.presence
-            return "phone, fax, or " + urgent_other_details
-        elsif urgent_phone and urgent_fax
-            return "phone or fax"
-        elsif urgent_phone
-            output = "phone"
-            if urgent_other_details.presence
-                return output + " or " + urgent_other_details
-            end
-        elsif urgent_fax
-            output = "fax"
-            if urgent_other_details.presence
-                return output + " or " + urgent_other_details
-            end
-        elsif urgent_other_details.presence
-            return referral_other_details
-        else
-            return "unspecified"
-        end
-    end
+  end
 
   def token
     if self.saved_token
