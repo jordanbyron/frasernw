@@ -19,109 +19,127 @@
       = render @specialist.contacts
 
 %h1
-  = "#{@specialist.firstname} #{@specialist.lastname}"
+  = @specialist.name
 %h2
   = "#{@specialist.specializations.collect(){ |s| s.name }.join(", ")}"
+- if @specialist.billing_number
+  %h3
+    = "MSP ##{@specialist.billing_number}"
   
 - if not @specialist.responded
   %p
     This specialist has not yet provided Pathways their information
 - else
-  %p
-    %strong Direct number:
-    = @specialist.direct_phone
-    %br
-    %strong Billing number:
-    = @specialist.billing_number
     
   - @specialist.addresses.each do |address|
     - next if address.empty?
     %p
-      %i
-        = address.address
-        %br
-        = address.phone_and_fax
-        - if address.hospital
-          %br
-          = "In #{address.hospital.name}"
-        - if address.clinic
-          %br
-          = "In #{address.clinic.name}"
+      = link_to address.address, address.map_url, :target => "_blank", :class => "address"
+    %p.collapse_up
+      = address.phone_and_fax
+    - if address.hospital
+      %p.collapse_up
+        = "In #{address.hospital.name}"
+    - if address.clinic
+      %p.collapse_up
+        = "In #{address.clinic.name}"
+  - if not @specialist.direct_phone.blank?
+    %p.collapse_up
+      = "direct number (for physician use only): #{@specialist.direct_phone}"
         
   %p
-    %strong Status:
-    = @specialist.status
-    %br
-    %strong Additional details (if any):
-    = @specialist.status_details
-    %br
-    %strong Other practice Limitations (if any):
-    = @specialist.practise_limitations
-    %br
-    %strong Practice opened at this location:
-    = @specialist.location_opened
-    %br
-    %strong Languages spoken at the practice:
-    = @specialist.languages.map{ |x| x.name }.join(", ")
-    
-  %p
-    %strong Investigations required for all patients:
-    = @specialist.required_investigations
-    %br
-    %strong Area of practice:
-    = compressed_procedures_indented(@specialist).html_safe
-    %br
-    %strong Most interested in:
-    = @specialist.interest
-    %br
-    %strong Does not see or do:
-    = @specialist.not_performed
-    
-  %p
-    %strong Accepts referrals via:
-    = @specialist.referral_phone ? "phone, " : ""
-    = @specialist.referral_fax ? "fax, " : ""
-    = @specialist.referral_other_details
-    %br
-    %strong Has referral form:
-    = @specialist.referral_form
-    %br
-    %strong Average length of time to notify GP of a booking date:
-    = @specialist.lagtime
-    %br
-    %strong Average wait time from request for consultation to appointment:
-    = @specialist.waittime
-    %br
-    %strong Office responds to referrals by:
-    = @specialist.respond_by_phone ? "phone, " : ""
-    = @specialist.respond_by_fax ? "fax, " : ""
-    = @specialist.respond_by_mail ? "mail, " : ""
-    = @specialist.respond_to_patient ? "directly to patient" : ""
-    %br
-    %strong Accepts direct calls from patients after referral to book their own appointments?
-    = @specialist.patient_can_book
-    %br
-    %strong Conditions (red flags) that office feels warrants urgent consultation:
-    = @specialist.red_flags
-    %br
-    %strong Optimal method of referral for urgent appointments:
-    = @specialist.urgent_phone ? "phone, " : ""
-    = @specialist.urgent_fax ? "fax, " : ""
-    = @specialist.urgent_other_details
-    
-  %p
-    %strong Hospital Privileges:
-    - @specialist.hospitals.each do |hospitals|
-      = link_to(hospitals.name, url_for(hospitals))
-      %br
-    
-  %p
-    %strong Clinics:
-    - @specialist.clinics.each do |clinic|
-      = link_to(clinic.name, url_for(clinic))
-      %br
+    %strong{ :class => "status_#{@specialist.status_clean}"}= @specialist.status
+    - if not @specialist.status_details.blank?
+      %p.collapse_up
+        %strong Details:
+        = @specialist.status_details
+    - if ((not @specialist.practise_limitations.blank?) and (not @specialist.retired?))
+      %p.collapse_up
+        %strong Limitations:
+        = @specialist.practise_limitations
+    - if ((not @specialist.location_opened.blank?) and (not @specialist.retired?))
+      %p.collapse_up
+        This practice opened
+        = @specialist.location_opened.downcase
+  
+  - if not @specialist.retired?
+    - if not @specialist.languages.empty?
+      %p
+        %strong.language= @specialist.languages.map{ |x| x.name }.to_sentence
+        - if @specialist.languages.count > 1
+          are spoken at this practice
+        - else
+          is spoken at this practice
+          
+    .investigation  
+      - if not @specialist.required_investigations.empty?
+        %p
+          %strong Required investigations for all patients:
+          = @specialist.required_investigations
+      - if not @specialist.procedure_specializations.empty?
+        %p.collapse_up
+          %strong Areas of practice
+          \- with any 
+          %i additional 
+          required investigations:
+        = compressed_procedures_indented(@specialist).html_safe
+      - if not @specialist.interest.empty?
+        %p.collapse_up
+          %strong Most interested in
+          = @specialist.interest
+      - if not @specialist.not_performed.empty?
+        %p.collapse_up
+          %strong Does not see or do
+          = @specialist.not_performed
+      
+    %p
+      %strong.referral Referrals
+      - if @specialist.responds_via.empty?
+        = "are accepted by #{@specialist.accepts_referrals_via}"
+      - else
+        = "are accepted by #{@specialist.accepts_referrals_via}, and resonded to by #{@specialist.responds_via}"
+      
+    - if @specialist.referral_form_mask == 1
+      %p.collapse_up This office has a referral form
+    - elsif @specialist.referral_form_mask == 2
+      %p.collapse_up This office does not have a referral form
+      
+    -if @specialist.waittime
+      %p.collapse_up
+        Average wait time from referral to appointment:
+        %strong= @specialist.waittime
+            
+    -if @specialist.lagtime
+      %p.collapse_up
+        Average length of time to notify GP of a booking date:
+        %strong= @specialist.lagtime
+      
+    - if @specialist.patient_can_book_mask == 1
+      %p.collapse_up This office accepts direct calls from patients after referral to book their own appointments
+    - elsif @specialist.patient_can_book_mask == 2
+      %p.collapse_up This office does not accept direct calls from patients after referral to book their own appointments
+      
+    .red_flag
+      - if not @specialist.red_flags.empty?
+        %p.collapse_up
+          %strong Red flags
+          this office feels warrants urgent consultation:
+          = @specialist.red_flags
+      - if @specialist.urgent_referrals_via
+        %p.collapse_up
+          = "The optimal method of referral for urgent consulation is #{@specialist.urgent_referrals_via}"
+      
+    - if not @specialist.hospitals.empty?
+      %p
+        %strong.hospital Hospital privileges:
+        != @specialist.hospitals.map{ |hospital| link_to(hospital.name, url_for(hospital)) }.to_sentence
 
-%p
+    - if not @specialist.clinics.empty?
+      %p
+        %strong.clinic Clinic associations:
+        != @specialist.clinics.map{ |clinic| link_to(clinic.name, url_for(clinic)) }.to_sentence
+
+%p.admin
   - if can? :update, @specialist
     = link_to "Edit specialist", edit_specialist_path(@specialist)
     |

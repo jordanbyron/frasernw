@@ -1,9 +1,47 @@
 @import "_globals";
 
-body
+@font-face
 {
+  font-family: Quicksand;
+  src: url('/Quicksand_Book.otf');
 }
 
+@font-face
+{
+  font-family: QuicksandDash;
+  src: url('/Quicksand_Dash.otf');
+}
+
+
+@font-face
+{
+  font-family: Oswald;
+  src: url('/Oswald.ttf');
+}
+
+
+@font-face
+{
+  font-family: Icon;
+  src: url('/iconic_fill.otf');
+}
+
+html 
+{
+  font-size:100%;
+}
+
+body 
+{
+  color:$FNW_TEXT;
+  background:$FNW_BACKGROUND;
+  /*font-family: Quicksand, QuicksandDash;*/
+  font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.light-highlight {
+  background-color: #FFFFE0;
+}
 #flash_notice 
 {
   clear: both;
@@ -14,11 +52,12 @@ body
   clear: both;
 }
 
+$FWN_HEADER_HEIGHT: 50px;
+
 #header_wrapper
 {
   width: 100%;
-  height: 77px;
-  background:$FNW_DARK_GRAY;
+  background: $FNW_DARK_GRAY;
   border-bottom: 1px solid #FFFFFF;
   
   #header 
@@ -29,34 +68,63 @@ body
     #logo
     {
       width: 256px;
+      height: $FWN_HEADER_HEIGHT;
       float: left;
+      text-align: center; 
+      font-family:"Oswald", Helvetica, Arial, sans-serif;
+      font-size: 25pt;
+      text-shadow: 0px 0px 5px #232930;
+      
+      a
+      {
+        color: $FNW_HEADER;
+        text-decoration: none;
+      }
       
       img
       {
+        width: 115px;
+        height: 50px;
         display: block;
-        margin: 2px auto 0 auto;
+        margin: 0 auto;
       }
     }
+    
     #nav
     {
-      float: left;
+      display: inline-block;
       width: 768px;
+      margin-top: $FWN_HEADER_HEIGHT - 20px;
       text-align:right;
-      margin-top: 55px;
+      padding-bottom: 5px;
     }
-    #nav a
+    
+    #admin
     {
-      /*font-family: QuicksandDash, "Helvetica Neue", Helvetica, Arial, sans-serif;*/
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      font-size: 13px;
-      text-decoration:none;
-      color: $FNW_LIGHT;
-      text-shadow: 0px 0px 5px #232930;
-      margin-right: 15px;
+      clear: both;
+      width: 1024px;
+      text-align: center;
+      margin-top: 3px;
+      border-top: 1px dashed $FNW_HEADER;
     }
-    #nav a:hover
+    
+    #nav, #admin
     {
-      color: $FNW_GREEN;
+      a
+      {
+        font-family:"Oswald", Helvetica, Arial, sans-serif;
+        font-size: 10pt;
+        text-transform: uppercase;
+        text-decoration:none;
+        color: $FNW_NAV_TEXT;
+        text-shadow: 0px 0px 5px #232930;
+        margin-right: 15px;
+      }
+      
+      a:hover
+      {
+        color: $FNW_BLUE;
+      }
     }
   }
 }
@@ -71,19 +139,179 @@ body
   {
     float: left;
     width: 255px;
-    background-color: $FNW_LIGHT;
+    background-color: $FNW_BACKGROUND;
     border-right: 1px solid #DDD;
-    overflow-y:hidden;
+    overflow:hidden;
   }
   
   #content
   {
+    $CONTENT_PADDING_WIDTH: 45px;
     float: left;
-    width: 766px;
-    font-size: 13px;
-    line-height: 20px;
-    background: $FNW_LIGHT;
+    width: 766px - ($CONTENT_PADDING_WIDTH * 2);
+    font-size: 10pt;
+    line-height: 1.5;
+    background: $FNW_CONTENT_BACKGROUND;
     border-left: 1px solid #EEE;
     border-right: 1px solid #EEE;
+    padding: 18pt $CONTENT_PADDING_WIDTH;
+    
+    h1, h2, h3, h4
+    {
+      font-family:"Oswald", Helvetica, Arial, sans-serif
+    }
+    
+    h1
+    {
+      font-size: 18pt;
+      color: $FNW_BLUE;
+    }
+    
+    h2
+    {
+      font-size: 12pt;
+      color: $FNW_BLUE;
+    }
+    
+    h3
+    {
+      font-size: 10pt;
+      color: $FNW_BLUE;
+    }
+    
+    p
+    {
+      margin-top: 0.75em;
+    } 
+    
+    p.collapse_up
+    {
+      margin-top: 0;
+    }
+    
+    strong
+    {
+      font-weight: bold;
+    }
+    
+    a
+    {
+      color: $FNW_TEXT;
+    }
+      
+    a:hover
+    {
+      text-decoration: none;
+    }
+    
+    a.address
+    {
+      text-decoration: none;
+    }
+    
+    a.address:hover
+    {
+      text-decoration: underline;
+    }
+    
+    .address:before, 
+    .status_available:before, 
+    .status_unavailable:before, 
+    .status_unknown:before, 
+    .status_warning:before, 
+    .language:before, 
+    .investigation p:first-child strong:before, 
+    .referral:before, 
+    .red_flag p:first-child strong:before, 
+    .hospital:before, 
+    .clinic:before
+    {
+      font-family: "Icon";
+      color: $FNW_BLUE;
+      font-size: 12pt;
+      display: inline-block;
+      margin-left: -$CONTENT_PADDING_WIDTH;
+      width: $CONTENT_PADDING_WIDTH;
+      text-align: center;
+      padding: 0;
+    }
+    
+    .address:before
+    {
+      content: "\002709";
+    }
+    
+    .status_available:before
+    {
+      content: "\002713";
+    }
+    
+    .status_unavailable:before
+    {
+      content: "\002717";
+    }
+    
+    .status_unknown:before
+    {
+      content: "?";
+    }
+    
+    .status_warning:before
+    {
+      content: "!";
+    }
+    
+    .language:before
+    {
+      content: "\00e007";
+    }
+    
+    .investigation p:first-child strong:before
+    {
+      content: "\00e055";
+    }
+    
+    .investigation p:first-child
+    {
+      margin-top: 0.75em;
+    }
+    
+    .referral:before
+    {
+      content: "\00e000";
+    }
+    
+    .red_flag p:first-child strong:before
+    {
+      content: "\002691";
+    }
+    
+    .red_flag p:first-child
+    {
+      margin-top: 0.75em;
+    }
+    
+    .hospital:before
+    {
+      content: "\002795";
+    }
+    
+    .clinic:before
+    {
+      content: "\002302";
+    }
+    
+    .admin
+    {
+      border-top: 1px dashed $FNW_DARK_GRAY;
+      padding-top: 3px;
+      
+      color: $FNW_RED;
+      
+      a
+      {
+        color: inherit;
+      }
+    }
   }
 }
