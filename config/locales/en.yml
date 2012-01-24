@@ -28,6 +28,7 @@ en:
         investigation: "Required Investigations"
       clinic:
         contact_name: "Name"
+        responded: "Responded to survey"
         contact_email: "Email"
         contact_phone: "Phone"
         contact_notes: "Notes"
@@ -54,7 +55,7 @@ en:
       specialist:
         firstname: "First Name"
         lastname: "Last Name"
-        responded: "Responded to Survey"
+        responded: "Responded to survey"
         direct_phone: "Direct Number (for physician contact)"
         billing_number: "MSP Billing Number"
         contact_name: "Name"

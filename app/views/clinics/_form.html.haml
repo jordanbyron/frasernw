@@ -5,6 +5,9 @@
     %h2 
       Clinic Name 
     = f.input :name
+    .input
+      = f.label :responded
+      = f.input :responded, :label => false, wrapper: false
     
   %fieldset
     %h2 Specialties This Clinic Works In

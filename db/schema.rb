@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120119211103) do
+ActiveRecord::Schema.define(:version => 20120124213849) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -116,6 +116,7 @@ ActiveRecord::Schema.define(:version => 20120119211103) do
     t.integer  "lagtime_mask"
     t.integer  "referral_form_mask",      :default => 3
     t.integer  "patient_can_book_mask",   :default => 3
+    t.boolean  "responded",               :default => true
   end
 
   create_table "contacts", :force => true do |t|
