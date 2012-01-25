@@ -47,4 +47,8 @@ class Address < ActiveRecord::Base
   def empty?
     suite.blank? and address1.blank? and address2.blank? and (not city) and postalcode.blank? and phone1.blank? and fax.blank? and hospital_id.blank? and clinic_id.blank?
   end
+  
+  def map_url
+    return "http://maps.google.com?q=#{address}"
+  end
 end

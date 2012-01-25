@@ -5,6 +5,5 @@
  *= require_self
  *= require ./all/resets
  *= require ./all/normalize
- *= require ./all/typography
  *= require_tree ./all 
 */

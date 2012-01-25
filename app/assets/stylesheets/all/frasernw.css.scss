@@ -57,7 +57,7 @@ $FWN_HEADER_HEIGHT: 50px;
 #header_wrapper
 {
   width: 100%;
-  background: $FNW_DARK_GRAY;
+  background: url("/images/header_background.png") $FNW_DARK_GRAY;
   border-bottom: 1px solid #FFFFFF;
   
   #header 
