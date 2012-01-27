@@ -49,6 +49,8 @@ body
     border-top: 1px dotted $FNW_TEXT;
     font-size: 9pt;
   }
+  
+  margin-bottom: 0;
 }
 
 #body
@@ -56,7 +58,56 @@ body
   #left-nav
   {
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
+    height: auto;
+    
+    font-size: 10pt;
+    margin-left: 19px; /*compensate for border width with bootstrap */
+    border-right: 1px solid #eee;
+    
+    h1
+    {
+      font-size: 15pt;
+      color: $FNW_RED;
+      padding: 0 10px;
+    }
+    
+    ul
+    {
+      list-style: none;
+      margin: 5px 0 0 0;
+      
+      li
+      {
+        border-top: 1px solid #eee;
+        
+        a
+        {
+          padding: 5px 10px;
+          display: inline-block;
+          width: 100%;
+        }
+         
+        a:hover
+        {
+          background-color: $FNW_BLUE;
+          text-decoration: none;
+        }
+        
+        ul
+        {
+          margin: 0;
+          
+          li
+          {
+            a
+            {
+              padding-left: 30px;
+            }
+          }
+        }
+      }
+    }
     
     .nav_panel 
     {
@@ -67,6 +118,7 @@ body
       transition: all 0.25s ease;
       position: absolute;
       width: 100%;
+      height: 100%;
       left: 100%;
       top: 0;
       background: $FNW_BACKGROUND;
@@ -102,21 +154,21 @@ body
     }
   }
   
-  #nav
+  #nav_OLD
   {
     margin-top: $FNW_HEADER_HEIGHT - 20px;
     text-align:right;
     padding-bottom: 5px;
   }
   
-  #admin
+  #admin_OLD
   {
     text-align: center;
     margin-top: 3px;
     border-top: 1px dashed $FNW_NAV_TEXT;
   }
   
-  #nav, #admin
+  #nav_OLD, #admin_OLD
   {
     a
     {
