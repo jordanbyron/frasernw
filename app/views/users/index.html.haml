@@ -1,17 +1,25 @@
 %h1 Users
 
-%table{:class => 'tablesorter'}
+%table.table.table-striped.table-condensed.tablesorter
   %tr
-    %th{:class => "{sorter: 'text'}"}
-      username
-    %th{:class => "{sorter: 'text'}"}
-      name
-    %th{:class => "{sorter: 'text'}"}
-      role
+    %th{:class => "{sorter: 'text'}"} Username
+    %th{:class => "{sorter: 'text'}"} Name
+    %th{:class => "{sorter: 'text'}"} Email
+    %th{:class => "{sorter: 'text'}"} Role
+    %th Notify?
     %th
-      notify?
+    %th
     %th
 
-  = render @users
+  - User.all.each do |user|
+    %tr
+      %td= user.username
+      %td= user.name
+      %td= user.email
+      %td= user.role
+      %td= user.notify
+      %td= link_to 'Show', user
+      %td= link_to 'Edit', edit_user_path(user)
+      %td= link_to 'Delete', user, :confirm => "Delete #{user.name}?", :method => :delete
 
 %p= link_to "add user", new_user_path

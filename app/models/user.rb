@@ -11,6 +11,8 @@ class User < ActiveRecord::Base
   validates_presence_of :username
   validates_presence_of :email
   
+  default_scope order('name')
+  
   def admin?
     self.role == 'admin'
   end

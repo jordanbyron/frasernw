@@ -1,8 +1,6 @@
-- title "Specialities"
+%h1 Specialities
 
-%table
-  %tr
-    %th Name
+%table.table.table-striped.table-condensed
   - Specialization.all.each do |specialization|
     %tr
       %td= specialization.name

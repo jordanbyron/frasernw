@@ -36,129 +36,122 @@ body
   color:$FNW_TEXT;
   background:$FNW_BACKGROUND;
   /*font-family: Quicksand, QuicksandDash;*/
-  font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+  /*font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;*/
 }
 
-.light-highlight {
-  background-color: #FFFFE0;
-}
-#flash_notice 
+#header
 {
-  clear: both;
-}
-
-#flash_alert 
-{
-  clear: both;
-}
-
-$FWN_HEADER_HEIGHT: 50px;
-
-#header_wrapper
-{
-  width: 100%;
-  background: url("/images/header_background.png") $FNW_DARK_GRAY;
-  border-bottom: 1px solid #FFFFFF;
-  
-  #header 
+  #top-nav
   {
-    width: 1024px;
-    margin: 0 auto;
+  }
+  #admin
+  {
+    border-top: 1px dotted $FNW_TEXT;
+    font-size: 9pt;
+  }
+}
+
+#body
+{
+  #left-nav
+  {
+    position: relative;
+    overflow: hidden;
     
-    #logo
+    .nav_panel 
     {
-      width: 256px;
-      height: $FWN_HEADER_HEIGHT;
-      float: left;
-      text-align: center; 
-      font-family:"Oswald", Helvetica, Arial, sans-serif;
-      font-size: 25pt;
-      text-shadow: 0px 0px 5px #232930;
-      
-      a
-      {
-        color: $FNW_HEADER;
-        text-decoration: none;
-      }
-      
-      img
-      {
-        width: 115px;
-        height: 50px;
-        display: block;
-        margin: 0 auto;
-      }
+      -webkit-transition: all 0.25s ease;
+      -moz-transition: all 0.25s ease;
+      -ms-transition: all 0.25s ease;
+      -o-transition: all 0.25s ease;
+      transition: all 0.25s ease;
+      position: absolute;
+      width: 100%;
+      left: 100%;
+      top: 0;
+      background: $FNW_BACKGROUND;
     }
-    
-    #nav
-    {
-      display: inline-block;
-      width: 768px;
-      margin-top: $FWN_HEADER_HEIGHT - 20px;
-      text-align:right;
-      padding-bottom: 5px;
-    }
-    
-    #admin
-    {
-      clear: both;
-      width: 1024px;
-      text-align: center;
-      margin-top: 3px;
-      border-top: 1px dashed $FNW_HEADER;
-    }
-    
-    #nav, #admin
-    {
-      a
-      {
-        font-family:"Oswald", Helvetica, Arial, sans-serif;
-        font-size: 10pt;
-        text-transform: uppercase;
-        text-decoration:none;
-        color: $FNW_NAV_TEXT;
-        text-shadow: 0px 0px 5px #232930;
-        margin-right: 15px;
-      }
       
-      a:hover
-      {
-        color: $FNW_BLUE;
-      }
+    .nav_panel.pushed
+    {
+      left: 0;
     }
   }
 }
 
-#content_wrapper
+#header_old
 {
-  clear: both;
-  width: 1024px;
-  margin: 0 auto;
+  $FNW_HEADER_HEIGHT: 50px;
+
+  background: url("/images/header_background.png") $FNW_DARK_GRAY;
+  border-bottom: 1px solid #FFFFFF;
   
+  #logo
+  {
+    height: $FNW_HEADER_HEIGHT;
+    text-align: center; 
+    /*font-family:"Oswald", Helvetica, Arial, sans-serif;*/
+    font-size: 25pt;
+    text-shadow: 0px 0px 5px #232930;
+    line-height: $FNW_HEADER_HEIGHT; 
+    
+    a
+    {
+      color: $FNW_HEADER;
+      text-decoration: none;
+    }
+  }
+  
+  #nav
+  {
+    margin-top: $FNW_HEADER_HEIGHT - 20px;
+    text-align:right;
+    padding-bottom: 5px;
+  }
+  
+  #admin
+  {
+    text-align: center;
+    margin-top: 3px;
+    border-top: 1px dashed $FNW_NAV_TEXT;
+  }
+  
+  #nav, #admin
+  {
+    a
+    {
+      /*font-family:"Oswald", Helvetica, Arial, sans-serif;*/
+      font-size: 10pt;
+      text-decoration:none;
+      color: $FNW_NAV_TEXT;
+      text-shadow: 0px 0px 5px #232930;
+    }
+    
+    a:hover
+    {
+      color: $FNW_BLUE;
+    }
+  }
+}
+
+#body_old
+{
   #searchbox
   {
-    float: left;
-    width: 255px;
     background-color: $FNW_BACKGROUND;
-    border-right: 1px solid #DDD;
     overflow:hidden;
   }
   
   #content
   {
     $CONTENT_PADDING_WIDTH: 45px;
-    float: left;
-    width: 766px - ($CONTENT_PADDING_WIDTH * 2);
     font-size: 10pt;
     line-height: 1.5;
     background: $FNW_CONTENT_BACKGROUND;
-    border-left: 1px solid #EEE;
-    border-right: 1px solid #EEE;
-    padding: 18pt $CONTENT_PADDING_WIDTH;
     
     h1, h2, h3, h4
     {
-      font-family:"Oswald", Helvetica, Arial, sans-serif
+      /*font-family:"Oswald", Helvetica, Arial, sans-serif*/
     }
     
     h1
