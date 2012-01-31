@@ -36,7 +36,11 @@ class Clinic < ActiveRecord::Base
   validates_presence_of :name, :on => :create, :message => "can't be blank"
   validates_length_of :clinic_specializations, :minimum => 1, :message => "require at least one set"
   
-  STATUS_HASH = { 1 => "Accepting new patients", 2 => "Only doing follow up on previous patients" }
+  STATUS_HASH = { 
+    1 => "Accepting new patients", 
+    2 => "Only doing follow up on previous patients",
+    3 => "Didn't answer"
+  }
   
   def status
     Clinic::STATUS_HASH[status_mask]
