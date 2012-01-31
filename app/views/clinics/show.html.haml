@@ -1,90 +1,123 @@
-%h1
-  = @clinic.name
+- if @is_version
+  = render 'versions/info'
+  
 %h2
+  = @clinic.name
+%h4
   = "#{@clinic.specializations.collect(){ |s| s.name }.join(", ")}"
-
+  
 - if not @clinic.responded
   %p
     This clinic has not yet provided Pathways their information
-- else  
+- else
+    
   - @clinic.addresses.each do |address|
     - next if address.empty?
     %p
-      %i
-        = address.address
-        %br
-        = address.phone_and_fax
-        - if address.hospital
-          %br
-          = "In #{address.hospital.name}"
+      = link_to address.address, address.map_url, :target => "_blank", :class => "address"
+    %p.collapse_up
+      = address.phone_and_fax
+    - if address.hospital
+      %p.collapse_up
+        = "In #{address.hospital.name}"
+    - if address.clinic
+      %p.collapse_up
+        = "In #{address.clinic.name}"
         
   %p
-    %strong Status:
-    = @clinic.status
-    %br
-    %strong Other practice Limitations (if any):
-    = @clinic.limitations
-    %br
-    %strong Practice opened at this location:
-    = @clinic.location_opened
-    %br
-    %strong Languages spoken at the practice:
-    = @clinic.languages.map{ |x| x.name }.join(", ")
-    
-  %p
-    %strong Investigations required for all patients:
-    = @clinic.required_investigations
-    %br
-    %strong Area of practice:
-    = compressed_procedures_indented(@clinic).html_safe
-    %br
-    %strong Does not see or do:
-    = @clinic.not_performed
-    
-  %p
-    %strong Accepts referrals via:
-    = @clinic.referral_phone ? "phone, " : ""
-    = @clinic.referral_fax ? "fax, " : ""
-    = @clinic.referral_other_details
-    %br
-    %strong Has referral form:
-    = @clinic.referral_form
-    %br
-    %strong Average length of time to notify GP of a booking date:
-    = @clinic.lagtime
-    %br
-    %strong Average wait time from request for consultation to appointment:
-    = @clinic.waittime
-    %br
-    %strong Responds to referrals by:
-    = @clinic.respond_by_phone ? "phone, " : ""
-    = @clinic.respond_by_fax ? "fax, " : ""
-    = @clinic.respond_by_mail ? "mail, " : ""
-    = @clinic.respond_to_patient ? "directly to patient" : ""
-    %br
-    %strong Accepts direct calls from patients after referral to book their own appointments?
-    = @clinic.patient_can_book
-    %br
-    %strong Conditions (red flags) that clinic feels warrants urgent consultation:
-    = @clinic.red_flags
-    %br
-    %strong Optimal method of referral for urgent appointments:
-    = @clinic.urgent_phone ? "phone, " : ""
-    = @clinic.urgent_fax ? "fax, " : ""
-    = @clinic.urgent_other_details
+    %strong{ :class => "status_#{@clinic.status_class}"}= @clinic.status
+    - if not @clinic.limitations.blank?
+      %p.collapse_up
+        %strong Limitations:
+        = @clinic.limitations
+    - if ((not @clinic.location_opened.blank?) and (not @clinic.retired?))
+      %p.collapse_up
+        This practice opened
+        = @clinic.location_opened.downcase
 
+  - if not @clinic.languages.empty?
+    %p
+      %strong.language= @clinic.languages.map{ |x| x.name }.to_sentence
+      - if @clinic.languages.count > 1
+        are spoken at this practice
+      - else
+        is spoken at this practice
+        
+  .investigation  
+    - if not @clinic.required_investigations.empty?
+      %p
+        %strong Required investigations for all patients:
+        = @clinic.required_investigations
+    - if not @clinic.procedure_specializations.empty?
+      %p.collapse_up
+        %strong Areas of practice
+        \- with any 
+        %i additional 
+        required investigations:
+      = compressed_procedures_indented(@clinic).html_safe
+    - if not @clinic.interest.empty?
+      %p.collapse_up
+        %strong Most interested in
+        = @clinic.interest
+    - if not @clinic.not_performed.empty?
+      %p.collapse_up
+        %strong Does not see or do
+        = @clinic.not_performed
+    
   %p
-    %strong Physicians who see patients at the clinic:
+    %strong.referral Referrals
+    - if @clinic.responds_via.empty?
+      = "are accepted by #{@clinic.accepts_referrals_via}"
+    - else
+      = "are accepted by #{@clinic.accepts_referrals_via}, and resonded to by #{@clinic.responds_via}"
+    
+  - if @clinic.referral_form_mask == 1
+    %p.collapse_up This office has a referral form
+  - elsif @clinic.referral_form_mask == 2
+    %p.collapse_up This office does not have a referral form
+    
+  -if @clinic.waittime
+    %p.collapse_up
+      Average wait time from referral to appointment:
+      %strong= @clinic.waittime
+          
+  -if @clinic.lagtime
+    %p.collapse_up
+      Average length of time to notify GP of a booking date:
+      %strong= @clinic.lagtime
+    
+  - if @clinic.patient_can_book_mask == 1
+    %p.collapse_up This office accepts direct calls from patients after referral to book their own appointments
+  - elsif @clinic.patient_can_book_mask == 2
+    %p.collapse_up This office does not accept direct calls from patients after referral to book their own appointments
+    
+  .red_flag
+    - if not @clinic.red_flags.empty?
+      %p.collapse_up
+        %strong Red flags
+        this office feels warrants urgent consultation:
+        = @clinic.red_flags
+    - if @clinic.urgent_referrals_via
+      %p.collapse_up
+        = "The optimal method of referral for urgent consulation is #{@clinic.urgent_referrals_via}"
+    
+  - if not @clinic.healthcare_providers.empty?
+    %p
+      %strong.healthcare_provider Hospital privileges:
+      %strong Healthcare providers 
+      who see patients at the clinic:
+      != @clinic.healthcare_providers.map{ |x| x.name }.join(", ")\
+
+  - if not @clinic.attendances.empty?
+    %p
+      %strong.attendance Physicians
+      who see patients at the clinic:
     - @clinic.attendances.each do |attendance|
       - if attendance.is_specialist
         - if attendance.specialist
-          = link_to(attendance.specialist.name, url_for(attendance.specialist)) + raw("<br/>")
+          = link_to(attendance.specialist.name, specialist_path(attendance.specialist)) + raw("<br/>")
       - else
         = attendance.freeform_name
-        
-  %p
-    %strong Healthcare providers who see patients at the clinic:
-    = @clinic.healthcare_providers.map{ |x| x.name }.join(", ")
 
 %p
   = link_to "Edit clinic", edit_clinic_path(@clinic)
