@@ -74,7 +74,7 @@ class Specialist < ActiveRecord::Base
       else
         "Unavailable from #{unavailable_from.to_s(:long_ordinal)} through #{unavailable_to.to_s(:long_ordinal)}"
       end
-    elsif status_mask == 7
+    elsif (status_mask == 7 or (not status_mask.presence))
       "It is unknown if this specialist is accepting new patients (they didn't answer)"
     else
       Specialist::STATUS_HASH[status_mask]

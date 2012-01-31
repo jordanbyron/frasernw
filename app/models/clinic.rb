@@ -43,7 +43,7 @@ class Clinic < ActiveRecord::Base
   }
   
   def status
-    if ((status_mask != 1) and (status_mask != 2))
+    if ((status_mask == 3) or (not status_mask.presence))
       "It is unknown if this clinic is accepting new patients (they didn't answer)"
     else
       Clinic::STATUS_HASH[status_mask]
