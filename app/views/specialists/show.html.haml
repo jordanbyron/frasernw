@@ -70,7 +70,7 @@
           is spoken at this practice
           
     .investigation  
-      - if not @specialist.required_investigations.empty?
+      - if not @specialist.required_investigations.blank?
         %p
           %strong Required investigations for all patients:
           = @specialist.required_investigations
@@ -81,11 +81,11 @@
           %i additional 
           required investigations:
         = compressed_procedures_indented(@specialist).html_safe
-      - if not @specialist.interest.empty?
+      - if not @specialist.interest.blank?
         %p.collapse_up
           %strong Most interested in
           = @specialist.interest
-      - if not @specialist.not_performed.empty?
+      - if not @specialist.not_performed.blank?
         %p.collapse_up
           %strong Does not see or do
           = @specialist.not_performed
@@ -118,7 +118,7 @@
       %p.collapse_up This office does not accept direct calls from patients after referral to book their own appointments
       
     .red_flag
-      - if not @specialist.red_flags.empty?
+      - if not @specialist.red_flags.blank?
         %p.collapse_up
           %strong Red flags
           this office feels warrants urgent consultation:
