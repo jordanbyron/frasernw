@@ -26,8 +26,6 @@ Frasernw::Application.routes.draw do
 
   match "tracker" => 'tracker#index', :as => 'tracker'
   
-  match "specializations/:id/showalt" => 'specializations#showalt'
-  
   match "specialists/:id/:token/edit"   => 'specialists_editor#edit',  :as => 'specialist_self_edit'
   put  "specialists/:id/:token/update" => 'specialists_editor#update', :as => 'specialist_self_update'
   post  "specialists/email/:id"         => 'specialists#email', :as => 'specialist_email'
