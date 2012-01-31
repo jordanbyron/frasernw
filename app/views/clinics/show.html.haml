@@ -12,7 +12,7 @@
 - else
     
   - @clinic.addresses.each do |address|
-    - next if address.empty?
+    - next if address.blank?
     %p
       = link_to address.address, address.map_url, :target => "_blank", :class => "address"
     %p.collapse_up
@@ -35,7 +35,7 @@
         This practice opened
         = @clinic.location_opened.downcase
 
-  - if not @clinic.languages.empty?
+  - if not @clinic.languages.blank?
     %p
       %strong.language= @clinic.languages.map{ |x| x.name }.to_sentence
       - if @clinic.languages.count > 1
@@ -48,7 +48,7 @@
       %p
         %strong Required investigations for all patients:
         = @clinic.required_investigations
-    - if not @clinic.procedure_specializations.empty?
+    - if not @clinic.procedure_specializations.blank?
       %p.collapse_up
         %strong Areas of practice
         \- with any 
@@ -66,7 +66,7 @@
     
   %p
     %strong.referral Referrals
-    - if @clinic.responds_via.empty?
+    - if @clinic.responds_via.blank?
       = "are accepted by #{@clinic.accepts_referrals_via}"
     - else
       = "are accepted by #{@clinic.accepts_referrals_via}, and resonded to by #{@clinic.responds_via}"
@@ -101,14 +101,14 @@
       %p.collapse_up
         = "The optimal method of referral for urgent consulation is #{@clinic.urgent_referrals_via}"
     
-  - if not @clinic.healthcare_providers.empty?
+  - if not @clinic.healthcare_providers.blank?
     %p
       %strong.healthcare_provider Hospital privileges:
       %strong Healthcare providers 
       who see patients at the clinic:
       != @clinic.healthcare_providers.map{ |x| x.name }.join(", ")\
 
-  - if not @clinic.attendances.empty?
+  - if not @clinic.attendances.blank?
     %p
       %strong.attendance Physicians
       who see patients at the clinic:

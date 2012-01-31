@@ -30,7 +30,7 @@
 - else
     
   - @specialist.addresses.each do |address|
-    - next if address.empty?
+    - next if address.blank?
     %p
       = link_to address.address, address.map_url, :target => "_blank", :class => "address"
     %p.collapse_up
@@ -61,7 +61,7 @@
         = @specialist.location_opened.downcase
   
   - if not @specialist.retired?
-    - if not @specialist.languages.empty?
+    - if not @specialist.languages.blank?
       %p
         %strong.language= @specialist.languages.map{ |x| x.name }.to_sentence
         - if @specialist.languages.count > 1
@@ -74,7 +74,7 @@
         %p
           %strong Required investigations for all patients:
           = @specialist.required_investigations
-      - if not @specialist.procedure_specializations.empty?
+      - if not @specialist.procedure_specializations.blank?
         %p.collapse_up
           %strong Areas of practice
           \- with any 
@@ -92,7 +92,7 @@
       
     %p
       %strong.referral Referrals
-      - if @specialist.responds_via.empty?
+      - if @specialist.responds_via.blank?
         = "are accepted by #{@specialist.accepts_referrals_via}"
       - else
         = "are accepted by #{@specialist.accepts_referrals_via}, and resonded to by #{@specialist.responds_via}"
@@ -127,12 +127,12 @@
         %p.collapse_up
           = "The optimal method of referral for urgent consulation is #{@specialist.urgent_referrals_via}"
       
-    - if not @specialist.hospitals.empty?
+    - if not @specialist.hospitals.blank?
       %p
         %strong.hospital Hospital privileges:
         != @specialist.hospitals.map{ |hospital| link_to(hospital.name, url_for(hospital)) }.to_sentence
 
-    - if not @specialist.clinics.empty?
+    - if not @specialist.clinics.blank?
       %p
         %strong.clinic Clinic associations:
         != @specialist.clinics.map{ |clinic| link_to(clinic.name, url_for(clinic)) }.to_sentence
