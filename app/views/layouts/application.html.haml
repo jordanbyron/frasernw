@@ -69,11 +69,11 @@
                         %ul
                           - children.each do |ps,children|
                             %li
-                              = link_to ps.procedure.name, procedure_path(ps.procedure)
+                              %a{"href" => "#", "onclick" => "ajaxto('#{procedure_path(ps.procedure)}')"}= ps.procedure.name
                               - if children.length > 0
                                 %ul
                                   - children.each do |ps,children|
-                                    %li= link_to ps.procedure.name, procedure_path(ps.procedure)
+                                    %a{"href" => "#", "onclick" => "ajaxto('#{procedure_path(ps.procedure)}')"}= ps.procedure.name
 
         #content.span9
           %div{:id => "container"}
