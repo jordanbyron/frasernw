@@ -1,4 +1,4 @@
-- title "Edit #{@specialist.name} - #{@specialist.specializations.collect(){ |s| s.name }.join(", ")}"
+%h2= "Edit #{@specialist.name} - #{@specialist.specializations.collect(){ |s| s.name }.join(", ")}"
 
 = render 'specialists/form'
 
