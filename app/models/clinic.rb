@@ -36,10 +36,26 @@ class Clinic < ActiveRecord::Base
   validates_presence_of :name, :on => :create, :message => "can't be blank"
   validates_length_of :clinic_specializations, :minimum => 1, :message => "require at least one set"
   
-  STATUS_HASH = { 1 => "Accepting new patients", 2 => "Only doing follow up on previous patients" }
+  STATUS_HASH = { 
+    1 => "Accepting new patients", 
+    2 => "Only doing follow up on previous patients" 
+  }
   
   def status
     Clinic::STATUS_HASH[status_mask]
+  end
+  
+  def status_class
+    if not responded
+      return "unknown"
+    elsif (status_mask == 1)
+      return "available"
+    elsif (status_mask == 2)
+      return "unavailable"
+    else
+      #this shouldn't really happen
+      return "unknown"
+    end
   end
   
   WAITTIME_HASH = { 

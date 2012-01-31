@@ -1,34 +1,29 @@
 /* Colours */
 
-/*
-$FNW_LIGHT: #FAFAF9;
-$FNW_DARK: #403B33;
-$FNW_LIGHT_GREEN: #D6E1C7;
-$FNW_MID_GREEN: #94C7B6;
-$FNW_DARK_GREEN: #32795D;
-$FNW_ORANGE: #D3643B;
-$FNW_BORDER_COLOUR: #DDD;
-*/
-
-/* SETTLED
-$FNW_LIGHT: #FDFDFD;
-$FNW_LIGHT_GRAY: #F0F0F0;
+$FNW_BACKGROUND: #fefefe;
+$FNW_HEADER_TEXT: #FDFDFD;
+$FNW_LIGHT_GRAY: #e8f6f6;
+$FNW_MID_GRAY: #CCC;
 $FNW_DARK_GRAY: #556270;
-$FNW_GREEN: #C7F464;
+$FNW_GREEN: #1ddc3e;
+$FNW_BLUE: #049CDB;
+$FNW_LIGHT_BLUE: #addfff;
 $FNW_RED: #C44D58;
+$FNW_ORANGE: #F89406;
 $FNW_TEXT: #424242;
-$FNW_BORDER: #DDD;
-*/
 
-$FNW_BACKGROUND: #FDFDFD;
-$FNW_CONTENT_BACKGROUND: #FDFDFD;
-$FNW_HEADER: #C7F464;
-$FNW_NAV_TEXT: #FDFDFD;
-$FNW_LIGHT: #FDFDFD;
-$FNW_LIGHT_GRAY: #f0f6f6;
-$FNW_DARK_GRAY: #556270;
-$FNW_GREEN: #32795D;
-$FNW_BLUE: #7cc0e6;
-$FNW_RED: #C44D58;
-$FNW_TEXT: #424242;
-$FNW_BORDER: #DDD;
+/* Fonts */
+
+@font-face
+{
+  font-family: Icon;
+  src: url('/fonts/iconic_fill.otf');
+}
+
+@font-face {
+	font-family: 'League Gothic';
+	src: url('/fonts/League_Gothic-webfont.eot?#iefix') format('embedded-opentype'), 
+	     url('/fonts/League_Gothic-webfont.woff') format('woff'), 
+	     url('/fonts/League_Gothic-webfont.ttf')  format('truetype'),
+	     url('/fonts/League_Gothic-webfont.svg#League_Gothic') format('svg');
+	}

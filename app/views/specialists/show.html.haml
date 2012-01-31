@@ -1,5 +1,3 @@
-/ - title "Specialist"
-
 - if @is_version
   = render 'versions/info'
 
@@ -18,12 +16,12 @@
         = "never" if @specialist.contacts.length < 1
       = render @specialist.contacts
 
-%h1
-  = @specialist.name
 %h2
+  = @specialist.name
+%h4
   = "#{@specialist.specializations.collect(){ |s| s.name }.join(", ")}"
 - if @specialist.billing_number
-  %h3
+  %h5
     = "MSP ##{@specialist.billing_number}"
   
 - if not @specialist.responded
@@ -48,7 +46,7 @@
       = "direct number (for physician use only): #{@specialist.direct_phone}"
         
   %p
-    %strong{ :class => "status_#{@specialist.status_clean}"}= @specialist.status
+    %strong{ :class => "status_#{@specialist.status_class}"}= @specialist.status
     - if not @specialist.status_details.blank?
       %p.collapse_up
         %strong Details:

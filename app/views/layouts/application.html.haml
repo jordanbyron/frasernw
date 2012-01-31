@@ -15,30 +15,34 @@
     = yield(:head)
 
   %body{:id => "#{params[:controller]}_page"}
-    #header.navbar.navbar-static
-      .navbar-inner
-        #top-nav.container
-          = link_to "Pathways", root_url, :class => "brand"
-          -#= link_to image_tag('/images/logo.png'), root_url
-          - if logged_in?
-            %ul.nav.pull-right
-              %li= link_to "Logout", logout_url
-            %form.navbar-search.pull-right
-              %input.search-query{"type" => "text", "placeholder" => "Search"}
-          - if logged_in? and current_user.admin?
-            %ul#admin.nav
-              /%li= link_to "Track Specialists", tracker_path
-              %li= link_to "Activity", all_versions_path
-              %li= link_to "Review Queue (#{Review.count})", reviews_path
-              %li= link_to "Users", users_path
-              %li= link_to "Specialities", specializations_path
-              %li= link_to "Specialists", specialists_path
-              %li= link_to "Clinics", clinics_path
-              %li= link_to "Hospitals", hospitals_path
-              %li= link_to "Areas of Practice", procedures_path
-              %li= link_to "Healthcare Providers", healthcare_providers_path
-              %li= link_to "Languages", languages_path
-              %li= link_to "Cities", cities_path
+    #header
+      #top-nav.container
+        .row
+          #logo.span3
+            = link_to "Pathways", root_url
+            -#= link_to image_tag('/images/logo.png'), root_url
+          #link.span9
+            - if logged_in?
+              %ul.pull-right
+                %li= link_to "Logout", logout_url
+              %form.navbar-search.pull-right
+                %input.search-query{"type" => "text", "placeholder" => "Search"}
+        -# if logged_in? and current_user.admin?
+          .row
+            #admin.span12
+              %ul
+                /%li= link_to "Track Specialists", tracker_path
+                %li= link_to "Activity", all_versions_path
+                %li= link_to "Review Queue (#{Review.count})", reviews_path
+                %li= link_to "Users", users_path
+                %li= link_to "Specialities", specializations_path
+                %li= link_to "Specialists", specialists_path
+                %li= link_to "Clinics", clinics_path
+                %li= link_to "Hospitals", hospitals_path
+                %li= link_to "Areas of Practice", procedures_path
+                %li= link_to "Healthcare Providers", healthcare_providers_path
+                %li= link_to "Languages", languages_path
+                %li= link_to "Cities", cities_path
 
     #body.container
       .row
@@ -46,21 +50,21 @@
           -#%iframe#searchbox.span3{:src => "/navigation"}
              
           #left-nav.span3
-            %h1 Specialities
+            %h3 Specialities
             %ul
               - Specialization.all.each do |specialization|
                 %li
-                  %a{"href" => "#section_#{specialization.id}", "data-toggle" => "push"}= specialization.name
+                  %a.push{"href" => "#section_#{specialization.id}", "onclick" => "ajaxto('#{specialization_path(specialization)}')", "data-toggle" => "push"}= specialization.name
             
             - Specialization.all.each do |specialization|
               .nav_panel{ "id" => "section_#{specialization.id}" }
-                %h1= specialization.name
+                %h3= specialization.name
                 %ul
                   %li
-                    %a{"href" => "#", "data-toggle" => "pop", "data-target" => "#section_#{specialization.id}"} Back
+                    %a.pop{"href" => "#", "data-toggle" => "pop", "data-target" => "#section_#{specialization.id}"} Back
                   - specialization.procedure_specializations_arranged.each do |ps,children|
                     %li 
-                      = link_to ps.procedure.name, procedure_path(ps.procedure)
+                      %a{"href" => "#", "onclick" => "ajaxto('#{procedure_path(ps.procedure)}')"}= ps.procedure.name
                       - if children.length > 0
                         %ul
                           - children.each do |ps,children|
@@ -70,10 +74,9 @@
                                 %ul
                                   - children.each do |ps,children|
                                     %li= link_to ps.procedure.name, procedure_path(ps.procedure)
-                        
-        #content.span9{:class => "container_#{params[:controller]}"}
-          - flash.each do |type, msg|
-            .alert.alert-success= msg
-          - if show_title?
-            %h1= yield(:title)
-          = yield
+
+        #content.span9
+          %div{:id => "container"}
+            - flash.each do |type, msg|
+              .alert.alert-success= msg
+            = yield

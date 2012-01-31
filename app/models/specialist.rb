@@ -59,7 +59,7 @@ class Specialist < ActiveRecord::Base
     7 => "Didn't answer"
   }
   
-def status
+  def status
     if status_mask == 5
       if unavailable_from <= Date.today
         #retiring as of date has passed, retired
@@ -81,17 +81,22 @@ def status
     end
   end
   
-  def status_clean
-    if ((status_mask == 1) or ((status_mask == 6) and (unavailable_to < Date.today)))
+  def status_class
+    if not responded
+      return "unknown"
+    elsif ((status_mask == 1) or ((status_mask == 6) and (unavailable_to < Date.today)))
       #marked as available, or the "unavailable between" period has passed
       return "available"
     elsif ((status_mask == 2) or (status_mask == 4) or ((status_mask == 5) and (unavailable_from <= Date.today)) or ((status_mask == 6) and (unavailable_from <= Date.today) and (unavailable_to >= Date.today)))
       #only seeing old patients, retired, "retiring as of" date has passed", or in midst of inavailability
       return "unavailable"
+    elsif (((status_mask == 5) and (unavailable_from > Date.today)) or ((status_mask == 6) and (unavailable_from > Date.today)))
+      return "warning"
     elsif ((status_mask == 3) or (status_mask == 7))
       return "unknown"
     else
-      return "warning"
+      #this shouldn't really happen
+      return "unknown"
     end
   end
   
@@ -113,7 +118,7 @@ def status
   }
   
   def waittime
-    Specialist::WAITTIME_HASH[waittime_mask]
+    waittime_mask.presence ? Specialist::WAITTIME_HASH[waittime_mask] : "Unknown"
   end
   
   LAGTIME_HASH = { 
@@ -163,7 +168,7 @@ def status
       return "phone or fax"
     elsif referral_phone
       if referral_other_details.presence
-        return output + "phone or " + referral_other_details
+        return "phone or " + referral_other_details
       else
         return "phone"
       end

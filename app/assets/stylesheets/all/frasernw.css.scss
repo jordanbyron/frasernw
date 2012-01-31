@@ -1,73 +1,83 @@
 @import "_globals";
 
-@font-face
-{
-  font-family: Quicksand;
-  src: url('/Quicksand_Book.otf');
-}
-
-@font-face
-{
-  font-family: QuicksandDash;
-  src: url('/Quicksand_Dash.otf');
-}
-
-
-@font-face
-{
-  font-family: Oswald;
-  src: url('/Oswald.ttf');
-}
-
-
-@font-face
-{
-  font-family: Icon;
-  src: url('/iconic_fill.otf');
-}
-
-html 
-{
-  font-size:100%;
-}
-
 body 
 {
-  color:$FNW_TEXT;
-  background:$FNW_BACKGROUND;
-  /*font-family: Quicksand, QuicksandDash;*/
-  /*font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;*/
+  background-color: $FNW_BACKGROUND;
 }
 
 #header
 {
+  font-size: 13px;
+  background-color: $FNW_DARK_GRAY;
+  width: 100%;
+  border-bottom: 5px solid $FNW_LIGHT_GRAY;
+  margin-bottom: 15px;
+
   #top-nav
   {
+    #logo
+    {
+      font: 30px/54px "Helvetica Neue";
+      font-weight: bold;
+      text-align: center;
+      text-shadow: 0px 0px 5px #232930;
+      
+      a
+      {
+        text-decoration: none;
+        color: $FNW_GREEN;
+      }
+    }
+      
+    a
+    {
+      color: $FNW_HEADER_TEXT;
+      text-decoration: none;
+    }
+    
+    a:hover
+    {
+      text-decoration: underline;
+    }
+    
+    #admin
+    {
+      text-align: center;
+      background: $FNW_RED;
+      ul
+      {
+        display: inline-block;
+        list-style-type: none;
+        padding: 0;
+        margin: 2px;
+        
+        li
+        {
+          display: inline-block;
+          margin: 0;
+          float: left;
+          padding-right: 12px;
+          font-weight: bold;
+        }
+      }
+    }
   }
-  #admin
-  {
-    border-top: 1px dotted $FNW_TEXT;
-    font-size: 9pt;
-  }
-  
-  margin-bottom: 0;
 }
 
 #body
 {
+  color:$FNW_TEXT;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  
   #left-nav
   {
     position: relative;
     overflow-x: hidden;
     height: auto;
     
-    font-size: 10pt;
-    margin-left: 19px; /*compensate for border width with bootstrap */
-    border-right: 1px solid #eee;
-    
-    h1
+    h3
     {
-      font-size: 15pt;
       color: $FNW_RED;
       padding: 0 10px;
     }
@@ -79,19 +89,50 @@ body
       
       li
       {
-        border-top: 1px solid #eee;
+        border-top: 1px solid $FNW_LIGHT_GRAY;
         
         a
         {
           padding: 5px 10px;
           display: inline-block;
           width: 100%;
+          color: $FNW_BLUE;
+          text-decoration: none;
         }
          
         a:hover
         {
-          background-color: $FNW_BLUE;
+          color: $FNW_RED;
+          background-color: $FNW_LIGHT_BLUE;
           text-decoration: none;
+        }
+        
+        a.push:after,
+        a.pop:before
+        {
+          font-family: "Icon";
+          display: inline-block;
+          color: $FNW_LIGHT_BLUE;
+        }
+        
+        a.push:after
+        {
+          float: right;
+          width: 30px;
+          content: '\002192';
+        }
+        
+        a.pop:before
+        {
+          float: left;
+          width: 20px;
+          content: '\002190';
+        }
+        
+        a.push:hover:after,
+        a.pop:hover:before
+        {
+          color: $FNW_BLUE;
         }
         
         ul
@@ -129,124 +170,37 @@ body
       left: 0;
     }
   }
-}
-
-#header_old
-{
-  $FNW_HEADER_HEIGHT: 50px;
-
-  background: url("/images/header_background.png") $FNW_DARK_GRAY;
-  border-bottom: 1px solid #FFFFFF;
   
-  #logo
+  #content #container
   {
-    height: $FNW_HEADER_HEIGHT;
-    text-align: center; 
-    /*font-family:"Oswald", Helvetica, Arial, sans-serif;*/
-    font-size: 25pt;
-    text-shadow: 0px 0px 5px #232930;
-    line-height: $FNW_HEADER_HEIGHT; 
+    $FNW_CONTAINER_INDENT: 30px;
     
-    a
-    {
-      color: $FNW_HEADER;
-      text-decoration: none;
-    }
-  }
-  
-  #nav_OLD
-  {
-    margin-top: $FNW_HEADER_HEIGHT - 20px;
-    text-align:right;
-    padding-bottom: 5px;
-  }
-  
-  #admin_OLD
-  {
-    text-align: center;
-    margin-top: 3px;
-    border-top: 1px dashed $FNW_NAV_TEXT;
-  }
-  
-  #nav_OLD, #admin_OLD
-  {
-    a
-    {
-      /*font-family:"Oswald", Helvetica, Arial, sans-serif;*/
-      font-size: 10pt;
-      text-decoration:none;
-      color: $FNW_NAV_TEXT;
-      text-shadow: 0px 0px 5px #232930;
-    }
+    margin-left: $FNW_CONTAINER_INDENT;
     
-    a:hover
+    h1, h2, h3, h4, h5
     {
-      color: $FNW_BLUE;
-    }
-  }
-}
-
-#body_old
-{
-  #searchbox
-  {
-    background-color: $FNW_BACKGROUND;
-    overflow:hidden;
-  }
-  
-  #content
-  {
-    $CONTENT_PADDING_WIDTH: 45px;
-    font-size: 10pt;
-    line-height: 1.5;
-    background: $FNW_CONTENT_BACKGROUND;
-    
-    h1, h2, h3, h4
-    {
-      /*font-family:"Oswald", Helvetica, Arial, sans-serif*/
-    }
-    
-    h1
-    {
-      font-size: 18pt;
-      color: $FNW_BLUE;
-    }
-    
-    h2
-    {
-      font-size: 12pt;
-      color: $FNW_BLUE;
-    }
-    
-    h3
-    {
-      font-size: 10pt;
-      color: $FNW_BLUE;
+      color: $FNW_RED;
     }
     
     p
     {
-      margin-top: 0.75em;
-    } 
-    
+      margin: 9px 0 0;
+    }
+  
     p.collapse_up
     {
       margin-top: 0;
     }
     
-    strong
-    {
-      font-weight: bold;
-    }
-    
     a
     {
-      color: $FNW_TEXT;
+      color: $FNW_BLUE;
+      text-decoration: none;
     }
       
     a:hover
     {
-      text-decoration: none;
+      text-decoration: underline;
     }
     
     a.address
@@ -275,10 +229,31 @@ body
       color: $FNW_BLUE;
       font-size: 12pt;
       display: inline-block;
-      margin-left: -$CONTENT_PADDING_WIDTH;
-      width: $CONTENT_PADDING_WIDTH;
-      text-align: center;
+      margin-left: -$FNW_CONTAINER_INDENT;
+      width: $FNW_CONTAINER_INDENT;
+      text-align: left;
       padding: 0;
+    }
+    
+    table
+    {
+      .status_available,
+      .status_unavailable,
+      .status_unknown,
+      .status_warning
+      {
+        visibility: hidden;
+      }
+      
+      .status_available:before, 
+      .status_unavailable:before, 
+      .status_unknown:before, 
+      .status_warning:before
+      {
+        visibility: visible;
+        margin-left: 0;
+        width: auto;
+      }
     }
     
     .address:before
@@ -289,21 +264,30 @@ body
     .status_available:before
     {
       content: "\002713";
+      color: $FNW_GREEN;
     }
     
     .status_unavailable:before
     {
+      visibility: visible;
       content: "\002717";
+      color: $FNW_RED;
     }
     
     .status_unknown:before
     {
+      visibility: visible;
       content: "?";
+      font-weight: bold;
+      color: $FNW_MID_GRAY;
     }
     
     .status_warning:before
     {
+      visibility: visible;
       content: "!";
+      font-weight: bold;
+      color: $FNW_ORANGE;
     }
     
     .language:before
@@ -348,8 +332,7 @@ body
     
     .admin
     {
-      border-top: 1px dashed $FNW_DARK_GRAY;
-      padding-top: 3px;
+      font-weight: bold;
       
       color: $FNW_RED;
       
@@ -357,6 +340,70 @@ body
       {
         color: inherit;
       }
+    }
+    
+    .tabbable
+    {
+      margin-top: 10px;
+    }
+    
+    .table th
+    {
+      border-top: 0;
+    }
+    
+    .table th.status_column
+    {
+      width: 100px;
+    }
+    
+    .table td 
+    {
+      border-top: 1px solid $FNW_LIGHT_GRAY;
+    }
+    
+    .table tr.not-responded td
+    {
+      color: $FNW_MID_GRAY;
+      
+      a
+      {
+        color: $FNW_MID_GRAY;
+      }
+    }
+    
+    table.tablesorter thead tr th.headerSortUp:after, 
+    table.tablesorter thead tr th.headerSortDown:after,
+    table.tablesorter thead tr th:after
+    {
+      font-family: "Icon";
+      color: $FNW_BLUE;
+      font-size: 9pt;
+      display: inline-block;
+      width: 20px;
+      margin-left: 10px;
+      padding: 0;
+      font-face: "Icon";
+    }
+    
+    table.tablesorter thead tr th:hover
+    {
+      cursor: pointer;
+    }
+    
+    table.tablesorter thead tr th:after
+    {
+      content: " ";
+    }
+    
+    table.tablesorter thead tr th.headerSortUp:after
+    {
+      content: "\002191";
+    }
+    
+    table.tablesorter thead tr th.headerSortDown:after 
+    {
+      content: "\002193";
     }
   }
 }
