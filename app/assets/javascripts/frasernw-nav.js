@@ -30,10 +30,6 @@
     })
   }
 
-
- /* COLLAPSIBLE DATA-API
-  * ==================== */
-
   $(function () {
     $('body').on('click.nav_panel.data-api', '[data-toggle=push]', function ( e ) {
       var $this = $(this)
