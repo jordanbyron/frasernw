@@ -57,10 +57,9 @@
           
     - if has_clinics
       #clinic_tab.tab-pane{:class => clinic_tab_class}
-        %table.table.table-condensed{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'specialist_table'}
+        %table.table.table-condensed{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'clinic_table'}
           %thead
             %tr{:class => 'tableheader'}
-              / see tablesorter docx for sorters 
               %th{:class => "{sorter: 'bylastname'} name_column"} Clinic
               - if multiple_specialties
                 %th{:class => "{sorter: 'text'}"} Speciality
