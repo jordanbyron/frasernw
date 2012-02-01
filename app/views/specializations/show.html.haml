@@ -52,7 +52,8 @@
           %tbody
             - (@specialization.clinics).each do |clinic|
               %tr
-                %td= link_to clinic.name, clinic_path(clinic)
+                %td
+                  %a{"href" => "#", "onclick" => "ajaxto('#{clinic_path(clinic)}')"}= clinic.name
                 %td{:class => "status_#{clinic.status_class}"}= clinic.status_class
                 %td= clinic.waittime
                 %td= clinic.addresses.first ? clinic.addresses.first.city : ""
