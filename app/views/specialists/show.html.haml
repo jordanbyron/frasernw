@@ -37,10 +37,12 @@
       = address.phone_and_fax
     - if address.hospital
       %p.collapse_up
-        = "In #{address.hospital.name}"
+        In 
+        %a{"href" => "#", "onclick" => "ajaxto('#{hospital_path(address.hospital)}')"}= address.hospital.name
     - if address.clinic
       %p.collapse_up
-        = "In #{address.clinic.name}"
+        In
+        %a{"href" => "#", "onclick" => "ajaxto('#{clinic_path(address.clinic)}')"}= address.clinic.name
   - if not @specialist.direct_phone.blank?
     %p.collapse_up
       = "direct number (for physician use only): #{@specialist.direct_phone}"
@@ -130,12 +132,12 @@
     - if not @specialist.hospitals.blank?
       %p
         %strong.hospital Hospital privileges:
-        != @specialist.hospitals.map{ |hospital| link_to(hospital.name, url_for(hospital)) }.to_sentence
+        != @specialist.hospitals.map{ |hospital| "<a href='#' onclick=\"ajaxto('#{hospital_path(hospital)}')\">#{hospital.name}</a>" }.to_sentence 
 
     - if not @specialist.clinics.blank?
       %p
         %strong.clinic Clinic associations:
-        != @specialist.clinics.map{ |clinic| link_to(clinic.name, url_for(clinic)) }.to_sentence
+        != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' onclick=\"ajaxto('#{clinic_path(clinic)}'); return false;\">#{clinic.name}</a>" }.to_sentence
 
 %p.admin
   - if can? :update, @specialist
