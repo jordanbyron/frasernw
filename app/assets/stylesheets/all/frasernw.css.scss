@@ -332,6 +332,7 @@ body
     
     .admin
     {
+      display: none;
       font-weight: bold;
       
       color: $FNW_RED;
@@ -345,6 +346,15 @@ body
     .tabbable
     {
       margin-top: 10px;
+      
+      ul.nav
+      {
+        margin-bottom: 10px;
+        
+        li a
+        {
+        }
+      }
     }
     
     .table
