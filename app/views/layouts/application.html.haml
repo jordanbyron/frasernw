@@ -54,7 +54,7 @@
             %ul
               - Specialization.all.each do |specialization|
                 %li
-                  %a.push{"href" => "#section_#{specialization.id}", "onclick" => "ajaxto('#{specialization_path(specialization)}')", "data-toggle" => "push"}= specialization.name
+                  %a.push{"href" => "#", "onclick" => "ajaxto('#{specialization_path(specialization)}')", "data-toggle" => "push", "data-target" => "#section_#{specialization.id}"}= specialization.name
             
             - Specialization.all.each do |specialization|
               .nav_panel{ "id" => "section_#{specialization.id}" }
@@ -64,16 +64,21 @@
                     %a.pop{"href" => "#", "data-toggle" => "pop", "data-target" => "#section_#{specialization.id}"} Back
                   - specialization.procedure_specializations_arranged.each do |ps,children|
                     %li 
-                      %a{"href" => "#", "onclick" => "ajaxto('#{procedure_path(ps.procedure)}')"}= ps.procedure.name
                       - if children.length > 0
-                        %ul
-                          - children.each do |ps,children|
-                            %li
-                              %a{"href" => "#", "onclick" => "ajaxto('#{procedure_path(ps.procedure)}')"}= ps.procedure.name
-                              - if children.length > 0
-                                %ul
-                                  - children.each do |ps,children|
-                                    %a{"href" => "#", "onclick" => "ajaxto('#{procedure_path(ps.procedure)}')"}= ps.procedure.name
+                        %a.push{"href" => "#", "onclick" => "ajaxto('#{procedure_path(ps.procedure)}')", "data-toggle" => "push", "data-target" => "#procedure_#{ps.procedure.id}"}= ps.procedure.name
+                      - else
+                        %a{"href" => "#", "onclick" => "ajaxto('#{procedure_path(ps.procedure)}')"}= ps.procedure.name
+                      
+              - specialization.procedure_specializations_arranged.each do |ps,children|
+                - next if children.length == 0
+                .nav_panel{ "id" => "procedure_#{ps.procedure.id}" }
+                  %h3= ps.specialization.name
+                  %ul
+                    %li
+                      %a.pop{"href" => "#", "data-toggle" => "pop", "data-target" => "#procedure_#{ps.procedure.id}"} Back
+                    - children.each do |ps,children|
+                      %li
+                        %a{"href" => "#", "onclick" => "ajaxto('#{procedure_path(ps.procedure)}')"}= ps.procedure.name
 
         #content.span9
           %div{:id => "container"}
