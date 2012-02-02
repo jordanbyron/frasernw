@@ -67,7 +67,8 @@
                     %ul
                       - specialist.child_procedures(@procedure).each do |p|
                         %li= p.name
-                %td{:class => "status_#{specialist.status_class}"}= specialist.status_class
+                %td
+                  %span{:class => "status_#{specialist.status_class}"}= specialist.status_class
                 %td= specialist.waittime
                 %td= specialist.addresses.first ? specialist.addresses.first.city : ""
     
@@ -90,7 +91,8 @@
                   %a{"href" => "#", "onclick" => "ajaxto('#{clinic_path(clinic)}')"}= clinic.name
                 - if multiple_specialties
                   %td= clinic.specializations.collect(){ |s| s.name }.to_sentence
-                %td{:class => "status_#{clinic.status_class}"}= clinic.status_class
+                %td
+                  %span{:class => "status_#{clinic.status_class}"}= clinic.status_class
                 %td= clinic.waittime
                 %td= clinic.addresses.first ? clinic.addresses.first.city : ""
 

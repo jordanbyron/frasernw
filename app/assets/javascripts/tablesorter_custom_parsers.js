@@ -40,7 +40,7 @@ $.tablesorter.addParser({
       return false; 
     }, 
 		format: function(s) {
-			switch(s)
+			switch($.trim(s))
       {
         case("available"):
           return 0;
