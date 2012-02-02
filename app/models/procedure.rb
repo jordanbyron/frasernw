@@ -17,5 +17,18 @@ class Procedure < ActiveRecord::Base
   def to_s
     self.name
   end
-
+  
+  def all_specialists
+    #look at this procedure as well as its children to find any specialists
+    results = []
+    procedure_specializations.each do |ps|
+      ProcedureSpecialization.subtree_of(ps).each do |child|
+        Capacity.find_all_by_procedure_specialization_id(child.id).each do |capacity|
+          results << capacity.specialist
+        end
+      end
+    end
+    results.uniq!
+    return results.compact if results else []
+  end
 end

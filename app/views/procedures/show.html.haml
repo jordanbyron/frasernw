@@ -17,7 +17,7 @@
 %h2= "#{@procedure.name}"
 %h4= @procedure.procedure_specializations.collect(){ |ps| compressed_ancestry(ps) }.to_sentence
 
-- has_specialists = @procedure.specialists.length > 0
+- has_specialists = @procedure.all_specialists.length > 0
 - has_clinics = @procedure.clinics.length > 0
 
 - specialist_tab_class = has_specialists ? "active" : ""
@@ -44,7 +44,7 @@
               %th{:class => "{sorter: 'waittime'}"} Wait Time
               %th{:class => "{sorter: 'blanks_to_bottom'}"} City
           %tbody
-            - (@procedure.specialists).each do |specialist|
+            - (@procedure.all_specialists).each do |specialist|
               %tr{:class => specialist.responded ? "" : "not-responded"}
                 %td
                   %a{"href" => "#", "onclick" => "ajaxto('#{specialist_path(specialist)}')"}= specialist.name
