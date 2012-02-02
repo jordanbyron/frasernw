@@ -35,8 +35,10 @@ Frasernw::Application.routes.draw do
   match 'signup' => 'users#new', :as => :signup
 
   match 'logout' => 'user_sessions#destroy', :as => :logout
-
+  
   match 'login' => 'user_sessions#new', :as => :login
+  
+  match 'blank' => 'specialization#blank', :as => :blank
 
   resources :user_sessions
 
@@ -91,7 +93,7 @@ Frasernw::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => 'specializations#index'
+  root :to => 'specializations#blank'
 
   # See how all your routes lay out with "rake routes"
 

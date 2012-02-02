@@ -1,5 +1,8 @@
 class SpecializationsController < ApplicationController
   load_and_authorize_resource
+  
+  def blank
+  end
 
   def index
     @specializations = Specialization.all
