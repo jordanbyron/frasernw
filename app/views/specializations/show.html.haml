@@ -13,16 +13,15 @@
 - clinic_tab_class = has_specialists ? "" : "active"
 
 .tabbable
-  - if (has_specialists and has_clinics)
-    %ul.nav.nav-tabs
-      %li{:class => specialist_tab_class} 
-        %a{"href" => "#specialist_tab", "data-toggle" => "tab"} Specialists
-      %li{:class => clinic_tab_class}
-        %a{"href" => "#clinic_tab", "data-toggle" => "tab"} Clinics
+  %ul.nav.nav-tabs
+    %li{:class => specialist_tab_class} 
+      %a{"href" => "#specialist_tab", "data-toggle" => "tab"} Specialists
+    %li{:class => clinic_tab_class}
+      %a{"href" => "#clinic_tab", "data-toggle" => "tab"} Clinics
 
   .tab-content
-    - if has_specialists
-      #specialist_tab.tab-pane{:class => specialist_tab_class} 
+    #specialist_tab.tab-pane{:class => specialist_tab_class} 
+      - if has_specialists
         %table.table.table-condensed.tablesorter{:id => 'specialist_table'}
           %thead
             %tr{:class => 'tableheader'}
@@ -40,8 +39,8 @@
                 %td= specialist.waittime
                 %td= specialist.addresses.first ? specialist.addresses.first.city : ""
           
-    - if has_clinics
-      #clinic_tab.tab-pane{:class => clinic_tab_class}
+    #clinic_tab.tab-pane{:class => clinic_tab_class}
+      - if has_clinics
         %table.table.table-condensed{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'clinic_table'}
           %thead
             %tr{:class => 'tableheader'}
