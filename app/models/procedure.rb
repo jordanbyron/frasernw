@@ -31,4 +31,12 @@ class Procedure < ActiveRecord::Base
     results.uniq!
     return results.compact if results else []
   end
+  
+  def has_children?
+    result = false
+    procedure_specializations.each do |ps|
+      result |= ps.has_children?
+    end
+    return result
+  end
 end

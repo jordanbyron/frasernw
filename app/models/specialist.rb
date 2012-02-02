@@ -236,6 +236,16 @@ class Specialist < ActiveRecord::Base
       return ""
     end
   end
+  
+  def child_procedures(procedure)
+    result = []
+    procedure.procedure_specializations.each do |ps|
+      next if not ps.has_children?
+      result += (ProcedureSpecialization.descendants_of(ps) & self.procedure_specializations)
+    end
+    result.uniq!
+    return result.compact.collect{ |ps| ps.procedure } if result else []
+  end
 
   def token
     if self.saved_token

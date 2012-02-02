@@ -1,7 +1,14 @@
 - multiple_specialties = (@procedure.specializations.length > 1)
+-# has_children = @procedure.has_children?
+- has_children = false
 
-
-- if multiple_specialties
+- if multiple_specialties and has_children
+  :javascript
+    $(document).ready(function() {
+      //sort by status then wait time
+        $('.tablesorter').tablesorter({sortList: [[3,0],[4,0]]});
+    });
+- elsif multiple_specialties or has_children
   :javascript
     $(document).ready(function() {
       //sort by status then wait time
@@ -40,6 +47,8 @@
               %th{:class => "{sorter: 'bylastname'}"} Specialist
               - if multiple_specialties
                 %th{:class => "{sorter: 'text'}"} Speciality
+              - if has_children
+                %th{:class => "{sorter: 'text'}"}= "Additional #{@procedure.name} Focuses"
               %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
               %th{:class => "{sorter: 'waittime'}"} Wait Time
               %th{:class => "{sorter: 'blanks_to_bottom'}"} City
@@ -49,7 +58,15 @@
                 %td
                   %a{"href" => "#", "onclick" => "ajaxto('#{specialist_path(specialist)}')"}= specialist.name
                 - if multiple_specialties
-                  %td= specialist.specializations.collect(){ |s| s.name }.to_sentence
+                  %td
+                    %ul
+                      - specialist.specializations.each do |s|
+                        %li= s.name
+                - if has_children
+                  %td
+                    %ul
+                      - specialist.child_procedures(@procedure).each do |p|
+                        %li= p.name
                 %td{:class => "status_#{specialist.status_class}"}= specialist.status_class
                 %td= specialist.waittime
                 %td= specialist.addresses.first ? specialist.addresses.first.city : ""

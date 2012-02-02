@@ -347,63 +347,82 @@ body
       margin-top: 10px;
     }
     
-    .table th
+    .table
     {
-      border-top: 0;
-    }
-    
-    .table th.status_column
-    {
-      width: 100px;
-    }
-    
-    .table td 
-    {
-      border-top: 1px solid $FNW_LIGHT_GRAY;
-    }
-    
-    .table tr.not-responded td
-    {
-      color: $FNW_MID_GRAY;
+      th
+      {
+        border-top: 0;
+      }
       
-      a
+      th.status_column
+      {
+        width: 100px;
+      }
+      
+      tr td 
+      {
+        border-top: 1px solid $FNW_LIGHT_GRAY;
+        
+        ul
+        {
+          margin: 0;
+          
+          li
+          {
+            list-style-type: none;
+          }
+        }
+      }
+      
+      .table tr.not-responded td
       {
         color: $FNW_MID_GRAY;
+        
+        a
+        {
+          color: $FNW_MID_GRAY;
+        }
       }
     }
     
-    table.tablesorter thead tr th.headerSortUp:after, 
-    table.tablesorter thead tr th.headerSortDown:after,
-    table.tablesorter thead tr th:after
+    table.tablesorter
     {
-      font-family: "Icon";
-      color: $FNW_BLUE;
-      font-size: 9pt;
-      display: inline-block;
-      width: 20px;
-      margin-left: 10px;
-      padding: 0;
-      font-face: "Icon";
-    }
+      thead tr 
+      {
+        th.headerSortUp:after, 
+        th.headerSortDown:after,
+        th:after
+        {
+          font-family: "Icon";
+          color: $FNW_BLUE;
+          font-size: 9pt;
+          display: inline-block;
+          width: 20px;
+          margin-left: 10px;
+          padding: 0;
+          font-face: "Icon";
+        }
     
-    table.tablesorter thead tr th:hover
-    {
-      cursor: pointer;
-    }
-    
-    table.tablesorter thead tr th:after
-    {
-      content: " ";
-    }
-    
-    table.tablesorter thead tr th.headerSortUp:after
-    {
-      content: "\002191";
-    }
-    
-    table.tablesorter thead tr th.headerSortDown:after 
-    {
-      content: "\002193";
+        th:hover
+        {
+          cursor: pointer;
+        }
+        
+        th:after
+        {
+          content: " ";
+        }
+        
+        th.headerSortUp:after
+        {
+          content: "\002191";
+        }
+        
+        th.headerSortDown:after 
+        {
+          content: "\002193";
+        }
+      }
     }
   }
 }
