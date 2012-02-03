@@ -73,13 +73,16 @@ body
   #left-nav
   {
     position: relative;
-    overflow-x: hidden;
+    overflow: hidden;
     height: auto;
+        
+    $FNW_NAV_PADDING_LEFT: 5%;
+    $FNW_NAV_PADDING_RIGHT: 10%;
     
     h3
     {
       color: $FNW_RED;
-      padding: 0 10px;
+      padding: 0 $FNW_NAV_PADDING_RIGHT 0 $FNW_NAV_PADDING_LEFT;
     }
     
     ul
@@ -93,9 +96,9 @@ body
         
         a
         {
-          padding: 5px 10px;
+          padding: 5px $FNW_NAV_PADDING_RIGHT 5px $FNW_NAV_PADDING_LEFT;
           display: inline-block;
-          width: 100%;
+          width: 100% - $FNW_NAV_PADDING_RIGHT - $FNW_NAV_PADDING_LEFT;
           color: $FNW_BLUE;
           text-decoration: none;
         }
@@ -118,7 +121,8 @@ body
         a.push:after
         {
           float: right;
-          width: 30px;
+          margin-right: -$FNW_NAV_PADDING_RIGHT;
+          width: $FNW_NAV_PADDING_RIGHT;
           content: '\002192';
         }
         
@@ -133,19 +137,6 @@ body
         a.pop:hover:before
         {
           color: $FNW_BLUE;
-        }
-        
-        ul
-        {
-          margin: 0;
-          
-          li
-          {
-            a
-            {
-              padding-left: 30px;
-            }
-          }
         }
       }
     }
