@@ -20,7 +20,7 @@
         .container
           = link_to "Pathways", root_url, :class => "brand"
           - if logged_in?
-            %ul.nav.pull-right
+            %ul.nav.pull-left
               %li= link_to "Logout", logout_url
             %form.navbar-search.pull-right
               %input.search-query{"type" => "text", "placeholder" => "Search"}

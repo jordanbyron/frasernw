@@ -10,6 +10,21 @@ body
   background-color: $FNW_DARK_GRAY;
   background-image: none;
   border-radius: 0;
+  
+  .navbar-search .search-query, .navbar-search .search-query:focus
+  {
+    border: none;
+    padding: 5px 10px;
+    color: $FNW_TEXT;
+    background: $FNW_BACKGROUND;
+  }
+  
+  .navbar-search .search-query :-moz-placeholder {
+    color: $FNW_MID_GRAY;
+  }
+  .navbar-search .search-query::-webkit-input-placeholder {
+    color: $FNW_MID_GRAY;
+  }
 }
 
 #admin-nav .navbar-inner
