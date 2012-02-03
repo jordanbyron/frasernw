@@ -48,18 +48,19 @@
       .row
         - unless params[:controller] == 'user_sessions'
           #left-nav.span3
-            %h3 Specialities
-            %ul
-              - Specialization.all.each do |specialization|
-                %li
-                  %a.push{"href" => "#", "onclick" => "ajaxto('#{specialization_path(specialization)}')", "data-toggle" => "push", "data-target" => "#section_#{specialization.id}"}= specialization.name
-            
+            #root
+              %h3 Specialities
+              %ul
+                - Specialization.all.each do |specialization|
+                  %li
+                    %a.push{"href" => "#", "onclick" => "ajaxto('#{specialization_path(specialization)}')", "data-toggle" => "push", "data-target" => "#section_#{specialization.id}"}= specialization.name
+              
             - Specialization.all.each do |specialization|
               .nav_panel{ "id" => "section_#{specialization.id}" }
                 %h3= specialization.name
                 %ul
                   %li
-                    %a.pop{"href" => "#", "data-toggle" => "pop", "data-target" => "#section_#{specialization.id}"} Back
+                    %a.pop{"href" => "#", "data-toggle" => "pop", "data-target" => "#section_#{specialization.id}", "data-parent" => "#root"} Back
                   - specialization.procedure_specializations_arranged.each do |ps,children|
                     %li 
                       - if children.length > 0
@@ -73,7 +74,7 @@
                   %h3= ps.specialization.name
                   %ul
                     %li
-                      %a.pop{"href" => "#", "data-toggle" => "pop", "data-target" => "#procedure_#{ps.procedure.id}"} Back
+                      %a.pop{"href" => "#", "data-toggle" => "pop", "data-target" => "#procedure_#{ps.procedure.id}", "data-parent" => "#section_#{specialization.id}"} Back
                     - children.each do |ps,children|
                       %li
                         %a{"href" => "#", "onclick" => "ajaxto('#{procedure_path(ps.procedure)}')"}= ps.procedure.name
