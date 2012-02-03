@@ -15,34 +15,32 @@
     = yield(:head)
 
   %body{:id => "#{params[:controller]}_page"}
-    #header
-      #top-nav.container
-        .row
-          #logo.span3
-            = link_to "Pathways", root_url
-            -#= link_to image_tag('/images/logo.png'), root_url
-          #link.span9
-            - if logged_in?
-              %ul.pull-right
-                %li= link_to "Logout", logout_url
-              %form.navbar-search.pull-right
-                %input.search-query{"type" => "text", "placeholder" => "Search"}
-        -# if logged_in? and current_user.admin?
-          .row
-            #admin.span12
-              %ul
-                /%li= link_to "Track Specialists", tracker_path
-                %li= link_to "Activity", all_versions_path
-                %li= link_to "Review Queue (#{Review.count})", reviews_path
-                %li= link_to "Users", users_path
-                %li= link_to "Specialities", specializations_path
-                %li= link_to "Specialists", specialists_path
-                %li= link_to "Clinics", clinics_path
-                %li= link_to "Hospitals", hospitals_path
-                %li= link_to "Areas of Practice", procedures_path
-                %li= link_to "Healthcare Providers", healthcare_providers_path
-                %li= link_to "Languages", languages_path
-                %li= link_to "Cities", cities_path
+    #main-nav.navbar
+      .navbar-inner
+        .container
+          = link_to "Pathways", root_url, :class => "brand"
+          - if logged_in?
+            %ul.nav.pull-right
+              %li= link_to "Logout", logout_url
+            %form.navbar-search.pull-right
+              %input.search-query{"type" => "text", "placeholder" => "Search"}
+    -# if logged_in? and current_user.admin?
+      #admin-nav.navbar
+        .navbar-inner
+          .container
+            %ul.nav
+              /%li= link_to "Track Specialists", tracker_path
+              %li= link_to "Activity", all_versions_path
+              %li= link_to "Review Queue (#{Review.count})", reviews_path
+              %li= link_to "Users", users_path
+              %li= link_to "Specialities", specializations_path
+              %li= link_to "Specialists", specialists_path
+              %li= link_to "Clinics", clinics_path
+              %li= link_to "Hospitals", hospitals_path
+              %li= link_to "Areas of Practice", procedures_path
+              %li= link_to "Healthcare Providers", healthcare_providers_path
+              %li= link_to "Languages", languages_path
+              %li= link_to "Cities", cities_path
 
     #body.container
       .row

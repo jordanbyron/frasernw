@@ -5,60 +5,28 @@ body
   background-color: $FNW_BACKGROUND;
 }
 
-#header
+#main-nav .navbar-inner
 {
-  font-size: 13px;
   background-color: $FNW_DARK_GRAY;
-  width: 100%;
-  border-bottom: 5px solid $FNW_LIGHT_GRAY;
-  margin-bottom: 15px;
+  background-image: none;
+  border-radius: 0;
+}
 
-  #top-nav
+#admin-nav .navbar-inner
+{
+  margin-top: -10px;
+  background-color: $FNW_RED;
+  background-image: none;
+  border-radius: 0;
+  
+  ul
   {
-    #logo
+    li
     {
-      font: 30px/54px "Helvetica Neue";
-      font-weight: bold;
-      text-align: center;
-      text-shadow: 0px 0px 5px #232930;
-      
       a
       {
-        text-decoration: none;
-        color: $FNW_GREEN;
-      }
-    }
-      
-    a
-    {
-      color: $FNW_HEADER_TEXT;
-      text-decoration: none;
-    }
-    
-    a:hover
-    {
-      text-decoration: underline;
-    }
-    
-    #admin
-    {
-      text-align: center;
-      background: $FNW_RED;
-      ul
-      {
-        display: inline-block;
-        list-style-type: none;
-        padding: 0;
-        margin: 2px;
-        
-        li
-        {
-          display: inline-block;
-          margin: 0;
-          float: left;
-          padding-right: 12px;
-          font-weight: bold;
-        }
+        color: $FNW_LIGHT_GRAY;
+        font-size: 12px;
       }
     }
   }
@@ -75,7 +43,7 @@ body
     position: relative;
     overflow: hidden;
     height: auto;
-        
+    
     $FNW_NAV_PADDING_LEFT: 5%;
     $FNW_NAV_PADDING_RIGHT: 10%;
     
@@ -102,7 +70,7 @@ body
           color: $FNW_BLUE;
           text-decoration: none;
         }
-         
+        
         a:hover
         {
           color: $FNW_RED;
@@ -155,7 +123,7 @@ body
       top: 0;
       background: $FNW_BACKGROUND;
     }
-      
+    
     .nav_panel.pushed
     {
       left: 0;
@@ -177,7 +145,7 @@ body
     {
       margin: 9px 0 0;
     }
-  
+    
     p.collapse_up
     {
       margin-top: 0;
@@ -188,7 +156,7 @@ body
       color: $FNW_BLUE;
       text-decoration: none;
     }
-      
+    
     a:hover
     {
       text-decoration: underline;
@@ -403,7 +371,7 @@ body
           padding: 0;
           font-face: "Icon";
         }
-    
+        
         th:hover
         {
           cursor: pointer;
