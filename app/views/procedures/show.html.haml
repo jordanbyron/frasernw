@@ -32,10 +32,12 @@
 
 .tabbable
   %ul.nav.nav-tabs
-    %li{:class => specialist_tab_class} 
-      %a{"href" => "#specialist_tab", "data-toggle" => "tab"} Specialists
-    %li{:class => clinic_tab_class}
-      %a{"href" => "#clinic_tab", "data-toggle" => "tab"} Clinics
+    - if has_specialists
+      %li{:class => specialist_tab_class} 
+        %a{"href" => "#specialist_tab", "data-toggle" => "tab"} Specialists
+    - if has_clinics
+      %li{:class => clinic_tab_class}
+        %a{"href" => "#clinic_tab", "data-toggle" => "tab"} Clinics
 
   .tab-content
     #specialist_tab.tab-pane{:class => specialist_tab_class}
