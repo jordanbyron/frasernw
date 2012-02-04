@@ -19,7 +19,7 @@
 %h2
   = @specialist.name
 %h4
-  = "#{@specialist.specializations.collect(){ |s| s.name }.join(", ")}"
+  = "#{@specialist.specializations.collect(){ |s| s.name }.to_sentence}"
 - if @specialist.billing_number
   %h5
     = "MSP ##{@specialist.billing_number}"

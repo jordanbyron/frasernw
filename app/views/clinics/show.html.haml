@@ -4,7 +4,7 @@
 %h2
   = @clinic.name
 %h4
-  = "#{@clinic.specializations.collect(){ |s| s.name }.join(", ")}"
+  = "#{@clinic.specializations.collect(){ |s| s.name }.to_sentence}"
   
 - if not @clinic.responded
   %p
