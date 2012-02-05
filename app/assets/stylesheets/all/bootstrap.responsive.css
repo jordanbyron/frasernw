@@ -65,6 +65,9 @@
   .span12, .container {
     width: 724px;
   }
+  .offsethalf {
+    margin-left: 41px;
+  }
   .offset1 {
     margin-left: 82px;
   }
@@ -242,6 +245,9 @@
   }
   .span12, .container {
     width: 1170px;
+  }
+  .offsethalf {
+    margin-left: 65px;
   }
   .offset1 {
     margin-left: 130px;

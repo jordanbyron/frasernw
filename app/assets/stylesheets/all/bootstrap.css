@@ -161,6 +161,9 @@ a:hover {
 .span12, .container {
   width: 940px;
 }
+.offsethalf {
+  margin-left: 50px;
+}
 .offset1 {
   margin-left: 100px;
 }
