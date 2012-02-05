@@ -172,12 +172,17 @@ body
     
     p
     {
-      margin: 9px 0 0;
+      margin: 9px 0 0 0;
     }
     
     p.collapse_up
     {
       margin-top: 0;
+    }
+    
+    p:empty
+    {
+      margin: 0;
     }
     
     a
@@ -199,6 +204,16 @@ body
     a.address:hover
     {
       text-decoration: underline;
+    }
+    
+    ul
+    {
+      margin: 0 0 0 1em;
+      
+      li
+      {
+        list-style-position: inside;
+      }
     }
     
     .address:before, 
