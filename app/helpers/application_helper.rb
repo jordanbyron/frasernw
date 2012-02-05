@@ -21,11 +21,12 @@ module ApplicationHelper
   
   alias :clinics_procedures :specialists_procedures
   
-  def procedure_ancestry(specialist_or_clinic_or_specialization)
+  def procedure_ancestry(specialist_or_clinic_or_specialization, specialization_level)
     result = {}
   
     specialist_or_clinic_or_specialization.procedure_specializations.each do |ps| 
       temp = { ps => {} }
+      next if ps.procedure.specialization_level != specialization_level
       while ps.parent
         temp = { ps.parent => temp }
         ps = ps.parent
@@ -64,14 +65,16 @@ module ApplicationHelper
     result
   end
   
-  def compressed_procedures_indented(specialist_or_clinic)
-    return compressed_procedures_indented_output( procedure_ancestry(specialist_or_clinic), specialist_or_clinic ) 
+  def compressed_procedures_indented(specialist_or_clinic, specialization_level)
+    return compressed_procedures_indented_output( procedure_ancestry(specialist_or_clinic, specialization_level), specialist_or_clinic ) 
   end
   
   def compressed_procedures_indented_output(items, root)
-    return "" if items.empty?
+    count = 0
+    return "", 0 if items.empty?
     result = "<ul>"
     items.each do |item|
+      count += 1
       result += "<li>"
       result += item[:parent].procedure.name
       investigation = item[:parent].investigation(root)
@@ -79,10 +82,12 @@ module ApplicationHelper
         result += ": #{investigation}"
       end
       result += "</li>"
-      result += compressed_procedures_indented_output(item[:children], root)
+      child_result, child_count = compressed_procedures_indented_output(item[:children], root)
+      result += child_result
+      count += child_count                                       
     end
     result += "</ul>"
-    result
+    return result, count
   end
   
   def compressed_ancestry(procedure_specialization)

@@ -46,7 +46,7 @@
   - if not @specialist.direct_phone.blank?
     %p.collapse_up
       = "direct number (for physician use only): #{@specialist.direct_phone}"
-        
+
   %p
     %strong{ :class => "status_#{@specialist.status_class}"}= @specialist.status
     - if not @specialist.status_details.blank?
@@ -76,13 +76,22 @@
         %p
           %strong Required investigations for all patients:
           = @specialist.required_investigations
-      - if not @specialist.procedure_specializations.blank?
+      - specialization_procedures, specialization_count = compressed_procedures_indented(@specialist, true)
+      - if specialization_count > 0
         %p.collapse_up
           %strong Areas of practice
           \- with any 
           %i additional 
           required investigations:
-        = compressed_procedures_indented(@specialist).html_safe
+          = specialization_procedures.html_safe
+      - custom_procedures, custom_count = compressed_procedures_indented(@specialist, false)
+      - if custom_count > 0
+        %p.collapse_up
+          %strong Other areas of interest
+          \- with any 
+          %i additional 
+          required investigations:
+          = custom_procedures.html_safe
       - if not @specialist.interest.blank?
         %p.collapse_up
           %strong Most interested in
@@ -91,24 +100,24 @@
         %p.collapse_up
           %strong Does not see or do
           = @specialist.not_performed
-      
+
     %p
       %strong.referral Referrals
       - if @specialist.responds_via.blank?
         = "are accepted by #{@specialist.accepts_referrals_via}"
       - else
         = "are accepted by #{@specialist.accepts_referrals_via}, and resonded to by #{@specialist.responds_via}"
-      
+
     - if @specialist.referral_form_mask == 1
       %p.collapse_up This office has a referral form
     - elsif @specialist.referral_form_mask == 2
       %p.collapse_up This office does not have a referral form
-      
+
     -if @specialist.waittime
       %p.collapse_up
         Average wait time from referral to appointment:
         %strong= @specialist.waittime
-            
+
     -if @specialist.lagtime
       %p.collapse_up
         Average length of time to notify GP of a booking date:

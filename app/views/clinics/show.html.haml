@@ -46,13 +46,22 @@
       %p
         %strong Required investigations for all patients:
         = @clinic.required_investigations
-    - if not @clinic.procedure_specializations.blank?
-      %p.collapse_up
-        %strong Areas of practice
-        \- with any 
-        %i additional 
-        required investigations:
-      = compressed_procedures_indented(@clinic).html_safe
+      - specialization_procedures, specialization_count = compressed_procedures_indented(@clinic, true)
+      - if specialization_count > 0
+        %p.collapse_up
+          %strong Areas of practice
+          \- with any 
+          %i additional 
+          required investigations:
+          = specialization_procedures.html_safe
+      - custom_procedures, custom_count = compressed_procedures_indented(@clinic, false)
+      - if custom_count > 0
+        %p.collapse_up
+          %strong Other areas of interest
+          \- with any 
+          %i additional 
+          required investigations:
+          = custom_procedures.html_safe
     - if not @clinic.interest.blank?
       %p.collapse_up
         %strong Most interested in
