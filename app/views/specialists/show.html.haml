@@ -22,7 +22,7 @@
   = "#{@specialist.specializations.collect(){ |s| s.name }.to_sentence}"
 - if @specialist.billing_number
   %h5
-    = "MSP ##{@specialist.billing_number}"
+    = "MSP ##{@specialist.billing_number_padded}"
   
 - if not @specialist.responded
   %p

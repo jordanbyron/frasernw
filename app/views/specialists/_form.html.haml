@@ -18,7 +18,7 @@
       = f.label :responded
       = f.input :responded, :label => false, wrapper: false
     = f.input :direct_phone
-    = f.input :billing_number, :as => :string
+    = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.billing_number_padded }
     
   %fieldset
     %h2 Specialties This Specialist Works In

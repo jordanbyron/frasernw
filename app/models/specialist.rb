@@ -156,6 +156,10 @@ class Specialist < ActiveRecord::Base
   def name
     firstname + ' ' + lastname
   end
+  
+  def billing_number_padded
+    "%05d" % billing_number
+  end
     
   def practice_limitations
     return practise_limitations
