@@ -1,5 +1,7 @@
 %h2 Users
 
+%p.admin= link_to "New User", new_user_path, :class => "btn btn-primary"
+
 %table.table.table-condensed.tablesorter
   %tr
     %th{:class => "{sorter: 'text'}"} Username
@@ -9,17 +11,13 @@
     %th Notify?
     %th
     %th
-    %th
 
   - User.all.each do |user|
     %tr
-      %td= user.username
+      %td= link_to user.username, user
       %td= user.name
       %td= user.email
       %td= user.role
       %td= user.notify
-      %td= link_to 'Show', user
-      %td= link_to 'Edit', edit_user_path(user)
-      %td= link_to 'Delete', user, :confirm => "Delete #{user.name}?", :method => :delete
-
-%p.admin= link_to "Add new user", new_user_path
+      %td.admin= link_to "<i class='icon-pencil'></i>".html_safe, edit_user_path(user)
+      %td.admin= link_to "<i class='icon-trash'></i>".html_safe, user, :confirm => "Delete #{user.name}?", :method => :delete

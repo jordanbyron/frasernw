@@ -204,6 +204,16 @@ body
       text-decoration: underline;
     }
     
+    a.btn
+    {
+      color: #FFF;
+    }
+    
+    a.btn:hover
+    {
+      text-decoration: none;
+    }
+    
     ul
     {
       margin: 0 0 0 1em;
@@ -331,16 +341,20 @@ body
       content: "\002302";
     }
     
-    .admin
+    .admin 
     {
-      display: none;
-      font-weight: bold;
-      
       color: $FNW_RED;
+      font-weight: bold;
       
       a
       {
         color: inherit;
+      }
+      
+      a.btn
+      {
+        color: #fff;
+        margin-bottom: 10px;
       }
     }
     

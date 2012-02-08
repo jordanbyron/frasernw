@@ -1,26 +1,34 @@
-= form_for @user do |f|
+= simple_form_for @user, :html => { :class => "form-horizontal" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
-  .row
-    = f.label :username, :class => "span3"
-    = f.text_field :username, :class => "span5"
-  .row
-    = f.label :name, :class => "span3"
-    = f.text_field :name, :class => "span5"
-  .row
-    = f.label :email, "Email Address", :class => "span3"
-    = f.text_field :email, :class => "span5"
-  .row
-    = f.label :password, :class => "span3"
-    = f.password_field :password, :class => "span5"
-  .row
-    = f.label :password_confirmation, "Confirm Password", :class => "span3"
-    = f.password_field :password_confirmation, :class => "span5"
-  .row
-    = f.label :role, :class => "span3"
-    = f.select :role, ['user', 'admin'], :class => "span5"
-  .row
-    = f.label :nofity, "email notifications (only if admin)", :class => "span3"
-    = f.check_box :notify, :class => "span5"
-  .row
-    = f.submit (@user.new_record? ? "Sign up" : "Update")
+  .control-group
+    = f.label :username, :class => "control-label"
+    .controls
+      = f.text_field :username
+  .control-group
+    = f.label :name, :class => "control-label"
+    .controls
+      = f.text_field :name
+  .control-group
+    = f.label :email, "Email Address", :class => "control-label"
+    .controls
+      = f.text_field :email
+  .control-group
+    = f.label :password, :class => "control-label"
+    .controls
+      = f.password_field :password
+  .control-group
+    = f.label :password_confirmation, "Confirm Password", :class => "control-label"
+    .controls
+      = f.password_field :password_confirmation
+  .control-group
+    = f.label :role, :class => "control-label"
+    .controls
+      = f.select :role, ['user', 'admin']
+  .control-group
+    = f.label :nofity, "Email Notifications (only if admin)", :class => "control-label"
+    .controls
+      = f.check_box :notify
+  .form-actions
+    = f.button :submit, :class => "btn btn-primary"
+    = link_to 'Cancel', users_path, :class => "btn btn-danger"
