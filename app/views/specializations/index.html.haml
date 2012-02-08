@@ -5,7 +5,7 @@
     %tr
       %td= specialization.name
       %td= link_to 'Show', specialization
-      %td= link_to 'Edit', edit_hospital_path(specialization)
+      %td= link_to 'Edit', edit_specialization_path(specialization)
       %td= link_to 'Delete', specialization, :confirm => "Delete #{specialization.name}?", :method => :delete
 
 %p= link_to "New Speciality", new_specialization_path
