@@ -1,6 +1,6 @@
-%h1 Users
+%h2 Users
 
-%table.table.table-striped.table-condensed.tablesorter
+%table.table.table-condensed.tablesorter
   %tr
     %th{:class => "{sorter: 'text'}"} Username
     %th{:class => "{sorter: 'text'}"} Name
@@ -22,4 +22,4 @@
       %td= link_to 'Edit', edit_user_path(user)
       %td= link_to 'Delete', user, :confirm => "Delete #{user.name}?", :method => :delete
 
-%p= link_to "add user", new_user_path
+%p.admin= link_to "Add new user", new_user_path
