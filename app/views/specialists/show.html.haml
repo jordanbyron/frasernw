@@ -106,7 +106,7 @@
       - if @specialist.responds_via.blank?
         = "are accepted by #{@specialist.accepts_referrals_via}"
       - else
-        = "are accepted by #{@specialist.accepts_referrals_via}, and resonded to by #{@specialist.responds_via}"
+        = "are accepted by #{@specialist.accepts_referrals_via}, and responded to by #{@specialist.responds_via}"
 
     - if @specialist.referral_form_mask == 1
       %p.collapse_up This office has a referral form
