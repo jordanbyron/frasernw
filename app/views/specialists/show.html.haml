@@ -31,7 +31,7 @@
     = @specialist.direct_phone
     %br
     %strong Billing number:
-    = @specialist.billing_number
+    = @specialist.billing_number_padded
     
   - @specialist.addresses.each do |address|
     - next if address.empty?
