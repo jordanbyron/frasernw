@@ -1,19 +1,15 @@
-%h1 Languages
+%h2 Languages
 
-%table.table.table-striped.table-condensed
+%table.table.table-condensed
   %tr
     %th Name
-    %th
-    %th
-    %th
+    %th.admin
 
   - @languages.each do |language|
     %tr
-      %td= language.name
-      %td= link_to 'Show', language
-      %td= link_to 'Edit', edit_language_path(language)
-      %td= link_to 'Delete', language, :confirm => "Delete #{language.name}?", :method => :delete
+      %td{"style" => "vertical-align:middle"}= link_to language.name, language
+      %td.admin.btn-group
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_language_path(language), :class => "btn btn-small")
+        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", language, :confirm => "Delete #{language.name}?", :method => :delete, :class => "btn btn-small")
 
-%br
-
-= link_to 'New Language', new_language_path
+%p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Language", new_language_path, :class => "btn")

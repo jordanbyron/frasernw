@@ -1,11 +1,8 @@
-%p#notice= notice
+%h2= @language.name
 
-%p
-  %b Name:
-  = @language.name
-
-= link_to 'Edit language', edit_language_path(@language)
-\|
-= link_to 'Delete language', @language, :confirm => "Delete #{@language.name}?", :method => :delete
-\|
-= link_to 'Show all languages', languages_path
+%p.admin.btn-group
+  - if can? :update, @language
+    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_language_path(@language), :class => "btn")
+    = link_to("<i class='icon-folder-open'></i>".html_safe + " History", show_versions_path(@language), :class => "btn")
+  - if can? :destroy, @language
+    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @language, :confirm => "Delete #{@language.name}?", :method => :delete, :class => "btn")
