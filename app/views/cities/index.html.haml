@@ -1,21 +1,17 @@
-%h1 Cities
+%h2 Cities
 
-%table.table.table-striped.table-condensed
+%table.table.table-condensed
   %tr
     %th Name
     %th Province
-    %th
-    %th
-    %th
+    %th.admin
 
   - @cities.each do |city|
     %tr
-      %td= "#{city.name}"
-      %td= "#{city.province}"
-      %td= link_to 'Show', city
-      %td= link_to 'Edit', edit_city_path(city)
-      %td= link_to 'Delete', city, :confirm => "Delete #{city.name}?", :method => :delete
+      %td{"style" => "vertical-align:middle"}= link_to city.name, city
+      %td{"style" => "vertical-align:middle"}= city.province
+      %td.admin.btn-group
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_city_path(city), :class => "btn btn-small")
+        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", city, :confirm => "Delete #{city.name}?", :method => :delete, :class => "btn btn-small")
 
-%br
-
-= link_to 'New City', new_city_path
+%p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New City", new_city_path, :class => "btn")
