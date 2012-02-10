@@ -12,10 +12,10 @@
 
   - User.all.each do |user|
     %tr
-      %td= link_to user.username, user
-      %td= user.name
-      %td= user.role
-      %td= user.notify
+      %td{"style" => "vertical-align:middle"}= link_to user.username, user
+      %td{"style" => "vertical-align:middle"}= user.name
+      %td{"style" => "vertical-align:middle"}= user.role
+      %td{"style" => "vertical-align:middle"}= user.notify
       %td.admin.btn-group
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-small")
         = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-small")
