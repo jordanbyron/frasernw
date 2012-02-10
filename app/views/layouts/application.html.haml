@@ -80,7 +80,7 @@
                       %li
                         %a{"href" => "#", "onclick" => "ajaxto('#{procedure_path(ps.procedure)}')"}= ps.procedure.name
 
-        #content.span8.offsethalf
+        #content.span8half.offsethalf
           %div{:id => "container"}
             - flash.each do |type, msg|
               .alert.alert-success= msg
