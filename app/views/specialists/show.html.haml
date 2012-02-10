@@ -148,13 +148,9 @@
         %strong.clinic Clinic associations:
         != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' onclick=\"ajaxto('#{clinic_path(clinic)}'); return false;\">#{clinic.name}</a>" }.to_sentence
 
-%p.admin
+%p.admin.btn-group
   - if can? :update, @specialist
-    = link_to "Edit specialist", edit_specialist_path(@specialist)
-    |
-  = link_to "History of edits", show_versions_path(@specialist)
-  |
+    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(@specialist), :class => "btn")
+  = link_to("<i class='icon-folder-open'></i>".html_safe + " History", show_versions_path(@specialist), :class => "btn")
   - if can? :destroy, @specialist
-    = link_to "Delete specialist", @specialist, :confirm => "Delete #{@specialist.name}?", :method => :delete
-    |
-  = link_to 'Show all specialists', specialists_path
+    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @specialist, :confirm => "Delete #{@specialist.name}?", :method => :delete, :class => "btn")
