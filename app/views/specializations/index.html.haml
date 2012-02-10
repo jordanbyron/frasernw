@@ -1,6 +1,6 @@
 %h2 Specialities
 
-%p.admin= link_to("<i class='icon-plus-sign icon-white'></i>".html_safe + " New Speciality", new_specialization_path, :class => "btn btn-primary btn-bottom-pad")
+%p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Speciality", new_specialization_path, :class => "btn btn-bottom-pad")
 
 %table.table.table-condensed
   - Specialization.all.each do |specialization|
