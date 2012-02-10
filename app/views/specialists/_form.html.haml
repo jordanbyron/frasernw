@@ -41,7 +41,7 @@
     = i.association :clinic, as: :select, collection: @specializations_clinics, label: "Clinic office is located in", :include_blank => true, :hint => "If applicable"
     - address_number += 1
   - if @specialist.addresses.count < Specialist::MAX_ADDRESSES
-    = f.link_to_add( "<i class='icon-plus-sign icon-white'></i>".html_safe + " Add a second location", :addresses, class: "btn btn-primary", id: "add_address")
+    = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add a second location", :addresses, class: "btn", id: "add_address")
   
   %hr
 
@@ -92,7 +92,7 @@
         .spanhalf
           = i.hidden_field :_destroy
           = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
-    = f.link_to_add( "<i class='icon-plus-sign icon-white'></i>".html_safe + " Add an area of practice", :capacities, class: "btn btn-primary")
+    = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add an area of practice", :capacities, class: "btn")
     
   %hr{ "style" => "visibility:hidden" }
   
