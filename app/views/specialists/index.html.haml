@@ -7,7 +7,7 @@
       %th.admin
       
     %tr
-      %th=link_to( "<i class='icon-plus-sign icon-white'></i>".html_safe + " New Specialist in #{specialization.name}", new_specialization_specialist_path(specialization), :class => "btn btn-primary")
+      %th=link_to( "<i class='icon-plus-sign'></i>".html_safe + " New Specialist in #{specialization.name}", new_specialization_specialist_path(specialization), :class => "btn")
       %th.admin
       
     - specialization.specialists.each do |specialist|
