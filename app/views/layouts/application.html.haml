@@ -20,7 +20,7 @@
             %ul.nav.pull-left
               
               - if logged_in? and current_user.admin?
-                %li.dropdown
+                %li.dropdown.admin
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
                     Admin
                     %b.caret
@@ -39,9 +39,9 @@
                     %li= link_to "Cities", cities_path
                     %li= link_to "Provinces", provinces_path
                     
-              %li= link_to "Pearls", "#"
-              %li= link_to "Handouts", "#"
-              %li= link_to "Videos", "#"
+              /%li= link_to "Pearls", "#"
+              /%li= link_to "Handouts", "#"
+              /%li= link_to "Videos", "#"
               %li= link_to "Logout", logout_url
             
             %form.navbar-search.pull-right
