@@ -18,29 +18,34 @@
           = link_to "Pathways", root_url, :class => "brand"
           - if logged_in?
             %ul.nav.pull-left
+              
+              - if logged_in? and current_user.admin?
+                %li.dropdown
+                  %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                    Admin
+                    %b.caret
+                  %ul.dropdown-menu
+                    /%li= link_to "Track Specialists", tracker_path
+                    %li= link_to "Activity", all_versions_path
+                    %li= link_to "Review Queue (#{Review.count})", reviews_path
+                    %li= link_to "Users", users_path
+                    %li= link_to "Specialities", specializations_path
+                    %li= link_to "Specialists", specialists_path
+                    %li= link_to "Clinics", clinics_path
+                    %li= link_to "Hospitals", hospitals_path
+                    %li= link_to "Areas of Practice", procedures_path
+                    %li= link_to "Healthcare Providers", healthcare_providers_path
+                    %li= link_to "Languages", languages_path
+                    %li= link_to "Cities", cities_path
+                    %li= link_to "Provinces", provinces_path
+                    
               %li= link_to "Pearls", "#"
               %li= link_to "Handouts", "#"
               %li= link_to "Videos", "#"
               %li= link_to "Logout", logout_url
+            
             %form.navbar-search.pull-right
-              %input.search-query{"type" => "text", "placeholder" => "Search"}
-    - if logged_in? and current_user.admin?
-      #admin-nav.navbar
-        .navbar-inner
-          .container
-            %ul.nav
-              /%li= link_to "Track Specialists", tracker_path
-              %li= link_to "Activity", all_versions_path
-              %li= link_to "Review Queue (#{Review.count})", reviews_path
-              %li= link_to "Users", users_path
-              %li= link_to "Specialities", specializations_path
-              %li= link_to "Specialists", specialists_path
-              %li= link_to "Clinics", clinics_path
-              %li= link_to "Hospitals", hospitals_path
-              %li= link_to "Areas of Practice", procedures_path
-              %li= link_to "Healthcare Providers", healthcare_providers_path
-              %li= link_to "Languages", languages_path
-              %li= link_to "Cities", cities_path
+              %input.span3.search-query{"type" => "text", "placeholder" => "Search"}
 
     #body.container
       .row
