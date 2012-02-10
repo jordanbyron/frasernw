@@ -1,13 +1,11 @@
-%h1 Hospitals
+%h2 Hospitals
 
-%table.table.table-striped.table-condensed
-  %tr
-    %th Name
-  - for hospital in @hospitals
+%p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Hospital", new_hospital_path, :class => "btn btn-bottom-pad")
+
+%table.table.table-condensed
+  - Hospital.all.each do |hospital|
     %tr
-      %td= hospital.name
-      %td= link_to 'Show', hospital
-      %td= link_to 'Edit', edit_hospital_path(hospital)
-      %td= link_to 'Delete', hospital, :confirm => "Delete #{hospital.name}?", :method => :delete
-
-%p= link_to "New Hospital", new_hospital_path
+      %td{"style" => "vertical-align:middle"}= link_to hospital.name, hospital
+      %td.admin.btn-group
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_hospital_path(hospital), :class => "btn btn-small")
+        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", hospital, :confirm => "Delete #{hospital.name}?", :method => :delete, :class => "btn btn-small")
