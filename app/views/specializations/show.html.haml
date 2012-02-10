@@ -60,16 +60,15 @@
                 %td= clinic.waittime
                 %td= clinic.addresses.first ? clinic.addresses.first.city : ""
 
-%p.admin
-  = link_to "New specialist", new_specialization_specialist_path(@specialization)
-  |
-  = link_to "New clinic", new_specialization_clinic_path(@specialization)
-  |
-  = link_to "New area of practice", new_specialization_procedure_path(@specialization)
+%p.admin.btn-group
+  - if can? :update, @specialization
+    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialty", edit_specialization_path(@specialization), :class => "btn")
+    = link_to("<i class='icon-folder-open'></i>".html_safe + " Specialty History", show_versions_path(@specialization), :class => "btn")
+  - if can? :destroy, @specialization
+    = link_to("<i class='icon-trash'></i>".html_safe + " Delete Specialty", @specialization, :confirm => "Delete #{@specialization.name}?", :method => :delete, :class => "btn")
 
-%p.admin
-  = link_to "Edit specialization", edit_specialization_path(@specialization)
-  |
-  = link_to "Delete specialization", @specialization, :confirm => "Delete #{@specialization.name}?", :method => :delete
-  |
-  = link_to "Show all specializations", specializations_path
+%p.admin.btn-group
+  - if can? :update, @specialization
+    = link_to("<i class='icon-plus-sign'></i>".html_safe + " New Specialist", new_specialization_specialist_path(@specialization), :class => "btn")
+    = link_to("<i class='icon-plus-sign'></i>".html_safe + " New Clinic", new_specialization_clinic_path(@specialization), :class => "btn")
+    = link_to("<i class='icon-plus-sign'></i>".html_safe + " New Area of Practice", new_specialization_procedure_path(@specialization), :class => "btn")
