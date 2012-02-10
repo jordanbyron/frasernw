@@ -1,23 +1,19 @@
-%h1 Provinces
+%h2 Provinces
 
-%table.table.table-striped.table-condensed
+%table.table.table-condensed
   %tr
     %th Name
     %th Abbreviation
     %th Symbol
-    %th
-    %th
-    %th
+    %th.admin
 
   - @provinces.each do |province|
     %tr
-      %td= province.name
+      %td= link_to province.name, province
       %td= province.abbreviation
       %td= province.symbol
-      %td= link_to 'Show', province
-      %td= link_to 'Edit', edit_province_path(province)
-      %td= link_to 'Delete', province, :confirm => "Delete #{province.name}?", :method => :delete
+      %td.admin.btn-group
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_province_path(province), :class => "btn btn-small")
+        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", province, :confirm => "Delete #{province.name}?", :method => :delete, :class => "btn btn-small")
 
-%br
-
-= link_to 'New Province', new_province_path
+%p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Province", new_province_path, :class => "btn")

@@ -1,9 +1,11 @@
-= simple_nested_form_for @province do |f|
-  = f.error_notification
+= simple_nested_form_for @province, :html => { :class => "form-horizontal" } do |f|
+  - if not f.error_messages.blank?
+    .alert.alert-error= f.error_messages
 
   = f.input :name
   = f.input :abbreviation
   = f.input :symbol
-    
-  %p
-    = f.button :submit
+
+  .form-actions
+    = f.button :submit, :class => "btn btn-primary"
+    = link_to 'Cancel', provinces_path, :class => "btn btn-danger"
