@@ -11,14 +11,14 @@
     .error_messages
       %h2 You are editing your record in the Fraser NW Division of Family Practice Resource database
       %p This database exists to make our practices, and your practice more efficient. By providing the information requested below you are making it easier for family doctors to find your practice, ensure that they are providing you with the correct information, and that your scope of practice is fully understood.
+      
+  %h3 General Information
 
   = f.input :firstname
   = f.input :lastname
   = f.input :responded
   = f.input :direct_phone, :hint => "For physician contact only"
   = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.billing_number_padded }
-  
-  %hr
     
   = f.association :specializations, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
   
@@ -122,16 +122,16 @@
   = f.input :patient_can_book_mask, as: :radio, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
   = f.input :red_flags, as: :text, input_html: { class: "full" }
   
-  %label Optimal method of referral for urgent appointments
+  %label Optimal method of referral for urgent appointments:
   = f.input :urgent_fax, as: :boolean, wrapper: :bootstrap_tight
   = f.input :urgent_phone, as: :boolean, wrapper: :bootstrap_tight
   = f.input :urgent_other_details
 
   %hr
   
+  %h3 Associations
+  
   = f.association :hospitals, as: :check_boxes, collection: Hospital.all(:order => "name ASC") 
-
-  %hr
   
   = f.association :clinics, as: :check_boxes, collection: @specializations_clinics
 

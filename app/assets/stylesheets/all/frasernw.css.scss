@@ -455,24 +455,32 @@ body
       }
     }
     
-    form textarea
+    .form-horizontal
     {
-      height: 75px;
-    }
+      textarea
+      {
+        height: 70px;
+      }
     
-    /* better bootstrap defaults for wrapping */
-    .radio.inline, .checkbox.inline
-    {
-      margin-right: 15px;
-    }
-    
-    .radio.inline + .radio.inline, .checkbox.inline + .checkbox.inline {
-      margin-left: 0;
-    }
-    
-    .control-group-tight
-    {
-      margin-bottom: 0px;
+      /* better bootstrap defaults for wrapping */
+      .radio.inline, .checkbox.inline
+      {
+        margin-right: 15px;
+      }
+      
+      .radio.inline + .radio.inline, .checkbox.inline + .checkbox.inline {
+        margin-left: 0;
+      }
+      
+      .control-group-tight
+      {
+        margin-bottom: 0px;
+      }
+      
+      h1, h2, h3, h4, h5, h6
+      {
+        margin-bottom: 10px;
+      }
     }
     
     .row.spaced
