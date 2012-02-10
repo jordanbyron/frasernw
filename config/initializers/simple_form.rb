@@ -43,8 +43,8 @@ SimpleForm.setup do |config|
     b.use :label_input
     b.use :hint,  :tag => :span, :class => :hint
     b.use :error, :tag => :span, :class => :error
-  end
-
+    end
+  
   config.wrappers :bootstrap, :tag => 'div', :class => 'control-group', :error_class => 'error' do |b|
     b.use :placeholder
     b.use :label, :class => 'control-label'
@@ -54,7 +54,17 @@ SimpleForm.setup do |config|
       ba.use :hint,  :tag => 'p', :class => 'help-block'
     end
   end
-
+  
+  config.wrappers :bootstrap_tight, :tag => 'div', :class => 'control-group control-group-tight', :error_class => 'error' do |b|
+    b.use :placeholder
+    b.use :label, :class => 'control-label'
+    b.use :tag => 'div', :class => 'controls' do |ba|
+      ba.use :input
+      ba.use :error, :tag => 'span', :class => 'help-inline'
+      ba.use :hint,  :tag => 'p', :class => 'help-block'
+    end
+  end
+  
   config.wrappers :prepend, :tag => 'div', :class => "control-group", :error_class => 'error' do |b|
     b.use :placeholder
     b.use :label, :class => 'control-label'
@@ -77,6 +87,12 @@ SimpleForm.setup do |config|
       end
       input.use :error, :tag => 'span', :class => 'help-inline'
     end
+  end
+  
+  config.wrappers :no_wrapper, :tag => false, :error_class => 'error' do |b|
+    b.use :placeholder
+    b.use :input 
+    b.use :label
   end
 
   # Wrappers for forms and inputs using the Twitter Bootstrap toolkit.
@@ -127,7 +143,7 @@ SimpleForm.setup do |config|
   # config.item_wrapper_class = nil
 
   # How the label text should be generated altogether with the required text.
-  # config.label_text = lambda { |label, required| "#{required} #{label}" }
+  config.label_text = lambda { |label, required| "#{label}" }
 
   # You can define the class to use on all labels. Default is nil.
   # config.label_class = nil
