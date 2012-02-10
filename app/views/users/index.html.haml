@@ -8,8 +8,7 @@
     %th{:class => "{sorter: 'text'}"} Name
     %th{:class => "{sorter: 'text'}"} Role
     %th Notify?
-    %th
-    %th
+    %th.admin
 
   - User.all.each do |user|
     %tr
@@ -17,5 +16,6 @@
       %td= user.name
       %td= user.role
       %td= user.notify
-      %td.admin= link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-small")
-      %td.admin= link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-small")
+      %td.admin.btn-group
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-small")
+        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-small")
