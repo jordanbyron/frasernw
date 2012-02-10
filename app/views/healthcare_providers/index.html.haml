@@ -1,19 +1,15 @@
-%h1 Healthcare Providers
+%h2 Healthcare Providers
 
-%table.table.table-striped.table-condensed
+%table.table.table-condensed
   %tr
     %th Name
-    %th
-    %th
-    %th
+    %th.admin
 
   - @healthcare_providers.each do |healthcare_provider|
     %tr
-      %td= healthcare_provider.name
-      %td= link_to 'Show', healthcare_provider
-      %td= link_to 'Edit', edit_healthcare_provider_path(healthcare_provider)
-      %td= link_to 'Delete', healthcare_provider, :confirm => "Delete #{healthcare_provider.name}?", :method => :delete
+      %td{"style" => "vertical-align:middle"}= healthcare_provider.name
+      %td.admin.btn-group
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_healthcare_provider_path(healthcare_provider), :class => "btn btn-small")
+        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", healthcare_provider, :confirm => "Delete #{healthcare_provider.name}?", :method => :delete, :class => "btn btn-small")
 
-%br
-
-= link_to 'New Healthcare provider', new_healthcare_provider_path
+%p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Healthcare Provider", new_healthcare_provider_path, :class => "btn")
