@@ -1,7 +1,5 @@
 %h2 Users
 
-%p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New User", new_user_path, :class => "btn btn-bottom-pad")
-
 %table.table.table-condensed.tablesorter
   %tr
     %th{:class => "{sorter: 'text'}"} Username
@@ -19,3 +17,5 @@
       %td.admin.btn-group
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-small")
         = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-small")
+
+%p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New User", new_user_path, :class => "btn")
