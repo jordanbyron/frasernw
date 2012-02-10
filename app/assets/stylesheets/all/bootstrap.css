@@ -125,6 +125,10 @@ a:hover {
   float: left;
   margin-left: 20px;
 }
+.spanhalf {
+  margin-left: 10px;
+  width: 30px;
+}
 .span1 {
   width: 60px;
 }
@@ -148,6 +152,9 @@ a:hover {
 }
 .span8 {
   width: 620px;
+}
+.span8half {
+  width: 660px;
 }
 .span9 {
   width: 700px;
@@ -538,7 +545,7 @@ textarea,
 select,
 .uneditable-input {
   display: inline-block;
-  width: 210px;
+  width: 380px;
   height: 18px;
   padding: 4px;
   margin-bottom: 9px;
@@ -594,7 +601,7 @@ select, input[type="file"] {
   line-height: 28px;
 }
 select {
-  width: 220px;
+  width: 390px;
   background-color: #ffffff;
 }
 select[multiple], select[size] {
@@ -974,15 +981,15 @@ input:focus:required:invalid:focus, textarea:focus:required:invalid:focus, selec
 }
 .form-horizontal .control-group > label {
   float: left;
-  width: 140px;
+  width: 220px;
   padding-top: 5px;
   text-align: right;
 }
 .form-horizontal .controls {
-  margin-left: 160px;
+  margin-left: 240px;
 }
 .form-horizontal .form-actions {
-  padding-left: 160px;
+  padding-left: 240px;
 }
 table {
   max-width: 100%;
@@ -1735,9 +1742,10 @@ table .span12 {
   margin-top: 1px;
 }
 .btn-small {
-  padding: 5px 9px;
+  padding: 3px 7px;
   font-size: 11px;
-  line-height: 16px;
+  line-height: 14px;
+}
 }
 .btn-small .icon {
   margin-top: -1px;

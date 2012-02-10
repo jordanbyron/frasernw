@@ -14,6 +14,23 @@
 
 /* Thin layout, also for iPad in portrait */
 @media (max-width: 980px), only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait) {
+  input,
+  textarea,
+  .uneditable-input {
+    width: 290px;
+  }
+  select {
+    width: 300px;
+  }
+  .form-horizontal .control-group > label {
+    width: 166px;
+  }
+  .form-horizontal .controls {
+    margin-left: 186px;
+  }
+  .form-horizontal .form-actions {
+    padding-left: 186px;
+  }
   .row {
     margin-left: -20px;
     *zoom: 1;
@@ -28,6 +45,10 @@
   [class*="span"] {
     float: left;
     margin-left: 20px;
+  }
+  .spanhalf {
+    width: 21px;
+    margin-left: 10px;
   }
   .span1 {
     width: 42px;
@@ -52,6 +73,9 @@
   }
   .span8 {
     width: 476px;
+  }
+  .span8half {
+    width: 507px;
   }
   .span9 {
     width: 538px;
@@ -195,6 +219,23 @@
 
 /* wide layout */
 @media (min-width: 1200px) {
+  input,
+  textarea,
+  .uneditable-input {
+    width: 470px;
+  }
+  select {
+    width: 480px;
+  }
+  .form-horizontal .control-group > label {
+    width: 270px;
+  }
+  .form-horizontal .controls {
+    margin-left: 300px;
+  }
+  .form-horizontal .form-actions {
+    padding-left: 300px;
+  }
   .row {
     margin-left: -30px;
     *zoom: 1;
@@ -209,6 +250,10 @@
   [class*="span"] {
     float: left;
     margin-left: 30px;
+  }
+  .spanhalf {
+    width: 35px;
+    margin-left: 15px;
   }
   .span1 {
     width: 70px;
@@ -233,6 +278,9 @@
   }
   .span8 {
     width: 770px;
+  }
+  .span8half {
+    width: 820px;
   }
   .span9 {
     width: 870px;
