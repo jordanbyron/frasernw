@@ -1,22 +1,25 @@
-= simple_nested_form_for @procedure do |f|
-  = f.error_messages
+= simple_nested_form_for @procedure, :html => { :class => "form-horizontal" } do |f|
+  - if not f.error_messages.blank?
+    .alert.alert-error= f.error_messages
   
-  %fieldset
-    %h2 Area of Practice
-    = f.input :name
-    = f.input :specialization_level, as: :radio, :collection => [ ['Specialization', true], ['Physician', false] ] 
- 
-  %fieldset
-    %h2 Specialities This Area of Practice Belongs To
+  = f.input :name
+  = f.input :specialization_level, as: :radio, :collection => [ ['Specialization', true], ['Physician', false] ] 
+
+  %h3 Specialities This Area of Practice Belongs To
+  .content
     - Specialization.all.each_with_index do |specialization, index|
-      %div.fields
+      .row.spaced
         - procedure_specialization = ProcedureSpecialization.find_by_procedure_id_and_specialization_id( @procedure.id, specialization.id )
         - procedure_ancestry = [["~ No parent ~", nil]] + ancestry_options_limited(specialization.procedure_specializations_arranged, procedure_specialization.subtree)
         = f.hidden_field procedure_specialization.id, :name => "procedure[all_procedure_specializations_attributes][#{index}][id]", :value => procedure_specialization.id
-        = label_tag "check_#{specialization.id}", specialization.name
-        = check_box_tag "check_#{specialization.id}", 1, procedure_specialization.mapped, :name => "procedure[all_procedure_specializations_attributes][#{index}][mapped]", :class => "check aop_active", :checked => @specializations.include?(specialization)
-        = select_tag "select_#{specialization.id}", options_for_select(procedure_ancestry, procedure_specialization.parent_id), :name => "procedure[all_procedure_specializations_attributes][#{index}][parent_id]", :class => "select parent", :hidden => !@specializations.include?(specialization)
-    
-  %p
-    = f.submit
+        = label_tag "check_#{specialization.id}", specialization.name, :class => "span3", "style" => "text-align:right"
+        = check_box_tag "check_#{specialization.id}", 1, procedure_specialization.mapped, :name => "procedure[all_procedure_specializations_attributes][#{index}][mapped]", :class => "check aop_active span1", :checked => @specializations.include?(specialization)
+        = select_tag "select_#{specialization.id}", options_for_select(procedure_ancestry, procedure_specialization.parent_id), :name => "procedure[all_procedure_specializations_attributes][#{index}][parent_id]", :class => "select parent span3"
+          
+  :javascript
+    $(".aop_active").each( hideShowParents )
+
+  .form-actions
+    = f.button :submit, :class => "btn btn-primary"
+    = link_to 'Cancel', procedures_path, :class => "btn btn-danger"
     

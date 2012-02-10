@@ -347,6 +347,11 @@ body
       }
     }
     
+    td.admin.btn-group
+    {
+      width: 120px;
+    }
+    
     a.btn
     {
       color: $FNW_TEXT;
@@ -356,6 +361,11 @@ body
     a.btn.btn-primary, a.btn.btn-danger
     {
       color: #fff;
+    }
+      
+    a.btn.btn-top-pad
+    {
+      margin-top: 10px;
     }
       
     a.btn.btn-bottom-pad

@@ -97,9 +97,9 @@
                 %td= clinic.waittime
                 %td= clinic.addresses.first ? clinic.addresses.first.city : ""
 
-%p.admin
-  = link_to "Edit area of practice", edit_procedure_path
-  |
-  = link_to "Delete area of practice", @procedure, :confirm => "Delete #{@procedure.name}?", :method => :delete
-  |
-  = link_to "View all areas of practice", procedures_path
+%p.admin.btn-group
+  - if can? :update, @procedure
+    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_procedure_path(@procedure), :class => "btn")
+    = link_to("<i class='icon-folder-open'></i>".html_safe + " History", show_versions_path(@procedure), :class => "btn")
+  - if can? :destroy, @procedure
+    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @procedure, :confirm => "Delete #{@procedure.name}?", :method => :delete, :class => "btn")
