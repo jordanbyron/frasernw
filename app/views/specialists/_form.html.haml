@@ -24,7 +24,7 @@
   
   %hr
 
-  %h3 Office / Contact Information
+  %h3 Office Contact Information
   - address_number = 1
   = f.simple_fields_for :addresses do |i|
     %h4.location_header 
@@ -53,7 +53,7 @@
     = f.input :contact_phone
     = f.input :contact_notes, hint: "Include contact's role (MOA, etc.) and anything else we should know."
     
-  %hr
+    %hr
 
   %h3 Status
   = f.input :status_mask, as: :select, collection: Specialist::STATUS_HASH, label_method: :last, value_method: :first
@@ -72,7 +72,7 @@
   %hr
 
   %h3 Areas of Practice
-  = f.input :required_investigations, input_html: { class: "full" }, :hint => "eg. XRs, MRIs, scans, blood work, etc."
+  = f.input :required_investigations, :hint => "eg. XRs, MRIs, scans, blood work, etc."
     
   %hr{ "style" => "visibility:hidden" }
   
@@ -120,7 +120,7 @@
   = f.input :respond_to_patient, as: :boolean
       
   = f.input :patient_can_book_mask, as: :radio, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
-  = f.input :red_flags, as: :text, input_html: { class: "full" }
+  = f.input :red_flags, as: :text
   
   %label Optimal method of referral for urgent appointments:
   = f.input :urgent_fax, as: :boolean, wrapper: :bootstrap_tight
