@@ -3,141 +3,138 @@
 - current_action = params[:action]     == 'new' ? :create : :update
 - form_action    = params[:controller] == 'specialists_editor' ? :update : current_action
 
-= simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => form_action}, :method => form_method do |f|
-  = f.error_messages
+= simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => form_action}, :method => form_method, :html => { :class => "form-horizontal" } do |f|
+  - if not f.error_messages.blank?
+    .alert.alert-error= f.error_messages
+    
   - if @view
     .error_messages
       %h2 You are editing your record in the Fraser NW Division of Family Practice Resource database
       %p This database exists to make our practices, and your practice more efficient. By providing the information requested below you are making it easier for family doctors to find your practice, ensure that they are providing you with the correct information, and that your scope of practice is fully understood.
 
-  %fieldset
-    %h2 Specialist
-    = f.input :firstname
-    = f.input :lastname
-    .input
-      = f.label :responded
-      = f.input :responded, :label => false, wrapper: false
-    = f.input :direct_phone
-    = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.billing_number_padded }
+  = f.input :firstname
+  = f.input :lastname
+  = f.input :responded
+  = f.input :direct_phone, :hint => "For physician contact only"
+  = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.billing_number_padded }
+  
+  %hr
     
-  %fieldset
-    %h2 Specialties This Specialist Works In
-    %p When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics.
-    = f.simple_fields_for :specialist_specializations do |i|
-      = i.association :specialization, as: :select, label: false, include_blank: false, wrapper: false
-      = i.hidden_field :_destroy
-      = i.link_to_remove "remove"
-    = f.link_to_add "Add another speciality", :specialist_specializations, class: "button"
+  = f.association :specializations, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
+  
+  %hr
 
-  %fieldset.address
-    %h2 Office / Contact Information
-    - address_number = 1
-    = f.simple_fields_for :addresses do |i|
-      %h4.location_header 
-        Location 
-        = address_number
-      = i.input :phone1
-      = i.input :fax
-      = i.input :suite
-      = i.input :address1
-      = i.input :address2
-      = i.association :city, as: :select, collection: City.all(:order => "name ASC").map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
-      = i.input :postalcode
-      = i.association :hospital, as: :select, collection: Hospital.all(:order => "name ASC"), label: "Hospital office is located in (if applicable)", :include_blank => true
-      = i.association :clinic, as: :select, collection: @specializations_clinics, label: "Clinic office is located in (if applicable)", :include_blank => true
-      %hr
-      - address_number += 1
-    - if @specialist.addresses.count < Specialist::MAX_ADDRESSES
-      = f.link_to_add "Add another location", :addresses, class: "button", id: "add_address"
+  %h3 Office / Contact Information
+  - address_number = 1
+  = f.simple_fields_for :addresses do |i|
+    %h4.location_header 
+      Location 
+      = address_number
+    = i.input :phone1
+    = i.input :fax
+    = i.input :suite
+    = i.input :address1
+    = i.input :address2
+    = i.association :city, as: :select, collection: City.all(:order => "name ASC").map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
+    = i.input :postalcode
+    = i.association :hospital, as: :select, collection: Hospital.all(:order => "name ASC"), label: "Hospital office is located in", :include_blank => true, :hint => "If applicable"
+    = i.association :clinic, as: :select, collection: @specializations_clinics, label: "Clinic office is located in", :include_blank => true, :hint => "If applicable"
+    - address_number += 1
+  - if @specialist.addresses.count < Specialist::MAX_ADDRESSES
+    = f.link_to_add( "<i class='icon-plus-sign icon-white'></i>".html_safe + " Add a second location", :addresses, class: "btn btn-primary", id: "add_address")
+  
+  %hr
 
-  - if current_user && current_user.admin?    
-    %fieldset
-      %h2 Senior MOA Contact Information
-      %p Allows specialists to edit their own form. This information is only visible to admins.
-      = f.input :contact_name
-      = f.input :contact_email
-      = f.input :contact_phone
-      = f.input :contact_notes, hint: "Include contact's role (MOA, etc.) and anything else we should know."
-
-  %fieldset
-    %h2 Status
-    = f.input :status_mask, as: :select, collection: Specialist::STATUS_HASH, label_method: :last, value_method: :first
-    #availablility
-      = f.input :unavailable_from, label: false, wrapper: false, input_html: { class: "unavailable_from", style: "display:none" }
-      %span.unavailable_to{ style: "display:none" }
-        to
-      = f.input :unavailable_to, label: false, wrapper: false, input_html: { class: "unavailable_to", style: "display:none" }
-      :javascript
-        $("#specialist_status_mask").each( status_changed );
-    = f.input :status_details
-    = f.input :practise_limitations
-    = f.input :location_opened, as: :select, collection: ["Prior to 2010", 2010, 2011], prompt: "Select ..."
-    = f.association :languages, as: :check_boxes, wrapper: false
-
-  %fieldset
-    %h2 Areas of Practice
-    %p
-      In addition to history, PH, meds, allergies and previous OR/consultation reports, the following information/investigations are required for ALL patients.
-      %span.quiet eg. XRs, MRIs, scans, blood work, etc.
-    = f.input :required_investigations, label: false, input_html: { class: "full" }
+  - if current_user && current_user.admin?   
+    %h3 Senior MOA Contact Information
+    %h4 This allows specialists to edit their own form. This information is only visible to admins.
+    = f.input :contact_name
+    = f.input :contact_email
+    = f.input :contact_phone
+    = f.input :contact_notes, hint: "Include contact's role (MOA, etc.) and anything else we should know."
     
-    %h3 Pertinent Areas of Practice/Expertise
-    %div.nested
-      %p
-        %span.middle Referrals accepted in the following areas of practice.
-        %span.last Additional information/investigations required for the specified area of practice.
+  %hr
 
-      = f.simple_fields_for :capacities do |i|
-        = i.association :procedure_specialization, as: :select, label: false, collection: @specializations_procedures, prompt: 'Select ...', wrapper: false
-        = i.input :investigation, label: false, wrapper: false
-        = i.hidden_field :_destroy
-        = i.link_to_remove "remove"
-      = f.link_to_add "Add an area of practice", :capacities, class: "button"
+  %h3 Status
+  = f.input :status_mask, as: :select, collection: Specialist::STATUS_HASH, label_method: :last, value_method: :first
+  #availablility
+    = f.input :unavailable_from, label: false, wrapper: false, input_html: { class: "unavailable_from", style: "display:none" }
+    %span.unavailable_to{ style: "display:none" }
+      to
+    = f.input :unavailable_to, label: false, wrapper: false, input_html: { class: "unavailable_to", style: "display:none" }
+    :javascript
+      $("#specialist_status_mask").each( status_changed );
+  = f.input :status_details
+  = f.input :practise_limitations
+  = f.input :location_opened, as: :select, collection: ["Prior to 2010", 2010, 2011], prompt: "Select ..."
+  = f.association :languages, as: :check_boxes, :item_wrapper_class => 'inline'
+  
+  %hr
 
-    %hr
-
-    = f.input :interest, as: :text
-    = f.input :not_performed, as: :text
-
-  %fieldset.referral_details
-    %h2 Referral Details
-    .mechanisms
-      %span.label How does your office accept requests for standard referrals?
-      = f.input :referral_fax, as: :boolean, wrapper: false
-      = f.input :referral_phone, as: :boolean, wrapper: false
-      = f.input :referral_other_details, wrapper: false
-
-    = f.input :referral_form_mask, as: :radio, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
+  %h3 Areas of Practice
+  = f.input :required_investigations, input_html: { class: "full" }, :hint => "eg. XRs, MRIs, scans, blood work, etc."
     
-    .input.optional
-      = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_HASH, label_method: :last, value_method: :first, wrapper: false
+  %hr{ "style" => "visibility:hidden" }
+  
+  %h4 Pertinent Areas of Practice/Expertise
+  
+  .content
+    .row
+      .span3 Referrals accepted in the following areas of practice.
+      .span3 Additional information/investigations required for the specified area of practice.
     
-    .input.optional
-      = f.input :waittime_mask, as: :select, collection: Specialist::WAITTIME_HASH, label_method: :last, value_method: :first, wrapper: false
+    = f.simple_fields_for :capacities, :class => "row" do |i|
+      .row.spaced
+        .span3
+          = i.association :procedure_specialization, as: :select, label: false, collection: @specializations_procedures, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "span3" }
+        .span5
+          = i.input :investigation, label: false, wrapper: :no_wrapper, input_html: { class: "span5" }
+        .spanhalf
+          = i.hidden_field :_destroy
+          = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
+    = f.link_to_add( "<i class='icon-plus-sign icon-white'></i>".html_safe + " Add an area of practice", :capacities, class: "btn btn-primary")
+    
+  %hr{ "style" => "visibility:hidden" }
+  
+  = f.input :interest, as: :text
+  = f.input :not_performed, as: :text
 
-    .mechanisms
-      %span.label Our office will respond to referral requests
-      %span.inputs
-        To the referring office by:
-        = f.input :respond_by_fax, as: :boolean, wrapper: false
-        = f.input :respond_by_phone, as: :boolean, wrapper: false
-        = f.input :respond_by_mail, as: :boolean, wrapper: false
-        %br
-        = f.input :respond_to_patient, as: :boolean, wrapper: false
-    = f.input :patient_can_book_mask, as: :radio, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
-    = f.input :red_flags, as: :text, input_html: { class: "full" }
-    .mechanisms
-      %span.label Optimal method of referral for urgent appointments
-      = f.input :urgent_fax, as: :boolean, wrapper: false
-      = f.input :urgent_phone, as: :boolean, wrapper: false
-      = f.input :urgent_other_details, wrapper: false
+  %hr
 
-  %fieldset
-    %h2 Hospital Privileges
-    = f.association :hospitals, as: :check_boxes, label: false, collection: Hospital.all(:order => "name ASC") 
+  %h3 Referral Details
+  %label How does your office accept requests for standard referrals?
+  = f.input :referral_fax, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :referral_phone, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :referral_other_details
 
-  %fieldset
-    %h2 Sub-Specialty Clinics
-    = f.association :clinics, as: :check_boxes, label: false, collection: @specializations_clinics
+  = f.input :referral_form_mask, as: :radio, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
+  
+  = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_HASH, label_method: :last, value_method: :first  
+  
+  = f.input :waittime_mask, as: :select, collection: Specialist::WAITTIME_HASH, label_method: :last, value_method: :first
 
-  = f.submit
+  %label Our office will respond to referral requests:
+  = f.input :respond_by_fax, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :respond_by_phone, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :respond_by_mail, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :respond_to_patient, as: :boolean
+      
+  = f.input :patient_can_book_mask, as: :radio, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
+  = f.input :red_flags, as: :text, input_html: { class: "full" }
+  
+  %label Optimal method of referral for urgent appointments
+  = f.input :urgent_fax, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :urgent_phone, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :urgent_other_details
+
+  %hr
+  
+  = f.association :hospitals, as: :check_boxes, collection: Hospital.all(:order => "name ASC") 
+
+  %hr
+  
+  = f.association :clinics, as: :check_boxes, collection: @specializations_clinics
+
+  .form-actions
+    = f.button :submit, :class => "btn btn-primary"
+    = link_to 'Cancel', specialists_path, :class => "btn btn-danger"

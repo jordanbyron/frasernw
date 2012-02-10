@@ -204,11 +204,6 @@ body
       text-decoration: underline;
     }
     
-    a.btn
-    {
-      color: #FFF;
-    }
-    
     a.btn:hover
     {
       text-decoration: none;
@@ -350,12 +345,22 @@ body
       {
         color: inherit;
       }
+    }
+    
+    a.btn
+    {
+      color: $FNW_TEXT;
+      font-weight: normal;
+    }
       
-      a.btn
-      {
-        color: #fff;
-        margin-bottom: 10px;
-      }
+    a.btn.btn-primary, a.btn.btn-danger
+    {
+      color: #fff;
+    }
+      
+    a.btn.btn-bottom-pad
+    {
+      margin-bottom: 10px;
     }
     
     .tabbable
@@ -448,6 +453,32 @@ body
           content: "\002193";
         }
       }
+    }
+    
+    form textarea
+    {
+      height: 75px;
+    }
+    
+    /* better bootstrap defaults for wrapping */
+    .radio.inline, .checkbox.inline
+    {
+      margin-right: 15px;
+    }
+    
+    .radio.inline + .radio.inline, .checkbox.inline + .checkbox.inline {
+      margin-left: 0;
+    }
+    
+    .control-group-tight
+    {
+      margin-bottom: 0px;
+    }
+    
+    .row.spaced
+    {
+      margin-top: 5px;
+      margin-bottom: 5px;
     }
   }
 }

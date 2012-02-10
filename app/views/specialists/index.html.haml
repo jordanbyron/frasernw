@@ -1,23 +1,20 @@
 %h1 Specialists
 
-%table.table.table-striped.table-condensed
+%table.table.table-condensed
   -Specialization.all.each do |specialization|
     %tr
-      %th= specialization.name
+      %th=specialization.name
       %th
       %th
+      
+    %tr
+      %th=link_to( "<i class='icon-plus-sign icon-white'></i>".html_safe + " New Specialist in #{specialization.name}", new_specialization_specialist_path(specialization), :class => "btn btn-primary")
       %th
-
+      %th
+      
     - specialization.specialists.each do |specialist|
       %tr
-        %td= "#{specialist.name}"
-        %td= link_to 'Show', specialist_path(specialist)
-        %td= link_to 'Edit', edit_specialist_path(specialist)
-        %td= link_to 'Delete', specialist, :confirm => "Delete #{specialist.name}?", :method => :delete
-        
-    %tr
-      %td= link_to "New Specialist in #{specialization.name}", new_specialization_specialist_path(specialization)
-      %td
-      %td
-      %td
+        %td{"style" => "vertical-align:middle"}= link_to specialist.name, specialist_path(specialist)
+        %td= link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-small")
+        %td= link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-small")
 
