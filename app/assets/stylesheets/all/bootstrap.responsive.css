@@ -222,10 +222,10 @@
   input,
   textarea,
   .uneditable-input {
-    width: 470px;
+    width: 370px;
   }
   select {
-    width: 480px;
+    width: 380px;
   }
   .form-horizontal .control-group > label {
     width: 270px;

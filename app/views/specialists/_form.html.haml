@@ -87,8 +87,8 @@
       .row.spaced
         .span3
           = i.association :procedure_specialization, as: :select, label: false, collection: @specializations_procedures, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "span3" }
-        .span5
-          = i.input :investigation, label: false, wrapper: :no_wrapper, input_html: { class: "span5" }
+        .span4
+          = i.input :investigation, label: false, wrapper: :no_wrapper, input_html: { class: "span4" }
         .spanhalf
           = i.hidden_field :_destroy
           = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"

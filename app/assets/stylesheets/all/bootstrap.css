@@ -545,7 +545,7 @@ textarea,
 select,
 .uneditable-input {
   display: inline-block;
-  width: 380px;
+  width: 300px;
   height: 18px;
   padding: 4px;
   margin-bottom: 9px;
@@ -601,7 +601,7 @@ select, input[type="file"] {
   line-height: 28px;
 }
 select {
-  width: 390px;
+  width: 310px;
   background-color: #ffffff;
 }
 select[multiple], select[size] {
