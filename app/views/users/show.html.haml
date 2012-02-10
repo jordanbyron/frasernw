@@ -1,7 +1,9 @@
-%h2= @user.username
+%h2= @user.name
 
-%h3 Favourites
-- @user.favorites.each do |f|
-  %p= f.name
+%p= "user name: #{@user.username}"
+%p= "email: #{@user.email}"
+%p= "role: #{@user.role}"
+%p= "notify: #{@user.notify}"
+
 
 %p= link_to "Edit user", edit_user_path(@user)
