@@ -16,8 +16,8 @@
 
   - Procedure.all(:order => "name").each do |procedure|
     %tr
-      %td= link_to procedure.name, procedure_path(procedure)
-      %td= procedure.procedure_specializations.map(){ |ps| compressed_ancestry(ps) }.join(", ")
+      %td{"style" => "vertical-align:middle"}= link_to procedure.name, procedure_path(procedure)
+      %td{"style" => "vertical-align:middle"}= procedure.procedure_specializations.map(){ |ps| compressed_ancestry(ps) }.join(", ")
       %td.admin.btn-group
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_procedure_path(procedure), :class => "btn btn-small")
         = link_to("<i class='icon-trash'></i>".html_safe + " Delete", procedure, :confirm => "Delete #{procedure.name}?", :method => :delete, :class => "btn btn-small")
