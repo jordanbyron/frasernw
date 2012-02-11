@@ -8,6 +8,7 @@
 
     = stylesheet_link_tag "application"
     = javascript_include_tag "application"
+    = javascript_include_tag 'livesearch'
     = csrf_meta_tag
     = yield(:head)
               
@@ -16,7 +17,7 @@
       {
           $('#search').livesearch({
             container: '#search_results',
-            data: [{ value: 'Russell',url: 'http://russell'}, {value: 'Kathleen',url: 'http://kathleen'}, {value: 'Jean',url: 'http://jean'}]
+            data: pathways_search_data
           });
       });
 

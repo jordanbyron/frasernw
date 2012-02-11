@@ -38,6 +38,8 @@ Frasernw::Application.routes.draw do
   
   match 'login' => 'user_sessions#new', :as => :login
   
+  match 'livesearch' => 'search#livesearch', :as => :livesearch
+  
   match 'blank' => 'specialization#blank', :as => :blank
 
   resources :user_sessions

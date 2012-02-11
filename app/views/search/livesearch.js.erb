@@ -1,0 +1,10 @@
+<% search_data = Array.new 
+
+Specialist.all.each do |specialist|
+
+  entry = { "value" => specialist.name, "url" => url_for(specialist) }
+  search_data << entry
+  
+end
+-%>
+pathways_search_data = <%=search_data.to_json.html_safe %>
