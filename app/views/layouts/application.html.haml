@@ -48,7 +48,10 @@
               %input.span3.search-query#search{"type" => "text", "placeholder" => "Search"}
               
             :javascript
-              $('#search').typeahead({source: ['Russell', 'Kathleen', 'Jean', 'Michael', 'Kyla', 'Anython']});
+              $(document).ready(function() 
+              {
+                  $('#search').livesearch('#search_results', [['Russell','url'], ['Kathleen','url'], ['Jean','url']], data_scores_matches, format_search_result).focus();
+              });
 
     #body.container
       .row
@@ -94,7 +97,8 @@
                         %a{"href" => "#", "onclick" => "ajaxto('#{procedure_path(ps.procedure)}')"}= ps.procedure.name
 
         #content.span8half.offsethalf
-          %div{:id => "container"}
+          #search_results.span8half
+          #container
             - flash.each do |type, msg|
               .alert.alert-success= msg
             = yield
