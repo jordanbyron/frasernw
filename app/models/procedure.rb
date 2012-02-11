@@ -32,6 +32,52 @@ class Procedure < ActiveRecord::Base
     return results.compact if results else []
   end
   
+  def all_clinics
+    #look at this procedure as well as its children to find any clinics
+    results = []
+    procedure_specializations.each do |ps|
+      ProcedureSpecialization.subtree_of(ps).each do |child|
+        Focus.find_all_by_procedure_specialization_id(child.id).each do |focus|
+          results << focus.clinic
+        end
+      end
+    end
+    results.uniq!
+    return results.compact if results else []
+  end
+  
+  def all_specialists_for_specialization(specialization)
+    #look at this procedure as well as its children to find any specialists
+    results = []
+    ProcedureSpecialization.find_by_specialization_id_and_procedure_id(specialization.id, self.id).subtree.each do |child|
+      Capacity.find_all_by_procedure_specialization_id(child.id).each do |capacity|
+        results << capacity.specialist
+      end
+    end
+    results.uniq!
+    return results.compact if results else []
+  end
+  
+  def all_clinics_for_specialization(specialization)
+    #look at this procedure as well as its children to find any clinics
+    results = []
+    ProcedureSpecialization.find_by_specialization_id_and_procedure_id(specialization.id, self.id).subtree.each do |child|
+      Focus.find_all_by_procedure_specialization_id(child.id).each do |focus|
+        results << focus.clinic
+      end
+    end
+    results.uniq!
+    return results.compact if results else []
+  end
+  
+  def empty?
+    return ((all_specialists.length == 0) and (all_clinics.length == 0))
+  end
+  
+  def empty_for_specialization?(specialization)
+    return ((all_specialists_for_specialization(specialization).length == 0) and (all_clinics_for_specialization(specialization).length == 0))
+  end
+  
   def has_children?
     result = false
     procedure_specializations.each do |ps|

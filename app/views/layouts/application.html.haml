@@ -66,6 +66,7 @@
                     %a.pop{"href" => "#", "data-toggle" => "pop", "data-target" => "#section_#{specialization.id}", "data-parent" => "#root"} Back
                   - specialization.procedure_specializations_arranged.each do |ps,children|
                     - next if not ps.procedure.specialization_level
+                    - next if ps.procedure.empty_for_specialization? specialization
                     %li 
                       - if children.length > 0
                         %a.push{"href" => "#", "onclick" => "ajaxto('#{procedure_path(ps.procedure)}')", "data-toggle" => "push", "data-target" => "#procedure_#{ps.procedure.id}"}= ps.procedure.name
@@ -75,6 +76,7 @@
               - specialization.procedure_specializations_arranged.each do |ps,children|
                 - next if children.length == 0
                 - next if not ps.procedure.specialization_level
+                - next if ps.procedure.empty_for_specialization? specialization
                 .nav_panel{ "id" => "procedure_#{ps.procedure.id}" }
                   %h3= ps.specialization.name
                   %ul
@@ -82,6 +84,7 @@
                       %a.pop{"href" => "#", "data-toggle" => "pop", "data-target" => "#procedure_#{ps.procedure.id}", "data-parent" => "#section_#{specialization.id}"} Back
                     - children.each do |ps,children|
                       - next if not ps.procedure.specialization_level
+                      - next if ps.procedure.empty_for_specialization? specialization
                       %li
                         %a{"href" => "#", "onclick" => "ajaxto('#{procedure_path(ps.procedure)}')"}= ps.procedure.name
 
