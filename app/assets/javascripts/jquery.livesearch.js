@@ -4,58 +4,110 @@
  * format_search_result(total_score, scores, matches, search_data_entry) needs to be a function which takes in a total score, array of scores and matches (as returned by your scores_matches_fnc), and the original search_data_entry, and returns a formatted list element (e.g. <li>something</li>).
 */
 
-jQuery.fn.livesearch = function(list, search_data, scores_matches_fnc, format_search_result_fnc)
+jQuery.fn.livesearch = function(options)
 {
-	list = jQuery(list);
-    search_data = jQuery(search_data);
-        
-    this
+  container = jQuery(options.container)
+  list = container.children('ul')
+  data = jQuery(options.data)
+  scorer_fnc = options.scorer || scorer
+  formatter_fnc = options.formatter || formatter
+  
+  this
     .keyup(filter).keyup()
     .parents('form').submit(function()
                             {
                                 return false;
                             });
-    
+  
 	return this;
     
 	function filter()
-    {
+  {
 		var term = jQuery.trim( jQuery(this).val().toLowerCase() )
-        var results = [];
 		
 		if ( !term ) 
-        {
-			list.hide();
+    {
+			container.hide();
+      return
 		} 
-        else 
-        {
-            list.empty();
-			list.show();
-            
-			search_data.each(   function()
-                                {
-                                    var total_score = 0;
-                                    var scores_matches = scores_matches_fnc(this, term);
-                                    var scores = scores_matches[0];
-                                    var matches = scores_matches[1];
-                                    for ( var i = 0; i < scores.length; ++i )
-                                    {
-                                        total_score += scores[i];
-                                    }
-                             
-                                    if (total_score > 0) 
-                                    { 
-                                        results.push([total_score, scores, matches, this]); 
-                                    }
-                                });
-            
-			jQuery.each(results.sort(function(a, b){return b[0] - a[0];}), function()
-                        {
-                            list.append(format_search_result_fnc(this[0], this[1], this[2], this[3]));
-                        });
-		}
+    
+    var results = [];
+    list.empty();
+    container.show();
+    
+    data.each(   function()
+                 {
+                   var total_score = 0
+                   var scores_matches = scorer_fnc(this, term)
+                   var scores = scores_matches[0]
+                   var matches = scores_matches[1]
+                   
+                   for ( var i = 0; i < scores.length; ++i )
+                   {
+                     total_score += scores[i]
+                   }
+                   
+                   if (total_score > 0) 
+                   { 
+                     results.push({total_score: total_score, scores: scores, matches: matches, data_entry: this})
+                   }
+                 });
+  
+  jQuery.each(results.sort(function(a, b){return b[0] - a[0];}), function()
+              {
+                list.append(formatter_fnc(this.total_score, this.scores, this.matches, this.data_entry))
+              });
 	}
+  
+  function scorer(data_entry, term) 
+  {
+    var score_matches = data_entry.value.score_matches(term,0);
+    return [[score_matches[0]], [score_matches[1]]];
+  }
+  
+  function highlighter(string, matches)
+  {
+    var output = "";
+    var string_length = string.length;
+    var currently_highlighted = false;
+    
+    for ( var i = 0; i < string_length; ++i )
+    {
+      var should_highlight = matches.hasValue(i);
+      
+      if ( should_highlight && !currently_highlighted )
+      {
+        output += "<em>";
+        currently_highlighted = true;
+      }
+      else if ( !should_highlight && currently_highlighted )
+      {
+        output += "</em>";
+        currently_highlighted = false;
+      }
+      
+      output += string.charAt(i);
+    }
+    
+    if ( currently_highlighted )
+    {
+      output += "</em>";
+    }
+    
+    return output;
+  }
+  
+  function formatter(total_score, scores, matches, data_entry)
+  {
+    return "<li><a href=\'" + data_entry.url + "'>" + highlighter( data_entry.value, matches[0] ) + '</a></li>';
+  }
 };
+
+Array.prototype.hasValue = function(value)
+{
+  for (var i=0; i<this.length; i++) { if (this[i] === value) return true; }
+  return false;
+}
 
  /*!
  * score_matches, built off of string_score

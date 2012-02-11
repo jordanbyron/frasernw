@@ -10,6 +10,15 @@
     = javascript_include_tag "application"
     = csrf_meta_tag
     = yield(:head)
+              
+    :javascript
+      $(document).ready(function() 
+      {
+          $('#search').livesearch({
+            container: '#search_results',
+            data: [{ value: 'Russell',url: 'http://russell'}, {value: 'Kathleen',url: 'http://kathleen'}, {value: 'Jean',url: 'http://jean'}]
+          });
+      });
 
   %body{:id => "#{params[:controller]}_page"}
     #main-nav.navbar
@@ -46,12 +55,6 @@
             
             %form.navbar-search.pull-right
               %input.span3.search-query#search{"type" => "text", "placeholder" => "Search"}
-              
-            :javascript
-              $(document).ready(function() 
-              {
-                  $('#search').livesearch('#search_results', [['Russell','url'], ['Kathleen','url'], ['Jean','url']], data_scores_matches, format_search_result).focus();
-              });
 
     #body.container
       .row
@@ -98,6 +101,7 @@
 
         #content.span8half.offsethalf
           #search_results.span8half
+            %ul
           #container
             - flash.each do |type, msg|
               .alert.alert-success= msg
