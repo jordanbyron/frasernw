@@ -4,7 +4,7 @@
 %h2
   = @clinic.name
 %h4
-  = @clinic.specializations.collect(){ |s| "<a href='#' onclick=\"ajaxto(\'#{specialization_path(s)}\')\">#{s.name}</a>".html_safe }.to_sentence
+  = @clinic.specializations.collect(){ |s| "<a href='#' onclick=\"ajaxto(\'#{specialization_path(s)}\')\">#{s.name}</a>" }.to_sentence.html_safe
   
 - if not @clinic.responded
   %p
@@ -46,30 +46,30 @@
       %p
         %strong Required investigations for all patients:
         = @clinic.required_investigations
-      - specialization_procedures, specialization_count = compressed_procedures_indented(@clinic, true)
-      - if specialization_count > 0
-        %p.collapse_up
-          %strong Areas of practice
-          \- with any 
-          %i additional 
-          required investigations:
-          = specialization_procedures.html_safe
-      - custom_procedures, custom_count = compressed_procedures_indented(@clinic, false)
-      - if custom_count > 0
-        %p.collapse_up
-          %strong Other areas of interest
-          \- with any 
-          %i additional 
-          required investigations:
-          = custom_procedures.html_safe
-    - if not @clinic.interest.blank?
+    - specialization_procedures, specialization_count = compressed_procedures_indented(@clinic, true)
+    - if specialization_count > 0
       %p.collapse_up
-        %strong Most interested in
-        = @clinic.interest
-    - if not @clinic.not_performed.blank?
+        %strong Areas of practice
+        \- with any 
+        %i additional 
+        required investigations:
+        = specialization_procedures.html_safe
+    - custom_procedures, custom_count = compressed_procedures_indented(@clinic, false)
+    - if custom_count > 0
       %p.collapse_up
-        %strong Does not see or do
-        = @clinic.not_performed
+        %strong Other areas of interest
+        \- with any 
+        %i additional 
+        required investigations:
+        = custom_procedures.html_safe
+  - if not @clinic.interest.blank?
+    %p.collapse_up
+      %strong Most interested in
+      = @clinic.interest
+  - if not @clinic.not_performed.blank?
+    %p.collapse_up
+      %strong Does not see or do
+      = @clinic.not_performed
     
   %p
     %strong.referral Referrals
