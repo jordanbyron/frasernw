@@ -45,7 +45,10 @@
               %li= link_to "Logout", logout_url
             
             %form.navbar-search.pull-right
-              %input.span3.search-query{"type" => "text", "placeholder" => "Search"}
+              %input.span3.search-query#search{"type" => "text", "placeholder" => "Search"}
+              
+            :javascript
+              $('#search').typeahead({source: ['Russell', 'Kathleen', 'Jean', 'Michael', 'Kyla', 'Anython']});
 
     #body.container
       .row
