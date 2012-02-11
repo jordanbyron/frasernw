@@ -1,4 +1,9 @@
 @import "_globals";
+    
+.admin 
+{
+  /*display: none;*/
+}
 
 body 
 {
@@ -16,6 +21,7 @@ body
     font-size: 26px;
     line-height: 20px;
     text-shadow: #333 0 0 5px;
+    font-weight: 200;
   }
   
   .brand:hover
@@ -39,26 +45,6 @@ body
   }
 }
 
-#admin-nav .navbar-inner
-{
-  margin-top: -10px;
-  background-color: $FNW_RED;
-  background-image: none;
-  border-radius: 0;
-  
-  ul
-  {
-    li
-    {
-      a
-      {
-        color: $FNW_LIGHT_GRAY;
-        font-size: 12px;
-      }
-    }
-  }
-}
-
 #body
 {
   color:$FNW_TEXT;
@@ -79,6 +65,17 @@ body
       color: $FNW_RED;
       padding: 0 $FNW_NAV_PADDING_RIGHT 0 $FNW_NAV_PADDING_LEFT;
       font-weight: normal;
+      
+      a
+      {
+        color: inherit;
+        text-decoration: none;
+      }
+      
+      a:hover
+      {
+        text-decoration: underline;
+      }
     }
     
     ul
@@ -166,6 +163,11 @@ body
     {
       color: $FNW_RED;
       font-weight: normal;  
+      
+      a
+      {
+        color: inherit;
+      }
     }
     
     p
@@ -334,11 +336,6 @@ body
     .clinic:before
     {
       content: "\002302";
-    }
-    
-    .admin 
-    {
-      /*display: none;*/
     }
     
     td.admin.btn-group
