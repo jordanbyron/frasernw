@@ -21,4 +21,10 @@ function ajaxto(src)
             window.parent.history.pushState(null, $(data).filter('title').text(), src);
           }
          });
+  /*
+  $.pjax({
+         url: src,
+         container: '#container'
+   });
+   */
 }
