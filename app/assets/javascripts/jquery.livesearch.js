@@ -11,6 +11,8 @@ jQuery.fn.livesearch = function(options)
   data = jQuery(options.data)
   scorer_fnc = options.scorer || scorer
   formatter_fnc = options.formatter || formatter
+  fuzziness = options.fuzziness || 0
+  max_results = options.max_results || 10
   
   this
     .keyup(filter).keyup()
@@ -38,7 +40,7 @@ jQuery.fn.livesearch = function(options)
     data.each(   function()
                  {
                    var total_score = 0
-                   var scores_matches = scorer_fnc(this, term)
+                   var scores_matches = scorer_fnc(this, term, fuzziness)
                    var scores = scores_matches[0]
                    var matches = scores_matches[1]
                    
@@ -53,15 +55,18 @@ jQuery.fn.livesearch = function(options)
                    }
                  });
   
-  jQuery.each(results.sort(function(a, b){return b[0] - a[0];}), function()
-              {
-                list.append(formatter_fnc(this.total_score, this.scores, this.matches, this.data_entry))
-              });
+    var count = 0;
+    jQuery.each(results.sort(function(a, b){return b[0] - a[0];}), function()
+                {
+                  count++
+                  if (count < max_results)
+                    list.append(formatter_fnc(this.total_score, this.scores, this.matches, this.data_entry))
+                });
 	}
   
-  function scorer(data_entry, term) 
+  function scorer(data_entry, term, fuzziness) 
   {
-    var score_matches = data_entry.value.score_matches(term,0);
+    var score_matches = data_entry.value.score_matches(term, fuzziness);
     return [[score_matches[0]], [score_matches[1]]];
   }
   
