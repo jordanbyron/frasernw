@@ -4,6 +4,6 @@
 
 = simple_form_for @user_session do |f|
   = f.error_messages
-  =f.input :username, autofocus: true
+  =f.input :username, autofocus: true, input_html: { "autocorrect" => "off", "autocapitalize" => "off" }
   =f.input :password
   =f.button :submit, "Log In"
