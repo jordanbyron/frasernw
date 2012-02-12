@@ -22,7 +22,7 @@
     });
 
 %h2= "#{@procedure.name}"
-%h4= @procedure.procedure_specializations.collect(){ |ps| compressed_ancestry(ps) }.to_sentence
+%h4= @procedure.procedure_specializations.collect(){ |ps| "<a href='#' onclick=\"ajaxto(\'#{specialization_path(ps.specialization)}\')\">#{compressed_ancestry(ps)}</a>" }.to_sentence.html_safe
 
 - has_specialists = @procedure.all_specialists.length > 0
 - has_clinics = @procedure.all_clinics.length > 0
