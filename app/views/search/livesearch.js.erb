@@ -1,10 +1,59 @@
 <% search_data = Array.new 
 
-Specialist.all.each do |specialist|
-
-  entry = { "name" => specialist.name, "specialty" => specialist.specializations.collect{ |s| s.name }.to_sentence, "url" => url_for(specialist) }
+Specialization.all.each do |specialization|
+  entry = { 
+    "name" => specialization.name, 
+    "specialty" => "",
+    "city" => "", 
+    "status" => "",
+    "icon" => "book",
+    "url" => url_for(specialization) }
   search_data << entry
-  
+end 
+
+Procedure.all.each do |procedure|
+  entry = { 
+    "name" => procedure.name, 
+    "specialty" => "",
+    "city" => "", 
+    "status" => "",
+    "icon" => "tag",
+    "url" => url_for(procedure) }
+  search_data << entry
+end 
+
+Specialist.all.each do |specialist|
+  entry = { 
+    "name" => specialist.name, 
+    "specialty" => specialist.specializations.collect{ |s| s.name }.to_sentence, 
+    "city" => specialist.addresses.first ? "#{specialist.addresses.first.city}" : "", 
+    "status" => specialist.status_class,
+    "icon" => "user",
+    "url" => url_for(specialist) }
+  search_data << entry
 end
+
+Clinic.all.each do |clinic|
+  entry = { 
+    "name" => clinic.name, 
+    "specialty" => clinic.specializations.collect{ |s| s.name }.to_sentence,
+    "city" => clinic.addresses.first ? "#{clinic.addresses.first.city}" : "",  
+    "status" => clinic.status_class,
+    "icon" => "home",
+    "url" => url_for(clinic) }
+  search_data << entry
+end
+
+Hospital.all.each do |hospital|
+  entry = { 
+    "name" => hospital.name, 
+    "specialty" => "", 
+    "city" => hospital.addresses.first ? "#{hospital.addresses.first.city}" : "", 
+    "status" => "none",
+    "icon" => "plus",
+    "url" => url_for(hospital) }
+  search_data << entry
+end
+
 -%>
 pathways_search_data = <%=search_data.to_json.html_safe %>

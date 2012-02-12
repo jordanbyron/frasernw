@@ -1,4 +1,9 @@
 @import "_globals";
+
+
+$FNW_STATUS_INDENT: 40px;    
+$FNW_NAV_PADDING_LEFT: 5%;
+$FNW_NAV_PADDING_RIGHT: 10%;
     
 .admin 
 {
@@ -44,6 +49,83 @@ body
     color: $FNW_MID_GRAY;
   }
 }
+  
+#search_results
+{
+  -webkit-transition: opacity 0.25s ease;
+  -moz-transition: opacity 0.25s ease;
+  -ms-transition: opacity 0.25s ease;
+  -o-transition: opacity 0.25s ease;
+  transition: opacity 0.25s ease;
+  opacity: 0;
+  
+  z-index: 1979;
+  position: absolute;
+  overflow: hidden;
+  top: 45px;
+  margin: 0;
+  padding: 0;
+  background-color: $FNW_BACKGROUND;
+  border: 3px solid $FNW_DARK_GRAY;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  
+  em
+  {
+    font-style: normal;
+    font-weight: bold;
+  }
+  
+  ul
+  {
+    margin: 0;
+    padding: 0;
+  
+    li
+    {
+      display: block;
+      list-style-type: none;
+      border-bottom: 1px solid $FNW_LIGHT_GRAY;
+      margin: 0;
+      padding: 0;
+    
+      a
+      {
+        padding: 10px $FNW_STATUS_INDENT;
+        display: inline-block;
+        width: 100%;
+        color: $FNW_BLUE;
+        
+        .name, specialties, .city
+        {
+          display: block;
+        }
+      }
+      
+      a:hover
+      {
+        background: $FNW_LIGHT_BLUE;
+        text-decoration: none;
+      }
+    }
+    
+    li.empty
+    {
+      padding: 10px 20px;
+      color: $FNW_TEXT; 
+      font-weight: bold; 
+    }
+  }
+}
+
+#search_results.show
+{
+  opacity: 1.0;
+}
 
 #body
 {
@@ -56,9 +138,6 @@ body
     position: relative;
     overflow: hidden;
     height: auto;
-    
-    $FNW_NAV_PADDING_LEFT: 5%;
-    $FNW_NAV_PADDING_RIGHT: 10%;
     
     h3
     {
@@ -155,92 +234,8 @@ body
     }
   }
   
-  #search_results
-  {
-    -webkit-transition: opacity 0.25s ease;
-    -moz-transition: opacity 0.25s ease;
-    -ms-transition: opacity 0.25s ease;
-    -o-transition: opacity 0.25s ease;
-    transition: opacity 0.25s ease;
-    opacity: 0;
-    
-    z-index: 1979;
-    position: absolute;
-    overflow: hidden;
-    top: 45px;
-    margin: 0;
-    padding: 0;
-    background-color: $FNW_BACKGROUND;
-    border: 3px solid $FNW_DARK_GRAY;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
-    -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-    
-    em
-    {
-      font-style: normal;
-      font-weight: bold;
-    }
-    
-    ul
-    {
-      margin: 0;
-      padding: 0;
-    
-      li
-      {
-        display: block;
-        list-style-type: none;
-        border-bottom: 1px solid $FNW_LIGHT_GRAY;
-        margin: 0;
-        padding: 0;
-      
-        a
-        {
-          padding: 10px 20px;
-          display: inline-block;
-          width: 100%;
-          color: $FNW_BLUE;
-          
-          .name
-          {
-            display: block;
-          }
-          
-          .specialties
-          {
-            display: block;
-          }
-        }
-        
-        a:hover
-        {
-          background: $FNW_LIGHT_BLUE;
-          text-decoration: none;
-        }
-      }
-      
-      li.empty
-      {
-        padding: 10px 20px;
-        color: $FNW_TEXT; 
-        font-weight: bold; 
-      }
-    }
-  }
-  
-  #search_results.show
-  {
-    opacity: 1.0;
-  }
-  
   #content #container
   {
-    $FNW_CONTAINER_INDENT: 30px;
-    
     h1, h2, h3, h4, h5
     {
       color: $FNW_RED;
@@ -304,10 +299,6 @@ body
     }
     
     .address:before, 
-    .status_available:before, 
-    .status_unavailable:before, 
-    .status_unknown:before, 
-    .status_warning:before, 
     .language:before, 
     .investigation p:first-child strong:before, 
     .referral:before, 
@@ -319,9 +310,9 @@ body
       color: $FNW_BLUE;
       font-size: 12pt;
       display: inline-block;
-      margin-left: -$FNW_CONTAINER_INDENT;
-      width: $FNW_CONTAINER_INDENT;
-      text-align: left;
+      margin-left: -$FNW_STATUS_INDENT;
+      width: $FNW_STATUS_INDENT;
+      text-align: center;
       padding: 0;
     }
     
@@ -349,35 +340,6 @@ body
     .address:before
     {
       content: "\002709";
-    }
-    
-    .status_available:before
-    {
-      content: "\002713";
-      color: $FNW_GREEN;
-    }
-    
-    .status_unavailable:before
-    {
-      visibility: visible;
-      content: "\002717";
-      color: $FNW_RED;
-    }
-    
-    .status_unknown:before
-    {
-      visibility: visible;
-      content: "?";
-      font-weight: bold;
-      color: $FNW_MID_GRAY;
-    }
-    
-    .status_warning:before
-    {
-      visibility: visible;
-      content: "!";
-      font-weight: bold;
-      color: $FNW_ORANGE;
     }
     
     .language:before
@@ -571,5 +533,46 @@ body
       margin-top: 5px;
       margin-bottom: 5px;
     }
+  }
+    
+  .status_available:before, 
+  .status_unavailable:before, 
+  .status_unknown:before, 
+  .status_warning:before,
+  {
+    font-family: "Icon";
+    color: $FNW_BLUE;
+    font-size: 12pt;
+    display: inline-block;
+    margin-left: -$FNW_STATUS_INDENT;
+    width: $FNW_STATUS_INDENT;
+    text-align: center;
+    padding: 0;
+  }
+  
+  .status_available:before
+  {
+    content: "\002713";
+    color: $FNW_GREEN;
+  }
+  
+  .status_unavailable:before
+  {
+    content: "\002717";
+    color: $FNW_RED;
+  }
+  
+  .status_unknown:before
+  {
+    content: "?";
+    font-weight: bold;
+    color: $FNW_MID_GRAY;
+  }
+  
+  .status_warning:before
+  {
+    content: "!";
+    font-weight: bold;
+    color: $FNW_ORANGE;
   }
 }
