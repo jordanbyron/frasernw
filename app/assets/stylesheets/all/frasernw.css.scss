@@ -7,7 +7,7 @@ $FNW_NAV_PADDING_RIGHT: 10%;
     
 .admin 
 {
-  /*display: none;*/
+  display: none;
 }
 
 body 
@@ -95,15 +95,10 @@ body
     
       a
       {
-        padding: 10px $FNW_STATUS_INDENT;
+        padding: 10px;
         display: inline-block;
         width: 100%;
         color: $FNW_BLUE;
-        
-        .name, specialties, .city
-        {
-          display: block;
-        }
       }
       
       a:hover
