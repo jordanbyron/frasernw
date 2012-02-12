@@ -2,7 +2,7 @@
 
 Specialist.all.each do |specialist|
 
-  entry = { "value" => specialist.name, "url" => url_for(specialist) }
+  entry = { "name" => specialist.name, "specialty" => specialist.specializations.collect{ |s| s.name }.to_sentence, "url" => url_for(specialist) }
   search_data << entry
   
 end

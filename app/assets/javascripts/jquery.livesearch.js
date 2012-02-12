@@ -11,11 +11,17 @@ jQuery.fn.livesearch = function(options)
   data = jQuery(options.data)
   scorer_fnc = options.scorer || scorer
   formatter_fnc = options.formatter || formatter
-  fuzziness = options.fuzziness || 0
+  empty_fnc = options.empty || empty
+  fuzziness = options.fuzziness || 0.5
   max_results = options.max_results || 10
+  min_score = options.min_score || 0.5
   
   this
     .keyup(filter).keyup()
+    .focus(filter)
+    .blur(function() 
+          { container.removeClass('show') 
+          })
     .parents('form').submit(function()
                             {
                                 return false;
@@ -29,82 +35,55 @@ jQuery.fn.livesearch = function(options)
 		
 		if ( !term ) 
     {
-			container.hide();
+      container.removeClass('show')
       return
 		} 
     
-    var results = [];
-    list.empty();
-    container.show();
+    list.empty()
+    container.addClass('show')
     
-    data.each(   function()
-                 {
-                   var total_score = 0
-                   var scores_matches = scorer_fnc(this, term, fuzziness)
-                   var scores = scores_matches[0]
-                   var matches = scores_matches[1]
-                   
-                   for ( var i = 0; i < scores.length; ++i )
-                   {
-                     total_score += scores[i]
-                   }
-                   
-                   if (total_score > 0) 
-                   { 
-                     results.push({total_score: total_score, scores: scores, matches: matches, data_entry: this})
-                   }
-                 });
-  
+    var results = [];
+    
+    data.each(function()
+      {
+        var total_score = 0
+        var scores_matches = scorer_fnc(this, term, fuzziness)
+      
+        $.each(scores_matches, function(k, v) { total_score += v.score } );
+      
+        if (total_score >= min_score) 
+          results.push({total_score: total_score, scores_matches: scores_matches, data_entry: this})
+      });
+    
+    if (results.length == 0)
+    {
+      list.append( empty_fnc() )
+      return
+    }
+    
     var count = 0;
-    jQuery.each(results.sort(function(a, b){return b[0] - a[0];}), function()
-                {
-                  count++
-                  if (count < max_results)
-                    list.append(formatter_fnc(this.total_score, this.scores, this.matches, this.data_entry))
-                });
+    $.each(results.sort(function(a, b){return b.total_score - a.total_score}), function()
+      {
+        if (++count > max_results)
+           return false;
+        
+        list.append(formatter_fnc(this.total_score, this.scores_matches, this.data_entry))
+      });
 	}
   
   function scorer(data_entry, term, fuzziness) 
   {
-    var score_matches = data_entry.value.score_matches(term, fuzziness);
-    return [[score_matches[0]], [score_matches[1]]];
+    return { value: data_entry.value.score_matches(term, fuzziness) };
   }
   
-  function highlighter(string, matches)
+  function formatter(total_score, scores_matches, data_entry)
   {
-    var output = "";
-    var string_length = string.length;
-    var currently_highlighted = false;
-    
-    for ( var i = 0; i < string_length; ++i )
-    {
-      var should_highlight = matches.hasValue(i);
-      
-      if ( should_highlight && !currently_highlighted )
-      {
-        output += "<em>";
-        currently_highlighted = true;
-      }
-      else if ( !should_highlight && currently_highlighted )
-      {
-        output += "</em>";
-        currently_highlighted = false;
-      }
-      
-      output += string.charAt(i);
-    }
-    
-    if ( currently_highlighted )
-    {
-      output += "</em>";
-    }
-    
-    return output;
+    return "<li><a href=\'" + data_entry.url + "'>" + livesearch_highlighter( data_entry.value, scores_matches.value.matches ) + '</a></li>';
   }
   
-  function formatter(total_score, scores, matches, data_entry)
+  function empty()
   {
-    return "<li><a href=\'" + data_entry.url + "'>" + highlighter( data_entry.value, matches[0] ) + '</a></li>';
+    return "<li class='empty'>No results</li>";
   }
 };
 
@@ -139,125 +118,157 @@ Array.prototype.hasValue = function(value)
 
 String.prototype.score_matches = function(abbreviation, fuzziness) 
 {
-    var matches = new Array();
-    
-    // If the string is equal to the abbreviation, perfect match.
-    if (this == abbreviation) 
+  var matches = new Array();
+  
+  // If the string is equal to the abbreviation, perfect match.
+  if (this == abbreviation) 
+  {
+    for ( var i = 0; i < this.length; ++i )
     {
-        for ( var i = 0; i < this.length; ++i )
-        {
-            matches[i] = i;
-        }
-        return [1,matches];
+      matches[i] = i;
     }
-    //if it's not a perfect match and is empty return 0
-    if(abbreviation == "") {return [0,[]];}
+    return [1,matches];
+  }
+  //if it's not a perfect match and is empty return 0
+  if(abbreviation == "") {return [0,[]];}
+  
+  var total_character_score = 0,
+  string = this,
+  string_length = string.length,
+  abbreviation_length = abbreviation.length,
+  start_of_string_bonus,
+  abbreviation_score,
+  cur_start = 0,
+  fuzzies = 1,
+  final_score
+  
+  // Walk through abbreviation and add up scores.
+  for (var i = 0,
+       character_score/* = 0*/,
+       index_in_string/* = 0*/,
+       c/* = ''*/,
+       index_c_lowercase/* = 0*/,
+       index_c_uppercase/* = 0*/,
+       min_index/* = 0*/;
+       i < abbreviation_length;
+       ++i) 
+  {
     
-    var total_character_score = 0,
-    string = this,
-    string_length = string.length,
-    abbreviation_length = abbreviation.length,
-    start_of_string_bonus,
-    abbreviation_score,
-    cur_start = 0,
-    fuzzies = 1,
-    final_score
+    // Find the first case-insensitive match of a character.
+    c = abbreviation.charAt(i);
     
-    // Walk through abbreviation and add up scores.
-    for (var i = 0,
-         character_score/* = 0*/,
-         index_in_string/* = 0*/,
-         c/* = ''*/,
-         index_c_lowercase/* = 0*/,
-         index_c_uppercase/* = 0*/,
-         min_index/* = 0*/;
-         i < abbreviation_length;
-         ++i) 
+    index_c_lowercase = string.indexOf(c.toLowerCase());
+    index_c_uppercase = string.indexOf(c.toUpperCase());
+    min_index = Math.min(index_c_lowercase, index_c_uppercase);
+    index_in_string = (min_index > -1) ? min_index : Math.max(index_c_lowercase, index_c_uppercase);
+    
+    if (index_in_string === -1) 
+    { 
+      if (fuzziness) 
+      {
+        fuzzies += 1-fuzziness;
+        continue;
+      } 
+      else 
+      {
+        return [0,[]];
+      }
+    } 
+    else 
     {
-        
-        // Find the first case-insensitive match of a character.
-        c = abbreviation.charAt(i);
-        
-        index_c_lowercase = string.indexOf(c.toLowerCase());
-        index_c_uppercase = string.indexOf(c.toUpperCase());
-        min_index = Math.min(index_c_lowercase, index_c_uppercase);
-        index_in_string = (min_index > -1) ? min_index : Math.max(index_c_lowercase, index_c_uppercase);
-        
-        if (index_in_string === -1) 
-        { 
-            if (fuzziness) 
-            {
-                fuzzies += 1-fuzziness;
-                continue;
-            } 
-            else 
-            {
-                return [0,[]];
-            }
-        } 
-        else 
-        {
-            matches.push(cur_start + index_in_string);
-            character_score = 0.1;
-        }
-        
-        // Set base score for matching 'c'.
-        
-        // Same case bonus.
-        if (string[index_in_string] === c) 
-        { 
-            character_score += 0.1; 
-        }
-        
-        // Consecutive letter & start-of-string Bonus
-        if (index_in_string === 0) 
-        {
-            // Increase the score when matching first character of the remainder of the string
-            character_score += 0.6;
-            if (i === 0) 
-            {
-                // If match is the first character of the string
-                // & the first character of abbreviation, add a
-                // start-of-string match bonus.
-                start_of_string_bonus = 1 //true;
-            }
-        }
-        else 
-        {
-            // Acronym Bonus
-            // Weighing Logic: Typing the first character of an acronym is as if you
-            // preceded it with two perfect character matches.
-            if (string.charAt(index_in_string - 1) === ' ') 
-            {
-                character_score += 0.8; // * Math.min(index_in_string, 5); // Cap bonus at 0.4 * 5
-            }
-        }
-        
-        // Left trim the already matched part of the string
-        // (forces sequential matching).
-        string = string.substring(index_in_string + 1, string_length);
-        cur_start += index_in_string + 1;
-        
-        total_character_score += character_score;
-    } // end of for loop
-    
-    // Uncomment to weigh smaller words higher.
-    // return total_character_score / string_length;
-    
-    abbreviation_score = total_character_score / abbreviation_length;
-    //percentage_of_matched_string = abbreviation_length / string_length;
-    //word_score = abbreviation_score * percentage_of_matched_string;
-    
-    // Reduce penalty for longer strings.
-    //final_score = (word_score + abbreviation_score) / 2;
-    final_score = ((abbreviation_score * (abbreviation_length / string_length)) + abbreviation_score) / 2;
-    
-    final_score = final_score / fuzzies;
-    
-    if (start_of_string_bonus && (final_score + 0.15 < 1)) 
-    {
-        final_score += 0.15;
+      matches.push(cur_start + index_in_string);
+      character_score = 0.1;
     }
     
-    return [final_score, matches];
+    // Set base score for matching 'c'.
+    
+    // Same case bonus.
+    if (string[index_in_string] === c) 
+    { 
+      character_score += 0.1; 
+    }
+    
+    // Consecutive letter & start-of-string Bonus
+    if (index_in_string === 0) 
+    {
+      // Increase the score when matching first character of the remainder of the string
+      character_score += 0.6;
+      if (i === 0) 
+      {
+        // If match is the first character of the string
+        // & the first character of abbreviation, add a
+        // start-of-string match bonus.
+        start_of_string_bonus = 1 //true;
+      }
+    }
+    else 
+    {
+      // Acronym Bonus
+      // Weighing Logic: Typing the first character of an acronym is as if you
+      // preceded it with two perfect character matches.
+      if (string.charAt(index_in_string - 1) === ' ') 
+      {
+        character_score += 0.8; // * Math.min(index_in_string, 5); // Cap bonus at 0.4 * 5
+      }
+    }
+    
+    // Left trim the already matched part of the string
+    // (forces sequential matching).
+    string = string.substring(index_in_string + 1, string_length);
+    cur_start += index_in_string + 1;
+    
+    total_character_score += character_score;
+  } // end of for loop
+  
+  // Uncomment to weigh smaller words higher.
+  // return total_character_score / string_length;
+  
+  abbreviation_score = total_character_score / abbreviation_length;
+  //percentage_of_matched_string = abbreviation_length / string_length;
+  //word_score = abbreviation_score * percentage_of_matched_string;
+  
+  // Reduce penalty for longer strings.
+  //final_score = (word_score + abbreviation_score) / 2;
+  final_score = ((abbreviation_score * (abbreviation_length / string_length)) + abbreviation_score) / 2;
+  
+  final_score = final_score / fuzzies;
+  
+  if (start_of_string_bonus && (final_score + 0.15 < 1)) 
+  {
+    final_score += 0.15;
+  }
+  
+  return { score: final_score, matches: matches };
 };
+
+function livesearch_highlighter(string, matches)
+{
+  var output = "";
+  var string_length = string.length;
+  var currently_highlighted = false;
+  
+  for ( var i = 0; i < string_length; ++i )
+  {
+    var should_highlight = matches.hasValue(i);
+    
+    if ( should_highlight && !currently_highlighted )
+    {
+      output += "<em>";
+      currently_highlighted = true;
+    }
+    else if ( !should_highlight && currently_highlighted )
+    {
+      output += "</em>";
+      currently_highlighted = false;
+    }
+    
+    output += string.charAt(i);
+  }
+  
+  if ( currently_highlighted )
+  {
+    output += "</em>";
+  }
+  
+  return output;
+}

@@ -17,7 +17,9 @@
       {
           $('#search').livesearch({
             container: '#search_results',
-            data: pathways_search_data
+            data: pathways_search_data,
+            scorer: pathways_scorer,
+            formatter: pathways_formatter
           });
       });
 
