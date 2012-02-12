@@ -10,7 +10,9 @@ jQuery.fn.livesearch = function(options)
   list = container.children('ul')
   data = jQuery(options.data)
   scorer_fnc = options.scorer || scorer
-  formatter_fnc = options.formatter || formatter
+  grouper_fnc = options.grouper || grouper
+  data_formatter_fnc = options.data_formatter || data_formatter
+  group_formatter_fnc = options.group_formatter || group_formatter
   empty_fnc = options.empty || empty
   fuzziness = options.fuzziness || 0.5
   max_results = options.max_results || 10
@@ -19,9 +21,9 @@ jQuery.fn.livesearch = function(options)
   this
     .keyup(filter).keyup()
     .focus(filter)
-    .blur(function() 
+    /*.blur(function() 
           { container.removeClass('show') 
-          })
+          })*/
     .parents('form').submit(function()
                             {
                                 return false;
@@ -45,15 +47,15 @@ jQuery.fn.livesearch = function(options)
     var results = [];
     
     data.each(function()
-      {
-        var total_score = 0
-        var scores_matches = scorer_fnc(this, term, fuzziness)
-      
-        $.each(scores_matches, function(k, v) { total_score += v.score } );
-      
-        if (total_score >= min_score) 
-          results.push({total_score: total_score, scores_matches: scores_matches, data_entry: this})
-      });
+    {
+      var total_score = 0
+      var scores_matches = scorer_fnc(this, term, fuzziness)
+    
+      $.each(scores_matches, function(k, v) { total_score += v.score } );
+    
+      if (total_score >= min_score) 
+        results.push({total_score: total_score, scores_matches: scores_matches, data_entry: this})
+    });
     
     if (results.length == 0)
     {
@@ -61,14 +63,18 @@ jQuery.fn.livesearch = function(options)
       return
     }
     
-    var count = 0;
-    $.each(results.sort(function(a, b){return b.total_score - a.total_score}), function()
+    results = results.sort(function(a, b){return b.total_score - a.total_score}).slice(0,max_results);
+    
+    var last_group = -999;
+    $.each(results.sort(grouper_fnc), function()
+    {
+      if ( this.data_entry.group_name && (last_group != this.data_entry.group_order) )
       {
-        if (++count > max_results)
-           return false;
-        
-        list.append(formatter_fnc(this.total_score, this.scores_matches, this.data_entry))
-      });
+        last_group = this.data_entry.group_order
+        list.append(group_formatter_fnc(this.data_entry.group_name))
+      }
+      list.append(data_formatter_fnc(this.total_score, this.scores_matches, this.data_entry))
+    });
 	}
   
   function scorer(data_entry, term, fuzziness) 
@@ -76,9 +82,24 @@ jQuery.fn.livesearch = function(options)
     return { value: data_entry.value.score_matches(term, fuzziness) };
   }
   
-  function formatter(total_score, scores_matches, data_entry)
+  function grouper(a, b)
+  {
+    if (a.data_entry.group_order && b.data_entry.group_order)
+      return (a.group_order - b.group_order)
+    else
+      return (b.total_score - a.total_score)
+  }
+  
+  function data_formatter(total_score, scores_matches, data_entry)
   {
     return "<li><a href=\'" + data_entry.url + "'>" + livesearch_highlighter( data_entry.value, scores_matches.value.matches ) + '</a></li>';
+  }
+  
+  function group_formatter(group_name)
+  {
+    var result = "<li>" + group_name + "</li>";
+    
+    return result;
   }
   
   function empty()

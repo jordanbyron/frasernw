@@ -65,6 +65,7 @@ body
   top: 45px;
   margin: 0;
   padding: 0;
+  width: 406px;
   background-color: $FNW_BACKGROUND;
   border: 3px solid $FNW_DARK_GRAY;
   -webkit-border-radius: 6px;
@@ -84,28 +85,70 @@ body
   {
     margin: 0;
     padding: 0;
-  
+    
     li
     {
-      display: block;
-      list-style-type: none;
-      border-bottom: 1px solid $FNW_LIGHT_GRAY;
+      display: table;
+      list-style: none;
+      width: 100%;
       margin: 0;
       padding: 0;
+    }
     
+    li.group
+    {
+      padding: 2px;
+      border-top: 1px solid $FNW_MID_GRAY;
+      border-bottom: 1px solid $FNW_MID_GRAY;
+      background-color: $FNW_LIGHT_GRAY;
+      color: $FNW_RED;
+      font-weight: bold;
+      font-size: 13px;
+    }
+  
+    li.result
+    {
+      border-bottom: 1px solid $FNW_LIGHT_GRAY;
+      
+      div
+      {
+        float: left;
+        display: inline-block;
+        margin-left: $FNW_STATUS_INDENT;
+        width: 200px - $FNW_STATUS_INDENT;
+      }
+      
+      div.specialties, div.city
+      {
+        margin-left: 20px;
+        width: 180px;
+      }
+      
+      div.wait_time
+      {
+        clear: both;
+        padding-bottom: 10px;
+      }
+      
       a
       {
-        padding: 10px;
-        display: inline-block;
+        display: block;
+        padding: 10px 0;
         width: 100%;
+        min-height: 20px;
+        line-height: 20px;
         color: $FNW_BLUE;
       }
       
       a:hover
       {
-        background: $FNW_LIGHT_BLUE;
         text-decoration: none;
       }
+    }
+    
+    li.result:hover
+    {
+      background: $FNW_LIGHT_BLUE;
     }
     
     li.empty
