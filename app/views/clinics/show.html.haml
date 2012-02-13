@@ -28,9 +28,9 @@
       %p.collapse_up
         %strong Limitations:
         = @clinic.limitations
-    - if ((not @clinic.location_opened.blank?) and (not @clinic.retired?))
+    - if not @clinic.location_opened.blank?
       %p.collapse_up
-        This practice opened
+        This clinic opened
         = @clinic.location_opened.downcase
 
   - if not @clinic.languages.blank?
