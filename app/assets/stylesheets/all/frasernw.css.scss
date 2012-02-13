@@ -255,7 +255,7 @@ body
           height: 14px;
           background-position: 14px 14px;
           background-repeat: no-repeat;
-          background-image: url(../img/glyphicons-halflings-blue.png);
+          background-image: url(/img/glyphicons-halflings-blue.png);
           content: "\0000a0";
         }
         
@@ -276,7 +276,7 @@ body
         a.push:hover:after,
         a.pop:hover:before
         {
-          background-image: url(../img/glyphicons-halflings-red.png);
+          background-image: url(/img/glyphicons-halflings-red.png);
         }
       }
     }
@@ -380,7 +380,7 @@ body
       display: inline-block;
       width: 14px;
       height: 14px;
-      background-image: url(../img/glyphicons-halflings-text.png);
+      background-image: url(/img/glyphicons-halflings-text.png);
       content: "\0000a0";
     }
     
@@ -431,7 +431,7 @@ body
     
     .red_flag p:first-child strong:before
     {
-      background-image: url(../img/glyphicons-halflings-red.png);
+      background-image: url(/img/glyphicons-halflings-red.png);
       background-position: -312px -24px;
     }
     
@@ -555,7 +555,7 @@ body
           height: 14px;
           background-position: 14px 14px;
           background-repeat: no-repeat;
-          background-image: url(../img/glyphicons-halflings-blue.png);
+          background-image: url(/img/glyphicons-halflings-blue.png);
           content: "\0000a0";
         }
         
@@ -613,23 +613,23 @@ body
 }
 
 .icon-blue {
-  background-image: url(../img/glyphicons-halflings-blue.png);
+  background-image: url(/img/glyphicons-halflings-blue.png);
 }
 
 .icon-red {
-  background-image: url(../img/glyphicons-halflings-red.png);
+  background-image: url(/img/glyphicons-halflings-red.png);
 }
 
 .icon-green {
-  background-image: url(../img/glyphicons-halflings-green.png);
+  background-image: url(/img/glyphicons-halflings-green.png);
 }
 
 .icon-orange {
-  background-image: url(../img/glyphicons-halflings-orange.png);
+  background-image: url(/img/glyphicons-halflings-orange.png);
 }
 
 .icon-text {
-  background-image: url(../img/glyphicons-halflings-text.png);
+  background-image: url(/img/glyphicons-halflings-text.png);
 }
     
 .status_available:before, 
@@ -646,28 +646,28 @@ body
 
 .status_available:before
 {
-  background-image: url(../img/glyphicons-halflings-green.png);
+  background-image: url(/img/glyphicons-halflings-green.png);
   background-position: -288px 0;
   content: "\0000a0";
 }
 
 .status_unavailable:before
 {
-  background-image: url(../img/glyphicons-halflings-red.png);
+  background-image: url(/img/glyphicons-halflings-red.png);
   background-position: -312px 0;
   content: "\0000a0";
 }
 
 .status_unknown:before
 {
-  background-image: url(../img/glyphicons-halflings-text.png);
+  background-image: url(/img/glyphicons-halflings-text.png);
   background-position: -96px -96px;
   content: "\0000a0";
 }
 
 .status_warning:before
 {
-  background-image: url(../img/glyphicons-halflings-orange.png);
+  background-image: url(/img/glyphicons-halflings-orange.png);
   background-position: 0 -120px;
   content: "\0000a0";
 }
