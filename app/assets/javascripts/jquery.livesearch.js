@@ -14,9 +14,11 @@ jQuery.fn.livesearch = function(options)
   data_formatter_fnc = options.data_formatter || data_formatter
   group_formatter_fnc = options.group_formatter || group_formatter
   empty_fnc = options.empty || empty
+  searcher_fnc = options.searcher || searcher
   fuzziness = options.fuzziness || 0.5
   max_results = options.max_results || 10
   min_score = options.min_score || 0.5
+  results = []
   
   this
     .keyup(filter).keyup()
@@ -25,10 +27,7 @@ jQuery.fn.livesearch = function(options)
           { 
             container.animate({height: "hide"}, 200) 
           })
-    .parents('form').submit(function()
-                            {
-                                return false;
-                            });
+    .parents('form').submit( function() { if (results.length > 0) { return searcher_fnc(results[0].data_entry) } else { return false; } });
   
 	return this;
     
@@ -44,7 +43,7 @@ jQuery.fn.livesearch = function(options)
     
     list.empty()
     
-    var results = [];
+    results = [];
     
     data.each(function()
     {
@@ -95,12 +94,12 @@ jQuery.fn.livesearch = function(options)
   
   function data_formatter(total_score, scores_matches, data_entry)
   {
-    return "<li><a href=\'" + data_entry.url + "'>" + livesearch_highlighter( data_entry.value, scores_matches.value.matches ) + '</a></li>';
+    return "<li class='result'><a href=\'" + data_entry.url + "'>" + livesearch_highlighter( data_entry.value, scores_matches.value.matches ) + '</a></li>';
   }
   
   function group_formatter(group_name)
   {
-    var result = "<li>" + group_name + "</li>";
+    var result = "<li class='group'>" + group_name + "</li>";
     
     return result;
   }
@@ -108,6 +107,11 @@ jQuery.fn.livesearch = function(options)
   function empty()
   {
     return "<li class='empty'>No results</li>";
+  }
+  
+  function searcher(data_entry)
+  {
+    return false;
   }
 };
 

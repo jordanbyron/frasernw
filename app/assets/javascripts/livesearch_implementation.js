@@ -57,3 +57,9 @@ function pathways_group_formatter(group_name)
   
   return result;
 }
+
+function pathways_searcher(data_entry)
+{
+  ajaxto(data_entry.url);
+  return false;
+}
