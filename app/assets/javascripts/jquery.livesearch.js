@@ -21,9 +21,9 @@ jQuery.fn.livesearch = function(options)
   this
     .keyup(filter).keyup()
     .focus(filter)
-    /*.blur(function() 
+    .blur(function() 
           { container.removeClass('show') 
-          })*/
+          })
     .parents('form').submit(function()
                             {
                                 return false;

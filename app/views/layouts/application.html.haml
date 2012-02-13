@@ -61,6 +61,8 @@
             %form.navbar-search.pull-right
               %i.icon-white.icon-search
               %input.span3.search-query#search{"type" => "search", "placeholder" => "Search"}
+              #search_results
+                %ul
 
     #body.container
       .row
@@ -106,8 +108,6 @@
                         %a{"href" => "#", "onclick" => "ajaxto('#{procedure_path(ps.procedure)}')"}= ps.procedure.name
 
         #content.span8half.offsethalf
-          #search_results
-            %ul
           #container
             - flash.each do |type, msg|
               .alert.alert-success= msg

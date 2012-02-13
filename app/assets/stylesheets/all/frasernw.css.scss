@@ -5,7 +5,7 @@ $FNW_STATUS_INDENT: 40px;
 $FNW_NAV_PADDING_LEFT: 5%;
 $FNW_NAV_PADDING_RIGHT: 10%;
     
-.admin 
+.admin, .navbar .nav > li.admin
 {
   display: none;
 }
@@ -20,6 +20,7 @@ body
   background-color: $FNW_DARK_GRAY;
   background-image: none;
   border-radius: 0;
+  box-shadow: 0 3px 5px $FNW_MID_GRAY;
   
   .brand
   {
@@ -62,18 +63,24 @@ body
   z-index: 1979;
   position: absolute;
   overflow: hidden;
-  top: 45px;
+  top: 34px;
+  right: 0;
   margin: 0;
   padding: 0;
   width: 406px;
   background-color: $FNW_BACKGROUND;
-  border: 3px solid $FNW_DARK_GRAY;
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
+  border-bottom: 3px solid $FNW_DARK_GRAY;
+  border-left: 3px solid $FNW_DARK_GRAY;
+  border-right: 3px solid $FNW_DARK_GRAY;
+  -webkit-border-bottom-right-radius: 10px;
+  -webkit-border-bottom-left-radius: 10px;
+  -moz-border-bottom-left-radius: 10px;
+  -moz-border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
   -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 5px $FNW_MID_GRAY;
   
   em
   {
@@ -97,25 +104,30 @@ body
     
     li.group
     {
-      padding: 2px;
+      padding: 2px 0;
       border-top: 1px solid $FNW_MID_GRAY;
       border-bottom: 1px solid $FNW_MID_GRAY;
       background-color: $FNW_LIGHT_GRAY;
       color: $FNW_RED;
       font-weight: bold;
       font-size: 13px;
+      
+      [class^="icon-"]
+      {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
     }
   
     li.result
-    {
-      border-bottom: 1px solid $FNW_LIGHT_GRAY;
-      
+    { 
       div
       {
         float: left;
         display: inline-block;
         margin-left: $FNW_STATUS_INDENT;
         width: 200px - $FNW_STATUS_INDENT;
+        overflow: visible;
       }
       
       div.specialties, div.city
@@ -139,16 +151,21 @@ body
         line-height: 20px;
         color: $FNW_BLUE;
       }
-      
-      a:hover
-      {
-        text-decoration: none;
-      }
+    }
+    
+    li.result + li.result
+    {
+      border-top: 1px solid $FNW_LIGHT_GRAY;
     }
     
     li.result:hover
     {
       background: $FNW_LIGHT_BLUE;
+      a
+      {
+        color: $FNW_RED;
+        text-decoration: none;
+      }
     }
     
     li.empty
@@ -342,16 +359,16 @@ body
     .referral:before, 
     .red_flag p:first-child strong:before, 
     .hospital:before, 
-    .clinic:before
+    .clinic:before,
+    .attendance:before
     {
-      font-family: "Icon";
-      color: $FNW_BLUE;
-      font-size: 12pt;
+      margin-left: -($FNW_STATUS_INDENT + 14px)/2;
+      margin-right: ($FNW_STATUS_INDENT - 14px)/2;
       display: inline-block;
-      margin-left: -$FNW_STATUS_INDENT;
-      width: $FNW_STATUS_INDENT;
-      text-align: center;
-      padding: 0;
+      width: 14px;
+      height: 14px;
+      background-image: url(../img/glyphicons-halflings-text.png);
+      content: "\0000a0";
     }
     
     table
@@ -371,23 +388,22 @@ body
       {
         visibility: visible;
         margin-left: 0;
-        width: auto;
       }
     }
     
     .address:before
     {
-      content: "\002709";
+      background-position: -72px 0;
     }
     
     .language:before
     {
-      content: "\00e007";
+      background-position: -240px -120px;
     }
     
     .investigation p:first-child strong:before
     {
-      content: "\00e055";
+      background-position: -360px -48px;
     }
     
     .investigation p:first-child
@@ -397,12 +413,13 @@ body
     
     .referral:before
     {
-      content: "\00e000";
+      background-position: -24px -24px;
     }
     
     .red_flag p:first-child strong:before
     {
-      content: "\002691";
+      background-image: url(../img/glyphicons-halflings-red.png);
+      background-position: -312px -24px;
     }
     
     .red_flag p:first-child
@@ -412,12 +429,17 @@ body
     
     .hospital:before
     {
-      content: "\002795";
+      background-position: -408px -96px;
     }
     
     .clinic:before
     {
-      content: "\002302";
+      background-position: 0 -24px;
+    }
+    
+    .attendance:before
+    {
+      background-position: -168px 0;
     }
     
     td.admin.btn-group
@@ -456,6 +478,14 @@ body
         
         li a
         {
+          text-decoration: none;
+        }
+        
+        li:not(.active) a:hover
+        {
+          background: $FNW_LIGHT_BLUE;
+          color: $FNW_RED;
+          cursor: pointer;
         }
       }
     }
@@ -572,45 +602,64 @@ body
       margin-bottom: 5px;
     }
   }
+}
+
+.icon-blue {
+  background-image: url(../img/glyphicons-halflings-blue.png);
+}
+
+.icon-red {
+  background-image: url(../img/glyphicons-halflings-red.png);
+}
+
+.icon-green {
+  background-image: url(../img/glyphicons-halflings-green.png);
+}
+
+.icon-orange {
+  background-image: url(../img/glyphicons-halflings-orange.png);
+}
+
+.icon-text {
+  background-image: url(../img/glyphicons-halflings-text.png);
+}
     
-  .status_available:before, 
-  .status_unavailable:before, 
-  .status_unknown:before, 
-  .status_warning:before,
-  {
-    font-family: "Icon";
-    color: $FNW_BLUE;
-    font-size: 12pt;
-    display: inline-block;
-    margin-left: -$FNW_STATUS_INDENT;
-    width: $FNW_STATUS_INDENT;
-    text-align: center;
-    padding: 0;
-  }
-  
-  .status_available:before
-  {
-    content: "\002713";
-    color: $FNW_GREEN;
-  }
-  
-  .status_unavailable:before
-  {
-    content: "\002717";
-    color: $FNW_RED;
-  }
-  
-  .status_unknown:before
-  {
-    content: "?";
-    font-weight: bold;
-    color: $FNW_MID_GRAY;
-  }
-  
-  .status_warning:before
-  {
-    content: "!";
-    font-weight: bold;
-    color: $FNW_ORANGE;
-  }
+.status_available:before, 
+.status_unavailable:before, 
+.status_unknown:before, 
+.status_warning:before,
+{
+  margin-left: -($FNW_STATUS_INDENT + 14px)/2;
+  margin-right: ($FNW_STATUS_INDENT - 14px)/2;
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+}
+
+.status_available:before
+{
+  background-image: url(../img/glyphicons-halflings-green.png);
+  background-position: -288px 0;
+  content: "\0000a0";
+}
+
+.status_unavailable:before
+{
+  background-image: url(../img/glyphicons-halflings-red.png);
+  background-position: -312px 0;
+  content: "\0000a0";
+}
+
+.status_unknown:before
+{
+  background-image: url(../img/glyphicons-halflings-text.png);
+  background-position: -96px -96px;
+  content: "\0000a0";
+}
+
+.status_warning:before
+{
+  background-image: url(../img/glyphicons-halflings-orange.png);
+  background-position: 0 -120px;
+  content: "\0000a0";
 }

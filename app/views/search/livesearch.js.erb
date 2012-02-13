@@ -45,7 +45,7 @@ Clinic.all.each do |clinic|
     "specialty" => clinic.specializations.collect{ |s| s.name }.to_sentence,
     "city" => clinic.addresses.first ? "#{clinic.addresses.first.city}" : "",  
     "status" => clinic.status_class,
-    "wait_time" => clinic.waittime || "",
+    "wait_time" => clinic.waittime,
     "url" => url_for(clinic),
     "group_name" => "Clinics",
     "group_order" => 2 }

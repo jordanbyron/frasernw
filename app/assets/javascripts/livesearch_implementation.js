@@ -47,12 +47,12 @@ function pathways_group_formatter(group_name)
       icon = "book"
       break;
     case "Areas of Practice":
-      icon = "tag"
+      icon = "list"
       break;
   }
   
   var result = "<li class='group'>"
-  result += "<div class='group'><i class='icon-" + icon + "'></i> " + group_name + "</div>"
+  result += "<div class='group'><i class='icon-" + icon + " icon-text'></i> " + group_name + "</div>"
   result += "</li>";
   
   return result;
