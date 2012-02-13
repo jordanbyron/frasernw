@@ -75,12 +75,6 @@ body
   -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
   box-shadow: 0 3px 5px $FNW_MID_GRAY;
   
-  em
-  {
-    font-style: normal;
-    font-weight: bold;
-  }
-  
   ul
   {
     margin: 0;
@@ -132,17 +126,24 @@ body
       div.wait_time
       {
         clear: both;
-        padding-bottom: 10px;
+        padding-bottom: 5px;
       }
       
       a
       {
         display: block;
-        padding: 10px 0;
+        padding: 5px 0;
         width: 100%;
         min-height: 20px;
         line-height: 20px;
         color: $FNW_BLUE;
+      }
+      
+      em
+      {
+        font-style: normal;
+        font-weight: bold;
+        background-color: $FNW_LIGHT_BLUE;
       }
     }
     
@@ -156,7 +157,6 @@ body
       background: $FNW_LIGHT_BLUE;
       a
       {
-        color: $FNW_RED;
         text-decoration: none;
       }
     }
