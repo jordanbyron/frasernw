@@ -240,30 +240,33 @@ body
         a.push:after,
         a.pop:before
         {
-          font-family: "Icon";
           display: inline-block;
-          color: $FNW_LIGHT_BLUE;
+          width: 14px;
+          height: 14px;
+          background-position: 14px 14px;
+          background-repeat: no-repeat;
+          background-image: url(../img/glyphicons-halflings-blue.png);
+          content: "\0000a0";
         }
         
         a.push:after
         {
           float: right;
           margin-right: -$FNW_NAV_PADDING_RIGHT;
-          width: $FNW_NAV_PADDING_RIGHT;
-          content: '\002192';
+          background-position: -264px -96px;
         }
         
         a.pop:before
         {
           float: left;
-          width: 20px;
-          content: '\002190';
+          background-position: -240px -96px;
+          margin-right: 10px;
         }
         
         a.push:hover:after,
         a.pop:hover:before
         {
-          color: $FNW_BLUE;
+          background-image: url(../img/glyphicons-halflings-red.png);
         }
       }
     }
@@ -536,14 +539,14 @@ body
         th.headerSortDown:after,
         th:after
         {
-          font-family: "Icon";
-          color: $FNW_BLUE;
-          font-size: 9pt;
           display: inline-block;
-          width: 20px;
           margin-left: 10px;
-          padding: 0;
-          font-face: "Icon";
+          width: 14px;
+          height: 14px;
+          background-position: 14px 14px;
+          background-repeat: no-repeat;
+          background-image: url(../img/glyphicons-halflings-blue.png);
+          content: "\0000a0";
         }
         
         th:hover
@@ -551,19 +554,14 @@ body
           cursor: pointer;
         }
         
-        th:after
-        {
-          content: " ";
-        }
-        
         th.headerSortUp:after
         {
-          content: "\002191";
+          background-position: -289px -96px;       
         }
         
         th.headerSortDown:after 
         {
-          content: "\002193";
+          background-position: -312px -96px;
         }
       }
     }
