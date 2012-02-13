@@ -60,7 +60,7 @@ body
   transition: opacity 0.25s ease;
   opacity: 0;
   
-  z-index: 1979;
+  z-index: -1979;
   position: absolute;
   overflow: hidden;
   top: 34px;
@@ -190,6 +190,7 @@ body
 #search_results.show
 {
   opacity: 1.0;
+  z-index: 1979;
 }
 
 #body
