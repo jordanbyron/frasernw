@@ -27,13 +27,19 @@
   %ul.nav.nav-tabs
     - if has_specialists
       %li{:class => specialist_tab_class} 
-        %a{"href" => "#specialist_tab", "data-toggle" => "tab"} Specialists with Hospital Privileges
+        %a{"href" => "#specialist_tab", "data-toggle" => "tab"}
+          %i.icon-user.icon-text
+          Specialists with Hospital Privileges
     - if has_clinics
       %li{:class => clinic_tab_class}
-        %a{"href" => "#clinic_tab", "data-toggle" => "tab"} Clinics in Hospital
+        %a{"href" => "#clinic_tab", "data-toggle" => "tab"}
+          %i.icon-user.icon-text
+          Clinics in Hospital
     - if has_specialist_offices
       %li{:class => specialist_offices_tab_class}
-        %a{"href" => "#specialist_offices_tab", "data-toggle" => "tab"} Specialist Offices in Hospital
+        %a{"href" => "#specialist_offices_tab", "data-toggle" => "tab"} 
+          %i.icon-envelope.icon-text
+          Offices in Hospital
 
   .tab-content
     - if has_specialists
