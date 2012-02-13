@@ -53,14 +53,7 @@ body
   
 #search_results
 {
-  -webkit-transition: opacity 0.25s ease;
-  -moz-transition: opacity 0.25s ease;
-  -ms-transition: opacity 0.25s ease;
-  -o-transition: opacity 0.25s ease;
-  transition: opacity 0.25s ease;
-  opacity: 0;
-  
-  z-index: -1979;
+  z-index: 1979;
   position: absolute;
   overflow: hidden;
   top: 34px;
@@ -185,12 +178,6 @@ body
       font-weight: bold; 
     }
   }
-}
-
-#search_results.show
-{
-  opacity: 1.0;
-  z-index: 1979;
 }
 
 #body

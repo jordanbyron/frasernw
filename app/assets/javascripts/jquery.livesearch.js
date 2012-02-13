@@ -22,7 +22,8 @@ jQuery.fn.livesearch = function(options)
     .keyup(filter).keyup()
     .focus(filter)
     .blur(function() 
-          { container.removeClass('show') 
+          { 
+            container.animate({height: "hide"}, 200) 
           })
     .parents('form').submit(function()
                             {
@@ -37,12 +38,11 @@ jQuery.fn.livesearch = function(options)
 		
 		if ( !term ) 
     {
-      container.removeClass('show')
+      container.animate({height: "hide"}, 200) 
       return
 		} 
     
     list.empty()
-    container.addClass('show')
     
     var results = [];
     
@@ -60,6 +60,7 @@ jQuery.fn.livesearch = function(options)
     if (results.length == 0)
     {
       list.append( empty_fnc() )
+      container.animate({height: "show"}, 200) 
       return
     }
     
@@ -75,6 +76,8 @@ jQuery.fn.livesearch = function(options)
       }
       list.append(data_formatter_fnc(this.total_score, this.scores_matches, this.data_entry))
     });
+    
+    container.animate({height: "show"}, 200) 
 	}
   
   function scorer(data_entry, term, fuzziness) 
