@@ -19,6 +19,10 @@ jQuery.fn.livesearch = function(options)
   max_results = options.max_results || 10
   min_score = options.min_score || 0.5
   results = []
+  selected = -1
+  that = this
+  
+  container.mouseover( function() { set_selected(-1) });
   
   this
     .keyup(filter).keyup()
@@ -27,12 +31,33 @@ jQuery.fn.livesearch = function(options)
           { 
             container.animate({height: "hide"}, 200) 
           })
-    .parents('form').submit( function() { if (results.length > 0) { return searcher_fnc(results[0].data_entry) } else { return false; } });
+    .parents('form').submit( function() { if (results.length > 0) { that.blur(); return searcher_fnc(results[selected].data_entry) } else { return false; } });
   
 	return this;
     
-	function filter()
+	function filter(event)
   {
+    if (event.keyCode == 38)
+    {
+      //up key
+      if ( --selected < 0 )
+      {
+        selected = 0
+      }
+      set_selected(selected)
+      return;
+    }
+    else if (event.keyCode == 40)
+    {
+      //down key
+      if ( ++selected >= results.length )
+      {
+        selected = (results.length - 1)
+      }
+      set_selected(selected)
+      return;
+    }
+    
 		var term = jQuery.trim( jQuery(this).val().toLowerCase() )
 		
 		if ( !term ) 
@@ -76,6 +101,9 @@ jQuery.fn.livesearch = function(options)
       list.append(data_formatter_fnc(this.total_score, this.scores_matches, this.data_entry))
     });
     
+    selected = 0
+    set_selected(selected)
+    
     container.animate({height: "show"}, 200) 
 	}
   
@@ -112,6 +140,20 @@ jQuery.fn.livesearch = function(options)
   function searcher(data_entry)
   {
     return false;
+  }
+  
+  function set_selected(index)
+  {
+    container.find('li.result').each( function(i) {
+                                       if (i == index)
+                                       {
+                                         $(this).addClass('selected');
+                                       }
+                                       else
+                                       {
+                                         $(this).removeClass('selected');
+                                       }
+                                     });
   }
 };
 

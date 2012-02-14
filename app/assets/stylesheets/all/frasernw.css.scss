@@ -152,7 +152,7 @@ body
       border-top: 1px solid $FNW_LIGHT_GRAY;
     }
     
-    li.result:hover
+    li.result:hover, li.result.selected
     {
       background: $FNW_LIGHT_BLUE;
       a
