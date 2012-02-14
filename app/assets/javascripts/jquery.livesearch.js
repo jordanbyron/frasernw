@@ -176,13 +176,12 @@ Array.prototype.hasValue = function(value)
  * MIT license: http://www.opensource.org/licenses/mit-license.php
  *
  * Date: Tue Mar 1 2011
- */
-
-/**
- * Scores a string against another string.
- * Modified to also return array of matching characters, for highlighting purposes.
+ *
+ * Modified by Pathways to also return array of matching characters for highlighting purposes.
  *  'Hello World'.score('he');     //=> [0.5931818181818181, [0,1]]
  *  'Hello World'.score('Hello');  //=> [0.7318181818181818, [0,1,2,3,4]]
+ *
+ * Further modified to weight results in a more pleasing way
  */
 
 
@@ -199,6 +198,7 @@ String.prototype.score_matches = function(abbreviation, fuzziness)
     }
     return [1,matches];
   }
+  
   //if it's not a perfect match and is empty return 0
   if(abbreviation == "") {return [0,[]];}
   
@@ -268,7 +268,7 @@ String.prototype.score_matches = function(abbreviation, fuzziness)
         // If match is the first character of the string
         // & the first character of abbreviation, add a
         // start-of-string match bonus.
-        start_of_string_bonus = 1 //true;
+        start_of_string_bonus = 1 
       }
     }
     else 
@@ -288,24 +288,28 @@ String.prototype.score_matches = function(abbreviation, fuzziness)
     cur_start += index_in_string + 1;
     
     total_character_score += character_score;
-  } // end of for loop
+  } 
   
-  // Uncomment to weigh smaller words higher.
-  // return total_character_score / string_length;
+  if (matches.length == 0)
+  {
+    return 0;
+  }
   
   abbreviation_score = total_character_score / abbreviation_length;
-  //percentage_of_matched_string = abbreviation_length / string_length;
-  //word_score = abbreviation_score * percentage_of_matched_string;
   
-  // Reduce penalty for longer strings.
-  //final_score = (word_score + abbreviation_score) / 2;
-  final_score = ((abbreviation_score * (abbreviation_length / string_length)) + abbreviation_score) / 2;
+  //penalize longer strings just slightly
+  final_score = abbreviation_score - ((string_length - abbreviation_length) * 0.025);
   
+  //take into account errors
   final_score = final_score / fuzzies;
   
-  if (start_of_string_bonus && (final_score + 0.15 < 1)) 
+  //weight based of length of match vs. length of abbreviation (to penalize matches with "big gaps")
+  match_length = Math.max(abbreviation_length, matches[matches.length -1] - matches[0]);
+  final_score *= abbreviation_length / match_length;
+  
+  if (start_of_string_bonus) 
   {
-    final_score += 0.15;
+    final_score = Math.min(1, final_score + 0.15);
   }
   
   return { score: final_score, matches: matches };
