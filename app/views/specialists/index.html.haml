@@ -2,7 +2,7 @@
 
 %table.table.table-condensed
   -Specialization.all.each do |specialization|
-    %tr
+    %tr{ :class => specialization.in_progress ? "in-progress" : "" } 
       %th=specialization.name
       %th.admin
       

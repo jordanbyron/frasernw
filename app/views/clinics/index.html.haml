@@ -1,8 +1,8 @@
-%h1 Clinics
+%h2 Clinics
 
 %table.table.table-condensed
   -Specialization.all.each do |specialization|
-    %tr
+    %tr{ :class => specialization.in_progress ? "in-progress" : "" }
       %th
         = specialization.name
       %th.admin
