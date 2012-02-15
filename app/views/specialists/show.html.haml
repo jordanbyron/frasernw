@@ -19,7 +19,10 @@
 %h2
   = @specialist.name
 %h4
-  = @specialist.specializations.collect(){ |s| "<a href='#' onclick=\"ajaxto(\'#{specialization_path(s)}\')\">#{s.name}</a>" }.to_sentence.html_safe
+  - if current_user.admin?
+    = @specialist.specializations_including_in_progress.collect(){ |s| "<a href='#' onclick=\"ajaxto(\'#{specialization_path(s)}\')\">#{s.name}</a>" }.to_sentence.html_safe
+  - else
+    = @specialist.specializations.collect(){ |s| "<a href='#' onclick=\"ajaxto(\'#{specialization_path(s)}\')\">#{s.name}</a>" }.to_sentence.html_safe
 - if @specialist.billing_number
   %h5
     = "MSP ##{@specialist.billing_number_padded}"

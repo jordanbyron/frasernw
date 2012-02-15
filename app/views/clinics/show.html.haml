@@ -4,7 +4,10 @@
 %h2
   = @clinic.name
 %h4
-  = @clinic.specializations.collect(){ |s| "<a href='#' onclick=\"ajaxto(\'#{specialization_path(s)}\')\">#{s.name}</a>" }.to_sentence.html_safe
+  - if current_user.admin?
+    = @clinic.specializations_including_in_progress.collect(){ |s| "<a href='#' onclick=\"ajaxto(\'#{specialization_path(s)}\')\">#{s.name}</a>" }.to_sentence.html_safe
+  - else
+    = @clinic.specializations.collect(){ |s| "<a href='#' onclick=\"ajaxto(\'#{specialization_path(s)}\')\">#{s.name}</a>" }.to_sentence.html_safe
   
 - if not @clinic.responded
   %p

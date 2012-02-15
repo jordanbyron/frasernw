@@ -26,7 +26,7 @@ class ProceduresController < ApplicationController
   
   def edit
     @procedure = Procedure.find(params[:id])
-    @specializations = @procedure.specializations
+    @specializations = @procedure.specializations_including_in_progress
     Specialization.all.each { |specialization| ProcedureSpecialization.find_or_create_by_procedure_id_and_specialization_id(params[:id], specialization.id) }
   end
   

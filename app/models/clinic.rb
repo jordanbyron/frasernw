@@ -4,7 +4,8 @@ class Clinic < ActiveRecord::Base
   
   # clinics can have multiple specializations
   has_many :clinic_specializations, :dependent => :destroy
-  has_many :specializations, :through => :clinic_specializations
+  has_many :specializations, :through => :clinic_specializations, :conditions => { "in_progress" => false }
+  has_many :specializations_including_in_progress, :through => :clinic_specializations, :source => :specialization, :class_name => "Specialization"
   accepts_nested_attributes_for :clinic_specializations, :allow_destroy => true
   
   # clinics can have more than one address

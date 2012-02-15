@@ -6,6 +6,9 @@
   
 %h2= @specialization.name
 
+- if @specialization.in_progress
+  %h4 In Progress
+
 - has_specialists = @specialization.specialists.length > 0
 - has_clinics = @specialization.clinics.length > 0
 

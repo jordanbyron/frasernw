@@ -37,13 +37,13 @@ class ClinicsController < ApplicationController
       @clinic.focuses.build
     end
     @clinic_procedures = []
-    @clinic.specializations.each { |specialization| 
-      @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
+    @clinic.specializations_including_in_progress.each { |specialization| 
+      @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations_including_in_progress.count > 1
       @clinic_procedures += ancestry_options( specialization.procedure_specializations_arranged )
     }
     @clinic_specialists = []
-    @clinic.specializations.each { |specialization|
-      @clinic_specialists << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
+    @clinic.specializations_including_in_progress.each { |specialization|
+      @clinic_specialists << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations_including_in_progress.count > 1
       @clinic_specialists += specialization.specialists.collect { |s| [s.name, s.id] }
     }
   end

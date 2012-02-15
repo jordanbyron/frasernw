@@ -11,13 +11,13 @@ class SpecialistsEditorController < ApplicationController
       @specialist.capacities.build
     end
     @specializations_clinics = []
-    @specialist.specializations.each { |s| 
+    @specialist.specializations_including_in_progress.each { |s| 
       @specializations_clinics += s.clinics.collect { |c| [c.name, c.id] }
     }
     @specializations_clinics.sort!
     @specializations_procedures = []
-    @specialist.specializations.each { |s| 
-      @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations.count > 1
+    @specialist.specializations_including_in_progress.each { |s| 
+      @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations_including_in_progress.count > 1
       @specializations_procedures += ancestry_options( s.procedure_specializations_arranged )
     }
     @view = @specialist.views.build(:notes => request.remote_ip)
@@ -36,13 +36,13 @@ class SpecialistsEditorController < ApplicationController
         @specialist.capacities.build
       end
       @specializations_clinics = []
-      @specialist.specializations.each { |s| 
+      @specialist.specializations_including_in_progress.each { |s| 
         @specializations_clinics += s.clinics.collect { |c| [c.name, c.id] }
       }
       @specializations_clinics.sort!
       @specializations_procedures = []
-      @specialist.specializations.each { |s| 
-        @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations.count > 1
+      @specialist.specializations_including_in_progress.each { |s| 
+        @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations_including_in_progress.count > 1
         @specializations_procedures += ancestry_options( s.procedure_specializations_arranged )
       }
       @view = @specialist.views.build(:notes => request.remote_ip)

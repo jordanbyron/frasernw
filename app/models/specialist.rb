@@ -4,7 +4,8 @@ class Specialist < ActiveRecord::Base
   
   # specialists can have multiple specializations
   has_many :specialist_specializations, :dependent => :destroy
-  has_many :specializations, :through => :specialist_specializations
+  has_many :specializations, :through => :specialist_specializations, :conditions => { "in_progress" => false }
+  has_many :specializations_including_in_progress, :through => :specialist_specializations, :source => :specialization, :class_name => "Specialization"
   accepts_nested_attributes_for :specialist_specializations, :allow_destroy => true
 
   # specialists have the capacity to perform procedures

@@ -5,6 +5,10 @@
     = f.label :name, :class => "control-label"
     .controls
       = f.text_field :name
+  .control-group
+    = f.label :in_progress, :class => "control-label"
+    .controls
+      = f.check_box :in_progress
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
     = link_to 'Cancel', specializations_path, :class => "btn btn-danger"
