@@ -74,12 +74,13 @@
               %h3 Specialities
               %ul
                 - Specialization.all.each do |specialization|
+                  - next if (specialization.in_progress and !current_user.admin?)
                   %li
-                    %a.push{"href" => "#", "onclick" => "ajaxto('#{specialization_path(specialization)}')", "data-toggle" => "push", "data-target" => "#section_#{specialization.id}"}= specialization.name
+                    %a.push{"href" => "#", "onclick" => "ajaxto('#{specialization_path(specialization)}')", "data-toggle" => "push", "data-target" => "#section_#{specialization.id}", :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
               
             - Specialization.all.each do |specialization|
               .nav_panel{ "id" => "section_#{specialization.id}" }
-                %h3
+                %h3{:class => specialization.in_progress ? "in-progress" : ""}
                   %a{"href" => "#", "onclick" => "ajaxto('#{specialization_path(specialization)}')"}= specialization.name
                 %ul
                   %li

@@ -7,7 +7,12 @@ $FNW_NAV_PADDING_RIGHT: 10%;
     
 .admin, .navbar .nav > li.admin
 {
-  display: none;
+  /*display: none;*/
+}
+
+.in-progress
+{
+  background-image: url(/img/orange-stripes.png);
 }
 
 body 
@@ -185,6 +190,7 @@ body
   color:$FNW_TEXT;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
+  padding-bottom: 30px;
   
   #left-nav
   {
