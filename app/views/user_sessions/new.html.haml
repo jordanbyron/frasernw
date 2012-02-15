@@ -1,9 +1,17 @@
-%h2= "Log in"
-
-%p== Don't have an account? Email John Yap.
-
 = simple_form_for @user_session do |f|
-  = f.error_messages
-  =f.input :username, autofocus: true, input_html: { "autocorrect" => "off", "autocapitalize" => "off" }
-  =f.input :password
-  =f.button :submit, "Log In"
+
+  %h2= "Log in to Pathways"
+  
+  = f.input :username, autofocus: true, input_html: { "autocorrect" => "off", "autocapitalize" => "off" }, :wrapper => :prepend, :label => false do
+    %span.add-on
+      %i.icon-user.icon-text
+      Username
+    = f.input_field :username
+  
+  = f.input :password, :wrapper => :prepend, :label => false do
+    %span.add-on
+      %i.icon-lock.icon-text
+      Password
+    = f.input_field :password
+  
+  =f.button :submit, "Log In", :class => "btn btn-primary"

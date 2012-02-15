@@ -1,7 +1,7 @@
 !!!
 %html
   %head
-    %title= yield(:title) || "Untitled"
+    %title= "Pathways | Log in"
     %meta{"http-equiv"=>"Content-Type", :content=>"text/html; charset=utf-8"}
 
     = stylesheet_link_tag "application"
@@ -10,6 +10,9 @@
     = yield(:head)
 
   %body{:id => "#{params[:controller]}_page"}
-    #container
-      %h1= yield :title
+    #main-nav.navbar
+      .navbar-inner
+        .container
+          = link_to "Pathways", root_url, :class => "brand"
+    #content
       = yield

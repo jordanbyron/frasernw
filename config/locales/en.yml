@@ -2,7 +2,28 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
+  authlogic:
+    error_messages:
+      login_blank: Your username can not be blank
+      login_not_found: This username is not valid
+      login_invalid: should use only letters, numbers, spaces, and .-_@ please.
+      consecutive_failed_logins_limit_exceeded: Consecutive failed logins limit exceeded, account is disabled.
+      email_invalid: should look like an email address.
+      password_blank: Your password can not be blank
+      password_invalid: Your password is not valid
+      not_active: Your account is not active
+      not_confirmed: Your account is not confirmed
+      not_approved: Your account is not approved
+      no_authentication_details: You did not provide any details for authentication.
+      general_credentials_error: Login/Password combination is not valid
+    models:
+      user_session: UserSession (or whatever name you are using)
+    attributes:
+      user_session:
+        login: login
+        email: email
+        password: password
+        remember_me: remember me
   activerecord:
     values:
       specialist:
