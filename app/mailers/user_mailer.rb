@@ -3,7 +3,7 @@ class UserMailer < ActionMailer::Base
   
   def welcome_admin(user)
     @user = user
-    mail(:to => user.email, :subject => "[frasernw] you now have admin rights at frasernw.heroku.com")
+    mail(:to => user.email, :subject => "Pathways: you now have admin rights at mdpathwaysbc.com")
   end
   
 end

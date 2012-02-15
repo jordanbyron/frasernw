@@ -1,14 +1,14 @@
 class SpecialistMailer < ActionMailer::Base
-  default from: "frasernw@gmail.com"
+  default from: ENV['SMTP_USER']
   
   def invite_specialist(specialist)
     @specialist = specialist
-    mail(:to => specialist.contact_email, :subject => "You've been invited to edit the Fraser NW Division of Family Practice directory entry for #{specialist.name}")
+    mail(:to => specialist.contact_email, :subject => "You've been invited to edit the Pathways directory entry for #{specialist.name}")
   end
   
   def updated_by_self(specialist)
     @specialist = specialist
-    mail(:to => all_admins, :subject => "[frasernw] #{specialist.name} has been edited by self")
+    mail(:to => all_admins, :subject => "[Pathways] #{specialist.name} has been edited by self")
   end
   
   private
