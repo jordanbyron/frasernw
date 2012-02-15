@@ -1,6 +1,9 @@
 <% search_data = Array.new 
 
 Specialization.all.each do |specialization|
+
+  next if specialization.in_progress
+  
   entry = { 
     "name" => specialization.name, 
     "specialty" => "",
@@ -14,6 +17,10 @@ Specialization.all.each do |specialization|
 end 
 
 Procedure.all.each do |procedure|
+
+  #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
+  next if procedure.specializations.length == 0
+  
   entry = { 
     "name" => procedure.name, 
     "specialty" => procedure.specializations.collect{ |s| s.name }.to_sentence,
@@ -27,6 +34,10 @@ Procedure.all.each do |procedure|
 end 
 
 Specialist.all.each do |specialist|
+
+  #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
+  next if specialist.specializations.length == 0
+  
   entry = { 
     "name" => specialist.name, 
     "specialty" => specialist.specializations.collect{ |s| s.name }.to_sentence, 
@@ -40,6 +51,10 @@ Specialist.all.each do |specialist|
 end
 
 Clinic.all.each do |clinic|
+
+  #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
+  next if clinic.specializations.length == 0
+  
   entry = { 
     "name" => clinic.name, 
     "specialty" => clinic.specializations.collect{ |s| s.name }.to_sentence,
