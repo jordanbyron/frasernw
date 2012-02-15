@@ -1,14 +1,10 @@
 = simple_form_for @specialization, :html => { :class => "form-horizontal" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
-  .control-group
-    = f.label :name, :class => "control-label"
-    .controls
-      = f.text_field :name
-  .control-group
-    = f.label :in_progress, :class => "control-label"
-    .controls
-      = f.check_box :in_progress
+    
+  = f.input :name
+  = f.input :in_progress
+  
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
     = link_to 'Cancel', specializations_path, :class => "btn btn-danger"
