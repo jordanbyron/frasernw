@@ -6,7 +6,7 @@
   = f.input :name
   = f.input :responded
     
-  = f.association :specializations, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this clinic again to update the list of available areas of practices and specialists."
+  = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this clinic again to update the list of available areas of practices and specialists."
   
   %hr
 

@@ -1,12 +1,11 @@
 class Specialist < ActiveRecord::Base
-  attr_accessible :firstname, :lastname, :responded, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :hospital_ids, :specialization_ids, :capacities_attributes, :offices_attributes, :language_ids, :addresses_attributes
+  attr_accessible :firstname, :lastname, :responded, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :offices_attributes, :language_ids, :addresses_attributes
   has_paper_trail ignore: :saved_token
   
   # specialists can have multiple specializations
   has_many :specialist_specializations, :dependent => :destroy
   has_many :specializations, :through => :specialist_specializations, :conditions => { "in_progress" => false }
   has_many :specializations_including_in_progress, :through => :specialist_specializations, :source => :specialization, :class_name => "Specialization"
-  accepts_nested_attributes_for :specialist_specializations, :allow_destroy => true
 
   # specialists have the capacity to perform procedures
   has_many   :capacities, :dependent => :destroy

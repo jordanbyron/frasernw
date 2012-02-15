@@ -20,7 +20,7 @@
   = f.input :direct_phone, :hint => "For physician contact only"
   = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.billing_number_padded }
     
-  = f.association :specializations, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
+  = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
   
   %hr
 
