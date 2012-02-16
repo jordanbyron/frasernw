@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  skip_authorization_check
+  skip_authorization_check :only => [:create]
+  load_and_authorize_resource
 
   def index
     @users = User.find(:all)
