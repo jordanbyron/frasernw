@@ -27,6 +27,10 @@ class Specialist < ActiveRecord::Base
   # specialists are favorited by users of the system
   has_many   :favorites
   has_many   :users, :through => :favorites
+  
+  #specialist are controlled (e.g. can be edited) by users of the system
+  has_many :user_controls_specialists
+  has_many :controlling_users, :through => :user_controls_specialists, :source => :specialist, :class_name => "Specialist"
 
   # has many contacts - dates and times they were contacted
   has_many  :contacts

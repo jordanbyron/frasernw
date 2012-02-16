@@ -152,6 +152,7 @@
 %p.admin.btn-group
   - if can? :update, @specialist
     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(@specialist), :class => "btn")
+  - if current_user_is_admin?
     = link_to("<i class='icon-folder-open'></i>".html_safe + " History", show_versions_path(@specialist), :class => "btn")
   - if can? :destroy, @specialist
     = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @specialist, :confirm => "Delete #{@specialist.name}?", :method => :delete, :class => "btn")
