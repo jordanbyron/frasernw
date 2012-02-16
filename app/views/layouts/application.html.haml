@@ -35,7 +35,7 @@
           - if logged_in?
             %ul.nav.pull-left
               
-              - if logged_in? and current_user_is_admin?
+              - if current_user_is_admin?
                 %li.dropdown.admin
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
                     Admin
