@@ -1,8 +1,5 @@
 class UsersController < ApplicationController
-  before_filter :login_required, :except => [:new, :create]
   skip_authorization_check
- # before_filter :admin_required, :except => [:show]
-  # FIXME need admin logins
 
   def index
     @users = User.find(:all)

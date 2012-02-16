@@ -1,6 +1,14 @@
 class UserSessionsController < ApplicationController
   skip_before_filter :login_required
   skip_authorization_check
+  
+  def index
+    redirect_to root_url
+  end
+  
+  def show
+    redirect_to root_url
+  end
 
   def new
     @user_session = UserSession.new

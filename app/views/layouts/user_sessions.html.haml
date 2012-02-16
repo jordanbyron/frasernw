@@ -15,4 +15,6 @@
         .container
           = link_to "Pathways", root_url, :class => "brand"
     #content
+      - flash.each do |type, msg|
+        .alert.alert-error= msg
       = yield

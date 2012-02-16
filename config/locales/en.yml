@@ -17,7 +17,7 @@ en:
       no_authentication_details: You did not provide any details for authentication.
       general_credentials_error: Login/Password combination is not valid
     models:
-      user_session: UserSession (or whatever name you are using)
+      user_session: UserSession
     attributes:
       user_session:
         login: login
