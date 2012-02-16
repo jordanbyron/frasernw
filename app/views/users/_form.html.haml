@@ -1,34 +1,35 @@
-= simple_form_for @user, :html => { :class => "form-horizontal" } do |f|
+= simple_nested_form_for @user, :html => { :class => "form-horizontal" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
-  .control-group
-    = f.label :username, :class => "control-label"
-    .controls
-      = f.text_field :username
-  .control-group
-    = f.label :name, :class => "control-label"
-    .controls
-      = f.text_field :name
-  .control-group
-    = f.label :email, "Email Address", :class => "control-label"
-    .controls
-      = f.text_field :email
-  .control-group
-    = f.label :password, :class => "control-label"
-    .controls
-      = f.password_field :password
-  .control-group
-    = f.label :password_confirmation, "Confirm Password", :class => "control-label"
-    .controls
-      = f.password_field :password_confirmation
-  .control-group
-    = f.label :role, :class => "control-label"
-    .controls
-      = f.select :role, ['user', 'admin']
-  .control-group
-    = f.label :nofity, "Email Notifications (only if admin)", :class => "control-label"
-    .controls
-      = f.check_box :notify
+  
+  = f.input :username
+  = f.input :name
+  = f.input :email
+  = f.input :password
+  = f.input :password_confirmation
+  = f.input :role, :as => :select, collection: ['user', 'admin'], :include_blank => false
+  
+  %hr
+  
+  #admin_pane
+    = f.input :notify
+    
+  #user_pane
+    %h4 Specialist user can edit
+    .content
+      = f.simple_fields_for :user_controls_specialists do |i|
+        .row.spaced
+          .span4.offset3
+            = i.association :specialist, as: :select, :label => false, collection: Specialist.all, prompt: 'Select ...', wrapper: :no_wrapper
+          .spanhalf.offsethalf
+            = i.hidden_field :_destroy
+            = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
+    .row
+      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another specialist", :user_controls_specialists, class: "btn offset3")
+      
+  :javascript
+    $("#user_role").each( swapRole );
+    
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
     = link_to 'Cancel', users_path, :class => "btn btn-danger"

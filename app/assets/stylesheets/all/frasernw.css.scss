@@ -7,7 +7,7 @@ $FNW_NAV_PADDING_RIGHT: 10%;
     
 .admin, .navbar .nav > li.admin
 {
-  display: none;
+  /*display: none;*/
 }
 
 .in-progress
@@ -534,7 +534,13 @@ body
       
       h1, h2, h3, h4, h5, h6
       {
+        color: $FNW_RED;
         margin-bottom: 10px;
+      }
+      
+      .row .fields .row
+      {
+        margin-left: 0;
       }
     }
     

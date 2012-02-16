@@ -1,21 +1,55 @@
 %h2 Users
 
-%table.table.table-condensed.tablesorter
-  %tr
-    %th{:class => "{sorter: 'text'}"} Username
-    %th{:class => "{sorter: 'text'}"} Name
-    %th{:class => "{sorter: 'text'}"} Role
-    %th Notify?
-    %th.admin
+.tabbable
+  %ul.nav.nav-tabs
+    %li.active
+      %a{"href" => "#admin_tab", "data-toggle" => "tab"}= "Admins"
+    %li
+      %a{"href" => "#user_tab", "data-toggle" => "tab"}= "Users"
 
-  - User.all.each do |user|
-    %tr
-      %td{"style" => "vertical-align:middle"}= link_to user.username, user
-      %td{"style" => "vertical-align:middle"}= user.name
-      %td{"style" => "vertical-align:middle"}= user.role
-      %td{"style" => "vertical-align:middle"}= user.notify
-      %td.admin.btn-group
-        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-small")
-        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-small")
+  .tab-content
+    #admin_tab.tab-pane.active
+      %table.table.table-condensed
+        %tr
+          %th Username
+          %th Name
+          %th Role
+          %th Notify?
+          %th.admin
+
+        - User.all.each do |user|
+          - next if not user.admin?
+          %tr
+            %td{"style" => "vertical-align:top"}= link_to user.username, user
+            %td{"style" => "vertical-align:top"}= user.name
+            %td{"style" => "vertical-align:top"}= user.role
+            %td{"style" => "vertical-align:top"}= user.notify
+            %td.admin.btn-group
+              = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-small")
+              = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-small")
+
+    #user_tab.tab-pane
+      %table.table.table-condensed
+        %tr
+          %th Username
+          %th Name
+          %th Role
+          %th Controls
+          %th.admin
+
+        - User.all.each do |user|
+          - next if user.admin?
+          %tr
+            %td{"style" => "vertical-align:top"}= link_to user.username, user
+            %td{"style" => "vertical-align:top"}= user.name
+            %td{"style" => "vertical-align:top"}= user.role
+            %td{"style" => "vertical-align:top"}
+              - if !user.admin?
+                %ul
+                  - user.controlled_specialists.each do |specialist|
+                    %li= specialist.name
+            %td.admin.btn-group
+              = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-small")
+              = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-small")
 
 %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New User", new_user_path, :class => "btn")
