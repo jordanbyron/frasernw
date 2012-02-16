@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   check_authorization
 
   def info_for_paper_trail
-    { to_review: (!current_user.admin? rescue true) }
+    { to_review: (!current_user_is_admin? rescue true) }
   end
 
   rescue_from CanCan::AccessDenied do |exception|

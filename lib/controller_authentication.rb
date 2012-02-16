@@ -30,6 +30,10 @@ module ControllerAuthentication
     @current_user = current_user_session && current_user_session.record
   end
 
+  def current_user_is_admin?
+    return (current_user and current_user.admin?)
+  end
+
   def logged_in?
     !current_user.nil?
   end
@@ -43,7 +47,7 @@ module ControllerAuthentication
   def login_required
     unless logged_in?
       store_target_location
-      redirect_to login_url, :alert => "You must log in to access this page."
+      redirect_to login_url, :alert => (request.url != root_url) ? "You must log in to access this page." : false
     end
   end
   

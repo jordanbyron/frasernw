@@ -2,7 +2,7 @@
   = render 'versions/info'
 
 /
-  - if current_user.admin?
+  - if current_user_is_admin?
     #flash_notice
       - if @specialist.contact_email
         %h2 Email an invitation to this specialist
@@ -19,7 +19,7 @@
 %h2
   = @specialist.name
 %h4
-  = @specialist.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user.admin? }.collect(){ |s| "<a href='#' #{ s.in_progress ? "class='in-progress'" : "" } onclick=\"ajaxto(\'#{specialization_path(s)}\')\">#{s.name}</a>" }.to_sentence.html_safe
+  = @specialist.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#' #{ s.in_progress ? "class='in-progress'" : "" } onclick=\"ajaxto(\'#{specialization_path(s)}\')\">#{s.name}</a>" }.to_sentence.html_safe
     
 - if @specialist.billing_number
   %h5

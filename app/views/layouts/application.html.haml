@@ -35,7 +35,7 @@
           - if logged_in?
             %ul.nav.pull-left
               
-              - if logged_in? and current_user and current_user.admin?
+              - if logged_in? and current_user_is_admin?
                 %li.dropdown.admin
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
                     Admin
@@ -74,7 +74,7 @@
               %h3 Specialities
               %ul
                 - Specialization.all.each do |specialization|
-                  - next if (specialization.in_progress and !(current_user and current_user.admin?))
+                  - next if (specialization.in_progress and !current_user_is_admin?)
                   %li
                     %a.push{"href" => "#", "onclick" => "ajaxto('#{specialization_path(specialization)}')", "data-toggle" => "push", "data-target" => "#section_#{specialization.id}", :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
               

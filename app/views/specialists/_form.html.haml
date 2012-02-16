@@ -45,7 +45,7 @@
   
   %hr
 
-  - if current_user && current_user.admin?   
+  - if current_user_is_admin?   
     %h3 Senior MOA Contact Information
     %h4 This allows specialists to edit their own form. This information is only visible to admins.
     = f.input :contact_name
