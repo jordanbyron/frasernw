@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120214193714) do
+ActiveRecord::Schema.define(:version => 20120216194745) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -328,6 +328,13 @@ ActiveRecord::Schema.define(:version => 20120214193714) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "in_progress", :default => false
+  end
+
+  create_table "user_controls_specialists", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "specialist_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "users", :force => true do |t|
