@@ -23,7 +23,7 @@
             searcher: pathways_searcher,
             data_formatter: pathways_data_formatter,
             group_formatter: pathways_group_formatter,
-            min_score: 0.4
+            min_score: 0.6
           });
       });
 
@@ -61,7 +61,6 @@
               %li= link_to "Logout", logout_url
             
             %form.navbar-search.pull-right
-              %i.icon-white.icon-search
               %input.span3.search-query#search{"type" => "search", "placeholder" => "Search"}
               #search_results
                 %ul
