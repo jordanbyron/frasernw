@@ -119,7 +119,7 @@
       who see patients at the clinic:
       != @clinic.healthcare_providers.map{ |x| x.name }.join(", ")\
 
-  - if not @clinic.attendances.blank?
+  - if @clinic.attendances?
     %p
       %strong.attendance Physicians
       who see patients at the clinic:
@@ -129,8 +129,11 @@
           - if attendance.specialist
             %li
               %a{"href" => "#", "onclick" => "ajaxto('#{specialist_path(attendance.specialist)}')"}= attendance.specialist.name
+              = "- #{attendance.area_of_focus}" if not attendance.area_of_focus.blank?
         - else
-          %li= attendance.freeform_name
+          %li
+            = attendance.freeform_name
+            = "- #{attendance.area_of_focus}" if not attendance.area_of_focus.blank?
 
 %p.admin.btn-group
   - if can? :update, @clinic

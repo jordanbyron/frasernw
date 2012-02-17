@@ -40,6 +40,17 @@ class Clinic < ActiveRecord::Base
   validates_presence_of :name, :on => :create, :message => "can't be blank"
   validates_length_of :clinic_specializations, :minimum => 1, :message => "require at least one set"
   
+  def attendances?
+    attendances.each do |attendance|
+      if (attendance.is_specialist and attendance.specialist)
+        return true
+      elsif (!attendance.is_specialist and !attendance.freeform_name.blank?)
+        return true
+      end
+    end
+    return false
+  end
+  
   STATUS_HASH = { 
     1 => "Accepting new patients", 
     2 => "Only doing follow up on previous patients",
