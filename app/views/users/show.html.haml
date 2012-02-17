@@ -1,9 +1,38 @@
 %h2= @user.name
 
-%p= "user name: #{@user.username}"
-%p= "email: #{@user.email}"
-%p= "role: #{@user.role}"
-%p= "notify: #{@user.notify}"
+%p
+  %strong User name:
+  = @user.username
+%p
+  %strong Email address:
+  = @user.email
+%p
+  %strong Role:
+  = @user.role
 
+- if @user.admin?
+  %p
+    %strong Send notification emails on admin events:
+    = @user.notify ? "yes" : "no"
+- else
+  - if @user.controlled_specialists.length > 0
+    %p 
+      %strong Can edit specialists
+    %ul
+      - @user.controlled_specialists.each do |specialist|
+        %li= specialist.name
+  - if @user.controlled_clinics.length > 0
+    %p 
+      %strong Can edit clinics
+    %ul
+      - @user.controlled_clinics.each do |clinic|
+        %li= clinic.name
 
-%p= link_to "Edit user", edit_user_path(@user)
+%p.admin.btn-group
+  - if can? :update, @user
+    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(@user), :class => "btn")
+  - if current_user_is_admin?
+    = link_to("<i class='icon-folder-open'></i>".html_safe + " History", show_versions_path(@user), :class => "btn")
+  - if can? :destroy, @user
+    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @user, :confirm => "Delete #{@user.name}?", :method => :delete, :class => "btn")
+    

@@ -8,6 +8,8 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
+    @user.user_controls_specialists.build
+    @user.user_controls_clinics.build
   end
 
   def create
@@ -21,6 +23,8 @@ class UsersController < ApplicationController
 
   def edit
     @user = User.find(params[:id])
+    @user.user_controls_specialists.build
+    @user.user_controls_clinics.build
   end
 
   # def update
@@ -33,7 +37,7 @@ class UsersController < ApplicationController
   # end
   
   def show
-    @user = current_user
+    @user = User.find(params[:id])
   end
   
   def update

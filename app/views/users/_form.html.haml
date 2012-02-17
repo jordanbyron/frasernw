@@ -5,8 +5,9 @@
   = f.input :username
   = f.input :name
   = f.input :email
-  = f.input :password
-  = f.input :password_confirmation
+  - if params[:action] == 'new'
+    = f.input :password
+    = f.input :password_confirmation
   = f.input :role, :as => :select, collection: ['user', 'admin'], :include_blank => false
   
   %hr
@@ -26,6 +27,18 @@
             = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
     .row
       = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another specialist", :user_controls_specialists, class: "btn offset3")
+      
+    %h4 Clinics user can edit
+    .content
+      = f.simple_fields_for :user_controls_clinics do |j|
+        .row.spaced
+          .span4.offset3
+            = j.association :clinic, as: :select, :label => false, collection: Clinic.all, prompt: 'Select ...', wrapper: :no_wrapper
+          .spanhalf.offsethalf
+            = j.hidden_field :_destroy
+            = j.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
+    .row
+      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another clinic", :user_controls_clinics, class: "btn offset3")
       
   :javascript
     $("#user_role").each( swapRole );

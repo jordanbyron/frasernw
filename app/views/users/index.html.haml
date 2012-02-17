@@ -13,7 +13,6 @@
         %tr
           %th Username
           %th Name
-          %th Role
           %th Notify?
           %th.admin
 
@@ -22,7 +21,6 @@
           %tr
             %td{"style" => "vertical-align:top"}= link_to user.username, user
             %td{"style" => "vertical-align:top"}= user.name
-            %td{"style" => "vertical-align:top"}= user.role
             %td{"style" => "vertical-align:top"}= user.notify
             %td.admin.btn-group
               = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-small")
@@ -33,7 +31,6 @@
         %tr
           %th Username
           %th Name
-          %th Role
           %th Controls
           %th.admin
 
@@ -42,12 +39,13 @@
           %tr
             %td{"style" => "vertical-align:top"}= link_to user.username, user
             %td{"style" => "vertical-align:top"}= user.name
-            %td{"style" => "vertical-align:top"}= user.role
             %td{"style" => "vertical-align:top"}
               - if !user.admin?
                 %ul
                   - user.controlled_specialists.each do |specialist|
                     %li= specialist.name
+                  - user.controlled_clinics.each do |clinic|
+                    %li= clinic.name
             %td.admin.btn-group
               = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-small")
               = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-small")
