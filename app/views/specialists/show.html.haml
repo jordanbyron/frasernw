@@ -152,6 +152,13 @@
       %p
         %strong.clinic Clinic associations:
         != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' onclick=\"ajaxto('#{clinic_path(clinic)}'); return false;\">#{clinic.name}</a>" }.to_sentence
+            
+- if current_user_is_admin?
+  - if not @specialist.controlling_users.blank?
+    %p.admin
+      %strong.control Users 
+      that can edit this specialist:
+      != @specialist.controlling_users.map{ |user| "<a href='#' onclick=\"ajaxto('#{user_path(user)}')\">#{user.name}</a>" }.to_sentence
 
 %p.admin.btn-group
   - if can? :update, @specialist

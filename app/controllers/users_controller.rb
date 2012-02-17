@@ -38,6 +38,7 @@ class UsersController < ApplicationController
   
   def show
     @user = User.find(params[:id])
+    render :layout => false if request.headers['X-PJAX']
   end
   
   def update
