@@ -31,6 +31,10 @@ class Clinic < ActiveRecord::Base
   has_many   :clinic_healthcare_providers, :dependent => :destroy
   has_many   :healthcare_providers, :through => :clinic_healthcare_providers, :order => "name ASC"
   
+  #clinics are controlled (e.g. can be edited) by users of the system
+  has_many :user_controls_clinics, :dependent => :destroy
+  has_many :controlling_users, :through => :user_controls_clinics, :source => :user, :class_name => "User"
+  
   default_scope order('name')
   
   validates_presence_of :name, :on => :create, :message => "can't be blank"
@@ -167,19 +171,23 @@ class Clinic < ActiveRecord::Base
   end
   
   def urgent_referrals_via
-    if urgent_phone and urgent_fax and urgent_other_details.presence
-      return "phone, fax, or " + urgent_other_details
-    elsif urgent_phone and urgent_fax
-      return "phone or fax"
-    elsif urgent_phone
-      output = "phone"
+    if urgent_phone and urgent_fax
       if urgent_other_details.presence
-        return output + " or " + urgent_other_details
+        return "phone, fax, or " + urgent_other_details
+      else
+        return "phone or fax"
+      end
+    elsif urgent_phone
+      if urgent_other_details.presence
+        return output + "phone or " + urgent_other_details
+      else
+        return "phone"
       end
     elsif urgent_fax
-      output = "fax"
       if urgent_other_details.presence
-        return output + " or " + urgent_other_details
+        return "fax or " + urgent_other_details
+      else
+        return "fax"
       end
     elsif urgent_other_details.presence
       return referral_other_details
