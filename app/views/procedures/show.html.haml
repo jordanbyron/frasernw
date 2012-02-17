@@ -51,7 +51,7 @@
             %tr{:class => 'tableheader'}
               %th{:class => "{sorter: 'bylastname'}"} Specialist
               - if multiple_specialties
-                %th{:class => "{sorter: 'text'}"} Speciality
+                %th{:class => "{sorter: 'text'}"} Specialty
               - if has_children
                 %th{:class => "{sorter: 'text'}"}= "Additional #{@procedure.name} Focuses"
               %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
@@ -85,7 +85,7 @@
             %tr{:class => 'tableheader'}
               %th{:class => "{sorter: 'bylastname'} name_column"} Clinic
               - if multiple_specialties
-                %th{:class => "{sorter: 'text'}"} Speciality
+                %th{:class => "{sorter: 'text'}"} Specialty
               %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
               %th{:class => "{sorter: 'waittime'}"} Wait Time
               %th{:class => "{sorter: 'blanks_to_bottom'}"} City

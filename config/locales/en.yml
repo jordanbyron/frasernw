@@ -81,7 +81,7 @@ en:
         responded: "Responded to survey"
         direct_phone: "Direct Number"
         billing_number: "MSP Billing Number"
-        clinics: "Sub-speciality clinics"
+        clinics: "Sub-specialty clinics"
         contact_name: "Name"
         contact_email: "Email"
         contact_phone: "Phone"
@@ -111,7 +111,7 @@ en:
         patient_can_book_mask: "After you receive our referral, will your office accept direct calls from patients to book their own appointments?"
         red_flags: "What conditions (red flags) does your office feel warrant urgent consultation?"
         specialist_specializations: "Specialities"
-        specializations: "Areas of Speciality"
+        specializations: "Areas of Specialty"
       procedure:
         specialization_level: "Level"
         parent_id: "Parent Area of Practice"

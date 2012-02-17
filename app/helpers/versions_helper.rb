@@ -18,7 +18,7 @@ module VersionsHelper
     .gsub('clinicaddress', 'clinic address')
     .gsub('clinichealcareprovider', 'clinic healthcare provider')
     .gsub('clinicspeak', 'clinic speaks language')
-    .gsub('clinicspecialization', 'clinic has speciality')
+    .gsub('clinicspecialization', 'clinic has specialty')
     .gsub('focus', 'clinic has area of practice')
     .gsub('healthcareprovider', 'healthcare provider')
     .gsub('hospitaladdress', 'hospital address')
@@ -27,8 +27,8 @@ module VersionsHelper
     .gsub('procedure', 'area of practice')
     .gsub('specialist_address', 'specialist address')
     .gsub('specialistspeak', 'specialist office speaks language')
-    .gsub('specialistspecialization', 'specialist has speciality')
-    .gsub('specialization', 'speciality')
+    .gsub('specialistspecialization', 'specialist has specialty')
+    .gsub('specialization', 'specialty')
     content_tag :span, class: ["type", klass] do
       klass.titlecase
     end
