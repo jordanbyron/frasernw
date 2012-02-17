@@ -30,7 +30,8 @@ Frasernw::Application.routes.draw do
   put  "specialists/:id/:token/update" => 'specialists_editor#update', :as => 'specialist_self_update'
   post  "specialists/email/:id"         => 'specialists#email', :as => 'specialist_email'
   
-  match 'user/edit' => 'users#edit', :as => :edit_current_user
+  #RPW TODO: allow users to edit their own profile
+  #match 'user/edit' => 'users#edit', :as => :edit_current_user
 
   match 'signup' => 'users#new', :as => :signup
 
