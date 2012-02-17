@@ -1,5 +1,5 @@
 class Specialist < ActiveRecord::Base
-  attr_accessible :firstname, :lastname, :responded, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :offices_attributes, :language_ids, :addresses_attributes
+  attr_accessible :firstname, :lastname, :responded, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :offices_attributes, :language_ids, :addresses_attributes, :user_controls_specialists_attributes
   has_paper_trail ignore: :saved_token
   
   # specialists can have multiple specializations
@@ -31,6 +31,7 @@ class Specialist < ActiveRecord::Base
   #specialist are controlled (e.g. can be edited) by users of the system
   has_many :user_controls_specialists, :dependent => :destroy
   has_many :controlling_users, :through => :user_controls_specialists, :source => :user, :class_name => "User"
+  accepts_nested_attributes_for :user_controls_specialists, :reject_if => lambda { |ucs| ucs[:user_id].blank? }, :allow_destroy => true
 
   # has many contacts - dates and times they were contacted
   has_many  :contacts

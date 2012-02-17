@@ -136,6 +136,21 @@
   %hr{ "style" => "visibility:hidden" }
 
   = f.association :healthcare_providers, as: :check_boxes
+  
+  -if current_user_is_admin?
+    %hr
+  
+    %h4 Users that can Edit this Clinic
+    .content
+      = f.simple_fields_for :user_controls_clinics do |i|
+        .row.spaced
+          .span4.offset3
+            = i.association :user, as: :select, :label => false, collection: User.all.reject{ |u| u.admin? }, prompt: 'Select ...', wrapper: :no_wrapper
+          .spanhalf.offsethalf
+            = i.hidden_field :_destroy
+            = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
+    .row
+      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another user", :user_controls_clinics, class: "btn offset3")
     
   %hr
   
