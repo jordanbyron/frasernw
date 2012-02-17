@@ -12,11 +12,11 @@ class Ability
       can :blank, Specialization #landing page
       
       can :update, Specialist do |specialist|
-        specialist.controlling_users.include? specialist
+        specialist.controlling_users.include? user
       end
       
       can :update, Clinic do |clinic|
-        false #TODO return true if this is a clinic mapped to a user
+        clinic.controlling_users.include? user
       end
       
     end
