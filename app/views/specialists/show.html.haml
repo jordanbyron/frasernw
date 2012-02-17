@@ -131,13 +131,17 @@
       
     .red_flag
       - if not @specialist.red_flags.blank?
-        %p.collapse_up
+        %p
           %strong Red flags
           this office feels warrants urgent consultation:
           = @specialist.red_flags
-      - if @specialist.urgent_referrals_via
+      - if not @specialist.urgent_referrals_via.blank?
         %p.collapse_up
-          = "The optimal method of referral for urgent consulation is #{@specialist.urgent_referrals_via}"
+          - if @specialist.red_flags.blank?
+            %strong Urgent consulation 
+          - else
+            Urgent consulation
+          = "should be referred via #{@specialist.urgent_referrals_via}"
       
     - if not @specialist.hospitals.blank?
       %p

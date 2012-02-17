@@ -100,13 +100,17 @@
     
   .red_flag
     - if not @clinic.red_flags.blank?
-      %p.collapse_up
+      %p
         %strong Red flags
-        this office feels warrants urgent consultation:
+        this clinic feels warrants urgent consultation:
         = @clinic.red_flags
-    - if @clinic.urgent_referrals_via
+    - if not @clinic.urgent_referrals_via.blank?
       %p.collapse_up
-        = "The optimal method of referral for urgent consulation is #{@clinic.urgent_referrals_via}"
+        - if @clinic.red_flags.blank?
+          %strong Urgent consulation 
+        - else
+          Urgent consulation
+        = "should be referred via #{@clinic.urgent_referrals_via}"
     
   - if not @clinic.healthcare_providers.blank?
     %p
@@ -131,6 +135,7 @@
 %p.admin.btn-group
   - if can? :update, @clinic
     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path(@clinic), :class => "btn")
+  - if current_user_is_admin?
     = link_to("<i class='icon-folder-open'></i>".html_safe + " History", show_versions_path(@clinic), :class => "btn")
   - if can? :destroy, @clinic
     = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @clinic, :confirm => "Delete #{@clinic.name}?", :method => :delete, :class => "btn")
