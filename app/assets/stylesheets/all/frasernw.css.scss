@@ -507,6 +507,14 @@ body
         {
           background-position: -312px -96px;
         }
+        
+        th.headerSortUp + th.headerSortUp:after, 
+        th.headerSortDown + th.headerSortDown:after, 
+        th.headerSortUp + th.headSortDown:after, 
+        th.headerSortDown + th.headerSortUp:after
+        {
+          background-position: 14px 14px;
+        } 
       }
     }
     
