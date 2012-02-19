@@ -22,7 +22,7 @@ Procedure.all.each do |procedure|
   next if procedure.specializations.length == 0
   
   entry = { 
-    "name" => procedure.name, 
+    "name" => procedure.full_name, 
     "specialty" => procedure.specializations.collect{ |s| s.name }.to_sentence,
     "city" => "", 
     "status" => "",

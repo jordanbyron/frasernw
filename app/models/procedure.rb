@@ -23,6 +23,14 @@ class Procedure < ActiveRecord::Base
     self.name
   end
   
+  def full_name
+    if procedure_specializations.first and procedure_specializations.first.parent
+      return procedure_specializations.first.parent.procedure.full_name + " " + self.name
+    else
+      return self.name
+    end
+  end
+  
   def all_specialists
     #look at this procedure as well as its children to find any specialists
     results = []
