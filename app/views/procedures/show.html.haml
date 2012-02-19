@@ -3,26 +3,29 @@
 - has_children = false
 
 - if multiple_specialties and has_children
-  :javascript
-    $(document).ready(function() {
-      //sort by status then wait time
-        $('.tablesorter').tablesorter({sortList: [[3,0],[4,0]]});
-    });
+  %script{"type" => "text/javascript"}
+    :plain
+      $(document).ready(function() {
+        //sort by status then wait time
+          $('.tablesorter').tablesorter({sortList: [[3,0],[4,0]]});
+      });
 - elsif multiple_specialties or has_children
-  :javascript
-    $(document).ready(function() {
-      //sort by status then wait time
-        $('.tablesorter').tablesorter({sortList: [[2,0],[3,0]]});
-    });
+  %script{"type" => "text/javascript"}
+    :plain
+      $(document).ready(function() {
+        //sort by status then wait time
+          $('.tablesorter').tablesorter({sortList: [[2,0],[3,0]]});
+      });
 - else
-  :javascript
-    $(document).ready(function() {
-      //sort by status then wait time
-        $('.tablesorter').tablesorter({sortList: [[1,0],[2,0]]});
-    });
+  %script{"type" => "text/javascript"}
+    :plain
+      $(document).ready(function() {
+        //sort by status then wait time
+          $('.tablesorter').tablesorter({sortList: [[1,0],[2,0]]});
+      });
 
 %h2= "#{@procedure.name}"
-%h4= @procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress and !current_user_is_admin? }.collect(){ |ps| "<a href='#' class='#{ ps.specialization.in_progress ? "in-progress" : ""}' onclick=\"ajaxto(\'#{specialization_path(ps.specialization)}\')\">#{compressed_ancestry(ps)}</a>" }.to_sentence.html_safe
+%h4= @procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress and !current_user_is_admin? }.collect(){ |ps| "<a href=\"#{specialization_path(ps.specialization)}\" class='#{ ps.specialization.in_progress ? "in-progress ajax" : "ajax"}'>#{compressed_ancestry(ps)}</a>" }.to_sentence.html_safe
 
 - has_specialists = @procedure.all_specialists.length > 0
 - has_clinics = @procedure.all_clinics.length > 0
@@ -61,7 +64,7 @@
             - (@procedure.all_specialists).each do |specialist|
               %tr{:class => specialist.responded ? "" : "not-responded"}
                 %td
-                  %a{"href" => "#", "onclick" => "ajaxto('#{specialist_path(specialist)}')"}= specialist.name
+                  %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                 - if multiple_specialties
                   %td
                     %ul
@@ -93,7 +96,7 @@
             - (@procedure.all_clinics).each do |clinic|
               %tr
                 %td
-                  %a{"href" => "#", "onclick" => "ajaxto('#{clinic_path(clinic)}')"}= clinic.name
+                  %a.ajax{"href" => clinic_path(clinic)}= clinic.name
                 - if multiple_specialties
                   %td= clinic.specializations.collect(){ |s| s.name }.to_sentence
                 %td

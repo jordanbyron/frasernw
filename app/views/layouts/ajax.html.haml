@@ -1,0 +1,9 @@
+!!!
+%html
+  %head
+    %title= yield(:title) || "Pathways"
+
+  %body
+    - flash.each do |type, msg|
+      .alert.alert-success= msg
+    = yield

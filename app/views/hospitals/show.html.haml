@@ -1,8 +1,9 @@
-:javascript
-  $(document).ready(function() {
-    //sort by status then wait time
-    $('.tablesorter').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
-  });
+%script{"type" => "text/javascript"}
+  :plain
+    $(document).ready(function() {
+      //sort by status then wait time
+      $('.tablesorter').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
+    });
   
 %h2= @hospital.name
   
@@ -56,7 +57,7 @@
             - (@hospital.specialists).each do |specialist|
               %tr{:class => specialist.responded ? "" : "not-responded"}
                 %td
-                  %a{"href" => "#", "onclick" => "ajaxto('#{specialist_path(specialist)}')"}= specialist.name
+                  %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                 %td
                   %ul
                     - specialist.specializations.each do |s|
@@ -80,7 +81,7 @@
             - (@hospital.clinics).each do |clinic|
               %tr
                 %td
-                  %a{"href" => "#", "onclick" => "ajaxto('#{clinic_path(clinic)}')"}= clinic.name
+                  %a.ajax{"href" => clinic_path(clinic)}= clinic.name
                 %td
                   %ul
                     - clinic.specializations.each do |s|
@@ -104,7 +105,7 @@
             - (@hospital.specialist_offices).each do |specialist|
               %tr{:class => specialist.responded ? "" : "not-responded"}
                 %td
-                  %a{"href" => "#", "onclick" => "ajaxto('#{specialist_path(specialist)}')"}= specialist.name
+                  %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                 %td
                   %ul
                     - specialist.specializations.each do |s|

@@ -4,7 +4,7 @@
 %h2
   = @clinic.name
 %h4.specialty
-  = @clinic.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#' #{ s.in_progress ? "class='in-progress'" : "" } onclick=\"ajaxto(\'#{specialization_path(s)}\')\">#{s.name}</a>" }.to_sentence.html_safe
+  = @clinic.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
   
 - if not @clinic.responded
   %p
@@ -20,7 +20,7 @@
     - if address.hospital
       %p.collapse_up
         In 
-        %a{"href" => "#", "onclick" => "ajaxto('#{hospital_path(address.hospital)}')"}= address.hospital.name
+        %a.ajax{"href" => hospital_path(address.hospital)}= address.hospital.name
         
   %p
     %strong{ :class => "status_#{@clinic.status_class}"}= @clinic.status
@@ -128,7 +128,7 @@
         - if attendance.is_specialist
           - if attendance.specialist
             %li
-              %a{"href" => "#", "onclick" => "ajaxto('#{specialist_path(attendance.specialist)}')"}= attendance.specialist.name
+              %a.ajax{"href" => specialist_path(attendance.specialist)}= attendance.specialist.name
               = "- #{attendance.area_of_focus}" if not attendance.area_of_focus.blank?
         - else
           %li
@@ -140,7 +140,7 @@
     %p.admin
       %strong.control Users 
       that can edit this clinic:
-      != @clinic.controlling_users.map{ |user| "<a href='#' onclick=\"ajaxto('#{user_path(user)}')\">#{user.name}</a>" }.to_sentence
+      != @clinic.controlling_users.map{ |user| "<a class='ajax' href='#{user_path(user)}'>#{user.name}</a>" }.to_sentence
 
 %p.admin.btn-group
   - if can? :update, @clinic

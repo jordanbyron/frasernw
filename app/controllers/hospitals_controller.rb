@@ -7,7 +7,7 @@ class HospitalsController < ApplicationController
 
   def show
     @hospital = Hospital.find(params[:id])
-    render :layout => false if request.headers['X-PJAX']
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def new

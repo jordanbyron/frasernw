@@ -13,7 +13,7 @@ function pathways_grouper(a, b)
 
 function pathways_data_formatter(total_score, scores_matches, data_entry)
 {
-  var result = "<li class='result'><a href=\"#\" onclick=\"ajaxto('" + data_entry.url + "'); $('#search_results').removeClass('show');\">"
+  var result = "<li class='result'><a id='" + data_entry.url.replace('/','_') + "'  href='" + data_entry.url + "' class='ajax'>"
   
   result += "<div class='name status_" + data_entry.status + "'>" + livesearch_highlighter( data_entry.name, scores_matches.name.matches ) + "</div>"
   result += "<div class='specialties'>" + data_entry.specialty + "</div>"
@@ -26,7 +26,7 @@ function pathways_data_formatter(total_score, scores_matches, data_entry)
   
   result += "</a></li>";
   
-  return result;
+  return $(result).ajaxify();
 }
 
 function pathways_group_formatter(group_name)
@@ -60,6 +60,6 @@ function pathways_group_formatter(group_name)
 
 function pathways_searcher(data_entry)
 {
-  ajaxto(data_entry.url);
+  $('#' + data_entry.url.replace('/','_')).click();
   return false;
 }
