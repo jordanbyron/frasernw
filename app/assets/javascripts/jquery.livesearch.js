@@ -1,9 +1,3 @@
-/*
- * search_data needs to be an array of search data entries, where each entry is an array of info. e.g. [["name 1", "url 1"], ["name 2", "url 2"]].
- * scores_matches_fnc(search_data_entry, term) needs to be a function which takes in a search data entry and search term, and returns an array of two arrays, [[scores],[matches]] for each element in the search_data_entry which you want to search against. For scores, higher is a better match, with zero indicating no match. Note that the String.score_matches function is useful here.
- * format_search_result(total_score, scores, matches, search_data_entry) needs to be a function which takes in a total score, array of scores and matches (as returned by your scores_matches_fnc), and the original search_data_entry, and returns a formatted list element (e.g. <li>something</li>).
-*/
-
 jQuery.fn.livesearch = function(options)
 {
   container = jQuery(options.container)
@@ -93,10 +87,10 @@ jQuery.fn.livesearch = function(options)
     var last_group = -999;
     $.each(results.sort(grouper_fnc), function()
     {
-      if ( this.data_entry.group_name && (last_group != this.data_entry.group_order) )
+      if ( this.data_entry.gn && (last_group != this.data_entry.go) )
       {
-        last_group = this.data_entry.group_order
-        list.append(group_formatter_fnc(this.data_entry.group_name))
+        last_group = this.data_entry.go
+        list.append(group_formatter_fnc(this.data_entry.gn))
       }
       list.append(data_formatter_fnc(this.total_score, this.scores_matches, this.data_entry))
     });
@@ -114,8 +108,8 @@ jQuery.fn.livesearch = function(options)
   
   function grouper(a, b)
   {
-    if (a.data_entry.group_order && b.data_entry.group_order)
-      return (a.group_order - b.group_order)
+    if (a.data_entry.go && b.data_entry.go)
+      return (a.go - b.go)
     else
       return (b.total_score - a.total_score)
   }

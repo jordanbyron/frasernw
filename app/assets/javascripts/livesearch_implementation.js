@@ -2,26 +2,26 @@
 function pathways_scorer(data_entry, term, fuzziness) 
 {
   return { 
-    name: data_entry.name.score_matches(term, fuzziness)
+    n: data_entry.n.score_matches(term, fuzziness)
   };
 }
 
 function pathways_grouper(a, b)
 {
-  return (a.data_entry.group_order - b.data_entry.group_order)
+  return (a.data_entry.go - b.data_entry.go)
 }
 
 function pathways_data_formatter(total_score, scores_matches, data_entry)
 {
   var result = "<li class='result'><a id='" + data_entry.url.replace(/\//g,'_') + "'  href='" + data_entry.url + "' class='ajax'>"
   
-  result += "<div class='name status_" + data_entry.status + "'>" + livesearch_highlighter( data_entry.name, scores_matches.name.matches ) + "</div>"
-  result += "<div class='specialties'>" + data_entry.specialty + "</div>"
+  result += "<div class='name status_" + data_entry.st + "'>" + livesearch_highlighter( data_entry.n, scores_matches.n.matches ) + "</div>"
+  result += "<div class='specialties'>" + data_entry.sp + "</div>"
   
   if ( data_entry.wait_time != "" && data_entry.city != "" )
   {
-    result += "<div class='wait_time'>Wait time: " + data_entry.wait_time + "</div>"
-    result += "<div class='city'>" + data_entry.city + "</div>"
+    result += "<div class='wait_time'>Wait time: " + data_entry.wt + "</div>"
+    result += "<div class='city'>" + data_entry.c + "</div>"
   }
   
   result += "</a></li>";
