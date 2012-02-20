@@ -21,9 +21,9 @@
 			$content = $(contentSelector).filter(':first'),
 			contentNode = $content.get(0),
 			$menu = $('#left-nav').filter(':first'),
-			activeClass = 'active selected current youarehere',
-			activeSelector = '.active,.selected,.current,.youarehere',
-			menuChildrenSelector = '> li,> ul > li',
+			activeClass = 'active',
+			activeSelector = '.active',
+			menuChildrenSelector = '.nav_panel > ul > li',
       fadeSpeed = 75,
 			/* Application Generic Variables */
 			$body = $(document.body),
@@ -140,8 +140,8 @@
 					// Update the menu
 					$menuChildren = $menu.find(menuChildrenSelector);
 					$menuChildren.filter(activeSelector).removeClass(activeClass);
-					$menuChildren = $menuChildren.has('a[href^="'+relativeUrl+'"],a[href^="/'+relativeUrl+'"],a[href^="'+url+'"]');
-					if ( $menuChildren.length === 1 ) { $menuChildren.addClass(activeClass); }
+					$menuChildren = $menuChildren.has('a[href="'+relativeUrl+'"],a[href="/'+relativeUrl+'"],a[href="'+url+'"]');
+					if ( $menuChildren.length >= 1 ) { $menuChildren.addClass(activeClass); }
 
 					// Update the content
 					$content.stop(true,true);

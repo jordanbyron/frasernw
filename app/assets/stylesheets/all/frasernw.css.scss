@@ -191,6 +191,8 @@ body
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   padding-bottom: 30px;
+        
+  $LINK_MIN_HEIGHT: 34px;
   
   #left-nav
   {
@@ -227,7 +229,9 @@ body
         
         a
         {
-          padding: 5px $FNW_NAV_PADDING_RIGHT 5px $FNW_NAV_PADDING_LEFT;
+          min-height: $LINK_MIN_HEIGHT;
+          line-height: $LINK_MIN_HEIGHT;
+          padding: 0 $FNW_NAV_PADDING_RIGHT 0 $FNW_NAV_PADDING_LEFT;
           display: inline-block;
           width: 100% - $FNW_NAV_PADDING_RIGHT - $FNW_NAV_PADDING_LEFT;
           color: $FNW_BLUE;
@@ -247,6 +251,7 @@ body
           display: inline-block;
           width: 14px;
           height: 14px;
+          margin: ($LINK_MIN_HEIGHT - 14px)/2 0;
           background-position: 14px 14px;
           background-repeat: no-repeat;
           background-image: url(/img/glyphicons-halflings-blue.png);
@@ -272,6 +277,13 @@ body
         {
           background-image: url(/img/glyphicons-halflings-red.png);
         }
+      }
+      
+      li.active a
+      {
+        color: $FNW_RED;
+        background: url(/img/nav_arrow_mask.png) no-repeat 100% 50% $FNW_LIGHT_BLUE;
+        text-decoration: none;
       }
     }
     
@@ -434,6 +446,10 @@ body
       tr td 
       {
         border-top: 1px solid $FNW_LIGHT_GRAY;
+        vertical-align: middle;
+        height: $LINK_MIN_HEIGHT;
+        padding-top:0;
+        padding-bottom:0;
         
         .status_available,
         .status_unavailable,
