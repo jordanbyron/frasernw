@@ -411,20 +411,39 @@ body
     
     .tabbable
     {
-      margin-top: 10px;
+      margin: 10px 0;
       
-      ul.nav
+      ul.nav-tabs
       {
-        margin-bottom: 10px;
+        margin: 0;
+        border-color: $FNW_MID_GRAY;
         
-        li a
+        li
         {
-          text-decoration: none;
+          margin-left: 5px;
+          
+          a
+          {
+            border: 1px solid $FNW_LIGHT_GRAY;
+            border-bottom-color: transparent;
+            text-decoration: none;
+          }
+        }
+      
+        li.active
+        {
+          a
+          {
+            border-color: $FNW_MID_GRAY;
+            border-bottom-color: transparent;
+          }
         }
         
         li:not(.active) a:hover
         {
           background: $FNW_LIGHT_BLUE;
+          border-coor: $FNW_MID_GRAY;
+          border-bottom-color: transparent;
           color: $FNW_RED;
           cursor: pointer;
         }
