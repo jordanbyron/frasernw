@@ -233,7 +233,7 @@ class Specialist < ActiveRecord::Base
       end
     elsif urgent_phone
       if urgent_other_details.presence
-        return output + "phone or " + urgent_other_details
+        return "phone or " + urgent_other_details
       else
         return "phone"
       end
