@@ -3,6 +3,5 @@
 %p.admin.btn-group
   - if can? :update, @language
     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_language_path(@language), :class => "btn")
-    = link_to("<i class='icon-folder-open'></i>".html_safe + " History", show_versions_path(@language), :class => "btn")
   - if can? :destroy, @language
     = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @language, :confirm => "Delete #{@language.name}?", :method => :delete, :class => "btn")

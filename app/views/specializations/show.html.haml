@@ -73,7 +73,6 @@
 %p.admin.btn-group
   - if can? :update, @specialization
     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialty", edit_specialization_path(@specialization), :class => "btn")
-    = link_to("<i class='icon-folder-open'></i>".html_safe + " Specialty History", show_versions_path(@specialization), :class => "btn")
   - if can? :destroy, @specialization
     = link_to("<i class='icon-trash'></i>".html_safe + " Delete Specialty", @specialization, :confirm => "Delete #{@specialization.name}?", :method => :delete, :class => "btn")
 
