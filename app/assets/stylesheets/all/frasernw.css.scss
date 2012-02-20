@@ -7,7 +7,7 @@ $FNW_NAV_PADDING_RIGHT: 10%;
     
 .admin, .navbar .nav > li.admin
 {
-  /*display: none;*/
+  display: none;
 }
 
 .in-progress
@@ -282,7 +282,7 @@ body
       li.active a
       {
         color: $FNW_RED;
-        background: $FNW_LIGHT_BLUE url(/img/nav_arrow_mask_small.png) no-repeat 100% 50%;
+        background: url(/img/nav_arrow_mask_small.png) no-repeat 100% 50% $FNW_LIGHT_BLUE;
         text-decoration: none;
       }
     }
