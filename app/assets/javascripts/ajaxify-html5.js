@@ -17,13 +17,9 @@
 		// Prepare Variables
 		var
 			/* Application Specific Variables */
-			contentSelector = '#container,article:first,.article:first,.post:first',
-			$content = $(contentSelector).filter(':first'),
+			$content = $('#container').filter(':first'),
 			contentNode = $content.get(0),
 			$menu = $('#left-nav').filter(':first'),
-			activeClass = 'active',
-			activeSelector = '.active',
-			menuChildrenSelector = '.nav_panel > ul > li',
       fadeSpeed = 75,
 			/* Application Generic Variables */
 			$body = $(document.body),
@@ -138,10 +134,10 @@
 					}
 					
 					// Update the menu
-					$menuChildren = $menu.find(menuChildrenSelector);
-					$menuChildren.filter(activeSelector).removeClass(activeClass);
+					$menuChildren = $menu.find('.nav_panel > ul > li, #root > ul > li');
+					$menuChildren.filter('.active').removeClass('active');
 					$menuChildren = $menuChildren.has('a[href="'+relativeUrl+'"],a[href="/'+relativeUrl+'"],a[href="'+url+'"]');
-					if ( $menuChildren.length >= 1 ) { $menuChildren.addClass(activeClass); }
+					if ( $menuChildren.length >= 1 ) { $menuChildren.addClass('active'); }
 
 					// Update the content
 					$content.stop(true,true);

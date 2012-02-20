@@ -282,7 +282,7 @@ body
       li.active a
       {
         color: $FNW_RED;
-        background: url(/img/nav_arrow_mask.png) no-repeat 100% 50% $FNW_LIGHT_BLUE;
+        background: $FNW_LIGHT_BLUE url(/img/nav_arrow_mask_small.png) no-repeat 100% 50%;
         text-decoration: none;
       }
     }

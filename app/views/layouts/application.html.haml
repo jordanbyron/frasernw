@@ -15,16 +15,16 @@
     :javascript
       $(document).ready(function() 
       {
-          $('#search').livesearch({
-            container: '#search_results',
-            data: pathways_search_data,
-            scorer: pathways_scorer,
-            grouper: pathways_grouper,
-            searcher: pathways_searcher,
-            data_formatter: pathways_data_formatter,
-            group_formatter: pathways_group_formatter,
-            min_score: 0.6
-          });
+        $('#search').livesearch({
+          container: '#search_results',
+          data: pathways_search_data,
+          scorer: pathways_scorer,
+          grouper: pathways_grouper,
+          searcher: pathways_searcher,
+          data_formatter: pathways_data_formatter,
+          group_formatter: pathways_group_formatter,
+          min_score: 0.6
+        });
       });
 
   %body{:id => "#{params[:controller]}_page"}
@@ -75,15 +75,15 @@
                 - Specialization.all.each do |specialization|
                   - next if (specialization.in_progress and !current_user_is_admin?)
                   %li
-                    %a.ajax.push{"href" => specialization_path(specialization), "data-toggle" => "push", "data-target" => "#section_#{specialization.id}", :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
+                    %a.ajax.push{"href" => specialization_path(specialization), "data-toggle" => "push", "data-target" => "#specialization_#{specialization.id}", :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
               
             - Specialization.all.each do |specialization|
-              .nav_panel{ "id" => "section_#{specialization.id}" }
+              .nav_panel{ "id" => "specialization_#{specialization.id}" }
                 %h3{:class => specialization.in_progress ? "in-progress" : ""}
                   %a.ajax{"href" => specialization_path(specialization)}= specialization.name
                 %ul
                   %li
-                    %a.ajax.pop{"href" => "javascript:void(0)", "data-toggle" => "pop", "data-target" => "#section_#{specialization.id}", "data-parent" => "#root"} Back
+                    %a.ajax.pop{"href" => "javascript:void(0)", "data-toggle" => "pop", "data-target" => "#specialization_#{specialization.id}", "data-parent" => "#root"} Back
                   - specialization.procedure_specializations_arranged.each do |ps,children|
                     - next if not ps.procedure.specialization_level
                     - next if ps.procedure.empty_for_specialization? specialization
@@ -102,7 +102,7 @@
                     %a.ajax{"href" => procedure_path(ps.procedure)}= ps.procedure.name
                   %ul
                     %li
-                      %a.ajax.pop{"href" => "javascript:void(0)#", "data-toggle" => "pop", "data-target" => "#procedure_#{ps.procedure.id}", "data-parent" => "#section_#{specialization.id}"} Back
+                      %a.ajax.pop{"href" => "javascript:void(0)#", "data-toggle" => "pop", "data-target" => "#procedure_#{ps.procedure.id}", "data-parent" => "#specialization_#{specialization.id}"} Back
                     - children.each do |ps,children|
                       - next if not ps.procedure.specialization_level
                       - next if ps.procedure.empty_for_specialization? specialization

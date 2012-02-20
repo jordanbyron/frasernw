@@ -47,5 +47,76 @@
       nav_pop(target, resize)
     })
   })
+  
+  //fix up navigation based off where we loaded site
+  $(document).ready(function()
+  {
+    var url = History.getState().url;
+    
+    var found = false;
+    
+    //check root, push any panel we have selected (e.g. we started on a specialty)
+    $('#root > ul > li').each( function () {
+      var nav_link = $(this);
+      var link = $('a:first', nav_link);
+      var link_url = link.attr("href");
+      if (url.indexOf( link_url, url.length - link_url.length ) !== -1)
+      {
+        //highlight link on the root nav
+        nav_link.addClass('active');
+        //push the panel for the specialization
+        var child_panel = $(link.attr("data-target"));
+        child_panel.addClass('pushed');
+        found = true;
+        return false;
+      }
+    });
+    
+    if (found)
+    {
+      return true;
+    }
+    
+    //check all panel links, pushing and activating if any are selected
+    $('.nav_panel').each( function() {
+      var nav_panel = $(this);
+      var parent_panel = $('a.pop:first', nav_panel).attr("data-parent");
+      var found = false;
+      $('li', nav_panel).each( function () {
+        var nav_link = $(this);
+        var link = $('a:first', nav_link);
+        var link_url = link.attr("href");
+        if (url.indexOf( link_url, url.length - link_url.length ) !== -1)
+        {
+          if (parent_panel !== "#root")
+          {
+            //push the parent panel if we have one
+            $(parent_panel).addClass('pushed');
+          }
+          
+          //push our panel
+          nav_panel.addClass('pushed');
+          
+          //mark our link
+          nav_link.addClass('active');
+        
+          if (link.attr("data-target"))
+          {
+            //push the child panel if we have one
+            var child_panel = $(link.attr("data-target"));
+            child_panel.addClass('pushed');
+          }
+          
+          console.log("found");
+          found = true; //flag to break outer loop
+          return false;
+        }
+      });
+      if (found)
+      {
+        return false;
+      }
+    });
+  });
 
 }( window.jQuery )
