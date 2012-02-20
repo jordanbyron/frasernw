@@ -3,7 +3,7 @@
 %table.table.table-condensed
   - Hospital.all.each do |hospital|
     %tr
-      %td{"style" => "vertical-align:middle"}= link_to hospital.name, hospital
+      %td= link_to hospital.name, hospital
       %td.admin.btn-group
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_hospital_path(hospital), :class => "btn btn-small")
         = link_to("<i class='icon-trash'></i>".html_safe + " Delete", hospital, :confirm => "Delete #{hospital.name}?", :method => :delete, :class => "btn btn-small")

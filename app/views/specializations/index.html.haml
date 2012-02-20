@@ -3,8 +3,8 @@
 %table.table.table-condensed
   - Specialization.all.each do |specialization|
     %tr
-      %td{"style" => "vertical-align:middle"}= link_to specialization.name, specialization
-      %td{"style" => "vertical-align:middle"}= specialization.in_progress ? "In progress" : ""
+      %td= link_to specialization.name, specialization
+      %td= specialization.in_progress ? "In progress" : ""
       %td.admin.btn-group
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialization_path(specialization), :class => "btn btn-small")
         = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialization, :confirm => "Delete #{specialization.name}?", :method => :delete, :class => "btn btn-small")

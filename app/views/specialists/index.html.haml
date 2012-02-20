@@ -8,7 +8,7 @@
       
     - specialization.specialists.each do |specialist|
       %tr
-        %td{"style" => "vertical-align:middle"}= link_to specialist.name, specialist_path(specialist)
+        %td= link_to specialist.name, specialist_path(specialist)
         %td.admin.btn-group
           = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-small")
           = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-small")

@@ -99,7 +99,7 @@
                 - next if ps.procedure.empty_for_specialization? specialization
                 .nav_panel{ "id" => "procedure_#{ps.procedure.id}" }
                   %h3
-                    %a.ajax{"href" => specialization_path(specialization)}= ps.specialization.name
+                    %a.ajax{"href" => procedure_path(ps.procedure)}= ps.procedure.name
                   %ul
                     %li
                       %a.ajax.pop{"href" => "javascript:void(0)#", "data-toggle" => "pop", "data-target" => "#procedure_#{ps.procedure.id}", "data-parent" => "#section_#{specialization.id}"} Back

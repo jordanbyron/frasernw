@@ -8,8 +8,8 @@
 
   - @cities.each do |city|
     %tr
-      %td{"style" => "vertical-align:middle"}= link_to city.name, city
-      %td{"style" => "vertical-align:middle"}= city.province
+      %td= link_to city.name, city
+      %td= city.province
       %td.admin.btn-group
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_city_path(city), :class => "btn btn-small")
         = link_to("<i class='icon-trash'></i>".html_safe + " Delete", city, :confirm => "Delete #{city.name}?", :method => :delete, :class => "btn btn-small")

@@ -7,7 +7,7 @@
 
   - @languages.each do |language|
     %tr
-      %td{"style" => "vertical-align:middle"}= link_to language.name, language
+      %td= link_to language.name, language
       %td.admin.btn-group
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_language_path(language), :class => "btn btn-small")
         = link_to("<i class='icon-trash'></i>".html_safe + " Delete", language, :confirm => "Delete #{language.name}?", :method => :delete, :class => "btn btn-small")
