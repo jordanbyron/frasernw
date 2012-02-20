@@ -3,6 +3,6 @@
 %ol
   - @versions.each_with_index do |version, idx|
     %li
-      = link_to "#{version.evented.capitalize}", show_version_path(version)
+      = link_to "#{version.evented.capitalize}", show_version_path(version), :class => "ajax"
       by #{whodunnit_name(version)}
       %span{:class=> "muted"}= "#{time_ago_in_words(version.created_at)} ago"

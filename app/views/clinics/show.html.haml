@@ -146,7 +146,7 @@
   - if can? :update, @clinic
     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path(@clinic), :class => "btn")
   - if current_user_is_admin?
-    = link_to("<i class='icon-folder-open'></i>".html_safe + " History", clinic_versions_path(@clinic), :class => "btn")
+    = link_to("<i class='icon-folder-open'></i>".html_safe + " History", clinic_versions_path(@clinic), :class => "ajax btn")
   - if can? :destroy, @clinic
     = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @clinic, :confirm => "Delete #{@clinic.name}?", :method => :delete, :class => "btn")
 

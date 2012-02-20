@@ -5,6 +5,7 @@ class VersionsController < ApplicationController
     klass = params[:model].singularize.camelize.constantize
     @item = klass.find params[:id]
     @versions = @item.versions
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
   def show
@@ -12,11 +13,18 @@ class VersionsController < ApplicationController
     @klass = @version.reify.class.to_s.downcase
     eval("@#{@klass} = @version.reify" )
     @is_version = true
-    render :template => "#{@klass.pluralize}/show"
+    if @klass == "specialist"
+      render 'specialists/show', :layout => 'ajax' if request.headers['X-PJAX']
+    elsif @klass == "clinic"
+      render 'clinics/show', :layout => 'ajax' if request.headers['X-PJAX']
+    else
+      redirect_to root_url and return;
+    end
   end
 
   def show_all
     @versions = Version.order('id desc').paginate(:page => params[:page], :per_page => 50)
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def revert

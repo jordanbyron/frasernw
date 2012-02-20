@@ -1,14 +1,18 @@
-#partial.error_messages
-  %h2 You are viewing an older version of this #{@klass} record
+.alert.alert-info
+  %h3 You are viewing an older version of this #{@klass} record
   %p
-    This version was saved #{time_ago_in_words(@version.created_at)} ago because #{User.find(@version.whodunnit).username} did an #{@version.event}. The changes made to this version included: 
-  %p
-    #{@version.changeset.to_s}
-  %p
-    (note that currently, changes to lists of procedures are not versioned).
-  %p
-    View the
-    = link_to "previous version", show_version_path(@version.previous)
+    This version was saved #{@version.created_at.strftime("%B %d, %Y")} by #{whodunnit_name(@version)}.
+    =link_to "View current site version", url_for(@version.reify), :class => "ajax" 
+  / 
+    %p
+      The changes made to this version included: #{@version.previous.changeset.to_s}
+    
+  %ul.pager
+    - if @version.previous
+      %li
+        = link_to "<i class='icon-arrow-left icon-blue'></i>previous version".html_safe, show_version_path(@version.previous), :class => "ajax"
+    %li
+      = link_to "list all versions", url_for(@version.reify) + "/versions", :class => "ajax"
     - if @version.next
-      or 
-      = link_to "next version", show_version_path(@version.next)
+      %li
+        = link_to "next version <i class='icon-arrow-right icon-blue'></i>".html_safe, show_version_path(@version.next), :class => "ajax"

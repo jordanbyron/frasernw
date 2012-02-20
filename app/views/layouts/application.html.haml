@@ -42,7 +42,7 @@
                     %b.caret
                   %ul.dropdown-menu
                     /%li= link_to "Track Specialists", tracker_path
-                    %li= link_to "Activity", all_versions_path
+                    %li= link_to "Activity", all_versions_path, :class => "ajax"
                     %li= link_to "Review Queue (#{Review.count})", reviews_path
                     %li= link_to "Users", users_path
                     %li= link_to "Specialities", specializations_path
