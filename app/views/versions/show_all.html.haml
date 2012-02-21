@@ -1,5 +1,5 @@
 %h2 Recent activity
 
-= will_paginate @versions
+= will_paginate @versions, :renderer => PathwaysPaginationHelper::LinkRenderer
 
 = render 'list'
