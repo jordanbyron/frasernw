@@ -4,9 +4,9 @@ module PathwaysPaginationHelper
     
     def page_number(page)
       unless page == current_page
-        link(page, page, :rel => rel_value(page))
+        link(page, page, :rel => rel_value(page), :class => 'ajax')
         else
-        link(page, "#", :class => 'active')
+        link(page, "#", :class => 'active ajax')
       end
     end
     
@@ -22,9 +22,9 @@ module PathwaysPaginationHelper
     
     def previous_or_next_page(page, text, classname)
       if page
-        link(text, page, :class => classname)
+        link(text, page, :class => classname + ' ajax')
         else
-        link(text, "#", :class => classname + ' disabled')
+        link(text, "#", :class => classname + ' disabled ajax')
       end
     end
     
