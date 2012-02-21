@@ -23,7 +23,7 @@ class VersionsController < ApplicationController
   end
 
   def show_all
-    @versions = Version.order('id desc').paginate(:page => params[:page], :per_page => 50)
+    @versions = Version.order('id desc').paginate(:page => params[:page], :per_page => 30)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 

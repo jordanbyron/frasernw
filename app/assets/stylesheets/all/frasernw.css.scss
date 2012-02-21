@@ -316,7 +316,7 @@ body
       font-weight: normal;  
     }
     
-    h4.specialty
+    h4.specialty_links
     {
       color: $FNW_TEXT;
     }
@@ -599,6 +599,12 @@ body
     
     .pagination
     {
+      a
+      {
+        padding: 0 8px;
+        line-height: 30px;
+      }
+      
       a:hover
       {
         text-decoration: none;

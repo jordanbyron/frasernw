@@ -22,14 +22,15 @@ $FNW_STATUS_INDENT: 40px;
   background-image: url(/img/glyphicons-halflings-text.png);
 }
 
-.specialty a:first-child:before, 
+.specialty_links a:first-child:before, .specialty:before, 
+.specialist:before, 
 .address:before, 
 .status_available:before, 
 .status_unavailable:before, 
 .status_unknown:before, 
 .status_warning:before,
 .language:before, 
-.investigation p:first-child strong:before, 
+.investigation p:first-child strong:before, .procedure:before,
 .referral:before, 
 .red_flag p:first-child strong:before, 
 .hospital:before, 
@@ -48,9 +49,14 @@ $FNW_STATUS_INDENT: 40px;
   content: "\0000a0";
 }
 
-.specialty a:first-child:before
+.specialty_links a:first-child:before, .specialty:before
 {
   background-position: -48px -48px;
+}
+
+.specialist:before
+{
+  background-position: -168px 0;
 }
 
 .address:before
@@ -63,7 +69,7 @@ $FNW_STATUS_INDENT: 40px;
   background-position: -240px -120px;
 }
 
-.investigation p:first-child strong:before
+.investigation p:first-child strong:before, .procedure:before
 {
   background-position: -360px -48px;
 }

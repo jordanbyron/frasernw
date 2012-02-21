@@ -1,34 +1,33 @@
 %ul.versions
   - @versions.each do |version|
+    - event = version_event(version)
+    - next if event.blank?
     %li
-      .item
-        = activity_badge(version)
+      = event.html_safe
+      %ul       
 
-        - if (version.to_review == true) && (controller_name == 'reviews')
-          %span.actions
-            = button_to "Accept", review_accept_path(version), method: :put
-            = link_to "Reject", review_path(version), action: :destroy, method: :delete
-
-        %span.event 
-          #{version.evented.titlecase} by 
-          = whodunnit_name(version)
-          #{time_ago_in_words(version.created_at)} ago
-
-        %span.item 
-          = link_to_item(version)
-          - if association_details(version)
-            = "- #{association_details(version)}"
-
-      - if version.changeset.present?
-        %ul.changeset
+        - if version.changeset.present?
           - version.changeset.each do |attribute, changeset|
             %li
-              %span.title= version.item_type.constantize.human_attribute_name(attribute)
-              - if changeset[0].present?
-                %span.change
-                  %span.label From:
-                  = translate_changes(version, attribute, changeset[0])
-              - if changeset[1].present?
-                %span.change
-                  %span.label To:
-                  = translate_changes(version, attribute, changeset[1])
+              = version.item_type.constantize.human_attribute_name(attribute)
+              - if (changeset[0].present? and changeset[1].present?)
+                changed from
+                = translate_changes(version, attribute, changeset[0])
+                to
+                = translate_changes(version, attribute, changeset[1])
+              - elsif changeset[0].present?
+                is no longer
+                = translate_changes(version, attribute, changeset[0])
+              - elsif changeset[1].present?
+                became
+                = translate_changes(version, attribute, changeset[1])
+          
+        %li
+          Changed by
+          = whodunnit_name(version)
+          #{time_ago_in_words(version.created_at)} ago 
+            
+        - if (version.to_review == true) && (controller_name == 'reviews')
+          %li
+            = link_to "Accept", review_accept_path(version), method: :put
+            = link_to "Reject", review_path(version), action: :destroy, method: :delete
