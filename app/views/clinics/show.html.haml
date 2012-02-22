@@ -72,23 +72,27 @@
       = @clinic.not_performed
     
   %p
-    %strong.referral Referrals
-    - if @clinic.responds_via.blank?
-      = "are accepted by #{@clinic.accepts_referrals_via}"
-    - else
+    - if @clinic.accepts_referrals_via.presence and @clinic.responds_via.presence
+      %strong.referral Referrals
       = "are accepted by #{@clinic.accepts_referrals_via}, and responded to by #{@clinic.responds_via}"
+    - elsif @clinic.accepts_referrals_via.presence
+      %strong.referral Referrals
+      = "are accepted by #{@clinic.accepts_referrals_via}"
+    - elsif @clinic.responds_via.presence
+      %strong.referral Referrals
+      = "are responded to by #{@clinic.responds_via}"
     
   - if @clinic.referral_form_mask == 1
     %p.collapse_up This office has a referral form
   - elsif @clinic.referral_form_mask == 2
     %p.collapse_up This office does not have a referral form
     
-  -if @clinic.waittime
+  -if @clinic.waittime.presence
     %p.collapse_up
       Average wait time from referral to appointment:
       %strong= @clinic.waittime
           
-  -if @clinic.lagtime
+  -if @clinic.lagtime.presence
     %p.collapse_up
       Average length of time to notify GP of a booking date:
       %strong= @clinic.lagtime

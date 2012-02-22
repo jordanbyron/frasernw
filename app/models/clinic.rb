@@ -1,5 +1,5 @@
 class Clinic < ActiveRecord::Base
-  attr_accessible :name, :responded, :status, :interest, :waittime, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :responds_via, :specializations_including_in_progress_ids, :addresses_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes
+  attr_accessible :name, :responded, :status, :interest, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :responds_via, :specializations_including_in_progress_ids, :addresses_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes
   has_paper_trail meta: { to_review: false }
   
   # clinics can have multiple specializations
@@ -93,7 +93,7 @@ class Clinic < ActiveRecord::Base
   }
   
   def waittime
-    Clinic::WAITTIME_HASH[waittime_mask]
+    waittime_mask.presence ? Clinic::WAITTIME_HASH[waittime_mask] : ""
   end
   
   LAGTIME_HASH = { 
@@ -148,7 +148,7 @@ class Clinic < ActiveRecord::Base
     elsif referral_other_details.presence
       return referral_other_details
     else
-      return "unspecified"
+      return ""
     end
   end
   

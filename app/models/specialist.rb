@@ -123,7 +123,7 @@ class Specialist < ActiveRecord::Base
   }
   
   def waittime
-    waittime_mask.presence ? Specialist::WAITTIME_HASH[waittime_mask] : "Unknown"
+    waittime_mask.presence ? Specialist::WAITTIME_HASH[waittime_mask] : ""
   end
   
   LAGTIME_HASH = { 
@@ -190,7 +190,7 @@ class Specialist < ActiveRecord::Base
     elsif referral_other_details.presence
       return referral_other_details
     else
-      return "unspecified"
+      return ""
     end
   end
   
