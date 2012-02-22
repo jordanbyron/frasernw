@@ -19,6 +19,7 @@ class SpecialistsController < ApplicationController
     @specialist.addresses.build
     @specializations_clinics = specialization.clinics.collect { |c| [c.name, c.id] }
     @specializations_procedures = ancestry_options( specialization.procedure_specializations_arranged )
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def create
@@ -45,6 +46,7 @@ class SpecialistsController < ApplicationController
       @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations_including_in_progress.count > 1
       @specializations_procedures += ancestry_options( s.procedure_specializations_arranged )
     }
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def update

@@ -30,6 +30,7 @@ class SpecializationsController < ApplicationController
 
   def edit
     @specialization = Specialization.find(params[:id])
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def update

@@ -11,6 +11,7 @@ class UsersController < ApplicationController
     @user = User.new
     @user.user_controls_specialists.build
     @user.user_controls_clinics.build
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def create
@@ -26,6 +27,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @user.user_controls_specialists.build
     @user.user_controls_clinics.build
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   # def update

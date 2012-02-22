@@ -13,6 +13,7 @@ class CitiesController < ApplicationController
   
   def new
     @city = City.new
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
   def create
@@ -26,6 +27,7 @@ class CitiesController < ApplicationController
   
   def edit
     @city = City.find(params[:id])
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
   def update

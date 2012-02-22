@@ -1,10 +1,10 @@
 %h2= @city.name
 %p
   %strong Province:
-  = link_to @city.province, province_path(@city.province)
+  = link_to @city.province, province_path(@city.province), :class => 'ajax'
 
 %p.admin.btn-group
   - if can? :update, @city
-    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_city_path(@city), :class => "btn")
+    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_city_path(@city), :class => "btn ajax")
   - if can? :destroy, @city
     = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @city, :confirm => "Delete #{@city.name}?", :method => :delete, :class => "btn")

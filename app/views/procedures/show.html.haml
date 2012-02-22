@@ -106,6 +106,6 @@
 
 %p.admin.btn-group
   - if can? :update, @procedure
-    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Area of Practice", edit_procedure_path(@procedure), :class => "btn")
+    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Area of Practice", edit_procedure_path(@procedure), :class => "btn ajax")
   - if can? :destroy, @procedure
     = link_to("<i class='icon-trash'></i>".html_safe + " Delete Area of Practice", @procedure, :confirm => "Delete #{@procedure.name}?", :method => :delete, :class => "btn")

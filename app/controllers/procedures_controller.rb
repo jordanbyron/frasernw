@@ -14,6 +14,7 @@ class ProceduresController < ApplicationController
     @procedure = Procedure.new(params[:id])
     Specialization.all.each { |specialization| ProcedureSpecialization.find_or_create_by_procedure_id_and_specialization_id(params[:id], specialization.id) }
     @specializations = [Specialization.find(params[:specialization_id])]
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
   def create
@@ -29,6 +30,7 @@ class ProceduresController < ApplicationController
     @procedure = Procedure.find(params[:id])
     @specializations = @procedure.specializations_including_in_progress
     Specialization.all.each { |specialization| ProcedureSpecialization.find_or_create_by_procedure_id_and_specialization_id(params[:id], specialization.id) }
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
   def update

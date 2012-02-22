@@ -13,6 +13,7 @@ class HealthcareProvidersController < ApplicationController
   
   def new
     @healthcare_provider = HealthcareProvider.new
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
   def create
@@ -26,6 +27,7 @@ class HealthcareProvidersController < ApplicationController
   
   def edit
     @healthcare_provider = HealthcareProvider.find(params[:id])
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
   def update

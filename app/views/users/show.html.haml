@@ -30,7 +30,7 @@
 
 %p.admin.btn-group
   - if can? :update, @user
-    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(@user), :class => "btn")
+    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(@user), :class => "btn ajax")
   - if can? :destroy, @user
     = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @user, :confirm => "Delete #{@user.name}?", :method => :delete, :class => "btn")
     

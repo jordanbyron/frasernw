@@ -14,6 +14,7 @@ class HospitalsController < ApplicationController
   def new
     @hospital = Hospital.new
     @hospital.addresses.build
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def create
@@ -27,6 +28,7 @@ class HospitalsController < ApplicationController
 
   def edit
     @hospital = Hospital.find(params[:id])
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def update
