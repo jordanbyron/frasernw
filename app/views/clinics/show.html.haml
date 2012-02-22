@@ -118,7 +118,6 @@
     
   - if not @clinic.healthcare_providers.blank?
     %p
-      %strong.healthcare_provider Hospital privileges:
       %strong Healthcare providers 
       who see patients at the clinic:
       != @clinic.healthcare_providers.map{ |x| x.name }.join(", ")\

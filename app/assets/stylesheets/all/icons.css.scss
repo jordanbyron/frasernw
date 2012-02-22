@@ -23,7 +23,7 @@ $FNW_STATUS_INDENT: 40px;
 }
 
 .specialty_links a:first-child:before, .specialty:before, 
-.specialist:before, 
+.specialist:before, .user:before,
 .address:before, 
 .status_available:before, 
 .status_unavailable:before, 
@@ -36,8 +36,11 @@ $FNW_STATUS_INDENT: 40px;
 .hospital:before, 
 .clinic:before,
 .attendance:before,
-.control:before
-.review:before
+.control:before,
+.review:before,
+.history:before,
+.city:before, .province:before,
+.healthcare_provider:before
 {
   margin-left: -($FNW_STATUS_INDENT + 14px)/2;
   margin-right: ($FNW_STATUS_INDENT - 14px)/2;
@@ -50,12 +53,23 @@ $FNW_STATUS_INDENT: 40px;
   content: "\0000a0";
 }
 
+.dropdown-menu *:before
+{
+  background-image: url(/img/glyphicons-halflings-text.png);
+  margin-left: 0;
+}
+
+.dropdown-menu li:hover *:before
+{
+  background-image: url(/img/glyphicons-halflings-white.png);
+}
+
 .specialty_links a:first-child:before, .specialty:before
 {
   background-position: -48px -48px;
 }
 
-.specialist:before
+.specialist:before, .user:before
 {
   background-position: -168px 0;
 }
@@ -114,6 +128,21 @@ $FNW_STATUS_INDENT: 40px;
 .review:before
 {
   background-position: -264px -24px;
+}
+
+.history:before
+{
+  background-position: -408px -120px;
+}
+
+.healthcare_provider:before
+{
+  background-position: -96px 0;
+}
+
+.city:before, .province:before
+{
+  background-position: -24px -72px;
 }
 
 .status_available:before
