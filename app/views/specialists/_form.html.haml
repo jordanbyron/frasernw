@@ -107,7 +107,7 @@
   = f.input :referral_phone, as: :boolean, wrapper: :bootstrap_tight
   = f.input :referral_other_details
 
-  = f.input :referral_form_mask, as: :radio, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
+  = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
   
   = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_HASH, label_method: :last, value_method: :first  
   
@@ -119,7 +119,7 @@
   = f.input :respond_by_mail, as: :boolean, wrapper: :bootstrap_tight
   = f.input :respond_to_patient, as: :boolean
       
-  = f.input :patient_can_book_mask, as: :radio, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
+  = f.input :patient_can_book_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
   = f.input :red_flags, as: :text
   
   %label Optimal method of referral for urgent appointments:
