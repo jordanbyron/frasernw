@@ -1,5 +1,7 @@
 %h2 #{pluralize(@versions.count, 'item')} to review
 
-= will_paginate @versions
+= will_paginate @versions, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
 
 = render 'versions/list'
+
+= will_paginate @versions, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2

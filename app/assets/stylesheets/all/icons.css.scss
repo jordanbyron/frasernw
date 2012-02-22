@@ -37,6 +37,7 @@ $FNW_STATUS_INDENT: 40px;
 .clinic:before,
 .attendance:before,
 .control:before
+.review:before
 {
   margin-left: -($FNW_STATUS_INDENT + 14px)/2;
   margin-right: ($FNW_STATUS_INDENT - 14px)/2;
@@ -108,6 +109,11 @@ $FNW_STATUS_INDENT: 40px;
 .control:before
 {
   background-position: 0 -72px;
+}
+
+.review:before
+{
+  background-position: -264px -24px;
 }
 
 .status_available:before

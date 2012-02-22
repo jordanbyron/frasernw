@@ -75,5 +75,4 @@ class SpecialistsController < ApplicationController
     @contact.save
     redirect_to @specialist, :notice => "Sent email to #{@specialist.contact_email}"
   end
-  
 end
