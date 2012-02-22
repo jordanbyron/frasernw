@@ -3,10 +3,12 @@ class CitiesController < ApplicationController
   
   def index
     @citys = City.all
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
   def show
     @city = City.find(params[:id])
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
   def new

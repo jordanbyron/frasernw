@@ -3,6 +3,7 @@ class ReviewsController < ApplicationController
 
   def index
     @versions = Version.needs_review.paginate(:page => params[:page], :per_page => 50)
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def accept

@@ -3,6 +3,7 @@ class SpecialistsController < ApplicationController
   include ApplicationHelper
 
   def index
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def show

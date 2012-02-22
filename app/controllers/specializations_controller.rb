@@ -7,6 +7,7 @@ class SpecializationsController < ApplicationController
 
   def index
     @specializations = Specialization.all
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def show

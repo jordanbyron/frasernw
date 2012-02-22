@@ -2,11 +2,13 @@ class LanguagesController < ApplicationController
     load_and_authorize_resource
     
     def index
-        @languages = Language.all
+      @languages = Language.all
+      render :layout => 'ajax' if request.headers['X-PJAX']
     end
     
     def show
-        @language = Language.find(params[:id])
+      @language = Language.find(params[:id])
+      render :layout => 'ajax' if request.headers['X-PJAX']
     end
     
     def new

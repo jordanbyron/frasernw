@@ -3,10 +3,12 @@ class HealthcareProvidersController < ApplicationController
   
   def index
     @healthcare_providers = HealthcareProvider.all
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
   def show
     @healthcare_provider = HealthcareProvider.find(params[:id])
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
   def new

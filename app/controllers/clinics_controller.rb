@@ -4,6 +4,7 @@ class ClinicsController < ApplicationController
 
   def index
     @clinics = Clinic.all
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def show

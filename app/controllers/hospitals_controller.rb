@@ -3,6 +3,7 @@ class HospitalsController < ApplicationController
 
   def index
     @hospitals = Hospital.all
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def show
