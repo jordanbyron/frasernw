@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120216232031) do
+ActiveRecord::Schema.define(:version => 20120223005753) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -236,6 +236,15 @@ ActiveRecord::Schema.define(:version => 20120216232031) do
     t.timestamp "updated_at"
   end
 
+  create_table "review_items", :force => true do |t|
+    t.string   "item_type"
+    t.integer  "item_id"
+    t.string   "whodunnit"
+    t.text     "object"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "reviews", :force => true do |t|
     t.string    "item_type",      :null => false
     t.integer   "item_id",        :null => false
@@ -324,10 +333,10 @@ ActiveRecord::Schema.define(:version => 20120216232031) do
   end
 
   create_table "specializations", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "in_progress", :default => false
+    t.string    "name"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.boolean   "in_progress", :default => false
   end
 
   create_table "user_controls_clinics", :force => true do |t|
