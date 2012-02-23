@@ -153,7 +153,7 @@
   - if can? :update, @specialist
     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(@specialist), :class => "btn ajax")
   - if current_user_is_admin?
-    - if @specialist.versions.last.to_review?
+    - if @specialist.review_item.present?
       = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", reviews_path, :class => "btn ajax")
     - else
       %a.btn{"href" => "#share", "data-toggle" => "collapse", "data-target" => "#share"}

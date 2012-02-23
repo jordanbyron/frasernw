@@ -1,6 +1,6 @@
 class Specialization < ActiveRecord::Base
   attr_accessible :name, :in_progress
-  has_paper_trail meta: { to_review: false }
+  has_paper_trail
   
   has_many :specialist_specializations, :dependent => :destroy
   has_many :specialists, :through => :specialist_specializations

@@ -1,6 +1,6 @@
 class City < ActiveRecord::Base
   attr_accessible :name, :province_id
-  has_paper_trail meta: { to_review: false }
+  has_paper_trail
   
   belongs_to :province
   

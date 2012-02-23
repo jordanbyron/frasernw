@@ -23,7 +23,7 @@ class Ability
 
     # Cannot update items that need review.
     cannot :update, Specialist do |specialist|
-      specialist.versions.last.to_review? == true
+      specialist.review_item.present?
     end
     
   end

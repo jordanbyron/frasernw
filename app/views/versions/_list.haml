@@ -26,8 +26,3 @@
           Changed by
           = whodunnit_name(version)
           #{time_ago_in_words(version.created_at)} ago 
-            
-        - if (version.to_review == true) && (controller_name == 'reviews')
-          %li
-            = link_to "Accept", review_accept_path(version), method: :put
-            = link_to "Reject", review_path(version), action: :destroy, method: :delete

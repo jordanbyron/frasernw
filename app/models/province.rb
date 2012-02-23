@@ -1,6 +1,6 @@
 class Province < ActiveRecord::Base
   attr_accessible :name, :abbreviation, :symbol
-  has_paper_trail meta: { to_review: false }
+  has_paper_trail
   
   has_many :cities, :order => "name ASC"
   
