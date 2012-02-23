@@ -1,5 +1,7 @@
 Frasernw::Application.routes.draw do
 
+  resources :review_items
+
   resources :reviews, :only => [:index, :destroy] do
     put :accept
   end

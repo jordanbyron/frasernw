@@ -1,0 +1,18 @@
+%p#notice= notice
+
+%p
+  %b Item type:
+  = @review_item.item_type
+%p
+  %b Item:
+  = @review_item.item_id
+%p
+  %b Whodunnit:
+  = @review_item.whodunnit
+%p
+  %b Object:
+  = @review_item.object
+
+= link_to 'Edit', edit_review_item_path(@review_item)
+\|
+= link_to 'Back', review_items_path

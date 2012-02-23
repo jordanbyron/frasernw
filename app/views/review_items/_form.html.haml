@@ -1,0 +1,11 @@
+= simple_form_for(@review_item) do |f|
+  = f.error_notification
+
+  .inputs
+    = f.input :item_type
+    = f.input :item_id
+    = f.input :whodunnit
+    = f.input :object
+
+  .actions
+    = f.button :submit
