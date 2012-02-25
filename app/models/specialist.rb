@@ -1,5 +1,5 @@
 class Specialist < ActiveRecord::Base
-  attr_accessible :firstname, :lastname, :responded, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :offices_attributes, :language_ids, :addresses_attributes, :user_controls_specialists_attributes
+  attr_accessible :firstname, :lastname, :responded, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :offices_attributes, :language_ids, :addresses_attributes, :user_controls_specialists_attributes
   has_paper_trail ignore: [:saved_token, :review_item]
   
   # specialists can have multiple specializations
@@ -225,26 +225,32 @@ class Specialist < ActiveRecord::Base
   def urgent_referrals_via
     if urgent_phone and urgent_fax
       if urgent_other_details.presence
-        return "phone, fax, or " + urgent_other_details
+        result = "phone, fax, or " + urgent_other_details
       else
-        return "phone or fax"
+        result = "phone or fax"
       end
     elsif urgent_phone
       if urgent_other_details.presence
-        return "phone or " + urgent_other_details
+        result = "phone or " + urgent_other_details
       else
-        return "phone"
+        result = "phone"
       end
     elsif urgent_fax
       if urgent_other_details.presence
-        return "fax or " + urgent_other_details
+        result = "fax or " + urgent_other_details
       else
-        return "fax"
+        result = "fax"
       end
     elsif urgent_other_details.presence
-      return referral_other_details
+      result = referral_other_details
     else
-      return ""
+      result = ""
+    end
+    
+    if urgent_details
+      return "#{result}. #{urgent_details.slice(0,1).capitalize + urgent_details.slice(1..-1)}"
+    else
+      return result
     end
   end
   
