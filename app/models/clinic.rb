@@ -38,9 +38,6 @@ class Clinic < ActiveRecord::Base
   
   default_scope order('name')
   
-  validates_presence_of :name, :on => :create, :message => "can't be blank"
-  validates_length_of :clinic_specializations, :minimum => 1, :message => "require at least one set"
-  
   def attendances?
     attendances.each do |attendance|
       if (attendance.is_specialist and attendance.specialist)
