@@ -204,7 +204,7 @@ class Clinic < ActiveRecord::Base
       result = ""
     end
     
-    if urgent_details
+    if urgent_details.presence
       return "#{result}. #{urgent_details.slice(0,1).capitalize + urgent_details.slice(1..-1)}"
     else
       return result
