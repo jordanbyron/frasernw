@@ -27,7 +27,8 @@
 			scrollOptions = {
 				duration: 800,
 				easing:'swing'
-			};
+			},
+    form = false;
 		
 		// Ensure Content
 		if ( $content.length === 0 ) {
@@ -70,6 +71,7 @@
 			// Ajaxify
 			$this.find('a.ajax:internal').click(function(event){
 				// Prepare
+        form = null;       
 				var
 					$this = $(this),
 					url = $this.attr('href'),
@@ -78,7 +80,26 @@
 				// Continue as normal for cmd clicks etc
 				if ( event.which == 2 || event.metaKey ) { return true; }
 				
-				// Ajaxify this link
+				// Ajaxify this link                     
+        History.pushState(null,title,url);
+				event.preventDefault();
+				return true;
+			});
+			
+			
+			// Ajaxify forms
+			$this.find('form.ajax').submit(function(event){
+				// Prepare
+        form = $(this)
+				var
+					$this = $(this),
+					url = $this.attr('action'),
+					title = null;
+				
+				// Continue as normal for cmd clicks etc
+				if ( event.which == 2 || event.metaKey ) { return true; }
+				
+        // Ajaxify this link
         History.pushState(null,title,url);
 				event.preventDefault();
 				return true;
@@ -110,6 +131,8 @@
 			// Ajax Request the Traditional Page
 			$.ajax({
 				url: url,
+        type: form != null ? 'POST' : 'GET',
+        data: form != null ? form.serialize() : null,
         beforeSend: function(xhr){
           xhr.setRequestHeader('X-PJAX', 'true');
         },

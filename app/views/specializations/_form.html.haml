@@ -1,4 +1,4 @@
-= simple_form_for @specialization, :html => { :class => "form-horizontal" } do |f|
+= simple_form_for @specialization, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
     
