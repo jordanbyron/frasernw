@@ -75,4 +75,28 @@ class SpecialistsController < ApplicationController
     @contact.save
     redirect_to @specialist, :notice => "Sent email to #{@specialist.contact_email}"
   end
+  
+  def review
+    @review_item = ReviewItem.find_by_item_type_and_item_id( "Specialist", params[:id] );
+    
+    if @review_item.blank?
+      redirect_to specialists_path, :notice => "There are no review items for this specialist"
+    else
+      @specialist = Specialist.find(params[:id])
+      if @specialist.capacities.count == 0
+        @specialist.capacities.build
+      end
+      @specializations_clinics = []
+      @specialist.specializations_including_in_progress.each { |s| 
+        @specializations_clinics += s.clinics.collect { |c| [c.name, c.id] }
+      }
+      @specializations_clinics.sort!
+      @specializations_procedures = []
+      @specialist.specializations_including_in_progress.each { |s| 
+        @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations_including_in_progress.count > 1
+        @specializations_procedures += ancestry_options( s.procedure_specializations_arranged )
+      }
+      render :template => 'specialists/edit', :layout => 'ajax' if request.headers['X-PJAX']
+    end
+  end
 end

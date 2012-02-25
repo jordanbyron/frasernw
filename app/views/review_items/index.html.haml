@@ -5,9 +5,6 @@
     %th Item type
     %th Item
     %th Whodunnit
-    %th Object
-    %th
-    %th
     %th
 
   - @review_items.each do |review_item|
@@ -15,11 +12,5 @@
       %td= review_item.item_type
       %td= review_item.item_id
       %td= review_item.whodunnit
-      %td= review_item.object
-      %td= link_to 'Show', review_item
-      %td= link_to 'Edit', edit_review_item_path(review_item)
-      %td= link_to 'Destroy', review_item, :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Show', review_item, :class => 'ajax'
 
-%br
-
-= link_to 'New Review item', new_review_item_path

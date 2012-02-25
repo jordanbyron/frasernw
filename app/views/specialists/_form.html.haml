@@ -3,6 +3,30 @@
 - current_action = params[:action]     == 'new' ? :create : :update
 - form_action    = params[:controller] == 'specialists_editor' ? :update : current_action
 
+- if @review_item
+  %script{"type" => "text/javascript"}
+    :plain
+      $(document).ready(function() 
+      {
+        var review_item = #{@review_item.object};
+        $.each(review_item, function(entry_key, new_entry_value) {
+          var entry_id = "#specialist_" + entry_key;
+          if ($(entry_id).length == 1)
+          {
+            form_element = $(entry_id);
+            old_entry_value = form_element.val();
+            new_entry_value = review_item[entry_key];
+            if (old_entry_value != new_entry_value)
+            {
+              form_element.val(new_entry_value);
+              form_element.parent().parent().addClass("warning");
+              form_element.parent().append(sprintf("<span class='help-inline'>Was: %d</span>", old_entry_value));
+              console.log(entry_key + " changed from " + old_entry_value + " to " + new_entry_value);
+            }
+          }
+        });
+      });
+
 = simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => form_action}, :method => form_method, :html => { :class => "form-horizontal" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages

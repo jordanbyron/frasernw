@@ -154,7 +154,7 @@
     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(@specialist), :class => "btn ajax")
   - if current_user_is_admin?
     - if @specialist.review_item.present?
-      = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", review_item_path(@specialist.review_item), :class => "btn ajax")
+      = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", specialist_review_path(@specialist), :class => "btn ajax")
     - else
       %a.btn{"href" => "#share", "data-toggle" => "collapse", "data-target" => "#share"}
         %i.icon-share

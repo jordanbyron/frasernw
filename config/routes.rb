@@ -1,7 +1,5 @@
 Frasernw::Application.routes.draw do
 
-  resources :review_items
-
   resources :reviews, :only => [:index, :destroy] do
     put :accept
   end
@@ -26,12 +24,14 @@ Frasernw::Application.routes.draw do
   resources :cities
   resources :provinces
   resources :healthcare_providers
+  resources :review_items
 
   match "tracker" => 'tracker#index', :as => 'tracker'
   
   match "specialists/:id/:token/edit"   => 'specialists_editor#edit',  :as => 'specialist_self_edit'
-  put  "specialists/:id/:token/update" => 'specialists_editor#update', :as => 'specialist_self_update'
-  get  "specialists/email/:id"         => 'specialists#email', :as => 'specialist_email'
+  put  "specialists/:id/:token/update"  => 'specialists_editor#update', :as => 'specialist_self_update'
+  get  "specialists/email/:id"          => 'specialists#email', :as => 'specialist_email'
+  match "specialists/:id/review"        => 'specialists#review', :as => 'specialist_review'
   
   #RPW TODO: allow users to edit their own profile
   #match 'user/edit' => 'users#edit', :as => :edit_current_user

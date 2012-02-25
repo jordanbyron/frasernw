@@ -13,6 +13,4 @@
   %b Object:
   = @review_item.object
 
-= link_to 'Edit', edit_review_item_path(@review_item)
-\|
-= link_to 'Back', review_items_path
+= link_to 'Back', review_items_path, :class => 'ajax'
