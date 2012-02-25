@@ -46,7 +46,7 @@
     - if ((not @specialist.location_opened.blank?) and (not @specialist.retired?))
       %p.collapse_up
         This practice opened
-        = @specialist.location_opened.downcase
+        = @specialist.location_opened == "Prior to 2010" ? @specialist.location_opened.downcase : "in #{@specialist.location_opened}"
   
   - if not @specialist.retired?
     - if not @specialist.languages.blank?

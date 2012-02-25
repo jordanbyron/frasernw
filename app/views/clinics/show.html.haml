@@ -31,7 +31,7 @@
     - if not @clinic.location_opened.blank?
       %p.collapse_up
         This clinic opened
-        = @clinic.location_opened.downcase
+        = @clinic.location_opened == "Prior to 2010" ? @clinic.location_opened.downcase : "in #{@clinic.location_opened}"
 
   - if not @clinic.languages.blank?
     %p
