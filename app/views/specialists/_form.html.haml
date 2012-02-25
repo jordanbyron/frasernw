@@ -20,7 +20,11 @@
             {
               form_element.val(new_entry_value);
               form_element.parent().parent().addClass("warning");
-              form_element.parent().append(sprintf("<span class='help-inline'>Was: %d</span>", old_entry_value));
+              help_span = $(document.createElement('span'));
+              help_span.addClass('help-inline');
+              old_entry_formatted = old_entry_value ? old_entry_value : "blank";
+              help_span.text("Was: " + old_entry_formatted);
+              form_element.parent().append(help_span);
               console.log(entry_key + " changed from " + old_entry_value + " to " + new_entry_value);
             }
           }
