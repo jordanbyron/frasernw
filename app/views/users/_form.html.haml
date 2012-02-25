@@ -40,8 +40,9 @@
     .row
       = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another clinic", :user_controls_clinics, class: "btn offset3")
       
-  :javascript
-    $("#user_role").each( swapRole );
+  %script{"type" => "text/javascript"}
+    :plain
+      $("#user_role").each( swapRole );
     
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

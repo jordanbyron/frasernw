@@ -587,6 +587,26 @@ body
       {
         margin-left: 0;
       }
+      
+      #availability
+      {
+        select.unavailable_from, span.unavailable_to, select.unavailable_to
+        {
+          width: auto;
+          float: left;
+          margin-right: 5px;
+        }
+        
+        select.unavailable_to:first-child
+        {
+          clear: both;
+        }
+      }
+      
+      .control-group
+      {
+        clear: both;
+      }
     }
     
     .row.spaced

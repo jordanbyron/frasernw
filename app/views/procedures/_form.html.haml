@@ -16,8 +16,9 @@
         = check_box_tag "check_#{specialization.id}", 1, procedure_specialization.mapped, :name => "procedure[all_procedure_specializations_attributes][#{index}][mapped]", :class => "check aop_active span1", :checked => @specializations.include?(specialization)
         = select_tag "select_#{specialization.id}", options_for_select(procedure_ancestry, procedure_specialization.parent_id), :name => "procedure[all_procedure_specializations_attributes][#{index}][parent_id]", :class => "select parent span3"
           
-  :javascript
-    $(".aop_active").each( hideShowParents )
+  %script{"type" => "text/javascript"}
+    :plain
+      $(".aop_active").each( hideShowParents )
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

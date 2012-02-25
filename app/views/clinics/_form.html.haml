@@ -131,7 +131,8 @@
           
     = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another physician", :attendances, class: "btn")
           
-    :javascript
+  %script{"type" => "text/javascript"}
+    :plain
       $(".is_specialist").each( hideShowPhysicians )
     
   %hr{ "style" => "visibility:hidden" }

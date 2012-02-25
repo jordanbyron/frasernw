@@ -81,13 +81,14 @@
 
   %h3 Status
   = f.input :status_mask, as: :select, collection: Specialist::STATUS_HASH, label_method: :last, value_method: :first
-  #availablility
+  #availability
     = f.input :unavailable_from, label: false, wrapper: false, input_html: { class: "unavailable_from", style: "display:none" }
     %span.unavailable_to{ style: "display:none" }
       to
     = f.input :unavailable_to, label: false, wrapper: false, input_html: { class: "unavailable_to", style: "display:none" }
-    :javascript
-      $("#specialist_status_mask").each( status_changed );
+    %script{"type" => "text/javascript"}
+      :plain
+        $("#specialist_status_mask").each( status_changed );
   = f.input :status_details
   = f.input :practise_limitations
   = f.input :location_opened, as: :select, collection: ["Prior to 2010", 2010, 2011, 2012], prompt: "Select ..."
