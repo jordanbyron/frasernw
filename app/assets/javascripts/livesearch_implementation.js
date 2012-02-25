@@ -15,13 +15,13 @@ function pathways_data_formatter(total_score, scores_matches, data_entry)
 {
   var result = "<li class='result'><a id='" + data_entry.url.replace(/\//g,'_') + "'  href='" + data_entry.url + "' class='ajax'>"
   
-  result += "<div class='name status_" + data_entry.st + "'>" + livesearch_highlighter( data_entry.n, scores_matches.n.matches ) + "</div>"
-  result += "<div class='specialties'>" + data_entry.sp + "</div>"
+  result += "<div class='search_name status_" + data_entry.st + "'>" + livesearch_highlighter( data_entry.n, scores_matches.n.matches ) + "</div>"
+  result += "<div class='search_specialties'>" + data_entry.sp + "</div>"
   
-  if ( data_entry.wait_time != "" && data_entry.city != "" )
+  if ( data_entry.wt != "" && data_entry.c != "" )
   {
-    result += "<div class='wait_time'>Wait time: " + data_entry.wt + "</div>"
-    result += "<div class='city'>" + data_entry.c + "</div>"
+    result += "<div class='search_wait_time'>Wait time: " + data_entry.wt + "</div>"
+    result += "<div class='search_city'>" + data_entry.c + "</div>"
   }
   
   result += "</a></li>";
