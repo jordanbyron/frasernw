@@ -14,17 +14,35 @@
           if ($(entry_id).length == 1)
           {
             form_element = $(entry_id);
+            
             old_entry_value = form_element.val();
             new_entry_value = review_item[entry_key];
+            
             if (old_entry_value != new_entry_value)
             {
               form_element.val(new_entry_value);
-              form_element.parent().parent().addClass("warning");
+              
+              var old_entry_formatted = "";
+              
+              switch( form_element.attr('type') )
+              {
+                case('radio'):
+                  old_entry_formatted = old_entry_value == 1 ? "selected" : "unselected";
+                  break;
+                case('checkbox'):
+                  old_entry_formatted = old_entry_value == 1 ? "checked" : "unchecked";
+                  break;
+                defaut:
+                  old_entry_formatted = old_entry_value != "" ? old_entry_value : "blank";
+                  break;
+              }
+              
+              form_element.closest('"div.control-group').addClass('warning');
               help_span = $(document.createElement('span'));
               help_span.addClass('help-inline');
-              old_entry_formatted = old_entry_value ? old_entry_value : "blank";
               help_span.text("Was: " + old_entry_formatted);
               form_element.parent().append(help_span);
+              
               console.log(entry_key + " changed from " + old_entry_value + " to " + new_entry_value);
             }
           }
