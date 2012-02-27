@@ -49,6 +49,9 @@ function pathways_group_formatter(group_name)
     case "Areas of Practice":
       icon = "list"
       break;
+    case "Languages":
+      icon = "comment"
+      break;
   }
   
   var result = "<li class='group'>"

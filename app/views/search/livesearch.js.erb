@@ -80,5 +80,18 @@ Hospital.all.each do |hospital|
   search_data << entry
 end
 
+Language.all.each do |language|
+  entry = { 
+    "n" => language.name, 
+    "sp" => "", 
+    "c" => "", 
+    "st" => "none",
+    "wt" => "",
+    "url" => url_for(language),
+    "gn" => "Languages",
+    "go" => 6 }
+  search_data << entry
+end
+
 -%>
 pathways_search_data = <%=search_data.to_json.html_safe %>
