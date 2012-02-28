@@ -12,13 +12,14 @@ class SpecialistsController < ApplicationController
   end
 
   def new
-    specialization = Specialization.find(params[:specialization_id])
+    #specialization passed in to facilitate javascript "checking off" of starting speciality, since build below doesn't seem to work
+    @specialization = Specialization.find(params[:specialization_id])     
     @specialist = Specialist.new
-    @specialist.specialist_specializations.build( :specialization_id => specialization.id )
+    @specialist.specialist_specializations.build( :specialization_id => @specialization.id )
     @specialist.capacities.build
     @specialist.addresses.build
-    @specializations_clinics = specialization.clinics.collect { |c| [c.name, c.id] }
-    @specializations_procedures = ancestry_options( specialization.procedure_specializations_arranged )
+    @specializations_clinics = @specialization.clinics.collect { |c| [c.name, c.id] }
+    @specializations_procedures = ancestry_options( @specialization.procedure_specializations_arranged )
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 

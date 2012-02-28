@@ -49,6 +49,15 @@
         });
       });
 
+- if @specialization
+  %script{"type" => "text/javascript"}
+    :plain
+      $(document).ready(function() 
+      {
+        var specialty_checkbox_id = "#specialist_specializations_including_in_progress_ids_#{@specialization.id}";
+        $(specialty_checkbox_id).prop("checked", true);
+      });
+
 = simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => form_action}, :method => form_method, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
