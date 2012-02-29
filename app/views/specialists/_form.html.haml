@@ -80,22 +80,39 @@
   %hr
 
   %h3 Office Contact Information
-  - address_number = 1
+  - address_number = 0
   = f.simple_fields_for :addresses do |i|
     %h4.location_header 
       Location 
-      = address_number
+      = address_number + 1
     = i.input :phone1
     = i.input :fax
+    .control-group
+      %label Office is
+      .controls
+        - location_class = "location_#{address_number}"
+        - is_in_clinic = (@specialist.addresses[address_number].present? and @specialist.addresses[address_number].clinic.present?)
+        - is_in_hospital = ((!is_in_clinic) and @specialist.addresses[address_number].present? and @specialist.addresses[address_number].hospital.present?)
+        - is_stand_alone = ((!is_in_clinic) and (!is_in_hospital))
+        - [['Stand alone', is_stand_alone], ['Located in a clinic', is_in_clinic], ['Located in a hospital', is_in_hospital]].each do |location| 
+          = label_tag "#{location_class}_#{location.first}", "#{radio_button_tag(location_class, location.first, location.second, :class => location_class)} #{location.first}".html_safe
+    %div{:class => "clinic_#{address_number}"}
+      = i.association :clinic, as: :select, collection: @specializations_clinics, label: "Clinic", :include_blank => true
+    %div{:class => "hospital_#{address_number}"}
+      = i.association :hospital, as: :select, collection: Hospital.all(:order => "name ASC"), label: "Hospital", :include_blank => true
     = i.input :suite
-    = i.input :address1
-    = i.input :address2
-    = i.association :city, as: :select, collection: City.all(:order => "name ASC").map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
-    = i.input :postalcode
-    = i.association :hospital, as: :select, collection: Hospital.all(:order => "name ASC"), label: "Hospital office is located in", :include_blank => true, :hint => "If applicable"
-    = i.association :clinic, as: :select, collection: @specializations_clinics, label: "Clinic office is located in", :include_blank => true, :hint => "If applicable"
+    %div{:class => "details_#{address_number}"}
+      = i.input :details
+    %div{:class => "address_#{address_number}"}
+      = i.input :address1
+      = i.input :address2
+      = i.association :city, as: :select, collection: City.all(:order => "name ASC").map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
+      = i.input :postalcode
+    %script{"type" => "text/javascript"}
+      :plain
+        $(document).ready( address_#{address_number}_location_changed );
     - address_number += 1
-  - if @specialist.addresses.count < Specialist::MAX_ADDRESSES
+  - if @specialist.addresses.count < Clinic::MAX_ADDRESSES
     = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add a second location", :addresses, class: "btn", id: "add_address")
   
   %hr

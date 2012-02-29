@@ -16,9 +16,10 @@
 - else
     
   - @specialist.addresses.each do |address|
-    - next if address.blank?
+    - next if address.empty?
     %p
-      = link_to address.address, address.map_url, :target => "_blank", :class => "address"
+      - if address.map_url.present?
+        = link_to address.address, address.map_url, :target => "_blank", :class => "address"
     %p.collapse_up
       = address.phone_and_fax
     - if address.hospital
