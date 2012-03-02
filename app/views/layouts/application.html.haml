@@ -89,7 +89,7 @@
                     - next if not ps.procedure.specialization_level
                     - next if ps.procedure.empty_for_specialization? specialization
                     %li 
-                      - if children.reject{ |c| not c.procedure.specialization_level }.length > 0
+                      - if children.reject{ |c| (not c.procedure.specialization_level) or c.procedure.empty_for_specialization? specialization }.length > 0
                         %a.ajax.push{"href" => procedure_path(ps.procedure), "data-toggle" => "push", "data-target" => "#procedure_#{ps.procedure.id}"}= ps.procedure.name
                       - else
                         %a.ajax{"href" => procedure_path(ps.procedure)}= ps.procedure.name

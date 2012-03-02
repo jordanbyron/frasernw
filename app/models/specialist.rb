@@ -161,7 +161,11 @@ class Specialist < ActiveRecord::Base
   end
   
   def billing_number_padded
-    "%05d" % billing_number if billing_number else ""
+    if billing_number.present?
+      "%05d" % billing_number
+    else
+      billing_number
+    end
   end
     
   def practice_limitations

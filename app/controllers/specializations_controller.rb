@@ -17,6 +17,7 @@ class SpecializationsController < ApplicationController
 
   def new
     @specialization = Specialization.new
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def create
