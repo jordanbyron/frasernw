@@ -6,47 +6,78 @@
 - if @review_item
   %script{"type" => "text/javascript"}
     :plain
+      function compare_form(form_element_id, new_entry_value)
+      {
+        form_element = $(form_element_id);
+          
+        if ($(form_element).length == 1)
+        {
+          console.log("found on form: " + form_element_id);
+          
+          old_entry_value = form_element.val();
+          
+          if (old_entry_value != new_entry_value)
+          {
+            form_element.val(new_entry_value);
+            
+            var old_entry_formatted = "";
+                
+            console.log("tag: " + form_element.tagName);
+            
+            switch(form_element.tagName)
+            {
+              case('input'):
+                console.log(form_element.attr('type'))
+                switch(form_element.attr('type'))
+                {
+                  case('radio'):
+                    old_entry_formatted = old_entry_value == 1 ? "selected" : "unselected";
+                    break;
+                  case('checkbox'):
+                    old_entry_formatted = old_entry_value == 1 ? "checked" : "unchecked";
+                    break;
+                  case('text'):
+                    old_entry_formatted = old_entry_value != "" ? old_entry_value : "blank";
+                    break;
+                }
+                break;
+              case('textarea'):
+                old_entry_formatted = old_entry_value;
+                break;
+            }
+            
+            form_element.closest('"div.control-group').addClass('warning');
+            help_span = $(document.createElement('span'));
+            help_span.addClass('help-inline');
+            help_span.text("Was: " + old_entry_formatted);
+            form_element.parent().append(help_span);
+            
+            console.log(form_element_id + " changed from " + old_entry_value + " to " + new_entry_value);
+          }
+        }
+      }
+      
+      function traverse_review_item(id_base, review_item)
+      {
+        $.each(review_item, function(entry_key, new_entry_value) {
+          var id = id_base + "_" + entry_key;
+          if ( $.isArray(new_entry_value) )
+          {
+            //recursive
+            traverse_review_item(id, new_entry_value);
+          }
+          else
+          {
+            compare_form(id, new_entry_value);
+          }
+        });
+      }
+      
       $(document).ready(function() 
       {
         var review_item = #{@review_item.object};
-        $.each(review_item, function(entry_key, new_entry_value) {
-          var entry_id = "#specialist_" + entry_key;
-          if ($(entry_id).length == 1)
-          {
-            form_element = $(entry_id);
-            
-            old_entry_value = form_element.val();
-            new_entry_value = review_item[entry_key];
-            
-            if (old_entry_value != new_entry_value)
-            {
-              form_element.val(new_entry_value);
-              
-              var old_entry_formatted = "";
-              
-              switch( form_element.attr('type') )
-              {
-                case('radio'):
-                  old_entry_formatted = old_entry_value == 1 ? "selected" : "unselected";
-                  break;
-                case('checkbox'):
-                  old_entry_formatted = old_entry_value == 1 ? "checked" : "unchecked";
-                  break;
-                defaut:
-                  old_entry_formatted = old_entry_value != "" ? old_entry_value : "blank";
-                  break;
-              }
-              
-              form_element.closest('"div.control-group').addClass('warning');
-              help_span = $(document.createElement('span'));
-              help_span.addClass('help-inline');
-              help_span.text("Was: " + old_entry_formatted);
-              form_element.parent().append(help_span);
-              
-              console.log(entry_key + " changed from " + old_entry_value + " to " + new_entry_value);
-            }
-          }
-        });
+        console.log(review_item);
+        traverse_review_item("#specialist", review_item);
       });
 
 - if @specialization
