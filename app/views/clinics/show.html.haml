@@ -10,17 +10,19 @@
   %p
     This clinic has not yet provided Pathways their information
 - else
-    
-  - @clinic.addresses.each do |address|
-    - next if address.blank?
+  - if @clinic.location.in_hospital?
+    - hospital = @clinic.location.hospital_in
+    %p= "In #{link_to hospital.name, hospital_path(hospital), :class => 'ajax'}".html_safe
+    - if hospital.address.present? && !hospital.address.empty?
+      %p.collapse_up= link_to hospital.address.address, hospital.address.map_url, :target => "_blank"
+    - if @clinic.location.in_details.present?
+      %p.collapse_up= @clinic.location.in_details
+  - else
     %p
-      = link_to address.address, address.map_url, :target => "_blank", :class => "address"
-    %p.collapse_up
-      = address.phone_and_fax
-    - if address.hospital
-      %p.collapse_up
-        In 
-        %a.ajax{"href" => hospital_path(address.hospital)}= address.hospital.name
+      %i
+        = link_to @clinic.address.address, @clinic.address.map_url, :target => "_blank"
+  - if @clinic.phone_and_fax.present?
+    %p.collapse_up= @clinic.phone_and_fax
         
   %p
     %strong{ :class => "status_#{@clinic.status_class}"}= @clinic.status

@@ -1,5 +1,5 @@
 class Clinic < ActiveRecord::Base
-  attr_accessible :name, :responded, :status, :interest, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :specializations_including_in_progress_ids, :addresses_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes
+  attr_accessible :name, :phone, :fax, :responded, :status, :interest, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :specializations_including_in_progress_ids, :location_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes
   has_paper_trail
   
   # clinics can have multiple specializations
@@ -7,11 +7,10 @@ class Clinic < ActiveRecord::Base
   has_many :specializations, :through => :clinic_specializations, :conditions => { "in_progress" => false }
   has_many :specializations_including_in_progress, :through => :clinic_specializations, :source => :specialization, :class_name => "Specialization"
   
-  # clinics can have more than one address
-  MAX_ADDRESSES = 2
-  has_many :clinic_addresses
-  has_many :addresses, :through => :clinic_addresses
-  accepts_nested_attributes_for :addresses
+  # clinics have an address
+  has_one :location, :as => :locatable
+  has_one :address, :through => :location
+  accepts_nested_attributes_for :location
   
   # clinics speak many languages
   has_many   :clinic_speaks, :dependent => :destroy
@@ -37,6 +36,27 @@ class Clinic < ActiveRecord::Base
   accepts_nested_attributes_for :user_controls_clinics, :reject_if => lambda { |ucc| ucc[:user_id].blank? }, :allow_destroy => true
   
   default_scope order('name')
+  
+  def phone_and_fax
+    if phone.present? and fax.present?
+      return "#{phone}, Fax: #{fax}"
+    elsif phone.present?
+      return "#{phone}"
+    elsif fax.present?
+      return "Fax: #{fax}"
+    else
+      return ""
+    end
+  end
+  
+  def city
+    l = location
+    return "" if l.blank?
+    a = l.resolved_address
+    return "" if a.blank?
+    c = a.city
+    c.present? ? c.name : ""
+  end
   
   def attendances?
     attendances.each do |attendance|

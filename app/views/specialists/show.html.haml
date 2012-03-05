@@ -15,21 +15,24 @@
     This specialist has not yet provided Pathways their information
 - else
     
-  - @specialist.addresses.each do |address|
-    - next if address.empty?
-    %p
-      - if address.map_url.present?
-        = link_to address.address, address.map_url, :target => "_blank", :class => "address"
-    %p.collapse_up
-      = address.phone_and_fax
-    - if address.hospital
-      %p.collapse_up
-        In 
-        %a.ajax{"href" => hospital_path(address.hospital)}= address.hospital.name
-    - if address.clinic
-      %p.collapse_up
-        In
-        %a.ajax{"href" => clinic_path(address.clinic)}= address.clinic.name
+  - @specialist.specialist_offices.each do |specialist_office|
+    - next if specialist_office.empty?
+    - location = specialist_office.office.location
+    - if (location.in_hospital? or location.in_clinic?)
+      - located_in = location.hospital_in
+      - located_in ||= location.clinic_in
+      %p= "In #{link_to located_in.name, url_for(located_in), :class => 'ajax'}".html_safe
+      - if not located_in.address.empty?
+        %p.collapse_up= link_to located_in.address.address, located_in.address.map_url, :target => "_blank"
+      - if location.in_details.present?
+        %p.collapse_up= location.in_details
+    - elsif location.address.present?
+      %p
+        %i
+          = link_to location.address.address, location.address.map_url, :target => "_blank"
+    - if specialist_office.phone_and_fax.present?
+      %p.collapse_up= specialist_office.phone_and_fax
+      
   - if not @specialist.direct_phone.blank?
     %p.collapse_up
       = "direct number (for physician use only): #{@specialist.direct_phone}"

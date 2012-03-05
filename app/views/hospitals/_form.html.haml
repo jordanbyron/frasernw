@@ -1,4 +1,4 @@
-= simple_nested_form_for @hospital, :html => { :class => "form-horizontal ajax" } do |f|
+= simple_form_for @hospital, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
@@ -8,22 +8,17 @@
 
   %h3 Hospital Contact Information
   
-  - address_number = 1
-  = f.simple_fields_for :addresses do |i|
-    %h4.location_header 
-      Location 
-      = address_number
-    = i.input :phone1
-    = i.input :fax
-    = i.input :suite
-    = i.input :address1
-    = i.input :address2
-    = i.association :city, as: :select, collection: City.all(:order => "name ASC").map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
-    = i.input :postalcode
-    - address_number += 1
-  - if @hospital.addresses.count < Hospital::MAX_ADDRESSES
-    = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add a second location", :addresses, class: "btn", id: "add_address")
+  = f.input :phone
+  = f.input :fax
+  
+  = f.simple_fields_for :location do |l|
+    = l.simple_fields_for :address do |a|
+      = a.input :suite
+      = a.input :address1
+      = a.input :address2
+      = a.association :city, as: :select, collection: City.all(:order => "name ASC").map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
+      = a.input :postalcode
 
-  .form-actions
-    = f.button :submit, :class => "btn btn-primary"
-    = link_to 'Cancel', hospitals_path, :class => "btn btn-danger ajax"
+    .form-actions
+      = f.button :submit, :class => "btn btn-primary"
+      = link_to 'Cancel', hospitals_path, :class => "btn btn-danger ajax"

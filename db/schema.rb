@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120225180232) do
+ActiveRecord::Schema.define(:version => 20120302004606) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -118,6 +118,8 @@ ActiveRecord::Schema.define(:version => 20120225180232) do
     t.integer   "patient_can_book_mask",   :default => 3
     t.boolean   "responded",               :default => true
     t.text      "urgent_details"
+    t.string    "phone"
+    t.string    "fax"
   end
 
   create_table "contacts", :force => true do |t|
@@ -172,12 +174,26 @@ ActiveRecord::Schema.define(:version => 20120225180232) do
     t.string    "name"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.string    "phone"
+    t.string    "fax"
   end
 
   create_table "languages", :force => true do |t|
     t.string    "name"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+  end
+
+  create_table "locations", :force => true do |t|
+    t.string   "locatable_type"
+    t.integer  "locatable_id"
+    t.integer  "address_id"
+    t.integer  "hospital_in_id"
+    t.integer  "clinic_in_id"
+    t.string   "suite_in"
+    t.string   "details_in"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "moderations", :force => true do |t|
@@ -190,19 +206,9 @@ ActiveRecord::Schema.define(:version => 20120225180232) do
   end
 
   create_table "offices", :force => true do |t|
-    t.string    "address1"
-    t.string    "address2"
-    t.string    "postalcode"
-    t.string    "city"
-    t.string    "province"
-    t.string    "phone1"
-    t.string    "fax"
-    t.integer   "specialist_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
-
-  add_index "offices", ["specialist_id"], :name => "index_offices_on_specialist_id"
 
   create_table "privileges", :force => true do |t|
     t.integer   "specialist_id"
@@ -238,12 +244,12 @@ ActiveRecord::Schema.define(:version => 20120225180232) do
   end
 
   create_table "review_items", :force => true do |t|
-    t.string   "item_type"
-    t.integer  "item_id"
-    t.string   "whodunnit"
-    t.text     "object"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string    "item_type"
+    t.integer   "item_id"
+    t.string    "whodunnit"
+    t.text      "object"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "reviews", :force => true do |t|
@@ -271,6 +277,15 @@ ActiveRecord::Schema.define(:version => 20120225180232) do
     t.integer   "address_id"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+  end
+
+  create_table "specialist_offices", :force => true do |t|
+    t.integer  "specialist_id"
+    t.integer  "office_id"
+    t.string   "phone"
+    t.string   "fax"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "specialist_speaks", :force => true do |t|
@@ -342,17 +357,17 @@ ActiveRecord::Schema.define(:version => 20120225180232) do
   end
 
   create_table "user_controls_clinics", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "clinic_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "user_id"
+    t.integer   "clinic_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "user_controls_specialists", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "specialist_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "user_id"
+    t.integer   "specialist_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "users", :force => true do |t|
@@ -370,13 +385,13 @@ ActiveRecord::Schema.define(:version => 20120225180232) do
   end
 
   create_table "versions", :force => true do |t|
-    t.string   "item_type",      :null => false
-    t.integer  "item_id",        :null => false
-    t.string   "event",          :null => false
-    t.string   "whodunnit"
-    t.text     "object"
-    t.datetime "created_at"
-    t.text     "object_changes"
+    t.string    "item_type",      :null => false
+    t.integer   "item_id",        :null => false
+    t.string    "event",          :null => false
+    t.string    "whodunnit"
+    t.text      "object"
+    t.timestamp "created_at"
+    t.text      "object_changes"
   end
 
   add_index "versions", ["item_type", "item_id"], :name => "index_versions_on_item_type_and_item_id"

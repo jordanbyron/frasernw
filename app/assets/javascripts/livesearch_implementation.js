@@ -18,9 +18,14 @@ function pathways_data_formatter(total_score, scores_matches, data_entry)
   result += "<div class='search_name status_" + data_entry.st + "'>" + livesearch_highlighter( data_entry.n, scores_matches.n.matches ) + "</div>"
   result += "<div class='search_specialties'>" + data_entry.sp + "</div>"
   
-  if ( data_entry.wt != "" && data_entry.c != "" )
+  if ( data_entry.wt != "" || data_entry.c != "" )
   {
-    result += "<div class='search_wait_time'>Wait time: " + data_entry.wt + "</div>"
+    result += "<div class='search_wait_time'>"
+    if(data_entry.wt != "")
+    {
+      result += "Wait time: " + data_entry.wt
+    }
+    result += "</div>"
     result += "<div class='search_city'>" + data_entry.c + "</div>"
   }
   

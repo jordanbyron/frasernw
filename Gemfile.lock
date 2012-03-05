@@ -1,9 +1,9 @@
 GIT
-  remote: https://github.com/ryanb/nested_form.git
-  revision: 57f32788f1952bcd633057b4b56b69b51df17610
-  ref: 57f32788f1952bcd633057b4b56b69b51df17610
+  remote: https://github.com/warneboldt/nested_form.git
+  revision: 230e366a35a2fabd1f2b51d0102237ba684174f0
+  ref: 230e366a35a2fabd1f2b51d0102237ba684174f0
   specs:
-    nested_form (0.1.1)
+    nested_form (0.2.0)
 
 GEM
   remote: https://rubygems.org/

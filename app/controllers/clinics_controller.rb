@@ -17,7 +17,8 @@ class ClinicsController < ApplicationController
     @specialization = Specialization.find(params[:specialization_id])
     @clinic = Clinic.new
     @clinic.clinic_specializations.build( :specialization_id => @specialization.id )
-    @clinic.addresses.build
+    @clinic.build_location
+    @clinic.location.build_address
     @clinic.focuses.build
     @clinic.attendances.build
     @clinic_procedures = ancestry_options( @specialization.procedure_specializations_arranged )
@@ -28,7 +29,7 @@ class ClinicsController < ApplicationController
   def create
     @clinic = Clinic.new(params[:clinic])
     if @clinic.save
-      redirect_to clinic_path(@clinic), :notice => "Successfully created clinic."
+      redirect_to clinic_path(@clinic), :notice => "Successfully created #{@clinic.name}."
     else
       render :action => 'new'
     end
@@ -36,6 +37,12 @@ class ClinicsController < ApplicationController
 
   def edit
     @clinic = Clinic.find(params[:id])
+    if @clinic.location.blank?
+      @clinic.build_location
+      @clinic.location.build_address
+    elsif @clinic.location.address.blank?
+      @clinic.build_address
+    end
     if @clinic.focuses.count == 0
       @clinic.focuses.build
     end
@@ -56,15 +63,16 @@ class ClinicsController < ApplicationController
     params[:clinic][:procedure_ids] ||= []
     @clinic = Clinic.find(params[:id])
     if @clinic.update_attributes(params[:clinic])
-      redirect_to @clinic, :notice  => "Successfully updated clinic."
-    else\
+      redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
+    else
       render :action => 'edit'
     end
   end
 
   def destroy
     @clinic = Clinic.find(params[:id])
+    name = @clinic.name
     @clinic.destroy
-    redirect_to clinics_url, :notice => "Successfully deleted clinic."
+    redirect_to clinics_url, :notice => "Successfully deleted #{name}."
   end
 end

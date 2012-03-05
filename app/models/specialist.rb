@@ -1,5 +1,5 @@
 class Specialist < ActiveRecord::Base
-  attr_accessible :firstname, :lastname, :responded, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :offices_attributes, :language_ids, :addresses_attributes, :user_controls_specialists_attributes
+  attr_accessible :firstname, :lastname, :responded, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :language_ids, :user_controls_specialists_attributes, :specialist_offices_attributes
   has_paper_trail ignore: [:saved_token, :review_item]
   
   # specialists can have multiple specializations
@@ -39,14 +39,23 @@ class Specialist < ActiveRecord::Base
   # dates and times they looked at and changed their own record
   has_many  :views
   has_many  :edits
-
-  has_many :offices
-  accepts_nested_attributes_for :offices
   
-  MAX_ADDRESSES = 2
-  has_many :specialist_addresses
-  has_many :addresses, :through => :specialist_addresses
-  accepts_nested_attributes_for :addresses
+  MAX_OFFICES = 2
+  has_many :specialist_offices
+  has_many :offices, :through => :specialist_offices
+  has_many :locations, :through => :offices
+  accepts_nested_attributes_for :specialist_offices
+  
+  def city
+    o = offices.first
+    return "" if o.blank?
+    l = o.location
+    return "" if l.blank?
+    a = l.resolved_address
+    return "" if a.blank?
+    c = a.city
+    c.present? ? c.name : ""
+  end
   
   has_one :review_item, :as => :item
 

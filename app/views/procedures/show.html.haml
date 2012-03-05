@@ -78,7 +78,7 @@
                 %td
                   %span{:class => "status_#{specialist.status_class}"}= specialist.status_class
                 %td= specialist.waittime
-                %td= specialist.addresses.first ? specialist.addresses.first.city : ""
+                %td= specialist.city
     
           
     #clinic_tab.tab-pane{:class => clinic_tab_class}
@@ -102,7 +102,7 @@
                 %td
                   %span{:class => "status_#{clinic.status_class}"}= clinic.status_class
                 %td= clinic.waittime
-                %td= clinic.addresses.first ? clinic.addresses.first.city : ""
+                %td= clinic.city
 
 %p.admin.btn-group
   - if can? :update, @procedure

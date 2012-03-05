@@ -21,40 +21,87 @@ var status_changed = function()
 
 $("#specialist_status_mask").live("change", status_changed );
 
+function reset_select(id)
+{
+  // remove "selected"
+  $("[id=" + id + "] option[selected='selected']").each(
+      function() {
+          $(this).removeAttr('selected');
+      }
+  );
+  
+  $("[id=" + id + "] option:first").attr('selected','selected')
+}
+
+function reset_office(address_number)
+{
+  reset_select("specialist_specialist_offices_attributes_" + address_number + "_office_id");
+}
+
+function reset_hospital(address_number)
+{
+  reset_select("specialist_specialist_offices_attributes_" + address_number + "_office_attributes_location_attributes_hospital_in_id");
+  reset_select("clinic_location_attributes_hospital_in_id");
+}
+
+function reset_clinic(address_number)
+{
+  reset_select("specialist_specialist_offices_attributes_" + address_number + "_office_attributes_location_attributes_clinic_in_id");
+}
+
+function reset_numbers(address_number)
+{
+  $("#specialist_specialist_offices_attributes_" + address_number + "_phone").val("");
+  $("#specialist_specialist_offices_attributes_" + address_number + "_fax").val("");
+}
+
 var address_location_changed = function(address_number)
 {
-  if ($('#location_' + address_number + '_Stand_alone').is(':checked'))
+  if ($('#location_' + address_number + '_Not_used').is(':checked'))
   {
+    $('.numbers_' + address_number).hide();
+    $('.office_' + address_number).hide();
+    $('.address_' + address_number).hide();
+    $('.hospital_' + address_number).hide();
+    $('.clinic_' + address_number).hide();
+    $('.details_' + address_number).hide();
+    reset_office(address_number);
+    reset_hospital(address_number);
+    reset_clinic(address_number);
+    reset_numbers(address_number);
+  }
+  else if ($('#location_' + address_number + '_Stand_alone').is(':checked') || $('#location_' + address_number + '_In_an_office').is(':checked'))
+  {
+    $('.numbers_' + address_number).show();
+    $('.office_' + address_number).show();
     $('.address_' + address_number).show();
     $('.hospital_' + address_number).hide();
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).hide();
-    
-    //need to force the hospital or clinic that might be currently selected to be not selected, as that is our address 'flag'
-    
-    // remove "selected" from the hospital and clinic dropdowns that might already be selected
-    $("[id$=addresses_attributes_" + address_number + "_hospital_id] option[selected='selected'], [id$=addresses_attributes_" + address_number + "_clinic_id] option[selected='selected']").each(
-        function() {
-            $(this).removeAttr('selected');
-        }
-    );
-
-    // mark the first option as selected
-    $("[id$=addresses_attributes_" + address_number + "_hospital_id] option:first, [id$=addresses_attributes_" + address_number + "_clinic_id] option:first").attr('selected','selected');  
+    reset_hospital(address_number);
+    reset_clinic(address_number);
   }
-  else if ($('#location_' + address_number + '_Located_in_a_hospital').is(':checked'))
+  else if ($('#location_' + address_number + '_In_a_hospital').is(':checked'))
   {
+    $('.numbers_' + address_number).show();
+    $('.office_' + address_number).hide();
     $('.address_' + address_number).hide();
     $('.hospital_' + address_number).show();
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).show();
+    reset_office(address_number);
+    reset_clinic(address_number);
   }
-  else if ($('#location_' + address_number + '_Located_in_a_clinic').is(':checked'))
+  else if ($('#location_' + address_number + '_In_a_clinic').is(':checked'))
   {
+    $('.numbers_' + address_number).show();
+    $('.office_' + address_number).hide();
     $('.address_' + address_number).hide();
     $('.hospital_' + address_number).hide();
     $('.clinic_' + address_number).show();
     $('.details_' + address_number).show();
+    reset_office(address_number);
+    reset_hospital(address_number);
   }
 }
 

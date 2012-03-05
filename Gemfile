@@ -25,7 +25,7 @@ gem 'carrierwave'
 gem 'paper_trail', '~> 2'
 gem 'will_paginate', '~> 3.0.0'
 gem "simple_form", "~> 2.0.0.rc"
-gem "nested_form", :git => "https://github.com/ryanb/nested_form.git", :ref => "57f32788f1952bcd633057b4b56b69b51df17610"
+gem "nested_form", :git => "https://github.com/warneboldt/nested_form.git", :ref => "230e366a35a2fabd1f2b51d0102237ba684174f0"
 gem 'exception_notification'
 gem "cancan", "~> 1.6.7"
 

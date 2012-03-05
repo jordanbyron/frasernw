@@ -17,7 +17,11 @@ class SpecialistsController < ApplicationController
     @specialist = Specialist.new
     @specialist.specialist_specializations.build( :specialization_id => @specialization.id )
     @specialist.capacities.build
-    @specialist.addresses.build
+    while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
+      os = @specialist.specialist_offices.build
+      o = os.build_office
+      l = o.build_location
+    end
     @specializations_clinics = @specialization.clinics.collect { |c| [c.name, c.id] }
     @specializations_procedures = ancestry_options( @specialization.procedure_specializations_arranged )
     render :layout => 'ajax' if request.headers['X-PJAX']
@@ -25,8 +29,17 @@ class SpecialistsController < ApplicationController
 
   def create
     @specialist = Specialist.new(params[:specialist])
+    
+    params[:specialist][:specialist_offices_attributes].each { |so_key, so_value|
+      if so_value[:office_id].blank?
+        so_value.delete(:office_id)
+      else
+        so_value.delete(:office_attributes)
+      end
+    }
+    
     if @specialist.save!
-      redirect_to @specialist, :notice => "Successfully created specialist. #{undo_link}"
+      redirect_to @specialist, :notice => "Successfully created #{specialist.name}. #{undo_link}"
     else
       render :action => 'new'
     end
@@ -36,6 +49,11 @@ class SpecialistsController < ApplicationController
     @specialist = Specialist.find(params[:id])
     if @specialist.capacities.count == 0
       @specialist.capacities.build
+    end
+    while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
+      os = @specialist.specialist_offices.build
+      o = os.build_office
+      l = o.build_location
     end
     @specializations_clinics = []
     @specialist.specializations_including_in_progress.each { |s| 
@@ -52,8 +70,17 @@ class SpecialistsController < ApplicationController
 
   def update
     @specialist = Specialist.find(params[:id])
+    
+    params[:specialist][:specialist_offices_attributes].each { |so_key, so_value|
+      if so_value[:office_id].blank?
+        so_value.delete(:office_id)
+      else
+        so_value.delete(:office_attributes)
+      end
+    }
+    
     if @specialist.update_attributes(params[:specialist])
-      redirect_to @specialist, :notice => "Successfully updated specialist. #{undo_link}"
+      redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
     else
       render :edit
     end
@@ -61,8 +88,9 @@ class SpecialistsController < ApplicationController
 
   def destroy
     @specialist = Specialist.find(params[:id])
+    name = specialist.name;
     @specialist.destroy
-    redirect_to specialists_url, :notice => "Successfully deleted specialist. #{undo_link}"
+    redirect_to specialists_url, :notice => "Successfully deleted #{name}. #{undo_link}"
   end
 
   def undo_link
