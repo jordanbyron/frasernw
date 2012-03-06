@@ -19,8 +19,7 @@
       %p.collapse_up= @clinic.location.in_details
   - else
     %p
-      %i
-        = link_to @clinic.address.address, @clinic.address.map_url, :target => "_blank"
+      = link_to @clinic.address.address, @clinic.address.map_url, :target => "_blank"
   - if @clinic.phone_and_fax.present?
     %p.collapse_up= @clinic.phone_and_fax
         
