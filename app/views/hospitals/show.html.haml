@@ -49,7 +49,7 @@
               %th{:class => "{sorter: 'bylastname'}"} Specialist
               %th{:class => "{sorter: 'text'}"} Specialty
               %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
-              %th{:class => "{sorter: 'waittime'}"} Wait Time
+              %th{:class => "{sorter: 'waittime'}"} Average Patient Wait Time
               %th{:class => "{sorter: 'blanks_to_bottom'}"} City
           %tbody
             - (@hospital.specialists).each do |specialist|
@@ -73,7 +73,7 @@
               %th{:class => "{sorter: 'bylastname'} name_column"} Clinic
               %th{:class => "{sorter: 'text'}"} Specialty
               %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
-              %th{:class => "{sorter: 'waittime'}"} Wait Time
+              %th{:class => "{sorter: 'waittime'}"} Average Patient Wait Time
               %th{:class => "{sorter: 'blanks_to_bottom'}"} City
           %tbody
             - (@hospital.clinics).each do |clinic|
@@ -97,7 +97,7 @@
               %th{:class => "{sorter: 'bylastname'}"} Specialist
               %th{:class => "{sorter: 'text'}"} Specialty
               %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
-              %th{:class => "{sorter: 'waittime'}"} Wait Time
+              %th{:class => "{sorter: 'waittime'}"} Average Patient Wait Time
               %th{:class => "{sorter: 'blanks_to_bottom'}"} City
           %tbody
             - (@hospital.specialist_offices).each do |specialist|

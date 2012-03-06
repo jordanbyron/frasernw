@@ -58,7 +58,7 @@
               - if has_children
                 %th{:class => "{sorter: 'text'}"}= "Additional #{@procedure.name} Focuses"
               %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
-              %th{:class => "{sorter: 'waittime'}"} Wait Time
+              %th{:class => "{sorter: 'waittime'}"} Average Patient Wait Time
               %th{:class => "{sorter: 'blanks_to_bottom'}"} City
           %tbody
             - (@procedure.all_specialists).each do |specialist|
@@ -90,7 +90,7 @@
               - if multiple_specialties
                 %th{:class => "{sorter: 'text'}"} Specialty
               %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
-              %th{:class => "{sorter: 'waittime'}"} Wait Time
+              %th{:class => "{sorter: 'waittime'}"} Average Patient Wait Time
               %th{:class => "{sorter: 'blanks_to_bottom'}"} City
           %tbody
             - (@procedure.all_clinics).each do |clinic|
