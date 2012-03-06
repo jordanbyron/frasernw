@@ -6,6 +6,7 @@
   %tr
     %th Address
     %th City
+    %th Specialists
     %th.admin
 
   - @offices.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.each do |office|
@@ -13,6 +14,10 @@
     %tr
       %td= link_to office.short_address, office, :class => 'ajax'
       %td= office.city
+      %td
+        %ul
+          - office.specialists.each do |specialist|
+            %li= link_to specialist.name, specialist, :class => 'ajax'
       %td.admin.btn-group
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_office_path(office), :class => "btn btn-small ajax")
         = link_to("<i class='icon-trash'></i>".html_safe + " Delete", office, :confirm => "Delete #{office.short_address.present? ? office.short_address : "office"}?", :method => :delete, :class => "btn btn-small")
