@@ -38,15 +38,15 @@ function reset_office(address_number)
   reset_select("specialist_specialist_offices_attributes_" + address_number + "_office_id");
 }
 
-function reset_hospital(address_number)
+function reset_hospital()
 {
-  reset_select("specialist_specialist_offices_attributes_" + address_number + "_office_attributes_location_attributes_hospital_in_id");
+  reset_select("office_location_attributes_hospital_in_id");
   reset_select("clinic_location_attributes_hospital_in_id");
 }
 
-function reset_clinic(address_number)
+function reset_clinic()
 {
-  reset_select("specialist_specialist_offices_attributes_" + address_number + "_office_attributes_location_attributes_clinic_in_id");
+  reset_select("office_location_attributes_clinic_in_id")
 }
 
 function reset_numbers(address_number)
@@ -66,8 +66,8 @@ var address_location_changed = function(address_number)
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).hide();
     reset_office(address_number);
-    reset_hospital(address_number);
-    reset_clinic(address_number);
+    reset_hospital();
+    reset_clinic();
     reset_numbers(address_number);
   }
   else if ($('#location_' + address_number + '_Stand_alone').is(':checked') || $('#location_' + address_number + '_In_an_office').is(':checked'))
@@ -78,8 +78,8 @@ var address_location_changed = function(address_number)
     $('.hospital_' + address_number).hide();
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).hide();
-    reset_hospital(address_number);
-    reset_clinic(address_number);
+    reset_hospital();
+    reset_clinic();
   }
   else if ($('#location_' + address_number + '_In_a_hospital').is(':checked'))
   {
@@ -90,7 +90,7 @@ var address_location_changed = function(address_number)
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).show();
     reset_office(address_number);
-    reset_clinic(address_number);
+    reset_clinic();
   }
   else if ($('#location_' + address_number + '_In_a_clinic').is(':checked'))
   {
@@ -101,7 +101,7 @@ var address_location_changed = function(address_number)
     $('.clinic_' + address_number).show();
     $('.details_' + address_number).show();
     reset_office(address_number);
-    reset_hospital(address_number);
+    reset_hospital();
   }
 }
 

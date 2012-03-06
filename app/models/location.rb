@@ -31,6 +31,33 @@ class Location < ActiveRecord::Base
     end
   end
   
+  def city
+    a = resolved_address
+    return "" if a.blank?
+    c = a.city
+    c.present? ? c.name : ""
+  end
+  
+  def short_address
+    if in_clinic?
+      if resolved_address.present?
+        return "In #{clinic_in.name} - #{resolved_address.short_address}"
+      else
+        return "In #{clinic_in.name}, no address"
+      end
+    elsif in_hospital?
+      if resolved_address.present?
+        return "In #{hospital_in.name} - #{resolved_address.short_address}"
+      else
+        return "In #{hospital_in.name}, no address"
+      end
+    elsif resolved_address.present?
+      return "#{resolved_address.short_address}"
+    else
+      return ""
+    end
+  end
+  
   def in_details
     if suite_in.present? and details_in.present?
       return "Suite #{suite_in}, #{details_in}"

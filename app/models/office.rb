@@ -13,6 +13,18 @@ class Office < ActiveRecord::Base
     location.blank? || location.empty?
   end
   
+  def city
+    l = location
+    return "" if l.blank?
+    return l.city
+  end
+  
+  def short_address
+    l = location
+    return "" if l.blank?
+    return l.short_address
+  end
+  
   def to_s
     return location.to_s
   end

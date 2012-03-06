@@ -49,12 +49,7 @@ class Specialist < ActiveRecord::Base
   def city
     o = offices.first
     return "" if o.blank?
-    l = o.location
-    return "" if l.blank?
-    a = l.resolved_address
-    return "" if a.blank?
-    c = a.city
-    c.present? ? c.name : ""
+    return o.city
   end
   
   has_one :review_item, :as => :item

@@ -126,28 +126,14 @@
           %label Location is
           .controls
             - location_class = "location_#{index}"
-            - specialist_office = @specialist.specialist_offices[index]
-            - ofc = specialist_office.office
-            - is_location = !specialist_office.empty?
-            - is_in_hospital = is_location && ofc.present? && ofc.location.present? && ofc.location.in_hospital?
-            - is_in_clinic = is_location && !is_in_hospital && ofc.present? && ofc.location.present? && ofc.location.in_clinic?
-            - is_in_office = is_location && !is_in_clinic && !is_in_hospital
-            - [['Not used', !is_location], ['In an office', is_in_office], ['In a clinic', is_in_clinic], ['In a hospital', is_in_hospital]].each do |option| 
+            - is_location = @specialist.specialist_offices[index].present? && !@specialist.specialist_offices[index].empty?
+            - [['Not used', !is_location], ['In an office', is_location]].each do |option| 
               = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
         %div{:class => "numbers_#{index}"}
           = so.input :phone
           = so.input :fax
         %div{:class => "office_#{index}"}
-          = so.association :office, as: :select, collection: Office.all.reject{|o| o.empty? || o.location.resolved_address.blank? || o.location.resolved_address.short_address.blank?}.collect{|o| [o.location.resolved_address.short_address, o.id]}, :include_blank => true
-        = so.simple_fields_for :office, :suppress_fields => true do |o|
-          = o.simple_fields_for :location, :suppress_fields => true do |l|
-            %div{:class => "hospital_#{index}"}
-              = l.association :hospital_in, as: :select, collection: Hospital.all, :include_blank => true
-            %div{:class => "clinic_#{index}"}
-              = l.association :clinic_in, as: :select, collection: @specializations_clinics, :include_blank => true
-            %div{:class => "details_#{index}"}
-              = l.input :suite_in
-              = l.input :details_in
+          = so.association :office, as: :select, collection: @offices, :include_blank => true
         %script{"type" => "text/javascript"}
           :plain
             $(document).ready( address_#{index}_location_changed );

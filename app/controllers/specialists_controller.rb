@@ -22,6 +22,7 @@ class SpecialistsController < ApplicationController
       o = os.build_office
       l = o.build_location
     end
+    @offices = Office.all.reject{|o| o.empty? || o.location.resolved_address.blank? || o.short_address.blank?}.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
     @specializations_clinics = @specialization.clinics.collect { |c| [c.name, c.id] }
     @specializations_procedures = ancestry_options( @specialization.procedure_specializations_arranged )
     render :layout => 'ajax' if request.headers['X-PJAX']
@@ -29,15 +30,6 @@ class SpecialistsController < ApplicationController
 
   def create
     @specialist = Specialist.new(params[:specialist])
-    
-    params[:specialist][:specialist_offices_attributes].each { |so_key, so_value|
-      if so_value[:office_id].blank?
-        so_value.delete(:office_id)
-      else
-        so_value.delete(:office_attributes)
-      end
-    }
-    
     if @specialist.save!
       redirect_to @specialist, :notice => "Successfully created #{specialist.name}. #{undo_link}"
     else
@@ -55,6 +47,7 @@ class SpecialistsController < ApplicationController
       o = os.build_office
       l = o.build_location
     end
+    @offices = Office.all.reject{|o| o.empty? || o.location.resolved_address.blank? || o.short_address.blank?}.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
     @specializations_clinics = []
     @specialist.specializations_including_in_progress.each { |s| 
       @specializations_clinics += s.clinics.collect { |c| [c.name, c.id] }
@@ -70,15 +63,6 @@ class SpecialistsController < ApplicationController
 
   def update
     @specialist = Specialist.find(params[:id])
-    
-    params[:specialist][:specialist_offices_attributes].each { |so_key, so_value|
-      if so_value[:office_id].blank?
-        so_value.delete(:office_id)
-      else
-        so_value.delete(:office_attributes)
-      end
-    }
-    
     if @specialist.update_attributes(params[:specialist])
       redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
     else
