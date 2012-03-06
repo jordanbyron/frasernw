@@ -126,6 +126,7 @@
 			// Start Fade Out
 			// Animating to opacity to 0 still keeps the element's height intact
 			// Which prevents that annoying pop bang issue when loading in new content
+      $('#tt').tooltip('hide');
 			$content.animate({opacity:0},fadeSpeed);
 			
 			// Ajax Request the Traditional Page

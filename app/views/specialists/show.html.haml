@@ -18,18 +18,25 @@
   - @specialist.specialist_offices.each do |specialist_office|
     - next if specialist_office.empty?
     - location = specialist_office.office.location
+    - num_specialists = specialist_office.office.num_specialists
     - if (location.in_hospital? or location.in_clinic?)
       - located_in = location.hospital_in
       - located_in ||= location.clinic_in
-      %p= "In #{link_to located_in.name, url_for(located_in), :class => 'ajax'}".html_safe
-      - if not located_in.address.empty?
+      %p
+        = "In #{link_to located_in.name, url_for(located_in), :class => 'ajax'}".html_safe
+        - if num_specialists > 1
+          with
+          %a#tt{"href" => "#", "onclick" => "$('#tt').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
+      - if located_in.address &&  !located_in.address.empty?
         %p.collapse_up= link_to located_in.address.address, located_in.address.map_url, :target => "_blank"
       - if location.in_details.present?
         %p.collapse_up= location.in_details
     - elsif location.address.present?
       %p
-        %i
-          = link_to location.address.address, location.address.map_url, :target => "_blank"
+        = link_to location.address.address, location.address.map_url, :target => "_blank"
+        - if num_specialists > 1
+          with
+          %a#tt{"href" => "#", "onclick" => "$('#tt').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
     - if specialist_office.phone_and_fax.present?
       %p.collapse_up= specialist_office.phone_and_fax
       
@@ -145,6 +152,10 @@
       %p
         %strong.clinic Clinic associations:
         != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'>#{clinic.name}</a>" }.to_sentence
+        
+%script{"type" => "text/javascript"}
+  :plain
+    $(document).ready(function() { $('#tt').tooltip({trigger: 'manual'}) });
             
 - if current_user_is_admin?
   - if not @specialist.controlling_users.blank?

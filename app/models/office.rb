@@ -13,6 +13,10 @@ class Office < ActiveRecord::Base
     location.blank? || location.empty?
   end
   
+  def num_specialists
+    specialists.count
+  end
+  
   def city
     l = location
     return "" if l.blank?

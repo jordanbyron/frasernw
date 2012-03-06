@@ -635,3 +635,31 @@ body
     }
   }
 }
+
+.tooltip.top .tooltip-arrow
+{
+  border-top-color: $FNW_LIGHT_BLUE;
+}
+  
+.tooltip-inner
+{
+  background: $FNW_LIGHT_BLUE;
+  color: $FNW_BLUE;
+  font-size: 13px;
+  text-align: left;
+  ul
+  {
+    list-style: none;
+    margin: 5px;
+    padding: 0;
+  }
+  a
+  {
+    color: inherit;
+    text-decoration: none;
+  }
+  a:hover
+  {
+    text-decoration: underline;
+  }
+}
