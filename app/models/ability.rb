@@ -8,7 +8,7 @@ class Ability
       
     else
       
-      can :show, [Specialization, Procedure, Specialist, Clinic, Hospital]
+      can :show, [Specialization, Procedure, Specialist, Clinic, Hospital, Language]
       can :blank, Specialization #landing page
       
       can :update, Specialist do |specialist|
