@@ -1,4 +1,8 @@
 class CollapseOffices < ActiveRecord::Migration
+  def cleanup_address(address)
+    return address.sub('avenue', 'ave').sub('street', 'st').sub('.',' ').sub('-',' ').sub(' ','')
+  end
+  
   def change
     Office.all.each do |o1|
       
@@ -11,7 +15,7 @@ class CollapseOffices < ActiveRecord::Migration
       next if a1.blank?
       
       suite1 = a1.suite.strip.downcase
-      address1 = a1.address1.strip.downcase
+      address1 = cleanup_address(a1.address1.strip.downcase)
       city1 = a1.city
       
       next if suite1.blank?
@@ -31,7 +35,7 @@ class CollapseOffices < ActiveRecord::Migration
         next if a2.blank?
         
         suite2 = a2.suite.strip.downcase
-        address2 = a2.address1.strip.downcase
+        address2 = cleanup_address(a2.address1.strip.downcase)
         city2 = a2.city
         
         next if suite1 != suite2
