@@ -1,0 +1,15 @@
+= simple_nested_form_for @office, :html => { :class => "form-horizontal ajax" } do |f|
+  - if not f.error_messages.blank?
+    .alert.alert-error= f.error_messages
+
+  = f.simple_fields_for :location do |l|
+    = l.simple_fields_for :address do |a|
+      = a.input :suite
+      = a.input :address1
+      = a.input :address2
+      = a.association :city, as: :select, collection: City.all(:order => "name ASC").map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
+      = a.input :postalcode
+
+  .form-actions
+    = f.button :submit, :class => "btn btn-primary"
+    = link_to 'Cancel', offices_path, :class => "btn btn-danger ajax"

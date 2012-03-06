@@ -1,0 +1,20 @@
+- title "Pathways | Offices"
+
+%h2 Offices
+
+%table.table.table-condensed
+  %tr
+    %th Address
+    %th City
+    %th.admin
+
+  - @offices.each do |office|
+    - address = office.location.present? ? office.location.resolved_address : nil
+    %tr
+      %td= address.present? ? (link_to address.short_address, office, :class => 'ajax') : ""
+      %td= address.present? ? address.city : ""
+      %td.admin.btn-group
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_office_path(office), :class => "btn btn-small ajax")
+        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", office, :confirm => "Delete #{address.present? ? address.short_address : "office"}?", :method => :delete, :class => "btn btn-small")
+
+%p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Office", new_office_path, :class => "btn ajax")

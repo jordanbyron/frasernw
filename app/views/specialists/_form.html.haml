@@ -129,8 +129,8 @@
             - specialist_office = @specialist.specialist_offices[index]
             - ofc = specialist_office.office
             - is_location = !specialist_office.empty?
-            - is_in_hospital = is_location && ofc.location.in_hospital?
-            - is_in_clinic = is_location && !is_in_hospital && ofc.location.in_clinic?
+            - is_in_hospital = is_location && ofc.present? && ofc.location.present? && ofc.location.in_hospital?
+            - is_in_clinic = is_location && !is_in_hospital && ofc.present? && ofc.location.present? && ofc.location.in_clinic?
             - is_in_office = is_location && !is_in_clinic && !is_in_hospital
             - [['Not used', !is_location], ['In an office', is_in_office], ['In a clinic', is_in_clinic], ['In a hospital', is_in_hospital]].each do |option| 
               = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe

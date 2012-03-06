@@ -21,6 +21,7 @@ Frasernw::Application.routes.draw do
   resources :procedures
   resources :hospitals
   resources :languages
+  resources :offices
   resources :cities
   resources :provinces
   resources :healthcare_providers

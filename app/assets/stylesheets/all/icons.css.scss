@@ -24,7 +24,7 @@ $FNW_STATUS_INDENT: 40px;
 
 .specialty_links a:first-child:before, .specialty:before, 
 .specialist:before, .user:before,
-.address:before, 
+.address:before, .office:before,
 .status_available:before, 
 .status_unavailable:before, 
 .status_unknown:before, 
@@ -74,7 +74,7 @@ $FNW_STATUS_INDENT: 40px;
   background-position: -168px 0;
 }
 
-.address:before
+.address:before, .office:before
 {
   background-position: -72px 0;
 }

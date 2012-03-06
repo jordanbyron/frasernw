@@ -5,6 +5,7 @@ class Office < ActiveRecord::Base
   accepts_nested_attributes_for :location
   
   has_many :specialist_offices
+  has_many :specialists, :through => :specialist_offices
   
   has_paper_trail
   
