@@ -22,13 +22,9 @@ class Location < ActiveRecord::Base
   end
   
   def resolved_address
-    if in_hospital?
-      return hospital_in.address
-    elsif in_clinic?
-      return clinic_in.address
-    else
-      return address
-    end
+    return hospital_in.resolved_address if in_hospital?
+    return clinic_in.resolved_address if in_clinic?
+    return address
   end
   
   def city

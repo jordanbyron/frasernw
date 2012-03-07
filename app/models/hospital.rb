@@ -40,4 +40,9 @@ class Hospital < ActiveRecord::Base
     c = a.city
     c.present? ? c.name : ""
   end
+  
+  def resolved_address
+    return location.resolved_address if location
+    return nil
+  end
 end

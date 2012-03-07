@@ -9,7 +9,7 @@
   
 - if @hospital.address.present? && !@hospital.address.empty?
   %p
-    = link_to @hospital.address.address, @hospital.address.map_url, :target => "_blank"
+    .address= link_to @hospital.address.address, @hospital.address.map_url, :target => "_blank"
 - if (@hospital.phone_and_fax.present?)
   %p.collapse_up
     = @hospital.phone_and_fax

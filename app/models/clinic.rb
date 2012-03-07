@@ -38,7 +38,7 @@ class Clinic < ActiveRecord::Base
   default_scope order('name')
   
   def phone_and_fax
-    if phone.present? and fax.present?
+    if phone.present? && fax.present?
       return "#{phone}, Fax: #{fax}"
     elsif phone.present?
       return "#{phone}"
@@ -56,6 +56,11 @@ class Clinic < ActiveRecord::Base
     return "" if a.blank?
     c = a.city
     c.present? ? c.name : ""
+  end
+  
+  def resolved_address
+    return location.resolved_address if location
+    return nil
   end
   
   def attendances?
