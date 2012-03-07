@@ -20,12 +20,12 @@ function pathways_data_formatter(total_score, scores_matches, data_entry)
   
   if ( data_entry.wt != "" || data_entry.c != "" )
   {
-    result += "<div class='search_wait_time'>"
     if(data_entry.wt != "")
     {
+      result += "<div class='search_wait_time'>"
       result += "Wait time: " + data_entry.wt
+      result += "</div>"
     }
-    result += "</div>"
     result += "<div class='search_city'>" + data_entry.c + "</div>"
   }
   
