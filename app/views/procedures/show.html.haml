@@ -9,7 +9,14 @@
         //sort by status then wait time
           $('.tablesorter').tablesorter({sortList: [[3,0],[4,0]]});
       });
-- elsif multiple_specialties or has_children
+- elsif multiple_specialties
+  %script{"type" => "text/javascript"}
+    :plain
+      $(document).ready(function() {
+        //sort by speciality, status then wait time
+          $('.tablesorter').tablesorter({sortList: [[2,0],[1,0],[3,0]]});
+      });
+- elsif has_children
   %script{"type" => "text/javascript"}
     :plain
       $(document).ready(function() {
