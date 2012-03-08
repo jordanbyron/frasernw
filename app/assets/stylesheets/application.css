@@ -9,4 +9,5 @@
  *= require ./all/icons
  *= require ./all/frasernw
  *= require_tree ./all 
+ *= require ./all/chosen
 */

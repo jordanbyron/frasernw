@@ -133,11 +133,14 @@
           = so.input :phone
           = so.input :fax
         %div{:class => "office_#{index}"}
-          = so.association :office, as: :select, collection: @offices, :include_blank => true
+          = so.association :office, as: :select, collection: @offices, :include_blank => true, :input_html => { :class => "chzn-select" }
         %script{"type" => "text/javascript"}
           :plain
             $(document).ready( address_#{index}_location_changed );
         - index += 1
+  %script{"type" => "text/javascript"}
+    :plain
+      $(document).ready( $(".chzn-select").chosen() );
       
   %hr
 
