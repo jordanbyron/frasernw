@@ -461,7 +461,17 @@ body
       
       th.status_column
       {
-        width: 100px;
+        width: 110px;
+      }
+      
+      th.wait_time_column
+      {
+        width: 110px;
+      }
+      
+      th.specialty_column
+      {
+        min-width: 80px;
       }
       
       tr td 

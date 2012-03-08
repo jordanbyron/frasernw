@@ -61,11 +61,11 @@
             %tr{:class => 'tableheader'}
               %th{:class => "{sorter: 'bylastname'}"} Specialist
               - if multiple_specialties
-                %th{:class => "{sorter: 'text'}"} Specialty
+                %th{:class => "{sorter: 'text'} specialty_column"} Specialty
               - if has_children
                 %th{:class => "{sorter: 'text'}"}= "Additional #{@procedure.name} Focuses"
-              %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
-              %th{:class => "{sorter: 'waittime'}"} Average Patient Wait Time
+              %th{:class => "{sorter: 'status'} status_column"} Accepting New<br>Patients?
+              %th{:class => "{sorter: 'waittime'} wait_time_column"} Average Patient<br>Wait Time
               %th{:class => "{sorter: 'blanks_to_bottom'}"} City
           %tbody
             - (@procedure.all_specialists).each do |specialist|
@@ -95,9 +95,9 @@
             %tr{:class => 'tableheader'}
               %th{:class => "{sorter: 'bylastname'} name_column"} Clinic
               - if multiple_specialties
-                %th{:class => "{sorter: 'text'}"} Specialty
-              %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
-              %th{:class => "{sorter: 'waittime'}"} Average Patient Wait Time
+                %th{:class => "{sorter: 'text'} specialty_column"} Specialty
+              %th{:class => "{sorter: 'status'} status_column"} Accepting New<br>Patients?
+              %th{:class => "{sorter: 'waittime'} wait_time_column"} Average Patient<br>Wait Time
               %th{:class => "{sorter: 'blanks_to_bottom'}"} City
           %tbody
             - (@procedure.all_clinics).each do |clinic|
