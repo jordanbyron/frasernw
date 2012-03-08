@@ -73,7 +73,21 @@ class Address < ActiveRecord::Base
   end
   
   def map_url
-    return "http://maps.google.com?q=#{address}"\
+    search = ""
+    
+    if address1.present?
+      search += "#{address1}, "
+    end
+    
+    if city
+      search += "#{city}, #{city.province}, "
+    end
+    
+    if postalcode.present?
+      search += "#{postalcode}, "
+    end
+    
+    return "http://maps.google.com?q=#{search} Canada"\
   end
   
   def to_s
