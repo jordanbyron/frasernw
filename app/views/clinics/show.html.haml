@@ -13,13 +13,15 @@
   - address = @clinic.resolved_address
   - if @clinic.location.present? && @clinic.location.in_hospital?
     - hospital = @clinic.location.hospital_in
-    %p.address= "In #{link_to hospital.name, hospital_path(hospital), :class => 'ajax'}".html_safe
+    %p
+      %span.address= "In #{link_to hospital.name, hospital_path(hospital), :class => 'ajax'}".html_safe
     - if address.present? && !address.empty?
       %p.collapse_up= link_to address.address, address.map_url, :target => "_blank"
     - if @clinic.location.in_details.present?
       %p.collapse_up= @clinic.location.in_details
   - elsif address.present? && !address.empty?
-    %p.address= link_to address.address, address.map_url, :target => "_blank"
+    %p
+      %span.address= link_to address.address, address.map_url, :target => "_blank"
   - if @clinic.phone_and_fax.present?
     %p.collapse_up= @clinic.phone_and_fax
         

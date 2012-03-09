@@ -24,8 +24,8 @@
     - if (location.in_hospital? or location.in_clinic?)
       - located_in = location.hospital_in
       - located_in ||= location.clinic_in
-      %p.address
-        ="In #{link_to located_in.name, url_for(located_in), :class => 'ajax'}".html_safe
+      %p
+        %span.address= "In #{link_to located_in.name, url_for(located_in), :class => 'ajax'}".html_safe
         - if located_in.location.present? && located_in.location.in_hospital?
           - hopsital = located_in.location.hospital_in
           = "which is in #{link_to hopsital.name, hospital_path(hopsital), :class => 'ajax'}".html_safe
@@ -37,8 +37,8 @@
       - if location.in_details.present?
         %p.collapse_up= location.in_details
     - elsif address.present?
-      %p.address
-        = link_to address.address, address.map_url, :target => "_blank"
+      %p
+        %span.address= link_to address.address, address.map_url, :target => "_blank"
         - if num_specialists > 1
           with
           %a#tt{"href" => "#", "onclick" => "$('#tt').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
