@@ -44,15 +44,10 @@ class Location < ActiveRecord::Base
   end
   
   def in_details
-    if suite_in.present? and details_in.present?
-      return "Suite #{suite_in}, #{details_in}"
-    elsif suite_in.present?
-      return "Suite #{suite_in}"
-    elsif details_in.present?
-      return "#{details_in}"
-    else
-      return ""
-    end
+    return "Suite #{suite_in}, #{details_in}" if (suite_in.present? && details_in.present?)
+    return "Suite #{suite_in}" if suite_in.present?
+    return "#{details_in}" if details_in.present?
+    return ""
   end
   
   def to_s

@@ -12,21 +12,10 @@ class Address < ActiveRecord::Base
       output += "#{suite}, "
     end
     
-    if address1.present?
-      output += "#{address1}, "
-    end
-    
-    if address2.present?
-      output += "#{address2}, "
-    end
-    
-    if city
-      output += "#{city}, #{city.province}, "
-    end
-    
-    if postalcode.present?
-      output += "#{postalcode}, "
-    end
+    output += "#{address1}, " if address1.present?
+    output += "#{address2}, " if address2.present?
+    output += "#{city}, #{city.province}, " if city.present?
+    output += "#{postalcode}, "  if postalcode.present?
     
     return output[0..-3]
   end
@@ -37,31 +26,21 @@ class Address < ActiveRecord::Base
     if suite.present? and (address1.present? or address2.present?)
       output += "#{suite} - "
     elsif suite.present?
-      output += "Suite #{suite}, "
+      output += "#{suite}"
     end
     
-    if address1.present?
-      output += "#{address1}, "
-    end
-    
-    if address2.present?
-      output += "#{address2}, "
-    end
+    output += "#{address1}, " if address1.present?
+    output += "#{address2}, " if address2.present?
     
     return output[0..-3]
   end
     
   
   def phone_and_fax
-    if phone1.present? and fax.present?
-      return "#{phone1}, Fax: #{fax}"
-    elsif phone1.present?
-      return "#{phone1}"
-    elsif fax.present?
-      return "fax: #{fax}"
-    else
-      return ""
-    end
+    return "#{phone1}, Fax: #{fax}" if (phone1.present? && fax.present?)
+    return "#{phone1}" if phone1.present?
+    return "fax: #{fax}" if fax.present?
+    return ""
   end
   
   def empty_old?
@@ -74,20 +53,10 @@ class Address < ActiveRecord::Base
   
   def map_url
     search = ""
-    
-    if address1.present?
-      search += "#{address1}, "
-    end
-    
-    if city
-      search += "#{city}, #{city.province}, "
-    end
-    
-    if postalcode.present?
-      search += "#{postalcode}, "
-    end
-    
-    return "http://maps.google.com?q=#{search} Canada"\
+    search += "#{address1}, " if address1.present?
+    search += "#{city}, #{city.province}, " if city.present?
+    search += "#{postalcode}, " if postalcode.present?
+    return "http://maps.google.com?q=#{search} Canada"
   end
   
   def to_s
