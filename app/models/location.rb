@@ -35,23 +35,12 @@ class Location < ActiveRecord::Base
   end
   
   def short_address
-    if in_clinic?
-      if resolved_address.present?
-        return "In #{clinic_in.name} - #{resolved_address.short_address}"
-      else
-        return "In #{clinic_in.name}, no address"
-      end
-    elsif in_hospital?
-      if resolved_address.present?
-        return "In #{hospital_in.name} - #{resolved_address.short_address}"
-      else
-        return "In #{hospital_in.name}, no address"
-      end
-    elsif resolved_address.present?
-      return "#{resolved_address.short_address}"
-    else
-      return ""
-    end
+    output = ""
+    output += "#{suite_in}, " if suite_in.present?
+    output += "In #{hospital_in.name} " if in_hospital?
+    output += "In #{clinic_in.name} " if in_clinic?
+    output +=  " #{resolved_address.short_address}" if resolved_address.present?
+    return output
   end
   
   def in_details

@@ -9,7 +9,7 @@ class Address < ActiveRecord::Base
     if suite.present? and (address1.present? or address2.present?)
       output += "#{suite} - "
     elsif suite.present?
-      output += "Suite #{suite}, "
+      output += "#{suite}, "
     end
     
     if address1.present?
