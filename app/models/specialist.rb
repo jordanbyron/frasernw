@@ -26,7 +26,7 @@ class Specialist < ActiveRecord::Base
   
   #specialists have multiple referral forms
   has_many   :referral_forms, :as => :referrable
-  accepts_nested_attributes_for :referral_forms
+  accepts_nested_attributes_for :referral_forms, :allow_destroy => true
   
   # specialists are favorited by users of the system
   has_many   :favorites
