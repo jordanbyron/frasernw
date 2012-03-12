@@ -253,6 +253,18 @@ ActiveRecord::Schema.define(:version => 20120324163845) do
     t.timestamp "updated_at"
   end
 
+  create_table "referral_forms", :force => true do |t|
+    t.string   "referrable_type"
+    t.integer  "referrable_id"
+    t.string   "description"
+    t.string   "form_file_name"
+    t.string   "form_content_type"
+    t.integer  "form_file_size"
+    t.datetime "form_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "review_items", :force => true do |t|
     t.string    "item_type"
     t.integer   "item_id"
