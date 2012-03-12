@@ -151,7 +151,13 @@
         = "responded to by #{@specialist.responds_via}."
 
     - if @specialist.referral_form_mask == 1
-      %p.collapse_up This office has a referral form.
+      - referral_form_count = @specialist.referral_forms.reject{|referral_form| not referral_form.form.present?}.length
+      %p.collapse_up= "This office has #{ referral_form_count > 1 ? 'referral forms' : 'a referfal form'}."
+      %ul.referral_forms
+        - @specialist.referral_forms.each do |referral_form|
+          - next if not referral_form.form.present?
+          - type = referral_form.form_content_type.split('/').last
+          %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, :target => "_blank"
     - elsif @specialist.referral_form_mask == 2
       %p.collapse_up This office does not have a referral form.
 

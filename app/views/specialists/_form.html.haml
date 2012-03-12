@@ -89,7 +89,7 @@
         $(specialty_checkbox_id).prop("checked", true);
       });
 
-= simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => form_action}, :method => form_method, :html => { :class => "form-horizontal ajax" } do |f|
+= simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => form_action}, :method => form_method, :html => { :class => "form-horizontal", :multipart => true } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
     
@@ -252,9 +252,27 @@
     = f.input :referral_details
 
     = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
+  
+    %h4 Referral Forms
+  
+    .content
+      .row
+        .span3 Desicription
+        .span4 Referral Form
+      = f.simple_fields_for :referral_forms, :class => "row" do |i|
+        .row.spaced
+          .span3
+            = i.input :description, label: false, wrapper: :no_wrapper, input_html: { class: "span3" }
+          .span4
+            = i.input :form, as: :file, label: false, wrapper: :no_wrapper, input_html: { class: "span4" }
+          .spanhalf
+            = i.hidden_field :_destroy
+            = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
+      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another referral form", :referral_forms, class: "btn")
     
+    %hr{ "style" => "visibility:hidden" }
     = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_HASH, label_method: :last, value_method: :first  
-    
+  
     = f.input :waittime_mask, as: :select, collection: Specialist::WAITTIME_HASH, label_method: :last, value_method: :first
 
     %label Our office will respond to referral requests:
