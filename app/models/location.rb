@@ -36,7 +36,7 @@ class Location < ActiveRecord::Base
   
   def short_address
     output = ""
-    output += "#{suite_in}, " if suite_in.present?
+    output += "##{suite_in}, " if suite_in.present?
     output += "In #{hospital_in.name} " if in_hospital?
     output += "In #{clinic_in.name} " if in_clinic?
     output +=  " #{resolved_address.short_address}" if resolved_address.present?
@@ -44,8 +44,8 @@ class Location < ActiveRecord::Base
   end
   
   def in_details
-    return "Suite #{suite_in}, #{details_in}" if (suite_in.present? && details_in.present?)
-    return "Suite #{suite_in}" if suite_in.present?
+    return "##{suite_in}, #{details_in}" if (suite_in.present? && details_in.present?)
+    return "##{suite_in}" if suite_in.present?
     return "#{details_in}" if details_in.present?
     return ""
   end

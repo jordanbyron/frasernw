@@ -7,9 +7,9 @@ class Address < ActiveRecord::Base
     output = ""
   
     if suite.present? and (address1.present? or address2.present?)
-      output += "#{suite} - "
+      output += "##{suite}, "
     elsif suite.present?
-      output += "#{suite}, "
+      output += "##{suite}, "
     end
     
     output += "#{address1}, " if address1.present?
@@ -24,9 +24,9 @@ class Address < ActiveRecord::Base
     output = ""
   
     if suite.present? and (address1.present? or address2.present?)
-      output += "#{suite} - "
+      output += "##{suite}, "
     elsif suite.present?
-      output += "#{suite}"
+      output += "##{suite}"
     end
     
     output += "#{address1}, " if address1.present?
