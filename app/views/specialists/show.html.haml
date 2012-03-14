@@ -17,31 +17,32 @@
     
   - @specialist.specialist_offices.each do |specialist_office|
     - next if specialist_office.empty?
-    - num_specialists = specialist_office.office.num_specialists
-    - location = specialist_office.office.location
-    - next if !location
-    - address = location.resolved_address
-    - if (location.in_hospital? or location.in_clinic?)
-      - located_in = location.hospital_in
-      - located_in ||= location.clinic_in
-      %p
-        %span.address= "In #{link_to located_in.name, url_for(located_in), :class => 'ajax'}".html_safe
-        - if located_in.location.present? && located_in.location.in_hospital?
-          - hopsital = located_in.location.hospital_in
-          = "which is in #{link_to hopsital.name, hospital_path(hopsital), :class => 'ajax'}".html_safe
-        - if num_specialists > 1
-          with
-          %a#tt{"href" => "#", "onclick" => "$('#tt').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
-      - if address.present? && !address.empty?
-        %p.collapse_up= link_to address.address, address.map_url, :target => "_blank"
-      - if location.in_details.present?
-        %p.collapse_up= location.in_details
-    - elsif address.present?
-      %p
-        %span.address= link_to address.address, address.map_url, :target => "_blank"
-        - if num_specialists > 1
-          with
-          %a#tt{"href" => "#", "onclick" => "$('#tt').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
+    - if specialist_office.office.present?
+      - num_specialists = specialist_office.office.num_specialists
+      - location = specialist_office.office.location
+      - next if !location
+      - address = location.resolved_address
+      - if (location.in_hospital? or location.in_clinic?)
+        - located_in = location.hospital_in
+        - located_in ||= location.clinic_in
+        %p
+          %span.address= "In #{link_to located_in.name, url_for(located_in), :class => 'ajax'}".html_safe
+          - if located_in.location.present? && located_in.location.in_hospital?
+            - hopsital = located_in.location.hospital_in
+            = "which is in #{link_to hopsital.name, hospital_path(hopsital), :class => 'ajax'}".html_safe
+          - if num_specialists > 1
+            with
+            %a#tt{"href" => "#", "onclick" => "$('#tt').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
+        - if address.present? && !address.empty?
+          %p.collapse_up= link_to address.address, address.map_url, :target => "_blank"
+        - if location.in_details.present?
+          %p.collapse_up= location.in_details
+      - elsif address.present?
+        %p
+          %span.address= link_to address.address, address.map_url, :target => "_blank"
+          - if num_specialists > 1
+            with
+            %a#tt{"href" => "#", "onclick" => "$('#tt').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
     - if specialist_office.phone_and_fax.present?
       %p.collapse_up= specialist_office.phone_and_fax
       
