@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120306010957) do
+ActiveRecord::Schema.define(:version => 20120315195232) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -218,12 +218,13 @@ ActiveRecord::Schema.define(:version => 20120306010957) do
   end
 
   create_table "procedure_specializations", :force => true do |t|
-    t.integer   "procedure_id"
-    t.integer   "specialization_id"
-    t.string    "ancestry"
-    t.boolean   "mapped",            :default => false
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "procedure_id"
+    t.integer  "specialization_id"
+    t.string   "ancestry"
+    t.boolean  "mapped",            :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "classification"
   end
 
   add_index "procedure_specializations", ["ancestry"], :name => "index_procedure_specializations_on_ancestry"

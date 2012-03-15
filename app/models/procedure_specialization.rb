@@ -10,9 +10,35 @@ class ProcedureSpecialization < ActiveRecord::Base
   
   has_paper_trail
   has_ancestry
+   
+  CLASSIFICATION_FOCUSED    = 1
+  CLASSIFICATION_NONFOCUSED = 2
+  CLASSIFICATION_ASSUMED    = 3
+  
+  CLASSIFICATION_HASH = { 
+    CLASSIFICATION_FOCUSED => "Focused", 
+    CLASSIFICATION_NONFOCUSED => "Non-Focused", 
+    CLASSIFICATION_ASSUMED => "Assumed"
+  }
+  
+  def classification_text
+    ProcedureSpecialization::CLASSIFICATION_HASH[classification]
+  end
+  
+  def focused?
+    classification == ProcedureSpecialization::CLASSIFICATION_FOCUSED
+  end
+  
+  def nonfocused?
+    classification == ProcedureSpecialization::CLASSIFICATION_NONFOCUSED
+  end
+  
+  def assumed?
+    classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED
+  end
   
   def to_s
-    return procedure.to_s
+    procedure.to_s
   end
   
   def investigation(specialist_or_clinic)
