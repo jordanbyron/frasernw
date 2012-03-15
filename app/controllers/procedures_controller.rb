@@ -35,6 +35,12 @@ class ProceduresController < ApplicationController
   
   def update
     @procedure = Procedure.find(params[:id])
+    params[:procedure][:all_procedure_specializations_attributes].each{ |so_key, so_value|
+      if so_value[:mapped].blank?
+        so_value[:mapped] = 0
+      end
+    }
+    
     if @procedure.update_attributes(params[:procedure])
       redirect_to @procedure, :notice  => "Successfully updated area of practice."
     else

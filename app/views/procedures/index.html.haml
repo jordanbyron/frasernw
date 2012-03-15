@@ -17,7 +17,8 @@
   - Procedure.all(:order => "name").each do |procedure|
     %tr
       %td= link_to procedure.name, procedure_path(procedure), :class => 'ajax'
-      %td= procedure.procedure_specializations.collect(){ |ps| "<span class='#{ ps.specialization.in_progress ? "in-progress" : ""}'>#{compressed_ancestry(ps)}</span>" }.to_sentence.html_safe
+      %td
+        %ul= procedure.procedure_specializations.collect(){ |ps| "<li><span class='#{ ps.specialization.in_progress ? "in-progress" : ""}'>#{compressed_ancestry(ps)} (#{ps.classification_text})</span></li>" }.join().html_safe
       %td.admin.btn-group
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_procedure_path(procedure), :class => "btn btn-small ajax")
         = link_to("<i class='icon-trash'></i>".html_safe + " Delete", procedure, :confirm => "Delete #{procedure.name}?", :method => :delete, :class => "btn btn-small")

@@ -122,7 +122,6 @@ en:
         specialist_specializations: "Specialities"
         specializations: "Areas of Specialty"
       procedure:
-        specialization_level: "Level"
         parent_id: "Parent Area of Practice"
       user:
         notify: "Email notifications of events"

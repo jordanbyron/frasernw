@@ -3,7 +3,6 @@
     .alert.alert-error= f.error_messages
   
   = f.input :name
-  = f.input :specialization_level, as: :radio, :collection => [ ['Specialization', true], ['Physician', false] ] 
 
   %h3 Specialities This Area of Practice Belongs To
   .content
@@ -12,8 +11,9 @@
         - procedure_specialization = ProcedureSpecialization.find_by_procedure_id_and_specialization_id( @procedure.id, specialization.id )
         - procedure_ancestry = [["~ No parent ~", nil]] + ancestry_options_limited(specialization.procedure_specializations_arranged, procedure_specialization.subtree)
         = f.hidden_field procedure_specialization.id, :name => "procedure[all_procedure_specializations_attributes][#{index}][id]", :value => procedure_specialization.id
-        = label_tag "check_#{specialization.id}", specialization.name, :class => "span3", "style" => "text-align:right"
+        = label_tag "check_#{specialization.id}", specialization.name, :class => "span2", "style" => "text-align:right"
         = check_box_tag "check_#{specialization.id}", 1, procedure_specialization.mapped, :name => "procedure[all_procedure_specializations_attributes][#{index}][mapped]", :class => "check aop_active span1", :checked => @specializations.include?(specialization)
+        = select_tag "classification_#{specialization.id}", options_for_select([[ProcedureSpecialization::CLASSIFICATION_HASH[ProcedureSpecialization::CLASSIFICATION_FOCUSED], ProcedureSpecialization::CLASSIFICATION_FOCUSED],[ProcedureSpecialization::CLASSIFICATION_HASH[ProcedureSpecialization::CLASSIFICATION_NONFOCUSED], ProcedureSpecialization::CLASSIFICATION_NONFOCUSED], [ProcedureSpecialization::CLASSIFICATION_HASH[ProcedureSpecialization::CLASSIFICATION_ASSUMED], ProcedureSpecialization::CLASSIFICATION_ASSUMED]], procedure_specialization.classification), :name => "procedure[all_procedure_specializations_attributes][#{index}][classification]", :class => "select classification span2"
         = select_tag "select_#{specialization.id}", options_for_select(procedure_ancestry, procedure_specialization.parent_id), :name => "procedure[all_procedure_specializations_attributes][#{index}][parent_id]", :class => "select parent span3"
           
   %script{"type" => "text/javascript"}

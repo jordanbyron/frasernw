@@ -10,12 +10,12 @@ module ApplicationHelper
   
   alias :clinics_procedures :specialists_procedures
   
-  def procedure_ancestry(specialist_or_clinic_or_specialization, specialization_level)
+  def procedure_ancestry(specialist_or_clinic_or_specialization, classification)
     result = {}
   
     specialist_or_clinic_or_specialization.procedure_specializations.each do |ps| 
       temp = { ps => {} }
-      next if ps.procedure.specialization_level != specialization_level
+      next if ps.classification != classification
       while ps.parent
         temp = { ps.parent => temp }
         ps = ps.parent
@@ -41,21 +41,8 @@ module ApplicationHelper
     end
   end
   
-  def compressed_procedures(specialist)
-    return compressed_procedures_output( procedure_ancestry(specialist), "" )[0..-2]
-  end
-  
-  def compressed_procedures_output(items, prefix)
-    result = ""
-    items.each do |item|
-      new_prefix = prefix.blank? ? item[:parent].procedure.name : prefix + " > " + item[:parent].procedure.name
-      result += new_prefix + ", " + compressed_procedures_output(item[:children], new_prefix)
-    end
-    result
-  end
-  
-  def compressed_procedures_indented(specialist_or_clinic, specialization_level)
-    return compressed_procedures_indented_output( procedure_ancestry(specialist_or_clinic, specialization_level), specialist_or_clinic ) 
+  def compressed_procedures_indented(specialist_or_clinic, classification)
+    return compressed_procedures_indented_output( procedure_ancestry(specialist_or_clinic, classification), specialist_or_clinic ) 
   end
   
   def compressed_procedures_indented_output(items, root)
@@ -94,24 +81,6 @@ module ApplicationHelper
       output += (clinic.name + ', ')
     end
     output.gsub(/\,\ $/,'')
-  end
-  
-  def specialization_procedures_indented(specialization)
-    return specialization_procedures_indented_output( procedure_ancestry(specialization) ) 
-  end
-  
-  def specialization_procedures_indented_output(items)
-    return "" if items.empty?
-    result = "<ul>"
-    items.each do |item|
-      procedure = item[:parent].procedure
-      result += "<li>"
-      result += link_to "#{procedure.name}: #{procedure.specialists.length + procedure.clinics.length}", procedure_path(procedure)
-      result += "</li>"
-      result += specialization_procedures_indented_output(item[:children])
-    end
-    result += "</ul>"
-    result
   end
   
   def ancestry_options(items, parent = "")

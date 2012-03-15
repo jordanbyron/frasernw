@@ -79,7 +79,7 @@
         %p
           %strong Required investigations for all patients:
           = @specialist.required_investigations
-      - specialization_procedures, specialization_count = compressed_procedures_indented(@specialist, true)
+      - specialization_procedures, specialization_count = compressed_procedures_indented(@specialist, ProcedureSpecialization::CLASSIFICATION_FOCUSED)
       - if specialization_count > 0
         %p.collapse_up
           %strong Areas of practice
@@ -87,7 +87,7 @@
           %i additional 
           required investigations:
           = specialization_procedures.html_safe
-      - custom_procedures, custom_count = compressed_procedures_indented(@specialist, false)
+      - custom_procedures, custom_count = compressed_procedures_indented(@specialist, ProcedureSpecialization::CLASSIFICATION_NONFOCUSED)
       - if custom_count > 0
         %p.collapse_up
           %strong Other areas of interest
