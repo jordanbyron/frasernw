@@ -29,7 +29,7 @@
       %label Location is
       .controls
         - location_class = "location_0"
-        - [['Stand alone', !@clinic.location.in_hospital?], ['In a hospital', @clinic.location.in_hospital?]].each do |location| 
+        - [['Standalone', !@clinic.location.in_hospital?], ['In a hospital', @clinic.location.in_hospital?]].each do |location| 
           = label_tag "#{location_class}_#{location.first}", "#{radio_button_tag(location_class, location.first, location.second, :class => location_class)} #{location.first}".html_safe
     .hospital_0
       = l.association :hospital_in, as: :select, collection: Hospital.all, :include_blank => true

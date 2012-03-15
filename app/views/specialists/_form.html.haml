@@ -126,14 +126,35 @@
           %label Location is
           .controls
             - location_class = "location_#{index}"
-            - is_location = @specialist.specialist_offices[index].present? && !@specialist.specialist_offices[index].empty?
-            - [['Not used', !is_location], ['In an office', is_location]].each do |option| 
-              = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
+            - if @is_new
+              - [['Not used', true], ['In an existing office', false], ['In a new standalone office', false], ['In a new office in a hospital', false], ['In a new office in a clinic', false]].each do |option| 
+                = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
+            - else
+              - is_location = @specialist.specialist_offices[index].present? && !@specialist.specialist_offices[index].empty?
+              - [['Not used', !is_location], ['In an office', is_location]].each do |option| 
+                = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
         %div{:class => "numbers_#{index}"}
           = so.input :phone
           = so.input :fax
         %div{:class => "office_#{index}"}
           = so.association :office, as: :select, collection: @offices, :include_blank => true, :input_html => { :class => "chzn-select" }
+        - if @is_new
+          = so.simple_fields_for :office, :suppress_fields => true do |o|
+            = o.simple_fields_for :location, :suppress_fields => true do |l|
+              %div{:class => "address_#{index}"}
+                = l.simple_fields_for :address do |a|
+                  = a.input :suite
+                  = a.input :address1
+                  = a.input :address2
+                  = a.association :city, as: :select, collection: City.all.map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
+                  = a.input :postalcode
+              %div{:class => "hospital_#{index}"}
+                = l.association :hospital_in, as: :select, collection: Hospital.all, :include_blank => true
+              %div{:class => "clinic_#{index}"}
+                = l.association :clinic_in, as: :select, collection: @specializations_clinics, :include_blank => true
+              %div{:class => "details_#{index}"}
+                = l.input :suite_in
+                = l.input :details_in
         %script{"type" => "text/javascript"}
           :plain
             $(document).ready( address_#{index}_location_changed );

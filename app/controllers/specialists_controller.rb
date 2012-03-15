@@ -12,6 +12,7 @@ class SpecialistsController < ApplicationController
   end
 
   def new
+    @is_new = true
     #specialization passed in to facilitate javascript "checking off" of starting speciality, since build below doesn't seem to work
     @specialization = Specialization.find(params[:specialization_id])     
     @specialist = Specialist.new
@@ -21,6 +22,7 @@ class SpecialistsController < ApplicationController
       os = @specialist.specialist_offices.build
       o = os.build_office
       l = o.build_location
+      l.build_address
     end
     @offices = Office.all.reject{|o| o.empty? || o.location.resolved_address.blank? || o.short_address.blank?}.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
     @specializations_clinics = @specialization.clinics.collect { |c| [c.name, c.id] }
@@ -29,15 +31,24 @@ class SpecialistsController < ApplicationController
   end
 
   def create
+    #can only have one of office_id or office_attributes, otherwise create gets confused
+    params[:specialist][:specialist_offices_attributes].each{ |so_key, so_value|
+      if so_value[:office_id].blank?
+        so_value.delete(:office_id)
+      else
+        so_value.delete(:office_attributes)
+      end
+    }
     @specialist = Specialist.new(params[:specialist])
     if @specialist.save!
-      redirect_to @specialist, :notice => "Successfully created #{specialist.name}. #{undo_link}"
+      redirect_to @specialist, :notice => "Successfully created #{@specialist.name}. #{undo_link}"
     else
       render :action => 'new'
     end
   end
 
   def edit
+    @is_new = false
     @specialist = Specialist.find(params[:id])
     if @specialist.capacities.count == 0
       @specialist.capacities.build
@@ -90,6 +101,7 @@ class SpecialistsController < ApplicationController
   end
   
   def review
+    @is_new = false
     @review_item = ReviewItem.find_by_item_type_and_item_id( "Specialist", params[:id] );
     
     if @review_item.blank?

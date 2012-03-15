@@ -70,10 +70,10 @@ var address_location_changed = function(address_number)
     reset_clinic();
     reset_numbers(address_number);
   }
-  else if ($('#location_' + address_number + '_Stand_alone').is(':checked') || $('#location_' + address_number + '_In_an_office').is(':checked'))
+  else if ($('#location_' + address_number + '_Standalone').is(':checked') || $('#location_' + address_number + '_In_a_new_standalone_office').is(':checked'))
   {
     $('.numbers_' + address_number).show();
-    $('.office_' + address_number).show();
+    $('.office_' + address_number).hide();
     $('.address_' + address_number).show();
     $('.hospital_' + address_number).hide();
     $('.clinic_' + address_number).hide();
@@ -81,7 +81,18 @@ var address_location_changed = function(address_number)
     reset_hospital();
     reset_clinic();
   }
-  else if ($('#location_' + address_number + '_In_a_hospital').is(':checked'))
+  else if ($('#location_' + address_number + '_In_an_office').is(':checked') || $('#location_' + address_number + '_In_an_existing_office').is(':checked'))
+  {
+    $('.numbers_' + address_number).show();
+    $('.office_' + address_number).show();
+    $('.address_' + address_number).hide();
+    $('.hospital_' + address_number).hide();
+    $('.clinic_' + address_number).hide();
+    $('.details_' + address_number).hide();
+    reset_hospital();
+    reset_clinic();
+  }
+  else if ($('#location_' + address_number + '_In_a_hospital').is(':checked') || $('#location_' + address_number + '_In_a_new_office_in_a_hospital').is(':checked'))
   {
     $('.numbers_' + address_number).show();
     $('.office_' + address_number).hide();
@@ -92,7 +103,7 @@ var address_location_changed = function(address_number)
     reset_office(address_number);
     reset_clinic();
   }
-  else if ($('#location_' + address_number + '_In_a_clinic').is(':checked'))
+  else if ($('#location_' + address_number + '_In_a_clinic').is(':checked') || $('#location_' + address_number + '_In_a_new_office_in_a_clinic').is(':checked'))
   {
     $('.numbers_' + address_number).show();
     $('.office_' + address_number).hide();
