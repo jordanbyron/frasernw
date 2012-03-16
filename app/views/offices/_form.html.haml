@@ -11,7 +11,7 @@
         - is_in_hospital = location.in_hospital?
         - is_in_clinic = !is_in_hospital && location.in_clinic?
         - is_stand_alone = !is_in_clinic && !is_in_hospital
-        - [['Stand alone', is_stand_alone], ['In a clinic', is_in_clinic], ['In a hospital', is_in_hospital]].each do |option| 
+        - [['Standalone', is_stand_alone], ['In a clinic', is_in_clinic], ['In a hospital', is_in_hospital]].each do |option| 
           = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
     .address_0
       = l.simple_fields_for :address do |a|
