@@ -2,24 +2,56 @@
 
 %h2 Offices
 
-%table.table.table-condensed
-  %tr
-    %th Address
-    %th City
-    %th Specialists
-    %th.admin
-
-  - @offices.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.each do |office|
-    - address = office.location.present? ? office.location.resolved_address : nil
-    %tr
-      %td= link_to office.short_address, office, :class => 'ajax'
-      %td= office.city
-      %td
-        %ul
-          - office.specialists.each do |specialist|
-            %li= link_to specialist.name, specialist, :class => 'ajax'
-      %td.admin.btn-group
-        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_office_path(office), :class => "btn btn-small ajax")
-        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", office, :confirm => "Delete #{office.short_address.present? ? office.short_address : "office"}?", :method => :delete, :class => "btn btn-small")
+.tabbable
+  %ul.nav.nav-tabs
+    %li.active
+      %a{"href" => "#no_city_tab", "data-toggle" => "tab"} No city
+    - City.all.each do |city|
+      %li
+        %a{"href" => "##{city.id}_tab", "data-toggle" => "tab"}= city.name
+        
+  .tab-content
+    #no_city_tab.tab-pane.active
+      %table.table.table-condensed
+        %tr
+          %th Address
+          %th City
+          %th Specialists
+          %th.admin
+    
+        - @offices.reject{ |o| o.city != "" }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.each do |office|
+          - address = office.location.present? ? office.location.resolved_address : nil
+          %tr
+            %td= link_to office.short_address, office, :class => 'ajax'
+            %td= office.city
+            %td
+              %ul
+                - office.specialists.each do |specialist|
+                  %li= link_to specialist.name, specialist, :class => 'ajax'
+            %td.admin.btn-group
+              = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_office_path(office), :class => "btn btn-small ajax")
+              = link_to("<i class='icon-trash'></i>".html_safe + " Delete", office, :confirm => "Delete #{office.short_address.present? ? office.short_address : "office"}?", :method => :delete, :class => "btn btn-small")
+              
+    - City.all.each do |city|
+      .tab-pane{:id => "#{city.id}_tab"}
+        %table.table.table-condensed
+          %tr
+            %th Address
+            %th City
+            %th Specialists
+            %th.admin
+      
+          - @offices.reject{ |o| o.city != city.name }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.each do |office|
+            - address = office.location.present? ? office.location.resolved_address : nil
+            %tr
+              %td= link_to office.short_address, office, :class => 'ajax'
+              %td= office.city
+              %td
+                %ul
+                  - office.specialists.each do |specialist|
+                    %li= link_to specialist.name, specialist, :class => 'ajax'
+              %td.admin.btn-group
+                = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_office_path(office), :class => "btn btn-small ajax")
+                = link_to("<i class='icon-trash'></i>".html_safe + " Delete", office, :confirm => "Delete #{office.short_address.present? ? office.short_address : "office"}?", :method => :delete, :class => "btn btn-small")
 
 %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Office", new_office_path, :class => "btn ajax")
