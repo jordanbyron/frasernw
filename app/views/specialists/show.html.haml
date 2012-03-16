@@ -62,7 +62,7 @@
         = @specialist.practise_limitations
     - if ((not @specialist.location_opened.blank?) and (not @specialist.retired?))
       %p.collapse_up
-        This practice opened
+        This practice opened at this location
         = @specialist.location_opened == "Prior to 2010" ? @specialist.location_opened.downcase : "in #{@specialist.location_opened}"
   
   - if not @specialist.retired?
