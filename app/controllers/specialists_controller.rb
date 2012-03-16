@@ -83,7 +83,7 @@ class SpecialistsController < ApplicationController
 
   def destroy
     @specialist = Specialist.find(params[:id])
-    name = specialist.name;
+    name = @specialist.name;
     @specialist.destroy
     redirect_to specialists_url, :notice => "Successfully deleted #{name}. #{undo_link}"
   end
