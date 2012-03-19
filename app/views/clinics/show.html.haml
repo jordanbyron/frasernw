@@ -5,6 +5,7 @@
   = @clinic.name
 %h4.specialty_links
   = @clinic.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
+%h5= @clinic.sector if @clinic.sector?
   
 - if not @clinic.responded
   %p
@@ -15,15 +16,13 @@
     - hospital = @clinic.location.hospital_in
     %p
       %span.address= "In #{link_to hospital.name, hospital_path(hospital), :class => 'ajax'}".html_safe
-    - if address.present? && !address.empty?
-      %p.collapse_up= link_to address.address, address.map_url, :target => "_blank"
-    - if @clinic.location.in_details.present?
-      %p.collapse_up= @clinic.location.in_details
+    %p.collapse_up= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
+    %p.collapse_up= @clinic.location.in_details if @clinic.location.in_details.present?
   - elsif address.present? && !address.empty?
     %p
       %span.address= link_to address.address, address.map_url, :target => "_blank"
-  - if @clinic.phone_and_fax.present?
-    %p.collapse_up= @clinic.phone_and_fax
+  %p.collapse_up= "Wheelchair accessible" if @clinic.wheelchair_accessible?
+  %p.collapse_up= @clinic.phone_and_fax if @clinic.phone_and_fax.present?
         
   %p
     %strong{ :class => "status_#{@clinic.status_class}"}= @clinic.status
@@ -34,7 +33,7 @@
     - if not @clinic.location_opened.blank?
       %p.collapse_up
         This clinic opened at this location 
-        = @clinic.location_opened == "Prior to 2010" ? @clinic.location_opened.downcase : "in #{@clinic.location_opened}"
+        = @clinic.location_opened == "Prior to 2010" ? "#{@clinic.location_opened.downcase}." : "in #{@clinic.location_opened}."
 
   - if not @clinic.languages.blank?
     %p
@@ -76,14 +75,14 @@
     
   %p
     - if @clinic.accepts_referrals_via.presence and @clinic.responds_via.presence
-      %strong.referral Referrals
-      = "are accepted by #{@clinic.accepts_referrals_via}, and responded to by #{@clinic.responds_via}"
+      %strong.referral Referrals:
+      = "accepted by #{@clinic.accepts_referrals_via}. Responded to by #{@clinic.responds_via}."
     - elsif @clinic.accepts_referrals_via.presence
-      %strong.referral Referrals
-      = "are accepted by #{@clinic.accepts_referrals_via}"
+      %strong.referral Referrals:
+      = "accepted by #{@clinic.accepts_referrals_via}."
     - elsif @clinic.responds_via.presence
-      %strong.referral Referrals
-      = "are responded to by #{@clinic.responds_via}"
+      %strong.referral Referrals:
+      = "responded to by #{@clinic.responds_via}."
     
   - if @clinic.referral_form_mask == 1
     %p.collapse_up This office has a referral form
@@ -101,9 +100,9 @@
       %strong= @clinic.lagtime
     
   - if @clinic.patient_can_book_mask == 1
-    %p.collapse_up This office accepts direct calls from patients after referral to book their own appointments
+    %p.collapse_up This office accepts direct calls from patients after referral to book their own appointments.
   - elsif @clinic.patient_can_book_mask == 2
-    %p.collapse_up This office does not accept direct calls from patients after referral to book their own appointments
+    %p.collapse_up This office does not accept direct calls from patients after referral to book their own appointments.
     
   .red_flag
     - if not @clinic.red_flags.blank?

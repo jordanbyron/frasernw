@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120315195232) do
+ActiveRecord::Schema.define(:version => 20120317064920) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -82,44 +82,48 @@ ActiveRecord::Schema.define(:version => 20120315195232) do
   end
 
   create_table "clinics", :force => true do |t|
-    t.string    "name"
-    t.text      "status"
-    t.text      "interest"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.text      "referral_criteria"
-    t.text      "referral_process"
-    t.string    "responds_via"
-    t.string    "contact_name"
-    t.string    "contact_phone"
-    t.string    "contact_email"
-    t.string    "contact_notes"
-    t.integer   "status_mask"
-    t.text      "limitations"
-    t.text      "location_opened"
-    t.text      "required_investigations"
-    t.text      "not_performed"
-    t.boolean   "referral_fax"
-    t.boolean   "referral_phone"
-    t.string    "referral_other_details"
-    t.boolean   "referral_form_old"
-    t.boolean   "respond_by_fax"
-    t.boolean   "respond_by_phone"
-    t.boolean   "respond_by_mail"
-    t.boolean   "respond_to_patient"
-    t.boolean   "patient_can_book_old"
-    t.text      "red_flags"
-    t.boolean   "urgent_fax"
-    t.boolean   "urgent_phone"
-    t.string    "urgent_other_details"
-    t.integer   "waittime_mask"
-    t.integer   "lagtime_mask"
-    t.integer   "referral_form_mask",      :default => 3
-    t.integer   "patient_can_book_mask",   :default => 3
-    t.boolean   "responded",               :default => true
-    t.text      "urgent_details"
-    t.string    "phone"
-    t.string    "fax"
+    t.string   "name"
+    t.text     "status"
+    t.text     "interest"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "referral_criteria"
+    t.text     "referral_process"
+    t.string   "responds_via"
+    t.string   "contact_name"
+    t.string   "contact_phone"
+    t.string   "contact_email"
+    t.string   "contact_notes"
+    t.integer  "status_mask"
+    t.text     "limitations"
+    t.text     "location_opened"
+    t.text     "required_investigations"
+    t.text     "not_performed"
+    t.boolean  "referral_fax"
+    t.boolean  "referral_phone"
+    t.string   "referral_other_details"
+    t.boolean  "referral_form_old"
+    t.boolean  "respond_by_fax"
+    t.boolean  "respond_by_phone"
+    t.boolean  "respond_by_mail"
+    t.boolean  "respond_to_patient"
+    t.boolean  "patient_can_book_old"
+    t.text     "red_flags"
+    t.boolean  "urgent_fax"
+    t.boolean  "urgent_phone"
+    t.string   "urgent_other_details"
+    t.integer  "waittime_mask"
+    t.integer  "lagtime_mask"
+    t.integer  "referral_form_mask",         :default => 3
+    t.integer  "patient_can_book_mask",      :default => 3
+    t.boolean  "responded",                  :default => true
+    t.text     "urgent_details"
+    t.string   "phone"
+    t.string   "fax"
+    t.integer  "sector_mask",                :default => 1
+    t.integer  "wheelchair_accessible_mask", :default => 3
+    t.text     "referral_details"
+    t.text     "admin_notes"
   end
 
   create_table "contacts", :force => true do |t|
@@ -218,13 +222,13 @@ ActiveRecord::Schema.define(:version => 20120315195232) do
   end
 
   create_table "procedure_specializations", :force => true do |t|
-    t.integer  "procedure_id"
-    t.integer  "specialization_id"
-    t.string   "ancestry"
-    t.boolean  "mapped",            :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "classification"
+    t.integer   "procedure_id"
+    t.integer   "specialization_id"
+    t.string    "ancestry"
+    t.boolean   "mapped",            :default => false
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.integer   "classification"
   end
 
   add_index "procedure_specializations", ["ancestry"], :name => "index_procedure_specializations_on_ancestry"
@@ -287,6 +291,8 @@ ActiveRecord::Schema.define(:version => 20120315195232) do
     t.string   "fax"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "phone_extension"
+    t.integer  "sector_mask"
   end
 
   create_table "specialist_speaks", :force => true do |t|
@@ -304,50 +310,56 @@ ActiveRecord::Schema.define(:version => 20120315195232) do
   end
 
   create_table "specialists", :force => true do |t|
-    t.string    "firstname"
-    t.string    "lastname"
-    t.text      "practise_limitations"
-    t.text      "interest"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.string    "direct_phone"
-    t.string    "contact_name"
-    t.string    "contact_phone"
-    t.string    "contact_email"
-    t.text      "red_flags"
-    t.string    "responds_via"
-    t.string    "referral_criteria"
-    t.string    "saved_token"
-    t.string    "contact_notes"
-    t.text      "not_interested"
-    t.text      "all_procedure_info"
-    t.string    "referral_other_details"
-    t.string    "referral_request"
-    t.boolean   "patient_can_book_old",    :default => false
-    t.string    "urgent_other_details"
-    t.text      "required_investigations"
-    t.text      "not_performed"
-    t.text      "status_details"
-    t.string    "location_opened"
-    t.integer   "status_mask"
-    t.boolean   "referral_fax"
-    t.boolean   "referral_phone"
-    t.boolean   "respond_by_fax"
-    t.boolean   "respond_by_phone"
-    t.boolean   "respond_by_mail"
-    t.boolean   "respond_to_patient"
-    t.boolean   "urgent_fax"
-    t.boolean   "urgent_phone"
-    t.boolean   "referral_form_old"
-    t.integer   "waittime_mask"
-    t.integer   "lagtime_mask"
-    t.integer   "billing_number"
-    t.integer   "referral_form_mask",      :default => 3
-    t.integer   "patient_can_book_mask",   :default => 3
-    t.date      "unavailable_from"
-    t.date      "unavailable_to"
-    t.boolean   "responded",               :default => true
-    t.text      "urgent_details"
+    t.string   "firstname"
+    t.string   "lastname"
+    t.text     "practise_limitations"
+    t.text     "interest"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "direct_phone"
+    t.string   "contact_name"
+    t.string   "contact_phone"
+    t.string   "contact_email"
+    t.text     "red_flags"
+    t.string   "responds_via"
+    t.string   "referral_criteria"
+    t.string   "saved_token"
+    t.string   "contact_notes"
+    t.text     "not_interested"
+    t.text     "all_procedure_info"
+    t.string   "referral_other_details"
+    t.string   "referral_request"
+    t.boolean  "patient_can_book_old",    :default => false
+    t.string   "urgent_other_details"
+    t.text     "required_investigations"
+    t.text     "not_performed"
+    t.text     "status_details"
+    t.string   "location_opened"
+    t.integer  "status_mask"
+    t.boolean  "referral_fax"
+    t.boolean  "referral_phone"
+    t.boolean  "respond_by_fax"
+    t.boolean  "respond_by_phone"
+    t.boolean  "respond_by_mail"
+    t.boolean  "respond_to_patient"
+    t.boolean  "urgent_fax"
+    t.boolean  "urgent_phone"
+    t.boolean  "referral_form_old"
+    t.integer  "waittime_mask"
+    t.integer  "lagtime_mask"
+    t.integer  "billing_number"
+    t.integer  "referral_form_mask",      :default => 3
+    t.integer  "patient_can_book_mask",   :default => 3
+    t.date     "unavailable_from"
+    t.date     "unavailable_to"
+    t.boolean  "responded",               :default => true
+    t.text     "urgent_details"
+    t.string   "go_by_name"
+    t.string   "goes_by_name"
+    t.string   "direct_phone_extension"
+    t.integer  "sex_mask",                :default => 3
+    t.text     "referral_details"
+    t.text     "admin_notes"
   end
 
   create_table "specializations", :force => true do |t|

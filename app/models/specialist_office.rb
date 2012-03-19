@@ -1,5 +1,5 @@
 class SpecialistOffice < ActiveRecord::Base
-  attr_accessible :phone, :fax, :office_id, :office_attributes
+  attr_accessible :phone, :phone_extension, :fax, :sector_mask, :office_id, :office_attributes
   
   belongs_to :specialist
   belongs_to :office
@@ -8,18 +8,32 @@ class SpecialistOffice < ActiveRecord::Base
   has_paper_trail
   
   def phone_and_fax
-    if phone.present? and fax.present?
-      return "#{phone}, Fax: #{fax}"
-    elsif phone.present?
-      return "#{phone}"
-    elsif fax.present?
-      return "Fax: #{fax}"
-    else
-      return ""
-    end
+    return "#{phone} ext. #{phone_extension}, Fax: #{fax}" if phone.present? && phone_extension.present? && fax.present?
+    return "#{phone} ext. #{phone_extension}" if phone.present? && phone_extension.present?
+    return "#{phone}, Fax: #{fax}" if phone.present? && fax.present?
+    return "ext. #{phone_extension}, Fax: #{fax}" if phone_extension.present? && fax.present?
+    return "#{phone}" if phone.present?
+    return "Fax: #{fax}" if fax.present?
+    return "ext. #{phone_extension}" if phone_extension.present?
+    return ""
+  end
+  
+  SECTOR_HASH = { 
+    1 => "Public", 
+    2 => "Private", 
+    3 => "Public and Private", 
+    4 => "Didn't answer", 
+  }
+  
+  def sector
+    SpecialistOffice::SECTOR_HASH[sector_mask]
+  end
+  
+  def sector?
+    sector_mask != 4
   end
   
   def empty?
-    (phone.blank? and fax.blank? and office.blank?)
+    (phone.blank? and phone_extension.blank? and fax.blank? and office.blank?)
   end
 end

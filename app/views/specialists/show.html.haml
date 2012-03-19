@@ -6,9 +6,12 @@
 %h4.specialty_links
   = @specialist.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
     
-- if not @specialist.billing_number_padded.blank?
-  %h5
-    = "MSP ##{@specialist.billing_number_padded}"
+- if @specialist.billing_number_padded.present? && @specialist.sex?
+  %h5= "MSP ##{@specialist.billing_number_padded}, #{@specialist.sex}"
+- elsif @specialist.billing_number_padded.present?
+  %h5= "MSP ##{@specialist.billing_number_padded}"
+- elsif @specialist.sex?
+  %h5= @specialist.sex
   
 - if not @specialist.responded
   %p
@@ -30,25 +33,28 @@
           - if located_in.location.present? && located_in.location.in_hospital?
             - hopsital = located_in.location.hospital_in
             = "which is in #{link_to hopsital.name, hospital_path(hopsital), :class => 'ajax'}".html_safe
+          = "(#{specialist_office.sector.downcase})" if specialist_office.sector?
           - if num_specialists > 1
             with
             %a#tt{"href" => "#", "onclick" => "$('#tt').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
-        - if address.present? && !address.empty?
-          %p.collapse_up= link_to address.address, address.map_url, :target => "_blank"
-        - if location.in_details.present?
-          %p.collapse_up= location.in_details
+        %p.collapse_up= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
+        %p.collapse_up= location.in_details if location.in_details.present?
       - elsif address.present?
         %p
           %span.address= link_to address.address, address.map_url, :target => "_blank"
+          = "(#{specialist_office.sector.downcase})" if specialist_office.sector?
           - if num_specialists > 1
             with
             %a#tt{"href" => "#", "onclick" => "$('#tt').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
-    - if specialist_office.phone_and_fax.present?
-      %p.collapse_up= specialist_office.phone_and_fax
+    %p.collapse_up= specialist_office.phone_and_fax if specialist_office.phone_and_fax.present?
       
-  - if not @specialist.direct_phone.blank?
+  - if @specialist.direct_phone.present?
     %p.collapse_up
-      = "direct number (for physician use only): #{@specialist.direct_phone}"
+      Direct number 
+      %em for physician use only:
+      =@specialist.direct_phone
+      - if @specialist.direct_phone_extension.present?
+        = "ext. #{@specialist.direct_phone_extension}"
 
   %p
     %strong{ :class => "status_#{@specialist.status_class}"}= @specialist.status
@@ -63,7 +69,7 @@
     - if ((not @specialist.location_opened.blank?) and (not @specialist.retired?))
       %p.collapse_up
         This practice opened at this location
-        = @specialist.location_opened == "Prior to 2010" ? @specialist.location_opened.downcase : "in #{@specialist.location_opened}"
+        = @specialist.location_opened == "Prior to 2010" ? "#{@specialist.location_opened.downcase}." : "in #{@specialist.location_opened}."
   
   - if not @specialist.retired?
     - if not @specialist.languages.blank?
@@ -106,19 +112,19 @@
 
     %p
       - if @specialist.accepts_referrals_via.presence and @specialist.responds_via.presence
-        %strong.referral Referrals
-        = "are accepted by #{@specialist.accepts_referrals_via}, and responded to by #{@specialist.responds_via}"
+        %strong.referral Referrals:
+        = "accepted by #{@specialist.accepts_referrals_via}. Responded to by #{@specialist.responds_via}."
       - elsif @specialist.accepts_referrals_via.presence
-        %strong.referral Referrals
-        = "are accepted by #{@specialist.accepts_referrals_via}"
+        %strong.referral Referrals:
+        = "accepted by #{@specialist.accepts_referrals_via}."
       - elsif @specialist.responds_via.presence
-        %strong.referral Referrals
-        = "are responded to by #{@specialist.responds_via}"
+        %strong.referral Referrals:
+        = "responded to by #{@specialist.responds_via}."
 
     - if @specialist.referral_form_mask == 1
-      %p.collapse_up This office has a referral form
+      %p.collapse_up This office has a referral form.
     - elsif @specialist.referral_form_mask == 2
-      %p.collapse_up This office does not have a referral form
+      %p.collapse_up This office does not have a referral form.
 
     -if @specialist.waittime.presence
       %p.collapse_up
@@ -131,9 +137,9 @@
         %strong= @specialist.lagtime
       
     - if @specialist.patient_can_book_mask == 1
-      %p.collapse_up This office accepts direct calls from patients after referral to book their own appointments
+      %p.collapse_up This office accepts direct calls from patients after referral to book their own appointments.
     - elsif @specialist.patient_can_book_mask == 2
-      %p.collapse_up This office does not accept direct calls from patients after referral to book their own appointments
+      %p.collapse_up This office does not accept direct calls from patients after referral to book their own appointments.
       
     .red_flag
       - if not @specialist.red_flags.blank?

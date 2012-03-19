@@ -102,8 +102,13 @@
 
   = f.input :firstname
   = f.input :lastname
+  = f.input :goes_by_name
   = f.input :responded
-  = f.input :direct_phone, :hint => "For physician contact only"
+  = f.input :sex_mask, as: :select, collection: Specialist::SEX_HASH, label_method: :last, value_method: :first, :include_blank => false
+  = f.input :direct_phone, :hint => "For physician contact only" do
+    = f.input_field :direct_phone, :class => "span3"
+    ext: 
+    = f.input_field :direct_phone_extension, :class => "span1"
   = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.billing_number_padded }
     
   = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
@@ -134,7 +139,10 @@
               - [['Not used', !is_location], ['In an office', is_location]].each do |option| 
                 = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
         %div{:class => "numbers_#{index}"}
-          = so.input :phone
+          = so.input :phone do
+            = so.input_field :phone, :class => "span3"
+            ext: 
+            = so.input_field :phone_extension, :class => "span1"
           = so.input :fax
         %div{:class => "office_#{index}"}
           = so.association :office, as: :select, collection: @offices, :include_blank => true, :input_html => { :class => "chzn-select" }
@@ -155,6 +163,8 @@
               %div{:class => "details_#{index}"}
                 = l.input :suite_in
                 = l.input :details_in
+        %div{:class => "sector_#{index}"}
+          = so.input :sector_mask, as: :select, collection: SpecialistOffice::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
         %script{"type" => "text/javascript"}
           :plain
             $(document).ready( address_#{index}_location_changed );
@@ -227,6 +237,7 @@
   = f.input :referral_fax, as: :boolean, wrapper: :bootstrap_tight
   = f.input :referral_phone, as: :boolean, wrapper: :bootstrap_tight
   = f.input :referral_other_details
+  = f.input :referral_details
 
   = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
   
@@ -258,9 +269,12 @@
   = f.association :clinics, as: :check_boxes, collection: @specializations_clinics
   
   -if current_user_is_admin?
+    
     %hr
   
-    %h4 Users that can Edit this Specialist
+    %h3 Admin
+  
+    Users that can Edit this Specialist
     .content
       = f.simple_fields_for :user_controls_specialists do |i|
         .row.spaced
@@ -271,6 +285,10 @@
             = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
     .row
       = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another user", :user_controls_specialists, class: "btn offset3")
+    
+    %hr{ "style" => "visibility:hidden" }
+    
+    = f.input :admin_notes
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

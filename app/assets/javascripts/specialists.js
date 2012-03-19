@@ -65,6 +65,7 @@ var address_location_changed = function(address_number)
     $('.hospital_' + address_number).hide();
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).hide();
+    $('.sector_' + address_number).hide();
     reset_office(address_number);
     reset_hospital();
     reset_clinic();
@@ -78,6 +79,7 @@ var address_location_changed = function(address_number)
     $('.hospital_' + address_number).hide();
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).hide();
+    $('.sector_' + address_number).show();
     reset_hospital();
     reset_clinic();
   }
@@ -89,6 +91,7 @@ var address_location_changed = function(address_number)
     $('.hospital_' + address_number).hide();
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).hide();
+    $('.sector_' + address_number).show();
     reset_hospital();
     reset_clinic();
   }
@@ -100,6 +103,7 @@ var address_location_changed = function(address_number)
     $('.hospital_' + address_number).show();
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).show();
+    $('.sector_' + address_number).show();
     reset_office(address_number);
     reset_clinic();
   }
@@ -111,6 +115,7 @@ var address_location_changed = function(address_number)
     $('.hospital_' + address_number).hide();
     $('.clinic_' + address_number).show();
     $('.details_' + address_number).show();
+    $('.sector_' + address_number).show();
     reset_office(address_number);
     reset_hospital();
   }

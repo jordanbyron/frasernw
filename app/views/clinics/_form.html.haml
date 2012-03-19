@@ -43,6 +43,9 @@
         = a.input :address2
         = a.association :city, as: :select, collection: City.all.map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
         = a.input :postalcode
+  .sector_0
+    = f.input :sector_mask, as: :select, collection: Clinic::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
+  = f.input :wheelchair_accessible_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
   %script{"type" => "text/javascript"}
     :plain
       $(document).ready( address_0_location_changed );
@@ -100,12 +103,13 @@
   = f.input :referral_fax, as: :boolean, wrapper: :bootstrap_tight
   = f.input :referral_phone, as: :boolean, wrapper: :bootstrap_tight
   = f.input :referral_other_details
+  = f.input :referral_details
 
-  = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
+  = f.input :referral_form_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
   
-  = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_HASH, label_method: :last, value_method: :first
+  = f.input :lagtime_mask, as: :select, collection: Clinic::LAGTIME_HASH, label_method: :last, value_method: :first
   
-  = f.input :waittime_mask, as: :select, collection: Specialist::WAITTIME_HASH, label_method: :last, value_method: :first
+  = f.input :waittime_mask, as: :select, collection: Clinic::WAITTIME_HASH, label_method: :last, value_method: :first
 
   %label Our clinic will respond to referral requests:
   = f.input :respond_by_fax, as: :boolean, wrapper: :bootstrap_tight
@@ -113,7 +117,7 @@
   = f.input :respond_by_mail, as: :boolean, wrapper: :bootstrap_tight
   = f.input :respond_to_patient, as: :boolean
   
-  = f.input :patient_can_book_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
+  = f.input :patient_can_book_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
   
   = f.input :red_flags, as: :text
   
@@ -160,8 +164,10 @@
   
   -if current_user_is_admin?
     %hr
+    
+    %h3 Admin
   
-    %h4 Users that can Edit this Clinic
+    Users that can Edit this Clinic
     .content
       = f.simple_fields_for :user_controls_clinics do |i|
         .row.spaced
@@ -172,6 +178,10 @@
             = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
     .row
       = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another user", :user_controls_clinics, class: "btn offset3")
+    
+    %hr{ "style" => "visibility:hidden" }
+    
+    = f.input :admin_notes
     
   %hr
   

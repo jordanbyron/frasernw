@@ -1,5 +1,5 @@
 class Specialist < ActiveRecord::Base
-  attr_accessible :firstname, :lastname, :responded, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :language_ids, :user_controls_specialists_attributes, :specialist_offices_attributes
+  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :responded, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone, :direct_phone_extension, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :language_ids, :user_controls_specialists_attributes, :specialist_offices_attributes, :admin_notes
   has_paper_trail ignore: [:saved_token, :review_item]
   
   # specialists can have multiple specializations
@@ -151,17 +151,27 @@ class Specialist < ActiveRecord::Base
     2 => "No", 
     3 => "Didn't answer", 
   }
-  
-  def referral_form
-    Specialist::BOOLEAN_HASH[referral_form_mask]
-  end
-  
-  def patient_can_book
-    Specialist::BOOLEAN_HASH[patient_can_book_mask]
-  end
 
   def name
-    firstname + ' ' + lastname
+    if goes_by_name.present?
+      "#{goes_by_name} (#{firstname}) #{lastname}"
+    else
+      "#{firstname} #{lastname}"
+    end
+  end
+  
+  SEX_HASH = { 
+    1 => "Male", 
+    2 => "Female", 
+    3 => "Didn't answer", 
+  }
+  
+  def sex
+    Specialist::SEX_HASH[sex_mask]
+  end
+  
+  def sex?
+    sex_mask != 3
   end
   
   def billing_number_padded
@@ -178,25 +188,31 @@ class Specialist < ActiveRecord::Base
   
   def accepts_referrals_via
     if referral_phone and referral_fax and referral_other_details.presence
-      return "phone, fax, or " + referral_other_details
+      output = "phone, fax, or " + referral_other_details
     elsif referral_phone and referral_fax
-      return "phone or fax"
+      output =  "phone or fax"
     elsif referral_phone
       if referral_other_details.presence
-        return "phone or " + referral_other_details
+        output =  "phone or " + referral_other_details
       else
-        return "phone"
+        output =  "phone"
       end
     elsif referral_fax
       if referral_other_details.presence
-        return "fax or " + referral_other_details
+        output =  "fax or " + referral_other_details
       else
-        return "fax"
+        output =  "fax"
       end
     elsif referral_other_details.presence
-      return referral_other_details
+      output =  referral_other_details
     else
-      return ""
+      output = ""
+    end
+    
+    if referral_details.presence
+      return "#{output}. #{referral_details.slice(0,1).capitalize + referral_details.slice(1..-1)}"
+    else
+      return output
     end
   end
   
@@ -204,7 +220,7 @@ class Specialist < ActiveRecord::Base
     if (not respond_by_phone) and (not respond_by_fax) and (not respond_by_mail) and (not respond_to_patient)
       return ""
     elsif (not respond_by_phone) and (not respond_by_fax) and (not respond_by_mail) and respond_to_patient
-      return "directly to patient"
+      return "directly contacting the patient"
     else
       if respond_by_phone and respond_by_fax and respond_by_mail
         output = "phone, fax, or mail to referring office"
@@ -223,7 +239,7 @@ class Specialist < ActiveRecord::Base
       end
       
       if respond_to_patient
-        return output + ", and directly to patient"
+        return output + ", and by directly contacting the patient"
       else
         return output
       end
@@ -233,32 +249,32 @@ class Specialist < ActiveRecord::Base
   def urgent_referrals_via
     if urgent_phone and urgent_fax
       if urgent_other_details.presence
-        result = "phone, fax, or " + urgent_other_details
+        output = "phone, fax, or " + urgent_other_details
       else
-        result = "phone or fax"
+        output = "phone or fax"
       end
     elsif urgent_phone
       if urgent_other_details.presence
-        result = "phone or " + urgent_other_details
+        output = "phone or " + urgent_other_details
       else
-        result = "phone"
+        output = "phone"
       end
     elsif urgent_fax
       if urgent_other_details.presence
-        result = "fax or " + urgent_other_details
+        output = "fax or " + urgent_other_details
       else
-        result = "fax"
+        output = "fax"
       end
     elsif urgent_other_details.presence
-      result = referral_other_details
+      output = referral_other_details
     else
-      result = ""
+      output = ""
     end
     
     if urgent_details.presence
-      return "#{result}. #{urgent_details.slice(0,1).capitalize + urgent_details.slice(1..-1)}"
+      return "#{output}. #{urgent_details.slice(0,1).capitalize + urgent_details.slice(1..-1)}"
     else
-      return result
+      return output
     end
   end
   
