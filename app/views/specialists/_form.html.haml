@@ -165,13 +165,6 @@
                 = l.input :details_in
         %div{:class => "universal_#{index}"}
           = so.input :sector_mask, as: :select, collection: SpecialistOffice::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
-          .control-group
-            %label Days in office 
-            .controls
-              = so.simple_fields_for :schedule, :suppress_fields => true do |s|
-                - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
-                  = s.simple_fields_for day, :suppress_fields => true do |d|
-                    = d.input :scheduled, :label => "&nbsp;#{capitalize_first_letter(day)}".html_safe, wrapper: :no_wrapper, :item_wrapper_class => 'inline'
         %script{"type" => "text/javascript"}
           :plain
             $(document).ready( address_#{index}_location_changed );
