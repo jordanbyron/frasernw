@@ -1,5 +1,5 @@
 class Clinic < ActiveRecord::Base
-  attr_accessible :name, :phone, :fax, :responded, :sector_mask, :wheelchair_accessible_mask, :status, :interest, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :specializations_including_in_progress_ids, :location_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes, :admin_notes
+  attr_accessible :name, :phone, :fax, :responded, :sector_mask, :wheelchair_accessible_mask, :status, :interest, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :specializations_including_in_progress_ids, :location_attributes, :schedule_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes, :admin_notes
   has_paper_trail
   
   # clinics can have multiple specializations
@@ -8,9 +8,13 @@ class Clinic < ActiveRecord::Base
   has_many :specializations_including_in_progress, :through => :clinic_specializations, :source => :specialization, :class_name => "Specialization"
   
   # clinics have an address
-  has_one :location, :as => :locatable
+  has_one :location, :as => :locatable, :dependent => :destroy
   has_one :address, :through => :location
   accepts_nested_attributes_for :location
+  
+  #clinics have a schedule
+  has_one :schedule, :as => :schedulable, :dependent => :destroy
+  accepts_nested_attributes_for :schedule
   
   # clinics speak many languages
   has_many   :clinic_speaks, :dependent => :destroy
@@ -159,6 +163,10 @@ class Clinic < ActiveRecord::Base
   
   def sector?
     sector_mask != 4
+  end
+  
+  def scheduled?
+    schedule.scheduled?
   end
   
   def accepts_referrals_via

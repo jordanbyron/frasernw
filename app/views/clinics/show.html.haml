@@ -23,6 +23,7 @@
       %span.address= link_to address.address, address.map_url, :target => "_blank"
   %p.collapse_up= "Wheelchair accessible" if @clinic.wheelchair_accessible?
   %p.collapse_up= @clinic.phone_and_fax if @clinic.phone_and_fax.present?
+  %p.collapse_up= @clinic.schedule.days_and_hours.to_sentence if @clinic.scheduled?
         
   %p
     %strong{ :class => "status_#{@clinic.status_class}"}= @clinic.status

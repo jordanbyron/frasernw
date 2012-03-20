@@ -65,7 +65,7 @@ var address_location_changed = function(address_number)
     $('.hospital_' + address_number).hide();
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).hide();
-    $('.sector_' + address_number).hide();
+    $('.universal_' + address_number).hide();
     reset_office(address_number);
     reset_hospital();
     reset_clinic();
@@ -79,7 +79,7 @@ var address_location_changed = function(address_number)
     $('.hospital_' + address_number).hide();
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).hide();
-    $('.sector_' + address_number).show();
+    $('.universal_' + address_number).show();
     reset_hospital();
     reset_clinic();
   }
@@ -91,7 +91,7 @@ var address_location_changed = function(address_number)
     $('.hospital_' + address_number).hide();
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).hide();
-    $('.sector_' + address_number).show();
+    $('.universal_' + address_number).show();
     reset_hospital();
     reset_clinic();
   }
@@ -103,7 +103,7 @@ var address_location_changed = function(address_number)
     $('.hospital_' + address_number).show();
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).show();
-    $('.sector_' + address_number).show();
+    $('.universal_' + address_number).show();
     reset_office(address_number);
     reset_clinic();
   }
@@ -115,7 +115,7 @@ var address_location_changed = function(address_number)
     $('.hospital_' + address_number).hide();
     $('.clinic_' + address_number).show();
     $('.details_' + address_number).show();
-    $('.sector_' + address_number).show();
+    $('.universal_' + address_number).show();
     reset_office(address_number);
     reset_hospital();
   }
@@ -124,10 +124,25 @@ var address_location_changed = function(address_number)
 var address_0_location_changed = function() { address_location_changed(0) }
 var address_1_location_changed = function() { address_location_changed(1) }
 
-$(".location_0").live("change", address_0_location_changed );
-$(".location_1").live("change", address_1_location_changed );
+$(".location_0").live("change", address_0_location_changed);
+$(".location_1").live("change", address_1_location_changed);
 
 
-$("#add_address").live("click", function() {
-                       $(this).hide()
-                       });
+$("#add_address").live("click", function() 
+{
+  $(this).hide()
+});
+
+var scheduled_changed = function() 
+{
+  if ($(this).is(":checked"))
+  {
+    $(this).parent().siblings(".hours").show()
+  }
+  else
+  {
+    $(this).parent().siblings(".hours").hide()
+  }
+}
+
+$(".scheduled").live("change", scheduled_changed)

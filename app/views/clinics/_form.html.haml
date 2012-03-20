@@ -43,12 +43,31 @@
         = a.input :address2
         = a.association :city, as: :select, collection: City.all.map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
         = a.input :postalcode
-  .sector_0
+  .universal_0
     = f.input :sector_mask, as: :select, collection: Clinic::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
   = f.input :wheelchair_accessible_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
   %script{"type" => "text/javascript"}
     :plain
       $(document).ready( address_0_location_changed );
+    
+  %hr
+    
+  %h3 Schedule
+  
+  = f.simple_fields_for :schedule, :suppress_fields => true do |s|
+    - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
+      = s.simple_fields_for day, :suppress_fields => true do |d|
+        = d.input :scheduled, :label => capitalize_first_letter(day), wrapper: :bootstrap_tight do
+          = d.input_field :scheduled, :class => "scheduled span1"
+          .hours
+            from: 
+            = d.input_field :from, :class => "auto"
+            to: 
+            = d.input_field :to, :class => "auto"
+
+  %script{"type" => "text/javascript"}
+    :plain
+      $(".scheduled").each(scheduled_changed)
     
   %hr
 

@@ -1,9 +1,12 @@
 class SpecialistOffice < ActiveRecord::Base
-  attr_accessible :phone, :phone_extension, :fax, :sector_mask, :office_id, :office_attributes
+  attr_accessible :phone, :phone_extension, :fax, :sector_mask, :office_id, :office_attributes, :schedule_attributes
   
   belongs_to :specialist
   belongs_to :office
   accepts_nested_attributes_for :office
+  
+  has_one :schedule, :as => :schedulable, :dependent => :destroy
+  accepts_nested_attributes_for :schedule
   
   has_paper_trail
   
@@ -33,7 +36,11 @@ class SpecialistOffice < ActiveRecord::Base
     sector_mask != 4
   end
   
+  def scheduled?
+    schedule.present? && schedule.scheduled?
+  end
+  
   def empty?
-    (phone.blank? and phone_extension.blank? and fax.blank? and office.blank?)
+    phone.blank? && phone_extension.blank? && fax.blank? && office.blank? && !schedule.scheduled?
   end
 end

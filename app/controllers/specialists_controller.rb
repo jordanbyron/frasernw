@@ -19,8 +19,16 @@ class SpecialistsController < ApplicationController
     @specialist.specialist_specializations.build( :specialization_id => @specialization.id )
     @specialist.capacities.build
     while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
-      os = @specialist.specialist_offices.build
-      o = os.build_office
+      so = @specialist.specialist_offices.build
+      s = so.build_schedule
+      s.build_monday
+      s.build_tuesday
+      s.build_wednesday
+      s.build_thursday
+      s.build_friday
+      s.build_saturday
+      s.build_sunday
+      o = so.build_office
       l = o.build_location
       l.build_address
     end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120317064920) do
+ActiveRecord::Schema.define(:version => 20120319205610) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -124,6 +124,7 @@ ActiveRecord::Schema.define(:version => 20120317064920) do
     t.integer  "wheelchair_accessible_mask", :default => 3
     t.text     "referral_details"
     t.text     "admin_notes"
+    t.integer  "schedule_id"
   end
 
   create_table "contacts", :force => true do |t|
@@ -267,6 +268,28 @@ ActiveRecord::Schema.define(:version => 20120317064920) do
     t.timestamp "updated_at"
   end
 
+  create_table "schedule_days", :force => true do |t|
+    t.boolean  "scheduled"
+    t.time     "from"
+    t.time     "to"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "schedules", :force => true do |t|
+    t.string   "schedulable_type"
+    t.integer  "schedulable_id"
+    t.integer  "monday_id"
+    t.integer  "tuesday_id"
+    t.integer  "wednesday_id"
+    t.integer  "thursday_id"
+    t.integer  "friday_id"
+    t.integer  "saturday_id"
+    t.integer  "sunday_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "sessions", :force => true do |t|
     t.string    "session_id", :null => false
     t.text      "data"
@@ -293,6 +316,7 @@ ActiveRecord::Schema.define(:version => 20120317064920) do
     t.datetime "updated_at"
     t.string   "phone_extension"
     t.integer  "sector_mask"
+    t.integer  "schedule_id"
   end
 
   create_table "specialist_speaks", :force => true do |t|

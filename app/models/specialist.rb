@@ -41,7 +41,7 @@ class Specialist < ActiveRecord::Base
   has_many  :edits
   
   MAX_OFFICES = 2
-  has_many :specialist_offices
+  has_many :specialist_offices, :dependent => :destroy
   has_many :offices, :through => :specialist_offices
   has_many :locations, :through => :offices
   accepts_nested_attributes_for :specialist_offices

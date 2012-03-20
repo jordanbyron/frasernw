@@ -125,6 +125,11 @@ a:hover {
   float: left;
   margin-left: 20px;
 }
+.auto
+{
+  margin-left: 0;
+  width: auto;
+}
 .spanhalf {
   margin-left: 10px;
   width: 30px;

@@ -18,6 +18,14 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.new
     @clinic.clinic_specializations.build( :specialization_id => @specialization.id )
     @clinic.build_location
+    s = @clinic.build_schedule
+    s.build_monday
+    s.build_tuesday
+    s.build_wednesday
+    s.build_thursday
+    s.build_friday
+    s.build_saturday
+    s.build_sunday
     @clinic.location.build_address
     @clinic.focuses.build
     @clinic.attendances.build

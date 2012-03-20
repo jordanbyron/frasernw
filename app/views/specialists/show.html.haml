@@ -46,6 +46,7 @@
           - if num_specialists > 1
             with
             %a#tt{"href" => "#", "onclick" => "$('#tt').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
+    %p.collapse_up= specialist_office.schedule.days.to_sentence if specialist_office.scheduled?
     %p.collapse_up= specialist_office.phone_and_fax if specialist_office.phone_and_fax.present?
       
   - if @specialist.direct_phone.present?
