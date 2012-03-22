@@ -14,8 +14,9 @@
   %h5= @specialist.sex
   
 - if not @specialist.responded
-  %p
-    This specialist has not yet provided Pathways their information
+  %p This specialist has not yet provided Pathways their information
+- elsif @specialist.moved_away
+  %p This specialist has moved away
 - else
     
   - @specialist.specialist_offices.each do |specialist_office|
@@ -47,14 +48,11 @@
             with
             %a#tt{"href" => "#", "onclick" => "$('#tt').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
     %p.collapse_up= specialist_office.phone_and_fax if specialist_office.phone_and_fax.present?
-      
-  - if @specialist.direct_phone.present?
-    %p.collapse_up
-      Direct number 
-      %em for physician use only:
-      =@specialist.direct_phone
-      - if @specialist.direct_phone_extension.present?
-        = "ext. #{@specialist.direct_phone_extension}"
+    - if specialist_office.direct_info.present?
+      %p.collapse_up
+        Direct number 
+        %em for physician use only:
+        =specialist_office.direct_info
 
   %p
     %strong{ :class => "status_#{@specialist.status_class}"}= @specialist.status

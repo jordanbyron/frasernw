@@ -103,13 +103,9 @@
   = f.input :firstname
   = f.input :lastname
   = f.input :goes_by_name
-  = f.input :responded
   = f.input :sex_mask, as: :select, collection: Specialist::SEX_HASH, label_method: :last, value_method: :first, :include_blank => false
-  = f.input :direct_phone, :hint => "For physician contact only" do
-    = f.input_field :direct_phone, :class => "span3"
-    ext: 
-    = f.input_field :direct_phone_extension, :class => "span1"
   = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.billing_number_padded }
+  = f.input :responded
     
   = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
   
@@ -144,6 +140,10 @@
             ext: 
             = so.input_field :phone_extension, :class => "span1"
           = so.input :fax
+          = so.input :direct_phone, :hint => "For physician contact only" do
+            = so.input_field :direct_phone, :class => "span3"
+            ext: 
+            = so.input_field :direct_phone_extension, :class => "span1"
         %div{:class => "office_#{index}"}
           = so.association :office, as: :select, collection: @offices, :include_blank => true, :input_html => { :class => "chzn-select" }
         - if @is_new

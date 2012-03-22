@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120319205610) do
+ActiveRecord::Schema.define(:version => 20120322145748) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -317,6 +317,8 @@ ActiveRecord::Schema.define(:version => 20120319205610) do
     t.string   "phone_extension"
     t.integer  "sector_mask"
     t.integer  "schedule_id"
+    t.string   "direct_phone"
+    t.string   "direct_phone_extension"
   end
 
   create_table "specialist_speaks", :force => true do |t|
@@ -340,7 +342,7 @@ ActiveRecord::Schema.define(:version => 20120319205610) do
     t.text     "interest"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "direct_phone"
+    t.string   "direct_phone_old"
     t.string   "contact_name"
     t.string   "contact_phone"
     t.string   "contact_email"
@@ -353,7 +355,7 @@ ActiveRecord::Schema.define(:version => 20120319205610) do
     t.text     "all_procedure_info"
     t.string   "referral_other_details"
     t.string   "referral_request"
-    t.boolean  "patient_can_book_old",    :default => false
+    t.boolean  "patient_can_book_old",       :default => false
     t.string   "urgent_other_details"
     t.text     "required_investigations"
     t.text     "not_performed"
@@ -372,16 +374,16 @@ ActiveRecord::Schema.define(:version => 20120319205610) do
     t.integer  "waittime_mask"
     t.integer  "lagtime_mask"
     t.integer  "billing_number"
-    t.integer  "referral_form_mask",      :default => 3
-    t.integer  "patient_can_book_mask",   :default => 3
+    t.integer  "referral_form_mask",         :default => 3
+    t.integer  "patient_can_book_mask",      :default => 3
     t.date     "unavailable_from"
     t.date     "unavailable_to"
-    t.boolean  "responded",               :default => true
+    t.boolean  "responded",                  :default => true
     t.text     "urgent_details"
     t.string   "go_by_name"
     t.string   "goes_by_name"
-    t.string   "direct_phone_extension"
-    t.integer  "sex_mask",                :default => 3
+    t.string   "direct_phone_extension_old"
+    t.integer  "sex_mask",                   :default => 3
     t.text     "referral_details"
     t.text     "admin_notes"
   end

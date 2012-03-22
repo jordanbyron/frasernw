@@ -1,5 +1,5 @@
 class Specialist < ActiveRecord::Base
-  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :responded, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone, :direct_phone_extension, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :language_ids, :user_controls_specialists_attributes, :specialist_offices_attributes, :admin_notes
+  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :responded, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :language_ids, :user_controls_specialists_attributes, :specialist_offices_attributes, :admin_notes
   has_paper_trail ignore: [:saved_token, :review_item]
   
   # specialists can have multiple specializations
@@ -47,6 +47,7 @@ class Specialist < ActiveRecord::Base
   accepts_nested_attributes_for :specialist_offices
   
   def city
+    return "" if moved_away
     o = offices.first
     return "" if o.blank?
     return o.city
@@ -87,6 +88,10 @@ class Specialist < ActiveRecord::Base
     else
       Specialist::STATUS_HASH[status_mask]
     end
+  end
+  
+  def moved_away
+    status_mask == 8
   end
   
   def status_class

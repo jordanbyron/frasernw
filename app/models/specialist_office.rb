@@ -1,5 +1,5 @@
 class SpecialistOffice < ActiveRecord::Base
-  attr_accessible :phone, :phone_extension, :fax, :sector_mask, :office_id, :office_attributes
+  attr_accessible :phone, :phone_extension, :fax, :direct_phone, :direct_phone_extension, :sector_mask, :office_id, :office_attributes
   
   belongs_to :specialist
   belongs_to :office
@@ -15,6 +15,13 @@ class SpecialistOffice < ActiveRecord::Base
     return "#{phone}" if phone.present?
     return "Fax: #{fax}" if fax.present?
     return "ext. #{phone_extension}" if phone_extension.present?
+    return ""
+  end
+  
+  def direct_info
+    return "#{direct_phone} ext. #{direct_phone_extension}" if direct_phone.present? && direct_phone_extension.present?
+    return "#{direct_phone}" if direct_phone.present?
+    return "ext. #{direct_phone_extension}" if direct_phone_extension.present?
     return ""
   end
   
