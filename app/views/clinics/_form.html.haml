@@ -13,7 +13,7 @@
 
   %h3 General Information 
   = f.input :name
-  = f.input :responded
+  = f.input :categorization_mask, as: :select, collection: Clinic::CATEGORIZATION_HASH, label_method: :last, value_method: :first, :include_blank => false
     
   = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this clinic again to update the list of available areas of practices and specialists."
   

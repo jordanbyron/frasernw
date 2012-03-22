@@ -7,10 +7,16 @@
   = @clinic.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
 %h5= @clinic.sector if @clinic.sector?
   
-- if not @clinic.responded
-  %p
-    This clinic has not yet provided Pathways their information
+- if @clinic.not_responded?
+
+  %p This clinic has not yet provided Pathways their information.
+  
+- elsif @clinic.purposely_not_yet_surveyed?
+
+  %p This clinic has purposely not yet been surveyed by Pathways. They may be out of our catchement area, or in a speciality we have yet to fully survey.
+  
 - else
+
   - address = @clinic.resolved_address
   - if @clinic.location.present? && @clinic.location.in_hospital?
     - hospital = @clinic.location.hospital_in

@@ -1,5 +1,5 @@
 class Clinic < ActiveRecord::Base
-  attr_accessible :name, :phone, :fax, :responded, :sector_mask, :wheelchair_accessible_mask, :status, :interest, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :specializations_including_in_progress_ids, :location_attributes, :schedule_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes, :admin_notes
+  attr_accessible :name, :phone, :fax, :categorization_mask, :sector_mask, :wheelchair_accessible_mask, :status, :interest, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :specializations_including_in_progress_ids, :location_attributes, :schedule_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes, :admin_notes
   has_paper_trail
   
   # clinics can have multiple specializations
@@ -40,6 +40,28 @@ class Clinic < ActiveRecord::Base
   accepts_nested_attributes_for :user_controls_clinics, :reject_if => lambda { |ucc| ucc[:user_id].blank? }, :allow_destroy => true
   
   default_scope order('name')
+  
+  CATEGORIZATION_HASH = {
+    1 => "Responded to survey",
+    2 => "Not responded to survey",
+    3 => "Purposely not yet surveyed",
+  }
+  
+  def responded?
+    categorization_mask == 1
+  end
+  
+  def not_responded?
+    categorization_mask == 2
+  end
+  
+  def purposely_not_yet_surveyed?
+    categorization_mask == 3
+  end
+  
+  def show_in_table?
+    responded? || not_responded?
+  end
   
   def phone_and_fax
     if phone.present? && fax.present?
@@ -93,7 +115,7 @@ class Clinic < ActiveRecord::Base
   end
   
   def status_class
-    if not responded
+    if not_responded? || purposely_not_yet_surveyed?
       return "unknown"
     elsif (status_mask == 1)
       return "available"

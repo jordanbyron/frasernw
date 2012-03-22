@@ -44,7 +44,7 @@
           %tbody
             - (@specialization.specialists).each do |specialist|
               - next if not specialist.show_in_table?
-              %tr{:class => specialist.responded? ? "" : "not-responded"}
+              %tr{:class => specialist.not_responded? ? "not-responded" : ""}
                 %td
                   %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                 %td
@@ -63,7 +63,8 @@
               %th{:class => "{sorter: 'blanks_to_bottom'}"} City
           %tbody
             - (@specialization.clinics).each do |clinic|
-              %tr
+              - next if not clinic.show_in_table?
+              %tr{:class => clinic.not_responded? ? "not-responded" : ""}
                 %td
                   %a.ajax{"href" => clinic_path(clinic)}= clinic.name
                 %td

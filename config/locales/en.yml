@@ -47,6 +47,7 @@ en:
         investigation: "Required Investigations"
       clinic:
         admin_notes: "Admin only notes"
+        categorization_mask: "Categorization"
         contact_name: "Name"
         contact_email: "Email"
         contact_phone: "Phone"
@@ -64,7 +65,6 @@ en:
         referral_phone: "Phone"
         referral_other_details: "Other method"
         referral_details: "Additional referral details"
-        responded: "Responded to survey"
         respond_by_fax: "By fax to referring office"
         respond_by_phone: "By phone to referring office"
         respond_by_mail: "By mail to referring office"
