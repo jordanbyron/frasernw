@@ -1,5 +1,5 @@
 class Specialist < ActiveRecord::Base
-  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :responded, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :language_ids, :user_controls_specialists_attributes, :specialist_offices_attributes, :admin_notes
+  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :categorization_mask, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :language_ids, :user_controls_specialists_attributes, :specialist_offices_attributes, :admin_notes
   has_paper_trail ignore: [:saved_token, :review_item]
   
   # specialists can have multiple specializations
@@ -47,7 +47,7 @@ class Specialist < ActiveRecord::Base
   accepts_nested_attributes_for :specialist_offices
   
   def city
-    return "" if moved_away
+    return "" if moved_away?
     o = offices.first
     return "" if o.blank?
     return o.city
@@ -57,6 +57,38 @@ class Specialist < ActiveRecord::Base
 
   default_scope order('lastname, firstname')
   
+  CATEGORIZATION_HASH = {
+    1 => "Responded to survey",
+    2 => "Not responded to survey",
+    3 => "Only works out of hospitals or clinics",
+    4 => "Purposely not yet surveyed",
+    5 => "Moved away"
+  }
+  
+  def responded?
+    categorization_mask == 1
+  end
+  
+  def not_responded?
+    categorization_mask == 2
+  end
+  
+  def hospital_or_clinic_only?
+    categorization_mask == 3
+  end
+  
+  def purposely_not_yet_surveyed?
+    categorization_mask == 4
+  end
+  
+  def moved_away?
+    categorization_mask == 5
+  end
+  
+  def show_in_table?
+    responded? || not_responded? || hospital_or_clinic_only?
+  end
+  
   STATUS_HASH = { 
     1 => "Accepting new patients", 
     2 => "Only doing follow up on previous patients", 
@@ -64,7 +96,6 @@ class Specialist < ActiveRecord::Base
     4 => "Retired",
     5 => "Retiring as of",
     6 => "Unavailable between",
-    8 => "Moved away",
     7 => "Didn't answer"
   }
   
@@ -90,17 +121,13 @@ class Specialist < ActiveRecord::Base
     end
   end
   
-  def moved_away
-    status_mask == 8
-  end
-  
   def status_class
-    if not responded
+    if not_responded? || hospital_or_clinic_only? || purposely_not_yet_surveyed?
       return "unknown"
     elsif ((status_mask == 1) or ((status_mask == 6) and (unavailable_to < Date.today)))
       #marked as available, or the "unavailable between" period has passed
       return "available"
-    elsif ((status_mask == 2) or (status_mask == 4) or ((status_mask == 5) and (unavailable_from <= Date.today)) or ((status_mask == 6) and (unavailable_from <= Date.today) and (unavailable_to >= Date.today)) or (status_mask == 8))
+    elsif ((status_mask == 2) or (status_mask == 4) or ((status_mask == 5) and (unavailable_from <= Date.today)) or ((status_mask == 6) and (unavailable_from <= Date.today) and (unavailable_to >= Date.today)) or moved_away?)
       #only seeing old patients, retired, "retiring as of" date has passed", or in midst of inavailability, or moved away
       return "unavailable"
     elsif (((status_mask == 5) and (unavailable_from > Date.today)) or ((status_mask == 6) and (unavailable_from > Date.today)))

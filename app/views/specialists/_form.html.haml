@@ -105,190 +105,206 @@
   = f.input :goes_by_name
   = f.input :sex_mask, as: :select, collection: Specialist::SEX_HASH, label_method: :last, value_method: :first, :include_blank => false
   = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.billing_number_padded }
-  = f.input :responded
-    
-  = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
+  = f.input :categorization_mask, as: :select, collection: Specialist::CATEGORIZATION_HASH, label_method: :last, value_method: :first, :include_blank => false
   
-  %hr
-
-  %h3 Office Contact Information
-  
-  .tabbable
-    %ul.nav.nav-tabs
-      - @specialist.specialist_offices.each_with_index do |so, index|
-        %li{:class => index == 0 ? "active" : ""} 
-          %a{"href" => "#location_tab_#{index}", "data-toggle" => "tab"}= "Location #{index+1}"
-          
-  .tab-content
-    - index = 0
-    = f.simple_fields_for :specialist_offices, :suppress_fields => true do |so|
-      .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"} 
-        .control-group
-          %label Location is
-          .controls
-            - location_class = "location_#{index}"
-            - if @is_new
-              - [['Not used', true], ['In an existing office', false], ['In a new standalone office', false], ['In a new office in a hospital', false], ['In a new office in a clinic', false]].each do |option| 
-                = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
-            - else
-              - is_location = @specialist.specialist_offices[index].present? && !@specialist.specialist_offices[index].empty?
-              - [['Not used', !is_location], ['In an office', is_location]].each do |option| 
-                = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
-        %div{:class => "numbers_#{index}"}
-          = so.input :phone do
-            = so.input_field :phone, :class => "span3"
-            ext: 
-            = so.input_field :phone_extension, :class => "span1"
-          = so.input :fax
-          = so.input :direct_phone, :hint => "For physician contact only" do
-            = so.input_field :direct_phone, :class => "span3"
-            ext: 
-            = so.input_field :direct_phone_extension, :class => "span1"
-        %div{:class => "office_#{index}"}
-          = so.association :office, as: :select, collection: @offices, :include_blank => true, :input_html => { :class => "chzn-select" }
-        - if @is_new
-          = so.simple_fields_for :office, :suppress_fields => true do |o|
-            = o.simple_fields_for :location, :suppress_fields => true do |l|
-              %div{:class => "address_#{index}"}
-                = l.simple_fields_for :address do |a|
-                  = a.input :suite
-                  = a.input :address1
-                  = a.input :address2
-                  = a.association :city, as: :select, collection: City.all.map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
-                  = a.input :postalcode
-              %div{:class => "hospital_#{index}"}
-                = l.association :hospital_in, as: :select, collection: Hospital.all, :include_blank => true
-              %div{:class => "clinic_#{index}"}
-                = l.association :clinic_in, as: :select, collection: @specializations_clinics, :include_blank => true
-              %div{:class => "details_#{index}"}
-                = l.input :suite_in
-                = l.input :details_in
-        %div{:class => "universal_#{index}"}
-          = so.input :sector_mask, as: :select, collection: SpecialistOffice::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
-        %script{"type" => "text/javascript"}
-          :plain
-            $(document).ready( address_#{index}_location_changed );
-        - index += 1
   %script{"type" => "text/javascript"}
     :plain
-      $(document).ready( $(".chzn-select").chosen() );
-      
-  %hr
+      $(document).ready( $("specialist_categorization_mask").each(categorization_changed) );
+  
+  = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
 
-  - if current_user_is_admin?   
-    %h3 Senior MOA Contact Information
-    %h4 This allows specialists to edit their own form. This information is only visible to admins.
-    = f.input :contact_name
-    = f.input :contact_email
-    = f.input :contact_phone
-    = f.input :contact_notes, hint: "Include contact's role (MOA, etc.) and anything else we should know."
-    
+  #section_contact
+  
     %hr
-
-  %h3 Status
-  = f.input :status_mask, as: :select, collection: Specialist::STATUS_HASH, label_method: :last, value_method: :first
-  #availability
-    = f.input :unavailable_from, label: false, wrapper: false, input_html: { class: "unavailable_from", style: "display:none" }
-    %span.unavailable_to{ style: "display:none" }
-      to
-    = f.input :unavailable_to, label: false, wrapper: false, input_html: { class: "unavailable_to", style: "display:none" }
+    
+    %h3 Office Contact Information
+    
+    .tabbable
+      %ul.nav.nav-tabs
+        - @specialist.specialist_offices.each_with_index do |so, index|
+          %li{:class => index == 0 ? "active" : ""} 
+            %a{"href" => "#location_tab_#{index}", "data-toggle" => "tab"}= "Location #{index+1}"
+            
+    .tab-content
+      - index = 0
+      = f.simple_fields_for :specialist_offices, :suppress_fields => true do |so|
+        .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"} 
+          .control-group
+            %label Location is
+            .controls
+              - location_class = "location_#{index}"
+              - if @is_new
+                - [['Not used', true], ['In an existing office', false], ['In a new standalone office', false], ['In a new office in a hospital', false], ['In a new office in a clinic', false]].each do |option| 
+                  = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
+              - else
+                - is_location = @specialist.specialist_offices[index].present? && !@specialist.specialist_offices[index].empty?
+                - [['Not used', !is_location], ['In an office', is_location]].each do |option| 
+                  = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
+          %div{:class => "numbers_#{index}"}
+            = so.input :phone do
+              = so.input_field :phone, :class => "span3"
+              ext: 
+              = so.input_field :phone_extension, :class => "span1"
+            = so.input :fax
+            = so.input :direct_phone, :hint => "For physician contact only" do
+              = so.input_field :direct_phone, :class => "span3"
+              ext: 
+              = so.input_field :direct_phone_extension, :class => "span1"
+          %div{:class => "office_#{index}"}
+            = so.association :office, as: :select, collection: @offices, :include_blank => true, :input_html => { :class => "chzn-select" }
+          - if @is_new
+            = so.simple_fields_for :office, :suppress_fields => true do |o|
+              = o.simple_fields_for :location, :suppress_fields => true do |l|
+                %div{:class => "address_#{index}"}
+                  = l.simple_fields_for :address do |a|
+                    = a.input :suite
+                    = a.input :address1
+                    = a.input :address2
+                    = a.association :city, as: :select, collection: City.all.map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
+                    = a.input :postalcode
+                %div{:class => "hospital_#{index}"}
+                  = l.association :hospital_in, as: :select, collection: Hospital.all, :include_blank => true
+                %div{:class => "clinic_#{index}"}
+                  = l.association :clinic_in, as: :select, collection: @specializations_clinics, :include_blank => true
+                %div{:class => "details_#{index}"}
+                  = l.input :suite_in
+                  = l.input :details_in
+          %div{:class => "universal_#{index}"}
+            = so.input :sector_mask, as: :select, collection: SpecialistOffice::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
+          %script{"type" => "text/javascript"}
+            :plain
+              $(document).ready( address_#{index}_location_changed );
+          - index += 1
     %script{"type" => "text/javascript"}
       :plain
-        $("#specialist_status_mask").each( status_changed );
-  = f.input :status_details
-  = f.input :practise_limitations
-  = f.input :location_opened, as: :select, collection: ["Prior to 2010", 2010, 2011, 2012], prompt: "Select ..."
-  = f.association :languages, as: :check_boxes, :item_wrapper_class => 'inline'
+        $(document).ready( $(".chzn-select").chosen() );
   
-  %hr
-
-  %h3 Areas of Practice
-  = f.input :required_investigations, :hint => "eg. XRs, MRIs, scans, blood work, etc."
-    
-  %hr{ "style" => "visibility:hidden" }
+  - if current_user_is_admin? 
+    #section_moa
+      %hr  
+        %h3 Senior MOA Contact Information
+        %h4 This allows specialists to edit their own form. This information is only visible to admins.
+        = f.input :contact_name
+        = f.input :contact_email
+        = f.input :contact_phone
+        = f.input :contact_notes, hint: "Include contact's role (MOA, etc.) and anything else we should know."
+        
+  #section_status
   
-  %h4 Pertinent Areas of Practice/Expertise
-  
-  .content
-    .row
-      .span3 Referrals accepted in the following areas of practice.
-      .span3 Additional information/investigations required for the specified area of practice.
-    
-    = f.simple_fields_for :capacities, :class => "row" do |i|
-      .row.spaced
-        .span3
-          = i.association :procedure_specialization, as: :select, label: false, collection: @specializations_procedures, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "span3" }
-        .span4
-          = i.input :investigation, label: false, wrapper: :no_wrapper, input_html: { class: "span4" }
-        .spanhalf
-          = i.hidden_field :_destroy
-          = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
-    = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another area of practice", :capacities, class: "btn")
-    
-  %hr{ "style" => "visibility:hidden" }
-  
-  = f.input :interest, as: :text
-  = f.input :not_performed, as: :text
-
-  %hr
-
-  %h3 Referral Details
-  %label How does your office accept requests for standard referrals?
-  = f.input :referral_fax, as: :boolean, wrapper: :bootstrap_tight
-  = f.input :referral_phone, as: :boolean, wrapper: :bootstrap_tight
-  = f.input :referral_other_details
-  = f.input :referral_details
-
-  = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
-  
-  = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_HASH, label_method: :last, value_method: :first  
-  
-  = f.input :waittime_mask, as: :select, collection: Specialist::WAITTIME_HASH, label_method: :last, value_method: :first
-
-  %label Our office will respond to referral requests:
-  = f.input :respond_by_fax, as: :boolean, wrapper: :bootstrap_tight
-  = f.input :respond_by_phone, as: :boolean, wrapper: :bootstrap_tight
-  = f.input :respond_by_mail, as: :boolean, wrapper: :bootstrap_tight
-  = f.input :respond_to_patient, as: :boolean
-      
-  = f.input :patient_can_book_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
-  = f.input :red_flags, as: :text
-  
-  %label Optimal method of referral for urgent appointments:
-  = f.input :urgent_fax, as: :boolean, wrapper: :bootstrap_tight
-  = f.input :urgent_phone, as: :boolean, wrapper: :bootstrap_tight
-  = f.input :urgent_other_details
-  = f.input :urgent_details
-
-  %hr
-  
-  %h3 Associations
-  
-  = f.association :hospitals, as: :check_boxes, collection: Hospital.all(:order => "name ASC") 
-  
-  = f.association :clinics, as: :check_boxes, collection: @specializations_clinics
-  
-  -if current_user_is_admin?
-    
     %hr
+
+    %h3 Status
+    = f.input :status_mask, as: :select, collection: Specialist::STATUS_HASH, label_method: :last, value_method: :first
+    #availability
+      = f.input :unavailable_from, label: false, wrapper: false, input_html: { class: "unavailable_from", style: "display:none" }
+      %span.unavailable_to{ style: "display:none" }
+        to
+      = f.input :unavailable_to, label: false, wrapper: false, input_html: { class: "unavailable_to", style: "display:none" }
+      %script{"type" => "text/javascript"}
+        :plain
+          $("#specialist_status_mask").each( status_changed );
+    = f.input :status_details
+    = f.input :practise_limitations
+    = f.input :location_opened, as: :select, collection: ["Prior to 2010", 2010, 2011, 2012], prompt: "Select ..."
+    = f.association :languages, as: :check_boxes, :item_wrapper_class => 'inline'
   
-    %h3 Admin
+  #section_aop
   
-    Users that can Edit this Specialist
-    .content
-      = f.simple_fields_for :user_controls_specialists do |i|
-        .row.spaced
-          .span4.offset3
-            = i.association :user, as: :select, :label => false, collection: User.all.reject{ |u| u.admin? }, prompt: 'Select ...', wrapper: :no_wrapper
-          .spanhalf.offsethalf
-            = i.hidden_field :_destroy
-            = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
-    .row
-      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another user", :user_controls_specialists, class: "btn offset3")
-    
+    %hr
+
+    %h3 Areas of Practice
+    = f.input :required_investigations, :hint => "eg. XRs, MRIs, scans, blood work, etc."
+      
     %hr{ "style" => "visibility:hidden" }
     
-    = f.input :admin_notes
+    %h4 Pertinent Areas of Practice/Expertise
+    
+    .content
+      .row
+        .span3 Referrals accepted in the following areas of practice.
+        .span3 Additional information/investigations required for the specified area of practice.
+      
+      = f.simple_fields_for :capacities, :class => "row" do |i|
+        .row.spaced
+          .span3
+            = i.association :procedure_specialization, as: :select, label: false, collection: @specializations_procedures, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "span3" }
+          .span4
+            = i.input :investigation, label: false, wrapper: :no_wrapper, input_html: { class: "span4" }
+          .spanhalf
+            = i.hidden_field :_destroy
+            = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
+      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another area of practice", :capacities, class: "btn")
+      
+    %hr{ "style" => "visibility:hidden" }
+    
+    = f.input :interest, as: :text
+    = f.input :not_performed, as: :text
+
+  #section_referrals
+  
+    %hr
+
+    %h3 Referral Details
+    %label How does your office accept requests for standard referrals?
+    = f.input :referral_fax, as: :boolean, wrapper: :bootstrap_tight
+    = f.input :referral_phone, as: :boolean, wrapper: :bootstrap_tight
+    = f.input :referral_other_details
+    = f.input :referral_details
+
+    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
+    
+    = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_HASH, label_method: :last, value_method: :first  
+    
+    = f.input :waittime_mask, as: :select, collection: Specialist::WAITTIME_HASH, label_method: :last, value_method: :first
+
+    %label Our office will respond to referral requests:
+    = f.input :respond_by_fax, as: :boolean, wrapper: :bootstrap_tight
+    = f.input :respond_by_phone, as: :boolean, wrapper: :bootstrap_tight
+    = f.input :respond_by_mail, as: :boolean, wrapper: :bootstrap_tight
+    = f.input :respond_to_patient, as: :boolean
+        
+    = f.input :patient_can_book_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
+    = f.input :red_flags, as: :text
+    
+    %label Optimal method of referral for urgent appointments:
+    = f.input :urgent_fax, as: :boolean, wrapper: :bootstrap_tight
+    = f.input :urgent_phone, as: :boolean, wrapper: :bootstrap_tight
+    = f.input :urgent_other_details
+    = f.input :urgent_details
+
+  #section_associations
+  
+    %hr
+  
+    %h3 Associations
+    
+    = f.association :hospitals, as: :check_boxes, collection: Hospital.all(:order => "name ASC") 
+    
+    = f.association :clinics, as: :check_boxes, collection: @specializations_clinics
+  
+  -if current_user_is_admin?
+  
+    #section_admin
+    
+      %hr
+    
+      %h3 Admin
+    
+      Users that can Edit this Specialist
+      .content
+        = f.simple_fields_for :user_controls_specialists do |i|
+          .row.spaced
+            .span4.offset3
+              = i.association :user, as: :select, :label => false, collection: User.all.reject{ |u| u.admin? }, prompt: 'Select ...', wrapper: :no_wrapper
+            .spanhalf.offsethalf
+              = i.hidden_field :_destroy
+              = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
+      .row
+        = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another user", :user_controls_specialists, class: "btn offset3")
+      
+      %hr{ "style" => "visibility:hidden" }
+      
+      = f.input :admin_notes
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

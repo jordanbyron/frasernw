@@ -146,3 +146,32 @@ var scheduled_changed = function()
 }
 
 $(".scheduled").live("change", scheduled_changed)
+
+var categorization_changed = function()
+{
+  if ($(this).val() == 1 || $(this).val() == 2)
+  {
+    //surveyed (may or may not have fully responded)
+    $("#section_contact").show();
+    $("#section_moa").show();
+    $("#section_status").show();
+    $("#section_aop").show();
+    $("#section_referrals").show();
+    $("#section_associations").show();
+    $("#section_admin").show();
+  }
+  else
+  {
+    //only works in clinics or hospitals, or purposely not surveyed
+    //in this case we will show their associations but nothing else, as all the rest is personal to them 
+    $("#section_contact").hide();
+    $("#section_moa").hide();
+    $("#section_status").hide();
+    $("#section_aop").hide();
+    $("#section_referrals").hide();
+    $("#section_associations").show();
+    $("#section_admin").show();
+  }
+}
+
+$("#specialist_categorization_mask").live("change", categorization_changed)

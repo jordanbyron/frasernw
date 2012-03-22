@@ -511,13 +511,13 @@ body
         }
       }
       
-      .table tr.not-responded td
+      tr.not-responded td
       {
-        color: $FNW_MID_GRAY;
+        color: $FNW_DISABLED_TEXT;
         
         a
         {
-          color: $FNW_MID_GRAY;
+          color: $FNW_DISABLED_TEXT;
         }
       }
     }

@@ -69,7 +69,8 @@
               %th{:class => "{sorter: 'blanks_to_bottom'}"} City
           %tbody
             - (@procedure.all_specialists).each do |specialist|
-              %tr{:class => specialist.responded ? "" : "not-responded"}
+              - next if not specialist.show_in_table?
+              %tr{:class => specialist.responded? ? "" : "not-responded"}
                 %td
                   %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                 - if multiple_specialties

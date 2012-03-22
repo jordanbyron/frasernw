@@ -85,12 +85,11 @@ en:
         clinic_in: "Clinic"
         suite_in: "Suite"
       specialist:
-        admin_notes: "Admin only notes"
         firstname: "First name"
         lastname: "Last name"
-        responded: "Responded to survey"
-        direct_phone: "Direct number"
+        admin_notes: "Admin only notes"
         billing_number: "MSP billing number"
+        categorization_mask: "Categorization"
         clinics: "Sub-specialty clinics"
         contact_name: "Name"
         contact_email: "Email"
@@ -129,6 +128,7 @@ en:
         specializations: "Areas of Specialty"
       specialist_office:
         sector_mask: "Public or private"
+        direct_phone: "Direct number"
       procedure:
         parent_id: "Parent Area of Practice"
       user:
