@@ -147,7 +147,7 @@ var scheduled_changed = function()
 
 $(".scheduled").live("change", scheduled_changed)
 
-var categorization_changed = function()
+var specialist_categorization_changed = function()
 {
   if ($(this).val() == 1 || $(this).val() == 2)
   {
@@ -157,6 +157,7 @@ var categorization_changed = function()
     $("#section_status").show();
     $("#section_aop").show();
     $("#section_referrals").show();
+    $("#section_for_patients").show();
     $("#section_associations").show();
     $("#section_admin").show();
   }
@@ -169,9 +170,10 @@ var categorization_changed = function()
     $("#section_status").hide();
     $("#section_aop").hide();
     $("#section_referrals").hide();
+    $("#section_for_patients").hide();
     $("#section_associations").show();
     $("#section_admin").show();
   }
 }
 
-$("#specialist_categorization_mask").live("change", categorization_changed)
+$("#specialist_categorization_mask").live("change", specialist_categorization_changed)

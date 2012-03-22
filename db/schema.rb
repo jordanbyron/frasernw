@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120322202040) do
+ActiveRecord::Schema.define(:version => 20120322202558) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -125,6 +125,8 @@ ActiveRecord::Schema.define(:version => 20120322202040) do
     t.text     "admin_notes"
     t.integer  "schedule_id"
     t.integer  "categorization_mask",        :default => 1
+    t.text     "patient_instructions"
+    t.text     "cancellation_policy"
   end
 
   create_table "contacts", :force => true do |t|
@@ -386,6 +388,8 @@ ActiveRecord::Schema.define(:version => 20120322202040) do
     t.text     "referral_details"
     t.text     "admin_notes"
     t.integer  "categorization_mask",        :default => 1
+    t.text     "patient_instructions"
+    t.text     "cancellation_policy"
   end
 
   create_table "specializations", :force => true do |t|

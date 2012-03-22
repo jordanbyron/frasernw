@@ -14,203 +14,237 @@
   %h3 General Information 
   = f.input :name
   = f.input :categorization_mask, as: :select, collection: Clinic::CATEGORIZATION_HASH, label_method: :last, value_method: :first, :include_blank => false
+  
+  %script{"type" => "text/javascript"}
+    :plain
+      $(document).ready( $("#clinic_categorization_mask").each(clinic_categorization_changed) );
     
   = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this clinic again to update the list of available areas of practices and specialists."
   
-  %hr
-
-  %h3 Clinic Contact Information
-  
-  = f.input :phone
-  = f.input :fax
-  
-  = f.simple_fields_for :location do |l|
-    .control-group
-      %label Location is
-      .controls
-        - location_class = "location_0"
-        - [['Standalone', !@clinic.location.in_hospital?], ['In a hospital', @clinic.location.in_hospital?]].each do |location| 
-          = label_tag "#{location_class}_#{location.first}", "#{radio_button_tag(location_class, location.first, location.second, :class => location_class)} #{location.first}".html_safe
-    .hospital_0
-      = l.association :hospital_in, as: :select, collection: Hospital.all, :include_blank => true
-    .details_0
-      = l.input :suite_in
-      = l.input :details_in
-    .address_0
-      = l.simple_fields_for :address do |a|
-        = a.input :suite
-        = a.input :address1
-        = a.input :address2
-        = a.association :city, as: :select, collection: City.all.map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
-        = a.input :postalcode
-  .universal_0
-    = f.input :sector_mask, as: :select, collection: Clinic::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
-  = f.input :wheelchair_accessible_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready( address_0_location_changed );
-    
-  %hr
-    
-  %h3 Schedule
-  
-  = f.simple_fields_for :schedule, :suppress_fields => true do |s|
-    - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
-      = s.simple_fields_for day, :suppress_fields => true do |d|
-        = d.input :scheduled, :label => capitalize_first_letter(day), wrapper: :bootstrap_tight do
-          = d.input_field :scheduled, :class => "scheduled span1"
-          .hours
-            from: 
-            = d.input_field :from, :class => "auto"
-            to: 
-            = d.input_field :to, :class => "auto"
-
-  %script{"type" => "text/javascript"}
-    :plain
-      $(".scheduled").each(scheduled_changed)
-    
-  %hr
-
-  - if current_user_is_admin?    
-    %h3 Senior MOA Contact Information
-    %h4 This allows clinics to edit their own form. This information is only visible to admins.
-    = f.input :contact_name
-    = f.input :contact_phone
-    = f.input :contact_email
-    = f.input :contact_notes, hint: "Include contact's role (MOA, etc.) and anything else we should know."
+  #section_contact
     
     %hr
 
-  %h3 Status
-  = f.input :status_mask, as: :select, collection: Clinic::STATUS_HASH, label_method: :last, value_method: :first
-  = f.input :limitations
-  = f.input :location_opened, as: :select, collection: ["Prior to 2010", 2010, 2011, 2012], prompt: "Select ..."
-  = f.association :languages, as: :check_boxes, :item_wrapper_class => 'inline'
-
-  %hr
-
-  %h3 Areas of Practice
-  = f.input :required_investigations, :hint => "eg. XRs, MRIs, scans, blood work, etc."
-  
-  %hr{ "style" => "visibility:hidden" }
-  
-  %h4 Pertinent Areas of Practice/Expertise
-  
-  .content
-    .row
-      .span3 Referrals accepted in the following areas of practice.
-      .span3 Additional information/investigations required for the specified area of practice.
-      
-    = f.simple_fields_for :focuses do |i|
-      .row.spaced
-        .span3
-          = i.association :procedure_specialization, as: :select, label: false, collection: @clinic_procedures, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "span3" }
-        .span4
-          = i.input :investigation, label: false, wrapper: :no_wrapper, input_html: { class: "span4" }
-        .spanhalf
-          = i.hidden_field :_destroy
-          = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
-          
-    = f.link_to_add "Add another area of practice", :focuses, class: "button"
+    %h3 Clinic Contact Information
     
-  %hr{ "style" => "visibility:hidden" }
-
-  = f.input :not_performed, as: :text
-
-  %h3 Referral Details
-  %label How does your clinic accept requests for standard referrals?
-  = f.input :referral_fax, as: :boolean, wrapper: :bootstrap_tight
-  = f.input :referral_phone, as: :boolean, wrapper: :bootstrap_tight
-  = f.input :referral_other_details
-  = f.input :referral_details
-
-  = f.input :referral_form_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
-  
-  = f.input :lagtime_mask, as: :select, collection: Clinic::LAGTIME_HASH, label_method: :last, value_method: :first
-  
-  = f.input :waittime_mask, as: :select, collection: Clinic::WAITTIME_HASH, label_method: :last, value_method: :first
-
-  %label Our clinic will respond to referral requests:
-  = f.input :respond_by_fax, as: :boolean, wrapper: :bootstrap_tight
-  = f.input :respond_by_phone, as: :boolean, wrapper: :bootstrap_tight
-  = f.input :respond_by_mail, as: :boolean, wrapper: :bootstrap_tight
-  = f.input :respond_to_patient, as: :boolean
-  
-  = f.input :patient_can_book_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
-  
-  = f.input :red_flags, as: :text
-  
-  %label Optimal method of referral for urgent appointments
-  = f.input :urgent_fax, as: :boolean, wrapper: :bootstrap_tight
-  = f.input :urgent_phone, as: :boolean, wrapper: :bootstrap_tight
-  = f.input :urgent_other_details
-  = f.input :urgent_details
-
-  %hr
-  
-  %h2 Associations
-  %h4 Physicians Who See Patients at the Clinic
-  
-  .content
-    .row
-      .span1 Is a Specialist
-      .span4 Physician name
-      .span3 Area of focus (if not the same for all physicians working in your clinic).
-      
-    = f.simple_fields_for :attendances do |i|
-      .row.spaced
-        .span1
-          = i.input :is_specialist, label: false, wrapper: :no_wrapper, input_html: { class: "is_specialist span1" }
-        .span4
-          = i.association :specialist, as: :select, label: false, collection: @clinic_specialists, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "specialist_list span4" }
-          = i.input :freeform_firstname, label: false, wrapper: :no_wrapper, input_html: { class: "freeform span2", style: "display:none" }
-          = i.input :freeform_lastname, label: false, wrapper: :no_wrapper, input_html: { class: "freeform span2", style: "display:none" }
-        .span3
-          = i.input :area_of_focus, label: false, wrapper: :no_wrapper, input_html: { class: "span3" }
-        .spanhalf
-          = i.hidden_field :_destroy
-          = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
-          
-    = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another physician", :attendances, class: "btn")
-          
-  %script{"type" => "text/javascript"}
-    :plain
-      $(".is_specialist").each( hideShowPhysicians )
+    = f.input :phone
+    = f.input :fax
     
-  %hr{ "style" => "visibility:hidden" }
-
-  = f.association :healthcare_providers, as: :check_boxes
-  
-  -if current_user_is_admin?
+    = f.simple_fields_for :location do |l|
+      .control-group
+        %label Location is
+        .controls
+          - location_class = "location_0"
+          - [['Standalone', !@clinic.location.in_hospital?], ['In a hospital', @clinic.location.in_hospital?]].each do |location| 
+            = label_tag "#{location_class}_#{location.first}", "#{radio_button_tag(location_class, location.first, location.second, :class => location_class)} #{location.first}".html_safe
+      .hospital_0
+        = l.association :hospital_in, as: :select, collection: Hospital.all, :include_blank => true
+      .details_0
+        = l.input :suite_in
+        = l.input :details_in
+      .address_0
+        = l.simple_fields_for :address do |a|
+          = a.input :suite
+          = a.input :address1
+          = a.input :address2
+          = a.association :city, as: :select, collection: City.all.map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
+          = a.input :postalcode
+    .universal_0
+      = f.input :sector_mask, as: :select, collection: Clinic::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
+    = f.input :wheelchair_accessible_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
+    %script{"type" => "text/javascript"}
+      :plain
+        $(document).ready( address_0_location_changed );
+      
     %hr
+      
+    %h3 Schedule
     
-    %h3 Admin
+    = f.simple_fields_for :schedule, :suppress_fields => true do |s|
+      - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
+        = s.simple_fields_for day, :suppress_fields => true do |d|
+          = d.input :scheduled, :label => capitalize_first_letter(day), wrapper: :bootstrap_tight do
+            = d.input_field :scheduled, :class => "scheduled span1"
+            .hours
+              from: 
+              = d.input_field :from, :class => "auto"
+              to: 
+              = d.input_field :to, :class => "auto"
+
+    %script{"type" => "text/javascript"}
+      :plain
+        $(".scheduled").each(scheduled_changed)
+      
+
+  - if current_user_is_admin?  
+    
+    #section_moa
+        
+      %hr
+        
+      %h3 Senior MOA Contact Information
+      %h4 This allows clinics to edit their own form. This information is only visible to admins.
+      = f.input :contact_name
+      = f.input :contact_phone
+      = f.input :contact_email
+      = f.input :contact_notes, hint: "Include contact's role (MOA, etc.) and anything else we should know."
   
-    Users that can Edit this Clinic
-    .content
-      = f.simple_fields_for :user_controls_clinics do |i|
-        .row.spaced
-          .span4.offset3
-            = i.association :user, as: :select, :label => false, collection: User.all.reject{ |u| u.admin? }, prompt: 'Select ...', wrapper: :no_wrapper
-          .spanhalf.offsethalf
-            = i.hidden_field :_destroy
-            = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
-    .row
-      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another user", :user_controls_clinics, class: "btn offset3")
+  #section_status
+              
+    %hr
+
+    %h3 Status
+    = f.input :status_mask, as: :select, collection: Clinic::STATUS_HASH, label_method: :last, value_method: :first
+    = f.input :limitations
+    = f.input :location_opened, as: :select, collection: ["Prior to 2010", 2010, 2011, 2012], prompt: "Select ..."
+    = f.association :languages, as: :check_boxes, :item_wrapper_class => 'inline'
+
+  #section_aop
+
+    %hr
+
+    %h3 Areas of Practice
+    = f.input :required_investigations, :hint => "eg. XRs, MRIs, scans, blood work, etc."
     
     %hr{ "style" => "visibility:hidden" }
     
-    = f.input :admin_notes
+    %h4 Pertinent Areas of Practice/Expertise
     
-  %hr
+    .content
+      .row
+        .span3 Referrals accepted in the following areas of practice.
+        .span3 Additional information/investigations required for the specified area of practice.
+        
+      = f.simple_fields_for :focuses do |i|
+        .row.spaced
+          .span3
+            = i.association :procedure_specialization, as: :select, label: false, collection: @clinic_procedures, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "span3" }
+          .span4
+            = i.input :investigation, label: false, wrapper: :no_wrapper, input_html: { class: "span4" }
+          .spanhalf
+            = i.hidden_field :_destroy
+            = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
+            
+      = f.link_to_add "Add another area of practice", :focuses, class: "button"
+      
+    %hr{ "style" => "visibility:hidden" }
+
+    = f.input :not_performed, as: :text
+    
+  #section_referrals
+
+    %h3 Referral Details
+    
+    %label How does your clinic accept requests for standard referrals?
+    = f.input :referral_fax, as: :boolean, wrapper: :bootstrap_tight
+    = f.input :referral_phone, as: :boolean, wrapper: :bootstrap_tight
+    = f.input :referral_other_details
+    = f.input :referral_details
+
+    = f.input :referral_form_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
+    
+    = f.input :lagtime_mask, as: :select, collection: Clinic::LAGTIME_HASH, label_method: :last, value_method: :first
+    
+    = f.input :waittime_mask, as: :select, collection: Clinic::WAITTIME_HASH, label_method: :last, value_method: :first
+
+    %label Our clinic will respond to referral requests:
+    = f.input :respond_by_fax, as: :boolean, wrapper: :bootstrap_tight
+    = f.input :respond_by_phone, as: :boolean, wrapper: :bootstrap_tight
+    = f.input :respond_by_mail, as: :boolean, wrapper: :bootstrap_tight
+    = f.input :respond_to_patient, as: :boolean
+    
+    = f.input :patient_can_book_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
+    
+    = f.input :red_flags, as: :text
+    
+    %label Optimal method of referral for urgent appointments
+    = f.input :urgent_fax, as: :boolean, wrapper: :bootstrap_tight
+    = f.input :urgent_phone, as: :boolean, wrapper: :bootstrap_tight
+    = f.input :urgent_other_details
+    = f.input :urgent_details
+    
+  #section_for_patients
   
-  %h3 Deprecated fields
-  %h4
-    These are old form fields which may have information in them than now needs to be transferred to fields of the new form. These deprecated fields will not show up on the final site, and are here temporarily to avoid losing previously entered data. As you transfer this information to the other form fields, you might want to delete it from here to avoid confusion.
-  = f.input :status
-  = f.input :responds_via
-  = f.input :interest
-  = f.input :referral_criteria
+    %hr
+    
+    %h3 Information for Patients
+    
+    = f.input :patient_instructions
+    = f.input :cancellation_policy
+    
+  #section_associations
+
+    %hr
+    
+    %h3 Associations
+    
+    %h4 Physicians Who See Patients at the Clinic
+    
+    .content
+      .row
+        .span1 Is a specialist
+        .span4 Name
+        .span3 Area of focus (if not the same for all physicians working in your clinic).
+        
+      = f.simple_fields_for :attendances do |i|
+        .row.spaced
+          .span1
+            = i.input :is_specialist, label: false, wrapper: :no_wrapper, input_html: { class: "is_specialist span1" }
+          .span4
+            = i.association :specialist, as: :select, label: false, collection: @clinic_specialists, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "specialist_list span4" }
+            = i.input :freeform_firstname, label: false, wrapper: :no_wrapper, input_html: { class: "freeform span2", style: "display:none" }
+            = i.input :freeform_lastname, label: false, wrapper: :no_wrapper, input_html: { class: "freeform span2", style: "display:none" }
+          .span3
+            = i.input :area_of_focus, label: false, wrapper: :no_wrapper, input_html: { class: "span3" }
+          .spanhalf
+            = i.hidden_field :_destroy
+            = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
+            
+      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another physician", :attendances, class: "btn")
+            
+    %script{"type" => "text/javascript"}
+      :plain
+        $(".is_specialist").each( hideShowPhysicians )
+      
+    %hr{ "style" => "visibility:hidden" }
+
+    = f.association :healthcare_providers, as: :check_boxes
+  
+  - if current_user_is_admin?
+  
+    #section_admin
+    
+      %hr
+      
+      %h3 Admin
+    
+      Users that can Edit this Clinic
+      .content
+        = f.simple_fields_for :user_controls_clinics do |i|
+          .row.spaced
+            .span4.offset3
+              = i.association :user, as: :select, :label => false, collection: User.all.reject{ |u| u.admin? }, prompt: 'Select ...', wrapper: :no_wrapper
+            .spanhalf.offsethalf
+              = i.hidden_field :_destroy
+              = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
+      .row
+        = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another user", :user_controls_clinics, class: "btn offset3")
+      
+      %hr{ "style" => "visibility:hidden" }
+      
+      = f.input :admin_notes
+      
+  #section_deprecated
+        
+    %hr
+    
+    %h3 Deprecated fields
+    %h4
+      These are old form fields which may have information in them than now needs to be transferred to fields of the new form. These deprecated fields will not show up on the final site, and are here temporarily to avoid losing previously entered data. As you transfer this information to the other form fields, you might want to delete it from here to avoid confusion.
+    = f.input :status
+    = f.input :responds_via
+    = f.input :interest
+    = f.input :referral_criteria
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

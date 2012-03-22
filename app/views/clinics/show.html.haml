@@ -124,6 +124,23 @@
         - else
           Urgent consulation
         = "should be referred via #{@clinic.urgent_referrals_via}"
+        
+  .patient_information
+    - if @clinic.patient_instructions.present? && @clinic.cancellation_policy.present?
+      %p
+        %strong Patient instructions:
+        = @clinic.patient_instructions
+      %p.collapse_up
+        %strong Cancellation policy:
+        = @clinic.cancellation_policy
+    - elsif @clinic.patient_instructions.present?
+      %p
+        %strong Patient instructions:
+        = @clinic.patient_instructions
+    -elsif @clinic.cancellation_policy.present?
+      %p
+        %strong Cancellation policy:
+        = @clinic.cancellation_policy
     
   - if not @clinic.healthcare_providers.blank?
     %p

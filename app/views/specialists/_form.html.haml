@@ -109,7 +109,7 @@
   
   %script{"type" => "text/javascript"}
     :plain
-      $(document).ready( $("specialist_categorization_mask").each(categorization_changed) );
+      $(document).ready( $("#specialist_categorization_mask").each(specialist_categorization_changed) );
   
   = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
 
@@ -271,6 +271,15 @@
     = f.input :urgent_phone, as: :boolean, wrapper: :bootstrap_tight
     = f.input :urgent_other_details
     = f.input :urgent_details
+    
+  #section_for_patients
+  
+    %hr
+    
+    %h3 Information for Patients
+    
+    = f.input :patient_instructions
+    = f.input :cancellation_policy
 
   #section_associations
   

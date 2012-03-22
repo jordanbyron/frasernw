@@ -40,7 +40,8 @@ $FNW_STATUS_INDENT: 40px;
 .review:before,
 .history:before,
 .city:before, .province:before,
-.healthcare_provider:before
+.healthcare_provider:before,
+.patient_information p:first-child strong:before
 {
   margin-left: -($FNW_STATUS_INDENT + 14px)/2;
   margin-right: ($FNW_STATUS_INDENT - 14px)/2;
@@ -138,6 +139,11 @@ $FNW_STATUS_INDENT: 40px;
 .healthcare_provider:before
 {
   background-position: -96px 0;
+}
+
+.patient_information p:first-child strong:before
+{
+  background-position: -120px -96px;
 }
 
 .city:before, .province:before
