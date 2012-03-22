@@ -7,11 +7,11 @@ class AddDirectPhonePerOffice < ActiveRecord::Migration
     rename_column :specialists, :direct_phone_extension, :direct_phone_extension_old
     
     Specialist.all.each do |s|
-      if ((s.offices.length > 2) && s.direct_phone.present?)
-        say "#{s.name} has two offices with a single direct phone number #{s.direct_phone}"
-      end
-      
       next if (s.direct_phone_old.strip.downcase == "no" || s.direct_phone_old.strip.downcase == "none")
+      
+      if ((s.offices.length >= 2) && s.direct_phone_old.present?)
+        say "#{s.name} has two offices with a single direct phone number #{s.direct_phone_old}"
+      end
       
       s.specialist_offices.each do |so|
         so.direct_phone = s.direct_phone_old
@@ -19,7 +19,5 @@ class AddDirectPhonePerOffice < ActiveRecord::Migration
         so.save
       end
     end
-    
-    #TODO remove columnsx
   end
 end
