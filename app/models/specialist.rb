@@ -63,6 +63,7 @@ class Specialist < ActiveRecord::Base
     4 => "Retired",
     5 => "Retiring as of",
     6 => "Unavailable between",
+    8 => "Moved away",
     7 => "Didn't answer"
   }
   
@@ -94,8 +95,8 @@ class Specialist < ActiveRecord::Base
     elsif ((status_mask == 1) or ((status_mask == 6) and (unavailable_to < Date.today)))
       #marked as available, or the "unavailable between" period has passed
       return "available"
-    elsif ((status_mask == 2) or (status_mask == 4) or ((status_mask == 5) and (unavailable_from <= Date.today)) or ((status_mask == 6) and (unavailable_from <= Date.today) and (unavailable_to >= Date.today)))
-      #only seeing old patients, retired, "retiring as of" date has passed", or in midst of inavailability
+    elsif ((status_mask == 2) or (status_mask == 4) or ((status_mask == 5) and (unavailable_from <= Date.today)) or ((status_mask == 6) and (unavailable_from <= Date.today) and (unavailable_to >= Date.today)) or (status_mask == 8))
+      #only seeing old patients, retired, "retiring as of" date has passed", or in midst of inavailability, or moved away
       return "unavailable"
     elsif (((status_mask == 5) and (unavailable_from > Date.today)) or ((status_mask == 6) and (unavailable_from > Date.today)))
       return "warning"
