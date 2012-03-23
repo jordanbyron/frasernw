@@ -50,7 +50,7 @@
           = a.association :city, as: :select, collection: City.all.map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
           = a.input :postalcode
     .universal_0
-      = f.input :sector_mask, as: :select, collection: Clinic::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
+      = f.input :sector_mask, as: :radio_buttons, collection: Clinic::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
     = f.input :wheelchair_accessible_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
     %script{"type" => "text/javascript"}
       :plain
@@ -169,7 +169,7 @@
     
     %h3 Information for Patients
     
-    = f.input :patient_instructions
+    = f.input :patient_instructions, hint: "e.g. call two days in advance to confirm, bring a list of medications."
     = f.input :cancellation_policy
     
   #section_associations
