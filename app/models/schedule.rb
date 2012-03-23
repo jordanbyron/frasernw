@@ -42,13 +42,13 @@ class Schedule < ActiveRecord::Base
   
   def days_and_hours
     output = []
-    output << "Monday #{monday.from.to_s(:time)} - #{monday.to.to_s(:time)}" if monday.scheduled
-    output << "Tuesday #{tuesday.from.to_s(:time)} - #{tuesday.to.to_s(:time)}" if tuesday.scheduled
-    output << "Wednesday #{wednesday.from.to_s(:time)} - #{wednesday.to.to_s(:time)}" if wednesday.scheduled
-    output << "Thursday #{thursday.from.to_s(:time)} - #{thursday.to.to_s(:time)}" if thursday.scheduled
-    output << "Friday #{friday.from.to_s(:time)} - #{friday.to.to_s(:time)}" if friday.scheduled
-    output << "Saturday #{saturday.from.to_s(:time)} - #{saturday.to.to_s(:time)}" if saturday.scheduled
-    output << "Sunday #{sunday.from.to_s(:time)} - #{sunday.to.to_s(:time)}" if sunday.scheduled
+    output << "Monday #{monday.from.to_s(:schedule_time)} - #{monday.to.to_s(:schedule_time)}" if monday.scheduled
+    output << "Tuesday #{tuesday.from.to_s(:schedule_time)} - #{tuesday.to.to_s(:schedule_time)}" if tuesday.scheduled
+    output << "Wednesday #{wednesday.from.to_s(:schedule_time)} - #{wednesday.to.to_s(:schedule_time)}" if wednesday.scheduled
+    output << "Thursday #{thursday.from.to_s(:schedule_time)} - #{thursday.to.to_s(:schedule_time)}" if thursday.scheduled
+    output << "Friday #{friday.from.to_s(:schedule_time)} - #{friday.to.to_s(:schedule_time)}" if friday.scheduled
+    output << "Saturday #{saturday.from.to_s(:schedule_time)} - #{saturday.to.to_s(:schedule_time)}" if saturday.scheduled
+    output << "Sunday #{sunday.from.to_s(:schedule_time)} - #{sunday.to.to_s(:schedule_time)}" if sunday.scheduled
     return output
   end
 end

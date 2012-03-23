@@ -66,10 +66,10 @@
           = d.input :scheduled, :label => capitalize_first_letter(day), wrapper: :bootstrap_tight do
             = d.input_field :scheduled, :class => "scheduled span1"
             .hours
-              from: 
-              = d.input_field :from, :class => "auto"
-              to: 
-              = d.input_field :to, :class => "auto"
+              from
+              = d.input_field :from, :class => "auto", :minute_step => 15
+              to
+              = d.input_field :to, :class => "auto", :minute_step => 15
 
     %script{"type" => "text/javascript"}
       :plain
