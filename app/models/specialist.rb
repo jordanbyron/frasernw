@@ -188,10 +188,6 @@ class Specialist < ActiveRecord::Base
     3 => "Didn't answer", 
   }
   
-  def has_referral_form
-    Specialist::BOOLEAN_HASH[referral_form_mask]
-  end
-
   def name
     if goes_by_name.present?
       "#{goes_by_name} (#{firstname}) #{lastname}"

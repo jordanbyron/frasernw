@@ -7,7 +7,7 @@
         $(specialty_checkbox_id).prop("checked", true);
       });
       
-= simple_nested_form_for @clinic, :html => { :class => "form-horizontal ajax" } do |f|
+= simple_nested_form_for @clinic, :html => { :class => "form-horizontal", :multipart => true } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
