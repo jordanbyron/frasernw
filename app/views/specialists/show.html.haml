@@ -105,7 +105,7 @@
     - if not @specialist.languages.blank?
       %p
         %strong.language= @specialist.languages.map{ |x| x.name }.to_sentence
-        = "#{@clinic.languages.count == 1 ? 'is' : 'are' } spoken at this practice."
+        = "#{@specialist.languages.count == 1 ? 'is' : 'are' } spoken at this practice."
           
     .investigation  
       - if not @specialist.required_investigations.blank?
