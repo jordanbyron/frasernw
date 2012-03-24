@@ -152,7 +152,7 @@
 
     - if @specialist.referral_form_mask == 1
       - referral_form_count = @specialist.referral_forms.reject{|referral_form| not referral_form.form.present?}.length
-      %p.collapse_up= "This office has #{ referral_form_count > 1 ? 'referral forms' : 'a referfal form'}."
+      %p.collapse_up= "This office has #{ referral_form_count > 1 ? 'referral forms' : 'a referral form'}."
       %ul.referral_forms
         - @specialist.referral_forms.each do |referral_form|
           - next if not referral_form.form.present?
