@@ -98,8 +98,4 @@ module ApplicationHelper
     return (current_user and current_user.admin?)
   end
   
-  def capitalize_first_letter(phrase)
-    phrase.slice(0,1).capitalize + phrase.slice(1..-1)
-  end
-  
 end

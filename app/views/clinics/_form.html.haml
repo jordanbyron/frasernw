@@ -66,7 +66,7 @@
     = f.simple_fields_for :schedule, :suppress_fields => true do |s|
       - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
         = s.simple_fields_for day, :suppress_fields => true do |d|
-          = d.input :scheduled, :label => capitalize_first_letter(day), wrapper: :bootstrap_tight do
+          = d.input :scheduled, :label => day.to_s.capitalize_first_letter, wrapper: :bootstrap_tight do
             = d.input_field :scheduled, :class => "scheduled span1"
             .hours
               from
