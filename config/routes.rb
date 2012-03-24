@@ -34,6 +34,9 @@ Frasernw::Application.routes.draw do
   get  "specialists/email/:id"          => 'specialists#email', :as => 'specialist_email'
   match "specialists/:id/review"        => 'specialists#review', :as => 'specialist_review'
   
+  match "/specialists/:id/edit_referral_forms" => "specialists#edit_referral_forms",  :as => "specialist_referral_forms"
+  match "/clinics/:id/edit_referral_forms" => "clinics#edit_referral_forms",          :as => "clinic_referral_forms"
+  
   #RPW TODO: allow users to edit their own profile
   #match 'user/edit' => 'users#edit', :as => :edit_current_user
 

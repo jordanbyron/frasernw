@@ -83,4 +83,9 @@ class ClinicsController < ApplicationController
     @clinic.destroy
     redirect_to clinics_url, :notice => "Successfully deleted #{name}."
   end
+  
+  def edit_referral_forms
+    @entity = Clinic.find(params[:id])
+    render :layout => 'ajax' if request.headers['X-PJAX']
+  end
 end
