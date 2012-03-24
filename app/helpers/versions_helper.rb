@@ -35,9 +35,29 @@ module VersionsHelper
           if version.event == "create"
             "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'} now specializes in #{link_to version.item.specialization.name, specialization_path(version.item.specialization), :class => 'ajax'}"
           elsif version.event == "update"
-            "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'} speciality in #{link_to version.item.specialization.name, specialization_path(version.item.specialization), :class => 'ajax'} was updated"
+            "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'}'s speciality in #{link_to version.item.specialization.name, specialization_path(version.item.specialization), :class => 'ajax'} was updated"
           else
             "#{link_to version.reify.specialist.name, specialist_path(version.reify.specialist), :class => 'specialist ajax'} no longer specializes in #{link_to version.reify.specialization.name, specialization_path(version.reify.specialization), :class => 'ajax'}"
+          end
+        when "SpecialistOffice"
+          if version.event == "create"
+            if version.item.office.present?
+              "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'} now works in office #{link_to version.item.office.short_address, office_path(version.item.office), :class => 'ajax'}"
+            else
+              ""
+            end
+          elsif version.event == "update"
+            if version.item.office.present?
+              "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'}'s office in #{link_to version.item.office.short_address, office_path(version.item.office), :class => 'ajax'} was updated"
+            else
+              "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'}'s office was deleted"
+            end
+          else
+            if version.reify.office.present?
+              "#{link_to version.reify.specialist.name, specialist_path(version.reify.specialist), :class => 'specialist ajax'} no longer works in office #{link_to version.reify.office.short_address, office_path(version.reify.office), :class => 'ajax'}"
+            else
+              ""
+            end
           end
         when "SpecialistAddress"
           #handled by Address
@@ -46,7 +66,7 @@ module VersionsHelper
           if version.event == "create"
             "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'} now performs #{link_to version.item.procedure_specialization.procedure.name, procedure_path(version.item.procedure_specialization.procedure), :class => 'ajax'}"
           elsif version.event == "update"
-            "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'} area of practice #{link_to version.item.procedure_specialization.procedure.name, procedure_path(version.item.procedure_specialization.procedure), :class => 'ajax'} was updated"
+            "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'}'s area of practice #{link_to version.item.procedure_specialization.procedure.name, procedure_path(version.item.procedure_specialization.procedure), :class => 'ajax'} was updated"
           else
             "#{link_to version.reify.specialist.name, specialist_path(version.reify.specialist), :class => 'specialist ajax'} no longer performs #{link_to version.reify.procedure_specialization.procedure.name, procedure_path(version.reify.procedure_specialization.procedure), :class => 'ajax'}"
           end
@@ -54,7 +74,7 @@ module VersionsHelper
           if version.event == "create"
             "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'} now works in #{link_to version.item.clinic.name, clinic_path(version.item.clinic), :class => 'ajax'}"
           elsif version.event == "update"
-            "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'} association with clinic #{link_to version.item.clinic.name, clinic_path(version.item.clinic), :class => 'ajax'} was updated"
+            "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'}'s association with clinic #{link_to version.item.clinic.name, clinic_path(version.item.clinic), :class => 'ajax'} was updated"
           else
             "#{link_to version.reify.specialist.name, show_version_path(version.reify.specialist), :class => 'specialist ajax'} no longer works in #{link_to version.reify.clinic.name, clinic_path(version.reify.clinic), :class => 'ajax'}"
           end
@@ -70,7 +90,7 @@ module VersionsHelper
           if version.event == "create"
             "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'} now has hospital priviledge at #{link_to version.item.hospital.name, hospital_path(version.item.hospital), :class => 'ajax'}"
           elsif version.event == "update"
-            "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'} hospital priviledges at #{link_to version.item.hospital.name, hospital_path(version.item.hospital), :class => 'ajax'} were updated"
+            "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'}'s hospital priviledges at #{link_to version.item.hospital.name, hospital_path(version.item.hospital), :class => 'ajax'} were updated"
           else
             "#{link_to version.reify.specialist.name, specialist_path(version.reify.specialist), :class => 'specialist ajax'} no longer has hospital priviledge at #{link_to version.reify.hospital.name, hospital_path(version.item.hospital), :class => 'ajax'}"
           end
@@ -132,55 +152,14 @@ module VersionsHelper
           ""
         #ADDRESSES
         when "Address"
-          if version.event == "create"
-            return "" if version.item.empty?
-            
-            specialist = SpecialistAddress.find_by_address_id(version.item.id)
-            clinic = ClinicAddress.find_by_address_id(version.item.id)
-            hospital = HospitalAddress.find_by_address_id(version.item.id)
-            
-            if specialist
-              "#{link_to specialist.specialist.name, specialist_path(specialist), :class => 'specialist ajax'} now has another location #{version.item.address}"
-            elsif clinic
-              "#{link_to clinic.clinic.name, clinic_path(clinic), :class => 'clinic ajax'} now has another location #{version.item.address}"
-            elsif hospital
-              "#{link_to hospital.hospital.name, hospital_path(hospital), :class => 'hospital ajax'} now has another location #{version.item.address}"
-            else
-              ""
-            end
-          elsif version.event == "update"
-            return "" if version.reify.empty?
-            
-            specialist = SpecialistAddress.find_by_address_id(version.item.id)
-            clinic = ClinicAddress.find_by_address_id(version.item.id)
-            hospital = HospitalAddress.find_by_address_id(version.item.id)
-            
-            if specialist
-              "#{link_to specialist.specialist.name, specialist_path(specialist), :class => 'specialist ajax'} has an updated location #{version.item.address}"
-            elsif clinic
-              "#{link_to clinic.clinic.name, clinic_path(clinic), :class => 'clinic ajax'} has an updated location #{version.item.address}"
-            elsif hospital
-              "#{link_to hospital.hospital.name, hospital_path(hospital), :class => 'hospital ajax'} has an updated location #{version.item.address}"
-            else
-              ""
-            end
-          else
-            return "" if version.reify.empty?
-            
-            specialist = SpecialistAddress.find_by_address_id(version.item.id)
-            clinic = ClinicAddress.find_by_address_id(version.item.id)
-            hospital = HospitalAddress.find_by_address_id(version.item.id)
-            
-            if specialist
-              "#{link_to specialist.specialist.name, specialist_path(specialist), :class => 'specialist ajax'} no longer has another location #{version.item.address}"
-            elsif clinic
-              "#{link_to clinic.clinic.name, clinic_path(clinic), :class => 'clinic ajax'} no longer has another location #{version.item.address}"
-            elsif hospital
-              "#{link_to hospital.hospital.name, hospital_path(hospital), :class => 'hospital ajax'} no longer has another location #{version.item.address}"
-            else
-              ""
-            end
-          end
+          #TODO
+          ""
+        when "Location"
+          #TODO
+          ""
+        when "Office"
+          #TODO
+          ""
         #PROCEDURES
         when "Procedure"
           if version.event == "create"
@@ -231,10 +210,24 @@ module VersionsHelper
           else
             "#{link_to version.reify.name, show_version_path(version.item_id), :class => 'clinic ajax'} was deleted"
           end
+        when "Schedule"
+          if version.event == "create" || version.event == "update"
+            if version.item.days_and_hours.length == 0
+              ""
+            else
+              "#{link_to version.item.schedulable.name, url_for(version.item.schedulable), :class => 'ajax'} has the schedule: #{version.item.days_and_hours.to_sentence}"
+            end
+          else
+            "#{link_to version.item.schedulable.name, url_for(version.item.schedulable), :class => 'ajax'} no longer has a schedule"
+          end
+        when "ScheduleDay"
+          #handled by Schedule
+          ""
         else
         "TODO: #{version.item_type}"
       end
-      rescue
+      rescue Exception => exc
+      #"This item (#{version.reify.respond_to?('name') ? version.reify.name + ', ' + version.item_type : version.item_type}) was deleted after the change was made: #{exc.message}"
         "This item (#{version.reify.respond_to?('name') ? version.reify.name + ', ' + version.item_type : version.item_type}) was deleted after the change was made"
     end
   end
