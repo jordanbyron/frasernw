@@ -319,7 +319,7 @@ ActiveRecord::Schema.define(:version => 20120324163845) do
     t.timestamp "created_at"
     t.timestamp "updated_at"
     t.string    "phone_extension"
-    t.integer   "sector_mask"
+    t.integer   "sector_mask",            :default => 1
     t.string    "direct_phone"
     t.string    "direct_phone_extension"
   end

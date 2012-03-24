@@ -7,7 +7,7 @@ class AddNewFields < ActiveRecord::Migration
     add_column :specialists, :admin_notes, :text
     
     add_column :specialist_offices, :phone_extension, :string
-    add_column :specialist_offices, :sector_mask, :integer
+    add_column :specialist_offices, :sector_mask, :integer, :default => 1
     
     SpecialistOffice.all.each do |so|
       if so.empty?
