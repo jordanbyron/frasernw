@@ -27,7 +27,10 @@
 
     %h3 Clinic Contact Information
     
-    = f.input :phone
+    = f.input :phone do
+      = f.input_field :phone, :class => "span3"
+      ext: 
+      = f.input_field :phone_extension, :class => "span1"
     = f.input :fax
     
     = f.simple_fields_for :location do |l|

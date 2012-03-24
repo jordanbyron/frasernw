@@ -1,5 +1,5 @@
 class Clinic < ActiveRecord::Base
-  attr_accessible :name, :phone, :fax, :categorization_mask, :sector_mask, :wheelchair_accessible_mask, :status, :interest, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :patient_instructions, :cancellation_policy, :specializations_including_in_progress_ids, :location_attributes, :schedule_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes, :admin_notes
+  attr_accessible :name, :phone, :phone_extension, :fax, :categorization_mask, :sector_mask, :wheelchair_accessible_mask, :status, :interest, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :patient_instructions, :cancellation_policy, :specializations_including_in_progress_ids, :location_attributes, :schedule_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes, :admin_notes
   has_paper_trail
   
   # clinics can have multiple specializations
@@ -64,15 +64,14 @@ class Clinic < ActiveRecord::Base
   end
   
   def phone_and_fax
-    if phone.present? && fax.present?
-      return "#{phone}, Fax: #{fax}"
-    elsif phone.present?
-      return "#{phone}"
-    elsif fax.present?
-      return "Fax: #{fax}"
-    else
-      return ""
-    end
+    return "#{phone} ext. #{phone_extension}, Fax: #{fax}" if phone.present? && phone_extension.present? && fax.present?
+    return "#{phone} ext. #{phone_extension}" if phone.present? && phone_extension.present?
+    return "#{phone}, Fax: #{fax}" if phone.present? && fax.present?
+    return "ext. #{phone_extension}, Fax: #{fax}" if phone_extension.present? && fax.present?
+    return "#{phone}" if phone.present?
+    return "Fax: #{fax}" if fax.present?
+    return "ext. #{phone_extension}" if phone_extension.present?
+    return ""
   end
   
   def city

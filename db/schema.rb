@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120322202558) do
+ActiveRecord::Schema.define(:version => 20120324163845) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -127,6 +127,7 @@ ActiveRecord::Schema.define(:version => 20120322202558) do
     t.integer  "categorization_mask",        :default => 1
     t.text     "patient_instructions"
     t.text     "cancellation_policy"
+    t.string   "phone_extension"
   end
 
   create_table "contacts", :force => true do |t|
@@ -183,6 +184,7 @@ ActiveRecord::Schema.define(:version => 20120322202558) do
     t.timestamp "updated_at"
     t.string    "phone"
     t.string    "fax"
+    t.string    "phone_extension"
   end
 
   create_table "languages", :force => true do |t|
@@ -192,15 +194,15 @@ ActiveRecord::Schema.define(:version => 20120322202558) do
   end
 
   create_table "locations", :force => true do |t|
-    t.string   "locatable_type"
-    t.integer  "locatable_id"
-    t.integer  "address_id"
-    t.integer  "hospital_in_id"
-    t.integer  "clinic_in_id"
-    t.string   "suite_in"
-    t.string   "details_in"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string    "locatable_type"
+    t.integer   "locatable_id"
+    t.integer   "address_id"
+    t.integer   "hospital_in_id"
+    t.integer   "clinic_in_id"
+    t.string    "suite_in"
+    t.string    "details_in"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "moderations", :force => true do |t|
@@ -213,8 +215,8 @@ ActiveRecord::Schema.define(:version => 20120322202558) do
   end
 
   create_table "offices", :force => true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "privileges", :force => true do |t|
@@ -310,17 +312,16 @@ ActiveRecord::Schema.define(:version => 20120322202558) do
   end
 
   create_table "specialist_offices", :force => true do |t|
-    t.integer  "specialist_id"
-    t.integer  "office_id"
-    t.string   "phone"
-    t.string   "fax"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "phone_extension"
-    t.integer  "sector_mask"
-    t.integer  "schedule_id"
-    t.string   "direct_phone"
-    t.string   "direct_phone_extension"
+    t.integer   "specialist_id"
+    t.integer   "office_id"
+    t.string    "phone"
+    t.string    "fax"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string    "phone_extension"
+    t.integer   "sector_mask"
+    t.string    "direct_phone"
+    t.string    "direct_phone_extension"
   end
 
   create_table "specialist_speaks", :force => true do |t|
@@ -381,7 +382,6 @@ ActiveRecord::Schema.define(:version => 20120322202558) do
     t.date     "unavailable_from"
     t.date     "unavailable_to"
     t.text     "urgent_details"
-    t.string   "go_by_name"
     t.string   "goes_by_name"
     t.string   "direct_phone_extension_old"
     t.integer  "sex_mask",                   :default => 3

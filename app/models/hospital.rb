@@ -1,5 +1,5 @@
 class Hospital < ActiveRecord::Base
-  attr_accessible :name, :phone, :fax, :location_attributes, :address_attributes
+  attr_accessible :name, :phone, :phone_extension, :fax, :location_attributes, :address_attributes
   has_paper_trail
   
   has_many :privileges, :dependent => :destroy
@@ -20,15 +20,14 @@ class Hospital < ActiveRecord::Base
   validates_presence_of :name, :on => :create, :message => "can't be blank"
   
   def phone_and_fax
-    if phone.present? and fax.present?
-      return "#{phone}, Fax: #{fax}"
-    elsif phone.present?
-      return "#{phone}"
-    elsif fax.present?
-      return "Fax: #{fax}"
-    else
-      return ""
-    end
+    return "#{phone} ext. #{phone_extension}, Fax: #{fax}" if phone.present? && phone_extension.present? && fax.present?
+    return "#{phone} ext. #{phone_extension}" if phone.present? && phone_extension.present?
+    return "#{phone}, Fax: #{fax}" if phone.present? && fax.present?
+    return "ext. #{phone_extension}, Fax: #{fax}" if phone_extension.present? && fax.present?
+    return "#{phone}" if phone.present?
+    return "Fax: #{fax}" if fax.present?
+    return "ext. #{phone_extension}" if phone_extension.present?
+    return ""
   end
   
   def city
