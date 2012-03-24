@@ -4,7 +4,7 @@ class String
     self.slice(0,1).capitalize + self.slice(1..-1)
   end
   
-  def end_with_period(phrase)
+  def end_with_period
     if self[-1,1] != '.'
       self + "."
     else

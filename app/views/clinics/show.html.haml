@@ -32,11 +32,11 @@
   %p.collapse_up= @clinic.schedule.days_and_hours.to_sentence if @clinic.scheduled?
         
   %p
-    %strong{ :class => "status_#{@clinic.status_class}"}= @clinic.status
+    %strong{ :class => "status_#{@clinic.status_class}"}= @clinic.status.end_with_period
     - if not @clinic.limitations.blank?
       %p.collapse_up
         %strong Limitations:
-        = @clinic.limitations
+        = @clinic.limitations.end_with_period
     - if not @clinic.location_opened.blank?
       %p.collapse_up
         This clinic opened at this location 
@@ -45,40 +45,39 @@
   - if not @clinic.languages.blank?
     %p
       %strong.language= @clinic.languages.map{ |x| x.name }.to_sentence
-      - if @clinic.languages.count > 1
-        are spoken at this practice
-      - else
-        is spoken at this practice
+      = "#{@clinic.languages.count == 1 ? 'is' : 'are' } spoken at this clinic."
         
   .investigation  
     - if not @clinic.required_investigations.blank?
       %p
         %strong Required investigations for all patients:
-        = @clinic.required_investigations
-    - specialization_procedures, specialization_count = compressed_procedures_indented(@clinic, ProcedureSpecialization::CLASSIFICATION_FOCUSED)
+        = @clinic.required_investigations.end_with_period
+    - specialization_procedures, specialization_count, specialization_has_investigations = compressed_procedures_indented(@clinic, ProcedureSpecialization::CLASSIFICATION_FOCUSED)
     - if specialization_count > 0
       %p.collapse_up
-        %strong Areas of practice
-        \- with any 
-        %i additional 
-        required investigations:
+        %strong Areas of practice:
+        - if specialization_has_investigations
+          with any 
+          %i additional 
+          required investigations
         = specialization_procedures.html_safe
-    - custom_procedures, custom_count = compressed_procedures_indented(@clinic, ProcedureSpecialization::CLASSIFICATION_NONFOCUSED)
+    - custom_procedures, custom_count, custom_has_investigations = compressed_procedures_indented(@clinic, ProcedureSpecialization::CLASSIFICATION_NONFOCUSED)
     - if custom_count > 0
       %p.collapse_up
-        %strong Other areas of interest
-        \- with any 
-        %i additional 
-        required investigations:
+        %strong Other areas of interest:
+        - if custom_has_investigations
+          with any 
+          %i additional 
+          required investigations
         = custom_procedures.html_safe
   - if not @clinic.interest.blank?
     %p.collapse_up
-      %strong Most interested in
-      = @clinic.interest
+      %strong Most interested in:
+      = @clinic.interest.end_with_period
   - if not @clinic.not_performed.blank?
     %p.collapse_up
-      %strong Does not see or do
-      = @clinic.not_performed
+      %strong Does not see or do:
+      = @clinic.not_performed.end_with_period
     
   %p
     - if @clinic.accepts_referrals_via.presence and @clinic.responds_via.presence
@@ -92,9 +91,9 @@
       = "responded to by #{@clinic.responds_via}."
     
   - if @clinic.referral_form_mask == 1
-    %p.collapse_up This office has a referral form
+    %p.collapse_up This clinic has a referral form.
   - elsif @clinic.referral_form_mask == 2
-    %p.collapse_up This office does not have a referral form
+    %p.collapse_up This clinic does not have a referral form.
     
   -if @clinic.waittime.presence
     %p.collapse_up
@@ -115,38 +114,35 @@
     - if not @clinic.red_flags.blank?
       %p
         %strong Red flags
-        this clinic feels warrants urgent consultation:
-        = @clinic.red_flags
+        that this clinic feels warrants urgent consultation:
+        = @clinic.red_flags.end_with_period
     - if not @clinic.urgent_referrals_via.blank?
       %p.collapse_up
-        - if @clinic.red_flags.blank?
-          %strong Urgent consulation 
-        - else
-          Urgent consulation
-        = "should be referred via #{@clinic.urgent_referrals_via}"
+        %strong Urgent consulation: 
+        = "should be referred via #{@clinic.urgent_referrals_via}."
         
   .patient_information
     - if @clinic.patient_instructions.present? && @clinic.cancellation_policy.present?
       %p
         %strong Patient instructions:
-        = @clinic.patient_instructions
+        = @clinic.patient_instructions.end_with_period
       %p.collapse_up
         %strong Cancellation policy:
-        = @clinic.cancellation_policy
+        = @clinic.cancellation_policy.end_with_period
     - elsif @clinic.patient_instructions.present?
       %p
         %strong Patient instructions:
-        = @clinic.patient_instructions
+        = @clinic.patient_instructions.end_with_period
     -elsif @clinic.cancellation_policy.present?
       %p
         %strong Cancellation policy:
-        = @clinic.cancellation_policy
+        = @clinic.cancellation_policy.end_with_period
     
   - if not @clinic.healthcare_providers.blank?
     %p
       %strong Healthcare providers 
       who see patients at the clinic:
-      != @clinic.healthcare_providers.map{ |x| x.name }.join(", ")\
+      != @clinic.healthcare_providers.map{ |x| x.name }.join(", ")
 
   - if @clinic.attendances?
     %p

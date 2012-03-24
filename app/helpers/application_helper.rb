@@ -47,7 +47,8 @@ module ApplicationHelper
   
   def compressed_procedures_indented_output(items, root)
     count = 0
-    return "", 0 if items.empty?
+    has_investigation = false
+    return "", count, has_investigation if items.empty?
     result = "<ul>"
     items.each do |item|
       count += 1
@@ -56,14 +57,16 @@ module ApplicationHelper
       investigation = item[:parent].investigation(root)
       if investigation and investigation.length > 0
         result += ": #{investigation}"
+        has_investigation = true
       end
       result += "</li>"
-      child_result, child_count = compressed_procedures_indented_output(item[:children], root)
+      child_result, child_count, child_has_investigation = compressed_procedures_indented_output(item[:children], root)
       result += child_result
-      count += child_count                                       
+      count += child_count          
+      has_investigation |= child_has_investigation
     end
     result += "</ul>"
-    return result, count
+    return result, count, has_investigation
   end
   
   def compressed_ancestry(procedure_specialization)
