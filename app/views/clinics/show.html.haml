@@ -89,11 +89,17 @@
     - elsif @clinic.responds_via.presence
       %strong.referral Referrals:
       = "responded to by #{@clinic.responds_via}."
-    
+
   - if @clinic.referral_form_mask == 1
-    %p.collapse_up This clinic has a referral form.
+    - referral_form_count = @clinic.referral_forms.reject{|referral_form| not referral_form.form.present?}.length
+    %p.collapse_up= "This office has #{ referral_form_count > 1 ? 'referral forms' : 'a referral form'}."
+    %ul.referral_forms
+      - @clinic.referral_forms.each do |referral_form|
+        - next if not referral_form.form.present?
+        - type = referral_form.form_content_type.split('/').last
+        %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, :target => "_blank"
   - elsif @clinic.referral_form_mask == 2
-    %p.collapse_up This clinic does not have a referral form.
+    %p.collapse_up This office does not have a referral form.
     
   -if @clinic.waittime.presence
     %p.collapse_up
