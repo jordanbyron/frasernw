@@ -29,6 +29,7 @@ gem "nested_form", :git => "https://github.com/warneboldt/nested_form.git", :ref
 gem 'exception_notification'
 gem "cancan", "~> 1.6.7"
 gem "paperclip", "~> 2.7"
+gem "aws-s3"
 
 # Use unicorn as the web server
 gem 'unicorn'
