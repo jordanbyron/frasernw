@@ -20,7 +20,7 @@
         .span4
           - referral_form = referral_forms[index]
           - if referral_form.present? && referral_form.form.present?
-            = link_to referral_form.form.name, referral_form.form.url, :target => "_blank"
+            = link_to referral_form.form_file_name, referral_form.form.url, :target => "_blank"
           - else
             = i.input :form, as: :file, label: false, wrapper: :no_wrapper, input_html: { class: "span4" }
         .spanhalf
@@ -31,7 +31,7 @@
   
   %script{"type" => "text/javascript"}
     :plain
-      $(".referral_form_mask").each( hideShowReferralForms );
+      $(".referral_form_mask").each( initReferralForms );
     
   .form-actions
     = f.button :submit, :class => "btn btn-primary", :value => "Update referral forms"
