@@ -450,6 +450,30 @@ body
           cursor: pointer;
         }
       }
+      
+      ul.nav-pills
+      {
+        li:not(.active) a
+        {
+          background: $FNW_LIGHT_GRAY;
+        }
+      
+        li.active
+        {
+          a
+          {
+            color: $FNW_LIGHT_GRAY;
+          }
+        }
+        
+        li:hover
+        {
+          a
+          {
+            text-decoration: none;
+          }
+        }
+      }
     }
     
     .table
