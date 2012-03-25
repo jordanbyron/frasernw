@@ -86,6 +86,7 @@ class ClinicsController < ApplicationController
   
   def edit_referral_forms
     @entity = Clinic.find(params[:id])
+    @entity_type = "clinic"
     render :template => 'referral_form/edit', :layout => 'ajax' if request.headers['X-PJAX']
   end
 end

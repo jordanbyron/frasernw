@@ -2,9 +2,12 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
-  = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
+  = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does the #{@entity_type} have a referral form?", :input_html => { :class => "referral_form_mask" }
+  
+  .content#referral_forms
     
-  .content
+    %h4 Referral Forms  
+    
     .row
       .span3 Description
       .span4 Referral Form
@@ -25,6 +28,10 @@
           = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
       - index += 1
     = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another referral form", :referral_forms, class: "btn")
+  
+  %script{"type" => "text/javascript"}
+    :plain
+      $(".referral_form_mask").each( hideShowReferralForms );
     
   .form-actions
     = f.button :submit, :class => "btn btn-primary", :value => "Update referral forms"
