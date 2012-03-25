@@ -130,7 +130,7 @@
       = f.simple_fields_for :specialist_offices, :suppress_fields => true do |so|
         .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"} 
           .control-group
-            %label Location is
+            %label.control-label Location is
             .controls
               - location_class = "location_#{index}"
               - if @is_new

@@ -35,7 +35,7 @@
     
     = f.simple_fields_for :location do |l|
       .control-group
-        %label Location is
+        %label.control-label Location is
         .controls
           - location_class = "location_0"
           - [['Standalone', !@clinic.location.in_hospital?], ['In a hospital', @clinic.location.in_hospital?]].each do |location| 
