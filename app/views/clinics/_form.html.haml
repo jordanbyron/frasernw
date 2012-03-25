@@ -184,17 +184,17 @@
     .content
       .row
         .span1 Is a specialist
-        .span4 Name
+        .span3 Name
         .span3 Area of focus (if not the same for all physicians working in your clinic).
         
       = f.simple_fields_for :attendances do |i|
         .row.spaced
           .span1
             = i.input :is_specialist, label: false, wrapper: :no_wrapper, input_html: { class: "is_specialist span1" }
-          .span4
-            = i.association :specialist, as: :select, label: false, collection: @clinic_specialists, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "specialist_list span4" }
-            = i.input :freeform_firstname, label: false, wrapper: :no_wrapper, input_html: { class: "freeform span2", style: "display:none" }
-            = i.input :freeform_lastname, label: false, wrapper: :no_wrapper, input_html: { class: "freeform span2", style: "display:none" }
+          .span3
+            = i.association :specialist, as: :select, label: false, collection: @clinic_specialists, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "specialist_list span3" }
+            = i.input :freeform_firstname, label: false, wrapper: :no_wrapper, input_html: { class: "freeform span1half", style: "display:none" }
+            = i.input :freeform_lastname, label: false, wrapper: :no_wrapper, input_html: { class: "freeform span1half", style: "display:none" }
           .span3
             = i.input :area_of_focus, label: false, wrapper: :no_wrapper, input_html: { class: "span3" }
           .spanhalf

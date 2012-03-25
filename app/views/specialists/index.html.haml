@@ -10,10 +10,10 @@
       %tr
         %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
         %td.admin.btn-group
-          = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-small ajax")
-          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-small")
+          = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
+          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")
       
     %tr
       %th
-      %th.admin=link_to( "<i class='icon-plus-sign'></i>".html_safe + " New Specialist in #{specialization.name}", new_specialization_specialist_path(specialization), :class => "btn btn-small ajax")
+      %th.admin=link_to( "<i class='icon-plus-sign'></i>".html_safe + " New Specialist in #{specialization.name}", new_specialization_specialist_path(specialization), :class => "btn btn-mini ajax")
 

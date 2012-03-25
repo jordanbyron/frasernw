@@ -6,6 +6,7 @@
  *= require ./all/normalize
  *= require ./all/bootstrap
  *= require ./all/bootstrap.responsive
+ *= require ./all/bootstrap.modifications
  *= require ./all/icons
  *= require ./all/frasernw
  *= require ./all/chosen
