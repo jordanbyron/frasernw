@@ -31,36 +31,43 @@
     #main-nav.navbar
       .navbar-inner
         .container
-          = link_to "Pathways", root_url, :class => "brand ajax"
+                      
+          %a{"href" => "#", "data-toggle" => "pop", :class => "brand ajax"} Pathways
           - if logged_in?
             %ul.nav.pull-left
-              
-              - if current_user_is_admin?
-                %li.dropdown.admin
+              - if logged_in?
+                %li.dropdown
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-                    Admin
+                    Specialties
                     %b.caret
                   %ul.dropdown-menu
-                    /%li= link_to "Track Specialists", tracker_path\
-                    %li= link_to "Activity", all_versions_path, :class => "history ajax"
-                    /%li= link_to "Review Queue (#{Review.count})", reviews_path, :class => "review ajax"
-                    %li.divider
-                    %li= link_to "Areas of Practice", procedures_path, :class => "procedure ajax"
-                    %li= link_to "Clinics", clinics_path, :class => "clinic ajax"
-                    %li= link_to "Cities", cities_path, :class => "city ajax"
-                    %li= link_to "Healthcare Providers", healthcare_providers_path, :class => "healthcare_provider ajax"
-                    %li= link_to "Hospitals", hospitals_path, :class => "hospital ajax"
-                    %li= link_to "Languages", languages_path, :class => "language ajax"
-                    %li= link_to "Offices", offices_path, :class => "office ajax"
-                    %li= link_to "Provinces", provinces_path, :class => "province ajax"
-                    %li= link_to "Specialists", specialists_path, :class => "specialist ajax"
-                    %li= link_to "Specialties", specializations_path, :class => "specialty ajax"
-                    %li= link_to "Users", users_path, :class => "user ajax"
-                    
-              /%li= link_to "Pearls", "#"
-              /%li= link_to "Handouts", "#"
-              /%li= link_to "Videos", "#"
-              %li= link_to "Logout", logout_url
+                    - Specialization.all.each do |specialization|
+                      %li
+                        %a.ajax{"href" => specialization_path(specialization), "data-toggle" => "push", :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
+                
+                - if current_user_is_admin?
+                  %li.dropdown.admin
+                    %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                      Admin
+                      %b.caret
+                    %ul.dropdown-menu
+                      /%li= link_to "Track Specialists", tracker_path\
+                      %li= link_to "Activity", all_versions_path, :class => "history ajax"
+                      /%li= link_to "Review Queue (#{Review.count})", reviews_path, :class => "review ajax"
+                      %li.divider
+                      %li= link_to "Areas of Practice", procedures_path, :class => "procedure ajax"
+                      %li= link_to "Clinics", clinics_path, :class => "clinic ajax"
+                      %li= link_to "Cities", cities_path, :class => "city ajax"
+                      %li= link_to "Healthcare Providers", healthcare_providers_path, :class => "healthcare_provider ajax"
+                      %li= link_to "Hospitals", hospitals_path, :class => "hospital ajax"
+                      %li= link_to "Languages", languages_path, :class => "language ajax"
+                      %li= link_to "Offices", offices_path, :class => "office ajax"
+                      %li= link_to "Provinces", provinces_path, :class => "province ajax"
+                      %li= link_to "Specialists", specialists_path, :class => "specialist ajax"
+                      %li= link_to "Specialties", specializations_path, :class => "specialty ajax"
+                      %li= link_to "Users", users_path, :class => "user ajax"
+                      
+                %li= link_to "Logout", logout_url
             
             %form.navbar-search.pull-right
               %input.span3.search-query#search{"type" => "search", "placeholder" => "Search"}
@@ -69,49 +76,8 @@
 
     #body.container
       .row
-        - if logged_in?
-          #left-nav.span3
-            #root
-              %h3 Specialities
-              %ul
-                - Specialization.all.each do |specialization|
-                  - next if (specialization.in_progress and !current_user_is_admin?)
-                  %li
-                    %a.ajax.push{"href" => specialization_path(specialization), "data-toggle" => "push", "data-target" => "#specialization_#{specialization.id}", :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
-              
-            - Specialization.all.each do |specialization|
-              .nav_panel{ "id" => "specialization_#{specialization.id}" }
-                %h3{:class => specialization.in_progress ? "in-progress" : ""}
-                  %a.ajax{"href" => specialization_path(specialization)}= specialization.name
-                %ul
-                  %li
-                    %a.ajax.pop{"href" => "javascript:void(0)", "data-toggle" => "pop", "data-target" => "#specialization_#{specialization.id}", "data-parent" => "#root"} Back
-                  - specialization.procedure_specializations_arranged.each do |ps,children|
-                    - next if not ps.focused?
-                    - next if ps.procedure.empty_for_specialization? specialization
-                    %li 
-                      - if children.reject{ |c| (not c.focused?) or c.procedure.empty_for_specialization? specialization }.length > 0
-                        %a.ajax.push{"href" => procedure_path(ps.procedure), "data-toggle" => "push", "data-target" => "#procedure_#{ps.procedure.id}"}= ps.procedure.name
-                      - else
-                        %a.ajax{"href" => procedure_path(ps.procedure)}= ps.procedure.name
-                      
-              - specialization.procedure_specializations_arranged.each do |ps,children|
-                - next if children.length == 0
-                - next if not ps.focused?
-                - next if ps.procedure.empty_for_specialization? specialization
-                .nav_panel{ "id" => "procedure_#{ps.procedure.id}" }
-                  %h3
-                    %a.ajax{"href" => procedure_path(ps.procedure)}= ps.procedure.name
-                  %ul
-                    %li
-                      %a.ajax.pop{"href" => "javascript:void(0)#", "data-toggle" => "pop", "data-target" => "#procedure_#{ps.procedure.id}", "data-parent" => "#specialization_#{specialization.id}"} Back
-                    - children.each do |ps,children|
-                      - next if not ps.focused?
-                      - next if ps.procedure.empty_for_specialization? specialization
-                      %li
-                        %a.ajax{"href" => procedure_path(ps.procedure)}= ps.procedure.name
-
-        #content.span8half.offsethalf
+                    
+        #content.span12
           #container
             - flash.each do |type, msg|
               .alert.alert-success= msg

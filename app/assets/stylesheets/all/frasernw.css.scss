@@ -18,6 +18,10 @@ $FNW_NAV_PADDING_RIGHT: 10%;
 body 
 {
   background-color: $FNW_BACKGROUND;
+  color:$FNW_TEXT;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  padding-bottom: 30px;
 }
 
 #main-nav .navbar-inner
@@ -185,160 +189,45 @@ body
   }
 }
 
-#body
+        
+$LINK_MIN_HEIGHT: 31px;
+
+#left-nav
 {
-  color:$FNW_TEXT;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  padding-bottom: 30px;
-        
-  $LINK_MIN_HEIGHT: 33px;
+  z-index: 1979;
+  position: absolute;
+  top: 40px;
+  overflow: hidden;
+  width: 200px;
+  background-color: $FNW_BACKGROUND;
+  border-bottom: 3px solid $FNW_DARK_GRAY;
+  border-left: 3px solid $FNW_DARK_GRAY;
+  border-right: 3px solid $FNW_DARK_GRAY;
+  -webkit-border-bottom-right-radius: 10px;
+  -webkit-border-bottom-left-radius: 10px;
+  -moz-border-bottom-left-radius: 10px;
+  -moz-border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 5px $FNW_MID_GRAY;
   
-  #left-nav
-  {
-    position: relative;
-    overflow: hidden;
-    height: auto;
-    
-    h3
-    {
-      color: $FNW_RED;
-      padding: 0 $FNW_NAV_PADDING_RIGHT 0 $FNW_NAV_PADDING_LEFT;
-      font-weight: normal;
-      
-      a
-      {
-        color: inherit;
-        text-decoration: none;
-      }
-      
-      a:hover
-      {
-        text-decoration: underline;
-      }
-    }
-    
-    ul
-    {
-      list-style: none;
-      margin: 5px 0 0 0;
-      
-      li
-      {
-        border-top: 1px solid $FNW_LIGHT_GRAY;
-        
-        a
-        {
-          min-height: $LINK_MIN_HEIGHT;
-          line-height: $LINK_MIN_HEIGHT;
-          padding: 0 $FNW_NAV_PADDING_RIGHT 0 $FNW_NAV_PADDING_LEFT;
-          display: inline-block;
-          width: 100% - $FNW_NAV_PADDING_RIGHT - $FNW_NAV_PADDING_LEFT;
-          color: $FNW_BLUE;
-          text-decoration: none;
-        }
-        
-        a:hover
-        {
-          color: $FNW_RED;
-          background-color: $FNW_LIGHT_BLUE;
-          text-decoration: none;
-        }
-        
-        a.push:after,
-        a.pop:before
-        {
-          display: inline-block;
-          width: 14px;
-          height: 14px;
-          margin: ($LINK_MIN_HEIGHT - 14px)/2 0;
-          background-position: 14px 14px;
-          background-repeat: no-repeat;
-          background-image: url(/img/glyphicons-halflings-blue.png);
-          content: "\0000a0";
-        }
-        
-        a.push:after
-        {
-          float: right;
-          margin-right: -14px;
-          background-position: -264px -96px;
-        }
-        
-        a.pop:before
-        {
-          float: left;
-          background-position: -240px -96px;
-          margin-right: 10px;
-        }
-        
-        a.push:hover:after,
-        a.pop:hover:before
-        {
-          background-image: url(/img/glyphicons-halflings-red.png);
-        }
-      }
-      
-      li.active a
-      {
-        color: $FNW_RED;
-        background: url(/img/nav_arrow_mask_small.png) no-repeat 100% 50% $FNW_LIGHT_BLUE;
-        text-decoration: none;
-      }
-    }
-    
-    .nav_panel 
-    {
-      -webkit-transition: all 0.25s ease;
-      -moz-transition: all 0.25s ease;
-      -ms-transition: all 0.25s ease;
-      -o-transition: all 0.25s ease;
-      transition: all 0.25s ease;
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      left: 100%;
-      top: 0;
-      background: $FNW_BACKGROUND;
-    }
-    
-    .nav_panel.pushed
-    {
-      left: 0;
-    }
-  }
+  -webkit-transition: all 0.25s ease;
+  -moz-transition: all 0.25s ease;
+  -ms-transition: all 0.25s ease;
+  -o-transition: all 0.25s ease;
+  transition: all 0.25s ease;
   
-  #content #container
+  h3
   {
-    h1, h2, h3, h4, h5, h6
-    {
-      color: $FNW_RED;
-      font-weight: normal;  
-    }
-    
-    h4.specialty_links
-    {
-      color: $FNW_TEXT;
-    }
-    
-    p
-    {
-      margin: 9px 0 0 0;
-    }
-    
-    p.collapse_up
-    {
-      margin-top: 0;
-    }
-    
-    p:empty
-    {
-      margin: 0;
-    }
+    color: $FNW_RED;
+    padding: 0 $FNW_NAV_PADDING_RIGHT 0 $FNW_NAV_PADDING_LEFT;
+    font-weight: normal;
     
     a
     {
-      color: $FNW_BLUE;
+      color: inherit;
       text-decoration: none;
     }
     
@@ -346,334 +235,323 @@ body
     {
       text-decoration: underline;
     }
+  }
+  
+  ul
+  {
+    list-style: none;
+    margin: 5px 0 0 0;
     
-    a.address
+    li
     {
-      text-decoration: none;
-    }
-    
-    a.address:hover
-    {
-      text-decoration: underline;
-    }
-    
-    a.btn:hover
-    {
-      text-decoration: none;
-    }
-    
-    ul
-    {
-      margin: 0 0 0 1em;
+      border-top: 1px solid $FNW_LIGHT_GRAY;
+      white-space: nowrap;
       
-      li
-      {
-        list-style-position: inside;
-      }
-    }
-    
-    ul.pager
-    {
-      margin-top: 1em;
-    }
-    
-    .investigation p:first-child
-    {
-      margin-top: 0.75em;
-    }
-    
-    .red_flag p:first-child
-    {
-      margin-top: 0.75em;
-    }
-    
-    td.admin.btn-group
-    {
-      width: 120px;
-    }
-    
-    a.btn
-    {
-      color: $FNW_TEXT;
-      font-weight: normal;
-    }
-      
-    a.btn.btn-primary, a.btn.btn-danger, a.btn.btn-warning
-    {
-      color: #fff;
-    }
-      
-    a.btn.btn-top-pad
-    {
-      margin-top: 10px;
-    }
-      
-    a.btn.btn-bottom-pad
-    {
-      margin-bottom: 10px;
-    }
-    
-    .tabbable
-    {
-      ul.nav-tabs
-      {
-        margin: 10px 0;
-        border-color: $FNW_MID_GRAY;
-        
-        li
-        {
-          margin-left: 5px;
-          
-          a
-          {
-            border: 1px solid $FNW_LIGHT_GRAY;
-            border-bottom-color: transparent;
-            text-decoration: none;
-          }
-        }
-      
-        li.active
-        {
-          a
-          {
-            border-color: $FNW_MID_GRAY;
-            border-bottom-color: transparent;
-          }
-        }
-        
-        li:not(.active) a:hover
-        {
-          background: $FNW_LIGHT_BLUE;
-          border-coor: $FNW_MID_GRAY;
-          border-bottom-color: transparent;
-          color: $FNW_RED;
-          cursor: pointer;
-        }
-      }
-      
-      ul.nav-pills
-      {
-        li:not(.active) a
-        {
-          background: $FNW_LIGHT_GRAY;
-        }
-      
-        li.active
-        {
-          a
-          {
-            color: $FNW_LIGHT_GRAY;
-          }
-        }
-        
-        li:hover
-        {
-          a
-          {
-            text-decoration: none;
-          }
-        }
-      }
-    }
-    
-    .table
-    {
-      th
-      {
-        border-top: 0;
-      }
-      
-      th.status_column
-      {
-        width: 110px;
-      }
-      
-      th.wait_time_column
-      {
-        width: 110px;
-      }
-      
-      th.specialty_column
-      {
-        min-width: 80px;
-      }
-      
-      tr td 
-      {
-        border-top: 1px solid $FNW_LIGHT_GRAY;
-        vertical-align: middle;
-        height: $LINK_MIN_HEIGHT;
-        padding-top:0;
-        padding-bottom:0;
-        
-        .status_available,
-        .status_unavailable,
-        .status_unknown,
-        .status_warning
-        {
-          visibility: hidden;
-        }
-        
-        .status_available:before, 
-        .status_unavailable:before, 
-        .status_unknown:before, 
-        .status_warning:before
-        {
-          visibility: visible;
-          margin-left: 0;
-          margin-right: 0;
-        }
-        
-        ul
-        {
-          margin: 0;
-          
-          li
-          {
-            list-style-type: none;
-          }
-        }
-      }
-      
-      tr.not-responded td
-      {
-        color: $FNW_DISABLED_TEXT;
-        
-        a
-        {
-          color: $FNW_DISABLED_TEXT;
-        }
-      }
-    }
-    
-    table.tablesorter
-    {
-      thead tr 
-      {
-        th.headerSortUp:after, 
-        th.headerSortDown:after,
-        th:after
-        {
-          display: inline-block;
-          margin-left: 10px;
-          width: 14px;
-          height: 14px;
-          background-position: 14px 14px;
-          background-repeat: no-repeat;
-          background-image: url(/img/glyphicons-halflings-blue.png);
-          content: "\0000a0";
-        }
-        
-        th:hover
-        {
-          cursor: pointer;
-        }
-        
-        th.headerSortUp:after
-        {
-          background-position: -289px -96px;       
-        }
-        
-        th.headerSortDown:after 
-        {
-          background-position: -312px -96px;
-        }
-        
-        th.headerSortUp + th.headerSortUp:after, 
-        th.headerSortDown + th.headerSortDown:after, 
-        th.headerSortUp + th.headSortDown:after, 
-        th.headerSortDown + th.headerSortUp:after
-        {
-          background-position: 14px 14px;
-        } 
-      }
-    }
-    
-    .form-horizontal
-    {
-      h1, h2, h3, h4, h5, h6
-      {
-        color: $FNW_RED;
-        margin-bottom: 10px;
-      }
-      
-      .row .fields .row
-      {
-        margin-left: 0;
-      }
-      
-      #availability
-      {
-        select.unavailable_from, span.unavailable_to, select.unavailable_to
-        {
-          width: auto;
-          float: left;
-          margin-right: 5px;
-        }
-        
-        select.unavailable_to:first-child
-        {
-          clear: both;
-        }
-      }
-      
-      .control-group
-      {
-        clear: both;
-      }
-    }
-    
-    .row.spaced
-    {
-      margin-top: 5px;
-      margin-bottom: 5px;
-    }
-    
-    .pagination
-    {
       a
       {
-        padding: 0 8px;
-        line-height: 30px;
+        min-height: $LINK_MIN_HEIGHT;
+        line-height: $LINK_MIN_HEIGHT;
+        padding: 0 $FNW_NAV_PADDING_RIGHT 0 $FNW_NAV_PADDING_LEFT;
+        display: inline-block;
+        width: 100% - $FNW_NAV_PADDING_RIGHT - $FNW_NAV_PADDING_LEFT;
+        color: $FNW_BLUE;
+        text-decoration: none;
       }
       
       a:hover
       {
+        color: $FNW_RED;
+        background-color: $FNW_LIGHT_BLUE;
         text-decoration: none;
       }
-      
-      .disabled a
-      {
-        color: $FNW_TEXT;
-      }
+    }
+    
+    li.active a
+    {
+      color: $FNW_RED;
+      background: url(/img/nav_arrow_mask_small.png) no-repeat 100% 50% $FNW_LIGHT_BLUE;
+      text-decoration: none;
     }
   }
 }
-
-.tooltip.top .tooltip-arrow
-{
-  border-top-color: $FNW_LIGHT_BLUE;
-}
   
-.tooltip-inner
+#left-nav.pushed
 {
-  background: $FNW_LIGHT_BLUE;
-  color: $FNW_BLUE;
-  font-size: 13px;
-  text-align: left;
-  ul
+  height: 0px;
+}
+
+#content #container
+{
+  h1, h2, h3, h4, h5, h6
   {
-    list-style: none;
-    margin: 5px;
-    padding: 0;
+    color: $FNW_RED;
+    font-weight: normal;  
   }
+  
+  h3.pull-left
+  {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 3px 0 0 0;
+  }
+  
+  h4.specialty_links
+  {
+    color: $FNW_TEXT;
+  }
+  
+  p
+  {
+    margin: 9px 0 0 0;
+  }
+  
+  p.collapse_up
+  {
+    margin-top: 0;
+  }
+  
+  p:empty
+  {
+    margin: 0;
+  }
+  
   a
   {
-    color: inherit;
+    color: $FNW_BLUE;
     text-decoration: none;
   }
+  
   a:hover
   {
     text-decoration: underline;
+  }
+  
+  a.address
+  {
+    text-decoration: none;
+  }
+  
+  a.address:hover
+  {
+    text-decoration: underline;
+  }
+  
+  a.btn:hover
+  {
+    text-decoration: none;
+  }
+  
+  ul
+  {
+    margin: 0 0 0 1em;
+    
+    li
+    {
+      list-style-position: inside;
+    }
+  }
+  
+  ul.pager
+  {
+    margin-top: 1em;
+  }
+  
+  .investigation p:first-child
+  {
+    margin-top: 0.75em;
+  }
+  
+  .red_flag p:first-child
+  {
+    margin-top: 0.75em;
+  }
+  
+  td.admin.btn-group
+  {
+    width: 120px;
+  }
+  
+  a.btn
+  {
+    color: $FNW_TEXT;
+    font-weight: normal;
+  }
+    
+  a.btn.btn-primary, a.btn.btn-danger, a.btn.btn-warning
+  {
+    color: #fff;
+  }
+    
+  a.btn.btn-top-pad
+  {
+    margin-top: 10px;
+  }
+    
+  a.btn.btn-bottom-pad
+  {
+    margin-bottom: 10px;
+  }
+  
+  .table
+  {
+    th
+    {
+      border-top: 0;
+    }
+    
+    th.status_column
+    {
+      width: 110px;
+    }
+    
+    th.wait_time_column
+    {
+      width: 110px;
+    }
+    
+    th.specialty_column
+    {
+      min-width: 80px;
+    }
+    
+    tr td 
+    {
+      border-top: 1px solid $FNW_LIGHT_GRAY;
+      vertical-align: middle;
+      height: $LINK_MIN_HEIGHT;
+      padding-top:0;
+      padding-bottom:0;
+      
+      .status_available,
+      .status_unavailable,
+      .status_unknown,
+      .status_warning
+      {
+        visibility: hidden;
+      }
+      
+      .status_available:before, 
+      .status_unavailable:before, 
+      .status_unknown:before, 
+      .status_warning:before
+      {
+        visibility: visible;
+        margin-left: 0;
+        margin-right: 0;
+      }
+      
+      ul
+      {
+        margin: 0;
+        
+        li
+        {
+          list-style-type: none;
+        }
+      }
+    }
+    
+    tr.not-responded td
+    {
+      color: $FNW_DISABLED_TEXT;
+      
+      a
+      {
+        color: $FNW_DISABLED_TEXT;
+      }
+    }
+  }
+  
+  table.tablesorter
+  {
+    thead tr 
+    {
+      th.headerSortUp:after, 
+      th.headerSortDown:after,
+      th:after
+      {
+        display: inline-block;
+        margin-left: 10px;
+        width: 14px;
+        height: 14px;
+        background-position: 14px 14px;
+        background-repeat: no-repeat;
+        background-image: url(/img/glyphicons-halflings-blue.png);
+        content: "\0000a0";
+      }
+      
+      th:hover
+      {
+        cursor: pointer;
+      }
+      
+      th.headerSortUp:after
+      {
+        background-position: -289px -96px;       
+      }
+      
+      th.headerSortDown:after 
+      {
+        background-position: -312px -96px;
+      }
+      
+      th.headerSortUp + th.headerSortUp:after, 
+      th.headerSortDown + th.headerSortDown:after, 
+      th.headerSortUp + th.headSortDown:after, 
+      th.headerSortDown + th.headerSortUp:after
+      {
+        background-position: 14px 14px;
+      } 
+    }
+  }
+  
+  .form-horizontal
+  {
+    h1, h2, h3, h4, h5, h6
+    {
+      color: $FNW_RED;
+      margin-bottom: 10px;
+    }
+    
+    .row .fields .row
+    {
+      margin-left: 0;
+    }
+    
+    #availability
+    {
+      select.unavailable_from, span.unavailable_to, select.unavailable_to
+      {
+        width: auto;
+        float: left;
+        margin-right: 5px;
+      }
+      
+      select.unavailable_to:first-child
+      {
+        clear: both;
+      }
+    }
+  }
+  
+  .well
+  {
+    .filter-group-title
+    {
+      color: $FNW_TEXT;
+      font-weight: bold;
+    }
+    
+    a.filter-group-title:hover
+    {
+      color: $FNW_RED;
+      text-decoration: none;
+    }
+  }
+  
+  .row.spaced
+  {
+    margin-top: 5px;
+    margin-bottom: 5px;
   }
 }

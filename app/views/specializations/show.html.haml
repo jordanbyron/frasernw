@@ -7,7 +7,7 @@
       $('.tablesorter').tablesorter({sortList: [[1,0],[2,0]]});
     });
   
-%h2= @specialization.name
+%h3.pull-left= @specialization.name
 
 - if @specialization.in_progress
   %h4{:class => @specialization.in_progress ? "in-progress" : ""} In Progress
@@ -23,17 +23,36 @@
     - if has_specialists
       %li{:class => specialist_tab_class} 
         %a{"href" => "#specialist_tab", "data-toggle" => "tab"} 
-          %i.icon-user.icon-text
+          %i.icon-user.icon-blue
           Specialists
     - if has_clinics
       %li{:class => clinic_tab_class}
         %a{"href" => "#clinic_tab", "data-toggle" => "tab"}
-          %i.icon-home.icon-text
+          %i.icon-home.icon-blue
           Clinics
 
   .tab-content
-    #specialist_tab.tab-pane{:class => specialist_tab_class} 
-      - if has_specialists
+    - if has_specialists
+      #specialist_tab.tab-pane{:class => specialist_tab_class} 
+      
+        .well
+          .filter-group
+            .filter-group-title Filter results by focused areas of practice
+        
+            #filter-group-content-focused.filter-group-content.in
+              %ul.nav.nav-pills.small
+                - @specialization.focused_procedure_specializations.each do |ps|
+                  %li= link_to ps.procedure.name, procedure_path(ps.procedure)
+      
+          .filter-group
+            %a.filter-group-title{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#filter-group-content-nonfocused"}
+              Filter results by other metrics
+        
+            #filter-group-content-nonfocused.filter-group-content.collapse
+              %ul.nav.nav-pills.small
+                - @specialization.nonfocused_procedure_specializations.each do |ps|
+                  %li= link_to ps.procedure.name, procedure_path(ps.procedure)
+      
         %table.table.table-condensed.tablesorter{:id => 'specialist_table'}
           %thead
             %tr{:class => 'tableheader'}
@@ -52,8 +71,8 @@
                 %td= specialist.waittime
                 %td= specialist.city
           
-    #clinic_tab.tab-pane{:class => clinic_tab_class}
-      - if has_clinics
+    - if has_clinics
+      #clinic_tab.tab-pane{:class => clinic_tab_class}
         %table.table.table-condensed{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'clinic_table'}
           %thead
             %tr{:class => 'tableheader'}

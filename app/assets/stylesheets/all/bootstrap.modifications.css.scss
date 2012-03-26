@@ -1,3 +1,5 @@
+@import "_globals";
+
 /* ADDING NEW SPANS */
 
 .spanhalf {
@@ -23,6 +25,17 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
   margin-left: 40px;
 }
 
+/* NAVBAR */
+.navbar 
+{
+  margin-bottom: 10px;
+  
+  .container
+  {
+    width: 940px;
+  }
+}
+
 /* FIXING ICON PATHING */
 
 [class^="icon-"],
@@ -34,59 +47,205 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
   background-image: url("/img/glyphicons-halflings-white.png");
 }
 
-/* REMOVING TABLE HOVER */
-
-.table tbody tr:hover td,
-.table tbody tr:hover th {
-  background-color: transparent;
-}
-
-/* FORM STYLING */
-
-.form-horizontal
+#content #container
 {
-  textarea
-  {
-    height: 70px;
+
+  /* REMOVING TABLE HOVER */
+
+  .table tbody tr:hover td,
+  .table tbody tr:hover th {
+    background-color: transparent;
   }
 
-  /* better bootstrap defaults for wrapping */
-  .radio.inline, .checkbox.inline
+  /* FORM STYLING */
+
+  .form-horizontal
   {
-    margin-right: 15px;
+    textarea
+    {
+      height: 70px;
+    }
+
+    /* better bootstrap defaults for wrapping */
+    .radio.inline, .checkbox.inline
+    {
+      margin-right: 15px;
+    }
+
+    .radio.inline + .radio.inline, .checkbox.inline + .checkbox.inline {
+      margin-left: 0;
+    }
+
+    .control-group-tight
+    {
+      margin-bottom: 0px;
+    }
+    
+    .control-label
+    {
+      width: 220px;
+    }
+    
+    .controls 
+    {
+      margin-left: 220px;
+      padding-left: 20px;
+      
+      input[type="text"]:not([class*="span"]),
+      input[type="tel"]:not([class*="span"]),
+      input[type="email"]:not([class*="span"]),
+      textarea:not([class*="span"]),
+      {
+        /* remove some for input padding */
+        width: 290px;
+      }
+      
+      select:not([class*="span"])
+      {
+        width: 300px;
+      }
+    }
   }
 
-  .radio.inline + .radio.inline, .checkbox.inline + .checkbox.inline {
+  /* TABS */
+
+  .tabbable
+  {
+    ul.nav-tabs
+    {
+      margin: 0 0 10px 0;
+      border-color: $FNW_LIGHT_BLUE;
+      
+      li
+      {
+        margin-left: 5px;
+        
+        a
+        {
+          border: 1px solid $FNW_LIGHT_GRAY;
+          border-bottom-color: transparent;
+          text-decoration: none;
+          font-weight: bold;
+        }
+      }
+    
+      li.active
+      {
+        a
+        {
+          border-color: $FNW_LIGHT_BLUE;
+          border-bottom-color: transparent;
+        }
+      }
+      
+      li:not(.active) a:hover
+      {
+        background: $FNW_LIGHT_BLUE;
+        border-coor: $FNW_LIGHT_BLUE;
+        border-bottom-color: transparent;
+        color: $FNW_RED;
+        cursor: pointer;
+        
+        i.icon-blue
+        {
+          background-image: url(/img/glyphicons-halflings-red.png);
+        }
+      }
+    }
+  }
+
+  /* PILLS */
+        
+  ul.nav-pills
+  {
     margin-left: 0;
+
+    li:not(.active) a
+    {
+      border: 1px solid $FNW_LIGHT_BLUE;
+    }
+
+    li.active a
+    {
+      color: $FNW_LIGHT_GRAY;
+    }
+    
+    li:hover a
+    {
+      text-decoration: none;
+      background-color: $FNW_LIGHT_BLUE;
+      color: $FNW_RED;
+    }
   }
 
-  .control-group-tight
+  .nav-pills.small > li > a 
   {
-    margin-bottom: 0px;
+    padding: 5px 8px;
+    margin: 2px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
   }
-  
-  .control-label
-  {
-    width: 220px;
-  }
-  
-  .controls 
-  {
-    margin-left: 220px;
-    padding-left: 20px;
+
+  /* PAGINATION */
     
-    input[type="text"]:not([class*="span"]),
-    input[type="tel"]:not([class*="span"]),
-    input[type="email"]:not([class*="span"]),
-    textarea:not([class*="span"]),
+  .pagination
+  {
+    a
     {
-      /* remove some for input padding */
-      width: 290px;
+      padding: 0 8px;
+      line-height: 30px;
     }
     
-    select:not([class*="span"])
+    a:hover
     {
-      width: 300px;
+      text-decoration: none;
     }
+    
+    .disabled a
+    {
+      color: $FNW_TEXT;
+    }
+  }
+
+  /* TOOLTIPS */
+
+  .tooltip.top .tooltip-arrow
+  {
+    border-top-color: $FNW_LIGHT_BLUE;
+  }
+    
+  .tooltip-inner
+  {
+    background: $FNW_LIGHT_BLUE;
+    color: $FNW_BLUE;
+    font-size: 13px;
+    text-align: left;
+    ul
+    {
+      list-style: none;
+      margin: 5px;
+      padding: 0;
+    }
+    a
+    {
+      color: inherit;
+      text-decoration: none;
+    }
+    a:hover
+    {
+      text-decoration: underline;
+    }
+  }
+  
+  /* WELL */
+  
+  .well
+  {
+    background-color: $FNW_LIGHT_GRAY;
+    border-color: $FNW_LIGHT_BLUE;
+    padding: 8px;
+    margin-bottom: 8px;
   }
 }
+  
