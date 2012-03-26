@@ -127,6 +127,7 @@ class SpecialistsController < ApplicationController
   
   def edit_referral_forms
     @entity = Specialist.find(params[:id])
+    @entity.referral_forms.build if @entity.referral_forms.length == 0
     @entity_type = "office"
     render :template => 'referral_form/edit', :layout => 'ajax' if request.headers['X-PJAX']
   end
