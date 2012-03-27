@@ -58,7 +58,7 @@ class SpecialistsController < ApplicationController
       o = os.build_office
       l = o.build_location
     end
-    @offices = Office.all.reject{|o| o.empty? || o.location.resolved_address.blank? || o.short_address.blank?}.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+    @offices = Office.all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
     @specializations_clinics = []
     @specialist.specializations_including_in_progress.each { |s| 
       @specializations_clinics += s.clinics.collect { |c| [c.name, c.id] }

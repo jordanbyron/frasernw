@@ -2,7 +2,7 @@ class OfficesController < ApplicationController
   load_and_authorize_resource
   
   def index
-    @offices = Office.all
+    @offices = Office.all.reject{ |o| o.empty? }
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
