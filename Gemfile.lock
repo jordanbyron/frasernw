@@ -108,9 +108,6 @@ GEM
       rest-client (~> 1.6.1)
       rubyzip
       term-ansicolor (~> 1.0.5)
-    heroku_backup_task (0.0.5.1)
-      heroku (>= 1.13.7)
-      rake
     heroku_cloud_backup (0.0.6)
       fog (>= 0.7.2)
       heroku (>= 2.1.4)
@@ -275,7 +272,6 @@ DEPENDENCIES
   guard-spork
   haml-rails
   heroku
-  heroku_backup_task
   heroku_cloud_backup
   jquery-rails
   mocha
