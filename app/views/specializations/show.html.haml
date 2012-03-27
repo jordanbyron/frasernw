@@ -37,12 +37,11 @@
       
         .well
           .filter-group
-            .filter-group-title Filter results by focused areas of practice
-        
             #filter-group-content-focused.filter-group-content.in
               %ul.nav.nav-pills.small
                 - @specialization.focused_procedure_specializations.each do |ps|
-                  %li= link_to ps.procedure.name, procedure_path(ps.procedure)
+                  %li
+                    %a{"href" => "javascript:void(0)", "data-toggle" => "filter", "data-metric" => "p#{ps.procedure.id}", "data-target" => "#specialist_table"}= ps.procedure.name
       
           .filter-group
             %a.filter-group-title{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#filter-group-content-nonfocused"}
@@ -51,7 +50,8 @@
             #filter-group-content-nonfocused.filter-group-content.collapse
               %ul.nav.nav-pills.small
                 - @specialization.nonfocused_procedure_specializations.each do |ps|
-                  %li= link_to ps.procedure.name, procedure_path(ps.procedure)
+                  %li
+                    %a{"href" => "javascript:void(0)", "data-toggle" => "filter", "data-metric" => ps.procedure.id, "data-target" => "#specialist_table"}= ps.procedure.name
       
         %table.table.table-condensed.tablesorter{:id => 'specialist_table'}
           %thead
@@ -63,7 +63,7 @@
           %tbody
             - (@specialization.specialists).each do |specialist|
               - next if not specialist.show_in_table?
-              %tr{:class => specialist.not_responded? ? "not-responded" : ""}
+              %tr{:class => specialist.not_responded? && "not-responded", "data-filter" => "#{specialist.procedure_specializations.each.map{|ps| "p#{ps.procedure.id}"}.join(" ")}"}
                 %td
                   %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                 %td

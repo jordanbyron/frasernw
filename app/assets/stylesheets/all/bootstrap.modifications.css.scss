@@ -16,15 +16,6 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
   width: 98px;
 }
 
-.span8half {
-  width: 650px;
-  margin-left: 10px;
-}
-
-.offsethalf {
-  margin-left: 40px;
-}
-
 /* NAVBAR */
 .navbar 
 {
@@ -174,7 +165,17 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
     {
       text-decoration: none;
       background-color: $FNW_LIGHT_BLUE;
-      color: $FNW_RED;
+    }
+  
+    li a.filtered
+    {
+      background-color: $FNW_BLUE;
+      color: $FNW_BACKGROUND;
+    }
+    
+    li:hover a.filtered
+    {
+      background-color: $FNW_MID_BLUE;
     }
   }
 

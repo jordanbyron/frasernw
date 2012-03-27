@@ -42,7 +42,7 @@
           %tbody
             - (@language.specialists).each do |specialist|
               - next if not specialist.show_in_table?
-              %tr{:class => specialist.not_responded? ? "not-responded" : ""}
+              %tr{:class => specialist.not_responded? && "not-responded"}
                 %td
                   %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                 %td
