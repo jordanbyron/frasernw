@@ -17,7 +17,7 @@ class Clinic < ActiveRecord::Base
   accepts_nested_attributes_for :schedule
   
   #clinics speak many languages
-  has_many   :clinic_speaks, :dependent => :destroy
+  has_many   :clinic_speaks, :dependent => :destroy, :dependent => :destroy
   has_many   :languages, :through => :clinic_speaks, :order => "name ASC"
   
   #clinics have multiple referral forms

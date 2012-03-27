@@ -25,7 +25,7 @@ class Specialist < ActiveRecord::Base
   has_many   :languages, :through => :specialist_speaks
   
   #specialists have multiple referral forms
-  has_many   :referral_forms, :as => :referrable
+  has_many   :referral_forms, :as => :referrable, :dependent => :destroy
   accepts_nested_attributes_for :referral_forms, :allow_destroy => true
   
   # specialists are favorited by users of the system
