@@ -206,6 +206,14 @@ class Specialist < ActiveRecord::Base
     Specialist::SEX_HASH[sex_mask]
   end
   
+  def male?
+    sex_mask == 1
+  end
+  
+  def female?
+    sex_mask == 2
+  end
+  
   def sex?
     sex_mask != 3
   end

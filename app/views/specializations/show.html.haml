@@ -1,5 +1,7 @@
 - title "Pathways | #{@specialization.name}"
 
+%script{"type" => "text/javascript", "src" => "/specializations/#{@specialization.id}/index_filter.js"}
+
 %script{"type" => "text/javascript"}
   :plain
     $(document).ready(function() {
@@ -41,7 +43,7 @@
               %ul.nav.nav-pills.small
                 - @specialization.focused_procedure_specializations.each do |ps|
                   %li
-                    %a{"href" => "javascript:void(0)", "data-toggle" => "filter", "data-metric" => "p#{ps.procedure.id}", "data-target" => "#specialist_table"}= ps.procedure.name
+                    %a{"href" => "javascript:void(0)", "data-toggle" => "filter", "data-filter" => "p#{ps.procedure.id}", "data-target" => "#specialist_table"}= ps.procedure.name
       
           .filter-group
             %a.filter-group-title{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#filter-group-content-nonfocused"}
@@ -51,7 +53,11 @@
               %ul.nav.nav-pills.small
                 - @specialization.nonfocused_procedure_specializations.each do |ps|
                   %li
-                    %a{"href" => "javascript:void(0)", "data-toggle" => "filter", "data-metric" => ps.procedure.id, "data-target" => "#specialist_table"}= ps.procedure.name
+                    %a{"href" => "javascript:void(0)", "data-toggle" => "filter", "data-filter" => "p#{ps.procedure.id}", "data-target" => "#specialist_table"}= ps.procedure.name
+                %li
+                  %a{"href" => "javascript:void(0)", "data-toggle" => "filter", "data-filter" => "sexm", "data-target" => "#specialist_table"} Male
+                %li
+                  %a{"href" => "javascript:void(0)", "data-toggle" => "filter", "data-filter" => "sexf", "data-target" => "#specialist_table"} Female
       
         %table.table.table-condensed.tablesorter{:id => 'specialist_table'}
           %thead
@@ -63,7 +69,7 @@
           %tbody
             - (@specialization.specialists).each do |specialist|
               - next if not specialist.show_in_table?
-              %tr{:class => specialist.not_responded? && "not-responded", "data-filter" => "#{specialist.procedure_specializations.each.map{|ps| "p#{ps.procedure.id}"}.join(" ")}"}
+              %tr{:class => specialist.not_responded? && "not-responded", :id => "s#{specialist.id}"}
                 %td
                   %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                 %td
