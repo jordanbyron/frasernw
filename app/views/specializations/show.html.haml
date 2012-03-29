@@ -1,6 +1,18 @@
 - title "Pathways | #{@specialization.name}"
 
-%script{"type" => "text/javascript", "src" => "/specializations/#{@specialization.id}/index_filter.js"}
+%script{"type" => "text/javascript"}
+  $(document).ready(function() {
+  console.log('init table data')
+  - @specialization.specialists.each do |s|
+    - next if not s.show_in_table?
+    - filter_attributes = []
+    - s.procedure_specializations.each do |ps|
+      - filter_attributes << "p#{ps.procedure.id}"
+    - filter_attributes << "sexm" if s.male?
+    - filter_attributes << "sexf" if s.female?
+    $('#s#{s.id}').data('filter', '#{filter_attributes.join(' ')}');
+  });
+    
 
 %script{"type" => "text/javascript"}
   :plain

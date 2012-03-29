@@ -5,13 +5,6 @@ class SpecialistsController < ApplicationController
   def index
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
-  def index_filter
-    @specialist = Specialist.find(params[:id])
-    respond_to do |format|
-      index_filter.js
-    end
-  end
 
   def show
     @specialist = Specialist.find(params[:id])
