@@ -10,3 +10,7 @@
 //= require jquery.history.js
 //= require ajaxify-html5.js
 //= require_tree .
+
+Array.prototype.to_sentence = function() {
+  return this.join(", ").replace(/,\s([^,]+)$/, ' and $1')
+}

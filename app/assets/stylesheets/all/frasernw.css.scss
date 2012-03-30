@@ -27,7 +27,7 @@ body
 #main-nav .navbar-inner
 {
   background-color: $FNW_DARK_GRAY;
-  background-image: none;
+  background-image: url(/img/header-bg.jpg);
   border-radius: 0;
   box-shadow: 0 3px 5px $FNW_MID_GRAY;
   
@@ -36,7 +36,7 @@ body
     font-size: 26px;
     line-height: 20px;
     text-shadow: #333 0 0 5px;
-    font-weight: 200;
+    font-weight: 100;
   }
   
   .brand:hover
@@ -534,12 +534,13 @@ $LINK_MIN_HEIGHT: 31px;
     }
   }
   
-  .well
+  .filter
   {
     .filter-group-title
     {
       color: $FNW_TEXT;
       font-weight: bold;
+      padding-bottom: 8px;
     }
     
     a.filter-group-title:hover
@@ -547,6 +548,59 @@ $LINK_MIN_HEIGHT: 31px;
       color: $FNW_RED;
       text-decoration: none;
     }
+    
+    label
+    {
+      display: block;
+      text-indent: -18px;
+      padding-left: 18px;
+      
+      input
+      {
+        display: inline;
+        margin-right: 5px;
+      }
+    }
+    
+    label.indent
+    {
+      margin-left: 18px;
+    }
+    
+    .more
+    {
+      margin-left: 18px;
+    }
+    
+    label.half
+    {
+      display: inline-block;
+      width: 80px;
+    }
+    
+    hr
+    {
+      margin: 8px auto;
+      border: 0;
+      height: 1px;
+      background-color: $FNW_MID_GRAY;
+    }
+  }
+  
+  .filter-phrase
+  {
+    background-color: $FNW_LIGHT_BLUE;
+    padding: 8px;
+    font-weight: bold;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+  }
+  
+  .filter-phrase.none
+  {
+    background-color: $FNW_RED;
+    color: $FNW_BACKGROUND;
   }
   
   .row.spaced
