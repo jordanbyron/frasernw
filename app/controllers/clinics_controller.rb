@@ -49,7 +49,7 @@ class ClinicsController < ApplicationController
       @clinic.build_location
       @clinic.location.build_address
     elsif @clinic.location.address.blank?
-      @clinic.build_address
+      @clinic.location.build_address
     end
     if @clinic.focuses.count == 0
       @clinic.focuses.build
