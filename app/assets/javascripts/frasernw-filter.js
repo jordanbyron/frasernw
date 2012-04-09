@@ -118,7 +118,6 @@ var update_specialist_table = function() {
 }
 
 var update_clinic_table = function() {
-  console.log("bing")
   var current_filters = new Array();
   var procedures = new Array();
   var languages = new Array();
