@@ -47,6 +47,8 @@ body
   
 #search_results
 {
+  $SEARCH_BORDER_RADIUS: 4px;
+
   z-index: 1979;
   position: absolute;
   overflow: hidden;
@@ -56,15 +58,15 @@ body
   padding: 0;
   width: 406px;
   background-color: $FNW_BACKGROUND;
-  border-bottom: 3px solid $FNW_DARK_GRAY;
-  border-left: 3px solid $FNW_DARK_GRAY;
-  border-right: 3px solid $FNW_DARK_GRAY;
-  -webkit-border-bottom-right-radius: 10px;
-  -webkit-border-bottom-left-radius: 10px;
-  -moz-border-bottom-left-radius: 10px;
-  -moz-border-bottom-right-radius: 10px;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-bottom: 1px solid $FNW_DARK_GRAY;
+  border-left: 1px solid $FNW_DARK_GRAY;
+  border-right: 1px solid $FNW_DARK_GRAY;
+  -webkit-border-bottom-right-radius: $SEARCH_BORDER_RADIUS;
+  -webkit-border-bottom-left-radius: $SEARCH_BORDER_RADIUS;
+  -moz-border-bottom-left-radius: $SEARCH_BORDER_RADIUS;
+  -moz-border-bottom-right-radius: $SEARCH_BORDER_RADIUS;
+  border-bottom-left-radius: $SEARCH_BORDER_RADIUS;
+  border-bottom-right-radius: $SEARCH_BORDER_RADIUS;
   -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
   box-shadow: 0 3px 5px $FNW_MID_GRAY;
@@ -151,18 +153,19 @@ body
       background: $FNW_LIGHT_BLUE;
       a
       {
+        color: $FNW_RED;
         text-decoration: none;
       }
     }
     
     li.result:last-of-type
     {
-      -webkit-border-bottom-right-radius: 10px;
-      -webkit-border-bottom-left-radius: 10px;
-      -moz-border-bottom-left-radius: 10px;
-      -moz-border-bottom-right-radius: 10px;
-      border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px;
+      -webkit-border-bottom-right-radius: $SEARCH_BORDER_RADIUS;
+      -webkit-border-bottom-left-radius: $SEARCH_BORDER_RADIUS;
+      -moz-border-bottom-left-radius: $SEARCH_BORDER_RADIUS;
+      -moz-border-bottom-right-radius: $SEARCH_BORDER_RADIUS;
+      border-bottom-left-radius: $SEARCH_BORDER_RADIUS;
+      border-bottom-right-radius: $SEARCH_BORDER_RADIUS;
     }
     
     li.empty
@@ -472,11 +475,6 @@ body
     }
     
     label.indent
-    {
-      margin-left: 18px;
-    }
-    
-    .more
     {
       margin-left: 18px;
     }
