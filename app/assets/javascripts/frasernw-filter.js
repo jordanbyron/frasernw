@@ -6,7 +6,7 @@ var update_specialist_table = function() {
   var sex = '';
   
   // collect procedure filters
-  $('.filter-group-content > label > .sp').each( function() {
+  $('.filter-group-content > label > .sp, .filter-group-content > .more > label > .sp').each( function() {
     var $this = $(this);
     if ($this.prop('checked'))
     {  
@@ -123,7 +123,7 @@ var update_clinic_table = function() {
   var languages = new Array();
   
   // collect procedure filters
-  $('.filter-group-content > label > .cp').each( function() {
+  $('.filter-group-content > label > .cp, .filter-group-content > .more > label > .cp').each( function() {
     var $this = $(this);
     if ($this.prop('checked'))
     {  
