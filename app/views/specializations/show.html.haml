@@ -65,6 +65,19 @@
         %a{"href" => "#clinic_tab", "data-toggle" => "tab"}
           %i.icon-home.icon-blue
           Clinics
+    - if true
+      %li
+        %a{"href" => "#blank_tab", "data-toggle" => "tab"}
+          %i.icon-star.icon-blue
+          Pearls
+      %li
+        %a{"href" => "#blank_tab", "data-toggle" => "tab"}
+          %i.icon-list.icon-blue
+          Workups
+      %li
+        %a{"href" => "#blank_tab", "data-toggle" => "tab"}
+          %i.icon-file.icon-blue
+          Patient Education
 
   .tab-content
     - if has_specialists
@@ -292,6 +305,8 @@
                     $('.cp').click( update_clinic_table );
                     $('.cl').click( update_clinic_table );
                   });
+                  
+      #blank_tab.tab-pane
 
 %p.admin.btn-group
   - if can? :update, @specialization
