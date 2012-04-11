@@ -5,7 +5,7 @@ $FNW_STATUS_INDENT: 40px;
     
 .admin, .navbar .nav > li.admin
 {
-  /*display: none;*/
+  display: none;
 }
 
 .in-progress
@@ -20,29 +20,6 @@ body
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   padding-bottom: 30px;
-}
-
-#main-nav .navbar-inner
-{
-  background-color: $FNW_DARK_GRAY;
-  background-image: url(/img/header-bg.jpg);
-  border-radius: 0;
-  box-shadow: 0 3px 5px $FNW_MID_GRAY;
-  
-  .navbar-search .search-query, .navbar-search .search-query:focus
-  {
-    border: none;
-    padding: 5px 10px;
-    color: $FNW_TEXT;
-    background: $FNW_BACKGROUND;
-  }
-  
-  .navbar-search .search-query :-moz-placeholder {
-    color: $FNW_MID_GRAY;
-  }
-  .navbar-search .search-query::-webkit-input-placeholder {
-    color: $FNW_MID_GRAY;
-  }
 }
   
 #search_results

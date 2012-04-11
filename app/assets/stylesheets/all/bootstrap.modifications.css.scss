@@ -25,6 +25,29 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
   {
     width: 940px;
   }
+  
+  .navbar-inner
+  {
+    background-color: $FNW_NAV_BACKGROUND;
+    background-image: none;
+    border-radius: 0;
+    box-shadow: 0 3px 5px $FNW_MID_GRAY;
+    
+    .navbar-search .search-query, .navbar-search .search-query:focus
+    {
+      border: none;
+      padding: 5px 10px;
+      color: $FNW_TEXT;
+      background: $FNW_BACKGROUND;
+    }
+    
+    .navbar-search .search-query :-moz-placeholder {
+      color: $FNW_MID_GRAY;
+    }
+    .navbar-search .search-query::-webkit-input-placeholder {
+      color: $FNW_MID_GRAY;
+    }
+  }
 }
 
 /* FIXING ICON PATHING */
@@ -42,6 +65,18 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
 {
   margin-right: -5px;
   margin-bottom: 9px;
+}
+  
+/* DROPDOWN MENUS */
+  
+ul.dropdown-menu 
+{
+  border-color: $FNW_DARK_GRAY;
+  
+  li a:hover
+  {
+    background-color: $FNW_BLUE;
+  }
 }
 
 #content #container
@@ -111,7 +146,7 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
     ul.nav-tabs
     {
       margin: 0 0 10px 0;
-      border-color: $FNW_LIGHT_BLUE;
+      border-color: $FNW_DARK_GRAY;
       
       li
       {
@@ -119,10 +154,10 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
         
         a
         {
-          border: 1px solid $FNW_LIGHT_GRAY;
+          border: 1px solid $FNW_MID_GRAY;
           border-bottom-color: transparent;
+          font-size: 14px;
           text-decoration: none;
-          font-weight: bold;
         }
       }
     
@@ -130,7 +165,7 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
       {
         a
         {
-          border-color: $FNW_LIGHT_BLUE;
+          border-color: $FNW_DARK_GRAY;
           border-bottom-color: transparent;
         }
       }
@@ -138,8 +173,7 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
       li:not(.active) a:hover
       {
         background: $FNW_LIGHT_BLUE;
-        border-coor: $FNW_LIGHT_BLUE;
-        border-bottom-color: transparent;
+        border-color: $FNW_DARK_GRAY;
         color: $FNW_RED;
         cursor: pointer;
         
@@ -252,7 +286,7 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
   .well
   {
     background-color: $FNW_LIGHT_GRAY;
-    border-color: $FNW_LIGHT_BLUE;
+    border-color: $FNW_MID_GRAY;
     padding: 8px;
     margin-bottom: 8px;
   }
