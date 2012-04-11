@@ -25,6 +25,45 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
   {
     width: 940px;
   }
+
+  .navbar-inner
+  {
+    background-color: $FNW_RED;
+    background-image: none;
+    border-radius: 0;
+    box-shadow: 0 1px 3px $FNW_MID_GRAY;
+    
+    .navbar-search .search-query, .navbar-search .search-query:focus
+    {
+      border: none;
+      padding: 5px 10px;
+      color: $FNW_TEXT;
+      background: $FNW_BACKGROUND;
+    }
+    
+    .navbar-search .search-query :-moz-placeholder {
+      color: $FNW_MID_GRAY;
+    }
+    .navbar-search .search-query::-webkit-input-placeholder {
+      color: $FNW_MID_GRAY;
+    }
+    
+    li a
+    {
+      color: $FNW_BACKGROUND;
+    }
+    
+    ul.dropdown-menu li a
+    {
+      color: $FNW_BLUE;
+    }
+    
+    ul.dropdown-menu li a:hover
+    {
+      background: $FNW_LIGHT_BLUE;
+      color: $FNW_RED;
+    }
+  }
 }
 
 /* FIXING ICON PATHING */
