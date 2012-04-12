@@ -15,19 +15,19 @@
   
 - if @specialist.not_responded?
 
-  %p This specialist has not yet provided Pathways their information.
+  %p.space.no_indent This specialist has not yet provided Pathways their information.
   
 - elsif @specialist.moved_away?
 
-  %p This specialist has moved away.
+  %p.space.no_indent This specialist has moved away.
   
 - elsif @specialist.retired?
 
-  %p This specialist has retired.
+  %p.space.no_indent This specialist has retired.
   
 - elsif @specialist.purposely_not_yet_surveyed?
 
-  %p This specialist has purposely not yet been surveyed by Pathways. They may be out of our current catchment area, or in a speciality we have yet to fully survey.
+  %p.space.no_indent This specialist has purposely not yet been surveyed by Pathways. They may be out of our current catchment area, or in a speciality we have yet to fully survey.
   
 - elsif @specialist.hospital_or_clinic_only?
 
@@ -35,21 +35,21 @@
   - clinics = @specialist.clinics.present?
   
   - if hospitals && clinics
-    %p This specialist only works out of hospitals and clinics.
+    %p.space.no_indent This specialist only works out of hospitals and clinics.
   - elsif clinics
-    %p This specialist only works out of clinics.
+    %p.space.no_indent This specialist only works out of clinics.
   - elsif hospitals
-    %p This specialist only works out of hospitals.
+    %p.space.no_indent This specialist only works out of hospitals.
   - else
-    %p This specialist only works out of hopsitals and clinics, but we do not yet have data on which ones.
+    %p.space.no_indent This specialist only works out of hopsitals and clinics, but we do not yet have data on which ones.
     
   - if hospitals
-    %p
+    %p.space.no_indent
       %strong Hospital privileges:
       != @specialist.hospitals.map{ |hospital| "<a href='#{hospital_path(hospital)}' class='ajax')\">#{hospital.name}</a>" }.to_sentence 
 
   - if clinics
-    %p
+    %p.space.no_indent
       %strong Clinic associations:
       != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'>#{clinic.name}</a>" }.to_sentence
       
