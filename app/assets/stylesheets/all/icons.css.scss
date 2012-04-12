@@ -1,6 +1,7 @@
 @import "_globals";
 
-$FNW_STATUS_INDENT: 40px;    
+$FNW_STATUS_INDENT: 40px;   
+$FNW_ICON_WIDTH: 24px; 
 
 .icon-blue {
   background-image: url(/img/glyphicons-halflings-blue.png);
@@ -22,7 +23,7 @@ $FNW_STATUS_INDENT: 40px;
   background-image: url(/img/glyphicons-halflings-text.png);
 }
 
-.specialty_links a:first-child:before, .specialty:before, 
+.specialty:before, 
 .specialist:before, .user:before,
 .address:before, .office:before,
 .status_available:before, 
@@ -30,10 +31,11 @@ $FNW_STATUS_INDENT: 40px;
 .status_unknown:before, 
 .status_warning:before,
 .language:before, 
-.investigation p:first-child strong:before, .procedure:before,
+.procedure:before,
 .referral:before, 
-.red_flag p:first-child strong:before, 
-.hospital:before, 
+.red_flag:before, 
+.hospital:before,
+.association:before,
 .clinic:before,
 .attendance:before,
 .control:before,
@@ -41,16 +43,18 @@ $FNW_STATUS_INDENT: 40px;
 .history:before,
 .city:before, .province:before,
 .healthcare_provider:before,
-.patient_information p:first-child strong:before
+.patient_information:before
 {
   margin-left: -($FNW_STATUS_INDENT + 14px)/2;
   margin-right: ($FNW_STATUS_INDENT - 14px)/2;
+  margin-left: ($FNW_ICON_WIDTH - 14px)/2;
+  margin-right: ($FNW_ICON_WIDTH - 14px)/2;
   display: inline-block;
   width: 14px;
   height: 14px;
   background-position: 14px 14px;
   background-repeat: no-repeat;
-  background-image: url(/img/glyphicons-halflings-blue.png);
+  background-image: url(/img/glyphicons-halflings-red.png);
   content: "\0000a0";
 }
 
@@ -65,7 +69,7 @@ $FNW_STATUS_INDENT: 40px;
   background-image: url(/img/glyphicons-halflings-white.png);
 }
 
-.specialty_links a:first-child:before, .specialty:before
+.specialty:before
 {
   background-position: -48px -48px;
 }
@@ -77,7 +81,7 @@ $FNW_STATUS_INDENT: 40px;
 
 .address:before, .office:before
 {
-  background-position: -72px 0;
+  background-position: -24px -72px;
 }
 
 .language:before
@@ -85,7 +89,7 @@ $FNW_STATUS_INDENT: 40px;
   background-position: -240px -120px;
 }
 
-.investigation p:first-child strong:before, .procedure:before
+.procedure:before
 {
   background-position: -360px -48px;
 }
@@ -100,15 +104,20 @@ $FNW_STATUS_INDENT: 40px;
   background-position: -24px -24px;
 }
 
-.red_flag p:first-child strong:before
+.red_flag:before
 {
   background-image: url(/img/glyphicons-halflings-red.png);
   background-position: -312px -24px;
 }
     
-.hospital:before
+.hospital:before,
 {
   background-position: -408px -96px;
+}
+    
+.association:before
+{
+  background-position: -456px -118px;
 }
 
 .clinic:before
@@ -141,7 +150,7 @@ $FNW_STATUS_INDENT: 40px;
   background-position: -96px 0;
 }
 
-.patient_information p:first-child strong:before
+.patient_information:before
 {
   background-position: -120px -96px;
 }
