@@ -1,7 +1,7 @@
 - if @is_version
   = render 'versions/info'
 
-%h3
+%h2
   = @specialist.name
 %h4.specialty_links
   = @specialist.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
@@ -227,6 +227,14 @@
       %p
         %strong Clinic associations:
         != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'>#{clinic.name}</a>" }.to_sentence
+        
+  .btn-group
+    %a.btn
+      %i.icon-print.icon-text
+      Print Information for Patient
+    %a.btn
+      %i.icon-exclamation-sign.icon-text
+      Report Incorrect Information
         
 %script{"type" => "text/javascript"}
   :plain

@@ -42,7 +42,7 @@
       $('.tablesorter').tablesorter({sortList: [[1,0],[2,0]]});
     });
   
-%h3.pull-left= @specialization.name
+%h2= @specialization.name
 
 - if @specialization.in_progress
   %h4{:class => @specialization.in_progress ? "in-progress" : ""} In Progress

@@ -162,6 +162,11 @@ body
     font-weight: normal;  
   }
   
+  h2
+  {
+    margin-bottom: 8px;
+  }
+  
   h3.pull-left
   {
     padding-right: 8px;
@@ -246,6 +251,11 @@ body
     li
     {
       list-style-position: inside;
+    }
+    
+    ul
+    {
+      margin-left: 14px;
     }
   }
   
@@ -527,13 +537,11 @@ body
   
   .investigation .list
   {
-   /*
     -webkit-column-count: 3;
     -moz-column-count: 3;
     column-count: 3;
-    -webkit-column-gap: 20px;
-    -moz-column-gap: 20px;
-    column-gap: 20px;
-   */
+    -webkit-column-gap: 24px;
+    -moz-column-gap: 24px;
+    column-gap: 24px;
   }
 }
