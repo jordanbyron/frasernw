@@ -489,6 +489,14 @@ body
     label.indent
     {
       margin-left: 18px;
+      text-indent: 0;
+      padding-left: 0;
+      
+      select
+      {
+        margin-left: 0;
+        width: 95%;
+      }
     }
     
     label.half
@@ -525,7 +533,6 @@ body
     a
     {
       color: $FNW_LIGHT_BLUE;
-      text-decoration: underline;
     }
   }
   

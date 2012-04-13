@@ -199,21 +199,16 @@
                           
                 .filter-group
                   .filter-group-title
-                    Responds to referral requests
-                  #filter-group-content-referral.filter-group-content
-                    %select.span2half.sc
-                      %option{"value" => 0} Within any timeframe
-                      - Specialist::LAGTIME_HASH.each do |lag_index, lag_value|
-                        %option{"value" => "sc#{lag_index}_"}= lag_value
-                          
-                %hr
-                          
-                .filter-group
-                  .filter-group-title
                     Referrals
                   #filter-group-content-referral.filter-group-content
                     %label
-                      %input#srph.sr{"type" => "checkbox"} Referrals are accepted via phone
+                      %input#srph.sr{"type" => "checkbox"} Accepted via phone
+                    %label.indent
+                      Responded to within:
+                      %select.sc
+                        %option{"value" => 0} Any timeframe
+                        - Specialist::LAGTIME_HASH.each do |lag_index, lag_value|
+                          %option{"value" => "sc#{lag_index}_"}= lag_value
                     %label
                       %input#srpb.sr{"type" => "checkbox"} Patients can call to book after referral
                           
@@ -337,21 +332,16 @@
                           
                 .filter-group
                   .filter-group-title
-                    Responds to referral requests
-                  #filter-group-content-referral.filter-group-content
-                    %select.span2half.cc
-                      %option{"value" => 0} Within any timeframe
-                      - Clinic::LAGTIME_HASH.each do |lag_index, lag_value|
-                        %option{"value" => "cc#{lag_index}_"}= lag_value
-                          
-                %hr
-                          
-                .filter-group
-                  .filter-group-title
                     Referrals
                   #filter-group-content-referral.filter-group-content
                     %label
                       %input#crph.cr{"type" => "checkbox"} Referrals are accepted via phone
+                    %label.indent
+                      Responded to within:
+                      %select.cc
+                        %option{"value" => 0} Any timeframe
+                        - Clinic::LAGTIME_HASH.each do |lag_index, lag_value|
+                          %option{"value" => "csc#{lag_index}_"}= lag_value
                     %label
                       %input#crpb.cr{"type" => "checkbox"} Patients can call to book after referral
                 

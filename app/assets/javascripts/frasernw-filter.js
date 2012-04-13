@@ -3,7 +3,6 @@ var update_specialist_table = function() {
   var current_filters = new Array();
   var procedures = new Array();
   var referrals = new Array();
-  var lagtimes = new Array();
   var languages = new Array();
   var sex = '';
   
@@ -31,27 +30,40 @@ var update_specialist_table = function() {
     }
   });
   
-  // collect lagtime filters
+  // collect referral filters
+  if ( $('#srph').prop('checked'))
+  {
+    current_filters.push('srph');
+    referrals.push('referrals are accepted via phone');
+  }
   $('.sc option:selected').each( function() {
     var $this = $(this);
     if ($this.val() != 0)
     {
       var text = $this.text().trim();
-      lagtimes.push(text.charAt(0).toLowerCase() + text.slice(1));
+      text = text.charAt(0).toLowerCase() + text.slice(1);
+                                console.log($this.val())
+                                
+      if ($this.val() == "sc1_")
+      {
+        referrals.push('referrals are responded to by phone when office calls for appointment');
+      }
+      else if ($this.val() == "sc2_")
+      {
+        referrals.push('referrals are responded to ' + text);
+      }
+      else
+      {
+        referrals.push('referrals are responded to within ' + text);
+      }
       current_filters.push($this.val());
     }
   });
-  
-  // collect referral filters
-  $('.sr').each( function() {
-    var $this = $(this);
-    if ($this.prop('checked'))
-    {
-      var text = $this.parent().text().trim();
-      referrals.push(text.charAt(0).toLowerCase() + text.slice(1));
-      current_filters.push($this.attr('id'));
-    }
-  });
+  if ( $('#srpb').prop('checked'))
+  {
+    current_filters.push('srpb');
+    referrals.push('patients can call to book after referral');
+  }
   
   // collect sex filters
   if ( $('#ssm').prop('checked') && !$('#ssf').prop('checked') )
@@ -129,25 +141,12 @@ var update_specialist_table = function() {
     description += ' who work in an office that speaks ' + languages.to_sentence();
   }
   
-  if ( lagtimes.length >= 1 && referrals.length >= 1 )
-  {
-    description += ' where referrals are responded to ' + lagtimes.to_sentence() + 'and ' + referrals.to_sentence();
-  }
-  else if ( lagtimes.length >= 1 )
-  {
-    description += ' where referrals are responded to ' + lagtimes.to_sentence();
-  }
-  else if ( referrals.length >= 1 )
+  if ( referrals.length >= 1 )
   {
     description += ' where ' + referrals.to_sentence();
   }
   
-  description += '.';
-  
-  if ( !found )
-  {
-    description += " <a href='javascript:clear_specialist_filters()'>Clear all filters</a>";
-  }
+  description += ". <a href='javascript:clear_specialist_filters()'>Clear all filters</a>."
   
   var specialist_phrase = $('#specialist_phrase');
   specialist_phrase.html(description);
@@ -158,7 +157,6 @@ var update_specialist_table = function() {
 var update_clinic_table = function() {
   var current_filters = new Array();
   var procedures = new Array();
-  var lagtimes = new Array();
   var referrals = new Array();
   var languages = new Array();
   
@@ -186,27 +184,40 @@ var update_clinic_table = function() {
     }
   });
   
-  // collect lagtime filters
+  // collect referral filters
+  if ( $('#crph').prop('checked'))
+  {
+    current_filters.push('crph');
+    referrals.push('referrals are accepted via phone');
+  }
   $('.cc option:selected').each( function() {
     var $this = $(this);
     if ($this.val() != 0)
     {
       var text = $this.text().trim();
-      lagtimes.push(text.charAt(0).toLowerCase() + text.slice(1));
+      text = text.charAt(0).toLowerCase() + text.slice(1);
+                                console.log($this.val())
+                                
+      if ($this.val() == "cc1_")
+      {
+        referrals.push('referrals are responded to by phone when office calls for appointment');
+      }
+      else if ($this.val() == "cc2_")
+      {
+        referrals.push('referrals are responded to ' + text);
+      }
+      else
+      {
+        referrals.push('referrals are responded to within ' + text);
+      }
       current_filters.push($this.val());
     }
   });
-  
-  // collect referral filters
-  $('.cr').each( function() {
-    var $this = $(this);
-    if ($this.prop('checked'))
-    {
-      var text = $this.parent().text().trim();
-      referrals.push(text.charAt(0).toLowerCase() + text.slice(1));
-      current_filters.push($this.attr('id'));
-    }
-  });
+  if ( $('#crpb').prop('checked'))
+  {
+    current_filters.push('crpb');
+    referrals.push('patients can call to book after referral');
+  }
   
   // collect language filters
   $('.cl').each( function() {
@@ -272,25 +283,12 @@ var update_clinic_table = function() {
     description += ' which have staff that speak ' + languages.to_sentence();
   }
   
-  if ( lagtimes.length >= 1 && referrals.length >= 1 )
-  {
-    description += ' where referrals are responded to ' + lagtimes.to_sentence() + 'and ' + referrals.to_sentence();
-  }
-  else if ( lagtimes.length >= 1 )
-  {
-    description += ' where referrals are responded to ' + lagtimes.to_sentence();
-  }
-  else if ( referrals.length >= 1 )
+  if ( referrals.length >= 1 )
   {
     description += ' where ' + referrals.to_sentence();
   }
   
-  description += '.';
-  
-  if ( !found )
-  {
-    description += " <a href='javascript:clear_clinic_filters()'>Clear all filters</a>";
-  }
+  description += ". <a href='javascript:clear_clinic_filters()'>Clear all filters</a>."
   
   var clinic_phrase = $('#clinic_phrase');
   clinic_phrase.html(description);
