@@ -165,15 +165,15 @@
                       - break if has_more
                     
                     - if has_more
-                      %a.more#specialist_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_specialist_procedures"} More...
+                      %a.more#specialist_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_specialist_procedures"} More...
                       %script{"type" => "text/javascript"}
                         :plain
                           $(document).ready(function() {
                             $('#more_specialist_procedures').on('show', function() {
-                              $('#specialist_more').html('Less...');
+                              $('#specialist_procedures_more').html('Less...');
                             });
                             $('#more_specialist_procedures').on('hide', function() {
-                              $('#specialist_more').html('More...');
+                              $('#specialist_procedures_more').html('More...');
                             });
                           });
                 
@@ -211,27 +211,38 @@
                           %option{"value" => "sc#{lag_index}_"}= lag_value
                     %label
                       %input#srpb.sr{"type" => "checkbox"} Patients can call to book after referral
-                          
-                %hr
-                          
-                .filter-group
-                  .filter-group-title
-                    Sex
-                  #filter-group-content-sex.filter-group-content
-                    %label.half
-                      %input#ssm.ss{"type" => "checkbox"} Male
-                    %label.half
-                      %input#ssf.ss{"type" => "checkbox"} Female
                 
                 %hr
-                      
-                .filter-group
-                  .filter-group-title
-                    Languages spoken in office
-                  #filter-group-content-language.filter-group-content
-                    - Language.all.each do |l|
+    
+                %a.more#specialist_filter_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#specialist_more_filters"} More filters...
+                %script{"type" => "text/javascript"}
+                  :plain
+                    $(document).ready(function() {
+                      $('#specialist_more_filters').on('show', function() {
+                        $('#specialist_filter_more').hide();
+                      });
+                    });
+                          
+                #specialist_more_filters.collapse
+                          
+                  .filter-group
+                    .filter-group-title
+                      Sex
+                    #filter-group-content-sex.filter-group-content
                       %label.half
-                        %input.sl{"type" => "checkbox", "id" => "sl#{l.id}"}= l.name
+                        %input#ssm.ss{"type" => "checkbox"} Male
+                      %label.half
+                        %input#ssf.ss{"type" => "checkbox"} Female
+                
+                  %hr
+                        
+                  .filter-group
+                    .filter-group-title
+                      Languages spoken in office
+                    #filter-group-content-language.filter-group-content
+                      - Language.all.each do |l|
+                        %label.half
+                          %input.sl{"type" => "checkbox", "id" => "sl#{l.id}"}= l.name
 
               %script{"type" => "text/javascript"}
                 :plain
@@ -298,15 +309,15 @@
                       - break if has_more
                     
                     - if has_more
-                      %a.more#clinic_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_clinic_procedures"} More...
+                      %a.more#clinic_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_clinic_procedures"} More...
                       %script{"type" => "text/javascript"}
                         :plain
                           $(document).ready(function() {
                             $('#more_clinic_procedures').on('show', function() {
-                              $('#clinic_more').html('Less...');
+                              $('#clinic_procedures_more').html('Less...');
                             });
                             $('#more_clinic_procedures').on('hide', function() {
-                              $('#clinic_more').html('More...');
+                              $('#clinic_procedures_more').html('More...');
                             });
                           });
                 
@@ -346,14 +357,25 @@
                       %input#crpb.cr{"type" => "checkbox"} Patients can call to book after referral
                 
                 %hr
+    
+                %a.more#clinic_filter_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#clinic_more_filters"} More filters...
+                %script{"type" => "text/javascript"}
+                  :plain
+                    $(document).ready(function() {
+                      $('#clinic_more_filters').on('show', function() {
+                        $('#clinic_filter_more').hide();
+                      });
+                    });
+                          
+                #clinic_more_filters.collapse
                       
-                .filter-group
-                  .filter-group-title
-                    Languages spoken in clinic
-                  #filter-group-content-language.filter-group-content
-                    - Language.all.each do |l|
-                      %label.half
-                        %input.cl{"type" => "checkbox", "id" => "cl#{l.id}"}= l.name
+                  .filter-group
+                    .filter-group-title
+                      Languages spoken in clinic
+                    #filter-group-content-language.filter-group-content
+                      - Language.all.each do |l|
+                        %label.half
+                          %input.cl{"type" => "checkbox", "id" => "cl#{l.id}"}= l.name
 
               %script{"type" => "text/javascript"}
                 :plain
