@@ -6,9 +6,9 @@
     - next if not s.show_in_table?
     - specialist_filter_attributes = []
     - s.procedure_specializations.each do |ps|
-      - specialist_filter_attributes << "sp#{ps.procedure.id}"
+      - specialist_filter_attributes << "sp#{ps.procedure.id}_"
       - parent = ps.parent
-      - specialist_filter_attributes << "sp#{parent.procedure.id}" if (parent && !specialist_filter_attributes.include?("sp#{parent.procedure.id}"))
+      - specialist_filter_attributes << "sp#{parent.procedure.id}_" if (parent && !specialist_filter_attributes.include?("sp#{parent.procedure.id}_"))
     - if s.lagtime_mask.present?
       - (s.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
         - specialist_filter_attributes << "sc#{i}_"
@@ -17,7 +17,11 @@
     - specialist_filter_attributes << "ssm" if s.male?
     - specialist_filter_attributes << "ssf" if s.female?
     - s.languages.each do |l|
-      - specialist_filter_attributes << "sl#{l.id}"
+      - specialist_filter_attributes << "sl#{l.id}_"
+    - s.clinics.each do |c|
+      - specialist_filter_attributes << "sac#{c.id}_"
+    - s.hospitals.each do |h|
+      - specialist_filter_attributes << "sah#{h.id}_"
     $('#s#{s.id}').data('filter', '#{specialist_filter_attributes.join(' ')}');
   - @specialization.procedures.each do |p|
     - next if p.specializations.length <= 1
@@ -31,17 +35,16 @@
     - next if not c.show_in_table?
     - clinics_filter_attributes = []
     - c.procedure_specializations.each do |ps|
-      - clinics_filter_attributes << "cp#{ps.procedure.id}"
+      - clinics_filter_attributes << "cp#{ps.procedure.id}_"
       - parent = ps.parent
-      - clinics_filter_attributes << "cp#{parent.procedure.id}" if (parent && !clinics_filter_attributes.include?("cp#{parent.procedure.id}"))
+      - clinics_filter_attributes << "cp#{parent.procedure.id}_" if (parent && !clinics_filter_attributes.include?("cp#{parent.procedure.id}_"))
     - if c.lagtime_mask.present?
       - (c.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
         - clinics_filter_attributes << "cc#{i}_"
-    - clinics_filter_attributes << "cc#{c.lagtime_mask}"
     - clinics_filter_attributes << "crph" if c.referral_phone
     - clinics_filter_attributes << "crpb" if c.patient_can_book?
     - c.languages.each do |l|
-      - clinics_filter_attributes << "cl#{l.id}"
+      - clinics_filter_attributes << "cl#{l.id}_"
     $('#c#{c.id}').data('filter', '#{clinics_filter_attributes.join(' ')}');
   });
     
@@ -144,7 +147,7 @@
                     - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
                       - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
                       %label
-                        %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}", "onclick" => "$('#children_sp#{ps.procedure.id}').collapse('toggle')"}= ps.procedure.name
+                        %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}').collapse('toggle')"}= ps.procedure.name
                       - next if children.length == 0
                       .collapse{:id => "children_sp#{ps.procedure.id}"}
                         %script{"type" => "text/javascript"}
@@ -156,7 +159,7 @@
                         - children.each do |ps, children|
                           - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
                           %label.indent
-                            %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}", "class" => "child_sp#{parent_id}"}= ps.procedure.name
+                            %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}"}= ps.procedure.name
                     
                     - nonfocused_procedure_specializations = @specialization.nonfocused_procedure_specializations_arranged
                     - has_more = false
@@ -181,7 +184,7 @@
                         - nonfocused_procedure_specializations.each do |ps, children|
                           - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
                           %label
-                            %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}"}= ps.procedure.name
+                            %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_"}= ps.procedure.name
                           - next if children.length == 0
                           .collapse{:id => "children_sp#{ps.procedure.id}"}
                             %script{"type" => "text/javascript"}
@@ -193,7 +196,7 @@
                             - children.each do |ps, children|
                               - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
                               %label.indent
-                                %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}", "class" => "child_sp#{parent_id}"}= ps.procedure.name
+                                %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}"}= ps.procedure.name
                           
                 %hr
                           
@@ -242,12 +245,31 @@
                     #filter-group-content-language.filter-group-content
                       - Language.all.each do |l|
                         %label.half
-                          %input.sl{"type" => "checkbox", "id" => "sl#{l.id}"}= l.name
+                          %input.sl{"type" => "checkbox", "id" => "sl#{l.id}_"}= l.name
+                          
+                  %hr
+                            
+                  .filter-group
+                    .filter-group-title
+                      Associations
+                    #filter-group-content-referral.filter-group-content
+                      %label.indent
+                        Clinic:
+                        %select.sa
+                          %option{"value" => 0} Any
+                          - @specialization.clinics.all.each do |c|
+                            %option{"value" => "sac#{c.id}_"}= c.name
+                      %label.indent
+                        Hospital:
+                        %select.sa
+                          %option{"value" => 0} Any
+                          - Hospital.all.each do |h|
+                            %option{"value" => "sah#{h.id}_"}= h.name
 
               %script{"type" => "text/javascript"}
                 :plain
                   $(document).ready(function() {
-                    $('.sp, .sc, .sr, .ss, .sl').click( update_specialist_table );
+                    $('.sp, .sc, .sr, .ss, .sl, .sa').click( update_specialist_table );
                   });
           
     - if has_clinics
@@ -288,7 +310,7 @@
                     - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
                       - next if ps.procedure.all_clinics_for_specialization(@specialization).blank?
                       %label
-                        %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}", "onclick" => "$('#children_cp#{ps.procedure.id}').collapse('toggle')"}= ps.procedure.name
+                        %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}').collapse('toggle')"}= ps.procedure.name
                       - next if children.length == 0
                       .collapse{:id => "children_cp#{ps.procedure.id}"}
                         %script{"type" => "text/javascript"}
@@ -300,7 +322,7 @@
                         - children.each do |ps, children|
                           - next if ps.procedure.all_clinics_for_specialization(@specialization).blank?
                           %label.indent
-                            %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}", "class" => "child_cp#{parent_id}"}= ps.procedure.name
+                            %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "class" => "child_cp#{parent_id}"}= ps.procedure.name
                     
                     - nonfocused_procedure_specializations = @specialization.nonfocused_procedure_specializations_arranged
                     - has_more = false
@@ -325,7 +347,7 @@
                         - nonfocused_procedure_specializations.each do |ps, children|
                           - next if ps.procedure.all_clinics_for_specialization(@specialization).blank?
                           %label
-                            %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}", "onclick" => "$('#children_cp#{ps.procedure.id}').collapse('toggle')"}= ps.procedure.name
+                            %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}').collapse('toggle')"}= ps.procedure.name
                           - next if children.length == 0
                           .collapse{:id => "children_cp#{ps.procedure.id}"}
                             %script{"type" => "text/javascript"}
@@ -337,7 +359,7 @@
                             - children.each do |ps, children|
                               - next if ps.procedure.all_clinics_for_specialization(@specialization).blank?
                               %label.indent
-                                %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}", "class" => "child_cp#{parent_id}"}= ps.procedure.name
+                                %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "class" => "child_cp#{parent_id}"}= ps.procedure.name
                           
                 %hr
                           
@@ -375,7 +397,7 @@
                     #filter-group-content-language.filter-group-content
                       - Language.all.each do |l|
                         %label.half
-                          %input.cl{"type" => "checkbox", "id" => "cl#{l.id}"}= l.name
+                          %input.cl{"type" => "checkbox", "id" => "cl#{l.id}_"}= l.name
 
               %script{"type" => "text/javascript"}
                 :plain

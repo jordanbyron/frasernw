@@ -4,6 +4,7 @@ var update_specialist_table = function() {
   var procedures = new Array();
   var referrals = new Array();
   var languages = new Array();
+  var associations = new Array();
   var sex = '';
   
   // collect procedure filters
@@ -87,6 +88,16 @@ var update_specialist_table = function() {
     }
   });
   
+  // collect association filters
+  $('.sa option:selected').each( function() {
+    var $this = $(this);
+    if ($this.val() != 0)
+    {
+      associations.push($this.text().trim());
+      current_filters.push($this.val());
+    }
+  });
+  
   var found = false;
              
   //loop over each row of the table, hiding those which don't match our filters
@@ -128,9 +139,21 @@ var update_specialist_table = function() {
   
   var description = found ? 'Showing all ' + sex + ' specialists' : 'There are no ' + sex + ' specialists';
   
-  if ( procedures.length >= 1 && languages.length >= 1 ) 
+  if ( procedures.length >= 1 && languages.length >= 1 && associations.length >= 1 ) 
+  {
+    description += ' who practice in ' + procedures.to_sentence() + ', work in an office that speaks ' + languages.to_sentence() + ', and are associated with ' + associations.to_sentence();
+  }
+  else if ( procedures.length >= 1 && languages.length >= 1 ) 
   {
     description += ' who practice in ' + procedures.to_sentence() + ' and work in an office that speaks ' + languages.to_sentence();
+  }
+  else if ( procedures.length >= 1 && associations.length >= 1 ) 
+  {
+    description += ' who practice in ' + procedures.to_sentence() + ' and are associated with ' + associations.to_sentence();
+  }
+  else if ( languages.length >= 1 && associations.length >= 1 ) 
+  {
+    description += ' who work in an office that speaks ' + languages.to_sentence() + ' and are associated with ' + associations.to_sentence();
   }
   else if ( procedures.length >= 1 ) 
   {
@@ -139,6 +162,10 @@ var update_specialist_table = function() {
   else if ( languages.length >= 1 ) 
   {
     description += ' who work in an office that speaks ' + languages.to_sentence();
+  }
+  else if ( associations.length >= 1 ) 
+  {
+    description += ' who are associated with ' + associations.to_sentence();
   }
   
   if ( referrals.length >= 1 )
@@ -322,6 +349,11 @@ var clear_specialist_filters = function() {
   // clear language filters
   $('.sl').each( function() {
     $(this).prop('checked',false)
+  });
+  
+  // clear association filters
+  $('.sa').each( function() {
+    $(this).val(0)
   });
   
   update_specialist_table();
