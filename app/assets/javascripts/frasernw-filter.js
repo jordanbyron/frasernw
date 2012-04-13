@@ -3,6 +3,7 @@ var update_specialist_table = function() {
   var current_filters = new Array();
   var procedures = new Array();
   var referrals = new Array();
+  var lagtimes = new Array();
   var languages = new Array();
   var sex = '';
   
@@ -27,6 +28,17 @@ var update_specialist_table = function() {
         procedures.push($this.parent().text().trim());
         current_filters.push($this.attr('id'));
       }
+    }
+  });
+  
+  // collect lagtime filters
+  $('.sc option:selected').each( function() {
+    var $this = $(this);
+    if ($this.val() != 0)
+    {
+      var text = $this.text().trim();
+      lagtimes.push(text.charAt(0).toLowerCase() + text.slice(1));
+      current_filters.push($this.val());
     }
   });
   
@@ -116,10 +128,20 @@ var update_specialist_table = function() {
   {
     description += ' who work in an office that speaks ' + languages.to_sentence();
   }
-  if ( referrals.length >= 1 )
+  
+  if ( lagtimes.length >= 1 && referrals.length >= 1 )
+  {
+    description += ' where referrals are responded to ' + lagtimes.to_sentence() + 'and ' + referrals.to_sentence();
+  }
+  else if ( lagtimes.length >= 1 )
+  {
+    description += ' where referrals are responded to ' + lagtimes.to_sentence();
+  }
+  else if ( referrals.length >= 1 )
   {
     description += ' where ' + referrals.to_sentence();
   }
+  
   description += '.';
   
   if ( !found )
@@ -136,6 +158,8 @@ var update_specialist_table = function() {
 var update_clinic_table = function() {
   var current_filters = new Array();
   var procedures = new Array();
+  var lagtimes = new Array();
+  var referrals = new Array();
   var languages = new Array();
   
   // collect procedure filters
@@ -159,6 +183,28 @@ var update_clinic_table = function() {
         procedures.push($this.parent().text().trim());
         current_filters.push($this.attr('id'));
       }
+    }
+  });
+  
+  // collect lagtime filters
+  $('.cc option:selected').each( function() {
+    var $this = $(this);
+    if ($this.val() != 0)
+    {
+      var text = $this.text().trim();
+      lagtimes.push(text.charAt(0).toLowerCase() + text.slice(1));
+      current_filters.push($this.val());
+    }
+  });
+  
+  // collect referral filters
+  $('.cr').each( function() {
+    var $this = $(this);
+    if ($this.prop('checked'))
+    {
+      var text = $this.parent().text().trim();
+      referrals.push(text.charAt(0).toLowerCase() + text.slice(1));
+      current_filters.push($this.attr('id'));
     }
   });
   
@@ -225,6 +271,20 @@ var update_clinic_table = function() {
   {
     description += ' which have staff that speak ' + languages.to_sentence();
   }
+  
+  if ( lagtimes.length >= 1 && referrals.length >= 1 )
+  {
+    description += ' where referrals are responded to ' + lagtimes.to_sentence() + 'and ' + referrals.to_sentence();
+  }
+  else if ( lagtimes.length >= 1 )
+  {
+    description += ' where referrals are responded to ' + lagtimes.to_sentence();
+  }
+  else if ( referrals.length >= 1 )
+  {
+    description += ' where ' + referrals.to_sentence();
+  }
+  
   description += '.';
   
   if ( !found )
@@ -245,6 +305,11 @@ var clear_specialist_filters = function() {
     {
       $(this).trigger('click');
     }
+  });
+  
+  // clear lagtime filters
+  $('.sc').each( function() {
+    $(this).val(0)
   });
   
   // clear referral filters
@@ -271,6 +336,16 @@ var clear_clinic_filters = function() {
     {
       $(this).trigger('click');
     }
+  });
+  
+  // clear lagtime filters
+  $('.cc').each( function() {
+    $(this).val(0)
+  });
+  
+  // clear referral filters
+  $('.cr').each( function() {
+    $(this).prop('checked',false)
   });
   
   // clear language filters

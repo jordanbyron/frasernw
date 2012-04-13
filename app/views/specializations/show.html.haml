@@ -9,6 +9,9 @@
       - specialist_filter_attributes << "sp#{ps.procedure.id}"
       - parent = ps.parent
       - specialist_filter_attributes << "sp#{parent.procedure.id}" if (parent && !specialist_filter_attributes.include?("sp#{parent.procedure.id}"))
+    - if s.lagtime_mask.present?
+      - (s.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
+        - specialist_filter_attributes << "sc#{i}_"
     - specialist_filter_attributes << "srph" if s.referral_phone
     - specialist_filter_attributes << "srpb" if s.patient_can_book?
     - specialist_filter_attributes << "ssm" if s.male?
@@ -31,6 +34,12 @@
       - clinics_filter_attributes << "cp#{ps.procedure.id}"
       - parent = ps.parent
       - clinics_filter_attributes << "cp#{parent.procedure.id}" if (parent && !clinics_filter_attributes.include?("cp#{parent.procedure.id}"))
+    - if c.lagtime_mask.present?
+      - (c.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
+        - clinics_filter_attributes << "cc#{i}_"
+    - clinics_filter_attributes << "cc#{c.lagtime_mask}"
+    - clinics_filter_attributes << "crph" if c.referral_phone
+    - clinics_filter_attributes << "crpb" if c.patient_can_book?
     - c.languages.each do |l|
       - clinics_filter_attributes << "cl#{l.id}"
     $('#c#{c.id}').data('filter', '#{clinics_filter_attributes.join(' ')}');
@@ -190,8 +199,19 @@
                           
                 .filter-group
                   .filter-group-title
+                    Responds to referral requests
+                  #filter-group-content-referral.filter-group-content
+                    %select.span2half.sc
+                      %option{"value" => 0} Within any timeframe
+                      - Specialist::LAGTIME_HASH.each do |lag_index, lag_value|
+                        %option{"value" => "sc#{lag_index}_"}= lag_value
+                          
+                %hr
+                          
+                .filter-group
+                  .filter-group-title
                     Referrals
-                  #filter-group-content-sex.filter-group-content
+                  #filter-group-content-referral.filter-group-content
                     %label
                       %input#srph.sr{"type" => "checkbox"} Referrals are accepted via phone
                     %label
@@ -221,7 +241,7 @@
               %script{"type" => "text/javascript"}
                 :plain
                   $(document).ready(function() {
-                    $('.sp, .sr, .ss, .sl').click( update_specialist_table );
+                    $('.sp, .sc, .sr, .ss, .sl').click( update_specialist_table );
                   });
           
     - if has_clinics
@@ -312,6 +332,28 @@
                               - next if ps.procedure.all_clinics_for_specialization(@specialization).blank?
                               %label.indent
                                 %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}", "class" => "child_cp#{parent_id}"}= ps.procedure.name
+                          
+                %hr
+                          
+                .filter-group
+                  .filter-group-title
+                    Responds to referral requests
+                  #filter-group-content-referral.filter-group-content
+                    %select.span2half.cc
+                      %option{"value" => 0} Within any timeframe
+                      - Clinic::LAGTIME_HASH.each do |lag_index, lag_value|
+                        %option{"value" => "cc#{lag_index}_"}= lag_value
+                          
+                %hr
+                          
+                .filter-group
+                  .filter-group-title
+                    Referrals
+                  #filter-group-content-referral.filter-group-content
+                    %label
+                      %input#crph.cr{"type" => "checkbox"} Referrals are accepted via phone
+                    %label
+                      %input#crpb.cr{"type" => "checkbox"} Patients can call to book after referral
                 
                 %hr
                       
@@ -326,8 +368,7 @@
               %script{"type" => "text/javascript"}
                 :plain
                   $(document).ready(function() {
-                    $('.cp').click( update_clinic_table );
-                    $('.cl').click( update_clinic_table );
+                    $('.cp, .cc, .cr, .cl').click( update_clinic_table );
                   });
                   
       #blank_tab.tab-pane

@@ -171,6 +171,10 @@ class Clinic < ActiveRecord::Base
     3 => "Didn't answer", 
   }
   
+  def patient_can_book?
+    patient_can_book_mask == 1
+  end
+  
   def wheelchair_accessible?
     wheelchair_accessible_mask == 1
   end
