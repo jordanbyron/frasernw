@@ -2,6 +2,7 @@ var update_specialist_table = function() {
   
   var current_filters = new Array();
   var procedures = new Array();
+  var referrals = new Array();
   var languages = new Array();
   var sex = '';
   
@@ -29,12 +30,13 @@ var update_specialist_table = function() {
     }
   });
   
-  // collect language filters
-  $('.sl').each( function() {
+  // collect referral filters
+  $('.sr').each( function() {
     var $this = $(this);
     if ($this.prop('checked'))
     {
-      languages.push($this.parent().text().trim());
+      var text = $this.parent().text().trim();
+      referrals.push(text.charAt(0).toLowerCase() + text.slice(1));
       current_filters.push($this.attr('id'));
     }
   });
@@ -50,6 +52,16 @@ var update_specialist_table = function() {
     current_filters.push('ssf');
     sex = 'female'
   }
+  
+  // collect language filters
+  $('.sl').each( function() {
+    var $this = $(this);
+    if ($this.prop('checked'))
+    {
+      languages.push($this.parent().text().trim());
+      current_filters.push($this.attr('id'));
+    }
+  });
   
   var found = false;
              
@@ -103,6 +115,10 @@ var update_specialist_table = function() {
   else if ( languages.length >= 1 ) 
   {
     description += ' who work in an office that speaks ' + languages.to_sentence();
+  }
+  if ( referrals.length >= 1 )
+  {
+    description += ' where ' + referrals.to_sentence();
   }
   description += '.';
   
@@ -231,14 +247,19 @@ var clear_specialist_filters = function() {
     }
   });
   
-  // clear language filters
-  $('.sl').each( function() {
+  // clear referral filters
+  $('.sr').each( function() {
     $(this).prop('checked',false)
   });
   
   // collect sex filters
   $('#ssm').prop('checked', false);
   $('#ssf').prop('checked', false);
+  
+  // clear language filters
+  $('.sl').each( function() {
+    $(this).prop('checked',false)
+  });
   
   update_specialist_table();
 }

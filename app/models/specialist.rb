@@ -188,6 +188,10 @@ class Specialist < ActiveRecord::Base
     3 => "Didn't answer", 
   }
   
+  def patient_can_book?
+    patient_can_book_mask == 1
+  end
+  
   def name
     if goes_by_name.present?
       "#{goes_by_name} (#{firstname}) #{lastname}"

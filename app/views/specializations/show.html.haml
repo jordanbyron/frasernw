@@ -9,6 +9,8 @@
       - specialist_filter_attributes << "sp#{ps.procedure.id}"
       - parent = ps.parent
       - specialist_filter_attributes << "sp#{parent.procedure.id}" if (parent && !specialist_filter_attributes.include?("sp#{parent.procedure.id}"))
+    - specialist_filter_attributes << "srph" if s.referral_phone
+    - specialist_filter_attributes << "srpb" if s.patient_can_book?
     - specialist_filter_attributes << "ssm" if s.male?
     - specialist_filter_attributes << "ssf" if s.female?
     - s.languages.each do |l|
@@ -68,6 +70,10 @@
     - if true
       %li
         %a{"href" => "#blank_tab", "data-toggle" => "tab"}
+          %i.icon-leaf.icon-blue
+          Community Resources
+      %li
+        %a{"href" => "#blank_tab", "data-toggle" => "tab"}
           %i.icon-star.icon-blue
           Pearls
       %li
@@ -76,8 +82,17 @@
           Workups
       %li
         %a{"href" => "#blank_tab", "data-toggle" => "tab"}
+          %i.icon-flag.icon-blue
+          Red Flags
+      %li
+        %a{"href" => "#blank_tab", "data-toggle" => "tab"}
+          %i.icon-road.icon-blue
+          Care Pathways
+      %li
+        %a{"href" => "#blank_tab", "data-toggle" => "tab"}
           %i.icon-book.icon-blue
           Patient Education
+
 
   .tab-content
     - if has_specialists
@@ -175,6 +190,17 @@
                           
                 .filter-group
                   .filter-group-title
+                    Referrals
+                  #filter-group-content-sex.filter-group-content
+                    %label
+                      %input#srph.sr{"type" => "checkbox"} Referrals are accepted via phone
+                    %label
+                      %input#srpb.sr{"type" => "checkbox"} Patients can call to book after referral
+                          
+                %hr
+                          
+                .filter-group
+                  .filter-group-title
                     Sex
                   #filter-group-content-sex.filter-group-content
                     %label.half
@@ -195,9 +221,7 @@
               %script{"type" => "text/javascript"}
                 :plain
                   $(document).ready(function() {
-                    $('.sp').click( update_specialist_table );
-                    $('.sl').click( update_specialist_table );
-                    $('.ss').click( update_specialist_table );
+                    $('.sp, .sr, .ss, .sl').click( update_specialist_table );
                   });
           
     - if has_clinics
