@@ -37,7 +37,8 @@ class SpecialistOffice < ActiveRecord::Base
   end
   
   def sector?
-    sector_mask != 4
+    #we assume public for specialists
+    sector_mask != 1 && sector_mask != 4
   end
   
   def empty?
