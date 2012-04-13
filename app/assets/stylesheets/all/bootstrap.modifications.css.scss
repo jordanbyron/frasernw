@@ -150,13 +150,14 @@ ul.dropdown-menu
       
       li
       {
-        margin-left: 5px;
+        margin-left: 4px;
         
         a
         {
           border: 1px solid $FNW_MID_GRAY;
           border-bottom-color: transparent;
           text-decoration: none;
+          padding: 8px;
         }
       }
     
