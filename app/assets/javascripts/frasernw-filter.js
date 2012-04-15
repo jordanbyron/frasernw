@@ -174,6 +174,7 @@ var update_clinic_table = function() {
   var current_filters = new Array();
   var procedures = new Array();
   var referrals = new Array();
+  var details = new Array();
   var languages = new Array();
   var days = new Array();
   
@@ -234,6 +235,24 @@ var update_clinic_table = function() {
   {
     current_filters.push('crpb');
     referrals.push('patients can call to book after referral');
+  }
+  
+  // collect details filters
+  if ( $('#cdpb').prop('checked') && !$('#cdpv').prop('checked') )
+  {
+    current_filters.push('cdpb');
+    details.push('public')
+  }
+  else if ( !$('#cdpb').prop('checked') && $('#cdpv').prop('checked') )
+  {
+    current_filters.push('cdpv');
+    details.push('private')
+  }
+  
+  if ( $('#cdwa').prop('checked') )
+  {
+    current_filters.push('cdwa');
+    details.push('wheelchair accessible')
   }
   
   // collect schedule filters
@@ -305,6 +324,10 @@ var update_clinic_table = function() {
   if ( referrals.length >= 1 )
   {
     fragments.push(referrals.to_sentence());
+  }
+  if ( details.length >= 1 )
+  {
+    fragments.push('are ' + details.to_sentence());
   }
   if ( days.length >= 1 )
   {
@@ -380,6 +403,11 @@ var clear_clinic_filters = function() {
   
   // clear referral filters
   $('.cr').each( function() {
+    $(this).prop('checked',false)
+  });
+  
+  // clear details filters
+  $('.cd').each( function() {
     $(this).prop('checked',false)
   });
   

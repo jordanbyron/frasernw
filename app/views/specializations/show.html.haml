@@ -43,6 +43,9 @@
         - clinics_filter_attributes << "cc#{i}_"
     - clinics_filter_attributes << "crph" if c.referral_phone
     - clinics_filter_attributes << "crpb" if c.patient_can_book?
+    - clinics_filter_attributes << "cdpb" if c.sector_mask == 1 || c.sector_mask == 3
+    - clinics_filter_attributes << "cdpv" if c.sector_mask == 2 || c.sector_mask == 3
+    - clinics_filter_attributes << "cdwa" if c.wheelchair_accessible?
     - if c.scheduled?
       - schedule = c.schedule
       - clinics_filter_attributes << "csmon" if schedule.monday.scheduled
@@ -399,32 +402,40 @@
                     });
                           
                 #clinic_more_filters.collapse
+                          
+                  .filter-group
+                    .filter-group-title
+                      Clinic Details
+                    #filter-group-content-details.filter-group-content
+                      %label.half
+                        %input#cdpb.cd{"type" => "checkbox"} Public
+                      %label.half
+                        %input#cdpv.cd{"type" => "checkbox"} Private
+                      %label
+                        %input.cd{"type" => "checkbox", "id" => "cdwa"} Wheelchair Accessible
+                
+                  %hr
                       
                   .filter-group
                     .filter-group-title
                       Days open
                     #filter-group-content-schedule.filter-group-content
                       %label
-                        %input.cs{"type" => "checkbox", "id" => "csmon"}
-                        Monday
+                        %input.cs{"type" => "checkbox", "id" => "csmon"} Monday
                       %label
-                        %input.cs{"type" => "checkbox", "id" => "cstues"}
-                        Tuesday
+                        %input.cs{"type" => "checkbox", "id" => "cstues"} Tuesday
                       %label
-                        %input.cs{"type" => "checkbox", "id" => "cswed"}
-                        Wednesday
+                        %input.cs{"type" => "checkbox", "id" => "cswed"} Wednesday
                       %label
-                        %input.cs{"type" => "checkbox", "id" => "csthurs"}
-                        Thursday
+                        %input.cs{"type" => "checkbox", "id" => "csthurs"} Thursday
                       %label
-                        %input.cs{"type" => "checkbox", "id" => "csfri"}
-                        Friday
+                        %input.cs{"type" => "checkbox", "id" => "csfri"} Friday
                       %label
-                        %input.cs{"type" => "checkbox", "id" => "cssat"}
-                        Saturday
+                        %input.cs{"type" => "checkbox", "id" => "cssat"} Saturday
                       %label
-                        %input.cs{"type" => "checkbox", "id" => "cssun"}
-                        Sunday
+                        %input.cs{"type" => "checkbox", "id" => "cssun"} Sunday
+                
+                  %hr
                       
                   .filter-group
                     .filter-group-title
@@ -437,7 +448,7 @@
               %script{"type" => "text/javascript"}
                 :plain
                   $(document).ready(function() {
-                    $('.cp, .cc, .cr, .cs, .cl').click( update_clinic_table );
+                    $('.cp, .cc, .cr, .cd, .cs, .cl').click( update_clinic_table );
                   });
                   
       #blank_tab.tab-pane
