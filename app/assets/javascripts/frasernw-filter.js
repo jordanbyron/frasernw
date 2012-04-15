@@ -35,7 +35,7 @@ var update_specialist_table = function() {
   if ( $('#srph').prop('checked'))
   {
     current_filters.push('srph');
-    referrals.push('referrals are accepted via phone');
+    referrals.push('accept referrals via phone');
   }
   $('.sc option:selected').each( function() {
     var $this = $(this);
@@ -47,15 +47,15 @@ var update_specialist_table = function() {
                                 
       if ($this.val() == "sc1_")
       {
-        referrals.push('referrals are responded to by phone when office calls for appointment');
+        referrals.push('respond to referrals by phone when office calls for appointment');
       }
       else if ($this.val() == "sc2_")
       {
-        referrals.push('referrals are responded to ' + text);
+        referrals.push('respond to referrals ' + text);
       }
       else
       {
-        referrals.push('referrals are responded to within ' + text);
+        referrals.push('respond to referrals within ' + text);
       }
       current_filters.push($this.val());
     }
@@ -139,38 +139,27 @@ var update_specialist_table = function() {
   
   var description = found ? 'Showing all ' + sex + ' specialists' : 'There are no ' + sex + ' specialists';
   
-  if ( procedures.length >= 1 && languages.length >= 1 && associations.length >= 1 ) 
+  var fragments = new Array()
+  if ( procedures.length >= 1 )
   {
-    description += ' who practice in ' + procedures.to_sentence() + ', work in an office that speaks ' + languages.to_sentence() + ', and are associated with ' + associations.to_sentence();
+    fragments.push('practice in ' + procedures.to_sentence());
   }
-  else if ( procedures.length >= 1 && languages.length >= 1 ) 
-  {
-    description += ' who practice in ' + procedures.to_sentence() + ' and work in an office that speaks ' + languages.to_sentence();
-  }
-  else if ( procedures.length >= 1 && associations.length >= 1 ) 
-  {
-    description += ' who practice in ' + procedures.to_sentence() + ' and are associated with ' + associations.to_sentence();
-  }
-  else if ( languages.length >= 1 && associations.length >= 1 ) 
-  {
-    description += ' who work in an office that speaks ' + languages.to_sentence() + ' and are associated with ' + associations.to_sentence();
-  }
-  else if ( procedures.length >= 1 ) 
-  {
-    description += ' who practice in ' + procedures.to_sentence();
-  }
-  else if ( languages.length >= 1 ) 
-  {
-    description += ' who work in an office that speaks ' + languages.to_sentence();
-  }
-  else if ( associations.length >= 1 ) 
-  {
-    description += ' who are associated with ' + associations.to_sentence();
-  }
-  
   if ( referrals.length >= 1 )
   {
-    description += ' where ' + referrals.to_sentence();
+    fragments.push(referrals.to_sentence());
+  }
+  if ( languages.length >= 1 )
+  {
+    fragments.push('have staff that speak ' + languages.to_sentence());
+  }
+  if ( associations.length >= 1 )
+  {
+    fragments.push('are open on ' + days.to_sentence());
+  }
+  
+  if ( fragments.length >= 1 )
+  {
+    description += ' which ' + fragments.to_sentence()
   }
   
   description += ". <a href='javascript:clear_specialist_filters()'>Clear all filters</a>."
@@ -186,6 +175,7 @@ var update_clinic_table = function() {
   var procedures = new Array();
   var referrals = new Array();
   var languages = new Array();
+  var days = new Array();
   
   // collect procedure filters
   $('.filter-group-content > label > .cp, .filter-group-content > .more > label > .cp').each( function() {
@@ -215,7 +205,7 @@ var update_clinic_table = function() {
   if ( $('#crph').prop('checked'))
   {
     current_filters.push('crph');
-    referrals.push('referrals are accepted via phone');
+    referrals.push('accept referrals via phone');
   }
   $('.cc option:selected').each( function() {
     var $this = $(this);
@@ -227,15 +217,15 @@ var update_clinic_table = function() {
                                 
       if ($this.val() == "cc1_")
       {
-        referrals.push('referrals are responded to by phone when office calls for appointment');
+        referrals.push('respond to referrals by phone when office calls for appointment');
       }
       else if ($this.val() == "cc2_")
       {
-        referrals.push('referrals are responded to ' + text);
+        referrals.push('respond to ' + text);
       }
       else
       {
-        referrals.push('referrals are responded to within ' + text);
+        referrals.push('respond to referrals within ' + text);
       }
       current_filters.push($this.val());
     }
@@ -245,6 +235,16 @@ var update_clinic_table = function() {
     current_filters.push('crpb');
     referrals.push('patients can call to book after referral');
   }
+  
+  // collect schedule filters
+  $('.cs').each( function() {
+    var $this = $(this);
+    if ($this.prop('checked'))
+    {
+      days.push($this.parent().text().trim());
+      current_filters.push($this.attr('id'));
+    }
+  });
   
   // collect language filters
   $('.cl').each( function() {
@@ -297,24 +297,29 @@ var update_clinic_table = function() {
   
   var description = found ? 'Showing all clinics' : 'There are no clinics';
   
-  if ( procedures.length >= 1 && languages.length >= 1 ) 
+  var fragments = new Array()
+  if ( procedures.length >= 1 )
   {
-    description += ' which practice in ' + procedures.to_sentence() + ' and have staff that speak ' + languages.to_sentence();
+    fragments.push('practice in ' + procedures.to_sentence());
   }
-  else if ( procedures.length >= 1 ) 
-  {
-    description += ' which practice in ' + procedures.to_sentence();
-  }
-  else if ( languages.length >= 1 ) 
-  {
-    description += ' which have staff that speak ' + languages.to_sentence();
-  }
-  
   if ( referrals.length >= 1 )
   {
-    description += ' where ' + referrals.to_sentence();
+    fragments.push(referrals.to_sentence());
+  }
+  if ( days.length >= 1 )
+  {
+    fragments.push('are open on ' + days.to_sentence());
+  }
+  if ( languages.length >= 1 )
+  {
+    fragments.push('have staff that speak ' + languages.to_sentence());
   }
   
+  if ( fragments.length >= 1 )
+  {
+    description += ' which ' + fragments.to_sentence()
+  }
+    
   description += ". <a href='javascript:clear_clinic_filters()'>Clear all filters</a>."
   
   var clinic_phrase = $('#clinic_phrase');
@@ -375,6 +380,11 @@ var clear_clinic_filters = function() {
   
   // clear referral filters
   $('.cr').each( function() {
+    $(this).prop('checked',false)
+  });
+  
+  // clear schedule filters
+  $('.cs').each( function() {
     $(this).prop('checked',false)
   });
   

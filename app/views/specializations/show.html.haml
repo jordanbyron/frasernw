@@ -43,6 +43,15 @@
         - clinics_filter_attributes << "cc#{i}_"
     - clinics_filter_attributes << "crph" if c.referral_phone
     - clinics_filter_attributes << "crpb" if c.patient_can_book?
+    - if c.scheduled?
+      - schedule = c.schedule
+      - clinics_filter_attributes << "csmon" if schedule.monday.scheduled
+      - clinics_filter_attributes << "cstues" if schedule.tuesday.scheduled
+      - clinics_filter_attributes << "cswed" if schedule.wednesday.scheduled
+      - clinics_filter_attributes << "csthurs" if schedule.thursday.scheduled
+      - clinics_filter_attributes << "csfri" if schedule.friday.scheduled
+      - clinics_filter_attributes << "cssat" if schedule.saturday.scheduled
+      - clinics_filter_attributes << "cssun" if schedule.sunday.scheduled
     - c.languages.each do |l|
       - clinics_filter_attributes << "cl#{l.id}_"
     $('#c#{c.id}').data('filter', '#{clinics_filter_attributes.join(' ')}');
@@ -393,6 +402,32 @@
                       
                   .filter-group
                     .filter-group-title
+                      Days open
+                    #filter-group-content-schedule.filter-group-content
+                      %label
+                        %input.cs{"type" => "checkbox", "id" => "csmon"}
+                        Monday
+                      %label
+                        %input.cs{"type" => "checkbox", "id" => "cstues"}
+                        Tuesday
+                      %label
+                        %input.cs{"type" => "checkbox", "id" => "cswed"}
+                        Wednesday
+                      %label
+                        %input.cs{"type" => "checkbox", "id" => "csthurs"}
+                        Thursday
+                      %label
+                        %input.cs{"type" => "checkbox", "id" => "csfri"}
+                        Friday
+                      %label
+                        %input.cs{"type" => "checkbox", "id" => "cssat"}
+                        Saturday
+                      %label
+                        %input.cs{"type" => "checkbox", "id" => "cssun"}
+                        Sunday
+                      
+                  .filter-group
+                    .filter-group-title
                       Languages spoken in clinic
                     #filter-group-content-language.filter-group-content
                       - Language.all.each do |l|
@@ -402,7 +437,7 @@
               %script{"type" => "text/javascript"}
                 :plain
                   $(document).ready(function() {
-                    $('.cp, .cc, .cr, .cl').click( update_clinic_table );
+                    $('.cp, .cc, .cr, .cs, .cl').click( update_clinic_table );
                   });
                   
       #blank_tab.tab-pane
