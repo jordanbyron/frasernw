@@ -44,8 +44,6 @@ $FNW_ICON_WIDTH: 24px;
 .healthcare_provider:before,
 .patient_information:before
 {
-  margin-left: -($FNW_STATUS_INDENT + 14px)/2;
-  margin-right: ($FNW_STATUS_INDENT - 14px)/2;
   margin-left: ($FNW_ICON_WIDTH - 14px)/2;
   margin-right: ($FNW_ICON_WIDTH - 14px)/2;
   display: inline-block;
@@ -55,6 +53,18 @@ $FNW_ICON_WIDTH: 24px;
   background-repeat: no-repeat;
   background-image: url(/img/glyphicons-halflings-red.png);
   content: "\0000a0";
+}
+
+#search_results
+{
+  .status_available:before, 
+  .status_unavailable:before, 
+  .status_unknown:before, 
+  .status_warning:before
+  {
+    margin-left: -($FNW_STATUS_INDENT + 14px)/2;
+    margin-right: ($FNW_STATUS_INDENT - 14px)/2;
+  }
 }
 
 .dropdown-menu *:before
