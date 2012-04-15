@@ -117,7 +117,7 @@ class Specialist < ActiveRecord::Base
       else
         "Unavailable from #{unavailable_from.to_s(:long_ordinal)} through #{unavailable_to.to_s(:long_ordinal)}"
       end
-    elsif (status_mask == 7 or (not status_mask.presence))
+    elsif status_mask == 7 || status_mask.blank?
       "It is unknown if this specialist is accepting new patients (the office didn't respond)"
     else
       Specialist::STATUS_HASH[status_mask]
@@ -127,15 +127,15 @@ class Specialist < ActiveRecord::Base
   def status_class
     if not_responded? || hospital_or_clinic_only? || purposely_not_yet_surveyed?
       return "unknown"
-    elsif ((status_mask == 1) or ((status_mask == 6) and (unavailable_to < Date.today)))
+    elsif ((status_mask == 1) || ((status_mask == 6) && (unavailable_to < Date.today)))
       #marked as available, or the "unavailable between" period has passed
       return "available"
-    elsif ((status_mask == 2) or (status_mask == 4) or ((status_mask == 5) and (unavailable_from <= Date.today)) or ((status_mask == 6) and (unavailable_from <= Date.today) and (unavailable_to >= Date.today)) or moved_away?)
+    elsif ((status_mask == 2) || (status_mask == 4) || ((status_mask == 5) && (unavailable_from <= Date.today)) || ((status_mask == 6) && (unavailable_from <= Date.today) && (unavailable_to >= Date.today)) || moved_away?)
       #only seeing old patients, retired, "retiring as of" date has passed", or in midst of inavailability, or moved away
       return "unavailable"
-    elsif (((status_mask == 5) and (unavailable_from > Date.today)) or ((status_mask == 6) and (unavailable_from > Date.today)))
+    elsif (((status_mask == 5) && (unavailable_from > Date.today)) || ((status_mask == 6) && (unavailable_from > Date.today)))
       return "warning"
-    elsif ((status_mask == 3) or (status_mask == 7))
+    elsif ((status_mask == 3) || (status_mask == 7))
       return "unknown"
     else
       #this shouldn't really happen
@@ -144,7 +144,7 @@ class Specialist < ActiveRecord::Base
   end
   
   def retired?
-    return ((status_mask == 4) or ((status_mask == 5) and (unavailable_from <= Date.today)))
+    return ((status_mask == 4) || ((status_mask == 5) && (unavailable_from <= Date.today)))
   end
   
   WAITTIME_HASH = { 
@@ -161,7 +161,7 @@ class Specialist < ActiveRecord::Base
   }
   
   def waittime
-    waittime_mask.presence ? Specialist::WAITTIME_HASH[waittime_mask] : ""
+    waittime_mask.present? ? Specialist::WAITTIME_HASH[waittime_mask] : ""
   end
   
   LAGTIME_HASH = { 
@@ -235,92 +235,92 @@ class Specialist < ActiveRecord::Base
   end
   
   def accepts_referrals_via
-    if referral_phone and referral_fax and referral_other_details.presence
-      output = "phone, fax, or " + referral_other_details
-    elsif referral_phone and referral_fax
-      output =  "phone or fax"
+    if referral_phone && referral_fax && referral_other_details.present?
+      output = "phone, fax, or #{referral_other_details}."
+    elsif referral_phone && referral_fax
+      output = "phone or fax."
     elsif referral_phone
-      if referral_other_details.presence
-        output =  "phone or " + referral_other_details
+      if referral_other_details.present?
+        output = "phone or #{referral_other_details}."
       else
-        output =  "phone"
+        output = "phone."
       end
     elsif referral_fax
-      if referral_other_details.presence
-        output =  "fax or " + referral_other_details
+      if referral_other_details.present?
+        output = "fax or #{referral_other_details}."
       else
-        output =  "fax"
+        output = "fax."
       end
-    elsif referral_other_details.presence
-      output =  referral_other_details
+    elsif referral_other_details.present?
+      output = referral_other_details.punctuate
     else
       output = ""
     end
     
-    if referral_details.presence
-      return "#{output}. #{referral_details.slice(0,1).capitalize + referral_details.slice(1..-1)}"
+    if referral_details.present?
+      return "#{output} #{referral_details.punctuate}"
     else
       return output
     end
   end
   
   def responds_via
-    if (not respond_by_phone) and (not respond_by_fax) and (not respond_by_mail) and (not respond_to_patient)
+    if (not respond_by_phone) && (not respond_by_fax) && (not respond_by_mail) && (not respond_to_patient)
       return ""
-    elsif (not respond_by_phone) and (not respond_by_fax) and (not respond_by_mail) and respond_to_patient
-      return "directly contacting the patient"
+    elsif (not respond_by_phone) && (not respond_by_fax) && (not respond_by_mail) && respond_to_patient
+      return "directly contacting the patient."
     else
-      if respond_by_phone and respond_by_fax and respond_by_mail
+      if respond_by_phone && respond_by_fax && respond_by_mail
         output = "phone, fax, or mail to referring office"
-      elsif respond_by_phone and respond_by_fax and (not respond_by_mail)
+      elsif respond_by_phone && respond_by_fax && (not respond_by_mail)
         output = "phone or fax to referring office"
-      elsif respond_by_phone and (not respond_by_fax) and respond_by_mail
+      elsif respond_by_phone && (not respond_by_fax) && respond_by_mail
         output = "phone or mail to referring office"
-      elsif respond_by_phone and (not respond_by_fax) and (not respond_by_mail)
+      elsif respond_by_phone && (not respond_by_fax) && (not respond_by_mail)
         output = "phone to referring office"
-      elsif (not respond_by_phone) and respond_by_fax and respond_by_mail
+      elsif (not respond_by_phone) && respond_by_fax && respond_by_mail
         output = "fax or mail to referring office"
-      elsif (not respond_by_phone) and respond_by_fax and (not respond_by_mail)
+      elsif (not respond_by_phone) && respond_by_fax && (not respond_by_mail)
         output = "fax to referring office"
-      else # must be (not respond_by_phone) and (not respond_by_fax) and respond_by_mail
+      else
         output = "mail to referring office"
       end
       
       if respond_to_patient
-        return output + ", and by directly contacting the patient"
+        return output + ", and by directly contacting the patient."
       else
-        return output
+        return output.end_with_period
       end
     end
   end
   
   def urgent_referrals_via
-    if urgent_phone and urgent_fax
-      if urgent_other_details.presence
-        output = "phone, fax, or " + urgent_other_details
+    if urgent_phone && urgent_fax
+      if urgent_other_details.present?
+        output = "phone, fax, or #{urgent_other_details}."
       else
-        output = "phone or fax"
+        output = "phone or fax."
       end
     elsif urgent_phone
-      if urgent_other_details.presence
-        output = "phone or " + urgent_other_details
+      if urgent_other_details.present?
+        output = "phone or #{urgent_other_details}."
       else
-        output = "phone"
+        output = "phone."
       end
     elsif urgent_fax
-      if urgent_other_details.presence
-        output = "fax or " + urgent_other_details
+      if urgent_other_details.present?
+        output = "fax or #{urgent_other_details}."
       else
-        output = "fax"
+        output = "fax."
       end
-    elsif urgent_other_details.presence
-      output = referral_other_details
+    elsif urgent_other_details.present?
+      output = referral_other_details.punctuate
     else
       output = ""
     end
     
-    if urgent_details.presence
-      return "#{output}. #{urgent_details.slice(0,1).capitalize + urgent_details.slice(1..-1)}"
+    if urgent_details.present?
+      return "#{output} #{urgent_details.punctuate}"
     else
       return output
     end

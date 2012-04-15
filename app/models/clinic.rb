@@ -94,9 +94,9 @@ class Clinic < ActiveRecord::Base
   
   def attendances?
     attendances.each do |attendance|
-      if (attendance.is_specialist and attendance.specialist)
+      if attendance.is_specialist && attendance.specialist
         return true
-      elsif (!attendance.is_specialist and !attendance.freeform_name.blank?)
+      elsif !attendance.is_specialist && !attendance.freeform_name.blank?
         return true
       end
     end
@@ -110,7 +110,7 @@ class Clinic < ActiveRecord::Base
   }
   
   def status
-    if ((status_mask == 3) or (not status_mask.presence))
+    if (status_mask == 3) || status_mask.blank?
       "It is unknown if this clinic is accepting new patients (this clinic didn't respond)"
     else
       Clinic::STATUS_HASH[status_mask]
@@ -144,7 +144,7 @@ class Clinic < ActiveRecord::Base
   }
   
   def waittime
-    waittime_mask.presence ? Clinic::WAITTIME_HASH[waittime_mask] : ""
+    waittime_mask.present? ? Clinic::WAITTIME_HASH[waittime_mask] : ""
   end
   
   LAGTIME_HASH = { 
@@ -199,92 +199,92 @@ class Clinic < ActiveRecord::Base
   end
   
   def accepts_referrals_via
-    if referral_phone and referral_fax and referral_other_details.presence
-      output = "phone, fax, or " + referral_other_details
-    elsif referral_phone and referral_fax
-      output = "phone or fax"
+    if referral_phone && referral_fax && referral_other_details.present?
+      output = "phone, fax, or #{referral_other_details}."
+    elsif referral_phone && referral_fax
+      output = "phone or fax."
     elsif referral_phone
-      if referral_other_details.presence
-        output = "phone or " + referral_other_details
+      if referral_other_details.present?
+        output = "phone or #{referral_other_details}."
       else
-        output = "phone"
+        output = "phone."
       end
     elsif referral_fax
-      if referral_other_details.presence
-        output = "fax or " + referral_other_details
+      if referral_other_details.present?
+        output = "fax or #{referral_other_details}."
       else
-        output = "fax"
+        output = "fax."
       end
-    elsif referral_other_details.presence
-      output = referral_other_details
+    elsif referral_other_details.present?
+      output = referral_other_details.punctuate
     else
       output = ""
     end
     
-    if referral_details.presence
-      return "#{output}. #{referral_details.slice(0,1).capitalize + referral_details.slice(1..-1)}"
+    if referral_details.present?
+      return "#{output} #{referral_details.punctuate}"
     else
       return output
     end
   end
   
   def responds_via
-    if (not respond_by_phone) and (not respond_by_fax) and (not respond_by_mail) and (not respond_to_patient)
+    if (not respond_by_phone) && (not respond_by_fax) && (not respond_by_mail) && (not respond_to_patient)
       return ""
-    elsif (not respond_by_phone) and (not respond_by_fax) and (not respond_by_mail) and respond_to_patient
-      return "directly contacting the patient"
+    elsif (not respond_by_phone) && (not respond_by_fax) && (not respond_by_mail) && respond_to_patient
+      return "directly contacting the patient."
     else
-      if respond_by_phone and respond_by_fax and respond_by_mail
+      if respond_by_phone && respond_by_fax && respond_by_mail
         output = "phone, fax, or mail to referring office"
-      elsif respond_by_phone and respond_by_fax and (not respond_by_mail)
+      elsif respond_by_phone && respond_by_fax && (not respond_by_mail)
         output = "phone or fax to referring office"
-      elsif respond_by_phone and (not respond_by_fax) and respond_by_mail
+      elsif respond_by_phone && (not respond_by_fax) && respond_by_mail
         output = "phone or mail to referring office"
-      elsif respond_by_phone and (not respond_by_fax) and (not respond_by_mail)
+      elsif respond_by_phone && (not respond_by_fax) && (not respond_by_mail)
         output = "phone to referring office"
-      elsif (not respond_by_phone) and respond_by_fax and respond_by_mail
+      elsif (not respond_by_phone) && respond_by_fax && respond_by_mail
         output = "fax or mail to referring office"
-      elsif (not respond_by_phone) and respond_by_fax and (not respond_by_mail)
+      elsif (not respond_by_phone) && respond_by_fax && (not respond_by_mail)
         output = "fax to referring office"
-      else # must be (not respond_by_phone) and (not respond_by_fax) and respond_by_mail
+      else
         output = "mail to referring office"
       end
       
       if respond_to_patient
-        return output + ", and by directly contacting the patient"
+        return output + ", and by directly contacting the patient."
       else
-        return output
+        return output.end_with_period
       end
     end
   end
   
   def urgent_referrals_via
-    if urgent_phone and urgent_fax
-      if urgent_other_details.presence
-        output = "phone, fax, or " + urgent_other_details
+    if urgent_phone && urgent_fax
+      if urgent_other_details.present?
+        output = "phone, fax, or #{urgent_other_details}."
       else
-        output = "phone or fax"
+        output = "phone or fax."
       end
     elsif urgent_phone
-      if urgent_other_details.presence
-        output = "phone or " + urgent_other_details
+      if urgent_other_details.present?
+        output = "phone or #{urgent_other_details}."
       else
-        output = "phone"
+        output = "phone."
       end
     elsif urgent_fax
-      if urgent_other_details.presence
-        output = "fax or " + urgent_other_details
+      if urgent_other_details.present?
+        output = "fax or #{urgent_other_details}."
       else
-        output = "fax"
+        output = "fax."
       end
-    elsif urgent_other_details.presence
-      output = referral_other_details
+    elsif urgent_other_details.present?
+      output = referral_other_details.punctuate
     else
       output = ""
     end
     
-    if urgent_details.presence
-      return "#{output}. #{urgent_details.slice(0,1).capitalize + urgent_details.slice(1..-1)}"
+    if urgent_details.present?
+      return "#{output} #{urgent_details.punctuate}"
     else
       return output
     end

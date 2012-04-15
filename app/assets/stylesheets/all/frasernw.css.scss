@@ -5,7 +5,7 @@ $FNW_STATUS_INDENT: 40px;
     
 .admin, .navbar .nav > li.admin
 {
-  display: none;
+  /*display: none;*/
 }
 
 .in-progress
@@ -206,7 +206,7 @@ body
   
   p.space
   {
-    margin-top: 8px;
+    margin-top: 4px;
   }
   
   p:empty
@@ -242,7 +242,7 @@ body
   
   ul
   {
-    margin: 0 0 0 28px;
+    margin: 4px 0 0 28px;
     
     li
     {
