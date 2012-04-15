@@ -200,7 +200,7 @@
       %p This office does not accept direct calls from patients after referral to book their own appointments.
   
   - if @specialist.red_flags.present? || @specialist.urgent_referrals_via.present?
-    %h6.red_flag Urgent Referrals
+    %h6.urgent_referral Urgent Referrals
     
     - if @specialist.urgent_referrals_via.present?
       %p

@@ -93,29 +93,17 @@
           Clinics
     - if true
       %li
-        %a{"href" => "#blank_tab", "data-toggle" => "tab"}
-          %i.icon-leaf.icon-blue
-          Community Resources
+        %a.community_resources{"href" => "#blank_tab", "data-toggle" => "tab"} Community Resources
       %li
-        %a{"href" => "#blank_tab", "data-toggle" => "tab"}
-          %i.icon-star.icon-blue
-          Pearls
+        %a.pearls{"href" => "#blank_tab", "data-toggle" => "tab"} Pearls
       %li
-        %a{"href" => "#blank_tab", "data-toggle" => "tab"}
-          %i.icon-list.icon-blue
-          Workups
+        %a.workups{"href" => "#blank_tab", "data-toggle" => "tab"} Workups
       %li
-        %a{"href" => "#blank_tab", "data-toggle" => "tab"}
-          %i.icon-flag.icon-blue
-          Red Flags
+        %a.red_flags{"href" => "#blank_tab", "data-toggle" => "tab"} Red Flags
       %li
-        %a{"href" => "#blank_tab", "data-toggle" => "tab"}
-          %i.icon-random.icon-blue
-          Care Pathways
+        %a.care_pathways{"href" => "#blank_tab", "data-toggle" => "tab"} Care Pathways
       %li
-        %a{"href" => "#blank_tab", "data-toggle" => "tab"}
-          %i.icon-book.icon-blue
-          Patient Education
+        %a.patient_education{"href" => "#blank_tab", "data-toggle" => "tab"} Patient Education
 
 
   .tab-content
@@ -126,7 +114,6 @@
           .row
             .span9
               #specialist_phrase.filter-phrase
-                Showing all specialists.
             
               %table.table.table-condensed.tablesorter{:id => 'specialist_table'}
                 %thead
@@ -269,7 +256,7 @@
                         Clinic:
                         %select.sa
                           %option{"value" => 0} Any
-                          - @specialization.clinics.all.each do |c|
+                          - @specialization.clinics.each do |c|
                             %option{"value" => "sac#{c.id}_"}= c.name
                       %label.indent
                         Hospital:
@@ -291,7 +278,6 @@
           .row
             .span9
               #clinic_phrase.filter-phrase
-                Showing all clinics.
                 
               %table.table.table-condensed{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'clinic_table'}
                 %thead
