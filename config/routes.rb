@@ -48,7 +48,7 @@ Frasernw::Application.routes.draw do
   
   match 'livesearch' => 'search#livesearch', :as => :livesearch
   
-  match 'blank' => 'specialization#blank', :as => :blank
+  match 'front' => 'front#index', :as => :front
 
   resources :user_sessions
 
@@ -103,7 +103,7 @@ Frasernw::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => 'specializations#blank'
+  root :to => 'front#index'
 
   # See how all your routes lay out with "rake routes"
 

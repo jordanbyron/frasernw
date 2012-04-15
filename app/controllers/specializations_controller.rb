@@ -1,10 +1,6 @@
 class SpecializationsController < ApplicationController
   load_and_authorize_resource
   
-  def blank
-    render :layout => 'ajax' if request.headers['X-PJAX']
-  end
-
   def index
     @specializations = Specialization.all
     render :layout => 'ajax' if request.headers['X-PJAX']

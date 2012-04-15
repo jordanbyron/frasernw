@@ -1,0 +1,4 @@
+%ul#front
+  - Specialization.all.each do |s|
+    %li
+      %a.ajax{"href" => specialization_path(s)}= s.name

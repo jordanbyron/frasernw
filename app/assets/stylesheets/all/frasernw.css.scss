@@ -5,7 +5,7 @@ $FNW_STATUS_INDENT: 40px;
     
 .admin, .navbar .nav > li.admin
 {
-  /*display: none;*/
+  display: none;
 }
 
 .in-progress
@@ -258,6 +258,35 @@ body
   ul.pager
   {
     margin-top: 1em;
+  }
+  
+  ul#front
+  {
+    margin: 8px 0 0 0;
+    list-style-type: none;
+    line-height: 60px;
+    li
+    {
+      display: inline-block;
+      padding: 8px;
+      
+      a
+      {
+        padding: 8px;
+        font-size: 24px;
+        background-color: $FNW_LIGHT_GRAY;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        border-radius: 8px;
+      }
+      
+      a:hover
+      {
+        text-decoration: none;
+        background-color: $FNW_LIGHT_BLUE;
+        color: $FNW_RED;
+      }
+    }
   }
   
   td.admin.btn-group
