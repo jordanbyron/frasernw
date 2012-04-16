@@ -41,10 +41,13 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
       background: $FNW_BACKGROUND;
     }
     
-    .navbar-search .search-query :-moz-placeholder {
+    .navbar-search .search-query :-moz-placeholder 
+    {
       color: $FNW_MID_GRAY;
     }
-    .navbar-search .search-query::-webkit-input-placeholder {
+    
+    .navbar-search .search-query::-webkit-input-placeholder
+     {
       color: $FNW_MID_GRAY;
     }
   }
@@ -68,9 +71,16 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
 }
   
 /* DROPDOWN MENUS */
+    
+li.dropdown:hover ul.dropdown-menu
+{
+  /* display: block; */    
+}
   
 ul.dropdown-menu 
 {
+  margin-top: 0;
+  
   border-color: $FNW_DARK_GRAY;
   
   li a:hover
