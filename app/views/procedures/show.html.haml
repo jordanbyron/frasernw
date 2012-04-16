@@ -1,4 +1,4 @@
-- title "Pathways | #{@procedure.name}"
+- title "Pathways | #{@procedure.full_name}"
 
 %script{"type" => "text/javascript"}
   $(document).ready(function() {
@@ -61,8 +61,8 @@
           $('.tablesorter').tablesorter({sortList: [[1,0],[2,0]]});
       });
 
-%h2= "#{@procedure.name}"
-%h4= @procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress and !current_user_is_admin? }.collect(){ |ps| "<a href=\"#{specialization_path(ps.specialization)}\" class='#{ ps.specialization.in_progress ? "in-progress ajax" : "ajax"}'>#{compressed_ancestry(ps)}</a>" }.to_sentence.html_safe
+%h2= "#{@procedure.full_name}"
+%h4= @procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress and !current_user_is_admin? }.collect(){ |ps| "<a href=\"#{specialization_path(ps.specialization)}\" class='#{ ps.specialization.in_progress ? "in-progress ajax" : "ajax"}'>#{ps.specialization.name}</a>" }.to_sentence.html_safe
 
 - has_specialists = @procedure.all_specialists.length > 0
 - has_clinics = @procedure.all_clinics.length > 0
