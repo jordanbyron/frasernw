@@ -185,6 +185,14 @@
           %li
             = attendance.freeform_name
             = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
+        
+  .btn-group
+    %a.btn
+      %i.icon-print.icon-text
+      Print Information for Patient
+    %a.btn
+      %i.icon-exclamation-sign.icon-text
+      Incorrect Information? Let us know
             
 - if current_user_is_admin?
   - if @clinic.controlling_users.present?
