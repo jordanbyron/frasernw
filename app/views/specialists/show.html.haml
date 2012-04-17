@@ -94,7 +94,7 @@
             = "(#{specialist_office.sector})" if specialist_office.sector?
             - if num_specialists > 1
               with
-              %a#tt{"href" => "#", "onclick" => "$('#tt').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
+              %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "#", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other specialist')}"
           %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
           %p= location.in_details if location.in_details.present?
         - elsif address.present?
@@ -103,7 +103,7 @@
             = "(#{specialist_office.sector})" if specialist_office.sector?
             - if num_specialists > 1
               with
-              %a#tt{"href" => "#", "onclick" => "$('#tt').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other specialist')}"
+              %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "#", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other specialist')}"
       %p= specialist_office.phone_and_fax if specialist_office.phone_and_fax.present?
       - if specialist_office.direct_info.present?
         %p
@@ -250,7 +250,7 @@
         
 %script{"type" => "text/javascript"}
   :plain
-    $(document).ready(function() { $('#tt').tooltip({trigger: 'manual'}) });
+    $(document).ready(function() { $('.tt').tooltip({trigger: 'manual'}) });
             
 - if current_user_is_admin?
   - if @specialist.controlling_users.present?
