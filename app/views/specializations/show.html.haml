@@ -93,15 +93,13 @@
           Clinics
     - if true
       %li
-        %a.community_resources{"href" => "#blank_tab", "data-toggle" => "tab"} Community Resources
+        %a.calculators{"href" => "#blank_tab", "data-toggle" => "tab"} Calculators
+      %li
+        %a.care_pathways{"href" => "#blank_tab", "data-toggle" => "tab"} Care Pathways
       %li
         %a.pearls{"href" => "#blank_tab", "data-toggle" => "tab"} Pearls
       %li
-        %a.workups{"href" => "#blank_tab", "data-toggle" => "tab"} Workups
-      %li
         %a.red_flags{"href" => "#blank_tab", "data-toggle" => "tab"} Red Flags
-      %li
-        %a.care_pathways{"href" => "#blank_tab", "data-toggle" => "tab"} Care Pathways
       %li
         %a.patient_education{"href" => "#blank_tab", "data-toggle" => "tab"} Patient Education
 
@@ -146,19 +144,19 @@
                     - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
                       - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
                       %label
-                        %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}').collapse('toggle')"}= ps.procedure.name
+                        %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}_').collapse('toggle')"}= ps.procedure.name
                       - next if children.length == 0
-                      .collapse{:id => "children_sp#{ps.procedure.id}"}
+                      .collapse{:id => "children_sp#{ps.procedure.id}_"}
                         %script{"type" => "text/javascript"}
                           :plain
                             $(document).ready(function() {
-                              $('#children_sp#{ps.procedure.id}').collapse({toggle: false}); 
+                              $('#children_sp#{ps.procedure.id}_').collapse({toggle: false}); 
                             });
                         - parent_id = ps.procedure.id
                         - children.each do |ps, children|
                           - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
                           %label.indent
-                            %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}"}= ps.procedure.name
+                            %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}_"}= ps.procedure.name
                     
                     - nonfocused_procedure_specializations = @specialization.nonfocused_procedure_specializations_arranged
                     - has_more = false
@@ -185,17 +183,17 @@
                           %label
                             %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_"}= ps.procedure.name
                           - next if children.length == 0
-                          .collapse{:id => "children_sp#{ps.procedure.id}"}
+                          .collapse{:id => "children_sp#{ps.procedure.id}_"}
                             %script{"type" => "text/javascript"}
                               :plain
                                 $(document).ready(function() {
-                                  $('#children_sp#{ps.procedure.id}').collapse({toggle: false}); 
+                                  $('#children_sp#{ps.procedure.id}_').collapse({toggle: false}); 
                                 });
                             - parent_id = ps.procedure.id
                             - children.each do |ps, children|
                               - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
                               %label.indent
-                                %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}"}= ps.procedure.name
+                                %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}_"}= ps.procedure.name
                           
                 %hr
                           

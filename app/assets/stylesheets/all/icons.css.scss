@@ -43,9 +43,8 @@ $FNW_ICON_WIDTH: 24px;
 .city:before, .province:before,
 .healthcare_provider:before,
 .patient_information:before,
-.community_resources:before,
+.calculators:before,
 .pearls:before,
-.workups:before,
 .red_flags:before, 
 .care_pathways:before,
 .patient_education:before
@@ -199,9 +198,8 @@ $FNW_ICON_WIDTH: 24px;
   background-position: 0 -120px;
 }
 
-.community_resources:before,
+.calculators:before,
 .pearls:before,
-.workups:before,
 .red_flags:before,
 .care_pathways:before,
 .patient_education:before
@@ -210,7 +208,12 @@ $FNW_ICON_WIDTH: 24px;
   background-image: url(/img/glyphicons-halflings-blue.png);
 }
 
-.community_resources:before
+.calculators:before
+{
+  background-position: -240px 0;
+}
+
+.care_pathways:before
 {
   background-position: -48px -120px;
 }
@@ -220,19 +223,9 @@ $FNW_ICON_WIDTH: 24px;
   background-position: -120px 0;
 }
 
-.workups:before
-{
-  background-position: -360px -48px;
-}
-
 .red_flags:before
 {
   background-position: -312px -24px;
-}
-
-.care_pathways:before
-{
-  background-position: -216px -120px;
 }
 
 .patient_education:before
