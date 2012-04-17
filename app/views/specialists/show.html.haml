@@ -86,7 +86,7 @@
         - if (location.in_hospital? or location.in_clinic?)
           - located_in = location.hospital_in
           - located_in ||= location.clinic_in
-          %p
+          %p.space
             = "In #{link_to located_in.name, url_for(located_in), :class => 'ajax'}".html_safe
             - if located_in.location.present? && located_in.location.in_hospital?
               - hopsital = located_in.location.hospital_in
@@ -98,7 +98,7 @@
           %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
           %p= location.in_details if location.in_details.present?
         - elsif address.present?
-          %p
+          %p.space
             = link_to address.address, address.map_url, :target => "_blank"
             = "(#{specialist_office.sector})" if specialist_office.sector?
             - if num_specialists > 1
