@@ -1,4 +1,58 @@
-%ul#front
-  - Specialization.all.each do |s|
-    %li
-      %a.ajax{"href" => specialization_path(s)}= s.name
+- title "Pathways"
+
+.content#front
+  .row
+    .span3
+    
+      %h3 Specialties
+      
+      %ul.specialties
+        - Specialization.all.each do |s|
+          %li
+            %a.ajax{"href" => specialization_path(s)}= s.name
+     
+    .span9
+      .content
+        .row
+          .span4
+            %h3 What is Pathways?
+            
+            %p 
+              Pathways is a web based resource for GPs and MOAs to facilitate 
+              %strong real-time, optimal, patient referrals 
+              by providing a comprehensive, searchable database of specialists and clinics. 
+            
+            %p 
+              Pathways contributes to improved patient outcomes by 
+              %strong incorporate learnings from our Shared Care initiative, 
+              including calculators, care pathways, pearls, red flags, and patient education materials.
+          
+          .span4.offset1
+            %h3 Latest Updates
+            
+            %ul.space
+                
+              %li
+                %a.ajax{"href" => "http://localhost:3000/specialists/479"} Michael Butler
+                = surround '(', ')' do
+                  %a.ajax{"href" => "http://localhost:3000/specializations/15"} Ophthalmology
+                is newly opened and accepting patients in Burnaby.
+                
+              %li
+                %a.ajax{"href" => "http://localhost:3000/specialists/354"} Gary Jackson
+                = surround '(', ')' do
+                  %a.ajax{"href" => "http://localhost:3000/specializations/22"} Obstetrics Gynecology
+                is retiring as of May 31st, 2012.
+                
+              %li
+                %a.ajax{"href" => "http://localhost:3000/specialists/341"} Melanie Altas
+                = surround '(', ')' do
+                  %a.ajax{"href" => "http://localhost:3000/specializations/22"} Obstetrics Gynecology
+                is newly opened and accepting patients in New Westminster.
+              
+        .row
+          .span4
+            %h3 Did you know?
+          
+          .span4.offset1
+            %h3 More content here

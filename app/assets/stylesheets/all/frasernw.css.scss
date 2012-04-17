@@ -260,35 +260,6 @@ body
     margin-top: 1em;
   }
   
-  ul#front
-  {
-    margin: 8px 0 0 0;
-    list-style-type: none;
-    line-height: 60px;
-    li
-    {
-      display: inline-block;
-      padding: 8px;
-      
-      a
-      {
-        padding: 8px;
-        font-size: 24px;
-        background-color: $FNW_LIGHT_GRAY;
-        -webkit-border-radius: 8px;
-        -moz-border-radius: 8px;
-        border-radius: 8px;
-      }
-      
-      a:hover
-      {
-        text-decoration: none;
-        background-color: $FNW_LIGHT_BLUE;
-        color: $FNW_RED;
-      }
-    }
-  }
-  
   td.admin.btn-group
   {
     width: 120px;
@@ -565,5 +536,41 @@ body
     -webkit-column-gap: 24px;
     -moz-column-gap: 24px;
     column-gap: 24px;
+  }
+  
+  
+  
+  #front
+  {
+    p, ul
+    {
+      margin: 12px 0 0 0;
+    }
+    
+    ul
+    {
+      list-style-type: none;
+      
+      li a:hover
+      {
+        text-decoration: none;
+        color: $FNW_RED;
+      }
+    }
+    
+    ul.space li
+    {
+      margin-top: 12px;
+    }
+    
+    ul.specialties li
+    {
+      margin-top: 6px;
+    }
+    
+    .row + .row
+    {
+      margin-top: 24px;
+    }
   }
 }
