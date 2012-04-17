@@ -25,7 +25,7 @@ procedures.each do |procedure|
   
   entry = { 
     "n" => procedure.full_name, 
-    "sp" => procedure.procedure_specializations.collect{ |ps| ps.specialization.name }.to_sentence,
+    "sp" => procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress }.collect{ |ps| ps.specialization.name }.to_sentence,
     "c" => "", 
     "st" => "",
     "wt" => "",
@@ -35,16 +35,16 @@ procedures.each do |procedure|
   search_data << entry
 end 
 
-specialists = Specialist.includes(:specialist_specializations => :specialization)
+specialists = Specialist.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:clinic_in => {:location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}}]}})
 
 specialists.each do |specialist|
 
   #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
-  next if specialist.specializations.length == 0
+  next if specialist.specialist_specializations.reject{ |ss| ss.specialization.blank? or ss.specialization.in_progress }.length == 0
   
   entry = { 
     "n" => specialist.name, 
-    "sp" => specialist.specializations.collect{ |s| s.name }.to_sentence, 
+    "sp" => specialist.specialist_specializations.reject{ |ss| ss.specialization.blank? or ss.specialization.in_progress }.collect{ |ss| ss.specialization.name }.to_sentence, 
     "c" => specialist.city,
     "st" => specialist.status_class,
     "wt" => specialist.waittime || "",
@@ -54,16 +54,16 @@ specialists.each do |specialist|
   search_data << entry
 end
 
-clinics = Clinic.includes(:clinic_specializations => :specialization, :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}])
+clinics = Clinic.includes(:location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}])
 
 clinics.each do |clinic|
 
   #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
-  next if clinic.specializations.length == 0
+  next if clinic.clinic_specializations.reject{ |cs| cs.specialization.in_progress }.length == 0
   
   entry = { 
     "n" => clinic.name, 
-    "sp" => clinic.specializations.collect{ |s| s.name }.to_sentence,
+    "sp" => clinic.clinic_specializations.reject{ |cs| cs.specialization.in_progress }.collect{ |cs| cs.specialization.name }.to_sentence,
     "c" => clinic.city,
     "st" => clinic.status_class,
     "wt" => clinic.waittime,
