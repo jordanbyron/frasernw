@@ -57,6 +57,12 @@ class Specialist < ActiveRecord::Base
     return o.city
   end
   
+  def city_id
+    return nil if moved_away?
+    o = offices.first
+    return o.present? ? o.city_id : nil
+  end
+  
   has_one :review_item, :as => :item
 
   default_scope order('lastname, firstname')

@@ -1,3 +1,54 @@
+<%
+
+group_data = { 
+  "1" => "Specialists",
+  "2" => "Clinics",
+  "3" => "Hospitals",
+  "4" => "Areas of Practice",
+  "5" => "Specialties", 
+  "6" => "Languages" 
+}
+  
+-%>
+
+pathways_group_data = <%=group_data.to_json.html_safe %><%
+
+url_data = { 
+  "1" => "specialists",
+  "2" => "clinics",
+  "3" => "hospitals",
+  "4" => "procedures",
+  "5" => "specializations", 
+  "6" => "languages" 
+}
+  
+-%>
+
+pathways_url_data = <%=url_data.to_json.html_safe %>
+
+<% specialization_data = Hash.new
+
+Specialization.all.each do |specialization|
+  next if specialization.in_progress
+  specialization_data[specialization.id] = specialization.name
+
+end
+  
+-%>
+
+pathways_specialization_data = <%=specialization_data.to_json.html_safe %>
+
+<% city_data = Hash.new
+
+City.all.each do |city|
+  city_data[city.id] = city.name
+
+end
+  
+-%>
+
+pathways_city_data = <%=city_data.to_json.html_safe %>
+
 <% search_data = Array.new 
 
 Specialization.all.each do |specialization|
@@ -6,12 +57,7 @@ Specialization.all.each do |specialization|
   
   entry = { 
     "n" => specialization.name, 
-    "sp" => "",
-    "c" => "", 
-    "st" => "",
-    "wt" => "",
-    "url" => url_for(specialization),
-    "gn" => "Specialties",
+    'id' => specialization.id,
     "go" => 5 }
   search_data << entry
 end 
@@ -25,12 +71,8 @@ procedures.each do |procedure|
   
   entry = { 
     "n" => procedure.full_name, 
-    "sp" => procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress }.collect{ |ps| ps.specialization.name }.to_sentence,
-    "c" => "", 
-    "st" => "",
-    "wt" => "",
-    "url" => url_for(procedure),
-    "gn" => "Areas of Practice",
+    "sp" => procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress }.collect{ |ps| ps.specialization_id },
+    "id" => procedure.id,
     "go" => 4 }
   search_data << entry
 end 
@@ -44,12 +86,11 @@ specialists.each do |specialist|
   
   entry = { 
     "n" => specialist.name, 
-    "sp" => specialist.specialist_specializations.reject{ |ss| ss.specialization.blank? or ss.specialization.in_progress }.collect{ |ss| ss.specialization.name }.to_sentence, 
-    "c" => specialist.city,
+    "sp" => specialist.specialist_specializations.reject{ |ss| ss.specialization.blank? or ss.specialization.in_progress }.collect{ |ss| ss.specialization_id }, 
+    "c" => specialist.city_id,
     "st" => specialist.status_class,
     "wt" => specialist.waittime || "",
-    "url" => url_for(specialist),
-    "gn" => "Specialists",
+    "id" => specialist.id,
     "go" => 1 }
   search_data << entry
 end
@@ -63,12 +104,11 @@ clinics.each do |clinic|
   
   entry = { 
     "n" => clinic.name, 
-    "sp" => clinic.clinic_specializations.reject{ |cs| cs.specialization.in_progress }.collect{ |cs| cs.specialization.name }.to_sentence,
-    "c" => clinic.city,
+    "sp" => clinic.clinic_specializations.reject{ |cs| cs.specialization.in_progress }.collect{ |cs| cs.specialization_id },
+    "c" => clinic.city_id,
     "st" => clinic.status_class,
     "wt" => clinic.waittime,
-    "url" => url_for(clinic),
-    "gn" => "Clinics",
+    "id" => clinic.id,
     "go" => 2 }
   search_data << entry
 end
@@ -78,12 +118,8 @@ hospitals = Hospital.includes(:location => {:address => :city})
 hospitals.each do |hospital|
   entry = { 
     "n" => hospital.name, 
-    "sp" => "", 
-    "c" => hospital.city, 
-    "st" => "none",
-    "wt" => "",
-    "url" => url_for(hospital),
-    "gn" => "Hospitals",
+    "c" => hospital.city_id, 
+    "id" => hospital.id,
     "go" => 3 }
   search_data << entry
 end
@@ -91,12 +127,7 @@ end
 Language.all.each do |language|
   entry = { 
     "n" => language.name, 
-    "sp" => "", 
-    "c" => "", 
-    "st" => "none",
-    "wt" => "",
-    "url" => url_for(language),
-    "gn" => "Languages",
+    "id" => language.id,
     "go" => 6 }
   search_data << entry
 end
