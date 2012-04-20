@@ -165,7 +165,7 @@
     - if @specialist.accepts_referrals_via.present?
       %p
         %strong Accepted by:
-        = @specialist.accepts_referrals_via
+        = @specialist.accepts_referrals_via.html_safe
     - if @specialist.responds_via.present?
       %p
         %strong Responded to by:
