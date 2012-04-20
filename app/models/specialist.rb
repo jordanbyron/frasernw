@@ -1,5 +1,5 @@
 class Specialist < ActiveRecord::Base
-  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :categorization_mask, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :patient_instructions, :cancellation_policy, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :language_ids, :user_controls_specialists_attributes, :specialist_offices_attributes, :admin_notes, :referral_forms_attributes
+  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :categorization_mask, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_clinic_id, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :patient_instructions, :cancellation_policy, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :language_ids, :user_controls_specialists_attributes, :specialist_offices_attributes, :admin_notes, :referral_forms_attributes
   has_paper_trail ignore: [:saved_token, :review_item]
   
   # specialists can have multiple specializations
@@ -64,6 +64,9 @@ class Specialist < ActiveRecord::Base
   end
   
   has_one :review_item, :as => :item
+  
+  #clinic that referrals are done through
+  belongs_to :referral_clinic, :class_name => "Clinic"
 
   default_scope order('lastname, firstname')
   
@@ -230,25 +233,30 @@ class Specialist < ActiveRecord::Base
   
   def accepts_referrals_via
     if referral_phone and referral_fax and referral_other_details.presence
-      output = "phone, fax, or " + referral_other_details
+      output = "by phone, fax, or " + referral_other_details
     elsif referral_phone and referral_fax
-      output =  "phone or fax"
+      output =  "by phone or fax"
     elsif referral_phone
       if referral_other_details.presence
-        output =  "phone or " + referral_other_details
+        output =  "by phone or " + referral_other_details
       else
-        output =  "phone"
+        output =  "by phone"
       end
     elsif referral_fax
       if referral_other_details.presence
-        output =  "fax or " + referral_other_details
+        output =  "by fax or " + referral_other_details
       else
-        output =  "fax"
+        output =  "by fax"
       end
     elsif referral_other_details.presence
       output =  referral_other_details
     else
       output = ""
+    end
+    
+    if referral_clinic.present?
+      through = "through <a class='ajax' href='/clinics/#{referral_clinic.id}'>#{referral_clinic.name}</a>"
+      output = output.blank? ? through : "#{through}, or #{output}"
     end
     
     if referral_details.presence

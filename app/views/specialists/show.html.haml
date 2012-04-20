@@ -142,10 +142,10 @@
     %p
       - if @specialist.accepts_referrals_via.presence and @specialist.responds_via.presence
         %strong.referral Referrals:
-        = "accepted by #{@specialist.accepts_referrals_via}. Responded to by #{@specialist.responds_via}."
+        = "accepted #{@specialist.accepts_referrals_via}. Responded to by #{@specialist.responds_via}.".html_safe
       - elsif @specialist.accepts_referrals_via.presence
         %strong.referral Referrals:
-        = "accepted by #{@specialist.accepts_referrals_via}."
+        = "accepted #{@specialist.accepts_referrals_via}.".html_safe
       - elsif @specialist.responds_via.presence
         %strong.referral Referrals:
         = "responded to by #{@specialist.responds_via}."

@@ -105,6 +105,7 @@ en:
         required_investigations: "In addition to history, PH, meds, allergies and previous OR/consultation reports, the following information/investigations are required for ALL patients"
         interest: "I am most interested in"
         not_performed: "I do not see or do"
+        referral_clinic: "Through clinic"
         referral_form_mask: "Does the office have a referral form?"
         referral_fax: "Fax"
         referral_phone: "Phone"
