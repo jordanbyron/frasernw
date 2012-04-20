@@ -41,7 +41,8 @@ $FNW_STATUS_INDENT: 40px;
 .history:before,
 .city:before, .province:before,
 .healthcare_provider:before,
-.patient_information p:first-child strong:before
+.patient_information p:first-child strong:before,
+.create:before
 {
   margin-left: -($FNW_STATUS_INDENT + 14px)/2;
   margin-right: ($FNW_STATUS_INDENT - 14px)/2;
@@ -54,13 +55,13 @@ $FNW_STATUS_INDENT: 40px;
   content: "\0000a0";
 }
 
-.dropdown-menu *:before
+.dropdown-menu li > a:before
 {
   background-image: url(/img/glyphicons-halflings-text.png);
   margin-left: 0;
 }
 
-.dropdown-menu li:hover *:before
+.dropdown-menu li:hover > a:before
 {
   background-image: url(/img/glyphicons-halflings-white.png);
 }
@@ -173,5 +174,33 @@ $FNW_STATUS_INDENT: 40px;
 {
   background-image: url(/img/glyphicons-halflings-orange.png);
   background-position: 0 -120px;
+}
+
+.create:before
+{
+  background-position: 0 -96px;
+}
+
+.arrow-left-after:after,
+.arrow-right-after:after
+{
+  display: inline-block;
+  float: right;
+  width: 14px;
+  height: 14px;
+  background-position: 14px 14px;
+  background-repeat: no-repeat;
+  background-image: url(/img/glyphicons-halflings-text.png);
+  content: "\0000a0";
+}
+
+.arrow-left-after:after
+{
+  background-position: -240px -96px;
+}
+
+.arrow-right-after:after
+{
+  background-position: -264px -96px;
 }
 

@@ -42,8 +42,34 @@
                     %b.caret
                   %ul.dropdown-menu
                     /%li= link_to "Track Specialists", tracker_path\
-                    %li= link_to "Activity", all_versions_path, :class => "history ajax"
+                    %li= link_to "Activity Feed", all_versions_path, :class => "history ajax"
                     /%li= link_to "Review Queue (#{Review.count})", reviews_path, :class => "review ajax"
+                    %li.divider
+                    %li
+                      = link_to "New...", "#", :class => "create arrow-right-after"
+                      %ul.dropdown-menu.sub-menu
+                        %li
+                          = link_to "New Area of Practice in...", "#", :class => "procedure arrow-right-after"
+                          %ul.dropdown-menu.sub-menu
+                            - Specialization.all.each do |specialization|
+                              %li=link_to specialization.name, new_specialization_procedure_path(specialization), :class => 'ajax'
+                        %li
+                          = link_to "New Clinic in...", "#", :class => "clinic arrow-right-after"
+                          %ul.dropdown-menu.sub-menu
+                            - Specialization.all.each do |specialization|
+                              %li=link_to specialization.name, new_specialization_clinic_path(specialization), :class => 'ajax'
+                        %li= link_to "New City", new_city_path, :class => "city ajax"
+                        %li= link_to "New Healthcare Provider", new_healthcare_provider_path, :class => "healthcare_provider ajax"
+                        %li= link_to "New Hospital", new_hospital_path, :class => "hospital ajax"
+                        %li= link_to "New Language", new_language_path, :class => "language ajax"
+                        %li= link_to "New Office", new_office_path, :class => "office ajax"
+                        %li
+                          = link_to "New Specialist in...", "#", :class => "specialist arrow-right-after"
+                          %ul.dropdown-menu.sub-menu
+                            - Specialization.all.each do |specialization|
+                              %li=link_to specialization.name, new_specialization_specialist_path(specialization), :class => 'ajax'
+                        %li= link_to "New Specialty", new_specialization_path, :class => "specialty ajax"
+                        %li= link_to "New User", new_user_path, :class => "user ajax"
                     %li.divider
                     %li= link_to "Areas of Practice", procedures_path, :class => "procedure ajax"
                     %li= link_to "Clinics", clinics_path, :class => "clinic ajax"
