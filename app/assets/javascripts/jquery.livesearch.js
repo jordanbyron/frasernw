@@ -87,10 +87,10 @@ jQuery.fn.livesearch = function(options)
     var last_group = -999;
     $.each(results.sort(grouper_fnc), function()
     {
-      if ( this.data_entry.gn && (last_group != this.data_entry.go) )
+      if ( last_group != this.data_entry.go )
       {
         last_group = this.data_entry.go
-        list.append(group_formatter_fnc(this.data_entry.gn))
+        list.append(group_formatter_fnc(this.data_entry.go))
       }
       list.append(data_formatter_fnc(this.total_score, this.scores_matches, this.data_entry))
     });
@@ -119,9 +119,9 @@ jQuery.fn.livesearch = function(options)
     return "<li class='result'><a href=\'" + data_entry.url + "'>" + livesearch_highlighter( data_entry.value, scores_matches.value.matches ) + '</a></li>';
   }
   
-  function group_formatter(group_name)
+  function group_formatter(group_id)
   {
-    var result = "<li class='group'>" + group_name + "</li>";
+    var result = "<li class='group'>" + group_id + "</li>";
     
     return result;
   }

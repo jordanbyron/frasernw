@@ -248,6 +248,7 @@
     %label How does your office accept requests for standard referrals?
     = f.input :referral_fax, as: :boolean, wrapper: :bootstrap_tight
     = f.input :referral_phone, as: :boolean, wrapper: :bootstrap_tight
+    = f.association :referral_clinic, as: :select, :prompt => "None", :include_blank => true
     = f.input :referral_other_details
     = f.input :referral_details
     

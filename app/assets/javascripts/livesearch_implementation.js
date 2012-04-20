@@ -13,20 +13,39 @@ function pathways_grouper(a, b)
 
 function pathways_data_formatter(total_score, scores_matches, data_entry)
 {
-  var result = "<li class='result'><a id='" + data_entry.url.replace(/\//g,'_') + "'  href='" + data_entry.url + "' class='ajax'>"
+  var result = "<li class='result'><a id='" + data_entry.go + '_' + data_entry.id + "'  href='/" + pathways_url_data[data_entry.go] + '/' + data_entry.id + "' class='ajax'>"
   
   result += "<div class='search_name status_" + data_entry.st + "'>" + livesearch_highlighter( data_entry.n, scores_matches.n.matches ) + "</div>"
-  result += "<div class='search_specialties'>" + data_entry.sp + "</div>"
   
-  if ( data_entry.wt != "" || data_entry.c != "" )
+  var specialties = new Array();
+  
+  if ( data_entry.sp )
   {
-    if(data_entry.wt != "")
+    for (var i = 0; i < data_entry.sp.length; ++i)
     {
-      result += "<div class='search_wait_time'>"
-      result += "Wait time: " + data_entry.wt
-      result += "</div>"
+      specialties.push( pathways_specialization_data[data_entry.sp[i]] )
     }
-    result += "<div class='search_city'>" + data_entry.c + "</div>"
+  }
+  
+  result += "<div class='search_specialties'>" + specialties.to_sentence() + "</div>";
+  
+  if(data_entry.wt && (data_entry.wt != "") && data_entry.c && (data_entry.c != ""))
+  {
+    result += "<div class='search_wait_time'>"
+    result += "Wait time: " + data_entry.wt
+    result += "</div>"
+    result += "<div class='search_city'>" + pathways_city_data[data_entry.c] + "</div>"
+  }
+  else if (data_entry.wt && (data_entry.wt != ""))
+  {
+    result += "<div class='search_wait_time'>"
+    result += "Wait time: " + data_entry.wt
+    result += "</div>"
+  }
+  else if (data_entry.c && (data_entry.c != ""))
+  {
+    result += "<div class='search_wait_time'></div>"
+    result += "<div class='search_city'>" + pathways_city_data[data_entry.c] + "</div>"
   }
   
   result += "</a></li>";
@@ -34,33 +53,33 @@ function pathways_data_formatter(total_score, scores_matches, data_entry)
   return $(result).ajaxify();
 }
 
-function pathways_group_formatter(group_name)
+function pathways_group_formatter(group_id)
 {
   var icon = "";
-  switch(group_name)
+  switch(group_id)
   {
-    case "Specialists":
+    case 0: //specialists
       icon = "user"
       break;
-    case "Clinics":
+    case 1: //clinics
       icon = "home"
       break;
-    case "Hospitals":
+    case 3: //hospitals
       icon = "plus"
       break;
-    case "Specialties":
-      icon = "book"
-      break;
-    case "Areas of Practice":
+    case 4: //areas of practice
       icon = "list"
       break;
-    case "Languages":
+    case 5: //specialties
+      icon = "book"
+      break;
+    case 6: //languages
       icon = "comment"
       break;
   }
   
   var result = "<li class='group'>"
-  result += "<div class='group'><i class='icon-" + icon + " icon-text'></i> " + group_name + "</div>"
+  result += "<div class='group'><i class='icon-" + icon + " icon-text'></i> " + pathways_group_data[group_id] + "</div>"
   result += "</li>";
   
   return result;
@@ -68,6 +87,6 @@ function pathways_group_formatter(group_name)
 
 function pathways_searcher(data_entry)
 {
-  $('#' + data_entry.url.replace(/\//g,'_')).click();
+  $('#' + data_entry.go + '_' + data_entry.id).click();
   return false;
 }

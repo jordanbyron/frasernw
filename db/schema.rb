@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120418225933) do
+ActiveRecord::Schema.define(:version => 20120420152318) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -462,7 +462,10 @@ ActiveRecord::Schema.define(:version => 20120418225933) do
     t.integer   "categorization_mask",        :default => 1
     t.text      "patient_instructions"
     t.text      "cancellation_policy"
+    t.integer   "referral_clinic_id"
   end
+
+  add_index "specialists", ["referral_clinic_id"], :name => "index_specialists_on_referral_clinic_id"
 
   create_table "specializations", :force => true do |t|
     t.string    "name"
