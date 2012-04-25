@@ -2,7 +2,12 @@ class OfficesController < ApplicationController
   load_and_authorize_resource
   
   def index
-    @offices = Office.all.reject{ |o| o.empty? }
+    if params[:city_id].present?
+      @city = City.find(params[:city_id])
+      @offices = @city.direct_offices.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}
+    else
+      @offices = Office.all.reject{ |o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}
+    end
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   

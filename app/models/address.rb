@@ -5,13 +5,8 @@ class Address < ActiveRecord::Base
   
   def address
     output = ""
-  
-    if suite.present? and (address1.present? or address2.present?)
-      output += "##{suite}, "
-    elsif suite.present?
-      output += "##{suite}, "
-    end
     
+    output += "##{suite}, " if suite.present?
     output += "#{address1}, " if address1.present?
     output += "#{address2}, " if address2.present?
     output += "#{city}, #{city.province}, " if city.present?
@@ -22,15 +17,11 @@ class Address < ActiveRecord::Base
   
   def short_address
     output = ""
-  
-    if suite.present? and (address1.present? or address2.present?)
-      output += "##{suite}, "
-    elsif suite.present?
-      output += "##{suite}"
-    end
     
+    output += "##{suite}, " if suite.present?
     output += "#{address1}, " if address1.present?
     output += "#{address2}, " if address2.present?
+    output += "#{city}, " if city.present?
     
     return output[0..-3]
   end

@@ -5,6 +5,8 @@ class Hospital < ActiveRecord::Base
   has_many :privileges, :dependent => :destroy
   has_many :specialists, :through => :privileges
   
+  has_many :locations_in, :foreign_key => :hospital_in_id, :class_name => "Location"
+  
   has_many :clinics, :finder_sql => proc { "SELECT DISTINCT c.* FROM clinics c JOIN clinic_addresses ca ON c.id = ca.clinic_id JOIN addresses a ON ca.address_id = a.id WHERE a.hospital_id = #{self.id} ORDER BY c.name ASC" }
   
   has_many :specialist_offices, :finder_sql => proc { "SELECT DISTINCT s.* FROM specialists s JOIN specialist_addresses sa ON s.id = sa.specialist_id JOIN addresses a ON sa.address_id = a.id WHERE a.hospital_id = #{self.id} ORDER BY s.lastname ASC, s.firstname ASC" }, :class_name => "Specialist"

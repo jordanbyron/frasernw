@@ -77,7 +77,12 @@
                     %li= link_to "Healthcare Providers", healthcare_providers_path, :class => "healthcare_provider ajax"
                     %li= link_to "Hospitals", hospitals_path, :class => "hospital ajax"
                     %li= link_to "Languages", languages_path, :class => "language ajax"
-                    %li= link_to "Offices", offices_path, :class => "office ajax"
+                    %li
+                      = link_to "Offices", "#", :class => "office arrow-right-after"
+                      %ul.dropdown-menu.sub-menu
+                        %li=link_to "All Offices", offices_path, :class => 'office ajax'
+                        - City.all.each do |city|
+                          %li=link_to "Offices in #{city.name}", city_offices_path(city), :class => 'office ajax'
                     %li= link_to "Provinces", provinces_path, :class => "province ajax"
                     %li= link_to "Specialists", specialists_path, :class => "specialist ajax"
                     %li= link_to "Specialties", specializations_path, :class => "specialty ajax"
@@ -112,8 +117,7 @@
                 %ul
                   %li
                     %a.ajax.pop{"href" => "javascript:void(0)", "data-toggle" => "pop", "data-target" => "#specialization_#{specialization.id}", "data-parent" => "#root"} Back
-                  - specialization.procedure_specializations_arranged.each do |ps,children|
-                    - next if not ps.focused?
+                  - specialization.focused_procedure_specializations_arranged.each do |ps,children|
                     - next if ps.procedure.empty_for_specialization? specialization
                     %li 
                       - if children.reject{ |c| (not c.focused?) or c.procedure.empty_for_specialization? specialization }.length > 0
@@ -121,9 +125,8 @@
                       - else
                         %a.ajax{"href" => procedure_path(ps.procedure)}= ps.procedure.name
                       
-              - specialization.procedure_specializations_arranged.each do |ps,children|
+              - specialization.non_assumed_procedure_specializations_arranged.each do |ps,children|
                 - next if children.length == 0
-                - next if not ps.focused?
                 - next if ps.procedure.empty_for_specialization? specialization
                 .nav_panel{ "id" => "procedure_#{ps.procedure.id}" }
                   %h3
