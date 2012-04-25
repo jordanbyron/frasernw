@@ -18,7 +18,7 @@ class SpecialistsEditorController < ApplicationController
     @specializations_procedures = []
     @specialist.specializations_including_in_progress.each { |s| 
       @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations_including_in_progress.count > 1
-      @specializations_procedures += ancestry_options( s.procedure_specializations_arranged )
+      @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
     }
     @view = @specialist.views.build(:notes => request.remote_ip)
     @view.save

@@ -29,7 +29,7 @@ class ClinicsController < ApplicationController
     @clinic.location.build_address
     @clinic.focuses.build
     @clinic.attendances.build
-    @clinic_procedures = ancestry_options( @specialization.procedure_specializations_arranged )
+    @clinic_procedures = ancestry_options( @specialization.non_assumed_procedure_specializations_arranged )
     @clinic_specialists = @specialization.specialists.collect { |s| [s.name, s.id] }
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
@@ -57,7 +57,7 @@ class ClinicsController < ApplicationController
     @clinic_procedures = []
     @clinic.specializations_including_in_progress.each { |specialization| 
       @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations_including_in_progress.count > 1
-      @clinic_procedures += ancestry_options( specialization.procedure_specializations_arranged )
+      @clinic_procedures += ancestry_options( specialization.non_assumed_procedure_specializations_arranged )
     }
     @clinic_specialists = []
     @clinic.specializations_including_in_progress.each { |specialization|

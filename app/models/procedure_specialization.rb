@@ -1,15 +1,4 @@
 class ProcedureSpecialization < ActiveRecord::Base
-  belongs_to :procedure
-  belongs_to :specialization
-  
-  has_many :capacities, :dependent => :destroy
-  has_many :specialists, :through => :capacities
-  
-  has_many :focuses, :dependent => :destroy
-  has_many :clinics, :through => :focuses
-  
-  has_paper_trail
-  has_ancestry
    
   CLASSIFICATION_FOCUSED    = 1
   CLASSIFICATION_NONFOCUSED = 2
@@ -20,6 +9,22 @@ class ProcedureSpecialization < ActiveRecord::Base
     CLASSIFICATION_NONFOCUSED => "Non-Focused", 
     CLASSIFICATION_ASSUMED => "Assumed"
   }
+  
+  belongs_to :procedure
+  belongs_to :specialization
+  scope :focused, where("classification = #{ProcedureSpecialization::CLASSIFICATION_FOCUSED}")
+  scope :non_focused, where("classification = #{ProcedureSpecialization::CLASSIFICATION_NONFOCUSED}")
+  scope :assumed, where("classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED}")
+  scope :non_assumed, where("classification != #{ProcedureSpecialization::CLASSIFICATION_ASSUMED}")
+  
+  has_many :capacities, :dependent => :destroy
+  has_many :specialists, :through => :capacities
+  
+  has_many :focuses, :dependent => :destroy
+  has_many :clinics, :through => :focuses
+  
+  has_paper_trail
+  has_ancestry
   
   def classification_text
     ProcedureSpecialization::CLASSIFICATION_HASH[classification]

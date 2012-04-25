@@ -12,6 +12,7 @@ jQuery.fn.livesearch = function(options)
   fuzziness = options.fuzziness || 0.5
   max_results = options.max_results || 10
   min_score = options.min_score || 0.5
+  always_match_something = options.always_match_something || true
   results = []
   selected = -1
   that = this
@@ -64,22 +65,34 @@ jQuery.fn.livesearch = function(options)
     
     results = [];
     
+    var best_match = null;
+    
     data.each(function()
     {
       var total_score = 0
       var scores_matches = scorer_fnc(this, term, fuzziness)
     
       $.each(scores_matches, function(k, v) { total_score += v.score } );
+              
+      if ( !best_match || best_match.total_score < total_score )
+        best_match = {total_score: total_score, scores_matches: scores_matches, data_entry: this}
     
       if (total_score >= min_score) 
         results.push({total_score: total_score, scores_matches: scores_matches, data_entry: this})
     });
-    
+  
     if (results.length == 0)
     {
-      list.append( empty_fnc() )
-      container.animate({height: "show"}, 200) 
-      return
+      if (always_match_something)
+      {
+        results.push(best_match)
+      }
+      else
+      {
+        list.append( empty_fnc() )
+        container.animate({height: "show"}, 200) 
+        return
+      }
     }
     
     results = results.sort(function(a, b){return b.total_score - a.total_score}).slice(0,max_results);

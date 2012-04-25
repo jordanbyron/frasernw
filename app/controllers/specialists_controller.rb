@@ -26,7 +26,7 @@ class SpecialistsController < ApplicationController
     end
     @offices = Office.all.reject{|o| o.empty? || o.location.resolved_address.blank? || o.short_address.blank?}.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
     @specializations_clinics = @specialization.clinics.collect { |c| [c.name, c.id] }
-    @specializations_procedures = ancestry_options( @specialization.procedure_specializations_arranged )
+    @specializations_procedures = ancestry_options( @specialization.non_assumed_procedure_specializations_arranged )
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -67,7 +67,7 @@ class SpecialistsController < ApplicationController
     @specializations_procedures = []
     @specialist.specializations_including_in_progress.each { |s| 
       @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations_including_in_progress.count > 1
-      @specializations_procedures += ancestry_options( s.procedure_specializations_arranged )
+      @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
     }
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
@@ -119,7 +119,7 @@ class SpecialistsController < ApplicationController
       @specializations_procedures = []
       @specialist.specializations_including_in_progress.each { |s| 
         @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations_including_in_progress.count > 1
-        @specializations_procedures += ancestry_options( s.procedure_specializations_arranged )
+        @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
       }
       render :template => 'specialists/edit', :layout => 'ajax' if request.headers['X-PJAX']
     end

@@ -12,6 +12,9 @@ class Clinic < ActiveRecord::Base
   has_one :address, :through => :location
   accepts_nested_attributes_for :location
   
+  #clinics can have locations that are within them
+  has_many :locations_in, :foreign_key => :clinic_in_id, :class_name => "Clinic"
+  
   #clinics have a schedule
   has_one :schedule, :as => :schedulable, :dependent => :destroy
   accepts_nested_attributes_for :schedule
