@@ -1,6 +1,8 @@
 class ClinicsController < ApplicationController
   load_and_authorize_resource
   include ApplicationHelper
+  
+  cache_sweeper :clinic_sweeper, :only => [:create, :update, :destroy]
 
   def index
     @clinics = Clinic.all

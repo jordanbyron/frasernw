@@ -1,6 +1,8 @@
 class LanguagesController < ApplicationController
   load_and_authorize_resource
   
+  cache_sweeper :languages_sweeper, :only => [:create, :update, :destroy]
+  
   def index
     @languages = Language.all
     render :layout => 'ajax' if request.headers['X-PJAX']

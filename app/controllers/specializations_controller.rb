@@ -1,6 +1,8 @@
 class SpecializationsController < ApplicationController
   load_and_authorize_resource
   
+  cache_sweeper :specialization_sweeper, :only => [:create, :update, :destroy]
+  
   def blank
     render :layout => 'ajax' if request.headers['X-PJAX']
   end

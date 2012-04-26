@@ -1,6 +1,8 @@
 class SpecialistsController < ApplicationController
   load_and_authorize_resource
   include ApplicationHelper
+  
+  cache_sweeper :specialist_sweeper, :only => [:create, :update, :destroy]
 
   def index
     render :layout => 'ajax' if request.headers['X-PJAX']
