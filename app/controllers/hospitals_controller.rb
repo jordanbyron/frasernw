@@ -8,6 +8,7 @@ class HospitalsController < ApplicationController
 
   def show
     @hospital = Hospital.find(params[:id])
+    @specialists_with_offices_in = @hospital.offices_in.map{ |o| o.specialists }.flatten.uniq
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 

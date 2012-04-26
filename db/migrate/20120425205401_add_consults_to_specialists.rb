@@ -163,8 +163,11 @@ class AddConsultsToSpecialists < ActiveRecord::Migration
       ps_hospital.save
       
       s.specialists.each do |sp|
+        #make specialists do office procedures if they have an office
         Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(sp.id, ps_office.id) if sp.specialist_offices.reject{ |so| so.empty? }.length > 0
-        Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(sp.id, ps_hospital.id) if sp.hospitals.length > 0
+        
+        #make specialist do hospital procedures if they have hospital priviledges. Decided this was a bad assumption.
+        #Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(sp.id, ps_hospital.id) if sp.hospitals.length > 0
       end
     end
     

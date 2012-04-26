@@ -138,11 +138,13 @@
 
     %h3 Referral Details
     
-    %label How does your clinic accept requests for standard referrals?
+    %label How does this clinic accept requests for standard referrals?
     = f.input :referral_fax, as: :boolean, wrapper: :bootstrap_tight
     = f.input :referral_phone, as: :boolean, wrapper: :bootstrap_tight
     = f.input :referral_other_details
     = f.input :referral_details
+
+    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does this clinic have a referral form?"
 
     = f.input :lagtime_mask, as: :select, collection: Clinic::LAGTIME_HASH, label_method: :last, value_method: :first
     
@@ -185,7 +187,7 @@
       .row
         .span1 Is a specialist
         .span3 Name
-        .span3 Area of focus (if not the same for all physicians working in your clinic).
+        .span3 Area of focus (if not the same for all physicians working in the clinic).
         
       = f.simple_fields_for :attendances do |i|
         .row.spaced

@@ -4,7 +4,7 @@ class OfficesController < ApplicationController
   def index
     if params[:city_id].present?
       @city = City.find(params[:city_id])
-      @offices = @city.direct_offices.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}
+      @offices = @city.offices.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}
     else
       @offices = Office.all.reject{ |o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}
     end
