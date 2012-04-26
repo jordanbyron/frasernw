@@ -11,12 +11,6 @@ class Specialization < ActiveRecord::Base
   has_many :procedure_specializations, :dependent => :destroy, :conditions => { "procedure_specializations.mapped" => true }
   has_many :procedures, :through => :procedure_specializations, :order => 'name ASC'
   
-  has_many :focused_procedure_specializations, :dependent => :destroy, :finder_sql => proc { "SELECT DISTINCT ps.*, p.name FROM procedure_specializations ps JOIN procedures p ON ps.procedure_id = p.id WHERE ps.specialization_id = #{self.id} AND ps.mapped = 't' AND ps.classification = #{ProcedureSpecialization::CLASSIFICATION_FOCUSED} ORDER BY p.name ASC" }, :class_name => 'ProcedureSpecialization'
-  
-  has_many :nonfocused_procedure_specializations, :dependent => :destroy, :finder_sql => proc { "SELECT DISTINCT ps.*, p.name FROM procedure_specializations ps JOIN procedures p ON ps.procedure_id = p.id WHERE ps.specialization_id = #{self.id} AND ps.mapped = 't' AND ps.classification = #{ProcedureSpecialization::CLASSIFICATION_NONFOCUSED} ORDER BY p.name ASC" }, :class_name => 'ProcedureSpecialization'
-  
-  has_many :assumed_procedure_specializations, :dependent => :destroy, :finder_sql => proc { "SELECT DISTINCT ps.*, p.name FROM procedure_specializations ps JOIN procedures p ON ps.procedure_id = p.id WHERE ps.specialization_id = #{self.id} AND ps.mapped = 't' AND ps.classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED} ORDER BY p.name ASC" }, :class_name => 'ProcedureSpecialization'
-  
   default_scope order('name')
   
   def procedure_specializations_arranged
