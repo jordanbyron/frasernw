@@ -17,7 +17,7 @@ class Hospital < ActiveRecord::Base
   accepts_nested_attributes_for :location
   accepts_nested_attributes_for :address
   
-  default_scope order('name')
+  default_scope order('hospitals.name')
   
   validates_presence_of :name, :on => :create, :message => "can't be blank"
   

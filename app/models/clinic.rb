@@ -46,7 +46,7 @@ class Clinic < ActiveRecord::Base
   has_many :controlling_users, :through => :user_controls_clinics, :source => :user, :class_name => "User"
   accepts_nested_attributes_for :user_controls_clinics, :reject_if => lambda { |ucc| ucc[:user_id].blank? }, :allow_destroy => true
   
-  default_scope order('name')
+  default_scope order('clinics.name')
   
   CATEGORIZATION_HASH = {
     1 => "Responded to survey",
