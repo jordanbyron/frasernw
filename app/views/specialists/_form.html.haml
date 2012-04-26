@@ -245,12 +245,14 @@
     %hr
 
     %h3 Referral Details
-    %label How does your office accept requests for standard referrals?
+    %label How does the office accept requests for standard referrals?
     = f.input :referral_fax, as: :boolean, wrapper: :bootstrap_tight
     = f.input :referral_phone, as: :boolean, wrapper: :bootstrap_tight
-    = f.association :referral_clinic, as: :select, :prompt => "None", :include_blank => true
+    -#= f.association :referral_clinic, as: :select, :prompt => "None", :include_blank => true
     = f.input :referral_other_details
     = f.input :referral_details
+
+    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does the office have a referral form?"
     
     = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_HASH, label_method: :last, value_method: :first  
   
