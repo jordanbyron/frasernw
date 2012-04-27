@@ -34,6 +34,10 @@ gem "aws-sdk"
 # Use unicorn as the web server
 gem 'unicorn'
 
+# Heroku caching
+gem 'memcachier'
+gem 'dalli'
+
 # Deploy with Capistrano
 # gem 'capistrano'
 
