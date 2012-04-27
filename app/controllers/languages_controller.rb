@@ -1,7 +1,7 @@
 class LanguagesController < ApplicationController
   load_and_authorize_resource
   
-  cache_sweeper :languages_sweeper, :only => [:create, :update, :destroy]
+  cache_sweeper :language_sweeper, :only => [:create, :update, :destroy]
   
   def index
     @languages = Language.all

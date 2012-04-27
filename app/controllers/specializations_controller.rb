@@ -9,7 +9,7 @@ class SpecializationsController < ApplicationController
   end
 
   def show
-    @specialization = Specialization.includes([{:specialist_specializations => {:specialist => [{:capacities => {:procedure_specialization => :procedure}}, {:specialist_speaks => :language}, {:privileges => :hospital}, {:attendances => :clinic} ]}}, {:clinic_specializations => {:clinic => [{:focuses => {:procedure_specialization => :procedure}}, {:clinic_speaks => :language}]}}]).find(params[:id])
+    @specialization = Specialization.find(params[:id])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 

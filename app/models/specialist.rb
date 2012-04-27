@@ -10,6 +10,7 @@ class Specialist < ActiveRecord::Base
   # specialists have the capacity to perform procedures
   has_many   :capacities, :dependent => :destroy
   has_many   :procedure_specializations, :through => :capacities
+  has_many   :procedures, :through => :procedure_specializations
   accepts_nested_attributes_for :capacities, :reject_if => lambda { |c| c[:procedure_specialization_id].blank? }, :allow_destroy => true
   
   # specialists attend clinics

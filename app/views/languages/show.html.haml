@@ -1,83 +1,85 @@
 - title "Pathways | #{@language.name}"
 
-%script{"type" => "text/javascript"}
-  :plain
-    $(document).ready(function() {
-      //sort by specialty, status, then wait time
-      $('.tablesorter').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
-    });
-  
-%h2= @language.name
+- cache(:action => 'show') do
 
-- has_specialists = @language.specialists.length > 0
-- has_clinics = @language.clinics.length > 0
+  %script{"type" => "text/javascript"}
+    :plain
+      $(document).ready(function() {
+        //sort by specialty, status, then wait time
+        $('.tablesorter').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
+      });
+    
+  %h2= @language.name
 
-- specialist_tab_class = has_specialists ? "active" : ""
-- clinic_tab_class = has_specialists ? "" : "active"
+  - has_specialists = @language.specialists.length > 0
+  - has_clinics = @language.clinics.length > 0
 
-.tabbable
-  %ul.nav.nav-tabs
-    - if has_specialists
-      %li{:class => specialist_tab_class} 
-        %a{"href" => "#specialist_tab", "data-toggle" => "tab"} 
-          %i.icon-user.icon-text
-          Specialists
-    - if has_clinics
-      %li{:class => clinic_tab_class}
-        %a{"href" => "#clinic_tab", "data-toggle" => "tab"}
-          %i.icon-home.icon-text
-          Clinics
+  - specialist_tab_class = has_specialists ? "active" : ""
+  - clinic_tab_class = has_specialists ? "" : "active"
 
-  .tab-content
-    #specialist_tab.tab-pane{:class => specialist_tab_class} 
+  .tabbable
+    %ul.nav.nav-tabs
       - if has_specialists
-        %table.table.table-condensed.tablesorter{:id => 'specialist_table'}
-          %thead
-            %tr{:class => 'tableheader'}
-              %th{:class => "{sorter: 'bylastname'}"} Specialist
-              %th{:class => "{sorter: 'text'}"} Specialty
-              %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
-              %th{:class => "{sorter: 'waittime'}"} Wait Time
-              %th{:class => "{sorter: 'blanks_to_bottom'}"} City
-          %tbody
-            - (@language.specialists).each do |specialist|
-              - next if not specialist.show_in_table?
-              %tr{:class => specialist.not_responded? && "not-responded"}
-                %td
-                  %a.ajax{"href" => specialist_path(specialist)}= specialist.name
-                %td
-                  %ul
-                    - specialist.specializations.each do |s|
-                      %li= s.name
-                %td
-                  %span{:class => "status_#{specialist.status_class}"}= specialist.status_class
-                %td= specialist.waittime
-                %td= specialist.city
-          
-    #clinic_tab.tab-pane{:class => clinic_tab_class}
+        %li{:class => specialist_tab_class} 
+          %a{"href" => "#specialist_tab", "data-toggle" => "tab"} 
+            %i.icon-user.icon-text
+            Specialists
       - if has_clinics
-        %table.table.table-condensed{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'clinic_table'}
-          %thead
-            %tr{:class => 'tableheader'}
-              %th{:class => "{sorter: 'bylastname'} name_column"} Clinic
-              %th{:class => "{sorter: 'text'}"} Specialty
-              %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
-              %th{:class => "{sorter: 'waittime'}"} Wait Time
-              %th{:class => "{sorter: 'blanks_to_bottom'}"} City
-          %tbody
-            - (@language.clinics).each do |clinic|
-              - next if not clinic.show_in_table?
-              %tr{:class => clinic.not_responded? ? "not-responded" : ""}
-                %td
-                  %a.ajax{"href" => clinic_path(clinic)}= clinic.name
-                %td
-                  %ul
-                    - clinic.specializations.each do |s|
-                      %li= s.name
-                %td
-                  %span{:class => "status_#{clinic.status_class}"}= clinic.status_class
-                %td= clinic.waittime
-                %td= clinic.city
+        %li{:class => clinic_tab_class}
+          %a{"href" => "#clinic_tab", "data-toggle" => "tab"}
+            %i.icon-home.icon-text
+            Clinics
+
+    .tab-content
+      #specialist_tab.tab-pane{:class => specialist_tab_class} 
+        - if has_specialists
+          %table.table.table-condensed.tablesorter{:id => 'specialist_table'}
+            %thead
+              %tr{:class => 'tableheader'}
+                %th{:class => "{sorter: 'bylastname'}"} Specialist
+                %th{:class => "{sorter: 'text'}"} Specialty
+                %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
+                %th{:class => "{sorter: 'waittime'}"} Wait Time
+                %th{:class => "{sorter: 'blanks_to_bottom'}"} City
+            %tbody
+              - (@language.specialists).each do |specialist|
+                - next if not specialist.show_in_table?
+                %tr{:class => specialist.not_responded? && "not-responded"}
+                  %td
+                    %a.ajax{"href" => specialist_path(specialist)}= specialist.name
+                  %td
+                    %ul
+                      - specialist.specializations.each do |s|
+                        %li= s.name
+                  %td
+                    %span{:class => "status_#{specialist.status_class}"}= specialist.status_class
+                  %td= specialist.waittime
+                  %td= specialist.city
+            
+      #clinic_tab.tab-pane{:class => clinic_tab_class}
+        - if has_clinics
+          %table.table.table-condensed{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'clinic_table'}
+            %thead
+              %tr{:class => 'tableheader'}
+                %th{:class => "{sorter: 'bylastname'} name_column"} Clinic
+                %th{:class => "{sorter: 'text'}"} Specialty
+                %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
+                %th{:class => "{sorter: 'waittime'}"} Wait Time
+                %th{:class => "{sorter: 'blanks_to_bottom'}"} City
+            %tbody
+              - (@language.clinics).each do |clinic|
+                - next if not clinic.show_in_table?
+                %tr{:class => clinic.not_responded? ? "not-responded" : ""}
+                  %td
+                    %a.ajax{"href" => clinic_path(clinic)}= clinic.name
+                  %td
+                    %ul
+                      - clinic.specializations.each do |s|
+                        %li= s.name
+                  %td
+                    %span{:class => "status_#{clinic.status_class}"}= clinic.status_class
+                  %td= clinic.waittime
+                  %td= clinic.city
 
 %p.admin.btn-group
   - if can? :update, @language

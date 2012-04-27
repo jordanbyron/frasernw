@@ -1,5 +1,7 @@
 class HospitalsController < ApplicationController
   load_and_authorize_resource
+  
+  cache_sweeper :hospital_sweeper, :only => [:create, :update, :destroy]
 
   def index
     @hospitals = Hospital.all

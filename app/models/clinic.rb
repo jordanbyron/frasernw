@@ -30,6 +30,7 @@ class Clinic < ActiveRecord::Base
   #clinics focus on procedures
   has_many   :focuses, :dependent => :destroy
   has_many   :procedure_specializations, :through => :focuses
+  has_many   :procedures, :through => :procedure_specializations
   accepts_nested_attributes_for :focuses, :reject_if => lambda { |a| a[:procedure_specialization_id].blank? }, :allow_destroy => true
   
   #clinics have attendance (of specialists and freeform physicians)
