@@ -88,11 +88,11 @@
                         %li= link_to "Hospitals", hospitals_path, :class => "hospital ajax"
                         %li= link_to "Languages", languages_path, :class => "language ajax"
                         %li
-                        = link_to "Offices", "#", :class => "office arrow-right-after"
-                        %ul.dropdown-menu
-                          %li=link_to "All Offices", offices_path, :class => 'office ajax'
-                          - City.all.each do |city|
-                            %li=link_to "Offices in #{city.name}", city_offices_path(city), :class => 'office ajax'
+                          = link_to "Offices", "#", :class => "office arrow-right-after"
+                          %ul.dropdown-menu
+                            %li=link_to "All Offices", offices_path, :class => 'office ajax'
+                            - City.all.each do |city|
+                              %li=link_to "Offices in #{city.name}", city_offices_path(city), :class => 'office ajax'
                         %li= link_to "Provinces", provinces_path, :class => "province ajax"
                         %li= link_to "Specialists", specialists_path, :class => "specialist ajax"
                         %li= link_to "Specialties", specializations_path, :class => "specialty ajax"
