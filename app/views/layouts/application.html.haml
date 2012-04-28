@@ -63,12 +63,12 @@
                             %ul.dropdown-menu.sub-menu
                               - Specialization.all.each do |specialization|
                                 %li=link_to specialization.name, new_specialization_procedure_path(specialization), :class => 'ajax'
+                          %li= link_to "New City", new_city_path, :class => "city ajax"
                           %li
                             = link_to "New Clinic in...", "#", :class => "clinic arrow-right-after"
                             %ul.dropdown-menu
                               - Specialization.all.each do |specialization|
                                 %li=link_to specialization.name, new_specialization_clinic_path(specialization), :class => 'ajax'
-                          %li= link_to "New City", new_city_path, :class => "city ajax"
                           %li= link_to "New Healthcare Provider", new_healthcare_provider_path, :class => "healthcare_provider ajax"
                           %li= link_to "New Hospital", new_hospital_path, :class => "hospital ajax"
                           %li= link_to "New Language", new_language_path, :class => "language ajax"
@@ -82,8 +82,8 @@
                           %li= link_to "New User", new_user_path, :class => "user ajax"
                       %li.divider
                         %li= link_to "Areas of Practice", procedures_path, :class => "procedure ajax"
-                        %li= link_to "Clinics", clinics_path, :class => "clinic ajax"
                         %li= link_to "Cities", cities_path, :class => "city ajax"
+                        %li= link_to "Clinics", clinics_path, :class => "clinic ajax"
                         %li= link_to "Healthcare Providers", healthcare_providers_path, :class => "healthcare_provider ajax"
                         %li= link_to "Hospitals", hospitals_path, :class => "hospital ajax"
                         %li= link_to "Languages", languages_path, :class => "language ajax"
