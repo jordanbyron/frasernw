@@ -1,6 +1,6 @@
 class Hospital < ActiveRecord::Base
   attr_accessible :name, :phone, :phone_extension, :fax, :location_attributes, :address_attributes
-  has_paper_trail
+  has_paper_trail :ignore => :saved_token
   
   has_many :privileges, :dependent => :destroy
   has_many :specialists, :through => :privileges
@@ -59,5 +59,15 @@ class Hospital < ActiveRecord::Base
   def resolved_address
     return location.resolved_address if location
     return nil
+  end
+  
+  def token
+    if self.saved_token
+      return self.saved_token
+      else
+      self.saved_token = SecureRandom.hex(16)
+      self.save
+      return self.saved_token
+    end
   end
 end

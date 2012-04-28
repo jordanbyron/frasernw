@@ -1,6 +1,6 @@
 class Specialization < ActiveRecord::Base
   attr_accessible :name, :in_progress
-  has_paper_trail
+  has_paper_trail :ignore => :saved_token
   
   has_many :specialist_specializations, :dependent => :destroy
   has_many :specialists, :through => :specialist_specializations
@@ -31,6 +31,16 @@ class Specialization < ActiveRecord::Base
   
   def non_assumed_procedure_specializations_arranged
     return procedure_specializations.non_assumed.arrange(:joins => "JOIN procedures ON procedure_specializations.procedure_id = procedures.id", :conditions => "procedure_specializations.specialization_id = #{self.id} AND procedure_specializations.mapped = 't'", :order => "procedures.name")
+  end
+  
+  def token
+    if self.saved_token
+      return self.saved_token
+      else
+      self.saved_token = SecureRandom.hex(16)
+      self.save
+      return self.saved_token
+    end
   end
 
 end

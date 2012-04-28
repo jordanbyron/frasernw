@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120425205401) do
+ActiveRecord::Schema.define(:version => 20120428012320) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -149,6 +149,7 @@ ActiveRecord::Schema.define(:version => 20120425205401) do
     t.text      "patient_instructions"
     t.text      "cancellation_policy"
     t.string    "phone_extension"
+    t.string    "saved_token"
   end
 
   create_table "contacts", :force => true do |t|
@@ -212,12 +213,14 @@ ActiveRecord::Schema.define(:version => 20120425205401) do
     t.string    "phone"
     t.string    "fax"
     t.string    "phone_extension"
+    t.string    "saved_token"
   end
 
   create_table "languages", :force => true do |t|
     t.string    "name"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.string    "saved_token"
   end
 
   create_table "locations", :force => true do |t|
@@ -279,6 +282,7 @@ ActiveRecord::Schema.define(:version => 20120425205401) do
     t.timestamp "created_at"
     t.timestamp "updated_at"
     t.boolean   "specialization_level", :default => true
+    t.string    "saved_token"
   end
 
   create_table "provinces", :force => true do |t|
@@ -472,6 +476,7 @@ ActiveRecord::Schema.define(:version => 20120425205401) do
     t.timestamp "created_at"
     t.timestamp "updated_at"
     t.boolean   "in_progress", :default => false
+    t.string    "saved_token"
   end
 
   create_table "user_controls_clinics", :force => true do |t|
