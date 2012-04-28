@@ -1,5 +1,8 @@
 class LanguagesController < ApplicationController
-  load_and_authorize_resource
+  skip_before_filter :login_required, :only => :refresh_cache
+  load_and_authorize_resource :except => :refresh_cache
+  before_filter :check_token, :only => :refresh_cache
+  skip_authorization_check :only => :refresh_cache
   
   cache_sweeper :language_sweeper, :only => [:create, :update, :destroy]
   
@@ -45,5 +48,14 @@ class LanguagesController < ApplicationController
     @language = Language.find(params[:id])
     @language.destroy
     redirect_to languages_url, :notice => "Successfully deleted language."
+  end
+  
+  def check_token
+    token_required( Language, params[:token], params[:id] )
+  end
+  
+  def refresh_cache
+    @language = Language.find(params[:id])
+    render :show, :layout => 'ajax'
   end
 end

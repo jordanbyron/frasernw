@@ -33,12 +33,18 @@ Frasernw::Application.routes.draw do
   
   match "specialists/:id/:token/edit"   => 'specialists_editor#edit',  :as => 'specialist_self_edit'
   put  "specialists/:id/:token/update"  => 'specialists_editor#update', :as => 'specialist_self_update'
-  get  "specialists/:id/:token/refresh_cache" => 'specialists#refresh_cache', :as => 'specialist_refesh_cache', :ajax_layout => 'true'
   get  "specialists/email/:id"          => 'specialists#email', :as => 'specialist_email'
   match "specialists/:id/review"        => 'specialists#review', :as => 'specialist_review'
   
   match "/specialists/:id/edit_referral_forms" => "specialists#edit_referral_forms",  :as => "specialist_referral_forms"
   match "/clinics/:id/edit_referral_forms" => "clinics#edit_referral_forms",          :as => "clinic_referral_forms"
+  
+  get  "specializations/:id/:token/refresh_cache" => 'specializations#refresh_cache', :as => 'specialization_refesh_cache'
+  get  "specialists/:id/:token/refresh_cache"     => 'specialists#refresh_cache',     :as => 'specialist_refesh_cache'
+  get  "clinics/:id/:token/refresh_cache"         => 'clinics#refresh_cache',         :as => 'clinic_refesh_cache'
+  get  "hospitals/:id/:token/refresh_cache"       => 'hospitals#refresh_cache',       :as => 'hospital_refesh_cache'
+  get  "procedures/:id/:token/refresh_cache"      => 'procedures#refresh_cache',      :as => 'procedure_refesh_cache'
+  get  "languages/:id/:token/refresh_cache"       => 'languages#refresh_cache',       :as => 'language_refesh_cache'
   
   #RPW TODO: allow users to edit their own profile
   #match 'user/edit' => 'users#edit', :as => :edit_current_user

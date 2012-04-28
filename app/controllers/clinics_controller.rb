@@ -1,5 +1,8 @@
 class ClinicsController < ApplicationController
-  load_and_authorize_resource
+  skip_before_filter :login_required, :only => :refresh_cache
+  load_and_authorize_resource :except => :refresh_cache
+  before_filter :check_token, :only => :refresh_cache
+  skip_authorization_check :only => :refresh_cache
   include ApplicationHelper
   
   cache_sweeper :clinic_sweeper, :only => [:create, :update, :destroy]
@@ -91,5 +94,14 @@ class ClinicsController < ApplicationController
     @entity.referral_forms.build if @entity.referral_forms.length == 0
     @entity_type = "clinic"
     render :template => 'referral_form/edit', :layout => 'ajax' if request.headers['X-PJAX']
+  end
+  
+  def check_token
+    token_required( Clinic, params[:token], params[:id] )
+  end
+  
+  def refresh_cache
+    @clinic = Clinic.find(params[:id])
+    render :show, :layout => 'ajax'
   end
 end
