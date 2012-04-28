@@ -10,7 +10,8 @@ class Location < ActiveRecord::Base
   has_paper_trail
   
   def empty?
-    (not in_hospital?) && (not in_clinic?) && (address.blank? || address.empty?)
+    a = resolved_address
+    a.blank? || a.empty?
   end
   
   def in_hospital?
