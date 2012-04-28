@@ -1,6 +1,6 @@
 %h2 Specialists
 
-%table.table.table-condensed
+%table.table.table-condensed.table-striped
   -Specialization.all.each do |specialization|
     %tr{ :class => specialization.in_progress ? "in-progress" : "" } 
       %th=specialization.name

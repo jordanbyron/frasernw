@@ -1,6 +1,6 @@
 %h2 Hospitals
 
-%table.table.table-condensed
+%table.table.table-condensed.table-striped
   - Hospital.all.each do |hospital|
     %tr
       %td= link_to hospital.name, hospital, :class => 'ajax'

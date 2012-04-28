@@ -1,6 +1,6 @@
 %h2 Specialities
 
-%table.table.table-condensed
+%table.table.table-condensed.table-striped
   - Specialization.all.each do |specialization|
     %tr
       %td= link_to specialization.name, specialization, :class => 'ajax'

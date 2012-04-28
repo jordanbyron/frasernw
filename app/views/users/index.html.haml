@@ -9,7 +9,7 @@
 
   .tab-content
     #admin_tab.tab-pane.active
-      %table.table.table-condensed
+      %table.table.table-condensed.table-striped
         %tr
           %th Username
           %th Name
@@ -27,7 +27,7 @@
               = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
 
     #user_tab.tab-pane
-      %table.table.table-condensed
+      %table.table.table-condensed.table-striped
         %tr
           %th Username
           %th Name
