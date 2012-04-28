@@ -2,7 +2,7 @@ class SpecialistsEditorController < ApplicationController
   include ApplicationHelper
   skip_before_filter :login_required
   skip_authorization_check
-  before_filter { |controller|  controller.send(:specialist_token_required, params[:token], params[:id]) }
+  before_filter { |controller|  controller.send(:token_required, Specialist, params[:token], params[:id]) }
   
   def edit
     @token      = params[:token]

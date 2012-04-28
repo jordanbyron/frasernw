@@ -33,6 +33,7 @@ Frasernw::Application.routes.draw do
   
   match "specialists/:id/:token/edit"   => 'specialists_editor#edit',  :as => 'specialist_self_edit'
   put  "specialists/:id/:token/update"  => 'specialists_editor#update', :as => 'specialist_self_update'
+  get  "specialists/:id/:token/refresh_cache" => 'specialists#refresh_cache', :as => 'specialist_refesh_cache', :ajax_layout => 'true'
   get  "specialists/email/:id"          => 'specialists#email', :as => 'specialist_email'
   match "specialists/:id/review"        => 'specialists#review', :as => 'specialist_review'
   
