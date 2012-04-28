@@ -37,6 +37,8 @@ gem 'unicorn'
 # Heroku caching
 gem 'memcachier'
 gem 'dalli'
+gem 'delayed_job_active_record'
+gem 'daemons'
 
 # Deploy with Capistrano
 # gem 'capistrano'
