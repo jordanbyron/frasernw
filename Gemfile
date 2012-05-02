@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.1.0'
+gem 'rails', '3.1.4'
 
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
@@ -21,13 +21,14 @@ gem 'jquery-rails'
 gem 'haml-rails'
 
 gem 'authlogic'
-gem 'carrierwave'
 gem 'paper_trail', '~> 2'
 gem 'will_paginate', '~> 3.0.0'
-gem "simple_form", "~> 1.5.1"
-gem "nested_form", :git => "https://github.com/ryanb/nested_form.git", :ref => "57f32788f1952bcd633057b4b56b69b51df17610"
+gem "simple_form", "~> 2.0.0.rc"
+gem "nested_form", :git => "https://github.com/warneboldt/nested_form.git", :ref => "230e366a35a2fabd1f2b51d0102237ba684174f0"
 gem 'exception_notification'
 gem "cancan", "~> 1.6.7"
+gem "paperclip", "~> 2.7"
+gem "aws-sdk"
 
 # Use unicorn as the web server
 gem 'unicorn'
@@ -36,18 +37,15 @@ gem 'unicorn'
 # gem 'capistrano'
 
 group :test do
-  gem 'faker'
   # Pretty printed test output
   gem 'turn', :require => false
 end
 
 group :development, :test do
   gem 'sqlite3'
-  gem 'mocha'
   gem "nifty-generators"
   gem 'rspec'
   gem 'rspec-rails'
-  gem 'wirble'
   gem 'spork', '> 0.9.0rc'
   # To use debugger
   gem 'ruby-debug19', :require => 'ruby-debug'
@@ -57,17 +55,13 @@ group :development, :test do
   gem 'guard-rspec'
   gem 'guard-livereload'
   gem 'guard-spork'
-  gem "ruby_gntp", "~> 0.3.4"
   gem 'heroku'
   gem 'taps'
 end
 
 # gem "mocha", :group => :test
-# why bcrypt? I think it's for authlogic
-gem "bcrypt-ruby", :require => "bcrypt"
 
 # Automated Heroku DB backups (to Google Storage)
-gem 'heroku_backup_task'
 gem 'heroku_cloud_backup'
 
 gem 'ancestry'
