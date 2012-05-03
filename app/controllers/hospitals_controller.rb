@@ -66,6 +66,7 @@ class HospitalsController < ApplicationController
   
   def refresh_cache
     @hospital = Hospital.find(params[:id])
+    @specialists_with_offices_in = @hospital.offices_in.map{ |o| o.specialists }.flatten.uniq
     render :show, :layout => 'ajax'
   end
 end
