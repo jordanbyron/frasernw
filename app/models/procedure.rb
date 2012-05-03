@@ -99,10 +99,21 @@ class Procedure < ActiveRecord::Base
     return result
   end
   
+  def children
+    result = []
+    procedure_specializations.each do |ps|
+      ps.children.each do |child|
+        result << child.procedure
+        result << child.procedure.children if ps.procedure != self #recursive
+      end
+    end
+    return result.flatten.uniq
+  end
+  
   def token
     if self.saved_token
       return self.saved_token
-      else
+    else
       self.saved_token = SecureRandom.hex(16)
       self.save
       return self.saved_token
