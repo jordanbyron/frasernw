@@ -47,7 +47,7 @@ class HospitalSweeper < ActionController::Caching::Sweeper
       end
       
       #expire all specialists that are associated with the hospital
-      hospitals.specialists.each do |s|
+      hospital.specialists.each do |s|
         expire_fragment :controller => 'specialists', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialists/#{s.id}/#{s.token}/refresh_cache") )
       end
