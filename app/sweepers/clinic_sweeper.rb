@@ -40,6 +40,18 @@ class ClinicSweeper < ActionController::Caching::Sweeper
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specializations/#{s.id}/#{s.token}/refresh_cache") )
       end
       
+      #expire all specialists pages that work in the clinic
+      clinic.specialists_in.each do |s|
+        expire_fragment :controller => 'specialists', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
+        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialists/#{s.id}/#{s.token}/refresh_cache") )
+      end
+      
+      #expire all specialization pages of specialists that work in the clinic (they might have the clinics city on them)
+      clinic.specializations_in.each do |s|
+        expire_fragment :controller => 'specializations', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
+        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specializations/#{s.id}/#{s.token}/refresh_cache") )
+      end
+      
       #expire all procedures pages that the clinic performs
       clinic.procedures.each do |p|
         expire_fragment :controller => 'procedures', :action => 'show', :id => p.id, :host => APP_CONFIG[:domain]
