@@ -40,6 +40,15 @@ class SpecialistSweeper < ActionController::Caching::Sweeper
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specializations/#{s.id}/#{s.token}/refresh_cache") )
       end
       
+      #expire all specialist pages that the specialist works with
+      specialist.offices.each do |o|
+        o.specialists.each do |s|
+          next if s.id == specialist_id
+          expire_fragment :controller => 'specialists', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
+          Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialists/#{s.id}/#{s.token}/refresh_cache") )
+        end
+      end
+      
       #expire all procedures pages that the specialist performs
       specialist.procedures.each do |p|
         expire_fragment :controller => 'procedures', :action => 'show', :id => p.id, :host => APP_CONFIG[:domain]
