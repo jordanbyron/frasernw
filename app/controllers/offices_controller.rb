@@ -1,6 +1,8 @@
 class OfficesController < ApplicationController
   load_and_authorize_resource
   
+  cache_sweeper :office_sweeper, :only => [:create, :update, :destroy]
+  
   def index
     if params[:city_id].present?
       @city = City.find(params[:city_id])

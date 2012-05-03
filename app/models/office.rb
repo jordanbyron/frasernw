@@ -7,6 +7,11 @@ class Office < ActiveRecord::Base
   has_many :specialist_offices
   has_many :specialists, :through => :specialist_offices
   
+  has_many :specializations, :through => :specialists
+  has_many :procedures, :through => :specialists
+  has_many :hospitals, :through => :specialists
+  has_many :languages, :through => :specialists
+  
   has_paper_trail
   
   def empty?
