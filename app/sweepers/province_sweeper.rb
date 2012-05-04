@@ -36,8 +36,8 @@ class ProvinceSweeper < ActionController::Caching::Sweeper
           a.offices.each do |o|
             specialists << o.specialists
           end
+          clinics << a.clinics + a.clinics_in_hospitals
         end
-        clinics << c.clinics + c.clinics_in_hospitals
       end
       
       #expire specialists in province
