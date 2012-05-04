@@ -32,8 +32,10 @@ class ProvinceSweeper < ActionController::Caching::Sweeper
       clinics = []
       
       province.cities.each do |c|
-        c.offices.each do |o|
-          specialists << o.specialists
+        c.addresses.each do |a|
+          a.offices.each do |o|
+            specialists << o.specialists
+          end
         end
         clinics << c.clinics + c.clinics_in_hospitals
       end
