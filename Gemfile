@@ -21,7 +21,6 @@ gem 'jquery-rails'
 gem 'haml-rails'
 
 gem 'authlogic'
-gem 'carrierwave'
 gem 'paper_trail', '~> 2'
 gem 'will_paginate', '~> 3.0.0'
 gem "simple_form", "~> 2.0.1"
@@ -44,18 +43,15 @@ gem 'daemons'
 # gem 'capistrano'
 
 group :test do
-  gem 'faker'
   # Pretty printed test output
   gem 'turn', :require => false
 end
 
 group :development, :test do
   gem 'sqlite3'
-  gem 'mocha'
   gem "nifty-generators"
   gem 'rspec'
   gem 'rspec-rails'
-  gem 'wirble'
   gem 'spork', '> 0.9.0rc'
   # To use debugger
   gem 'ruby-debug19', :require => 'ruby-debug'
@@ -65,14 +61,11 @@ group :development, :test do
   gem 'guard-rspec'
   gem 'guard-livereload'
   gem 'guard-spork'
-  gem "ruby_gntp", "~> 0.3.4"
   gem 'heroku'
   gem 'taps'
 end
 
 # gem "mocha", :group => :test
-# why bcrypt? I think it's for authlogic
-gem "bcrypt-ruby", :require => "bcrypt"
 
 # Automated Heroku DB backups (to Google Storage)
 gem 'heroku_cloud_backup'

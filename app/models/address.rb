@@ -3,6 +3,24 @@ class Address < ActiveRecord::Base
   belongs_to :city
   has_many :locations
   
+  has_many :direct_offices, :through => :locations, :source => :locatable, :source_type => "Office"
+  
+  has_many :clinics, :through => :locations, :source => :locatable, :source_type => "Clinic"
+  has_many :locations_in_clinics, :through => :clinics, :source => :locations_in, :class_name => "Location"
+  has_many :offices_in_clinics, :through => :locations_in_clinics, :source => :locatable, :source_type => "Office"
+  
+  has_many :hospitals, :through => :locations, :source => :locatable, :source_type => "Hospital"
+  has_many :locations_in_hospitals, :through => :hospitals, :source => :locations_in, :class_name => "Location"
+  has_many :offices_in_hospitals, :through => :locations_in_hospitals, :source => :locatable, :source_type => "Office"
+  
+  has_many :clinics_in_hospitals, :through => :locations_in_hospitals, :source => :locatable, :source_type => "Clinic"
+  has_many :locations_in_clinics_in_hospitals, :through => :clinics_in_hospitals, :source => :locations_in, :class_name => "Location"
+  has_many :offices_in_clinics_in_hospitals, :through => :locations_in_clinics_in_hospitals, :source => :locatable, :source_type => "Office"
+  
+  def offices
+    direct_offices + offices_in_clinics + offices_in_hospitals + offices_in_clinics_in_hospitals
+  end
+  
   def address
     output = ""
     

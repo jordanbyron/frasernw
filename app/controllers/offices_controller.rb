@@ -5,8 +5,14 @@ class OfficesController < ApplicationController
   
   def index
     if params[:city_id].present?
-      @city = City.find(params[:city_id])
-      @offices = @city.offices.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}
+      @city = City.includes(:addresses => :locations).find(params[:city_id])
+      @offices = []
+      
+      @city.addresses.each do |a|
+        @offices << a.offices
+      end
+      
+      @offices = @offices.flatten.uniq.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}
     else
       @offices = Office.includes(:location => [ {:address => :city}, {:clinic_in => {:location => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{ |o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}
     end

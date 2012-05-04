@@ -50,11 +50,8 @@ GEM
       json (~> 1.4)
       nokogiri (<= 1.5.0)
       uuidtools (~> 2.1)
-    bcrypt-ruby (3.0.1)
     builder (3.0.0)
     cancan (1.6.7)
-    carrierwave (0.5.7)
-      activesupport (~> 3.0)
     cocaine (0.2.1)
     coffee-script (2.2.0)
       coffee-script-source
@@ -79,8 +76,6 @@ GEM
     excon (0.7.9)
     execjs (1.2.9)
       multi_json (~> 1.0)
-    faker (1.0.1)
-      i18n (~> 0.4)
     fog (1.1.1)
       builder
       excon (~> 0.7.4)
@@ -136,10 +131,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     memcachier (0.0.1)
-    metaclass (0.0.1)
     mime-types (1.18)
-    mocha (0.10.0)
-      metaclass (~> 0.0.1)
     multi_json (1.0.4)
     multi_xml (0.4.2)
     net-scp (1.0.4)
@@ -210,7 +202,6 @@ GEM
     ruby-hmac (0.4.0)
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
-    ruby_gntp (0.3.4)
     rubyzip (0.9.4)
     sass (3.1.10)
     sass-rails (3.1.4)
@@ -258,7 +249,6 @@ GEM
       raindrops (~> 0.6)
     uuidtools (2.1.2)
     will_paginate (3.0.2)
-    wirble (0.1.3)
 
 PLATFORMS
   ruby
@@ -267,15 +257,12 @@ DEPENDENCIES
   ancestry
   authlogic
   aws-sdk
-  bcrypt-ruby
   cancan (~> 1.6.7)
-  carrierwave
   coffee-script
   daemons
   dalli
   delayed_job_active_record
   exception_notification
-  faker
   guard
   guard-livereload
   guard-rspec
@@ -285,7 +272,6 @@ DEPENDENCIES
   heroku_cloud_backup
   jquery-rails
   memcachier
-  mocha
   nested_form!
   nifty-generators
   paper_trail (~> 2)
@@ -295,7 +281,6 @@ DEPENDENCIES
   rspec
   rspec-rails
   ruby-debug19
-  ruby_gntp (~> 0.3.4)
   sass-rails (~> 3.1.0)
   simple_form (~> 2.0.1)
   spork (> 0.9.0rc)
@@ -306,4 +291,3 @@ DEPENDENCIES
   uglifier
   unicorn
   will_paginate (~> 3.0.0)
-  wirble
