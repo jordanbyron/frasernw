@@ -36,11 +36,13 @@ class CitySweeper < ActionController::Caching::Sweeper
       procedures = []
       languages = []
       
-      city.offices.each do |o|
-        specialists << o.specialists
-        specializations << o.specializations
-        procedures << o.procedures
-        languages << o.languages
+      city.addresses.each do |a|
+        a.offices.each do |o|
+          specialists << o.specialists
+          specializations << o.specializations
+          procedures << o.procedures
+          languages << o.languages
+        end
       end
       
       #expire the specialist pages
