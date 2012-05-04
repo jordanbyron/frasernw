@@ -1,6 +1,8 @@
 class ProvincesController < ApplicationController
   load_and_authorize_resource
   
+  cache_sweeper :province_sweeper, :only => [:create, :update, :destroy]
+  
   def index
     @provinces = Province.all
     render :layout => 'ajax' if request.headers['X-PJAX']
