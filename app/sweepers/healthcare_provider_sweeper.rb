@@ -2,70 +2,55 @@ class HealthcareProviderSweeper < ActionController::Caching::Sweeper
   observe HealthcareProvider
   
   def after_create(healthcare_provider)
-    expire_cache_for(healthcare_provider)
+    init_lists
+    add_to_lists(healthcare_provider)
+    queue_job
   end
   
-  def after_update(healthcare_provider)
-    expire_cache_for(healthcare_provider)
+  def before_controller_update(healthcare_provider)
+    init_lists
+    expire_self
+    add_to_lists(healthcare_provider)
   end
   
-  def after_destroy(healthcare_provider)
-    expire_cache_for(healthcare_provider)
+  def before_update(healthcare_provider)
+    add_to_lists(healthcare_provider)
+    queue_job
   end
   
-  def expire_cache_for(healthcare_provider)
-    #expire all the related pages in a delayed job
-    Delayed::Job.enqueue HealthcareProviderCacheRefreshJob.new(healthcare_provider.id)
+  def before_controller_destroy(healthcare_provider)
+    init_lists
+    expire_self
+    add_to_lists(healthcare_provider)
+    queue_job
   end
   
-  class HealthcareProviderCacheRefreshJob < Struct.new(:healthcare_provider_id)
-    include ActionController::Caching::Actions
-    include ActionController::Caching::Fragments
-    include Net
-    include Rails.application.routes.url_helpers # for url generation
+  def init_lists
+    @specializations = []
+    @procedures = []
+    @specialists = []
+    @clinics = []
+    @hospitals = []
+    @languages = []
+  end
+  
+  def expire_self
+    expire_fragment :controller => 'healthcare_providers', :action => 'show'
+  end 
+  
+  def add_to_lists(healthcare_provider)
     
-    def perform
-      healthcare_provider = HealthcareProvider.find(healthcare_provider_id)
-      
-      #expire search data
-      expire_action :controller => 'search', :action => 'livesearch', :format => :js, :host => APP_CONFIG[:domain]
-      #Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/livesearch.js") )
-      
-      #expire all clinics that the healthcare_provider is in
-      healthcare_provider.clinics.each do |c|
-        expire_fragment :controller => 'clinics', :action => 'show', :id => c.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/clinics/#{c.id}/#{c.token}/refresh_cache") )
-      end
-      
-      #expire all specialization pages, they list healthcare providers
-      Specialization.all.each do |s|
-        expire_fragment :controller => 'specializations', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specializations/#{s.id}/#{s.token}/refresh_cache") )
-      end
-      
-      #expire all procedures pages, they list healthcare providers
-      Procedure.all.each do |p|
-        expire_fragment :controller => 'procedures', :action => 'show', :id => p.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/procedures/#{p.id}/#{p.token}/refresh_cache") )
-      end
-    end
+    #expire all specializations, they list healthcare providers
+    @specializations << Specialization.all.map { |s| s.id }
     
-    private
+    #expire all procedures, they list healthcare providers
+    @procedures << Procedure.all.map{ |p| p.id }
     
-    # The following methods are defined to fake out the ActionController
-    # requirements of the Rails cache
-    
-    def cache_store
-      ActionController::Base.cache_store
-    end
-    
-    def self.benchmark( *params )
-      yield
-    end
-    
-    def cache_configured?
-      true
-    end
-    
+    #expire all clinics that the healthcare_provider is in
+    @clinics << healthcare_provider.clinics.map{ |c| c.id }
+  end
+  
+  def queue_job
+    Delayed::Job.enqueue PathwaysSweeper::PathwaysCacheRefreshJob.new(@specializations, @procedures, @specialists, @clinics, @hospitals, @languages)
   end
 end

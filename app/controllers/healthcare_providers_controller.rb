@@ -34,6 +34,7 @@ class HealthcareProvidersController < ApplicationController
   
   def update
     @healthcare_provider = HealthcareProvider.find(params[:id])
+    HealthcareProviderSweeper.instance.before_controller_update(@healthcare_provider)
     if @healthcare_provider.update_attributes(params[:healthcare_provider])
       redirect_to @healthcare_provider, :notice  => "Successfully updated healthcare_provider."
       else
@@ -43,6 +44,7 @@ class HealthcareProvidersController < ApplicationController
   
   def destroy
     @healthcare_provider = HealthcareProvider.find(params[:id])
+    HealthcareProviderSweeper.instance.before_controller_destroy(@healthcare_provider)
     @healthcare_provider.destroy
     redirect_to healthcare_providers_url, :notice => "Successfully deleted healthcare_provider."
   end
