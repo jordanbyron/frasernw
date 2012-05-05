@@ -2,91 +2,65 @@ class ClinicSweeper < ActionController::Caching::Sweeper
   observe Clinic
   
   def after_create(clinic)
-    expire_cache_for(clinic)
+    init_lists
+    add_to_lists(clinic)
+    queue_job
   end
   
-  def after_update(clinic)
-    expire_cache_for(clinic)
+  def before_controller_update(clinic)
+    init_lists
+    expire_self
+    add_to_lists(clinic)
   end
   
-  def after_destroy(clinic)
-    expire_cache_for(clinic)
+  def before_update(clinic)
+    add_to_lists(clinic)
+    queue_job
   end
   
-  def expire_cache_for(clinic)
-    #expire clinic page
+  def before_controller_destroy(clinic)
+    init_lists
+    expire_self
+    add_to_lists(clinic)
+    queue_job
+  end
+  
+  def init_lists
+    @specializations = []
+    @procedures = []
+    @specialists = []
+    @clinics = []
+    @hospitals = []
+    @languages = []
+  end
+  
+  def expire_self
     expire_fragment :controller => 'clinics', :action => 'show'
+  end 
+  
+  def add_to_lists(clinic)
     
-    #expire all the related pages in a delayed job
-    Delayed::Job.enqueue ClinicCacheRefreshJob.new(clinic.id)
+    #all specialization that the clinic is in
+    @specializations << clinic.specializations_including_in_progress.map { |s| s.id }
+    #all specialization pages of specialists that work in the clinic (they might have the clinics city on them)
+    @specializations << clinic.specializations_in.map{ |s| s.id }
+    
+    #expire all procedures that the clinic performs
+    @procedures << clinic.procedures.map{ |p| p.id }
+    
+    #expire all specialists attend the clinic
+    @specialists << clinic.specialists.map{ |s| s.id }
+    #expire all specialists that have offices in this clinic
+    @specialists << clinic.specialists_in.map{ |s| s.id }
+    
+    #expire any hospital the clinic is in
+    @hospitals << clinic.location.hospital_in.id if clinic.location.present? && clinic.location.hospital_in.present?
+    
+    #expire all languages the clinics speaks
+    @languages << clinic.languages.map{ |l| l.id }
   end
   
-  class ClinicCacheRefreshJob < Struct.new(:clinic_id)
-    include ActionController::Caching::Actions
-    include ActionController::Caching::Fragments
-    include Net
-    include Rails.application.routes.url_helpers # for url generation
-    
-    def perform
-      clinic = Clinic.find(clinic_id)
-      
-      #expire search data
-      expire_action :controller => 'search', :action => 'livesearch', :format => :js, :host => APP_CONFIG[:domain]
-      #Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/livesearch.js") )
-      
-      #expire all specialization pages that the clinic is in
-      clinic.specializations_including_in_progress.each do |s|
-        expire_fragment :controller => 'specializations', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specializations/#{s.id}/#{s.token}/refresh_cache") )
-      end
-      
-      #expire all specialists pages that work in the clinic
-      clinic.specialists_in.each do |s|
-        expire_fragment :controller => 'specialists', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialists/#{s.id}/#{s.token}/refresh_cache") )
-      end
-      
-      #expire all specialization pages of specialists that work in the clinic (they might have the clinics city on them)
-      clinic.specializations_in.each do |s|
-        expire_fragment :controller => 'specializations', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specializations/#{s.id}/#{s.token}/refresh_cache") )
-      end
-      
-      #expire all procedures pages that the clinic performs
-      clinic.procedures.each do |p|
-        expire_fragment :controller => 'procedures', :action => 'show', :id => p.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/procedures/#{p.id}/#{p.token}/refresh_cache") )
-      end
-      
-      #expire all specialist pages the clinic has attending
-      clinic.specialists.each do |s|
-        expire_fragment :controller => 'specialists', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialists/#{s.id}/#{s.token}/refresh_cache") )
-      end
-      
-      #expire all language pages the clinic speaks
-      clinic.languages do |l|
-        expire_fragment :controller => 'languages', :action => 'show', :id => l.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/languages/#{l.id}/#{l.token}/refresh_cache") )
-      end
-    end
-    
-    private
-    
-    # The following methods are defined to fake out the ActionController
-    # requirements of the Rails cache
-    
-    def cache_store
-      ActionController::Base.cache_store
-    end
-    
-    def self.benchmark( *params )
-      yield
-    end
-    
-    def cache_configured?
-      true
-    end
-    
+  def queue_job
+    Delayed::Job.enqueue PathwaysSweeper::PathwaysCacheRefreshJob.new(@specializations, @procedures, @specialists, @clinics, @hospitals, @languages)
   end
 end

@@ -75,6 +75,7 @@ class ClinicsController < ApplicationController
   def update
     params[:clinic][:procedure_ids] ||= []
     @clinic = Clinic.find(params[:id])
+    ClinicSweeper.instance.before_controller_update(@clinic)
     if @clinic.update_attributes(params[:clinic])
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else
@@ -84,6 +85,7 @@ class ClinicsController < ApplicationController
 
   def destroy
     @clinic = Clinic.find(params[:id])
+    ClinicSweeper.instance.before_controller_destroy(@clinic)
     name = @clinic.name
     @clinic.destroy
     redirect_to clinics_url, :notice => "Successfully deleted #{name}."
