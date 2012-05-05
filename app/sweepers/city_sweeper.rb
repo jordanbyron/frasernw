@@ -40,21 +40,23 @@ class CitySweeper < ActionController::Caching::Sweeper
   
   def add_to_lists(city)
     
-    #expire all the specialists in city, and specializations, procedures, and languages of specialists in the city (they list the city)
+    #expire all the clinics and specialists in the city, and their associated specializations, procedures, and languages (they list the city)
     city.addresses.each do |a|
       a.offices.each do |o|
-        @specializations << o.specializations
-        @procedures << o.procedures
-        @specialists << o.specialists
-        @languages << o.languages
+        @specializations << o.specializations.map{ |s| s.id }
+        @procedures << o.procedures.map{ |p| p.id }
+        @specialists << o.specialists.map{ |s| s.id }
+        @languages << o.languages.map{ |l| l.id }
       end
+      (a.clinics + a.clinics_in_hospitals).each do |c|
+        @specializations << c.specializations.map{ |s| s.id }
+        @procedures << c.procedures.map{ |p| p.id }
+        @clinics << c.id
+        @languages << c.languages.map{ |l| l.id }
+      end
+      #expire hospitals in city
+      @hospitals << a.hospitals.map{ |h| h.id }
     end
-    
-    #expire clinics in city
-    @clinics << (city.clinics + city.clinics_in_hospitals).map{ |c| c.id }
-    
-    #expire hospitals in city
-    @hospitals << city.hospitals.map{ |h| h.id }
   end
   
   def queue_job
