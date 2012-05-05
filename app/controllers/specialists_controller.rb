@@ -79,6 +79,7 @@ class SpecialistsController < ApplicationController
 
   def update
     @specialist = Specialist.find(params[:id])
+    SpecialistSweeper.instance.before_controller_update(@specialist)
     if @specialist.update_attributes(params[:specialist])
       redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
     else
@@ -88,6 +89,7 @@ class SpecialistsController < ApplicationController
 
   def destroy
     @specialist = Specialist.find(params[:id])
+    SpecialistSweeper.instance.before_controller_destroy(@specialist)
     name = @specialist.name;
     @specialist.destroy
     redirect_to specialists_url, :notice => "Successfully deleted #{name}. #{undo_link}"
