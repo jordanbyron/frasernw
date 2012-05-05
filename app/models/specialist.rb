@@ -354,8 +354,7 @@ class Specialist < ActiveRecord::Base
     if self.saved_token
       return self.saved_token
     else
-      self.saved_token = SecureRandom.hex(16)
-      self.save
+      update_column(:saved_token, SecureRandom.hex(16)) #avoid callbacks / validation as we don't want to trigger a sweeper for this
       return self.saved_token
     end
   end
