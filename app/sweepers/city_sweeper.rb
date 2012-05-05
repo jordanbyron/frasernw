@@ -38,7 +38,7 @@ class CitySweeper < ActionController::Caching::Sweeper
     expire_fragment :controller => 'cities', :action => 'show'
   end 
   
-  def add_to_lists(specialist)
+  def add_to_lists(city)
     
     #expire all the specialists in city, and specializations, procedures, and languages of specialists in the city (they list the city)
     city.addresses.each do |a|
