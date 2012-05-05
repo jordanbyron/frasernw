@@ -37,6 +37,7 @@ class SpecializationsController < ApplicationController
 
   def update
     @specialization = Specialization.find(params[:id])
+    SpecializationSweeper.instance.before_controller_update(@specialization)
     if @specialization.update_attributes(params[:specialization])
       redirect_to @specialization, :notice  => "Successfully updated specialization."
     else
@@ -46,6 +47,7 @@ class SpecializationsController < ApplicationController
 
   def destroy
     @specialization = Specialization.find(params[:id])
+    SpecializationSweeper.instance.before_controller_destroy(@specialization)
     @specialization.destroy
     redirect_to specializations_url, :notice => "Successfully deleted specialization."
   end
