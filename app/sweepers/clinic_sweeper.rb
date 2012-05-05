@@ -47,6 +47,8 @@ class ClinicSweeper < ActionController::Caching::Sweeper
     
     #expire all procedures that the clinic performs
     @procedures << clinic.procedures.map{ |p| p.id }
+    #all procedure pages of specialists that work in the clinic (they might have the clinics city on them)
+    @procedures << clinic.procedures_in.map{ |p| p.id }
     
     #expire all specialists attend the clinic
     @specialists << clinic.specialists.map{ |s| s.id }
