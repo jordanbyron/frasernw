@@ -34,6 +34,7 @@ class CitiesController < ApplicationController
   
   def update
     @city = City.find(params[:id])
+    CitySweeper.instance.before_controller_update(@city)
     if @city.update_attributes(params[:city])
       redirect_to @city, :notice  => "Successfully updated city."
       else
@@ -43,6 +44,7 @@ class CitiesController < ApplicationController
   
   def destroy
     @city = City.find(params[:id])
+    CitySweeper.instance.before_controller_destroy(@city)
     @city.destroy
     redirect_to cities_path, :notice => "Successfully deleted city."
   end
