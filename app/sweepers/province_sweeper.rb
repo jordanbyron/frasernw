@@ -42,9 +42,9 @@ class ProvinceSweeper < ActionController::Caching::Sweeper
     #only specialists and clinic index cards list the province
     province.addresses.each do |a|
       a.offices.each do |o|
-        @specialists << o.specialists
+        @specialists << o.specialists.map{ |s| s.id }
       end
-      @clinics << a.clinics + a.clinics_in_hospitals
+      @clinics << (a.clinics + a.clinics_in_hospitals).map{ |c| c.id }
     end
   end
   
