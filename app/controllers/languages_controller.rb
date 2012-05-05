@@ -37,6 +37,7 @@ class LanguagesController < ApplicationController
   
   def update
     @language = Language.find(params[:id])
+    LanguageSweeper.instance.before_controller_update(@language)
     if @language.update_attributes(params[:language])
       redirect_to @language, :notice  => "Successfully updated language."
       else
@@ -46,6 +47,7 @@ class LanguagesController < ApplicationController
   
   def destroy
     @language = Language.find(params[:id])
+    LanguageSweeper.instance.before_controller_destroy(@language)
     @language.destroy
     redirect_to languages_url, :notice => "Successfully deleted language."
   end

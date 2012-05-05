@@ -2,80 +2,58 @@ class LanguageSweeper < ActionController::Caching::Sweeper
   observe Language
   
   def after_create(language)
-    expire_cache_for(language)
+    init_lists
+    add_to_lists(language)
+    queue_job
   end
   
-  def after_update(language)
-    expire_cache_for(language)
+  def before_controller_update(language)
+    init_lists
+    expire_self
+    add_to_lists(language)
   end
   
-  def after_destroy(language)
-    expire_cache_for(language)
+  def before_update(language)
+    add_to_lists(language)
+    queue_job
   end
   
-  def expire_cache_for(language)
-    #expire language page
+  def before_controller_destroy(language)
+    init_lists
+    expire_self
+    add_to_lists(language)
+    queue_job
+  end
+  
+  def init_lists
+    @specializations = []
+    @procedures = []
+    @specialists = []
+    @clinics = []
+    @hospitals = []
+    @languages = []
+  end
+  
+  def expire_self
     expire_fragment :controller => 'languages', :action => 'show'
+  end 
+  
+  def add_to_lists(language)
     
-    #expire all the related pages in a delayed job
-    Delayed::Job.enqueue LanguageCacheRefreshJob.new(language.id)
+    #expire all specializations (they list all languages)
+    @specializations << Specialization.all.map { |s| s.id }
+    
+    #expire all procedures (they list all languages)
+    @procedures << Procedure.all.map{ |p| p.id }
+    
+    #expire all specialists that speak the language
+    @specialists << language.specialists.map{ |s| s.id }
+    
+    #expire all clinics that speak the language
+    @clinics << language.clinics.map{ |c| c.id }
   end
   
-  class LanguageCacheRefreshJob < Struct.new(:language_id)
-    include ActionController::Caching::Actions
-    include ActionController::Caching::Fragments
-    include Net
-    include Rails.application.routes.url_helpers # for url generation
-    
-    def perform
-      language = Language.find(language_id)
-      
-      #expire search data
-      expire_action :controller => 'search', :action => 'livesearch', :format => :js, :host => APP_CONFIG[:domain]
-      #Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/livesearch.js") )
-      
-      #expire all specialization pages (they list all languages)
-      Specialization.all.each do |s|
-        expire_fragment :controller => 'specializations', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specializations/#{s.id}/#{s.token}/refresh_cache") )
-      end
-      
-      #expire all procedures pages (they list all languages)
-      Procedure.all.each do |p|
-        expire_fragment :controller => 'procedures', :action => 'show', :id => p.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/procedures/#{p.id}/#{p.token}/refresh_cache") )
-      end
-      
-      #expire all specialists that speak this language
-      language.specialists.each do |s|
-        expire_fragment :controller => 'specialists', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialists/#{s.id}/#{s.token}/refresh_cache") )
-      end
-      
-      #expire all clinics that speak this language
-      language.clinics.each do |c|
-        expire_fragment :controller => 'clinics', :action => 'show', :id => c.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/clinics/#{c.id}/#{c.token}/refresh_cache") )
-      end
-      
-    end
-    
-    private
-    
-    # The following methods are defined to fake out the ActionController
-    # requirements of the Rails cache
-    
-    def cache_store
-      ActionController::Base.cache_store
-    end
-    
-    def self.benchmark( *params )
-      yield
-    end
-    
-    def cache_configured?
-      true
-    end
-    
+  def queue_job
+    Delayed::Job.enqueue PathwaysSweeper::PathwaysCacheRefreshJob.new(@specializations, @procedures, @specialists, @clinics, @hospitals, @languages)
   end
 end
