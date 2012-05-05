@@ -3,6 +3,7 @@ class Province < ActiveRecord::Base
   has_paper_trail
   
   has_many :cities, :order => "name ASC"
+  has_many :addresses, :through => :cities
   
   default_scope order('name')
   
