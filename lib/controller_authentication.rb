@@ -51,8 +51,8 @@ module ControllerAuthentication
     end
   end
   
-  def token_required(klass, token, specialist_id)
-    klass_object = klass.find(specialist_id)
+  def token_required(klass, token, id)
+    klass_object = klass.find(id)
     unless token == klass_object.token
       redirect_to login_url, :alert => "Invalid token. Please email millerjc@shaw.ca to request or reset your secret url for editing."
     end
