@@ -42,10 +42,10 @@ class PathwaysSweeper < ActionController::Caching::Sweeper
     puts "hospitals: #{@hospitals}"
     puts "languages: #{@languages}"
     
-    Delayed::Job.enqueue PathwaysSweeper::PathwaysCacheRefreshJob.new(@specializations, @procedures, @specialists, @clinics, @hospitals, @languages)
+    Delayed::Job.enqueue PathwaysSweeper::PathwaysCacheRefreshJob.new(@specializations, @procedures, @specialists, @clinics, @hospitals, @languages, 1979)
   end
     
-  class PathwaysCacheRefreshJob < Struct.new(:specialization_ids, :procedure_ids, :specialist_ids, :clinic_ids, :hospital_ids, :language_ids)
+  class PathwaysCacheRefreshJob < Struct.new(:specialization_ids, :procedure_ids, :specialist_ids, :clinic_ids, :hospital_ids, :language_ids, :test)
     include ActionController::Caching::Actions
     include ActionController::Caching::Fragments
     include Net
@@ -59,6 +59,7 @@ class PathwaysSweeper < ActionController::Caching::Sweeper
       puts "clinics: #{@clinics}"
       puts "hospitals: #{@hospitals}"
       puts "languages: #{@languages}"
+      puts "test: #{@test}"
       
       #expire search data
       expire_action :controller => 'search', :action => 'livesearch', :format => :js, :host => APP_CONFIG[:domain]
