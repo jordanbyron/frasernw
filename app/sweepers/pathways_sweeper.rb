@@ -34,13 +34,7 @@ class PathwaysSweeper < ActionController::Caching::Sweeper
   end
   
   def queue_job
-    puts "specialiations: #{@specializations}"
-    puts "procedures: #{@procedures}"
-    puts "specialists: #{@specialists}"
-    puts "clinics: #{@clinics}"
-    puts "hospitals: #{@hospitals}"
-    puts "languages: #{@languages}"
-    #Delayed::Job.enqueue PathwaysSweeper::PathwaysCacheRefreshJob.new(@specializations, @procedures, @specialists, @clinics, @hospitals, @languages)
+    Delayed::Job.enqueue PathwaysSweeper::PathwaysCacheRefreshJob.new(@specializations, @procedures, @specialists, @clinics, @hospitals, @languages)
   end
     
   class PathwaysCacheRefreshJob < Struct.new(:specialization_ids, :procedure_ids, :specialist_ids, :clinic_ids, :hospital_ids, :language_ids)
