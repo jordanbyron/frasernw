@@ -53,7 +53,7 @@ class PathwaysSweeper < ActionController::Caching::Sweeper
       puts "languages: #{@languages}"
       
       #expire search data
-      expire_action :controller => 'search', :action => 'livesearch', :format => :js, :host => 'localhost:3000'
+      expire_action :controller => 'search', :action => 'livesearch', :format => :js, :host => APP_CONFIG[:domain]
       #Net::HTTP.get( URI("#{APP_CONFIG[:domain]}/livesearch.js") )
       
       specialization_ids.flatten.uniq.each.each do |s_id|
