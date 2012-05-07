@@ -45,6 +45,13 @@ class PathwaysSweeper < ActionController::Caching::Sweeper
     
     def perform
       
+      puts "specialiations: #{@specializations}"
+      puts "procedures: #{@procedures}"
+      puts "specialists: #{@specialists}"
+      puts "clinics: #{@clinics}"
+      puts "hospitals: #{@hospitals}"
+      puts "languages: #{@languages}"
+      
       #expire search data
       expire_action :controller => 'search', :action => 'livesearch', :format => :js, :host => 'localhost:3000'
       #Net::HTTP.get( URI("#{APP_CONFIG[:domain]}/livesearch.js") )
