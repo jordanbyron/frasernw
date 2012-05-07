@@ -2,83 +2,61 @@ class OfficeSweeper < ActionController::Caching::Sweeper
   observe Office
   
   def after_create(office)
-    expire_cache_for(office)
+    init_lists
+    add_to_lists(office)
+    queue_job
   end
   
-  def after_update(office)
-    expire_cache_for(office)
+  def before_controller_update(office)
+    init_lists
+    expire_self
+    add_to_lists(office)
   end
   
-  def after_destroy(office)
-    expire_cache_for(office)
+  def before_update(office)
+    add_to_lists(office)
+    queue_job
   end
   
-  def expire_cache_for(office)
-    #expire sepcialists that work in the office in a delayed job
-    Delayed::Job.enqueue OfficeCacheRefreshJob.new(office.id)
+  def before_controller_destroy(office)
+    init_lists
+    expire_self
+    add_to_lists(office)
+    queue_job
   end
   
-  class OfficeCacheRefreshJob < Struct.new(:office_id)
-    include ActionController::Caching::Actions
-    include ActionController::Caching::Fragments
-    include Net
-    include Rails.application.routes.url_helpers # for url generation
+  def init_lists
+    @specializations = []
+    @procedures = []
+    @specialists = []
+    @clinics = []
+    @hospitals = []
+    @languages = []
+  end
+  
+  def expire_self
+    expire_fragment :controller => 'offices', :action => 'show'
+  end 
+  
+  def add_to_lists(office)
     
-    def perform
-      office = Office.find(office_id)
-      
-      #expire search data
-      expire_action :controller => 'search', :action => 'livesearch', :format => :js, :host => APP_CONFIG[:domain]
-      #Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/livesearch.js") )
-      
-      #expire the specialist pages
-      office.specialists.each do |s|
-        expire_fragment :controller => 'specialists', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialists/#{s.id}/#{s.token}/refresh_cache") )
-      end
-      
-      #expire all specialization pages of the specialists (they list cities)
-      office.specializations.all.each do |s|
-        expire_fragment :controller => 'specializations', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specializations/#{s.id}/#{s.token}/refresh_cache") )
-      end
-      
-      #expire all procedure pages of the specialists (they list cities)
-      office.procedures.all.each do |p|
-        expire_fragment :controller => 'procedures', :action => 'show', :id => p.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/procedures/#{p.id}/#{p.token}/refresh_cache") )
-      end
-      
-      #expire all hospital pages of the specialists (they list cities)
-      office.hospitals.all.each do |h|
-        expire_fragment :controller => 'hospitals', :action => 'show', :id => h.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/hospitals/#{h.id}/#{h.token}/refresh_cache") )
-      end
-      
-      #expire all languages pages of the specialists (they list cities)
-      office.languages.all.each do |l|
-        expire_fragment :controller => 'languages', :action => 'show', :id => l.id, :host => APP_CONFIG[:domain]
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/languages/#{l.id}/#{l.token}/refresh_cache") )
-      end
-      
-    end
+    #expire all specializations of specialists in the office (they list the city)
+    @specializations << office.specializations.map { |s| s.id }
     
-    private
+    #expire all procedures of specialists in the office (they list the city)
+    @procedures << office.procedures.map{ |p| p.id }
     
-    # The following methods are defined to fake out the ActionController
-    # requirements of the Rails cache
+    #expire all specialists in the office
+    @specialists << office.specialists.map{ |s| s.id }
     
-    def cache_store
-      ActionController::Base.cache_store
-    end
+    #expire all hospital pages of the specialists (they list the city)
+    @hospitals << office.hospitals.map{ |h| h.id }
     
-    def self.benchmark( *params )
-      yield
-    end
-    
-    def cache_configured?
-      true
-    end
-    
+    #expire all language pages of the specialists (they list the city)
+    @languages << office.languages.map{ |l| l.id }
+  end
+  
+  def queue_job
+    Delayed::Job.enqueue PathwaysSweeper::PathwaysCacheRefreshJob.new(@specializations, @procedures, @specialists, @clinics, @hospitals, @languages)
   end
 end
