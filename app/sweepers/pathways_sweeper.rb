@@ -1,4 +1,47 @@
 class PathwaysSweeper < ActionController::Caching::Sweeper
+  
+  def after_create(entity)
+    init_lists
+    add_to_lists(entity)
+    queue_job
+  end
+  
+  def before_controller_update(entity)
+    init_lists
+    expire_self
+    add_to_lists(entity)
+  end
+  
+  def before_update(entity)
+    add_to_lists(entity)
+    queue_job
+  end
+  
+  def before_controller_destroy(entity)
+    init_lists
+    expire_self
+    add_to_lists(entity)
+    queue_job
+  end
+  
+  def init_lists
+    @specializations = []
+    @procedures = []
+    @specialists = []
+    @clinics = []
+    @hospitals = []
+    @languages = []
+  end
+  
+  def queue_job
+    puts "specialiations: #{@specializations}"
+    puts "procedures: #{@procedures}"
+    puts "specialists: #{@specialists}"
+    puts "clinics: #{@clinics}"
+    puts "hospitals: #{@hospitals}"
+    puts "languages: #{@languages}"
+    #Delayed::Job.enqueue PathwaysSweeper::PathwaysCacheRefreshJob.new(@specializations, @procedures, @specialists, @clinics, @hospitals, @languages)
+  end
     
   class PathwaysCacheRefreshJob < Struct.new(:specialization_ids, :procedure_ids, :specialist_ids, :clinic_ids, :hospital_ids, :language_ids)
     include ActionController::Caching::Actions
