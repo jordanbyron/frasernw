@@ -14,7 +14,7 @@ class SpecialistSweeper < ActionController::Caching::Sweeper
   end
   
   def expire_cache_for(specialist)
-    expire_action :controller => 'search', :action => 'livesearch', :format => :js
-    #expire_fragment :controller => 'specialists', :action => 'show'
+    #expire_action :controller => 'search', :action => 'livesearch', :format => :js
+    expire_fragment :controller => 'specialists', :action => 'show'
   end
 end
