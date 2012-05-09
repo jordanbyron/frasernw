@@ -41,6 +41,8 @@
         - clinics_filter_attributes << "csfri" if schedule.friday.scheduled
         - clinics_filter_attributes << "cssat" if schedule.saturday.scheduled
         - clinics_filter_attributes << "cssun" if schedule.sunday.scheduled
+      - c.healthcare_providers.each do |h|
+        - clinics_filter_attributes << "ch#{h.id}_"
       - c.languages.each do |l|
         - clinics_filter_attributes << "cl#{l.id}_"
       $('#c#{c.id}').data('filter', '#{clinics_filter_attributes.join(' ')}');
@@ -308,6 +310,16 @@
                         
                     .filter-group
                       .filter-group-title
+                        Healthcare providers in clinic
+                      #filter-group-content-healthcare-providers.filter-group-content
+                        - HealthcareProvider.all.each do |h|
+                          %label
+                            %input.ch{"type" => "checkbox", "id" => "ch#{h.id}_"}= h.name
+                  
+                    %hr
+                        
+                    .filter-group
+                      .filter-group-title
                         Languages spoken in clinic
                       #filter-group-content-language.filter-group-content
                         - Language.all.each do |l|
@@ -317,7 +329,7 @@
                 %script{"type" => "text/javascript"}
                   :plain
                     $(document).ready(function() {
-                      $('.cp, .cc, .cr, .cd, .cs, .cl').click( update_clinic_table );
+                      $('.cp, .cc, .cr, .cd, .cs, .ch, .cl').click( update_clinic_table );
                     });
                     
         #blank_tab.tab-pane

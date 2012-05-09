@@ -175,8 +175,9 @@ var update_clinic_table = function() {
   var procedures = new Array();
   var referrals = new Array();
   var details = new Array();
-  var languages = new Array();
   var days = new Array();
+  var healthcare_providers = new Array();
+  var languages = new Array();
   
   // collect procedure filters
   $('.filter-group-content > label > .cp, .filter-group-content > .more > label > .cp').each( function() {
@@ -265,6 +266,16 @@ var update_clinic_table = function() {
     }
   });
   
+  // collect healthcare provider filters
+  $('.ch').each( function() {
+    var $this = $(this);
+    if ($this.prop('checked'))
+    {
+      healthcare_providers.push($this.parent().text().trim());
+      current_filters.push($this.attr('id'));
+    }
+  });
+  
   // collect language filters
   $('.cl').each( function() {
     var $this = $(this);
@@ -332,6 +343,10 @@ var update_clinic_table = function() {
   if ( days.length >= 1 )
   {
     fragments.push('are open on ' + days.to_sentence());
+  }
+  if ( healthcare_providers.length >= 1 )
+  {
+    fragments.push('have a ' + healthcare_providers.to_sentence());
   }
   if ( languages.length >= 1 )
   {
@@ -413,6 +428,11 @@ var clear_clinic_filters = function() {
   
   // clear schedule filters
   $('.cs').each( function() {
+    $(this).prop('checked',false)
+  });
+  
+  // clear healthcare filters
+  $('.ch').each( function() {
     $(this).prop('checked',false)
   });
   
