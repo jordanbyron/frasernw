@@ -133,19 +133,125 @@ ul.dropdown-menu
       margin-left: 220px;
       padding-left: 20px;
       
-      input[type="text"]:not([class*="span"]),
-      input[type="tel"]:not([class*="span"]),
-      input[type="email"]:not([class*="span"]),
-      textarea:not([class*="span"]),
-      {
-        /* remove some for input padding */
-        width: 290px;
-      }
-      
-      select:not([class*="span"])
-      {
-        width: 300px;
-      }
+      max-width: 390px;
+    }
+    
+    /* fixed span width within forms */
+    
+    /* first, some defaults for those without span specifications (e.g. simple form auto layouts) */
+    input[type="text"]:not([class*="span"]),
+    input[type="tel"]:not([class*="span"]),
+    input[type="email"]:not([class*="span"]),
+    textarea:not([class*="span"]),
+    {
+      /* remove some for input padding */
+      width: 380px;
+    }
+    
+    select:not([class*="span"])
+    {
+      width: 390px;
+    }
+    
+    /* now, specifics for each span width */
+    [class*="span"] {
+      float: left;
+      margin-left: 20px;
+    }
+    input[class*="span"], 
+    select[class*="span"]
+    {
+      margin-left: 0;
+    }
+    .span12 {
+      width: 940px;
+    }
+    .span11 {
+      width: 860px;
+    }
+    .span10 {
+      width: 780px;
+    }
+    .span9 {
+      width: 700px;
+    }
+    .span8 {
+      width: 620px;
+    }
+    .span7 {
+      width: 540px;
+    }
+    .span6 {
+      width: 460px;
+    }
+    .span5 {
+      width: 380px;
+    }
+    .span4 {
+      width: 300px;
+    }
+    .span3 {
+      width: 220px;
+    }
+    .span2 {
+      width: 140px;
+    }
+    .span1 {
+      width: 60px;
+    }
+    .spanhalf {
+      width: 20px;
+    }
+    .offset12 {
+      margin-left: 980px;
+    }
+    .offset11 {
+      margin-left: 900px;
+    }
+    .offset10 {
+      margin-left: 820px;
+    }
+    .offset9 {
+      margin-left: 740px;
+    }
+    .offset8 {
+      margin-left: 660px;
+    }
+    .offset7 {
+      margin-left: 580px;
+    }
+    .offset6 {
+      margin-left: 500px;
+    }
+    .offset5 {
+      margin-left: 420px;
+    }
+    .offset4 {
+      margin-left: 340px;
+    }
+    .offset3 {
+      margin-left: 260px;
+    }
+    .offset2 {
+      margin-left: 180px;
+    }
+    .offset1 {
+      margin-left: 100px;
+    }
+    .offsethalf {
+      margin-left: 40px;
+    }
+    
+    .help-block
+    {
+      margin: 6px 0 0 0;
+      max-width: 350px;
+      color: $FNW_DARK_GRAY;
+    }
+    
+    select.auto:not([class*="span"])
+    {
+      width: auto;
     }
   }
 

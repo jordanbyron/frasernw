@@ -209,6 +209,11 @@ body
     margin-top: 4px;
   }
   
+  p.admin.btn-group
+  {
+    margin-left: 0;
+  }
+  
   p:empty
   {
     margin: 0;
@@ -429,6 +434,23 @@ body
       select.unavailable_to:first-child
       {
         clear: both;
+      }
+    }
+    
+    .hours
+    {
+      .from, .to
+      {
+        display: inline-block;
+        text-align: center;
+      }
+      .from
+      {
+        padding-right: 10px;
+      }
+      .to
+      {
+        padding: 0 10px;
       }
     }
   }

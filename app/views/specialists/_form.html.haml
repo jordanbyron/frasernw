@@ -143,12 +143,14 @@
           %div{:class => "numbers_#{index}"}
             = so.input :phone do
               = so.input_field :phone, :class => "span3"
-              ext: 
+              .span1
+                ext: 
               = so.input_field :phone_extension, :class => "span1"
-            = so.input :fax
+            = so.input :fax, :input_html => { :class => "span3" }
             = so.input :direct_phone, :hint => "For physician contact only" do
               = so.input_field :direct_phone, :class => "span3"
-              ext: 
+              .span1
+                ext: 
               = so.input_field :direct_phone_extension, :class => "span1"
           %div{:class => "office_#{index}"}
             = so.association :office, as: :select, collection: @offices, :include_blank => true, :input_html => { :class => "chzn-select" }
@@ -222,18 +224,19 @@
     .content
       .row
         .span3 Referrals accepted in the following areas of practice.
-        .span3 Additional information/investigations required for the specified area of practice.
+        .span5 Additional information/investigations required for the specified area of practice.
       
       = f.simple_fields_for :capacities, :class => "row" do |i|
         .row.spaced
           .span3
             = i.association :procedure_specialization, as: :select, label: false, collection: @specializations_procedures, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "span3" }
-          .span4
-            = i.input :investigation, label: false, wrapper: :no_wrapper, input_html: { class: "span4" }
+          .span5
+            = i.input :investigation, label: false, wrapper: :no_wrapper, input_html: { class: "span5" }
           .spanhalf
             = i.hidden_field :_destroy
             = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
-      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another area of practice", :capacities, class: "btn")
+      .row
+        = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another area of practice", :capacities, class: "btn offset3")
       
     %hr{ "style" => "visibility:hidden" }
     
@@ -304,13 +307,13 @@
       .content
         = f.simple_fields_for :user_controls_specialists do |i|
           .row.spaced
-            .span4.offset3
-              = i.association :user, as: :select, :label => false, collection: User.all.reject{ |u| u.admin? }, prompt: 'Select ...', wrapper: :no_wrapper
+            .span5.offset3
+              = i.association :user, as: :select, :label => false, collection: User.all.reject{ |u| u.admin? }, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "span5" }
             .spanhalf.offsethalf
               = i.hidden_field :_destroy
               = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
-      .row
-        = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another user", :user_controls_specialists, class: "btn offset3")
+        .row
+          = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another user", :user_controls_specialists, class: "btn offset3")
       
       %hr{ "style" => "visibility:hidden" }
       

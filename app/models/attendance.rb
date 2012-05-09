@@ -5,6 +5,7 @@ class Attendance < ActiveRecord::Base
   has_paper_trail
   
   def freeform_name
-    (freeform_firstname or "") + " " + (freeform_lastname or "")
+    freeform_firstname or ""
+    #(freeform_firstname or "") + " " + (freeform_lastname or "")
   end
 end
