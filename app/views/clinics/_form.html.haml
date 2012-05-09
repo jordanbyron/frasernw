@@ -43,15 +43,15 @@
       .hospital_0
         = l.association :hospital_in, as: :select, collection: Hospital.all, :include_blank => true
       .details_0
-        = l.input :suite_in
+        = l.input :suite_in, :input_html => { :class => "span1" }
         = l.input :details_in
       .address_0
         = l.simple_fields_for :address do |a|
-          = a.input :suite
+          = a.input :suite, :input_html => { :class => "span1" }
           = a.input :address1
           = a.input :address2
           = a.association :city, as: :select, collection: City.all.map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
-          = a.input :postalcode
+          = a.input :postalcode, :input_html => { :class => "span1" }
     .universal_0
       = f.input :sector_mask, as: :radio_buttons, collection: Clinic::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
     = f.input :wheelchair_accessible_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first

@@ -10,17 +10,18 @@
   
   = f.input :phone do
     = f.input_field :phone, :class => "span3"
-    ext: 
+    .span1
+      ext: 
     = f.input_field :phone_extension, :class => "span1"
-  = f.input :fax
+  = f.input :fax, :input_html => { :class => "span3" }
   
   = f.simple_fields_for :location do |l|
     = l.simple_fields_for :address do |a|
-      = a.input :suite
+      = a.input :suite, :input_html => { :class => "span1" }
       = a.input :address1
       = a.input :address2
       = a.association :city, as: :select, collection: City.all(:order => "name ASC").map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
-      = a.input :postalcode
+      = a.input :postalcode, :input_html => { :class => "span1" }
 
     .form-actions
       = f.button :submit, :class => "btn btn-primary"
