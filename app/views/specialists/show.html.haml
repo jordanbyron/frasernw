@@ -262,7 +262,7 @@
 
 %p.admin.btn-group
   - if can? :update, @specialist
-    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(@specialist), :class => "btn ajax")
+    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialist", edit_specialist_path(@specialist), :class => "btn ajax")
     = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", specialist_referral_forms_path(@specialist), :class => "btn ajax")
   - if current_user_is_admin?
     - if @specialist.review_item.present?
@@ -273,7 +273,7 @@
         Share
     = link_to("<i class='icon-folder-open'></i>".html_safe + " History", specialist_versions_path(@specialist), :class => "btn ajax")
   - if can? :destroy, @specialist
-    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @specialist, :confirm => "Delete #{@specialist.name}?", :method => :delete, :class => "btn")
+    = link_to("<i class='icon-trash'></i>".html_safe + " Delete Specialist", @specialist, :confirm => "Delete #{@specialist.name}?", :method => :delete, :class => "btn")
 
 - if current_user_is_admin?
   #share.collapse

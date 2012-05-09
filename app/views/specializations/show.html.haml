@@ -456,8 +456,6 @@
     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialty", edit_specialization_path(@specialization), :class => "btn ajax")
   - if can? :destroy, @specialization
     = link_to("<i class='icon-trash'></i>".html_safe + " Delete Specialty", @specialization, :confirm => "Delete #{@specialization.name}?", :method => :delete, :class => "btn")
-
-%p.admin.btn-group
   - if can? :update, @specialization
     = link_to("<i class='icon-plus-sign'></i>".html_safe + " New Specialist", new_specialization_specialist_path(@specialization), :class => "btn ajax")
     = link_to("<i class='icon-plus-sign'></i>".html_safe + " New Clinic", new_specialization_clinic_path(@specialization), :class => "btn ajax")
