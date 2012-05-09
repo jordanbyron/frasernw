@@ -101,45 +101,44 @@
     #body.container
       .row
         - if logged_in?
-          - cache do
-            #left-nav.span3
-              #root
-                %h3 Specialities
+          #left-nav.span3
+            #root
+              %h3 Specialities
+              %ul
+                - Specialization.all.each do |specialization|
+                  - next if (specialization.in_progress and !current_user_is_admin?)
+                  %li
+                    %a.ajax.push{"href" => specialization_path(specialization), "data-toggle" => "push", "data-target" => "#specialization_#{specialization.id}", :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
+              
+            - Specialization.includes(:procedure_specializations => :procedure).all.each do |specialization|
+              .nav_panel{ "id" => "specialization_#{specialization.id}" }
+                %h3{:class => specialization.in_progress ? "in-progress" : ""}
+                  %a.ajax{"href" => specialization_path(specialization)}= specialization.name
                 %ul
-                  - Specialization.all.each do |specialization|
-                    - next if (specialization.in_progress and !current_user_is_admin?)
-                    %li
-                      %a.ajax.push{"href" => specialization_path(specialization), "data-toggle" => "push", "data-target" => "#specialization_#{specialization.id}", :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
-                
-              - Specialization.all.each do |specialization|
-                .nav_panel{ "id" => "specialization_#{specialization.id}" }
-                  %h3{:class => specialization.in_progress ? "in-progress" : ""}
-                    %a.ajax{"href" => specialization_path(specialization)}= specialization.name
+                  %li
+                    %a.ajax.pop{"href" => "javascript:void(0)", "data-toggle" => "pop", "data-target" => "#specialization_#{specialization.id}", "data-parent" => "#root"} Back
+                  - specialization.focused_procedure_specializations_arranged.each do |ps,children|
+                    - next if ps.procedure.empty_for_specialization? specialization
+                    %li 
+                      - if children.reject{ |c| (not c.focused?) or c.procedure.empty_for_specialization? specialization }.length > 0
+                        %a.ajax.push{"href" => procedure_path(ps.procedure), "data-toggle" => "push", "data-target" => "#procedure_#{ps.procedure.id}"}= ps.procedure.name
+                      - else
+                        %a.ajax{"href" => procedure_path(ps.procedure)}= ps.procedure.name
+                      
+              - specialization.non_assumed_procedure_specializations_arranged.each do |ps,children|
+                - next if children.length == 0
+                - next if ps.procedure.empty_for_specialization? specialization
+                .nav_panel{ "id" => "procedure_#{ps.procedure.id}" }
+                  %h3
+                    %a.ajax{"href" => procedure_path(ps.procedure)}= ps.procedure.name
                   %ul
                     %li
-                      %a.ajax.pop{"href" => "javascript:void(0)", "data-toggle" => "pop", "data-target" => "#specialization_#{specialization.id}", "data-parent" => "#root"} Back
-                    - specialization.focused_procedure_specializations_arranged.each do |ps,children|
+                      %a.ajax.pop{"href" => "javascript:void(0)#", "data-toggle" => "pop", "data-target" => "#procedure_#{ps.procedure.id}", "data-parent" => "#specialization_#{specialization.id}"} Back
+                    - children.each do |ps,children|
+                      - next if not ps.focused?
                       - next if ps.procedure.empty_for_specialization? specialization
-                      %li 
-                        - if children.reject{ |c| (not c.focused?) or c.procedure.empty_for_specialization? specialization }.length > 0
-                          %a.ajax.push{"href" => procedure_path(ps.procedure), "data-toggle" => "push", "data-target" => "#procedure_#{ps.procedure.id}"}= ps.procedure.name
-                        - else
-                          %a.ajax{"href" => procedure_path(ps.procedure)}= ps.procedure.name
-                        
-                - specialization.non_assumed_procedure_specializations_arranged.each do |ps,children|
-                  - next if children.length == 0
-                  - next if ps.procedure.empty_for_specialization? specialization
-                  .nav_panel{ "id" => "procedure_#{ps.procedure.id}" }
-                    %h3
-                      %a.ajax{"href" => procedure_path(ps.procedure)}= ps.procedure.name
-                    %ul
                       %li
-                        %a.ajax.pop{"href" => "javascript:void(0)#", "data-toggle" => "pop", "data-target" => "#procedure_#{ps.procedure.id}", "data-parent" => "#specialization_#{specialization.id}"} Back
-                      - children.each do |ps,children|
-                        - next if not ps.focused?
-                        - next if ps.procedure.empty_for_specialization? specialization
-                        %li
-                          %a.ajax{"href" => procedure_path(ps.procedure)}= ps.procedure.name
+                        %a.ajax{"href" => procedure_path(ps.procedure)}= ps.procedure.name
 
         #content.span8half.offsethalf
           #container
