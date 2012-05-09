@@ -18,10 +18,12 @@ class Ability
     else
       
       #user
+       
+      #landing page
+      can :index, Front
       
       #can show pages
       can :show, [Specialization, Procedure, Specialist, Clinic, Hospital, Language]
-      can :blank, Specialization #landing page
       
       #can update users they control
       can :update, Specialist do |specialist|
