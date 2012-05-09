@@ -52,46 +52,44 @@ class PathwaysSweeper < ActionController::Caching::Sweeper
     include Rails.application.routes.url_helpers # for url generation
     
     def perform
-      
-      puts "specialiations: #{@specializations}"
-      puts "procedures: #{@procedures}"
-      puts "specialists: #{@specialists}"
-      puts "clinics: #{@clinics}"
-      puts "hospitals: #{@hospitals}"
-      puts "languages: #{@languages}"
-      
       specialization_ids.flatten.uniq.each.each do |s_id|
         s = Specialization.find(s_id)
+        puts "expiring specialization #{s.name}, #{s.id}"
         expire_fragment :controller => 'specializations', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specializations/#{s.id}/#{s.token}/refresh_cache") )
       end
       
       procedure_ids.flatten.uniq.each.each do |p_id|
         p = Procedure.find(p_id)
+        puts "expiring procedure #{p.name}, #{p.id}"
         expire_fragment :controller => 'procedures', :action => 'show', :id => p.id, :host => APP_CONFIG[:domain]
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/procedures/#{p.id}/#{p.token}/refresh_cache") )
       end
       
       specialist_ids.flatten.uniq.each.each do |s_id|
         s = Specialist.find(s_id)
+        puts "expiring specialist #{s.name}, #{s.id}"
         expire_fragment :controller => 'specialists', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialists/#{s.id}/#{s.token}/refresh_cache") )
       end
       
       clinic_ids.flatten.uniq.each.each do |c_id|
         c = Clinic.find(c_id)
+        puts "expiring clinic #{c.name}, #{c.id}"
         expire_fragment :controller => 'clinics', :action => 'show', :id => c.id, :host => APP_CONFIG[:domain]
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/clinics/#{c.id}/#{c.token}/refresh_cache") )
       end
       
       hospital_ids.flatten.uniq.each.each do |h_id|
         h = Hospital.find(h_id)
+        puts "expiring hospital #{h.name}, #{h.id}"
         expire_fragment :controller => 'hospitals', :action => 'show', :id => h.id, :host => APP_CONFIG[:domain]
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/hospitals/#{h.id}/#{h.token}/refresh_cache") )
       end
       
       language_ids.flatten.uniq.each.each do |l_id|
         l = Language.find(l_id)
+        puts "expiring language #{l.name}, #{l.id}"
         expire_fragment :controller => 'languages', :action => 'show', :id => l.id, :host => APP_CONFIG[:domain]
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/languages/#{l.id}/#{l.token}/refresh_cache") )
       end
