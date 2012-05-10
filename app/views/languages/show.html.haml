@@ -3,6 +3,54 @@
 - cache(:action => 'show') do
 
   %script{"type" => "text/javascript"}
+    $(document).ready(function() {
+    - @language.specialists.each do |s|
+      - next if not s.show_in_table?
+      - specialist_filter_attributes = []
+      - s.specializations.each do |sp|
+        - specialist_filter_attributes << "ssp#{sp.id}_"
+      - if s.lagtime_mask.present?
+        - (s.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
+          - specialist_filter_attributes << "sc#{i}_"
+      - specialist_filter_attributes << "srph" if s.referral_phone
+      - specialist_filter_attributes << "srpb" if s.patient_can_book?
+      - specialist_filter_attributes << "ssm" if s.male?
+      - specialist_filter_attributes << "ssf" if s.female?
+      - s.languages.each do |l|
+        - specialist_filter_attributes << "sl#{l.id}_"
+      - s.hospitals.each do |h|
+        - specialist_filter_attributes << "sah#{h.id}_"
+      $('#s#{s.id}').data('filter', '#{specialist_filter_attributes.join(' ')}');
+    - @language.clinics.each do |c|
+      - next if not c.show_in_table?
+      - clinics_filter_attributes = []
+      - c.specializations.each do |s|
+        - clinics_filter_attributes << "csp#{s.id}_"
+      - if c.lagtime_mask.present?
+        - (c.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
+          - clinics_filter_attributes << "cc#{i}_"
+      - clinics_filter_attributes << "crph" if c.referral_phone
+      - clinics_filter_attributes << "crpb" if c.patient_can_book?
+      - clinics_filter_attributes << "cdpb" if c.sector_mask == 1 || c.sector_mask == 3
+      - clinics_filter_attributes << "cdpv" if c.sector_mask == 2 || c.sector_mask == 3
+      - clinics_filter_attributes << "cdwa" if c.wheelchair_accessible?
+      - if c.scheduled?
+        - schedule = c.schedule
+        - clinics_filter_attributes << "cshmon" if schedule.monday.scheduled
+        - clinics_filter_attributes << "cshtues" if schedule.tuesday.scheduled
+        - clinics_filter_attributes << "cshwed" if schedule.wednesday.scheduled
+        - clinics_filter_attributes << "cshthurs" if schedule.thursday.scheduled
+        - clinics_filter_attributes << "cshfri" if schedule.friday.scheduled
+        - clinics_filter_attributes << "cshsat" if schedule.saturday.scheduled
+        - clinics_filter_attributes << "cshsun" if schedule.sunday.scheduled
+      - c.healthcare_providers.each do |h|
+        - clinics_filter_attributes << "ch#{h.id}_"
+      - c.languages.each do |l|
+        - clinics_filter_attributes << "cl#{l.id}_"
+      $('#c#{c.id}').data('filter', '#{clinics_filter_attributes.join(' ')}');
+    });
+
+  %script{"type" => "text/javascript"}
     :plain
       $(document).ready(function() {
         //sort by specialty, status, then wait time
@@ -30,56 +78,246 @@
             %i.icon-home.icon-text
             Clinics
 
-    .tab-content
-      #specialist_tab.tab-pane{:class => specialist_tab_class} 
-        - if has_specialists
-          %table.table.table-condensed.tablesorter{:id => 'specialist_table'}
-            %thead
-              %tr{:class => 'tableheader'}
-                %th{:class => "{sorter: 'bylastname'}"} Specialist
-                %th{:class => "{sorter: 'text'}"} Specialty
-                %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
-                %th{:class => "{sorter: 'waittime'}"} Wait Time
-                %th{:class => "{sorter: 'blanks_to_bottom'}"} City
-            %tbody
-              - (@language.specialists).each do |specialist|
-                - next if not specialist.show_in_table?
-                %tr{:class => specialist.not_responded? && "not-responded"}
-                  %td
-                    %a.ajax{"href" => specialist_path(specialist)}= specialist.name
-                  %td
-                    %ul
-                      - specialist.specializations.each do |s|
-                        %li= s.name
-                  %td
-                    %span{:class => "status_#{specialist.status_class}"}= specialist.status_class
-                  %td= specialist.waittime
-                  %td= specialist.city
-            
-      #clinic_tab.tab-pane{:class => clinic_tab_class}
-        - if has_clinics
-          %table.table.table-condensed{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'clinic_table'}
-            %thead
-              %tr{:class => 'tableheader'}
-                %th{:class => "{sorter: 'bylastname'} name_column"} Clinic
-                %th{:class => "{sorter: 'text'}"} Specialty
-                %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
-                %th{:class => "{sorter: 'waittime'}"} Wait Time
-                %th{:class => "{sorter: 'blanks_to_bottom'}"} City
-            %tbody
-              - (@language.clinics).each do |clinic|
-                - next if not clinic.show_in_table?
-                %tr{:class => clinic.not_responded? ? "not-responded" : ""}
-                  %td
-                    %a.ajax{"href" => clinic_path(clinic)}= clinic.name
-                  %td
-                    %ul
-                      - clinic.specializations.each do |s|
-                        %li= s.name
-                  %td
-                    %span{:class => "status_#{clinic.status_class}"}= clinic.status_class
-                  %td= clinic.waittime
-                  %td= clinic.city
+    .tab-content 
+      - if has_specialists
+        #specialist_tab.tab-pane{:class => specialist_tab_class}
+          .content
+            .row
+              .span9
+                #specialist_phrase.filter-phrase
+                
+                %table.table.table-condensed.tablesorter{:id => 'specialist_table'}
+                  %thead
+                    %tr{:class => 'tableheader'}
+                      %th{:class => "{sorter: 'bylastname'}"} Specialist
+                      %th{:class => "{sorter: 'text'}"} Specialty
+                      %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
+                      %th{:class => "{sorter: 'waittime'}"} Wait Time
+                      %th{:class => "{sorter: 'blanks_to_bottom'}"} City
+                  %tbody
+                    - (@language.specialists).each do |specialist|
+                      - next if not specialist.show_in_table?
+                      %tr{:class => specialist.not_responded? && "not-responded", :id => "s#{specialist.id}"}
+                        %td
+                          %a.ajax{"href" => specialist_path(specialist)}= specialist.name
+                        %td
+                          %ul
+                            - specialist.specializations.each do |s|
+                              %li= s.name
+                        %td
+                          %span{:class => "status_#{specialist.status_class}"}= specialist.status_class
+                        %td= specialist.waittime
+                        %td= specialist.city
+                        
+              .span3
+                .well.filter
+                  .title
+                    Filter Specialists
+                  .filter-group
+                    .filter-group-title
+                      Specializations
+                    #filter-group-content-focused.filter-group-content
+                      - Specialization.all.each do |s|
+                        %label
+                          %input.ssp{"type" => "checkbox", "id" => "ssp#{s.id}_"}= s.name
+                            
+                  %hr
+                            
+                  .filter-group
+                    .filter-group-title
+                      Referrals
+                    #filter-group-content-referral.filter-group-content
+                      %label
+                        %input#srph.sr{"type" => "checkbox"} Accepted via phone
+                      %label.indent
+                        Responded to within:
+                        %select.sc
+                          %option{"value" => 0} Any timeframe
+                          - Specialist::LAGTIME_HASH.each do |lag_index, lag_value|
+                            %option{"value" => "sc#{lag_index}_"}= lag_value
+                      %label
+                        %input#srpb.sr{"type" => "checkbox"} Patients can call to book after referral
+                  
+                  %hr
+      
+                  %a.more#specialist_filter_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#specialist_more_filters"} More filters...
+                  %script{"type" => "text/javascript"}
+                    :plain
+                      $(document).ready(function() {
+                        $('#specialist_more_filters').on('show', function() {
+                          $('#specialist_filter_more').hide();
+                        });
+                      });
+                            
+                  #specialist_more_filters.collapse
+                            
+                    .filter-group
+                      .filter-group-title
+                        Sex
+                      #filter-group-content-sex.filter-group-content
+                        %label.half
+                          %input#ssm.ss{"type" => "checkbox"} Male
+                        %label.half
+                          %input#ssf.ss{"type" => "checkbox"} Female
+                  
+                    %hr
+                          
+                    .filter-group
+                      .filter-group-title
+                        Languages spoken in office
+                      #filter-group-content-language.filter-group-content
+                        - Language.all.each do |l|
+                          %label.half
+                            %input.sl{"type" => "checkbox", "id" => "sl#{l.id}_"}= l.name
+                            
+                    %hr
+                              
+                    .filter-group
+                      .filter-group-title
+                        Associations
+                        %label.indent
+                          Hospital:
+                          %select.sa
+                            %option{"value" => 0} Any
+                            - Hospital.all.each do |h|
+                              %option{"value" => "sah#{h.id}_"}= h.name
+                            
+
+                %script{"type" => "text/javascript"}
+                  :plain
+                    $(document).ready(function() {
+                      $('.ssp, .sc, .sr, .ss, .sl, .sah').click( update_specialist_table );
+                    });
+                  
+      - if has_clinics
+        #clinic_tab.tab-pane{:class => clinic_tab_class}
+          .content
+            .row
+              .span9
+                #clinic_phrase.filter-phrase
+                      
+                %table.table.table-condensed{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'clinic_table'}
+                  %thead
+                    %tr{:class => 'tableheader'}
+                      %th{:class => "{sorter: 'bylastname'} name_column"} Clinic
+                      %th{:class => "{sorter: 'text'}"} Specialty
+                      %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
+                      %th{:class => "{sorter: 'waittime'}"} Wait Time
+                      %th{:class => "{sorter: 'blanks_to_bottom'}"} City
+                  %tbody
+                    - (@language.clinics).each do |clinic|
+                      - next if not clinic.show_in_table?
+                      %tr{:class => clinic.not_responded? ? "not-responded" : "", :id => "c#{clinic.id}"}
+                        %td
+                          %a.ajax{"href" => clinic_path(clinic)}= clinic.name
+                        %td
+                          %ul
+                            - clinic.specializations.each do |s|
+                              %li= s.name
+                        %td
+                          %span{:class => "status_#{clinic.status_class}"}= clinic.status_class
+                        %td= clinic.waittime
+                        %td= clinic.city
+                        
+              .span3
+                .well.filter
+                  .title
+                    Filter Specialists
+                  .filter-group
+                    .filter-group-title
+                      Specializations
+                    #filter-group-content-focused.filter-group-content
+                      - Specialization.all.each do |s|
+                        %label
+                          %input.csp{"type" => "checkbox", "id" => "csp#{s.id}_"}= s.name
+                            
+                  %hr
+                            
+                  .filter-group
+                    .filter-group-title
+                      Referrals
+                    #filter-group-content-referral.filter-group-content
+                      %label
+                        %input#crph.cr{"type" => "checkbox"} Referrals are accepted via phone
+                      %label.indent
+                        Responded to within:
+                        %select.cc
+                          %option{"value" => 0} Any timeframe
+                          - Clinic::LAGTIME_HASH.each do |lag_index, lag_value|
+                            %option{"value" => "csc#{lag_index}_"}= lag_value
+                      %label
+                        %input#crpb.cr{"type" => "checkbox"} Patients can call to book after referral
+                  
+                  %hr
+      
+                  %a.more#clinic_filter_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#clinic_more_filters"} More filters...
+                  %script{"type" => "text/javascript"}
+                    :plain
+                      $(document).ready(function() {
+                        $('#clinic_more_filters').on('show', function() {
+                          $('#clinic_filter_more').hide();
+                        });
+                      });
+                            
+                  #clinic_more_filters.collapse
+                            
+                    .filter-group
+                      .filter-group-title
+                        Clinic Details
+                      #filter-group-content-details.filter-group-content
+                        %label.half
+                          %input#cdpb.cd{"type" => "checkbox"} Public
+                        %label.half
+                          %input#cdpv.cd{"type" => "checkbox"} Private
+                        %label
+                          %input.cd{"type" => "checkbox", "id" => "cdwa"} Wheelchair Accessible
+                  
+                    %hr
+                        
+                    .filter-group
+                      .filter-group-title
+                        Days open
+                      #filter-group-content-schedule.filter-group-content
+                        %label
+                          %input.csh{"type" => "checkbox", "id" => "cshmon"} Monday
+                        %label
+                          %input.csh{"type" => "checkbox", "id" => "cshtues"} Tuesday
+                        %label
+                          %input.csh{"type" => "checkbox", "id" => "cshwed"} Wednesday
+                        %label
+                          %input.csh{"type" => "checkbox", "id" => "cshthurs"} Thursday
+                        %label
+                          %input.csh{"type" => "checkbox", "id" => "cshfri"} Friday
+                        %label
+                          %input.csh{"type" => "checkbox", "id" => "cshsat"} Saturday
+                        %label
+                          %input.csh{"type" => "checkbox", "id" => "cshsun"} Sunday
+                  
+                    %hr
+                        
+                    .filter-group
+                      .filter-group-title
+                        Healthcare providers in clinic
+                      #filter-group-content-healthcare-providers.filter-group-content
+                        - HealthcareProvider.all.each do |h|
+                          %label
+                            %input.ch{"type" => "checkbox", "id" => "ch#{h.id}_"}= h.name
+                  
+                    %hr
+                        
+                    .filter-group
+                      .filter-group-title
+                        Languages spoken in clinic
+                      #filter-group-content-language.filter-group-content
+                        - Language.all.each do |l|
+                          %label.half
+                            %input.cl{"type" => "checkbox", "id" => "cl#{l.id}_"}= l.name
+
+                %script{"type" => "text/javascript"}
+                  :plain
+                    $(document).ready(function() {
+                      $('.csp, .cc, .cr, .cd, .csh, .ch, .cl').click( update_clinic_table );
+                    });
 
 %p.admin.btn-group
   - if can? :update, @language
