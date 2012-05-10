@@ -1,14 +1,28 @@
-var update_specialist_table = function() {
+var update_table = function(prefix, entity_id, entity_name) {
   
   var current_filters = new Array();
+  var specializations = new Array();
   var procedures = new Array();
   var referrals = new Array();
+  var details = new Array();
+  var days = new Array();
+  var healthcare_providers = new Array();
   var languages = new Array();
   var associations = new Array();
   var sex = '';
   
+  // collect specialization filters
+  $('.' + prefix + 'sp').each( function() {
+    var $this = $(this);
+    if ($this.prop('checked'))
+    {
+      specializations.push($this.parent().text().trim());
+      current_filters.push($this.attr('id'));
+    }
+  });
+  
   // collect procedure filters
-  $('.filter-group-content > label > .sp, .filter-group-content > .more > label > .sp').each( function() {
+  $('.filter-group-content > label > .' + prefix + 'p, .filter-group-content > .more > label > .' + prefix + 'p').each( function() {
     var $this = $(this);
     if ($this.prop('checked'))
     {  
@@ -32,12 +46,12 @@ var update_specialist_table = function() {
   });
   
   // collect referral filters
-  if ( $('#srph').prop('checked'))
+  if ( $('#' + prefix + 'rph').prop('checked'))
   {
     current_filters.push('srph');
     referrals.push('accept referrals via phone');
   }
-  $('.sc option:selected').each( function() {
+  $('.' + prefix + 'c option:selected').each( function() {
     var $this = $(this);
     if ($this.val() != 0)
     {
@@ -45,11 +59,11 @@ var update_specialist_table = function() {
       text = text.charAt(0).toLowerCase() + text.slice(1);
                                 console.log($this.val())
                                 
-      if ($this.val() == "sc1_")
+      if ($this.val() == prefix + "c1_")
       {
         referrals.push('respond to referrals by phone when office calls for appointment');
       }
-      else if ($this.val() == "sc2_")
+      else if ($this.val() == prefix + "c2_")
       {
         referrals.push('respond to referrals ' + text);
       }
@@ -60,26 +74,64 @@ var update_specialist_table = function() {
       current_filters.push($this.val());
     }
   });
-  if ( $('#srpb').prop('checked'))
+  if ( $('#' + prefix + 'rpb').prop('checked'))
   {
-    current_filters.push('srpb');
+    current_filters.push(prefix + 'rpb');
     referrals.push('patients can call to book after referral');
   }
   
   // collect sex filters
-  if ( $('#ssm').prop('checked') && !$('#ssf').prop('checked') )
+  if ( $('#' + prefix + 'sm').prop('checked') && !$('#' + prefix + 'sf').prop('checked') )
   {
-    current_filters.push('ssm');
+    current_filters.push(prefix + 'sm');
     sex = 'male'
   }
-  else if ( !$('#ssm').prop('checked') && $('#ssf').prop('checked') )
+  else if ( !$('#' + prefix + 'sm').prop('checked') && $('#' + prefix + 'sf').prop('checked') )
   {
-    current_filters.push('ssf');
+    current_filters.push(prefix + 'sf');
     sex = 'female'
   }
   
+  // collect details filters
+  if ( $('#' + prefix + 'dpb').prop('checked') && !$('#' + prefix + 'dpv').prop('checked') )
+  {
+    current_filters.push(prefix + 'dpb');
+    details.push('public')
+  }
+  else if ( !$('#' + prefix + 'dpb').prop('checked') && $('#' + prefix + 'dpv').prop('checked') )
+  {
+    current_filters.push(prefix + 'dpv');
+    details.push('private')
+  }
+  
+  if ( $('#' + prefix + 'dwa').prop('checked') )
+  {
+    current_filters.push(prefix + 'dwa');
+    details.push('wheelchair accessible')
+  }
+  
+  // collect schedule filters
+  $('.' + prefix + 'sh').each( function() {
+    var $this = $(this);
+    if ($this.prop('checked'))
+    {
+      days.push($this.parent().text().trim());
+      current_filters.push($this.attr('id'));
+    }
+  });
+  
+  // collect healthcare provider filters
+  $('.' + prefix + 'h').each( function() {
+    var $this = $(this);
+    if ($this.prop('checked'))
+    {
+      healthcare_providers.push($this.parent().text().trim());
+      current_filters.push($this.attr('id'));
+    }
+  });
+  
   // collect language filters
-  $('.sl').each( function() {
+  $('.' + prefix + 'l').each( function() {
     var $this = $(this);
     if ($this.prop('checked'))
     {
@@ -89,7 +141,7 @@ var update_specialist_table = function() {
   });
   
   // collect association filters
-  $('.sa option:selected').each( function() {
+  $('.' + prefix + 'a option:selected').each( function() {
     var $this = $(this);
     if ($this.val() != 0)
     {
@@ -101,7 +153,7 @@ var update_specialist_table = function() {
   var found = false;
              
   //loop over each row of the table, hiding those which don't match our filters
-  $('#specialist_table tbody tr').each(function () {
+  $('#' + entity_id + '_table tbody tr').each(function () {
     var row = $(this)
       , row_filter = row.data('filter');
     if (current_filters.length == 0)
@@ -137,197 +189,13 @@ var update_specialist_table = function() {
     }  
   });
   
-  var description = found ? 'Showing all ' + sex + ' specialists' : 'There are no ' + sex + ' specialists';
+  var description = found ? 'Showing all ' + sex + ' ' + entity_name : 'There are no ' + sex + ' ' + entity_name;
   
   var fragments = new Array()
-  if ( procedures.length >= 1 )
+  if ( specializations.length >= 1 )
   {
-    fragments.push('practice in ' + procedures.to_sentence());
+    fragments.push('specialize in ' + specializations.to_sentence());
   }
-  if ( referrals.length >= 1 )
-  {
-    fragments.push(referrals.to_sentence());
-  }
-  if ( languages.length >= 1 )
-  {
-    fragments.push('have staff that speak ' + languages.to_sentence());
-  }
-  if ( associations.length >= 1 )
-  {
-    fragments.push('are open on ' + days.to_sentence());
-  }
-  
-  if ( fragments.length >= 1 )
-  {
-    description += ' which ' + fragments.to_sentence()
-  }
-  
-  description += ". <a href='javascript:clear_specialist_filters()'>Clear all filters</a>."
-  
-  var specialist_phrase = $('#specialist_phrase');
-  specialist_phrase.html(description);
-  found ? specialist_phrase.removeClass('none') : specialist_phrase.addClass('none');
-  current_filters.length == 0 ? specialist_phrase.hide() : specialist_phrase.show();
-}
-
-var update_clinic_table = function() {
-  var current_filters = new Array();
-  var procedures = new Array();
-  var referrals = new Array();
-  var details = new Array();
-  var days = new Array();
-  var healthcare_providers = new Array();
-  var languages = new Array();
-  
-  // collect procedure filters
-  $('.filter-group-content > label > .cp, .filter-group-content > .more > label > .cp').each( function() {
-    var $this = $(this);
-    if ($this.prop('checked'))
-    {  
-      var parent_text = $this.parent().text().trim();
-      var checked_children = false;
-      $('.child_' + $this.attr('id')).each( function() {
-        var $this = $(this);
-        if ($this.prop('checked'))
-        {
-          checked_children = true;
-          procedures.push(parent_text + " " + $this.parent().text().trim());
-          current_filters.push($this.attr('id'));
-        }
-      });
-      if (!checked_children)
-      {
-        procedures.push($this.parent().text().trim());
-        current_filters.push($this.attr('id'));
-      }
-    }
-  });
-  
-  // collect referral filters
-  if ( $('#crph').prop('checked'))
-  {
-    current_filters.push('crph');
-    referrals.push('accept referrals via phone');
-  }
-  $('.cc option:selected').each( function() {
-    var $this = $(this);
-    if ($this.val() != 0)
-    {
-      var text = $this.text().trim();
-      text = text.charAt(0).toLowerCase() + text.slice(1);
-                                console.log($this.val())
-                                
-      if ($this.val() == "cc1_")
-      {
-        referrals.push('respond to referrals by phone when office calls for appointment');
-      }
-      else if ($this.val() == "cc2_")
-      {
-        referrals.push('respond to ' + text);
-      }
-      else
-      {
-        referrals.push('respond to referrals within ' + text);
-      }
-      current_filters.push($this.val());
-    }
-  });
-  if ( $('#crpb').prop('checked'))
-  {
-    current_filters.push('crpb');
-    referrals.push('patients can call to book after referral');
-  }
-  
-  // collect details filters
-  if ( $('#cdpb').prop('checked') && !$('#cdpv').prop('checked') )
-  {
-    current_filters.push('cdpb');
-    details.push('public')
-  }
-  else if ( !$('#cdpb').prop('checked') && $('#cdpv').prop('checked') )
-  {
-    current_filters.push('cdpv');
-    details.push('private')
-  }
-  
-  if ( $('#cdwa').prop('checked') )
-  {
-    current_filters.push('cdwa');
-    details.push('wheelchair accessible')
-  }
-  
-  // collect schedule filters
-  $('.cs').each( function() {
-    var $this = $(this);
-    if ($this.prop('checked'))
-    {
-      days.push($this.parent().text().trim());
-      current_filters.push($this.attr('id'));
-    }
-  });
-  
-  // collect healthcare provider filters
-  $('.ch').each( function() {
-    var $this = $(this);
-    if ($this.prop('checked'))
-    {
-      healthcare_providers.push($this.parent().text().trim());
-      current_filters.push($this.attr('id'));
-    }
-  });
-  
-  // collect language filters
-  $('.cl').each( function() {
-    var $this = $(this);
-    if ($this.prop('checked'))
-    {
-      languages.push($this.parent().text().trim());
-      current_filters.push($this.attr('id'));
-    }
-  });
-  
-  var found = false;
-             
-  //loop over each row of the table, hiding those which don't match our filters
-  $('#clinic_table tbody tr').each(function () {
-    var row = $(this)
-      , row_filter = row.data('filter');
-    if (current_filters.length == 0)
-    {
-      found = true;                   
-      row.show();
-      return true;
-    }
-    else if (!row_filter)
-    {
-      row.hide();
-      return true;
-    }
-                                       
-    var show = true;
-    for (var i = 0; i < current_filters.length; ++i)
-    {
-      if (row_filter.indexOf(current_filters[i]) == -1)
-      {
-        show = false;
-        break;
-      }
-    }
-    
-    if (show)
-    {
-      found = true; 
-      row.show();
-    }
-    else
-    {
-      row.hide();
-    }  
-  });
-  
-  var description = found ? 'Showing all clinics' : 'There are no clinics';
-  
-  var fragments = new Array()
   if ( procedures.length >= 1 )
   {
     fragments.push('practice in ' + procedures.to_sentence());
@@ -352,23 +220,33 @@ var update_clinic_table = function() {
   {
     fragments.push('have staff that speak ' + languages.to_sentence());
   }
+  if ( associations.length >= 1 )
+  {
+    fragments.push('are associated with ' + associations.to_sentence());
+  }
   
   if ( fragments.length >= 1 )
   {
     description += ' which ' + fragments.to_sentence()
   }
-    
-  description += ". <a href='javascript:clear_clinic_filters()'>Clear all filters</a>."
   
-  var clinic_phrase = $('#clinic_phrase');
-  clinic_phrase.html(description);
-  found ? clinic_phrase.removeClass('none') : clinic_phrase.addClass('none');
-  current_filters.length == 0 ? clinic_phrase.hide() : clinic_phrase.show();
+  description += ". <a href=\"javascript:clear_filters('" + prefix + "','" + entity_id + "','" + entity_name + "')\">Clear all filters</a>."
+  
+  var phrase = $('#' + entity_id + '_phrase');
+  phrase.html(description);
+  found ? phrase.removeClass('none') : phrase.addClass('none');
+  current_filters.length == 0 ? phrase.hide() : phrase.show();
 }
 
-var clear_specialist_filters = function() {
+var clear_filters = function(prefix, entity_id, entity_name) {
+  
+  // clear specialization filters
+  $('.' + prefix + 'sp').each( function() {
+    $(this).prop('checked',false)
+  });
+  
   // clear procedure filters
-  $('.sp').each( function() {
+  $('.' + prefix + 'p').each( function() {
     if ($(this).prop('checked'))
     {
       $(this).trigger('click');
@@ -376,70 +254,73 @@ var clear_specialist_filters = function() {
   });
   
   // clear lagtime filters
-  $('.sc').each( function() {
+  $('.' + prefix + 'c').each( function() {
     $(this).val(0)
   });
   
   // clear referral filters
-  $('.sr').each( function() {
+  $('.' + prefix + 'r').each( function() {
     $(this).prop('checked',false)
   });
   
   // collect sex filters
-  $('#ssm').prop('checked', false);
-  $('#ssf').prop('checked', false);
-  
-  // clear language filters
-  $('.sl').each( function() {
-    $(this).prop('checked',false)
-  });
-  
-  // clear association filters
-  $('.sa').each( function() {
-    $(this).val(0)
-  });
-  
-  update_specialist_table();
-}
-
-var clear_clinic_filters = function() {
-  // clear procedure filters
-  $('.cp').each( function() {
-    if ($(this).prop('checked'))
-    {
-      $(this).trigger('click');
-    }
-  });
-  
-  // clear lagtime filters
-  $('.cc').each( function() {
-    $(this).val(0)
-  });
-  
-  // clear referral filters
-  $('.cr').each( function() {
-    $(this).prop('checked',false)
-  });
+  $('#' + prefix + 'sm').prop('checked', false);
+  $('#' + prefix + 'sf').prop('checked', false);
   
   // clear details filters
-  $('.cd').each( function() {
+  $('.' + prefix + 'd').each( function() {
     $(this).prop('checked',false)
   });
   
   // clear schedule filters
-  $('.cs').each( function() {
+  $('.' + prefix + 's').each( function() {
     $(this).prop('checked',false)
   });
   
   // clear healthcare filters
-  $('.ch').each( function() {
+  $('.' + prefix + 'h').each( function() {
     $(this).prop('checked',false)
   });
   
   // clear language filters
-  $('.cl').each( function() {
+  $('.' + prefix + 'l').each( function() {
     $(this).prop('checked',false)
   });
   
-  update_clinic_table();
+  // clear association filters
+  $('.' + prefix + 'a').each( function() {
+    $(this).val(0)
+  });
+  
+  update_table(prefix, entity_id, entity_name);
+}
+
+var update_specialist_table = function()
+{
+  update_table('s', 'specialist', 'specialists');
+}
+
+var update_clinic_table = function()
+{
+  update_table('c', 'clinic', 'clinics');
+}
+
+var update_office_table = function()
+{
+  update_table('o', 'office', 'specialists');
+}
+
+var clear_specialist_filters = function()
+{
+  clear_filters('s', 'specialist', 'specialists');
+}
+
+var clear_clinic_filters = function() 
+{
+  clear_filters('c', 'clinic', 'clinics');
+}
+
+var clear_office_filters = function() 
+{
+  clear_filters('o', 'office', 'specialists');
 }

@@ -50,13 +50,13 @@
       - clinics_filter_attributes << "cdwa" if c.wheelchair_accessible?
       - if c.scheduled?
         - schedule = c.schedule
-        - clinics_filter_attributes << "csmon" if schedule.monday.scheduled
-        - clinics_filter_attributes << "cstues" if schedule.tuesday.scheduled
-        - clinics_filter_attributes << "cswed" if schedule.wednesday.scheduled
-        - clinics_filter_attributes << "csthurs" if schedule.thursday.scheduled
-        - clinics_filter_attributes << "csfri" if schedule.friday.scheduled
-        - clinics_filter_attributes << "cssat" if schedule.saturday.scheduled
-        - clinics_filter_attributes << "cssun" if schedule.sunday.scheduled
+        - clinics_filter_attributes << "cshmon" if schedule.monday.scheduled
+        - clinics_filter_attributes << "cshtues" if schedule.tuesday.scheduled
+        - clinics_filter_attributes << "cshwed" if schedule.wednesday.scheduled
+        - clinics_filter_attributes << "cshthurs" if schedule.thursday.scheduled
+        - clinics_filter_attributes << "cshfri" if schedule.friday.scheduled
+        - clinics_filter_attributes << "cshsat" if schedule.saturday.scheduled
+        - clinics_filter_attributes << "cshsun" if schedule.sunday.scheduled
       - c.healthcare_providers.each do |h|
         - clinics_filter_attributes << "ch#{h.id}_"
       - c.languages.each do |l|
@@ -409,19 +409,19 @@
                         Days open
                       #filter-group-content-schedule.filter-group-content
                         %label
-                          %input.cs{"type" => "checkbox", "id" => "csmon"} Monday
+                          %input.csh{"type" => "checkbox", "id" => "cshmon"} Monday
                         %label
-                          %input.cs{"type" => "checkbox", "id" => "cstues"} Tuesday
+                          %input.csh{"type" => "checkbox", "id" => "cshtues"} Tuesday
                         %label
-                          %input.cs{"type" => "checkbox", "id" => "cswed"} Wednesday
+                          %input.csh{"type" => "checkbox", "id" => "cshwed"} Wednesday
                         %label
-                          %input.cs{"type" => "checkbox", "id" => "csthurs"} Thursday
+                          %input.csh{"type" => "checkbox", "id" => "cshthurs"} Thursday
                         %label
-                          %input.cs{"type" => "checkbox", "id" => "csfri"} Friday
+                          %input.csh{"type" => "checkbox", "id" => "cshfri"} Friday
                         %label
-                          %input.cs{"type" => "checkbox", "id" => "cssat"} Saturday
+                          %input.csh{"type" => "checkbox", "id" => "cshsat"} Saturday
                         %label
-                          %input.cs{"type" => "checkbox", "id" => "cssun"} Sunday
+                          %input.csh{"type" => "checkbox", "id" => "cshsun"} Sunday
                   
                     %hr
                         
@@ -446,7 +446,7 @@
                 %script{"type" => "text/javascript"}
                   :plain
                     $(document).ready(function() {
-                      $('.cp, .cc, .cr, .cd, .cs, .ch, .cl').click( update_clinic_table );
+                      $('.cp, .cc, .cr, .cd, .csh, .ch, .cl').click( update_clinic_table );
                     });
                     
         #blank_tab.tab-pane
