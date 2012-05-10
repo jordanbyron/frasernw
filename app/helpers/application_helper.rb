@@ -53,7 +53,7 @@ module ApplicationHelper
     items.each do |item|
       count += 1
       result += "<li>"
-      result += item[:parent].procedure.name
+      result += "<a class='ajax' href='#{procedure_path(item[:parent].procedure)}'>#{item[:parent].procedure.name}</a>"
       investigation = item[:parent].investigation(root)
       if investigation and investigation.length > 0
         result += ": #{investigation}"

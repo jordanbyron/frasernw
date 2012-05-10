@@ -119,7 +119,7 @@
       
       - if @specialist.languages.present?
         %p.space
-          %strong= @specialist.languages.map{ |x| x.name }.to_sentence
+          = @specialist.languages.map{ |x| "<a class='ajax' href='#{language_path(x)}'>#{x.name}</a>" }.to_sentence.html_safe
           = "#{@specialist.languages.count == 1 ? 'is' : 'are' } spoken at this practice."
     
     - specialization_procedures, specialization_count, specialization_has_investigations = compressed_procedures_indented(@specialist, ProcedureSpecialization::CLASSIFICATION_FOCUSED)
