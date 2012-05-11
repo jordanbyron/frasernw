@@ -260,6 +260,21 @@ body
     }
   }
   
+  ol
+  {
+    margin: 6px 0 0 28px;
+    
+    li
+    {
+      list-style-position: outside;
+    }
+    
+    ul
+    {
+      margin-left: 14px;
+    }
+  }
+  
   ul.pager
   {
     margin-top: 1em;
@@ -320,7 +335,7 @@ body
     
     tr td 
     {
-      border-top: 1px solid $FNW_LIGHT_GRAY;
+      border-top: 1px solid $FNW_MID_GRAY;
       vertical-align: middle;
       height: 31px;
       padding-top:0;
@@ -367,21 +382,26 @@ body
     
     .h1
     {
-      font-weight: bold;
-      color: $FNW_TEXT;
-      background: $FNW_LIGHT_BLUE;
+      font-weight: normal;
+      color: $FNW_RED;
     }
     
     .h2
     {
       font-weight: bold;
-      background: $FNW_LIGHT_GRAY;
+      border-top: 1px solid $FNW_MID_GRAY;
     }
     
     .h3
     {
       font-weight: bold;
     }
+      
+  }
+  
+  table.table-no-lines tr td
+  {
+    border-top: 0;
   }
   
   h1 + table, h2 + table, h3 + table, h4 + table, h5 + table, h6 + table
