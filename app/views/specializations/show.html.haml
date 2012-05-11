@@ -71,6 +71,7 @@
         //sort by status then wait time
         $('.tablesorter').tablesorter({sortList: [[1,0],[2,0]]});
       });
+      function toggle_tab(tab) { $('#content_tabs a[href=' + tab + ']').tab('show') }
     
   %h2= @specialization.name
 
@@ -84,7 +85,7 @@
   - clinic_tab_class = has_specialists ? "" : "active"
 
   .tabbable
-    %ul.nav.nav-tabs
+    %ul#content_tabs.nav.nav-tabs
       - if has_specialists
         %li{:class => specialist_tab_class} 
           %a{"href" => "#specialist_tab", "data-toggle" => "tab"} 
@@ -149,6 +150,10 @@
                         - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
                         %label
                           %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}_').collapse('toggle')"}= ps.procedure.name
+                          - if ps.procedure.id == 218
+                            <a href="javascript:toggle_tab('#care_pathways_tab')"><i class="icon-leaf icon-blue"></i></a>
+                          - elsif ps.procedure.id == 365
+                            <a href="javascript:toggle_tab('#pearls_tab')"><i class="icon-star icon-blue"></i></a>
                         - next if children.length == 0
                         .collapse{:id => "children_sp#{ps.procedure.id}_"}
                           %script{"type" => "text/javascript"}
@@ -186,6 +191,8 @@
                             - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
                             %label
                               %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_"}= ps.procedure.name
+                              - if ps.procedure.id == 231
+                                <a href="javascript:toggle_tab('#pearls_tab')"><i class="icon-star icon-blue"></i></a>
                             - next if children.length == 0
                             .collapse{:id => "children_sp#{ps.procedure.id}_"}
                               %script{"type" => "text/javascript"}
@@ -452,14 +459,19 @@
       #calculator_tab.tab-pane
                     
       #care_pathways_tab.tab-pane
+        - if @specialization.id == 22 #OB/GYN
+          %h4 Primary Care Obstetrics
+          %ul
+            %li=link_to "Routine pregnancy care schedule", "/content/routine_pregnancy_care.html", :class => "ajax"
                     
       #pearls_tab.tab-pane
-        - if @specialization.id == 8 #GI
+        - if @specialization.id == 8 || @specialization.id == 3 || @specialization.id == 13 #GI, General Surgery, Internal Medicine
+          %h4 Colonoscopy
           %ul
             %li=link_to "Polyp Results", "/content/polyp.html", :class => "ajax"
         - if @specialization.id == 22 #OB/GYN
+          %h4 Sexual Wellness
           %ul
-            %li=link_to "Routine pregnancy care schedule", "/content/routine_pregnancy_care.html", :class => "ajax"
             %li=link_to "Oral contraceptives and venous thromboembolic risks", "/content/oral_contraceptives.html", :class => "ajax"
                     
       #red_flags_tab.tab-pane
