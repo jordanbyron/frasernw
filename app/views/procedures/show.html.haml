@@ -88,15 +88,15 @@
             Clinics
       - if true
         %li
-          %a.calculators{"href" => "#blank_tab", "data-toggle" => "tab"} Calculators
+          %a.calculators{"href" => "#calculator_tab", "data-toggle" => "tab"} Calculators
         %li
-          %a.care_pathways{"href" => "#blank_tab", "data-toggle" => "tab"} Care Pathways
+          %a.care_pathways{"href" => "#care_pathways_tab", "data-toggle" => "tab"} Care Pathways
         %li
-          %a.pearls{"href" => "#blank_tab", "data-toggle" => "tab"} Pearls
+          %a.pearls{"href" => "#pearls_tab", "data-toggle" => "tab"} Pearls
         %li
-          %a.red_flags{"href" => "#blank_tab", "data-toggle" => "tab"} Red Flags
+          %a.red_flags{"href" => "#red_flags_tab", "data-toggle" => "tab"} Red Flags
         %li
-          %a.patient_education{"href" => "#blank_tab", "data-toggle" => "tab"} Patient Education
+          %a.patient_education{"href" => "#patient_education_tab", "data-toggle" => "tab"} Patient Education
 
     .tab-content
       - if has_specialists
@@ -332,7 +332,24 @@
                       $('.cp, .cc, .cr, .cd, .csh, .ch, .cl').click( update_clinic_table );
                     });
                     
-      #blank_tab.tab-pane
+      #calculator_tab.tab-pane
+                    
+      #care_pathways_tab.tab-pane
+        - if @procedure.id == 218 #Primary care obstetrics
+          %ul
+            %li=link_to "Routine pregnancy care schedule", "/content/routine_pregnancy_care.html", :class => "ajax"
+                    
+      #pearls_tab.tab-pane
+        - if @procedure.id == 365 #Colonoscopy
+          %ul
+            %li=link_to "Polyp Results", "/content/polyp.html", :class => "ajax"
+        - if @procedure.id == 231 #Sexual wellness
+          %ul
+            %li=link_to "Oral contraceptives and venous thromboembolic risks", "/content/oral_contraceptives.html", :class => "ajax"
+                    
+      #red_flags_tab.tab-pane
+                    
+      #patient_education_tab.tab-pane
 
 %p.admin.btn-group
   - if can? :update, @procedure
