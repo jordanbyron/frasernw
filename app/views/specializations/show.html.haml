@@ -455,9 +455,12 @@
                     
       #pearls_tab.tab-pane
         - if @specialization.id == 8 #GI
-          =link_to "Polyp Results", "/content/polyp.html", :class => "ajax"
+          %ul
+            %li=link_to "Polyp Results", "/content/polyp.html", :class => "ajax"
         - if @specialization.id == 22 #OB/GYN
-          =link_to "Oral contraceptives and venous thromboembolic risks", "/content/oral_contraceptives.html", :class => "ajax"
+          %ul
+            %li=link_to "Routine pregnancy care schedule", "/content/routine_pregnancy_care.html", :class => "ajax"
+            %li=link_to "Oral contraceptives and venous thromboembolic risks", "/content/oral_contraceptives.html", :class => "ajax"
                     
       #red_flags_tab.tab-pane
                     
