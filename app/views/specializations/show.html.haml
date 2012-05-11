@@ -154,6 +154,8 @@
                             <a href="javascript:toggle_tab('#care_pathways_tab')"><i class="icon-leaf icon-blue"></i></a>
                           - elsif ps.procedure.id == 365
                             <a href="javascript:toggle_tab('#pearls_tab')"><i class="icon-star icon-blue"></i></a>
+                          - elsif [10, 21].include? ps.procedure.id 
+                            <a href="javascript:toggle_tab('#red_flags_tab')"><i class="icon-flag icon-blue"></i></a>
                         - next if children.length == 0
                         .collapse{:id => "children_sp#{ps.procedure.id}_"}
                           %script{"type" => "text/javascript"}
@@ -475,6 +477,37 @@
             %li=link_to "Oral contraceptives and venous thromboembolic risks", "/content/oral_contraceptives.html", :class => "ajax"
                     
       #red_flags_tab.tab-pane
+        - if [1, 29, 30, 32].include? @specialization.id
+          %h3 Back
+          %h4 Red Flags for Low Back Pain
+          %ul 
+            %li Major trauma
+            %li Minor trauma in the elderly or osteoporotic Age > 50 or < 20 years 
+            %li History of cancer 
+            %li Constitutonal symptoms (fever, chills, weight loss) 
+            %li Recent bacterial infection 
+            %li IV drug use 
+            %li Immunosuppression 
+            %li Pain worse at night or when supine 
+            %li Severe progressive sensory alteration or weakness 
+            %li Bladder or bowel dysfuncion 
+            %li Evidence of neurological deficit in the perineum
+          %p.space.no_indent In low back pain, radiographs are indicated with:
+          %ul 
+            %li Recent significant trauma, or milder trauma age >50 
+            %li Suspected cancer
+            %li Suspected infection 
+            %li Back pain with lower limb neurologic deficit
+            
+          %h3 Knee
+          %h4 Ottawa Knee Rules: Red Flags after knee trauma indicating an x-ray is warranted
+          %p.space.no_indent If any of the following criteria are met after knee trauma, consider an x-ray:
+          %ul 
+            %li Age > 55   
+            %li Isolated tenderness of the patella
+            %li Tenderness at the fibular head
+            %li Unable to flex knee to 90 degrees
+            %li Unable to bear weight immediately and in the ED (4 steps, limping is OK)
                     
       #patient_education_tab.tab-pane
 
