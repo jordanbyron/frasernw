@@ -328,7 +328,7 @@ class Specialist < ActiveRecord::Base
         output = "fax."
       end
     elsif urgent_other_details.present?
-      output = referral_other_details.punctuate
+      output = urgent_other_details.punctuate
     else
       output = ""
     end
