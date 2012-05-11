@@ -16,7 +16,7 @@ class ProcedureSweeper < ActionController::Caching::Sweeper
   def expire_cache_for(procedure)
     #expire_action :controller => 'search', :action => 'livesearch', :format => :js
     procedure.specialists_including_in_progress.each do |s|
-      expire_fragment :controller => 'specialists', :action => 'show', :id => s.id
+      #expire_fragment :controller => 'specialists', :action => 'show', :id => s.id
     end
   end
 end
