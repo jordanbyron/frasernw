@@ -206,7 +206,7 @@ body
   
   p.space
   {
-    margin-top: 4px;
+    margin-top: 6px;
   }
   
   p.admin.btn-group
@@ -367,6 +367,18 @@ body
         {
           list-style-type: none;
         }
+      }
+      
+      ul.bullets li
+      {
+        list-style-type: disc;
+        list-style-position: outside;
+        margin-left: 24px;
+      } 
+      
+      ul.space
+      {
+        margin-top: 6px;
       }
     }
     
