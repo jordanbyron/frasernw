@@ -462,19 +462,22 @@
                     
       #care_pathways_tab.tab-pane
         - if @specialization.id == 22 #OB/GYN
-          %h4 Primary Care Obstetrics
+          %h3 Primary Care Obstetrics
           %ul
             %li=link_to "Routine pregnancy care schedule", "/content/routine_pregnancy_care.html", :class => "ajax"
                     
       #pearls_tab.tab-pane
         - if @specialization.id == 8 || @specialization.id == 3 || @specialization.id == 13 #GI, General Surgery, Internal Medicine
-          %h4 Colonoscopy
+          %h3 Colonoscopy
           %ul
             %li=link_to "Polyp Results", "/content/polyp.html", :class => "ajax"
         - if @specialization.id == 22 #OB/GYN
-          %h4 Sexual Wellness
+          %h3 Sexual Wellness
           %ul
             %li=link_to "Oral contraceptives and venous thromboembolic risks", "/content/oral_contraceptives.html", :class => "ajax"
+          %h3 Hormone Replacement Therapy
+          %ul
+            %li=link_to "HRT Risk Table: Summary of Women's Health Initiative Study Findings", "/content/hrt_whi.html", :class => "ajax"
                     
       #red_flags_tab.tab-pane
         - if [1, 29, 30, 32].include? @specialization.id
