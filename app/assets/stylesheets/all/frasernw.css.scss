@@ -364,6 +364,29 @@ body
         color: $FNW_DISABLED_TEXT;
       }
     }
+    
+    .h1
+    {
+      font-weight: bold;
+      color: $FNW_TEXT;
+      background: $FNW_LIGHT_BLUE;
+    }
+    
+    .h2
+    {
+      font-weight: bold;
+      background: $FNW_LIGHT_GRAY;
+    }
+    
+    .h3
+    {
+      font-weight: bold;
+    }
+  }
+  
+  h1 + table, h2 + table, h3 + table, h4 + table, h5 + table, h6 + table
+  {
+    margin-top: 12px;
   }
   
   table.tablesorter
