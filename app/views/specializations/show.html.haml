@@ -452,10 +452,10 @@
       #calculator_tab.tab-pane
                     
       #care_pathways_tab.tab-pane
-        - if @specialization.id == 8 #GI
-          =link_to "Polyp Results", "/content/polyp.html", :class => "ajax"
                     
       #pearls_tab.tab-pane
+        - if @specialization.id == 8 #GI
+          =link_to "Polyp Results", "/content/polyp.html", :class => "ajax"
         - if @specialization.id == 22 #OB/GYN
           =link_to "Oral contraceptives and venous thromboembolic risks", "/content/oral_contraceptives.html", :class => "ajax"
                     
