@@ -478,6 +478,9 @@
           %h3 Hormone Replacement Therapy
           %ul
             %li=link_to "HRT Risk Table: Summary of Women's Health Initiative Study Findings", "/content/hrt_whi.html", :class => "ajax"
+        - if @specialization.id == 4 #Cardiology
+          %ul
+            %li=link_to "ASA is no longer indicated for primary prevention of cardiovascular events", "/content/asa.html", :class => "ajax"
                     
       #red_flags_tab.tab-pane
         - if [1, 29, 30, 32].include? @specialization.id
