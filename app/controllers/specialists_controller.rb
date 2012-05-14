@@ -101,10 +101,10 @@ class SpecialistsController < ApplicationController
 
   def email
     @specialist = Specialist.find params[:id]
-    SpecialistMailer.invite_specialist(@specialist).deliver
-    @contact = @specialist.contacts.build(:user_id => current_user, :notes => @specialist.contact_email)
-    @contact.save
-    redirect_to @specialist, :notice => "Sent email to #{@specialist.contact_email}"
+    #SpecialistMailer.invite_specialist(@specialist).deliver
+    #@contact = @specialist.contacts.build(:user_id => current_user, :notes => @specialist.contact_email)
+    #@contact.save
+    redirect_to @specialist, :notice => "TODO"
   end
   
   def review
