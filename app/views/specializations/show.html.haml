@@ -520,6 +520,8 @@
             %li
               Video:
               =link_to "Understanding Pain: What to do about it in less than five minutes?", "http://www.youtube.com/watch?v=4b8oB757DKc", :target => "_blank"
+              %i.icon-arrow-right.icon-blue
+              =link_to "Email this link to a patient", "mailto:no@thanks.com"
 
 %p.admin.btn-group
   - if can? :update, @specialization
