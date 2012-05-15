@@ -25,14 +25,13 @@
       - s.hospitals.each do |h|
         - specialist_filter_attributes << "sah#{h.id}_"
       $('#s#{s.id}').data('filter', '#{specialist_filter_attributes.join(' ')}');
+    - other_specialists = []
     - @specialization.procedures.each do |p|
       - next if p.specializations.length <= 1
-      - other_specialists = []
-      - p.specializations.each do |s|
-        - next if s == @specialization
-        - p.all_specialists_for_specialization(s).each do |sp|
-          - other_specialists << sp.name
-      $('#sp#{p.id}').data('other-specialists', '#{other_specialists.join(' ')}');
+      - p.specializations.each do |p_s|
+        - next if p_s.id == @specialization.id
+        - other_specialists << p.all_specialists_for_specialization(p_s).map{ |p_s_s| p_s_s.id }
+    $('#other-specialists').data('other-specialists', '#{other_specialists.flatten.uniq.join(' ')}');
     - @specialization.clinics.each do |c|
       - next if not c.show_in_table?
       - clinics_filter_attributes = []
@@ -516,6 +515,11 @@
             %li Unable to bear weight immediately and in the ED (4 steps, limping is OK)
                     
       #patient_education_tab.tab-pane
+        - if @specialization.id == 30 #Pain Management
+          %ul 
+            %li
+              Video:
+              =link_to "Understanding Pain: What to do about it in less than five minutes?", "http://www.youtube.com/watch?v=4b8oB757DKc", :target => "_blank"
 
 %p.admin.btn-group
   - if can? :update, @specialization
