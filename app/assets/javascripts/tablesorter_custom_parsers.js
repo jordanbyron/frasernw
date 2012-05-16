@@ -67,8 +67,8 @@ $.tablesorter.addParser({
       return false; 
     }, 
 		format: function(s) {
-      if (s === ('' || "n/a")) {
-  			return null;
+      if (s === '') {
+  			return "zzzzzz";
 			} else {
 			  return s;
 			}
