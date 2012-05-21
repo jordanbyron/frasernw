@@ -108,6 +108,11 @@ ul.dropdown-menu
 
   .form-horizontal
   {
+    .control-group
+    {
+      clear: both;
+    }
+    
     textarea
     {
       height: 70px;

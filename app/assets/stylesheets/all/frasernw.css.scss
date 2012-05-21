@@ -5,7 +5,7 @@ $FNW_STATUS_INDENT: 40px;
     
 .admin, .navbar .nav > li.admin
 {
-  display: none;
+  /*display: none;*/
 }
 
 .in-progress
@@ -491,7 +491,7 @@ body
       {
         width: auto;
         float: left;
-        margin-right: 5px;
+        margin: 0 6px 12px 0;
       }
       
       select.unavailable_to:first-child
