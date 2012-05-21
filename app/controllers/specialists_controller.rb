@@ -22,7 +22,6 @@ class SpecialistsController < ApplicationController
     @specialization = Specialization.find(params[:specialization_id])     
     @specialist = Specialist.new
     @specialist.specialist_specializations.build( :specialization_id => @specialization.id )
-    @specialist.capacities.build
     while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
       so = @specialist.specialist_offices.build
       o = so.build_office

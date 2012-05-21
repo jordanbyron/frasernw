@@ -115,20 +115,16 @@
     
     .content
       .row
-        .span3 Referrals accepted in the following areas of practice.
-        .span5 Additional information/investigations required for the specified area of practice.
-        
-      = f.simple_fields_for :focuses do |i|
+        .span4 Referrals accepted in the following areas of practice.
+        .span4 Additional information/investigations required for the specified area of practice.
+      
+      - @focuses.each do |f|
         .row.spaced
-          .span3
-            = i.association :procedure_specialization, as: :select, label: false, collection: @clinic_procedures, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "span3" }
-          .span5
-            = i.input :investigation, label: false, wrapper: :no_wrapper, input_html: { class: "span5" }
-          .spanhalf
-            = i.hidden_field :_destroy
-            = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
-      .row
-        = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another area of practice", :focuses, class: "btn offset3")
+          .span4.changed_wrapper{:class => "pad#{f[:offset]}"}
+            %label{"for" => "focuses_mapped_#{f[:id]}"}
+              = check_box_tag "focuses_mapped[#{f[:id]}]", 1, f[:mapped], :class => "focus"
+              = f[:name]
+          .span4.changed_wrapper= text_field_tag "focuses_investigations[#{f[:id]}]", f[:investigations], :class => "span4"
       
     %hr{ "style" => "visibility:hidden" }
 

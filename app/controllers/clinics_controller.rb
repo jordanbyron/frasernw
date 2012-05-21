@@ -32,16 +32,27 @@ class ClinicsController < ApplicationController
     s.build_saturday
     s.build_sunday
     @clinic.location.build_address
-    @clinic.focuses.build
     @clinic.attendances.build
     @clinic_procedures = ancestry_options( @specialization.non_assumed_procedure_specializations_arranged )
     @clinic_specialists = @specialization.specialists.collect { |s| [s.name, s.id] }
+    @focuses = []
+    @specialization.non_assumed_procedure_specializations_arranged.each { |ps, children|
+      @focuses << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
+      children.each { |child_ps, grandchildren|
+        @focuses << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
+      }
+    }
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def create
     @clinic = Clinic.new(params[:clinic])
     if @clinic.save
+      params[:focuses_mapped].each do |updated_focus, value|
+        focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
+        focus.investigation = params[:focuses_investigations][updated_focus]
+        focus.save
+      end
       redirect_to clinic_path(@clinic), :notice => "Successfully created #{@clinic.name}."
     else
       render :action => 'new'
@@ -56,18 +67,34 @@ class ClinicsController < ApplicationController
     elsif @clinic.location.address.blank?
       @clinic.location.build_address
     end
-    if @clinic.focuses.count == 0
-      @clinic.focuses.build
-    end
     @clinic_procedures = []
     @clinic.specializations_including_in_progress.each { |specialization| 
       @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations_including_in_progress.count > 1
       @clinic_procedures += ancestry_options( specialization.non_assumed_procedure_specializations_arranged )
     }
     @clinic_specialists = []
+    procedure_specializations = {}
     @clinic.specializations_including_in_progress.each { |specialization|
       @clinic_specialists << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations_including_in_progress.count > 1
       @clinic_specialists += specialization.specialists.collect { |s| [s.name, s.id] }
+      procedure_specializations.merge!(specialization.non_assumed_procedure_specializations_arranged)
+    }
+    @focuses = []
+    procedure_specializations.each { |ps, children|
+      focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps.id)
+      if focus.present?
+        @focuses << { :mapped => true, :name => ps.procedure.name, :id => ps.id, :investigations => focus.investigation, :offset => 0 }
+      else
+        @focuses << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
+      end
+      children.each { |child_ps, grandchildren|
+        focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, child_ps.id)
+        if focus.present?
+          @focuses << { :mapped => true, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => focus.investigation, :offset => 1 }
+        else
+          @focuses << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
+        end
+      }
     }
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
@@ -77,6 +104,14 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.find(params[:id])
     ClinicSweeper.instance.before_controller_update(@clinic)
     if @clinic.update_attributes(params[:clinic])
+      @clinic.focuses.each do |original_focus|
+        Focus.destroy(original_focus.id) if params[:focuses_mapped][original_focus].blank?
+      end
+      params[:focuses_mapped].each do |updated_focus, value|
+        focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
+        focus.investigation = params[:focuses_investigations][updated_focus]
+        focus.save
+      end
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else
       render :action => 'edit'
