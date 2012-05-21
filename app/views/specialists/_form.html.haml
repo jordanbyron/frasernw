@@ -6,78 +6,183 @@
 - if @review_item
   %script{"type" => "text/javascript"}
     :plain
-      function compare_form(form_element_id, new_entry_value)
-      {
-        form_element = $(form_element_id);
-          
-        if ($(form_element).length == 1)
-        {
-          console.log("found on form: " + form_element_id);
-          
-          old_entry_value = form_element.val();
-          
-          if (old_entry_value != new_entry_value)
-          {
-            form_element.val(new_entry_value);
-            
-            var old_entry_formatted = "";
-                
-            console.log("tag: " + form_element.tagName);
-            
-            switch(form_element.tagName)
-            {
-              case('input'):
-                console.log(form_element.attr('type'))
-                switch(form_element.attr('type'))
-                {
-                  case('radio'):
-                    old_entry_formatted = old_entry_value == 1 ? "selected" : "unselected";
-                    break;
-                  case('checkbox'):
-                    old_entry_formatted = old_entry_value == 1 ? "checked" : "unchecked";
-                    break;
-                  case('text'):
-                    old_entry_formatted = old_entry_value != "" ? old_entry_value : "blank";
-                    break;
-                }
-                break;
-              case('textarea'):
-                old_entry_formatted = old_entry_value;
-                break;
-            }
-            
-            form_element.closest('"div.control-group').addClass('warning');
-            help_span = $(document.createElement('span'));
-            help_span.addClass('help-inline');
-            help_span.text("Was: " + old_entry_formatted);
-            form_element.parent().append(help_span);
-            
-            console.log(form_element_id + " changed from " + old_entry_value + " to " + new_entry_value);
-          }
-        }
-      }
+      function show_old_value(form_element, old_value_formatted)
+      { 
+        form_element.closest('div.control-group, div.capacity_section').addClass('changed');
+        help_span = $(document.createElement('span'));
+        help_span.addClass('help-inline');
+        help_span.text("Was: " + old_value_formatted);
+        form_element.parent().append(help_span);
+      } 
       
-      function traverse_review_item(id_base, review_item)
+      function generate_button_name(form_element_id_array)
       {
-        $.each(review_item, function(entry_key, new_entry_value) {
-          var id = id_base + "_" + entry_key;
-          if ( $.isArray(new_entry_value) )
+        return form_element_id_array[0] + '[' + form_element_id_array.slice(1).join('][') + ']';
+      }
+    
+      function compare_form(form_element_id_array, new_entry_value)
+      {
+        console.log(form_element_id_array + " : " + new_entry_value)
+        
+        if ( $.isArray( new_entry_value ) )
+        {
+          //try as array of checkboxes
+          checkbox_selector = "input:checkbox[name='" + generate_button_name(form_element_id_array) + "[]']"
+          form_element = $(checkbox_selector);
+          
+          if (form_element)
           {
-            //recursive
-            traverse_review_item(id, new_entry_value);
+            $.each(form_element, function( index, checkbox )
+            {
+              checkbox = $(checkbox);
+              if ( checkbox.prop('checked') && (new_entry_value.indexOf(checkbox.val()) == -1) )
+              {
+                //was checked, but not in updated list
+                checkbox.prop('checked', false); //uncheck
+                show_old_value(checkbox, "checked");
+              }
+              else if ( !checkbox.prop('checked') && (new_entry_value.indexOf(checkbox.val()) != -1) )
+              {
+                //was unchecked, but now in updated list
+                checkbox.prop('checked', true); //check
+                show_old_value(checkbox, "unchecked");
+              }
+            });
           }
           else
           {
-            compare_form(id, new_entry_value);
+            console.log( "No check boxes for array " + new_entry_value );
+          }
+          
+          return;
+        }
+        
+        //try just as id
+        form_element = $('#' + form_element_id_array.join('_'));
+        
+        if (!form_element || form_element.length != 1)
+        {
+          //try as radio button
+          radio_selector = "input:radio[name='" + generate_button_name(form_element_id_array) + "']:checked"
+          form_element = $(radio_selector);
+        }
+        
+        if (!form_element || form_element.length != 1)
+        {
+          console.log("Found nothing with id " + form_element_id_array);
+          return;
+        }
+                
+        console.log("tag: " + form_element.prop("tagName"));
+        
+        switch(form_element.prop("tagName"))
+        {
+          case('INPUT'):
+            console.log(form_element.attr('type'))
+            switch(form_element.attr('type'))
+            {
+              case('radio'):
+                old_entry_value = form_element.val();
+                if (old_entry_value != new_entry_value)
+                {
+                  console.log("RADIO: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
+                  form_element.prop('checked', false);          // uncheck old value
+                  new_entry_value_offset = new_entry_value - 1; //eq is zero indexed, our forms are 1
+                  $("input:radio[name='" + generate_button_name(form_element_id_array) + "']:eq(" + new_entry_value_offset + ")").prop('checked', true);              //check new value
+                  old_value_formatted = form_element.closest('label').text()
+                  show_old_value(form_element, old_value_formatted);
+                }
+                break;
+              case('checkbox'):
+                if (form_element.prop('checked') && (new_entry_value == "0"))
+                {
+                  //was checked, uncheck
+                  form_element.prop('checked', false);
+                  show_old_value(form_element, "checked");
+                }
+                else if (!form_element.prop('checked') && (new_entry_value == "1"))
+                {
+                  //was uncheck, check
+                  form_element.prop('checked', true);
+                  show_old_value(form_element, "unchecked")
+                }
+                break;
+              case('text'):
+                old_entry_value = form_element.val();
+                if (old_entry_value != new_entry_value)
+                {
+                  console.log("TEXT: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
+                  form_element.val(new_entry_value);
+                  old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
+                  show_old_value(form_element, old_value_formatted);
+                }
+                break;
+            }
+            break;
+          case('TEXTAREA'):
+            old_entry_value = form_element.val();
+            if (old_entry_value != new_entry_value)
+            {
+              form_element.val(new_entry_value);
+              old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
+              show_old_value(form_element, old_value_formatted);
+            }
+            break;
+          case('SELECT'):
+            old_entry_value = form_element.val();
+            if (old_entry_value != new_entry_value)
+            {
+              console.log("SELECT: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
+              form_element.val(new_entry_value);
+              old_value_formatted = old_entry_value != "" ? $('#' + form_element_id_array.join('_') + ' option[value=\'' + old_entry_value + '\']').text(): "blank";
+              show_old_value(form_element, old_value_formatted);
+            }
+            break;
+        }
+      }
+      
+      function traverse_review_item(id_array, review_item)
+      {
+        $.each(review_item, function(entry_key, new_entry_value) {
+          local_id_array = id_array.slice(0); //array copy
+          local_id_array.push(entry_key);
+          if ( $.isPlainObject(new_entry_value) )
+          {
+            //recursive
+            traverse_review_item(local_id_array, new_entry_value);
+          }
+          else
+          {
+            compare_form(local_id_array, new_entry_value);
           }
         });
+      }
+      
+      function traverse_capacities(review_item)
+      {
+        $("input.capacity").each( function() {
+          var $this = $(this);
+          if ($this.prop('checked'))
+          {
+            var checkbox_id = $this.attr('id').substring("capacities_mapped_".length);
+            console.log(checkbox_id);
+            if (!review_item["capacities_mapped"][checkbox_id])
+            {
+              $this.prop('checked', false);
+              show_old_value($this, "checked");
+            }
+          }
+        });
+        traverse_review_item(["capacities_mapped"], review_item["capacities_mapped"]);
+        traverse_review_item(["capacities_investigations"], review_item["capacities_investigations"]);
       }
       
       $(document).ready(function() 
       {
         var review_item = #{@review_item.object};
         console.log(review_item);
-        traverse_review_item("#specialist", review_item);
+        traverse_review_item(["specialist"], review_item["specialist"]);
+        traverse_capacities(review_item);
       });
 
 - if @specialization
@@ -223,20 +328,16 @@
     
     .content
       .row
-        .span3 Referrals accepted in the following areas of practice.
-        .span5 Additional information/investigations required for the specified area of practice.
+        .span4 Referrals accepted in the following areas of practice.
+        .span4 Additional information/investigations required for the specified area of practice.
       
-      = f.simple_fields_for :capacities, :class => "row" do |i|
+      - @capacities.each do |c|
         .row.spaced
-          .span3
-            = i.association :procedure_specialization, as: :select, label: false, collection: @specializations_procedures, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "span3" }
-          .span5
-            = i.input :investigation, label: false, wrapper: :no_wrapper, input_html: { class: "span5" }
-          .spanhalf
-            = i.hidden_field :_destroy
-            = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
-      .row
-        = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another area of practice", :capacities, class: "btn offset3")
+          .span4.capacity_section{:class => "pad#{c[:offset]}"}
+            %label{"for" => "capacities_mapped_#{c[:id]}"}
+              = check_box_tag "capacities_mapped[#{c[:id]}]", 1, c[:mapped], :class => "capacity"
+              = c[:name]
+          .span4.capacity_section= text_field_tag "capacities_investigations[#{c[:id]}]", c[:investigations], :class => "span4"
       
     %hr{ "style" => "visibility:hidden" }
     

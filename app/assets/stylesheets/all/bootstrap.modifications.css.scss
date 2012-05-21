@@ -7,6 +7,11 @@
   width: 30px;
 }
 
+.offsethalf
+{
+  margin-left: 50px;
+}
+
 .span1half {
   margin-left: 10px;
   width: 110px;
@@ -241,12 +246,41 @@ ul.dropdown-menu
     .offsethalf {
       margin-left: 40px;
     }
+    .pad0
+    {
+      padding-left: 0px;
+    }
+    .pad1
+    {
+      padding-left: 24px;
+    }
     
     .help-block
     {
       margin: 6px 0 0 0;
       max-width: 350px;
       color: $FNW_DARK_GRAY;
+    }
+    
+    .row.changed label,
+    .changed > label,
+    .changed .help-block,
+    .changed .help-inline {
+      color: $FNW_ORANGE;
+    }
+    .changed input,
+    .changed select,
+    .changed textarea {
+      color: $FNW_ORANGE;
+      border-color: $FNW_ORANGE;
+    }
+    .changed input:focus,
+    .changed select:focus,
+    .changed textarea:focus {
+      border-color: $FNW_ORANGE;
+      -webkit-box-shadow: 0 0 6px $FNW_ORANGE;
+      -moz-box-shadow: 0 0 6px $FNW_ORANGE;
+      box-shadow: 0 0 6px $FNW_ORANGE;
     }
     
     select.auto:not([class*="span"])

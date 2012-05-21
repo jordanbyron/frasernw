@@ -32,6 +32,10 @@ class SpecialistsController < ApplicationController
     @offices = Office.includes(:location => [ {:address => :city}, {:clinic_in => {:location => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
     @specializations_clinics = @specialization.clinics.collect { |c| [c.name, c.id] }
     @specializations_procedures = ancestry_options( @specialization.non_assumed_procedure_specializations_arranged )
+    @capacities = []
+    @specialization.procedure_specializations.non_assumed.each { |ps|
+      @capacities << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "" }
+    }
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -46,6 +50,11 @@ class SpecialistsController < ApplicationController
     }
     @specialist = Specialist.new(params[:specialist])
     if @specialist.save!
+      params[:capacities_mapped].each do |updated_capacity, value|
+        capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
+        capacity.investigation = params[:capacities_investigations][updated_capacity]
+        capacity.save
+      end
       redirect_to @specialist, :notice => "Successfully created #{@specialist.name}. #{undo_link}"
     else
       render :action => 'new'
@@ -70,9 +79,28 @@ class SpecialistsController < ApplicationController
     }
     @specializations_clinics.sort!
     @specializations_procedures = []
+    procedure_specializations = {}
     @specialist.specializations_including_in_progress.each { |s| 
       @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations_including_in_progress.count > 1
       @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
+      procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
+    }
+    @capacities = []
+    procedure_specializations.each { |ps, children|
+      capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps.id)
+      if capacity.present?
+        @capacities << { :mapped => true, :name => ps.procedure.name, :id => ps.id, :investigations => capacity.investigation, :offset => 0 }
+      else
+        @capacities << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
+      end
+      children.each { |child_ps, grandchildren|
+        capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, child_ps.id)
+        if capacity.present?
+          @capacities << { :mapped => true, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => capacity.investigation, :offset => 1 }
+        else
+          @capacities << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
+        end
+      }
     }
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
@@ -81,6 +109,14 @@ class SpecialistsController < ApplicationController
     @specialist = Specialist.find(params[:id])
     SpecialistSweeper.instance.before_controller_update(@specialist)
     if @specialist.update_attributes(params[:specialist])
+      @specialist.capacities.each do |original_capacity|
+        Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity].blank?
+      end
+      params[:capacities_mapped].each do |updated_capacity, value|
+        capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
+        capacity.investigation = params[:capacities_investigations][updated_capacity]
+        capacity.save
+      end
       redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
     else
       render :edit
@@ -115,18 +151,26 @@ class SpecialistsController < ApplicationController
       redirect_to specialists_path, :notice => "There are no review items for this specialist"
     else
       @specialist = Specialist.find(params[:id])
-      if @specialist.capacities.count == 0
-        @specialist.capacities.build
-      end
       @specializations_clinics = []
       @specialist.specializations_including_in_progress.each { |s| 
         @specializations_clinics += s.clinics.collect { |c| [c.name, c.id] }
       }
       @specializations_clinics.sort!
       @specializations_procedures = []
+      procedure_specializations = []
       @specialist.specializations_including_in_progress.each { |s| 
         @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations_including_in_progress.count > 1
         @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
+        procedure_specializations += s.procedure_specializations.non_assumed
+      }
+      @capacities = []
+      procedure_specializations.flatten.uniq.each { |ps|
+        capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps.id)
+        if capacity.present?
+          @capacities << { :mapped => true, :name => ps.procedure.name, :id => ps.id, :investigations => capacity.investigation }
+        else
+          @capacities << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "" }
+        end
       }
       render :template => 'specialists/edit', :layout => 'ajax' if request.headers['X-PJAX']
     end
