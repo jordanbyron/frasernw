@@ -52,7 +52,10 @@ function reset_clinic()
 function reset_numbers(address_number)
 {
   $("#specialist_specialist_offices_attributes_" + address_number + "_phone").val("");
+  $("#specialist_specialist_offices_attributes_" + address_number + "_phone_extension").val("");
   $("#specialist_specialist_offices_attributes_" + address_number + "_fax").val("");
+  $("#specialist_specialist_offices_attributes_" + address_number + "_direct_phone").val("");
+  $("#specialist_specialist_offices_attributes_" + address_number + "_direct_phone_extension").val("");
 }
 
 var address_location_changed = function(address_number)

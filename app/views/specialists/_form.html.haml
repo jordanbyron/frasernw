@@ -8,7 +8,7 @@
     :plain
       function show_old_value(form_element, old_value_formatted)
       { 
-        form_element.closest('div.control-group, div.capacity_section').addClass('changed');
+        form_element.closest('div.control-group, div.changed_wrapper').addClass('changed');
         help_span = $(document.createElement('span'));
         help_span.addClass('help-inline');
         help_span.text("Was: " + old_value_formatted);
@@ -184,6 +184,8 @@
         console.log(review_item);
         traverse_review_item(["specialist"], review_item["specialist"]);
         traverse_capacities(review_item);
+        $('#location_0_In_an_office').prop('checked', true);
+        $('#location_1_In_an_office').prop('checked', true);
       });
 
 - if @specialization
@@ -334,11 +336,11 @@
       
       - @capacities.each do |c|
         .row.spaced
-          .span4.capacity_section{:class => "pad#{c[:offset]}"}
+          .span4.changed_wrapper{:class => "pad#{c[:offset]}"}
             %label{"for" => "capacities_mapped_#{c[:id]}"}
               = check_box_tag "capacities_mapped[#{c[:id]}]", 1, c[:mapped], :class => "capacity"
               = c[:name]
-          .span4.capacity_section= text_field_tag "capacities_investigations[#{c[:id]}]", c[:investigations], :class => "span4"
+          .span4.changed_wrapper= text_field_tag "capacities_investigations[#{c[:id]}]", c[:investigations], :class => "span4"
       
     %hr{ "style" => "visibility:hidden" }
     

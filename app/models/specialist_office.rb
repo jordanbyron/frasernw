@@ -42,6 +42,6 @@ class SpecialistOffice < ActiveRecord::Base
   end
   
   def empty?
-    phone.blank? && phone_extension.blank? && fax.blank? && office.blank?
+    phone.blank? && phone_extension.blank? && fax.blank? && direct_phone.blank? && direct_phone_extension.blank? && office.blank?
   end
 end
