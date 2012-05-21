@@ -33,8 +33,11 @@ class SpecialistsController < ApplicationController
     @specializations_clinics = @specialization.clinics.collect { |c| [c.name, c.id] }
     @specializations_procedures = ancestry_options( @specialization.non_assumed_procedure_specializations_arranged )
     @capacities = []
-    @specialization.procedure_specializations.non_assumed.each { |ps|
-      @capacities << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "" }
+    @specialization.non_assumed_procedure_specializations_arranged.each { |ps, children|
+      @capacities << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
+      children.each { |child_ps, grandchildren|
+        @capacities << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
+      }
     }
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
@@ -157,20 +160,28 @@ class SpecialistsController < ApplicationController
       }
       @specializations_clinics.sort!
       @specializations_procedures = []
-      procedure_specializations = []
+      procedure_specializations = {}
       @specialist.specializations_including_in_progress.each { |s| 
         @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations_including_in_progress.count > 1
         @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
-        procedure_specializations += s.procedure_specializations.non_assumed
+        procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
       }
       @capacities = []
-      procedure_specializations.flatten.uniq.each { |ps|
+      procedure_specializations.each { |ps, children|
         capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps.id)
         if capacity.present?
-          @capacities << { :mapped => true, :name => ps.procedure.name, :id => ps.id, :investigations => capacity.investigation }
+          @capacities << { :mapped => true, :name => ps.procedure.name, :id => ps.id, :investigations => capacity.investigation, :offset => 0 }
         else
-          @capacities << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "" }
+          @capacities << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
         end
+        children.each { |child_ps, grandchildren|
+          capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, child_ps.id)
+          if capacity.present?
+            @capacities << { :mapped => true, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => capacity.investigation, :offset => 1 }
+          else
+            @capacities << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
+          end
+        }
       }
       render :template => 'specialists/edit', :layout => 'ajax' if request.headers['X-PJAX']
     end
