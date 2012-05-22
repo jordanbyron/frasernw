@@ -2,6 +2,7 @@
 
 %table.table.table-condensed.table-striped
   -Specialization.all.each do |specialization|
+    -next if specialization.clinics.length == 0
     %tr{ :class => specialization.in_progress ? "in-progress" : "" }
       %th
         = specialization.name
@@ -13,8 +14,3 @@
         %td.admin.btn-group
           = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path((clinic)), :class => "btn btn-mini ajax")
           = link_to("<i class='icon-trash'></i>".html_safe + " Delete", clinic, :confirm => "Delete #{clinic.name}?", :method => :delete, :class => "btn btn-mini")
-    
-    %tr
-      %th
-      %th.admin
-        = link_to( "<i class='icon-plus-sign'></i>".html_safe + " New Clinic in #{specialization.name}", new_specialization_clinic_path(specialization), :class => "btn btn-mini ajax")
