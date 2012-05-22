@@ -51,10 +51,15 @@ class SpecialistsEditorController < ApplicationController
     review_item.item_type = "Specialist"
     review_item.item_id = @specialist.id
     review_item.object = ActiveSupport::JSON::encode(params)
-    review_item.whodunnit = "Unknown"
+    review_item.whodunnit = current_user.id if current_user.present?
     review_item.save
     
-    redirect_to specialist_self_edit_path(@specialist), :notice => "You have successfully updated the information for #{@specialist.name}."
+    redirect_to specialist_self_queued_path(@specialist)
+  end
+  
+  def queued
+    @specialist = Specialist.find(params[:id])
+    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
 end

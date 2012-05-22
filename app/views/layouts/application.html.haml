@@ -51,9 +51,9 @@
                       Admin
                       %b.caret
                     %ul.dropdown-menu
-                      /%li= link_to "Track Specialists", tracker_path\
+                      /%li= link_to "Track Specialists", tracker_path
                       %li= link_to "Activity Feed", all_versions_path, :class => "history ajax"
-                      /%li= link_to "Review Queue (#{Review.count})", reviews_path, :class => "review ajax"
+                      %li= link_to "Review Queue (#{Specialist.all.reject{|s| s.review_item.blank?}.count})", review_items_path, :class => "review ajax"
                       %li.divider
                       %li
                         = link_to "New...", "#", :class => "create arrow-right-after"

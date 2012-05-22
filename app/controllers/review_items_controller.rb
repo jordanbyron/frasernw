@@ -6,8 +6,9 @@ class ReviewItemsController < ApplicationController
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
-  def show
+  def destroy
     @review_item = ReviewItem.find(params[:id])
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    @review_item.destroy
+    redirect_to review_items_url, :notice => "Successfully discarded changes."
   end
 end

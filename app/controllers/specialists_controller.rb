@@ -125,6 +125,29 @@ class SpecialistsController < ApplicationController
     end
   end
 
+  def accept
+    #accept changes, destroy the review item so that we can save the specialist
+    @specialist = Specialist.find(params[:id])
+    
+    review_item = @specialist.review_item
+    ReviewItem.destroy(review_item)
+    
+    SpecialistSweeper.instance.before_controller_update(@specialist)
+    if @specialist.update_attributes(params[:specialist])
+      @specialist.capacities.each do |original_capacity|
+        Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity].blank?
+      end
+      params[:capacities_mapped].each do |updated_capacity, value|
+        capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
+        capacity.investigation = params[:capacities_investigations][updated_capacity]
+        capacity.save
+      end
+      redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
+    else
+      render :edit
+    end
+  end
+
   def destroy
     @specialist = Specialist.find(params[:id])
     SpecialistSweeper.instance.before_controller_destroy(@specialist)

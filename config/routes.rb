@@ -1,9 +1,5 @@
 Frasernw::Application.routes.draw do
 
-  resources :reviews, :only => [:index, :destroy] do
-    put :accept
-  end
-
   post "versions/:id/revert" => "versions#revert", :as => "revert_version"
 
   match "/versions"                 => "versions#show_all", :as => "all_versions"
@@ -31,10 +27,12 @@ Frasernw::Application.routes.draw do
 
   match "tracker" => 'tracker#index', :as => 'tracker'
   
-  match "specialists/:id/:token/edit"   => 'specialists_editor#edit',  :as => 'specialist_self_edit'
-  put  "specialists/:id/:token/update"  => 'specialists_editor#update', :as => 'specialist_self_update'
-  get  "specialists/email/:id"          => 'specialists#email', :as => 'specialist_email'
-  match "specialists/:id/review"        => 'specialists#review', :as => 'specialist_review'
+  match "specialists/:id/:token/edit"   => 'specialists_editor#edit',   :as => 'specialist_self_edit'
+  match "specialists/:id/queued"        => 'specialists_editor#queued', :as => 'specialist_self_queued'
+  put   "specialists/:id/:token/update" => 'specialists_editor#update', :as => 'specialist_self_update'
+  get   "specialists/email/:id"         => 'specialists#email',         :as => 'specialist_email'
+  match "specialists/:id/review"        => 'specialists#review',        :as => 'specialist_review'
+  match "specialists/:id/accept"        => 'specialists#accept',        :as => 'specialist_accept_review'
   
   match "/specialists/:id/edit_referral_forms" => "specialists#edit_referral_forms",  :as => "specialist_referral_forms"
   match "/clinics/:id/edit_referral_forms" => "clinics#edit_referral_forms",          :as => "clinic_referral_forms"

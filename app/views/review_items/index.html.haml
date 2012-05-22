@@ -1,16 +1,18 @@
-%h1 Listing review_items
+%h2 Review queue
 
-%table
+%table.table.table-condensed.table-striped
   %tr
-    %th Item type
-    %th Item
-    %th Whodunnit
+    %th Specialist
+    %th Changed by
+    %th Date
     %th
 
   - @review_items.each do |review_item|
     %tr
-      %td= review_item.item_type
-      %td= review_item.item_id
-      %td= review_item.whodunnit
-      %td= link_to 'Show', review_item, :class => 'ajax'
+      %td= review_item.item.name
+      %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
+      %td= review_item.created_at
+      %td.admin.btn-group.wide
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", specialist_review_path(review_item.item), :class => "btn btn-mini ajax")
+        = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
 
