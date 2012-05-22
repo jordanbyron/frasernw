@@ -2,7 +2,8 @@ class SpecialistsEditorController < ApplicationController
   include ApplicationHelper
   skip_before_filter :login_required
   skip_authorization_check
-  before_filter { |controller|  controller.send(:token_required, Specialist, params[:token], params[:id]) }
+  before_filter :check_pending, :except => :pending
+  before_filter :check_token
   
   def edit
     @token      = params[:token]
@@ -54,12 +55,21 @@ class SpecialistsEditorController < ApplicationController
     review_item.whodunnit = current_user.id if current_user.present?
     review_item.save
     
-    redirect_to specialist_self_queued_path(@specialist)
+    render :layout => 'ajax'
   end
   
-  def queued
+  def pending
     @specialist = Specialist.find(params[:id])
     render :layout => 'ajax' if request.headers['X-PJAX']
+  end
+  
+  def check_pending
+    specialist = Specialist.find(params[:id])
+    redirect_to specialist_self_pending_path(specialist) if specialist.review_item.present?
+  end
+  
+  def check_token
+    token_required( Specialist, params[:token], params[:id] )
   end
 
 end

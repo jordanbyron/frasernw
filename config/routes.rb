@@ -28,8 +28,8 @@ Frasernw::Application.routes.draw do
   match "tracker" => 'tracker#index', :as => 'tracker'
   
   match "specialists/:id/:token/edit"   => 'specialists_editor#edit',   :as => 'specialist_self_edit'
-  match "specialists/:id/queued"        => 'specialists_editor#queued', :as => 'specialist_self_queued'
   put   "specialists/:id/:token/update" => 'specialists_editor#update', :as => 'specialist_self_update'
+  get   "specialists/:id/:token/pending"=> 'specialists_editor#pending',:as => 'specialist_self_pending'
   get   "specialists/email/:id"         => 'specialists#email',         :as => 'specialist_email'
   match "specialists/:id/review"        => 'specialists#review',        :as => 'specialist_review'
   match "specialists/:id/accept"        => 'specialists#accept',        :as => 'specialist_accept_review'
