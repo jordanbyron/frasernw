@@ -1,7 +1,10 @@
 -# a bit messy, and probably there is a better way of handling multiple controllers reusing this form
-- form_method    = params[:action]     == 'new' ? :post   : :put
-- current_action = params[:action]     == 'new' ? :create : :update
-- form_action    = params[:controller] == 'specialists_editor' ? :update : current_action
+- form_method    = params[:action] == 'new' ? :post   : :put
+
+- current_action = params[:action] == 'new' ? :create : :update
+- current_action = params[:action] == 'review' ? :accept : current_action
+- current_action = params[:controller] == 'specialists_editor' ? :update : current_action
+- form_action    = current_action
 
 - if @review_item
   %script{"type" => "text/javascript"}
