@@ -24,7 +24,7 @@
     
       function compare_form(form_element_id_array, new_entry_value)
       {
-        console.log(form_element_id_array + " : " + new_entry_value)
+        //console.log(form_element_id_array + " : " + new_entry_value)
         
         if ( $.isArray( new_entry_value ) )
         {
@@ -53,7 +53,7 @@
           }
           else
           {
-            console.log( "No check boxes for array " + new_entry_value );
+            //console.log( "No check boxes for array " + new_entry_value );
           }
           
           return;
@@ -71,23 +71,23 @@
         
         if (!form_element || form_element.length != 1)
         {
-          console.log("Found nothing with id " + form_element_id_array);
+          //console.log("Found nothing with id " + form_element_id_array);
           return;
         }
                 
-        console.log("tag: " + form_element.prop("tagName"));
+        //console.log("tag: " + form_element.prop("tagName"));
         
         switch(form_element.prop("tagName"))
         {
           case('INPUT'):
-            console.log(form_element.attr('type'))
+            //console.log(form_element.attr('type'))
             switch(form_element.attr('type'))
             {
               case('radio'):
                 old_entry_value = form_element.val();
                 if (old_entry_value != new_entry_value)
                 {
-                  console.log("RADIO: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
+                  //console.log("RADIO: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
                   form_element.prop('checked', false);          // uncheck old value
                   new_entry_value_offset = new_entry_value - 1; //eq is zero indexed, our forms are 1
                   $("input:radio[name='" + generate_button_name(form_element_id_array) + "']:eq(" + new_entry_value_offset + ")").prop('checked', true);              //check new value
@@ -113,7 +113,7 @@
                 old_entry_value = form_element.val();
                 if (old_entry_value != new_entry_value)
                 {
-                  console.log("TEXT: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
+                  //console.log("TEXT: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
                   form_element.val(new_entry_value);
                   old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
                   show_old_value(form_element, old_value_formatted);
@@ -134,7 +134,7 @@
             old_entry_value = form_element.val();
             if (old_entry_value != new_entry_value)
             {
-              console.log("SELECT: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
+              //console.log("SELECT: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
               form_element.val(new_entry_value);
               old_value_formatted = old_entry_value != "" ? $('#' + form_element_id_array.join('_') + ' option[value=\'' + old_entry_value + '\']').text(): "blank";
               show_old_value(form_element, old_value_formatted);
@@ -163,27 +163,34 @@
       
       function traverse_capacities(review_item)
       {
+        capacities_mapped = review_item["capacities_mapped"];
+        if (!capacities_mapped)
+        {
+          //handle when no areas of practice are checked off
+          capacities_mapped = {}
+        }
+        
         $("input.capacity").each( function() {
           var $this = $(this);
           if ($this.prop('checked'))
           {
             var checkbox_id = $this.attr('id').substring("capacities_mapped_".length);
-            console.log(checkbox_id);
-            if (!review_item["capacities_mapped"][checkbox_id])
+            //console.log(checkbox_id);
+            if (!capacities_mapped[checkbox_id])
             {
               $this.prop('checked', false);
               show_old_value($this, "checked");
             }
           }
         });
-        traverse_review_item(["capacities_mapped"], review_item["capacities_mapped"]);
+        traverse_review_item(["capacities_mapped"], capacities_mapped);
         traverse_review_item(["capacities_investigations"], review_item["capacities_investigations"]);
       }
       
       $(document).ready(function() 
       {
         var review_item = #{@review_item.object};
-        console.log(review_item);
+        //console.log(review_item);
         traverse_review_item(["specialist"], review_item["specialist"]);
         traverse_capacities(review_item);
         $('#location_0_In_an_office').prop('checked', true);
