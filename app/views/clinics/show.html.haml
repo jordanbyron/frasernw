@@ -208,7 +208,21 @@
     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path(@clinic), :class => "btn ajax")
     = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", clinic_referral_forms_path(@clinic), :class => "btn ajax")
   - if current_user_is_admin?
+    - if @clinic.review_item.present?
+      = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", clinic_review_path(@specialist), :class => "btn ajax")
+    - else
+      %a.btn{"href" => "#share", "data-toggle" => "collapse", "data-target" => "#share"}
+        %i.icon-share
+        Share
     = link_to("<i class='icon-folder-open'></i>".html_safe + " History", clinic_versions_path(@clinic), :class => "btn ajax")
   - if can? :destroy, @clinic
     = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @clinic, :confirm => "Delete #{@clinic.name}?", :method => :delete, :class => "btn")
+
+- if current_user_is_admin?
+  #share.collapse
+    %p
+      .alert.alert-info
+        %h3 Secret edit link
+        %p Anyone can edit this clinic if they have the following secret address:
+        %p= clinic_self_edit_path(@clinic, @clinic.token, :only_path => false)
 

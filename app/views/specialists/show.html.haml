@@ -282,21 +282,22 @@
         %h3 Secret edit link
         %p Anyone can edit this specialist if they have the following secret address:
         %p= specialist_self_edit_path(@specialist, @specialist.token, :only_path => false)
-        %p 
-          You can:
-          %ul
-            - if @specialist.contact_email.present?
-              %li
-                Have Pathways
-                = link_to "send and email", specialist_email_path(@specialist)
-                = " with this link to #{@specialist.contact_name} (#{@specialist.contact_email}), the contact MOA for this specialist."
-            %li 
-              Manually
-              = mail_to "", "Send an email", :subject => "Edit #{@specialist.name} on Pathways", :body => "#{specialist_self_edit_path(@specialist, @specialist.token, :only_path => false)}"
-              with this link in to whomever you chose
-            %li Copy and paste it into an email or document manually.
-        - if @specialist.contacts.length > 0
-          %p
-            Contact history through Pathways:
+        -#
+          %p 
+            You can:
             %ul
-              = render @specialist.contacts
+              - if @specialist.contact_email.present?
+                %li
+                  Have Pathways
+                  = link_to "send and email", specialist_email_path(@specialist)
+                  = " with this link to #{@specialist.contact_name} (#{@specialist.contact_email}), the contact MOA for this specialist."
+              %li 
+                Manually
+                = mail_to "", "Send an email", :subject => "Edit #{@specialist.name} on Pathways", :body => "#{specialist_self_edit_path(@specialist, @specialist.token, :only_path => false)}"
+                with this link in to whomever you chose
+              %li Copy and paste it into an email or document manually.
+          - if @specialist.contacts.length > 0
+            %p
+              Contact history through Pathways:
+              %ul
+                = render @specialist.contacts

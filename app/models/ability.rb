@@ -36,10 +36,13 @@ class Ability
       end
       
     end
-
+    
     # No one can update items that need review.
     cannot :update, Specialist do |specialist|
       specialist.review_item.present?
+    end
+    cannot :update, Clinic do |clinic|
+      clinic.review_item.present?
     end
     
   end
