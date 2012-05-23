@@ -133,6 +133,75 @@ class ClinicsController < ApplicationController
     render :template => 'referral_form/edit', :layout => 'ajax' if request.headers['X-PJAX']
   end
   
+  def review
+    @review_item = ReviewItem.find_by_item_type_and_item_id( "Clinic", params[:id] );
+    
+    if @review_item.blank?
+      redirect_to clinics_path, :notice => "There are no review items for this specialist"
+    else
+      @clinic = Clinic.find(params[:id])
+      if @clinic.location.blank?
+        @clinic.build_location
+        @clinic.location.build_address
+        elsif @clinic.location.address.blank?
+        @clinic.location.build_address
+      end
+      @clinic_procedures = []
+      @clinic.specializations_including_in_progress.each { |specialization| 
+        @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations_including_in_progress.count > 1
+        @clinic_procedures += ancestry_options( specialization.non_assumed_procedure_specializations_arranged )
+      }
+      @clinic_specialists = []
+      procedure_specializations = {}
+      @clinic.specializations_including_in_progress.each { |specialization|
+        @clinic_specialists << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations_including_in_progress.count > 1
+        @clinic_specialists += specialization.specialists.collect { |s| [s.name, s.id] }
+        procedure_specializations.merge!(specialization.non_assumed_procedure_specializations_arranged)
+      }
+      @focuses = []
+      procedure_specializations.each { |ps, children|
+        focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps.id)
+        if focus.present?
+          @focuses << { :mapped => true, :name => ps.procedure.name, :id => ps.id, :investigations => focus.investigation, :offset => 0 }
+          else
+          @focuses << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
+        end
+        children.each { |child_ps, grandchildren|
+          focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, child_ps.id)
+          if focus.present?
+            @focuses << { :mapped => true, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => focus.investigation, :offset => 1 }
+            else
+            @focuses << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
+          end
+        }
+      }
+      render :template => 'clinics/edit', :layout => 'ajax' if request.headers['X-PJAX']
+    end
+  end
+  
+  def accept
+    #accept changes, destroy the review item so that we can save the clinic
+    @clinic = Clinic.find(params[:id])
+    
+    review_item = @clinic.review_item
+    ReviewItem.destroy(review_item)
+    
+    ClinicSweeper.instance.before_controller_update(@clinic)
+    if @clinic.update_attributes(params[:clinic])
+      @clinic.focuses.each do |original_focus|
+        Focus.destroy(original_focus.id) if params[:focuses_mapped][original_focus].blank?
+      end
+      params[:focuses_mapped].each do |updated_focus, value|
+        focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
+        focus.investigation = params[:focuses_investigations][updated_focus]
+        focus.save
+      end
+      redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
+    else
+      render :action => 'edit'
+    end
+  end
+  
   def check_token
     token_required( Clinic, params[:token], params[:id] )
   end
