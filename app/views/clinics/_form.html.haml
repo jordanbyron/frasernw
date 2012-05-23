@@ -264,20 +264,23 @@
     = f.simple_fields_for :schedule, :suppress_fields => true do |s|
       - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
         = s.simple_fields_for day, :suppress_fields => true do |d|
-          = d.input :scheduled, :label => day.to_s.capitalize_first_letter, wrapper: :bootstrap_tight do
-            = d.input_field :scheduled, :class => "scheduled span1"
-            .hours
-              .from from
-              = d.input_field :from, :class => "auto", :minute_step => 15
-              .to to
-              = d.input_field :to, :class => "auto", :minute_step => 15
+          .changed_wrapper
+            = d.input :scheduled, :label => day.to_s.capitalize_first_letter, wrapper: :bootstrap_tight do
+              = d.input_field :scheduled, :class => "scheduled span1"
+              .hours
+                .changed_wrapper
+                  .from from
+                  = d.input_field :from, :class => "auto", :minute_step => 15
+                .changed_wrapper
+                  .to to
+                  = d.input_field :to, :class => "auto", :minute_step => 15
 
     %script{"type" => "text/javascript"}
       :plain
         $(".scheduled").each(scheduled_changed)
       
 
-  - if current_user_is_admin?  
+  - if current_user_is_admin? && !@is_review 
     
     #section_moa
         
@@ -370,44 +373,46 @@
     = f.input :cancellation_policy
     
   #section_associations
+    
+    - if current_user_is_admin? && !@is_review
 
-    %hr
-    
-    %h3 Associations
-    
-    %h4 Physicians Who See Patients at the Clinic
-    
-    .content
-      .row
-        .span1 Specialist?
-        .span2 Name
-        .span5 Area of focus (if not the same for all physicians working in the clinic).
-        
-      = f.simple_fields_for :attendances do |i|
-        .row.spaced
-          .span1
-            = i.input :is_specialist, label: false, wrapper: :no_wrapper, input_html: { class: "is_specialist span1" }
-          .span2
-            = i.association :specialist, as: :select, label: false, collection: @clinic_specialists, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "specialist_list span2" }
-            = i.input :freeform_firstname, label: false, wrapper: :no_wrapper, input_html: { class: "freeform span2", style: "display:none" }
-          .span5
-            = i.input :area_of_focus, label: false, wrapper: :no_wrapper, input_html: { class: "span5" }
-          .spanhalf
-            = i.hidden_field :_destroy
-            = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
-            
-      .row
-        = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another physician", :attendances, class: "btn offset3")
-            
-    %script{"type" => "text/javascript"}
-      :plain
-        $(".is_specialist").each( hideShowPhysicians )
+      %hr
+      
+      %h3 Associations
+      
+      %h4 Physicians Who See Patients at the Clinic
+      
+      .content
+        .row
+          .span1 Specialist?
+          .span2 Name
+          .span5 Area of focus (if not the same for all physicians working in the clinic).
+          
+        = f.simple_fields_for :attendances do |i|
+          .row.spaced
+            .span1
+              = i.input :is_specialist, label: false, wrapper: :no_wrapper, input_html: { class: "is_specialist span1" }
+            .span2
+              = i.association :specialist, as: :select, label: false, collection: @clinic_specialists, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "specialist_list span2" }
+              = i.input :freeform_firstname, label: false, wrapper: :no_wrapper, input_html: { class: "freeform span2", style: "display:none" }
+            .span5
+              = i.input :area_of_focus, label: false, wrapper: :no_wrapper, input_html: { class: "span5" }
+            .spanhalf
+              = i.hidden_field :_destroy
+              = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
+              
+        .row
+          = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another physician", :attendances, class: "btn offset3")
+              
+      %script{"type" => "text/javascript"}
+        :plain
+          $(".is_specialist").each( hideShowPhysicians )
       
     %hr{ "style" => "visibility:hidden" }
 
     = f.association :healthcare_providers, as: :check_boxes
   
-  - if current_user_is_admin?
+  - if current_user_is_admin? && !@is_review
   
     #section_admin
     
@@ -431,17 +436,17 @@
       
       = f.input :admin_notes
       
-  #section_deprecated
-        
-    %hr
-    
-    %h3 Deprecated fields
-    %h4
-      These are old form fields which may have information in them than now needs to be transferred to fields of the new form. These deprecated fields will not show up on the final site, and are here temporarily to avoid losing previously entered data. As you transfer this information to the other form fields, you might want to delete it from here to avoid confusion.
-    = f.input :status
-    = f.input :responds_via
-    = f.input :interest
-    = f.input :referral_criteria
+    #section_deprecated
+          
+      %hr
+      
+      %h3 Deprecated fields
+      %h4
+        These are old form fields which may have information in them than now needs to be transferred to fields of the new form. These deprecated fields will not show up on the final site, and are here temporarily to avoid losing previously entered data. As you transfer this information to the other form fields, you might want to delete it from here to avoid confusion.
+      = f.input :status
+      = f.input :responds_via
+      = f.input :interest
+      = f.input :referral_criteria
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

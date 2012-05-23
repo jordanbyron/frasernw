@@ -7,6 +7,7 @@ class ClinicsEditorController < ApplicationController
   
   def edit
     @token = params[:token]
+    @is_review = true
     @clinic = Clinic.find(params[:id])
     if @clinic.focuses.count == 0
       @clinic.focuses.build

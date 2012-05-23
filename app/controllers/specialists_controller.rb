@@ -18,6 +18,7 @@ class SpecialistsController < ApplicationController
 
   def new
     @is_new = true
+    @is_review = false
     #specialization passed in to facilitate javascript "checking off" of starting speciality, since build below doesn't seem to work
     @specialization = Specialization.find(params[:specialization_id])     
     @specialist = Specialist.new
@@ -65,6 +66,7 @@ class SpecialistsController < ApplicationController
 
   def edit
     @is_new = false
+    @is_review = false
     @specialist = Specialist.find(params[:id])
     if @specialist.capacities.count == 0
       @specialist.capacities.build
@@ -170,6 +172,7 @@ class SpecialistsController < ApplicationController
   
   def review
     @is_new = false
+    @is_review = true
     @review_item = ReviewItem.find_by_item_type_and_item_id( "Specialist", params[:id] );
     
     if @review_item.blank?

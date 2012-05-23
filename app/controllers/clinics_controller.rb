@@ -18,6 +18,7 @@ class ClinicsController < ApplicationController
   end
 
   def new
+    @is_review = false
     #specialization passed in to facilitate javascript "checking off" of starting speciality, since build below doesn't seem to work
     @specialization = Specialization.find(params[:specialization_id])
     @clinic = Clinic.new
@@ -60,6 +61,7 @@ class ClinicsController < ApplicationController
   end
 
   def edit
+    @is_review = false
     @clinic = Clinic.find(params[:id])
     if @clinic.location.blank?
       @clinic.build_location
@@ -134,6 +136,7 @@ class ClinicsController < ApplicationController
   end
   
   def review
+    @is_review = true
     @review_item = ReviewItem.find_by_item_type_and_item_id( "Clinic", params[:id] );
     
     if @review_item.blank?

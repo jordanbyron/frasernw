@@ -298,7 +298,7 @@
       :plain
         $(document).ready( $(".chzn-select").chosen() );
   
-  - if current_user_is_admin? 
+  - if current_user_is_admin? && !@is_review
     #section_moa
       %hr  
         %h3 Senior MOA Contact Information
@@ -408,7 +408,7 @@
     
     = f.association :clinics, as: :check_boxes, collection: @specializations_clinics
   
-  -if current_user_is_admin?
+  -if current_user_is_admin? && !@is_review
   
     #section_admin
     

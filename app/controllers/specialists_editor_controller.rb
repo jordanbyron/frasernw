@@ -7,6 +7,7 @@ class SpecialistsEditorController < ApplicationController
   
   def edit
     @token      = params[:token]
+    @is_review = true
     @specialist = Specialist.find(params[:id])
     if @specialist.capacities.count == 0
       @specialist.capacities.build
