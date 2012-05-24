@@ -4,11 +4,11 @@
 en:
   authlogic:
     error_messages:
-      login_blank: Your email can not be blank
-      login_not_found: This email is not valid
-      login_invalid: should use only letters, numbers, spaces, and .-_@ please.
+      login_blank: Your e-mail address can not be blank
+      login_not_found: This e-mail address is not valid
+      login_invalid: Your email address should use only letters, numbers, spaces, and .-_@ please.
       consecutive_failed_logins_limit_exceeded: Consecutive failed logins limit exceeded, account is disabled.
-      email_invalid: should look like an email address.
+      email_invalid: Sorry, your e-mail address must look like an email address.
       password_blank: Your password can not be blank
       password_invalid: Your password is not valid
       not_active: Your account is not active

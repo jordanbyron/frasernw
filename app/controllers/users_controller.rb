@@ -58,10 +58,12 @@ class UsersController < ApplicationController
       redirect_to login_url
     else
       @user = User.find_by_saved_token(params[:user][:saved_token].downcase)
-      if @user.present?
-        render :action => 'signup', :layout => request.headers['X-PJAX'] ? 'ajax' : 'user_sessions'
+      if @user.blank?
+        redirect_to login_url, :alert  => "Sorry, your access key was not recognized."
+      elsif @user.email.present?
+        redirect_to login_url, :alert  => "Sorry, your access key has already been used to set up an account."
       else
-        redirect_to login_url, :notice  => "Sorry, your access key was not recognized."
+        render :action => 'signup', :layout => 'user_sessions'
       end
     end
   end
@@ -72,11 +74,9 @@ class UsersController < ApplicationController
     else
       @user = User.find_by_saved_token(params[:user][:saved_token].downcase)
       if @user.present? && @user.update_attributes(params[:user])
-        @user.saved_token = nil
-        @user.save
         redirect_to login_url, :notice  => "Your account is now created. Please log in with your new email and password. Welcome to Pathways!"
       else
-        redirect_to login_url, :notice  => "Sorry, your access key was not recognized."
+        redirect_to login_url, :alert  => "Sorry, your access key was not recognized."
       end
     end
   end

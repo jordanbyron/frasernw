@@ -13,7 +13,7 @@ class UserSessionsController < ApplicationController
   def new
     @user_session = UserSession.new
     @user = User.new
-    # render :layout=>false
+    render
   end
 
   def create
@@ -21,6 +21,7 @@ class UserSessionsController < ApplicationController
     if @user_session.save
       redirect_to_target_or_default root_url
     else
+      @user = User.new
       render :action => 'new'
     end
   end

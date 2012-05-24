@@ -10,7 +10,7 @@
         = f.button :submit, "Log in", :class => "btn btn-primary"
         
     .span5.offset1
-      = simple_form_for @user, :url => {:controller => "users", :action => "validate"}, :html => { :class => "ajax" }, :method => "put" do |f|
+      = simple_form_for @user, :url => {:controller => "users", :action => "validate"}, :method => "put" do |f|
 
         %h2 Have an access key? Sign up!
         
