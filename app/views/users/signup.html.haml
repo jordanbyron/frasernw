@@ -1,0 +1,13 @@
+= simple_form_for @user, :url => {:controller => "users", :action => "setup"}, :method => "put", :html => { :class => "form-horizontal" } do |f|
+
+  %h2= "Welcome to Pathways, #{@user.name}!"
+  
+  %p.space.no_indent Please enter your email address and then create and confirm a password. These will be how you log in to Pathways in the future. 
+  
+  = f.input :email
+  = f.input :password
+  = f.input :password_confirmation
+  
+  = f.input :saved_token, :as => :hidden, :value => @user.token
+  
+  =f.button :submit, "Set-up account", :class => "btn btn-primary"

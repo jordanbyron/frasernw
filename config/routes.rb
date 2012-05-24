@@ -53,8 +53,9 @@ Frasernw::Application.routes.draw do
   
   #RPW TODO: allow users to edit their own profile
   #match 'user/edit' => 'users#edit', :as => :edit_current_user
-
-  match 'signup' => 'users#new', :as => :signup
+  
+  match 'validate' => 'users#validate', :as => :validate
+  match 'setup' => 'users#setup', :as => :setup
 
   match 'logout' => 'user_sessions#destroy', :as => :logout
   

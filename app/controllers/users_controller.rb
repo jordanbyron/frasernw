@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  skip_authorization_check :only => [:create]
   load_and_authorize_resource
+  skip_before_filter :login_required, :only => [:validate, :signup, :setup]
 
   def index
     @users = User.find(:all)
@@ -16,7 +16,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(params[:user])
-    if @user.save
+    if @user.save :validate => false #only for create, which is by admins, so we can avoid setting up with emails or passwords
       redirect_to users_path, :notice => "User #{@user.name} successfully created."
     else
       render :action => 'new'
@@ -50,6 +50,34 @@ class UsersController < ApplicationController
       redirect_to users_url, :notice  => "Successfully updated user."
     else
       render :action => 'edit'
+    end
+  end
+  
+  def validate
+    if params.blank? || params[:user].blank?
+      redirect_to login_url
+    else
+      @user = User.find_by_saved_token(params[:user][:saved_token].downcase)
+      if @user.present?
+        render :action => 'signup', :layout => request.headers['X-PJAX'] ? 'ajax' : 'user_sessions'
+      else
+        redirect_to login_url, :notice  => "Sorry, your access key was not recognized."
+      end
+    end
+  end
+  
+  def setup
+    if params.blank? || params[:user].blank?
+      redirect_to login_url
+    else
+      @user = User.find_by_saved_token(params[:user][:saved_token].downcase)
+      if @user.present? && @user.update_attributes(params[:user])
+        @user.saved_token = nil
+        @user.save
+        redirect_to login_url, :notice  => "Your account is now created. Please log in with your new email and password. Welcome to Pathways!"
+      else
+        redirect_to login_url, :notice  => "Sorry, your access key was not recognized."
+      end
     end
   end
 

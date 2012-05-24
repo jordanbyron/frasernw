@@ -6,7 +6,7 @@ class Ability
       
       #not logged in
       
-      #can't do anything
+      can [:validate, :signup, :setup], User
       
     elsif user.admin?
       

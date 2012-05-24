@@ -2,13 +2,8 @@
 
 #user_sessions_page #content
 {
-  width: 400px;
-  margin: auto;
-
   form
   {
-    padding: 15px 20px;
-    
     h2
     {
       color: $FNW_RED;
@@ -16,29 +11,9 @@
       margin-bottom: 20px;
     }
     
-    .add-on
-    {
-      width: 110px;
-      background: $FNW_LIGHT_GRAY;
-      color: $FNW_TEXT;
-    }
-    
-    input[type="text"], input[type="password"]
-    {
-      width: 200px;
-    }
-    
     input[type="submit"]
     {
       width: 80px;
-      margin-left: 250px;
-      margin-bottom: 0;
-    }
-    
-    .help-inline
-    {
-      margin-left: 120px;
-      margin-top: -20px;
     }
   }
 }

@@ -132,3 +132,7 @@ en:
         direct_phone: "Direct number"
       procedure:
         parent_id: "Parent Area of Practice"
+      user:
+        email: "E-mail address"
+        password: "Password"
+        saved_token: "Access key"

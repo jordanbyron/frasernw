@@ -29,6 +29,7 @@
         %tr
           %th Name
           %th Email
+          %th Temporary Password
           %th Controls
           %th.admin
 
@@ -37,6 +38,7 @@
           %tr
             %td= link_to user.name, user, :class => 'ajax'
             %td= user.email
+            %td= user.token.upcase
             %td
               - if !user.admin?
                 %ul

@@ -15,7 +15,11 @@
       .navbar-inner
         .container
           = link_to "Pathways", root_url, :class => "brand"
-    #content
-      - flash.each do |type, msg|
-        .alert.alert-error= msg
-      = yield
+
+    #body.container
+      .row
+        #content.span12
+          #container
+            - flash.each do |type, msg|
+              .alert.alert-success= msg
+            = yield

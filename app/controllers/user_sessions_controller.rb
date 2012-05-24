@@ -12,6 +12,7 @@ class UserSessionsController < ApplicationController
 
   def new
     @user_session = UserSession.new
+    @user = User.new
     # render :layout=>false
   end
 

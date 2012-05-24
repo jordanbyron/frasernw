@@ -1,15 +1,18 @@
-= simple_form_for @user_session do |f|
+.content
+  .row
+    .span5
+      = simple_form_for @user_session do |f|
 
-  %h2= "Log in to Pathways"
-  
-  = f.input :email, autofocus: true, :wrapper => :prepend, :label => false do
-    %span.add-on
-      E-mail address
-    = f.input_field :email, "autocorrect" => "off", "autocapitalize" => "none"
-  
-  = f.input :password, :wrapper => :prepend, :label => false do
-    %span.add-on
-      Password
-    = f.input_field :password
-  
-  =f.button :submit, "Log In", :class => "btn btn-primary"
+        %h2 Returning User? Log in!
+        
+        = f.input :email, autofocus: true, :input_html => {"autocorrect" => "off", "autocapitalize" => "none", :class => "span4"}, :label => "E-mail address"
+        = f.input :password, :label => "Password", :input_html => {:class => "span4"}
+        = f.button :submit, "Log in", :class => "btn btn-primary"
+        
+    .span5.offset1
+      = simple_form_for @user, :url => {:controller => "users", :action => "validate"}, :html => { :class => "ajax" }, :method => "put" do |f|
+
+        %h2 Have an access key? Sign up!
+        
+        = f.input :saved_token, :input_html => {"autocorrect" => "off", "autocapitalize" => "none", :class => "span4"}
+        = f.button :submit, "Sign up", :class => "btn btn-primary"

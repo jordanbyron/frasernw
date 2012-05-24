@@ -1,5 +1,8 @@
 class User < ActiveRecord::Base
-  acts_as_authentic
+  acts_as_authentic do |c|
+    c.merge_validates_length_of_password_field_options({:minimum => 6})
+  end
+
   has_many :favorites
   has_many :specialists, :through => :favorites
   
@@ -16,7 +19,6 @@ class User < ActiveRecord::Base
 
   # has_many :clinics,     :through => :favorites
   validates_presence_of :name
-  validates_presence_of :email
   
   default_scope order('name')
   
