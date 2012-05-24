@@ -25,6 +25,9 @@ class Ability
       #can show pages
       can :show, [Specialization, Procedure, Specialist, Clinic, Hospital, Language]
       
+      #can add feedback
+      can [:create, :show], FeedbackItem
+      
       #can update users they control
       can :update, Specialist do |specialist|
         specialist.controlling_users.include? user
