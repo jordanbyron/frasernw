@@ -1,4 +1,6 @@
-// https://gist.github.com/854622
+// based off https://gist.github.com/854622
+// rather modified for Pathways to work with forms, amongst other things
+
 (function(window,undefined){
 	
 	// Prepare our Variables
@@ -19,7 +21,6 @@
 			/* Application Specific Variables */
 			$content = $('#container').filter(':first'),
 			contentNode = $content.get(0),
-			$menu = $('#left-nav').filter(':first'),
       fadeSpeed = 75,
 			/* Application Generic Variables */
 			$body = $(document.body),
@@ -142,7 +143,8 @@
 					var
 						$data = $(documentHtml(data)),
 						$dataContent = $data.find('.document-body:first'),
-             $menuChildren, contentHtml, $scripts;
+            contentHtml, 
+            $scripts;
              
           // Fetch the scripts
           $scripts = $dataContent.find('.document-script');
@@ -156,12 +158,6 @@
 						document.location.href = url;
 						return false;
 					}
-					
-					// Update the menu
-					$menuChildren = $menu.find('.nav_panel > ul > li, #root > ul > li');
-					$menuChildren.filter('.active').removeClass('active');
-					$menuChildren = $menuChildren.has('a[href="'+relativeUrl+'"],a[href="/'+relativeUrl+'"],a[href="'+url+'"]');
-					if ( $menuChildren.length >= 1 ) { $menuChildren.addClass('active'); }
 
 					// Update the content
 					$content.stop(true,true);
