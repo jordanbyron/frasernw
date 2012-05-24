@@ -23,4 +23,18 @@ class User < ActiveRecord::Base
   def admin?
     self.role == 'admin'
   end
+  
+  def token
+    if self.saved_token
+      return self.saved_token
+    else
+      saved_token = SecureRandom.hex(4) #length will be double this, giving us 16^8 or 4,294,967,296 different tokens
+      while User.find_by_saved_token(saved_token).present?
+        #ensure no saved_token collisions
+        saved_token = SecureRandom.hex(4)
+      end
+      update_column(:saved_token, saved_token)
+      return self.saved_token
+    end
+  end
 end

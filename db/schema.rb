@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120524010219) do
+ActiveRecord::Schema.define(:version => 20120524022507) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -534,6 +534,7 @@ ActiveRecord::Schema.define(:version => 20120524010219) do
     t.string   "name"
     t.string   "role"
     t.string   "perishable_token",  :default => "", :null => false
+    t.string   "saved_token"
   end
 
   create_table "versions", :force => true do |t|
