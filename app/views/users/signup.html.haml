@@ -4,10 +4,10 @@
   
   %p.space.no_indent Please enter your email address and then create and confirm a password. These will be how you log in to Pathways in the future. 
   
-  = f.input :email
-  = f.input :password
-  = f.input :password_confirmation
-  
+  = f.input :email, :input_html => { :class => "span4" }, :hint => "This will be your Pathways username"
+  = f.input :password, :input_html => { :class => "span4" }, :hint => "Your password must be at least 6 characters long"
+  = f.input :password_confirmation, :input_html => { :class => "span4" }, :hint => "Please confirm your new password by typing it again"
   = f.input :saved_token, :as => :hidden, :value => @user.token
   
-  =f.button :submit, "Set-up account", :class => "btn btn-primary"
+  .form-actions
+    =f.button :submit, "Set-up account", :class => "btn btn-primary"

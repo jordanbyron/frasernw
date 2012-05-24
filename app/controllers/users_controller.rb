@@ -73,8 +73,12 @@ class UsersController < ApplicationController
       redirect_to login_url
     else
       @user = User.find_by_saved_token(params[:user][:saved_token].downcase)
-      if @user.present? && @user.update_attributes(params[:user])
-        redirect_to login_url, :notice  => "Your account is now created. Please log in with your new email and password. Welcome to Pathways!"
+      if @user.present?
+        if @user.update_attributes(params[:user])
+          redirect_to login_url, :notice  => "Your account is now created. Please log in with your e-mail address and password. Welcome to Pathways!"
+        else
+          render :action => 'signup'
+        end
       else
         redirect_to login_url, :alert  => "Sorry, your access key was not recognized."
       end
