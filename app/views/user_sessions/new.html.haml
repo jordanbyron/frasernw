@@ -3,7 +3,7 @@
     .span5
       = simple_form_for @user_session do |f|
 
-        %h2 Returning User? Log in!
+        %h2 Have an account? Log in!
         
         = f.input :email, autofocus: true, :input_html => {"autocorrect" => "off", "autocapitalize" => "none", :class => "span4"}, :label => "E-mail address"
         = f.input :password, :label => "Password", :input_html => {:class => "span4"}
