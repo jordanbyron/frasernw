@@ -75,7 +75,7 @@ class UsersController < ApplicationController
       @user = User.find_by_saved_token(params[:user][:saved_token].downcase)
       if @user.present?
         if @user.update_attributes(params[:user])
-          redirect_to login_url, :notice  => "Your account is now created. Please log in with your e-mail address and password. Welcome to Pathways!"
+          redirect_to login_url, :notice  => "Your account has been set up; please log in with your e-mail address and password. Welcome to Pathways!"
         else
           render :action => 'signup'
         end
