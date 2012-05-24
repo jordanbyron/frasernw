@@ -13,6 +13,7 @@ class SpecialistsController < ApplicationController
 
   def show
     @specialist = Specialist.find(params[:id])
+    @feedback = @specialist.feedback_items.build
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 

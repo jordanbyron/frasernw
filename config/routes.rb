@@ -24,6 +24,7 @@ Frasernw::Application.routes.draw do
   resources :provinces
   resources :healthcare_providers
   resources :review_items
+  resources :feedback_items
 
   match "tracker" => 'tracker#index', :as => 'tracker'
   

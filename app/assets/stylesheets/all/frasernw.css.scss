@@ -673,4 +673,33 @@ body
   {
     text-decoration: underline;
   }
+  
+  #feedback
+  {
+    display: none;
+    position: fixed;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    padding: 12px 12px 0 12px;
+    background: #fff;
+    border: 1px solid $FNW_DARK_GRAY;
+    -webkit-border-radius: 3px;
+    -moz-border-radius:3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    -box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    
+    label
+    {
+      font-weight: bold;
+    }
+    
+    textarea
+    {
+      width: 95%;
+      height: 200px;
+    }
+  }
 }

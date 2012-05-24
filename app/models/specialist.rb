@@ -65,6 +65,7 @@ class Specialist < ActiveRecord::Base
   end
   
   has_one :review_item, :as => :item
+  has_many :feedback_items, :as => :item
   
   #clinic that referrals are done through
   belongs_to :referral_clinic, :class_name => "Clinic"

@@ -245,9 +245,21 @@
       %a.btn
         %i.icon-print.icon-text
         Print Information for Patient
-      %a.btn
+      %a.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
         %i.icon-exclamation-sign.icon-text
         Incorrect Information? Let us know
+        
+    #feedback
+                
+      = simple_form_for @feedback, :html => { :class => "ajax" } do |f|
+
+        = f.input :feedback, :label => "Please provide us with any updates to #{@specialist.name}'s information"
+        = f.input :item_type, :as => :hidden, :value => "Specialist"
+        = f.input :item_id, :as => :hidden, :value => @specialist.id
+
+        .form-actions
+          = f.button :submit, :class => "btn btn-primary", :value => "Send Feedback"
+          %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
           
   %script{"type" => "text/javascript"}
     :plain
@@ -268,7 +280,7 @@
     - if @specialist.review_item.present?
       = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", specialist_review_path(@specialist), :class => "btn ajax")
     - else
-      %a.btn{"href" => "#share", "data-toggle" => "collapse", "data-target" => "#share"}
+      %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
         %i.icon-share
         Share
     = link_to("<i class='icon-folder-open'></i>".html_safe + " History", specialist_versions_path(@specialist), :class => "btn ajax")

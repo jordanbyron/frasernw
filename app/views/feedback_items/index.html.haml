@@ -1,0 +1,18 @@
+%h2 Feedback Queue
+
+%table.table.table-condensed.table-striped
+  %tr
+    %th Feedback on
+    %th Provided by
+    %th Provided when
+    %th Feedback
+    %th.admin
+
+  - @feedback_items.each do |feedback_item|
+    %tr
+      %td= link_to feedback_item.item.name, feedback_item.item, :class => 'ajax'
+      %td= feedback_item.user.name
+      %td= "#{time_ago_in_words(feedback_item.created_at)} ago"
+      %td{"style" => "width: 40%"}= feedback_item.feedback
+      %td.admin.btn-group
+        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", feedback_item, :confirm => "Delete?", :method => :delete, :class => "btn btn-mini")

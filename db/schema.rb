@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120428023135) do
+ActiveRecord::Schema.define(:version => 20120523212823) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -197,6 +197,15 @@ ActiveRecord::Schema.define(:version => 20120428023135) do
 
   add_index "favorites", ["specialist_id"], :name => "index_favorites_on_specialist_id"
   add_index "favorites", ["user_id"], :name => "index_favorites_on_user_id"
+
+  create_table "feedback_items", :force => true do |t|
+    t.string   "item_type"
+    t.integer  "item_id"
+    t.integer  "user_id"
+    t.text     "feedback"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "focuses", :force => true do |t|
     t.integer   "clinic_id"
