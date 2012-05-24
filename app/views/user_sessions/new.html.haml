@@ -2,15 +2,13 @@
 
   %h2= "Log in to Pathways"
   
-  = f.input :username, autofocus: true, :wrapper => :prepend, :label => false do
+  = f.input :email, autofocus: true, :wrapper => :prepend, :label => false do
     %span.add-on
-      %i.icon-user.icon-text
-      Username
-    = f.input_field :username, "autocorrect" => "off", "autocapitalize" => "none"
+      E-mail address
+    = f.input_field :email, "autocorrect" => "off", "autocapitalize" => "none"
   
   = f.input :password, :wrapper => :prepend, :label => false do
     %span.add-on
-      %i.icon-lock.icon-text
       Password
     = f.input_field :password
   

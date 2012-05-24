@@ -2,7 +2,7 @@
 
 #user_sessions_page #content
 {
-  width: 345px;
+  width: 400px;
   margin: auto;
 
   form
@@ -18,7 +18,7 @@
     
     .add-on
     {
-      width: 80px;
+      width: 110px;
       background: $FNW_LIGHT_GRAY;
       color: $FNW_TEXT;
     }
@@ -31,13 +31,14 @@
     input[type="submit"]
     {
       width: 80px;
-      margin-left: 220px;
+      margin-left: 250px;
       margin-bottom: 0;
     }
     
     .help-inline
     {
-      margin-left: 90px;
+      margin-left: 120px;
+      margin-top: -20px;
     }
   }
 }

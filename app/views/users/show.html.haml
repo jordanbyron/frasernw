@@ -1,20 +1,13 @@
 %h2= @user.name
 
 %p
-  %strong User name:
-  = @user.username
-%p
   %strong Email address:
   = @user.email
 %p
   %strong Role:
   = @user.role
 
-- if @user.admin?
-  %p
-    %strong Send notification emails on admin events:
-    = @user.notify ? "yes" : "no"
-- else
+- if !@user.admin?
   - if @user.controlled_specialists.length > 0
     %p 
       %strong Can edit specialists

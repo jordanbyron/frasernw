@@ -11,15 +11,15 @@
     #admin_tab.tab-pane.active
       %table.table.table-condensed.table-striped
         %tr
-          %th Username
           %th Name
+          %th Email
           %th.admin
 
         - User.all.each do |user|
           - next if not user.admin?
           %tr
-            %td= link_to user.username, user, :class => 'ajax'
-            %td= user.name
+            %td= link_to user.name, user, :class => 'ajax'
+            %td= user.email
             %td.admin.btn-group
               = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
               = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
@@ -27,16 +27,16 @@
     #user_tab.tab-pane
       %table.table.table-condensed.table-striped
         %tr
-          %th Username
           %th Name
+          %th Email
           %th Controls
           %th.admin
 
         - User.all.each do |user|
           - next if user.admin?
           %tr
-            %td= link_to user.username, user, :class => 'ajax'
-            %td= user.name
+            %td= link_to user.name, user, :class => 'ajax'
+            %td= user.email
             %td
               - if !user.admin?
                 %ul

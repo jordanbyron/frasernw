@@ -2,9 +2,8 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
   
-  = f.input :username
-  = f.input :name
   = f.input :email
+  = f.input :name
   - if params[:action] == 'new'
     = f.input :password, :input_html => { :class => "span5" }
     = f.input :password_confirmation, :input_html => { :class => "span5" }

@@ -16,7 +16,6 @@ class User < ActiveRecord::Base
 
   # has_many :clinics,     :through => :favorites
   validates_presence_of :name
-  validates_presence_of :username
   validates_presence_of :email
   
   default_scope order('name')

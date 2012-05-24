@@ -4,8 +4,8 @@
 en:
   authlogic:
     error_messages:
-      login_blank: Your username can not be blank
-      login_not_found: This username is not valid
+      login_blank: Your email can not be blank
+      login_not_found: This email is not valid
       login_invalid: should use only letters, numbers, spaces, and .-_@ please.
       consecutive_failed_logins_limit_exceeded: Consecutive failed logins limit exceeded, account is disabled.
       email_invalid: should look like an email address.
@@ -132,5 +132,3 @@ en:
         direct_phone: "Direct number"
       procedure:
         parent_id: "Parent Area of Practice"
-      user:
-        notify: "Email notifications of events"

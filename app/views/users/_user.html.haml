@@ -1,15 +1,12 @@
 %tr
   %td
-    %span.username 
-      =user.username
+    %span.email 
+      =user.email
   %td
     %span.name
       =user.name
   %td
     %span.role 
       =user.role if user.admin?
-  %td
-    %span.notify
-      =user.notify
   %td
     =link_to 'edit', edit_user_path(user)

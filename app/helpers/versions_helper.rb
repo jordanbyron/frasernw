@@ -1,6 +1,5 @@
 module VersionsHelper
   def whodunnit_name(version)
-     # ? User.find(version.whodunnit).username : 'unknown'
     if version.whodunnit.to_i.to_s == version.whodunnit
       User.find(version.whodunnit).name
     elsif version.whodunnit == "MOA"

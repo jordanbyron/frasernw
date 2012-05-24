@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120523212823) do
+ActiveRecord::Schema.define(:version => 20120524010219) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -525,17 +525,15 @@ ActiveRecord::Schema.define(:version => 20120523212823) do
   add_index "user_controls_specialists", ["user_id"], :name => "index_user_controls_specialists_on_user_id"
 
   create_table "users", :force => true do |t|
-    t.string    "username"
-    t.string    "email"
-    t.string    "persistence_token"
-    t.string    "crypted_password"
-    t.string    "password_salt"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.string    "name"
-    t.string    "role"
-    t.boolean   "notify"
-    t.string    "perishable_token",  :default => "", :null => false
+    t.string   "email"
+    t.string   "persistence_token"
+    t.string   "crypted_password"
+    t.string   "password_salt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+    t.string   "role"
+    t.string   "perishable_token",  :default => "", :null => false
   end
 
   create_table "versions", :force => true do |t|
