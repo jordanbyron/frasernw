@@ -29,15 +29,6 @@ class UsersController < ApplicationController
     @user.user_controls_clinics.build
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-
-  # def update
-  #   @user = current_user
-  #   if @user.update_attributes(params[:user])
-  #     redirect_to root_url, :notice => "Your profile has been updated."
-  #   else
-  #     render :action => 'edit'
-  #   end
-  # end
   
   def show
     @user = User.find(params[:id])
@@ -84,7 +75,7 @@ class UsersController < ApplicationController
       end
     end
   end
-
+  
   def destroy
     @user = User.find(params[:id])
     @user.destroy
