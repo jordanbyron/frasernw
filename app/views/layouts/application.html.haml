@@ -2,7 +2,7 @@
 %html
 
   %head
-    %title= yield(:title) || "Untitled"
+    %title= yield(:title) || "Pathways"
     %meta{"http-equiv"=>"Content-Type", :content=>"text/html; charset=utf-8"}
     %meta{"name"=>"viewport", :content=>"initial-scale=1.0"}
 
@@ -104,7 +104,8 @@
                   Settings
                   %b.caret
                 %ul.dropdown-menu
-                  %li= link_to "Change password", change_password_path
+                  -#%li= link_to "Change password", change_password_path
+                  %li things will go here
                       
               %li= link_to "<i class='icon-off'></i> Logout".html_safe, logout_url
             
