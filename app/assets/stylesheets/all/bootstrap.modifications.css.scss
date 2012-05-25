@@ -1,5 +1,16 @@
 @import "_globals";
 
+/* FIXING ICON PATHING */
+
+[class^="icon-"],
+[class*=" icon-"] {
+  background-image: url("/img/glyphicons-halflings.png");
+}
+
+.icon-white {
+  background-image: url("/img/glyphicons-halflings-white.png");
+}
+
 /* ADDING NEW SPANS */
 
 .spanhalf {
@@ -22,6 +33,7 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
 }
 
 /* NAVBAR */
+
 .navbar 
 {
   margin-bottom: 10px;
@@ -55,24 +67,27 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
      {
       color: $FNW_MID_GRAY;
     }
+    
+    .nav > li > a
+    {
+      color: $FNW_LIGHT_GRAY;
+    }
+    
+    .nav > li > a:hover
+    {
+      color: #FFF;
+    }
+    
+    .nav > li a i[class^="icon-"],
+    .nav > li a i[class*=" icon-"] {
+      background-image: url("/img/glyphicons-halflings.png");
+    }
+    
+    .nav > li a:hover i[class^="icon-"],
+    .nav > li a:hover i[class*=" icon-"] {
+      background-image: url("/img/glyphicons-halflings-white.png");
+    }
   }
-}
-
-/* FIXING ICON PATHING */
-
-[class^="icon-"],
-[class*=" icon-"] {
-  background-image: url("/img/glyphicons-halflings.png");
-}
-
-.icon-white {
-  background-image: url("/img/glyphicons-halflings-white.png");
-}
-  
-.input-prepend .add-on
-{
-  margin-right: -5px;
-  margin-bottom: 9px;
 }
   
 /* DROPDOWN MENUS */
