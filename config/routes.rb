@@ -56,9 +56,9 @@ Frasernw::Application.routes.draw do
   
   match 'validate' => 'users#validate', :as => :validate
   match 'setup' => 'users#setup', :as => :setup
+  resources :password_resets, :only => [ :new, :create, :edit, :update ]
 
   match 'logout' => 'user_sessions#destroy', :as => :logout
-  
   match 'login' => 'user_sessions#new', :as => :login
   
   match 'livesearch' => 'search#livesearch', :as => :livesearch

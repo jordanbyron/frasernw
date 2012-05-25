@@ -1,7 +1,7 @@
 !!!
 %html
   %head
-    %title= yield(:title) || "Pathways"
+    %title= yield(:title) ? "Pathways | #{yield(:title)}" : "Pathways"
     %meta{"http-equiv"=>"Content-Type", :content=>"text/html; charset=utf-8"}
     %meta{"name"=>"viewport", :content=>"initial-scale=1.0"}
 

@@ -1,0 +1,11 @@
+-title "Change your password"
+
+%h2 Change your password
+
+%p.space.no_indent= "#{@user.name}, please set a new password below."
+
+= simple_form_for @user, :url => {:controller => "password_resets", :action => "update"} do |f|
+  
+  = f.input :password
+  = f.input :password_confirmation
+  = f.button :submit, "Set password", :class => "btn btn-primary"

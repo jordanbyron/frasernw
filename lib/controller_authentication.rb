@@ -50,6 +50,12 @@ module ControllerAuthentication
       redirect_to login_url, :alert => (request.url != root_url) ? "You must log in to access this page." : false
     end
   end
+
+  def not_login_required
+    unless !logged_in?
+      redirect_to root_url, :alert => "You must be logged out to access this page."
+    end
+  end
   
   def token_required(klass, token, id)
     klass_object = klass.find(id)

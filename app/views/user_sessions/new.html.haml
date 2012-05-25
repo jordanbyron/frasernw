@@ -1,3 +1,5 @@
+-title "Sign in"
+
 .content
   .row
     .span5
@@ -8,6 +10,8 @@
         = f.input :email, autofocus: true, :input_html => {"autocorrect" => "off", "autocapitalize" => "none", :class => "span4"}, :label => "E-mail address"
         = f.input :password, :label => "Password", :input_html => {:class => "span4"}
         = f.button :submit, "Log in", :class => "btn btn-primary"
+        
+        %a{"href" => new_password_reset_path} Forgot your password?
         
     .span5.offset1
       = simple_form_for @user, :url => {:controller => "users", :action => "validate"}, :method => "put" do |f|

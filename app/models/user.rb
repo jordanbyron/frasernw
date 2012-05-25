@@ -21,6 +21,11 @@ class User < ActiveRecord::Base
   validates_presence_of :name
   
   default_scope order('name')
+
+  def deliver_password_reset_instructions!  
+    reset_perishable_token!  
+    PasswordResetMailer.password_reset_instructions(self).deliver
+  end  
   
   def admin?
     self.role == 'admin'

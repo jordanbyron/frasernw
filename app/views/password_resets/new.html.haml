@@ -1,0 +1,10 @@
+-title "Reset your password"
+
+%h2 Reset your password
+
+%p.space.no_indent Please enter your email address, and a password reset link will be mailed to you.
+
+= simple_form_for @user, :url => {:controller => "password_resets", :action => "create"} do |f|
+  
+  = f.input :email, :input_html => {"autocorrect" => "off", "autocapitalize" => "none"}
+  = f.button :submit, "Reset password", :class => "btn btn-primary"
