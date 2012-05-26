@@ -6,7 +6,7 @@ class PasswordResetsController < ApplicationController
   
   def new  
     @user = User.new
-    render :layout => 'user_sessions'
+    render :layout => request.headers['X-PJAX'] ? 'ajax' : 'user_sessions'
   end  
   
   def create  
