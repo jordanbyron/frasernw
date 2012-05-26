@@ -84,7 +84,7 @@ class UsersController < ApplicationController
   def update_password
     @user = current_user
     if @user.update_attributes(params[:user])
-      redirect_to login_url, :layout => 'user_sessions', :notice => "Your password was successfully changed."
+      redirect_to root_url, :layout => 'user_sessions', :notice => "Your password was successfully changed."
     else
       render :action => :change_password, :layout => 'user_sessions'
     end
