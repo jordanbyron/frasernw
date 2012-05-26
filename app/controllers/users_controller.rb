@@ -74,6 +74,20 @@ class UsersController < ApplicationController
         redirect_to login_url, :alert  => "Sorry, your access key was not recognized."
       end
     end
+  end 
+  
+  def change_password
+    @user = current_user
+    render :layout => 'ajax' if request.headers['X-PJAX']
+  end
+  
+  def update_password
+    @user = current_user
+    if @user.update_attributes(params[:user])
+      redirect_to login_url, :layout => 'user_sessions', :notice => "Your password was successfully changed."
+    else
+      render :action => :change_password, :layout => 'user_sessions'
+    end
   end
   
   def destroy
