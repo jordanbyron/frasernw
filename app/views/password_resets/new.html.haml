@@ -8,3 +8,4 @@
   
   = f.input :email, :input_html => {"autocorrect" => "off", "autocapitalize" => "none"}
   = f.button :submit, "Reset password", :class => "btn btn-primary"
+  %a.btn.btn-danger.ajax{"href" => login_url} Cancel
