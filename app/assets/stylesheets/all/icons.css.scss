@@ -40,7 +40,7 @@ $FNW_ICON_WIDTH: 24px;
 .control:before,
 .review:before,
 .feedback:before,
-.password:before,
+.change_password:before,
 .history:before,
 .city:before, .province:before,
 .healthcare_provider:before,
@@ -162,7 +162,7 @@ $FNW_ICON_WIDTH: 24px;
   background-position: -24px -144px;
 }
 
-.password:before
+.change_password:before
 {
   background-position: -287px -24px;
 }
