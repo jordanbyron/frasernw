@@ -211,6 +211,10 @@ class Specialist < ActiveRecord::Base
     end
   end
   
+  def formal_name
+    "Dr. #{lastname}"
+  end
+  
   SEX_HASH = { 
     1 => "Male", 
     2 => "Female", 

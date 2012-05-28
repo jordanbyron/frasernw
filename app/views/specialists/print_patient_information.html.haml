@@ -1,0 +1,66 @@
+- title "#{@specialist.name}"
+
+%h2= @specialist.formal_name
+
+%h3.specialty_links= @specialist.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| s.name }.to_sentence
+    
+%h5= @specialist.sex if @specialist.sex?
+
+%h6 Appointment Information
+
+%p
+  %span.square
+  Your appointment is on 
+  %span.date_line &nbsp;
+  at
+  %span.time_line &nbsp;
+
+%p
+  %span.square
+  Our office will call you once your appointment is booked.
+
+%p
+  %span.square
+  #{@specialist.formal_name}'s office will call you once your appointment is booked.  
+  
+
+-if @specialist.patient_instructions.present? 
+  %h6 Instructions
+  %p= @specialist.patient_instructions.end_with_period
+    
+- if @specialist.cancellation_policy.present?
+  %h6 Cancellation Policy
+  %p= @specialist.cancellation_policy.end_with_period
+  
+%h6 Office Information
+  
+- @specialist.specialist_offices.each do |specialist_office|
+  - next if specialist_office.empty?
+  - if specialist_office.office.present?
+    %p= specialist_office.phone_only if specialist_office.phone_only.present?
+    - location = specialist_office.office.location
+    - next if !location
+    - address = location.resolved_address
+    - if (location.in_hospital? or location.in_clinic?)
+      - located_in = location.hospital_in
+      - located_in ||= location.clinic_in
+      %p
+        = "In #{located_in.name}"
+        = "which is in #{located_in.location.hospital_in.name}" if located_in.location.present? && located_in.location.in_hospital?
+      %p= address.address if address.present? && !address.empty?
+      %p= location.in_details if location.in_details.present?
+      %img{"src" => address.map_image(640,320,15,2), "width" => "640", "height" => "320"}
+    - else
+      %p= address.address if address.present? && !address.empty?
+      %img{"src" => address.map_image(640,320,15,2), "width" => "640", "height" => "320"}
+    
+%script{"type" => "text/javascript"}
+  :plain
+    function print_patient_information()
+    {
+      window.print();
+    }
+  
+    //$(document).ready( print_patient_information );
+        
+%input.btn{"type" => "button", "value" => "Print", "onclick" => "print_patient_information()"}

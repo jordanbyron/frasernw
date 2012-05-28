@@ -18,6 +18,13 @@ class SpecialistOffice < ActiveRecord::Base
     return ""
   end
   
+  def phone_only
+    return "#{phone} ext. #{phone_extension}" if phone.present? && phone_extension.present?
+    return "#{phone}" if phone.present?
+    return "ext. #{phone_extension}" if phone_extension.present?
+    return ""
+  end
+  
   def direct_info
     return "#{direct_phone} ext. #{direct_phone_extension}" if direct_phone.present? && direct_phone_extension.present?
     return "#{direct_phone}" if direct_phone.present?

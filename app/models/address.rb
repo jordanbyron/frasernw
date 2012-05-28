@@ -68,6 +68,14 @@ class Address < ActiveRecord::Base
     return "http://maps.google.com?q=#{search} Canada"
   end
   
+  def map_image(width, height, zoom, scale)
+    search = ""
+    search += "#{address1}, " if address1.present?
+    search += "#{city}, #{city.province}, " if city.present?
+    search += "#{postalcode}, " if postalcode.present?
+    return "https://maps.googleapis.com/maps/api/staticmap?size=#{width}x#{height}&zoom=#{zoom}&scale=#{scale}&sensor=false&markers=#{search} Canada"
+  end
+  
   def to_s
     return address
   end

@@ -41,8 +41,11 @@ Frasernw::Application.routes.draw do
   match "clinics/:id/review"            => 'clinics#review',            :as => 'clinic_review'
   match "clinics/:id/accept"            => 'clinics#accept',            :as => 'clinic_accept_review'
   
-  match "/specialists/:id/edit_referral_forms" => "specialists#edit_referral_forms",  :as => "specialist_referral_forms"
-  match "/clinics/:id/edit_referral_forms" => "clinics#edit_referral_forms",          :as => "clinic_referral_forms"
+  match "/specialists/:id/edit_referral_forms"  => "specialists#edit_referral_forms", :as => "specialist_referral_forms"
+  match "/clinics/:id/edit_referral_forms"      => "clinics#edit_referral_forms",     :as => "clinic_referral_forms"
+  
+  match "/specialists/:id/print"        => "specialists#print_patient_information",   :as => "specialist_patient_information"
+  match "/clinics/:id/print"            => "clinics#print_patient_information",       :as => "clinic_patient_information"
   
   get  "specializations/:id/:token/refresh_cache" => 'specializations#refresh_cache', :as => 'specialization_refesh_cache'
   get  "specialists/:id/:token/refresh_cache"     => 'specialists#refresh_cache',     :as => 'specialist_refesh_cache'

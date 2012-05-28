@@ -242,7 +242,7 @@
           != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'>#{clinic.name}</a>" }.to_sentence
           
     .btn-group
-      %a.btn
+      %a.btn{"href" => specialist_patient_information_path(@specialist), "target" => "_blank"}
         %i.icon-print.icon-text
         Print Information for Patient
       %a.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}

@@ -220,6 +220,11 @@ class SpecialistsController < ApplicationController
     render :template => 'referral_form/edit', :layout => 'ajax' if request.headers['X-PJAX']
   end
   
+  def print_patient_information
+    @specialist = Specialist.find(params[:id])
+    render :layout => 'print'
+  end
+  
   def check_token
     token_required( Specialist, params[:token], params[:id] )
   end
