@@ -206,6 +206,11 @@ class ClinicsController < ApplicationController
     end
   end
   
+  def print_patient_information
+    @clinic = Clinic.find(params[:id])
+    render :layout => 'print'
+  end
+  
   def check_token
     token_required( Clinic, params[:token], params[:id] )
   end

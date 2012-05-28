@@ -89,6 +89,13 @@ class Clinic < ActiveRecord::Base
     return ""
   end
   
+  def phone_only
+    return "#{phone} ext. #{phone_extension}" if phone.present? && phone_extension.present?
+    return "#{phone}" if phone.present?
+    return "ext. #{phone_extension}" if phone_extension.present?
+    return ""
+  end
+  
   def city
     l = location
     return "" if l.blank?

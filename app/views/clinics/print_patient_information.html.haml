@@ -1,0 +1,57 @@
+- title "#{@clinic.name}"
+
+%h2= @clinic.name
+
+%h3.specialty_links= @clinic.specializations.collect(){ |s| s.name }.to_sentence
+
+%h6 Appointment Information
+
+%p
+  %span.square
+  Your appointment is on 
+  %span.date_line &nbsp;
+  at
+  %span.time_line &nbsp;
+
+%p
+  %span.square
+  Our office will call you once your appointment is booked.
+
+%p
+  %span.square
+  #{@clinic.name} will call you once your appointment is booked.  
+  
+-if @clinic.patient_instructions.present? 
+  %h6 Instructions
+  %p= @clinic.patient_instructions.end_with_period
+    
+- if @clinic.cancellation_policy.present?
+  %h6 Cancellation Policy
+  %p= @clinic.cancellation_policy.end_with_period
+  
+%h6 Clinic Information
+
+%p= @clinic.phone_only if @clinic.phone_only.present?
+
+- address = @clinic.resolved_address
+- if @clinic.location.present? && @clinic.location.in_hospital?
+  - hospital = @clinic.location.hospital_in
+  %p= "In #{hospital.name}"
+  - if address.present? && !address.empty?
+    %p address.address 
+    %p= @clinic.location.in_details if @clinic.location.in_details.present?
+    %img{"src" => address.map_image(640,320,15,2), "width" => "640", "height" => "320"}
+- elsif address.present? && !address.empty?
+  %p= address.address
+  %img{"src" => address.map_image(640,320,15,2), "width" => "640", "height" => "320"}
+  
+%script{"type" => "text/javascript"}
+  :plain
+    function print_patient_information()
+    {
+      window.print();
+    }
+  
+    $(document).ready( print_patient_information );
+        
+%input.btn{"type" => "button", "value" => "Print", "onclick" => "print_patient_information()"}
