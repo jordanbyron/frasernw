@@ -5,6 +5,11 @@
   display: none !important;
 }
 
+.print-only
+{
+  display: block !important;
+}
+
 body
 {
   margin: 5%;
@@ -51,19 +56,14 @@ body
       display: none;
     }
 
-    .print-only
+    .print-only ul
     {
-      display: block;
+      list-style-type: none;
+      margin: 0;
       
-      ul
+      li.selected
       {
-        list-style-type: none;
-        margin: 0;
-        
-        li.selected
-        {
-          font-weight: bold;
-        }
+        font-weight: bold;
       }
     }
   }
