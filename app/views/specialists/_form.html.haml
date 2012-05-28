@@ -222,13 +222,14 @@
   = f.input :goes_by_name
   = f.input :sex_mask, as: :select, collection: Specialist::SEX_HASH, label_method: :last, value_method: :first, :include_blank => false
   = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.billing_number_padded }
-  = f.input :categorization_mask, as: :select, collection: Specialist::CATEGORIZATION_HASH, label_method: :last, value_method: :first, :include_blank => false
+  .no-print
+    = f.input :categorization_mask, as: :select, collection: Specialist::CATEGORIZATION_HASH, label_method: :last, value_method: :first, :include_blank => false
   
   %script{"type" => "text/javascript"}
     :plain
       $(document).ready( $("#specialist_categorization_mask").each(specialist_categorization_changed) );
-  
-  = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
+  .no-print
+    = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
 
   #section_contact
   
@@ -246,7 +247,8 @@
       - index = 0
       = f.simple_fields_for :specialist_offices, :suppress_fields => true do |so|
         .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"} 
-          .control-group
+          %h4.print-only= "Location #{index+1}"
+          .control-group.no-print
             %label.control-label Location is
             .controls
               - location_class = "location_#{index}"
@@ -269,8 +271,13 @@
               .span1
                 ext: 
               = so.input_field :direct_phone_extension, :class => "span1"
-          %div{:class => "office_#{index}"}
-            = so.association :office, as: :select, collection: @offices, :include_blank => true, :input_html => { :class => "chzn-select" }
+          %div.no-print{:class => "office_#{index}"}
+            = so.association :office, as: :select, collection: @offices, :include_blank => true, :input_html => { :class => "chzn-select no-print" }
+          .control-group.print-only
+            %label.control-label Address
+            .controls
+              - text_address = @specialist.locations[index].resolved_address.address if @specialist.locations[index].present? && @specialist.locations[index].resolved_address.present?
+              %input{"type" => "text", "value" => "#{text_address}"}
           - if @is_new
             = so.simple_fields_for :office, :suppress_fields => true do |o|
               = o.simple_fields_for :location, :suppress_fields => true do |l|
@@ -299,7 +306,7 @@
         $(document).ready( $(".chzn-select").chosen() );
   
   - if current_user_is_admin? && !@is_review
-    #section_moa
+    #section_moa.no-print
       %hr  
         %h3 Senior MOA Contact Information
         %h4 This allows specialists to edit their own form. This information is only visible to admins.
@@ -314,7 +321,7 @@
 
     %h3 Status
     = f.input :status_mask, as: :select, collection: Specialist::STATUS_HASH, label_method: :last, value_method: :first
-    #availability
+    #availability.no-print
       = f.input :unavailable_from, label: false, wrapper: false, input_html: { class: "unavailable_from", style: "display:none" }
       %span.unavailable_to{ style: "display:none" }
         to
@@ -410,7 +417,7 @@
   
   -if current_user_is_admin? && !@is_review
   
-    #section_admin
+    #section_admin.no-print
     
       %hr
     
@@ -435,3 +442,18 @@
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
     = link_to 'Cancel', specialists_path, :class => "btn btn-danger ajax"
+
+%script{"type" => "text/javascript"}
+  :plain
+    $(document).ready(function() {
+      $("select").not('.no-print').each(function(i){
+        var $el = $(this);
+        var $options = $el.find("option");
+        $el.after("<div class='print-only'><ul id=sel"+i+"></ul></div>");
+        var $curPrintBox = $("#sel"+i);
+        $options.each(function() {
+          var selected = $(this).prop('selected') ? "class='selected'" : "";
+          $curPrintBox.append("<li " + selected + ">"+$(this).text()+"</li>");
+        });    
+      });
+    });

@@ -1,5 +1,10 @@
 @import "_globals";
 
+.no-print
+{
+  display: none !important;
+}
+
 body
 {
   margin: 5%;
@@ -8,93 +13,58 @@ body
   border: 0;
 }
 
-p, h1, h2, h3, h4, h5, h6, img
+.navbar, .admin, .form-actions, .tabbable
 {
-  margin: 0;
-  padding: 0;
+  display: none;
 }
 
-p
+#content #container
 {
-  font-size: 10pt;
-  line-height: 15pt;
-  margin-top: 5pt;
-  color: $FNW_TEXT;
-}
-
-h1, h2, h3, h4, h5, h6
-{
-  font-weight: normal;
-  color: $FNW_TEXT;
-}
-
-h2 
-{
-  font-size: 18pt;
-  line-height: 27pt;
-}
-
-h3 
-{
-  font-size: 14pt;
-  line-height: 21pt;
-}
-
-h5 
-{
-  font-size: 12pt;
-  line-height: 18pt;
-}
-
-h6 
-{
-  margin-top: 12px;
-  font-size: 10pt;
-  line-height: 15pt;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.square, .date_line, .time_line
-{
-  display: inline-block;
-  height: 1em;
-}
-
-.square
-{
-  border: 1px solid $FNW_TEXT;
-  width: 1em;
-}
-
-.date_line
-{
-  border-bottom: 1px solid $FNW_TEXT;
-  width: 20em;
-}
-
-.time_line
-{
-  border-bottom: 1px solid $FNW_TEXT;
-  width: 10em;
-}
-
-img
-{
-  margin-top: 9pt;
-}
-
-.btn
-{
-  margin-top: 9pt;
-  font-size: 12pt;
-  display: block;
-}
-
-@media print
-{
-  .btn
+  .tab-pane
   {
-    display: none;
+    display: block;
+  }
+
+  .form-horizontal
+  {
+    input[type='text']
+    {
+      border: 0;
+      -webkit-border-radius: 0;
+      -moz-border-radius: 0;
+      border-radius: 0;
+      border-bottom: 1px solid $FNW_TEXT;
+      box-shadow: none;
+    }
+
+    textarea
+    {
+      -webkit-border-radius: 0;
+      -moz-border-radius: 0;
+      border-radius: 0;
+      border: 1px solid $FNW_TEXT;
+      box-shadow: none;
+    }
+
+    select
+    {
+      display: none;
+    }
+
+    .print-only
+    {
+      display: block;
+      
+      ul
+      {
+        list-style-type: none;
+        margin: 0;
+        
+        li.selected
+        {
+          font-weight: bold;
+        }
+      }
+    }
   }
 }
