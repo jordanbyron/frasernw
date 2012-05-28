@@ -38,7 +38,7 @@
   - hospital = @clinic.location.hospital_in
   %p= "In #{hospital.name}"
   - if address.present? && !address.empty?
-    %p address.address 
+    %p= address.address 
     %p= @clinic.location.in_details if @clinic.location.in_details.present?
     %img{"src" => address.map_image(640,320,15,2), "width" => "640", "height" => "320"}
 - elsif address.present? && !address.empty?
