@@ -25,6 +25,12 @@ class Ability
       #can show pages
       can :show, [Specialization, Procedure, Specialist, Clinic, Hospital, Language]
       
+      #can print patient information
+      can :print_patient_information, [Specialist, Clinic]
+      
+      #can change password
+      can [:change_password, :update_password], User
+      
       #can add feedback
       can [:create, :show], FeedbackItem
       
