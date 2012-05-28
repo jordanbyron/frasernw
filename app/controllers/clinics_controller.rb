@@ -217,6 +217,7 @@ class ClinicsController < ApplicationController
   
   def refresh_cache
     @clinic = Clinic.find(params[:id])
+    @feedback = @clinic.feedback_items.build
     render :show, :layout => 'ajax'
   end
 end

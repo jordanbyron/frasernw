@@ -231,6 +231,7 @@ class SpecialistsController < ApplicationController
   
   def refresh_cache
     @specialist = Specialist.find(params[:id])
+    @feedback = @specialist.feedback_items.build
     render :show, :layout => 'ajax'
   end
 end
