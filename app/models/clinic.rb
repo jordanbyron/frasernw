@@ -155,6 +155,14 @@ class Clinic < ActiveRecord::Base
     end
   end
   
+  def accepting_new_patients?
+    status_mask == 1
+  end
+  
+  def opened_this_year?
+    location_opened == Time.now.year.to_s
+  end
+  
   WAITTIME_HASH = { 
     1 => "Within one week", 
     2 => "1-2 weeks", 

@@ -645,18 +645,17 @@ body
     
     ul
     {
+      list-style-type: none;
       margin: 6px 0 0 0;
-      padding: 0;
       
       li
       {
-        margin-top: 6px;
+        margin-top: 12px;
       }
     }
     
     ul.specialties
     {
-      list-style-type: none;
       
       li
       {

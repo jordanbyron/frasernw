@@ -154,8 +154,20 @@ class Specialist < ActiveRecord::Base
     end
   end
   
+  def accepting_new_patients?
+    status_mask == 1
+  end
+  
   def retired?
-    return ((status_mask == 4) || ((status_mask == 5) && (unavailable_from <= Date.today)))
+    (status_mask == 4) || ((status_mask == 5) && (unavailable_from <= Date.today))
+  end
+  
+  def retiring?
+    (status_mask == 5) && (unavailable_from > Date.today)
+  end
+  
+  def opened_this_year?
+    location_opened == Time.now.year.to_s
   end
   
   WAITTIME_HASH = { 

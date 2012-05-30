@@ -31,24 +31,8 @@
             %h3 Latest Updates
             
             %ul.space
-                
-              %li
-                %a.ajax{"href" => "http://localhost:3000/specialists/479"} Michael Butler
-                = surround '(', ')' do
-                  %a.ajax{"href" => "http://localhost:3000/specializations/15"} Ophthalmology
-                is newly opened and accepting patients in Burnaby.
-                
-              %li
-                %a.ajax{"href" => "http://localhost:3000/specialists/354"} Gary Jackson
-                = surround '(', ')' do
-                  %a.ajax{"href" => "http://localhost:3000/specializations/22"} Obstetrics Gynecology
-                is retiring as of May 31st, 2012.
-                
-              %li
-                %a.ajax{"href" => "http://localhost:3000/specialists/341"} Melanie Altas
-                = surround '(', ')' do
-                  %a.ajax{"href" => "http://localhost:3000/specializations/22"} Obstetrics Gynecology
-                is newly opened and accepting patients in New Westminster.
+              - latest_events(5).each do |event|
+                %li= event
               
         .row
           .span4
