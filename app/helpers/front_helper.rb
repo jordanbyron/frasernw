@@ -80,7 +80,7 @@ module FrontHelper
         
         #new specialist / clinic association
       
-        return "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) now works at #{link_to clinic.name, clinic_path(clinic), :class => 'ajax'}. #{version.id}".html_safe
+        return "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) now works at the #{link_to clinic.name, clinic_path(clinic), :class => 'ajax'}. #{version.id}".html_safe
       
       end
     end
