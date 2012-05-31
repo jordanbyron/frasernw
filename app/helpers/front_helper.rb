@@ -84,6 +84,8 @@ module FrontHelper
       
       end
     end
+    rescue Exception => exc
+      return false
   end
   
 end
