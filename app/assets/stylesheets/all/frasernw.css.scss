@@ -600,9 +600,8 @@ body
     }
   }
   
-  .filter-phrase
+  .filter-phrase, .assumed-phrase
   {
-    display: none;
     background-color: $FNW_LIGHT_BLUE;
     padding: 8px;
     -webkit-border-radius: 4px;
@@ -611,6 +610,11 @@ body
     font-weight: bold;
   }
   
+  .filter-phrase
+  {
+    display: none;
+  }
+
   .filter-phrase.none
   {
     background-color: $FNW_RED;
@@ -636,6 +640,11 @@ body
     -webkit-column-gap: 24px;
     -moz-column-gap: 24px;
     column-gap: 24px;
+  }
+  
+  #specialist_assumed_list
+  {
+    color: $FNW_DISABLED_TEXT;
   }
   
   #front

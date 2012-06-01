@@ -236,6 +236,8 @@ var update_table = function(prefix, entity_id, entity_name) {
   phrase.html(description);
   found ? phrase.removeClass('none') : phrase.addClass('none');
   current_filters.length == 0 ? phrase.hide() : phrase.show();
+  var assumed = $('#' + entity_id + '_assumed');
+  current_filters.length != 0 ? assumed.hide() : assumed.show();
 }
 
 var clear_filters = function(prefix, entity_id, entity_name) {

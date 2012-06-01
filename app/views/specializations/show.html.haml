@@ -135,6 +135,11 @@
                         %td= specialist.waittime
                         %td= specialist.city
                         
+                #specialist_assumed_list
+                  %strong 1. 
+                  Areas of practice we assume all #{@specialization.member_name.uncapitalize_first_letter.pluralize} see:
+                  = @specialization.procedure_specializations.assumed.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
+                        
                 #other_specialists.filter-others
                         
               .span3
@@ -144,6 +149,8 @@
                   .filter-group
                     .filter-group-title
                       Areas of Practice
+                      %sup
+                        %a{"href" => "#specialist_assumed"} [1]
                     #filter-group-content-focused.filter-group-content
                       - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
                         - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
@@ -278,7 +285,11 @@
                 %script{"type" => "text/javascript"}
                   :plain
                     $(document).ready(function() {
-                      $('.sp, .sc, .sr, .ss, .sl, .sa').click( update_specialist_table );
+                      var update_custom_specialist_table = function()
+                      {
+                        update_table('s', 'specialist', '#{@specialization.member_name.uncapitalize_first_letter.pluralize}');
+                      }
+                      $('.sp, .sc, .sr, .ss, .sl, .sa').click( update_custom_specialist_table );
                     });
             
       - if has_clinics

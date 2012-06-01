@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120524022507) do
+ActiveRecord::Schema.define(:version => 20120601041827) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -502,6 +502,7 @@ ActiveRecord::Schema.define(:version => 20120524022507) do
     t.timestamp "updated_at"
     t.boolean   "in_progress", :default => false
     t.string    "saved_token"
+    t.string    "member_name"
   end
 
   create_table "user_controls_clinics", :force => true do |t|

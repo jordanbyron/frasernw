@@ -4,7 +4,7 @@
 
   %script{"type" => "text/javascript"}
     $(document).ready(function() {
-    - @procedure.specialists.each do |s|
+    - @procedure.all_specialists.each do |s|
       - next if not s.show_in_table?
       - specialist_filter_attributes = []
       - if s.lagtime_mask.present?
@@ -104,6 +104,11 @@
           .content
             .row
               .span9
+                - assumed_specializations = @procedure.procedure_specializations.reject{ |ps| !ps.assumed? }.map{ |ps| ps.specialization }
+                - if assumed_specializations.present?
+                  #specialist_assumed.assumed-phrase
+                    It is assumed that #{assumed_specializations.map{ |s| s.member_name.uncapitalize_first_letter.pluralize }.to_sentence} see #{@procedure.name.uncapitalize_first_letter}
+              
                 #specialist_phrase.filter-phrase
               
                 %table.table.table-condensed.tablesorter{:id => 'specialist_table'}
@@ -205,9 +210,14 @@
                               %option{"value" => "sah#{h.id}_"}= h.name
 
                 %script{"type" => "text/javascript"}
+                  - member_name = @procedure.specializations.length == 1 ? @procedure.specializations.first.member_name.uncapitalize_first_letter.pluralize : 'specialists'
                   :plain
                     $(document).ready(function() {
-                      $('.sp, .sc, .sr, .ss, .sl, .sa').click( update_specialist_table );
+                      var update_custom_specialist_table = function()
+                      {
+                        update_table('s', 'specialist', '#{member_name}');
+                      }
+                      $('.sp, .sc, .sr, .ss, .sl, .sa').click( update_custom_specialist_table );
                     });
       
             
