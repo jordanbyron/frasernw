@@ -58,8 +58,14 @@ namespace :pathways do
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/languages/#{l.id}/#{l.token}/refresh_cache") )
       end
     end
+  
+    task :search => :environment do
+      puts "Recaching search..."
+      expire_action :controller => 'search', :action => 'livesearch', :format => :js, :host => APP_CONFIG[:domain]
+      Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/livesearch.js") )
+    end
 
-    task :all => [:specializations, :procedures, :specialists, :clinics, :hospitals, :languages] do
+    task :all => [:specializations, :procedures, :specialists, :clinics, :hospitals, :languages, :search] do
       puts "All pages recached."
     end
     
