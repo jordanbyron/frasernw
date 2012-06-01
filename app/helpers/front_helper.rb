@@ -21,9 +21,9 @@ module FrontHelper
             #new specialist that is accepting patients
             
             if specialist.city.present? 
-              events["#{version.item_type}_#{version.item.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is accepting patients in #{specialist.city}. #{version.id}".html_safe
+              events["#{version.item_type}_#{version.item.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is accepting patients in #{specialist.city}.".html_safe
             else 
-              events["#{version.item_type}_#{version.item.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is accepting patients. #{version.id}".html_safe
+              events["#{version.item_type}_#{version.item.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is accepting patients.".html_safe
             end
           
           elsif version.event == "update"
@@ -35,14 +35,14 @@ module FrontHelper
               
               #newly retired
               
-              events["#{version.item_type}_#{version.item.id}"] = "#{version.item_type}_#{version.item.id}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has retired. #{version.id}".html_safe
+              events["#{version.item_type}_#{version.item.id}"] = "#{version.item_type}_#{version.item.id}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has retired.".html_safe
               
             elsif specialist.retiring?
               
               next if version.previous.blank? || version.previous.reify.blank?
               next if version.previous.reify.retiring? #retiring status hasn't changed
               
-              events["#{version.item_type}_#{version.item.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{specialist.unavailable_from.strftime('%B %d, %Y')}. #{version.id}".html_safe
+              events["#{version.item_type}_#{version.item.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{specialist.unavailable_from.strftime('%B %d, %Y')}.".html_safe
               
             end
           
@@ -58,9 +58,9 @@ module FrontHelper
             #new clinic
           
             if clinic.city.present?
-              events["#{version.item_type}_#{version.item.id}"] = "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) is accepting patients in #{clinic.city}. #{version.id}".html_safe
+              events["#{version.item_type}_#{version.item.id}"] = "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) is accepting patients in #{clinic.city}.".html_safe
             else
-              events["#{version.item_type}_#{version.item.id}"] = "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) is accepting patients. #{version.id}".html_safe
+              events["#{version.item_type}_#{version.item.id}"] = "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) is accepting patients.".html_safe
             end
           
           end
@@ -77,7 +77,7 @@ module FrontHelper
             
             #new specialist / clinic association
           
-            events["#{version.item_type}_#{specialist.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) now works at the #{link_to clinic.name, clinic_path(clinic), :class => 'ajax'}. #{version.id}".html_safe
+            events["#{version.item_type}_#{specialist.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) now works at the #{link_to clinic.name, clinic_path(clinic), :class => 'ajax'}.".html_safe
           
           end
           
@@ -90,7 +90,7 @@ module FrontHelper
           
           if version.event == "create" || version.event == "update"
           
-            events["Clinic_#{schedulable.id}"] = "The schedule for the #{link_to schedulable.name, url_for(schedulable), :class => 'ajax'} (#{schedulable.specializations.map{ |s| s.name }.to_sentence}) is now #{schedule.days_and_hours.to_sentence}. #{version.id}".html_safe
+            events["Clinic_#{schedulable.id}"] = "The schedule for the #{link_to schedulable.name, url_for(schedulable), :class => 'ajax'} (#{schedulable.specializations.map{ |s| s.name }.to_sentence}) is now #{schedule.days_and_hours.to_sentence}.".html_safe
           
           end
           
@@ -111,11 +111,11 @@ module FrontHelper
             
             if location.locatable.is_a?(Office)
           
-              events["#{version.item_type}_#{version.item.id}"] = "The address for #{location.locatable.specialists.map{ |s| link_to s.name, specialist_path(s), :class => 'ajax' }.to_sentence} is now #{address.short_address}. #{version.id}".html_safe
+              events["#{version.item_type}_#{version.item.id}"] = "The address for #{location.locatable.specialists.map{ |s| link_to s.name, specialist_path(s), :class => 'ajax' }.to_sentence} is now #{address.short_address}.".html_safe
               
             else
               
-              events["#{version.item_type}_#{version.item.id}"] = "The address for #{location.locatable.name} is now #{address.short_address}. #{version.id}".html_safe
+              events["#{version.item_type}_#{version.item.id}"] = "The address for #{location.locatable.name} is now #{address.short_address}.".html_safe
             
             end
           
@@ -135,11 +135,11 @@ module FrontHelper
             
             if office.specialists.length > 1
               
-              events["Specialist_#{specialist.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence }) now works in an office at #{office.short_address}. #{version.id} with #{office.specialists.reject{ |s| specialist.id == s.id }.map{ |s| link_to s.name, specialist_path(s), :class => 'ajax' }.to_sentence}. #{version.id}".html_safe
+              events["Specialist_#{specialist.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence }) now works in an office at #{office.short_address}. with #{office.specialists.reject{ |s| specialist.id == s.id }.map{ |s| link_to s.name, specialist_path(s), :class => 'ajax' }.to_sentence}.".html_safe
             
             else
               
-              events["Specialist_#{specialist.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence }) now works in an office at #{office.short_address}. #{version.id}".html_safe
+              events["Specialist_#{specialist.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence }) now works in an office at #{office.short_address}.".html_safe
             
             end
           end
