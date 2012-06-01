@@ -130,6 +130,9 @@ en:
       specialist_office:
         sector_mask: "Public or private"
         direct_phone: "Direct number"
+      specialization:
+        name: "Speciality (e.g. Allergy)"
+        member_name: "Specialist in the speciality (e.g. Allergist)"
       procedure:
         parent_id: "Parent Area of Practice"
       user:
