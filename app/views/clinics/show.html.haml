@@ -1,12 +1,16 @@
 - title "Pathways | #{@clinic.name}"
+
+- if @is_version
+  = render 'versions/info'
+    
+%h2
+  = @clinic.name
+  
+  %a{"href" => "javascript:void(0)", "onclick" => "favorite('/favorites/clinics/#{@clinic.id}')"}
+    %i#user_favorite.icon-heart{:class => Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @clinic.id, "Clinic").present? ? "icon-red" : "icon-text" }
   
 - cache(:action => 'show') do
-
-  - if @is_version
-    = render 'versions/info'
     
-  %h2
-    = @clinic.name
   %h3.specialty_links
     = @clinic.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
     

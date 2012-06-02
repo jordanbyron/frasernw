@@ -110,14 +110,13 @@
                   - if has_specialists
                     %li.nav-header Specialists
                     - current_user.favorite_specialists.each do |s|
-                      %li= link_to s.name, specialist_path(s), :class => 'specialist ajax'
+                      %li= link_to s.name, specialist_path(s), :class => 'ajax'
                   - if has_specialists && has_clinics
                     %li.divider
                   - if has_clinics
-                    %li.nav-header Specialists
-                    - current_user.favorite_clinics.each do |s|
-                      %li= link_to s.name, specialist_path(s), :class => 'specialist ajax'
-                    %li.divider
+                    %li.nav-header Clinics
+                    - current_user.favorite_clinics.each do |c|
+                      %li= link_to c.name, clinic_path(c), :class => 'ajax'
                   - if current_user.favorites.blank?
                     %li
                       %p
