@@ -14,3 +14,25 @@
 Array.prototype.to_sentence = function() {
   return this.join(", ").replace(/,\s([^,]+)$/, ' and $1')
 }
+
+function favorite(request_url) {
+  $.ajax({
+    url: request_url,
+    type: "PUT",
+    data: "",
+    dataType: 'json',
+    success: function(data)
+    {
+      if (data)
+      {
+        $('#user_favorite').removeClass('icon-text');
+        $('#user_favorite').addClass('icon-red');
+      }
+      else
+      {
+        $('#user_favorite').removeClass('icon-red');
+        $('#user_favorite').addClass('icon-text');
+      }
+    }
+  });
+}

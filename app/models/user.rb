@@ -4,7 +4,8 @@ class User < ActiveRecord::Base
   end
 
   has_many :favorites
-  has_many :specialists, :through => :favorites
+  has_many :favorite_specialists, :through => :favorites, :source => :favoritable, :source_type => "Specialist", :class_name => "Specialist"
+  has_many :favorite_clinics, :through => :favorites, :source => :favoritable, :source_type => "Clinic", :class_name => "Clinic"
   
   has_many :user_controls_specialists, :dependent => :destroy
   has_many :controlled_specialists, :through => :user_controls_specialists, :source => :specialist, :class_name => "Specialist"

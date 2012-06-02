@@ -101,6 +101,32 @@
                       
               %li.dropdown
                 %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                  %i.icon-heart
+                  Favourites
+                  %b.caret
+                %ul.dropdown-menu
+                  - has_specialists = current_user.favorite_specialists.present?
+                  - has_clinics = current_user.favorite_clinics.present?
+                  - if has_specialists
+                    %li.nav-header Specialists
+                    - current_user.favorite_specialists.each do |s|
+                      %li= link_to s.name, specialist_path(s), :class => 'specialist ajax'
+                  - if has_specialists && has_clinics
+                    %li.divider
+                  - if has_clinics
+                    %li.nav-header Specialists
+                    - current_user.favorite_clinics.each do |s|
+                      %li= link_to s.name, specialist_path(s), :class => 'specialist ajax'
+                    %li.divider
+                  - if current_user.favorites.blank?
+                    %li
+                      %p
+                        Add specialists, clinics, specialties, or areas of practice to this menu for quick reference by pressing the
+                        %i.icon-text.icon-heart
+                        beside their name.
+                      
+              %li.dropdown
+                %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
                   %i.icon-cog
                   Settings
                   %b.caret

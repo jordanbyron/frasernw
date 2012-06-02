@@ -87,6 +87,13 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
     .nav > li a:hover i[class*=" icon-"] {
       background-image: url("/img/glyphicons-halflings-white.png");
     }
+    
+    .nav .dropdown .dropdown-menu li p
+    {
+      color: $FNW_TEXT;
+      margin: 3px 6px;
+      padding: 0;
+    }
   }
 }
   
