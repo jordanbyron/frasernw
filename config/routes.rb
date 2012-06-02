@@ -54,6 +54,8 @@ Frasernw::Application.routes.draw do
   get  "procedures/:id/:token/refresh_cache"      => 'procedures#refresh_cache',      :as => 'procedure_refesh_cache'
   get  "languages/:id/:token/refresh_cache"       => 'languages#refresh_cache',       :as => 'language_refesh_cache'
   
+  put  "/favorites/specialists/:id" => "favorites#edit", :as => "specialist_favorite", :model => 'specialists'
+  
   #RPW TODO: allow users to edit their own profile
   #match 'user/edit' => 'users#edit', :as => :edit_current_user
   

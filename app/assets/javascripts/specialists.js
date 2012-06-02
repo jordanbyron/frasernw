@@ -180,3 +180,25 @@ var specialist_categorization_changed = function()
 }
 
 $("#specialist_categorization_mask").live("change", specialist_categorization_changed)
+
+function favorite(request_url) {
+  $.ajax({
+    url: request_url,
+    type: "PUT",
+    data: "",
+    dataType: 'json',
+    success: function(data)
+    {
+      if (data)
+      {
+        $('#user_favorite').removeClass('icon-text');
+        $('#user_favorite').addClass('icon-red');
+      }
+      else
+      {
+        $('#user_favorite').removeClass('icon-red');
+        $('#user_favorite').addClass('icon-text');
+      }
+    }
+  });
+}
