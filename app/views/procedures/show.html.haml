@@ -3,7 +3,7 @@
 %h2
   = @procedure.full_name
   
-  %a{"href" => "javascript:void(0)", "onclick" => "favorite('/favorites/procedures/#{@procedure.id}')"}
+  %a{"href" => "javascript:void(0)", "onclick" => "favorite('/favorites/procedures/#{@procedure.id}')", "title" => "Favourite / un-favourite"}
     %i#user_favorite.icon-heart{:class => Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @procedure.id, "Procedure").present? ? "icon-red" : "icon-text" }
   
 - cache(:action => 'show') do
