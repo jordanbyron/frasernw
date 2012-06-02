@@ -142,7 +142,7 @@
                 #specialist_assumed_list
                   %strong 1. 
                   Areas of practice we assume all #{@specialization.member_name.uncapitalize_first_letter.pluralize} see:
-                  = @specialization.procedure_specializations.assumed.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
+                  = @specialization.procedure_specializations.assumed.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
                         
                 #other_specialists.filter-others
                         
