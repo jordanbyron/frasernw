@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120601041827) do
+ActiveRecord::Schema.define(:version => 20120602001714) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -189,13 +189,14 @@ ActiveRecord::Schema.define(:version => 20120601041827) do
   add_index "edits", ["specialist_id"], :name => "index_edits_on_specialist_id"
 
   create_table "favorites", :force => true do |t|
-    t.integer   "user_id"
-    t.integer   "specialist_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "favoritable_id"
+    t.string   "favoritable_type"
   end
 
-  add_index "favorites", ["specialist_id"], :name => "index_favorites_on_specialist_id"
+  add_index "favorites", ["favoritable_id", "favoritable_type"], :name => "index_favorites_on_favoritable_id_and_favoritable_type"
   add_index "favorites", ["user_id"], :name => "index_favorites_on_user_id"
 
   create_table "feedback_items", :force => true do |t|
