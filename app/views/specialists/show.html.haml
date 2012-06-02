@@ -3,11 +3,11 @@
 - if @is_version
   = render 'versions/info'
   
-  %h2
-    = @specialist.name
-    
-    %a{"href" => "javascript:void(0)", "onclick" => "favorite('/favorites/specialists/#{@specialist.id}')"}
-      %i#user_favorite.icon-heart{:class => Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @specialist.id, "Specialist").present? ? "icon-red" : "icon-text" }
+%h2
+  = @specialist.name
+  
+  %a{"href" => "javascript:void(0)", "onclick" => "favorite('/favorites/specialists/#{@specialist.id}')"}
+    %i#user_favorite.icon-heart{:class => Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @specialist.id, "Specialist").present? ? "icon-red" : "icon-text" }
   
 - cache(:action => 'show') do
     
