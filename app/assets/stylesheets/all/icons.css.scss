@@ -23,6 +23,14 @@ $FNW_ICON_WIDTH: 24px;
   background-image: url(/img/glyphicons-halflings-text.png);
 }
 
+.icon-mid-gray {
+  background-image: url(/img/glyphicons-halflings-mid-gray.png);
+}
+
+.icon-dark-gray {
+  background-image: url(/img/glyphicons-halflings-dark-gray.png);
+}
+
 .specialty:before, 
 .specialist:before, .user:before,
 .address:before, .office:before,
@@ -84,6 +92,11 @@ $FNW_ICON_WIDTH: 24px;
 .dropdown-menu li:hover > a:before
 {
   background-image: url(/img/glyphicons-halflings-white.png);
+}
+
+.dropdown-menu li.nav-header:before
+{
+  background-image: url(/img/glyphicons-halflings-blue.png);
 }
 
 .specialty:before

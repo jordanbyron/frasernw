@@ -106,22 +106,22 @@
                   %b.caret
                 %ul.dropdown-menu
                   - if current_user.favorite_specializations.present?
-                    %li.nav-header Specializations
+                    %li.nav-header.specialty Specializations
                     - current_user.favorite_specializations.each do |s|
                       %li= link_to s.name, specialization_path(s), :class => 'ajax'
                       
                   - if current_user.favorite_procedures.present?
-                    %li.nav-header Areas of Practice
+                    %li.nav-header.procedure Areas of Practice
                     - current_user.favorite_procedures.each do |p|
                       %li= link_to p.name, procedure_path(p), :class => 'ajax'
                       
                   - if current_user.favorite_specialists.present?
-                    %li.nav-header Specialists
+                    %li.nav-header.specialist Specialists
                     - current_user.favorite_specialists.each do |s|
                       %li= link_to s.name, specialist_path(s), :class => 'ajax'
                       
                   - if current_user.favorite_specializations.present?
-                    %li.nav-header Clinics
+                    %li.nav-header.clinic Clinics
                     - current_user.favorite_clinics.each do |c|
                       %li= link_to c.name, clinic_path(c), :class => 'ajax'
                       
