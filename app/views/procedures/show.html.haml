@@ -1,5 +1,11 @@
 - title "Pathways | #{@procedure.full_name}"
   
+%h2
+  = @procedure.full_name
+  
+  %a{"href" => "javascript:void(0)", "onclick" => "favorite('/favorites/procedures/#{@procedure.id}')"}
+    %i#user_favorite.icon-heart{:class => Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @procedure.id, "Procedure").present? ? "icon-red" : "icon-text" }
+  
 - cache(:action => 'show') do
 
   %script{"type" => "text/javascript"}
@@ -65,7 +71,6 @@
             $('.tablesorter').tablesorter({sortList: [[1,0],[2,0]]});
         });
 
-  %h2= "#{@procedure.full_name}"
   %h4= @procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress and !current_user_is_admin? }.collect(){ |ps| "<a href=\"#{specialization_path(ps.specialization)}\" class='#{ ps.specialization.in_progress ? "in-progress ajax" : "ajax"}'>#{ps.specialization.name}</a>" }.to_sentence.html_safe
 
   - has_specialists = @procedure.all_specialists.length > 0

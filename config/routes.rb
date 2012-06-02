@@ -56,6 +56,8 @@ Frasernw::Application.routes.draw do
   
   put  "/favorites/specialists/:id" => "favorites#edit", :as => "specialist_favorite", :model => 'specialists'
   put  "/favorites/clinics/:id" => "favorites#edit", :as => "clinic_favorite", :model => 'clinics'
+  put  "/favorites/specializations/:id" => "favorites#edit", :as => "specialization_favorite", :model => 'specializations'
+  put  "/favorites/procedures/:id" => "favorites#edit", :as => "procedure_favorite", :model => 'procedures'
   
   #RPW TODO: allow users to edit their own profile
   #match 'user/edit' => 'users#edit', :as => :edit_current_user
