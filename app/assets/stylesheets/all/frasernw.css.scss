@@ -600,7 +600,7 @@ body
     }
   }
   
-  .filter-phrase, .assumed-phrase
+  .filter-phrase, .assumed-phrase, .other-phrase
   {
     background-color: $FNW_LIGHT_BLUE;
     padding: 8px;
@@ -610,7 +610,7 @@ body
     font-weight: bold;
   }
   
-  .filter-phrase
+  .filter-phrase, .other-phrase
   {
     display: none;
   }
@@ -624,6 +624,11 @@ body
     {
       color: $FNW_LIGHT_BLUE;
     }
+  }
+  
+  .other-phrase
+  {
+    margin-bottom: 12px;
   }
   
   .row.spaced

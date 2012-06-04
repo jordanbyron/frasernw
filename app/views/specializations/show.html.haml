@@ -12,64 +12,24 @@
     $(document).ready(function() {
     - @specialization.specialists.each do |s|
       - next if not s.show_in_table?
-      - specialist_filter_attributes = []
-      - s.procedure_specializations.each do |ps|
-        - specialist_filter_attributes << "sp#{ps.procedure.id}_"
-        - parent = ps.parent
-        - specialist_filter_attributes << "sp#{parent.procedure.id}_" if (parent && !specialist_filter_attributes.include?("sp#{parent.procedure.id}_"))
-      - if s.lagtime_mask.present?
-        - (s.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
-          - specialist_filter_attributes << "sc#{i}_"
-      - specialist_filter_attributes << "srph" if s.referral_phone
-      - specialist_filter_attributes << "srpb" if s.patient_can_book?
-      - specialist_filter_attributes << "ssm" if s.male?
-      - specialist_filter_attributes << "ssf" if s.female?
-      - s.languages.each do |l|
-        - specialist_filter_attributes << "sl#{l.id}_"
-      - s.clinics.each do |c|
-        - specialist_filter_attributes << "sac#{c.id}_"
-      - s.hospitals.each do |h|
-        - specialist_filter_attributes << "sah#{h.id}_"
-      $('#s#{s.id}').data('filter', '#{specialist_filter_attributes.join(' ')}');
-    - other_specialists = []
-    - @specialization.procedures.each do |p|
-      - next if p.specializations.length <= 1
-      - p.specializations.each do |p_s|
-        - next if p_s.id == @specialization.id
-        - other_specialists << p.all_specialists_for_specialization(p_s).map{ |p_s_s| p_s_s.id }
-    $('#other-specialists').data('other-specialists', '#{other_specialists.flatten.uniq.join(' ')}');
+      $('#s#{s.id}').data('filter', '#{specialist_filtering_attributes(s).join(' ')}');
+      
+    - other_specialists = other_specialists(@specialization)
+    - other_specialists.each do |s|
+      - next if not s.show_in_table?
+      $('#specialist_table').data('s#{s.id}', '#{specialist_filtering_attributes(s).join(' ')}');
+      $('#specialist_table').data('s#{s.id}_name', '#{s.name}');
+      $('#specialist_table').data('s#{s.id}_specialties', '#{s.specializations.map{|sp| sp.name}.to_sentence}');
+      $('#specialist_table').data('s#{s.id}_status', '#{s.status_class}');
+      $('#specialist_table').data('s#{s.id}_wait_time', '#{s.waittime}');
+      $('#specialist_table').data('s#{s.id}_city', '#{s.city}');
+    $('#specialist_table').data('filter', '#{other_specialists.map{ |s| s.id }.join(' ')}');
+    
     - @specialization.clinics.each do |c|
       - next if not c.show_in_table?
-      - clinics_filter_attributes = []
-      - c.procedure_specializations.each do |ps|
-        - clinics_filter_attributes << "cp#{ps.procedure.id}_"
-        - parent = ps.parent
-        - clinics_filter_attributes << "cp#{parent.procedure.id}_" if (parent && !clinics_filter_attributes.include?("cp#{parent.procedure.id}_"))
-      - if c.lagtime_mask.present?
-        - (c.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
-          - clinics_filter_attributes << "cc#{i}_"
-      - clinics_filter_attributes << "crph" if c.referral_phone
-      - clinics_filter_attributes << "crpb" if c.patient_can_book?
-      - clinics_filter_attributes << "cdpb" if c.sector_mask == 1 || c.sector_mask == 3
-      - clinics_filter_attributes << "cdpv" if c.sector_mask == 2 || c.sector_mask == 3
-      - clinics_filter_attributes << "cdwa" if c.wheelchair_accessible?
-      - if c.scheduled?
-        - schedule = c.schedule
-        - clinics_filter_attributes << "cshmon" if schedule.monday.scheduled
-        - clinics_filter_attributes << "cshtues" if schedule.tuesday.scheduled
-        - clinics_filter_attributes << "cshwed" if schedule.wednesday.scheduled
-        - clinics_filter_attributes << "cshthurs" if schedule.thursday.scheduled
-        - clinics_filter_attributes << "cshfri" if schedule.friday.scheduled
-        - clinics_filter_attributes << "cshsat" if schedule.saturday.scheduled
-        - clinics_filter_attributes << "cshsun" if schedule.sunday.scheduled
-      - c.healthcare_providers.each do |h|
-        - clinics_filter_attributes << "ch#{h.id}_"
-      - c.languages.each do |l|
-        - clinics_filter_attributes << "cl#{l.id}_"
-      $('#c#{c.id}').data('filter', '#{clinics_filter_attributes.join(' ')}');
+      $('#c#{c.id}').data('filter', '#{clinic_filtering_attributes(c).join(' ')}');
     });
       
-
   %script{"type" => "text/javascript"}
     :plain
       $(document).ready(function() {
@@ -139,12 +99,12 @@
                         %td= specialist.waittime
                         %td= specialist.city
                         
+                #specialist_others.other-phrase
+                        
                 #specialist_assumed_list
                   %strong 1. 
                   Areas of practice we assume all #{@specialization.member_name.uncapitalize_first_letter.pluralize} see:
                   = @specialization.procedure_specializations.assumed.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
-                        
-                #other_specialists.filter-others
                         
               .span3
                 .well.filter

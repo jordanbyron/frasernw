@@ -1,5 +1,44 @@
-var update_table = function(prefix, entity_id, entity_name) {
+function matches_filters( input, filters )
+{
+  if (filters.length == 0)
+  {
+    return true;
+  }
   
+  for (var i = 0; i < filters.length; ++i)
+  {
+    if (input.indexOf(filters[i]) == -1)
+    {
+      return false;
+    }
+  }
+  
+  return true
+}
+
+function show_others( entity_id, ids )
+{
+  var data_table = $('#' + entity_id + '_table');
+  $(ids).each( function() {
+    name = data_table.data('s' + this + '_name');
+    specialties = data_table.data('s' + this + '_specialties');
+    status = data_table.data('s' + this + '_status');
+    wait_time = data_table.data('s' + this + '_wait_time');
+    city = data_table.data('s' + this + '_city');
+    add_row( entity_id, this, '/' + entity_id + 's/' + this, name, status, wait_time, city );
+  });
+  
+  var others = $('#' + entity_id + '_others');
+  others.hide();
+}
+
+function add_row( entity_id, row_id, url, name, status, wait_time, city )
+{
+  $('#' + entity_id + '_table tr:last').after("<tr id='" + row_id + "' class='other'><td><a href=\"" + url + "\" class=\"ajax\">" + name + "</a> (" + specialties + ")</td><td><span class=\"status_" + status + "\">" + status + "</span></td><td>" + wait_time + "</td><td>" + city + "</td></tr>");
+}
+
+var update_table = function(prefix, entity_id, entity_name)
+{  
   var current_filters = new Array();
   var specializations = new Array();
   var procedures = new Array();
@@ -156,37 +195,20 @@ var update_table = function(prefix, entity_id, entity_name) {
   $('#' + entity_id + '_table tbody tr').each(function () {
     var row = $(this)
       , row_filter = row.data('filter');
-    if (current_filters.length == 0)
-    {
-      found = true;                   
-      row.show();
-      return true;
-    }
-    else if (!row_filter)
-    {
-      row.hide();
-      return true;
-    }
-                                       
-    var show = true;
-    for (var i = 0; i < current_filters.length; ++i)
-    {
-      if (row_filter.indexOf(current_filters[i]) == -1)
-      {
-        show = false;
-        break;
-      }
-    }
     
-    if (show)
+    if ( row.hasClass('other') )
     {
-      found = true; 
+      row.remove();
+    }
+    else if ( matches_filters( row_filter, current_filters ) )
+    {
       row.show();
+      found = true;
     }
     else
     {
       row.hide();
-    }  
+    }
   });
   
   var description = found ? 'Showing all ' + sex + ' ' + entity_name : 'There are no ' + sex + ' ' + entity_name;
@@ -238,6 +260,44 @@ var update_table = function(prefix, entity_id, entity_name) {
   current_filters.length == 0 ? phrase.hide() : phrase.show();
   var assumed = $('#' + entity_id + '_assumed');
   current_filters.length != 0 ? assumed.hide() : assumed.show();
+  
+  // handle 'other specialists
+  
+  var others = $('#' + entity_id + '_others');
+   
+  if ( procedures.length >= 1 )
+  {
+    //filter out our entities from other specialities
+    var data_table = $('#' + entity_id + '_table')
+    var other_specialists = data_table.data('filter')
+    if (other_specialists)
+    {
+      var results = []
+      $(other_specialists.split(' ')).each( function() {
+        var specialist_filters = data_table.data('s' + this);
+        if ( matches_filters( specialist_filters, current_filters ) )
+        {
+          results.push( this );
+        }
+      });
+      
+      if (results.length > 0)
+      {
+        others.show();
+        var description = (results.length > 1) ? 'There are ' + results.length + ' specialists in other specialties that match your search.' : 'There is 1 specialist in another specialty that matches your search.';
+        description += " <a href=\"javascript:void(0)\" onclick=\"show_others('" + entity_id + "', [" + results.join(', ') + "])\">Show</a>";
+        others.html(description);
+      }
+      else
+      {
+        others.hide();
+      }
+    }
+  }
+  else
+  {
+    others.hide();
+  }
 }
 
 var clear_filters = function(prefix, entity_id, entity_name) {
