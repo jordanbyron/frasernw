@@ -112,7 +112,7 @@
                 - assumed_specializations = @procedure.procedure_specializations.reject{ |ps| !ps.assumed? }.map{ |ps| ps.specialization }
                 - if assumed_specializations.present?
                   #specialist_assumed.assumed-phrase
-                    It is assumed that #{assumed_specializations.map{ |s| s.member_name.uncapitalize_first_letter.pluralize }.to_sentence} see #{@procedure.name.uncapitalize_first_letter}
+                    It is assumed that all #{assumed_specializations.map{ |s| s.member_name.uncapitalize_first_letter.pluralize }.to_sentence} see #{@procedure.name.uncapitalize_first_letter}
               
                 #specialist_phrase.filter-phrase
               
