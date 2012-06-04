@@ -249,7 +249,7 @@ var update_table = function(prefix, entity_id, entity_name)
   
   if ( fragments.length >= 1 )
   {
-    description += ' which ' + fragments.to_sentence()
+    description += ' who ' + fragments.to_sentence()
   }
   
   description += ". <a href=\"javascript:clear_filters('" + prefix + "','" + entity_id + "','" + entity_name + "')\">Clear all filters</a>."
