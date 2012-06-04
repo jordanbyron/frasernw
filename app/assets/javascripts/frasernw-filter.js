@@ -28,8 +28,15 @@ function show_others( entity_id, ids )
     add_row( entity_id, this, '/' + entity_id + 's/' + this, name, status, wait_time, city );
   });
   
-  var others = $('#' + entity_id + '_others');
-  others.hide();
+  var others = $('#' + entity_id + '_others').hide();
+  var others = $('#' + entity_id + '_hide_others').show();
+}
+
+function hide_others( entity_id )
+{
+  $('#' + entity_id + '_table tbody tr.other').each(function () { $(this).remove() });
+  $('#' + entity_id + '_others').show();
+  $('#' + entity_id + '_hide_others').hide();
 }
 
 function add_row( entity_id, row_id, url, name, status, wait_time, city )
@@ -284,8 +291,8 @@ var update_table = function(prefix, entity_id, entity_name)
       if (results.length > 0)
       {
         others.show();
-        var description = (results.length > 1) ? 'There are ' + results.length + ' specialists in other specialties that match your search.' : 'There is 1 specialist in another specialty that matches your search.';
-        description += " <a href=\"javascript:void(0)\" onclick=\"show_others('" + entity_id + "', [" + results.join(', ') + "])\">Show</a>";
+        var description = (results.length > 1) ? 'There are ' + results.length + ' specialists from other specialties who match your search.' : 'There is 1 specialist from another specialty who matches your search.';
+        description += " <a href=\"javascript:void(0)\" onclick=\"show_others('" + entity_id + "', [" + results.join(', ') + "])\">Show</a> these specialists.";
         others.html(description);
       }
       else
@@ -294,9 +301,16 @@ var update_table = function(prefix, entity_id, entity_name)
       }
     }
   }
-  else
+  else if ( others )
   {
     others.hide();
+  }
+  
+  var hide_others = $('#' + entity_id + '_hide_others');
+  if ( hide_others )
+  {
+    //this always starts hidden
+    hide_others.hide();
   }
 }
 
