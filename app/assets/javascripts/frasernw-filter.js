@@ -207,6 +207,11 @@ var update_table = function(prefix, entity_id, entity_name)
     {
       row.remove();
     }
+    else if ( !row_filter )
+    {
+      //a very blank specialist entry                                        
+      row.hide();
+    }
     else if ( matches_filters( row_filter, current_filters ) )
     {
       row.show();
@@ -214,6 +219,7 @@ var update_table = function(prefix, entity_id, entity_name)
     }
     else
     {
+      //doesn't match
       row.hide();
     }
   });
