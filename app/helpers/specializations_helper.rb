@@ -1,10 +1,17 @@
 module SpecializationsHelper
-  def specialist_filtering_attributes(s)
+  def specialist_filtering_attributes(s, include_assumed)
     filtering_attributes = []
     s.procedure_specializations.each do |ps|
       filtering_attributes << "sp#{ps.procedure.id}_"
       parent = ps.parent
       filtering_attributes << "sp#{parent.procedure.id}_" if (parent && !filtering_attributes.include?("sp#{parent.procedure.id}_"))
+    end
+    if include_assumed
+      s.specializations.each do |specialization|
+        specialization.procedure_specializations.assumed.each do |ps|
+          filtering_attributes << "sp#{ps.procedure.id}_"
+        end
+      end
     end
     if s.lagtime_mask.present?
       (s.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|

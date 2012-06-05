@@ -13,12 +13,12 @@
     $(document).ready(function() {
     - @specialization.specialists.each do |s|
       - next if not s.show_in_table?
-      $('#s#{s.id}').data('filter', '#{specialist_filtering_attributes(s).join(' ')}');
+      $('#s#{s.id}').data('filter', '#{specialist_filtering_attributes(s, false).join(' ')}');
       
     - other_specialists = other_specialists(@specialization)
     - other_specialists.each do |s|
       - next if not s.show_in_table?
-      $('#specialist_table').data('s#{s.id}', '#{specialist_filtering_attributes(s).join(' ')}');
+      $('#specialist_table').data('s#{s.id}', '#{specialist_filtering_attributes(s, true).join(' ')}');
       $('#specialist_table').data('s#{s.id}_name', '#{escape_javascript(s.name)}');
       $('#specialist_table').data('s#{s.id}_specialties', '#{escape_javascript(s.specializations.map{|sp| sp.name}.to_sentence)}');
       $('#specialist_table').data('s#{s.id}_status', '#{escape_javascript(s.status_class)}');

@@ -66,9 +66,14 @@ class Procedure < ActiveRecord::Base
   def all_specialists_for_specialization(specialization)
     #look at this procedure as well as its children to find any specialists
     results = []
-    ProcedureSpecialization.find_by_specialization_id_and_procedure_id(specialization.id, self.id).subtree.each do |child|
-      Capacity.find_all_by_procedure_specialization_id(child.id).each do |capacity|
-        results << capacity.specialist
+    ps = ProcedureSpecialization.find_by_specialization_id_and_procedure_id(specialization.id, self.id)
+    if ps.assumed?
+      results += ps.specialization.specialists
+    else
+      ps.subtree.each do |child|
+        Capacity.find_all_by_procedure_specialization_id(child.id).each do |capacity|
+          results << capacity.specialist
+        end
       end
     end
     results.uniq!
