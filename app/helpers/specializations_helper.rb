@@ -60,6 +60,7 @@ module SpecializationsHelper
     c.languages.each do |l|
       filtering_attributes << "cl#{l.id}_"
     end
+    return filtering_attributes
   end
   
   def other_specialists(specialization)
