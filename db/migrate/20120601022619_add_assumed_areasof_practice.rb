@@ -1,58 +1,58 @@
 class AddAssumedAreasofPractice < ActiveRecord::Migration
   def change
     input = {
-      "Addiction Medicine" => ["alcohol withdrawal", "drug withdrawal", "methadone treatment", "drug counseling"],
+      #"Addiction Medicine" => ["alcohol withdrawal", "drug withdrawal", "methadone treatment", "drug counseling"],
       
-      "Allergy" => ["skin testing", "desensitization"],
+      #"Allergy" => ["skin testing", "desensitization"],
       
-      "Cardiology" => ["arrhythmia", "valvular heart disease", "cardiac stress test", "hypertension", "angina", "congestive heart failure", "coronary heart disease", "chest pain", "hyperlipidemia", "myocardial infarction", "cardiomyopathy", "syncope", "peripheral vascular disease", "atrial fibrillaton", "acute coronary syndrome", "primary prevention", "secondary prevention"],
+      #"Cardiology" => ["arrhythmia", "valvular heart disease", "cardiac stress test", "hypertension", "angina", "congestive heart failure", "coronary heart disease", "chest pain", "hyperlipidemia", "myocardial infarction", "cardiomyopathy", "syncope", "peripheral vascular disease", "atrial fibrillaton", "acute coronary syndrome", "primary prevention", "secondary prevention"],
       
       
-      "Cardiothoracic Surgery" => ["mediastinal mass", "lung cancer", "empyema", "lung abscess", "coronary artery disease", "valvular heart disease", "critical care"],
+      #"Cardiothoracic Surgery" => ["mediastinal mass", "lung cancer", "empyema", "lung abscess", "coronary artery disease", "valvular heart disease", "critical care"],
       
-      "Dermatology" => ["skin ulcer", "rash", "pruritis", "skin allergy atopic dermatitis", "acne", "rosacea", "skin lesion", "psoriasis", "skin cancer", "exzema", "seborrheic dermatitis", "skin infections", "pemphigus", "vesicles", "bullae", "drug rash", "erythema multiforme", "alopecia"],
+      #"Dermatology" => ["skin ulcer", "rash", "pruritis", "skin allergy atopic dermatitis", "acne", "rosacea", "skin lesion", "psoriasis", "skin cancer", "exzema", "seborrheic dermatitis", "skin infections", "pemphigus", "vesicles", "bullae", "drug rash", "erythema multiforme", "alopecia"],
       
-      "Endocrinology" => ["thyroid disease", "hypothyroidism", "hyperthyroidism", "hyperparathyroidism", "adrenal disease", "Addison's disease", "diabetes", "pituitary disease", "pituitary adenoma", "dyslipidemia", "obesity", "Cushing's disease", "hirsuitism", "pheochromocytoma", "hypercalcemia", "osteoporosis", "paget's disease"],
+      #"Endocrinology" => ["thyroid disease", "hypothyroidism", "hyperthyroidism", "hyperparathyroidism", "adrenal disease", "Addison's disease", "diabetes", "pituitary disease", "pituitary adenoma", "dyslipidemia", "obesity", "Cushing's disease", "hirsuitism", "pheochromocytoma", "hypercalcemia", "osteoporosis", "paget's disease"],
       
-      "ENT (Otolaryngology)" => ["hoarseness", "hearing loss", "tinnitus", "perforated ear drum", "serous otitis", "chronic otitis", "mastoiditis", "sinusitis", "rhinitis", "mouth lesions", "salivary gland disease", " sialadenitis", "ENT cancers", "nasal obstruction"],
+      #"ENT (Otolaryngology)" => ["hoarseness", "hearing loss", "tinnitus", "perforated ear drum", "serous otitis", "chronic otitis", "mastoiditis", "sinusitis", "rhinitis", "mouth lesions", "salivary gland disease", " sialadenitis", "ENT cancers", "nasal obstruction"],
       
-      "Gastroenterology" => ["GI bleed", "peptic ulcer disease", "functional dyspepsia", "colitis", "Irritable bowel syndrome", "Crohn's disease", " ulcerative colitis", "abdominal pain", "constipation", "diarrhea", "jaundice", "esophagitis", "GERD", "celiac disease", "malabsorption", "pancreatitis", "gastrointestinal cancers", "sigmiodoscopies", "hepatitis"],
+      #"Gastroenterology" => ["GI bleed", "peptic ulcer disease", "functional dyspepsia", "colitis", "Irritable bowel syndrome", "Crohn's disease", " ulcerative colitis", "abdominal pain", "constipation", "diarrhea", "jaundice", "esophagitis", "GERD", "celiac disease", "malabsorption", "pancreatitis", "gastrointestinal cancers", "sigmiodoscopies", "hepatitis"],
       
-      "General Surgery" => ["acute abdomen", "bowel obstruction", "bowel cancer", "colon cancer", "pilonidal sinus", "ileostomy", "colostomy", "cholecystitis", "cholelithiasis", "biliary cholic", "obstructive jaundice", "breast cancer", "breast lump"],
+      #"General Surgery" => ["acute abdomen", "bowel obstruction", "bowel cancer", "colon cancer", "pilonidal sinus", "ileostomy", "colostomy", "cholecystitis", "cholelithiasis", "biliary cholic", "obstructive jaundice", "breast cancer", "breast lump"],
       
-      "Geriatrics" => ["frailty", "falls", "delirium", "caregiver stress", "abuse", "dementia", "neurodegenerative disease", "musculoskeletal ", "failure to thrive", "weight loss", "polypharmacy", "depression", "anxiety", "urinary incontinence"],
+      #"Geriatrics" => ["frailty", "falls", "delirium", "caregiver stress", "abuse", "dementia", "neurodegenerative disease", "musculoskeletal ", "failure to thrive", "weight loss", "polypharmacy", "depression", "anxiety", "urinary incontinence"],
       
-      "Hematology/Oncology" => ["anemia", "polycythemia", "hemoglobinopathy", "hemolytic anemia", "hemochromotosis", "coagulopathy"],
+      #"Hematology/Oncology" => ["anemia", "polycythemia", "hemoglobinopathy", "hemolytic anemia", "hemochromotosis", "coagulopathy"],
       
-      "Infectious Disease" => ["septicemia", "tuberculosis", "herpes infections", "endocarditis", "chronic infections", "cellulites", "meningitis", "HIV", "fever of unknown origin", "hepatitis"],
+      #"Infectious Disease" => ["septicemia", "tuberculosis", "herpes infections", "endocarditis", "chronic infections", "cellulites", "meningitis", "HIV", "fever of unknown origin", "hepatitis"],
       
-      "Internal Medicine" => ["could include most items under cardiology", "endocrinology", "gastroenterology", "geriatrics", "nephrology", "respirology with the exception of cardiac stress test", "bronchoscopy", "renal dialysis", "colonoscopy and gastroscopy", "and including abdominal cancers", "neurology", "rheumatology", "pre-op assessments"],
+      #"Internal Medicine" => ["could include most items under cardiology", "endocrinology", "gastroenterology", "geriatrics", "nephrology", "respirology with the exception of cardiac stress test", "bronchoscopy", "renal dialysis", "colonoscopy and gastroscopy", "and including abdominal cancers", "neurology", "rheumatology", "pre-op assessments"],
       
-      "Nephrology" => ["renal dialysis", "renal failure", "kidney cancers", "proteiinuria", "hematuria", "glomerulonephritis", "nephropathy", "renal cystic disease"],
+      #"Nephrology" => ["renal dialysis", "renal failure", "kidney cancers", "proteiinuria", "hematuria", "glomerulonephritis", "nephropathy", "renal cystic disease"],
       
-      "Neurology" => ["concussion", "headache", "seizure", "dementia", "neuropathy", "coma", "ataxia", "peripheral neuropathy", "myasthenia gravis", "myositis", "stroke", "TIA", "meningitis", "encephalitis", "epilepsy", "neuromuscular disease", "trigeminal neuralgia", "diplopia", "spasticity", "spinal cord disease", "vertigo", "visual field defect"],
+      #"Neurology" => ["concussion", "headache", "seizure", "dementia", "neuropathy", "coma", "ataxia", "peripheral neuropathy", "myasthenia gravis", "myositis", "stroke", "TIA", "meningitis", "encephalitis", "epilepsy", "neuromuscular disease", "trigeminal neuralgia", "diplopia", "spasticity", "spinal cord disease", "vertigo", "visual field defect"],
       
-      "Obstetrics Gynecology" => ["caesarian section", "gestational diabetes", "antenatal hemorrhage", "abnormal labour", "retained placenta", "vaginal discharge", "vaginitis", "vaginismus", "prolapse", "cystocele", "enterocele", "amenorrhea", "polycystic ovarian syndrome", " menorrhagia", "dysmenorrhea", "pelvic mass", "menopause", "and cancer of uterus", "ovary", "cervix", "vagina", "vulva"],
+      #"Obstetrics Gynecology" => ["caesarian section", "gestational diabetes", "antenatal hemorrhage", "abnormal labour", "retained placenta", "vaginal discharge", "vaginitis", "vaginismus", "prolapse", "cystocele", "enterocele", "amenorrhea", "polycystic ovarian syndrome", " menorrhagia", "dysmenorrhea", "pelvic mass", "menopause", "and cancer of uterus", "ovary", "cervix", "vagina", "vulva"],
       
-      "Ophthalmology" => ["cataracts", "visual loss", "retinal disease", "conjunctivitis", "iritis", "corneal ulcers", "glaucoma", "blepharitis", "ptosis", "blepharitis", "pterygium", "scleritis", "corneal abrasion", "macular degeneration"],
+      #"Ophthalmology" => ["cataracts", "visual loss", "retinal disease", "conjunctivitis", "iritis", "corneal ulcers", "glaucoma", "blepharitis", "ptosis", "blepharitis", "pterygium", "scleritis", "corneal abrasion", "macular degeneration"],
       
-      "Orthopedics" => ["fracture", "dislocation", "ligament injury", "tendonitis", "tendon injury", "septic arthritis", "joint pain", "bone cancer", "soft tissue injuries", "overuse syndromes"],
+      #"Orthopedics" => ["fracture", "dislocation", "ligament injury", "tendonitis", "tendon injury", "septic arthritis", "joint pain", "bone cancer", "soft tissue injuries", "overuse syndromes"],
       
-      "Pediatrics" => ["prematurity", "failure to thrive", "infant feeding problems", "congenital disease", "genetic disease", "  child abuse", "adolescent medicine", "eneuresis", "encopresis", "language delay", "developmental delay", "children's asthma", "weight loss", "chronic diarrhea", "recurrent vomiting", "rash", "endocrine"],
+      #"Pediatrics" => ["prematurity", "failure to thrive", "infant feeding problems", "congenital disease", "genetic disease", "  child abuse", "adolescent medicine", "eneuresis", "encopresis", "language delay", "developmental delay", "children's asthma", "weight loss", "chronic diarrhea", "recurrent vomiting", "rash", "endocrine"],
       
-      "Plastic Surgery" => ["skin cancer", "scar revision", "burns", "facial fractures", "cleft lip", "cleft palate"],
+      #"Plastic Surgery" => ["skin cancer", "scar revision", "burns", "facial fractures", "cleft lip", "cleft palate"],
       
-      "Rehabilitation Medicine" => ["stroke", "aphasia", "post-MVA", "disability"],
+      #"Rehabilitation Medicine" => ["stroke", "aphasia", "post-MVA", "disability"],
       
-      "Respirology" => ["shortness of breath", "cough", "asthma", "COPD", "cystic fibrosis", "interstitial lung disease", "pulmonary vascular disease", "lung infections", "lung abscess", "respiratory failure", "lung cancer", "bronchoscopy", "pulmonary embolism", "pleurisy", "pleural effusion", "hemoptysis", "tuberculosis", "pheumothorax", "respiratory problems in neuromuscular disease"],
+      #"Respirology" => ["shortness of breath", "cough", "asthma", "COPD", "cystic fibrosis", "interstitial lung disease", "pulmonary vascular disease", "lung infections", "lung abscess", "respiratory failure", "lung cancer", "bronchoscopy", "pulmonary embolism", "pleurisy", "pleural effusion", "hemoptysis", "tuberculosis", "pheumothorax", "respiratory problems in neuromuscular disease"],
       
-      "Rheumatology" => ["connective tissue disease", "rheumatoid arthritis", "vasculitis", "osteoarthritis", "gout", "pseudogout", "inflammatory arthritis", "septic arthritis", "soft tissue inflammation", "musculoskeletal pain", "fibromyalgia", "polymyalgia rheumatica"],
+      #"Rheumatology" => ["connective tissue disease", "rheumatoid arthritis", "vasculitis", "osteoarthritis", "gout", "pseudogout", "inflammatory arthritis", "septic arthritis", "soft tissue inflammation", "musculoskeletal pain", "fibromyalgia", "polymyalgia rheumatica"],
       
-      "Sports Medicine" => ["soft tissue injuries", "repetitive strain", "tendonitis"],
+      #"Sports Medicine" => ["soft tissue injuries", "repetitive strain", "tendonitis"],
       
-      "Urology" => ["cystoscopy", "urological cancer", "bladder cancer", "prostate cancer", "hematuria", "renal colic", "recurrent urinary tract infections", "prostatitis", "epididymitis", "interstitial cystitis", "hydronephrosis", "erectile dysfunction testicular torsion", "spermatocele", "varicocele", "urethral syndrome", "infertility"],
+      #"Urology" => ["cystoscopy", "urological cancer", "bladder cancer", "prostate cancer", "hematuria", "renal colic", "recurrent urinary tract infections", "prostatitis", "epididymitis", "interstitial cystitis", "hydronephrosis", "erectile dysfunction testicular torsion", "spermatocele", "varicocele", "urethral syndrome", "infertility"],
       
-      "Vascular Surgery" => ["claudication", "vascular insufficiency", "diabetic vascular disease", "peripheral vascular disease", "aortic aneurysm"]
+      #"Vascular Surgery" => ["claudication", "vascular insufficiency", "diabetic vascular disease", "peripheral vascular disease", "aortic aneurysm"]
     }
     
     input.each do |specialization_name, procedure_names|
