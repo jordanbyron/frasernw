@@ -288,7 +288,7 @@ var update_table = function(prefix, entity_id, entity_name)
       var results = []
       $(other_specialists.split(' ')).each( function() {
         var specialist_filters = data_table.data('s' + this);
-        if ( matches_filters( specialist_filters, current_filters ) )
+        if ( specialist_filters && matches_filters( specialist_filters, current_filters ) )
         {
           results.push( this );
         }
