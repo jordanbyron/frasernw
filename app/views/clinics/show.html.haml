@@ -7,7 +7,8 @@
   = @clinic.name
   
   %a{"href" => "javascript:void(0)", "onclick" => "favorite('/favorites/clinics/#{@clinic.id}')", "title" => "Favourite / un-favourite"}
-    %i#user_favorite.icon-heart{:class => Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @clinic.id, "Clinic").present? ? "icon-red" : "icon-text" }
+    - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @clinic.id, "Clinics").present? ? "icon-red" : "icon-text") : "icon-text"
+    %i#user_favorite.icon-heart{:class => favorite_class }
   
 - cache(:action => 'show') do
     
