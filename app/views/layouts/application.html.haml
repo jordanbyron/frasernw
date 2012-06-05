@@ -120,7 +120,7 @@
                     - current_user.favorite_specialists.each do |s|
                       %li= link_to s.name, specialist_path(s), :class => 'ajax'
                       
-                  - if current_user.favorite_specializations.present?
+                  - if current_user.favorite_clinics.present?
                     %li.nav-header.clinic Clinics
                     - current_user.favorite_clinics.each do |c|
                       %li= link_to c.name, clinic_path(c), :class => 'ajax'
