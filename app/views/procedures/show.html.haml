@@ -61,8 +61,8 @@
     %script{"type" => "text/javascript"}
       :plain
         $(document).ready(function() {
-          //sort by speciality, status then wait time
-            $('.tablesorter').tablesorter({sortList: [[2,0],[1,0],[3,0]]});
+          //sort by status, wait time, then specialty
+            $('.tablesorter').tablesorter({sortList: [[2,0],[3,0],[1,0]]});
         });
   - else
     %script{"type" => "text/javascript"}
