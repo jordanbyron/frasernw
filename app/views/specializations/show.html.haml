@@ -107,9 +107,10 @@
                         %td= specialist.city
                         
                 #specialist_assumed_list
-                  %strong 1. 
-                  Areas of practice we assume all #{@specialization.member_name.uncapitalize_first_letter.pluralize} see:
-                  = @specialization.procedure_specializations.assumed.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
+                  - if @specialization.procedure_specializations.assumed.present?
+                    %strong 1. 
+                    Areas of practice we assume all #{@specialization.member_name.uncapitalize_first_letter.pluralize} see:
+                    = @specialization.procedure_specializations.assumed.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
                         
               .span3
                 .well.filter
@@ -118,8 +119,9 @@
                   .filter-group
                     .filter-group-title
                       Areas of Practice
-                      %sup
-                        %a{"href" => "#specialist_assumed"} [1]
+                      - if @specialization.procedure_specializations.assumed.present?
+                        %sup
+                          %a{"href" => "#specialist_assumed_list"} [1]
                     #filter-group-content-focused.filter-group-content
                       - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
                         - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
