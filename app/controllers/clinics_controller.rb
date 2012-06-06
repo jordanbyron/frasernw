@@ -50,10 +50,12 @@ class ClinicsController < ApplicationController
   def create
     @clinic = Clinic.new(params[:clinic])
     if @clinic.save
-      params[:focuses_mapped].each do |updated_focus, value|
-        focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
-        focus.investigation = params[:focuses_investigations][updated_focus]
-        focus.save
+      if params[:focuses_mapped].present?
+        params[:focuses_mapped].each do |updated_focus, value|
+          focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
+          focus.investigation = params[:focuses_investigations][updated_focus]
+          focus.save
+        end
       end
       redirect_to clinic_path(@clinic), :notice => "Successfully created #{@clinic.name}."
     else
@@ -110,10 +112,12 @@ class ClinicsController < ApplicationController
       @clinic.focuses.each do |original_focus|
         Focus.destroy(original_focus.id) if params[:focuses_mapped][original_focus].blank?
       end
-      params[:focuses_mapped].each do |updated_focus, value|
-        focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
-        focus.investigation = params[:focuses_investigations][updated_focus]
-        focus.save
+      if params[:focuses_mapped].present?
+        params[:focuses_mapped].each do |updated_focus, value|
+          focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
+          focus.investigation = params[:focuses_investigations][updated_focus]
+          focus.save
+        end
       end
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else
