@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
   # has_many :clinics,     :through => :favorites
   validates_presence_of :name
   
-  default_scope order('name')
+  default_scope order('users.name')
 
   def deliver_password_reset_instructions!  
     reset_perishable_token!  

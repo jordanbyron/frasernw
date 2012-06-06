@@ -11,7 +11,7 @@ class Specialization < ActiveRecord::Base
   has_many :procedure_specializations, :dependent => :destroy, :conditions => { "procedure_specializations.mapped" => true }
   has_many :procedures, :through => :procedure_specializations, :order => 'name ASC'
   
-  default_scope order('name')
+  default_scope order('specializations.name')
   
   def procedure_specializations_arranged
     return procedure_specializations.arrange(:joins => "JOIN procedures ON procedure_specializations.procedure_id = procedures.id", :conditions => "procedure_specializations.specialization_id = #{self.id} AND procedure_specializations.mapped = 't'", :order => "procedures.name")

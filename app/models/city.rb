@@ -6,7 +6,7 @@ class City < ActiveRecord::Base
   has_many :addresses
   has_many :locations, :through => :addresses
   
-  default_scope order('name')
+  default_scope order('cities.name')
   
   validates_presence_of :name, :on => :create, :message => "can't be blank"
   

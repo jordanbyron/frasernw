@@ -70,7 +70,7 @@ class Specialist < ActiveRecord::Base
   #clinic that referrals are done through
   belongs_to :referral_clinic, :class_name => "Clinic"
 
-  default_scope order('lastname, firstname')
+  default_scope order('specialists.lastname, specialists.firstname')
   
   CATEGORIZATION_HASH = {
     1 => "Responded to survey",
