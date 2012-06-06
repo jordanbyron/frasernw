@@ -107,17 +107,20 @@ class Specialist < ActiveRecord::Base
   STATUS_HASH = { 
     1 => "Accepting new patients", 
     2 => "Only doing follow up on previous patients", 
-    4 => "Retired",
+    4 => "Retired as of",
     5 => "Retiring as of",
     6 => "Unavailable between",
+    8 => "Indefinitely unavailable",
     7 => "Didn't answer"
   }
   
   def status
-    if status_mask == 5
+    if status_mask == 4 
+      "Retired"
+    elsif status_mask == 5
       if unavailable_from <= Date.today
         #retiring as of date has passed, retired
-        Specialist::STATUS_HASH[4]
+        "Retired"
       else
         "Retiring as of #{unavailable_from.to_s(:long_ordinal)}"
       end
@@ -141,8 +144,8 @@ class Specialist < ActiveRecord::Base
     elsif ((status_mask == 1) || ((status_mask == 6) && (unavailable_to < Date.today)))
       #marked as available, or the "unavailable between" period has passed
       return "available"
-    elsif ((status_mask == 2) || (status_mask == 4) || ((status_mask == 5) && (unavailable_from <= Date.today)) || ((status_mask == 6) && (unavailable_from <= Date.today) && (unavailable_to >= Date.today)) || moved_away?)
-      #only seeing old patients, retired, "retiring as of" date has passed", or in midst of inavailability, or moved away
+    elsif ((status_mask == 2) || (status_mask == 4) || ((status_mask == 5) && (unavailable_from <= Date.today)) || ((status_mask == 6) && (unavailable_from <= Date.today) && (unavailable_to >= Date.today)) || (status_mask == 8) || moved_away?)
+      #only seeing old patients, retired, "retiring as of" date has passed", or in midst of inavailability, indefinitely unavailables, or moved away
       return "unavailable"
     elsif (((status_mask == 5) && (unavailable_from > Date.today)) || ((status_mask == 6) && (unavailable_from > Date.today)))
       return "warning"
