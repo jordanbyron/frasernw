@@ -54,10 +54,12 @@ class SpecialistsController < ApplicationController
     }
     @specialist = Specialist.new(params[:specialist])
     if @specialist.save!
-      params[:capacities_mapped].each do |updated_capacity, value|
-        capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
-        capacity.investigation = params[:capacities_investigations][updated_capacity]
-        capacity.save
+      if params[:capacities_mapped].present?
+        params[:capacities_mapped].each do |updated_capacity, value|
+          capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
+          capacity.investigation = params[:capacities_investigations][updated_capacity]
+          capacity.save
+        end
       end
       redirect_to @specialist, :notice => "Successfully created #{@specialist.name}. #{undo_link}"
     else
@@ -117,10 +119,12 @@ class SpecialistsController < ApplicationController
       @specialist.capacities.each do |original_capacity|
         Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity].blank?
       end
-      params[:capacities_mapped].each do |updated_capacity, value|
-        capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
-        capacity.investigation = params[:capacities_investigations][updated_capacity]
-        capacity.save
+      if params[:capacities_mapped].present?
+        params[:capacities_mapped].each do |updated_capacity, value|
+          capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
+          capacity.investigation = params[:capacities_investigations][updated_capacity]
+          capacity.save
+        end
       end
       redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
     else
