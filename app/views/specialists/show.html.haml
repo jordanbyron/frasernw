@@ -51,6 +51,11 @@
     - else
       %p.space.no_indent This specialist only works out of hospitals and clinics, but we do not yet have data on which ones.
       
+    - if @specialist.hospital_clinic_details.present?
+      %p.space.no_indent
+        %strong Details:
+        = @specialist.hospital_clinic_details
+      
     - if hospitals
       %p.space.no_indent
         %strong Hospital privileges:

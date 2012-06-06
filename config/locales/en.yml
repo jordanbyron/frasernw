@@ -97,6 +97,7 @@ en:
         contact_notes: "Notes"
         goes_by_name: "Goes by"
         hospitals: "Hospital privileges"
+        hospital_clinic_details: "Additional details"
         status_mask: "Current status"
         status_details: "Additional details (if any)"
         practise_limitations: "Other practice limitations (if any)"

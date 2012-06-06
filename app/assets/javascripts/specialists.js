@@ -161,6 +161,7 @@ var specialist_categorization_changed = function()
     $("#section_aop").show();
     $("#section_referrals").show();
     $("#section_for_patients").show();
+    $("#section_hospital_clinic_details").hide()
     $("#section_associations").show();
     $("#section_admin").show();
   }
@@ -174,6 +175,7 @@ var specialist_categorization_changed = function()
     $("#section_aop").hide();
     $("#section_referrals").hide();
     $("#section_for_patients").hide();
+    $("#section_hospital_clinic_details").show()
     $("#section_associations").show();
     $("#section_admin").show();
   }
