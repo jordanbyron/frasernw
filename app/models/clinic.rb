@@ -15,8 +15,8 @@ class Clinic < ActiveRecord::Base
   #clinics can have locations that are within them
   has_many :locations_in, :foreign_key => :clinic_in_id, :class_name => "Location"
   has_many :direct_offices_in, :through => :locations_in, :source => :locatable, :source_type => "Office"
-  has_many :specialists_in, :through => :direct_offices_in, :source => :specialists, :class_name => "Specialist", :uniq => true  
-  has_many :specializations_in, :through => :specialists_in, :source => :specializations, :class_name => "Specialization", :uniq => true
+  has_many :specialists_in, :through => :direct_offices_in, :source => :specialists, :class_name => "Specialist", :uniq => true
+  has_many :specializations_in, :through => :specialists_in, :source => :specializations, :class_name => "Specialization", :uniq => true, :select => "DISTINCT specializations.*, specialists.firstname, specialists.lastname"
   has_many :procedures_in, :through => :specialists_in, :source => :procedures, :class_name => "Procedure", :uniq => true
   
   #clinics have a schedule
