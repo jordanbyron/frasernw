@@ -17,7 +17,7 @@ class Clinic < ActiveRecord::Base
   has_many :direct_offices_in, :through => :locations_in, :source => :locatable, :source_type => "Office"
   has_many :specialists_in, :through => :direct_offices_in, :source => :specialists, :class_name => "Specialist", :uniq => true
   has_many :specializations_in, :through => :specialists_in, :source => :specializations, :class_name => "Specialization", :uniq => true, :select => "DISTINCT specializations.*, specialists.firstname, specialists.lastname"
-  has_many :procedures_in, :through => :specialists_in, :source => :procedures, :class_name => "Procedure", :uniq => true
+  has_many :procedures_in, :through => :specialists_in, :source => :procedures, :class_name => "Procedure", :uniq => true, :select => "DISTINCT procedures.*, specialists.firstname, specialists.lastname"
   
   #clinics have a schedule
   has_one :schedule, :as => :schedulable, :dependent => :destroy
