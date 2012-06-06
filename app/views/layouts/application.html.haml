@@ -44,6 +44,47 @@
                   - Specialization.all.each do |specialization|
                     %li
                       %a.ajax{"href" => specialization_path(specialization), "data-toggle" => "push", :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
+                      
+              %li.dropdown
+                %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                  %i.icon-heart
+                  Favourites
+                  %b.caret
+                %ul.dropdown-menu
+                  - if current_user.favorite_specializations.present?
+                    %li.nav-header.specialty Specializations
+                    - current_user.favorite_specializations.each do |s|
+                      %li= link_to s.name, specialization_path(s), :class => 'ajax'
+                      
+                  - if current_user.favorite_procedures.present?
+                    %li.nav-header.procedure Areas of Practice
+                    - current_user.favorite_procedures.each do |p|
+                      %li= link_to p.name, procedure_path(p), :class => 'ajax'
+                      
+                  - if current_user.favorite_specialists.present?
+                    %li.nav-header.specialist Specialists
+                    - current_user.favorite_specialists.each do |s|
+                      %li= link_to s.name, specialist_path(s), :class => 'ajax'
+                      
+                  - if current_user.favorite_clinics.present?
+                    %li.nav-header.clinic Clinics
+                    - current_user.favorite_clinics.each do |c|
+                      %li= link_to c.name, clinic_path(c), :class => 'ajax'
+                      
+                  - if current_user.favorites.blank?
+                    %li
+                      %p
+                        Add specialists, clinics, specialties, or areas of practice to this menu for quick reference by pressing the
+                        %i.icon-text.icon-heart
+                        beside their name.
+                      
+              %li.dropdown
+                %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                  %i.icon-cog
+                  Settings
+                  %b.caret
+                %ul.dropdown-menu
+                  %li= link_to "Change password", change_password_path, :class => 'change_password ajax'
                 
               - if current_user_is_admin?
                 %li.dropdown.admin
@@ -98,47 +139,6 @@
                       %li= link_to "Specialists", specialists_path, :class => "specialist ajax"
                       %li= link_to "Specialties", specializations_path, :class => "specialty ajax"
                       %li= link_to "Users", users_path, :class => "user ajax"
-                      
-              %li.dropdown
-                %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-                  %i.icon-heart
-                  Favourites
-                  %b.caret
-                %ul.dropdown-menu
-                  - if current_user.favorite_specializations.present?
-                    %li.nav-header.specialty Specializations
-                    - current_user.favorite_specializations.each do |s|
-                      %li= link_to s.name, specialization_path(s), :class => 'ajax'
-                      
-                  - if current_user.favorite_procedures.present?
-                    %li.nav-header.procedure Areas of Practice
-                    - current_user.favorite_procedures.each do |p|
-                      %li= link_to p.name, procedure_path(p), :class => 'ajax'
-                      
-                  - if current_user.favorite_specialists.present?
-                    %li.nav-header.specialist Specialists
-                    - current_user.favorite_specialists.each do |s|
-                      %li= link_to s.name, specialist_path(s), :class => 'ajax'
-                      
-                  - if current_user.favorite_clinics.present?
-                    %li.nav-header.clinic Clinics
-                    - current_user.favorite_clinics.each do |c|
-                      %li= link_to c.name, clinic_path(c), :class => 'ajax'
-                      
-                  - if current_user.favorites.blank?
-                    %li
-                      %p
-                        Add specialists, clinics, specialties, or areas of practice to this menu for quick reference by pressing the
-                        %i.icon-text.icon-heart
-                        beside their name.
-                      
-              %li.dropdown
-                %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-                  %i.icon-cog
-                  Settings
-                  %b.caret
-                %ul.dropdown-menu
-                  %li= link_to "Change password", change_password_path, :class => 'change_password ajax'
                       
               %li= link_to "<i class='icon-off'></i> Logout".html_safe, logout_url
             
