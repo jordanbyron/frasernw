@@ -10,9 +10,9 @@ namespace :pathways do
         end
         children.each do |child_ps, grandchildren|
           if child_ps.procedure.specializations.length > 1
-            puts "- #{child_ps.procedure.name} (shared between #{child_ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
-            else
-              puts "- #{child_ps.procedure.name}"
+            puts "-- #{child_ps.procedure.name} (shared between #{child_ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
+          else
+              puts "-- #{child_ps.procedure.name}"
           end
         end
       end
@@ -26,9 +26,9 @@ namespace :pathways do
         end
         children.each do |child_ps, grandchildren|
           if child_ps.procedure.specializations.length > 1
-            puts "- #{child_ps.procedure.name} (shared between #{child_ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
-            else
-              puts "- #{child_ps.procedure.name}"
+            puts "-- #{child_ps.procedure.name} (shared between #{child_ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
+          else
+              puts "-- #{child_ps.procedure.name}"
           end
         end
       end
@@ -42,9 +42,9 @@ namespace :pathways do
         end
         children.each do |child_ps, grandchildren|
           if child_ps.procedure.specializations.length > 1
-            puts "- #{child_ps.procedure.name} (shared between #{child_ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
-            else
-              puts "- #{child_ps.procedure.name}"
+            puts "-- #{child_ps.procedure.name} (shared between #{child_ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
+          else
+              puts "-- #{child_ps.procedure.name}"
           end
         end
       end
