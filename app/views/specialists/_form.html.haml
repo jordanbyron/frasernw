@@ -333,6 +333,7 @@
     = f.input :practise_limitations
     = f.input :location_opened, as: :select, collection: ["Prior to 2010", 2010, 2011, 2012], prompt: "Select ..."
     = f.association :languages, as: :check_boxes, :item_wrapper_class => 'inline'
+    = f.input :interpreter_available
   
   #section_aop
   

@@ -33,7 +33,7 @@
         = @clinic.limitations.end_with_period
     
     - address = @clinic.resolved_address
-    - if @clinic.sector? || (@clinic.location.present? && @clinic.location.in_hospital?) || (address.present? && !address.empty?) || @clinic.wheelchair_accessible? || @clinic.phone_and_fax.present? || @clinic.scheduled? || @clinic.location_opened.present? || @clinic.languages.present?
+    - if @clinic.sector? || (@clinic.location.present? && @clinic.location.in_hospital?) || (address.present? && !address.empty?) || @clinic.wheelchair_accessible? || @clinic.phone_and_fax.present? || @clinic.scheduled? || @clinic.location_opened.present? || @clinic.languages.present? || @clinic.interpreter_available
       
       %h6.address Clinic Information
       
@@ -62,6 +62,10 @@
         %p.space
           = @clinic.languages.map{ |x| "<a class='ajax' href='#{language_path(x)}'>#{x.name}</a>" }.to_sentence.html_safe
           = "#{@clinic.languages.count == 1 ? 'is' : 'are' } spoken at this clinic."
+      
+      - if @clinic.interpreter_available
+        %p.space
+          Interpreter available upon request.
     
     - specialization_procedures, specialization_count, specialization_has_investigations = compressed_procedures_indented(@clinic, ProcedureSpecialization::CLASSIFICATION_FOCUSED)
     - custom_procedures, custom_count, custom_has_investigations = compressed_procedures_indented(@clinic, ProcedureSpecialization::CLASSIFICATION_NONFOCUSED)
