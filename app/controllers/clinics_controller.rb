@@ -109,10 +109,10 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.find(params[:id])
     ClinicSweeper.instance.before_controller_update(@clinic)
     if @clinic.update_attributes(params[:clinic])
-      @clinic.focuses.each do |original_focus|
-        Focus.destroy(original_focus.id) if params[:focuses_mapped][original_focus].blank?
-      end
       if params[:focuses_mapped].present?
+        @clinic.focuses.each do |original_focus|
+          Focus.destroy(original_focus.id) if params[:focuses_mapped][original_focus].blank?
+        end
         params[:focuses_mapped].each do |updated_focus, value|
           focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
           focus.investigation = params[:focuses_investigations][updated_focus]

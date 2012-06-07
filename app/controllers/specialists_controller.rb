@@ -116,10 +116,10 @@ class SpecialistsController < ApplicationController
     @specialist = Specialist.find(params[:id])
     SpecialistSweeper.instance.before_controller_update(@specialist)
     if @specialist.update_attributes(params[:specialist])
-      @specialist.capacities.each do |original_capacity|
-        Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity].blank?
-      end
       if params[:capacities_mapped].present?
+        @specialist.capacities.each do |original_capacity|
+          Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity].blank?
+        end
         params[:capacities_mapped].each do |updated_capacity, value|
           capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
           capacity.investigation = params[:capacities_investigations][updated_capacity]
