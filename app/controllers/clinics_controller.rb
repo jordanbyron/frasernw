@@ -137,7 +137,7 @@ class ClinicsController < ApplicationController
     @entity = Clinic.find(params[:id])
     @entity.referral_forms.build if @entity.referral_forms.length == 0
     @entity_type = "clinic"
-    render :template => 'referral_form/edit', :layout => 'ajax' if request.headers['X-PJAX']
+    render :template => 'referral_form/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
   end
   
   def review
@@ -183,7 +183,7 @@ class ClinicsController < ApplicationController
           end
         }
       }
-      render :template => 'clinics/edit', :layout => 'ajax' if request.headers['X-PJAX']
+      render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
   
