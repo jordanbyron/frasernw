@@ -1,16 +1,5 @@
 @import "_globals";
 
-/* FIXING ICON PATHING */
-
-[class^="icon-"],
-[class*=" icon-"] {
-  background-image: url("/img/glyphicons-halflings.png");
-}
-
-.icon-white {
-  background-image: url("/img/glyphicons-halflings-white.png");
-}
-
 /* ADDING NEW SPANS */
 
 .spanhalf {
@@ -80,12 +69,12 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
     
     .nav > li a i[class^="icon-"],
     .nav > li a i[class*=" icon-"] {
-      background-image: url("/img/glyphicons-halflings-dark-gray.png");
+      color: $FNW_DARK_GRAY;
     }
     
     .nav > li a:hover i[class^="icon-"],
     .nav > li a:hover i[class*=" icon-"] {
-      background-image: url("/img/glyphicons-halflings-white.png");
+      color: #FFF;
     }
   }
 }
@@ -363,11 +352,6 @@ ul.dropdown-menu
         border-color: $FNW_DARK_GRAY;
         color: $FNW_RED;
         cursor: pointer;
-        
-        i.icon-blue
-        {
-          background-image: url(/img/glyphicons-halflings-red.png);
-        }
       }
     }
   }

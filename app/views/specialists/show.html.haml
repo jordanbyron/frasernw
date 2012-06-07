@@ -69,7 +69,7 @@
   - else
 
     %p.space.no_indent
-      %strong{ :class => "status_#{@specialist.status_class}"}= @specialist.status.end_with_period
+      %strong.status{ :class => "status_#{@specialist.status_class}"}= @specialist.status.end_with_period
     - if @specialist.status_details.present?
       %p
         %strong Details:
@@ -105,7 +105,7 @@
               = "(#{specialist_office.sector})" if specialist_office.sector?
               - if num_specialists > 1
                 with
-                %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "#", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other specialist')}"
+                %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other specialist')}"
             %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
             %p= location.in_details if location.in_details.present?
           - elsif address.present?
@@ -114,7 +114,7 @@
               = "(#{specialist_office.sector})" if specialist_office.sector?
               - if num_specialists > 1
                 with
-                %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "#", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other specialist')}"
+                %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "rel" => "tooltip", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| s.id == @specialist.id}.map{|s| "<li>#{link_to s.name, specialist_path(s), :class => 'ajax'}"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other specialist')}"
         %p= specialist_office.phone_and_fax if specialist_office.phone_and_fax.present?
         - if specialist_office.direct_info.present?
           %p
@@ -259,8 +259,7 @@
       %a.btn{"href" => specialist_patient_information_path(@specialist), "target" => "_blank"}
         %i.icon-print.icon-text
         Print Information for Patient
-      %a.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
-        %i.icon-exclamation-sign.icon-text
+      %a.feedback.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
         Incorrect Information? Let us know
         
     #feedback

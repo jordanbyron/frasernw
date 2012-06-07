@@ -442,14 +442,16 @@ body
       th.headerSortDown:after,
       th:after
       {
+        font-family: FontAwesome;
+        font-weight: normal;
+        font-style: normal;
+        font-size: 15px;
         display: inline-block;
-        margin-left: 10px;
-        width: 14px;
-        height: 14px;
-        background-position: 14px 14px;
-        background-repeat: no-repeat;
-        background-image: url(/img/glyphicons-halflings-blue.png);
+        text-decoration: inherit;
+        width: 18px;
+        margin-left: 6px;
         content: "\0000a0";
+        color: $FNW_BLUE;
       }
       
       th:hover
@@ -459,12 +461,12 @@ body
       
       th.headerSortUp:after
       {
-        background-position: -289px -96px;       
+        content: "\f062";       
       }
       
       th.headerSortDown:after 
       {
-        background-position: -312px -96px;
+        content: "\f063";
       }
       
       th.headerSortUp + th.headerSortUp:after, 
@@ -472,7 +474,7 @@ body
       th.headerSortUp + th.headSortDown:after, 
       th.headerSortDown + th.headerSortUp:after
       {
-        background-position: 14px 14px;
+        content: "\0000a0";
       } 
     }
   }

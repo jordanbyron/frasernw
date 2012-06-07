@@ -52,14 +52,10 @@
     %ul#content_tabs.nav.nav-tabs
       - if has_specialists
         %li{:class => specialist_tab_class} 
-          %a{"href" => "#specialist_tab", "data-toggle" => "tab"} 
-            %i.icon-user.icon-blue
-            Specialists
+          %a.specialist{"href" => "#specialist_tab", "data-toggle" => "tab"} Specialists
       - if has_clinics
         %li{:class => clinic_tab_class}
-          %a{"href" => "#clinic_tab", "data-toggle" => "tab"}
-            %i.icon-home.icon-blue
-            Clinics
+          %a.clinic{"href" => "#clinic_tab", "data-toggle" => "tab"} Clinics
       - if true
         %li
           %a.calculators{"href" => "#calculator_tab", "data-toggle" => "tab"} Calculators
