@@ -15,9 +15,9 @@ Array.prototype.to_sentence = function() {
   return this.join(", ").replace(/,\s([^,]+)$/, ' and $1')
 }
 
-function favorite(request_url) {
+function favorite(type, id, name) {
   $.ajax({
-    url: request_url,
+    url: '/favorites/' + type + '/' + id,
     type: "PUT",
     data: "",
     dataType: 'json',
@@ -26,12 +26,26 @@ function favorite(request_url) {
       if (data)
       {
         $('#user_favorite').removeClass('icon-text');
-        $('#user_favorite').addClass('icon-red');
+        $('#user_favorite').addClass('icon-red');   //make the heart red
+        $('#add_favorites').hide();                 //hide the favorites description
+        $('#' + type + '_favorites').show();        //show the favorites section header if it isn't already
+        $('#' + type + '_favorites').after('<li id=\"' + type + '_' + id + '\"><a class=\"ajax\" href=\"/' + type + '/' + id + '\">' + name + '</a></li>');
       }
       else
       {
         $('#user_favorite').removeClass('icon-red');
         $('#user_favorite').addClass('icon-text');
+        $('#favorites_dropdown li#' + type + '_' + id).remove()
+        if ( $('#favorites_dropdown li[id^=' + type + ']').length == 1 )
+        {
+          //hide the favorites section header if there isn't any other items
+          $('#' + type + '_favorites').hide();        
+        }
+        if ( $('#favorites_dropdown li').length == 5 )
+        {
+          //show the favorites description if only it an the headings are all that's left
+          $('#add_favorites').show();
+        }
       }
     }
   });

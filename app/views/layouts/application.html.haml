@@ -50,33 +50,49 @@
                   %i.icon-heart
                   Favourites
                   %b.caret
-                %ul.dropdown-menu
-                  - if current_user.favorite_specializations.present?
-                    %li.nav-header.specialty Specializations
-                    - current_user.favorite_specializations.each do |s|
-                      %li= link_to s.name, specialization_path(s), :class => 'ajax'
+                %ul#favorites_dropdown.dropdown-menu
+                  %li#specializations_favorites.nav-header.specialty Specializations
+                  - current_user.favorite_specializations.each do |s|
+                    %li{"id" => "specializations_#{s.id}"}= link_to s.name, specialization_path(s), :class => 'ajax'
                       
-                  - if current_user.favorite_procedures.present?
-                    %li.nav-header.procedure Areas of Practice
-                    - current_user.favorite_procedures.each do |p|
-                      %li= link_to p.name, procedure_path(p), :class => 'ajax'
+                  %li#procedures_favorites.nav-header.procedure Areas of Practice
+                  - current_user.favorite_procedures.each do |p|
+                    %li{"id" => "procedures_#{p.id}"}= link_to p.full_name, procedure_path(p), :class => 'ajax'
                       
-                  - if current_user.favorite_specialists.present?
-                    %li.nav-header.specialist Specialists
-                    - current_user.favorite_specialists.each do |s|
-                      %li= link_to s.name, specialist_path(s), :class => 'ajax'
+                  %li#specialists_favorites.nav-header.specialist Specialists
+                  - current_user.favorite_specialists.each do |s|
+                    %li{"id" => "specialists_#{s.id}"}= link_to s.name, specialist_path(s), :class => 'ajax'
                       
-                  - if current_user.favorite_clinics.present?
-                    %li.nav-header.clinic Clinics
-                    - current_user.favorite_clinics.each do |c|
-                      %li= link_to c.name, clinic_path(c), :class => 'ajax'
+                  %li#clinics_favorites.nav-header.clinic Clinics
+                  - current_user.favorite_clinics.each do |c|
+                    %li{"id" => "clinics_#{c.id}"}= link_to c.name, clinic_path(c), :class => 'ajax'
                       
-                  - if current_user.favorites.blank?
-                    %li
-                      %p
-                        Add specialists, clinics, specialties, or areas of practice to this menu for quick reference by pressing the
-                        %i.icon-text.icon-heart
-                        beside their name.
+                  %li#add_favorites
+                    %p
+                      Add specialists, clinics, specialties, or areas of practice to this menu for quick reference by pressing the
+                      %i.icon-text.icon-heart
+                      beside their name.
+                        
+              
+                  -if current_user.favorite_specializations.blank?
+                    :javascript
+                      $(document).ready(function() { $('#specializations_favorites').hide(); });
+                      
+                  -if current_user.favorite_procedures.blank?
+                    :javascript
+                      $(document).ready(function() { $('#procedures_favorites').hide(); });
+                      
+                  -if current_user.favorite_specialists.blank?
+                    :javascript
+                      $(document).ready(function() { $('#specialists_favorites').hide(); });
+                      
+                  -if current_user.favorite_clinics.blank?
+                    :javascript
+                      $(document).ready(function() { $('#clinics_favorites').hide(); });
+                      
+                  -if current_user.favorites.present?
+                    :javascript
+                      $(document).ready(function() { $('#add_favorites').hide(); });
                       
               %li.dropdown
                 %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
