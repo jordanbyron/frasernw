@@ -116,10 +116,10 @@ class SpecialistsController < ApplicationController
     @specialist = Specialist.find(params[:id])
     SpecialistSweeper.instance.before_controller_update(@specialist)
     if @specialist.update_attributes(params[:specialist])
-      @specialist.capacities.each do |original_capacity|
-        Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity].blank?
-      end
       if params[:capacities_mapped].present?
+        @specialist.capacities.each do |original_capacity|
+          Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity].blank?
+        end
         params[:capacities_mapped].each do |updated_capacity, value|
           capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
           capacity.investigation = params[:capacities_investigations][updated_capacity]
@@ -213,7 +213,7 @@ class SpecialistsController < ApplicationController
           end
         }
       }
-      render :template => 'specialists/edit', :layout => 'ajax' if request.headers['X-PJAX']
+      render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
   
@@ -221,7 +221,7 @@ class SpecialistsController < ApplicationController
     @entity = Specialist.find(params[:id])
     @entity.referral_forms.build if @entity.referral_forms.length == 0
     @entity_type = "office"
-    render :template => 'referral_form/edit', :layout => 'ajax' if request.headers['X-PJAX']
+    render :template => 'referral_form/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true 
   end
   
   def print_patient_information
