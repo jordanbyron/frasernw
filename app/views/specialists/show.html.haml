@@ -43,13 +43,17 @@
     - clinics = @specialist.clinics.present?
     
     - if hospitals && clinics
-      %p.space.no_indent This specialist only works out of hospitals and clinics.
+      %p.space.no_indent
+        %strong.status_external This specialist only works out of hospitals and clinics.
     - elsif clinics
-      %p.space.no_indent This specialist only works out of clinics.
+      %p.space.no_indent 
+        %strong.status_external This specialist only works out of clinics.
     - elsif hospitals
-      %p.space.no_indent This specialist only works out of hospitals.
+      %p.space.no_indent 
+        %strong.status_external This specialist only works out of hospitals.
     - else
-      %p.space.no_indent This specialist only works out of hospitals and clinics, but we do not yet have data on which ones.
+      %p.space.no_indent 
+        %strong.status_external This specialist only works out of hospitals and clinics, but we do not yet have data on which ones.
       
     - if @specialist.hospital_clinic_details.present?
       %p.space.no_indent

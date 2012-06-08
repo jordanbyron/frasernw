@@ -46,12 +46,14 @@ $.tablesorter.addParser({
           return 0;
         case("warning"):
           return 1;
-        case("unavailable"):
+        case("external"):
           return 2;
-        case("unknown"):
+        case("unavailable"):
           return 3;
-        default:
+        case("unknown"):
           return 4;
+        default:
+          return 5;
       }
 		}, 
     // set type, either numeric or text 

@@ -356,7 +356,8 @@ body
       .status_available,
       .status_unavailable,
       .status_unknown,
-      .status_warning
+      .status_warning, 
+      .status_external
       {
         visibility: hidden;
       }
@@ -364,7 +365,8 @@ body
       .status_available:before, 
       .status_unavailable:before, 
       .status_unknown:before, 
-      .status_warning:before
+      .status_warning:before, 
+      .status_external:before
       {
         visibility: visible;
         margin-left: 0;

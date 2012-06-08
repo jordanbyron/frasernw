@@ -50,6 +50,7 @@ $FNW_STATUS_INDENT: 40px;
 .status_unavailable:before, 
 .status_unknown:before, 
 .status_warning:before,
+.status_external:before,
 .language:before, 
 .procedure:before,
 .referral:before, 
@@ -94,7 +95,8 @@ $FNW_STATUS_INDENT: 40px;
   .status_available:before, 
   .status_unavailable:before, 
   .status_unknown:before, 
-  .status_warning:before
+  .status_warning:before, 
+  .status_external:before
   {
     margin-left: -($FNW_STATUS_INDENT + 14px)/2;
     margin-right: ($FNW_STATUS_INDENT - 14px)/2;
@@ -236,6 +238,12 @@ $FNW_STATUS_INDENT: 40px;
 {
   color: $FNW_ORANGE;
   content: "\f06a";
+}
+
+.status_external:before
+{
+  color: $FNW_BLUE;
+  content: "\f08b";
 }
 
 .arrow-left-after:after,

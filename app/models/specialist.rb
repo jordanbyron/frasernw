@@ -139,8 +139,10 @@ class Specialist < ActiveRecord::Base
   end
   
   def status_class
-    if not_responded? || hospital_or_clinic_only? || purposely_not_yet_surveyed?
+    if not_responded? || purposely_not_yet_surveyed?
       return "unknown"
+    elsif hospital_or_clinic_only?
+      return "external"
     elsif ((status_mask == 1) || ((status_mask == 6) && (unavailable_to < Date.today)))
       #marked as available, or the "unavailable between" period has passed
       return "available"
