@@ -400,7 +400,7 @@ body
     {
       color: $FNW_DISABLED_TEXT;
       
-      a
+      a, span.status_unknown:before
       {
         color: $FNW_DISABLED_TEXT;
       }
