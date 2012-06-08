@@ -46,7 +46,7 @@ class Procedure < ActiveRecord::Base
       end
     end
     results.uniq!
-    return results.compact if results else []
+    return (results ? results.compact : [])
   end
   
   def all_clinics
@@ -60,7 +60,7 @@ class Procedure < ActiveRecord::Base
       end
     end
     results.uniq!
-    return results.compact if results else []
+    return (results ? results.compact : [])
   end
   
   def all_specialists_for_specialization(specialization)
@@ -77,7 +77,7 @@ class Procedure < ActiveRecord::Base
       end
     end
     results.uniq!
-    return results.compact if results else []
+    return (results ? results.compact : [])
   end
   
   def all_clinics_for_specialization(specialization)
@@ -89,7 +89,7 @@ class Procedure < ActiveRecord::Base
       end
     end
     results.uniq!
-    return results.compact if results else []
+    return (results ? results.compact : [])
   end
   
   def empty?

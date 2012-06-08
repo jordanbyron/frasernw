@@ -369,7 +369,7 @@ class Specialist < ActiveRecord::Base
       result += (ProcedureSpecialization.descendants_of(ps) & self.procedure_specializations)
     end
     result.uniq!
-    return result.compact.collect{ |ps| ps.procedure } if result else []
+    return (result ? result.compact.collect{ |ps| ps.procedure } : [])
   end
 
   def token
