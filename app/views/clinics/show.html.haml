@@ -6,7 +6,7 @@
 %h2
   = @clinic.name
   
-  %a{"href" => "javascript:void(0)", "onclick" => "favorite('clinics',#{@clinic.id},'#{@clinic.name}')", "title" => "Favourite / un-favourite"}
+  %a{"href" => "javascript:void(0)", "onclick" => "favorite('clinics',#{@clinic.id},'#{escape_javascript(@clinic.name)}')", "title" => "Favourite / un-favourite"}
     - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @clinic.id, "Clinics").present? ? "icon-red" : "icon-text") : "icon-text"
     %i#user_favorite.icon-heart{:class => favorite_class }
   

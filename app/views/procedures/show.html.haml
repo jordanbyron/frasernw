@@ -3,7 +3,7 @@
 %h2
   = @procedure.full_name
   
-  %a{"href" => "javascript:void(0)", "onclick" => "favorite('procedures',#{@procedure.id},'#{@procedure.full_name}')", "title" => "Favourite / un-favourite"}
+  %a{"href" => "javascript:void(0)", "onclick" => "favorite('procedures',#{@procedure.id},'#{escape_javascript(@procedure.full_name)}')", "title" => "Favourite / un-favourite"}
     - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @procedure.id, "Procedure").present? ? "icon-red" : "icon-text") : "icon-text"
     %i#user_favorite.icon-heart{:class => favorite_class }
   
