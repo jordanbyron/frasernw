@@ -112,6 +112,7 @@
                     %li= link_to "Activity Feed", all_versions_path, :class => "history ajax"
                     %li= link_to "Review Queue (#{ReviewItem.all.count})", review_items_path, :class => "review ajax"
                     %li= link_to "Feedback Queue (#{FeedbackItem.all.count})", feedback_items_path, :class => "feedback ajax"
+                    %li= link_to "Stats", stats_path, :class => "stats ajax"
                     %li.divider
                     %li
                       = link_to "New...", "#", :class => "create arrow-right-after"

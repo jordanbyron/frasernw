@@ -1,0 +1,74 @@
+- title "Pathways"
+
+%table#stats.table
+  
+  %tr
+    %th
+    %th Total
+  %tr
+    %th Specialties
+    %td= Specialization.all.length
+    
+  %tr
+    %th
+  
+  %tr
+    %th
+    %th Total
+    %th Focused
+    %th Non Focused
+    %th Assumed
+  %tr
+    %th Areas of practice
+    %td= Procedure.all.length
+    %td= Procedure.all.reject{|p| !p.procedure_specializations.first.focused?}.length
+    %td= Procedure.all.reject{|p| !p.procedure_specializations.first.nonfocused?}.length
+    %td= Procedure.all.reject{|p| !p.procedure_specializations.first.assumed?}.length
+    
+  %tr
+    %th
+    
+  %tr
+    %th
+    %th Total
+    %th Completed Survey
+    %th Not Completed Survey
+    %th Purposely Not Yet Surveyed
+    %th Hospital/Clinic Only
+    %th Moved Away
+    %th Retired
+  %tr
+    %th Specialists
+    %td= Specialist.all.length
+    %td= Specialist.all.reject{|s| !s.responded?}.length
+    %td= Specialist.all.reject{|s| !s.not_responded?}.length
+    %td= Specialist.all.reject{|s| !s.purposely_not_yet_surveyed?}.length
+    %td= Specialist.all.reject{|s| !s.hospital_or_clinic_only?}.length
+    %td= Specialist.all.reject{|s| !s.moved_away?}.length
+    %td= Specialist.all.reject{|s| !s.retired?}.length
+    
+  %tr
+    %th
+  
+  %tr
+    %th
+    %th Total
+    %th Completed Survey
+    %th Not Completed Survey
+    %th Purposely Not Yet Surveyed
+  %tr
+    %th Clinics
+    %td= Clinic.all.length
+    %td= Clinic.all.reject{|s| !s.responded?}.length
+    %td= Clinic.all.reject{|s| !s.not_responded?}.length
+    %td= Clinic.all.reject{|s| !s.purposely_not_yet_surveyed?}.length
+    
+  %tr
+    %th
+  
+  %tr
+    %th
+    %th Total
+  %tr
+    %th Hospitals
+    %td= Hospital.all.length

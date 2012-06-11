@@ -62,6 +62,7 @@ $FNW_STATUS_INDENT: 40px;
 .feedback:before,
 .change_password:before,
 .history:before,
+.stats:before,
 .city:before, .province:before,
 .healthcare_provider:before,
 .patient_information:before,
@@ -199,6 +200,11 @@ $FNW_STATUS_INDENT: 40px;
 .history:before
 {
   content: "\f07c";
+}
+
+.stats:before
+{
+  content: "\f080";
 }
 
 .healthcare_provider:before
