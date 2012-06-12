@@ -1,0 +1,15 @@
+%h2 Shared Care Categories
+
+%table.table.table-condensed.table-striped
+  %tr
+    %th Name
+    %th.admin
+
+  - @sc_categories.each do |sc_category|
+    %tr
+      %td= link_to sc_category.name, sc_category, :class => 'ajax'
+      %td.admin.btn-group
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_sc_category_path(sc_category), :class => "btn btn-mini ajax")
+        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", sc_category, :confirm => "Delete #{sc_category.name}?", :method => :delete, :class => "btn btn-mini")
+
+%p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Shared Care Category", new_sc_category_path, :class => "btn ajax")

@@ -25,6 +25,8 @@ ActiveRecord::Schema.define(:version => 20120709184718) do
     t.integer   "city_id"
     t.string    "address2"
     t.integer   "clinic_id"
+    t.float     "latitude",    :default => 0.0
+    t.float     "longitude",   :default => 0.0
   end
 
   add_index "addresses", ["city_id"], :name => "index_addresses_on_city_id"
@@ -358,6 +360,12 @@ ActiveRecord::Schema.define(:version => 20120709184718) do
   end
 
   add_index "reviews", ["item_id", "item_type"], :name => "index_reviews_on_item_id_and_item_type"
+
+  create_table "sc_categories", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "schedule_days", :force => true do |t|
     t.boolean   "scheduled"

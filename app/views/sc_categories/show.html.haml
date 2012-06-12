@@ -1,0 +1,7 @@
+%h2= @sc_category.name
+
+%p.admin.btn-group
+  - if can? :update, @sc_category
+    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_sc_category_path(@sc_category), :class => "btn ajax")
+  - if can? :destroy, @sc_category
+    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @sc_category, :confirm => "Delete #{@sc_category.name}?", :method => :delete, :class => "btn")
