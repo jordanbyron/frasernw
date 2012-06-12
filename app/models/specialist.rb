@@ -45,7 +45,7 @@ class Specialist < ActiveRecord::Base
   has_many  :views
   has_many  :edits
   
-  MAX_OFFICES = 2
+  MAX_OFFICES = 3
   has_many :specialist_offices, :dependent => :destroy
   has_many :offices, :through => :specialist_offices
   has_many :locations, :through => :offices
