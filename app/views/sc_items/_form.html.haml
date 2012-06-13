@@ -1,0 +1,11 @@
+= simple_form_for @sc_item, :html => { :class => "form-horizontal ajax" } do |f|
+  - if not f.error_messages.blank?
+    .alert.alert-error= f.error_messages
+
+  = f.input :name
+  = f.association :sc_category, as: :radio_buttons
+  = f.association :specializations, as: :check_boxes
+
+  .form-actions
+    = f.button :submit, :class => "btn btn-primary"
+    = link_to 'Cancel', sc_items_path, :class => "btn btn-danger ajax"

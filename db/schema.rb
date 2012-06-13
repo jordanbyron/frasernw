@@ -367,6 +367,20 @@ ActiveRecord::Schema.define(:version => 20120709184718) do
     t.datetime "updated_at"
   end
 
+  create_table "sc_item_specializations", :force => true do |t|
+    t.integer  "sc_item_id"
+    t.integer  "specializaton_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sc_items", :force => true do |t|
+    t.integer  "sc_category_id"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "schedule_days", :force => true do |t|
     t.boolean   "scheduled"
     t.time      "from"

@@ -27,6 +27,7 @@ Frasernw::Application.routes.draw do
   resources :feedback_items
   
   resources :sc_categories
+  resources :sc_items
 
   match "tracker" => 'tracker#index', :as => 'tracker'
   

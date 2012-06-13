@@ -35,6 +35,7 @@ en:
     models:
       procedure: "Area of Practice"
       sc_category: "Shared Care Category"
+      sc_item: "Shared Care Item"
     attributes:
       address:
         address1: "Address line 1"
@@ -87,6 +88,8 @@ en:
         hospital_in: "Hospital"
         clinic_in: "Clinic"
         suite_in: "Suite"
+      sc_item:
+        sc_category: "Shared care category"
       specialist:
         firstname: "First name"
         lastname: "Last name"
