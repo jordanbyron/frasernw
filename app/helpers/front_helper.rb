@@ -35,7 +35,7 @@ module FrontHelper
               
               #newly retired
               
-              events["#{version.item_type}_#{version.item.id}"] = "#{version.item_type}_#{version.item.id}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has retired.".html_safe
+              events["#{version.item_type}_#{version.item.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has retired.".html_safe
               
             elsif specialist.retiring?
               
