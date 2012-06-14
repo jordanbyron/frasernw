@@ -5,4 +5,4 @@ test:
   domain: test.host
 
 production:
-  domain: frasernwux.heroku.com
+  domain: frasernw.heroku.com
