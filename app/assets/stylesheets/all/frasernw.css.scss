@@ -357,7 +357,8 @@ body
       .status_unavailable,
       .status_unknown,
       .status_warning, 
-      .status_external
+      .status_external,
+      .status_blank
       {
         visibility: hidden;
       }
@@ -366,7 +367,8 @@ body
       .status_unavailable:before, 
       .status_unknown:before, 
       .status_warning:before, 
-      .status_external:before
+      .status_external:before,
+      .status_blank:before
       {
         visibility: visible;
         margin-left: 0;
@@ -396,7 +398,7 @@ body
       }
     }
     
-    tr.not-responded td
+    tr.disabled td
     {
       color: $FNW_DISABLED_TEXT;
       

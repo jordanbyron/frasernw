@@ -78,6 +78,10 @@ class Clinic < ActiveRecord::Base
     responded? || not_responded?
   end
   
+  def disabled_in_table?
+    not_responded?
+  end
+  
   def phone_and_fax
     return "#{phone} ext. #{phone_extension}, Fax: #{fax}" if phone.present? && phone_extension.present? && fax.present?
     return "#{phone} ext. #{phone_extension}" if phone.present? && phone_extension.present?
@@ -97,19 +101,27 @@ class Clinic < ActiveRecord::Base
   end
   
   def city
-    l = location
-    return "" if l.blank?
-    a = l.resolved_address
-    return "" if a.blank?
-    c = a.city
-    c.present? ? c.name : ""
+    if responded?
+      l = location
+      return "" if l.blank?
+      a = l.resolved_address
+      return "" if a.blank?
+      c = a.city
+      return c.present? ? c.name : ""
+    else
+      return ""
+    end
   end
   
   def city_id
-    l = location
-    return nil if l.blank?
-    a = l.resolved_address
-    return a.present? ? a.city_id : nil
+    if responded?
+      l = location
+      return nil if l.blank?
+      a = l.resolved_address
+      return a.present? ? a.city_id : nil
+    else
+      return nil
+    end
   end
   
   def resolved_address
@@ -143,15 +155,17 @@ class Clinic < ActiveRecord::Base
   end
   
   def status_class
-    if not_responded? || purposely_not_yet_surveyed?
+    if not_responded?
       return "unknown"
+    elsif purposely_not_yet_surveyed?
+      return "blank"
     elsif (status_mask == 1)
       return "available"
     elsif (status_mask == 2)
       return "unavailable"
     else
       #this shouldn't really happen
-      return "unknown"
+      return "blank"
     end
   end
   

@@ -129,7 +129,7 @@
                   %tbody
                     - (@procedure.all_specialists).each do |specialist|
                       - next if not specialist.show_in_table?
-                      %tr{:class => specialist.not_responded? && "not-responded", :id => "s#{specialist.id}"}
+                      %tr{:class => specialist.disabled_in_table? && "disabled", :id => "s#{specialist.id}"}
                         %td
                           %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                         - if multiple_specialties
@@ -247,7 +247,7 @@
                   %tbody
                     - (@procedure.all_clinics).each do |clinic|
                       - next if not clinic.show_in_table?
-                      %tr{:class => clinic.not_responded? ? "not-responded" : "", :id => "c#{clinic.id}"}
+                      %tr{:class => clinic.disabled_in_table? && "disabled", :id => "c#{clinic.id}"}
                         %td
                           %a.ajax{"href" => clinic_path(clinic)}= clinic.name
                         - if multiple_specialties

@@ -52,16 +52,22 @@ class Specialist < ActiveRecord::Base
   accepts_nested_attributes_for :specialist_offices
   
   def city
-    return "" if moved_away?
-    o = offices.first
-    return "" if o.blank?
-    return o.city
+    if responded? 
+      o = offices.first
+      return "" if o.blank?
+      return o.city
+    else
+      return ""
+    end
   end
   
   def city_id
-    return nil if moved_away?
-    o = offices.first
-    return o.present? ? o.city_id : nil
+    if responded?
+      o = offices.first
+      return o.present? ? o.city_id : nil
+    else
+      return nil
+    end
   end
   
   has_one :review_item, :as => :item
@@ -104,6 +110,10 @@ class Specialist < ActiveRecord::Base
     responded? || not_responded? || hospital_or_clinic_only?
   end
   
+  def disabled_in_table?
+    not_responded?
+  end
+  
   STATUS_HASH = { 
     1 => "Accepting new patients", 
     2 => "Only doing follow up on previous patients", 
@@ -139,8 +149,12 @@ class Specialist < ActiveRecord::Base
   end
   
   def status_class
-    if not_responded? || purposely_not_yet_surveyed?
+    if not_responded?
       return "unknown"
+    elsif moved_away?
+      return "unavailable"
+    elsif purposely_not_yet_surveyed?
+      return "blank"
     elsif hospital_or_clinic_only?
       return "external"
     elsif ((status_mask == 1) || ((status_mask == 6) && (unavailable_to < Date.today)))
@@ -155,7 +169,7 @@ class Specialist < ActiveRecord::Base
       return "unknown"
     else
       #this shouldn't really happen
-      return "unknown"
+      return "blank"
     end
   end
   
