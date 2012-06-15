@@ -360,7 +360,7 @@ body
       .status_external,
       .status_blank
       {
-        visibility: hidden;
+        color: #fff;
       }
       
       .status_available:before, 
@@ -370,7 +370,6 @@ body
       .status_external:before,
       .status_blank:before
       {
-        visibility: visible;
         margin-left: 0;
         margin-right: 0;
       }
