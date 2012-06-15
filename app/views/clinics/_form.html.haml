@@ -413,10 +413,12 @@
       %script{"type" => "text/javascript"}
         :plain
           $(".is_specialist").each( hideShowPhysicians )
+          
+    #section_healthcare_providers
       
-    %hr{ "style" => "visibility:hidden" }
+      %hr{ "style" => "visibility:hidden" }
 
-    = f.association :healthcare_providers, as: :check_boxes
+      = f.association :healthcare_providers, as: :check_boxes
   
   - if current_user_is_admin? && !@is_review
   

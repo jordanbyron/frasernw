@@ -36,6 +36,7 @@ var clinic_categorization_changed = function()
     $("#section_referrals").show();
     $("#section_for_patients").show();
     $("#section_associations").show();
+    $("#section_healthcare_providers").show();
     $("#section_admin").show();
     $("#section_deprecated").show();
   }
@@ -49,7 +50,8 @@ var clinic_categorization_changed = function()
     $("#section_aop").hide();
     $("#section_referrals").hide();
     $("#section_for_patients").hide();
-    $("#section_associations").hide();
+    $("#section_associations").show();
+    $("#section_healthcare_providers").hide();
     $("#section_admin").show();
     $("#section_deprecated").show();
   }
