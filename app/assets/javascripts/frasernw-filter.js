@@ -27,6 +27,7 @@ function show_others( entity_id, ids )
     city = data_table.data('s' + this + '_city');
     add_row( entity_id, this, '/' + entity_id + 's/' + this, name, status, wait_time, city );
   });
+  data_table.trigger('update', [true]);
   
   var others = $('#' + entity_id + '_others').hide();
   var others = $('#' + entity_id + '_hide_others').show();
@@ -35,6 +36,7 @@ function show_others( entity_id, ids )
 function hide_others( entity_id )
 {
   $('#' + entity_id + '_table tbody tr.other').each(function () { $(this).remove() });
+  $('#' + entity_id + '_table').trigger('update', [true]);
   $('#' + entity_id + '_others').show();
   $('#' + entity_id + '_hide_others').hide();
 }
