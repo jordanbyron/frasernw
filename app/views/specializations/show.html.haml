@@ -296,19 +296,19 @@
                       - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
                         - next if ps.procedure.all_clinics_for_specialization(@specialization).blank?
                         %label
-                          %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}').collapse('toggle')"}= ps.procedure.name
+                          %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}_').collapse('toggle')"}= ps.procedure.name
                         - next if children.length == 0
-                        .collapse{:id => "children_cp#{ps.procedure.id}"}
+                        .collapse{:id => "children_cp#{ps.procedure.id}_"}
                           %script{"type" => "text/javascript"}
                             :plain
                               $(document).ready(function() {
-                                $('#children_cp#{ps.procedure.id}').collapse({toggle: false}); 
+                                $('#children_cp#{ps.procedure.id}_').collapse({toggle: false}); 
                               });
                           - parent_id = ps.procedure.id
                           - children.each do |ps, children|
                             - next if ps.procedure.all_clinics_for_specialization(@specialization).blank?
                             %label.indent
-                              %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "class" => "child_cp#{parent_id}"}= ps.procedure.name
+                              %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "class" => "child_cp#{parent_id}_"}= ps.procedure.name
                       
                       - non_focused_procedure_specializations = @specialization.non_focused_procedure_specializations_arranged
                       - has_more = false
