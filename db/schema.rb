@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120606212245) do
+ActiveRecord::Schema.define(:version => 20120615234159) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -165,17 +165,17 @@ ActiveRecord::Schema.define(:version => 20120606212245) do
   add_index "contacts", ["user_id"], :name => "index_contacts_on_user_id"
 
   create_table "delayed_jobs", :force => true do |t|
-    t.integer  "priority",   :default => 0
-    t.integer  "attempts",   :default => 0
-    t.text     "handler"
-    t.text     "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
-    t.string   "locked_by"
-    t.string   "queue"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "priority",   :default => 0
+    t.integer   "attempts",   :default => 0
+    t.text      "handler"
+    t.text      "last_error"
+    t.timestamp "run_at"
+    t.timestamp "locked_at"
+    t.timestamp "failed_at"
+    t.string    "locked_by"
+    t.string    "queue"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
@@ -190,23 +190,23 @@ ActiveRecord::Schema.define(:version => 20120606212245) do
   add_index "edits", ["specialist_id"], :name => "index_edits_on_specialist_id"
 
   create_table "favorites", :force => true do |t|
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "favoritable_id"
-    t.string   "favoritable_type"
+    t.integer   "user_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.integer   "favoritable_id"
+    t.string    "favoritable_type"
   end
 
   add_index "favorites", ["favoritable_id", "favoritable_type"], :name => "index_favorites_on_favoritable_id_and_favoritable_type"
   add_index "favorites", ["user_id"], :name => "index_favorites_on_user_id"
 
   create_table "feedback_items", :force => true do |t|
-    t.string   "item_type"
-    t.integer  "item_id"
-    t.integer  "user_id"
-    t.text     "feedback"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string    "item_type"
+    t.integer   "item_id"
+    t.integer   "user_id"
+    t.text      "feedback"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "focuses", :force => true do |t|
@@ -442,60 +442,60 @@ ActiveRecord::Schema.define(:version => 20120606212245) do
   add_index "specialist_specializations", ["specialization_id"], :name => "index_specialist_specializations_on_specialization_id"
 
   create_table "specialists", :force => true do |t|
-    t.string   "firstname"
-    t.string   "lastname"
-    t.text     "practise_limitations"
-    t.text     "interest"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "direct_phone_old"
-    t.string   "contact_name"
-    t.string   "contact_phone"
-    t.string   "contact_email"
-    t.text     "red_flags"
-    t.string   "responds_via"
-    t.string   "referral_criteria"
-    t.string   "saved_token"
-    t.string   "contact_notes"
-    t.text     "not_interested"
-    t.text     "all_procedure_info"
-    t.string   "referral_other_details"
-    t.string   "referral_request"
-    t.boolean  "patient_can_book_old",       :default => false
-    t.string   "urgent_other_details"
-    t.text     "required_investigations"
-    t.text     "not_performed"
-    t.text     "status_details"
-    t.string   "location_opened"
-    t.integer  "status_mask"
-    t.boolean  "referral_fax"
-    t.boolean  "referral_phone"
-    t.boolean  "respond_by_fax"
-    t.boolean  "respond_by_phone"
-    t.boolean  "respond_by_mail"
-    t.boolean  "respond_to_patient"
-    t.boolean  "urgent_fax"
-    t.boolean  "urgent_phone"
-    t.boolean  "referral_form_old"
-    t.integer  "waittime_mask"
-    t.integer  "lagtime_mask"
-    t.integer  "billing_number"
-    t.integer  "referral_form_mask",         :default => 3
-    t.integer  "patient_can_book_mask",      :default => 3
-    t.date     "unavailable_from"
-    t.date     "unavailable_to"
-    t.text     "urgent_details"
-    t.string   "goes_by_name"
-    t.string   "direct_phone_extension_old"
-    t.integer  "sex_mask",                   :default => 3
-    t.text     "referral_details"
-    t.text     "admin_notes"
-    t.integer  "categorization_mask",        :default => 1
-    t.text     "patient_instructions"
-    t.text     "cancellation_policy"
-    t.integer  "referral_clinic_id"
-    t.text     "hospital_clinic_details"
-    t.boolean  "interpreter_available",      :default => false
+    t.string    "firstname"
+    t.string    "lastname"
+    t.text      "practise_limitations"
+    t.text      "interest"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string    "direct_phone_old"
+    t.string    "contact_name"
+    t.string    "contact_phone"
+    t.string    "contact_email"
+    t.text      "red_flags"
+    t.string    "responds_via"
+    t.string    "referral_criteria"
+    t.string    "saved_token"
+    t.string    "contact_notes"
+    t.text      "not_interested"
+    t.text      "all_procedure_info"
+    t.string    "referral_other_details"
+    t.string    "referral_request"
+    t.boolean   "patient_can_book_old",       :default => false
+    t.string    "urgent_other_details"
+    t.text      "required_investigations"
+    t.text      "not_performed"
+    t.text      "status_details"
+    t.string    "location_opened"
+    t.integer   "status_mask"
+    t.boolean   "referral_fax"
+    t.boolean   "referral_phone"
+    t.boolean   "respond_by_fax"
+    t.boolean   "respond_by_phone"
+    t.boolean   "respond_by_mail"
+    t.boolean   "respond_to_patient"
+    t.boolean   "urgent_fax"
+    t.boolean   "urgent_phone"
+    t.boolean   "referral_form_old"
+    t.integer   "waittime_mask"
+    t.integer   "lagtime_mask"
+    t.integer   "billing_number"
+    t.integer   "referral_form_mask",         :default => 3
+    t.integer   "patient_can_book_mask",      :default => 3
+    t.date      "unavailable_from"
+    t.date      "unavailable_to"
+    t.text      "urgent_details"
+    t.string    "goes_by_name"
+    t.string    "direct_phone_extension_old"
+    t.integer   "sex_mask",                   :default => 3
+    t.text      "referral_details"
+    t.text      "admin_notes"
+    t.integer   "categorization_mask",        :default => 1
+    t.text      "patient_instructions"
+    t.text      "cancellation_policy"
+    t.integer   "referral_clinic_id"
+    t.text      "hospital_clinic_details"
+    t.boolean   "interpreter_available",      :default => false
   end
 
   add_index "specialists", ["referral_clinic_id"], :name => "index_specialists_on_referral_clinic_id"
@@ -530,16 +530,16 @@ ActiveRecord::Schema.define(:version => 20120606212245) do
   add_index "user_controls_specialists", ["user_id"], :name => "index_user_controls_specialists_on_user_id"
 
   create_table "users", :force => true do |t|
-    t.string   "email"
-    t.string   "persistence_token"
-    t.string   "crypted_password"
-    t.string   "password_salt"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "name"
-    t.string   "role"
-    t.string   "perishable_token",  :default => "", :null => false
-    t.string   "saved_token"
+    t.string    "email"
+    t.string    "persistence_token"
+    t.string    "crypted_password"
+    t.string    "password_salt"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string    "name"
+    t.string    "role"
+    t.string    "perishable_token",  :default => "", :null => false
+    t.string    "saved_token"
   end
 
   create_table "versions", :force => true do |t|
