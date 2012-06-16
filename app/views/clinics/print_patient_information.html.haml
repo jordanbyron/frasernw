@@ -7,18 +7,18 @@
 %h6 Appointment Information
 
 %p
-  %span.square
+  %input{"type" => "checkbox"}
   Your appointment is on 
-  %span.date_line &nbsp;
+  %input{"type" => "text"}
   at
-  %span.time_line &nbsp;
+  %input{"type" => "text"}
 
 %p
-  %span.square
+  %input{"type" => "checkbox"}
   Our office will call you once your appointment is booked.
 
 %p
-  %span.square
+  %input{"type" => "checkbox"}
   #{@clinic.name} will call you once your appointment is booked.  
   
 -if @clinic.patient_instructions.present? 

@@ -55,30 +55,6 @@ h6
   text-transform: uppercase;
 }
 
-.square, .date_line, .time_line
-{
-  display: inline-block;
-  height: 1em;
-}
-
-.square
-{
-  border: 1px solid $FNW_TEXT;
-  width: 1em;
-}
-
-.date_line
-{
-  border-bottom: 1px solid $FNW_TEXT;
-  width: 20em;
-}
-
-.time_line
-{
-  border-bottom: 1px solid $FNW_TEXT;
-  width: 10em;
-}
-
 img
 {
   margin-top: 9pt;
@@ -96,5 +72,15 @@ img
   .btn
   {
     display: none;
+  }
+  
+  input[type='text']
+  {
+    border: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    border-bottom: 1px solid $FNW_TEXT;
+    box-shadow: none;
   }
 }
