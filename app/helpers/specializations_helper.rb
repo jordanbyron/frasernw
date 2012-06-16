@@ -79,6 +79,11 @@ module SpecializationsHelper
         other_specialists << p.all_specialists_for_specialization(s)
       end
     end
-    return other_specialists.flatten.uniq
+    other_specialists = other_specialists.flatten.uniq
+    specialization.specialists.each do |s|
+      #remove any specialists that are also in this specialization
+      other_specialists.delete(s)
+    end
+    return other_specialists
   end
 end
