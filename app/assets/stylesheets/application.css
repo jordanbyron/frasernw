@@ -7,9 +7,9 @@
  *= require ./all/bootstrap
  *= require ./all/font-awesome
  *= require ./all/bootstrap.modifications
- *= require ./all/bootstrap.responsive
  *= require ./all/icons
  *= require ./all/frasernw
+ *= require ./all/bootstrap.responsive
  *= require ./all/chosen
  *= require_tree ./all 
 */

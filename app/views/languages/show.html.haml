@@ -69,14 +69,12 @@
     %ul.nav.nav-tabs
       - if has_specialists
         %li{:class => specialist_tab_class} 
-          %a{"href" => "#specialist_tab", "data-toggle" => "tab"} 
-            %i.icon-user.icon-text
-            Specialists
+          %a.specialist{"href" => "#specialist_tab", "data-toggle" => "tab"} 
+            %span Specialists
       - if has_clinics
         %li{:class => clinic_tab_class}
-          %a{"href" => "#clinic_tab", "data-toggle" => "tab"}
-            %i.icon-home.icon-text
-            Clinics
+          %a.clinic{"href" => "#clinic_tab", "data-toggle" => "tab"}
+            %span Clinics
 
     .tab-content 
       - if has_specialists
