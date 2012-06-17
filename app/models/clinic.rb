@@ -155,7 +155,7 @@ class Clinic < ActiveRecord::Base
   end
   
   def status_class
-    if not_responded?
+    if not_responded? || status_mask.blank?
       return "unknown"
     elsif purposely_not_yet_surveyed?
       return "blank"

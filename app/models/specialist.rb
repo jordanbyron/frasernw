@@ -165,7 +165,7 @@ class Specialist < ActiveRecord::Base
       return "unavailable"
     elsif (((status_mask == 5) && (unavailable_from > Date.today)) || ((status_mask == 6) && (unavailable_from > Date.today)))
       return "warning"
-    elsif ((status_mask == 3) || (status_mask == 7))
+    elsif ((status_mask == 3) || (status_mask == 7) || status_mask.blank?)
       return "unknown"
     else
       #this shouldn't really happen
