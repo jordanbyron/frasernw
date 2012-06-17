@@ -111,6 +111,7 @@ jQuery.fn.livesearch = function(options)
     selected = 0
     set_selected(selected)
     
+    container.ajaxify();
     container.animate({height: "show"}, 200) 
 	}
   
@@ -129,7 +130,7 @@ jQuery.fn.livesearch = function(options)
   
   function data_formatter(total_score, scores_matches, data_entry)
   {
-    return "<li class='result'><a href=\'" + data_entry.url + "'>" + livesearch_highlighter( data_entry.value, scores_matches.value.matches ) + '</a></li>';
+    return "<li class='search-result'><a href=\'" + data_entry.url + "'>" + livesearch_highlighter( data_entry.value, scores_matches.value.matches ) + '</a></li>';
   }
   
   function group_formatter(group_id)
@@ -151,7 +152,7 @@ jQuery.fn.livesearch = function(options)
   
   function set_selected(index)
   {
-    container.find('li.result').each( function(i) {
+    container.find('.search-result').each( function(i) {
                                        if (i == index)
                                        {
                                          $(this).addClass('selected');

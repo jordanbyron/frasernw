@@ -13,7 +13,7 @@ function pathways_grouper(a, b)
 
 function pathways_data_formatter(total_score, scores_matches, data_entry)
 {
-  var result = "<li class='result'><a id='" + data_entry.go + '_' + data_entry.id + "'  href='/" + pathways_url_data[data_entry.go] + '/' + data_entry.id + "' class='ajax'>"
+  var result = "<a class='search-result' id='search_result_" + data_entry.go + '_' + data_entry.id + "'  href='/" + pathways_url_data[data_entry.go] + '/' + data_entry.id + "' class='ajax'><li>"
   
   result += "<div class='search_name status_" + data_entry.st + "'>" + livesearch_highlighter( data_entry.n, scores_matches.n.matches ) + "</div>"
   
@@ -48,9 +48,9 @@ function pathways_data_formatter(total_score, scores_matches, data_entry)
     result += "<div class='search_city'>" + pathways_city_data[data_entry.c] + "</div>"
   }
   
-  result += "</a></li>";
+  result += "</li></a>";
   
-  return $(result).ajaxify();
+  return result;
 }
 
 function pathways_group_formatter(group_id)
@@ -87,6 +87,6 @@ function pathways_group_formatter(group_id)
 
 function pathways_searcher(data_entry)
 {
-  $('#' + data_entry.go + '_' + data_entry.id).click();
+  $.each( $('#search_result_' + data_entry.go + '_' + data_entry.id), function(x){ $(x).click() });
   return false;
 }

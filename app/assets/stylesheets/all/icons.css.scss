@@ -14,6 +14,7 @@
 }
 
 $FNW_STATUS_INDENT: 40px;  
+$FNW_ICON_WIDTH: 18px;  
 
 .icon-blue {
   color: $FNW_BLUE;
@@ -79,7 +80,7 @@ $FNW_STATUS_INDENT: 40px;
   font-size: 15px;
   display: inline-block;
   text-decoration: inherit;
-  width: 18px;
+  width: $FNW_ICON_WIDTH;
 }
 
 #container h6:before
@@ -100,8 +101,8 @@ $FNW_STATUS_INDENT: 40px;
   .status_warning:before, 
   .status_external:before
   {
-    margin-left: -($FNW_STATUS_INDENT + 14px)/2;
-    margin-right: ($FNW_STATUS_INDENT - 14px)/2;
+    margin-left: -($FNW_STATUS_INDENT + $FNW_ICON_WIDTH)/2;
+    margin-right: ($FNW_STATUS_INDENT - $FNW_ICON_WIDTH)/2;
   }
 }
 
