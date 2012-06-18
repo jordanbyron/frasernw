@@ -126,9 +126,11 @@ var address_location_changed = function(address_number)
 
 var address_0_location_changed = function() { address_location_changed(0) }
 var address_1_location_changed = function() { address_location_changed(1) }
+var address_2_location_changed = function() { address_location_changed(2) }
 
 $(".location_0").live("change", address_0_location_changed);
 $(".location_1").live("change", address_1_location_changed);
+$(".location_2").live("change", address_2_location_changed);
 
 
 $("#add_address").live("click", function() 
@@ -161,7 +163,7 @@ var specialist_categorization_changed = function()
     $("#section_aop").show();
     $("#section_referrals").show();
     $("#section_for_patients").show();
-    $("#section_hospital_clinic_details").hide()
+    $("#section_hospital_clinic_details").hide();
     $("#section_associations").show();
     $("#section_admin").show();
   }
@@ -175,7 +177,7 @@ var specialist_categorization_changed = function()
     $("#section_aop").hide();
     $("#section_referrals").hide();
     $("#section_for_patients").hide();
-    $("#section_hospital_clinic_details").show()
+    $("#section_hospital_clinic_details").show();
     $("#section_associations").show();
     $("#section_admin").show();
   }
