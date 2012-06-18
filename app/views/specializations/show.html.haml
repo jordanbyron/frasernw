@@ -233,6 +233,8 @@
                       .filter-group-title
                         Languages spoken in office
                       #filter-group-content-language.filter-group-content
+                        %label
+                          %input#si.si{"type" => "checkbox"} Interpreter available
                         - Language.all.each do |l|
                           %label.half
                             %input.sl{"type" => "checkbox", "id" => "sl#{l.id}_"}= l.name
@@ -263,7 +265,7 @@
                       {
                         update_table('s', 'specialist', '#{@specialization.member_name.uncapitalize_first_letter.pluralize}');
                       }
-                      $('.sp, .sc, .sr, .ss, .sl, .sa').click( update_custom_specialist_table );
+                      $('.sp, .sc, .sr, .ss, .si, .sl, .sa').click( update_custom_specialist_table );
                     });
             
       - if has_clinics
@@ -432,6 +434,8 @@
                       .filter-group-title
                         Languages spoken in clinic
                       #filter-group-content-language.filter-group-content
+                        %label
+                          %input#ci.ci{"type" => "checkbox"} Interpreter available
                         - Language.all.each do |l|
                           %label.half
                             %input.cl{"type" => "checkbox", "id" => "cl#{l.id}_"}= l.name
@@ -439,7 +443,7 @@
                 %script{"type" => "text/javascript"}
                   :plain
                     $(document).ready(function() {
-                      $('.cp, .cc, .cr, .cd, .csh, .ch, .cl').click( update_clinic_table );
+                      $('.cp, .cc, .cr, .cd, .csh, .ch, .ci, .cl').click( update_clinic_table );
                     });
                     
       #calculator_tab.tab-pane

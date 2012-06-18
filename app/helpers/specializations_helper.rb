@@ -25,6 +25,7 @@ module SpecializationsHelper
     s.languages.each do |l|
       filtering_attributes << "sl#{l.id}_"
     end
+    filtering_attributes << "si" if s.interpreter_available
     s.clinics.each do |c|
       filtering_attributes << "sac#{c.id}_"
     end
@@ -67,6 +68,7 @@ module SpecializationsHelper
     c.languages.each do |l|
       filtering_attributes << "cl#{l.id}_"
     end
+    filtering_attributes << "ci" if c.interpreter_available
     return filtering_attributes
   end
   

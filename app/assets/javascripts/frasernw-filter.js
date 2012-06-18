@@ -58,6 +58,7 @@ var update_table = function(prefix, entity_id, entity_name)
   var languages = new Array();
   var associations = new Array();
   var sex = '';
+  var interpreter = false;
   
   // collect specialization filters
   $('.' + prefix + 'sp').each( function() {
@@ -178,6 +179,13 @@ var update_table = function(prefix, entity_id, entity_name)
     }
   });
   
+  // collect interpreter filters
+  if ( $('#' + prefix + 'i').prop('checked') )
+  {
+    current_filters.push(prefix + 'i');
+    interpreter = true;
+  }
+  
   // collect language filters
   $('.' + prefix + 'l').each( function() {
     var $this = $(this);
@@ -262,9 +270,17 @@ var update_table = function(prefix, entity_id, entity_name)
     fragments.push('are associated with ' + associations.to_sentence());
   }
   
-  if ( fragments.length >= 1 )
+  if ( fragments.length >= 1)
   {
     description += ' who ' + fragments.to_sentence()
+    if ( interpreter )
+    {
+      description += ' and have an interpreter available upon request'
+    }
+  }
+  else if ( interpreter )
+  {
+    description += ' who have an interpreter available upon request'
   }
   
   description += ". <a href=\"javascript:clear_filters('" + prefix + "','" + entity_id + "','" + entity_name + "')\">Clear all filters</a>."
@@ -347,7 +363,7 @@ var clear_filters = function(prefix, entity_id, entity_name) {
     $(this).prop('checked',false)
   });
   
-  // collect sex filters
+  // clear sex filters
   $('#' + prefix + 'sm').prop('checked', false);
   $('#' + prefix + 'sf').prop('checked', false);
   
@@ -365,6 +381,9 @@ var clear_filters = function(prefix, entity_id, entity_name) {
   $('.' + prefix + 'h').each( function() {
     $(this).prop('checked',false)
   });
+  
+  // clear interpreter filters
+  $('#' + prefix + 'i').prop('checked', false);
   
   // clear language filters
   $('.' + prefix + 'l').each( function() {

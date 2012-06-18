@@ -13,46 +13,10 @@
     $(document).ready(function() {
     - @procedure.all_specialists.each do |s|
       - next if not s.show_in_table?
-      - specialist_filter_attributes = []
-      - if s.lagtime_mask.present?
-        - (s.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
-          - specialist_filter_attributes << "sc#{i}_"
-      - specialist_filter_attributes << "srph" if s.referral_phone
-      - specialist_filter_attributes << "srpb" if s.patient_can_book?
-      - specialist_filter_attributes << "ssm" if s.male?
-      - specialist_filter_attributes << "ssf" if s.female?
-      - s.languages.each do |l|
-        - specialist_filter_attributes << "sl#{l.id}_"
-      - s.clinics.each do |c|
-        - specialist_filter_attributes << "sac#{c.id}_"
-      - s.hospitals.each do |h|
-        - specialist_filter_attributes << "sah#{h.id}_"
-      $('#s#{s.id}').data('filter', '#{specialist_filter_attributes.join(' ')}');
+      $('#s#{s.id}').data('filter', '#{specialist_filtering_attributes(s, false).join(' ')}');
     - @procedure.clinics.each do |c|
       - next if not c.show_in_table?
-      - clinics_filter_attributes = []
-      - if c.lagtime_mask.present?
-        - (c.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
-          - clinics_filter_attributes << "cc#{i}_"
-      - clinics_filter_attributes << "crph" if c.referral_phone
-      - clinics_filter_attributes << "crpb" if c.patient_can_book?
-      - clinics_filter_attributes << "cdpb" if c.sector_mask == 1 || c.sector_mask == 3
-      - clinics_filter_attributes << "cdpv" if c.sector_mask == 2 || c.sector_mask == 3
-      - clinics_filter_attributes << "cdwa" if c.wheelchair_accessible?
-      - if c.scheduled?
-        - schedule = c.schedule
-        - clinics_filter_attributes << "cshmon" if schedule.monday.scheduled
-        - clinics_filter_attributes << "cshtues" if schedule.tuesday.scheduled
-        - clinics_filter_attributes << "cshwed" if schedule.wednesday.scheduled
-        - clinics_filter_attributes << "cshthurs" if schedule.thursday.scheduled
-        - clinics_filter_attributes << "cshfri" if schedule.friday.scheduled
-        - clinics_filter_attributes << "cshsat" if schedule.saturday.scheduled
-        - clinics_filter_attributes << "cshsun" if schedule.sunday.scheduled
-      - c.healthcare_providers.each do |h|
-        - clinics_filter_attributes << "ch#{h.id}_"
-      - c.languages.each do |l|
-        - clinics_filter_attributes << "cl#{l.id}_"
-      $('#c#{c.id}').data('filter', '#{clinics_filter_attributes.join(' ')}');
+      $('#c#{c.id}').data('filter', '#{clinic_filtering_attributes(c).join(' ')}');
     });
     
   - multiple_specialties = (@procedure.specializations.length > 1)
@@ -195,6 +159,8 @@
                       .filter-group-title
                         Languages spoken in office
                       #filter-group-content-language.filter-group-content
+                        %label
+                          %input#si.si{"type" => "checkbox"} Interpreter available
                         - Language.all.each do |l|
                           %label.half
                             %input.sl{"type" => "checkbox", "id" => "sl#{l.id}_"}= l.name
@@ -226,7 +192,7 @@
                       {
                         update_table('s', 'specialist', '#{member_name}');
                       }
-                      $('.sp, .sc, .sr, .ss, .sl, .sa').click( update_custom_specialist_table );
+                      $('.sp, .sc, .sr, .ss, .si, .sl, .sa').click( update_custom_specialist_table );
                     });
       
             
@@ -341,6 +307,8 @@
                       .filter-group-title
                         Languages spoken in clinic
                       #filter-group-content-language.filter-group-content
+                        %label
+                          %input#ci.ci{"type" => "checkbox"} Interpreter available
                         - Language.all.each do |l|
                           %label.half
                             %input.cl{"type" => "checkbox", "id" => "cl#{l.id}_"}= l.name
@@ -348,7 +316,7 @@
                 %script{"type" => "text/javascript"}
                   :plain
                     $(document).ready(function() {
-                      $('.cp, .cc, .cr, .cd, .csh, .ch, .cl').click( update_clinic_table );
+                      $('.cp, .cc, .cr, .cd, .csh, .ch, .ci, .cl').click( update_clinic_table );
                     });
                     
       #calculator_tab.tab-pane
