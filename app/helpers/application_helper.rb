@@ -100,5 +100,13 @@ module ApplicationHelper
   def current_user_is_admin?
     return (current_user and current_user.admin?)
   end
+
+  def current_user_id
+    if current_user
+      return current_user.id
+    else
+      return -1
+    end
+  end
   
 end

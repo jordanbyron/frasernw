@@ -182,15 +182,15 @@
 					$body.removeClass('loading');
 	
 					// Inform Google Analytics of the change
-					if ( typeof window.pageTracker !== 'undefined' ) {
-						window.pageTracker._trackPageview(relativeUrl);
+					if ( _gaq ) {
+            _gaq.push(['_trackPageview', relativeUrl]);
 					}
 
 					// Inform ReInvigorate of a state change
-					if ( typeof window.reinvigorate !== 'undefined' && typeof window.reinvigorate.ajax_track !== 'undefined' ) {
+					/* if ( typeof window.reinvigorate !== 'undefined' && typeof window.reinvigorate.ajax_track !== 'undefined' ) {
 						reinvigorate.ajax_track(url);
 						// ^ we use the full url here as that is what reinvigorate supports
-					}
+					} */
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					document.location.href = url;
