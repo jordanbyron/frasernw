@@ -25,8 +25,6 @@ ActiveRecord::Schema.define(:version => 20120709184718) do
     t.integer   "city_id"
     t.string    "address2"
     t.integer   "clinic_id"
-    t.float     "latitude",    :default => 0.0
-    t.float     "longitude",   :default => 0.0
   end
 
   add_index "addresses", ["city_id"], :name => "index_addresses_on_city_id"
