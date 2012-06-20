@@ -367,7 +367,7 @@ ActiveRecord::Schema.define(:version => 20120709184718) do
 
   create_table "sc_item_specializations", :force => true do |t|
     t.integer  "sc_item_id"
-    t.integer  "specializaton_id"
+    t.integer  "specialization_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

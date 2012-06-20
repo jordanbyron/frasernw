@@ -2,7 +2,7 @@ class AddScItem < ActiveRecord::Migration
   def change
     create_table :sc_item_specializations do |t|
       t.integer :sc_item_id
-      t.integer :specializaton_id
+      t.integer :specialization_id
       
       t.timestamps
     end

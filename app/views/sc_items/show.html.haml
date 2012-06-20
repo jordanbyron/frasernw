@@ -1,4 +1,6 @@
 %h2= @sc_item.name
+%h4= link_to @sc_item.sc_category.name, @sc_item.sc_category, :class => 'ajax'
+%h5= @sc_item.specializations.map{ |s| link_to s.name, s, :class => 'ajax' }.to_sentence.html_safe
 
 %p.admin.btn-group
   - if can? :update, @sc_item
