@@ -8,4 +8,8 @@ class ScItem < ActiveRecord::Base
   
   validates_presence_of :name, :on => :create, :message => "can't be blank"
   #validates_presence_of :sc_category, :on => :create, :message => "can't be blank"
+  
+  def self.for_specialization(specialization)
+    joins(:sc_item_specializations).where("sc_item_specializations.specialization_id == ?", specialization.id)
+  end
 end

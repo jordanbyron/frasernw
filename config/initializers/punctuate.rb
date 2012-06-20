@@ -53,4 +53,7 @@ class String
     end
   end
   
+  def remove_whitespace
+    self.gsub(/\s+/, "")
+  end
 end

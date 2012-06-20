@@ -45,22 +45,11 @@
       %li{:class => clinic_tab_class}
         %a#clinics{"href" => "#clinic_tab", "data-toggle" => "tab"}
           %span Clinics
-    - if true
-      %li
-        %a#risk_calculators{"href" => "#calculator_tab", "data-toggle" => "tab"}
-          %span Risk Calculators
-      %li
-        %a#care_pathways{"href" => "#care_pathways_tab", "data-toggle" => "tab"}
-          %span Care Pathways
-      %li
-        %a#pearls{"href" => "#pearls_tab", "data-toggle" => "tab"}
-          %span Pearls
-      %li
-        %a#red_flags{"href" => "#red_flags_tab", "data-toggle" => "tab"}
-          %span Red Flags
-      %li
-        %a#patient_education{"href" => "#patient_education_tab", "data-toggle" => "tab"}
-          %span Patient Education
+    - ScCategory.all.each do |sc_category|
+      - if sc_category.sc_items.for_specialization(@specialization).present?
+        %li
+          %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "data-toggle" => "tab"}
+            %span= sc_category.name
   
   .content-wrapper
   
@@ -430,105 +419,13 @@
             $('.collapsable').on('hidden', function() {
               $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
             });
-                      
-        #calculator_tab.tab-pane
-                      
-        #care_pathways_tab.tab-pane
-          - if @specialization.id == 22 #OB/GYN
-            %h3 Primary Care Obstetrics
-            %ul
-              %li=link_to "Routine pregnancy care schedule", "/content/routine_pregnancy_care.html", :class => "ajax"
-              
-          - if [1, 29, 30, 32].include? @specialization.id
-            %h3 Back
-            %p.space.no_indent In low back pain, radiographs are indicated with:
-            %ul 
-              %li Recent significant trauma, or milder trauma age >50 
-              %li Suspected cancer
-              %li Suspected infection 
-              %li Back pain with lower limb neurologic deficit
-              
-            %h3 Knee
-            %h4 Ottawa Knee Rules:
-            %p.space.no_indent If any of the following criteria are met after knee trauma, consider an x-ray:
-            %ul 
-              %li Age > 55   
-              %li Isolated tenderness of the patella
-              %li Tenderness at the fibular head
-              %li Unable to flex knee to 90 degrees
-              %li Unable to bear weight immediately and in the ED (4 steps, limping is OK)
-              
-          - if @specialization.id == 4 #Cardiology
-            %ul
-              %li
-                %a{"href" => "http://www.bcguidelines.ca/pdf/cvd_summary.pdf", "target" => "_blank"} GPAC Summary: Cardiovascular Disease - Primary Prevention
-              %li
-                %a{"href" => "http://www.bcguidelines.ca/pdf/heart_failure_summary.pdf", "target" => "_blank"} GPAC Summary: Heart Failure Care
-              %li
-                %a{"href" => "http://www.bcguidelines.ca/pdf/hypertension_summary.pdf", "target" => "_blank"} GPAC Summary: Hypertension - Detection, Diagnosis and Management
-                      
-        #pearls_tab.tab-pane
-          - if @specialization.id == 8 || @specialization.id == 3 || @specialization.id == 13 #GI, General Surgery, Internal Medicine
-            %h3 Colonoscopy
-            %ul
-              %li=link_to "Polyp Results", "/content/polyp.html", :class => "ajax"
-          - if @specialization.id == 22 #OB/GYN
-            %h3 Sexual Wellness
-            %ul
-              %li=link_to "Oral Contraceptives: Costs and Venous Thromboembolic Risks", "/content/oral_contraceptives.html", :class => "ajax"
-            %h3 Hormone Replacement Therapy
-            %ul
-              %li=link_to "HRT Risk Table: Summary of Women's Health Initiative Study Findings", "/content/hrt_whi.html", :class => "ajax"
-          - if @specialization.id == 4 #Cardiology
-            %ul
-              %li=link_to "ASA is no longer indicated for primary prevention of cardiovascular events", "/content/asa.html", :class => "ajax"
-                      
-        #red_flags_tab.tab-pane
-          - if [1, 29, 30, 32].include? @specialization.id
-            %h3 Ankle and Foot
-            %ul
-              %li Fracture
-              %li Dislocation
-              %li Infected joint
-              %li Rupture of Achilles tendon
-              
-            %h3 Knee and Hip
-            %ul
-              %li Fracture
-              %li Locked knee
-              %li Infected joint
-              %li Rupture of quadriceps tendon or patellar tendon
-              
-            %h3 Upper Extremities
-            %ul
-              %li Fracture
-              %li Dislocation
-              %li Infected joint
-              %li Distal biceps tendon rupture
-            
-            %h3 Low Back Pain
-            %ul 
-              %li Major trauma
-              %li Minor trauma in the elderly or osteoporotic Age > 50 or < 20 years 
-              %li History of cancer 
-              %li Constitutonal symptoms (fever, chills, weight loss) 
-              %li Recent bacterial infection 
-              %li IV drug use 
-              %li Immunosuppression 
-              %li Pain worse at night or when supine 
-              %li Severe progressive sensory alteration or weakness 
-              %li Bladder or bowel dysfuncion 
-              %li Evidence of neurological deficit in the perineum
-              
-                      
-        #patient_education_tab.tab-pane
-          - if @specialization.id == 30 #Pain Management
-            %ul 
-              %li
-                Video:
-                =link_to "Understanding Pain: What to do about it in less than five minutes?", "http://www.youtube.com/watch?v=4b8oB757DKc", :target => "_blank"
-                %i.icon-arrow-right.icon-blue
-                =link_to "Email this link to a patient", "mailto:no@thanks.com"
+      
+        - ScCategory.all.each do |sc_category|
+          - if sc_category.sc_items.for_specialization(@specialization).present?
+            .tab-pane{"id" => "#{sc_category.name.remove_whitespace}_tab"}
+              %ul
+                - sc_category.sc_items.each do |sc_item|
+                  %li= sc_item.name
       
       %script{"type" => "text/javascript"}
         :plain
