@@ -21,6 +21,25 @@ body
   font-size: 13px;
   padding-bottom: 30px;
 }
+
+body #loading
+{
+  display: none;
+  position: fixed;
+  width: 4%;
+  min-width: 32px;
+  height: 4%;
+  min-height: 32px;
+  top: 48%;
+  left: 48%;
+  background-image: url(/img/ajax-loader.gif);
+  background-repeat: no-repeat;
+}
+
+body.loading #loading
+{
+  display: block;
+}
   
 #search_results
 {
