@@ -325,6 +325,24 @@
         - if @procedure.id == 218 #Primary care obstetrics
           %ul
             %li=link_to "Routine pregnancy care schedule", "/content/routine_pregnancy_care.html", :class => "ajax"
+            
+        - if @procedure.id == 21 #Back
+          %p.space.no_indent In low back pain, radiographs are indicated with:
+          %ul 
+            %li Recent significant trauma, or milder trauma age >50 
+            %li Suspected cancer
+            %li Suspected infection 
+            %li Back pain with lower limb neurologic deficit
+            
+        - if @procedure.id == 10 #Knee
+          %h4 Ottawa Knee Rules
+          %p.space.no_indent If any of the following criteria are met after knee trauma, consider an x-ray:
+          %ul 
+            %li Age > 55   
+            %li Isolated tenderness of the patella
+            %li Tenderness at the fibular head
+            %li Unable to flex knee to 90 degrees
+            %li Unable to bear weight immediately and in the ED (4 steps, limping is OK)
                     
       #pearls_tab.tab-pane
         - if @procedure.id == 365 #Colonoscopy
@@ -349,22 +367,6 @@
             %li Severe progressive sensory alteration or weakness 
             %li Bladder or bowel dysfuncion 
             %li Evidence of neurological deficit in the perineum
-          %p.space.no_indent In low back pain, radiographs are indicated with:
-          %ul 
-            %li Recent significant trauma, or milder trauma age >50 
-            %li Suspected cancer
-            %li Suspected infection 
-            %li Back pain with lower limb neurologic deficit
-            
-        - if @procedure.id == 10 #Knee
-          %h4 Ottawa Knee Rules: Red Flags after knee trauma indicating an x-ray is warranted
-          %p.space.no_indent If any of the following criteria are met after knee trauma, consider an x-ray:
-          %ul 
-            %li Age > 55   
-            %li Isolated tenderness of the patella
-            %li Tenderness at the fibular head
-            %li Unable to flex knee to 90 degrees
-            %li Unable to bear weight immediately and in the ED (4 steps, limping is OK)
                     
       #patient_education_tab.tab-pane
 
