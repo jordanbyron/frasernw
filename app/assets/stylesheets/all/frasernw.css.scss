@@ -555,6 +555,11 @@ body.loading #loading
   
   .filter
   {
+    a i.icon-asterisk:hover
+    {
+      color: $FNW_BLUE;
+    }
+    
     .title
     {
       margin: -8px -8px 8px -8px;

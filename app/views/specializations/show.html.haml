@@ -111,7 +111,7 @@
                         
                 #specialist_assumed_list
                   - if @specialization.procedure_specializations.assumed.present?
-                    %strong 1. 
+                    %i.icon-asterisk.icon-disabled.icon-small
                     Areas of practice we assume all #{@specialization.member_name.uncapitalize_first_letter.pluralize} see:
                     = @specialization.procedure_specializations.assumed.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
                         
@@ -124,18 +124,19 @@
                       Areas of Practice
                       - if @specialization.procedure_specializations.assumed.present?
                         %sup
-                          %a{"href" => "#specialist_assumed_list"} [1]
+                          %a.asterisk{"href" => "#specialist_assumed_list"}
+                            %i.icon-asterisk.icon-disabled.icon-small
                     #filter-group-content-focused.filter-group-content
                       - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
                         - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
                         %label
                           %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}_').collapse('toggle')"}= ps.procedure.name
                           - if [218, 21, 10].include? ps.procedure.id
-                            <a href="javascript:toggle_tab('#care_pathways_tab')"><i class="icon-leaf icon-blue"></i></a>
+                            <a href="javascript:toggle_tab('#care_pathways_tab')"><i class="icon-leaf icon-light-blue"></i></a>
                           - if [365].include? ps.procedure.id
-                            <a href="javascript:toggle_tab('#pearls_tab')"><i class="icon-star icon-blue"></i></a>
-                          - if [21].include? ps.procedure.id 
-                            <a href="javascript:toggle_tab('#red_flags_tab')"><i class="icon-flag icon-blue"></i></a>
+                            <a href="javascript:toggle_tab('#pearls_tab')"><i class="icon-star icon-light-blue"></i></a>
+                          - if [21, 154, 9, 10, 12].include? ps.procedure.id 
+                            <a href="javascript:toggle_tab('#red_flags_tab')"><i class="icon-flag icon-light-blue"></i></a>
                         - next if children.length == 0
                         .collapse{:id => "children_sp#{ps.procedure.id}_"}
                           %script{"type" => "text/javascript"}
@@ -491,8 +492,28 @@
                     
       #red_flags_tab.tab-pane
         - if [1, 29, 30, 32].include? @specialization.id
-          %h3 Back
-          %h4 Red Flags for Low Back Pain
+          %h3 Ankle and Foot
+          %ul
+            %li fracture
+            %li dislocation
+            %li infected joint
+            %li rupture of Achilles tendon
+            
+          %h3 Knee and Hip
+          %ul
+            %li fracture
+            %li locked knee
+            %li infected joint
+            %li rupture of quadriceps tendon or patellar tendon
+            
+          %h3 Upper Extremities
+          %ul
+            %li fracture
+            %li dislocation
+            %li infected joint
+            %li distal biceps tendon rupture
+          
+          %h3 Low Back Pain
           %ul 
             %li Major trauma
             %li Minor trauma in the elderly or osteoporotic Age > 50 or < 20 years 
@@ -505,6 +526,7 @@
             %li Severe progressive sensory alteration or weakness 
             %li Bladder or bowel dysfuncion 
             %li Evidence of neurological deficit in the perineum
+            
                     
       #patient_education_tab.tab-pane
         - if @specialization.id == 30 #Pain Management

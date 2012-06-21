@@ -353,6 +353,23 @@
             %li=link_to "Oral contraceptives and venous thromboembolic risks", "/content/oral_contraceptives.html", :class => "ajax"
                     
       #red_flags_tab.tab-pane
+            
+        - if @procedure.id == 12 || @procedure.id == 154 #Foot and Ankle
+          %h3 Ankle and Foot
+          %ul
+            %li fracture
+            %li dislocation
+            %li infected joint
+            %li rupture of Achilles tendon
+            
+        - if @procedure.id == 10 || @procedure.id == 9 #Knee & hip
+          %h3 Knee and Hip
+          %ul
+            %li fracture
+            %li locked knee
+            %li infected joint
+            %li rupture of quadriceps tendon or patellar tendon
+            
         - if @procedure.id == 21 #Back
           %h4 Red Flags for Low Back Pain
           %ul 

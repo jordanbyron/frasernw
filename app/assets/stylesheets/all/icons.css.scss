@@ -5,6 +5,16 @@
   font-size: 15px;
 }
 
+[class^="icon-small"]:before, [class*=" icon-small"]:before 
+{
+  font-size: 12px;
+}
+
+[class^="icon-"]:hover:before, [class*=" icon-"]:hover:before 
+{
+  text-decoration: none;
+}
+
 .btn-mini
 {
   [class^="icon-"]:before, [class*=" icon-"]:before 
@@ -41,7 +51,15 @@ $FNW_ICON_WIDTH: 18px;
 }
 
 .icon-dark-gray {
-  color: $FNW_DARK_GRAY
+  color: $FNW_DARK_GRAY;
+}
+
+.icon-light-blue {
+  color: $FNW_LIGHT_BLUE;
+}
+
+.icon-disabled {
+  color: $FNW_DISABLED_TEXT;
 }
 
 .specialty:before, 
