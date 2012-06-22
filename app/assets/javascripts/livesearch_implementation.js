@@ -13,7 +13,7 @@ function pathways_grouper(a, b)
 
 function pathways_data_formatter(total_score, scores_matches, data_entry)
 {
-  var result = "<a class='search-result' id='search_result_" + data_entry.go + '_' + data_entry.id + "'  href='/" + pathways_url_data[data_entry.go] + '/' + data_entry.id + "' class='ajax'><li>"
+  var result = "<li class='search-result'><a class='ajax' id='search_result_" + data_entry.go + '_' + data_entry.id + "'  href='/" + pathways_url_data[data_entry.go] + '/' + data_entry.id + "'>"
   
   result += "<div class='search_name status_" + data_entry.st + "'>" + livesearch_highlighter( data_entry.n, scores_matches.n.matches ) + "</div>"
   
@@ -23,34 +23,43 @@ function pathways_data_formatter(total_score, scores_matches, data_entry)
   {
     for (var i = 0; i < data_entry.sp.length; ++i)
     {
-      specialties.push( pathways_specialization_data[data_entry.sp[i]] )
+      specialties.push( pathways_specialization_data[data_entry.sp[i]] );
     }
   }
   
   result += "<div class='search_specialties'>" + specialties.to_sentence() + "</div>";
   
-  if(data_entry.wt && (data_entry.wt != "") && data_entry.c && (data_entry.c != ""))
+  var has_wait_time = data_entry.wt && (data_entry.wt != "");
+  var has_city = data_entry.c && (data_entry.c != "")
+  
+  if (has_wait_time || has_city)
   {
     result += "<div class='search_wait_time'>"
-    result += "Wait time: " + data_entry.wt
+    if (has_wait_time)
+    {
+      result += "Wait time: " + data_entry.wt; 
+    }
+    else
+    {
+      result += "&nbsp;";
+    }
+    result += "</div>";
+    
+    result += "<div class='search_city'>";
+    if (has_city)
+    {
+      result += pathways_city_data[data_entry.c];
+    }
+    else
+    {
+      result += "&nbsp;";
+    }
     result += "</div>"
-    result += "<div class='search_city'>" + pathways_city_data[data_entry.c] + "</div>"
-  }
-  else if (data_entry.wt && (data_entry.wt != ""))
-  {
-    result += "<div class='search_wait_time'>"
-    result += "Wait time: " + data_entry.wt
-    result += "</div>"
-  }
-  else if (data_entry.c && (data_entry.c != ""))
-  {
-    result += "<div class='search_wait_time'></div>"
-    result += "<div class='search_city'>" + pathways_city_data[data_entry.c] + "</div>"
   }
   
-  result += "</li></a>";
+  result += "</a></li>";
   
-  return result;
+  return $(result).ajaxify();
 }
 
 function pathways_group_formatter(group_id)
@@ -87,6 +96,6 @@ function pathways_group_formatter(group_id)
 
 function pathways_searcher(data_entry)
 {
-  $.each( $('#search_result_' + data_entry.go + '_' + data_entry.id), function(x){ $(x).click() });
+  $.each( $('#search_result_' + data_entry.go + '_' + data_entry.id), function(){ console.log(this); $(this).click() });
   return false;
 }

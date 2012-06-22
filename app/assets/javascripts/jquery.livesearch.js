@@ -111,7 +111,6 @@ jQuery.fn.livesearch = function(options)
     selected = 0
     set_selected(selected)
     
-    container.ajaxify();
     container.animate({height: "show"}, 200) 
 	}
   

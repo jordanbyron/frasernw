@@ -103,52 +103,57 @@ body.loading #loading
       display: block;
       padding: 5px 0;
       margin: 0;
-      width: 100%;
-      min-height: 20px;
-      line-height: 20px;
-      color: $FNW_BLUE;
     }
     
-    a.search-result li
+    li.search-result
     {
-      padding: 0;
       margin: 0;
+      padding: 0;
       
-      div
+      a
       {
-        float: left;
         display: inline-block;
-        margin-left: $FNW_STATUS_INDENT;
-        width: 200px - $FNW_STATUS_INDENT;
-        overflow: visible;
-      }
-      
-      div.search_specialties, div.search_city
-      {
-        margin-left: 20px;
-        width: 180px;
-      }
-      
-      div.search_wait_time
-      {
-        clear: both;
-        padding-bottom: 5px;
-      }
-      
-      em
-      {
-        font-style: normal;
-        font-weight: bold;
-        background-color: $FNW_LIGHT_BLUE;
+        padding: 5px 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        color: $FNW_BLUE;
+        
+        div
+        {
+          float: left;
+          display: inline-block;
+          margin-left: $FNW_STATUS_INDENT;
+          width: 200px - $FNW_STATUS_INDENT;
+          overflow: visible;
+        }
+        
+        div.search_specialties, div.search_city
+        {
+          margin-left: 20px;
+          width: 180px;
+        }
+        
+        div.search_wait_time
+        {
+          clear: both;
+        }
+        
+        em
+        {
+          font-style: normal;
+          font-weight: bold;
+          background-color: $FNW_LIGHT_BLUE;
+        }
       }
     }
     
-    a + a
+    li.search-result + li.search-result
     {
       border-top: 1px solid $FNW_LIGHT_GRAY;
     }
     
-    a:hover, a.selected
+    a:hover, li.selected a
     {
       background: $FNW_LIGHT_BLUE;
       color: $FNW_RED;
