@@ -20,8 +20,10 @@
 		var
 			/* Application Specific Variables */
 			$content = $('#container').filter(':first'),
+			$loader = $('#loading').filter(':first'),
 			contentNode = $content.get(0),
       fadeSpeed = 75,
+      loadSpeed = 500,
 			/* Application Generic Variables */
 			$body = $(document.body),
 			rootUrl = History.getRootUrl(),
@@ -123,6 +125,7 @@
 
 			// Set Loading
 			$body.addClass('loading');
+			$loader.animate({opacity:1.0},loadSpeed);
 
 			// Start Fade Out
 			// Animating to opacity to 0 still keeps the element's height intact
@@ -180,6 +183,7 @@
 					// Complete the change
 					if ( $body.ScrollTo||false ) { $body.ScrollTo(scrollOptions); } /* http://balupton.com/projects/jquery-scrollto */
 					$body.removeClass('loading');
+          $loader.animate({opacity:0.0},loadSpeed);
 	
 					// Inform Google Analytics of the change
 					if ( _gaq ) {
