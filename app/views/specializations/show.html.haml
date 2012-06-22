@@ -473,6 +473,15 @@
             %li Tenderness at the fibular head
             %li Unable to flex knee to 90 degrees
             %li Unable to bear weight immediately and in the ED (4 steps, limping is OK)
+            
+        - if @specialization.id == 4 #Cardiology
+          %ul
+            %li
+              %a{"href" => "http://www.bcguidelines.ca/pdf/cvd_summary.pdf", "target" => "_blank"} GPAC Summary: Cardiovascular Disease - Primary Prevention
+            %li
+              %a{"href" => "http://www.bcguidelines.ca/pdf/heart_failure_summary.pdf", "target" => "_blank"} GPAC Summary: Heart Failure Care
+            %li
+              %a{"href" => "http://www.bcguidelines.ca/pdf/hypertension_summary.pdf", "target" => "_blank"} GPAC Summary: Hypertension - Detection, Diagnosis and Management
                     
       #pearls_tab.tab-pane
         - if @specialization.id == 8 || @specialization.id == 3 || @specialization.id == 13 #GI, General Surgery, Internal Medicine

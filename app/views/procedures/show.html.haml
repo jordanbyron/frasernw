@@ -343,6 +343,13 @@
             %li Tenderness at the fibular head
             %li Unable to flex knee to 90 degrees
             %li Unable to bear weight immediately and in the ED (4 steps, limping is OK)
+            
+        - if @procedure.id == 443 #Heart Failure
+          %a{"href" => "http://www.bcguidelines.ca/pdf/heart_failure_summary.pdf", "target" => "_blank"} GPAC Summary: Heart Failure Care
+          
+          
+        - if @procedure.id == 441 #Hypertension
+          %a{"href" => "http://www.bcguidelines.ca/pdf/hypertension_summary.pdf", "target" => "_blank"} GPAC Summary: Hypertension - Detection, Diagnosis and Management
                     
       #pearls_tab.tab-pane
         - if @procedure.id == 365 #Colonoscopy
@@ -368,7 +375,7 @@
             %li fracture
             %li locked knee
             %li infected joint
-            %li rupture of quadriceps tendon or patellar tendon
+            %li rupture of quadriceps tendon or patellar tendony
             
         - if @procedure.id == 21 #Back
           %h4 Red Flags for Low Back Pain
