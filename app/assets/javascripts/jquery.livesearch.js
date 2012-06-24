@@ -70,11 +70,13 @@ jQuery.fn.livesearch = function(options)
     data.each(function()
     {
       var total_score = 0
+      var total_items = 0
       var scores_matches = scorer_fnc(this, term, fuzziness)
     
-      $.each(scores_matches, function(k, v) { total_score += v.score } );
+      $.each(scores_matches, function(k, v) { total_items += 1; total_score += v } );
+      total_score /= total_items
               
-      if ( !best_match || best_match.total_score < total_score )
+      if ( !best_match || total_score > best_match.total_score )
         best_match = {total_score: total_score, scores_matches: scores_matches, data_entry: this}
     
       if (total_score >= min_score) 
@@ -116,7 +118,7 @@ jQuery.fn.livesearch = function(options)
   
   function scorer(data_entry, term, fuzziness) 
   {
-    return { value: data_entry.value.score_matches(term, fuzziness) };
+    return { value: score_matches( term, data_entry.value, fuzziness) };
   }
   
   function grouper(a, b)
@@ -129,7 +131,7 @@ jQuery.fn.livesearch = function(options)
   
   function data_formatter(total_score, scores_matches, data_entry)
   {
-    return "<li class='search-result'><a href=\'" + data_entry.url + "'>" + livesearch_highlighter( data_entry.value, scores_matches.value.matches ) + '</a></li>';
+    return "<li class='search-result'><a href=\'" + data_entry.url + "'>" + data_entry.value + '</a></li>';
   }
   
   function group_formatter(group_id)
@@ -171,7 +173,7 @@ Array.prototype.hasValue = function(value)
 }
 
  /*!
- * score_matches, built off of string_score
+ * score_matches, very loosely built off of string_score
  * 
  * string_score.js: String Scoring Algorithm 0.1.10 
  *
@@ -192,142 +194,163 @@ Array.prototype.hasValue = function(value)
  */
 
 
-String.prototype.score_matches = function(abbreviation, fuzziness) 
+var score_matches = function(string1, string2, fuzziness) 
 {
-  var matches = new Array();
-  abbreviation = abbreviation.toLowerCase();
-  
-  // If the string is equal to the abbreviation, perfect match.
-  if (this.toLowerCase() == abbreviation) 
+  if (string1.trim() == "" || string2.trim() == "")
   {
-    for ( var i = 0; i < this.length; ++i )
-    {
-      matches[i] = i;
-    }
-    return { score: 1.0, matches: matches };
+    return 0.0;
   }
   
-  //if it's not a perfect match and is empty return 0
-  if(abbreviation == "") 
-  { 
-    return { score: 0.0, matches: [] }; 
-  }
+  arr1 = string1.trim().toLowerCase().split(' ');
+  arr2 = string2.trim().toLowerCase().split(' ');
   
-  var total_character_score = 0,
-  string = this.toLowerCase(),
-  string_length = string.length,
-  abbreviation_length = abbreviation.length,
-  start_of_word_matches = 0,
-  abbreviation_score,
-  cur_start = 0,
-  num_matches = 0,
-  fuzzies = 1,
-  final_score;
+  best_match = new Array(arr1.length);
   
-  var i = 0;
-  // Walk through abbreviation and add up scores.
-  while (i < abbreviation_length) 
+loop1:
+  for(var x = 0; x < arr1.length; ++x)
   {
-    // Find the longest match remaining.
-    for (var match_length = abbreviation_length - i; match_length > 0; --match_length)
+    best_match[x] = 0;
+    piece1 = arr1[x];
+    
+  loop2:
+    for (var y = 0; y < arr2.length; ++y )
     {
-      var index_in_string = string.indexOf( abbreviation.substr(i, match_length) );
+      piece2 = arr2[y]
       
-      if (index_in_string != -1)
+      // perfect match?
+      if (piece1 == piece2) 
       {
+        best_match[x] = 1.0;
         break;
       }
-    }
-    
-    var character_score = 0.0;
-    
-    if (index_in_string === -1) 
-    { 
-      if (fuzziness) 
+      
+      var total_character_score = 0,
+      piece1_length = piece1.length,
+      piece2_length = piece2.length,
+      start_of_word_matches = 0,
+      cur_start = 0,
+      num_matches = 0,
+      fuzzies = 1,
+      piece_score;
+      
+      var i = 0;
+      
+      while (i < piece1_length) 
       {
-        fuzzies += 1-fuzziness;
-        ++i;
-        continue;
+        // Find the longest match remaining.
+        for (var match_length = piece1_length - i; match_length > 0; --match_length)
+        {
+          var index_in_string = piece2.indexOf( piece1.substr(i, match_length) );
+          
+          if (index_in_string != -1)
+          {
+            break;
+          }
+        }
+        
+        var character_score = 0.0;
+        
+        if (index_in_string === -1) 
+        { 
+          if (fuzziness) 
+          {
+            fuzzies += 1-fuzziness;
+            ++i;
+            continue;
+          } 
+          else 
+          {
+            continue loop2;
+          }
+        }
+        
+        ++num_matches;
+        
+        // Set base score for matching 'c'.
+        var match_score = match_length / piece1_length;
+        
+        var start_of_abbrev_word = ((i == 0) || (piece1.charAt(i-1) == ' '))
+        var start_of_string_word = ((cur_start == 0) || (piece2.charAt(index_in_string-1) == ' '))
+        
+        // Consecutive letter & start-of-string or word bonus
+        if (start_of_abbrev_word && start_of_abbrev_word) 
+        {
+          // Increase the score when matching first character of the remainder of the string, or starting a new word
+          start_of_word_matches += 1;
+        }
+        
+        // Left trim the already matched part of the string (forces sequential matching).
+        piece2 = piece2.substring(index_in_string + match_length + 1, piece2_length);
+        i += match_length + 1;
+        cur_start += index_in_string + match_length + 1;
+        
+        total_character_score += match_score;
       } 
-      else 
+      
+      if (num_matches == 0)
       {
-        return [0,[]];
+        continue;
+      }
+      
+      //take into account errors
+      piece_score = piece_score / fuzzies;
+      
+      //penalize each match that isn't a start of string
+      var piece_score = total_character_score - ((num_matches-start_of_word_matches) * 0.2);
+      
+      //penalize longer words slightly
+      piece_score *= 1.0 - (Math.abs(piece2_length - piece1_length) * 0.01);
+      
+      if ( piece_score > best_match[x] )
+      {
+        best_match[x] = piece_score;
       }
     }
-    
-    ++num_matches;
-    
-    // Set base score for matching 'c'.
-    var match_score = match_length / abbreviation_length;
-    
-    for (var k = 0; k < match_length; ++k)
-    {
-      matches.push(cur_start + index_in_string + k);
-    }
-    
-    var start_of_abbrev_word = ((i == 0) || (abbreviation.charAt(i-1) == ' '))
-    var start_of_string_word = ((cur_start == 0) || (string.charAt(index_in_string-1) == ' '))
-    
-    // Consecutive letter & start-of-string or word bonus
-    if (start_of_abbrev_word && start_of_abbrev_word) 
-    {
-      // Increase the score when matching first character of the remainder of the string, or starting a new word
-      start_of_word_matches += 1;
-    }
-    
-    // Left trim the already matched part of the string (forces sequential matching).
-    string = string.substring(index_in_string + match_length + 1, string_length);
-    i += match_length + 1;
-    cur_start += index_in_string + match_length + 1;
-    
-    total_character_score += match_score;
-  } 
-  
-  if (matches.length == 0)
-  {
-    return 0;
   }
   
-  //take into account errors
-  final_score = final_score / fuzzies;
+  overall_score = 0;
+  for ( var x = 0; x < best_match.length; ++x )
+  {
+    overall_score += best_match[x];
+  }
+  overall_score /= best_match.length;
   
-  //penalize each match that isn't a start of string
-  var final_score = total_character_score - ((num_matches-start_of_word_matches) * 0.2);
-  
-  //penalize longer words slightly
-  final_score *= 1.0 - (Math.abs(string_length - abbreviation_length) * 0.01);
-  
-  return { score: final_score, matches: matches };
+  return overall_score;
 };
 
-function livesearch_highlighter(string, matches)
+var levenshtein_distance = function(string1, string2) 
 {
-  var output = "";
-  var string_length = string.length;
-  var currently_highlighted = false;
-  
-  for ( var i = 0; i < string_length; ++i )
+  length1 = string1.length
+  length2 = string2.length
+
+  var D = new Array(length1 + 1);
+  for (var i = 0; i <= length1; i++) 
   {
-    var should_highlight = matches.hasValue(i);
-    
-    if ( should_highlight && !currently_highlighted )
-    {
-      output += "<em>";
-      currently_highlighted = true;
-    }
-    else if ( !should_highlight && currently_highlighted )
-    {
-      output += "</em>";
-      currently_highlighted = false;
-    }
-    
-    output += string.charAt(i);
+    D[i] = new Array(length2 + 1);
+    D[i][0] = i;
+  }
+  for (var j = 0; j <= length2; j++) 
+  {
+    D[0][j] = j;
   }
   
-  if ( currently_highlighted )
+  for (var j = 1; j <= length2; ++j)
   {
-    output += "</em>";
+    for (var i = 1; i <= length1; ++i)
+    {
+      var cost = string1.charAt(i) == string2.charAt(j) ? 0 : 1;
+      var cI = D[i-1][j] + 1; //insertion
+      var cD = D[i][j-1] + 1; //deletion
+      var cS = D[i-1][j-1] + cost; //substitution
+      if ( cI < cD )
+      {
+        D[i][j] = cI < cS ? cI : cS;
+      }
+      else
+      {
+        D[i][j] = cD < cS ? cD : cS;
+      }
+    }
   }
-  
-  return output;
+  return { score: D[length1][length2], matches: [] };
 }

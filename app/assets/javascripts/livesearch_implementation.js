@@ -2,7 +2,7 @@
 function pathways_scorer(data_entry, term, fuzziness) 
 {
   return { 
-    n: data_entry.n.score_matches(term, fuzziness)
+    n: score_matches( term, data_entry.n, fuzziness)
   };
 }
 
@@ -15,7 +15,7 @@ function pathways_data_formatter(total_score, scores_matches, data_entry)
 {
   var result = "<li class='search-result'><a class='ajax' id='search_result_" + data_entry.go + '_' + data_entry.id + "'  href='/" + pathways_url_data[data_entry.go] + '/' + data_entry.id + "'>"
   
-  result += "<div class='search_name status_" + data_entry.st + "'>" + livesearch_highlighter( data_entry.n, scores_matches.n.matches ) + "</div>"
+  result += "<div class='search_name status_" + data_entry.st + "'>" + data_entry.n + "</div>"
   
   var specialties = new Array();
   
