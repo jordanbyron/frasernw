@@ -1,11 +1,11 @@
 <%
 
 group_data = { 
-  "1" => "Specialists",
-  "2" => "Clinics",
-  "3" => "Hospitals",
+  "1" => "Specialties", 
+  "2" => "Specialists",
+  "3" => "Clinics",
   "4" => "Areas of Practice",
-  "5" => "Specialties", 
+  "5" => "Hospitals",
   "6" => "Languages" 
 }
   
@@ -58,7 +58,7 @@ Specialization.all.each do |specialization|
   entry = { 
     "n" => specialization.name, 
     'id' => specialization.id,
-    "go" => 5 }
+    "go" => 1 }
   search_data << entry
 end 
 
@@ -91,7 +91,7 @@ specialists.each do |specialist|
     "st" => specialist.status_class,
     "wt" => specialist.waittime || "",
     "id" => specialist.id,
-    "go" => 1 }
+    "go" => 2 }
   search_data << entry
 end
 
@@ -109,7 +109,7 @@ clinics.each do |clinic|
     "st" => clinic.status_class,
     "wt" => clinic.waittime,
     "id" => clinic.id,
-    "go" => 2 }
+    "go" => 3 }
   search_data << entry
 end
 
@@ -120,7 +120,7 @@ hospitals.each do |hospital|
     "n" => hospital.name, 
     "c" => hospital.city_id, 
     "id" => hospital.id,
-    "go" => 3 }
+    "go" => 5 }
   search_data << entry
 end
 
