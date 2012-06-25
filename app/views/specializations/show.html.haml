@@ -175,7 +175,7 @@
                             %label
                               %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_"}= ps.procedure.name
                               - if ps.procedure.id == 231
-                                <a href="javascript:toggle_tab('#pearls_tab')"><i class="icon-star icon-blue"></i></a>
+                                <a href="javascript:toggle_tab('#pearls_tab')"><i class="icon-star icon-light-blue"></i></a>
                             - next if children.length == 0
                             .collapse{:id => "children_sp#{ps.procedure.id}_"}
                               %script{"type" => "text/javascript"}
@@ -503,24 +503,24 @@
         - if [1, 29, 30, 32].include? @specialization.id
           %h3 Ankle and Foot
           %ul
-            %li fracture
-            %li dislocation
-            %li infected joint
-            %li rupture of Achilles tendon
+            %li Fracture
+            %li Dislocation
+            %li Infected joint
+            %li Rupture of Achilles tendon
             
           %h3 Knee and Hip
           %ul
-            %li fracture
-            %li locked knee
-            %li infected joint
-            %li rupture of quadriceps tendon or patellar tendon
+            %li Fracture
+            %li Locked knee
+            %li Infected joint
+            %li Rupture of quadriceps tendon or patellar tendon
             
           %h3 Upper Extremities
           %ul
-            %li fracture
-            %li dislocation
-            %li infected joint
-            %li distal biceps tendon rupture
+            %li Fracture
+            %li Dislocation
+            %li Infected joint
+            %li Distal biceps tendon rupture
           
           %h3 Low Back Pain
           %ul 
