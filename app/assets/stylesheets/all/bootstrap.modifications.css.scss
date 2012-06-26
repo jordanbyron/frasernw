@@ -329,19 +329,25 @@ ul.dropdown-menu
   {
     ul.nav-tabs
     {
+      background-color: $FNW_DARK_GRAY;
       margin: 8px 0;
-      border-color: $FNW_DARK_GRAY;
+      padding: 0;
+      border: none;
       
       li
       {
-        margin-left: 4px;
+        margin: 0;
+        padding: 0;
+        border: 0;
         
         a
         {
-          border: 1px solid $FNW_MID_GRAY;
-          border-bottom-color: transparent;
+          color: $FNW_MID_GRAY;
+          border: none;
+          border-radius: 0;
           text-decoration: none;
-          padding: 8px;
+          padding: 4px 16px;
+          margin: 0;
         }
       }
     
@@ -349,17 +355,24 @@ ul.dropdown-menu
       {
         a
         {
-          border-color: $FNW_DARK_GRAY;
-          border-bottom-color: transparent;
+          color: $FNW_WHITE;
+          background: #757575;
+          font-weight: bold;
+          border: none;
         }
       }
       
       li:not(.active) a:hover
       {
-        background: $FNW_LIGHT_BLUE;
-        border-color: $FNW_DARK_GRAY;
-        color: $FNW_RED;
+        background: #757575;
+        border: none;
         cursor: pointer;
+      }
+      
+      li + li
+      {
+        padding-left: 2px;
+        background: $FNW_DARK_GRAY url(/img/tab_divider.png) 0% 50% no-repeat;
       }
     }
   }
