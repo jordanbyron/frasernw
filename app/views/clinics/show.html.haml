@@ -29,7 +29,7 @@
       %strong.status{ :class => "status_#{@clinic.status_class}"}= @clinic.status.end_with_period
     - if @clinic.limitations.present?
       %p
-        %strong Interests:
+        %strong Limitations:
         = @clinic.limitations.end_with_period
     
     - address = @clinic.resolved_address
