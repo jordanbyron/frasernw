@@ -32,29 +32,42 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
     background-color: $FNW_NAV_BACKGROUND;
     background-image: none;
     border-radius: 0;
-    box-shadow: 0 1px 3px $FNW_MID_GRAY;
+    box-shadow: none;
+    
+    .navbar-search
+    {
+      margin-left: 12px;
+      margin-top: 28px;
+      padding: 0 6px;
+    }
     
     .navbar-search .search-query, .navbar-search .search-query:focus
     {
       border: none;
-      padding: 5px 10px;
+      padding: 3px 10px;
       color: $FNW_TEXT;
       background: $FNW_BACKGROUND;
     }
     
-    .navbar-search .search-query :-moz-placeholder 
+    .navbar-search .search-query :-moz-placeholder, .navbar-search .search-query::-webkit-input-placeholder
     {
       color: $FNW_MID_GRAY;
     }
     
-    .navbar-search .search-query::-webkit-input-placeholder
-     {
-      color: $FNW_MID_GRAY;
+    .nav
+    {
+      margin-top: 30px;
     }
     
     .nav > li > a
     {
       color: $FNW_MID_GRAY;
+      padding: 0 6px;
+    }
+    
+    .nav > li + li
+    {
+      border-left: 1px solid #666666;
     }
     
     .nav > li > a:hover

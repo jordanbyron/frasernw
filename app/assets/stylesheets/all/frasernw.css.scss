@@ -13,6 +13,15 @@ $FNW_STATUS_INDENT: 40px;
   background-image: url(/img/orange-stripes.png);
 }
 
+#logo
+{
+  width: 202px;
+  height: 45px;
+  background: transparent url(/img/logo.png) 50% 50% no-repeat;
+  margin: 0;
+  padding: 6px 0;
+}
+
 body 
 {
   background-color: $FNW_BACKGROUND;
@@ -48,7 +57,7 @@ body.loading #loading
   z-index: 1979;
   position: absolute;
   overflow: hidden;
-  top: 35px;
+  top: 29px;
   right: 0;
   margin: 0;
   padding: 0;
