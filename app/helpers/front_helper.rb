@@ -4,7 +4,7 @@ module FrontHelper
     
     events = {}
         
-    Version.order("id desc").where("item_type = ? OR item_type = ? OR item_type = ? OR item_type = ? OR item_type = ? OR item_type = ?", "Specialist", "Clinic", "Attendance", "Schedule", "Address", "SpecialistOffice").limit(200).each do |version|
+    Version.order("id desc").where("item_type = ? OR item_type = ? OR item_type = ? OR item_type = ? OR item_type = ? OR item_type = ?", "Specialist", "Clinic", "Attendance", "Schedule", "Address", "SpecialistOffice").limit(500).each do |version|
     
       next if version.item.blank?
       break if events.length >= max_events
@@ -16,7 +16,7 @@ module FrontHelper
           specialist = version.item
           next if specialist.blank?
           
-          if version.event == "create" && specialist.accepting_new_patients?
+          if version.event == "create" && specialist.accepting_new_patients? && specialist.opened_this_year?
             
             #new specialist that is accepting patients
             
@@ -28,7 +28,16 @@ module FrontHelper
           
           elsif version.event == "update"
           
-            if specialist.retired?
+            if specialist.moved_away?
+              
+              next if version.previous.blank? || version.previous.reify.blank?
+              next if version.previous.reify.moved_away? #moved away status hasn't changed
+              
+              #newly moved away
+              
+              events["#{version.item_type}_#{version.item.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has moved away.".html_safe
+              
+            elsif specialist.retired?
               
               next if version.previous.blank? || version.previous.reify.blank?
               next if version.previous.reify.retired? #retired status hasn't changed
@@ -53,7 +62,7 @@ module FrontHelper
           clinic = version.item
           next if clinic.blank?
           
-          if version.event == "create" && clinic.accepting_new_patients?
+          if version.event == "create" && clinic.accepting_new_patients? && clinic.opened_this_year?
             
             #new clinic
           
@@ -94,7 +103,7 @@ module FrontHelper
           
           end
           
-        elsif version.item_type == "Address"
+        elsif version.item_type == "Address" && false
           
           address = version.item
           next if address.blank? || address.locations.blank?
@@ -121,7 +130,7 @@ module FrontHelper
           
           end
           
-        elsif version.item_type == "SpecialistOffice"
+        elsif version.item_type == "SpecialistOffice" && false
         
           specialist_office = version.item
           next if specialist_office.blank? || specialist_office.specialist.blank? || specialist_office.office.blank?
