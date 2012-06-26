@@ -31,8 +31,9 @@
             %h3 Latest Updates
             
             %ul.space
-              - latest_events(5).each do |event|
-                %li= event
+              - cache(:action => 'index') do
+                - latest_events(5).each do |event|
+                  %li= event
               
         .row
           .span4
