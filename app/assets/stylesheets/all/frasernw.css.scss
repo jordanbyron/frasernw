@@ -589,11 +589,35 @@ body.loading #loading
     .filter-group-title
     {
       display: block;
-      padding: 4px 12px;
+      padding: 4px 0 4px 12px;
       color: $FNW_BLUE;
       background: $FNW_LIGHT_BLUE;
       font-weight: bold;
       border-top: 2px solid $FNW_BACKGROUND;
+    }
+      
+    .filter-group-title.closed:after, .filter-group-title.open:after
+    {
+      font-family: FontAwesome;
+      font-weight: normal;
+      font-style: normal;
+      font-size: 11px;
+      display: block;
+      float: right;
+      width: 46px;
+      padding-top: 2px;
+      text-align: center;
+      background: transparent url(/img/filtering_divider.png) 0% 50% repeat-y;
+    }
+      
+    .filter-group-title.closed:after
+    {
+      content: "\f067";
+    }
+      
+    .filter-group-title.open:after
+    {
+      content: "\f068";
     }
     
     a.filter-group-title:hover

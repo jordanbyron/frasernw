@@ -120,13 +120,13 @@
                   .title
                     Filter Specialists
                   .filter-group
-                    %a.filter-group-title{"data-toggle" => "collapse", "href" => "#specialist-filter-aop"}
+                    %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#specialist-filter-aop"}
                       Areas of Practice
                       -# - if @specialization.procedure_specializations.assumed.present?
                         %sup
                           %a.asterisk{"href" => "#specialist_assumed_list"}
                             %i.icon-asterisk.icon-disabled.icon-small
-                    #specialist-filter-aop.in
+                    #specialist-filter-aop.collapsable.in
                       .filter-group-content
                         - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
                           - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
@@ -192,9 +192,9 @@
                               
                             
                   .filter-group
-                    %a.filter-group-title{"data-toggle" => "collapse", "href" => "#specialist-filter-referral"}
+                    %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#specialist-filter-referral"}
                       Referrals
-                    #specialist-filter-referral.in
+                    #specialist-filter-referral.collapsable.in
                       .filter-group-content
                         %label
                           %input#srph.sr{"type" => "checkbox"} Accepted via phone
@@ -208,9 +208,9 @@
                           %input#srpb.sr{"type" => "checkbox"} Patients can call to book after referral
       
                   .filter-group
-                    %a.filter-group-title{"data-toggle" => "collapse", "href" => "#specialist-filter-sex"}
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-sex"}
                       Sex
-                    #specialist-filter-sex.collapse
+                    #specialist-filter-sex.collapsable.collapse
                       .filter-group-content
                         %label.half
                           %input#ssm.ss{"type" => "checkbox"} Male
@@ -218,9 +218,9 @@
                           %input#ssf.ss{"type" => "checkbox"} Female
                 
                   .filter-group
-                    %a.filter-group-title{"data-toggle" => "collapse", "href" => "#specialist-filter-language"}
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-language"}
                       Languages
-                    #specialist-filter-language.collapse
+                    #specialist-filter-language.collapsable.collapse
                       .filter-group-content
                         %label
                           %input#si.si{"type" => "checkbox"} Interpreter available
@@ -229,9 +229,9 @@
                             %input.sl{"type" => "checkbox", "id" => "sl#{l.id}_"}= l.name
                           
                   .filter-group
-                    %a.filter-group-title{"data-toggle" => "collapse", "href" => "#specialist-filter-association"}
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-association"}
                       Associations
-                    #specialist-filter-association.collapse
+                    #specialist-filter-association.collapsable.collapse
                       .filter-group-content
                         %label.indent
                           Clinic:
@@ -287,9 +287,9 @@
                   .title
                     Filter Clinics
                   .filter-group
-                    %a.filter-group-title{"data-toggle" => "collapse", "href" => "#clinic-filter-aop"}
+                    %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#clinic-filter-aop"}
                       Areas of Practice
-                    #clinic-filter-aop.in
+                    #clinic-filter-aop.collapsable.in
                       .filter-group-content
                         - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
                           - next if ps.procedure.all_clinics_for_specialization(@specialization).blank?
@@ -346,9 +346,9 @@
                                     %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "class" => "child_cp#{parent_id}"}= ps.procedure.name
                               
                   .filter-group
-                    %a.filter-group-title{"data-toggle" => "collapse", "href" => "#clinic-filter-referral"}
+                    %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#clinic-filter-referral"}
                       Referrals
-                    #clinic-filter-referral.in
+                    #clinic-filter-referral.collapsable.in
                       .filter-group-content
                         %label
                           %input#crph.cr{"type" => "checkbox"} Referrals are accepted via phone
@@ -364,9 +364,9 @@
 
                           
                   .filter-group
-                    %a.filter-group-title{"data-toggle" => "collapse", "href" => "#clinic-filter-details"}
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-details"}
                       Clinic Details
-                    #clinic-filter-details.collapse
+                    #clinic-filter-details.collapsable.collapse
                       .filter-group-content
                         %label.half
                           %input#cdpb.cd{"type" => "checkbox"} Public
@@ -376,9 +376,9 @@
                           %input.cd{"type" => "checkbox", "id" => "cdwa"} Wheelchair Accessible
                       
                   .filter-group
-                    %a.filter-group-title{"data-toggle" => "collapse", "href" => "#clinic-filter-schedule"}
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-schedule"}
                       Schedule
-                    #clinic-filter-schedule.collapse
+                    #clinic-filter-schedule.collapsable.collapse
                       .filter-group-content
                         %label
                           %input.csh{"type" => "checkbox", "id" => "cshmon"} Monday
@@ -396,18 +396,18 @@
                           %input.csh{"type" => "checkbox", "id" => "cshsun"} Sunday
                       
                   .filter-group
-                    %a.filter-group-title{"data-toggle" => "collapse", "href" => "#clinic-filter-healthcare-providers"}
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-healthcare-providers"}
                       Healthcare Providerss
-                    #clinic-filter-healthcare-providers.collapse
+                    #clinic-filter-healthcare-providers.collapsable.collapse
                       .filter-group-content
                         - HealthcareProvider.all.each do |h|
                           %label
                             %input.ch{"type" => "checkbox", "id" => "ch#{h.id}_"}= h.name
                 
                   .filter-group
-                    %a.filter-group-title{"data-toggle" => "collapse", "href" => "#clinic-filter-language"}
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-language"}
                       Languages
-                    #clinic-filter-language.collapse
+                    #clinic-filter-language.collapsable.collapse
                       .filter-group-content
                         %label
                           %input#ci.ci{"type" => "checkbox"} Interpreter available
@@ -419,6 +419,15 @@
                 :plain
                   $(document).ready(function() {
                     $('.cp, .cc, .cr, .cd, .csh, .ch, .ci, .cl').click( update_clinic_table );
+                  });
+
+              %script{"type" => "text/javascript"}
+                :plain
+                  $('.collapsable').on('shown', function() {
+                    $(this).siblings('.filter-group-title').removeClass('closed').addClass('open');
+                  });
+                  $('.collapsable').on('hidden', function() {
+                    $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
                   });
                     
       #calculator_tab.tab-pane
