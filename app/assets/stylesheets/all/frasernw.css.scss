@@ -569,6 +569,9 @@ body.loading #loading
   
   .filter
   {
+    margin: 0;
+    padding: 0 0 30px 0;
+    
     a i.icon-asterisk:hover
     {
       color: $FNW_BLUE;
@@ -576,20 +579,21 @@ body.loading #loading
     
     .title
     {
-      margin: -8px -8px 8px -8px;
-      padding: 8px;
-      background: $FNW_LIGHT_BLUE;
-      border-bottom: 1px dashed $FNW_BACKGROUND;
+      padding: 4px 0;
+      background: $FNW_HEADLINE_BACKGROUND;
       text-align: center;
-      color: $FNW_TEXT;
+      color: $FNW_DARK_GRAY;
       font-weight: bold;
     }
       
     .filter-group-title
     {
-      color: $FNW_TEXT;
+      display: block;
+      padding: 4px 12px;
+      color: $FNW_BLUE;
+      background: $FNW_LIGHT_BLUE;
       font-weight: bold;
-      padding-bottom: 4px;
+      border-top: 2px solid $FNW_BACKGROUND;
     }
     
     a.filter-group-title:hover
@@ -598,71 +602,78 @@ body.loading #loading
       text-decoration: none;
     }
     
-    label
+    .filter-group-content
     {
-      display: block;
-      text-indent: -18px;
-      padding-left: 18px;
+      padding: 12px;
       
-      input
+      label
       {
-        display: inline;
-        margin-right: 5px;
+        display: block;
+        text-indent: -18px;
+        padding-left: 18px;
+        
+        input
+        {
+          display: inline;
+          margin-right: 5px;
+        }
+        
+        i
+        {
+          text-indent: 0;
+        }
       }
       
-      i
+      .resource
       {
+        float: left;
+      }
+      
+      label.indent
+      {
+        margin-left: 18px;
         text-indent: 0;
+        padding-left: 0;
+        
+        select
+        {
+          margin-left: 0;
+          width: 95%;
+        }
       }
-    }
-    
-    .resource
-    {
-      float: left;
-    }
-    
-    label.indent
-    {
-      margin-left: 18px;
-      text-indent: 0;
-      padding-left: 0;
       
-      select
+      label.half
       {
-        margin-left: 0;
-        width: 95%;
+        display: inline-block;
+        width: 78px;
       }
-    }
-    
-    label.half
-    {
-      display: inline-block;
-      width: 80px;
-    }
-    
-    hr
-    {
-      margin: 8px auto;
-      border: 0;
-      height: 1px;
-      background-color: $FNW_MID_GRAY;
     }
   }
   
-  .filter-phrase, .assumed-phrase, .other-phrase
+  .filter-phrase
   {
-    background-color: $FNW_LIGHT_BLUE;
-    padding: 8px;
+    padding: 4px 8px;
+    font-weight: bold;
+  }
+  
+  .assumed-phrase, .other-phrase
+  {
+    background-color: $FNW_HEADLINE_BACKGROUND;
+    padding: 4px 8px;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
     font-weight: bold;
   }
   
+  .filter-phrase, .assumed-phrase, .other-phrase
+  {
+    margin-bottom: 4px;
+  }
+  
   .filter-phrase, .other-phrase
   {
     display: none;
-    margin-bottom: 12px;
   }
 
   .filter-phrase.none

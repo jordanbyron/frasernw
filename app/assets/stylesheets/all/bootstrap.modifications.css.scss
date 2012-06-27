@@ -330,7 +330,7 @@ ul.dropdown-menu
     ul.nav-tabs
     {
       background-color: $FNW_DARK_GRAY;
-      margin: 8px 0;
+      margin: 2px 0 24px 0;
       padding: 0;
       border: none;
       
@@ -448,7 +448,7 @@ ul.dropdown-menu
   .well
   {
     background-color: $FNW_LIGHT_GRAY;
-    border-color: $FNW_MID_GRAY;
+    border: none;
     padding: 8px;
     margin-bottom: 8px;
   }
