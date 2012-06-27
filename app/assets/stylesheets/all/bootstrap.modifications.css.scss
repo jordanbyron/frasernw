@@ -25,7 +25,7 @@ input.span1half, textarea.span1half, .uneditable-input.span1half {
 
 .navbar 
 {
-  margin-bottom: 10px;
+  margin-bottom: $FNW_BODY_BREATHING;
     
   .navbar-inner
   {
@@ -333,6 +333,8 @@ ul.dropdown-menu
       margin: 2px 0 24px 0;
       padding: 0;
       border: none;
+      margin-left: 2-$FNW_BODY_BREATHING;
+      margin-right: 2-$FNW_BODY_BREATHING;
       
       li
       {

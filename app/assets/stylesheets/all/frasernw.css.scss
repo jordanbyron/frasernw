@@ -1,7 +1,7 @@
 @import "_globals";
 
 
-$FNW_STATUS_INDENT: 40px;    
+$FNW_STATUS_INDENT: 40px;   
     
 .admin, .navbar .nav > li.admin
 {
@@ -24,7 +24,7 @@ $FNW_STATUS_INDENT: 40px;
 
 body 
 {
-  background-color: $FNW_BACKGROUND;
+  background-image: url(/img/background.png);
   color:$FNW_TEXT;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
@@ -43,6 +43,13 @@ body #loading
   left: 48%;
   background-image: url(/img/ajax-loader.gif);
   background-repeat: no-repeat;
+}
+
+#container
+{
+  margin: 0 0-$FNW_BODY_BREATHING;
+  padding: 0 $FNW_BODY_BREATHING;
+  background-color: $FNW_WHITE;
 }
 
 body.loading #loading
