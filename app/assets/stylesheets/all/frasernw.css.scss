@@ -181,7 +181,9 @@ body.loading #loading
   
   h3.specialty_links
   {
-    font-size: 15px;
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: bold;
     color: $FNW_TEXT;
   }
   
@@ -198,7 +200,7 @@ body.loading #loading
     font-weight: bold;
     font-size: 13px;
     text-transform: none;
-    margin: 16px 0;
+    margin: 24px 0 20px 0;
     padding: 4px 16px;
   }
   
@@ -219,7 +221,7 @@ body.loading #loading
   
   p.space
   {
-    margin-top: 6px;
+    margin-top: 12px;
   }
   
   p.admin.btn-group
@@ -668,7 +670,7 @@ body.loading #loading
   
   .areas-of-practice
   {
-    padding: 16px;
+    padding: 24px;
     
     p
     {
