@@ -146,12 +146,6 @@
                           - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
                           %label
                             %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}_').collapse('toggle')"}= ps.procedure.name
-                            - if [218, 21, 10].include? ps.procedure.id
-                              <a href="javascript:toggle_tab('#care_pathways_tab')"><i class="icon-leaf icon-light-blue"></i></a>
-                            - if [365].include? ps.procedure.id
-                              <a href="javascript:toggle_tab('#pearls_tab')"><i class="icon-star icon-light-blue"></i></a>
-                            - if [21, 154, 9, 10, 12].include? ps.procedure.id 
-                              <a href="javascript:toggle_tab('#red_flags_tab')"><i class="icon-flag icon-light-blue"></i></a>
                           - next if children.length == 0
                           .collapse{:id => "children_sp#{ps.procedure.id}_"}
                             %script{"type" => "text/javascript"}
@@ -189,8 +183,6 @@
                               - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
                               %label
                                 %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_"}= ps.procedure.name
-                                - if ps.procedure.id == 231
-                                  <a href="javascript:toggle_tab('#pearls_tab')"><i class="icon-star icon-light-blue"></i></a>
                               - next if children.length == 0
                               .collapse{:id => "children_sp#{ps.procedure.id}_"}
                                 %script{"type" => "text/javascript"}
