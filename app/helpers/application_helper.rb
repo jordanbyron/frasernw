@@ -56,14 +56,14 @@ module ApplicationHelper
       result += "<a class='ajax' href='#{procedure_path(item[:parent].procedure)}'>#{item[:parent].procedure.name}</a>"
       investigation = item[:parent].investigation(root)
       if investigation and investigation.length > 0
-        result += ": #{investigation}"
+        result += " (#{investigation})"
         has_investigation = true
       end
-      result += "</li>"
-      child_result, child_count, child_has_investigation = compressed_procedures_indented_output(item[:children], root)
-      result += child_result
-      count += child_count          
-      has_investigation |= child_has_investigation
+      if item[:children].length > 0
+        result += ": "
+        result += item[:children].map{ |c| "<a class='ajax' href='#{procedure_path(c[:parent].procedure)}'>#{c[:parent].procedure.name}</a>" }.to_sentence.html_safe
+      end
+      result += "</li>"         
     end
     result += "</ul>"
     return result, count, has_investigation

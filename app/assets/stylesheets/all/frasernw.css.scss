@@ -21,7 +21,8 @@
 
 body 
 {
-  background-image: url(/img/background.png);
+  /* background-image: url(/img/background.png); */
+  background-color: #EEE;
   color:$FNW_TEXT;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
@@ -192,21 +193,23 @@ body.loading #loading
   
   h6
   {
-    color: $FNW_RED;
+    color: $FNW_TEXT;
+    background: $FNW_LIGHT_BLUE;
     font-weight: bold;
-    margin: 12px 0 6px 0;
-    padding: 12px 0 0 0;
-    border-top: 1px dotted $FNW_DARK_GRAY;
+    font-size: 13px;
+    text-transform: none;
+    margin: 16px 0;
+    padding: 4px 16px;
   }
   
   p
   {
-    margin: 0 0 0 24px;
+    margin: 0 0 0 16px;
   }
   
   .indent
   {
-    margin-left: 24px;
+    margin-left: 12px;
   }
   
   p.no_indent
@@ -260,36 +263,6 @@ body.loading #loading
   a.btn:hover
   {
     text-decoration: none;
-  }
-  
-  ul
-  {
-    margin: 4px 0 0 28px;
-    
-    li
-    {
-      list-style-position: inside;
-    }
-    
-    ul
-    {
-      margin-left: 14px;
-    }
-  }
-  
-  ol
-  {
-    margin: 6px 0 0 28px;
-    
-    li
-    {
-      list-style-position: outside;
-    }
-    
-    ul
-    {
-      margin-left: 14px;
-    }
   }
   
   ul.pager
@@ -693,14 +666,40 @@ body.loading #loading
     margin-bottom: 5px;
   }
   
-  .investigation .list_disabled
+  .areas-of-practice
   {
-    -webkit-column-count: 3;
-    -moz-column-count: 3;
-    column-count: 3;
-    -webkit-column-gap: 24px;
-    -moz-column-gap: 24px;
-    column-gap: 24px;
+    padding: 16px;
+    
+    p
+    {
+      margin: 0;
+    }
+    
+    p.space
+    {
+      margin: 16px 0 0 0;
+    }
+    
+    h6
+    {
+      background: none;
+      text-transform: none;
+      font-size: 15px;
+      margin: 0;
+      padding: 0;
+    }
+    
+    ul
+    {
+      margin: 8px 0 0 0;
+      list-style: none;
+      
+      li
+      {
+        text-indent: -16px;
+        margin-left: 16px;
+      }
+    }
   }
   
   #specialist_assumed_list
