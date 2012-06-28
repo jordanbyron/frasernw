@@ -197,6 +197,8 @@ body.loading #loading
 
 #content #container
 {
+  position: relative;
+
   h1, h2, h3, h4, h5, h6
   {
     color: $FNW_RED;
@@ -815,5 +817,107 @@ body.loading #loading
   #user_favorite
   {
     vertical-align: baseline;
+  }
+
+  ul#specialties-menu
+  {
+    margin: 0 0 0 2-$FNW_BODY_BREATHING;
+    padding: 0;
+    
+    li
+    {
+      z-index: 1001;
+      position: relative;
+      list-style: none;
+      display: inline-block;
+      min-width: 130px;
+      margin: 2px 0 0 0;
+      padding: 6px;
+      font-weight: bold;
+      text-align: center;
+    }
+    
+    li.dropdown
+    {
+      z-index: 1002;
+      background: #8cd0f5;
+    }
+  
+    li.dropdown:after 
+    {
+      left: 100%;
+      border: solid transparent;
+      content: " ";
+      height: 0;
+      width: 0;
+      position: absolute;
+      pointer-events: none;
+      border-left-color: #8cd0f5;
+      border-width: 6px;
+      top: 50%;
+      margin-top: -6px;
+    }
+    
+    li.subsequent
+    {
+      padding: 5px 12px;
+      margin-left: -6px;
+      border: 1px dotted $FNW_BLUE;
+      color: #808080;
+    }
+    
+    li.subsequent + li.subsequent
+    {
+      border-left: 0;
+    }
+  }
+  
+  #specialties-dropdown-menu
+  {
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    display: none;
+    z-index: 1000;
+    margin: 0;
+    padding: 6px;
+    background: $FNW_WHITE;
+    box-shadow: 2px 2px 8px #888;
+    
+    .inner
+    {
+      margin: 0;
+      padding: 40px 8px 8px 8px;
+      border: 1px dotted $FNW_LIGHT_BLUE;
+      width: 650px;
+
+      ul
+      {
+        list-style: none;
+        display: inline-block;
+        width: 159px;
+        margin: 0;
+        border: 0;
+        padding: 0;
+        
+        li 
+        {
+          margin: 0;
+          padding: 2px 0;
+          
+          a
+          {
+            padding: 4px 6px;
+          }
+          
+          a:hover
+          {
+            text-decoration: none;
+            background-color: $FNW_HEADLINE_BACKGROUND;
+            border-radius: 4px;
+          }
+        }
+      }
+    }
   }
 }

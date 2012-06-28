@@ -1,12 +1,26 @@
 - title "Pathways | #{@specialization.name}"
     
-%h2
-  = @specialization.name
+%ul#specialties-menu
+  %li.dropdown
+    %a.dropdown-toggle{"href" => "#", "onclick" => "$('#specialties-dropdown-menu').toggle()"}
+      Specialties
+      %b.caret
+  %li.subsequent= @specialization.name
   
-  %a{"href" => "javascript:void(0)", "onclick" => "favorite('specializations',#{@specialization.id},'#{escape_javascript(@specialization.name)}')", "title" => "Favourite / un-favourite"}
-    - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @specialization.id, "Specialization").present? ? "icon-red" : "icon-text") : "icon-text"
-    %i#user_favorite.icon-heart{:class => favorite_class }
-  
+#specialties-dropdown-menu
+  .inner
+    - specializations = Specialization.all
+    - first = specializations[0, (specializations.length / 4.0).ceil]
+    - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
+    - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
+    - fourth = specializations - first - second - third
+    
+    - [first, second, third, fourth].each do |list|
+      %ul
+        - list.each do |specialization|
+          %li
+            %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
+    
 - cache(:action => 'show') do
 
   %script{"type" => "text/javascript"}
