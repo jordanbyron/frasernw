@@ -14,11 +14,11 @@ group_data = {
 pathways_group_data = <%=group_data.to_json.html_safe %><%
 
 url_data = { 
-  "1" => "specialists",
-  "2" => "clinics",
-  "3" => "hospitals",
+  "1" => "specializations", 
+  "2" => "specialists",
+  "3" => "clinics",
   "4" => "procedures",
-  "5" => "specializations", 
+  "5" => "hospitals",
   "6" => "languages" 
 }
   
@@ -89,7 +89,6 @@ specialists.each do |specialist|
     "sp" => specialist.specialist_specializations.reject{ |ss| ss.specialization.blank? or ss.specialization.in_progress }.collect{ |ss| ss.specialization_id }, 
     "c" => specialist.city_id,
     "st" => specialist.status_class,
-    "wt" => specialist.waittime || "",
     "id" => specialist.id,
     "go" => 2 }
   search_data << entry
@@ -107,7 +106,6 @@ clinics.each do |clinic|
     "sp" => clinic.clinic_specializations.reject{ |cs| cs.specialization.in_progress }.collect{ |cs| cs.specialization_id },
     "c" => clinic.city_id,
     "st" => clinic.status_class,
-    "wt" => clinic.waittime,
     "id" => clinic.id,
     "go" => 3 }
   search_data << entry

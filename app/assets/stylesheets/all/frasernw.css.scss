@@ -1,7 +1,4 @@
 @import "_globals";
-
-
-$FNW_STATUS_INDENT: 40px;   
     
 .admin, .navbar .nav > li.admin
 {
@@ -59,29 +56,18 @@ body.loading #loading
   
 #search_results
 {
-  $SEARCH_BORDER_RADIUS: 4px;
-
   z-index: 1979;
   position: absolute;
   overflow: hidden;
   top: 29px;
   right: 0;
   margin: 0;
-  padding: 0;
-  width: 406px;
+  padding: 16px;
+  border: 0;
+  width: 600px;
   background-color: $FNW_BACKGROUND;
-  border-bottom: 1px solid $FNW_DARK_GRAY;
-  border-left: 1px solid $FNW_DARK_GRAY;
-  border-right: 1px solid $FNW_DARK_GRAY;
-  -webkit-border-bottom-right-radius: $SEARCH_BORDER_RADIUS;
-  -webkit-border-bottom-left-radius: $SEARCH_BORDER_RADIUS;
-  -moz-border-bottom-left-radius: $SEARCH_BORDER_RADIUS;
-  -moz-border-bottom-right-radius: $SEARCH_BORDER_RADIUS;
-  border-bottom-left-radius: $SEARCH_BORDER_RADIUS;
-  border-bottom-right-radius: $SEARCH_BORDER_RADIUS;
-  -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 3px 5px $FNW_MID_GRAY;
+  -webkit-box-shadow: 2px 2px 8px #888;
+  box-shadow: 2px 2px 8px #888;
   
   ul
   {
@@ -99,19 +85,10 @@ body.loading #loading
     
     li.group
     {
-      padding: 2px 0;
-      border-top: 1px solid $FNW_MID_GRAY;
-      border-bottom: 1px solid $FNW_MID_GRAY;
-      background-color: $FNW_LIGHT_GRAY;
-      color: $FNW_RED;
+      color: $FNW_TEXT;
       font-weight: bold;
-      font-size: 13px;
-      
-      [class^="icon-"]
-      {
-        margin-left: 10px;
-        margin-right: 10px;
-      }
+      border-bottom: 1px dotted $FNW_LIGHT_BLUE;
+      margin: 4px 0 8px 0;
     }
   
     a
@@ -129,25 +106,31 @@ body.loading #loading
       a
       {
         display: inline-block;
-        padding: 5px 0;
+        padding: 2px 4px;
         margin: 0;
-        width: 100%;
-        height: 100%;
+        width: 600px - 8px;
         color: $FNW_BLUE;
+        border-radius: 4px;
         
         div
         {
           float: left;
           display: inline-block;
           margin-left: $FNW_STATUS_INDENT;
-          width: 200px - $FNW_STATUS_INDENT;
+          width: 240px - $FNW_STATUS_INDENT;
           overflow: visible;
         }
         
-        div.search_specialties, div.search_city
+        div.search_specialties
         {
-          margin-left: 20px;
-          width: 180px;
+          margin-left: 16px;
+          width: 200px;
+        }
+        
+        div.search_city
+        {
+          margin-left: 16px;
+          width: 110px;
         }
         
         div.search_wait_time
@@ -164,26 +147,10 @@ body.loading #loading
       }
     }
     
-    li.search-result + li.search-result
+    li a:hover, li.selected a
     {
-      border-top: 1px solid $FNW_LIGHT_GRAY;
-    }
-    
-    a:hover, li.selected a
-    {
-      background: $FNW_LIGHT_BLUE;
-      color: $FNW_RED;
+      background: $FNW_HEADLINE_BACKGROUND;
       text-decoration: none;
-    }
-    
-    a:last-of-type
-    {
-      -webkit-border-bottom-right-radius: $SEARCH_BORDER_RADIUS;
-      -webkit-border-bottom-left-radius: $SEARCH_BORDER_RADIUS;
-      -moz-border-bottom-left-radius: $SEARCH_BORDER_RADIUS;
-      -moz-border-bottom-right-radius: $SEARCH_BORDER_RADIUS;
-      border-bottom-left-radius: $SEARCH_BORDER_RADIUS;
-      border-bottom-right-radius: $SEARCH_BORDER_RADIUS;
     }
     
     li.empty
@@ -882,6 +849,7 @@ body.loading #loading
     margin: 0;
     padding: 6px;
     background: $FNW_WHITE;
+    -webkit-box-shadow: 2px 2px 8px #888;
     box-shadow: 2px 2px 8px #888;
     
     .inner

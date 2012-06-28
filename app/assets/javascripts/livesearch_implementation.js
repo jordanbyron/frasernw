@@ -2,20 +2,20 @@
 function pathways_scorer(data_entry, term, fuzziness) 
 {
   return { 
-    n: score_matches( term, data_entry.n, fuzziness)
+   n: score_matches( term, data_entry.n, fuzziness)
   };
 }
 
 function pathways_grouper(a, b)
 {
-  return (a.data_entry.go - b.data_entry.go)
+  return (a.data_entry.go - b.data_entry.go);
 }
 
 function pathways_data_formatter(total_score, scores_matches, data_entry)
 {
-  var result = "<li class='search-result'><a class='ajax' id='search_result_" + data_entry.go + '_' + data_entry.id + "'  href='/" + pathways_url_data[data_entry.go] + '/' + data_entry.id + "'>"
+  var result = "<li class='search-result'><a class='ajax' id='search_result_" + data_entry.go + '_' + data_entry.id + "'  href='/" + pathways_url_data[data_entry.go] + '/' + data_entry.id + "'>";
   
-  result += "<div class='search_name status_" + data_entry.st + "'>" + data_entry.n + "</div>"
+  result += "<div class='search_name status_" + data_entry.st + "'>" + data_entry.n + "</div>";
   
   var specialties = new Array();
   
@@ -29,32 +29,11 @@ function pathways_data_formatter(total_score, scores_matches, data_entry)
   
   result += "<div class='search_specialties'>" + specialties.to_sentence() + "</div>";
   
-  var has_wait_time = data_entry.wt && (data_entry.wt != "");
-  var has_city = data_entry.c && (data_entry.c != "")
+  var has_city = data_entry.c && (data_entry.c != "");
   
-  if (has_wait_time || has_city)
+  if (has_city)
   {
-    result += "<div class='search_wait_time'>"
-    if (has_wait_time)
-    {
-      result += "Wait time: " + data_entry.wt; 
-    }
-    else
-    {
-      result += "&nbsp;";
-    }
-    result += "</div>";
-    
-    result += "<div class='search_city'>";
-    if (has_city)
-    {
-      result += pathways_city_data[data_entry.c];
-    }
-    else
-    {
-      result += "&nbsp;";
-    }
-    result += "</div>"
+    result += "<div class='search_city'>" + pathways_city_data[data_entry.c] + "</div>";
   }
   
   result += "</a></li>";
@@ -64,34 +43,7 @@ function pathways_data_formatter(total_score, scores_matches, data_entry)
 
 function pathways_group_formatter(group_id)
 {
-  var icon = "";
-  switch(group_id)
-  {
-    case 0: //specialists
-      icon = "user"
-      break;
-    case 1: //clinics
-      icon = "home"
-      break;
-    case 3: //hospitals
-      icon = "plus"
-      break;
-    case 4: //areas of practice
-      icon = "list"
-      break;
-    case 5: //specialties
-      icon = "book"
-      break;
-    case 6: //languages
-      icon = "comment"
-      break;
-  }
-  
-  var result = "<li class='group'>"
-  result += "<div class='group'><i class='icon-" + icon + " icon-text'></i> " + pathways_group_data[group_id] + "</div>"
-  result += "</li>";
-  
-  return result;
+  return "<li class='group'><div class='group'>" + pathways_group_data[group_id] + "</div></li>";
 }
 
 function pathways_searcher(data_entry)
