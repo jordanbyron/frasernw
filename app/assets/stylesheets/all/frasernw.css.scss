@@ -843,6 +843,28 @@ body.loading #loading
       border: 1px dotted $FNW_LIGHT_BLUE;
       color: #808080;
     }
+  
+    li.subsequent.next:after, li.subsequent.next:before 
+    {
+      left: 100%;
+      border: solid transparent;
+      content: " ";
+      height: 0;
+      width: 0;
+      position: absolute;
+      pointer-events: none;
+      border-left-color: $FNW_WHITE;
+      border-width: 6px;
+      top: 50%;
+      margin-top: -6px;
+    } 
+    
+    li.subsequent.next:before 
+    {
+      border-left-color: $FNW_LIGHT_BLUE;
+      margin-top: -7px;
+      border-width: 7px;
+    }
     
     li.subsequent + li.subsequent
     {
