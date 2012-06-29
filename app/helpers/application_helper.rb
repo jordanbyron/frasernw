@@ -54,14 +54,23 @@ module ApplicationHelper
       count += 1
       result += "<li>"
       result += "<strong><a class='ajax' href='#{procedure_path(item[:parent].procedure)}'>#{item[:parent].procedure.name}</a></strong>"
-      investigation = item[:parent].investigation(root)
+      investigation = item[:parent].investigation(root).strip_period
       if investigation and investigation.length > 0
         result += " (#{investigation})"
         has_investigation = true
       end
+      has_investigation |= item[:children].reject{ |child| child[:parent].investigation(root).blank? }.length > 0
       if item[:children].length > 0
-        result += ": "
-        result += item[:children].map{ |c| "<a class='ajax' href='#{procedure_path(c[:parent].procedure)}'>#{c[:parent].procedure.name}</a>" }.to_sentence.html_safe
+        child_results = []
+        item[:children].each do |child|
+          child_investigation = child[:parent].investigation(root).strip_period
+          if child_investigation && child_investigation.length == 0
+            child_results << "<a class='ajax' href='#{procedure_path(child[:parent].procedure)}'>#{child[:parent].procedure.name}</a>"
+          else
+            child_results << "<a class='ajax' href='#{procedure_path(child[:parent].procedure)}'>#{child[:parent].procedure.name}</a> (#{child_investigation})"
+          end
+        end
+        result += ": #{child_results.to_sentence}"
       end
       result += "</li>"         
     end

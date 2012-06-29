@@ -23,6 +23,15 @@ class String
     end
   end
   
+  def strip_period
+    self.strip!
+    if self[-1,1] == '.'
+      self[0..-2]
+    else
+      self
+    end
+  end
+  
   def punctuate
     self.capitalize_first_letter.end_with_period
   end
