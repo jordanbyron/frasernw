@@ -267,6 +267,12 @@ body.loading #loading
     text-decoration: none;
   }
   
+  ul
+  {
+    margin-top: 12px;
+    list-style-position: inside;
+  }
+  
   ul.pager
   {
     margin-top: 1em;
@@ -614,6 +620,10 @@ body.loading #loading
         {
           margin-left: 0;
           width: 95%;
+          border: 0;
+          background-color: $FNW_LIGHT_GRAY;
+          font-size: 13px;
+          border-radius: 4px;
         }
       }
       

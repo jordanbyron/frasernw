@@ -1,5 +1,56 @@
 - title "Pathways | #{@clinic.name}"
 
+- specialization = @clinic.specializations.first || Specialization.all.first
+  
+%ul#specialties-menu
+  %li.dropdown
+    %a.dropdown-toggle{"href" => "#", "onclick" => "$('#specialties-dropdown-menu').toggle()"}
+      Specialties
+      %b.caret
+  %li.subsequent= specialization.name
+  
+#specialties-dropdown-menu
+  .inner
+    - specializations = Specialization.all
+    - first = specializations[0, (specializations.length / 4.0).ceil]
+    - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
+    - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
+    - fourth = specializations - first - second - third
+    
+    - [first, second, third, fourth].each do |list|
+      %ul
+        - list.each do |specialization|
+          %li
+            %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
+
+- has_specialists = specialization.specialists.length > 0
+
+.tabbable
+  %ul#content_tabs.nav.nav-tabs
+    - if has_specialists
+      %li
+        %a{"href" => "#specialist_tab", "data-toggle" => "tab"}
+          %span Specialists
+      %li.active
+        %a{"href" => "#clinic_tab", "data-toggle" => "tab"}
+          %span Clinics
+    - if true
+      %li
+        %a{"href" => "#calculator_tab", "data-toggle" => "tab"}
+          %span Calculators
+      %li
+        %a{"href" => "#care_pathways_tab", "data-toggle" => "tab"}
+          %span Care Pathways
+      %li
+        %a{"href" => "#pearls_tab", "data-toggle" => "tab"}
+          %span Pearls
+      %li
+        %a{"href" => "#red_flags_tab", "data-toggle" => "tab"}
+          %span Red Flags
+      %li
+        %a{"href" => "#patient_education_tab", "data-toggle" => "tab"}
+          %span Patient Education
+
 - if @is_version
   = render 'versions/info'
     
@@ -11,191 +62,207 @@
     %i#user_favorite.icon-heart{:class => favorite_class }
   
 - cache(:action => 'show') do
-    
-  %h3.specialty_links
-    = @clinic.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
-    
-  - if @clinic.not_responded?
-
-    %p.space.no_indent This clinic has not yet provided Pathways their information.
-    
-  - elsif @clinic.purposely_not_yet_surveyed?
-
-    %p.space.no_indent This clinic has purposely not yet been surveyed by Pathways. It may be out of our current catchment area, or in a speciality we have yet to fully survey.
-    
-  - else
-          
-    %p.space.no_indent
-      %strong.status{ :class => "status_#{@clinic.status_class}"}= @clinic.status.end_with_period
-    - if @clinic.limitations.present?
-      %p
-        %strong Limitations:
-        = @clinic.limitations.end_with_period
-    
-    - address = @clinic.resolved_address
-    - if @clinic.sector? || (@clinic.location.present? && @clinic.location.in_hospital?) || (address.present? && !address.empty?) || @clinic.wheelchair_accessible? || @clinic.phone_and_fax.present? || @clinic.scheduled? || @clinic.location_opened.present? || @clinic.languages.present? || @clinic.interpreter_available
       
-      %h6.address Clinic Information
-      
-      %p= @clinic.sector if @clinic.sector?
-
-      - if @clinic.location.present? && @clinic.location.in_hospital?
-        - hospital = @clinic.location.hospital_in
-        %p.space= "In #{link_to hospital.name, hospital_path(hospital), :class => 'ajax'}".html_safe
-        %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
-        %p= @clinic.location.in_details if @clinic.location.in_details.present?
-      - elsif address.present? && !address.empty?
-        %p.space= link_to address.address, address.map_url, :target => "_blank"
-      %p= "Wheelchair accessible" if @clinic.wheelchair_accessible?
-      %p= @clinic.phone_and_fax if @clinic.phone_and_fax.present?
-      - if @clinic.scheduled?
-        %p.space
-          %strong Schedule:
-          = @clinic.schedule.days_and_hours.to_sentence
-      
-      - if @clinic.location_opened.present?
-        %p.space
-          This clinic opened at this location 
-          = @clinic.location_opened == "Prior to 2010" ? "#{@clinic.location_opened.downcase}." : "in #{@clinic.location_opened}."
-
-      - if @clinic.languages.present?
-        %p.space
-          = @clinic.languages.map{ |x| "<a class='ajax' href='#{language_path(x)}'>#{x.name}</a>" }.to_sentence.html_safe
-          = "#{@clinic.languages.count == 1 ? 'is' : 'are' } spoken at this clinic."
-      
-      - if @clinic.interpreter_available
-        %p.space
-          Interpreter available upon request.
+  .content
+    .row
+      - show_aop = false
+      .span8
     
-    - specialization_procedures, specialization_count, specialization_has_investigations = compressed_procedures_indented(@clinic, ProcedureSpecialization::CLASSIFICATION_FOCUSED)
-    - custom_procedures, custom_count, custom_has_investigations = compressed_procedures_indented(@clinic, ProcedureSpecialization::CLASSIFICATION_NONFOCUSED)
-    - if @clinic.required_investigations.present? || specialization_count > 0 || custom_count > 0 || @clinic.interest.present? || @clinic.not_performed.present?
-      
-      %h6.procedure Areas of Practice
+        %h3.indent.specialty_links
+          = @clinic.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
             
-      .investigation  
-        - if @clinic.required_investigations.present?
-          %p
-            %strong Required investigations for all patients:
-            = @clinic.required_investigations.end_with_period
-        - if specialization_count > 0
-          %p.space
-            %strong Areas of practice:
-            - if specialization_has_investigations
-              with any 
-              %i additional 
-              required investigations
-            = specialization_procedures.html_safe
-        - if custom_count > 0
-          %p.space
-            %strong Other areas of interest:
-            - if custom_has_investigations
-              with any 
-              %i additional 
-              required investigations
-            = custom_procedures.html_safe
-      - if @clinic.interest.present?
-        %p.space
-          %strong Most interested in:
-          = @clinic.interest.end_with_period
-      - if @clinic.not_performed.present?
-        %p.space
-          %strong Does not see or do:
-          = @clinic.not_performed.end_with_period
-    
-    - if @clinic.accepts_referrals_via.present? || @clinic.responds_via.present? || @clinic.referral_form_mask != 3 || @clinic.waittime.present? || @clinic.lagtime.present? || @clinic.patient_can_book_mask != 3
-      
-      %h6.referral Referrals
-        
-      - if @clinic.accepts_referrals_via.present?
-        %p
-          %strong Accepted by:
-          = @clinic.accepts_referrals_via
-      - if @clinic.responds_via.present?
-        %p
-          %strong Responded to by:
-          = @clinic.responds_via
+        %h5.indent= @clinic.sector if @clinic.sector?
+          
+        - if @clinic.not_responded?
 
-      - if @clinic.referral_form_mask == 1
-        - referral_form_count = @clinic.referral_forms.reject{|referral_form| not referral_form.form.present?}.length
-        %p
-          %strong Referral form:
-          yes.
-        %ul.referral_forms
-          - @clinic.referral_forms.each do |referral_form|
-            - next if not referral_form.form.present?
-            - type = referral_form.form_content_type.split('/').last
-            %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, :target => "_blank"
-      - elsif @clinic.referral_form_mask == 2
-        %p 
-          %strong Referral form:
-          no.
-        
-      -if @clinic.waittime.present?
-        %p.space
-          Average patient wait time from referral to appointment:
-          %strong= @clinic.waittime
+          %p.space This clinic has not yet provided Pathways their information.
+          
+        - elsif @clinic.purposely_not_yet_surveyed?
+
+          %p.space This clinic has purposely not yet been surveyed by Pathways. It may be out of our current catchment area, or in a speciality we have yet to fully survey.
+          
+        - else
+          - show_aop = true
+                
+          %p.space
+            %strong.status{ :class => "status_#{@clinic.status_class}"}= @clinic.status.end_with_period
+          - if @clinic.limitations.present?
+            %p
+              %strong Limitations:
+              = @clinic.limitations.end_with_period
+          
+          - address = @clinic.resolved_address
+          - if @clinic.sector? || (@clinic.location.present? && @clinic.location.in_hospital?) || (address.present? && !address.empty?) || @clinic.wheelchair_accessible? || @clinic.phone_and_fax.present? || @clinic.scheduled? || @clinic.location_opened.present? || @clinic.languages.present? || @clinic.interpreter_available
+            
+            %h6 Clinic Information
+
+            %p
+              %strong= @clinic.phone if @clinic.phone.present?
+            %p= "Fax: #{@clinic.fax}" if @clinic.fax.present?
+            - if @clinic.location.present? && @clinic.location.in_hospital?
+              - hospital = @clinic.location.hospital_in
+              %p= "In #{link_to hospital.name, hospital_path(hospital), :class => 'ajax'}".html_safe
+              %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
+              %p= @clinic.location.in_details if @clinic.location.in_details.present?
+            - elsif address.present? && !address.empty?
+              %p= link_to address.address, address.map_url, :target => "_blank"
+            %p= "Wheelchair accessible" if @clinic.wheelchair_accessible?
+            - if @clinic.scheduled?
+              %p.space
+                %strong Schedule:
+                = @clinic.schedule.days_and_hours.to_sentence
+            
+            - if @clinic.location_opened.present?
+              %p.space
+                This clinic opened at this location 
+                = @clinic.location_opened == "Prior to 2010" ? "#{@clinic.location_opened.downcase}." : "in #{@clinic.location_opened}."
+
+            - if @clinic.languages.present?
+              %p.space
+                = @clinic.languages.map{ |x| "<a class='ajax' href='#{language_path(x)}'>#{x.name}</a>" }.to_sentence.html_safe
+                = "#{@clinic.languages.count == 1 ? 'is' : 'are' } spoken at this clinic."
+            
+            - if @clinic.interpreter_available
+              %p.space
+          
+          - if @clinic.accepts_referrals_via.present? || @clinic.responds_via.present? || @clinic.referral_form_mask != 3 || @clinic.waittime.present? || @clinic.lagtime.present? || @clinic.patient_can_book_mask != 3
+            
+            %h6 Referrals
               
-      -if @clinic.lagtime.present?
-        %p
-          Average length of time to notify GP of a booking date:
-          %strong= @clinic.lagtime
-        
-      - if @clinic.patient_can_book_mask == 1
-        %p This office accepts direct calls from patients after referral to book their own appointments.
-      - elsif @clinic.patient_can_book_mask == 2
-        %p This office does not accept direct calls from patients after referral to book their own appointments.
-    
-    - if @clinic.red_flags.present? || @clinic.urgent_referrals_via.present?
-      
-      %h6.urgent_referral Urgent Referrals
-          
-      - if @clinic.urgent_referrals_via.present?
-        %p
-          %strong Accepted by: 
-          = @clinic.urgent_referrals_via
-      
-      - if @clinic.red_flags.present?
-        %p
-          %strong Red flags
-          that this clinic feels warrants urgent consultation:
-          = @clinic.red_flags.end_with_period
-    
-    - if @clinic.patient_instructions.present? || @clinic.cancellation_policy.present?
-      %h6.patient_information Patient Information
-    
-      - if @clinic.patient_instructions.present?
-        %p
-          %strong Patient instructions:
-          = @clinic.patient_instructions.end_with_period
-          
-      - if @clinic.cancellation_policy.present?
-        %p
-          %strong Cancellation policy:
-          = @clinic.cancellation_policy.end_with_period
-      
-    - if @clinic.healthcare_providers.present?
-    
-      %h6.healtcare_provider Healthcare providers
-      
-      %p= "Healthcare providers who see patients at the clinic: #{@clinic.healthcare_providers.map{ |x| x.name }.join(", ")}"
+            - if @clinic.accepts_referrals_via.present?
+              %p
+                %strong Accepted by:
+                = @clinic.accepts_referrals_via
+            - if @clinic.responds_via.present?
+              %p
+                %strong Responded to by:
+                = @clinic.responds_via
 
-    - if @clinic.attendances?
-    
-      %h6.association Associations
-      
-      %p Physicians who see patients at the clinic:
-      %ul
-        - @clinic.attendances.each do |attendance|
-          - if attendance.is_specialist
-            - if attendance.specialist
-              %li
-                %a.ajax{"href" => specialist_path(attendance.specialist)}= attendance.specialist.name
-                = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
-          - else
-            %li
-              = attendance.freeform_name
-              = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
+            - if @clinic.referral_form_mask == 1
+              - referral_form_count = @clinic.referral_forms.reject{|referral_form| not referral_form.form.present?}.length
+              %p
+                %strong Referral form:
+                yes.
+              %ul.referral_forms
+                - @clinic.referral_forms.each do |referral_form|
+                  - next if not referral_form.form.present?
+                  - type = referral_form.form_content_type.split('/').last
+                  %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, :target => "_blank"
+            - elsif @clinic.referral_form_mask == 2
+              %p 
+                %strong Referral form:
+                no.
+              
+            -if @clinic.waittime.present?
+              %p.space
+                Average patient wait time from referral to appointment:
+                %strong= @clinic.waittime
+                    
+            -if @clinic.lagtime.present?
+              %p
+                Average length of time to notify GP of a booking date:
+                %strong= @clinic.lagtime
+              
+            - if @clinic.patient_can_book_mask == 1
+              %p This office accepts direct calls from patients after referral to book their own appointments.
+            - elsif @clinic.patient_can_book_mask == 2
+              %p This office does not accept direct calls from patients after referral to book their own appointments.
+          
+          - if @clinic.red_flags.present? || @clinic.urgent_referrals_via.present?
+            
+            %h6 Urgent Referrals
+                
+            - if @clinic.urgent_referrals_via.present?
+              %p
+                %strong Accepted by: 
+                = @clinic.urgent_referrals_via
+            
+            - if @clinic.red_flags.present?
+              %p
+                %strong Red flags
+                that this clinic feels warrants urgent consultation:
+                = @clinic.red_flags.end_with_period
+          
+          - if @clinic.patient_instructions.present? || @clinic.cancellation_policy.present?
+            %h6 Patient Information
+          
+            - if @clinic.patient_instructions.present?
+              %p
+                %strong Patient instructions:
+                = @clinic.patient_instructions.end_with_period
+                
+            - if @clinic.cancellation_policy.present?
+              %p
+                %strong Cancellation policy:
+                = @clinic.cancellation_policy.end_with_period
+            
+          - if @clinic.healthcare_providers.present?
+          
+            %h6 Healthcare providers
+            
+            %p
+              %strong Healthcare providers 
+              ="who see patients at the clinic: #{@clinic.healthcare_providers.map{ |x| x.name }.join(", ")}"
+
+          - if @clinic.attendances?
+          
+            %h6 Associations
+            
+            %p Physicians who see patients at the clinic:
+            %ul
+              - @clinic.attendances.each do |attendance|
+                - if attendance.is_specialist
+                  - if attendance.specialist
+                    %li
+                      %a.ajax{"href" => specialist_path(attendance.specialist)}= attendance.specialist.name
+                      = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
+                - else
+                  %li
+                    = attendance.freeform_name
+                    = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
+                    
+      - if show_aop  
+        .span4
+          - specialization_procedures, specialization_count, specialization_has_investigations = compressed_procedures_indented(@clinic, ProcedureSpecialization::CLASSIFICATION_FOCUSED)
+          - custom_procedures, custom_count, custom_has_investigations = compressed_procedures_indented(@clinic, ProcedureSpecialization::CLASSIFICATION_NONFOCUSED)
+          - if @clinic.required_investigations.present? || specialization_count > 0 || custom_count > 0 || @clinic.interest.present? || @clinic.not_performed.present?
+            .well.areas-of-practice
+              %h6 Areas of Practice
+                    
+              .investigation  
+                - if @clinic.required_investigations.present?
+                  %p.space
+                    %strong Required investigations for all patients
+                  %p= @clinic.required_investigations.end_with_period
+                - if specialization_count > 0
+                  %p.space
+                    %strong Areas of practice
+                  - if specialization_has_investigations
+                    %p
+                      (with any 
+                      %i additional 
+                      required investigations)
+                  .list
+                    = specialization_procedures.html_safe
+                - if custom_count > 0
+                  %p.space
+                    %strong Other areas of interest
+                  - if custom_has_investigations
+                    %p
+                      with any 
+                      %i additional 
+                      required investigations
+                  .list
+                    = custom_procedures.html_safe
+                - if @clinic.interest.present?
+                  %p.space
+                    %strong Most interested in
+                  %p= @clinic.interest.end_with_period
+                - if @clinic.not_performed.present?
+                  %p.space
+                    %strong Does not see or do
+                  %p
+                    = @clinic.not_performed.end_with_period
           
     .btn-group
       %a.btn{"href" => clinic_patient_information_path(@clinic), "target" => "_blank"}
@@ -229,7 +296,7 @@
     = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", clinic_referral_forms_path(@clinic), :class => "btn ajax")
   - if current_user_is_admin?
     - if @clinic.review_item.present?
-      = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", clinic_review_path(@specialist), :class => "btn ajax")
+      = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", clinic_review_path(@clinic), :class => "btn ajax")
     - else
       %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
         %i.icon-share
