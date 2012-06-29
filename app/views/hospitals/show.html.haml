@@ -163,12 +163,24 @@
                         - Language.all.each do |l|
                           %label.half
                             %input.sl{"type" => "checkbox", "id" => "sl#{l.id}_"}= l.name
+                          
+                  .filter-group
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-association"}
+                      Associations
+                    #specialist-filter-association.collapsable.collapse
+                      .filter-group-content
+                        %label.indent
+                          Clinic:
+                          %select.sa
+                            %option{"value" => 0} Any
+                            - Clinic.all.each do |c|
+                              %option{"value" => "sac#{c.id}_"}= c.name
                             
 
                 %script{"type" => "text/javascript"}
                   :plain
                     $(document).ready(function() {
-                      $('.ssp, .sc, .sr, .ss, .sl').click( update_specialist_table );
+                      $('.ssp, .sc, .sr, .ss, .sl, .sa').click( update_specialist_table );
                     });
             
       - if has_clinics_in
@@ -366,12 +378,23 @@
                         - Language.all.each do |l|
                           %label.half
                             %input.ol{"type" => "checkbox", "id" => "ol#{l.id}_"}= l.name
-                            
+                          
+                  .filter-group
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-association"}
+                      Associations
+                    #specialist-filter-association.collapsable.collapse
+                      .filter-group-content
+                        %label.indent
+                          Clinic:
+                          %select.oa
+                            %option{"value" => 0} Any
+                            - Clinic.all.each do |c|
+                              %option{"value" => "oac#{c.id}_"}= c.name
 
                 %script{"type" => "text/javascript"}
                   :plain
                     $(document).ready(function() {
-                      $('.osp, .oc, .or, .os, .ol').click( update_office_table );
+                      $('.osp, .oc, .or, .os, .ol, .oa').click( update_office_table );
                     });
 
       %script{"type" => "text/javascript"}
