@@ -54,7 +54,8 @@ module ApplicationHelper
       count += 1
       result += "<li>"
       result += "<strong><a class='ajax' href='#{procedure_path(item[:parent].procedure)}'>#{item[:parent].procedure.name}</a></strong>"
-      investigation = item[:parent].investigation(root).strip_period
+      investigation = item[:parent].investigation(root)
+      investigation = investigation.strip_period if investigation.present?
       if investigation and investigation.length > 0
         result += " (#{investigation})"
         has_investigation = true
@@ -64,7 +65,8 @@ module ApplicationHelper
         child_results = []
         item[:children].each do |child|
           count += 1
-          child_investigation = child[:parent].investigation(root).strip_period
+          child_investigation = child[:parent].investigation(root)
+          child_investigation = child_investigation.strip_period if child_investigation.present?
           if child_investigation && child_investigation.length == 0
             child_results << "<a class='ajax' href='#{procedure_path(child[:parent].procedure)}'>#{child[:parent].procedure.name}</a>"
           else
