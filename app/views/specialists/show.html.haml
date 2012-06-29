@@ -23,20 +23,15 @@
           %li
             %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
 
-- has_specialists = specialization.specialists.length > 0
 - has_clinics = specialization.clinics.length > 0
-
-- specialist_tab_class = has_specialists ? "active" : ""
-- clinic_tab_class = has_specialists ? "" : "active"
 
 .tabbable
   %ul#content_tabs.nav.nav-tabs
-    - if has_specialists
-      %li{:class => specialist_tab_class} 
+      %li.active 
         %a{"href" => "#specialist_tab", "data-toggle" => "tab"}
           %span Specialists
     - if has_clinics
-      %li{:class => clinic_tab_class}
+      %li
         %a{"href" => "#clinic_tab", "data-toggle" => "tab"}
           %span Clinics
     - if true
@@ -302,9 +297,9 @@
                     %strong Areas of practice
                   - if specialization_has_investigations
                     %p
-                      with any 
+                      (with any 
                       %i additional 
-                      required investigations
+                      required investigations)
                   .list
                     = specialization_procedures.html_safe
                 - if custom_count > 0
