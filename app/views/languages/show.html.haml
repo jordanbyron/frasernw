@@ -140,6 +140,8 @@
                       Languages
                     #specialist-filter-language.collapsable.collapse
                       .filter-group-content
+                        %label
+                          %input#si.si{"type" => "checkbox"} Interpreter available
                         - Language.all.each do |l|
                           %label.half
                             %input.sl{"type" => "checkbox", "id" => "sl#{l.id}_"}= l.name
@@ -165,7 +167,7 @@
                 %script{"type" => "text/javascript"}
                   :plain
                     $(document).ready(function() {
-                      $('.ssp, .sc, .sr, .ss, .sl, .sa').click( update_specialist_table );
+                      $('.ssp, .sc, .sr, .ss, .sl, .si, .sa').click( update_specialist_table );
                     });
                   
       - if has_clinics
@@ -274,6 +276,8 @@
                       Languages
                     #clinic-filter-language.collapsable.collapse
                       .filter-group-content
+                        %label
+                          %input#ci.ci{"type" => "checkbox"} Interpreter available
                         - Language.all.each do |l|
                           %label.half
                             %input.cl{"type" => "checkbox", "id" => "cl#{l.id}_"}= l.name
@@ -281,7 +285,7 @@
                 %script{"type" => "text/javascript"}
                   :plain
                     $(document).ready(function() {
-                      $('.csp, .cc, .cr, .cd, .csh, .ch, .cl').click( update_clinic_table );
+                      $('.csp, .cc, .cr, .cd, .csh, .ch, .cl, .ci').click( update_clinic_table );
                     });
 
       %script{"type" => "text/javascript"}

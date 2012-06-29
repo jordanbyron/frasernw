@@ -160,6 +160,8 @@
                       Languages
                     #specialist-filter-language.collapsable.collapse
                       .filter-group-content
+                        %label
+                          %input#si.si{"type" => "checkbox"} Interpreter available
                         - Language.all.each do |l|
                           %label.half
                             %input.sl{"type" => "checkbox", "id" => "sl#{l.id}_"}= l.name
@@ -180,7 +182,7 @@
                 %script{"type" => "text/javascript"}
                   :plain
                     $(document).ready(function() {
-                      $('.ssp, .sc, .sr, .ss, .sl, .sa').click( update_specialist_table );
+                      $('.ssp, .sc, .sr, .ss, .sl, .sa, .si').click( update_specialist_table );
                     });
             
       - if has_clinics_in
@@ -290,6 +292,8 @@
                       Languages
                     #clinic-filter-language.collapsable.collapse
                       .filter-group-content
+                        %label
+                          %input#ci.ci{"type" => "checkbox"} Interpreter available
                         - Language.all.each do |l|
                           %label.half
                             %input.cl{"type" => "checkbox", "id" => "cl#{l.id}_"}= l.name
@@ -297,7 +301,7 @@
                 %script{"type" => "text/javascript"}
                   :plain
                     $(document).ready(function() {
-                      $('.csp, .cc, .cr, .cd, .csh, .ch, .cl').click( update_clinic_table );
+                      $('.csp, .cc, .cr, .cd, .csh, .ch, .cl, .ci').click( update_clinic_table );
                     });
             
       - if has_specialists_with_offices_in
@@ -375,6 +379,8 @@
                       Languages
                     #office-filter-language.collapsable.collapse
                       .filter-group-content
+                        %label
+                          %input#oi.oi{"type" => "checkbox"} Interpreter available
                         - Language.all.each do |l|
                           %label.half
                             %input.ol{"type" => "checkbox", "id" => "ol#{l.id}_"}= l.name
@@ -394,7 +400,7 @@
                 %script{"type" => "text/javascript"}
                   :plain
                     $(document).ready(function() {
-                      $('.osp, .oc, .or, .os, .ol, .oa').click( update_office_table );
+                      $('.osp, .oc, .or, .os, .ol, .oi, .oa').click( update_office_table );
                     });
 
       %script{"type" => "text/javascript"}
