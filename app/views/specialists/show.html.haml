@@ -305,8 +305,8 @@
                       with any 
                       %i additional 
                       required investigations
-                    .list
-                      = specialization_procedures.html_safe
+                  .list
+                    = specialization_procedures.html_safe
                 - if custom_count > 0
                   %p.space
                     %strong Other areas of interest
@@ -315,8 +315,8 @@
                       with any 
                       %i additional 
                       required investigations
-                    .list
-                      = custom_procedures.html_safe
+                  .list
+                    = custom_procedures.html_safe
                 - if @specialist.interest.present?
                   %p.space
                     %strong Most interested in

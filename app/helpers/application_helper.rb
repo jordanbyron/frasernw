@@ -46,9 +46,9 @@ module ApplicationHelper
   end
   
   def compressed_procedures_indented_output(items, root)
+    return "", 0, false if items.empty?
     count = 0
     has_investigation = false
-    return "", count, has_investigation if items.empty?
     result = "<ul>"
     items.each do |item|
       count += 1
@@ -60,9 +60,10 @@ module ApplicationHelper
         has_investigation = true
       end
       has_investigation |= item[:children].reject{ |child| child[:parent].investigation(root).blank? }.length > 0
-      if item[:children].length > 0
+      if !item[:children].empty?
         child_results = []
         item[:children].each do |child|
+          count += 1
           child_investigation = child[:parent].investigation(root).strip_period
           if child_investigation && child_investigation.length == 0
             child_results << "<a class='ajax' href='#{procedure_path(child[:parent].procedure)}'>#{child[:parent].procedure.name}</a>"
