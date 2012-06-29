@@ -357,7 +357,7 @@
                     #clinic-filter-referral.collapsable.in
                       .filter-group-content
                         %label
-                          %input#crph.cr{"type" => "checkbox"} Referrals are accepted via phone
+                          %input#crph.cr{"type" => "checkbox"} Accepted via phone
                         %label.indent
                           Responded to within:
                           %select.cc
@@ -427,14 +427,14 @@
                     $('.cp, .cc, .cr, .cd, .csh, .ch, .ci, .cl').click( update_clinic_table );
                   });
 
-              %script{"type" => "text/javascript"}
-                :plain
-                  $('.collapsable').on('shown', function() {
-                    $(this).siblings('.filter-group-title').removeClass('closed').addClass('open');
-                  });
-                  $('.collapsable').on('hidden', function() {
-                    $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
-                  });
+      %script{"type" => "text/javascript"}
+        :plain
+          $('.collapsable').on('shown', function() {
+            $(this).siblings('.filter-group-title').removeClass('closed').addClass('open');
+          });
+          $('.collapsable').on('hidden', function() {
+            $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
+          });
                     
       #calculator_tab.tab-pane
                     

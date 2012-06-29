@@ -34,6 +34,42 @@ module SpecializationsHelper
     end
     return filtering_attributes
   end
+  
+  def office_filtering_attributes(s, include_assumed)
+    filtering_attributes = []
+    s.procedure_specializations.each do |ps|
+      filtering_attributes << "op#{ps.procedure.id}_"
+      parent = ps.parent
+      filtering_attributes << "op#{parent.procedure.id}_" if (parent && !filtering_attributes.include?("op#{parent.procedure.id}_"))
+    end
+    if include_assumed
+      s.specializations.each do |specialization|
+        specialization.procedure_specializations.assumed.each do |ps|
+          filtering_attributes << "op#{ps.procedure.id}_"
+        end
+      end
+    end
+    if s.lagtime_mask.present?
+      (s.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
+        filtering_attributes << "oc#{i}_"
+      end
+    end
+    filtering_attributes << "orph" if s.referral_phone
+    filtering_attributes << "orpb" if s.patient_can_book?
+    filtering_attributes << "osm" if s.male?
+    filtering_attributes << "osf" if s.female?
+    s.languages.each do |l|
+      filtering_attributes << "ol#{l.id}_"
+    end
+    filtering_attributes << "oi" if s.interpreter_available
+    s.clinics.each do |c|
+      filtering_attributes << "oac#{c.id}_"
+    end
+    s.hospitals.each do |h|
+      filtering_attributes << "oah#{h.id}_"
+    end
+    return filtering_attributes
+  end
     
   def clinic_filtering_attributes(c)
     filtering_attributes = []

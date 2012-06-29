@@ -821,7 +821,7 @@ body.loading #loading
       background: #8cd0f5;
     }
   
-    li.dropdown:after 
+    li.dropdown:not(.no-caret):after 
     {
       left: 100%;
       border: solid transparent;

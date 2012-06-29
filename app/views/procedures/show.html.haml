@@ -308,14 +308,14 @@
                       $('.cp, .cc, .cr, .cd, .csh, .ch, .ci, .cl').click( update_clinic_table );
                     });
 
-              %script{"type" => "text/javascript"}
-                :plain
-                  $('.collapsable').on('shown', function() {
-                    $(this).siblings('.filter-group-title').removeClass('closed').addClass('open');
-                  });
-                  $('.collapsable').on('hidden', function() {
-                    $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
-                  });
+      %script{"type" => "text/javascript"}
+        :plain
+          $('.collapsable').on('shown', function() {
+            $(this).siblings('.filter-group-title').removeClass('closed').addClass('open');
+          });
+          $('.collapsable').on('hidden', function() {
+            $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
+          });
                     
       #calculator_tab.tab-pane
                     
