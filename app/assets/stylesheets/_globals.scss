@@ -1,41 +1,61 @@
 /* Colours */
 
-$FNW_BACKGROUND: #fefefe;
+$FNW_BACKGROUND: #f0ede8;
 $FNW_WHITE: #fefefe;
 $FNW_NAV_BACKGROUND: #404040;
-$FNW_LIGHT_GRAY: #f3f9fa;
-$FNW_HEADLINE_BACKGROUND: #dbe4eb;
+$FNW_LIGHT_GRAY: #f3f8fc;
+$FNW_HEADLINE_BACKGROUND: #bde2f5;
 $FNW_MID_GRAY: #DDD;
 $FNW_DARK_GRAY: #666;
 $FNW_GREEN: #1ddc3e;
 $FNW_BLUE: #0088cc;
-$FNW_LIGHT_BLUE: #a4d8f5;
+$FNW_LIGHT_BLUE: #a3d9f5;
 $FNW_RED: #C44D58;
 $FNW_ORANGE: #F89406;
 $FNW_TEXT: #424242;
 $FNW_DISABLED_TEXT: #999;
+$FNW_BLUE_GRAY: #526b81;
 
 /* Misc */
 
-$FNW_BODY_BREATHING: 16px; 
+$FNW_BODY_BREATHING: 18px; 
 $FNW_STATUS_INDENT: 34px;
 $FNW_ICON_WIDTH: 18px; 
 
 /* Fonts */
 
-/*
-@font-face
-{
-  font-family: Icon;
-  src: url('/fonts/iconic_fill.otf');
+@font-face {
+  font-family: 'Bitter';
+  src:  url('/fonts/Bitter-Regular-webfont.eot');
+  src:  url('/fonts/Bitter-Regular-webfont.eot?#iefix') format('eot'), 
+        url('/fonts/Bitter-Regular-webfont.woff') format('woff'), 
+        url('/fonts/Bitter-Regular-webfont.ttf') format('truetype'), 
+        url('/fonts/Bitter-Regular-webfont.otf') format('opentype'), 
+        url('/fonts/Bitter-Regular-webfont.svg#Bitter') format('svg');
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
-	font-family: 'League Gothic';
-	src: url('/fonts/League_Gothic-webfont.eot?#iefix') format('embedded-opentype'), 
-	     url('/fonts/League_Gothic-webfont.woff') format('woff'), 
-	     url('/fonts/League_Gothic-webfont.ttf')  format('truetype'),
-	     url('/fonts/League_Gothic-webfont.svg#League_Gothic') format('svg');
-	}
-*/
+  font-family: 'Bitter';
+  src:  url('/fonts/Bitter-Bold-webfont.eot');
+  src:  url('/fonts/Bitter-Bold-webfont.eot?#iefix') format('eot'), 
+        url('/fonts/Bitter-Bold-webfont.woff') format('woff'), 
+        url('/fonts/Bitter-Bold-webfont.ttf') format('truetype'), 
+        url('/fonts/Bitter-Bold-webfont.otf') format('opentype'), 
+        url('/fonts/Bitter-Bold-webfont.svg#Bitter') format('svg');
+  font-weight: bold;
+  font-style: normal;
+}
 
+@font-face {
+  font-family: 'Bitter';
+  src:  url('/fonts/Bitter-Italic-webfont.eot');
+  src:  url('/fonts/Bitter-Italic-webfont.eot?#iefix') format('eot'), 
+        url('/fonts/Bitter-Italic-webfont.woff') format('woff'), 
+        url('/fonts/Bitter-Italic-webfont.ttf') format('truetype'), 
+        url('/fonts/Bitter-Italic-webfont.otf') format('opentype'), 
+        url('/fonts/Bitter-Italic-webfont.svg#Bitter') format('svg');
+  font-weight: normal;
+  font-style: italic;
+}
