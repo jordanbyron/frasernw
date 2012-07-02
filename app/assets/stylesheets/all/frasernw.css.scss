@@ -832,18 +832,34 @@ body.loading #loading
     margin: 0 0 0 0-$FNW_BODY_BREATHING;
     padding: 0;
     
-    li, li a
+    li
     {
-      font-family: Bitter;
-      font-size: 12px;
-      line-height: 30px;
       z-index: 1001;
       position: relative;
       list-style: none;
       display: inline-block;
+      font-family: Bitter;
+      font-size: 12px;
+      line-height: 30px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    
+    li a
+    {
+      display: inline-block;
+      line-height: 30px;
       min-width: 130px;
       text-align: center;
       text-transform: uppercase;
+      
+      b.caret
+      {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+        vertical-align: middle;
+      }
     }
     
     li a:hover
@@ -877,6 +893,15 @@ body.loading #loading
       background-color: $FNW_WHITE;
       margin-left: -6px;
       color: $FNW_DARK_GRAY;
+      padding: 0 16px;
+      min-width: 130px;
+      line-height: 28px;
+      border: 1px solid $FNW_WHITE;
+    }
+    
+    li.subsequent.border
+    {
+      border: 1px solid $FNW_MID_GRAY;
     }
   
     li.subsequent.next:after, li.subsequent.next:before 
@@ -906,7 +931,7 @@ body.loading #loading
   {
     position: absolute;
     top: -4px;
-    left: -4px;
+    left: -4px - $FNW_BODY_BREATHING;
     display: none;
     z-index: 1000;
     margin: 0;

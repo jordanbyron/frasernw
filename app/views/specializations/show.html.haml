@@ -2,7 +2,7 @@
     
 %ul#specialties-menu
   %li.dropdown
-    %a.dropdown-toggle{"href" => "#", "onclick" => "$('#specialties-dropdown-menu').toggle()"}
+    %a.dropdown-toggle{"href" => "#", "onclick" => "$('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border');"}
       Specialties
       %b.caret
   %li.subsequent= @specialization.name
