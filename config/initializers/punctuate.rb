@@ -7,10 +7,14 @@ class String
   
   def uncapitalize_first_letter
     self.strip!
-    if (self.length >= 1) || (self.slice(1,2).upcase != self.slice(1,2))
+    if self.length == 0
+      self
+    elsif self.length == 1
+      self.downcase
+    elsif (self.length > 1) && (self.slice(1,1).upcase != self.slice(1,1))
       self.slice(0,1).downcase + self.slice(1..-1)
     else
-      self.downcase
+      self
     end
   end
   
