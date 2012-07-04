@@ -4,7 +4,21 @@
 
   = f.input :name
   = f.association :sc_category, as: :radio_buttons
-  = f.association :specializations, as: :check_boxes
+  
+  - Specialization.all.each do |specialization|
+    %label
+      = check_box_tag "specialization_#{specialization.id}", 1, @has_specializations.include?(specialization.id), :name => "specialization[#{specialization.id}", :class => "offset3"
+      = specialization.name
+    - specialization.non_assumed_procedure_specializations_arranged.each do |ps,children|
+      %label
+        = check_box_tag "procedure_specialization_#{ps.id}", 1, @has_procedure_specializations.include?(ps.id), :name => "procedure_specialization[#{ps.id}", :class => "offset4"
+        = ps.procedure.name
+      - children.each do |child_ps, grandchildren|
+        %label
+          = check_box_tag "procedure_specialization_#{child_ps.id}", 1, @has_procedure_specializations.include?(child_ps.id), :name => "procedure_specialization[#{child_ps.id}", :class => "offset5"
+          = child_ps.procedure.name
+        
+        
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
