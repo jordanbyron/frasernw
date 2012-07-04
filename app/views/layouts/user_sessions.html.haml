@@ -14,12 +14,13 @@
     #main-nav.navbar
       .navbar-inner
         .container
-          = link_to "Pathways", root_url, :class => "brand"
+          %a#logo.brand.ajax{"href" => root_url}
 
     #body.container
       .row
         #content.span12
           #container
-            - flash.each do |type, msg|
-              .alert.alert-success= msg
-            = yield
+            .content-wrapper
+              - flash.each do |type, msg|
+                .alert.alert-success= msg
+              = yield
