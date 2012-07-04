@@ -903,7 +903,7 @@ body.loading #loading
     
     li
     {
-      z-index: 1001;
+      z-index: 1000;
       position: relative;
       list-style: none;
       display: inline-block;
@@ -914,7 +914,7 @@ body.loading #loading
       text-transform: uppercase;
     }
     
-    li a
+    li a.dropdown-toggle
     {
       display: inline-block;
       line-height: 30px;
@@ -968,12 +968,14 @@ body.loading #loading
       border: 1px solid $FNW_WHITE;
     }
     
-    li.subsequent.border
+    li.subsequent.next
     {
-      border: 1px solid $FNW_MID_GRAY;
+      z-index: 1001;
+      background: $FNW_LIGHT_GRAY;
+      border-color: $FNW_LIGHT_GRAY;
     }
-  
-    li.subsequent.next:after, li.subsequent.next:before 
+    
+    li.subsequent.next:after 
     {
       left: 100%;
       border: solid transparent;
@@ -982,17 +984,19 @@ body.loading #loading
       width: 0;
       position: absolute;
       pointer-events: none;
-      border-left-color: $FNW_WHITE;
+    }
+
+    li.subsequent.next:after 
+    {
+      border-left-color: $FNW_LIGHT_GRAY;
       border-width: 6px;
       top: 50%;
       margin-top: -6px;
-    } 
+    }
     
-    li.subsequent.next:before 
+    li.subsequent.border
     {
-      border-left-color: $FNW_LIGHT_BLUE;
-      margin-top: -7px;
-      border-width: 7px;
+      border: 1px solid $FNW_MID_GRAY;
     }
   }
   
@@ -1002,7 +1006,7 @@ body.loading #loading
     top: -4px;
     left: -4px - $FNW_BODY_BREATHING;
     display: none;
-    z-index: 1000;
+    z-index: 999;
     margin: 0;
     padding: 6px;
     background: $FNW_WHITE;
