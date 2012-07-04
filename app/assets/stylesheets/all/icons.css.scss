@@ -98,27 +98,9 @@
   width: $FNW_ICON_WIDTH;
 }
 
-#container h6:before
-{
-  width: 24px;
-}
-
 #container .status:before
 {
-  width: 24px;
-}
-
-#search_results
-{
-  .status_available:before, 
-  .status_unavailable:before, 
-  .status_unknown:before, 
-  .status_warning:before, 
-  .status_external:before
-  {
-    margin-left: -($FNW_STATUS_INDENT + $FNW_ICON_WIDTH)/2;
-    margin-right: ($FNW_STATUS_INDENT - $FNW_ICON_WIDTH)/2;
-  }
+  width: $FNW_ICON_WIDTH;
 }
 
 .dropdown-menu li > a:before

@@ -4,7 +4,7 @@
   
 %ul#specialties-menu
   %li.dropdown
-    %a.dropdown-toggle{"href" => "#", "onclick" => "$('#specialties-dropdown-menu').toggle()"}
+    %a.dropdown-toggle{"href" => "javascript:void(0)", "onclick" => "$('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border');"}
       Specialties
       %b.caret
   %li.subsequent= specialization.name
@@ -64,7 +64,8 @@
     .content
       .row
         - show_details = false
-        .span8
+        .span7half
+          .headline-header
           .headline
             %h2= @specialist.name
             %h3.specialty_links
@@ -138,7 +139,9 @@
                 %p.no_indent
                   %strong Limitations:
                   = @specialist.practise_limitations.end_with_period
-                  
+          
+          .headline-footer
+          
           - if show_details
           
             - has_office = false
@@ -192,7 +195,7 @@
                   = @specialist.location_opened == "Prior to 2010" ? "#{@specialist.location_opened.downcase}." : "in #{@specialist.location_opened}."
               
               - if @specialist.languages.present?
-                %p.space
+                %p
                   = @specialist.languages.map{ |x| "<a class='ajax' href='#{language_path(x)}'>#{x.name}</a>" }.to_sentence.html_safe
                   = "#{@specialist.languages.count == 1 ? 'is' : 'are' } spoken at this practice."
               
@@ -200,7 +203,7 @@
                 %p.space
                   Interpreter available upon request.
             
-            - if @specialist.accepts_referrals_via.present? || @specialist.responds_via.present? || @specialist.referral_form_mask != 3 || @specialist.waittime.present? || @specialist.lagtime.present? || @specialist.patient_can_book_mask != 3
+            - if @specialist.accepts_referrals_via.present? || @specialist.responds_via.present? || @specialist.referral_form_mask != 3 || @specialist.waittime.present? || @specialist.lagtime.present? || @specialist.patient_can_book_mask != 3 || @specialist.required_investigations.present?
             
               %h6 Referrals
 
@@ -242,6 +245,12 @@
                 %p This office accepts direct calls from patients after referral to book their own appointments.
               - elsif @specialist.patient_can_book_mask == 2
                 %p This office does not accept direct calls from patients after referral to book their own appointments.
+                
+              - if @specialist.required_investigations.present?
+                %p.space
+                  %strong Required investigations
+                  for all patients:
+                  = @specialist.required_investigations.end_with_period
             
             - if @specialist.red_flags.present? || @specialist.urgent_referrals_via.present?
               %h6 Urgent Referrals
@@ -282,23 +291,17 @@
                   %strong Clinic associations:
                   != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'>#{clinic.name}</a>" }.to_sentence
         - if show_details      
-          .span4
+          .span4.offsethalf
             - specialization_procedures, specialization_count, specialization_has_investigations = compressed_procedures_indented(@specialist, ProcedureSpecialization::CLASSIFICATION_FOCUSED)
             - custom_procedures, custom_count, custom_has_investigations = compressed_procedures_indented(@specialist, ProcedureSpecialization::CLASSIFICATION_NONFOCUSED)
-            - if @specialist.required_investigations.present? || specialization_count > 0 || custom_count > 0 || @specialist.interest.present? || @specialist.not_performed.present?
+            - if specialization_count > 0 || custom_count > 0 || @specialist.interest.present? || @specialist.not_performed.present?
               .well.areas-of-practice
                 %h6 Areas of Practice
                       
                 .investigation  
-                  - if @specialist.required_investigations.present?
-                    %p.space
-                      %strong Required investigations for all patients
-                    %p= @specialist.required_investigations.end_with_period
                   - if specialization_count > 0
-                    %p.space
-                      %strong Areas of practice
                     - if specialization_has_investigations
-                      %p
+                      %p.space
                         (with any 
                         %i additional 
                         required investigations)
@@ -316,12 +319,11 @@
                       = custom_procedures.html_safe
                   - if @specialist.interest.present?
                     %p.space
-                      %strong Most interested in
-                    %p= @specialist.interest.end_with_period
+                      %strong Most interested in:
+                      = @specialist.interest.end_with_period
                   - if @specialist.not_performed.present?
                     %p.space
-                      %strong Does not see or do
-                    %p
+                      %strong Does not see or do:
                       = @specialist.not_performed.end_with_period
                   
     .btn-group

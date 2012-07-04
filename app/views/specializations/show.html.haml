@@ -96,7 +96,7 @@
           
             .content
               .row
-                .span9
+                .span8half
                   #specialist_phrase.filter-phrase
                           
                   #specialist_others.other-phrase
@@ -129,7 +129,7 @@
                       Areas of practice we assume all #{@specialization.member_name.uncapitalize_first_letter.pluralize} see:
                       = @specialization.procedure_specializations.assumed.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
                       
-                .span3
+                .span3.offsethalf
                   .well.filter
                     .title
                       Filter Specialists

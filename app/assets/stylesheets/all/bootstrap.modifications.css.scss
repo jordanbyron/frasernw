@@ -1,24 +1,26 @@
 @import "_globals";
 
-/* ADDING NEW SPANS */
+/* 
+  ADDING NEW SPANS
+  1 'unit' = 80 pixels wide, 20 pixels of that is padding
+*/
+   
 
 .spanhalf {
-  margin-left: 10px;
-  width: 30px;
+  width: 20px;
 }
 
 .offsethalf
 {
-  margin-left: 50px;
+  margin-left: 60px;
 }
 
-.span1half {
-  margin-left: 10px;
-  width: 110px;
+.span8half {
+  width: 660px;
 }
 
-input.span1half, textarea.span1half, .uneditable-input.span1half {
-  width: 98px;
+.span7half {
+  width: 580px;
 }
 
 /* NAVBAR */
@@ -469,7 +471,7 @@ ul.dropdown-menu
   
   .btn-group
   {
-    margin-top: 16px;
+    margin-top: 24px;
   }
 }
 
