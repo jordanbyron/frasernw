@@ -275,7 +275,7 @@
                         %th{:class => "{sorter: 'bylastname'} name_column"} Clinic
                         %th{:class => "{sorter: 'status'} status_column"} Accepting New<br>Patients?
                         %th{:class => "{sorter: 'waittime'} wait_time_column"} Average Patient<br>Wait Time
-                        %th{:class => "{sorter: 'blanks_to_bottom'}"} City
+                        %th{:class => "{sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
                       - (@specialization.clinics).each do |clinic|
                         - next if not clinic.show_in_table?

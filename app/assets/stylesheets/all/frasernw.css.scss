@@ -475,9 +475,37 @@ body.loading #loading
       
   }
   
+  table.five
+  {
+    th.name_column
+    {
+      width: 30%;
+    }
+    
+    th.specialty_column
+    {
+      width: 20%;
+    }
+    
+    th.status_column
+    {
+      width: 15%;
+    }
+    
+    th.wait_time_column
+    {
+      width: 15%;
+    }
+    
+    th.city_column
+    {
+      width: 20%;
+    }
+  }
+  
   table.table-no-lines tr td
   {
-    border-top: 0;
+    background: none;
   }
   
   h1 + table, h2 + table, h3 + table, h4 + table, h5 + table, h6 + table
@@ -1016,5 +1044,10 @@ body.loading #loading
         }
       }
     }
+  }
+  
+  #specialties-dropdown-menu + .content-wrapper
+  {
+    margin-top: 4px;
   }
 }
