@@ -707,8 +707,16 @@ body.loading #loading
         text-indent: 0;
         padding-left: 0;
         
-        /*
         select
+        {
+          padding: 0 8px;
+          margin-left: 0;
+          width: 95%;
+          background-color: $FNW_WHITE;
+          font-size: 13px;
+        }
+        
+        /* select
         {
           -webkit-appearance: button;
           -webkit-border-radius: 4px;
@@ -720,8 +728,7 @@ body.loading #loading
           background-color: $FNW_WHITE;
           font-size: 13px;
           background: transparent url('/img/arrows.png') 90% 50% no-repeat;
-        }
-        */
+        } */
       }
       
       label.half
