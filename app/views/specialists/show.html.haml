@@ -199,10 +199,10 @@
                   = "#{@specialist.languages.count == 1 ? 'is' : 'are' } spoken at this practice."
               
               - if @specialist.interpreter_available
-                %p.space
+                %p
                   Interpreter available upon request.
             
-            - if @specialist.accepts_referrals_via.present? || @specialist.responds_via.present? || @specialist.referral_form_mask != 3 || @specialist.waittime.present? || @specialist.lagtime.present? || @specialist.patient_can_book_mask != 3 || @specialist.required_investigations.present?
+            - if @specialist.accepts_referrals_via.present? || @specialist.responds_via.present? || @specialist.referral_form_mask != 3 || @specialist.required_investigations.present? || @specialist.waittime.present? || @specialist.lagtime.present? || @specialist.patient_can_book_mask != 3
             
               %h6 Referrals
 
@@ -229,6 +229,12 @@
                 %p 
                   %strong Referral form:
                   no.
+                
+              - if @specialist.required_investigations.present?
+                %p.space
+                  %strong Required investigations
+                  for all patients:
+                  = @specialist.required_investigations.end_with_period
 
               -if @specialist.waittime.present?
                 %p.space
@@ -244,12 +250,6 @@
                 %p This office accepts direct calls from patients after referral to book their own appointments.
               - elsif @specialist.patient_can_book_mask == 2
                 %p This office does not accept direct calls from patients after referral to book their own appointments.
-                
-              - if @specialist.required_investigations.present?
-                %p.space
-                  %strong Required investigations
-                  for all patients:
-                  = @specialist.required_investigations.end_with_period
             
             - if @specialist.red_flags.present? || @specialist.urgent_referrals_via.present?
               %h6 Urgent Referrals
