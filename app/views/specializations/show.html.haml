@@ -66,27 +66,27 @@
     %ul#content_tabs.nav.nav-tabs
       - if has_specialists
         %li{:class => specialist_tab_class} 
-          %a{"href" => "#specialist_tab", "data-toggle" => "tab"}
+          %a#specialists_tab{"href" => "#specialist_tab", "data-toggle" => "tab"}
             %span Specialists
       - if has_clinics
         %li{:class => clinic_tab_class}
-          %a{"href" => "#clinic_tab", "data-toggle" => "tab"}
+          %a#clinics_tab{"href" => "#clinic_tab", "data-toggle" => "tab"}
             %span Clinics
       - if true
         %li
-          %a{"href" => "#calculator_tab", "data-toggle" => "tab"}
-            %span Calculators
+          %a#risk_calculators_tab{"href" => "#calculator_tab", "data-toggle" => "tab"}
+            %span Risk Calculators
         %li
-          %a{"href" => "#care_pathways_tab", "data-toggle" => "tab"}
+          %a#care_pathways_tab{"href" => "#care_pathways_tab", "data-toggle" => "tab"}
             %span Care Pathways
         %li
-          %a{"href" => "#pearls_tab", "data-toggle" => "tab"}
+          %a#pearls_tab{"href" => "#pearls_tab", "data-toggle" => "tab"}
             %span Pearls
         %li
-          %a{"href" => "#red_flags_tab", "data-toggle" => "tab"}
+          %a#red_flags_tab{"href" => "#red_flags_tab", "data-toggle" => "tab"}
             %span Red Flags
         %li
-          %a{"href" => "#patient_education_tab", "data-toggle" => "tab"}
+          %a#patient_education_tab{"href" => "#patient_education_tab", "data-toggle" => "tab"}
             %span Patient Education
 
     .content-wrapper
@@ -266,7 +266,7 @@
           
             .content
               .row
-                .span9
+                .span8half
                   #clinic_phrase.filter-phrase
                     
                   %table.table.table-condensed{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'clinic_table'}
@@ -287,7 +287,7 @@
                           %td= clinic.waittime
                           %td= clinic.city
                           
-                .span3
+                .span3.offsethalf
                   .well.filter
                     .title
                       Filter Clinics
@@ -400,7 +400,7 @@
                         
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-healthcare-providers"}
-                        Healthcare Providerss
+                        Care Providers
                       #clinic-filter-healthcare-providers.collapsable.collapse
                         .filter-group-content
                           - HealthcareProvider.all.each do |h|

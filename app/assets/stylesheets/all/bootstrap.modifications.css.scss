@@ -359,6 +359,7 @@ ul.dropdown-menu
           padding: 0 16px;
           margin: 0;
           line-height: 34px;
+          text-align: center;
         }
       }
     
@@ -370,6 +371,7 @@ ul.dropdown-menu
           background: transparent;
           font-weight: bold;
           border: none;
+          margin-top: -1px;
         }
       }
       
@@ -380,7 +382,7 @@ ul.dropdown-menu
         background: transparent;
         font-weight: bold;
         color: $FNW_WHITE;
-        margin: -1px;
+        margin-top: -1px;
       }
       
       li + li

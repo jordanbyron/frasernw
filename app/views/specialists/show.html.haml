@@ -28,28 +28,27 @@
 .tabbable
   %ul#content_tabs.nav.nav-tabs
     %li.active 
-      %a{"href" => "#specialist_tab", "data-toggle" => "tab"}
+      %a#specialists_tab{"href" => "#specialist_tab", "data-toggle" => "tab"}
         %span Specialists
     - if has_clinics
       %li
-        %a{"href" => "#clinic_tab", "data-toggle" => "tab"}
+        %a#clinics_tab{"href" => "#clinic_tab", "data-toggle" => "tab"}
           %span Clinics
-    - if true
-      %li
-        %a{"href" => "#calculator_tab", "data-toggle" => "tab"}
-          %span Calculators
-      %li
-        %a{"href" => "#care_pathways_tab", "data-toggle" => "tab"}
-          %span Care Pathways
-      %li
-        %a{"href" => "#pearls_tab", "data-toggle" => "tab"}
-          %span Pearls
-      %li
-        %a{"href" => "#red_flags_tab", "data-toggle" => "tab"}
-          %span Red Flags
-      %li
-        %a{"href" => "#patient_education_tab", "data-toggle" => "tab"}
-          %span Patient Education
+    %li
+      %a#risk_calculators_tab{"href" => "#calculator_tab", "data-toggle" => "tab"}
+        %span Risk Calculators
+    %li
+      %a#care_pathways_tab{"href" => "#care_pathways_tab", "data-toggle" => "tab"}
+        %span Care Pathways
+    %li
+      %a#pearls_tab{"href" => "#pearls_tab", "data-toggle" => "tab"}
+        %span Pearls
+    %li
+      %a#red_flags_tab{"href" => "#red_flags_tab", "data-toggle" => "tab"}
+        %span Red Flags
+    %li
+      %a#patient_education_tab{"href" => "#patient_education_tab", "data-toggle" => "tab"}
+        %span Patient Education
 
 - if @is_version
   = render 'versions/info'

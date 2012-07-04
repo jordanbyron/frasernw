@@ -331,6 +331,38 @@ body.loading #loading
     margin-bottom: 10px;
   }
   
+  .tabbable ul.nav-tabs li
+  {
+    a#specialists_tab
+    {
+      width: 65px;
+    }
+    a#clinics_tab
+    {
+      width: 40px;
+    }
+    a#risk_calculators_tab
+    {
+      width: 100px;
+    }
+    a#care_pathways_tab
+    {
+      width: 90px;
+    }
+    a#pearls_tab
+    {
+      width: 45px;
+    }
+    a#red_flags_tab
+    {
+      width: 60px;
+    }
+    a#patient_education_tab
+    {
+      width: 110px;
+    }
+  }
+  
   .table
   {
     th
@@ -671,7 +703,7 @@ body.loading #loading
     padding: 4px 8px;
   }
   
-  .assumed-phrase, .other-phrase
+  .filter-phrase, .assumed-phrase, .other-phrase
   {
     background-color: $FNW_LIGHT_GRAY;
     padding: 4px 8px;
@@ -689,10 +721,17 @@ body.loading #loading
   {
     display: none;
   }
+  
+  .other-phrase
+  {
+    background-color: $FNW_HEADLINE_BACKGROUND;
+    font-weight: bold;
+  }
 
   .filter-phrase.none
   {
     background-color: $FNW_RED;
+    font-weight: bold;
     color: $FNW_BACKGROUND;
     
     a
