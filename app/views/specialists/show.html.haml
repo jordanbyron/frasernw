@@ -68,6 +68,7 @@
     .content
       .row
         - show_details = false
+        - show_areas_of_practice = false
         .span7half
           .headline-header
           .headline
@@ -83,21 +84,23 @@
               
             - if @specialist.not_responded?
 
-              %p.space This specialist has not yet provided Pathways their information.
+              %p.space.no_indent This specialist has not yet provided Pathways their information.
               
             - elsif @specialist.moved_away?
 
-              %p.space This specialist has moved away.
+              %p.space.no_indent This specialist has moved away.
               
             - elsif @specialist.retired?
 
-              %p.space This specialist has retired.
+              %p.space.no_indent This specialist has retired.
               
             - elsif @specialist.purposely_not_yet_surveyed?
 
-              %p.space This specialist has purposely not yet been surveyed by Pathways. They may be out of our current catchment area, or in a speciality we have yet to fully survey.
+              %p.space.no_indent This specialist has purposely not yet been surveyed by Pathways. They may be out of our current catchment area, or in a speciality we have yet to fully survey.
               
             - elsif @specialist.hospital_or_clinic_only?
+            
+              - show_areas_of_practice = true
 
               - hospitals = @specialist.hospitals.present?
               - clinics = @specialist.clinics.present?
@@ -131,7 +134,9 @@
                   != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'>#{clinic.name}</a>" }.to_sentence
                 
             - else
+            
               - show_details = true
+              - show_areas_of_practice = true
             
               %p.no_indent.space
                 %strong.status{ :class => "status_#{@specialist.status_class}"}= @specialist.status.end_with_period
@@ -294,7 +299,9 @@
                 %p
                   %strong Clinic associations:
                   != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'>#{clinic.name}</a>" }.to_sentence
-        - if show_details      
+                  
+        - if show_details || show_areas_of_practice
+        
           .span4.offsethalf
             - specialization_procedures, specialization_count, specialization_has_investigations = compressed_procedures_indented(@specialist, ProcedureSpecialization::CLASSIFICATION_FOCUSED)
             - custom_procedures, custom_count, custom_has_investigations = compressed_procedures_indented(@specialist, ProcedureSpecialization::CLASSIFICATION_NONFOCUSED)

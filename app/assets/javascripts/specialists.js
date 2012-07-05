@@ -174,7 +174,7 @@ var specialist_categorization_changed = function()
     $("#section_contact").hide();
     $("#section_moa").hide();
     $("#section_status").hide();
-    $("#section_aop").hide();
+    $("#section_aop").show();
     $("#section_referrals").hide();
     $("#section_for_patients").hide();
     $("#section_hospital_clinic_details").show();

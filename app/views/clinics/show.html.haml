@@ -68,6 +68,8 @@
     .content
       .row
         - show_details = false
+        - show_areas_of_practice = false
+        
         .span7half
           .headline-header
           .headline
@@ -75,26 +77,30 @@
             %h2
               = @clinic.name
         
-            %h3.indent.specialty_links
+            %h3.specialty_links
               = @clinic.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
               
-            %h5.indent= @clinic.sector if @clinic.sector?
+            %h5= @clinic.sector if @clinic.sector?
             
             - if @clinic.not_responded?
 
-              %p.space This clinic has not yet provided Pathways their information.
+              %p.space.no_indent This clinic has not yet provided Pathways their information.
               
             - elsif @clinic.purposely_not_yet_surveyed?
+            
+              - show_areas_of_practice = true
 
-              %p.space This clinic has purposely not yet been surveyed by Pathways. It may be out of our current catchment area, or in a speciality we have yet to fully survey.
+              %p.space.no_indent This clinic has purposely not yet been surveyed by Pathways. It may be out of our current catchment area, or in a speciality we have yet to fully survey.
               
             - else
+            
               - show_details = true
+              - show_areas_of_practice = true
                     
-              %p.space
+              %p.space.no_indent
                 %strong.status{ :class => "status_#{@clinic.status_class}"}= @clinic.status.end_with_period
               - if @clinic.limitations.present?
-                %p
+                %p.no_indent
                   %strong Limitations:
                   = @clinic.limitations.end_with_period
           
@@ -238,7 +244,8 @@
                       = attendance.freeform_name
                       = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
                       
-        - if show_details  
+        - if show_details  || show_areas_of_practice
+        
           .span4.offsethalf
             - specialization_procedures, specialization_count, specialization_has_investigations = compressed_procedures_indented(@clinic, ProcedureSpecialization::CLASSIFICATION_FOCUSED)
             - custom_procedures, custom_count, custom_has_investigations = compressed_procedures_indented(@clinic, ProcedureSpecialization::CLASSIFICATION_NONFOCUSED)
