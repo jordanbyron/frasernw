@@ -563,4 +563,16 @@ ul.dropdown-menu
   top: 11px;
   left: -6px;
 }
+
+/* ALERTS */
+
+.alert-success,
+.alert-danger,
+.alert-error,
+.alert-info {
+  background-color: $FNW_LIGHT_BLUE;
+  font-weight: bold;
+  border: none;
+  color: $FNW_TEXT;
+}
   
