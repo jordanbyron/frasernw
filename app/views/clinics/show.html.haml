@@ -92,6 +92,11 @@
 
               %p.space.no_indent This clinic has purposely not yet been surveyed by Pathways. It may be out of our current catchment area, or in a speciality we have yet to fully survey.
               
+              - if @clinic.specialists.present?
+                %p.space.no_indent
+                  %strong Specialists that work in this clinic:
+                  != @clinic.specialists.map{ |specialist| "<a href='#{specialist_path(specialist)}' class='ajax')\">#{specialist.name}</a>" }.to_sentence 
+              
             - else
             
               - show_details = true

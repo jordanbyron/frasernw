@@ -94,42 +94,46 @@
 
               %p.space.no_indent This specialist has retired.
               
-            - elsif @specialist.purposely_not_yet_surveyed?
-
-              %p.space.no_indent This specialist has purposely not yet been surveyed by Pathways. They may be out of our current catchment area, or in a speciality we have yet to fully survey.
-              
-            - elsif @specialist.hospital_or_clinic_only?
+            - elsif @specialist.purposely_not_yet_surveyed? || @specialist.hospital_or_clinic_only?
             
               - show_areas_of_practice = true
 
               - hospitals = @specialist.hospitals.present?
               - clinics = @specialist.clinics.present?
               
-              - if hospitals && clinics
-                %p.space
-                  %strong.status_external This specialist only works out of hospitals and clinics.
-              - elsif clinics
-                %p.space
-                  %strong.status_external This specialist only works out of clinics.
-              - elsif hospitals
-                %p.space
-                  %strong.status_external This specialist only works out of hospitals.
-              - else
-                %p.space
-                  %strong.status_external This specialist only works out of hospitals and clinics, but we do not yet have data on which ones.
+              - if @specialist.purposely_not_yet_surveyed?
+
+                %p.space.no_indent This specialist has purposely not yet been surveyed by Pathways. They may be out of our current catchment area, or in a speciality we have yet to fully survey.
+              
+              - elsif @specialist.hospital_or_clinic_only?
+              
+                - show_areas_of_practice = true
                 
-              - if @specialist.hospital_clinic_details.present?
-                %p.space
-                  %strong Details:
-                  = @specialist.hospital_clinic_details
+                - if hospitals && clinics
+                  %p.space.no_indent
+                    %strong.status_external This specialist only works out of hospitals and clinics.
+                - elsif clinics
+                  %p.space.no_indent
+                    %strong.status_external This specialist only works out of clinics.
+                - elsif hospitals
+                  %p.space.no_indent
+                    %strong.status_external This specialist only works out of hospitals.
+                - else
+                  %p.space.no_indent
+                    %strong.status_external This specialist only works out of hospitals and clinics, but we do not yet have data on which ones.
+                  
+                - if @specialist.hospital_clinic_details.present?
+                  %p.space.no_indent
+                    %strong Details:
+                    = @specialist.hospital_clinic_details
                 
               - if hospitals
-                %p.space
+                %p.space.no_indent
                   %strong Hospital privileges:
                   != @specialist.hospitals.map{ |hospital| "<a href='#{hospital_path(hospital)}' class='ajax')\">#{hospital.name}</a>" }.to_sentence 
 
               - if clinics
-                %p.space
+                %p.space.no_indent
                   %strong Clinic associations:
                   != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'>#{clinic.name}</a>" }.to_sentence
                 
