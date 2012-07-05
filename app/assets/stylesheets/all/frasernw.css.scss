@@ -2,7 +2,7 @@
     
 .admin, .navbar .nav > li.admin
 {
-  display: none;
+  /*display: none;*/
 }
 
 .in-progress
@@ -875,6 +875,7 @@ body.loading #loading
   {
     display: none;
     position: fixed;
+    z-index: 3000;
     top: 25%;
     left: 25%;
     width: 50%;
