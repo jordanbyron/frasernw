@@ -9,9 +9,9 @@
   
 %script{"type" => "text/javascript"}
   :plain
-    $('a.dropdown-toggle').on('click.droptown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); });
-    //$('html').on('click.droptown-toggle', function () { $('#specialties-dropdown-menu').hide() });
-  
+    var $el = $('a.dropdown-toggle').on('click.droptown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
+    $('html').on('click.droptown-toggle', function () { $('#specialties-dropdown-menu').hide() });
+    
 #specialties-dropdown-menu
   .inner
     - specializations = Specialization.all
