@@ -60,6 +60,7 @@ body.loading #loading
   width: 600px;
   background-color: $FNW_WHITE;
   -webkit-box-shadow: 2px 2px 8px #888;
+  -moz-box-shadow: 2px 2px 8px #888;
   box-shadow: 2px 2px 8px #888;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
@@ -879,25 +880,29 @@ body.loading #loading
     top: 25%;
     left: 25%;
     width: 50%;
-    padding: 12px 12px 0 12px;
+    padding: 6px;
     background: #fff;
-    border: 1px solid $FNW_DARK_GRAY;
-    -webkit-border-radius: 3px;
-    -moz-border-radius:3px;
-    border-radius: 3px;
-    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    -box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border: none;
+    -webkit-box-shadow: 2px 2px 8px #888;
+    -moz-box-shadow: 2px 2px 8px #888;
+    box-shadow: 2px 2px 8px #888;
     
-    label
+    .inner
     {
-      font-weight: bold;
-    }
+      margin: 0;
+      padding: 12px;
+      border: 2px dotted $FNW_LIGHT_GRAY;
     
-    textarea
-    {
-      width: 95%;
-      height: 200px;
+      label
+      {
+        font-weight: bold;
+      }
+      
+      textarea
+      {
+        width: 95%;
+        height: 200px;
+      }
     }
   }
 
@@ -1026,6 +1031,7 @@ body.loading #loading
     padding: 6px;
     background: $FNW_WHITE;
     -webkit-box-shadow: 2px 2px 8px #888;
+    -moz-box-shadow: 2px 2px 8px #888;
     box-shadow: 2px 2px 8px #888;
     
     .inner

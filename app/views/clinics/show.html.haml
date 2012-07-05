@@ -290,16 +290,16 @@
           Incorrect Information? Let us know
           
       #feedback
-                  
-        = simple_form_for @feedback, :html => { :class => "ajax" } do |f|
+        .inner   
+          = simple_form_for @feedback, :html => { :class => "ajax" } do |f|
 
-          = f.input :feedback, :label => "Please provide us with any updates to #{@clinic.name}'s information"
-          = f.input :item_type, :as => :hidden, :value => "Clinic"
-          = f.input :item_id, :as => :hidden, :value => @clinic.name
+            = f.input :feedback, :label => "Please provide us with any updates to #{@clinic.name}'s information"
+            = f.input :item_type, :as => :hidden, :value => "Clinic"
+            = f.input :item_id, :as => :hidden, :value => @clinic.name
 
-          .form-actions
-            = f.button :submit, :class => "btn btn-primary", :value => "Send Feedback"
-            %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
+            .form-actions
+              = f.button :submit, :class => "btn btn-primary", :value => "Send Feedback"
+              %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
               
   - if current_user_is_admin?
     - if @clinic.controlling_users.present?
