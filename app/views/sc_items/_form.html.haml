@@ -7,19 +7,45 @@
   
   - Specialization.all.each do |specialization|
     %label
-      = check_box_tag "specialization_#{specialization.id}", 1, @has_specializations.include?(specialization.id), :name => "specialization[#{specialization.id}", :class => "offset3"
+      = check_box_tag "specialization_#{specialization.id}", 1, @has_specializations.include?(specialization.id), :name => "specialization[#{specialization.id}", :class => "specialty_check offset3"
       = specialization.name
-    - specialization.non_assumed_procedure_specializations_arranged.each do |ps,children|
-      %label
-        = check_box_tag "procedure_specialization_#{ps.id}", 1, @has_procedure_specializations.include?(ps.id), :name => "procedure_specialization[#{ps.id}", :class => "offset4"
-        = ps.procedure.name
-      - children.each do |child_ps, grandchildren|
+    
+    .procedures_list{"id" => "specialization_#{specialization.id}_procedures"}
+      - specialization.non_assumed_procedure_specializations_arranged.each do |ps,children|
         %label
-          = check_box_tag "procedure_specialization_#{child_ps.id}", 1, @has_procedure_specializations.include?(child_ps.id), :name => "procedure_specialization[#{child_ps.id}", :class => "offset5"
-          = child_ps.procedure.name
+          = check_box_tag "procedure_specialization_#{ps.id}", 1, @has_procedure_specializations.include?(ps.id), :name => "procedure_specialization[#{ps.id}", :class => "offset4"
+          = ps.procedure.name
+        - children.each do |child_ps, grandchildren|
+          %label
+            = check_box_tag "procedure_specialization_#{child_ps.id}", 1, @has_procedure_specializations.include?(child_ps.id), :name => "procedure_specialization[#{child_ps.id}", :class => "offset5"
+            = child_ps.procedure.name
+          
+          
+  %script{"type" => "text/javascript"}
+    :plain
+      function hide_show_procedures( checkbox )
+      {
+        id = "#" + $(checkbox).prop('id') + "_procedures";
+        console.log(id);
+        if ($(checkbox).prop('checked'))
+        {  
+          $(id).show();
+        }
+        else
+        {
+          $(id).hide();
+        }
+        return true;
+      }
+      
+      $(document).ready(function() { 
+        $.each($('.specialty_check'), function() { hide_show_procedures(this) });
+      });
+      
+      $('.specialty_check').click(function() { 
+        hide_show_procedures(this)
+      });
         
-        
-
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
     = link_to 'Cancel', sc_items_path, :class => "btn btn-danger ajax"
