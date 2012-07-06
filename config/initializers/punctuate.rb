@@ -2,7 +2,13 @@ class String
   
   def capitalize_first_letter
     self.strip!
-    self.slice(0,1).capitalize + self.slice(1..-1)
+    if self.length == 0
+      self
+    elsif self.length == 1
+      self.capitalize
+    else
+      self.slice(0,1).capitalize + self.slice(1..-1)
+    end
   end
   
   def uncapitalize_first_letter
@@ -20,7 +26,9 @@ class String
   
   def end_with_period
     self.strip!
-    if self[-1,1] != '.'
+    if self.length == 0
+      self
+    elsif self[-1,1] != '.'
       self + "."
     else
       self
@@ -37,7 +45,12 @@ class String
   end
   
   def punctuate
-    self.capitalize_first_letter.end_with_period
+    self.strip!
+    if self.length == 0
+      self
+    else
+      self.capitalize_first_letter.end_with_period
+    end
   end
   
 end
