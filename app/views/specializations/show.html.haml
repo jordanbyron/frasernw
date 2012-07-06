@@ -148,7 +148,7 @@
                       #specialist-filter-aop.collapsable.in
                         .filter-group-content
                           - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
-                            - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
+                            - next if ps.procedure.all_specialists.blank?
                             %label
                               %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}_').collapse('toggle')"}= ps.procedure.name
                             - next if children.length == 0
@@ -160,14 +160,14 @@
                                   });
                               - parent_id = ps.procedure.id
                               - children.each do |ps, children|
-                                - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
+                                - next if ps.procedure.all_specialists.blank?
                                 %label.indent
                                   %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}_"}= ps.procedure.name
                           
                           - non_focused_procedure_specializations = @specialization.non_focused_procedure_specializations_arranged
                           - has_more = false
                           - non_focused_procedure_specializations.each do |ps, children|
-                            - has_more = true if not ps.procedure.all_specialists_for_specialization(@specialization).blank?
+                            - has_more = true if not ps.procedure.all_specialists.blank?
                             - break if has_more
                           
                           - if has_more
@@ -185,7 +185,7 @@
                       
                             #more_specialist_procedures.more.collapse
                               - non_focused_procedure_specializations.each do |ps, children|
-                                - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
+                                - next if ps.procedure.all_specialists.blank?
                                 %label
                                   %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_"}= ps.procedure.name
                                 - next if children.length == 0
@@ -197,7 +197,7 @@
                                       });
                                   - parent_id = ps.procedure.id
                                   - children.each do |ps, children|
-                                    - next if ps.procedure.all_specialists_for_specialization(@specialization).blank?
+                                    - next if ps.procedure.all_specialists.blank?
                                     %label.indent
                                       %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}_"}= ps.procedure.name
                                 
@@ -302,7 +302,7 @@
                       #clinic-filter-aop.collapsable.in
                         .filter-group-content
                           - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
-                            - next if ps.procedure.all_clinics_for_specialization(@specialization).blank?
+                            - next if ps.procedure.all_clinics.blank?
                             %label
                               %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}_').collapse('toggle')"}= ps.procedure.name
                             - next if children.length == 0
@@ -314,14 +314,14 @@
                                   });
                               - parent_id = ps.procedure.id
                               - children.each do |ps, children|
-                                - next if ps.procedure.all_clinics_for_specialization(@specialization).blank?
+                                - next if ps.procedure.all_clinics.blank?
                                 %label.indent
                                   %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "class" => "child_cp#{parent_id}_"}= ps.procedure.name
                           
                           - non_focused_procedure_specializations = @specialization.non_focused_procedure_specializations_arranged
                           - has_more = false
                           - non_focused_procedure_specializations.each do |ps, children|
-                            - has_more = true if not ps.procedure.all_clinics_for_specialization(@specialization).blank?
+                            - has_more = true if not ps.procedure.all_clinics.blank?
                             - break if has_more
                           
                           - if has_more
@@ -339,7 +339,7 @@
                       
                             #more_clinic_procedures.more.collapse
                               - non_focused_procedure_specializations.each do |ps, children|
-                                - next if ps.procedure.all_clinics_for_specialization(@specialization).blank?
+                                - next if ps.procedure.all_clinics.blank?
                                 %label
                                   %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}').collapse('toggle')"}= ps.procedure.name
                                 - next if children.length == 0
@@ -351,7 +351,7 @@
                                       });
                                   - parent_id = ps.procedure.id
                                   - children.each do |ps, children|
-                                    - next if ps.procedure.all_clinics_for_specialization(@specialization).blank?
+                                    - next if ps.procedure.all_clinics.blank?
                                     %label.indent
                                       %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "class" => "child_cp#{parent_id}"}= ps.procedure.name
                                 
