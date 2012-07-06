@@ -247,31 +247,31 @@ class Clinic < ActiveRecord::Base
   
   def accepts_referrals_via
     if referral_phone && referral_fax && referral_other_details.present?
-      output = "phone, fax, or #{referral_other_details}."
+      output = "phone, fax, or #{referral_other_details}"
     elsif referral_phone && referral_fax
-      output = "phone or fax."
+      output = "phone or fax"
     elsif referral_phone
       if referral_other_details.present?
-        output = "phone or #{referral_other_details}."
+        output = "phone or #{referral_other_details}"
       else
-        output = "phone."
+        output = "phone"
       end
     elsif referral_fax
       if referral_other_details.present?
-        output = "fax or #{referral_other_details}."
+        output = "fax or #{referral_other_details}"
       else
-        output = "fax."
+        output = "fax"
       end
     elsif referral_other_details.present?
-      output = referral_other_details.punctuate
+      output = referral_other_details
     else
       output = ""
     end
     
     if referral_details.present?
-      return "#{output} #{referral_details.punctuate}"
+      return "#{output.punctuate} #{referral_details.punctuate}"
     else
-      return output
+      return output.punctuate
     end
   end
   
@@ -279,7 +279,7 @@ class Clinic < ActiveRecord::Base
     if (not respond_by_phone) && (not respond_by_fax) && (not respond_by_mail) && (not respond_to_patient)
       return ""
     elsif (not respond_by_phone) && (not respond_by_fax) && (not respond_by_mail) && respond_to_patient
-      return "directly contacting the patient."
+      return "Directly contacting the patient."
     else
       if respond_by_phone && respond_by_fax && respond_by_mail
         output = "phone, fax, or mail to referring office"
@@ -298,7 +298,7 @@ class Clinic < ActiveRecord::Base
       end
       
       if respond_to_patient
-        return output + ", and by directly contacting the patient."
+        return output.capitalize_first_letter + ", and by directly contacting the patient."
       else
         return output.end_with_period
       end
@@ -308,21 +308,21 @@ class Clinic < ActiveRecord::Base
   def urgent_referrals_via
     if urgent_phone && urgent_fax
       if urgent_other_details.present?
-        output = "phone, fax, or #{urgent_other_details}."
+        output = "phone, fax, or #{urgent_other_details}"
       else
-        output = "phone or fax."
+        output = "phone or fax"
       end
     elsif urgent_phone
       if urgent_other_details.present?
-        output = "phone or #{urgent_other_details}."
+        output = "phone or #{urgent_other_details}"
       else
-        output = "phone."
+        output = "phone"
       end
     elsif urgent_fax
       if urgent_other_details.present?
-        output = "fax or #{urgent_other_details}."
+        output = "fax or #{urgent_other_details}"
       else
-        output = "fax."
+        output = "fax"
       end
     elsif urgent_other_details.present?
       output = urgent_other_details.punctuate
@@ -331,9 +331,9 @@ class Clinic < ActiveRecord::Base
     end
     
     if urgent_details.present?
-      return "#{output} #{urgent_details.punctuate}"
+      return "#{output.punctuate} #{urgent_details.punctuate}"
     else
-      return output
+      return output.punctuate
     end
   end
 

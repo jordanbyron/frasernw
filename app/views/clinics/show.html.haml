@@ -165,7 +165,7 @@
                 - referral_form_count = @clinic.referral_forms.reject{|referral_form| not referral_form.form.present?}.length
                 %p
                   %strong Referral form:
-                  yes.
+                  Yes.
                 %ul.referral_forms
                   - @clinic.referral_forms.each do |referral_form|
                     - next if not referral_form.form.present?
@@ -174,7 +174,7 @@
               - elsif @clinic.referral_form_mask == 2
                 %p 
                   %strong Referral form:
-                  no.
+                  No.
                 
               - if @clinic.required_investigations.present?
                 %p.space
