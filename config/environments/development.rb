@@ -25,9 +25,6 @@ Frasernw::Application.configure do
 
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
-  
-  # auto rotate log files, keep 2 of 1MB each
-  config.logger = Logger.new(config.paths["log/first"], 1, 1*1024*1024)
 end
 
 ActionMailer::Base.smtp_settings = {
