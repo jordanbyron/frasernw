@@ -132,7 +132,7 @@
               - if @clinic.scheduled?
                 %p.space
                   %strong Schedule:
-                  = @clinic.schedule.days_and_hours.to_sentence
+                  = @clinic.schedule.collapsed_days_and_hours.join(". ").end_with_period
               
               - if @clinic.location_opened.present?
                 %p.space
