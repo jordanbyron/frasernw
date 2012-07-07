@@ -2,14 +2,14 @@
     
 %ul#specialties-menu
   %li.dropdown.no-caret
-    %a.dropdown-toggle{"href" => "javascript:void(0)"}
+    %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       Specialties
       %b.caret
   
 %script{"type" => "text/javascript"}
   :plain
-    var $el = $('a.dropdown-toggle').on('click.droptown-toggle', function () { $('#specialties-dropdown-menu').toggle(); return false; });
-    $('html').on('click.droptown-toggle', function () { $('#specialties-dropdown-menu').hide() });
+    var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); return false; });
+    $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
   
 #specialties-dropdown-menu
   .inner

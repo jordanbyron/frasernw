@@ -4,7 +4,7 @@
     
 %ul#specialties-menu
   %li.dropdown
-    %a.dropdown-toggle{"href" => "javascript:void(0)"}
+    %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       Specialties
       %b.caret
   %li.subsequent.next= @procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress and !current_user_is_admin? }.collect(){ |ps| "<a href=\"#{specialization_path(ps.specialization)}\" class='#{ ps.specialization.in_progress ? "in-progress ajax" : "ajax"}'>#{ps.specialization.name}</a>" }.to_sentence.html_safe
@@ -12,8 +12,8 @@
   
 %script{"type" => "text/javascript"}
   :plain
-    var $el = $('a.dropdown-toggle').on('click.droptown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
-    $('html').on('click.droptown-toggle', function () { $('#specialties-dropdown-menu').hide() });
+    var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
+    $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
   
 #specialties-dropdown-menu
   .inner
