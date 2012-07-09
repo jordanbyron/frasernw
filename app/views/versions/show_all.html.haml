@@ -1,7 +1,9 @@
-%h2 Activity
+.content-wrapper
 
-= will_paginate @versions, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
+  %h2 Activity
 
-= render 'list'
+  = will_paginate @versions, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
 
-= will_paginate @versions, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
+  = render 'list'
+
+  = will_paginate @versions, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2

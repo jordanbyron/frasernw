@@ -1,24 +1,26 @@
-%h1 Areas of Practice
-      
-.btn-group
-  %a.btn.btn-bottom-pad.btn-top-pad.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-    = "<i class='icon-plus-sign'></i>".html_safe + " New Area of Practice in"
-    %span.caret
-  %ul.dropdown-menu
-    - Specialization.all.each do |specialization|
-      %li=link_to specialization.name, new_specialization_procedure_path(specialization), :class => 'ajax'
+.content-wrapper
 
-%table.table.table-condensed.table-striped
-  %tr
-    %th Area of Practice
-    %th Hierarchy
-    %th.admin
+  %h2 Areas of Practice
+        
+  .btn-group
+    %a.btn.btn-bottom-pad.btn-top-pad.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+      = "<i class='icon-plus-sign'></i>".html_safe + " New Area of Practice in"
+      %span.caret
+    %ul.dropdown-menu
+      - Specialization.all.each do |specialization|
+        %li=link_to specialization.name, new_specialization_procedure_path(specialization), :class => 'ajax'
 
-  - Procedure.all(:order => "name").each do |procedure|
+  %table.table.table-condensed.table-striped
     %tr
-      %td= link_to procedure.name, procedure_path(procedure), :class => 'ajax'
-      %td
-        %ul= procedure.procedure_specializations.collect(){ |ps| "<li><span class='#{ ps.specialization.in_progress ? "in-progress" : ""}'>#{compressed_ancestry(ps)} (#{ps.classification_text})</span></li>" }.join().html_safe
-      %td.admin.btn-group
-        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_procedure_path(procedure), :class => "btn btn-mini ajax")
-        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", procedure, :confirm => "Delete #{procedure.name}?", :method => :delete, :class => "btn btn-mini")
+      %th Area of Practice
+      %th Hierarchy
+      %th.admin
+
+    - Procedure.all(:order => "name").each do |procedure|
+      %tr
+        %td= link_to procedure.name, procedure_path(procedure), :class => 'ajax'
+        %td
+          %ul= procedure.procedure_specializations.collect(){ |ps| "<li><span class='#{ ps.specialization.in_progress ? "in-progress" : ""}'>#{compressed_ancestry(ps)} (#{ps.classification_text})</span></li>" }.join().html_safe
+        %td.admin.btn-group
+          = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_procedure_path(procedure), :class => "btn btn-mini ajax")
+          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", procedure, :confirm => "Delete #{procedure.name}?", :method => :delete, :class => "btn btn-mini")
