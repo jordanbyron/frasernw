@@ -29,7 +29,7 @@
           %li
             %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
   
-- cache(:action => 'show') do
+- cache(:action => 'show', :cache_path => procedure_path(@procedure)) do
 
   %script{"type" => "text/javascript"}
     $(document).ready(function() {

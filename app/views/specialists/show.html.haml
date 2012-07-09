@@ -63,8 +63,8 @@
     - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @specialist.id, "Specialist").present? ? "icon-red" : "icon-text") : "icon-text"
     %i#user_favorite.icon-heart{:class => favorite_class } 
      
-.content-wrapper    
-  - cache(:action => 'show') do
+.content-wrapper
+  - cache(:action => 'show', :cache_path => specialist_path(@specialist)) do
     .content
       .row
         - show_details = false

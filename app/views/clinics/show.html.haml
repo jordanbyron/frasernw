@@ -64,7 +64,7 @@
     %i#user_favorite.icon-heart{:class => favorite_class }
 
 .content-wrapper
-  - cache(:action => 'show') do
+  - cache(:action => 'show', :cache_path => clinic_path(@clinic)) do
     .content
       .row
         - show_details = false
