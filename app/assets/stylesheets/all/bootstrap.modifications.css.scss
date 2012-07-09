@@ -128,11 +128,16 @@ ul.dropdown-menu
 #content #container
 {
 
-  /* REMOVING TABLE HOVER */
+  /* TABLES */
 
   .table tbody tr:hover td,
   .table tbody tr:hover th {
-    background-color: transparent;
+    background-color: $FNW_WHITE;
+  }
+  
+  .table-striped tbody tr:nth-child(odd) td, .table-striped tbody tr:nth-child(odd):hover td,
+  .table-striped tbody tr:nth-child(odd) th, .table-striped tbody tr:nth-child(odd):hover th {
+    background-color: $FNW_LIGHT_GRAY;
   }
 
   /* FORM STYLING */
