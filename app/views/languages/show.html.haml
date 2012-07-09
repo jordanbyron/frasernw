@@ -24,54 +24,55 @@
         - list.each do |specialization|
           %li
             %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
-
-- cache(:action => 'show', :cache_path => language_path(@language)) do
-
-  %script{"type" => "text/javascript"}
-    $(document).ready(function() {
-    - @language.specialists.each do |s|
-      - next if not s.show_in_table?
-      - specialist_filter_attributes = specialist_filtering_attributes(s, false)
-      - s.specializations.each do |sp|
-        - specialist_filter_attributes << "ssp#{sp.id}_"
-      $('#s#{s.id}').data('filter', '#{specialist_filter_attributes.join(' ')}');
-    - @language.clinics.each do |c|
-      - next if not c.show_in_table?
-      - clinic_filter_attributes = clinic_filtering_attributes(c)
-      - c.specializations.each do |s|
-        - clinic_filter_attributes << "csp#{s.id}_"
-      $('#c#{c.id}').data('filter', '#{clinic_filter_attributes.join(' ')}');
-    });
-
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready(function() {
-        //sort by specialty, status, then wait time
-        $('.tablesorter').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
-      });
-      
-  .content-wrapper
-    %h2= @language.name
-
-  - has_specialists = @language.specialists.length > 0
-  - has_clinics = @language.clinics.length > 0
-
-  - specialist_tab_class = has_specialists ? "active" : ""
-  - clinic_tab_class = has_specialists ? "" : "active"
-
-  .tabbable
-    %ul.nav.nav-tabs
-      - if has_specialists
-        %li{:class => specialist_tab_class} 
-          %a#specialists_tab{"href" => "#specialist_tab", "data-toggle" => "tab"} 
-            %span Specialists
-      - if has_clinics
-        %li{:class => clinic_tab_class}
-          %a#clinics_tab{"href" => "#clinic_tab", "data-toggle" => "tab"}
-            %span Clinics
-
-    .content-wrapper
     
+.content-wrapper
+
+  %h2= @language.name
+
+- has_specialists = @language.specialists.length > 0
+- has_clinics = @language.clinics.length > 0
+
+- specialist_tab_class = has_specialists ? "active" : ""
+- clinic_tab_class = has_specialists ? "" : "active"
+
+.tabbable
+  %ul.nav.nav-tabs
+    - if has_specialists
+      %li{:class => specialist_tab_class} 
+        %a#specialists_tab{"href" => "#specialist_tab", "data-toggle" => "tab"} 
+          %span Specialists
+    - if has_clinics
+      %li{:class => clinic_tab_class}
+        %a#clinics_tab{"href" => "#clinic_tab", "data-toggle" => "tab"}
+          %span Clinics
+          
+  .content-wrapper
+
+    - cache(:action => 'show', :cache_path => language_path(@language)) do
+
+      %script{"type" => "text/javascript"}
+        $(document).ready(function() {
+        - @language.specialists.each do |s|
+          - next if not s.show_in_table?
+          - specialist_filter_attributes = specialist_filtering_attributes(s, false)
+          - s.specializations.each do |sp|
+            - specialist_filter_attributes << "ssp#{sp.id}_"
+          $('#s#{s.id}').data('filter', '#{specialist_filter_attributes.join(' ')}');
+        - @language.clinics.each do |c|
+          - next if not c.show_in_table?
+          - clinic_filter_attributes = clinic_filtering_attributes(c)
+          - c.specializations.each do |s|
+            - clinic_filter_attributes << "csp#{s.id}_"
+          $('#c#{c.id}').data('filter', '#{clinic_filter_attributes.join(' ')}');
+        });
+
+      %script{"type" => "text/javascript"}
+        :plain
+          $(document).ready(function() {
+            //sort by specialty, status, then wait time
+            $('.tablesorter').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
+          });
+  
       .tab-content 
         - if has_specialists
           #specialist_tab.tab-pane{:class => specialist_tab_class}
@@ -305,8 +306,8 @@
               $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
             });
 
-%p.admin.btn-group
-  - if can? :update, @language
-    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Language", edit_language_path(@language), :class => "btn ajax")
-  - if can? :destroy, @language
-    = link_to("<i class='icon-trash'></i>".html_safe + " Delete Language", @language, :confirm => "Delete #{@language.name}?", :method => :delete, :class => "btn")
+    %p.admin.btn-group
+      - if can? :update, @language
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Language", edit_language_path(@language), :class => "btn ajax")
+      - if can? :destroy, @language
+        = link_to("<i class='icon-trash'></i>".html_safe + " Delete Language", @language, :confirm => "Delete #{@language.name}?", :method => :delete, :class => "btn")

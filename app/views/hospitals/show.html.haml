@@ -24,74 +24,74 @@
         - list.each do |specialization|
           %li
             %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
-
-- cache(:action => 'show', :cache_path => hospital_path(@hospital)) do
-
-  %script{"type" => "text/javascript"}
+          
+%script{"type" => "text/javascript"}
+  :plain
     $(document).ready(function() {
-    - @hospital.specialists.each do |s|
-      - next if not s.show_in_table?
-      - specialist_filter_attributes = specialist_filtering_attributes(s, false)
-      - s.specializations.each do |sp|
-        - specialist_filter_attributes << "ssp#{sp.id}_"
-      $('#s#{s.id}').data('filter', '#{specialist_filter_attributes.join(' ')}');
-    - @hospital.clinics_in.each do |c|
-      - next if not c.show_in_table?
-      - clinic_filter_attributes = clinic_filtering_attributes(c)
-      - c.specializations.each do |s|
-        - clinic_filter_attributes << "csp#{s.id}_"
-      $('#c#{c.id}').data('filter', '#{clinic_filter_attributes.join(' ')}');
-    - @specialists_with_offices_in.each do |s|
-      - next if not s.show_in_table?
-      - office_filter_attributes = office_filtering_attributes(s, false)
-      - s.specializations.each do |sp|
-        - office_filter_attributes << "osp#{sp.id}_"
-      $('#o#{s.id}').data('filter', '#{office_filter_attributes.join(' ')}');
+      //sort by specialities, status then wait time
+      $('.tablesorter').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
     });
+    
+.content-wrapper
+    
+  %h2= @hospital.name
+    
+  - if @hospital.address.present? && !@hospital.address.empty?
+    %p.no_indent= link_to @hospital.address.address, @hospital.address.map_url, :target => "_blank"
+  - if (@hospital.phone_and_fax.present?)
+    %p.no_indent= @hospital.phone_and_fax
+    
+- specialists = @hospital.specialists
+- clinics_in = @hospital.clinics_in
 
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready(function() {
-        //sort by specialities, status then wait time
-        $('.tablesorter').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
-      });
-      
+- has_specialists = specialists.length > 0
+- has_clinics_in = clinics_in.length > 0
+- has_specialists_with_offices_in = @specialists_with_offices_in.length > 0
+
+- specialist_tab_class = has_specialists ? "active" : ""
+- clinic_tab_class = (!has_specialists and has_clinics_in) ? "active" : ""
+- specialist_offices_tab_class = (!has_specialists and !has_clinics_in) ? "active" : ""
+
+.tabbable
+  %ul.nav.nav-tabs
+    - if has_specialists
+      %li{:class => specialist_tab_class} 
+        %a{"href" => "#specialist_tab", "data-toggle" => "tab"}
+          %span Specialists with Hospital Privileges
+    - if has_clinics_in
+      %li{:class => clinic_tab_class}
+        %a{"href" => "#clinic_tab", "data-toggle" => "tab"}
+          %span Clinics in Hospital
+    - if has_specialists_with_offices_in
+      %li{:class => specialist_offices_tab_class}
+        %a{"href" => "#specialist_offices_tab", "data-toggle" => "tab"} 
+          %span Specialists with Offices in Hospital
+  
   .content-wrapper
-    
-    %h2= @hospital.name
-      
-    - if @hospital.address.present? && !@hospital.address.empty?
-      %p.no_indent= link_to @hospital.address.address, @hospital.address.map_url, :target => "_blank"
-    - if (@hospital.phone_and_fax.present?)
-      %p.no_indent= @hospital.phone_and_fax
-      
-  - specialists = @hospital.specialists
-  - clinics_in = @hospital.clinics_in
 
-  - has_specialists = specialists.length > 0
-  - has_clinics_in = clinics_in.length > 0
-  - has_specialists_with_offices_in = @specialists_with_offices_in.length > 0
+    - cache(:action => 'show', :cache_path => hospital_path(@hospital)) do
 
-  - specialist_tab_class = has_specialists ? "active" : ""
-  - clinic_tab_class = (!has_specialists and has_clinics_in) ? "active" : ""
-  - specialist_offices_tab_class = (!has_specialists and !has_clinics_in) ? "active" : ""
-
-  .tabbable
-    %ul.nav.nav-tabs
-      - if has_specialists
-        %li{:class => specialist_tab_class} 
-          %a{"href" => "#specialist_tab", "data-toggle" => "tab"}
-            %span Specialists with Hospital Privileges
-      - if has_clinics_in
-        %li{:class => clinic_tab_class}
-          %a{"href" => "#clinic_tab", "data-toggle" => "tab"}
-            %span Clinics in Hospital
-      - if has_specialists_with_offices_in
-        %li{:class => specialist_offices_tab_class}
-          %a{"href" => "#specialist_offices_tab", "data-toggle" => "tab"} 
-            %span Specialists with Offices in Hospital
-    
-    .content-wrapper
+      %script{"type" => "text/javascript"}
+        $(document).ready(function() {
+        - @hospital.specialists.each do |s|
+          - next if not s.show_in_table?
+          - specialist_filter_attributes = specialist_filtering_attributes(s, false)
+          - s.specializations.each do |sp|
+            - specialist_filter_attributes << "ssp#{sp.id}_"
+          $('#s#{s.id}').data('filter', '#{specialist_filter_attributes.join(' ')}');
+        - @hospital.clinics_in.each do |c|
+          - next if not c.show_in_table?
+          - clinic_filter_attributes = clinic_filtering_attributes(c)
+          - c.specializations.each do |s|
+            - clinic_filter_attributes << "csp#{s.id}_"
+          $('#c#{c.id}').data('filter', '#{clinic_filter_attributes.join(' ')}');
+        - @specialists_with_offices_in.each do |s|
+          - next if not s.show_in_table?
+          - office_filter_attributes = office_filtering_attributes(s, false)
+          - s.specializations.each do |sp|
+            - office_filter_attributes << "osp#{sp.id}_"
+          $('#o#{s.id}').data('filter', '#{office_filter_attributes.join(' ')}');
+        });
 
       .tab-content
         - if has_specialists
@@ -421,8 +421,8 @@
               $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
             });
             
-%p.admin.btn-group
-  - if can? :update, @hospital
-    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_hospital_path(@hospital), :class => "btn ajax")
-  - if can? :destroy, @hospital
-    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @hospital, :confirm => "Delete #{@hospital.name}?", :method => :delete, :class => "btn")
+    %p.admin.btn-group
+      - if can? :update, @hospital
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Hospital", edit_hospital_path(@hospital), :class => "btn ajax")
+      - if can? :destroy, @hospital
+        = link_to("<i class='icon-trash'></i>".html_safe + " Delete Hospital", @hospital, :confirm => "Delete #{@hospital.name}?", :method => :delete, :class => "btn")

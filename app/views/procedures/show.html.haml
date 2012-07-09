@@ -29,69 +29,69 @@
           %li
             %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
   
-- cache(:action => 'show', :cache_path => procedure_path(@procedure)) do
+- multiple_specialties = (@procedure.specializations.length > 1)
 
+- if multiple_specialties
   %script{"type" => "text/javascript"}
-    $(document).ready(function() {
-    - @procedure.all_specialists.each do |s|
-      - next if not s.show_in_table?
-      $('#s#{s.id}').data('filter', '#{specialist_filtering_attributes(s, false).join(' ')}');
-    - @procedure.clinics.each do |c|
-      - next if not c.show_in_table?
-      $('#c#{c.id}').data('filter', '#{clinic_filtering_attributes(c).join(' ')}');
-    });
-    
-  - multiple_specialties = (@procedure.specializations.length > 1)
+    :plain
+      $(document).ready(function() {
+        //sort by status, wait time, then specialty
+          $('.tablesorter').tablesorter({sortList: [[2,0],[3,0],[1,0]]});
+      });
+- else
+  %script{"type" => "text/javascript"}
+    :plain
+      $(document).ready(function() {
+        //sort by status then wait time
+          $('.tablesorter').tablesorter({sortList: [[1,0],[2,0]]});
+      });
 
-  - if multiple_specialties
-    %script{"type" => "text/javascript"}
-      :plain
+- has_specialists = @procedure.all_specialists.length > 0
+- has_clinics = @procedure.all_clinics.length > 0
+
+- specialist_tab_class = has_specialists ? "active" : ""
+- clinic_tab_class = has_specialists ? "" : "active"
+
+.tabbable
+  %ul#content_tabs.nav.nav-tabs
+    - if has_specialists
+      %li{:class => specialist_tab_class} 
+        %a#specialists_tab{"href" => "#specialist_tab", "data-toggle" => "tab"}
+          %span Specialists
+    - if has_clinics
+      %li{:class => clinic_tab_class}
+        %a#clinics_tab{"href" => "#clinic_tab", "data-toggle" => "tab"}
+          %span Clinics
+    - if true
+      %li
+        %a#risk_calculators_tab{"href" => "#calculator_tab", "data-toggle" => "tab"}
+          %span Risk Calculators
+      %li
+        %a#care_pathways_tab{"href" => "#care_pathways_tab", "data-toggle" => "tab"}
+          %span Care Pathways
+      %li
+        %a#pearls_tab{"href" => "#pearls_tab", "data-toggle" => "tab"}
+          %span Pearls
+      %li
+        %a#red_flags_tab{"href" => "#red_flags_tab", "data-toggle" => "tab"}
+          %span Red Flags
+      %li
+        %a#patient_education_tab{"href" => "#patient_education_tab", "data-toggle" => "tab"}
+          %span Patient Education
+
+  .content-wrapper
+  
+    - cache(:action => 'show', :cache_path => procedure_path(@procedure)) do
+
+      %script{"type" => "text/javascript"}
         $(document).ready(function() {
-          //sort by status, wait time, then specialty
-            $('.tablesorter').tablesorter({sortList: [[2,0],[3,0],[1,0]]});
+        - @procedure.all_specialists.each do |s|
+          - next if not s.show_in_table?
+          $('#s#{s.id}').data('filter', '#{specialist_filtering_attributes(s, false).join(' ')}');
+        - @procedure.clinics.each do |c|
+          - next if not c.show_in_table?
+          $('#c#{c.id}').data('filter', '#{clinic_filtering_attributes(c).join(' ')}');
         });
-  - else
-    %script{"type" => "text/javascript"}
-      :plain
-        $(document).ready(function() {
-          //sort by status then wait time
-            $('.tablesorter').tablesorter({sortList: [[1,0],[2,0]]});
-        });
-
-  - has_specialists = @procedure.all_specialists.length > 0
-  - has_clinics = @procedure.all_clinics.length > 0
-
-  - specialist_tab_class = has_specialists ? "active" : ""
-  - clinic_tab_class = has_specialists ? "" : "active"
-
-  .tabbable
-    %ul#content_tabs.nav.nav-tabs
-      - if has_specialists
-        %li{:class => specialist_tab_class} 
-          %a#specialists_tab{"href" => "#specialist_tab", "data-toggle" => "tab"}
-            %span Specialists
-      - if has_clinics
-        %li{:class => clinic_tab_class}
-          %a#clinics_tab{"href" => "#clinic_tab", "data-toggle" => "tab"}
-            %span Clinics
-      - if true
-        %li
-          %a#risk_calculators_tab{"href" => "#calculator_tab", "data-toggle" => "tab"}
-            %span Risk Calculators
-        %li
-          %a#care_pathways_tab{"href" => "#care_pathways_tab", "data-toggle" => "tab"}
-            %span Care Pathways
-        %li
-          %a#pearls_tab{"href" => "#pearls_tab", "data-toggle" => "tab"}
-            %span Pearls
-        %li
-          %a#red_flags_tab{"href" => "#red_flags_tab", "data-toggle" => "tab"}
-            %span Red Flags
-        %li
-          %a#patient_education_tab{"href" => "#patient_education_tab", "data-toggle" => "tab"}
-            %span Patient Education
-
-    .content-wrapper
       
       .tab-content
         - if has_specialists
@@ -399,8 +399,8 @@
                       
         #patient_education_tab.tab-pane
 
-%p.admin.btn-group
-  - if can? :update, @procedure
-    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Area of Practice", edit_procedure_path(@procedure), :class => "btn ajax")
-  - if can? :destroy, @procedure
-    = link_to("<i class='icon-trash'></i>".html_safe + " Delete Area of Practice", @procedure, :confirm => "Delete #{@procedure.name}?", :method => :delete, :class => "btn")
+    %p.admin.btn-group
+      - if can? :update, @procedure
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Area of Practice", edit_procedure_path(@procedure), :class => "btn ajax")
+      - if can? :destroy, @procedure
+        = link_to("<i class='icon-trash'></i>".html_safe + " Delete Area of Practice", @procedure, :confirm => "Delete #{@procedure.name}?", :method => :delete, :class => "btn")
