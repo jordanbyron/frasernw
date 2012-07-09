@@ -290,7 +290,7 @@ body.loading #loading
     text-decoration: none;
   }
   
-  ul
+  ul:not(.dropdown-menu)
   {
     margin-top: 12px;
     list-style-position: inside;
@@ -589,18 +589,23 @@ body.loading #loading
     
     .hours
     {
-      .from, .to
+      .changed_wrapper
       {
         display: inline-block;
-        text-align: center;
-      }
-      .from
-      {
-        padding-right: 10px;
-      }
-      .to
-      {
-        padding: 0 10px;
+        
+        .from, .to
+        {
+          display: inline-block;
+          text-align: center;
+        }
+        .from
+        {
+          padding-right: 10px;
+        }
+        .to
+        {
+          padding: 0 10px;
+        }
       }
     }
   }
