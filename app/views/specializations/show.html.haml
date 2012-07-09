@@ -49,14 +49,6 @@
       - next if not c.show_in_table?
       $('#c#{c.id}').data('filter', '#{clinic_filtering_attributes(c).join(' ')}');
     });
-      
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready(function() {
-        //sort by status then wait time
-        $('.tablesorter').tablesorter({sortList: [[1,0],[2,0]]});
-      });
-      function toggle_tab(tab) { $('#content_tabs a[href=' + tab + ']').tab('show') }
 
   - if @specialization.in_progress
     %h4{:class => @specialization.in_progress ? "in-progress" : ""} In Progress
@@ -71,27 +63,27 @@
     %ul#content_tabs.nav.nav-tabs
       - if has_specialists
         %li{:class => specialist_tab_class} 
-          %a#specialists_tab{"href" => "#specialist_tab", "data-toggle" => "tab"}
+          %a#specialists{"href" => "#specialist_tab", "data-toggle" => "tab"}
             %span Specialists
       - if has_clinics
         %li{:class => clinic_tab_class}
-          %a#clinics_tab{"href" => "#clinic_tab", "data-toggle" => "tab"}
+          %a#clinics{"href" => "#clinic_tab", "data-toggle" => "tab"}
             %span Clinics
       - if true
         %li
-          %a#risk_calculators_tab{"href" => "#calculator_tab", "data-toggle" => "tab"}
+          %a#risk_calculators{"href" => "#calculator_tab", "data-toggle" => "tab"}
             %span Risk Calculators
         %li
-          %a#care_pathways_tab{"href" => "#care_pathways_tab", "data-toggle" => "tab"}
+          %a#care_pathways{"href" => "#care_pathways_tab", "data-toggle" => "tab"}
             %span Care Pathways
         %li
-          %a#pearls_tab{"href" => "#pearls_tab", "data-toggle" => "tab"}
+          %a#pearls{"href" => "#pearls_tab", "data-toggle" => "tab"}
             %span Pearls
         %li
-          %a#red_flags_tab{"href" => "#red_flags_tab", "data-toggle" => "tab"}
+          %a#red_flags{"href" => "#red_flags_tab", "data-toggle" => "tab"}
             %span Red Flags
         %li
-          %a#patient_education_tab{"href" => "#patient_education_tab", "data-toggle" => "tab"}
+          %a#patient_education{"href" => "#patient_education_tab", "data-toggle" => "tab"}
             %span Patient Education
 
     .content-wrapper
@@ -536,6 +528,44 @@
                 =link_to "Understanding Pain: What to do about it in less than five minutes?", "http://www.youtube.com/watch?v=4b8oB757DKc", :target => "_blank"
                 %i.icon-arrow-right.icon-blue
                 =link_to "Email this link to a patient", "mailto:no@thanks.com"
+      
+  %script{"type" => "text/javascript"}
+    :plain
+      $(document).ready(function() {
+        //sort by status then wait time
+        $('.tablesorter').tablesorter({sortList: [[1,0],[2,0]]});
+        //flip to a tab if appropriate
+        var hash = window.location.hash;
+        console.log(hash);
+        if (hash == '#specialists')
+        {
+          $('#content_tabs a#specialists').tab('show');
+        }
+        else if (hash == '#clinics')
+        {
+          $('#content_tabs a#clinics').tab('show');
+        }
+        else if (hash == '#calculators')
+        {
+          $('#content_tabs a#calculators').tab('show');
+        }
+        else if (hash == '#care_pathways')
+        {
+          $('#content_tabs a#care_pathways').tab('show');
+        }
+        else if (hash == '#pearls')
+        {
+          $('#content_tabs a#pearls').tab('show');
+        }
+        else if (hash == '#red_flags')
+        {
+          $('#content_tabs a#red_flags').tab('show');
+        }
+        else if (hash == '#patient_education')
+        {
+          $('#content_tabs a#patient_education').tab('show');
+        }
+      });
 
 %p.admin.btn-group
   - if can? :update, @specialization
