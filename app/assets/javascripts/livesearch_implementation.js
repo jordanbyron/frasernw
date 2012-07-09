@@ -48,6 +48,6 @@ function pathways_group_formatter(group_id)
 
 function pathways_searcher(data_entry)
 {
-  $.each( $('#search_result_' + data_entry.go + '_' + data_entry.id), function(){ console.log(this); $(this).click() });
+  $.each( $('#search_result_' + data_entry.go + '_' + data_entry.id), function(){ $(this).click() });
   return false;
 }
