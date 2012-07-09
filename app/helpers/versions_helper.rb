@@ -1,7 +1,11 @@
 module VersionsHelper
   def whodunnit_name(version)
     if version.whodunnit.to_i.to_s == version.whodunnit
-      User.find(version.whodunnit).name
+      if User.find_by_id(version.whodunnit).present?
+        User.find_by_id(version.whodunnit).name
+      else
+        'unknown'
+      end
     elsif version.whodunnit == "MOA"
       version.whodunnit
     else
