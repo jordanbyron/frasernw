@@ -104,6 +104,10 @@
                     
               %p.space.no_indent
                 %strong.status{ :class => "status_#{@clinic.status_class}"}= @clinic.status.end_with_period
+              - if @clinic.status_details.present?
+                %p.no_indent
+                  %strong Details:
+                  = @clinic.status_details.end_with_period
               - if @clinic.limitations.present?
                 %p.no_indent
                   %strong Limitations:
@@ -121,6 +125,7 @@
               %p
                 %strong= @clinic.phone if @clinic.phone.present?
               %p= "Fax: #{@clinic.fax}" if @clinic.fax.present?
+              %p= @clinic.contact_details if @clinic.contact_details.present?
               - if @clinic.location.present? && @clinic.location.in_hospital?
                 - hospital = @clinic.location.hospital_in
                 %p= "In #{link_to hospital.name, hospital_path(hospital), :class => 'ajax'}".html_safe

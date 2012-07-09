@@ -232,6 +232,7 @@
         ext: 
       = f.input_field :phone_extension, :class => "span1"
     = f.input :fax, :input_html => { :class => "span3" }
+    = f.input :contact_details
     
     = f.simple_fields_for :location do |l|
       .control-group.no-print
@@ -304,6 +305,7 @@
 
     %h3 Status
     = f.input :status_mask, as: :select, collection: Clinic::STATUS_HASH, label_method: :last, value_method: :first
+    = f.input :status_details
     = f.input :limitations
     = f.input :location_opened, as: :select, collection: ["Prior to 2010", 2010, 2011, 2012], prompt: "Select ..."
     = f.association :languages, as: :check_boxes, :item_wrapper_class => 'inline'
