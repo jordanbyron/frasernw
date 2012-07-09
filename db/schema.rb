@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120615234159) do
+ActiveRecord::Schema.define(:version => 20120709184718) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -151,6 +151,8 @@ ActiveRecord::Schema.define(:version => 20120615234159) do
     t.string    "phone_extension"
     t.string    "saved_token"
     t.boolean   "interpreter_available",      :default => false
+    t.text      "contact_details"
+    t.text      "status_details"
   end
 
   create_table "contacts", :force => true do |t|
