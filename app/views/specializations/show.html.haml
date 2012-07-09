@@ -533,8 +533,8 @@
       %script{"type" => "text/javascript"}
         :plain
           $(document).ready(function() {
-            //sort by status then wait time
-            $('.tablesorter').tablesorter({sortList: [[1,0],[2,0]]});
+            //sort by status, wait time, then city
+            $('.tablesorter').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
             //flip to a tab if appropriate
             var hash = window.location.hash;
             console.log(hash);
