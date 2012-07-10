@@ -18,7 +18,7 @@ namespace :pathways do
       puts "Recaching procedures..."
       Procedure.all.sort{ |a,b| a.id <=> b.id }.each do |p|
         puts "Procedure #{p.id}"
-        expire_fragment :controller => 'procedures', :action => 'show', :id => p.id, :host => APP_CONFIG[:domain]
+        expire_fragment procedure_path(p)
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/procedures/#{p.id}/#{p.token}/refresh_cache") )
       end
     end
@@ -27,7 +27,7 @@ namespace :pathways do
       puts "Recaching specialists..."
       Specialist.all.sort{ |a,b| a.id <=> b.id }.each do |s|
         puts "Specialist #{s.id}"
-        expire_fragment :controller => 'specialists', :action => 'show', :id => s.id, :host => APP_CONFIG[:domain]
+        expire_fragment specialist_path(s)
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialists/#{s.id}/#{s.token}/refresh_cache") )
       end
     end
@@ -36,7 +36,7 @@ namespace :pathways do
       puts "Recaching clinics..."
       Clinic.all.sort{ |a,b| a.id <=> b.id }.each do |c|
         puts "Clinic #{c.id}"
-        expire_fragment :controller => 'clinics', :action => 'show', :id => c.id, :host => APP_CONFIG[:domain]
+        expire_fragment clinic_path(c)
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/clinics/#{c.id}/#{c.token}/refresh_cache") )
       end
     end
@@ -45,7 +45,7 @@ namespace :pathways do
       puts "Recaching hospitals..."
       Hospital.all.sort{ |a,b| a.id <=> b.id }.each do |h|
         puts "Hospital #{h.id}"
-        expire_fragment :controller => 'hospitals', :action => 'show', :id => h.id, :host => APP_CONFIG[:domain]
+        expire_fragment hospital_path(h)
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/hospitals/#{h.id}/#{h.token}/refresh_cache") )
       end
     end
@@ -54,7 +54,7 @@ namespace :pathways do
       puts "Recaching languages..."
       Language.all.sort{ |a,b| a.id <=> b.id }.each do |l|
         puts "Language #{l.id}"
-        expire_fragment :controller => 'languages', :action => 'show', :id => l.id, :host => APP_CONFIG[:domain]
+        expire_fragment language_path(l)
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/languages/#{l.id}/#{l.token}/refresh_cache") )
       end
     end
@@ -65,7 +65,8 @@ namespace :pathways do
       Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/livesearch.js") )
     end
 
-    task :all => [:specializations, :procedures, :specialists, :clinics, :hospitals, :languages, :search] do
+    #purposeful order from least important to most important, to keep cache 'hot'
+    task :all => [:languages, :hospitals, :procedures, :clinics, :specialists, :specializations, :search] do
       puts "All pages recached."
     end
     

@@ -69,7 +69,7 @@
   
   .content-wrapper
 
-    - cache(:action => 'show', :cache_path => hospital_path(@hospital)) do
+    - cache(hospital_path(@hospital)) do
 
       %script{"type" => "text/javascript"}
         $(document).ready(function() {

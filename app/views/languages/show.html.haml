@@ -48,7 +48,7 @@
           
   .content-wrapper
 
-    - cache(:action => 'show', :cache_path => language_path(@language)) do
+    - cache(language_path(@language)) do
 
       %script{"type" => "text/javascript"}
         $(document).ready(function() {
