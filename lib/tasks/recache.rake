@@ -9,7 +9,7 @@ namespace :pathways do
       puts "Recaching specializations..."
       Specialization.all.sort{ |a,b| a.id <=> b.id }.each do |s|
         puts "Specialization #{s.id}"
-        expire_fragment :controller => 'specializations', :action => 'show', :id => s.id, :cache_path => specialization_path(s)
+        expire_fragment :controller => 'specializations', :action => 'show', :id => s.id, :cache_path => specialization_path(s), :only_path => true
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specializations/#{s.id}/#{s.token}/refresh_cache") )
       end
     end
