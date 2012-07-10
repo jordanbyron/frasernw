@@ -2,7 +2,6 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
-  = f.input :name
   = f.association :sc_category, as: :radio_buttons
   
   .control-group
@@ -49,6 +48,11 @@
       $('.specialty_check').click(function() { 
         hide_show_procedures(this)
       });
+      
+  = f.input :title
+  = f.input :type_mask, as: :select, collection: ScItem::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
+  = f.input :url
+  = f.input :markdown_content
         
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

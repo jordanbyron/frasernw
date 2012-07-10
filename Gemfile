@@ -39,6 +39,9 @@ gem 'dalli'
 gem 'delayed_job_active_record'
 gem 'daemons'
 
+# markdown
+gem 'bluecloth'
+
 # Deploy with Capistrano
 # gem 'capistrano'
 

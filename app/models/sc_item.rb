@@ -1,5 +1,5 @@
 class ScItem < ActiveRecord::Base
-  attr_accessible :name, :sc_category_id, :specialization_ids
+  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :url, :markdown_content
   
   belongs_to  :sc_category
   
@@ -14,5 +14,22 @@ class ScItem < ActiveRecord::Base
   
   def self.for_specialization(specialization)
     joins(:sc_item_specializations).where("sc_item_specializations.specialization_id == ?", specialization.id)
+  end
+  
+  TYPE_HASH = {
+    1 => "Link", 
+    2 => "Markdown", 
+  }
+  
+  def type
+    SCItem::TYPE_HASH[type_mask]
+  end
+
+  def link?
+    TYPE_HASH[type_mask] == 1
+  end
+
+  def markdown?
+    TYPE_HASH[type_mask] == 2
   end
 end

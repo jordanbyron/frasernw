@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120709184718) do
+ActiveRecord::Schema.define(:version => 20120710202013) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -381,9 +381,12 @@ ActiveRecord::Schema.define(:version => 20120709184718) do
 
   create_table "sc_items", :force => true do |t|
     t.integer  "sc_category_id"
-    t.string   "name"
+    t.string   "title"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "type_mask"
+    t.string   "url"
+    t.text     "markdown_content"
   end
 
   create_table "schedule_days", :force => true do |t|

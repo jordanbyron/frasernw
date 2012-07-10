@@ -48,7 +48,7 @@
     - ScCategory.all.each do |sc_category|
       - if sc_category.sc_items.for_specialization(@specialization).present?
         %li
-          %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "data-toggle" => "tab"}
+          %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "id" => sc_category.name.remove_whitespace, "data-toggle" => "tab"}
             %span= sc_category.name
   
   .content-wrapper
@@ -425,7 +425,7 @@
             .tab-pane{"id" => "#{sc_category.name.remove_whitespace}_tab"}
               %ul
                 - sc_category.sc_items.each do |sc_item|
-                  %li= sc_item.name
+                  %li= link_to sc_item.title, sc_item.link? ? sc_item.url : sc_item, :class => sc_item.markdown? && "ajax"
       
       %script{"type" => "text/javascript"}
         :plain
@@ -443,25 +443,9 @@
             {
               $('#content_tabs a#clinics').tab('show');
             }
-            else if (hash == '#calculators')
+            else 
             {
-              $('#content_tabs a#calculators').tab('show');
-            }
-            else if (hash == '#care_pathways')
-            {
-              $('#content_tabs a#care_pathways').tab('show');
-            }
-            else if (hash == '#pearls')
-            {
-              $('#content_tabs a#pearls').tab('show');
-            }
-            else if (hash == '#red_flags')
-            {
-              $('#content_tabs a#red_flags').tab('show');
-            }
-            else if (hash == '#patient_education')
-            {
-              $('#content_tabs a#patient_education').tab('show');
+              //handle shared care tabs here programtically but without javascript injection vulnerability
             }
           });
 
