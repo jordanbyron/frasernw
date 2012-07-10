@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120704223623) do
+ActiveRecord::Schema.define(:version => 20120709184718) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -103,56 +103,56 @@ ActiveRecord::Schema.define(:version => 20120704223623) do
   add_index "clinic_specializations", ["specialization_id"], :name => "index_clinic_specializations_on_specialization_id"
 
   create_table "clinics", :force => true do |t|
-    t.string    "name"
-    t.text      "status"
-    t.text      "interest"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.text      "referral_criteria"
-    t.text      "referral_process"
-    t.string    "responds_via"
-    t.string    "contact_name"
-    t.string    "contact_phone"
-    t.string    "contact_email"
-    t.string    "contact_notes"
-    t.integer   "status_mask"
-    t.text      "limitations"
-    t.text      "location_opened"
-    t.text      "required_investigations"
-    t.text      "not_performed"
-    t.boolean   "referral_fax"
-    t.boolean   "referral_phone"
-    t.string    "referral_other_details"
-    t.boolean   "referral_form_old"
-    t.boolean   "respond_by_fax"
-    t.boolean   "respond_by_phone"
-    t.boolean   "respond_by_mail"
-    t.boolean   "respond_to_patient"
-    t.boolean   "patient_can_book_old"
-    t.text      "red_flags"
-    t.boolean   "urgent_fax"
-    t.boolean   "urgent_phone"
-    t.string    "urgent_other_details"
-    t.integer   "waittime_mask"
-    t.integer   "lagtime_mask"
-    t.integer   "referral_form_mask",         :default => 3
-    t.integer   "patient_can_book_mask",      :default => 3
-    t.text      "urgent_details"
-    t.string    "phone"
-    t.string    "fax"
-    t.integer   "sector_mask",                :default => 1
-    t.integer   "wheelchair_accessible_mask", :default => 3
-    t.text      "referral_details"
-    t.text      "admin_notes"
-    t.integer   "schedule_id"
-    t.integer   "categorization_mask",        :default => 1
-    t.text      "patient_instructions"
-    t.text      "cancellation_policy"
-    t.string    "phone_extension"
-    t.string    "saved_token"
-    t.boolean   "interpreter_available",      :default => false
-    t.text      "contact_details"
-    t.text      "status_details"
+    t.string   "name"
+    t.text     "status"
+    t.text     "interest"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "referral_criteria"
+    t.text     "referral_process"
+    t.string   "responds_via"
+    t.string   "contact_name"
+    t.string   "contact_phone"
+    t.string   "contact_email"
+    t.string   "contact_notes"
+    t.integer  "status_mask"
+    t.text     "limitations"
+    t.text     "location_opened"
+    t.text     "required_investigations"
+    t.text     "not_performed"
+    t.boolean  "referral_fax"
+    t.boolean  "referral_phone"
+    t.string   "referral_other_details"
+    t.boolean  "referral_form_old"
+    t.boolean  "respond_by_fax"
+    t.boolean  "respond_by_phone"
+    t.boolean  "respond_by_mail"
+    t.boolean  "respond_to_patient"
+    t.boolean  "patient_can_book_old"
+    t.text     "red_flags"
+    t.boolean  "urgent_fax"
+    t.boolean  "urgent_phone"
+    t.string   "urgent_other_details"
+    t.integer  "waittime_mask"
+    t.integer  "lagtime_mask"
+    t.integer  "referral_form_mask",         :default => 3
+    t.integer  "patient_can_book_mask",      :default => 3
+    t.text     "urgent_details"
+    t.string   "phone"
+    t.string   "fax"
+    t.integer  "sector_mask",                :default => 1
+    t.integer  "wheelchair_accessible_mask", :default => 3
+    t.text     "referral_details"
+    t.text     "admin_notes"
+    t.integer  "schedule_id"
+    t.integer  "categorization_mask",        :default => 1
+    t.text     "patient_instructions"
+    t.text     "cancellation_policy"
+    t.string   "phone_extension"
+    t.string   "saved_token"
+    t.boolean  "interpreter_available",      :default => false
+    t.text     "contact_details"
+    t.text     "status_details"
   end
 
   create_table "contacts", :force => true do |t|
@@ -365,16 +365,9 @@ ActiveRecord::Schema.define(:version => 20120704223623) do
     t.datetime "updated_at"
   end
 
-  create_table "sc_item_procedure_specializations", :force => true do |t|
-    t.integer  "sc_item_id"
-    t.integer  "procedure_specialization_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "sc_item_specialization_procedures", :force => true do |t|
+  create_table "sc_item_specialization_procedure_specializations", :force => true do |t|
     t.integer  "sc_item_specialization_id"
-    t.integer  "procedure_id"
+    t.integer  "procedure_specialization_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

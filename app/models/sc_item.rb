@@ -6,8 +6,8 @@ class ScItem < ActiveRecord::Base
   has_many    :sc_item_specializations, :dependent => :destroy
   has_many    :specializations, :through => :sc_item_specializations
 
-  has_many    :sc_item_procedure_specializations, :dependent => :destroy
-  has_many    :procedure_specializations, :through => :sc_item_procedure_specializations
+  has_many    :sc_item_specialization_procedure_specializations, :through => :sc_item_specializations
+  has_many    :procedure_specializations, :through => :sc_item_specialization_procedure_specializations
  
   validates_presence_of :name, :on => :create, :message => "can't be blank"
   #validates_presence_of :sc_category, :on => :create, :message => "can't be blank"

@@ -22,12 +22,15 @@ class ScItemsController < ApplicationController
   
   def create
     @sc_item = ScItem.new(params[:sc_item])
+    params[:specialization] = {} if params[:specialization].blank?
+    params[:procedure_specialization] = {} if params[:procedure_specialization].blank?
     if @sc_item.save
       params[:specialization].each do |specialization_id, set|
         @sc_item.sc_item_specializations.create( :specialization_id => specialization_id )
       end
       params[:procedure_specialization].each do |ps_id, set|
-        @sc_item.sc_item_procedure_specializations.create( :procedure_specialization_id => ps_id )
+        specialization = ProcedureSpecialization.find(ps_id).specialization
+        @sc_item.sc_item_specialization_procedure_specializations.create( :specialization_id => specialization.id, :procedure_specialization_id => ps_id )
       end
       redirect_to @sc_item, :notice => "Successfully created sc_item."
     else
@@ -38,29 +41,36 @@ class ScItemsController < ApplicationController
   def edit
     @sc_item = ScItem.find(params[:id])
     @has_specializations = @sc_item.specializations.map{ |s| s.id }
-    @has_procedure_specializations = @sc_item.procedure_specializations.map{ |s| s.id }
+    @has_procedure_specializations = @sc_item.procedure_specializations.map{ |ps| ps.id }
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
   def update
     @sc_item = ScItem.find(params[:id])
+    params[:specialization] = {} if params[:specialization].blank?
+    params[:procedure_specialization] = {} if params[:procedure_specialization].blank?
     #ScItemSweeper.instance.before_controller_update(@sc_item)
     if @sc_item.update_attributes(params[:sc_item])
       @sc_item.sc_item_specializations.each do |sis|
         #remove existing specializations that no longer exist
-        ScItemSpecialization.destroy(sis.id) if !params[:specialization].include? sis.id
+        ScItemSpecialization.destroy(sis.id) if !params[:specialization].include? sis.specialization_id
       end
       params[:specialization].each do |specialization_id, set|
         #add new specializations
         ScItemSpecialization.find_or_create_by_sc_item_id_and_specialization_id( @sc_item.id, specialization_id )
       end
-      @sc_item.sc_item_procedure_specializations.each do |sips|
+      @sc_item.sc_item_specialization_procedure_specializations.each do |sisps|
         #remove existing procedure specializations that no longer exist
-        ScItemProcedureSpecialization.destroy(sips.id) if !params[:procedure_specialization].include? sips.id
+        ScItemSpecializationProcedureSpecialization.destroy(sisps.id) if !params[:procedure_specialization].include? sisps.procedure_specialization_id
       end
       params[:procedure_specialization].each do |ps_id, set|
         #add new procedure specializations
-        ScItemProcedureSpecialization.find_or_create_by_sc_item_id_and_procedure_specialization_id( @sc_item.id, ps_id )
+        specialization = ProcedureSpecialization.find(ps_id).specialization
+        sc_item_specialization = ScItemSpecialization.find_by_sc_item_id_and_specialization_id( @sc_item.id, specialization.id )
+        if sc_item_specialization.present?
+          #parent specialization was checked off
+          ScItemSpecializationProcedureSpecialization.find_or_create_by_sc_item_specialization_id_and_procedure_specialization_id( sc_item_specialization.id, ps_id )
+        end
       end
       redirect_to @sc_item, :notice  => "Successfully updated sc_item."
     else

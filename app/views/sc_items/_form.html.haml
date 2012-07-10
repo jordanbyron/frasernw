@@ -5,22 +5,26 @@
   = f.input :name
   = f.association :sc_category, as: :radio_buttons
   
-  - Specialization.all.each do |specialization|
-    %label
-      = check_box_tag "specialization_#{specialization.id}", 1, @has_specializations.include?(specialization.id), :name => "specialization[#{specialization.id}", :class => "specialty_check offset3"
-      = specialization.name
-    
-    .procedures_list{"id" => "specialization_#{specialization.id}_procedures"}
-      - specialization.non_assumed_procedure_specializations_arranged.each do |ps,children|
+  .control-group
+    .control-label
+      Specialties
+    .controls
+      - Specialization.all.each do |specialization|
         %label
-          = check_box_tag "procedure_specialization_#{ps.id}", 1, @has_procedure_specializations.include?(ps.id), :name => "procedure_specialization[#{ps.id}", :class => "offset4"
-          = ps.procedure.name
-        - children.each do |child_ps, grandchildren|
-          %label
-            = check_box_tag "procedure_specialization_#{child_ps.id}", 1, @has_procedure_specializations.include?(child_ps.id), :name => "procedure_specialization[#{child_ps.id}", :class => "offset5"
-            = child_ps.procedure.name
-          
-          
+          = check_box_tag "specialization_#{specialization.id}", 1, @has_specializations.include?(specialization.id), :name => "specialization[#{specialization.id}", :class => "specialty_check"
+          = specialization.name
+        
+        .procedures_list{"id" => "specialization_#{specialization.id}_procedures"}
+          - specialization.non_assumed_procedure_specializations_arranged.each do |ps,children|
+            %label
+              = check_box_tag "procedure_specialization_#{ps.id}", 1, @has_procedure_specializations.include?(ps.id), :name => "procedure_specialization[#{ps.id}", :class => "offsethalf"
+              = ps.procedure.name
+            - children.each do |child_ps, grandchildren|
+              %label
+                = check_box_tag "procedure_specialization_#{child_ps.id}", 1, @has_procedure_specializations.include?(child_ps.id), :name => "procedure_specialization[#{child_ps.id}", :class => "offset1"
+                = child_ps.procedure.name
+            
+            
   %script{"type" => "text/javascript"}
     :plain
       function hide_show_procedures( checkbox )
