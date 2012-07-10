@@ -64,7 +64,7 @@
   
   .content-wrapper
   
-    - cache(:action => 'show', :cache_path => specialization_path(@specialization)) do
+    - cache(specialization_path(@specialization)) do
 
       %script{"type" => "text/javascript"}
         $(document).ready(function() {
