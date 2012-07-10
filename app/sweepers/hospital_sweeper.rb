@@ -1,8 +1,8 @@
 class HospitalSweeper < PathwaysSweeper
   observe Hospital
   
-  def expire_self
-    expire_fragment :controller => 'hospitals', :action => 'show'
+  def expire_self(entity)
+    expire_fragment hospital_path(entity)
   end 
   
   def add_to_lists(hospital)

@@ -1,8 +1,8 @@
 class HealthcareProviderSweeper < PathwaysSweeper
   observe HealthcareProvider
   
-  def expire_self
-    expire_fragment :controller => 'healthcare_providers', :action => 'show'
+  def expire_self(entity)
+    #healthcare providers aren't cached
   end 
   
   def add_to_lists(healthcare_provider)

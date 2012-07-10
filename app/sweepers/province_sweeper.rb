@@ -1,8 +1,8 @@
 class ProvinceSweeper < PathwaysSweeper
   observe Province
   
-  def expire_self
-    expire_fragment :controller => 'provinces', :action => 'show'
+  def expire_self(entity)
+    #provinces aren't cached
   end 
   
   def add_to_lists(province)

@@ -1,8 +1,8 @@
 class LanguageSweeper < PathwaysSweeper
   observe Language
   
-  def expire_self
-    expire_fragment :controller => 'languages', :action => 'show'
+  def expire_self(entity)
+    expire_fragment language_path(entity)
   end 
   
   def add_to_lists(language)

@@ -1,8 +1,8 @@
 class CitySweeper < PathwaysSweeper
   observe City
   
-  def expire_self
-    expire_fragment :controller => 'cities', :action => 'show'
+  def expire_self(entity)
+    #cities aren't cached
   end 
   
   def add_to_lists(city)

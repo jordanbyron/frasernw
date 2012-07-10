@@ -1,8 +1,8 @@
 class ProcedureSweeper < PathwaysSweeper
   observe Procedure
   
-  def expire_self
-    expire_fragment :controller => 'procedures', :action => 'show'
+  def expire_self(entity)
+    expire_fragment procedure_path(entity)
   end 
   
   def add_to_lists(procedure)

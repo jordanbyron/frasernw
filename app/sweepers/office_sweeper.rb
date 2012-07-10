@@ -1,8 +1,8 @@
 class OfficeSweeper < PathwaysSweeper
   observe Office
   
-  def expire_self
-    expire_fragment :controller => 'offices', :action => 'show'
+  def expire_self(entity)
+    #offices aren't cached
   end 
   
   def add_to_lists(office)

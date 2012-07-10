@@ -1,8 +1,8 @@
 class SpecialistSweeper < PathwaysSweeper
   observe Specialist
   
-  def expire_self
-    expire_fragment :controller => 'specialists', :action => 'show'
+  def expire_self(entity)
+    expire_fragment specialist_path(entity)
   end 
   
   def add_to_lists(specialist)

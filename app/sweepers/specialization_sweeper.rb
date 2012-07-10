@@ -1,8 +1,8 @@
 class SpecializationSweeper < PathwaysSweeper
   observe Specialization
   
-  def expire_self
-    expire_fragment :controller => 'specializations', :action => 'show'
+  def expire_self(entity)
+    expire_fragment specialization_path(entity)
   end 
   
   def add_to_lists(specialization)
