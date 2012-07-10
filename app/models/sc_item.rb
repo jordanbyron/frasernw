@@ -26,10 +26,10 @@ class ScItem < ActiveRecord::Base
   end
 
   def link?
-    TYPE_HASH[type_mask] == 1
+    type_mask == 1
   end
 
   def markdown?
-    TYPE_HASH[type_mask] == 2
+    type_mask == 2
   end
 end
