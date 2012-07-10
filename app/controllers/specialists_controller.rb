@@ -55,10 +55,14 @@ class SpecialistsController < ApplicationController
     @specialist = Specialist.new(params[:specialist])
     if @specialist.save!
       if params[:capacities_mapped].present?
+        specialist_specializations = @specialist.specializations_including_in_progress
         params[:capacities_mapped].each do |updated_capacity, value|
           capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
           capacity.investigation = params[:capacities_investigations][updated_capacity]
           capacity.save
+          
+          #save any other capacities that have the same procedure and are in a specialization our specialist is in
+          capacity.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.map{ |ps2| Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps2.id) }.map{ |c| c.save }
         end
       end
       redirect_to @specialist, :notice => "Successfully created #{@specialist.name}. #{undo_link}"
@@ -95,18 +99,10 @@ class SpecialistsController < ApplicationController
     @capacities = []
     procedure_specializations.each { |ps, children|
       capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps.id)
-      if capacity.present?
-        @capacities << { :mapped => true, :name => ps.procedure.name, :id => ps.id, :investigations => capacity.investigation, :offset => 0 }
-      else
-        @capacities << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
-      end
+      @capacities << { :mapped => capacity.present?, :name => ps.procedure.name, :id => ps.id, :investigations => capacity.present? ? capacity.investigation : "", :offset => 0 }
       children.each { |child_ps, grandchildren|
         capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, child_ps.id)
-        if capacity.present?
-          @capacities << { :mapped => true, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => capacity.investigation, :offset => 1 }
-        else
-          @capacities << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
-        end
+        @capacities << { :mapped => capacity.present?, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => capacity.present? ? capacity.investigation : "", :offset => 1 }
       }
     }
     render :layout => 'ajax' if request.headers['X-PJAX']
@@ -117,6 +113,7 @@ class SpecialistsController < ApplicationController
     SpecialistSweeper.instance.before_controller_update(@specialist)
     if @specialist.update_attributes(params[:specialist])
       if params[:capacities_mapped].present?
+        specialist_specializations = @specialist.specializations_including_in_progress
         @specialist.capacities.each do |original_capacity|
           Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity].blank?
         end
@@ -124,6 +121,9 @@ class SpecialistsController < ApplicationController
           capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
           capacity.investigation = params[:capacities_investigations][updated_capacity]
           capacity.save
+          
+          #save any other capacities that have the same procedure and are in a specialization our specialist is in
+          capacity.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.map{ |ps2| Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps2.id) }.map{ |c| c.save }
         end
       end
       redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
@@ -199,18 +199,10 @@ class SpecialistsController < ApplicationController
       @capacities = []
       procedure_specializations.each { |ps, children|
         capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps.id)
-        if capacity.present?
-          @capacities << { :mapped => true, :name => ps.procedure.name, :id => ps.id, :investigations => capacity.investigation, :offset => 0 }
-        else
-          @capacities << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
-        end
+        @capacities << { :mapped => capacity.present?, :name => ps.procedure.name, :id => ps.id, :investigations => capacity.present? ? capacity.investigation : "", :offset => 0 }
         children.each { |child_ps, grandchildren|
           capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, child_ps.id)
-          if capacity.present?
-            @capacities << { :mapped => true, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => capacity.investigation, :offset => 1 }
-          else
-            @capacities << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
-          end
+          @capacities << { :mapped => capacity.present?, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => capacity.present? ? capacity.investigation : "", :offset => 1 }
         }
       }
       render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true

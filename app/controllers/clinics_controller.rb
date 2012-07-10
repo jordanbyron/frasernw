@@ -51,10 +51,14 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.new(params[:clinic])
     if @clinic.save
       if params[:focuses_mapped].present?
+        clinic_specializations = @clinic.specializations_including_in_progress
         params[:focuses_mapped].each do |updated_focus, value|
           focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
           focus.investigation = params[:focuses_investigations][updated_focus]
           focus.save
+          
+          #save any other focuses that have the same procedure and are in a specialization our clinic is in
+          focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
       redirect_to clinic_path(@clinic), :notice => "Successfully created #{@clinic.name}."
@@ -85,20 +89,14 @@ class ClinicsController < ApplicationController
       procedure_specializations.merge!(specialization.non_assumed_procedure_specializations_arranged)
     }
     @focuses = []
+    clinic_specializations = @clinic.specializations_including_in_progress
     procedure_specializations.each { |ps, children|
       focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps.id)
-      if focus.present?
-        @focuses << { :mapped => true, :name => ps.procedure.name, :id => ps.id, :investigations => focus.investigation, :offset => 0 }
-      else
-        @focuses << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
-      end
+      @focuses << { :mapped => focus.present?, :name => ps.procedure.name, :id => ps.id, :investigations => focus.present? ? focus.investigation : "", :offset => 0 }
+      
       children.each { |child_ps, grandchildren|
         focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, child_ps.id)
-        if focus.present?
-          @focuses << { :mapped => true, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => focus.investigation, :offset => 1 }
-        else
-          @focuses << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
-        end
+        @focuses << { :mapped => focus.present?, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => focus.present? ? focus.investigation : "", :offset => 1 }
       }
     }
     render :layout => 'ajax' if request.headers['X-PJAX']
@@ -109,6 +107,7 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.find(params[:id])
     ClinicSweeper.instance.before_controller_update(@clinic)
     if @clinic.update_attributes(params[:clinic])
+      clinic_specializations = @clinic.specializations_including_in_progress
       if params[:focuses_mapped].present?
         @clinic.focuses.each do |original_focus|
           Focus.destroy(original_focus.id) if params[:focuses_mapped][original_focus].blank?
@@ -117,6 +116,9 @@ class ClinicsController < ApplicationController
           focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
           focus.investigation = params[:focuses_investigations][updated_focus]
           focus.save
+          
+          #save any other focuses that have the same procedure and are in a specialization our clinic is in
+          focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
@@ -169,18 +171,10 @@ class ClinicsController < ApplicationController
       @focuses = []
       procedure_specializations.each { |ps, children|
         focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps.id)
-        if focus.present?
-          @focuses << { :mapped => true, :name => ps.procedure.name, :id => ps.id, :investigations => focus.investigation, :offset => 0 }
-          else
-          @focuses << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
-        end
+        @focuses << { :mapped => focus.present?, :name => ps.procedure.name, :id => ps.id, :investigations => focus.present? ? focus.investigation : "", :offset => 0 }
         children.each { |child_ps, grandchildren|
           focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, child_ps.id)
-          if focus.present?
-            @focuses << { :mapped => true, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => focus.investigation, :offset => 1 }
-            else
-            @focuses << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
-          end
+          @focuses << { :mapped => focus.present?, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => focus.present? ? focus.investigation : "", :offset => 1 }
         }
       }
       render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true

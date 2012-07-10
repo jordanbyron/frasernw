@@ -14,10 +14,10 @@ module ApplicationHelper
     result = {}
   
     specialist_or_clinic_or_specialization.procedure_specializations.each do |ps| 
-      temp = { ps => {} }
+      temp = { ps.procedure => {} }
       next if ps.classification != classification
       while ps.parent
-        temp = { ps.parent => temp }
+        temp = { ps.parent.procedure => temp }
         ps = ps.parent
       end
       result.merge!(temp) { |key, a, b| a.merge(b) }
@@ -35,7 +35,7 @@ module ApplicationHelper
   end
   
   def sort_array_of_hashes( a )
-    a.sort!{ |x, y| x[:parent].procedure.name <=> y[:parent].procedure.name }
+    a.sort!{ |x, y| x[:parent].name <=> y[:parent].name }
     a.each do |entry|
       sort_array_of_hashes( entry[:children] )
     end
@@ -53,24 +53,24 @@ module ApplicationHelper
     items.each do |item|
       count += 1
       result += "<li>"
-      result += "<strong><a class='ajax' href='#{procedure_path(item[:parent].procedure)}'>#{item[:parent].procedure.name}</a></strong>"
-      investigation = item[:parent].investigation(root)
+      result += "<strong><a class='ajax' href='#{procedure_path(item[:parent])}'>#{item[:parent].name}</a></strong>"
+      investigation = item[:parent].procedure_specializations.map{ |ps| ps.investigation(root) }.reject{ |i| i.blank? }.map{ |i| i.punctuate }.join(' ');
       investigation = investigation.strip_period if investigation.present?
       if investigation and investigation.length > 0
         result += " (#{investigation})"
         has_investigation = true
       end
-      has_investigation |= item[:children].reject{ |child| child[:parent].investigation(root).blank? }.length > 0
       if !item[:children].empty?
         child_results = []
         item[:children].each do |child|
           count += 1
-          child_investigation = child[:parent].investigation(root)
+          child_investigation = child[:parent].procedure_specializations.map{ |ps| ps.investigation(root) }.reject{ |i| i.blank? }.map{ |i| i.punctuate }.join(' ');
           child_investigation = child_investigation.strip_period if child_investigation.present?
-          if child_investigation && child_investigation.length == 0
-            child_results << "<a class='ajax' href='#{procedure_path(child[:parent].procedure)}'>#{child[:parent].procedure.name}</a>"
+          if child_investigation && child_investigation.strip.length != 0
+            has_investigation = true
+            child_results << "<a class='ajax' href='#{procedure_path(child[:parent])}'>#{child[:parent].name}</a> (#{child_investigation})"
           else
-            child_results << "<a class='ajax' href='#{procedure_path(child[:parent].procedure)}'>#{child[:parent].procedure.name}</a> (#{child_investigation})"
+            child_results << "<a class='ajax' href='#{procedure_path(child[:parent])}'>#{child[:parent].name}</a>"
           end
         end
         result += ": #{child_results.to_sentence}"
