@@ -22,6 +22,18 @@
               %label
                 = check_box_tag "procedure_specialization_#{child_ps.id}", 1, @has_procedure_specializations.include?(child_ps.id), :name => "procedure_specialization[#{child_ps.id}", :class => "offset1"
                 = child_ps.procedure.name
+      
+  = f.input :title
+  = f.input :type_mask, as: :select, collection: ScItem::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
+  #link_section
+    = f.input :url
+  #mardown_section
+    = f.input :inline
+    = f.input :markdown_content
+        
+  .form-actions
+    = f.button :submit, :class => "btn btn-primary"
+    = link_to 'Cancel', sc_items_path, :class => "btn btn-danger ajax"
             
             
   %script{"type" => "text/javascript"}
@@ -46,15 +58,24 @@
       });
       
       $('.specialty_check').click(function() { 
-        hide_show_procedures(this)
+        hide_show_procedures(this);
       });
+
+      var type_mask_changed = function()
+      {
+        if ($(this).val() == 1)
+        {
+          $("#link_section").show();
+          $("#mardown_section").hide();
+        }
+        else
+        {
+          $("#link_section").hide();
+          $("#mardown_section").show();
+        }
+      }
       
-  = f.input :title
-  = f.input :type_mask, as: :select, collection: ScItem::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
-  = f.input :url
-  = f.input :inline
-  = f.input :markdown_content
-        
-  .form-actions
-    = f.button :submit, :class => "btn btn-primary"
-    = link_to 'Cancel', sc_items_path, :class => "btn btn-danger ajax"
+      $(document).ready(function() { 
+        $("#sc_item_type_mask").each(type_mask_changed);
+        $("#sc_item_type_mask").live("change", type_mask_changed);
+      });
