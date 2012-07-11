@@ -7,14 +7,14 @@ Frasernw::Application.routes.draw do
   match "/clinics/:id/versions"     => "versions#index",    :as => "clinic_versions",     :model => 'clinics'
   match "/versions/:id"             => "versions#show",     :as => "show_version"
 
-  resources :specializations do
+  resources :specializations, :path => 'specialties' do
     resources :specialists
-    resources :procedures
+    resources :procedures, :path => 'areas_of_practice'
     resources :clinics
   end
   resources :clinics
   resources :specialists
-  resources :procedures
+  resources :procedures, :path => 'areas_of_practice'
   resources :hospitals
   resources :languages
   resources :cities do
@@ -27,7 +27,7 @@ Frasernw::Application.routes.draw do
   resources :feedback_items
   
   resources :sc_categories
-  resources :sc_items
+  resources :sc_items, :path => 'shared_care_items'
 
   match "tracker" => 'tracker#index', :as => 'tracker'
   
@@ -50,17 +50,17 @@ Frasernw::Application.routes.draw do
   match "/specialists/:id/print"        => "specialists#print_patient_information",   :as => "specialist_patient_information"
   match "/clinics/:id/print"            => "clinics#print_patient_information",       :as => "clinic_patient_information"
   
-  get  "specializations/:id/:token/refresh_cache" => 'specializations#refresh_cache', :as => 'specialization_refesh_cache'
+  get  "specialties/:id/:token/refresh_cache" => 'specializations#refresh_cache', :as => 'specialization_refesh_cache'
   get  "specialists/:id/:token/refresh_cache"     => 'specialists#refresh_cache',     :as => 'specialist_refesh_cache'
   get  "clinics/:id/:token/refresh_cache"         => 'clinics#refresh_cache',         :as => 'clinic_refesh_cache'
   get  "hospitals/:id/:token/refresh_cache"       => 'hospitals#refresh_cache',       :as => 'hospital_refesh_cache'
-  get  "procedures/:id/:token/refresh_cache"      => 'procedures#refresh_cache',      :as => 'procedure_refesh_cache'
+  get  "areas_of_practice/:id/:token/refresh_cache"      => 'procedures#refresh_cache',      :as => 'procedure_refesh_cache'
   get  "languages/:id/:token/refresh_cache"       => 'languages#refresh_cache',       :as => 'language_refesh_cache'
   
   put  "/favorites/specialists/:id" => "favorites#edit", :as => "specialist_favorite", :model => 'specialists'
   put  "/favorites/clinics/:id" => "favorites#edit", :as => "clinic_favorite", :model => 'clinics'
-  put  "/favorites/specializations/:id" => "favorites#edit", :as => "specialization_favorite", :model => 'specializations'
-  put  "/favorites/procedures/:id" => "favorites#edit", :as => "procedure_favorite", :model => 'procedures'
+  put  "/favorites/specialties/:id" => "favorites#edit", :as => "specialization_favorite", :model => 'specializations'
+  put  "/favorites/areas_of_practice/:id" => "favorites#edit", :as => "procedure_favorite", :model => 'procedures'
   
   #RPW TODO: allow users to edit their own profile
   #match 'user/edit' => 'users#edit', :as => :edit_current_user

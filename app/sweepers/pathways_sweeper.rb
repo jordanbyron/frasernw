@@ -56,14 +56,14 @@ class PathwaysSweeper < ActionController::Caching::Sweeper
         s = Specialization.find(s_id)
         puts "expiring specialization #{s.name}, #{s.id}"
         expire_fragment specialization_path(s)
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specializations/#{s.id}/#{s.token}/refresh_cache") )
+        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_cache") )
       end
       
       procedure_ids.flatten.uniq.each.each do |p_id|
         p = Procedure.find(p_id)
         puts "expiring procedure #{p.name}, #{p.id}"
         expire_fragment procedure_path(p)
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/procedures/#{p.id}/#{p.token}/refresh_cache") )
+        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/areas_of_practice/#{p.id}/#{p.token}/refresh_cache") )
       end
       
       specialist_ids.flatten.uniq.each.each do |s_id|

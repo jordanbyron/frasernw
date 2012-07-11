@@ -10,7 +10,7 @@ namespace :pathways do
       Specialization.all.sort{ |a,b| a.id <=> b.id }.each do |s|
         puts "Specialization #{s.id}"
         expire_fragment specialization_path(s)
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specializations/#{s.id}/#{s.token}/refresh_cache") )
+        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_cache") )
       end
     end
   
@@ -19,7 +19,7 @@ namespace :pathways do
       Procedure.all.sort{ |a,b| a.id <=> b.id }.each do |p|
         puts "Procedure #{p.id}"
         expire_fragment procedure_path(p)
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/procedures/#{p.id}/#{p.token}/refresh_cache") )
+        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/areas_of_practice/#{p.id}/#{p.token}/refresh_cache") )
       end
     end
   
