@@ -561,6 +561,7 @@
 
 .nav li.dropdown > ul.dropdown-menu ul 
 {
+  width: 200px;
   display: none;
   float:right;
   position: relative;
@@ -570,24 +571,14 @@
 
 .nav li.dropdown ul.dropdown-menu ul.dropdown-menu:before 
 {
-  border-top: 7px solid transparent;
-  border-bottom: 7px solid transparent;
-  border-right: 7px solid rgba(0, 0, 0, 0.2);
-  border-left: none;
-  position: absolute;
-  top: 10px;
-  left: -7px;
+  border: none;
+  content: none;
 }
 
 .nav li.dropdown ul.dropdown-menu ul.dropdown-menu:after
 {
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
-  border-right: 6px solid #fff;
-  border-left: none;
-  position: absolute;
-  top: 11px;
-  left: -6px;
+  border: none;
+  content: none;
 }
 
 /* ALERTS */
