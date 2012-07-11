@@ -89,7 +89,11 @@ en:
         clinic_in: "Clinic"
         suite_in: "Suite"
       sc_item:
-        sc_category: "Shared care category"
+        inline: "Show content inline on specialty pages"
+        sc_category: "Item category"
+        title: "Item title"
+        type_mask: "Content type"
+        url: "Content URL"
       specialist:
         firstname: "First name"
         lastname: "Last name"

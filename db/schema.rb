@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120710202013) do
+ActiveRecord::Schema.define(:version => 20120711000345) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -387,6 +387,7 @@ ActiveRecord::Schema.define(:version => 20120710202013) do
     t.integer  "type_mask"
     t.string   "url"
     t.text     "markdown_content"
+    t.boolean  "inline"
   end
 
   create_table "schedule_days", :force => true do |t|

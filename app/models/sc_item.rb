@@ -1,5 +1,5 @@
 class ScItem < ActiveRecord::Base
-  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :url, :markdown_content
+  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :url, :inline, :markdown_content
   
   belongs_to  :sc_category
   
@@ -31,5 +31,9 @@ class ScItem < ActiveRecord::Base
 
   def markdown?
     type_mask == 2
+  end
+
+  def inline?
+    inline
   end
 end

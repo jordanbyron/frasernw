@@ -6,7 +6,7 @@
   
   .control-group
     .control-label
-      Specialties
+      Item Specialties & Areas of Practice
     .controls
       - Specialization.all.each do |specialization|
         %label
@@ -52,6 +52,7 @@
   = f.input :title
   = f.input :type_mask, as: :select, collection: ScItem::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
   = f.input :url
+  = f.input :inline
   = f.input :markdown_content
         
   .form-actions

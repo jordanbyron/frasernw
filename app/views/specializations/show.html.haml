@@ -425,7 +425,15 @@
             .tab-pane{"id" => "#{sc_category.name.remove_whitespace}_tab"}
               %ul
                 - sc_category.sc_items.each do |sc_item|
-                  %li= link_to sc_item.title, sc_item.link? ? sc_item.url : sc_item, :class => sc_item.markdown? && "ajax"
+                  - if sc_item.markdown? 
+                    - if sc_item.inline?
+                      %li
+                        = sc_item.title
+                        %p= BlueCloth.new(sc_item.markdown_content).to_html.html_safe
+                    - else
+                      %li= link_to sc_item.title, sc_item, :class => "ajax"
+                  - else
+                    %li= link_to sc_item.title, sc_item.url, :target => "_blank"
       
       %script{"type" => "text/javascript"}
         :plain
