@@ -608,6 +608,11 @@ body.loading #loading
         }
       }
     }
+    
+    #sc_item_markdown_content
+    {
+      height: 400px;
+    }
   }
   
   p + form, h2 + form
