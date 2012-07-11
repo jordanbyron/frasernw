@@ -7,7 +7,7 @@
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       Specialties
       %b.caret
-  %li.subsequent= specialization.name
+  %li.subsequent= link_to specialization.name, specialization, :class => "ajax"
   
 %script{"type" => "text/javascript"}
   :plain
