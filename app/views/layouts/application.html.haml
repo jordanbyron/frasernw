@@ -60,64 +60,6 @@
                   %ul
                   
               %ul.nav.pull-right
-              
-                %li.dropdown
-                  %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-                    %i.icon-heart
-                    Favourites
-                    %b.caret
-                    
-                  %ul#favorites_dropdown.dropdown-menu
-                    %li#specializations_favorites.nav-header.specialty Specializations
-                    - current_user.favorite_specializations.each do |s|
-                      %li{"id" => "specializations_#{s.id}"}= link_to s.name, specialization_path(s), :class => 'ajax'
-                        
-                    %li#procedures_favorites.nav-header.procedure Areas of Practice
-                    - current_user.favorite_procedures.each do |p|
-                      %li{"id" => "procedures_#{p.id}"}= link_to p.full_name, procedure_path(p), :class => 'ajax'
-                        
-                    %li#specialists_favorites.nav-header.specialist Specialists
-                    - current_user.favorite_specialists.each do |s|
-                      %li{"id" => "specialists_#{s.id}"}= link_to s.name, specialist_path(s), :class => 'ajax'
-                        
-                    %li#clinics_favorites.nav-header.clinic Clinics
-                    - current_user.favorite_clinics.each do |c|
-                      %li{"id" => "clinics_#{c.id}"}= link_to c.name, clinic_path(c), :class => 'ajax'
-                        
-                    %li#add_favorites
-                      %p
-                        Add specialists and clinics to this menu for quick reference by pressing the
-                        %i.icon-text.icon-heart
-                        beside their name.
-                          
-                
-                    -if current_user.favorite_specializations.blank?
-                      :javascript
-                        $(document).ready(function() { $('#specializations_favorites').hide(); });
-                        
-                    -if current_user.favorite_procedures.blank?
-                      :javascript
-                        $(document).ready(function() { $('#procedures_favorites').hide(); });
-                        
-                    -if current_user.favorite_specialists.blank?
-                      :javascript
-                        $(document).ready(function() { $('#specialists_favorites').hide(); });
-                        
-                    -if current_user.favorite_clinics.blank?
-                      :javascript
-                        $(document).ready(function() { $('#clinics_favorites').hide(); });
-                        
-                    -if current_user.favorites.present?
-                      :javascript
-                        $(document).ready(function() { $('#add_favorites').hide(); });
-                        
-                %li.dropdown
-                  %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-                    %i.icon-cog
-                    Settings
-                    %b.caret
-                  %ul.dropdown-menu
-                    %li= link_to "Change password", change_password_path, :class => 'change_password ajax'
                   
                 - if current_user_is_admin?
                 
@@ -184,6 +126,64 @@
                           %li= link_to "New Content Item", new_sc_item_path, :class => "ajax"
                       %li= link_to "Content Categories", sc_categories_path, :class => "sc_category ajax"
                       %li= link_to "Content Items", sc_items_path, :class => "sc_item ajax"
+              
+                %li.dropdown
+                  %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                    %i.icon-heart
+                    Favourites
+                    %b.caret
+                    
+                  %ul#favorites_dropdown.dropdown-menu
+                    %li#specializations_favorites.nav-header.specialty Specializations
+                    - current_user.favorite_specializations.each do |s|
+                      %li{"id" => "specializations_#{s.id}"}= link_to s.name, specialization_path(s), :class => 'ajax'
+                        
+                    %li#procedures_favorites.nav-header.procedure Areas of Practice
+                    - current_user.favorite_procedures.each do |p|
+                      %li{"id" => "procedures_#{p.id}"}= link_to p.full_name, procedure_path(p), :class => 'ajax'
+                        
+                    %li#specialists_favorites.nav-header.specialist Specialists
+                    - current_user.favorite_specialists.each do |s|
+                      %li{"id" => "specialists_#{s.id}"}= link_to s.name, specialist_path(s), :class => 'ajax'
+                        
+                    %li#clinics_favorites.nav-header.clinic Clinics
+                    - current_user.favorite_clinics.each do |c|
+                      %li{"id" => "clinics_#{c.id}"}= link_to c.name, clinic_path(c), :class => 'ajax'
+                        
+                    %li#add_favorites
+                      %p
+                        Add specialists and clinics to this menu for quick reference by pressing the
+                        %i.icon-text.icon-heart
+                        beside their name.
+                          
+                
+                    -if current_user.favorite_specializations.blank?
+                      :javascript
+                        $(document).ready(function() { $('#specializations_favorites').hide(); });
+                        
+                    -if current_user.favorite_procedures.blank?
+                      :javascript
+                        $(document).ready(function() { $('#procedures_favorites').hide(); });
+                        
+                    -if current_user.favorite_specialists.blank?
+                      :javascript
+                        $(document).ready(function() { $('#specialists_favorites').hide(); });
+                        
+                    -if current_user.favorite_clinics.blank?
+                      :javascript
+                        $(document).ready(function() { $('#clinics_favorites').hide(); });
+                        
+                    -if current_user.favorites.present?
+                      :javascript
+                        $(document).ready(function() { $('#add_favorites').hide(); });
+                        
+                %li.dropdown
+                  %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                    %i.icon-cog
+                    Settings
+                    %b.caret
+                  %ul.dropdown-menu
+                    %li= link_to "Change password", change_password_path, :class => 'change_password ajax'
                         
                 %li= link_to "<i class='icon-off'></i> Logout".html_safe, logout_url
 
