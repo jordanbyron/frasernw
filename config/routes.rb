@@ -26,8 +26,8 @@ Frasernw::Application.routes.draw do
   resources :review_items
   resources :feedback_items
   
-  resources :sc_categories
-  resources :sc_items, :path => 'shared_care_items'
+  resources :sc_categories, :path => 'content_categories'
+  resources :sc_items, :path => 'content_items'
 
   match "tracker" => 'tracker#index', :as => 'tracker'
   
