@@ -9,8 +9,7 @@ class ScItem < ActiveRecord::Base
   has_many    :sc_item_specialization_procedure_specializations, :through => :sc_item_specializations
   has_many    :procedure_specializations, :through => :sc_item_specialization_procedure_specializations
  
-  validates_presence_of :name, :on => :create, :message => "can't be blank"
-  #validates_presence_of :sc_category, :on => :create, :message => "can't be blank"
+  validates_presence_of :title, :on => :create, :message => "can't be blank"
   
   def self.for_specialization(specialization)
     joins(:sc_item_specializations).where("sc_item_specializations.specialization_id == ?", specialization.id)
