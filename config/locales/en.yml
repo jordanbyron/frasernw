@@ -34,8 +34,8 @@ en:
           "4": "Retired"
     models:
       procedure: "Area of Practice"
-      sc_category: "Shared Care Category"
-      sc_item: "Shared Care Item"
+      sc_category: "Content Category"
+      sc_item: "Content Item"
     attributes:
       address:
         address1: "Address line 1"
