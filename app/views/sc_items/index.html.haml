@@ -13,7 +13,15 @@
       %tr
         %td= link_to sc_item.title, sc_item, :class => 'ajax'
         %td= link_to sc_item.sc_category.name, sc_item.sc_category, :class => 'ajax'
-        %td= sc_item.specializations.map{ |s| link_to s.name, s, :class => 'ajax' }.to_sentence.html_safe
+        %td
+          %ul
+            - sc_item.sc_item_specializations.each do |is|
+              %li
+                = link_to is.specialization.name, is.specialization, :class => 'ajax'
+                - if is.procedure_specializations.present?
+                  %ul
+                    - is.procedure_specializations.each do |ps|
+                      %li= link_to ps.procedure.name, ps.procedure, :class => 'ajax'
         %td.admin.btn-group
           = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_sc_item_path(sc_item), :class => "btn btn-mini ajax")
           = link_to("<i class='icon-trash'></i>".html_safe + " Delete", sc_item, :confirm => "Delete #{sc_item.title}?", :method => :delete, :class => "btn btn-mini")

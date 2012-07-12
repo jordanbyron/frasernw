@@ -430,6 +430,11 @@ body.loading #loading
         li
         {
           list-style-type: none;
+          
+          ul
+          {
+            margin-left: 12px;
+          }
         }
       }
       
