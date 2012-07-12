@@ -60,66 +60,13 @@
                   %ul
                   
               %ul.nav.pull-right
-                  
-                - if current_user_is_admin?
-                  %li.dropdown.admin
-                    %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-                      Admin
-                      %b.caret
-                    %ul.dropdown-menu
-                      /%li= link_to "Track Specialists", tracker_path
-                      %li= link_to "Activity Feed", all_versions_path, :class => "history ajax"
-                      %li= link_to "Review Queue (#{ReviewItem.all.count})", review_items_path, :class => "review ajax"
-                      %li= link_to "Feedback Queue (#{FeedbackItem.all.count})", feedback_items_path, :class => "feedback ajax"
-                      %li= link_to "Stats", stats_path, :class => "stats ajax"
-                      %li.divider
-                      %li
-                        = link_to "New...", "#", :class => "create arrow-right-after"
-                        %ul.dropdown-menu
-                          %li
-                            = link_to "New Area of Practice in...", "#", :class => "arrow-right-after"
-                            %ul.dropdown-menu.sub-menu
-                              - Specialization.all.each do |specialization|
-                                %li=link_to specialization.name, new_specialization_procedure_path(specialization), :class => "ajax"
-                          %li= link_to "New City", new_city_path, :class => "ajax"
-                          %li
-                            = link_to "New Clinic in...", "#", :class => "arrow-right-after"
-                            %ul.dropdown-menu
-                              - Specialization.all.each do |specialization|
-                                %li=link_to specialization.name, new_specialization_clinic_path(specialization), :class => "ajax"
-                          %li= link_to "New Healthcare Provider", new_healthcare_provider_path, :class => "ajax"
-                          %li= link_to "New Hospital", new_hospital_path, :class => "ajax"
-                          %li= link_to "New Language", new_language_path, :class => "ajax"
-                          %li= link_to "New Office", new_office_path, :class => "ajax"
-                          %li
-                            = link_to "New Specialist in...", "#", :class => "arrow-right-after"
-                            %ul.dropdown-menu
-                              - Specialization.all.each do |specialization|
-                                %li=link_to specialization.name, new_specialization_specialist_path(specialization), :class => 'ajax'
-                          %li= link_to "New Specialty", new_specialization_path, :class => "ajax"
-                          %li= link_to "New User", new_user_path, :class => "ajax"
-                      %li.divider
-                        %li= link_to "Areas of Practice", procedures_path, :class => "ajax"
-                        %li= link_to "Cities", cities_path, :class => "ajax"
-                        %li= link_to "Clinics", clinics_path, :class => "ajax"
-                        %li= link_to "Healthcare Providers", healthcare_providers_path, :class => "ajax"
-                        %li= link_to "Hospitals", hospitals_path, :class => "ajax"
-                        %li= link_to "Languages", languages_path, :class => "ajax"
-                        %li
-                          = link_to "Offices", "#", :class => "arrow-right-after"
-                          %ul.dropdown-menu
-                            %li=link_to "All Offices", offices_path, :class => "ajax"
-                            - City.all.each do |city|
-                              %li=link_to "Offices in #{city.name}", city_offices_path(city), :class => "ajax"
-                        %li= link_to "Provinces", provinces_path, :class => "ajax"
-                        %li= link_to "Specialists", specialists_path, :class => "ajax"
-                        %li= link_to "Specialties", specializations_path, :class => "ajax"
-                        %li= link_to "Users", users_path, :class => "ajax"
+              
                 %li.dropdown
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
                     %i.icon-heart
                     Favourites
                     %b.caret
+                    
                   %ul#favorites_dropdown.dropdown-menu
                     %li#specializations_favorites.nav-header.specialty Specializations
                     - current_user.favorite_specializations.each do |s|
@@ -171,6 +118,63 @@
                     %b.caret
                   %ul.dropdown-menu
                     %li= link_to "Change password", change_password_path, :class => 'change_password ajax'
+                  
+                - if current_user_is_admin?
+                
+                  %li.dropdown.admin
+                    %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                      Admin
+                      %b.caret
+                      
+                    %ul.dropdown-menu
+                      /%li= link_to "Track Specialists", tracker_path
+                      %li= link_to "Activity Feed", all_versions_path, :class => "history ajax"
+                      %li= link_to "Review Queue (#{ReviewItem.all.count})", review_items_path, :class => "review ajax"
+                      %li= link_to "Feedback Queue (#{FeedbackItem.all.count})", feedback_items_path, :class => "feedback ajax"
+                      %li= link_to "Stats", stats_path, :class => "stats ajax"
+                      %li.divider
+                      %li
+                        = link_to "New...", "#", :class => "create arrow-right-after"
+                        %ul.dropdown-menu
+                          %li
+                            = link_to "New Area of Practice in...", "#", :class => "arrow-right-after"
+                            %ul.dropdown-menu.sub-menu
+                              - Specialization.all.each do |specialization|
+                                %li=link_to specialization.name, new_specialization_procedure_path(specialization), :class => "ajax"
+                          %li= link_to "New City", new_city_path, :class => "ajax"
+                          %li
+                            = link_to "New Clinic in...", "#", :class => "arrow-right-after"
+                            %ul.dropdown-menu
+                              - Specialization.all.each do |specialization|
+                                %li=link_to specialization.name, new_specialization_clinic_path(specialization), :class => "ajax"
+                          %li= link_to "New Healthcare Provider", new_healthcare_provider_path, :class => "ajax"
+                          %li= link_to "New Hospital", new_hospital_path, :class => "ajax"
+                          %li= link_to "New Language", new_language_path, :class => "ajax"
+                          %li= link_to "New Office", new_office_path, :class => "ajax"
+                          %li
+                            = link_to "New Specialist in...", "#", :class => "arrow-right-after"
+                            %ul.dropdown-menu
+                              - Specialization.all.each do |specialization|
+                                %li=link_to specialization.name, new_specialization_specialist_path(specialization), :class => 'ajax'
+                          %li= link_to "New Specialty", new_specialization_path, :class => "ajax"
+                          %li= link_to "New User", new_user_path, :class => "ajax"
+                      %li.divider
+                        %li= link_to "Areas of Practice", procedures_path, :class => "ajax"
+                        %li= link_to "Cities", cities_path, :class => "ajax"
+                        %li= link_to "Clinics", clinics_path, :class => "ajax"
+                        %li= link_to "Healthcare Providers", healthcare_providers_path, :class => "ajax"
+                        %li= link_to "Hospitals", hospitals_path, :class => "ajax"
+                        %li= link_to "Languages", languages_path, :class => "ajax"
+                        %li
+                          = link_to "Offices", "#", :class => "arrow-right-after"
+                          %ul.dropdown-menu
+                            %li=link_to "All Offices", offices_path, :class => "ajax"
+                            - City.all.each do |city|
+                              %li=link_to "Offices in #{city.name}", city_offices_path(city), :class => "ajax"
+                        %li= link_to "Provinces", provinces_path, :class => "ajax"
+                        %li= link_to "Specialists", specialists_path, :class => "ajax"
+                        %li= link_to "Specialties", specializations_path, :class => "ajax"
+                        %li= link_to "Users", users_path, :class => "ajax"
                         
                 %li= link_to "<i class='icon-off'></i> Logout".html_safe, logout_url
 
