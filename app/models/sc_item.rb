@@ -15,6 +15,10 @@ class ScItem < ActiveRecord::Base
     joins(:sc_item_specializations).where("sc_item_specializations.specialization_id == ?", specialization.id)
   end
   
+  def self.for_procedure_specialization(procedure_specialization)
+joins([:sc_item_specializations, :sc_item_specialization_procedure_specializations]).where("sc_item_specializations.id == sc_item_specialization_procedure_specializations.sc_item_specialization_id AND sc_item_specialization_procedure_specializations.procedure_specialization_id == ?", procedure_specialization.id)
+  end
+  
   TYPE_HASH = {
     1 => "Link", 
     2 => "Markdown", 

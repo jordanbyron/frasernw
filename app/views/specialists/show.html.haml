@@ -39,21 +39,11 @@
       %li
         %a#clinics{"href" => "#{specialization_path(specialization)}#clinics"}
           %span Clinics
-    %li
-      %a#risk_calculators{"href" => "#{specialization_path(specialization)}#calculators"}
-        %span Risk Calculators
-    %li
-      %a#care_pathways{"href" => "#{specialization_path(specialization)}#care_pathways"}
-        %span Care Pathways
-    %li
-      %a#pearls{"href" => "#{specialization_path(specialization)}#pearls"}
-        %span Pearls
-    %li
-      %a#red_flags{"href" => "#{specialization_path(specialization)}#red_flags"}
-        %span Red Flags
-    %li
-      %a#patient_education{"href" => "#{specialization_path(specialization)}#patient_education"}
-        %span Patient Education
+    - ScCategory.all.each do |sc_category|
+      - if sc_category.sc_items.for_specialization(specialization).present?
+        %li
+          %a{"href" => "#{specialization_path(specialization)}##{sc_category.name.remove_whitespace}", "id" => sc_category.name.remove_whitespace}
+            %span= sc_category.name
 
 - if @is_version
   = render 'versions/info'
