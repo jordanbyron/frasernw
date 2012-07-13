@@ -5,7 +5,7 @@
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       Specialties
       %b.caret
-  %li.subsequent= @specialization.name
+  %li.subsequent{:class =>  @specialization.in_progress && "in-progress"}= @specialization.name
   
 %script{"type" => "text/javascript"}
   :plain
@@ -25,9 +25,6 @@
         - list.each do |specialization|
           %li
             %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
-
-- if @specialization.in_progress
-  %h4{:class => @specialization.in_progress ? "in-progress" : ""} In Progress
 
 - has_specialists = @specialization.specialists.length > 0
 - has_clinics = @specialization.clinics.length > 0
