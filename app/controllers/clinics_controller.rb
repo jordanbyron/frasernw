@@ -110,7 +110,7 @@ class ClinicsController < ApplicationController
       clinic_specializations = @clinic.specializations_including_in_progress
       if params[:focuses_mapped].present?
         @clinic.focuses.each do |original_focus|
-          Focus.destroy(original_focus.id) if params[:focuses_mapped][original_focus].blank?
+          Focus.destroy(original_focus.id) if params[:focuses_mapped][original_focus.procedure_specialization.id.to_s].blank?
         end
         params[:focuses_mapped].each do |updated_focus, value|
           focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
@@ -191,7 +191,7 @@ class ClinicsController < ApplicationController
     ClinicSweeper.instance.before_controller_update(@clinic)
     if @clinic.update_attributes(params[:clinic])
       @clinic.focuses.each do |original_focus|
-        Focus.destroy(original_focus.id) if params[:focuses_mapped][original_focus].blank?
+        Focus.destroy(original_focus.id) if params[:focuses_mapped][original_focus.procedure_specialization.id.to_s].blank?
       end
       params[:focuses_mapped].each do |updated_focus, value|
         focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)

@@ -115,7 +115,7 @@ class SpecialistsController < ApplicationController
       if params[:capacities_mapped].present?
         specialist_specializations = @specialist.specializations_including_in_progress
         @specialist.capacities.each do |original_capacity|
-          Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity].blank?
+          Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity.procedure_specialization.id.to_s].blank?
         end
         params[:capacities_mapped].each do |updated_capacity, value|
           capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
@@ -142,7 +142,7 @@ class SpecialistsController < ApplicationController
     SpecialistSweeper.instance.before_controller_update(@specialist)
     if @specialist.update_attributes(params[:specialist])
       @specialist.capacities.each do |original_capacity|
-        Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity].blank?
+        Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity.procedure_specialization.id.to_s].blank?
       end
       params[:capacities_mapped].each do |updated_capacity, value|
         capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
