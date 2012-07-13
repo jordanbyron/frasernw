@@ -1,6 +1,7 @@
 - title "Pathways | #{@procedure.full_name}"
 
-- specialization = @procedure.specializations.first
+- procedure_specialization = @procedure.procedure_specializations.first
+- specialization = procedure_specialization.specialization
     
 %ul#specialties-menu
   %li.dropdown
@@ -62,22 +63,11 @@
       %li{:class => clinic_tab_class}
         %a#clinics_tab{"href" => "#clinic_tab", "data-toggle" => "tab"}
           %span Clinics
-    - if true
-      %li
-        %a#risk_calculators_tab{"href" => "#calculator_tab", "data-toggle" => "tab"}
-          %span Risk Calculators
-      %li
-        %a#care_pathways_tab{"href" => "#care_pathways_tab", "data-toggle" => "tab"}
-          %span Care Pathways
-      %li
-        %a#pearls_tab{"href" => "#pearls_tab", "data-toggle" => "tab"}
-          %span Pearls
-      %li
-        %a#red_flags_tab{"href" => "#red_flags_tab", "data-toggle" => "tab"}
-          %span Red Flags
-      %li
-        %a#patient_education_tab{"href" => "#patient_education_tab", "data-toggle" => "tab"}
-          %span Patient Education
+    - ScCategory.all.each do |sc_category|
+      - if sc_category.sc_items.for_procedure_specialization(procedure_specialization).present?
+        %li
+          %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "id" => sc_category.name.remove_whitespace, "data-toggle" => "tab"}
+            %span= sc_category.name
 
   .content-wrapper
   
@@ -323,81 +313,21 @@
             $('.collapsable').on('hidden', function() {
               $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
             });
-                      
-        #calculator_tab.tab-pane
-                      
-        #care_pathways_tab.tab-pane
-          - if @procedure.id == 218 #Primary care obstetrics
-            %ul
-              %li=link_to "Routine pregnancy care schedule", "/content/routine_pregnancy_care.html", :class => "ajax"
-              
-          - if @procedure.id == 21 #Back
-            %p.space.no_indent In low back pain, radiographs are indicated with:
-            %ul 
-              %li Recent significant trauma, or milder trauma age >50 
-              %li Suspected cancer
-              %li Suspected infection 
-              %li Back pain with lower limb neurologic deficit
-              
-          - if @procedure.id == 10 #Knee
-            %h4 Ottawa Knee Rules
-            %p.space.no_indent If any of the following criteria are met after knee trauma, consider an x-ray:
-            %ul 
-              %li Age > 55   
-              %li Isolated tenderness of the patella
-              %li Tenderness at the fibular head
-              %li Unable to flex knee to 90 degrees
-              %li Unable to bear weight immediately and in the ED (4 steps, limping is OK)
-              
-          - if @procedure.id == 443 #Heart Failure
-            %a{"href" => "http://www.bcguidelines.ca/pdf/heart_failure_summary.pdf", "target" => "_blank"} GPAC Summary: Heart Failure Care
-            
-            
-          - if @procedure.id == 441 #Hypertension
-            %a{"href" => "http://www.bcguidelines.ca/pdf/hypertension_summary.pdf", "target" => "_blank"} GPAC Summary: Hypertension - Detection, Diagnosis and Management
-                      
-        #pearls_tab.tab-pane
-          - if @procedure.id == 365 #Colonoscopy
-            %ul
-              %li=link_to "Polyp Results", "/content/polyp.html", :class => "ajax"
-          - if @procedure.id == 231 #Sexual wellness
-            %ul
-              %li=link_to "Oral contraceptives and venous thromboembolic risks", "/content/oral_contraceptives.html", :class => "ajax"
-                      
-        #red_flags_tab.tab-pane
-              
-          - if @procedure.id == 12 || @procedure.id == 154 #Foot and Ankle
-            %h3 Ankle and Foot
-            %ul
-              %li fracture
-              %li dislocation
-              %li infected joint
-              %li rupture of Achilles tendon
-              
-          - if @procedure.id == 10 || @procedure.id == 9 #Knee & hip
-            %h3 Knee and Hip
-            %ul
-              %li fracture
-              %li locked knee
-              %li infected joint
-              %li rupture of quadriceps tendon or patellar tendony
-              
-          - if @procedure.id == 21 #Back
-            %h4 Red Flags for Low Back Pain
-            %ul 
-              %li Major trauma
-              %li Minor trauma in the elderly or osteoporotic Age > 50 or < 20 years 
-              %li History of cancer 
-              %li Constitutonal symptoms (fever, chills, weight loss) 
-              %li Recent bacterial infection 
-              %li IV drug use 
-              %li Immunosuppression 
-              %li Pain worse at night or when supine 
-              %li Severe progressive sensory alteration or weakness 
-              %li Bladder or bowel dysfuncion 
-              %li Evidence of neurological deficit in the perineum
-                      
-        #patient_education_tab.tab-pane
+      
+        - ScCategory.all.each do |sc_category|
+          - if sc_category.sc_items.for_procedure_specialization(procedure_specialization).present?
+            .tab-pane{"id" => "#{sc_category.name.remove_whitespace}_tab"}
+              %ul
+                - sc_category.sc_items.each do |sc_item|
+                  - if sc_item.markdown? 
+                    - if sc_item.inline?
+                      %li
+                        = sc_item.title
+                        %p= BlueCloth.new(sc_item.markdown_content).to_html.html_safe
+                    - else
+                      %li= link_to sc_item.title, sc_item, :class => "ajax"
+                  - else
+                    %li= link_to sc_item.title, sc_item.url, :target => "_blank"
 
     %p.admin.btn-group
       - if can? :update, @procedure
