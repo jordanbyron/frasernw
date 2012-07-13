@@ -432,6 +432,11 @@
                   - else
                     %li= link_to sc_item.title, sc_item.url, :target => "_blank"
       
+      
+      - tab_javascript = ""
+      - ScCategory.all.each do |sc_category|
+        - tab_javascript += "else if (hash == '##{sc_category.name.remove_whitespace}') { $('#content_tabs a##{sc_category.name.remove_whitespace}').tab('show'); } "
+        
       %script{"type" => "text/javascript"}
         :plain
           $(document).ready(function() {
@@ -448,10 +453,7 @@
             {
               $('#content_tabs a#clinics').tab('show');
             }
-            else 
-            {
-              //handle shared care tabs here programtically but without javascript injection vulnerability
-            }
+            #{tab_javascript}
           });
 
     %p.admin.btn-group
