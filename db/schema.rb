@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120711000345) do
+ActiveRecord::Schema.define(:version => 20120714025012) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -153,6 +153,7 @@ ActiveRecord::Schema.define(:version => 20120711000345) do
     t.boolean  "interpreter_available",      :default => false
     t.text     "contact_details"
     t.text     "status_details"
+    t.string   "url"
   end
 
   create_table "contacts", :force => true do |t|
@@ -449,6 +450,7 @@ ActiveRecord::Schema.define(:version => 20120711000345) do
     t.integer   "sector_mask",            :default => 1
     t.string    "direct_phone"
     t.string    "direct_phone_extension"
+    t.string    "url"
   end
 
   add_index "specialist_offices", ["office_id"], :name => "index_specialist_offices_on_office_id"

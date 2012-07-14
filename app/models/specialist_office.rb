@@ -1,5 +1,5 @@
 class SpecialistOffice < ActiveRecord::Base
-  attr_accessible :phone, :phone_extension, :fax, :direct_phone, :direct_phone_extension, :sector_mask, :office_id, :office_attributes
+  attr_accessible :phone, :phone_extension, :fax, :direct_phone, :direct_phone_extension, :sector_mask, :office_id, :office_attributes, :url
   
   belongs_to :specialist
   belongs_to :office

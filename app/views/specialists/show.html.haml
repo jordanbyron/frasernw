@@ -160,6 +160,7 @@
                 %p.space
                   %strong= specialist_office.phone if specialist_office.phone.present?
                 %p= "Fax: #{specialist_office.fax}" if specialist_office.fax.present?
+                %p= "Website: #{link_to specialist_office.url, specialist_office.url, :target => '_blank'}".html_safe if specialist_office.url.present?
                 - if specialist_office.office.present?
                   - num_specialists = specialist_office.office.num_specialists
                   - location = specialist_office.office.location
