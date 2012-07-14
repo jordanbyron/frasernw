@@ -2,7 +2,7 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
-  = f.association :sc_category, as: :radio_buttons
+  = f.association :sc_category, as: :select, :include_blank => false
   
   .control-group
     .control-label
