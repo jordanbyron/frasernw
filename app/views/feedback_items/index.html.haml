@@ -5,6 +5,7 @@
   %table.table.table-condensed.table-striped
     %tr
       %th Feedback on
+      %th Specialty
       %th Provided by
       %th Provided when
       %th Feedback
@@ -13,6 +14,7 @@
     - @feedback_items.each do |feedback_item|
       %tr
         %td= link_to feedback_item.item.name, feedback_item.item, :class => 'ajax'
+        %td= feedback_item.item.specializations.map{ |s| s.name }.to_sentence
         %td= feedback_item.user.name
         %td= "#{time_ago_in_words(feedback_item.created_at)} ago"
         %td{"style" => "width: 40%"}= feedback_item.feedback
