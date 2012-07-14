@@ -115,6 +115,7 @@
               %p
                 %strong= @clinic.phone if @clinic.phone.present?
               %p= "Fax: #{@clinic.fax}" if @clinic.fax.present?
+              %p= "Website: #{link_to @clinic.url, @clinic.url, :target => '_blank'}".html_safe if @clinic.url.present?
               %p= @clinic.contact_details.gsub(/\r\n/, '<br>').html_safe if @clinic.contact_details.present?
               - if @clinic.location.present? && @clinic.location.in_hospital?
                 - hospital = @clinic.location.hospital_in
