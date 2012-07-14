@@ -15,6 +15,7 @@
         %table.table.table-condensed.table-striped
           %tr
             %th Specialist
+            %th Specialty
             %th Updated by
             %th Updated when
             %th
@@ -23,6 +24,7 @@
             - next if review_item.item_type != "Specialist"
             %tr
               %td= review_item.item.name
+              %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
               %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
               %td.admin.btn-group.wide
