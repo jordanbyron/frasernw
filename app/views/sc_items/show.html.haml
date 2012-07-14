@@ -44,7 +44,7 @@
     - ScCategory.all.each do |sc_category|
       - if sc_category.sc_items.for_specialization(specialization).present?
         %li{:class => @sc_item.sc_category == sc_category && "active"}
-          %a{"href" => "#{specialization_path(specialization)}##{sc_category.name.remove_whitespace}_tab"}
+          %a{"href" => "#{specialization_path(specialization)}##{sc_category.name.remove_whitespace}"}
             %span= sc_category.name
             
 .content-wrapper.scm
