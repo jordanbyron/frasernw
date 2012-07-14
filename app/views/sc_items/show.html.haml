@@ -55,7 +55,7 @@
     
   - else
   
-    %h2= @sc_item.title
+    %h1= @sc_item.title
   
     %p= BlueCloth.new(@sc_item.markdown_content).to_html.html_safe
   
