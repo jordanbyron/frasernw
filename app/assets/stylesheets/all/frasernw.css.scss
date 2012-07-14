@@ -301,6 +301,11 @@ body.loading #loading
     margin-top: 1em;
   }
   
+  ul.no-marker
+  {
+    list-style-type: none;
+  }
+  
   td.admin.btn-group
   {
     width: 120px;
@@ -1089,5 +1094,49 @@ body.loading #loading
   #specialties-dropdown-menu + .content-wrapper
   {
     margin-top: 4px;
+  }
+  
+  .scm
+  {
+    h1, h2, h3
+    {
+      margin-top: 12px;
+      font-family: Bitter;
+    }
+  
+    h1
+    { 
+      font-size: 20px;
+    }
+    
+    h2
+    { 
+      font-size: 16px;
+    }
+    
+    h3
+    {
+      font-size: 13px;
+    }
+    
+    p, ul, ol
+    {
+      margin: 8px 0 0 0;
+    }
+    
+    p:first
+    {
+      margin: 0;
+    }
+    
+    ul, ol
+    {
+      margin-left: 25px;
+    }
+    
+    ul
+    {
+      list-style-position: outside;
+    }
   }
 }
