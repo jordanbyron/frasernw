@@ -1,29 +1,31 @@
-%h2= @user.name
+.content-wrapper
 
-%p
-  %strong Email address:
-  = @user.email
-%p
-  %strong Role:
-  = @user.role
+  %h2= @user.name
 
-- if !@user.admin?
-  - if @user.controlled_specialists.length > 0
-    %p 
-      %strong Can edit specialists
-    %ul
-      - @user.controlled_specialists.each do |specialist|
-        %li= specialist.name
-  - if @user.controlled_clinics.length > 0
-    %p 
-      %strong Can edit clinics
-    %ul
-      - @user.controlled_clinics.each do |clinic|
-        %li= clinic.name
+  %p
+    %strong Email address:
+    = @user.email
+  %p
+    %strong Role:
+    = @user.role
 
-%p.admin.btn-group
-  - if can? :update, @user
-    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(@user), :class => "btn ajax")
-  - if can? :destroy, @user
-    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @user, :confirm => "Delete #{@user.name}?", :method => :delete, :class => "btn")
-    
+  - if !@user.admin?
+    - if @user.controlled_specialists.length > 0
+      %p 
+        %strong Can edit specialists
+      %ul
+        - @user.controlled_specialists.each do |specialist|
+          %li= link_to specialist.name, specialist, :class => 'ajax'
+    - if @user.controlled_clinics.length > 0
+      %p 
+        %strong Can edit clinics
+      %ul
+        - @user.controlled_clinics.each do |clinic|
+          %li= link_to clinic.name, clinic, :class => 'ajax'
+
+  %p.admin.btn-group
+    - if can? :update, @user
+      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(@user), :class => "btn ajax")
+    - if can? :destroy, @user
+      = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @user, :confirm => "Delete #{@user.name}?", :method => :delete, :class => "btn")
+      
