@@ -246,6 +246,13 @@
                     %li
                       = attendance.freeform_name
                       = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
+              
+            - if current_user_is_admin? &&  @clinic.controlling_users.present?
+              %h6 Users that can edit this clinic
+              
+              %ul
+                - @clinic.controlling_users.each do |user|
+                  %li= link_to user.name, user, :class => 'ajax'
                       
         - if show_details  || show_areas_of_practice
         
@@ -303,13 +310,6 @@
             .form-actions
               = f.button :submit, :class => "btn btn-primary", :value => "Send Feedback"
               %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
-              
-  - if current_user_is_admin?
-    - if @clinic.controlling_users.present?
-      %p.admin
-        %strong.control Users 
-        that can edit this clinic:
-        != @clinic.controlling_users.map{ |user| "<a class='ajax' href='#{user_path(user)}'>#{user.name}</a>" }.to_sentence
 
   %p.admin.btn-group
           
