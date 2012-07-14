@@ -66,6 +66,8 @@
                   %li.dropdown.admin
                     %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
                       Admin
+                      -  if ReviewItem.all.count + FeedbackItem.all.count > 0
+                        (#{ReviewItem.all.count + FeedbackItem.all.count})
                       %b.caret
                       
                     %ul.dropdown-menu
