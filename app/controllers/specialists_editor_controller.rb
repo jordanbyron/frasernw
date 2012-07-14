@@ -43,7 +43,7 @@ class SpecialistsEditorController < ApplicationController
     }
     @view = @specialist.views.build(:notes => request.remote_ip)
     @view.save
-    render :template => 'specialists/edit'
+    render :template => 'specialists/edit', :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def update

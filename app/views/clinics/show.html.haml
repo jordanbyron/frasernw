@@ -311,19 +311,25 @@
         != @clinic.controlling_users.map{ |user| "<a class='ajax' href='#{user_path(user)}'>#{user.name}</a>" }.to_sentence
 
   %p.admin.btn-group
-    - if can? :update, @clinic
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path(@clinic), :class => "btn ajax")
-      = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", clinic_referral_forms_path(@clinic), :class => "btn ajax")
+          
     - if current_user_is_admin?
+    
       - if @clinic.review_item.present?
         = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", clinic_review_path(@clinic), :class => "btn ajax")
-      - else
+
+      - elsif can? :update, @clinic
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Clinic", edit_clinic_path(@clinic), :class => "btn ajax")
+        = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", clinic_referral_forms_path(@clinic), :class => "btn ajax")
         %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
           %i.icon-share
           Share
-      = link_to("<i class='icon-folder-open'></i>".html_safe + " History", clinic_versions_path(@clinic), :class => "btn ajax")
+        = link_to("<i class='icon-folder-open'></i>".html_safe + " History", clinic_versions_path(@clinic), :class => "btn ajax")
+        
+    - elsif can? :update, @clinic
+      = link_to("<i class='icon-pencil'></i>".html_safe + " Update #{@clinic.name}'s information", clinic_self_edit_path(@clinic, @clinic.token), :class => "btn ajax")
+    
     - if can? :destroy, @clinic
-      = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @clinic, :confirm => "Delete #{@clinic.name}?", :method => :delete, :class => "btn")
+      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Clinic", @clinic, :confirm => "Delete #{@clinic.name}?", :method => :delete, :class => "btn")
 
   - if current_user_is_admin?
     #share.collapse

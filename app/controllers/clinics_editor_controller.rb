@@ -41,7 +41,7 @@ class ClinicsEditorController < ApplicationController
         end
       }
     }
-    render :template => 'clinics/edit'
+    render :template => 'clinics/edit', :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def update

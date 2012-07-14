@@ -362,17 +362,23 @@
         != @specialist.controlling_users.map{ |user| "<a href='#{user_path(user)}' class='ajax'>#{user.name}</a>" }.to_sentence
 
   %p.admin.btn-group
-    - if can? :update, @specialist
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialist", edit_specialist_path(@specialist), :class => "btn ajax")
-      = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", specialist_referral_forms_path(@specialist), :class => "btn ajax")
+          
     - if current_user_is_admin?
+    
       - if @specialist.review_item.present?
         = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", specialist_review_path(@specialist), :class => "btn ajax")
-      - else
+
+      - elsif can? :update, @specialist
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialist", edit_specialist_path(@specialist), :class => "btn ajax")
+        = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", specialist_referral_forms_path(@specialist), :class => "btn ajax")
         %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
           %i.icon-share
           Share
-      = link_to("<i class='icon-folder-open'></i>".html_safe + " History", specialist_versions_path(@specialist), :class => "btn ajax")
+        = link_to("<i class='icon-folder-open'></i>".html_safe + " History", specialist_versions_path(@specialist), :class => "btn ajax")
+        
+    - elsif can? :update, @specialist
+      = link_to("<i class='icon-pencil'></i>".html_safe + " Update #{@specialist.name}'s information", specialist_self_edit_path(@specialist, @specialist.token), :class => "btn ajax")
+    
     - if can? :destroy, @specialist
       = link_to("<i class='icon-trash'></i>".html_safe + " Delete Specialist", @specialist, :confirm => "Delete #{@specialist.name}?", :method => :delete, :class => "btn")
 
