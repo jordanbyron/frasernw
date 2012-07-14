@@ -35,33 +35,30 @@
                 - cache(:action => 'index') do
                   - latest_events(5).each do |event|
                     %li= event
+          
+          - ScCategory.all.reject{ |c| c.sc_items.blank? }.each_slice(2) do |category_a, category_b|
+            .row
+              .span4
+                %h3= "Featured #{category_a.name}"
+              
+                %ul.space
+                  - category_a.sc_items.first(3).each do |sc_item|
+                    - if sc_item.markdown? 
+                      %li= link_to sc_item.title, sc_item, :class => "ajax"
+                    - else
+                      %li= link_to sc_item.title, sc_item.url, :target => "_blank"
+                      
+                %p.no_indent= link_to "Show all #{category_a.name}", sc_category_path(category_a), :class => 'ajax'
+                      
+              - if category_b.present?
+                .span4.offset1
+                  %h3= "Featured #{category_b.name}"
                 
-          .row
-            .span4
-              %h3.pearls Featured Pearls: Did You Know?
-              
-              %ul.space
-                %li
-                  Obstetrics Gynecology: 
-                  %a.ajax{"href" => "/content/oral_contraceptives.html"}Oral Contraceptives: Costs and Venous Thromboembolic Risks
-                  
-                %li
-                  Cardiology:
-                  %a.ajax{"href" => "/content/asa.html"}ASA is no longer indicated for primary prevention of cardiovascular events
-                  
-                %li
-                  Obstetrics Gynecology: 
-                  %a.ajax{"href" => "/content/hrt_whi.html"}HRT Risk Table: Summary of Women's Health Initiative Study Findings
-            
-            .span4.offset1
-              %h3.care_pathways Featured Care Pathways
-              
-              %ul.space
-                %li
-                  Cardiology:
-                  %a{"href" => "http://www.bcguidelines.ca/pdf/heart_failure_summary.pdf", "target" => "_blank"} GPAC Guideline: Heart Failure Summary
-              
-                %li
-                  Obstetrics Gynecology: A 
-                  %a.ajax{"href" => "/content/routine_pregnancy_care.html"} Routine Pregnancy Care Schedule
-                  is available which outlines week-by-week interventions during pregnancy.
+                  %ul.space
+                    - category_b.sc_items.first(3).each do |sc_item|
+                      - if sc_item.markdown? 
+                        %li= link_to sc_item.title, sc_item, :class => "ajax"
+                      - else
+                        %li= link_to sc_item.title, sc_item.url, :target => "_blank"
+                      
+                  %p.no_indent= link_to "Show all #{category_b.name}", sc_category_path(category_b), :class => 'ajax'
