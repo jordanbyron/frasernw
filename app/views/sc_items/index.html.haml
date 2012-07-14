@@ -12,7 +12,7 @@
     - @sc_items.each do |sc_item|
       %tr
         %td= link_to sc_item.title, sc_item, :class => 'ajax'
-        %td= link_to sc_item.sc_category.name, sc_item.sc_category, :class => 'ajax'
+        %td= link_to sc_item.sc_category.name, sc_item.sc_category, :class => 'ajax' if sc_item.sc_category.present?
         %td
           %ul
             - sc_item.sc_item_specializations.each do |is|
