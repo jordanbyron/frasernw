@@ -2,7 +2,9 @@
 
   %h2 Update complete
 
-  %p Thank you for your updates to #{@specialist.name}. We will review these changes shortly, and let you know when they are available on the web site.
+  %p.space.no_indent Thank you for your updates to #{@specialist.name}. We will review these changes shortly, and let you know when they are available on Pathways.
+  
+  %p.space.no_indent You may #{link_to "return to #{@specialist.name}'s page", @specialist, :class => 'ajax'} or #{link_to "update #{@specialist.name}'s information again", specialist_self_edit_path(@specialist, @specialist.token), :class => 'ajax'} if you wanted to make further changes.
 
 
 

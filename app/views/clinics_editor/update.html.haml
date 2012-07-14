@@ -2,7 +2,9 @@
 
   %h2 Update complete
 
-  %p Thank you for your updates to #{@clinic.name}. We will review these changes shortly, and let you know when they are available on the web site.
+  %p.space.no_indent Thank you for your updates to #{@clinic.name}. We will review these changes shortly, and let you know when they are available on Pathways.
+  
+  %p.space.no_indent You may #{link_to "return to #{@clinic.name}'s page", @clinic, :class => 'ajax'} or #{link_to "update #{@clinic.name}'s information again", clinic_self_edit_path(@clinic, @clinic.token), :class => 'ajax'} if you wanted to make further changes.
 
 
 

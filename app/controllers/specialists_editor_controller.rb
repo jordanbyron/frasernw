@@ -6,8 +6,9 @@ class SpecialistsEditorController < ApplicationController
   before_filter :check_token
   
   def edit
-    @token      = params[:token]
+    @token = params[:token]
     @is_review = true
+    @review_item = ReviewItem.find_by_item_type_and_item_id( "Specialist", params[:id] );
     @specialist = Specialist.find(params[:id])
     if @specialist.capacities.count == 0
       @specialist.capacities.build
@@ -43,11 +44,17 @@ class SpecialistsEditorController < ApplicationController
     }
     @view = @specialist.views.build(:notes => request.remote_ip)
     @view.save
-    render :template => 'specialists/edit', :layout => 'ajax' if request.headers['X-PJAX']
+    if request.headers['X-PJAX']
+      render :template => 'specialists/edit', :layout => 'ajax'
+    else
+      render :template => 'specialists/edit'
+    end
   end
 
   def update
     @specialist = Specialist.find(params[:id])
+    
+    ReviewItem.delete(@specialist.review_item) if @specialist.review_item.present?
     
     review_item = ReviewItem.new
     review_item.item_type = "Specialist"
@@ -66,7 +73,7 @@ class SpecialistsEditorController < ApplicationController
   
   def check_pending
     specialist = Specialist.find(params[:id])
-    redirect_to specialist_self_pending_path(specialist) if specialist.review_item.present?
+    redirect_to specialist_self_pending_path(specialist) if specialist.review_item.present? && (!current_user || (specialist.review_item.whodunnit != current_user.id.to_s))
   end
   
   def check_token

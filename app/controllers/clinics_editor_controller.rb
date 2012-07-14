@@ -8,6 +8,7 @@ class ClinicsEditorController < ApplicationController
   def edit
     @token = params[:token]
     @is_review = true
+    @review_item = ReviewItem.find_by_item_type_and_item_id( "Clinic", params[:id] );
     @clinic = Clinic.find(params[:id])
     if @clinic.focuses.count == 0
       @clinic.focuses.build
@@ -41,11 +42,17 @@ class ClinicsEditorController < ApplicationController
         end
       }
     }
-    render :template => 'clinics/edit', :layout => 'ajax' if request.headers['X-PJAX']
+    if request.headers['X-PJAX']
+      render :template => 'clinics/edit', :layout => 'ajax'
+    else
+      render :template => 'clinics/edit'
+    end
   end
 
   def update
     @clinic = Clinic.find(params[:id])
+    
+    ReviewItem.delete(@clinic.review_item) if @clinic.review_item.present?
     
     review_item = ReviewItem.new
     review_item.item_type = "Clinic"
@@ -64,7 +71,7 @@ class ClinicsEditorController < ApplicationController
   
   def check_pending
     clinic = Clinic.find(params[:id])
-    redirect_to clinic_self_pending_path(clinic) if clinic.review_item.present?
+    redirect_to clinic_self_pending_path(clinic) if clinic.review_item.present? && (!current_user || (clinic.review_item.whodunnit != current_user.id.to_s))
   end
   
   def check_token
