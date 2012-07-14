@@ -1,7 +1,6 @@
 - title "Pathways | #{@procedure.full_name}"
 
-- procedure_specialization = @procedure.procedure_specializations.first
-- specialization = procedure_specialization.specialization
+- procedure_specialization = @procedure.procedure_specializations.first || ProcedureSpecialization.first
     
 %ul#specialties-menu
   %li.dropdown
