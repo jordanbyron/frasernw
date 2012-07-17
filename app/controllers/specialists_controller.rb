@@ -177,7 +177,7 @@ class SpecialistsController < ApplicationController
   
   def review
     @is_new = false
-    @is_review = true
+    @is_review = false
     @review_item = ReviewItem.find_by_item_type_and_item_id( "Specialist", params[:id] );
     
     if @review_item.blank?

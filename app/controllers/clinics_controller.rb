@@ -143,7 +143,7 @@ class ClinicsController < ApplicationController
   end
   
   def review
-    @is_review = true
+    @is_review = false
     @review_item = ReviewItem.find_by_item_type_and_item_id( "Clinic", params[:id] );
     
     if @review_item.blank?
