@@ -24,6 +24,7 @@
                 = child_ps.procedure.name
       
   = f.input :title
+  = f.input :searchable
   = f.input :type_mask, as: :select, collection: ScItem::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
   #link_section
     = f.input :url

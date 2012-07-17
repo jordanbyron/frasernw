@@ -1,26 +1,50 @@
 <%
 
-group_data = { 
-  "1" => "Specialties", 
-  "2" => "Specialists",
-  "3" => "Clinics",
-  "4" => "Areas of Practice",
-  "5" => "Hospitals",
-  "6" => "Languages" 
+order_map = {
+  "Specializations" => "1",
+  "Specialists" => "2",
+  "Clinics" => "3",
+  "Procedures" => "4",
+  "Hospitals" => "5",
+  "Languages" => "6"
 }
-  
+
+ScCategory.all.each do |category|
+  next if category.sc_items.searchable.empty?
+  order_map[ category.name ] = ( order_map.length + 1 ).to_s
+end
+
+group_data = { 
+  order_map["Specializations"] => "Specialties", 
+  order_map["Specialists"] => "Specialists",
+  order_map["Clinics"] => "Clinics",
+  order_map["Procedures"] => "Areas of Practice",
+  order_map["Hospitals"] => "Hospitals",
+  order_map["Languages"] => "Languages"
+}
+
+ScCategory.all.each do |category|
+  next if category.sc_items.searchable.empty?
+  group_data[ order_map[category.name] ] = category.name
+end
+
 -%>
 
 pathways_group_data = <%=group_data.to_json.html_safe %><%
 
 url_data = { 
-  "1" => "specialties", 
-  "2" => "specialists",
-  "3" => "clinics",
-  "4" => "areas_of_practice",
-  "5" => "hospitals",
-  "6" => "languages" 
+  order_map["Specializations"]  => "specialties", 
+  order_map["Specialists"]  => "specialists",
+  order_map["Clinics"]  => "clinics",
+  order_map["Procedures"]  => "areas_of_practice",
+  order_map["Hospitals"]  => "hospitals",
+  order_map["Languages"]  => "languages" 
 }
+
+ScCategory.all.each do |category|
+  next if category.sc_items.searchable.empty?
+  url_data[ order_map[category.name] ] = "content_items"
+end
   
 -%>
 
@@ -31,7 +55,6 @@ pathways_url_data = <%=url_data.to_json.html_safe %>
 Specialization.all.each do |specialization|
   next if specialization.in_progress
   specialization_data[specialization.id] = specialization.name
-
 end
   
 -%>
@@ -58,7 +81,7 @@ Specialization.all.each do |specialization|
   entry = { 
     "n" => specialization.name, 
     'id' => specialization.id,
-    "go" => 1 }
+    "go" => order_map["Specializations"] }
   search_data << entry
 end 
 
@@ -73,7 +96,7 @@ procedures.each do |procedure|
     "n" => procedure.full_name, 
     "sp" => procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress }.collect{ |ps| ps.specialization_id },
     "id" => procedure.id,
-    "go" => 4 }
+    "go" => order_map["Procedures"] }
   search_data << entry
 end 
 
@@ -90,7 +113,7 @@ specialists.each do |specialist|
     "c" => specialist.city_id,
     "st" => specialist.status_class,
     "id" => specialist.id,
-    "go" => 2 }
+    "go" => order_map["Specialists"] }
   search_data << entry
 end
 
@@ -107,7 +130,7 @@ clinics.each do |clinic|
     "c" => clinic.city_id,
     "st" => clinic.status_class,
     "id" => clinic.id,
-    "go" => 3 }
+    "go" => order_map["Clinics"] }
   search_data << entry
 end
 
@@ -118,7 +141,7 @@ hospitals.each do |hospital|
     "n" => hospital.name, 
     "c" => hospital.city_id, 
     "id" => hospital.id,
-    "go" => 5 }
+    "go" => order_map["Hospitals"] }
   search_data << entry
 end
 
@@ -126,10 +149,20 @@ Language.all.each do |language|
   entry = { 
     "n" => language.name, 
     "id" => language.id,
-    "go" => 6 }
+    "go" => order_map["Languages"] }
   search_data << entry
 end
 
+ScCategory.all.each do |category|
+  category.sc_items.searchable.each do |item|
+    entry = { 
+      "n" => item.title, 
+      "sp" => item.procedure_specializations.reject{ |ps| ps.specialization.in_progress }.collect{ |ps| ps.specialization_id },
+      "id" => item.id,
+      "go" => order_map[category.name] }
+    search_data << entry
+  end
+end
 
 -%>
 pathways_search_data = <%=search_data.to_json.html_safe %>

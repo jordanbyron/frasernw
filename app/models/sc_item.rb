@@ -1,5 +1,5 @@
 class ScItem < ActiveRecord::Base
-  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :url, :inline, :markdown_content
+  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :inline, :url, :markdown_content
   
   belongs_to  :sc_category
   
@@ -17,6 +17,10 @@ class ScItem < ActiveRecord::Base
   
   def self.for_procedure_specialization(procedure_specialization)
 joins([:sc_item_specializations, :sc_item_specialization_procedure_specializations]).where("sc_item_specializations.id = sc_item_specialization_procedure_specializations.sc_item_specialization_id AND sc_item_specialization_procedure_specializations.procedure_specialization_id = ?", procedure_specialization.id)
+  end
+  
+  def self.searchable
+    where("sc_items.searchable = ?", true)
   end
   
   TYPE_HASH = {
@@ -38,5 +42,9 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
 
   def inline?
     inline
+  end
+
+  def searchable?
+    searchable
   end
 end
