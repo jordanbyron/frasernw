@@ -8,4 +8,4 @@ tmp/
 .rspec
 __MACOSX/
 vendor/gems
-
+db/*.bak

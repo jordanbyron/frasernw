@@ -421,17 +421,16 @@
           - if sc_category.sc_items.for_specialization(@specialization).present?
             .tab-pane{"id" => "#{sc_category.name.remove_whitespace}_tab"}
               %ul
-                - sc_category.sc_items.each do |sc_item|
+                - sc_category.sc_items.for_specialization(@specialization).reject{ |item| item.markdown? && item.inline? }.each do |sc_item|
                   - if sc_item.markdown? 
-                    - if sc_item.inline?
-                      %li
-                        = sc_item.title
-                        %p= BlueCloth.new(sc_item.markdown_content).to_html.html_safe
-                    - else
-                      %li= link_to sc_item.title, sc_item, :class => "ajax"
+                    %li= link_to sc_item.title, sc_item, :class => "ajax"
                   - else
                     %li= link_to sc_item.title, sc_item.url, :target => "_blank"
-      
+  
+              - sc_category.sc_items.for_specialization(@specialization).reject{ |item| !item.markdown? || !item.inline? }.each do |sc_item|
+                .scm
+                  %h1= sc_item.title
+                  = BlueCloth.new(sc_item.markdown_content).to_html.html_safe
       
       - tab_javascript = ""
       - ScCategory.all.each do |sc_category|

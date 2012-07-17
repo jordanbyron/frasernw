@@ -44,16 +44,18 @@
     - ScCategory.all.each do |sc_category|
       - if sc_category.sc_items.for_specialization(specialization).present?
         %li{:class => @sc_item.sc_category == sc_category && "active"}
-          %a{"href" => "#{specialization_path(specialization)}##{sc_category.name.remove_whitespace}_tab"}
+          %a{"href" => "#{specialization_path(specialization)}##{sc_category.name.remove_whitespace}"}
             %span= sc_category.name
             
-.content-wrapper
+.content-wrapper.scm
   
   - if @sc_item.link?
   
     %p= link_to @sc_item.title, @sc_item.url, :target => "_blank"
     
   - else
+  
+    %h1= @sc_item.title
   
     %p= BlueCloth.new(@sc_item.markdown_content).to_html.html_safe
   
