@@ -205,15 +205,15 @@
         var specialty_checkbox_id = "#specialist_specializations_including_in_progress_ids_#{@specialization.id}";
         $(specialty_checkbox_id).prop("checked", true);
       });
+    
+- if @is_review
+  .alert.alert-info
+    %h3 You are editing #{@specialist.name}'s entry in Pathways.
+    %p This database exists to make our practices, and your practice more efficient. By providing the information requested below you are making it easier for family doctors to find your practice, ensuring that the scope of your practice is fully understood, and guiding offices in providing you with the correct information when making referrals.
 
 = simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => form_action}, :method => form_method, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
-    
-  - if @view
-    .alert.alert-info
-      %h3 You are editing a record in Pathways, the Fraser NW Division of Family Practice Resource database
-      %p This database exists to make our practices, and your practice more efficient. By providing the information requested below you are making it easier for family doctors to find your practice, ensure that they are providing you with the correct information, and that your scope of practice is fully understood.
       
   %h3 General Information
 
@@ -305,15 +305,19 @@
     %script{"type" => "text/javascript"}
       :plain
         $(document).ready( $(".chzn-select").chosen() );
+    
+  - if current_user_is_admin? || @is_review
   
-  - if current_user_is_admin? && !@is_review
     #section_moa.no-print
+    
       %hr  
-        %h3 Senior MOA Contact Information
-        %h4 This allows specialists to edit their own form. This information is only visible to admins.
-        = f.input :contact_name
-        = f.input :contact_email
-        = f.input :contact_phone
+    
+      %h3 Senior MOA Contact Information
+      %h4 This information is only available to Pathways administrators, and will only be used for contact related to keeping Pathways information up-to-date.
+      = f.input :contact_name
+      = f.input :contact_email
+      = f.input :contact_phone
+      - if current_user_is_admin?
         = f.input :contact_notes, hint: "Include contact's role (MOA, etc.) and anything else we should know."
         
   #section_status
