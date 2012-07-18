@@ -355,6 +355,18 @@
     = f.input :referral_details
 
     = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does this clinic have a referral form?"
+    
+    - if @is_review && @clinic.referral_form_mask == 1 && @clinic.referral_forms.reject{ |referral_form| referral_form.form.blank? }.present?
+   
+      .control-group
+        .controls
+          %p Below is a list of referral forms we have on file for the clinic:
+          
+          %ul
+            - @clinic.referral_forms.each do |referral_form|
+              - next if not referral_form.form.present?
+              - type = referral_form.form_content_type.split('/').last
+              %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, :target => "_blank" 
 
     = f.input :lagtime_mask, as: :select, collection: Clinic::LAGTIME_HASH, label_method: :last, value_method: :first
     
