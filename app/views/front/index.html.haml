@@ -1,69 +1,73 @@
 - title "Pathways"
+  
+%ul#specialties-menu
+  %li.dropdown.no-caret
+    %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
+      Specialties
+      %b.caret
+  
+%script{"type" => "text/javascript"}
+  :plain
+    var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
+    $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
+  
+#specialties-dropdown-menu
+  .inner
+    - specializations = Specialization.all.reject{ |s| s.in_progress && !current_user_is_admin? }
+    - first = specializations[0, (specializations.length / 4.0).ceil]
+    - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
+    - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
+    - fourth = specializations - first - second - third
+    
+    - [first, second, third, fourth].each do |list|
+      %ul
+        - list.each do |specialization|
+          %li
+            %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
 
 .content-wrapper
   .content#front
     .row
-      .span3
-      
-        %h3 Specialties
-        
-        %ul.specialties
-          - Specialization.all.each do |s|
-            %li
-              %a.ajax{"href" => specialization_path(s)}= s.name
        
-      .span9
-        .content
-          .row
-            .span4
-              %h3 What is Pathways?
+      .span7half
+       
+        %h2 What is Pathways?
+        
+        %p 
+          Pathways is a web based resource for GPs and MOAs to facilitate 
+          %strong real-time, optimal, patient referrals 
+          by providing a comprehensive, searchable database of specialists and clinics. 
+        
+        %p 
+          Pathways contributes to improved patient outcomes by 
+          %strong incorporate learnings from our Shared Care initiative, 
+          including decision tools, care pathways, pearls, red flags, and patient education materials.
+      
+        %h2 Latest Updates
+        
+        %ul.space
+          - cache(:action => 'index') do
+            - latest_events(5).each do |event|
+              %li= event
               
-              %p 
-                Pathways is a web based resource for GPs and MOAs to facilitate 
-                %strong real-time, optimal, patient referrals 
-                by providing a comprehensive, searchable database of specialists and clinics. 
-              
-              %p 
-                Pathways contributes to improved patient outcomes by 
-                %strong incorporate learnings from our Shared Care initiative, 
-                including calculators, care pathways, pearls, red flags, and patient education materials.
-            
-            .span4.offset1
-              %h3 Latest Updates
-              
-              %ul.space
-                - cache(:action => 'index') do
-                  - latest_events(5).each do |event|
-                    %li= event
+      .span4.offsethalf
           
-          - ScCategory.all.reject{ |c| c.featured_sc_items.blank? }.each_slice(2) do |category_a, category_b|
-            .row
-              .span4
-                %h3= "Featured #{category_a.name}"
-              
-                %ul.space
-                  - category_a.featured_sc_items.each do |featured_sc_item|
-                    - if featured_sc_item.markdown? 
-                      %li= link_to featured_sc_item.title, featured_sc_item, :class => "ajax"
-                    - else
-                      %li= link_to featured_sc_item.title, featured_sc_item.url, :target => "_blank"
-                      
-                  %li.more= link_to "Browse all #{category_a.name}", sc_category_path(category_a), :class => 'ajax'
-                      
-              - if category_b.present?
-                .span4.offset1
-                  %h3= "Featured #{category_b.name}"
+        - ScCategory.all.reject{ |c| c.featured_sc_items.blank? }.sort{ |a,b| a.name <=> b.name }.each do |category|
+       
+          %h2= "Featured #{category.name}"
+        
+          %ul.space
+            - category.featured_sc_items.each do |featured_sc_item|
+              - if featured_sc_item.markdown? 
+                %li= link_to featured_sc_item.title, featured_sc_item, :class => "ajax"
+              - else
+                %li= link_to featured_sc_item.title, featured_sc_item.url, :target => "_blank"
                 
-                  %ul.space
-                    - category_b.featured_sc_items.each do |featured_sc_item|
-                      - if featured_sc_item.markdown? 
-                        %li= link_to featured_sc_item.title, featured_sc_item, :class => "ajax"
-                      - else
-                        %li= link_to featured_sc_item.title, featured_sc_item.url, :target => "_blank"
-                      
-                    %li.more= link_to "Browse all #{category_b.name}", sc_category_path(category_b), :class => 'ajax'
+            %li.more= link_to "Browse all #{category.name}", sc_category_path(category), :class => 'ajax'
                   
   - if current_user_is_admin?
     %p.admin.btn-group
       = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Front Page", edit_front_path, :class => "btn ajax")
+            
+#front-arrow
     
