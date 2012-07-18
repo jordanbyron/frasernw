@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120717174654) do
+ActiveRecord::Schema.define(:version => 20120718005714) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -203,6 +203,14 @@ ActiveRecord::Schema.define(:version => 20120717174654) do
   add_index "favorites", ["favoritable_id", "favoritable_type"], :name => "index_favorites_on_favoritable_id_and_favoritable_type"
   add_index "favorites", ["user_id"], :name => "index_favorites_on_user_id"
 
+  create_table "featured_contents", :force => true do |t|
+    t.integer  "sc_category_id"
+    t.integer  "sc_item_id"
+    t.integer  "front_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "feedback_items", :force => true do |t|
     t.string    "item_type"
     t.integer   "item_id"
@@ -222,6 +230,11 @@ ActiveRecord::Schema.define(:version => 20120717174654) do
 
   add_index "focuses", ["clinic_id"], :name => "index_focuses_on_clinic_id"
   add_index "focuses", ["procedure_specialization_id"], :name => "index_focuses_on_procedure_specialization_id"
+
+  create_table "fronts", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "healthcare_providers", :force => true do |t|
     t.string    "name"

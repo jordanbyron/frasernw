@@ -36,29 +36,34 @@
                   - latest_events(5).each do |event|
                     %li= event
           
-          - ScCategory.all.reject{ |c| c.sc_items.blank? }.each_slice(2) do |category_a, category_b|
+          - ScCategory.all.reject{ |c| c.featured_sc_items.blank? }.each_slice(2) do |category_a, category_b|
             .row
               .span4
                 %h3= "Featured #{category_a.name}"
               
                 %ul.space
-                  - category_a.sc_items.first(3).each do |sc_item|
-                    - if sc_item.markdown? 
-                      %li= link_to sc_item.title, sc_item, :class => "ajax"
+                  - category_a.featured_sc_items.each do |featured_sc_item|
+                    - if featured_sc_item.markdown? 
+                      %li= link_to featured_sc_item.title, featured_sc_item, :class => "ajax"
                     - else
-                      %li= link_to sc_item.title, sc_item.url, :target => "_blank"
+                      %li= link_to featured_sc_item.title, featured_sc_item.url, :target => "_blank"
                       
-                %p.no_indent= link_to "Show all #{category_a.name}", sc_category_path(category_a), :class => 'ajax'
+                %p.no_indent= link_to "Browse all #{category_a.name}", sc_category_path(category_a), :class => 'ajax'
                       
               - if category_b.present?
                 .span4.offset1
                   %h3= "Featured #{category_b.name}"
                 
                   %ul.space
-                    - category_b.sc_items.first(3).each do |sc_item|
-                      - if sc_item.markdown? 
-                        %li= link_to sc_item.title, sc_item, :class => "ajax"
+                    - category_b.featured_sc_items.each do |featured_sc_item|
+                      - if featured_sc_item.markdown? 
+                        %li= link_to featured_sc_item.title, featured_sc_item, :class => "ajax"
                       - else
-                        %li= link_to sc_item.title, sc_item.url, :target => "_blank"
+                        %li= link_to featured_sc_item.title, featured_sc_item.url, :target => "_blank"
                       
-                  %p.no_indent= link_to "Show all #{category_b.name}", sc_category_path(category_b), :class => 'ajax'
+                  %p.no_indent= link_to "Browse all #{category_b.name}", sc_category_path(category_b), :class => 'ajax'
+                  
+  - if current_user_is_admin?
+    %p.admin.btn-group
+      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Front Page", edit_front_path, :class => "btn ajax")
+    

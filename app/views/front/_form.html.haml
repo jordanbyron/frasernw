@@ -1,0 +1,12 @@
+= simple_nested_form_for @front, :url => {:controller => 'front', :action => :update}, :html => { :class => "form-horizontal ajax" } do |f|
+  - if not f.error_messages.blank?
+    .alert.alert-error= f.error_messages
+
+  - @front.featured_contents.sort{ |a,b| a.sc_category.name <=> b.sc_category.name }.each do |fc|
+    
+    = f.simple_fields_for :featured_contents, fc do |fcf|
+      = fcf.association :sc_item, :collection => fc.sc_category.sc_items, :label => fc.sc_category.name
+    
+  .form-actions
+    = f.button :submit, :class => "btn btn-primary"
+    = link_to 'Cancel', healthcare_providers_path, :class => "btn btn-danger ajax"

@@ -77,6 +77,8 @@ Frasernw::Application.routes.draw do
   match 'livesearch' => 'search#livesearch', :as => :livesearch
   
   match 'front' => 'front#index', :as => :front
+  match 'front/edit' => 'front#edit', :as => :edit_front
+  match 'front/update' => 'front#update', :as => :update_front
   match 'stats' => 'stats#index', :as => :stats
 
   resources :user_sessions
