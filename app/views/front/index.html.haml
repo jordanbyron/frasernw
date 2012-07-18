@@ -51,19 +51,21 @@
               %li= event
               
       .span4.offsethalf
+      
+        .well
           
-        - ScCategory.all.reject{ |c| c.featured_sc_items.blank? }.sort{ |a,b| a.name <=> b.name }.each do |category|
-       
-          %h2= "Featured #{category.name}"
-        
-          %ul.space
-            - category.featured_sc_items.each do |featured_sc_item|
-              - if featured_sc_item.markdown? 
-                %li= link_to featured_sc_item.title, featured_sc_item, :class => "ajax"
-              - else
-                %li= link_to featured_sc_item.title, featured_sc_item.url, :target => "_blank"
-                
-            %li.more= link_to "Browse all #{category.name}", sc_category_path(category), :class => 'ajax'
+          - ScCategory.all.reject{ |c| c.featured_sc_items.blank? }.sort{ |a,b| a.name <=> b.name }.each do |category|
+         
+            %h3= "Featured #{category.name}"
+          
+            %ul.space
+              - category.featured_sc_items.each do |featured_sc_item|
+                - if featured_sc_item.markdown? 
+                  %li= link_to featured_sc_item.title, featured_sc_item, :class => "ajax"
+                - else
+                  %li= link_to featured_sc_item.title, featured_sc_item.url, :target => "_blank"
+                  
+              %li.more= link_to "Browse all #{category.name}", sc_category_path(category), :class => 'ajax'
                   
   - if current_user_is_admin?
     %p.admin.btn-group
