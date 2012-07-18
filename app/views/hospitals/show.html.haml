@@ -13,7 +13,7 @@
   
 #specialties-dropdown-menu
   .inner
-    - specializations = Specialization.all
+    - specializations = Specialization.all.reject{ |s| s.in_progress && !current_user_is_admin? }
     - first = specializations[0, (specializations.length / 4.0).ceil]
     - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
     - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
