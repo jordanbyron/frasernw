@@ -1,5 +1,5 @@
 class ScItem < ActiveRecord::Base
-  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :inline, :url, :markdown_content
+  attr_accessible :sc_category_id, :specialization_ids, :tool, :type_mask, :title, :searchable, :inline, :url, :markdown_content
   
   belongs_to  :sc_category
   
@@ -23,10 +23,18 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
     where("sc_items.searchable = ?", true)
   end
   
+  def self.tool
+    where("sc_items.tool = ?", true)
+  end
+  
   TYPE_HASH = {
     1 => "Link", 
     2 => "Markdown", 
   }
+
+  def tool?
+    tool
+  end
   
   def type
     SCItem::TYPE_HASH[type_mask]

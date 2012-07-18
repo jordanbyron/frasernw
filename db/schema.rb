@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120718005714) do
+ActiveRecord::Schema.define(:version => 20120718221945) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -403,6 +403,7 @@ ActiveRecord::Schema.define(:version => 20120718005714) do
     t.text      "markdown_content"
     t.boolean   "inline"
     t.boolean   "searchable",       :default => false
+    t.boolean   "tool",             :default => false
   end
 
   create_table "schedule_days", :force => true do |t|

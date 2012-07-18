@@ -178,6 +178,19 @@
                     -if current_user.favorites.present?
                       :javascript
                         $(document).ready(function() { $('#add_favorites').hide(); });
+                  
+                - if ScItem.tool.present?
+                  %li.dropdown
+                    %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                      %i.icon-wrench
+                      Tools
+                      %b.caret
+                    %ul.dropdown-menu
+                      - ScItem.tool.each do |tool|
+                        - if tool.link?
+                          %li= link_to tool.title, tool.url, :target => '_blank'
+                        - else
+                          %li= link_to tool.title, tool, :class => 'ajax'
                         
                 %li.dropdown
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
