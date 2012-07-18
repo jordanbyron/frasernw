@@ -99,7 +99,7 @@ module FrontHelper
           
           if version.event == "create" || version.event == "update"
           
-            events["Clinic_#{schedulable.id}"] = "The schedule for the #{link_to schedulable.name, url_for(schedulable), :class => 'ajax'} (#{schedulable.specializations.map{ |s| s.name }.to_sentence}) is now #{schedule.days_and_hours.to_sentence}.".html_safe
+            events["Clinic_#{schedulable.id}"] = "The schedule for the #{link_to schedulable.name, url_for(schedulable), :class => 'ajax'} (#{schedulable.specializations.map{ |s| s.name }.to_sentence}) is now #{schedule.collapsed_days_and_hours.to_sentence}.".html_safe
           
           end
           

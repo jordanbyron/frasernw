@@ -11,6 +11,9 @@ class Specialization < ActiveRecord::Base
   has_many :procedure_specializations, :dependent => :destroy, :conditions => { "procedure_specializations.mapped" => true }
   has_many :procedures, :through => :procedure_specializations, :order => 'name ASC'
   
+  has_many :sc_items_specializations, :dependent => :destroy
+  has_many :sc_items, :through => :sc_items_specializations
+  
   default_scope order('specializations.name')
   
   def procedure_specializations_arranged
