@@ -4,7 +4,6 @@ class ScItemsController < ApplicationController
   #cache_sweeper :sc_item_sweeper, :only => [:create, :update, :destroy]
   
   def index
-    @sc_items = ScItem.all
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
