@@ -1,21 +1,21 @@
-jQuery.fn.livesearch = function(options)
+$.fn.livesearch = function(options)
 {
-  container = jQuery(options.container)
-  list = container.children('ul')
-  data = jQuery(options.data)
-  scorer_fnc = options.scorer || scorer
-  grouper_fnc = options.grouper || grouper
-  data_formatter_fnc = options.data_formatter || data_formatter
-  group_formatter_fnc = options.group_formatter || group_formatter
-  empty_fnc = options.empty || empty
-  searcher_fnc = options.searcher || searcher
-  fuzziness = options.fuzziness || 0.5
-  max_results = options.max_results || 10
-  min_score = options.min_score || 0.5
-  always_match_something = options.always_match_something || true
-  results = []
-  selected = -1
-  that = this
+  var container = $(options.container);
+  var list = container.children('ul');
+  var data = $(options.data);
+  var scorer_fnc = options.scorer || scorer;
+  var grouper_fnc = options.grouper || grouper;
+  var data_formatter_fnc = options.data_formatter || data_formatter;
+  var group_formatter_fnc = options.group_formatter || group_formatter;
+  var empty_fnc = options.empty || empty;
+  var searcher_fnc = options.searcher || searcher;
+  var fuzziness = options.fuzziness || 0.5;
+  var max_results = options.max_results || 10;
+  var min_score = options.min_score || 0.5;
+  var always_match_something = options.always_match_something || true;
+  var results = [];
+  var selected = -1;
+  var that = this;
   
   container.mouseover( function() { set_selected(-1) });
   
@@ -53,7 +53,7 @@ jQuery.fn.livesearch = function(options)
       return;
     }
     
-		var term = jQuery.trim( jQuery(this).val().toLowerCase() )
+		var term = $.trim( $(this).val().toLowerCase() )
 		
 		if ( !term ) 
     {
@@ -201,21 +201,21 @@ var score_matches = function(string1, string2, fuzziness)
     return 0.0;
   }
   
-  arr1 = string1.trim().toLowerCase().split(' ');
-  arr2 = string2.trim().toLowerCase().split(' ');
+  var arr1 = string1.trim().toLowerCase().split(' ');
+  var arr2 = string2.trim().toLowerCase().split(' ');
   
-  best_match = new Array(arr1.length);
+  var best_match = new Array(arr1.length);
   
 loop1:
   for(var x = 0; x < arr1.length; ++x)
   {
     best_match[x] = 0;
-    piece1 = arr1[x];
+    var piece1 = arr1[x];
     
   loop2:
     for (var y = 0; y < arr2.length; ++y )
     {
-      piece2 = arr2[y]
+      var piece2 = arr2[y]
       
       // perfect match?
       if (piece1 == piece2) 
@@ -224,14 +224,14 @@ loop1:
         break;
       }
       
-      var total_character_score = 0,
-      piece1_length = piece1.length,
-      piece2_length = piece2.length,
-      start_of_word_matches = 0,
-      cur_start = 0,
-      num_matches = 0,
-      fuzzies = 1,
-      piece_score;
+      var total_character_score = 0;
+      var piece1_length = piece1.length;
+      var piece2_length = piece2.length;
+      var start_of_word_matches = 0;
+      var cur_start = 0;
+      var num_matches = 0;
+      var fuzzies = 1;
+      var piece_score;
       
       var i = 0;
       
@@ -320,8 +320,8 @@ loop1:
 
 var levenshtein_distance = function(string1, string2) 
 {
-  length1 = string1.length
-  length2 = string2.length
+  var length1 = string1.length
+  var length2 = string2.length
 
   var D = new Array(length1 + 1);
   for (var i = 0; i <= length1; i++) 

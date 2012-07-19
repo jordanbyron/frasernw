@@ -15,6 +15,12 @@ Array.prototype.to_sentence = function() {
   return this.join(", ").replace(/,\s([^,]+)$/, ' and $1')
 }
 
+if(typeof String.prototype.trim !== 'function') {
+  String.prototype.trim = function() {
+    return this.replace(/^\s+|\s+$/g, '');
+  }
+}
+
 function favorite(type, id, name) {
   $.ajax({
     url: '/favorites/' + type + '/' + id,

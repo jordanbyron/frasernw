@@ -43,7 +43,14 @@ function hide_others( entity_id )
 
 function add_row( entity_id, row_id, url, name, status, wait_time, city )
 {
-  $('#' + entity_id + '_table tr:last').after($("<tr id='" + row_id + "' class='other'><td><a href=\"" + url + "\" class=\"ajax\">" + name + "</a> (" + specialties + ")</td><td><span class=\"status_" + status + "\">" + status + "</span></td><td>" + wait_time + "</td><td>" + city + "</td></tr>").ajaxify());
+  if (typeof $.fn.ajaxify !== 'function')
+  {
+    $('#' + entity_id + '_table tr:last').after($("<tr id='" + row_id + "' class='other'><td><a href=\"" + url + "\" class=\"ajax\">" + name + "</a> (" + specialties + ")</td><td><span class=\"status_" + status + "\">" + status + "</span></td><td>" + wait_time + "</td><td>" + city + "</td></tr>"));
+  }
+  else
+  {
+    $('#' + entity_id + '_table tr:last').after($("<tr id='" + row_id + "' class='other'><td><a href=\"" + url + "\" class=\"ajax\">" + name + "</a> (" + specialties + ")</td><td><span class=\"status_" + status + "\">" + status + "</span></td><td>" + wait_time + "</td><td>" + city + "</td></tr>").ajaxify());
+  }
 }
 
 var update_table = function(prefix, entity_id, entity_name)

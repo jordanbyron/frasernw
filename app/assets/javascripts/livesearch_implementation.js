@@ -38,7 +38,7 @@ function pathways_data_formatter(total_score, scores_matches, data_entry)
   
   result += "</a></li>";
   
-  return $(result).ajaxify();
+  return (typeof $.fn.ajaxify !== 'function') ? result : $(result).ajaxify();
 }
 
 function pathways_group_formatter(group_id)
