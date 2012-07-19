@@ -154,19 +154,36 @@ class Clinic < ActiveRecord::Base
     end
   end
   
+  STATUS_CLASS_AVAILABLE    = "available"
+  STATUS_CLASS_UNAVAILABLE  = "unavailable"
+  STATUS_CLASS_UNKNOWN      = "unknown"
+  STATUS_CLASS_BLANK        = "blank"
+  
+  #match specialist
+  STATUS_CLASS_HASH = {
+    STATUS_CLASS_AVAILABLE => 1,
+    STATUS_CLASS_UNAVAILABLE => 2,
+    STATUS_CLASS_UNKNOWN => 4,
+    STATUS_CLASS_BLANK => 6,
+  }
+  
   def status_class
     if not_responded? || status_mask.blank?
-      return "unknown"
+      return STATUS_CLASS_UNKNOWN
     elsif purposely_not_yet_surveyed?
-      return "blank"
+      return STATUS_CLASS_BLANK
     elsif (status_mask == 1)
-      return "available"
+      return STATUS_CLASS_AVAILABLE
     elsif (status_mask == 2)
-      return "unavailable"
+      return STATUS_CLASS_UNAVAILABLE
     else
       #this shouldn't really happen
-      return "blank"
+      return STATUS_CLASS_BLANK
     end
+  end
+  
+  def status_class_hash
+    STATUS_CLASS_HASH[status_class]
   end
   
   def accepting_new_patients?

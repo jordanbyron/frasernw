@@ -65,12 +65,21 @@ pathways_specialization_data = <%=specialization_data.to_json.html_safe %>
 
 City.all.each do |city|
   city_data[city.id] = city.name
-
 end
   
 -%>
 
 pathways_city_data = <%=city_data.to_json.html_safe %>
+
+<% status_data = Hash.new
+
+Specialist::STATUS_CLASS_HASH.each do |key, value|
+  status_data[value] = key
+end
+  
+-%>
+
+pathways_status_data = <%=status_data.to_json.html_safe %>
 
 <% search_data = Array.new 
 
@@ -111,7 +120,7 @@ specialists.each do |specialist|
     "n" => specialist.name, 
     "sp" => specialist.specialist_specializations.reject{ |ss| ss.specialization.blank? or ss.specialization.in_progress }.collect{ |ss| ss.specialization_id }, 
     "c" => specialist.city_id,
-    "st" => specialist.status_class,
+    "st" => specialist.status_class_hash,
     "id" => specialist.id,
     "go" => order_map["Specialists"] }
   search_data << entry
@@ -128,7 +137,7 @@ clinics.each do |clinic|
     "n" => clinic.name, 
     "sp" => clinic.clinic_specializations.reject{ |cs| cs.specialization.in_progress }.collect{ |cs| cs.specialization_id },
     "c" => clinic.city_id,
-    "st" => clinic.status_class,
+    "st" => clinic.status_class_hash,
     "id" => clinic.id,
     "go" => order_map["Clinics"] }
   search_data << entry

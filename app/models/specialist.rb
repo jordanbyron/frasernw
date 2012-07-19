@@ -148,29 +148,50 @@ class Specialist < ActiveRecord::Base
     end
   end
   
+  STATUS_CLASS_AVAILABLE    = "available"
+  STATUS_CLASS_UNAVAILABLE  = "unavailable"
+  STATUS_CLASS_WARNING      = "warning"
+  STATUS_CLASS_UNKNOWN      = "unknown"
+  STATUS_CLASS_EXTERNAL     = "external"
+  STATUS_CLASS_BLANK        = "blank"
+  
+  #match clinic
+  STATUS_CLASS_HASH = {
+    STATUS_CLASS_AVAILABLE => 1,
+    STATUS_CLASS_UNAVAILABLE => 2,
+    STATUS_CLASS_WARNING => 3,
+    STATUS_CLASS_UNKNOWN => 4,
+    STATUS_CLASS_EXTERNAL => 5,
+    STATUS_CLASS_BLANK => 6,
+  }
+  
   def status_class
     if not_responded?
-      return "unknown"
+      return STATUS_CLASS_UNKNOWN
     elsif moved_away?
-      return "unavailable"
+      return STATUS_CLASS_UNAVAILABLE
     elsif purposely_not_yet_surveyed?
-      return "blank"
+      return STATUS_CLASS_BLANK
     elsif hospital_or_clinic_only?
-      return "external"
+      return STATUS_CLASS_EXTERNAL
     elsif ((status_mask == 1) || ((status_mask == 6) && (unavailable_to < Date.today)))
       #marked as available, or the "unavailable between" period has passed
-      return "available"
+      return STATUS_CLASS_AVAILABLE
     elsif ((status_mask == 2) || (status_mask == 4) || ((status_mask == 5) && (unavailable_from <= Date.today)) || ((status_mask == 6) && (unavailable_from <= Date.today) && (unavailable_to >= Date.today)) || (status_mask == 8) || moved_away?)
       #only seeing old patients, retired, "retiring as of" date has passed", or in midst of inavailability, indefinitely unavailables, or moved away
-      return "unavailable"
+      return STATUS_CLASS_UNAVAILABLE
     elsif (((status_mask == 5) && (unavailable_from > Date.today)) || ((status_mask == 6) && (unavailable_from > Date.today)))
-      return "warning"
+      return STATUS_CLASS_WARNING
     elsif ((status_mask == 3) || (status_mask == 7) || status_mask.blank?)
-      return "unknown"
+      return STATUS_CLASS_UNKNOWN
     else
       #this shouldn't really happen
-      return "blank"
+      return STATUS_CLASS_BLANK
     end
+  end
+  
+  def status_class_hash
+    STATUS_CLASS_HASH[status_class]
   end
   
   def accepting_new_patients?
