@@ -402,7 +402,7 @@ ActiveRecord::Schema.define(:version => 20120718221945) do
     t.string    "url"
     t.text      "markdown_content"
     t.boolean   "inline"
-    t.boolean   "searchable",       :default => false
+    t.boolean   "searchable",       :default => true
     t.boolean   "tool",             :default => false
   end
 
