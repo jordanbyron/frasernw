@@ -523,17 +523,18 @@
   font-size: 13px;
   text-align: left;
   box-shadow: 1px 1px 3px $FNW_MID_GRAY;
+  max-width: 400px;
   
   ul
   {
-    list-style: none;
+    list-style-type: none;
     margin: 5px;
     padding: 0;
   }
   
   a
   {
-    color: inherit;
+    color: $FNW_BLUE;
     text-decoration: none;
   }
   
