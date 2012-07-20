@@ -88,8 +88,8 @@
             
               - show_areas_of_practice = true
 
-              - hospitals = @specialist.hospitals.present?
-              - clinics = @specialist.clinics.present?
+              - hospital_count = @specialist.hospitals.length
+              - clinic_count = @specialist.clinics.length
               
               - if @specialist.purposely_not_yet_surveyed?
 
@@ -99,30 +99,30 @@
               
                 - show_areas_of_practice = true
                 
-                - if hospitals && clinics
+                - if hospital_count > 0 && clinic_count > 0
                   %p.space.no_indent
-                    %strong.status_external This specialist only works out of hospitals and clinics.
-                - elsif clinics
+                    %strong.status_external This specialist only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"} and #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through these locations.
+                - elsif clinic_count > 0
                   %p.space.no_indent
-                    %strong.status_external This specialist only works out of clinics.
-                - elsif hospitals
+                    %strong.status_external This specialist only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
+                - elsif hospital_count > 0
                   %p.space.no_indent
-                    %strong.status_external This specialist only works out of hospitals.
+                    %strong.status_external This specialist only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
                 - else
                   %p.space.no_indent
-                    %strong.status_external This specialist only works out of hospitals and clinics, but we do not yet have data on which ones.
+                    %strong.status_external This specialist only works out of hospitals and / or clinics, but we do not yet have data on which ones.
                   
                 - if @specialist.hospital_clinic_details.present?
                   %p.space.no_indent
                     %strong Details:
                     = @specialist.hospital_clinic_details
                 
-              - if hospitals
+              - if hospital_count > 0
                 %p.space.no_indent
                   %strong Hospital privileges:
                   != @specialist.hospitals.map{ |hospital| "<a href='#{hospital_path(hospital)}' class='ajax')\">#{hospital.name}</a>" }.to_sentence 
 
-              - if clinics
+              - if clinic_count > 0
                 %p.space.no_indent
                   %strong Clinic associations:
                   != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'>#{clinic.name}</a>" }.to_sentence
