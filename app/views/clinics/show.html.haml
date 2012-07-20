@@ -292,24 +292,51 @@
                     %p
                       = @clinic.not_performed.end_with_period
             
-      .btn-group
-        %a.btn{"href" => clinic_patient_information_path(@clinic), "target" => "_blank"}
-          %i.icon-print.icon-text
-          Print Information for Patient
-        %a.feedback.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
-          Incorrect Information? Let us know
-          
-      #feedback
-        .inner   
-          = simple_form_for @feedback, :html => { :class => "ajax" } do |f|
+    .btn-group
+      %a.btn{"href" => clinic_patient_information_path(@clinic), "target" => "_blank"}
+        %i.icon-print.icon-text
+        Print Information for Patient
+      %a.feedback.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
+        Incorrect Information? Let us know
+        
+    #feedback
+      .inner   
+        = simple_form_for @feedback, :html => { :class => "ajax feedback_form" } do |f|
 
-            = f.input :feedback, :label => "Please provide us with any updates to #{@clinic.name}'s information"
-            = f.input :item_type, :as => :hidden, :value => "Clinic"
-            = f.input :item_id, :as => :hidden, :value => @clinic.name
+          = f.input :feedback, :label => "Please provide us with any updates to #{@clinic.name}'s information"
+          = f.input :item_type, :as => :hidden, :value => "Clinic"
+          = f.input :item_id, :as => :hidden, :value => @clinic.name
 
-            .form-actions
-              = f.button :submit, :class => "btn btn-primary", :value => "Send Feedback"
-              %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
+          .form-actions
+            %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" } Send Feedback
+            %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
+                    
+    #feedback_thanks
+      .inner
+        %h2 Thank you!
+        
+        %p.space.no_indent= "Thank you for providing your feedback  on #{@clinic.name}. Your contributions help make Pathways a valuable resource for the community."
+        
+        %p.space.no_indent We will review your feedback promptly and take action as necessary.
+        
+        %p.space.no_indent
+          %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close
+            
+    %script{"type" => "text/javascript"}
+      :plain
+        $(document).ready(function() { $('.tt').tooltip({trigger: 'manual'}) });
+        
+        function send_feedback(form) { 
+          $.ajax({
+              url: form.attr('action'),
+              data: form.serialize(),
+              type: 'POST'
+          }).success(function(json) {
+              $('#feedback').fadeOut(200);
+              $('#feedback_item_feedback').val('')
+              $('#feedback_thanks').fadeIn(200);
+          });
+        }
 
   %p.admin.btn-group
           

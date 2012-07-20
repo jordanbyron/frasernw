@@ -2,7 +2,7 @@
     
 .admin, .navbar .nav > li.admin
 {
-  display: none;
+  /*display: none;*/
 }
 
 .in-progress
@@ -934,7 +934,7 @@ body.loading #loading
     text-decoration: underline;
   }
   
-  #feedback
+  #feedback, #feedback_thanks
   {
     display: none;
     position: fixed;

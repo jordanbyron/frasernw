@@ -14,11 +14,7 @@ class FeedbackItemsController < ApplicationController
   def create
     @feedback_item = FeedbackItem.new(params[:feedback_item])
     @feedback_item.user = current_user
-    if @feedback_item.save
-      redirect_to @feedback_item
-    else
-      render :action => 'new', :layout => 'ajax' if request.headers['X-PJAX']
-    end
+    @feedback_item.save
   end
   
   def destroy
