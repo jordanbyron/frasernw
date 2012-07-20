@@ -197,10 +197,10 @@ body.loading #loading
   h6
   {
     font-family: Bitter;
-    color: $FNW_TEXT;
-    background: transparent url(/img/double-border.png) 0% 100% repeat-x;
+    color: $FNW_RED;
+    background: transparent url(/img/double-border-10.png) 0% 100% repeat-x;
     font-weight: normal;
-    font-size: 13px;
+    font-size: 15px;
     text-transform: none;
     margin: 28px 0 24px 0;
     padding: 4px;
@@ -210,7 +210,7 @@ body.loading #loading
   {
     widght: 100%;
     height: 4px;
-    background: transparent url(/img/double-border.png) 0% 0 repeat-x;
+    background: transparent url(/img/double-border-10.png) 0% 0 repeat-x;
   }
   
   .headline
@@ -649,7 +649,7 @@ body.loading #loading
       text-align: left;
       padding: 24px 0 6px 10px;
       margin: 0 0 8px 0;
-      background: transparent url(/img/filtering-title-background.png) 0% 100% repeat-x;
+      background: transparent url(/img/double-border-10.png) 0% 100% repeat-x;
     }
       
     .filter-group-title
@@ -831,7 +831,7 @@ body.loading #loading
       text-align: left;
       padding: 0 0 6px 24px;
       margin: 0 -24px 8px -24px;
-      background: transparent url(/img/filtering-title-background.png) 0% 100% repeat-x;
+      background: transparent url(/img/double-border-10.png) 0% 100% repeat-x;
     }
     
     ul
@@ -909,7 +909,7 @@ body.loading #loading
         text-align: left;
         padding: 0 0 6px 24px;
         margin: 0 -24px 8px -24px;
-        background: transparent url(/img/filtering-title-background.png) 0% 100% repeat-x;
+        background: transparent url(/img/double-border-10.png) 0% 100% repeat-x;
       }
       
       ul + h3
@@ -1085,8 +1085,8 @@ body.loading #loading
   #specialties-dropdown-menu
   {
     position: absolute;
-    top: -4px;
-    left: -4px - $FNW_BODY_BREATHING;
+    top: -6px;
+    left: -6px - $FNW_BODY_BREATHING;
     display: none;
     z-index: 999;
     margin: 0;
@@ -1100,7 +1100,7 @@ body.loading #loading
     {
       margin: 0;
       padding: 40px 8px 8px 8px;
-      border: 2px dotted $FNW_LIGHT_GRAY;
+      border: 2px dotted $FNW_MID_GRAY;
       width: 616px;
 
       ul
