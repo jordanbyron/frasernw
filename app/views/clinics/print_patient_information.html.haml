@@ -2,9 +2,9 @@
 
 %h2= @clinic.name
 
-%h3.specialty_links= @clinic.specializations.collect(){ |s| s.name }.to_sentence
+%h5.specialty_links= @clinic.specializations.collect(){ |s| s.name }.to_sentence
 
-%h6 Appointment Information
+%h6 Your Appointment Information
 
 %p
   %input{"type" => "checkbox"}
@@ -33,10 +33,10 @@
   %select
     %option
     %option our office.
-    %option The #{@clinic.name}.
+    %option the #{@clinic.name}.
   
 -if @clinic.patient_instructions.present? 
-  %h6 Instructions
+  %h6 Appointment Instructions
   %p= @clinic.patient_instructions.end_with_period
     
 - if @clinic.cancellation_policy.present?
@@ -54,10 +54,10 @@
   - if address.present? && !address.empty?
     %p= address.address 
     %p= @clinic.location.in_details if @clinic.location.in_details.present?
-    %img{"src" => address.map_image(640,320,15,2), "width" => "640", "height" => "320"}
+    %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
 - elsif address.present? && !address.empty?
   %p= address.address
-  %img{"src" => address.map_image(640,320,15,2), "width" => "640", "height" => "320"}
+  %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
   
 %script{"type" => "text/javascript"}
   :plain

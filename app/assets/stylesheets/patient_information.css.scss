@@ -2,7 +2,7 @@
 
 body
 {
-  margin: 5%;
+  margin: 2.5%;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 0;
   border: 0;
@@ -14,11 +14,11 @@ p, h1, h2, h3, h4, h5, h6, img
   padding: 0;
 }
 
-p
+p, input
 {
-  font-size: 10pt;
+  font-size: 12pt;
   line-height: 15pt;
-  margin-top: 5pt;
+  margin-top: 6pt;
   color: $FNW_TEXT;
 }
 
@@ -29,7 +29,7 @@ p.indent
 
 h1, h2, h3, h4, h5, h6
 {
-  font-weight: normal;
+  font-weight: bold;
   color: $FNW_TEXT;
 }
 
@@ -41,21 +41,20 @@ h2
 
 h3 
 {
-  font-size: 14pt;
+  font-size: 16pt;
   line-height: 21pt;
 }
 
 h5 
 {
-  font-size: 12pt;
+  font-size: 14pt;
   line-height: 18pt;
 }
 
 h6 
 {
-  margin-top: 12px;
-  font-size: 10pt;
-  line-height: 15pt;
+  margin-top: 18pt;
+  font-size: 12pt;
   font-weight: bold;
   text-transform: uppercase;
 }

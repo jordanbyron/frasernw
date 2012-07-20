@@ -1,12 +1,12 @@
 - title "#{@specialist.name}"
 
-%h2= @specialist.formal_name
+%h2
+  = @specialist.formal_name
+  = "(#{@specialist.sex})" if @specialist.sex?
 
-%h3.specialty_links= @specialist.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| s.name }.to_sentence
-    
-%h5= @specialist.sex if @specialist.sex?
+%h5.specialty_links= @specialist.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| s.name }.to_sentence
 
-%h6 Appointment Information
+%h6 Your Appointment Information
 
 %p
   %input{"type" => "checkbox"}
@@ -38,14 +38,14 @@
     %option #{@specialist.formal_name}'s office.
   
 -if @specialist.patient_instructions.present? 
-  %h6 Instructions
+  %h6 Appointment Instructions
   %p= @specialist.patient_instructions.end_with_period
     
 - if @specialist.cancellation_policy.present?
   %h6 Cancellation Policy
   %p= @specialist.cancellation_policy.end_with_period
   
-%h6 Office Information
+%h6 #{@specialist.formal_name}'s Office Information
   
 - @specialist.specialist_offices.each do |specialist_office|
   - next if specialist_office.empty?
@@ -62,10 +62,10 @@
         = "which is in #{located_in.location.hospital_in.name}" if located_in.location.present? && located_in.location.in_hospital?
       %p= address.address if address.present? && !address.empty?
       %p= location.in_details if location.in_details.present?
-      %img{"src" => address.map_image(640,320,15,2), "width" => "640", "height" => "320"}
+      %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
     - else
       %p= address.address if address.present? && !address.empty?
-      %img{"src" => address.map_image(640,320,15,2), "width" => "640", "height" => "320"}
+      %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
     
 %script{"type" => "text/javascript"}
   :plain
