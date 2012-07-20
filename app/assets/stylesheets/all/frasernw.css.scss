@@ -791,6 +791,7 @@ body.loading #loading
   .filter-phrase, .assumed-phrase, .other-phrase
   {
     background-color: $FNW_LIGHT_GRAY;
+    font-weight: bold;
     padding: 4px 8px;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
@@ -799,7 +800,7 @@ body.loading #loading
   
   .filter-phrase, .assumed-phrase, .other-phrase
   {
-    margin-bottom: 4px;
+    margin-bottom: 12px;
   }
   
   .filter-phrase, .other-phrase
@@ -809,7 +810,7 @@ body.loading #loading
   
   .other-phrase
   {
-    background-color: $FNW_HEADLINE_BACKGROUND;
+    background-color: $FNW_LIGHT_BLUE;
     font-weight: bold;
   }
 
