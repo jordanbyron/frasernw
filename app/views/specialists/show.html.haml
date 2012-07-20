@@ -274,11 +274,11 @@
               %h6 Patient Information
               
               -if @specialist.patient_instructions.present?
-                %p
+                %p.space
                   %strong Patient instructions:
                   = @specialist.patient_instructions.end_with_period
               -if @specialist.cancellation_policy.present?
-                %p
+                %p.space
                   %strong Cancellation policy:
                   = @specialist.cancellation_policy.end_with_period
             

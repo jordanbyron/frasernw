@@ -212,12 +212,12 @@
               %h6 Patient Information
             
               - if @clinic.patient_instructions.present?
-                %p
+                %p.space
                   %strong Patient instructions:
                   = @clinic.patient_instructions.end_with_period
                   
               - if @clinic.cancellation_policy.present?
-                %p
+                %p.space
                   %strong Cancellation policy:
                   = @clinic.cancellation_policy.end_with_period
               
