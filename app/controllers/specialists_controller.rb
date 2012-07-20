@@ -149,6 +149,7 @@ class SpecialistsController < ApplicationController
         capacity.investigation = params[:capacities_investigations][updated_capacity]
         capacity.save
       end
+      @specialist.update_attributes( :address_update => "" )
       redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
     else
       render :edit

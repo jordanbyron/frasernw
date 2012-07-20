@@ -305,6 +305,9 @@
     %script{"type" => "text/javascript"}
       :plain
         $(document).ready( $(".chzn-select").chosen() );
+        
+    - if @review_item || @is_review
+      = f.input :address_update, :label => "If you have any address updates, please enter them here"
     
   - if current_user_is_admin? || @is_review
   
