@@ -414,7 +414,7 @@ body.loading #loading
       .status_external,
       .status_blank
       {
-        color: #fff;
+        color: $FNW_WHITE;
       }
       
       .status_available:before, 
@@ -511,6 +511,29 @@ body.loading #loading
     th.city_column
     {
       width: 20%;
+    }
+  }
+  
+  table#specialist_table tr:hover, table#clinic_table tr:hover, table#office_table tr:hover
+  {
+    cursor: pointer;
+    td
+    {
+      background-color: $FNW_LIGHT_GRAY;
+      
+      .status_available,
+      .status_unavailable,
+      .status_unknown,
+      .status_warning, 
+      .status_external,
+      .status_blank
+      {
+        color: $FNW_LIGHT_GRAY;
+      }
+      a
+      {
+        text-decoration: underline;
+      }
     }
   }
   

@@ -312,6 +312,9 @@
             $('.collapsable').on('hidden', function() {
               $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
             });
+            //make full rows clickable
+            $('table tr').click( function() { $(this).find('a').click(); });
+            $('table a').click( function(e) { e.stopPropagation(); });
       
         - ScCategory.all.each do |sc_category|
           - if sc_category.sc_items.for_procedure_specialization(procedure_specialization).present?

@@ -453,8 +453,11 @@
               $('#content_tabs a#clinics').tab('show');
             }
             #{tab_javascript}
+            //make full rows clickable
+            $('table tr').click( function() { $(this).find('a').click(); });
+            $('table a').click( function(e) { e.stopPropagation(); });
           });
-
+            
     %p.admin.btn-group
       - if can? :update, @specialization
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialty", edit_specialization_path(@specialization), :class => "btn ajax")
