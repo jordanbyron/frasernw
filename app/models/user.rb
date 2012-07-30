@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   acts_as_authentic do |c|
     c.merge_validates_length_of_password_field_options({:minimum => 6})
+    c.merge_validates_uniqueness_of_email_field_options({:message => "has already been used to set up another account."})
   end
 
   has_many :favorites

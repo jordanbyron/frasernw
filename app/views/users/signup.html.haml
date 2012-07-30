@@ -1,13 +1,19 @@
-= simple_form_for @user, :url => {:controller => "users", :action => "setup"}, :method => "put", :html => { :class => "form-horizontal" } do |f|
+-title "Sign up"
+
+.content-wrapper
 
   %h2= "Welcome to Pathways, #{@user.name}!"
   
-  %p.space.no_indent Please enter your email address and then create and confirm a password. These will be how you log in to Pathways in the future. 
+  %p.space.no_indent Please enter your email address and then create and confirm a password, which will be what you use to log in to Pathways in the future.
   
-  = f.input :email, :input_html => { :class => "span4" }, :hint => "This will be your Pathways username"
-  = f.input :password, :input_html => { :class => "span4" }, :hint => "Your password must be at least 6 characters long"
-  = f.input :password_confirmation, :input_html => { :class => "span4" }, :hint => "Please confirm your new password by typing it again"
-  = f.input :saved_token, :as => :hidden, :value => @user.token
-  
-  .form-actions
-    =f.button :submit, "Set-up account", :class => "btn btn-primary"
+  %p.space.no_indent We will only ever use your e-mail address to send you important Pathways-related messages, such as a way to reset your password if you forget it.
+
+  = simple_form_for @user, :url => {:controller => "users", :action => "setup"}, :method => "put", :html => { :class => "form-horizontal" } do |f| 
+    
+    = f.input :email, :input_html => { :class => "span4" }, :hint => "Your e-mail address will also be your Pathways username. We suggest using an office e-mail address if possible, as you may want to share your account within your office."
+    = f.input :password, :input_html => { :class => "span4" }, :hint => "Your password must be at least 6 characters long. Again, since you may want to share an account within your office, we do not recommment choosing a password that is personal to you."
+    = f.input :password_confirmation, :input_html => { :class => "span4" }, :hint => "Please confirm your new password by typing it again."
+    = f.input :saved_token, :as => :hidden, :value => @user.token
+    
+    .form-actions
+      =f.button :submit, "Set-up account", :class => "btn btn-primary"
