@@ -20,7 +20,6 @@
       .row
         #content.span12
           #container
-            .content-wrapper
-              - flash.each do |type, msg|
-                .alert.alert-success= msg
-              = yield
+            - flash.each do |type, msg|
+              .alert.alert-success= msg
+            = yield
