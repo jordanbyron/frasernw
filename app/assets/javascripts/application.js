@@ -47,7 +47,7 @@ function favorite(type, id, name) {
           //hide the favorites section header if there isn't any other items
           $('#' + type + '_favorites').hide();        
         }
-        if ( $('#favorites_dropdown li').length == 5 )
+        if ( $('#favorites_dropdown li').length == 3 )
         {
           //show the favorites description if only it an the headings are all that's left
           $('#add_favorites').show();
