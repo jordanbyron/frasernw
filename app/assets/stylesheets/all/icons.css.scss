@@ -77,6 +77,8 @@
 .clinic:before,
 .review:before,
 .feedback:before,
+.change_name:before,
+.change_email:before,
 .change_password:before,
 .history:before,
 .stats:before,
@@ -189,6 +191,16 @@
 .feedback:before
 {
   content: "\f0a1";
+}
+
+.change_name:before
+{
+  content: "\f007";
+}
+
+.change_email:before
+{
+  content: "\f003";
 }
 
 .change_password:before
