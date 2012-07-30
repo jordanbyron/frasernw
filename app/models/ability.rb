@@ -23,7 +23,7 @@ class Ability
       can :index, Front
       
       #can show pages
-      can :show, [Specialization, Procedure, Specialist, Clinic, Hospital, Language]
+      can :show, [Specialization, Procedure, Specialist, Clinic, Hospital, Language, ScCategory, ScItem]
       
       #can print patient information
       can :print_patient_information, [Specialist, Clinic]
