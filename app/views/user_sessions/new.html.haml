@@ -19,5 +19,5 @@
 
           %h2 Have an access key? Sign up!
           
-          = f.input :saved_token, :input_html => {"autocorrect" => "off", "autocapitalize" => "none", :class => "span4"}
+          = f.input :saved_token, :input_html => {"autocorrect" => "off", "autocapitalize" => "none", :class => "span2", "maxlength" => 8}
           = f.button :submit, "Sign up", :class => "btn btn-primary"
