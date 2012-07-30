@@ -9,10 +9,13 @@
       %b.caret
   %li.subsequent= link_to specialization.name, specialization, :class => "ajax"
   
+- favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @specialist.id, "Specialist").present? ? "icon-red" : "icon-text") : "icon-text"
+  
 %script{"type" => "text/javascript"}
   :plain
     var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
     $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
+    $(document).ready(function() { $('#user_favorite').addClass('#{favorite_class}') });
   
 #specialties-dropdown-menu
   .inner
@@ -47,11 +50,6 @@
 
 - if @is_version
   = render 'versions/info'
-  
--#
-  %a{"href" => "javascript:void(0)", "onclick" => "favorite('specialists',#{@specialist.id},'#{escape_javascript(@specialist.name)}')", "title" => "Favourite / un-favourite"}
-    - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @specialist.id, "Specialist").present? ? "icon-red" : "icon-text") : "icon-text"
-    %i#user_favorite.icon-heart{:class => favorite_class } 
      
 .content-wrapper
   - cache(specialist_path(@specialist)) do
@@ -62,7 +60,10 @@
         .span7half
           .headline-header
           .headline
-            %h2= @specialist.name
+            %h2
+              = @specialist.name
+              %a{"href" => "javascript:void(0)", "onclick" => "favorite('specialists',#{@specialist.id},'#{escape_javascript(@specialist.name)}')", "title" => "Favourite / un-favourite"}
+                %i#user_favorite.icon-heart 
             %h3.specialty_links
               = @specialist.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
             - if @specialist.sex? && @specialist.billing_number_padded.present?

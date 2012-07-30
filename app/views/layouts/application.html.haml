@@ -136,13 +136,6 @@
                     %b.caret
                     
                   %ul#favorites_dropdown.dropdown-menu
-                    %li#specializations_favorites.nav-header.specialty Specializations
-                    - current_user.favorite_specializations.each do |s|
-                      %li{"id" => "specializations_#{s.id}"}= link_to s.name, specialization_path(s), :class => 'ajax'
-                        
-                    %li#procedures_favorites.nav-header.procedure Areas of Practice
-                    - current_user.favorite_procedures.each do |p|
-                      %li{"id" => "procedures_#{p.id}"}= link_to p.full_name, procedure_path(p), :class => 'ajax'
                         
                     %li#specialists_favorites.nav-header.specialist Specialists
                     - current_user.favorite_specialists.each do |s|
@@ -158,14 +151,6 @@
                         %i.icon-text.icon-heart
                         beside their name.
                           
-                
-                    -if current_user.favorite_specializations.blank?
-                      :javascript
-                        $(document).ready(function() { $('#specializations_favorites').hide(); });
-                        
-                    -if current_user.favorite_procedures.blank?
-                      :javascript
-                        $(document).ready(function() { $('#procedures_favorites').hide(); });
                         
                     -if current_user.favorite_specialists.blank?
                       :javascript
