@@ -2,7 +2,8 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
-  = f.input :tool
+  %h3 Content Classification
+
   = f.association :sc_category, as: :select, :include_blank => false
   
   .control-group
@@ -23,15 +24,22 @@
               %label
                 = check_box_tag "procedure_specialization_#{child_ps.id}", 1, @has_procedure_specializations.include?(child_ps.id), :name => "procedure_specialization[#{child_ps.id}", :class => "offset1"
                 = child_ps.procedure.name
+
+  %h3 Content Options
+  
+  = f.input :tool
+  = f.input :searchable
+  = f.input :shared_care
+
+  %h3 Content
       
   = f.input :title
-  = f.input :searchable
   = f.input :type_mask, as: :select, collection: ScItem::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
   #link_section
     = f.input :url
   #mardown_section
-    = f.input :inline
     = f.input :markdown_content
+    = f.input :inline
         
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

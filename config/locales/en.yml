@@ -91,8 +91,11 @@ en:
         suite_in: "Suite"
       sc_item:
         inline: "Show content inline on specialty pages"
-        sc_category: "Item category"
-        title: "Item title"
+        sc_category: "Content category"
+        title: "Content title"
+        tool: "Show in tools menu"
+        searchable: "Make searchable by title"
+        shared_care: "From a Shared Care Initiative"
         type_mask: "Content type"
         url: "Content URL"
       specialist:
