@@ -11,14 +11,16 @@ class PasswordResetsController < ApplicationController
   
   def create  
     if params.blank? || params[:user].blank? || params[:user][:email].blank?
-      render :action => :new, :layout => 'user_sessions', :alert => "No user was found with that email address."
+      @user = User.new
+      render new_password_reset_url, :layout => 'user_sessions', :notice => "We do not have any account that uses that e-mail address as a login. Please check the e-mail address you used and try again."
     else
       @user = User.find_by_email(params[:user][:email])  
       if @user  
         @user.deliver_password_reset_instructions!  
-        redirect_to login_url, :layout => 'user_sessions', :notice => "Instructions to reset your password have been emailed to you. Please check your email."
+        redirect_to login_url, :layout => 'user_sessions', :notice => "Instructions to reset your password have been e-mailed to you. Please check your e-mail."
       else  
-        render :action => :new, :layout => 'user_sessions', :alert => "No user was found with that email address." 
+        @user = User.new
+        redirect_to new_password_reset_url, :layout => 'user_sessions', :notice => "We do not have any account that uses that e-mail address as a login. Please check the e-mail address you used and try again."
       end  
     end
   end  
