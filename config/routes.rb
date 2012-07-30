@@ -62,13 +62,14 @@ Frasernw::Application.routes.draw do
   put  "/favorites/specialties/:id" => "favorites#edit", :as => "specialization_favorite", :model => 'specializations'
   put  "/favorites/areas_of_practice/:id" => "favorites#edit", :as => "procedure_favorite", :model => 'procedures'
   
-  #RPW TODO: allow users to edit their own profile
-  #match 'user/edit' => 'users#edit', :as => :edit_current_user
-  
   match 'validate' => 'users#validate', :as => :validate
   match 'setup' => 'users#setup', :as => :setup
-  match 'change_password' => 'users#change_password', :as => :change_password
-  match 'update_password' => 'users#update_password', :as => :update_password
+  get 'change_password' => 'users#change_password', :as => :change_password
+  put 'update_password' => 'users#update_password', :as => :update_password
+  get 'change_email' => 'users#change_email', :as => :change_email
+  put 'update_email' => 'users#update_email', :as => :update_email
+  get 'change_name' => 'users#change_name', :as => :change_name
+  put 'update_name' => 'users#update_name', :as => :update_name
   resources :password_resets, :only => [ :new, :create, :edit, :update ]
 
   match 'logout' => 'user_sessions#destroy', :as => :logout

@@ -1,0 +1,15 @@
+-title "Pathways | Change your email address"
+
+.content-wrapper
+
+  %h2 Change your e-mail address / log-in
+  
+  %p.space.no_indent Please enter an updated e-mail address. Please note that since your e-mail address is used as your Pathways username, you will need to log in again after changing it.
+
+  = simple_form_for @user, :url => {:controller => "users", :action => "update_email"}, :html => { :class => "form-horizontal" } do |f|
+    
+    = f.input :email, :label => "New e-mail address", :hint => "Your e-mail address will also be your Pathways username. We suggest using an office e-mail address if possible, as you may want to share your account within your office."
+    
+    .form-actions
+      = f.button :submit, "Change e-mail address", :class => "btn btn-primary"
+      %a.btn.btn-danger.ajax{"href" => root_url} Cancel
