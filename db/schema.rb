@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120730231947) do
+ActiveRecord::Schema.define(:version => 20120730235201) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -386,12 +386,18 @@ ActiveRecord::Schema.define(:version => 20120730231947) do
     t.timestamp "updated_at"
   end
 
+  add_index "sc_item_specialization_procedure_specializations", ["procedure_specialization_id"], :name => "index_sc_item_sps_on_procedure_specialization_id"
+  add_index "sc_item_specialization_procedure_specializations", ["sc_item_specialization_id"], :name => "index_sc_item_sps_on_sc_item_specialization_id"
+
   create_table "sc_item_specializations", :force => true do |t|
     t.integer   "sc_item_id"
     t.integer   "specialization_id"
     t.timestamp "created_at"
     t.timestamp "updated_at"
   end
+
+  add_index "sc_item_specializations", ["sc_item_id"], :name => "index_sc_item_specializations_on_sc_item_id"
+  add_index "sc_item_specializations", ["specialization_id"], :name => "index_sc_item_specializations_on_specialization_id"
 
   create_table "sc_items", :force => true do |t|
     t.integer   "sc_category_id"
@@ -406,6 +412,8 @@ ActiveRecord::Schema.define(:version => 20120730231947) do
     t.boolean   "tool",             :default => false
     t.boolean   "shared_care",      :default => false
   end
+
+  add_index "sc_items", ["sc_category_id"], :name => "index_sc_items_on_sc_category_id"
 
   create_table "schedule_days", :force => true do |t|
     t.boolean   "scheduled"
