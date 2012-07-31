@@ -16,6 +16,7 @@
 %p
   %input{"type" => "checkbox"}
   %select
+    %option
     %option Our office
     %option The #{@clinic.name}
   will call you once your appointment is booked.  
@@ -25,10 +26,17 @@
   If you haven't had heard about your appointment date within
   %select
     %option
-    %option 1 week
-    %option 2 weeks
-    %option 1 month
-    %option 2 months
+    %option 1 week (by #{DateTime.now.since(1.week).to_date.strftime("%b %d, %Y")})
+    %option 2 weeks (by #{DateTime.now.since(2.week).to_date.strftime("%b %d, %Y")})
+    %option 1 month (by #{DateTime.now.since(1.month).to_date.strftime("%b %d, %Y")})
+    %option 2 months (by #{DateTime.now.since(2.month).to_date.strftime("%b %d, %Y")})
+    %option 4 months (by #{DateTime.now.since(4.month).to_date.strftime("%b %d, %Y")})
+    %option 6 months (by #{DateTime.now.since(6.month).to_date.strftime("%b %d, %Y")})
+    %option 8 months (by #{DateTime.now.since(8.month).to_date.strftime("%b %d, %Y")})
+    %option 12 months (by #{DateTime.now.since(12.month).to_date.strftime("%b %d, %Y")})
+    %option 14 months (by #{DateTime.now.since(14.month).to_date.strftime("%b %d, %Y")})
+    %option 18 months (by #{DateTime.now.since(18.month).to_date.strftime("%b %d, %Y")})
+    %option 24 months (by #{DateTime.now.since(24.month).to_date.strftime("%b %d, %Y")})
   please call
   %select
     %option
