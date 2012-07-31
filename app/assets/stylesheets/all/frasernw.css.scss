@@ -322,9 +322,9 @@ body.loading #loading
     font-weight: normal;
   }
     
-  a.btn.btn-primary, a.btn.btn-danger, a.btn.btn-warning
+  a.btn.btn-primary, a.btn.btn-danger, a.btn.btn-warning, a.btn.btn-info, a.btn.btn-success
   {
-    color: #fff;
+    color: $FNW_LIGHT_GRAY;
   }
     
   a.btn.btn-top-pad

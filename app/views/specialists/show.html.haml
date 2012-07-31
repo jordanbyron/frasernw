@@ -345,9 +345,14 @@
         %a.btn{"href" => specialist_patient_information_path(@specialist), "target" => "_blank"}
           %i.icon-print.icon-text
           Print Information for Patient
-      %a.feedback.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
-        Incorrect Information? Let us know
-                    
+      - if !current_user_is_admin? && (can? :update, @specialist)
+        %a.btn.btn-primary.ajax{"href" => specialist_self_edit_path(@specialist, @specialist.token)}
+          %i.icon-pencil.icon-white
+          Update #{@specialist.name}'s information
+      - else
+        %a.feedback.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
+          Incorrect Information? Let us know
+      
     #feedback
       .inner
         = simple_form_for @feedback, :html => { :class => "ajax feedback_form" } do |f|
@@ -387,26 +392,26 @@
           });
         }
 
-  %p.admin.btn-group
+  - if current_user_is_admin?
+  
+    %p.admin.btn-group
           
-    - if current_user_is_admin?
-    
       - if @specialist.review_item.present?
+        
         = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", specialist_review_path(@specialist), :class => "btn ajax")
 
       - elsif can? :update, @specialist
+        
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialist", edit_specialist_path(@specialist), :class => "btn ajax")
         = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", specialist_referral_forms_path(@specialist), :class => "btn ajax")
         %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
           %i.icon-share
           Share
         = link_to("<i class='icon-folder-open'></i>".html_safe + " History", specialist_versions_path(@specialist), :class => "btn ajax")
-        
-    - elsif can? :update, @specialist
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Update #{@specialist.name}'s information", specialist_self_edit_path(@specialist, @specialist.token), :class => "btn ajax")
     
-    - if can? :destroy, @specialist
-      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Specialist", @specialist, :confirm => "Delete #{@specialist.name}?", :method => :delete, :class => "btn")
+      - if can? :destroy, @specialist
+        
+        = link_to("<i class='icon-trash'></i>".html_safe + " Delete Specialist", @specialist, :confirm => "Delete #{@specialist.name}?", :method => :delete, :class => "btn")
 
   - if current_user_is_admin?
     #share.collapse
