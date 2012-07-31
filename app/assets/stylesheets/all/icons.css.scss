@@ -59,22 +59,12 @@
   color: $FNW_DISABLED_TEXT;
 }
 
-.specialty:before, 
-.specialist:before, .user:before,
-.address:before, .office:before,
 .status_available:before, 
 .status_unavailable:before, 
 .status_unknown:before, 
 .status_warning:before,
 .status_external:before,
 .status_blank:before,
-.language:before, 
-.procedure:before,
-.referral:before, 
-.urgent_referral:before, 
-.hospital:before,
-.association:before,
-.clinic:before,
 .review:before,
 .feedback:before,
 .change_name:before,
@@ -82,14 +72,7 @@
 .change_password:before,
 .history:before,
 .stats:before,
-.city:before, .province:before,
-.healthcare_provider:before,
-.patient_information:before,
-.calculators:before,
-.pearls:before,
-.red_flags:before, 
-.care_pathways:before,
-.patient_education:before,
+.shared_care:before,
 {
   font-family: FontAwesome;
   font-weight: normal;
@@ -120,67 +103,6 @@
 .dropdown-menu li.nav-header:before
 {
   color: $FNW_BLUE;
-}
-
-.specialty:before
-{
-  content: "\f02d";
-}
-
-.specialist:before
-{
-  content: "\f200";
-}
-
-.user:before
-{
-  content: "\f007";
-}
-
-.address:before, .office:before
-{
-  content: "\f041";
-}
-
-.language:before
-{
-  content: "\f086";
-}
-
-.procedure:before
-{
-  content: "\f0ca";
-}
-
-.investigation p:first-child
-{
-  margin-top: 0.75em;
-}
-
-.referral:before
-{
-  content: "\f016";
-}
-
-.urgent_referral:before
-{
-  color: $FNW_RED;
-  content: "\f024";
-}
-    
-.hospital:before,
-{
-  content: "\f067";
-}
-    
-.association:before
-{
-  content: "\f07e";
-}
-
-.clinic:before
-{
-  content: "\f015";
 }
 
 .review:before
@@ -216,21 +138,6 @@
 .stats:before
 {
   content: "\f080";
-}
-
-.healthcare_provider:before
-{
-  content: "\f007";
-}
-
-.patient_information:before
-{
-  content: "\f05a";
-}
-
-.city:before, .province:before
-{
-  content: "\f041";
 }
 
 .status_available:before
@@ -284,39 +191,8 @@
   content: "\f0a9";
 }
 
-.specialist:before,
-.clinic:before,
-.calculators:before,
-.pearls:before,
-.red_flags:before,
-.care_pathways:before,
-.patient_education:before
-{
-  margin-left: 0;
-}
-
-.calculators:before
-{
-  content: "\f00a";
-}
-
-.care_pathways:before
-{
-  content: "\f06c";
-}
-
-.pearls:before
+.shared_care:before
 {
   content: "\f005";
-}
-
-.red_flags:before
-{
-  content: "\f024";
-}
-
-.patient_education:before
-{
-  content: "\f02d";
 }
 

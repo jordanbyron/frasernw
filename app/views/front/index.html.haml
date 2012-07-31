@@ -27,7 +27,7 @@
 
 .content-wrapper
   .content#front
-    .row
+    .row, :searchable, :searchable
        
       .span7half
        
@@ -61,9 +61,9 @@
             %ul.space
               - category.featured_sc_items.each do |featured_sc_item|
                 - if featured_sc_item.markdown? 
-                  %li= link_to featured_sc_item.title, featured_sc_item, :class => "ajax"
+                  %li= link_to featured_sc_item.title, featured_sc_item, :class => "ajax #{featured_sc_item.shared_care? && 'shared_care'}"
                 - else
-                  %li= link_to featured_sc_item.title, featured_sc_item.url, :target => "_blank"
+                  %li= link_to featured_sc_item.title, featured_sc_item.url, :target => "_blank", :class => featured_sc_item.shared_care? && "shared_care"
                   
               %li.more= link_to "Browse all #{category.name}", sc_category_path(category), :class => 'ajax'
                   
