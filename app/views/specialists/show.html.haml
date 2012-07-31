@@ -341,9 +341,10 @@
                       = @specialist.not_performed.end_with_period
                   
     .btn-group
-      %a.btn{"href" => specialist_patient_information_path(@specialist), "target" => "_blank"}
-        %i.icon-print.icon-text
-        Print Information for Patient
+      - if show_details
+        %a.btn{"href" => specialist_patient_information_path(@specialist), "target" => "_blank"}
+          %i.icon-print.icon-text
+          Print Information for Patient
       %a.feedback.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
         Incorrect Information? Let us know
                     
