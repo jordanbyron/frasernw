@@ -1020,6 +1020,7 @@ body.loading #loading
       display: inline-block;
       font-family: Bitter;
       font-size: 12px;
+      padding: 0 12px;
       line-height: 30px;
       text-align: center;
       text-transform: uppercase;
@@ -1029,7 +1030,6 @@ body.loading #loading
     {
       display: inline-block;
       line-height: 30px;
-      min-width: 130px;
       text-align: center;
       text-transform: uppercase;
       
@@ -1073,8 +1073,6 @@ body.loading #loading
       background-color: $FNW_WHITE;
       margin-left: -6px;
       color: $FNW_DARK_GRAY;
-      padding: 0 16px;
-      min-width: 130px;
       line-height: 28px;
       border: 1px solid $FNW_WHITE;
     }
@@ -1147,7 +1145,7 @@ body.loading #loading
     {
       margin: 0;
       padding: 40px 8px 8px 8px;
-      border: 2px dotted $FNW_MID_GRAY;
+      border: 1px dotted $FNW_MID_GRAY;
       width: 616px;
 
       ul
