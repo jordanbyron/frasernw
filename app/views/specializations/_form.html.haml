@@ -1,10 +1,12 @@
-= simple_form_for @specialization, :html => { :class => "form-horizontal ajax" } do |f|
+= simple_nested_form_for @specialization, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
     
   = f.input :name
   = f.input :member_name
   = f.input :in_progress
+  = f.simple_fields_for :specialization_owner do |so|
+    = so.input :owner_id, :as => :select, :collection => User.all.reject{ |u| !u.admin? }
   
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

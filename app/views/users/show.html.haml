@@ -2,12 +2,19 @@
 
   %h2= @user.name
 
-  %p
+  %p.no_indent.space
     %strong Email address:
     = @user.email
-  %p
+  %p.no_indent.space
     %strong Role:
     = @user.role
+    
+  - if @user.admin? && @user.specializations.present?
+    %p.no_indent.space 
+      %strong Specializations owned:
+      %ul
+        - @user.specializations.each do |s|
+          %li= link_to s.name, s, :class => 'ajax'
 
   - if !@user.admin?
     - if @user.controlled_specialists.length > 0

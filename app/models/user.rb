@@ -18,7 +18,10 @@ class User < ActiveRecord::Base
   has_many :controlled_clinics, :through => :user_controls_clinics, :source => :clinic, :class_name => "Clinic"
   accepts_nested_attributes_for :user_controls_clinics, :reject_if => lambda { |ucc| ucc[:clinic_id].blank? }, :allow_destroy => true
 
-  # times that the user (as admin) has contacted specialistscreate 
+  has_many :specialization_owners, :dependent => :destroy, :foreign_key => "owner_id"
+  has_many :specializations, :through => :specialization_owners
+
+  # times that the user (as admin) has contacted specialistscreate
   has_many :contacts
 
   # has_many :clinics,     :through => :favorites

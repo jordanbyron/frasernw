@@ -3,10 +3,17 @@
   %h2 Specialties
 
   %table.table.table-condensed.table-striped
+    %tr
+      %th Name
+      %th Member name
+      %th Owner
+      %th In Progress?
+      %th.admin
     - Specialization.all.each do |specialization|
       %tr
         %td= link_to specialization.name, specialization, :class => 'ajax'
         %td= specialization.member_name
+        %td= link_to specialization.owner.name, specialization.owner, :class => 'ajax'
         %td= specialization.in_progress ? "In progress" : ""
         %td.admin.btn-group
           = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialization_path(specialization), :class => "btn btn-mini ajax")
