@@ -51,4 +51,12 @@ class User < ActiveRecord::Base
       return self.saved_token
     end
   end
+
+  def owns(specializations)
+    does_own = false
+    specializations.each do |specialization|
+      does_own |= SpecializationOwner.find_by_specialization_id_and_owner_id(specialization.id, self.id).present?
+    end
+    does_own
+  end
 end

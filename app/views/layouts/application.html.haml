@@ -66,15 +66,19 @@
                   %li.dropdown.admin
                     %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
                       Admin
-                      -  if ReviewItem.all.count + FeedbackItem.all.count > 0
-                        (#{ReviewItem.all.count + FeedbackItem.all.count})
+                      - user_review_item_count = ReviewItem.all.reject{ |ri| !current_user.owns(ri.item.specializations) }.count
+                      - user_feedback_item_count = FeedbackItem.all.reject{ |fi| !current_user.owns(fi.item.specializations) }.count
+                      - total_review_item_count = ReviewItem.all.count
+                      - total_feedback_item_count = FeedbackItem.all.count
+                      -  if total_review_item_count + total_feedback_item_count > 0
+                        (#{user_review_item_count + user_feedback_item_count}/#{total_review_item_count + total_feedback_item_count})
                       %b.caret
                       
                     %ul.dropdown-menu
                       /%li= link_to "Track Specialists", tracker_path
                       %li= link_to "Activity Feed", all_versions_path, :class => "history ajax"
-                      %li= link_to "Review Queue (#{ReviewItem.all.count})", review_items_path, :class => "review ajax"
-                      %li= link_to "Feedback Queue (#{FeedbackItem.all.count})", feedback_items_path, :class => "feedback ajax"
+                      %li= link_to "Review Queue (#{user_review_item_count}/#{total_review_item_count})", review_items_path, :class => "review ajax"
+                      %li= link_to "Feedback Queue (#{user_feedback_item_count}/#{total_feedback_item_count})", feedback_items_path, :class => "feedback ajax"
                       %li= link_to "Stats", stats_path, :class => "stats ajax"
                       %li.divider
                       %li.nav-header Pathways
