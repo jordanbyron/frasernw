@@ -25,7 +25,7 @@ class Procedure < ActiveRecord::Base
   
   def full_name
     if procedure_specializations.first and procedure_specializations.first.parent
-      return procedure_specializations.first.parent.procedure.full_name + " " + self.name
+      return procedure_specializations.first.parent.procedure.full_name + " " + self.name.uncapitalize_first_letter
     else
       return self.name
     end
