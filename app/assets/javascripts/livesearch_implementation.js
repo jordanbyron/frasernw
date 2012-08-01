@@ -27,13 +27,16 @@ function pathways_data_formatter(total_score, scores_matches, data_entry)
     }
   }
   
-  result += "<div class='search_specialties'>" + specialties.to_sentence() + "</div>";
-  
   var has_city = data_entry.c && (data_entry.c != "");
   
   if (has_city)
   {
+    result += "<div class='search_specialties'>" + specialties.to_sentence() + "</div>";
     result += "<div class='search_city'>" + pathways_city_data[data_entry.c] + "</div>";
+  }
+  else
+  {
+    result += "<div class='search_specialties no_city'>" + specialties.to_sentence() + "</div>";
   }
   
   result += "</a></li>";
