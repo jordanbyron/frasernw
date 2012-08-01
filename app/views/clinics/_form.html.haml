@@ -207,7 +207,8 @@
 - if @is_review
   .alert.alert-info
     %h3 You are editing #{@clinic.name}'s entry in Pathways.
-    %p This database exists to make our practices, and your practice more efficient. By providing the information requested below you are making it easier for family doctors to find your practice, ensuring that the scope of your practice is fully understood, and guiding offices in providing you with the correct information when making referrals.
+    %p.space.no_indent If you have any questions while editing, please contact #{@clinic.owner.name} at #{mail_to @clinic.owner.email}
+    %p.space.no_indent This database exists to make our practices and your clinic more efficient. By providing the information requested below you are making it easier for family doctors to find your clinic, ensuring that the scope of your clinic is fully understood, and guiding offices in providing you with the correct information when making referrals.
       
 = simple_nested_form_for @clinic, :url => {:controller => params[:controller], :action => form_action}, :method => form_method, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?

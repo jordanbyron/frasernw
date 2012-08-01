@@ -78,6 +78,14 @@ class Specialist < ActiveRecord::Base
 
   default_scope order('specialists.lastname, specialists.firstname')
   
+  def owner
+    if specializations.first.present? && specializations.first.owner.present?
+      specializations.first.owner
+    else
+      User.find(7)
+    end
+  end
+  
   CATEGORIZATION_HASH = {
     1 => "Responded to survey",
     2 => "Not responded to survey",

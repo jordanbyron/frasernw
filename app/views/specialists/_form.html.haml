@@ -209,7 +209,8 @@
 - if @is_review
   .alert.alert-info
     %h3 You are editing #{@specialist.name}'s entry in Pathways.
-    %p This database exists to make our practices, and your practice more efficient. By providing the information requested below you are making it easier for family doctors to find your practice, ensuring that the scope of your practice is fully understood, and guiding offices in providing you with the correct information when making referrals.
+    %p.space.no_indent If you have any questions while editing, please contact #{@specialist.owner.name} at #{mail_to @specialist.owner.email}
+    %p.space.no_indent This database exists to make our practices and your practice more efficient. By providing the information requested below you are making it easier for family doctors to find your practice, ensuring that the scope of your practice is fully understood, and guiding offices in providing you with the correct information when making referrals.
 
 = simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => form_action}, :method => form_method, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
@@ -316,7 +317,10 @@
       %hr  
     
       %h3 Senior MOA Contact Information
-      %h4 This information is only available to Pathways administrators (not to GPs nor their MOAs), and will only be used for contact related to keeping Pathways information up-to-date.
+      .alert.alert-info
+        %p.no_indent Please note: the following Senior MOA contact information is never shown on Pathways to users.
+        %p.space.no_indent It will only be used for contact by Pathways administrators related to keeping your office's information up-to-date.
+        
       = f.input :contact_name
       = f.input :contact_email
       = f.input :contact_phone
