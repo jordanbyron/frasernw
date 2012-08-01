@@ -363,7 +363,7 @@
    
       .control-group
         .controls
-          %p Below is a list of referral forms we have on file for the clinic:
+          %p Below is a list of referral forms we have on file for the clinic. If you would like to add or correct any, please email them to #{@clinic.owner.name} at #{mail_to @clinic.owner.email}
           
           %ul
             - @clinic.referral_forms.each do |referral_form|
@@ -466,7 +466,7 @@
       
       = f.input :admin_notes
       
-    #section_deprecated.no-print
+    -#section_deprecated.no-print
           
       %hr
       

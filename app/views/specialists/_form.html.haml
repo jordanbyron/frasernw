@@ -394,7 +394,7 @@
    
       .control-group
         .controls
-          %p Below is a list of referral forms we have on file for the office:
+          %p Below is a list of referral forms we have on file for the office. If you would like to add or correct any, please email them to #{@specialist.owner.name} at #{mail_to @specialist.owner.email}
           
           %ul
             - @specialist.referral_forms.each do |referral_form|
