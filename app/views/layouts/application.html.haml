@@ -183,10 +183,23 @@
                         
                 %li.dropdown
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-                    %i.icon-cog
-                    Settings
+                    %i.icon-user
+                    You
                     %b.caret
                   %ul.dropdown-menu
+                    %li.nav-header.info= current_user.name
+                    
+                    - if current_user.controlled_specialists.present?
+                      %li.nav-header Your specialists
+                      - current_user.controlled_specialists.each do |specialist|
+                        %li= link_to specialist.name, specialist, :class => 'ajax'
+                    
+                    - if current_user.controlled_clinics.present?
+                      %li.nav-header Your clinics
+                      - current_user.controlled_clinics.each do |clinic|
+                        %li= link_to clinic.name, clinic, :class => 'ajax'
+                    
+                    %li.nav-header Settings
                     %li= link_to "Change name", change_name_path, :class => 'change_name ajax'
                     %li= link_to "Change e-mail address", change_email_path, :class => 'change_email ajax'
                     %li= link_to "Change password", change_password_path, :class => 'change_password ajax'
