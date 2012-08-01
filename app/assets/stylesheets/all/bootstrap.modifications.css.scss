@@ -516,6 +516,11 @@
   border-top-color: $FNW_LIGHT_BLUE;
 }
 
+.tooltip.bottom .tooltip-arrow, 
+{
+  border-bottom-color: $FNW_LIGHT_BLUE;
+}
+
 .tooltip.in
 {
   opacity: 1.0;
@@ -527,7 +532,9 @@
   color: $FNW_BLUE;
   font-size: 13px;
   text-align: left;
-  box-shadow: 1px 1px 3px $FNW_MID_GRAY;
+  -webkit-box-shadow: 0px 0px 2px $FNW_MID_GRAY;
+  -moz-box-shadow: 0px 0px 2px $FNW_MID_GRAY;
+  box-shadow: 0px 0px 2px $FNW_MID_GRAY;
   max-width: 400px;
   
   ul
@@ -535,6 +542,12 @@
     list-style-type: none;
     margin: 5px;
     padding: 0;
+  }
+  
+  ul.specialties
+  {
+    font-family: Bitter;
+    text-transform: uppercase;
   }
   
   a

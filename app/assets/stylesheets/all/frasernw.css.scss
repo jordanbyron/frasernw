@@ -1044,7 +1044,7 @@ body.loading #loading
     
     li.dropdown
     {
-      z-index: 1002;
+      z-index: 1003;
       background: #8cd0f5;
     }
   
@@ -1074,14 +1074,14 @@ body.loading #loading
       border: 1px solid $FNW_WHITE;
     }
     
-    li.subsequent.next
+    li.subsequent.specialty
     {
-      z-index: 1001;
-      background: $FNW_LIGHT_GRAY;
-      border-color: $FNW_LIGHT_GRAY;
+      z-index: 1002;
+      background: $FNW_HEADLINE_BACKGROUND;
+      border-color: $FNW_HEADLINE_BACKGROUND;
     }
     
-    li.subsequent.next:after 
+    li.subsequent.specialty:after 
     {
       left: 100%;
       border: solid transparent;
@@ -1090,10 +1090,28 @@ body.loading #loading
       width: 0;
       position: absolute;
       pointer-events: none;
+      border-left-color: $FNW_HEADLINE_BACKGROUND;
+      border-width: 6px;
+      top: 50%;
+      margin-top: -6px;
     }
-
-    li.subsequent.next:after 
+    
+    li.subsequent.parent
     {
+      z-index: 1001;
+      background: $FNW_LIGHT_GRAY;
+      border-color: $FNW_LIGHT_GRAY;
+    }
+    
+    li.subsequent.parent:after 
+    {
+      left: 100%;
+      border: solid transparent;
+      content: " ";
+      height: 0;
+      width: 0;
+      position: absolute;
+      pointer-events: none;
       border-left-color: $FNW_LIGHT_GRAY;
       border-width: 6px;
       top: 50%;

@@ -1,19 +1,27 @@
 - title "Pathways | #{@procedure.full_name}"
 
 - procedure_specialization = @procedure.procedure_specializations.first || ProcedureSpecialization.first
+- procedure_specializations = @procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress }
     
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       Specialties
       %b.caret
-  %li.subsequent.next= @procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress and !current_user_is_admin? }.collect(){ |ps| "<a href=\"#{specialization_path(ps.specialization)}\" class='#{ ps.specialization.in_progress ? "in-progress ajax" : "ajax"}'>#{ps.specialization.name}</a>" }.to_sentence.html_safe
+  - if procedure_specializations.length > 2
+    %li.subsequent.specialty
+      %a.tt#tt_more_specialties{"href" => "javascript:void(0)", "onclick" => "$('#tt_more_specialties').tooltip('toggle')", "title" => "<ul class='specialties'>#{procedure_specializations.map{|ps| "<li>#{link_to ps.specialization.name, ps.specialization, :class => 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{procedure_specializations.first(2).collect{ |ps| ps.specialization.name }.join(', ')}..."
+  - else
+    %li.subsequent.specialty= "#{procedure_specializations.collect{ |ps| link_to ps.specialization.name, ps.specialization, :class => 'ajax' }.to_sentence}...".html_safe
+  - if procedure_specialization.parent.present? && procedure_specialization.parent.procedure.present?
+    %li.subsequent.parent= link_to procedure_specialization.parent.procedure.name, procedure_specialization.parent.procedure, :class => 'ajax'
   %li.subsequent= @procedure.name
   
 %script{"type" => "text/javascript"}
   :plain
     var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
     $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
+    $(document).ready(function() { $('.tt').tooltip({trigger: 'manual', placement: 'bottom'}) });
   
 #specialties-dropdown-menu
   .inner
