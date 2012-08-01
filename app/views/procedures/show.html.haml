@@ -35,15 +35,15 @@
   %script{"type" => "text/javascript"}
     :plain
       $(document).ready(function() {
-        //sort by status, wait time, then city
-          $('.tablesorter').tablesorter({sortList: [[2,0],[3,0],[4,0]]});
+        $('#specialist_table').tablesorter({sortList: [[2,0],[3,0],[4,0]]});
+        $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0],[4,0]]});
       });
 - else
   %script{"type" => "text/javascript"}
     :plain
       $(document).ready(function() {
-        //sort by status, wait time, then city
-          $('.tablesorter').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
+        $('#specialist_table').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
+        $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0]]});
       });
 
 - has_specialists = @procedure.all_specialists.length > 0
@@ -95,7 +95,7 @@
                 
                   #specialist_phrase.filter-phrase
                 
-                  %table.table.table-condensed.tablesorter{:id => 'specialist_table', :class => multiple_specialties && 'five'}
+                  %table.table.table-condensed.tablesorter#specialist_table{:class => multiple_specialties && 'five'}
                     %thead
                       %tr{:class => 'tableheader'}
                         %th{:class => "{sorter: 'bylastname'} name_column"} Specialist
@@ -203,10 +203,10 @@
                 .span8half
                   #clinic_phrase.filter-phrase
                   
-                  %table.table.table-condensed{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'clinic_table', :class => multiple_specialties && 'five'}
+                  %table.table.table-condensed.tablesorter#clinic_table{:class => multiple_specialties && 'five'}
                     %thead
                       %tr{:class => 'tableheader'}
-                        %th{:class => "{sorter: 'bylastname'} name_column"} Clinic
+                        %th{:class => "{sorter: 'text'} name_column"} Clinic
                         - if multiple_specialties
                           %th{:class => "{sorter: 'text'} specialty_column"} Specialty
                         %th{:class => "{sorter: 'status'} status_column"} Accepting New<br>Patients?

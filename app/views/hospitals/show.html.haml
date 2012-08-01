@@ -28,8 +28,8 @@
 %script{"type" => "text/javascript"}
   :plain
     $(document).ready(function() {
-      //sort by specialty, status, wait time, then city
-      $('.tablesorter').tablesorter({sortList: [[1,0],[2,0],[3,0],[4,0]]});
+      $('#specialist_table, #office_table').tablesorter({sortList: [[1,0],[2,0],[3,0],[4,0]]});
+      $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0],[4,0]]});
     });
     
 .content-wrapper
@@ -101,7 +101,7 @@
                 .span8half
                   #specialist_phrase.filter-phrase
                   
-                  %table.table.table-condensed.tablesorter.five{:id => 'specialist_table'}
+                  %table.table.table-condensed.tablesorter.five#specialist_table
                     %thead
                       %tr{:class => 'tableheader'}
                         %th{:class => "{sorter: 'bylastname'} name_column"} Specialist
@@ -202,7 +202,7 @@
                 .span8half
                   #clinic_phrase.filter-phrase
                   
-                  %table.table.table-condensed.tablesorter.five{:class => 'tablesorter {sortlist: [[2,0],[3,0]]}', :id => 'clinic_table'}
+                  %table.table.table-condensed.tablesorter.five#clinic_table
                     %thead
                       %tr{:class => 'tableheader'}
                         %th{:class => "{sorter: 'text'} name_column"} Clinic
@@ -320,7 +320,7 @@
                 .span8half
                   #office_phrase.filter-phrase
                   
-                  %table.table.table-condensed.tablesorter.five{:id => 'office_table'}
+                  %table.table.table-condensed.tablesorter.five#office_table
                     %thead
                       %tr{:class => 'tableheader'}
                         %th{:class => "{sorter: 'bylastname'} name_column"} Specialists
