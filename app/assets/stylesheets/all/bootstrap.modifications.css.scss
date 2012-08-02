@@ -70,8 +70,7 @@
     
     .nav > li > a
     {
-      font-family: Bitter;
-      font-size: 12px;
+      font-size: 13px;
       color: $FNW_MID_GRAY;
       padding: 0 8px;
     }
@@ -118,11 +117,6 @@
     -webkit-box-shadow: 2px 2px 8px #888;
     -moz-box-shadow: 2px 2px 8px #888;
     box-shadow: 2px 2px 8px #888;
-    
-    li a:hover
-    {
-      color: $FNW_TEXT;
-    }
     
     li a:hover
     {
