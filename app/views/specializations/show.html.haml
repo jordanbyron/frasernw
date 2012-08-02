@@ -422,7 +422,7 @@
             .tab-pane{"id" => "#{sc_category.name.remove_whitespace}_tab"}
               - link_items = sc_category.sc_items.for_specialization(@specialization).reject{ |item| item.markdown? && item.inline? }
               - if link_items.present?
-                %ul
+                %ul.scm
                   - link_items.each do |sc_item|
                     - if sc_item.markdown? 
                       %li= link_to sc_item.title, sc_item, :class => "ajax"
