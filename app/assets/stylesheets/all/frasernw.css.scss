@@ -895,34 +895,21 @@ body.loading #loading
       {
         margin-top: 6px;
       }
-      
-      li.more:before
-      {
-        font-family: FontAwesome;
-        font-weight: normal;
-        font-style: normal;
-        font-size: 15px;
-        display: inline-block;
-        text-decoration: inherit;
-        margin-right: 6px;
-        color: $FNW_BLUE;
-        content: "\f061";
-      }
     }
     
     h2
     {
-      margin: 12px 0 6px 0;
+      margin: 0 0 6px 0;
     }
       
     p + h2
     {
-      margin-top: 24px;
+      margin-top: 18px;
     }
     
     p
     {
-      margin: 6px 0 0 0;
+      margin: 12px 0 0 0;
     }
     
     .well
@@ -946,16 +933,6 @@ body.loading #loading
         margin-top: 24px;
       }
     }
-  }
-  
-  #front-arrow
-  {
-    position: absolute;
-    top: -18px;
-    left: 120px;
-    width: 107px;
-    height: 76px;
-    background: transparent url(/img/front-arrow.png) no-repeat;
   }
   
   a:hover
@@ -1188,8 +1165,12 @@ body.loading #loading
   {
     h1, h2, h3
     {
-      margin-top: 12px;
       font-family: Bitter;
+    }
+    
+    p + h1, p + h2, p + h3
+    {
+      margin-top: 12px;
     }
   
     h1

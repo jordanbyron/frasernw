@@ -29,7 +29,15 @@
   .content#front
     .row
        
-      .span7half
+      .span3
+       
+        %h2 Specialties
+        
+        %ul.space
+          - Specialization.all.reject{ |s| s.in_progress && !current_user_is_admin? }.each do |specialization|
+            %li= link_to specialization.name, specialization, :class => specialization.in_progress ? "in-progress ajax" : "ajax"
+       
+      .span4half
        
         %h2 What is Pathways?
         
@@ -45,10 +53,8 @@
       
         %h2 Latest Updates
         
-        %ul.space
-          - cache(:action => 'index') do
-            - latest_events(5).each do |event|
-              %li= event
+        - latest_events(5).each do |event|
+          %p= event
               
       .span4.offsethalf
       
@@ -65,11 +71,10 @@
                 - else
                   %li= link_to featured_sc_item.title, featured_sc_item.url, :target => "_blank", :class => featured_sc_item.shared_care? && "shared_care"
                   
-              %li.more= link_to "Browse all #{category.name}", sc_category_path(category), :class => 'ajax'
+              %li
+                = link_to "<i class='icon-arrow-right icon-blue'></i> Browse all #{category.name}".html_safe, sc_category_path(category), :class => 'ajax'
                   
   - if current_user_is_admin?
     %p.admin.btn-group
       = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Front Page", edit_front_path, :class => "btn ajax")
-            
-#front-arrow
     
