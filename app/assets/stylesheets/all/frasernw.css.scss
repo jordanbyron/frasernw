@@ -899,7 +899,9 @@ body.loading #loading
     
     h2
     {
-      margin: 0 0 6px 0;
+      font-size: 18px;
+      line-height: 18px;
+      margin: 0 0 12px 0;
     }
       
     p + h2
@@ -1168,14 +1170,14 @@ body.loading #loading
       font-family: Bitter;
     }
     
-    p + h1, p + h2, p + h3
+    p + h1, p + h2, p + h3, ul + h1, ul + h2, ul + h3, li + h1, li + h2, li + h3
     {
       margin-top: 12px;
     }
   
     h1
     { 
-      font-size: 20px;
+      font-size: 18px;
     }
     
     h2
@@ -1207,5 +1209,12 @@ body.loading #loading
     {
       list-style-position: outside;
     }
+  }
+  
+  .scm + .scm
+  {
+    margin-top: 12px;
+    padding-top: 12px;
+    background: transparent url(/img/double-border-10.png) 0% 0 repeat-x;
   }
 }
