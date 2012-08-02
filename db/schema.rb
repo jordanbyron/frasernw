@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120801210250) do
+ActiveRecord::Schema.define(:version => 20120802183506) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -377,6 +377,7 @@ ActiveRecord::Schema.define(:version => 20120801210250) do
     t.string    "name"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.boolean   "show_on_front_page", :default => true
   end
 
   create_table "sc_item_specialization_procedure_specializations", :force => true do |t|
