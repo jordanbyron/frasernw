@@ -70,6 +70,7 @@
 .change_name:before,
 .change_email:before,
 .change_password:before,
+.logout:before,
 .history:before,
 .stats:before,
 .shared_care:before,
@@ -128,6 +129,11 @@
 .change_password:before
 {
   content: "\f084";
+}
+
+.logout:before
+{
+  content: "\f011";
 }
 
 .history:before
