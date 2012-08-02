@@ -12,11 +12,20 @@
 
 #logo
 {
-  width: 162px;
+  width: 164px;
   height: 38px;
   background: transparent url(/img/logo.png) 50% 50% no-repeat;
   margin: 0;
   padding: 8px 0;
+}
+  
+@media only screen and (min--moz-device-pixel-ratio: 2),
+only screen and (-o-min-device-pixel-ratio: 2/1),
+only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (min-device-pixel-ratio: 2) {
+  #logo {
+    background-image: url(/img/logo@2x.png);
+  }
 }
 
 body 

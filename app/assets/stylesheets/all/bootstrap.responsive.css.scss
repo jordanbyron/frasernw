@@ -640,12 +640,63 @@
     padding-top: 0;
   }
   
+  #logo
+  {
+    width: 129px;
+    height: 30px;
+    background-image: url(/img/logo_small.png);
+    background-size: 100%;
+    padding: 4px 0;
+  }
+  
+  #search_results
+  {
+    display: block;
+    position: relative;
+    width: 90%;
+    top: 10px;
+    
+    ul li.search-result a
+    {
+      width: 90%;
+      
+      div, div.search_specialties, div.search_specialties.no_city, div.search_city
+      {
+        float: none;
+        display: block;
+        width: 280px;
+        overflow: visible;
+        margin-left: 0;
+      }
+      
+      div.search_name
+      {
+        font-weight: bold;
+      }
+    }
+    
+    ul li.group
+    {
+      border-bottom: 0;
+    }
+    
+    li.search-result + li.group
+    {
+      margin-top: 12px;
+    }
+    
+    li.search-result + li.search-result
+    {
+      border-top: 1px dotted $FNW_LIGHT_BLUE;
+    }
+  }
+  
   #content #container 
   {
     .content-wrapper
     {
-      margin: 0;
-      padding: 18px;
+      margin: 0 -10px;
+      padding: 10px;
     }
     
     ul#specialties-menu
@@ -671,42 +722,11 @@
   
     .tabbable ul.nav-tabs
     {
-      border: 0;
-      li a:before
-      {
-        width: 14px;
-      }
-      li a span
-      {
-        display: none;
-      }
-      li.active a span
-      {
-        display: inline;
-      }
-      li
-      {
-        border: 1px solid $FNW_DARK_GRAY;
-        border-top-right-radius: 8px;
-        border-top-left-radius: 8px;
-        margin: 0;
-        padding: 0;
-      }
+      margin: 10px -10px 0 -10px;
+      
       li a
       {
-        border: 0;
-        border-radius: 0;
-        border-top-right-radius: 8px;
-        border-top-left-radius: 8px;
-        margin: 0;
-      }
-      li + li
-      {
-        border-left: none;
-      }
-      li.active
-      {
-        border-bottom: 1px solid $FNW_BACKGROUND;
+        padding: 0 10px;
       }
     }
     
@@ -751,6 +771,10 @@
     padding-right: 10px;
     padding-left: 10px;
     margin: 0 0 0 -5px;
+  }
+  .navbar
+  {
+    margin-bottom: 10px;
   }
   .navbar .navbar-inner
   {
@@ -862,6 +886,15 @@
   .navbar-static .navbar-inner {
     padding-right: 10px;
     padding-left: 10px;
+  }
+}
+  
+@media only screen and (min--moz-device-pixel-ratio: 2) and (max-width: 767px),
+only screen and (-o-min-device-pixel-ratio: 2/1) and (max-width: 767px),
+only screen and (-webkit-min-device-pixel-ratio: 2) and (max-width: 767px),
+only screen and (min-device-pixel-ratio: 2) and (max-width: 767px) {
+  #logo {
+    background-image: url(/img/logo_small@2x.png);
   }
 }
 
