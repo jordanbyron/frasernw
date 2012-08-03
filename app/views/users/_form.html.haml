@@ -8,6 +8,8 @@
   #admin_pane
     
   #user_pane
+    = f.input :type_mask, :as => :select, :collection => User::TYPE_HASH, :label_method => :last, :value_method => :first, :include_blank => false
+  
     %h4 Specialist user can edit
     .content
       = f.simple_fields_for :user_controls_specialists do |i|

@@ -38,6 +38,17 @@ class User < ActiveRecord::Base
     self.role == 'admin'
   end
   
+  TYPE_HASH = {
+    1 => "GP Office",
+    2 => "Specialist Office",
+    3 => "Clinic Office",
+    4 => "Other"
+  }
+
+  def type
+    User::TYPE_HASH[type_mask]
+  end
+
   def token
     if self.saved_token
       return self.saved_token

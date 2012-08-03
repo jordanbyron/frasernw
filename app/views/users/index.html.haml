@@ -34,6 +34,7 @@
         %table.table.table-condensed.table-striped
           %tr
             %th Name
+            %th Type
             %th Email
             %th Can edit
             %th.admin
@@ -42,6 +43,7 @@
             - next if user.admin? || user.email.blank?
             %tr
               %td= link_to user.name, user, :class => 'ajax'
+              %td= user.type
               %td= user.email
               %td
                 %ul

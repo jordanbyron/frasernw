@@ -155,3 +155,4 @@ en:
         email: "E-mail address"
         password: "Password"
         saved_token: "Access key"
+        type_mask: "User type"
