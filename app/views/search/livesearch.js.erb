@@ -119,7 +119,7 @@ specialists.each do |specialist|
   entry = { 
     "n" => specialist.name, 
     "sp" => specialist.specialist_specializations.reject{ |ss| ss.specialization.blank? or ss.specialization.in_progress }.collect{ |ss| ss.specialization_id }, 
-    "c" => specialist.city_id,
+    "c" => specialist.city_ids,
     "st" => specialist.status_class_hash,
     "id" => specialist.id,
     "go" => order_map["Specialists"] }
@@ -166,7 +166,7 @@ ScCategory.all.each do |category|
   category.sc_items.searchable.each do |item|
     entry = { 
       "n" => item.title, 
-      "sp" => item.procedure_specializations.reject{ |ps| ps.specialization.in_progress }.collect{ |ps| ps.specialization_id },
+      "sp" => item.specializations.reject{ |s| s.in_progress }.collect{ |s| s.id },
       "id" => item.id,
       "go" => order_map[category.name] }
     search_data << entry

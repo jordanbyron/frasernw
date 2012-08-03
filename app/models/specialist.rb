@@ -70,6 +70,14 @@ class Specialist < ActiveRecord::Base
     end
   end
   
+  def cities
+    offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
+  end
+  
+  def city_ids
+    offices.map{ |o| o.city_id }.reject{ |c| c.blank? }.uniq
+  end
+  
   has_one :review_item, :as => :item
   has_many :feedback_items, :as => :item
   

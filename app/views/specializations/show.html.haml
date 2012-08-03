@@ -105,7 +105,7 @@
                           %td
                             %span{:class => "status_#{specialist.status_class}"}= specialist.status_class
                           %td= specialist.waittime
-                          %td= specialist.city
+                          %td= specialist.cities.join(" / ")
                           
                   #specialist_assumed_list
                     - if @specialization.procedure_specializations.assumed.present?

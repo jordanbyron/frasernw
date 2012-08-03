@@ -27,12 +27,16 @@ function pathways_data_formatter(total_score, scores_matches, data_entry)
     }
   }
   
-  var has_city = data_entry.c && (data_entry.c != "");
-  
-  if (has_city)
+  if (data_entry.c)
   {
+    var cities = [];
+    for( x = 0; x < data_entry.c.length; ++ x )
+    {
+      cities[x] = pathways_city_data[data_entry.c[x]];
+    }
+    
     result += "<div class='search_specialties'>" + specialties.to_sentence() + "</div>";
-    result += "<div class='search_city'>" + pathways_city_data[data_entry.c] + "</div>";
+    result += "<div class='search_city'>" + cities.join(" / ") + "</div>";
   }
   else
   {
