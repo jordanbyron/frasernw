@@ -30,7 +30,7 @@ class ScItemsController < ApplicationController
       params[:procedure_specialization].each do |ps_id, set|
         specialization = ProcedureSpecialization.find(ps_id).specialization
         sc_item_specialization = ScItemSpecialization.find_by_sc_item_id_and_specialization_id( @sc_item.id, specialization.id )
-        ScItemSpecializationProcedureSpecialization.create( :sc_item_specialization_id => sc_item_specialization.id, :procedure_specialization_id => ps_id )
+        ScItemSpecializationProcedureSpecialization.create( :sc_item_specialization_id => sc_item_specialization.id, :procedure_specialization_id => ps_id ) if sc_item_specialization.present?
       end
       redirect_to @sc_item, :notice => "Successfully created sc_item."
     else
