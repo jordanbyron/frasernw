@@ -8,6 +8,7 @@
       _gaq.push(['_setAccount', 'UA-32752873-1']);
       _gaq.push(['_trackPageview']);
       _gaq.push(['_setCustomVar', 1, 'ID', '#{current_user_id}', 1]);
+      _gaq.push(['_setCustomVar', 2, 'Type', '#{current_user_type_mask}', 1]);
 
       (function() {
         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
