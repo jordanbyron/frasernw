@@ -387,14 +387,12 @@
     -#= f.association :referral_clinic, as: :select, :prompt => "None", :include_blank => true
     = f.input :referral_other_details
     = f.input :referral_details
-
-    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does the office have a referral form?"
+    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does the office have a referral form?", :hint => @is_review ? "If you would like to add or correct any referral forms, please email them to #{@specialist.owner.name} at #{mail_to @specialist.owner.email}".html_safe : ""
     
     - if @is_review && @specialist.referral_form_mask == 1 && @specialist.referral_forms.reject{ |referral_form| referral_form.form.blank? }.present?
    
       .control-group
         .controls
-          %p Below is a list of referral forms we have on file for the office. If you would like to add or correct any, please email them to #{@specialist.owner.name} at #{mail_to @specialist.owner.email}
           
           %ul
             - @specialist.referral_forms.each do |referral_form|
