@@ -20,7 +20,6 @@
             %th Specialty
             %th Updated by
             %th Updated when
-            %th
 
           - @review_items.each do |review_item|
             - next if review_item.item_type != "Specialist"
@@ -29,9 +28,6 @@
               %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
               %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
-              %td.admin.btn-group.wide
-                = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", specialist_review_path(review_item.item), :class => "btn btn-mini ajax")
-                = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
                 
       #clinics_tab.tab-pane
 
@@ -40,7 +36,6 @@
             %th Clinic
             %th Updated by
             %th Updated when
-            %th
 
           - @review_items.each do |review_item|
             - next if review_item.item_type != "Clinic"
@@ -48,8 +43,5 @@
               %td= review_item.item.name
               %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
-              %td.admin.btn-group.wide
-                = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", clinic_review_path(review_item.item), :class => "btn btn-mini ajax")
-                = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
