@@ -1,32 +1,31 @@
-- title "#{@specialist.name}"
+- title "#{@specialist.formal_name}"
 
 %h2
   = @specialist.formal_name
   = "(#{@specialist.sex})" if @specialist.sex?
 
-%h5.specialty_links= @specialist.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| s.name }.to_sentence
+%h5.specialty_links= @specialist.specializations.collect(){ |s| s.name }.to_sentence
 
 %h6 Your Appointment Information
 
-%p
-  %input{"type" => "checkbox"}
+%p#specific_appointment_block
+  %input.specific_appointment#specific_appointment_check{"type" => "radio", "name" => "appointment", "checked" => "checked"}
   Your appointment is on 
-  %input{"type" => "text"}
+  %input.specific_appointment{"type" => "text"}
   at
-  %input{"type" => "text"}
+  %input.specific_appointment{"type" => "text"}
 
-%p
-  %input{"type" => "checkbox"}
-  %select
-    %option
+%p#future_appointment_block.empty
+  %input.future_appointment#future_appointment_check{"type" => "radio", "name" => "appointment"}
+  %select.future_appointment
     %option Our office
     %option #{@specialist.formal_name}'s office
   will call you once your appointment is booked.  
 
-%p.indent
-  %input{"type" => "checkbox"}
+%p.indent#future_appointment_followup_block.empty
+  %input#future_appointment_followup_check{"type" => "checkbox"}
   If you haven't had heard about your appointment date within
-  %select
+  %select.future_appointment_followup
     %option
     %option 1 week (by #{DateTime.now.since(1.week).to_date.strftime("%b %d, %Y")})
     %option 2 weeks (by #{DateTime.now.since(2.week).to_date.strftime("%b %d, %Y")})
@@ -40,14 +39,18 @@
     %option 18 months (by #{DateTime.now.since(18.month).to_date.strftime("%b %d, %Y")})
     %option 24 months (by #{DateTime.now.since(24.month).to_date.strftime("%b %d, %Y")})
   please call
-  %select
+  %select.future_appointment_followup
     %option
     %option our office.
     %option #{@specialist.formal_name}'s office.
+   
+  %h6#patient_instruction_header Appointment Instructions
   
--if @specialist.patient_instructions.present? 
-  %h6 Appointment Instructions
-  %p= @specialist.patient_instructions.end_with_period
+  -if @specialist.patient_instructions.present?
+    %p= @specialist.patient_instructions.end_with_period
+  
+  %textarea#custom_patient_instructions{:placeholder => "Additional patient instructions"}
+  #custom_patient_instructions_print
     
 - if @specialist.cancellation_policy.present?
   %h6 Cancellation Policy
@@ -74,14 +77,68 @@
     - else
       %p= address.address if address.present? && !address.empty?
       %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
-    
+  
 %script{"type" => "text/javascript"}
   :plain
     function print_patient_information()
     {
+      copy_to_print_helper();
       window.print();
     }
+    
+    function copy_to_print_helper(){
+      $('#custom_patient_instructions_print').text($('#custom_patient_instructions').val());
+      if ( $('#custom_patient_instructions').val().trim() == "" )
+      {
+        $('#patient_instruction_header').addClass('empty');
+      }
+      else
+      {
+        $('#patient_instruction_header').removeClass('empty');
+      }
+    }
+    
+    function set_future_followup_block_print_visibility()
+    {
+      if ( $('#future_appointment_followup_check').attr('checked') )
+      {
+        $('#future_appointment_followup_block').removeClass('empty');
+      }
+      else
+      {
+        $('#future_appointment_followup_block').addClass('empty');
+      }
+    }
+    
+    $('#custom_patient_instructions').bind('keydown keyup keypress cut copy past blur change', function(){
+      copy_to_print_helper();
+    });
+    
+    $('.specific_appointment').bind('keydown keyup keypress cut copy past blur change', function(){
+      $('#specific_appointment_check').attr('checked', true);
+      $('#specific_appointment_block').removeClass('empty');
+      $('#future_appointment_block').addClass('empty');
+      $('#future_appointment_followup_block').hide();
+    });
+    
+    $('.future_appointment').bind('change', function(){
+      $('#specific_appointment_block').addClass('empty');
+      $('#future_appointment_check').attr('checked', true);
+      $('#future_appointment_block').removeClass('empty');
+      $('#future_appointment_followup_block').show();
+    });
+    
+    $('.future_appointment_followup').bind('change', function(){
+      $('#future_appointment_followup_check').attr('checked', true);
+      set_future_followup_block_print_visibility();
+    });
+    
+    $('#future_appointment_followup_check').bind('change', function(){
+      set_future_followup_block_print_visibility();
+    });
   
-    //$(document).ready( print_patient_information );
+    $(document).ready( function(){
+      $('#future_appointment_followup_block').hide();
+    });
         
 %input.btn{"type" => "button", "value" => "Print", "onclick" => "print_patient_information()"}

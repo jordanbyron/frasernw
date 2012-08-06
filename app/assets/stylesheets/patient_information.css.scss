@@ -14,12 +14,17 @@ p, h1, h2, h3, h4, h5, h6, img
   padding: 0;
 }
 
-p, input
+p, input, textarea, #custom_patient_instructions_print, select
 {
   font-size: 12pt;
   line-height: 15pt;
   margin-top: 6pt;
   color: $FNW_TEXT;
+}
+
+#custom_patient_instructions_print
+{
+  display: none;
 }
 
 p.indent
@@ -71,6 +76,12 @@ img
   display: block;
 }
 
+textarea
+{
+  width: 640px;
+  height: 75px;
+}
+
 @media print
 {
   .btn
@@ -86,6 +97,24 @@ img
     border-radius: 0;
     border-bottom: 1px solid $FNW_TEXT;
     box-shadow: none;
+  }
+  
+  textarea
+  {
+    display: none;
+  }
+  
+  .empty
+  {
+    display: none !important;
+  }
+
+  #custom_patient_instructions_print
+  {
+    display: block;
+    overflow: visible;
+    white-space: pre;
+    white-space: pre-wrap;
   }
   
   select
