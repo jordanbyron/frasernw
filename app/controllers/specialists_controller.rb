@@ -133,11 +133,12 @@ class SpecialistsController < ApplicationController
   end
 
   def accept
-    #accept changes, destroy the review item so that we can save the specialist
+    #accept changes, archive the review item so that we can save the specialist
     @specialist = Specialist.find(params[:id])
     
     review_item = @specialist.review_item
-    ReviewItem.destroy(review_item)
+    review_item.archived = true;
+    review_item.save
     
     SpecialistSweeper.instance.before_controller_update(@specialist)
     if @specialist.update_attributes(params[:specialist])
@@ -179,12 +180,12 @@ class SpecialistsController < ApplicationController
   def review
     @is_new = false
     @is_review = false
-    @review_item = ReviewItem.find_by_item_type_and_item_id( "Specialist", params[:id] );
+    @specialist = Specialist.find(params[:id])
+    @review_item = @specialist.review_item;
     
     if @review_item.blank?
       redirect_to specialists_path, :notice => "There are no review items for this specialist"
     else
-      @specialist = Specialist.find(params[:id])
       @specializations_clinics = []
       @specialist.specializations_including_in_progress.each { |s| 
         @specializations_clinics += s.clinics.collect { |c| [c.name, c.id] }

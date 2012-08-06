@@ -1,6 +1,8 @@
 .content-wrapper
 
-  %h2 Review Queue
+  %h2 Review Queue Archive
+
+  = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
 
   .tabbable
     %ul.nav.nav-tabs
@@ -49,6 +51,5 @@
               %td.admin.btn-group.wide
                 = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", clinic_review_path(review_item.item), :class => "btn btn-mini ajax")
                 = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
-  
-  .btn-group= link_to "View archived review queue items", archived_review_items_path, :class => 'btn ajax'
 
+  = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2

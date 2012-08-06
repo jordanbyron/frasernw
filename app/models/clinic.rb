@@ -51,8 +51,8 @@ class Clinic < ActiveRecord::Base
   has_many :controlling_users, :through => :user_controls_clinics, :source => :user, :class_name => "User"
   accepts_nested_attributes_for :user_controls_clinics, :reject_if => lambda { |ucc| ucc[:user_id].blank? }, :allow_destroy => true
   
-  has_one :review_item, :as => :item
-  has_many :feedback_items, :as => :item
+  has_one :review_item, :as => :item, :conditions => { "archived" => false }
+  has_many :feedback_items, :as => :item, :conditions => { "archived" => false }
   
   default_scope order('clinics.name')
   

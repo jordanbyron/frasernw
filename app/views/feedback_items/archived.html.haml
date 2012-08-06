@@ -1,6 +1,8 @@
 .content-wrapper
 
-  %h2 Feedback Queue
+  %h2 Feedback Queue Archive
+
+  = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
 
   %table.table.table-condensed.table-striped
     %tr
@@ -9,7 +11,6 @@
       %th Provided by
       %th Provided when
       %th Feedback
-      %th.admin
 
     - @feedback_items.each do |feedback_item|
       %tr
@@ -18,7 +19,5 @@
         %td= feedback_item.user.name
         %td= "#{time_ago_in_words(feedback_item.created_at)} ago"
         %td{"style" => "width: 40%"}= feedback_item.feedback
-        %td.admin.btn-group
-          = link_to("<i class='icon-folder-open'></i>".html_safe + " Archive", feedback_item, :method => :delete, :class => "btn btn-mini")
-  
-  .btn-group= link_to "View archived feedback items", archived_feedback_items_path, :class => 'btn ajax'
+
+  = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2

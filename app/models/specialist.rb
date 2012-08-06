@@ -45,6 +45,12 @@ class Specialist < ActiveRecord::Base
   has_many  :views
   has_many  :edits
   
+  has_one :review_item, :as => :item, :conditions => { "archived" => false }
+  has_many :archived_review_items, :as => :item, :foreign_key => "item_id", :class_name => "ReviewItem"
+  
+  has_many :feedback_items, :as => :item, :conditions => { "archived" => false }
+  has_many :archived_feedback_items, :as => :item, :foreign_key => "item_id", :class_name => "FeedbackItem"
+  
   MAX_OFFICES = 3
   has_many :specialist_offices, :dependent => :destroy
   has_many :offices, :through => :specialist_offices
@@ -77,9 +83,6 @@ class Specialist < ActiveRecord::Base
   def city_ids
     offices.map{ |o| o.city_id }.reject{ |c| c.blank? }.uniq
   end
-  
-  has_one :review_item, :as => :item
-  has_many :feedback_items, :as => :item
   
   #clinic that referrals are done through
   belongs_to :referral_clinic, :class_name => "Clinic"

@@ -8,8 +8,8 @@ class SpecialistsEditorController < ApplicationController
   def edit
     @token = params[:token]
     @is_review = true
-    @review_item = ReviewItem.find_by_item_type_and_item_id( "Specialist", params[:id] );
     @specialist = Specialist.find(params[:id])
+    @review_item = @specialist.review_item
     if @specialist.capacities.count == 0
       @specialist.capacities.build
     end

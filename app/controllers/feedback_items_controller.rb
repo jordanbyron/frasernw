@@ -2,7 +2,12 @@ class FeedbackItemsController < ApplicationController
   load_and_authorize_resource
   
   def index
-    @feedback_items = FeedbackItem.all
+    @feedback_items = FeedbackItem.active
+    render :layout => 'ajax' if request.headers['X-PJAX']
+  end
+  
+  def archived
+    @feedback_items = FeedbackItem.archived.order('id desc').paginate(:page => params[:page], :per_page => 30)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
@@ -18,8 +23,10 @@ class FeedbackItemsController < ApplicationController
   end
   
   def destroy
+    #we actually archive
     @feedback_item = FeedbackItem.find(params[:id])
-    @feedback_item.destroy
-    redirect_to feedback_items_url, :notice => "Successfully deleted feedback_item."
+    @feedback_item.archived = true
+    @feedback_item.save
+    redirect_to feedback_items_url, :notice => "Successfully archived feedback item."
   end
 end

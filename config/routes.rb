@@ -23,7 +23,11 @@ Frasernw::Application.routes.draw do
   resources :offices
   resources :provinces
   resources :healthcare_providers
+  
+  match "/review_items/archived" => "review_items#archived", :as => "archived_review_items"
   resources :review_items
+  
+  match "/feedback_items/archived" => "feedback_items#archived", :as => "archived_feedback_items"
   resources :feedback_items
   
   resources :sc_categories, :path => 'content_categories'

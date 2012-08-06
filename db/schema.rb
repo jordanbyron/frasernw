@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120803182410) do
+ActiveRecord::Schema.define(:version => 20120806200837) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -218,6 +218,7 @@ ActiveRecord::Schema.define(:version => 20120803182410) do
     t.text      "feedback"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.boolean   "archived",   :default => false
   end
 
   create_table "focuses", :force => true do |t|
@@ -357,6 +358,7 @@ ActiveRecord::Schema.define(:version => 20120803182410) do
     t.text      "object"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.boolean   "archived",   :default => false
   end
 
   add_index "review_items", ["item_id", "item_type"], :name => "index_review_items_on_item_id_and_item_type"

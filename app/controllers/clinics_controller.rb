@@ -143,13 +143,13 @@ class ClinicsController < ApplicationController
   end
   
   def review
+    @clinic = Clinic.find(params[:id])
     @is_review = false
-    @review_item = ReviewItem.find_by_item_type_and_item_id( "Clinic", params[:id] );
+    @review_item = @clinic.review_item;
     
     if @review_item.blank?
       redirect_to clinics_path, :notice => "There are no review items for this specialist"
     else
-      @clinic = Clinic.find(params[:id])
       if @clinic.location.blank?
         @clinic.build_location
         @clinic.location.build_address
@@ -182,11 +182,12 @@ class ClinicsController < ApplicationController
   end
   
   def accept
-    #accept changes, destroy the review item so that we can save the clinic
+    #accept changes, archive the review item so that we can save the clinic
     @clinic = Clinic.find(params[:id])
     
     review_item = @clinic.review_item
-    ReviewItem.destroy(review_item)
+    review_item.archived = true;
+    review_item.save
     
     ClinicSweeper.instance.before_controller_update(@clinic)
     if @clinic.update_attributes(params[:clinic])

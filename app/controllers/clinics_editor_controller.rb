@@ -8,8 +8,8 @@ class ClinicsEditorController < ApplicationController
   def edit
     @token = params[:token]
     @is_review = true
-    @review_item = ReviewItem.find_by_item_type_and_item_id( "Clinic", params[:id] );
     @clinic = Clinic.find(params[:id])
+    @review_item = @clinic.review_item;
     if @clinic.focuses.count == 0
       @clinic.focuses.build
     end

@@ -67,10 +67,10 @@
                   %li.dropdown.admin
                     %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
                       Admin
-                      - user_review_item_count = ReviewItem.all.reject{ |ri| !current_user.owns(ri.item.specializations) }.count
-                      - user_feedback_item_count = FeedbackItem.all.reject{ |fi| !current_user.owns(fi.item.specializations) }.count
-                      - total_review_item_count = ReviewItem.all.count
-                      - total_feedback_item_count = FeedbackItem.all.count
+                      - user_review_item_count = ReviewItem.active.reject{ |ri| !current_user.owns(ri.item.specializations) }.count
+                      - user_feedback_item_count = FeedbackItem.active.reject{ |fi| !current_user.owns(fi.item.specializations) }.count
+                      - total_review_item_count = ReviewItem.active.count
+                      - total_feedback_item_count = FeedbackItem.active.count
                       -  if total_review_item_count + total_feedback_item_count > 0
                         (#{user_review_item_count + user_feedback_item_count}/#{total_review_item_count + total_feedback_item_count})
                       %b.caret
