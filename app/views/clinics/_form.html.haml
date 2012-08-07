@@ -145,6 +145,9 @@
               show_old_value(form_element, old_value_formatted);
             }
             break;
+          default:
+            //console.log("Don't know how to handle form tag " + form_element.prop("tagName"));
+            break;
         }
       }
       
