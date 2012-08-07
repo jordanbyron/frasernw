@@ -291,19 +291,6 @@
                       %strong Does not see or do
                     %p
                       = @clinic.not_performed.end_with_period
-            
-    .btn-group
-      - if show_details
-        %a.btn{"href" => clinic_patient_information_path(@clinic), "target" => "_blank"}
-          %i.icon-print.icon-text
-          Print Information for Patient
-      - if !current_user_is_admin? && (can? :update, @clinic)
-        %a.btn.btn-primary.ajax{"href" => clinic_self_edit_path(@clinic, @clinic.token)}
-          %i.icon-pencil.icon-white
-          Update #{@clinic.name}'s information
-      - else
-        %a.feedback.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
-          Incorrect Information? Let us know
         
     #feedback
       .inner   
@@ -343,6 +330,19 @@
               $('#feedback_thanks').fadeIn(200);
           });
         }
+            
+  .btn-group
+    - if show_details
+      %a.btn{"href" => clinic_patient_information_path(@clinic), "target" => "_blank"}
+        %i.icon-print.icon-text
+        Print Information for Patient
+    - if !current_user_is_admin? && (can? :update, @clinic)
+      %a.btn.btn-primary.ajax{"href" => clinic_self_edit_path(@clinic, @clinic.token)}
+        %i.icon-pencil.icon-white
+        Update #{@clinic.name}'s information
+    - else
+      %a.feedback.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
+        Incorrect Information? Let us know
 
   - if current_user_is_admin?
     
