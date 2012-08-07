@@ -94,7 +94,7 @@
                       %tr{:class => 'tableheader'}
                         %th{:class => "{sorter: 'bylastname'} name_column"} Specialist
                         %th{:class => "{sorter: 'status'} status_column"} Accepting New<br>Patients?
-                        %th{:class => "{sorter: 'waittime'} wait_time_column"} Average Patient<br>Wait Time
+                        %th{:class => "{sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
                         %th{:class => "{sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
                       - (@specialization.specialists).each do |specialist|
@@ -258,7 +258,7 @@
                       %tr{:class => 'tableheader'}
                         %th{:class => "{sorter: 'text'} name_column"} Clinic
                         %th{:class => "{sorter: 'status'} status_column"} Accepting New<br>Patients?
-                        %th{:class => "{sorter: 'waittime'} wait_time_column"} Average Patient<br>Wait Time
+                        %th{:class => "{sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
                         %th{:class => "{sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
                       - (@specialization.clinics).each do |clinic|
