@@ -701,7 +701,7 @@
     
     ul#specialties-menu
     {
-      margin: 0;
+      margin: 0 0 10px 0;
     }
     
     #specialties-dropdown-menu
@@ -722,11 +722,19 @@
   
     .tabbable ul.nav-tabs
     {
-      margin: 10px -10px 0 -10px;
+      margin: 0 -10px 0 -10px;
       
       li a
       {
         padding: 0 10px;
+      }
+    }
+  
+    .content-wrapper + .tabbable
+    {
+      ul.nav-tabs
+      {
+        margin-top: 0;
       }
     }
     

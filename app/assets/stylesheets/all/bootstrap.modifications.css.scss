@@ -373,7 +373,7 @@
     {
       height: 34px;
       background: $FNW_BLUE_GRAY url(/img/tab-background.gif) repeat-x;
-      margin: 4px 0-$FNW_BODY_BREATHING;;
+      margin: 0 0-$FNW_BODY_BREATHING 4px 0-$FNW_BODY_BREATHING ;
       padding: 0;
       border: none;
       
@@ -425,6 +425,14 @@
         padding-left: 2px;
         background: transparent url(/img/tab_divider.png) 0% 50% no-repeat;
       }
+    }
+  }
+  
+  .content-wrapper + .tabbable
+  {
+    ul.nav-tabs
+    {
+      margin-top: 4px;
     }
   }
 

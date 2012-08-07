@@ -998,7 +998,7 @@ body.loading #loading
 
   ul#specialties-menu
   {
-    margin: 0 0 0 0-$FNW_BODY_BREATHING;
+    margin: 0 0 4px 0-$FNW_BODY_BREATHING;
     padding: 0;
     
     li
@@ -1166,11 +1166,6 @@ body.loading #loading
         }
       }
     }
-  }
-  
-  #specialties-dropdown-menu + .content-wrapper
-  {
-    margin-top: 4px;
   }
   
   .scm
