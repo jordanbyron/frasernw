@@ -50,13 +50,14 @@
 
 - if @is_version
   = render 'versions/info'
+  
+- show_details = false
+- show_areas_of_practice = false
      
 .content-wrapper
   - cache(specialist_path(@specialist)) do
     .content
       .row
-        - show_details = false
-        - show_areas_of_practice = false
         .span7half
           .headline-header
           .headline
