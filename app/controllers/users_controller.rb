@@ -16,7 +16,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(params[:user])
-    if @user.save :validate => false #only for create, which is by admins, so we can avoid setting up with emails or passwords
+    if @user.save :validate => false #so we can avoid setting up with emails or passwords
       redirect_to users_path, :notice => "User #{@user.name} successfully created."
     else
       render :action => 'new'
@@ -37,7 +37,8 @@ class UsersController < ApplicationController
   
   def update
     @user = User.find(params[:id])
-    if @user.update_attributes(params[:user])
+    @user.attributes = params[:user]
+    if @user.save :validate => false #so we can edit a pending account
       redirect_to users_url, :notice  => "Successfully updated user."
     else
       render :action => 'edit'
