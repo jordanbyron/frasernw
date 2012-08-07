@@ -109,6 +109,9 @@
                 }
                 break;
               case('text'):
+              case('tel'):
+              case('email'):
+              case('url'):
                 old_entry_value = form_element.val();
                 if (old_entry_value != new_entry_value)
                 {
@@ -117,6 +120,9 @@
                   old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
                   show_old_value(form_element, old_value_formatted);
                 }
+                break;
+              default:
+                //console.log("Don't know how to handle type " + form_element.attr('type'));
                 break;
             }
             break;
