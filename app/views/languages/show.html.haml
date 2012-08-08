@@ -103,7 +103,10 @@
                           %td
                             %span{:class => "status_#{specialist.status_class}"}= specialist.status_class
                           %td= specialist.waittime
-                          %td= specialist.cities.join(" / ")
+                          %td
+                            %ul
+                              - specialist.cities.each do |city|
+                                %li= city
                           
                 .span3.offsethalf
                   .well.filter
