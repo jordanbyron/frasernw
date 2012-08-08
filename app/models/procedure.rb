@@ -37,7 +37,12 @@ class Procedure < ActiveRecord::Base
     procedure_specializations.each do |ps|
       ProcedureSpecialization.subtree_of(ps).each do |child|
         if child.assumed?
-          results += ps.specialization.specialists
+          if child.parent.present?
+            #only add the specialists that do the parent procedure we are assumed for
+            results += child.parent.procedure.all_specialists_for_specialization(child.specialization)
+          else
+            results += ps.specialization.specialists
+          end
         else
           Capacity.find_all_by_procedure_specialization_id(child.id).each do |capacity|
             results << capacity.specialist

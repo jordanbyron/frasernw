@@ -96,10 +96,10 @@
             .content
               .row
                 .span8half
-                  - assumed_specializations = @procedure.procedure_specializations.reject{ |ps| !ps.assumed? }.map{ |ps| ps.specialization }
-                  - if assumed_specializations.present?
+                  - assumed_procedure_specializations = @procedure.procedure_specializations.reject{ |ps| !ps.assumed? }
+                  - if assumed_procedure_specializations.present?
                     #specialist_assumed.assumed-phrase
-                      It is assumed that all #{assumed_specializations.map{ |s| s.member_name.uncapitalize_first_letter.pluralize }.to_sentence} see #{@procedure.name.uncapitalize_first_letter}
+                      It is assumed that all #{assumed_procedure_specializations.map{ |ps| ps.parent.present? ? "#{ps.specialization.member_name.uncapitalize_first_letter.pluralize} who see #{link_to ps.parent.procedure.name.uncapitalize_first_letter, ps.parent.procedure, :class => 'ajax'}" : ps.specialization.member_name.uncapitalize_first_letter.pluralize }.to_sentence.html_safe} see #{@procedure.name.uncapitalize_first_letter}
                 
                   #specialist_phrase.filter-phrase
                 

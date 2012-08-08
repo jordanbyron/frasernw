@@ -111,10 +111,10 @@
                                 %li= city
                           
                   #specialist_assumed_list
-                    - if @specialization.procedure_specializations.assumed.present?
+                    - if @specialization.procedure_specializations.assumed.reject{ |ps| ps.parent.present? }.present?
                       %i.icon-asterisk.icon-disabled.icon-small
                       Areas of practice we assume all #{@specialization.member_name.uncapitalize_first_letter.pluralize} see:
-                      = @specialization.procedure_specializations.assumed.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
+                      = @specialization.procedure_specializations.assumed.reject{ |ps| ps.parent.present? }.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
                       
                 .span3.offsethalf
                   .well.filter
