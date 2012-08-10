@@ -308,6 +308,8 @@
                   = l.input :suite_in, :input_html => { :class => "span1" }
                   = l.input :details_in
           %div{:class => "universal_#{index}"}
+            = so.input :open_saturday, wrapper: :bootstrap_tight
+            = so.input :open_sunday
             = so.input :sector_mask, as: :radio_buttons, collection: SpecialistOffice::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
           %script{"type" => "text/javascript"}
             :plain

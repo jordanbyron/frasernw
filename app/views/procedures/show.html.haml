@@ -164,6 +164,16 @@
                             %input#ssm.ss{"type" => "checkbox"} Male
                           %label.half
                             %input#ssf.ss{"type" => "checkbox"} Female
+                        
+                    .filter-group
+                      %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-schedule"}
+                        Schedule
+                      #specialist-filter-schedule.collapsable.collapse
+                        .filter-group-content
+                          %label.half
+                            %input.ssh{"type" => "checkbox", "id" => "sshsat"} Saturday
+                          %label.half
+                            %input.ssh{"type" => "checkbox", "id" => "sshsun"} Sunday
                     
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-language"}
@@ -202,7 +212,7 @@
                         {
                           update_table('s', 'specialist', '#{member_name}');
                         }
-                        $('.sp, .sc, .sr, .ss, .si, .sl, .sa').click( update_custom_specialist_table );
+                        $('.sp, .sc, .sr, .ss, .si, .ssh, .sl, .sa').click( update_custom_specialist_table );
                       });
         
               

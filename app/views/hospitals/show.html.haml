@@ -166,6 +166,16 @@
                             %input#ssm.ss{"type" => "checkbox"} Male
                           %label.half
                             %input#ssf.ss{"type" => "checkbox"} Female
+                        
+                    .filter-group
+                      %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-schedule"}
+                        Schedule
+                      #specialist-filter-schedule.collapsable.collapse
+                        .filter-group-content
+                          %label.half
+                            %input.ssh{"type" => "checkbox", "id" => "sshsat"} Saturday
+                          %label.half
+                            %input.ssh{"type" => "checkbox", "id" => "sshsun"} Sunday
                               
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-language"}
@@ -194,7 +204,7 @@
                   %script{"type" => "text/javascript"}
                     :plain
                       $(document).ready(function() {
-                        $('.ssp, .sc, .sr, .ss, .sl, .sa, .si').click( update_specialist_table );
+                        $('.ssp, .sc, .sr, .ss, .ssh, .sl, .sa, .si').click( update_specialist_table );
                       });
               
         - if has_clinics_in
@@ -388,6 +398,16 @@
                             %input#osm.os{"type" => "checkbox"} Male
                           %label.half
                             %input#osf.os{"type" => "checkbox"} Female
+                        
+                    .filter-group
+                      %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#office-filter-schedule"}
+                        Schedule
+                      #office-filter-schedule.collapsable.collapse
+                        .filter-group-content
+                          %label.half
+                            %input.osh{"type" => "checkbox", "id" => "oshsat"} Saturday
+                          %label.half
+                            %input.osh{"type" => "checkbox", "id" => "oshsun"} Sunday
                               
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#office-filter-language"}
@@ -415,7 +435,7 @@
                   %script{"type" => "text/javascript"}
                     :plain
                       $(document).ready(function() {
-                        $('.osp, .oc, .or, .os, .ol, .oi, .oa').click( update_office_table );
+                        $('.osp, .oc, .or, .os, .osh, .ol, .oi, .oa').click( update_office_table );
                       });
 
         %script{"type" => "text/javascript"}

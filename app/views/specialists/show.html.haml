@@ -195,6 +195,12 @@
                     Direct number 
                     %em for physician use only:
                     =specialist_office.direct_info
+                - if specialist_office.open_saturday && specialist_office.open_sunday
+                  %p Open Saturday and Sunday
+                - elsif specialist_office.open_saturday
+                  %p Open Saturday
+                - elsif specialist_office.open_sunday
+                  %p Open Sunday
                     
               - if @specialist.location_opened.present?
                 %p.space

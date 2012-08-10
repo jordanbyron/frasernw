@@ -22,6 +22,8 @@ module SpecializationsHelper
     filtering_attributes << "srpb" if s.patient_can_book?
     filtering_attributes << "ssm" if s.male?
     filtering_attributes << "ssf" if s.female?
+    filtering_attributes << "sshsat" if s.open_saturday?
+    filtering_attributes << "sshsun" if s.open_sunday?
     s.languages.each do |l|
       filtering_attributes << "sl#{l.id}_"
     end
@@ -58,6 +60,8 @@ module SpecializationsHelper
     filtering_attributes << "orpb" if s.patient_can_book?
     filtering_attributes << "osm" if s.male?
     filtering_attributes << "osf" if s.female?
+    filtering_attributes << "oshsat" if s.open_saturday?
+    filtering_attributes << "oshsun" if s.open_sunday?
     s.languages.each do |l|
       filtering_attributes << "ol#{l.id}_"
     end

@@ -425,6 +425,14 @@ class Specialist < ActiveRecord::Base
     result.uniq!
     return (result ? result.compact.collect{ |ps| ps.procedure } : [])
   end
+  
+  def open_saturday?
+    specialist_offices.reject{ |so| !so.open_saturday }.present?
+  end
+  
+  def open_sunday?
+    specialist_offices.reject{ |so| !so.open_sunday }.present?
+  end
 
   def token
     if self.saved_token

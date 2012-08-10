@@ -147,6 +147,16 @@
                             %input#ssm.ss{"type" => "checkbox"} Male
                           %label.half
                             %input#ssf.ss{"type" => "checkbox"} Female
+                        
+                    .filter-group
+                      %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-schedule"}
+                        Schedule
+                      #specialist-filter-schedule.collapsable.collapse
+                        .filter-group-content
+                          %label.half
+                            %input.ssh{"type" => "checkbox", "id" => "sshsat"} Saturday
+                          %label.half
+                            %input.ssh{"type" => "checkbox", "id" => "sshsun"} Sunday
                               
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-language"}
@@ -180,7 +190,7 @@
                   %script{"type" => "text/javascript"}
                     :plain
                       $(document).ready(function() {
-                        $('.ssp, .sc, .sr, .ss, .sl, .si, .sa').click( update_specialist_table );
+                        $('.ssp, .sc, .sr, .ss, .ssh, .sl, .si, .sa').click( update_specialist_table );
                       });
                     
         - if has_clinics

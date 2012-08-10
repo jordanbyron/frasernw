@@ -55,6 +55,7 @@ en:
         contact_details: "Additional contact details"
         contact_phone: "Phone"
         contact_notes: "Notes"
+        email: "E-mail"
         healthcare_providers: "Healthcare providers who see patients at the clinic"
         lagtime_mask: "On average, how long does it take the clinic to advise the GP office that an appointment has been booked for their patient?"
         limitations: "Clinic limitations (if any)"
@@ -145,6 +146,9 @@ en:
       specialist_office:
         sector_mask: "Public or private"
         direct_phone: "Direct number"
+        email: "E-mail"
+        open_saturday: "Open Saturday?"
+        open_sunday: "Open Sunday?"
         url: "Website address"
       specialization:
         name: "Speciality (e.g. Allergy)"
