@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120806200837) do
+ActiveRecord::Schema.define(:version => 20120810221212) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -154,6 +154,7 @@ ActiveRecord::Schema.define(:version => 20120806200837) do
     t.text      "contact_details"
     t.text      "status_details"
     t.string    "url"
+    t.string    "email"
   end
 
   create_table "contacts", :force => true do |t|
@@ -478,6 +479,7 @@ ActiveRecord::Schema.define(:version => 20120806200837) do
     t.string    "direct_phone"
     t.string    "direct_phone_extension"
     t.string    "url"
+    t.string    "email"
   end
 
   add_index "specialist_offices", ["office_id"], :name => "index_specialist_offices_on_office_id"

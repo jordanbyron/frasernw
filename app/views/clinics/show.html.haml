@@ -113,8 +113,9 @@
               %h6 Clinic Information
 
               %p
-                %strong= @clinic.phone if @clinic.phone.present?
+                %strong= @clinic.phone_only if @clinic.phone_only.present?
               %p= "Fax: #{@clinic.fax}" if @clinic.fax.present?
+              %p= "E-mail: #{mail_to @clinic.email, @clinic.email, :target => '_blank'}".html_safe if @clinic.email?
               %p= "Website: #{link_to @clinic.url, @clinic.url, :target => '_blank'}".html_safe if @clinic.url.present?
               %p= @clinic.contact_details.convert_newlines_to_br if @clinic.contact_details.present?
               - if @clinic.location.present? && @clinic.location.in_hospital?

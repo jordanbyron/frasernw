@@ -62,6 +62,8 @@
   - next if specialist_office.empty?
   - if specialist_office.office.present?
     %p= specialist_office.phone_only if specialist_office.phone_only.present?
+    %p= specialist_office.email if specialist_office.email.present?
+    %p= specialist_office.url if specialist_office.url.present?
     - location = specialist_office.office.location
     - next if !location
     - address = location.resolved_address

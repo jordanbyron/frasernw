@@ -281,6 +281,7 @@
               .span1
                 ext: 
               = so.input_field :direct_phone_extension, :class => "span1"
+            = so.input :email, :input_html => { :class => "span3" }
             = so.input :url, :input_html => { :class => "span3" }
           %div.no-print{:class => "office_#{index}"}
             = so.association :office, as: :select, collection: @offices, :include_blank => true, :input_html => { :class => "chzn-select no-print" }

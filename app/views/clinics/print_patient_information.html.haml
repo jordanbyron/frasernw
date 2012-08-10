@@ -57,6 +57,8 @@
 %h6 Clinic Information
 
 %p= @clinic.phone_only if @clinic.phone_only.present?
+%p= @clinic.email if @clinic.email.present?
+%p= @clinic.url if @clinic.url.present?
 
 - address = @clinic.resolved_address
 - if @clinic.location.present? && @clinic.location.in_hospital?
