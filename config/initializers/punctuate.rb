@@ -56,4 +56,8 @@ class String
   def remove_whitespace
     self.gsub(/\s+/, "")
   end
+  
+  def convert_newlines_to_br
+    self.gsub(/\r\n/, '<br>').html_safe
+  end
 end

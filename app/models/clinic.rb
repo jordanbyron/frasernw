@@ -294,7 +294,7 @@ class Clinic < ActiveRecord::Base
     end
     
     if referral_details.present?
-      return "#{output.punctuate} #{referral_details.punctuate}"
+      return "#{output.punctuate} #{referral_details.punctuate.convert_newlines_to_br}".html_safe
     else
       return output.punctuate
     end
@@ -356,7 +356,7 @@ class Clinic < ActiveRecord::Base
     end
     
     if urgent_details.present?
-      return "#{output.punctuate} #{urgent_details.punctuate}"
+      return "#{output.punctuate} #{urgent_details.punctuate.convert_newlines_to_br}".html_safe
     else
       return output.punctuate
     end

@@ -97,11 +97,11 @@
               - if @clinic.status_details.present?
                 %p.no_indent
                   %strong Details:
-                  = @clinic.status_details.end_with_period
+                  = @clinic.status_details.end_with_period.convert_newlines_to_br
               - if @clinic.limitations.present?
                 %p.no_indent
                   %strong Limitations:
-                  = @clinic.limitations.end_with_period
+                  = @clinic.limitations.end_with_period.convert_newlines_to_br
           
           .headline-footer
    
@@ -116,7 +116,7 @@
                 %strong= @clinic.phone if @clinic.phone.present?
               %p= "Fax: #{@clinic.fax}" if @clinic.fax.present?
               %p= "Website: #{link_to @clinic.url, @clinic.url, :target => '_blank'}".html_safe if @clinic.url.present?
-              %p= @clinic.contact_details.gsub(/\r\n/, '<br>').html_safe if @clinic.contact_details.present?
+              %p= @clinic.contact_details.convert_newlines_to_br if @clinic.contact_details.present?
               - if @clinic.location.present? && @clinic.location.in_hospital?
                 - hospital = @clinic.location.hospital_in
                 %p= "In #{link_to hospital.name, hospital_path(hospital), :class => 'ajax'}".html_safe
@@ -176,7 +176,7 @@
                 %p.space
                   %strong Required investigations
                   for all patients:
-                  = @clinic.required_investigations.end_with_period
+                  = @clinic.required_investigations.end_with_period.convert_newlines_to_br
                 
               -if @clinic.waittime.present?
                 %p.space
@@ -206,7 +206,7 @@
                 %p
                   %strong Red flags
                   that this clinic feels warrants urgent consultation:
-                  = @clinic.red_flags.end_with_period
+                  = @clinic.red_flags.end_with_period.convert_newlines_to_br
             
             - if @clinic.patient_instructions.present? || @clinic.cancellation_policy.present?
               %h6 Patient Information
@@ -214,12 +214,12 @@
               - if @clinic.patient_instructions.present?
                 %p.space
                   %strong Patient instructions:
-                  = @clinic.patient_instructions.end_with_period
+                  = @clinic.patient_instructions.end_with_period.convert_newlines_to_br
                   
               - if @clinic.cancellation_policy.present?
                 %p.space
                   %strong Cancellation policy:
-                  = @clinic.cancellation_policy.end_with_period
+                  = @clinic.cancellation_policy.end_with_period.convert_newlines_to_br
               
             - if @clinic.healthcare_providers.present?
             
@@ -285,12 +285,11 @@
                   - if @clinic.interest.present?
                     %p.space
                       %strong Most interested in
-                    %p= @clinic.interest.end_with_period
+                    %p= @clinic.interest.end_with_period.convert_newlines_to_br
                   - if @clinic.not_performed.present?
                     %p.space
                       %strong Does not see or do
-                    %p
-                      = @clinic.not_performed.end_with_period
+                    %p= @clinic.not_performed.end_with_period.convert_newlines_to_br
         
     #feedback
       .inner   

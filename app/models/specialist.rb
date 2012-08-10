@@ -348,7 +348,7 @@ class Specialist < ActiveRecord::Base
       output = output.blank? ? through : "#{through}, or #{output}"
     end
     if referral_details.present?
-      return "#{output.punctuate} #{referral_details.punctuate}"
+      return "#{output.punctuate} #{referral_details.convert_newlines_to_br.punctuate}".html_safe
     else
       return output.punctuate
     end
@@ -410,7 +410,7 @@ class Specialist < ActiveRecord::Base
     end
     
     if urgent_details.present?
-      return "#{output.punctuate} #{urgent_details.punctuate}"
+      return "#{output.punctuate} #{urgent_details.convert_newlines_to_br.punctuate}".html_safe
     else
       return output.punctuate
     end

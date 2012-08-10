@@ -139,11 +139,11 @@
               - if @specialist.status_details.present?
                 %p.no_indent
                   %strong Details:
-                  = @specialist.status_details.end_with_period
+                  = @specialist.status_details.end_with_period.convert_newlines_to_br
               - if @specialist.practise_limitations.present?
                 %p.no_indent
                   %strong Limitations:
-                  = @specialist.practise_limitations.end_with_period
+                  = @specialist.practise_limitations.end_with_period.convert_newlines_to_br
           
           .headline-footer
           
@@ -241,7 +241,7 @@
                 %p.space
                   %strong Required investigations
                   for all patients:
-                  = @specialist.required_investigations.end_with_period
+                  = @specialist.required_investigations.end_with_period.convert_newlines_to_br
 
               -if @specialist.waittime.present?
                 %p.space
@@ -270,7 +270,7 @@
                 %p
                   %strong Red flags
                   that this office feels warrant urgent consultation:
-                  = @specialist.red_flags.end_with_period
+                  = @specialist.red_flags.end_with_period.convert_newlines_to_br
               
             - if @specialist.patient_instructions.present? || @specialist.cancellation_policy.present?
               %h6 Patient Information
@@ -278,11 +278,11 @@
               -if @specialist.patient_instructions.present?
                 %p.space
                   %strong Patient instructions:
-                  = @specialist.patient_instructions.end_with_period
+                  = @specialist.patient_instructions.end_with_period.convert_newlines_to_br
               -if @specialist.cancellation_policy.present?
                 %p.space
                   %strong Cancellation policy:
-                  = @specialist.cancellation_policy.end_with_period
+                  = @specialist.cancellation_policy.end_with_period.convert_newlines_to_br
             
             - if @specialist.hospitals.present? || @specialist.clinics.present?
               %h6 Associations
@@ -334,12 +334,12 @@
                       = custom_procedures.html_safe
                   - if @specialist.interest.present?
                     %p.space
-                      %strong Most interested in:
-                      = @specialist.interest.end_with_period
+                      %strong Most interested in
+                    %p= @specialist.interest.end_with_period.convert_newlines_to_br
                   - if @specialist.not_performed.present?
                     %p.space
-                      %strong Does not see or do:
-                      = @specialist.not_performed.end_with_period
+                      %strong Does not see or do
+                    %p= @specialist.not_performed.end_with_period.convert_newlines_to_br
       
     #feedback
       .inner

@@ -47,14 +47,14 @@
   %h6#patient_instruction_header Appointment Instructions
   
   -if @specialist.patient_instructions.present?
-    %p= @specialist.patient_instructions.end_with_period
+    %p= @specialist.patient_instructions.end_with_period.convert_newlines_to_br
   
   %textarea#custom_patient_instructions{:placeholder => "Additional patient instructions"}
   #custom_patient_instructions_print
     
 - if @specialist.cancellation_policy.present?
   %h6 Cancellation Policy
-  %p= @specialist.cancellation_policy.end_with_period
+  %p= @specialist.cancellation_policy.end_with_period.convert_newlines_to_br
   
 %h6 #{@specialist.formal_name}'s Office Information
   
