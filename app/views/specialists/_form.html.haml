@@ -310,7 +310,30 @@
           %div{:class => "universal_#{index}"}
             = so.input :open_saturday, wrapper: :bootstrap_tight
             = so.input :open_sunday
+                        
             = so.input :sector_mask, as: :radio_buttons, collection: SpecialistOffice::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
+            
+            %h4 When days and times are your phone lines open?
+            = so.simple_fields_for :phone_schedule, :suppress_fields => true do |s|
+              - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
+                = s.simple_fields_for day, :suppress_fields => true do |d|
+                  .changed_wrapper
+                    = d.input :scheduled, :label => day.to_s.capitalize_first_letter, wrapper: :bootstrap_tight do
+                      = d.input_field :scheduled, :class => "scheduled span1"
+                      .hours.no-print
+                        .changed_wrapper
+                          .from from
+                          = d.input_field :from, :class => "auto no-print", :minute_step => 15, :include_blank => true
+                        .changed_wrapper
+                          .to to
+                          = d.input_field :to, :class => "auto no-print", :minute_step => 15, :include_blank => true
+                      .print-only
+                        from:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to:
+
+            %script{"type" => "text/javascript"}
+              :plain
+                $(".scheduled").each(scheduled_changed)
+                
           %script{"type" => "text/javascript"}
             :plain
               $(document).ready( address_#{index}_location_changed );

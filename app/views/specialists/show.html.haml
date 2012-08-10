@@ -201,6 +201,7 @@
                   %p Open Saturday
                 - elsif specialist_office.open_sunday
                   %p Open Sunday
+                %p= "Phone lines open #{specialist_office.phone_schedule.collapsed_days_and_hours.to_sentence}" if specialist_office.phone_schedule.scheduled?
                     
               - if @specialist.location_opened.present?
                 %p.space

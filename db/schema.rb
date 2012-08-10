@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120810222816) do
+ActiveRecord::Schema.define(:version => 20120810225148) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -482,6 +482,7 @@ ActiveRecord::Schema.define(:version => 20120810222816) do
     t.string   "email"
     t.boolean  "open_saturday",          :default => false
     t.boolean  "open_sunday",            :default => false
+    t.integer  "schedule_id"
   end
 
   add_index "specialist_offices", ["office_id"], :name => "index_specialist_offices_on_office_id"

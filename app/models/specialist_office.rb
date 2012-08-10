@@ -1,9 +1,13 @@
 class SpecialistOffice < ActiveRecord::Base
-  attr_accessible :phone, :phone_extension, :fax, :direct_phone, :direct_phone_extension, :sector_mask, :email, :open_saturday, :open_sunday, :office_id, :office_attributes, :url
+  attr_accessible :phone, :phone_extension, :fax, :direct_phone, :direct_phone_extension, :sector_mask, :email, :open_saturday, :open_sunday, :office_id, :office_attributes, :phone_schedule_attributes, :url
   
   belongs_to :specialist
   belongs_to :office
   accepts_nested_attributes_for :office
+  
+  #offices have a phone schedule
+  has_one :phone_schedule, :as => :schedulable, :dependent => :destroy, :class_name => "Schedule"
+  accepts_nested_attributes_for :phone_schedule
   
   has_paper_trail
   

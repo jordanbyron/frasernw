@@ -4,7 +4,7 @@ class ScheduleDay < ActiveRecord::Base
   has_paper_trail
   
   def time?
-    from.hour != 0 || from.min != 0 || to.hour != 0 || to.min != 0
+    from.present? && to.present? && (from.hour != 0 || from.min != 0 || to.hour != 0 || to.min != 0)
   end
   
   def time
