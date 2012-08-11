@@ -21,7 +21,7 @@ class HealthcareProvidersController < ApplicationController
   def create
     @healthcare_provider = HealthcareProvider.new(params[:healthcare_provider])
     if @healthcare_provider.save
-      redirect_to @healthcare_provider, :notice => "Successfully created healthcare_provider."
+      redirect_to @healthcare_provider, :notice => "Successfully created healthcare provider."
       else
       render :action => 'new'
     end
@@ -36,7 +36,7 @@ class HealthcareProvidersController < ApplicationController
     @healthcare_provider = HealthcareProvider.find(params[:id])
     HealthcareProviderSweeper.instance.before_controller_update(@healthcare_provider)
     if @healthcare_provider.update_attributes(params[:healthcare_provider])
-      redirect_to @healthcare_provider, :notice  => "Successfully updated healthcare_provider."
+      redirect_to @healthcare_provider, :notice  => "Successfully updated healthcare provider."
       else
       render :action => 'edit'
     end
@@ -46,6 +46,6 @@ class HealthcareProvidersController < ApplicationController
     @healthcare_provider = HealthcareProvider.find(params[:id])
     HealthcareProviderSweeper.instance.before_controller_destroy(@healthcare_provider)
     @healthcare_provider.destroy
-    redirect_to healthcare_providers_url, :notice => "Successfully deleted healthcare_provider."
+    redirect_to healthcare_providers_url, :notice => "Successfully deleted healthcare provider."
   end
 end

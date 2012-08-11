@@ -17,10 +17,10 @@ class PasswordResetsController < ApplicationController
       @user = User.find_by_email(params[:user][:email])  
       if @user  
         @user.deliver_password_reset_instructions!  
-        redirect_to login_url, :layout => 'user_sessions', :notice => "Instructions to reset your password have been e-mailed to you. Please check your e-mail."
+        redirect_to login_url, :layout => 'user_sessions', :notice => "Instructions to reset your password have been e-mailed to #{@user.email}. Please check your e-mail."
       else  
         @user = User.new
-        redirect_to new_password_reset_url, :layout => 'user_sessions', :notice => "We do not have any account that uses that e-mail address as a login. Please check the e-mail address you used and try again."
+        redirect_to new_password_reset_url, :layout => 'user_sessions', :notice => "We do not have any account associated with #{@user.email}. Please check the e-mail address you used and try again."
       end  
     end
   end  

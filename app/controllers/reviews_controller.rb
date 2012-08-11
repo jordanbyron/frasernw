@@ -9,13 +9,13 @@ class ReviewsController < ApplicationController
   def accept
     review = Review.find(params[:review_id])
     review.accept
-    redirect_to reviews_path, :notice => "Changes Accepted"
+    redirect_to reviews_path, :notice => "Successfully accepted changes."
   end
 
   def destroy
     review = Review.find(params[:id])
     review.reject!
     review.destroy
-    redirect_to reviews_path, :notice => "Changes Rejected"
+    redirect_to reviews_path, :notice => "Rejected changes"
   end
 end
