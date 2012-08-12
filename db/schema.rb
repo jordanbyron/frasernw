@@ -205,11 +205,11 @@ ActiveRecord::Schema.define(:version => 20120811001827) do
   add_index "favorites", ["user_id"], :name => "index_favorites_on_user_id"
 
   create_table "featured_contents", :force => true do |t|
-    t.integer  "sc_category_id"
-    t.integer  "sc_item_id"
-    t.integer  "front_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "sc_category_id"
+    t.integer   "sc_item_id"
+    t.integer   "front_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "feedback_items", :force => true do |t|
@@ -234,8 +234,8 @@ ActiveRecord::Schema.define(:version => 20120811001827) do
   add_index "focuses", ["procedure_specialization_id"], :name => "index_focuses_on_procedure_specialization_id"
 
   create_table "fronts", :force => true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "healthcare_providers", :force => true do |t|
@@ -468,21 +468,21 @@ ActiveRecord::Schema.define(:version => 20120811001827) do
   end
 
   create_table "specialist_offices", :force => true do |t|
-    t.integer  "specialist_id"
-    t.integer  "office_id"
-    t.string   "phone"
-    t.string   "fax"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "phone_extension"
-    t.integer  "sector_mask",            :default => 1
-    t.string   "direct_phone"
-    t.string   "direct_phone_extension"
-    t.string   "url"
-    t.string   "email"
-    t.boolean  "open_saturday",          :default => false
-    t.boolean  "open_sunday",            :default => false
-    t.integer  "schedule_id"
+    t.integer   "specialist_id"
+    t.integer   "office_id"
+    t.string    "phone"
+    t.string    "fax"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string    "phone_extension"
+    t.integer   "sector_mask",            :default => 1
+    t.string    "direct_phone"
+    t.string    "direct_phone_extension"
+    t.string    "url"
+    t.string    "email"
+    t.boolean   "open_saturday",          :default => false
+    t.boolean   "open_sunday",            :default => false
+    t.integer   "schedule_id"
   end
 
   add_index "specialist_offices", ["office_id"], :name => "index_specialist_offices_on_office_id"
@@ -569,10 +569,10 @@ ActiveRecord::Schema.define(:version => 20120811001827) do
   add_index "specialists", ["referral_clinic_id"], :name => "index_specialists_on_referral_clinic_id"
 
   create_table "specialization_owners", :force => true do |t|
-    t.integer  "specialization_id"
-    t.integer  "owner_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "specialization_id"
+    t.integer   "owner_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "specializations", :force => true do |t|
