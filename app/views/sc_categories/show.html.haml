@@ -45,7 +45,19 @@
     %tbody
       - @sc_category.sc_items.each do |sc_item|
         %tr
-          %td= link_to(sc_item.title, sc_item, :class => "ajax")
+          %td
+            - if sc_item.link?
+              %ul.space
+                %li= link_to(sc_item.title, sc_item.url, :target => "_blank")
+                %li
+                  %span.format= sc_item.format
+                  %span.domain= sc_item.domain
+            - else
+              %ul.space
+                %li= link_to sc_item.title, sc_item, :class => "ajax"
+                %li
+                  %span.format= sc_item.format
+                  %span.domain= sc_item.domain
           %td= sc_item.specializations.map{ |s| s.name }.to_sentence
       
   %p.admin.btn-group

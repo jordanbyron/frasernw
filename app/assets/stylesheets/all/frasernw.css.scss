@@ -384,6 +384,19 @@ body.loading #loading
     }
   }
   
+  span.format, span.domain
+  {
+    color: #888;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 10px;
+  }
+  
+  span.domain
+  {
+    color: #DDD;
+  }
+  
   .table
   {
     th
@@ -468,6 +481,7 @@ body.loading #loading
       ul.space
       {
         margin-top: 6px;
+        margin-bottom: 6px;
       }
     }
     
@@ -1224,6 +1238,17 @@ body.loading #loading
     li
     {
       margin-bottom: 12px;
+  
+      ul.content-link
+      {
+        list-style-type: none;
+        margin: 0;
+      
+        li
+        {
+          margin: 0;
+        }
+      }
     }
   }
   

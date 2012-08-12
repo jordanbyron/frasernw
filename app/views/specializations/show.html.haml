@@ -438,9 +438,19 @@
                 %ul.scm
                   - link_items.each do |sc_item|
                     - if sc_item.markdown? 
-                      %li= link_to sc_item.title, sc_item, :class => "ajax"
+                      %li
+                        %ul.content-link
+                          %li= link_to sc_item.title, sc_item, :class => "ajax"
+                          %li
+                            %span.format= sc_item.format
+                            %span.domain= sc_item.domain
                     - else
-                      %li= link_to sc_item.title, sc_item.url, :target => "_blank"
+                      %li
+                        %ul.content-link
+                          %li= link_to(sc_item.title, sc_item.url, :target => "_blank")
+                          %li
+                            %span.format= sc_item.format
+                            %span.domain= sc_item.domain
   
               - sc_category.sc_items.for_specialization(@specialization).reject{ |item| !item.markdown? || !item.inline? }.each do |sc_item|
                 .scm
