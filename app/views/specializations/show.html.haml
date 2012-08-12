@@ -456,6 +456,9 @@
                 .scm
                   %h1= sc_item.title
                   = BlueCloth.new(sc_item.markdown_content).to_html.html_safe
+                  
+              %hr
+              = link_to "<i class='icon-arrow-right icon-blue'></i> Browse #{sc_category.name} content from all specialties".html_safe, sc_category_path(sc_category), :class => 'ajax'
       
       - tab_javascript = ""
       - ScCategory.all.each do |sc_category|
