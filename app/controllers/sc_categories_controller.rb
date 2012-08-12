@@ -21,7 +21,7 @@ class ScCategoriesController < ApplicationController
   def create
     @sc_category = ScCategory.new(params[:sc_category])
     if @sc_category.save
-      redirect_to @sc_category, :notice => "Successfully created sc_category."
+      redirect_to @sc_category, :notice => "Successfully created content category."
     else
       render :action => 'new'
     end
@@ -36,7 +36,7 @@ class ScCategoriesController < ApplicationController
     @sc_category = ScCategory.find(params[:id])
     #ScCategorySweeper.instance.before_controller_update(@sc_category)
     if @sc_category.update_attributes(params[:sc_category])
-      redirect_to @sc_category, :notice  => "Successfully updated sc_category."
+      redirect_to @sc_category, :notice  => "Successfully updated content category."
     else
       render :action => 'edit'
     end
@@ -46,6 +46,6 @@ class ScCategoriesController < ApplicationController
     @sc_category = ScCategory.find(params[:id])
     #ScCategorySweeper.instance.before_controller_destroy(@sc_category)
     @sc_category.destroy
-    redirect_to sc_categories_url, :notice => "Successfully deleted sc_category."
+    redirect_to sc_categories_url, :notice => "Successfully deleted content category."
   end
 end

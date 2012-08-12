@@ -32,7 +32,7 @@ class ScItemsController < ApplicationController
         sc_item_specialization = ScItemSpecialization.find_by_sc_item_id_and_specialization_id( @sc_item.id, specialization.id )
         ScItemSpecializationProcedureSpecialization.create( :sc_item_specialization_id => sc_item_specialization.id, :procedure_specialization_id => ps_id ) if sc_item_specialization.present?
       end
-      redirect_to @sc_item, :notice => "Successfully created sc_item."
+      redirect_to @sc_item, :notice => "Successfully created content item."
     else
       render :action => 'new'
     end
@@ -72,7 +72,7 @@ class ScItemsController < ApplicationController
           ScItemSpecializationProcedureSpecialization.find_or_create_by_sc_item_specialization_id_and_procedure_specialization_id( sc_item_specialization.id, ps_id )
         end
       end
-      redirect_to @sc_item, :notice  => "Successfully updated sc_item."
+      redirect_to @sc_item, :notice  => "Successfully updated content item."
     else
       render :action => 'edit'
     end
@@ -82,6 +82,6 @@ class ScItemsController < ApplicationController
     @sc_item = ScItem.find(params[:id])
     #ScItemSweeper.instance.before_controller_destroy(@sc_item)
     @sc_item.destroy
-    redirect_to sc_items_url, :notice => "Successfully deleted sc_item."
+    redirect_to sc_items_url, :notice => "Successfully deleted content item."
   end
 end
