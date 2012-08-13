@@ -53,8 +53,9 @@
       
         %h2 Latest Updates
         
-        - latest_events(5).each do |event|
-          %p= event
+        - cache('latest_updates') do
+          - latest_events(5).each do |event|
+            %p= event
               
       .span4.offsethalf
       
