@@ -389,7 +389,7 @@
         }
                   
   .btn-group
-    - if show_details
+    - if true || show_details
       %a.btn{"href" => specialist_patient_information_path(@specialist), "target" => "_blank"}
         %i.icon-print.icon-text
         Print Information for Patient

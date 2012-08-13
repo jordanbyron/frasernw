@@ -332,7 +332,7 @@
         }
             
   .btn-group
-    - if show_details
+    - if true || show_details
       %a.btn{"href" => clinic_patient_information_path(@clinic), "target" => "_blank"}
         %i.icon-print.icon-text
         Print Information for Patient
