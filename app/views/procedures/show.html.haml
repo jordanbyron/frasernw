@@ -351,7 +351,7 @@
   
               - sc_category.sc_items.for_procedure_specialization(procedure_specialization).reject{ |item| !item.markdown? || !item.inline? }.each do |sc_item|
                 .scm
-                  %h1= sc_item.title
+                  %h1{:class => sc_item.shared_care? && "shared_care"}= sc_item.title
                   = BlueCloth.new(sc_item.markdown_content).to_html.html_safe
 
     %p.admin.btn-group
