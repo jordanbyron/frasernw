@@ -80,7 +80,7 @@
                 - if featured_sc_item.markdown? 
                   %li= link_to featured_sc_item.title, featured_sc_item, :class => "ajax #{featured_sc_item.shared_care? && 'shared_care'}"
                 - else
-                  %li= link_to featured_sc_item.title, featured_sc_item.url, :target => "_blank", :class => featured_sc_item.shared_care? && "shared_care"
+                  %li= link_to featured_sc_item.title, feature_sc_item.link? ? featured_sc_item.url : featured_sc_item.document.url, :target => "_blank", :class => featured_sc_item.shared_care? && "shared_care"
                   
               %li
                 = link_to "<i class='icon-arrow-right icon-blue'></i> Browse all #{category.name}".html_safe, sc_category_path(category), :class => 'ajax'

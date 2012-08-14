@@ -447,7 +447,7 @@
                     - else
                       %li
                         %ul.content-link
-                          %li= link_to(sc_item.title, sc_item.url, :target => "_blank")
+                          %li= link_to(sc_item.title, sc_item.link? ? sc_item.url : sc_item.document.url, :target => "_blank")
                           %li
                             %span.format= sc_item.format
                             %span.domain= sc_item.domain

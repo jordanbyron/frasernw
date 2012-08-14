@@ -53,11 +53,15 @@
   
     %p= link_to @sc_item.title, @sc_item.url, :target => "_blank"
     
-  - else
+  - elsif @sc_item.markdown?
   
     %h1{:class => @sc_item.shared_care? && "shared_care"}= @sc_item.title
   
     %p= BlueCloth.new(@sc_item.markdown_content).to_html.html_safe
+  
+  - elsif @sc_item.document?
+  
+    %p= link_to @sc_item.title, @sc_item.document.url, :target => "_blank"
   
   %p.admin.btn-group
     - if can? :update, @sc_item
