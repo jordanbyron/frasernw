@@ -1,3 +1,5 @@
+- title "Pathways | Content Items"
+
 .content-wrapper
 
   %h2 Content Items
@@ -19,6 +21,10 @@
             %tr
               %th Title
               %th Specialties
+              %th Type
+              %th Inline?
+              %th Searchable?
+              %th Shared Care?
               %th.admin
 
             - category.sc_items.each do |sc_item|
@@ -33,6 +39,10 @@
                           %ul
                             - is.procedure_specializations.each do |ps|
                               %li= link_to ps.procedure.name, ps.procedure, :class => 'ajax'
+                %td= sc_item.type
+                %td= sc_item.inline? ? "Yes" : "No"
+                %td= sc_item.searchable ? "Yes" : "No"
+                %td= sc_item.shared_care? ? "Yes" : "No"
                 %td.admin.btn-group
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_sc_item_path(sc_item), :class => "btn btn-mini ajax")
                   = link_to("<i class='icon-trash'></i>".html_safe + " Delete", sc_item, :confirm => "Delete #{sc_item.title}?", :method => :delete, :class => "btn btn-mini")

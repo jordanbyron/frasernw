@@ -37,7 +37,7 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
   end
   
   def type
-    SCItem::TYPE_HASH[type_mask]
+    ScItem::TYPE_HASH[type_mask]
   end
 
   def link?
