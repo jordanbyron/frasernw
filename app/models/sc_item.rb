@@ -1,5 +1,5 @@
 class ScItem < ActiveRecord::Base
-  attr_accessible :sc_category_id, :specialization_ids, :tool, :type_mask, :title, :searchable, :shared_care, :inline, :url, :markdown_content
+  attr_accessible :sc_category_id, :specialization_ids, :tool, :type_mask, :title, :searchable, :shared_care, :inline, :url, :markdown_content, :document
   
   belongs_to  :sc_category
   
