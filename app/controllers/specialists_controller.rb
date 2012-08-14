@@ -88,7 +88,7 @@ class SpecialistsController < ApplicationController
     end
     while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
       os = @specialist.specialist_offices.build
-      s = os.build_schedule
+      s = os.build_phone_schedule
       s.build_monday
       s.build_tuesday
       s.build_wednesday
