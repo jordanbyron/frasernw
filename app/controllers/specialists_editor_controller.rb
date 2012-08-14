@@ -13,6 +13,20 @@ class SpecialistsEditorController < ApplicationController
     if @specialist.capacities.count == 0
       @specialist.capacities.build
     end
+    while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
+      os = @specialist.specialist_offices.build
+      s = os.build_phone_schedule
+      s.build_monday
+      s.build_tuesday
+      s.build_wednesday
+      s.build_thursday
+      s.build_friday
+      s.build_saturday
+      s.build_sunday
+      o = os.build_office
+      l = o.build_location
+    end
+    @offices = Office.includes(:location => [ {:address => :city}, {:clinic_in => {:location => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
     @specializations_clinics = []
     @specialist.specializations_including_in_progress.each { |s| 
       @specializations_clinics += s.clinics.collect { |c| [c.name, c.id] }
