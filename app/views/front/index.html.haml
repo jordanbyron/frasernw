@@ -56,6 +56,16 @@
         - cache('latest_updates') do
           - latest_events(5).each do |event|
             %p= event
+            
+        %h2 Division Updates
+        
+        %p
+          %strong August 13th
+          Pathways is being demonstrated to the Fraser Northwest division board at 6:30pm
+        
+        %h2.shared_care Shared Care Updates
+        
+        %p Our first sessions with our local orthopedic surgeons were a great success. We have referral criteria for the #{link_to 'Fraser Orthopedic Treatment Clinic (FOTC)', '/clinics/124', :class => 'ajax'} - a clinic that is available for referrals by all GP's - as well as red flag guidelines for #{link_to 'upper extremeties', '/content_items/13', :class => 'ajax'}, #{link_to 'knee and hip', '/content_items/12', :class => 'ajax'}, and #{link_to 'ankle and foot', '/content_items/11', :class => 'ajax'}.
               
       .span4.offsethalf
       
@@ -74,6 +84,13 @@
                   
               %li
                 = link_to "<i class='icon-arrow-right icon-blue'></i> Browse all #{category.name}".html_safe, sc_category_path(category), :class => 'ajax'
+                
+          %h3
+          
+          %ul.space
+            %li
+              %a.shared_care.icon-blue 
+              Indicates content from our Shared Care initiative
                   
   - if current_user_is_admin?
     %p.admin.btn-group
