@@ -1,8 +1,6 @@
 class HealthcareProvidersController < ApplicationController
   load_and_authorize_resource
   
-  cache_sweeper :healthcare_provider_sweeper, :only => [:create, :update, :destroy]
-  
   def index
     @healthcare_providers = HealthcareProvider.all
     render :layout => 'ajax' if request.headers['X-PJAX']

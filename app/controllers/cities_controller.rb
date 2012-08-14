@@ -1,8 +1,6 @@
 class CitiesController < ApplicationController
   load_and_authorize_resource
   
-  cache_sweeper :city_sweeper, :only => [:create, :update, :destroy]
-  
   def index
     @citys = City.all
     render :layout => 'ajax' if request.headers['X-PJAX']
