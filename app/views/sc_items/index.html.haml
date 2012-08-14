@@ -29,16 +29,14 @@
 
             - category.sc_items.each do |sc_item|
               %tr
-                %td= link_to sc_item.title, sc_item, :class => 'ajax'
+                %td{"width" => "40%"}= link_to sc_item.title, sc_item, :class => 'ajax'
                 %td
                   %ul
                     - sc_item.sc_item_specializations.each do |is|
                       %li
                         = link_to is.specialization.name, is.specialization, :class => 'ajax'
                         - if is.procedure_specializations.present?
-                          %ul
-                            - is.procedure_specializations.each do |ps|
-                              %li= link_to ps.procedure.name, ps.procedure, :class => 'ajax'
+                          = ": #{is.procedure_specializations.map{ |ps| link_to ps.procedure.name, ps.procedure, :class => 'ajax' }.to_sentence}".html_safe
                 %td= sc_item.type
                 %td= sc_item.inline? ? "Yes" : "No"
                 %td= sc_item.searchable ? "Yes" : "No"
