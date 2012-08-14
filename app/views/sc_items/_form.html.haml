@@ -1,4 +1,4 @@
-= simple_form_for @sc_item, :html => { :class => "form-horizontal ajax" } do |f|
+= simple_form_for @sc_item, :html => { :class => "form-horizontal", :multipart => true } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
@@ -40,6 +40,8 @@
   #mardown_section
     = f.input :markdown_content
     = f.input :inline
+  #document_section
+    = f.input :document, as: :file
         
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
@@ -77,11 +79,19 @@
         {
           $("#link_section").show();
           $("#mardown_section").hide();
-        }
-        else
+          $("#document_section").hide();
+        } 
+        else if ($(this).val() == 2)
         {
           $("#link_section").hide();
           $("#mardown_section").show();
+          $("#document_section").hide();
+        }
+        else if ($(this).val() == 3)
+        {
+          $("#link_section").hide();
+          $("#mardown_section").hide();
+          $("#document_section").show();
         }
       }
       

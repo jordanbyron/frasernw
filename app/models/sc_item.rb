@@ -8,6 +8,14 @@ class ScItem < ActiveRecord::Base
 
   has_many    :sc_item_specialization_procedure_specializations, :through => :sc_item_specializations
   has_many    :procedure_specializations, :through => :sc_item_specialization_procedure_specializations
+  
+  has_attached_file :document,
+  :storage => :s3,
+  :bucket => ENV['S3_BUCKET_NAME_CONTENT_DOCUMENTS'],
+  :s3_credentials => {
+  :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
+  :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
+  }
  
   validates_presence_of :title, :on => :create, :message => "can't be blank"
   
@@ -28,20 +36,13 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
   end
   
   TYPE_HASH = {
-    1 => "Link", 
-    2 => "Markdown", 
+    1 => "Link",
+    2 => "Markdown",
+    3 => "Document",
   }
 
   def tool?
     tool
-  end
-  
-  def type
-    ScItem::TYPE_HASH[type_mask]
-  end
-
-  def link?
-    type_mask == 1
   end
 
   FORMAT_TYPE_INTERNAL = 0
@@ -69,7 +70,7 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
   }
   
   def format_type
-    if link?
+    if link? || document?
       ftype = FORMAT_HASH[url.slice(url.rindex('.')+1..-1).downcase]
       ftype = FORMAT_HASH[domain] if ftype.blank?
       ftype = FORMAT_TYPE_EXTERNAL if ftype.blank?
@@ -108,9 +109,21 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
         ""
       end
   end
+  
+  def type
+    ScItem::TYPE_HASH[type_mask]
+  end
+
+  def link?
+    type_mask == 1
+  end
       
   def markdown?
     type_mask == 2
+  end
+      
+  def document?
+    type_mask == 3
   end
 
   def inline?

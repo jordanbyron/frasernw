@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120811001827) do
+ActiveRecord::Schema.define(:version => 20120814201313) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -412,9 +412,13 @@ ActiveRecord::Schema.define(:version => 20120811001827) do
     t.string    "url"
     t.text      "markdown_content"
     t.boolean   "inline"
-    t.boolean   "searchable",       :default => true
-    t.boolean   "tool",             :default => false
-    t.boolean   "shared_care",      :default => false
+    t.boolean   "searchable",            :default => true
+    t.boolean   "tool",                  :default => false
+    t.boolean   "shared_care",           :default => false
+    t.string    "document_file_name"
+    t.string    "document_content_type"
+    t.integer   "document_file_size"
+    t.datetime  "document_updated_at"
   end
 
   add_index "sc_items", ["sc_category_id"], :name => "index_sc_items_on_sc_category_id"
