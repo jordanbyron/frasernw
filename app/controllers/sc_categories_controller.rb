@@ -34,7 +34,6 @@ class ScCategoriesController < ApplicationController
   
   def update
     @sc_category = ScCategory.find(params[:id])
-    #ScCategorySweeper.instance.before_controller_update(@sc_category)
     if @sc_category.update_attributes(params[:sc_category])
       redirect_to @sc_category, :notice  => "Successfully updated content category."
     else
@@ -44,7 +43,6 @@ class ScCategoriesController < ApplicationController
   
   def destroy
     @sc_category = ScCategory.find(params[:id])
-    #ScCategorySweeper.instance.before_controller_destroy(@sc_category)
     @sc_category.destroy
     redirect_to sc_categories_url, :notice => "Successfully deleted content category."
   end

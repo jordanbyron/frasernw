@@ -47,7 +47,6 @@ class OfficesController < ApplicationController
   
   def update
     @office = Office.find(params[:id])
-    OfficeSweeper.instance.before_controller_update(@office)
     if @office.update_attributes(params[:office])
       redirect_to @office, :notice  => "Successfully updated office."
       else
@@ -57,7 +56,6 @@ class OfficesController < ApplicationController
   
   def destroy
     @office = Office.find(params[:id])
-    OfficeSweeper.instance.before_controller_destroy(@office)
     @office.destroy
     redirect_to offices_url, :notice => "Successfully deleted office."
   end
