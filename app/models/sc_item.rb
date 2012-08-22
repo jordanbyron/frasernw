@@ -19,6 +19,8 @@ class ScItem < ActiveRecord::Base
  
   validates_presence_of :title, :on => :create, :message => "can't be blank"
   
+  default_scope order('sc_items.title')
+  
   def self.for_specialization(specialization)
     joins(:sc_item_specializations).where("sc_item_specializations.specialization_id = ?", specialization.id)
   end
