@@ -235,12 +235,13 @@
                         Associations
                       #specialist-filter-association.collapsable.collapse
                         .filter-group-content
-                          %label.indent
-                            Clinic:
-                            %select.sa
-                              %option{"value" => 0} Any
-                              - @specialization.clinics.each do |c|
-                                %option{"value" => "sac#{c.id}_"}= c.name
+                          - if @specialization.clinics.present?
+                            %label.indent
+                              Clinic:
+                              %select.sa
+                                %option{"value" => 0} Any
+                                - @specialization.clinics.each do |c|
+                                  %option{"value" => "sac#{c.id}_"}= c.name
                           %label.indent
                             Hospital:
                             %select.sa
