@@ -11,6 +11,7 @@ class UsersController < ApplicationController
     @user = User.new
     @user.user_controls_specialists.build
     @user.user_controls_clinics.build
+    @new_user = true
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -27,6 +28,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @user.user_controls_specialists.build
     @user.user_controls_clinics.build
+    @new_user = false
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
@@ -41,6 +43,7 @@ class UsersController < ApplicationController
     if @user.save :validate => false #so we can edit a pending account
       redirect_to users_url, :notice  => "Successfully updated user."
     else
+      @new_user = false
       render :action => 'edit'
     end
   end
