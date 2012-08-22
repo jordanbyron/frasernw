@@ -89,6 +89,8 @@
           - next if not c.show_in_table?
           $('#c#{c.id}').data('filter', '#{clinic_filtering_attributes(c).join(' ')}');
         });
+                  
+      - assumed_procedure_specializations = @procedure.procedure_specializations.reject{ |ps| !ps.assumed? }
       
       .tab-content
         - if has_specialists
@@ -96,7 +98,6 @@
             .content
               .row
                 .span8half
-                  - assumed_procedure_specializations = @procedure.procedure_specializations.reject{ |ps| !ps.assumed? }
                   - if assumed_procedure_specializations.present?
                     #specialist_assumed.assumed-phrase
                       It is assumed that all #{assumed_procedure_specializations.map{ |ps| ps.parent.present? ? "#{ps.specialization.member_name.uncapitalize_first_letter.pluralize} who see #{link_to ps.parent.procedure.name.uncapitalize_first_letter, ps.parent.procedure, :class => 'ajax'}" : ps.specialization.member_name.uncapitalize_first_letter.pluralize }.to_sentence.html_safe} see #{@procedure.name.uncapitalize_first_letter}
@@ -138,6 +139,47 @@
                   .well.filter
                     .title
                       Filter Specialists
+                      
+                    - focused_child_procedures = @procedure.focused_children
+                    - non_focused_child_procedures = @procedure.non_focused_children
+                      
+                    - if focused_child_procedures.present? || non_focused_child_procedures.present?
+                      .filter-group
+                        %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#specialist-filter-aop"}
+                          Sub-Areas of Practice
+                          - if assumed_procedure_specializations.present?
+                            %sup
+                              %i.icon-asterisk.icon-disabled.icon-small
+                        #specialist-filter-aop.collapsable.in
+                          .filter-group-content
+                            - focused_child_procedures.each do |child_procedure|
+                              - next if child_procedure.all_specialists.blank?
+                              %label
+                                %input.sp{"type" => "checkbox", "id" => "sp#{child_procedure.id}_", "onclick" => "$('#children_sp#{child_procedure.id}_').collapse('toggle')"}= child_procedure.name
+                            
+                            - has_more = false
+                            - non_focused_child_procedures.each do |child_procedure|
+                              - has_more = true if not child_procedure.all_specialists.blank?
+                              - break if has_more
+                            
+                            - if has_more
+                              %a.more#specialist_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_specialist_procedures"} More...
+                              %script{"type" => "text/javascript"}
+                                :plain
+                                  $(document).ready(function() {
+                                    $('#more_specialist_procedures').on('show', function() {
+                                      $('#specialist_procedures_more').html('Less...');
+                                    });
+                                    $('#more_specialist_procedures').on('hide', function() {
+                                      $('#specialist_procedures_more').html('More...');
+                                    });
+                                  });
+                        
+                              #more_specialist_procedures.more.collapse
+                                - non_focused_child_procedures.each do |child_procedure|
+                                  - next if child_procedure.all_specialists.blank?
+                                  %label
+                                    %input.sp{"type" => "checkbox", "id" => "sp#{child_procedure.id}_"}= child_procedure.name
                               
                     .filter-group
                       %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#specialist-filter-referral"}
@@ -191,12 +233,13 @@
                         Assocations
                       #specialist-filter-association.collapsable.collapse
                         .filter-group-content
-                          %label.indent
-                            Clinic:
-                            %select.sa
-                              %option{"value" => 0} Any
-                              - @procedure.clinics.each do |c|
-                                %option{"value" => "sac#{c.id}_"}= c.name
+                          - if @procedure.clinics.present?
+                            %label.indent
+                              Clinic:
+                              %select.sa
+                                %option{"value" => 0} Any
+                                - @procedure.clinics.each do |c|
+                                  %option{"value" => "sac#{c.id}_"}= c.name
                           %label.indent
                             Hospital:
                             %select.sa
