@@ -224,6 +224,10 @@ var update_table = function(prefix, entity_id, entity_name)
     {
       row.remove();
     }
+    else if ( current_filters.length == 0 )
+    {
+      row.show();
+    }
     else if ( !row_filter )
     {
       //a very blank specialist entry                                        
