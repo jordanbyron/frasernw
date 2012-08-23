@@ -153,23 +153,28 @@ class SpecialistsController < ApplicationController
     @specialist = Specialist.find(params[:id])
     
     review_item = @specialist.review_item
-    review_item.archived = true;
-    review_item.save
     
-    SpecialistSweeper.instance.before_controller_update(@specialist)
-    if @specialist.update_attributes(params[:specialist])
-      @specialist.capacities.each do |original_capacity|
-        Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity.procedure_specialization.id.to_s].blank?
-      end
-      params[:capacities_mapped].each do |updated_capacity, value|
-        capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
-        capacity.investigation = params[:capacities_investigations][updated_capacity]
-        capacity.save
-      end
-      @specialist.update_attributes( :address_update => "" )
-      redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
+    if review_item.blank?
+      redirect_to specialists_path, :notice => "There are no review items for this specialist"
     else
-      render :edit
+      review_item.archived = true;
+      review_item.save
+      
+      SpecialistSweeper.instance.before_controller_update(@specialist)
+      if @specialist.update_attributes(params[:specialist])
+        @specialist.capacities.each do |original_capacity|
+          Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity.procedure_specialization.id.to_s].blank?
+        end
+        params[:capacities_mapped].each do |updated_capacity, value|
+          capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
+          capacity.investigation = params[:capacities_investigations][updated_capacity]
+          capacity.save
+        end
+        @specialist.update_attributes( :address_update => "" )
+        redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
+      else
+        render :edit
+      end
     end
   end
 
