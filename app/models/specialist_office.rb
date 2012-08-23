@@ -5,6 +5,8 @@ class SpecialistOffice < ActiveRecord::Base
   belongs_to :office
   accepts_nested_attributes_for :office
   
+  has_many :user_controls_specialist_offices
+  
   #offices have a phone schedule
   has_one :phone_schedule, :as => :schedulable, :dependent => :destroy, :class_name => "Schedule"
   accepts_nested_attributes_for :phone_schedule

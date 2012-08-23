@@ -26,7 +26,6 @@ class User < ActiveRecord::Base
   # times that the user (as admin) has contacted specialists
   has_many :contacts
 
-  # has_many :clinics,     :through => :favorites
   validates_presence_of :name
   
   default_scope order('users.name')

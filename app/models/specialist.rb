@@ -1,5 +1,5 @@
 class Specialist < ActiveRecord::Base
-  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :categorization_mask, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_clinic_id, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :patient_instructions, :cancellation_policy, :hospital_clinic_details, :interpreter_available, :address_update, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :language_ids, :user_controls_specialists_attributes, :specialist_offices_attributes, :admin_notes, :referral_forms_attributes
+  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :categorization_mask, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_clinic_id, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :patient_instructions, :cancellation_policy, :hospital_clinic_details, :interpreter_available, :address_update, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :language_ids, :user_controls_specialist_offices_attributes, :specialist_offices_attributes, :admin_notes, :referral_forms_attributes
   has_paper_trail ignore: [:saved_token, :review_item]
   
   # specialists can have multiple specializations
@@ -31,12 +31,7 @@ class Specialist < ActiveRecord::Base
   
   # specialists are favorited by users of the system
   has_many   :favorites
-  has_many   :users, :through => :favorites
-  
-  #specialist are controlled (e.g. can be edited) by users of the system
-  has_many :user_controls_specialists, :dependent => :destroy
-  has_many :controlling_users, :through => :user_controls_specialists, :source => :user, :class_name => "User"
-  accepts_nested_attributes_for :user_controls_specialists, :reject_if => lambda { |ucs| ucs[:user_id].blank? }, :allow_destroy => true
+  has_many   :favorite_users, :through => :favorites, :source => :user, :class_name => "User"
 
   # has many contacts - dates and times they were contacted
   has_many  :contacts
@@ -56,6 +51,11 @@ class Specialist < ActiveRecord::Base
   has_many :offices, :through => :specialist_offices
   has_many :locations, :through => :offices
   accepts_nested_attributes_for :specialist_offices
+  
+  #specialist are controlled (e.g. can be edited) by users of the system
+  has_many :user_controls_specialist_offices, :through => :specialist_offices
+  has_many :controlling_users, :through => :user_controls_specialist_offices, :source => :user, :class_name => "User"
+  accepts_nested_attributes_for :user_controls_specialist_offices, :reject_if => lambda { |ucso| ucso[:user_id].blank? }, :allow_destroy => true
   
   def city
     if responded? 
