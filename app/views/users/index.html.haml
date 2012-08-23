@@ -21,7 +21,7 @@
             %th.admin
 
           - User.all.each do |user|
-            - next if not user.admin?
+            - next if !user.admin? || user.pending?
             %tr
               %td= link_to user.name, user, :class => 'ajax'
               %td= user.email
@@ -40,7 +40,7 @@
             %th.admin
 
           - User.all.each do |user|
-            - next if user.admin? || user.email.blank?
+            - next if user.admin? || user.pending?
             %tr
               %td= link_to user.name, user, :class => 'ajax'
               %td= user.type
@@ -59,14 +59,18 @@
         %table.table.table-condensed.table-striped
           %tr
             %th Name
+            %th Admin?
+            %th Type
             %th Access key
             %th Can edit
             %th.admin
 
           - User.all.each do |user|
-            - next if user.admin? || user.email.present?
+            - next if !user.pending?
             %tr
               %td= link_to user.name, user, :class => 'ajax'
+              %td= user.admin? ? "Yes" : "No"
+              %td= user.admin? ? "Admin" : user.type
               %td= user.token
               %td
                 %ul

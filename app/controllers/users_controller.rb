@@ -9,7 +9,7 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
-    @user.user_controls_specialists.build
+    @user.user_controls_specialist_offices.build
     @user.user_controls_clinics.build
     @new_user = true
     render :layout => 'ajax' if request.headers['X-PJAX']
@@ -26,7 +26,7 @@ class UsersController < ApplicationController
 
   def edit
     @user = User.find(params[:id])
-    @user.user_controls_specialists.build
+    @user.user_controls_specialist_offices.build
     @user.user_controls_clinics.build
     @new_user = false
     render :layout => 'ajax' if request.headers['X-PJAX']

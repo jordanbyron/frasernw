@@ -13,15 +13,15 @@
   
     %h4 Specialist user can edit
     .content
-      = f.simple_fields_for :user_controls_specialists do |i|
+      = f.simple_fields_for :user_controls_specialist_offices do |i|
         .row.spaced
           .span5.offset3
-            = i.association :specialist, as: :select, :label => false, collection: Specialist.all, prompt: 'Select ...', wrapper: :no_wrapper
+            = i.association :specialist_office, as: :select, :label => false, collection: SpecialistOffice.all.reject{ |so| so.office.blank? || so.empty? || so.specialist.blank? }.sort{ |a,b| a.specialist.lastname <=> b.specialist.lastname }.map{ |so| ["#{so.specialist.name} - #{so.office.short_address}", so.id]}, prompt: 'Select ...', wrapper: :no_wrapper
           .spanhalf.offsethalf
             = i.hidden_field :_destroy
             = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
     .row
-      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another specialist", :user_controls_specialists, class: "btn offset3")
+      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another specialist", :user_controls_specialist_offices, class: "btn offset3")
       
     %h4 Clinics user can edit
     .content

@@ -11,9 +11,10 @@ class User < ActiveRecord::Base
   has_many :favorite_specializations, :through => :favorites, :source => :favoritable, :source_type => "Specialization", :class_name => "Specialization"
   has_many :favorite_procedures, :through => :favorites, :source => :favoritable, :source_type => "Procedure", :class_name => "Procedure"
   
-  has_many :user_controls_specialists, :dependent => :destroy
-  has_many :controlled_specialists, :through => :user_controls_specialists, :source => :specialist, :class_name => "Specialist"
-  accepts_nested_attributes_for :user_controls_specialists, :reject_if => lambda { |ucs| ucs[:specialist_id].blank? }, :allow_destroy => true
+  has_many :user_controls_specialist_offices, :dependent => :destroy
+  has_many :controlled_specialist_offices, :through => :user_controls_specialist_offices, :source => :specialist_office, :class_name => "SpecialistOffice"
+  has_many :controlled_specialists, :through => :controlled_specialist_offices, :source => :specialist, :class_name => "Specialist"
+  accepts_nested_attributes_for :user_controls_specialist_offices, :reject_if => lambda { |ucso| ucso[:specialist_office_id].blank? }, :allow_destroy => true
   
   has_many :user_controls_clinics, :dependent => :destroy
   has_many :controlled_clinics, :through => :user_controls_clinics, :source => :clinic, :class_name => "Clinic"
@@ -22,7 +23,7 @@ class User < ActiveRecord::Base
   has_many :specialization_owners, :dependent => :destroy, :foreign_key => "owner_id"
   has_many :specializations, :through => :specialization_owners
 
-  # times that the user (as admin) has contacted specialistscreate
+  # times that the user (as admin) has contacted specialists
   has_many :contacts
 
   # has_many :clinics,     :through => :favorites
@@ -39,6 +40,10 @@ class User < ActiveRecord::Base
     self.role == 'admin'
   end
   
+  def pending?
+    self.email.blank?
+  end
+
   TYPE_HASH = {
     1 => "GP Office",
     2 => "Specialist Office",

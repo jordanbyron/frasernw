@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120814201313) do
+ActiveRecord::Schema.define(:version => 20120823224810) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -598,6 +598,13 @@ ActiveRecord::Schema.define(:version => 20120814201313) do
   add_index "user_controls_clinics", ["clinic_id"], :name => "index_user_controls_clinics_on_clinic_id"
   add_index "user_controls_clinics", ["user_id"], :name => "index_user_controls_clinics_on_user_id"
 
+  create_table "user_controls_specialist_offices", :force => true do |t|
+    t.integer  "user_id",              :null => false
+    t.integer  "specialist_office_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "user_controls_specialists", :force => true do |t|
     t.integer   "user_id"
     t.integer   "specialist_id"
@@ -609,18 +616,18 @@ ActiveRecord::Schema.define(:version => 20120814201313) do
   add_index "user_controls_specialists", ["user_id"], :name => "index_user_controls_specialists_on_user_id"
 
   create_table "users", :force => true do |t|
-    t.string    "email"
-    t.string    "persistence_token"
-    t.string    "crypted_password"
-    t.string    "password_salt"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.string    "name"
-    t.string    "role"
-    t.string    "perishable_token",  :default => "", :null => false
-    t.string    "saved_token"
-    t.integer   "type_mask",         :default => 1
-    t.datetime  "last_request_at"
+    t.string   "email"
+    t.string   "persistence_token"
+    t.string   "crypted_password"
+    t.string   "password_salt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+    t.string   "role"
+    t.string   "perishable_token",  :default => "", :null => false
+    t.string   "saved_token"
+    t.integer  "type_mask",         :default => 1
+    t.datetime "last_request_at"
   end
 
   create_table "versions", :force => true do |t|
