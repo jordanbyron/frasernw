@@ -39,6 +39,12 @@ class Office < ActiveRecord::Base
     return l.short_address
   end
   
+  def full_address
+    l = location
+    return "" if l.blank?
+    return l.full_address
+  end
+  
   def to_s
     return location.to_s
   end
