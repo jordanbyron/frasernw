@@ -155,7 +155,7 @@ class SpecialistsController < ApplicationController
     review_item = @specialist.review_item
     
     if review_item.blank?
-      redirect_to specialists_path, :notice => "There are no review items for this specialist"
+      redirect_to specialist_path(@specialist), :notice => "There are no review items for this specialist"
     else
       review_item.archived = true;
       review_item.save
