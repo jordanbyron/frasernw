@@ -48,6 +48,7 @@
               %td
                 %ul
                   - user.controlled_specialist_offices.each do |specialist_office|
+                    - next if specialist_office.office.blank?
                     %li= "#{specialist_office.specialist.name} - #{specialist_office.office.short_address}"
                   - user.controlled_clinics.each do |clinic|
                     %li= clinic.name
@@ -75,6 +76,7 @@
               %td
                 %ul
                   - user.controlled_specialist_offices.each do |specialist_office|
+                    - next if specialist_office.office.blank?
                     %li= "#{specialist_office.specialist.name} - #{specialist_office.office.short_address}"
                   - user.controlled_clinics.each do |clinic|
                     %li= clinic.name
