@@ -41,7 +41,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @user.attributes = params[:user]
     if @user.save :validate => false #so we can edit a pending account
-      redirect_to users_url, :notice  => "Successfully updated user."
+      redirect_to @user, :notice  => "Successfully updated user."
     else
       @new_user = false
       render :action => 'edit'
