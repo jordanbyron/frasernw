@@ -13,8 +13,8 @@ class AddUserControlsSpecialistOffice < ActiveRecord::Migration
       specialist = ucs.specialist
       user = ucs.user
       
-      if specialist.offices.length == 1
-        UserControlsSpecialistOffice.create :user_id => user.id, :specialist_office_id => specialist.specialist_offices.first.id
+      if specialist.specialist_offices.reject{ |so| so.office.blank? }.length == 1
+        UserControlsSpecialistOffice.create :user_id => user.id, :specialist_office_id => specialist.specialist_offices.reject{ |so| so.office.blank? }.first.id
       else
         puts "User #{user.name} controls #{specialist.name} but the specialist has multiple offices. Will need to update by hand"
       end
