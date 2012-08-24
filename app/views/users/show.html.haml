@@ -18,7 +18,7 @@
 
   - if !@user.admin?
     - if @user.controlled_specialists.length > 0
-      %p 
+      %p.no_indent.space
         %strong Can edit specialists
       %ul
         - @user.controlled_specialists.each do |specialist|
