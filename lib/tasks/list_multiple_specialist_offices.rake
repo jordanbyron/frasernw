@@ -1,5 +1,5 @@
 namespace :pathways do
-  task :list_specialist_offices => :environment do
+  task :list_multiple_specialist_offices => :environment do
     Office.all.reject{ |o| o.num_specialists <= 1 || o.specialists.first.specializations.blank? }.sort{ |a,b| a.specialists.first.specializations.first.name <=> b.specialists.first.specializations.first.name }.each do |o|
       next if o.empty?
       puts o.short_address
