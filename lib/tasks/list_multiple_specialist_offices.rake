@@ -5,7 +5,11 @@ namespace :pathways do
       puts o.full_address
       o.controlling_users.uniq.each do |u|
         puts "Account name: #{u.name}"
-        puts "Access key: #{u.token}"
+        if u.pending?
+          puts "Access key: #{u.token}"
+        else
+          puts "No access key needed, this account has previously been created and in use"
+        end
         
         same_owner = (u.controlled_specialists.map{ |s| s.owner }.uniq.length == 1)
         
