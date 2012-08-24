@@ -18,7 +18,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
     if @user.save :validate => false #so we can avoid setting up with emails or passwords
-      redirect_to users_path, :notice => "User #{@user.name} successfully created."
+      redirect_to @user, :notice => "User #{@user.name} successfully created."
     else
       render :action => 'new'
     end
