@@ -47,8 +47,8 @@
               %td= user.email
               %td
                 %ul
-                  - user.controlled_specialists.each do |specialist|
-                    %li= specialist.name
+                  - user.controlled_specialist_offices.each do |specialist_office|
+                    %li= "#{specialist_office.specialist.name} - #{specialist_office.office.short_address}"
                   - user.controlled_clinics.each do |clinic|
                     %li= clinic.name
               %td.admin.btn-group
@@ -74,8 +74,8 @@
               %td= user.token
               %td
                 %ul
-                  - user.controlled_specialists.each do |specialist|
-                    %li= specialist.name
+                  - user.controlled_specialist_offices.each do |specialist_office|
+                    %li= "#{specialist_office.specialist.name} - #{specialist_office.office.short_address}"
                   - user.controlled_clinics.each do |clinic|
                     %li= clinic.name
               %td.admin.btn-group
