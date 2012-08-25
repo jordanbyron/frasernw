@@ -22,9 +22,9 @@ namespace :pathways do
         u.controlled_specialist_offices.each do |so|
           next if so.specialist.blank?
           if same_owner
-            puts "- #{so.specialist.name} (#{so.specialist.specializations.map{ |s| s.name }.to_sentence}) #{so.phone_and_fax}"
+            puts "- #{so.specialist.name} (#{so.specialist.specializations.map{ |s| s.name }.to_sentence})"
           else
-            puts "- #{so.specialist.name} (#{so.specialist.specializations.map{ |s| s.name }.to_sentence} - #{so.specialist.owner.name}) #{so.phone_and_fax}"
+            puts "- #{so.specialist.name} (#{so.specialist.specializations.map{ |s| s.name }.to_sentence} - Assigned to #{so.specialist.owner.name})"
           end
         end
         puts ""
