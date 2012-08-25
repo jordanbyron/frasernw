@@ -380,7 +380,7 @@
             $('table tr').click( function() { $(this).find('a').click(); });
             $('table a').click( function(e) { e.stopPropagation(); });
       
-        - ScCategory.all.each do |sc_category|
+        - ScCategory.specialty.each do |sc_category|
           - if sc_category.sc_items.for_procedure_specialization(procedure_specialization).present?
             .tab-pane{"id" => "#{sc_category.name.remove_whitespace}_tab"}
               - link_items = sc_category.sc_items.for_procedure_specialization(procedure_specialization).reject{ |item| item.markdown? && item.inline? }

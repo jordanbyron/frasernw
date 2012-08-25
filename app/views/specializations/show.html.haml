@@ -431,7 +431,7 @@
               $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
             });
       
-        - ScCategory.all.each do |sc_category|
+        - ScCategory.specialty.each do |sc_category|
           - if sc_category.sc_items.for_specialization(@specialization).present?
             .tab-pane{"id" => "#{sc_category.name.remove_whitespace}_tab"}
               - link_items = sc_category.sc_items.for_specialization(@specialization).reject{ |item| item.markdown? && item.inline? }
@@ -462,7 +462,7 @@
               = link_to "<i class='icon-arrow-right icon-blue'></i> Browse #{sc_category.name} content from all specialties".html_safe, sc_category_path(sc_category), :class => 'ajax'
       
       - tab_javascript = ""
-      - ScCategory.all.each do |sc_category|
+      - ScCategory.specialty.each do |sc_category|
         - tab_javascript += "else if (hash == '##{sc_category.name.remove_whitespace}') { $('#content_tabs a##{sc_category.name.remove_whitespace}').tab('show'); } "
         
       %script{"type" => "text/javascript"}

@@ -133,6 +133,21 @@
                           %li= link_to "New Content Item", new_sc_item_path, :class => "ajax"
                       %li= link_to "Content Categories", sc_categories_path, :class => "sc_category ajax"
                       %li= link_to "Content Items", sc_items_path, :class => "sc_item ajax"
+                  
+                - ScCategory.global_nav.reject{ |category| category.sc_items.blank? }.each do |category|
+                  - if category.show_as_dropdown?
+                    %li.dropdown
+                      %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                        = category.name
+                        %b.caret
+                      %ul.dropdown-menu
+                        - category.sc_items.each do |item|
+                          - if item.link? || item.document?
+                            %li= link_to item.title, item.link? ? item.url : item.document.url, :target => '_blank'
+                          - else
+                            %li= link_to item.title, item, :class => 'ajax'
+                  - else
+                    %li= link_to category.name, category, :class => 'ajax'
               
                 %li.dropdown
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
@@ -168,19 +183,6 @@
                     -if current_user.favorites.present?
                       :javascript
                         $(document).ready(function() { $('#add_favorites').hide(); });
-                  
-                - if ScItem.tool.present?
-                  %li.dropdown
-                    %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-                      %i.icon-wrench
-                      Tools
-                      %b.caret
-                    %ul.dropdown-menu
-                      - ScItem.tool.each do |tool|
-                        - if tool.link?
-                          %li= link_to tool.title, tool.url, :target => '_blank'
-                        - else
-                          %li= link_to tool.title, tool, :class => 'ajax'
                         
                 %li.dropdown
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}

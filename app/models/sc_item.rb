@@ -1,5 +1,5 @@
 class ScItem < ActiveRecord::Base
-  attr_accessible :sc_category_id, :specialization_ids, :tool, :type_mask, :title, :searchable, :shared_care, :inline, :url, :markdown_content, :document
+  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :shared_care, :inline, :url, :markdown_content, :document
   
   belongs_to  :sc_category
   
@@ -31,10 +31,6 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
   
   def self.searchable
     where("sc_items.searchable = ?", true)
-  end
-  
-  def self.tool
-    where("sc_items.tool = ?", true)
   end
   
   TYPE_HASH = {

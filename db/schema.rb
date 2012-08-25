@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120825174057) do
+ActiveRecord::Schema.define(:version => 20120825180527) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -382,6 +382,9 @@ ActiveRecord::Schema.define(:version => 20120825174057) do
     t.datetime "updated_at"
     t.boolean  "show_on_front_page", :default => true
     t.integer  "sort_order",         :default => 10
+    t.integer  "display_hash",       :default => 1
+    t.integer  "display_mask",       :default => 1
+    t.boolean  "show_as_dropdown",   :default => false
   end
 
   create_table "sc_item_specialization_procedure_specializations", :force => true do |t|
@@ -405,21 +408,20 @@ ActiveRecord::Schema.define(:version => 20120825174057) do
   add_index "sc_item_specializations", ["specialization_id"], :name => "index_sc_item_specializations_on_specialization_id"
 
   create_table "sc_items", :force => true do |t|
-    t.integer   "sc_category_id"
-    t.string    "title"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.integer   "type_mask"
-    t.string    "url"
-    t.text      "markdown_content"
-    t.boolean   "inline"
-    t.boolean   "searchable",            :default => true
-    t.boolean   "tool",                  :default => false
-    t.boolean   "shared_care",           :default => false
-    t.string    "document_file_name"
-    t.string    "document_content_type"
-    t.integer   "document_file_size"
-    t.timestamp "document_updated_at"
+    t.integer  "sc_category_id"
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "type_mask"
+    t.string   "url"
+    t.text     "markdown_content"
+    t.boolean  "inline"
+    t.boolean  "searchable",            :default => true
+    t.boolean  "shared_care",           :default => false
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
   end
 
   add_index "sc_items", ["sc_category_id"], :name => "index_sc_items_on_sc_category_id"
