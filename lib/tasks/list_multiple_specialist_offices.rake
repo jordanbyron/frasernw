@@ -3,6 +3,7 @@ namespace :pathways do
     Office.all.reject{ |o| o.num_specialists <= 1 }.sort{ |a,b| a.specialists.first.specializations.first.name <=> b.specialists.first.specializations.first.name }.each do |o|
     
       puts o.full_address
+      puts ""
       o.controlling_users.uniq.each do |u|
         puts "Account name: #{u.name}"
         if u.pending?
@@ -29,6 +30,7 @@ namespace :pathways do
         puts ""
       end
       puts ""
+      puts "--------------------------------------------------------"
       puts ""
     end  
   end
