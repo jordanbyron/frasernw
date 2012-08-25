@@ -74,7 +74,10 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
   def format_type
     if link? || document?
       theurl = link? ? url : document.url
-      ftype = FORMAT_HASH[theurl.slice(theurl.rindex('.')+1..-1).downcase]
+      theurl = theurl.slice(theurl.rindex('.')+1..-1).downcase              #take everything after the last period
+      theurl = theurl.slice(0...theurl.rindex('?')) if theurl.rindex('?')   #take off anything after a ?
+      theurl = theurl.slice(0...theurl.rindex('#')) if theurl.rindex('#')   #take off anything after a #
+      ftype = FORMAT_HASH[theurl]
       ftype = FORMAT_HASH[domain] if ftype.blank?
       ftype = FORMAT_TYPE_EXTERNAL if ftype.blank?
       ftype
