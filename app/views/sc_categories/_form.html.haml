@@ -3,6 +3,7 @@
     .alert.alert-error= f.error_messages
 
   = f.input :name
+  = f.input :sort_order, :as => :select, :collection => 1...ScCategory.all.length
   = f.input :show_on_front_page
 
   .form-actions

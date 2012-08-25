@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120823224810) do
+ActiveRecord::Schema.define(:version => 20120825174057) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -377,10 +377,11 @@ ActiveRecord::Schema.define(:version => 20120823224810) do
   add_index "reviews", ["item_id", "item_type"], :name => "index_reviews_on_item_id_and_item_type"
 
   create_table "sc_categories", :force => true do |t|
-    t.string    "name"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.boolean   "show_on_front_page", :default => true
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "show_on_front_page", :default => true
+    t.integer  "sort_order",         :default => 10
   end
 
   create_table "sc_item_specialization_procedure_specializations", :force => true do |t|
