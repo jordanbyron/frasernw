@@ -418,6 +418,29 @@
   input.span1, textarea.span1, .uneditable-input.span1 {
     width: 32px;
   }
+  .navbar .navbar-inner 
+  {
+    .container
+    {
+      width: 738px;
+    }
+    
+    .nav-collapse .nav
+    {
+      i
+      {
+        display: none;
+      }
+    }
+    
+    .nav-collapse .navbar-search
+    {
+      input[type="search"]
+      {
+        width: 150px;
+      }
+    }
+  }
 }
 
 @media (min-width: 1220px) {

@@ -575,9 +575,20 @@
 
 /* NESTED DROPDOWNS */
 
+.dropdown-menu
+{
+  max-width: 350px;
+}
+
 .dropdown-menu li
 {
   position: relative;
+}
+
+.dropdown-menu li a
+{
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .nav li.dropdown ul.dropdown-menu li:hover > ul 
