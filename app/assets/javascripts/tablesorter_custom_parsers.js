@@ -69,7 +69,7 @@ $.tablesorter.addParser({
       return false; 
     }, 
 		format: function(s) {
-      if (s === '') {
+      if ($.trim(s) === '') {
   			return "zzzzzz";
 			} else {
 			  return s;

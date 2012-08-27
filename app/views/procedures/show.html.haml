@@ -107,12 +107,12 @@
                   %table.table.table-condensed.tablesorter#specialist_table{:class => multiple_specialties && 'five'}
                     %thead
                       %tr{:class => 'tableheader'}
-                        %th.sp{:class => "{sorter: 'bylastname'} name_column"} Specialist
+                        %th{:class => "sp {sorter: 'bylastname'} name_column"} Specialist
                         - if multiple_specialties
-                          %th.s{:class => "{sorter: 'text'} specialty_column"} Specialty
-                        %th.st{:class => "{sorter: 'status'} status_column"} Accepting New<br>Patients?
-                        %th.wt{:class => "{sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
-                        %th.c{:class => "{sorter: 'blanks_to_bottom'} city_column"} City
+                          %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
+                        %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Patients?
+                        %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
+                        %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
                       - (@procedure.all_specialists).each do |specialist|
                         - next if not specialist.show_in_table?
@@ -271,12 +271,12 @@
                   %table.table.table-condensed.tablesorter#clinic_table{:class => multiple_specialties && 'five'}
                     %thead
                       %tr{:class => 'tableheader'}
-                        %th.sp{:class => "{sorter: 'text'} name_column"} Clinic
+                        %th{:class => "sp {sorter: 'text'} name_column"} Clinic
                         - if multiple_specialties
-                          %th.s{:class => "{sorter: 'text'} specialty_column"} Specialty
-                        %th.st{:class => "{sorter: 'status'} status_column"} Accepting New<br>Patients?
-                        %th.wt{:class => "{sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
-                        %th.c{:class => "{sorter: 'blanks_to_bottom'} city_column"} City
+                          %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
+                        %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Patients?
+                        %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
+                        %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
                       - (@procedure.all_clinics).each do |clinic|
                         - next if not clinic.show_in_table?
