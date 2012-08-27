@@ -441,6 +441,14 @@
       }
     }
   }
+  
+  #content #container .filter
+  {
+    .filter-group-title.closed:after, .filter-group-title.open:after
+    {
+      width: 30px;
+    }
+  }
 }
 
 @media (min-width: 1220px) {
