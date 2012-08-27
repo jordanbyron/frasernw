@@ -162,10 +162,11 @@ class Clinic < ActiveRecord::Base
     end
   end
   
-  STATUS_CLASS_AVAILABLE    = "available"
-  STATUS_CLASS_UNAVAILABLE  = "unavailable"
-  STATUS_CLASS_UNKNOWN      = "unknown"
-  STATUS_CLASS_BLANK        = "blank"
+  
+  STATUS_CLASS_AVAILABLE    = "icon-ok icon-green"
+  STATUS_CLASS_UNAVAILABLE  = "icon-remove icon-red"
+  STATUS_CLASS_UNKNOWN      = "icon-question-sign"
+  STATUS_CLASS_BLANK        = ""
   
   #match specialist
   STATUS_CLASS_HASH = {

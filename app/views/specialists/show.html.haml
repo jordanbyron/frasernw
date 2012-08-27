@@ -135,7 +135,8 @@
               - show_areas_of_practice = true
             
               %p.no_indent.space
-                %strong.status{ :class => "status_#{@specialist.status_class}"}= @specialist.status.end_with_period
+                %i{:class => @specialist.status_class}
+                %strong.status= @specialist.status.end_with_period
               - if @specialist.status_details.present?
                 %p.no_indent
                   %strong Details:

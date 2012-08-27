@@ -55,7 +55,10 @@
     
   - elsif @sc_item.markdown?
   
-    %h1{:class => @sc_item.shared_care? && "shared_care"}= @sc_item.title
+    %h1
+      - if @sc_item.shared_care?
+        %i.icon-red.icon-star
+        = @sc_item.title
   
     %p= BlueCloth.new(@sc_item.markdown_content).to_html.html_safe
   

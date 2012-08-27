@@ -167,12 +167,12 @@ class Specialist < ActiveRecord::Base
     end
   end
   
-  STATUS_CLASS_AVAILABLE    = "available"
-  STATUS_CLASS_UNAVAILABLE  = "unavailable"
-  STATUS_CLASS_WARNING      = "warning"
-  STATUS_CLASS_UNKNOWN      = "unknown"
-  STATUS_CLASS_EXTERNAL     = "external"
-  STATUS_CLASS_BLANK        = "blank"
+  STATUS_CLASS_AVAILABLE    = "icon-ok icon-green"
+  STATUS_CLASS_UNAVAILABLE  = "icon-remove icon-red"
+  STATUS_CLASS_WARNING      = "icon-exclamation-sign icon-orange"
+  STATUS_CLASS_UNKNOWN      = "icon-question-sign"
+  STATUS_CLASS_EXTERNAL     = "icon-signout icon-blue"
+  STATUS_CLASS_BLANK        = ""
   
   #match clinic
   STATUS_CLASS_HASH = {
