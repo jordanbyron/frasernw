@@ -33,6 +33,7 @@ en:
           "3": "Semi-retired"
           "4": "Retired"
     models:
+      specialization: "Specialty"
       procedure: "Area of Practice"
       sc_category: "Content Category"
       sc_item: "Content Item"
