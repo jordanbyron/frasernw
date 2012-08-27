@@ -60,7 +60,6 @@
 }
 
 .review:before,
-.feedback:before,
 .change_name:before,
 .change_email:before,
 .change_password:before,
@@ -74,11 +73,6 @@
   font-size: 15px;
   display: inline-block;
   text-decoration: inherit;
-  width: $FNW_ICON_WIDTH;
-}
-
-#container .status:before
-{
   width: $FNW_ICON_WIDTH;
 }
 
@@ -102,11 +96,6 @@
 .review:before
 {
   content: "\f039";
-}
-
-.feedback:before
-{
-  content: "\f0a1";
 }
 
 .change_name:before

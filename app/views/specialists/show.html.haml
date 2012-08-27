@@ -399,7 +399,8 @@
         %i.icon-pencil.icon-white
         Update #{@specialist.name}'s information
     - else
-      %a.feedback.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
+      %a.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
+        %i.icon-bullhorn.icon-text
         Incorrect Information? Let us know
 
   - if current_user_is_admin?
