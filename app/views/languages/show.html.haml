@@ -101,7 +101,7 @@
                               - specialist.specializations.each do |s|
                                 %li= s.name
                           %td
-                            %span{:class => "status_#{specialist.status_class}"}= specialist.status_class
+                            %span{:class => "status_#{specialist.status_class}"}= specialist.status_class_hash
                           %td= specialist.waittime
                           %td
                             %ul
@@ -219,7 +219,7 @@
                               - clinic.specializations.each do |s|
                                 %li= s.name
                           %td
-                            %span{:class => "status_#{clinic.status_class}"}= clinic.status_class
+                            %span{:class => "status_#{clinic.status_class}"}= clinic.status_class_hash
                           %td= clinic.waittime
                           %td= clinic.city
                           

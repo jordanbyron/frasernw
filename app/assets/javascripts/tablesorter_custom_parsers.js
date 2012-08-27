@@ -42,15 +42,15 @@ $.tablesorter.addParser({
 		format: function(s) {
 			switch($.trim(s))
       {
-        case("available"):
+        case("1"): //available
           return 0;
-        case("warning"):
+        case("3"): //warning
           return 1;
-        case("external"):
+        case("5"): //external
           return 2;
-        case("unavailable"):
+        case("2"): //unavailable
           return 3;
-        case("unknown"):
+        case("4"): //unknown
           return 4;
         default:
           return 5;
