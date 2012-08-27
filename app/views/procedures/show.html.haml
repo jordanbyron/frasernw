@@ -107,27 +107,27 @@
                   %table.table.table-condensed.tablesorter#specialist_table{:class => multiple_specialties && 'five'}
                     %thead
                       %tr{:class => 'tableheader'}
-                        %th{:class => "{sorter: 'bylastname'} name_column"} Specialist
+                        %th.sp{:class => "{sorter: 'bylastname'} name_column"} Specialist
                         - if multiple_specialties
-                          %th{:class => "{sorter: 'text'} specialty_column"} Specialty
-                        %th{:class => "{sorter: 'status'} status_column"} Accepting New<br>Patients?
-                        %th{:class => "{sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
-                        %th{:class => "{sorter: 'blanks_to_bottom'} city_column"} City
+                          %th.s{:class => "{sorter: 'text'} specialty_column"} Specialty
+                        %th.st{:class => "{sorter: 'status'} status_column"} Accepting New<br>Patients?
+                        %th.wt{:class => "{sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
+                        %th.c{:class => "{sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
                       - (@procedure.all_specialists).each do |specialist|
                         - next if not specialist.show_in_table?
                         %tr{:class => specialist.disabled_in_table? && "disabled", :id => "s#{specialist.id}"}
-                          %td
+                          %td.sp
                             %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                           - if multiple_specialties
-                            %td
+                            %td.s
                               %ul
                                 - specialist.specializations.each do |s|
                                   %li= s.name
-                          %td
+                          %td.st
                             %span{:class => "status_#{specialist.status_class}"}= specialist.status_class_hash
-                          %td= specialist.waittime
-                          %td
+                          %td.wt= specialist.waittime
+                          %td.c
                             %ul
                               - specialist.cities.each do |city|
                                 %li= city
@@ -270,24 +270,24 @@
                   %table.table.table-condensed.tablesorter#clinic_table{:class => multiple_specialties && 'five'}
                     %thead
                       %tr{:class => 'tableheader'}
-                        %th{:class => "{sorter: 'text'} name_column"} Clinic
+                        %th.sp{:class => "{sorter: 'text'} name_column"} Clinic
                         - if multiple_specialties
-                          %th{:class => "{sorter: 'text'} specialty_column"} Specialty
-                        %th{:class => "{sorter: 'status'} status_column"} Accepting New<br>Patients?
-                        %th{:class => "{sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
-                        %th{:class => "{sorter: 'blanks_to_bottom'} city_column"} City
+                          %th.s{:class => "{sorter: 'text'} specialty_column"} Specialty
+                        %th.st{:class => "{sorter: 'status'} status_column"} Accepting New<br>Patients?
+                        %th.wt{:class => "{sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
+                        %th.c{:class => "{sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
                       - (@procedure.all_clinics).each do |clinic|
                         - next if not clinic.show_in_table?
                         %tr{:class => clinic.disabled_in_table? && "disabled", :id => "c#{clinic.id}"}
-                          %td
+                          %td.sp
                             %a.ajax{"href" => clinic_path(clinic)}= clinic.name
                           - if multiple_specialties
-                            %td= clinic.specializations.collect(){ |s| s.name }.to_sentence
-                          %td
+                            %td.s= clinic.specializations.collect(){ |s| s.name }.to_sentence
+                          %td.sc
                             %span{:class => "status_#{clinic.status_class}"}= clinic.status_class_hash
-                          %td= clinic.waittime
-                          %td= clinic.city
+                          %td.wt= clinic.waittime
+                          %td.c= clinic.city
                           
                 .span3.offsethalf
                   .well.filter

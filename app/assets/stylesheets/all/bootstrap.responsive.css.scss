@@ -805,7 +805,7 @@
       
       li:not(.active) a:hover
       {
-        margin-top: 5px;
+        margin-top: 3px;
         background-color: $FNW_MID_GRAY;
         color: $FNW_TEXT;
       }
@@ -821,8 +821,6 @@
       background-position: left top, left bottom;
       background-repeat: repeat-x, repeat-x;
       height: auto;
-      
-      
     }
   
     .content-wrapper + .tabbable
@@ -843,6 +841,111 @@
       {
         width: 95%;
         height: 100px;
+      }
+    }
+      
+    
+    table#specialist_table, table#clinic_table, table#office_table
+    {
+      display: table;
+      
+      th.wt, th.c
+      {
+        display: none;
+      }
+      
+      tr
+      {
+        td, th
+        {
+          padding: 0;
+          border: 0;
+          margin: 0;
+          float: left;
+          display: inline-block;
+        }
+        
+        td.sp, th.sp, td.c, th.c
+        {
+          width: 60%;  
+        }
+        
+        td.st, th.st, td.wt, th.wt
+        {
+          width: 40%;
+        }
+        
+        td
+        {
+          height: auto;
+          ul 
+          {
+              white-space: nowrap;
+              width: 100%;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            
+            li
+            {
+              display: inline;
+            }
+            
+            li + li
+            {
+              border-left: 1px solid $FNW_TEXT;
+              padding-left: 3px;
+            }
+          }
+        }
+        td.sp, td.st, td.s
+        {
+          padding-top: 4px;
+        }
+        td.wt, td.c
+        {
+          padding-bottom: 4px;
+          background: none;
+        }
+        td.wt
+        {
+          clear: both;
+          margin-left: 60%;
+        }
+        td.c
+        {
+          margin-left: -100%;
+        }
+      }
+      tr:hover td
+      {
+        background-color: transparent;
+      }
+    }
+    
+    table#specialist_table.five, table#clinic_table.five, table#office_table.five
+    {
+      tr
+      {
+        td.sp
+        {
+          width: 100%;
+        }
+        
+        th.s
+        {
+          display: none;
+        }
+        
+        td.s
+        {
+          width: 60%;
+        }
+      }
+      
+      td.s, td.st
+      {
+        padding: 0;
+        background: none;
       }
     }
   }
