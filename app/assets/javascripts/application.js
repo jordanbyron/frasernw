@@ -7,6 +7,7 @@
 //= require jquery-1.7.1.min
 //= require jquery_ujs
 //= require jquery.scrollto.min.js
+//= require json2.js
 //= require jquery.history.js
 //= require ajaxify-html5.js
 //= require_tree .
