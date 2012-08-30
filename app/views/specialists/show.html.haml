@@ -15,7 +15,7 @@
   :plain
     var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
     $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
-    $(document).ready(function() { $('#user_favorite').addClass('#{favorite_class}') });
+    $(document).ready(function() { $('#user_favorite_specialists_#{@specialist.id}').addClass('#{favorite_class}') });
   
 #specialties-dropdown-menu
   .inner
@@ -64,7 +64,7 @@
             %h2
               = @specialist.name
               %a{"href" => "javascript:void(0)", "onclick" => "favorite('specialists',#{@specialist.id},'#{escape_javascript(@specialist.name)}')", "title" => "Favourite / un-favourite"}
-                %i#user_favorite.icon-heart 
+                %i.icon-heart{"id" => "user_favorite_specialists_#{@specialist.id}"}
             %h3.specialty_links
               = @specialist.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
             - if @specialist.sex? && @specialist.billing_number_padded.present?
@@ -101,18 +101,16 @@
               
                 - show_areas_of_practice = true
                 
-                - if hospital_count > 0 && clinic_count > 0
-                  %p.space.no_indent
-                    %strong.status_external This specialist only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"} and #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through these locations.
-                - elsif clinic_count > 0
-                  %p.space.no_indent
-                    %strong.status_external This specialist only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
-                - elsif hospital_count > 0
-                  %p.space.no_indent
-                    %strong.status_external This specialist only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
-                - else
-                  %p.space.no_indent
-                    %strong.status_external This specialist only works out of hospitals and / or clinics, but we do not yet have data on which ones.
+                %p.space.no_indent
+                  %i{:class => @specialist.status_class}
+                  - if hospital_count > 0 && clinic_count > 0
+                    %strong This specialist only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"} and #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through these locations.
+                  - elsif clinic_count > 0
+                    %strong This specialist only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
+                  - elsif hospital_count > 0
+                    %strong This specialist only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
+                  - else
+                    %strong This specialist only works out of hospitals and / or clinics, but we do not yet have data on which ones.
                   
                 - if @specialist.hospital_clinic_details.present?
                   %p.space.no_indent

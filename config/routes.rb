@@ -63,8 +63,7 @@ Frasernw::Application.routes.draw do
   
   put  "/favorites/specialists/:id" => "favorites#edit", :as => "specialist_favorite", :model => 'specialists'
   put  "/favorites/clinics/:id" => "favorites#edit", :as => "clinic_favorite", :model => 'clinics'
-  put  "/favorites/specialties/:id" => "favorites#edit", :as => "specialization_favorite", :model => 'specializations'
-  put  "/favorites/areas_of_practice/:id" => "favorites#edit", :as => "procedure_favorite", :model => 'procedures'
+  put  "/favorites/sc_items/:id" => "favorites#edit", :as => "content_items_favorite", :model => 'sc_items'
   
   match 'validate' => 'users#validate', :as => :validate
   match 'setup' => 'users#setup', :as => :setup

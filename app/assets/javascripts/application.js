@@ -30,25 +30,26 @@ function favorite(type, id, name) {
     dataType: 'json',
     success: function(data)
     {
+      var favorite_heart = $('#user_favorite_' + type + '_' + id)
       if (data)
       {
-        $('#user_favorite').removeClass('icon-text');
-        $('#user_favorite').addClass('icon-red');   //make the heart red
+        favorite_heart.removeClass('icon-text');
+        favorite_heart.addClass('icon-red');   //make the heart red
         $('#add_favorites').hide();                 //hide the favorites description
         $('#' + type + '_favorites').show();        //show the favorites section header if it isn't already
         $('#' + type + '_favorites').after('<li id=\"' + type + '_' + id + '\"><a class=\"ajax\" href=\"/' + type + '/' + id + '\">' + name + '</a></li>');
       }
       else
       {
-        $('#user_favorite').removeClass('icon-red');
-        $('#user_favorite').addClass('icon-text');
+        favorite_heart.removeClass('icon-red');
+        favorite_heart.addClass('icon-text');
         $('#favorites_dropdown li#' + type + '_' + id).remove()
         if ( $('#favorites_dropdown li[id^=' + type + ']').length == 1 )
         {
           //hide the favorites section header if there isn't any other items
           $('#' + type + '_favorites').hide();        
         }
-        if ( $('#favorites_dropdown li').length == 3 )
+        if ( $('#favorites_dropdown li').length == 4 )
         {
           //show the favorites description if only it an the headings are all that's left
           $('#add_favorites').show();

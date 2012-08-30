@@ -78,7 +78,7 @@
             %ul.space
               - category.featured_sc_items.each do |featured_sc_item|
                 %li
-                  -if featured_sc_item.shared_care?
+                  - if featured_sc_item.shared_care?
                     %i.icon-blue.icon-star
                   - if featured_sc_item.markdown? 
                     = link_to featured_sc_item.title, featured_sc_item, :class => "ajax"

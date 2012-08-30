@@ -179,12 +179,15 @@
                     - current_user.favorite_clinics.each do |c|
                       %li{"id" => "clinics_#{c.id}"}= link_to c.name, clinic_path(c), :class => 'ajax'
                         
+                    %li#sc_items_favorites.nav-header.clinic Content
+                    - current_user.favorite_content_items.each do |c|
+                      %li{"id" => "sc_items_#{c.id}"}= link_to c.title, "/content_items/#{c.id}", :class => 'ajax'
+                        
                     %li#add_favorites
                       %p
-                        Add specialists and clinics to this menu for quick reference by viewing their full details and pressing the
+                        Add specialists, clinics, and content to this menu for quick reference by viewing their full details and pressing the
                         %i.icon-text.icon-heart
                         beside their name.
-                          
                         
                     -if current_user.favorite_specialists.blank?
                       :javascript
@@ -193,6 +196,10 @@
                     -if current_user.favorite_clinics.blank?
                       :javascript
                         $(document).ready(function() { $('#clinics_favorites').hide(); });
+                        
+                    -if current_user.favorite_content_items.blank?
+                      :javascript
+                        $(document).ready(function() { $('#sc_items_favorites').hide(); });
                         
                     -if current_user.favorites.present?
                       :javascript

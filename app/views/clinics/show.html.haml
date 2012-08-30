@@ -15,7 +15,7 @@
   :plain
     var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
     $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
-    $(document).ready(function() { $('#user_favorite').addClass('#{favorite_class}') });
+    $(document).ready(function() { $('#user_favorite_clinics_#{@clinic.id}').addClass('#{favorite_class}') });
   
 #specialties-dropdown-menu
   .inner
@@ -65,7 +65,7 @@
             %h2
               = @clinic.name
               %a{"href" => "javascript:void(0)", "onclick" => "favorite('clinics',#{@clinic.id},'#{escape_javascript(@clinic.name)}')", "title" => "Favourite / un-favourite"}
-                %i#user_favorite.icon-heart
+                %i.icon-heart{"id" => "user_favorite_clinics_#{@clinic.id}"}
         
             %h3.specialty_links
               = @clinic.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe

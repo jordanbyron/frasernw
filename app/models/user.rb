@@ -8,8 +8,7 @@ class User < ActiveRecord::Base
   has_many :favorites
   has_many :favorite_specialists, :through => :favorites, :source => :favoritable, :source_type => "Specialist", :class_name => "Specialist"
   has_many :favorite_clinics, :through => :favorites, :source => :favoritable, :source_type => "Clinic", :class_name => "Clinic"
-  has_many :favorite_specializations, :through => :favorites, :source => :favoritable, :source_type => "Specialization", :class_name => "Specialization"
-  has_many :favorite_procedures, :through => :favorites, :source => :favoritable, :source_type => "Procedure", :class_name => "Procedure"
+  has_many :favorite_content_items, :through => :favorites, :source => :favoritable, :source_type => "ScItem", :class_name => "ScItem"
   
   has_many :user_controls_specialist_offices, :dependent => :destroy
   has_many :controlled_specialist_offices, :through => :user_controls_specialist_offices, :source => :specialist_office, :class_name => "SpecialistOffice"

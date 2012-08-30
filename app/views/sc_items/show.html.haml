@@ -9,10 +9,13 @@
       %b.caret
   %li.subsequent= link_to specialization.name, specialization, :class => "ajax"
   
+- favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @sc_item.id, "ScItem").present? ? "icon-red" : "icon-text") : "icon-text"
+  
 %script{"type" => "text/javascript"}
   :plain
     var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); return false; });
     $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
+    $(document).ready(function() { $('#user_favorite_sc_items_#{@sc_item.id}').addClass('#{favorite_class}') });
   
 #specialties-dropdown-menu
   .inner
@@ -58,7 +61,9 @@
     %h1
       - if @sc_item.shared_care?
         %i.icon-red.icon-star
-        = @sc_item.title
+      = @sc_item.title
+      %a{"href" => "javascript:void(0)", "onclick" => "favorite('sc_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
+        %i.icon-heart{"id" => "user_favorite_sc_items_#{@sc_item.id}"}
   
     %p= BlueCloth.new(@sc_item.markdown_content).to_html.html_safe
   
