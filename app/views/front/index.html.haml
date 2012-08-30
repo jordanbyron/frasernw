@@ -10,6 +10,7 @@
   :plain
     var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
     $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
+    $(document).ready(function() { update_favorites() });
   
 #specialties-dropdown-menu
   .inner
@@ -84,6 +85,8 @@
                     = link_to featured_sc_item.title, featured_sc_item, :class => "ajax"
                   - else
                     = link_to featured_sc_item.title, featured_sc_item.link? ? featured_sc_item.url : featured_sc_item.document.url, :target => "_blank"
+                  %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{featured_sc_item.id},'#{escape_javascript(featured_sc_item.title)}')", "title" => "Favourite / un-favourite"}
+                    %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{featured_sc_item.id}"}
                   
               %li
                 = link_to "<i class='icon-arrow-right icon-blue'></i> Browse all #{category.name}".html_safe, sc_category_path(category), :class => 'ajax'
