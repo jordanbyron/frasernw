@@ -33,6 +33,14 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
     where("sc_items.searchable = ?", true)
   end
   
+  def self.displayed_inline
+    where("sc_items.type_mask = ? AND sc_items.inline = ?", 2, true)
+  end
+  
+  def self.not_displayed_inline
+    where("sc_items.type_mask != ? OR sc_items.inline = ?", 2, false)
+  end
+  
   TYPE_HASH = {
     1 => "Link",
     2 => "Markdown",

@@ -30,14 +30,14 @@ function favorite(type, id, name) {
     dataType: 'json',
     success: function(data)
     {
-      var favorite_heart = $('#user_favorite_' + type + '_' + id)
+      var favorite_heart = $('#user_favorite_' + type + '_' + id);
       if (data)
       {
         favorite_heart.removeClass('icon-text');
         favorite_heart.addClass('icon-red');   //make the heart red
         $('#add_favorites').hide();                 //hide the favorites description
         $('#' + type + '_favorites').show();        //show the favorites section header if it isn't already
-        $('#' + type + '_favorites').after('<li id=\"' + type + '_' + id + '\"><a class=\"ajax\" href=\"/' + type + '/' + id + '\">' + name + '</a></li>');
+        $('#' + type + '_favorites').after('<li class=\"favorite\" id=\"' + type + '_' + id + '\"><a class=\"ajax\" href=\"/' + type + '/' + id + '\">' + name + '</a></li>');
       }
       else
       {
@@ -56,5 +56,14 @@ function favorite(type, id, name) {
         }
       }
     }
+  });
+}
+
+function update_favorites() {
+  $('#favorites_dropdown li.favorite').each( function() {
+    var attr_id = $(this).attr('id');
+    var favorite_heart = $('#user_favorite_' + attr_id);
+    favorite_heart.removeClass('icon-text');
+    favorite_heart.addClass('icon-red');
   });
 }

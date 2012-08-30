@@ -173,15 +173,15 @@
                         
                     %li#specialists_favorites.nav-header.specialist Specialists
                     - current_user.favorite_specialists.each do |s|
-                      %li{"id" => "specialists_#{s.id}"}= link_to s.name, specialist_path(s), :class => 'ajax'
+                      %li.favorite{"id" => "specialists_#{s.id}"}= link_to s.name, specialist_path(s), :class => 'ajax'
                         
                     %li#clinics_favorites.nav-header.clinic Clinics
                     - current_user.favorite_clinics.each do |c|
-                      %li{"id" => "clinics_#{c.id}"}= link_to c.name, clinic_path(c), :class => 'ajax'
+                      %li.favorite{"id" => "clinics_#{c.id}"}= link_to c.name, clinic_path(c), :class => 'ajax'
                         
                     %li#content_items_favorites.nav-header.clinic Content
                     - current_user.favorite_content_items.each do |c|
-                      %li{"id" => "content_items_#{c.id}"}= link_to c.title, "/content_items/#{c.id}", :class => 'ajax'
+                      %li.favorite{"id" => "content_items_#{c.id}"}= link_to c.title, "/content_items/#{c.id}", :class => 'ajax'
                         
                     %li#add_favorites
                       %p
