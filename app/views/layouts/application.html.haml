@@ -179,9 +179,9 @@
                     - current_user.favorite_clinics.each do |c|
                       %li{"id" => "clinics_#{c.id}"}= link_to c.name, clinic_path(c), :class => 'ajax'
                         
-                    %li#sc_items_favorites.nav-header.clinic Content
+                    %li#content_items_favorites.nav-header.clinic Content
                     - current_user.favorite_content_items.each do |c|
-                      %li{"id" => "sc_items_#{c.id}"}= link_to c.title, "/content_items/#{c.id}", :class => 'ajax'
+                      %li{"id" => "content_items_#{c.id}"}= link_to c.title, "/content_items/#{c.id}", :class => 'ajax'
                         
                     %li#add_favorites
                       %p
@@ -199,7 +199,7 @@
                         
                     -if current_user.favorite_content_items.blank?
                       :javascript
-                        $(document).ready(function() { $('#sc_items_favorites').hide(); });
+                        $(document).ready(function() { $('#content_items_favorites').hide(); });
                         
                     -if current_user.favorites.present?
                       :javascript

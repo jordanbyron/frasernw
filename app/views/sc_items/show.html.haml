@@ -15,7 +15,7 @@
   :plain
     var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); return false; });
     $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
-    $(document).ready(function() { $('#user_favorite_sc_items_#{@sc_item.id}').addClass('#{favorite_class}') });
+    $(document).ready(function() { $('#user_favorite_content_items_#{@sc_item.id}').addClass('#{favorite_class}') });
   
 #specialties-dropdown-menu
   .inner
@@ -54,7 +54,10 @@
   
   - if @sc_item.link?
   
-    %p= link_to @sc_item.title, @sc_item.url, :target => "_blank"
+    %p
+      = link_to @sc_item.title, @sc_item.url, :target => "_blank"
+      %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
+        %i.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
     
   - elsif @sc_item.markdown?
   
@@ -62,14 +65,17 @@
       - if @sc_item.shared_care?
         %i.icon-red.icon-star
       = @sc_item.title
-      %a{"href" => "javascript:void(0)", "onclick" => "favorite('sc_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
-        %i.icon-heart{"id" => "user_favorite_sc_items_#{@sc_item.id}"}
+      %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
+        %i.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
   
     %p= BlueCloth.new(@sc_item.markdown_content).to_html.html_safe
   
   - elsif @sc_item.document?
   
-    %p= link_to @sc_item.title, @sc_item.document.url, :target => "_blank"
+    %p
+      = link_to @sc_item.title, @sc_item.document.url, :target => "_blank"
+      %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
+        %i.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
   
   %p.admin.btn-group
     - if can? :update, @sc_item
