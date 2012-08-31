@@ -987,12 +987,41 @@
         background: none;
       }
     }
+    .well, #front .well
+    {
+      background-color: $FNW_WHITE;
+      box-shadow: none;
+      padding: 0;
+      border: 0;
+      
+      h3
+      {
+        margin: 0;
+        padding: 0;
+        color: $FNW_RED;
+        font-weight: normal;
+        background: none;
+        font-size: 18px;
+      }
+      
+      h6
+      {
+        padding: 4px;
+        margin: 0;
+        color: $FNW_RED;
+        font-weight: normal;
+        font-size: 14px;
+      }
+    }
   }
   .well.filter
   {
     display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
-  .btn-group .btn 
+  .btn-group .btn
   {
     position: block;
     float: none;
