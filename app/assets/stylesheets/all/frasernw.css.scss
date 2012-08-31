@@ -635,7 +635,7 @@ body.loading #loading
       }
     }
     
-    .hours
+    .hours, .break
     {
       .changed_wrapper
       {
@@ -655,6 +655,14 @@ body.loading #loading
           padding: 0 10px;
         }
       }
+    }
+    
+    .break
+    {
+      margin-top: 6px;
+      margin-left: 0px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid $FNW_MID_GRAY;
     }
     
     #sc_item_markdown_content

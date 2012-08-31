@@ -327,6 +327,13 @@
                         .changed_wrapper
                           .to to
                           = d.input_field :to, :class => "auto no-print", :minute_step => 15, :include_blank => true
+                      .break.no-print
+                        .changed_wrapper
+                          .from closed for lunch from
+                          = d.input_field :break_from, :class => "auto no-print", :minute_step => 15, :include_blank => true
+                        .changed_wrapper
+                          .to to
+                          = d.input_field :break_to, :class => "auto no-print", :minute_step => 15, :include_blank => true
                       .print-only
                         from:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to:
 
