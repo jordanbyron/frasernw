@@ -47,8 +47,6 @@ module Frasernw
 
     # Enable the asset pipeline
     config.assets.enabled = true
-    
-    config.active_record.observers = :user_observer
 
     # mailer
     config.action_mailer.delivery_method = :smtp
