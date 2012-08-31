@@ -98,6 +98,11 @@
             .content
               .row
                 .span8half
+                  .toggle-filters.visible-phone
+                    %a{"href" => "javascript:void(0)", "onclick" => "$('#specialist_filters').toggle()"}
+                      %i.icon-blue.icon-cog.icon-small
+                      Show / Hide Specialist Filters
+                      
                   - if assumed_procedure_specializations.present?
                     #specialist_assumed.assumed-phrase
                       It is assumed that all #{assumed_procedure_specializations.map{ |ps| ps.parent.present? ? "#{ps.specialization.member_name.uncapitalize_first_letter.pluralize} who see #{link_to ps.parent.procedure.name.uncapitalize_first_letter, ps.parent.procedure, :class => 'ajax'}" : ps.specialization.member_name.uncapitalize_first_letter.pluralize }.to_sentence.html_safe} see #{@procedure.name.uncapitalize_first_letter}
@@ -137,7 +142,7 @@
                       
                       
                 .span3.offsethalf
-                  .well.filter
+                  .well.filter#specialist_filters
                     .title
                       Filter Specialists
                       
@@ -266,6 +271,11 @@
             .content
               .row
                 .span8half
+                  .toggle-filters.visible-phone
+                    %a{"href" => "javascript:void(0)", "onclick" => "$('#clinic_filters').toggle()"}
+                      %i.icon-blue.icon-cog.icon-small
+                      Show / Hide Clinic Filters
+                      
                   #clinic_phrase.filter-phrase
                   
                   %table.table.table-condensed.tablesorter#clinic_table{:class => multiple_specialties && 'five'}
@@ -292,7 +302,7 @@
                           %td.c= clinic.city
                           
                 .span3.offsethalf
-                  .well.filter
+                  .well.filter#clinic_filters
                     .title
                       Filter Clinics
                               

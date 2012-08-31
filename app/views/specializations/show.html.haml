@@ -65,7 +65,8 @@
           $('#specialist_table').data('s#{s.id}', '#{specialist_filtering_attributes(s, true).join(' ')}');
           $('#specialist_table').data('s#{s.id}_name', '#{escape_javascript(s.name)}');
           $('#specialist_table').data('s#{s.id}_specialties', '#{escape_javascript(s.specializations.map{|sp| sp.name}.to_sentence)}');
-          $('#specialist_table').data('s#{s.id}_status', '#{escape_javascript(s.status_class)}');
+          $('#specialist_table').data('s#{s.id}_status_class', '#{escape_javascript(s.status_class)}');
+          $('#specialist_table').data('s#{s.id}_status_sort', '#{s.status_mask}');
           $('#specialist_table').data('s#{s.id}_wait_time', '#{escape_javascript(s.waittime)}');
           $('#specialist_table').data('s#{s.id}_city', '#{escape_javascript(s.city)}');
         $('#specialist_table').data('filter', '#{other_specialists.map{ |s| s.id }.join(' ')}');
@@ -81,7 +82,12 @@
           
             .content
               .row
-                .span8half
+                .span8half                    
+                  .toggle-filters.visible-phone
+                    %a{"href" => "javascript:void(0)", "onclick" => "$('#specialist_filters').toggle()"}
+                      %i.icon-blue.icon-cog.icon-small
+                      Show / Hide Specialist Filters
+                
                   #specialist_phrase.filter-phrase
                           
                   #specialist_others.other-phrase
@@ -119,7 +125,7 @@
                       = @specialization.procedure_specializations.assumed.reject{ |ps| ps.parent.present? }.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
                       
                 .span3.offsethalf
-                  .well.filter
+                  .well.filter#specialist_filters
                     .title
                       Filter Specialists
                     - if @specialization.procedure_specializations.non_assumed.present?
@@ -267,6 +273,11 @@
             .content
               .row
                 .span8half
+                  .toggle-filters.visible-phone
+                    %a{"href" => "javascript:void(0)", "onclick" => "$('#clinic_filters').toggle()"}
+                      %i.icon-blue.icon-cog.icon-small
+                      Show / Hide Clinic Filters
+                      
                   #clinic_phrase.filter-phrase
                     
                   %table.table.table-condensed.tablesorter#clinic_table
@@ -289,7 +300,7 @@
                           %td.c= clinic.city
                           
                 .span3.offsethalf
-                  .well.filter
+                  .well.filter#clinic_filters
                     .title
                       Filter Clinics
                     .filter-group

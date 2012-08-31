@@ -79,7 +79,12 @@
           #specialist_tab.tab-pane{:class => specialist_tab_class}
             .content
               .row
-                .span8half
+                .span8half                    
+                  .toggle-filters.visible-phone
+                    %a{"href" => "javascript:void(0)", "onclick" => "$('#specialist_filters').toggle()"}
+                      %i.icon-blue.icon-cog.icon-small
+                      Show / Hide Specialist Filters
+                      
                   #specialist_phrase.filter-phrase
                   
                   %table.table.table-condensed.tablesorter.five#specialist_table
@@ -110,7 +115,7 @@
                                 %li= city
                           
                 .span3.offsethalf
-                  .well.filter
+                  .well.filter#specialist_filters
                     .title
                       Filter Specialists
                               
@@ -198,7 +203,12 @@
           #clinic_tab.tab-pane{:class => clinic_tab_class}
             .content
               .row
-                .span8half
+                .span8half                  
+                  .toggle-filters.visible-phone
+                    %a{"href" => "javascript:void(0)", "onclick" => "$('#clinic_filters').toggle()"}
+                      %i.icon-blue.icon-cog.icon-small
+                      Show / Hide Clinic Filters
+                      
                   #clinic_phrase.filter-phrase
                         
                   %table.table.table-condensed.tablesorter.five#clinic_table
@@ -226,7 +236,7 @@
                           %td.c= clinic.city
                           
                 .span3.offsethalf
-                  .well.filter
+                  .well.filter#clinic_filters
                     .title
                       Filter Clinics
                               
