@@ -64,6 +64,7 @@
 }
 
 .review:before,
+.feedback:before,
 .change_name:before,
 .change_email:before,
 .change_password:before,
@@ -100,6 +101,11 @@
 .review:before
 {
   content: "\f039";
+}
+
+.feedback:before
+{
+  content: "\f0a1";
 }
 
 .change_name:before
