@@ -220,6 +220,7 @@
     %h3 You are editing #{@specialist.name}'s entry in Pathways.
     %p.space.no_indent If you have any questions while editing, please contact #{@specialist.owner.name} at #{mail_to @specialist.owner.email}
     %p.space.no_indent This database exists to make our practices and your practice more efficient. By providing the information requested below you are making it easier for family doctors to find your practice, ensuring that the scope of your practice is fully understood, and guiding offices in providing you with the correct information when making referrals.
+    %p.space.no_indent Unless otherwise indicated, all provided information will be available to all users of Pathways.
 
 = simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => form_action}, :method => form_method, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
@@ -229,7 +230,7 @@
 
   = f.input :firstname
   = f.input :lastname
-  = f.input :goes_by_name
+  = f.input :goes_by_name, :hint => "A name which collegues refer to the specialist with, if different from his or her formal first name. E.g. \"Bill\" when the first name is \"William\""
   = f.input :sex_mask, as: :select, collection: Specialist::SEX_HASH, label_method: :last, value_method: :first, :include_blank => false
   = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.billing_number_padded }
   .no-print
@@ -239,7 +240,7 @@
     :plain
       $(document).ready( $("#specialist_categorization_mask").each(specialist_categorization_changed) );
   .no-print
-    = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
+    = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "If you are adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
 
   #section_contact
   
@@ -313,7 +314,7 @@
                         
             = so.input :sector_mask, as: :radio_buttons, collection: SpecialistOffice::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
             
-            %h4 When days and times are your phone lines open?
+            %h4 What days and times are your phone lines open?
             = so.simple_fields_for :phone_schedule, :suppress_fields => true do |s|
               - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
                 = s.simple_fields_for day, :suppress_fields => true do |d|
@@ -402,8 +403,10 @@
     
     .content
       .row
-        .span4 Referrals accepted in the following areas of practice.
-        .span4 Additional information/investigations required for the specified area of practice.
+        .span4
+          %strong Referrals accepted in the following areas of practice.
+        .span4 
+          %strong Additional information/investigations required for the specified area of practice.
       
       - @capacities.each do |c|
         .row.spaced

@@ -661,6 +661,7 @@ body.loading #loading
   {
     h1, h2, h3, h4, h5, h6
     {
+      font-family: Bitter;
       color: $FNW_RED;
       margin-bottom: 10px;
     }
@@ -718,6 +719,13 @@ body.loading #loading
     #sc_item_markdown_content
     {
       height: 400px;
+    }
+    
+    #section_moa
+    {
+      background-color: #eff5fb;
+      padding: 0 18px;
+      margin: 2px -18px -18px -18px;
     }
   }
   
