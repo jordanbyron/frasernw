@@ -189,14 +189,6 @@ class SpecialistsController < ApplicationController
   def undo_link
     #view_context.link_to("undo", revert_version_path(@specialist.versions.scoped.last), :method => :post).html_safe
   end
-
-  def email
-    @specialist = Specialist.find params[:id]
-    #SpecialistMailer.invite_specialist(@specialist).deliver
-    #@contact = @specialist.contacts.build(:user_id => current_user, :notes => @specialist.contact_email)
-    #@contact.save
-    redirect_to @specialist, :notice => "TODO"
-  end
   
   def review
     @is_new = false
