@@ -3,7 +3,7 @@
 %ul#specialties-menu
   %li.dropdown.no-caret
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-      Specialties
+      All Specialties
       %b.caret
   
 %script{"type" => "text/javascript"}
@@ -124,7 +124,7 @@
                         Specialties
                       #specialist-filter-specialty.collapsable.in
                         .filter-group-content
-                          - Specialization.all.each do |s|
+                          - Specialization.not_in_progress.each do |s|
                             %label
                               %input.ssp{"type" => "checkbox", "id" => "ssp#{s.id}_"}= s.name
                               
@@ -245,7 +245,7 @@
                         Specialties
                       #clinic-filter-specialty.collapsable.in
                         .filter-group-content
-                          - Specialization.all.each do |s|
+                          - Specialization.not_in_progress.each do |s|
                             %label
                               %input.csp{"type" => "checkbox", "id" => "csp#{s.id}_"}= s.name
                               

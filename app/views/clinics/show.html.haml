@@ -1,11 +1,11 @@
 - title "Pathways | #{@clinic.name}"
 
-- specialization = @clinic.specializations.first || Specialization.all.first
+- specialization = @clinic.specializations.first || Specialization.not_in_progress.first
   
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-      Specialties
+      All Specialties
       %b.caret
   %li.subsequent= link_to specialization.name, specialization, :class => "ajax"
   

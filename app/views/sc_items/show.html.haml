@@ -1,11 +1,11 @@
 - title "Pathways | #{@sc_item.title}"
 
-- specialization = @sc_item.specializations.first || Specialization.all.first
+- specialization = @sc_item.specializations.first || Specialization.not_in_progress.first
     
 %ul#specialties-menu
   %li.dropdown.no-caret
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-      Specialties
+      All Specialties
       %b.caret
   %li.subsequent= link_to specialization.name, specialization, :class => "ajax"
   
