@@ -202,8 +202,21 @@
         //console.log(review_item);
         traverse_review_item(["specialist"], review_item["specialist"]);
         traverse_capacities(review_item);
-        $('#location_0_In_an_office').prop('checked', true);
-        $('#location_1_In_an_office').prop('checked', true);
+        if ($('#location_tab_0 .changed').length !== 0)
+        {
+          $('#location_0_In_an_office').prop('checked', true);
+          $('a[href="#location_tab_0"]').addClass('changed');
+        }
+        if ($('#location_tab_1 .changed').length !== 0)
+        {
+          $('#location_1_In_an_office').prop('checked', true);
+          $('a[href="#location_tab_1"]').addClass('changed');
+        }
+        if ($('#location_tab_2 .changed').length !== 0)
+        {
+          $('#location_2_In_an_office').prop('checked', true);
+          $('a[href="#location_tab_2"]').addClass('changed');
+        }
       });
 
 - if @specialization

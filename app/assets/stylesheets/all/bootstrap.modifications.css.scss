@@ -396,6 +396,11 @@
           line-height: 34px;
           text-align: center;
         }
+        
+        a.changed
+        {
+          color: $FNW_ORANGE;
+        }
       }
     
       li.active
@@ -408,6 +413,11 @@
           border: none;
           margin-top: -1px;
         }
+        
+        a.changed
+        {
+          color: $FNW_ORANGE;
+        }
       }
       
       li:not(.active) a:hover
@@ -416,6 +426,12 @@
         cursor: pointer;
         background: transparent;
         color: $FNW_WHITE;
+      }
+      
+      li:not(.active) a.changed:hover
+      {
+        font-weight: bold;
+        color: $FNW_ORANGE;
       }
       
       li + li
