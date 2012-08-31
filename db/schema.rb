@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120830234904) do
+ActiveRecord::Schema.define(:version => 20120831015704) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -573,6 +573,10 @@ ActiveRecord::Schema.define(:version => 20120830234904) do
     t.text      "hospital_clinic_details"
     t.boolean   "interpreter_available",      :default => false
     t.text      "address_update"
+    t.string    "photo_file_name"
+    t.string    "photo_content_type"
+    t.integer   "photo_file_size"
+    t.datetime  "photo_updated_at"
   end
 
   add_index "specialists", ["referral_clinic_id"], :name => "index_specialists_on_referral_clinic_id"

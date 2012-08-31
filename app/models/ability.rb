@@ -37,7 +37,7 @@ class Ability
       can [:create, :show], FeedbackItem
       
       #can update users they control
-      can :update, Specialist do |specialist|
+      can [:update, :photo, :update_photo], Specialist do |specialist|
         specialist.controlling_users.include? user
       end
       

@@ -229,9 +229,59 @@ body.loading #loading
   }
   
   .headline
-  { 
+  {
     background: $FNW_LIGHT_GRAY;
     padding: 16px;
+    min-height: 130px;
+    
+    .specialist-image
+    {
+      float: right;
+      display: block;
+    
+      .image
+      {
+        display: block;
+        margin: 0;
+        padding: 0;
+        
+        img
+        {
+          border: 8px solid $FNW_WHITE;
+          width: 100px;
+          height: 100px;
+          margin: 8px 8px 24px 16px;
+        }
+      }
+      
+      .image.empty:before
+      {
+        display: block;
+        width: 100px;
+        height: 100px;
+        margin: 8px 8px 24px 16px;
+        border: 8px solid $FNW_WHITE;
+        font-family: FontAwesome;
+        font-weight: normal;
+        font-style: normal;
+        font-size: 80px;
+        line-height: 125px;
+        text-align: baseline;
+        background-color: $FNW_LIGHT_GRAY;
+        content: "\f200";
+        color: $FNW_LIGHT_BLUE;
+        text-align: center;
+      }
+      
+      .edit
+      {
+        display: block;
+        width: 116px;
+        margin: -22px 8px 0 16px;
+        font-size: 13px;
+        text-align: center;
+      }
+    }
   }
   
   .content-wrapper

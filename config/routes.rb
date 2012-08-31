@@ -41,6 +41,8 @@ Frasernw::Application.routes.draw do
   get   "specialists/email/:id"         => 'specialists#email',         :as => 'specialist_email'
   match "specialists/:id/review"        => 'specialists#review',        :as => 'specialist_review'
   match "specialists/:id/accept"        => 'specialists#accept',        :as => 'specialist_accept_review'
+  match "specialists/:id/photo"         => 'specialists#photo',         :as => 'specialist_photo'
+  put   "specialists/:id/update_photo"  => 'specialists#update_photo',  :as => 'specialist_update_photo'
   
   match "clinics/:id/:token/edit"       => 'clinics_editor#edit',       :as => 'clinic_self_edit'
   put   "clinics/:id/:token/update"     => 'clinics_editor#update',     :as => 'clinic_self_update'

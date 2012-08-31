@@ -61,6 +61,13 @@
         .span7half
           .headline-header
           .headline
+            .specialist-image
+              .image{:class => !@specialist.photo.present? && "empty"}
+                - if @specialist.photo.present?
+                  %img{"src" => @specialist.photo.url(:thumb)}
+              - if current_user_is_admin? || (can? :update, @specialist)
+                .edit
+                  = link_to @specialist.photo.present? ? "Change photo" : "Add photo", specialist_photo_path(@specialist), :class => 'ajax'
             %h2
               = @specialist.name
               %a{"href" => "javascript:void(0)", "onclick" => "favorite('specialists',#{@specialist.id},'#{escape_javascript(@specialist.name)}')", "title" => "Favourite / un-favourite"}

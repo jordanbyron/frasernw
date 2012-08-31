@@ -258,6 +258,20 @@ class SpecialistsController < ApplicationController
     render :layout => 'print'
   end
   
+  def photo
+    @specialist = Specialist.find(params[:id])
+    render :layout => request.headers['X-PJAX'] ? 'ajax' : true
+  end
+  
+  def update_photo
+    @specialist = Specialist.find(params[:id])
+    if @specialist.update_attributes(params[:specialist])
+      redirect_to @specialist, :notice  => "Successfully updated #{@specialist.formal_name}'s photo."
+    else
+      render :action => 'photo'
+    end
+  end
+  
   def check_token
     token_required( Specialist, params[:token], params[:id] )
   end

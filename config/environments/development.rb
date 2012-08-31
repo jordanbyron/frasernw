@@ -25,6 +25,9 @@ Frasernw::Application.configure do
 
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
+  
+  #imagemagick path
+  Paperclip.options[:command_path] = "/usr/local/bin/"
 end
 
 ActionMailer::Base.smtp_settings = {
