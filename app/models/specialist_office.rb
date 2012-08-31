@@ -39,10 +39,10 @@ class SpecialistOffice < ActiveRecord::Base
     return ""
   end
   
-  SECTOR_HASH = { 
-    1 => "Public", 
-    2 => "Private", 
-    3 => "Public and Private", 
+  SECTOR_HASH = {
+    1 => "Public (MSP billed)",
+    2 => "Private (Patient pays)",
+    3 => "Public and Private",
     4 => "Didn't answer", 
   }
   
