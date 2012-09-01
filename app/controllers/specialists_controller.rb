@@ -257,6 +257,7 @@ class SpecialistsController < ApplicationController
   
   def update_photo
     @specialist = Specialist.find(params[:id])
+    SpecialistSweeper.instance.before_controller_update(@specialist)
     if @specialist.update_attributes(params[:specialist])
       redirect_to @specialist, :notice  => "Successfully updated #{@specialist.formal_name}'s photo."
     else
