@@ -52,7 +52,7 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
   }
 
   def can_email?
-    type_mask == 1 || type_mask == 3
+    type_mask == 1
   end
 
   def resolved_url
