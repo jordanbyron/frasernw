@@ -5,7 +5,7 @@ class SpecialistsController < ApplicationController
   skip_authorization_check :only => :refresh_cache
   include ApplicationHelper
   
-  cache_sweeper :specialist_sweeper, :only => [:create, :update, :destroy]
+  cache_sweeper :specialist_sweeper, :only => [:create, :update, :update_photo, :destroy]
 
   def index
     render :layout => 'ajax' if request.headers['X-PJAX']
