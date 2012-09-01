@@ -48,12 +48,14 @@
         %tr
           %td
             %ul.space
-              %li= link_to(sc_item.title, sc_item.markdown? ? sc_item : (sc_item.link? ? sc_item.url : sc_item.document.url), :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank")
+              %li= link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank")
               %li
                 %span.format= sc_item.format
                 %span.domain= sc_item.domain
                 %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
                   %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
+                - if sc_item.can_email?
+                  %span.email= link_to "E-mail to patient", compose_mail_to_patients_path(sc_item), :class => 'ajax'
           %td= sc_item.specializations.map{ |s| s.name }.to_sentence
       
   %p.admin.btn-group

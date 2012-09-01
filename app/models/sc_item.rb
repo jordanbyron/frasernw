@@ -40,12 +40,24 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
   def self.not_displayed_inline
     where("sc_items.type_mask != ? OR sc_items.inline = ?", 2, false)
   end
+
+  def mail_to_patient(current_user, patient_email)
+    MailToPatientMailer.mail_to_patient(self, current_user, patient_email).deliver
+  end  
   
   TYPE_HASH = {
     1 => "Link",
     2 => "Markdown",
     3 => "Document",
   }
+
+  def can_email?
+    type_mask == 1 || type_mask == 3
+  end
+
+  def resolved_url
+    markdown? ? "/content_items/#{self.id}" : (link? ? url : document.url)
+  end
 
   def tool?
     tool
