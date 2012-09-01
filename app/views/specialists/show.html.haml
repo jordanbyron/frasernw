@@ -310,13 +310,6 @@
                 %p
                   %strong Clinic associations:
                   != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'>#{clinic.name}</a>" }.to_sentence
-              
-            - if current_user_is_admin? &&  @specialist.controlling_users.present?
-              %h6 Users that can edit this specialist
-              
-              %ul
-                - @specialist.controlling_users.each do |user|
-                  %li= link_to user.name, user, :class => 'ajax'
                   
         - if show_details || show_areas_of_practice
         
@@ -393,6 +386,13 @@
               $('#feedback_thanks').fadeIn(200);
           });
         }
+              
+  - if current_user_is_admin? && @specialist.controlling_users.present?
+    %h6 Users that can edit this specialist
+    
+    %ul
+      - @specialist.controlling_users.each do |user|
+        %li= link_to user.name, user, :class => 'ajax'
                   
   .btn-group
     - if true || show_details
