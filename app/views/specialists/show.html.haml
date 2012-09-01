@@ -65,15 +65,12 @@
               .image{:class => !@specialist.photo.present? && "empty"}
                 - if @specialist.photo.present?
                   %img{"src" => @specialist.photo.url(:thumb)}
-              - if current_user_is_admin? || (can? :update, @specialist)
-                .edit
-                  = link_to @specialist.photo.present? ? "Change photo" : "Add photo", specialist_photo_path(@specialist), :class => 'ajax'
             %h2
               = @specialist.name
               %a{"href" => "javascript:void(0)", "onclick" => "favorite('specialists',#{@specialist.id},'#{escape_javascript(@specialist.name)}')", "title" => "Favourite / un-favourite"}
                 %i.icon-heart{"id" => "user_favorite_specialists_#{@specialist.id}"}
             %h3.specialty_links
-              = @specialist.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
+              = @specialist.specializations.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
             - if @specialist.sex? && @specialist.billing_number_padded.present?
               %h5= " #{@specialist.sex}, MSP ##{@specialist.billing_number_padded}"
             - elsif @specialist.sex?
@@ -407,6 +404,10 @@
       %a.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
         %i.icon-bullhorn.icon-text
         Incorrect Information? Let us know
+    - if !current_user_is_admin? && (can? :update, @specialist)
+      %a.btn.ajax{"href" => specialist_photo_path(@specialist)}
+        %i.icon-picture.icon-white
+        #{@specialist.photo.present? ? "Change" : "Add"} #{@specialist.name}'s photo
 
   - if current_user_is_admin?
   
@@ -420,6 +421,7 @@
         
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialist", edit_specialist_path(@specialist), :class => "btn ajax")
         = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", specialist_referral_forms_path(@specialist), :class => "btn ajax")
+        = link_to("<i class='icon-picture'></i>".html_safe + " Photo", specialist_photo_path(@specialist), :class => "btn ajax")
         %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
           %i.icon-share
           Share

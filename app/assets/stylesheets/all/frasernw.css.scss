@@ -272,15 +272,6 @@ body.loading #loading
         color: $FNW_LIGHT_BLUE;
         text-align: center;
       }
-      
-      .edit
-      {
-        display: block;
-        width: 116px;
-        margin: -22px 8px 0 16px;
-        font-size: 13px;
-        text-align: center;
-      }
     }
   }
   
@@ -412,26 +403,6 @@ body.loading #loading
     a#clinics
     {
       width: 40px;
-    }
-    a#risk_calculators
-    {
-      width: 100px;
-    }
-    a#care_pathways
-    {
-      width: 90px;
-    }
-    a#pearls
-    {
-      width: 45px;
-    }
-    a#red_flags
-    {
-      width: 60px;
-    }
-    a#patient_education
-    {
-      width: 110px;
     }
   }
   
