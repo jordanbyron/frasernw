@@ -10,6 +10,7 @@ gem 'rails', '3.1.4'
 group :production do
   gem 'pg'
   gem 'therubyracer-heroku', '0.8.1.pre3'
+  gem 'newrelic_rpm'
 end
 
 # Asset template engines
