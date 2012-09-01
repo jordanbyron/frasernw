@@ -138,6 +138,7 @@ GEM
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
     net-ssh (2.2.1)
+    newrelic_rpm (3.4.1)
     nifty-generators (0.4.6)
     nokogiri (1.5.0)
     paper_trail (2.4.0)
@@ -275,6 +276,7 @@ DEPENDENCIES
   jquery-rails
   memcachier
   nested_form!
+  newrelic_rpm
   nifty-generators
   paper_trail (~> 2)
   paperclip (~> 2.7)
