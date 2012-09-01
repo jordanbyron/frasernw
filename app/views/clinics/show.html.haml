@@ -1,11 +1,11 @@
 - title "Pathways | #{@clinic.name}"
 
-- specialization = @clinic.specializations.first || Specialization.all.first
+- specialization = @clinic.specializations.first || Specialization.not_in_progress.first
   
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-      Specialties
+      All Specialties
       %b.caret
   %li.subsequent= link_to specialization.name, specialization, :class => "ajax"
   
@@ -15,7 +15,7 @@
   :plain
     var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
     $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
-    $(document).ready(function() { $('#user_favorite').addClass('#{favorite_class}') });
+    $(document).ready(function() { $('#user_favorite_clinics_#{@clinic.id}').addClass('#{favorite_class}') });
   
 #specialties-dropdown-menu
   .inner
@@ -42,7 +42,7 @@
     %li.active
       %a#clinics{"href" => "#{specialization_path(specialization)}#clinics"}
         %span Clinics
-    - ScCategory.all.each do |sc_category|
+    - ScCategory.specialty.each do |sc_category|
       - if sc_category.sc_items.for_specialization(specialization).present?
         %li
           %a{"href" => "#{specialization_path(specialization)}##{sc_category.name.remove_whitespace}", "id" => sc_category.name.remove_whitespace}
@@ -65,7 +65,7 @@
             %h2
               = @clinic.name
               %a{"href" => "javascript:void(0)", "onclick" => "favorite('clinics',#{@clinic.id},'#{escape_javascript(@clinic.name)}')", "title" => "Favourite / un-favourite"}
-                %i#user_favorite.icon-heart
+                %i.icon-heart{"id" => "user_favorite_clinics_#{@clinic.id}"}
         
             %h3.specialty_links
               = @clinic.specializations_including_in_progress.reject{ |s| s.in_progress and !current_user_is_admin? }.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
@@ -93,7 +93,8 @@
               - show_areas_of_practice = true
                     
               %p.space.no_indent
-                %strong.status{ :class => "status_#{@clinic.status_class}"}= @clinic.status.end_with_period
+                %i{:class => @clinic.status_class}
+                %strong.status= @clinic.status.end_with_period
               - if @clinic.status_details.present?
                 %p.no_indent
                   %strong Details:
@@ -341,7 +342,8 @@
         %i.icon-pencil.icon-white
         Update #{@clinic.name}'s information
     - else
-      %a.feedback.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
+      %a.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
+        %i.icon-bullhorn.icon-text
         Incorrect Information? Let us know
 
   - if current_user_is_admin?

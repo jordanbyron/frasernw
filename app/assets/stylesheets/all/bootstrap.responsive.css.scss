@@ -212,6 +212,24 @@
   }
 }
 
+@media only screen and (min-width: 767px) and (max-width: 769px) and (orientation:portrait){
+   /* ipad portrait */
+  #search_results
+  {
+    max-height: 500px;
+    overflow-y: scroll;
+  }
+}
+
+@media only screen and (min-width: 1023px) and (max-width: 1025px) and (orientation:landscape){
+   /* ipad landscape */
+  #search_results
+  {
+    max-height: 180px;
+    overflow-y: scroll;
+  }
+}
+
 @media (min-width: 768px) and (max-width: 979px) {
   .row {
     margin-left: -18px;
@@ -417,6 +435,37 @@
   }
   input.span1, textarea.span1, .uneditable-input.span1 {
     width: 32px;
+  }
+  .navbar .navbar-inner 
+  {
+    .container
+    {
+      width: 738px;
+    }
+    
+    .nav-collapse .nav
+    {
+      i
+      {
+        display: none;
+      }
+    }
+    
+    .nav-collapse .navbar-search
+    {
+      input[type="search"]
+      {
+        width: 150px;
+      }
+    }
+  }
+  
+  #content #container .filter
+  {
+    .filter-group-title.closed:after, .filter-group-title.open:after
+    {
+      width: 30px;
+    }
   }
 }
 
@@ -649,12 +698,33 @@
     padding: 4px 0;
   }
   
+  .navbar .navbar-inner 
+  {
+    padding: 0 10px;
+    
+    .navbar-search
+    {
+      margin: 5px 0;
+      
+      #search
+      {
+        width: 100px;
+        padding: 0 2px;
+        height: auto;
+      }
+    }
+  }
+    
   #search_results
   {
     display: block;
-    position: relative;
-    width: 90%;
-    top: 10px;
+    position: absolute;
+    right: -50px;
+    top: 33px;
+    width: 280px;
+    padding: 0 10px;
+    max-height: 100px;
+    overflow-y: scroll;
     
     ul li.search-result a
     {
@@ -708,14 +778,38 @@
     {
       top: 0;
       left: 0;
-      width: 160px;
+      max-width: 288px;
+      
       .inner
       {
         border: 0;
+        max-width: 288px;
+        padding: 30px 0 0 0;
         
         ul
         {
-          display: block;
+          display: inline;
+          wrap: wrap;
+          
+          li
+          {
+            float: left;
+            display: block;
+            
+            line-height: 26px;
+            padding: 0 8px;
+            margin: 3px;
+            height: auto;
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+            border-radius: 15px;
+            border: 1px solid $FNW_MID_GRAY;
+            
+            a:hover
+            {
+              background: none; 
+            }
+          }
         }
       }
     }
@@ -723,11 +817,49 @@
     .tabbable ul.nav-tabs
     {
       margin: 0 -10px 0 -10px;
+      padding: 5px;
       
-      li a
+      li
       {
-        padding: 0 10px;
+        display: inline;
       }
+      
+      li a, li.active a, li:not(.active) a:hover
+      {
+        line-height: 26px;
+        padding: 0 8px;
+        margin: 3px;
+        height: auto;
+        -webkit-border-radius: 15px;
+        -moz-border-radius: 15px;
+        border-radius: 15px;
+        border: 1px solid $FNW_MID_GRAY;
+      }
+      
+      li.active a
+      {
+        background-color: $FNW_LIGHT_GRAY;
+        color: $FNW_TEXT;
+      }
+      
+      li:not(.active) a:hover
+      {
+        margin-top: 3px;
+        background-color: $FNW_MID_GRAY;
+        color: $FNW_TEXT;
+      }
+      
+      li + li
+      {
+        padding-left: 0;
+        background-image: none;
+      }
+      
+      background-color: $FNW_BLUE_GRAY;
+      background-image: url(/img/tab-background-half.gif), url(/img/tab-background-half.gif);
+      background-position: left top, left bottom;
+      background-repeat: repeat-x, repeat-x;
+      height: auto;
     }
   
     .content-wrapper + .tabbable
@@ -750,12 +882,164 @@
         height: 100px;
       }
     }
+      
+    
+    table#specialist_table, table#clinic_table, table#office_table
+    {
+      display: table;
+      
+      th.wt, th.c
+      {
+        display: none;
+      }
+      
+      tr
+      {
+        td, th
+        {
+          padding: 0;
+          border: 0;
+          margin: 0;
+          float: left;
+          display: inline-block;
+        }
+        
+        td.sp, th.sp, td.c, th.c
+        {
+          width: 60%;  
+        }
+        
+        td.st, th.st, td.wt, th.wt
+        {
+          width: 40%;
+        }
+        
+        td
+        {
+          height: auto;
+          ul 
+          {
+              white-space: nowrap;
+              width: 100%;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            
+            li
+            {
+              display: inline;
+            }
+            
+            li + li
+            {
+              border-left: 1px solid $FNW_TEXT;
+              padding-left: 3px;
+            }
+          }
+        }
+        td.sp, td.st, td.s
+        {
+          padding-top: 4px;
+        }
+        td.wt, td.c
+        {
+          padding-bottom: 4px;
+          background: none;
+        }
+        td.wt
+        {
+          clear: both;
+          margin-left: 60%;
+        }
+        td.c
+        {
+          margin-left: -100%;
+        }
+      }
+      tr:hover td
+      {
+        background-color: transparent;
+      }
+    }
+    
+    table#specialist_table.five, table#clinic_table.five, table#office_table.five
+    {
+      tr
+      {
+        td.sp
+        {
+          width: 100%;
+        }
+        
+        th.s
+        {
+          display: none;
+        }
+        
+        td.s
+        {
+          width: 60%;
+        }
+      }
+      
+      td.s, td.st
+      {
+        padding: 0;
+        background: none;
+      }
+    }
+    .well, #front .well
+    {
+      background-color: $FNW_WHITE;
+      box-shadow: none;
+      padding: 0;
+      border: 0;
+      
+      h3
+      {
+        margin: 0;
+        padding: 0;
+        color: $FNW_RED;
+        font-weight: normal;
+        background: none;
+        font-size: 18px;
+      }
+      
+      h6
+      {
+        padding: 4px;
+        margin: 0;
+        color: $FNW_RED;
+        font-weight: normal;
+        font-size: 14px;
+      }
+    }
+  }
+  .toggle-filters
+  {
+    background-color: $FNW_HEADLINE_BACKGROUND;
+    display: block;
+    height: 30px;
+    margin: 0px -10px 10px -10px;
+    padding: 0 10px;
+    line-height: 30px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 11px;
   }
   .well.filter
   {
     display: none;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    z-index: 1;
+    
+    .title
+    {
+      display: none;
+    }
   }
-  .btn-group .btn 
+  .btn-group .btn
   {
     position: block;
     float: none;

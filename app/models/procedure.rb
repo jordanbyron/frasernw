@@ -124,6 +124,28 @@ class Procedure < ActiveRecord::Base
     return result.flatten.uniq
   end
   
+  def focused_children
+    result = []
+    procedure_specializations.focused.each do |ps|
+      ps.children.each do |child|
+        result << child.procedure
+        result << child.procedure.focused_children if ps.procedure != self #recursive
+      end
+    end
+    return result.flatten.uniq
+  end
+  
+  def non_focused_children
+    result = []
+    procedure_specializations.non_focused.each do |ps|
+      ps.children.each do |child|
+        result << child.procedure
+        result << child.procedure.non_focused_children if ps.procedure != self #recursive
+      end
+    end
+    return result.flatten.uniq
+  end
+  
   def token
     if self.saved_token
       return self.saved_token

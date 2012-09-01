@@ -1,18 +1,21 @@
 - title "Pathways | #{@sc_item.title}"
 
-- specialization = @sc_item.specializations.first || Specialization.all.first
+- specialization = @sc_item.specializations.first || Specialization.not_in_progress.first
     
 %ul#specialties-menu
   %li.dropdown.no-caret
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-      Specialties
+      All Specialties
       %b.caret
   %li.subsequent= link_to specialization.name, specialization, :class => "ajax"
+  
+- favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @sc_item.id, "ScItem").present? ? "icon-red" : "icon-text") : "icon-text"
   
 %script{"type" => "text/javascript"}
   :plain
     var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); return false; });
     $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
+    $(document).ready(function() { $('#user_favorite_content_items_#{@sc_item.id}').addClass('#{favorite_class}') });
   
 #specialties-dropdown-menu
   .inner
@@ -41,7 +44,7 @@
       %li
         %a#clinics{"href" => "#{specialization_path(specialization)}#clinics"}
           %span Clinics
-    - ScCategory.all.each do |sc_category|
+    - ScCategory.specialty.each do |sc_category|
       - if sc_category.sc_items.for_specialization(specialization).present?
         %li{:class => @sc_item.sc_category == sc_category && "active"}
           %a{"href" => "#{specialization_path(specialization)}##{sc_category.name.remove_whitespace}"}
@@ -49,19 +52,28 @@
             
 .content-wrapper.scm
   
-  - if @sc_item.link?
+  - if @sc_item.link? || @sc_item.document?
   
-    %p= link_to @sc_item.title, @sc_item.url, :target => "_blank"
+    %ul.no-marker
+      %li= link_to @sc_item.title, @sc_item.resolved_url, :target => "_blank"
+      %li
+        %span.format= @sc_item.format
+        %span.domain= @sc_item.domain
+        %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
+          %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
+        - if @sc_item.can_email?
+          %span.email= link_to "E-mail to patient", compose_mail_to_patients_path(@sc_item), :class => 'ajax'
     
   - elsif @sc_item.markdown?
   
-    %h1{:class => @sc_item.shared_care? && "shared_care"}= @sc_item.title
+    %h1
+      - if @sc_item.shared_care?
+        %i.icon-red.icon-star
+      = @sc_item.title
+      %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
+        %i.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
   
     %p= BlueCloth.new(@sc_item.markdown_content).to_html.html_safe
-  
-  - elsif @sc_item.document?
-  
-    %p= link_to @sc_item.title, @sc_item.document.url, :target => "_blank"
   
   %p.admin.btn-group
     - if can? :update, @sc_item

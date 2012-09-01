@@ -28,14 +28,16 @@ class Ability
       #can print patient information
       can :print_patient_information, [Specialist, Clinic]
       
-      #can change password
+      #can change name, email, password
+      can [:change_name, :update_name], User
+      can [:change_email, :update_email], User
       can [:change_password, :update_password], User
       
       #can add feedback
       can [:create, :show], FeedbackItem
       
       #can update users they control
-      can :update, Specialist do |specialist|
+      can [:update, :photo, :update_photo], Specialist do |specialist|
         specialist.controlling_users.include? user
       end
       

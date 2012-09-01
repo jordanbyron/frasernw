@@ -9,3 +9,4 @@ tmp/
 __MACOSX/
 vendor/gems
 db/*.bak
+config/heroku_env.rb

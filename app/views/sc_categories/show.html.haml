@@ -3,13 +3,14 @@
 %ul#specialties-menu
   %li.dropdown.no-caret
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-      Specialties
+      All Specialties
       %b.caret
   
 %script{"type" => "text/javascript"}
   :plain
     var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); return false; });
     $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
+    $(document).ready(function() { update_favorites() });
   
 #specialties-dropdown-menu
   .inner
@@ -46,18 +47,15 @@
       - @sc_category.sc_items.each do |sc_item|
         %tr
           %td
-            - if sc_item.link?
-              %ul.space
-                %li= link_to(sc_item.title, sc_item.url, :target => "_blank")
-                %li
-                  %span.format= sc_item.format
-                  %span.domain= sc_item.domain
-            - else
-              %ul.space
-                %li= link_to sc_item.title, sc_item, :class => "ajax"
-                %li
-                  %span.format= sc_item.format
-                  %span.domain= sc_item.domain
+            %ul.space
+              %li= link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank")
+              %li
+                %span.format= sc_item.format
+                %span.domain= sc_item.domain
+                %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
+                  %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
+                - if sc_item.can_email?
+                  %span.email= link_to "E-mail to patient", compose_mail_to_patients_path(sc_item), :class => 'ajax'
           %td= sc_item.specializations.map{ |s| s.name }.to_sentence
       
   %p.admin.btn-group

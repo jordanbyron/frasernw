@@ -7,6 +7,10 @@
     %meta{"name"=>"viewport", :content=>"initial-scale=1.0"}
 
     = stylesheet_link_tag "application", :media => 'screen, print'
+    /[if lte IE 7]
+      = stylesheet_link_tag "ie.css", :media => 'screen'
+    /[if IE 7]
+      = stylesheet_link_tag "font-awesome-ie7.css", :media => 'screen, print'
     = stylesheet_link_tag "print", :media => 'print'
     = javascript_include_tag "application"
     = javascript_include_tag '../livesearch'
@@ -26,6 +30,11 @@
           group_formatter: pathways_group_formatter,
           min_score: 0.8
         });
+        
+        if ($(window).width() <= 480) 
+        { 
+          $('meta[name=viewport]').attr('content','initial-scale=1.0, user-scalable=no');
+        }
       });
 
       var _gaq = _gaq || [];
@@ -52,15 +61,20 @@
             
           %a#logo.brand.ajax{"href" => root_url}
           
+          - if logged_in?
+            
+            %form.navbar-search.pull-right
+              %input.span3.search-query#search{"type" => "search", "placeholder" => "Search"}
+              #search_results
+                %ul
+          
           .nav-collapse
             - if logged_in?
-              
-              %form.navbar-search.pull-right
-                %input.span3.search-query#search{"type" => "search", "placeholder" => "Search"}
-                #search_results
-                  %ul
                   
               %ul.nav.pull-right
+              
+                %li.dropdown.visible-desktop
+                  %a.ajax{"href" => root_url} Home
                   
                 - if current_user_is_admin?
                 
@@ -133,6 +147,21 @@
                           %li= link_to "New Content Item", new_sc_item_path, :class => "ajax"
                       %li= link_to "Content Categories", sc_categories_path, :class => "sc_category ajax"
                       %li= link_to "Content Items", sc_items_path, :class => "sc_item ajax"
+                  
+                - ScCategory.global_nav.reject{ |category| category.sc_items.blank? }.each do |category|
+                  - if category.show_as_dropdown?
+                    %li.dropdown
+                      %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                        = category.name
+                        %b.caret
+                      %ul.dropdown-menu
+                        - category.sc_items.each do |item|
+                          - if item.link? || item.document?
+                            %li= link_to item.title, item.link? ? item.url : item.document.url, :target => '_blank'
+                          - else
+                            %li= link_to item.title, item, :class => 'ajax'
+                  - else
+                    %li= link_to category.name, category, :class => 'ajax'
               
                 %li.dropdown
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
@@ -144,18 +173,21 @@
                         
                     %li#specialists_favorites.nav-header.specialist Specialists
                     - current_user.favorite_specialists.each do |s|
-                      %li{"id" => "specialists_#{s.id}"}= link_to s.name, specialist_path(s), :class => 'ajax'
+                      %li.favorite{"id" => "specialists_#{s.id}"}= link_to s.name, specialist_path(s), :class => 'ajax'
                         
                     %li#clinics_favorites.nav-header.clinic Clinics
                     - current_user.favorite_clinics.each do |c|
-                      %li{"id" => "clinics_#{c.id}"}= link_to c.name, clinic_path(c), :class => 'ajax'
+                      %li.favorite{"id" => "clinics_#{c.id}"}= link_to c.name, clinic_path(c), :class => 'ajax'
+                        
+                    %li#content_items_favorites.nav-header.clinic Content
+                    - current_user.favorite_content_items.each do |c|
+                      %li.favorite{"id" => "content_items_#{c.id}"}= link_to c.title, "/content_items/#{c.id}", :class => 'ajax'
                         
                     %li#add_favorites
                       %p
-                        Add specialists and clinics to this menu for quick reference by viewing their full details and pressing the
+                        Add specialists, clinics, and content to this menu for quick reference by viewing their full details and pressing the
                         %i.icon-text.icon-heart
                         beside their name.
-                          
                         
                     -if current_user.favorite_specialists.blank?
                       :javascript
@@ -165,22 +197,13 @@
                       :javascript
                         $(document).ready(function() { $('#clinics_favorites').hide(); });
                         
+                    -if current_user.favorite_content_items.blank?
+                      :javascript
+                        $(document).ready(function() { $('#content_items_favorites').hide(); });
+                        
                     -if current_user.favorites.present?
                       :javascript
                         $(document).ready(function() { $('#add_favorites').hide(); });
-                  
-                - if ScItem.tool.present?
-                  %li.dropdown
-                    %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-                      %i.icon-wrench
-                      Tools
-                      %b.caret
-                    %ul.dropdown-menu
-                      - ScItem.tool.each do |tool|
-                        - if tool.link?
-                          %li= link_to tool.title, tool.url, :target => '_blank'
-                        - else
-                          %li= link_to tool.title, tool, :class => 'ajax'
                         
                 %li.dropdown
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}

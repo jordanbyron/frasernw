@@ -21,7 +21,7 @@
             %th.admin
 
           - User.all.each do |user|
-            - next if not user.admin?
+            - next if !user.admin? || user.pending?
             %tr
               %td= link_to user.name, user, :class => 'ajax'
               %td= user.email
@@ -40,15 +40,16 @@
             %th.admin
 
           - User.all.each do |user|
-            - next if user.admin? || user.email.blank?
+            - next if user.admin? || user.pending?
             %tr
               %td= link_to user.name, user, :class => 'ajax'
               %td= user.type
               %td= user.email
               %td
                 %ul
-                  - user.controlled_specialists.each do |specialist|
-                    %li= specialist.name
+                  - user.controlled_specialist_offices.each do |specialist_office|
+                    - next if specialist_office.office.blank?
+                    %li= "#{specialist_office.specialist.name} - #{specialist_office.office.short_address}"
                   - user.controlled_clinics.each do |clinic|
                     %li= clinic.name
               %td.admin.btn-group
@@ -59,19 +60,24 @@
         %table.table.table-condensed.table-striped
           %tr
             %th Name
+            %th Admin?
+            %th Type
             %th Access key
             %th Can edit
             %th.admin
 
           - User.all.each do |user|
-            - next if user.admin? || user.email.present?
+            - next if !user.pending?
             %tr
               %td= link_to user.name, user, :class => 'ajax'
+              %td= user.admin? ? "Yes" : "No"
+              %td= user.admin? ? "Admin" : user.type
               %td= user.token
               %td
                 %ul
-                  - user.controlled_specialists.each do |specialist|
-                    %li= specialist.name
+                  - user.controlled_specialist_offices.each do |specialist_office|
+                    - next if specialist_office.office.blank?
+                    %li= "#{specialist_office.specialist.name} - #{specialist_office.office.short_address}"
                   - user.controlled_clinics.each do |clinic|
                     %li= clinic.name
               %td.admin.btn-group

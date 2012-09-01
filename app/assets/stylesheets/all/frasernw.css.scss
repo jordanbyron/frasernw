@@ -229,13 +229,64 @@ body.loading #loading
   }
   
   .headline
-  { 
+  {
     background: $FNW_LIGHT_GRAY;
     padding: 16px;
+    min-height: 130px;
+    
+    .specialist-image
+    {
+      float: right;
+      display: block;
+    
+      .image
+      {
+        display: block;
+        margin: 0;
+        padding: 0;
+        
+        img
+        {
+          border: 8px solid $FNW_WHITE;
+          width: 100px;
+          height: 100px;
+          margin: 8px 8px 24px 16px;
+        }
+      }
+      
+      .image.empty:before
+      {
+        display: block;
+        width: 100px;
+        height: 100px;
+        margin: 8px 8px 24px 16px;
+        border: 8px solid $FNW_WHITE;
+        font-family: FontAwesome;
+        font-weight: normal;
+        font-style: normal;
+        font-size: 80px;
+        line-height: 125px;
+        text-align: baseline;
+        background-color: $FNW_LIGHT_GRAY;
+        content: "\f200";
+        color: $FNW_LIGHT_BLUE;
+        text-align: center;
+      }
+      
+      .edit
+      {
+        display: block;
+        width: 116px;
+        margin: -22px 8px 0 16px;
+        font-size: 13px;
+        text-align: center;
+      }
+    }
   }
   
   .content-wrapper
   {
+    position: relative;
     margin: 0 0-$FNW_BODY_BREATHING;
     padding: $FNW_BODY_BREATHING*1.5 $FNW_BODY_BREATHING;
     background-color: $FNW_WHITE;
@@ -384,17 +435,28 @@ body.loading #loading
     }
   }
   
-  span.format, span.domain
+  span.format, span.domain, span.email
   {
     color: #888;
     text-transform: uppercase;
     font-weight: bold;
     font-size: 10px;
   }
-  
+    
   span.domain
   {
     color: #DDD;
+  }
+  
+  span.email a
+  {
+    color: $FNW_LIGHT_BLUE;
+  }
+  
+  span.email a:hover
+  {
+    color: $FNW_BLUE;
+    text-decoration: none;
   }
   
   .table
@@ -435,25 +497,10 @@ body.loading #loading
       height: 31px;
       padding-bottom:0;
       
-      .status_available,
-      .status_unavailable,
-      .status_unknown,
-      .status_warning, 
-      .status_external,
-      .status_blank
+      .status
       {
+        display: none;
         color: $FNW_WHITE;
-      }
-      
-      .status_available:before, 
-      .status_unavailable:before, 
-      .status_unknown:before, 
-      .status_warning:before, 
-      .status_external:before,
-      .status_blank:before
-      {
-        margin-left: 0;
-        margin-right: 0;
       }
       
       ul
@@ -625,6 +672,7 @@ body.loading #loading
   {
     h1, h2, h3, h4, h5, h6
     {
+      font-family: Bitter;
       color: $FNW_RED;
       margin-bottom: 10px;
     }
@@ -649,7 +697,7 @@ body.loading #loading
       }
     }
     
-    .hours
+    .hours, .break
     {
       .changed_wrapper
       {
@@ -671,9 +719,24 @@ body.loading #loading
       }
     }
     
+    .break
+    {
+      margin-top: 6px;
+      margin-left: 0px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid $FNW_MID_GRAY;
+    }
+    
     #sc_item_markdown_content
     {
       height: 400px;
+    }
+    
+    #section_moa
+    {
+      background-color: #eff5fb;
+      padding: 0 18px 1px 18px;
+      margin: 2px -18px -18px -18px;
     }
   }
   

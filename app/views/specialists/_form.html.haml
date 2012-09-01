@@ -202,8 +202,21 @@
         //console.log(review_item);
         traverse_review_item(["specialist"], review_item["specialist"]);
         traverse_capacities(review_item);
-        $('#location_0_In_an_office').prop('checked', true);
-        $('#location_1_In_an_office').prop('checked', true);
+        if ($('#location_tab_0 .changed').length !== 0)
+        {
+          $('#location_0_In_an_office').prop('checked', true);
+          $('a[href="#location_tab_0"]').addClass('changed');
+        }
+        if ($('#location_tab_1 .changed').length !== 0)
+        {
+          $('#location_1_In_an_office').prop('checked', true);
+          $('a[href="#location_tab_1"]').addClass('changed');
+        }
+        if ($('#location_tab_2 .changed').length !== 0)
+        {
+          $('#location_2_In_an_office').prop('checked', true);
+          $('a[href="#location_tab_2"]').addClass('changed');
+        }
       });
 
 - if @specialization
@@ -220,6 +233,7 @@
     %h3 You are editing #{@specialist.name}'s entry in Pathways.
     %p.space.no_indent If you have any questions while editing, please contact #{@specialist.owner.name} at #{mail_to @specialist.owner.email}
     %p.space.no_indent This database exists to make our practices and your practice more efficient. By providing the information requested below you are making it easier for family doctors to find your practice, ensuring that the scope of your practice is fully understood, and guiding offices in providing you with the correct information when making referrals.
+    %p.space.no_indent Unless otherwise indicated, all provided information will be available to all users of Pathways.
 
 = simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => form_action}, :method => form_method, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
@@ -229,7 +243,7 @@
 
   = f.input :firstname
   = f.input :lastname
-  = f.input :goes_by_name
+  = f.input :goes_by_name, :hint => "A name which collegues refer to the specialist with, if different from his or her formal first name. E.g. \"Bill\" when the first name is \"William\""
   = f.input :sex_mask, as: :select, collection: Specialist::SEX_HASH, label_method: :last, value_method: :first, :include_blank => false
   = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.billing_number_padded }
   .no-print
@@ -239,7 +253,7 @@
     :plain
       $(document).ready( $("#specialist_categorization_mask").each(specialist_categorization_changed) );
   .no-print
-    = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
+    = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "If you are adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
 
   #section_contact
   
@@ -313,7 +327,7 @@
                         
             = so.input :sector_mask, as: :radio_buttons, collection: SpecialistOffice::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
             
-            %h4 When days and times are your phone lines open?
+            %h4 What days and times are your phone lines open?
             = so.simple_fields_for :phone_schedule, :suppress_fields => true do |s|
               - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
                 = s.simple_fields_for day, :suppress_fields => true do |d|
@@ -327,6 +341,13 @@
                         .changed_wrapper
                           .to to
                           = d.input_field :to, :class => "auto no-print", :minute_step => 15, :include_blank => true
+                      .break.no-print
+                        .changed_wrapper
+                          .from closed for lunch from
+                          = d.input_field :break_from, :class => "auto no-print", :minute_step => 15, :include_blank => true
+                        .changed_wrapper
+                          .to to
+                          = d.input_field :break_to, :class => "auto no-print", :minute_step => 15, :include_blank => true
                       .print-only
                         from:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to:
 
@@ -395,8 +416,10 @@
     
     .content
       .row
-        .span4 Referrals accepted in the following areas of practice.
-        .span4 Additional information/investigations required for the specified area of practice.
+        .span4
+          %strong Referrals accepted in the following areas of practice.
+        .span4 
+          %strong Additional information/investigations required for the specified area of practice.
       
       - @capacities.each do |c|
         .row.spaced
@@ -488,20 +511,6 @@
       %hr
     
       %h3 Admin
-    
-      Users that can edit this specialist
-      .content
-        = f.simple_fields_for :user_controls_specialists do |i|
-          .row.spaced
-            .span5.offset3
-              = i.association :user, as: :select, :label => false, collection: User.all.reject{ |u| u.admin? }, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "span5" }
-            .spanhalf.offsethalf
-              = i.hidden_field :_destroy
-              = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
-        .row
-          = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another user", :user_controls_specialists, class: "btn offset3")
-      
-      %hr{ "style" => "visibility:hidden" }
       
       = f.input :admin_notes
 

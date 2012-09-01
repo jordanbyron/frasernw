@@ -21,8 +21,7 @@
             %th Updated by
             %th Updated when
 
-          - @review_items.each do |review_item|
-            - next if review_item.item_type != "Specialist"
+          - @review_items.reject{ |item| item.item.blank? || item.item_type != "Specialist" }.each do |review_item|
             %tr
               %td= review_item.item.name
               %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
@@ -37,8 +36,7 @@
             %th Updated by
             %th Updated when
 
-          - @review_items.each do |review_item|
-            - next if review_item.item_type != "Clinic"
+          - @review_items.reject{ |item| item.item.blank? || item.item_type != "Clinic" }.each do |review_item|
             %tr
               %td= review_item.item.name
               %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"

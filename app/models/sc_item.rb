@@ -1,5 +1,5 @@
 class ScItem < ActiveRecord::Base
-  attr_accessible :sc_category_id, :specialization_ids, :tool, :type_mask, :title, :searchable, :shared_care, :inline, :url, :markdown_content, :document
+  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :shared_care, :inline, :url, :markdown_content, :document
   
   belongs_to  :sc_category
   
@@ -19,6 +19,8 @@ class ScItem < ActiveRecord::Base
  
   validates_presence_of :title, :on => :create, :message => "can't be blank"
   
+  default_scope order('sc_items.title')
+  
   def self.for_specialization(specialization)
     joins(:sc_item_specializations).where("sc_item_specializations.specialization_id = ?", specialization.id)
   end
@@ -31,15 +33,31 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
     where("sc_items.searchable = ?", true)
   end
   
-  def self.tool
-    where("sc_items.tool = ?", true)
+  def self.displayed_inline
+    where("sc_items.type_mask = ? AND sc_items.inline = ?", 2, true)
   end
+  
+  def self.not_displayed_inline
+    where("sc_items.type_mask != ? OR sc_items.inline = ?", 2, false)
+  end
+
+  def mail_to_patient(current_user, patient_email)
+    MailToPatientMailer.mail_to_patient(self, current_user, patient_email).deliver
+  end  
   
   TYPE_HASH = {
     1 => "Link",
     2 => "Markdown",
     3 => "Document",
   }
+
+  def can_email?
+    type_mask == 1 || type_mask == 3
+  end
+
+  def resolved_url
+    markdown? ? "/content_items/#{self.id}" : (link? ? url : document.url)
+  end
 
   def tool?
     tool
@@ -71,7 +89,11 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
   
   def format_type
     if link? || document?
-      ftype = FORMAT_HASH[url.slice(url.rindex('.')+1..-1).downcase]
+      theurl = link? ? url : document.url
+      theurl = theurl.slice(theurl.rindex('.')+1..-1).downcase              #take everything after the last period
+      theurl = theurl.slice(0...theurl.rindex('?')) if theurl.rindex('?')   #take off anything after a ?
+      theurl = theurl.slice(0...theurl.rindex('#')) if theurl.rindex('#')   #take off anything after a #
+      ftype = FORMAT_HASH[theurl]
       ftype = FORMAT_HASH[domain] if ftype.blank?
       ftype = FORMAT_TYPE_EXTERNAL if ftype.blank?
       ftype

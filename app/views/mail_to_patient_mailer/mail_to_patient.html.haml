@@ -1,0 +1,7 @@
+!!!
+%html
+  %head
+    %title #{@user.name} has sent you a link to a medical resource
+    
+  %body
+    %p #{@user.name} has sent you a link to a medical resource "#{@sc_item.title}" which is available at #{@sc_item.resolved_url}.

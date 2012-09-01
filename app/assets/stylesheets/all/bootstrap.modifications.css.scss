@@ -396,6 +396,11 @@
           line-height: 34px;
           text-align: center;
         }
+        
+        a.changed
+        {
+          color: $FNW_ORANGE;
+        }
       }
     
       li.active
@@ -408,6 +413,11 @@
           border: none;
           margin-top: -1px;
         }
+        
+        a.changed
+        {
+          color: $FNW_ORANGE;
+        }
       }
       
       li:not(.active) a:hover
@@ -415,9 +425,13 @@
         border: none;
         cursor: pointer;
         background: transparent;
-        font-weight: bold;
         color: $FNW_WHITE;
-        margin-top: -1px;
+      }
+      
+      li:not(.active) a.changed:hover
+      {
+        font-weight: bold;
+        color: $FNW_ORANGE;
       }
       
       li + li
@@ -575,9 +589,20 @@
 
 /* NESTED DROPDOWNS */
 
+.dropdown-menu
+{
+  max-width: 350px;
+}
+
 .dropdown-menu li
 {
   position: relative;
+}
+
+.dropdown-menu li a
+{
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .nav li.dropdown ul.dropdown-menu li:hover > ul 

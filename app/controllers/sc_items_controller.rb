@@ -49,7 +49,6 @@ class ScItemsController < ApplicationController
     @sc_item = ScItem.find(params[:id])
     params[:specialization] = {} if params[:specialization].blank?
     params[:procedure_specialization] = {} if params[:procedure_specialization].blank?
-    #ScItemSweeper.instance.before_controller_update(@sc_item)
     if @sc_item.update_attributes(params[:sc_item])
       @sc_item.sc_item_specializations.each do |sis|
         #remove existing specializations that no longer exist
@@ -80,7 +79,6 @@ class ScItemsController < ApplicationController
   
   def destroy
     @sc_item = ScItem.find(params[:id])
-    #ScItemSweeper.instance.before_controller_destroy(@sc_item)
     @sc_item.destroy
     redirect_to sc_items_url, :notice => "Successfully deleted content item."
   end

@@ -33,6 +33,7 @@ en:
           "3": "Semi-retired"
           "4": "Retired"
     models:
+      specialization: "Specialty"
       procedure: "Area of Practice"
       sc_category: "Content Category"
       sc_item: "Content Item"
@@ -90,6 +91,10 @@ en:
         hospital_in: "Hospital"
         clinic_in: "Clinic"
         suite_in: "Suite"
+      sc_category:
+        display_mask: "Display items"
+        show_as_dropdown: "Display in global navigation as a dropdown menu"
+        show_on_front_page: "Display featured items on front page"
       sc_item:
         inline: "Show content inline on specialty pages"
         sc_category: "Content category"

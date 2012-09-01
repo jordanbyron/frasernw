@@ -9,15 +9,16 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
-    @user.user_controls_specialists.build
+    @user.user_controls_specialist_offices.build
     @user.user_controls_clinics.build
+    @new_user = true
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def create
     @user = User.new(params[:user])
     if @user.save :validate => false #so we can avoid setting up with emails or passwords
-      redirect_to users_path, :notice => "User #{@user.name} successfully created."
+      redirect_to @user, :notice => "User #{@user.name} successfully created."
     else
       render :action => 'new'
     end
@@ -25,8 +26,9 @@ class UsersController < ApplicationController
 
   def edit
     @user = User.find(params[:id])
-    @user.user_controls_specialists.build
+    @user.user_controls_specialist_offices.build
     @user.user_controls_clinics.build
+    @new_user = false
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
@@ -39,8 +41,9 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @user.attributes = params[:user]
     if @user.save :validate => false #so we can edit a pending account
-      redirect_to users_url, :notice  => "Successfully updated user."
+      redirect_to @user, :notice  => "Successfully updated user."
     else
+      @new_user = false
       render :action => 'edit'
     end
   end

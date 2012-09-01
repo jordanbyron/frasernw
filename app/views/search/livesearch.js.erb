@@ -52,8 +52,7 @@ pathways_url_data = <%=url_data.to_json.html_safe %>
 
 <% specialization_data = Hash.new
 
-Specialization.all.each do |specialization|
-  next if specialization.in_progress
+Specialization.not_in_progress.each do |specialization|
   specialization_data[specialization.id] = specialization.name
 end
   

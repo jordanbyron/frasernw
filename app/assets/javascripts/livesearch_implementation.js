@@ -15,7 +15,7 @@ function pathways_data_formatter(total_score, scores_matches, data_entry)
 {
   var result = "<li class='search-result'><a class='ajax' id='search_result_" + data_entry.go + '_' + data_entry.id + "'  href='/" + pathways_url_data[data_entry.go] + '/' + data_entry.id + "'>";
   
-  result += "<div class='search_name status_" + pathways_status_data[data_entry.st] + "'>" + data_entry.n + "</div>";
+  result += "<div class='search_name'><i class='" + pathways_status_data[data_entry.st] + "'></i> " + data_entry.n + "</div>";
   
   var specialties = new Array();
   

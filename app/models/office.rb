@@ -4,8 +4,10 @@ class Office < ActiveRecord::Base
   has_one :location, :as => :locatable
   accepts_nested_attributes_for :location
   
-  has_many :specialist_offices
+  has_many :specialist_offices, :dependent => :destroy
   has_many :specialists, :through => :specialist_offices
+  has_many :user_controls_specialist_offices, :through => :specialist_offices
+  has_many :controlling_users, :through => :user_controls_specialist_offices, :source => :user, :class_name => "User"
   
   has_many :specializations, :through => :specialists
   has_many :procedures, :through => :specialists
@@ -37,6 +39,12 @@ class Office < ActiveRecord::Base
     l = location
     return "" if l.blank?
     return l.short_address
+  end
+  
+  def full_address
+    l = location
+    return "" if l.blank?
+    return l.full_address
   end
   
   def to_s

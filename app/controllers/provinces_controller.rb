@@ -32,7 +32,6 @@ class ProvincesController < ApplicationController
   
   def update
     @province = Province.find(params[:id])
-    ProvinceSweeper.instance.before_controller_update(@province)
     if @province.update_attributes(params[:province])
       redirect_to @province, :notice  => "Successfully updated province."
     else
@@ -42,7 +41,6 @@ class ProvincesController < ApplicationController
   
   def destroy
     @province = Province.find(params[:id])
-    ProvinceSweeper.instance.before_controller_destroy(@province)
     @province.destroy
     redirect_to provinces_url, :notice => "Successfully deleted province."
   end

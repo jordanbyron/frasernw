@@ -5,6 +5,9 @@ class SpecialistOffice < ActiveRecord::Base
   belongs_to :office
   accepts_nested_attributes_for :office
   
+  has_many :user_controls_specialist_offices, :dependent => :destroy
+  has_many :controlling_users, :through => :user_controls_specialist_offices, :source => :user, :class_name => "User"
+  
   #offices have a phone schedule
   has_one :phone_schedule, :as => :schedulable, :dependent => :destroy, :class_name => "Schedule"
   accepts_nested_attributes_for :phone_schedule
@@ -36,10 +39,10 @@ class SpecialistOffice < ActiveRecord::Base
     return ""
   end
   
-  SECTOR_HASH = { 
-    1 => "Public", 
-    2 => "Private", 
-    3 => "Public and Private", 
+  SECTOR_HASH = {
+    1 => "Public (MSP billed)",
+    2 => "Private (Patient pays)",
+    3 => "Public and Private",
     4 => "Didn't answer", 
   }
   

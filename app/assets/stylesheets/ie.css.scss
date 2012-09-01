@@ -1,0 +1,25 @@
+@import "_globals";
+
+.content-wrapper
+{
+  width: 976px;
+  padding-left: 18px;
+  padding-right: 18px;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+#search_results, .navbar ul.dropdown-menu
+{
+  border-left: 1px solid $FNW_TEXT;
+  border-right: 1px solid $FNW_TEXT;
+  border-bottom: 1px solid $FNW_TEXT;
+}
+
+#content #container ul#specialties-menu
+{
+   li
+  {
+    display: inline;
+  }
+}

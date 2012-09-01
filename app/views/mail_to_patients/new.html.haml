@@ -1,0 +1,19 @@
+-title "Email to patient"
+
+.content-wrapper
+
+  %h2 Email to patient
+
+  %p.space.no_indent 
+    Enter the patient's email address to send the link to 
+    %strong #{@sc_item.title} 
+    to. Please note that this email address is not stored by Pathways, nor will it be used again for any other purpose.
+  
+  %form.form-horizontal{"accept-charset" => "UTF-8", "action" => "/mail_to_patients/create", "method" => "post", "novalidate" => "novalidate"}
+  
+    %input{:type => "email", :name => "patient_email", "autocorrect" => "off", "autocapitalize" => "none"}
+    %input{:type => "hidden", :name => "sc_item_id", :value => @sc_item.id}
+    
+    .form-actions
+      %input{:type => "submit", "name" => "E-mail to patient", :class => "btn btn-primary"}
+      %a.btn.btn-danger.ajax{"href" => sc_item_path(@sc_item) } Cancel

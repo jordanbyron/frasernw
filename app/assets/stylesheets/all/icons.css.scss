@@ -7,7 +7,7 @@
 
 [class^="icon-small"]:before, [class*=" icon-small"]:before 
 {
-  font-size: 12px;
+  font-size: 10px;
 }
 
 [class^="icon-"]:hover:before, [class*=" icon-"]:hover:before 
@@ -43,6 +43,10 @@
   color: $FNW_TEXT;
 }
 
+#front .icon-text {
+  color: $FNW_MID_GRAY;
+}
+
 .icon-mid-gray {
   color: $FNW_MID_GRAY;
 }
@@ -59,12 +63,6 @@
   color: $FNW_DISABLED_TEXT;
 }
 
-.status_available:before, 
-.status_unavailable:before, 
-.status_unknown:before, 
-.status_warning:before,
-.status_external:before,
-.status_blank:before,
 .review:before,
 .feedback:before,
 .change_name:before,
@@ -73,7 +71,6 @@
 .logout:before,
 .history:before,
 .stats:before,
-.shared_care:before,
 {
   font-family: FontAwesome;
   font-weight: normal;
@@ -81,11 +78,6 @@
   font-size: 15px;
   display: inline-block;
   text-decoration: inherit;
-  width: $FNW_ICON_WIDTH;
-}
-
-#container .status:before
-{
   width: $FNW_ICON_WIDTH;
 }
 
@@ -146,36 +138,6 @@
   content: "\f080";
 }
 
-.status_available:before
-{
-  color: $FNW_GREEN;
-  content: "\f00c";
-}
-
-.status_unavailable:before
-{
-  color: $FNW_RED;
-  content: "\f00d";
-}
-
-.status_unknown:before
-{
-  color: $FNW_TEXT;
-  content: "\f059";
-}
-
-.status_warning:before
-{
-  color: $FNW_ORANGE;
-  content: "\f06a";
-}
-
-.status_external:before
-{
-  color: $FNW_BLUE;
-  content: "\f08b";
-}
-
 .arrow-left-after:after,
 .arrow-right-after:after
 {
@@ -195,10 +157,5 @@
 .arrow-right-after:after
 {
   content: "\f0a9";
-}
-
-.shared_care:before
-{
-  content: "\f005";
 }
 
