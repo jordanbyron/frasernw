@@ -64,9 +64,13 @@ namespace :pathways do
       expire_action :controller => 'search', :action => 'livesearch', :format => :js, :host => APP_CONFIG[:domain]
       Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/livesearch.js") )
     end
+    
+    task :front => :environment do
+      expire_fragment 'latest_updates'
+    end
 
     #purposeful order from least important to most important, to keep cache 'hot'
-    task :all => [:languages, :hospitals, :procedures, :clinics, :specialists, :specializations, :search] do
+    task :all => [:languages, :hospitals, :procedures, :clinics, :specialists, :specializations, :search, :front] do
       puts "All pages recached."
     end
     
