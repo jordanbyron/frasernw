@@ -167,7 +167,7 @@
 					$content.html(contentHtml).ajaxify().css({opacity: 0, visibility: "visible"}).animate({opacity:1.0},fadeSpeed);
 
 					// Update the title
-					document.title = $data.find('.document-title:first').text();
+					document.title = "Pathways | " + $data.find('.document-title:first').text();
 					try {
 						document.getElementsByTagName('title')[0].innerHTML = document.title.replace('<','&lt;').replace('>','&gt;').replace(' & ',' &amp; ');
 					}
