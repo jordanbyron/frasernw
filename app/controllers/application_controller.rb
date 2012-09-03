@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   include ControllerAuthentication
-  before_filter [:redirect_to_cedar, :login_required]
+  before_filter :redirect_to_cedar
   protect_from_forgery
   check_authorization
 
