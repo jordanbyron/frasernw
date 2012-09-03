@@ -1,9 +1,8 @@
 class PasswordResetMailer < ActionMailer::Base
-  default from: "passwordreset@pathwaysbc.ca"
   
   def password_reset_instructions(user)
     @user = user
-    mail(:to => user.email, :subject => "Pathways: reset your password")
+    mail(:to => user.email, :from => 'passwordreset@pathwaysbc.ca', :reply_to => 'passwordreset@pathwaysbc.ca', :subject => "Pathways: reset your password")
   end
   
 end
