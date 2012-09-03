@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   include ControllerAuthentication
-  before_filter :redirect_if_old
+  before_filter [:redirect_to_cedar, :login_required]
   protect_from_forgery
   check_authorization
 
@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
     redirect_to root_url, :alert => "You are not allowed to access this page"
   end
 
-  def redirect_if_old
+  def redirect_to_cedar
     redirect_to "http://pathwaysbc.herokuapp.com", :status => :moved_permanently
   end
 end
