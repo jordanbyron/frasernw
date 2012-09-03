@@ -1,5 +1,5 @@
 class PasswordResetMailer < ActionMailer::Base
-  default from: ENV['SMTP_USER']
+  default from: "passwordreset@pathwaysbc.ca"
   
   def password_reset_instructions(user)
     @user = user

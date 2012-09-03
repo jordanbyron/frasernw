@@ -1,6 +1,6 @@
 class MailToPatientMailer < ActionMailer::Base
   include ApplicationHelper
-  default :from => "noreply@noreply"
+  default from: "noreply@pathwaysbc.ca"
   
   def mail_to_patient(sc_item, user, patient_email)
     @sc_item = sc_item
