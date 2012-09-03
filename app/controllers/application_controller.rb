@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   include ControllerAuthentication
-  before_filter [:redirect_if_old, :login_required]
+  before_filter :redirect_if_old
   protect_from_forgery
   check_authorization
 
