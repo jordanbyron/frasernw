@@ -9,8 +9,6 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_if_old
-    if request.host == "frasernw.heroku.com"
-      redirect_to "http://pathwaysbc.herokuapp.com#{request.fullpath}", :status => :moved_permanently
-    end
+    redirect_to "http://pathwaysbc.herokuapp.com", :status => :moved_permanently
   end
 end
