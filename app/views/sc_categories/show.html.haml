@@ -48,7 +48,10 @@
         %tr
           %td
             %ul.space
-              %li= link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank")
+              %li
+                - if sc_item.shared_care?
+                  %i.icon-blue.icon-star
+                = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank")
               %li
                 %span.format= sc_item.format
                 %span.domain= sc_item.domain
