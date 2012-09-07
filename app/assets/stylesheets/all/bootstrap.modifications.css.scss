@@ -648,4 +648,18 @@
   border: none;
   color: $FNW_TEXT;
 }
+
+#content #container .alert .error_messages
+{
+  h2
+  {
+    font-size: 16px;
+    margin: 0;
+  }
+  
+  p, ul
+  {
+    margin: 5px 0 0 0;
+  }
+}
   

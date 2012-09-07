@@ -11,7 +11,9 @@
       %li
         %a{"href" => "#user_tab", "data-toggle" => "tab"}= "Users"
       %li
-        %a{"href" => "#pending_user_tab", "data-toggle" => "tab"}= "Pending Users"
+        %a{"href" => "#pending_user_tab", "data-toggle" => "tab"}= "Pending Accounts"
+      %li
+        %a{"href" => "#disabled_user_tab", "data-toggle" => "tab"}= "Inactive Accounts"
 
     .tab-content
       #admin_tab.tab-pane.active
@@ -22,8 +24,7 @@
             %th Owns Specialties
             %th.admin
 
-          - User.all.each do |user|
-            - next if !user.admin? || user.pending?
+          - User.all.reject{ |user| !user.admin? || user.pending? || !user.active? }.each do |user|
             %tr
               %td= link_to user.name, user, :class => 'ajax'
               %td= user.email
@@ -41,8 +42,7 @@
             %th Can edit
             %th.admin
 
-          - User.all.each do |user|
-            - next if user.admin? || user.pending?
+          - User.all.reject{ |user| user.admin? || user.pending? || !user.active? }.each do |user|
             %tr
               %td= link_to user.name, user, :class => 'ajax'
               %td= user.type
@@ -68,13 +68,41 @@
             %th Can edit
             %th.admin
 
-          - User.all.each do |user|
-            - next if !user.pending?
+          - User.all.reject{ |user| !user.pending? || !user.active? }.each do |user|
             %tr
               %td= link_to user.name, user, :class => 'ajax'
               %td= user.admin? ? "Yes" : "No"
               %td= user.admin? ? "Admin" : user.type
               %td= user.token
+              %td
+                %ul
+                  - user.controlled_specialist_offices.each do |specialist_office|
+                    - next if specialist_office.office.blank?
+                    %li= "#{specialist_office.specialist.name} - #{specialist_office.office.short_address}"
+                  - user.controlled_clinics.each do |clinic|
+                    %li= clinic.name
+              %td.admin.btn-group
+                = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
+                = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
+
+      #disabled_user_tab.tab-pane
+        %table.table.table-condensed.table-striped
+          %tr
+            %th Name
+            %th Admin?
+            %th Type
+            %th Email
+            %th Access key
+            %th Can edit
+            %th.admin
+
+          - User.all.reject{ |u| u.active? }.each do |user|
+            %tr
+              %td= link_to user.name, user, :class => 'ajax'
+              %td= user.admin? ? "Yes" : "No"
+              %td= user.admin? ? "Admin" : user.type
+              %td= user.email
+              %td= user.pending? ? user.token : "Account was actived"
               %td
                 %ul
                   - user.controlled_specialist_offices.each do |specialist_office|

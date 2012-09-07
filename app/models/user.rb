@@ -35,6 +35,10 @@ class User < ActiveRecord::Base
     PasswordResetMailer.password_reset_instructions(self).deliver
   end  
   
+  def active?
+    active
+  end
+  
   def admin?
     self.role == 'admin'
   end
