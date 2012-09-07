@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120831015704) do
+ActiveRecord::Schema.define(:version => 20120907025357) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -633,10 +633,11 @@ ActiveRecord::Schema.define(:version => 20120831015704) do
     t.timestamp "updated_at"
     t.string    "name"
     t.string    "role"
-    t.string    "perishable_token",  :default => "", :null => false
+    t.string    "perishable_token",  :default => "",    :null => false
     t.string    "saved_token"
     t.integer   "type_mask",         :default => 1
     t.timestamp "last_request_at"
+    t.boolean   "agree_to_toc",      :default => false
   end
 
   create_table "versions", :force => true do |t|

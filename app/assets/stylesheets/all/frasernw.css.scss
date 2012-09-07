@@ -363,6 +363,16 @@ body.loading #loading
     list-style-type: none;
   }
   
+  ul.letter-marker
+  {
+    list-style-type: upper-alpha;
+  }
+  
+  ul.outside-marker
+  {
+    list-style-position: outside;
+  }
+  
   td.admin.btn-group
   {
     width: 120px;
