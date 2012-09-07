@@ -31,6 +31,8 @@ class PasswordResetsController < ApplicationController
   
   def update
     if @user.update_attributes(params[:user])
+      @user.failed_login_count = 0
+      @user.save!
       redirect_to login_url, :layout => 'user_sessions', :notice => "Your password was successfully changed."
     else
       render :action => :edit, :layout => 'user_sessions'
