@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
   has_many :contacts
 
   validates_presence_of :name
-  validates :agree_to_toc, :acceptance => true
+  validates :agree_to_toc, presence: true
   
   default_scope order('users.name')
 
