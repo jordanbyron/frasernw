@@ -227,11 +227,6 @@
   = f.input :name
   .no-print
     = f.input :categorization_mask, as: :select, collection: Clinic::CATEGORIZATION_HASH, label_method: :last, value_method: :first, :include_blank => false
-  
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready( $("#clinic_categorization_mask").each(clinic_categorization_changed) );
-      
   .no-print
     = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this clinic again to update the list of available areas of practices and specialists."
   
@@ -505,3 +500,4 @@
         });    
       });
     });
+    $(document).ready( $("#clinic_categorization_mask").each(clinic_categorization_changed) );

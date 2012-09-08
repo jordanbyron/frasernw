@@ -248,10 +248,6 @@
   = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.billing_number_padded }
   .no-print
     = f.input :categorization_mask, as: :select, collection: Specialist::CATEGORIZATION_HASH, label_method: :last, value_method: :first, :include_blank => false
-  
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready( $("#specialist_categorization_mask").each(specialist_categorization_changed) );
   .no-print
     = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "If you are adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
 
@@ -532,3 +528,4 @@
         });    
       });
     });
+    $(document).ready( $("#specialist_categorization_mask").each(specialist_categorization_changed) );
