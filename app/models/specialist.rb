@@ -158,7 +158,6 @@ class Specialist < ActiveRecord::Base
   STATUS_HASH = { 
     1 => "Accepting new patients", 
     2 => "Only doing follow up on previous patients", 
-    9 => "Only doing non-surgical consultations",
     4 => "Retired as of",
     5 => "Retiring as of",
     6 => "Unavailable between",
@@ -222,7 +221,7 @@ class Specialist < ActiveRecord::Base
     elsif ((status_mask == 2) || (status_mask == 4) || ((status_mask == 5) && (unavailable_from <= Date.today)) || ((status_mask == 6) && (unavailable_from <= Date.today) && (unavailable_to >= Date.today)) || (status_mask == 8) || moved_away?)
       #only seeing old patients, retired, "retiring as of" date has passed", or in midst of inavailability, indefinitely unavailables, or moved away
       return STATUS_CLASS_UNAVAILABLE
-    elsif (((status_mask == 5) && (unavailable_from > Date.today)) || ((status_mask == 6) && (unavailable_from > Date.today)) || status_mask == 9)
+    elsif (((status_mask == 5) && (unavailable_from > Date.today)) || ((status_mask == 6) && (unavailable_from > Date.today)))
       return STATUS_CLASS_WARNING
     elsif ((status_mask == 3) || (status_mask == 7) || status_mask.blank?)
       return STATUS_CLASS_UNKNOWN
