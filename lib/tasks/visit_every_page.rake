@@ -1,5 +1,5 @@
 namespace :pathways do
-  namespace :recache do
+  namespace :visit_every_page do
     include ActionController::Caching::Actions
     include ActionController::Caching::Fragments
     include Net
