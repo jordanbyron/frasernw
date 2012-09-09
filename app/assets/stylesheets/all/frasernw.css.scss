@@ -83,6 +83,11 @@ body #email
     color: $FNW_BLUE;
   }
 }
+
+body.loading #email
+{
+  display: none;
+}
   
 #search_results
 {
