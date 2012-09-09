@@ -36,6 +36,15 @@ body
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   padding-bottom: 30px;
+  
+  .content-wrapper
+  {
+    position: relative;
+    margin: 0 0-$FNW_BODY_BREATHING;
+    padding: $FNW_BODY_BREATHING*1.5 $FNW_BODY_BREATHING;
+    background-color: $FNW_WHITE;
+    border: 0;
+  }
 }
 
 body #loading
@@ -55,6 +64,24 @@ body #loading
 body.loading #loading
 {
   display: block;
+}
+
+body #email
+{
+  border-bottom-left-radius: $FNW_BODY_BREATHING/2;
+  border-bottom-right-radius: $FNW_BODY_BREATHING/2;
+  clear: both;
+  float: right;
+  padding-top: $FNW_BODY_BREATHING/2;
+  padding-bottom: $FNW_BODY_BREATHING/2;
+  border-top: 1px solid $FNW_BACKGROUND;
+  font-size: 12px;
+  text-align: center;
+  
+  a:hover
+  {
+    color: $FNW_BLUE;
+  }
 }
   
 #search_results
@@ -273,15 +300,6 @@ body.loading #loading
         text-align: center;
       }
     }
-  }
-  
-  .content-wrapper
-  {
-    position: relative;
-    margin: 0 0-$FNW_BODY_BREATHING;
-    padding: $FNW_BODY_BREATHING*1.5 $FNW_BODY_BREATHING;
-    background-color: $FNW_WHITE;
-    border: 0;
   }
   
   p
