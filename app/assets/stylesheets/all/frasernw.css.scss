@@ -1303,3 +1303,14 @@ body.loading #loading
     background: transparent url(/img/double-border-10.png) 0% 0 repeat-x;
   }
 }
+
+#toc
+{
+  ul, ol
+  {
+    li
+    {
+      margin-top: 6px;
+    }
+  }
+}
