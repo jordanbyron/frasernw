@@ -11,6 +11,7 @@
       %th Provided by
       %th Provided when
       %th Feedback
+      %th Reply
       %th.admin
 
     - @feedback_items.each do |feedback_item|
@@ -20,6 +21,7 @@
         %td= feedback_item.user.name
         %td= "#{time_ago_in_words(feedback_item.created_at)} ago"
         %td{"style" => "width: 40%"}= feedback_item.feedback
+        %td= mail_to feedback_item.user.email, feedback_item.user.email, :subject => "Your Pathways Feedback", :body => "#{feedback_item.feedback} \n\n Pathways: http://www.pathwaysbc.ca"
         %td.admin.btn-group
           = link_to("<i class='icon-folder-open'></i>".html_safe + " Archive", feedback_item, :method => :delete, :class => "btn btn-mini")
   

@@ -13,6 +13,7 @@
       %th Provided by
       %th Provided when
       %th Feedback
+      %th Reply
 
     - @feedback_items.each do |feedback_item|
       %tr
@@ -21,5 +22,6 @@
         %td= feedback_item.user.name
         %td= "#{time_ago_in_words(feedback_item.created_at)} ago"
         %td{"style" => "width: 40%"}= feedback_item.feedback
+        %td= mail_to feedback_item.user.email, feedback_item.user.email, :subject => "Your Pathways Feedback", :body => "#{feedback_item.feedback} \n\n Pathways: http://www.pathwaysbc.ca"
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
