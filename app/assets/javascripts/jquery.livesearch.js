@@ -206,13 +206,11 @@ var score_matches = function(string1, string2, fuzziness)
   
   var best_match = new Array(arr1.length);
   
-loop1:
   for(var x = 0; x < arr1.length; ++x)
   {
     best_match[x] = 0;
     var piece1 = arr1[x];
     
-  loop2:
     for (var y = 0; y < arr2.length; ++y )
     {
       var piece2 = arr2[y]
@@ -228,61 +226,57 @@ loop1:
       var piece1_length = piece1.length;
       var piece2_length = piece2.length;
       var start_of_word_matches = 0;
-      var cur_start = 0;
       var num_matches = 0;
       var fuzzies = 1;
       var piece_score;
       
-      var i = 0;
+      var piece1_index = 0;
       
-      while (i < piece1_length) 
+      while (piece1_index < piece1_length) 
       {
         // Find the longest match remaining.
-        for (var match_length = piece1_length - i; match_length > 0; --match_length)
+        var found = false;
+        var piece2_index = -1;
+        
+        for (var match_length = 0; match_length <= piece1_length - piece1_index; ++match_length)
         {
-          var index_in_string = piece2.indexOf( piece1.substr(i, match_length) );
+          var cur_index = piece2.indexOf( piece1.substr(piece1_index, match_length) );
           
-          if (index_in_string != -1)
+          if (cur_index != -1)
           {
+            found = true;
+            piece2_index = cur_index;
+          }
+          else
+          {
+            match_length -= 1;
             break;
           }
         }
         
-        var character_score = 0.0;
-        
-        if (index_in_string === -1) 
+        if (!found)
         { 
-          if (fuzziness) 
-          {
-            fuzzies += 1-fuzziness;
-            ++i;
-            continue;
-          } 
-          else 
-          {
-            continue loop2;
-          }
+          fuzzies += 1-fuzziness;
+          ++piece1_index;
+          continue;
         }
+        
+        var character_score = 0.0;
         
         ++num_matches;
         
         // Set base score for matching 'c'.
         var match_score = match_length / piece1_length;
         
-        var start_of_abbrev_word = ((i == 0) || (piece1.charAt(i-1) == ' '))
-        var start_of_string_word = ((cur_start == 0) || (piece2.charAt(index_in_string-1) == ' '))
-        
-        // Consecutive letter & start-of-string or word bonus
-        if (start_of_abbrev_word && start_of_abbrev_word) 
+        if (piece2_index == 0) 
         {
           // Increase the score when matching first character of the remainder of the string, or starting a new word
           start_of_word_matches += 1;
         }
         
         // Left trim the already matched part of the string (forces sequential matching).
-        piece2 = piece2.substring(index_in_string + match_length + 1, piece2_length);
-        i += match_length + 1;
-        cur_start += index_in_string + match_length + 1;
+        piece1_index += match_length + 1;
+        piece2 = piece2.substring(piece2_index + match_length + 1, piece2_length);
         
         total_character_score += match_score;
       } 
