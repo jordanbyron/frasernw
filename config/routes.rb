@@ -83,6 +83,7 @@ Frasernw::Application.routes.draw do
   match 'livesearch' => 'search#livesearch', :as => :livesearch
   
   match 'front' => 'front#index', :as => :front
+  match 'faq' => 'front#faq', :as => :faq
   match 'front/edit' => 'front#edit', :as => :edit_front
   match 'front/update' => 'front#update', :as => :update_front
   match 'stats' => 'stats#index', :as => :stats

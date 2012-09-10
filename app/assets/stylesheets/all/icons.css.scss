@@ -68,6 +68,8 @@
 .change_name:before,
 .change_email:before,
 .change_password:before,
+.faq:before,
+.contact:before,
 .logout:before,
 .history:before,
 .stats:before,
@@ -83,7 +85,7 @@
 
 .dropdown-menu li > a:before
 {
-  color: $FNW_TEXT;
+  color: $FNW_DARK_GRAY;
   margin-left: 0;
   width: 24px;
 }
@@ -121,6 +123,16 @@
 .change_password:before
 {
   content: "\f084";
+}
+
+.faq:before
+{
+  content: "\f059";
+}
+
+.contact:before
+{
+  content: "\f003";
 }
 
 .logout:before

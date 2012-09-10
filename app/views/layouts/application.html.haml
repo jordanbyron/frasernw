@@ -228,6 +228,11 @@
                     %li= link_to "Change e-mail address", change_email_path, :class => 'change_email ajax'
                     %li= link_to "Change password", change_password_path, :class => 'change_password ajax'
                     %li= link_to "Logout", logout_url, :class => 'logout'
+                    
+                    %li.nav-header Help
+                    %li= link_to "FAQ", faq_path, :class => 'faq ajax'
+                    %li= mail_to "administration@pathwaysbc.ca", "Contact Us", :class => 'contact'
+                    
                         
 
     #body.container
