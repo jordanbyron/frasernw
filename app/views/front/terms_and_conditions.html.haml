@@ -1,0 +1,31 @@
+- title "Terms and Conditions"
+
+%ul#specialties-menu
+  %li.dropdown.no-caret
+    %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
+      All Specialties
+      %b.caret
+  
+%script{"type" => "text/javascript"}
+  :plain
+    var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
+    $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
+    $(document).ready(function() { update_favorites() });
+  
+#specialties-dropdown-menu
+  .inner
+    - specializations = Specialization.all.reject{ |s| s.in_progress && !current_user_is_admin? }
+    - first = specializations[0, (specializations.length / 4.0).ceil]
+    - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
+    - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
+    - fourth = specializations - first - second - third
+    
+    - [first, second, third, fourth].each do |list|
+      %ul
+        - list.each do |specialization|
+          %li
+            %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
+            
+.content-wrapper
+  
+  = render 'users/toc'

@@ -69,6 +69,7 @@
 .change_email:before,
 .change_password:before,
 .faq:before,
+.tac:before,
 .contact:before,
 .logout:before,
 .history:before,
@@ -128,6 +129,11 @@
 .faq:before
 {
   content: "\f059";
+}
+
+.tac:before
+{
+  content: "\f0e3";
 }
 
 .contact:before
