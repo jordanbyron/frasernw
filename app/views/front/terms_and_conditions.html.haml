@@ -27,5 +27,7 @@
             %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
             
 .content-wrapper
-  
-  = render 'users/toc'
+  .content
+    .row
+      #toc.span6.offset3
+        = render 'users/toc'
