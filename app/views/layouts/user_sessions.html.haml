@@ -40,3 +40,8 @@
             - flash.each do |type, msg|
               .alert.alert-success= msg
             = yield
+            
+      .row
+        #email.content-wrapper
+          Contact us:
+          = mail_to "administration@pathwaysbc.ca", "administration@pathwaysbc.ca"
