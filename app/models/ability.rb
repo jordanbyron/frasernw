@@ -20,7 +20,7 @@ class Ability
       #user
        
       #landing page
-      can :index, Front
+      can [:index, :faq, :terms_and_conditions], Front
       
       #can show pages
       can :show, [Specialization, Procedure, Specialist, Clinic, Hospital, Language, ScCategory, ScItem]
