@@ -50,7 +50,10 @@ class User < ActiveRecord::Base
   TYPE_HASH = {
     1 => "GP Office",
     2 => "Specialist Office",
-    3 => "Clinic Office",
+    3 => "Clinic",
+    5 => "Hospitalist",
+    6 => "Locum",
+    7 => "Resident",
     4 => "Other"
   }
 
