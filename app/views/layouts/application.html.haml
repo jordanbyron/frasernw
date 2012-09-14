@@ -218,6 +218,13 @@
                       - current_user.controlled_specialists.each do |specialist|
                         %li= link_to specialist.name, specialist, :class => 'ajax'
                     
+                    %li.nav-header Help
+                    %li= link_to "FAQ", faq_path, :class => 'faq ajax'
+                    %li= mail_to "administration@pathwaysbc.ca", "Contact Us", :class => 'contact'
+                    
+                    %li.nav-header Legal
+                    %li= link_to "Terms and Conditions", terms_and_conditions_path, :class => 'tac ajax'
+                    
                     - if current_user.controlled_clinics.present?
                       %li.nav-header Your clinics
                       - current_user.controlled_clinics.each do |clinic|
@@ -228,13 +235,6 @@
                     %li= link_to "Change e-mail address", change_email_path, :class => 'change_email ajax'
                     %li= link_to "Change password", change_password_path, :class => 'change_password ajax'
                     %li= link_to "Logout", logout_url, :class => 'logout'
-                    
-                    %li.nav-header Help
-                    %li= link_to "FAQ", faq_path, :class => 'faq ajax'
-                    %li= mail_to "administration@pathwaysbc.ca", "Contact Us", :class => 'contact'
-                    
-                    %li.nav-header Legal
-                    %li= link_to "Terms and Conditions", terms_and_conditions_path, :class => 'tac ajax'
 
     #body.container
       .row
