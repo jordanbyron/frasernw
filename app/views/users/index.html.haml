@@ -17,101 +17,120 @@
 
     .tab-content
       #admin_tab.tab-pane.active
-        %table.table.table-condensed.table-striped
-          %tr
-            %th Name
-            %th Email
-            %th Owns Specialties
-            %th.admin
+        %table.table.table-condensed.table-striped.tablesorter
+          %thead
+            %tr.tableheader
+              %th{:class => "{sorter: 'text'}"} Name
+              %th{:class => "{sorter: 'text'}"} Email
+              %th{:class => "{sorter: 'text'}"} Owns Specialties
+              %th.admin
 
-          - User.all.reject{ |user| !user.admin? || user.pending? || !user.active? }.each do |user|
-            %tr
-              %td= link_to user.name, user, :class => 'ajax'
-              %td= user.email
-              %td= user.specializations.map{ |s| s.name }.to_sentence
-              %td.admin.btn-group
-                = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
-                = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
+          %tbody
+            - User.all.reject{ |user| !user.admin? || user.pending? || !user.active? }.each do |user|
+              %tr
+                %td= link_to user.name, user, :class => 'ajax'
+                %td= user.email
+                %td= user.specializations.map{ |s| s.name }.to_sentence
+                %td.admin.btn-group
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
+                  = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
 
       #user_tab.tab-pane
-        %table.table.table-condensed.table-striped
-          %tr
-            %th Name
-            %th Type
-            %th Email
-            %th Can edit
-            %th.admin
+        %table.table.table-condensed.table-striped.tablesorter
+          %thead
+            %tr.tableheader
+              %th{:class => "{sorter: 'text'}"} Name
+              %th{:class => "{sorter: 'text'}"} Type
+              %th{:class => "{sorter: 'text'}"} Email
+              %th{:class => "{sorter: 'text'}"} Can edit
+              %th.admin
 
-          - User.all.reject{ |user| user.admin? || user.pending? || !user.active? }.each do |user|
-            %tr
-              %td= link_to user.name, user, :class => 'ajax'
-              %td= user.type
-              %td= user.email
-              %td
-                %ul
-                  - user.controlled_specialist_offices.each do |specialist_office|
-                    - next if specialist_office.office.blank?
-                    %li= "#{specialist_office.specialist.name} - #{specialist_office.office.short_address}"
-                  - user.controlled_clinics.each do |clinic|
-                    %li= clinic.name
-              %td.admin.btn-group
-                = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
-                = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
+          %tbody
+            - User.all.reject{ |user| user.admin? || user.pending? || !user.active? }.each do |user|
+              %tr
+                %td= link_to user.name, user, :class => 'ajax'
+                %td= user.type
+                %td= user.email
+                %td
+                  %ul
+                    - user.controlled_specialist_offices.each do |specialist_office|
+                      - next if specialist_office.office.blank?
+                      %li= "#{specialist_office.specialist.name} - #{specialist_office.office.short_address}"
+                    - user.controlled_clinics.each do |clinic|
+                      %li= clinic.name
+                %td.admin.btn-group
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
+                  = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
 
       #pending_user_tab.tab-pane
-        %table.table.table-condensed.table-striped
-          %tr
-            %th Name
-            %th Admin?
-            %th Type
-            %th Access key
-            %th Can edit
-            %th.admin
-
-          - User.all.reject{ |user| !user.pending? || !user.active? }.each do |user|
-            %tr
-              %td= link_to user.name, user, :class => 'ajax'
-              %td= user.admin? ? "Yes" : "No"
-              %td= user.admin? ? "Admin" : user.type
-              %td= user.token
-              %td
-                %ul
-                  - user.controlled_specialist_offices.each do |specialist_office|
-                    - next if specialist_office.office.blank?
-                    %li= "#{specialist_office.specialist.name} - #{specialist_office.office.short_address}"
-                  - user.controlled_clinics.each do |clinic|
-                    %li= clinic.name
-              %td.admin.btn-group
-                = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
-                = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
+        %table.table.table-condensed.table-striped.tablesorter
+          %thead
+            %tr.tableheader
+              %th{:class => "{sorter: 'text'}"} Name
+              %th{:class => "{sorter: 'text'}"} Admin?
+              %th{:class => "{sorter: 'text'}"} Type
+              %th{:class => "{sorter: 'text'}"} Access key
+              %th{:class => "{sorter: 'text'}"} Can edit
+              %th.admin
+              
+          %tbody
+            - User.all.reject{ |user| !user.pending? || !user.active? }.each do |user|
+              %tr
+                %td= link_to user.name, user, :class => 'ajax'
+                %td= user.admin? ? "Yes" : "No"
+                %td= user.admin? ? "Admin" : user.type
+                %td= user.token
+                %td
+                  %ul
+                    - user.controlled_specialist_offices.each do |specialist_office|
+                      - next if specialist_office.office.blank?
+                      %li= "#{specialist_office.specialist.name} - #{specialist_office.office.short_address}"
+                    - user.controlled_clinics.each do |clinic|
+                      %li= clinic.name
+                %td.admin.btn-group
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
+                  = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
 
       #disabled_user_tab.tab-pane
-        %table.table.table-condensed.table-striped
-          %tr
-            %th Name
-            %th Admin?
-            %th Type
-            %th Email
-            %th Access key
-            %th Can edit
-            %th.admin
+        %table.table.table-condensed.table-striped.tablesorter
+          %thead
+            %tr.tableheader
+              %th{:class => "{sorter: 'text'}"} Name
+              %th{:class => "{sorter: 'text'}"} Admin?
+              %th{:class => "{sorter: 'text'}"} Type
+              %th{:class => "{sorter: 'text'}"} Email
+              %th{:class => "{sorter: 'text'}"} Access key
+              %th{:class => "{sorter: 'text'}"} Can edit
+              %th.admin
 
-          - User.all.reject{ |u| u.active? }.each do |user|
+          %tbody
+            - User.all.reject{ |u| u.active? }.each do |user|
+              %tr
+                %td= link_to user.name, user, :class => 'ajax'
+                %td= user.admin? ? "Yes" : "No"
+                %td= user.admin? ? "Admin" : user.type
+                %td= user.email
+                %td= user.pending? ? user.token : "Account was actived"
+                %td
+                  %ul
+                    - user.controlled_specialist_offices.each do |specialist_office|
+                      - next if specialist_office.office.blank?
+                      %li= "#{specialist_office.specialist.name} - #{specialist_office.office.short_address}"
+                    - user.controlled_clinics.each do |clinic|
+                      %li= clinic.name
+                %td.admin.btn-group
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
+                  = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
             %tr
-              %td= link_to user.name, user, :class => 'ajax'
-              %td= user.admin? ? "Yes" : "No"
-              %td= user.admin? ? "Admin" : user.type
-              %td= user.email
-              %td= user.pending? ? user.token : "Account was actived"
               %td
-                %ul
-                  - user.controlled_specialist_offices.each do |specialist_office|
-                    - next if specialist_office.office.blank?
-                    %li= "#{specialist_office.specialist.name} - #{specialist_office.office.short_address}"
-                  - user.controlled_clinics.each do |clinic|
-                    %li= clinic.name
-              %td.admin.btn-group
-                = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
-                = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
+              %td
+              %td
+              %td
+              %td
+              %td
 
+      %script{"type" => "text/javascript"}
+        :plain
+          $(document).ready(function() { $('.tablesorter').tablesorter({sortList: [[0,0]]}) });
+            
   %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New User", new_user_path, :class => "btn ajax")
