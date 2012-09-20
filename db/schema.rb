@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120907054000) do
+ActiveRecord::Schema.define(:version => 20120920173112) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -385,6 +385,7 @@ ActiveRecord::Schema.define(:version => 20120907054000) do
     t.integer  "display_hash",       :default => 1
     t.integer  "display_mask",       :default => 1
     t.boolean  "show_as_dropdown",   :default => false
+    t.string   "ancestry"
   end
 
   create_table "sc_item_specialization_procedure_specializations", :force => true do |t|
