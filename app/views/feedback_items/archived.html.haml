@@ -16,6 +16,7 @@
       %th Reply
 
     - @feedback_items.each do |feedback_item|
+      - next if feedback_item.item.blank?
       %tr
         %td= link_to feedback_item.item.name, feedback_item.item, :class => 'ajax'
         %td= feedback_item.item.specializations.map{ |s| s.name }.to_sentence
