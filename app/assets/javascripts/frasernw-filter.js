@@ -512,7 +512,7 @@ function update_category_table(category_id, category_name)
   {
     fragments.push('of format ' + formats.to_sentence());
   }
-  description += fragments.to_sentence();
+  description += ' ' + fragments.to_sentence();
   
   description += ". <a href=\"javascript:clear_category_filters('" + category_id + "','" + category_name + "')\">Clear all filters</a>."
   

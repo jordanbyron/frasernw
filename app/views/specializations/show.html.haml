@@ -503,19 +503,20 @@
                       .title
                         Filter #{sc_category.name}
                                   
-                      .filter-group
-                        %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#{sc_category.id}-filter-subcategories"}
-                          Subcategories
-                        .collapsable.in{:id => "#{sc_category.id}-filter-subcategories"}
-                          .filter-group-content
-                            %label
-                              %input.ic#icall{"type" => "radio", "name" => "ic#{sc_category.id}", "checked" => "checked"} All
-                            - sc_category.children.each do |subcategory|
+                      - if sc_category.has_children?
+                        .filter-group
+                          %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "##{sc_category.id}-filter-subcategories"}
+                            Subcategories
+                          .collapsable.in{:id => "#{sc_category.id}-filter-subcategories"}
+                            .filter-group-content
                               %label
-                                %input.ic{"type" => "radio", "name" => "ic#{sc_category.id}", "id" => "ic#{subcategory.id}_"}= subcategory.name
+                                %input.ic#icall{"type" => "radio", "name" => "ic#{sc_category.id}", "checked" => "checked"} All
+                              - sc_category.children.each do |subcategory|
+                                %label
+                                  %input.ic{"type" => "radio", "name" => "ic#{sc_category.id}", "id" => "ic#{subcategory.id}_"}= subcategory.name
                                   
                       .filter-group
-                        %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#{sc_category.id}-filter-formats"}
+                        %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "##{sc_category.id}-filter-formats"}
                           Formats
                         .collapsable.in{:id => "#{sc_category.id}-filter-formats"}
                           .filter-group-content
