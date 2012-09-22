@@ -468,7 +468,7 @@
                               %input.if#ifall{"type" => "radio", "name" => "if#{sc_category.id}", "checked" => "checked"} All
                             - ScItem::FILTER_FORMAT_HASH.each do |format_hash, format_name|
                               %label
-                                %input.if{"type" => "radio", "name" => "if#{sc_category.id}", "id" => "ic#{format_hash}_"}= format_name
+                                %input.if{"type" => "radio", "name" => "if#{sc_category.id}", "id" => "if#{format_hash}_"}= format_name
 
                   %script{"type" => "text/javascript"}
                     :plain

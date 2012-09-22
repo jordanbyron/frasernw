@@ -132,6 +132,7 @@ module SpecializationsHelper
   def sc_item_filtering_attributes(item)
     filtering_attributes = []
     filtering_attributes << "ic#{item.sc_category.id}_"
+    filtering_attributes << "if#{item.format_type}_"
     return filtering_attributes
   end
 end
