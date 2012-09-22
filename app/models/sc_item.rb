@@ -1,5 +1,5 @@
 class ScItem < ActiveRecord::Base
-  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :shared_care, :inline, :url, :markdown_content, :document
+  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :shared_care, :url, :markdown_content, :document
   
   belongs_to  :sc_category
   
@@ -32,14 +32,6 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
   def self.searchable
     where("sc_items.searchable = ?", true)
   end
-  
-  def self.displayed_inline
-    where("sc_items.type_mask = ? AND sc_items.inline = ?", 2, true)
-  end
-  
-  def self.not_displayed_inline
-    where("sc_items.type_mask != ? OR sc_items.inline = ?", 2, false)
-  end
 
   def mail_to_patient(current_user, patient_email)
     MailToPatientMailer.mail_to_patient(self, current_user, patient_email).deliver
@@ -71,6 +63,14 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
   FORMAT_TYPE_WORD_DOC = 5
   FORMAT_TYPE_VIDEO = 6
 
+  FILTER_FORMAT_HASH = {
+    FORMAT_TYPE_HTML => "Website",
+    FORMAT_TYPE_PDF => "PDF",
+    FORMAT_TYPE_IMAGE => "Image",
+    FORMAT_TYPE_WORD_DOC => "Word Document",
+    FORMAT_TYPE_VIDEO => "Video"
+  }
+
   FORMAT_HASH = {
     "pdf" => FORMAT_TYPE_PDF,
     "html" => FORMAT_TYPE_HTML,
@@ -95,10 +95,10 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
       theurl = theurl.slice(0...theurl.rindex('#')) if theurl.rindex('#')   #take off anything after a #
       ftype = FORMAT_HASH[theurl]
       ftype = FORMAT_HASH[domain] if ftype.blank?
-      ftype = FORMAT_TYPE_EXTERNAL if ftype.blank?
+      ftype = FORMAT_TYPE_HTML if ftype.blank? #external
       ftype
     else
-      FORMAT_TYPE_INTERNAL
+      FORMAT_TYPE_HTML #internal
     end
   end
 
@@ -114,19 +114,19 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
   def format
     case format_type
       when FORMAT_TYPE_INTERNAL
-        "web page"
+        "Pathways"
       when FORMAT_TYPE_EXTERNAL
-        "web page"
+        "Website"
       when FORMAT_TYPE_HTML
-        "web page"
+        "Website"
       when FORMAT_TYPE_IMAGE
-        "image"
+        "Image"
       when FORMAT_TYPE_PDF
-        "pdf"
+        "PDF"
       when FORMAT_TYPE_WORD_DOC
-        "word document"
+        "Word"
       when FORMAT_TYPE_VIDEO
-        "video"
+        "Video"
       else
         ""
       end
@@ -146,10 +146,6 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
       
   def document?
     type_mask == 3
-  end
-
-  def inline?
-    inline
   end
 
   def searchable?

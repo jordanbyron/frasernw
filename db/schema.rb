@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120920173112) do
+ActiveRecord::Schema.define(:version => 20120921204625) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -377,15 +377,14 @@ ActiveRecord::Schema.define(:version => 20120920173112) do
   add_index "reviews", ["item_id", "item_type"], :name => "index_reviews_on_item_id_and_item_type"
 
   create_table "sc_categories", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "show_on_front_page", :default => true
-    t.integer  "sort_order",         :default => 10
-    t.integer  "display_hash",       :default => 1
-    t.integer  "display_mask",       :default => 1
-    t.boolean  "show_as_dropdown",   :default => false
-    t.string   "ancestry"
+    t.string    "name"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.boolean   "show_on_front_page", :default => true
+    t.integer   "sort_order",         :default => 10
+    t.integer   "display_mask",       :default => 1
+    t.boolean   "show_as_dropdown",   :default => false
+    t.string    "ancestry"
   end
 
   create_table "sc_item_specialization_procedure_specializations", :force => true do |t|
@@ -416,7 +415,6 @@ ActiveRecord::Schema.define(:version => 20120920173112) do
     t.integer  "type_mask"
     t.string   "url"
     t.text     "markdown_content"
-    t.boolean  "inline"
     t.boolean  "searchable",            :default => true
     t.boolean  "shared_care",           :default => false
     t.string   "document_file_name"
@@ -577,7 +575,7 @@ ActiveRecord::Schema.define(:version => 20120920173112) do
     t.string    "photo_file_name"
     t.string    "photo_content_type"
     t.integer   "photo_file_size"
-    t.datetime  "photo_updated_at"
+    t.timestamp "photo_updated_at"
   end
 
   add_index "specialists", ["referral_clinic_id"], :name => "index_specialists_on_referral_clinic_id"
@@ -609,10 +607,10 @@ ActiveRecord::Schema.define(:version => 20120920173112) do
   add_index "user_controls_clinics", ["user_id"], :name => "index_user_controls_clinics_on_user_id"
 
   create_table "user_controls_specialist_offices", :force => true do |t|
-    t.integer  "user_id",              :null => false
-    t.integer  "specialist_office_id", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "user_id",              :null => false
+    t.integer   "specialist_office_id", :null => false
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "user_controls_specialists", :force => true do |t|
@@ -626,21 +624,21 @@ ActiveRecord::Schema.define(:version => 20120920173112) do
   add_index "user_controls_specialists", ["user_id"], :name => "index_user_controls_specialists_on_user_id"
 
   create_table "users", :force => true do |t|
-    t.string   "email"
-    t.string   "persistence_token"
-    t.string   "crypted_password"
-    t.string   "password_salt"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "name"
-    t.string   "role"
-    t.string   "perishable_token",   :default => "",    :null => false
-    t.string   "saved_token"
-    t.integer  "type_mask",          :default => 1
-    t.datetime "last_request_at"
-    t.boolean  "agree_to_toc",       :default => false
-    t.boolean  "active",             :default => true
-    t.integer  "failed_login_count", :default => 0
+    t.string    "email"
+    t.string    "persistence_token"
+    t.string    "crypted_password"
+    t.string    "password_salt"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string    "name"
+    t.string    "role"
+    t.string    "perishable_token",   :default => "",    :null => false
+    t.string    "saved_token"
+    t.integer   "type_mask",          :default => 1
+    t.timestamp "last_request_at"
+    t.boolean   "agree_to_toc",       :default => false
+    t.boolean   "active",             :default => true
+    t.integer   "failed_login_count", :default => 0
   end
 
   create_table "versions", :force => true do |t|

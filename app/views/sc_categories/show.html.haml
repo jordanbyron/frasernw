@@ -31,35 +31,100 @@
   %script{"type" => "text/javascript"}
     :plain
       $(document).ready(function() {
-        //sort by specialty, status, wait time, then city
-        $('.tablesorter').tablesorter({sortList: [[1,0],[0,0]]});
+        $('.tablesorter').tablesorter({sortList: [[0,0],[1,0],[2,0]]});
       });
 
 
-  %h2= @sc_category.name
+  %h2= @sc_category.name 
+        
+  - if @sc_category.inline?
 
-  %table.table.table-condensed.tablesorter
-    %thead
-      %tr{:class => 'tableheader'}
-        %th{:class => "{sorter: 'text'}"} Name
-        %th{:class => "{sorter: 'text'}"} Specialty
-    %tbody
-      - @sc_category.sc_items.each do |sc_item|
-        %tr
-          %td
-            %ul.space
-              %li
-                - if sc_item.shared_care?
-                  %i.icon-blue.icon-star
-                = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank")
-              %li
-                %span.format= sc_item.format
-                %span.domain= sc_item.domain
-                %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
-                  %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
-                - if sc_item.can_email?
-                  %span.email= link_to "E-mail to patient", compose_mail_to_patients_path(sc_item), :class => 'ajax'
-          %td= sc_item.specializations.map{ |s| s.name }.to_sentence
+    - @sc_category.all_sc_items.each do |sc_item|
+      .scm
+        %h1
+          - if sc_item.shared_care?
+            %i.icon-red.icon-star
+          = sc_item.title
+          %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
+            %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
+        
+        - if sc_item.markdown?
+          = BlueCloth.new(sc_item.markdown_content).to_html.html_safe
+        - else
+          = link_to sc_item.title, sc_item.resolved_url, :target => "_blank"
+  
+  - else
+  
+
+    %script{"type" => "text/javascript"}
+      $(document).ready(function() {
+      - @sc_category.all_sc_items.each do |sc_item|
+        $('#i#{sc_item.id}').data('filter', '#{sc_item_filtering_attributes(sc_item).join(' ')}');
+      });
+
+    .content
+      .row
+        .span8half
+          .toggle-filters.visible-phone
+            %a{"href" => "javascript:void(0)", "onclick" => "$('#{@sc_category.id}_filters').toggle()"}
+              %i.icon-blue.icon-cog.icon-small
+              Show / Hide Clinic Filters
+              
+          .filter-phrase{:id => "#{@sc_category.id}_phrase"}
+
+          %table.table.table-condensed.tablesorter.category_table{:id => "#{@sc_category.id}_table"}
+            %thead
+              %tr{:class => 'tableheader'}
+                %th{:class => "{sorter: 'text'}"} Title
+                %th{:class => "{sorter: 'text'}"} Subcategory
+                %th{:class => "{sorter: 'text'}"} Format
+                %th{:class => "{sorter: 'text'}"} E-mail to Patient
+            %tbody
+              - @sc_category.all_sc_items.each do |sc_item|
+                %tr{:id => "i#{sc_item.id}"}
+                  %td
+                    = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank")
+                    %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
+                      %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
+                  %td= sc_item.sc_category.name
+                  %td.format= sc_item.format
+                  %td.email
+                    - if sc_item.can_email?
+                      = link_to "E-mail to patient", compose_mail_to_patients_path(sc_item), :class => 'ajax'
+                
+        .span3.offsethalf
+          .well.filter{:id => "#{@sc_category.id}_filters"}
+            .title
+              Filter #{@sc_category.name}
+                        
+            .filter-group
+              %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#{@sc_category.id}-filter-subcategories"}
+                Subcategories
+              .collapsable.in{:id => "#{@sc_category.id}-filter-subcategories"}
+                .filter-group-content
+                  %label
+                    %input.ic#icall{"type" => "radio", "name" => "ic#{@sc_category.id}", "checked" => "checked"} All
+                  - @sc_category.children.each do |subcategory|
+                    %label
+                      %input.ic{"type" => "radio", "name" => "ic#{@sc_category.id}", "id" => "ic#{subcategory.id}_"}= subcategory.name
+                        
+            .filter-group
+              %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#{@sc_category.id}-filter-formats"}
+                Formats
+              .collapsable.in{:id => "#{@sc_category.id}-filter-formats"}
+                .filter-group-content
+                  %label
+                    %input.if#ifall{"type" => "radio", "name" => "if#{@sc_category.id}", "checked" => "checked"} All
+                  - ScItem::FILTER_FORMAT_HASH.each do |format_hash, format_name|
+                    %label
+                      %input.if{"type" => "radio", "name" => "if#{@sc_category.id}", "id" => "ic#{format_hash}_"}= format_name
+
+        %script{"type" => "text/javascript"}
+          :plain
+            var update_category_#{@sc_category.id}_table = function() { update_category_table(#{@sc_category.id}, '#{@sc_category.name}'); }
+            $(document).ready(function() {
+              $("input.ic[name='ic#{@sc_category.id}'], input.if[name='if#{@sc_category.id}']").click( update_category_#{@sc_category.id}_table ); 
+            });
       
   %p.admin.btn-group
     - if can? :update, @sc_category

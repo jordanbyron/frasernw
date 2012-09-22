@@ -7,6 +7,7 @@
   %table.table.table-condensed.table-striped
     %tr
       %th Name
+      %th Parent
       %th Sort order
       %th Display
       %th Feature on front page?
@@ -16,6 +17,7 @@
     - @sc_categories.each do |sc_category|
       %tr
         %td= link_to sc_category.name, sc_category, :class => 'ajax'
+        %td= sc_category.parent.present? ? sc_category.parent.name : ""
         %td= sc_category.sort_order
         %td= sc_category.display
         %td= sc_category.show_on_front_page? ? "Yes" : "No"

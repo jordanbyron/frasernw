@@ -435,7 +435,89 @@ var clear_clinic_filters = function()
   clear_filters('c', 'clinic', 'clinics');
 }
 
-var clear_office_filters = function() 
+var clear_office_filters = function()
 {
   clear_filters('o', 'office', 'specialists');
+}
+
+function clear_category_filters(category_id, category_name)
+{
+  $("input#icall[name='ic" + category_id + "']").prop('checked',true);
+  $("input#ifall[name='if" + category_id + "']").prop('checked',true);
+  update_category_table(category_id, category_name);
+}
+
+function update_category_table(category_id, category_name)
+{
+  var current_filters = new Array();
+  var subcategories = new Array();
+  var formats = new Array();
+  
+  // collect subcategory filters
+  $("input[name='ic" + category_id + "']:checked").each( function() {
+    var $this = $(this);
+    if ($this.attr('id') != 'icall')
+    {
+      subcategories.push($this.parent().text().trim());
+      current_filters.push($this.attr('id'));
+    }
+  });
+  
+  // collect format filters
+  $("input[name='if" + category_id + "']:checked").each( function() {
+    var $this = $(this);
+    if ($this.attr('id') != 'ifall')
+    {
+      formats.push($this.parent().text().trim());
+      current_filters.push($this.attr('id'));
+    }
+  });
+  
+  var found = false;
+             
+  //loop over each row of the table, hiding those which don't match our filters
+  $('#' + category_id + '_table tbody tr').each(function () {
+    var row = $(this)
+      , row_filter = row.data('filter');
+    
+    if ( current_filters.length == 0 )
+    {
+      row.show();
+    }
+    else if ( !row_filter )
+    {
+      //a very blank entry                                        
+      row.hide();
+    }
+    else if ( matches_filters( row_filter, current_filters ) )
+    {
+      row.show();
+      found = true;
+    }
+    else
+    {
+      //doesn't match
+      row.hide();
+    }
+  });
+  
+  var description = found ? 'Showing all ' + category_name : 'There are no ' + category_name;
+  
+  var fragments = new Array()
+  if ( subcategories.length >= 1 )
+  {
+    fragments.push('of subcategory ' + subcategories.to_sentence());
+  }
+  if ( formats.length >= 1 )
+  {
+    fragments.push('of format ' + formats.to_sentence());
+  }
+  description += fragments.to_sentence();
+  
+  description += ". <a href=\"javascript:clear_category_filters('" + category_id + "','" + category_name + "')\">Clear all filters</a>."
+  
+  var phrase = $('#' + category_id + '_phrase');
+  phrase.html(description);
+  found ? phrase.removeClass('none') : phrase.addClass('none');
+  current_filters.length == 0 ? phrase.hide() : phrase.show();
 }

@@ -1,4 +1,5 @@
 class ScCategoriesController < ApplicationController
+  include ScCategoriesHelper
   load_and_authorize_resource
   
   #cache_sweeper :sc_category_sweeper, :only => [:create, :update, :destroy]
@@ -15,6 +16,7 @@ class ScCategoriesController < ApplicationController
   
   def new
     @sc_category = ScCategory.new
+    @hierarchy = ancestry_options_limited(ScCategory.unscoped.arrange(:order => 'name'), nil)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
@@ -29,6 +31,7 @@ class ScCategoriesController < ApplicationController
   
   def edit
     @sc_category = ScCategory.find(params[:id])
+    @hierarchy = ancestry_options_limited(ScCategory.unscoped.arrange(:order => 'name'), @sc_category.subtree)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
