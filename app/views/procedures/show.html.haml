@@ -416,31 +416,30 @@
                 .row
                   .span8half
                     .toggle-filters.visible-phone
-                      %a{"href" => "javascript:void(0)", "onclick" => "$('#{sc_category.id}_filters').toggle()"}
+                      %a{"href" => "javascript:void(0)", "onclick" => "$('##{sc_category.id}_filters').toggle()"}
                         %i.icon-blue.icon-cog.icon-small
-                        Show / Hide Clinic Filters
+                        Show / Hide #{sc_category.name} Filters
                         
                     .filter-phrase{:id => "#{sc_category.id}_phrase"}
         
                     %table.table.table-condensed.tablesorter.category_table{:id => "#{sc_category.id}_table"}
                       %thead
                         %tr{:class => 'tableheader'}
-                          %th{:class => "{sorter: 'text'}"} Title
-                          %th{:class => "{sorter: 'text'}"} Subcategory
-                          %th{:class => "{sorter: 'text'}"} Format
-                          %th{:class => "{sorter: 'text'}"} E-mail to Patient
+                          %th{:class => "title {sorter: 'text'}"} Title
+                          %th{:class => "subcategory {sorter: 'text'}"} Subcategory
+                          %th.favorite
+                          %th{:class => "email {sorter: 'text'}"} E-mail
                       %tbody
                         - items.each do |sc_item|
                           %tr{:id => "i#{sc_item.id}"}
-                            %td
-                              = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank")
+                            %td.title= link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank")
+                            %td.subcategory= sc_item.sc_category.name
+                            %td.favorite
                               %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
                                 %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
-                            %td= sc_item.sc_category.name
-                            %td.format= sc_item.format
                             %td.email
                               - if sc_item.can_email?
-                                = link_to "E-mail to patient", compose_mail_to_patients_path(sc_item), :class => 'ajax'
+                                = link_to "<i class='icon-envelope-alt icon-blue'></i>".html_safe, compose_mail_to_patients_path(sc_item), :class => 'ajax', :title => "E-mail to patient"
                           
                   .span3.offsethalf
                     .well.filter{:id => "#{sc_category.id}_filters"}
@@ -456,19 +455,9 @@
                               %label
                                 %input.ic#icall{"type" => "radio", "name" => "ic#{sc_category.id}", "checked" => "checked"} All
                               - sc_category.children.each do |subcategory|
+                                - next if subcategory.sc_items.blank?
                                 %label
                                   %input.ic{"type" => "radio", "name" => "ic#{sc_category.id}", "id" => "ic#{subcategory.id}_"}= subcategory.name
-                                  
-                      .filter-group
-                        %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "##{sc_category.id}-filter-formats"}
-                          Formats
-                        .collapsable.in{:id => "#{sc_category.id}-filter-formats"}
-                          .filter-group-content
-                            %label
-                              %input.if#ifall{"type" => "radio", "name" => "if#{sc_category.id}", "checked" => "checked"} All
-                            - ScItem::FILTER_FORMAT_HASH.each do |format_hash, format_name|
-                              %label
-                                %input.if{"type" => "radio", "name" => "if#{sc_category.id}", "id" => "if#{format_hash}_"}= format_name
 
                   %script{"type" => "text/javascript"}
                     :plain

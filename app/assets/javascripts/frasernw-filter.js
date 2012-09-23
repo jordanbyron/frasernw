@@ -443,7 +443,7 @@ var clear_office_filters = function()
 function clear_category_filters(category_id, category_name)
 {
   $("input#icall[name='ic" + category_id + "']").prop('checked',true);
-  $("input#ifall[name='if" + category_id + "']").prop('checked',true);
+  $("input#isall[name='is" + category_id + "']").prop('checked',true);
   update_category_table(category_id, category_name);
 }
 
@@ -451,7 +451,7 @@ function update_category_table(category_id, category_name)
 {
   var current_filters = new Array();
   var subcategories = new Array();
-  var formats = new Array();
+  var specializations = new Array();
   
   // collect subcategory filters
   $("input[name='ic" + category_id + "']:checked").each( function() {
@@ -463,12 +463,12 @@ function update_category_table(category_id, category_name)
     }
   });
   
-  // collect format filters
-  $("input[name='if" + category_id + "']:checked").each( function() {
+  // collect specializations filters
+  $("input[name='is" + category_id + "']:checked").each( function() {
     var $this = $(this);
-    if ($this.attr('id') != 'ifall')
+    if ($this.attr('id') != 'isall')
     {
-      formats.push($this.parent().text().trim());
+      specializations.push($this.parent().text().trim());
       current_filters.push($this.attr('id'));
     }
   });
@@ -508,9 +508,9 @@ function update_category_table(category_id, category_name)
   {
     fragments.push('of subcategory ' + subcategories.to_sentence());
   }
-  if ( formats.length >= 1 )
+  if ( specializations.length >= 1 )
   {
-    fragments.push('of format ' + formats.to_sentence());
+    fragments.push('within ' + specializations.to_sentence());
   }
   description += ' ' + fragments.to_sentence();
   

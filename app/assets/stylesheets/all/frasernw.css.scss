@@ -522,6 +522,16 @@ body.loading #email
         color: $FNW_DISABLED_TEXT;
       }
     }
+  
+    td.subcategory
+    {
+      min-width: 100px;
+    }
+  
+    td.email
+    {
+      min-width: 70px;
+    }
     
     .h1
     {
@@ -571,7 +581,7 @@ body.loading #email
     }
   }
   
-  table#specialist_table tr:hover, table#clinic_table tr:hover, table#office_table tr:hover
+  table#specialist_table tr:hover, table#clinic_table tr:hover, table#office_table tr:hover, table.category_table tr:hover
   {
     cursor: pointer;
     td
@@ -587,11 +597,19 @@ body.loading #email
       {
         color: $FNW_LIGHT_GRAY;
       }
-      a
-      {
-        text-decoration: underline;
-      }
     }
+    td.link a
+    {
+      text-decoration: underline;
+    }
+  }
+  
+  table.category_table tr td, table#clinic_table tr td
+  {
+    /*better height wrapping*/
+    height: auto;
+    padding-top: 7px;
+    padding-bottom: 5px;
   }
   
   table.table-no-lines tr td

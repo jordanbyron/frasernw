@@ -882,7 +882,6 @@
         height: 100px;
       }
     }
-      
     
     table#specialist_table, table#clinic_table, table#office_table
     {
@@ -987,6 +986,56 @@
         background: none;
       }
     }
+    
+    table.category_table
+    {
+      display: table;
+      
+      th.favorite, th.subcategory, th.email
+      {
+        display: none;
+      }
+      
+      tr
+      {
+        td, th
+        {
+          padding: 0;
+          border: 0;
+          margin: 0;
+          float: left;
+          display: inline-block;
+        }
+        
+        td.title, th.title
+        {
+          width: 100%;  
+        }
+        
+        td.title
+        {
+          padding-top: 4px;
+        }
+        td.subcategory, td.favorite, td.email
+        {
+          padding-bottom: 4px;
+          background: none;
+        }
+        td.subcategory
+        {
+          clear: both;
+        }
+        td.email, td.favorite
+        {
+          padding-left: 20px;
+        }
+      }
+      tr:hover td
+      {
+        background-color: transparent;
+      }
+    }
+    
     .well, #front .well
     {
       background-color: $FNW_WHITE;
@@ -1029,8 +1078,9 @@
   .well.filter
   {
     display: none;
+    width: 100%;
     position: absolute;
-    top: 40px;
+    top: 70px;
     left: 0;
     z-index: 1;
     
@@ -1038,6 +1088,10 @@
     {
       display: none;
     }
+  }
+  .tab-pane .well.filter
+  {
+    top: 40px;
   }
   .btn-group .btn
   {

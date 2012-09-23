@@ -129,10 +129,14 @@ module SpecializationsHelper
     return other_specialists
   end
 
-  def sc_item_filtering_attributes(item)
+  def sc_item_filtering_attributes(item, include_specializations)
     filtering_attributes = []
     filtering_attributes << "ic#{item.sc_category.id}_"
-    filtering_attributes << "if#{item.format_type}_"
+    if include_specializations
+      item.specializations.each do |s|
+        filtering_attributes << "is#{s.id}_"
+      end
+    end
     return filtering_attributes
   end
 end
