@@ -3,11 +3,13 @@
 .content-wrapper
 
   %h2 Content Items
+  
+  - categories = ScCategory.all.reject{ |category| category.parent.present? || category.all_sc_items.blank? }
 
   .tabbable
     %ul.nav.nav-tabs
       - active = true
-      - ScCategory.all.reject{ |category| category.sc_items.blank? }.each do |category|
+      - categories.each do |category|
         %li{:class => active && "active"}
           %a{"href" => "##{category.name.remove_whitespace}_tab", "data-toggle" => "tab"}= category.name
         - active = false
@@ -15,20 +17,22 @@
   
     .tab-content
       - active = true
-      - ScCategory.all.reject{ |category| category.sc_items.blank? }.each do |category|
+      - categories.each do |category|
         .tab-pane{"id" => "#{category.name.remove_whitespace}_tab", :class => active && "active"}
           %table.table.table-condensed.table-striped
             %tr
               %th Title
+              %th Subcategory
               %th Specialties
               %th Type
               %th Searchable?
               %th Shared Care?
               %th.admin
 
-            - category.sc_items.each do |sc_item|
+            - category.all_sc_items.each do |sc_item|
               %tr
                 %td{"width" => "40%"}= link_to sc_item.title, sc_item, :class => 'ajax'
+                %td= sc_item.sc_category != category ? (link_to sc_item.sc_category.name, sc_item.sc_category, :class => 'ajax') : ""
                 %td
                   %ul
                     - sc_item.sc_item_specializations.each do |is|

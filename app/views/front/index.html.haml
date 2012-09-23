@@ -76,7 +76,7 @@
       
         .well
           
-          - ScCategory.all.reject{ |c| !c.show_on_front_page? || c.featured_sc_items.blank? }.sort{ |a,b| a.name <=> b.name }.each do |category|
+          - ScCategory.all.reject{ |c| !c.show_on_front_page? || c.featured_sc_items.blank? }.each do |category|
          
             %h3= "Featured #{category.name}"
           
