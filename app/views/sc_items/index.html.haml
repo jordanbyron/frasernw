@@ -22,7 +22,6 @@
               %th Title
               %th Specialties
               %th Type
-              %th Inline?
               %th Searchable?
               %th Shared Care?
               %th.admin
@@ -38,7 +37,6 @@
                         - if is.procedure_specializations.present?
                           = ": #{is.procedure_specializations.map{ |ps| link_to ps.procedure.name, ps.procedure, :class => 'ajax' }.to_sentence}".html_safe
                 %td= sc_item.type
-                %td= sc_item.inline? ? "Yes" : "No"
                 %td= sc_item.searchable ? "Yes" : "No"
                 %td= sc_item.shared_care? ? "Yes" : "No"
                 %td.admin.btn-group
