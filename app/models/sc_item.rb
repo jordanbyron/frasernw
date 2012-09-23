@@ -35,7 +35,15 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
 
   def mail_to_patient(current_user, patient_email)
     MailToPatientMailer.mail_to_patient(self, current_user, patient_email).deliver
-  end  
+  end
+
+  def full_title
+    if sc_category.parent.present?
+      sc_category.name + ": " + title
+    else
+      title
+    end
+  end
   
   TYPE_HASH = {
     1 => "Link",

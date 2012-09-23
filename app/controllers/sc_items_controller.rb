@@ -1,4 +1,5 @@
 class ScItemsController < ApplicationController
+  include ScCategoriesHelper
   load_and_authorize_resource
   
   #cache_sweeper :sc_item_sweeper, :only => [:create, :update, :destroy]
@@ -16,6 +17,7 @@ class ScItemsController < ApplicationController
     @sc_item = ScItem.new
     @has_specializations = []
     @has_procedure_specializations = []
+    @hierarchy = ancestry_options_limited(ScCategory.unscoped.arrange(:order => 'name'), nil)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
@@ -42,6 +44,7 @@ class ScItemsController < ApplicationController
     @sc_item = ScItem.find(params[:id])
     @has_specializations = @sc_item.specializations.map{ |s| s.id }
     @has_procedure_specializations = @sc_item.procedure_specializations.map{ |ps| ps.id }
+    @hierarchy = ancestry_options_limited(ScCategory.unscoped.arrange(:order => 'name'), nil)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   

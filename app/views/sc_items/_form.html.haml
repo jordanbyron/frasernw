@@ -4,7 +4,7 @@
 
   %h3 Content Classification
 
-  = f.association :sc_category, as: :select, :include_blank => false
+  = f.association :sc_category, as: :select, :collection => @hierarchy, :include_blank => false
   
   .control-group
     .control-label

@@ -39,12 +39,12 @@
         
   - if @sc_category.inline?
 
-    - @sc_category.all_sc_items.each do |sc_item|
+    - @sc_category.all_sc_items.sort{ |a,b| a.sc_category.sort_order <=> a.sc_category.sort_order }.each do |sc_item|
       .scm
         %h1
           - if sc_item.shared_care?
             %i.icon-red.icon-star
-          = sc_item.title
+          = sc_item.full_title
           %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
             %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
         
@@ -55,7 +55,6 @@
   
   - else
   
-
     %script{"type" => "text/javascript"}
       $(document).ready(function() {
       - @sc_category.all_sc_items.each do |sc_item|
@@ -82,7 +81,10 @@
             %tbody
               - @sc_category.all_sc_items.each do |sc_item|
                 %tr{:id => "i#{sc_item.id}"}
-                  %td.title= link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank")
+                  %td.title
+                    - if sc_item.shared_care?
+                      %i.icon-blue.icon-star
+                    = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank")
                   %td.subcategory= sc_item.sc_category.name
                   %td.favorite
                     %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}

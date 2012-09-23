@@ -45,7 +45,7 @@
         %a#clinics{"href" => "#{specialization_path(specialization)}#clinics"}
           %span Clinics
     - ScCategory.specialty.each do |sc_category|
-      - if sc_category.sc_items.for_specialization(specialization).present?
+      - if sc_category.sc_items_for_specialization(specialization).present?
         %li{:class => @sc_item.sc_category == sc_category && "active"}
           %a{"href" => "#{specialization_path(specialization)}##{sc_category.name.remove_whitespace}"}
             %span= sc_category.name
@@ -55,21 +55,22 @@
   - if @sc_item.link? || @sc_item.document?
   
     %ul.no-marker
-      %li= link_to @sc_item.title, @sc_item.resolved_url, :target => "_blank"
+      %li 
+        - if @sc_item.shared_care?
+          %i.icon-blue.icon-star
+        = link_to @sc_item.title, @sc_item.resolved_url, :target => "_blank"
       %li
-        %span.format= @sc_item.format
-        %span.domain= @sc_item.domain
         %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
-          %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
+          %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
         - if @sc_item.can_email?
-          %span.email= link_to "E-mail to patient", compose_mail_to_patients_path(@sc_item), :class => 'ajax'
+          = link_to "<i class='icon-envelope-alt icon-blue'></i>".html_safe, compose_mail_to_patients_path(@sc_item), :class => 'ajax', :title => "E-mail to patient"
     
   - elsif @sc_item.markdown?
   
     %h1
       - if @sc_item.shared_care?
         %i.icon-red.icon-star
-      = @sc_item.title
+      = @sc_item.full_title
       %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
         %i.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
   
