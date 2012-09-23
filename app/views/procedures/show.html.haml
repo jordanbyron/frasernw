@@ -409,7 +409,7 @@
               %script{"type" => "text/javascript"}
                 $(document).ready(function() {
                 - items.each do |sc_item|
-                  $('#i#{sc_item.id}').data('filter', '#{sc_item_filtering_attributes(sc_item).join(' ')}');
+                  $('#i#{sc_item.id}').data('filter', '#{sc_item_filtering_attributes(sc_item, false).join(' ')}');
                 });
           
               .content
@@ -459,7 +459,7 @@
                               %label
                                 %input.ic#icall{"type" => "radio", "name" => "ic#{sc_category.id}", "checked" => "checked"} All
                               - sc_category.children.each do |subcategory|
-                                - next if subcategory.sc_items.blank?
+                                - next if subcategory.sc_items.for_procedure_specialization(procedure_specialization).blank?
                                 %label
                                   %input.ic{"type" => "radio", "name" => "ic#{sc_category.id}", "id" => "ic#{subcategory.id}_"}= subcategory.name
 

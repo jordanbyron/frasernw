@@ -515,7 +515,7 @@
                               %label
                                 %input.ic#icall{"type" => "radio", "name" => "ic#{sc_category.id}", "checked" => "checked"} All
                               - sc_category.children.each do |subcategory|
-                                - next if subcategory.sc_items.blank?
+                                - next if subcategory.sc_items.for_specialization(@specialization).blank?
                                 %label
                                   %input.ic{"type" => "radio", "name" => "ic#{sc_category.id}", "id" => "ic#{subcategory.id}_"}= subcategory.name
 
