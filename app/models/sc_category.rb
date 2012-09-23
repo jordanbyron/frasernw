@@ -33,6 +33,14 @@ class ScCategory < ActiveRecord::Base
   def inline?
     display_mask == 3
   end
+
+  def full_name
+    if parent.present?
+      parent.name + ": " + name
+    else
+      name
+    end
+  end
   
   def show_as_dropdown?
     show_as_dropdown

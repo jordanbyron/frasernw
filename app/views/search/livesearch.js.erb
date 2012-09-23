@@ -25,7 +25,7 @@ group_data = {
 
 ScCategory.all.each do |category|
   next if category.sc_items.searchable.empty?
-  group_data[ order_map[category.name] ] = category.name
+  group_data[ order_map[category.name] ] = category.full_name
 end
 
 -%>
