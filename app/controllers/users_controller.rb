@@ -56,7 +56,7 @@ class UsersController < ApplicationController
       if @user.blank?
         redirect_to login_url, :alert  => "Sorry, your access key was not recognized."
       elsif @user.email.present?
-        redirect_to login_url, :alert  => "Sorry, your access key has already been used to set up an account."
+        redirect_to login_url, :alert  => "Your access key has already been used to set up an account. Please enter the e-mail address and password associated with your account, and press 'Log in'"
       else
         render :action => 'signup', :layout => 'user_sessions'
       end
