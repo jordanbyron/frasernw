@@ -500,12 +500,13 @@
                               - if sc_item.can_email?
                                 = link_to "<i class='icon-envelope-alt icon-blue'></i>".html_safe, compose_mail_to_patients_path(sc_item), :class => 'ajax', :title => "E-mail to patient"
                           
-                  .span3.offsethalf
-                    .well.filter{:id => "#{sc_category.id}_filters"}
-                      .title
-                        Filter #{sc_category.name}
-                                  
-                      - if sc_category.has_children?
+                          
+                  - if sc_category.has_children?
+                    .span3.offsethalf
+                      .well.filter{:id => "#{sc_category.id}_filters"}
+                        .title
+                          Filter #{sc_category.name}
+                                    
                         .filter-group
                           %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "##{sc_category.id}-filter-subcategories"}
                             Subcategories
