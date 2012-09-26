@@ -13,7 +13,7 @@ function pathways_grouper(a, b)
 
 function pathways_data_formatter(total_score, scores_matches, data_entry, term)
 {
-  var result = "<li class='search-result'><a class='ajax' id='search_result_" + data_entry.go + '_' + data_entry.id + "'  href='/" + pathways_url_data[data_entry.go] + '/' + data_entry.id + "' onlick='_gaq.push(['_trackEvent', 'search', 'term', 'term', '" + term + "']; _gaq.push(['_trackEvent', 'search', 'user', 'user_id', '#{current_user_id}']);'>";
+  var result = "<li class='search-result'><a class='ajax' id='search_result_" + data_entry.go + '_' + data_entry.id + "'  href='/" + pathways_url_data[data_entry.go] + '/' + data_entry.id + "'>";
   
   result += "<div class='search_name'><i class='" + pathways_status_data[data_entry.st] + "'></i> " + data_entry.n + "</div>";
   
