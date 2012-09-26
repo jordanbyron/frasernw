@@ -107,7 +107,7 @@ $.fn.livesearch = function(options)
         last_group = this.data_entry.go
         list.append(group_formatter_fnc(this.data_entry.go))
       }
-      list.append(data_formatter_fnc(this.total_score, this.scores_matches, this.data_entry))
+      list.append(data_formatter_fnc(this.total_score, this.scores_matches, this.data_entry, term))
     });
     
     selected = 0
@@ -129,7 +129,7 @@ $.fn.livesearch = function(options)
       return (b.total_score - a.total_score)
   }
   
-  function data_formatter(total_score, scores_matches, data_entry)
+  function data_formatter(total_score, scores_matches, data_entry, term)
   {
     return "<li class='search-result'><a href=\'" + data_entry.url + "'>" + data_entry.value + '</a></li>';
   }

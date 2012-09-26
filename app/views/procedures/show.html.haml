@@ -435,7 +435,7 @@
                             %td.title
                               - if sc_item.shared_care?
                                 %i.icon-blue.icon-star
-                              = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank")
+                              = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank", :id => sc_item.id, :onclick => "_gaq.push(['_trackEvent', 'content', 'visit', 'content_id', '{sc_item.id}']); _gaq.push(['_trackEvent', 'content', 'user', 'user_id', '#{current_user_id}']);")
                             %td.subcategory= sc_item.sc_category.name
                             %td.favorite
                               %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
@@ -482,7 +482,8 @@
               $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
             });
             //make full rows clickable
-            $('table tr').click( function() { 
+            $('#specialist_table tr, #clinic_table tr').click( function() { $(this).find('a').click(); });
+            $('.category_table tr').click( function() { 
               var link = $(this).find('td.title a');
               if (link.hasClass('ajax'))
               {
@@ -490,6 +491,8 @@
               } 
               else 
               {
+                _gaq.push(['_trackEvent', 'content', 'visit', 'content_id', link.attr('id')]);
+                _gaq.push(['_trackEvent', 'content', 'user', 'user_id', '#{current_user_id}']);
                 window.open(link.attr('href'));
               }
             });
