@@ -93,7 +93,7 @@
                   #specialist_others.other-phrase
                           
                   #specialist_hide_others.other-phrase
-                    %a{"href" => "javascript:void(0)", "onclick" => "hide_others('specialist')"}Hide
+                    %a{"href" => "javascript:void(0)", "onclick" => "hide_others('specialist', '#{@specialization.member_name.uncapitalize_first_letter.pluralize}')"}Hide
                     results from other specialties.
                 
                   %table.table.table-condensed.tablesorter#specialist_table

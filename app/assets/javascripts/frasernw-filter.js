@@ -30,16 +30,18 @@ function show_others( entity_id, ids )
   });
   data_table.trigger('update', [true]);
   
-  var others = $('#' + entity_id + '_others').hide();
-  var others = $('#' + entity_id + '_hide_others').show();
+  $('#' + entity_id + '_others').hide();
+  $('#' + entity_id + '_hide_others').show();
+  $('#' + entity_id + '_description_entity').html("specialists");
 }
 
-function hide_others( entity_id )
+function hide_others( entity_id, entity_name )
 {
   $('#' + entity_id + '_table tbody tr.other').each(function () { $(this).remove() });
   $('#' + entity_id + '_table').trigger('update', [true]);
   $('#' + entity_id + '_others').show();
   $('#' + entity_id + '_hide_others').hide();
+  $('#' + entity_id + '_description_entity').html(entity_name);
 }
 
 function add_row( entity_id, row_id, url, name, status_class, status_sort, wait_time, city )
@@ -246,7 +248,7 @@ var update_table = function(prefix, entity_id, entity_name)
     }
   });
   
-  var description = found ? 'Showing all ' + sex + ' ' + entity_name : 'There are no ' + sex + ' ' + entity_name;
+  var description = found ? 'Showing all ' + sex + ' <span id=\'' + entity_id + '_description_entity\'>' + entity_name + '</span>' : 'There are no ' + sex + ' ' + entity_name;
   
   var fragments = new Array()
   if ( specializations.length >= 1 )
