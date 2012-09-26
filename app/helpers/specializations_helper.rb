@@ -126,7 +126,7 @@ module SpecializationsHelper
       #remove any specialists that are also in this specialization
       other_specialists.delete(s)
     end
-    return other_specialists
+    return other_specialists.sort{ |a,b| "#{a.waittime_mask}" <=> "#{b.waittime_mask}" }
   end
 
   def sc_item_filtering_attributes(item, include_specializations)
