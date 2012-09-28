@@ -35,7 +35,6 @@
                 %td= user.specializations.map{ |s| s.name }.to_sentence
                 %td.admin.btn-group
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
-                  = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
 
       #user_tab.tab-pane
         %table.table.table-condensed.table-striped.tablesorter
@@ -64,7 +63,6 @@
                       %li= clinic.name
                 %td.admin.btn-group
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
-                  = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
 
       #pending_user_tab.tab-pane
         %table.table.table-condensed.table-striped.tablesorter
@@ -93,7 +91,6 @@
                       %li= clinic.name
                 %td.admin.btn-group
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
-                  = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
 
       #disabled_user_tab.tab-pane
         %table.table.table-condensed.table-striped.tablesorter
@@ -126,7 +123,6 @@
                       %li= clinic.name
                 %td.admin.btn-group
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
-                  = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
             %tr
               %td
               %td
