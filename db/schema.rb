@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120921204625) do
+ActiveRecord::Schema.define(:version => 20120928184140) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -408,19 +408,19 @@ ActiveRecord::Schema.define(:version => 20120921204625) do
   add_index "sc_item_specializations", ["specialization_id"], :name => "index_sc_item_specializations_on_specialization_id"
 
   create_table "sc_items", :force => true do |t|
-    t.integer  "sc_category_id"
-    t.string   "title"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "type_mask"
-    t.string   "url"
-    t.text     "markdown_content"
-    t.boolean  "searchable",            :default => true
-    t.boolean  "shared_care",           :default => false
-    t.string   "document_file_name"
-    t.string   "document_content_type"
-    t.integer  "document_file_size"
-    t.datetime "document_updated_at"
+    t.integer   "sc_category_id"
+    t.string    "title"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.integer   "type_mask"
+    t.string    "url"
+    t.text      "markdown_content"
+    t.boolean   "searchable",            :default => true
+    t.boolean   "shared_care",           :default => false
+    t.string    "document_file_name"
+    t.string    "document_content_type"
+    t.integer   "document_file_size"
+    t.timestamp "document_updated_at"
   end
 
   add_index "sc_items", ["sc_category_id"], :name => "index_sc_items_on_sc_category_id"
@@ -624,21 +624,22 @@ ActiveRecord::Schema.define(:version => 20120921204625) do
   add_index "user_controls_specialists", ["user_id"], :name => "index_user_controls_specialists_on_user_id"
 
   create_table "users", :force => true do |t|
-    t.string    "email"
-    t.string    "persistence_token"
-    t.string    "crypted_password"
-    t.string    "password_salt"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.string    "name"
-    t.string    "role"
-    t.string    "perishable_token",   :default => "",    :null => false
-    t.string    "saved_token"
-    t.integer   "type_mask",          :default => 1
-    t.timestamp "last_request_at"
-    t.boolean   "agree_to_toc",       :default => false
-    t.boolean   "active",             :default => true
-    t.integer   "failed_login_count", :default => 0
+    t.string   "email"
+    t.string   "persistence_token"
+    t.string   "crypted_password"
+    t.string   "password_salt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+    t.string   "role"
+    t.string   "perishable_token",   :default => "",    :null => false
+    t.string   "saved_token"
+    t.integer  "type_mask",          :default => 1
+    t.datetime "last_request_at"
+    t.boolean  "agree_to_toc",       :default => false
+    t.boolean  "active",             :default => true
+    t.integer  "failed_login_count", :default => 0
+    t.date     "activated_at"
   end
 
   create_table "versions", :force => true do |t|

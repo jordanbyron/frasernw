@@ -20,15 +20,17 @@
         %table.table.table-condensed.table-striped.tablesorter
           %thead
             %tr.tableheader
-              %th{:class => "{sorter: 'text'}"} Name
-              %th{:class => "{sorter: 'text'}"} Email
-              %th{:class => "{sorter: 'text'}"} Owns Specialties
+              %th{:class => "{sorter: 'text'}", :style => "width:25%"} Name
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Signed Up
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Email
+              %th{:class => "{sorter: 'text'}", :style => "width:45%"} Owns Specialties
               %th.admin
 
           %tbody
             - User.all.reject{ |user| !user.admin? || user.pending? || !user.active? }.each do |user|
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
+                %td= user.activated_at.present? ? "#{time_ago_in_words(user.activated_at)} ago" : "#{time_ago_in_words(user.created_at)} ago"
                 %td= user.email
                 %td= user.specializations.map{ |s| s.name }.to_sentence
                 %td.admin.btn-group
@@ -39,16 +41,18 @@
         %table.table.table-condensed.table-striped.tablesorter
           %thead
             %tr.tableheader
-              %th{:class => "{sorter: 'text'}"} Name
-              %th{:class => "{sorter: 'text'}"} Type
-              %th{:class => "{sorter: 'text'}"} Email
-              %th{:class => "{sorter: 'text'}"} Can edit
+              %th{:class => "{sorter: 'text'}", :style => "width:25%"} Name
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Signed Up
+              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Type
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Email
+              %th{:class => "{sorter: 'text'}", :style => "width:35%"} Can edit
               %th.admin
 
           %tbody
             - User.all.reject{ |user| user.admin? || user.pending? || !user.active? }.each do |user|
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
+                %td= user.activated_at.present? ? "#{time_ago_in_words(user.activated_at)} ago" : "#{time_ago_in_words(user.created_at)} ago"
                 %td= user.type
                 %td= user.email
                 %td
@@ -66,11 +70,11 @@
         %table.table.table-condensed.table-striped.tablesorter
           %thead
             %tr.tableheader
-              %th{:class => "{sorter: 'text'}"} Name
-              %th{:class => "{sorter: 'text'}"} Admin?
-              %th{:class => "{sorter: 'text'}"} Type
-              %th{:class => "{sorter: 'text'}"} Access key
-              %th{:class => "{sorter: 'text'}"} Can edit
+              %th{:class => "{sorter: 'text'}", :style => "width:25%"} Name
+              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Admin?
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Type
+              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Access key
+              %th{:class => "{sorter: 'text'}", :style => "width:40%"} Can edit
               %th.admin
               
           %tbody
@@ -95,18 +99,20 @@
         %table.table.table-condensed.table-striped.tablesorter
           %thead
             %tr.tableheader
-              %th{:class => "{sorter: 'text'}"} Name
-              %th{:class => "{sorter: 'text'}"} Admin?
-              %th{:class => "{sorter: 'text'}"} Type
-              %th{:class => "{sorter: 'text'}"} Email
-              %th{:class => "{sorter: 'text'}"} Access key
-              %th{:class => "{sorter: 'text'}"} Can edit
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Name
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Signed Up
+              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Admin?
+              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Type
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Email
+              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Access key
+              %th{:class => "{sorter: 'text'}", :style => "width:25%"} Can edit
               %th.admin
 
           %tbody
             - User.all.reject{ |u| u.active? }.each do |user|
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
+                %td= user.activated_at.present? ? "#{time_ago_in_words(user.activated_at)} ago" : "#{time_ago_in_words(user.created_at)} ago"
                 %td= user.admin? ? "Yes" : "No"
                 %td= user.admin? ? "Admin" : user.type
                 %td= user.email
@@ -122,6 +128,7 @@
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
                   = link_to("<i class='icon-trash'></i>".html_safe + " Delete", user, :confirm => "Delete #{user.name}?", :method => :delete, :class => "btn btn-mini")
             %tr
+              %td
               %td
               %td
               %td
