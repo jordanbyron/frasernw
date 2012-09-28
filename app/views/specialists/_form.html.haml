@@ -13,7 +13,7 @@
         form_element.closest('div.control-group, div.changed_wrapper').addClass('changed');
         help_span = $(document.createElement('span'));
         help_span.addClass('help-inline');
-        help_span.text("Was: " + old_value_formatted);
+        help_span.html("Was: " + old_value_formatted.replace(/(\r\n|\n|\r)/gm,"<br>"));
         form_element.parent().append(help_span);
       } 
       
@@ -129,8 +129,9 @@
             break;
           case('TEXTAREA'):
             old_entry_value = form_element.val();
-            if (old_entry_value != new_entry_value)
+            if (old_entry_value.replace(/(\r\n|\n|\r)/gm,"") != new_entry_value.replace(/(\r\n|\n|\r)/gm,""))
             {
+              //console.log("TEXTAREA: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
               form_element.val(new_entry_value);
               old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
               show_old_value(form_element, old_value_formatted);
