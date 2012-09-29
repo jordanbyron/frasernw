@@ -30,7 +30,7 @@
             - User.all.reject{ |user| !user.admin? || user.pending? || !user.active? }.each do |user|
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
-                %td= user.activated_at.present? ? "#{time_ago_in_words(user.activated_at)} ago" : "#{time_ago_in_words(user.created_at)} ago"
+                %td= user.activated_at.present? ? user.activated_at.strftime("%Y-%m-%d") : user.created_at.strftime("%Y-%m-%d")
                 %td= user.email
                 %td= user.specializations.map{ |s| s.name }.to_sentence
                 %td.admin.btn-group
@@ -51,7 +51,7 @@
             - User.all.reject{ |user| user.admin? || user.pending? || !user.active? }.each do |user|
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
-                %td= user.activated_at.present? ? "#{time_ago_in_words(user.activated_at)} ago" : "#{time_ago_in_words(user.created_at)} ago"
+                %td= user.activated_at.present? ? user.activated_at.strftime("%Y-%m-%d") : user.created_at.strftime("%Y-%m-%d")
                 %td= user.type
                 %td= user.email
                 %td
@@ -109,7 +109,7 @@
             - User.all.reject{ |u| u.active? }.each do |user|
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
-                %td= user.activated_at.present? ? "#{time_ago_in_words(user.activated_at)} ago" : "#{time_ago_in_words(user.created_at)} ago"
+                %td= user.activated_at.present? ? user.activated_at.strftime("%Y-%m-%d") : user.created_at.strftime("%Y-%m-%d")
                 %td= user.admin? ? "Yes" : "No"
                 %td= user.admin? ? "Admin" : user.type
                 %td= user.email
