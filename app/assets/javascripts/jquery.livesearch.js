@@ -19,13 +19,12 @@ $.fn.livesearch = function(options)
   
   container.mouseover( function() { set_selected(-1) });
   
+  function hide_search() { container.animate({height: "hide"}, 200) }
+  
   this
     .keyup(filter).keyup()
     .focus(filter)
-    .blur(function() 
-          { 
-            container.animate({height: "hide"}, 200) 
-          })
+    .blur(function(){ setTimeout(hide_search,100) })
     .parents('form').submit( function() { if (results.length > 0) { that.blur(); return searcher_fnc(results[selected].data_entry) } else { return false; } });
   
 	return this;
