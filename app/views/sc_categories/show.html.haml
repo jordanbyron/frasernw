@@ -52,6 +52,10 @@
           = BlueCloth.new(sc_item.markdown_content).to_html.html_safe
         - else
           = link_to sc_item.title, sc_item.resolved_url, :target => "_blank"
+          
+    - if @sc_category.parent.present?
+      %hr
+      = link_to "<i class='icon-arrow-right icon-blue'></i> Browse all #{@sc_category.parent.name} content".html_safe, sc_category_path(@sc_category.parent), :class => 'ajax'
   
   - else
   
@@ -92,6 +96,9 @@
                   %td.email
                     - if sc_item.can_email?
                       = link_to "<i class='icon-envelope-alt icon-blue'></i>".html_safe, compose_mail_to_patients_path(sc_item), :class => 'ajax', :title => "E-mail to patient"
+          
+          - if @sc_category.parent.present?
+            = link_to "<i class='icon-arrow-right icon-blue'></i> Browse all #{@sc_category.parent.name} content".html_safe, sc_category_path(@sc_category.parent), :class => 'ajax'
                 
         .span3.offsethalf
           .well.filter{:id => "#{@sc_category.id}_filters"}
