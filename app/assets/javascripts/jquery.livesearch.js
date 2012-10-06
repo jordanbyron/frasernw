@@ -194,7 +194,7 @@ Array.prototype.hasValue = function(value)
  */
 
 
-var score_matches = function(string1, string2, fuzziness) 
+var score_matches = function(string1, string2, fuzziness)
 {
   if (string1.trim() == "" || string2.trim() == "")
   {
@@ -210,6 +210,7 @@ var score_matches = function(string1, string2, fuzziness)
   {
     best_match[x] = 0;
     var piece1 = arr1[x];
+    var piece1_length = piece1.length;
     
     for (var y = 0; y < arr2.length; ++y )
     {
@@ -223,8 +224,8 @@ var score_matches = function(string1, string2, fuzziness)
       }
       
       var total_character_score = 0;
-      var piece1_length = piece1.length;
       var piece2_length = piece2.length;
+      var max_length = Math.max(piece1_length, piece2_length);
       var start_of_word_matches = 0;
       var num_matches = 0;
       var fuzzies = 1;
@@ -238,7 +239,7 @@ var score_matches = function(string1, string2, fuzziness)
         var found = false;
         var piece2_index = -1;
         
-        for (var match_length = 0; match_length <= piece1_length - piece1_index; ++match_length)
+        for (var match_length = 1; match_length <= piece1_length - piece1_index; ++match_length)
         {
           var cur_index = piece2.indexOf( piece1.substr(piece1_index, match_length) );
           
@@ -261,22 +262,18 @@ var score_matches = function(string1, string2, fuzziness)
           continue;
         }
         
-        var character_score = 0.0;
-        
         ++num_matches;
         
-        // Set base score for matching 'c'.
-        var match_score = match_length / piece1_length;
+        var match_score = match_length / max_length;
         
         if (piece2_index == 0) 
         {
-          // Increase the score when matching first character of the remainder of the string, or starting a new word
-          start_of_word_matches += 1;
+          ++start_of_word_matches;
         }
         
         // Left trim the already matched part of the string (forces sequential matching).
-        piece1_index += match_length + 1;
-        piece2 = piece2.substring(piece2_index + match_length + 1, piece2_length);
+        piece1_index += match_length;
+        piece2 = piece2.substring(piece2_index + match_length, piece2_length);
         
         total_character_score += match_score;
       } 
@@ -286,19 +283,13 @@ var score_matches = function(string1, string2, fuzziness)
         continue;
       }
       
+      //penalize each match that isn't a start of string
+      piece_score = total_character_score - ((num_matches-start_of_word_matches) * 0.1);
+      
       //take into account errors
       piece_score = piece_score / fuzzies;
       
-      //penalize each match that isn't a start of string
-      var piece_score = total_character_score - ((num_matches-start_of_word_matches) * 0.2);
-      
-      //penalize longer words slightly
-      piece_score *= 1.0 - (Math.abs(piece2_length - piece1_length) * 0.01);
-      
-      if ( piece_score > best_match[x] )
-      {
-        best_match[x] = piece_score;
-      }
+      best_match[x] = Math.max(piece_score, best_match[x]);
     }
   }
   
