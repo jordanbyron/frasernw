@@ -4,9 +4,10 @@ order_map = {
   "Specializations" => "1",
   "Specialists" => "2",
   "Clinics" => "3",
-  "Procedures" => "4",
-  "Hospitals" => "5",
-  "Languages" => "6"
+  "Content" => "4",
+  "Procedures" => "5",
+  "Hospitals" => "6",
+  "Languages" => "7"
 }
 
 ScCategory.all.each do |category|
@@ -18,6 +19,7 @@ group_data = {
   order_map["Specializations"] => "Specialties", 
   order_map["Specialists"] => "Specialists",
   order_map["Clinics"] => "Clinics",
+  order_map["Content"] => "Content", 
   order_map["Procedures"] => "Areas of Practice",
   order_map["Hospitals"] => "Hospitals",
   order_map["Languages"] => "Languages"
@@ -36,6 +38,7 @@ url_data = {
   order_map["Specializations"]  => "specialties", 
   order_map["Specialists"]  => "specialists",
   order_map["Clinics"]  => "clinics",
+  order_map["Content"]  => "content_categories", 
   order_map["Procedures"]  => "areas_of_practice",
   order_map["Hospitals"]  => "hospitals",
   order_map["Languages"]  => "languages" 
@@ -93,21 +96,6 @@ Specialization.all.each do |specialization|
   search_data << entry
 end 
 
-procedures = Procedure.includes(:procedure_specializations => :specialization)
-
-procedures.each do |procedure|
-
-  #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
-  next if procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress }.length == 0
-  
-  entry = { 
-    "n" => procedure.full_name, 
-    "sp" => procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress }.collect{ |ps| ps.specialization_id },
-    "id" => procedure.id,
-    "go" => order_map["Procedures"] }
-  search_data << entry
-end 
-
 specialists = Specialist.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:clinic_in => {:location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}}]}})
 
 specialists.each do |specialist|
@@ -141,6 +129,29 @@ clinics.each do |clinic|
     "go" => order_map["Clinics"] }
   search_data << entry
 end
+
+ScCategory.searchable.each do |category|
+  entry = { 
+    "n" => category.full_name, 
+    'id' => category.id,
+    "go" => order_map["Content"] }
+  search_data << entry
+end 
+
+procedures = Procedure.includes(:procedure_specializations => :specialization)
+
+procedures.each do |procedure|
+
+  #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
+  next if procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress }.length == 0
+  
+  entry = { 
+    "n" => procedure.full_name, 
+    "sp" => procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress }.collect{ |ps| ps.specialization_id },
+    "id" => procedure.id,
+    "go" => order_map["Procedures"] }
+  search_data << entry
+end 
 
 hospitals = Hospital.includes(:location => {:address => :city})
 

@@ -6,6 +6,7 @@
   = f.input :parent_id, :as => :select, :collection => @hierarchy
   = f.input :sort_order, :as => :select, :collection => 1...ScCategory.all.length, :include_blank => false
   = f.input :display_mask, :as => :select, :collection => ScCategory::DISPLAY_HASH, label_method: :last, value_method: :first, :include_blank => false
+  = f.input :searchable
   = f.input :show_as_dropdown
   = f.input :show_on_front_page
 
