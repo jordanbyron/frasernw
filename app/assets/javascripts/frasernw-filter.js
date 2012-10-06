@@ -116,7 +116,6 @@ var update_table = function(prefix, entity_id, entity_name)
     {
       var text = $this.text().trim();
       text = text.charAt(0).toLowerCase() + text.slice(1);
-                                console.log($this.val())
                                 
       if ($this.val() == prefix + "c1_")
       {
