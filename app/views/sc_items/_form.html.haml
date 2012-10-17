@@ -36,10 +36,12 @@
   = f.input :type_mask, as: :select, collection: ScItem::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
   #link_section
     = f.input :url
+    = f.input :can_email_link
   #mardown_section
     = f.input :markdown_content
   #document_section
     = f.input :document, as: :file
+    = f.input :can_email_document
         
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

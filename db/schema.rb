@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121006193110) do
+ActiveRecord::Schema.define(:version => 20121017211058) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -422,6 +422,8 @@ ActiveRecord::Schema.define(:version => 20121006193110) do
     t.string    "document_content_type"
     t.integer   "document_file_size"
     t.timestamp "document_updated_at"
+    t.boolean   "can_email_document",    :default => false
+    t.boolean   "can_email_link",        :default => true
   end
 
   add_index "sc_items", ["sc_category_id"], :name => "index_sc_items_on_sc_category_id"

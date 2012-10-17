@@ -1,5 +1,5 @@
 class ScItem < ActiveRecord::Base
-  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :shared_care, :url, :markdown_content, :document
+  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :shared_care, :url, :markdown_content, :document, :can_email_document, :can_email_link
   
   belongs_to  :sc_category
   
@@ -52,7 +52,7 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
   }
 
   def can_email?
-    type_mask == 1
+    ((type_mask == 1 && can_email_link?) || (type_mask == 3 && can_email_document?))
   end
 
   def resolved_url

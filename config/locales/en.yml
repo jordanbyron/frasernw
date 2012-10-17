@@ -107,6 +107,8 @@ en:
         shared_care: "From a Shared Care Initiative"
         type_mask: "Content type"
         url: "Content URL"
+        can_email_document: "Can email document to patient"
+        can_email_link: "Can email URL to patient"
       specialist:
         firstname: "First name"
         lastname: "Last name"
