@@ -1023,6 +1023,14 @@ body.loading #email
       {
         margin-top: 24px;
       }
+      
+      .new
+      {
+        text-transform: uppercase;
+        font-weight: bold;
+        color: $FNW_RED;
+        font-size: 11px;
+      }
     }
   }
   
