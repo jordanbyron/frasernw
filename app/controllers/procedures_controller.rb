@@ -12,6 +12,7 @@ class ProceduresController < ApplicationController
   
   def show
     @procedure = Procedure.find(params[:id])
+    @feedback = FeedbackItem.new
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   

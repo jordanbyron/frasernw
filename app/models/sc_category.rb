@@ -70,11 +70,11 @@ class ScCategory < ActiveRecord::Base
     items
   end
 
-  def sc_items_for_procedure_specialization(procedure_specialization)
-    items = sc_items.for_procedure_specialization(procedure_specialization)
+  def sc_items_for_procedure(procedure)
+    items = sc_items.for_procedure(procedure)
     self.children.each do |child|
-      items += child.sc_items.for_procedure_specialization(procedure_specialization)
+      items += child.sc_items.for_procedure(procedure)
     end
-    items
+    items.flatten.uniq
   end
 end
