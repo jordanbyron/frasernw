@@ -4,26 +4,40 @@
 
   %h2 Feedback Queue
 
-  %table.table.table-condensed.table-striped
-    %tr
-      %th Feedback on
-      %th Specialty
-      %th Provided by
-      %th Provided when
-      %th Feedback
-      %th Reply
-      %th.admin
+  .tabbable
+    %ul.nav.nav-tabs
+      %li.active
+        %a{"href" => "#Specialist_tab", "data-toggle" => "tab"}= "Specialist Feedback"
+      %li
+        %a{"href" => "#Clinic_tab", "data-toggle" => "tab"}= "Clinic Feedback"
+      %li
+        %a{"href" => "#ScItem_tab", "data-toggle" => "tab"}= "Content Feedback"
+        
+    .tab-content
+    
+      - ["Specialist", "Clinic", "ScItem"].each do |feedback_type|
+      
+        .tab-pane{"id" => "#{feedback_type}_tab", "class" => (feedback_type == "Specialist") && "active"}
+      
+          %table.table.table-condensed.table-striped
+            %tr
+              %th Feedback on
+              %th Specialty
+              %th Provided by
+              %th Provided when
+              %th Feedback
+              %th Reply
+              %th.admin
 
-    - @feedback_items.each do |feedback_item|
-      - next if feedback_item.item.blank?
-      %tr
-        %td= link_to feedback_item.item.name, feedback_item.item, :class => 'ajax'
-        %td= feedback_item.item.specializations.map{ |s| s.name }.to_sentence
-        %td= feedback_item.user.name
-        %td= "#{time_ago_in_words(feedback_item.created_at)} ago"
-        %td{"style" => "width: 40%"}= feedback_item.feedback
-        %td= mail_to feedback_item.user.email, feedback_item.user.email, :subject => "Your Pathways Feedback", :body => "#{feedback_item.feedback} \n\n Pathways: http://www.pathwaysbc.ca"
-        %td.admin.btn-group
-          = link_to("<i class='icon-folder-open'></i>".html_safe + " Archive", feedback_item, :method => :delete, :class => "btn btn-mini")
-  
+            - @feedback_items.reject{ |feedback_item| feedback_item.item.class != feedback_type.constantize }.each do |feedback_item|
+              %tr
+                %td= link_to (feedback_item.item.respond_to?('name') ? feedback_item.item.name : feedback_item.item.title), feedback_item.item, :class => 'ajax'
+                %td= feedback_item.item.specializations.map{ |s| s.name }.to_sentence
+                %td= feedback_item.user.blank? ? "unavailable" : feedback_item.user.name
+                %td= "#{time_ago_in_words(feedback_item.created_at)} ago"
+                %td{"style" => "width: 30%"}= feedback_item.feedback
+                %td= feedback_item.user.blank? ? "unavailable" : (mail_to feedback_item.user.email, feedback_item.user.email, :subject => "Your Pathways Feedback", :body => "#{feedback_item.feedback} \n\n Pathways: http://www.pathwaysbc.ca")
+                %td.admin.btn-group
+                  = link_to("<i class='icon-folder-open'></i>".html_safe + " Archive", feedback_item, :method => :delete, :class => "btn btn-mini")
+
   .btn-group= link_to "View archived feedback items", archived_feedback_items_path, :class => 'btn ajax'

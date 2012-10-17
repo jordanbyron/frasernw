@@ -10,6 +10,7 @@ class ScItemsController < ApplicationController
   
   def show
     @sc_item = ScItem.find(params[:id])
+    @feedback = @sc_item.feedback_items.build
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   

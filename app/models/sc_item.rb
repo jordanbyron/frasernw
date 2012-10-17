@@ -9,6 +9,9 @@ class ScItem < ActiveRecord::Base
   has_many    :sc_item_specialization_procedure_specializations, :through => :sc_item_specializations
   has_many    :procedure_specializations, :through => :sc_item_specialization_procedure_specializations
   
+  has_many    :feedback_items, :as => :item, :conditions => { "archived" => false }
+  has_many    :archived_feedback_items, :as => :item, :foreign_key => "item_id", :class_name => "FeedbackItem"
+  
   has_attached_file :document,
   :storage => :s3,
   :bucket => ENV['S3_BUCKET_NAME_CONTENT_DOCUMENTS'],
