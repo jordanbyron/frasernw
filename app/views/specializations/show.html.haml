@@ -485,6 +485,7 @@
                           %th{:class => "subcategory {sorter: 'text'}"} Subcategory
                           %th.favorite
                           %th.email
+                          %th.fb
                       %tbody
                         - items.each do |sc_item|
                           %tr{:id => "i#{sc_item.id}"}
@@ -499,6 +500,9 @@
                             %td.email
                               - if sc_item.can_email?
                                 = link_to "<i class='icon-envelope-alt icon-blue'></i>".html_safe, compose_mail_to_patients_path(sc_item), :class => 'ajax', :title => "E-mail to patient"
+                            %td.fb
+                              %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
+                                %i.icon-bullhorn
                           
                           
                   - if sc_category.has_children?
@@ -572,7 +576,54 @@
             });
             $('table a').click( function(e) { e.stopPropagation(); });
           });
-            
+    
+      #feedback
+        .inner
+          = simple_form_for @feedback, :html => { :class => "ajax feedback_form" } do |f|
+
+            = f.input :feedback, :label => "Please provide us with any comments about '<span class='feedback_item_title'></span>'".html_safe
+            = f.input :item_type, :as => :hidden
+            = f.input :item_id, :as => :hidden
+
+            .form-actions
+              %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" } Send Feedback
+              %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
+        
+      #feedback_thanks
+        .inner
+          %h2 Thank you!
+          
+          %p.space.no_indent= "Thank you for providing your feedback  on '<span class='feedback_item_title'></span>'. Your contributions help make Pathways a valuable resource for the community.".html_safe
+          
+          %p.space.no_indent We will review your feedback in the near future and take action as necessary.
+          
+          %p.space.no_indent
+            %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close     
+                 
+      %script{"type" => "text/javascript"}
+        :plain
+          $(document).ready(function() { $('.tt').tooltip({trigger: 'manual'}) });
+          
+          function show_feedback(item_title, item_id)
+          {
+            $('.feedback_item_title').text(item_title);
+            $('#feedback_item_item_id').val(item_id);
+            $('#feedback_item_item_type').val("ScItem");
+            $('#feedback').fadeIn(200);
+          }
+
+          function send_feedback(form) { 
+            $.ajax({
+                url: form.attr('action'),
+                data: form.serialize(),
+                type: 'POST'
+            }).success(function(json) {
+                $('#feedback').fadeOut(200);
+                $('#feedback_item_feedback').val('')
+                $('#feedback_thanks').fadeIn(200);
+            });
+          }
+
     %p.admin.btn-group
       - if can? :update, @specialization
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialty", edit_specialization_path(@specialization), :class => "btn ajax")

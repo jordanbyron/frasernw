@@ -13,6 +13,7 @@ class SpecializationsController < ApplicationController
 
   def show
     @specialization = Specialization.find(params[:id])
+    @feedback = FeedbackItem.new
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
