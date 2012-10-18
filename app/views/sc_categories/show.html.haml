@@ -154,6 +154,10 @@
             $(document).ready(function() {
               $("input.ic[name='ic#{@sc_category.id}'], input.is[name='is#{@sc_category.id}']").click( update_category_#{@sc_category.id}_table ); 
             });
+            
+  %hr
+  = mail_to "submissions@pathwaysbc.ca", "<i class='icon-envelope-alt icon-blue'></i> Send us suggestions for #{@sc_category.name.downcase} content for Pathways".html_safe, :subject => "#{@sc_category.name} content suggestion for Pathways"
+  \: submissions@pathwaysbc.ca
     
   #feedback
     .inner
