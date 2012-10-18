@@ -11,6 +11,7 @@ class ScCategoriesController < ApplicationController
   
   def show
     @sc_category = ScCategory.find(params[:id])
+    @feedback = FeedbackItem.new
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
