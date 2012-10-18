@@ -397,7 +397,9 @@
                     = sc_item.full_title
                     %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
                       %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
-                  
+                    %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
+                      %i.icon-bullhorn
+
                   - if sc_item.markdown?
                     = BlueCloth.new(sc_item.markdown_content).to_html.html_safe
                   - else
