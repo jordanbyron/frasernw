@@ -3,15 +3,28 @@
 .content-wrapper
 
   %h2 Feedback Queue
+  
+  - specialist_count  = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Specialist }.length
+  - clinic_count      = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Clinic }.length
+  - sc_item_count     = @feedback_items.reject{ |feedback_item| feedback_item.item.class != ScItem }.length
 
   .tabbable
     %ul.nav.nav-tabs
       %li.active
-        %a{"href" => "#Specialist_tab", "data-toggle" => "tab"}= "Specialist Feedback"
+        %a{"href" => "#Specialist_tab", "data-toggle" => "tab"}
+          Specialist Feedback
+          - if specialist_count > 0
+            %span.badge.badge-warning= specialist_count
       %li
-        %a{"href" => "#Clinic_tab", "data-toggle" => "tab"}= "Clinic Feedback"
+        %a{"href" => "#Clinic_tab", "data-toggle" => "tab"}
+          Clinic Feedback
+          - if clinic_count > 0
+            %span.badge.badge-warning= clinic_count
       %li
-        %a{"href" => "#ScItem_tab", "data-toggle" => "tab"}= "Content Feedback"
+        %a{"href" => "#ScItem_tab", "data-toggle" => "tab"}
+          Content Feedback
+          - if sc_item_count > 0
+            %span.badge.badge-warning= sc_item_count
         
     .tab-content
     
