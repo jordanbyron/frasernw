@@ -68,6 +68,7 @@ class ProceduresController < ApplicationController
   
   def refresh_cache
     @procedure = Procedure.find(params[:id])
+    @feedback = FeedbackItem.new
     render :show, :layout => 'ajax'
   end
 end

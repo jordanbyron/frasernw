@@ -59,6 +59,7 @@ class SpecializationsController < ApplicationController
   
   def refresh_cache
     @specialization = Specialization.find(params[:id])
+    @feedback = FeedbackItem.new
     render :show, :layout => 'ajax'
   end
 end
