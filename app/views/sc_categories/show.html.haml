@@ -156,8 +156,9 @@
             });
             
   %hr
-  = mail_to "submissions@pathwaysbc.ca", "<i class='icon-envelope-alt icon-blue'></i> Send us suggestions for #{@sc_category.name.downcase} content for Pathways".html_safe, :subject => "#{@sc_category.name} content suggestion for Pathways"
-  \: submissions@pathwaysbc.ca
+  %i.icon-envelope-alt
+  Send us suggestions for #{@sc_category.name.downcase} content for Pathways:
+  = mail_to "submissions@pathwaysbc.ca", "submissions@pathwaysbc.ca", :subject => "#{@sc_category.name} content suggestion for Pathways"
     
   #feedback
     .inner
