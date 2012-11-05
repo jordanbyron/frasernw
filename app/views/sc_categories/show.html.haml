@@ -91,7 +91,7 @@
                   %td.title
                     - if sc_item.shared_care?
                       %i.icon-blue.icon-star
-                    = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item', 'click', '#{sc_item.type}', #{sc_item.id}]); return true;")
+                    = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item', 'source', 'content_category', #{@sc_category.id}]); _gaq.push(['_trackEvent', 'content_item', 'item', '#{sc_item.type}', #{sc_item.id}]); _gaq.push(['_trackEvent', 'content_item', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]); return true;")
                   %td.subcategory= sc_item.sc_category.name
                   %td.favorite
                     %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
