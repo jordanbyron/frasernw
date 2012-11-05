@@ -37,16 +37,16 @@
   %ul#content_tabs.nav.nav-tabs
     - if has_specialists
       %li{:class => specialist_tab_class} 
-        %a#specialists{"href" => "#specialist_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'specialization', 'tab', 'specialists', #{@specialization.id}]); return true;"}
+        %a#specialists{"href" => "#specialist_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'specialization_tab', 'specialists', '#{current_user_id}', #{@specialization.id}]); return true;"}
           %span Specialists
     - if has_clinics
       %li{:class => clinic_tab_class}
-        %a#clinics{"href" => "#clinic_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'specialization', 'tab', 'clinics', #{@specialization.id}]); return true;"}
+        %a#clinics{"href" => "#clinic_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'specialization_tab', 'clinics', '#{current_user_id}', #{@specialization.id}]); return true;"}
           %span Clinics
     - ScCategory.specialty.each do |sc_category|
       - if sc_category.sc_items_for_specialization(@specialization).present?
         %li
-          %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "id" => sc_category.name.remove_whitespace, "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'specialization', 'tab', '#{sc_category.id}', #{@specialization.id}]); return true;"}
+          %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "id" => sc_category.name.remove_whitespace, "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'specialization_tab', '#{sc_category.id}', '#{current_user_id}', #{@specialization.id}]); return true;"}
             %span= sc_category.name
   
   .content-wrapper
