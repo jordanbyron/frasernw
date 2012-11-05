@@ -35,6 +35,9 @@
         { 
           $('meta[name=viewport]').attr('content','initial-scale=1.0, user-scalable=no');
         }
+        
+        $('body').data('GLOBAL_USER_ID', #{current_user_id});
+        $('body').data('GLOBAL_USER_TYPE', #{current_user_type_mask});
       });
 
       var _gaq = _gaq || [];
