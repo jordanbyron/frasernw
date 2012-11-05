@@ -93,10 +93,7 @@
                     %span.new new
                   - if featured_sc_item.shared_care?
                     %i.icon-blue.icon-star
-                  - if featured_sc_item.markdown? 
-                    = link_to featured_sc_item.title, featured_sc_item, :class => "ajax"
-                  - else
-                    = link_to featured_sc_item.title, featured_sc_item.link? ? featured_sc_item.url : featured_sc_item.document.url, :target => "_blank"
+                  = link_to(featured_sc_item.title, featured_sc_item.resolved_url, :class => featured_sc_item.markdown? && "ajax", :target => featured_sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item', 'click', '#{featured_sc_item.type}', #{featured_sc_item.id}]); return true;")
                   %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{featured_sc_item.id},'#{escape_javascript(featured_sc_item.title)}')", "title" => "Favourite / un-favourite"}
                     %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{featured_sc_item.id}"}
                   
