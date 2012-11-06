@@ -537,7 +537,7 @@
             
       - tab_javascript = ""
       - ScCategory.specialty.each do |sc_category|
-        - tab_javascript += "else if (hash == '##{sc_category.name.remove_whitespace}') { $('#content_tabs a##{sc_category.name.remove_whitespace}').tab('show'); } "
+        - tab_javascript += "else if (hash == '##{sc_category.name.remove_whitespace}') { _gaq.push(['_trackEvent', 'tab', 'type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]); $('#content_tabs a##{sc_category.name.remove_whitespace}').tab('show'); } "
         
       %script{"type" => "text/javascript"}
         :plain
@@ -556,10 +556,14 @@
             
             if (hash == '#specialists')
             {
+              _gaq.push(['_trackEvent', 'tab', 'type', 'specialists']); 
+              _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]);
               $('#content_tabs a#specialists').tab('show');
             }
             else if (hash == '#clinics')
             {
+              _gaq.push(['_trackEvent', 'tab', 'type', 'clinics']); 
+              _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]);
               $('#content_tabs a#clinics').tab('show');
             }
             #{tab_javascript}
