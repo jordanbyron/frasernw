@@ -534,54 +534,6 @@
                     
             %hr
             = link_to "<i class='icon-arrow-right icon-blue'></i> Browse #{sc_category.name} content from all specialties".html_safe, sc_category_path(sc_category), :class => 'ajax'
-            
-      - tab_javascript = ""
-      - ScCategory.specialty.each do |sc_category|
-        - tab_javascript += "else if (hash == '##{sc_category.name.remove_whitespace}') { _gaq.push(['_trackEvent', 'tab', 'type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]); $('#content_tabs a##{sc_category.name.remove_whitespace}').tab('show'); } "
-        
-      %script{"type" => "text/javascript"}
-        :plain
-          $('.collapsable').on('shown', function() {
-            $(this).siblings('.filter-group-title').removeClass('closed').addClass('open');
-          });
-          $('.collapsable').on('hidden', function() {
-            $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
-          });
-          $(document).ready(function() {
-            $('#specialist_table').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
-            $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0]]});
-            $('.category_table').tablesorter({sortList: [[0,0],[1,0],[2,0]]});
-            //flip to a tab if appropriate
-            var hash = window.location.hash;
-            
-            if (hash == '#specialists')
-            {
-              _gaq.push(['_trackEvent', 'tab', 'type', 'specialists']); 
-              _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]);
-              $('#content_tabs a#specialists').tab('show');
-            }
-            else if (hash == '#clinics')
-            {
-              _gaq.push(['_trackEvent', 'tab', 'type', 'clinics']); 
-              _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]);
-              $('#content_tabs a#clinics').tab('show');
-            }
-            #{tab_javascript}
-            //make full rows clickable
-            $('#specialist_table tr, #clinic_table tr').click( function() { $(this).find('a').click(); });
-            $('.category_table tr').click( function() { 
-              var link = $(this).find('td.title a');
-              if (link.hasClass('ajax'))
-              {
-                link.click();
-              } 
-              else 
-              {
-                window.open(link.attr('href'));
-              }
-            });
-            $('table a').click( function(e) { e.stopPropagation(); });
-          });
     
       #feedback
         .inner
@@ -629,6 +581,54 @@
                 $('#feedback_thanks').fadeIn(200);
             });
           }
+            
+    - tab_javascript = ""
+    - ScCategory.specialty.each do |sc_category|
+      - tab_javascript += "else if (hash == '##{sc_category.name.remove_whitespace}') { _gaq.push(['_trackEvent', 'tab', 'type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]); $('#content_tabs a##{sc_category.name.remove_whitespace}').tab('show'); } "
+      
+    %script{"type" => "text/javascript"}
+      :plain
+        $('.collapsable').on('shown', function() {
+          $(this).siblings('.filter-group-title').removeClass('closed').addClass('open');
+        });
+        $('.collapsable').on('hidden', function() {
+          $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
+        });
+        $(document).ready(function() {
+          $('#specialist_table').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
+          $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0]]});
+          $('.category_table').tablesorter({sortList: [[0,0],[1,0],[2,0]]});
+          //flip to a tab if appropriate
+          var hash = window.location.hash;
+          
+          if (hash == '#specialists')
+          {
+            _gaq.push(['_trackEvent', 'tab', 'type', 'specialists']); 
+            _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]);
+            $('#content_tabs a#specialists').tab('show');
+          }
+          else if (hash == '#clinics')
+          {
+            _gaq.push(['_trackEvent', 'tab', 'type', 'clinics']); 
+            _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]);
+            $('#content_tabs a#clinics').tab('show');
+          }
+          #{tab_javascript}
+          //make full rows clickable
+          $('#specialist_table tr, #clinic_table tr').click( function() { $(this).find('a').click(); });
+          $('.category_table tr').click( function() { 
+            var link = $(this).find('td.title a');
+            if (link.hasClass('ajax'))
+            {
+              link.click();
+            } 
+            else 
+            {
+              window.open(link.attr('href'));
+            }
+          });
+          $('table a').click( function(e) { e.stopPropagation(); });
+        });
 
     %p.admin.btn-group
       - if can? :update, @specialization
