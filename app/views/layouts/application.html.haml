@@ -123,6 +123,7 @@
                             %ul.dropdown-menu
                               - Specialization.all.each do |specialization|
                                 %li=link_to specialization.name, new_specialization_clinic_path(specialization), :class => "ajax"
+                          %li= link_to "New Division", new_division_path, :class => "ajax"
                           %li= link_to "New Healthcare Provider", new_healthcare_provider_path, :class => "ajax"
                           %li= link_to "New Hospital", new_hospital_path, :class => "ajax"
                           %li= link_to "New Language", new_language_path, :class => "ajax"
@@ -137,6 +138,7 @@
                       %li= link_to "Areas of Practice", procedures_path, :class => "ajax"
                       %li= link_to "Cities", cities_path, :class => "ajax"
                       %li= link_to "Clinics", clinics_path, :class => "ajax"
+                      %li= link_to "Divisions", divisions_path, :class => "ajax"
                       %li= link_to "Healthcare Providers", healthcare_providers_path, :class => "ajax"
                       %li= link_to "Hospitals", hospitals_path, :class => "ajax"
                       %li= link_to "Languages", languages_path, :class => "ajax"
