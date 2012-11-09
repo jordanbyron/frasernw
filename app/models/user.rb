@@ -54,6 +54,8 @@ class User < ActiveRecord::Base
     5 => "Hospitalist",
     6 => "Locum",
     7 => "Resident",
+    8 => "Nurse Practitioner",
+    9 => "Unit Clerk",
     4 => "Other"
   }
 
