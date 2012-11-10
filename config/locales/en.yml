@@ -89,6 +89,8 @@ en:
         url: "Website address"
         waittime_mask: "On average, what is the clinic’s normal wait time from request for a consultation to the appointment itself?"
         wheelchair_accessible_mask: "Wheelchair accessible?"
+      division:
+        cities: Cities Encompassed
       location:
         details_in: "Additional directions or details"
         hospital_in: "Hospital"
