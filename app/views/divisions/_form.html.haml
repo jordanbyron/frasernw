@@ -5,6 +5,46 @@
   = f.input :name
   = f.association :cities, as: :check_boxes
   
+  .control-group
+    .control-label
+      Local Referral Areas
+    .controls
+      - Specialization.all.each do |specialization|
+        %label
+          = check_box_tag "specialization_#{specialization.id}", 1, @local_referral_cities.include?(specialization.id), :name => "specialization[#{specialization.id}]", :class => "specialty_check"
+          = specialization.name
+        
+        .cities_list{"id" => "specialization_#{specialization.id}_cities"}
+          - City.all.each do |city|
+            %label
+              = check_box_tag "city_#{city.id}", 1, (@local_referral_cities[specialization.id].present?) && (@local_referral_cities[specialization.id].include? city.id), :name => "local_referral_city[#{specialization.id}][#{city.id}]", :class => "offsethalf"
+              = city.name
+  
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
     = link_to 'Cancel', divisions_path, :class => "btn btn-danger ajax"
+            
+            
+  %script{"type" => "text/javascript"}
+    :plain
+      function hide_show_cities( checkbox )
+      {
+        id = "#" + $(checkbox).prop('id') + "_cities";
+        if ($(checkbox).prop('checked'))
+        {  
+          $(id).show();
+        }
+        else
+        {
+          $(id).hide();
+        }
+        return true;
+      }
+      
+      $(document).ready(function() { 
+        $.each($('.specialty_check'), function() { hide_show_cities(this) });
+      });
+      
+      $('.specialty_check').click(function() { 
+        hide_show_cities(this);
+      });
