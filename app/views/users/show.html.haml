@@ -11,9 +11,16 @@
     %strong Role:
     = @user.role_full
     
+  - if @user.admin? && @user.divisions.present?
+    %p.no_indent.space 
+      %strong Belongs to divisions
+      %ul
+        - @user.divisions.each do |d|
+          %li= link_to d.name, d, :class => 'ajax'
+    
   - if @user.admin? && @user.specializations.present?
     %p.no_indent.space 
-      %strong Specializations owned:
+      %strong Specializations owned
       %ul
         - @user.specializations.each do |s|
           %li= link_to s.name, s, :class => 'ajax'

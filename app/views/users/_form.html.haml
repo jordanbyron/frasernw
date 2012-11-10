@@ -10,6 +10,10 @@
   #super_admin_pane
   
   #admin_pane
+  
+  #admin_and_super_admin_pane
+  
+    = f.association :divisions, as: :check_boxes
     
   #user_pane
     = f.input :type_mask, :as => :select, :collection => User::TYPE_HASH, :label_method => :last, :value_method => :first, :include_blank => false

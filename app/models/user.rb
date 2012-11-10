@@ -4,6 +4,10 @@ class User < ActiveRecord::Base
     c.merge_validates_uniqueness_of_email_field_options({:message => "has already been used to set up another account."})
     c.logged_in_timeout = 1.week
   end
+  
+  has_many :user_divisions, :source => :division_users, :class_name => "DivisionUser", :dependent => :destroy
+  has_many :divisions, :through => :user_divisions
+  has_many :cities, :through => :divisions
 
   has_many :favorites
   has_many :favorite_specialists, :through => :favorites, :source => :favoritable, :source_type => "Specialist", :class_name => "Specialist"
