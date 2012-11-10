@@ -1,5 +1,5 @@
 class Specialization < ActiveRecord::Base
-  attr_accessible :name, :member_name, :in_progress, :specialization_owner_attributes
+  attr_accessible :name, :member_name, :in_progress, :specialization_owners_attributes
   has_paper_trail :ignore => :saved_token
   
   has_many :specialist_specializations, :dependent => :destroy
@@ -14,9 +14,9 @@ class Specialization < ActiveRecord::Base
   has_many :sc_items_specializations, :dependent => :destroy
   has_many :sc_items, :through => :sc_items_specializations
   
-  has_one :specialization_owner, :dependent => :destroy
-  accepts_nested_attributes_for :specialization_owner
-  has_one :owner, :through => :specialization_owner, :class_name => "User"
+  has_many :specialization_owners, :dependent => :destroy
+  accepts_nested_attributes_for :specialization_owners
+  has_one :owners, :through => :specialization_owners, :class_name => "User"
   
   default_scope order('specializations.name')
   

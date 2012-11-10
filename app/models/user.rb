@@ -44,6 +44,22 @@ class User < ActiveRecord::Base
     "super" => "Super Administrator",
   }
 
+  def self.user
+    where("users.role = 'user'")
+  end
+
+  def self.admin_only
+    where("users.role = 'admin'")
+  end
+
+  def self.admin
+    where("users.role = 'admin' OR users.role = 'super'")
+  end
+
+  def self.super_admin
+    where("users.role = 'super'")
+  end
+
   def deliver_password_reset_instructions!
     reset_perishable_token!  
     PasswordResetMailer.password_reset_instructions(self).deliver

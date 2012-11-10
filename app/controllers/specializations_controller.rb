@@ -25,7 +25,7 @@ class SpecializationsController < ApplicationController
   def create
     @specialization = Specialization.new(params[:specialization])
     if @specialization.save
-      redirect_to @specialization, :notice => "Successfully created specialization."
+      redirect_to @specialization, :notice => "Successfully created specialty."
     else
       render :action => 'new'
     end
@@ -33,6 +33,7 @@ class SpecializationsController < ApplicationController
 
   def edit
     @specialization = Specialization.find(params[:id])
+    Division.all.each { |division| SpecializationOwner.find_or_create_by_specialization_id_and_division_id(params[:id], division.id) }
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -40,7 +41,7 @@ class SpecializationsController < ApplicationController
     @specialization = Specialization.find(params[:id])
     SpecializationSweeper.instance.before_controller_update(@specialization)
     if @specialization.update_attributes(params[:specialization])
-      redirect_to @specialization, :notice  => "Successfully updated specialization."
+      redirect_to @specialization, :notice  => "Successfully updated specialty."
     else
       render :action => 'edit'
     end
@@ -50,7 +51,7 @@ class SpecializationsController < ApplicationController
     @specialization = Specialization.find(params[:id])
     SpecializationSweeper.instance.before_controller_destroy(@specialization)
     @specialization.destroy
-    redirect_to specializations_url, :notice => "Successfully deleted specialization."
+    redirect_to specializations_url, :notice => "Successfully deleted specialty."
   end
   
   def check_token
