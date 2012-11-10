@@ -34,12 +34,11 @@ class User < ActiveRecord::Base
   
   default_scope order('users.name')
 
-  ROLE_HASH = {
+  LIMITED_ROLE_HASH = {
     "user" => "User",
-    "admin" => "Administrator",
   }
 
-  SUPER_ROLE_HASH = {
+  ROLE_HASH = {
     "user" => "User",
     "admin" => "Administrator",
     "super" => "Super Administrator",
@@ -71,7 +70,7 @@ class User < ActiveRecord::Base
   end
 
   def role_full
-    User::SUPER_ROLE_HASH[self.role]
+    User::ROLE_HASH[self.role]
   end
 
   TYPE_HASH = {

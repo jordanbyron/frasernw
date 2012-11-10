@@ -4,7 +4,7 @@
   
   = f.input :name
   = f.input :email if !@new_user
-  = f.input :role, :as => :select, collection: (current_user_is_super_admin? ? User::SUPER_ROLE_HASH : User::ROLE_HASH), label_method: :last, value_method: :first, :include_blank => false
+  = f.input :role, :as => :select, collection: (current_user_is_super_admin? ? User::ROLE_HASH : User::LIMITED_ROLE_HASH), label_method: :last, value_method: :first, :include_blank => false
   = f.input :active
   
   #super_admin_pane
@@ -13,8 +13,9 @@
   
   #admin_and_super_admin_pane
   
-    = f.association :divisions, as: :check_boxes
-    
+    - if current_user_is_super_admin?
+      = f.association :divisions, as: :check_boxes
+
   #user_pane
     = f.input :type_mask, :as => :select, :collection => User::TYPE_HASH, :label_method => :last, :value_method => :first, :include_blank => false
   
@@ -41,11 +42,39 @@
             = j.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
     .row
       = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another clinic", :user_controls_clinics, class: "btn offset3")
-      
-  %script{"type" => "text/javascript"}
-    :plain
-      $("#user_role").each( swapRole );
     
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
     = link_to 'Cancel', users_path, :class => "btn btn-danger ajax"
+      
+  %script{"type" => "text/javascript"}
+    :plain
+      var swapRole = function() 
+      {
+        if ( $(this).val() == "super" )
+        {
+          $("#admin_and_super_admin_pane").show();
+          $("#super_admin_pane").show();
+          $("#admin_pane").hide();
+          $("#user_pane").hide();
+        }
+        else if ( $(this).val() == "admin" )
+        {
+          $("#admin_and_super_admin_pane").show();
+          $("#super_admin_pane").hide();
+          $("#admin_pane").show();
+          $("#user_pane").hide();
+        }
+        else
+        {
+          $("#admin_and_super_admin_pane").hide();
+          $("#super_admin_pane").hide();
+          $("#admin_pane").hide();
+          $("#user_pane").show();
+        }
+      }
+
+      $(document).ready(function() { 
+        $("#user_role").each( swapRole );
+        $("#user_role").live("change", swapRole );
+      });
