@@ -34,6 +34,10 @@ module ControllerAuthentication
     return (current_user and current_user.admin?)
   end
 
+  def current_user_is_super_admin?
+    return (current_user and current_user.super_admin?)
+  end
+
   def logged_in?
     !current_user.nil?
   end

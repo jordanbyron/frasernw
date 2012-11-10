@@ -30,7 +30,18 @@ class User < ActiveRecord::Base
   
   default_scope order('users.name')
 
-  def deliver_password_reset_instructions!  
+  ROLE_HASH = {
+    "user" => "User",
+    "admin" => "Administrator",
+  }
+
+  SUPER_ROLE_HASH = {
+    "user" => "User",
+    "admin" => "Administrator",
+    "super" => "Super Administrator",
+  }
+
+  def deliver_password_reset_instructions!
     reset_perishable_token!  
     PasswordResetMailer.password_reset_instructions(self).deliver
   end  
@@ -39,12 +50,24 @@ class User < ActiveRecord::Base
     active
   end
   
+  def admin_only?
+    (self.role == 'admin')
+  end
+  
   def admin?
-    self.role == 'admin'
+    admin_only? || super_admin?
+  end
+  
+  def super_admin?
+    self.role == 'super'
   end
   
   def pending?
     self.email.blank?
+  end
+
+  def role_full
+    User::SUPER_ROLE_HASH[self.role]
   end
 
   TYPE_HASH = {

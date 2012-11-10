@@ -9,7 +9,7 @@
     = @user.email
   %p.no_indent.space
     %strong Role:
-    = @user.role
+    = @user.role_full
     
   - if @user.admin? && @user.specializations.present?
     %p.no_indent.space 
