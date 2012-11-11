@@ -2,7 +2,7 @@ class SetUpInitialDivision < ActiveRecord::Migration
   def change
     
     #make our first super admin
-    user = User.find(10).update_attributes(:role => 'super')
+    user = User.find(10).update_attribute(:role, 'super')
     
     #make our first division
     division = Division.new(:name => "Fraser Northwest")
@@ -19,10 +19,10 @@ class SetUpInitialDivision < ActiveRecord::Migration
       so.save
     end
     
-    #make all our administrators admins of this division
-    User.admin_only.each do |admin|
-      admin.divisions << division
-      admin.save
+    #make all our current users belong to this division
+    User.all.each do |user|
+      user.divisions << division
+      user.save
     end
   end
 end
