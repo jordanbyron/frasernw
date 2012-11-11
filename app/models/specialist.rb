@@ -1,4 +1,6 @@
 class Specialist < ActiveRecord::Base
+  include ApplicationHelper
+  
   attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :categorization_mask, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_clinic_id, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :patient_instructions, :cancellation_policy, :hospital_clinic_details, :interpreter_available, :photo, :photo_delete, :address_update, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :language_ids, :user_controls_specialist_offices_attributes, :specialist_offices_attributes, :admin_notes, :referral_forms_attributes
   has_paper_trail ignore: [:saved_token, :review_item]
   
@@ -79,44 +81,53 @@ class Specialist < ActiveRecord::Base
   validates_attachment_content_type :photo, :content_type => /image/
   validates_attachment_size :photo, :less_than => 2.megabytes
   
-  def city
-    if responded? 
-      o = offices.first
-      return "" if o.blank?
-      return o.city
-    else
-      return ""
-    end
-  end
+  default_scope order('specialists.lastname, specialists.firstname')
   
-  def city_id
-    if responded?
-      o = offices.first
-      return o.present? ? o.city_id : nil
-    else
-      return nil
-    end
+  #clinic that referrals are done through
+  belongs_to :referral_clinic, :class_name => "Clinic"
+  
+  def city
+    o = offices.first
+    return nil if o.blank?
+    return o.city
   end
   
   def cities
     offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
   end
   
-  def city_ids
-    offices.map{ |o| o.city_id }.reject{ |c| c.blank? }.uniq
+  def divisions
+    return cities.map{ |city| city.divisions }.flatten.uniq
   end
   
-  #clinic that referrals are done through
-  belongs_to :referral_clinic, :class_name => "Clinic"
-
-  default_scope order('specialists.lastname, specialists.firstname')
-  
-  def owner
-    if specializations.first.present? && specializations.first.owner.present?
-      specializations.first.owner
-    else
-      User.find(7)
+  def owner_for_divisions(input_divisions)
+    if specializations.blank? || divisions.blank?
+      return default_owner
+    elsif input_divisions.present?
+      #interesect the passed in divisions with the divisions the specialist is in, to find a match
+      intersecting_divisions = input_divisions & divisions
+      if intersecting_divisions.present?
+        specialization_owners = []
+        specializations.each{ |specialization| specialization_owners << specialization.specialization_owners.for_division(intersecting_divisions.first) }
+        specialization_owners.flatten!
+        if specialization_owners.first.present? && specialization_owners.first.owner.present?
+          return specialization_owners.first.owner
+        end
+      end
     end
+    
+    #We either didn't pass in a division, or the interesection was blank with the specialist's actual divisions.
+    #So just return the owner for the clinic's division
+    divisions.each do |division|
+      specializations.specialization_owners.for_division(division).each do |specialization_owner|
+        if specialization_owner.owner.present?
+          return specialization_owner.owner
+        end
+      end
+    end
+    
+    #There is no owner for the any of the specializations this specialist is in...
+    return default_owner
   end
   
   CATEGORIZATION_HASH = {

@@ -1,4 +1,6 @@
 class Clinic < ActiveRecord::Base
+  include ApplicationHelper
+  
   attr_accessible :name, :phone, :phone_extension, :fax, :contact_details, :categorization_mask, :sector_mask, :url, :email, :wheelchair_accessible_mask, :status, :status_details, :interest, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :patient_instructions, :cancellation_policy, :interpreter_available, :specializations_including_in_progress_ids, :location_attributes, :schedule_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes, :admin_notes, :referral_forms_attributes
   has_paper_trail :ignore => :saved_token
   
@@ -56,14 +58,6 @@ class Clinic < ActiveRecord::Base
   
   default_scope order('clinics.name')
   
-  def owner
-    if specializations.first.present? && specializations.first.owner.present?
-      specializations.first.owner
-    else
-      User.find(7)
-    end
-  end
-  
   CATEGORIZATION_HASH = {
     1 => "Responded to survey",
     2 => "Not responded to survey",
@@ -109,32 +103,57 @@ class Clinic < ActiveRecord::Base
   end
   
   def city
-    if responded?
-      l = location
-      return "" if l.blank?
-      a = l.resolved_address
-      return "" if a.blank?
-      c = a.city
-      return c.present? ? c.name : ""
-    else
-      return ""
-    end
+    l = location
+    return nil if l.blank?
+    a = l.resolved_address
+    return nil if a.blank? || a.city.blank?
+    return a.city
   end
   
-  def city_id
-    if responded?
-      l = location
-      return nil if l.blank?
-      a = l.resolved_address
-      return a.present? ? a.city_id : nil
-    else
-      return nil
-    end
+  def city_entity
+    l = location
+    return nil if l.blank?
+    a = l.resolved_address
+    return a.present? ? a.city : nil
   end
   
   def resolved_address
     return location.resolved_address if location
     return nil
+  end
+  
+  def divisions
+    return city.present? ? city.divisions : []
+  end
+  
+  def owner_for_divisions(input_divisions)
+    if specializations.blank? || divisions.blank?
+      return default_owner
+    elsif input_divisions.present?
+      #interesect the passed in divisions with the divisions the specialist is in, to find a match
+      intersecting_divisions = input_divisions & divisions
+      if intersecting_divisions.present?
+        specialization_owners = []
+        specializations.each{ |specialization| specialization_owners << specialization.specialization_owners.for_division(intersecting_divisions.first) }
+        specialization_owners.flatten!
+        if specialization_owners.first.present? && specialization_owners.first.owner.present?
+          return specialization_owners.first.owner
+        end
+      end
+    end
+    
+    #We either didn't pass in a division, or the interesection was blank with the clinic's actual divisions.
+    #So just return the owner for the clinic's division
+    divisions.each do |division|
+      specializations.specialization_owners.for_division(division).each do |specialization_owner|
+        if specialization_owner.owner.present?
+          return specialization_owner.owner
+        end
+      end
+    end
+    
+    #There is no owner for the any of the specializations this clinic is in...
+    return default_owner
   end
   
   def attendances?

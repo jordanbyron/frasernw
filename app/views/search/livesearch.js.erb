@@ -106,7 +106,7 @@ specialists.each do |specialist|
   entry = { 
     "n" => specialist.name, 
     "sp" => specialist.specialist_specializations.reject{ |ss| ss.specialization.blank? or ss.specialization.in_progress }.collect{ |ss| ss.specialization_id }, 
-    "c" => specialist.city_ids,
+    "c" => specialist.cities.map{ |city| city.id },
     "st" => specialist.status_class_hash,
     "id" => specialist.id,
     "go" => order_map["Specialists"] }
@@ -123,7 +123,7 @@ clinics.each do |clinic|
   entry = { 
     "n" => clinic.name, 
     "sp" => clinic.clinic_specializations.reject{ |cs| cs.specialization.in_progress }.collect{ |cs| cs.specialization_id },
-    "c" => clinic.city_id,
+    "c" => clinic.city.present? ? clinic.city.id : "",
     "st" => clinic.status_class_hash,
     "id" => clinic.id,
     "go" => order_map["Clinics"] }
@@ -158,7 +158,7 @@ hospitals = Hospital.includes(:location => {:address => :city})
 hospitals.each do |hospital|
   entry = { 
     "n" => hospital.name, 
-    "c" => hospital.city_id, 
+    "c" => hospital.city.present? ? hospital.city.id : "", 
     "id" => hospital.id,
     "go" => order_map["Hospitals"] }
   search_data << entry

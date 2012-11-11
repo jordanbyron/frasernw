@@ -30,9 +30,7 @@ class Location < ActiveRecord::Base
   
   def city
     a = resolved_address
-    return "" if a.blank?
-    c = a.city
-    c.present? ? c.name : ""
+    return a.blank? ? nil : a.city
   end
   
   def city_id

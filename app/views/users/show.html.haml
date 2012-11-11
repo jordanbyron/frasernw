@@ -11,7 +11,7 @@
     %strong Role:
     = @user.role_full
     
-  - if @user.admin? && @user.divisions.present?
+  - if @user.divisions.present?
     %p.no_indent.space 
       %strong Belongs to divisions
       %ul

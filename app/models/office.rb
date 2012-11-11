@@ -26,7 +26,7 @@ class Office < ActiveRecord::Base
   
   def city
     l = location
-    return "" if l.blank?
+    return nil if l.blank?
     return l.city
   end
   

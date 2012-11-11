@@ -6,15 +6,13 @@
   = f.input :email if !@new_user
   = f.input :role, :as => :select, collection: (current_user_is_super_admin? ? User::ROLE_HASH : User::LIMITED_ROLE_HASH), label_method: :last, value_method: :first, :include_blank => false
   = f.input :active
+  = f.association :divisions, as: :check_boxes
   
   #super_admin_pane
   
   #admin_pane
   
   #admin_and_super_admin_pane
-  
-    - if current_user_is_super_admin?
-      = f.association :divisions, as: :check_boxes
 
   #user_pane
     = f.input :type_mask, :as => :select, :collection => User::TYPE_HASH, :label_method => :last, :value_method => :first, :include_blank => false

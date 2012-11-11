@@ -228,11 +228,13 @@
         var specialty_checkbox_id = "#specialist_specializations_including_in_progress_ids_#{@specialization.id}";
         $(specialty_checkbox_id).prop("checked", true);
       });
+      
+- specialist_owner = @specialist.owner_for_divisions(current_user_divisions)
     
 - if @is_review
   .alert.alert-info
     %h3 You are editing #{@specialist.name}'s entry in Pathways.
-    %p.space.no_indent If you have any questions while editing, please contact #{@specialist.owner.name} at #{mail_to @specialist.owner.email}
+    %p.space.no_indent If you have any questions while editing, please contact #{specialist_owner.name} at #{mail_to specialist_owner.email}
     %p.space.no_indent This database exists to make our practices and your practice more efficient. By providing the information requested below you are making it easier for family doctors to find your practice, ensuring that the scope of your practice is fully understood, and guiding offices in providing you with the correct information when making referrals.
     %p.space.no_indent Unless otherwise indicated, all provided information will be available to all users of Pathways.
 
@@ -442,7 +444,7 @@
     -#= f.association :referral_clinic, as: :select, :prompt => "None", :include_blank => true
     = f.input :referral_other_details
     = f.input :referral_details
-    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does the office have a referral form?", :hint => @is_review ? "If you would like to add or correct any referral forms, please email them to #{@specialist.owner.name} at #{mail_to @specialist.owner.email}".html_safe : ""
+    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does the office have a referral form?", :hint => @is_review ? "If you would like to add or correct any referral forms, please email them to #{specialist_owner.name} at #{mail_to specialist_owner.email}".html_safe : ""
     
     - if @is_review && @specialist.referral_form_mask == 1 && @specialist.referral_forms.reject{ |referral_form| referral_form.form.blank? }.present?
    

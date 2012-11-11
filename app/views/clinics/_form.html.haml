@@ -212,11 +212,13 @@
         var specialty_checkbox_id = "#clinic_specializations_including_in_progress_ids_#{@specialization.id}";
         $(specialty_checkbox_id).prop("checked", true);
       });
+      
+- clinic_owner = @clinic.owner_for_divisions(current_user_divisions)
     
 - if @is_review
   .alert.alert-info
     %h3 You are editing #{@clinic.name}'s entry in Pathways.
-    %p.space.no_indent If you have any questions while editing, please contact #{@clinic.owner.name} at #{mail_to @clinic.owner.email}
+    %p.space.no_indent If you have any questions while editing, please contact #{clinic_owner.name} at #{mail_to clinic_owner.email}
     %p.space.no_indent This database exists to make our practices and your clinic more efficient. By providing the information requested below you are making it easier for family doctors to find your clinic, ensuring that the scope of your clinic is fully understood, and guiding offices in providing you with the correct information when making referrals.
       
 = simple_nested_form_for @clinic, :url => {:controller => params[:controller], :action => form_action}, :method => form_method, :html => { :class => "form-horizontal ajax" } do |f|
@@ -362,7 +364,7 @@
     = f.input :referral_other_details
     = f.input :referral_details
 
-    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does this clinic have a referral form?", :hint => @is_review ? "If you would like to add or correct any referral forms, please email them to #{@clinic.owner.name} at #{mail_to @clinic.owner.email}".html_safe : ""
+    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does this clinic have a referral form?", :hint => @is_review ? "If you would like to add or correct any referral forms, please email them to #{clinic_owner.name} at #{mail_to clinic_owner.email}".html_safe : ""
     
     - if @is_review && @clinic.referral_form_mask == 1 && @clinic.referral_forms.reject{ |referral_form| referral_form.form.blank? }.present?
    

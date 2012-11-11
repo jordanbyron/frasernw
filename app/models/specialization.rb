@@ -16,7 +16,7 @@ class Specialization < ActiveRecord::Base
   
   has_many :specialization_owners, :dependent => :destroy
   accepts_nested_attributes_for :specialization_owners
-  has_one :owners, :through => :specialization_owners, :class_name => "User"
+  has_many :owners, :through => :specialization_owners, :class_name => "User"
   
   default_scope order('specializations.name')
   

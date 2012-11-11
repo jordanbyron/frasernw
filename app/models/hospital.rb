@@ -41,12 +41,11 @@ class Hospital < ActiveRecord::Base
   
   def city
     l = location
-    return "" if l.blank?
+    return nil if l.blank?
     #hospitals can't be in anything, no need to resolve_address
     a = location.address
-    return "" if a.blank?
-    c = a.city
-    c.present? ? c.name : ""
+    return nil if a.blank? || a.city.blank?
+    return a.city
   end
   
   def city_id

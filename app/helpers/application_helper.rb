@@ -133,4 +133,16 @@ module ApplicationHelper
     end
   end
   
+  def current_user_divisions
+    if current_user
+      return current_user.divisions
+    else
+      return []
+    end
+  end
+  
+  def default_owner
+    return User.find(10)
+  end
+  
 end

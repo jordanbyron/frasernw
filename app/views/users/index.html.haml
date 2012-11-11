@@ -11,7 +11,7 @@
           %a{"href" => "#super_admin_tab", "data-toggle" => "tab"}= "Super Administrators"
         %li
           %a{"href" => "#admin_tab", "data-toggle" => "tab"}= "Administrators"
-      %li
+      %li{:class => !current_user_is_super_admin? && "active"}
         %a{"href" => "#user_tab", "data-toggle" => "tab"}= "Users"
       %li
         %a{"href" => "#pending_user_tab", "data-toggle" => "tab"}= "Pending Accounts"
@@ -24,16 +24,18 @@
           %table.table.table-condensed.table-striped.tablesorter
             %thead
               %tr.tableheader
-                %th{:class => "{sorter: 'text'}", :style => "width:25%"} Name
+                %th{:class => "{sorter: 'text'}", :style => "width:15%"} Name
+                %th{:class => "{sorter: 'text'}", :style => "width:15%"} Division(s)
                 %th{:class => "{sorter: 'text'}", :style => "width:15%"} Signed Up
                 %th{:class => "{sorter: 'text'}", :style => "width:15%"} Email
-                %th{:class => "{sorter: 'text'}", :style => "width:45%"} Owns Specialties
+                %th{:class => "{sorter: 'text'}", :style => "width:40%"} Owns Specialties
                 %th.admin
 
             %tbody
-              - User.all.reject{ |user| !user.super_admin? || user.pending? || !user.active? }.each do |user|
+              - User.super_admin.reject{ |user| user.pending? || !user.active? }.each do |user|
                 %tr
                   %td= link_to user.name, user, :class => 'ajax'
+                  %td= user.divisions.map{ |s| s.name }.to_sentence
                   %td= user.activated_at.present? ? user.activated_at.strftime("%Y-%m-%d") : user.created_at.strftime("%Y-%m-%d")
                   %td= user.email
                   %td= user.specializations.map{ |s| s.name }.to_sentence
@@ -44,39 +46,41 @@
           %table.table.table-condensed.table-striped.tablesorter
             %thead
               %tr.tableheader
-                %th{:class => "{sorter: 'text'}", :style => "width:25%"} Name
+                %th{:class => "{sorter: 'text'}", :style => "width:15%"} Name
+                %th{:class => "{sorter: 'text'}", :style => "width:15%"} Division(s)
                 %th{:class => "{sorter: 'text'}", :style => "width:15%"} Signed Up
                 %th{:class => "{sorter: 'text'}", :style => "width:15%"} Email
-                %th{:class => "{sorter: 'text'}", :style => "width:45%"} Divisions
-                %th{:class => "{sorter: 'text'}", :style => "width:45%"} Owns Specialties
+                %th{:class => "{sorter: 'text'}", :style => "width:40%"} Owns Specialties
                 %th.admin
 
             %tbody
-              - User.all.reject{ |user| !user.admin_only? || user.pending? || !user.active? }.each do |user|
+              - User.admin_only.reject{ |user| user.pending? || !user.active? }.each do |user|
                 %tr
                   %td= link_to user.name, user, :class => 'ajax'
+                  %td= user.divisions.map{ |s| s.name }.to_sentence
                   %td= user.activated_at.present? ? user.activated_at.strftime("%Y-%m-%d") : user.created_at.strftime("%Y-%m-%d")
                   %td= user.email
-                  %td= user.divisions.map{ |s| s.name }.to_sentence
                   %td= user.specializations.map{ |s| s.name }.to_sentence
                   %td.admin.btn-group
                     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
 
-      #user_tab.tab-pane
+      #user_tab.tab-pane{:class => !current_user_is_super_admin? && "active"}
         %table.table.table-condensed.table-striped.tablesorter
           %thead
             %tr.tableheader
-              %th{:class => "{sorter: 'text'}", :style => "width:25%"} Name
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Name
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Division(s)
               %th{:class => "{sorter: 'text'}", :style => "width:15%"} Signed Up
-              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Type
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Type
               %th{:class => "{sorter: 'text'}", :style => "width:15%"} Email
-              %th{:class => "{sorter: 'text'}", :style => "width:35%"} Can edit
+              %th{:class => "{sorter: 'text'}", :style => "width:25%"} Can edit
               %th.admin
 
           %tbody
-            - User.all.reject{ |user| user.admin? || user.pending? || !user.active? }.each do |user|
+            - User.user.reject{ |user| user.pending? || !user.active? }.each do |user|
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
+                %td= user.divisions.map{ |s| s.name }.to_sentence
                 %td= user.activated_at.present? ? user.activated_at.strftime("%Y-%m-%d") : user.created_at.strftime("%Y-%m-%d")
                 %td= user.type
                 %td= user.email
@@ -94,17 +98,19 @@
         %table.table.table-condensed.table-striped.tablesorter
           %thead
             %tr.tableheader
-              %th{:class => "{sorter: 'text'}", :style => "width:25%"} Name
-              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Role
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Name
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Division(s)
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Role
               %th{:class => "{sorter: 'text'}", :style => "width:15%"} Type
-              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Access key
-              %th{:class => "{sorter: 'text'}", :style => "width:40%"} Can edit
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Access key
+              %th{:class => "{sorter: 'text'}", :style => "width:25%"} Can edit
               %th.admin
               
           %tbody
             - User.all.reject{ |user| !user.pending? || !user.active? }.each do |user|
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
+                %td= user.divisions.map{ |s| s.name }.to_sentence
                 %td= user.role_full
                 %td= user.admin? ? "Admin" : user.type
                 %td= user.token
@@ -123,23 +129,25 @@
           %thead
             %tr.tableheader
               %th{:class => "{sorter: 'text'}", :style => "width:15%"} Name
-              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Signed Up
-              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Role
-              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Type
-              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Email
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Division(s)
+              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Signed Up
+              %th{:class => "{sorter: 'text'}", :style => "width:5%"} Role
+              %th{:class => "{sorter: 'text'}", :style => "width:5%"} Type
+              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Email
               %th{:class => "{sorter: 'text'}", :style => "width:10%"} Access key
-              %th{:class => "{sorter: 'text'}", :style => "width:25%"} Can edit
+              %th{:class => "{sorter: 'text'}", :style => "width:30%"} Can edit
               %th.admin
 
           %tbody
             - User.all.reject{ |u| u.active? }.each do |user|
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
+                %td= user.divisions.map{ |s| s.name }.to_sentence
                 %td= user.activated_at.present? ? user.activated_at.strftime("%Y-%m-%d") : user.created_at.strftime("%Y-%m-%d")
                 %td= user.role_full
                 %td= user.admin? ? "Admin" : user.type
                 %td= user.email
-                %td= user.pending? ? user.token : "Account was actived"
+                %td= user.pending? ? user.token : "Was actived"
                 %td
                   %ul
                     - user.controlled_specialist_offices.each do |specialist_office|

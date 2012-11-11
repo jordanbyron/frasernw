@@ -38,6 +38,14 @@ module ControllerAuthentication
     return (current_user and current_user.super_admin?)
   end
 
+  def current_user_divisions
+    if current_user
+      return current_user.divisions
+    else
+      return []
+    end
+  end
+
   def logged_in?
     !current_user.nil?
   end

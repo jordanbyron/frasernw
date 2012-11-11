@@ -68,7 +68,7 @@
           $('#specialist_table').data('s#{s.id}_status_class', '#{escape_javascript(s.status_class)}');
           $('#specialist_table').data('s#{s.id}_status_sort', '#{s.status_mask}');
           $('#specialist_table').data('s#{s.id}_wait_time', '#{escape_javascript(s.waittime)}');
-          $('#specialist_table').data('s#{s.id}_city', '#{escape_javascript(s.city)}');
+          $('#specialist_table').data('s#{s.id}_city', '#{escape_javascript(s.city.present? ? s.city.name : "")}');
         $('#specialist_table').data('filter', '#{other_specialists.map{ |s| s.id }.join(' ')}');
         
         - @specialization.clinics.each do |c|
