@@ -30,9 +30,8 @@ class Office < ActiveRecord::Base
     return l.city
   end
   
-  def city_id
-    l = location
-    return l.present? ? l.city_id : nil
+  def divisions
+    return city.present? ? city.divisions : []
   end
   
   def short_address

@@ -11,6 +11,11 @@
     %strong Role:
     = @user.role_full
     
+  - if @user.pending
+    %p.no_indent.space
+      %strong Access Key:
+      = @user.token
+
   - if @user.divisions.present?
     %p.no_indent.space 
       %strong Belongs to divisions

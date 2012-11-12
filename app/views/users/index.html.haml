@@ -139,7 +139,9 @@
               %th.admin
 
           %tbody
+            - has_user = false
             - User.all.reject{ |u| u.active? }.each do |user|
+              - has_user = true
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
                 %td= user.divisions.map{ |s| s.name }.to_sentence
@@ -157,15 +159,17 @@
                       %li= clinic.name
                 %td.admin.btn-group
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
-            %tr
-              %td
-              %td
-              %td
-              %td
-              %td
-              %td
-              %td
-              %td
+            - if !has_user
+              %tr
+                %td
+                %td
+                %td
+                %td
+                %td
+                %td
+                %td
+                %td
+                %td
 
       %script{"type" => "text/javascript"}
         :plain

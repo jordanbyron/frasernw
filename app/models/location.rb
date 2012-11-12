@@ -33,11 +33,6 @@ class Location < ActiveRecord::Base
     return a.blank? ? nil : a.city
   end
   
-  def city_id
-    a = resolved_address
-    return a.present? ? a.city_id : nil
-  end
-  
   def short_address
     output = ""
     output += "##{suite_in}, " if suite_in.present? && (in_hospital? || in_clinic?)

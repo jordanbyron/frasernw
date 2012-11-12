@@ -48,11 +48,8 @@ class Hospital < ActiveRecord::Base
     return a.city
   end
   
-  def city_id
-    l = location
-    return nil if l.blank?
-    a = location.address
-    return a.present? ? a.city_id : nil
+  def divisions
+    return city.present? ? city.divisions : []
   end
   
   def resolved_address

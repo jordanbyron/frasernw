@@ -69,6 +69,10 @@ class User < ActiveRecord::Base
     active
   end
   
+  def user?
+    (self.role == 'user')
+  end
+  
   def admin_only?
     (self.role == 'admin')
   end
