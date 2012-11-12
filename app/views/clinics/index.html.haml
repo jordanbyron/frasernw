@@ -12,7 +12,8 @@
           = specialization.name
         %th.admin
 
-      - specialization.clinics.each do |clinic|
+      - clinics = current_user_is_super_admin? ? specialization.clinics : specialization.clinics.in_divisions(current_user_divisions)
+      - clinics.in_divisions(current_user_divisions).each do |clinic|
         %tr
           %td= link_to clinic.name, clinic_path(clinic), :class => 'ajax'
           %td.admin.btn-group

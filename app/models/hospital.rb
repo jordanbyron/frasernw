@@ -24,6 +24,11 @@ class Hospital < ActiveRecord::Base
   accepts_nested_attributes_for :location
   accepts_nested_attributes_for :address
   
+  def self.in_divisions(divisions)
+    city_ids = divisions.map{ |division| division.cities.map{ |city| city.id } }.flatten.uniq
+    joins('INNER JOIN "locations" ON "hospitals".id = "locations".locatable_id INNER JOIN "addresses" ON "locations".address_id = "addresses".id').where('"locations".locatable_type = "Hospital" AND "addresses".city_id in (?)', city_ids)
+  end
+  
   default_scope order('hospitals.name')
   
   validates_presence_of :name, :on => :create, :message => "can't be blank"

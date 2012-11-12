@@ -9,7 +9,8 @@
       %th Name
       %th City
       %th
-    - Hospital.all.each do |hospital|
+    - hospitals = current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(current_user_divisions)
+    - hospitals.each do |hospital|
       %tr
         %td= link_to hospital.name, hospital, :class => 'ajax'
         %td= hospital.city

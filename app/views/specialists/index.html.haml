@@ -10,7 +10,8 @@
         %th=specialization.name
         %th.admin
         
-      - specialization.specialists.each do |specialist|
+      - specialists = current_user_is_super_admin? ? specialization.specialists : specialization.specialists.in_divisions(current_user_divisions)
+      - specialists.each do |specialist|
         %tr
           %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
           %td.admin.btn-group
