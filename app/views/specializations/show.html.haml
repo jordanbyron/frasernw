@@ -37,16 +37,16 @@
   %ul#content_tabs.nav.nav-tabs
     - if has_specialists
       %li{:class => specialist_tab_class} 
-        %a#specialists{"href" => "#specialist_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab', 'type', 'specialists']); _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]); return true;"}
+        %a#specialists{"href" => "#specialist_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'specialists']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
           %span Specialists
     - if has_clinics
       %li{:class => clinic_tab_class}
-        %a#clinics{"href" => "#clinic_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab', 'type', 'clinics']); _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]); return true;"}
+        %a#clinics{"href" => "#clinic_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'clinics']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
           %span Clinics
     - ScCategory.specialty.each do |sc_category|
       - if sc_category.sc_items_for_specialization(@specialization).present?
         %li
-          %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "id" => sc_category.name.remove_whitespace, "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab', 'type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]); return true;"}
+          %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "id" => sc_category.name.remove_whitespace, "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
             %span= sc_category.name
   
   .content-wrapper
@@ -584,7 +584,7 @@
             
     - tab_javascript = ""
     - ScCategory.specialty.each do |sc_category|
-      - tab_javascript += "else if (hash == '##{sc_category.name.remove_whitespace}') { _gaq.push(['_trackEvent', 'tab', 'type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]); $('#content_tabs a##{sc_category.name.remove_whitespace}').tab('show'); } "
+      - tab_javascript += "else if (hash == '##{sc_category.name.remove_whitespace}') { _gaq.push(['_trackEvent', 'tab_type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); $('#content_tabs a##{sc_category.name.remove_whitespace}').tab('show'); } "
       
     %script{"type" => "text/javascript"}
       :plain
@@ -603,14 +603,14 @@
           
           if (hash == '#specialists')
           {
-            _gaq.push(['_trackEvent', 'tab', 'type', 'specialists']); 
-            _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]);
+            _gaq.push(['_trackEvent', 'tab_type', 'specialists']); 
+            _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]);
             $('#content_tabs a#specialists').tab('show');
           }
           else if (hash == '#clinics')
           {
-            _gaq.push(['_trackEvent', 'tab', 'type', 'clinics']); 
-            _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]);
+            _gaq.push(['_trackEvent', 'tab_type', 'clinics']); 
+            _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]);
             $('#content_tabs a#clinics').tab('show');
           }
           #{tab_javascript}
