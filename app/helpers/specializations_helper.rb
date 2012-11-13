@@ -112,21 +112,18 @@ module SpecializationsHelper
     return filtering_attributes
   end
   
-  def other_specialists(specialization)
+  def other_specialists_in_divisions(specialization, divisions)
     other_specialists = []
     specialization.procedures.each do |p|
       next if p.specializations.length <= 1
       p.specializations.each do |s|
         next if s.id == specialization.id
-        other_specialists << p.all_specialists_for_specialization(s)
+        other_specialists << p.all_specialists_for_specialization_in_divisions(s, divisions)
       end
     end
     other_specialists = other_specialists.flatten.uniq
-    specialization.specialists.each do |s|
-      #remove any specialists that are also in this specialization
-      other_specialists.delete(s)
-    end
-    return other_specialists.sort{ |a,b| "#{a.waittime_mask}" <=> "#{b.waittime_mask}" }
+    #remove any specialists that are also in this specialization, sort
+    return (other_specialists - specialization.specialists.in_divisions(divisions)).sort{ |a,b| "#{a.waittime_mask}" <=> "#{b.waittime_mask}" }
   end
 
   def sc_item_filtering_attributes(item, include_specializations)

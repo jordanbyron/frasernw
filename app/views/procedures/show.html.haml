@@ -54,8 +54,8 @@
         $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0]]});
       });
 
-- has_specialists = @procedure.all_specialists.length > 0
-- has_clinics = @procedure.all_clinics.length > 0
+- has_specialists = @procedure.all_specialists_in_divisions(current_user_divisions).length > 0
+- has_clinics = @procedure.all_clinics_in_divisions(current_user_divisions).length > 0
 
 - specialist_tab_class = has_specialists ? "active" : ""
 - clinic_tab_class = has_specialists ? "" : "active"
@@ -77,477 +77,475 @@
             %span= sc_category.name
 
   .content-wrapper
-  
-    - cache(procedure_path(@procedure)) do
 
-      %script{"type" => "text/javascript"}
-        $(document).ready(function() {
-        - @procedure.all_specialists.each do |s|
-          - next if not s.show_in_table?
-          $('#s#{s.id}').data('filter', '#{specialist_filtering_attributes(s, false).join(' ')}');
-        - @procedure.clinics.each do |c|
-          - next if not c.show_in_table?
-          $('#c#{c.id}').data('filter', '#{clinic_filtering_attributes(c).join(' ')}');
-        });
-                  
-      - assumed_procedure_specializations = @procedure.procedure_specializations.reject{ |ps| !ps.assumed? }
-      
-      .tab-content
-        - if has_specialists
-          #specialist_tab.tab-pane{:class => specialist_tab_class}
-            .content
-              .row
-                .span8half
-                  .toggle-filters.visible-phone
-                    %a{"href" => "javascript:void(0)", "onclick" => "$('#specialist_filters').toggle()"}
-                      %i.icon-blue.icon-cog.icon-small
-                      Show / Hide Specialist Filters
-                      
-                  - if assumed_procedure_specializations.present?
-                    #specialist_assumed.assumed-phrase
-                      It is assumed that all #{assumed_procedure_specializations.map{ |ps| ps.parent.present? ? "#{ps.specialization.member_name.uncapitalize_first_letter.pluralize} who see #{link_to ps.parent.procedure.name.uncapitalize_first_letter, ps.parent.procedure, :class => 'ajax'}" : ps.specialization.member_name.uncapitalize_first_letter.pluralize }.to_sentence.html_safe} see #{@procedure.name.uncapitalize_first_letter}
+    %script{"type" => "text/javascript"}
+      $(document).ready(function() {
+      - @procedure.all_specialists_in_divisions(current_user_divisions).each do |s|
+        - next if not s.show_in_table?
+        $('#s#{s.id}').data('filter', '#{specialist_filtering_attributes(s, false).join(' ')}');
+      - @procedure.all_clinics_in_divisions(current_user_divisions).each do |c|
+        - next if not c.show_in_table?
+        $('#c#{c.id}').data('filter', '#{clinic_filtering_attributes(c).join(' ')}');
+      });
                 
-                  #specialist_phrase.filter-phrase
-                
-                  %table.table.table-condensed.tablesorter#specialist_table{:class => multiple_specialties && 'five'}
-                    %thead
-                      %tr{:class => 'tableheader'}
-                        %th{:class => "sp {sorter: 'bylastname'} name_column"} Specialist
+    - assumed_procedure_specializations = @procedure.procedure_specializations.reject{ |ps| !ps.assumed? }
+    
+    .tab-content
+      - if has_specialists
+        #specialist_tab.tab-pane{:class => specialist_tab_class}
+          .content
+            .row
+              .span8half
+                .toggle-filters.visible-phone
+                  %a{"href" => "javascript:void(0)", "onclick" => "$('#specialist_filters').toggle()"}
+                    %i.icon-blue.icon-cog.icon-small
+                    Show / Hide Specialist Filters
+                    
+                - if assumed_procedure_specializations.present?
+                  #specialist_assumed.assumed-phrase
+                    It is assumed that all #{assumed_procedure_specializations.map{ |ps| ps.parent.present? ? "#{ps.specialization.member_name.uncapitalize_first_letter.pluralize} who see #{link_to ps.parent.procedure.name.uncapitalize_first_letter, ps.parent.procedure, :class => 'ajax'}" : ps.specialization.member_name.uncapitalize_first_letter.pluralize }.to_sentence.html_safe} see #{@procedure.name.uncapitalize_first_letter}
+              
+                #specialist_phrase.filter-phrase
+              
+                %table.table.table-condensed.tablesorter#specialist_table{:class => multiple_specialties && 'five'}
+                  %thead
+                    %tr{:class => 'tableheader'}
+                      %th{:class => "sp {sorter: 'bylastname'} name_column"} Specialist
+                      - if multiple_specialties
+                        %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
+                      %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Patients?
+                      %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
+                      %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
+                  %tbody
+                    - @procedure.all_specialists_in_divisions(current_user_divisions).each do |specialist|
+                      - next if not specialist.show_in_table?
+                      %tr{:class => specialist.disabled_in_table? && "disabled", :id => "s#{specialist.id}"}
+                        %td.sp
+                          %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                         - if multiple_specialties
-                          %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
-                        %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Patients?
-                        %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
-                        %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
-                    %tbody
-                      - (@procedure.all_specialists).each do |specialist|
-                        - next if not specialist.show_in_table?
-                        %tr{:class => specialist.disabled_in_table? && "disabled", :id => "s#{specialist.id}"}
-                          %td.sp
-                            %a.ajax{"href" => specialist_path(specialist)}= specialist.name
-                          - if multiple_specialties
-                            %td.s
-                              %ul
-                                - specialist.specializations.each do |s|
-                                  %li= s.name
-                          %td.st
-                            %i{:class => specialist.status_class}
-                            .status= specialist.status_class_hash
-                          %td.wt= specialist.waittime
-                          %td.c
+                          %td.s
                             %ul
-                              - specialist.cities.each do |city|
-                                %li= city
-                                
-                  #other_specialists.filter-others
-                      
-                      
-                .span3.offsethalf
-                  .well.filter#specialist_filters
-                    .title
-                      Filter Specialists
-                      
-                    - focused_child_procedures = @procedure.focused_children
-                    - non_focused_child_procedures = @procedure.non_focused_children
-                      
-                    - if focused_child_procedures.present? || non_focused_child_procedures.present?
-                      .filter-group
-                        %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#specialist-filter-aop"}
-                          Sub-Areas of Practice
-                          - if assumed_procedure_specializations.present?
-                            %sup
-                              %i.icon-asterisk.icon-disabled.icon-small
-                        #specialist-filter-aop.collapsable.in
-                          .filter-group-content
-                            - focused_child_procedures.each do |child_procedure|
-                              - next if child_procedure.all_specialists.blank?
-                              %label
-                                %input.sp{"type" => "checkbox", "id" => "sp#{child_procedure.id}_", "onclick" => "$('#children_sp#{child_procedure.id}_').collapse('toggle')"}= child_procedure.name
-                            
-                            - has_more = false
-                            - non_focused_child_procedures.each do |child_procedure|
-                              - has_more = true if not child_procedure.all_specialists.blank?
-                              - break if has_more
-                            
-                            - if has_more
-                              %a.more#specialist_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_specialist_procedures"} More...
-                              %script{"type" => "text/javascript"}
-                                :plain
-                                  $(document).ready(function() {
-                                    $('#more_specialist_procedures').on('show', function() {
-                                      $('#specialist_procedures_more').html('Less...');
-                                    });
-                                    $('#more_specialist_procedures').on('hide', function() {
-                                      $('#specialist_procedures_more').html('More...');
-                                    });
+                              - specialist.specializations.each do |s|
+                                %li= s.name
+                        %td.st
+                          %i{:class => specialist.status_class}
+                          .status= specialist.status_class_hash
+                        %td.wt= specialist.waittime
+                        %td.c
+                          %ul
+                            - specialist.cities.each do |city|
+                              %li= city
+                              
+                #other_specialists.filter-others
+                    
+                    
+              .span3.offsethalf
+                .well.filter#specialist_filters
+                  .title
+                    Filter Specialists
+                    
+                  - focused_child_procedures = @procedure.focused_children
+                  - non_focused_child_procedures = @procedure.non_focused_children
+                    
+                  - if focused_child_procedures.present? || non_focused_child_procedures.present?
+                    .filter-group
+                      %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#specialist-filter-aop"}
+                        Sub-Areas of Practice
+                        - if assumed_procedure_specializations.present?
+                          %sup
+                            %i.icon-asterisk.icon-disabled.icon-small
+                      #specialist-filter-aop.collapsable.in
+                        .filter-group-content
+                          - focused_child_procedures.each do |child_procedure|
+                            - next if child_procedure.all_specialists_in_divisions(current_user_divisions).blank?
+                            %label
+                              %input.sp{"type" => "checkbox", "id" => "sp#{child_procedure.id}_", "onclick" => "$('#children_sp#{child_procedure.id}_').collapse('toggle')"}= child_procedure.name
+                          
+                          - has_more = false
+                          - non_focused_child_procedures.each do |child_procedure|
+                            - has_more = true if not child_procedure.all_specialists_in_divisions(current_user_divisions).blank?
+                            - break if has_more
+                          
+                          - if has_more
+                            %a.more#specialist_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_specialist_procedures"} More...
+                            %script{"type" => "text/javascript"}
+                              :plain
+                                $(document).ready(function() {
+                                  $('#more_specialist_procedures').on('show', function() {
+                                    $('#specialist_procedures_more').html('Less...');
                                   });
-                        
-                              #more_specialist_procedures.more.collapse
-                                - non_focused_child_procedures.each do |child_procedure|
-                                  - next if child_procedure.all_specialists.blank?
-                                  %label
-                                    %input.sp{"type" => "checkbox", "id" => "sp#{child_procedure.id}_"}= child_procedure.name
-                              
-                    .filter-group
-                      %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#specialist-filter-referral"}
-                        Referrals
-                      #specialist-filter-referral.collapsable.in
-                        .filter-group-content
-                          %label
-                            %input#srph.sr{"type" => "checkbox"} Accepted via phone
+                                  $('#more_specialist_procedures').on('hide', function() {
+                                    $('#specialist_procedures_more').html('More...');
+                                  });
+                                });
+                      
+                            #more_specialist_procedures.more.collapse
+                              - non_focused_child_procedures.each do |child_procedure|
+                                - next if child_procedure.all_specialists_in_divisions(current_user_divisions).blank?
+                                %label
+                                  %input.sp{"type" => "checkbox", "id" => "sp#{child_procedure.id}_"}= child_procedure.name
+                            
+                  .filter-group
+                    %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#specialist-filter-referral"}
+                      Referrals
+                    #specialist-filter-referral.collapsable.in
+                      .filter-group-content
+                        %label
+                          %input#srph.sr{"type" => "checkbox"} Accepted via phone
+                        %label.indent
+                          Responded to within:
+                          %select.sc
+                            %option{"value" => 0} Any timeframe
+                            - Specialist::LAGTIME_HASH.each do |lag_index, lag_value|
+                              %option{"value" => "sc#{lag_index}_"}= lag_value
+                        %label
+                          %input#srpb.sr{"type" => "checkbox"} Patients can call to book after referral
+                  
+                  .filter-group
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-sex"}
+                      Sex
+                    #specialist-filter-sex.collapsable.collapse
+                      .filter-group-content
+                        %label.half
+                          %input#ssm.ss{"type" => "checkbox"} Male
+                        %label.half
+                          %input#ssf.ss{"type" => "checkbox"} Female
+                      
+                  .filter-group
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-schedule"}
+                      Schedule
+                    #specialist-filter-schedule.collapsable.collapse
+                      .filter-group-content
+                        %label.half
+                          %input.ssh{"type" => "checkbox", "id" => "sshsat"} Saturday
+                        %label.half
+                          %input.ssh{"type" => "checkbox", "id" => "sshsun"} Sunday
+                  
+                  .filter-group
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-language"}
+                      Languages
+                    #specialist-filter-language.collapsable.collapse
+                      .filter-group-content
+                        %label
+                          %input#si.si{"type" => "checkbox"} Interpreter available
+                        - Language.all.each do |l|
+                          %label.half
+                            %input.sl{"type" => "checkbox", "id" => "sl#{l.id}_"}= l.name
+                            
+                  .filter-group
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-association"}
+                      Assocations
+                    #specialist-filter-association.collapsable.collapse
+                      .filter-group-content
+                        - if @procedure.clinics.present?
                           %label.indent
-                            Responded to within:
-                            %select.sc
-                              %option{"value" => 0} Any timeframe
-                              - Specialist::LAGTIME_HASH.each do |lag_index, lag_value|
-                                %option{"value" => "sc#{lag_index}_"}= lag_value
-                          %label
-                            %input#srpb.sr{"type" => "checkbox"} Patients can call to book after referral
-                    
-                    .filter-group
-                      %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-sex"}
-                        Sex
-                      #specialist-filter-sex.collapsable.collapse
-                        .filter-group-content
-                          %label.half
-                            %input#ssm.ss{"type" => "checkbox"} Male
-                          %label.half
-                            %input#ssf.ss{"type" => "checkbox"} Female
-                        
-                    .filter-group
-                      %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-schedule"}
-                        Schedule
-                      #specialist-filter-schedule.collapsable.collapse
-                        .filter-group-content
-                          %label.half
-                            %input.ssh{"type" => "checkbox", "id" => "sshsat"} Saturday
-                          %label.half
-                            %input.ssh{"type" => "checkbox", "id" => "sshsun"} Sunday
-                    
-                    .filter-group
-                      %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-language"}
-                        Languages
-                      #specialist-filter-language.collapsable.collapse
-                        .filter-group-content
-                          %label
-                            %input#si.si{"type" => "checkbox"} Interpreter available
-                          - Language.all.each do |l|
-                            %label.half
-                              %input.sl{"type" => "checkbox", "id" => "sl#{l.id}_"}= l.name
-                              
-                    .filter-group
-                      %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-association"}
-                        Assocations
-                      #specialist-filter-association.collapsable.collapse
-                        .filter-group-content
-                          - if @procedure.clinics.present?
-                            %label.indent
-                              Clinic:
-                              %select.sa
-                                %option{"value" => 0} Any
-                                - @procedure.clinics.each do |c|
-                                  %option{"value" => "sac#{c.id}_"}= c.name
-                          %label.indent
-                            Hospital:
+                            Clinic:
                             %select.sa
                               %option{"value" => 0} Any
-                              - Hospital.all.each do |h|
-                                %option{"value" => "sah#{h.id}_"}= h.name
+                              - @procedure.clinics.each do |c|
+                                %option{"value" => "sac#{c.id}_"}= c.name
+                        %label.indent
+                          Hospital:
+                          %select.sa
+                            %option{"value" => 0} Any
+                            - Hospital.all.each do |h|
+                              %option{"value" => "sah#{h.id}_"}= h.name
 
-                  %script{"type" => "text/javascript"}
-                    - member_name = @procedure.specializations.length == 1 ? @procedure.specializations.first.member_name.uncapitalize_first_letter.pluralize : 'specialists'
-                    :plain
-                      $(document).ready(function() {
-                        var update_custom_specialist_table = function()
-                        {
-                          update_table('s', 'specialist', '#{member_name}');
-                        }
-                        $('.sp, .sc, .sr, .ss, .si, .ssh, .sl, .sa').click( update_custom_specialist_table );
-                      });
+                %script{"type" => "text/javascript"}
+                  - member_name = @procedure.specializations.length == 1 ? @procedure.specializations.first.member_name.uncapitalize_first_letter.pluralize : 'specialists'
+                  :plain
+                    $(document).ready(function() {
+                      var update_custom_specialist_table = function()
+                      {
+                        update_table('s', 'specialist', '#{member_name}');
+                      }
+                      $('.sp, .sc, .sr, .ss, .si, .ssh, .sl, .sa').click( update_custom_specialist_table );
+                    });
+      
+            
+      - if has_clinics
+        #clinic_tab.tab-pane{:class => clinic_tab_class}
         
-              
-        - if has_clinics
-          #clinic_tab.tab-pane{:class => clinic_tab_class}
+          .content
+            .row
+              .span8half
+                .toggle-filters.visible-phone
+                  %a{"href" => "javascript:void(0)", "onclick" => "$('#clinic_filters').toggle()"}
+                    %i.icon-blue.icon-cog.icon-small
+                    Show / Hide Clinic Filters
+                    
+                #clinic_phrase.filter-phrase
+                
+                %table.table.table-condensed.tablesorter#clinic_table{:class => multiple_specialties && 'five'}
+                  %thead
+                    %tr{:class => 'tableheader'}
+                      %th{:class => "sp {sorter: 'text'} name_column"} Clinic
+                      - if multiple_specialties
+                        %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
+                      %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Patients?
+                      %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
+                      %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
+                  %tbody
+                    - @procedure.all_clinics_in_divisions(current_user_divisions).each do |clinic|
+                      - next if not clinic.show_in_table?
+                      %tr{:class => clinic.disabled_in_table? && "disabled", :id => "c#{clinic.id}"}
+                        %td.sp
+                          %a.ajax{"href" => clinic_path(clinic)}= clinic.name
+                        - if multiple_specialties
+                          %td.s= clinic.specializations.collect(){ |s| s.name }.to_sentence
+                        %td.sc
+                          %i{:class => clinic.status_class}
+                          .status= clinic.status_class_hash
+                        %td.wt= clinic.waittime
+                        %td.c= clinic.city
+                        
+              .span3.offsethalf
+                .well.filter#clinic_filters
+                  .title
+                    Filter Clinics
+                            
+                  .filter-group
+                    %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#clinic-filter-referral"}
+                      Referrals
+                    #clinic-filter-referral.collapsable.in
+                      .filter-group-content
+                        %label
+                          %input#crph.cr{"type" => "checkbox"} Accepted via phone
+                        %label.indent
+                          Responded to within:
+                          %select.cc
+                            %option{"value" => 0} Any timeframe
+                            - Clinic::LAGTIME_HASH.each do |lag_index, lag_value|
+                              %option{"value" => "csc#{lag_index}_"}= lag_value
+                        %label
+                          %input#crpb.cr{"type" => "checkbox"} Patients can call to book after referral
+                            
+                  .filter-group
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-details"}
+                      Details
+                    #clinic-filter-details.collapsable.collapse
+                      .filter-group-content
+                        %label.half
+                          %input#cdpb.cd{"type" => "checkbox"} Public
+                        %label.half
+                          %input#cdpv.cd{"type" => "checkbox"} Private
+                        %label
+                          %input.cd{"type" => "checkbox", "id" => "cdwa"} Wheelchair Accessible
+                  
+                  .filter-group
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-schedule"}
+                      Schedule
+                    #clinic-filter-schedule.collapsable.collapse
+                      .filter-group-content
+                        %label
+                          %input.csh{"type" => "checkbox", "id" => "cshmon"} Monday
+                        %label
+                          %input.csh{"type" => "checkbox", "id" => "cshtues"} Tuesday
+                        %label
+                          %input.csh{"type" => "checkbox", "id" => "cshwed"} Wednesday
+                        %label
+                          %input.csh{"type" => "checkbox", "id" => "cshthurs"} Thursday
+                        %label
+                          %input.csh{"type" => "checkbox", "id" => "cshfri"} Friday
+                        %label
+                          %input.csh{"type" => "checkbox", "id" => "cshsat"} Saturday
+                        %label
+                          %input.csh{"type" => "checkbox", "id" => "cshsun"} Sunday
+                  
+                  .filter-group
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-healthcare-provider"}
+                      Healthcare Providers
+                    #clinic-filter-healthcare-provider.collapsable.collapse
+                      .filter-group-content
+                        - HealthcareProvider.all.each do |h|
+                          %label
+                            %input.ch{"type" => "checkbox", "id" => "ch#{h.id}_"}= h.name
+                  
+                  .filter-group
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-language"}
+                      Languages
+                    #clinic-filter-language.collapsable.collapse
+                      .filter-group-content
+                        %label
+                          %input#ci.ci{"type" => "checkbox"} Interpreter available
+                        - Language.all.each do |l|
+                          %label.half
+                            %input.cl{"type" => "checkbox", "id" => "cl#{l.id}_"}= l.name
+
+                %script{"type" => "text/javascript"}
+                  :plain
+                    $(document).ready(function() {
+                      $('.cp, .cc, .cr, .cd, .csh, .ch, .ci, .cl').click( update_clinic_table );
+                    });
+    
+      - ScCategory.specialty.each do |sc_category|
+      
+        - items = sc_category.sc_items_for_procedure(@procedure)
+        - next if items.blank?
+            
+        .tab-pane{"id" => "#{sc_category.name.remove_whitespace}_tab"}  
+      
+          - if sc_category.inline?
+    
+            - items.sort{ |a,b| a.sc_category.sort_order <=> a.sc_category.sort_order }.each do |sc_item|
+              .scm
+                %h1
+                  - if sc_item.shared_care?
+                    %i.icon-red.icon-star
+                  = sc_item.full_title
+                  %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
+                    %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
+                  %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
+                    %i.icon-bullhorn
+
+                - if sc_item.markdown?
+                  = BlueCloth.new(sc_item.markdown_content).to_html.html_safe
+                - else
+                  = link_to sc_item.title, sc_item.resolved_url, :target => "_blank"
           
+          - else
+          
+
+            %script{"type" => "text/javascript"}
+              $(document).ready(function() {
+              - items.each do |sc_item|
+                $('#i#{sc_item.id}').data('filter', '#{sc_item_filtering_attributes(sc_item, false).join(' ')}');
+              });
+        
             .content
               .row
                 .span8half
                   .toggle-filters.visible-phone
-                    %a{"href" => "javascript:void(0)", "onclick" => "$('#clinic_filters').toggle()"}
+                    %a{"href" => "javascript:void(0)", "onclick" => "$('##{sc_category.id}_filters').toggle()"}
                       %i.icon-blue.icon-cog.icon-small
-                      Show / Hide Clinic Filters
+                      Show / Hide #{sc_category.name} Filters
                       
-                  #clinic_phrase.filter-phrase
-                  
-                  %table.table.table-condensed.tablesorter#clinic_table{:class => multiple_specialties && 'five'}
+                  .filter-phrase{:id => "#{sc_category.id}_phrase"}
+      
+                  %table.table.table-condensed.tablesorter.category_table{:id => "#{sc_category.id}_table"}
                     %thead
                       %tr{:class => 'tableheader'}
-                        %th{:class => "sp {sorter: 'text'} name_column"} Clinic
-                        - if multiple_specialties
-                          %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
-                        %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Patients?
-                        %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
-                        %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
+                        %th{:class => "title {sorter: 'text'}"} Title
+                        %th{:class => "subcategory {sorter: 'text'}"} Subcategory
+                        %th.favorite
+                        %th.email
+                        %th.fb
                     %tbody
-                      - (@procedure.all_clinics).each do |clinic|
-                        - next if not clinic.show_in_table?
-                        %tr{:class => clinic.disabled_in_table? && "disabled", :id => "c#{clinic.id}"}
-                          %td.sp
-                            %a.ajax{"href" => clinic_path(clinic)}= clinic.name
-                          - if multiple_specialties
-                            %td.s= clinic.specializations.collect(){ |s| s.name }.to_sentence
-                          %td.sc
-                            %i{:class => clinic.status_class}
-                            .status= clinic.status_class_hash
-                          %td.wt= clinic.waittime
-                          %td.c= clinic.city
-                          
-                .span3.offsethalf
-                  .well.filter#clinic_filters
-                    .title
-                      Filter Clinics
-                              
-                    .filter-group
-                      %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#clinic-filter-referral"}
-                        Referrals
-                      #clinic-filter-referral.collapsable.in
-                        .filter-group-content
-                          %label
-                            %input#crph.cr{"type" => "checkbox"} Accepted via phone
-                          %label.indent
-                            Responded to within:
-                            %select.cc
-                              %option{"value" => 0} Any timeframe
-                              - Clinic::LAGTIME_HASH.each do |lag_index, lag_value|
-                                %option{"value" => "csc#{lag_index}_"}= lag_value
-                          %label
-                            %input#crpb.cr{"type" => "checkbox"} Patients can call to book after referral
-                              
-                    .filter-group
-                      %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-details"}
-                        Details
-                      #clinic-filter-details.collapsable.collapse
-                        .filter-group-content
-                          %label.half
-                            %input#cdpb.cd{"type" => "checkbox"} Public
-                          %label.half
-                            %input#cdpv.cd{"type" => "checkbox"} Private
-                          %label
-                            %input.cd{"type" => "checkbox", "id" => "cdwa"} Wheelchair Accessible
-                    
-                    .filter-group
-                      %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-schedule"}
-                        Schedule
-                      #clinic-filter-schedule.collapsable.collapse
-                        .filter-group-content
-                          %label
-                            %input.csh{"type" => "checkbox", "id" => "cshmon"} Monday
-                          %label
-                            %input.csh{"type" => "checkbox", "id" => "cshtues"} Tuesday
-                          %label
-                            %input.csh{"type" => "checkbox", "id" => "cshwed"} Wednesday
-                          %label
-                            %input.csh{"type" => "checkbox", "id" => "cshthurs"} Thursday
-                          %label
-                            %input.csh{"type" => "checkbox", "id" => "cshfri"} Friday
-                          %label
-                            %input.csh{"type" => "checkbox", "id" => "cshsat"} Saturday
-                          %label
-                            %input.csh{"type" => "checkbox", "id" => "cshsun"} Sunday
-                    
-                    .filter-group
-                      %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-healthcare-provider"}
-                        Healthcare Providers
-                      #clinic-filter-healthcare-provider.collapsable.collapse
-                        .filter-group-content
-                          - HealthcareProvider.all.each do |h|
-                            %label
-                              %input.ch{"type" => "checkbox", "id" => "ch#{h.id}_"}= h.name
-                    
-                    .filter-group
-                      %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-language"}
-                        Languages
-                      #clinic-filter-language.collapsable.collapse
-                        .filter-group-content
-                          %label
-                            %input#ci.ci{"type" => "checkbox"} Interpreter available
-                          - Language.all.each do |l|
-                            %label.half
-                              %input.cl{"type" => "checkbox", "id" => "cl#{l.id}_"}= l.name
-
-                  %script{"type" => "text/javascript"}
-                    :plain
-                      $(document).ready(function() {
-                        $('.cp, .cc, .cr, .cd, .csh, .ch, .ci, .cl').click( update_clinic_table );
-                      });
-      
-        - ScCategory.specialty.each do |sc_category|
-        
-          - items = sc_category.sc_items_for_procedure(@procedure)
-          - next if items.blank?
-              
-          .tab-pane{"id" => "#{sc_category.name.remove_whitespace}_tab"}  
-        
-            - if sc_category.inline?
-      
-              - items.sort{ |a,b| a.sc_category.sort_order <=> a.sc_category.sort_order }.each do |sc_item|
-                .scm
-                  %h1
-                    - if sc_item.shared_care?
-                      %i.icon-red.icon-star
-                    = sc_item.full_title
-                    %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
-                      %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
-                    %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
-                      %i.icon-bullhorn
-
-                  - if sc_item.markdown?
-                    = BlueCloth.new(sc_item.markdown_content).to_html.html_safe
-                  - else
-                    = link_to sc_item.title, sc_item.resolved_url, :target => "_blank"
-            
-            - else
-            
-
-              %script{"type" => "text/javascript"}
-                $(document).ready(function() {
-                - items.each do |sc_item|
-                  $('#i#{sc_item.id}').data('filter', '#{sc_item_filtering_attributes(sc_item, false).join(' ')}');
-                });
-          
-              .content
-                .row
-                  .span8half
-                    .toggle-filters.visible-phone
-                      %a{"href" => "javascript:void(0)", "onclick" => "$('##{sc_category.id}_filters').toggle()"}
-                        %i.icon-blue.icon-cog.icon-small
-                        Show / Hide #{sc_category.name} Filters
+                      - items.each do |sc_item|
+                        %tr{:id => "i#{sc_item.id}"}
+                          %td.title
+                            - if sc_item.shared_care?
+                              %i.icon-blue.icon-star
+                            = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{sc_item.type_mask}', '#{sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
+                          %td.subcategory= sc_item.sc_category.name
+                          %td.favorite
+                            %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
+                              %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
+                          %td.email
+                            - if sc_item.can_email?
+                              = link_to "<i class='icon-envelope-alt icon-blue'></i>".html_safe, compose_mail_to_patients_path(sc_item), :class => 'ajax', :title => "E-mail to patient"
+                          %td.fb
+                            %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
+                              %i.icon-bullhorn
                         
-                    .filter-phrase{:id => "#{sc_category.id}_phrase"}
-        
-                    %table.table.table-condensed.tablesorter.category_table{:id => "#{sc_category.id}_table"}
-                      %thead
-                        %tr{:class => 'tableheader'}
-                          %th{:class => "title {sorter: 'text'}"} Title
-                          %th{:class => "subcategory {sorter: 'text'}"} Subcategory
-                          %th.favorite
-                          %th.email
-                          %th.fb
-                      %tbody
-                        - items.each do |sc_item|
-                          %tr{:id => "i#{sc_item.id}"}
-                            %td.title
-                              - if sc_item.shared_care?
-                                %i.icon-blue.icon-star
-                              = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{sc_item.type_mask}', '#{sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
-                            %td.subcategory= sc_item.sc_category.name
-                            %td.favorite
-                              %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
-                                %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
-                            %td.email
-                              - if sc_item.can_email?
-                                = link_to "<i class='icon-envelope-alt icon-blue'></i>".html_safe, compose_mail_to_patients_path(sc_item), :class => 'ajax', :title => "E-mail to patient"
-                            %td.fb
-                              %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
-                                %i.icon-bullhorn
-                          
-                  - if sc_category.has_children?
-                  
-                    .span3.offsethalf
-                      .well.filter{:id => "#{sc_category.id}_filters"}
-                        .title
-                          Filter #{sc_category.name}
-                                   
-                        .filter-group
-                          %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "##{sc_category.id}-filter-subcategories"}
-                            Subcategories
-                          .collapsable.in{:id => "#{sc_category.id}-filter-subcategories"}
-                            .filter-group-content
+                - if sc_category.has_children?
+                
+                  .span3.offsethalf
+                    .well.filter{:id => "#{sc_category.id}_filters"}
+                      .title
+                        Filter #{sc_category.name}
+                                 
+                      .filter-group
+                        %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "##{sc_category.id}-filter-subcategories"}
+                          Subcategories
+                        .collapsable.in{:id => "#{sc_category.id}-filter-subcategories"}
+                          .filter-group-content
+                            %label
+                              %input.ic#icall{"type" => "radio", "name" => "ic#{sc_category.id}", "checked" => "checked"} All
+                            - sc_category.children.each do |subcategory|
+                              - next if subcategory.sc_items_for_procedure(@procedure).blank?
                               %label
-                                %input.ic#icall{"type" => "radio", "name" => "ic#{sc_category.id}", "checked" => "checked"} All
-                              - sc_category.children.each do |subcategory|
-                                - next if subcategory.sc_items_for_procedure(@procedure).blank?
-                                %label
-                                  %input.ic{"type" => "radio", "name" => "ic#{sc_category.id}", "id" => "ic#{subcategory.id}_"}= subcategory.name
+                                %input.ic{"type" => "radio", "name" => "ic#{sc_category.id}", "id" => "ic#{subcategory.id}_"}= subcategory.name
 
-                  %script{"type" => "text/javascript"}
-                    :plain
-                      var update_category_#{sc_category.id}_table = function() { update_category_table(#{sc_category.id}, '#{sc_category.name}'); }
-                      $(document).ready(function() {
-                        $("input.ic[name='ic#{sc_category.id}'], input.if[name='if#{sc_category.id}']").click( update_category_#{sc_category.id}_table ); 
-                      });
-                    
-            %hr
-            = link_to "<i class='icon-arrow-right icon-blue'></i> Browse #{sc_category.name} content from all specialties".html_safe, sc_category_path(sc_category), :class => 'ajax'
+                %script{"type" => "text/javascript"}
+                  :plain
+                    var update_category_#{sc_category.id}_table = function() { update_category_table(#{sc_category.id}, '#{sc_category.name}'); }
+                    $(document).ready(function() {
+                      $("input.ic[name='ic#{sc_category.id}'], input.if[name='if#{sc_category.id}']").click( update_category_#{sc_category.id}_table ); 
+                    });
+                  
+          %hr
+          = link_to "<i class='icon-arrow-right icon-blue'></i> Browse #{sc_category.name} content from all specialties".html_safe, sc_category_path(sc_category), :class => 'ajax'
 
-        %script{"type" => "text/javascript"}
-          :plain
-            $('.collapsable').on('shown', function() {
-              $(this).siblings('.filter-group-title').removeClass('closed').addClass('open');
-            });
-            $('.collapsable').on('hidden', function() {
-              $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
-            });
-            //make full rows clickable
-            $('#specialist_table tr, #clinic_table tr').click( function() { $(this).find('a').click(); });
-            $('.category_table tr').click( function() { 
-              var link = $(this).find('td.title a');
-              if (link.hasClass('ajax'))
-              {
-                link.click();
-              } 
-              else 
-              {
-                window.open(link.attr('href'));
-              }
-            });
-            $('table a').click( function(e) { e.stopPropagation(); });
-    
-      #feedback
-        .inner
-          = simple_form_for @feedback, :html => { :class => "ajax feedback_form" } do |f|
-
-            = f.input :feedback, :label => "Please provide us with any comments about '<span class='feedback_item_title'></span>'".html_safe
-            = f.input :item_type, :as => :hidden
-            = f.input :item_id, :as => :hidden
-
-            .form-actions
-              %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" } Send Feedback
-              %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
-        
-      #feedback_thanks
-        .inner
-          %h2 Thank you!
-          
-          %p.space.no_indent= "Thank you for providing your feedback  on '<span class='feedback_item_title'></span>'. Your contributions help make Pathways a valuable resource for the community.".html_safe
-          
-          %p.space.no_indent We will review your feedback in the near future and take action as necessary.
-          
-          %p.space.no_indent
-            %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close     
-                 
       %script{"type" => "text/javascript"}
         :plain
-          $(document).ready(function() { $('.tt').tooltip({trigger: 'manual'}) });
-          
-          function show_feedback(item_title, item_id)
-          {
-            $('.feedback_item_title').text(item_title);
-            $('#feedback_item_item_id').val(item_id);
-            $('#feedback_item_item_type').val("ScItem");
-            $('#feedback').fadeIn(200);
-          }
+          $('.collapsable').on('shown', function() {
+            $(this).siblings('.filter-group-title').removeClass('closed').addClass('open');
+          });
+          $('.collapsable').on('hidden', function() {
+            $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
+          });
+          //make full rows clickable
+          $('#specialist_table tr, #clinic_table tr').click( function() { $(this).find('a').click(); });
+          $('.category_table tr').click( function() { 
+            var link = $(this).find('td.title a');
+            if (link.hasClass('ajax'))
+            {
+              link.click();
+            } 
+            else 
+            {
+              window.open(link.attr('href'));
+            }
+          });
+          $('table a').click( function(e) { e.stopPropagation(); });
+  
+    #feedback
+      .inner
+        = simple_form_for @feedback, :html => { :class => "ajax feedback_form" } do |f|
 
-          function send_feedback(form) { 
-            $.ajax({
-                url: form.attr('action'),
-                data: form.serialize(),
-                type: 'POST'
-            }).success(function(json) {
-                $('#feedback').fadeOut(200);
-                $('#feedback_item_feedback').val('')
-                $('#feedback_thanks').fadeIn(200);
-            });
-          }
+          = f.input :feedback, :label => "Please provide us with any comments about '<span class='feedback_item_title'></span>'".html_safe
+          = f.input :item_type, :as => :hidden
+          = f.input :item_id, :as => :hidden
+
+          .form-actions
+            %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" } Send Feedback
+            %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
+      
+    #feedback_thanks
+      .inner
+        %h2 Thank you!
+        
+        %p.space.no_indent= "Thank you for providing your feedback  on '<span class='feedback_item_title'></span>'. Your contributions help make Pathways a valuable resource for the community.".html_safe
+        
+        %p.space.no_indent We will review your feedback in the near future and take action as necessary.
+        
+        %p.space.no_indent
+          %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close     
+               
+    %script{"type" => "text/javascript"}
+      :plain
+        $(document).ready(function() { $('.tt').tooltip({trigger: 'manual'}) });
+        
+        function show_feedback(item_title, item_id)
+        {
+          $('.feedback_item_title').text(item_title);
+          $('#feedback_item_item_id').val(item_id);
+          $('#feedback_item_item_type').val("ScItem");
+          $('#feedback').fadeIn(200);
+        }
+
+        function send_feedback(form) { 
+          $.ajax({
+              url: form.attr('action'),
+              data: form.serialize(),
+              type: 'POST'
+          }).success(function(json) {
+              $('#feedback').fadeOut(200);
+              $('#feedback_item_feedback').val('')
+              $('#feedback_thanks').fadeIn(200);
+          });
+        }
 
     %p.admin.btn-group
       - if can? :update, @procedure
