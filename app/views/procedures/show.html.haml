@@ -64,16 +64,16 @@
   %ul#content_tabs.nav.nav-tabs
     - if has_specialists
       %li{:class => specialist_tab_class} 
-        %a#specialists_tab{"href" => "#specialist_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab', 'type', 'specialists']); _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]); return true;"}
+        %a#specialists_tab{"href" => "#specialist_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'specialists']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
           %span Specialists
     - if has_clinics
       %li{:class => clinic_tab_class}
-        %a#clinics_tab{"href" => "#clinic_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab', 'type', 'clinics']); _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]); return true;"}
+        %a#clinics_tab{"href" => "#clinic_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'clinics']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
           %span Clinics
     - ScCategory.specialty.each do |sc_category|
       - if sc_category.sc_items_for_procedure(@procedure).present?
         %li
-          %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "id" => sc_category.name.remove_whitespace, "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab', 'type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]); return true;"}
+          %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "id" => sc_category.name.remove_whitespace, "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
             %span= sc_category.name
 
   .content-wrapper
@@ -438,7 +438,7 @@
                             %td.title
                               - if sc_item.shared_care?
                                 %i.icon-blue.icon-star
-                              = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item', 'item', '#{sc_item.type}', #{sc_item.id}]); _gaq.push(['_trackEvent', 'content_item', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]); return true;")
+                              = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{sc_item.type_mask}', '#{sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
                             %td.subcategory= sc_item.sc_category.name
                             %td.favorite
                               %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}

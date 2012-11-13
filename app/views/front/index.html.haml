@@ -93,7 +93,7 @@
                     %span.new new
                   - if featured_sc_item.shared_care?
                     %i.icon-blue.icon-star
-                  = link_to(featured_sc_item.title, featured_sc_item.resolved_url, :class => featured_sc_item.markdown? && "ajax", :target => featured_sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item', 'item', '#{featured_sc_item.type}', #{featured_sc_item.id}]); _gaq.push(['_trackEvent', 'content_item', 'user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID')]); return true;")
+                  = link_to(featured_sc_item.title, featured_sc_item.resolved_url, :class => featured_sc_item.markdown? && "ajax", :target => featured_sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{featured_sc_item.type_mask}', '#{featured_sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
                   %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{featured_sc_item.id},'#{escape_javascript(featured_sc_item.title)}')", "title" => "Favourite / un-favourite"}
                     %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{featured_sc_item.id}"}
                   
