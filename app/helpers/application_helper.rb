@@ -141,6 +141,22 @@ module ApplicationHelper
     end
   end
   
+  def current_user_cities_for_specializations(specializations)
+    if current_user
+      return specializations.map{ |specialization| City.for_user_in_specialization(current_user, specialization) }.flatten.uniq
+    else
+      return []
+    end
+  end
+  
+  def current_user_cities_for_specialization(specialization)
+    if current_user
+      City.for_user_in_specialization(current_user, specialization)
+    else
+      return []
+    end
+  end
+  
   def default_owner
     return User.find(10)
   end

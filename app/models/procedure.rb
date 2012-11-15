@@ -31,7 +31,7 @@ class Procedure < ActiveRecord::Base
     end
   end
   
-  def all_specialists_in_divisions(divisions)
+  def all_specialists_in_cities(cities)
     #look at this procedure as well as its children to find any specialists
     results = []
     procedure_specializations.each do |ps|
@@ -39,13 +39,13 @@ class Procedure < ActiveRecord::Base
         if child.assumed?
           if child.parent.present?
             #only add the specialists that do the parent procedure we are assumed for
-            results += child.parent.procedure.all_specialists_for_specialization_in_divisions(child.specialization, divisions)
+            results += child.parent.procedure.all_specialists_for_specialization_in_cities(child.specialization, cities)
           else
-            results += ps.specialization.specialists.in_divisions(divisions)
+            results += ps.specialization.specialists.in_cities(cities)
           end
         else
           Capacity.find_all_by_procedure_specialization_id(child.id).each do |capacity|
-            results << capacity.specialist if capacity.specialist.present? && (capacity.specialist.divisions & divisions).present?
+            results << capacity.specialist if capacity.specialist.present? && (capacity.specialist.cities & cities).present?
           end
         end
       end
@@ -54,13 +54,13 @@ class Procedure < ActiveRecord::Base
     return (results ? results.compact : [])
   end
   
-  def all_clinics_in_divisions(divisions)
+  def all_clinics_in_cities(cities)
     #look at this procedure as well as its children to find any clinics
     results = []
     procedure_specializations.each do |ps|
       ProcedureSpecialization.subtree_of(ps).each do |child|
         Focus.find_all_by_procedure_specialization_id(child.id).each do |focus|
-          results << focus.clinic if focus.clinic.present? && (focus.clinic.divisions & divisions).present?
+          results << focus.clinic if focus.clinic.present? && (cities.include? focus.clinic.city)
         end
       end
     end
@@ -68,16 +68,16 @@ class Procedure < ActiveRecord::Base
     return (results ? results.compact : [])
   end
   
-  def all_specialists_for_specialization_in_divisions(specialization, divisions)
+  def all_specialists_for_specialization_in_cities(specialization, cities)
     #look at this procedure as well as its children to find any specialists
     results = []
     ps = ProcedureSpecialization.find_by_specialization_id_and_procedure_id(specialization.id, self.id)
     if ps.assumed?
-      results += ps.specialization.specialists.in_divisions(divisions)
+      results += ps.specialization.specialists.in_cities(cities)
     else
       ps.subtree.each do |child|
         Capacity.find_all_by_procedure_specialization_id(child.id).each do |capacity|
-          results << capacity.specialist if capacity.specialist.present? && (capacity.specialist.divisions & divisions).present?
+          results << capacity.specialist if capacity.specialist.present? && (capacity.specialist.cities & cities).present?
         end
       end
     end
@@ -85,12 +85,12 @@ class Procedure < ActiveRecord::Base
     return (results ? results.compact : [])
   end
   
-  def all_clinics_for_specialization_in_divisions(specialization, divisions)
+  def all_clinics_for_specialization_in_cities(specialization, cities)
     #look at this procedure as well as its children to find any clinics
     results = []
     ProcedureSpecialization.find_by_specialization_id_and_procedure_id(specialization.id, self.id).subtree.each do |child|
       Focus.find_all_by_procedure_specialization_id(child.id).each do |focus|
-        results << focus.clinic if focus.clinic.present? && (focus.clinic.divisions & divisions).present?
+        results << focus.clinic if focus.clinic.present? && (cities.include? focus.clinic.city)
       end
     end
     results.uniq!
@@ -98,7 +98,7 @@ class Procedure < ActiveRecord::Base
   end
   
   def empty?
-    return ((all_specialists_in_divisions(Division.all).length == 0) and (all_clinics_in_divisions(Division.all).length == 0))
+    return ((all_specialists_in_cities(City.all).length == 0) and (all_clinics_in_cities(City.all).length == 0))
   end
   
   def has_children?

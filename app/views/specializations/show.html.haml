@@ -27,8 +27,9 @@
           %li
             %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
 
-- has_specialists = @specialization.specialists.in_division(current_user_divisions).length > 0
-- has_clinics = @specialization.clinics.in_division(current_user_divisions).length > 0
+- user_cities = current_user_cities_for_specialization(@specialization)
+- has_specialists = @specialization.specialists.in_cities(user_cities).length > 0
+- has_clinics = @specialization.clinics.in_cities(user_cities).length > 0
 
 - specialist_tab_class = has_specialists ? "active" : ""
 - clinic_tab_class = has_specialists ? "" : "active"
@@ -53,11 +54,11 @@
 
     %script{"type" => "text/javascript"}
       $(document).ready(function() {
-      - @specialization.specialists.in_divisions(current_user_divisions).each do |s|
+      - @specialization.specialists.in_cities(user_cities).each do |s|
         - next if not s.show_in_table?
         $('#s#{s.id}').data('filter', '#{specialist_filtering_attributes(s, false).join(' ')}');
         
-      - other_specialists = other_specialists_in_divisions(@specialization, current_user_divisions)
+      - other_specialists = other_specialists_in_cities(@specialization, user_cities)
       - other_specialists.each do |s|
         - next if not s.show_in_table?
         $('#specialist_table').data('s#{s.id}', '#{specialist_filtering_attributes(s, true).join(' ')}');
@@ -69,7 +70,7 @@
         $('#specialist_table').data('s#{s.id}_city', '#{escape_javascript(s.city.present? ? s.city.name : "")}');
       $('#specialist_table').data('filter', '#{other_specialists.map{ |s| s.id }.join(' ')}');
       
-      - @specialization.clinics.in_divisions(current_user_divisions).each do |c|
+      - @specialization.clinics.in_cities(user_cities).each do |c|
         - next if not c.show_in_table?
         $('#c#{c.id}').data('filter', '#{clinic_filtering_attributes(c).join(' ')}');
       });
@@ -102,7 +103,7 @@
                       %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
                       %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                   %tbody
-                    - @specialization.specialists.in_divisions(current_user_divisions).each do |specialist|
+                    - @specialization.specialists.in_cities(user_cities).each do |specialist|
                       - next if not specialist.show_in_table?
                       %tr{:class => specialist.disabled_in_table? && "disabled", :id => "s#{specialist.id}"}
                         %td.sp
@@ -136,7 +137,7 @@
                       #specialist-filter-aop.collapsable.in
                         .filter-group-content
                           - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
-                            - next if ps.procedure.all_specialists_in_divisions(current_user_divisions).blank?
+                            - next if ps.procedure.all_specialists_in_cities(user_cities).blank?
                             %label
                               %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}_').collapse('toggle')"}= ps.procedure.name
                             - next if children.length == 0
@@ -148,14 +149,14 @@
                                   });
                               - parent_id = ps.procedure.id
                               - children.each do |ps, children|
-                                - next if ps.procedure.all_specialists_in_divisions(current_user_divisions).blank?
+                                - next if ps.procedure.all_specialists_in_cities(user_cities).blank?
                                 %label.indent
                                   %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}_"}= ps.procedure.name
                           
                           - non_focused_procedure_specializations = @specialization.non_focused_procedure_specializations_arranged
                           - has_more = false
                           - non_focused_procedure_specializations.each do |ps, children|
-                            - has_more = true if not ps.procedure.all_specialists_in_divisions(current_user_divisions).blank?
+                            - has_more = true if not ps.procedure.all_specialists_in_cities(user_cities).blank?
                             - break if has_more
                           
                           - if has_more
@@ -173,7 +174,7 @@
                       
                             #more_specialist_procedures.more.collapse
                               - non_focused_procedure_specializations.each do |ps, children|
-                                - next if ps.procedure.all_specialists_in_divisions(current_user_divisions).blank?
+                                - next if ps.procedure.all_specialists_in_cities(user_cities).blank?
                                 %label
                                   %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_"}= ps.procedure.name
                                 - next if children.length == 0
@@ -185,7 +186,7 @@
                                       });
                                   - parent_id = ps.procedure.id
                                   - children.each do |ps, children|
-                                    - next if ps.procedure.all_specialists_in_divisions(current_user_divisions).blank?
+                                    - next if ps.procedure.all_specialists_in_cities(user_cities).blank?
                                     %label.indent
                                       %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}_"}= ps.procedure.name
                                 
@@ -286,7 +287,7 @@
                       %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
                       %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                   %tbody
-                    - @specialization.clinics.in_divisions(current_user_divisions).each do |clinic|
+                    - @specialization.clinics.in_cities(user_cities).each do |clinic|
                       - next if not clinic.show_in_table?
                       %tr{:class => clinic.disabled_in_table? && "disabled", :id => "c#{clinic.id}"}
                         %td.sp
@@ -307,7 +308,7 @@
                     #clinic-filter-aop.collapsable.in
                       .filter-group-content
                         - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
-                          - next if ps.procedure.all_clinics_in_divisions(current_user_divisions).blank?
+                          - next if ps.procedure.all_clinics_in_cities(user_cities).blank?
                           %label
                             %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}_').collapse('toggle')"}= ps.procedure.name
                           - next if children.length == 0
@@ -319,14 +320,14 @@
                                 });
                             - parent_id = ps.procedure.id
                             - children.each do |ps, children|
-                              - next if ps.procedure.all_clinics_in_divisions(current_user_divisions).blank?
+                              - next if ps.procedure.all_clinics_in_cities(user_cities).blank?
                               %label.indent
                                 %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "class" => "child_cp#{parent_id}_"}= ps.procedure.name
                         
                         - non_focused_procedure_specializations = @specialization.non_focused_procedure_specializations_arranged
                         - has_more = false
                         - non_focused_procedure_specializations.each do |ps, children|
-                          - has_more = true if not ps.procedure.all_clinics_in_divisions(current_user_divisions).blank?
+                          - has_more = true if not ps.procedure.all_clinics_in_cities(user_cities).blank?
                           - break if has_more
                         
                         - if has_more
@@ -344,7 +345,7 @@
                     
                           #more_clinic_procedures.more.collapse
                             - non_focused_procedure_specializations.each do |ps, children|
-                              - next if ps.procedure.all_clinics_in_divisions(current_user_divisions).blank?
+                              - next if ps.procedure.all_clinics_in_cities(user_cities).blank?
                               %label
                                 %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}').collapse('toggle')"}= ps.procedure.name
                               - next if children.length == 0
@@ -356,7 +357,7 @@
                                     });
                                 - parent_id = ps.procedure.id
                                 - children.each do |ps, children|
-                                  - next if ps.procedure.all_clinics_in_divisions(current_user_divisions).blank?
+                                  - next if ps.procedure.all_clinics_in_cities(user_cities).blank?
                                   %label.indent
                                     %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "class" => "child_cp#{parent_id}"}= ps.procedure.name
                               

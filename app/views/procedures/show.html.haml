@@ -54,8 +54,9 @@
         $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0]]});
       });
 
-- has_specialists = @procedure.all_specialists_in_divisions(current_user_divisions).length > 0
-- has_clinics = @procedure.all_clinics_in_divisions(current_user_divisions).length > 0
+- user_cities = current_user_cities_for_specializations(@procedure.specializations)
+- has_specialists = @procedure.all_specialists_in_cities(user_cities).length > 0
+- has_clinics = @procedure.all_clinics_in_cities(user_cities).length > 0
 
 - specialist_tab_class = has_specialists ? "active" : ""
 - clinic_tab_class = has_specialists ? "" : "active"
@@ -80,10 +81,10 @@
 
     %script{"type" => "text/javascript"}
       $(document).ready(function() {
-      - @procedure.all_specialists_in_divisions(current_user_divisions).each do |s|
+      - @procedure.all_specialists_in_cities(user_cities).each do |s|
         - next if not s.show_in_table?
         $('#s#{s.id}').data('filter', '#{specialist_filtering_attributes(s, false).join(' ')}');
-      - @procedure.all_clinics_in_divisions(current_user_divisions).each do |c|
+      - @procedure.all_clinics_in_cities(user_cities).each do |c|
         - next if not c.show_in_table?
         $('#c#{c.id}').data('filter', '#{clinic_filtering_attributes(c).join(' ')}');
       });
@@ -117,7 +118,7 @@
                       %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
                       %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                   %tbody
-                    - @procedure.all_specialists_in_divisions(current_user_divisions).each do |specialist|
+                    - @procedure.all_specialists_in_cities(user_cities).each do |specialist|
                       - next if not specialist.show_in_table?
                       %tr{:class => specialist.disabled_in_table? && "disabled", :id => "s#{specialist.id}"}
                         %td.sp
@@ -157,13 +158,13 @@
                       #specialist-filter-aop.collapsable.in
                         .filter-group-content
                           - focused_child_procedures.each do |child_procedure|
-                            - next if child_procedure.all_specialists_in_divisions(current_user_divisions).blank?
+                            - next if child_procedure.all_specialists_in_cities(user_cities).blank?
                             %label
                               %input.sp{"type" => "checkbox", "id" => "sp#{child_procedure.id}_", "onclick" => "$('#children_sp#{child_procedure.id}_').collapse('toggle')"}= child_procedure.name
                           
                           - has_more = false
                           - non_focused_child_procedures.each do |child_procedure|
-                            - has_more = true if not child_procedure.all_specialists_in_divisions(current_user_divisions).blank?
+                            - has_more = true if not child_procedure.all_specialists_in_cities(user_cities).blank?
                             - break if has_more
                           
                           - if has_more
@@ -181,7 +182,7 @@
                       
                             #more_specialist_procedures.more.collapse
                               - non_focused_child_procedures.each do |child_procedure|
-                                - next if child_procedure.all_specialists_in_divisions(current_user_divisions).blank?
+                                - next if child_procedure.all_specialists_in_cities(user_cities).blank?
                                 %label
                                   %input.sp{"type" => "checkbox", "id" => "sp#{child_procedure.id}_"}= child_procedure.name
                             
@@ -286,7 +287,7 @@
                       %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
                       %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                   %tbody
-                    - @procedure.all_clinics_in_divisions(current_user_divisions).each do |clinic|
+                    - @procedure.all_clinics_in_cities(user_cities).each do |clinic|
                       - next if not clinic.show_in_table?
                       %tr{:class => clinic.disabled_in_table? && "disabled", :id => "c#{clinic.id}"}
                         %td.sp
