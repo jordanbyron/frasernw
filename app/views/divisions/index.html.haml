@@ -8,7 +8,6 @@
     %tr
       %th Name
       %th Cities
-      %th Specialties with Local Referral Areas
       %th.admin
 
     - @divisions.each do |division|
@@ -18,10 +17,6 @@
           %ul
             -division.cities.each do |city|
               %li= link_to city.name, city_path(city), :class => 'ajax'
-        %td
-          %ul
-            -division.specializations.each do |specialization|
-              %li= link_to specialization.name, specialization_path(specialization), :class => 'ajax'
         %td.admin.btn-group
           = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_division_path(division), :class => "btn btn-mini ajax")
           = link_to("<i class='icon-trash'></i>".html_safe + " Delete", division, :confirm => "Delete #{division.name}?", :method => :delete, :class => "btn btn-mini")

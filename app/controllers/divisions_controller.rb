@@ -14,8 +14,8 @@ class DivisionsController < ApplicationController
   def new
     @division = Division.new
     @local_referral_cities = {}
-    @division.specializations.each do |s|
-      @local_referral_cities[s.id] = []
+    City.all.each do |city|
+      @local_referral_cities[city.id] = []
     end
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
@@ -23,28 +23,20 @@ class DivisionsController < ApplicationController
   def create
     @division = Division.new(params[:division])
     if @division.save
-      @division.division_specializations.each do |ds|
-        #remove existing specializations that no longer exist
-        DivisionSpecialization.destroy(ds.id) if (params[:specialization].blank? || !(params[:specialization].include? ds.specialization_id))
-      end
-      if params[:specialization].present?
-        #add new specializations
-        params[:specialization].each do |specialization_id, set|
-          DivisionSpecialization.find_or_create_by_division_id_and_specialization_id( @division.id, specialization_id )
+      if params[:city].present?
+        #add new cities
+        params[:city].each do |city_id, set|
+          DivisionReferralCity.find_or_create_by_division_id_and_city_id( @division.id, city_id )
         end
       end
-      @division.division_specialization_cities.each do |dsc|
-        #remove existing cities that no longer exist
-        DivisionSpecializationCity.destroy(dcs.id) if (!(params[:local_referral_city].include? dcs.specialization_id) || !(params[:local_referral_city][dcs.specialization_id].include? dcs.city_id))
-      end
-      if params[:local_referral_city].present?
-        #add new cities
-        params[:local_referral_city].each do |specialization_id, cities|
-          division_specialization = DivisionSpecialization.find_by_division_id_and_specialization_id( @division.id, specialization_id )
-          if division_specialization.present?
-            #parent specialization was checked off
-            cities.each do |city_id, set|
-              DivisionSpecializationCity.find_or_create_by_division_specialization_id_and_city_id( division_specialization.id, city_id )
+      if params[:local_referral_cities].present?
+        #add new specializations
+        params[:local_referral_cities].each do |city_id, specializations|
+          division_referral_city = DivisionReferralCity.find_by_division_id_and_city_id( @division.id, city_id )
+          if division_referral_city.present?
+            #parent city was checked off
+            specializations.each do |specializations_id, set|
+              DivisionReferralCitySpecialization.find_or_create_by_division_referral_city_id_and_specialization_id( division_referral_city.id, specializations_id )
             end
           end
         end
@@ -58,8 +50,14 @@ class DivisionsController < ApplicationController
   def edit
     @division = Division.find(params[:id])
     @local_referral_cities = {}
-    @division.specializations.each do |s|
-      @local_referral_cities[s.id] = @division.local_referral_cities_for_specialization(s).map{ |c| c.id }
+    City.all.each do |city|
+      @local_referral_cities[city.id] = []
+    end
+    Specialization.all.each do |specialization|
+      cities = @division.local_referral_cities_for_specialization(specialization)
+      cities.each do |city|
+        @local_referral_cities[city.id] << specialization.id
+      end
     end
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
@@ -67,28 +65,28 @@ class DivisionsController < ApplicationController
   def update
     @division = Division.find(params[:id])
     if @division.update_attributes(params[:division])
-      @division.division_specializations.each do |ds|
-        #remove existing specializations that no longer exist
-        DivisionSpecialization.destroy(ds.id) if (params[:specialization].blank? || !(params[:specialization].include? ds.specialization_id))
+      @division.division_referral_cities.each do |uc|
+        #remove existing cities that no longer exist
+        DivisionReferralCity.destroy(uc.id) if (params[:city].blank? || !(params[:city].include? uc.city_id))
       end
-      if params[:specialization].present?
-        #add new specializations
-        params[:specialization].each do |specialization_id, set|
-          DivisionSpecialization.find_or_create_by_division_id_and_specialization_id( @division.id, specialization_id )
+      if params[:city].present?
+        #add new cities
+        params[:city].each do |city_id, set|
+          DivisionReferralCity.find_or_create_by_division_id_and_city_id( @division.id, city_id )
         end
       end
-      @division.division_specialization_cities.each do |dsc|
-        #remove existing cities that no longer exist
-        DivisionSpecializationCity.destroy(dcs.id) if (!(params[:local_referral_city].include? dcs.specialization_id) || !(params[:local_referral_city][dcs.specialization_id].include? dcs.city_id))
+      @division.division_referral_city_specializations.each do |ucs|
+        #remove existing specializations that no longer exist
+        DivisionReferralCitySpecialization.destroy(ucs.id) if (!(params[:local_referral_cities].include? ucs.city_id) || !(params[:local_referral_cities][usc.city_id].include? usc.specialization_id))
       end
-      if params[:local_referral_city].present?
-        #add new cities
-        params[:local_referral_city].each do |specialization_id, cities|
-          division_specialization = DivisionSpecialization.find_by_division_id_and_specialization_id( @division.id, specialization_id )
-          if division_specialization.present?
-            #parent specialization was checked off
-            cities.each do |city_id, set|
-              DivisionSpecializationCity.find_or_create_by_division_specialization_id_and_city_id( division_specialization.id, city_id )
+      if params[:local_referral_cities].present?
+        #add new specializations
+        params[:local_referral_cities].each do |city_id, specializations|
+          division_referral_city = DivisionReferralCity.find_by_division_id_and_city_id( @division.id, city_id )
+          if division_referral_city.present?
+            #parent city was checked off
+            specializations.each do |specializations_id, set|
+              DivisionReferralCitySpecialization.find_or_create_by_division_referral_city_id_and_specialization_id( division_referral_city.id, specializations_id )
             end
           end
         end

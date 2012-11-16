@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   
   has_many :user_divisions, :source => :division_users, :class_name => "DivisionUser", :dependent => :destroy
   has_many :divisions, :through => :user_divisions
-  has_many :cities, :through => :divisions
+  #has_many :cities, :through => :divisions
 
   has_many :favorites
   has_many :favorite_specialists, :through => :favorites, :source => :favoritable, :source_type => "Specialist", :class_name => "Specialist"
@@ -28,7 +28,6 @@ class User < ActiveRecord::Base
   
   has_many :user_cities, :dependent => :destroy
   has_many :user_city_specializations, :through => :user_cities
-  has_many :local_referral_cities, :through => :user_city_specializations, :class_name => "City", :source => :city
 
   # times that the user (as admin) has contacted specialists
   has_many :contacts

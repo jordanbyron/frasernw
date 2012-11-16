@@ -11,13 +11,13 @@
     - division_admins = [nil]
     - possible_admins.uniq.each{ |user| division_admins << [user.name, user.id]}
     - specialization_owner = SpecializationOwner.find_by_specialization_id_and_division_id(@specialization.id, division.id)
-    - specialization_owner_user_id = specialization_owner.owner.present? ? specialization_owner.owner.id : nil
+    - specialization_owner_user_id = specialization_owner.present? && specialization_owner.owner.present? ? specialization_owner.owner.id : nil
     .control-group
       %label.control-label
         #{division.name} Owner
       .controls
         = select_tag "specialization_specialization_owners_attributes_#{index}_owner_id", options_for_select(division_admins, specialization_owner_user_id), :name => "specialization[specialization_owners_attributes][#{index}][owner_id]", :class => "select"
-        = f.hidden_field specialization_owner.id, :name => "specialization[specialization_owners_attributes][#{index}][id]", :value => specialization_owner.id, :id => "specialization_specialization_owners_attributes_#{index}_id"
+        = f.hidden_field specialization_owner_user_id, :name => "specialization[specialization_owners_attributes][#{index}][id]", :value => specialization_owner_user_id, :id => "specialization_specialization_owners_attributes_#{index}_id"
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

@@ -10,16 +10,6 @@
     %ul
       - @division.cities.each do |city|
         %li= link_to city.name, city_path(city), :class => 'ajax'
-        
-  - if @division.specializations.present?
-    %p.no_indent
-      %strong Local Referral Areas
-      
-      - @division.specializations.each do |specialization|
-        %ul
-          = specialization.name
-          - @division.local_referral_cities_for_specialization(specialization).each do |city|
-            %li= link_to city.name, city_path(city), :class => 'ajax'
 
   %p.admin.btn-group
     - if can? :update, @division
