@@ -163,12 +163,14 @@ class SpecialistsController < ApplicationController
       SpecialistSweeper.instance.before_controller_update(@specialist)
       if @specialist.update_attributes(params[:specialist])
         @specialist.capacities.each do |original_capacity|
-          Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity.procedure_specialization.id.to_s].blank?
+          Capacity.destroy(original_capacity.id) if (params[:capacities_mapped].blank? || params[:capacities_mapped][original_capacity.procedure_specialization.id.to_s].blank?)
         end
-        params[:capacities_mapped].each do |updated_capacity, value|
-          capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
-          capacity.investigation = params[:capacities_investigations][updated_capacity]
-          capacity.save
+        if params[:capacities_mapped].present?
+          params[:capacities_mapped].each do |updated_capacity, value|
+            capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
+            capacity.investigation = params[:capacities_investigations][updated_capacity]
+            capacity.save
+          end
         end
         @specialist.update_attributes( :address_update => "" )
         redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
