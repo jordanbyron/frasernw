@@ -70,6 +70,7 @@
 
 .review:before,
 .feedback:before,
+.change_local_referral_area:before,
 .change_name:before,
 .change_email:before,
 .change_password:before,
@@ -114,6 +115,11 @@
 .feedback:before
 {
   content: "\f0a1";
+}
+
+.change_local_referral_area:before
+{
+  content: "\f041";
 }
 
 .change_name:before

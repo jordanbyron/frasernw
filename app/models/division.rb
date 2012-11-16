@@ -9,7 +9,7 @@ class Division < ActiveRecord::Base
   has_many :specializations, :through => :division_specializations
   
   has_many :division_specialization_cities, :through => :division_specializations
-  has_many :local_referral_cities, :through => :division_specialization_cities, :class_name => "Division", :source => :city
+  has_many :local_referral_cities, :through => :division_specialization_cities, :class_name => "City", :source => :city
   
   has_many :division_users, :dependent => :destroy
   has_many :users, :through => :division_users

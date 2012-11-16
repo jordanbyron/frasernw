@@ -24,7 +24,11 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :user_controls_clinics, :reject_if => lambda { |ucc| ucc[:clinic_id].blank? }, :allow_destroy => true
 
   has_many :specialization_owners, :dependent => :destroy, :foreign_key => "owner_id"
-  has_many :specializations, :through => :specialization_owners
+  has_many :specializations_owned, :through => :specialization_owners, :class_name => "Specialization", :source => :specialization
+  
+  has_many :user_cities, :dependent => :destroy
+  has_many :user_city_specializations, :through => :user_cities
+  has_many :local_referral_cities, :through => :user_city_specializations, :class_name => "City", :source => :city
 
   # times that the user (as admin) has contacted specialists
   has_many :contacts
@@ -129,5 +133,9 @@ class User < ActiveRecord::Base
       does_own |= SpecializationOwner.find_by_specialization_id_and_owner_id(specialization.id, self.id).present?
     end
     does_own
+  end
+
+  def local_referral_cities_for_specialization(specialization)
+    return user_city_specializations.reject{ |ucs| ucs.specialization_id != specialization.id }.map{ |ucs| ucs.user_city.city }
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121110183644) do
+ActiveRecord::Schema.define(:version => 20121115043632) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -632,6 +632,20 @@ ActiveRecord::Schema.define(:version => 20121110183644) do
     t.boolean   "in_progress", :default => false
     t.string    "saved_token"
     t.string    "member_name"
+  end
+
+  create_table "user_cities", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "city_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_city_specializations", :force => true do |t|
+    t.integer  "user_city_id"
+    t.integer  "specialization_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "user_controls_clinics", :force => true do |t|
