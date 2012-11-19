@@ -96,6 +96,10 @@ en:
         hospital_in: "Hospital"
         clinic_in: "Clinic"
         suite_in: "Suite"
+      news_item:
+        breaking: "Show as breaking news"
+        end_date: "End date (can be blank)"
+        body: "News body"
       sc_category:
         display_mask: "Display items"
         show_as_dropdown: "Display in global navigation as a dropdown menu"

@@ -1,0 +1,29 @@
+- title "News Items"
+
+.content-wrapper
+
+  %h2 News Items
+
+  = will_paginate @news_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
+
+  %table.table.table-condensed.table-striped
+    %tr
+      %th Title
+      %th Breaking
+      %th Start Date
+      %th End Date
+      %th.admin
+
+    - @news_items.each do |news_item|
+      %tr
+        %td= link_to news_item.title, news_item, :class => 'ajax'
+        %td= news_item.breaking? ? "Yes" : "No"
+        %td= news_item.start_date_full
+        %td= news_item.end_date_full
+        %td.admin.btn-group
+          = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_news_item_path(news_item), :class => "btn btn-mini ajax")
+          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", news_item, :confirm => "Delete #{news_item.title}?", :method => :delete, :class => "btn btn-mini")
+
+  = will_paginate @news_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
+
+  %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New News Item", new_news_item_path, :class => "btn ajax")
