@@ -12,4 +12,5 @@
  *= require ./all/bootstrap.responsive
  *= require ./all/chosen
  *= require_tree ./all 
+ *= require vendor
 */

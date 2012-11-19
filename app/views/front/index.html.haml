@@ -28,6 +28,16 @@
 
 .content-wrapper
   .content#front
+    - if NewsItem.breaking.length > 0
+      .row
+        .span12
+          - NewsItem.breaking.each do |news_item|
+            .news_item.breaking
+              .news_item_date= news_item.date if news_item.date.present?
+              .news_item_title= news_item.title if news_item.title.present?
+              .news_item_body
+                = BlueCloth.new(news_item.body).to_html.html_safe
+
     .row
        
       .span3.hidden-phone
@@ -64,14 +74,17 @@
             
         %h2 Division Updates
         
-        %p
-          %strong Thursday December 6th
-          Division Christmas Party (which will include spouses).
-        
-        %p
-          %strong Sunday January 13th - Monday January 14th
-          Division CME Event with Dr. Hamilton Hall, Executive Director of the Canadian Spine Society, founder of the Canadian Back Institute, and author of many journal articles & books including The Back Doctor, who will be giving a presentation to our division on 
-          %strong ‘GP Management of Low Back Pain’.
+        - NewsItem.news.each do |news_item|
+          
+          .news_item
+            .news_item_date= news_item.date if news_item.date.present?
+            .news_item_title= news_item.title if news_item.title.present?
+            .news_item_body
+              = BlueCloth.new(news_item.body).to_html.html_safe
+                  
+        - if current_user_is_admin?
+          %p.admin.btn-group
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Division Updates", news_items_path, :class => "btn btn-mini ajax")
         
         %h2
           %i.icon-red.icon-star
@@ -108,7 +121,6 @@
               %i.icon-star.icon-blue 
               Indicates content from our Shared Care initiative
                   
-  - if current_user_is_admin?
-    %p.admin.btn-group
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Front Page", edit_front_path, :class => "btn ajax")
-    
+        - if current_user_is_admin?
+          %p.admin.btn-group
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Featured Content", edit_front_path, :class => "btn btn-mini ajax")

@@ -5,6 +5,7 @@
 // the compiled file.
 //
 //= require jquery-1.7.1.min
+//= require jquery-ui
 //= require jquery_ujs
 //= require jquery.scrollto.min.js
 //= require json2.js

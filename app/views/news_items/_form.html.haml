@@ -1,0 +1,19 @@
+= simple_form_for @news_item, :html => { :class => "form-horizontal ajax" } do |f|
+  - if not f.error_messages.blank?
+    .alert.alert-error= f.error_messages
+
+  = f.input :title
+  = f.input :breaking
+  = f.input :start_date, :as => :datepicker
+  = f.input :end_date, :as => :datepicker
+  = f.input :body
+
+  .form-actions
+    = f.button :submit, :class => "btn btn-primary"
+    = link_to 'Cancel', news_items_path, :class => "btn btn-danger ajax"
+      
+  %script{"type" => "text/javascript"}
+    :plain
+      $(document).ready(function() { 
+        $("input.datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
+      });

@@ -1032,6 +1032,42 @@ body.loading #email
         font-size: 11px;
       }
     }
+    
+    .news_item
+    {
+      .news_item_date
+      {
+        font-weight: bold;
+      }
+      
+      .news_item_title
+      {
+        font-style: italic;
+      }
+      
+      p
+      {
+        margin: 0 0 12px 0;
+      }
+    }
+    
+    .news_item.breaking
+    {
+      padding: 8px 35px 8px 14px;
+      margin-top: -8px;
+      margin-bottom: 20px;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+      background-color: $FNW_HEADLINE_BACKGROUND;
+      border: 1px solid $FNW_LIGHT_BLUE;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      border-radius: 4px;
+      
+      p
+      {
+        margin: 6px 0 0 0;
+      }
+    }
   }
   
   #faq 

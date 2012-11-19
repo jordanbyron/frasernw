@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121017211058) do
+ActiveRecord::Schema.define(:version => 20121119191709) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -184,6 +184,40 @@ ActiveRecord::Schema.define(:version => 20121017211058) do
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
+  create_table "division_cities", :force => true do |t|
+    t.integer  "division_id"
+    t.integer  "city_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "division_referral_cities", :force => true do |t|
+    t.integer  "division_id"
+    t.integer  "city_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "division_referral_city_specializations", :force => true do |t|
+    t.integer  "division_referral_city_id"
+    t.integer  "specialization_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "division_users", :force => true do |t|
+    t.integer  "division_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "divisions", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "edits", :force => true do |t|
     t.integer   "specialist_id"
     t.text      "notes"
@@ -291,6 +325,16 @@ ActiveRecord::Schema.define(:version => 20121017211058) do
     t.text      "attr_value",                     :null => false
     t.timestamp "created_at"
     t.timestamp "updated_at"
+  end
+
+  create_table "news_items", :force => true do |t|
+    t.boolean  "breaking"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.string   "title"
+    t.text     "body"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "offices", :force => true do |t|
@@ -588,6 +632,7 @@ ActiveRecord::Schema.define(:version => 20121017211058) do
     t.integer   "owner_id"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.integer   "division_id"
   end
 
   create_table "specializations", :force => true do |t|
@@ -597,6 +642,20 @@ ActiveRecord::Schema.define(:version => 20121017211058) do
     t.boolean   "in_progress", :default => false
     t.string    "saved_token"
     t.string    "member_name"
+  end
+
+  create_table "user_cities", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "city_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_city_specializations", :force => true do |t|
+    t.integer  "user_city_id"
+    t.integer  "specialization_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "user_controls_clinics", :force => true do |t|
@@ -627,22 +686,22 @@ ActiveRecord::Schema.define(:version => 20121017211058) do
   add_index "user_controls_specialists", ["user_id"], :name => "index_user_controls_specialists_on_user_id"
 
   create_table "users", :force => true do |t|
-    t.string   "email"
-    t.string   "persistence_token"
-    t.string   "crypted_password"
-    t.string   "password_salt"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "name"
-    t.string   "role"
-    t.string   "perishable_token",   :default => "",    :null => false
-    t.string   "saved_token"
-    t.integer  "type_mask",          :default => 1
-    t.datetime "last_request_at"
-    t.boolean  "agree_to_toc",       :default => false
-    t.boolean  "active",             :default => true
-    t.integer  "failed_login_count", :default => 0
-    t.date     "activated_at"
+    t.string    "email"
+    t.string    "persistence_token"
+    t.string    "crypted_password"
+    t.string    "password_salt"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string    "name"
+    t.string    "role"
+    t.string    "perishable_token",   :default => "",    :null => false
+    t.string    "saved_token"
+    t.integer   "type_mask",          :default => 1
+    t.timestamp "last_request_at"
+    t.boolean   "agree_to_toc",       :default => false
+    t.boolean   "active",             :default => true
+    t.integer   "failed_login_count", :default => 0
+    t.date      "activated_at"
   end
 
   create_table "versions", :force => true do |t|

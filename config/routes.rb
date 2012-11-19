@@ -33,6 +33,8 @@ Frasernw::Application.routes.draw do
   resources :sc_categories, :path => 'content_categories'
   resources :sc_items, :path => 'content_items'
   
+  resources :news_items
+  
   match "specialists/:id/:token/edit"   => 'specialists_editor#edit',   :as => 'specialist_self_edit'
   put   "specialists/:id/:token/update" => 'specialists_editor#update', :as => 'specialist_self_update'
   get   "specialists/:id/:token/pending"=> 'specialists_editor#pending',:as => 'specialist_self_pending'
