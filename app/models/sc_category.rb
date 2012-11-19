@@ -23,7 +23,7 @@ class ScCategory < ActiveRecord::Base
   end
   
   def self.global_nav
-    where("sc_categories.display_mask IN (?) AND sc_categories.ancestry is null", [2,4])
+    where("sc_categories.display_mask IN (?)", [2,4])
   end
   
   def self.specialty
