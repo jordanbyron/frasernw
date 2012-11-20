@@ -72,16 +72,18 @@
           - latest_events(5).each do |event|
             %p= event
             
-        %h2 Division Updates
-        
-        - NewsItem.news.each do |news_item|
+        - if NewsItem.news.length > 0
           
-          .news_item
-            .news_item_date= news_item.date if news_item.date.present?
-            .news_item_title= news_item.title if news_item.title.present?
-            .news_item_body
-              = BlueCloth.new(news_item.body).to_html.html_safe
-                  
+          %h2 Division Updates
+        
+          - NewsItem.news.each do |news_item|
+            
+            .news_item
+              .news_item_date= news_item.date if news_item.date.present?
+              .news_item_title= news_item.title if news_item.title.present?
+              .news_item_body
+                = BlueCloth.new(news_item.body).to_html.html_safe
+
         - if current_user_is_admin?
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Division Updates", news_items_path, :class => "btn btn-mini ajax")
