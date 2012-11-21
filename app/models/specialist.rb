@@ -71,6 +71,7 @@ class Specialist < ActiveRecord::Base
   before_save :destroy_photo?
   
   def self.in_cities(c)
+  #TODO - handle specialists that have moved away, not responded to survey, or are purposedly not yet surveyed
     city_ids = c.map{ |city| city.id }
     responded_direct = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id').where('"direct_location".locatable_type = "Office" AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL AND "direct_location".clinic_in_id IS NULL AND "specialists".categorization_mask = (?)', city_ids, 1)
   
