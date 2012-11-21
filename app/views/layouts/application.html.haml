@@ -188,14 +188,14 @@
                       - if can? :read, ScItem
                         %li= link_to "Content Items", sc_items_path, :class => "sc_item ajax"
                   
-                - ScCategory.global_nav.reject{ |category| category.sc_items.blank? }.each do |category|
+                - ScCategory.global_nav.reject{ |category| category.all_sc_items.blank? }.each do |category|
                   - if category.show_as_dropdown?
                     %li.dropdown
                       %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
                         = category.name
                         %b.caret
                       %ul.dropdown-menu
-                        - category.sc_items.each do |item|
+                        - category.all_sc_items.each do |item|
                           - if item.link? || item.document?
                             %li= link_to item.title, item.link? ? item.url : item.document.url, :target => '_blank'
                           - else

@@ -106,7 +106,13 @@ class Specialist < ActiveRecord::Base
   end
   
   def cities
-    offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
+    if responded?
+      offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
+    elsif hospital_or_clinic_only?
+      (hospitals.map{ |h| h.city } + clinics.map{ |c| c.city }).reject{ |i| i == nil }.uniq
+    else
+      []
+    end
   end
   
   def divisions
