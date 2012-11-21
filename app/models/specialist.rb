@@ -100,9 +100,15 @@ class Specialist < ActiveRecord::Base
   belongs_to :referral_clinic, :class_name => "Clinic"
   
   def city
-    o = offices.first
-    return nil if o.blank?
-    return o.city
+    if responded?
+      o = offices.first
+      return nil if o.blank?
+      return o.city
+    elsif hospital_or_clinic_only?
+      (hospitals.map{ |h| h.city } + clinics.map{ |c| c.city }).reject{ |i| i == nil }.uniq.first
+    else
+      nil
+    end
   end
   
   def cities
