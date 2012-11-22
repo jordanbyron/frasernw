@@ -26,6 +26,10 @@ class Ability
           (entity.divisions & user.divisions).present?
         end
         
+        can :read, City do |city|
+          (city.divisions & user.divisions).present?
+        end
+        
         #can edit non-admin/super-admin users
         can :manage, User do |user|
           user.user?

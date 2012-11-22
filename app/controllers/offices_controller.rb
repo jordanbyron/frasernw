@@ -1,5 +1,6 @@
 class OfficesController < ApplicationController
   load_and_authorize_resource
+  load_and_authorize_resource :city
   
   def index
     if params[:city_id].present?
