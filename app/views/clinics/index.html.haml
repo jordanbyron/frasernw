@@ -9,8 +9,8 @@
       - clinics = current_user_is_super_admin? ? specialization.clinics : specialization.clinics.in_divisions(current_user_divisions)
       - next if clinics.blank?
       %tr{ :class => specialization.in_progress ? "in-progress" : "" }
-        %th= specialization.name
-        %th City
+        %th{:style => "width:75%"}= specialization.name
+        %th{:style => "width:25%"} City
         %th.admin
 
       - clinics.each do |clinic|

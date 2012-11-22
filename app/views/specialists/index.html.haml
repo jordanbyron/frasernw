@@ -8,9 +8,9 @@
     -Specialization.all.each do |specialization|
       - specialists = current_user_is_super_admin? ? specialization.specialists : specialization.specialists.in_divisions(current_user_divisions)
       - next if specialists.blank?
-      %tr{ :class => specialization.in_progress ? "in-progress" : "" } 
-        %th=specialization.name
-        %th Cities
+      %tr{ :class => specialization.in_progress ? "in-progress" : "" }
+        %th{:style => "width:50%"}= specialization.name
+        %th{:style => "width:50%"} Cities
         %th.admin
         
       - specialists.each do |specialist|

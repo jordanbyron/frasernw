@@ -6,8 +6,8 @@
 
   %table.table.table-condensed.table-striped
     %tr
-      %th Name
-      %th City
+      %th{:style => "width:50%"} Name
+      %th{:style => "width:50%"} City
       %th
     - hospitals = current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(current_user_divisions)
     - hospitals.each do |hospital|
