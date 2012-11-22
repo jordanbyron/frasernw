@@ -141,6 +141,14 @@ module ApplicationHelper
     end
   end
   
+  def current_user_cities
+    if current_user
+      return current_user.divisions.map { |d| d.cities }.flatten.uniq
+    else
+      return []
+    end
+  end
+  
   def current_user_cities_for_specializations(specializations)
     if current_user
       return specializations.map{ |specialization| City.for_user_in_specialization(current_user, specialization) }.flatten.uniq

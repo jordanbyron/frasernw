@@ -145,34 +145,34 @@
                             %li= link_to "New Specialty", new_specialization_path, :class => "ajax"
                           - if can? :create, User
                             %li= link_to "New User", new_user_path, :class => "ajax"
-                      - if can? :read, Procedure
+                      - if can? :index, Procedure
                         %li= link_to "Areas of Practice", procedures_path, :class => "ajax"
-                      - if can? :read, City
+                      - if can? :index, City
                         %li= link_to "Cities", cities_path, :class => "ajax"
-                      - if can? :read, Clinic
+                      - if can? :index, Clinic
                         %li= link_to "Clinics", clinics_path, :class => "ajax"
-                      - if can? :read, Division
+                      - if can? :index, Division
                         %li= link_to "Divisions", divisions_path, :class => "ajax"
-                      - if can? :read, HealthcareProvider
+                      - if can? :index, HealthcareProvider
                         %li= link_to "Healthcare Providers", healthcare_providers_path, :class => "ajax"
-                      - if can? :read, Hospital
+                      - if can? :index, Hospital
                         %li= link_to "Hospitals", hospitals_path, :class => "ajax"
-                      - if can? :read, Language
+                      - if can? :index, Language
                         %li= link_to "Languages", languages_path, :class => "ajax"
-                      - if can? :read, Office
+                      - if can? :index, Office
                         %li
                           = link_to "Offices", "#", :class => "arrow-right-after"
                           %ul.dropdown-menu
                             %li=link_to "All Offices", offices_path, :class => "ajax"
-                            - current_user.divisions.map{ |division| division.cities }.flatten.uniq.each do |city|
+                            - current_user_cities.each do |city|
                               %li=link_to "Offices in #{city.name}", city_offices_path(city), :class => 'office ajax'
-                      - if can? :read, Province
+                      - if can? :index, Province
                         %li= link_to "Provinces", provinces_path, :class => "ajax"
-                      - if can? :read, Specialist
+                      - if can? :index, Specialist
                         %li= link_to "Specialists", specialists_path, :class => "ajax"
-                      - if can? :read, Specialization
+                      - if can? :index, Specialization
                         %li= link_to "Specialties", specializations_path, :class => "ajax"
-                      - if can? :read, User
+                      - if can? :index, User
                         %li= link_to "Users", users_path, :class => "ajax"
                       %li.divider
                       %li.nav-header Content Management

@@ -30,6 +30,8 @@ class Ability
           (city.divisions & user.divisions).present?
         end
         
+        cannot :index, City
+        
         #can edit non-admin/super-admin users
         can :manage, User do |user|
           user.user?
