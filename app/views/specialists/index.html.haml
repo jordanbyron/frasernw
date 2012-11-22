@@ -6,14 +6,17 @@
 
   %table.table.table-condensed.table-striped
     -Specialization.all.each do |specialization|
+      - specialists = current_user_is_super_admin? ? specialization.specialists : specialization.specialists.in_divisions(current_user_divisions)
+      - next if specialists.blank?
       %tr{ :class => specialization.in_progress ? "in-progress" : "" } 
         %th=specialization.name
+        %th Cities
         %th.admin
         
-      - specialists = current_user_is_super_admin? ? specialization.specialists : specialization.specialists.in_divisions(current_user_divisions)
       - specialists.each do |specialist|
         %tr
           %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
+          %td= specialist.cities.map{ |c| c.name }.to_sentence
           %td.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
             = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")

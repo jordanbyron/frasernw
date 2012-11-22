@@ -6,16 +6,17 @@
 
   %table.table.table-condensed.table-striped
     -Specialization.all.each do |specialization|
-      -next if specialization.clinics.length == 0
+      - clinics = current_user_is_super_admin? ? specialization.clinics : specialization.clinics.in_divisions(current_user_divisions)
+      - next if clinics.blank?
       %tr{ :class => specialization.in_progress ? "in-progress" : "" }
-        %th
-          = specialization.name
+        %th= specialization.name
+        %th City
         %th.admin
 
-      - clinics = current_user_is_super_admin? ? specialization.clinics : specialization.clinics.in_divisions(current_user_divisions)
-      - clinics.in_divisions(current_user_divisions).each do |clinic|
+      - clinics.each do |clinic|
         %tr
           %td= link_to clinic.name, clinic_path(clinic), :class => 'ajax'
+          %td= clinic.city.present? ? clinic.city.name : ""
           %td.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path((clinic)), :class => "btn btn-mini ajax")
             = link_to("<i class='icon-trash'></i>".html_safe + " Delete", clinic, :confirm => "Delete #{clinic.name}?", :method => :delete, :class => "btn btn-mini")
