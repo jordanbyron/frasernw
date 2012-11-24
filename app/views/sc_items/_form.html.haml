@@ -28,6 +28,7 @@
   %h3 Content Options
   
   = f.input :searchable
+  = f.input :shareable
   = f.input :shared_care
 
   %h3 Content
@@ -35,7 +36,7 @@
   = f.input :title
   = f.input :type_mask, as: :select, collection: ScItem::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
   #link_section
-    = f.input :url
+    = f.input :url, :input_html => { :class => "span5" }
     = f.input :can_email_link
   #mardown_section
     = f.input :markdown_content

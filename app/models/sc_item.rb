@@ -1,5 +1,5 @@
 class ScItem < ActiveRecord::Base
-  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :shared_care, :url, :markdown_content, :document, :can_email_document, :can_email_link
+  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :shared_care, :url, :markdown_content, :document, :can_email_document, :can_email_link, :shareable
   
   belongs_to  :sc_category
   
@@ -11,6 +11,9 @@ class ScItem < ActiveRecord::Base
   
   has_many    :feedback_items, :as => :item, :conditions => { "archived" => false }
   has_many    :archived_feedback_items, :as => :item, :foreign_key => "item_id", :class_name => "FeedbackItem"
+  
+  has_many    :division_display_sc_items, :dependent => :destroy
+  has_many    :divisions_sharing, :through => :division_display_sc_items, :class_name => "Division"
   
   has_attached_file :document,
   :storage => :s3,

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121119191709) do
+ActiveRecord::Schema.define(:version => 20121124204855) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -187,6 +187,13 @@ ActiveRecord::Schema.define(:version => 20121119191709) do
   create_table "division_cities", :force => true do |t|
     t.integer  "division_id"
     t.integer  "city_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "division_display_scitem", :force => true do |t|
+    t.integer  "division_id"
+    t.integer  "sc_item_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -453,21 +460,23 @@ ActiveRecord::Schema.define(:version => 20121119191709) do
   add_index "sc_item_specializations", ["specialization_id"], :name => "index_sc_item_specializations_on_specialization_id"
 
   create_table "sc_items", :force => true do |t|
-    t.integer   "sc_category_id"
-    t.string    "title"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.integer   "type_mask"
-    t.string    "url"
-    t.text      "markdown_content"
-    t.boolean   "searchable",            :default => true
-    t.boolean   "shared_care",           :default => false
-    t.string    "document_file_name"
-    t.string    "document_content_type"
-    t.integer   "document_file_size"
-    t.timestamp "document_updated_at"
-    t.boolean   "can_email_document",    :default => false
-    t.boolean   "can_email_link",        :default => true
+    t.integer  "sc_category_id"
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "type_mask"
+    t.string   "url"
+    t.text     "markdown_content"
+    t.boolean  "searchable",            :default => true
+    t.boolean  "shared_care",           :default => false
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.boolean  "can_email_document",    :default => false
+    t.boolean  "can_email_link",        :default => true
+    t.integer  "division_id"
+    t.boolean  "shareable",             :default => true
   end
 
   add_index "sc_items", ["sc_category_id"], :name => "index_sc_items_on_sc_category_id"

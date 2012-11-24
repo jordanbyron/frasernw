@@ -8,12 +8,14 @@
     %tr
       %th Name
       %th Province
+      %th Divisions
       %th.admin
 
     - @cities.each do |city|
       %tr
         %td= link_to city.name, city, :class => 'ajax'
         %td= city.province
+        %td= city.divisions.map{ |d| d.name }.to_sentence
         %td.admin.btn-group
           = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_city_path(city), :class => "btn btn-mini ajax")
           = link_to("<i class='icon-trash'></i>".html_safe + " Delete", city, :confirm => "Delete #{city.name}?", :method => :delete, :class => "btn btn-mini")
