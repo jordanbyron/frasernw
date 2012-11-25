@@ -26,11 +26,17 @@ class Ability
           (entity.divisions & user.divisions).present?
         end
         
+        #so that an admin can list offices by city for those in their division
         can :read, City do |city|
           (city.divisions & user.divisions).present?
         end
         
+        #admin can not list all cities, though
         cannot :index, City
+        
+        can :manage, ScItem do |item|
+          (user.divisions.include? item.division).present?
+        end
         
         #can edit non-admin/super-admin users
         can :manage, User do |user|

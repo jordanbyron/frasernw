@@ -191,7 +191,7 @@ ActiveRecord::Schema.define(:version => 20121124204855) do
     t.datetime "updated_at"
   end
 
-  create_table "division_display_scitem", :force => true do |t|
+  create_table "division_display_sc_items", :force => true do |t|
     t.integer  "division_id"
     t.integer  "sc_item_id"
     t.datetime "created_at"

@@ -43,7 +43,7 @@
       %a#clinics{"href" => "#{specialization_path(specialization)}#clinics"}
         %span Clinics
     - ScCategory.specialty.each do |sc_category|
-      - if sc_category.sc_items_for_specialization(specialization).present?
+      - if sc_category.sc_items_for_specialization_in_divisions(specialization, current_user_divisions).present?
         %li
           %a{"href" => "#{specialization_path(specialization)}##{sc_category.name.remove_whitespace}", "id" => sc_category.name.remove_whitespace}
             %span= sc_category.name

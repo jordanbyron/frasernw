@@ -27,6 +27,11 @@
 
   %h3 Content Options
   
+  - if current_user_is_super_admin?
+    = f.input :division_id, as: :select, :collection => Division.all, :include_blank => false
+  - elsif current_user_divisions.length > 1
+    = f.input :division_id, as: :select, :collection => current_user_divisions
+    
   = f.input :searchable
   = f.input :shareable
   = f.input :shared_care

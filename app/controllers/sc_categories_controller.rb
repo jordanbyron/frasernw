@@ -11,6 +11,7 @@ class ScCategoriesController < ApplicationController
   
   def show
     @sc_category = ScCategory.find(params[:id])
+    @sc_items = @sc_category.all_sc_items_in_divisions( current_user_is_super_admin? ? Division.all : current_user_divisions )
     @feedback = FeedbackItem.new
     render :layout => 'ajax' if request.headers['X-PJAX']
   end

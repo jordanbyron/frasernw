@@ -54,26 +54,42 @@ class ScCategory < ActiveRecord::Base
     show_on_front_page
   end
 
-  def all_sc_items
-    items = sc_items
+  def owned_sc_items_in_divisions(divisions)
+    items = sc_items.owned_in_divisions(divisions)
     self.children.each do |child|
-      items += child.all_sc_items
+      items += child.owned_sc_items_in_divisions(divisions)
     end
     items
   end
 
-  def sc_items_for_specialization(specialization)
-    items = sc_items.for_specialization(specialization)
+  def shared_sc_items_in_divisions(divisions)
+    items = sc_items.shared_in_divisions(divisions)
     self.children.each do |child|
-      items += child.sc_items.for_specialization(specialization)
+      items += child.shared_sc_items_in_divisions(divisions)
     end
     items
   end
 
-  def sc_items_for_procedure(procedure)
-    items = sc_items.for_procedure(procedure)
+  def all_sc_items_in_divisions(divisions)
+    items = sc_items.all_in_divisions(divisions)
     self.children.each do |child|
-      items += child.sc_items.for_procedure(procedure)
+      items += child.all_sc_items_in_divisions(divisions)
+    end
+    items
+  end
+
+  def sc_items_for_specialization_in_divisions(specialization, divisions)
+    items = sc_items.for_specialization_in_divisions(specialization, divisions)
+    self.children.each do |child|
+      items += child.sc_items_for_specialization_in_divisions(specialization, divisions)
+    end
+    items
+  end
+
+  def sc_items_for_procedure_in_divisions(procedure, divisions)
+    items = sc_items.for_procedure_in_divisions(procedure, divisions)
+    self.children.each do |child|
+      items += child.sc_items_for_procedure_in_divisions(procedure, divisions)
     end
     items.flatten.uniq
   end
