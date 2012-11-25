@@ -9,7 +9,7 @@ class ScCategory < ActiveRecord::Base
   
   has_ancestry
   
-  default_scope order('sc_categories.sort_order')
+  default_scope order('sc_categories.sort_order, sc_categories.name')
   
   DISPLAY_HASH = {
     2 => "In global navigation",
