@@ -1,0 +1,60 @@
+- title "Content Items"
+
+.content-wrapper
+
+  %h2 Content Items Created by Other Divisions that can be Shared with #{@division.name}
+  
+  = simple_nested_form_for @division, :url => {:action => 'update_shared'}, :html => { :class => "form-horizontal ajax" } do |f|
+    - if not f.error_messages.blank?
+      .alert.alert-error= f.error_messages
+
+    - division_shareable_items = ScItem.shareable_by_divisions([@division])
+    - division_shared_items = ScItem.shared_in_divisions([@division])
+    - categories = ScCategory.all.reject{ |category| category.parent.present? || (category.all_shareable_sc_items - division_shareable_items).blank? }
+
+    .tabbable
+      %ul.nav.nav-tabs
+        - active = true
+        - categories.each do |category|
+          %li{:class => active && "active"}
+            %a{"href" => "##{category.name.remove_whitespace}_tab", "data-toggle" => "tab"}= category.name
+          - active = false
+
+    
+      .tab-content
+        - active = true
+        - categories.each do |category|
+          .tab-pane{"id" => "#{category.name.remove_whitespace}_tab", :class => active && "active"}
+            %table.table.table-condensed.table-striped
+              %tr
+                %th Share?
+                %th Title
+                %th Created By
+                %th Subcategory
+                %th Specialties
+                %th Type
+                %th Searchable?
+                %th Shared Care?
+
+              - (category.all_shareable_sc_items - division_shareable_items).each do |sc_item|
+                %tr
+                  %td= check_box_tag "division_shared_sc_item_ids_#{sc_item.id}", sc_item.id, (division_shared_items.include? sc_item), :name => "division[shared_sc_item_ids][]", :class => "check_boxes optional"
+                  %td{"width" => "40%"}= link_to sc_item.title, sc_item, :class => 'ajax'
+                  %td= sc_item.division.name
+                  %td= sc_item.sc_category != category ? (link_to sc_item.sc_category.name, sc_item.sc_category, :class => 'ajax') : ""
+                  %td
+                    %ul
+                      - sc_item.sc_item_specializations.each do |is|
+                        %li
+                          = link_to is.specialization.name, is.specialization, :class => 'ajax'
+                          - if is.procedure_specializations.present?
+                            = ": #{is.procedure_specializations.map{ |ps| link_to ps.procedure.name, ps.procedure, :class => 'ajax' }.to_sentence}".html_safe
+                  %td= sc_item.type
+                  %td= sc_item.searchable ? "Yes" : "No"
+                  %td= sc_item.shared_care? ? "Yes" : "No"
+                  
+          - active = false
+
+    .form-actions
+      = f.button :submit, "Update shared content items", :class => "btn btn-primary"
+      %a.btn.btn-danger.ajax{"href" => divisions_path} Cancel

@@ -1,5 +1,8 @@
 class DivisionsController < ApplicationController
   load_and_authorize_resource
+  skip_authorize_resource :only => [:shared_sc_items, :update_shared]
+  skip_authorization_check :only => [:shared_sc_items, :update_shared]
+  before_filter :authorize_division_for_user, :only => [:shared_sc_items, :update_shared]
   
   def index
     @divisions = Division.all
@@ -97,9 +100,31 @@ class DivisionsController < ApplicationController
     end
   end
   
+  def shared_sc_items
+    @division = Division.find(params[:id])
+    render :layout => 'ajax' if request.headers['X-PJAX']
+  end
+  
+  def update_shared
+    @division = Division.find(params[:id])
+    if @division.update_attributes(params[:division])
+      redirect_to shared_content_items_path(@division), :notice  => "Successfully updated shared content items."
+    else
+      render :action => 'shared_sc_items'
+    end
+  end
+  
   def destroy
     @division = Division.find(params[:id])
     @division.destroy
     redirect_to divisions_path, :notice => "Successfully deleted division."
+  end
+  
+  private
+  
+  def authorize_division_for_user
+    if !(current_user_divisions.include? Division.find(params[:id]))
+      redirect_to root_url, :notice => "You are not allowed to access this page"
+    end
   end
 end

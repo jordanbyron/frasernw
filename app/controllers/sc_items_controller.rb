@@ -76,7 +76,7 @@ class ScItemsController < ApplicationController
         end
       end
       redirect_to @sc_item, :notice  => "Successfully updated content item."
-    else
+      else
       render :action => 'edit'
     end
   end

@@ -1,6 +1,6 @@
 class Division < ActiveRecord::Base
   
-  attr_accessible :name, :city_ids
+  attr_accessible :name, :city_ids, :shared_sc_item_ids
    
   has_many :division_cities, :dependent => :destroy
   has_many :cities, :through => :division_cities
@@ -10,6 +10,9 @@ class Division < ActiveRecord::Base
   
   has_many :division_users, :dependent => :destroy
   has_many :users, :through => :division_users
+  
+  has_many :division_display_sc_items, :dependent => :destroy
+  has_many :shared_sc_items, :through => :division_display_sc_items, :source => "sc_item", :class_name => "ScItem"
   
   has_paper_trail
   

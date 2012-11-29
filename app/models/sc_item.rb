@@ -32,25 +32,34 @@ class ScItem < ActiveRecord::Base
   def self.for_specialization_in_divisions(specialization, divisions)
     division_ids = divisions.map{ |d| d.id }
     owned = joins(:sc_item_specializations).where('"sc_item_specializations"."specialization_id" = (?) AND "sc_items"."division_id" IN (?)', specialization.id, division_ids)
-    shared = joins(:sc_item_specializations, :division_display_sc_items).where('"sc_item_specializations"."specialization_id" = (?) AND "division_display_sc_items"."division_id" in (?)', specialization.id, division_ids)
+    shared = joins(:sc_item_specializations, :division_display_sc_items).where('"sc_item_specializations"."specialization_id" = (?) AND "division_display_sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', specialization.id, division_ids, true)
     (owned + shared).uniq
   end
   
   def self.for_procedure_in_divisions(procedure, divisions)
     division_ids = divisions.map{ |d| d.id }
     owned = joins([:sc_item_specializations, :sc_item_specialization_procedure_specializations, :procedure_specializations]).where('sc_item_specializations.id = sc_item_specialization_procedure_specializations.sc_item_specialization_id AND sc_item_specialization_procedure_specializations.procedure_specialization_id = procedure_specializations.id AND procedure_specializations.procedure_id = ? AND "sc_items"."division_id" IN (?)', procedure.id, division_ids)
-    shared = joins([:sc_item_specializations, :sc_item_specialization_procedure_specializations, :procedure_specializations, :division_display_sc_items]).where('sc_item_specializations.id = sc_item_specialization_procedure_specializations.sc_item_specialization_id AND sc_item_specialization_procedure_specializations.procedure_specialization_id = procedure_specializations.id AND procedure_specializations.procedure_id = ? AND "division_display_sc_items"."division_id" in (?)', procedure.id, division_ids)
+    shared = joins([:sc_item_specializations, :sc_item_specialization_procedure_specializations, :procedure_specializations, :division_display_sc_items]).where('sc_item_specializations.id = sc_item_specialization_procedure_specializations.sc_item_specialization_id AND sc_item_specialization_procedure_specializations.procedure_specialization_id = procedure_specializations.id AND procedure_specializations.procedure_id = ? AND "division_display_sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', procedure.id, division_ids, true)
     (owned + shared).uniq
   end
   
   def self.owned_in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
-    owned = where('"sc_items"."division_id" IN (?)', division_ids)
+    where('"sc_items"."division_id" IN (?)', division_ids)
   end
   
   def self.shared_in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
-    shared = joins('INNER JOIN "division_display_sc_items" ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"').where('"division_display_sc_items"."division_id" in (?)', division_ids)
+    joins('INNER JOIN "division_display_sc_items" ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"').where('"division_display_sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', division_ids, true)
+  end
+  
+  def self.shareable_by_divisions(divisions)
+    division_ids = divisions.map{ |d| d.id }
+    where('"sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', division_ids, true)
+  end
+  
+  def self.shareable
+    where('"sc_items"."shareable" = (?)', true)
   end
   
   def self.all_in_divisions(divisions)

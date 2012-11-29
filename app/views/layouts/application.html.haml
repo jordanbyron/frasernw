@@ -187,6 +187,20 @@
                         %li= link_to "Content Categories", sc_categories_path, :class => "sc_category ajax"
                       - if can? :read, ScItem
                         %li= link_to "Content Items", sc_items_path, :class => "sc_item ajax"
+                        - if current_user_is_super_admin?
+                          %li
+                            = link_to "Manage Shared Content Items For...", "#", :class => "create arrow-right-after"
+                            %ul.dropdown-menu
+                              - Division.all.each do |division|
+                                %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
+                        - elsif current_user_divisions.length > 1
+                          %li
+                            = link_to "Manage Shared Content Items For...", "#", :class => "create arrow-right-after"
+                            %ul.dropdown-menu
+                              - current_user_divisions.each do |division|
+                                %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
+                        - elsif current_user_divisions.length == 1
+                          %li= link_to "Manage Shared Content Items", shared_content_items_path(current_user_divisions.first), :class => "sc_item ajax"
                   
                 - ScCategory.global_nav.reject{ |category| category.all_sc_items_in_divisions(current_user_divisions).blank? }.each do |category|
                   - if category.show_as_dropdown?

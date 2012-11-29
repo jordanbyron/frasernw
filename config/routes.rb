@@ -34,6 +34,9 @@ Frasernw::Application.routes.draw do
   resources :sc_categories, :path => 'content_categories'
   resources :sc_items, :path => 'content_items'
   
+  match "/divisions/:id/content_items" => "divisions#shared_sc_items", :as => "shared_content_items"
+  put   "/divisions/:id/update_shared" => "divisions#update_shared", :as => "update_shared"
+  
   resources :news_items
   
   match "specialists/:id/:token/edit"   => 'specialists_editor#edit',   :as => 'specialist_self_edit'

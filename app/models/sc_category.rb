@@ -54,18 +54,26 @@ class ScCategory < ActiveRecord::Base
     show_on_front_page
   end
 
-  def owned_sc_items_in_divisions(divisions)
-    items = sc_items.owned_in_divisions(divisions)
+  def all_shareable_sc_items
+    items = sc_items.shareable
     self.children.each do |child|
-      items += child.owned_sc_items_in_divisions(divisions)
+      items += child.all_shareable_sc_items
     end
     items
   end
 
-  def shared_sc_items_in_divisions(divisions)
+  def all_owned_sc_items_in_divisions(divisions)
+    items = sc_items.owned_in_divisions(divisions)
+    self.children.each do |child|
+      items += child.all_owned_sc_items_in_divisions(divisions)
+    end
+    items
+  end
+
+  def all_shared_sc_items_in_divisions(divisions)
     items = sc_items.shared_in_divisions(divisions)
     self.children.each do |child|
-      items += child.shared_sc_items_in_divisions(divisions)
+      items += child.all_shared_sc_items_in_divisions(divisions)
     end
     items
   end

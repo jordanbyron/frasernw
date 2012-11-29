@@ -460,23 +460,23 @@ ActiveRecord::Schema.define(:version => 20121124204855) do
   add_index "sc_item_specializations", ["specialization_id"], :name => "index_sc_item_specializations_on_specialization_id"
 
   create_table "sc_items", :force => true do |t|
-    t.integer  "sc_category_id"
-    t.string   "title"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "type_mask"
-    t.string   "url"
-    t.text     "markdown_content"
-    t.boolean  "searchable",            :default => true
-    t.boolean  "shared_care",           :default => false
-    t.string   "document_file_name"
-    t.string   "document_content_type"
-    t.integer  "document_file_size"
-    t.datetime "document_updated_at"
-    t.boolean  "can_email_document",    :default => false
-    t.boolean  "can_email_link",        :default => true
-    t.integer  "division_id"
-    t.boolean  "shareable",             :default => true
+    t.integer   "sc_category_id"
+    t.string    "title"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.integer   "type_mask"
+    t.string    "url"
+    t.text      "markdown_content"
+    t.boolean   "searchable",            :default => true
+    t.boolean   "shared_care",           :default => false
+    t.string    "document_file_name"
+    t.string    "document_content_type"
+    t.integer   "document_file_size"
+    t.timestamp "document_updated_at"
+    t.boolean   "can_email_document",    :default => false
+    t.boolean   "can_email_link",        :default => true
+    t.integer   "division_id"
+    t.boolean   "shareable",             :default => true
   end
 
   add_index "sc_items", ["sc_category_id"], :name => "index_sc_items_on_sc_category_id"
@@ -641,6 +641,7 @@ ActiveRecord::Schema.define(:version => 20121124204855) do
     t.integer   "owner_id"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.integer   "division_id"
   end
 
   create_table "specializations", :force => true do |t|
@@ -650,6 +651,20 @@ ActiveRecord::Schema.define(:version => 20121124204855) do
     t.boolean   "in_progress", :default => false
     t.string    "saved_token"
     t.string    "member_name"
+  end
+
+  create_table "user_cities", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "city_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_city_specializations", :force => true do |t|
+    t.integer  "user_city_id"
+    t.integer  "specialization_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "user_controls_clinics", :force => true do |t|

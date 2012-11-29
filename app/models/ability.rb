@@ -35,7 +35,7 @@ class Ability
         cannot :index, City
         
         can :manage, ScItem do |item|
-          (user.divisions.include? item.division).present?
+          user.divisions.include? item.division
         end
         
         #can edit non-admin/super-admin users

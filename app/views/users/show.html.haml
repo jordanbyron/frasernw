@@ -11,7 +11,7 @@
     %strong Role:
     = @user.role_full
     
-  - if @user.pending
+  - if @user.pending?
     %p.no_indent.space
       %strong Access Key:
       = @user.token
@@ -23,12 +23,14 @@
         - @user.divisions.each do |d|
           %li= link_to d.name, d, :class => 'ajax'
     
-  - if @user.admin? && @user.specializations.present?
-    %p.no_indent.space 
-      %strong Specializations owned
-      %ul
-        - @user.specializations.each do |s|
-          %li= link_to s.name, s, :class => 'ajax'
+  - @user.divisions.each do |division|
+    - specialization_owners = @user.specialization_owners.for_division(division).reject{ |so| so.specialization.blank? }
+    - if @user.admin? && specialization_owners.present?
+      %p.no_indent.space 
+        %strong Specializations owned in #{division.name}
+        %ul
+          - specialization_owners.each do |so|
+            %li= link_to so.specialization.name, so.specialization, :class => 'ajax'
 
   - if !@user.admin?
     - if @user.controlled_specialists.length > 0

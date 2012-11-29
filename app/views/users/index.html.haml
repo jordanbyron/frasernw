@@ -38,7 +38,15 @@
                   %td= user.divisions.map{ |s| s.name }.to_sentence
                   %td= user.activated_at.present? ? user.activated_at.strftime("%Y-%m-%d") : user.created_at.strftime("%Y-%m-%d")
                   %td= user.email
-                  %td= user.specializations.map{ |s| s.name }.to_sentence
+                  %td
+                    - user.divisions.each do |division|
+                      - specialization_owners = user.specialization_owners.for_division(division).reject{ |so| so.specialization.blank? }
+                      - if user.admin? && specialization_owners.present?
+                        %ul
+                          Specializations owned in #{division.name}
+                          - specialization_owners.each do |so|
+                            %li= link_to so.specialization.name, so.specialization, :class => 'ajax'
+            
                   %td.admin.btn-group
                     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
 
@@ -60,7 +68,14 @@
                   %td= user.divisions.map{ |s| s.name }.to_sentence
                   %td= user.activated_at.present? ? user.activated_at.strftime("%Y-%m-%d") : user.created_at.strftime("%Y-%m-%d")
                   %td= user.email
-                  %td= user.specializations.map{ |s| s.name }.to_sentence
+                  %td
+                    - user.divisions.each do |division|
+                      - specialization_owners = user.specialization_owners.for_division(division).reject{ |so| so.specialization.blank? }
+                      - if user.admin? && specialization_owners.present?
+                        %ul
+                          Specializations owned in #{division.name}
+                          - specialization_owners.each do |so|
+                            %li= link_to so.specialization.name, so.specialization, :class => 'ajax'
                   %td.admin.btn-group
                     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
 

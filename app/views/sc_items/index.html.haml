@@ -4,7 +4,7 @@
 
   %h2 Content Items
   
-  - categories = ScCategory.all.reject{ |category| category.parent.present? || category.owned_sc_items_in_divisions(current_user_divisions).blank? }
+  - categories = ScCategory.all.reject{ |category| category.parent.present? || category.all_owned_sc_items_in_divisions(current_user_divisions).blank? }
 
   .tabbable
     %ul.nav.nav-tabs
@@ -29,7 +29,7 @@
               %th Shared Care?
               %th.admin
 
-            - category.owned_sc_items_in_divisions(current_user_divisions).each do |sc_item|
+            - category.all_owned_sc_items_in_divisions(current_user_divisions).each do |sc_item|
               %tr
                 %td{"width" => "40%"}= link_to sc_item.title, sc_item, :class => 'ajax'
                 %td= sc_item.sc_category != category ? (link_to sc_item.sc_category.name, sc_item.sc_category, :class => 'ajax') : ""
