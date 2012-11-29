@@ -90,6 +90,10 @@
 
               %p.space.no_indent This specialist has retired.
               
+            - elsif @specialist.permanently_unavailable?
+
+              %p.space.no_indent This specialist is no longer available.
+              
             - elsif @specialist.purposely_not_yet_surveyed? || @specialist.hospital_or_clinic_only?
             
               - show_areas_of_practice = true
