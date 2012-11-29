@@ -120,7 +120,7 @@
                     %label
                       %input.ic#icall{"type" => "radio", "name" => "ic#{@sc_category.id}", "checked" => "checked"} All
                     - @sc_category.children.each do |subcategory|
-                      - next if subcategory.sc_items.blank?
+                      - next if subcategory.all_sc_items_in_divisions(current_user_divisions).blank?
                       %label
                         %input.ic{"type" => "radio", "name" => "ic#{@sc_category.id}", "id" => "ic#{subcategory.id}_"}= subcategory.name
                         
@@ -132,7 +132,7 @@
                   %label
                     %input.is#isall{"type" => "radio", "name" => "is#{@sc_category.id}", "checked" => "checked"} All
                   - Specialization.all.each do |s|
-                    - next if @sc_category.sc_items_for_specialization(s).blank?
+                    - next if @sc_category.all_sc_items_for_specialization_in_divisions(s, current_user_divisions).blank?
                     %label
                       %input.is{"type" => "radio", "name" => "is#{@sc_category.id}", "id" => "is#{s.id}_"}= s.name
 

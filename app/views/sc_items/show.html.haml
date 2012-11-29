@@ -45,7 +45,7 @@
         %a#clinics{"href" => "#{specialization_path(specialization)}#clinics"}
           %span Clinics
     - ScCategory.specialty.each do |sc_category|
-      - if sc_category.sc_items_for_specialization_in_divisions(specialization, current_user_divisions).present?
+      - if sc_category.all_sc_items_for_specialization_in_divisions(specialization, current_user_divisions).present?
         %li{:class => sc_category.subtree.include?(@sc_item.sc_category) && "active"}
           %a{"href" => "#{specialization_path(specialization)}##{sc_category.name.remove_whitespace}"}
             %span= sc_category.name

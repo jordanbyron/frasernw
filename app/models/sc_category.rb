@@ -86,18 +86,18 @@ class ScCategory < ActiveRecord::Base
     items
   end
 
-  def sc_items_for_specialization_in_divisions(specialization, divisions)
+  def all_sc_items_for_specialization_in_divisions(specialization, divisions)
     items = sc_items.for_specialization_in_divisions(specialization, divisions)
     self.children.each do |child|
-      items += child.sc_items_for_specialization_in_divisions(specialization, divisions)
+      items += child.all_sc_items_for_specialization_in_divisions(specialization, divisions)
     end
     items
   end
 
-  def sc_items_for_procedure_in_divisions(procedure, divisions)
+  def all_sc_items_for_procedure_in_divisions(procedure, divisions)
     items = sc_items.for_procedure_in_divisions(procedure, divisions)
     self.children.each do |child|
-      items += child.sc_items_for_procedure_in_divisions(procedure, divisions)
+      items += child.all_sc_items_for_procedure_in_divisions(procedure, divisions)
     end
     items.flatten.uniq
   end

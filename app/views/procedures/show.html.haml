@@ -72,7 +72,7 @@
         %a#clinics_tab{"href" => "#clinic_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'clinics']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
           %span Clinics
     - ScCategory.specialty.each do |sc_category|
-      - if sc_category.sc_items_for_procedure_in_divisions(@procedure, current_user_divisions).present?
+      - if sc_category.all_sc_items_for_procedure_in_divisions(@procedure, current_user_divisions).present?
         %li
           %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "id" => sc_category.name.remove_whitespace, "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
             %span= sc_category.name
@@ -381,7 +381,7 @@
     
       - ScCategory.specialty.each do |sc_category|
       
-        - items = sc_category.sc_items_for_procedure_in_divisions(@procedure, current_user_divisions)
+        - items = sc_category.all_sc_items_for_procedure_in_divisions(@procedure, current_user_divisions)
         - next if items.blank?
             
         .tab-pane{"id" => "#{sc_category.name.remove_whitespace}_tab"}  
@@ -464,7 +464,7 @@
                             %label
                               %input.ic#icall{"type" => "radio", "name" => "ic#{sc_category.id}", "checked" => "checked"} All
                             - sc_category.children.each do |subcategory|
-                              - next if subcategory.sc_items_for_procedure_in_divisions(@procedure, current_user_divisions).blank?
+                              - next if subcategory.all_sc_items_for_procedure_in_divisions(@procedure, current_user_divisions).blank?
                               %label
                                 %input.ic{"type" => "radio", "name" => "ic#{sc_category.id}", "id" => "ic#{subcategory.id}_"}= subcategory.name
 
