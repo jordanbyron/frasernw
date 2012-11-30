@@ -6,7 +6,7 @@ class NewsItem < ActiveRecord::Base
     elsif start_date_full.present?
       start_date_full
     elsif end_date_full.present?
-      start_date_full
+      end_date_full
     end
   end
   
