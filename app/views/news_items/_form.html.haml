@@ -5,8 +5,10 @@
   = f.input :title
   = f.input :breaking
   = f.input :start_date, :as => :datepicker
+  = f.input :show_start_date
   = f.input :end_date, :as => :datepicker
-  = f.input :body
+  = f.input :show_end_date, :hint => "The end date can be blank: if no end date is provided, the news item will expire after the start date, otherwise it will expire after the end date."
+  = f.input :body, :hint => "Accepts Markdown"
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
