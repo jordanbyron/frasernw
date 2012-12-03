@@ -98,7 +98,7 @@ en:
         suite_in: "Suite"
       news_item:
         breaking: "Show as breaking news"
-        end_date: "End date (can be blank)"
+        end_date: "End date"
         body: "News body"
       sc_category:
         display_mask: "Display items"
