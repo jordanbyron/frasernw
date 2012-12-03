@@ -156,9 +156,11 @@ class Clinic < ActiveRecord::Base
     #We either didn't pass in a division, or the interesection was blank with the clinic's actual divisions.
     #So just return the owner for the clinic's division
     divisions.each do |division|
-      specializations.specialization_owners.for_division(division).each do |specialization_owner|
-        if specialization_owner.owner.present?
-          return specialization_owner.owner
+      specialization.each do |specialization|
+        specialization.specialization_owners.for_division(division).each do |specialization_owner|
+          if specialization_owner.owner.present?
+            return specialization_owner.owner
+          end
         end
       end
     end
