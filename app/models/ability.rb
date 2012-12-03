@@ -26,6 +26,8 @@ class Ability
           (entity.divisions & user.divisions).present?
         end
         
+        can :create, [Specialist, Clinic, Hospital, Office]
+        
         #so that an admin can list offices by city for those in their division
         can :read, City do |city|
           (city.divisions & user.divisions).present?

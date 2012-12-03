@@ -255,7 +255,7 @@
           - [['Standalone', !@clinic.location.in_hospital?], ['In a hospital', @clinic.location.in_hospital?]].each do |location| 
             = label_tag "#{location_class}_#{location.first}", "#{radio_button_tag(location_class, location.first, location.second, :class => location_class)} #{location.first}".html_safe
       .hospital_0.no-print
-        = l.association :hospital_in, as: :select, collection: Hospital.all, :include_blank => true
+        = l.association :hospital_in, as: :select, collection: (current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(current_user_divisions)), :include_blank => true
       .details_0
         = l.input :suite_in, :input_html => { :class => "span1" }
         = l.input :details_in
@@ -265,7 +265,7 @@
           = a.input :address1
           = a.input :address2
           .no-print
-            = a.association :city, as: :select, collection: City.all.map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
+            = a.association :city, as: :select, collection: (current_user_is_super_admin? ? City.all : City.in_divisions(current_user_divisions)).map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
           = a.input :postalcode, :input_html => { :class => "span1" }
     .universal_0
       = f.input :sector_mask, as: :radio_buttons, collection: Clinic::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
