@@ -38,7 +38,7 @@
         %th{:style => "width:50%"} City
         %th.admin
 
-      - Hospital.all.each do |hospital|
+      - Hospital.in_divisions(current_user_divisions).each do |hospital|
         %tr
           %td= link_to hospital.name, hospital_path(hospital), :class => 'ajax'
           %td= hospital.city.present? ? hospital.city.name : ""
