@@ -27,7 +27,7 @@
                 - specialists.each do |specialist|
                   %tr
                     %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
-                    %td= specialist.city.present? ? specialist.city.name : ""
+                    %td= specialist.cities.map{ |c| c.name}.to_sentence
                     %td.admin.btn-group
                       = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path((specialist)), :class => "btn btn-mini ajax")
                       = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")
@@ -46,7 +46,7 @@
         - specialists.each do |specialist|
           %tr
             %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
-            %td= specialist.city.present? ? specialist.city.name : ""
+            %td= specialist.cities.map{ |c| c.name}.to_sentence
             %td.admin.btn-group
               = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path((specialist)), :class => "btn btn-mini ajax")
               = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")
