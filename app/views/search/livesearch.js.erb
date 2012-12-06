@@ -104,7 +104,7 @@ specialists.each do |specialist|
   next if specialist.specialist_specializations.reject{ |ss| ss.specialization.blank? or ss.specialization.in_progress }.length == 0
   
   entry = { 
-    "n" => specialist.name, 
+    "n" => specialist.billing_number_padded ? specialist.name + " - MSP #" + specialist.billing_number_padded: specialist.name, 
     "sp" => specialist.specialist_specializations.reject{ |ss| ss.specialization.blank? or ss.specialization.in_progress }.collect{ |ss| ss.specialization_id }, 
     "c" => specialist.cities.map{ |city| city.id },
     "st" => specialist.status_class_hash,
