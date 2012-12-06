@@ -1,0 +1,45 @@
+<%
+
+specialist_data = Hash.new
+
+@specialization.specialists.in_cities([@city]).each do |s|
+  next if not s.show_in_table?
+  specialist_data[s.id] = specialist_filtering_attributes(s, false).join(' ')
+end
+
+-%>
+
+<%= "specialists[#{@city.id}]" %> = <%=specialist_data.to_json.html_safe %>
+
+<%
+
+other_specialist_data = Hash.new
+
+other_specialists_in_cities(@specialization, [@city]).each do |s|
+  next if not s.show_in_table?
+  other_specialist_data[s.id] = Hash.new
+  other_specialist_data[s.id]['filters'] = specialist_filtering_attributes(s, true).join(' ')
+  other_specialist_data[s.id]['name'] = escape_javascript(s.name)
+  other_specialist_data[s.id]['specialties'] = escape_javascript(s.specializations.map{|sp| sp.name}.to_sentence)
+  other_specialist_data[s.id]['status_class'] = escape_javascript(s.status_class)
+  other_specialist_data[s.id]['status_sort'] = s.status_mask
+  other_specialist_data[s.id]['wait_time'] = escape_javascript(s.waittime)
+  other_specialist_data[s.id]['cities'] = escape_javascript(s.cities.map{ |c| c.name }.to_sentence)
+end
+
+-%>
+
+<%= "other_specialists[#{@city.id}]" %> = <%=other_specialist_data.to_json.html_safe %>
+
+<%
+
+clinic_data = Hash.new
+
+@specialization.clinics.in_cities([@city]).each do |c|
+  next if not c.show_in_table?
+  clinic_data[c.id] = clinic_filtering_attributes(c).join(' ')
+end
+
+-%>
+
+<%= "clinics[#{@city.id}]" %> = <%=clinic_data.to_json.html_safe %>

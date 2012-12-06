@@ -63,4 +63,12 @@ class SpecializationsController < ApplicationController
     @feedback = FeedbackItem.new
     render :show, :layout => 'ajax'
   end
+  
+  def city
+    @specialization = Specialization.find(params[:id])
+    @city = City.find(params[:city_id])
+    respond_to do |format|
+      format.js
+    end
+  end
 end

@@ -12,6 +12,7 @@ Frasernw::Application.routes.draw do
     resources :procedures, :path => 'areas_of_practice'
     resources :clinics
   end
+  match "specialties/:id/cities/:city_id"   => 'specializations#city',   :as => 'specialization_cities'
   resources :clinics
   resources :specialists
   resources :procedures, :path => 'areas_of_practice'
