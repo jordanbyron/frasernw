@@ -4,6 +4,7 @@
 - current_action = params[:action] == 'review' ? :accept : current_action                   #if we are reviewing a review queue edit
 - current_action = params[:controller] == 'specialists_editor' ? :update : current_action   #if we are making a review queue edit
 - form_action    = current_action
+- cancel_path    = params[:controller] == 'specialists_editor' ? root_url : specialist_path(@specialist)
 
 - if @review_item
   %script{"type" => "text/javascript"}
@@ -513,7 +514,7 @@
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
-    = link_to 'Cancel', specialists_path, :class => "btn btn-danger ajax"
+    = link_to 'Cancel', cancel_path, :class => "btn btn-danger ajax"
 
 %script{"type" => "text/javascript"}
   :plain
