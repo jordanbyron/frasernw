@@ -1,0 +1,15 @@
+<%
+cities = Hash.new
+City.all.each{ |city| cities[city.id] = city.name }
+-%>
+<%= "global_cities" %> = <%=cities.to_json.html_safe %>
+<%
+specialties = Hash.new
+Specialization.all.each{ |specialty| specialties[specialty.id] = specialty.name }
+-%>
+<%= "global_specialties" %> = <%=specialties.to_json.html_safe %>
+<%
+status_classes = Hash.new
+Specialist::STATUS_CLASS_HASH.each{|status_class, id| status_classes[id] = status_class }
+-%>
+<%= "global_status_classes" %> = <%=status_classes.to_json.html_safe %>

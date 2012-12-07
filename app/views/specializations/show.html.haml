@@ -53,28 +53,10 @@
   .content-wrapper
 
     %script{"type" => "text/javascript"}
-      $(document).ready(function() {
-      - @specialization.specialists.in_cities(user_cities).each do |s|
-        - next if not s.show_in_table?
-        $('#s#{s.id}').data('filter', '#{specialist_filtering_attributes(s, false).join(' ')}');
-        
-      - other_specialists = other_specialists_in_cities(@specialization, user_cities)
-      - other_specialists.each do |s|
-        - next if not s.show_in_table?
-        $('#specialist_table').data('s#{s.id}', '#{specialist_filtering_attributes(s, true).join(' ')}');
-        $('#specialist_table').data('s#{s.id}_name', '#{escape_javascript(s.name)}');
-        $('#specialist_table').data('s#{s.id}_specialties', '#{escape_javascript(s.specializations.map{|sp| sp.name}.to_sentence)}');
-        $('#specialist_table').data('s#{s.id}_status_class', '#{escape_javascript(s.status_class)}');
-        $('#specialist_table').data('s#{s.id}_status_sort', '#{s.status_mask}');
-        $('#specialist_table').data('s#{s.id}_wait_time', '#{escape_javascript(s.waittime)}');
-        $('#specialist_table').data('s#{s.id}_city', '#{escape_javascript(s.city.present? ? s.city.name : "")}');
-      $('#specialist_table').data('filter', '#{other_specialists.map{ |s| s.id }.join(' ')}');
+      = render 'lookup.js'
+      - current_user_cities.each do |city|
+        = render 'city.js', :city => city, :specialization => @specialization
       
-      - @specialization.clinics.in_cities(user_cities).each do |c|
-        - next if not c.show_in_table?
-        $('#c#{c.id}').data('filter', '#{clinic_filtering_attributes(c).join(' ')}');
-      });
-  
     .tab-content
       - if has_specialists
         #specialist_tab.tab-pane{:class => specialist_tab_class} 
