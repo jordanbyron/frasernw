@@ -16,44 +16,22 @@ function matches_filters( input, filters )
   return true
 }
 
-function show_others( entity_id, ids )
+function show_others( entity_id )
 {
-  var data_table = $('#' + entity_id + '_table');
-  $(ids).each( function() {
-    name = data_table.data('s' + this + '_name');
-    specialties = data_table.data('s' + this + '_specialties');
-    status_class = data_table.data('s' + this + '_status_class');
-    status_sort = data_table.data('s' + this + '_status_sort');
-    wait_time = data_table.data('s' + this + '_wait_time');
-    city = data_table.data('s' + this + '_city');
-    add_row( entity_id, this, '/' + entity_id + 's/' + this, name, status_class, status_sort, wait_time, city );
-  });
-  data_table.trigger('update', [true]);
-  
+  should_show_others = true;
   $('#' + entity_id + '_others').hide();
   $('#' + entity_id + '_hide_others').show();
   $('#' + entity_id + '_description_entity').html("specialists");
+  update_specialist_table();
 }
 
 function hide_others( entity_id, entity_name )
 {
-  $('#' + entity_id + '_table tbody tr.other').each(function () { $(this).remove() });
-  $('#' + entity_id + '_table').trigger('update', [true]);
+  should_show_others = false;
   $('#' + entity_id + '_others').show();
   $('#' + entity_id + '_hide_others').hide();
   $('#' + entity_id + '_description_entity').html(entity_name);
-}
-
-function add_row( entity_id, row_id, url, name, status_class, status_sort, wait_time, city )
-{
-  if (typeof $.fn.ajaxify !== 'function')
-  {
-    $('#' + entity_id + '_table tr:last').after($("<tr id='" + row_id + "' class='other'><td class=\"sp\"><a href=\"" + url + "\" class=\"ajax\">" + name + "</a> (" + specialties + ")</td><td class=\"st\"><i class=\"" + status_class + "\"></i><div class=\"status\">" + status_sort + "</div></td><td class=\"wt\">" + wait_time + "</td><td class=\"ct\">" + city + "</td></tr>"));
-  }
-  else
-  {
-    $('#' + entity_id + '_table tr:last').after($("<tr id='" + row_id + "' class='other'><td class=\"sp\"><a href=\"" + url + "\" class=\"ajax\">" + name + "</a> (" + specialties + ")</td><td class=\"st\"><i class=\"" + status_class + "\"></i><div class=\"status\">" + status_sort + "</div></td><td class=\"wt\">" + wait_time + "</td><td class=\"ct\">" + city + "</td></tr>").ajaxify());
-  }
+  update_specialist_table();
 }
 
 var update_table = function(prefix, entity_id, entity_name)
@@ -220,11 +198,11 @@ var update_table = function(prefix, entity_id, entity_name)
   //loop over each row of the table, hiding those which don't match our filters
   $('#' + entity_id + '_table tbody tr').each(function () {
     var row = $(this)
-      , row_filter = row.data('filter');
+      , row_filter = row.data('attributes');
     
-    if ( row.hasClass('other') )
+    if ( !should_show_others && row.hasClass('other') )
     {
-      row.remove();
+      row.hide();
     }
     else if ( current_filters.length == 0 )
     {
@@ -306,48 +284,42 @@ var update_table = function(prefix, entity_id, entity_name)
   current_filters.length != 0 ? assumed.hide() : assumed.show();
   
   // handle 'other specialists
-  
   var others = $('#' + entity_id + '_others');
-   
-  if ( procedures.length >= 1 )
+  var other_results = 0;
+  if((procedures.length >= 1))
   {
-    //filter out our entities from other specialities
-    var data_table = $('#' + entity_id + '_table')
-    var other_specialists = data_table.data('filter')
-    if (other_specialists)
-    {
-      var results = []
-      $(other_specialists.split(' ')).each( function() {
-        var specialist_filters = data_table.data('s' + this);
-        if ( specialist_filters && matches_filters( specialist_filters, current_filters ) )
+    $('#' + entity_id + '_table tbody tr').each(function () {
+      var row = $(this);
+      if ( row.hasClass('other') )
+      {
+        var row_filter = row.data('attributes');
+        if (row_filter && matches_filters(row_filter, current_filters))
         {
-          results.push( this );
+          other_results++;
         }
-      });
-      
-      if (results.length > 0)
-      {
-        others.show();
-        var description = (results.length > 1) ? 'There are ' + results.length + ' specialists from other specialties who match your search.' : 'There is 1 specialist from another specialty who matches your search.';
-        description += " <a href=\"javascript:void(0)\" onclick=\"show_others('" + entity_id + "', [" + results.join(', ') + "])\">Show</a> these specialists.";
-        others.html(description);
       }
-      else
-      {
-        others.hide();
-      }
+    });
+    if (!should_show_others && (other_results > 0))
+    {
+      others.show();
+      var description = (other_results > 1) ? 'There are ' + other_results + ' specialists from other specialties who match your search.' : 'There is 1 specialist from another specialty who matches your search.';
+      description += " <a href=\"javascript:void(0)\" onclick=\"show_others('" + entity_id + "')\">Show</a> these specialists.";
+      others.html(description);
+    }
+    else
+    {
+      others.hide();
     }
   }
-  else if ( others )
+  else if (others)
   {
     others.hide();
   }
   
   var hide_others = $('#' + entity_id + '_hide_others');
-  if ( hide_others )
+  if (hide_others)
   {
-    //this always starts hidden
-    hide_others.hide();
+    (should_show_others && (other_results > 0)) ? hide_others.show() : hide_others.hide();
   }
 }
 
@@ -408,6 +380,7 @@ var clear_filters = function(prefix, entity_id, entity_name) {
     $(this).val(0)
   });
   
+  should_show_others = false;
   update_table(prefix, entity_id, entity_name);
 }
 
@@ -424,21 +397,6 @@ var update_clinic_table = function()
 var update_office_table = function()
 {
   update_table('o', 'office', 'specialists');
-}
-
-var clear_specialist_filters = function()
-{
-  clear_filters('s', 'specialist', 'specialists');
-}
-
-var clear_clinic_filters = function() 
-{
-  clear_filters('c', 'clinic', 'clinics');
-}
-
-var clear_office_filters = function()
-{
-  clear_filters('o', 'office', 'specialists');
 }
 
 function clear_category_filters(category_id, category_name)
@@ -479,7 +437,7 @@ function update_category_table(category_id, category_name)
   //loop over each row of the table, hiding those which don't match our filters
   $('#' + category_id + '_table tbody tr').each(function () {
     var row = $(this)
-      , row_filter = row.data('filter');
+      , row_filter = row.data('attributes');
     
     if ( current_filters.length == 0 )
     {

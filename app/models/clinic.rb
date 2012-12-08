@@ -121,13 +121,6 @@ class Clinic < ActiveRecord::Base
     return a.city
   end
   
-  def city_entity
-    l = location
-    return nil if l.blank?
-    a = l.resolved_address
-    return a.present? ? a.city : nil
-  end
-  
   def resolved_address
     return location.resolved_address if location
     return nil

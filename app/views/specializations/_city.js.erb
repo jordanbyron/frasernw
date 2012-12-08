@@ -1,3 +1,5 @@
+<% cache(specialization_path(specialization) + "_" + city_path(city)) do %>
+current_cities["<%= city.id %>"] = true
 <%
 
 specialist_data = Hash.new
@@ -15,7 +17,7 @@ specialist_data = Hash.new
 end
 
 -%>
-<%= "specialists[#{city.id}]" %> = <%=specialist_data.to_json.html_safe %>
+specialist_data["<%= city.id %>"] = <%=specialist_data.to_json.html_safe %>
 <%
 
 clinic_data = Hash.new
@@ -24,7 +26,14 @@ clinic_data = Hash.new
   next if not c.show_in_table?
   clinic_data[c.id] = Hash.new
   clinic_data[c.id]['attributes'] = clinic_filtering_attributes(c).join(' ')
+  clinic_data[c.id]['name'] = escape_javascript(c.name)
+  clinic_data[c.id]['specialties'] = c.specializations.map{ |sp| sp.id }
+  clinic_data[c.id]['status_class'] = c.status_class_hash
+  clinic_data[c.id]['status_sort'] = c.status_mask
+  clinic_data[c.id]['wait_time'] = c.waittime_mask
+  clinic_data[c.id]['cities'] = c.city.present? ? [c.city.id] : []
 end
 
 -%>
-<%= "clinics[#{city.id}]" %> = <%=clinic_data.to_json.html_safe %>
+clinic_data["<%= city.id %>"] = <%=clinic_data.to_json.html_safe %>
+<% end %>
