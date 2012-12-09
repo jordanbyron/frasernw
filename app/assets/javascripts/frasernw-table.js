@@ -1,4 +1,4 @@
-function build_table()
+function build_tables()
 {
   for(var city_id in current_cities)
   {
@@ -8,39 +8,72 @@ function build_table()
       console.log("unloaded city: " + city_id);
       continue
     }
-    
-    for(var specialist_id in specialist_data[city_id])
-    {
-      var specialist = specialist_data[city_id][specialist_id];
-      var name = specialist.name;
-      var attributes = specialist.attributes;
-      var specialties = specialist.specialties.map(function(specialty_id) { return global_specialties[specialty_id] }).to_sentence();
-      var status_class = global_status_classes[specialist.status_class];
-      var status_sort = specialist.status_sort;
-      var wait_time = global_wait_times[specialist.wait_time];
-      var status_class = global_status_classes[specialist.status_class];
-      var cities = specialist.cities.map(function(city_id) { return global_cities[city_id] }).to_sentence();
-      add_row( 'specialist', specialist_id, '/specialists/' + specialist_id, name, status_class, status_sort, wait_time, cities, specialist.specialties, specialties, attributes );
-    }
+    add_specialist_city(city_id);
+    add_clinic_city(city_id);
   }
-  update_specialist_table();
 }
 
-function add_row( entity_id, row_id, url, name, status_class, status_sort, wait_time, city, specialty_ids, specialties, attributes )
+function add_specialist_city(city_id)
 {
-  var other = ($.inArray(current_specialty, specialty_ids) == -1)
-  var row_class = other ? "other" : ""
+  for(var specialist_id in specialist_data[city_id])
+  {
+    var specialist = specialist_data[city_id][specialist_id];
+    var name = specialist.name;
+    var attributes = specialist.attributes;
+    var specialties = specialist.specialties.map(function(specialty_id) { return global_specialties[specialty_id] }).to_sentence();
+    var status_class = global_status_classes[specialist.status_class];
+    var status_sort = specialist.status_class;
+    var wait_time = global_wait_times[specialist.wait_time];
+    var status_class = global_status_classes[specialist.status_class];
+    var cities = specialist.cities.map(function(city_id) { return global_cities[city_id] }).to_sentence();
+    var other = ($.inArray(current_specialty, specialist.specialties) == -1);
+    add_row('specialist', specialist_id, '/specialists/' + specialist_id, name, status_class, status_sort, wait_time, cities, specialties, attributes, other);
+  }
+  update_specialist_table();
+  $('#specialist_table').trigger('update', [true]);
+}
+
+function add_clinic_city(city_id)
+{
+  for(var clinic_id in clinic_data[city_id])
+  {
+    var clinic = clinic_data[city_id][clinic_id];
+    var name = clinic.name;
+    var attributes = clinic.attributes;
+    var specialties = clinic.specialties.map(function(specialty_id) { return global_specialties[specialty_id] }).to_sentence();
+    var status_class = global_status_classes[clinic.status_class];
+    var status_sort = clinic.status_class;
+    var wait_time = global_wait_times[clinic.wait_time];
+    var status_class = global_status_classes[clinic.status_class];
+    var cities = clinic.cities.map(function(city_id) { return global_cities[city_id] }).to_sentence();
+    add_row('clinic', clinic_id, '/clinics/' + clinic_id, name, status_class, status_sort, wait_time, cities, specialties, attributes, false);
+  }
+  
+  update_clinic_table();
+  $('#clinic_table').trigger('update', [true]);
+}
+
+function add_row( entity_type, entity_id, url, name, status_class, status_sort, wait_time, city, specialties, attributes, other )
+{
+  var row_id = entity_type + "_" + entity_id;
+  if ($("#" + row_id).length > 0)
+  {
+    //row already exists
+    return;
+  }
+  
+  var row_class = other ? "class='other'" : ""
   var row_specialties = other ? ("(" + specialties + ")") : ""
   
-  var row_html = $("<tr id='" + entity_id + "_" + row_id + "' class='" + row_class + "'><td class=\"sp\"><a href=\"" + url + "\" class=\"ajax\">" + name + "</a> " + row_specialties + "</td><td class=\"st\"><i class=\"" + status_class + "\"></i><div class=\"status\">" + status_sort + "</div></td><td class=\"wt\">" + wait_time + "</td><td class=\"ct\">" + city + "</td></tr>");
+  var row_html = $("<tr id='" + row_id + "' " + row_class + "><td class=\"sp\"><a href=\"" + url + "\" class=\"ajax\">" + name + "</a> " + row_specialties + "</td><td class=\"st\"><i class=\"" + status_class + "\"></i><div class=\"status\">" + status_sort + "</div></td><td class=\"wt\">" + wait_time + "</td><td class=\"ct\">" + city + "</td></tr>");
   
   if (typeof $.fn.ajaxify !== 'function')
   {
-    $('#' + entity_id + '_table tr:last').after(row_html);
+    $('#' + entity_type + '_table tr:last').after(row_html);
   }
   else
   {
-    $('#' + entity_id + '_table tr:last').after(row_html.ajaxify());
+    $('#' + entity_type + '_table tr:last').after(row_html.ajaxify());
   }
-  $('#' + entity_id + "_" + row_id).data('attributes', attributes);
+  $('#' + entity_type + "_" + entity_id).data('attributes', attributes);
 }

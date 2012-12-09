@@ -660,6 +660,11 @@ body.loading #email
         content: "\0000a0";
       } 
     }
+    
+    tbody tr.placeholder
+    {
+      display: none !important;
+    }
   }
   
   table.local_referral_area

@@ -10,9 +10,8 @@ specialist_data = Hash.new
   specialist_data[s.id]['attributes'] = specialist_filtering_attributes(s, false).join(' ')
   specialist_data[s.id]['name'] = escape_javascript(s.name)
   specialist_data[s.id]['specialties'] = s.specializations.map{ |sp| sp.id }
-  specialist_data[s.id]['status_class'] = s.status_class_hash
-  specialist_data[s.id]['status_sort'] = s.status_mask
-  specialist_data[s.id]['wait_time'] = s.waittime_mask
+  specialist_data[s.id]['status_class'] = "#{s.status_class_hash}"
+  specialist_data[s.id]['wait_time'] = "#{s.waittime_mask.present? ? s.waittime_mask : -1}"
   specialist_data[s.id]['cities'] = s.cities.map{ |c| c.id }
 end
 
@@ -28,9 +27,8 @@ clinic_data = Hash.new
   clinic_data[c.id]['attributes'] = clinic_filtering_attributes(c).join(' ')
   clinic_data[c.id]['name'] = escape_javascript(c.name)
   clinic_data[c.id]['specialties'] = c.specializations.map{ |sp| sp.id }
-  clinic_data[c.id]['status_class'] = c.status_class_hash
-  clinic_data[c.id]['status_sort'] = c.status_mask
-  clinic_data[c.id]['wait_time'] = c.waittime_mask
+  clinic_data[c.id]['status_class'] = "#{c.status_class_hash}"
+  clinic_data[c.id]['wait_time'] = "#{c.waittime_mask}"
   clinic_data[c.id]['cities'] = c.city.present? ? [c.city.id] : []
 end
 

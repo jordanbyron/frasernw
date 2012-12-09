@@ -15,7 +15,8 @@ Specialist::STATUS_CLASS_HASH.each{|status_class, id| status_classes[id] = statu
 var global_status_classes = <%=status_classes.to_json.html_safe %>
 <%
 wait_times = Hash.new
-Specialist::WAITTIME_HASH.each{|id, wait_time| wait_times [id] = wait_time }
+Specialist::WAITTIME_HASH.each{|id, wait_time| wait_times[id] = wait_time }
+wait_times[-1] = ""
 -%>
 var global_wait_times = <%=wait_times.to_json.html_safe %>
 var specialist_data = {}
