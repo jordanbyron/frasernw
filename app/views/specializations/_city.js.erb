@@ -3,6 +3,7 @@ current_cities["<%= city.id %>"] = true
 <%
 
 specialist_data = Hash.new
+specialist_procedures = Array.new
 
 (specialization.specialists.in_cities([city]) + other_specialists_in_cities(specialization, [city])).flatten.uniq.each do |s|
   next if not s.show_in_table?
@@ -13,13 +14,16 @@ specialist_data = Hash.new
   specialist_data[s.id]['status_class'] = "#{s.status_class_hash}"
   specialist_data[s.id]['wait_time'] = "#{s.waittime_mask.present? ? s.waittime_mask : -1}"
   specialist_data[s.id]['cities'] = s.cities.map{ |c| c.id }
+  specialist_procedures += specialist_procedure_filtering_attributes(s)
 end
 
 -%>
-specialist_data["<%= city.id %>"] = <%=specialist_data.to_json.html_safe %>
+specialist_data["<%= city.id %>"] = <%=specialist_data.to_json.html_safe %>;
+specialist_procedures["<%= city.id %>"] = <%=specialist_procedures.flatten.uniq.to_json.html_safe %>;
 <%
 
 clinic_data = Hash.new
+clinic_procedures = Array.new
 
 @specialization.clinics.in_cities([city]).each do |c|
   next if not c.show_in_table?
@@ -30,8 +34,10 @@ clinic_data = Hash.new
   clinic_data[c.id]['status_class'] = "#{c.status_class_hash}"
   clinic_data[c.id]['wait_time'] = "#{c.waittime_mask}"
   clinic_data[c.id]['cities'] = c.city.present? ? [c.city.id] : []
+  clinic_procedures += clinic_procedure_filtering_attributes(c)
 end
 
 -%>
 clinic_data["<%= city.id %>"] = <%=clinic_data.to_json.html_safe %>
+clinic_procedures["<%= city.id %>"] = <%=clinic_procedures.flatten.uniq.to_json.html_safe %>;
 <% end %>

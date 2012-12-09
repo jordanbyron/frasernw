@@ -8,12 +8,20 @@ function build_tables()
       console.log("unloaded city: " + city_id);
       continue
     }
-    add_specialist_city(city_id);
-    add_clinic_city(city_id);
+    add_specialists_from_city(city_id);
+    add_clinics_from_city(city_id);
   }
+  
+  update_specialist_procedures();
+  update_specialist_table();
+  $('#specialist_table').trigger('update', [true]);
+  
+  update_clinic_procedures();
+  update_clinic_table();
+  $('#clinic_table').trigger('update', [true]);
 }
 
-function add_specialist_city(city_id)
+function add_specialists_from_city(city_id)
 {
   for(var specialist_id in specialist_data[city_id])
   {
@@ -29,11 +37,9 @@ function add_specialist_city(city_id)
     var other = ($.inArray(current_specialty, specialist.specialties) == -1);
     add_row('specialist', specialist_id, '/specialists/' + specialist_id, name, status_class, status_sort, wait_time, cities, specialties, attributes, other);
   }
-  update_specialist_table();
-  $('#specialist_table').trigger('update', [true]);
 }
 
-function add_clinic_city(city_id)
+function add_clinics_from_city(city_id)
 {
   for(var clinic_id in clinic_data[city_id])
   {
@@ -48,9 +54,6 @@ function add_clinic_city(city_id)
     var cities = clinic.cities.map(function(city_id) { return global_cities[city_id] }).to_sentence();
     add_row('clinic', clinic_id, '/clinics/' + clinic_id, name, status_class, status_sort, wait_time, cities, specialties, attributes, false);
   }
-  
-  update_clinic_table();
-  $('#clinic_table').trigger('update', [true]);
 }
 
 function add_row( entity_type, entity_id, url, name, status_class, status_sort, wait_time, city, specialties, attributes, other )
@@ -76,4 +79,58 @@ function add_row( entity_type, entity_id, url, name, status_class, status_sort, 
     $('#' + entity_type + '_table tr:last').after(row_html.ajaxify());
   }
   $('#' + entity_type + "_" + entity_id).data('attributes', attributes);
+}
+
+function update_specialist_procedures()
+{
+  var current_procedures = [];
+  
+  for(var city_id in current_cities)
+  {
+    if (!current_cities[city_id])
+    {
+      //'unloaded' city
+      console.log("unloaded city: " + city_id);
+      continue
+    }
+    
+    current_procedures = current_procedures.concat(specialist_procedures[city_id]);
+  }
+  
+  current_procedures = current_procedures.unique();
+    
+  $('input.sp').each( function() {
+    $this = $(this)
+    if (current_procedures.indexOf($this.attr('id')) == -1)
+    {
+      $this.parent().hide();
+    }
+  });
+}
+
+function update_clinic_procedures()
+{
+  var current_procedures = [];
+  
+  for(var city_id in current_cities)
+  {
+    if (!current_cities[city_id])
+    {
+      //'unloaded' city
+      console.log("unloaded city: " + city_id);
+      continue
+    }
+    
+    current_procedures = current_procedures.concat(clinic_procedures[city_id]);
+  }
+  
+  current_procedures = current_procedures.unique();
+    
+  $('input.cp').each( function() {
+    $this = $(this)
+    if (current_procedures.indexOf($this.attr('id')) == -1)
+    {
+      $this.parent().hide();
+    }
+  });
 }

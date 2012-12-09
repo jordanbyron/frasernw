@@ -113,7 +113,6 @@
                       #specialist-filter-aop.collapsable.in
                         .filter-group-content
                           - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
-                            - next if ps.procedure.all_specialists_in_cities(user_cities).blank?
                             %label
                               %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}_').collapse('toggle')"}= ps.procedure.name
                             - next if children.length == 0
@@ -125,47 +124,38 @@
                                   });
                               - parent_id = ps.procedure.id
                               - children.each do |ps, children|
-                                - next if ps.procedure.all_specialists_in_cities(user_cities).blank?
                                 %label.indent
                                   %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}_"}= ps.procedure.name
                           
-                          - non_focused_procedure_specializations = @specialization.non_focused_procedure_specializations_arranged
-                          - has_more = false
-                          - non_focused_procedure_specializations.each do |ps, children|
-                            - has_more = true if not ps.procedure.all_specialists_in_cities(user_cities).blank?
-                            - break if has_more
+                          %a.more#specialist_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_specialist_procedures"} More...
                           
-                          - if has_more
-                            %a.more#specialist_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_specialist_procedures"} More...
-                            %script{"type" => "text/javascript"}
-                              :plain
-                                $(document).ready(function() {
-                                  $('#more_specialist_procedures').on('show', function() {
-                                    $('#specialist_procedures_more').html('Less...');
-                                  });
-                                  $('#more_specialist_procedures').on('hide', function() {
-                                    $('#specialist_procedures_more').html('More...');
-                                  });
+                          %script{"type" => "text/javascript"}
+                            :plain
+                              $(document).ready(function() {
+                                $('#more_specialist_procedures').on('show', function() {
+                                  $('#specialist_procedures_more').html('Less...');
                                 });
-                      
-                            #more_specialist_procedures.more.collapse
-                              - non_focused_procedure_specializations.each do |ps, children|
-                                - next if ps.procedure.all_specialists_in_cities(user_cities).blank?
-                                %label
-                                  %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_"}= ps.procedure.name
-                                - next if children.length == 0
-                                .collapse{:id => "children_sp#{ps.procedure.id}_"}
-                                  %script{"type" => "text/javascript"}
-                                    :plain
-                                      $(document).ready(function() {
-                                        $('#children_sp#{ps.procedure.id}_').collapse({toggle: false}); 
-                                      });
-                                  - parent_id = ps.procedure.id
-                                  - children.each do |ps, children|
-                                    - next if ps.procedure.all_specialists_in_cities(user_cities).blank?
-                                    %label.indent
-                                      %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}_"}= ps.procedure.name
-                                
+                                $('#more_specialist_procedures').on('hide', function() {
+                                  $('#specialist_procedures_more').html('More...');
+                                });
+                              });
+                    
+                          #more_specialist_procedures.more.collapse
+                            - @specialization.non_focused_procedure_specializations_arranged.each do |ps, children|
+                              %label
+                                %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_"}= ps.procedure.name
+                              - next if children.length == 0
+                              .collapse{:id => "children_sp#{ps.procedure.id}_"}
+                                %script{"type" => "text/javascript"}
+                                  :plain
+                                    $(document).ready(function() {
+                                      $('#children_sp#{ps.procedure.id}_').collapse({toggle: false}); 
+                                    });
+                                - parent_id = ps.procedure.id
+                                - children.each do |ps, children|
+                                  %label.indent
+                                    %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}_"}= ps.procedure.name
+
                   .filter-group
                     %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#specialist-filter-referral"}
                       Referrals
@@ -279,7 +269,6 @@
                     #clinic-filter-aop.collapsable.in
                       .filter-group-content
                         - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
-                          - next if ps.procedure.all_clinics_in_cities(user_cities).blank?
                           %label
                             %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}_').collapse('toggle')"}= ps.procedure.name
                           - next if children.length == 0
@@ -291,47 +280,38 @@
                                 });
                             - parent_id = ps.procedure.id
                             - children.each do |ps, children|
-                              - next if ps.procedure.all_clinics_in_cities(user_cities).blank?
                               %label.indent
                                 %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "class" => "child_cp#{parent_id}_"}= ps.procedure.name
+                 
+                        %a.more#clinic_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_clinic_procedures"} More...
                         
-                        - non_focused_procedure_specializations = @specialization.non_focused_procedure_specializations_arranged
-                        - has_more = false
-                        - non_focused_procedure_specializations.each do |ps, children|
-                          - has_more = true if not ps.procedure.all_clinics_in_cities(user_cities).blank?
-                          - break if has_more
-                        
-                        - if has_more
-                          %a.more#clinic_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_clinic_procedures"} More...
-                          %script{"type" => "text/javascript"}
-                            :plain
-                              $(document).ready(function() {
-                                $('#more_clinic_procedures').on('show', function() {
-                                  $('#clinic_procedures_more').html('Less...');
-                                });
-                                $('#more_clinic_procedures').on('hide', function() {
-                                  $('#clinic_procedures_more').html('More...');
-                                });
+                        %script{"type" => "text/javascript"}
+                          :plain
+                            $(document).ready(function() {
+                              $('#more_clinic_procedures').on('show', function() {
+                                $('#clinic_procedures_more').html('Less...');
                               });
-                    
-                          #more_clinic_procedures.more.collapse
-                            - non_focused_procedure_specializations.each do |ps, children|
-                              - next if ps.procedure.all_clinics_in_cities(user_cities).blank?
-                              %label
-                                %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}').collapse('toggle')"}= ps.procedure.name
-                              - next if children.length == 0
-                              .collapse{:id => "children_cp#{ps.procedure.id}"}
-                                %script{"type" => "text/javascript"}
-                                  :plain
-                                    $(document).ready(function() {
-                                      $('#children_cp#{ps.procedure.id}').collapse({toggle: false}); 
-                                    });
-                                - parent_id = ps.procedure.id
-                                - children.each do |ps, children|
-                                  - next if ps.procedure.all_clinics_in_cities(user_cities).blank?
-                                  %label.indent
-                                    %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "class" => "child_cp#{parent_id}"}= ps.procedure.name
-                              
+                              $('#more_clinic_procedures').on('hide', function() {
+                                $('#clinic_procedures_more').html('More...');
+                              });
+                            });
+                  
+                        #more_clinic_procedures.more.collapse
+                          - @specialization.non_focused_procedure_specializations_arranged.each do |ps, children|
+                            %label
+                              %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}').collapse('toggle')"}= ps.procedure.name
+                            - next if children.length == 0
+                            .collapse{:id => "children_cp#{ps.procedure.id}"}
+                              %script{"type" => "text/javascript"}
+                                :plain
+                                  $(document).ready(function() {
+                                    $('#children_cp#{ps.procedure.id}').collapse({toggle: false}); 
+                                  });
+                              - parent_id = ps.procedure.id
+                              - children.each do |ps, children|
+                                %label.indent
+                                  %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "class" => "child_cp#{parent_id}"}= ps.procedure.name
+
                   .filter-group
                     %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#clinic-filter-referral"}
                       Referrals

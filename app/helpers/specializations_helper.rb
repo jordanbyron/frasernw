@@ -1,11 +1,6 @@
 module SpecializationsHelper
   def specialist_filtering_attributes(s, include_assumed)
-    filtering_attributes = []
-    s.procedure_specializations.each do |ps|
-      filtering_attributes << "sp#{ps.procedure.id}_"
-      parent = ps.parent
-      filtering_attributes << "sp#{parent.procedure.id}_" if (parent && !filtering_attributes.include?("sp#{parent.procedure.id}_"))
-    end
+    filtering_attributes = specialist_procedure_filtering_attributes(s)
     if include_assumed
       s.specializations.each do |specialization|
         specialization.procedure_specializations.assumed.each do |ps|
@@ -35,6 +30,16 @@ module SpecializationsHelper
       filtering_attributes << "sah#{h.id}_"
     end
     return filtering_attributes
+  end
+  
+  def specialist_procedure_filtering_attributes(s)
+    filtering_attributes = []
+    s.procedure_specializations.each do |ps|
+      filtering_attributes << "sp#{ps.procedure.id}_"
+      parent = ps.parent
+      filtering_attributes << "sp#{parent.procedure.id}_" if (parent && !filtering_attributes.include?("sp#{parent.procedure.id}_"))
+    end
+    filtering_attributes
   end
   
   def office_filtering_attributes(s, include_assumed)
@@ -76,12 +81,7 @@ module SpecializationsHelper
   end
     
   def clinic_filtering_attributes(c)
-    filtering_attributes = []
-    c.procedure_specializations.each do |ps|
-      filtering_attributes << "cp#{ps.procedure.id}_"
-      parent = ps.parent
-      filtering_attributes << "cp#{parent.procedure.id}_" if (parent && !filtering_attributes.include?("cp#{parent.procedure.id}_"))
-    end
+    filtering_attributes = clinic_procedure_filtering_attributes(c)
     if c.lagtime_mask.present?
       (c.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
         filtering_attributes << "cc#{i}_"
@@ -110,6 +110,16 @@ module SpecializationsHelper
     end
     filtering_attributes << "ci" if c.interpreter_available
     return filtering_attributes
+  end
+  
+  def clinic_procedure_filtering_attributes(c)
+    filtering_attributes = []
+    c.procedure_specializations.each do |ps|
+      filtering_attributes << "cp#{ps.procedure.id}_"
+      parent = ps.parent
+      filtering_attributes << "cp#{parent.procedure.id}_" if (parent && !filtering_attributes.include?("cp#{parent.procedure.id}_"))
+    end
+    filtering_attributes
   end
   
   def other_specialists_in_cities(specialization, cities)
