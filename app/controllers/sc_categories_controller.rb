@@ -2,8 +2,6 @@ class ScCategoriesController < ApplicationController
   include ScCategoriesHelper
   load_and_authorize_resource
   
-  #cache_sweeper :sc_category_sweeper, :only => [:create, :update, :destroy]
-  
   def index
     @sc_categories = ScCategory.all
     render :layout => 'ajax' if request.headers['X-PJAX']

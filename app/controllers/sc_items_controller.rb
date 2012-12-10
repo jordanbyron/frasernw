@@ -2,8 +2,6 @@ class ScItemsController < ApplicationController
   include ScCategoriesHelper
   load_and_authorize_resource
   
-  #cache_sweeper :sc_item_sweeper, :only => [:create, :update, :destroy]
-  
   def index
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
