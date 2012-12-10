@@ -53,9 +53,9 @@
   .content-wrapper
 
     %script{"type" => "text/javascript"}
-      = render 'lookup.js', :specialization => @specialization
+      = render 'global_lookup.js', :specialization => @specialization
       - current_user_cities_for_specializations([@specialization]).each do |city|
-        = render 'city.js', :city => city, :specialization => @specialization
+        = render 'city_lookup.js', :city => city, :specialization => @specialization
       $(document).ready(function() { build_tables() });
       var should_show_others = false;
       

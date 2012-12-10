@@ -71,4 +71,11 @@ class SpecializationsController < ApplicationController
       format.js
     end
   end
+  
+  def refresh_city_cache
+    @specialization = Specialization.find(params[:id])
+    @city = City.find(params[:city_id])
+    @feedback = FeedbackItem.new
+    render 'city.js'
+  end
 end

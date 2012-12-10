@@ -12,7 +12,6 @@ Frasernw::Application.routes.draw do
     resources :procedures, :path => 'areas_of_practice'
     resources :clinics
   end
-  match "specialties/:id/cities/:city_id"   => 'specializations#city',   :as => 'specialization_cities'
   resources :clinics
   resources :specialists
   resources :procedures, :path => 'areas_of_practice'
@@ -66,6 +65,8 @@ Frasernw::Application.routes.draw do
   get  "hospitals/:id/:token/refresh_cache"       => 'hospitals#refresh_cache',       :as => 'hospital_refesh_cache'
   get  "areas_of_practice/:id/:token/refresh_cache"      => 'procedures#refresh_cache',      :as => 'procedure_refesh_cache'
   get  "languages/:id/:token/refresh_cache"       => 'languages#refresh_cache',       :as => 'language_refesh_cache'
+  
+  get  "specialties/:id/:token/refresh_city_cache/:city_id" => 'specializations#refresh_city_cache', :as => 'specialization_refresh_city_cache'
   
   put  "/favorites/specialists/:id" => "favorites#edit", :as => "specialist_favorite", :model => 'specialists'
   put  "/favorites/clinics/:id" => "favorites#edit", :as => "clinic_favorite", :model => 'clinics'
