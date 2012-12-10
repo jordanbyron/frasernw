@@ -4,7 +4,7 @@ module FrontHelper
     
     events = {}
         
-    Version.order("id desc").where("item_type = ? OR item_type = ?", "Specialist", "Clinic").each do |version|
+    Version.order("id desc").where("item_type = (?) OR item_type = (?)", "Specialist", "Clinic").each do |version|
     
       next if version.item.blank?
       break if events.length >= max_events

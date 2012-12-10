@@ -38,8 +38,8 @@ class ScItem < ActiveRecord::Base
   
   def self.for_procedure_in_divisions(procedure, divisions)
     division_ids = divisions.map{ |d| d.id }
-    owned = joins([:sc_item_specializations, :sc_item_specialization_procedure_specializations, :procedure_specializations]).where('sc_item_specializations.id = sc_item_specialization_procedure_specializations.sc_item_specialization_id AND sc_item_specialization_procedure_specializations.procedure_specialization_id = procedure_specializations.id AND procedure_specializations.procedure_id = ? AND "sc_items"."division_id" IN (?)', procedure.id, division_ids)
-    shared = joins([:sc_item_specializations, :sc_item_specialization_procedure_specializations, :procedure_specializations, :division_display_sc_items]).where('sc_item_specializations.id = sc_item_specialization_procedure_specializations.sc_item_specialization_id AND sc_item_specialization_procedure_specializations.procedure_specialization_id = procedure_specializations.id AND procedure_specializations.procedure_id = ? AND "division_display_sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', procedure.id, division_ids, true)
+    owned = joins([:sc_item_specializations, :sc_item_specialization_procedure_specializations, :procedure_specializations]).where('sc_item_specializations.id = sc_item_specialization_procedure_specializations.sc_item_specialization_id AND sc_item_specialization_procedure_specializations.procedure_specialization_id = procedure_specializations.id AND procedure_specializations.procedure_id = (?) AND "sc_items"."division_id" IN (?)', procedure.id, division_ids)
+    shared = joins([:sc_item_specializations, :sc_item_specialization_procedure_specializations, :procedure_specializations, :division_display_sc_items]).where('sc_item_specializations.id = sc_item_specialization_procedure_specializations.sc_item_specialization_id AND sc_item_specialization_procedure_specializations.procedure_specialization_id = procedure_specializations.id AND procedure_specializations.procedure_id = (?) AND "division_display_sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', procedure.id, division_ids, true)
     (owned + shared).uniq
   end
   
@@ -67,7 +67,7 @@ class ScItem < ActiveRecord::Base
   end
   
   def self.searchable
-    where("sc_items.searchable = ?", true)
+    where("sc_items.searchable = (?)", true)
   end
 
   def mail_to_patient(current_user, patient_email)

@@ -31,7 +31,7 @@ class ScCategory < ActiveRecord::Base
   end
   
   def self.searchable
-    where("sc_categories.searchable = ?", true)
+    where("sc_categories.searchable = (?)", true)
   end
 
   def inline?

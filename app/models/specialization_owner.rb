@@ -4,7 +4,7 @@ class SpecializationOwner < ActiveRecord::Base
   belongs_to :division
   
   def self.for_division(division)
-    where("specialization_owners.division_id = ?", division.id)
+    where("specialization_owners.division_id = (?)", division.id)
   end
   
   has_paper_trail

@@ -21,7 +21,7 @@ class Specialization < ActiveRecord::Base
   default_scope order('specializations.name')
   
   def self.not_in_progress
-    where("specializations.in_progress = ?", false)
+    where("specializations.in_progress = (?)", false)
   end
   
   def procedure_specializations_arranged

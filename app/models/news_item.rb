@@ -45,10 +45,10 @@ class NewsItem < ActiveRecord::Base
   default_scope order('news_items.start_date')
   
   def self.breaking
-    where("news_items.breaking = ? AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)))", true, Date.today, Date.today)
+    where("news_items.breaking = (?) AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)))", true, Date.today, Date.today)
   end
   
   def self.news
-    where("news_items.breaking = ? AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)))", false, Date.today, Date.today)
+    where("news_items.breaking = (?) AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)))", false, Date.today, Date.today)
   end
 end

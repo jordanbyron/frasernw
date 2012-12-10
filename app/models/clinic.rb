@@ -66,8 +66,8 @@ class Clinic < ActiveRecord::Base
   
   def self.in_cities(cities)
     city_ids = cities.map{ |city| city.id }
-    direct = joins('INNER JOIN "locations" AS "direct_location" ON "clinics".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id').where('"direct_location".locatable_type = "Clinic" AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL', city_ids)
-    in_hospital = joins('INNER JOIN "locations" AS "direct_location" ON "clinics".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id').where('"direct_location".locatable_type = "Clinic" AND "hospital_in_location".locatable_type = "Hospital" AND "hospital_address".city_id in (?)', city_ids)
+    direct = joins('INNER JOIN "locations" AS "direct_location" ON "clinics".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL', "Clinic", city_ids)
+    in_hospital = joins('INNER JOIN "locations" AS "direct_location" ON "clinics".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id').where('"direct_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?)', "Clinic", "Hospital", city_ids)
     (direct + in_hospital).uniq
   end
 
