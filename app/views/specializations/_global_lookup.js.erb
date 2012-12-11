@@ -31,7 +31,7 @@ var global_hospitals = <%=hospitals.to_json.html_safe %>
 
 <%
 clinics = Hash.new
-specialization.clinics.each{|c| clinics[c.id] = c.name }
+specializations.each{ |s| s.clinics.each{|c| clinics[c.id] = c.name } }
 -%>
 var global_clinics = <%=clinics.to_json.html_safe %>
 
@@ -44,10 +44,10 @@ var global_languages = <%=languages.to_json.html_safe %>
 var specialist_data = {}
 var clinic_data = {}
 var current_cities = {}
-var current_specialty = <%=specialization.id %>
-var specialist_procedures = []
-var specialist_associations = []
-var specialist_languages = []
-var clinic_procedures = []
-var clinic_languages = []
-var clinic_healthcare_providers = []
+var current_specialties = <%=specializations.map{ |s| s.id } %>
+var specialist_procedures = {}
+var specialist_associations = {}
+var specialist_languages = {}
+var clinic_procedures = {}
+var clinic_languages = {}
+var clinic_healthcare_providers = {}

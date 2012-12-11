@@ -28,6 +28,25 @@ Array.prototype.unique = function() {
   return a;
 };
 
+Array.prototype.intersect = function(a2)
+{
+  var a1 = this;
+  var a = [];
+  var l = a1.length;
+  var l2 = a2.length;
+  for(var i=0; i<l; i++)
+  {
+    for(var j=0; j<l2; j++)
+    {
+      if (a1[i] === a2[j])
+      {
+        a.push(a1[i]);
+      }
+    }
+  }
+  return a.unique();
+};
+
 // Production steps of ECMA-262, Edition 5, 15.4.4.19
 // Reference: http://es5.github.com/#x15.4.4.19
 if (!Array.prototype.map) {

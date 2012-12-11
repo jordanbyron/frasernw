@@ -33,15 +33,15 @@
 - has_specialists = @specialization.specialists.in_cities(user_cities).length > 0
 - has_clinics = @specialization.clinics.in_cities(user_cities).length > 0
 
+%script{"type" => "text/javascript"}
+  = render 'global_lookup.js', :specializations => [@specialization]
+  - user_cities.each do |city|
+    = render 'city_lookup.js', :city => city, :specializations => [@specialization], :other => true
+  $(document).ready(function() { init_tables(-1) });
+  var should_show_others = false;
+
 - specialist_tab_class = has_specialists ? "active" : ""
 - clinic_tab_class = has_specialists ? "" : "active"
-
-%script{"type" => "text/javascript"}
-  = render 'global_lookup.js', :specialization => @specialization
-  - current_user_cities_for_specializations([@specialization]).each do |city|
-    = render 'city_lookup.js', :city => city, :specialization => @specialization
-  $(document).ready(function() { init_tables() });
-  var should_show_others = false;
 
 -# TABS ARE USER SPECIFIC, BASED OFF CONTENT (OR LACK THEREOF)
 
