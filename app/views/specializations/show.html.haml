@@ -198,7 +198,7 @@
                           %label.half
                             %input.ssh{"type" => "checkbox", "id" => "sshsun"} Sunday
                   
-                    .filter-group
+                    .filter-group#sl-filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-language"}
                         Languages
                       #specialist-filter-language.collapsable.collapse
@@ -209,7 +209,7 @@
                             %label.half
                               %input.sl{"type" => "checkbox", "id" => "sl#{l.id}_"}= l.name
                             
-                    .filter-group
+                    .filter-group#sa-filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-association"}
                         Associations
                       #specialist-filter-association.collapsable.collapse
@@ -360,7 +360,7 @@
                           %label
                             %input.csh{"type" => "checkbox", "id" => "cshsun"} Sunday
                         
-                    .filter-group
+                    .filter-group#ch-filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-healthcare-providers"}
                         Care Providers
                       #clinic-filter-healthcare-providers.collapsable.collapse
@@ -369,7 +369,7 @@
                             %label
                               %input.ch{"type" => "checkbox", "id" => "ch#{h.id}_"}= h.name
                   
-                    .filter-group
+                    .filter-group#cl-filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-language"}
                         Languages
                       #clinic-filter-language.collapsable.collapse

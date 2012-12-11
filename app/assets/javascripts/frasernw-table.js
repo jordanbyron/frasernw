@@ -118,6 +118,8 @@ function update_associations(prefix, city_associations)
   
   current_associations = current_associations.unique();
   
+  var showing_something = false;
+  
   //only add hopsitals that someone works in
   var hospital_select = $('.' + prefix + 'a#hospital_associations');
   hospital_select.find('option').remove();
@@ -127,6 +129,7 @@ function update_associations(prefix, city_associations)
     if (current_associations.indexOf(attribute) != -1)
     {
       hospital_select.append($('<option>').text(hospital_name).val(attribute));
+      showing_something = true;
     }
   });
   
@@ -139,8 +142,19 @@ function update_associations(prefix, city_associations)
     if (current_associations.indexOf(attribute) != -1)
     {
       clinic_select.append($('<option>').text(clinic_name).val(attribute));
+      showing_something = true;
     }
   });
+  
+  //hide the whole filtering group if we hid everything above
+  if (showing_something)
+  {
+    $('#' + prefix + 'a-filter-group').show();
+  }
+  else
+  {
+    $('#' + prefix + 'a-filter-group').hide();
+  }
 }
 
 function update_languages(prefix, city_languages)
@@ -159,6 +173,8 @@ function update_languages(prefix, city_languages)
     current_languages = current_languages.concat(city_languages[city_id]);
   }
   
+  var showing_something = false;
+  
   //hide langauges that no entity performs
   $('input.' + prefix + 'l, input.' + prefix + 'i').each( function() {
     $this = $(this)
@@ -169,8 +185,19 @@ function update_languages(prefix, city_languages)
     else
     {
       $this.parent().show();
+      showing_something = true;
     }
   });
+  
+  //hide the whole filtering group if we hid everything above
+  if (showing_something)
+  {
+    $('#' + prefix + 'l-filter-group').show();
+  }
+  else
+  {
+    $('#' + prefix + 'l-filter-group').hide();
+  }
 }
 
 function update_healthcare_provders(prefix, city_healthcare_providers)
@@ -189,7 +216,9 @@ function update_healthcare_provders(prefix, city_healthcare_providers)
     current_healthcare_providers = current_healthcare_providers.concat(city_healthcare_providers[city_id]);
   }
   
-  //hide langauges that no entity performs
+  var showing_something = false;
+  
+  //hide healthcare providers that no entity has
   $('input.' + prefix + 'h').each( function() {
     $this = $(this)
     if (current_healthcare_providers.indexOf($this.attr('id')) == -1)
@@ -199,6 +228,17 @@ function update_healthcare_provders(prefix, city_healthcare_providers)
     else
     {
       $this.parent().show();
+      showing_something = true;
     }
   });
+  
+  //hide the whole filtering group if we hid everything above
+  if (showing_something)
+  {
+    $('#' + prefix + 'h-filter-group').show();
+  }
+  else
+  {
+    $('#' + prefix + 'h-filter-group').hide();
+  }
 }
