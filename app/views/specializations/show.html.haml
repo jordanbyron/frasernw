@@ -40,7 +40,7 @@
   = render 'global_lookup.js', :specialization => @specialization
   - current_user_cities_for_specializations([@specialization]).each do |city|
     = render 'city_lookup.js', :city => city, :specialization => @specialization
-  $(document).ready(function() { build_tables() });
+  $(document).ready(function() { init_tables() });
   var should_show_others = false;
 
 -# TABS ARE USER SPECIFIC, BASED OFF CONTENT (OR LACK THEREOF)
@@ -217,16 +217,10 @@
                           - if @specialization.clinics.present?
                             %label.indent
                               Clinic:
-                              %select.sa
-                                %option{"value" => 0} Any
-                                - @specialization.clinics.each do |c|
-                                  %option{"value" => "sac#{c.id}_"}= c.name
+                              %select.sa#clinic_associations
                           %label.indent
                             Hospital:
-                            %select.sa
-                              %option{"value" => 0} Any
-                              - Hospital.all.each do |h|
-                                %option{"value" => "sah#{h.id}_"}= h.name
+                            %select.sa#hospital_associations
 
                 %script{"type" => "text/javascript"}
                   :plain

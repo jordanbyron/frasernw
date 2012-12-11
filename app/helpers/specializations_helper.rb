@@ -19,16 +19,8 @@ module SpecializationsHelper
     filtering_attributes << "ssf" if s.female?
     filtering_attributes << "sshsat" if s.open_saturday?
     filtering_attributes << "sshsun" if s.open_sunday?
-    s.languages.each do |l|
-      filtering_attributes << "sl#{l.id}_"
-    end
-    filtering_attributes << "si" if s.interpreter_available
-    s.clinics.each do |c|
-      filtering_attributes << "sac#{c.id}_"
-    end
-    s.hospitals.each do |h|
-      filtering_attributes << "sah#{h.id}_"
-    end
+    filtering_attributes += specialist_association_filtering_attributes(s)
+    filtering_attributes += specialist_language_filtering_attributes(s)
     return filtering_attributes
   end
   
@@ -38,6 +30,26 @@ module SpecializationsHelper
       filtering_attributes << "sp#{ps.procedure.id}_"
       parent = ps.parent
       filtering_attributes << "sp#{parent.procedure.id}_" if (parent && !filtering_attributes.include?("sp#{parent.procedure.id}_"))
+    end
+    filtering_attributes
+  end
+  
+  def specialist_association_filtering_attributes(s)
+    filtering_attributes = []
+    s.clinics.each do |c|
+      filtering_attributes << "sac#{c.id}_"
+    end
+    s.hospitals.each do |h|
+      filtering_attributes << "sah#{h.id}_"
+    end
+    filtering_attributes
+  end
+  
+  def specialist_language_filtering_attributes(s)
+    filtering_attributes = []
+    filtering_attributes << "si" if s.interpreter_available
+    s.languages.each do |l|
+      filtering_attributes << "sl#{l.id}_"
     end
     filtering_attributes
   end
@@ -102,13 +114,8 @@ module SpecializationsHelper
       filtering_attributes << "cshsat" if schedule.saturday.scheduled
       filtering_attributes << "cshsun" if schedule.sunday.scheduled
     end
-    c.healthcare_providers.each do |h|
-      filtering_attributes << "ch#{h.id}_"
-    end
-    c.languages.each do |l|
-      filtering_attributes << "cl#{l.id}_"
-    end
-    filtering_attributes << "ci" if c.interpreter_available
+    filtering_attributes += clinic_healthcare_provider_filtering_attributes(c)
+    filtering_attributes += clinic_language_filtering_attributes(c)
     return filtering_attributes
   end
   
@@ -118,6 +125,23 @@ module SpecializationsHelper
       filtering_attributes << "cp#{ps.procedure.id}_"
       parent = ps.parent
       filtering_attributes << "cp#{parent.procedure.id}_" if (parent && !filtering_attributes.include?("cp#{parent.procedure.id}_"))
+    end
+    filtering_attributes
+  end
+  
+  def clinic_language_filtering_attributes(c)
+    filtering_attributes = []
+    filtering_attributes << "ci" if c.interpreter_available
+    c.languages.each do |l|
+      filtering_attributes << "cl#{l.id}_"
+    end
+    filtering_attributes
+  end
+  
+  def clinic_healthcare_provider_filtering_attributes(c)
+    filtering_attributes = []
+    c.healthcare_providers.each do |h|
+      filtering_attributes << "ch#{h.id}_"
     end
     filtering_attributes
   end

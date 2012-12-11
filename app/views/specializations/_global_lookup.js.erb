@@ -3,25 +3,51 @@ cities = Hash.new
 City.all.each{ |city| cities[city.id] = city.name }
 -%>
 var global_cities = <%=cities.to_json.html_safe %>
+
 <%
 specialties = Hash.new
 Specialization.all.each{ |specialty| specialties[specialty.id] = specialty.name }
 -%>
 var global_specialties = <%=specialties.to_json.html_safe %>
+
 <%
 status_classes = Hash.new
 Specialist::STATUS_CLASS_HASH.each{|status_class, id| status_classes[id] = status_class }
 -%>
 var global_status_classes = <%=status_classes.to_json.html_safe %>
+
 <%
 wait_times = Hash.new
 Specialist::WAITTIME_HASH.each{|id, wait_time| wait_times[id] = wait_time }
 wait_times[-1] = ""
 -%>
 var global_wait_times = <%=wait_times.to_json.html_safe %>
+
+<%
+hospitals = Hash.new
+Hospital.all.each{|h| hospitals[h.id] = h.name }
+-%>
+var global_hospitals = <%=hospitals.to_json.html_safe %>
+
+<%
+clinics = Hash.new
+specialization.clinics.each{|c| clinics[c.id] = c.name }
+-%>
+var global_clinics = <%=clinics.to_json.html_safe %>
+
+<%
+languages = Hash.new
+Language.all.each{|l| languages[l.id] = l.name }
+-%>
+var global_languages = <%=languages.to_json.html_safe %>
+
 var specialist_data = {}
 var clinic_data = {}
 var current_cities = {}
 var current_specialty = <%=specialization.id %>
 var specialist_procedures = []
+var specialist_associations = []
+var specialist_languages = []
 var clinic_procedures = []
+var clinic_languages = []
+var clinic_healthcare_providers = []
