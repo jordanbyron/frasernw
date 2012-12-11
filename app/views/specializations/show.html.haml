@@ -133,20 +133,20 @@
                                   %label.indent
                                     %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}_"}= ps.procedure.name
                             
-                            %a.more#specialist_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_specialist_procedures"} More...
+                            %a.more#s_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_s_procedures"} More...
                             
                             %script{"type" => "text/javascript"}
                               :plain
                                 $(document).ready(function() {
-                                  $('#more_specialist_procedures').on('show', function() {
-                                    $('#specialist_procedures_more').html('Less...');
+                                  $('#more_s_procedures').on('show', function() {
+                                    $('#s_procedures_more').html('Less...');
                                   });
-                                  $('#more_specialist_procedures').on('hide', function() {
-                                    $('#specialist_procedures_more').html('More...');
+                                  $('#more_s_procedures').on('hide', function() {
+                                    $('#s_procedures_more').html('More...');
                                   });
                                 });
                       
-                            #more_specialist_procedures.more.collapse
+                            #more_s_procedures.more.collapse
                               - @specialization.non_focused_procedure_specializations_arranged.each do |ps, children|
                                 %label
                                   %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_"}= ps.procedure.name
@@ -283,20 +283,20 @@
                                 %label.indent
                                   %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "class" => "child_cp#{parent_id}_"}= ps.procedure.name
                    
-                          %a.more#clinic_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_clinic_procedures"} More...
+                          %a.more#c_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_c_procedures"} More...
                           
                           %script{"type" => "text/javascript"}
                             :plain
                               $(document).ready(function() {
-                                $('#more_clinic_procedures').on('show', function() {
-                                  $('#clinic_procedures_more').html('Less...');
+                                $('#more_c_procedures').on('show', function() {
+                                  $('#c_procedures_more').html('Less...');
                                 });
-                                $('#more_clinic_procedures').on('hide', function() {
-                                  $('#clinic_procedures_more').html('More...');
+                                $('#more_c_procedures').on('hide', function() {
+                                  $('#c_procedures_more').html('More...');
                                 });
                               });
                     
-                          #more_clinic_procedures.more.collapse
+                          #more_c_procedures.more.collapse
                             - @specialization.non_focused_procedure_specializations_arranged.each do |ps, children|
                               %label
                                 %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}').collapse('toggle')"}= ps.procedure.name

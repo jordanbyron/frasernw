@@ -20,7 +20,7 @@ function init_tables()
   
   update_procedures('c', clinic_procedures);
   update_languages('c', clinic_languages);
-  update_healthcare_provders('c', clinic_healthcare_providers);
+  update_healthcare_providers('c', clinic_healthcare_providers);
   update_clinic_table();
   $('#clinic_table').trigger('update', [true]);
 }
@@ -98,6 +98,27 @@ function update_procedures(prefix, city_procedures)
       $this.parent().show();
     }
   });
+  
+  //hide 'more' if there are no more
+  has_more = false
+  $('#more_' + prefix + '_procedures').children('label').each( function() {
+    if ($(this).css('display') != 'none')
+    {
+      has_more = true;
+      return false;
+    }
+  });
+  
+  if (has_more)
+  {
+    $('#more_' + prefix + '_procedures').show()
+    $('#' + prefix + '_procedures_more').show();
+  }
+  else
+  {
+    $('#more_' + prefix + '_procedures').hide()
+    $('#' + prefix + '_procedures_more').hide();
+  }
 }
 
 function update_associations(prefix, city_associations)
@@ -200,7 +221,7 @@ function update_languages(prefix, city_languages)
   }
 }
 
-function update_healthcare_provders(prefix, city_healthcare_providers)
+function update_healthcare_providers(prefix, city_healthcare_providers)
 {
   var current_healthcare_providers = [];
   
