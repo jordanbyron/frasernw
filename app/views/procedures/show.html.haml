@@ -59,7 +59,7 @@
 - has_clinics = @procedure.all_clinics_in_cities(user_cities).length > 0
 
 %script{"type" => "text/javascript"}
-  = render 'specializations/global_lookup.js', :specializations => procedure_specializations
+  = render 'specializations/global_lookup.js', :specializations => procedure_specializations.map{|ps| ps.specialization}
   - user_cities.each do |city|
     = render 'specializations/city_lookup.js', :city => city, :specializations => procedure_specializations.map{|ps| ps.specialization}, :other => false
   $(document).ready(function() { init_tables(#{@procedure.id}) });
