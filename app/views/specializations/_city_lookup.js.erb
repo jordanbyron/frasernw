@@ -1,18 +1,18 @@
-specialist_data["<%= city.id %>"] = {};
-specialist_procedures["<%= city.id %>"] = [];
-specialist_associations["<%= city.id %>"] = [];
-specialist_languages["<%= city.id %>"] = [];
+filtering.specialist_data["<%= city.id %>"] = {};
+filtering.specialist_procedures["<%= city.id %>"] = [];
+filtering.specialist_associations["<%= city.id %>"] = [];
+filtering.specialist_languages["<%= city.id %>"] = [];
 
-clinic_data["<%= city.id %>"] = {};
-clinic_procedures["<%= city.id %>"] = [];
-clinic_languages["<%= city.id %>"] = [];
-clinic_healthcare_providers["<%= city.id %>"] = [];
+filtering.clinic_data["<%= city.id %>"] = {};
+filtering.clinic_procedures["<%= city.id %>"] = [];
+filtering.clinic_languages["<%= city.id %>"] = [];
+filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
 
 <% specializations.each do |specialization| %>
 
   <% cache(specialization_path(specialization) + "_" + city_path(city)) do %>
   
-    current_cities["<%= city.id %>"] = true
+    filtering.current_cities["<%= city.id %>"] = true
     <%
 
     specialist_data = Hash.new
@@ -48,10 +48,10 @@ clinic_healthcare_providers["<%= city.id %>"] = [];
       end
     end
     -%>
-    specialist_data["<%= city.id %>"] = $.extend({}, specialist_data["<%= city.id %>"], <%=specialist_data.to_json.html_safe %>);
-    specialist_procedures["<%= city.id %>"] = specialist_procedures["<%= city.id %>"].concat(<%=specialist_procedures.flatten.uniq.to_json.html_safe %>);
-    specialist_associations["<%= city.id %>"] = specialist_associations["<%= city.id %>"].concat(<%=specialist_associations.flatten.uniq.to_json.html_safe %>);
-    specialist_languages["<%= city.id %>"] = specialist_languages["<%= city.id %>"].concat(<%=specialist_languages.flatten.uniq.to_json.html_safe %>);
+    filtering.specialist_data["<%= city.id %>"] = $.extend({}, filtering.specialist_data["<%= city.id %>"], <%=specialist_data.to_json.html_safe %>);
+    filtering.specialist_procedures["<%= city.id %>"] = filtering.specialist_procedures["<%= city.id %>"].concat(<%=specialist_procedures.flatten.uniq.to_json.html_safe %>);
+    filtering.specialist_associations["<%= city.id %>"] = filtering.specialist_associations["<%= city.id %>"].concat(<%=specialist_associations.flatten.uniq.to_json.html_safe %>);
+    filtering.specialist_languages["<%= city.id %>"] = filtering.specialist_languages["<%= city.id %>"].concat(<%=specialist_languages.flatten.uniq.to_json.html_safe %>);
     <%
 
     clinic_data = Hash.new
@@ -74,10 +74,10 @@ clinic_healthcare_providers["<%= city.id %>"] = [];
     end
 
     -%>
-    clinic_data["<%= city.id %>"] = $.extend({}, clinic_data["<%= city.id %>"], <%=clinic_data.to_json.html_safe %>);
-    clinic_procedures["<%= city.id %>"] = clinic_procedures["<%= city.id %>"].concat(<%=clinic_procedures.flatten.uniq.to_json.html_safe %>);
-    clinic_languages["<%= city.id %>"] = clinic_languages["<%= city.id %>"].concat(<%=clinic_languages.flatten.uniq.to_json.html_safe %>);
-    clinic_healthcare_providers["<%= city.id %>"] = clinic_healthcare_providers["<%= city.id %>"].concat(<%=clinic_healthcare_providers.flatten.uniq.to_json.html_safe %>);
+    filtering.clinic_data["<%= city.id %>"] = $.extend({}, filtering.clinic_data["<%= city.id %>"], <%=clinic_data.to_json.html_safe %>);
+    filtering.clinic_procedures["<%= city.id %>"] = filtering.clinic_procedures["<%= city.id %>"].concat(<%=clinic_procedures.flatten.uniq.to_json.html_safe %>);
+    filtering.clinic_languages["<%= city.id %>"] = filtering.clinic_languages["<%= city.id %>"].concat(<%=clinic_languages.flatten.uniq.to_json.html_safe %>);
+    filtering.clinic_healthcare_providers["<%= city.id %>"] = filtering.clinic_healthcare_providers["<%= city.id %>"].concat(<%=clinic_healthcare_providers.flatten.uniq.to_json.html_safe %>);
     
   <% end %>
   

@@ -51,14 +51,25 @@ body #loading
 {
   display: none;
   position: fixed;
-  width: 4%;
-  min-width: 32px;
-  height: 4%;
-  min-height: 32px;
-  top: 48%;
-  left: 48%;
-  background-image: url(/img/ajax-loader.gif);
-  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #000;
+  opacity: 0.25;
+  
+  #loading-spinner
+  {
+    position: fixed;
+    width: 4%;
+    min-width: 32px;
+    height: 4%;
+    min-height: 32px;
+    top: 48%;
+    left: 48%;
+    background-image: url(/img/ajax-loader.gif);
+    background-repeat: no-repeat;
+  }
 }
 
 body.loading #loading
