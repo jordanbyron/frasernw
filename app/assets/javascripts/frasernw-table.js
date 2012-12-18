@@ -12,23 +12,30 @@ function init_tables(procedure_filter)
     add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter);
   }
   
-  update_procedures('s', filtering.specialist_procedures);
-  update_associations('s', filtering.specialist_associations);
-  update_languages('s', filtering.specialist_languages);
-  update_specialist_table();
-  $('#specialist_table').trigger('update');
-  
-  update_procedures('c', filtering.clinic_procedures);
-  update_languages('c', filtering.clinic_languages);
-  update_healthcare_providers('c', filtering.clinic_healthcare_providers);
-  update_clinic_table();
-  $('#clinic_table').trigger('update');
+  update_ui(procedure_filter);
 }
 
 function clear_tables()
 {
   $('#specialist_table tbody').find('tr').not('.placeholder').remove();
   $('#clinic_table tbody').find('tr').not('.placeholder').remove();
+}
+
+function update_ui(procedure_filter)
+{
+  update_procedures('s', filtering.specialist_procedures);
+  update_associations('s', filtering.specialist_associations);
+  update_languages('s', filtering.specialist_languages);
+  update_specialist_table();
+  $('#specialist_table').trigger('update');
+  $('#specialist_table').trigger('sorton', [[[1,0],[2,0],[3,0]]]);
+  
+  update_procedures('c', filtering.clinic_procedures);
+  update_languages('c', filtering.clinic_languages);
+  update_healthcare_providers('c', filtering.clinic_healthcare_providers);
+  update_clinic_table();
+  $('#clinic_table').trigger('update');
+  $('#clinic_table').trigger('sorton', [[[0,0],[1,0],[2,0],[3,0]]]);
 }
 
 function add_entities_from_city(prefix, entity_name, entity_data, city_id, procedure_filter)
@@ -294,18 +301,8 @@ function expand_city(is_checked, specialization_id, city_id, procedure_filter)
       //this all needs to happen in this callback function
       add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter);
       add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter);
-    
-      update_procedures('s', filtering.specialist_procedures);
-      update_associations('s', filtering.specialist_associations);
-      update_languages('s', filtering.specialist_languages);
-      update_specialist_table();
-      $('#specialist_table').trigger('update');
-      
-      update_procedures('c', filtering.clinic_procedures);
-      update_languages('c', filtering.clinic_languages);
-      update_healthcare_providers('c', filtering.clinic_healthcare_providers);
-      update_clinic_table();
-      $('#clinic_table').trigger('update');
+                
+      update_ui(procedure_filter);
       
       $body.removeClass('loading');
     });
@@ -314,21 +311,7 @@ function expand_city(is_checked, specialization_id, city_id, procedure_filter)
   {
     //we have it loaded, just show it
     filtering.current_cities[city_id.toString()] = true;
-    
-    add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter);
-    add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter);
-    
-    update_procedures('s', filtering.specialist_procedures);
-    update_associations('s', filtering.specialist_associations);
-    update_languages('s', filtering.specialist_languages);
-    update_specialist_table();
-    $('#specialist_table').trigger('update');
-    
-    update_procedures('c', filtering.clinic_procedures);
-    update_languages('c', filtering.clinic_languages);
-    update_healthcare_providers('c', filtering.clinic_healthcare_providers);
-    update_clinic_table();
-    $('#clinic_table').trigger('update');
+    update_ui(procedure_filter);
   }
   else
   {
