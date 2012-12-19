@@ -637,9 +637,9 @@ body.loading #email
   {
     thead tr 
     {
-      th.headerSortUp:after, 
-      th.headerSortDown:after,
-      th:after
+      th.tablesorter-headerAsc div:after, 
+      th.tablesorter-headerDesc div:after,
+      th div:after
       {
         font-family: FontAwesome;
         font-weight: normal;
@@ -658,20 +658,20 @@ body.loading #email
         cursor: pointer;
       }
       
-      th.headerSortUp:after
+      th.tablesorter-headerAsc div:after
       {
         content: "\f062";       
       }
       
-      th.headerSortDown:after 
+      th.tablesorter-headerDesc div:after 
       {
         content: "\f063";
       }
       
-      th.headerSortUp + th.headerSortUp:after, 
-      th.headerSortDown + th.headerSortDown:after, 
-      th.headerSortUp + th.headSortDown:after, 
-      th.headerSortDown + th.headerSortUp:after
+      th.tablesorter-headerAsc + th.tablesorter-headerAsc div:after, 
+      th.tablesorter-headerDesc + th.tablesorter-headerDesc div:after, 
+      th.tablesorter-headerAsc + th.tablesorter-headerDesc div:after, 
+      th.tablesorter-headerDesc + th.tablesorter-headerAsc div:after
       {
         content: "\0000a0";
       } 
