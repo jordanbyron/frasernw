@@ -5,7 +5,6 @@ function init_tables(procedure_filter)
     if (!filtering.current_cities[city_id])
     {
       //'unloaded' city
-      console.log("unloaded city: " + city_id);
       continue
     }
     add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter);
@@ -18,7 +17,10 @@ function init_tables(procedure_filter)
 function clear_tables()
 {
   $('#specialist_table tbody').find('tr').not('.placeholder').remove();
+  $('#specialist_table').trigger('update');
+  
   $('#clinic_table tbody').find('tr').not('.placeholder').remove();
+  $('#clinic_table').trigger('update');
 }
 
 function update_ui(procedure_filter)
@@ -100,7 +102,6 @@ function update_procedures(prefix, city_procedures)
     if (!filtering.current_cities[city_id])
     {
       //'unloaded' city
-      console.log("unloaded city: " + city_id);
       continue
     }
     
@@ -153,7 +154,6 @@ function update_associations(prefix, city_associations)
     if (!filtering.current_cities[city_id])
     {
       //'unloaded' city
-      console.log("unloaded city: " + city_id);
       continue
     }
     
@@ -210,7 +210,6 @@ function update_languages(prefix, city_languages)
     if (!filtering.current_cities[city_id])
     {
       //'unloaded' city
-      console.log("unloaded city: " + city_id);
       continue
     }
     
@@ -253,7 +252,6 @@ function update_healthcare_providers(prefix, city_healthcare_providers)
     if (!filtering.current_cities[city_id])
     {
       //'unloaded' city
-      console.log("unloaded city: " + city_id);
       continue
     }
     
@@ -311,6 +309,8 @@ function expand_city(is_checked, specialization_id, city_id, procedure_filter)
   {
     //we have it loaded, just show it
     filtering.current_cities[city_id.toString()] = true;
+    add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter);
+    add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter);
     update_ui(procedure_filter);
   }
   else
