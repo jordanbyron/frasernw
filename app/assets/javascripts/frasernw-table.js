@@ -25,19 +25,21 @@ function clear_tables()
 
 function update_ui(procedure_filter)
 {
+  var five_columns = (filtering.current_specialties.length > 1);
+  
   update_procedures('s', filtering.specialist_procedures);
   update_associations('s', filtering.specialist_associations);
   update_languages('s', filtering.specialist_languages);
   update_specialist_table();
   $('#specialist_table').trigger('update');
-  $('#specialist_table').trigger('sorton', [[[1,0],[2,0],[3,0]]]);
+  $('#specialist_table').trigger('sorton', five_columns ? [[[2,0],[3,0],[4,0]]] : [[[1,0],[2,0],[3,0]]]);
   
   update_procedures('c', filtering.clinic_procedures);
   update_languages('c', filtering.clinic_languages);
   update_healthcare_providers('c', filtering.clinic_healthcare_providers);
   update_clinic_table();
   $('#clinic_table').trigger('update');
-  $('#clinic_table').trigger('sorton', [[[0,0],[1,0],[2,0],[3,0]]]);
+  $('#clinic_table').trigger('sorton', five_columns ? [[[0,0],[1,0],[2,0],[3,0]]] : [[[0,0],[2,0],[3,0],[4,0]]]);
 }
 
 function add_entities_from_city(prefix, entity_name, entity_data, city_id, procedure_filter)
