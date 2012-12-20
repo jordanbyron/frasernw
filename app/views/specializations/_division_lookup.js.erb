@@ -13,7 +13,7 @@ filtering.current_subcategories["<%= division.id %>"] = {};
     <%
     
       ScCategory.specialty.each do |category|
-        items = category.all_sc_items_for_specialization_in_divisions(@specialization, [division])
+        items = category.all_sc_items_for_specialization_in_divisions(specialization, [division])
         next if items.blank?
         
         category_data = Hash.new

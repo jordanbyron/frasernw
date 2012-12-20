@@ -166,6 +166,9 @@ module SpecializationsHelper
     item.specializations.each do |s|
       filtering_attributes << "is#{s.id}_"
     end
+    item.procedure_specializations.each do |ps|
+      filtering_attributes << "p#{ps.procedure.id}_"
+    end
     return filtering_attributes
   end
 end

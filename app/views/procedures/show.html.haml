@@ -58,12 +58,26 @@
 - has_specialists = @procedure.all_specialists_in_cities(user_cities).length > 0
 - has_clinics = @procedure.all_clinics_in_cities(user_cities).length > 0
 
+#page_scripts
+  %script{"type" => "text/javascript"}
+    = render 'specializations/global_lookup.js', :specializations => procedure_specializations.map{|ps| ps.specialization}
+    - user_cities.each do |city|
+      = render 'specializations/city_lookup.js', :city => city, :specializations => procedure_specializations.map{|ps| ps.specialization}, :other => false
+    - current_user_divisions.each do |division|
+      = render 'specializations/division_lookup.js', :division => division, :specializations => procedure_specializations.map{|ps| ps.specialization}
+    $(document).ready(function() { init_tables(#{@procedure.id}) });
+    var should_show_others = false;
+
+-# TABS ARE USER SPECIFIC, BASED OFF CONTENT (OR LACK THEREOF)
+
+- categories = ScCategory.specialty.reject{ |sc_category| sc_category.all_sc_items_for_procedure_in_divisions(@procedure, current_user_divisions).blank? }
+
 %script{"type" => "text/javascript"}
-  = render 'specializations/global_lookup.js', :specializations => procedure_specializations.map{|ps| ps.specialization}
-  - user_cities.each do |city|
-    = render 'specializations/city_lookup.js', :city => city, :specializations => procedure_specializations.map{|ps| ps.specialization}, :other => false
-  $(document).ready(function() { init_tables(#{@procedure.id}) });
-  var should_show_others = false;
+  $(document).ready( function(){
+  - categories.each do |sc_category|
+    - if !sc_category.inline?
+      init_category("#{sc_category.id}", #{@procedure.id});
+  update_favorites(); });
 
 - specialist_tab_class = has_specialists ? "active" : ""
 - clinic_tab_class = has_specialists ? "" : "active"
@@ -409,13 +423,6 @@
                     = link_to sc_item.title, sc_item.resolved_url, :target => "_blank"
             
             - else
-            
-
-              %script{"type" => "text/javascript"}
-                $(document).ready(function() {
-                - items.each do |sc_item|
-                  $('#i#{sc_item.id}').data('filter', '#{sc_item_filtering_attributes(sc_item, false).join(' ')}');
-                });
           
               .content
                 .row
@@ -436,22 +443,11 @@
                           %th.email
                           %th.fb
                       %tbody
-                        - items.each do |sc_item|
-                          %tr{:id => "i#{sc_item.id}"}
-                            %td.title
-                              - if sc_item.shared_care?
-                                %i.icon-blue.icon-star
-                              = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{sc_item.type_mask}', '#{sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
-                            %td.subcategory= sc_item.sc_category.name
-                            %td.favorite
-                              %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
-                                %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
-                            %td.email
-                              - if sc_item.can_email?
-                                = link_to "<i class='icon-envelope-alt icon-blue'></i>".html_safe, compose_mail_to_patients_path(sc_item), :class => 'ajax', :title => "E-mail to patient"
-                            %td.fb
-                              %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
-                                %i.icon-bullhorn
+                        %tr.placeholder
+                          %td
+                          %td
+                          %td
+                          %td
                           
                   - if sc_category.has_children?
                   

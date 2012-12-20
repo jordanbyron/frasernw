@@ -1,8 +1,8 @@
-function init_category(category_id)
+function init_category(category_id, procedure_filter)
 {
   for(var division_id in filtering.current_divisions)
   {
-    add_items_from_division(filtering.content_data[division_id], category_id);
+    add_items_from_division(filtering.content_data[division_id], category_id, procedure_filter);
   }
   
   update_ui(category_id);
@@ -15,11 +15,19 @@ function update_ui(category_id)
   $('#specialist_table').trigger('sorton', [[[0,0]]]);
 }
 
-function add_items_from_division(category_data, category_id)
+function add_items_from_division(category_data, category_id, procedure_filter)
 {
   for(var item_id in category_data[category_id])
   {
     var item = category_data[category_id][item_id];
+    if (procedure_filter != -1)
+    {
+      if (item.attributes.indexOf('p' + procedure_filter + '_') == -1)
+      {
+        //the item doesn't belong to the procedure we are filtering on, skip it
+        continue;
+      }
+    }
     var title = item.title;
     var subcategory = filtering.global_categories[item.subcategory];
     var can_email = item.can_email;
