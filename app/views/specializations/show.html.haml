@@ -11,7 +11,6 @@
   :plain
     var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
     $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
-    $(document).ready(function() { update_favorites() });
     
 #specialties-dropdown-menu
   .inner
@@ -38,6 +37,8 @@
     = render 'global_lookup.js', :specializations => [@specialization]
     - user_cities.each do |city|
       = render 'city_lookup.js', :city => city, :specializations => [@specialization], :other => true
+    - current_user_divisions.each do |division|
+      = render 'division_lookup.js', :division => division, :specializations => [@specialization]
     $(document).ready(function() { init_tables(-1) });
     var should_show_others = false;
 
@@ -46,6 +47,15 @@
 
 -# TABS ARE USER SPECIFIC, BASED OFF CONTENT (OR LACK THEREOF)
 
+- categories = ScCategory.specialty.reject{ |sc_category| sc_category.all_sc_items_for_specialization_in_divisions(@specialization, current_user_divisions).blank? }
+
+%script{"type" => "text/javascript"}
+  $(document).ready( function(){
+  - categories.each do |sc_category|
+    - if !sc_category.inline?
+      init_category("#{sc_category.id}");
+  update_favorites(); });
+  
 .tabbable
   %ul#content_tabs.nav.nav-tabs
     - if has_specialists
@@ -56,12 +66,11 @@
       %li{:class => clinic_tab_class}
         %a#clinics{"href" => "#clinic_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'clinics']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
           %span Clinics
-    - ScCategory.specialty.each do |sc_category|
-      - if sc_category.all_sc_items_for_specialization_in_divisions(@specialization, current_user_divisions).present?
-        %li
-          %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "id" => sc_category.name.remove_whitespace, "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
-            %span= sc_category.name
-            
+    - categories.each do |sc_category|
+      %li
+        %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "id" => sc_category.name.remove_whitespace, "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
+          %span= sc_category.name
+
   - cache(specialization_path(@specialization)) do
     
     .content-wrapper
@@ -424,13 +433,6 @@
                     = link_to sc_item.title, sc_item.resolved_url, :target => "_blank"
             
             - else
-            
-
-              %script{"type" => "text/javascript"}
-                $(document).ready(function() {
-                - items.each do |sc_item|
-                  $('#i#{sc_item.id}').data('filter', '#{sc_item_filtering_attributes(sc_item, false).join(' ')}');
-                });
           
               .content
                 .row
@@ -451,22 +453,11 @@
                           %th.email
                           %th.fb
                       %tbody
-                        - items.each do |sc_item|
-                          %tr{:id => "i#{sc_item.id}"}
-                            %td.title
-                              - if sc_item.shared_care?
-                                %i.icon-blue.icon-star
-                              = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{sc_item.type_mask}', '#{sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
-                            %td.subcategory= sc_item.sc_category.name
-                            %td.favorite
-                              %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
-                                %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
-                            %td.email
-                              - if sc_item.can_email?
-                                = link_to "<i class='icon-envelope-alt icon-blue'></i>".html_safe, compose_mail_to_patients_path(sc_item), :class => 'ajax', :title => "E-mail to patient"
-                            %td.fb
-                              %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
-                                %i.icon-bullhorn
+                        %tr.placeholder
+                          %td
+                          %td
+                          %td
+                          %td
                           
                           
                   - if sc_category.has_children?

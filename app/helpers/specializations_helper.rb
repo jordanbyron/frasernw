@@ -160,13 +160,11 @@ module SpecializationsHelper
     return (other_specialists - specialization.specialists.in_cities(cities)).sort{ |a,b| "#{a.waittime_mask}" <=> "#{b.waittime_mask}" }
   end
 
-  def sc_item_filtering_attributes(item, include_specializations)
+  def sc_item_filtering_attributes(item)
     filtering_attributes = []
     filtering_attributes << "ic#{item.sc_category.id}_"
-    if include_specializations
-      item.specializations.each do |s|
-        filtering_attributes << "is#{s.id}_"
-      end
+    item.specializations.each do |s|
+      filtering_attributes << "is#{s.id}_"
     end
     return filtering_attributes
   end

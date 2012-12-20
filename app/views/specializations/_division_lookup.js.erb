@@ -1,0 +1,43 @@
+filtering.content_data["<%= division.id %>"] = {};
+filtering.current_subcategories["<%= division.id %>"] = {};
+<% ScCategory.specialty.each do |category| %>
+  filtering.current_subcategories["<%= division.id %>"]["<%= category.id %>"] = [];
+<% end %>
+
+<% specializations.each do |specialization| %>
+
+  <% cache(specialization_path(specialization) + "_" + division_path(division)) do %>
+  
+    filtering.current_divisions["<%= division.id %>"] = true
+    
+    <%
+    
+      ScCategory.specialty.each do |category|
+        items = category.all_sc_items_for_specialization_in_divisions(@specialization, [division])
+        next if items.blank?
+        
+        category_data = Hash.new
+        current_subcategories = Array.new
+
+        items.each do |item|
+          category_data[item.id] = Hash.new
+          category_data[item.id]['title'] = escape_javascript(item.title)
+          category_data[item.id]['subcategory'] = "#{item.sc_category.id}"
+          category_data[item.id]['can_email'] = item.can_email?
+          category_data[item.id]['shared_care'] = item.shared_care?
+          category_data[item.id]['attributes'] = sc_item_filtering_attributes(item).join(' ')
+          current_subcategories += sc_item_filtering_attributes(item)
+        end
+        
+        -%>
+    
+        filtering.content_data["<%= division.id %>"]["<%= category.id %>"] = $.extend({}, filtering.content_data["<%= division.id %>"]["<%= category.id %>"], <%=category_data.to_json.html_safe %>);
+        filtering.current_subcategories["<%= division.id %>"]["<%= category.id %>"] = filtering.current_subcategories["<%= division.id %>"]["<%= category.id %>"].concat(<%=current_subcategories.flatten.uniq.to_json.html_safe %>);
+       
+        <% 
+        
+    end
+
+  end
+  
+end %>

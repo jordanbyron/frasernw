@@ -92,7 +92,7 @@ function add_row( entity_type, entity_id, url, name, status_class, status_sort, 
   {
     $('#' + entity_type + '_table tr:last').after(row_html.ajaxify());
   }
-  $('#' + entity_type + "_" + entity_id).data('attributes', attributes);
+  $('#' + row_id).data('attributes', attributes);
 }
 
 function update_procedures(prefix, city_procedures)

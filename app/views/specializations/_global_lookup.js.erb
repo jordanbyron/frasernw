@@ -55,3 +55,13 @@ filtering.specialist_languages = {}
 filtering.clinic_procedures = {}
 filtering.clinic_languages = {}
 filtering.clinic_healthcare_providers = {}
+
+<%
+categories = Hash.new
+ScCategory.all.each{|c| categories[c.id] = c.name }
+-%>
+filtering.global_categories = <%=categories.to_json.html_safe %>
+
+filtering.content_data = {}
+filtering.current_divisions = {}
+filtering.current_subcategories = {}
