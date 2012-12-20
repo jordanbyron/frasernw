@@ -59,11 +59,10 @@ Frasernw::Application.routes.draw do
   match '/specialists/:id/print'        => 'specialists#print_patient_information',   :as => 'specialist_patient_information'
   match '/clinics/:id/print'            => 'clinics#print_patient_information',       :as => 'clinic_patient_information'
   
-  get  '/specialties/:id/:token/refresh_cache' => 'specializations#refresh_cache', :as => 'specialization_refesh_cache'
+  get  '/specialties/:id/:token/refresh_cache'     => 'specializations#refresh_cache', :as => 'specialization_refesh_cache'
   get  '/specialists/:id/:token/refresh_cache'     => 'specialists#refresh_cache',     :as => 'specialist_refesh_cache'
   get  '/clinics/:id/:token/refresh_cache'         => 'clinics#refresh_cache',         :as => 'clinic_refesh_cache'
   get  '/hospitals/:id/:token/refresh_cache'       => 'hospitals#refresh_cache',       :as => 'hospital_refesh_cache'
-  get  '/areas_of_practice/:id/:token/refresh_cache'      => 'procedures#refresh_cache',      :as => 'procedure_refesh_cache'
   get  '/languages/:id/:token/refresh_cache'       => 'languages#refresh_cache',       :as => 'language_refesh_cache'
   
   get  '/specialties/:id/cities/:city_id' => 'specializations#city', :as => 'specialization_city'

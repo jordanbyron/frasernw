@@ -18,15 +18,6 @@ namespace :pathways do
       end
     end
   
-    task :procedures => :environment do
-      puts "Recaching procedures..."
-      Procedure.all.sort{ |a,b| a.id <=> b.id }.each do |p|
-        puts "Procedure #{p.id}"
-        expire_fragment procedure_path(p)
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/areas_of_practice/#{p.id}/#{p.token}/refresh_cache") )
-      end
-    end
-  
     task :specialists => :environment do
       puts "Recaching specialists..."
       Specialist.all.sort{ |a,b| a.id <=> b.id }.each do |s|
