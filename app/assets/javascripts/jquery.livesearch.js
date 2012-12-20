@@ -2,7 +2,8 @@ $.fn.livesearch = function(options)
 {
   var container = $(options.container);
   var list = container.children('ul');
-  var data = $(options.data);
+  var global_data = options.global_data;
+  var division_data = options.division_data;
   var scorer_fnc = options.scorer || scorer;
   var grouper_fnc = options.grouper || grouper;
   var data_formatter_fnc = options.data_formatter || data_formatter;
@@ -16,6 +17,12 @@ $.fn.livesearch = function(options)
   var results = [];
   var selected = -1;
   var that = this;
+  var data = global_data;
+  for (var division_id in division_data)
+  {
+    data = data.concat(division_data[division_id]);
+  }
+  data = $(data);
   
   container.mouseover( function() { set_selected(-1) });
   

@@ -1,0 +1,131 @@
+<% 
+cache("livesearch_global") do
+
+  order_map = {
+    "Specializations" => "1",
+    "Specialists" => "2",
+    "Clinics" => "3",
+    "Content" => "4",
+    "Procedures" => "5",
+    "Hospitals" => "6",
+    "Languages" => "7"
+  }
+
+  ScCategory.all.each do |category|
+    order_map[ category.name ] = ( order_map.length + 1 ).to_s
+  end
+
+  group_data = { 
+    order_map["Specializations"] => "Specialties", 
+    order_map["Specialists"] => "Specialists",
+    order_map["Clinics"] => "Clinics",
+    order_map["Content"] => "Content", 
+    order_map["Procedures"] => "Areas of Practice",
+    order_map["Hospitals"] => "Hospitals",
+    order_map["Languages"] => "Languages"
+  }
+
+  ScCategory.all.each do |category|
+    next if category.sc_items.searchable.empty?
+    group_data[ order_map[category.name] ] = category.full_name
+  end
+
+  -%>
+
+  var pathways_group_data = <%=group_data.to_json.html_safe %><%
+
+  url_data = { 
+    order_map["Specializations"]  => "specialties", 
+    order_map["Specialists"]  => "specialists",
+    order_map["Clinics"]  => "clinics",
+    order_map["Content"]  => "content_categories", 
+    order_map["Procedures"]  => "areas_of_practice",
+    order_map["Hospitals"]  => "hospitals",
+    order_map["Languages"]  => "languages" 
+  }
+
+  ScCategory.all.each do |category|
+    next if category.sc_items.searchable.empty?
+    url_data[ order_map[category.name] ] = "content_items"
+  end
+    
+  -%>
+
+  var pathways_url_data = <%=url_data.to_json.html_safe %>
+
+  <% specialization_data = Hash.new
+
+  Specialization.not_in_progress.each do |specialization|
+    specialization_data[specialization.id] = specialization.name
+  end
+    
+  -%>
+
+  var pathways_specialization_data = <%=specialization_data.to_json.html_safe %>
+
+  <% city_data = Hash.new
+
+  City.all.each do |city|
+    city_data[city.id] = city.name
+  end
+    
+  -%>
+
+  var pathways_city_data = <%=city_data.to_json.html_safe %>
+
+  <% status_data = Hash.new
+
+  Specialist::STATUS_CLASS_HASH.each do |key, value|
+    status_data[value] = key
+  end
+    
+  -%>
+
+  var pathways_status_data = <%=status_data.to_json.html_safe %>
+
+  <% search_data = Array.new 
+
+  Specialization.all.each do |specialization|
+
+    next if specialization.in_progress
+    
+    entry = { 
+      "n" => specialization.name, 
+      'id' => specialization.id,
+      "go" => order_map["Specializations"] }
+    search_data << entry
+  end 
+
+  ScCategory.searchable.each do |category|
+    entry = { 
+      "n" => category.full_name, 
+      'id' => category.id,
+      "go" => order_map["Content"] }
+    search_data << entry
+  end 
+
+  Procedure.includes(:procedure_specializations => :specialization).each do |procedure|
+
+    #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
+    next if procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress }.length == 0
+    
+    entry = { 
+      "n" => procedure.full_name, 
+      "sp" => procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress }.collect{ |ps| ps.specialization_id },
+      "id" => procedure.id,
+      "go" => order_map["Procedures"] }
+    search_data << entry
+  end 
+
+  Language.all.each do |language|
+    entry = { 
+      "n" => language.name, 
+      "id" => language.id,
+      "go" => order_map["Languages"] }
+    search_data << entry
+  end
+
+  -%>
+  var pathways_global_search_data = <%=search_data.to_json.html_safe %>
+
+<% end -%>

@@ -22,7 +22,8 @@
       {
         $('#search').livesearch({
           container: '#search_results',
-          data: pathways_search_data,
+          global_data: pathways_global_search_data,
+          division_data: pathways_division_search_data,
           scorer: pathways_scorer,
           grouper: pathways_grouper,
           searcher: pathways_searcher,
