@@ -75,8 +75,7 @@
 %script{"type" => "text/javascript"}
   $(document).ready( function(){
   - categories.each do |sc_category|
-    - if !sc_category.inline?
-      init_category("#{sc_category.id}", #{@procedure.id});
+    init_category("#{sc_category.id}", #{sc_category.inline?}, #{@procedure.id});
   update_favorites(); });
 
 - specialist_tab_class = has_specialists ? "active" : ""
@@ -406,21 +405,7 @@
         
             - if sc_category.inline?
       
-              - items.sort{ |a,b| a.sc_category.sort_order <=> a.sc_category.sort_order }.each do |sc_item|
-                .scm
-                  %h1
-                    - if sc_item.shared_care?
-                      %i.icon-red.icon-star
-                    = sc_item.full_title
-                    %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
-                      %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
-                    %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
-                      %i.icon-bullhorn
-
-                  - if sc_item.markdown?
-                    = BlueCloth.new(sc_item.markdown_content).to_html.html_safe
-                  - else
-                    = link_to sc_item.title, sc_item.resolved_url, :target => "_blank"
+              %div{:id => "#{sc_category.id}_items"}
             
             - else
           
