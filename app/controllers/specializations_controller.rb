@@ -58,6 +58,12 @@ class SpecializationsController < ApplicationController
     token_required( Specialization, params[:token], params[:id] )
   end
   
+  def city
+    @specialization = Specialization.find(params[:id])
+    @city = City.find(params[:city_id])
+    render 'refresh_city.js'
+  end
+  
   def refresh_cache
     @specialization = Specialization.find(params[:id])
     @feedback = FeedbackItem.new
