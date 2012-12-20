@@ -64,7 +64,7 @@
     %script{"type" => "text/javascript"}
       $(document).ready(function() {
       - @sc_items.each do |sc_item|
-        $('#i#{sc_item.id}').data('filter', '#{sc_item_filtering_attributes(sc_item, true).join(' ')}');
+        $('#i#{sc_item.id}').data('filter', '#{sc_item_filtering_attributes(sc_item).join(' ')}');
       });
 
     .content

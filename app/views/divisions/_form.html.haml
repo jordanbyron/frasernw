@@ -31,7 +31,7 @@
                   = check_box_tag "#{city.id}_#{specialization.id}", 1, (@local_referral_cities[city.id].present?) && (@local_referral_cities[city.id].include? specialization.id), :name => "local_referral_cities[#{city.id}][#{specialization.id}]", :class => "city_#{city.id} city_specialization"
 
   .form-actions
-    = f.button :submit, "Update your local referral areas", :class => "btn btn-primary"
+    = f.button :submit, p:class => "btn btn-primary"
     %a.btn.btn-danger.ajax{"href" => divisions_path} Cancel
           
 %script{"type" => "text/javascript"}
