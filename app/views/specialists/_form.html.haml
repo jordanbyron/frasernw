@@ -399,7 +399,7 @@
           $("#specialist_status_mask").each( status_changed );
     = f.input :status_details
     = f.input :practise_limitations
-    = f.input :location_opened, as: :select, collection: ["Prior to 2010", 2010, 2011, 2012], prompt: "Select ..."
+    = f.input :location_opened, as: :select, collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a), prompt: "Select ..."
     = f.association :languages, as: :check_boxes, :item_wrapper_class => 'inline'
     = f.input :interpreter_available
   
