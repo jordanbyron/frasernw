@@ -67,6 +67,7 @@ Frasernw::Application.routes.draw do
   
   get  '/specialties/:id/cities/:city_id' => 'specializations#city', :as => 'specialization_city'
   get  '/specialties/:id/:token/refresh_city_cache/:city_id' => 'specializations#refresh_city_cache', :as => 'specialization_refresh_city_cache'
+  get  '/specialties/:id/:token/refresh_division_cache/:division_id' => 'specializations#refresh_division_cache', :as => 'specialization_refresh_division_cache'
   
   put  '/favorites/specialists/:id' => 'favorites#edit', :as => 'specialist_favorite', :model => 'specialists'
   put  '/favorites/clinics/:id' => 'favorites#edit', :as => 'clinic_favorite', :model => 'clinics'

@@ -1,8 +1,8 @@
 class SpecializationsController < ApplicationController
-  skip_before_filter :login_required, :only => [:refresh_cache, :refresh_city_cache]
-  load_and_authorize_resource :except => [:refresh_cache, :refresh_city_cache]
-  before_filter :check_token, :only => [:refresh_cache, :refresh_city_cache]
-  skip_authorization_check :only => [:refresh_cache, :refresh_city_cache]
+  skip_before_filter :login_required, :only => [:refresh_cache, :refresh_city_cache, :refresh_division_cache]
+  load_and_authorize_resource :except => [:refresh_cache, :refresh_city_cache, :refresh_division_cache]
+  before_filter :check_token, :only => [:refresh_cache, :refresh_city_cache, :refresh_division_cache]
+  skip_authorization_check :only => [:refresh_cache, :refresh_city_cache, :refresh_division_cache]
   
   cache_sweeper :specialization_sweeper, :only => [:create, :update, :destroy]
 
@@ -64,18 +64,15 @@ class SpecializationsController < ApplicationController
     render :show, :layout => 'ajax'
   end
   
-  def city
-    @specialization = Specialization.find(params[:id])
-    @city = City.find(params[:city_id])
-    respond_to do |format|
-      format.js
-    end
-  end
-  
   def refresh_city_cache
     @specialization = Specialization.find(params[:id])
     @city = City.find(params[:city_id])
-    @feedback = FeedbackItem.new
-    render 'city.js'
+    render 'refresh_city.js'
+  end
+  
+  def refresh_division_cache
+    @specialization = Specialization.find(params[:id])
+    @division = Division.find(params[:division_id])
+    render 'refresh_division.js'
   end
 end

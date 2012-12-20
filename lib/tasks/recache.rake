@@ -12,8 +12,14 @@ namespace :pathways do
         expire_fragment specialization_path(s)
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_cache") )
         City.all.each do |c|
+          puts "Specialization City #{c.id}"
           expire_fragment "#{specialization_path(s)}_#{city_path(c)}"
-          Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_city_cache/#{c.id}") )
+          Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_city_cache/#{c.id}.js") )
+        end
+        Division.all.each do |d|
+          puts "Specialization Division #{d.id}"
+          expire_fragment "#{specialization_path(s)}_#{division_path(d)}"
+          Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_division_cache/#{d.id}.js") )
         end
       end
     end
