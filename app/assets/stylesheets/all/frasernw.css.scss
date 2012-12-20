@@ -658,12 +658,12 @@ body.loading #email
         cursor: pointer;
       }
       
-      th.tablesorter-headerAsc div:after
+      th.tablesorter-headerDesc div:after
       {
         content: "\f062";       
       }
       
-      th.tablesorter-headerDesc div:after 
+      th.tablesorter-headerAsc div:after 
       {
         content: "\f063";
       }
