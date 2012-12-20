@@ -76,7 +76,7 @@ namespace :pathways do
     end
 
     #purposeful order from least important to most important, to keep cache 'hot'
-    task :all => [:languages, :hospitals, :procedures, :clinics, :specialists, :specializations, :search, :front] do
+    task :all => [:languages, :hospitals, :clinics, :specialists, :specializations, :search, :front] do
       puts "All pages recached."
     end
     
