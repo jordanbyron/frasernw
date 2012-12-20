@@ -79,6 +79,27 @@ namespace :pathways do
     task :all => [:languages, :hospitals, :clinics, :specialists, :specializations, :search, :front] do
       puts "All pages recached."
     end
+  
+    #utility expiration tasks
+
+    task :expire_specialization_pages => :environment do
+      puts "Expiring specialization pages..."
+      Specialization.all.each do |s|
+        expire_fragment specialization_path(s)
+      end
+    end
+    
+    task :expire_specialization_content => :environment do
+      puts "Expiring specialization content..."
+      Specialization.all.each do |s|
+        City.all.each do |c|
+          expire_fragment "#{specialization_path(s)}_#{city_path(c)}"
+        end
+        Division.all.each do |d|
+          expire_fragment "#{specialization_path(s)}_#{division_path(d)}"
+        end
+      end
+    end
     
     # The following methods are defined to fake out the ActionController
     # requirements of the Rails cache
