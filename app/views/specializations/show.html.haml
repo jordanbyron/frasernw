@@ -53,7 +53,7 @@
   $(document).ready( function(){
   - categories.each do |sc_category|
     - if !sc_category.inline?
-      init_category("#{sc_category.id}");
+      init_category("#{sc_category.id}", -1);
   update_favorites(); });
   
 .tabbable
