@@ -42,18 +42,15 @@ $.fn.livesearch = function(options)
           url: search_all_url, 
           dataType: 'script'
         }).success(function() {
-          console.log('loaded search data!');
           use_all_data();
           container.removeClass('loading');
         }).fail(function(){
-          console.log('failed to load all search data');
           container.removeClass('loading');
         });
       }
       else
       {
         //already loaded all data, flip to it
-        console.log('using loaded search data!');
         use_all_data();
         that.trigger('focus'); //maintain focus
       }
@@ -61,7 +58,6 @@ $.fn.livesearch = function(options)
     else
     {
       //go back to divisional data
-      console.log('using divisional data!');
       use_division_data();
       that.trigger('focus'); //maintain focus
     }
