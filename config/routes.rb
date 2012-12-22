@@ -92,7 +92,9 @@ Frasernw::Application.routes.draw do
   match '/login' => 'user_sessions#new', :as => :login
   
   match '/livesearch' => 'search#livesearch', :as => :livesearch
-  match '/refresh_livesearch' => 'search#refresh_livesearch', :as => :refresh_livesearch
+  match '/livesearch_all' => 'search#livesearch_all', :as => :livesearch_all
+  match '/refresh_livesearch_global' => 'search#refresh_livesearch_global', :as => :refresh_livesearch_global
+  match '/refresh_livesearch_all' => 'search#refresh_livesearch_all', :as => :refresh_livesearch_all
   match '/refresh_livesearch_division/:division_id' => 'search#refresh_livesearch_division', :as => :refresh_livesearch_division
   
   match '/front' => 'front#index', :as => :front

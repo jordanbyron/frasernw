@@ -8,7 +8,19 @@ class SearchController < ApplicationController
     end
   end
   
-  def refresh_livesearch
+  def livesearch_all
+    respond_to do |format|
+      format.js
+    end
+  end
+  
+  def refresh_livesearch_global
+    respond_to do |format|
+      format.js
+    end
+  end
+  
+  def refresh_livesearch_all
     respond_to do |format|
       format.js
     end

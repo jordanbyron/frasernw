@@ -18,10 +18,13 @@
     = yield(:head)
               
     :javascript
+      var livesearch;
       $(document).ready(function() 
       {
-        $('#search').livesearch({
+        livesearch = $('#search').livesearch({
           container: '#search_results',
+          search_all: '#search_all',
+          search_all_url: '/livesearch_all.js',
           global_data: pathways_global_search_data,
           division_data: pathways_division_search_data,
           scorer: pathways_scorer,
@@ -70,7 +73,13 @@
             %form.navbar-search.pull-right
               %input.span3.search-query#search{"type" => "search", "placeholder" => "Search"}
               #search_results
+                #loading
+                  #loading-spinner
                 %ul
+                #search_location
+                  %label
+                    %input#search_all{"type" => "checkbox"}
+                    Search in all divisions
           
           .nav-collapse
             - if logged_in?

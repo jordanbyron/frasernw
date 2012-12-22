@@ -1,6 +1,8 @@
 $.fn.livesearch = function(options)
 {
   var container = $(options.container);
+  var search_all = $(options.search_all);
+  var search_all_url = options.search_all_url;
   var list = container.children('ul');
   var global_data = options.global_data;
   var division_data = options.division_data;
@@ -17,28 +19,84 @@ $.fn.livesearch = function(options)
   var results = [];
   var selected = -1;
   var that = this;
-  var data = global_data;
-  for (var division_id in division_data)
-  {
-    data = data.concat(division_data[division_id]);
-  }
-  data = $(data);
+  var data;
+  use_division_data();
   
   container.mouseover( function() { set_selected(-1) });
   
-  function hide_search() { container.animate({height: "hide"}, 200) }
-  
   this
-    .keyup(filter).keyup()
-    .focus(filter)
+    .keyup(filter_search).keyup()
+    .focus(filter_search)
     .blur(function(){ setTimeout(hide_search,100) })
     .parents('form').submit( function() { if (results.length > 0) { that.blur(); return searcher_fnc(results[selected].data_entry) } else { return false; } });
   
+  search_all.click(function() {
+    if ($(this).prop('checked') == true)
+    {
+      if (typeof pathways_all_search_data == 'undefined')
+      {
+        //load all data
+        that.trigger('focus'); //maintain focus
+        container.addClass('loading');
+        $.ajax({
+          url: search_all_url, 
+          dataType: 'script'
+        }).success(function() {
+          console.log('loaded search data!');
+          use_all_data();
+          container.removeClass('loading');
+        }).fail(function(){
+          console.log('failed to load all search data');
+          container.removeClass('loading');
+        });
+      }
+      else
+      {
+        //already loaded all data, flip to it
+        console.log('using loaded search data!');
+        use_all_data();
+        that.trigger('focus'); //maintain focus
+      }
+    }
+    else
+    {
+      //go back to divisional data
+      console.log('using divisional data!');
+      use_division_data();
+      that.trigger('focus'); //maintain focus
+    }
+  }).blur(function(){ setTimeout(hide_search,100) });
+  
 	return this;
-    
-	function filter(event)
+  
+  function hide_search()
   {
-    if (event.keyCode == 38)
+    if (!(that.is(':focus')))
+    {
+      container.animate({height: "hide"}, 200)
+    }
+  }
+  
+  function use_all_data()
+  {
+    data = $(global_data.concat(pathways_all_search_data));
+    that.trigger('focus'); //refresh results
+  }
+  
+  function use_division_data()
+  {
+    data = global_data;
+    for (var division_id in division_data)
+    {
+      data = data.concat(division_data[division_id]);
+    }
+    data = $(data);
+    that.trigger('focus'); //refresh results
+  }
+    
+	function filter_search(event)
+  {
+    if (event && event.keyCode == 38)
     {
       //up key
       if ( --selected < 0 )
@@ -48,7 +106,7 @@ $.fn.livesearch = function(options)
       set_selected(selected)
       return;
     }
-    else if (event.keyCode == 40)
+    else if (event && event.keyCode == 40)
     {
       //down key
       if ( ++selected >= results.length )

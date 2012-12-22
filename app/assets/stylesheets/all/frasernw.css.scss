@@ -105,7 +105,13 @@ body.loading #email
 {
   display: none;
 }
-  
+
+#search_results.loading #loading
+{
+  display: block;
+  opacity: 0.25;
+}
+
 #search_results
 {
   z-index: 1979;
@@ -114,7 +120,6 @@ body.loading #email
   top: 26px;
   right: 0;
   margin: 0;
-  padding: 16px;
   border: 0;
   width: 600px;
   background-color: $FNW_WHITE;
@@ -123,11 +128,57 @@ body.loading #email
   box-shadow: 2px 2px 8px #888;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
+
+  #loading
+  {
+    transition: opacity 1s;
+    -moz-transition: opacity 1s;
+    -webkit-transition: opacity 1s; 
+    -o-transition: opacity 1s;
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: #000;
+    opacity: 0;
+    
+    #loading-spinner
+    {
+      position: absolute;
+      width: 32px;
+      height: 4%;
+      min-height: 32px;
+      top: 48%;
+      left: 284px;
+      background-image: url(/img/ajax-loader.gif);
+      background-repeat: no-repeat;
+    }
+  }
+  
+  #search_location
+  {
+    width: 100%;
+    height: 20px;
+    background-color: $FNW_LIGHT_GRAY;
+    padding: 4px 16px;
+    
+    label
+    {
+      color: $FNW_DARK_GRAY;
+      input
+      {
+        display: inline;
+        vertical-align: top;
+      }
+    }
+  }
   
   ul
   {
     margin: 0;
-    padding: 0;
+    padding: 16px;
     
     li
     {
