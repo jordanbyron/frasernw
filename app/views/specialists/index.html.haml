@@ -5,15 +5,21 @@
   %h2 Specialists
   
   - if current_user_is_super_admin?
-    - first_division = Division.all.first
+    - divisions = Division.all
+  - else
+    - divisions = current_user_divisions
+  
+  - if divisions.length > 1
+  
+    - first_division = divisions.first
     .tabbable
       %ul#content_tabs.nav.nav-tabs
-        - Division.all.each do |division|
+        - divisions.each do |division|
           %li{:class => (division == first_division) && "active"}
             %a{"href" => "##{division.id}_tab", "data-toggle" => "tab"}= division.name
             
       .tab-content
-        - Division.all.each do |division|
+        - divisions.each do |division|
           .tab-pane{:id => "#{division.id}_tab", :class => (division == first_division) && "active"} 
             %table.table.table-condensed.table-striped
               - Specialization.all.each do |specialization|
@@ -36,7 +42,7 @@
   
     %table.table.table-condensed.table-striped
       - Specialization.all.each do |specialization|
-        - specialists = specialization.specialists.in_divisions(current_user_divisions)
+        - specialists = specialization.specialists.in_divisions(divisions)
         - next if specialists.blank?
         %tr{ :class => specialization.in_progress ? "in-progress" : "" }
           %th{:style => "width:50%"}= specialization.name
