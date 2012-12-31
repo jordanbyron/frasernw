@@ -26,7 +26,6 @@ cache("livesearch_global") do
   }
 
   ScCategory.all.each do |category|
-    next if category.sc_items.searchable.empty?
     group_data[ order_map[category.name] ] = category.full_name
   end
 
@@ -45,7 +44,6 @@ cache("livesearch_global") do
   }
 
   ScCategory.all.each do |category|
-    next if category.sc_items.searchable.empty?
     url_data[ order_map[category.name] ] = "content_items"
   end
     

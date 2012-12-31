@@ -1,6 +1,8 @@
-var pathways_division_search_data = {};
+var pathways_division_search_data_content = {};
+var pathways_division_search_data_entries = {};
 
 = render 'livesearch_global.js'
 
 - current_user_divisions.each do |division|
-  = render 'livesearch_division.js', :division => division
+  = render 'livesearch_division_entries.js', :division => division
+  = render 'livesearch_division_content.js', :division => division

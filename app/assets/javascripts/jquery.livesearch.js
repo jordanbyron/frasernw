@@ -5,7 +5,8 @@ $.fn.livesearch = function(options)
   var search_all_url = options.search_all_url;
   var list = container.children('ul');
   var global_data = options.global_data;
-  var division_data = options.division_data;
+  var division_entry_data = options.division_entry_data;
+  var division_content_data = options.division_content_data;
   var scorer_fnc = options.scorer || scorer;
   var grouper_fnc = options.grouper || grouper;
   var data_formatter_fnc = options.data_formatter || data_formatter;
@@ -75,16 +76,25 @@ $.fn.livesearch = function(options)
   
   function use_all_data()
   {
-    data = $(global_data.concat(pathways_all_search_data));
+    data = global_data.concat(pathways_all_search_data);
+    for (var division_id in division_content_data)
+    {
+      data = data.concat(division_content_data[division_id]);
+    }
+    data = $(data);
     that.trigger('focus'); //refresh results
   }
   
   function use_division_data()
   {
     data = global_data;
-    for (var division_id in division_data)
+    for (var division_id in division_entry_data)
     {
-      data = data.concat(division_data[division_id]);
+      data = data.concat(division_entry_data[division_id]);
+    }
+    for (var division_id in division_content_data)
+    {
+      data = data.concat(division_content_data[division_id]);
     }
     data = $(data);
     that.trigger('focus'); //refresh results

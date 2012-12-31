@@ -24,9 +24,10 @@
         livesearch = $('#search').livesearch({
           container: '#search_results',
           search_all: '#search_all',
-          search_all_url: '/livesearch_all.js',
+          search_all_url: '/livesearch_all_entries.js',
           global_data: pathways_global_search_data,
-          division_data: pathways_division_search_data,
+          division_entry_data: pathways_division_search_data_entries,
+          division_content_data: pathways_division_search_data_content,
           scorer: pathways_scorer,
           grouper: pathways_grouper,
           searcher: pathways_searcher,

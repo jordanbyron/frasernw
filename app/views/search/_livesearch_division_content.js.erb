@@ -1,0 +1,33 @@
+<% cache("livesearch_" + division_path(division) + "_content") do
+
+  search_data = Array.new
+
+  order_map = {
+    "Specializations" => "1",
+    "Specialists" => "2",
+    "Clinics" => "3",
+    "Content" => "4",
+    "Procedures" => "5",
+    "Hospitals" => "6",
+    "Languages" => "7"
+  }
+
+  ScCategory.all.each do |category|
+    order_map[ category.name ] = ( order_map.length + 1 ).to_s
+  end
+
+  ScCategory.all.each do |category|
+    category.all_sc_items_in_divisions([division]).reject{ |item| !item.searchable? }.each do |item|
+      entry = { 
+        "n" => item.title, 
+        "sp" => item.specializations.reject{ |s| s.in_progress }.collect{ |s| s.id },
+        "id" => item.id,
+        "go" => order_map[category.name] }
+      search_data << entry
+    end
+  end
+
+  -%>
+  pathways_division_search_data_content["<%= division.id %>"] = <%=search_data.to_json.html_safe %>
+
+<% end -%>

@@ -1,4 +1,4 @@
-<% cache("livesearch_" + division_path(division)) do
+<% cache("livesearch_all_entries") do
 
   search_data = Array.new
 
@@ -16,7 +16,7 @@
     order_map[ category.name ] = ( order_map.length + 1 ).to_s
   end
 
-  specialists = Specialist.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:clinic_in => {:location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}}]}}).in_divisions([division])
+  specialists = Specialist.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:clinic_in => {:location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}}]}})
 
   specialists.each do |specialist|
 
@@ -33,7 +33,7 @@
     search_data << entry
   end
 
-  clinics = Clinic.includes(:location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]).in_divisions([division])
+  clinics = Clinic.includes(:location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}])
 
   clinics.each do |clinic|
 
@@ -50,18 +50,7 @@
     search_data << entry
   end
 
-  ScCategory.all.each do |category|
-    category.all_sc_items_in_divisions([division]).reject{ |item| !item.searchable? }.each do |item|
-      entry = { 
-        "n" => item.title, 
-        "sp" => item.specializations.reject{ |s| s.in_progress }.collect{ |s| s.id },
-        "id" => item.id,
-        "go" => order_map[category.name] }
-      search_data << entry
-    end
-  end
-
   -%>
-  pathways_division_search_data["<%= division.id %>"] = <%=search_data.to_json.html_safe %>
+  var pathways_all_search_data = <%=search_data.to_json.html_safe %>
 
 <% end -%>
