@@ -3,6 +3,7 @@ class ScItemsController < ApplicationController
   load_and_authorize_resource
   
   def index
+    @division = Division.find(params[:division_id])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   

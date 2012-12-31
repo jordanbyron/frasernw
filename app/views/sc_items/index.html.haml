@@ -4,7 +4,7 @@
 
   %h2 Content Items
   
-  - categories = ScCategory.all.reject{ |category| category.parent.present? || category.all_owned_sc_items_in_divisions(current_user_divisions).blank? }
+  - categories = ScCategory.all.reject{ |category| category.parent.present? || category.all_sc_items_in_divisions([@division]).blank? }
 
   .tabbable
     %ul.nav.nav-tabs
@@ -25,13 +25,19 @@
               %th Subcategory
               %th Specialties
               %th Type
-              %th Searchable?
-              %th Shared Care?
+              %th
+                %i.icon-search
+              %th
+                %i.icon-envelope
+              %th
+                %i.icon-share-alt
+              %th
+                %i.icon-star
               %th.admin
 
-            - category.all_owned_sc_items_in_divisions(current_user_divisions).each do |sc_item|
+            - category.all_owned_sc_items_in_divisions([@division]).each do |sc_item|
               %tr
-                %td{"width" => "40%"}= link_to sc_item.title, sc_item, :class => 'ajax'
+                %td{"width" => "30%"}= link_to sc_item.title, sc_item, :class => 'ajax'
                 %td= sc_item.sc_category != category ? (link_to sc_item.sc_category.name, sc_item.sc_category, :class => 'ajax') : ""
                 %td
                   %ul
@@ -41,8 +47,10 @@
                         - if is.procedure_specializations.present?
                           = ": #{is.procedure_specializations.map{ |ps| link_to ps.procedure.name, ps.procedure, :class => 'ajax' }.to_sentence}".html_safe
                 %td= sc_item.type
-                %td= sc_item.searchable ? "Yes" : "No"
-                %td= sc_item.shared_care? ? "Yes" : "No"
+                %td= sc_item.searchable? ? "<i class='icon-search'></i>".html_safe : ""
+                %td= sc_item.can_email? ? "<i class='icon-envelope'></i>".html_safe : ""
+                %td= sc_item.shareable? ? "<i class='icon-share-alt'></i>".html_safe : ""
+                %td= sc_item.shared_care? ? "<i class='icon-star'></i>".html_safe : ""
                 %td.admin.btn-group
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_sc_item_path(sc_item), :class => "btn btn-mini ajax")
                   = link_to("<i class='icon-trash'></i>".html_safe + " Delete", sc_item, :confirm => "Delete #{sc_item.title}?", :method => :delete, :class => "btn btn-mini")
