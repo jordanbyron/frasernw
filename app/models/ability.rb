@@ -45,6 +45,11 @@ class Ability
           user.user?
         end
         
+        #can manage their own news items
+        can :manage, NewsItem do |news_item|
+          (news_item.division & user.divisions).present?
+        end
+        
       end
       
       if user.admin_only? || user.user?
