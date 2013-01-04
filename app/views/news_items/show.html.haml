@@ -4,6 +4,9 @@
 
   %h2= @news_item.title
   %p.space.no_indent
+    %strong Divisions:
+    = @news_item.division.name
+  %p.space.no_indent
     %strong Start Date:
     = @news_item.start_date_full
   %p.space.no_indent

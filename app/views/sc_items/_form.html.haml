@@ -31,6 +31,8 @@
     = f.input :division_id, as: :select, :collection => Division.all, :include_blank => false
   - elsif current_user_divisions.length > 1
     = f.input :division_id, as: :select, :collection => current_user_divisions
+  - else
+    = f.input :division_id, as: :hidden, :input_html => { :value => current_user_divisions.first.id }
     
   = f.input :searchable
   = f.input :shareable

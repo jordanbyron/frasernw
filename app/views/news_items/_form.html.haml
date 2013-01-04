@@ -2,6 +2,13 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
+  - if current_user_is_super_admin?
+    = f.association :division, as: :select, :collection => Division.all, :include_blank => false
+  - elsif current_user_divisions.length > 1
+    = f.association :division, as: :select, :collection => current_user_divisions
+  - else
+    = f.association :division, as: :hidden, :input_html => { :value => current_user_divisions.first.id }
+
   = f.input :title
   = f.input :breaking
   = f.input :start_date, :as => :datepicker

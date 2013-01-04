@@ -28,10 +28,10 @@
 
 .content-wrapper
   .content#front
-    - if NewsItem.breaking.length > 0
+    - if NewsItem.breaking_in_divisions(current_user_divisions).length > 0
       .row
         .span12
-          - NewsItem.breaking.each do |news_item|
+          - NewsItem.breaking_in_divisions(current_user_divisions).each do |news_item|
             .news_item.breaking
               .news_item_date= news_item.date if news_item.date.present?
               %div{:class => news_item.date.present? ? "news_item_title" : "news_item_date"}= news_item.title if news_item.title.present?
@@ -75,11 +75,11 @@
           - latest_events(5).each do |event|
             %p= event
             
-        - if NewsItem.news.length > 0
+        - if NewsItem.news_in_divisions(current_user_divisions).length > 0
           
           %h2 Division Updates
         
-          - NewsItem.news.each do |news_item|
+          - NewsItem.news_in_divisions(current_user_divisions).each do |news_item|
             
             .news_item
               .news_item_date= news_item.date if news_item.date.present?

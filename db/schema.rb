@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121206171519) do
+ActiveRecord::Schema.define(:version => 20130104214943) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -335,15 +335,16 @@ ActiveRecord::Schema.define(:version => 20121206171519) do
   end
 
   create_table "news_items", :force => true do |t|
-    t.boolean   "breaking"
-    t.date      "start_date"
-    t.date      "end_date"
-    t.string    "title"
-    t.text      "body"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.boolean   "show_start_date", :default => true
-    t.boolean   "show_end_date",   :default => true
+    t.boolean  "breaking"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.string   "title"
+    t.text     "body"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "show_start_date", :default => true
+    t.boolean  "show_end_date",   :default => true
+    t.integer  "division_id"
   end
 
   create_table "offices", :force => true do |t|
@@ -643,6 +644,7 @@ ActiveRecord::Schema.define(:version => 20121206171519) do
     t.integer   "owner_id"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.integer   "division_id"
   end
 
   create_table "specializations", :force => true do |t|
@@ -652,6 +654,20 @@ ActiveRecord::Schema.define(:version => 20121206171519) do
     t.boolean   "in_progress", :default => false
     t.string    "saved_token"
     t.string    "member_name"
+  end
+
+  create_table "user_cities", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "city_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_city_specializations", :force => true do |t|
+    t.integer  "user_city_id"
+    t.integer  "specialization_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "user_controls_clinics", :force => true do |t|

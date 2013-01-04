@@ -1,4 +1,8 @@
 class NewsItem < ActiveRecord::Base
+  
+  attr_accessible :division_id, :title, :body, :breaking, :start_date, :end_date, :show_start_date, :show_end_date
+  
+  belongs_to :division
     
   def date
     if start_date_full.present? && end_date_full.present? && (start_date.to_s != end_date.to_s)
@@ -44,11 +48,13 @@ class NewsItem < ActiveRecord::Base
     
   default_scope order('news_items.start_date')
   
-  def self.breaking
-    where("news_items.breaking = (?) AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)))", true, Date.today, Date.today)
+  def self.breaking_in_divisions(divisions)
+    division_ids = divisions.map{ |d| d.id }
+    where("news_items.breaking = (?) AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)) and news_items.division_id IN (?))", true, Date.today, Date.today, division_ids)
   end
   
-  def self.news
-    where("news_items.breaking = (?) AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)))", false, Date.today, Date.today)
+  def self.news_in_divisions(divisions)
+    division_ids = divisions.map{ |d| d.id }
+    where("news_items.breaking = (?) AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)) and news_items.division_id IN (?))", false, Date.today, Date.today, division_ids)
   end
 end
