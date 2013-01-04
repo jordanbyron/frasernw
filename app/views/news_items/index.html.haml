@@ -9,7 +9,7 @@
   %table.table.table-condensed.table-striped
     %tr
       %th Title
-      %th Breaking
+      %th Type
       %th Start Date
       %th End Date
       %th.admin
@@ -17,7 +17,7 @@
     - @news_items.each do |news_item|
       %tr
         %td= link_to news_item.title, news_item, :class => 'ajax'
-        %td= news_item.breaking? ? "Yes" : "No"
+        %td= news_item.type
         %td= news_item.start_date_full_regardless
         %td= news_item.end_date_full_regardless
         %td.admin.btn-group

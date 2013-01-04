@@ -75,11 +75,11 @@
           - latest_events(5).each do |event|
             %p= event
             
-        - if NewsItem.news.length > 0
+        - if NewsItem.divisional.length > 0
           
           %h2 Division Updates
         
-          - NewsItem.news.each do |news_item|
+          - NewsItem.divisional.each do |news_item|
             
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
@@ -90,12 +90,24 @@
         - if current_user_is_admin?
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Division Updates", news_items_path, :class => "btn btn-mini ajax")
+            
+        - if NewsItem.shared_care.length > 0
+            
+          %h2
+            %i.icon-red.icon-star
+            Shared Care Updates
         
-        %h2
-          %i.icon-red.icon-star
-          Shared Care Updates
-        
-        %p Our first sessions with our local orthopedic surgeons were a great success. We have referral criteria for the #{link_to 'Fraser Orthopedic Treatment Clinic (FOTC)', '/clinics/124', :class => 'ajax'} - a clinic that is available for referrals by all GP's - as well as red flag guidelines for urgent referrals. We also have a page about #{link_to 'improving the referral process in orthopedics', '/content_items/141', :class => 'ajax'} with our shared care decisions so far.
+          - NewsItem.shared_care.each do |news_item|
+            
+            .news_item
+              .news_item_date= news_item.date if news_item.date.present?
+              %div{:class => news_item.date.present? ? "news_item_title" : "news_item_date"}= news_item.title if news_item.title.present?
+              .news_item_body
+                = BlueCloth.new(news_item.body).to_html.html_safe
+
+        - if current_user_is_admin?
+          %p.admin.btn-group
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Shared Care Updates", news_items_path, :class => "btn btn-mini ajax")
               
       .span4.offsethalf
       

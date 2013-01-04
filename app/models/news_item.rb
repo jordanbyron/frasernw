@@ -41,14 +41,32 @@ class NewsItem < ActiveRecord::Base
       ""
     end
   end
-    
+  
+  TYPE_BREAKING     = 1
+  TYPE_DIVISIONAL   = 2
+  TYPE_SHARED_CARE  = 3
+  
+  TYPE_HASH = {
+    TYPE_DIVISIONAL => "Divisional Update",
+    TYPE_SHARED_CARE => "Shared Care Update",
+    TYPE_BREAKING => "Breaking News"
+  }
+  
+  def type
+    TYPE_HASH[type_mask]
+  end
+  
   default_scope order('news_items.start_date')
   
   def self.breaking
-    where("news_items.breaking = ? AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)))", true, Date.today, Date.today)
+    where("news_items.type_mask = ? AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)))", TYPE_BREAKING, Date.today, Date.today)
   end
   
-  def self.news
-    where("news_items.breaking = ? AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)))", false, Date.today, Date.today)
+  def self.divisional
+    where("news_items.type_mask = ? AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)))", TYPE_DIVISIONAL, Date.today, Date.today)
+  end
+  
+  def self.shared_care
+    where("news_items.type_mask = ? AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)))", TYPE_SHARED_CARE, Date.today, Date.today)
   end
 end
