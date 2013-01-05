@@ -162,14 +162,14 @@
                             %label
                               %input.sp{"type" => "checkbox", "id" => "sp#{child_procedure.id}_", "onclick" => "$('#children_sp#{child_procedure.id}_').collapse('toggle')"}
                               %span= child_procedure.name
-                          - focused_grandchild_procedures =child_procedure.children
-                          - if focused_grandchild_procedures.length > 0
-                            .collapse{:id => "children_sp#{child_procedure.id}_"}
-                              %script{"type" => "text/javascript"}
-                                :plain
-                                  $(document).ready(function() {
-                                    $('#children_sp#{child_procedure.id}_').collapse({toggle: false}); 
-                                    });
+                            - focused_grandchild_procedures = child_procedure.children
+                            - if focused_grandchild_procedures.length > 0
+                              .collapse{:id => "children_sp#{child_procedure.id}_"}
+                                %script{"type" => "text/javascript"}
+                                  :plain
+                                    $(document).ready(function() {
+                                      $('#children_sp#{child_procedure.id}_').collapse({toggle: false}); 
+                                      });
                                 - focused_grandchild_procedures.each do |grandchild_procedure|
                                   %label.indent
                                     %input.sp{"type" => "checkbox", "id" => "sp#{grandchild_procedure.id}_", "class" => "child_sp#{child_procedure.id}_"}
@@ -296,7 +296,7 @@
                             %label
                               %input.cp{"type" => "checkbox", "id" => "cp#{child_procedure.id}_", "onclick" => "$('#children_cp#{child_procedure.id}_').collapse('toggle')"}
                               %span= child_procedure.name
-                            - focused_grandchild_procedures =child_procedure.children
+                            - focused_grandchild_procedures = child_procedure.children
                             - if focused_grandchild_procedures.length > 0
                               .collapse{:id => "children_cp#{child_procedure.id}_"}
                                 %script{"type" => "text/javascript"}
