@@ -19,8 +19,8 @@
       %tr
         %td= link_to sc_category.name, sc_category, :class => 'ajax'
         %td= sc_category.parent.present? ? sc_category.parent.name : ""
-        %td= sc_category.sort_order
-        %td= sc_category.display
+        %td= sc_category.parent.present? ? "" : sc_category.sort_order
+        %td= sc_category.parent.present? ? "" : sc_category.display
         %td= sc_category.searchable? ? "Yes" : "No"
         %td= sc_category.show_on_front_page? ? "Yes" : "No"
         %td= sc_category.sc_items.length
