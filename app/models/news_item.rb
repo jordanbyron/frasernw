@@ -1,6 +1,6 @@
 class NewsItem < ActiveRecord::Base
   
-  attr_accessible :division_id, :title, :body, :breaking, :start_date, :end_date, :show_start_date, :show_end_date
+  attr_accessible :division_id, :title, :body, :breaking, :start_date, :end_date, :show_start_date, :show_end_date, :type_mask
   
   belongs_to :division
     
@@ -64,16 +64,16 @@ class NewsItem < ActiveRecord::Base
   
   def self.breaking_in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
-    where("news_items.type_mask = (?) AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)) and news_items.division_id IN (?))", TYPE_BREAKING, Date.today, Date.today, division_ids)
+    where("news_items.type_mask = (?) AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?))) AND news_items.division_id IN (?)", TYPE_BREAKING, Date.today, Date.today, division_ids)
   end
   
   def self.divisional_in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
-    where("news_items.type_mask = (?) AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)) and news_items.division_id IN (?))", TYPE_DIVISIONAL, Date.today, Date.today, division_ids)
+    where("news_items.type_mask = (?) AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?))) AND news_items.division_id IN (?)", TYPE_DIVISIONAL, Date.today, Date.today, division_ids)
   end
   
   def self.shared_care_in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
-    where("news_items.type_mask = ? AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?)))", TYPE_SHARED_CARE, Date.today, Date.today, division_ids)
+    where("news_items.type_mask = (?) AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?))) and news_items.division_id IN (?)", TYPE_SHARED_CARE, Date.today, Date.today, division_ids)
   end
 end

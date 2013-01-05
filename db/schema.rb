@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121206171519) do
+ActiveRecord::Schema.define(:version => 20130104232955) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -184,6 +184,47 @@ ActiveRecord::Schema.define(:version => 20121206171519) do
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
+  create_table "division_cities", :force => true do |t|
+    t.integer  "division_id"
+    t.integer  "city_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "division_display_sc_items", :force => true do |t|
+    t.integer  "division_id"
+    t.integer  "sc_item_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "division_referral_cities", :force => true do |t|
+    t.integer  "division_id"
+    t.integer  "city_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "division_referral_city_specializations", :force => true do |t|
+    t.integer  "division_referral_city_id"
+    t.integer  "specialization_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "division_users", :force => true do |t|
+    t.integer  "division_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "divisions", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "edits", :force => true do |t|
     t.integer   "specialist_id"
     t.text      "notes"
@@ -294,6 +335,7 @@ ActiveRecord::Schema.define(:version => 20121206171519) do
   end
 
   create_table "news_items", :force => true do |t|
+    t.boolean  "breaking"
     t.date     "start_date"
     t.date     "end_date"
     t.string   "title"
@@ -437,6 +479,8 @@ ActiveRecord::Schema.define(:version => 20121206171519) do
     t.timestamp "document_updated_at"
     t.boolean   "can_email_document",    :default => false
     t.boolean   "can_email_link",        :default => true
+    t.integer   "division_id"
+    t.boolean   "shareable",             :default => true
   end
 
   add_index "sc_items", ["sc_category_id"], :name => "index_sc_items_on_sc_category_id"
@@ -601,6 +645,7 @@ ActiveRecord::Schema.define(:version => 20121206171519) do
     t.integer   "owner_id"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.integer   "division_id"
   end
 
   create_table "specializations", :force => true do |t|
@@ -610,6 +655,20 @@ ActiveRecord::Schema.define(:version => 20121206171519) do
     t.boolean   "in_progress", :default => false
     t.string    "saved_token"
     t.string    "member_name"
+  end
+
+  create_table "user_cities", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "city_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_city_specializations", :force => true do |t|
+    t.integer  "user_city_id"
+    t.integer  "specialization_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "user_controls_clinics", :force => true do |t|

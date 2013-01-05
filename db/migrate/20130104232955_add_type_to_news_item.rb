@@ -6,7 +6,5 @@ class AddTypeToNewsItem < ActiveRecord::Migration
       news_item.type_mask = news_item.breaking? ? NewsItem::TYPE_BREAKING : NewsItem::TYPE_DIVISIONAL
       news_item.save
     end
-    
-    remove_column :news_items, :breaking
   end
 end
