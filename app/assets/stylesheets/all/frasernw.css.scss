@@ -974,7 +974,7 @@ body.loading #email
         float: left;
       }
       
-      label.indent
+      label.indent, label.indent2
       {
         margin-left: 18px;
         text-indent: 0;
@@ -988,20 +988,11 @@ body.loading #email
           background-color: $FNW_WHITE;
           font-size: 13px;
         }
-        
-        /* select
-        {
-          -webkit-appearance: button;
-          -webkit-border-radius: 4px;
-          -webkit-user-select: none;
-          padding: 0 8px;
-          border: 1px solid #FNW_MID_GRAY;
-          margin-left: 0;
-          width: 95%;
-          background-color: $FNW_WHITE;
-          font-size: 13px;
-          background: transparent url('/img/arrows.png') 90% 50% no-repeat;
-        } */
+      }
+      
+      label.indent2
+      {
+        margin-left: 36px;
       }
       
       label.half
@@ -1312,7 +1303,7 @@ body.loading #email
     
     li.dropdown
     {
-      z-index: 1003;
+      z-index: 1004;
       background: #8cd0f5;
     }
   
@@ -1342,12 +1333,14 @@ body.loading #email
     
     li.subsequent.specialty
     {
-      z-index: 1002;
+      z-index: 1003;
       background: $FNW_HEADLINE_BACKGROUND;
       border-color: $FNW_HEADLINE_BACKGROUND;
     }
     
-    li.subsequent.specialty:after 
+    li.subsequent.specialty:after,
+    li.subsequent.grandparent:after,
+    li.subsequent.parent:after
     {
       left: 100%;
       border: solid transparent;
@@ -1362,6 +1355,18 @@ body.loading #email
       margin-top: -6px;
     }
     
+    li.subsequent.grandparent
+    {
+      z-index: 1002;
+      background: #dbeffd;
+      border-color: #dbeffd;
+    }
+    
+    li.subsequent.grandparent:after
+    {
+      border-left-color: #dbeffd;
+    }
+    
     li.subsequent.parent
     {
       z-index: 1001;
@@ -1369,19 +1374,9 @@ body.loading #email
       border-color: $FNW_LIGHT_GRAY;
     }
     
-    li.subsequent.parent:after 
+    li.subsequent.parent:after
     {
-      left: 100%;
-      border: solid transparent;
-      content: " ";
-      height: 0;
-      width: 0;
-      position: absolute;
-      pointer-events: none;
       border-left-color: $FNW_LIGHT_GRAY;
-      border-width: 6px;
-      top: 50%;
-      margin-top: -6px;
     }
     
     li.subsequent.border

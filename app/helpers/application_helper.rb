@@ -60,17 +60,32 @@ module ApplicationHelper
         result += " (#{investigation})"
         has_investigation = true
       end
-      if !item[:children].empty?
+      if item[:children].present?
         child_results = []
         item[:children].each do |child|
           count += 1
           child_investigation = child[:parent].procedure_specializations.map{ |ps| ps.investigation(root) }.reject{ |i| i.blank? }.map{ |i| i.punctuate }.join(' ');
           child_investigation = child_investigation.strip_period if child_investigation.present?
+          
           if child_investigation && child_investigation.strip.length != 0
             has_investigation = true
             child_results << "<a class='ajax' href='#{procedure_path(child[:parent])}'>#{child[:parent].name}</a> (#{child_investigation})"
           else
-            child_results << "<a class='ajax' href='#{procedure_path(child[:parent])}'>#{child[:parent].name}</a>"
+            child_results <<"<a class='ajax' href='#{procedure_path(child[:parent])}'>#{child[:parent].name}</a>"
+          end
+          
+          if child[:children].present?
+            child[:children].each do |grandchild|
+              count += 1
+              grandchild_investigation = grandchild[:parent].procedure_specializations.map{ |ps| ps.investigation(root) }.reject{ |i| i.blank? }.map{ |i| i.punctuate }.join(' ');
+              grandchild_investigation = grandchild_investigation.strip_period if grandchild_investigation.present?
+              if grandchild_investigation && grandchild_investigation.strip.length != 0
+                has_investigation = true
+                child_results << "<a class='ajax' href='#{procedure_path(grandchild[:parent])}'>#{child[:parent].name} #{grandchild[:parent].name}</a> (#{grandchild_investigation})"
+              else
+                child_results << "<a class='ajax' href='#{procedure_path(grandchild[:parent])}'>#{child[:parent].name} #{grandchild[:parent].name}</a>"
+              end
+            end
           end
         end
         result += ": #{child_results.to_sentence}"

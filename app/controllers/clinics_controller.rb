@@ -42,6 +42,9 @@ class ClinicsController < ApplicationController
       @focuses << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
       children.each { |child_ps, grandchildren|
         @focuses << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
+        grandchildren.each { |grandchild_ps, greatgrandchildren|
+          @capacities << { :mapped => false, :name => grandchild_ps.procedure.name, :id => grandchild_ps.id, :investigations => "", :offset => 2 }
+        }
       }
     }
     render :layout => 'ajax' if request.headers['X-PJAX']
@@ -97,6 +100,11 @@ class ClinicsController < ApplicationController
       children.each { |child_ps, grandchildren|
         focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, child_ps.id)
         @focuses << { :mapped => focus.present?, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => focus.present? ? focus.investigation : "", :offset => 1 }
+        
+        grandchildren.each { |grandchild_ps, greatgrandchildren|
+          focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, grandchild_ps.id)
+          @focuses << { :mapped => focus.present?, :name => grandchild_ps.procedure.name, :id => grandchild_ps.id, :investigations => focus.present? ? focus.investigation : "", :offset => 2 }
+        }
       }
     }
     render :layout => 'ajax' if request.headers['X-PJAX']

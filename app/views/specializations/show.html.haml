@@ -129,18 +129,30 @@
                         .filter-group-content
                           - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
                             %label
-                              %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}_').collapse('toggle')"}= ps.procedure.name
-                            - next if children.length == 0
-                            .collapse{:id => "children_sp#{ps.procedure.id}_"}
-                              %script{"type" => "text/javascript"}
-                                :plain
-                                  $(document).ready(function() {
-                                    $('#children_sp#{ps.procedure.id}_').collapse({toggle: false}); 
-                                  });
-                              - parent_id = ps.procedure.id
-                              - children.each do |ps, children|
-                                %label.indent
-                                  %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}_"}= ps.procedure.name
+                              %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}_').collapse('toggle')"}
+                              %span= ps.procedure.name
+                            - if children.length > 0
+                              .collapse{:id => "children_sp#{ps.procedure.id}_"}
+                                %script{"type" => "text/javascript"}
+                                  :plain
+                                    $(document).ready(function() {
+                                      $('#children_sp#{ps.procedure.id}_').collapse({toggle: false}); 
+                                    });
+                                - children.each do |child_ps, grandchildren|
+                                  %label.indent
+                                    %input.sp{"type" => "checkbox", "id" => "sp#{child_ps.procedure.id}_", "onclick" => "$('#grandchildren_sp#{child_ps.procedure.id}_').collapse('toggle')", "class" => "child_sp#{ps.procedure.id}_"}
+                                    %span= child_ps.procedure.name
+                                  - if grandchildren.length > 0
+                                    .collapse{:id => "grandchildren_sp#{child_ps.procedure.id}_"}
+                                      %script{"type" => "text/javascript"}
+                                        :plain
+                                          $(document).ready(function() {
+                                            $('#grandchildren_sp#{child_ps.procedure.id}_').collapse({toggle: false}); 
+                                          });
+                                      - grandchildren.each do |grandchild_ps, greatgrandchildren|
+                                        %label.indent2
+                                          %input.sp{"type" => "checkbox", "id" => "sp#{grandchild_ps.procedure.id}_", "class" => "grandchild_sp#{child_ps.procedure.id}_"}
+                                          %span= grandchild_ps.procedure.name
                           
                           %a.more#s_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_s_procedures"} More...
                           
@@ -155,21 +167,33 @@
                                 });
                               });
                     
-                          #more_s_procedures.more.collapse
-                            - @specialization.non_focused_procedure_specializations_arranged.each do |ps, children|
+                          #more_specialist_procedures.more.collapse
+                            - @specialization.non_focused_procedure_specializations.each do |ps, children|
                               %label
-                                %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_"}= ps.procedure.name
-                              - next if children.length == 0
-                              .collapse{:id => "children_sp#{ps.procedure.id}_"}
-                                %script{"type" => "text/javascript"}
-                                  :plain
-                                    $(document).ready(function() {
-                                      $('#children_sp#{ps.procedure.id}_').collapse({toggle: false}); 
-                                    });
-                                - parent_id = ps.procedure.id
-                                - children.each do |ps, children|
-                                  %label.indent
-                                    %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "class" => "child_sp#{parent_id}_"}= ps.procedure.name
+                                %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}_').collapse('toggle')"}
+                                %span= ps.procedure.name
+                              - if children.length > 0
+                                .collapse{:id => "children_sp#{ps.procedure.id}_"}
+                                  %script{"type" => "text/javascript"}
+                                    :plain
+                                      $(document).ready(function() {
+                                        $('#children_sp#{ps.procedure.id}_').collapse({toggle: false}); 
+                                      });
+                                  - children.each do |child_ps, grandchildren|
+                                    %label.indent
+                                      %input.sp{"type" => "checkbox", "id" => "sp#{child_ps.procedure.id}_", "onclick" => "$('#grandchildren_sp#{child_ps.procedure.id}_').collapse('toggle')", "class" => "child_sp#{ps.procedure.id}_"}
+                                      %span= child_ps.procedure.name
+                                    - if grandchildren.length > 0
+                                      .collapse{:id => "grandchildren_sp#{child_ps.procedure.id}_"}
+                                        %script{"type" => "text/javascript"}
+                                          :plain
+                                            $(document).ready(function() {
+                                              $('#grandchildren_sp#{child_ps.procedure.id}_').collapse({toggle: false}); 
+                                            });
+                                        - grandchildren.each do |grandchild_ps, greatgrandchildren|
+                                          %label.indent2
+                                            %input.sp{"type" => "checkbox", "id" => "sp#{grandchild_ps.procedure.id}_", "class" => "grandchild_sp#{child_ps.procedure.id}_"}
+                                            %span= grandchild_ps.procedure.name
 
                   .filter-group
                     %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#specialist-filter-referral"}
@@ -289,18 +313,30 @@
                       .filter-group-content
                         - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
                           %label
-                            %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}_').collapse('toggle')"}= ps.procedure.name
-                          - next if children.length == 0
-                          .collapse{:id => "children_cp#{ps.procedure.id}_"}
-                            %script{"type" => "text/javascript"}
-                              :plain
-                                $(document).ready(function() {
-                                  $('#children_cp#{ps.procedure.id}_').collapse({toggle: false}); 
-                                });
-                            - parent_id = ps.procedure.id
-                            - children.each do |ps, children|
-                              %label.indent
-                                %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "class" => "child_cp#{parent_id}_"}= ps.procedure.name
+                            %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}_').collapse('toggle')"}
+                            %span= ps.procedure.name
+                          - if children.length > 0
+                            .collapse{:id => "children_cp#{ps.procedure.id}_"}
+                              %script{"type" => "text/javascript"}
+                                :plain
+                                  $(document).ready(function() {
+                                    $('#children_cp#{ps.procedure.id}_').collapse({toggle: false}); 
+                                  });
+                              - children.each do |child_ps, grandchildren|
+                                %label.indent
+                                  %input.cp{"type" => "checkbox", "id" => "cp#{child_ps.procedure.id}_", "onclick" => "$('#grandchildren_cp#{child_ps.procedure.id}_').collapse('toggle')", "class" => "child_cp#{ps.procedure.id}_"}
+                                  %span= child_ps.procedure.name
+                                - if grandchildren.length > 0
+                                  .collapse{:id => "grandchildren_cp#{child_ps.procedure.id}_"}
+                                    %script{"type" => "text/javascript"}
+                                      :plain
+                                        $(document).ready(function() {
+                                          $('#grandchildren_cp#{child_ps.procedure.id}_').collapse({toggle: false}); 
+                                        });
+                                    - grandchildren.each do |grandchild_ps, greatgrandchildren|
+                                      %label.indent2
+                                        %input.cp{"type" => "checkbox", "id" => "cp#{grandchild_ps.procedure.id}_", "class" => "grandchild_cp#{child_ps.procedure.id}_"}
+                                        %span= grandchild_ps.procedure.name
                  
                         %a.more#c_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_c_procedures"} More...
                         
@@ -315,21 +351,33 @@
                               });
                             });
                   
-                        #more_c_procedures.more.collapse
-                          - @specialization.non_focused_procedure_specializations_arranged.each do |ps, children|
+                        #more_clinic_procedures.more.collapse
+                          - @specialization.non_focused_procedure_specializations.each do |ps, children|
                             %label
-                              %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}').collapse('toggle')"}= ps.procedure.name
-                            - next if children.length == 0
-                            .collapse{:id => "children_cp#{ps.procedure.id}"}
-                              %script{"type" => "text/javascript"}
-                                :plain
-                                  $(document).ready(function() {
-                                    $('#children_cp#{ps.procedure.id}').collapse({toggle: false}); 
-                                  });
-                              - parent_id = ps.procedure.id
-                              - children.each do |ps, children|
-                                %label.indent
-                                  %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "class" => "child_cp#{parent_id}"}= ps.procedure.name
+                              %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}_').collapse('toggle')"}
+                              %span= ps.procedure.name
+                            - if children.length > 0
+                              .collapse{:id => "children_cp#{ps.procedure.id}_"}
+                                %script{"type" => "text/javascript"}
+                                  :plain
+                                    $(document).ready(function() {
+                                      $('#children_cp#{ps.procedure.id}_').collapse({toggle: false}); 
+                                    });
+                                - children.each do |child_ps, grandchildren|
+                                  %label.indent
+                                    %input.cp{"type" => "checkbox", "id" => "cp#{child_ps.procedure.id}_", "onclick" => "$('#grandchildren_cp#{child_ps.procedure.id}_').collapse('toggle')", "class" => "child_cp#{ps.procedure.id}_"}
+                                    %span= child_ps.procedure.name
+                                  - if grandchildren.length > 0
+                                    .collapse{:id => "grandchildren_cp#{child_ps.procedure.id}_"}
+                                      %script{"type" => "text/javascript"}
+                                        :plain
+                                          $(document).ready(function() {
+                                            $('#grandchildren_cp#{child_ps.procedure.id}_').collapse({toggle: false}); 
+                                          });
+                                      - grandchildren.each do |grandchild_ps, greatgrandchildren|
+                                        %label.indent2
+                                          %input.cp{"type" => "checkbox", "id" => "cp#{grandchild_ps.procedure.id}_", "class" => "grandchild_cp#{child_ps.procedure.id}_"}
+                                          %span= grandchild_ps.procedure.name
 
                   .filter-group
                     %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#clinic-filter-referral"}
