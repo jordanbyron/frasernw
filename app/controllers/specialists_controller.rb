@@ -46,6 +46,9 @@ class SpecialistsController < ApplicationController
       @capacities << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
       children.each { |child_ps, grandchildren|
         @capacities << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
+        grandchildren.each { |grandchild_ps, greatgrandchildren|
+          @capacities << { :mapped => false, :name => grandchild_ps.procedure.name, :id => grandchild_ps.id, :investigations => "", :offset => 2 }
+        }
       }
     }
     render :layout => 'ajax' if request.headers['X-PJAX']
@@ -119,6 +122,10 @@ class SpecialistsController < ApplicationController
       children.each { |child_ps, grandchildren|
         capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, child_ps.id)
         @capacities << { :mapped => capacity.present?, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => capacity.present? ? capacity.investigation : "", :offset => 1 }
+        grandchildren.each { |grandchild_ps, greatgrandchildren|
+          capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, grandchild_ps.id)
+          @capacities << { :mapped => capacity.present?, :name => grandchild_ps.procedure.name, :id => grandchild_ps.id, :investigations => capacity.present? ? capacity.investigation : "", :offset => 2 }
+        }
       }
     }
     render :layout => 'ajax' if request.headers['X-PJAX']

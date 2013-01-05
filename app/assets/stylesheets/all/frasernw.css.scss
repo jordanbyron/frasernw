@@ -831,7 +831,7 @@ body.loading #email
         float: left;
       }
       
-      label.indent
+      label.indent, label.indent2
       {
         margin-left: 18px;
         text-indent: 0;
@@ -845,20 +845,11 @@ body.loading #email
           background-color: $FNW_WHITE;
           font-size: 13px;
         }
-        
-        /* select
-        {
-          -webkit-appearance: button;
-          -webkit-border-radius: 4px;
-          -webkit-user-select: none;
-          padding: 0 8px;
-          border: 1px solid #FNW_MID_GRAY;
-          margin-left: 0;
-          width: 95%;
-          background-color: $FNW_WHITE;
-          font-size: 13px;
-          background: transparent url('/img/arrows.png') 90% 50% no-repeat;
-        } */
+      }
+      
+      label.indent2
+      {
+        margin-left: 36px;
       }
       
       label.half

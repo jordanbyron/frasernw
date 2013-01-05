@@ -4,7 +4,10 @@ module SpecializationsHelper
     s.procedure_specializations.each do |ps|
       filtering_attributes << "sp#{ps.procedure.id}_"
       parent = ps.parent
-      filtering_attributes << "sp#{parent.procedure.id}_" if (parent && !filtering_attributes.include?("sp#{parent.procedure.id}_"))
+      if parent.present?
+        filtering_attributes << "sp#{parent.procedure.id}_" if !filtering_attributes.include?("sp#{parent.procedure.id}_")
+        filtering_attributes << "sp#{parent.parent.procedure.id}_" if (parent.parent.present? && !filtering_attributes.include?("sp#{parent.parent.procedure.id}_"))
+      end
     end
     if include_assumed
       s.specializations.each do |specialization|
@@ -42,7 +45,10 @@ module SpecializationsHelper
     s.procedure_specializations.each do |ps|
       filtering_attributes << "op#{ps.procedure.id}_"
       parent = ps.parent
-      filtering_attributes << "op#{parent.procedure.id}_" if (parent && !filtering_attributes.include?("op#{parent.procedure.id}_"))
+      if parent.present?
+        filtering_attributes << "op#{parent.procedure.id}_" if !filtering_attributes.include?("op#{parent.procedure.id}_")
+        filtering_attributes << "op#{parent.parent.procedure.id}_" if (parent.parent.present? && !filtering_attributes.include?("op#{parent.parent.procedure.id}_"))
+      end
     end
     if include_assumed
       s.specializations.each do |specialization|
@@ -80,7 +86,10 @@ module SpecializationsHelper
     c.procedure_specializations.each do |ps|
       filtering_attributes << "cp#{ps.procedure.id}_"
       parent = ps.parent
-      filtering_attributes << "cp#{parent.procedure.id}_" if (parent && !filtering_attributes.include?("cp#{parent.procedure.id}_"))
+      if parent.present?
+        filtering_attributes << "cp#{parent.procedure.id}_" if !filtering_attributes.include?("cp#{parent.procedure.id}_")
+        filtering_attributes << "cp#{parent.parent.procedure.id}_" if (parent.parent.present? && !filtering_attributes.include?("cp#{parent.parent.procedure.id}_"))
+      end
     end
     if c.lagtime_mask.present?
       (c.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|

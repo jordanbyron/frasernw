@@ -81,27 +81,41 @@ var update_table = function(prefix, entity_id, entity_name)
   });
   
   // collect procedure filters
-  $('.filter-group-content > label > .' + prefix + 'p, .filter-group-content > .more > label > .' + prefix + 'p').each( function() {
-    var $this = $(this);
-    if ($this.prop('checked'))
-    {  
-      var parent_text = $this.parent().text().trim();
-      var checked_children = false;
-      $('.child_' + $this.attr('id')).each( function() {
-        var $this = $(this);
-        if ($this.prop('checked'))
-        {
-          checked_children = true;
-          procedures.push(parent_text + " " + $this.parent().text().trim());
-          current_filters.push($this.attr('id'));
-        }
+  $('.filter-group-content > label > .' + prefix + 'p, .filter-group-content > .more > label > .' + prefix + 'p').filter(':checked').each( function() {
+    var parent = $(this);
+                                                             console.log("parent: " + parent);
+    var parent_text = parent.siblings('span').text().trim();
+    var checked_children = false;
+                                                                                                                                          
+    $('.child_' + parent.attr('id')).filter(':checked').each( function() {
+      child = $(this);
+                                                             console.log("child: " + child);
+      var child_text = child.siblings('span').text().trim();
+      checked_children = true;
+      var checked_grandchildren = false;
+                                                             
+      $('.grandchild_' + child.attr('id')).filter(':checked').each( function() {
+        var grandchild = $(this);
+                                                             console.log("grandchild: " + grandchild);
+        checked_grandchildren = true;
+        procedures.push(parent_text + " " + child_text + " " + grandchild.siblings('span').text().trim());
+        current_filters.push(grandchild.attr('id'));
       });
-      if (!checked_children)
+                                                             
+      if (!checked_grandchildren)
       {
-        procedures.push($this.parent().text().trim());
-        current_filters.push($this.attr('id'));
+        procedures.push(parent_text + " " + child_text);
+        current_filters.push(child.attr('id'));
       }
+                                                             
+    });
+                                                                                                                                          
+    if (!checked_children)
+    {
+      procedures.push(parent_text);
+      current_filters.push(parent.attr('id'));
     }
+                                                                                                                                          
   });
   
   // collect referral filters
