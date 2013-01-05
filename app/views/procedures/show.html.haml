@@ -13,6 +13,8 @@
       %a.tt#tt_more_specialties{"href" => "javascript:void(0)", "onclick" => "$('#tt_more_specialties').tooltip('toggle')", "title" => "<ul class='specialties'>#{procedure_specializations.map{|ps| "<li>#{link_to ps.specialization.name, ps.specialization, :class => 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{procedure_specializations.first(2).collect{ |ps| ps.specialization.name }.join(', ')}..."
   - else
     %li.subsequent.specialty= "#{procedure_specializations.collect{ |ps| link_to ps.specialization.name, ps.specialization, :class => 'ajax' }.to_sentence}".html_safe
+  - if procedure_specialization.parent.present? && procedure_specialization.parent.parent.present? && procedure_specialization.parent.parent.procedure.present?
+    %li.subsequent.grandparent= link_to procedure_specialization.parent.parent.procedure.name, procedure_specialization.parent.parent.procedure, :class => 'ajax'
   - if procedure_specialization.parent.present? && procedure_specialization.parent.procedure.present?
     %li.subsequent.parent= link_to procedure_specialization.parent.procedure.name, procedure_specialization.parent.procedure, :class => 'ajax'
   %li.subsequent= @procedure.name
