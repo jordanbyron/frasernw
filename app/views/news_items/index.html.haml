@@ -16,7 +16,7 @@
       %th Title
       - if multiple_divisions
         %th Division
-      %th Breaking
+      %th Type
       %th Start Date
       %th End Date
       %th.admin
@@ -26,7 +26,7 @@
         %td= link_to news_item.title, news_item, :class => 'ajax'
         - if multiple_divisions
           %td= news_item.division.name
-        %td= news_item.breaking? ? "Yes" : "No"
+        %td= news_item.type
         %td= news_item.start_date_full_regardless
         %td= news_item.end_date_full_regardless
         %td.admin.btn-group
