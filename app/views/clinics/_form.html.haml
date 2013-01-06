@@ -180,7 +180,7 @@
           focuses_mapped = {}
         }
       
-        $("input.capacity").each( function() {
+        $("input.focus").each( function() {
           var $this = $(this);
           if ($this.prop('checked'))
           {
@@ -340,8 +340,14 @@
     
     .content
       .row
-        .span4 Referrals accepted in the following areas of practice.
-        .span4 Additional information/investigations required for the specified area of practice.
+        .span4 
+          %strong Referrals accepted in the following areas of practice.
+        .span4 
+          %strong Additional information/investigations required for the specified area of practice.
+        .span2
+          %strong Lag Time
+        .span2
+          %strong Wait Time
       
       - @focuses.each do |f|
         .row.spaced
@@ -350,6 +356,9 @@
               = check_box_tag "focuses_mapped[#{f[:id]}]", 1, f[:mapped], :class => "focus"
               = f[:name]
           .span4.changed_wrapper= text_field_tag "focuses_investigations[#{f[:id]}]", f[:investigations], :class => "span4"
+          - if f[:custom_wait_time]
+            .span2.lagtime= select_tag "focuses_lagtime[#{f[:id]}]", options_from_collection_for_select(Clinic::LAGTIME_HASH, :first, :last, f[:lagtime]), :class => "span2", :include_blank => true
+            .span2.waittime= select_tag "focuses_waittime[#{f[:id]}]", options_from_collection_for_select(Clinic::WAITTIME_HASH, :first, :last, f[:waittime]), :class => "span2", :include_blank => true
       
     %hr{ "style" => "visibility:hidden" }
 

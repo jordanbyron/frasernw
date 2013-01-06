@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130104232955) do
+ActiveRecord::Schema.define(:version => 20130105205903) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -51,6 +51,8 @@ ActiveRecord::Schema.define(:version => 20130104232955) do
     t.timestamp "updated_at"
     t.string    "investigation"
     t.integer   "procedure_specialization_id"
+    t.integer   "waittime_mask"
+    t.integer   "lagtime_mask"
   end
 
   add_index "capacities", ["procedure_specialization_id"], :name => "index_capacities_on_procedure_specialization_id"
@@ -269,6 +271,8 @@ ActiveRecord::Schema.define(:version => 20130104232955) do
     t.timestamp "updated_at"
     t.string    "investigation"
     t.integer   "procedure_specialization_id"
+    t.integer   "waittime_mask"
+    t.integer   "lagtime_mask"
   end
 
   add_index "focuses", ["clinic_id"], :name => "index_focuses_on_clinic_id"
@@ -344,7 +348,6 @@ ActiveRecord::Schema.define(:version => 20130104232955) do
     t.datetime "updated_at"
     t.boolean  "show_start_date", :default => true
     t.boolean  "show_end_date",   :default => true
-    t.integer  "division_id"
     t.integer  "type_mask"
   end
 
@@ -367,10 +370,12 @@ ActiveRecord::Schema.define(:version => 20130104232955) do
     t.integer   "procedure_id"
     t.integer   "specialization_id"
     t.string    "ancestry"
-    t.boolean   "mapped",            :default => false
+    t.boolean   "mapped",               :default => false
     t.timestamp "created_at"
     t.timestamp "updated_at"
     t.integer   "classification"
+    t.boolean   "specialist_wait_time", :default => false
+    t.boolean   "clinic_wait_time",     :default => false
   end
 
   add_index "procedure_specializations", ["ancestry"], :name => "index_procedure_specializations_on_ancestry"

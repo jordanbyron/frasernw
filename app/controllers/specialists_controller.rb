@@ -43,11 +43,11 @@ class SpecialistsController < ApplicationController
     @specializations_procedures = ancestry_options( @specialization.non_assumed_procedure_specializations_arranged )
     @capacities = []
     @specialization.non_assumed_procedure_specializations_arranged.each { |ps, children|
-      @capacities << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
+      @capacities << generate_capacity(nil, ps, 0)
       children.each { |child_ps, grandchildren|
-        @capacities << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
+        @capacities << generate_capacity(nil, child_ps, 1)
         grandchildren.each { |grandchild_ps, greatgrandchildren|
-          @capacities << { :mapped => false, :name => grandchild_ps.procedure.name, :id => grandchild_ps.id, :investigations => "", :offset => 2 }
+          @capacities << generate_capacity(nil, grandchild_ps, 2)
         }
       }
     }
@@ -70,6 +70,8 @@ class SpecialistsController < ApplicationController
         params[:capacities_mapped].each do |updated_capacity, value|
           capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
           capacity.investigation = params[:capacities_investigations][updated_capacity]
+          capacity.waittime_mask = params[:capacities_waittime][updated_capacity]
+          capacity.lagtime_mask = params[:capacities_lagtime][updated_capacity]
           capacity.save
           
           #save any other capacities that have the same procedure and are in a specialization our specialist is in
@@ -117,14 +119,11 @@ class SpecialistsController < ApplicationController
     }
     @capacities = []
     procedure_specializations.each { |ps, children|
-      capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps.id)
-      @capacities << { :mapped => capacity.present?, :name => ps.procedure.name, :id => ps.id, :investigations => capacity.present? ? capacity.investigation : "", :offset => 0 }
+      @capacities << generate_capacity(@specialist, ps, 0)
       children.each { |child_ps, grandchildren|
-        capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, child_ps.id)
-        @capacities << { :mapped => capacity.present?, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => capacity.present? ? capacity.investigation : "", :offset => 1 }
+        @capacities << generate_capacity(@specialist, child_ps, 1)
         grandchildren.each { |grandchild_ps, greatgrandchildren|
-          capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, grandchild_ps.id)
-          @capacities << { :mapped => capacity.present?, :name => grandchild_ps.procedure.name, :id => grandchild_ps.id, :investigations => capacity.present? ? capacity.investigation : "", :offset => 2 }
+          @capacities << generate_capacity(@specialist, grandchild_ps, 2)
         }
       }
     }
@@ -143,6 +142,8 @@ class SpecialistsController < ApplicationController
         params[:capacities_mapped].each do |updated_capacity, value|
           capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
           capacity.investigation = params[:capacities_investigations][updated_capacity]
+          capacity.waittime_mask = params[:capacities_waittime][updated_capacity]
+          capacity.lagtime_mask = params[:capacities_lagtime][updated_capacity]
           capacity.save
           
           #save any other capacities that have the same procedure and are in a specialization our specialist is in
@@ -176,6 +177,8 @@ class SpecialistsController < ApplicationController
           params[:capacities_mapped].each do |updated_capacity, value|
             capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
             capacity.investigation = params[:capacities_investigations][updated_capacity]
+            capacity.waittime_mask = params[:capacities_waittime][updated_capacity]
+            capacity.lagtime_mask = params[:capacities_lagtime][updated_capacity]
             capacity.save
           end
         end
@@ -236,11 +239,12 @@ class SpecialistsController < ApplicationController
       }
       @capacities = []
       procedure_specializations.each { |ps, children|
-        capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps.id)
-        @capacities << { :mapped => capacity.present?, :name => ps.procedure.name, :id => ps.id, :investigations => capacity.present? ? capacity.investigation : "", :offset => 0 }
+        @capacities << generate_capacity(@specialist, ps, 0)
         children.each { |child_ps, grandchildren|
-          capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, child_ps.id)
-          @capacities << { :mapped => capacity.present?, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => capacity.present? ? capacity.investigation : "", :offset => 1 }
+          @capacities << generate_capacity(@specialist, child_ps, 1)
+          grandchildren.each { |grandchild_ps, greatgrandchildren|
+            @capacities << generate_capacity(@specialist, grandchild_ps, 2)
+          }
         }
       }
       render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
@@ -283,4 +287,19 @@ class SpecialistsController < ApplicationController
     @feedback = @specialist.feedback_items.build
     render :show, :layout => 'ajax'
   end
+  
+  protected
+    def generate_capacity(specialist, procedure_specialization, offset)
+      capacity = specialist.present? ? Capacity.find_by_specialist_id_and_procedure_specialization_id(specialist.id, procedure_specialization.id) : nil
+      return {
+        :mapped => capacity.present?,
+        :name => procedure_specialization.procedure.name,
+        :id => procedure_specialization.id,
+        :investigations => capacity.present? ? capacity.investigation : "",
+        :custom_wait_time => procedure_specialization.specialist_wait_time?,
+        :waittime => capacity.present? ? capacity.waittime_mask : 0,
+        :lagtime => capacity.present? ? capacity.lagtime_mask : 0,
+        :offset => offset
+      }
+    end
 end
