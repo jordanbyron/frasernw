@@ -418,6 +418,10 @@
           %strong Referrals accepted in the following areas of practice.
         .span4 
           %strong Additional information/investigations required for the specified area of practice.
+        .span2
+          %strong Lag Time
+        .span2
+          %strong Wait Time
       
       - @capacities.each do |c|
         .row.spaced
@@ -426,7 +430,10 @@
               = check_box_tag "capacities_mapped[#{c[:id]}]", 1, c[:mapped], :class => "capacity"
               = c[:name]
           .span4.changed_wrapper= text_field_tag "capacities_investigations[#{c[:id]}]", c[:investigations], :class => "span4"
-      
+          - if c[:custom_wait_time]
+            .span2.lagtime= select_tag "capacities_lagtime[#{c[:id]}]", options_from_collection_for_select(Specialist::LAGTIME_HASH, :first, :last, c[:lagtime]), :class => "span2", :include_blank => true
+            .span2.waittime= select_tag "capacities_waittime[#{c[:id]}]", options_from_collection_for_select(Specialist::WAITTIME_HASH, :first, :last, c[:waittime]), :class => "span2", :include_blank => true
+
     %hr{ "style" => "visibility:hidden" }
     
     = f.input :interest, as: :text

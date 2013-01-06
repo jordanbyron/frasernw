@@ -39,11 +39,11 @@ class ClinicsController < ApplicationController
     @clinic_specialists = @specialization.specialists.collect { |s| [s.name, s.id] }
     @focuses = []
     @specialization.non_assumed_procedure_specializations_arranged.each { |ps, children|
-      @focuses << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
+      @focuses << generate_focus(nil, ps, 0)
       children.each { |child_ps, grandchildren|
-        @focuses << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
+        @focuses << generate_focus(nil, child_ps, 1)
         grandchildren.each { |grandchild_ps, greatgrandchildren|
-          @capacities << { :mapped => false, :name => grandchild_ps.procedure.name, :id => grandchild_ps.id, :investigations => "", :offset => 2 }
+          @focuses << generate_focus(nil, grandchild_ps, 2)
         }
       }
     }
@@ -58,6 +58,8 @@ class ClinicsController < ApplicationController
         params[:focuses_mapped].each do |updated_focus, value|
           focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
           focus.investigation = params[:focuses_investigations][updated_focus]
+          focus.waittime_mask = params[:focuses_waittime][updated_focus]
+          focus.lagtime_mask = params[:focuses_lagtime][updated_focus]
           focus.save
           
           #save any other focuses that have the same procedure and are in a specialization our clinic is in
@@ -94,16 +96,11 @@ class ClinicsController < ApplicationController
     @focuses = []
     clinic_specializations = @clinic.specializations_including_in_progress
     procedure_specializations.each { |ps, children|
-      focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps.id)
-      @focuses << { :mapped => focus.present?, :name => ps.procedure.name, :id => ps.id, :investigations => focus.present? ? focus.investigation : "", :offset => 0 }
-      
+      @focuses << generate_focus(@clinic, ps, 0)
       children.each { |child_ps, grandchildren|
-        focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, child_ps.id)
-        @focuses << { :mapped => focus.present?, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => focus.present? ? focus.investigation : "", :offset => 1 }
-        
+        @focuses << generate_focus(@clinic, child_ps, 1)
         grandchildren.each { |grandchild_ps, greatgrandchildren|
-          focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, grandchild_ps.id)
-          @focuses << { :mapped => focus.present?, :name => grandchild_ps.procedure.name, :id => grandchild_ps.id, :investigations => focus.present? ? focus.investigation : "", :offset => 2 }
+          @focuses << generate_focus(@clinic, grandchild_ps, 2)
         }
       }
     }
@@ -123,6 +120,8 @@ class ClinicsController < ApplicationController
         params[:focuses_mapped].each do |updated_focus, value|
           focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
           focus.investigation = params[:focuses_investigations][updated_focus]
+          focus.waittime_mask = params[:focuses_waittime][updated_focus]
+          focus.lagtime_mask = params[:focuses_lagtime][updated_focus]
           focus.save
           
           #save any other focuses that have the same procedure and are in a specialization our clinic is in
@@ -178,11 +177,12 @@ class ClinicsController < ApplicationController
       }
       @focuses = []
       procedure_specializations.each { |ps, children|
-        focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps.id)
-        @focuses << { :mapped => focus.present?, :name => ps.procedure.name, :id => ps.id, :investigations => focus.present? ? focus.investigation : "", :offset => 0 }
+        @focuses << generate_focus(@clinic, ps, 0)
         children.each { |child_ps, grandchildren|
-          focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, child_ps.id)
-          @focuses << { :mapped => focus.present?, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => focus.present? ? focus.investigation : "", :offset => 1 }
+          @focuses << generate_focus(@clinic, child_ps, 1)
+          grandchildren.each { |grandchild_ps, greatgrandchildren|
+            @focuses << generate_focus(@clinic, grandchild_ps, 2)
+          }
         }
       }
       render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
@@ -205,6 +205,8 @@ class ClinicsController < ApplicationController
       params[:focuses_mapped].each do |updated_focus, value|
         focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
         focus.investigation = params[:focuses_investigations][updated_focus]
+        focus.waittime_mask = params[:focuses_waittime][updated_focus]
+        focus.lagtime_mask = params[:focuses_lagtime][updated_focus]
         focus.save
       end
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
@@ -226,5 +228,20 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.find(params[:id])
     @feedback = @clinic.feedback_items.build
     render :show, :layout => 'ajax'
+  end
+  
+  protected
+  def generate_focus(clinic, procedure_specialization, offset)
+    focus = clinic.present? ? Focus.find_by_clinic_id_and_procedure_specialization_id(clinic.id, procedure_specialization.id) : nil
+    return {
+      :mapped => focus.present?,
+      :name => procedure_specialization.procedure.name,
+      :id => procedure_specialization.id,
+      :investigations => focus.present? ? focus.investigation : "",
+      :custom_wait_time => procedure_specialization.clinic_wait_time?,
+      :waittime => focus.present? ? focus.waittime_mask : 0,
+      :lagtime => focus.present? ? focus.lagtime_mask : 0,
+      :offset => offset
+    }
   end
 end

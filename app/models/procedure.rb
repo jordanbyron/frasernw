@@ -1,5 +1,5 @@
 class Procedure < ActiveRecord::Base
-  attr_accessible :name, :specialization_level, :parent_id, :specialization_ids, :all_procedure_specializations_attributes
+  attr_accessible :name, :parent_id, :specialization_ids, :all_procedure_specializations_attributes
   has_paper_trail :ignore => :saved_token
   
   has_many :specialists, :finder_sql => proc { "SELECT DISTINCT s.* FROM specialists s JOIN capacities c ON c.specialist_id = s.id JOIN procedure_specializations ps ON c.procedure_specialization_id = ps.id JOIN specializations sz ON ps.specialization_id = sz.id WHERE ps.procedure_id = #{self.id} AND sz.in_progress = 'f' ORDER BY s.lastname ASC, s.firstname ASC" }
