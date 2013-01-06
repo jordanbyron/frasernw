@@ -6,18 +6,30 @@
 
   %h3 Specialities This Area of Practice Belongs To
   .content
-    - Specialization.all.each_with_index do |specialization, index|
-      .row.spaced
-        - procedure_specialization = ProcedureSpecialization.find_by_procedure_id_and_specialization_id( @procedure.id, specialization.id )
-        - procedure_ancestry = [["~ No parent ~", nil]] + procedure_ancestry_options_limited(specialization.procedure_specializations_arranged, procedure_specialization.subtree)
-        = f.hidden_field procedure_specialization.id, :name => "procedure[all_procedure_specializations_attributes][#{index}][id]", :value => procedure_specialization.id
-        = label_tag "check_#{specialization.id}", specialization.name, :class => "span2", "style" => "text-align:right"
-        = check_box_tag "check_#{specialization.id}", 1, procedure_specialization.mapped, :name => "procedure[all_procedure_specializations_attributes][#{index}][mapped]", :class => "check aop_active span1", :checked => @specializations.include?(specialization)
-        = select_tag "classification_#{specialization.id}", options_for_select([[ProcedureSpecialization::CLASSIFICATION_HASH[ProcedureSpecialization::CLASSIFICATION_FOCUSED], ProcedureSpecialization::CLASSIFICATION_FOCUSED],[ProcedureSpecialization::CLASSIFICATION_HASH[ProcedureSpecialization::CLASSIFICATION_NONFOCUSED], ProcedureSpecialization::CLASSIFICATION_NONFOCUSED], [ProcedureSpecialization::CLASSIFICATION_HASH[ProcedureSpecialization::CLASSIFICATION_ASSUMED], ProcedureSpecialization::CLASSIFICATION_ASSUMED]], procedure_specialization.classification), :name => "procedure[all_procedure_specializations_attributes][#{index}][classification]", :class => "select classification span2"
-        = select_tag "select_#{specialization.id}", options_for_select(procedure_ancestry, procedure_specialization.parent_id), :name => "procedure[all_procedure_specializations_attributes][#{index}][parent_id]", :class => "select parent span3"
-        = check_box_tag "swaittime_#{specialization.id}", 1, procedure_specialization.specialist_wait_time, :name => "procedure[all_procedure_specializations_attributes][#{index}][specialist_wait_time]", :class => "check span1", :checked => procedure_specialization.specialist_wait_time?
-        = check_box_tag "cwaittime_#{specialization.id}", 1, procedure_specialization.clinic_wait_time, :name => "procedure[all_procedure_specializations_attributes][#{index}][clinic_wait_time]", :class => "check span1", :checked => procedure_specialization.clinic_wait_time?
-          
+    %table.table.table-condensed
+      %tr
+        %th Specialization
+        %th Classification
+        %th Parent
+        %th Has Custom Specialist Wait Time
+        %th Has Custom Clinic Wait Time
+      - Specialization.all.each_with_index do |specialization, index|
+        %tr
+          - procedure_specialization = ProcedureSpecialization.find_by_procedure_id_and_specialization_id( @procedure.id, specialization.id )
+          - procedure_ancestry = [["~ No parent ~", nil]] + procedure_ancestry_options_limited(specialization.procedure_specializations_arranged, procedure_specialization.subtree)
+          %td{:style => "white-space: nowrap"}
+            = f.hidden_field procedure_specialization.id, :name => "procedure[all_procedure_specializations_attributes][#{index}][id]", :value => procedure_specialization.id
+            = label_tag "check_#{specialization.id}", specialization.name, :class => "span2", "style" => "text-align:right"
+            = check_box_tag "check_#{specialization.id}", 1, procedure_specialization.mapped, :name => "procedure[all_procedure_specializations_attributes][#{index}][mapped]", :class => "check aop_active span1", :checked => @specializations.include?(specialization)
+          %td
+            = select_tag "classification_#{specialization.id}", options_for_select([[ProcedureSpecialization::CLASSIFICATION_HASH[ProcedureSpecialization::CLASSIFICATION_FOCUSED], ProcedureSpecialization::CLASSIFICATION_FOCUSED],[ProcedureSpecialization::CLASSIFICATION_HASH[ProcedureSpecialization::CLASSIFICATION_NONFOCUSED], ProcedureSpecialization::CLASSIFICATION_NONFOCUSED], [ProcedureSpecialization::CLASSIFICATION_HASH[ProcedureSpecialization::CLASSIFICATION_ASSUMED], ProcedureSpecialization::CLASSIFICATION_ASSUMED]], procedure_specialization.classification), :name => "procedure[all_procedure_specializations_attributes][#{index}][classification]", :class => "select classification span2"
+          %td
+            = select_tag "select_#{specialization.id}", options_for_select(procedure_ancestry, procedure_specialization.parent_id), :name => "procedure[all_procedure_specializations_attributes][#{index}][parent_id]", :class => "select parent span3"
+          %td
+            = check_box_tag "swaittime_#{specialization.id}", 1, procedure_specialization.specialist_wait_time, :name => "procedure[all_procedure_specializations_attributes][#{index}][specialist_wait_time]", :class => "check span1", :checked => procedure_specialization.specialist_wait_time?
+          %td
+            = check_box_tag "cwaittime_#{specialization.id}", 1, procedure_specialization.clinic_wait_time, :name => "procedure[all_procedure_specializations_attributes][#{index}][clinic_wait_time]", :class => "check span1", :checked => procedure_specialization.clinic_wait_time?
+
   %script{"type" => "text/javascript"}
     :plain
       $(".aop_active").each( hideShowParents )
