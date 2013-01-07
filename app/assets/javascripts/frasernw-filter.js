@@ -16,17 +16,41 @@ function matches_filters( input, filters )
   return true
 }
 
-function show_others( entity_id, ids )
+//dirty dirty globals for per-procedure wait times. these will disappear in the expansion branch, for now it's not worth any effort to get rid of them
+var wait_time_hash = ["","Within one week","1-2 weeks","2-4 weeks","1-2 months","2-4 months","4-6 months","6-9 months","9-12 months","12-18 months",">18 months"];
+var wait_time_procedure = true;
+
+function show_others( prefix, entity_id, ids )
 {
   var data_table = $('#' + entity_id + '_table');
   $(ids).each( function() {
-    name = data_table.data('s' + this + '_name');
-    specialties = data_table.data('s' + this + '_specialties');
-    status_class = data_table.data('s' + this + '_status_class');
-    status_sort = data_table.data('s' + this + '_status_sort');
-    wait_time = data_table.data('s' + this + '_wait_time');
+    var name = data_table.data('s' + this + '_name');
+    var specialties = data_table.data('s' + this + '_specialties');
+    var status_class = data_table.data('s' + this + '_status_class');
+    var status_sort = data_table.data('s' + this + '_status_sort');
+    var wait_time = "";
+    if (wait_time_procedure === true)
+    {
+      var wait_time = data_table.data('s' + this + '_wait_time');
+    }
+    else if (wait_time_procedure !== false)
+    {
+      attributes = data_table.data('s' + this);
+      var wait_time_prefix = (wait_time_procedure === true) ? prefix + 'wt_' : prefix + 'wt' + wait_time_procedure;
+      var wait_time_index = attributes.indexOf(wait_time_prefix);
+      if (wait_time_index == -1)
+      {
+        var wait_time = "";
+      }
+      else
+      {
+        var wait_time = attributes.substring(wait_time_index);
+        var wait_time = wait_time.substring(wait_time_prefix.length, wait_time.indexOf(' '));
+        var wait_time = wait_time_hash[wait_time];
+      }
+    }
     city = data_table.data('s' + this + '_city');
-    add_row( entity_id, this, '/' + entity_id + 's/' + this, name, status_class, status_sort, wait_time, city );
+    add_row( entity_id, this, '/' + entity_id + 's/' + this, name, specialties, status_class, status_sort, wait_time, city );
   });
   data_table.trigger('update', [true]);
   
@@ -44,7 +68,7 @@ function hide_others( entity_id, entity_name )
   $('#' + entity_id + '_description_entity').html(entity_name);
 }
 
-function add_row( entity_id, row_id, url, name, status_class, status_sort, wait_time, city )
+function add_row( entity_id, row_id, url, name, specialties, status_class, status_sort, wait_time, city )
 {
   if (typeof $.fn.ajaxify !== 'function')
   {
@@ -270,7 +294,6 @@ var update_table = function(prefix, entity_id, entity_name)
   var checked_custom_wait_times = checked_procedures.filter('[name="1"]');
   console.log("checked_procedures : " + checked_procedures)
   console.log("checked_custom_wait_times : " + checked_custom_wait_times)
-  var wait_time_procedure = true;
   
   if (checked_custom_wait_times.length == 0)
   {
@@ -294,9 +317,6 @@ var update_table = function(prefix, entity_id, entity_name)
     console.log("no wait times - more than one custom");
     wait_time_procedure = false;
   }
-  
-  //TODO: temp
-  var wait_time_hash = ["","Within one week","1-2 weeks","2-4 weeks","1-2 months","2-4 months","4-6 months","6-9 months","9-12 months","12-18 months",">18 months"];
   
   //loop over each row of the table, hiding those which don't match our filters
   $('#' + entity_id + '_table tbody tr').each(function () {
@@ -405,7 +425,7 @@ var update_table = function(prefix, entity_id, entity_name)
       {
         others.show();
         var description = (results.length > 1) ? 'There are ' + results.length + ' specialists from other specialties who match your search.' : 'There is 1 specialist from another specialty who matches your search.';
-        description += " <a href=\"javascript:void(0)\" onclick=\"show_others('" + entity_id + "', [" + results.join(', ') + "])\">Show</a> these specialists.";
+        description += " <a href=\"javascript:void(0)\" onclick=\"show_others('" + prefix + "', '" + entity_id + "', [" + results.join(', ') + "])\">Show</a> these specialists.";
         others.html(description);
       }
       else
