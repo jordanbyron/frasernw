@@ -339,7 +339,6 @@ ActiveRecord::Schema.define(:version => 20130105205903) do
   end
 
   create_table "news_items", :force => true do |t|
-    t.boolean  "breaking"
     t.date     "start_date"
     t.date     "end_date"
     t.string   "title"
@@ -349,6 +348,7 @@ ActiveRecord::Schema.define(:version => 20130105205903) do
     t.boolean  "show_start_date", :default => true
     t.boolean  "show_end_date",   :default => true
     t.integer  "type_mask"
+    t.integer  "division_id"
   end
 
   create_table "offices", :force => true do |t|

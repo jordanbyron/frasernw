@@ -276,15 +276,15 @@ var update_table = function(prefix, entity_id, entity_name)
   //TODO: temp
   var wait_time_hash = ["","Within one week","1-2 weeks","2-4 weeks","1-2 months","2-4 months","4-6 months","6-9 months","9-12 months","12-18 months",">18 months"];
   
-  //loop over each row of the table, hiding those which don't match our filters
+  //loop over each row of the table, updating the wait time
   $('#' + entity_id + '_table tbody tr').each(function () {
     var row = $(this)
-      , row_filter = row.data('filter');
+      , row_filter = row.data('attributes');
     if (wait_time_procedure === false)
     {
       row.children('.wt').html("");
     }
-    else
+    else if (row_filter)
     {
       var wait_time_prefix = (wait_time_procedure === true) ? prefix + 'wt_' : prefix + 'wt' + wait_time_procedure;
       var wait_time_index = row_filter.indexOf(wait_time_prefix);
