@@ -189,8 +189,8 @@
                               #more_specialist_procedures.more.collapse
                                 - non_focused_procedure_specializations.each do |ps, children|
                                   - next if ps.procedure.all_specialists.blank?
-                                  %label
-                                    %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}_').collapse('toggle')"}
+                                  %label{:class => ps.specialist_wait_time && "custom_wait_time"}
+                                    %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}_').collapse('toggle')", :name => "#{ps.specialist_wait_time? ? 1 : 0}"}
                                     %span= ps.procedure.name
                                   - if children.length > 0
                                     .collapse{:id => "children_sp#{ps.procedure.id}_"}
@@ -201,8 +201,8 @@
                                           });
                                       - children.each do |child_ps, grandchildren|
                                         - next if child_ps.procedure.all_specialists.blank?
-                                        %label.indent
-                                          %input.sp{"type" => "checkbox", "id" => "sp#{child_ps.procedure.id}_", "onclick" => "$('#grandchildren_sp#{child_ps.procedure.id}_').collapse('toggle')", "class" => "child_sp#{ps.procedure.id}_"}
+                                        %label.indent{:class => child_ps.specialist_wait_time && "custom_wait_time"}
+                                          %input.sp{"type" => "checkbox", "id" => "sp#{child_ps.procedure.id}_", "onclick" => "$('#grandchildren_sp#{child_ps.procedure.id}_').collapse('toggle')", "class" => "child_sp#{ps.procedure.id}_", :name => "#{child_ps.specialist_wait_time? ? 1 : 0}"}
                                           %span= child_ps.procedure.name
                                         - if grandchildren.length > 0
                                           .collapse{:id => "grandchildren_sp#{child_ps.procedure.id}_"}
@@ -213,8 +213,8 @@
                                                 });
                                             - grandchildren.each do |grandchild_ps, greatgrandchildren|
                                               - next if grandchild_ps.procedure.all_specialists.blank?
-                                              %label.indent2
-                                                %input.sp{"type" => "checkbox", "id" => "sp#{grandchild_ps.procedure.id}_", "class" => "grandchild_sp#{child_ps.procedure.id}_"}
+                                              %label.indent2{:class => grandchild_ps.specialist_wait_time && "custom_wait_time"}
+                                                %input.sp{"type" => "checkbox", "id" => "sp#{grandchild_ps.procedure.id}_", "class" => "grandchild_sp#{child_ps.procedure.id}_", :name => "#{grandchild_ps.specialist_wait_time? ? 1 : 0}"}
                                                 %span= grandchild_ps.procedure.name
 
                     .filter-group
@@ -386,8 +386,8 @@
                             #more_clinic_procedures.more.collapse
                               - non_focused_procedure_specializations.each do |ps, children|
                                 - next if ps.procedure.all_clinics.blank?
-                                %label
-                                  %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}_').collapse('toggle')"}
+                                %label{:class => ps.specialist_wait_time && "custom_wait_time"}
+                                  %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}_').collapse('toggle')", :name => "#{ps.specialist_wait_time? ? 1 : 0}"}
                                   %span= ps.procedure.name
                                 - if children.length > 0
                                   .collapse{:id => "children_cp#{ps.procedure.id}_"}
@@ -398,8 +398,8 @@
                                         });
                                     - children.each do |child_ps, grandchildren|
                                       - next if child_ps.procedure.all_clinics.blank?
-                                      %label.indent
-                                        %input.cp{"type" => "checkbox", "id" => "cp#{child_ps.procedure.id}_", "onclick" => "$('#grandchildren_cp#{child_ps.procedure.id}_').collapse('toggle')", "class" => "child_cp#{ps.procedure.id}_"}
+                                      %label.indent{:class => child_ps.specialist_wait_time && "custom_wait_time"}
+                                        %input.cp{"type" => "checkbox", "id" => "cp#{child_ps.procedure.id}_", "onclick" => "$('#grandchildren_cp#{child_ps.procedure.id}_').collapse('toggle')", "class" => "child_cp#{ps.procedure.id}_", :name => "#{child_ps.specialist_wait_time? ? 1 : 0}"}
                                         %span= child_ps.procedure.name
                                       - if grandchildren.length > 0
                                         .collapse{:id => "grandchildren_cp#{child_ps.procedure.id}_"}
@@ -410,8 +410,8 @@
                                               });
                                           - grandchildren.each do |grandchild_ps, greatgrandchildren|
                                             - next if grandchild_ps.procedure.all_clinics.blank?
-                                            %label.indent2
-                                              %input.cp{"type" => "checkbox", "id" => "cp#{grandchild_ps.procedure.id}_", "class" => "grandchild_cp#{child_ps.procedure.id}_"}
+                                            %label.indent2{:class => grandchild_ps.specialist_wait_time && "custom_wait_time"}
+                                              %input.cp{"type" => "checkbox", "id" => "cp#{grandchild_ps.procedure.id}_", "class" => "grandchild_cp#{child_ps.procedure.id}_", :name => "#{grandchild_ps.specialist_wait_time? ? 1 : 0}"}
                                               %span= grandchild_ps.procedure.name
 
                     .filter-group
