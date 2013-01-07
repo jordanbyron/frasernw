@@ -80,6 +80,8 @@ var update_table = function(prefix, entity_id, entity_name)
     }
   });
   
+  var checked_procedures = $([])
+  
   // collect procedure filters
   $('.filter-group-content > label > .' + prefix + 'p, .filter-group-content > .more > label > .' + prefix + 'p').filter(':checked').each( function() {
     var parent = $(this);
@@ -100,12 +102,14 @@ var update_table = function(prefix, entity_id, entity_name)
         checked_grandchildren = true;
         procedures.push(parent_text + " " + child_text + " " + grandchild.siblings('span').text().trim());
         current_filters.push(grandchild.attr('id'));
+        checked_procedures = checked_procedures.add(grandchild);
       });
                                                              
       if (!checked_grandchildren)
       {
         procedures.push(parent_text + " " + child_text);
         current_filters.push(child.attr('id'));
+        checked_procedures = checked_procedures.add(child);
       }
                                                              
     });
@@ -114,6 +118,7 @@ var update_table = function(prefix, entity_id, entity_name)
     {
       procedures.push(parent_text);
       current_filters.push(parent.attr('id'));
+      checked_procedures = checked_procedures.add(parent);
     }
                                                                                                                                           
   });
@@ -258,6 +263,63 @@ var update_table = function(prefix, entity_id, entity_name)
     {
       //doesn't match
       row.hide();
+    }
+  });
+  
+  // adjust wait time based off checked custom wait time procedures
+  var checked_custom_wait_times = checked_procedures.filter('[name="1"]');
+  console.log("checked_procedures : " + checked_procedures)
+  console.log("checked_custom_wait_times : " + checked_custom_wait_times)
+  var wait_time_procedure = true;
+  
+  if (checked_custom_wait_times.length == 0)
+  {
+    console.log("use usual wait time");
+  }
+  else if (checked_custom_wait_times.length == 1)
+  {
+    if (checked_procedures.length == 1)
+    {
+      console.log("replace with custom wait time");
+      wait_time_procedure = checked_procedures.attr('id').substring((prefix + 'p').length);
+    }
+    else
+    {
+      console.log("no wait times - mix of custom and non custom");
+      wait_time_procedure = false;
+    }
+  }
+  else
+  {
+    console.log("no wait times - more than one custom");
+    wait_time_procedure = false;
+  }
+  
+  //TODO: temp
+  var wait_time_hash = ["","Within one week","1-2 weeks","2-4 weeks","1-2 months","2-4 months","4-6 months","6-9 months","9-12 months","12-18 months",">18 months"];
+  
+  //loop over each row of the table, hiding those which don't match our filters
+  $('#' + entity_id + '_table tbody tr').each(function () {
+    var row = $(this)
+      , row_filter = row.data('filter');
+    if (wait_time_procedure === false)
+    {
+      row.children('.wt').html("");
+    }
+    else
+    {
+      var wait_time_prefix = (wait_time_procedure === true) ? prefix + 'wt_' : prefix + 'wt' + wait_time_procedure;
+      var wait_time_index = row_filter.indexOf(wait_time_prefix);
+      if (wait_time_index == -1)
+      {
+        row.children('.wt').html("");
+      }
+      else
+      {
+        var wait_time = row_filter.substring(wait_time_index);
+        var wait_time = wait_time.substring(wait_time_prefix.length, wait_time.indexOf(' '));
+        row.children('.wt').html(wait_time_hash[wait_time]);
+      }
     }
   });
   
