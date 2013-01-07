@@ -1,6 +1,17 @@
 module SpecializationsHelper
   def specialist_filtering_attributes(s, include_assumed)
     filtering_attributes = specialist_procedure_filtering_attributes(s)
+    filtering_attributes << "swt_#{s.waittime_mask.present? ? s.waittime_mask : 0}"
+    s.procedure_specializations.specialist_wait_time.each do |ps|
+      capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(s.id,ps.id)
+      next if capacity.blank?
+      filtering_attributes << "swt#{ps.procedure.id}_#{capacity.waittime_mask}" if capacity.waittime_mask.present?
+      if capacity.lagtime_mask.present?
+        (capacity.lagtime_mask..Specialist::LAGTIME_HASH.length+1).each do |i|
+          filtering_attributes << "slt#{ps.procedure.id}_#{i}"
+        end
+      end
+    end
     if include_assumed
       s.specializations.each do |specialization|
         specialization.procedure_specializations.assumed.each do |ps|
@@ -67,6 +78,17 @@ module SpecializationsHelper
         filtering_attributes << "op#{parent.parent.procedure.id}_" if (parent.parent.present? && !filtering_attributes.include?("op#{parent.parent.procedure.id}_"))
       end
     end
+    filtering_attributes << "owt_#{s.waittime_mask.present? ? s.waittime_mask : 0}"
+    s.procedure_specializations.specialist_wait_time.each do |ps|
+      capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(s.id,ps.id)
+      next if capacity.blank?
+      filtering_attributes << "owt#{ps.procedure.id}_#{capacity.waittime_mask}" if capacity.waittime_mask.present?
+      if capacity.lagtime_mask.present?
+        (capacity.lagtime_mask..Specialist::LAGTIME_HASH.length+1).each do |i|
+          filtering_attributes << "olt#{ps.procedure.id}_#{i}"
+        end
+      end
+    end
     if include_assumed
       s.specializations.each do |specialization|
         specialization.procedure_specializations.assumed.each do |ps|
@@ -100,6 +122,17 @@ module SpecializationsHelper
     
   def clinic_filtering_attributes(c)
     filtering_attributes = clinic_procedure_filtering_attributes(c)
+    filtering_attributes << "cwt_#{c.waittime_mask.present? ? c.waittime_mask : 0}"
+    c.procedure_specializations.clinic_wait_time.each do |ps|
+      focus = Focus.find_by_clinic_id_and_procedure_specialization_id(c.id,ps.id)
+      next if focus.blank?
+      filtering_attributes << "cwt#{ps.procedure.id}_#{focus.waittime_mask}" if focus.waittime_mask.present?
+      if focus.lagtime_mask.present?
+        (focus.lagtime_mask..Clinic::LAGTIME_HASH.length+1).each do |i|
+          filtering_attributes << "clt#{ps.procedure.id}_#{i}"
+        end
+      end
+    end
     if c.lagtime_mask.present?
       (c.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
         filtering_attributes << "cc#{i}_"

@@ -969,6 +969,12 @@ body.loading #email
         }
       }
       
+      label.custom_wait_time span:after
+      {
+        font-family: FontAwesome;
+        content: " \f0c1";
+      }
+
       .resource
       {
         float: left;

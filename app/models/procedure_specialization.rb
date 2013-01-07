@@ -42,6 +42,14 @@ class ProcedureSpecialization < ActiveRecord::Base
     classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED
   end
   
+  def self.specialist_wait_time
+    where('procedure_specializations.specialist_wait_time = (?)', true)
+  end
+  
+  def self.clinic_wait_time
+    where('procedure_specializations.clinic_wait_time = (?)', true)
+  end
+  
   def to_s
     procedure.to_s
   end
