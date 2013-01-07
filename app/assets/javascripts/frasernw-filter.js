@@ -298,6 +298,7 @@ var update_table = function(prefix, entity_id, entity_name)
   if (checked_custom_wait_times.length == 0)
   {
     console.log("use usual wait time");
+    wait_time_procedure = true;
   }
   else if (checked_custom_wait_times.length == 1)
   {
