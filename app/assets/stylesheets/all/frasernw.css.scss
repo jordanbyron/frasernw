@@ -1014,7 +1014,7 @@ body.loading #email
     padding: 4px 8px;
   }
   
-  .filter-phrase, .assumed-phrase, .other-phrase
+  .filter-phrase, .assumed-phrase, .other-phrase, .wait-time-phrase
   {
     background-color: $FNW_LIGHT_GRAY;
     font-weight: bold;
@@ -1022,14 +1022,10 @@ body.loading #email
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
-  }
-  
-  .filter-phrase, .assumed-phrase, .other-phrase
-  {
     margin-bottom: 12px;
   }
   
-  .filter-phrase, .other-phrase
+  .filter-phrase, .other-phrase, .wait-time-phrase
   {
     display: none;
   }
@@ -1037,6 +1033,11 @@ body.loading #email
   .other-phrase
   {
     background-color: $FNW_LIGHT_BLUE;
+  }
+  
+  .wait-time-phrase
+  {
+    background-color: $FNW_MID_BLUE;
     font-weight: bold;
   }
 
@@ -1364,13 +1365,13 @@ body.loading #email
     li.subsequent.grandparent
     {
       z-index: 1002;
-      background: #dbeffd;
-      border-color: #dbeffd;
+      background: $FNW_MID_BLUE;
+      border-color: $FNW_MID_BLUE;
     }
     
     li.subsequent.grandparent:after
     {
-      border-left-color: #dbeffd;
+      border-left-color: $FNW_MID_BLUE;
     }
     
     li.subsequent.parent

@@ -301,6 +301,22 @@ var update_table = function(prefix, entity_id, entity_name)
     }
   });
   
+  if (wait_time_procedure === true)
+  {
+    $("#" + entity_id + "_custom_wait_time").hide();
+    $("#" + entity_id + "_no_wait_time").hide();
+  }
+  else if (wait_time_procedure === false)
+  {
+    $("#" + entity_id + "_custom_wait_time").hide();
+    $("#" + entity_id + "_no_wait_time").show();
+  }
+  else
+  {
+    $("#" + entity_id + "_custom_wait_time").show();
+    $("#" + entity_id + "_no_wait_time").hide();
+  }
+  
   var description = found ? 'Showing all ' + sex + ' <span id=\'' + entity_id + '_description_entity\'>' + entity_name + '</span>' : 'There are no ' + sex + ' ' + entity_name;
   
   var fragments = new Array()
