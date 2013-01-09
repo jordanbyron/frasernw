@@ -102,7 +102,7 @@ en:
         body: "News body"
       sc_category:
         display_mask: "Display items"
-        show_as_dropdown: "Display in global navigation as a dropdown menu"
+        show_as_dropdown: "Display in global navigation in resources dropdown menu"
         show_on_front_page: "Display featured items on front page"
       sc_item:
         inline: "Show content inline on specialty pages"
