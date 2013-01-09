@@ -267,11 +267,27 @@
                 %p
                   Average length of time to notify GP of a booking date:
                   %strong= @specialist.lagtime
+                  
+              - @specialist.capacities.specialist_wait_time.each do |capacity|
+              
+                - if capacity.waittime.present? || capacity.lagtime.present?
+                  %p.space
+                    %strong= "#{capacity.procedure_specialization.procedure.name}:"
                 
+                  -if capacity.waittime.present?
+                    %p
+                      Average non-urgent patient wait time from referral to appointment:
+                      %strong= capacity.waittime
+                          
+                  -if capacity.lagtime.present?
+                    %p
+                      Average length of time to notify GP of a booking date:
+                      %strong= capacity.lagtime
+
               - if @specialist.patient_can_book_mask == 1
-                %p This office accepts direct calls from patients after referral to book their own appointments.
+                %p.space This office accepts direct calls from patients after referral to book their own appointments.
               - elsif @specialist.patient_can_book_mask == 2
-                %p This office does not accept direct calls from patients after referral to book their own appointments.
+                %p.space This office does not accept direct calls from patients after referral to book their own appointments.
             
             - if @specialist.red_flags.present? || @specialist.urgent_referrals_via.present?
               %h6 Urgent Referrals
