@@ -189,11 +189,27 @@
                 %p
                   Average length of time to notify GP of a booking date:
                   %strong= @clinic.lagtime
+                  
+              - @clinic.focuses.clinic_wait_time.each do |focus|
+              
+                - if focus.waittime.present? || focus.lagtime.present?
+                  %p.space
+                    %strong= "#{focus.procedure_specialization.procedure.name}:"
                 
+                  -if focus.waittime.present?
+                    %p
+                      Average non-urgent patient wait time from referral to appointment:
+                      %strong= focus.waittime
+                          
+                  -if focus.lagtime.present?
+                    %p
+                      Average length of time to notify GP of a booking date:
+                      %strong= focus.lagtime
+
               - if @clinic.patient_can_book_mask == 1
-                %p This office accepts direct calls from patients after referral to book their own appointments.
+                %p.space This office accepts direct calls from patients after referral to book their own appointments.
               - elsif @clinic.patient_can_book_mask == 2
-                %p This office does not accept direct calls from patients after referral to book their own appointments.
+                %p.space This office does not accept direct calls from patients after referral to book their own appointments.
             
             - if @clinic.red_flags.present? || @clinic.urgent_referrals_via.present?
               
