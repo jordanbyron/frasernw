@@ -297,8 +297,16 @@ var update_table = function(prefix, entity_id, entity_name)
   
   if (checked_custom_wait_times.length == 0)
   {
-    console.log("use usual wait time");
-    wait_time_procedure = true;
+    if (root_procedures[prefix] != undefined)
+    {
+      console.log("base filtering on procedure");
+      wait_time_procedure = root_procedures[prefix] + '_';
+    }
+    else
+    {
+      console.log("use usual wait time");
+      wait_time_procedure = true;
+    }
   }
   else if (checked_custom_wait_times.length == 1)
   {
@@ -346,7 +354,14 @@ var update_table = function(prefix, entity_id, entity_name)
   
   if (wait_time_procedure === true)
   {
-    $("#" + entity_id + "_custom_wait_time").hide();
+    if (root_procedures[prefix] == undefined)
+    {
+      $("#" + entity_id + "_custom_wait_time").hide();
+    }
+    else
+    {
+      $("#" + entity_id + "_custom_wait_time").show();
+    }
     $("#" + entity_id + "_no_wait_time").hide();
   }
   else if (wait_time_procedure === false)
