@@ -1010,11 +1010,15 @@ body.loading #email
         font-family: Bitter;
         font-size: 14px;
         font-weight: bold;
-        color: $FNW_TEXT;
         text-align: left;
         padding: 0 0 6px 24px;
         margin: 0 -24px 8px -24px;
         background: transparent url(/img/double-border-10.png) 0% 100% repeat-x;
+        
+        a
+        {
+          color: $FNW_TEXT;
+        }
       }
       
       ul + h3
@@ -1028,6 +1032,28 @@ body.loading #email
         font-weight: bold;
         color: $FNW_RED;
         font-size: 11px;
+      }
+      
+      ul
+      {
+        span.featured
+        {
+        }
+        li
+        {
+          list-style-type: circle;
+          list-style-position: outside;
+          margin-left: 15px;
+          color: $FNW_LIGHT_BLUE;
+        }
+        li.all
+        {
+          margin-left: 0;
+          list-style-type: none;
+          font-weight: bold;
+          font-size: 11px;
+          text-transform: uppercase;
+        }
       }
     }
     
