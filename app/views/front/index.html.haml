@@ -118,7 +118,7 @@
             %h3= link_to category.name, sc_category_path(category), :class => 'ajax'
           
             %ul.space
-              %span.featured= "Featured #{category.name}:"
+              %span.featured= "Featured:"
               - category.featured_sc_items.sort{|a,b| b.created_at <=> a.created_at }.each do |featured_sc_item|
                 %li.indent
                   - if featured_sc_item.created_at > 2.week.ago.utc
@@ -130,7 +130,7 @@
                     %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{featured_sc_item.id}"}
                   
               %li.all
-                = link_to "<i class='icon-arrow-right icon-blue icon-small'></i> Browse all #{category.name}".html_safe, sc_category_path(category), :class => 'ajax'
+                = link_to "Browse all #{category.name} <i class='icon-arrow-right icon-blue icon-small'></i>".html_safe, sc_category_path(category), :class => 'ajax'
                 
           %h3
           

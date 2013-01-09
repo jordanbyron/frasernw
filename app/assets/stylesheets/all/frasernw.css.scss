@@ -1023,7 +1023,7 @@ body.loading #email
       
       ul + h3
       {
-        margin-top: 24px;
+        margin-top: 18px;
       }
       
       .new
@@ -1038,10 +1038,14 @@ body.loading #email
       {
         span.featured
         {
+          color: $FNW_DARK_GRAY;
+          font-weight: bold;
+          font-size: 11px;
+          text-transform: uppercase;
         }
         li
         {
-          list-style-type: circle;
+          list-style-type: none;
           list-style-position: outside;
           margin-left: 15px;
           color: $FNW_LIGHT_BLUE;
