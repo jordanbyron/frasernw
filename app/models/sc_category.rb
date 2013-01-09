@@ -14,6 +14,7 @@ class ScCategory < ActiveRecord::Base
   DISPLAY_HASH = {
     2 => "In global navigation",
     4 => "In global navigation and filterable on specialty pages",
+    5 => "In global navigation and inline on specialty pages",
     1 => "Filterable on specialty pages",
     3 => "Inline on specialty pages"
   }
@@ -22,8 +23,12 @@ class ScCategory < ActiveRecord::Base
     ScCategory::DISPLAY_HASH[display_mask]
   end
   
-  def self.global_nav
-    where("sc_categories.display_mask IN (?)", [2,4])
+  def self.global_resources_dropdown
+    where("sc_categories.display_mask IN (?) AND sc_categories.show_as_dropdown = (?)", [2,4,5], true)
+  end
+  
+  def self.global_navbar
+    where("sc_categories.display_mask IN (?) AND sc_categories.show_as_dropdown = (?)", [2,4,5], false)
   end
   
   def self.specialty
@@ -35,7 +40,7 @@ class ScCategory < ActiveRecord::Base
   end
 
   def inline?
-    display_mask == 3
+    [3,5].include? display_mask
   end
 
   def full_name
