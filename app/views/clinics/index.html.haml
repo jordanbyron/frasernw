@@ -7,9 +7,9 @@
   %table.table.table-condensed.table-striped
     -Specialization.all.each do |specialization|
       -next if specialization.clinics.length == 0
-      %tr{ :class => specialization.in_progress ? "in-progress" : "" }
+      %tr
         %th
-          = specialization.name
+          %span{ :class => specialization.in_progress ? "in-progress" : "" }= specialization.name
         %th.admin
 
       - specialization.clinics.each do |clinic|

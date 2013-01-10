@@ -116,13 +116,13 @@
                             = link_to "New Area of Practice in...", "#", :class => "arrow-right-after"
                             %ul.dropdown-menu.sub-menu
                               - Specialization.all.each do |specialization|
-                                %li=link_to specialization.name, new_specialization_procedure_path(specialization), :class => "ajax"
+                                %li=link_to specialization.name, new_specialization_procedure_path(specialization), :class => specialization.in_progress ? "in-progress ajax" : " ajax"
                           %li= link_to "New City", new_city_path, :class => "ajax"
                           %li
                             = link_to "New Clinic in...", "#", :class => "arrow-right-after"
                             %ul.dropdown-menu
                               - Specialization.all.each do |specialization|
-                                %li=link_to specialization.name, new_specialization_clinic_path(specialization), :class => "ajax"
+                                %li=link_to specialization.name, new_specialization_clinic_path(specialization), :class => specialization.in_progress ? "in-progress ajax" : " ajax"
                           %li= link_to "New Healthcare Provider", new_healthcare_provider_path, :class => "ajax"
                           %li= link_to "New Hospital", new_hospital_path, :class => "ajax"
                           %li= link_to "New Language", new_language_path, :class => "ajax"
@@ -131,7 +131,7 @@
                             = link_to "New Specialist in...", "#", :class => "arrow-right-after"
                             %ul.dropdown-menu
                               - Specialization.all.each do |specialization|
-                                %li=link_to specialization.name, new_specialization_specialist_path(specialization), :class => 'ajax'
+                                %li=link_to specialization.name, new_specialization_specialist_path(specialization), :class => specialization.in_progress ? "in-progress ajax" : " ajax"
                           %li= link_to "New Specialty", new_specialization_path, :class => "ajax"
                           %li= link_to "New User", new_user_path, :class => "ajax"
                       %li= link_to "Areas of Practice", procedures_path, :class => "ajax"
