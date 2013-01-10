@@ -12,6 +12,7 @@
     var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
     $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
     $(document).ready(function() { update_favorites() });
+    var root_procedures = [];
     
 #specialties-dropdown-menu
   .inner
