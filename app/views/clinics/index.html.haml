@@ -45,7 +45,8 @@
         - clinics = specialization.clinics.in_divisions(current_user_divisions)
         - next if clinics.blank?
         %tr{ :class => specialization.in_progress ? "in-progress" : "" }
-          %th{:style => "width:75%"}= specialization.name
+          %th{:style => "width:75%"}
+            %span{ :class => specialization.in_progress ? "in-progress" : "" }= specialization.name
           %th{:style => "width:25%"} City
           %th.admin
 

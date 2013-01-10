@@ -26,7 +26,8 @@
                 - specialists = specialization.specialists.in_divisions([division])
                 - next if specialists.blank?
                 %tr{ :class => specialization.in_progress ? "in-progress" : "" }
-                  %th{:style => "width:50%"}= specialization.name
+                  %th{:style => "width:50%"}
+                    %span{ :class => specialization.in_progress ? "in-progress" : "" }=specialization.name= specialization.name
                   %th{:style => "width:50%"} City
                   %th.admin
 
