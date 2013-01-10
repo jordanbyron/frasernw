@@ -4,9 +4,17 @@
 
   %h2 Feedback Queue
   
-  - specialist_count  = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Specialist }.length
-  - clinic_count      = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Clinic }.length
-  - sc_item_count     = @feedback_items.reject{ |feedback_item| feedback_item.item.class != ScItem }.length
+  - divisions = current_user_is_admin? ? Division.all : current_user_divisions
+  
+  - specialist_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Specialist }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
+  - clinic_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Clinic }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
+  - sc_item_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != ScItem }.reject{ |feedback_item| (feedback_item.item.division & divisions).blank? }
+
+  - specialist_count  = specialists.length
+  - clinic_count      = clinics.length
+  - sc_item_count     = sc_items.length
+  
+  - feedback = [specialists_feedback, clinic_feedback, sc_item_feedback]
 
   .tabbable
     %ul.nav.nav-tabs
@@ -28,7 +36,7 @@
         
     .tab-content
     
-      - ["Specialist", "Clinic", "ScItem"].each do |feedback_type|
+      - ["Specialist", "Clinic", "ScItem"].each_with_index do |feedback_type, index|
       
         .tab-pane{"id" => "#{feedback_type}_tab", "class" => (feedback_type == "Specialist") && "active"}
       
@@ -42,7 +50,7 @@
               %th Reply
               %th.admin
 
-            - @feedback_items.reject{ |feedback_item| feedback_item.item.class != feedback_type.constantize }.each do |feedback_item|
+            - feedback[index].each do |feedback_item|
               %tr
                 %td= link_to (feedback_item.item.respond_to?('name') ? feedback_item.item.name : feedback_item.item.title), feedback_item.item, :class => 'ajax'
                 %td= feedback_item.item.specializations.map{ |s| s.name }.to_sentence
