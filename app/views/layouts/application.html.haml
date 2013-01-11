@@ -18,9 +18,10 @@
     = yield(:head)
               
     :javascript
+      var livesearch;
       $(document).ready(function() 
       {
-        var livesearch = $('#search').livesearch({
+        livesearch = $('#search').livesearch({
           container: '#search_results',
           search_all: '#search_all',
           search_all_url: '/livesearch_all_entries.js',
