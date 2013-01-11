@@ -1,3 +1,5 @@
+- user_divisions = current_user_divisions
+
 !!!
 %html
 
@@ -96,9 +98,10 @@
                     %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
                       Admin
                       - user_review_item_count = ReviewItem.active.reject{ |ri| !current_user.owns(ri.item.specializations) }.count
-                      - user_feedback_item_count = FeedbackItem.active.reject{ |fi| !current_user.owns(fi.item.specializations) }.count
+                      - feedback = FeedbackItem.active.reject{ |fi| !(fi.item.present? && ((fi.item.instance_of?(Specialist) && (fi.item.divisions & user_divisions).present?) || (fi.item.instance_of?(Clinic) && (fi.item.divisions & user_divisions).present?) || (fi.item.instance_of?(ScItem) && (fi.item.division & user_divisions).present?))) }
+                      - user_feedback_item_count = feedback.reject{ |fi| !current_user.owns(fi.item.specializations) }.count
                       - total_review_item_count = ReviewItem.active.count
-                      - total_feedback_item_count = FeedbackItem.active.count
+                      - total_feedback_item_count = feedback.count
                       -  if total_review_item_count + total_feedback_item_count > 0
                         %span.badge{ :class => ((user_review_item_count + user_feedback_item_count) > 0) && "badge-warning"}
                           #{user_review_item_count + user_feedback_item_count}/#{total_review_item_count + total_feedback_item_count}
@@ -208,22 +211,22 @@
                             %ul.dropdown-menu
                               - Division.all.each do |division|
                                 %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
-                        - elsif current_user_divisions.length > 1
+                        - elsif user_divisions.length > 1
                           %li
                             = link_to "Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
-                              - current_user_divisions.each do |division|
+                              - user_divisions.each do |division|
                                 %li= link_to "#{division.name}", sc_items_path(division), :class => "sc_item ajax"
                           %li
                             = link_to "Manage Shared Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
-                              - current_user_divisions.each do |division|
+                              - user_divisions.each do |division|
                                 %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
-                        - elsif current_user_divisions.length == 1
-                          %li= link_to "Content Items", sc_items_path(current_user_divisions.first), :class => "sc_item ajax"
-                          %li= link_to "Manage Shared Content Items", shared_content_items_path(current_user_divisions.first), :class => "sc_item ajax"
+                        - elsif user_divisions.length == 1
+                          %li= link_to "Content Items", sc_items_path(user_divisions.first), :class => "sc_item ajax"
+                          %li= link_to "Manage Shared Content Items", shared_content_items_path(user_divisions.first), :class => "sc_item ajax"
                   
-                - dropdown_categories = ScCategory.global_resources_dropdown.reject{ |category| category.all_sc_items_in_divisions(current_user_divisions).blank? }
+                - dropdown_categories = ScCategory.global_resources_dropdown.reject{ |category| category.all_sc_items_in_divisions(user_divisions).blank? }
                 - if dropdown_categories.present?
                   %li.dropdown
                     %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
@@ -233,7 +236,7 @@
                       - dropdown_categories.each do |category|
                         %li=link_to category.name, category, :class => 'ajax'
                 
-                - ScCategory.global_navbar.reject{ |category| category.all_sc_items_in_divisions(current_user_divisions).blank? }.each do |category|
+                - ScCategory.global_navbar.reject{ |category| category.all_sc_items_in_divisions(user_divisions).blank? }.each do |category|
                   %li= link_to category.name, category, :class => 'ajax'
 
                 %li.dropdown

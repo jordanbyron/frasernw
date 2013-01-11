@@ -97,8 +97,8 @@
                   %i.icon-link
                   You have chosen multiple areas of practice, and in one or more of which specialists have optionally provided a specific wait time. Due to the conflicing wait times, the wait time column is blank.
                           
-                 #specialist_others.other-phrase
-                        
+                #specialist_others.other-phrase
+                
                 #specialist_hide_others.other-phrase
                   %a{"href" => "javascript:void(0)", "onclick" => "hide_others('specialist', '#{@specialization.member_name.uncapitalize_first_letter.pluralize}')"}Hide
                   results from other specialties.
@@ -160,7 +160,7 @@
                                           });
                                       - grandchildren.each do |grandchild_ps, greatgrandchildren|
                                         %label.indent2{:class => grandchild_ps.specialist_wait_time && "custom_wait_time"}
-                                          %input.sp{"type" => "checkbox", "id" => "sp#{grandchild_ps.procedure.id}_", "class" => "grandchild_sp#{child_ps.procedure.id}_", :name => "#{grandps.specialist_wait_time? ? 1 : 0}"}
+                                          %input.sp{"type" => "checkbox", "id" => "sp#{grandchild_ps.procedure.id}_", "class" => "grandchild_sp#{child_ps.procedure.id}_", :name => "#{grandchild_ps.specialist_wait_time? ? 1 : 0}"}
                                           %span= grandchild_ps.procedure.name
                           
                           %a.more#s_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_s_procedures"} More...

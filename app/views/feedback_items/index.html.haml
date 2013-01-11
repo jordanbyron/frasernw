@@ -10,11 +10,11 @@
   - clinic_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Clinic }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
   - sc_item_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != ScItem }.reject{ |feedback_item| (feedback_item.item.division & divisions).blank? }
 
-  - specialist_count  = specialists.length
-  - clinic_count      = clinics.length
-  - sc_item_count     = sc_items.length
+  - specialist_count  = specialist_feedback.length
+  - clinic_count      = clinic_feedback.length
+  - sc_item_count     = sc_item_feedback.length
   
-  - feedback = [specialists_feedback, clinic_feedback, sc_item_feedback]
+  - feedback = [specialist_feedback, clinic_feedback, sc_item_feedback]
 
   .tabbable
     %ul.nav.nav-tabs

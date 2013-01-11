@@ -50,6 +50,14 @@ class Ability
           (news_item.division & user.divisions).present?
         end
         
+        #can manage their own feedback items
+        can :manage, FeedbackItem do |feedback_item|
+          feedback_item.item.present? &&
+            ((feedback_item.item.instance_of?(Specialist) && (feedback_item.item.divisions & user.divisions).present?) ||
+             (feedback_item.item.instance_of?(Clinic) && (feedback_item.item.divisions & user.divisions).present?) ||
+             (feedback_item.item.instance_of?(ScItem) && (feedback_item.item.division & user.divisions).present?))
+        end
+        
       end
       
       if user.admin_only? || user.user?
