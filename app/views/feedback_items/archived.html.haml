@@ -3,6 +3,18 @@
 .content-wrapper
 
   %h2 Feedback Queue Archive
+  
+  - divisions = current_user_is_admin? ? Division.all : current_user_divisions
+  
+  - specialist_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Specialist }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
+  - clinic_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Clinic }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
+  - sc_item_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != ScItem }.reject{ |feedback_item| ([feedback_item.item.division] & divisions).blank? }
+
+  - specialist_count  = specialist_feedback.length
+  - clinic_count      = clinic_feedback.length
+  - sc_item_count     = sc_item_feedback.length
+  
+  - feedback = [specialist_feedback, clinic_feedback, sc_item_feedback]
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
 
@@ -17,7 +29,7 @@
         
     .tab-content
     
-      - ["Specialist", "Clinic", "ScItem"].each do |feedback_type|
+      - ["Specialist", "Clinic", "ScItem"].each_with_index do |feedback_type, index|
       
         .tab-pane{"id" => "#{feedback_type}_tab", "class" => (feedback_type == "Specialist") && "active"}
       
@@ -30,7 +42,7 @@
               %th Feedback
               %th Reply
 
-            - @feedback_items.reject{ |feedback_item| feedback_item.item.class != feedback_type.constantize }.each do |feedback_item|
+            - feedback[index].each do |feedback_item|
               %tr
                 %td= link_to (feedback_item.item.respond_to?('name') ? feedback_item.item.name : feedback_item.item.title), feedback_item.item, :class => 'ajax'
                 %td= feedback_item.item.specializations.map{ |s| s.name }.to_sentence
