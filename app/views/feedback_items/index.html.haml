@@ -14,31 +14,65 @@
   - clinic_count      = clinic_feedback.length
   - sc_item_count     = sc_item_feedback.length
   
-  - feedback = [specialist_feedback, clinic_feedback, sc_item_feedback]
+  - if current_user_is_super_admin?
+  
+    - other_specialist_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Specialist }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).length > 0 }
+    - other_clinic_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Clinic }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).length > 0 }
+    - other_sc_item_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != ScItem }.reject{ |feedback_item| ([feedback_item.item.division] & divisions).length > 0 }
+
+    - other_specialist_count  = other_specialist_feedback.length
+    - other_clinic_count      = other_clinic_feedback.length
+    - other_sc_item_count     = other_sc_item_feedback.length
+    
+    - feedback = [specialist_feedback, clinic_feedback, sc_item_feedback, other_specialist_feedback, other_clinic_feedback, other_sc_item_feedback]
+
+  - else
+    
+    - feedback = [specialist_feedback, clinic_feedback, sc_item_feedback]
 
   .tabbable
     %ul.nav.nav-tabs
       %li.active
-        %a{"href" => "#Specialist_tab", "data-toggle" => "tab"}
-          Specialist Feedback
+        %a{"href" => "#0_tab", "data-toggle" => "tab"}
+          Specialist
           - if specialist_count > 0
             %span.badge.badge-warning= specialist_count
       %li
-        %a{"href" => "#Clinic_tab", "data-toggle" => "tab"}
-          Clinic Feedback
+        %a{"href" => "#1_tab", "data-toggle" => "tab"}
+          Clinic
           - if clinic_count > 0
             %span.badge.badge-warning= clinic_count
       %li
-        %a{"href" => "#ScItem_tab", "data-toggle" => "tab"}
-          Content Feedback
+        %a{"href" => "#2_tab", "data-toggle" => "tab"}
+          Content
           - if sc_item_count > 0
             %span.badge.badge-warning= sc_item_count
-        
+            
+      - if current_user_is_super_admin?
+      
+        %li
+          %a{"href" => "#3_tab", "data-toggle" => "tab"}
+            Other Divisions' Specialist
+            - if other_specialist_count > 0
+              %span.badge.badge-warning= other_specialist_count
+        %li
+          %a{"href" => "#4_tab", "data-toggle" => "tab"}
+            Other Divisions' Specialist
+            - if other_clinic_count > 0
+              %span.badge.badge-warning= other_clinic_count
+        %li
+          %a{"href" => "#5_tab", "data-toggle" => "tab"}
+            Other Divisions' Content
+            - if other_sc_item_count > 0
+              %span.badge.badge-warning= other_sc_item_count
+
     .tab-content
     
-      - ["Specialist", "Clinic", "ScItem"].each_with_index do |feedback_type, index|
+      - classes = current_user_is_super_admin? ? ["Specialist", "Clinic", "ScItem", "Specialist", "Clinic", "ScItem"] : ["Specialist", "Clinic", "ScItem"]      
+    
+      - classes.each_with_index do |feedback_type, index|
       
-        .tab-pane{"id" => "#{feedback_type}_tab", "class" => (feedback_type == "Specialist") && "active"}
+        .tab-pane{"id" => "#{index}_tab", "class" => (index == 0) && "active"}
       
           %table.table.table-condensed.table-striped
             %tr
@@ -59,6 +93,6 @@
                 %td{"style" => "width: 30%"}= feedback_item.feedback
                 %td= feedback_item.user.blank? ? "unavailable" : (mail_to feedback_item.user.email, feedback_item.user.email, :subject => "Your Pathways Feedback", :body => "#{feedback_item.feedback} \n\n Pathways: http://www.pathwaysbc.ca")
                 %td.admin.btn-group
-                  = link_to("<i class='icon-folder-open'></i>".html_safe + " Archive", feedback_item, :method => :delete, :class => "btn btn-mini")
+                  = link_to("<i class='icon-folder-open'></i>".html_safe + " Archive", feedback_item, :method => :delete, :class => "btn btn-mini ajax")
 
   .btn-group= link_to "View archived feedback items", archived_feedback_items_path, :class => 'btn ajax'

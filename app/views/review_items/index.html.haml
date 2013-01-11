@@ -11,6 +11,14 @@
   
   - specialist_count  = specialist_reviews.length
   - clinic_count      = clinic_reviews.length
+  
+  - if current_user_is_super_admin?
+  
+    - other_specialist_reviews = @review_items.reject{ |review_item| review_item.item.class != Specialist }.reject{ |review_item| (review_item.item.divisions & divisions).length > 0 }
+    - other_clinic_reviews = @review_items.reject{ |review_item| review_item.item.class != Clinic }.reject{ |review_item| (review_item.item.divisions & divisions).length > 0 }
+
+    - other_specialist_count  = other_specialist_reviews.length
+    - other_clinic_count      = other_clinic_reviews.length
 
   .tabbable
     %ul.nav.nav-tabs
@@ -24,6 +32,19 @@
           Clinic Review Items
           - if clinic_count > 0
             %span.badge.badge-warning= clinic_count
+  
+      - if current_user_is_super_admin?
+  
+        %li
+          %a{"href" => "#other_specialists_tab", "data-toggle" => "tab"}
+            Other Divisions' Specialist Review Items
+            - if other_specialist_count > 0
+              %span.badge.badge-warning= other_specialist_count
+        %li
+          %a{"href" => "#other_clinics_tab", "data-toggle" => "tab"}
+            Other Divisions' Clinic Review Items
+            - if other_clinic_count > 0
+              %span.badge.badge-warning= other_clinic_count
 
     .tab-content
       #specialists_tab.tab-pane.active
@@ -51,6 +72,7 @@
         %table.table.table-condensed.table-striped
           %tr
             %th Clinic
+            %th Specialty
             %th Updated by
             %th Updated when
             %th
@@ -58,11 +80,54 @@
           - clinic_reviews.each do |review_item|
             %tr
               %td= review_item.item.name
+              %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
               %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
               %td.admin.btn-group.wide
                 = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", clinic_review_path(review_item.item), :class => "btn btn-mini ajax")
                 = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
-  
+                
+      - if current_user_is_super_admin?
+        
+        #other_specialists_tab.tab-pane
+
+          %table.table.table-condensed.table-striped
+            %tr
+              %th Specialist
+              %th Specialty
+              %th Updated by
+              %th Updated when
+              %th
+
+            - other_specialist_reviews.each do |review_item|
+              %tr
+                %td= review_item.item.name
+                %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
+                %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
+                %td= "#{time_ago_in_words(review_item.created_at)} ago"
+                %td.admin.btn-group.wide
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", specialist_review_path(review_item.item), :class => "btn btn-mini ajax")
+                  = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
+                  
+        #other_clinics_tab.tab-pane
+
+          %table.table.table-condensed.table-striped
+            %tr
+              %th Clinic
+              %th Specialty
+              %th Updated by
+              %th Updated when
+              %th
+
+            - other_clinic_reviews.each do |review_item|
+              %tr
+                %td= review_item.item.name
+                %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
+                %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
+                %td= "#{time_ago_in_words(review_item.created_at)} ago"
+                %td.admin.btn-group.wide
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", clinic_review_path(review_item.item), :class => "btn btn-mini ajax")
+                  = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
+
   .btn-group= link_to "View archived review queue items", archived_review_items_path, :class => 'btn ajax'
 

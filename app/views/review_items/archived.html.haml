@@ -8,6 +8,11 @@
   
   - specialist_reviews = @review_items.reject{ |review_item| review_item.item.class != Specialist }.reject{ |review_item| (review_item.item.divisions & divisions).blank? }
   - clinic_reviews = @review_items.reject{ |review_item| review_item.item.class != Clinic }.reject{ |review_item| (review_item.item.divisions & divisions).blank? }
+  
+  - if current_user_is_super_admin?
+  
+    - other_specialist_reviews = @review_items.reject{ |review_item| review_item.item.class != Specialist }.reject{ |review_item| (review_item.item.divisions & divisions).length > 0 }
+    - other_clinic_reviews = @review_items.reject{ |review_item| review_item.item.class != Clinic }.reject{ |review_item| (review_item.item.divisions & divisions).length > 0 }
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
 
@@ -20,6 +25,15 @@
       %li
         %a{"href" => "#clinics_tab", "data-toggle" => "tab"}
           Clinic Review Items
+  
+      - if current_user_is_super_admin?
+  
+        %li
+          %a{"href" => "#other_specialists_tab", "data-toggle" => "tab"}
+            Other Divisions' Specialist Review Items
+        %li
+          %a{"href" => "#other_clinics_tab", "data-toggle" => "tab"}
+            Other Divisions' Clinic Review Items
 
     .tab-content
       #specialists_tab.tab-pane.active
@@ -51,5 +65,47 @@
               %td= review_item.item.name
               %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
+                
+      - if current_user_is_super_admin?
+        
+        #other_specialists_tab.tab-pane
+
+          %table.table.table-condensed.table-striped
+            %tr
+              %th Specialist
+              %th Specialty
+              %th Updated by
+              %th Updated when
+              %th
+
+            - other_specialist_reviews.each do |review_item|
+              %tr
+                %td= review_item.item.name
+                %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
+                %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
+                %td= "#{time_ago_in_words(review_item.created_at)} ago"
+                %td.admin.btn-group.wide
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", specialist_review_path(review_item.item), :class => "btn btn-mini ajax")
+                  = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
+                  
+        #other_clinics_tab.tab-pane
+
+          %table.table.table-condensed.table-striped
+            %tr
+              %th Clinic
+              %th Specialty
+              %th Updated by
+              %th Updated when
+              %th
+
+            - other_clinic_reviews.each do |review_item|
+              %tr
+                %td= review_item.item.name
+                %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
+                %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
+                %td= "#{time_ago_in_words(review_item.created_at)} ago"
+                %td.admin.btn-group.wide
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", clinic_review_path(review_item.item), :class => "btn btn-mini ajax")
+                  = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
