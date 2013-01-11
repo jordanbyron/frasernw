@@ -58,6 +58,13 @@ class Ability
              (feedback_item.item.instance_of?(ScItem) && ([feedback_item.item.division] & user.divisions).present?))
         end
         
+        #can manage their own review items
+        can :manage, ReviewItem do |review_item|
+          review_item.item.present? &&
+            ((review_item.item.instance_of?(Specialist) && (review_item.item.divisions & user.divisions).present?) ||
+             (review_item.item.instance_of?(Clinic) && (review_item.item.divisions & user.divisions).present?))
+        end
+        
       end
       
       if user.admin_only? || user.user?

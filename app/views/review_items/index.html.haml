@@ -3,13 +3,27 @@
 .content-wrapper
 
   %h2 Review Queue
+  
+  - divisions = current_user_is_admin? ? Division.all : current_user_divisions
+  
+  - specialist_reviews = @review_items.reject{ |review_item| review_item.item.class != Specialist }.reject{ |review_item| (review_item.item.divisions & divisions).blank? }
+  - clinic_reviews = @review_items.reject{ |review_item| review_item.item.class != Clinic }.reject{ |review_item| (review_item.item.divisions & divisions).blank? }
+  
+  - specialist_count  = specialist_reviews.length
+  - clinic_count      = clinic_reviews.length
 
   .tabbable
     %ul.nav.nav-tabs
       %li.active
-        %a{"href" => "#specialists_tab", "data-toggle" => "tab"}= "Specialists"
+        %a{"href" => "#specialists_tab", "data-toggle" => "tab"}
+          Specialist Review Items
+          - if specialist_count > 0
+            %span.badge.badge-warning= specialist_count
       %li
-        %a{"href" => "#clinics_tab", "data-toggle" => "tab"}= "Clinics"
+        %a{"href" => "#clinics_tab", "data-toggle" => "tab"}
+          Clinic Review Items
+          - if clinic_count > 0
+            %span.badge.badge-warning= clinic_count
 
     .tab-content
       #specialists_tab.tab-pane.active
@@ -22,8 +36,7 @@
             %th Updated when
             %th
 
-          - @review_items.each do |review_item|
-            - next if review_item.item_type != "Specialist"
+          - specialist_reviews.each do |review_item|
             %tr
               %td= review_item.item.name
               %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
@@ -42,8 +55,7 @@
             %th Updated when
             %th
 
-          - @review_items.each do |review_item|
-            - next if review_item.item_type != "Clinic"
+          - clinic_reviews.each do |review_item|
             %tr
               %td= review_item.item.name
               %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
