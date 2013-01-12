@@ -8,7 +8,7 @@ module SpecializationsHelper
       filtering_attributes << "swt#{ps.procedure.id}_#{capacity.waittime_mask}" if capacity.waittime_mask.present?
       if capacity.lagtime_mask.present?
         (capacity.lagtime_mask..Specialist::LAGTIME_HASH.length+1).each do |i|
-          filtering_attributes << "slt#{ps.procedure.id}_#{i}"
+          filtering_attributes << "slt#{ps.procedure.id}_sc#{i}_"
         end
       end
     end
@@ -85,7 +85,7 @@ module SpecializationsHelper
       filtering_attributes << "owt#{ps.procedure.id}_#{capacity.waittime_mask}" if capacity.waittime_mask.present?
       if capacity.lagtime_mask.present?
         (capacity.lagtime_mask..Specialist::LAGTIME_HASH.length+1).each do |i|
-          filtering_attributes << "olt#{ps.procedure.id}_#{i}"
+          filtering_attributes << "olt#{ps.procedure.id}_oc#{i}_"
         end
       end
     end
@@ -129,7 +129,7 @@ module SpecializationsHelper
       filtering_attributes << "cwt#{ps.procedure.id}_#{focus.waittime_mask}" if focus.waittime_mask.present?
       if focus.lagtime_mask.present?
         (focus.lagtime_mask..Clinic::LAGTIME_HASH.length+1).each do |i|
-          filtering_attributes << "clt#{ps.procedure.id}_#{i}"
+          filtering_attributes << "clt#{ps.procedure.id}_cc#{i}_"
         end
       end
     end

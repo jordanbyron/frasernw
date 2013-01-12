@@ -293,10 +293,6 @@
                         required investigations
                     .list
                       = custom_procedures.html_safe
-                  - if @clinic.interest.present?
-                    %p.space
-                      %strong Most interested in
-                    %p= @clinic.interest.end_with_period.convert_newlines_to_br
                   - if @clinic.not_performed.present?
                     %p.space
                       %strong Does not see or do

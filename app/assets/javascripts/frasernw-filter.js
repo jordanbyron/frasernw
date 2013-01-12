@@ -101,34 +101,90 @@ var update_table = function(prefix, entity_id, entity_name)
                                                                                                                                           
   });
   
+  // adjust wait time based off checked custom wait time procedures
+  var checked_custom_wait_times = checked_procedures.filter('[name="1"]');
+  console.log("checked_procedures : " + checked_procedures)
+  console.log("checked_custom_wait_times : " + checked_custom_wait_times)
+  var wait_time_procedure = true;
+  
+  if (checked_custom_wait_times.length == 0)
+  {
+    if (root_procedures[prefix] != undefined)
+    {
+      console.log("base filtering on procedure");
+      wait_time_procedure = root_procedures[prefix] + '_';
+    }
+    else
+    {
+      console.log("use usual wait time");
+      wait_time_procedure = true;
+    }
+  }
+  else if (checked_custom_wait_times.length == 1)
+  {
+    if (checked_procedures.length == 1)
+    {
+      console.log("replace with custom wait time");
+      wait_time_procedure = checked_procedures.attr('id').substring((prefix + 'p').length);
+    }
+    else
+    {
+      console.log("no wait times - mix of custom and non custom");
+      wait_time_procedure = false;
+    }
+  }
+  else
+  {
+    console.log("no wait times - more than one custom");
+    wait_time_procedure = false;
+  }
+  
   // collect referral filters
   if ( $('#' + prefix + 'rph').prop('checked'))
   {
     current_filters.push('srph');
     referrals.push('accept referrals via phone');
   }
-  $('.' + prefix + 'c option:selected').each( function() {
-    var $this = $(this);
-    if ($this.val() != 0)
-    {
-      var text = $this.text().trim();
-      text = text.charAt(0).toLowerCase() + text.slice(1);
-                                
-      if ($this.val() == prefix + "c1_")
+  if (wait_time_procedure !== false)
+  {
+    $('#' + prefix + 'lagtime').show();
+    $('.' + prefix + 'c option:selected').each( function() {
+      var $this = $(this);
+      if ($this.val() != 0)
       {
-        referrals.push('respond to referrals by phone when office calls for appointment');
+        var text = $this.text().trim();
+        text = text.charAt(0).toLowerCase() + text.slice(1);
+                                  
+        if ($this.val() == prefix + "c1_")
+        {
+          referrals.push('respond to referrals by phone when office calls for appointment');
+        }
+        else if ($this.val() == prefix + "c2_")
+        {
+          referrals.push('respond to referrals ' + text);
+        }
+        else
+        {
+          referrals.push('respond to referrals within ' + text);
+        }
+
+        if (wait_time_procedure !== true)
+        {
+          //use custom lag time for this procedure
+          current_filters.push(prefix + "lt" + wait_time_procedure + $this.val());
+        }
+        else
+        {
+          //use global lag time
+          current_filters.push($this.val());
+        }
       }
-      else if ($this.val() == prefix + "c2_")
-      {
-        referrals.push('respond to referrals ' + text);
-      }
-      else
-      {
-        referrals.push('respond to referrals within ' + text);
-      }
-      current_filters.push($this.val());
-    }
-  });
+    });
+  }
+  else
+  {
+    $('#' + prefix + 'lagtime').hide();
+  }
   if ( $('#' + prefix + 'rpb').prop('checked'))
   {
     current_filters.push(prefix + 'rpb');
@@ -244,49 +300,10 @@ var update_table = function(prefix, entity_id, entity_name)
     }
   });
   
-  // adjust wait time based off checked custom wait time procedures
-  var checked_custom_wait_times = checked_procedures.filter('[name="1"]');
-  console.log("checked_procedures : " + checked_procedures)
-  console.log("checked_custom_wait_times : " + checked_custom_wait_times)
-  var wait_time_procedure = true;
-  
-  if (checked_custom_wait_times.length == 0)
-  {
-    if (root_procedures[prefix] != undefined)
-    {
-      console.log("base filtering on procedure");
-      wait_time_procedure = root_procedures[prefix] + '_';
-    }
-    else
-    {
-      console.log("use usual wait time");
-      wait_time_procedure = true;
-    }
-  }
-  else if (checked_custom_wait_times.length == 1)
-  {
-    if (checked_procedures.length == 1)
-    {
-      console.log("replace with custom wait time");
-      wait_time_procedure = checked_procedures.attr('id').substring((prefix + 'p').length);
-    }
-    else
-    {
-      console.log("no wait times - mix of custom and non custom");
-      wait_time_procedure = false;
-    }
-  }
-  else
-  {
-    console.log("no wait times - more than one custom");
-    wait_time_procedure = false;
-  }
-  
   //TODO: temp
   var wait_time_hash = ["","Within one week","1-2 weeks","2-4 weeks","1-2 months","2-4 months","4-6 months","6-9 months","9-12 months","12-18 months",">18 months"];
   
-  //loop over each row of the table, updating the wait time
-  $('#' + entity_id + '_table tbody tr').each(function () {
+  //loop over each row of the table, updating the wait time  $('#' + entity_id + '_table tbody tr').each(function () {
     var row = $(this)
       , row_filter = row.data('attributes');
     if (wait_time_procedure === false)
