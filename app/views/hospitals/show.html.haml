@@ -43,7 +43,7 @@
     %p.no_indent= @hospital.phone_and_fax
     
 - specialists = @hospital.specialists.reject{ |s| (!current_user_is_admin? && s.in_progress) || !s.show_in_table? }
-- clinics = @hospital.clinics_in.reject{ |c| (!current_user_is_admin? && c.in_progress) || !c.show_in_table? }
+- clinics_in = @hospital.clinics_in.reject{ |c| (!current_user_is_admin? && c.in_progress) || !c.show_in_table? }
 
 - has_specialists = specialists.length > 0
 - has_clinics_in = clinics_in.length > 0
