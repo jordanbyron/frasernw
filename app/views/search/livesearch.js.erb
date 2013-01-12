@@ -105,7 +105,7 @@ specialists.each do |specialist|
   
   entry = { 
     "n" => specialist.billing_number_padded ? specialist.name + " - MSP #" + specialist.billing_number_padded: specialist.name, 
-    "sp" => specialist.specializations.collect{ |ss| ss.specialization_id }, 
+    "sp" => specialist.specializations.collect{ |s| s.id }, 
     "c" => specialist.city_ids,
     "st" => specialist.status_class_hash,
     "id" => specialist.id,
@@ -122,7 +122,7 @@ clinics.each do |clinic|
   
   entry = { 
     "n" => clinic.name, 
-    "sp" => clinic.specializations.collect{ |cs| cs.specialization_id },
+    "sp" => clinic.specializations.collect{ |s| s.id },
     "c" => clinic.city_id,
     "st" => clinic.status_class_hash,
     "id" => clinic.id,
