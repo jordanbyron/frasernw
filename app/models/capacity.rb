@@ -13,6 +13,6 @@ class Capacity < ActiveRecord::Base
   end
 
   def lagtime
-    Specialist::WAITTIME_HASH[lagtime_mask].present? ? Specialist::WAITTIME_HASH[lagtime_mask] : ""
+    Specialist::LAGTIME_HASH[lagtime_mask].present? ? Specialist::LAGTIME_HASH[lagtime_mask] : ""
   end
 end

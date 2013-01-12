@@ -13,6 +13,6 @@ class Focus < ActiveRecord::Base
   end
 
   def lagtime
-    Clinic::WAITTIME_HASH[lagtime_mask].present? ? Clinic::WAITTIME_HASH[lagtime_mask] : ""
+    Clinic::LAGTIME_HASH[lagtime_mask].present? ? Clinic::LAGTIME_HASH[lagtime_mask] : ""
   end
 end
