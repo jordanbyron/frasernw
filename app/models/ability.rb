@@ -23,7 +23,10 @@ class Ability
       can [:index, :faq, :terms_and_conditions], Front
       
       #can show pages
-      can :show, [Specialization, Procedure, Specialist, Clinic, Hospital, Language, ScCategory, ScItem]
+      can :show, [Specialization, Procedure, Specialist, Clinic] do |entity|
+        !entity.in_progress
+      end
+      can :show, [Hospital, Language, ScCategory, ScItem]
       
       #can print patient information
       can :print_patient_information, [Specialist, Clinic]

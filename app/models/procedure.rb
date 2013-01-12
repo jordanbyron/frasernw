@@ -31,6 +31,10 @@ class Procedure < ActiveRecord::Base
     end
   end
   
+  def in_progress
+    (specializations_including_in_progress.length > 0) && (specializations.length == 0)
+  end
+  
   def all_specialists
     #look at this procedure as well as its children to find any specialists
     results = []

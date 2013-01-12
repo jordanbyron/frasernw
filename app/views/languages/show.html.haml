@@ -29,9 +29,12 @@
 .content-wrapper
 
   %h2= @language.name
+  
+- specialists = @language.specialists.reject{ |s| (!current_user_is_admin? && s.in_progress) || !s.show_in_table? }
+- clinics = @language.clinics.reject{ |c| (!current_user_is_admin? && c.in_progress) || !c.show_in_table? }
 
-- has_specialists = @language.specialists.length > 0
-- has_clinics = @language.clinics.length > 0
+- has_specialists = specialists.length > 0
+- has_clinics = clinics.length > 0
 
 - specialist_tab_class = has_specialists ? "active" : ""
 - clinic_tab_class = has_specialists ? "" : "active"
@@ -97,8 +100,7 @@
                         %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Wait Time
                         %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
-                      - (@language.specialists).each do |specialist|
-                        - next if not specialist.show_in_table?
+                      - specialists.each do |specialist|
                         %tr{:class => specialist.disabled_in_table? && "disabled", :id => "s#{specialist.id}"}
                           %td.sp
                             %a.ajax{"href" => specialist_path(specialist)}= specialist.name
@@ -221,8 +223,7 @@
                         %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Wait Time
                         %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
-                      - (@language.clinics).each do |clinic|
-                        - next if not clinic.show_in_table?
+                      - clinics.each do |clinic|
                         %tr{:class => clinic.disabled_in_table? && "disabled", :id => "c#{clinic.id}"}
                           %td.sp
                             %a.ajax{"href" => clinic_path(clinic)}= clinic.name

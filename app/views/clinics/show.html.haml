@@ -1,13 +1,13 @@
 - title "#{@clinic.name}"
 
-- specialization = @clinic.specializations.first || Specialization.not_in_progress.first
+- specialization = (current_user_is_admin? ? @clinic.specializations_including_in_progress : @clinic.specializations).first || Specialization.not_in_progress.first
   
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       All Specialties
       %b.caret
-  %li.subsequent= link_to specialization.name, specialization, :class => "ajax"
+  %li.subsequent{:class => specialization.in_progress && "in-progress"}= link_to specialization.name, specialization, :class => "ajax"
   
 - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @clinic.id, "Clinic").present? ? "icon-red" : "icon-text") : "icon-text"
   

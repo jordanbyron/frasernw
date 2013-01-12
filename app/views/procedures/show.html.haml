@@ -1,7 +1,7 @@
 - title "#{@procedure.full_name}"
 
 - procedure_specialization = @procedure.procedure_specializations.first || ProcedureSpecialization.first
-- procedure_specializations = @procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress }
+- procedure_specializations = @procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress && !current_user_is_admin? }
     
 %ul#specialties-menu
   %li.dropdown
@@ -60,9 +60,12 @@
         $('#specialist_table').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
         $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0]]});
       });
+      
+- specialists = @procedure.all_specialists.reject{ |s| (!current_user_is_admin? && s.in_progress) || !s.show_in_table? }
+- clinics = @procedure.all_clinics.reject{ |c| (!current_user_is_admin? && c.in_progress) || !c.show_in_table? }
 
-- has_specialists = @procedure.all_specialists.length > 0
-- has_clinics = @procedure.all_clinics.length > 0
+- has_specialists = specialists.length > 0
+- has_clinics = clinics.length > 0
 
 - specialist_tab_class = has_specialists ? "active" : ""
 - clinic_tab_class = has_specialists ? "" : "active"
@@ -134,9 +137,8 @@
                         %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
                         %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
-                      - (@procedure.all_specialists).each do |specialist|
-                        - next if not specialist.show_in_table?
-                        %tr{:class => specialist.disabled_in_table? && "disabled", :id => "s#{specialist.id}"}
+                      - specialists.each do |specialist|
+                        %tr{:class => specialist.disabled_in_table? && "disabled", :class => specialist.in_progress && "in-progress", :id => "s#{specialist.id}"}
                           %td.sp
                             %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                           - if multiple_specialties
@@ -302,9 +304,8 @@
                         %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
                         %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
-                      - (@procedure.all_clinics).each do |clinic|
-                        - next if not clinic.show_in_table?
-                        %tr{:class => clinic.disabled_in_table? && "disabled", :id => "c#{clinic.id}"}
+                      - clinics.each do |clinic|
+                        %tr{:class => clinic.disabled_in_table? && "disabled", :class => clinic.in_progress && "in-progress", :id => "c#{clinic.id}"}
                           %td.sp
                             %a.ajax{"href" => clinic_path(clinic)}= clinic.name
                           - if multiple_specialties

@@ -1,13 +1,13 @@
 - title "#{@specialist.name}"
 
-- specialization = @specialist.specializations.first || Specialization.not_in_progress.first
+- specialization = (current_user_is_admin? ? @specialist.specializations_including_in_progress : @specialist.specializations).first || Specialization.not_in_progress.first
   
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       All Specialties
       %b.caret
-  %li.subsequent= link_to specialization.name, specialization, :class => "ajax"
+  %li.subsequent{:class => specialization.in_progress && "in-progress"}= link_to specialization.name, specialization, :class => "ajax"
   
 - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @specialist.id, "Specialist").present? ? "icon-red" : "icon-text") : "icon-text"
   
@@ -315,7 +315,8 @@
                   %strong Cancellation policy:
                   = @specialist.cancellation_policy.end_with_period.convert_newlines_to_br
             
-            - if @specialist.hospitals.present? || @specialist.clinics.present?
+            - clinics = @specialist.clinics.reject{ |c| !current_user_is_admin? && c.in_progress }
+            - if @specialist.hospitals.present? || clinics.present?
               %h6 Associations
               
               - if @specialist.hospitals.present?
@@ -323,10 +324,10 @@
                   %strong Hospital privileges:
                   != @specialist.hospitals.map{ |hospital| "<a href='#{hospital_path(hospital)}' class='ajax')\">#{hospital.name}</a>" }.to_sentence 
 
-              - if @specialist.clinics.present?
+              - if clinics.present?
                 %p
                   %strong Clinic associations:
-                  != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'>#{clinic.name}</a>" }.to_sentence
+                  != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='#{clinic.in_progress ? 'in-progress ajax' : 'ajax'}'>#{clinic.name}</a>" }.to_sentence
                   
         - if show_details || show_areas_of_practice
         
