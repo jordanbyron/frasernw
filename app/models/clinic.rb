@@ -58,6 +58,10 @@ class Clinic < ActiveRecord::Base
   
   default_scope order('clinics.name')
   
+  def in_progress
+    (specializations_including_in_progress.length > 0) && (specializations.length == 0)
+  end
+  
   CATEGORIZATION_HASH = {
     1 => "Responded to survey",
     2 => "Not responded to survey",

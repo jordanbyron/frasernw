@@ -68,6 +68,10 @@ class Specialist < ActiveRecord::Base
       :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
     }
   
+  def in_progress
+    (specializations_including_in_progress.length > 0) && (specializations.length == 0)
+  end
+  
   before_save :destroy_photo?
   
   def self.in_cities(c)

@@ -42,8 +42,8 @@
   - if (@hospital.phone_and_fax.present?)
     %p.no_indent= @hospital.phone_and_fax
     
-- specialists = @hospital.specialists
-- clinics_in = @hospital.clinics_in
+- specialists = @hospital.specialists.reject{ |s| (!current_user_is_admin? && s.in_progress) || !s.show_in_table? }
+- clinics_in = @hospital.clinics_in.reject{ |c| (!current_user_is_admin? && c.in_progress) || !c.show_in_table? }
 
 - has_specialists = specialists.length > 0
 - has_clinics_in = clinics_in.length > 0
@@ -117,7 +117,6 @@
                         %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
                       - specialists.each do |specialist|
-                        - next if not specialist.show_in_table?
                         %tr{:class => specialist.disabled_in_table? && "disabled", :id => "s#{specialist.id}"}
                           %td.sp
                             %a.ajax{"href" => specialist_path(specialist)}= specialist.name
@@ -237,7 +236,6 @@
                         %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
                       - clinics_in.each do |clinic|
-                        - next if not clinic.show_in_table?
                         %tr{:class => clinic.disabled_in_table? && "disabled", :id => "c#{clinic.id}"}
                           %td.sp
                             %a.ajax{"href" => clinic_path(clinic)}= clinic.name
