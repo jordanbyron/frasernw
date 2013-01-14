@@ -80,7 +80,7 @@ function add_item(category_id, item_id, title, full_title, url, markdown, body, 
     //add it to the table
     var shared_care_icon = shared_care ? "<i class=\"icon-blue icon-star\"></i>" : ""
     var email = can_email ? "<a href=\"/content_items/" + item_id + "/email\" class=\"ajax\" title=\"E-mail to patient\"><i class=\"icon-envelope-alt icon-blue\"></i></a>" : ""
-    var row_html = $("<tr id='" + entry_id + "'><td class=\"title\">" new_tag + "" + shared_care_icon + "<a href=\"" + url + "\" class=\"ajax\">" + title + "</a></td><td class=\"subcategory\">" + subcategory + "</td><td class=\"favorite\">" + favorite + "</td><td class=\"email\">" + email + "</td><td class=\"fb\">" + feedback + "</td></tr>");
+    var row_html = $("<tr id='" + entry_id + "'><td class=\"title\">" + new_tag + "" + shared_care_icon + "<a href=\"" + url + "\" class=\"ajax\">" + title + "</a></td><td class=\"subcategory\">" + subcategory + "</td><td class=\"favorite\">" + favorite + "</td><td class=\"email\">" + email + "</td><td class=\"fb\">" + feedback + "</td></tr>");
     
     if (typeof $.fn.ajaxify !== 'function')
     {
