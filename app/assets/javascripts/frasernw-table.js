@@ -65,12 +65,19 @@ function add_entities_from_city(prefix, entity_name, entity_data, city_id, proce
     var status_class = filtering.global_status_classes[entity.status_class];
     var cities = entity.cities.map(function(city_id) { return filtering.global_cities[city_id] }).to_sentence();
     var other = (entity_name == 'specialist') && (filtering.current_specialties.intersect(entity.specialties).length == 0);
-    add_row(entity_name, entity_id, '/' + entity_name + 's/' + entity_id, name, status_class, status_sort, wait_time, cities, specialties, attributes, other, five_columns);
+    var in_progress = entity.in_progress === true
+    var is_new = entity.is_new === true
+    add_row(entity_name, entity_id, '/' + entity_name + 's/' + entity_id, name, status_class, status_sort, wait_time, cities, specialties, attributes, other, in_progress, is_new, five_columns);
   }
 }
 
-function add_row( entity_type, entity_id, url, name, status_class, status_sort, wait_time, city, specialties, attributes, other, five_columns )
+function add_row( entity_type, entity_id, url, name, status_class, status_sort, wait_time, city, specialties, attributes, other, in_progress, is_new, five_columns )
 {
+  if (in_progress && !current_user_is_admin())
+  {
+    return;
+  }
+  
   var row_id = entity_type + "_" + entity_id;
   if ($("#" + row_id).length > 0)
   {
@@ -78,11 +85,12 @@ function add_row( entity_type, entity_id, url, name, status_class, status_sort, 
     return;
   }
   
-  var row_class = other ? "class='other'" : "";
+  var row_class = other ? (in_progress ? "class='other in-progress'" : "class='other'") : (in_progress ? "class='in-progress'" : "");
   var row_specialties = other ? ("(" + specialties + ")") : "";
   var fifth_column = five_columns ? "<td class='s'>" + specialties + "</td>" : "";
+  var new_tag = is_new ? "<span class='new'>new</span> " : ""
   
-  var row_html = $("<tr id='" + row_id + "' " + row_class + "><td class=\"sp\"><a href=\"" + url + "\" class=\"ajax\">" + name + "</a> " + row_specialties + "</td>" + fifth_column + "<td class=\"st\"><i class=\"" + status_class + "\"></i><div class=\"status\">" + status_sort + "</div></td><td class=\"wt\">" + wait_time + "</td><td class=\"ct\">" + city + "</td></tr>");
+  var row_html = $("<tr id='" + row_id + "' " + row_class + "><td class=\"sp\">" + new_tag + "<a href=\"" + url + "\" class=\"ajax\">" + name + "</a> " + row_specialties + "</td>" + fifth_column + "<td class=\"st\"><i class=\"" + status_class + "\"></i><div class=\"status\">" + status_sort + "</div></td><td class=\"wt\">" + wait_time + "</td><td class=\"ct\">" + city + "</td></tr>");
   
   if (typeof $.fn.ajaxify !== 'function')
   {

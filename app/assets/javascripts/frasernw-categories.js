@@ -41,8 +41,9 @@ function add_items_from_division(category_data, category_id, inline, procedure_f
     var body = inline ? item.body : "";
     var can_email = item.can_email;
     var shared_care = item.shared_care;
+    var is_new = item.is_new;
     var attributes = item.attributes;
-    add_item(category_id, item_id, title, full_title, url, markdown, body, subcategory, can_email, shared_care, attributes, inline);
+    add_item(category_id, item_id, title, full_title, url, markdown, body, subcategory, can_email, shared_care, is_new, attributes, inline);
   }
 }
 
@@ -57,12 +58,13 @@ function add_item(category_id, item_id, title, full_title, url, markdown, body, 
   
   var favorite = "<a href=\"javascript:void(0)\" onclick=\"favorite('content_items'," + item_id + ",'" + title + "')\" title=\"Favourite / un-favourite\"><i class=\"icon-text icon-heart\" id=\"user_favorite_content_items_" + item_id + "\"></i></a>"
   var feedback = "<a href=\"javascript:void(0)\" onclick=\"show_feedback('" + title + "'," + item_id + ")\" title=\"Provide feedback on content\"><i class=\"icon-bullhorn\"></i></a>"
+  var new_tag = is_new ? "<span class='new'>new</span> " : ""
   
   if (inline)
   {
     //add it as an inline entry
     var shared_care_icon = shared_care ? "<i class=\"icon-red icon-star\"></i>" : ""
-    var entry_html = "<div class=\"scm\"><h1>" + shared_care_icon + " " + full_title + " " + favorite + " " + feedback + "</h1>";
+    var entry_html = "<div class=\"scm\">" + new_tag + "<h1>" + shared_care_icon + " " + full_title + " " + favorite + " " + feedback + "</h1>";
     if (markdown)
     {
       entry_html += body;
@@ -78,7 +80,7 @@ function add_item(category_id, item_id, title, full_title, url, markdown, body, 
     //add it to the table
     var shared_care_icon = shared_care ? "<i class=\"icon-blue icon-star\"></i>" : ""
     var email = can_email ? "<a href=\"/content_items/" + item_id + "/email\" class=\"ajax\" title=\"E-mail to patient\"><i class=\"icon-envelope-alt icon-blue\"></i></a>" : ""
-    var row_html = $("<tr id='" + entry_id + "'><td class=\"title\">" + shared_care_icon + "<a href=\"" + url + "\" class=\"ajax\">" + title + "</a></td><td class=\"subcategory\">" + subcategory + "</td><td class=\"favorite\">" + favorite + "</td><td class=\"email\">" + email + "</td><td class=\"fb\">" + feedback + "</td></tr>");
+    var row_html = $("<tr id='" + entry_id + "'><td class=\"title\">" new_tag + "" + shared_care_icon + "<a href=\"" + url + "\" class=\"ajax\">" + title + "</a></td><td class=\"subcategory\">" + subcategory + "</td><td class=\"favorite\">" + favorite + "</td><td class=\"email\">" + email + "</td><td class=\"fb\">" + feedback + "</td></tr>");
     
     if (typeof $.fn.ajaxify !== 'function')
     {

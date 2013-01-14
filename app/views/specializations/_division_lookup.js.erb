@@ -32,6 +32,7 @@ filtering.current_subcategories["<%= division.id %>"] = {};
           else
             category_data[item.id]['subcategory'] = "#{item.sc_category.id}"
           end
+          category_data[item.id]['is_new'] = item.new?
           category_data[item.id]['attributes'] = sc_item_filtering_attributes(item).join(' ')
           current_subcategories += sc_item_filtering_attributes(item)
         end

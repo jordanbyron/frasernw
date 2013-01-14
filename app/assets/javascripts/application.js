@@ -13,6 +13,11 @@
 //= require ajaxify-html5.js
 //= require_tree .
 
+function current_user_is_admin()
+{
+  return ($('body').data('GLOBAL_USER_TYPE') === 0);
+}
+
 Array.prototype.to_sentence = function() {
   return this.join(", ").replace(/,\s([^,]+)$/, ' and $1')
 }
