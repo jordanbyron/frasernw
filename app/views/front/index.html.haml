@@ -121,7 +121,7 @@
               %span.featured= "Featured:"
               - category.featured_sc_items.sort{|a,b| b.created_at <=> a.created_at }.each do |featured_sc_item|
                 %li.indent
-                  - if featured_sc_item.created_at > 2.week.ago.utc
+                  - if featured_sc_item.new?
                     %span.new new
                   - if featured_sc_item.shared_care?
                     %i.icon-blue.icon-star

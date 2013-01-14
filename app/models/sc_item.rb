@@ -200,4 +200,8 @@ class ScItem < ActiveRecord::Base
   def shared_care?
     shared_care
   end
+
+  def new?
+    created_at > 3.week.ago.utc
+  end
 end
