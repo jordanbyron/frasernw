@@ -84,8 +84,8 @@
                   %li.dropdown.admin
                     %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
                       Admin
-                      - user_review_item_count = ReviewItem.active.reject{ |ri| !current_user.owns(ri.item.specializations) }.count
-                      - user_feedback_item_count = FeedbackItem.active.reject{ |fi| !current_user.owns(fi.item.specializations) }.count
+                      - user_review_item_count = ReviewItem.active.reject{ |ri| !current_user.owns(ri.item.specializations_including_in_progress) }.count
+                      - user_feedback_item_count = FeedbackItem.active.reject{ |fi| !current_user.owns(fi.item.specializations_including_in_progress) }.count
                       - total_review_item_count = ReviewItem.active.count
                       - total_feedback_item_count = FeedbackItem.active.count
                       -  if total_review_item_count + total_feedback_item_count > 0

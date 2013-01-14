@@ -173,10 +173,10 @@ Language.all.each do |language|
 end
 
 ScCategory.all.each do |category|
-  category.sc_items.searchable.each do |item|
+  category.sc_items.searchable.reject{ |i| i.in_progress }.each do |item|
     entry = { 
       "n" => item.title, 
-      "sp" => item.specializations.reject{ |s| s.in_progress }.collect{ |s| s.id },
+      "sp" => item.specializations.map{ |s| s.id },
       "id" => item.id,
       "go" => order_map[category.name] }
     search_data << entry

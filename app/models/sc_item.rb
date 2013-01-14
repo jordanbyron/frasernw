@@ -4,7 +4,8 @@ class ScItem < ActiveRecord::Base
   belongs_to  :sc_category
   
   has_many    :sc_item_specializations, :dependent => :destroy
-  has_many    :specializations, :through => :sc_item_specializations
+  has_many    :specializations, :through => :sc_item_specializations, :conditions => { "in_progress" => false }
+  has_many    :specializations_including_in_progress, :through => :sc_item_specializations, :source => :specialization, :class_name => "Specialization"
 
   has_many    :sc_item_specialization_procedure_specializations, :through => :sc_item_specializations
   has_many    :procedure_specializations, :through => :sc_item_specialization_procedure_specializations
@@ -23,6 +24,10 @@ class ScItem < ActiveRecord::Base
   validates_presence_of :title, :on => :create, :message => "can't be blank"
   
   default_scope order('sc_items.title')
+  
+  def in_progress
+    (specializations_including_in_progress.length > 0) && (specializations.length == 0)
+  end
   
   def self.for_specialization(specialization)
     joins(:sc_item_specializations).where("sc_item_specializations.specialization_id = ?", specialization.id)
