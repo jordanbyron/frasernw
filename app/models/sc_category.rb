@@ -32,7 +32,7 @@ class ScCategory < ActiveRecord::Base
   end
   
   def self.specialty
-    where("sc_categories.display_mask IN (?) AND sc_categories.ancestry is null", [1,3,4])
+    where("sc_categories.display_mask IN (?) AND sc_categories.ancestry is null", [1,3,4,5])
   end
   
   def self.searchable

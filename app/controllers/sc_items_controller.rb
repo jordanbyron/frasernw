@@ -42,7 +42,7 @@ class ScItemsController < ApplicationController
   
   def edit
     @sc_item = ScItem.find(params[:id])
-    @has_specializations = @sc_item.specializations.map{ |s| s.id }
+    @has_specializations = @sc_item.specializations_including_in_progress.map{ |s| s.id }
     @has_procedure_specializations = @sc_item.procedure_specializations.map{ |ps| ps.id }
     @hierarchy = ancestry_options_limited(ScCategory.unscoped.arrange(:order => 'name'), nil)
     render :layout => 'ajax' if request.headers['X-PJAX']
