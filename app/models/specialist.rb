@@ -485,6 +485,10 @@ class Specialist < ActiveRecord::Base
       return self.saved_token
     end
   end
+  
+  def new?
+    opened_this_year? && (created_at > 3.week.ago.utc)
+  end
 
 private
   

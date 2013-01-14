@@ -366,6 +366,10 @@ class Clinic < ActiveRecord::Base
       return output.punctuate
     end
   end
+  
+  def new?
+    opened_this_year? && (created_at > 3.week.ago.utc)
+  end
 
   def token
     if self.saved_token

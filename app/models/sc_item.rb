@@ -166,4 +166,8 @@ joins([:sc_item_specializations, :sc_item_specialization_procedure_specializatio
   def shared_care?
     shared_care
   end
+
+  def new?
+    created_at > 3.week.ago.utc
+  end
 end

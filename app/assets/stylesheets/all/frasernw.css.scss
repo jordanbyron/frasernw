@@ -381,7 +381,7 @@ body.loading #email
   {
     margin-top: 1em;
   }
-  
+
   ul.no-marker
   {
     list-style-type: none;
@@ -396,7 +396,15 @@ body.loading #email
   {
     list-style-position: outside;
   }
-  
+      
+  .new
+  {
+    text-transform: uppercase;
+    font-weight: bold;
+    color: $FNW_RED;
+    font-size: 11px;
+  }
+
   td.admin.btn-group
   {
     min-width: 120px;
@@ -1024,14 +1032,6 @@ body.loading #email
       ul + h3
       {
         margin-top: 18px;
-      }
-      
-      .new
-      {
-        text-transform: uppercase;
-        font-weight: bold;
-        color: $FNW_RED;
-        font-size: 11px;
       }
       
       ul
