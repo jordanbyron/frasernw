@@ -43,8 +43,8 @@
     $(document).ready(function() { init_tables(-1) });
     var should_show_others = false;
 
-- specialist_tab_class = has_specialists ? "active" : ""
-- clinic_tab_class = has_specialists ? "" : "active"
+- specialist_tab_class = (has_specialists && !(@specialization.open_to_clinic_tab? && has_clinics)) ? "active" : ""
+- clinic_tab_class = specialist_tab_class == "" ? "active" : ""
 
 -# TABS ARE USER SPECIFIC, BASED OFF CONTENT (OR LACK THEREOF)
 

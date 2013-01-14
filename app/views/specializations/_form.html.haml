@@ -5,6 +5,7 @@
   = f.input :name
   = f.input :member_name
   = f.input :in_progress
+  = f.input :open_to_clinic_tab
   
   - Division.all.each_with_index do |division, index|
     - possible_admins = division.users.admin + User.super_admin

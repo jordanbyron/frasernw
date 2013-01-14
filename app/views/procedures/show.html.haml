@@ -89,8 +89,8 @@
     init_category("#{sc_category.id}", #{sc_category.inline?}, #{@procedure.id});
   update_favorites(); });
 
-- specialist_tab_class = has_specialists ? "active" : ""
-- clinic_tab_class = has_specialists ? "" : "active"
+- specialist_tab_class = (has_specialists && !(procedure_specialization.specialization.open_to_clinic_tab? && has_clinics)) ? "active" : ""
+- clinic_tab_class = specialist_tab_class == "" ? "active" : ""
 
 .tabbable
   %ul#content_tabs.nav.nav-tabs

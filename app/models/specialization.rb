@@ -1,5 +1,5 @@
 class Specialization < ActiveRecord::Base
-  attr_accessible :name, :member_name, :in_progress, :specialization_owners_attributes
+  attr_accessible :name, :member_name, :in_progress, :specialization_owners_attributes, :open_to_clinic
   has_paper_trail :ignore => :saved_token
   
   has_many :specialist_specializations, :dependent => :destroy
