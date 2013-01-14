@@ -18,14 +18,13 @@
 
   specialists = Specialist.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:clinic_in => {:location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}}]}})
 
-  specialists.each do |specialist|
+  specialists.reject{ |s| s.in_progress }.each do |specialist|
 
     #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
-    next if specialist.specialist_specializations.reject{ |ss| ss.specialization.blank? or ss.specialization.in_progress }.length == 0
     
     entry = { 
       "n" => specialist.billing_number_padded ? specialist.name + " - MSP #" + specialist.billing_number_padded: specialist.name, 
-      "sp" => specialist.specialist_specializations.reject{ |ss| ss.specialization.blank? or ss.specialization.in_progress }.collect{ |ss| ss.specialization_id }, 
+      "sp" => specialist.specializations.map{ |s| s.id },
       "c" => specialist.cities.map{ |city| city.id },
       "st" => specialist.status_class_hash,
       "id" => specialist.id,
@@ -35,14 +34,13 @@
 
   clinics = Clinic.includes(:location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}])
 
-  clinics.each do |clinic|
+  clinics.reject{ |c| c.in_progress }.each do |clinic|
 
     #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
-    next if clinic.clinic_specializations.reject{ |cs| cs.specialization.in_progress }.length == 0
     
     entry = { 
       "n" => clinic.name, 
-      "sp" => clinic.clinic_specializations.reject{ |cs| cs.specialization.in_progress }.collect{ |cs| cs.specialization_id },
+      "sp" => clinic.specializations.map{ |c| c.id },
       "c" => clinic.city.present? ? clinic.city.id : "",
       "st" => clinic.status_class_hash,
       "id" => clinic.id,
