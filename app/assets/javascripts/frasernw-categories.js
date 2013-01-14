@@ -47,7 +47,7 @@ function add_items_from_division(category_data, category_id, inline, procedure_f
   }
 }
 
-function add_item(category_id, item_id, title, full_title, url, markdown, body, subcategory, can_email, shared_care, attributes, inline)
+function add_item(category_id, item_id, title, full_title, url, markdown, body, subcategory, can_email, shared_care, is_new, attributes, inline)
 {
   var entry_id = category_id + "_" + item_id;
   if ($("#" + entry_id).length > 0)
