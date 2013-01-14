@@ -67,7 +67,7 @@
 - has_specialists = specialists.length > 0
 - has_clinics = clinics.length > 0
 
-- specialist_tab_class = (has_specialists && !(specialization.open_to_clinic_tab? && has_clinics)) ? "active" : ""
+- specialist_tab_class = (has_specialists && !(procedure_specialization.specialization.open_to_clinic_tab? && has_clinics)) ? "active" : ""
 - clinic_tab_class = specialist_tab_class == "" ? "active" : ""
 
 .tabbable
