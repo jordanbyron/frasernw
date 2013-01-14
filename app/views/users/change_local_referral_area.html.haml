@@ -10,7 +10,7 @@
   %p.no_indent.space
     You can your change your local referral area, if your prefer to permananetly receive results from a different cities. You can change this for all specialties, or per specialty.
 
-  = simple_form_for @user, :url => {:controller => "users", :action => "update_local_referral_area"}, :html => { :class => "form-horizontal" } do |f|
+  = simple_form_for @user, :url => {:controller => "users", :action => "update_local_referral_area"}, :html => { :class => "form-horizontal ajax" } do |f|
   
     .row
       .span2
