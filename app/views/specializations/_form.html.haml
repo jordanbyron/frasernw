@@ -5,6 +5,7 @@
   = f.input :name
   = f.input :member_name
   = f.input :in_progress
+  = f.input :open_to_clinic_tab
   = f.simple_fields_for :specialization_owner do |so|
     = so.input :owner_id, :as => :select, :collection => User.all.reject{ |u| !u.admin? }
   
