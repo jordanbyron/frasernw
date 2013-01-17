@@ -23,8 +23,8 @@ class User < ActiveRecord::Base
   has_many :controlled_clinics, :through => :user_controls_clinics, :source => :clinic, :class_name => "Clinic"
   accepts_nested_attributes_for :user_controls_clinics, :reject_if => lambda { |ucc| ucc[:clinic_id].blank? }, :allow_destroy => true
 
-  has_many :specialization_owners, :dependent => :destroy, :foreign_key => "owner_id"
-  has_many :specializations_owned, :through => :specialization_owners, :class_name => "Specialization", :source => :specialization
+  has_many :specialization_options, :dependent => :destroy, :foreign_key => "owner_id"
+  has_many :specializations_owned, :through => :specialization_options, :class_name => "Specialization", :source => :specialization
   
   has_many :user_cities, :dependent => :destroy
   has_many :user_city_specializations, :through => :user_cities
@@ -61,6 +61,11 @@ class User < ActiveRecord::Base
 
   def self.super_admin
     where("users.role = 'super'")
+  end
+
+  def self.in_divisions(divisions)
+    division_ids = divisions.map{ |d| d.id }
+    joins(:division_users).where('"division_users"."division_id" IN (?)', division_ids)
   end
 
   def deliver_password_reset_instructions!
@@ -129,7 +134,7 @@ class User < ActiveRecord::Base
   def owns(specializations)
     does_own = false
     specializations.each do |specialization|
-      does_own |= SpecializationOwner.find_by_specialization_id_and_owner_id(specialization.id, self.id).present?
+      does_own |= SpecializationOption.find_by_specialization_id_and_owner_id(specialization.id, self.id).present?
     end
     does_own
   end

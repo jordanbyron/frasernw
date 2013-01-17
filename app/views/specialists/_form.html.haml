@@ -226,7 +226,7 @@
     :plain
       $(document).ready(function() 
       {
-        var specialty_checkbox_id = "#specialist_specializations_including_in_progress_ids_#{@specialization.id}";
+        var specialty_checkbox_id = "#specialist_specialization_ids_#{@specialization.id}";
         $(specialty_checkbox_id).prop("checked", true);
       });
       
@@ -253,7 +253,7 @@
   .no-print
     = f.input :categorization_mask, as: :select, collection: Specialist::CATEGORIZATION_HASH, label_method: :last, value_method: :first, :include_blank => false
   .no-print
-    = f.association :specializations_including_in_progress, as: :check_boxes, :hint => "If you are adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
+    = f.association :specializations, as: :check_boxes, :hint => "If you are adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
 
   #section_contact
   

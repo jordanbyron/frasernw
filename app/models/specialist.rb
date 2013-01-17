@@ -1,13 +1,12 @@
 class Specialist < ActiveRecord::Base
   include ApplicationHelper
   
-  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :categorization_mask, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_clinic_id, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :patient_instructions, :cancellation_policy, :hospital_clinic_details, :interpreter_available, :photo, :photo_delete, :address_update, :hospital_ids, :specializations_including_in_progress_ids, :capacities_attributes, :language_ids, :user_controls_specialist_offices_attributes, :specialist_offices_attributes, :admin_notes, :referral_forms_attributes
+  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :categorization_mask, :billing_number, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_clinic_id, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :patient_instructions, :cancellation_policy, :hospital_clinic_details, :interpreter_available, :photo, :photo_delete, :address_update, :hospital_ids, :specialization_ids, :capacities_attributes, :language_ids, :user_controls_specialist_offices_attributes, :specialist_offices_attributes, :admin_notes, :referral_forms_attributes
   has_paper_trail ignore: [:saved_token, :review_item]
   
   # specialists can have multiple specializations
   has_many :specialist_specializations, :dependent => :destroy
-  has_many :specializations, :through => :specialist_specializations, :conditions => { "in_progress" => false }
-  has_many :specializations_including_in_progress, :through => :specialist_specializations, :source => :specialization, :class_name => "Specialization"
+  has_many :specializations, :through => :specialist_specializations
 
   # specialists have the capacity to perform procedures
   has_many   :capacities, :dependent => :destroy
@@ -68,8 +67,14 @@ class Specialist < ActiveRecord::Base
       :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
     }
   
-  def in_progress
-    (specializations_including_in_progress.length > 0) && (specializations.length == 0)
+  def self.not_in_progress_for_divisions(divisions)
+    division_ids = divisions.map{ |division| division.id }
+    joins('INNER JOIN "specialist_specializations" ON "specialists"."id" = "specialist_specializations"."specialist_id" INNER JOIN "specialization_options" ON "specialization_options"."specialization_id" = "specialist_specializations"."specialization_id"').where('"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)', division_ids, false)
+  end
+
+  def in_progress_for_divisions(divisions)
+    specialization_options = specializations.map{ |s| s.specialization_options.for_divisions(divisions) }.flatten
+    (specialization_options.length > 0) && (specialization_options.reject{ |so| so.in_progress }.length == 0)
   end
   
   before_save :destroy_photo?
@@ -147,24 +152,19 @@ class Specialist < ActiveRecord::Base
       #interesect the passed in divisions with the divisions the specialist is in, to find a match
       intersecting_divisions = input_divisions & divisions
       if intersecting_divisions.present?
-        specialization_owners = []
-        specializations.each{ |specialization| specialization_owners << specialization.specialization_owners.for_division(intersecting_divisions.first) }
-        specialization_owners.flatten!
-        if specialization_owners.first.present? && specialization_owners.first.owner.present?
-          return specialization_owners.first.owner
+        options = []
+        specializations.each{ |specialization| options << specialization.specialization_options.for_divisions(intersecting_divisions) }
+        options.flatten.each do |so|
+          return so.owner if so.owner.present?
         end
       end
     end
     
     #We either didn't pass in a division, or the interesection was blank with the specialist's actual divisions.
     #So just return the owner for the specialists' division
-    divisions.each do |division|
-      specializations.each do |specialization|
-        specialization.specialization_owners.for_division(division).each do |specialization_owner|
-          if specialization_owner.owner.present?
-            return specialization_owner.owner
-          end
-        end
+    specializations.each do |specialization|
+      specialization.specialization_options.for_divisions(divisions).each do |so|
+        return so.owner if so.owner.present?
       end
     end
     

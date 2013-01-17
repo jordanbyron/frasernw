@@ -1,13 +1,13 @@
 - title "#{@sc_item.title}"
 
-- specialization = (current_user_is_admin? ? @sc_item.specializations_including_in_progress : @sc_item.specializations).first || Specialization.not_in_progress.first
+- specialization = (current_user_is_admin? ? @sc_item.specializations : @sc_item.specializations.not_in_progress_for_divisions(current_user_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
     
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       All Specialties
       %b.caret
-  %li.subsequent{:class => specialization.in_progress && "in-progress"}= link_to specialization.name, specialization, :class => "ajax"
+  %li.subsequent{:class => specialization.fully_in_progress_for_divisions(current_user_divisions) && "in-progress"}= specialization.name
   
 - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @sc_item.id, "ScItem").present? ? "icon-red" : "icon-text") : "icon-text"
   
@@ -19,7 +19,7 @@
   
 #specialties-dropdown-menu
   .inner
-    - specializations = Specialization.all.reject{ |s| s.in_progress && !current_user_is_admin? }
+    - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions)
     - first = specializations[0, (specializations.length / 4.0).ceil]
     - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
     - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
@@ -29,7 +29,7 @@
       %ul
         - list.each do |specialization|
           %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
+            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}= specialization.name
 
 - has_specialists = specialization.specialists.length > 0
 - has_clinics = specialization.clinics.length > 0

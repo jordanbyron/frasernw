@@ -14,7 +14,7 @@
   
 #specialties-dropdown-menu
   .inner
-    - specializations = Specialization.all.reject{ |s| s.in_progress && !current_user_is_admin? }
+    - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions)
     - first = specializations[0, (specializations.length / 4.0).ceil]
     - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
     - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
@@ -24,7 +24,7 @@
       %ul
         - list.each do |specialization|
           %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
+            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}= specialization.name
 
 .content-wrapper
 
@@ -39,7 +39,7 @@
         
   - if @sc_category.inline?
 
-    - @sc_items.reject{ |i| i.in_progress }.sort{ |a,b| a.sc_category.sort_order <=> a.sc_category.sort_order }.each do |sc_item|
+    - @sc_items.reject{ |i| i.in_progress_for_divisions(current_user_divisions) }.sort{ |a,b| a.sc_category.sort_order <=> a.sc_category.sort_order }.each do |sc_item|
       .scm
         %h1
           - if sc_item.new?
@@ -88,7 +88,7 @@
                 %th.email
                 %th.fb
             %tbody
-              - @sc_items.reject{ |i| i.in_progress }.each do |sc_item|
+              - @sc_items.reject{ |i| i.in_progress_for_divisions(current_user_divisions) }.each do |sc_item|
                 %tr{:id => "i#{sc_item.id}"}
                   %td.title
                     - if sc_item.new?

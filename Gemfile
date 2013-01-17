@@ -67,6 +67,8 @@ group :development, :test do
   gem 'guard-spork'
   gem 'heroku'
   gem 'taps'
+  gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
+  gem 'rb-fsevent', '~> 0.9.1'
 end
 
 # gem "mocha", :group => :test

@@ -24,7 +24,7 @@
           %li= link_to d.name, d, :class => 'ajax'
     
   - @user.divisions.each do |division|
-    - specialization_owners = @user.specialization_owners.for_division(division).reject{ |so| so.specialization.blank? }
+    - specialization_owners = @user.specialization_owners.for_divisions([division]).reject{ |so| so.specialization.blank? }
     - if @user.admin? && specialization_owners.present?
       %p.no_indent.space 
         %strong Specializations owned in #{division.name}

@@ -1,13 +1,13 @@
 - title "#{@specialist.name}"
 
-- specialization = (current_user_is_admin? ? @specialist.specializations_including_in_progress : @specialist.specializations).first || Specialization.not_in_progress.first
+- specialization = (current_user_is_admin? ? @specialist.specializations : @specialist.specializations.not_in_progress_for_divisions(current_user_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
   
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       All Specialties
       %b.caret
-  %li.subsequent{:class => specialization.in_progress && "in-progress"}= link_to specialization.name, specialization, :class => "ajax"
+  %li.subsequent{:class => specialization.fully_in_progress_for_divisions(current_user_divisions) && "in-progress"}= specialization.name
   
 - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @specialist.id, "Specialist").present? ? "icon-red" : "icon-text") : "icon-text"
   
@@ -19,7 +19,7 @@
   
 #specialties-dropdown-menu
   .inner
-    - specializations = Specialization.all.reject{ |s| s.in_progress && !current_user_is_admin? }
+    - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions)
     - first = specializations[0, (specializations.length / 4.0).ceil]
     - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
     - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
@@ -29,7 +29,7 @@
       %ul
         - list.each do |specialization|
           %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
+            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}= specialization.name
 
 - has_clinics = specialization.clinics.length > 0
 
@@ -70,7 +70,7 @@
               %a{"href" => "javascript:void(0)", "onclick" => "favorite('specialists',#{@specialist.id},'#{escape_javascript(@specialist.name)}')", "title" => "Favourite / un-favourite"}
                 %i.icon-heart{"id" => "user_favorite_specialists_#{@specialist.id}"}
             %h3.specialty_links
-              = @specialist.specializations.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.in_progress ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
+              = @specialist.specializations.collect(){ |s| "<a href='#{specialization_path(s)}' class='#{ s.fully_in_progress_for_divisions(@specialist.divisions) ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
             - if @specialist.sex? && @specialist.billing_number_padded.present?
               %h5= " #{@specialist.sex}, MSP ##{@specialist.billing_number_padded}"
             - elsif @specialist.sex?
@@ -315,7 +315,7 @@
                   %strong Cancellation policy:
                   = @specialist.cancellation_policy.end_with_period.convert_newlines_to_br
             
-            - clinics = @specialist.clinics.reject{ |c| !current_user_is_admin? && c.in_progress }
+            - clinics = @specialist.clinics
             - if @specialist.hospitals.present? || clinics.present?
               %h6 Associations
               
@@ -327,7 +327,7 @@
               - if clinics.present?
                 %p
                   %strong Clinic associations:
-                  != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='#{clinic.in_progress ? 'in-progress ajax' : 'ajax'}'>#{clinic.name}</a>" }.to_sentence
+                  != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'}'>#{clinic.name}</a>" }.to_sentence
                   
         - if show_details || show_areas_of_practice
         

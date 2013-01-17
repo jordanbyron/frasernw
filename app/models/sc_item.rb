@@ -4,8 +4,7 @@ class ScItem < ActiveRecord::Base
   belongs_to  :sc_category
   
   has_many    :sc_item_specializations, :dependent => :destroy
-  has_many    :specializations, :through => :sc_item_specializations, :conditions => { "in_progress" => false }
-  has_many    :specializations_including_in_progress, :through => :sc_item_specializations, :source => :specialization, :class_name => "Specialization"
+  has_many    :specializations, :through => :sc_item_specializations
 
   has_many    :sc_item_specialization_procedure_specializations, :through => :sc_item_specializations
   has_many    :procedure_specializations, :through => :sc_item_specialization_procedure_specializations
@@ -30,8 +29,14 @@ class ScItem < ActiveRecord::Base
   
   default_scope order('sc_items.title')
   
-  def in_progress
-    (specializations_including_in_progress.length > 0) && (specializations.length == 0)
+  def self.not_in_progress_for_divisions(divisions)
+    division_ids = divisions.map{ |division| division.id }
+    joins('INNER JOIN "sc_item_specializations" ON "sc_item"."id" = "sc_item_specializations"."sc_item_id" INNER JOIN "specialization_options" ON "specialization_options"."specialization_id" = "sc_item_specializations"."specialization_id"').where('"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)', division_ids, false)
+  end
+
+  def in_progress_for_divisions(divisions)
+    specialization_options = specializations.map{ |s| s.specialization_options.for_divisions(divisions) }.flatten
+    (specialization_options.length > 0) && (specialization_options.reject{ |so| so.in_progress }.length == 0)
   end
   
   def self.for_specialization_in_divisions(specialization, divisions)

@@ -68,7 +68,7 @@
             - feedback[index].each do |feedback_item|
               %tr
                 %td= link_to (feedback_item.item.respond_to?('name') ? feedback_item.item.name : feedback_item.item.title), feedback_item.item, :class => 'ajax'
-                %td= feedback_item.item.specializations_including_in_progress.map{ |s| s.name }.to_sentence
+                %td= feedback_item.item.specializations.map{ |s| s.name }.to_sentence
                 %td= feedback_item.user.blank? ? "unavailable" : feedback_item.user.name
                 %td= "#{time_ago_in_words(feedback_item.created_at)} ago"
                 %td{"style" => "width: 30%"}= feedback_item.feedback

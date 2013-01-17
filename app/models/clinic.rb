@@ -1,13 +1,12 @@
 class Clinic < ActiveRecord::Base
   include ApplicationHelper
   
-  attr_accessible :name, :phone, :phone_extension, :fax, :contact_details, :categorization_mask, :sector_mask, :url, :email, :wheelchair_accessible_mask, :status, :status_details, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :patient_instructions, :cancellation_policy, :interpreter_available, :specializations_including_in_progress_ids, :location_attributes, :schedule_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes, :admin_notes, :referral_forms_attributes
+  attr_accessible :name, :phone, :phone_extension, :fax, :contact_details, :categorization_mask, :sector_mask, :url, :email, :wheelchair_accessible_mask, :status, :status_details, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :patient_instructions, :cancellation_policy, :interpreter_available, :specialization_ids, :location_attributes, :schedule_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes, :admin_notes, :referral_forms_attributes
   has_paper_trail :ignore => :saved_token
   
   #clinics can have multiple specializations
   has_many :clinic_specializations, :dependent => :destroy
-  has_many :specializations, :through => :clinic_specializations, :conditions => { "in_progress" => false }
-  has_many :specializations_including_in_progress, :through => :clinic_specializations, :source => :specialization, :class_name => "Specialization"
+  has_many :specializations, :through => :clinic_specializations
   
   #clinics have an address
   has_one :location, :as => :locatable, :dependent => :destroy
@@ -58,8 +57,14 @@ class Clinic < ActiveRecord::Base
   
   default_scope order('clinics.name')
   
-  def in_progress
-    (specializations_including_in_progress.length > 0) && (specializations.length == 0)
+  def self.not_in_progress_for_divisions(divisions)
+    division_ids = divisions.map{ |division| division.id }
+    joins('INNER JOIN "clinic_specializations" ON "clinics"."id" = "clinic_specializations"."clinic_id" INNER JOIN "specialization_options" ON "specialization_options"."specialization_id" = "clinic_specializations"."specialization_id"').where('"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)', division_ids, false)
+  end
+
+  def in_progress_for_divisions(divisions)
+    specialization_options = specializations.map{ |s| s.specialization_options.for_divisions(divisions) }.flatten
+    (specialization_options.length > 0) && (specialization_options.reject{ |so| so.in_progress }.length == 0)
   end
   
   CATEGORIZATION_HASH = {
@@ -141,24 +146,19 @@ class Clinic < ActiveRecord::Base
       #interesect the passed in divisions with the divisions the specialist is in, to find a match
       intersecting_divisions = input_divisions & divisions
       if intersecting_divisions.present?
-        specialization_owners = []
-        specializations.each{ |specialization| specialization_owners << specialization.specialization_owners.for_division(intersecting_divisions.first) }
-        specialization_owners.flatten!
-        if specialization_owners.first.present? && specialization_owners.first.owner.present?
-          return specialization_owners.first.owner
+        options = []
+        specializations.each{ |specialization| options << specialization.specialization_options.for_divisions(intersecting_divisions) }
+        options.flatten.each do |so|
+          return so.owner if so.owner.present?
         end
       end
     end
     
     #We either didn't pass in a division, or the interesection was blank with the clinic's actual divisions.
     #So just return the owner for the clinic's division
-    divisions.each do |division|
-      specialization.each do |specialization|
-        specialization.specialization_owners.for_division(division).each do |specialization_owner|
-          if specialization_owner.owner.present?
-            return specialization_owner.owner
-          end
-        end
+    specialization.each do |specialization|
+      specialization.specialization_options.for_divisions(divisions).each do |so|
+        return so.owner if so.owner.present?
       end
     end
     

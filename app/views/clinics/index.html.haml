@@ -25,7 +25,7 @@
               - Specialization.all.each do |specialization|
                 - clinics = specialization.clinics.in_divisions([division])
                 - next if clinics.blank?
-                %tr{ :class => specialization.in_progress ? "in-progress" : "" }
+                %tr{ :class => specialization.fully_in_progress_for_divisions([division]) ? "in-progress" : "" }
                   %th{:style => "width:75%"}= specialization.name
                   %th{:style => "width:25%"} City
                   %th.admin
@@ -44,9 +44,9 @@
       - Specialization.all.each do |specialization|
         - clinics = specialization.clinics.in_divisions(current_user_divisions)
         - next if clinics.blank?
-        %tr{ :class => specialization.in_progress ? "in-progress" : "" }
+        %tr{ :class => specialization.fully_in_progress_for_divisions(divisions) ? "in-progress" : "" }
           %th{:style => "width:75%"}
-            %span{ :class => specialization.in_progress ? "in-progress" : "" }= specialization.name
+            %span{ :class => specialization.fully_in_progress_for_divisions(divisions) ? "in-progress" : "" }= specialization.name
           %th{:style => "width:25%"} City
           %th.admin
 

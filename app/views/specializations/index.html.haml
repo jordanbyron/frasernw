@@ -9,7 +9,6 @@
       %th Name
       %th Member name
       %th Owners
-      %th In Progress?
       %th.admin
     - Specialization.all.each do |specialization|
       %tr
@@ -18,9 +17,8 @@
         %td
           %ul
             - Division.all.each do |division|
-              - specialization_owner = SpecializationOwner.find_by_specialization_id_and_division_id(specialization.id, division.id)
-              %li= "#{division.name}: #{specialization_owner.present? && specialization_owner.owner.present? ? (link_to specialization_owner.owner.name, specialization_owner.owner, :class => 'ajax') : "none"}".html_safe
-        %td= specialization.in_progress ? "In progress" : ""
+              - specialization_option = SpecializationOption.find_by_specialization_id_and_division_id(specialization.id, division.id)
+              %li= "#{division.name}: #{specialization_option.present? && specialization_option.owner.present? ? (link_to specialization_option.owner.name, specialization_option.owner, :class => 'ajax') : "none"}".html_safe
         %td.admin.btn-group
           = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialization_path(specialization), :class => "btn btn-mini ajax")
           = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialization, :confirm => "Delete #{specialization.name}?", :method => :delete, :class => "btn btn-mini")

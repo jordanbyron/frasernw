@@ -54,7 +54,7 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.new(params[:clinic])
     if @clinic.save
       if params[:focuses_mapped].present?
-        clinic_specializations = @clinic.specializations_including_in_progress
+        clinic_specializations = @clinic.specializations
         params[:focuses_mapped].each do |updated_focus, value|
           focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
           focus.investigation = params[:focuses_investigations][updated_focus]
@@ -82,19 +82,19 @@ class ClinicsController < ApplicationController
       @clinic.location.build_address
     end
     @clinic_procedures = []
-    @clinic.specializations_including_in_progress.each { |specialization| 
-      @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations_including_in_progress.count > 1
+    @clinic.specializations.each { |specialization| 
+      @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
       @clinic_procedures += ancestry_options( specialization.non_assumed_procedure_specializations_arranged )
     }
     @clinic_specialists = []
     procedure_specializations = {}
-    @clinic.specializations_including_in_progress.each { |specialization|
-      @clinic_specialists << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations_including_in_progress.count > 1
+    @clinic.specializations.each { |specialization|
+      @clinic_specialists << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
       @clinic_specialists += specialization.specialists.collect { |s| [s.name, s.id] }
       procedure_specializations.merge!(specialization.non_assumed_procedure_specializations_arranged)
     }
     @focuses = []
-    clinic_specializations = @clinic.specializations_including_in_progress
+    clinic_specializations = @clinic.specializations
     procedure_specializations.each { |ps, children|
       @focuses << generate_focus(@clinic, ps, 0)
       children.each { |child_ps, grandchildren|
@@ -112,7 +112,7 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.find(params[:id])
     ClinicSweeper.instance.before_controller_update(@clinic)
     if @clinic.update_attributes(params[:clinic])
-      clinic_specializations = @clinic.specializations_including_in_progress
+      clinic_specializations = @clinic.specializations
       if params[:focuses_mapped].present?
         @clinic.focuses.each do |original_focus|
           Focus.destroy(original_focus.id) if params[:focuses_mapped][original_focus.procedure_specialization.id.to_s].blank?
@@ -164,14 +164,14 @@ class ClinicsController < ApplicationController
         @clinic.location.build_address
       end
       @clinic_procedures = []
-      @clinic.specializations_including_in_progress.each { |specialization| 
-        @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations_including_in_progress.count > 1
+      @clinic.specializations.each { |specialization| 
+        @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
         @clinic_procedures += ancestry_options( specialization.non_assumed_procedure_specializations_arranged )
       }
       @clinic_specialists = []
       procedure_specializations = {}
-      @clinic.specializations_including_in_progress.each { |specialization|
-        @clinic_specialists << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations_including_in_progress.count > 1
+      @clinic.specializations.each { |specialization|
+        @clinic_specialists << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
         @clinic_specialists += specialization.specialists.collect { |s| [s.name, s.id] }
         procedure_specializations.merge!(specialization.non_assumed_procedure_specializations_arranged)
       }

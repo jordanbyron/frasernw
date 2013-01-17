@@ -14,14 +14,14 @@ class ClinicsEditorController < ApplicationController
       @clinic.focuses.build
     end
     @specializations_clinics = []
-    @clinic.specializations_including_in_progress.each { |s| 
+    @clinic.specializations.each { |s| 
       @specializations_clinics += s.clinics.collect { |c| [c.name, c.id] }
     }
     @specializations_clinics.sort!
     @specializations_procedures = []
     procedure_specializations = {}
-    @clinic.specializations_including_in_progress.each { |s| 
-      @specializations_procedures << [ "----- #{s.name} -----", nil ] if @clinic.specializations_including_in_progress.count > 1
+    @clinic.specializations.each { |s| 
+      @specializations_procedures << [ "----- #{s.name} -----", nil ] if @clinic.specializations.count > 1
       @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
       procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
     }

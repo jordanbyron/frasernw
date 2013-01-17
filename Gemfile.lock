@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/thedarkone/rails-dev-boost.git
+  revision: 60a39d477c267c407d4da870cfb700d3f50a9904
+  specs:
+    rails-dev-boost (0.2.1)
+      listen (>= 0.5)
+      rails (>= 3.0)
+
+GIT
   remote: https://github.com/warneboldt/nested_form.git
   revision: 230e366a35a2fabd1f2b51d0102237ba684174f0
   ref: 230e366a35a2fabd1f2b51d0102237ba684174f0
@@ -127,6 +135,7 @@ GEM
       addressable (~> 2.2.6)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
+    listen (0.7.2)
     mail (2.3.3)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -176,6 +185,7 @@ GEM
       thor (~> 0.14.6)
     raindrops (0.8.0)
     rake (10.0.3)
+    rb-fsevent (0.9.3)
     rdoc (3.12)
       json (~> 1.4)
     rest-client (1.6.7)
@@ -282,6 +292,8 @@ DEPENDENCIES
   paperclip (~> 2.7)
   pg
   rails (= 3.1.10)
+  rails-dev-boost!
+  rb-fsevent (~> 0.9.1)
   rspec
   rspec-rails
   ruby-debug19

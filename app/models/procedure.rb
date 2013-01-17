@@ -2,20 +2,16 @@ class Procedure < ActiveRecord::Base
   attr_accessible :name, :parent_id, :specialization_ids, :all_procedure_specializations_attributes
   has_paper_trail :ignore => :saved_token
   
-  has_many :specialists, :finder_sql => proc { "SELECT DISTINCT s.* FROM specialists s JOIN capacities c ON c.specialist_id = s.id JOIN procedure_specializations ps ON c.procedure_specialization_id = ps.id JOIN specializations sz ON ps.specialization_id = sz.id WHERE ps.procedure_id = #{self.id} AND sz.in_progress = 'f' ORDER BY s.lastname ASC, s.firstname ASC" }
-  
-  has_many :specialists_including_in_progress, :finder_sql => proc { "SELECT DISTINCT s.* FROM specialists s JOIN capacities c ON c.specialist_id = s.id JOIN procedure_specializations ps ON c.procedure_specialization_id = ps.id WHERE ps.procedure_id = #{self.id} ORDER BY s.lastname ASC, s.firstname ASC" }, :class_name => "Specialist"
-  
-  has_many :clinics, :finder_sql => proc { "SELECT DISTINCT cl.* FROM clinics cl JOIN focuses f ON f.clinic_id = cl.id JOIN procedure_specializations ps ON f.procedure_specialization_id = ps.id JOIN specializations sz ON ps.specialization_id = sz.id WHERE ps.procedure_id = #{self.id} AND sz.in_progress = 'f' ORDER BY cl.name ASC" }
-  
-  has_many :clinics_including_in_progress, :finder_sql => proc { "SELECT DISTINCT cl.* FROM clinics cl JOIN focuses f ON f.clinic_id = cl.id JOIN procedure_specializations ps ON f.procedure_specialization_id = ps.id WHERE ps.procedure_id = #{self.id} ORDER BY cl.name ASC" }, :class_name => "Clinic"
-  
   has_many :all_procedure_specializations, :dependent => :destroy, :class_name => "ProcedureSpecialization"
   has_many :procedure_specializations, :dependent => :destroy, :conditions => { "mapped" => true }
-  has_many :specializations, :through => :procedure_specializations, :uniq => true, :conditions => { "procedure_specializations.mapped" => true, "in_progress" => false }, :order => 'name ASC'
-  has_many :specializations_including_in_progress, :through => :procedure_specializations, :uniq => true, :conditions => { "procedure_specializations.mapped" => true }, :order => 'name ASC', :source => :specialization, :class_name => "Specialization"
-  
+  has_many :specializations, :through => :procedure_specializations, :uniq => true, :conditions => { "procedure_specializations.mapped" => true }, :order => 'name ASC'  
   accepts_nested_attributes_for :all_procedure_specializations, :allow_destroy => true
+  
+  has_many :capacities, :through => :procedure_specializations
+  has_many :specialists, :through => :capacities
+  
+  has_many :focuses, :through => :procedure_specializations
+  has_many :clinics, :through => :focuses
 
   validates_presence_of :name, :on => :save, :message => "can't be blank"
   
@@ -31,8 +27,11 @@ class Procedure < ActiveRecord::Base
     end
   end
   
-  def in_progress
-    (specializations_including_in_progress.length > 0) && (specializations.length == 0)
+  def fully_in_progress_for_divisions(divisions)
+    specializations.each do |s|
+     return false if (s.specialization_options.for_divisions(divisions).length == 0) || (s.specialization_options.for_divisions(divisions).reject{ |so| so.in_progress }.length != 0)
+    end
+    return true
   end
   
   def all_specialists_in_cities(cities)

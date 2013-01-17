@@ -66,7 +66,7 @@ class SpecialistsController < ApplicationController
     @specialist = Specialist.new(params[:specialist])
     if @specialist.save!
       if params[:capacities_mapped].present?
-        specialist_specializations = @specialist.specializations_including_in_progress
+        specialist_specializations = @specialist.specializations
         params[:capacities_mapped].each do |updated_capacity, value|
           capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
           capacity.investigation = params[:capacities_investigations][updated_capacity]
@@ -106,14 +106,14 @@ class SpecialistsController < ApplicationController
     end
     @offices = Office.includes(:location => [ {:address => :city}, {:clinic_in => {:location => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
     @specializations_clinics = []
-    @specialist.specializations_including_in_progress.each { |s| 
+    @specialist.specializations.each { |s|
       @specializations_clinics += (current_user_is_super_admin? ? s.clinics : s.clinics.in_divisions(current_user_divisions)).collect { |c| [c.name, c.id] }
     }
     @specializations_clinics.sort!
     @specializations_procedures = []
     procedure_specializations = {}
-    @specialist.specializations_including_in_progress.each { |s| 
-      @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations_including_in_progress.count > 1
+    @specialist.specializations.each { |s|
+      @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations.count > 1
       @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
       procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
     }
@@ -135,7 +135,7 @@ class SpecialistsController < ApplicationController
     SpecialistSweeper.instance.before_controller_update(@specialist)
     if @specialist.update_attributes(params[:specialist])
       if params[:capacities_mapped].present?
-        specialist_specializations = @specialist.specializations_including_in_progress
+        specialist_specializations = @specialist.specializations
         @specialist.capacities.each do |original_capacity|
           Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity.procedure_specialization.id.to_s].blank?
         end
@@ -226,14 +226,14 @@ class SpecialistsController < ApplicationController
       end
       @offices = Office.includes(:location => [ {:address => :city}, {:clinic_in => {:location => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
       @specializations_clinics = []
-      @specialist.specializations_including_in_progress.each { |s| 
+      @specialist.specializations.each { |s|
         @specializations_clinics += s.clinics.collect { |c| [c.name, c.id] }
       }
       @specializations_clinics.sort!
       @specializations_procedures = []
       procedure_specializations = {}
-      @specialist.specializations_including_in_progress.each { |s| 
-        @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations_including_in_progress.count > 1
+      @specialist.specializations.each { |s|
+        @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations.count > 1
         @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
         procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
       }

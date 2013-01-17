@@ -1,7 +1,7 @@
 - title "#{@procedure.full_name}"
 
 - procedure_specialization = @procedure.procedure_specializations.first || ProcedureSpecialization.first
-- procedure_specializations = @procedure.procedure_specializations.reject{ |ps| ps.specialization.in_progress && !current_user_is_admin? }
+- procedure_specializations = @procedure.procedure_specializations.reject{ |ps| !current_user_is_admin? && !ps.specialization.not_in_progress_for_divisions(current_user_divisions) }
     
 %ul#specialties-menu
   %li.dropdown
@@ -10,9 +10,9 @@
       %b.caret
   - if procedure_specializations.length > 2
     %li.subsequent.specialty
-      %a.tt#tt_more_specialties{"href" => "javascript:void(0)", "onclick" => "$('#tt_more_specialties').tooltip('toggle')", "title" => "<ul class='specialties'>#{procedure_specializations.map{|ps| "<li>#{link_to ps.specialization.name, ps.specialization, :class => 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{procedure_specializations.first(2).collect{ |ps| ps.specialization.name }.join(', ')}..."
+      %a.tt#tt_more_specialties{"href" => "javascript:void(0)", "onclick" => "$('#tt_more_specialties').tooltip('toggle')", "title" => "<ul class='specialties'>#{procedure_specializations.map{|ps| "<li>#{link_to ps.specialization.name, ps.specialization, :class => ps.specialization.fully_in_progress_for_divisions(current_user_divisions) ? 'in-progress ajax' : 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{procedure_specializations.first(2).collect{ |ps| ps.specialization.name }.join(', ')}..."
   - else
-    %li.subsequent.specialty= "#{procedure_specializations.collect{ |ps| link_to ps.specialization.name, ps.specialization, :class => 'ajax' }.to_sentence}".html_safe
+    %li.subsequent.specialty= "#{procedure_specializations.collect{ |ps| link_to ps.specialization.name, ps.specialization, :class => ps.specialization.fully_in_progress_for_divisions(current_user_divisions) ? 'in-progress ajax' : 'ajax' }.to_sentence}".html_safe
   - if procedure_specialization.parent.present? && procedure_specialization.parent.parent.present? && procedure_specialization.parent.parent.procedure.present?
     %li.subsequent.grandparent= link_to procedure_specialization.parent.parent.procedure.name, procedure_specialization.parent.parent.procedure, :class => 'ajax'
   - if procedure_specialization.parent.present? && procedure_specialization.parent.procedure.present?
@@ -32,7 +32,7 @@
   
 #specialties-dropdown-menu
   .inner
-    - specializations = Specialization.all.reject{ |s| s.in_progress && !current_user_is_admin? }
+    - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions)
     - first = specializations[0, (specializations.length / 4.0).ceil]
     - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
     - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
@@ -42,7 +42,7 @@
       %ul
         - list.each do |specialization|
           %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
+            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}= specialization.name
   
 - multiple_specialties = (@procedure.specializations.length > 1)
 
@@ -63,8 +63,8 @@
 
 - user_cities = current_user_cities_for_specializations(@procedure.specializations)
 
-- specialists = @procedure.all_specialists_in_cities(user_cities).reject{ |s| (!current_user_is_admin? && s.in_progress) || !s.show_in_table? }
-- clinics = @procedure.all_clinics_in_cities(user_cities).reject{ |c| (!current_user_is_admin? && c.in_progress) || !c.show_in_table? }
+- specialists = @procedure.all_specialists_in_cities(user_cities).reject{ |s| (!current_user_is_admin? && !s.not_in_progress_for_divisions(current_user_divisions)) || !s.show_in_table? }
+- clinics = @procedure.all_clinics_in_cities(user_cities).reject{ |c| (!current_user_is_admin? && !c.not_in_progress_for_divisions(current_user_divisions)) || !c.show_in_table? }
 
 - has_specialists = specialists.length > 0
 - has_clinics = clinics.length > 0
@@ -89,7 +89,7 @@
     init_category("#{sc_category.id}", #{sc_category.inline?}, #{@procedure.id});
   update_favorites(); });
 
-- specialist_tab_class = (has_specialists && !(procedure_specialization.specialization.open_to_clinic_tab? && has_clinics)) ? "active" : ""
+- specialist_tab_class = (has_specialists && !(procedure_specialization.specialization.open_to_clinic_tab_for_divisions(current_user_divisions) && has_clinics)) ? "active" : ""
 - clinic_tab_class = specialist_tab_class == "" ? "active" : ""
 
 .tabbable

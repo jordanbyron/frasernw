@@ -33,7 +33,7 @@ class SpecializationsController < ApplicationController
 
   def edit
     @specialization = Specialization.find(params[:id])
-    Division.all.each { |division| SpecializationOwner.find_or_create_by_specialization_id_and_division_id(params[:id], division.id) }
+    Division.all.each { |division| SpecializationOption.find_or_create_by_specialization_id_and_division_id(params[:id], division.id) }
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -41,6 +41,14 @@ class SpecializationsController < ApplicationController
     @specialization = Specialization.find(params[:id])
     SpecializationSweeper.instance.before_controller_update(@specialization)
     if @specialization.update_attributes(params[:specialization])
+      Division.all.each do |division|
+        puts division.name
+        so = SpecializationOption.find_by_specialization_id_and_division_id(@specialization.id, division.id);
+        so.owner = User.find_by_id(params[:owner]["#{division.id}"])
+        so.in_progress = params[:in_progress].present? && params[:in_progress]["#{division.id}"].present?
+        so.open_to_clinic_tab = params[:open_to_clinic_tab].present? && params[:open_to_clinic_tab]["#{division.id}"].present?
+        so.save
+      end
       redirect_to @specialization, :notice  => "Successfully updated specialty."
     else
       render :action => 'edit'

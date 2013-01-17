@@ -31,7 +31,7 @@ class ProceduresController < ApplicationController
   
   def edit
     @procedure = Procedure.find(params[:id])
-    @specializations = @procedure.specializations_including_in_progress
+    @specializations = @procedure.specializations
     Specialization.all.each { |specialization| ProcedureSpecialization.find_or_create_by_procedure_id_and_specialization_id(params[:id], specialization.id) }
     render :layout => 'ajax' if request.headers['X-PJAX']
   end

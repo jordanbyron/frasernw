@@ -75,8 +75,11 @@ class Ability
         can [:index, :faq, :terms_and_conditions], Front
         
         #can show pages
-        can :show, [Specialization, Procedure, Specialist, Clinic] do |entity|
-          !entity.in_progress
+        can :show, [Specialization, Procedure] do |entity|
+          !entity.fully_in_progress_for_divisions(Division.all)
+        end
+        can :show, [Specialist, Clinic] do |entity|
+          !entity.in_progress_for_divisions(entity.divisions)
         end
         can :show, [Hospital, Language, ScCategory, ScItem]
 

@@ -40,7 +40,7 @@
                   %td= user.email
                   %td
                     - user.divisions.each do |division|
-                      - specialization_owners = user.specialization_owners.for_division(division).reject{ |so| so.specialization.blank? }
+                      - specialization_owners = user.specialization_owners.for_divisions([division]).reject{ |so| so.specialization.blank? }
                       - if user.admin? && specialization_owners.present?
                         %ul
                           Specializations owned in #{division.name}
@@ -70,7 +70,7 @@
                   %td= user.email
                   %td
                     - user.divisions.each do |division|
-                      - specialization_owners = user.specialization_owners.for_division(division).reject{ |so| so.specialization.blank? }
+                      - specialization_owners = user.specialization_owners.for_divisions([division]).reject{ |so| so.specialization.blank? }
                       - if user.admin? && specialization_owners.present?
                         %ul
                           Specializations owned in #{division.name}

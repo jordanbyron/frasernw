@@ -99,8 +99,8 @@
                       Admin
                       - review = ReviewItem.active.reject{ |re| !(ri.item.present? && ((ri.item.instance_of?(Specialist) && (ri.item.divisions & user_divisions).present?) || (ri.item.instance_of?(Clinic) && (ri.item.divisions & user_divisions).present?))) }
                       - feedback = FeedbackItem.active.reject{ |fi| !(fi.item.present? && ((fi.item.instance_of?(Specialist) && (fi.item.divisions & user_divisions).present?) || (fi.item.instance_of?(Clinic) && (fi.item.divisions & user_divisions).present?) || (fi.item.instance_of?(ScItem) && ([fi.item.division] & user_divisions).present?))) }
-                      - user_review_item_count = review.reject{ |ri| !current_user.owns(ri.item.specializations_including_in_progress) }.count
-                      - user_feedback_item_count = feedback.reject{ |fi| !current_user.owns(fi.item.specializations_including_in_progress) }.count
+                      - user_review_item_count = review.reject{ |ri| !current_user.owns(ri.item.specializations) }.count
+                      - user_feedback_item_count = feedback.reject{ |fi| !current_user.owns(fi.item.specializations) }.count
                       - total_review_item_count = review.count
                       - total_feedback_item_count = feedback.count
                       -  if total_review_item_count + total_feedback_item_count > 0

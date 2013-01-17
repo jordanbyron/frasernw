@@ -11,10 +11,11 @@
     var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); return false; });
     $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
     var root_procedures = [];
+    var should_show_others = false;
   
 #specialties-dropdown-menu
   .inner
-    - specializations = Specialization.all.reject{ |s| s.in_progress && !current_user_is_admin? }
+    - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions)
     - first = specializations[0, (specializations.length / 4.0).ceil]
     - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
     - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
@@ -24,14 +25,14 @@
       %ul
         - list.each do |specialization|
           %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.in_progress ? "in-progress" : ""}= specialization.name
+            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}= specialization.name
     
 .content-wrapper
 
   %h2= @language.name
   
-- specialists = @language.specialists.reject{ |s| (!current_user_is_admin? && s.in_progress) || !s.show_in_table? }
-- clinics = @language.clinics.reject{ |c| (!current_user_is_admin? && c.in_progress) || !c.show_in_table? }
+- specialists = @language.specialists.reject{ |s| s.in_progress_for_divisions(Division.all) || !s.show_in_table? }
+- clinics = @language.clinics.reject{ |c| c.in_progress_for_divisions(Division.all) || !c.show_in_table? }
 
 - has_specialists = specialists.length > 0
 - has_clinics = clinics.length > 0
@@ -106,7 +107,7 @@
                             %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                           %td.s
                             %ul
-                              - specialist.specializations.each do |s|
+                              - specialist.specializations.not_in_progress_for_divisions(specialist.divisions).each do |s|
                                 %li= s.name
                           %td.st
                             %i{:class => specialist.status_class}
@@ -127,7 +128,7 @@
                         Specialties
                       #specialist-filter-specialty.collapsable.in
                         .filter-group-content
-                          - Specialization.not_in_progress.each do |s|
+                          - Specialization.all.reject{ |s| s.fully_in_progress }.each do |s|
                             %label
                               %input.ssp{"type" => "checkbox", "id" => "ssp#{s.id}_"}= s.name
                               
@@ -229,7 +230,7 @@
                             %a.ajax{"href" => clinic_path(clinic)}= clinic.name
                           %td.s
                             %ul
-                              - clinic.specializations.each do |s|
+                              - clinic.specializations.not_in_progress_for_divisions(clinic.divisions).each do |s|
                                 %li= s.name
                           %td.st
                             %i{:class => clinic.status_class}
@@ -247,7 +248,7 @@
                         Specialties
                       #clinic-filter-specialty.collapsable.in
                         .filter-group-content
-                          - Specialization.not_in_progress.each do |s|
+                          - Specialization.all.reject{ |s| s.fully_in_progress }.each do |s|
                             %label
                               %input.csp{"type" => "checkbox", "id" => "csp#{s.id}_"}= s.name
                               
