@@ -63,20 +63,20 @@ var update_table = function(prefix, entity_id, entity_name)
   // collect procedure filters
   $('.filter-group-content > label > .' + prefix + 'p, .filter-group-content > .more > label > .' + prefix + 'p').filter(':checked').each( function() {
     var parent = $(this);
-                                                             console.log("parent: " + parent);
+    //console.log("parent: " + parent);
     var parent_text = parent.siblings('span').text().trim();
     var checked_children = false;
                                                                                                                                           
     $('.child_' + parent.attr('id')).filter(':checked').each( function() {
       child = $(this);
-                                                             console.log("child: " + child);
+      //console.log("child: " + child);
       var child_text = child.siblings('span').text().trim();
       checked_children = true;
       var checked_grandchildren = false;
                                                              
       $('.grandchild_' + child.attr('id')).filter(':checked').each( function() {
         var grandchild = $(this);
-                                                             console.log("grandchild: " + grandchild);
+        //console.log("grandchild: " + grandchild);
         checked_grandchildren = true;
         procedures.push(parent_text + " " + child_text + " " + grandchild.siblings('span').text().trim());
         current_filters.push(grandchild.attr('id'));
@@ -103,20 +103,20 @@ var update_table = function(prefix, entity_id, entity_name)
   
   // adjust wait time based off checked custom wait time procedures
   var checked_custom_wait_times = checked_procedures.filter('[name="1"]');
-  console.log("checked_procedures : " + checked_procedures)
-  console.log("checked_custom_wait_times : " + checked_custom_wait_times)
+  //console.log("checked_procedures : " + checked_procedures)
+  //console.log("checked_custom_wait_times : " + checked_custom_wait_times)
   var wait_time_procedure = true;
   
   if (checked_custom_wait_times.length == 0)
   {
     if (root_procedures[prefix] != undefined)
     {
-      console.log("base filtering on procedure");
+      //console.log("base filtering on procedure");
       wait_time_procedure = root_procedures[prefix] + '_';
     }
     else
     {
-      console.log("use usual wait time");
+      //console.log("use usual wait time");
       wait_time_procedure = true;
     }
   }
@@ -124,18 +124,18 @@ var update_table = function(prefix, entity_id, entity_name)
   {
     if (checked_procedures.length == 1)
     {
-      console.log("replace with custom wait time");
+      //console.log("replace with custom wait time");
       wait_time_procedure = checked_procedures.attr('id').substring((prefix + 'p').length);
     }
     else
     {
-      console.log("no wait times - mix of custom and non custom");
+      //console.log("no wait times - mix of custom and non custom");
       wait_time_procedure = false;
     }
   }
   else
   {
-    console.log("no wait times - more than one custom");
+    //console.log("no wait times - more than one custom");
     wait_time_procedure = false;
   }
   
