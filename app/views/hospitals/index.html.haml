@@ -33,8 +33,10 @@
                   %td= link_to hospital.name, hospital_path(hospital), :class => 'ajax'
                   %td= hospital.city.present? ? hospital.city.name : ""
                   %td.admin.btn-group
-                    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_hospital_path((hospital)), :class => "btn btn-mini ajax")
-                    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", hospital, :confirm => "Delete #{hospital.name}?", :method => :delete, :class => "btn btn-mini")
+                    - if can? :update, hospital
+                      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_hospital_path(hospital), :class => "btn btn-mini ajax")
+                    - if can? :destroy, hospital
+                      = link_to("<i class='icon-trash'></i>".html_safe + " Delete", hospital, :confirm => "Delete #{hospital.name}?", :method => :delete, :class => "btn btn-mini")
 
   - else
   
@@ -49,7 +51,9 @@
           %td= link_to hospital.name, hospital_path(hospital), :class => 'ajax'
           %td= hospital.city.present? ? hospital.city.name : ""
           %td.admin.btn-group
-            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_hospital_path((hospital)), :class => "btn btn-mini ajax")
-            = link_to("<i class='icon-trash'></i>".html_safe + " Delete", hospital, :confirm => "Delete #{hospital.name}?", :method => :delete, :class => "btn btn-mini")
+            - if can? :update, hospital
+              = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_hospital_path(hospital), :class => "btn btn-mini ajax")
+            - if can? :destroy, hospital
+              = link_to("<i class='icon-trash'></i>".html_safe + " Delete", hospital, :confirm => "Delete #{hospital.name}?", :method => :delete, :class => "btn btn-mini")
 
   %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Hospital", new_hospital_path, :class => "btn ajax")
