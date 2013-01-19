@@ -1,6 +1,5 @@
 function init_category(category_id, inline, procedure_filter)
 {
-  console.log('init_category');
   for(var division_id in filtering.current_divisions)
   {
     add_items_from_division(filtering.content_data[division_id], category_id, inline, procedure_filter);
@@ -11,7 +10,6 @@ function init_category(category_id, inline, procedure_filter)
 
 function update_ui(category_id, inline)
 {
-  console.log('update_ui');
   if (!inline)
   {
     update_subcategories(category_id);
@@ -96,7 +94,6 @@ function add_item(category_id, item_id, title, full_title, url, markdown, body, 
 
 function update_subcategories(category_id)
 {
-  console.log('update_subcategories');
   var current_subcategories = [];
   
   for(var division_id in filtering.current_divisions)
@@ -105,11 +102,9 @@ function update_subcategories(category_id)
   }
   
   current_subcategories = current_subcategories.unique();
-  console.log('input.ic[name="ic' + category_id + '"]');
   
   //hide subcategories that no item has
   $('input.ic[name="ic' + category_id + '"]').each( function() {
-                                                   console.log(this);
     $this = $(this)
     if (current_subcategories.indexOf($this.attr('id')) == -1)
     {
