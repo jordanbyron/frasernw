@@ -40,11 +40,11 @@
                   %td= user.email
                   %td
                     - user.divisions.each do |division|
-                      - specialization_owners = user.specialization_owners.for_divisions([division]).reject{ |so| so.specialization.blank? }
-                      - if user.admin? && specialization_owners.present?
+                      - specialization_options = user.specialization_options.for_divisions([division]).reject{ |so| so.specialization.blank? }
+                      - if specialization_options.present?
                         %ul
                           Specializations owned in #{division.name}
-                          - specialization_owners.each do |so|
+                          - specialization_options.each do |so|
                             %li= link_to so.specialization.name, so.specialization, :class => 'ajax'
             
                   %td.admin.btn-group
@@ -70,11 +70,11 @@
                   %td= user.email
                   %td
                     - user.divisions.each do |division|
-                      - specialization_owners = user.specialization_owners.for_divisions([division]).reject{ |so| so.specialization.blank? }
-                      - if user.admin? && specialization_owners.present?
+                      - specialization_options = user.specialization_options.for_divisions([division]).reject{ |so| so.specialization.blank? }
+                      - if specialization_options.present?
                         %ul
                           Specializations owned in #{division.name}
-                          - specialization_owners.each do |so|
+                          - specialization_options.each do |so|
                             %li= link_to so.specialization.name, so.specialization, :class => 'ajax'
                   %td.admin.btn-group
                     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
