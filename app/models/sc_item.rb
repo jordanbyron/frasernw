@@ -80,6 +80,10 @@ class ScItem < ActiveRecord::Base
     where("sc_items.searchable = (?)", true)
   end
 
+  def available_to_divisions(divisions)
+    (divisions.include? division) || (shareable? && (divisions & divisions_sharing).present?)
+  end
+
   def mail_to_patient(current_user, patient_email)
     MailToPatientMailer.mail_to_patient(self, current_user, patient_email).deliver
   end
