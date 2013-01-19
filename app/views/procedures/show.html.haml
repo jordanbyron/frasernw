@@ -89,8 +89,12 @@
     init_category("#{sc_category.id}", #{sc_category.inline?}, #{@procedure.id});
   update_favorites(); });
 
-- specialist_tab_class = (has_specialists && !(procedure_specialization.specialization.open_to_clinic_tab_for_divisions(current_user_divisions) && has_clinics)) ? "active" : ""
-- clinic_tab_class = specialist_tab_class == "" ? "active" : ""
+- if has_clinics && procedure_specialization.specialization.open_to_clinic_tab_for_divisions(current_user_divisions)
+  - clinic_tab_class = "active"
+  - specialist_tab_class = ""
+- else
+  - specialist_tab_class = "active"
+  - clinic_tab_class = ""
 
 .tabbable
   %ul#content_tabs.nav.nav-tabs
@@ -115,7 +119,7 @@
       - assumed_procedure_specializations = @procedure.procedure_specializations.reject{ |ps| !ps.assumed? }
       
       .tab-content
-        #specialist_tab.tab-pane{:class => specialist_tab_class}
+        #specialist_tab.tab-pane
           .content
             .row
               .span8half
@@ -277,7 +281,7 @@
                     });
 
             
-        #clinic_tab.tab-pane{:class => clinic_tab_class}
+        #clinic_tab.tab-pane
         
           .content
             .row
@@ -547,7 +551,11 @@
                  
       %script{"type" => "text/javascript"}
         :plain
-          $(document).ready(function() { $('.tt').tooltip({trigger: 'manual'}) });
+          $(document).ready(function() { 
+            $('.tt').tooltip({trigger: 'manual'}) 
+            //show tab as appropriate for user items
+            $('#content_tabs a##{specialist_tab_class.present? ? "specialists" : "clinics"}').tab('show');
+          });
           
           function show_feedback(item_title, item_id)
           {

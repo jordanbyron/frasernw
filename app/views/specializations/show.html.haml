@@ -43,8 +43,12 @@
     $(document).ready(function() { init_tables(-1) });
     var should_show_others = false;
 
-- specialist_tab_class = (has_specialists && !(@specialization.open_to_clinic_tab_for_divisions(current_user_divisions) && has_clinics)) ? "active" : ""
-- clinic_tab_class = specialist_tab_class == "" ? "active" : ""
+- if has_clinics && @specialization.open_to_clinic_tab_for_divisions(current_user_divisions)
+  - clinic_tab_class = "active"
+  - specialist_tab_class = ""
+- else
+  - specialist_tab_class = "active"
+  - clinic_tab_class = ""
 
 -# TABS ARE USER SPECIFIC, BASED OFF CONTENT (OR LACK THEREOF)
 
@@ -77,7 +81,7 @@
         
       .tab-content
       
-        #specialist_tab.tab-pane{:class => specialist_tab_class} 
+        #specialist_tab.tab-pane 
         
           .content
             .row
@@ -286,7 +290,7 @@
                     $('.sct').click( function() { expand_city($(this).prop('checked'), [#{@specialization.id}], $(this).attr('id'), -1) });
                   });
             
-        #clinic_tab.tab-pane{:class => clinic_tab_class}
+        #clinic_tab.tab-pane
         
           .content
             .row
@@ -608,6 +612,9 @@
             $('#specialist_table').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
             $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0]]});
             $('.category_table').tablesorter({sortList: [[0,0],[1,0],[2,0]]});
+            //show tab as appropriate for user items
+            $('#content_tabs a##{specialist_tab_class.present? ? "specialists" : "clinics"}').tab('show');
+            
             //flip to a tab if appropriate
             var hash = window.location.hash;
             
