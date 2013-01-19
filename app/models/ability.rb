@@ -65,23 +65,41 @@ class Ability
              (review_item.item.instance_of?(Clinic) && (review_item.item.divisions & user.divisions).present?))
         end
         
-      end
-      
-      if user.admin_only? || user.user?
+        #landing page
+        can [:index, :faq, :terms_and_conditions], Front
+        
+        #can show pages, regardless of 'in progress'
+        can :show, [Specialization, Procedure, Specialist, Clinic, Hospital, Language, ScCategory, ScItem]
+        
+        #can print patient information
+        can :print_patient_information, [Specialist, Clinic]
+        
+        #can change name, email, password
+        #can [:change_name, :update_name], User
+        can [:change_email, :update_email], User
+        can [:change_password, :update_password], User
+        
+        #can add feedback
+        can [:create, :show], FeedbackItem
+        
+      elsif user.user?
         
         #user
          
         #landing page
         can [:index, :faq, :terms_and_conditions], Front
         
-        #can show pages
+        #can show pages that aren't in progress
         can :show, [Specialization, Procedure] do |entity|
           !entity.fully_in_progress_for_divisions(Division.all)
         end
         can :show, [Specialist, Clinic] do |entity|
           !entity.in_progress_for_divisions(entity.divisions)
         end
-        can :show, [Hospital, Language, ScCategory, ScItem]
+        can :show, [ScItem] do |item|
+          item.available_to_divisions(user.divisions)
+        end
+        can :show, [Hospital, Language, ScCategory]
 
         #can print patient information
         can :print_patient_information, [Specialist, Clinic]
@@ -94,7 +112,7 @@ class Ability
         #can add feedback
         can [:create, :show], FeedbackItem
         
-        #can update users they control
+        #can update specialists they control
         can [:update, :photo, :update_photo], Specialist do |specialist|
           specialist.controlling_users.include? user
         end
