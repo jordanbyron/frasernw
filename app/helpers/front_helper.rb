@@ -14,7 +14,7 @@ module FrontHelper
         if version.item_type == "Specialist"
           
           specialist = version.item
-          next if specialist.blank?
+          next if specialist.blank? || specialist.in_progress_for_divisions(specialist.divisions)
           
           if version.event == "create" && specialist.accepting_new_patients? && specialist.opened_this_year?
             
@@ -71,7 +71,7 @@ module FrontHelper
         elsif version.item_type == "Clinic"
           
           clinic = version.item
-          next if clinic.blank?
+          next if clinic.blank? || clinic.in_progress_for_divisions(clinic.divisions)
           
           if (version.event == "create" || version.event == "update") && clinic.accepting_new_patients? && clinic.opened_this_year?
             
