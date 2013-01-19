@@ -23,9 +23,8 @@ class Ability
         
         #can edit specialists, clinics, hospitals, and offices in their division
         can :manage, [Specialist, Clinic, Hospital, Office] do |entity|
-          (entity.divisions & user.divisions).present?
+          entity.divisions.blank? || (entity.divisions & user.divisions).present?
         end
-        
         can :create, [Specialist, Clinic, Hospital, Office]
         
         #so that an admin can list offices by city for those in their division
@@ -39,6 +38,7 @@ class Ability
         can :manage, ScItem do |item|
           user.divisions.include? item.division
         end
+        can :create, ScItem
         
         #can edit non-admin/super-admin users
         can :manage, User do |user|
@@ -96,7 +96,7 @@ class Ability
         can :show, [Specialist, Clinic] do |entity|
           !entity.in_progress_for_divisions(entity.divisions)
         end
-        can :show, [ScItem] do |item|
+        can :show, ScItem do |item|
           item.available_to_divisions(user.divisions)
         end
         can :show, [Hospital, Language, ScCategory]
