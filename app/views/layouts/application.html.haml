@@ -201,7 +201,7 @@
                       - if can? :read, ScCategory
                         %li= link_to "Content Categories", sc_categories_path, :class => "sc_category ajax"
                       - if can? :read, ScItem
-                        - if current_user_is_super_admin? && Division.all.length > 0
+                        - if current_user_is_super_admin? && Division.all.length > 1
                           %li
                             = link_to "Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
@@ -212,7 +212,7 @@
                             %ul.dropdown-menu
                               - Division.all.each do |division|
                                 %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
-                        - elsif user_divisions.length > 0
+                        - elsif user_divisions.length > 1
                           %li
                             = link_to "Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
@@ -223,9 +223,9 @@
                             %ul.dropdown-menu
                               - user_divisions.each do |division|
                                 %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
-                        - elsif user_divisions.length == 1
+                        - else
                           %li= link_to "Content Items", sc_items_path(user_divisions.first), :class => "sc_item ajax"
-                          - if Division.all.length > 0
+                          - if Division.all.length > 1
                             %li= link_to "Manage Shared Content Items", shared_content_items_path(user_divisions.first), :class => "sc_item ajax"
                   
                 - dropdown_categories = ScCategory.global_resources_dropdown.reject{ |category| category.all_sc_items_in_divisions(user_divisions).blank? }
@@ -310,7 +310,7 @@
                     
                     %li.nav-header Settings
                     -# %li= link_to "Change name", change_name_path, :class => 'change_name ajax'
-                    - if Division.all.length > 0
+                    - if Division.all.length > 1
                       %li= link_to "Change local referral area", change_local_referral_area_path, :class => 'change_local_referral_area ajax'
                     %li= link_to "Change e-mail address", change_email_path, :class => 'change_email ajax'
                     %li= link_to "Change password", change_password_path, :class => 'change_password ajax'

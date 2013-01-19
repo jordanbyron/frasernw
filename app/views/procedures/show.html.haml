@@ -252,7 +252,7 @@
                           Hospital:
                           %select.sa#hospital_associations
                   
-                  - if Division.all.length > 0
+                  - if Division.all.length > 1
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-cities"}
                         Expand Search Area
@@ -417,7 +417,7 @@
                           %label.half
                             %input.cl{"type" => "checkbox", "id" => "cl#{l.id}_"}= l.name
                           
-                  - if Division.all.length > 0
+                  - if Division.all.length > 1
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-cities"}
                         Expand Search Area
