@@ -51,8 +51,8 @@ ActiveRecord::Schema.define(:version => 20130116024816) do
     t.timestamp "updated_at"
     t.string    "investigation"
     t.integer   "procedure_specialization_id"
-    t.integer   "waittime_mask"
-    t.integer   "lagtime_mask"
+    t.integer   "waittime_mask",               :default => 0
+    t.integer   "lagtime_mask",                :default => 0
   end
 
   add_index "capacities", ["procedure_specialization_id"], :name => "index_capacities_on_procedure_specialization_id"
@@ -271,8 +271,8 @@ ActiveRecord::Schema.define(:version => 20130116024816) do
     t.timestamp "updated_at"
     t.string    "investigation"
     t.integer   "procedure_specialization_id"
-    t.integer   "waittime_mask"
-    t.integer   "lagtime_mask"
+    t.integer   "waittime_mask",               :default => 0
+    t.integer   "lagtime_mask",                :default => 0
   end
 
   add_index "focuses", ["clinic_id"], :name => "index_focuses_on_clinic_id"
@@ -339,16 +339,16 @@ ActiveRecord::Schema.define(:version => 20130116024816) do
   end
 
   create_table "news_items", :force => true do |t|
-    t.date     "start_date"
-    t.date     "end_date"
-    t.string   "title"
-    t.text     "body"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "show_start_date", :default => true
-    t.boolean  "show_end_date",   :default => true
-    t.integer  "type_mask"
-    t.integer  "division_id"
+    t.date      "start_date"
+    t.date      "end_date"
+    t.string    "title"
+    t.text      "body"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.boolean   "show_start_date", :default => true
+    t.boolean   "show_end_date",   :default => true
+    t.integer   "type_mask"
+    t.integer   "division_id"
   end
 
   create_table "offices", :force => true do |t|
@@ -646,13 +646,13 @@ ActiveRecord::Schema.define(:version => 20130116024816) do
   add_index "specialists", ["referral_clinic_id"], :name => "index_specialists_on_referral_clinic_id"
 
   create_table "specialization_options", :force => true do |t|
-    t.integer  "specialization_id"
-    t.integer  "owner_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "division_id"
-    t.boolean  "in_progress",        :default => false
-    t.boolean  "open_to_clinic_tab", :default => false
+    t.integer   "specialization_id"
+    t.integer   "owner_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.integer   "division_id"
+    t.boolean   "in_progress",        :default => false
+    t.boolean   "open_to_clinic_tab", :default => false
   end
 
   create_table "specializations", :force => true do |t|
