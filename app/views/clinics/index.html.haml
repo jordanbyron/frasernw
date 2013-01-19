@@ -35,8 +35,10 @@
                     %td= link_to clinic.name, clinic_path(clinic), :class => 'ajax'
                     %td= clinic.city.present? ? clinic.city.name : ""
                     %td.admin.btn-group
-                      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path((clinic)), :class => "btn btn-mini ajax")
-                      = link_to("<i class='icon-trash'></i>".html_safe + " Delete", clinic, :confirm => "Delete #{clinic.name}?", :method => :delete, :class => "btn btn-mini")
+                      - if can? :update, clinic
+                        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path((clinic)), :class => "btn btn-mini ajax")
+                      - if can? :destroy, clinic
+                        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", clinic, :confirm => "Delete #{clinic.name}?", :method => :delete, :class => "btn btn-mini")
 
   - else
   
@@ -55,5 +57,7 @@
             %td= link_to clinic.name, clinic_path(clinic), :class => 'ajax'
             %td= clinic.city.present? ? clinic.city.name : ""
             %td.admin.btn-group
-              = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path((clinic)), :class => "btn btn-mini ajax")
-              = link_to("<i class='icon-trash'></i>".html_safe + " Delete", clinic, :confirm => "Delete #{clinic.name}?", :method => :delete, :class => "btn btn-mini")
+              - if can? :update, clinic
+                = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path((clinic)), :class => "btn btn-mini ajax")
+              - if can? :destroy, clinic
+                = link_to("<i class='icon-trash'></i>".html_safe + " Delete", clinic, :confirm => "Delete #{clinic.name}?", :method => :delete, :class => "btn btn-mini")
