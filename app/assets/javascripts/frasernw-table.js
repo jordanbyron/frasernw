@@ -295,23 +295,34 @@ function update_healthcare_providers(prefix, city_healthcare_providers)
   }
 }
 
-function expand_city(is_checked, specialization_id, city_id, procedure_filter)
+function expand_city(is_checked, specialization_ids, city_id, procedure_filter)
 {
   var $body = $(document.body);
   
   if (filtering.current_cities[city_id.toString()] === undefined)
   {
+    if (specialization_ids.length == 0)
+    {
+      return;
+    }
     //we need to load it
     filtering.current_cities[city_id.toString()] = true;
     $body.addClass('loading');
     
-    $.getScript("/specialties/" + specialization_id + "/cities/" + city_id + ".js", function( data, textStatus, jqxhr){
+    for(var i = 0; i < specialization_ids.length - 1; ++i)
+    {
+      $.getScript("/specialties/" + specialization_ids[i] + "/cities/" + city_id + ".js", function( data, textStatus, jqxhr){
+        //this all needs to happen in this callback function
+        add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter);
+        add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter);
+      });
+    }
+    $.getScript("/specialties/" + specialization_ids[specialization_ids.length - 1] + "/cities/" + city_id + ".js", function( data, textStatus, jqxhr){
       //this all needs to happen in this callback function
       add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter);
       add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter);
-                
+      //update UI in the final load
       update_ui(procedure_filter);
-      
       $body.removeClass('loading');
     });
   }

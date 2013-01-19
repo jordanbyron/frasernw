@@ -266,7 +266,7 @@
                           
                   .filter-group
                     %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-cities"}
-                      Expand Search Cities
+                      Expand Search Area
                     #specialist-filter-cities.collapsable.collapse
                       .filter-group-content
                         - City.all.each do |c|
@@ -282,7 +282,7 @@
                       update_table('s', 'specialist', '#{@specialization.member_name.uncapitalize_first_letter.pluralize}');
                     }
                     $('.sp, .sc, .sr, .ss, .si, .ssh, .sl, .sa').click( update_custom_specialist_table );
-                    $('.sct').click( function() { expand_city($(this).prop('checked'), #{@specialization.id}, $(this).attr('id'), -1) });
+                    $('.sct').click( function() { expand_city($(this).prop('checked'), [#{@specialization.id}], $(this).attr('id'), -1) });
                   });
             
         #clinic_tab.tab-pane{:class => clinic_tab_class}
@@ -463,11 +463,22 @@
                         - Language.all.each do |l|
                           %label.half
                             %input.cl{"type" => "checkbox", "id" => "cl#{l.id}_"}= l.name
+                          
+                  .filter-group
+                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-cities"}
+                      Expand Search Area
+                    #clinic-filter-cities.collapsable.collapse
+                      .filter-group-content
+                        - City.all.each do |c|
+                          %label.half
+                            = check_box_tag c.id, c.id, (user_cities.include? c), :class => "cct"
+                            = c.name
 
               %script{"type" => "text/javascript"}
                 :plain
                   $(document).ready(function() {
                     $('.cp, .cc, .cr, .cd, .csh, .ch, .ci, .cl').click( update_clinic_table );
+                    $('.cct').click( function() { expand_city($(this).prop('checked'), [#{@specialization.id}], $(this).attr('id'), -1) });
                   });
 
         - ScCategory.specialty.each do |sc_category|
