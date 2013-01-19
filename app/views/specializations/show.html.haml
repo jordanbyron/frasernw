@@ -264,15 +264,16 @@
                           Hospital:
                           %select.sa#hospital_associations
                           
-                  .filter-group
-                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-cities"}
-                      Expand Search Area
-                    #specialist-filter-cities.collapsable.collapse
-                      .filter-group-content
-                        - City.all.each do |c|
-                          %label.half
-                            = check_box_tag c.id, c.id, (user_cities.include? c), :class => "sct"
-                            = c.name
+                  - if Division.all.length > 1
+                    .filter-group
+                      %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-cities"}
+                        Expand Search Area
+                      #specialist-filter-cities.collapsable.collapse
+                        .filter-group-content
+                          - City.all.each do |c|
+                            %label.half
+                              = check_box_tag c.id, c.id, (user_cities.include? c), :class => "sct"
+                              = c.name
 
               %script{"type" => "text/javascript"}
                 :plain
@@ -463,16 +464,16 @@
                         - Language.all.each do |l|
                           %label.half
                             %input.cl{"type" => "checkbox", "id" => "cl#{l.id}_"}= l.name
-                          
-                  .filter-group
-                    %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-cities"}
-                      Expand Search Area
-                    #clinic-filter-cities.collapsable.collapse
-                      .filter-group-content
-                        - City.all.each do |c|
-                          %label.half
-                            = check_box_tag c.id, c.id, (user_cities.include? c), :class => "cct"
-                            = c.name
+                  - if Division.all.length > 1
+                    .filter-group
+                      %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-cities"}
+                        Expand Search Area
+                      #clinic-filter-cities.collapsable.collapse
+                        .filter-group-content
+                          - City.all.each do |c|
+                            %label.half
+                              = check_box_tag c.id, c.id, (user_cities.include? c), :class => "cct"
+                              = c.name
 
               %script{"type" => "text/javascript"}
                 :plain
