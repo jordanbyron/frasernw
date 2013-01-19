@@ -86,14 +86,14 @@ namespace :pathways do
   
     #utility expiration tasks
 
-    task :expire_specialization_pages => :environment do
+    task :specialization_pages => :environment do
       puts "Expiring specialization pages..."
       Specialization.all.each do |s|
         expire_fragment specialization_path(s)
       end
     end
     
-    task :expire_specialization_content => :environment do
+    task :specialization_content => :environment do
       puts "Expiring specialization content..."
       Specialization.all.each do |s|
         City.all.each do |c|
