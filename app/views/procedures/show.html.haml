@@ -68,6 +68,7 @@
 
 - has_specialists = specialists.length > 0
 - has_clinics = clinics.length > 0
+- open_to_clinics = (has_clinics && procedure_specialization.specialization.open_to_clinic_tab_for_divisions(current_user_divisions))
 
 #page_scripts
   %script{"type" => "text/javascript"}
@@ -89,21 +90,14 @@
     init_category("#{sc_category.id}", #{sc_category.inline?}, #{@procedure.id});
   update_favorites(); });
 
-- if has_clinics && procedure_specialization.specialization.open_to_clinic_tab_for_divisions(current_user_divisions)
-  - clinic_tab_class = "active"
-  - specialist_tab_class = ""
-- else
-  - specialist_tab_class = "active"
-  - clinic_tab_class = ""
-
 .tabbable
   %ul#content_tabs.nav.nav-tabs
     - if has_specialists
-      %li{:class => specialist_tab_class} 
+      %li
         %a#specialists_tab{"href" => "#specialist_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'specialists']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
           %span Specialists
     - if has_clinics
-      %li{:class => clinic_tab_class}
+      %li
         %a#clinics_tab{"href" => "#clinic_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'clinics']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
           %span Clinics
     - ScCategory.specialty.each do |sc_category|
@@ -554,7 +548,7 @@
           $(document).ready(function() { 
             $('.tt').tooltip({trigger: 'manual'}) 
             //show tab as appropriate for user items
-            $('#content_tabs a##{specialist_tab_class.present? ? "specialists" : "clinics"}').tab('show');
+            $('#content_tabs a##{open_to_clinics ? "clinics" : "specialists"}').tab('show');
           });
           
           function show_feedback(item_title, item_id)

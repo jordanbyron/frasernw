@@ -32,6 +32,7 @@
 - user_cities = current_user_cities_for_specialization(@specialization)
 - has_specialists = @specialization.specialists.in_cities(user_cities).length > 0
 - has_clinics = @specialization.clinics.in_cities(user_cities).length > 0
+- open_to_clinics = (has_clinics && procedure_specialization.specialization.open_to_clinic_tab_for_divisions(current_user_divisions))
 
 #page_scripts
   %script{"type" => "text/javascript"}
@@ -42,13 +43,6 @@
       = render 'division_lookup.js', :division => division, :specializations => [@specialization]
     $(document).ready(function() { init_tables(-1) });
     var should_show_others = false;
-
-- if has_clinics && @specialization.open_to_clinic_tab_for_divisions(current_user_divisions)
-  - clinic_tab_class = "active"
-  - specialist_tab_class = ""
-- else
-  - specialist_tab_class = "active"
-  - clinic_tab_class = ""
 
 -# TABS ARE USER SPECIFIC, BASED OFF CONTENT (OR LACK THEREOF)
 
@@ -63,11 +57,11 @@
 .tabbable
   %ul#content_tabs.nav.nav-tabs
     - if has_specialists
-      %li{:class => specialist_tab_class} 
+      %li 
         %a#specialists{"href" => "#specialist_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'specialists']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
           %span Specialists
     - if has_clinics
-      %li{:class => clinic_tab_class}
+      %li
         %a#clinics{"href" => "#clinic_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'clinics']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
           %span Clinics
     - categories.each do |sc_category|
@@ -613,7 +607,7 @@
             $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0]]});
             $('.category_table').tablesorter({sortList: [[0,0],[1,0],[2,0]]});
             //show tab as appropriate for user items
-            $('#content_tabs a##{specialist_tab_class.present? ? "specialists" : "clinics"}').tab('show');
+            $('#content_tabs a##{open_to_clinics ? "clinics" : "specialists"}').tab('show');
             
             //flip to a tab if appropriate
             var hash = window.location.hash;
