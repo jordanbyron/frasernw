@@ -25,7 +25,7 @@
     entry = { 
       "n" => specialist.billing_number_padded ? specialist.name + " - MSP #" + specialist.billing_number_padded: specialist.name, 
       "sp" => specialist.specializations.not_in_progress_for_divisions(specialist.divisions).map{ |s| s.id }, 
-      "c" => specialist.cities.map{ |city| city.id },
+      "c" => specialist.cities_for_display.map{ |city| city.id },
       "st" => specialist.status_class_hash,
       "id" => specialist.id,
       "go" => order_map["Specialists"] }

@@ -115,7 +115,7 @@
                           %td.wt= specialist.waittime
                           %td.c
                             %ul
-                              - specialist.cities.each do |city|
+                              - specialist.cities_for_display.each do |city|
                                 %li= city
                           
                 .span3.offsethalf
