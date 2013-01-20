@@ -1,6 +1,7 @@
 class ScItemsController < ApplicationController
   include ScCategoriesHelper
   load_and_authorize_resource
+  before_filter :authorize_division_for_user, :only => :index
   
   def index
     @division = Division.find(params[:division_id])
@@ -84,5 +85,13 @@ class ScItemsController < ApplicationController
     @sc_item = ScItem.find(params[:id])
     @sc_item.destroy
     redirect_to sc_items_url, :notice => "Successfully deleted content item."
+  end
+  
+  private
+  
+  def authorize_division_for_user
+    if !(current_user_is_super_admin? || (current_user_divisions.include? Division.find(params[:id])))
+      redirect_to root_url, :notice => "You are not allowed to access this page"
+    end
   end
 end
