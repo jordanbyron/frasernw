@@ -174,7 +174,7 @@
                                 });
                               });
                     
-                          #more_specialist_procedures.more.collapse
+                          #more_s_procedures.more.collapse
                             - @specialization.non_focused_procedure_specializations_arranged.each do |ps, children|
                               %label{:class => ps.specialist_wait_time && "custom_wait_time"}
                                 %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}_').collapse('toggle')", :name => "#{ps.specialist_wait_time? ? 1 : 0}"}
@@ -367,7 +367,7 @@
                               });
                             });
                   
-                        #more_clinic_procedures.more.collapse
+                        #more_c_procedures.more.collapse
                           - @specialization.non_focused_procedure_specializations_arranged.each do |ps, children|
                             %label{:class => ps.specialist_wait_time && "custom_wait_time"}
                               %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}_').collapse('toggle')", :name => "#{ps.specialist_wait_time? ? 1 : 0}"}
