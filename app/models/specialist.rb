@@ -144,7 +144,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def cities_for_display
-    if responded? && !retired && !permanently_unavailable?
+    if responded? && !retired? && !permanently_unavailable?
       offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
     elsif hospital_or_clinic_only?
       (hospitals.map{ |h| h.city } + clinics.map{ |c| c.city }).reject{ |i| i == nil }.uniq
