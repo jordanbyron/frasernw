@@ -121,6 +121,15 @@ cache("livesearch_global") do
     search_data << entry
   end
 
+  Hospital.all.each do |hospital|
+    entry = { 
+      "n" => hospital.name, 
+      "c" => hospital.city.present? ? hospital.city.id : "",
+      "id" => hospital.id,
+      "go" => order_map["Hospitals"] }
+    search_data << entry
+  end
+
   -%>
   var pathways_global_search_data = <%=search_data.to_json.html_safe %>
 
