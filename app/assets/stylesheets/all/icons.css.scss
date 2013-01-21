@@ -79,7 +79,7 @@
 .contact:before,
 .logout:before,
 .history:before,
-.stats:before,
+.reports:before,
 {
   font-family: FontAwesome;
   font-weight: normal;
@@ -162,7 +162,7 @@
   content: "\f07c";
 }
 
-.stats:before
+.reports:before
 {
   content: "\f080";
 }

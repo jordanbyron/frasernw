@@ -104,7 +104,7 @@ Frasernw::Application.routes.draw do
   match '/terms_and_conditions' => 'front#terms_and_conditions', :as => :terms_and_conditions
   match '/front/edit' => 'front#edit', :as => :edit_front
   match '/front/update' => 'front#update', :as => :update_front
-  match '/stats' => 'stats#index', :as => :stats
+  match '/reports' => 'reports#index', :as => :reports
 
   resources :user_sessions
 
