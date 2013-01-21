@@ -26,15 +26,12 @@
                 - specialists = specialization.specialists.in_divisions([division])
                 - next if specialists.blank?
                 %tr{ :class => specialization.fully_in_progress_for_divisions([division]) ? "in-progress" : "" }
-                  %th{:style => "width:50%"}
-                    %span{ :class => specialization.in_progress ? "in-progress" : "" }=specialization.name= specialization.name
-                  %th{:style => "width:50%"} City
+                  %th{:style => "width:100%"}=specialization.name
                   %th.admin
 
                 - specialists.each do |specialist|
                   %tr
                     %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
-                    %td= specialist.cities.map{ |c| c.name}.to_sentence
                     %td.admin.btn-group
                       - if can? :update, specialist
                         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
@@ -48,14 +45,12 @@
         - specialists = specialization.specialists.in_divisions(divisions)
         - next if specialists.blank?
         %tr{ :class => specialization.fully_in_progress_for_divisions(divisions) ? "in-progress" : "" }
-          %th{:style => "width:50%"}= specialization.name
-          %th{:style => "width:50%"} City
+          %th{:style => "width:100%"}=specialization.name
           %th.admin
 
         - specialists.each do |specialist|
           %tr
             %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
-            %td= specialist.cities.map{ |c| c.name}.to_sentence
             %td.admin.btn-group
               - if can? :update, specialist
                 = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path((specialist)), :class => "btn btn-mini ajax")

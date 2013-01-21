@@ -26,14 +26,12 @@
                 - clinics = specialization.clinics.in_divisions([division])
                 - next if clinics.blank?
                 %tr{ :class => specialization.fully_in_progress_for_divisions([division]) ? "in-progress" : "" }
-                  %th{:style => "width:75%"}= specialization.name
-                  %th{:style => "width:25%"} City
+                  %th{:style => "width:100%"}= specialization.name
                   %th.admin
 
                 - clinics.each do |clinic|
                   %tr
                     %td= link_to clinic.name, clinic_path(clinic), :class => 'ajax'
-                    %td= clinic.city.present? ? clinic.city.name : ""
                     %td.admin.btn-group
                       - if can? :update, clinic
                         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path((clinic)), :class => "btn btn-mini ajax")
@@ -47,15 +45,12 @@
         - clinics = specialization.clinics.in_divisions(current_user_divisions)
         - next if clinics.blank?
         %tr{ :class => specialization.fully_in_progress_for_divisions(divisions) ? "in-progress" : "" }
-          %th{:style => "width:75%"}
-            %span{ :class => specialization.fully_in_progress_for_divisions(divisions) ? "in-progress" : "" }= specialization.name
-          %th{:style => "width:25%"} City
+          %th{:style => "width:100%"}= specialization.name
           %th.admin
 
         - clinics.each do |clinic|
           %tr
             %td= link_to clinic.name, clinic_path(clinic), :class => 'ajax'
-            %td= clinic.city.present? ? clinic.city.name : ""
             %td.admin.btn-group
               - if can? :update, clinic
                 = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path((clinic)), :class => "btn btn-mini ajax")
