@@ -42,7 +42,7 @@
   
     %table.table.table-condensed.table-striped
       - Specialization.all.each do |specialization|
-        - specialists = specialization.specialists.in_divisions(divisions) + specialization.specialists.reject{ |s| s.cities.length > 0 }
+        - specialists = specialization.specialists
         - next if specialists.blank?
         %tr{ :class => specialization.fully_in_progress_for_divisions(divisions) ? "in-progress" : "" }
           %th{:style => "width:100%"}=specialization.name
