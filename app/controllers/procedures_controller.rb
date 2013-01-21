@@ -43,9 +43,9 @@ class ProceduresController < ApplicationController
     @procedure = Procedure.find(params[:id])
     ProcedureSweeper.instance.before_controller_update(@procedure)
     params[:procedure][:all_procedure_specializations_attributes].each{ |so_key, so_value|
-      if so_value[:mapped].blank?
-        so_value[:mapped] = 0
-      end
+      so_value[:mapped] = 0 if so_value[:mapped].blank?
+      so_value[:specialist_wait_time] = 0 if so_value[:specialist_wait_time].blank?
+      so_value[:clinic_wait_time] = 0 if so_value[:clinic_wait_time].blank?
     }
     
     if @procedure.update_attributes(params[:procedure])
