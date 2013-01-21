@@ -23,7 +23,7 @@
           .tab-pane{:id => "#{division.id}_tab", :class => (division == first_division) && "active"} 
             %table.table.table-condensed.table-striped
               - Specialization.all.each do |specialization|
-                - specialists = specialization.specialists.in_divisions([division])
+                - specialists = specialization.specialists.in_divisions([division]) + specialization.specialists.reject{ |s| s.cities.length > 0 }
                 - next if specialists.blank?
                 %tr{ :class => specialization.fully_in_progress_for_divisions([division]) ? "in-progress" : "" }
                   %th{:style => "width:100%"}=specialization.name
@@ -42,7 +42,7 @@
   
     %table.table.table-condensed.table-striped
       - Specialization.all.each do |specialization|
-        - specialists = specialization.specialists.in_divisions(divisions)
+        - specialists = specialization.specialists.in_divisions(divisions) + specialization.specialists.reject{ |s| s.cities.length > 0 }
         - next if specialists.blank?
         %tr{ :class => specialization.fully_in_progress_for_divisions(divisions) ? "in-progress" : "" }
           %th{:style => "width:100%"}=specialization.name
