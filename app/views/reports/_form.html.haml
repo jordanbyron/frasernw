@@ -1,0 +1,100 @@
+= simple_form_for @report, :html => { :class => "form-horizontal ajax" } do |f|
+  - if not f.error_messages.blank?
+    .alert.alert-error= f.error_messages
+
+  = f.input :name
+  
+  = f.input :type_mask, as: :select, collection: Report::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
+  
+  #level
+    = f.input :level_mask, as: :select, collection: Report::LEVEL_HASH, label_method: :last, value_method: :first, :include_blank => false
+    #divison_level
+      = f.input :division,  as: :select, collection: Division.all, :include_blank => false
+    #city_level
+      = f.input :city,  as: :select, collection: City.all, :include_blank => false
+      
+  #user_type
+    - user_type_collection = {-1 => 'All Non-Admin Users', 0 => 'All Users' }.merge(User::TYPE_HASH)
+    = f.input :user_type_mask, as: :select, collection: user_type_collection, label_method: :last, value_method: :first, :include_blank => false
+      
+  #time_frame
+    = f.input :time_frame_mask, as: :select, collection: Report::TIME_FRAME_HASH, label_method: :last, value_method: :first, :include_blank => false
+    #custom_time_frame
+      = f.input :start_date, :as => :datepicker
+      = f.input :end_date, :as => :datepicker
+
+  .form-actions
+    = f.button :submit, :class => "btn btn-primary"
+    = link_to 'Cancel', reports_path, :class => "btn btn-danger ajax"
+    
+  %script{"type" => "text/javascript"}
+    :plain
+      var change_type = function() 
+      {
+        var val = $(this).val();
+        
+        if ( val == 1 )
+        {
+          $('#level').show()
+          $('#user_type').show()
+          $('#time_frame').show()
+        }
+        else
+        {
+          $('#level').hide()
+          $('#user_type').hide()
+          $('#time_frame').hide()
+        }
+      }
+      
+      $("#report_type_mask").each( change_type )
+      $("#report_type_mask").click( change_type )
+      
+      var change_level = function() 
+      {
+        var val = $(this).val();
+        
+        if ( val == 1 )
+        {
+          $('#divison_level').hide();
+          $('#city_level').hide();
+        }
+        else if (val == 2)
+        {
+          $('#divison_level').show();
+          $('#city_level').hide();
+        }
+        else if (val == 3)
+        {
+          $('#divison_level').hide();
+          $('#city_level').show();
+        }
+      }
+      
+      $("#report_level_mask").each( change_level )
+      $("#report_level_mask").click( change_level )
+      
+      var change_time_frame = function() 
+      {
+        var val = $(this).val();
+        
+        if ( val == 6 )
+        {
+          $('#custom_time_frame').show();
+        }
+        else 
+        {
+          $('#custom_time_frame').hide();
+        }
+      }
+      
+      $("#report_time_frame_mask").each( change_time_frame )
+      $("#report_time_frame_mask").click( change_time_frame )
+      
+      $(document).ready(function() { 
+        $("input.datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
+      });
+      
+      
+      
+      

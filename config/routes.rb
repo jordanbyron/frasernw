@@ -39,6 +39,7 @@ Frasernw::Application.routes.draw do
   put   '/divisions/:id/update_shared' => 'divisions#update_shared', :as => 'update_shared'
   
   resources :news_items
+  resources :reports
   
   match '/specialists/:id/:token/edit'   => 'specialists_editor#edit',   :as => 'specialist_self_edit'
   put   '/specialists/:id/:token/update' => 'specialists_editor#update', :as => 'specialist_self_update'
@@ -104,7 +105,6 @@ Frasernw::Application.routes.draw do
   match '/terms_and_conditions' => 'front#terms_and_conditions', :as => :terms_and_conditions
   match '/front/edit' => 'front#edit', :as => :edit_front
   match '/front/update' => 'front#update', :as => :update_front
-  match '/reports' => 'reports#index', :as => :reports
 
   resources :user_sessions
 

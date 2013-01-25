@@ -172,6 +172,12 @@ en:
         member_name: "Specialist in the speciality (e.g. Allergist)"
       procedure:
         parent_id: "Parent Area of Practice"
+      report:
+        name: "Report name"
+        type_mask: "Report about"
+        level_mask: "Report on region"
+        user_type_mask: "Report on user category"
+        time_frame_mask: "Report on time period"
       user:
         email: "E-mail address"
         password: "Password"

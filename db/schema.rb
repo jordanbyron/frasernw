@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130116024816) do
+ActiveRecord::Schema.define(:version => 20130122001948) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -411,6 +411,20 @@ ActiveRecord::Schema.define(:version => 20130116024816) do
   end
 
   add_index "referral_forms", ["referrable_id", "referrable_type"], :name => "index_referral_forms_on_referrable_id_and_referrable_type"
+
+  create_table "reports", :force => true do |t|
+    t.string   "name"
+    t.integer  "type_mask"
+    t.integer  "level_mask"
+    t.integer  "division_id"
+    t.integer  "city_id"
+    t.integer  "user_type_mask"
+    t.integer  "time_frame_mask"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "review_items", :force => true do |t|
     t.string    "item_type"

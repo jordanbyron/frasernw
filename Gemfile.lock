@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/chrisle/gattica.git
+  revision: b91a644fc7aff08196adaec8440e79abb1a17b22
+  specs:
+    gattica (0.6.2)
+      hpricot
+
+GIT
   remote: git://github.com/thedarkone/rails-dev-boost.git
   revision: 60a39d477c267c407d4da870cfb700d3f50a9904
   specs:
@@ -122,6 +129,7 @@ GEM
       fog (>= 0.7.2)
       heroku (>= 2.1.4)
     hike (1.2.1)
+    hpricot (0.8.6)
     httparty (0.8.1)
       multi_json
       multi_xml
@@ -276,6 +284,7 @@ DEPENDENCIES
   dalli
   delayed_job_active_record
   exception_notification
+  gattica!
   guard
   guard-livereload
   guard-rspec

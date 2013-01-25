@@ -1,0 +1,12 @@
+- title "#{@report.name}"
+
+- if @data
+
+  %p
+    = @data.inspect
+
+  - @data.to_h['points'].each do |entry|
+    %p
+      %strong
+        = entry.to_h['title']
+      = entry.to_h['metrics'].first[:visits]

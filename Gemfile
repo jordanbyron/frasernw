@@ -77,3 +77,6 @@ end
 gem 'heroku_cloud_backup'
 
 gem 'ancestry'
+
+# Google Analytics
+gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
