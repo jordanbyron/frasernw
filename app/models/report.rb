@@ -6,7 +6,7 @@ class Report < ActiveRecord::Base
   belongs_to :city
   
   TYPE_HASH = {
-    1 => "General page piews",
+    1 => "General page views",
     2 => "Users",
     3 => "Specialties",
     4 => "Content items",
@@ -17,17 +17,23 @@ class Report < ActiveRecord::Base
   }
   
   def type
-    REPORT::LEVEL_HASH[level_mask]
+    Report::TYPE_HASH[type_mask]
+  end
+  
+  USER_TYPE_HASH = {-1 => 'All Non-Admin Users', 0 => 'All Users' }.merge(User::TYPE_HASH)
+  
+  def user_type
+    Report::USER_TYPE_HASH[user_type_mask]
   end
   
   LEVEL_HASH = {
-    1 => "System wide",
+    1 => "System-wide",
     2 => "Divisional",
     3 => "City",
   }
   
   def level
-    REPORT::LEVEL_HASH[level_mask]
+    Report::LEVEL_HASH[level_mask]
   end
   
   TIME_FRAME_HASH = {

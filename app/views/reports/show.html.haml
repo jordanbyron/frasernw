@@ -1,12 +1,24 @@
 - title "#{@report.name}"
 
-- if @data
+.content-wrapper
 
-  %p
-    = @data.inspect
+  %h2= @report.name
+  %h4= "#{@report.level} report on #{@report.type.downcase}"
+  %h4= "Reporting on #{@report.user_type.pluralize.downcase}"
+  %h4= "#{@report.start_date} - #{@report.end_date}"
 
-  - @data.to_h['points'].each do |entry|
+  - if @h
+  
+    = javascript_include_tag :highcharts
+    = high_chart("my_id", @h)
+
+  %p.admin.btn-group
+    - if can? :update, @report
+      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Report", edit_report_path(@report), :class => "btn ajax")
+    - if can? :destroy, @report
+      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Report", @report, :confirm => "Delete #{@report.name}?", :method => :delete, :class => "btn")
+
+  - if @data
+
     %p
-      %strong
-        = entry.to_h['title']
-      = entry.to_h['metrics'].first[:visits]
+      = @data.inspect

@@ -8,3 +8,4 @@ load(heroku_env) if File.exists?(heroku_env)
 Frasernw::Application.initialize!
 
 Time::DATE_FORMATS[:schedule_time] = "%l:%M %p"
+Date::DATE_FORMATS[:yyyymmdd] = "%Y%m%d"

@@ -9,13 +9,12 @@
   #level
     = f.input :level_mask, as: :select, collection: Report::LEVEL_HASH, label_method: :last, value_method: :first, :include_blank => false
     #divison_level
-      = f.input :division,  as: :select, collection: Division.all, :include_blank => false
+      = f.input :division_id,  as: :select, collection: Division.all, :include_blank => false
     #city_level
-      = f.input :city,  as: :select, collection: City.all, :include_blank => false
+      = f.input :city_id,  as: :select, collection: City.all, :include_blank => false
       
   #user_type
-    - user_type_collection = {-1 => 'All Non-Admin Users', 0 => 'All Users' }.merge(User::TYPE_HASH)
-    = f.input :user_type_mask, as: :select, collection: user_type_collection, label_method: :last, value_method: :first, :include_blank => false
+    = f.input :user_type_mask, as: :select, collection: Report::USER_TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
       
   #time_frame
     = f.input :time_frame_mask, as: :select, collection: Report::TIME_FRAME_HASH, label_method: :last, value_method: :first, :include_blank => false
