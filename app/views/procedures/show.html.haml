@@ -63,8 +63,8 @@
 
 - user_cities = current_user_cities_for_specializations(@procedure.specializations)
 
-- specialists = @procedure.all_specialists_in_cities(user_cities).reject{ |s| (!current_user_is_admin? && !s.not_in_progress_for_divisions(current_user_divisions)) || !s.show_in_table? }
-- clinics = @procedure.all_clinics_in_cities(user_cities).reject{ |c| (!current_user_is_admin? && !c.not_in_progress_for_divisions(current_user_divisions)) || !c.show_in_table? }
+- specialists = @procedure.all_specialists_in_cities(user_cities).reject{ |s| (!current_user_is_admin? && s.in_progress_for_divisions(current_user_divisions)) || !s.show_in_table? }
+- clinics = @procedure.all_clinics_in_cities(user_cities).reject{ |c| (!current_user_is_admin? && c.in_progress_for_divisions(current_user_divisions)) || !c.show_in_table? }
 
 - has_specialists = specialists.length > 0
 - has_clinics = clinics.length > 0
