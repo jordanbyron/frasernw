@@ -68,7 +68,7 @@
 
 - has_specialists = specialists.length > 0
 - has_clinics = clinics.length > 0
-- open_to_clinics = (has_clinics && procedure_specialization.specialization.open_to_clinic_tab_for_divisions(current_user_divisions))
+- open_to_clinics = (has_clinics && procedure_specialization.specialization.open_to_clinic_tab_for_divisions(current_user_divisions)) || ((!has_specialists) && has_clinics)
 
 #page_scripts
   %script{"type" => "text/javascript"}
