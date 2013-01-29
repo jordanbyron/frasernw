@@ -58,8 +58,8 @@ class ClinicsController < ApplicationController
         params[:focuses_mapped].each do |updated_focus, value|
           focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
           focus.investigation = params[:focuses_investigations][updated_focus]
-          focus.waittime_mask = params[:focuses_waittime][updated_focus] if focus[:focuses_waittime].present?
-          focus.lagtime_mask = params[:focuses_lagtime][updated_focus] if focus[:focuses_lagtime].present?
+          focus.waittime_mask = params[:focuses_waittime][updated_focus] if params[:focuses_waittime].present?
+          focus.lagtime_mask = params[:focuses_lagtime][updated_focus] if params[:focuses_lagtime].present?
           focus.save
           
           #save any other focuses that have the same procedure and are in a specialization our clinic is in
@@ -120,8 +120,8 @@ class ClinicsController < ApplicationController
         params[:focuses_mapped].each do |updated_focus, value|
           focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
           focus.investigation = params[:focuses_investigations][updated_focus]
-          focus.waittime_mask = params[:focuses_waittime][updated_focus] if focus[:focuses_waittime].present?
-          focus.lagtime_mask = params[:focuses_lagtime][updated_focus] if focus[:focuses_lagtime].present?
+          focus.waittime_mask = params[:focuses_waittime][updated_focus] if params[:focuses_waittime].present?
+          focus.lagtime_mask = params[:focuses_lagtime][updated_focus] if params[:focuses_lagtime].present?
           focus.save
           
           #save any other focuses that have the same procedure and are in a specialization our clinic is in
@@ -205,8 +205,8 @@ class ClinicsController < ApplicationController
       params[:focuses_mapped].each do |updated_focus, value|
         focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
         focus.investigation = params[:focuses_investigations][updated_focus]
-        focus.waittime_mask = params[:focuses_waittime][updated_focus] if focus[:focuses_waittime].present?
-        focus.lagtime_mask = params[:focuses_lagtime][updated_focus] if focus[:focuses_lagtime].present?
+        focus.waittime_mask = params[:focuses_waittime][updated_focus] if params[:focuses_waittime].present?
+        focus.lagtime_mask = params[:focuses_lagtime][updated_focus] if params[:focuses_lagtime].present?
         focus.save
       end
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
