@@ -17,6 +17,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(params[:user])
+    @user.divisions << Division.all.first if (Division.all.length == 1)
     if @user.save :validate => false #so we can avoid setting up with emails or passwords
       redirect_to @user, :notice => "User #{@user.name} successfully created."
     else
