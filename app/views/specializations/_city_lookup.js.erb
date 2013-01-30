@@ -23,7 +23,7 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
     specialization.specialists.in_cities([city]).reject{ |s| !s.show_in_table? }.each do |s|
       specialist_data[s.id] = Hash.new
       specialist_data[s.id]['attributes'] = specialist_filtering_attributes(s, false).join(' ')
-      specialist_data[s.id]['name'] = escape_javascript(s.name)
+      specialist_data[s.id]['name'] = s.name
       specialist_data[s.id]['specialties'] = s.specializations.map{ |sp| sp.id }
       specialist_data[s.id]['status_class'] = "#{s.status_class_hash}"
       specialist_data[s.id]['wait_time'] = "#{s.waittime_mask.present? ? s.waittime_mask : -1}"
@@ -40,7 +40,7 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
       other_specialists_in_cities(specialization, [city]).flatten.uniq.reject{ |s| !s.show_in_table? }.each do |s|
         specialist_data[s.id] = Hash.new
         specialist_data[s.id]['attributes'] = specialist_filtering_attributes(s, false).join(' ')
-        specialist_data[s.id]['name'] = escape_javascript(s.name)
+        specialist_data[s.id]['name'] = s.name
         specialist_data[s.id]['specialties'] = s.specializations.map{ |sp| sp.id }
         specialist_data[s.id]['status_class'] = "#{s.status_class_hash}"
         specialist_data[s.id]['wait_time'] = "#{s.waittime_mask.present? ? s.waittime_mask : -1}"
@@ -64,7 +64,7 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
     specialization.clinics.in_cities([city]).reject{ |c| !c.show_in_table? }.each do |c|
       clinic_data[c.id] = Hash.new
       clinic_data[c.id]['attributes'] = clinic_filtering_attributes(c).join(' ')
-      clinic_data[c.id]['name'] = escape_javascript(c.name)
+      clinic_data[c.id]['name'] = c.name
       clinic_data[c.id]['specialties'] = c.specializations.map{ |sp| sp.id }
       clinic_data[c.id]['status_class'] = "#{c.status_class_hash}"
       clinic_data[c.id]['wait_time'] = "#{c.waittime_mask.present? ? c.waittime_mask : -1}"

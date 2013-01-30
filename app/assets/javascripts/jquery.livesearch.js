@@ -224,15 +224,15 @@ $.fn.livesearch = function(options)
   function set_selected(index)
   {
     container.find('.search-result').each( function(i) {
-                                       if (i == index)
-                                       {
-                                         $(this).addClass('selected');
-                                       }
-                                       else
-                                       {
-                                         $(this).removeClass('selected');
-                                       }
-                                     });
+     if (i == index)
+     {
+       $(this).addClass('selected');
+     }
+     else
+     {
+       $(this).removeClass('selected');
+     }
+   });
   }
 };
 
@@ -302,6 +302,7 @@ var score_matches = function(string1, string2, fuzziness)
       var piece_score;
       
       var piece1_index = 0;
+      var bonuses = 0;
       
       while (piece1_index < piece1_length) 
       {
@@ -338,7 +339,21 @@ var score_matches = function(string1, string2, fuzziness)
         
         if (piece2_index == 0) 
         {
+          //matching the start of a search term
           ++start_of_word_matches;
+        }
+        
+        //bonuses!
+        if ((match_length >= 2) && (piece1_index == 0) && (piece2_index == 0))
+        {
+          //matching the start of a search term to the start of a term
+          bonuses += 0.1;
+          
+          if ((x == 0) && (y == 0))
+          {
+            //matched the start of our search to the start of the result
+            bonuses += 0.2;
+          }
         }
         
         // Left trim the already matched part of the string (forces sequential matching).
@@ -356,8 +371,8 @@ var score_matches = function(string1, string2, fuzziness)
       //penalize each match that isn't a start of string
       piece_score = total_character_score - ((num_matches-start_of_word_matches) * 0.1);
       
-      //take into account errors
-      piece_score = piece_score / fuzzies;
+      //take into account errors and bonuses
+      piece_score = (piece_score / fuzzies) + bonuses;
       
       best_match[x] = Math.max(piece_score, best_match[x]);
     }
@@ -372,40 +387,3 @@ var score_matches = function(string1, string2, fuzziness)
   
   return overall_score;
 };
-
-var levenshtein_distance = function(string1, string2) 
-{
-  var length1 = string1.length
-  var length2 = string2.length
-
-  var D = new Array(length1 + 1);
-  for (var i = 0; i <= length1; i++) 
-  {
-    D[i] = new Array(length2 + 1);
-    D[i][0] = i;
-  }
-  for (var j = 0; j <= length2; j++) 
-  {
-    D[0][j] = j;
-  }
-  
-  for (var j = 1; j <= length2; ++j)
-  {
-    for (var i = 1; i <= length1; ++i)
-    {
-      var cost = string1.charAt(i) == string2.charAt(j) ? 0 : 1;
-      var cI = D[i-1][j] + 1; //insertion
-      var cD = D[i][j-1] + 1; //deletion
-      var cS = D[i-1][j-1] + cost; //substitution
-      if ( cI < cD )
-      {
-        D[i][j] = cI < cS ? cI : cS;
-      }
-      else
-      {
-        D[i][j] = cD < cS ? cD : cS;
-      }
-    }
-  }
-  return { score: D[length1][length2], matches: [] };
-}
