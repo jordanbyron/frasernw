@@ -2,7 +2,8 @@
 
 - procedure_specialization = @procedure.procedure_specializations.first || ProcedureSpecialization.first
 - procedure_specializations = @procedure.procedure_specializations.reject{ |ps| !current_user_is_admin? && ps.specialization.fully_in_progress_for_divisions(current_user_divisions) }
-    
+- assumed_specialization_ids = procedure_specializations.reject{ |ps| !ps.assumed? }.map{ |ps| ps.specialization.id }   
+
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
@@ -77,7 +78,7 @@
       = render 'specializations/city_lookup.js', :city => city, :specializations => procedure_specializations.map{|ps| ps.specialization}, :other => false
     - current_user_divisions.each do |division|
       = render 'specializations/division_lookup.js', :division => division, :specializations => procedure_specializations.map{|ps| ps.specialization}
-    $(document).ready(function() { init_tables(#{@procedure.id}) });
+    $(document).ready(function() { init_tables(#{@procedure.id}, [#{assumed_specialization_ids.join(',')}]) });
     var should_show_others = false;
 
 -# TABS ARE USER SPECIFIC, BASED OFF CONTENT (OR LACK THEREOF)
@@ -270,7 +271,7 @@
                         update_table('s', 'specialist', '#{member_name}');
                       }
                       $('.sp, .sc, .sr, .ss, .si, .ssh, .sl, .sa').click( update_custom_specialist_table );
-                      $('.sct').click( function() { expand_city($(this).prop('checked'), [#{@procedure.specializations.map{ |s| s.id }.join(',')}], $(this).attr('id'), #{@procedure.id}) });
+                      $('.sct').click( function() { expand_city($(this).prop('checked'), [#{@procedure.specializations.map{ |s| s.id }.join(',')}], $(this).attr('id'), #{@procedure.id}, [#{assumed_specialization_ids.join(',')}]) });
                       $(document).ready(update_custom_specialist_table);
                     });
 
@@ -430,7 +431,7 @@
                   :plain
                     $(document).ready(function() {
                       $('.cp, .cc, .cr, .cd, .csh, .ch, .ci, .cl').click( update_clinic_table );
-                      $('.cct').click( function() { expand_city($(this).prop('checked'), [#{@procedure.specializations.map{ |s| s.id }.join(',')}], $(this).attr('id'), #{@procedure.id}) });
+                      $('.cct').click( function() { expand_city($(this).prop('checked'), [#{@procedure.specializations.map{ |s| s.id }.join(',')}], $(this).attr('id'), #{@procedure.id}, [#{assumed_specialization_ids.join(',')}]) });
                     });
                     $(document).ready(update_clinic_table);
 

@@ -1,4 +1,4 @@
-function init_tables(procedure_filter)
+function init_tables(procedure_filter, assumed_specialties)
 {
   for(var city_id in filtering.current_cities)
   {
@@ -7,11 +7,11 @@ function init_tables(procedure_filter)
       //'unloaded' city
       continue
     }
-    add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter);
-    add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter);
+    add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter, assumed_specialties);
+    add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter, assumed_specialties);
   }
   
-  update_ui(procedure_filter);
+  update_ui();
 }
 
 function clear_tables()
@@ -23,7 +23,7 @@ function clear_tables()
   $('#clinic_table').trigger('update');
 }
 
-function update_ui(procedure_filter)
+function update_ui()
 {
   var five_columns = (filtering.current_specialties.length > 1);
   
@@ -42,7 +42,7 @@ function update_ui(procedure_filter)
   $('#clinic_table').trigger('sorton', five_columns ? [[[0,0],[1,0],[2,0],[3,0]]] : [[[0,0],[2,0],[3,0],[4,0]]]);
 }
 
-function add_entities_from_city(prefix, entity_name, entity_data, city_id, procedure_filter)
+function add_entities_from_city(prefix, entity_name, entity_data, city_id, procedure_filter, assumed_specialties)
 {
   var five_columns = (filtering.current_specialties.length > 1);
   for(var entity_id in entity_data[city_id])
@@ -50,9 +50,9 @@ function add_entities_from_city(prefix, entity_name, entity_data, city_id, proce
     var entity = entity_data[city_id][entity_id];
     if (procedure_filter != -1)
     {
-      if (entity.attributes.indexOf(prefix + 'p' + procedure_filter + '_') == -1)
+      if ((assumed_specialties.intersect(entity.specialties).length == 0) && (entity.attributes.indexOf(prefix + 'p' + procedure_filter + '_') == -1))
       {
-        //the entity doesn't perform the procedure we are filtering on, skip it
+        //the entity doesn't perform the procedure we are filtering on, nor any of the assume specialties, skip it
         continue;
       }
     }
@@ -295,7 +295,7 @@ function update_healthcare_providers(prefix, city_healthcare_providers)
   }
 }
 
-function expand_city(is_checked, specialization_ids, city_id, procedure_filter)
+function expand_city(is_checked, specialization_ids, city_id, procedure_filter, assumed_specialties)
 {
   var $body = $(document.body);
   
@@ -313,14 +313,14 @@ function expand_city(is_checked, specialization_ids, city_id, procedure_filter)
     {
       $.getScript("/specialties/" + specialization_ids[i] + "/cities/" + city_id + ".js", function( data, textStatus, jqxhr){
         //this all needs to happen in this callback function
-        add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter);
-        add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter);
+        add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter, assumed_specialties);
+        add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter, assumed_specialties);
       });
     }
     $.getScript("/specialties/" + specialization_ids[specialization_ids.length - 1] + "/cities/" + city_id + ".js", function( data, textStatus, jqxhr){
       //this all needs to happen in this callback function
-      add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter);
-      add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter);
+      add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter, assumed_specialties);
+      add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter, assumed_specialties);
       //update UI in the final load
       update_ui(procedure_filter);
       $body.removeClass('loading');
@@ -330,8 +330,8 @@ function expand_city(is_checked, specialization_ids, city_id, procedure_filter)
   {
     //we have it loaded, just show it
     filtering.current_cities[city_id.toString()] = true;
-    add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter);
-    add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter);
+    add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter, assumed_specialties);
+    add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter, assumed_specialties);
     update_ui(procedure_filter);
   }
   else
