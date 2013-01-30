@@ -4,9 +4,11 @@
 
   %h2= @user.name
 
-  %p.no_indent.space
-    %strong Email address:
-    = @user.email
+  - if !@user.pending?
+    %p.no_indent.space
+      %strong Email address:
+      = @user.email
+      
   %p.no_indent.space
     %strong Role:
     = @user.role_full
