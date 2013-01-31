@@ -195,7 +195,7 @@
               
                 - if focus.waittime.present? || focus.lagtime.present?
                   %p.space
-                    %strong= "#{focus.procedure_specialization.procedure.name}:"
+                    %strong= "#{focus.procedure_specialization.procedure.full_name}:"
                 
                   -if focus.waittime.present?
                     %p
