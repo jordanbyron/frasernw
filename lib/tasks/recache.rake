@@ -105,7 +105,7 @@ namespace :pathways do
       end
     end
     
-    task :specific_specialization, :specialization_id do |t, args|
+    task :specific_specialization, :specialization_id, :needs => :environment do |t, args|
       specialization_id = args[:specialization_id] || -1
       if specialization_id == -1
         puts "Specify a specialization id with :specific_specialization[specialization_id]"
