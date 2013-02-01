@@ -273,7 +273,7 @@
               
                 - if capacity.waittime.present? || capacity.lagtime.present?
                   %p.space
-                    %strong= "#{capacity.procedure_specialization.procedure.name}:"
+                    %strong= "#{capacity.procedure_specialization.procedure.full_name}:"
                 
                   -if capacity.waittime.present?
                     %p
