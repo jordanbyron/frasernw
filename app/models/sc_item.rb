@@ -80,6 +80,18 @@ class ScItem < ActiveRecord::Base
     where("sc_items.searchable = (?)", true)
   end
 
+  def self.link
+    where("sc_items.type_mask = (?)", TYPE_LINK)
+  end
+
+  def self.markdown
+    where("sc_items.type_mask = (?)", TYPE_MARKDOWN)
+  end
+
+  def self.document
+    where("sc_items.type_mask = (?)", TYPE_DOCUMENT)
+  end
+
   def available_to_divisions(divisions)
     (divisions.include? division) || (shareable? && (divisions & divisions_sharing).present?)
   end
@@ -95,11 +107,15 @@ class ScItem < ActiveRecord::Base
       title
     end
   end
-  
+
+  TYPE_LINK = 1
+  TYPE_MARKDOWN = 2
+  TYPE_DOCUMENT = 3
+
   TYPE_HASH = {
-    1 => "Link",
-    2 => "Markdown",
-    3 => "Document",
+    TYPE_LINK => "Link",
+    TYPE_MARKDOWN => "Markdown",
+    TYPE_DOCUMENT => "Document",
   }
 
   def can_email?
@@ -196,15 +212,15 @@ class ScItem < ActiveRecord::Base
   end
 
   def link?
-    type_mask == 1
+    type_mask == ScItem::TYPE_LINK
   end
       
   def markdown?
-    type_mask == 2
+    type_mask == ScItem::TYPE_MARKDOWN
   end
       
   def document?
-    type_mask == 3
+    type_mask == ScItem::TYPE_DOCUMENT
   end
 
   def searchable?
