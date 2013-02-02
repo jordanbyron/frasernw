@@ -8,6 +8,8 @@
 //= require jquery-ui
 //= require jquery_ujs
 //= require jquery.scrollto.min.js
+//= require dataTables/jquery.dataTables
+//= require dataTables/jquery.dataTables.bootstrap
 //= require json2.js
 //= require jquery.history.js
 //= require ajaxify-html5.js

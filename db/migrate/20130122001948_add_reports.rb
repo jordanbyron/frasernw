@@ -11,6 +11,9 @@ class AddReports < ActiveRecord::Migration
       t.integer :time_frame_mask
       t.date    :start_date, :default => nil
       t.date    :end_date, :default => nil
+      t.boolean :by_user, :default => false
+      t.boolean :by_pageview, :default => false
+      t.boolean :only_shared_care, :default => false
       
       t.timestamps
     end

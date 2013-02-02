@@ -21,6 +21,15 @@
     #custom_time_frame
       = f.input :start_date, :as => :datepicker
       = f.input :end_date, :as => :datepicker
+      
+  #by_user
+    = f.input :by_user
+      
+  #by_pageview
+    = f.input :by_pageview
+    
+  #content
+    = f.input :only_shared_care
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
@@ -34,15 +43,32 @@
         
         if ( val == 1 )
         {
+          //general page views
           $('#level').show()
           $('#user_type').show()
           $('#time_frame').show()
+          $('#by_user').show()
+          $('#by_pageview').hide()
+          $('#content').hide()
+        }
+        else if ( val == 4 )
+        {
+          //content items
+          $('#level').show()
+          $('#user_type').show()
+          $('#time_frame').show()
+          $('#by_user').hide()
+          $('#by_pageview').show()
+          $('#content').show()
         }
         else
         {
           $('#level').hide()
           $('#user_type').hide()
           $('#time_frame').hide()
+          $('#by_user').hide()
+          $('#by_pageview').hide()
+          $('#content').hide()
         }
       }
       

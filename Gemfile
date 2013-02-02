@@ -81,3 +81,4 @@ gem 'ancestry'
 # Google Analytics
 gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
 gem 'lazy_high_charts'
+gem 'jquery-datatables-rails'

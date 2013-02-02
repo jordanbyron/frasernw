@@ -11,14 +11,42 @@
   
     = javascript_include_tag :highcharts
     = high_chart("my_id", @h)
+    
+  - if @report.by_user
+
+    %table#user_table.table.table-condensed
+
+    %script{"type" => "text/javascript"}
+      :plain
+        $('#user_table').dataTable( {
+        "aaData": #{@user_results.to_json.html_safe},
+        "aoColumns": [
+          { "sTitle": "Name", "sWidth": "50%" },
+          { "sTitle": "Visits" },
+          { "sTitle": "Visitors" },
+          { "sTitle": "Pageviews" }
+        ],
+        "asSorting": [[1,'desc']],
+        "sPaginationType": "bootstrap"
+      } );
+      
+  - if @report.by_pageview
+
+    %table#pageviews_table.table.table-condensed
+
+    %script{"type" => "text/javascript"}
+      :plain
+        $('#pageviews_table').dataTable( {
+        "aaData": #{@by_page_pageviews.to_json.html_safe},
+        "aoColumns": [
+          { "sTitle": "Name", "sWidth": "75%" },
+          { "sTitle": "Pageviews" }
+        ],
+        "sPaginationType": "bootstrap"
+      } );
 
   %p.admin.btn-group
     - if can? :update, @report
       = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Report", edit_report_path(@report), :class => "btn ajax")
     - if can? :destroy, @report
       = link_to("<i class='icon-trash'></i>".html_safe + " Delete Report", @report, :confirm => "Delete #{@report.name}?", :method => :delete, :class => "btn")
-
-  - if @data
-
-    %p
-      = @data.inspect
