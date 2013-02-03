@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130130194714) do
+ActiveRecord::Schema.define(:version => 20130203191905) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -412,6 +412,23 @@ ActiveRecord::Schema.define(:version => 20130130194714) do
 
   add_index "referral_forms", ["referrable_id", "referrable_type"], :name => "index_referral_forms_on_referrable_id_and_referrable_type"
 
+  create_table "reports", :force => true do |t|
+    t.string   "name"
+    t.integer  "type_mask"
+    t.integer  "level_mask"
+    t.integer  "division_id"
+    t.integer  "city_id"
+    t.integer  "user_type_mask"
+    t.integer  "time_frame_mask"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.boolean  "by_user",          :default => false
+    t.boolean  "by_pageview",      :default => false
+    t.boolean  "only_shared_care", :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "review_items", :force => true do |t|
     t.string    "item_type"
     t.integer   "item_id"
@@ -582,65 +599,66 @@ ActiveRecord::Schema.define(:version => 20130130194714) do
   add_index "specialist_specializations", ["specialization_id"], :name => "index_specialist_specializations_on_specialization_id"
 
   create_table "specialists", :force => true do |t|
-    t.string    "firstname"
-    t.string    "lastname"
-    t.text      "practise_limitations"
-    t.text      "interest"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.string    "direct_phone_old"
-    t.string    "contact_name"
-    t.string    "contact_phone"
-    t.string    "contact_email"
-    t.text      "red_flags"
-    t.string    "responds_via"
-    t.string    "referral_criteria"
-    t.string    "saved_token"
-    t.string    "contact_notes"
-    t.text      "not_interested"
-    t.text      "all_procedure_info"
-    t.string    "referral_other_details"
-    t.string    "referral_request"
-    t.boolean   "patient_can_book_old",       :default => false
-    t.string    "urgent_other_details"
-    t.text      "required_investigations"
-    t.text      "not_performed"
-    t.text      "status_details"
-    t.string    "location_opened"
-    t.integer   "status_mask"
-    t.boolean   "referral_fax"
-    t.boolean   "referral_phone"
-    t.boolean   "respond_by_fax"
-    t.boolean   "respond_by_phone"
-    t.boolean   "respond_by_mail"
-    t.boolean   "respond_to_patient"
-    t.boolean   "urgent_fax"
-    t.boolean   "urgent_phone"
-    t.boolean   "referral_form_old"
-    t.integer   "waittime_mask"
-    t.integer   "lagtime_mask"
-    t.integer   "billing_number"
-    t.integer   "referral_form_mask",         :default => 3
-    t.integer   "patient_can_book_mask",      :default => 3
-    t.date      "unavailable_from"
-    t.date      "unavailable_to"
-    t.text      "urgent_details"
-    t.string    "goes_by_name"
-    t.string    "direct_phone_extension_old"
-    t.integer   "sex_mask",                   :default => 3
-    t.text      "referral_details"
-    t.text      "admin_notes"
-    t.integer   "categorization_mask",        :default => 1
-    t.text      "patient_instructions"
-    t.text      "cancellation_policy"
-    t.integer   "referral_clinic_id"
-    t.text      "hospital_clinic_details"
-    t.boolean   "interpreter_available",      :default => false
-    t.text      "address_update"
-    t.string    "photo_file_name"
-    t.string    "photo_content_type"
-    t.integer   "photo_file_size"
-    t.timestamp "photo_updated_at"
+    t.string   "firstname"
+    t.string   "lastname"
+    t.text     "practise_limitations"
+    t.text     "interest"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "direct_phone_old"
+    t.string   "contact_name"
+    t.string   "contact_phone"
+    t.string   "contact_email"
+    t.text     "red_flags"
+    t.string   "responds_via"
+    t.string   "referral_criteria"
+    t.string   "saved_token"
+    t.string   "contact_notes"
+    t.text     "not_interested"
+    t.text     "all_procedure_info"
+    t.string   "referral_other_details"
+    t.string   "referral_request"
+    t.boolean  "patient_can_book_old",       :default => false
+    t.string   "urgent_other_details"
+    t.text     "required_investigations"
+    t.text     "not_performed"
+    t.text     "status_details"
+    t.string   "location_opened"
+    t.integer  "status_mask"
+    t.boolean  "referral_fax"
+    t.boolean  "referral_phone"
+    t.boolean  "respond_by_fax"
+    t.boolean  "respond_by_phone"
+    t.boolean  "respond_by_mail"
+    t.boolean  "respond_to_patient"
+    t.boolean  "urgent_fax"
+    t.boolean  "urgent_phone"
+    t.boolean  "referral_form_old"
+    t.integer  "waittime_mask"
+    t.integer  "lagtime_mask"
+    t.integer  "billing_number"
+    t.integer  "referral_form_mask",         :default => 3
+    t.integer  "patient_can_book_mask",      :default => 3
+    t.date     "unavailable_from"
+    t.date     "unavailable_to"
+    t.text     "urgent_details"
+    t.string   "goes_by_name"
+    t.string   "direct_phone_extension_old"
+    t.integer  "sex_mask",                   :default => 3
+    t.text     "referral_details"
+    t.text     "admin_notes"
+    t.integer  "categorization_mask",        :default => 1
+    t.text     "patient_instructions"
+    t.text     "cancellation_policy"
+    t.integer  "referral_clinic_id"
+    t.text     "hospital_clinic_details"
+    t.boolean  "interpreter_available",      :default => false
+    t.text     "address_update"
+    t.string   "photo_file_name"
+    t.string   "photo_content_type"
+    t.integer  "photo_file_size"
+    t.datetime "photo_updated_at"
+    t.boolean  "is_gp",                      :default => false
   end
 
   add_index "specialists", ["referral_clinic_id"], :name => "index_specialists_on_referral_clinic_id"

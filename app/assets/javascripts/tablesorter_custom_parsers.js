@@ -84,10 +84,10 @@ $.tablesorter.addParser({
     id: 'bylastname', 
     is: function(s) { 
       return false; 
-    }, 
-		format: function(s) {
-                        return s.split(" ").reverse().toString().toLowerCase();
-		}, 
+    },
+		format: function(s, table, cell, cellIndex) {
+      return $(cell).children('a').text().split(" ").reverse().toString().toLowerCase();
+    },
     // set type, either numeric or text 
     type: 'text'
 });
