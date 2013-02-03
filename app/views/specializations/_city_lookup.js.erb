@@ -29,6 +29,7 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
       specialist_data[s.id]['wait_time'] = "#{s.waittime_mask.present? ? s.waittime_mask : -1}"
       specialist_data[s.id]['cities'] = s.cities_for_display.map{ |c| c.id }
       specialist_data[s.id]['in_progress'] = true if s.in_progress_for_divisions(s.divisions)
+      specialist_data[s.id]['is_gp'] = true if s.is_gp?
       specialist_data[s.id]['is_new'] = true if s.new?
       specialist_procedures += specialist_procedure_filtering_attributes(s)
       specialist_associations += specialist_association_filtering_attributes(s)
@@ -46,6 +47,7 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
         specialist_data[s.id]['wait_time'] = "#{s.waittime_mask.present? ? s.waittime_mask : -1}"
         specialist_data[s.id]['cities'] = s.cities_for_display.map{ |c| c.id }
         specialist_data[s.id]['in_progress'] = true if s.in_progress_for_divisions(s.divisions)
+        specialist_data[s.id]['is_gp'] = true if s.is_gp?
         specialist_data[s.id]['is_new'] = true if s.new?
       end
     end

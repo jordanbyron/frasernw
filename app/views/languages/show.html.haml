@@ -105,6 +105,10 @@
                         %tr{:class => specialist.disabled_in_table? && "disabled", :id => "s#{specialist.id}"}
                           %td.sp
                             %a.ajax{"href" => specialist_path(specialist)}= specialist.name
+                            - if specialist.is_gp?
+                              %span.gp GP
+                            - if specialist.new?
+                              %span.new NEW
                           %td.s
                             %ul
                               - specialist.specializations.not_in_progress_for_divisions(specialist.divisions).each do |s|
@@ -228,6 +232,8 @@
                         %tr{:class => clinic.disabled_in_table? && "disabled", :id => "c#{clinic.id}"}
                           %td.sp
                             %a.ajax{"href" => clinic_path(clinic)}= clinic.name
+                            - if clinic.new?
+                              %span.new NEW
                           %td.s
                             %ul
                               - clinic.specializations.not_in_progress_for_divisions(clinic.divisions).each do |s|

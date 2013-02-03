@@ -130,6 +130,7 @@ en:
         goes_by_name: "Goes by"
         hospitals: "Hospital privileges"
         hospital_clinic_details: "Additional details"
+        is_gp: "Is a GP"
         status_mask: "Current status"
         status_details: "Additional details (if any)"
         practise_limitations: "Other practice limitations (if any)"
