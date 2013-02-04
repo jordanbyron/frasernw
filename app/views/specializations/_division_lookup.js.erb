@@ -27,7 +27,7 @@ filtering.current_subcategories["<%= division.id %>"] = {};
           category_data[item.id]['shared_care'] = item.shared_care?
           if category.inline?
             category_data[item.id]['markdown'] = item.markdown?
-            category_data[item.id]['body'] = BlueCloth.new(item.markdown_content).to_html.html_safe
+            category_data[item.id]['body'] = URI::encode(BlueCloth.new(item.markdown_content).to_html.delete("\n"))
             category_data[item.id]['full_title'] = item.full_title
           else
             category_data[item.id]['subcategory'] = "#{item.sc_category.id}"
