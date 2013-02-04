@@ -71,7 +71,7 @@ function add_item(category_id, item_id, title, full_title, url, markdown, body, 
     {
       entry_html += "<a href=\"" + url + "\" target=\"_blank\">" + title + "</a>";
     }
-    $('#' + category_id + '_items').append(entry_html); 
+    $('#' + category_id + '_items').append(unescape(entry_html));
   }
   else
   {
