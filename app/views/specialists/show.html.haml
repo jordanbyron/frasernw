@@ -31,17 +31,14 @@
           %li
             %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}= specialization.name
 
-- has_clinics = specialization.clinics.length > 0
-
 .tabbable
   %ul#content_tabs.nav.nav-tabs
     %li.active 
       %a#specialists{"href" => "#{specialization_path(specialization)}#specialists"}
         %span Specialists
-    - if has_clinics
-      %li
-        %a#clinics{"href" => "#{specialization_path(specialization)}#clinics"}
-          %span Clinics
+    %li
+      %a#clinics{"href" => "#{specialization_path(specialization)}#clinics"}
+        %span Clinics
     - ScCategory.specialty.each do |sc_category|
       - if sc_category.all_sc_items_for_specialization_in_divisions(specialization, current_user_divisions).present?
         %li
