@@ -300,8 +300,7 @@ var update_table = function(prefix, entity_id, entity_name)
     }
   });
   
-  //TODO: temp
-  var wait_time_hash = ["","Within one week","1-2 weeks","2-4 weeks","1-2 months","2-4 months","4-6 months","6-9 months","9-12 months","12-18 months",">18 months"];
+  var wait_time_hash = ["","Within one week","1-2 weeks","2-4 weeks","1-2 months","2-4 months","4-6 months","6-9 months","9-12 months","12-18 months","18-24 months", "2-2.5 years", "2.5-3 years", ">3 years"];
   
   //loop over each row of the table, updating the wait time
   $('#' + entity_id + '_table tbody tr').each(function () {

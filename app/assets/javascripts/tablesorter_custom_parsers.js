@@ -24,10 +24,16 @@ $.tablesorter.addParser({
           return 7;
         case("12-18 months"):
           return 8;
-        case(">18 months"):
+        case("18-24 months"):
           return 9;
-        default:
+        case("2-2.5 years"):
           return 10;
+        case("2.5-3 years"):
+          return 11;
+        case(">3 years"):
+          return 12;
+        default:
+          return 13;
       }
 		}, 
     // set type, either numeric or text 
