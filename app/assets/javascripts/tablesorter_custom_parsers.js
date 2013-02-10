@@ -97,3 +97,16 @@ $.tablesorter.addParser({
     // set type, either numeric or text 
     type: 'text'
 });
+// added by rpw to sort by link
+$.tablesorter.addParser({ 
+    // set a unique id 
+    id: 'link_only', 
+    is: function(s) { 
+      return false; 
+    },
+		format: function(s, table, cell, cellIndex) {
+      return $(cell).children('a').text().toLowerCase();
+    },
+    // set type, either numeric or text 
+    type: 'text'
+});
