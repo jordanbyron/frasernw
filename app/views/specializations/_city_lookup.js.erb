@@ -19,8 +19,13 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
     specialist_procedures = Array.new
     specialist_associations = Array.new
     specialist_languages = Array.new
+    
+    specialists = specialization.specialists.in_cities([city]).reject{ |s| !s.show_in_table? }
+    if specialists.length > 0
+      -%> has_specialists = true; <%
+    end
 
-    specialization.specialists.in_cities([city]).reject{ |s| !s.show_in_table? }.each do |s|
+    specialists.each do |s|
       specialist_data[s.id] = Hash.new
       specialist_data[s.id]['attributes'] = specialist_filtering_attributes(s, false).join(' ')
       specialist_data[s.id]['name'] = s.name
@@ -62,8 +67,13 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
     clinic_procedures = Array.new
     clinic_languages = Array.new
     clinic_healthcare_providers = Array.new
+    
+    clinics = specialization.clinics.in_cities([city]).reject{ |c| !c.show_in_table? }
+    if clinics.length > 0
+      -%> has_clinics = true; <%
+    end
 
-    specialization.clinics.in_cities([city]).reject{ |c| !c.show_in_table? }.each do |c|
+    clinics.each do |c|
       clinic_data[c.id] = Hash.new
       clinic_data[c.id]['attributes'] = clinic_filtering_attributes(c).join(' ')
       clinic_data[c.id]['name'] = c.name
