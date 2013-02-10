@@ -6,29 +6,29 @@
   
   = f.input :type_mask, as: :select, collection: Report::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
   
-  #level
+  #report_level
     = f.input :level_mask, as: :select, collection: Report::LEVEL_HASH, label_method: :last, value_method: :first, :include_blank => false
-    #divison_level
+    #report_divison_level
       = f.input :division_id,  as: :select, collection: Division.all, :include_blank => false
-    #city_level
+    #report_city_level
       = f.input :city_id,  as: :select, collection: City.all, :include_blank => false
       
-  #user_type
+  #report_user_type
     = f.input :user_type_mask, as: :select, collection: Report::USER_TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
       
-  #time_frame
+  #report_time_frame
     = f.input :time_frame_mask, as: :select, collection: Report::TIME_FRAME_HASH, label_method: :last, value_method: :first, :include_blank => false
-    #custom_time_frame
+    #report_custom_time_frame
       = f.input :start_date, :as => :datepicker
       = f.input :end_date, :as => :datepicker
       
-  #by_user
+  #report_by_user
     = f.input :by_user
       
-  #by_pageview
+  #report_by_pageview
     = f.input :by_pageview
     
-  #content
+  #report_content
     = f.input :only_shared_care
 
   .form-actions
@@ -44,31 +44,31 @@
         if ( val == 1 )
         {
           //general page views
-          $('#level').show()
-          $('#user_type').show()
-          $('#time_frame').show()
-          $('#by_user').show()
-          $('#by_pageview').hide()
-          $('#content').hide()
+          $('#report_level').show()
+          $('#report_user_type').show()
+          $('#report_time_frame').show()
+          $('#report_by_user').show()
+          $('#report_by_pageview').hide()
+          $('#report_content').hide()
         }
         else if ( val == 4 )
         {
           //content items
-          $('#level').show()
-          $('#user_type').show()
-          $('#time_frame').show()
-          $('#by_user').hide()
-          $('#by_pageview').show()
-          $('#content').show()
+          $('#report_level').show()
+          $('#report_user_type').show()
+          $('#report_time_frame').show()
+          $('#report_by_user').hide()
+          $('#report_by_pageview').show()
+          $('#report_content').show()
         }
         else
         {
-          $('#level').hide()
-          $('#user_type').hide()
-          $('#time_frame').hide()
-          $('#by_user').hide()
-          $('#by_pageview').hide()
-          $('#content').hide()
+          $('#report_level').hide()
+          $('#report_user_type').hide()
+          $('#report_time_frame').hide()
+          $('#report_by_user').hide()
+          $('#report_by_pageview').hide()
+          $('#report_content').hide()
         }
       }
       
@@ -81,18 +81,18 @@
         
         if ( val == 1 )
         {
-          $('#divison_level').hide();
-          $('#city_level').hide();
+          $('#report_divison_level').hide();
+          $('#report_city_level').hide();
         }
         else if (val == 2)
         {
-          $('#divison_level').show();
-          $('#city_level').hide();
+          $('#report_divison_level').show();
+          $('#report_city_level').hide();
         }
         else if (val == 3)
         {
-          $('#divison_level').hide();
-          $('#city_level').show();
+          $('#report_divison_level').hide();
+          $('#report_city_level').show();
         }
       }
       
@@ -105,11 +105,11 @@
         
         if ( val == 6 )
         {
-          $('#custom_time_frame').show();
+          $('#report_custom_time_frame').show();
         }
         else 
         {
-          $('#custom_time_frame').hide();
+          $('#report_custom_time_frame').hide();
         }
       }
       
