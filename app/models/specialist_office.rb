@@ -14,7 +14,7 @@ class SpecialistOffice < ActiveRecord::Base
   
   has_paper_trail
   
-  default_scope order('specialist_offices.id DESC')
+  default_scope order('specialist_offices.id ASC')
   
   def phone_and_fax
     return "#{phone} ext. #{phone_extension}, Fax: #{fax}" if phone.present? && phone_extension.present? && fax.present?
