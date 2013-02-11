@@ -331,7 +331,10 @@ class Specialist < ActiveRecord::Base
     7 => "6-9 months", 
     8 => "9-12 months", 
     9 => "12-18 months", 
-    10 => ">18 months"
+    10 => "18-24 months",
+    11 => "2-2.5 years",
+    12 => "2.5-3 years",
+    13 => ">3 years"
   }
   
   def waittime
@@ -349,7 +352,10 @@ class Specialist < ActiveRecord::Base
     8 => "6-9 months", 
     9 => "9-12 months", 
     10 => "12-18 months", 
-    11 => ">18 months"
+    11 => "18-24 months",
+    12 => "2-2.5 years",
+    13 => "2.5-3 years",
+    14 => ">3 years"
   }
   
   def lagtime

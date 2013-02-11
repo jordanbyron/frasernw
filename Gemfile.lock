@@ -131,6 +131,7 @@ GEM
       heroku (>= 2.1.4)
     hike (1.2.1)
     hpricot (0.8.6)
+    htmlentities (4.3.1)
     httparty (0.8.1)
       multi_json
       multi_xml
@@ -298,6 +299,7 @@ DEPENDENCIES
   haml-rails
   heroku
   heroku_cloud_backup
+  htmlentities
   jquery-datatables-rails
   jquery-rails
   lazy_high_charts

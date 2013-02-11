@@ -11,8 +11,8 @@
     - possible_admins.uniq.each{ |user| division_admins << [user.name, user.id]}
     - specialization_option = SpecializationOption.find_by_specialization_id_and_division_id(@specialization.id, division.id)
     - owner_id = specialization_option.present? && specialization_option.owner.present? ? specialization_option.owner.id : nil
-    - in_progress = specialization_option.in_progress
-    - open_to_clinic_tab = specialization_option.open_to_clinic_tab
+    - in_progress = specialization_option.present? && specialization_option.in_progress
+    - open_to_clinic_tab = specialization_option.present? && specialization_option.open_to_clinic_tab
     %hr
     %h4=division.name
     .control-group

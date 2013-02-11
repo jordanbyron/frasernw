@@ -42,6 +42,7 @@ gem 'daemons'
 
 # markdown
 gem 'bluecloth'
+gem 'htmlentities'
 
 # Deploy with Capistrano
 # gem 'capistrano'

@@ -65,13 +65,13 @@ function add_item(category_id, item_id, title, full_title, url, markdown, body, 
     var entry_html = "<div class=\"scm\">" + new_tag + "<h1>" + shared_care_icon + " " + full_title + " " + favorite + " " + feedback + "</h1>";
     if (markdown)
     {
-      entry_html += body;
+      entry_html += $('<div/>').html(body).text();
     }
     else
     {
       entry_html += "<a href=\"" + url + "\" target=\"_blank\">" + title + "</a>";
     }
-    $('#' + category_id + '_items').append(unescape(entry_html));
+    $('#' + category_id + '_items').append(entry_html);
   }
   else
   {

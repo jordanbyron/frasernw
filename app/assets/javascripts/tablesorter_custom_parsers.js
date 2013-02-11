@@ -24,10 +24,16 @@ $.tablesorter.addParser({
           return 7;
         case("12-18 months"):
           return 8;
-        case(">18 months"):
+        case("18-24 months"):
           return 9;
-        default:
+        case("2-2.5 years"):
           return 10;
+        case("2.5-3 years"):
+          return 11;
+        case(">3 years"):
+          return 12;
+        default:
+          return 13;
       }
 		}, 
     // set type, either numeric or text 
@@ -87,6 +93,19 @@ $.tablesorter.addParser({
     },
 		format: function(s, table, cell, cellIndex) {
       return $(cell).children('a').text().split(" ").reverse().toString().toLowerCase();
+    },
+    // set type, either numeric or text 
+    type: 'text'
+});
+// added by rpw to sort by link
+$.tablesorter.addParser({ 
+    // set a unique id 
+    id: 'link_only', 
+    is: function(s) { 
+      return false; 
+    },
+		format: function(s, table, cell, cellIndex) {
+      return $(cell).children('a').text().toLowerCase();
     },
     // set type, either numeric or text 
     type: 'text'
