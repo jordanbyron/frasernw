@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   skip_before_filter :login_required, :only => [:validate, :signup, :setup]
 
   def index
-    @users = User.find(:all)
+    @users = User.includes([:user_controls_specialist_offices => {:specialist_office => {:office => {:location => [ {:address => :city}, {:clinic_in => {:location => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}}, {:hospital_in => {:location => {:address => :city}}}]}}}, :user_controls_clinics => :clinic, :specialization_options => :specialization, :user_divisions => :division]).all
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
