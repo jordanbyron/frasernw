@@ -66,7 +66,6 @@ class ReportsController < ApplicationController
         user_dimensions.delete('date')
         user_results = get_data_by_user(start_date, end_date, user_dimensions, metrics, filters, [])
         @user_results = []
-        puts user_results
         user_results.each do |user_id, metrics|
           user = User.find_by_id(user_id)
           @user_results << [ user.name, metrics[:visits], metrics[:visitors], metrics[:pageviews] ] if user.present?
@@ -101,76 +100,102 @@ class ReportsController < ApplicationController
       total_pageviews = []
       
       # we conly care about markdown content items; links and documents we will get via the 'outgoing links' events
-      markdown_ids = ScItem.markdown.reject{ |i| @report.only_shared_care && !i.shared_care }.map{ |c| "#{c.id}" }
+      markdown_ids = ScItem.markdown.reject{ |i| @report.only_shared_care && !i.shared_care }.map{ |c| c.id }
+      inline_ids = ScItem.inline.map{ |c| c.id }
       
       Array(dates.first..dates.last).each_with_index do |date, date_index|
         date_string = date.to_s(:yyyymmdd)
         total_pageviews[date_index] = 0
         results_markdown[date_string].each do |path, metrics|
-          next if !markdown_ids.include?(path.split('/').last)
+          next if !path.starts_with?('/content_items/')
+          content_item_id = path.split('/').last.to_i
+          next if !markdown_ids.include?(content_item_id)
+          next if inline_ids.include?(content_item_id)
           total_pageviews[date_index] += metrics[:pageviews]
         end
       end
-      
       if @report.by_pageview
-        results = get_data_by_path(start_date, end_date, dimensions, metrics, filters, sort)
-        puts results
         by_page_pageviews_map = {}
-        results.each do |path, metrics|
-          content_item_id = path.split('/').last.to_i
-          next if !markdown_ids.include?(content_item_id)
-          content_item = ScItem.find_by_id(content_item_id)
-          next if @report.only_shared_care && !content_item.shared_care
-          by_page_pageviews_map[content_item_id] = [ content_item.title, metrics[:pageviews] ] if content_item.present?
+        Array(dates.first..dates.last).each do |date|
+          date_string = date.to_s(:yyyymmdd)
+          results_markdown[date_string].each do |path, metrics|
+            next if !path.starts_with?('/content_items/')
+            content_item_id = path.split('/').last.to_i
+            next if !markdown_ids.include?(content_item_id)
+            next if inline_ids.include?(content_item_id)
+            if by_page_pageviews_map[content_item_id].present?
+              by_page_pageviews_map[content_item_id] = [ by_page_pageviews_map[content_item_id][0], by_page_pageviews_map[content_item_id][1] + metrics[:pageviews] ]
+            else
+              content_item = ScItem.find_by_id(content_item_id)
+              title = content_item.present? ? content_item.title : "[Deleted content item]"
+              by_page_pageviews_map[content_item_id] = [ title, metrics[:pageviews] ]
+            end
+          end
         end
       end
       
       #grab the 'outgoing links' events, cobmine into results
       
       metrics = ['totalEvents']
-      dimensions = ['eventCategory', 'eventAction']
+      dimensions = ['date', 'eventCategory', 'eventAction', 'eventLabel']
       filters = ["eventCategory =@ content_item_id", "eventAction == #{ScItem::TYPE_LINK}"]
       sort = []
       
       if @report.user_type_mask == -1
         #non admin
-        dimensions << 'customVarValue2'
+        dimensions = ['customVarValue2'] + dimensions
         filters << "customVarValue2 != 0"
       elsif @report.user_type_mask == 0
         #everyone
       else
         #specific user class
-        dimensions << 'customVarValue2'
+        dimensions = ['customVarValue2'] + dimensions
         filters << "customVarValue2 == #{@report.user_type_mask}"
       end
       
-      results_outgoing = get_data_by_date(start_date, end_date, dimensions, metrics, filters, sort)
+      results_outgoing = get_data_by_dimensions(['date', 'eventAction', 'eventLabel'], start_date, end_date, dimensions, metrics, filters, sort)
       
-      Array(dates.first..dates.last).each_with_index do |date, date_index|
-        date_string = date.to_s(:yyyymmdd)
-        total_pageviews[date_index] += results_outgoing[date_string][:totalEvents]
+      date_lookup = {}
+      Array(dates.first..dates.last).each_with_index{ |date, date_index| date_lookup[date.to_s(:yyyymmdd)] = date_index }
+      
+      results_outgoing.each do |date, level1|
+        date_index = date_lookup[date]
+        level1.each do |action, level2|
+          level2.each do |label, metrics|
+            content_item_id = label.to_i
+            next if inline_ids.include?(content_item_id)
+            total_pageviews[date_index] += metrics[:totalEvents]
+            if @report.by_pageview
+              if by_page_pageviews_map[content_item_id].present?
+                by_page_pageviews_map[content_item_id] = [ by_page_pageviews_map[content_item_id][0], by_page_pageviews_map[content_item_id][1] + metrics[:totalEvents] ]
+              else
+                content_item = ScItem.find_by_id(content_item_id)
+                title = content_item.present? ? content_item.title : "[Deleted content item]"
+                by_page_pageviews_map[content_item_id] = [ title, metrics[:totalEvents] ]
+              end
+            end
+          end
+        end
       end
       
       if @report.by_pageview
-        results = get_data_by_path(start_date, end_date, dimensions, metrics, filters, sort)
-        puts results
-        results.each do |path, metrics|
-          next if !path.starts_with?('/content_items/')
-          content_item_id = path.split('/').last.to_i
-          content_item = ScItem.find_by_id(content_item_id)
-          by_page_pageviews_map[content_item_id] = [ content_item.title, metrics[:totalEvents] ] if content_item.present?
-        end
-        
+        by_pageviews_count = 0
         @by_page_pageviews = []
-        ScItem.all.each do |sc_item|
-          next if sc_item.sc_category.inline?
+        ScItem.not_inline.each do |sc_item|
           if by_page_pageviews_map[sc_item.id].blank?
             @by_page_pageviews << [sc_item.title, 0]
           else
             @by_page_pageviews << by_page_pageviews_map[sc_item.id]
+            by_pageviews_count += by_page_pageviews_map[sc_item.id][1]
           end
         end
+        puts "!!!!!!!!!!!!!!!!!!!!! by_pageviews_count #{by_pageviews_count}"
       end
+      
+      total_pageviews_count = 0
+      total_pageviews.each{ |t| total_pageviews_count += t }
+      
+      puts "!!!!!!!!!!!!!!!!!!!!! total_pageviews_count #{total_pageviews_count}"
       
       #Graph it
       
@@ -238,7 +263,8 @@ class ReportsController < ApplicationController
       :metrics => metrics,
       :dimensions => dimensions,
       :filters => filters,
-      :sort => sort
+      :sort => sort,
+      :max_results => 10000
     }
   
     return ga.get(options)
@@ -274,8 +300,10 @@ class ReportsController < ApplicationController
     data = get_data(start_date, end_date, dimensions, metrics, filters, sort)
     
     results = {}
+    result_count = 0
     data.to_h['points'].each do |entry|
       entry_hash = entry.to_h
+      result_count += 1
       next if entry_hash['dimensions'][1].blank? || entry_hash['dimensions'][1][:pagePath].blank? #skip the 'summary' (non-pagepath-specific) results
       entry_date = entry_hash['dimensions'][0][:date]
       entry_path = entry_hash['dimensions'][1][:pagePath]
@@ -283,6 +311,8 @@ class ReportsController < ApplicationController
       results[entry_date] = {} if results[entry_date].blank?
       results[entry_date][entry_path] = entry_metrics
     end
+    
+    puts "!!!!!!!!!!!!!!!!!!!!!#{result_count}"
     
     #fill in any missing data with zeros
     Array(start_date..end_date).each do |date|
@@ -323,6 +353,41 @@ class ReportsController < ApplicationController
     end
     
     results
+  end
+  
+  def get_data_by_dimensions(dimension_to_get, start_date, end_date, dimensions, metrics, filters, sort)
+    
+    data = get_data(start_date, end_date, dimensions, metrics, filters, sort)
+    dimension_symbols = dimensions.map{ |d| d.to_sym }
+    
+    results = {}
+    data.to_h['points'].each do |entry|
+      entry_hash = entry.to_h
+      dimension_results = []
+      cur_result = results
+      dimensions.each_with_index do |dimension, index|
+        next if !dimension_to_get.include?(dimension)
+        dimension_results[index] = entry_hash['dimensions'][index][dimension_symbols[index]]
+        if index == (dimensions.length - 1)
+          #last dimension
+          entry_metrics = entry_hash['metrics'].reduce({}) { |h, pairs| pairs.each { |k, v| h[k] = v }; h }
+          if cur_result[dimension_results[index]].blank?
+            cur_result[dimension_results[index]] = entry_metrics
+          else
+            entry_metrics.each do |k,v|
+              cur_result[dimension_results[index]][k] += v
+            end
+          end
+        else
+          cur_result[dimension_results[index]] = {} if cur_result[dimension_results[index]].blank?
+          cur_result = cur_result[dimension_results[index]]
+        end
+      end
+    end
+    
+    puts results
+    
+    return results
   end
   
   def get_start_end_date(report)
