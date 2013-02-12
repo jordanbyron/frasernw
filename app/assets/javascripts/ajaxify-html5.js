@@ -72,7 +72,7 @@
 			var $this = $(this);
 			
 			// Ajaxify
-			$this.find('a.ajax:internal').click(function(event){
+			$this.find('a.ajaxDisable:internal').click(function(event){
 				// Prepare
         form = null;       
 				var
@@ -91,7 +91,7 @@
 			
 			
 			// Ajaxify forms
-			$this.find('form.ajax').submit(function(event){
+			$this.find('form.ajaxDisable').submit(function(event){
 				// Prepare
         form = $(this)
 				var
