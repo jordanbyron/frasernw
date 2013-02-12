@@ -39,8 +39,10 @@ class ScCategory < ActiveRecord::Base
     where("sc_categories.searchable = (?)", true)
   end
 
+  INLINE_MASKS = [3,5]
+
   def inline?
-    [3,5].include? display_mask
+    ScCategory::INLINE_MASKS.include? display_mask
   end
 
   def full_name

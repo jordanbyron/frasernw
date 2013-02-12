@@ -72,6 +72,14 @@ class ScItem < ActiveRecord::Base
     where('"sc_items"."shareable" = (?)', true)
   end
   
+  def self.inline
+    joins('INNER JOIN "sc_categories" ON "sc_items"."sc_category_id" = "sc_categories"."id"').where('"sc_categories"."display_mask" IN (?)', ScCategory::INLINE_MASKS)
+  end
+  
+  def self.not_inline
+    joins('INNER JOIN "sc_categories" ON "sc_items"."sc_category_id" = "sc_categories"."id"').where('"sc_categories"."display_mask" NOT IN (?)', ScCategory::INLINE_MASKS)
+  end
+  
   def self.all_in_divisions(divisions)
     (owned_in_divisions(divisions) + shared_in_divisions(divisions)).uniq
   end
