@@ -217,7 +217,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def not_available?
-    retired? || permanently_unavailable?
+    retired? || permanently_unavailable? || moved_away?
   end
      
   def retired_a_while_ago?
