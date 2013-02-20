@@ -102,7 +102,7 @@
                         %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
                       - specialists.each do |specialist|
-                        %tr{:class => specialist.disabled_in_table? && "disabled", :id => "s#{specialist.id}"}
+                        %tr{:id => "s#{specialist.id}"}
                           %td.sp
                             %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                             - if specialist.is_gp?
@@ -229,7 +229,7 @@
                         %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
                       - clinics.each do |clinic|
-                        %tr{:class => clinic.disabled_in_table? && "disabled", :id => "c#{clinic.id}"}
+                        %tr{:id => "c#{clinic.id}"}
                           %td.sp
                             %a.ajax{"href" => clinic_path(clinic)}= clinic.name
                             - if clinic.new?

@@ -593,16 +593,6 @@ body.loading #email
         margin-bottom: 6px;
       }
     }
-    
-    tr.disabled td
-    {
-      color: $FNW_DISABLED_TEXT;
-      
-      a, span.status_unknown:before
-      {
-        color: $FNW_DISABLED_TEXT;
-      }
-    }
   
     td.subcategory
     {

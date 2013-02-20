@@ -17,7 +17,7 @@
     %tbody
       - (@office.specialists).each do |specialist|
         - next if not specialist.show_in_table?
-        %tr{:class => specialist.disabled_in_table? && "disabled"}
+        %tr
           %td
             %a.ajax{"href" => specialist_path(specialist)}= specialist.name
           %td
