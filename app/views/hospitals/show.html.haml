@@ -77,7 +77,7 @@
         $(document).ready(function() {
         - @hospital.specialists.each do |s|
           - next if not s.show_in_table?
-          - specialist_filter_attributes = specialist_filtering_attributes(s, false)
+          - specialist_filter_attributes = s.not_available? ? [] : specialist_filtering_attributes(s, false)
           - s.specializations.each do |sp|
             - specialist_filter_attributes << "ssp#{sp.id}_"
           $('#s#{s.id}').data('filter', '#{specialist_filter_attributes.join(' ')}');
@@ -89,7 +89,7 @@
           $('#c#{c.id}').data('filter', '#{clinic_filter_attributes.join(' ')}');
         - @specialists_with_offices_in.each do |s|
           - next if not s.show_in_table?
-          - office_filter_attributes = office_filtering_attributes(s, false)
+          - office_filter_attributes = s.not_available? ? [] : office_filtering_attributes(s, false)
           - s.specializations.each do |sp|
             - office_filter_attributes << "osp#{sp.id}_"
           $('#o#{s.id}').data('filter', '#{office_filter_attributes.join(' ')}');
@@ -132,7 +132,7 @@
                           %td.st
                             %i{:class => specialist.status_class}
                             .status= specialist.status_class_hash
-                          %td.wt= specialist.waittime
+                          %td.wt= specialist.not_available? ? "" : specialist.waittime
                           %td.c
                             %ul
                               - specialist.cities_for_display.each do |city|
@@ -377,7 +377,7 @@
                           %td.st
                             %i{:class => specialist.status_class}
                             .status= specialist.status_class_hash
-                          %td.wt= specialist.waittime
+                          %td.wt= specialist.not_available? ? "" : specialist.waittime
                           %td.c
                             %ul
                               - specialist.cities.each do |city|

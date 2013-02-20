@@ -59,7 +59,7 @@
         $(document).ready(function() {
         - @language.specialists.each do |s|
           - next if not s.show_in_table?
-          - specialist_filter_attributes = specialist_filtering_attributes(s, false)
+          - specialist_filter_attributes = s.not_available? ? [] : specialist_filtering_attributes(s, false)
           - s.specializations.each do |sp|
             - specialist_filter_attributes << "ssp#{sp.id}_"
           $('#s#{s.id}').data('filter', '#{specialist_filter_attributes.join(' ')}');
@@ -116,7 +116,7 @@
                           %td.st
                             %i{:class => specialist.status_class}
                             .status= specialist.status_class_hash
-                          %td.wt= specialist.waittime
+                          %td.wt= specialist.not_available? ? "" : specialist.waittime
                           %td.c
                             %ul
                               - specialist.cities_for_display.each do |city|

@@ -144,7 +144,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def cities_for_display
-    if responded? && !retired? && !permanently_unavailable?
+    if responded? && !not_available?
       offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
     elsif hospital_or_clinic_only?
       (hospitals.map{ |h| h.city } + clinics.map{ |c| c.city }).reject{ |i| i == nil }.uniq
@@ -213,11 +213,15 @@ class Specialist < ActiveRecord::Base
   end
   
   def show_in_table?
-    responded? || not_responded? || hospital_or_clinic_only?
+    not_responded? || hospital_or_clinic_only? || (responded? && !retired_a_while_ago?)
   end
-  
-  def disabled_in_table?
-    not_responded?
+
+  def not_available?
+    retired? || permanently_unavailable?
+  end
+     
+  def retired_a_while_ago?
+    ((status_mask == 4) || (status_mask == 5)) && (unavailable_from <= (Date.today - 3.years))
   end
   
   STATUS_HASH = { 
