@@ -29,6 +29,11 @@ class Specialization < ActiveRecord::Base
     division_ids = divisions.map{ |d| d.id }
     joins(:specialization_options).where('"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)', division_ids, false)
   end
+    
+  def self.new_for_divisions(divisions)
+    division_ids = divisions.map{ |d| d.id }
+    joins(:specialization_options).where('"specialization_options"."division_id" IN (?) AND "specialization_options"."is_new" = (?)', division_ids, true)
+  end
   
   def not_fully_in_progress
     specialization_options.reject{ |so| so.in_progress }.length > 0
@@ -40,6 +45,10 @@ class Specialization < ActiveRecord::Base
 
   def fully_in_progress_for_divisions(divisions)
     (specialization_options.for_divisions(divisions).length > 0) && (specialization_options.for_divisions(divisions).reject{ |so| so.in_progress }.length == 0)
+  end
+    
+  def new_for_divisions(divisions)
+    specialization_options.for_divisions(divisions).is_new.length > 0
   end
 
   def open_to_clinic_tab_for_divisions(divisions)

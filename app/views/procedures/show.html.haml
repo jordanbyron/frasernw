@@ -13,7 +13,8 @@
     %li.subsequent.specialty
       %a.tt#tt_more_specialties{"href" => "javascript:void(0)", "onclick" => "$('#tt_more_specialties').tooltip('toggle')", "title" => "<ul class='specialties'>#{procedure_specializations.map{|ps| "<li>#{link_to ps.specialization.name, ps.specialization, :class => ps.specialization.fully_in_progress_for_divisions(current_user_divisions) ? 'in-progress ajax' : 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{procedure_specializations.first(2).collect{ |ps| ps.specialization.name }.join(', ')}..."
   - else
-    %li.subsequent.specialty= "#{procedure_specializations.collect{ |ps| link_to ps.specialization.name, ps.specialization, :class => ps.specialization.fully_in_progress_for_divisions(current_user_divisions) ? 'in-progress ajax' : 'ajax' }.to_sentence}".html_safe
+    %li.subsequent.specialty
+      = "#{procedure_specializations.collect{ |ps| "#{link_to ps.specialization.name, ps.specialization, :class => ps.specialization.fully_in_progress_for_divisions(current_user_divisions) ? 'in-progress ajax' : 'ajax'} #{"<span class='new'>new</span>".html_safe if ps.specialization.new_for_divisions(current_user_divisions)}" }.to_sentence}".html_safe
   - if procedure_specialization.parent.present? && procedure_specialization.parent.parent.present? && procedure_specialization.parent.parent.procedure.present?
     %li.subsequent.grandparent= link_to procedure_specialization.parent.parent.procedure.name, procedure_specialization.parent.parent.procedure, :class => 'ajax'
   - if procedure_specialization.parent.present? && procedure_specialization.parent.procedure.present?
@@ -43,7 +44,9 @@
       %ul
         - list.each do |specialization|
           %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}= specialization.name
+            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}
+              = specialization.name
+              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
   
 - multiple_specialties = (@procedure.specializations.length > 1)
 

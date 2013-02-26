@@ -24,7 +24,9 @@
       %ul
         - list.each do |specialization|
           %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}= specialization.name
+            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}
+              = specialization.name
+              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
             
 .content-wrapper
   .content

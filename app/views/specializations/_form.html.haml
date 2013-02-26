@@ -11,6 +11,7 @@
     - possible_admins.uniq.each{ |user| division_admins << [user.name, user.id]}
     - specialization_option = SpecializationOption.find_by_specialization_id_and_division_id(@specialization.id, division.id)
     - owner_id = specialization_option.present? && specialization_option.owner.present? ? specialization_option.owner.id : nil
+    - is_new = specialization_option.present? && specialization_option.is_new
     - in_progress = specialization_option.present? && specialization_option.in_progress
     - open_to_clinic_tab = specialization_option.present? && specialization_option.open_to_clinic_tab
     %hr
@@ -25,6 +26,11 @@
         In Progress
       .controls
         = check_box_tag "in_progress[#{division.id}]", "in_progress[#{division.id}]", in_progress, :name => "in_progress[#{division.id}]"
+    .control-group
+      %label.control-label
+        Mark as "new"
+      .controls
+        = check_box_tag "is_new[#{division.id}]", "is_new[#{division.id}]", is_new, :name => "is_new[#{division.id}]"
     .control-group
       %label.control-label
         Open to Clinic Tab
