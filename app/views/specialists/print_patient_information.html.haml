@@ -6,14 +6,17 @@
 
 %h5.specialty_links= @specialist.specializations.collect(){ |s| s.name }.to_sentence
 
-%h6 Your Appointment Information
+%h6#name
+  Appointment Information 
+  %span#for.empty for
+  %input.name.empty{"type" => "text", "placeholder" => "Patient Name"}
 
 %p#specific_appointment_block
   %input.specific_appointment#specific_appointment_check{"type" => "radio", "name" => "appointment", "checked" => "checked"}
   Your appointment is on 
-  %input.specific_appointment{"type" => "text"}
+  %input.specific_appointment{"type" => "text", "placeholder" => "Date"}
   at
-  %input.specific_appointment{"type" => "text"}
+  %input.specific_appointment{"type" => "text", "placeholder" => "Time"}
 
 %p#future_appointment_block.empty
   %input.future_appointment#future_appointment_check{"type" => "radio", "name" => "appointment"}
@@ -98,6 +101,16 @@
       {
         $('#patient_instruction_header').removeClass('empty');
       }
+      if ( $('#name .name').val().trim() == "" )
+      {
+        $('#name #for').addClass('empty');
+        $('#name .name').addClass('empty');
+      }
+      else
+      {
+        $('#name #for').removeClass('empty');
+        $('#name .name').removeClass('empty');
+      }
     }
     
     function set_future_followup_block_print_visibility()
@@ -112,7 +125,7 @@
       }
     }
     
-    $('#custom_patient_instructions').bind('keydown keyup keypress cut copy past blur change', function(){
+    $('#custom_patient_instructions, .name').bind('keydown keyup keypress cut copy past blur change', function(){
       copy_to_print_helper();
     });
     
