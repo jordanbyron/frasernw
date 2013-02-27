@@ -236,6 +236,8 @@
                             %a.ajax{"href" => clinic_path(clinic)}= clinic.name
                             - if clinic.new?
                               %span.new NEW
+                            - if clinic.private?
+                              %span.private PRIVATE
                           %td.s
                             %ul
                               - clinic.specializations.not_in_progress_for_divisions(clinic.divisions).each do |s|

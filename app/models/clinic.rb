@@ -297,6 +297,10 @@ class Clinic < ActiveRecord::Base
   def sector?
     sector_mask != 4
   end
+
+  def private?
+    sector_mask == 2
+  end
   
   def scheduled?
     schedule.scheduled?
