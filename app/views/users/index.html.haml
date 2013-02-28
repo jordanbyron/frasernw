@@ -83,12 +83,12 @@
         %table.table.table-condensed.table-striped.tablesorter
           %thead
             %tr.tableheader
-              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Name
-              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Division(s)
-              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Signed Up
-              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Type
-              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Email
-              %th{:class => "{sorter: 'text'}", :style => "width:25%"} Can edit
+              %th{:class => "{sorter: 'text'}", :style => "width:20%"} Name
+              %th{:class => "{sorter: 'text'}", :style => "width:20%"} Division(s)
+              %th{:class => "{sorter: 'text'}", :style => "width:20%"} Signed Up
+              %th{:class => "{sorter: 'text'}", :style => "width:20%"} Type
+              %th{:class => "{sorter: 'text'}", :style => "width:20%"} Email
+              -#%th{:class => "{sorter: 'text'}", :style => "width:25%"} Can edit
               %th.admin
 
           %tbody
@@ -99,7 +99,7 @@
                 %td= user.activated_at.present? ? user.activated_at.strftime("%Y-%m-%d") : user.created_at.strftime("%Y-%m-%d")
                 %td= user.type
                 %td= user.email
-                %td
+                -#%td
                   %ul
                     - user.controlled_specialist_offices.each do |specialist_office|
                       - next if specialist_office.office.blank?
@@ -113,12 +113,12 @@
         %table.table.table-condensed.table-striped.tablesorter
           %thead
             %tr.tableheader
-              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Name
-              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Division(s)
-              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Role
-              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Type
-              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Access key
-              %th{:class => "{sorter: 'text'}", :style => "width:25%"} Can edit
+              %th{:class => "{sorter: 'text'}", :style => "width:20%"} Name
+              %th{:class => "{sorter: 'text'}", :style => "width:20%"} Division(s)
+              %th{:class => "{sorter: 'text'}", :style => "width:20%"} Role
+              %th{:class => "{sorter: 'text'}", :style => "width:20%"} Type
+              %th{:class => "{sorter: 'text'}", :style => "width:20%"} Access key
+              -#%th{:class => "{sorter: 'text'}", :style => "width:25%"} Can edit
               %th.admin
               
           %tbody
@@ -129,7 +129,7 @@
                 %td= user.role_full
                 %td= user.admin? ? "Admin" : user.type
                 %td= user.token
-                %td
+                -#%td
                   %ul
                     - user.controlled_specialist_offices.each do |specialist_office|
                       - next if specialist_office.office.blank?
@@ -145,12 +145,12 @@
             %tr.tableheader
               %th{:class => "{sorter: 'text'}", :style => "width:15%"} Name
               %th{:class => "{sorter: 'text'}", :style => "width:15%"} Division(s)
-              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Signed Up
-              %th{:class => "{sorter: 'text'}", :style => "width:5%"} Role
-              %th{:class => "{sorter: 'text'}", :style => "width:5%"} Type
-              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Email
-              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Access key
-              %th{:class => "{sorter: 'text'}", :style => "width:30%"} Can edit
+              %th{:class => "{sorter: 'text'}", :style => "width:20%"} Signed Up
+              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Role
+              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Type
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Email
+              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Access key
+              -#%th{:class => "{sorter: 'text'}", :style => "width:30%"} Can edit
               %th.admin
 
           %tbody
@@ -165,7 +165,7 @@
                 %td= user.admin? ? "Admin" : user.type
                 %td= user.email
                 %td= user.pending? ? user.token : "Was actived"
-                %td
+                -#%td
                   %ul
                     - user.controlled_specialist_offices.each do |specialist_office|
                       - next if specialist_office.office.blank?
