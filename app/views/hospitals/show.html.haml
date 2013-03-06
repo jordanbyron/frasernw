@@ -25,7 +25,9 @@
       %ul
         - list.each do |specialization|
           %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}= specialization.name
+            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}
+              = specialization.name
+              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
           
 %script{"type" => "text/javascript"}
   :plain
@@ -77,7 +79,7 @@
         $(document).ready(function() {
         - @hospital.specialists.each do |s|
           - next if not s.show_in_table?
-          - specialist_filter_attributes = specialist_filtering_attributes(s, false)
+          - specialist_filter_attributes = s.not_available? ? [] : specialist_filtering_attributes(s, false)
           - s.specializations.each do |sp|
             - specialist_filter_attributes << "ssp#{sp.id}_"
           $('#s#{s.id}').data('filter', '#{specialist_filter_attributes.join(' ')}');
@@ -89,7 +91,7 @@
           $('#c#{c.id}').data('filter', '#{clinic_filter_attributes.join(' ')}');
         - @specialists_with_offices_in.each do |s|
           - next if not s.show_in_table?
-          - office_filter_attributes = office_filtering_attributes(s, false)
+          - office_filter_attributes = s.not_available? ? [] : office_filtering_attributes(s, false)
           - s.specializations.each do |sp|
             - office_filter_attributes << "osp#{sp.id}_"
           $('#o#{s.id}').data('filter', '#{office_filter_attributes.join(' ')}');
@@ -118,7 +120,7 @@
                         %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
                       - specialists.each do |specialist|
-                        %tr{:class => specialist.disabled_in_table? && "disabled", :id => "s#{specialist.id}"}
+                        %tr{:id => "s#{specialist.id}"}
                           %td.sp
                             %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                             - if specialist.is_gp?
@@ -132,7 +134,7 @@
                           %td.st
                             %i{:class => specialist.status_class}
                             .status= specialist.status_class_hash
-                          %td.wt= specialist.waittime
+                          %td.wt= specialist.not_available? ? "" : specialist.waittime
                           %td.c
                             %ul
                               - specialist.cities_for_display.each do |city|
@@ -241,11 +243,13 @@
                         %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
                       - clinics_in.each do |clinic|
-                        %tr{:class => clinic.disabled_in_table? && "disabled", :id => "c#{clinic.id}"}
+                        %tr{:id => "c#{clinic.id}"}
                           %td.sp
                             %a.ajax{"href" => clinic_path(clinic)}= clinic.name
                             - if clinic.new?
                               %span.new NEW
+                            - if clinic.private?
+                              %span.private PRIVATE
                           %td.s
                             %ul
                               - clinic.specializations.not_in_progress_for_divisions(clinic.divisions).each do |s|
@@ -367,7 +371,7 @@
                     %tbody
                       - @specialists_with_offices_in.each do |specialist|
                         - next if not specialist.show_in_table?
-                        %tr{:class => specialist.disabled_in_table? && "disabled", :id => "o#{specialist.id}"}
+                        %tr{:id => "o#{specialist.id}"}
                           %td.sp
                             %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                           %td.s
@@ -377,7 +381,7 @@
                           %td.st
                             %i{:class => specialist.status_class}
                             .status= specialist.status_class_hash
-                          %td.wt= specialist.waittime
+                          %td.wt= specialist.not_available? ? "" : specialist.waittime
                           %td.c
                             %ul
                               - specialist.cities.each do |city|

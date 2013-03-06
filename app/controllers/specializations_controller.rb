@@ -25,6 +25,15 @@ class SpecializationsController < ApplicationController
   def create
     @specialization = Specialization.new(params[:specialization])
     if @specialization.save
+      Division.all.each do |division|
+        puts division.name
+        so = SpecializationOption.find_or_create_by_specialization_id_and_division_id(@specialization.id, division.id);
+        so.owner = User.find_by_id(params[:owner]["#{division.id}"])
+        so.in_progress = params[:in_progress].present? && params[:in_progress]["#{division.id}"].present?
+        so.is_new = params[:is_new].present? && params[:is_new]["#{division.id}"].present?
+        so.open_to_clinic_tab = params[:open_to_clinic_tab].present? && params[:open_to_clinic_tab]["#{division.id}"].present?
+        so.save
+      end
       redirect_to @specialization, :notice => "Successfully created specialty."
     else
       render :action => 'new'
@@ -46,6 +55,7 @@ class SpecializationsController < ApplicationController
         so = SpecializationOption.find_by_specialization_id_and_division_id(@specialization.id, division.id);
         so.owner = User.find_by_id(params[:owner]["#{division.id}"])
         so.in_progress = params[:in_progress].present? && params[:in_progress]["#{division.id}"].present?
+        so.is_new = params[:is_new].present? && params[:is_new]["#{division.id}"].present?
         so.open_to_clinic_tab = params[:open_to_clinic_tab].present? && params[:open_to_clinic_tab]["#{division.id}"].present?
         so.save
       end

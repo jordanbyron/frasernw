@@ -11,6 +11,8 @@
     var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
     $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
     $(document).ready(function() { update_favorites() });
+    
+- user_divisions = current_user_divisions
   
 #specialties-dropdown-menu
   .inner
@@ -24,7 +26,9 @@
       %ul
         - list.each do |specialization|
           %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}= specialization.name
+            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(user_divisions) ? "in-progress" : ""}
+              = specialization.name
+              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
 
 .content-wrapper
   .content#front
@@ -46,7 +50,9 @@
         
         %ul.space
           - specializations.each do |specialization|
-            %li= link_to specialization.name, specialization, :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress ajax" : "ajax"
+            %li
+              = link_to specialization.name, specialization, :class => specialization.fully_in_progress_for_divisions(user_divisions) ? "in-progress ajax" : "ajax"
+              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(user_divisions)
        
       .span4half
       

@@ -28,7 +28,7 @@ SimpleForm.setup do |config|
     # extensions by default, you can change `b.optional` to `b.use`.
 
     # Calculates maxlength from length validations for string inputs
-    b.optional :maxlength
+    b.use :maxlength
 
     # Calculates pattern from format validations for string inputs
     b.optional :pattern
@@ -181,7 +181,7 @@ SimpleForm.setup do |config|
   # config.country_priority = nil
 
   # Default size for text inputs.
-  # config.default_input_size = 50
+  # config.default_input_size = 10
 
   # When false, do not use translations for labels.
   # config.translate_labels = true

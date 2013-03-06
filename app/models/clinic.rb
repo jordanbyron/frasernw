@@ -100,10 +100,6 @@ class Clinic < ActiveRecord::Base
     responded? || not_responded?
   end
   
-  def disabled_in_table?
-    not_responded?
-  end
-  
   def phone_and_fax
     return "#{phone} ext. #{phone_extension}, Fax: #{fax}" if phone.present? && phone_extension.present? && fax.present?
     return "#{phone} ext. #{phone_extension}" if phone.present? && phone_extension.present?
@@ -300,6 +296,10 @@ class Clinic < ActiveRecord::Base
   
   def sector?
     sector_mask != 4
+  end
+
+  def private?
+    sector_mask == 2
   end
   
   def scheduled?
