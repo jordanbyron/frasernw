@@ -20,33 +20,8 @@
   - if procedure_specialization.parent.present? && procedure_specialization.parent.procedure.present?
     %li.subsequent.parent= link_to procedure_specialization.parent.procedure.name, procedure_specialization.parent.procedure, :class => 'ajax'
   %li.subsequent= @procedure.name
-  
-%script{"type" => "text/javascript"}
-  :plain
-    var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
-    $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
-    $(document).ready(function() { $('.tt').tooltip({trigger: 'manual', placement: 'bottom'}); update_favorites(); });
-  var root_procedures = [];
-  - if procedure_specializations.reject{ |ps| !ps.specialist_wait_time? }.length > 0
-    root_procedures['s'] = #{@procedure.id};
-  - if procedure_specializations.reject{ |ps| !ps.clinic_wait_time? }.length > 0
-    root_procedures['c'] = #{@procedure.id};
-  
-#specialties-dropdown-menu
-  .inner
-    - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions)
-    - first = specializations[0, (specializations.length / 4.0).ceil]
-    - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
-    - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
-    - fourth = specializations - first - second - third
     
-    - [first, second, third, fourth].each do |list|
-      %ul
-        - list.each do |specialization|
-          %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}
-              = specialization.name
-              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
+= render 'partials/specialization_dropdown_menu'
   
 - multiple_specialties = (@procedure.specializations.length > 1)
 
@@ -67,6 +42,12 @@
 
 #page_scripts
   %script{"type" => "text/javascript"}
+    $(document).ready(function() { $('.tt').tooltip({trigger: 'manual', placement: 'bottom'}); update_favorites(); });
+    var root_procedures = [];
+    - if procedure_specializations.reject{ |ps| !ps.specialist_wait_time? }.length > 0
+      root_procedures['s'] = #{@procedure.id};
+    - if procedure_specializations.reject{ |ps| !ps.clinic_wait_time? }.length > 0
+      root_procedures['c'] = #{@procedure.id};
     var filtering = null;
     var should_show_others = false;
     $(document).ready(function() { 
