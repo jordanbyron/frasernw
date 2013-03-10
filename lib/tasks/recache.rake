@@ -25,12 +25,12 @@ namespace :pathways do
         end
         
         #expire the grouped together cities
-        User.all.map{ |u| City.for_user_in_specialization(u, s).map{ |c| c.id } }.unique.each do |city_group|
+        User.all.map{ |u| City.for_user_in_specialization(u, s).map{ |c| c.id } }.uniq.each do |city_group|
           expire_fragment "specialization_#{s.id}_content_cities_#{city_group.join('_')}"
         end
         
         #expire the grouped together divisions
-        User.all.map{ |u| u.divisions.map{ |d| d.id } }.unique.each do |division_group|
+        User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
           expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
         end
       end
@@ -104,12 +104,12 @@ namespace :pathways do
         expire_fragment specialization_path(s)
         
         #expire the grouped together cities
-        User.all.map{ |u| City.for_user_in_specialization(u, s).map{ |c| c.id } }.unique.each do |city_group|
+        User.all.map{ |u| City.for_user_in_specialization(u, s).map{ |c| c.id } }.uniq.each do |city_group|
           expire_fragment "specialization_#{s.id}_content_cities_#{city_group.join('_')}"
         end
         
         #expire the grouped together divisions
-        User.all.map{ |u| u.divisions.map{ |d| d.id } }.unique.each do |division_group|
+        User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
           expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
         end
       end
@@ -151,12 +151,12 @@ namespace :pathways do
       end
         
       #expire the grouped together cities
-      User.all.map{ |u| City.for_user_in_specialization(u, s).map{ |c| c.id } }.unique.each do |city_group|
+      User.all.map{ |u| City.for_user_in_specialization(u, s).map{ |c| c.id } }.uniq.each do |city_group|
         expire_fragment "specialization_#{s.id}_content_cities_#{city_group.join('_')}"
       end
       
       #expire the grouped together divisions
-      User.all.map{ |u| u.divisions.map{ |d| d.id } }.unique.each do |division_group|
+      User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
         expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
       end
     end
