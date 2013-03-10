@@ -101,16 +101,19 @@ namespace :pathways do
     task :specialization_pages => :environment do
       puts "Expiring specialization pages..."
       Specialization.all.each do |s|
+        puts "Specialization #{s.name}"
         expire_fragment specialization_path(s)
         
         #expire the grouped together cities
         User.all.map{ |u| City.for_user_in_specialization(u, s).map{ |c| c.id } }.uniq.each do |city_group|
+          puts "Cities #{city_group.join(' ')}"
           expire_fragment "specialization_#{s.id}_content_cities_#{city_group.join('_')}"
         end
         
         #expire the grouped together divisions
         User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
           expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
+          puts "Divisions #{division_group.join(' ')}"
         end
       end
     end
