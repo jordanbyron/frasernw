@@ -27,26 +27,11 @@ class ClinicsEditorController < ApplicationController
     }
     @focuses = []
     procedure_specializations.each { |ps, children|
-      focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps.id)
-      if focus.present?
-        @focuses << { :mapped => true, :name => ps.procedure.name, :id => ps.id, :investigations => focus.investigation, :offset => 0 }
-        else
-        @focuses << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
-      end
+      @focuses << generate_focus(@clinic, ps, 0)
       children.each { |child_ps, grandchildren|
-        focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, child_ps.id)
-        if focus.present?
-          @focuses << { :mapped => true, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => focus.investigation, :offset => 1 }
-        else
-          @focuses << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
-        end
+        @focuses << generate_focus(@clinic, child_ps, 1)
         grandchildren.each { |grandchild_ps, greatgrandchildren|
-          focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, grandchild_ps.id)
-          if focus.present?
-            @focuses << { :mapped => true, :name => grandchild_ps.procedure.name, :id => grandchild_ps.id, :investigations => focus.investigation, :offset => 2 }
-          else
-            @focuses << { :mapped => false, :name => grandchild_ps.procedure.name, :id => grandchild_ps.id, :investigations => "", :offset => 2 }
-          end
+          @focuses << generate_focus(@clinic, grandchild_ps, 2)
         }
       }
     }
@@ -84,6 +69,21 @@ class ClinicsEditorController < ApplicationController
   
   def check_token
     token_required( Clinic, params[:token], params[:id] )
+  end
+  
+  protected
+  def generate_focus(clinic, procedure_specialization, offset)
+    focus = clinic.present? ? Focus.find_by_clinic_id_and_procedure_specialization_id(clinic.id, procedure_specialization.id) : nil
+    return {
+      :mapped => focus.present?,
+      :name => procedure_specialization.procedure.name,
+      :id => procedure_specialization.id,
+      :investigations => focus.present? ? focus.investigation : "",
+      :custom_wait_time => procedure_specialization.clinic_wait_time?,
+      :waittime => focus.present? ? focus.waittime_mask : 0,
+      :lagtime => focus.present? ? focus.lagtime_mask : 0,
+      :offset => offset
+    }
   end
 
 end

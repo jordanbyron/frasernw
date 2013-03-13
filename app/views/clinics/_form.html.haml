@@ -195,6 +195,8 @@
         });
         traverse_review_item(["focuses_mapped"], focuses_mapped);
         traverse_review_item(["focuses_investigations"], review_item["focuses_investigations"]);
+        traverse_review_item(["focuses_waittime"], review_item["focuses_waittime"]);
+        traverse_review_item(["focuses_lagtime"], review_item["focuses_lagtime"]);
       }
       
       $(document).ready(function() 
@@ -357,8 +359,8 @@
               = f[:name]
           .span4.changed_wrapper= text_field_tag "focuses_investigations[#{f[:id]}]", f[:investigations], :class => "span4"
           - if f[:custom_wait_time]
-            .span2.lagtime= select_tag "focuses_lagtime[#{f[:id]}]", options_from_collection_for_select(Clinic::LAGTIME_HASH, :first, :last, f[:lagtime]), :class => "span2", :include_blank => true
-            .span2.waittime= select_tag "focuses_waittime[#{f[:id]}]", options_from_collection_for_select(Clinic::WAITTIME_HASH, :first, :last, f[:waittime]), :class => "span2", :include_blank => true
+            .span2.changed_wrapper.lagtime= select_tag "focuses_lagtime[#{f[:id]}]", options_from_collection_for_select(Clinic::LAGTIME_HASH, :first, :last, f[:lagtime]), :class => "span2", :include_blank => true
+            .span2.changed_wrapper.waittime= select_tag "focuses_waittime[#{f[:id]}]", options_from_collection_for_select(Clinic::WAITTIME_HASH, :first, :last, f[:waittime]), :class => "span2", :include_blank => true
       
     %hr{ "style" => "visibility:hidden" }
 
