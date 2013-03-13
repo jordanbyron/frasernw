@@ -54,6 +54,14 @@ class SpecialistsEditorController < ApplicationController
           else
           @capacities << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
         end
+        grandchildren.each { |grandchild_ps, greatgrandchildren|
+          focus = Focus.find_by_clinic_id_and_procedure_specialization_id(@clinic.id, grandchild_ps.id)
+          if focus.present?
+            @focuses << { :mapped => true, :name => grandchild_ps.procedure.name, :id => grandchild_ps.id, :investigations => focus.investigation, :offset => 2 }
+          else
+            @focuses << { :mapped => false, :name => grandchild_ps.procedure.name, :id => grandchild_ps.id, :investigations => "", :offset => 2 }
+          end
+        }
       }
     }
     @view = @specialist.views.build(:notes => request.remote_ip)
