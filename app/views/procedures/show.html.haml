@@ -20,33 +20,8 @@
   - if procedure_specialization.parent.present? && procedure_specialization.parent.procedure.present?
     %li.subsequent.parent= link_to procedure_specialization.parent.procedure.name, procedure_specialization.parent.procedure, :class => 'ajax'
   %li.subsequent= @procedure.name
-  
-%script{"type" => "text/javascript"}
-  :plain
-    var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
-    $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
-    $(document).ready(function() { $('.tt').tooltip({trigger: 'manual', placement: 'bottom'}); update_favorites(); });
-  var root_procedures = [];
-  - if procedure_specializations.reject{ |ps| !ps.specialist_wait_time? }.length > 0
-    root_procedures['s'] = #{@procedure.id};
-  - if procedure_specializations.reject{ |ps| !ps.clinic_wait_time? }.length > 0
-    root_procedures['c'] = #{@procedure.id};
-  
-#specialties-dropdown-menu
-  .inner
-    - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions)
-    - first = specializations[0, (specializations.length / 4.0).ceil]
-    - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
-    - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
-    - fourth = specializations - first - second - third
     
-    - [first, second, third, fourth].each do |list|
-      %ul
-        - list.each do |specialization|
-          %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}
-              = specialization.name
-              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
+= render 'partials/specialization_dropdown_menu'
   
 - multiple_specialties = (@procedure.specializations.length > 1)
 
@@ -67,6 +42,12 @@
 
 #page_scripts
   %script{"type" => "text/javascript"}
+    $(document).ready(function() { $('.tt').tooltip({trigger: 'manual', placement: 'bottom'}); update_favorites(); });
+    var root_procedures = [];
+    - if procedure_specializations.reject{ |ps| !ps.specialist_wait_time? }.length > 0
+      root_procedures['s'] = #{@procedure.id};
+    - if procedure_specializations.reject{ |ps| !ps.clinic_wait_time? }.length > 0
+      root_procedures['c'] = #{@procedure.id};
     var filtering = null;
     var should_show_others = false;
     $(document).ready(function() { 
@@ -101,7 +82,7 @@
       %a#specialists_tab{"href" => "#specialist_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'specialists']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
         %span Specialists
     %li#clinics_tab_label
-      %a#clinicss_tab{"href" => "#clinic_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'clinics']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
+      %a#clinics_tab{"href" => "#clinic_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'clinics']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
         %span Clinics
     - ScCategory.specialty.each do |sc_category|
       - if sc_category.all_sc_items_for_procedure_in_divisions(@procedure, current_user_divisions).present?
@@ -297,7 +278,7 @@
                         
                 #clinic_no_wait_time.wait-time-phrase.none
                   %i.icon-link
-                  You have chosen multiple areas of practice, and in one or more of which clinics have optionally provided a specific wait time. Due to the conflicing wait times, the wait time column is blank.
+                  You have chosen multiple areas of practice, and in one or more of which clinics have optionally provided a specific wait time. Due to the conflicting wait times, the wait time column is blank.
                   
                 %table.table.table-condensed.tablesorter#clinic_table{:class => multiple_specialties && 'five'}
                   %thead

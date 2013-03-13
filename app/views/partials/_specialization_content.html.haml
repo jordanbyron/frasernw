@@ -1,0 +1,50 @@
+- user_divisions = current_user_divisions
+- user_cities_for_specialization = current_user_cities_for_specialization(@specialization)
+
+- cache("specialization_#{@specialization.id}_content_cities_#{user_cities_for_specialization.map{|c| c.id}.join('_')}") do
+  
+  %script{"type" => "text/javascript"}
+    root_procedures = [];
+    filtering = null;
+    should_show_others = false;
+    $(document).ready(function() { 
+    has_specialists = false;
+    has_clinics = false;
+    open_to_clinics = #{@specialization.open_to_clinic_tab_for_divisions(user_divisions) ? "true" : "false"};
+    = render 'global_lookup.js', :specializations => [@specialization]
+    - user_cities_for_specialization.each do |city|
+      = render 'city_lookup.js', :city => city, :specializations => [@specialization], :other => true
+    });
+
+- cache("specialization_#{@specialization.id}_content_divisions_#{user_divisions.map{|d| d.id}.join('_')}") do
+
+  %script{"type" => "text/javascript"}
+    $(document).ready(function() { 
+    - user_divisions.each do |division|
+      = render 'division_lookup.js', :division => division, :specializations => [@specialization]
+    init_tables(-1, []);
+    if (!has_specialists) { $('#specialist_tab_label').hide(); }
+    if (!has_clinics) { $('#clinic_tab_label').hide(); }
+    var show_clinics = ((!has_specialists && has_clinics) || (open_to_clinics && has_clinics));
+    if (show_clinics) { $('#content_tabs a#clinics').tab('show'); } else { $('#content_tabs a#specialists').tab('show'); }
+    });
+  
+  - categories = ScCategory.specialty.reject{ |sc_category| sc_category.all_sc_items_for_specialization_in_divisions(@specialization, current_user_divisions).blank? }
+
+  %script{"type" => "text/javascript"}
+    $(document).ready( function(){
+    - categories.each do |sc_category|
+      init_category("#{sc_category.id}", #{sc_category.inline?}, -1);
+    update_favorites(); });
+    
+  %ul#content_tabs.nav.nav-tabs
+    %li#specialist_tab_label 
+      %a#specialists{"href" => "#specialist_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'specialists']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
+        %span Specialists
+    %li#clinic_tab_label
+      %a#clinics{"href" => "#clinic_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'clinics']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
+        %span Clinics
+    - categories.each do |sc_category|
+      %li
+        %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "id" => sc_category.name.remove_whitespace, "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
+          %span= sc_category.name
