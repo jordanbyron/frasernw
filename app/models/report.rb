@@ -14,6 +14,7 @@ class Report < ActiveRecord::Base
     6 => "Clinics",
     7 => "Areas of practice",
     8 => "Feedback items",
+    9 => "Specialist contact history",
   }
   
   def type
@@ -29,11 +30,14 @@ class Report < ActiveRecord::Base
   LEVEL_HASH = {
     1 => "System-wide",
     2 => "Divisional",
-    3 => "City",
   }
   
   def level
     Report::LEVEL_HASH[level_mask]
+  end
+  
+  def level_divisional?
+    LEVEL_HASH[level_mask] == 2
   end
   
   TIME_FRAME_HASH = {

@@ -28,7 +28,7 @@ class ReportsController < ApplicationController
       if @report.user_type_mask == -1
         #non admin
         dimensions << 'customVarValue2'
-        filters << "customVarValue2 != 0"
+        filters << "customVarValue2!=0"
       elsif @report.user_type_mask == 0
         #everyone
       else
@@ -38,6 +38,8 @@ class ReportsController < ApplicationController
       end
       
       results = get_data_by_date(start_date, end_date, dimensions, metrics, filters, sort)
+      
+      puts results
       
       @visits = []
       @visitors = []
@@ -207,7 +209,26 @@ class ReportsController < ApplicationController
         f.options[:xAxis][:labels][:step] = 7
         f.series(:name => 'Pageviews', :data => total_pageviews)
       end
-      
+    when 9
+      @specialist_email_table = {}
+      divisions = @report.level_divisional? ? Division.all : [@report.division]
+      Specialization.all.each do |s|
+        next if s.fully_in_progress_for_divisions(divisions)
+        specialization = []
+        s.specialists.each do |sp|
+          entry = {}
+          entry[:id] = sp.id
+          entry[:name] = sp.name
+          entry[:user_email] = sp.controlling_users.reject{ |u| u.pending? || !u.active? }.map{ |u| u.email }
+          entry[:moa_email] = sp.contact_email
+          entry[:token] = sp.token
+          entry[:updated_at] = sp.updated_at
+          review_item = sp.archived_review_items.sort_by{ |x| x.id }.last
+          entry[:reviewed_at] = review_item.present? ? review_item.updated_at : nil
+          specialization << entry
+        end
+        @specialist_email_table[s.id] = specialization
+      end
     else
       @data = nil
     end

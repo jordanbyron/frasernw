@@ -44,6 +44,30 @@
         ],
         "sPaginationType": "bootstrap"
       } );
+      
+  - if @specialist_email_table.present?
+  
+    %table.table.table-condensed.table-striped
+      %tr
+        %th Specialist
+        %th Emails
+        %th Secret edit link
+        %th Last updated by anyone
+        %th Last updated via review queue
+      - @specialist_email_table.each do |specialization_id, entries|
+        %tr
+          %th{:colspan => 4}= Specialization.find(specialization_id).name
+        - entries.each do |entry|
+          %tr
+            %td
+              %a.ajax{:href => "/specialists/#{entry[:id]}"}= entry[:name]
+            %td
+              %ul
+                - (entry[:user_email] + [entry[:moa_email]]).uniq.map{ |e| mail_to e }.each do |e|
+                  %li= e.html_safe
+            %td= link_to specialist_self_edit_path(entry[:id], entry[:token], :only_path => false)
+            %td= entry[:updated_at].strftime("%Y-%m-%d")
+            %td= entry[:reviewed_at].present? ? entry[:reviewed_at].strftime("%Y-%m-%d") : 'never'
 
   %p.admin.btn-group
     - if can? :update, @report
