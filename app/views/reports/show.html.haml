@@ -3,9 +3,11 @@
 .content-wrapper
 
   %h2= @report.name
+  %h4= "Generated on #{Time.now.strftime('%Y-%m-%d')} at #{Time.now.strftime('%H:%M:%S')}"
   %h4= "#{@report.level} report on #{@report.type.downcase}"
-  %h4= "Reporting on #{@report.user_type.pluralize.downcase}"
-  %h4= "#{@report.start_date} - #{@report.end_date}"
+  - if @report.type_mask != 9
+    %h4= "Reporting on #{@report.user_type.pluralize.downcase}"
+    %h4= "#{@report.start_date} - #{@report.end_date}"
 
   - if @h
   
@@ -52,22 +54,32 @@
         %th Specialist
         %th Emails
         %th Secret edit link
-        %th Last updated by anyone
-        %th Last updated via review queue
+        %th{:style => "min-width:100px"} Last updated by anyone
+        %th{:style => "min-width:100px"} Last updated via review queue
       - @specialist_email_table.each do |specialization_id, entries|
         %tr
-          %th{:colspan => 4}= Specialization.find(specialization_id).name
+          %th{:colspan => 5}= Specialization.find(specialization_id).name
         - entries.each do |entry|
           %tr
             %td
               %a.ajax{:href => "/specialists/#{entry[:id]}"}= entry[:name]
             %td
               %ul
-                - (entry[:user_email] + [entry[:moa_email]]).uniq.map{ |e| mail_to e }.each do |e|
+                - (entry[:user_email] + entry[:moa_email]).uniq.map{ |e| mail_to e }.each do |e|
                   %li= e.html_safe
-            %td= link_to specialist_self_edit_path(entry[:id], entry[:token], :only_path => false)
+            %td= link_to "http://www.pathwaysbc.ca#{specialist_self_edit_path(entry[:id], entry[:token], :only_path => true)}"
             %td= entry[:updated_at].strftime("%Y-%m-%d")
-            %td= entry[:reviewed_at].present? ? entry[:reviewed_at].strftime("%Y-%m-%d") : 'never'
+            %td
+              - if entry[:linked_active_account_count] > 0
+                - if entry[:reviewed_at].present?
+                  = entry[:reviewed_at].strftime("%Y-%m-%d")
+                - else
+                  no changes
+              - elsif entry[:linked_pending_account_count] > 0
+                not activated
+              - else
+                no account
+
 
   %p.admin.btn-group
     - if can? :update, @report

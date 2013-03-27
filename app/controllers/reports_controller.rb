@@ -216,15 +216,19 @@ class ReportsController < ApplicationController
         next if s.fully_in_progress_for_divisions(divisions)
         specialization = []
         s.specialists.each do |sp|
+          next if !sp.responded? || sp.not_available?
+          active_controlling_users = sp.controlling_users.reject{ |u| u.pending? || !u.active? }
           entry = {}
           entry[:id] = sp.id
           entry[:name] = sp.name
-          entry[:user_email] = sp.controlling_users.reject{ |u| u.pending? || !u.active? }.map{ |u| u.email }
-          entry[:moa_email] = sp.contact_email
+          entry[:user_email] = active_controlling_users.map{ |u| u.email }.map{ |e| e.split }.flatten.reject{ |e| !(e.include? '@') }
+          entry[:moa_email] = sp.contact_email.split.flatten.reject{ |e| !(e.include? '@') }
           entry[:token] = sp.token
           entry[:updated_at] = sp.updated_at
           review_item = sp.archived_review_items.sort_by{ |x| x.id }.last
           entry[:reviewed_at] = review_item.present? ? review_item.updated_at : nil
+          entry[:linked_active_account_count] = active_controlling_users.count
+          entry[:linked_pending_account_count] = sp.controlling_users.reject{ |u| !u.pending? }.count
           specialization << entry
         end
         @specialist_email_table[s.id] = specialization
