@@ -41,19 +41,12 @@ class SpecialistsEditorController < ApplicationController
     }
     @capacities = []
     procedure_specializations.each { |ps, children|
-      capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps.id)
-      if capacity.present?
-        @capacities << { :mapped => true, :name => ps.procedure.name, :id => ps.id, :investigations => capacity.investigation, :offset => 0 }
-        else
-        @capacities << { :mapped => false, :name => ps.procedure.name, :id => ps.id, :investigations => "", :offset => 0 }
-      end
+      @capacities << generate_capacity(@specialist, ps, 0)
       children.each { |child_ps, grandchildren|
-        capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(@specialist.id, child_ps.id)
-        if capacity.present?
-          @capacities << { :mapped => true, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => capacity.investigation, :offset => 1 }
-          else
-          @capacities << { :mapped => false, :name => child_ps.procedure.name, :id => child_ps.id, :investigations => "", :offset => 1 }
-        end
+        @capacities << generate_capacity(@specialist, child_ps, 1)
+        grandchildren.each { |grandchild_ps, greatgrandchildren|
+          @capacities << generate_capacity(@specialist, grandchild_ps, 2)
+        }
       }
     }
     @view = @specialist.views.build(:notes => request.remote_ip)
@@ -92,6 +85,21 @@ class SpecialistsEditorController < ApplicationController
   
   def check_token
     token_required( Specialist, params[:token], params[:id] )
+  end
+  
+  protected
+  def generate_capacity(specialist, procedure_specialization, offset)
+    capacity = specialist.present? ? Capacity.find_by_specialist_id_and_procedure_specialization_id(specialist.id, procedure_specialization.id) : nil
+    return {
+      :mapped => capacity.present?,
+      :name => procedure_specialization.procedure.name,
+      :id => procedure_specialization.id,
+      :investigations => capacity.present? ? capacity.investigation : "",
+      :custom_wait_time => procedure_specialization.specialist_wait_time?,
+      :waittime => capacity.present? ? capacity.waittime_mask : 0,
+      :lagtime => capacity.present? ? capacity.lagtime_mask : 0,
+      :offset => offset
+    }
   end
 
 end
