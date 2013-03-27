@@ -52,7 +52,7 @@
     %table.table.table-condensed.table-striped
       %tr
         %th Specialist
-        %th Emails
+        %th Email(s)
         %th Secret edit link
         %th{:style => "min-width:100px"} Last updated by anyone
         %th{:style => "min-width:100px"} Last updated via review queue
@@ -67,7 +67,7 @@
               %ul
                 - (entry[:user_email] + entry[:moa_email]).uniq.map{ |e| mail_to e }.each do |e|
                   %li= e.html_safe
-            %td= link_to "http://www.pathwaysbc.ca#{specialist_self_edit_path(entry[:id], entry[:token], :only_path => true)}"
+            %td= link_to "http://www.pathwaysbc.ca#{specialist_self_edit_path(entry[:id], entry[:token], :only_path => true)}", "http://www.pathwaysbc.ca#{specialist_self_edit_path(entry[:id], entry[:token], :only_path => true)}"
             %td= entry[:updated_at].strftime("%Y-%m-%d")
             %td
               - if entry[:linked_active_account_count] > 0
