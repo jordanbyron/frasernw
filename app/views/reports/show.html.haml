@@ -53,9 +53,9 @@
       %tr
         %th Specialist
         %th Email(s)
-        %th Secret edit link
         %th{:style => "min-width:100px"} Last updated by anyone
         %th{:style => "min-width:100px"} Last updated via review queue
+        %th Secret edit link
       - @specialist_email_table.each do |specialization_id, entries|
         %tr
           %th{:colspan => 5}= Specialization.find(specialization_id).name
@@ -65,9 +65,11 @@
               %a.ajax{:href => "/specialists/#{entry[:id]}"}= entry[:name]
             %td
               %ul
-                - (entry[:user_email] + entry[:moa_email]).uniq.map{ |e| mail_to e }.each do |e|
+                - entry[:user_email].uniq.map{ |e| mail_to e }.each do |e|
+                  %li
+                    %b= e.html_safe
+                - (entry[:moa_email] - entry[:user_email]).uniq.map{ |e| mail_to e }.each do |e|
                   %li= e.html_safe
-            %td= link_to "http://www.pathwaysbc.ca#{specialist_self_edit_path(entry[:id], entry[:token], :only_path => true)}", "http://www.pathwaysbc.ca#{specialist_self_edit_path(entry[:id], entry[:token], :only_path => true)}"
             %td= entry[:updated_at].strftime("%Y-%m-%d")
             %td
               - if entry[:linked_active_account_count] > 0
@@ -79,6 +81,7 @@
                 not activated
               - else
                 no account
+            %td= link_to "http://www.pathwaysbc.ca#{specialist_self_edit_path(entry[:id], entry[:token], :only_path => true)}", "http://www.pathwaysbc.ca#{specialist_self_edit_path(entry[:id], entry[:token], :only_path => true)}"
 
 
   %p.admin.btn-group
