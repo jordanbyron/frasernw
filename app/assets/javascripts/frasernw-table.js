@@ -1,4 +1,4 @@
-function init_tables(procedure_filter, assumed_specialties)
+function init_tables(procedure_filter, assumed_specialist_specialties, assumed_clinic_specialties)
 {
   for(var city_id in filtering.current_cities)
   {
@@ -7,8 +7,8 @@ function init_tables(procedure_filter, assumed_specialties)
       //'unloaded' city
       continue
     }
-    add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter, assumed_specialties);
-    add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter, assumed_specialties);
+    add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter, assumed_specialist_specialties);
+    add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter, assumed_clinic_specialties);
   }
   
   update_ui();
@@ -299,7 +299,7 @@ function update_healthcare_providers(prefix, city_healthcare_providers)
   }
 }
 
-function expand_city(is_checked, specialization_ids, city_id, procedure_filter, assumed_specialties)
+function expand_city(is_checked, specialization_ids, city_id, procedure_filter, assumed_specialist_specialties, assumed_clinic_specialties)
 {
   var $body = $(document.body);
   
@@ -317,14 +317,14 @@ function expand_city(is_checked, specialization_ids, city_id, procedure_filter, 
     {
       $.getScript("/specialties/" + specialization_ids[i] + "/cities/" + city_id + ".js", function( data, textStatus, jqxhr){
         //this all needs to happen in this callback function
-        add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter, assumed_specialties);
-        add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter, assumed_specialties);
+        add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter, assumed_specialist_specialties);
+        add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter, assumed_clinic_specialties);
       });
     }
     $.getScript("/specialties/" + specialization_ids[specialization_ids.length - 1] + "/cities/" + city_id + ".js", function( data, textStatus, jqxhr){
       //this all needs to happen in this callback function
-      add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter, assumed_specialties);
-      add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter, assumed_specialties);
+      add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter, assumed_specialist_specialties);
+      add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter, assumed_clinic_specialties);
       //update UI in the final load
       update_ui(procedure_filter);
       $body.removeClass('loading');
@@ -334,8 +334,8 @@ function expand_city(is_checked, specialization_ids, city_id, procedure_filter, 
   {
     //we have it loaded, just show it
     filtering.current_cities[city_id.toString()] = true;
-    add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter, assumed_specialties);
-    add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter, assumed_specialties);
+    add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter, assumed_specialist_specialties);
+    add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter, assumed_clinic_specialties);
     update_ui(procedure_filter);
   }
   else
@@ -343,6 +343,6 @@ function expand_city(is_checked, specialization_ids, city_id, procedure_filter, 
     //we want to hide this data, which requires a table reset
     filtering.current_cities[city_id.toString()] = false;
     clear_tables();
-    init_tables(procedure_filter);
+    init_tables(procedure_filter, assumed_specialist_specialties, assumed_clinic_specialties);
   }
 }

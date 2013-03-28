@@ -62,10 +62,10 @@
                       %td
                         
                 #specialist_assumed_list
-                  - if @specialization.procedure_specializations.assumed.reject{ |ps| ps.parent.present? }.present?
+                  - if @specialization.procedure_specializations.assumed_specialist.reject{ |ps| ps.parent.present? }.present?
                     %i.icon-asterisk.icon-disabled.icon-small
                     Areas of practice we assume all #{@specialization.member_name.uncapitalize_first_letter.pluralize} see:
-                    = @specialization.procedure_specializations.assumed.reject{ |ps| ps.parent.present? }.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
+                    = @specialization.procedure_specializations.assumed_specialist.reject{ |ps| ps.parent.present? }.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
                     
               .span3.offsethalf
                 .well.filter#specialist_filters
@@ -75,7 +75,7 @@
                     .filter-group
                       %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#specialist-filter-aop"}
                         Areas of Practice
-                        - if @specialization.procedure_specializations.assumed.present?
+                        - if @specialization.procedure_specializations.assumed_specialist.present?
                           %sup
                             %i.icon-asterisk.icon-disabled.icon-small
                       #specialist-filter-aop.collapsable.in
@@ -227,7 +227,7 @@
                       update_table('s', 'specialist', '#{@specialization.member_name.uncapitalize_first_letter.pluralize}');
                     }
                     $('.sp, .sc, .sr, .ss, .si, .ssh, .sl, .sa').click( update_custom_specialist_table );
-                    $('.sct').click( function() { expand_city($(this).prop('checked'), [#{@specialization.id}], $(this).attr('id'), -1, []) });
+                    $('.sct').click( function() { expand_city($(this).prop('checked'), [#{@specialization.id}], $(this).attr('id'), -1, [], []) });
                   });
             
         #clinic_tab.tab-pane
@@ -264,6 +264,12 @@
                       %td
                       %td
                         
+                #clinic_assumed_list
+                  - if @specialization.procedure_specializations.assumed_clinic.reject{ |ps| ps.parent.present? }.present?
+                    %i.icon-asterisk.icon-disabled.icon-small
+                    Areas of practice we assume all #{@specialization.name} clinics see:
+                    = @specialization.procedure_specializations.assumed_clinic.reject{ |ps| ps.parent.present? }.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
+                        
               .span3.offsethalf
                 .well.filter#clinic_filters
                   .title
@@ -271,6 +277,9 @@
                   .filter-group
                     %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#clinic-filter-aop"}
                       Areas of Practice
+                      - if @specialization.procedure_specializations.assumed_clinic.present?
+                        %sup
+                          %i.icon-asterisk.icon-disabled.icon-small
                     #clinic-filter-aop.collapsable.in
                       .filter-group-content
                         - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
@@ -423,7 +432,7 @@
                 :plain
                   $(document).ready(function() {
                     $('.cp, .cc, .cr, .cd, .csh, .ch, .ci, .cl').click( update_clinic_table );
-                    $('.cct').click( function() { expand_city($(this).prop('checked'), [#{@specialization.id}], $(this).attr('id'), -1, []) });
+                    $('.cct').click( function() { expand_city($(this).prop('checked'), [#{@specialization.id}], $(this).attr('id'), -1, [], []) });
                   });
 
         - ScCategory.specialty.each do |sc_category|

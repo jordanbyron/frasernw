@@ -1,21 +1,26 @@
 class ProcedureSpecialization < ActiveRecord::Base
    
-  CLASSIFICATION_FOCUSED    = 1
-  CLASSIFICATION_NONFOCUSED = 2
-  CLASSIFICATION_ASSUMED    = 3
+  CLASSIFICATION_FOCUSED              = 1
+  CLASSIFICATION_NONFOCUSED           = 2
+  CLASSIFICATION_ASSUMED_SPECIALIST   = 3
+  CLASSIFICATION_ASSUMED_CLINIC       = 4
+  CLASSIFICATION_ASSUMED_BOTH         = 5
   
   CLASSIFICATION_HASH = { 
     CLASSIFICATION_FOCUSED => "Focused", 
     CLASSIFICATION_NONFOCUSED => "Non-Focused", 
-    CLASSIFICATION_ASSUMED => "Assumed"
+    CLASSIFICATION_ASSUMED_SPECIALIST => "Assumed for Specialists", 
+    CLASSIFICATION_ASSUMED_CLINIC => "Assumed for Clinics", 
+    CLASSIFICATION_ASSUMED_BOTH => "Assumed for Specialists and Clinics"
   }
   
   belongs_to :procedure
   belongs_to :specialization
   scope :focused, where("classification = #{ProcedureSpecialization::CLASSIFICATION_FOCUSED}")
   scope :non_focused, where("classification = #{ProcedureSpecialization::CLASSIFICATION_NONFOCUSED}")
-  scope :assumed, where("classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED}")
-  scope :non_assumed, where("classification != #{ProcedureSpecialization::CLASSIFICATION_ASSUMED}")
+  scope :assumed_specialist, where("classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST} OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}")
+  scope :assumed_clinic, where("classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC} OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}")
+  scope :non_assumed, where("classification = #{ProcedureSpecialization::CLASSIFICATION_FOCUSED} OR classification = #{ProcedureSpecialization::CLASSIFICATION_NONFOCUSED}")
   
   has_many :capacities, :dependent => :destroy
   has_many :specialists, :through => :capacities
@@ -38,8 +43,12 @@ class ProcedureSpecialization < ActiveRecord::Base
     classification == ProcedureSpecialization::CLASSIFICATION_NONFOCUSED
   end
   
-  def assumed?
-    classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED
+  def assumed_specialist?
+    classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST || classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH
+  end
+  
+  def assumed_clinic?
+    classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC || classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH
   end
   
   def self.specialist_wait_time

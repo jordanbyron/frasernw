@@ -40,7 +40,7 @@ class Procedure < ActiveRecord::Base
     results = []
     procedure_specializations.each do |ps|
       ProcedureSpecialization.subtree_of(ps).each do |child|
-        if child.assumed?
+        if child.assumed_specialist?
           if child.parent.present?
             #only add the specialists that do the parent procedure we are assumed for
             results += child.parent.procedure.all_specialists_for_specialization_in_cities(child.specialization, cities)
@@ -63,8 +63,17 @@ class Procedure < ActiveRecord::Base
     results = []
     procedure_specializations.each do |ps|
       ProcedureSpecialization.subtree_of(ps).each do |child|
-        Focus.find_all_by_procedure_specialization_id(child.id).each do |focus|
-          results << focus.clinic if focus.clinic.present? && (cities.include? focus.clinic.city)
+        if child.assumed_clinic?
+          if child.parent.present?
+            #only add the clinics that do the parent procedure we are assumed for
+            results += child.parent.procedure.all_clinics_for_specialization_in_cities(child.specialization, cities)
+          else
+            results += ps.specialization.clinics.in_cities(cities)
+          end
+        else
+          Focus.find_all_by_procedure_specialization_id(child.id).each do |focus|
+            results << focus.clinic if focus.clinic.present? && (cities.include? focus.clinic.city)
+          end
         end
       end
     end
@@ -76,7 +85,7 @@ class Procedure < ActiveRecord::Base
     #look at this procedure as well as its children to find any specialists
     results = []
     ps = ProcedureSpecialization.find_by_specialization_id_and_procedure_id(specialization.id, self.id)
-    if ps.assumed?
+    if ps.assumed_specialist?
       results += ps.specialization.specialists.in_cities(cities)
     else
       ps.subtree.each do |child|
@@ -92,9 +101,14 @@ class Procedure < ActiveRecord::Base
   def all_clinics_for_specialization_in_cities(specialization, cities)
     #look at this procedure as well as its children to find any clinics
     results = []
-    ProcedureSpecialization.find_by_specialization_id_and_procedure_id(specialization.id, self.id).subtree.each do |child|
-      Focus.find_all_by_procedure_specialization_id(child.id).each do |focus|
-        results << focus.clinic if focus.clinic.present? && (cities.include? focus.clinic.city)
+    ps = ProcedureSpecialization.find_by_specialization_id_and_procedure_id(specialization.id, self.id)
+    if ps.assumed_clinic?
+      results += ps.specialization.clinics.in_cities(cities)
+    else
+      ps.subtree.each do |child|
+        Focus.find_all_by_procedure_specialization_id(child.id).each do |focus|
+          results << focus.clinic if focus.clinic.present? && (cities.include? focus.clinic.city)
+        end
       end
     end
     results.uniq!
