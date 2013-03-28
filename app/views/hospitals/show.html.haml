@@ -85,7 +85,7 @@
           $('#s#{s.id}').data('filter', '#{specialist_filter_attributes.join(' ')}');
         - @hospital.clinics_in.each do |c|
           - next if not c.show_in_table?
-          - clinic_filter_attributes = clinic_filtering_attributes(c)
+          - clinic_filter_attributes = clinic_filtering_attributes(c, false)
           - c.specializations.each do |s|
             - clinic_filter_attributes << "csp#{s.id}_"
           $('#c#{c.id}').data('filter', '#{clinic_filter_attributes.join(' ')}');

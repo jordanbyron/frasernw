@@ -14,7 +14,7 @@ module SpecializationsHelper
     end
     if include_assumed
       s.specializations.each do |specialization|
-        specialization.procedure_specializations.assumed.each do |ps|
+        specialization.procedure_specializations.assumed_specialist.each do |ps|
           filtering_attributes << "sp#{ps.procedure.id}_"
         end
       end
@@ -91,7 +91,7 @@ module SpecializationsHelper
     end
     if include_assumed
       s.specializations.each do |specialization|
-        specialization.procedure_specializations.assumed.each do |ps|
+        specialization.procedure_specializations.assumed_specialist.each do |ps|
           filtering_attributes << "op#{ps.procedure.id}_"
         end
       end
@@ -120,7 +120,7 @@ module SpecializationsHelper
     return filtering_attributes
   end
     
-  def clinic_filtering_attributes(c)
+  def clinic_filtering_attributes(c, include_assumed)
     filtering_attributes = clinic_procedure_filtering_attributes(c)
     filtering_attributes << "cwt_#{c.waittime_mask.present? ? c.waittime_mask : 0}"
     c.procedure_specializations.clinic_wait_time.each do |ps|
@@ -130,6 +130,13 @@ module SpecializationsHelper
       if focus.lagtime_mask.present?
         (focus.lagtime_mask..Clinic::LAGTIME_HASH.length+1).each do |i|
           filtering_attributes << "clt#{ps.procedure.id}_cc#{i}_"
+        end
+      end
+    end
+    if include_assumed
+      c.specializations.each do |specialization|
+        specialization.procedure_specializations.assumed_clinic.each do |ps|
+          filtering_attributes << "cp#{ps.procedure.id}_"
         end
       end
     end

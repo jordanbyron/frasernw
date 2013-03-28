@@ -68,8 +68,12 @@ class Specialization < ActiveRecord::Base
     return procedure_specializations.non_focused.arrange(:joins => "JOIN procedures ON procedure_specializations.procedure_id = procedures.id", :conditions => "procedure_specializations.specialization_id = #{self.id} AND procedure_specializations.mapped = 't'", :order => "procedures.name")
   end
   
-  def assumed_procedure_specializations_arranged
-    return procedure_specializations.assumed.arrange(:joins => "JOIN procedures ON procedure_specializations.procedure_id = procedures.id", :conditions => "procedure_specializations.specialization_id = #{self.id} AND procedure_specializations.mapped = 't'", :order => "procedures.name")
+  def assumed_specialist_procedure_specializations_arranged
+    return procedure_specializations.assumed_specialist.arrange(:joins => "JOIN procedures ON procedure_specializations.procedure_id = procedures.id", :conditions => "procedure_specializations.specialization_id = #{self.id} AND procedure_specializations.mapped = 't'", :order => "procedures.name")
+  end
+  
+  def assumed_clinic_procedure_specializations_arranged
+    return procedure_specializations.assumed_clinic.arrange(:joins => "JOIN procedures ON procedure_specializations.procedure_id = procedures.id", :conditions => "procedure_specializations.specialization_id = #{self.id} AND procedure_specializations.mapped = 't'", :order => "procedures.name")
   end
   
   def non_assumed_procedure_specializations_arranged

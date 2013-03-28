@@ -21,13 +21,15 @@
       %th Total
       %th Focused
       %th Non Focused
-      %th Assumed
+      %th Assumed for Specialists
+      %th Assumed for Clinics
     %tr
       %th Areas of practice
       %td= Procedure.all.length
       %td= Procedure.all.reject{|p| p.procedure_specializations.blank? || !p.procedure_specializations.first.focused?}.length
       %td= Procedure.all.reject{|p| p.procedure_specializations.blank? || !p.procedure_specializations.first.nonfocused?}.length
-      %td= Procedure.all.reject{|p| p.procedure_specializations.blank? || !p.procedure_specializations.first.assumed?}.length
+      %td= Procedure.all.reject{|p| p.procedure_specializations.blank? || !p.procedure_specializations.first.assumed_specialist?}.length
+      %td= Procedure.all.reject{|p| p.procedure_specializations.blank? || !p.procedure_specializations.first.assumed_clinic?}.length
       
     %tr
       %th

@@ -22,7 +22,7 @@
     $(document).ready(function() { 
     - user_divisions.each do |division|
       = render 'division_lookup.js', :division => division, :specializations => [@specialization]
-    init_tables(-1, []);
+    init_tables(-1, [], []);
     if (!has_specialists) { $('#specialist_tab_label').hide(); }
     if (!has_clinics) { $('#clinic_tab_label').hide(); }
     var show_clinics = ((!has_specialists && has_clinics) || (open_to_clinics && has_clinics));
