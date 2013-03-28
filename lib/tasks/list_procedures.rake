@@ -14,6 +14,13 @@ namespace :pathways do
           else
               puts "-- #{child_ps.procedure.name}"
           end
+          grandchildren.each do |grandchild_ps, greatgrandchildren|
+            if grandchild_ps.procedure.specializations.length > 1
+              puts "--- #{grandchild_ps.procedure.name} (shared between #{grandchild_ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
+            else
+                puts "--- #{grandchild_ps.procedure.name}"
+            end
+          end
         end
       end
       puts "" if s.procedure_specializations.non_focused.length > 0
@@ -29,6 +36,13 @@ namespace :pathways do
             puts "-- #{child_ps.procedure.name} (shared between #{child_ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
           else
               puts "-- #{child_ps.procedure.name}"
+          end
+          grandchildren.each do |grandchild_ps, greatgrandchildren|
+            if grandchild_ps.procedure.specializations.length > 1
+              puts "--- #{grandchild_ps.procedure.name} (shared between #{grandchild_ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
+            else
+                puts "--- #{grandchild_ps.procedure.name}"
+            end
           end
         end
       end
@@ -46,6 +60,13 @@ namespace :pathways do
           else
               puts "-- #{child_ps.procedure.name}"
           end
+          grandchildren.each do |grandchild_ps, greatgrandchildren|
+            if grandchild_ps.procedure.specializations.length > 1
+              puts "--- #{grandchild_ps.procedure.name} (shared between #{grandchild_ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
+            else
+                puts "--- #{grandchild_ps.procedure.name}"
+            end
+          end
         end
       end
       puts "" if s.procedure_specializations.assumed_clinic.length > 0
@@ -61,6 +82,13 @@ namespace :pathways do
             puts "-- #{child_ps.procedure.name} (shared between #{child_ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
           else
               puts "-- #{child_ps.procedure.name}"
+          end
+          grandchildren.each do |grandchild_ps, greatgrandchildren|
+            if grandchild_ps.procedure.specializations.length > 1
+              puts "--- #{grandchild_ps.procedure.name} (shared between #{grandchild_ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
+            else
+                puts "--- #{grandchild_ps.procedure.name}"
+            end
           end
         end
       end
