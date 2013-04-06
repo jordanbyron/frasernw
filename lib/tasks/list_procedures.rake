@@ -70,7 +70,7 @@ namespace :pathways do
         end
       end
       puts "" if s.procedure_specializations.assumed_clinic.length > 0
-      puts "#{s.name}: assumed clinic" if s.procedure_specializations.assumed_specialist.length > 0
+      puts "#{s.name}: assumed clinic" if s.procedure_specializations.assumed_clinic.length > 0
       s.assumed_clinic_procedure_specializations_arranged.each do |ps, children|
         if ps.procedure.specializations.length > 1
           puts "- #{ps.procedure.name} (shared between #{ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
