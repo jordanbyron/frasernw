@@ -1081,7 +1081,13 @@ body.loading #email
     
     p.space
     {
-      margin: 16px 0 0 0;
+      margin: 8px 0 0 0;
+    }
+    
+    .investigation-name
+    {
+      display: block;
+      margin-top: 16px;
     }
     
     h6
@@ -1096,6 +1102,11 @@ body.loading #email
       background: transparent url(/img/double-border-10.png) 0% 100% repeat-x;
     }
     
+    .list.indent
+    {
+      margin-left: 8px;
+    }
+    
     ul
     {
       margin: 8px 0 0 0;
@@ -1103,8 +1114,8 @@ body.loading #email
       
       li
       {
-        text-indent: -16px;
-        margin-left: 16px;
+        text-indent: -8px;
+        margin-left: 8px;
       }
     }
   }
