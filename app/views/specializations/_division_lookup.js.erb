@@ -21,14 +21,14 @@ filtering.current_subcategories["<%= division.id %>"] = {};
 
         items.each do |item|
           category_data[item.id] = Hash.new
-          category_data[item.id]['title'] = escape_javascript(item.title)
+          category_data[item.id]['title'] = HTMLEntities.new.encode(item.title, :decimal)
           category_data[item.id]['url'] = item.resolved_url
           category_data[item.id]['can_email'] = item.can_email?
           category_data[item.id]['shared_care'] = item.shared_care?
           if category.inline?
             category_data[item.id]['markdown'] = item.markdown?
             category_data[item.id]['body'] = HTMLEntities.new.encode(BlueCloth.new(item.markdown_content).to_html.delete("\n"), :decimal)
-            category_data[item.id]['full_title'] = item.full_title
+            category_data[item.id]['full_title'] = HTMLEntities.new.encode(item.full_title, :decimal)
           else
             category_data[item.id]['subcategory'] = "#{item.sc_category.id}"
           end
