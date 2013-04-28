@@ -10,4 +10,9 @@ class ReferralForm < ActiveRecord::Base
     }
   
   has_paper_trail
+  
+  def in_divisions(divisions)
+    referrable.present? && (referrable.divisions & divisions).present?
+  end
+  
 end
