@@ -74,6 +74,9 @@ class Ability
         #can print patient information
         can :print_patient_information, [Specialist, Clinic]
         
+        #can show referral forms
+        can :index, ReferralForm
+        
         #can change name, email, password
         #can [:change_name, :update_name], User
         can [:change_email, :update_email], User
@@ -103,6 +106,9 @@ class Ability
 
         #can print patient information
         can :print_patient_information, [Specialist, Clinic]
+        
+        #can show referral forms
+        can :index, ReferralForm
         
         #can change name, email, password
         #can [:change_name, :update_name], User
