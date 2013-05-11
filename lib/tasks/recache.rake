@@ -87,12 +87,20 @@ namespace :pathways do
       end
     end
     
+    task :menus => :environment do
+      expire_fragment 'specialization_dropdown_admin'
+      
+      User.all.map{ |u| u.divisions }.uniq.each do |division_group|
+        expire_fragment "specialization_dropdown_#{division_group.join('_')}"
+      end
+    end
+    
     task :front => :environment do
       expire_fragment 'latest_updates'
     end
 
     #purposeful order from least important to most important, to keep cache 'hot'
-    task :all => [:languages, :hospitals, :clinics, :specialists, :specializations, :search, :front] do
+    task :all => [:languages, :hospitals, :clinics, :specialists, :specializations, :menus, :search, :front] do
       puts "All pages recached."
     end
   
