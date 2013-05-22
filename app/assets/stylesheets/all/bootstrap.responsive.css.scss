@@ -469,6 +469,19 @@
   }
 }
 
+@media (min-width: 980px)
+{
+  #content #container #specialties-dropdown-menu .inner 
+  {
+    width: 816px;
+    
+    ul
+    {
+      width: 200px;
+    }
+  }
+}
+
 @media (min-width: 1220px) {
   .row {
     margin-left: -30px;
@@ -796,6 +809,7 @@
         {
           display: inline;
           wrap: wrap;
+          width: 175px;
           
           li
           {
