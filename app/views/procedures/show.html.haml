@@ -245,7 +245,7 @@
                         .filter-group-content
                           - City.all.each do |c|
                             %label.half
-                              = check_box_tag c.id, c.id, (user_cities.include? c), :class => "sct"
+                              = check_box_tag c.id, c.id, false, :class => "sct"
                               = c.name
 
                 %script{"type" => "text/javascript"}
@@ -414,7 +414,7 @@
                         .filter-group-content
                           - City.all.each do |c|
                             %label.half
-                              = check_box_tag c.id, c.id, (user_cities.include? c), :class => "cct"
+                              = check_box_tag c.id, c.id, false, :class => "cct"
                               = c.name
 
                 %script{"type" => "text/javascript"}
@@ -561,6 +561,17 @@
           }
 
 -# END OF CACHING
+
+%script{"type" => "text/javascript"}
+  :plain
+    var city_ids = [#{current_user_cities.map{|c| c.id}.join(',')}];
+    $(document).ready(function() {
+      for (var city_id in city_ids) {
+        $('#' + city_id + '.sct').attr('checked',true);
+        $('#' + city_id + '.cct').attr('checked',true);
+      }
+    });
+    
 .content-wrapper
   %p.admin.btn-group
     - if can? :update, @procedure
