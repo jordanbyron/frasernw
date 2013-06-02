@@ -216,7 +216,7 @@
                         .filter-group-content
                           - City.all.each do |c|
                             %label.half
-                              = check_box_tag c.id, c.id, false, :class => "sct"
+                              = check_box_tag c.id, c.id, false, :class => "sct", :id => "city_s_#{c.id}"
                               = c.name
 
               %script{"type" => "text/javascript"}
@@ -227,7 +227,7 @@
                       update_table('s', 'specialist', '#{@specialization.member_name.uncapitalize_first_letter.pluralize}');
                     }
                     $('.sp, .sc, .sr, .ss, .si, .ssh, .sl, .sa').click( update_custom_specialist_table );
-                    $('.sct').click( function() { expand_city($(this).prop('checked'), [#{@specialization.id}], $(this).attr('id'), -1, [], []) });
+                    $('.sct').click( function() { expand_city($(this).prop('checked'), [#{@specialization.id}], $(this).attr('name'), -1, [], []) });
                   });
             
         #clinic_tab.tab-pane
@@ -425,14 +425,14 @@
                         .filter-group-content
                           - City.all.each do |c|
                             %label.half
-                              = check_box_tag c.id, c.id, false, :class => "cct"
+                              = check_box_tag c.id, c.id, false, :class => "cct", :id => "city_c_#{c.id}"
                               = c.name
 
               %script{"type" => "text/javascript"}
                 :plain
                   $(document).ready(function() {
                     $('.cp, .cc, .cr, .cd, .csh, .ch, .ci, .cl').click( update_clinic_table );
-                    $('.cct').click( function() { expand_city($(this).prop('checked'), [#{@specialization.id}], $(this).attr('id'), -1, [], []) });
+                    $('.cct').click( function() { expand_city($(this).prop('checked'), [#{@specialization.id}], $(this).attr('name'), -1, [], []) });
                   });
 
         - ScCategory.specialty.each do |sc_category|
@@ -600,9 +600,10 @@
   :plain
     var city_ids = [#{current_user_cities.map{|c| c.id}.join(',')}];
     $(document).ready(function() {
-      for (var city_id in city_ids) {
-        $('#' + city_id + '.sct').attr('checked',true);
-        $('#' + city_id + '.cct').attr('checked',true);
+      for (var i = 0; i < city_ids.length; ++i) {
+        var city_id = city_ids[i];
+        $('#city_s_' + city_id).prop('checked', true);
+        $('#city_c_' + city_id).prop('checked', true);
       }
     });
 

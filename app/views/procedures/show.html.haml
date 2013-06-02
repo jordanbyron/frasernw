@@ -245,7 +245,7 @@
                         .filter-group-content
                           - City.all.each do |c|
                             %label.half
-                              = check_box_tag c.id, c.id, false, :class => "sct"
+                              = check_box_tag c.id, c.id, false, :class => "sct", :id => "city_s_#{c.id}"
                               = c.name
 
                 %script{"type" => "text/javascript"}
@@ -257,7 +257,7 @@
                         update_table('s', 'specialist', '#{member_name}');
                       }
                       $('.sp, .sc, .sr, .ss, .si, .ssh, .sl, .sa').click( update_custom_specialist_table );
-                      $('.sct').click( function() { expand_city($(this).prop('checked'), [#{@procedure.specializations.map{ |s| s.id }.join(',')}], $(this).attr('id'), #{@procedure.id}, [#{assumed_specialist_specialization_ids.join(',')}], [#{assumed_clinic_specialization_ids.join(',')}]) });
+                      $('.sct').click( function() { expand_city($(this).prop('checked'), [#{@procedure.specializations.map{ |s| s.id }.join(',')}], $(this).attr('name'), #{@procedure.id}, [#{assumed_specialist_specialization_ids.join(',')}], [#{assumed_clinic_specialization_ids.join(',')}]) });
                       $(document).ready(update_custom_specialist_table);
                     });
 
@@ -414,14 +414,14 @@
                         .filter-group-content
                           - City.all.each do |c|
                             %label.half
-                              = check_box_tag c.id, c.id, false, :class => "cct"
+                              = check_box_tag c.id, c.id, false, :class => "cct", :id => "city_c_#{c.id}"
                               = c.name
 
                 %script{"type" => "text/javascript"}
                   :plain
                     $(document).ready(function() {
                       $('.cp, .cc, .cr, .cd, .csh, .ch, .ci, .cl').click( update_clinic_table );
-                      $('.cct').click( function() { expand_city($(this).prop('checked'), [#{@procedure.specializations.map{ |s| s.id }.join(',')}], $(this).attr('id'), #{@procedure.id}, [#{assumed_specialist_specialization_ids.join(',')}], [#{assumed_clinic_specialization_ids.join(',')}]) });
+                      $('.cct').click( function() { expand_city($(this).prop('checked'), [#{@procedure.specializations.map{ |s| s.id }.join(',')}], $(this).attr('name'), #{@procedure.id}, [#{assumed_specialist_specialization_ids.join(',')}], [#{assumed_clinic_specialization_ids.join(',')}]) });
                     });
                     $(document).ready(update_clinic_table);
 
@@ -566,9 +566,10 @@
   :plain
     var city_ids = [#{current_user_cities.map{|c| c.id}.join(',')}];
     $(document).ready(function() {
-      for (var city_id in city_ids) {
-        $('#' + city_id + '.sct').attr('checked',true);
-        $('#' + city_id + '.cct').attr('checked',true);
+      for (var i = 0; i < city_ids.length; ++i) {
+        var city_id = city_ids[i];
+        $('#city_s_' + city_id).prop('checked', true);
+        $('#city_c_' + city_id).prop('checked', true);
       }
     });
     
