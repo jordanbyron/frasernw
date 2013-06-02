@@ -44,6 +44,9 @@ class DivisionsController < ApplicationController
           end
         end
       end
+      Specialization.all.each do |s|
+        SpecializationOption.find_or_create_by_division_id_and_specialization_id( @division.id, s.id )
+      end
       redirect_to @division, :notice => "Successfully created division."
     else
       render :action => 'new'
