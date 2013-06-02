@@ -1,10 +1,10 @@
 module FrontHelper
   
-  def latest_events(max_events)
+  def latest_events(max_events, divisions)
     
     events = {}
         
-    Version.order("id desc").where("item_type = (?) OR item_type = (?)", "Specialist", "Clinic").each do |version|
+    Version.order("id desc").where("item_type = (?) OR item_type = (?)", "Specialist", "Clinic").limit(1000).each do |version|
     
       next if version.item.blank?
       break if events.length >= max_events
@@ -14,7 +14,7 @@ module FrontHelper
         if version.item_type == "Specialist"
           
           specialist = version.item
-          next if specialist.blank? || specialist.in_progress_for_divisions(specialist.divisions)
+          next if specialist.blank? || specialist.in_progress_for_divisions(specialist.divisions) || (specialist.divisions & divisions).blank?
           
           if version.event == "create" && specialist.accepting_new_patients? && specialist.opened_this_year?
             
@@ -71,7 +71,7 @@ module FrontHelper
         elsif version.item_type == "Clinic"
           
           clinic = version.item
-          next if clinic.blank? || clinic.in_progress_for_divisions(clinic.divisions)
+          next if clinic.blank? || clinic.in_progress_for_divisions(clinic.divisions) || (clinic.divisions & divisions).blank?
           
           if (version.event == "create" || version.event == "update") && clinic.accepting_new_patients? && clinic.opened_this_year?
             

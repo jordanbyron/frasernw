@@ -102,7 +102,9 @@ namespace :pathways do
     end
     
     task :front => :environment do
-      expire_fragment 'latest_updates'
+      User.all.map{ |u| u.divisions }.uniq.each do |division_group|
+        expire_fragment "latest_updates_#{division_group.join('_')}"
+      end
     end
 
     #purposeful order from least important to most important, to keep cache 'hot'
