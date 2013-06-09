@@ -77,8 +77,8 @@
       
         %h2 Latest Specialist and Clinic Updates
         
-        - cache('latest_updates') do
-          - latest_events(5).each do |event|
+        - cache("latest_updates_#{current_user_divisions.map{|d| d.id }.join('_')}") do
+          - latest_events(5, current_user_divisions).each do |event|
             %p= event
             
         - if NewsItem.divisional_in_divisions(current_user_divisions).length > 0

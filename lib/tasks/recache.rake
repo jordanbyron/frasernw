@@ -8,30 +8,36 @@ namespace :pathways do
     task :specializations => :environment do
       puts "Recaching specializations..."
       Specialization.all.sort{ |a,b| a.id <=> b.id }.each do |s|
-        puts "Specialization #{s.id}"
-        expire_fragment specialization_path(s)
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_cache") )
-        
-        City.all.each do |c|
-          puts "Specialization City #{c.id}"
-          expire_fragment "#{specialization_path(s)}_#{city_path(c)}"
-          Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_city_cache/#{c.id}.js") )
-        end
-        
-        Division.all.each do |d|
-          puts "Specialization Division #{d.id}"
-          expire_fragment "#{specialization_path(s)}_#{division_path(d)}"
-          Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_division_cache/#{d.id}.js") )
-        end
-        
-        #expire the grouped together cities
-        User.all.map{ |u| City.for_user_in_specialization(u, s).map{ |c| c.id } }.uniq.each do |city_group|
-          expire_fragment "specialization_#{s.id}_content_cities_#{city_group.join('_')}"
-        end
-        
-        #expire the grouped together divisions
-        User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
-          expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
+        begin
+          puts "Specialization #{s.id}"
+          expire_fragment specialization_path(s)
+          Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_cache") )
+          
+          City.all.each do |c|
+            puts "Specialization City #{c.id}"
+            expire_fragment "#{specialization_path(s)}_#{city_path(c)}"
+            Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_city_cache/#{c.id}.js") )
+          end
+          
+          Division.all.each do |d|
+            puts "Specialization Division #{d.id}"
+            expire_fragment "#{specialization_path(s)}_#{division_path(d)}"
+            Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_division_cache/#{d.id}.js") )
+          end
+          
+          #expire the grouped together cities
+          User.all.map{ |u| City.for_user_in_specialization(u, s).map{ |c| c.id } }.uniq.each do |city_group|
+            expire_fragment "specialization_#{s.id}_content_cities_#{city_group.join('_')}"
+          end
+          
+          #expire the grouped together divisions
+          User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
+            expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
+          end
+        rescue Exception => e
+          puts e.message
+          puts "retrying.."
+          retry
         end
       end
     end
@@ -87,12 +93,22 @@ namespace :pathways do
       end
     end
     
+    task :menus => :environment do
+      expire_fragment 'specialization_dropdown_admin'
+      
+      User.all.map{ |u| u.divisions }.uniq.each do |division_group|
+        expire_fragment "specialization_dropdown_#{division_group.join('_')}"
+      end
+    end
+    
     task :front => :environment do
-      expire_fragment 'latest_updates'
+      User.all.map{ |u| u.divisions }.uniq.each do |division_group|
+        expire_fragment "latest_updates_#{division_group.join('_')}"
+      end
     end
 
     #purposeful order from least important to most important, to keep cache 'hot'
-    task :all => [:languages, :hospitals, :clinics, :specialists, :specializations, :search, :front] do
+    task :all => [:languages, :hospitals, :clinics, :specialists, :specializations, :menus, :search, :front] do
       puts "All pages recached."
     end
   

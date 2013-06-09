@@ -55,6 +55,6 @@ function pathways_group_formatter(group_id)
 
 function pathways_searcher(data_entry)
 {
-  $.each( $('#search_result_' + data_entry.go + '_' + data_entry.id), function(){ $(this).click() });
+  window.location.href = $('#search_result_' + data_entry.go + '_' + data_entry.id).first().attr('href');
   return false;
 }

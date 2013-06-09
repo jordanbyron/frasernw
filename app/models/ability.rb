@@ -74,6 +74,9 @@ class Ability
         #can print patient information
         can :print_patient_information, [Specialist, Clinic]
         
+        #can show referral forms
+        can :index, ReferralForm
+        
         #can change name, email, password
         #can [:change_name, :update_name], User
         can [:change_email, :update_email], User
@@ -93,6 +96,9 @@ class Ability
         can :show, [Specialization, Procedure] do |entity|
           !entity.fully_in_progress_for_divisions(Division.all)
         end
+        can :city, Specialization do |entity|
+          !entity.fully_in_progress_for_divisions(Division.all)
+        end
         can :show, [Specialist, Clinic] do |entity|
           !entity.in_progress_for_divisions(entity.divisions)
         end
@@ -103,6 +109,9 @@ class Ability
 
         #can print patient information
         can :print_patient_information, [Specialist, Clinic]
+        
+        #can show referral forms
+        can :index, ReferralForm
         
         #can change name, email, password
         #can [:change_name, :update_name], User

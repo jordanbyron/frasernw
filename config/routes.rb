@@ -57,6 +57,7 @@ Frasernw::Application.routes.draw do
   
   match '/specialists/:id/edit_referral_forms'  => 'specialists#edit_referral_forms', :as => 'specialist_referral_forms'
   match '/clinics/:id/edit_referral_forms'      => 'clinics#edit_referral_forms',     :as => 'clinic_referral_forms'
+  match '/referral_forms'               => 'referral_forms#index',      :as => 'referral_forms'
   
   match '/specialists/:id/print'        => 'specialists#print_patient_information',   :as => 'specialist_patient_information'
   match '/clinics/:id/print'            => 'clinics#print_patient_information',       :as => 'clinic_patient_information'

@@ -60,7 +60,7 @@ class NewsItem < ActiveRecord::Base
     TYPE_HASH[type_mask]
   end
   
-  default_scope order('news_items.start_date')
+  default_scope order('news_items.start_date DESC')
   
   def self.breaking_in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }

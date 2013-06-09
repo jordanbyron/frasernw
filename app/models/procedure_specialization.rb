@@ -31,6 +31,10 @@ class ProcedureSpecialization < ActiveRecord::Base
   has_paper_trail
   has_ancestry
   
+  def self.for_specialization(specialization)
+    where('procedure_specializations.specialization_id = (?)', specialization.id)
+  end
+  
   def classification_text
     ProcedureSpecialization::CLASSIFICATION_HASH[classification]
   end

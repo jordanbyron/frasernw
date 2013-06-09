@@ -605,3 +605,85 @@ function update_category_table(category_id, category_name)
   found ? phrase.removeClass('none') : phrase.addClass('none');
   current_filters.length == 0 ? phrase.hide() : phrase.show();
 }
+
+function clear_referral_form_filters()
+{
+  $("input#ftall").prop('checked',true);
+  $("input#fsall").prop('checked',true);
+  update_referral_form_table();
+}
+
+function update_referral_form_table()
+{
+  var current_filters = new Array();
+  var types = new Array();
+  var specializations = new Array();
+  
+  // collect subcategory filters
+  $("input.ft:checked").each( function() {
+    var $this = $(this);
+    if ($this.attr('id') != 'ftall')
+    {
+      types.push($this.parent().text().trim());
+      current_filters.push($this.attr('id'));
+    }
+  });
+  
+  // collect specializations filters
+  $("input.fs:checked").each( function() {
+    var $this = $(this);
+    if ($this.attr('id') != 'fsall')
+    {
+      specializations.push($this.parent().text().trim());
+      current_filters.push($this.attr('id'));
+    }
+  });
+  
+  var found = false;
+             
+  //loop over each row of the table, hiding those which don't match our filters
+  $('#referral_form_table tbody tr').each(function () {
+    var row = $(this)
+      , row_filter = row.data('attributes');
+    
+    if ( current_filters.length == 0 )
+    {
+      row.show();
+    }
+    else if ( !row_filter )
+    {
+      //a very blank entry                                        
+      row.hide();
+    }
+    else if ( matches_filters( row_filter, current_filters ) )
+    {
+      row.show();
+      found = true;
+    }
+    else
+    {
+      //doesn't match
+      row.hide();
+    }
+  });
+  
+  var description = found ? 'Showing referral forms for' : 'There are no referral forms for';
+  
+  var fragments = new Array()
+  if ( specializations.length >= 1 )
+  {
+    fragments.push(specializations.to_sentence());
+  }
+  if ( types.length >= 1 )
+  {
+    fragments.push(types.to_sentence().toLowerCase());
+  }
+  description += ' ' + fragments.join(' ');
+  
+  description += ". <a href=\"javascript:clear_referral_form_filters()\">Clear all filters</a>."
+  
+  var phrase = $('#referral_form_phrase');
+  phrase.html(description);
+  found ? phrase.removeClass('none') : phrase.addClass('none');
+  current_filters.length == 0 ? phrase.hide() : phrase.show();
+}

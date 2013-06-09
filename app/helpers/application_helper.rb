@@ -10,10 +10,10 @@ module ApplicationHelper
   
   alias :clinics_procedures :specialists_procedures
   
-  def procedure_ancestry(specialist_or_clinic_or_specialization, classification)
+  def procedure_ancestry(specialist_or_clinic_or_specialization, classification, specialization)
     result = {}
   
-    specialist_or_clinic_or_specialization.procedure_specializations.each do |ps| 
+    specialist_or_clinic_or_specialization.procedure_specializations.for_specialization(specialization).each do |ps|
       temp = { ps.procedure => {} }
       next if ps.classification != classification
       while ps.parent
@@ -41,8 +41,8 @@ module ApplicationHelper
     end
   end
   
-  def compressed_procedures_indented(specialist_or_clinic, classification)
-    return compressed_procedures_indented_output( procedure_ancestry(specialist_or_clinic, classification), specialist_or_clinic ) 
+  def compressed_procedures_indented(specialist_or_clinic, classification, specialty)
+    return compressed_procedures_indented_output( procedure_ancestry(specialist_or_clinic, classification, specialty), specialist_or_clinic )
   end
   
   def compressed_procedures_indented_output(items, root)

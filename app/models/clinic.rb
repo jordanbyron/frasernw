@@ -99,7 +99,11 @@ class Clinic < ActiveRecord::Base
   def show_in_table?
     responded? || not_responded?
   end
-  
+
+  def not_available?
+    false #to line up with specialists; all are "available" if they exist
+  end
+
   def phone_and_fax
     return "#{phone} ext. #{phone_extension}, Fax: #{fax}" if phone.present? && phone_extension.present? && fax.present?
     return "#{phone} ext. #{phone_extension}" if phone.present? && phone_extension.present?
