@@ -101,14 +101,14 @@ class ClinicsController < ApplicationController
         focuses_procedure_list << ps.procedure.id
       end
       children.each { |child_ps, grandchildren|
-        if !focuses_procedure_list.include?(ps.procedure.id)
+        if !focuses_procedure_list.include?(child_ps.procedure.id)
           @focuses << generate_focus(@clinic, child_ps, 1)
-          focuses_procedure_list << ps.procedure.id
+          focuses_procedure_list << child_ps.procedure.id
         end
         grandchildren.each { |grandchild_ps, greatgrandchildren|
-          if !focuses_procedure_list.include?(ps.procedure.id)
+          if !focuses_procedure_list.include?(grandchild_ps.procedure.id)
             @focuses << generate_focus(@clinic, grandchild_ps, 2)
-            focuses_procedure_list << ps.procedure.id
+            focuses_procedure_list << grandchild_ps.procedure.id
           end
         }
       }
@@ -192,14 +192,14 @@ class ClinicsController < ApplicationController
           focuses_procedure_list << ps.procedure.id
         end
         children.each { |child_ps, grandchildren|
-          if !focuses_procedure_list.include?(ps.procedure.id)
+          if !focuses_procedure_list.include?(child_ps.procedure.id)
             @focuses << generate_focus(@clinic, child_ps, 1)
-            focuses_procedure_list << ps.procedure.id
+            focuses_procedure_list << child_ps.procedure.id
           end
           grandchildren.each { |grandchild_ps, greatgrandchildren|
-            if !focuses_procedure_list.include?(ps.procedure.id)
+            if !focuses_procedure_list.include?(grandchild_ps.procedure.id)
               @focuses << generate_focus(@clinic, grandchild_ps, 2)
-              focuses_procedure_list << ps.procedure.id
+              focuses_procedure_list << grandchild_ps.procedure.id
             end
           }
         }

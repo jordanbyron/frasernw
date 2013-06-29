@@ -47,14 +47,14 @@ class SpecialistsEditorController < ApplicationController
         capacities_procedure_list << ps.procedure.id
       end
       children.each { |child_ps, grandchildren|
-        if !capacities_procedure_list.include?(ps.procedure.id)
+        if !capacities_procedure_list.include?(child_ps.procedure.id)
           @capacities << generate_capacity(@specialist, child_ps, 1)
-          capacities_procedure_list << ps.procedure.id
+          capacities_procedure_list << child_ps.procedure.id
         end
         grandchildren.each { |grandchild_ps, greatgrandchildren|
-          if !capacities_procedure_list.include?(ps.procedure.id)
+          if !capacities_procedure_list.include?(grandchild_ps.procedure.id)
             @capacities << generate_capacity(@specialist, grandchild_ps, 2)
-            capacities_procedure_list << ps.procedure.id
+            capacities_procedure_list << grandchild_ps.procedure.id
           end
         }
       }
