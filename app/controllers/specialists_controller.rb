@@ -117,13 +117,23 @@ class SpecialistsController < ApplicationController
       @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
       procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
     }
+    capacities_procedure_list = []
     @capacities = []
     procedure_specializations.each { |ps, children|
-      @capacities << generate_capacity(@specialist, ps, 0)
+      if !capacities_procedure_list.include?(ps.procedure.id)
+        @capacities << generate_capacity(@specialist, ps, 0)
+        capacities_procedure_list << ps.procedure.id
+      end
       children.each { |child_ps, grandchildren|
-        @capacities << generate_capacity(@specialist, child_ps, 1)
+        if !capacities_procedure_list.include?(ps.procedure.id)
+          @capacities << generate_capacity(@specialist, child_ps, 1)
+          capacities_procedure_list << ps.procedure.id
+        end
         grandchildren.each { |grandchild_ps, greatgrandchildren|
-          @capacities << generate_capacity(@specialist, grandchild_ps, 2)
+          if !capacities_procedure_list.include?(ps.procedure.id)
+            @capacities << generate_capacity(@specialist, grandchild_ps, 2)
+            capacities_procedure_list << ps.procedure.id
+          end
         }
       }
     }
@@ -237,13 +247,23 @@ class SpecialistsController < ApplicationController
         @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
         procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
       }
+      capacities_procedure_list = []
       @capacities = []
       procedure_specializations.each { |ps, children|
-        @capacities << generate_capacity(@specialist, ps, 0)
+        if !capacities_procedure_list.include?(ps.procedure.id)
+          @capacities << generate_capacity(@specialist, ps, 0)
+          capacities_procedure_list << ps.procedure.id
+        end
         children.each { |child_ps, grandchildren|
-          @capacities << generate_capacity(@specialist, child_ps, 1)
+          if !capacities_procedure_list.include?(ps.procedure.id)
+            @capacities << generate_capacity(@specialist, child_ps, 1)
+            capacities_procedure_list << ps.procedure.id
+          end
           grandchildren.each { |grandchild_ps, greatgrandchildren|
-            @capacities << generate_capacity(@specialist, grandchild_ps, 2)
+            if !capacities_procedure_list.include?(ps.procedure.id)
+              @capacities << generate_capacity(@specialist, grandchild_ps, 2)
+              capacities_procedure_list << ps.procedure.id
+            end
           }
         }
       }

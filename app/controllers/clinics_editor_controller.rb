@@ -25,13 +25,23 @@ class ClinicsEditorController < ApplicationController
       @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
       procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
     }
+    focuses_procedure_list = []
     @focuses = []
     procedure_specializations.each { |ps, children|
-      @focuses << generate_focus(@clinic, ps, 0)
+      if !focuses_procedure_list.include?(ps.procedure.id)
+        @focuses << generate_focus(@clinic, ps, 0)
+        focuses_procedure_list << ps.procedure.id
+      end
       children.each { |child_ps, grandchildren|
-        @focuses << generate_focus(@clinic, child_ps, 1)
+        if !focuses_procedure_list.include?(ps.procedure.id)
+          @focuses << generate_focus(@clinic, child_ps, 1)
+          focuses_procedure_list << ps.procedure.id
+        end
         grandchildren.each { |grandchild_ps, greatgrandchildren|
-          @focuses << generate_focus(@clinic, grandchild_ps, 2)
+          if !focuses_procedure_list.include?(ps.procedure.id)
+            @focuses << generate_focus(@clinic, grandchild_ps, 2)
+            focuses_procedure_list << ps.procedure.id
+          end
         }
       }
     }
