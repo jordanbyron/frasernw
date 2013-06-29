@@ -44,7 +44,7 @@
                 #specialist_others.other-phrase
                 
                 #specialist_hide_others.other-phrase
-                  %a{"href" => "javascript:void(0)", "onclick" => "hide_others('specialist', '#{@specialization.member_name.uncapitalize_first_letter.pluralize}')"}Hide
+                  %a{"href" => "javascript:void(0)", "onclick" => "hide_others('s', 'specialist', '#{@specialization.member_name.uncapitalize_first_letter.pluralize}')"}Hide
                   results from other specialties.
               
                 %table.table.table-condensed.tablesorter#specialist_table
@@ -249,6 +249,12 @@
                 #clinic_no_wait_time.wait-time-phrase.none
                   %i.icon-link
                   You have chosen multiple areas of practice, and in one or more of which clinics have optionally provided a specific wait time. Due to the conflicing wait times, the wait time column is blank.
+                          
+                #clinic_others.other-phrase
+                
+                #clinic_hide_others.other-phrase
+                  %a{"href" => "javascript:void(0)", "onclick" => "hide_others('c', 'clinic', 'clinics')"}Hide
+                  results from other specialties.
                     
                 %table.table.table-condensed.tablesorter#clinic_table
                   %thead
