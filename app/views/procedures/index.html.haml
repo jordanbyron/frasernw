@@ -17,8 +17,13 @@
       %th Area of Practice
       %th Hierarchy
       %th.admin
+      
+    - if (@specialization.present?)
+      - procedures = @specialization.procedures
+    - else
+      - procedures = Procedure.all(:order => "name")
 
-    - Procedure.all(:order => "name").each do |procedure|
+    - procedures.each do |procedure|
       %tr
         %td= link_to procedure.name, procedure_path(procedure), :class => 'ajax'
         %td
