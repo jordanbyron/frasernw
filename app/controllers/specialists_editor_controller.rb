@@ -78,6 +78,7 @@ class SpecialistsEditorController < ApplicationController
     review_item.item_id = @specialist.id
     review_item.object = ActiveSupport::JSON::encode(params)
     review_item.whodunnit = current_user.id if current_user.present?
+    review_item.status = params[:no_updates] ? ReviewItem::STATUS_NO_UPDATES: ReviewItem::STATUS_UPDATES
     review_item.save
     
     render :layout => 'ajax'

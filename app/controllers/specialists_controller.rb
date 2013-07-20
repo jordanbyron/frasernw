@@ -199,6 +199,21 @@ class SpecialistsController < ApplicationController
       end
     end
   end
+  
+  def archive
+    #archive the review item so that we can save the specialist
+    @specialist = Specialist.find(params[:id])
+    
+    review_item = @specialist.review_item
+    
+    if review_item.blank?
+      redirect_to specialist_path(@specialist), :notice => "There are no review items for this specialist"
+    else
+      review_item.archived = true;
+      review_item.save
+      redirect_to review_items_path, :notice => "Successfully archived review item for #{@specialist.name}."
+    end
+  end
 
   def destroy
     @specialist = Specialist.find(params[:id])
