@@ -68,7 +68,7 @@
               %td.admin.btn-group.wide
                 = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", specialist_review_path(review_item.item), :class => "btn btn-mini ajax")
                 - if review_item.no_updates?
-                  = link_to("<i class='icon-pencil'></i>".html_safe + " Archive changes", specialist_archive_path(review_item.item), :class => "btn btn-mini ajax")
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Archive", specialist_archive_path(review_item.item), :class => "btn btn-mini ajax")
                 - else
                   = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
                 
@@ -93,7 +93,7 @@
               %td.admin.btn-group.wide
                 = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", clinic_review_path(review_item.item), :class => "btn btn-mini ajax")
                 - if review_item.no_updates?
-                  = link_to("<i class='icon-pencil'></i>".html_safe + " Archive changes", clinic_archive_path(review_item.item), :class => "btn btn-mini ajax")
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Archive", clinic_archive_path(review_item.item), :class => "btn btn-mini ajax")
                 - else
                   = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
                 
@@ -120,7 +120,7 @@
                 %td.admin.btn-group.wide
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", specialist_review_path(review_item.item), :class => "btn btn-mini ajax")
                   - if review_item.no_updates?
-                    = link_to("<i class='icon-pencil'></i>".html_safe + " Archive changes", specialist_archive_path(review_item.item), :class => "btn btn-mini ajax")
+                    = link_to("<i class='icon-pencil'></i>".html_safe + " Archive", specialist_archive_path(review_item.item), :class => "btn btn-mini ajax")
                   - else
                     = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
 
@@ -145,7 +145,7 @@
                 %td.admin.btn-group.wide
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", clinic_review_path(review_item.item), :class => "btn btn-mini ajax")
                   - if review_item.no_updates?
-                    = link_to("<i class='icon-pencil'></i>".html_safe + " Archive changes", specialist_archive_path(review_item.item), :class => "btn btn-mini ajax")
+                    = link_to("<i class='icon-pencil'></i>".html_safe + " Archive", specialist_archive_path(review_item.item), :class => "btn btn-mini ajax")
                   - else
                     = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
 
