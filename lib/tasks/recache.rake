@@ -96,13 +96,13 @@ namespace :pathways do
     task :menus => :environment do
       expire_fragment 'specialization_dropdown_admin'
       
-      User.all.map{ |u| u.divisions }.uniq.each do |division_group|
+      User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
         expire_fragment "specialization_dropdown_#{division_group.join('_')}"
       end
     end
     
     task :front => :environment do
-      User.all.map{ |u| u.divisions }.uniq.each do |division_group|
+      User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
         expire_fragment "latest_updates_#{division_group.join('_')}"
       end
     end
