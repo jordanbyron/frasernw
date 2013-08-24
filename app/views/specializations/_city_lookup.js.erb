@@ -89,6 +89,22 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
       clinic_healthcare_providers += clinic_healthcare_provider_filtering_attributes(c)
     end
 
+    #broken apart as we only want to record the procedures and associations for the clinics directly in our city, and only for specialization pages
+    if other
+      other_clinics_in_cities(specialization, [city]).flatten.uniq.reject{ |c| !c.show_in_table? }.each do |c|
+        clinic_data[c.id] = Hash.new
+        clinic_data[c.id]['attributes'] = clinic_filtering_attributes(c, false).join(' ')
+        clinic_data[c.id]['name'] = c.name
+        clinic_data[c.id]['specialties'] = c.specializations.map{ |sp| sp.id }
+        clinic_data[c.id]['status_class'] = "#{c.status_class_hash}"
+        clinic_data[c.id]['wait_time'] = "#{c.waittime_mask.present? ? c.waittime_mask : -1}"
+        clinic_data[c.id]['cities'] = c.city.present? ? [c.city.id] : []
+        clinic_data[c.id]['in_progress'] = true if c.in_progress_for_divisions(c.divisions)
+        clinic_data[c.id]['is_new'] = true if c.new?
+        clinic_data[c.id]['is_private'] = true if c.private?
+      end
+    end
+
     -%>
     filtering.clinic_data["<%= city.id %>"] = $.extend({}, filtering.clinic_data["<%= city.id %>"], <%=clinic_data.to_json.html_safe %>);
     filtering.clinic_procedures["<%= city.id %>"] = filtering.clinic_procedures["<%= city.id %>"].concat(<%=clinic_procedures.flatten.uniq.to_json.html_safe %>);

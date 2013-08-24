@@ -42,8 +42,9 @@
           %tr
             %th Specialist
             %th Specialty
-            %th Updated by
-            %th Updated when
+            %th From
+            %th When
+            %th Any Updates?
 
           - specialist_reviews.reject{ |item| item.item.blank? || item.item_type != "Specialist" }.each do |review_item|
             %tr
@@ -51,6 +52,7 @@
               %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
               %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
+              %td= ReviewItem::STATUS_HASH[review_item.status]
                 
       #clinics_tab.tab-pane
 
@@ -58,8 +60,9 @@
           %tr
             %th Clinic
             %th Specialty
-            %th Updated by
-            %th Updated when
+            %th From
+            %th When
+            %th Any Updates?
 
           - clinic_reviews.reject{ |item| item.item.blank? || item.item_type != "Clinic" }.each do |review_item|
             %tr
@@ -67,6 +70,7 @@
               %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
               %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
+              %td= ReviewItem::STATUS_HASH[review_item.status]
                 
       - if current_user_is_super_admin?
         
@@ -76,9 +80,9 @@
             %tr
               %th Specialist
               %th Specialty
-              %th Updated by
-              %th Updated when
-              %th
+              %th From
+              %th When
+              %th Any Updates?
 
             - other_specialist_reviews.each do |review_item|
               %tr
@@ -86,9 +90,7 @@
                 %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
                 %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
                 %td= "#{time_ago_in_words(review_item.created_at)} ago"
-                %td.admin.btn-group.wide
-                  = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", specialist_review_path(review_item.item), :class => "btn btn-mini ajax")
-                  = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
+                %td= ReviewItem::STATUS_HASH[review_item.status]
                   
         #other_clinics_tab.tab-pane
 
@@ -96,9 +98,9 @@
             %tr
               %th Clinic
               %th Specialty
-              %th Updated by
-              %th Updated when
-              %th
+              %th From
+              %th When
+              %th Any Updates?
 
             - other_clinic_reviews.each do |review_item|
               %tr
@@ -106,8 +108,6 @@
                 %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
                 %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
                 %td= "#{time_ago_in_words(review_item.created_at)} ago"
-                %td.admin.btn-group.wide
-                  = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", clinic_review_path(review_item.item), :class => "btn btn-mini ajax")
-                  = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
+                %td= ReviewItem::STATUS_HASH[review_item.status]
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2

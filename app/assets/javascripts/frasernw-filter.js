@@ -16,22 +16,20 @@ function matches_filters( input, filters )
   return true
 }
 
-function show_others( entity_id )
+function show_others( prefix, entity_id, entity_name )
 {
   should_show_others = true;
   $('#' + entity_id + '_others').hide();
   $('#' + entity_id + '_hide_others').show();
-  $('#' + entity_id + '_description_entity').html("specialists");
-  update_specialist_table();
+  update_table(prefix, entity_id, entity_name);
 }
 
-function hide_others( entity_id, entity_name )
+function hide_others( prefix, entity_id, entity_name )
 {
   should_show_others = false;
   $('#' + entity_id + '_others').show();
   $('#' + entity_id + '_hide_others').hide();
-  $('#' + entity_id + '_description_entity').html(entity_name);
-  update_specialist_table();
+  update_table(prefix, entity_id, entity_name);
 }
 
 var update_table = function(prefix, entity_id, entity_name)
@@ -285,7 +283,7 @@ var update_table = function(prefix, entity_id, entity_name)
     }
     else if ( !row_filter )
     {
-      //a very blank specialist entry                                        
+      //a very blank specialist or clinic entry
       row.hide();
     }
     else if ( matches_filters( row_filter, current_filters ) )
@@ -427,8 +425,12 @@ var update_table = function(prefix, entity_id, entity_name)
     if (!should_show_others && (other_results > 0))
     {
       others.show();
-      var description = (other_results > 1) ? 'There are ' + other_results + ' specialists from other specialties who match your search.' : 'There is 1 specialist from another specialty who matches your search.';
-      description += " <a href=\"javascript:void(0)\" onclick=\"show_others('" + entity_id + "')\">Show</a> these specialists.";
+      var other_entity_name = (prefix == 's') ? 'specialists' : entity_name; //override the "specialization specific" entity name, e.g. "rheumatologist"
+      var other_singular_type = (prefix == 's') ? 'specialist' : 'clinic';
+      var other_singular_ref = (prefix == 's') ? 'who' : 'which';
+      var description = (other_results > 1) ? 'There are ' + other_results + ' ' + other_entity_name + ' from other specialties ' + other_singular_ref + ' match your search.' : 'There is 1 ' + other_singular_type + ' from another specialty ' + other_singular_ref + ' matches your search.';
+      description += " <a href=\"javascript:void(0)\" onclick=\"show_others('" + prefix + "','" + entity_id + "','" + entity_name + "')\">Show</a>";
+      description += (other_results > 1) ? ' these ' + other_entity_name + '.' : ' this ' + other_singular_type + '.';
       others.html(description);
     }
     else

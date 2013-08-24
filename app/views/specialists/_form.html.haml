@@ -528,8 +528,12 @@
       = f.input :admin_notes
 
   .form-actions
-    = f.button :submit, :class => "btn btn-primary"
-    = link_to 'Cancel', cancel_path, :class => "btn btn-danger ajax"
+    - if params[:controller] == 'specialists_editor'
+      = f.button :submit, 'Update Specialist with My Changes', :class => "btn btn-primary"
+      = f.button :submit, 'There are No Updates to this Specialist', :class => "btn btn-success", :name => 'no_updates'
+    - else
+      = f.button :submit, :class => "btn btn-primary"
+      = link_to 'Cancel', cancel_path, :class => "btn btn-danger ajax"
 
 %script{"type" => "text/javascript"}
   :plain

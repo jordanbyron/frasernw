@@ -5,34 +5,17 @@
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       All Specialties
       %b.caret
+
+= render 'partials/specialization_dropdown_menu'
   
 %script{"type" => "text/javascript"}
-  :plain
-    var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
-    $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
-    $(document).ready(function() { update_favorites() });
-  
-#specialties-dropdown-menu
-  .inner
-    - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions)
-    - first = specializations[0, (specializations.length / 4.0).ceil]
-    - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
-    - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
-    - fourth = specializations - first - second - third
-    
-    - [first, second, third, fourth].each do |list|
-      %ul
-        - list.each do |specialization|
-          %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}
-              = specialization.name
-              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
+  $(document).ready(function() { update_favorites() });
 
 .content-wrapper
   .content#faq
     .row
        
-      .span6.offset3
+      .span8.offset2
       
         %h1 FAQ
        
@@ -43,7 +26,7 @@
           %strong Incorrect Information? Let us know.
           If you press this button, a form will appear that will allow you to ender any comments about the specialist or clinic that you have. Type your feedback, and press "Send Feedback". Your comments will be sent directly to your administration team, who will review and act on them, possibly getting in touch with you for follow up.
         
-        %p We encourange all users to send feedback any time they see something they think is incorrect; Pathways is built on the concept of local ownership, and your feedback helps keep the site accurate for everyone.
+        %p We encourage all users to send feedback any time they see something they think is incorrect; Pathways is built on the concept of local ownership, and your feedback helps keep the site accurate for everyone.
        
         
         %h2 What are Favourites and how do I use them?
@@ -59,14 +42,14 @@
           %strong Favourites. 
           
         %p
-          Similarly, you can remove a favourite at any time by clicking on the red heart, which will change back to black. You can also favorite content that you regularly reference, such as Red Flags or Pearls.
+          Similarly, you can remove a favourite at any time by clicking on the red heart, which will change back to black. You can also favourite content that you regularly reference, such as Red Flags or Pearls.
        
         
         %h2 What can I type into the search box?
         
         %p
           The search box accepts the name of any 
-          %strong specialty, specialist, clinic, area of practice, hopspital, clinic, or GP resource
+          %strong specialty, specialist, clinic, area of practice, hospital, clinic, or GP resource
           = "- anything that exists on Pathways."
         %p
           You don't have to spell what you are looking for correctly nor completely; results will start to match as you type. We think you will find it a very fast way to navigate Pathways.

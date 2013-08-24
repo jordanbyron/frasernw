@@ -64,7 +64,7 @@ function add_entities_from_city(prefix, entity_name, entity_data, city_id, proce
     var wait_time = filtering.global_wait_times[entity.wait_time];
     var status_class = filtering.global_status_classes[entity.status_class];
     var cities = entity.cities.map(function(city_id) { return filtering.global_cities[city_id] }).to_sentence();
-    var other = (entity_name == 'specialist') && (filtering.current_specialties.intersect(entity.specialties).length == 0);
+    var other = filtering.current_specialties.intersect(entity.specialties).length == 0;
     var in_progress = entity.in_progress === true
     var is_gp = entity.is_gp === true
     var is_new = entity.is_new === true

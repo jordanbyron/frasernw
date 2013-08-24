@@ -45,6 +45,7 @@ Frasernw::Application.routes.draw do
   put   '/specialists/:id/:token/update' => 'specialists_editor#update', :as => 'specialist_self_update'
   get   '/specialists/:id/:token/pending'=> 'specialists_editor#pending',:as => 'specialist_self_pending'
   match '/specialists/:id/review'        => 'specialists#review',        :as => 'specialist_review'
+  match '/specialists/:id/archive'       => 'specialists#archive',       :as => 'specialist_archive'
   match '/specialists/:id/accept'        => 'specialists#accept',        :as => 'specialist_accept_review'
   match '/specialists/:id/photo'         => 'specialists#photo',         :as => 'specialist_photo'
   put   '/specialists/:id/update_photo'  => 'specialists#update_photo',  :as => 'specialist_update_photo'
@@ -53,6 +54,7 @@ Frasernw::Application.routes.draw do
   put   '/clinics/:id/:token/update'     => 'clinics_editor#update',     :as => 'clinic_self_update'
   get   '/clinics/:id/:token/pending'    => 'clinics_editor#pending',    :as => 'clinic_self_pending'
   match '/clinics/:id/review'            => 'clinics#review',            :as => 'clinic_review'
+  match '/clinics/:id/archive'       => 'clinics#archive',       :as => 'clinic_archive'
   match '/clinics/:id/accept'            => 'clinics#accept',            :as => 'clinic_accept_review'
   
   match '/specialists/:id/edit_referral_forms'  => 'specialists#edit_referral_forms', :as => 'specialist_referral_forms'

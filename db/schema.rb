@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130226042726) do
+ActiveRecord::Schema.define(:version => 20130720155842) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -430,13 +430,14 @@ ActiveRecord::Schema.define(:version => 20130226042726) do
   end
 
   create_table "review_items", :force => true do |t|
-    t.string    "item_type"
-    t.integer   "item_id"
-    t.string    "whodunnit"
-    t.text      "object"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.boolean   "archived",   :default => false
+    t.string   "item_type"
+    t.integer  "item_id"
+    t.string   "whodunnit"
+    t.text     "object"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "archived",   :default => false
+    t.integer  "status",     :default => 0
   end
 
   add_index "review_items", ["item_id", "item_type"], :name => "index_review_items_on_item_id_and_item_type"

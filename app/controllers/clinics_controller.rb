@@ -93,14 +93,23 @@ class ClinicsController < ApplicationController
       @clinic_specialists += specialization.specialists.collect { |s| [s.name, s.id] }
       procedure_specializations.merge!(specialization.non_assumed_procedure_specializations_arranged)
     }
+    focuses_procedure_list = []
     @focuses = []
-    clinic_specializations = @clinic.specializations
     procedure_specializations.each { |ps, children|
-      @focuses << generate_focus(@clinic, ps, 0)
+      if !focuses_procedure_list.include?(ps.procedure.id)
+        @focuses << generate_focus(@clinic, ps, 0)
+        focuses_procedure_list << ps.procedure.id
+      end
       children.each { |child_ps, grandchildren|
-        @focuses << generate_focus(@clinic, child_ps, 1)
+        if !focuses_procedure_list.include?(child_ps.procedure.id)
+          @focuses << generate_focus(@clinic, child_ps, 1)
+          focuses_procedure_list << child_ps.procedure.id
+        end
         grandchildren.each { |grandchild_ps, greatgrandchildren|
-          @focuses << generate_focus(@clinic, grandchild_ps, 2)
+          if !focuses_procedure_list.include?(grandchild_ps.procedure.id)
+            @focuses << generate_focus(@clinic, grandchild_ps, 2)
+            focuses_procedure_list << grandchild_ps.procedure.id
+          end
         }
       }
     }
@@ -175,13 +184,23 @@ class ClinicsController < ApplicationController
         @clinic_specialists += specialization.specialists.collect { |s| [s.name, s.id] }
         procedure_specializations.merge!(specialization.non_assumed_procedure_specializations_arranged)
       }
+      focuses_procedure_list = []
       @focuses = []
       procedure_specializations.each { |ps, children|
-        @focuses << generate_focus(@clinic, ps, 0)
+        if !focuses_procedure_list.include?(ps.procedure.id)
+          @focuses << generate_focus(@clinic, ps, 0)
+          focuses_procedure_list << ps.procedure.id
+        end
         children.each { |child_ps, grandchildren|
-          @focuses << generate_focus(@clinic, child_ps, 1)
+          if !focuses_procedure_list.include?(child_ps.procedure.id)
+            @focuses << generate_focus(@clinic, child_ps, 1)
+            focuses_procedure_list << child_ps.procedure.id
+          end
           grandchildren.each { |grandchild_ps, greatgrandchildren|
-            @focuses << generate_focus(@clinic, grandchild_ps, 2)
+            if !focuses_procedure_list.include?(grandchild_ps.procedure.id)
+              @focuses << generate_focus(@clinic, grandchild_ps, 2)
+              focuses_procedure_list << grandchild_ps.procedure.id
+            end
           }
         }
       }
@@ -212,6 +231,21 @@ class ClinicsController < ApplicationController
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else
       render :action => 'edit'
+    end
+  end
+  
+  def archive
+    #archive the review item so that we can save the clinic
+    @clinic = Clinic.find(params[:id])
+    
+    review_item = @clinic.review_item
+    
+    if review_item.blank?
+      redirect_to clinic_path(@clinic), :notice => "There are no review items for this clinic"
+    else
+      review_item.archived = true;
+      review_item.save
+      redirect_to review_items_path, :notice => "Successfully archived review item for #{@clinic.name}."
     end
   end
   

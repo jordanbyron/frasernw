@@ -117,13 +117,23 @@ class SpecialistsController < ApplicationController
       @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
       procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
     }
+    capacities_procedure_list = []
     @capacities = []
     procedure_specializations.each { |ps, children|
-      @capacities << generate_capacity(@specialist, ps, 0)
+      if !capacities_procedure_list.include?(ps.procedure.id)
+        @capacities << generate_capacity(@specialist, ps, 0)
+        capacities_procedure_list << ps.procedure.id
+      end
       children.each { |child_ps, grandchildren|
-        @capacities << generate_capacity(@specialist, child_ps, 1)
+        if !capacities_procedure_list.include?(child_ps.procedure.id)
+          @capacities << generate_capacity(@specialist, child_ps, 1)
+          capacities_procedure_list << child_ps.procedure.id
+        end
         grandchildren.each { |grandchild_ps, greatgrandchildren|
-          @capacities << generate_capacity(@specialist, grandchild_ps, 2)
+          if !capacities_procedure_list.include?(grandchild_ps.procedure.id)
+            @capacities << generate_capacity(@specialist, grandchild_ps, 2)
+            capacities_procedure_list << grandchild_ps.procedure.id
+          end
         }
       }
     }
@@ -189,6 +199,21 @@ class SpecialistsController < ApplicationController
       end
     end
   end
+  
+  def archive
+    #archive the review item so that we can save the specialist
+    @specialist = Specialist.find(params[:id])
+    
+    review_item = @specialist.review_item
+    
+    if review_item.blank?
+      redirect_to specialist_path(@specialist), :notice => "There are no review items for this specialist"
+    else
+      review_item.archived = true;
+      review_item.save
+      redirect_to review_items_path, :notice => "Successfully archived review item for #{@specialist.name}."
+    end
+  end
 
   def destroy
     @specialist = Specialist.find(params[:id])
@@ -237,13 +262,23 @@ class SpecialistsController < ApplicationController
         @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
         procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
       }
+      capacities_procedure_list = []
       @capacities = []
       procedure_specializations.each { |ps, children|
-        @capacities << generate_capacity(@specialist, ps, 0)
+        if !capacities_procedure_list.include?(ps.procedure.id)
+          @capacities << generate_capacity(@specialist, ps, 0)
+          capacities_procedure_list << ps.procedure.id
+        end
         children.each { |child_ps, grandchildren|
-          @capacities << generate_capacity(@specialist, child_ps, 1)
+          if !capacities_procedure_list.include?(child_ps.procedure.id)
+            @capacities << generate_capacity(@specialist, child_ps, 1)
+            capacities_procedure_list << child_ps.procedure.id
+          end
           grandchildren.each { |grandchild_ps, greatgrandchildren|
-            @capacities << generate_capacity(@specialist, grandchild_ps, 2)
+            if !capacities_procedure_list.include?(grandchild_ps.procedure.id)
+              @capacities << generate_capacity(@specialist, grandchild_ps, 2)
+              capacities_procedure_list << grandchild_ps.procedure.id
+            end
           }
         }
       }

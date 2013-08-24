@@ -82,7 +82,7 @@
     %li#specialist_tab_label 
       %a#specialists_tab{"href" => "#specialist_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'specialists']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
         %span Specialists
-    %li#clinics_tab_label
+    %li#clinic_tab_label
       %a#clinics_tab{"href" => "#clinic_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', 'clinics']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
         %span Clinics
     - ScCategory.specialty.each do |sc_category|
