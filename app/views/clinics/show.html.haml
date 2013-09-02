@@ -111,7 +111,7 @@
           - if show_details    
                
             - address = @clinic.resolved_address
-            - if @clinic.sector? || (@clinic.location.present? && @clinic.location.in_hospital?) || (address.present? && !address.empty?) || @clinic.wheelchair_accessible? || @clinic.phone_and_fax.present? || @clinic.scheduled? || @clinic.location_opened.present? || @clinic.languages.present? || @clinic.interpreter_available
+            - if @clinic.sector? || (@clinic.locations.present? && @clinic.location.in_hospital?) || (address.present? && !address.empty?) || @clinic.wheelchair_accessible? || @clinic.phone_and_fax.present? || @clinic.scheduled? || @clinic.location_opened.present? || @clinic.languages.present? || @clinic.interpreter_available
               
               %h6 Clinic Information
 

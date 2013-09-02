@@ -181,8 +181,7 @@
                   - next if !location
                   - address = location.resolved_address
                   - if (location.in_hospital? or location.in_clinic?)
-                    - located_in = location.hospital_in
-                    - located_in ||= location.clinic_in
+                    - located_in = location.hospital_in ||= location.location_in.locatable
                     %p
                       = "In #{link_to located_in.name, url_for(located_in), :class => 'ajax'}".html_safe
                       - if located_in.location.present? && located_in.location.in_hospital?

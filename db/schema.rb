@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130720155842) do
+ActiveRecord::Schema.define(:version => 20130721155511) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -314,15 +314,16 @@ ActiveRecord::Schema.define(:version => 20130720155842) do
   end
 
   create_table "locations", :force => true do |t|
-    t.string    "locatable_type"
-    t.integer   "locatable_id"
-    t.integer   "address_id"
-    t.integer   "hospital_in_id"
-    t.integer   "clinic_in_id"
-    t.string    "suite_in"
-    t.string    "details_in"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "locatable_type"
+    t.integer  "locatable_id"
+    t.integer  "address_id"
+    t.integer  "hospital_in_id"
+    t.integer  "clinic_in_id"
+    t.string   "suite_in"
+    t.string   "details_in"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "location_in_id"
   end
 
   add_index "locations", ["clinic_in_id"], :name => "index_locations_on_clinic_in_id"

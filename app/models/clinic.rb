@@ -9,12 +9,12 @@ class Clinic < ActiveRecord::Base
   has_many :specializations, :through => :clinic_specializations
   
   #clinics have an address
-  has_one :location, :as => :locatable, :dependent => :destroy
-  has_one :address, :through => :location
-  accepts_nested_attributes_for :location
+  has_many :locations, :as => :locatable, :dependent => :destroy
+  has_many :addresses, :through => :locations
+  accepts_nested_attributes_for :locations
   
   #clinics can have locations that are within them
-  has_many :locations_in, :foreign_key => :clinic_in_id, :class_name => "Location"
+  has_many :locations_in, :through => :locations, :foreign_key => :location_id, :class_name => "Location"
   has_many :direct_offices_in, :through => :locations_in, :source => :locatable, :source_type => "Office"
   has_many :specialists_in, :through => :direct_offices_in, :source => :specialists, :class_name => "Specialist", :uniq => true
   has_many :specializations_in, :through => :specialists_in, :source => :specializations, :class_name => "Specialization", :uniq => true, :select => "DISTINCT specializations.*, specialists.firstname, specialists.lastname"
@@ -122,23 +122,25 @@ class Clinic < ActiveRecord::Base
     return ""
   end
   
-  def city
-    l = location
+  def city_old
+    l = locations.first
     return nil if l.blank?
-    a = l.resolved_address
-    return nil if a.blank? || a.city.blank?
-    return a.city
+    return l.city
   end
-  
-  def resolved_address
+
+  def cities
+    return locations.map{ |l| l.city }.reject{ |c| c.blank? }.uniq
+  end
+
+  def resolved_address_old
     return location.resolved_address if location
     return nil
   end
-  
+
   def divisions
-    return city.present? ? city.divisions : []
+    return cities.map{ |city| city.divisions }.flatten.uniq
   end
-  
+
   def owner_for_divisions(input_divisions)
     if specializations.blank? || divisions.blank?
       return default_owner

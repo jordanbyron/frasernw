@@ -71,8 +71,7 @@
     - next if !location
     - address = location.resolved_address
     - if (location.in_hospital? or location.in_clinic?)
-      - located_in = location.hospital_in
-      - located_in ||= location.clinic_in
+      - located_in = location.hospital_in || location.location_in.locatable
       %p
         = "In #{located_in.name}"
         = "which is in #{located_in.location.hospital_in.name}" if located_in.location.present? && located_in.location.in_hospital?

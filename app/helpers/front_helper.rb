@@ -84,8 +84,8 @@ module FrontHelper
             
             #new clinic
           
-            if clinic.city.present?
-              events["#{version.item_type}_#{version.item.id}"] = "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) is recently opened and accepting patients in #{clinic.city}.".html_safe
+            if clinic.cities.present?
+              events["#{version.item_type}_#{version.item.id}"] = "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) is recently opened and accepting patients in #{clinic.cities.to_sentence}.".html_safe
             else
               events["#{version.item_type}_#{version.item.id}"] = "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) is recently opened and accepting patients.".html_safe
             end

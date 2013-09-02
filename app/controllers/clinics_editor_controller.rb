@@ -13,11 +13,6 @@ class ClinicsEditorController < ApplicationController
     if @clinic.focuses.count == 0
       @clinic.focuses.build
     end
-    @specializations_clinics = []
-    @clinic.specializations.each { |s| 
-      @specializations_clinics += s.clinics.collect { |c| [c.name, c.id] }
-    }
-    @specializations_clinics.sort!
     @specializations_procedures = []
     procedure_specializations = {}
     @clinic.specializations.each { |s| 

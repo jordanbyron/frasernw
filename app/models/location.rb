@@ -5,7 +5,9 @@ class Location < ActiveRecord::Base
   belongs_to :locatable, :polymorphic => true
   
   belongs_to :hospital_in, :class_name => "Hospital"
-  belongs_to :clinic_in, :class_name => "Clinic"
+  belongs_to :location_in, :class_name => "Location"
+  
+  has_many :locations_in, :foreign_key => :location_in_id, :class_name => "Location"
   
   has_paper_trail
   
@@ -19,12 +21,12 @@ class Location < ActiveRecord::Base
   end
   
   def in_clinic?
-    clinic_in.present?
+    location_in.present?
   end
   
   def resolved_address
     return hospital_in.resolved_address if in_hospital?
-    return clinic_in.resolved_address if in_clinic?
+    return location_in.resolved_address if in_clinic?
     return address
   end
   
@@ -37,7 +39,7 @@ class Location < ActiveRecord::Base
     output = ""
     output += "##{suite_in}, " if suite_in.present? && (in_hospital? || in_clinic?)
     output += "In #{hospital_in.name} " if in_hospital?
-    output += "In #{clinic_in.name} " if in_clinic?
+    output += "In #{location_in.locatable.name} " if in_clinic?
     output +=  "#{resolved_address.short_address}" if resolved_address.present?
     return output
   end
@@ -46,7 +48,7 @@ class Location < ActiveRecord::Base
     output = ""
     output += "##{suite_in}, " if suite_in.present? && (in_hospital? || in_clinic?)
     output += "In #{hospital_in.name} " if in_hospital?
-    output += "In #{clinic_in.name} " if in_clinic?
+    output += "In #{location_in.locatable.name} " if in_clinic?
     output +=  "#{resolved_address.address}" if resolved_address.present?
     return output
   end
