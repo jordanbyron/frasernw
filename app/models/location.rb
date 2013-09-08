@@ -39,7 +39,7 @@ class Location < ActiveRecord::Base
     output = ""
     output += "##{suite_in}, " if suite_in.present? && (in_hospital? || in_clinic?)
     output += "In #{hospital_in.name} " if in_hospital?
-    output += "In #{location_in.locatable.name} " if in_clinic?
+    output += "In #{location_in.locatable.clinic.name} " if in_clinic?
     output +=  "#{resolved_address.short_address}" if resolved_address.present?
     return output
   end
@@ -48,7 +48,7 @@ class Location < ActiveRecord::Base
     output = ""
     output += "##{suite_in}, " if suite_in.present? && (in_hospital? || in_clinic?)
     output += "In #{hospital_in.name} " if in_hospital?
-    output += "In #{location_in.locatable.name} " if in_clinic?
+    output += "In #{location_in.locatable.clinic.name} " if in_clinic?
     output +=  "#{resolved_address.address}" if resolved_address.present?
     return output
   end

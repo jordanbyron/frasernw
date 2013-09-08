@@ -13,6 +13,19 @@ class ClinicsEditorController < ApplicationController
     if @clinic.focuses.count == 0
       @clinic.focuses.build
     end
+    while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
+      cl = @clinic.clinic_locations.build
+      s = cl.build_schedule
+      s.build_monday
+      s.build_tuesday
+      s.build_wednesday
+      s.build_thursday
+      s.build_friday
+      s.build_saturday
+      s.build_sunday
+      l = cl.build_location
+      l.build_address
+    end
     @specializations_procedures = []
     procedure_specializations = {}
     @clinic.specializations.each { |s| 

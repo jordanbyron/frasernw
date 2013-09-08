@@ -240,66 +240,96 @@
     %hr
 
     %h3 Clinic Contact Information
-    = f.input :phone do
-      = f.input_field :phone, :class => "span3"
-      .span1
-        ext: 
-      = f.input_field :phone_extension, :class => "span1"
-    = f.input :fax, :input_html => { :class => "span3" }
-    = f.input :contact_details
-    = f.input :email, :input_html => { :class => "span3" }
-    = f.input :url, :input_html => { :class => "span3" }
-    
-    = f.simple_fields_for :location do |l|
-      .control-group.no-print
-        %label.control-label Location is
-        .controls
-          - location_class = "location_0"
-          - [['Standalone', !@clinic.location.in_hospital?], ['In a hospital', @clinic.location.in_hospital?]].each do |location| 
-            = label_tag "#{location_class}_#{location.first}", "#{radio_button_tag(location_class, location.first, location.second, :class => location_class)} #{location.first}".html_safe
-      .hospital_0.no-print
-        = l.association :hospital_in, as: :select, collection: (current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(current_user_divisions)), :include_blank => true
-      .details_0
-        = l.input :suite_in, :input_html => { :class => "span1" }
-        = l.input :details_in
-      .address_0
-        = l.simple_fields_for :address do |a|
-          = a.input :suite, :input_html => { :class => "span1" }
-          = a.input :address1
-          = a.input :address2
-          .no-print
-            = a.association :city, as: :select, collection: (current_user_is_super_admin? ? City.all : City.in_divisions(current_user_divisions)).map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
-          = a.input :postalcode, :input_html => { :class => "span1" }
-    .universal_0
-      = f.input :sector_mask, as: :radio_buttons, collection: Clinic::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
-    = f.input :wheelchair_accessible_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
-    %script{"type" => "text/javascript"}
-      :plain
-        $(document).ready( address_0_location_changed );
       
-    %hr
-      
-    %h3 Schedule
+    - clocs = @clinic.clinic_locations
     
-    = f.simple_fields_for :schedule, :suppress_fields => true do |s|
-      - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
-        = s.simple_fields_for day, :suppress_fields => true do |d|
-          .changed_wrapper
-            = d.input :scheduled, :label => day.to_s.capitalize_first_letter, wrapper: :bootstrap_tight do
-              = d.input_field :scheduled, :class => "scheduled span1"
-              .hours.no-print
-                .changed_wrapper
-                  .from from
-                  = d.input_field :from, :class => "auto no-print", :minute_step => 15, :include_blank => true
-                .changed_wrapper
-                  .to to
-                  = d.input_field :to, :class => "auto no-print", :minute_step => 15, :include_blank => true
-              .print-only
-                from:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to:
+    .tabbable
+      %ul.nav.nav-tabs
+        - @clinic.clinic_locations.each_with_index do |cl, index|
+          %li{:class => index == 0 ? "active" : ""} 
+            %a{"href" => "#location_tab_#{index}", "data-toggle" => "tab"}= "Location #{index+1}"
+    
+    .tab-content
+      - index = 0
+      = f.simple_fields_for :clinic_locations, :suppress_fields => true do |cl|
+        - cloc = clocs[index]
+        - loc = cloc.location
+        - is_unused = loc.empty?
+        - is_standalone = !is_unused && !loc.in_hospital?
+        - is_in_hospital = !is_unused && loc.in_hospital?
+        .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"} 
+          %h4.print-only= "Location #{index+1}"
+          .control-group.no-print
+            %label.control-label Location is
+            .controls
+              - location_class = "location_#{index}"
+              - [['Not used', is_unused], ['Standalone', is_standalone], ['In a hospital', is_in_hospital]].each do |option| 
+                = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
+          %div{:class => "numbers_#{index}"}
+            = cl.input :phone do
+              = cl.input_field :phone, :class => "span3"
+              .span1
+                ext: 
+              = cl.input_field :phone_extension, :class => "span1"
+            = cl.input :fax, :input_html => { :class => "span3" }
+            = cl.input :contact_details
+            = cl.input :email, :input_html => { :class => "span3" }
+            = cl.input :url, :input_html => { :class => "span3" }
+          .control-group.print-only
+            %label.control-label Address
+            .controls
+              - text_address = @clinic.locations[index].resolved_address.address if @clinic.locations[index].present? && @clinic.locations[index].resolved_address.present?
+              %input{"type" => "text", "value" => "#{text_address}"}
+
+          = cl.simple_fields_for :location, :suppress_fields => true do |l|
+            %div{:class => "address_#{index}"}
+              = l.simple_fields_for :address do |a|
+                = a.input :suite, :input_html => { :class => "span1" }
+                = a.input :address1
+                = a.input :address2
+                -#= a.association :city, as: :select, collection: (current_user_is_super_admin? ? City.all : City.in_divisions(current_user_divisions)).map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
+                = a.input :postalcode, :input_html => { :class => "span1" }
+            %div{:class => "hospital_#{index}"}
+              -#= l.association :hospital_in, as: :select, collection: (current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(current_user_divisions)), :include_blank => true
+            %div{:class => "details_#{index}"}
+              = l.input :suite_in, :input_html => { :class => "span1" }
+              = l.input :details_in
+            %div{:class => "universal_#{index}"}
+              = cl.input :sector_mask, as: :radio_buttons, collection: ClinicLocation::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
+          
+          %div{:class => "address_#{index}"}
+            = cl.input :wheelchair_accessible_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
+
+            %h4 Location schedule
+            
+            = cl.simple_fields_for :schedule, :suppress_fields => true do |s|
+              - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
+                = s.simple_fields_for day, :suppress_fields => true do |d|
+                  .changed_wrapper
+                    = d.input :scheduled, :label => day.to_s.capitalize_first_letter, wrapper: :bootstrap_tight do
+                      = d.input_field :scheduled, :class => "scheduled span1"
+                      .hours.no-print
+                        .changed_wrapper
+                          .from from
+                          = d.input_field :from, :class => "auto no-print", :minute_step => 15, :include_blank => true
+                        .changed_wrapper
+                          .to to
+                          = d.input_field :to, :class => "auto no-print", :minute_step => 15, :include_blank => true
+                      .print-only
+                        from:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to:
+
+          %script{"type" => "text/javascript"}
+            :plain
+              $(document).ready( address_location_changed(#{index}) );
+          - index += 1
 
     %script{"type" => "text/javascript"}
       :plain
         $(".scheduled").each(scheduled_changed)
+
+    %script{"type" => "text/javascript"}
+      :plain
+        $(document).ready( $(".chzn-select").chosen() );
     
   - if current_user_is_admin? || @is_review
   

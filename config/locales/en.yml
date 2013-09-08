@@ -56,10 +56,8 @@ en:
         categorization_mask: "Categorization"
         contact_name: "Name"
         contact_email: "Email"
-        contact_details: "Additional contact details"
         contact_phone: "Phone"
         contact_notes: "Notes"
-        email: "E-mail"
         healthcare_providers: "Healthcare providers who see patients at the clinic"
         lagtime_mask: "On average, how long does it take the clinic to advise the GP office that an appointment has been booked for their patient?"
         limitations: "Clinic limitations (if any)"
@@ -78,7 +76,6 @@ en:
         respond_by_mail: "By mail to referring office"
         respond_to_patient: "Directly to the patient"
         required_investigations: "In addition to history, PH, meds, allergies and relevant imaging, lab reports & OR/consultation reports, we require the following specific information/ investigations for ALL patients."
-        sector_mask: "Public or private"
         specializations_including_in_progress: "Specialties"
         status_details: "Additional details (if any)"
         status_mask: "Current status"
@@ -86,8 +83,12 @@ en:
         urgent_phone: "Phone"
         urgent_other_details: "Other method"
         urgent_details: "Additional urgent referral details"
-        url: "Website address"
         waittime_mask: "On average, what is the clinic’s normal wait time from request for a consultation to the appointment itself?"
+      clinic_location:
+        contact_details: "Additional contact details"
+        email: "E-mail"
+        sector_mask: "Public or private"
+        url: "Website address"
         wheelchair_accessible_mask: "Wheelchair accessible?"
       division:
         cities: Cities Encompassed

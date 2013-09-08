@@ -24,16 +24,19 @@ class ClinicsController < ApplicationController
     @specialization = Specialization.find(params[:specialization_id])
     @clinic = Clinic.new
     @clinic.clinic_specializations.build( :specialization_id => @specialization.id )
-    @clinic.build_location
-    s = @clinic.build_schedule
-    s.build_monday
-    s.build_tuesday
-    s.build_wednesday
-    s.build_thursday
-    s.build_friday
-    s.build_saturday
-    s.build_sunday
-    @clinic.location.build_address
+    while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
+      cl = @clinic.clinic_locations.build
+      s = cl.build_schedule
+      s.build_monday
+      s.build_tuesday
+      s.build_wednesday
+      s.build_thursday
+      s.build_friday
+      s.build_saturday
+      s.build_sunday
+      l = cl.build_location
+      l.build_address
+    end
     @clinic.attendances.build
     @clinic_procedures = ancestry_options( @specialization.non_assumed_procedure_specializations_arranged )
     @clinic_specialists = @specialization.specialists.collect { |s| [s.name, s.id] }
@@ -75,11 +78,20 @@ class ClinicsController < ApplicationController
   def edit
     @is_review = false
     @clinic = Clinic.find(params[:id])
-    if @clinic.location.blank?
-      @clinic.build_location
-      @clinic.location.build_address
-    elsif @clinic.location.address.blank?
-      @clinic.location.build_address
+    while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
+      puts "location #{@clinic.clinic_locations.length}"
+      cl = @clinic.clinic_locations.build
+      s = cl.build_schedule
+      s.build_monday
+      s.build_tuesday
+      s.build_wednesday
+      s.build_thursday
+      s.build_friday
+      s.build_saturday
+      s.build_sunday
+      l = cl.build_location
+      l.build_address
+      puts "locations #{@clinic.locations.length}"
     end
     @clinic_procedures = []
     @clinic.specializations.each { |specialization| 
@@ -166,11 +178,18 @@ class ClinicsController < ApplicationController
     if @review_item.blank?
       redirect_to clinics_path, :notice => "There are no review items for this specialist"
     else
-      if @clinic.location.blank?
-        @clinic.build_location
-        @clinic.location.build_address
-        elsif @clinic.location.address.blank?
-        @clinic.location.build_address
+      while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
+        cl = @clinic.clinic_locations.build
+        s = cl.build_schedule
+        s.build_monday
+        s.build_tuesday
+        s.build_wednesday
+        s.build_thursday
+        s.build_friday
+        s.build_saturday
+        s.build_sunday
+        l = cl.build_location
+        l.build_address
       end
       @clinic_procedures = []
       @clinic.specializations.each { |specialization| 

@@ -4,7 +4,8 @@ class AddLocationInToLocation < ActiveRecord::Migration
     
     Location.all.each do |l|
       if (l.clinic_in_id)
-        l.location_in_id = Clinic.find(l.clinic_in_id).locations.first
+        clinic = Clinic.find(l.clinic_in_id)
+        l.location_in_id = Location.find_by_locatable_id_and_locatable_type(clinic.id, 'Clinic').id
         l.save
       end
     end

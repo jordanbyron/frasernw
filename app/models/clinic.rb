@@ -1,28 +1,30 @@
 class Clinic < ActiveRecord::Base
   include ApplicationHelper
   
-  attr_accessible :name, :phone, :phone_extension, :fax, :contact_details, :categorization_mask, :sector_mask, :url, :email, :wheelchair_accessible_mask, :status, :status_details, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :patient_instructions, :cancellation_policy, :interpreter_available, :specialization_ids, :location_attributes, :schedule_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes, :admin_notes, :referral_forms_attributes
+  attr_accessible :name, :deprecated_phone, :deprecated_phone_extension, :deprecated_fax, :deprecated_contact_details, :categorization_mask, :deprecated_sector_mask, :deprecated_url, :deprecated_email, :deprecated_wheelchair_accessible_mask, :status, :status_details, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :patient_instructions, :cancellation_policy, :interpreter_available, :specialization_ids, :deprecated_schedule_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes, :admin_notes, :referral_forms_attributes, :clinic_locations_attributes
   has_paper_trail :ignore => :saved_token
   
   #clinics can have multiple specializations
   has_many :clinic_specializations, :dependent => :destroy
   has_many :specializations, :through => :clinic_specializations
   
-  #clinics have an address
-  has_many :locations, :as => :locatable, :dependent => :destroy
+  #clinics have multiple locations
+  MAX_LOCATIONS = 2
+  has_many :clinic_locations, :dependent => :destroy
+  accepts_nested_attributes_for :clinic_locations
+  has_many :locations, :through => :clinic_locations
   has_many :addresses, :through => :locations
-  accepts_nested_attributes_for :locations
   
   #clinics can have locations that are within them
-  has_many :locations_in, :through => :locations, :foreign_key => :location_id, :class_name => "Location"
-  has_many :direct_offices_in, :through => :locations_in, :source => :locatable, :source_type => "Office"
-  has_many :specialists_in, :through => :direct_offices_in, :source => :specialists, :class_name => "Specialist", :uniq => true
-  has_many :specializations_in, :through => :specialists_in, :source => :specializations, :class_name => "Specialization", :uniq => true, :select => "DISTINCT specializations.*, specialists.firstname, specialists.lastname"
-  has_many :procedures_in, :through => :specialists_in, :source => :procedures, :class_name => "Procedure", :uniq => true, :select => "DISTINCT procedures.*, specialists.firstname, specialists.lastname"
+  #has_many :locations_in, :through => :locations, :foreign_key => :location_id, :class_name => "Location"
+  #has_many :direct_offices_in, :through => :locations_in, :source => :locatable, :source_type => "Office"
+  #has_many :specialists_in, :through => :direct_offices_in, :source => :specialists, :class_name => "Specialist", :uniq => true
+  #has_many :specializations_in, :through => :specialists_in, :source => :specializations, :class_name => "Specialization", :uniq => true, :select => "DISTINCT specializations.*, specialists.firstname, specialists.lastname"
+  #has_many :procedures_in, :through => :specialists_in, :source => :procedures, :class_name => "Procedure", :uniq => true, :select => "DISTINCT procedures.*, specialists.firstname, specialists.lastname"
   
   #clinics have a schedule
-  has_one :schedule, :as => :schedulable, :dependent => :destroy
-  accepts_nested_attributes_for :schedule
+  #has_one :schedule, :as => :schedulable, :dependent => :destroy
+  #accepts_nested_attributes_for :schedule
   
   #clinics speak many languages
   has_many   :clinic_speaks, :dependent => :destroy, :dependent => :destroy
@@ -102,24 +104,6 @@ class Clinic < ActiveRecord::Base
 
   def not_available?
     false #to line up with specialists; all are "available" if they exist
-  end
-
-  def phone_and_fax
-    return "#{phone} ext. #{phone_extension}, Fax: #{fax}" if phone.present? && phone_extension.present? && fax.present?
-    return "#{phone} ext. #{phone_extension}" if phone.present? && phone_extension.present?
-    return "#{phone}, Fax: #{fax}" if phone.present? && fax.present?
-    return "ext. #{phone_extension}, Fax: #{fax}" if phone_extension.present? && fax.present?
-    return "#{phone}" if phone.present?
-    return "Fax: #{fax}" if fax.present?
-    return "ext. #{phone_extension}" if phone_extension.present?
-    return ""
-  end
-  
-  def phone_only
-    return "#{phone} ext. #{phone_extension}" if phone.present? && phone_extension.present?
-    return "#{phone}" if phone.present?
-    return "ext. #{phone_extension}" if phone_extension.present?
-    return ""
   end
   
   def city_old
@@ -283,33 +267,6 @@ class Clinic < ActiveRecord::Base
   
   def patient_can_book?
     patient_can_book_mask == 1
-  end
-  
-  def wheelchair_accessible?
-    wheelchair_accessible_mask == 1
-  end
-  
-  SECTOR_HASH = { 
-    1 => "Public (MSP billed)", 
-    2 => "Private (Patient pays)", 
-    3 => "Public and Private", 
-    4 => "Didn't answer", 
-  }
-  
-  def sector
-    Clinic::SECTOR_HASH[sector_mask]
-  end
-  
-  def sector?
-    sector_mask != 4
-  end
-
-  def private?
-    sector_mask == 2
-  end
-  
-  def scheduled?
-    schedule.scheduled?
   end
   
   def accepts_referrals_via

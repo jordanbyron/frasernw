@@ -360,7 +360,7 @@
                 
           %script{"type" => "text/javascript"}
             :plain
-              $(document).ready( address_#{index}_location_changed );
+              $(document).ready( address_location_changed(#{index}) );
           - index += 1
     %script{"type" => "text/javascript"}
       :plain

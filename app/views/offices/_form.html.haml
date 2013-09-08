@@ -23,7 +23,7 @@
     .hospital_0
       = l.association :hospital_in, as: :select, collection: Hospital.all, :include_blank => true
     .clinic_0
-      = l.association :location_in, as: :select, collection: Clinic.all.map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.name} #{l.short_address}", l.id] }, :include_blank => true
+      = l.association :location_in, as: :select, collection: Clinic.all.map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} #{l.short_address}", l.id] }, :include_blank => true
     .details_0
       = l.input :suite_in, :input_html => { :class => "span1" }
       = l.input :details_in
