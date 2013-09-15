@@ -32,7 +32,7 @@
     search_data << entry
   end
 
-  clinics = Clinic.includes(:location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}])
+  clinics = Clinic.includes(:locations => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}])
 
   clinics.reject{ |c| c.in_progress_for_divisions(c.divisions) }.each do |clinic|
 
@@ -41,7 +41,7 @@
     entry = { 
       "n" => clinic.name, 
       "sp" => clinic.specializations.not_in_progress_for_divisions(clinic.divisions).map{ |c| c.id },
-      "c" => specialist.cities.map{ |city| city.id },
+      "c" => clinic.cities.map{ |city| city.id },
       "st" => clinic.status_class_hash,
       "id" => clinic.id,
       "go" => order_map["Clinics"] }
