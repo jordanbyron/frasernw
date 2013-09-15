@@ -133,7 +133,7 @@
                 - elsif address.present? && !address.empty?
                   %p= "(#{cl.sector})" if cl.sector?
                   %p= link_to address.address, address.map_url, :target => "_blank"
-                %p= "Wheelchair accessible" if cl.wheelchair_accessible?
+                %p= "Wheelchair accessible." if cl.wheelchair_accessible?
                 - if cl.scheduled?
                   %p
                     %strong Schedule:
