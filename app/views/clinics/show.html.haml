@@ -117,7 +117,7 @@
               - clinic_locations.each do |cl|
                 - address = cl.resolved_address
 
-                %p
+                %p.space
                   %strong= cl.phone_only if cl.phone_only.present?
                 %p= "Fax: #{cl.fax}" if cl.fax.present?
                 %p= "E-mail: #{mail_to cl.email, cl.email, :target => '_blank'}".html_safe if cl.email.present?
@@ -135,7 +135,7 @@
                   %p= link_to address.address, address.map_url, :target => "_blank"
                 %p= "Wheelchair accessible" if cl.wheelchair_accessible?
                 - if cl.scheduled?
-                  %p.space
+                  %p
                     %strong Schedule:
                     = cl.schedule.collapsed_days_and_hours.join(". ").end_with_period
 
