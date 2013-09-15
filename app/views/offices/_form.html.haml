@@ -7,29 +7,29 @@
       %label Location is
       .controls
         - location = @office.location
-        - location_class = "location_0"
+        - location_class = "office_location"
         - is_in_hospital = location.in_hospital?
         - is_in_clinic = !is_in_hospital && location.in_clinic?
         - is_stand_alone = !is_in_clinic && !is_in_hospital
         - [['Standalone', is_stand_alone], ['In a clinic', is_in_clinic], ['In a hospital', is_in_hospital]].each do |option| 
           = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
-    .address_0
+    .address
       = l.simple_fields_for :address do |a|
         = a.input :suite, :input_html => { :class => "span1" }
         = a.input :address1
         = a.input :address2
         = a.association :city, as: :select, collection: (current_user_is_super_admin? ? City.all : City.in_divisions(current_user_divisions)).map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
         = a.input :postalcode, :input_html => { :class => "span1" }
-    .hospital_0
+    .hospital
       = l.association :hospital_in, as: :select, collection: Hospital.all, :include_blank => true
-    .clinic_0
+    .clinic
       = l.association :location_in, as: :select, collection: Clinic.all.map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} #{l.short_address}", l.id] }, :include_blank => true
-    .details_0
+    .details
       = l.input :suite_in, :input_html => { :class => "span1" }
       = l.input :details_in
     %script{"type" => "text/javascript"}
       :plain
-        $(document).ready( function() { address_location_changed(0) });
+        $(document).ready( office_address_location_changed );
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
