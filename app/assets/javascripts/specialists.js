@@ -124,15 +124,9 @@ var address_location_changed = function(address_number)
   }
 }
 
-$(".location_0").live("change", address_location_changed(0) );
-$(".location_1").live("change", address_location_changed(1) );
-$(".location_2").live("change", address_location_changed(2) );
-$(".location_3").live("change", address_location_changed(3) );
-$(".location_4").live("change", address_location_changed(4) );
-$(".location_5").live("change", address_location_changed(5) );
-$(".location_6").live("change", address_location_changed(6) );
-$(".location_7").live("change", address_location_changed(7) );
-$(".location_8").live("change", address_location_changed(8) );
+$(".location_0").live("change", function() { address_location_changed(0) });
+$(".location_1").live("change", function() { address_location_changed(1) });
+$(".location_2").live("change", function() { address_location_changed(2) });
 
 $("#add_address").live("click", function() 
 {

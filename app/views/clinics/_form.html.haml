@@ -246,7 +246,7 @@
     .tabbable
       %ul.nav.nav-tabs
         - @clinic.clinic_locations.each_with_index do |cl, index|
-          %li{:class => index == 0 ? "active" : ""} 
+          %li{:class => index == 0 ? "active" : ""}
             %a{"href" => "#location_tab_#{index}", "data-toggle" => "tab"}= "Location #{index+1}"
     
     .tab-content
@@ -262,7 +262,7 @@
           .control-group.no-print
             %label.control-label Location is
             .controls
-              - location_class = "location_#{index}"
+              - location_class = "clinic_location_#{index}"
               - [['Not used', is_unused], ['Standalone', is_standalone], ['In a hospital', is_in_hospital]].each do |option| 
                 = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
           %div{:class => "numbers_#{index}"}
@@ -287,17 +287,15 @@
                 = a.input :suite, :input_html => { :class => "span1" }
                 = a.input :address1
                 = a.input :address2
-                -#= a.association :city, as: :select, collection: (current_user_is_super_admin? ? City.all : City.in_divisions(current_user_divisions)).map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
+                = a.association :city, as: :select, collection: (current_user_is_super_admin? ? City.all : City.in_divisions(current_user_divisions)).map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
                 = a.input :postalcode, :input_html => { :class => "span1" }
             %div{:class => "hospital_#{index}"}
-              -#= l.association :hospital_in, as: :select, collection: (current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(current_user_divisions)), :include_blank => true
+              = l.association :hospital_in, as: :select, collection: (current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(current_user_divisions)), :include_blank => true
             %div{:class => "details_#{index}"}
               = l.input :suite_in, :input_html => { :class => "span1" }
               = l.input :details_in
-            %div{:class => "universal_#{index}"}
-              = cl.input :sector_mask, as: :radio_buttons, collection: ClinicLocation::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
-          
-          %div{:class => "address_#{index}"}
+          %div{:class => "universal_#{index}"}
+            = cl.input :sector_mask, as: :radio_buttons, collection: ClinicLocation::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
             = cl.input :wheelchair_accessible_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
 
             %h4 Location schedule
@@ -320,7 +318,7 @@
 
           %script{"type" => "text/javascript"}
             :plain
-              $(document).ready( address_location_changed(#{index}) );
+              $(document).ready( clinic_address_location_changed(#{index}) );
           - index += 1
 
     %script{"type" => "text/javascript"}
@@ -406,7 +404,7 @@
     = f.input :referral_other_details
     = f.input :referral_details
 
-    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does this clinic have a referral form?", :hint => @is_review ? "If you would like to add or correct any referral forms, please email them to #{clinic_owner.name} at #{mail_to clinic_owner.email}".html_safe : ""
+    = f.input :referral_form_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does this clinic have a referral form?", :hint => @is_review ? "If you would like to add or correct any referral forms, please email them to #{clinic_owner.name} at #{mail_to clinic_owner.email}".html_safe : ""
     
     - if @is_review && @clinic.referral_form_mask == 1 && @clinic.referral_forms.reject{ |referral_form| referral_form.form.blank? }.present?
    
