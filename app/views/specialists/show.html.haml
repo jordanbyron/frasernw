@@ -180,10 +180,24 @@
                   - location = specialist_office.office.location
                   - next if !location
                   - address = location.resolved_address
-                  - if (location.in_hospital? or location.in_clinic?)
-                    - located_in = location.hospital_in ||= location.location_in.locatable
+                  - if location.in_hospital?
+                    - located_in = location.hospital_in
                     %p
                       = "In #{link_to located_in.name, url_for(located_in), :class => 'ajax'}".html_safe
+                      - if located_in.location.present? && located_in.location.in_hospital?
+                        - hopsital = located_in.location.hospital_in
+                        = "which is in #{link_to hopsital.name, hospital_path(hopsital), :class => 'ajax'}".html_safe
+                      = "(#{specialist_office.sector})" if specialist_office.sector?
+                      - if num_specialists > 1
+                        with
+                        %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), :class => 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other specialist')}"
+                    %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
+                    %p= location.in_details if location.in_details.present?
+                  - elsif location.in_clinic?
+                    - located_in = location.location_in.locatable
+                    - clinic = located_in.clinic
+                    %p
+                      = "In #{link_to clinic.name, url_for(clinic), :class => 'ajax'}".html_safe
                       - if located_in.location.present? && located_in.location.in_hospital?
                         - hopsital = located_in.location.hospital_in
                         = "which is in #{link_to hopsital.name, hospital_path(hopsital), :class => 'ajax'}".html_safe
