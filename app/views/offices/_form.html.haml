@@ -29,7 +29,7 @@
       = l.input :details_in
     %script{"type" => "text/javascript"}
       :plain
-        $(document).ready( address_0_location_changed );
+        $(document).ready( function() { address_location_changed(0) });
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

@@ -60,7 +60,7 @@ class ClinicLocation < ActiveRecord::Base
   end
   
   def empty?
-    phone.blank? && phone_extension.blank? && fax.blank? && contact_details.blank? && !sector? && url.blank? && email.blank? && !wheelchair_accessible? && !scheduled? && (location.blank? || location.empty?) 
+    phone.blank? && phone_extension.blank? && fax.blank? && contact_details.blank? && (location.blank? || location.empty?)
   end
   
   has_paper_trail

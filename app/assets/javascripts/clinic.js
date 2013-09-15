@@ -64,11 +64,12 @@ function clinic_reset_select(id)
   // remove "selected"
   $("[id=" + id + "] option[selected='selected']").each(function() { $(this).removeAttr('selected'); });
   $("[id=" + id + "] option:first").attr('selected','selected')
+  $("#" + id).trigger('liszt:updated');
 }
 
-function clinic_reset_hospital()
+function clinic_reset_hospital(address_number)
 {
-  //clinic_reset_select("clinic_location_attributes_hospital_in_id");
+  clinic_reset_select("clinic_clinic_locations_attributes_" + address_number + "_location_attributes_hospital_in_id");
 }
 
 function clinic_reset_numbers(address_number)
@@ -78,6 +79,10 @@ function clinic_reset_numbers(address_number)
   $("#clinic_clinic_locations_attributes_" + address_number + "_fax").val("");
   $("#clinic_clinic_locations_attributes_" + address_number + "_direct_phone").val("");
   $("#clinic_clinic_locations_attributes_" + address_number + "_direct_phone_extension").val("");
+  $("#clinic_clinic_locations_attributes_" + address_number + "_email").val("");
+  $("#clinic_clinic_locations_attributes_" + address_number + "_url").val("");
+  $("#clinic_clinic_locations_attributes_" + address_number + "_location_attributes_suite_in").val("");
+  $("#clinic_clinic_locations_attributes_" + address_number + "_location_attributes_details_in").val("");
 }
 
 var clinic_address_location_changed = function(address_number)
@@ -91,7 +96,7 @@ var clinic_address_location_changed = function(address_number)
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).hide();
     $('.universal_' + address_number).hide();
-    clinic_reset_hospital();
+    clinic_reset_hospital(address_number);
     clinic_reset_numbers(address_number);
   }
   else if ($('#clinic_location_' + address_number + '_Standalone').is(':checked'))
@@ -103,7 +108,7 @@ var clinic_address_location_changed = function(address_number)
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).hide();
     $('.universal_' + address_number).show();
-    clinic_reset_hospital();
+    clinic_reset_hospital(address_number);
   }
   else if ($('#clinic_location_' + address_number + '_In_a_hospital').is(':checked'))
   {
