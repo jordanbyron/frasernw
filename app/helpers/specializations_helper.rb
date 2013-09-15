@@ -147,19 +147,20 @@ module SpecializationsHelper
     end
     filtering_attributes << "crph" if c.referral_phone
     filtering_attributes << "crpb" if c.patient_can_book?
-    filtering_attributes << "cdpb" if c.sector_mask == 1 || c.sector_mask == 3
-    filtering_attributes << "cdpv" if c.sector_mask == 2 || c.sector_mask == 3
-    filtering_attributes << "cdwa" if c.wheelchair_accessible?
-    if c.scheduled?
-      schedule = c.schedule
-      filtering_attributes << "cshmon" if schedule.monday.scheduled
-      filtering_attributes << "cshtues" if schedule.tuesday.scheduled
-      filtering_attributes << "cshwed" if schedule.wednesday.scheduled
-      filtering_attributes << "cshthurs" if schedule.thursday.scheduled
-      filtering_attributes << "cshfri" if schedule.friday.scheduled
-      filtering_attributes << "cshsat" if schedule.saturday.scheduled
-      filtering_attributes << "cshsun" if schedule.sunday.scheduled
+    if c.private?
+      filtering_attributes << "cdpv"
+    else
+      filtering_attributes << "cdpb"
     end
+    filtering_attributes << "cdwa" if c.wheelchair_accessible?
+    days = c.days
+    filtering_attributes << "cshmon" if days.include? "Monday"
+    filtering_attributes << "cshtues" if days.include? "Tuesday"
+    filtering_attributes << "cshwed" if days.include? "Wednesday"
+    filtering_attributes << "cshthurs" if days.include? "Thursday"
+    filtering_attributes << "cshfri" if days.include? "Friday"
+    filtering_attributes << "cshsat" if days.include? "Saturday"
+    filtering_attributes << "cshsun" if days.include? "Sunday"
     filtering_attributes += clinic_healthcare_provider_filtering_attributes(c)
     filtering_attributes += clinic_language_filtering_attributes(c)
     return filtering_attributes
