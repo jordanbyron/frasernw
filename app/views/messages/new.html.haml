@@ -1,0 +1,32 @@
+.message
+
+  %h1 Contact Pathways
+
+  = simple_form_for @message, :url => messages_path, :html => { :class => "form-horizontal message_form" } do |f|
+
+    = f.input :name, :label => 'Your name', :input_html => { :value => current_user.name }
+    = f.input :email, :label => 'Your e-mail',  :input_html => { :value => current_user.email }
+    = f.input :subject, :label => 'Message subject', :input_html => { :value => "Pathways Comment" }
+    = f.input :body, :label => 'Message body', :as => :text, :input_html => { :rows => 3 }
+
+    .form-actions
+      %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "send_message($('form.message_form'))" } Send Message
+      %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#message').fadeOut(200)"} Cancel
+      
+  
+      
+  %script{"type" => "text/javascript"}
+    :plain
+      function send_message(form) {
+        $(document.body).addClass('loading');
+        $.ajax({
+            url: form.attr('action'),
+            data: form.serialize(),
+            type: 'POST'
+        }).success(function(json) {
+            $('#message').fadeOut(200);
+            $('#message_sent').fadeIn(200);
+        }).complete(function() {
+            $(document.body).removeClass('loading');
+        });
+      }

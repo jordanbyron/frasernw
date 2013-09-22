@@ -108,6 +108,9 @@ Frasernw::Application.routes.draw do
   match '/front/edit' => 'front#edit', :as => :edit_front
   match '/front/update' => 'front#update', :as => :update_front
   match '/stats' => 'stats#index', :as => :stats
+  
+  match 'messages' => 'messages#new', :as => 'messages', :via => :get
+  match 'messages' => 'messages#create', :as => 'messages', :via => :post
 
   resources :user_sessions
 

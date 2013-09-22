@@ -342,11 +342,21 @@
             - flash.each do |type, msg|
               .alert.alert-success= msg
             = yield
-            
+            #message
+              .inner
+            #message_sent
+              .inner
+                %h2 Message sent!
+                
+                %p.space.no_indent Thank you for providing your comments to Pathways. We will review your message in the near future, and respond as necessary.
+                
+                %p.space.no_indent
+                  %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#message_sent').fadeOut(200)" } Close
+
       .row
         #email.content-wrapper
           Contact us:
-          = mail_to "administration@pathwaysbc.ca", "administration@pathwaysbc.ca"
+          %a{:href => '#', :onclick => "$('#message .inner').load('#{messages_path}', function() { $('#message').show() }); return false;"} administration@pathwaysbc.ca
             
     #loading
       #loading-spinner
