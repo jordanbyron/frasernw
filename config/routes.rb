@@ -61,7 +61,9 @@ Frasernw::Application.routes.draw do
   match '/referral_forms'               => 'referral_forms#index',      :as => 'referral_forms'
   
   match '/specialists/:id/print'        => 'specialists#print_patient_information',   :as => 'specialist_patient_information'
+  match '/specialists/:id/print/office/:office_id' => 'specialists#print_office_patient_information',   :as => 'specialist_patient_information_office'
   match '/clinics/:id/print'            => 'clinics#print_patient_information',       :as => 'clinic_patient_information'
+  match '/clinics/:id/print/location/:location_id'  => 'clinics#print_location_patient_information',       :as => 'clinic_patient_information_location'
   
   get  '/specialties/:id/:token/refresh_cache'     => 'specializations#refresh_cache', :as => 'specialization_refesh_cache'
   get  '/specialists/:id/:token/refresh_cache'     => 'specialists#refresh_cache',     :as => 'specialist_refesh_cache'

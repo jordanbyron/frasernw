@@ -54,6 +54,7 @@
   
 - show_details = false
 - show_areas_of_practice = false
+- specialist_offices = @specialist.specialist_offices.reject{ |specialist_office| specialist_office.empty? }
      
 .content-wrapper
   - cache(specialist_path(@specialist)) do
@@ -167,9 +168,8 @@
             - if has_office || @specialist.location_opened.present? || @specialist.languages.present? || @specialist.interpreter_available
             
               %h6 Office Information
-              
-              - @specialist.specialist_offices.each do |specialist_office|
-                - next if specialist_office.empty?
+
+              - specialist_offices.each do |specialist_office|
                 %p.space
                   %strong= specialist_office.phone_only if specialist_office.phone_only.present?
                 %p= "Fax: #{specialist_office.fax}" if specialist_office.fax.present?
@@ -446,12 +446,24 @@
     %ul
       - @specialist.controlling_users.each do |user|
         %li= link_to user.name, user, :class => 'ajax'
-                  
+
   .btn-group
     - if true || show_details
-      %a.btn{"href" => specialist_patient_information_path(@specialist), "target" => "_blank"}
-        %i.icon-print.icon-text
-        Print Information for Patient
+      - if specialist_offices.length == 1
+        %a.btn{"href" => specialist_patient_information_path(@specialist), "target" => "_blank"}
+          %i.icon-print.icon-text
+          Print Information for Patient
+      - else
+        %a.btn.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+          %i.icon-print.icon-text
+          Print Information for Patient
+          %span.caret
+        %ul.dropdown-menu
+          - specialist_offices.each do |specialist_office|
+            %li
+              %a{"href" => specialist_patient_information_office_path(@specialist, specialist_office), "target" => "_blank"}
+                = specialist_office.office.short_address
+
     - if !current_user_is_admin? && (can? :update, @specialist)
       %a.btn.btn-primary.ajax{"href" => specialist_self_edit_path(@specialist, @specialist.token)}
         %i.icon-pencil.icon-white

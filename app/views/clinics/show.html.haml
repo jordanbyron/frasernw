@@ -54,6 +54,7 @@
 
 - show_details = false
 - show_areas_of_practice = false
+- clinic_locations = @clinic.clinic_locations.reject{ |cl| cl.empty? }
 
 .content-wrapper
   - cache(clinic_path(@clinic)) do
@@ -106,9 +107,7 @@
           
           .headline-footer
    
-          - if show_details    
-          
-            - clinic_locations = @clinic.clinic_locations.reject{ |cl| cl.empty? }
+          - if show_details
         
             - if clinic_locations.present? || @clinic.location_opened.present? || @clinic.languages.present? || @clinic.interpreter_available
               
@@ -369,9 +368,20 @@
             
   .btn-group
     - if true || show_details
-      %a.btn{"href" => clinic_patient_information_path(@clinic), "target" => "_blank"}
-        %i.icon-print.icon-text
-        Print Information for Patient
+      - if clinic_locations.length == 1
+        %a.btn{"href" => clinic_patient_information_path(@clinic), "target" => "_blank"}
+          %i.icon-print.icon-text
+          Print Information for Patient
+      - else
+        %a.btn.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+          %i.icon-print.icon-text
+          Print Information for Patient
+          %span.caret
+        %ul.dropdown-menu
+          - clinic_locations.each do |clinic_location|
+            %li
+              %a{"href" => clinic_patient_information_location_path(@clinic, clinic_location), "target" => "_blank"}
+                = clinic_location.location.short_address
     - if !current_user_is_admin? && (can? :update, @clinic)
       %a.btn.btn-primary.ajax{"href" => clinic_self_edit_path(@clinic, @clinic.token)}
         %i.icon-pencil.icon-white

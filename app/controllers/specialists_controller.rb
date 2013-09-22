@@ -295,7 +295,14 @@ class SpecialistsController < ApplicationController
   
   def print_patient_information
     @specialist = Specialist.find(params[:id])
+    @specialist_office = @specialist.specialist_offices.first
     render :layout => 'print'
+  end
+  
+  def print_office_patient_information
+    @specialist = Specialist.find(params[:id])
+    @specialist_office = SpecialistOffice.find(params[:office_id])
+    render :print_patient_information, :layout => 'print'
   end
   
   def photo

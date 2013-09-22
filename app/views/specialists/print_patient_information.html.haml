@@ -61,24 +61,35 @@
   
 %h6 #{@specialist.formal_name}'s Office Information
   
-- @specialist.specialist_offices.each do |specialist_office|
-  - next if specialist_office.empty?
-  - if specialist_office.office.present?
-    %p= specialist_office.phone_only if specialist_office.phone_only.present?
-    %p= specialist_office.email if specialist_office.email.present?
-    %p= specialist_office.url if specialist_office.url.present?
-    - location = specialist_office.office.location
-    - next if !location
+- if @specialist_office.office.present?
+  %p= @specialist_office.phone_only if @specialist_office.phone_only.present?
+  %p= @specialist_office.email if @specialist_office.email.present?
+  %p= @specialist_office.url if @specialist_office.url.present?
+  - location = @specialist_office.office.location
+  - if location.present?
     - address = location.resolved_address
-    - if (location.in_hospital? or location.in_clinic?)
-      - located_in = location.hospital_in || location.location_in.locatable
+    - if location.in_hospital?
+      - located_in = location.hospital_in
       %p
-        = "In #{located_in.name}"
-        = "which is in #{located_in.location.hospital_in.name}" if located_in.location.present? && located_in.location.in_hospital?
+        = "In #{link_to located_in.name, url_for(located_in), :class => 'ajax'}".html_safe
+        - if located_in.location.present? && located_in.location.in_hospital?
+          - hopsital = located_in.location.hospital_in
+          = "which is in #{link_to hopsital.name, hospital_path(hopsital), :class => 'ajax'}".html_safe
       %p= address.address if address.present? && !address.empty?
       %p= location.in_details if location.in_details.present?
       %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
-    - else
+    - elsif location.in_clinic?
+      - located_in = location.location_in.locatable
+      - clinic = located_in.clinic
+      %p
+        = "In #{link_to clinic.name, url_for(clinic), :class => 'ajax'}".html_safe
+        - if located_in.location.present? && located_in.location.in_hospital?
+          - hopsital = located_in.location.hospital_in
+          = "which is in #{link_to hopsital.name, hospital_path(hopsital), :class => 'ajax'}".html_safe
+      %p= address.address if address.present? && !address.empty?
+      %p= location.in_details if location.in_details.present?
+      %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
+    - elsif address.present?
       %p= address.address if address.present? && !address.empty?
       %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
   
