@@ -20,6 +20,7 @@ class ClinicsController < ApplicationController
 
   def new
     @is_review = false
+    @is_rereview = false
     #specialization passed in to facilitate javascript "checking off" of starting speciality, since build below doesn't seem to work
     @specialization = Specialization.find(params[:specialization_id])
     @clinic = Clinic.new
@@ -69,6 +70,8 @@ class ClinicsController < ApplicationController
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
+      @clinic.review_object = ActiveSupport::JSON::encode(params)
+      @clinic.save
       redirect_to clinic_path(@clinic), :notice => "Successfully created #{@clinic.name}."
     else
       render :action => 'new'
@@ -77,6 +80,7 @@ class ClinicsController < ApplicationController
 
   def edit
     @is_review = false
+    @is_rereview = false
     @clinic = Clinic.find(params[:id])
     while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
       puts "location #{@clinic.clinic_locations.length}"
@@ -149,6 +153,8 @@ class ClinicsController < ApplicationController
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
+      @clinic.review_object = ActiveSupport::JSON::encode(params)
+      @clinic.save
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else
       render :action => 'edit'
@@ -173,10 +179,71 @@ class ClinicsController < ApplicationController
   def review
     @clinic = Clinic.find(params[:id])
     @is_review = false
+    @is_rereview = false
     @review_item = @clinic.review_item;
     
     if @review_item.blank?
       redirect_to clinics_path, :notice => "There are no review items for this specialist"
+    else
+      while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
+        cl = @clinic.clinic_locations.build
+        s = cl.build_schedule
+        s.build_monday
+        s.build_tuesday
+        s.build_wednesday
+        s.build_thursday
+        s.build_friday
+        s.build_saturday
+        s.build_sunday
+        l = cl.build_location
+        l.build_address
+      end
+      @clinic_procedures = []
+      @clinic.specializations.each { |specialization| 
+        @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
+        @clinic_procedures += ancestry_options( specialization.non_assumed_procedure_specializations_arranged )
+      }
+      @clinic_specialists = []
+      procedure_specializations = {}
+      @clinic.specializations.each { |specialization|
+        @clinic_specialists << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
+        @clinic_specialists += specialization.specialists.collect { |s| [s.name, s.id] }
+        procedure_specializations.merge!(specialization.non_assumed_procedure_specializations_arranged)
+      }
+      focuses_procedure_list = []
+      @focuses = []
+      procedure_specializations.each { |ps, children|
+        if !focuses_procedure_list.include?(ps.procedure.id)
+          @focuses << generate_focus(@clinic, ps, 0)
+          focuses_procedure_list << ps.procedure.id
+        end
+        children.each { |child_ps, grandchildren|
+          if !focuses_procedure_list.include?(child_ps.procedure.id)
+            @focuses << generate_focus(@clinic, child_ps, 1)
+            focuses_procedure_list << child_ps.procedure.id
+          end
+          grandchildren.each { |grandchild_ps, greatgrandchildren|
+            if !focuses_procedure_list.include?(grandchild_ps.procedure.id)
+              @focuses << generate_focus(@clinic, grandchild_ps, 2)
+              focuses_procedure_list << grandchild_ps.procedure.id
+            end
+          }
+        }
+      }
+      render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
+    end
+  end
+  
+  def rereview
+    @clinic = Clinic.find(params[:id])
+    @is_review = false
+    @is_rereview = true
+    @review_item = ReviewItem.find(params[:review_item_id])
+    
+    if @review_item.blank?
+      redirect_to clinics_path, :notice => "There are no review items for this clinic"
+    elsif @review_item.base_object.blank?
+      redirect_to specialists_path, :notice => "There is no base review item for this clinic to re-review from"
     else
       while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
         cl = @clinic.clinic_locations.build
@@ -247,6 +314,8 @@ class ClinicsController < ApplicationController
         focus.lagtime_mask = params[:focuses_lagtime][updated_focus] if params[:focuses_lagtime].present?
         focus.save
       end
+      @clinic.review_object = ActiveSupport::JSON::encode(params)
+      @clinic.save
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else
       render :action => 'edit'

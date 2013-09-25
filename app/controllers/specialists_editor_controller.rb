@@ -8,6 +8,7 @@ class SpecialistsEditorController < ApplicationController
   def edit
     @token = params[:token]
     @is_review = true
+    @is_rereview = false
     @specialist = Specialist.find(params[:id])
     @review_item = @specialist.review_item
     if @specialist.capacities.count == 0
@@ -77,6 +78,7 @@ class SpecialistsEditorController < ApplicationController
     review_item.item_type = "Specialist"
     review_item.item_id = @specialist.id
     review_item.object = ActiveSupport::JSON::encode(params)
+    review_item.base_object = @specialist.review_object
     review_item.whodunnit = current_user.id if current_user.present?
     review_item.status = params[:no_updates] ? ReviewItem::STATUS_NO_UPDATES: ReviewItem::STATUS_UPDATES
     review_item.save
