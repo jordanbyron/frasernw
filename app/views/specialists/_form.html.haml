@@ -232,7 +232,7 @@
         traverse_review_item(["specialist"], review_item["specialist"], true);
         traverse_capacities(review_item, true);
         
-        for (var i = 0; i < #{Specialist::MAX_LOCATIONS}; ++i)
+        for (var i = 0; i < #{Specialist::MAX_OFFICES}; ++i)
         {
           if ($('#location_tab_' + i + ' .changed').length !== 0)
           {
