@@ -98,9 +98,10 @@ en:
         location_in: "Clinic"
         suite_in: "Suite"
       news_item:
+        body: "Message body"
         breaking: "Show as breaking news"
         end_date: "End date"
-        body: "News body"
+        type_mask: "News Type"
       sc_category:
         display_mask: "Display items"
         show_as_dropdown: "Display in global navigation in resources dropdown menu"

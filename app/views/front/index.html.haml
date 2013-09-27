@@ -67,7 +67,7 @@
 
         - if current_user_is_admin?
           %p.admin.btn-group
-            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialist and Clinic Updates", news_items_path, :class => "btn btn-mini ajax")
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Latest Specialist and Clinic Updates", news_items_path, :class => "btn btn-mini ajax")
             
         - if NewsItem.divisional_in_divisions(current_user_divisions).length > 0
           
