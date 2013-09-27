@@ -46,14 +46,16 @@ class NewsItem < ActiveRecord::Base
     end
   end
   
-  TYPE_BREAKING     = 1
-  TYPE_DIVISIONAL   = 2
-  TYPE_SHARED_CARE  = 3
+  TYPE_BREAKING                 = 1
+  TYPE_DIVISIONAL               = 2
+  TYPE_SHARED_CARE              = 3
+  TYPE_SPECIALIST_CLINIC_UPDATE = 4
   
   TYPE_HASH = {
-    TYPE_DIVISIONAL => "Divisional Update",
-    TYPE_SHARED_CARE => "Shared Care Update",
-    TYPE_BREAKING => "Breaking News"
+    TYPE_DIVISIONAL               => "Divisional Update",
+    TYPE_SHARED_CARE              => "Shared Care Update",
+    TYPE_BREAKING                 => "Breaking News",
+    TYPE_SPECIALIST_CLINIC_UPDATE => "Specialist / Clinic Update"
   }
   
   def type
@@ -75,5 +77,10 @@ class NewsItem < ActiveRecord::Base
   def self.shared_care_in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     where("news_items.type_mask = (?) AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?))) and news_items.division_id IN (?)", TYPE_SHARED_CARE, Date.today, Date.today, division_ids)
+  end
+  
+  def self.specialist_clinic_in_divisions(divisions)
+    division_ids = divisions.map{ |d| d.id }
+    where("news_items.type_mask = (?) AND ((news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR (news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?))) and news_items.division_id IN (?)", TYPE_SPECIALIST_CLINIC_UPDATE, Date.today, Date.today, division_ids)
   end
 end

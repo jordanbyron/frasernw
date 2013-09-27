@@ -3,7 +3,11 @@ module FrontHelper
   def latest_events(max_events, divisions)
     
     events = {}
-        
+    
+    NewsItem.specialist_clinic_in_divisions(divisions).each do |news_item|
+      events["NewsItem_#{news_item.id}"] = ["#{news_item.start_date || news_item.end_date}", "#{BlueCloth.new(news_item.title + ". " + news_item.body).to_html}".html_safe]
+    end
+    
     Version.order("id desc").where("item_type = (?) OR item_type = (?)", "Specialist", "Clinic").limit(1000).each do |version|
     
       next if version.item.blank?
@@ -21,9 +25,9 @@ module FrontHelper
             #new specialist that is accepting patients
             
             if specialist.city.present? 
-              events["#{version.item_type}_#{version.item.id}"] = "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is recently opened and accepting patients in #{specialist.city}.".html_safe
+              events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is recently opened and accepting patients in #{specialist.city}.".html_safe]
             else 
-              events["#{version.item_type}_#{version.item.id}"] = "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is recently opened and accepting patients.".html_safe
+              events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is recently opened and accepting patients.".html_safe]
             end
           
           elsif version.event == "update"
@@ -35,7 +39,7 @@ module FrontHelper
               
               #newly moved away
               
-              events["#{version.item_type}_#{version.item.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has moved away.".html_safe
+              events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has moved away.".html_safe]
               
             elsif specialist.retired?
               
@@ -44,14 +48,14 @@ module FrontHelper
               
               #newly retired
               
-              events["#{version.item_type}_#{version.item.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has retired.".html_safe
+              events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has retired.".html_safe]
               
             elsif specialist.retiring?
               
               next if version.previous.blank? || version.previous.reify.blank?
               next if version.previous.reify.retiring? #retiring status hasn't changed
               
-              events["#{version.item_type}_#{version.item.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{specialist.unavailable_from.strftime('%B %d, %Y')}.".html_safe
+              events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{specialist.unavailable_from.strftime('%B %d, %Y')}.".html_safe]
               
             elsif specialist.accepting_new_patients? && specialist.opened_this_year?
               
@@ -59,9 +63,9 @@ module FrontHelper
               next if version.previous.reify.opened_this_year? #opened this year status hasn't changed
               
               if specialist.city.present?
-                events["#{version.item_type}_#{version.item.id}"] = "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is recently opened and accepting patients in #{specialist.city}.".html_safe
+                events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is recently opened and accepting patients in #{specialist.city}.".html_safe]
                 else
-                events["#{version.item_type}_#{version.item.id}"] = "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is recently opened and accepting patients.".html_safe
+                events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is recently opened and accepting patients.".html_safe]
               end
               
             end
@@ -98,7 +102,8 @@ module FrontHelper
       end
     end
     
-    return events.values
+    #mix in the news updates with the automatic updates
+    return events.values.sort{ |a, b| b[0] <=> a[0] }.map{ |x| x[1] }
   end
   
 end
