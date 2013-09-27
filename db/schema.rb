@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130924192733) do
+ActiveRecord::Schema.define(:version => 20130927184206) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -666,14 +666,15 @@ ActiveRecord::Schema.define(:version => 20130924192733) do
   add_index "specialists", ["referral_clinic_id"], :name => "index_specialists_on_referral_clinic_id"
 
   create_table "specialization_options", :force => true do |t|
-    t.integer   "specialization_id"
-    t.integer   "owner_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.integer   "division_id"
-    t.boolean   "in_progress",        :default => false
-    t.boolean   "open_to_clinic_tab", :default => false
-    t.boolean   "is_new",             :default => false
+    t.integer  "specialization_id"
+    t.integer  "owner_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "division_id"
+    t.boolean  "in_progress",        :default => false
+    t.boolean  "open_to_clinic_tab", :default => false
+    t.boolean  "is_new",             :default => false
+    t.integer  "content_owner_id"
   end
 
   create_table "specializations", :force => true do |t|
