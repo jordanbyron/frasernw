@@ -1,3 +1,5 @@
+# config/unicorn.rb
+
 worker_processes Integer(ENV["UNICORN_PROCESSES"] || 3)
 timeout 60
 preload_app true
