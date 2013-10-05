@@ -151,6 +151,8 @@
                             %li= link_to "New Hospital", new_hospital_path, :class => "ajax"
                           - if can? :create, Language
                             %li= link_to "New Language", new_language_path, :class => "ajax"
+                          - if can? :create, NewsItem
+                            %li= link_to "New News Item", new_news_item_path, :class => "ajax"
                           - if can? :create, Office
                             %li= link_to "New Office", new_office_path, :class => "ajax"
                           - if can? :create, Specialist
@@ -182,6 +184,8 @@
                         %li= link_to "Hospitals", hospitals_path, :class => "ajax"
                       - if can? :index, Language
                         %li= link_to "Languages", languages_path, :class => "ajax"
+                      - if can? :index, NewsItem
+                        %li= link_to "News Items", news_items_path, :class => "ajax"
                       - if can? :index, Office
                         %li
                           = link_to "Offices", "#", :class => "arrow-right-after"
