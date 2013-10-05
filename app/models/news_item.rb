@@ -64,6 +64,11 @@ class NewsItem < ActiveRecord::Base
   
   default_scope order('news_items.start_date DESC')
   
+  def self.in_divisions(divisions)
+    division_ids = divisions.map{ |d| d.id }
+    where("news_items.division_id IN (?)", division_ids)
+  end
+  
   def self.breaking_in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     where("news_items.type_mask = (?) AND (" +
