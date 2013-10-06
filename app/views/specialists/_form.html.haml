@@ -222,7 +222,7 @@
       {
         if (#{@is_rereview && @review_item.base_object.present?})
         {
-          var base_review_item = #{@review_item.base_object};
+          var base_review_item = #{@review_item.base_object || 'null'};
           traverse_review_item(["specialist"], base_review_item["specialist"], false);
           traverse_capacities(base_review_item, false);
         }
