@@ -19,9 +19,10 @@ class User < ActiveRecord::Base
   has_many :controlled_specialists, :through => :controlled_specialist_offices, :source => :specialist, :class_name => "Specialist"
   accepts_nested_attributes_for :user_controls_specialist_offices, :reject_if => lambda { |ucso| ucso[:specialist_office_id].blank? }, :allow_destroy => true
   
-  has_many :user_controls_clinics, :dependent => :destroy
-  has_many :controlled_clinics, :through => :user_controls_clinics, :source => :clinic, :class_name => "Clinic"
-  accepts_nested_attributes_for :user_controls_clinics, :reject_if => lambda { |ucc| ucc[:clinic_id].blank? }, :allow_destroy => true
+  has_many :user_controls_clinic_locations, :dependent => :destroy
+  has_many :controlled_clinic_locations, :through => :user_controls_clinic_locations, :source => :clinic_location, :class_name => "ClinicLocation"
+  has_many :controlled_clinics, :through => :controlled_clinic_locations, :source => :clinic, :class_name => "Clinic"
+  accepts_nested_attributes_for :user_controls_clinic_locations, :reject_if => lambda { |uccl| uccl[:clinic_location_id].blank? }, :allow_destroy => true
 
   has_many :specialization_options, :dependent => :destroy, :foreign_key => "owner_id"
   has_many :specializations_owned, :through => :specialization_options, :class_name => "Specialization", :source => :specialization

@@ -318,17 +318,17 @@
                       - current_user.controlled_specialists.each do |specialist|
                         %li= link_to specialist.name, specialist, :class => 'ajax'
                     
+                    - if current_user.controlled_clinics.present?
+                      %li.nav-header Your clinics
+                      - current_user.controlled_clinics.each do |clinic|
+                        %li= link_to clinic.name, clinic, :class => 'ajax'
+                    
                     %li.nav-header Help
                     %li= link_to "FAQ", faq_path, :class => 'faq ajax'
                     %li= mail_to "administration@pathwaysbc.ca", "Contact Us", :class => 'contact'
                     
                     %li.nav-header Legal
                     %li= link_to "Terms and Conditions", terms_and_conditions_path, :class => 'tac ajax'
-                    
-                    - if current_user.controlled_clinics.present?
-                      %li.nav-header Your clinics
-                      - current_user.controlled_clinics.each do |clinic|
-                        %li= link_to clinic.name, clinic, :class => 'ajax'
                     
                     %li.nav-header Settings
                     -# %li= link_to "Change name", change_name_path, :class => 'change_name ajax'

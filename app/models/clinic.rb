@@ -1,7 +1,7 @@
 class Clinic < ActiveRecord::Base
   include ApplicationHelper
   
-  attr_accessible :name, :deprecated_phone, :deprecated_phone_extension, :deprecated_fax, :deprecated_contact_details, :categorization_mask, :deprecated_sector_mask, :deprecated_url, :deprecated_email, :deprecated_wheelchair_accessible_mask, :status, :status_details, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :patient_instructions, :cancellation_policy, :interpreter_available, :specialization_ids, :deprecated_schedule_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinics_attributes, :admin_notes, :referral_forms_attributes, :clinic_locations_attributes, :review_object
+  attr_accessible :name, :deprecated_phone, :deprecated_phone_extension, :deprecated_fax, :deprecated_contact_details, :categorization_mask, :deprecated_sector_mask, :deprecated_url, :deprecated_email, :deprecated_wheelchair_accessible_mask, :status, :status_details, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :patient_instructions, :cancellation_policy, :interpreter_available, :specialization_ids, :deprecated_schedule_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinic_locations_attributes, :admin_notes, :referral_forms_attributes, :clinic_locations_attributes, :review_object
   has_paper_trail :ignore => :saved_token
   
   #clinics can have multiple specializations
@@ -14,17 +14,6 @@ class Clinic < ActiveRecord::Base
   accepts_nested_attributes_for :clinic_locations
   has_many :locations, :through => :clinic_locations
   has_many :addresses, :through => :locations
-  
-  #clinics can have locations that are within them
-  #has_many :locations_in, :through => :locations, :foreign_key => :location_id, :class_name => "Location"
-  #has_many :direct_offices_in, :through => :locations_in, :source => :locatable, :source_type => "Office"
-  #has_many :specialists_in, :through => :direct_offices_in, :source => :specialists, :class_name => "Specialist", :uniq => true
-  #has_many :specializations_in, :through => :specialists_in, :source => :specializations, :class_name => "Specialization", :uniq => true, :select => "DISTINCT specializations.*, specialists.firstname, specialists.lastname"
-  #has_many :procedures_in, :through => :specialists_in, :source => :procedures, :class_name => "Procedure", :uniq => true, :select => "DISTINCT procedures.*, specialists.firstname, specialists.lastname"
-  
-  #clinics have a schedule
-  #has_one :schedule, :as => :schedulable, :dependent => :destroy
-  #accepts_nested_attributes_for :schedule
   
   #clinics speak many languages
   has_many   :clinic_speaks, :dependent => :destroy, :dependent => :destroy
@@ -50,9 +39,9 @@ class Clinic < ActiveRecord::Base
   has_many   :healthcare_providers, :through => :clinic_healthcare_providers, :order => "name ASC"
   
   #clinics are controlled (e.g. can be edited) by users of the system
-  has_many :user_controls_clinics, :dependent => :destroy
-  has_many :controlling_users, :through => :user_controls_clinics, :source => :user, :class_name => "User"
-  accepts_nested_attributes_for :user_controls_clinics, :reject_if => lambda { |ucc| ucc[:user_id].blank? }, :allow_destroy => true
+  has_many :user_controls_clinic_locations, :through => :clinic_locations
+  has_many :controlling_users, :through => :user_controls_clinic_locations, :source => :user, :class_name => "User"
+  accepts_nested_attributes_for :user_controls_clinic_locations, :reject_if => lambda { |uccl| uccl[:user_id].blank? }, :allow_destroy => true
   
   has_one :review_item, :as => :item, :conditions => { "archived" => false }
   has_many :feedback_items, :as => :item, :conditions => { "archived" => false }
