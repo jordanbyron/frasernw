@@ -30,8 +30,8 @@ module FrontHelper
           
             if specialist.moved_away?
               
-              next if version.previous.blank? || version.previous.reify.blank?
-              next if version.previous.reify.moved_away? #moved away status hasn't changed
+              next if version.reify.blank?
+              next if version.reify.moved_away? #moved away status hasn't changed
               
               #newly moved away
               
@@ -39,8 +39,8 @@ module FrontHelper
               
             elsif specialist.retired?
               
-              next if version.previous.blank? || version.previous.reify.blank?
-              next if version.previous.reify.retired? #retired status hasn't changed
+              next if version.reify.blank?
+              next if version.reify.retired? #retired status hasn't changed
               
               #newly retired
               
@@ -48,15 +48,15 @@ module FrontHelper
               
             elsif specialist.retiring?
               
-              next if version.previous.blank? || version.previous.reify.blank?
-              next if version.previous.reify.retiring? #retiring status hasn't changed
+              next if version.reify.blank?
+              next if version.reify.retiring? #retiring status hasn't changed
               
               events["#{version.item_type}_#{version.item.id}"] = "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{specialist.unavailable_from.strftime('%B %d, %Y')}.".html_safe
               
             elsif specialist.accepting_new_patients? && specialist.opened_this_year?
               
-              next if version.previous.blank? || version.previous.reify.blank?
-              next if version.previous.reify.opened_this_year? #opened this year status hasn't changed
+              next if version.reify.blank?
+              next if version.reify.opened_this_year? #opened this year status hasn't changed
               
               if specialist.city.present?
                 events["#{version.item_type}_#{version.item.id}"] = "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is recently opened and accepting patients in #{specialist.city}.".html_safe
@@ -77,8 +77,8 @@ module FrontHelper
             
             if version.event == "update"
               
-              next if version.previous.blank? || version.previous.reify.blank?
-              next if version.previous.reify.opened_this_year? #opened this year status hasn't changed
+              next if version.reify.blank?
+              next if version.reify.opened_this_year? #opened this year status hasn't changed
               
             end
             
