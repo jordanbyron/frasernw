@@ -143,6 +143,15 @@ class Specialist < ActiveRecord::Base
     end
   end
 
+  #we need to know their 'old' cities if they moved away
+  def cities_for_front_page
+    if moved_away?
+      offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
+    else
+      cities
+    end
+  end
+
   def cities_for_display
     if responded? && !not_available?
       offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq

@@ -14,7 +14,9 @@ module FrontHelper
         if version.item_type == "Specialist"
           
           specialist = version.item
-          next if specialist.blank? || specialist.in_progress_for_divisions(specialist.divisions) || (specialist.divisions & divisions).blank?
+          next if specialist.blank? || specialist.in_progress_for_divisions(specialist.divisions)
+          specialist_divisions = specialist.cities_for_front_page.map{ |city| city.divisions }.flatten.uniq
+          next if (specialist_divisions & divisions).blank?
           
           if version.event == "create" && specialist.accepting_new_patients? && specialist.opened_this_year?
             
