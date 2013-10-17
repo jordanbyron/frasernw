@@ -67,6 +67,11 @@ function clinic_reset_select(id)
   $("#" + id).trigger('liszt:updated');
 }
 
+function clinic_reset_standalone(address_number)
+{
+  clinic_reset_select("clinic_clinic_locations_attributes_" + address_number + "_location_attributes_address_attributes_city_id");
+}
+
 function clinic_reset_hospital(address_number)
 {
   clinic_reset_select("clinic_clinic_locations_attributes_" + address_number + "_location_attributes_hospital_in_id");
@@ -83,6 +88,10 @@ function clinic_reset_numbers(address_number)
   $("#clinic_clinic_locations_attributes_" + address_number + "_url").val("");
   $("#clinic_clinic_locations_attributes_" + address_number + "_location_attributes_suite_in").val("");
   $("#clinic_clinic_locations_attributes_" + address_number + "_location_attributes_details_in").val("");
+  $("#clinic_clinic_locations_attributes_" + address_number + "_location_attributes_address_attributes_suite").val("");
+  $("#clinic_clinic_locations_attributes_" + address_number + "_location_attributes_address_attributes_address1").val("");
+  $("#clinic_clinic_locations_attributes_" + address_number + "_location_attributes_address_attributes_address2").val("");
+  $("#clinic_clinic_locations_attributes_" + address_number + "_location_attributes_address_attributes_postalcode").val("");
 }
 
 var clinic_address_location_changed = function(address_number)
@@ -96,6 +105,7 @@ var clinic_address_location_changed = function(address_number)
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).hide();
     $('.universal_' + address_number).hide();
+    clinic_reset_standalone(address_number);
     clinic_reset_hospital(address_number);
     clinic_reset_numbers(address_number);
   }
