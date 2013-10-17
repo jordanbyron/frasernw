@@ -530,22 +530,6 @@
     
       %hr
       
-      %h3 Admin
-    
-      Users that can edit this clinic
-      .content
-        = f.simple_fields_for :user_controls_clinics do |i|
-          .row.spaced
-            .span5.offset3
-              = i.association :user, as: :select, :label => false, collection: User.all.reject{ |u| u.admin? }, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "span5" }
-            .spanhalf.offsethalf
-              = i.hidden_field :_destroy
-              = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
-        .row
-          = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another user", :user_controls_clinics, class: "btn offset3")
-      
-      %hr{ "style" => "visibility:hidden" }
-      
       = f.input :admin_notes
       
     -#section_deprecated.no-print
