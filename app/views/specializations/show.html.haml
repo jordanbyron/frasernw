@@ -64,7 +64,7 @@
                 #specialist_assumed_list
                   - if @specialization.procedure_specializations.assumed_specialist.reject{ |ps| ps.parent.present? }.present?
                     %i.icon-asterisk.icon-disabled.icon-small
-                    Areas of practice we assume all #{@specialization.member_name.uncapitalize_first_letter.pluralize} see:
+                    Areas of practice we assume all #{@specialization.member_name.uncapitalize_first_letter.pluralize} see or do:
                     = @specialization.procedure_specializations.assumed_specialist.reject{ |ps| ps.parent.present? }.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
                     
               .span3.offsethalf
@@ -273,7 +273,7 @@
                 #clinic_assumed_list
                   - if @specialization.procedure_specializations.assumed_clinic.reject{ |ps| ps.parent.present? }.present?
                     %i.icon-asterisk.icon-disabled.icon-small
-                    Areas of practice we assume all #{@specialization.name} clinics see:
+                    Areas of practice we assume all #{@specialization.name} clinics see or do:
                     = @specialization.procedure_specializations.assumed_clinic.reject{ |ps| ps.parent.present? }.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
                         
               .span3.offsethalf
