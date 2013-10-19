@@ -77,7 +77,7 @@ class ClinicsEditorController < ApplicationController
     
     EventMailer.mail_review_queue_entry(review_item).deliver
     
-    render :layout => 'ajax'
+    render
   end
   
   def pending
