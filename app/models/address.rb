@@ -12,8 +12,7 @@ class Address < ActiveRecord::Base
   has_many :locations_in_hospitals, :through => :hospitals, :source => :locations_in, :class_name => "Location"
   has_many :offices_in_hospitals, :through => :locations_in_hospitals, :source => :locatable, :source_type => "Office"
   
-  has_many :clinics_in_hospitals, :through => :locations_in_hospitals, :source => :locatable, :source_type => "Clinic"
-  has_many :locations_in_clinics_in_hospitals, :through => :clinics_in_hospitals, :source => :locations_in, :class_name => "Location"
+  has_many :locations_in_clinics_in_hospitals, :through => :locations_in_hospitals, :source => :locations_in, :class_name => "Location"
   has_many :offices_in_clinics_in_hospitals, :through => :locations_in_clinics_in_hospitals, :source => :locatable, :source_type => "Office"
   
   def offices
