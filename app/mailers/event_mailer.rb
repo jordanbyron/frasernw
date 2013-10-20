@@ -5,14 +5,14 @@ class EventMailer < ActionMailer::Base
     @feedback_item = feedback_item
     item = feedback_item.item
     feedback_provider = feedback_item.user
-    owner = Owner.find(10) #item.owner_for_divisions(feedback_provider.divisions)
+    owner = User.find(10) #item.owner_for_divisions(feedback_provider.divisions)
     mail(:to => owner.email, :from => 'noreply@pathwaysbc.ca', :subject => "Pathways: #{item.name} has had feedback left on it")
   end
   
   def mail_content_item_feedback(feedback_item)
     @feedback_item = feedback_item
     item = feedback_item.item
-    owner = Owner.find(10) #item.owner
+    owner = User.find(10) #item.owner
     mail(:to => owner.email, :from => 'noreply@pathwaysbc.ca', :subject => "Pathways: #{item.title} has had feedback left on it")
   end
   
