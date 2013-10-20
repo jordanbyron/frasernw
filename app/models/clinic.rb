@@ -9,7 +9,7 @@ class Clinic < ActiveRecord::Base
   has_many :specializations, :through => :clinic_specializations
   
   #clinics have multiple locations
-  MAX_LOCATIONS = 2
+  MAX_LOCATIONS = 6
   has_many :clinic_locations, :dependent => :destroy
   accepts_nested_attributes_for :clinic_locations
   has_many :locations, :through => :clinic_locations
