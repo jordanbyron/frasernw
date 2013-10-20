@@ -9,8 +9,8 @@ en:
       login_invalid: Your email address should use only letters, numbers, spaces, and .-_@ please.
       consecutive_failed_logins_limit_exceeded: Consecutive failed logins limit exceeded, your account has been disabled for two hours. Please reset your password if you don't remember it.
       email_invalid: Sorry, your e-mail address must look like an email address.
-      password_blank: Your password can not be blank
-      password_invalid: Your password is not valid
+      password_blank: can not be blank
+      password_invalid: is not valid
       not_active: Your account is not active
       not_confirmed: Your account is not confirmed
       not_approved: Your account is not approved
