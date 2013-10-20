@@ -20,7 +20,7 @@ class FeedbackItemsController < ApplicationController
     @feedback_item = FeedbackItem.new(params[:feedback_item])
     @feedback_item.user = current_user
     @feedback_item.save
-    if @feedback_item.is_a? ScItem
+    if @feedback_item.item.is_a? ScItem
       EventMailer.mail_content_item_feedback(@feedback_item).deliver
     else
       EventMailer.mail_specialist_clinic_feedback(@feedback_item).deliver
