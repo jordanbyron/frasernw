@@ -9,10 +9,11 @@ class Address < ActiveRecord::Base
   has_many :offices_in_clinics, :through => :locations_in, :source => :locatable, :source_type => "Office"
   
   has_many :hospitals, :through => :locations, :source => :locatable, :source_type => "Hospital"
-  has_many :locations_in_hospitals, :through => :hospitals, :source => :locations_in, :class_name => "Location"
-  has_many :offices_in_hospitals, :through => :locations_in_hospitals, :source => :locatable, :source_type => "Office"
+  has_many :office_locations_in_hospitals, :through => :hospitals, :source => :locations_in, :class_name => "Location", :conditions => ["'locations_offices_in_hospitals_join'.'locatable_type' = ?", "Office"]
+  has_many :offices_in_hospitals, :through => :office_locations_in_hospitals, :source => :locatable, :source_type => "Office"
   
-  has_many :locations_in_clinics_in_hospitals, :through => :locations_in_hospitals, :source => :locations_in, :class_name => "Location"
+  has_many :clinic_locations_in_hospitals, :through => :hospitals, :source => :locations_in, :class_name => "Location", :conditions => ["'clinic_locations_in_hospitals_offices_in_clinics_in_hospitals_join'.'locatable_type' = ?", "ClinicLocation"]
+  has_many :locations_in_clinics_in_hospitals, :through => :clinic_locations_in_hospitals, :source => :locations_in, :class_name => "Location"
   has_many :offices_in_clinics_in_hospitals, :through => :locations_in_clinics_in_hospitals, :source => :locatable, :source_type => "Office"
   
   def offices
