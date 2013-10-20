@@ -38,7 +38,6 @@ function reset_hospital(address_number)
 {
   //specialist edit page
   reset_select("specialist_specialist_offices_attributes_" + address_number + "_office_attributes_location_attributes_hospital_in_id");
-  reset_select("specialist_specialist_offices_attributes_" + address_number + "_office_attributes_location_attributes_location_in_id");
   
   //offices edit
   reset_select("office_location_attributes_location_in_id");
@@ -47,7 +46,7 @@ function reset_hospital(address_number)
 
 function reset_clinic(address_number)
 {
-  reset_select("office_location_attributes_" + address_number + "_clinic_in_id")
+  reset_select("specialist_specialist_offices_attributes_" + address_number + "_office_attributes_location_attributes_location_in_id");
 }
 
 function reset_numbers(address_number)

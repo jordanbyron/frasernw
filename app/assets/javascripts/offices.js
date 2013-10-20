@@ -13,7 +13,7 @@ function office_reset_hospital()
 
 function office_reset_clinic()
 {
-  reset_select("office_location_attributes_clinic_in_id")
+  reset_select("office_location_attributes_location_in_id")
 }
 
 var office_address_location_changed = function()
