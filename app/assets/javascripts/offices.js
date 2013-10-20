@@ -7,7 +7,6 @@ function office_reset_select(id)
 
 function office_reset_hospital()
 {
-  reset_select("office_location_attributes_location_in_id");
   reset_select("office_location_attributes_hospital_in_id");
 }
 
