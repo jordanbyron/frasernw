@@ -58,6 +58,11 @@ Frasernw::Application.routes.draw do
   match '/clinics/:id/archive'           => 'clinics#archive',           :as => 'clinic_archive'
   match '/clinics/:id/accept'            => 'clinics#accept',            :as => 'clinic_accept_review'
   
+  match '/specialists/:id/:token/temp_edit'   => 'specialists_editor#temp_edit',   :as => 'specialist_temp_edit'
+  put   '/specialists/:id/:token/temp_update' => 'specialists_editor#temp_update', :as => 'specialist_temp_update'
+  match '/clinics/:id/:token/temp_edit'   => 'clinics_editor#temp_edit',   :as => 'clinic_temp_edit'
+  put   '/clinics/:id/:token/temp_update' => 'clinics_editor#temp_update', :as => 'clinic_temp_update'
+  
   match '/specialists/:id/edit_referral_forms'  => 'specialists#edit_referral_forms', :as => 'specialist_referral_forms'
   match '/clinics/:id/edit_referral_forms'      => 'clinics#edit_referral_forms',     :as => 'clinic_referral_forms'
   match '/referral_forms'               => 'referral_forms#index',      :as => 'referral_forms'

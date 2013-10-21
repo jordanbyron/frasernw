@@ -2,7 +2,7 @@ class SpecialistsEditorController < ApplicationController
   include ApplicationHelper
   skip_before_filter :login_required
   skip_authorization_check
-  before_filter :check_pending, :except => :pending
+  before_filter :check_pending, :except => [:pending, :temp_edit, :temp_update]
   before_filter :check_token
   
   def edit
@@ -100,6 +100,70 @@ class SpecialistsEditorController < ApplicationController
   
   def check_token
     token_required( Specialist, params[:token], params[:id] )
+  end
+  
+  def temp_edit
+    @is_new = false
+    @is_review = false
+    @is_rereview = false
+    @specialist = Specialist.find(params[:id])
+    if @specialist.capacities.count == 0
+      @specialist.capacities.build
+    end
+    while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
+      os = @specialist.specialist_offices.build
+      s = os.build_phone_schedule
+      s.build_monday
+      s.build_tuesday
+      s.build_wednesday
+      s.build_thursday
+      s.build_friday
+      s.build_saturday
+      s.build_sunday
+      o = os.build_office
+      l = o.build_location
+    end
+    @offices = Office.includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+    @specializations_clinics = []
+    @specialist.specializations.each { |s|
+      @specializations_clinics += (current_user_is_super_admin? ? s.clinics : s.clinics.in_divisions(current_user_divisions)).map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} - #{l.short_address}", l.id] }
+    }
+    @specializations_clinics.sort!
+    @specializations_procedures = []
+    procedure_specializations = {}
+    @specialist.specializations.each { |s|
+      @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations.count > 1
+      @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
+      procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
+    }
+    capacities_procedure_list = []
+    @capacities = []
+    procedure_specializations.each { |ps, children|
+      if !capacities_procedure_list.include?(ps.procedure.id)
+        @capacities << generate_capacity(@specialist, ps, 0)
+        capacities_procedure_list << ps.procedure.id
+      end
+      children.each { |child_ps, grandchildren|
+        if !capacities_procedure_list.include?(child_ps.procedure.id)
+          @capacities << generate_capacity(@specialist, child_ps, 1)
+          capacities_procedure_list << child_ps.procedure.id
+        end
+        grandchildren.each { |grandchild_ps, greatgrandchildren|
+          if !capacities_procedure_list.include?(grandchild_ps.procedure.id)
+            @capacities << generate_capacity(@specialist, grandchild_ps, 2)
+            capacities_procedure_list << grandchild_ps.procedure.id
+          end
+        }
+      }
+    }
+    render :template => 'specialists/edit'
+  end
+  
+  def temp_update
+    @specialist = Specialist.find(params[:id])
+    @specialist.review_object = ActiveSupport::JSON::encode(params)
+    @specialist.save
+    redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}."
   end
   
   protected

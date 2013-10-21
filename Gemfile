@@ -78,3 +78,4 @@ end
 gem 'heroku_cloud_backup'
 
 gem 'ancestry'
+gem 'mechanize'

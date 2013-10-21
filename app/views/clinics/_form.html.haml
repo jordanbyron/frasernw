@@ -2,7 +2,7 @@
 - form_method    = params[:action] == 'new' ? :post   : :put
 - current_action = params[:action] == 'new' ? :create : :update
 - current_action = params[:action] == 'review' ? :accept : current_action                   #if we are reviewing a review queue edit
-- current_action = params[:controller] == 'clinics_editor' ? :update : current_action       #if we are making a review queue edit
+- current_action = params[:controller] == 'clinics_editor' ? (params[:action] == 'temp_edit' ? :temp_update : :update ) : current_action       #if we are making a review queue edit
 - form_action    = current_action
 - cancel_path    = params[:controller] == 'clinics_editor' ? root_url : (@is_rereview ? archived_review_items_path : clinics_path)
 
@@ -547,7 +547,8 @@
   .form-actions
     - if params[:controller] == 'clinics_editor'
       = f.button :submit, 'Update Clinic with My Changes', :class => "btn btn-primary"
-      = f.button :submit, 'There are No Updates to this Clinic', :class => "btn btn-success", :name => 'no_updates'
+      - if params[:action] != 'temp_edit'
+        = f.button :submit, 'There are No Updates to this Clinic', :class => "btn btn-success", :name => 'no_updates'
     - elsif @is_rereview
       = f.button :submit, 'Done', :class => "btn btn-primary"
     - else
