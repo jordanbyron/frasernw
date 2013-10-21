@@ -85,6 +85,9 @@ class Ability
         #can add feedback
         can [:create, :show], FeedbackItem
         
+        #can send email messages
+        can :create, Message
+        
       elsif user.user?
         
         #user
@@ -120,6 +123,9 @@ class Ability
         
         #can add feedback
         can [:create, :show], FeedbackItem
+        
+        #can send email messages
+        can :create, Message
         
         #can update specialists they control
         can [:update, :photo, :update_photo], Specialist do |specialist|
