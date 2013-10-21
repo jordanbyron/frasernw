@@ -2,7 +2,7 @@ class NewsItemsController < ApplicationController
   load_and_authorize_resource
   
   def index
-    @news_items = NewsItem.paginate(:page => params[:page], :per_page => 30)
+    @news_items = (current_user_is_super_admin? ? NewsItem : NewsItem.in_divisions(current_user_divisions)).paginate(:page => params[:page], :per_page => 30)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   

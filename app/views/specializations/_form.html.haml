@@ -11,6 +11,7 @@
     - possible_admins.uniq.each{ |user| division_admins << [user.name, user.id]}
     - specialization_option = SpecializationOption.find_by_specialization_id_and_division_id(@specialization.id, division.id)
     - owner_id = specialization_option.present? && specialization_option.owner.present? ? specialization_option.owner.id : nil
+    - content_owner_id = specialization_option.present? && specialization_option.content_owner.present? ? specialization_option.content_owner.id : nil
     - is_new = specialization_option.present? && specialization_option.is_new
     - in_progress = specialization_option.present? && specialization_option.in_progress
     - open_to_clinic_tab = specialization_option.present? && specialization_option.open_to_clinic_tab
@@ -18,9 +19,14 @@
     %h4=division.name
     .control-group
       %label.control-label
-        Owner
+        Specialists and Clinics Owner
       .controls
         = select_tag "owner[#{division.id}]", options_for_select(division_admins, owner_id), :name => "owner[#{division.id}]", :class => "select"
+    .control-group
+      %label.control-label
+        Content Items Owner
+      .controls
+        = select_tag "content_owner[#{division.id}]", options_for_select(division_admins, content_owner_id), :name => "content_owner[#{division.id}]", :class => "select"
     .control-group
       %label.control-label
         In Progress

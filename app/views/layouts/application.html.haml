@@ -151,6 +151,8 @@
                             %li= link_to "New Hospital", new_hospital_path, :class => "ajax"
                           - if can? :create, Language
                             %li= link_to "New Language", new_language_path, :class => "ajax"
+                          - if can? :create, NewsItem
+                            %li= link_to "New News Item", new_news_item_path, :class => "ajax"
                           - if can? :create, Office
                             %li= link_to "New Office", new_office_path, :class => "ajax"
                           - if can? :create, Specialist
@@ -182,6 +184,8 @@
                         %li= link_to "Hospitals", hospitals_path, :class => "ajax"
                       - if can? :index, Language
                         %li= link_to "Languages", languages_path, :class => "ajax"
+                      - if can? :index, NewsItem
+                        %li= link_to "News Items", news_items_path, :class => "ajax"
                       - if can? :index, Office
                         %li
                           = link_to "Offices", "#", :class => "arrow-right-after"
@@ -314,17 +318,17 @@
                       - current_user.controlled_specialists.each do |specialist|
                         %li= link_to specialist.name, specialist, :class => 'ajax'
                     
+                    - if current_user.controlled_clinics.present?
+                      %li.nav-header Your clinics
+                      - current_user.controlled_clinics.each do |clinic|
+                        %li= link_to clinic.name, clinic, :class => 'ajax'
+                    
                     %li.nav-header Help
                     %li= link_to "FAQ", faq_path, :class => 'faq ajax'
                     %li= mail_to "administration@pathwaysbc.ca", "Contact Us", :class => 'contact'
                     
                     %li.nav-header Legal
                     %li= link_to "Terms and Conditions", terms_and_conditions_path, :class => 'tac ajax'
-                    
-                    - if current_user.controlled_clinics.present?
-                      %li.nav-header Your clinics
-                      - current_user.controlled_clinics.each do |clinic|
-                        %li= link_to clinic.name, clinic, :class => 'ajax'
                     
                     %li.nav-header Settings
                     -# %li= link_to "Change name", change_name_path, :class => 'change_name ajax'
@@ -342,11 +346,21 @@
             - flash.each do |type, msg|
               .alert.alert-success= msg
             = yield
-            
+            #message
+              .inner
+            #message_sent
+              .inner
+                %h2 Message sent!
+                
+                %p.space.no_indent Thank you for providing your comments to Pathways. We will review your message in the near future, and respond as necessary.
+                
+                %p.space.no_indent
+                  %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#message_sent').fadeOut(200)" } Close
+
       .row
         #email.content-wrapper
           Contact us:
-          = mail_to "administration@pathwaysbc.ca", "administration@pathwaysbc.ca"
+          %a{:href => '#', :onclick => "$('#message .inner').load('#{messages_path}', function() { $('#message').show() }); return false;"} administration@pathwaysbc.ca
             
     #loading
       #loading-spinner

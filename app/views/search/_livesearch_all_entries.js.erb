@@ -16,7 +16,7 @@
     order_map[ category.name ] = ( order_map.length + 1 ).to_s
   end
 
-  specialists = Specialist.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:clinic_in => {:location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}}]}})
+  specialists = Specialist.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:location_in => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}]}})
 
   specialists.reject{ |s| s.in_progress_for_divisions(s.divisions) }.each do |specialist|
 
@@ -32,7 +32,7 @@
     search_data << entry
   end
 
-  clinics = Clinic.includes(:location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}])
+  clinics = Clinic.includes(:locations => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}])
 
   clinics.reject{ |c| c.in_progress_for_divisions(c.divisions) }.each do |clinic|
 
@@ -41,7 +41,7 @@
     entry = { 
       "n" => clinic.name, 
       "sp" => clinic.specializations.not_in_progress_for_divisions(clinic.divisions).map{ |c| c.id },
-      "c" => clinic.city.present? ? clinic.city.id : "",
+      "c" => clinic.cities.map{ |city| city.id },
       "st" => clinic.status_class_hash,
       "id" => clinic.id,
       "go" => order_map["Clinics"] }

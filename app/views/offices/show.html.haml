@@ -1,10 +1,10 @@
-- address = @office.location.present? ? @office.location.resolved_address : nil
+- address = @office.full_address
 
-- title "#{address.present? ? address.short_address : "Office"}"
+- title address
 
 .content-wrapper
     
-  %h2= "Specialist working at #{address.present? ? address.short_address : "this office"}"
+  %h2= "Specialist working at #{address}"
 
   %table.table.table-condensed.tablesorter{:id => 'specialist_table'}
     %thead

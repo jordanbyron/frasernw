@@ -246,7 +246,10 @@
                             %i{:class => clinic.status_class}
                             .status= clinic.status_class_hash
                           %td.wt= clinic.waittime
-                          %td.c= clinic.city
+                          %td.c
+                            %ul
+                              - clinic.cities.each do |city|
+                                %li= city
                           
                 .span3.offsethalf
                   .well.filter#clinic_filters

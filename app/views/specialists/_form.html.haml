@@ -2,9 +2,9 @@
 - form_method    = params[:action] == 'new' ? :post   : :put
 - current_action = params[:action] == 'new' ? :create : :update
 - current_action = params[:action] == 'review' ? :accept : current_action                   #if we are reviewing a review queue edit
-- current_action = params[:controller] == 'specialists_editor' ? :update : current_action   #if we are making a review queue edit
+- current_action = params[:controller] == 'specialists_editor' ? (params[:action] == 'temp_edit' ? :temp_update : :update ) : current_action   #if we are making a review queue edit
 - form_action    = current_action
-- cancel_path    = (params[:controller] == 'specialists_editor') ? root_url : specialists_path
+- cancel_path    = (params[:controller] == 'specialists_editor') ? root_url : (@is_rereview ? archived_review_items_path : specialists_path)
 
 - if @review_item
   %script{"type" => "text/javascript"}
@@ -23,7 +23,7 @@
         return form_element_id_array[0] + '[' + form_element_id_array.slice(1).join('][') + ']';
       }
     
-      function compare_form(form_element_id_array, new_entry_value)
+      function compare_form(form_element_id_array, new_entry_value, highlight_changes)
       {
         //console.log(form_element_id_array + " : " + new_entry_value)
         
@@ -42,13 +42,13 @@
               {
                 //was checked, but not in updated list
                 checkbox.prop('checked', false); //uncheck
-                show_old_value(checkbox, "checked");
+                if (highlight_changes) { show_old_value(checkbox, "checked"); }
               }
               else if ( !checkbox.prop('checked') && (new_entry_value.indexOf(checkbox.val()) != -1) )
               {
                 //was unchecked, but now in updated list
                 checkbox.prop('checked', true); //check
-                show_old_value(checkbox, "unchecked");
+                if (highlight_changes) { show_old_value(checkbox, "unchecked"); }
               }
             });
           }
@@ -92,8 +92,11 @@
                   form_element.prop('checked', false);          // uncheck old value
                   new_entry_value_offset = new_entry_value - 1; //eq is zero indexed, our forms are 1
                   $("input:radio[name='" + generate_button_name(form_element_id_array) + "']:eq(" + new_entry_value_offset + ")").prop('checked', true);              //check new value
-                  old_value_formatted = form_element.closest('label').text()
-                  show_old_value(form_element, old_value_formatted);
+                  if (highlight_changes)
+                  { 
+                    old_value_formatted = form_element.closest('label').text()
+                    show_old_value(form_element, old_value_formatted);
+                  }
                 }
                 break;
               case('checkbox'):
@@ -101,13 +104,13 @@
                 {
                   //was checked, uncheck
                   form_element.prop('checked', false);
-                  show_old_value(form_element, "checked");
+                  if (highlight_changes) { show_old_value(form_element, "checked"); }
                 }
                 else if (!form_element.prop('checked') && (new_entry_value == "1"))
                 {
                   //was uncheck, check
                   form_element.prop('checked', true);
-                  show_old_value(form_element, "unchecked")
+                  if (highlight_changes) { show_old_value(form_element, "unchecked"); }
                 }
                 break;
               case('text'):
@@ -119,8 +122,11 @@
                 {
                   //console.log("TEXT: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
                   form_element.val(new_entry_value);
-                  old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
-                  show_old_value(form_element, old_value_formatted);
+                  if (highlight_changes)
+                  {
+                    old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
+                    show_old_value(form_element, old_value_formatted);
+                  }
                 }
                 break;
               default:
@@ -134,8 +140,11 @@
             {
               //console.log("TEXTAREA: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
               form_element.val(new_entry_value);
-              old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
-              show_old_value(form_element, old_value_formatted);
+              if (highlight_changes) 
+              {
+                old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
+                show_old_value(form_element, old_value_formatted);
+              }
             }
             break;
           case('SELECT'):
@@ -144,8 +153,11 @@
             {
               //console.log("SELECT: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
               form_element.val(new_entry_value);
-              old_value_formatted = old_entry_value != "" ? $('#' + form_element_id_array.join('_') + ' option[value=\'' + old_entry_value + '\']').text(): "blank";
-              show_old_value(form_element, old_value_formatted);
+              if (highlight_changes) 
+              {
+                old_value_formatted = old_entry_value != "" ? $('#' + form_element_id_array.join('_') + ' option[value=\'' + old_entry_value + '\']').text(): "blank";
+                show_old_value(form_element, old_value_formatted);
+              }
             }
             break;
           default:
@@ -154,7 +166,7 @@
         }
       }
       
-      function traverse_review_item(id_array, review_item)
+      function traverse_review_item(id_array, review_item, highlight_changes)
       {
         $.each(review_item, function(entry_key, new_entry_value) {
           local_id_array = id_array.slice(0); //array copy
@@ -163,16 +175,16 @@
           if ( $.isPlainObject(new_entry_value) )
           {
             //recursive
-            traverse_review_item(local_id_array, new_entry_value);
+            traverse_review_item(local_id_array, new_entry_value, highlight_changes);
           }
           else
           {
-            compare_form(local_id_array, new_entry_value);
+            compare_form(local_id_array, new_entry_value, highlight_changes);
           }
         });
       }
       
-      function traverse_capacities(review_item)
+      function traverse_capacities(review_item, highlight_changes)
       {
         capacities_mapped = review_item["capacities_mapped"];
         if (!capacities_mapped)
@@ -190,36 +202,43 @@
             if (!capacities_mapped[checkbox_id])
             {
               $this.prop('checked', false);
-              show_old_value($this, "checked");
+              if (highlight_changes) { show_old_value($this, "checked"); }
             }
           }
         });
-        traverse_review_item(["capacities_mapped"], capacities_mapped);
-        traverse_review_item(["capacities_investigations"], review_item["capacities_investigations"]);
-        traverse_review_item(["capacities_waittime"], review_item["capacities_waittime"]);
-        traverse_review_item(["capacities_lagtime"], review_item["capacities_lagtime"]);
+        traverse_review_item(["capacities_mapped"], capacities_mapped, highlight_changes);
+        traverse_review_item(["capacities_investigations"], review_item["capacities_investigations"], highlight_changes);
+        if (review_item["capacities_waittime"])
+        {
+          traverse_review_item(["capacities_waittime"], review_item["capacities_waittime"], highlight_changes);
+        }
+        if (review_item["capacities_lagtime"])
+        {
+          traverse_review_item(["capacities_lagtime"], review_item["capacities_lagtime"], highlight_changes);
+        }
       }
       
       $(document).ready(function() 
       {
+        if (#{@is_rereview && @review_item.base_object.present?})
+        {
+          var base_review_item = #{@review_item.base_object || 'null'};
+          traverse_review_item(["specialist"], base_review_item["specialist"], false);
+          traverse_capacities(base_review_item, false);
+        }
+
         var review_item = #{@review_item.object};
         //console.log(review_item);
-        traverse_review_item(["specialist"], review_item["specialist"]);
-        traverse_capacities(review_item);
-        if ($('#location_tab_0 .changed').length !== 0)
+        traverse_review_item(["specialist"], review_item["specialist"], true);
+        traverse_capacities(review_item, true);
+        
+        for (var i = 0; i < #{Specialist::MAX_OFFICES}; ++i)
         {
-          $('#location_0_In_an_office').prop('checked', true);
-          $('a[href="#location_tab_0"]').addClass('changed');
-        }
-        if ($('#location_tab_1 .changed').length !== 0)
-        {
-          $('#location_1_In_an_office').prop('checked', true);
-          $('a[href="#location_tab_1"]').addClass('changed');
-        }
-        if ($('#location_tab_2 .changed').length !== 0)
-        {
-          $('#location_2_In_an_office').prop('checked', true);
-          $('a[href="#location_tab_2"]').addClass('changed');
+          if ($('#location_tab_' + i + ' .changed').length !== 0)
+          {
+            $('#location_' + i + '_In_an_office').prop('checked', true);
+            $('a[href="#location_tab_' + i + '"]').addClass('changed');
+          }
         }
       });
 
@@ -320,7 +339,7 @@
                 %div{:class => "hospital_#{index}"}
                   = l.association :hospital_in, as: :select, collection: (current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(current_user_divisions)), :include_blank => true
                 %div{:class => "clinic_#{index}"}
-                  = l.association :clinic_in, as: :select, collection: @specializations_clinics, :include_blank => true
+                  = l.association :location_in, as: :select, collection: @specializations_clinics, :include_blank => true
                 %div{:class => "details_#{index}"}
                   = l.input :suite_in, :input_html => { :class => "span1" }
                   = l.input :details_in
@@ -360,7 +379,7 @@
                 
           %script{"type" => "text/javascript"}
             :plain
-              $(document).ready( address_#{index}_location_changed );
+              $(document).ready( address_location_changed(#{index}) );
           - index += 1
     %script{"type" => "text/javascript"}
       :plain
@@ -530,7 +549,10 @@
   .form-actions
     - if params[:controller] == 'specialists_editor'
       = f.button :submit, 'Update Specialist with My Changes', :class => "btn btn-primary"
-      = f.button :submit, 'There are No Updates to this Specialist', :class => "btn btn-success", :name => 'no_updates'
+      - if params[:action] != 'temp_edit'
+        = f.button :submit, 'There are No Updates to this Specialist', :class => "btn btn-success", :name => 'no_updates'
+    - elsif @is_rereview
+      = f.button :submit, 'Done', :class => "btn btn-primary"
     - else
       = f.button :submit, :class => "btn btn-primary"
       = link_to 'Cancel', cancel_path, :class => "btn btn-danger ajax"

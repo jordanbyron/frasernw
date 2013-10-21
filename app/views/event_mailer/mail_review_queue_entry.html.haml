@@ -1,0 +1,10 @@
+!!!
+%html
+  %body
+    - if (@review_item.whodunnit.present?)
+      - user = User.find(@review_item.whodunnit)
+      %p= "#{@review_item.item.name} has been edited by #{user.name} and is in the review queue."
+    - else
+      %p= "#{@review_item.item.name} has been edited using the secret edit link and is in the review queue"
+    %p
+      %a{:href => "http://www.pathwaysbc.ca/review_items"} Review this item

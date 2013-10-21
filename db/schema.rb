@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130720155842) do
+ActiveRecord::Schema.define(:version => 20131005210130) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -84,6 +84,20 @@ ActiveRecord::Schema.define(:version => 20130720155842) do
   add_index "clinic_healthcare_providers", ["clinic_id"], :name => "index_clinic_healthcare_providers_on_clinic_id"
   add_index "clinic_healthcare_providers", ["healthcare_provider_id"], :name => "index_clinic_healthcare_providers_on_healthcare_provider_id"
 
+  create_table "clinic_locations", :force => true do |t|
+    t.integer  "clinic_id"
+    t.string   "phone"
+    t.string   "fax"
+    t.string   "phone_extension"
+    t.integer  "sector_mask",                :default => 1
+    t.string   "url"
+    t.string   "email"
+    t.text     "contact_details"
+    t.integer  "wheelchair_accessible_mask", :default => 3
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "clinic_speaks", :force => true do |t|
     t.integer   "clinic_id"
     t.integer   "language_id"
@@ -105,58 +119,59 @@ ActiveRecord::Schema.define(:version => 20130720155842) do
   add_index "clinic_specializations", ["specialization_id"], :name => "index_clinic_specializations_on_specialization_id"
 
   create_table "clinics", :force => true do |t|
-    t.string    "name"
-    t.text      "status"
-    t.text      "interest"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.text      "referral_criteria"
-    t.text      "referral_process"
-    t.string    "responds_via"
-    t.string    "contact_name"
-    t.string    "contact_phone"
-    t.string    "contact_email"
-    t.string    "contact_notes"
-    t.integer   "status_mask"
-    t.text      "limitations"
-    t.text      "location_opened"
-    t.text      "required_investigations"
-    t.text      "not_performed"
-    t.boolean   "referral_fax"
-    t.boolean   "referral_phone"
-    t.string    "referral_other_details"
-    t.boolean   "referral_form_old"
-    t.boolean   "respond_by_fax"
-    t.boolean   "respond_by_phone"
-    t.boolean   "respond_by_mail"
-    t.boolean   "respond_to_patient"
-    t.boolean   "patient_can_book_old"
-    t.text      "red_flags"
-    t.boolean   "urgent_fax"
-    t.boolean   "urgent_phone"
-    t.string    "urgent_other_details"
-    t.integer   "waittime_mask"
-    t.integer   "lagtime_mask"
-    t.integer   "referral_form_mask",         :default => 3
-    t.integer   "patient_can_book_mask",      :default => 3
-    t.text      "urgent_details"
-    t.string    "phone"
-    t.string    "fax"
-    t.integer   "sector_mask",                :default => 1
-    t.integer   "wheelchair_accessible_mask", :default => 3
-    t.text      "referral_details"
-    t.text      "admin_notes"
-    t.integer   "schedule_id"
-    t.integer   "categorization_mask",        :default => 1
-    t.text      "patient_instructions"
-    t.text      "cancellation_policy"
-    t.string    "phone_extension"
-    t.string    "saved_token"
-    t.boolean   "interpreter_available",      :default => false
-    t.text      "contact_details"
-    t.text      "status_details"
-    t.string    "url"
-    t.string    "email"
+    t.string   "name"
+    t.text     "status"
+    t.text     "interest"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "referral_criteria"
+    t.text     "referral_process"
+    t.string   "responds_via"
+    t.string   "contact_name"
+    t.string   "contact_phone"
+    t.string   "contact_email"
+    t.string   "contact_notes"
+    t.integer  "status_mask"
+    t.text     "limitations"
+    t.text     "location_opened"
+    t.text     "required_investigations"
+    t.text     "not_performed"
+    t.boolean  "referral_fax"
+    t.boolean  "referral_phone"
+    t.string   "referral_other_details"
+    t.boolean  "referral_form_old"
+    t.boolean  "respond_by_fax"
+    t.boolean  "respond_by_phone"
+    t.boolean  "respond_by_mail"
+    t.boolean  "respond_to_patient"
+    t.boolean  "patient_can_book_old"
+    t.text     "red_flags"
+    t.boolean  "urgent_fax"
+    t.boolean  "urgent_phone"
+    t.string   "urgent_other_details"
+    t.integer  "waittime_mask"
+    t.integer  "lagtime_mask"
+    t.integer  "referral_form_mask",                    :default => 3
+    t.integer  "patient_can_book_mask",                 :default => 3
+    t.text     "urgent_details"
+    t.string   "deprecated_phone"
+    t.string   "deprecated_fax"
+    t.integer  "deprecated_sector_mask",                :default => 1
+    t.integer  "deprecated_wheelchair_accessible_mask", :default => 3
+    t.text     "referral_details"
+    t.text     "admin_notes"
+    t.integer  "deprecated_schedule_id"
+    t.integer  "categorization_mask",                   :default => 1
+    t.text     "patient_instructions"
+    t.text     "cancellation_policy"
+    t.string   "deprecated_phone_extension"
+    t.string   "saved_token"
+    t.boolean  "interpreter_available",                 :default => false
+    t.text     "deprecated_contact_details"
+    t.text     "status_details"
+    t.string   "deprecated_url"
+    t.string   "deprecated_email"
+    t.text     "review_object"
   end
 
   create_table "contacts", :force => true do |t|
@@ -323,6 +338,7 @@ ActiveRecord::Schema.define(:version => 20130720155842) do
     t.string    "details_in"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.integer   "location_in_id"
   end
 
   add_index "locations", ["clinic_in_id"], :name => "index_locations_on_clinic_in_id"
@@ -412,32 +428,16 @@ ActiveRecord::Schema.define(:version => 20130720155842) do
 
   add_index "referral_forms", ["referrable_id", "referrable_type"], :name => "index_referral_forms_on_referrable_id_and_referrable_type"
 
-  create_table "reports", :force => true do |t|
-    t.string   "name"
-    t.integer  "type_mask"
-    t.integer  "level_mask"
-    t.integer  "division_id"
-    t.integer  "city_id"
-    t.integer  "user_type_mask"
-    t.integer  "time_frame_mask"
-    t.date     "start_date"
-    t.date     "end_date"
-    t.boolean  "by_user",          :default => false
-    t.boolean  "by_pageview",      :default => false
-    t.boolean  "only_shared_care", :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "review_items", :force => true do |t|
-    t.string   "item_type"
-    t.integer  "item_id"
-    t.string   "whodunnit"
-    t.text     "object"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "archived",   :default => false
-    t.integer  "status",     :default => 0
+    t.string    "item_type"
+    t.integer   "item_id"
+    t.string    "whodunnit"
+    t.text      "object"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.boolean   "archived",    :default => false
+    t.integer   "status",      :default => 0
+    t.text      "base_object"
   end
 
   add_index "review_items", ["item_id", "item_type"], :name => "index_review_items_on_item_id_and_item_type"
@@ -660,6 +660,7 @@ ActiveRecord::Schema.define(:version => 20130720155842) do
     t.integer   "photo_file_size"
     t.timestamp "photo_updated_at"
     t.boolean   "is_gp",                      :default => false
+    t.text      "review_object"
   end
 
   add_index "specialists", ["referral_clinic_id"], :name => "index_specialists_on_referral_clinic_id"
@@ -673,6 +674,7 @@ ActiveRecord::Schema.define(:version => 20130720155842) do
     t.boolean   "in_progress",        :default => false
     t.boolean   "open_to_clinic_tab", :default => false
     t.boolean   "is_new",             :default => false
+    t.integer   "content_owner_id"
   end
 
   create_table "specializations", :force => true do |t|
@@ -697,6 +699,13 @@ ActiveRecord::Schema.define(:version => 20130720155842) do
     t.integer   "specialization_id"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+  end
+
+  create_table "user_controls_clinic_locations", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "clinic_location_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "user_controls_clinics", :force => true do |t|

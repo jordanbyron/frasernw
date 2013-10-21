@@ -9,8 +9,8 @@ en:
       login_invalid: Your email address should use only letters, numbers, spaces, and .-_@ please.
       consecutive_failed_logins_limit_exceeded: Consecutive failed logins limit exceeded, your account has been disabled for two hours. Please reset your password if you don't remember it.
       email_invalid: Sorry, your e-mail address must look like an email address.
-      password_blank: Your password can not be blank
-      password_invalid: Your password is not valid
+      password_blank: can not be blank
+      password_invalid: is not valid
       not_active: Your account is not active
       not_confirmed: Your account is not confirmed
       not_approved: Your account is not approved
@@ -56,10 +56,8 @@ en:
         categorization_mask: "Categorization"
         contact_name: "Name"
         contact_email: "Email"
-        contact_details: "Additional contact details"
         contact_phone: "Phone"
         contact_notes: "Notes"
-        email: "E-mail"
         healthcare_providers: "Healthcare providers who see patients at the clinic"
         lagtime_mask: "On average, how long does it take the clinic to advise the GP office that an appointment has been booked for their patient?"
         limitations: "Clinic limitations (if any)"
@@ -78,7 +76,6 @@ en:
         respond_by_mail: "By mail to referring office"
         respond_to_patient: "Directly to the patient"
         required_investigations: "In addition to history, PH, meds, allergies and relevant imaging, lab reports & OR/consultation reports, we require the following specific information/ investigations for ALL patients."
-        sector_mask: "Public or private"
         specializations_including_in_progress: "Specialties"
         status_details: "Additional details (if any)"
         status_mask: "Current status"
@@ -86,20 +83,25 @@ en:
         urgent_phone: "Phone"
         urgent_other_details: "Other method"
         urgent_details: "Additional urgent referral details"
-        url: "Website address"
         waittime_mask: "On average, what is the clinic’s normal wait time from request for a consultation to the appointment itself?"
+      clinic_location:
+        contact_details: "Additional contact details"
+        email: "E-mail"
+        sector_mask: "Public or private"
+        url: "Website address"
         wheelchair_accessible_mask: "Wheelchair accessible?"
       division:
         cities: Cities Encompassed
       location:
         details_in: "Additional directions or details"
         hospital_in: "Hospital"
-        clinic_in: "Clinic"
+        location_in: "Clinic"
         suite_in: "Suite"
       news_item:
+        body: "Message body"
         breaking: "Show as breaking news"
         end_date: "End date"
-        body: "News body"
+        type_mask: "News Type"
       sc_category:
         display_mask: "Display items"
         show_as_dropdown: "Display in global navigation in resources dropdown menu"

@@ -45,6 +45,7 @@
             %th From
             %th When
             %th Any Updates?
+            %th
 
           - specialist_reviews.reject{ |item| item.item.blank? || item.item_type != "Specialist" }.each do |review_item|
             %tr
@@ -53,6 +54,9 @@
               %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
               %td= ReviewItem::STATUS_HASH[review_item.status]
+              %td
+                -if review_item.base_object.present?
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", specialist_rereview_path(review_item.item, review_item.id), :class => "btn btn-mini ajax")
                 
       #clinics_tab.tab-pane
 
@@ -63,6 +67,7 @@
             %th From
             %th When
             %th Any Updates?
+            %th
 
           - clinic_reviews.reject{ |item| item.item.blank? || item.item_type != "Clinic" }.each do |review_item|
             %tr
@@ -71,6 +76,9 @@
               %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
               %td= ReviewItem::STATUS_HASH[review_item.status]
+              %td
+                -if review_item.base_object.present?
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", clinic_rereview_path(review_item.item, review_item.id), :class => "btn btn-mini ajax")
                 
       - if current_user_is_super_admin?
         
@@ -83,6 +91,7 @@
               %th From
               %th When
               %th Any Updates?
+              %th
 
             - other_specialist_reviews.each do |review_item|
               %tr
@@ -91,6 +100,9 @@
                 %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
                 %td= "#{time_ago_in_words(review_item.created_at)} ago"
                 %td= ReviewItem::STATUS_HASH[review_item.status]
+                %td
+                  -if review_item.base_object.present?
+                    = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", specialist_rereview_path(review_item.item, review_item.id), :class => "btn btn-mini ajax")
                   
         #other_clinics_tab.tab-pane
 
@@ -101,6 +113,7 @@
               %th From
               %th When
               %th Any Updates?
+              %th
 
             - other_clinic_reviews.each do |review_item|
               %tr
@@ -109,5 +122,8 @@
                 %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
                 %td= "#{time_ago_in_words(review_item.created_at)} ago"
                 %td= ReviewItem::STATUS_HASH[review_item.status]
+                %td
+                  -if review_item.base_object.present?
+                    = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", clinic_rereview_path(review_item.item, review_item.id), :class => "btn btn-mini ajax")
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2

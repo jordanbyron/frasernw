@@ -32,15 +32,15 @@
       
     %h4 Clinics user can edit
     .content
-      = f.simple_fields_for :user_controls_clinics do |j|
+      = f.simple_fields_for :user_controls_clinic_locations do |j|
         .row.spaced
           .span5.offset3
-            = j.association :clinic, as: :select, :label => false, collection: Clinic.all, prompt: 'Select ...', wrapper: :no_wrapper
+            = j.association :clinic_location, as: :select, :label => false, collection: ClinicLocation.all.reject{ |cl| cl.location.blank? || cl.empty? || cl.clinic.blank? }.sort{ |a,b| a.clinic.name <=> b.clinic.name }.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id]}, prompt: 'Select ...', wrapper: :no_wrapper
           .spanhalf.offsethalf
             = j.hidden_field :_destroy
             = j.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
     .row
-      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another clinic", :user_controls_clinics, class: "btn offset3")
+      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another clinic", :user_controls_clinic_locations, class: "btn offset3")
     
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

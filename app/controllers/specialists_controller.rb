@@ -38,8 +38,8 @@ class SpecialistsController < ApplicationController
       l = o.build_location
       l.build_address
     end
-    @offices = Office.includes(:location => [ {:address => :city}, {:clinic_in => {:location => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
-    @specializations_clinics = (current_user_is_super_admin? ? @specialization.clinics : @specialization.clinics.in_divisions(current_user_divisions)).collect { |c| [c.name, c.id] }
+    @offices = Office.includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+    @specializations_clinics = (current_user_is_super_admin? ? @specialization.clinics : @specialization.clinics.in_divisions(current_user_divisions)).map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} - #{l.short_address}", l.id] }
     @specializations_procedures = ancestry_options( @specialization.non_assumed_procedure_specializations_arranged )
     @capacities = []
     @specialization.non_assumed_procedure_specializations_arranged.each { |ps, children|
@@ -78,6 +78,8 @@ class SpecialistsController < ApplicationController
           capacity.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.map{ |ps2| Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps2.id) }.map{ |c| c.save }
         end
       end
+      @specialist.review_object = ActiveSupport::JSON::encode(params)
+      @specialist.save
       redirect_to @specialist, :notice => "Successfully created #{@specialist.name}. #{undo_link}"
     else
       render :action => 'new'
@@ -87,6 +89,7 @@ class SpecialistsController < ApplicationController
   def edit
     @is_new = false
     @is_review = false
+    @is_rereview = false
     @specialist = Specialist.find(params[:id])
     if @specialist.capacities.count == 0
       @specialist.capacities.build
@@ -104,10 +107,10 @@ class SpecialistsController < ApplicationController
       o = os.build_office
       l = o.build_location
     end
-    @offices = Office.includes(:location => [ {:address => :city}, {:clinic_in => {:location => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+    @offices = Office.includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
     @specializations_clinics = []
     @specialist.specializations.each { |s|
-      @specializations_clinics += (current_user_is_super_admin? ? s.clinics : s.clinics.in_divisions(current_user_divisions)).collect { |c| [c.name, c.id] }
+      @specializations_clinics += (current_user_is_super_admin? ? s.clinics : s.clinics.in_divisions(current_user_divisions)).map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} - #{l.short_address}", l.id] }
     }
     @specializations_clinics.sort!
     @specializations_procedures = []
@@ -160,6 +163,8 @@ class SpecialistsController < ApplicationController
           capacity.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.map{ |ps2| Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps2.id) }.map{ |c| c.save }
         end
       end
+      @specialist.review_object = ActiveSupport::JSON::encode(params)
+      @specialist.save
       redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
     else
       render :edit
@@ -193,6 +198,8 @@ class SpecialistsController < ApplicationController
           end
         end
         @specialist.update_attributes( :address_update => "" )
+        @specialist.review_object = ActiveSupport::JSON::encode(params)
+        @specialist.save
         redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
       else
         render :edit
@@ -230,11 +237,74 @@ class SpecialistsController < ApplicationController
   def review
     @is_new = false
     @is_review = false
+    @is_rereview = false
     @specialist = Specialist.find(params[:id])
     @review_item = @specialist.review_item;
     
     if @review_item.blank?
       redirect_to specialists_path, :notice => "There are no review items for this specialist"
+      else
+      while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
+        os = @specialist.specialist_offices.build
+        s = os.build_phone_schedule
+        s.build_monday
+        s.build_tuesday
+        s.build_wednesday
+        s.build_thursday
+        s.build_friday
+        s.build_saturday
+        s.build_sunday
+        o = os.build_office
+        l = o.build_location
+      end
+      @offices = Office.includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+      @specializations_clinics = []
+      @specialist.specializations.each { |s|
+        @specializations_clinics += s.clinics.map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} - #{l.short_address}", l.id] }
+      }
+      @specializations_clinics.sort!
+      @specializations_procedures = []
+      procedure_specializations = {}
+      @specialist.specializations.each { |s|
+        @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations.count > 1
+        @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
+        procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
+      }
+      capacities_procedure_list = []
+      @capacities = []
+      procedure_specializations.each { |ps, children|
+        if !capacities_procedure_list.include?(ps.procedure.id)
+          @capacities << generate_capacity(@specialist, ps, 0)
+          capacities_procedure_list << ps.procedure.id
+        end
+        children.each { |child_ps, grandchildren|
+          if !capacities_procedure_list.include?(child_ps.procedure.id)
+            @capacities << generate_capacity(@specialist, child_ps, 1)
+            capacities_procedure_list << child_ps.procedure.id
+          end
+          grandchildren.each { |grandchild_ps, greatgrandchildren|
+            if !capacities_procedure_list.include?(grandchild_ps.procedure.id)
+              @capacities << generate_capacity(@specialist, grandchild_ps, 2)
+              capacities_procedure_list << grandchild_ps.procedure.id
+            end
+          }
+        }
+      }
+      render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
+    end
+  end
+  
+  def rereview
+    @is_new = false
+    @is_review = false
+    @is_rereview = true
+    @specialist = Specialist.find(params[:id])
+    @review_item = ReviewItem.find(params[:review_item_id])
+    
+    if @review_item.blank?
+      redirect_to specialists_path, :notice => "There are no review items for this specialist"
+    elsif @review_item.base_object.blank?
+      redirect_to specialists_path, :notice => "There is no base review item for this specialist to re-review from"
     else
       while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
         os = @specialist.specialist_offices.build
@@ -249,10 +319,10 @@ class SpecialistsController < ApplicationController
         o = os.build_office
         l = o.build_location
       end
-      @offices = Office.includes(:location => [ {:address => :city}, {:clinic_in => {:location => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+      @offices = Office.includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
       @specializations_clinics = []
       @specialist.specializations.each { |s|
-        @specializations_clinics += s.clinics.collect { |c| [c.name, c.id] }
+        @specializations_clinics += s.clinics.map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} - #{l.short_address}", l.id] }
       }
       @specializations_clinics.sort!
       @specializations_procedures = []
@@ -295,7 +365,14 @@ class SpecialistsController < ApplicationController
   
   def print_patient_information
     @specialist = Specialist.find(params[:id])
+    @specialist_office = @specialist.specialist_offices.first
     render :layout => 'print'
+  end
+  
+  def print_office_patient_information
+    @specialist = Specialist.find(params[:id])
+    @specialist_office = SpecialistOffice.find(params[:office_id])
+    render :print_patient_information, :layout => 'print'
   end
   
   def photo

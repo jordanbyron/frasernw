@@ -1,8 +1,9 @@
 class SpecializationOption < ActiveRecord::Base
-  attr_accessible :specialization, :owner, :division, :in_progress, :open_to_clinic_tab, :is_new
+  attr_accessible :specialization, :owner, :content_owner, :division, :in_progress, :open_to_clinic_tab, :is_new
   
   belongs_to :specialization
   belongs_to :owner, :class_name => "User"
+  belongs_to :content_owner, :class_name => "User"
   belongs_to :division
   
   def self.for_divisions(divisions)

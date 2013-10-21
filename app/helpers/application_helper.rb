@@ -184,4 +184,8 @@ module ApplicationHelper
     return User.find(10)
   end
   
+  def default_content_owner
+    return User.find(3) #Ron
+  end
+  
 end

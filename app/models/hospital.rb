@@ -9,9 +9,10 @@ class Hospital < ActiveRecord::Base
   
   has_many :direct_offices_in, :through => :locations_in, :source => :locatable, :source_type => "Office"
   
-  has_many :clinics_in, :through => :locations_in, :source => :locatable, :source_type => "Clinic"
+  has_many :clinics_locations_in, :through => :locations_in, :source => :locatable, :source_type => "ClinicLocation"
+  has_many :clinics_in, :through => :clinics_locations_in, :source => :clinic, :class_name => "Clinic"
   
-  has_many :locations_in_clinics_in, :through => :clinics_in, :source => :locations_in, :class_name => "Location"
+  has_many :locations_in_clinics_in, :through => :locations_in, :source => :locations_in, :foreign_key => :location_in_id, :class_name => "Location"
   has_many :offices_in_clinics_in, :through => :locations_in_clinics_in, :source => :locatable, :source_type => "Office"
   
   def offices_in

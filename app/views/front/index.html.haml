@@ -43,7 +43,7 @@
         %h2 What is Pathways?
         
         %p
-          Pathways is is a web based resource for GPs and MOAs to facilitate real-time, optimal, patient referrals.
+          Pathways is a web based resource for GPs and MOAs to facilitate real-time, optimal, patient referrals.
           = "<a href='javascript:void(0)' data-toggle='collapse' data-target='#what_is'>Learn more.</a>".html_safe
         
         #what_is.collapse
@@ -64,6 +64,10 @@
         - cache("latest_updates_#{current_user_divisions.map{|d| d.id }.join('_')}") do
           - latest_events(5, current_user_divisions).each do |event|
             %p= event
+
+        - if current_user_is_admin?
+          %p.admin.btn-group
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Latest Specialist and Clinic Updates", news_items_path, :class => "btn btn-mini ajax")
             
         - if NewsItem.divisional_in_divisions(current_user_divisions).length > 0
           
