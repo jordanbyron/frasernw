@@ -72,7 +72,8 @@ class Ability
         can :show, [Specialization, Procedure, Specialist, Clinic, Hospital, Language, ScCategory, ScItem]
         
         #can print patient information
-        can :print_patient_information, [Specialist, Clinic]
+        can [:print_patient_information, :print_office_patient_information], Specialist
+        can [:print_patient_information, :print_location_patient_information], Clinic
         
         #can show referral forms
         can :index, ReferralForm
@@ -111,7 +112,8 @@ class Ability
         can :show, [Hospital, Language, ScCategory]
 
         #can print patient information
-        can :print_patient_information, [Specialist, Clinic]
+        can [:print_patient_information, :print_office_patient_information], Specialist
+        can [:print_patient_information, :print_location_patient_information], Clinic
         
         #can show referral forms
         can :index, ReferralForm
