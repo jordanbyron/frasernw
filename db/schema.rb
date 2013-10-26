@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131005210130) do
+ActiveRecord::Schema.define(:version => 20131026023817) do
 
   create_table "addresses", :force => true do |t|
     t.string    "address1"
@@ -32,17 +32,17 @@ ActiveRecord::Schema.define(:version => 20131005210130) do
   add_index "addresses", ["hospital_id"], :name => "index_addresses_on_hospital_id"
 
   create_table "attendances", :force => true do |t|
-    t.integer   "specialist_id"
-    t.integer   "clinic_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.boolean   "is_specialist",      :default => true
-    t.string    "freeform_firstname"
-    t.string    "freeform_lastname"
-    t.string    "area_of_focus"
+    t.integer  "specialist_id"
+    t.integer  "clinic_location_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "is_specialist",      :default => true
+    t.string   "freeform_firstname"
+    t.string   "freeform_lastname"
+    t.string   "area_of_focus"
   end
 
-  add_index "attendances", ["clinic_id"], :name => "index_attendances_on_clinic_id"
+  add_index "attendances", ["clinic_location_id"], :name => "index_attendances_on_clinic_id"
   add_index "attendances", ["specialist_id"], :name => "index_attendances_on_specialist_id"
 
   create_table "capacities", :force => true do |t|

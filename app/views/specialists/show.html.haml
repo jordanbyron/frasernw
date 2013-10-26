@@ -333,18 +333,19 @@
                   = @specialist.cancellation_policy.end_with_period.convert_newlines_to_br
             
             - clinics = @specialist.clinics
-            - if @specialist.hospitals.present? || clinics.present?
+            - hospitals = @specialist.hospitals
+            - if hospitals.present? || clinics.present?
               %h6 Associations
               
-              - if @specialist.hospitals.present?
+              - if hospitals.present?
                 %p
                   %strong Hospital privileges:
-                  != @specialist.hospitals.map{ |hospital| "<a href='#{hospital_path(hospital)}' class='ajax')\">#{hospital.name}</a>" }.to_sentence 
+                  != hospitals.map{ |hospital| "<a href='#{hospital_path(hospital)}' class='ajax')\">#{hospital.name}</a>" }.to_sentence
 
               - if clinics.present?
                 %p
                   %strong Clinic associations:
-                  != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'}'>#{clinic.name}</a>" }.to_sentence
+                  != clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'}'>#{clinic.name}</a>" }.to_sentence
                   
         - if show_details || show_areas_of_practice
         

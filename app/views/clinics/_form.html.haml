@@ -497,22 +497,27 @@
           .span1.no-print Specialist?
           .span2 Name
           .span5 Area of focus (if not the same for all physicians working in the clinic).
-          
-        = f.simple_fields_for :attendances do |i|
+        
+      - @clinic.clinic_locations.reject{|cl| cl.empty?}.each do |cl|
+        = f.simple_fields_for :clinic_locations, cl do |clf|
           .row.spaced
-            .span1.no-print
-              = i.input :is_specialist, label: false, wrapper: :no_wrapper, input_html: { class: "is_specialist span1 no-print" }
-            .span2
-              = i.association :specialist, as: :select, label: false, collection: @clinic_specialists, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "specialist_list span2 no-print force-print" }
-              = i.input :freeform_firstname, label: false, wrapper: :no_wrapper, input_html: { class: "freeform span2", style: "display:none" }
-            .span5
-              = i.input :area_of_focus, label: false, wrapper: :no_wrapper, input_html: { class: "span5" }
-            .spanhalf.no-print
-              = i.hidden_field :_destroy
-              = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
-              
-        .row.no-print
-          = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another physician", :attendances, class: "btn offset3")
+            .span6
+              %h5= cl.location.short_address
+          = clf.simple_fields_for :attendances do |i|
+            .row.spaced
+              .span1.no-print
+                = i.input :is_specialist, label: false, wrapper: :no_wrapper, input_html: { class: "is_specialist span1 no-print" }
+              .span2
+                = i.association :specialist, as: :select, label: false, collection: @clinic_specialists, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "specialist_list span2 no-print force-print" }
+                = i.input :freeform_firstname, label: false, wrapper: :no_wrapper, input_html: { class: "freeform span2", style: "display:none" }
+              .span5
+                = i.input :area_of_focus, label: false, wrapper: :no_wrapper, input_html: { class: "span5" }
+              .spanhalf.no-print
+                = i.hidden_field :_destroy
+                = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
+                
+          .row.no-print
+            = clf.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another physician", :attendances, class: "btn offset3")
               
       %script{"type" => "text/javascript"}
         :plain

@@ -1,6 +1,6 @@
 class ClinicLocation < ActiveRecord::Base
   
-  attr_accessible :clinic_id, :phone, :phone_extension, :fax, :contact_details, :sector_mask, :url, :email, :wheelchair_accessible_mask, :schedule_attributes, :location_attributes
+  attr_accessible :clinic_id, :phone, :phone_extension, :fax, :contact_details, :sector_mask, :url, :email, :wheelchair_accessible_mask, :schedule_attributes, :location_attributes, :attendances_attributes
 
   belongs_to :clinic
   has_one :location, :as => :locatable
@@ -11,6 +11,9 @@ class ClinicLocation < ActiveRecord::Base
   
   has_many :user_controls_clinic_locations, :dependent => :destroy
   has_many :controlling_users, :through => :user_controls_clinic_locations, :source => :user, :class_name => "User"
+  
+  has_many :attendances, :dependent => :destroy
+  accepts_nested_attributes_for :attendances, :allow_destroy => true
   
   def resolved_address
     return location.resolved_address if location.present?

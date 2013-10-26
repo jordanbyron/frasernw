@@ -534,7 +534,7 @@
     
     = f.association :hospitals, as: :check_boxes, collection: Hospital.all(:order => "name ASC") 
     
-    = f.association :clinics, as: :check_boxes, collection: @specializations_clinics
+    = f.association :clinic_locations, as: :check_boxes, collection: @specializations_clinic_locations
   
   -if current_user_is_admin? && !@is_review
   

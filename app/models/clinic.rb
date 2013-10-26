@@ -30,9 +30,8 @@ class Clinic < ActiveRecord::Base
   accepts_nested_attributes_for :focuses, :reject_if => lambda { |a| a[:procedure_specialization_id].blank? }, :allow_destroy => true
   
   #clinics have attendance (of specialists and freeform physicians)
-  has_many :attendances, :dependent => :destroy
+  has_many :attendances, :through => :clinic_locations
   has_many :specialists, :through => :attendances
-  accepts_nested_attributes_for :attendances, :allow_destroy => true
   
   #clinics have many healthcare providers
   has_many   :clinic_healthcare_providers, :dependent => :destroy
