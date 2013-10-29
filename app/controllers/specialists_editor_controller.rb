@@ -32,7 +32,7 @@ class SpecialistsEditorController < ApplicationController
     @specializations_clinic_locations = []
     @specialist.specializations.each { |s|
       @specializations_clinics += s.clinics.map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} #{l.short_address}", l.id] }
-      @specializations_clinic_locations += s.clinic_locations.map{ |c| c.clinic_locations.reject{ |cl| cl.empty? } }.flatten.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id] }
+      @specializations_clinic_locations += s.clinics.map{ |c| c.clinic_locations.reject{ |cl| cl.empty? } }.flatten.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id] }
     }
     @specializations_clinics.sort!
     @specializations_clinic_locations.sort!
@@ -131,7 +131,7 @@ class SpecialistsEditorController < ApplicationController
     @specializations_clinic_locations = []
     @specialist.specializations.each { |s|
       @specializations_clinics += (current_user_is_super_admin? ? s.clinics : s.clinics.in_divisions(current_user_divisions)).map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} - #{l.short_address}", l.id] }
-      @specializations_clinic_locations += s.clinic_locations.map{ |c| c.clinic_locations.reject{ |cl| cl.empty? } }.flatten.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id] }
+      @specializations_clinic_locations += s.clinics.map{ |c| c.clinic_locations.reject{ |cl| cl.empty? } }.flatten.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id] }
     }
     @specializations_clinics.sort!
     @specializations_clinic_locations.sort!
