@@ -2,14 +2,8 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.1.10'
 
-# Bundle edge Rails instead:
-# gem 'rails',     :git => 'git://github.com/rails/rails.git'
-# gem 'rails',      :git => "git://github.com/rails/rails.git", :branch => "3-1-stable"
-
-
 group :production do
   gem 'pg'
-  gem 'therubyracer-heroku', '0.8.1.pre3'
   gem 'newrelic_rpm'
 end
 
@@ -59,7 +53,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'spork', '> 0.9.0rc'
   # To use debugger
-  gem 'ruby-debug19', :require => 'ruby-debug'
+  # gem 'ruby-debug19', :require => 'ruby-debug'
   # can't include rb-fsevent here as heroku doesn't like it
   # gem 'rb-fsevent', :require => false if RUBY_PLATFORM =~ /darwin/i
   gem 'guard'
