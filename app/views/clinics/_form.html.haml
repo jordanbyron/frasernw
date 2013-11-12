@@ -490,19 +490,17 @@
       
       %h3 Associations
       
-      %h4 Physicians Who See Patients at the Clinic
-      
       .content
-        .row
-          .span1.no-print Specialist?
-          .span2 Name
-          .span5 Area of focus (if not the same for all physicians working in the clinic).
         
       - @clinic.clinic_locations.reject{|cl| cl.empty?}.each do |cl|
+      
+        %h4 Physicians Who See Patients at #{cl.location.short_address}
+
         = f.simple_fields_for :clinic_locations, cl do |clf|
           .row.spaced
-            .span6
-              %h5= cl.location.short_address
+            .span1.no-print Specialist?
+            .span2 Name
+            .span5 Area of focus (if not the same for all physicians working in the clinic).
           = clf.simple_fields_for :attendances do |i|
             .row.spaced
               .span1.no-print
