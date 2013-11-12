@@ -8,6 +8,7 @@
 
         - if version.changeset.present?
           - version.changeset.each do |attribute, changeset|
+            - next if attribute == 'review_object'
             %li
               = version.item_type.constantize.human_attribute_name(attribute)
               - if (changeset[0].present? and changeset[1].present?)
