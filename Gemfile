@@ -5,6 +5,7 @@ gem 'rails', '3.1.10'
 group :production do
   gem 'pg'
   gem 'newrelic_rpm'
+  gem 'heroku_cloud_backup'
 end
 
 # Asset template engines
@@ -19,7 +20,8 @@ gem 'authlogic'
 gem 'paper_trail', '~> 2'
 gem 'will_paginate', '~> 3.0.0'
 gem "simple_form", "~> 2.0.1"
-gem "nested_form", :git => "https://github.com/warneboldt/nested_form.git", :ref => "230e366a35a2fabd1f2b51d0102237ba684174f0"
+gem "nested_form", :git => "https://github.com/warneboldt/nested_form.git", :ref => "35a2cf060680280413880337a3f89bdec469301c"
+#gem 'nested_form', '0.3.2', :path => '~/Documents/Programming/Pathways/warneboldt/nested_form/'
 gem 'exception_notification'
 gem "cancan", "~> 1.6.7"
 gem "paperclip", "~> 2.7"
@@ -60,16 +62,11 @@ group :development, :test do
   gem 'guard-rspec'
   gem 'guard-livereload'
   gem 'guard-spork'
-  gem 'heroku'
+  #gem 'heroku'
   gem 'taps'
   gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
   gem 'rb-fsevent', '~> 0.9.1'
 end
-
-# gem "mocha", :group => :test
-
-# Automated Heroku DB backups (to Google Storage)
-gem 'heroku_cloud_backup'
 
 gem 'ancestry'
 gem 'mechanize'

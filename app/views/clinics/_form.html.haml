@@ -284,7 +284,7 @@
     
     .tab-content
       - index = 0
-      = f.simple_fields_for :clinic_locations, :suppress_fields => true do |cl|
+      = f.simple_fields_for :clinic_locations, :nested_wrapper => false do |cl|
         - cloc = clocs[index]
         - loc = cloc.location
         - is_unused = loc.empty?
@@ -314,7 +314,7 @@
               - text_address = @clinic.locations[index].resolved_address.address if @clinic.locations[index].present? && @clinic.locations[index].resolved_address.present?
               %input{"type" => "text", "value" => "#{text_address}"}
 
-          = cl.simple_fields_for :location, :suppress_fields => true do |l|
+          = cl.simple_fields_for :location, :nested_wrapper => false do |l|
             %div{:class => "address_#{index}"}
               = l.simple_fields_for :address do |a|
                 = a.input :suite, :input_html => { :class => "span1" }
@@ -333,9 +333,9 @@
 
             %h4 Location schedule
             
-            = cl.simple_fields_for :schedule, :suppress_fields => true do |s|
+            = cl.simple_fields_for :schedule, :nested_wrapper => false do |s|
               - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
-                = s.simple_fields_for day, :suppress_fields => true do |d|
+                = s.simple_fields_for day, :nested_wrapper => false do |d|
                   .changed_wrapper
                     = d.input :scheduled, :label => day.to_s.capitalize_first_letter, wrapper: :bootstrap_tight do
                       = d.input_field :scheduled, :class => "scheduled span1"

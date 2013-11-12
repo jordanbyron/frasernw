@@ -8,10 +8,10 @@ GIT
 
 GIT
   remote: https://github.com/warneboldt/nested_form.git
-  revision: 230e366a35a2fabd1f2b51d0102237ba684174f0
-  ref: 230e366a35a2fabd1f2b51d0102237ba684174f0
+  revision: 35a2cf060680280413880337a3f89bdec469301c
+  ref: 35a2cf060680280413880337a3f89bdec469301c
   specs:
-    nested_form (0.2.0)
+    nested_form (0.3.2)
 
 GEM
   remote: https://rubygems.org/
@@ -287,7 +287,6 @@ DEPENDENCIES
   guard-rspec
   guard-spork
   haml-rails
-  heroku
   heroku_cloud_backup
   htmlentities
   jquery-rails

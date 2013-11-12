@@ -10,6 +10,7 @@
 //= require jquery.scrollto.min.js
 //= require json2.js
 //= require jquery.history.js
+//= require jquery_nested_form.js
 //= require ajaxify-html5.js
 //= require_tree .
 
