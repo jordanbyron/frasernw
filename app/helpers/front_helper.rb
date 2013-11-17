@@ -9,7 +9,7 @@ module FrontHelper
       manual_events["NewsItem_#{news_item.id}"] = ["#{news_item.start_date || news_item.end_date}", "#{BlueCloth.new(news_item.title + ". " + news_item.body).to_html}".html_safe]
     end
     
-    Version.order("id desc").where("item_type = (?) OR item_type = (?)", "Specialist", "Clinic").limit(1000).each do |version|
+    Version.order("id desc").where("item_type = (?) OR item_type = (?)", "Specialist", "Clinic").limit(5000).each do |version|
     
       next if version.item.blank?
       break if automated_events.length >= max_automated_events
