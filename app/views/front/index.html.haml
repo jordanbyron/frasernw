@@ -16,10 +16,11 @@
 
 .content-wrapper
   .content#front
-    - if NewsItem.breaking_in_divisions(current_user_divisions).length > 0
+    - news_items = NewsItem.breaking_in_divisions(current_user_divisions)
+    - if news_items.length > 0
       .row
         .span12
-          - NewsItem.breaking_in_divisions(current_user_divisions).each do |news_item|
+          - news_items.each do |news_item|
             .news_item.breaking
               .news_item_date= news_item.date if news_item.date.present?
               %div{:class => news_item.date.present? ? "news_item_title" : "news_item_date"}= news_item.title if news_item.title.present?

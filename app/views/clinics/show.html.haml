@@ -2,6 +2,8 @@
 
 - specialization = (current_user_is_admin? ? @clinic.specializations : @clinic.specializations.not_in_progress_for_divisions(current_user_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
   
+- favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @clinic.id, "Clinic").present? ? "icon-red" : "icon-text") : "icon-text"
+  
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
@@ -11,43 +13,9 @@
     = link_to specialization.name, specialization_path(specialization), :class => 'ajax'
     = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
   
-- favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @clinic.id, "Clinic").present? ? "icon-red" : "icon-text") : "icon-text"
-  
-%script{"type" => "text/javascript"}
-  :plain
-    var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
-    $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
-    $(document).ready(function() { $('#user_favorite_clinics_#{@clinic.id}').addClass('#{favorite_class}') });
-  
-#specialties-dropdown-menu
-  .inner
-    - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions)
-    - first = specializations[0, (specializations.length / 4.0).ceil]
-    - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
-    - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
-    - fourth = specializations - first - second - third
-    
-    - [first, second, third, fourth].each do |list|
-      %ul
-        - list.each do |specialization|
-          %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}
-              = specialization.name
-              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
+= render 'partials/specialization_dropdown_menu'
 
-.tabbable
-  %ul#content_tabs.nav.nav-tabs
-    %li 
-      %a#specialists{"href" => "#{specialization_path(specialization)}#specialists"}
-        %span Specialists
-    %li.active
-      %a#clinics{"href" => "#{specialization_path(specialization)}#clinics"}
-        %span Clinics
-    - ScCategory.specialty.each do |sc_category|
-      - if sc_category.all_sc_items_for_specialization_in_divisions(specialization, current_user_divisions).present?
-        %li
-          %a{"href" => "#{specialization_path(specialization)}##{sc_category.name.remove_whitespace}", "id" => sc_category.name.remove_whitespace}
-            %span= sc_category.name
+= render 'partials/specialization_nav', :specialization => specialization, :selected => 'clinics'
 
 - if @is_version
   = render 'versions/info'
@@ -345,7 +313,10 @@
             
     %script{"type" => "text/javascript"}
       :plain
-        $(document).ready(function() { $('.tt').tooltip({trigger: 'manual'}) });
+        $(document).ready(function() { 
+          $('.tt').tooltip({trigger: 'manual'}); 
+          $('#user_favorite_clinics_#{@clinic.id}').addClass('#{favorite_class}'); 
+        });
         
         function send_feedback(form) { 
           $.ajax({

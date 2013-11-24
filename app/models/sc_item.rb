@@ -104,6 +104,14 @@ class ScItem < ActiveRecord::Base
     return default_content_owner
   end
 
+  def root_category
+    if sc_category.parent.present?
+      sc_category.parent
+    else
+      sc_category
+    end
+  end
+
   def full_title
     if sc_category.parent.present?
       sc_category.name + ": " + title
