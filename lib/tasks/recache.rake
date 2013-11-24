@@ -98,6 +98,10 @@ namespace :pathways do
       
       User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
         expire_fragment "specialization_dropdown_#{division_group.join('_')}"
+        
+        Specialization.all.each do |specialization|
+          expire_fragment "specialization_#{specialization.id}_nav_#{division_group.join('_')}"
+        end
       end
     end
     
