@@ -45,6 +45,8 @@
   
   - else
   
+    - has_children = @sc_category.has_children?
+  
     %script{"type" => "text/javascript"}
       $(document).ready(function() {
       - @sc_items.each do |sc_item|
@@ -65,7 +67,8 @@
             %thead
               %tr{:class => 'tableheader'}
                 %th{:class => "title {sorter: 'link_only'}"} Title
-                %th{:class => "subcategory {sorter: 'text'}"} Subcategory
+                - if has_children
+                  %th{:class => "subcategory {sorter: 'text'}"} Subcategory
                 %th.favorite
                 %th.email
                 %th.fb
@@ -78,7 +81,8 @@
                     - if sc_item.shared_care?
                       %i.icon-blue.icon-star
                     = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{sc_item.type_mask}', '#{sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
-                  %td.subcategory= sc_item.sc_category.name
+                  - if has_children
+                    %td.subcategory= sc_item.sc_category.name
                   %td.favorite
                     %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
                       %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
@@ -97,7 +101,7 @@
             .title
               Filter #{@sc_category.name}
                       
-            - if @sc_category.has_children?  
+            - if has_children  
               .filter-group
                 %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "##{@sc_category.id}-filter-subcategories"}
                   Subcategories
