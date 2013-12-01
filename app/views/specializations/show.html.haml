@@ -604,7 +604,7 @@
 
 %script{"type" => "text/javascript"}
   :plain
-    var city_ids = [#{current_user_cities.map{|c| c.id}.join(',')}];
+    var city_ids = [#{current_user_cities_for_specialization(@specialization).map{|c| c.id}.join(',')}];
     $(document).ready(function() {
       for (var i = 0; i < city_ids.length; ++i) {
         var city_id = city_ids[i];
