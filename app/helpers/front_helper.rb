@@ -6,7 +6,9 @@ module FrontHelper
     automated_events = {}
     
     NewsItem.specialist_clinic_in_divisions(divisions).each do |news_item|
-      manual_events["NewsItem_#{news_item.id}"] = ["#{news_item.start_date || news_item.end_date}", "#{BlueCloth.new(news_item.title + ". " + news_item.body).to_html}".html_safe]
+      item = news_item.title.present? ? BlueCloth.new(news_item.title + ". " + news_item.body).to_html : BlueCloth.new(news_item.body).to_html
+      
+      manual_events["NewsItem_#{news_item.id}"] = ["#{news_item.start_date || news_item.end_date}", item.html_safe]
     end
     
     Version.order("id desc").where("item_type = (?) OR item_type = (?)", "Specialist", "Clinic").limit(1000).each do |version|
