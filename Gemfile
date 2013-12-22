@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.1.10'
+gem 'pg'
 
 group :production do
-  gem 'pg'
   gem 'newrelic_rpm'
   gem 'heroku_cloud_backup'
 end
@@ -49,7 +49,7 @@ group :test do
 end
 
 group :development, :test do
-  gem 'sqlite3'
+  #gem 'sqlite3'
   gem "nifty-generators"
   gem 'rspec'
   gem 'rspec-rails'
