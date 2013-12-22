@@ -8,6 +8,11 @@ class FrontController < ApplicationController
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
+  def as_division
+    @division = Division.find(params[:division_id])
+    render :action => 'index'
+  end
+  
   def faq
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
@@ -19,13 +24,16 @@ class FrontController < ApplicationController
   def edit
     @front = Front.first
     @front = Front.create if @front.blank?
+    @division = Division.find(params[:division_id]) if params[:division_id].present?
+    @division = current_user_divisions.first if !(current_user_divisions.include? @division)
+    @division = @division || current_user_divisions.first
     ScCategory.all.each do |category|
-      featured_content = FeaturedContent.find_all_by_sc_category_id(category.id)
+      featured_content = FeaturedContent.in_divisions([@division]).find_all_by_sc_category_id(category.id)
       if category.show_on_front_page?
         #show on front page; make any slots we don't have
         featured_content_count = featured_content.blank? ? 0 : featured_content.length
         for x in (featured_content_count+1)..3
-          FeaturedContent.create( :front => @front, :sc_category => category )
+          FeaturedContent.create( :front => @front, :sc_category => category, :division => @division )
         end
       else
         #shouldn't be shown on front page any more

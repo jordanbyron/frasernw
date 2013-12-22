@@ -112,6 +112,7 @@ Frasernw::Application.routes.draw do
   match '/refresh_livesearch_division_content/:division_id' => 'search#refresh_livesearch_division_content', :as => :refresh_livesearch_division_content
   
   match '/front' => 'front#index', :as => :front
+  match '/front/as/:division_id' => 'front#as_division', :as => :front_as_division
   match '/faq' => 'front#faq', :as => :faq
   match '/terms_and_conditions' => 'front#terms_and_conditions', :as => :terms_and_conditions
   match '/front/edit' => 'front#edit', :as => :edit_front

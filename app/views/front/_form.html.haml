@@ -2,10 +2,10 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
-  - @front.featured_contents.sort{ |a,b| a.sc_category.name <=> b.sc_category.name }.each do |fc|
+  - @front.featured_contents.in_divisions([@division]).sort{ |a,b| a.sc_category.name <=> b.sc_category.name }.each do |fc|
     
     = f.simple_fields_for :featured_contents, fc do |fcf|
-      = fcf.association :sc_item, :collection => fc.sc_category.all_sc_items_in_divisions(current_user_divisions), :label => fc.sc_category.name
+      = fcf.association :sc_item, :collection => fc.sc_category.all_sc_items_in_divisions([@division]), :label => fc.sc_category.name
     
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

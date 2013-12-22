@@ -30,7 +30,6 @@ class UsersController < ApplicationController
     @user.user_controls_specialist_offices.build
     @user.user_controls_clinic_locations.build
     @new_user = false
-    puts "USER!!! #{@user}"
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
