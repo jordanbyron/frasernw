@@ -115,7 +115,7 @@ Frasernw::Application.routes.draw do
   match '/front/as/:division_id' => 'front#as_division', :as => :front_as_division
   match '/faq' => 'front#faq', :as => :faq
   match '/terms_and_conditions' => 'front#terms_and_conditions', :as => :terms_and_conditions
-  match '/front/edit' => 'front#edit', :as => :edit_front
+  match '/front/edit/as/:division_id' => 'front#edit', :as => :edit_front_as_division
   match '/front/update' => 'front#update', :as => :update_front
   match '/stats' => 'stats#index', :as => :stats
   

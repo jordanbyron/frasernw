@@ -2,7 +2,7 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
-  - @front.featured_contents.in_divisions([@division]).sort{ |a,b| a.sc_category.name <=> b.sc_category.name }.each do |fc|
+  - @front.featured_contents.in_divisions([@division]).order("sc_category_id, created_at").each do |fc|
     
     = f.simple_fields_for :featured_contents, fc do |fcf|
       = fcf.association :sc_item, :collection => fc.sc_category.all_sc_items_in_divisions([@division]), :label => fc.sc_category.name

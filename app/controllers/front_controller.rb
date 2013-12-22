@@ -25,7 +25,7 @@ class FrontController < ApplicationController
     @front = Front.first
     @front = Front.create if @front.blank?
     @division = Division.find(params[:division_id]) if params[:division_id].present?
-    @division = current_user_divisions.first if !(current_user_divisions.include? @division)
+    @division = current_user_divisions.first if (!current_user_is_super_admin? && !(current_user_divisions.include? @division))
     @division = @division || current_user_divisions.first
     ScCategory.all.each do |category|
       featured_content = FeaturedContent.in_divisions([@division]).find_all_by_sc_category_id(category.id)
