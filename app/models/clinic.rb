@@ -152,7 +152,7 @@ class Clinic < ActiveRecord::Base
   end
   
   STATUS_HASH = { 
-    1 => "Accepting new patients", 
+    1 => "Accepting new referrals", 
     2 => "Only doing follow up on previous patients",
     3 => "Didn't answer"
   }

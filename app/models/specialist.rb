@@ -235,7 +235,7 @@ class Specialist < ActiveRecord::Base
   end
   
   STATUS_HASH = { 
-    1 => "Accepting new patients", 
+    1 => "Accepting new referrals", 
     2 => "Only doing follow up on previous patients", 
     4 => "Retired as of",
     5 => "Retiring as of",
