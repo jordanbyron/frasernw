@@ -90,6 +90,10 @@ class Clinic < ActiveRecord::Base
     responded? || not_responded?
   end
 
+  def show_wait_time_in_table?
+    responded? && accepting_new_patients?
+  end
+
   def not_available?
     false #to line up with specialists; all are "available" if they exist
   end
@@ -180,11 +184,11 @@ class Clinic < ActiveRecord::Base
   }
   
   def status_class
-    if not_responded? || status_mask.blank?
+    if not_responded? || (status_mask == 3) || status_mask.blank?
       return STATUS_CLASS_UNKNOWN
     elsif purposely_not_yet_surveyed?
       return STATUS_CLASS_BLANK
-    elsif (status_mask == 1)
+    elsif accepting_new_patients?
       return STATUS_CLASS_AVAILABLE
     elsif (status_mask == 2)
       return STATUS_CLASS_UNAVAILABLE

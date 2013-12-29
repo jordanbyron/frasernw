@@ -226,6 +226,11 @@ class Specialist < ActiveRecord::Base
     not_responded? || hospital_or_clinic_only? || (responded? && !retired_a_while_ago?)
   end
 
+  def show_wait_time_in_table?
+    responded? && (accepting_new_patients? || retiring? ||
+                   ((status_mask == 6) && ((unavailable_to < Date.today) || (unavailable_from > Date.today))))  #not yet unavailable
+  end
+
   def not_available?
     retired? || permanently_unavailable? || moved_away?
   end
@@ -235,7 +240,7 @@ class Specialist < ActiveRecord::Base
   end
   
   STATUS_HASH = { 
-    1 => "Accepting new referrals", 
+    1 => "Accepting new referrals",
     2 => "Only doing follow up on previous patients", 
     4 => "Retired as of",
     5 => "Retiring as of",
@@ -295,13 +300,13 @@ class Specialist < ActiveRecord::Base
       return STATUS_CLASS_BLANK
     elsif hospital_or_clinic_only?
       return STATUS_CLASS_EXTERNAL
-    elsif ((status_mask == 1) || ((status_mask == 6) && (unavailable_to < Date.today)))
+    elsif (accepting_new_patients? || ((status_mask == 6) && (unavailable_to < Date.today)))
       #marked as available, or the "unavailable between" period has passed
       return STATUS_CLASS_AVAILABLE
     elsif ((status_mask == 2) || (status_mask == 4) || ((status_mask == 5) && (unavailable_from <= Date.today)) || ((status_mask == 6) && (unavailable_from <= Date.today) && (unavailable_to >= Date.today)) || (status_mask == 8) || (status_mask == 9) || moved_away?)
       #only seeing old patients, retired, "retiring as of" date has passed", or in midst of inavailability, indefinitely unavailable, permanently unavailable, or moved away
       return STATUS_CLASS_UNAVAILABLE
-    elsif (((status_mask == 5) && (unavailable_from > Date.today)) || ((status_mask == 6) && (unavailable_from > Date.today)))
+    elsif (retiring? || ((status_mask == 6) && (unavailable_from > Date.today)))
       return STATUS_CLASS_WARNING
     elsif ((status_mask == 3) || (status_mask == 7) || status_mask.blank?)
       return STATUS_CLASS_UNKNOWN
