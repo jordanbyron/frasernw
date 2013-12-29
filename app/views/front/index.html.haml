@@ -51,7 +51,7 @@
 
     .row
        
-      .span3.hidden-phone
+      .span3.hidden-phone.front
        
         %h2 Specialties
         
@@ -61,7 +61,7 @@
               = link_to specialization.name, specialization, :class => specialization.fully_in_progress_for_divisions(user_divisions) ? "in-progress ajax" : "ajax"
               = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(user_divisions)
        
-      .span4half
+      .span4half.front
       
         %h2 What is Pathways?
         
