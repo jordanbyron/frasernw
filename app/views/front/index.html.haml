@@ -129,28 +129,30 @@
       .span4.offsethalf
       
         .well
-          
-          - ScCategory.all.reject{ |c| !c.show_on_front_page? }.each do |category|
-          
-            - featured_items = category.featured_contents.in_divisions(user_divisions).order("created_at").reject{|fc| fc.sc_item.blank? }
-            - next if featured_items.blank?
-         
-            %h3= link_to category.name, sc_category_path(category), :class => 'ajax'
-          
-            %ul.space
-              %span.featured= "Featured:"
-              - featured_items.map{|fc| fc.sc_item}.each do |featured_sc_item|
-                %li.indent
-                  - if featured_sc_item.new?
-                    %span.new new
-                  - if featured_sc_item.shared_care?
-                    %i.icon-blue.icon-star
-                  = link_to(featured_sc_item.title, featured_sc_item.resolved_url, :class => featured_sc_item.markdown? && "ajax", :target => featured_sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{featured_sc_item.type_mask}', '#{featured_sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
-                  %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{featured_sc_item.id},'#{escape_javascript(featured_sc_item.title)}')", "title" => "Favourite / un-favourite"}
-                    %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{featured_sc_item.id}"}
-                  
-              %li.all
-                = link_to "Browse all #{category.name} <i class='icon-arrow-right icon-blue icon-small'></i>".html_safe, sc_category_path(category), :class => 'ajax'
+
+          - cache("featured_content_#{user_divisions.map{|d| d.id }.join('_')}") do
+            
+            - ScCategory.all.reject{ |c| !c.show_on_front_page? }.each do |category|
+            
+              - featured_items = category.featured_contents.in_divisions(user_divisions).order("created_at").reject{|fc| fc.sc_item.blank? }
+              - next if featured_items.blank?
+           
+              %h3= link_to category.name, sc_category_path(category), :class => 'ajax'
+            
+              %ul.space
+                %span.featured= "Featured:"
+                - featured_items.map{|fc| fc.sc_item}.each do |featured_sc_item|
+                  %li.indent
+                    - if featured_sc_item.new?
+                      %span.new new
+                    - if featured_sc_item.shared_care?
+                      %i.icon-blue.icon-star
+                    = link_to(featured_sc_item.title, featured_sc_item.resolved_url, :class => featured_sc_item.markdown? && "ajax", :target => featured_sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{featured_sc_item.type_mask}', '#{featured_sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
+                    %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{featured_sc_item.id},'#{escape_javascript(featured_sc_item.title)}')", "title" => "Favourite / un-favourite"}
+                      %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{featured_sc_item.id}"}
+                    
+                %li.all
+                  = link_to "Browse all #{category.name} <i class='icon-arrow-right icon-blue icon-small'></i>".html_safe, sc_category_path(category), :class => 'ajax'
                 
           %h3
           

@@ -47,8 +47,15 @@ class FrontController < ApplicationController
   
   def update
     @front = Front.first
+    division = Division.find(params[:division_id])
     if @front.update_attributes(params[:front])
-      redirect_to root_url, :notice  => "Successfully updated front page."
+      
+      #expire all the featured content for users that are in the divisions that we just updated
+      User.in_divisions([division]).map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
+        expire_fragment "featured_content_#{division_group.join('_')}"
+      end
+      
+      redirect_to front_as_division_path(division), :notice  => "Successfully updated featured content."
     else
       render :action => 'edit'
     end

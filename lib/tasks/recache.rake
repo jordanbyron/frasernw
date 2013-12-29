@@ -118,6 +118,7 @@ namespace :pathways do
     task :front => :environment do
       User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
         expire_fragment "latest_updates_#{division_group.join('_')}"
+        expire_fragment "featured_content_#{division_group.join('_')}"
       end
     end
 

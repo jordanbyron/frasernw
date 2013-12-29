@@ -1,6 +1,8 @@
 = simple_nested_form_for @front, :url => {:controller => 'front', :action => :update}, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
+    
+  = hidden_field_tag 'division_id', @division.id
 
   - @front.featured_contents.in_divisions([@division]).order("sc_category_id, created_at").each do |fc|
     

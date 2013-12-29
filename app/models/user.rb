@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
 
   def self.in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
-    joins(:division_users).where('"division_users"."division_id" IN (?)', division_ids)
+    joins(:user_divisions).where('"division_users"."division_id" IN (?)', division_ids)
   end
 
   def deliver_password_reset_instructions!

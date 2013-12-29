@@ -33,7 +33,15 @@ class NewsItemsController < ApplicationController
   def update
     @news_item = NewsItem.find(params[:id])
     if @news_item.update_attributes(params[:news_item])
-      redirect_to @news_item, :notice  => "Successfully updated news item."
+      
+      division = @news_item.division
+      
+      #expire all the front-page news content for users that are in the divisions that we just updated
+      User.in_divisions([division]).map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
+        expire_fragment "featured_content_#{division_group.join('_')}"
+      end
+      
+      redirect_to front_as_division_path(division), :notice  => "Successfully updated news item."
     else
       render :action => 'edit'
     end
