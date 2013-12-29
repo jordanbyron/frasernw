@@ -345,20 +345,14 @@
                   .investigation.space  
                     - if focused_count > 0
                       - if focused_has_investigations
-                        %p
-                          (with any 
-                          %i additional 
-                          required investigations)
+                        %p (with any additional details)
                       .list{:class => specializations_with_results_count > 1 && "indent"}
                         = focused_procedures.html_safe
                     - if nonfocused_count > 0
                       %p.space
                         %em Other areas of interest
                       - if nonfocused_has_investigations
-                        %p
-                          with any 
-                          %i additional 
-                          required investigations
+                        %p (with any additional details)
                       .list{:class => specializations_with_results_count > 1 && "indent"}
                         = nonfocused_procedures.html_safe
 
