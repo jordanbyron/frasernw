@@ -33,7 +33,7 @@
         .span12
           Show front page as:
           %ul.nav.nav-pills
-            - possible_divisions.each do |division|
+            - possible_divisions.sort{|a| a.id}.each do |division|
               %li{:class => (division == user_divisions.first) && 'active'}
                 = link_to division.name, front_as_division_path(division)
       %hr
