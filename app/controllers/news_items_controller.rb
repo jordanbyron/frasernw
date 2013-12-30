@@ -19,7 +19,14 @@ class NewsItemsController < ApplicationController
   def create
     @news_item = NewsItem.new(params[:news_item])
     if @news_item.save
-      redirect_to @news_item, :notice => "Successfully created news item."
+      division = @news_item.division
+      
+      #expire all the front-page news content for users that are in the divisions that we just updated
+      User.in_divisions([division]).map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
+        expire_fragment "latest_updates_#{division_group.join('_')}"
+      end
+      
+      redirect_to front_as_division_path(division), :notice  => "Successfully created news item."
     else
       render :action => 'new'
     end
@@ -38,7 +45,7 @@ class NewsItemsController < ApplicationController
       
       #expire all the front-page news content for users that are in the divisions that we just updated
       User.in_divisions([division]).map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
-        expire_fragment "featured_content_#{division_group.join('_')}"
+        expire_fragment "latest_updates_#{division_group.join('_')}"
       end
       
       redirect_to front_as_division_path(division), :notice  => "Successfully updated news item."
