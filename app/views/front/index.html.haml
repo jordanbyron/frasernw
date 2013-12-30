@@ -24,17 +24,17 @@
 
 - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(user_divisions)
 
+
 .content-wrapper
   .content#front{:style => 'margin-top: -15px'}
+
     - if current_user_is_admin? && (possible_divisions_count > 1)
       .row
         .span12
-          %p 
-            Show front page as:
+          Show front page as:
+          %ul.nav.nav-pills
             - possible_divisions.each do |division|
-              - if division == user_divisions.first
-                %strong= division.name
-              - else
+              %li{:class => (division == user_divisions.first) && 'active'}
                 = link_to division.name, front_as_division_path(division)
       %hr
 
