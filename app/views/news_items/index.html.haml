@@ -6,7 +6,7 @@
 
   = will_paginate @news_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
   
-  - if current_user_divisions.length > 1
+  - if (current_user_divisions.length > 1) || (current_user_is_super_admin? && Division.all.length > 1)
     - multiple_divisions = true
   - else
     - multiple_divisions = false
