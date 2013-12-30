@@ -75,7 +75,7 @@
             
             %form.navbar-search.pull-right
               %input.span3.search-query#search{"type" => "search", "placeholder" => "Search"}
-              #search_results
+              #search_results{:style => 'display:none'}
                 #loading
                   #loading-spinner
                 %ul
