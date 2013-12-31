@@ -183,7 +183,7 @@
                           %li= link_to "Division", division_path(current_user.divisions.first), :class => "ajax"
                         - else
                           %li
-                            = link_to "Divisions...", "#", :class => "arrow-right-after"
+                            = link_to "Divisions", "#", :class => "arrow-right-after"
                             %ul.dropdown-menu.sub-menu
                               - current_user.divisions.each do |division|
                                 %li= link_to division.name, division_path(division), :class => "ajax"
@@ -224,23 +224,23 @@
                       - if can? :read, ScItem
                         - if current_user_is_super_admin? && Division.all.length > 1
                           %li
-                            = link_to "Content Items For...", "#", :class => "create arrow-right-after"
+                            = link_to "Owned Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
                               - Division.all.each do |division|
                                 %li= link_to "#{division.name}", division_content_items_path(division), :class => "sc_item ajax"
                           %li
-                            = link_to "Manage Shared Content Items For...", "#", :class => "create arrow-right-after"
+                            = link_to "Shared Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
                               - Division.all.each do |division|
                                 %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
                         - elsif user_divisions.length > 1
                           %li
-                            = link_to "Content Items For...", "#", :class => "create arrow-right-after"
+                            = link_to "Owned Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
                               - user_divisions.each do |division|
                                 %li= link_to "#{division.name}", division_content_items_path(division), :class => "sc_item ajax"
                           %li
-                            = link_to "Manage Shared Content Items For...", "#", :class => "create arrow-right-after"
+                            = link_to "Shared Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
                               - user_divisions.each do |division|
                                 %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
