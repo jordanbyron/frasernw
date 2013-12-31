@@ -50,6 +50,11 @@ class Ability
           user.divisions.include? news_item.division
         end
         
+        #can edit their own divisions
+        can [:show, :edit, :update], Division do |division|
+          user.divisions.include? division
+        end
+        
         #can manage their own feedback items
         can :manage, FeedbackItem do |feedback_item|
           feedback_item.item.present? &&

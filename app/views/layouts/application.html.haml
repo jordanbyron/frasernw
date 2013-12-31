@@ -178,6 +178,15 @@
                         %li= link_to "Clinics", clinics_path, :class => "ajax"
                       - if can? :index, Division
                         %li= link_to "Divisions", divisions_path, :class => "ajax"
+                      - elsif current_user_is_admin?
+                        - if current_user.divisions.length == 1
+                          %li= link_to "Division", division_path(current_user.divisions.first), :class => "ajax"
+                        - else
+                          %li
+                            = link_to "Divisions...", "#", :class => "arrow-right-after"
+                            %ul.dropdown-menu.sub-menu
+                              - current_user.divisions.each do |division|
+                                %li= link_to division.name, division_path(division), :class => "ajax"
                       - if can? :index, HealthcareProvider
                         %li= link_to "Healthcare Providers", healthcare_providers_path, :class => "ajax"
                       - if can? :index, Hospital
