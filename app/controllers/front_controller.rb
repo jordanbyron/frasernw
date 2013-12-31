@@ -25,7 +25,9 @@ class FrontController < ApplicationController
     @front = Front.first
     @front = Front.create if @front.blank?
     @division = Division.find(params[:division_id]) if params[:division_id].present?
-    @division = current_user_divisions.first if (!current_user_is_super_admin? && !(current_user_divisions.include? @division))
+    if (!current_user_is_super_admin? && !(current_user_divisions.include? @division))
+      redirect_to root_url, :notice  => "Not allowed to edit this division."
+    end
     @division = @division || current_user_divisions.first
     ScCategory.all.each do |category|
       featured_content = FeaturedContent.in_divisions([@division]).find_all_by_sc_category_id(category.id)
@@ -48,6 +50,9 @@ class FrontController < ApplicationController
   def update
     @front = Front.first
     division = Division.find(params[:division_id])
+    if (!current_user_is_super_admin? && !(current_user_divisions.include? @division))
+      redirect_to root_url, :notice  => "Not allowed to edit this division."
+    end
     if @front.update_attributes(params[:front])
       
       #expire all the featured content for users that are in the divisions that we just updated

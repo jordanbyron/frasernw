@@ -47,7 +47,7 @@ class Ability
         
         #can manage their own news items
         can :manage, NewsItem do |news_item|
-          (news_item.division & user.divisions).present?
+          user.divisions.include? news_item.division
         end
         
         #can manage their own feedback items
@@ -65,8 +65,8 @@ class Ability
              (review_item.item.instance_of?(Clinic) && (review_item.item.divisions & user.divisions).present?))
         end
         
-        #landing page
-        can [:index, :faq, :terms_and_conditions], Front
+        #landing page, per-division restrictions are handled in controller
+        can :manage, Front
         
         #can show pages, regardless of 'in progress'
         can :show, [Specialization, Procedure, Specialist, Clinic, Hospital, Language, ScCategory, ScItem]
