@@ -44,8 +44,17 @@ class DivisionsController < ApplicationController
           end
         end
       end
+      first_division = Division.find(1)
+      default_owner = User.super_admin.first
       Specialization.all.each do |s|
-        SpecializationOption.find_or_create_by_division_id_and_specialization_id( @division.id, s.id )
+        old_so = SpecializationOption.find_by_division_id_and_specialization_id( first_division.id, s.id )
+        new_so = SpecializationOption.find_or_create_by_division_id_and_specialization_id( @division.id, s.id )
+        new_so.in_progress = old_so.in_progress
+        new_so.owner = old_so.owner.super_admin? ? old_so.owner : default_owner
+        new_so.content_owner = old_so.content_owner.super_admin? ? old_so.content_owner : default_owner
+        new_so.open_to_clinic_tab = old_so.open_to_clinic_tab
+        new_so.is_new = old_so.is_new
+        new_so.save
       end
       redirect_to @division, :notice => "Successfully created division."
     else
