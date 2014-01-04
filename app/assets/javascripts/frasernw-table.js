@@ -328,7 +328,8 @@ function expand_city(is_checked, specialization_ids, city_id, procedure_filter, 
       //update UI in the final load
       update_ui(procedure_filter);
       $body.removeClass('loading');
-    }).fail(function( data, textStatus, jqxhr){
+    }).fail(function(jqxhr, settings, exception){
+            console.log(jqxhr, settings, exception);
       update_ui(procedure_filter);
       $body.removeClass('loading');
     });
