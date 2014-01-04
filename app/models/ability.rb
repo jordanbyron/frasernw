@@ -76,6 +76,9 @@ class Ability
         #can show pages, regardless of 'in progress'
         can :show, [Specialization, Procedure, Specialist, Clinic, Hospital, Language, ScCategory, ScItem]
         
+        #can load city data from other specializations
+        can :city, Specialization
+        
         #can print patient information
         can [:print_patient_information, :print_office_patient_information], Specialist
         can [:print_patient_information, :print_location_patient_information], Clinic
@@ -104,15 +107,20 @@ class Ability
         can :show, [Specialization, Procedure] do |entity|
           !entity.fully_in_progress_for_divisions(Division.all)
         end
+        
+        #can load city data from other specializations
         can :city, Specialization do |entity|
           !entity.fully_in_progress_for_divisions(Division.all)
         end
+        
         can :show, [Specialist, Clinic] do |entity|
           !entity.in_progress_for_divisions(entity.divisions)
         end
+        
         can :show, ScItem do |item|
           item.available_to_divisions(user.divisions)
         end
+        
         can :show, [Hospital, Language, ScCategory]
 
         #can print patient information
