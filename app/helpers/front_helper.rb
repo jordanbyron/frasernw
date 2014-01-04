@@ -11,7 +11,7 @@ module FrontHelper
       manual_events["NewsItem_#{news_item.id}"] = ["#{news_item.start_date || news_item.end_date}", item.html_safe]
     end
     
-    Version.includes(:item).order("id desc").where("item_type = (?) OR item_type = (?)", "Specialist", "Clinic").limit(5000).each do |version|
+    Version.includes(:item).order("id desc").where("item_type = (?) OR item_type = (?)", "Specialist", "Clinic").limit(1000).each do |version|
     
       next if version.item.blank?
       break if automated_events.length >= max_automated_events
@@ -21,11 +21,11 @@ module FrontHelper
         if version.item_type == "Specialist"
           
           specialist = version.item
-          next if specialist.blank? || specialist.in_progress_for_divisions(specialist.divisions)
+          next if specialist.blank? || specialist.in_progress_for_divisions(divisions)
           specialist_divisions = specialist.cities_for_front_page.map{ |city| city.divisions }.flatten.uniq
           next if (specialist_divisions & divisions).blank?
           
-          if version.event == "create" && specialist.accepting_new_patients? && specialist.opened_this_year?
+          if version.event == "create" && specialist.accepting_new_patients? && specialist.opened_recently?
             
             #new specialist that is accepting patients
             
@@ -62,10 +62,10 @@ module FrontHelper
               
               automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{specialist.unavailable_from.strftime('%B %d, %Y')}.".html_safe]
               
-            elsif specialist.accepting_new_patients? && specialist.opened_this_year?
+            elsif specialist.accepting_new_patients? && specialist.opened_recently?
               
               next if version.reify.blank?
-              next if version.reify.opened_this_year? #opened this year status hasn't changed
+              next if version.reify.opened_recently? #opened this year status hasn't changed
               if specialist.city.present?
                 automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is recently opened and accepting patients in #{specialist.city}.".html_safe]
                 else
@@ -79,14 +79,14 @@ module FrontHelper
         elsif version.item_type == "Clinic"
           
           clinic = version.item
-          next if clinic.blank? || clinic.in_progress_for_divisions(clinic.divisions) || (clinic.divisions & divisions).blank?
+          next if clinic.blank? || clinic.in_progress_for_divisions(divisions) || (clinic.divisions & divisions).blank?
           
-          if (version.event == "create" || version.event == "update") && clinic.accepting_new_patients? && clinic.opened_this_year?
+          if (version.event == "create" || version.event == "update") && clinic.accepting_new_patients? && clinic.opened_recently?
             
             if version.event == "update"
               
               next if version.reify.blank?
-              next if version.reify.opened_this_year? #opened this year status hasn't changed
+              next if version.reify.opened_recently? #opened this year status hasn't changed
               
             end
             

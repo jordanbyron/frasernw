@@ -206,8 +206,8 @@ class Clinic < ActiveRecord::Base
     status_mask == 1
   end
   
-  def opened_this_year?
-    location_opened == Time.now.year.to_s
+  def opened_recently?
+    (location_opened == Time.now.year.to_s) || ((Time.now.month == 1) && (location_opened == (Time.now.year - 1).to_s))
   end
   
   WAITTIME_HASH = { 
@@ -354,7 +354,7 @@ class Clinic < ActiveRecord::Base
   end
   
   def new?
-    opened_this_year? && (created_at > 3.week.ago.utc)
+    opened_recently? && (created_at > 3.week.ago.utc)
   end
 
   def wheelchair_accessible?
