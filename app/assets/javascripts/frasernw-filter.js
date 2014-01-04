@@ -485,7 +485,7 @@ var clear_filters = function(prefix, entity_id, entity_name) {
   });
   
   // clear schedule filters
-  $('.' + prefix + 's').each( function() {
+  $('.' + prefix + 'sh').each( function() {
     $(this).prop('checked',false)
   });
   
