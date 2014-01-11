@@ -18,7 +18,9 @@ class NewsItemsController < ApplicationController
   
   def create
     @news_item = NewsItem.new(params[:news_item])
-    if @news_item.save
+    if current_user_is_admin? && !current_user_divisions.include?(@news_item.division)
+      render :action => 'new', :notice  => "Can't create a news item in that division."
+    elsif @news_item.save
       division = @news_item.division
       
       #expire all the front-page news content for users that are in the divisions that we just updated

@@ -46,6 +46,7 @@ class Ability
         end
         
         #can manage their own news items
+        can :create, NewsItem
         can :manage, NewsItem do |news_item|
           user.divisions.include? news_item.division
         end
