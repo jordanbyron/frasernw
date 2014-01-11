@@ -2,10 +2,14 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
     
-  = f.input :name
-  = f.input :member_name
-  
-  - Division.all.each do |division|
+  - if current_user_is_super_admin?
+    = f.input :name
+    = f.input :member_name
+    - divisions = Division.all
+  - else
+    - divisions = current_user_divisions
+    
+  - divisions.each do |division|
     - possible_admins = division.users.admin + User.super_admin
     - division_admins = [nil]
     - possible_admins.uniq.each{ |user| division_admins << [user.name, user.id]}

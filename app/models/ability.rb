@@ -27,6 +27,9 @@ class Ability
         end
         can :create, [Specialist, Clinic, Hospital, Office]
         
+        #can list and edit specializations, to change their divisional specialization options
+        can [:index, :edit, :update], Specialization
+        
         #so that an admin can list offices by city for those in their division
         can :read, City do |city|
           (city.divisions & user.divisions).present?
