@@ -306,8 +306,8 @@
               = cl.input_field :phone_extension, :class => "span1"
             = cl.input :fax, :input_html => { :class => "span3" }
             = cl.input :contact_details
-            = cl.input :public_email, :input_html => { :class => "span3" }
-            = cl.input :email, :input_html => { :class => "span3" }
+            = cl.input :public_email, :input_html => { :class => "span3" }, :hint => "For patient contact"
+            = cl.input :email, :input_html => { :class => "span3" }, :hint => "For physician contact only"
             = cl.input :url, :input_html => { :class => "span3" }
           .control-group.print-only
             %label.control-label Address
