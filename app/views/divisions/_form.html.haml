@@ -2,8 +2,9 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
-  = f.input :name
-  = f.association :cities, as: :check_boxes
+  - if current_user_is_super_admin?
+    = f.input :name
+    = f.association :cities, as: :check_boxes
   
   .row
     .span2

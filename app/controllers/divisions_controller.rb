@@ -11,6 +11,7 @@ class DivisionsController < ApplicationController
   
   def show
     @division = Division.find(params[:id])
+    @local_referral_cities = generate_local_referral_cities(@division)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
@@ -64,16 +65,7 @@ class DivisionsController < ApplicationController
   
   def edit
     @division = Division.find(params[:id])
-    @local_referral_cities = {}
-    City.all.each do |city|
-      @local_referral_cities[city.id] = []
-    end
-    Specialization.all.each do |specialization|
-      cities = @division.local_referral_cities_for_specialization(specialization)
-      cities.each do |city|
-        @local_referral_cities[city.id] << specialization.id
-      end
-    end
+    @local_referral_cities = generate_local_referral_cities(@division)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
@@ -138,5 +130,19 @@ class DivisionsController < ApplicationController
     if !(current_user_is_super_admin? || (current_user_divisions.include? Division.find(params[:id])))
       redirect_to root_url, :notice => "You are not allowed to access this page"
     end
+  end
+  
+  def generate_local_referral_cities(division)
+    local_referral_cities = {}
+    City.all.each do |city|
+      local_referral_cities[city.id] = []
+    end
+    Specialization.all.each do |specialization|
+      cities = division.local_referral_cities_for_specialization(specialization)
+      cities.each do |city|
+        local_referral_cities[city.id] << specialization.id
+      end
+    end
+    return local_referral_cities
   end
 end

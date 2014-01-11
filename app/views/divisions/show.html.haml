@@ -5,11 +5,26 @@
   %h2= @division.name
   
   %p.no_indent.space
-    %strong Cities
+    %strong Cities Encompassed
     
     %ul
       - @division.cities.each do |city|
         %li= link_to city.name, city_path(city), :class => 'ajax'
+
+  %div{:style => "overflow-x:scroll"}
+    %table.local_referral_area
+      %thead
+        %tr
+          %td &nbsp;
+          - Specialization.all.each do |specialization|
+            %td= specialization.name
+      %tbody
+        - City.all.each_with_index do |city, index|
+          %tr{:class => (index % 2 == 1) && "odd"}
+            %td{:style => "white-space:nowrap"}= city.name
+            - Specialization.all.each do |specialization|
+              %td
+                = (@local_referral_cities[city.id].present?) && (@local_referral_cities[city.id].include? specialization.id) ? "&#10004;".html_safe : ""
 
   %p.admin.btn-group
     - if can? :update, @division
