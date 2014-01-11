@@ -50,11 +50,9 @@ class FrontController < ApplicationController
   def update
     @front = Front.first
     division = Division.find(params[:division_id])
-    if (!current_user_is_super_admin? && !(current_user_divisions.include? @division))
+    if (!current_user_is_super_admin? && !(current_user_divisions.include? division))
       redirect_to root_url, :notice  => "Not allowed to edit this division."
-    end
-    if @front.update_attributes(params[:front])
-      
+    elsif @front.update_attributes(params[:front])
       #expire all the featured content for users that are in the divisions that we just updated
       User.in_divisions([division]).map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
         expire_fragment "featured_content_#{division_group.join('_')}"
