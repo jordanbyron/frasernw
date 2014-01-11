@@ -32,10 +32,10 @@ Frasernw::Application.routes.draw do
   resources :feedback_items
   
   resources :sc_categories, :path => 'content_categories'
-  match '/division/:division_id/content_items/' => 'sc_items#index', :as => 'division_content_items'
+  match '/divisions/:id/content_items/' => 'sc_items#index', :as => 'division_content_items'
   resources :sc_items, :path => 'content_items'
   
-  match '/divisions/:id/content_items' => 'divisions#shared_sc_items', :as => 'shared_content_items'
+  match '/divisions/:id/shared_content_items' => 'divisions#shared_sc_items', :as => 'shared_content_items'
   put   '/divisions/:id/update_shared' => 'divisions#update_shared', :as => 'update_shared'
   
   resources :news_items
