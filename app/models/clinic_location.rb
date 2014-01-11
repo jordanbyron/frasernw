@@ -1,6 +1,6 @@
 class ClinicLocation < ActiveRecord::Base
   
-  attr_accessible :clinic_id, :phone, :phone_extension, :fax, :contact_details, :sector_mask, :url, :email, :wheelchair_accessible_mask, :schedule_attributes, :location_attributes, :attendances_attributes
+  attr_accessible :clinic_id, :phone, :phone_extension, :fax, :contact_details, :sector_mask, :url, :public_email, :email, :wheelchair_accessible_mask, :schedule_attributes, :location_attributes, :attendances_attributes
 
   belongs_to :clinic
   has_one :location, :as => :locatable

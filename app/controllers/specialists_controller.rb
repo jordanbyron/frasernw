@@ -379,7 +379,7 @@ class SpecialistsController < ApplicationController
   
   def print_patient_information
     @specialist = Specialist.find(params[:id])
-    @specialist_office = @specialist.specialist_offices.first
+    @specialist_office = @specialist.specialist_offices.reject{ |so| so.empty? }.first
     render :layout => 'print'
   end
   

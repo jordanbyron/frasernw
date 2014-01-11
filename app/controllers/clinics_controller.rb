@@ -345,7 +345,7 @@ class ClinicsController < ApplicationController
   
   def print_patient_information
     @clinic = Clinic.find(params[:id])
-    @clinic_location = @clinic.clinic_locations.first
+    @clinic_location = @clinic.clinic_locations.reject{ |cl| cl.empty? }.first
     render :layout => 'print'
   end
   

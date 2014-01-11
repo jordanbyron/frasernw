@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131221201514) do
+ActiveRecord::Schema.define(:version => 20140111203841) do
 
   create_table "addresses", :force => true do |t|
     t.string   "address1"
@@ -96,6 +96,7 @@ ActiveRecord::Schema.define(:version => 20131221201514) do
     t.integer  "wheelchair_accessible_mask", :default => 3
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "public_email"
   end
 
   create_table "clinic_speaks", :force => true do |t|
@@ -575,6 +576,7 @@ ActiveRecord::Schema.define(:version => 20131221201514) do
     t.boolean  "open_saturday",          :default => false
     t.boolean  "open_sunday",            :default => false
     t.integer  "schedule_id"
+    t.string   "public_email"
   end
 
   add_index "specialist_offices", ["office_id"], :name => "index_specialist_offices_on_office_id"
