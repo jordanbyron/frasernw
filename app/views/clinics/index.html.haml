@@ -8,51 +8,51 @@
     - divisions = Division.all
   - else
     - divisions = current_user_divisions
-  
-  - if divisions.length > 1
 
-    - first_division = divisions.first
-    .tabbable
-      %ul#content_tabs.nav.nav-tabs
-        - divisions.each do |division|
-          %li{:class => (division == first_division) && "active"}
-            %a{"href" => "##{division.id}_tab", "data-toggle" => "tab"}= division.name
-            
-      .tab-content
-        - divisions.each do |division|
-          .tab-pane{:id => "#{division.id}_tab", :class => (division == first_division) && "active"} 
-            %table.table.table-condensed.table-striped
-              - Specialization.all.each do |specialization|
-                - clinics = specialization.clinics.in_divisions([division])
-                - next if clinics.blank?
-                %tr{ :class => specialization.fully_in_progress_for_divisions([division]) ? "in-progress" : "" }
-                  %th{:style => "width:100%"}= specialization.name
-                  %th.admin
+  - first_division = divisions.first
 
-                - clinics.each do |clinic|
-                  %tr
-                    %td= link_to clinic.name, clinic_path(clinic), :class => 'ajax'
-                    %td.admin.btn-group
-                      - if can? :update, clinic
-                        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path((clinic)), :class => "btn btn-mini ajax")
-                      - if can? :destroy, clinic
-                        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", clinic, :confirm => "Delete #{clinic.name}?", :method => :delete, :class => "btn btn-mini")
+  .tabbable
+    %ul#content_tabs.nav.nav-tabs
+      - divisions.each do |division|
+        %li{:class => (division == first_division) && "active"}
+          %a{"href" => "##{division.id}_tab", "data-toggle" => "tab"}= division.name
+      %li
+        %a{"href" => "#no_division_tab", "data-toggle" => "tab"} No Division
+          
+    .tab-content
+      - divisions.each do |division|
+        .tab-pane{:id => "#{division.id}_tab", :class => (division == first_division) && "active"} 
+          %table.table.table-condensed.table-striped
+            - Specialization.all.each do |specialization|
+              - clinics = specialization.clinics.in_divisions([division])
+              - next if clinics.blank?
+              %tr{ :class => specialization.fully_in_progress_for_divisions([division]) ? "in-progress" : "" }
+                %th{:style => "width:100%"}= specialization.name
+                %th.admin
 
-  - else
-  
-    %table.table.table-condensed.table-striped
-      - Specialization.all.each do |specialization|
-        - clinics = specialization.clinics
-        - next if clinics.blank?
-        %tr{ :class => specialization.fully_in_progress_for_divisions(divisions) ? "in-progress" : "" }
-          %th{:style => "width:100%"}= specialization.name
-          %th.admin
+              - clinics.each do |clinic|
+                %tr
+                  %td= link_to clinic.name, clinic_path(clinic), :class => 'ajax'
+                  %td.admin.btn-group
+                    - if can? :update, clinic
+                      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path((clinic)), :class => "btn btn-mini ajax")
+                    - if can? :destroy, clinic
+                      = link_to("<i class='icon-trash'></i>".html_safe + " Delete", clinic, :confirm => "Delete #{clinic.name}?", :method => :delete, :class => "btn btn-mini")
+                      
+      .tab-pane{:id => "no_division_tab"}
+        %table.table.table-condensed.table-striped
+          - Specialization.all.each do |specialization|
+            - clinics = specialization.clinics.reject{ |c| c.cities.length > 0 }
+            - next if clinics.blank?
+            %tr
+              %th{:style => "width:100%"}= specialization.name
+              %th.admin
 
-        - clinics.each do |clinic|
-          %tr
-            %td= link_to clinic.name, clinic_path(clinic), :class => 'ajax'
-            %td.admin.btn-group
-              - if can? :update, clinic
-                = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path((clinic)), :class => "btn btn-mini ajax")
-              - if can? :destroy, clinic
-                = link_to("<i class='icon-trash'></i>".html_safe + " Delete", clinic, :confirm => "Delete #{clinic.name}?", :method => :delete, :class => "btn btn-mini")
+            - clinics.each do |clinic|
+              %tr
+                %td= link_to clinic.name, clinic_path(clinic), :class => 'ajax'
+                %td.admin.btn-group
+                  - if can? :update, clinic
+                    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path((clinic)), :class => "btn btn-mini ajax")
+                  - if can? :destroy, clinic
+                    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", clinic, :confirm => "Delete #{clinic.name}?", :method => :delete, :class => "btn btn-mini")
