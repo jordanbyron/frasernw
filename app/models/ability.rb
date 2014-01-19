@@ -44,9 +44,12 @@ class Ability
         can :create, ScItem
         
         #can edit non-admin/super-admin users
-        can :manage, User do |user|
+        can [:index, :new, :create, :show], User
+        can [:edit, :update], User do |user|
           user.user?
         end
+        #can [:change_name, :update_name], User
+        can [:change_email, :update_email, :change_password, :update_password, :change_local_referral_area, :update_local_referral_area], User
         
         #can manage their own news items
         can :create, NewsItem
