@@ -11,12 +11,13 @@ class Specialization < ActiveRecord::Base
   has_many :procedure_specializations, :dependent => :destroy, :conditions => { "mapped" => true }
   has_many :procedures, :through => :procedure_specializations, :order => 'name ASC'
   
-  has_many :sc_items_specializations, :dependent => :destroy
+  has_many :sc_item_specializations, :dependent => :destroy
   has_many :sc_items, :through => :sc_items_specializations
   
   has_many :specialization_options, :dependent => :destroy
   accepts_nested_attributes_for :specialization_options
   has_many :owners, :through => :specialization_options, :class_name => "User"
+  has_many :content_owners, :through => :specialization_options, :class_name => "User"
   
   default_scope order('specializations.name')
   

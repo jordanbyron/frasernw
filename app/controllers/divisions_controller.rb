@@ -11,6 +11,7 @@ class DivisionsController < ApplicationController
   
   def show
     @division = Division.find(params[:id])
+    @local_referral_cities = generate_local_referral_cities(@division)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
@@ -44,8 +45,17 @@ class DivisionsController < ApplicationController
           end
         end
       end
+      first_division = Division.find(1)
+      default_owner = User.super_admin.first
       Specialization.all.each do |s|
-        SpecializationOption.find_or_create_by_division_id_and_specialization_id( @division.id, s.id )
+        old_so = SpecializationOption.find_by_division_id_and_specialization_id( first_division.id, s.id )
+        new_so = SpecializationOption.find_or_create_by_division_id_and_specialization_id( @division.id, s.id )
+        new_so.in_progress = old_so.in_progress
+        new_so.owner = old_so.owner.super_admin? ? old_so.owner : default_owner
+        new_so.content_owner = old_so.content_owner.super_admin? ? old_so.content_owner : default_owner
+        new_so.open_to_clinic_tab = old_so.open_to_clinic_tab
+        new_so.is_new = old_so.is_new
+        new_so.save
       end
       redirect_to @division, :notice => "Successfully created division."
     else
@@ -55,16 +65,7 @@ class DivisionsController < ApplicationController
   
   def edit
     @division = Division.find(params[:id])
-    @local_referral_cities = {}
-    City.all.each do |city|
-      @local_referral_cities[city.id] = []
-    end
-    Specialization.all.each do |specialization|
-      cities = @division.local_referral_cities_for_specialization(specialization)
-      cities.each do |city|
-        @local_referral_cities[city.id] << specialization.id
-      end
-    end
+    @local_referral_cities = generate_local_referral_cities(@division)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
@@ -129,5 +130,19 @@ class DivisionsController < ApplicationController
     if !(current_user_is_super_admin? || (current_user_divisions.include? Division.find(params[:id])))
       redirect_to root_url, :notice => "You are not allowed to access this page"
     end
+  end
+  
+  def generate_local_referral_cities(division)
+    local_referral_cities = {}
+    City.all.each do |city|
+      local_referral_cities[city.id] = []
+    end
+    Specialization.all.each do |specialization|
+      cities = division.local_referral_cities_for_specialization(specialization)
+      cities.each do |city|
+        local_referral_cities[city.id] << specialization.id
+      end
+    end
+    return local_referral_cities
   end
 end

@@ -75,7 +75,7 @@
             
             %form.navbar-search.pull-right
               %input.span3.search-query#search{"type" => "search", "placeholder" => "Search"}
-              #search_results
+              #search_results{:style => 'display:none'}
                 #loading
                   #loading-spinner
                 %ul
@@ -150,6 +150,8 @@
                             %li= link_to "New Hospital", new_hospital_path, :class => "ajax"
                           - if can? :create, Language
                             %li= link_to "New Language", new_language_path, :class => "ajax"
+                          - if can? :create, NewsItem
+                            %li= link_to "New News Item", new_news_item_path, :class => "ajax"
                           - if can? :create, Office
                             %li= link_to "New Office", new_office_path, :class => "ajax"
                           - if can? :create, Specialist
@@ -175,12 +177,23 @@
                         %li= link_to "Clinics", clinics_path, :class => "ajax"
                       - if can? :index, Division
                         %li= link_to "Divisions", divisions_path, :class => "ajax"
+                      - elsif current_user_is_admin?
+                        - if current_user.divisions.length == 1
+                          %li= link_to "Division", division_path(current_user.divisions.first), :class => "ajax"
+                        - else
+                          %li
+                            = link_to "Divisions", "#", :class => "arrow-right-after"
+                            %ul.dropdown-menu.sub-menu
+                              - current_user.divisions.each do |division|
+                                %li= link_to division.name, division_path(division), :class => "ajax"
                       - if can? :index, HealthcareProvider
                         %li= link_to "Healthcare Providers", healthcare_providers_path, :class => "ajax"
                       - if can? :index, Hospital
                         %li= link_to "Hospitals", hospitals_path, :class => "ajax"
                       - if can? :index, Language
                         %li= link_to "Languages", languages_path, :class => "ajax"
+                      - if can? :index, NewsItem
+                        %li= link_to "News Items", news_items_path, :class => "ajax"
                       - if can? :index, Office
                         %li
                           = link_to "Offices", "#", :class => "arrow-right-after"
@@ -210,23 +223,23 @@
                       - if can? :read, ScItem
                         - if current_user_is_super_admin? && Division.all.length > 1
                           %li
-                            = link_to "Content Items For...", "#", :class => "create arrow-right-after"
+                            = link_to "Owned Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
                               - Division.all.each do |division|
                                 %li= link_to "#{division.name}", division_content_items_path(division), :class => "sc_item ajax"
                           %li
-                            = link_to "Manage Shared Content Items For...", "#", :class => "create arrow-right-after"
+                            = link_to "Shared Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
                               - Division.all.each do |division|
                                 %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
                         - elsif user_divisions.length > 1
                           %li
-                            = link_to "Content Items For...", "#", :class => "create arrow-right-after"
+                            = link_to "Owned Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
                               - user_divisions.each do |division|
                                 %li= link_to "#{division.name}", division_content_items_path(division), :class => "sc_item ajax"
                           %li
-                            = link_to "Manage Shared Content Items For...", "#", :class => "create arrow-right-after"
+                            = link_to "Shared Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
                               - user_divisions.each do |division|
                                 %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
@@ -313,6 +326,11 @@
                       - current_user.controlled_specialists.each do |specialist|
                         %li= link_to specialist.name, specialist, :class => 'ajax'
                     
+                    - if current_user.controlled_clinics.present?
+                      %li.nav-header Your clinics
+                      - current_user.controlled_clinics.each do |clinic|
+                        %li= link_to clinic.name, clinic, :class => 'ajax'
+                    
                     %li.nav-header Help
                     %li= link_to "FAQ", faq_path, :class => 'faq ajax'
                     %li= mail_to "administration@pathwaysbc.ca", "Contact Us", :class => 'contact'
@@ -320,14 +338,9 @@
                     %li.nav-header Legal
                     %li= link_to "Terms and Conditions", terms_and_conditions_path, :class => 'tac ajax'
                     
-                    - if current_user.controlled_clinics.present?
-                      %li.nav-header Your clinics
-                      - current_user.controlled_clinics.each do |clinic|
-                        %li= link_to clinic.name, clinic, :class => 'ajax'
-                    
                     %li.nav-header Settings
                     -# %li= link_to "Change name", change_name_path, :class => 'change_name ajax'
-                    - if Division.all.length > 1
+                    -# if Division.all.length > 1
                       %li= link_to "Change local referral area", change_local_referral_area_path, :class => 'change_local_referral_area ajax'
                     %li= link_to "Change e-mail address", change_email_path, :class => 'change_email ajax'
                     %li= link_to "Change password", change_password_path, :class => 'change_password ajax'
@@ -341,11 +354,21 @@
             - flash.each do |type, msg|
               .alert.alert-success= msg
             = yield
-            
+            #message
+              .inner
+            #message_sent
+              .inner
+                %h2 Message sent!
+                
+                %p.space.no_indent Thank you for providing your comments to Pathways. We will review your message in the near future, and respond as necessary.
+                
+                %p.space.no_indent
+                  %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#message_sent').fadeOut(200)" } Close
+
       .row
         #email.content-wrapper
           Contact us:
-          = mail_to "administration@pathwaysbc.ca", "administration@pathwaysbc.ca"
+          %a{:href => '#', :onclick => "$('#message .inner').load('#{messages_path}', function() { $('#message').show() }); return false;"} administration@pathwaysbc.ca
             
     #loading
       #loading-spinner

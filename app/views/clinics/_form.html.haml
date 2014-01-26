@@ -2,9 +2,9 @@
 - form_method    = params[:action] == 'new' ? :post   : :put
 - current_action = params[:action] == 'new' ? :create : :update
 - current_action = params[:action] == 'review' ? :accept : current_action                   #if we are reviewing a review queue edit
-- current_action = params[:controller] == 'clinics_editor' ? :update : current_action       #if we are making a review queue edit
+- current_action = params[:controller] == 'clinics_editor' ? (params[:action] == 'temp_edit' ? :temp_update : :update ) : current_action       #if we are making a review queue edit
 - form_action    = current_action
-- cancel_path    = params[:controller] == 'clinics_editor' ? root_url : clinics_path
+- cancel_path    = params[:controller] == 'clinics_editor' ? root_url : (@is_rereview ? archived_review_items_path : clinics_path)
 
 - if @review_item
   %script{"type" => "text/javascript"}
@@ -23,7 +23,7 @@
         return form_element_id_array[0] + '[' + form_element_id_array.slice(1).join('][') + ']';
       }
 
-      function compare_form(form_element_id_array, new_entry_value)
+      function compare_form(form_element_id_array, new_entry_value, highlight_changes)
       {
         //console.log(form_element_id_array + " : " + new_entry_value)
         if ( $.isArray( new_entry_value ) )
@@ -41,13 +41,13 @@
               {
                 //was checked, but not in updated list
                 checkbox.prop('checked', false); //uncheck
-                show_old_value(checkbox, "checked");
+                if (highlight_changes) { show_old_value(checkbox, "checked"); }
               }
               else if ( !checkbox.prop('checked') && (new_entry_value.indexOf(checkbox.val()) != -1) )
               {
                 //was unchecked, but now in updated list
                 checkbox.prop('checked', true); //check
-                show_old_value(checkbox, "unchecked");
+                if (highlight_changes) { show_old_value(checkbox, "unchecked"); }
               }
             });
           }
@@ -91,8 +91,11 @@
                   form_element.prop('checked', false);          // uncheck old value
                   new_entry_value_offset = new_entry_value - 1; //eq is zero indexed, our forms are 1
                   $("input:radio[name='" + generate_button_name(form_element_id_array) + "']:eq(" + new_entry_value_offset + ")").prop('checked', true);              //check new value
-                  old_value_formatted = form_element.closest('label').text()
-                  show_old_value(form_element, old_value_formatted);
+                  if (highlight_changes) 
+                  {
+                    old_value_formatted = form_element.closest('label').text()
+                    show_old_value(form_element, old_value_formatted);
+                  }
                 }
                 break;
               case('checkbox'):
@@ -100,13 +103,13 @@
                 {
                   //was checked, uncheck
                   form_element.prop('checked', false);
-                  show_old_value(form_element, "checked");
+                  if (highlight_changes) { show_old_value(form_element, "checked"); }
                 }
                 else if (!form_element.prop('checked') && (new_entry_value == "1"))
                 {
                   //was uncheck, check
                   form_element.prop('checked', true);
-                  show_old_value(form_element, "unchecked")
+                  if (highlight_changes) { show_old_value(form_element, "unchecked"); }
                 }
                 break;
               case('text'):
@@ -118,8 +121,11 @@
                 {
                   //console.log("TEXT: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
                   form_element.val(new_entry_value);
-                  old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
-                  show_old_value(form_element, old_value_formatted);
+                  if (highlight_changes) 
+                  {
+                    old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
+                    show_old_value(form_element, old_value_formatted);
+                  }
                 }
                 break;
               default:
@@ -132,8 +138,11 @@
             if (old_entry_value != new_entry_value)
             {
               form_element.val(new_entry_value);
-              old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
-              show_old_value(form_element, old_value_formatted);
+              if (highlight_changes) 
+              { 
+                old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
+                show_old_value(form_element, old_value_formatted);
+              }
             }
             break;
           case('SELECT'):
@@ -142,8 +151,11 @@
             {
               //console.log("SELECT: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
               form_element.val(new_entry_value);
-              old_value_formatted = old_entry_value != "" ? $('#' + form_element_id_array.join('_') + ' option[value=\'' + old_entry_value + '\']').text(): "blank";
-              show_old_value(form_element, old_value_formatted);
+              if (highlight_changes) 
+              {
+                old_value_formatted = old_entry_value != "" ? $('#' + form_element_id_array.join('_') + ' option[value=\'' + old_entry_value + '\']').text(): "blank";
+                show_old_value(form_element, old_value_formatted);
+              }
             }
             break;
           default:
@@ -152,7 +164,7 @@
         }
       }
       
-      function traverse_review_item(id_array, review_item)
+      function traverse_review_item(id_array, review_item, highlight_changes)
       {
         $.each(review_item, function(entry_key, new_entry_value) {
           local_id_array = id_array.slice(0); //array copy
@@ -162,16 +174,16 @@
           if ( $.isPlainObject(new_entry_value) )
           {
             //recursive
-            traverse_review_item(local_id_array, new_entry_value);
+            traverse_review_item(local_id_array, new_entry_value, highlight_changes);
           }
           else
           {
-            compare_form(local_id_array, new_entry_value);
+            compare_form(local_id_array, new_entry_value, highlight_changes);
           }
         });
       }
       
-      function traverse_focuses(review_item)
+      function traverse_focuses(review_item, highlight_changes)
       {
         focuses_mapped = review_item["focuses_mapped"];
         if (!focuses_mapped)
@@ -189,22 +201,43 @@
             if (!focuses_mapped[checkbox_id])
             {
               $this.prop('checked', false);
-              show_old_value($this, "checked");
+              if (highlight_changes) { show_old_value($this, "checked"); }
             }
           }
         });
-        traverse_review_item(["focuses_mapped"], focuses_mapped);
-        traverse_review_item(["focuses_investigations"], review_item["focuses_investigations"]);
-        traverse_review_item(["focuses_waittime"], review_item["focuses_waittime"]);
-        traverse_review_item(["focuses_lagtime"], review_item["focuses_lagtime"]);
+        traverse_review_item(["focuses_mapped"], focuses_mapped, highlight_changes);
+        traverse_review_item(["focuses_investigations"], review_item["focuses_investigations"], highlight_changes);
+        if (review_item["focuses_waittime"])
+        {
+          traverse_review_item(["focuses_waittime"], review_item["focuses_waittime"], highlight_changes);
+        }
+        if (review_item["focuses_lagtime"])
+        {
+          traverse_review_item(["focuses_lagtime"], review_item["focuses_lagtime"], highlight_changes);
+        }
       }
       
       $(document).ready(function() 
       {
+        if (#{@is_rereview && @review_item.base_object.present?})
+        {
+          var base_review_item = #{@review_item.base_object || 'null'};
+          traverse_review_item(["clinic"], base_review_item["clinic"], false);
+          traverse_focuses(base_review_item, false);
+        }
+
         var review_item = #{@review_item.object};
         //console.log(review_item);
-        traverse_review_item(["clinic"], review_item["clinic"]);
-        traverse_focuses(review_item);
+        traverse_review_item(["clinic"], review_item["clinic"], true);
+        traverse_focuses(review_item, true);
+        
+        for (var i = 0; i < #{Clinic::MAX_LOCATIONS}; ++i)
+        {
+          if ($('#location_tab_' + i + ' .changed').length !== 0)
+          {
+            $('a[href="#location_tab_' + i + '"]').addClass('changed');
+          }
+        }
       });
       
 - if @specialization
@@ -240,66 +273,95 @@
     %hr
 
     %h3 Clinic Contact Information
-    = f.input :phone do
-      = f.input_field :phone, :class => "span3"
-      .span1
-        ext: 
-      = f.input_field :phone_extension, :class => "span1"
-    = f.input :fax, :input_html => { :class => "span3" }
-    = f.input :contact_details
-    = f.input :email, :input_html => { :class => "span3" }
-    = f.input :url, :input_html => { :class => "span3" }
-    
-    = f.simple_fields_for :location do |l|
-      .control-group.no-print
-        %label.control-label Location is
-        .controls
-          - location_class = "location_0"
-          - [['Standalone', !@clinic.location.in_hospital?], ['In a hospital', @clinic.location.in_hospital?]].each do |location| 
-            = label_tag "#{location_class}_#{location.first}", "#{radio_button_tag(location_class, location.first, location.second, :class => location_class)} #{location.first}".html_safe
-      .hospital_0.no-print
-        = l.association :hospital_in, as: :select, collection: (current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(current_user_divisions)), :include_blank => true
-      .details_0
-        = l.input :suite_in, :input_html => { :class => "span1" }
-        = l.input :details_in
-      .address_0
-        = l.simple_fields_for :address do |a|
-          = a.input :suite, :input_html => { :class => "span1" }
-          = a.input :address1
-          = a.input :address2
-          .no-print
-            = a.association :city, as: :select, collection: (current_user_is_super_admin? ? City.all : City.in_divisions(current_user_divisions)).map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
-          = a.input :postalcode, :input_html => { :class => "span1" }
-    .universal_0
-      = f.input :sector_mask, as: :radio_buttons, collection: Clinic::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
-    = f.input :wheelchair_accessible_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
-    %script{"type" => "text/javascript"}
-      :plain
-        $(document).ready( address_0_location_changed );
       
-    %hr
-      
-    %h3 Schedule
+    - clocs = @clinic.clinic_locations
     
-    = f.simple_fields_for :schedule, :suppress_fields => true do |s|
-      - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
-        = s.simple_fields_for day, :suppress_fields => true do |d|
-          .changed_wrapper
-            = d.input :scheduled, :label => day.to_s.capitalize_first_letter, wrapper: :bootstrap_tight do
-              = d.input_field :scheduled, :class => "scheduled span1"
-              .hours.no-print
-                .changed_wrapper
-                  .from from
-                  = d.input_field :from, :class => "auto no-print", :minute_step => 15, :include_blank => true
-                .changed_wrapper
-                  .to to
-                  = d.input_field :to, :class => "auto no-print", :minute_step => 15, :include_blank => true
-              .print-only
-                from:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to:
+    .tabbable
+      %ul.nav.nav-tabs
+        - @clinic.clinic_locations.each_with_index do |cl, index|
+          %li{:class => index == 0 ? "active" : ""}
+            %a{"href" => "#location_tab_#{index}", "data-toggle" => "tab"}= "Location #{index+1}"
+    
+    .tab-content
+      - index = 0
+      = f.simple_fields_for :clinic_locations, :nested_wrapper => false do |cl|
+        - cloc = clocs[index]
+        - loc = cloc.location
+        - is_unused = loc.empty?
+        - is_standalone = !is_unused && !loc.in_hospital?
+        - is_in_hospital = !is_unused && loc.in_hospital?
+        .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"} 
+          %h4.print-only= "Location #{index+1}"
+          .control-group.no-print
+            %label.control-label Location is
+            .controls
+              - location_class = "clinic_location_#{index}"
+              - [['Not used', is_unused], ['Standalone', is_standalone], ['In a hospital', is_in_hospital]].each do |option| 
+                = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
+          %div{:class => "numbers_#{index}"}
+            = cl.input :phone do
+              = cl.input_field :phone, :class => "span3"
+              .span1
+                ext: 
+              = cl.input_field :phone_extension, :class => "span1"
+            = cl.input :fax, :input_html => { :class => "span3" }
+            = cl.input :contact_details
+            = cl.input :public_email, :input_html => { :class => "span3" }, :hint => "For patient contact"
+            = cl.input :email, :input_html => { :class => "span3" }, :hint => "For physician contact only"
+            = cl.input :url, :input_html => { :class => "span3" }
+          .control-group.print-only
+            %label.control-label Address
+            .controls
+              - text_address = @clinic.locations[index].resolved_address.address if @clinic.locations[index].present? && @clinic.locations[index].resolved_address.present?
+              %input{"type" => "text", "value" => "#{text_address}"}
+
+          = cl.simple_fields_for :location, :nested_wrapper => false do |l|
+            %div{:class => "address_#{index}"}
+              = l.simple_fields_for :address do |a|
+                = a.input :suite, :input_html => { :class => "span1" }
+                = a.input :address1
+                = a.input :address2
+                = a.association :city, as: :select, collection: (current_user_is_super_admin? ? City.all : City.in_divisions(current_user_divisions)).map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
+                = a.input :postalcode, :input_html => { :class => "span1" }
+            %div{:class => "hospital_#{index}"}
+              = l.association :hospital_in, as: :select, collection: (current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(current_user_divisions)), :include_blank => true
+            %div{:class => "details_#{index}"}
+              = l.input :suite_in, :input_html => { :class => "span1" }
+              = l.input :details_in
+          %div{:class => "universal_#{index}"}
+            = cl.input :sector_mask, as: :radio_buttons, collection: ClinicLocation::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
+            = cl.input :wheelchair_accessible_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
+
+            %h4 Location schedule
+            
+            = cl.simple_fields_for :schedule, :nested_wrapper => false do |s|
+              - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
+                = s.simple_fields_for day, :nested_wrapper => false do |d|
+                  .changed_wrapper
+                    = d.input :scheduled, :label => day.to_s.capitalize_first_letter, wrapper: :bootstrap_tight do
+                      = d.input_field :scheduled, :class => "scheduled span1"
+                      .hours.no-print
+                        .changed_wrapper
+                          .from from
+                          = d.input_field :from, :class => "auto no-print", :minute_step => 15, :include_blank => true
+                        .changed_wrapper
+                          .to to
+                          = d.input_field :to, :class => "auto no-print", :minute_step => 15, :include_blank => true
+                      .print-only
+                        from:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to:
+
+          %script{"type" => "text/javascript"}
+            :plain
+              $(document).ready( clinic_address_location_changed(#{index}) );
+          - index += 1
 
     %script{"type" => "text/javascript"}
       :plain
         $(".scheduled").each(scheduled_changed)
+
+    %script{"type" => "text/javascript"}
+      :plain
+        $(document).ready( $(".chzn-select").chosen() );
     
   - if current_user_is_admin? || @is_review
   
@@ -376,7 +438,7 @@
     = f.input :referral_other_details
     = f.input :referral_details
 
-    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does this clinic have a referral form?", :hint => @is_review ? "If you would like to add or correct any referral forms, please email them to #{clinic_owner.name} at #{mail_to clinic_owner.email}".html_safe : ""
+    = f.input :referral_form_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does this clinic have a referral form?", :hint => @is_review ? "If you would like to add or correct any referral forms, please email them to #{clinic_owner.name} at #{mail_to clinic_owner.email}".html_safe : ""
     
     - if @is_review && @clinic.referral_form_mask == 1 && @clinic.referral_forms.reject{ |referral_form| referral_form.form.blank? }.present?
    
@@ -429,29 +491,32 @@
       
       %h3 Associations
       
-      %h4 Physicians Who See Patients at the Clinic
-      
       .content
-        .row
-          .span1.no-print Specialist?
-          .span2 Name
-          .span5 Area of focus (if not the same for all physicians working in the clinic).
-          
-        = f.simple_fields_for :attendances do |i|
+        
+      - @clinic.clinic_locations.reject{|cl| cl.empty?}.each do |cl|
+      
+        %h4 Physicians Who See Patients at #{cl.location.short_address}
+
+        = f.simple_fields_for :clinic_locations, cl do |clf|
           .row.spaced
-            .span1.no-print
-              = i.input :is_specialist, label: false, wrapper: :no_wrapper, input_html: { class: "is_specialist span1 no-print" }
-            .span2
-              = i.association :specialist, as: :select, label: false, collection: @clinic_specialists, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "specialist_list span2 no-print force-print" }
-              = i.input :freeform_firstname, label: false, wrapper: :no_wrapper, input_html: { class: "freeform span2", style: "display:none" }
-            .span5
-              = i.input :area_of_focus, label: false, wrapper: :no_wrapper, input_html: { class: "span5" }
-            .spanhalf.no-print
-              = i.hidden_field :_destroy
-              = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
-              
-        .row.no-print
-          = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another physician", :attendances, class: "btn offset3")
+            .span1.no-print Specialist?
+            .span2 Name
+            .span5 Area of focus (if not the same for all physicians working in the clinic).
+          = clf.simple_fields_for :attendances do |i|
+            .row.spaced
+              .span1.no-print
+                = i.input :is_specialist, label: false, wrapper: :no_wrapper, input_html: { class: "is_specialist span1 no-print" }
+              .span2
+                = i.association :specialist, as: :select, label: false, collection: @clinic_specialists, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "specialist_list span2 no-print force-print" }
+                = i.input :freeform_firstname, label: false, wrapper: :no_wrapper, input_html: { class: "freeform span2", style: "display:none" }
+              .span5
+                = i.input :area_of_focus, label: false, wrapper: :no_wrapper, input_html: { class: "span5" }
+              .spanhalf.no-print
+                = i.hidden_field :_destroy
+                = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
+                
+          .row.no-print
+            = clf.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another physician", :attendances, class: "btn offset3")
               
       %script{"type" => "text/javascript"}
         :plain
@@ -468,22 +533,6 @@
     #section_admin.no-print
     
       %hr
-      
-      %h3 Admin
-    
-      Users that can edit this clinic
-      .content
-        = f.simple_fields_for :user_controls_clinics do |i|
-          .row.spaced
-            .span5.offset3
-              = i.association :user, as: :select, :label => false, collection: User.all.reject{ |u| u.admin? }, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "span5" }
-            .spanhalf.offsethalf
-              = i.hidden_field :_destroy
-              = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
-        .row
-          = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another user", :user_controls_clinics, class: "btn offset3")
-      
-      %hr{ "style" => "visibility:hidden" }
       
       = f.input :admin_notes
       
@@ -502,7 +551,10 @@
   .form-actions
     - if params[:controller] == 'clinics_editor'
       = f.button :submit, 'Update Clinic with My Changes', :class => "btn btn-primary"
-      = f.button :submit, 'There are No Updates to this Clinic', :class => "btn btn-success", :name => 'no_updates'
+      - if params[:action] != 'temp_edit'
+        = f.button :submit, 'There are No Updates to this Clinic', :class => "btn btn-success", :name => 'no_updates'
+    - elsif @is_rereview
+      = f.button :submit, 'Done', :class => "btn btn-primary"
     - else
       = f.button :submit, :class => "btn btn-primary"
       = link_to 'Cancel', cancel_path, :class => "btn btn-danger ajax"

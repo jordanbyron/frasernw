@@ -1,5 +1,10 @@
 - title "Specialties"
 
+- if current_user_is_super_admin?
+  - divisions = Division.all
+- else
+  - divisions = current_user_divisions
+
 .content-wrapper
 
   %h2 Specialties
@@ -8,7 +13,8 @@
     %tr
       %th Name
       %th Member name
-      %th Owners
+      %th Specialist / Clinic Owners
+      %th Content Owners
       %th.admin
     - Specialization.all.each do |specialization|
       %tr
@@ -16,11 +22,17 @@
         %td= specialization.member_name
         %td
           %ul
-            - Division.all.each do |division|
+            - divisions.each do |division|
               - specialization_option = SpecializationOption.find_by_specialization_id_and_division_id(specialization.id, division.id)
               %li= "#{division.name}: #{specialization_option.present? && specialization_option.owner.present? ? (link_to specialization_option.owner.name, specialization_option.owner, :class => 'ajax') : "none"}".html_safe
+        %td
+          %ul
+            - divisions.each do |division|
+              - specialization_option = SpecializationOption.find_by_specialization_id_and_division_id(specialization.id, division.id)
+              %li= "#{division.name}: #{specialization_option.present? && specialization_option.content_owner.present? ? (link_to specialization_option.content_owner.name, specialization_option.content_owner, :class => 'ajax') : "none"}".html_safe
         %td.admin.btn-group
           = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialization_path(specialization), :class => "btn btn-mini ajax")
-          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialization, :confirm => "Delete #{specialization.name}?", :method => :delete, :class => "btn btn-mini")
+          - if can? :destory, @specialization
+            = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialization, :confirm => "Delete #{specialization.name}?", :method => :delete, :class => "btn btn-mini")
 
   %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Specialty", new_specialization_path, :class => "btn ajax")

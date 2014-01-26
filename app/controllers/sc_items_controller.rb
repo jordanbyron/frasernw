@@ -4,7 +4,7 @@ class ScItemsController < ApplicationController
   before_filter :authorize_division_for_user, :only => :index
   
   def index
-    @division = Division.find(params[:division_id])
+    @division = Division.find(params[:id])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   

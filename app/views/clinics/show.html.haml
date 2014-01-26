@@ -2,6 +2,8 @@
 
 - specialization = (current_user_is_admin? ? @clinic.specializations : @clinic.specializations.not_in_progress_for_divisions(current_user_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
   
+- favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @clinic.id, "Clinic").present? ? "icon-red" : "icon-text") : "icon-text"
+  
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
@@ -11,49 +13,16 @@
     = link_to specialization.name, specialization_path(specialization), :class => 'ajax'
     = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
   
-- favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @clinic.id, "Clinic").present? ? "icon-red" : "icon-text") : "icon-text"
-  
-%script{"type" => "text/javascript"}
-  :plain
-    var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
-    $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
-    $(document).ready(function() { $('#user_favorite_clinics_#{@clinic.id}').addClass('#{favorite_class}') });
-  
-#specialties-dropdown-menu
-  .inner
-    - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions)
-    - first = specializations[0, (specializations.length / 4.0).ceil]
-    - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
-    - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
-    - fourth = specializations - first - second - third
-    
-    - [first, second, third, fourth].each do |list|
-      %ul
-        - list.each do |specialization|
-          %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}
-              = specialization.name
-              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
+= render 'partials/specialization_dropdown_menu'
 
-.tabbable
-  %ul#content_tabs.nav.nav-tabs
-    %li 
-      %a#specialists{"href" => "#{specialization_path(specialization)}#specialists"}
-        %span Specialists
-    %li.active
-      %a#clinics{"href" => "#{specialization_path(specialization)}#clinics"}
-        %span Clinics
-    - ScCategory.specialty.each do |sc_category|
-      - if sc_category.all_sc_items_for_specialization_in_divisions(specialization, current_user_divisions).present?
-        %li
-          %a{"href" => "#{specialization_path(specialization)}##{sc_category.name.remove_whitespace}", "id" => sc_category.name.remove_whitespace}
-            %span= sc_category.name
+= render 'partials/specialization_nav', :specialization => specialization, :selected => 'clinics'
 
 - if @is_version
   = render 'versions/info'
 
 - show_details = false
 - show_areas_of_practice = false
+- clinic_locations = @clinic.clinic_locations.reject{ |cl| cl.empty? }
 
 .content-wrapper
   - cache(clinic_path(@clinic)) do
@@ -71,8 +40,6 @@
             %h3.specialty_links
               - self_in_progress = @clinic.in_progress_for_divisions(@clinic.divisions)
               = @clinic.specializations.reject{ |s| !self_in_progress && s.fully_in_progress_for_divisions(@clinic.divisions) }.map{ |s| "<a href='#{specialization_path(s)}' class='#{ s.fully_in_progress_for_divisions(@clinic.divisions) ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
-              
-            %h5= @clinic.sector if @clinic.sector?
             
             - if @clinic.not_responded?
 
@@ -108,32 +75,38 @@
           
           .headline-footer
    
-          - if show_details    
-               
-            - address = @clinic.resolved_address
-            - if @clinic.sector? || (@clinic.location.present? && @clinic.location.in_hospital?) || (address.present? && !address.empty?) || @clinic.wheelchair_accessible? || @clinic.phone_and_fax.present? || @clinic.scheduled? || @clinic.location_opened.present? || @clinic.languages.present? || @clinic.interpreter_available
+          - if show_details
+        
+            - if clinic_locations.present? || @clinic.location_opened.present? || @clinic.languages.present? || @clinic.interpreter_available
               
               %h6 Clinic Information
+            
+              - clinic_locations.each do |cl|
+                - address = cl.resolved_address
 
-              %p
-                %strong= @clinic.phone_only if @clinic.phone_only.present?
-              %p= "Fax: #{@clinic.fax}" if @clinic.fax.present?
-              %p= "E-mail: #{mail_to @clinic.email, @clinic.email, :target => '_blank'}".html_safe if @clinic.email?
-              %p= "Website: #{link_to @clinic.url, @clinic.url, :target => '_blank'}".html_safe if @clinic.url.present?
-              %p= @clinic.contact_details.convert_newlines_to_br if @clinic.contact_details.present?
-              - if @clinic.location.present? && @clinic.location.in_hospital?
-                - hospital = @clinic.location.hospital_in
-                %p= "In #{link_to hospital.name, hospital_path(hospital), :class => 'ajax'}".html_safe
-                %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
-                %p= @clinic.location.in_details if @clinic.location.in_details.present?
-              - elsif address.present? && !address.empty?
-                %p= link_to address.address, address.map_url, :target => "_blank"
-              %p= "Wheelchair accessible" if @clinic.wheelchair_accessible?
-              - if @clinic.scheduled?
                 %p.space
-                  %strong Schedule:
-                  = @clinic.schedule.collapsed_days_and_hours.join(". ").end_with_period
-              
+                  %strong= cl.phone_only if cl.phone_only.present?
+                %p= "Fax: #{cl.fax}" if cl.fax.present?
+                %p= "Public e-mail: #{mail_to cl.public_email, cl.public_email, :target => '_blank'}".html_safe if cl.public_email.present?
+                %p= "Private e-mail: #{mail_to cl.email, cl.email, :target => '_blank'}".html_safe if cl.email.present?
+                %p= "Website: #{link_to cl.url, cl.url, :target => '_blank'}".html_safe if cl.url.present?
+                %p= cl.contact_details.convert_newlines_to_br if cl.contact_details.present?
+                - if cl.location.present? && cl.location.in_hospital?
+                  - hospital = cl.location.hospital_in
+                  %p
+                    = "In #{link_to hospital.name, hospital_path(hospital), :class => 'ajax'}".html_safe
+                    = "(#{cl.sector})" if cl.sector?
+                  %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
+                  %p= cl.location.in_details if cl.location.in_details.present?
+                - elsif address.present? && !address.empty?
+                  %p= "(#{cl.sector})" if cl.sector?
+                  %p= link_to address.address, address.map_url, :target => "_blank"
+                %p= "Wheelchair accessible." if cl.wheelchair_accessible?
+                - if cl.scheduled?
+                  %p
+                    %strong Schedule:
+                    = cl.schedule.collapsed_days_and_hours.join(". ").end_with_period
+
               - if @clinic.location_opened.present?
                 %p.space
                   This clinic opened at this location 
@@ -147,7 +120,7 @@
               - if @clinic.interpreter_available
                 %p
                   Interpreter available upon request.
-            
+
             - if @clinic.accepts_referrals_via.present? || @clinic.responds_via.present? || @clinic.referral_form_mask != 3  || @clinic.required_investigations.present? || @clinic.waittime.present? || @clinic.lagtime.present? || @clinic.patient_can_book_mask != 3
               
               %h6 Referrals
@@ -294,20 +267,14 @@
                   .investigation.space  
                     - if focused_count > 0
                       - if focused_has_investigations
-                        %p
-                          (with any 
-                          %i additional 
-                          required investigations)
+                        %p (with any additional details)
                       .list{:class => specializations_with_results_count > 1 && "indent"}
                         = focused_procedures.html_safe
                     - if nonfocused_count > 0
                       %p.space
                         %em Other areas of interest
                       - if nonfocused_has_investigations
-                        %p
-                          with any 
-                          %i additional 
-                          required investigations
+                        %p (with any additional details)
                       .list{:class => specializations_with_results_count > 1 && "indent"}
                         = nonfocused_procedures.html_safe
 
@@ -341,7 +308,10 @@
             
     %script{"type" => "text/javascript"}
       :plain
-        $(document).ready(function() { $('.tt').tooltip({trigger: 'manual'}) });
+        $(document).ready(function() { 
+          $('.tt').tooltip({trigger: 'manual'}); 
+          $('#user_favorite_clinics_#{@clinic.id}').addClass('#{favorite_class}'); 
+        });
         
         function send_feedback(form) { 
           $.ajax({
@@ -364,9 +334,20 @@
             
   .btn-group
     - if true || show_details
-      %a.btn{"href" => clinic_patient_information_path(@clinic), "target" => "_blank"}
-        %i.icon-print.icon-text
-        Print Information for Patient
+      - if clinic_locations.length == 1
+        %a.btn{"href" => clinic_patient_information_path(@clinic), "target" => "_blank"}
+          %i.icon-print.icon-text
+          Print Information for Patient
+      - else
+        %a.btn.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+          %i.icon-print.icon-text
+          Print Information for Patient
+          %span.caret
+        %ul.dropdown-menu
+          - clinic_locations.each do |clinic_location|
+            %li
+              %a{"href" => clinic_patient_information_location_path(@clinic, clinic_location), "target" => "_blank"}
+                = clinic_location.location.short_address
     - if !current_user_is_admin? && (can? :update, @clinic)
       %a.btn.btn-primary.ajax{"href" => clinic_self_edit_path(@clinic, @clinic.token)}
         %i.icon-pencil.icon-white

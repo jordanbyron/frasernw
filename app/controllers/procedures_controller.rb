@@ -4,7 +4,7 @@ class ProceduresController < ApplicationController
   cache_sweeper :procedure_sweeper, :only => [:create, :update, :destroy]
   
   def index
-    @specialization = Specialization.find(params[:specialization_id])
+    @specialization = Specialization.find(params[:specialization_id]) if params[:specialization_id].present?
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   

@@ -1,7 +1,7 @@
 class Specialist < ActiveRecord::Base
   include ApplicationHelper
   
-  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :categorization_mask, :billing_number, :is_gp, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_clinic_id, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :patient_instructions, :cancellation_policy, :hospital_clinic_details, :interpreter_available, :photo, :photo_delete, :address_update, :hospital_ids, :specialization_ids, :capacities_attributes, :language_ids, :user_controls_specialist_offices_attributes, :specialist_offices_attributes, :admin_notes, :referral_forms_attributes
+  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :categorization_mask, :billing_number, :is_gp, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_location_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_clinic_id, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :patient_instructions, :cancellation_policy, :hospital_clinic_details, :interpreter_available, :photo, :photo_delete, :address_update, :hospital_ids, :specialization_ids, :capacities_attributes, :language_ids, :user_controls_specialist_offices_attributes, :specialist_offices_attributes, :admin_notes, :referral_forms_attributes, :review_object
   has_paper_trail ignore: [:saved_token, :review_item]
   
   # specialists can have multiple specializations
@@ -16,7 +16,8 @@ class Specialist < ActiveRecord::Base
   
   # specialists attend clinics
   has_many   :attendances, :dependent => :destroy
-  has_many   :clinics, :through => :attendances
+  has_many   :clinic_locations, :through => :attendances
+  has_many   :clinics, :through => :clinic_locations
   
   # specialists have "priviliges" at hospitals
   has_many   :privileges, :dependent => :destroy
@@ -78,24 +79,24 @@ class Specialist < ActiveRecord::Base
   end
   
   before_save :destroy_photo?
-  
+
   def self.in_cities(c)
   #for specialists that haven't responded or are purosely not yet surveyed we just try to grab any city that makes sense
     city_ids = c.map{ |city| city.id }
-    responded_direct = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL AND "direct_location".clinic_in_id IS NULL AND "specialists".categorization_mask in (?)', "Office", city_ids, [1, 2, 4, 5])
+    responded_direct = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL AND "direct_location".location_in_id IS NULL AND "specialists".categorization_mask in (?)', "Office", city_ids, [1, 2, 4, 5])
   
     responded_in_hospital = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id').where('"direct_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "specialists".categorization_mask in (?)', "Office", "Hospital", city_ids, [1, 2, 4, 5])
   
-    responded_in_clinic = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "clinics" ON "clinics".id = "direct_location".clinic_in_id INNER JOIN "locations" AS "clinic_in_location" ON "clinics".id = "clinic_in_location".locatable_id INNER JOIN "addresses" AS "clinic_address" ON "clinic_in_location".address_id = "clinic_address".id').where('"direct_location".locatable_type = (?) AND "direct_location".hospital_in_id IS NULL AND "clinic_in_location".locatable_type = (?) AND "clinic_in_location".hospital_in_id IS NULL AND "clinic_address".city_id in (?) AND "specialists".categorization_mask in (?)', "Office", "Clinic", city_ids, [1, 2, 4, 5])
+    responded_in_clinic = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "locations" AS "clinic_location" ON "clinic_location".id = "direct_location".location_in_id INNER JOIN "addresses" AS "clinic_address" ON "clinic_location".address_id = "clinic_address".id').where('"direct_location".locatable_type = (?) AND "direct_location".hospital_in_id IS NULL AND "clinic_location".locatable_type = (?) AND "clinic_location".hospital_in_id IS NULL AND "clinic_address".city_id in (?) AND "specialists".categorization_mask in (?)', "Office", "ClinicLocation", city_ids, [1, 2, 4, 5])
   
-    responded_in_clinic_in_hospital = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "clinics" ON "clinics".id = "direct_location".clinic_in_id INNER JOIN "locations" AS "clinic_in_location" ON "clinics".id = "clinic_in_location".locatable_id INNER JOIN "hospitals" ON "clinic_in_location".hospital_in_id = "hospitals".id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id').where('"direct_location".locatable_type = (?) AND "direct_location".hospital_in_id IS NULL AND "clinic_in_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "specialists".categorization_mask in (?)', "Office", "Clinic", "Hospital", city_ids, [1, 2, 4, 5])
+    responded_in_clinic_in_hospital = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "locations" AS "clinic_location" ON "clinic_location".id = "direct_location".location_in_id INNER JOIN "hospitals" ON "clinic_location".hospital_in_id = "hospitals".id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id').where('"direct_location".locatable_type = (?) AND "direct_location".hospital_in_id IS NULL AND "clinic_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "specialists".categorization_mask in (?)', "Office", "ClinicLocation", "Hospital", city_ids, [1, 2, 4, 5])
   
     hoc_hospital = joins('INNER JOIN "privileges" ON "specialists"."id" = "privileges"."specialist_id" INNER JOIN "hospitals" ON "privileges".hospital_id = "hospitals".id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id').where('"hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "specialists".categorization_mask IN (?)', "Hospital", city_ids, [2, 3, 4])
   
-    hoc_clinic = joins('INNER JOIN "attendances" ON "specialists"."id" = "attendances"."specialist_id" INNER JOIN "clinics" ON "attendances".clinic_id = "clinics".id INNER JOIN "locations" AS "clinic_in_location" ON "clinics".id = "clinic_in_location".locatable_id INNER JOIN "addresses" AS "clinic_address" ON "clinic_in_location".address_id = "clinic_address".id').where('"clinic_in_location".locatable_type = (?) AND "clinic_address".city_id in (?) AND "clinic_in_location".hospital_in_id IS NULL AND "specialists".categorization_mask IN (?)', "Clinic", city_ids, [2, 3, 4])
+    hoc_clinic = joins('INNER JOIN "attendances" ON "specialists"."id" = "attendances"."specialist_id" INNER JOIN "clinic_locations" AS "clinic_in_clinic_location" ON "clinic_in_clinic_location".id = "attendances".clinic_location_id INNER JOIN "locations" as "clinic_in_location" ON "clinic_in_location".locatable_id = "clinic_in_clinic_location".id INNER JOIN "addresses" AS "clinic_address" ON "clinic_in_location".address_id = "clinic_address".id').where('"clinic_in_location".locatable_type = (?) AND "clinic_address".city_id in (?) AND "clinic_in_location".hospital_in_id IS NULL AND "specialists".categorization_mask IN (?)', "ClinicLocation", city_ids, [2, 3, 4])
   
-    hoc_clinic_in_hospital = joins('INNER JOIN "attendances" ON "specialists"."id" = "attendances"."specialist_id" INNER JOIN "clinics" ON "attendances".clinic_id = "clinics".id INNER JOIN "locations" AS "clinic_in_location" ON "clinics".id = "clinic_in_location".locatable_id INNER JOIN "hospitals" ON "clinic_in_location".hospital_in_id = "hospitals".id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id').where('"hospital_in_location".locatable_type = (?) AND "clinic_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "specialists".categorization_mask IN (?)', "Hospital", "Clinic", city_ids, [2, 3, 4])
-  
+    hoc_clinic_in_hospital = joins('INNER JOIN "attendances" ON "specialists"."id" = "attendances"."specialist_id" INNER JOIN "clinic_locations" AS "clinic_in_clinic_location" ON "attendances".clinic_location_id = "clinic_in_clinic_location".id INNER JOIN "locations" as "clinic_location" ON "clinic_location".locatable_id = "clinic_in_clinic_location".id INNER JOIN "hospitals" ON "clinic_location".hospital_in_id = "hospitals".id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id').where('"clinic_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "specialists".categorization_mask in (?)', "ClinicLocation", "Hospital", city_ids, [2, 3, 4])
+
     (responded_direct + responded_in_hospital + responded_in_clinic + responded_in_clinic_in_hospital + hoc_hospital + hoc_clinic + hoc_clinic_in_hospital).uniq
   end
   
@@ -125,7 +126,7 @@ class Specialist < ActiveRecord::Base
       return nil if o.blank?
       return o.city
     elsif hospital_or_clinic_only?
-      (hospitals.map{ |h| h.city } + clinics.map{ |c| c.city }).reject{ |i| i == nil }.uniq.first
+      (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq.first
     else
       nil
     end
@@ -135,11 +136,20 @@ class Specialist < ActiveRecord::Base
     if responded?
       offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
     elsif hospital_or_clinic_only?
-      (hospitals.map{ |h| h.city } + clinics.map{ |c| c.city }).reject{ |i| i == nil }.uniq
+      (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq
     elsif not_responded? || purposely_not_yet_surveyed?
-      (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.city }).reject{ |c| c.blank? }.uniq
+      (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? }.uniq
     else
       []
+    end
+  end
+
+  #we need to know their 'old' cities if they moved away
+  def cities_for_front_page
+    if moved_away?
+      offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
+    else
+      cities
     end
   end
 
@@ -147,7 +157,7 @@ class Specialist < ActiveRecord::Base
     if responded? && !not_available?
       offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
     elsif hospital_or_clinic_only?
-      (hospitals.map{ |h| h.city } + clinics.map{ |c| c.city }).reject{ |i| i == nil }.uniq
+      (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq
     else
       []
     end
@@ -216,6 +226,11 @@ class Specialist < ActiveRecord::Base
     not_responded? || hospital_or_clinic_only? || (responded? && !retired_a_while_ago?)
   end
 
+  def show_wait_time_in_table?
+    responded? && (accepting_new_patients? || retiring? ||
+                   ((status_mask == 6) && ((unavailable_to < Date.today) || (unavailable_from > Date.today))))  #not yet unavailable
+  end
+
   def not_available?
     retired? || permanently_unavailable? || moved_away?
   end
@@ -225,7 +240,7 @@ class Specialist < ActiveRecord::Base
   end
   
   STATUS_HASH = { 
-    1 => "Accepting new patients", 
+    1 => "Accepting new referrals",
     2 => "Only doing follow up on previous patients", 
     4 => "Retired as of",
     5 => "Retiring as of",
@@ -285,13 +300,13 @@ class Specialist < ActiveRecord::Base
       return STATUS_CLASS_BLANK
     elsif hospital_or_clinic_only?
       return STATUS_CLASS_EXTERNAL
-    elsif ((status_mask == 1) || ((status_mask == 6) && (unavailable_to < Date.today)))
+    elsif (accepting_new_patients? || ((status_mask == 6) && (unavailable_to < Date.today)))
       #marked as available, or the "unavailable between" period has passed
       return STATUS_CLASS_AVAILABLE
     elsif ((status_mask == 2) || (status_mask == 4) || ((status_mask == 5) && (unavailable_from <= Date.today)) || ((status_mask == 6) && (unavailable_from <= Date.today) && (unavailable_to >= Date.today)) || (status_mask == 8) || (status_mask == 9) || moved_away?)
       #only seeing old patients, retired, "retiring as of" date has passed", or in midst of inavailability, indefinitely unavailable, permanently unavailable, or moved away
       return STATUS_CLASS_UNAVAILABLE
-    elsif (((status_mask == 5) && (unavailable_from > Date.today)) || ((status_mask == 6) && (unavailable_from > Date.today)))
+    elsif (retiring? || ((status_mask == 6) && (unavailable_from > Date.today)))
       return STATUS_CLASS_WARNING
     elsif ((status_mask == 3) || (status_mask == 7) || status_mask.blank?)
       return STATUS_CLASS_UNKNOWN
@@ -321,8 +336,8 @@ class Specialist < ActiveRecord::Base
     (status_mask == 9)
   end
   
-  def opened_this_year?
-    location_opened == Time.now.year.to_s
+  def opened_recently?
+    (location_opened == Time.now.year.to_s) || ((Time.now.month == 1) && (location_opened == (Time.now.year - 1).to_s))
   end
   
   WAITTIME_HASH = { 
@@ -546,7 +561,7 @@ class Specialist < ActiveRecord::Base
   end
   
   def new?
-    opened_this_year? && (created_at > 3.week.ago.utc)
+    opened_recently? && (created_at > 3.week.ago.utc)
   end
 
 private

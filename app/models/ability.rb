@@ -27,6 +27,9 @@ class Ability
         end
         can :create, [Specialist, Clinic, Hospital, Office]
         
+        #can list and edit specializations, to change their divisional specialization options
+        can [:index, :edit, :update], Specialization
+        
         #so that an admin can list offices by city for those in their division
         can :read, City do |city|
           (city.divisions & user.divisions).present?
@@ -41,13 +44,22 @@ class Ability
         can :create, ScItem
         
         #can edit non-admin/super-admin users
-        can :manage, User do |user|
+        can [:index, :new, :create, :show], User
+        can [:edit, :update], User do |user|
           user.user?
         end
+        #can [:change_name, :update_name], User
+        can [:change_email, :update_email, :change_password, :update_password, :change_local_referral_area, :update_local_referral_area], User
         
         #can manage their own news items
+        can :create, NewsItem
         can :manage, NewsItem do |news_item|
-          (news_item.division & user.divisions).present?
+          user.divisions.include? news_item.division
+        end
+        
+        #can edit their own divisions
+        can [:show, :edit, :update], Division do |division|
+          user.divisions.include? division
         end
         
         #can manage their own feedback items
@@ -65,25 +77,31 @@ class Ability
              (review_item.item.instance_of?(Clinic) && (review_item.item.divisions & user.divisions).present?))
         end
         
-        #landing page
-        can [:index, :faq, :terms_and_conditions], Front
+        #landing page, per-division restrictions are handled in controller
+        can :manage, Front
         
         #can show pages, regardless of 'in progress'
         can :show, [Specialization, Procedure, Specialist, Clinic, Hospital, Language, ScCategory, ScItem]
         
+        #can load city data from other specializations
+        can :city, Specialization
+        
         #can print patient information
-        can :print_patient_information, [Specialist, Clinic]
+        can [:print_patient_information, :print_office_patient_information], Specialist
+        can [:print_patient_information, :print_location_patient_information], Clinic
         
         #can show referral forms
         can :index, ReferralForm
         
         #can change name, email, password
         #can [:change_name, :update_name], User
-        can [:change_email, :update_email], User
-        can [:change_password, :update_password], User
+        can [:change_email, :update_email, :change_password, :update_password, :change_local_referral_area, :update_local_referral_area], User
         
         #can add feedback
         can [:create, :show], FeedbackItem
+        
+        #can send email messages
+        can :create, Message
         
       elsif user.user?
         
@@ -96,30 +114,38 @@ class Ability
         can :show, [Specialization, Procedure] do |entity|
           !entity.fully_in_progress_for_divisions(Division.all)
         end
+        
+        #can load city data from other specializations
         can :city, Specialization do |entity|
           !entity.fully_in_progress_for_divisions(Division.all)
         end
+        
         can :show, [Specialist, Clinic] do |entity|
           !entity.in_progress_for_divisions(entity.divisions)
         end
+        
         can :show, ScItem do |item|
           item.available_to_divisions(user.divisions)
         end
+        
         can :show, [Hospital, Language, ScCategory]
 
         #can print patient information
-        can :print_patient_information, [Specialist, Clinic]
+        can [:print_patient_information, :print_office_patient_information], Specialist
+        can [:print_patient_information, :print_location_patient_information], Clinic
         
         #can show referral forms
         can :index, ReferralForm
         
         #can change name, email, password
         #can [:change_name, :update_name], User
-        can [:change_email, :update_email], User
-        can [:change_password, :update_password], User
+        can [:change_email, :update_email, :change_password, :update_password, :change_local_referral_area, :update_local_referral_area], User
         
         #can add feedback
         can [:create, :show], FeedbackItem
+        
+        #can send email messages
+        can :create, Message
         
         #can update specialists they control
         can [:update, :photo, :update_photo], Specialist do |specialist|

@@ -538,11 +538,19 @@
   .span4half {
     width: 420px;
   }
+  .span4half.front {
+    /*space things out*/
+    width: 470px;
+  }
   .span4 {
     width: 370px;
   }
   .span3 {
     width: 270px;
+  }
+  .span3.front {
+    /*space things out*/
+    width: 220px;
   }
   .span2 {
     width: 170px;

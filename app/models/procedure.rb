@@ -72,7 +72,7 @@ class Procedure < ActiveRecord::Base
           end
         else
           Focus.find_all_by_procedure_specialization_id(child.id).each do |focus|
-            results << focus.clinic if focus.clinic.present? && (cities.include? focus.clinic.city)
+            results << focus.clinic if focus.clinic.present? && (focus.clinic.cities & cities)
           end
         end
       end
@@ -107,7 +107,7 @@ class Procedure < ActiveRecord::Base
     else
       ps.subtree.each do |child|
         Focus.find_all_by_procedure_specialization_id(child.id).each do |focus|
-          results << focus.clinic if focus.clinic.present? && (cities.include? focus.clinic.city)
+          results << focus.clinic if focus.clinic.present? && (focus.clinic.cities & cities).present?
         end
       end
     end

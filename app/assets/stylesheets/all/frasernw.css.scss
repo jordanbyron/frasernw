@@ -49,6 +49,7 @@ body
 
 body #loading
 {
+  z-index: 4000;
   transition: opacity 1s;
   -moz-transition: opacity 1s;
   -webkit-transition: opacity 1s; 
@@ -1268,7 +1269,7 @@ body.loading #email
     text-decoration: underline;
   }
   
-  #feedback, #feedback_thanks
+  #feedback, #feedback_thanks, #message, #message_sent
   {
     display: none;
     position: fixed;
@@ -1298,6 +1299,27 @@ body.loading #email
       {
         width: 95%;
         height: 200px;
+      }
+      
+      .message
+      {
+        textarea
+        {
+          height: 100px;
+        }
+        
+        input[type='text'], input[type='email']
+        {
+          width: 95%;
+        }
+    
+        h1
+        {
+          font-family: Bitter;
+          font-size: 24px;
+          line-height: 18px;
+          margin: 0 0 18px 0;
+        }
       }
     }
   }

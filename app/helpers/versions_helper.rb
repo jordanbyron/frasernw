@@ -106,6 +106,26 @@ module VersionsHelper
           else
             "#{link_to version.reify.name, show_version_path(version.item_id), :class => 'clinic ajax'} was deleted"
           end
+        when "ClinicLocation"
+          if version.event == "create"
+            if version.item.location.present?
+              "#{link_to version.item.clinic.name, clinic_path(version.item.clinic), :class => 'clinic ajax'} now works in #{version.item.location.short_address}"
+            else
+              ""
+            end
+          elsif version.event == "update"
+            if version.item.location.present?
+              "#{link_to version.item.clinic.name, clinic_path(version.item.clinic), :class => 'clinic ajax'}'s location at #{version.item.location.short_address} was updated"
+            else
+              "#{link_to version.item.clinic.name, clinic_path(version.item.clinic), :class => 'clinic ajax'}'s office was deleted"
+            end
+          else
+            if version.reify.location.present?
+              "#{link_to version.reify.clinic.name, clinic_path(version.reify.clinic), :class => 'clinic ajax'} no longer located at #{version.item.location.short_address}"
+            else
+              ""
+            end
+          end
         when "ClinicAddress"
           #handled by Address
           ""
@@ -217,17 +237,45 @@ module VersionsHelper
           if version.event == "create" || version.event == "update"
             if version.item.days_and_hours.length == 0
               ""
+            elsif version.item.schedulable.is_a? SpecialistOffice
+              "#{link_to version.item.schedulable.specialist.name, url_for(version.item.schedulable.specialist), :class => 'ajax'} has the schedule: #{version.item.days_and_hours.to_sentence}"
+            elsif version.item.schedulable.is_a? ClinicLocation
+              "#{link_to version.item.schedulable.clinic.name, url_for(version.item.schedulable.clinic), :class => 'ajax'} has the schedule: #{version.item.days_and_hours.to_sentence}"
             else
-              "#{link_to version.item.schedulable.name, url_for(version.item.schedulable), :class => 'ajax'} has the schedule: #{version.item.days_and_hours.to_sentence}"
+              ""
             end
           else
-            "#{link_to version.item.schedulable.name, url_for(version.item.schedulable), :class => 'ajax'} no longer has a schedule"
+            if version.item.schedulable.is_a? SpecialistOffice
+              "#{link_to version.item.schedulable.specialist.name, url_for(version.item.schedulable.specialist), :class => 'ajax'} no longer has a schedule"
+            elsif version.item.schedulable.is_a? ClinicLocation
+              "#{link_to version.item.schedulable.clinic.name, url_for(version.item.schedulable.clinic), :class => 'ajax'} no longer has a schedule"
+            else
+              ""
+            end
           end
         when "ScheduleDay"
           #handled by Schedule
           ""
+        when "UserControlsClinicLocation"
+          if version.event == "create" || version.event == "update"
+            "#{link_to version.item.user.name, user_path(version.item.user_id), :class => 'user ajax'} has the ability to edit #{link_to version.item.clinic_location.clinic.name, clinic_path(version.item.clinic_location.clinic_id), :class => 'clinic ajax'}"
+          else
+            "#{link_to version.reify.user.name, user_path(version.reify.user_id), :class => 'user ajax'} no longer has the ability to edit #{link_to version.reify.clinic_location.clinic.name, clinic_path(version.reify.clinic_location.clinic_id), :class => 'clinic ajax'}"
+          end
+        when "UserControlsSpecialistOffice"
+          if version.event == "create" || version.event == "update"
+            "#{link_to version.item.user.name, user_path(version.item.user_id), :class => 'user ajax'} has the ability to edit #{link_to version.item.specialist_office.specialist.name, specialist_path(version.item.specialist_office.specialist_id), :class => 'specialist ajax'}"
+          else
+            "#{link_to version.reify.user.name, user_path(version.reify.user_id), :class => 'user ajax'} no longer has the ability to edit #{link_to version.reify.specialist_office.specialist.name, specialist_path(version.item.specialist_office.specialist_id), :class => 'specialist ajax'}"
+          end
+        when "SpecializationOption"
+          ""
+        when "DivisionUser"
+          ""
+        when "ReferralForm"
+          ""
         else
-        "TODO: #{version.item_type}"
+          "TODO: #{version.item_type}"
       end
       rescue Exception => exc
       #"This item (#{version.reify.respond_to?('name') ? version.reify.name + ', ' + version.item_type : version.item_type}) was deleted after the change was made: #{exc.message}"

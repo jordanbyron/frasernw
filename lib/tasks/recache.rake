@@ -92,23 +92,38 @@ namespace :pathways do
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/refresh_livesearch_division_content/#{d.id}.js") )
       end
     end
+  
+    task :sc_categories => :environment do
+      puts "Recaching content categories..."
+      User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
+        ScCategory.all.sort{ |a,b| a.id <=> b.id }.each do |cc|
+          puts "Content Category #{cc.id}"
+          expire_fragment "content_#{cc.id}_category#{division_group.join('_')}"
+        end
+      end
+    end
     
     task :menus => :environment do
       expire_fragment 'specialization_dropdown_admin'
       
       User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
         expire_fragment "specialization_dropdown_#{division_group.join('_')}"
+        
+        Specialization.all.each do |specialization|
+          expire_fragment "specialization_#{specialization.id}_nav_#{division_group.join('_')}"
+        end
       end
     end
     
     task :front => :environment do
       User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
         expire_fragment "latest_updates_#{division_group.join('_')}"
+        expire_fragment "featured_content_#{division_group.join('_')}"
       end
     end
 
     #purposeful order from least important to most important, to keep cache 'hot'
-    task :all => [:languages, :hospitals, :clinics, :specialists, :specializations, :menus, :search, :front] do
+    task :all => [:languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front] do
       puts "All pages recached."
     end
   

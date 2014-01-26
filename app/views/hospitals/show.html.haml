@@ -1,79 +1,60 @@
 - title "#{@hospital.name}"
-    
+
 %ul#specialties-menu
   %li.dropdown.no-caret
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       All Specialties
       %b.caret
-  
-%script{"type" => "text/javascript"}
-  :plain
-    var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); return false; });
-    $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
-    var root_procedures = [];
-    var should_show_others = false;
-  
-#specialties-dropdown-menu
-  .inner
-    - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions)
-    - first = specializations[0, (specializations.length / 4.0).ceil]
-    - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
-    - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
-    - fourth = specializations - first - second - third
-    
-    - [first, second, third, fourth].each do |list|
-      %ul
-        - list.each do |specialization|
-          %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}
-              = specialization.name
-              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
+
+= render 'partials/specialization_dropdown_menu'
           
 %script{"type" => "text/javascript"}
   :plain
+    var root_procedures = [];
+    var should_show_others = false;
     $(document).ready(function() {
       $('#specialist_table, #office_table').tablesorter({sortList: [[1,0],[2,0],[3,0],[4,0]]});
       $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0],[4,0]]});
     });
-    
-.content-wrapper
-    
-  %h2= @hospital.name
-    
-  - if @hospital.address.present? && !@hospital.address.empty?
-    %p.no_indent= link_to @hospital.address.address, @hospital.address.map_url, :target => "_blank"
-  - if (@hospital.phone_and_fax.present?)
-    %p.no_indent= @hospital.phone_and_fax
-    
-- specialists = @hospital.specialists.reject{ |s| s.in_progress_for_divisions(Division.all) || !s.show_in_table? }
-- clinics_in = @hospital.clinics_in.reject{ |c| c.in_progress_for_divisions(Division.all) || !c.show_in_table? }
 
-- has_specialists = specialists.length > 0
-- has_clinics_in = clinics_in.length > 0
-- has_specialists_with_offices_in = @specialists_with_offices_in.length > 0
-
-- specialist_tab_class = has_specialists ? "active" : ""
-- clinic_tab_class = (!has_specialists and has_clinics_in) ? "active" : ""
-- specialist_offices_tab_class = (!has_specialists and !has_clinics_in) ? "active" : ""
-
-.tabbable
-  %ul.nav.nav-tabs
-    - if has_specialists
-      %li{:class => specialist_tab_class} 
-        %a{"href" => "#specialist_tab", "data-toggle" => "tab"}
-          %span Specialists with Hospital Privileges
-    - if has_clinics_in
-      %li{:class => clinic_tab_class}
-        %a{"href" => "#clinic_tab", "data-toggle" => "tab"}
-          %span Clinics in Hospital
-    - if has_specialists_with_offices_in
-      %li{:class => specialist_offices_tab_class}
-        %a{"href" => "#specialist_offices_tab", "data-toggle" => "tab"} 
-          %span Specialists with Offices in Hospital
-  
+- cache(hospital_path(@hospital)) do
+    
   .content-wrapper
+      
+    %h2= @hospital.name
+      
+    - if @hospital.address.present? && !@hospital.address.empty?
+      %p.no_indent= link_to @hospital.address.address, @hospital.address.map_url, :target => "_blank"
+    - if (@hospital.phone_and_fax.present?)
+      %p.no_indent= @hospital.phone_and_fax
+      
+  - specialists = @hospital.specialists.reject{ |s| s.in_progress_for_divisions(Division.all) || !s.show_in_table? }
+  - clinics_in = @hospital.clinics_in.reject{ |c| c.in_progress_for_divisions(Division.all) || !c.show_in_table? }
 
-    - cache(hospital_path(@hospital)) do
+  - has_specialists = specialists.length > 0
+  - has_clinics_in = clinics_in.length > 0
+  - has_specialists_with_offices_in = @specialists_with_offices_in.length > 0
+
+  - specialist_tab_class = has_specialists ? "active" : ""
+  - clinic_tab_class = (!has_specialists and has_clinics_in) ? "active" : ""
+  - specialist_offices_tab_class = (!has_specialists and !has_clinics_in) ? "active" : ""
+
+  .tabbable
+    %ul.nav.nav-tabs
+      - if has_specialists
+        %li{:class => specialist_tab_class} 
+          %a{"href" => "#specialist_tab", "data-toggle" => "tab"}
+            %span Specialists with Hospital Privileges
+      - if has_clinics_in
+        %li{:class => clinic_tab_class}
+          %a{"href" => "#clinic_tab", "data-toggle" => "tab"}
+            %span Clinics in Hospital
+      - if has_specialists_with_offices_in
+        %li{:class => specialist_offices_tab_class}
+          %a{"href" => "#specialist_offices_tab", "data-toggle" => "tab"} 
+            %span Specialists with Offices in Hospital
+    
+    .content-wrapper
 
       %script{"type" => "text/javascript"}
         $(document).ready(function() {
@@ -115,7 +96,7 @@
                       %tr{:class => 'tableheader'}
                         %th{:class => "sp {sorter: 'bylastname'} name_column"} Specialist
                         %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
-                        %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Patients?
+                        %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Referrals?
                         %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
                         %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
@@ -233,14 +214,13 @@
                       
                   #clinic_phrase.filter-phrase
                   
-                  %table.table.table-condensed.tablesorter.five#clinic_table
+                  %table.table.table-condensed.tablesorter#clinic_table
                     %thead
                       %tr{:class => 'tableheader'}
                         %th{:class => "sp {sorter: 'text'} name_column"} Clinic
                         %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
-                        %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Patients?
+                        %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Referrals?
                         %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
-                        %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
                       - clinics_in.each do |clinic|
                         %tr{:id => "c#{clinic.id}"}
@@ -258,7 +238,6 @@
                             %i{:class => clinic.status_class}
                             .status= clinic.status_class_hash
                           %td.wt= clinic.waittime
-                          %td.c= clinic.city
                           
                 .span3.offsethalf
                   .well.filter#clinic_filters
@@ -360,14 +339,13 @@
                       
                   #office_phrase.filter-phrase
                   
-                  %table.table.table-condensed.tablesorter.five#office_table
+                  %table.table.table-condensed.tablesorter#office_table
                     %thead
                       %tr{:class => 'tableheader'}
                         %th{:class => "sp {sorter: 'bylastname'} name_column"} Specialists
                         %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
-                        %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Patients?
+                        %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Referrals?
                         %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
-                        %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
                       - @specialists_with_offices_in.each do |specialist|
                         - next if not specialist.show_in_table?
@@ -382,10 +360,6 @@
                             %i{:class => specialist.status_class}
                             .status= specialist.status_class_hash
                           %td.wt= specialist.not_available? ? "" : specialist.waittime
-                          %td.c
-                            %ul
-                              - specialist.cities.each do |city|
-                                %li= city
                           
                 .span3.offsethalf
                   .well.filter#office_filters
@@ -477,9 +451,11 @@
             //make full rows clickable
             $('table tr').click( function() { $(this).find('a').click(); });
             $('table a').click( function(e) { e.stopPropagation(); });
-            
-    %p.admin.btn-group
-      - if can? :update, @hospital
-        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Hospital", edit_hospital_path(@hospital), :class => "btn ajax")
-      - if can? :destroy, @hospital
-        = link_to("<i class='icon-trash'></i>".html_safe + " Delete Hospital", @hospital, :confirm => "Delete #{@hospital.name}?", :method => :delete, :class => "btn")
+
+.content-wrapper
+
+  %p.admin.btn-group
+    - if can? :update, @hospital
+      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Hospital", edit_hospital_path(@hospital), :class => "btn ajax")
+    - if can? :destroy, @hospital
+      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Hospital", @hospital, :confirm => "Delete #{@hospital.name}?", :method => :delete, :class => "btn")

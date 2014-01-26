@@ -12,14 +12,37 @@
   $(document).ready(function() { update_favorites() });
     
 - user_divisions = current_user_divisions
-- specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions)
+
+- possible_divisions = current_user_is_super_admin? ? Division.all : user_divisions
+- possible_divisions_count = possible_divisions.count
+
+- if current_user_is_admin? && (possible_divisions_count > 1)
+  - if @division.present? && (possible_divisions.include? @division)
+    - user_divisions = [@division]
+  - else
+    - user_divisions = [user_divisions.first]
+
+- specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(user_divisions)
+
 
 .content-wrapper
-  .content#front
-    - if NewsItem.breaking_in_divisions(current_user_divisions).length > 0
+  .content#front{:style => 'margin-top: -15px'}
+
+    - if current_user_is_admin? && (possible_divisions_count > 1)
       .row
         .span12
-          - NewsItem.breaking_in_divisions(current_user_divisions).each do |news_item|
+          Show front page as:
+          %ul.nav.nav-pills
+            - possible_divisions.each do |division|
+              %li{:class => (division == user_divisions.first) && 'active'}
+                = link_to division.name, front_as_division_path(division)
+      %hr
+
+    - news_items = NewsItem.breaking_in_divisions(user_divisions)
+    - if news_items.length > 0
+      .row
+        .span12
+          - news_items.each do |news_item|
             .news_item.breaking
               .news_item_date= news_item.date if news_item.date.present?
               %div{:class => news_item.date.present? ? "news_item_title" : "news_item_date"}= news_item.title if news_item.title.present?
@@ -28,7 +51,7 @@
 
     .row
        
-      .span3.hidden-phone
+      .span3.hidden-phone.front
        
         %h2 Specialties
         
@@ -38,12 +61,12 @@
               = link_to specialization.name, specialization, :class => specialization.fully_in_progress_for_divisions(user_divisions) ? "in-progress ajax" : "ajax"
               = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(user_divisions)
        
-      .span4half
+      .span4half.front
       
         %h2 What is Pathways?
         
         %p
-          Pathways is is a web based resource for GPs and MOAs to facilitate real-time, optimal, patient referrals.
+          Pathways is a web based resource for GPs and MOAs to facilitate real-time, optimal, patient referrals.
           = "<a href='javascript:void(0)' data-toggle='collapse' data-target='#what_is'>Learn more.</a>".html_safe
         
         #what_is.collapse
@@ -61,15 +84,19 @@
       
         %h2 Latest Specialist and Clinic Updates
         
-        - cache("latest_updates_#{current_user_divisions.map{|d| d.id }.join('_')}") do
-          - latest_events(5, current_user_divisions).each do |event|
+        - cache("latest_updates_#{user_divisions.map{|d| d.id }.join('_')}") do
+          - latest_events(5, user_divisions).each do |event|
             %p= event
+
+        - if current_user_is_admin?
+          %p.admin.btn-group
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Latest Specialist and Clinic Updates", news_items_path, :class => "btn btn-mini ajax")
             
-        - if NewsItem.divisional_in_divisions(current_user_divisions).length > 0
+        - if NewsItem.divisional_in_divisions(user_divisions).length > 0
           
           %h2 Division Updates
         
-          - NewsItem.divisional_in_divisions(current_user_divisions).each do |news_item|
+          - NewsItem.divisional_in_divisions(user_divisions).each do |news_item|
             
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
@@ -81,13 +108,13 @@
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Division Updates", news_items_path, :class => "btn btn-mini ajax")
             
-        - if NewsItem.shared_care_in_divisions(current_user_divisions).length > 0
+        - if NewsItem.shared_care_in_divisions(user_divisions).length > 0
             
           %h2
             %i.icon-red.icon-star
             Shared Care Updates
         
-          - NewsItem.shared_care_in_divisions(current_user_divisions).each do |news_item|
+          - NewsItem.shared_care_in_divisions(user_divisions).each do |news_item|
             
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
@@ -102,25 +129,30 @@
       .span4.offsethalf
       
         .well
-          
-          - ScCategory.all.reject{ |c| !c.show_on_front_page? || c.featured_sc_items.blank? }.each do |category|
-         
-            %h3= link_to category.name, sc_category_path(category), :class => 'ajax'
-          
-            %ul.space
-              %span.featured= "Featured:"
-              - category.featured_sc_items.sort{|a,b| b.created_at <=> a.created_at }.each do |featured_sc_item|
-                %li.indent
-                  - if featured_sc_item.new?
-                    %span.new new
-                  - if featured_sc_item.shared_care?
-                    %i.icon-blue.icon-star
-                  = link_to(featured_sc_item.title, featured_sc_item.resolved_url, :class => featured_sc_item.markdown? && "ajax", :target => featured_sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{featured_sc_item.type_mask}', '#{featured_sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
-                  %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{featured_sc_item.id},'#{escape_javascript(featured_sc_item.title)}')", "title" => "Favourite / un-favourite"}
-                    %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{featured_sc_item.id}"}
-                  
-              %li.all
-                = link_to "Browse all #{category.name} <i class='icon-arrow-right icon-blue icon-small'></i>".html_safe, sc_category_path(category), :class => 'ajax'
+
+          - cache("featured_content_#{user_divisions.map{|d| d.id }.join('_')}") do
+            
+            - ScCategory.all.reject{ |c| !c.show_on_front_page? }.each do |category|
+            
+              - featured_items = category.featured_contents.in_divisions(user_divisions).order("created_at").reject{|fc| fc.sc_item.blank? }
+              - next if featured_items.blank?
+           
+              %h3= link_to category.name, sc_category_path(category), :class => 'ajax'
+            
+              %ul.space
+                %span.featured= "Featured:"
+                - featured_items.map{|fc| fc.sc_item}.each do |featured_sc_item|
+                  %li.indent
+                    - if featured_sc_item.new?
+                      %span.new new
+                    - if featured_sc_item.shared_care?
+                      %i.icon-blue.icon-star
+                    = link_to(featured_sc_item.title, featured_sc_item.resolved_url, :class => featured_sc_item.markdown? && "ajax", :target => featured_sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{featured_sc_item.type_mask}', '#{featured_sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
+                    %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{featured_sc_item.id},'#{escape_javascript(featured_sc_item.title)}')", "title" => "Favourite / un-favourite"}
+                      %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{featured_sc_item.id}"}
+                    
+                %li.all
+                  = link_to "Browse all #{category.name} <i class='icon-arrow-right icon-blue icon-small'></i>".html_safe, sc_category_path(category), :class => 'ajax'
                 
           %h3
           
@@ -130,4 +162,4 @@
                   
         - if current_user_is_admin?
           %p.admin.btn-group
-            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Featured Content", edit_front_path, :class => "btn btn-mini ajax")
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Featured Content", edit_front_as_division_path(user_divisions.first), :class => "btn btn-mini ajax")

@@ -5,7 +5,6 @@ class ScCategory < ActiveRecord::Base
   has_many :sc_items
   
   has_many :featured_contents, :dependent => :destroy
-  has_many :featured_sc_items, :through => :featured_contents, :source => :sc_item, :class_name => "ScItem"
   
   has_ancestry
   

@@ -1,5 +1,5 @@
 class SpecialistOffice < ActiveRecord::Base
-  attr_accessible :phone, :phone_extension, :fax, :direct_phone, :direct_phone_extension, :sector_mask, :email, :open_saturday, :open_sunday, :office_id, :office_attributes, :phone_schedule_attributes, :url
+  attr_accessible :phone, :phone_extension, :fax, :direct_phone, :direct_phone_extension, :sector_mask, :public_email, :email, :open_saturday, :open_sunday, :office_id, :office_attributes, :phone_schedule_attributes, :url
   
   belongs_to :specialist
   belongs_to :office
@@ -58,6 +58,6 @@ class SpecialistOffice < ActiveRecord::Base
   end
   
   def empty?
-    phone.blank? && phone_extension.blank? && fax.blank? && direct_phone.blank? && direct_phone_extension.blank? && office.blank?
+    phone.blank? && phone_extension.blank? && fax.blank? && direct_phone.blank? && direct_phone_extension.blank? && (office.blank? || office.empty?)
   end
 end

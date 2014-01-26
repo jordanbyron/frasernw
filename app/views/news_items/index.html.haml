@@ -6,7 +6,7 @@
 
   = will_paginate @news_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
   
-  - if current_user_is_super_admin? || current_user_divisions.length > 1
+  - if (current_user_divisions.length > 1) || (current_user_is_super_admin? && Division.all.length > 1)
     - multiple_divisions = true
   - else
     - multiple_divisions = false
@@ -17,18 +17,22 @@
       - if multiple_divisions
         %th Division
       %th Type
-      %th Start Date
-      %th End Date
+      %th Date
       %th.admin
 
     - @news_items.each do |news_item|
       %tr
         %td= link_to news_item.title, news_item, :class => 'ajax'
         - if multiple_divisions
-          %td= news_item.division.name
-        %td= news_item.type
-        %td= news_item.start_date_full_regardless
-        %td= news_item.end_date_full_regardless
+          %td{:style => "white-space: nowrap"}= news_item.division.name
+        %td{:style => "white-space: nowrap"}= news_item.type
+        %td{:style => "white-space: nowrap"}
+          - if news_item.start_date.present?
+            = "<b>Start:</b> #{news_item.start_date_full_regardless}".html_safe
+            - if news_item.end_date.present?
+              %br
+          - if news_item.end_date.present?
+            = "<b>End:</b> #{news_item.end_date_full_regardless}".html_safe
         %td.admin.btn-group
           = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_news_item_path(news_item), :class => "btn btn-mini ajax")
           = link_to("<i class='icon-trash'></i>".html_safe + " Delete", news_item, :confirm => "Delete #{news_item.title}?", :method => :delete, :class => "btn btn-mini")

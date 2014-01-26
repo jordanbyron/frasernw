@@ -143,6 +143,11 @@
     }
   }
 }
+
+.navbar .admin .dropdown-menu
+{
+  min-width: 225px;
+}
     
 #content #container ul.dropdown-menu 
 {
@@ -180,7 +185,7 @@
     
     .help-block
     {
-      padding-top: 6px;
+      padding-top: 3px;
     }
 
     /* better bootstrap defaults for wrapping */
@@ -465,28 +470,16 @@
       background-color: $FNW_BACKGROUND;
     }
 
-    li:not(.active) a
-    {
-      border: 1px solid $FNW_LIGHT_BLUE;
-    }
-
     li.active a
     {
       color: $FNW_LIGHT_GRAY;
-      border: 1px solid $FNW_LIGHT_BLUE;
+      background-color: $FNW_LIGHT_BLUE;
     }
     
     li:hover a
     {
       text-decoration: none;
       background-color: $FNW_LIGHT_BLUE;
-    }
-  
-    li a.filtered
-    {
-      background-color: $FNW_BLUE;
-      border: 1px solid $FNW_BLUE;
-      color: $FNW_BACKGROUND;
     }
   }
 

@@ -99,7 +99,7 @@
                       %tr{:class => 'tableheader'}
                         %th{:class => "sp {sorter: 'bylastname'} name_column"} Specialist
                         %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
-                        %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Patients?
+                        %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Referrals?
                         %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Wait Time
                         %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
@@ -226,7 +226,7 @@
                       %tr{:class => 'tableheader'}
                         %th{:class => "sp {sorter: 'text'} name_column"} Clinic
                         %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
-                        %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Patients?
+                        %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Referrals?
                         %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Wait Time
                         %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                     %tbody
@@ -246,7 +246,10 @@
                             %i{:class => clinic.status_class}
                             .status= clinic.status_class_hash
                           %td.wt= clinic.waittime
-                          %td.c= clinic.city
+                          %td.c
+                            %ul
+                              - clinic.cities.each do |city|
+                                %li= city
                           
                 .span3.offsethalf
                   .well.filter#clinic_filters

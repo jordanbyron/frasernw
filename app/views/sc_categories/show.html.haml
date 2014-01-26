@@ -5,213 +5,201 @@
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       All Specialties
       %b.caret
-  
-%script{"type" => "text/javascript"}
-  :plain
-    var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); return false; });
-    $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
-    $(document).ready(function() { update_favorites() });
-  
-#specialties-dropdown-menu
-  .inner
-    - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions)
-    - first = specializations[0, (specializations.length / 4.0).ceil]
-    - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
-    - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
-    - fourth = specializations - first - second - third
     
-    - [first, second, third, fourth].each do |list|
-      %ul
-        - list.each do |specialization|
-          %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}
-              = specialization.name
-              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
+= render 'partials/specialization_dropdown_menu'
+
+- current_divisions = current_user_divisions
 
 .content-wrapper
-
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready(function() {
-        $('.tablesorter').tablesorter({sortList: [[0,0],[1,0],[2,0]]});
-      });
-
-
-  %h2= @sc_category.full_name 
-        
-  - if @sc_category.inline?
-
-    - @sc_items.reject{ |i| i.in_progress_for_divisions(current_user_divisions) }.sort{ |a,b| a.sc_category.sort_order <=> a.sc_category.sort_order }.each do |sc_item|
-      .scm
-        %h1
-          - if sc_item.new?
-            %span.new new
-          - if sc_item.shared_care?
-            %i.icon-red.icon-star
-          = sc_item.full_title
-          %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
-            %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
-          %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
-            %i.icon-bullhorn
-
-        - if sc_item.markdown?
-          = BlueCloth.new(sc_item.markdown_content).to_html.html_safe
-        - else
-          = link_to sc_item.title, sc_item.resolved_url, :target => "_blank"
-          
-    - if @sc_category.parent.present?
-      %hr
-      = link_to "<i class='icon-arrow-right icon-blue'></i> Browse all #{@sc_category.parent.name} content".html_safe, sc_category_path(@sc_category.parent), :class => 'ajax'
   
-  - else
-  
+  - cache("content_#{@sc_category.id}_category_#{current_divisions.map{|d| d.id}.join('_')}") do
+
     %script{"type" => "text/javascript"}
-      $(document).ready(function() {
-      - @sc_items.each do |sc_item|
-        $('#i#{sc_item.id}').data('attributes', '#{sc_item_filtering_attributes(sc_item).join(' ')}');
-      });
+      :plain
+        $(document).ready(function() {
+          $('.tablesorter').tablesorter({sortList: [[0,0],[1,0],[2,0]]});
+        });
 
-    .content
-      .row
-        .span8half
-          .toggle-filters.visible-phone
-            %a{"href" => "javascript:void(0)", "onclick" => "$('##{@sc_category.id}_filters').toggle()"}
-              %i.icon-blue.icon-cog.icon-small
-              Show / Hide #{@sc_category.name} Filters
-              
-          .filter-phrase{:id => "#{@sc_category.id}_phrase"}
 
-          %table.table.table-condensed.tablesorter.category_table{:id => "#{@sc_category.id}_table"}
-            %thead
-              %tr{:class => 'tableheader'}
-                %th{:class => "title {sorter: 'link_only'}"} Title
-                %th{:class => "subcategory {sorter: 'text'}"} Subcategory
-                %th.favorite
-                %th.email
-                %th.fb
-            %tbody
-              - @sc_items.reject{ |i| i.in_progress_for_divisions(current_user_divisions) }.each do |sc_item|
-                %tr{:id => "i#{sc_item.id}"}
-                  %td.title
-                    - if sc_item.new?
-                      %span.new new
-                    - if sc_item.shared_care?
-                      %i.icon-blue.icon-star
-                    = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{sc_item.type_mask}', '#{sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
-                  %td.subcategory= sc_item.sc_category.name
-                  %td.favorite
-                    %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
-                      %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
-                  %td.email
-                    - if sc_item.can_email?
-                      = link_to "<i class='icon-envelope-alt icon-blue'></i>".html_safe, compose_mail_to_patients_path(sc_item), :class => 'ajax', :title => "E-mail to patient"
-                  %td.fb
-                    %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
-                      %i.icon-bullhorn
+    %h2= @sc_category.full_name 
           
-          - if @sc_category.parent.present?
-            = link_to "<i class='icon-arrow-right icon-blue'></i> Browse all #{@sc_category.parent.name} content".html_safe, sc_category_path(@sc_category.parent), :class => 'ajax'
+    - if @sc_category.inline?
+
+      - @sc_items.reject{ |i| i.in_progress_for_divisions(current_divisions) }.sort{ |a,b| a.sc_category.sort_order <=> a.sc_category.sort_order }.each do |sc_item|
+        .scm
+          %h1
+            - if sc_item.new?
+              %span.new new
+            - if sc_item.shared_care?
+              %i.icon-red.icon-star
+            = sc_item.full_title
+            %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
+              %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
+            %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
+              %i.icon-bullhorn
+
+          - if sc_item.markdown?
+            = BlueCloth.new(sc_item.markdown_content).to_html.html_safe
+          - else
+            = link_to sc_item.title, sc_item.resolved_url, :target => "_blank"
+            
+      - if @sc_category.parent.present?
+        %hr
+        = link_to "<i class='icon-arrow-right icon-blue'></i> Browse all #{@sc_category.parent.name} content".html_safe, sc_category_path(@sc_category.parent), :class => 'ajax'
+    
+    - else
+    
+      - has_children = @sc_category.has_children?
+    
+      %script{"type" => "text/javascript"}
+        $(document).ready(function() {
+        - @sc_items.each do |sc_item|
+          $('#i#{sc_item.id}').data('attributes', '#{sc_item_filtering_attributes(sc_item).join(' ')}');
+        });
+
+      .content
+        .row
+          .span8half
+            .toggle-filters.visible-phone
+              %a{"href" => "javascript:void(0)", "onclick" => "$('##{@sc_category.id}_filters').toggle()"}
+                %i.icon-blue.icon-cog.icon-small
+                Show / Hide #{@sc_category.name} Filters
                 
-        .span3.offsethalf
-          .well.filter{:id => "#{@sc_category.id}_filters"}
-            .title
-              Filter #{@sc_category.name}
-                      
-            - if @sc_category.has_children?  
+            .filter-phrase{:id => "#{@sc_category.id}_phrase"}
+
+            %table.table.table-condensed.tablesorter.category_table{:id => "#{@sc_category.id}_table"}
+              %thead
+                %tr{:class => 'tableheader'}
+                  %th{:class => "title {sorter: 'link_only'}"} Title
+                  - if has_children
+                    %th{:class => "subcategory {sorter: 'text'}"} Subcategory
+                  %th.favorite
+                  %th.email
+                  %th.fb
+              %tbody
+                - @sc_items.reject{ |i| i.in_progress_for_divisions(current_divisions) }.each do |sc_item|
+                  %tr{:id => "i#{sc_item.id}"}
+                    %td.title
+                      - if sc_item.new?
+                        %span.new new
+                      - if sc_item.shared_care?
+                        %i.icon-blue.icon-star
+                      = link_to(sc_item.title, sc_item.resolved_url, :class => sc_item.markdown? && "ajax", :target => sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{sc_item.type_mask}', '#{sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
+                    - if has_children
+                      %td.subcategory= sc_item.sc_category.name
+                    %td.favorite
+                      %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{sc_item.id},'#{escape_javascript(sc_item.title)}')", "title" => "Favourite / un-favourite"}
+                        %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{sc_item.id}"}
+                    %td.email
+                      - if sc_item.can_email?
+                        = link_to "<i class='icon-envelope-alt icon-blue'></i>".html_safe, compose_mail_to_patients_path(sc_item), :class => 'ajax', :title => "E-mail to patient"
+                    %td.fb
+                      %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
+                        %i.icon-bullhorn
+            
+            - if @sc_category.parent.present?
+              = link_to "<i class='icon-arrow-right icon-blue'></i> Browse all #{@sc_category.parent.name} content".html_safe, sc_category_path(@sc_category.parent), :class => 'ajax'
+                  
+          .span3.offsethalf
+            .well.filter{:id => "#{@sc_category.id}_filters"}
+              .title
+                Filter #{@sc_category.name}
+                        
+              - if has_children  
+                .filter-group
+                  %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "##{@sc_category.id}-filter-subcategories"}
+                    Subcategories
+                  .collapsable.in{:id => "#{@sc_category.id}-filter-subcategories"}
+                    .filter-group-content
+                      %label
+                        %input.ic#icall{"type" => "radio", "name" => "ic#{@sc_category.id}", "checked" => "checked"} All
+                      - @sc_category.children.each do |subcategory|
+                        - next if subcategory.all_sc_items_in_divisions(current_divisions).blank?
+                        %label
+                          %input.ic{"type" => "radio", "name" => "ic#{@sc_category.id}", "id" => "ic#{subcategory.id}_"}= subcategory.name
+                          
               .filter-group
-                %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "##{@sc_category.id}-filter-subcategories"}
-                  Subcategories
-                .collapsable.in{:id => "#{@sc_category.id}-filter-subcategories"}
+                %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "##{@sc_category.id}-filter-specialties"}
+                  Specialties
+                .collapsable.in{:id => "#{@sc_category.id}-filter-specialties"}
                   .filter-group-content
                     %label
-                      %input.ic#icall{"type" => "radio", "name" => "ic#{@sc_category.id}", "checked" => "checked"} All
-                    - @sc_category.children.each do |subcategory|
-                      - next if subcategory.all_sc_items_in_divisions(current_user_divisions).blank?
+                      %input.is#isall{"type" => "radio", "name" => "is#{@sc_category.id}", "checked" => "checked"} All
+                    - Specialization.all.each do |s|
+                      - next if @sc_category.all_sc_items_for_specialization_in_divisions(s, current_divisions).blank?
                       %label
-                        %input.ic{"type" => "radio", "name" => "ic#{@sc_category.id}", "id" => "ic#{subcategory.id}_"}= subcategory.name
-                        
-            .filter-group
-              %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "##{@sc_category.id}-filter-specialties"}
-                Specialties
-              .collapsable.in{:id => "#{@sc_category.id}-filter-specialties"}
-                .filter-group-content
-                  %label
-                    %input.is#isall{"type" => "radio", "name" => "is#{@sc_category.id}", "checked" => "checked"} All
-                  - Specialization.all.each do |s|
-                    - next if @sc_category.all_sc_items_for_specialization_in_divisions(s, current_user_divisions).blank?
-                    %label
-                      %input.is{"type" => "radio", "name" => "is#{@sc_category.id}", "id" => "is#{s.id}_"}= s.name
+                        %input.is{"type" => "radio", "name" => "is#{@sc_category.id}", "id" => "is#{s.id}_"}= s.name
 
-        %script{"type" => "text/javascript"}
-          :plain
-            $('table tr').click( function() { 
-              var link = $(this).find('td.title a');
-              if (link.hasClass('ajax'))
-              {
-                link.click();
-              } 
-              else 
-              {
-                window.open(link.attr('href'));
-              }
-            });
-            $('table tr a').click( function(e) { e.stopPropagation(); });
-            var update_category_#{@sc_category.id}_table = function() { update_category_table(#{@sc_category.id}, '#{@sc_category.name}'); }
-            $(document).ready(function() {
-              $("input.ic[name='ic#{@sc_category.id}'], input.is[name='is#{@sc_category.id}']").click( update_category_#{@sc_category.id}_table ); 
-            });
-            
-  %hr
-  %i.icon-envelope-alt
-  Send us suggestions for #{@sc_category.name.downcase} content for Pathways:
-  = mail_to "submissions@pathwaysbc.ca", "submissions@pathwaysbc.ca", :subject => "#{@sc_category.name} content suggestion for Pathways"
-    
-  #feedback
-    .inner
-      = simple_form_for @feedback, :html => { :class => "ajax feedback_form" } do |f|
+          %script{"type" => "text/javascript"}
+            :plain
+              $('table tr').click( function() { 
+                var link = $(this).find('td.title a');
+                if (link.hasClass('ajax'))
+                {
+                  link.click();
+                } 
+                else 
+                {
+                  window.open(link.attr('href'));
+                }
+              });
+              $('table tr a').click( function(e) { e.stopPropagation(); });
+              var update_category_#{@sc_category.id}_table = function() { update_category_table(#{@sc_category.id}, '#{@sc_category.name}'); }
+              $(document).ready(function() {
+                $("input.ic[name='ic#{@sc_category.id}'], input.is[name='is#{@sc_category.id}']").click( update_category_#{@sc_category.id}_table ); 
+              });
+              
+    %hr
+    %i.icon-envelope-alt
+    Send us suggestions for #{@sc_category.name.downcase} content for Pathways:
+    = mail_to "submissions@pathwaysbc.ca", "submissions@pathwaysbc.ca", :subject => "#{@sc_category.name} content suggestion for Pathways"
+      
+    #feedback
+      .inner
+        = simple_form_for @feedback, :html => { :class => "ajax feedback_form" } do |f|
 
-        = f.input :feedback, :label => "Please provide us with any comments about '<span class='feedback_item_title'></span>'".html_safe
-        = f.input :item_type, :as => :hidden
-        = f.input :item_id, :as => :hidden
+          = f.input :feedback, :label => "Please provide us with any comments about '<span class='feedback_item_title'></span>'".html_safe
+          = f.input :item_type, :as => :hidden
+          = f.input :item_id, :as => :hidden
 
-        .form-actions
-          %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" } Send Feedback
-          %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
-    
-  #feedback_thanks
-    .inner
-      %h2 Thank you!
+          .form-actions
+            %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" } Send Feedback
+            %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
       
-      %p.space.no_indent= "Thank you for providing your feedback  on '<span class='feedback_item_title'></span>'. Your contributions help make Pathways a valuable resource for the community.".html_safe
-      
-      %p.space.no_indent We will review your feedback in the near future and take action as necessary.
-      
-      %p.space.no_indent
-        %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close     
-             
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready(function() { $('.tt').tooltip({trigger: 'manual'}) });
-      
-      function show_feedback(item_title, item_id)
-      {
-        $('.feedback_item_title').text(item_title);
-        $('#feedback_item_item_id').val(item_id);
-        $('#feedback_item_item_type').val("ScItem");
-        $('#feedback').fadeIn(200);
-      }
+    #feedback_thanks
+      .inner
+        %h2 Thank you!
+        
+        %p.space.no_indent= "Thank you for providing your feedback  on '<span class='feedback_item_title'></span>'. Your contributions help make Pathways a valuable resource for the community.".html_safe
+        
+        %p.space.no_indent We will review your feedback in the near future and take action as necessary.
+        
+        %p.space.no_indent
+          %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close     
+               
+    %script{"type" => "text/javascript"}
+      :plain
+        $(document).ready(function() { $('.tt').tooltip({trigger: 'manual'}) });
+        
+        function show_feedback(item_title, item_id)
+        {
+          $('.feedback_item_title').text(item_title);
+          $('#feedback_item_item_id').val(item_id);
+          $('#feedback_item_item_type').val("ScItem");
+          $('#feedback').fadeIn(200);
+        }
 
-      function send_feedback(form) { 
-        $.ajax({
-            url: form.attr('action'),
-            data: form.serialize(),
-            type: 'POST'
-        }).success(function(json) {
-            $('#feedback').fadeOut(200);
-            $('#feedback_item_feedback').val('')
-            $('#feedback_thanks').fadeIn(200);
-        });
-      }
+        function send_feedback(form) { 
+          $.ajax({
+              url: form.attr('action'),
+              data: form.serialize(),
+              type: 'POST'
+          }).success(function(json) {
+              $('#feedback').fadeOut(200);
+              $('#feedback_item_feedback').val('')
+              $('#feedback_thanks').fadeIn(200);
+          });
+        }
 
   %p.admin.btn-group
     - if can? :update, @sc_category

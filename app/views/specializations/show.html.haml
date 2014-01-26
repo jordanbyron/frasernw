@@ -51,7 +51,7 @@
                   %thead
                     %tr{:class => 'tableheader'}
                       %th{:class => "sp {sorter: 'bylastname'} name_column"} Specialist
-                      %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Patients?
+                      %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Referrals?
                       %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
                       %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                   %tbody
@@ -64,7 +64,7 @@
                 #specialist_assumed_list
                   - if @specialization.procedure_specializations.assumed_specialist.reject{ |ps| ps.parent.present? }.present?
                     %i.icon-asterisk.icon-disabled.icon-small
-                    Areas of practice we assume all #{@specialization.member_name.uncapitalize_first_letter.pluralize} see:
+                    Areas of practice we assume all #{@specialization.member_name.uncapitalize_first_letter.pluralize} see or do:
                     = @specialization.procedure_specializations.assumed_specialist.reject{ |ps| ps.parent.present? }.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
                     
               .span3.offsethalf
@@ -260,7 +260,7 @@
                   %thead
                     %tr{:class => 'tableheader'}
                       %th{:class => "sp {sorter: 'text'} name_column"} Clinic
-                      %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Patients?
+                      %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Referrals?
                       %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
                       %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                   %tbody
@@ -273,7 +273,7 @@
                 #clinic_assumed_list
                   - if @specialization.procedure_specializations.assumed_clinic.reject{ |ps| ps.parent.present? }.present?
                     %i.icon-asterisk.icon-disabled.icon-small
-                    Areas of practice we assume all #{@specialization.name} clinics see:
+                    Areas of practice we assume all #{@specialization.name} clinics see or do:
                     = @specialization.procedure_specializations.assumed_clinic.reject{ |ps| ps.parent.present? }.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
                         
               .span3.offsethalf
@@ -604,7 +604,7 @@
 
 %script{"type" => "text/javascript"}
   :plain
-    var city_ids = [#{current_user_cities.map{|c| c.id}.join(',')}];
+    var city_ids = [#{current_user_cities_for_specialization(@specialization).map{|c| c.id}.join(',')}];
     $(document).ready(function() {
       for (var i = 0; i < city_ids.length; ++i) {
         var city_id = city_ids[i];

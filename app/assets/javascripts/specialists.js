@@ -24,13 +24,9 @@ $("#specialist_status_mask").live("change", status_changed );
 function reset_select(id)
 {
   // remove "selected"
-  $("[id=" + id + "] option[selected='selected']").each(
-      function() {
-          $(this).removeAttr('selected');
-      }
-  );
-  
-  $("[id=" + id + "] option:first").attr('selected','selected')
+  $("[id=" + id + "] option[selected='selected']").each(function() { $(this).removeAttr('selected'); });
+  $("[id=" + id + "] option:first").attr('selected','selected');
+  $("#" + id).trigger('liszt:updated');
 }
 
 function reset_office(address_number)
@@ -38,15 +34,19 @@ function reset_office(address_number)
   reset_select("specialist_specialist_offices_attributes_" + address_number + "_office_id");
 }
 
-function reset_hospital()
+function reset_hospital(address_number)
 {
+  //specialist edit page
+  reset_select("specialist_specialist_offices_attributes_" + address_number + "_office_attributes_location_attributes_hospital_in_id");
+  
+  //offices edit
+  reset_select("office_location_attributes_location_in_id");
   reset_select("office_location_attributes_hospital_in_id");
-  reset_select("clinic_location_attributes_hospital_in_id");
 }
 
-function reset_clinic()
+function reset_clinic(address_number)
 {
-  reset_select("office_location_attributes_clinic_in_id")
+  reset_select("specialist_specialist_offices_attributes_" + address_number + "_office_attributes_location_attributes_location_in_id");
 }
 
 function reset_numbers(address_number)
@@ -56,6 +56,8 @@ function reset_numbers(address_number)
   $("#specialist_specialist_offices_attributes_" + address_number + "_fax").val("");
   $("#specialist_specialist_offices_attributes_" + address_number + "_direct_phone").val("");
   $("#specialist_specialist_offices_attributes_" + address_number + "_direct_phone_extension").val("");
+  $("#specialist_specialist_offices_attributes_" + address_number + "_email").val("");
+  $("#specialist_specialist_offices_attributes_" + address_number + "_url").val("");
 }
 
 var address_location_changed = function(address_number)
@@ -70,8 +72,8 @@ var address_location_changed = function(address_number)
     $('.details_' + address_number).hide();
     $('.universal_' + address_number).hide();
     reset_office(address_number);
-    reset_hospital();
-    reset_clinic();
+    reset_hospital(address_number);
+    reset_clinic(address_number);
     reset_numbers(address_number);
   }
   else if ($('#location_' + address_number + '_Standalone').is(':checked') || $('#location_' + address_number + '_In_a_new_standalone_office').is(':checked'))
@@ -83,8 +85,8 @@ var address_location_changed = function(address_number)
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).hide();
     $('.universal_' + address_number).show();
-    reset_hospital();
-    reset_clinic();
+    reset_hospital(address_number);
+    reset_clinic(address_number);
   }
   else if ($('#location_' + address_number + '_In_an_office').is(':checked') || $('#location_' + address_number + '_In_an_existing_office').is(':checked'))
   {
@@ -95,8 +97,8 @@ var address_location_changed = function(address_number)
     $('.clinic_' + address_number).hide();
     $('.details_' + address_number).hide();
     $('.universal_' + address_number).show();
-    reset_hospital();
-    reset_clinic();
+    reset_hospital(address_number);
+    reset_clinic(address_number);
   }
   else if ($('#location_' + address_number + '_In_a_hospital').is(':checked') || $('#location_' + address_number + '_In_a_new_office_in_a_hospital').is(':checked'))
   {
@@ -108,7 +110,7 @@ var address_location_changed = function(address_number)
     $('.details_' + address_number).show();
     $('.universal_' + address_number).show();
     reset_office(address_number);
-    reset_clinic();
+    reset_clinic(address_number);
   }
   else if ($('#location_' + address_number + '_In_a_clinic').is(':checked') || $('#location_' + address_number + '_In_a_new_office_in_a_clinic').is(':checked'))
   {
@@ -120,18 +122,13 @@ var address_location_changed = function(address_number)
     $('.details_' + address_number).show();
     $('.universal_' + address_number).show();
     reset_office(address_number);
-    reset_hospital();
+    reset_hospital(address_number);
   }
 }
 
-var address_0_location_changed = function() { address_location_changed(0) }
-var address_1_location_changed = function() { address_location_changed(1) }
-var address_2_location_changed = function() { address_location_changed(2) }
-
-$(".location_0").live("change", address_0_location_changed);
-$(".location_1").live("change", address_1_location_changed);
-$(".location_2").live("change", address_2_location_changed);
-
+$(".location_0").live("change", function() { address_location_changed(0) });
+$(".location_1").live("change", function() { address_location_changed(1) });
+$(".location_2").live("change", function() { address_location_changed(2) });
 
 $("#add_address").live("click", function() 
 {

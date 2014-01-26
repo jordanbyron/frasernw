@@ -23,7 +23,7 @@
       = f.simple_fields_for :user_controls_specialist_offices do |i|
         .row.spaced
           .span5.offset3
-            = i.association :specialist_office, as: :select, :label => false, collection: SpecialistOffice.all.reject{ |so| so.office.blank? || so.empty? || so.specialist.blank? }.sort{ |a,b| a.specialist.lastname <=> b.specialist.lastname }.map{ |so| ["#{so.specialist.name} - #{so.office.short_address}", so.id]}, prompt: 'Select ...', wrapper: :no_wrapper
+            = i.association :specialist_office, as: :select, :label => false, collection: SpecialistOffice.includes(:office => [:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]]).all.reject{ |so| so.office.blank? || so.empty? || so.specialist.blank? }.sort{ |a,b| a.specialist.lastname <=> b.specialist.lastname }.map{ |so| ["#{so.specialist.name} - #{so.office.short_address}", so.id]}, prompt: 'Select ...', wrapper: :no_wrapper
           .spanhalf.offsethalf
             = i.hidden_field :_destroy
             = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
@@ -32,15 +32,15 @@
       
     %h4 Clinics user can edit
     .content
-      = f.simple_fields_for :user_controls_clinics do |j|
+      = f.simple_fields_for :user_controls_clinic_locations do |j|
         .row.spaced
           .span5.offset3
-            = j.association :clinic, as: :select, :label => false, collection: Clinic.all, prompt: 'Select ...', wrapper: :no_wrapper
+            = j.association :clinic_location, as: :select, :label => false, collection: ClinicLocation.includes(:location => [ {:address => :city}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{ |cl| cl.location.blank? || cl.empty? || cl.clinic.blank? }.sort{ |a,b| a.clinic.name <=> b.clinic.name }.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id]}, prompt: 'Select ...', wrapper: :no_wrapper
           .spanhalf.offsethalf
             = j.hidden_field :_destroy
             = j.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
     .row
-      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another clinic", :user_controls_clinics, class: "btn offset3")
+      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another clinic", :user_controls_clinic_locations, class: "btn offset3")
     
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
