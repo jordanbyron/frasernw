@@ -11,3 +11,4 @@ vendor/gems
 db/*.bak
 config/heroku_env.rb
 /app/views/.DS_Store
+/logfile
