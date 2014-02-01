@@ -87,13 +87,13 @@
                 %p.space.no_indent
                   %i{:class => @specialist.status_class}
                   - if hospital_count > 0 && clinic_count > 0
-                    %strong This specialist only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"} and #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through these locations.
+                    %strong This physician only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"} and #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through these locations.
                   - elsif clinic_count > 0
-                    %strong This specialist only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
+                    %strong This physician only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
                   - elsif hospital_count > 0
-                    %strong This specialist only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
+                    %strong This physician only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
                   - else
-                    %strong This specialist only works out of hospitals and / or clinics, but we do not yet have data on which ones.
+                    %strong This physician only works out of hospitals and / or clinics, but we do not yet have data on which ones.
                   
                 - if @specialist.hospital_clinic_details.present?
                   %p.space.no_indent
