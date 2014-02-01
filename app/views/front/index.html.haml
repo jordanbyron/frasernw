@@ -22,7 +22,7 @@
   - else
     - user_divisions = [user_divisions.first]
 
-- specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(user_divisions)
+- specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(user_divisions).uniq
 
 
 .content-wrapper

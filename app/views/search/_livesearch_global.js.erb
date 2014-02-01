@@ -83,7 +83,7 @@ cache("livesearch_global") do
 
   <% search_data = Array.new 
 
-  Specialization.not_in_progress_for_divisions(Division.all).each do |specialization|
+  Specialization.not_in_progress_for_divisions(Division.all).uniq.each do |specialization|
     
     entry = { 
       "n" => specialization.name, 

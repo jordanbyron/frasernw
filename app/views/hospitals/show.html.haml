@@ -110,7 +110,7 @@
                               %span.new NEW
                           %td.s
                             %ul
-                              - specialist.specializations.not_in_progress_for_divisions(specialist.divisions).each do |s|
+                              - specialist.specializations.not_in_progress_for_divisions(specialist.divisions).uniq.each do |s|
                                 %li= s.name
                           %td.st
                             %i{:class => specialist.status_class}
@@ -232,7 +232,7 @@
                               %span.private PRIVATE
                           %td.s
                             %ul
-                              - clinic.specializations.not_in_progress_for_divisions(clinic.divisions).each do |s|
+                              - clinic.specializations.not_in_progress_for_divisions(clinic.divisions).uniq.each do |s|
                                 %li= s.name
                           %td.st
                             %i{:class => clinic.status_class}
@@ -354,7 +354,7 @@
                             %a.ajax{"href" => specialist_path(specialist)}= specialist.name
                           %td.s
                             %ul
-                              - specialist.specializations.not_in_progress_for_divisions(specialist.divisions).each do |s|
+                              - specialist.specializations.not_in_progress_for_divisions(specialist.divisions).uniq.each do |s|
                                 %li= s.name
                           %td.st
                             %i{:class => specialist.status_class}
