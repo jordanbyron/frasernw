@@ -87,8 +87,8 @@
                 %p.space
                   %strong= cl.phone_only if cl.phone_only.present?
                 %p= "Fax: #{cl.fax}" if cl.fax.present?
-                %p= "Public e-mail: #{mail_to cl.public_email, cl.public_email, :target => '_blank'}".html_safe if cl.public_email.present?
-                %p= "Private e-mail: #{mail_to cl.email, cl.email, :target => '_blank'}".html_safe if cl.email.present?
+                %p= "Public e-mail (okay for patient use): #{mail_to cl.public_email, cl.public_email, :target => '_blank'}".html_safe if cl.public_email.present?
+                %p= "Private e-mail (for physician office use only): #{mail_to cl.email, cl.email, :target => '_blank'}".html_safe if cl.email.present?
                 %p= "Website: #{link_to cl.url, cl.url, :target => '_blank'}".html_safe if cl.url.present?
                 %p= cl.contact_details.convert_newlines_to_br if cl.contact_details.present?
                 - if cl.location.present? && cl.location.in_hospital?

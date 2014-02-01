@@ -143,8 +143,8 @@
                 %p.space
                   %strong= specialist_office.phone_only if specialist_office.phone_only.present?
                 %p= "Fax: #{specialist_office.fax}" if specialist_office.fax.present?
-                %p= "Public e-mail: #{mail_to specialist_office.public_email, specialist_office.public_email, :target => '_blank'}".html_safe if specialist_office.public_email.present?
-                %p= "Private e-mail: #{mail_to specialist_office.email, specialist_office.email, :target => '_blank'}".html_safe if specialist_office.email.present?
+                %p= "Public e-mail (okay for patient use): #{mail_to specialist_office.public_email, specialist_office.public_email, :target => '_blank'}".html_safe if specialist_office.public_email.present?
+                %p= "Private e-mail (for physician office use only): #{mail_to specialist_office.email, specialist_office.email, :target => '_blank'}".html_safe if specialist_office.email.present?
                 %p= "Website: #{link_to specialist_office.url, specialist_office.url, :target => '_blank'}".html_safe if specialist_office.url.present?
                 - if specialist_office.office.present?
                   - num_specialists = specialist_office.office.specialists.reject{ |s| s.not_available? }.count
