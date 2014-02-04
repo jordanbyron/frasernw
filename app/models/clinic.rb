@@ -207,7 +207,7 @@ class Clinic < ActiveRecord::Base
   end
   
   def opened_recently?
-    (location_opened == Time.now.year.to_s) || ((Time.now.month == 1) && (location_opened == (Time.now.year - 1).to_s))
+    (location_opened == Time.now.year.to_s) || (([1,2].include? Time.now.month) && (location_opened == (Time.now.year - 1).to_s))
   end
   
   WAITTIME_HASH = { 
