@@ -246,7 +246,7 @@ class Specialist < ActiveRecord::Base
     5 => "Retiring as of",
     6 => "Unavailable between",
     8 => "Indefinitely unavailable",
-    9 => "Permanenty unavailable",
+    9 => "Permanently unavailable",
     7 => "Didn't answer"
   }
   
