@@ -5,11 +5,16 @@
 - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @sc_item.id, "ScItem").present? ? "icon-red" : "icon-text") : "icon-text"
     
 %ul#specialties-menu
-  %li.dropdown
-    %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-      All Specialties
-      %b.caret
-  - if specialization.present?
+  - if specialization.blank?
+    %li.dropdown.no-caret
+      %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
+        All Specialties
+        %b.caret
+  - else
+    %li.dropdown
+      %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
+        All Specialties
+        %b.caret
     %li.subsequent{:class => specialization.fully_in_progress_for_divisions(current_user_divisions) && "in-progress"}
       = link_to specialization.name, specialization_path(specialization), :class => 'ajax'
       = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
