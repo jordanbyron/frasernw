@@ -92,11 +92,12 @@
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Latest Specialist and Clinic Updates", news_items_path, :class => "btn btn-mini ajax")
             
-        - if NewsItem.divisional_in_divisions(user_divisions).length > 0
+        - divisional_updates = NewsItem.divisional_in_divisions(user_divisions)
+        - if divisional_updates.length > 0
           
           %h2 Division Updates
         
-          - NewsItem.divisional_in_divisions(user_divisions).each do |news_item|
+          - divisional_updates.each do |news_item|
             
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
@@ -108,13 +109,31 @@
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Division Updates", news_items_path, :class => "btn btn-mini ajax")
             
-        - if NewsItem.shared_care_in_divisions(user_divisions).length > 0
+        - attachment_updates = NewsItem.attachment_in_divisions(user_divisions)
+        - if attachment_updates.length > 0
+          
+          %h2 Attachment Updates
+        
+          - attachment_updates.each do |news_item|
+            
+            .news_item
+              .news_item_date= news_item.date if news_item.date.present?
+              %div{:class => news_item.date.present? ? "news_item_title" : "news_item_date"}= news_item.title if news_item.title.present?
+              .news_item_body
+                = BlueCloth.new(news_item.body).to_html.html_safe
+
+        - if current_user_is_admin?
+          %p.admin.btn-group
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Attachment Updates", news_items_path, :class => "btn btn-mini ajax")
+            
+        - shared_care_updates = NewsItem.shared_care_in_divisions(user_divisions)
+        - if shared_care_updates.length > 0
             
           %h2
             %i.icon-red.icon-star
             Shared Care Updates
         
-          - NewsItem.shared_care_in_divisions(user_divisions).each do |news_item|
+          - shared_care_updates.each do |news_item|
             
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
