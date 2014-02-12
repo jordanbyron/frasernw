@@ -1,6 +1,6 @@
 - title "#{@sc_item.title}"
 
-- specialization = (current_user_is_admin? ? @sc_item.specializations : @sc_item.specializations.not_in_progress_for_divisions(current_user_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
+- specialization = (current_user_is_admin? ? @sc_item.specializations : @sc_item.specializations.not_in_progress_for_divisions(current_user_divisions)).first
   
 - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @sc_item.id, "ScItem").present? ? "icon-red" : "icon-text") : "icon-text"
     
@@ -9,13 +9,15 @@
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       All Specialties
       %b.caret
-  %li.subsequent{:class => specialization.fully_in_progress_for_divisions(current_user_divisions) && "in-progress"}
-    = link_to specialization.name, specialization_path(specialization), :class => 'ajax'
-    = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
+  - if specialization.present?
+    %li.subsequent{:class => specialization.fully_in_progress_for_divisions(current_user_divisions) && "in-progress"}
+      = link_to specialization.name, specialization_path(specialization), :class => 'ajax'
+      = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
     
 = render 'partials/specialization_dropdown_menu'
 
-= render 'partials/specialization_nav', :specialization => specialization, :selected => "category_#{@sc_item.root_category.id}"
+- if specialization.present?
+  = render 'partials/specialization_nav', :specialization => specialization, :selected => "category_#{@sc_item.root_category.id}"
             
 .content-wrapper.scm
   
