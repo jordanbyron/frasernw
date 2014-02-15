@@ -41,6 +41,7 @@ module FrontHelper
               
               next if version.reify.blank?
               next if version.reify.moved_away? #moved away status hasn't changed
+              next if (version.reify.unavailable_from < Date.today - 11.months)
               
               #newly moved away
               

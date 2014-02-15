@@ -1,6 +1,6 @@
 var status_changed = function() 
 {
-  if ( $(this).val() == "4" || $(this).val() == "5" )
+  if ( $(this).val() == "4" || $(this).val() == "5" || $(this).val() == "9" || $(this).val() == "10" )
   {
     //"retired as of" or "retiring as of"
     $(".unavailable_from").show();

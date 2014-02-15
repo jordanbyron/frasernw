@@ -198,8 +198,7 @@ class Specialist < ActiveRecord::Base
     1 => "Responded to survey",
     2 => "Not responded to survey",
     3 => "Only works out of hospitals or clinics",
-    4 => "Purposely not yet surveyed",
-    5 => "Moved away"
+    4 => "Purposely not yet surveyed"
   }
   
   def responded?
@@ -218,12 +217,8 @@ class Specialist < ActiveRecord::Base
     categorization_mask == 4
   end
   
-  def moved_away?
-    categorization_mask == 5
-  end
-  
   def show_in_table?
-    not_responded? || hospital_or_clinic_only? || (responded? && !retired_a_while_ago?)
+    not_responded? || hospital_or_clinic_only? || (responded? && !unavailable_for_a_while?)
   end
 
   def show_wait_time_in_table?
@@ -235,8 +230,8 @@ class Specialist < ActiveRecord::Base
     retired? || permanently_unavailable? || moved_away?
   end
      
-  def retired_a_while_ago?
-    ((status_mask == 4) || (status_mask == 5)) && (unavailable_from <= (Date.today - 3.years))
+  def unavailable_for_a_while?
+    (retired? || moved_away? || permanently_unavailable?) && (unavailable_from <= (Date.today - 2.years))
   end
   
   STATUS_HASH = { 
@@ -247,19 +242,15 @@ class Specialist < ActiveRecord::Base
     6 => "Unavailable between",
     8 => "Indefinitely unavailable",
     9 => "Permanently unavailable",
+    10 => "Moved away",
     7 => "Didn't answer"
   }
   
   def status
-    if status_mask == 4 
+    if retired?
       "Retired"
-    elsif status_mask == 5
-      if unavailable_from <= Date.today
-        #retiring as of date has passed, retired
-        "Retired"
-      else
-        "Retiring as of #{unavailable_from.to_s(:long_ordinal)}"
-      end
+    elsif retiring?
+      "Retiring as of #{unavailable_from.to_s(:long_ordinal)}"
     elsif status_mask == 6
       if (unavailable_to < Date.today)
         #inavailability date has passed, available again
@@ -294,8 +285,6 @@ class Specialist < ActiveRecord::Base
   def status_class
     if not_responded?
       return STATUS_CLASS_UNKNOWN
-    elsif moved_away?
-      return STATUS_CLASS_UNAVAILABLE
     elsif purposely_not_yet_surveyed?
       return STATUS_CLASS_BLANK
     elsif hospital_or_clinic_only?
@@ -303,7 +292,7 @@ class Specialist < ActiveRecord::Base
     elsif (accepting_new_patients? || ((status_mask == 6) && (unavailable_to < Date.today)))
       #marked as available, or the "unavailable between" period has passed
       return STATUS_CLASS_AVAILABLE
-    elsif ((status_mask == 2) || (status_mask == 4) || ((status_mask == 5) && (unavailable_from <= Date.today)) || ((status_mask == 6) && (unavailable_from <= Date.today) && (unavailable_to >= Date.today)) || (status_mask == 8) || (status_mask == 9) || moved_away?)
+    elsif (follow_up_only? || retired? || ((status_mask == 6) && (unavailable_from <= Date.today) && (unavailable_to >= Date.today)) || indefinitely_unavailable? || permanently_unavailable? || moved_away?)
       #only seeing old patients, retired, "retiring as of" date has passed", or in midst of inavailability, indefinitely unavailable, permanently unavailable, or moved away
       return STATUS_CLASS_UNAVAILABLE
     elsif (retiring? || ((status_mask == 6) && (unavailable_from > Date.today)))
@@ -323,6 +312,10 @@ class Specialist < ActiveRecord::Base
   def accepting_new_patients?
     status_mask == 1
   end
+
+  def follow_up_only?
+    status_mask == 2
+  end
   
   def retired?
     (status_mask == 4) || ((status_mask == 5) && (unavailable_from <= Date.today))
@@ -332,8 +325,16 @@ class Specialist < ActiveRecord::Base
     (status_mask == 5) && (unavailable_from > Date.today)
   end
   
+  def indefinitely_unavailable?
+    status_mask == 8
+  end
+  
   def permanently_unavailable?
-    (status_mask == 9)
+    status_mask == 9
+  end
+  
+  def moved_away?
+    status_mask == 10
   end
   
   def opened_recently?
