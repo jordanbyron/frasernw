@@ -9,7 +9,6 @@
   - else
     - divisions = current_user_divisions
 
-
   - first_division = divisions.first
   .tabbable
     %ul#content_tabs.nav.nav-tabs
@@ -25,7 +24,7 @@
         .tab-pane{:id => "#{division.id}_tab", :class => (division == first_division) && "active"} 
           %table.table.table-condensed.table-striped
             - Specialization.all.each do |specialization|
-              - specialists = specialization.specialists.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:location_in => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}]}}).in_divisions([division])
+              - specialists = specialization.specialists.in_divisions([division]).sort{ |a,b| a.lastname <=> b.lastname }
               - next if specialists.blank?
               %tr{ :class => specialization.fully_in_progress_for_divisions([division]) ? "in-progress" : "" }
                 %th{:style => "width:100%"}=specialization.name
@@ -35,15 +34,13 @@
                 %tr
                   %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
                   %td.admin.btn-group
-                    - if can? :update, specialist
-                      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
-                    - if can? :destroy, specialist
-                      = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")
+                    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
+                    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")
                       
       .tab-pane{:id => "no_division_tab"}
         %table.table.table-condensed.table-striped
           - Specialization.all.each do |specialization|
-            - specialists = specialization.specialists.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:location_in => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}]}}).reject{ |s| s.cities.length > 0 }
+            - specialists = specialization.specialists.reject{ |s| s.cities.length > 0 }
             - next if specialists.blank?
             %tr
               %th{:style => "width:100%"}=specialization.name
@@ -53,7 +50,5 @@
               %tr
                 %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
                 %td.admin.btn-group
-                  - if can? :update, specialist
-                    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
-                  - if can? :destroy, specialist
-                    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
+                  = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")
