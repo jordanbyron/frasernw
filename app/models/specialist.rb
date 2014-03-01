@@ -1,7 +1,7 @@
 class Specialist < ActiveRecord::Base
   include ApplicationHelper
   
-  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :categorization_mask, :billing_number, :is_gp, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_location_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened, :referral_fax, :referral_phone, :referral_clinic_id, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :patient_instructions, :cancellation_policy, :hospital_clinic_details, :interpreter_available, :photo, :photo_delete, :address_update, :hospital_ids, :specialization_ids, :capacities_attributes, :language_ids, :user_controls_specialist_offices_attributes, :specialist_offices_attributes, :admin_notes, :referral_forms_attributes, :review_object
+  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :categorization_mask, :billing_number, :is_gp, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_location_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened_old, :referral_fax, :referral_phone, :referral_clinic_id, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :patient_instructions, :cancellation_policy, :hospital_clinic_details, :interpreter_available, :photo, :photo_delete, :address_update, :hospital_ids, :specialization_ids, :capacities_attributes, :language_ids, :user_controls_specialist_offices_attributes, :specialist_offices_attributes, :admin_notes, :referral_forms_attributes, :review_object
   has_paper_trail ignore: [:saved_token, :review_item]
   
   # specialists can have multiple specializations
@@ -337,10 +337,6 @@ class Specialist < ActiveRecord::Base
     status_mask == 10
   end
   
-  def opened_recently?
-    (location_opened == Time.now.year.to_s) || (([1,2].include? Time.now.month) && (location_opened == (Time.now.year - 1).to_s))
-  end
-  
   WAITTIME_HASH = { 
     1 => "Within one week", 
     2 => "1-2 weeks", 
@@ -543,6 +539,10 @@ class Specialist < ActiveRecord::Base
     result.uniq!
     return (result ? result.compact.collect{ |ps| ps.procedure } : [])
   end
+
+  def opened_recently?
+    specialist_offices.reject{ |so| !so.opened_recently? }.present?
+  end
   
   def open_saturday?
     specialist_offices.reject{ |so| !so.open_saturday }.present?
@@ -550,6 +550,10 @@ class Specialist < ActiveRecord::Base
   
   def open_sunday?
     specialist_offices.reject{ |so| !so.open_sunday }.present?
+  end
+  
+  def new?
+    (created_at > 3.week.ago.utc) && opened_recently?
   end
 
   def token
@@ -559,10 +563,6 @@ class Specialist < ActiveRecord::Base
       update_column(:saved_token, SecureRandom.hex(16)) #avoid callbacks / validation as we don't want to trigger a sweeper for this
       return self.saved_token
     end
-  end
-  
-  def new?
-    opened_recently? && (created_at > 3.week.ago.utc)
   end
 
 private

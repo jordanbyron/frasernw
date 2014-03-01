@@ -77,7 +77,7 @@
    
           - if show_details
         
-            - if clinic_locations.present? || @clinic.location_opened.present? || @clinic.languages.present? || @clinic.interpreter_available
+            - if clinic_locations.present? || @clinic.languages.present? || @clinic.interpreter_available
               
               %h6 Clinic Information
             
@@ -101,19 +101,18 @@
                 - elsif address.present? && !address.empty?
                   %p= "(#{cl.sector})" if cl.sector?
                   %p= link_to address.address, address.map_url, :target => "_blank"
+                - if cl.location_opened.present?
+                  %p
+                    This clinic opened at this location
+                    = cl.location_opened == "Prior to 2010" ? "prior to 2010." : "in #{cl.location_opened}."
                 %p= "Wheelchair accessible." if cl.wheelchair_accessible?
                 - if cl.scheduled?
                   %p
                     %strong Schedule:
                     = cl.schedule.collapsed_days_and_hours.join(". ").end_with_period
 
-              - if @clinic.location_opened.present?
-                %p.space
-                  This clinic opened at this location 
-                  = @clinic.location_opened == "Prior to 2010" ? "#{@clinic.location_opened.downcase}." : "in #{@clinic.location_opened}."
-
               - if @clinic.languages.present?
-                %p
+                %p.space
                   = @clinic.languages.map{ |x| "<a class='ajax' href='#{language_path(x)}'>#{x.name}</a>" }.to_sentence.html_safe
                   = "#{@clinic.languages.count == 1 ? 'is' : 'are' } spoken at this clinic."
               

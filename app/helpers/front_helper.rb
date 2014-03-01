@@ -11,7 +11,7 @@ module FrontHelper
       manual_events["NewsItem_#{news_item.id}"] = ["#{news_item.start_date || news_item.end_date}", item.html_safe]
     end
     
-    Version.includes(:item).order("id desc").where("item_type = (?) OR item_type = (?)", "Specialist", "Clinic").limit(1000).each do |version|
+    Version.includes(:item).order("id desc").where("item_type in (?)", ["Specialist", "SpecialistOffice", "ClinicLocation"]).limit(1000).each do |version|
     
       next if version.item.blank?
       break if automated_events.length >= max_automated_events
@@ -25,17 +25,7 @@ module FrontHelper
           specialist_divisions = specialist.cities_for_front_page.map{ |city| city.divisions }.flatten.uniq
           next if (specialist_divisions & divisions).blank?
           
-          if version.event == "create" && specialist.accepting_new_patients? && specialist.opened_recently?
-            
-            #new specialist that is accepting patients
-            
-            if specialist.city.present? 
-              automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{specialist.city} and is accepting new referrals.".html_safe]
-            else 
-              automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe]
-            end
-          
-          elsif version.event == "update"
+          if version.event == "update"
           
             if specialist.moved_away?
               
@@ -63,46 +53,57 @@ module FrontHelper
               
               automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{specialist.unavailable_from.strftime('%B %d, %Y')}.".html_safe]
               
-            elsif specialist.accepting_new_patients? && specialist.opened_recently?
-              
-              next if version.reify.blank?
-              next if version.reify.opened_recently? #opened this year status hasn't changed
-              if specialist.city.present?
-                automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{specialist.city} and is accepting new referrals.".html_safe]
-                else
-                automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe]
-              end
-              
             end
           
           end
           
-        elsif version.item_type == "Clinic"
+        elsif version.item_type == "SpecialistOffice"
+        
+          specialist_office = version.item
+          next if specialist_office.specialist.blank?
           
-          clinic = version.item
-          next if clinic.blank? || clinic.in_progress_for_divisions(divisions) || (clinic.divisions & divisions).blank?
+          specialist = specialist_office.specialist
           
-          if (version.event == "create" || version.event == "update") && clinic.accepting_new_patients? && clinic.opened_recently?
+          if (["create", "update"].include? version.event) && specialist.accepting_new_patients? && specialist_office.opened_recently?
             
-            if version.event == "update"
-              
-              next if version.reify.blank?
-              next if version.reify.opened_recently? #opened this year status hasn't changed
-              
+            if (version.event == "update")
+                next if version.reify.blank?
+                next if version.reify.opened_recently? #opened this year status hasn't changed)
             end
             
-            #new clinic
+            if specialist_office.city.present?
+              automated_events["Specialist_#{specialist.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{specialist_office.city.name} and is accepting new referrals.".html_safe]
+            else
+              automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe]
+            end
+            
+          end
           
-            if clinic.cities.present?
-              automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{clinic.cities.to_sentence} and is accepting new referrals.".html_safe]
+        elsif version.item_type == "ClinicLocation"
+        
+          clinic_location = version.item
+          next if clinic_location.clinic.blank?
+          
+          clinic = clinic_location.clinic
+          
+          if (["create", "update"].include? version.event) && clinic.accepting_new_patients? && clinic_location.opened_recently?
+            
+            if (version.event == "update")
+                next if version.reify.blank?
+                next if version.reify.opened_recently? #opened this year status hasn't changed)
+            end
+            
+            if clinic_location.city.present?
+              automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{clinic_location.city.name} and is accepting new referrals.".html_safe]
             else
               automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe]
             end
-          
+            
           end
+          
         end
       rescue Exception => exc
-        #events['error'] = exc
+        #automated_events['error_error'] = ["ding", exc]
         next
       end
     end

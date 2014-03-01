@@ -135,7 +135,7 @@
             - @specialist.specialist_offices.each do |specialist_office|
               - has_office = true if not specialist_office.empty?
               
-            - if has_office || @specialist.location_opened.present? || @specialist.languages.present? || @specialist.interpreter_available
+            - if has_office || @specialist.languages.present? || @specialist.interpreter_available
             
               %h6 Office Information
 
@@ -185,6 +185,10 @@
                       - if num_specialists > 1
                         with
                         %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), :class => 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other specialist')}"
+                - if specialist_office.location_opened.present?
+                  %p
+                    This practice opened at this location
+                    = specialist_office.location_opened == "Prior to 2010" ? "prior to 2010." : "in #{specialist_office.location_opened}."
                 - if specialist_office.direct_info.present?
                   %p
                     Direct number 
@@ -197,14 +201,9 @@
                 - elsif specialist_office.open_sunday
                   %p Open Sunday
                 %p= "Phone lines open #{specialist_office.phone_schedule.collapsed_days_and_hours_and_breaks.to_sentence}" if specialist_office.phone_schedule.scheduled?
-                    
-              - if @specialist.location_opened.present?
-                %p.space
-                  This practice opened at this location
-                  = @specialist.location_opened == "Prior to 2010" ? "#{@specialist.location_opened.downcase}." : "in #{@specialist.location_opened}."
               
               - if @specialist.languages.present?
-                %p
+                %p.space
                   = @specialist.languages.map{ |x| "<a class='ajax' href='#{language_path(x)}'>#{x.name}</a>" }.to_sentence.html_safe
                   = "#{@specialist.languages.count == 1 ? 'is' : 'are' } spoken at this practice."
               

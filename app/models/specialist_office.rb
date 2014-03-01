@@ -1,5 +1,5 @@
 class SpecialistOffice < ActiveRecord::Base
-  attr_accessible :phone, :phone_extension, :fax, :direct_phone, :direct_phone_extension, :sector_mask, :public_email, :email, :open_saturday, :open_sunday, :office_id, :office_attributes, :phone_schedule_attributes, :url
+  attr_accessible :phone, :phone_extension, :fax, :direct_phone, :direct_phone_extension, :sector_mask, :public_email, :email, :open_saturday, :open_sunday, :office_id, :office_attributes, :phone_schedule_attributes, :url, :location_opened
   
   belongs_to :specialist
   belongs_to :office
@@ -15,6 +15,10 @@ class SpecialistOffice < ActiveRecord::Base
   has_paper_trail
   
   default_scope order('specialist_offices.id ASC')
+  
+  def opened_recently?
+    (location_opened == Time.now.year.to_s) || (([1,2].include? Time.now.month) && (location_opened == (Time.now.year - 1).to_s))
+  end
   
   def phone_and_fax
     return "#{phone} ext. #{phone_extension}, Fax: #{fax}" if phone.present? && phone_extension.present? && fax.present?
@@ -55,6 +59,12 @@ class SpecialistOffice < ActiveRecord::Base
   def sector?
     #we assume public for specialists
     sector_mask != 1 && sector_mask != 4
+  end
+  
+  def city
+    o = office
+    return nil if o.blank?
+    return o.city
   end
   
   def empty?

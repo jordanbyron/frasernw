@@ -1,6 +1,6 @@
 class ClinicLocation < ActiveRecord::Base
   
-  attr_accessible :clinic_id, :phone, :phone_extension, :fax, :contact_details, :sector_mask, :url, :public_email, :email, :wheelchair_accessible_mask, :schedule_attributes, :location_attributes, :attendances_attributes
+  attr_accessible :clinic_id, :phone, :phone_extension, :fax, :contact_details, :sector_mask, :url, :public_email, :email, :wheelchair_accessible_mask, :schedule_attributes, :location_attributes, :attendances_attributes, :location_opened
 
   belongs_to :clinic
   has_one :location, :as => :locatable
@@ -14,6 +14,18 @@ class ClinicLocation < ActiveRecord::Base
   
   has_many :attendances, :dependent => :destroy
   accepts_nested_attributes_for :attendances, :allow_destroy => true
+  
+  has_paper_trail
+  
+  def opened_recently?
+    (location_opened == Time.now.year.to_s) || (([1,2].include? Time.now.month) && (location_opened == (Time.now.year - 1).to_s))
+  end
+  
+  def city
+    l = location;
+    return nil if l.blank?
+    return l.city
+  end
   
   def resolved_address
     return location.resolved_address if location.present?
@@ -68,6 +80,4 @@ class ClinicLocation < ActiveRecord::Base
   def empty?
     phone.blank? && phone_extension.blank? && fax.blank? && contact_details.blank? && (location.blank? || location.empty?)
   end
-  
-  has_paper_trail
 end
