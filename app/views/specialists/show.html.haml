@@ -413,7 +413,7 @@
     %h6 Users that can edit this specialist
     
     %ul
-      - @specialist.controlling_users.each do |user|
+      - @specialist.controlling_users.uniq.each do |user|
         %li= link_to user.name, user, :class => 'ajax'
 
   .btn-group

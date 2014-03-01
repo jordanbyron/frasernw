@@ -329,7 +329,7 @@
     %h6 Users that can edit this clinic
     
     %ul
-      - @clinic.controlling_users.each do |user|
+      - @clinic.controlling_users.uniq.each do |user|
         %li= link_to user.name, user, :class => 'ajax'
             
   .btn-group
