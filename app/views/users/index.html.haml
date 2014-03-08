@@ -2,7 +2,10 @@
 
 .content-wrapper
 
-  %h2 Users
+  - if @division.present?
+    %h2 #{@division.name} Users
+  - else
+    %h2 Users
 
   .tabbable
     %ul.nav.nav-tabs
@@ -32,14 +35,15 @@
                 %th.admin
 
             %tbody
-              - User.super_admin.reject{ |user| user.pending? || !user.active? }.each do |user|
+              - @super_admin_users.each do |user|
                 %tr
                   %td= link_to user.name, user, :class => 'ajax'
                   %td= user.divisions.map{ |s| s.name }.to_sentence
                   %td= user.activated_at.present? ? user.activated_at.strftime("%Y-%m-%d") : user.created_at.strftime("%Y-%m-%d")
                   %td= user.email
                   %td
-                    - user.divisions.each do |division|
+                    - divisions = @division.present? ? [@division] : user.divisions
+                    - divisions.each do |division|
                       - specialization_options = user.specialization_options.for_divisions([division]).reject{ |so| so.specialization.blank? }
                       - if specialization_options.present?
                         %ul
@@ -62,7 +66,7 @@
                 %th.admin
 
             %tbody
-              - User.admin_only.reject{ |user| user.pending? || !user.active? }.each do |user|
+              - @admin_users.each do |user|
                 %tr
                   %td= link_to user.name, user, :class => 'ajax'
                   %td= user.divisions.map{ |s| s.name }.to_sentence
@@ -92,7 +96,7 @@
               %th.admin
 
           %tbody
-            - User.user.reject{ |user| user.pending? || !user.active? }.each do |user|
+            - @users.each do |user|
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
                 %td= user.divisions.map{ |s| s.name }.to_sentence
@@ -123,7 +127,7 @@
               %th.admin
               
           %tbody
-            - User.all.reject{ |user| !user.pending? || !user.active? }.each do |user|
+            - @pending_users.each do |user|
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
                 %td= user.created_at.strftime("%Y-%m-%d")
@@ -157,7 +161,7 @@
 
           %tbody
             - has_user = false
-            - User.all.reject{ |u| u.active? }.each do |user|
+            - @inactive_users.each do |user|
               - has_user = true
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
