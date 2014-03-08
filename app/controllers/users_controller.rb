@@ -11,12 +11,12 @@ class UsersController < ApplicationController
     if params[:division_id].present?
       @division = Division.find(params[:division_id])
       if current_user_is_super_admin?
-        @super_admin_users = User.in_divisions([@division]).active_super_admin
-        @admin_users = User.in_divisions([@division]).active_admin_only
+        @super_admin_users = User.includes(:divisions).in_divisions([@division]).active_super_admin
+        @admin_users = User.includes(:divisions).in_divisions([@division]).active_admin_only
       end
-      @users = User.in_divisions([@division]).active_user;
-      @pending_users = User.in_divisions([@division]).active_pending;
-      @inactive_users = User.in_divisions([@division]).inactive
+      @users = User.includes(:divisions).in_divisions([@division]).active_user;
+      @pending_users = User.includes(:divisions).in_divisions([@division]).active_pending;
+      @inactive_users = User.includes(:divisions).in_divisions([@division]).inactive
     else
       if current_user_is_super_admin?
         @super_admin_users = User.active_super_admin
