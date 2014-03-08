@@ -74,7 +74,7 @@ module FrontHelper
             if specialist_office.city.present?
               automated_events["Specialist_#{specialist.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{specialist_office.city.name} and is accepting new referrals.".html_safe]
             else
-              automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe]
+              automated_events["Specialist_#{version.item.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe]
             end
             
           end
@@ -94,9 +94,9 @@ module FrontHelper
             end
             
             if clinic_location.city.present?
-              automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{clinic_location.city.name} and is accepting new referrals.".html_safe]
+              automated_events["Clinic_#{version.item.id}"] = ["#{version.created_at}", "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{clinic_location.city.name} and is accepting new referrals.".html_safe]
             else
-              automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe]
+              automated_events["Clinic_#{version.item.id}"] = ["#{version.created_at}", "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe]
             end
             
           end
