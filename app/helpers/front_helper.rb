@@ -11,7 +11,7 @@ module FrontHelper
       manual_events["NewsItem_#{news_item.id}"] = ["#{news_item.start_date || news_item.end_date}", item.html_safe]
     end
     
-    Version.includes(:item).order("id desc").where("item_type in (?)", ["Specialist", "SpecialistOffice", "ClinicLocation"]).limit(1000).each do |version|
+    Version.includes(:item).order("id desc").where("item_type in (?)", ["Specialist", "SpecialistOffice", "ClinicLocation"]).limit(2000).each do |version|
     
       next if version.item.blank?
       break if automated_events.length >= max_automated_events
