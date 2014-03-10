@@ -22,7 +22,7 @@ class UsersController < ApplicationController
         @super_admin_users = User.active_super_admin
         @admin_users = User.active_admin_only
       end
-      @users = User.user;
+      @users = User.active_user;
       @pending_users = User.active_pending;
       @inactive_users = User.inactive
     end

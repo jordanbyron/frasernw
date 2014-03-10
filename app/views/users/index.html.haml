@@ -170,7 +170,7 @@
                 %td= user.role_full
                 %td= user.admin? ? "Admin" : user.type
                 %td= user.email
-                %td= user.pending? ? user.token : "Was actived"
+                %td= user.pending? ? user.token : "Was activated"
                 -#%td
                   %ul
                     - user.controlled_specialist_offices.each do |specialist_office|
