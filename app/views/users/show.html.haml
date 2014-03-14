@@ -2,7 +2,10 @@
 
 .content-wrapper
 
-  %h2= @user.name
+  %h2
+    %span{:class => !@user.active && "in-progress"}= @user.name
+    - if !@user.active
+      %h4 (INACTIVE)
 
   - if !@user.pending?
     %p.no_indent.space
