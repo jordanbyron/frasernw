@@ -326,12 +326,15 @@
   
               
   - if current_user_is_admin? 
-    - controlling_users = @clinic.controlling_users.active.uniq
+    - controlling_users = @clinic.controlling_users.uniq
     - if controlling_users.present?
       %h6 Users that can edit this clinic
       %ul
         - controlling_users.each do |user|
-          %li= link_to user.name, user, :class => 'ajax'
+          %li
+            = link_to user.name, user, :class => !user.active && "in-progress"
+            - if !user.active 
+              (inactive)
             
   .btn-group
     - if true || show_details
