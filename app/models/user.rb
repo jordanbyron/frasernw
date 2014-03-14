@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
   end
 
   def self.active_user
-    where("users.role = 'user' AND users.active = (?) AND users.email != ''", true)
+    where("users.role = 'user' AND users.active = (?) AND COALESCE(users.email,'') != ''", true)
   end
 
   def self.admin_only
@@ -61,7 +61,7 @@ class User < ActiveRecord::Base
   end
 
   def self.active_admin_only
-    where("users.role = 'admin' AND users.active = (?) AND users.email != ''", true)
+    where("users.role = 'admin' AND users.active = (?) AND COALESCE(users.email,'') != ''", true)
   end
 
   def self.admin
@@ -73,11 +73,11 @@ class User < ActiveRecord::Base
   end
 
   def self.active_super_admin
-    where("users.role = 'super' AND users.active = (?) AND users.email != ''", true)
+    where("users.role = 'super' AND users.active = (?) AND COALESCE(users.email,'') != ''", true)
   end
 
   def self.active_pending
-    where("users.email = '' AND users.active = (?)", true)
+    where("COALESCE(users.email,'') = '' AND users.active = (?)", true)
   end
 
   def self.active
