@@ -22,7 +22,10 @@
 
     - @news_items.each do |news_item|
       %tr
-        %td= link_to news_item.title, news_item, :class => 'ajax'
+        - title = news_item.title
+        - if title.blank?
+          - title = truncate(news_item.body, :length => 40, :separator => ' ')
+        %td= link_to title, news_item, :class => 'ajax'
         - if multiple_divisions
           %td{:style => "white-space: nowrap"}= news_item.division.name
         %td{:style => "white-space: nowrap"}= news_item.type
