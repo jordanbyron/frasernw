@@ -323,13 +323,15 @@
               $('#feedback_thanks').fadeIn(200);
           });
         }
+  
               
-  - if current_user_is_admin? &&  @clinic.controlling_users.present?
-    %h6 Users that can edit this clinic
-    
-    %ul
-      - @clinic.controlling_users.uniq.each do |user|
-        %li= link_to user.name, user, :class => 'ajax'
+  - if current_user_is_admin? 
+    - controlling_users = @clinic.controlling_users.active.uniq
+    - if controlling_users.present?
+      %h6 Users that can edit this clinic
+      %ul
+        - controlling_users.each do |user|
+          %li= link_to user.name, user, :class => 'ajax'
             
   .btn-group
     - if true || show_details

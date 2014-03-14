@@ -80,6 +80,10 @@ class User < ActiveRecord::Base
     where("users.email = '' AND users.active = (?)", true)
   end
 
+  def self.active
+    where("users.active = (?)", true)
+  end
+
   def self.inactive
     where("users.active = (?)", false)
   end
