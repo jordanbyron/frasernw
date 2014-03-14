@@ -24,7 +24,7 @@
       %tr
         - title = news_item.title
         - if title.blank?
-          - title = truncate(news_item.body, :length => 40, :separator => ' ')
+          - title = truncate(ActionView::Base.full_sanitizer.sanitize(BlueCloth.new(news_item.body).to_html), :length => 40, :separator => ' ')
         %td= link_to title, news_item, :class => 'ajax'
         - if multiple_divisions
           %td{:style => "white-space: nowrap"}= news_item.division.name
