@@ -132,6 +132,27 @@ var clinic_address_location_changed = function(address_number)
   }
 }
 
+//review queue may poke at details; update their location seleciton
+var clinic_address_details_changed = function(address_number)
+{
+  if (!$("[id=clinic_clinic_locations_attributes_" + address_number + "_location_attributes_address_attributes_city_id] option:first").prop('selected'))
+  {
+    //standalone
+    $('#clinic_location_' + address_number + '_Standalone').prop('checked', true);
+  }
+  else if (!$("[id=clinic_clinic_locations_attributes_" + address_number + "_location_attributes_hospital_in_id] option:first").prop('selected'))
+  {
+    //in a hospital
+    $('#clinic_location_' + address_number + '_In_a_hospital').prop('checked', true);
+  }
+  else
+  {
+    //must be unused
+    $('#clinic_location_' + address_number + '_Not_used').prop('checked', true);
+  }
+  clinic_address_location_changed(address_number);
+}
+
 $(".clinic_location_0").live("change", function() { clinic_address_location_changed(0) });
 $(".clinic_location_1").live("change", function() { clinic_address_location_changed(1) });
 $(".clinic_location_2").live("change", function() { clinic_address_location_changed(2) });
