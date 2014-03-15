@@ -208,9 +208,9 @@ class ReportsController < ApplicationController
         f.options[:xAxis][:labels][:step] = 7
         f.series(:name => 'Pageviews', :data => total_pageviews)
       end
-    when Report::ReportType::SPECIALIST_CONTACT_HISTORY
+      when Report::ReportType::SPECIALIST_CONTACT_HISTORY
       @specialist_email_table = {}
-      divisions = @report.divisional? ? Division.all : [@report.division]
+      @divisions = @report.divisional? ? [@report.division] : Division.all
       Specialization.all.each do |s|
         next if s.fully_in_progress_for_divisions(divisions)
         specialization = []
@@ -232,6 +232,9 @@ class ReportsController < ApplicationController
         end
         @specialist_email_table[s.id] = specialization
       end
+    when Report::ReportType::ENTITY_STATS
+      @divisions = @report.divisional? ? [@report.division] : Division.all
+      render :stats
     else
       @data = nil
     end

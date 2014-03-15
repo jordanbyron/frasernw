@@ -15,12 +15,14 @@ class Report < ActiveRecord::Base
     AREAS_OF_PRACTICE = 7
     FEEDBACK_ITEMS = 8
     SPECIALIST_CONTACT_HISTORY = 9
+    ENTITY_STATS = 10
   end
   
   TYPE_HASH = {
     ReportType::PAGE_VIEWS => "Page views",
     ReportType::CONTENT_ITEMS => "Content items",
     ReportType::SPECIALIST_CONTACT_HISTORY => "Specialist contact history",
+    ReportType::ENTITY_STATS => "Entity Statistics",
   }
   
   def type
