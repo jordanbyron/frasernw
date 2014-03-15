@@ -233,6 +233,7 @@ class ReportsController < ApplicationController
         @specialist_email_table[s.id] = specialization
       end
     when Report::ReportType::ENTITY_STATS
+      @divisional = @report.divisional?
       @divisions = @report.divisional? ? [@report.division] : Division.all
       render :stats
     else
