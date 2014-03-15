@@ -3,11 +3,11 @@
 .content-wrapper
 
   %h2= @report.name
-  %h4= "Generated on #{Time.now.strftime('%Y-%m-%d')} at #{Time.now.strftime('%H:%M:%S')}"
-  %h4= "#{@report.level} report on #{@report.type.downcase}"
-  - if @report.type_mask != 9
-    %h4= "Reporting on #{@report.user_type.pluralize.downcase}"
-    %h4= "#{@report.start_date} - #{@report.end_date}"
+  %h4= "#{@report.level_name} #{@report.type}"
+  - if @report.type_mask != Report::ReportType::SPECIALIST_CONTACT_HISTORY
+    %p.no_indent= "Reporting on #{@report.user_type.pluralize.downcase}"
+  %p.no_indent= "Covering #{@report.time_frame_name.downcase}"
+  %p.no_indent= "Generated on #{Time.now.strftime('%A %B %d')} at #{Time.now.strftime('%I:%M %p')}"
 
   - if @h
   

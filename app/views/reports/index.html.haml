@@ -19,7 +19,7 @@
         %td= report.type
         %td= report.level_name
         %td= report.user_type
-        %td= report.time_frame
+        %td= report.time_frame_name
         %td.admin.btn-group
           = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_report_path(report), :class => "btn btn-mini ajax")
           = link_to("<i class='icon-trash'></i>".html_safe + " Delete", report, :confirm => "Delete #{report.name}?", :method => :delete, :class => "btn btn-mini")

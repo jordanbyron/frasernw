@@ -49,9 +49,9 @@ class Report < ActiveRecord::Base
 
   def level_name
     if divisional?
-      return Division.find(division_id).name
+      Division.find(division_id).name
     else
-      return level
+      level
     end
   end
   
@@ -80,5 +80,14 @@ class Report < ActiveRecord::Base
   def time_frame
     Report::TIME_FRAME_HASH[time_frame_mask]
   end
-  
+
+  def time_frame_name
+    if type_mask == ReportType::SPECIALIST_CONTACT_HISTORY
+      TIME_FRAME_HASH[TimeFrame::ALL_TIME]
+    elsif time_frame_mask == Report::TimeFrame::CUSTOM_RANGE
+      "#{start_date} - #{end_date}"
+    else
+      time_frame
+    end
+  end
 end

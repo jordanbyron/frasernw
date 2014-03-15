@@ -241,6 +241,7 @@ class ReportsController < ApplicationController
   
   def new
     @report = Report.new
+    @ReportType = Report::ReportType
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
@@ -255,6 +256,7 @@ class ReportsController < ApplicationController
   
   def edit
     @report = Report.find(params[:id])
+    @ReportType = Report::ReportType
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
