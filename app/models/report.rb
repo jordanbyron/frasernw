@@ -56,7 +56,7 @@ class Report < ActiveRecord::Base
   end
   
   def divisional?
-    LEVEL_HASH[level_mask] == ReportLevel::DIVISIONAL
+    level_mask == ReportLevel::DIVISIONAL
   end
 
   module TimeFrame
