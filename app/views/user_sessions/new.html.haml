@@ -3,36 +3,60 @@
 .content-wrapper
   .content
     .row
-      .span5
+      .span4.offset4
         = simple_form_for @user_session do |f|
 
-          %h2 Have an account? Log in!
+          %h2 Log in to Pathways
         
           - if f.error_messages.present?
             .alert.alert-error= f.error_messages
           
           = f.input :email, autofocus: true, :input_html => {"autocorrect" => "off", "autocapitalize" => "none", :class => "span4"}, :label => "E-mail address"
-          = f.input :password, :label => "Password", :input_html => {:class => "span4"}
-          
-          = f.button :submit, "Log in", :class => "btn btn-primary"
-          
-          %a.ajax{"href" => new_password_reset_path} Forgot your password?
-      
-          %p.space.no_indent= "By logging in you agree to the <a href='javascript:void(0)' data-toggle='collapse' data-target='#toc'>Terms and Conditions</a>".html_safe
-                    
-      .span5.offset1
-        = simple_form_for @user, :url => {:controller => "users", :action => "validate"}, :method => "put" do |f|
 
-          %h2 Have an access key? Sign up!
+          .control-group
+            .controls
+              %label.radio
+                I am a new user
+                = radio_button_tag('new_user', 'yes', 1, class: 'new_user')
+              %label.radio
+                I am a returning user
+                = radio_button_tag('new_user', 'no', 0, class: 'new_user')
+
+          .returning_user_block
+            = f.input :password, :label => "Password", :input_html => {:class => "span4"}
           
-          = f.input :saved_token, :input_html => {"autocorrect" => "off", "autocapitalize" => "none", :class => "span2", "maxlength" => 8}
-          = f.button :submit, "Sign up", :class => "btn btn-primary"
-      
-          %p.space.no_indent#access_key_instructions Note that each access key is used only once. If you have already set up your account, simply sign in to the left with your e-mail address and chosen password.
-          
+            = f.button :submit, "Log in", :class => "btn btn-primary"
+            %a.ajax{"href" => new_password_reset_path} Forgot your password?
+            %p.space.no_indent= "By logging in you agree to the <a href='javascript:void(0)' data-toggle='collapse' data-target='#toc'>Terms and Conditions</a>".html_safe
+            
+        = simple_form_for @user, :url => {:controller => "users", :action => "validate"}, :method => "put" do |f|
+          .new_user_block.hide
+            = f.input :saved_token, :input_html => {"autocorrect" => "off", "autocapitalize" => "none", :class => "span2", "maxlength" => 8}, :hint => 'Please note that each access key is used only once to initially sign up for Pathways. If you have already set up your account simply sign in as a returning user with your e-mail address and chosen password.'
+            = f.button :submit, "Sign up", :class => "btn btn-primary space"
+
+        %script{"type" => "text/javascript"}
+          :plain
+            var new_user_changed = function()
+            {
+              if ($(this).val() == 'yes')
+              {
+                $(".returning_user_block").hide();
+                $(".new_user_block").show();
+              }
+              else
+              {
+                $(".returning_user_block").show();
+                $(".new_user_block").hide();
+              }
+            }
+
+            $(document).ready(function(){
+              $(".new_user").live("change", new_user_changed)
+            });
+            
     .row
     
-      .span12
+      .span8.offset2
       
         #toc.collapse
 
