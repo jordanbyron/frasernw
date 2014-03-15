@@ -126,6 +126,22 @@ var address_location_changed = function(address_number)
   }
 }
 
+//review queue may poke at details; update their location seleciton
+var specialist_address_details_changed = function(address_number)
+{
+  if (!$("[id=specialist_specialist_offices_attributes_" + address_number + "_office_id] option:first").prop('selected'))
+  {
+    //In an office
+    $('#location_' + address_number + '_In_an_office').prop('checked', true);
+  }
+  else
+  {
+    //must be unused
+    $('#location_' + address_number + '_Not_used').prop('checked', true);
+  }
+  address_location_changed(address_number);
+}
+
 $(".location_0").live("change", function() { address_location_changed(0) });
 $(".location_1").live("change", function() { address_location_changed(1) });
 $(".location_2").live("change", function() { address_location_changed(2) });
