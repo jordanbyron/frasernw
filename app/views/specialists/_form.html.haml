@@ -312,13 +312,13 @@
                 ext: 
               = so.input_field :phone_extension, :class => "span1"
             = so.input :fax, :input_html => { :class => "span3" }
-            = so.input :direct_phone, :hint => "For physician contact only" do
+            = so.input :direct_phone, :hint => "For physician use only" do
               = so.input_field :direct_phone, :class => "span3"
               .span1
                 ext: 
               = so.input_field :direct_phone_extension, :class => "span1"
-            = so.input :public_email, :input_html => { :class => "span3" }, :hint => "For patient contact"
-            = so.input :email, :input_html => { :class => "span3" }, :hint => "For physician contact only"
+            = so.input :email, :input_html => { :class => "span3" }, :hint => "For physician office use only"
+            = so.input :public_email, :input_html => { :class => "span3" }, :hint => "Okay for patient use to contact your office"
             = so.input :url, :input_html => { :class => "span3" }
           %div.no-print{:class => "office_#{index}"}
             = so.association :office, as: :select, collection: @offices, :include_blank => true, :input_html => { :class => "chzn-select no-print" }
@@ -347,7 +347,7 @@
           %div{:class => "universal_#{index}"}
             = so.input :open_saturday, wrapper: :bootstrap_tight
             = so.input :open_sunday
-                        
+            = so.input :location_opened, as: :select, collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a), prompt: "Select ..."
             = so.input :sector_mask, as: :radio_buttons, collection: SpecialistOffice::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
             
             %h4 What days and times are your phone lines open?
@@ -422,7 +422,6 @@
           $("#specialist_status_mask").each( status_changed );
     = f.input :status_details
     = f.input :practise_limitations
-    = f.input :location_opened, as: :select, collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a), prompt: "Select ..."
     = f.association :languages, as: :check_boxes, :item_wrapper_class => 'inline'
     = f.input :interpreter_available
   

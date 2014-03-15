@@ -306,8 +306,8 @@
               = cl.input_field :phone_extension, :class => "span1"
             = cl.input :fax, :input_html => { :class => "span3" }
             = cl.input :contact_details
-            = cl.input :public_email, :input_html => { :class => "span3" }, :hint => "For patient contact"
-            = cl.input :email, :input_html => { :class => "span3" }, :hint => "For physician contact only"
+            = cl.input :email, :input_html => { :class => "span3" }, :hint => "For physician office use only"
+            = cl.input :public_email, :input_html => { :class => "span3" }, :hint => "Okay for patient use to contact your office"
             = cl.input :url, :input_html => { :class => "span3" }
           .control-group.print-only
             %label.control-label Address
@@ -329,6 +329,7 @@
               = l.input :suite_in, :input_html => { :class => "span1" }
               = l.input :details_in
           %div{:class => "universal_#{index}"}
+            = cl.input :location_opened, as: :select, collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a), prompt: "Select ..."
             = cl.input :sector_mask, as: :radio_buttons, collection: ClinicLocation::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
             = cl.input :wheelchair_accessible_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
 
@@ -387,7 +388,6 @@
     = f.input :status_mask, as: :select, collection: Clinic::STATUS_HASH, label_method: :last, value_method: :first
     = f.input :status_details
     = f.input :limitations
-    = f.input :location_opened, as: :select, collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a), prompt: "Select ..."
     = f.association :languages, as: :check_boxes, :item_wrapper_class => 'inline'
     = f.input :interpreter_available
 

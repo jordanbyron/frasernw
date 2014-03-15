@@ -34,7 +34,7 @@
 
     #specialties-dropdown-menu
       .inner
-        - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions)
+        - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions).uniq
         - first = specializations[0, (specializations.length / 4.0).ceil]
         - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
         - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]

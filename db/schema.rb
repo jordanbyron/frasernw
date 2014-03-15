@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140111203841) do
+ActiveRecord::Schema.define(:version => 20140301035900) do
 
   create_table "addresses", :force => true do |t|
     t.string   "address1"
@@ -97,6 +97,7 @@ ActiveRecord::Schema.define(:version => 20140111203841) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "public_email"
+    t.string   "location_opened"
   end
 
   create_table "clinic_speaks", :force => true do |t|
@@ -134,7 +135,7 @@ ActiveRecord::Schema.define(:version => 20140111203841) do
     t.string   "contact_notes"
     t.integer  "status_mask"
     t.text     "limitations"
-    t.text     "location_opened"
+    t.text     "location_opened_old"
     t.text     "required_investigations"
     t.text     "not_performed"
     t.boolean  "referral_fax"
@@ -577,6 +578,7 @@ ActiveRecord::Schema.define(:version => 20140111203841) do
     t.boolean  "open_sunday",            :default => false
     t.integer  "schedule_id"
     t.string   "public_email"
+    t.string   "location_opened"
   end
 
   add_index "specialist_offices", ["office_id"], :name => "index_specialist_offices_on_office_id"
@@ -627,7 +629,7 @@ ActiveRecord::Schema.define(:version => 20140111203841) do
     t.text     "required_investigations"
     t.text     "not_performed"
     t.text     "status_details"
-    t.string   "location_opened"
+    t.string   "location_opened_old"
     t.integer  "status_mask"
     t.boolean  "referral_fax"
     t.boolean  "referral_phone"

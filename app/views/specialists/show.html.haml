@@ -87,13 +87,13 @@
                 %p.space.no_indent
                   %i{:class => @specialist.status_class}
                   - if hospital_count > 0 && clinic_count > 0
-                    %strong This specialist only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"} and #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through these locations.
+                    %strong This physician only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"} and #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through these locations.
                   - elsif clinic_count > 0
-                    %strong This specialist only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
+                    %strong This physician only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
                   - elsif hospital_count > 0
-                    %strong This specialist only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
+                    %strong This physician only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
                   - else
-                    %strong This specialist only works out of hospitals and / or clinics, but we do not yet have data on which ones.
+                    %strong This physician only works out of hospitals and / or clinics, but we do not yet have data on which ones.
                   
                 - if @specialist.hospital_clinic_details.present?
                   %p.space.no_indent
@@ -135,7 +135,7 @@
             - @specialist.specialist_offices.each do |specialist_office|
               - has_office = true if not specialist_office.empty?
               
-            - if has_office || @specialist.location_opened.present? || @specialist.languages.present? || @specialist.interpreter_available
+            - if has_office || @specialist.languages.present? || @specialist.interpreter_available
             
               %h6 Office Information
 
@@ -143,8 +143,8 @@
                 %p.space
                   %strong= specialist_office.phone_only if specialist_office.phone_only.present?
                 %p= "Fax: #{specialist_office.fax}" if specialist_office.fax.present?
-                %p= "Public e-mail: #{mail_to specialist_office.public_email, specialist_office.public_email, :target => '_blank'}".html_safe if specialist_office.public_email.present?
-                %p= "Private e-mail: #{mail_to specialist_office.email, specialist_office.email, :target => '_blank'}".html_safe if specialist_office.email.present?
+                %p= "Public e-mail (okay for patient use): #{mail_to specialist_office.public_email, specialist_office.public_email, :target => '_blank'}".html_safe if specialist_office.public_email.present?
+                %p= "Private e-mail (for physician office use only): #{mail_to specialist_office.email, specialist_office.email, :target => '_blank'}".html_safe if specialist_office.email.present?
                 %p= "Website: #{link_to specialist_office.url, specialist_office.url, :target => '_blank'}".html_safe if specialist_office.url.present?
                 - if specialist_office.office.present?
                   - num_specialists = specialist_office.office.specialists.reject{ |s| s.not_available? }.count
@@ -185,6 +185,10 @@
                       - if num_specialists > 1
                         with
                         %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), :class => 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other specialist')}"
+                - if specialist_office.location_opened.present?
+                  %p
+                    This practice opened at this location
+                    = specialist_office.location_opened == "Prior to 2010" ? "prior to 2010." : "in #{specialist_office.location_opened}."
                 - if specialist_office.direct_info.present?
                   %p
                     Direct number 
@@ -197,14 +201,9 @@
                 - elsif specialist_office.open_sunday
                   %p Open Sunday
                 %p= "Phone lines open #{specialist_office.phone_schedule.collapsed_days_and_hours_and_breaks.to_sentence}" if specialist_office.phone_schedule.scheduled?
-                    
-              - if @specialist.location_opened.present?
-                %p.space
-                  This practice opened at this location
-                  = @specialist.location_opened == "Prior to 2010" ? "#{@specialist.location_opened.downcase}." : "in #{@specialist.location_opened}."
               
               - if @specialist.languages.present?
-                %p
+                %p.space
                   = @specialist.languages.map{ |x| "<a class='ajax' href='#{language_path(x)}'>#{x.name}</a>" }.to_sentence.html_safe
                   = "#{@specialist.languages.count == 1 ? 'is' : 'are' } spoken at this practice."
               
@@ -409,12 +408,16 @@
           });
         }
               
-  - if current_user_is_admin? && @specialist.controlling_users.present?
-    %h6 Users that can edit this specialist
-    
-    %ul
-      - @specialist.controlling_users.each do |user|
-        %li= link_to user.name, user, :class => 'ajax'
+  - if current_user_is_admin? 
+    - controlling_users = @specialist.controlling_users.uniq
+    - if controlling_users.present?
+      %h6 Users that can edit this specialist
+      %ul
+        - controlling_users.each do |user|
+          %li
+            = link_to user.name, user, :class => !user.active && "in-progress"
+            - if !user.active
+              (inactive)
 
   .btn-group
     - if true || show_details

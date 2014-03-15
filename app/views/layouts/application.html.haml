@@ -200,7 +200,7 @@
                           %ul.dropdown-menu
                             %li=link_to "All Offices", offices_path, :class => "ajax"
                             - current_user_cities.each do |city|
-                              %li=link_to "Offices in #{city.name}", city_offices_path(city), :class => 'office ajax'
+                              %li=link_to "#{city.name} Offices", city_offices_path(city), :class => 'office ajax'
                       - if can? :index, Province
                         %li= link_to "Provinces", provinces_path, :class => "ajax"
                       - if can? :index, Specialist
@@ -208,7 +208,12 @@
                       - if can? :index, Specialization
                         %li= link_to "Specialties", specializations_path, :class => "ajax"
                       - if can? :index, User
-                        %li= link_to "Users", users_path, :class => "ajax"
+                        %li
+                          = link_to "Users", "#", :class => "arrow-right-after"
+                          %ul.dropdown-menu
+                            %li=link_to "All Users", users_path, :class => "ajax"
+                            - Division.all.each do |division|
+                              %li=link_to "#{division.name} Users", division_users_path(division), :class => 'division ajax'
                       %li.divider
                       %li.nav-header Content Management
                       %li

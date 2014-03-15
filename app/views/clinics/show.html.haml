@@ -77,7 +77,7 @@
    
           - if show_details
         
-            - if clinic_locations.present? || @clinic.location_opened.present? || @clinic.languages.present? || @clinic.interpreter_available
+            - if clinic_locations.present? || @clinic.languages.present? || @clinic.interpreter_available
               
               %h6 Clinic Information
             
@@ -87,8 +87,8 @@
                 %p.space
                   %strong= cl.phone_only if cl.phone_only.present?
                 %p= "Fax: #{cl.fax}" if cl.fax.present?
-                %p= "Public e-mail: #{mail_to cl.public_email, cl.public_email, :target => '_blank'}".html_safe if cl.public_email.present?
-                %p= "Private e-mail: #{mail_to cl.email, cl.email, :target => '_blank'}".html_safe if cl.email.present?
+                %p= "Public e-mail (okay for patient use): #{mail_to cl.public_email, cl.public_email, :target => '_blank'}".html_safe if cl.public_email.present?
+                %p= "Private e-mail (for physician office use only): #{mail_to cl.email, cl.email, :target => '_blank'}".html_safe if cl.email.present?
                 %p= "Website: #{link_to cl.url, cl.url, :target => '_blank'}".html_safe if cl.url.present?
                 %p= cl.contact_details.convert_newlines_to_br if cl.contact_details.present?
                 - if cl.location.present? && cl.location.in_hospital?
@@ -101,19 +101,18 @@
                 - elsif address.present? && !address.empty?
                   %p= "(#{cl.sector})" if cl.sector?
                   %p= link_to address.address, address.map_url, :target => "_blank"
+                - if cl.location_opened.present?
+                  %p
+                    This clinic opened at this location
+                    = cl.location_opened == "Prior to 2010" ? "prior to 2010." : "in #{cl.location_opened}."
                 %p= "Wheelchair accessible." if cl.wheelchair_accessible?
                 - if cl.scheduled?
                   %p
                     %strong Schedule:
                     = cl.schedule.collapsed_days_and_hours.join(". ").end_with_period
 
-              - if @clinic.location_opened.present?
-                %p.space
-                  This clinic opened at this location 
-                  = @clinic.location_opened == "Prior to 2010" ? "#{@clinic.location_opened.downcase}." : "in #{@clinic.location_opened}."
-
               - if @clinic.languages.present?
-                %p
+                %p.space
                   = @clinic.languages.map{ |x| "<a class='ajax' href='#{language_path(x)}'>#{x.name}</a>" }.to_sentence.html_safe
                   = "#{@clinic.languages.count == 1 ? 'is' : 'are' } spoken at this clinic."
               
@@ -324,13 +323,18 @@
               $('#feedback_thanks').fadeIn(200);
           });
         }
+  
               
-  - if current_user_is_admin? &&  @clinic.controlling_users.present?
-    %h6 Users that can edit this clinic
-    
-    %ul
-      - @clinic.controlling_users.each do |user|
-        %li= link_to user.name, user, :class => 'ajax'
+  - if current_user_is_admin? 
+    - controlling_users = @clinic.controlling_users.uniq
+    - if controlling_users.present?
+      %h6 Users that can edit this clinic
+      %ul
+        - controlling_users.each do |user|
+          %li
+            = link_to user.name, user, :class => !user.active && "in-progress"
+            - if !user.active 
+              (inactive)
             
   .btn-group
     - if true || show_details

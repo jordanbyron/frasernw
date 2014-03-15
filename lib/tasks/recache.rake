@@ -98,7 +98,7 @@ namespace :pathways do
       User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
         ScCategory.all.sort{ |a,b| a.id <=> b.id }.each do |cc|
           puts "Content Category #{cc.id}"
-          expire_fragment "content_#{cc.id}_category#{division_group.join('_')}"
+          expire_fragment "content_#{cc.id}_category_#{division_group.join('_')}"
         end
       end
     end
