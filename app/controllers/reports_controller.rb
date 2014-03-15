@@ -14,8 +14,7 @@ class ReportsController < ApplicationController
     ga.profile_id = accounts.first.profile_id
     
     case @report.type_mask
-    when 1
-      #report on general page views
+    when Report::ReportType::PAGE_VIEWS
       
       dates = get_start_end_date(@report)
       start_date = dates.first
@@ -73,9 +72,9 @@ class ReportsController < ApplicationController
           @user_results << [ user.name, metrics[:visits], metrics[:visitors], metrics[:pageviews] ] if user.present?
         end
       end
-    when 4
-      #report on content items
       
+    when Report::ReportType::CONTENT_ITEMS
+    
       #grab the page views
       dates = get_start_end_date(@report)
       start_date = dates.first
@@ -209,9 +208,9 @@ class ReportsController < ApplicationController
         f.options[:xAxis][:labels][:step] = 7
         f.series(:name => 'Pageviews', :data => total_pageviews)
       end
-    when 9
+    when Report::ReportType::SPECIALIST_CONTACT_HISTORY
       @specialist_email_table = {}
-      divisions = @report.level_divisional? ? Division.all : [@report.division]
+      divisions = @report.divisional? ? Division.all : [@report.division]
       Specialization.all.each do |s|
         next if s.fully_in_progress_for_divisions(divisions)
         specialization = []
@@ -417,17 +416,17 @@ class ReportsController < ApplicationController
   
   def get_start_end_date(report)
     case report.time_frame_mask
-      when 1
+      when Report::TimeFrame::YESTERDAY
         return [Date.today - 1, Date.today-1]
-      when 2
+      when Report::TimeFrame::LAST_WEEK
         return [Date.today - 7, Date.today]
-      when 3
+      when Report::TimeFrame::LAST_MONTH
         return [Date.today - 1.month, Date.today]
-      when 4
+      when Report::TimeFrame::LAST_YEAR
         return [Date.today - 1.year, Date.today]
-      when 5
+      when Report::TimeFrame::ALL_TIME
         return [Date.new(2012,06,1), Date.today]
-      when 6
+      when Report::TimeFrame::CUSTOM_RANGE
         return [report.start_date, report.end_date]
       else
         return [Date.today - 1, Date.today]
