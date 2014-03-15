@@ -32,7 +32,11 @@ class Report < ActiveRecord::Base
   USER_TYPE_HASH = {-1 => 'All Non-Admin Users', 0 => 'All Users' }.merge(User::TYPE_HASH)
   
   def user_type
-    Report::USER_TYPE_HASH[user_type_mask]
+    if [ReportType::SPECIALIST_CONTACT_HISTORY, ReportType::ENTITY_STATS].include? type_mask
+      "N/A"
+    else
+      Report::USER_TYPE_HASH[user_type_mask]
+    end
   end
 
   module ReportLevel
@@ -84,7 +88,9 @@ class Report < ActiveRecord::Base
   end
 
   def time_frame_name
-    if type_mask == ReportType::SPECIALIST_CONTACT_HISTORY
+    if type_mask == ReportType::ENTITY_STATS
+      "N/A"
+    elsif type_mask == ReportType::SPECIALIST_CONTACT_HISTORY
       TIME_FRAME_HASH[TimeFrame::ALL_TIME]
     elsif time_frame_mask == Report::TimeFrame::CUSTOM_RANGE
       "#{start_date} - #{end_date}"
