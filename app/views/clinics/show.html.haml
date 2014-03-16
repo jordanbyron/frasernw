@@ -228,7 +228,7 @@
               %ul
                 - @clinic.attendances.each do |attendance|
                   - if attendance.is_specialist
-                    - if attendance.specialist
+                    - if attendance.specialist && !attendance.specialist.not_available?
                       %li
                         %a.ajax{"href" => specialist_path(attendance.specialist)}= attendance.specialist.name
                         - if attendance.specialist.billing_number_padded.present?
