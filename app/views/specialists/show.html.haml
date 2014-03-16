@@ -418,6 +418,21 @@
             = link_to user.name, user, :class => !user.active && "in-progress"
             - if !user.active
               (inactive)
+              
+    %h6 Review Queue Updates
+    - review_items = ReviewItem.for_specialist(@specialist)
+    %ul
+      - if review_items.present?
+        - review_items.sort{|a,b| a.created_at <=> b.created_at}.each do |review_item|
+          %li
+            = review_item.created_at.strftime('%B %d, %Y')
+            - if review_item.archived?
+              - if review_item.base_object.present?
+                = link_to '(Re-review)', specialist_rereview_path(review_item.item, review_item.id)
+            - else
+              = link_to '(Review)', specialist_review_path(review_item.item, review_item.id)
+      - else
+        %li None
 
   .btn-group
     - if true || show_details
