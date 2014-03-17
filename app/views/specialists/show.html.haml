@@ -423,10 +423,12 @@
     - review_items = ReviewItem.for_specialist(@specialist)
     %ul
       - if review_items.present?
-        - review_items.sort{|a,b| a.created_at <=> b.created_at}.each do |review_item|
+        - review_items.sort{|a,b| b.created_at <=> a.created_at}.each do |review_item|
           %li
             = review_item.created_at.strftime('%B %d, %Y')
-            - if review_item.archived?
+            - if review_item.no_updates?
+              = "(#{ReviewItem::STATUS_HASH[review_item.status]})"
+            - elsif review_item.archived?
               - if review_item.base_object.present?
                 = link_to '(Re-review)', specialist_rereview_path(review_item.item, review_item.id)
             - else
@@ -493,22 +495,3 @@
           %h3 Secret edit link
           %p Anyone can edit this specialist if they have the following secret address:
           %p= specialist_self_edit_path(@specialist, @specialist.token, :only_path => false)
-          -#
-            %p 
-              You can:
-              %ul
-                - if @specialist.contact_email.present?
-                  %li
-                    Have Pathways
-                    = link_to "send and email", specialist_email_path(@specialist)
-                    = " with this link to #{@specialist.contact_name} (#{@specialist.contact_email}), the contact MOA for this specialist."
-                %li 
-                  Manually
-                  = mail_to "", "Send an email", :subject => "Edit #{@specialist.name} on Pathways", :body => "#{specialist_self_edit_path(@specialist, @specialist.token, :only_path => false)}"
-                  with this link in to whomever you chose
-                %li Copy and paste it into an email or document manually.
-            - if @specialist.contacts.length > 0
-              %p
-                Contact history through Pathways:
-                %ul
-                  = render @specialist.contacts
