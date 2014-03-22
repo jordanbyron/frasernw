@@ -12,16 +12,16 @@ class UsersController < ApplicationController
       @division = Division.find(params[:division_id])
       if current_user_is_super_admin?
         @super_admin_users = User.includes(:divisions).in_divisions([@division]).active_super_admin
-        @admin_users = User.includes(:divisions).in_divisions([@division]).active_admin_only
       end
+      @admin_users = User.includes(:divisions).in_divisions([@division]).active_admin_only
       @users = User.includes(:divisions).in_divisions([@division]).active_user;
       @pending_users = User.includes(:divisions).in_divisions([@division]).active_pending;
       @inactive_users = User.includes(:divisions).in_divisions([@division]).inactive
     else
       if current_user_is_super_admin?
         @super_admin_users = User.active_super_admin
-        @admin_users = User.active_admin_only
       end
+      @admin_users = User.active_admin_only
       @users = User.active_user;
       @pending_users = User.active_pending;
       @inactive_users = User.inactive
@@ -39,7 +39,6 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(params[:user])
-    @user.divisions << Division.all.first if (Division.all.length == 1)
     if @user.save :validate => false #so we can avoid setting up with emails or passwords
       redirect_to @user, :notice => "User #{@user.name} successfully created."
     else

@@ -38,14 +38,15 @@ class User < ActiveRecord::Base
   
   default_scope order('users.name')
 
-  LIMITED_ROLE_HASH = {
+LIMITED_ROLE_HASH = {
     "user" => "User",
+    "admin" => "Administrator"
   }
 
   ROLE_HASH = {
     "user" => "User",
     "admin" => "Administrator",
-    "super" => "Super Administrator",
+    "super" => "Super Administrator"
   }
 
   def self.user
