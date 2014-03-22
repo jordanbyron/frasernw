@@ -75,6 +75,10 @@
                 - if news_item.end_date.present?
                   = "<b>End:</b> #{news_item.end_date_full_regardless}".html_safe
               %td.admin.btn-group
-                = link_to("View", news_item_path(news_item), :class => "btn btn-mini ajax")
+                - if current_user_is_super_admin?
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_news_item_path(news_item), :class => "btn btn-mini ajax")
+                  = link_to("<i class='icon-trash'></i>".html_safe + " Delete", news_item, :confirm => "Delete #{news_item.title}?", :method => :delete, :class => "btn btn-mini")
+                - else
+                  = link_to("View", news_item_path(news_item), :class => "btn btn-mini ajax")
 
         = will_paginate @other_news_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2, :param_name => 'other_page'
