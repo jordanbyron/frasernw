@@ -52,8 +52,8 @@ class Ability
         can [:change_email, :update_email, :change_password, :update_password, :change_local_referral_area, :update_local_referral_area], User
         
         #can manage their own news items
-        can :create, NewsItem
-        can :manage, NewsItem do |news_item|
+        can [:index, :new, :create, :show], NewsItem
+        can [:edit, :update], NewsItem do |news_item|
           user.divisions.include? news_item.division
         end
         
