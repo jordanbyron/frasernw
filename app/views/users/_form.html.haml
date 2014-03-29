@@ -6,8 +6,7 @@
   = f.input :email if !@new_user
   = f.input :role, :as => :select, collection: (current_user_is_super_admin? ? User::ROLE_HASH : User::LIMITED_ROLE_HASH), label_method: :last, value_method: :first, :include_blank => false
   = f.input :active
-  - if Division.all.length > 1
-    = f.association :divisions, as: :check_boxes
+  = f.association :divisions, as: :check_boxes, collection: (current_user_is_super_admin? ? Division.all : current_user_divisions), checked: (current_user_is_super_admin? ? nil : current_user_divisions.first.id)
   
   #super_admin_pane
   
