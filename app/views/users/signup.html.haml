@@ -10,7 +10,7 @@
 
   = simple_form_for @user, :url => {:controller => "users", :action => "setup"}, :method => "put", :html => { :class => "form-horizontal" } do |f| 
     
-    = f.input :email, :input_html => { :class => "span4" }, :hint => "Your e-mail address will also be your Pathways username. We suggest using an office e-mail address if possible, as you may want to share your account within your office."
+    = f.input :email, :input_html => { :class => "span4" }, input_html: {value: @email },  :hint => "Your e-mail address will also be your Pathways username. We suggest using an office e-mail address if possible, as you may want to share your account within your office."
     = f.input :password, :input_html => { :class => "span4" }, :hint => "Your password must be at least 6 characters long. Again, since you may want to share an account within your office, we do not recommment choosing a password that is personal to you."
     = f.input :password_confirmation, :input_html => { :class => "span4" }, :hint => "Please confirm your new password by typing it again."
     

@@ -80,6 +80,7 @@ class UsersController < ApplicationController
       elsif @user.email.present?
         redirect_to login_url, :alert  => "Your access key has already been used to set up an account. Please enter the e-mail address and password associated with your account, and press 'Log in'"
       else
+        @email = params[:user][:email]
         render :action => 'signup', :layout => 'user_sessions'
       end
     end
