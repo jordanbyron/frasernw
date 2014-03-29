@@ -8,7 +8,11 @@ class ClinicsController < ApplicationController
   cache_sweeper :clinic_sweeper, :only => [:create, :update, :destroy]
 
   def index
-    @clinics = Clinic.all
+    if params[:specialization_id].present?
+      @specializations = [Specialization.find(params[:specialization_id])]
+    else
+      @specializations = Specialization.all
+    end
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
