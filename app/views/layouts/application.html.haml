@@ -165,6 +165,8 @@
                             %li= link_to "New Specialty", new_specialization_path, :class => "ajax"
                           - if can? :create, User
                             %li= link_to "New User", new_user_path, :class => "ajax"
+                            - if current_user_is_super_admin?
+                              %li= link_to "Bulk Create Users", upload_users_path, :class => "ajax"
                       - if can? :index, Procedure
                         %li
                           = link_to "Areas of Practice in...", "#", :class => "arrow-right-after"

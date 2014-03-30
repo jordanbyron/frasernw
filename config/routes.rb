@@ -126,7 +126,12 @@ Frasernw::Application.routes.draw do
 
   resources :user_sessions
 
-  resources :users
-
+  resources :users do
+    collection do
+      get :upload
+      post :import
+    end
+  end
+  
   root :to => 'front#index'
 end
