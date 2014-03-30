@@ -174,7 +174,12 @@
                       - if can? :index, City
                         %li= link_to "Cities", cities_path, :class => "ajax"
                       - if can? :index, Clinic
-                        %li= link_to "Clinics", clinics_path, :class => "ajax"
+                        %li
+                          = link_to "Clinics", "#", :class => "arrow-right-after"
+                          %ul.dropdown-menu
+                            %li=link_to "All Clinics", clinics_path, :class => "ajax"
+                            - Specialization.all.each do |specialization|
+                              %li=link_to "#{specialization.name} Clinics", specialization_clinics_path(specialization), :class => 'division ajax'
                       - if can? :index, Division
                         %li= link_to "Divisions", divisions_path, :class => "ajax"
                       - elsif current_user_is_admin?
@@ -204,7 +209,12 @@
                       - if can? :index, Province
                         %li= link_to "Provinces", provinces_path, :class => "ajax"
                       - if can? :index, Specialist
-                        %li= link_to "Specialists", specialists_path, :class => "ajax"
+                        %li
+                          = link_to "Specialists", "#", :class => "arrow-right-after"
+                          %ul.dropdown-menu
+                            %li=link_to "All Specialists", specialists_path, :class => "ajax"
+                            - Specialization.all.each do |specialization|
+                              %li=link_to specialization.member_name.pluralize, specialization_specialists_path(specialization), :class => 'division ajax'
                       - if can? :index, Specialization
                         %li= link_to "Specialties", specializations_path, :class => "ajax"
                       - if can? :index, User

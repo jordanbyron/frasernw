@@ -23,7 +23,7 @@
       - divisions.each do |division|
         .tab-pane{:id => "#{division.id}_tab", :class => (division == first_division) && "active"} 
           %table.table.table-condensed.table-striped
-            - Specialization.all.each do |specialization|
+            - @specializations.each do |specialization|
               - clinics = specialization.clinics.in_divisions([division]).sort{ |a,b| a.name <=> b.name }
               - next if clinics.blank?
               %tr{ :class => specialization.fully_in_progress_for_divisions([division]) ? "in-progress" : "" }
@@ -39,7 +39,7 @@
                       
       .tab-pane{:id => "no_division_tab"}
         %table.table.table-condensed.table-striped
-          - Specialization.all.each do |specialization|
+          - @specializations.each do |specialization|
             - clinics = specialization.clinics.reject{ |c| c.cities.length > 0 }.sort{ |a,b| a.name <=> b.name }
             - next if clinics.blank?
             %tr

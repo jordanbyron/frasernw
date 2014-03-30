@@ -228,7 +228,7 @@
               %ul
                 - @clinic.attendances.each do |attendance|
                   - if attendance.is_specialist
-                    - if attendance.specialist
+                    - if attendance.specialist && !attendance.specialist.not_available?
                       %li
                         %a.ajax{"href" => specialist_path(attendance.specialist)}= attendance.specialist.name
                         - if attendance.specialist.billing_number_padded.present?
@@ -335,6 +335,23 @@
             = link_to user.name, user, :class => !user.active && "in-progress"
             - if !user.active 
               (inactive)
+              
+    %h6 Review Queue Updates
+    - review_items = ReviewItem.for_clinic(@clinic)
+    %ul
+      - if review_items.present?
+        - review_items.sort{|a,b| b.created_at <=> a.created_at}.each do |review_item|
+          %li
+            = review_item.created_at.strftime('%B %d, %Y')
+            - if review_item.no_updates?
+              = "(#{ReviewItem::STATUS_HASH[review_item.status]})"
+            - elsif review_item.archived?
+              - if review_item.base_object.present?
+                = link_to '(Re-review)', clinic_rereview_path(review_item.item, review_item.id)
+            - else
+              = link_to '(Review)', clinic_review_path(review_item.item, review_item.id)
+      - else
+        %li None
             
   .btn-group
     - if true || show_details

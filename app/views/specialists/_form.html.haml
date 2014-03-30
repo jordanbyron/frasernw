@@ -236,8 +236,9 @@
         {
           if ($('#location_tab_' + i + ' .changed').length !== 0)
           {
-            $('#location_' + i + '_In_an_office').prop('checked', true);
             $('a[href="#location_tab_' + i + '"]').addClass('changed');
+            specialist_address_details_changed(i);
+            $(".chzn-select").trigger("liszt:updated");
           }
         }
       });

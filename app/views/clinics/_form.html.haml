@@ -236,6 +236,7 @@
           if ($('#location_tab_' + i + ' .changed').length !== 0)
           {
             $('a[href="#location_tab_' + i + '"]').addClass('changed');
+            clinic_address_details_changed(i);
           }
         }
       });
