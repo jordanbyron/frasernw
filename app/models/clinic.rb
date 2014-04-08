@@ -73,6 +73,10 @@ class Clinic < ActiveRecord::Base
   def self.in_divisions(divisions)
     self.in_cities(divisions.map{ |division| division.cities }.flatten.uniq)
   end
+
+  def self.in_local_referral_area_for_specializaton_and_division(specialization, division)
+    self.in_cities(division.local_referral_cities_for_specialization(specialization))
+  end
   
   def responded?
     categorization_mask == 1
