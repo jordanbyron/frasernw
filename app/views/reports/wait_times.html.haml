@@ -11,9 +11,9 @@
     - Specialization.all.each do |s|
 
       - if (@divisional)
-        - entities = s.send(@entity).in_divisions(@divisions)
+        - entities = s.send(@entity).in_divisions(@divisions).reject{ |e| !e.show_in_table? || !e.show_wait_time_in_table? }
       - else
-        - entities = s.send(@entity)
+        - entities = s.send(@entity).reject{ |e| !e.show_in_table? || !e.show_wait_time_in_table? }
         
       - next if entities.blank?
 
@@ -23,8 +23,6 @@
         %th Wait Time
         
       - entities.each do |entity|
-      
-        - next if !entity.show_wait_time_in_table?
       
         %tr
           %td= link_to entity.name, entity
