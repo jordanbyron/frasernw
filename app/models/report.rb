@@ -19,8 +19,8 @@ class Report < ActiveRecord::Base
   end
   
   TYPE_HASH = {
-    ReportType::PAGE_VIEWS => "Page views",
-    ReportType::CONTENT_ITEMS => "Content items",
+    #ReportType::PAGE_VIEWS => "Page views",
+    #ReportType::CONTENT_ITEMS => "Content items",
     ReportType::SPECIALIST_WAIT_TIMES => "Specialist wait times",
     ReportType::CLINIC_WAIT_TIMES => "Clinic wait times",
     ReportType::SPECIALIST_CONTACT_HISTORY => "Specialist contact history",
