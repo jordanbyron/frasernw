@@ -14,7 +14,7 @@
     = javascript_include_tag :highcharts
     = high_chart("my_id", @h)
     
-  - if @report.by_user
+  - if @report.by_user && @user_results.present?
 
     %table#user_table.table.table-condensed
 
