@@ -72,6 +72,10 @@ class Specialist < ActiveRecord::Base
     division_ids = divisions.map{ |division| division.id }
     joins('INNER JOIN "specialist_specializations" ON "specialists"."id" = "specialist_specializations"."specialist_id" INNER JOIN "specialization_options" ON "specialization_options"."specialization_id" = "specialist_specializations"."specialization_id"').where('"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)', division_ids, false)
   end
+  
+  def self.not_in_progress
+    joins('INNER JOIN "specialist_specializations" AS "ss2" ON "specialists"."id" = "ss2"."specialist_id" INNER JOIN "specialization_options" ON "specialization_options"."specialization_id" = "ss2"."specialization_id"').where('"specialization_options"."in_progress" = (?)', false)
+  end
 
   def in_progress_for_divisions(divisions)
     specialization_options = specializations.map{ |s| s.specialization_options.for_divisions(divisions) }.flatten
@@ -102,6 +106,10 @@ class Specialist < ActiveRecord::Base
   
   def self.in_divisions(divisions)
     self.in_cities(divisions.map{ |division| division.cities }.flatten.uniq)
+  end
+
+  def self.in_local_referral_area_for_specializaton_and_division(specialization, division)
+    self.in_cities(division.local_referral_cities_for_specialization(specialization))
   end
   
   def photo_delete

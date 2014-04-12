@@ -16,9 +16,18 @@
     order_map[ category.name ] = ( order_map.length + 1 ).to_s
   end
 
-  specialists = Specialist.not_in_progress_for_divisions([division]).includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:location_in => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}]}}).in_divisions([division])
+  specialists = []
+  clinics = []
+  
+  Specialization.all.each do |specialization|
 
-  specialists.each do |specialist|
+    specialists += specialization.specialists.not_in_progress.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:location_in => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}]}}).in_local_referral_area_for_specializaton_and_division(specialization, division)
+  
+    clinics += specialization.clinics.not_in_progress.includes(:locations => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]).in_local_referral_area_for_specializaton_and_division(specialization, division)
+
+  end
+
+  specialists.flatten.uniq.each do |specialist|
 
     #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
     
@@ -32,9 +41,7 @@
     search_data << entry
   end
 
-  clinics = Clinic.not_in_progress_for_divisions([division]).includes(:locations => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]).in_divisions([division])
-
-  clinics.each do |clinic|
+  clinics.flatten.uniq.each do |clinic|
 
     #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
     

@@ -168,4 +168,17 @@ LIMITED_ROLE_HASH = {
   def local_referral_cities_for_specialization(specialization)
     return user_city_specializations.reject{ |ucs| ucs.specialization_id != specialization.id }.map{ |ucs| ucs.user_city.city }
   end
+
+  def self.import(file, divisions, type_mask, role)
+    users = []
+    CSV.foreach(file.path) do |row|
+      user = User.new(:name => row[0], :divisions => divisions, :type_mask => type_mask, :role => role)
+      if user.save :validate => false #so we can avoid setting up with emails or passwords
+        users << user
+      else
+        puts "ERROR SETTING UP #{row[0]}"
+      end
+    end
+    users
+  end
 end

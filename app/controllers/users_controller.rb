@@ -196,6 +196,24 @@ class UsersController < ApplicationController
     end
   end
   
+  def upload
+    render :layout => 'ajax' if request.headers['X-PJAX']
+  end
+  
+  def import
+    divisions = []
+    params[:division_ids].each do |division_id|
+      next if division_id.blank?
+      divisions << Division.find(division_id)
+    end
+    if divisions.blank?
+      redirect_to upload_users_url, :layout => 'ajax', :notice => "At least one division must be chosen."
+    else
+      @users = User.import(params[:file], divisions, params[:type_mask], 'user')
+      render :layout => 'ajax' if request.headers['X-PJAX']
+    end
+  end
+  
   def destroy
     @user = User.find(params[:id])
     @user.destroy
