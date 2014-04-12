@@ -21,7 +21,7 @@ class ProvincesController < ApplicationController
     if @province.save
       redirect_to @province, :notice => "Successfully created province."
     else
-      render :action => 'new', 
+      render :action => 'new'
     end
   end
   
