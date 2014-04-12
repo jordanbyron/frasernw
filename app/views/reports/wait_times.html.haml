@@ -1,0 +1,38 @@
+- title "#{@report.name}"
+
+.content-wrapper
+
+  %h2= @report.name
+  %h4= "#{@report.level_name} #{@report.type}"
+  %p.no_indent= "Generated on #{Time.now.strftime('%A %B %d')} at #{Time.now.strftime('%I:%M %p')}"
+
+  %table#stats.table
+  
+    - Specialization.all.each do |s|
+
+      - if (@divisional)
+        - entities = s.send(@entity).in_divisions(@divisions)
+      - else
+        - entities = s.send(@entity)
+        
+      - next if entities.blank?
+
+      %tr
+        %th= s.name
+        %th Lag Time
+        %th Wait Time
+        
+      - entities.each do |entity|
+      
+        - next if !entity.show_wait_time_in_table?
+      
+        %tr
+          %td= link_to entity.name, entity
+          %td= entity.lagtime
+          %td= entity.waittime
+
+  %p.admin.btn-group
+    - if can? :update, @report
+      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Report", edit_report_path(@report), :class => "btn ajax")
+    - if can? :destroy, @report
+      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Report", @report, :confirm => "Delete #{@report.name}?", :method => :delete, :class => "btn")

@@ -208,7 +208,9 @@ class ReportsController < ApplicationController
         f.options[:xAxis][:labels][:step] = 7
         f.series(:name => 'Pageviews', :data => total_pageviews)
       end
+      
       when Report::ReportType::SPECIALIST_CONTACT_HISTORY
+      
       @specialist_email_table = {}
       @divisions = @report.divisional? ? [@report.division] : Division.all
       Specialization.all.each do |s|
@@ -236,6 +238,16 @@ class ReportsController < ApplicationController
       @divisional = @report.divisional?
       @divisions = @report.divisional? ? [@report.division] : Division.all
       render :stats
+    when Report::ReportType::SPECIALIST_WAIT_TIMES
+      @divisional = @report.divisional?
+      @divisions = @report.divisional? ? [@report.division] : Division.all
+      @entity = "specialists"
+      render :wait_times
+    when Report::ReportType::CLINIC_WAIT_TIMES
+      @divisional = @report.divisional?
+      @divisions = @report.divisional? ? [@report.division] : Division.all
+      @entity = "clinics"
+      render :wait_times
     else
       @data = nil
     end

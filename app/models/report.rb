@@ -10,8 +10,8 @@ class Report < ActiveRecord::Base
     USERS = 2
     SPECIALTIES = 3
     CONTENT_ITEMS = 4
-    SPECIALISTS = 5
-    CLINICS = 6
+    SPECIALIST_WAIT_TIMES = 5
+    CLINIC_WAIT_TIMES = 6
     AREAS_OF_PRACTICE = 7
     FEEDBACK_ITEMS = 8
     SPECIALIST_CONTACT_HISTORY = 9
@@ -21,6 +21,8 @@ class Report < ActiveRecord::Base
   TYPE_HASH = {
     ReportType::PAGE_VIEWS => "Page views",
     ReportType::CONTENT_ITEMS => "Content items",
+    ReportType::SPECIALIST_WAIT_TIMES => "Specialist wait times",
+    ReportType::CLINIC_WAIT_TIMES => "Clinic wait times",
     ReportType::SPECIALIST_CONTACT_HISTORY => "Specialist contact history",
     ReportType::ENTITY_STATS => "Entity Statistics",
   }
@@ -32,7 +34,7 @@ class Report < ActiveRecord::Base
   USER_TYPE_HASH = {-1 => 'All Non-Admin Users', 0 => 'All Users' }.merge(User::TYPE_HASH)
   
   def user_type
-    if [ReportType::SPECIALIST_CONTACT_HISTORY, ReportType::ENTITY_STATS].include? type_mask
+    if [ReportType::SPECIALIST_CONTACT_HISTORY, ReportType::SPECIALIST_WAIT_TIMES, ReportType::CLINIC_WAIT_TIMES, ReportType::ENTITY_STATS].include? type_mask
       "N/A"
     else
       Report::USER_TYPE_HASH[user_type_mask]
@@ -88,7 +90,7 @@ class Report < ActiveRecord::Base
   end
 
   def time_frame_name
-    if type_mask == ReportType::ENTITY_STATS
+    if [ReportType::SPECIALIST_WAIT_TIMES, ReportType::CLINIC_WAIT_TIMES, ReportType::ENTITY_STATS].include? type_mask
       "N/A"
     elsif type_mask == ReportType::SPECIALIST_CONTACT_HISTORY
       TIME_FRAME_HASH[TimeFrame::ALL_TIME]
