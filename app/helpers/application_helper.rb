@@ -156,6 +156,11 @@ module ApplicationHelper
     end
   end
   
+  def current_user_division_id
+    divisions = current_user_divisions
+    return divisions.present? ? divisions.first.id : -1;
+  end
+  
   def current_user_cities
     if current_user
       return current_user.divisions.map { |d| d.cities }.flatten.uniq
