@@ -8,4 +8,6 @@ class FeaturedContent < ActiveRecord::Base
     division_ids = divisions.map{ |division| division.id }
     where('"division_id" IN (?)', division_ids)
   end
+
+  MAX_FEATURED_ITEMS = 2
 end

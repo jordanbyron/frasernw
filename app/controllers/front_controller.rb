@@ -21,6 +21,8 @@ class FrontController < ApplicationController
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
+  
+  
   def edit
     @front = Front.first
     @front = Front.create if @front.blank?
@@ -34,8 +36,11 @@ class FrontController < ApplicationController
       if category.show_on_front_page?
         #show on front page; make any slots we don't have
         featured_content_count = featured_content.blank? ? 0 : featured_content.length
-        for x in (featured_content_count+1)..3
+        for x in (featured_content_count+1)..FeaturedContent::MAX_FEATURED_ITEMS
           FeaturedContent.create( :front => @front, :sc_category => category, :division => @division )
+        end
+        for x in (FeaturedContent::MAX_FEATURED_ITEMS+1)..featured_content_count
+          FeaturedContent.delete(featured_content.first)
         end
       else
         #shouldn't be shown on front page any more
