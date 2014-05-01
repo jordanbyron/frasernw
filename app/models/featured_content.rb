@@ -9,5 +9,5 @@ class FeaturedContent < ActiveRecord::Base
     where('"division_id" IN (?)', division_ids)
   end
 
-  MAX_FEATURED_ITEMS = 2
+  MAX_FEATURED_ITEMS = 3
 end
