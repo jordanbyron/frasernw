@@ -374,6 +374,7 @@
               .alert.alert-success= msg
             = yield
             #message
+              .url= request.fullpath
               .inner
             #message_sent
               .inner
@@ -387,7 +388,7 @@
       .row
         #email.content-wrapper
           Contact us:
-          %a{:href => '#', :onclick => "$('#message .inner').load('#{messages_path}', function() { $('#message').show() }); return false;"} administration@pathwaysbc.ca
+          %a{:href => '#', :onclick => "$('#message .inner').load('#{messages_path}', function() { show_message(); }); return false;"} administration@pathwaysbc.ca
             
     #loading
       #loading-spinner

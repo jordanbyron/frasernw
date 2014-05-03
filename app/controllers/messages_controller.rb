@@ -1,6 +1,8 @@
 class MessagesController < ApplicationController
   authorize_resource
   
+  include ApplicationHelper
+  
   def new
     @message = Message.new
     render layout: 'contact'
@@ -10,7 +12,7 @@ class MessagesController < ApplicationController
     @message = Message.new(params[:message])
     
     if @message.valid?
-      MessagesMailer.new_message(@message).deliver
+      MessagesMailer.new_message(@message, current_user).deliver
       redirect_to(root_path, :notice => "Message was successfully sent.")
     else
       flash.now.alert = "Please fill all fields."
