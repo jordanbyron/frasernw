@@ -21,9 +21,9 @@
   
   Specialization.all.each do |specialization|
 
-    specialists += specialization.specialists.not_in_progress.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:location_in => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}]}}).in_local_referral_area_for_specializaton_and_division(specialization, division)
+    specialists += specialization.specialists.not_in_progress
   
-    clinics += specialization.clinics.not_in_progress.includes(:locations => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]).in_local_referral_area_for_specializaton_and_division(specialization, division)
+    clinics += specialization.clinics.not_in_progress
 
   end
 
