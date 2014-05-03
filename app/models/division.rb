@@ -1,6 +1,6 @@
 class Division < ActiveRecord::Base
   
-  attr_accessible :name, :city_ids, :shared_sc_item_ids
+  attr_accessible :name, :city_ids, :shared_sc_item_ids, :primary_contact_id
    
   has_many :division_cities, :dependent => :destroy
   has_many :cities, :through => :division_cities
