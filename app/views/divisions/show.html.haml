@@ -3,6 +3,10 @@
 .content-wrapper
 
   %h2= @division.name
+
+  %p.no_indent.space
+    %strong Primary contact:
+    = link_to @division.primary_contact.name, @division.primary_contact, :class => 'ajax'
   
   %p.no_indent.space
     %strong Cities Encompassed

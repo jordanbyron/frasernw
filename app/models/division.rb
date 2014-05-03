@@ -14,6 +14,10 @@ class Division < ActiveRecord::Base
   has_many :division_display_sc_items, :dependent => :destroy
   has_many :shared_sc_items, :through => :division_display_sc_items, :source => "sc_item", :class_name => "ScItem"
   
+  belongs_to :primary_contact, :class_name => 'User'
+  
+  has_many :specialization_options, :dependent => :destroy
+  
   has_paper_trail
   
   default_scope order('divisions.name')

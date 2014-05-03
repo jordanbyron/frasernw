@@ -5,6 +5,8 @@
   - if current_user_is_super_admin?
     = f.input :name
     = f.association :cities, as: :check_boxes
+
+  = f.association :primary_contact, :collection => User.admin, :hint => 'This user will receive all emails via the administration@pathwaysbc.ca link at the bottom of the page on specialist/clinic/content within the division'
   
   .row
     .span2
