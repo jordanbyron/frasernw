@@ -41,6 +41,7 @@ module FrontHelper
               
               next if version.reify.blank?
               next if version.reify.retired? #retired status hasn't changed
+              next if specialist.id == 242
               
               #newly retired
               
