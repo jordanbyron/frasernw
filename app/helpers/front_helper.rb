@@ -50,8 +50,9 @@ module FrontHelper
               
               next if version.reify.blank?
               next if version.reify.retiring? #retiring status hasn't changed
+              current_specialist = Specialist.find(specialist.id);
               
-              automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{specialist.unavailable_from.strftime('%B %d, %Y')}.".html_safe]
+              automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{current_specialist.unavailable_from.to_s(:long_ordinal)}.".html_safe]
               
             end
           
