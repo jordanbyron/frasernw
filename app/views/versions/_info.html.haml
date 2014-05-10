@@ -1,5 +1,5 @@
 .alert.alert-success
-  %h4 You are viewing an prior version of this #{@klass} record
+  %h4 You are viewing a prior version of this #{@klass} record
   This version was saved #{@version.previous.created_at.to_s(:date_ordinal)} by #{whodunnit_name(@version.previous)}.
   = link_to "View live site version", url_for(@version.reify), :class => "ajax"
     
