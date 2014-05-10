@@ -269,7 +269,9 @@ module VersionsHelper
             "#{link_to version.reify.user.name, user_path(version.reify.user_id), :class => 'user ajax'} no longer has the ability to edit #{link_to version.reify.specialist_office.specialist.name, specialist_path(version.item.specialist_office.specialist_id), :class => 'specialist ajax'}"
           end
         when "SpecializationOption"
-          ""
+          if version.event == "create" || version.event == "update"
+            "The options for #{link_to version.item.specialization.name, specialization_path(version.item.specialization_id), :class => 'specialty ajax'} in division #{link_to version.item.division.name, division_path(version.item.division_id), :class => 'division ajax'} have changed"
+          end
         when "Division"
           if version.event == "create"
             "#{link_to version.item.name, division_path(version.item_id), :class => 'division ajax'} was created"
@@ -279,7 +281,28 @@ module VersionsHelper
             "#{link_to version.reify.name, show_division_path(version.item_id), :class => 'division ajax'} was deleted"
           end
         when "DivisionUser"
+          if version.event == "create" || version.event == "update"
+            "#{link_to version.item.user.name, user_path(version.item.user_id), :class => 'user ajax'} is now a member of #{link_to version.item.division.name, division_path(version.item.division_id), :class => 'division ajax'}"
+          else
+            "#{link_to version.reify.user.name, user_path(version.reify.user_id), :class => 'user ajax'} is no longer a member of #{link_to version.reify.division.name, division_path(version.reify.division_id), :class => 'division ajax'}"
+          end
+        when "DivisionDisplayScItem"
+          if version.event == "create" || version.event == "update"
+            "#{link_to version.item.division.name, division_path(version.item.division_id), :class => 'division ajax'} is now sharing the content item #{link_to version.item.sc_item.title, sc_item_path(version.item.sc_item_id), :class => 'sc_item ajax'}"
+          else
+            "#{link_to version.reify.division.name, division_path(version.reify.division_id), :class => 'division ajax'} is no longer sharing the content item #{link_to version.reify.sc_item.title, sc_item_path(version.reify.sc_item_id), :class => 'sc_item ajax'}"
+          end
+        when "DivisionReferralCitySpecialization"
+          if version.event == "create" || version.event == "update"
+            "#{link_to version.item.division_referral_city.division.name, division_path(version.item.division_referral_city.division_id), :class => 'division ajax'} now has #{version.item.division_referral_city.city.name} in their local referral area for #{link_to version.item.specialization.name, specialization_path(version.item.specialization_id), :class => 'specialty ajax'}"
+          end
+        when "DivisionReferralCity"
+          #handled by DivisionReferralCitySpecialization
           ""
+        when "DivisionCity"
+          if version.event == "create" || version.event == "update"
+            "#{link_to version.item.division.name, division_path(version.item.division_id), :class => 'division ajax'} now owns #{version.item.city.name}"
+          end
         when "ReferralForm"
           ""
         else
