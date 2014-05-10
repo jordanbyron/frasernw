@@ -27,6 +27,8 @@ class Ability
         end
         can :create, [Specialist, Clinic, Hospital, Office]
         
+        can :manage, Version
+      
         #can list and edit specializations, to change their divisional specialization options
         can [:index, :edit, :update], Specialization
         

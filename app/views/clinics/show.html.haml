@@ -17,14 +17,15 @@
 
 = render 'partials/specialization_nav', :specialization => specialization, :selected => 'clinics'
 
-- if @is_version
-  = render 'versions/info'
-
 - show_details = false
 - show_areas_of_practice = false
 - clinic_locations = @clinic.clinic_locations.reject{ |cl| cl.empty? }
 
 .content-wrapper
+
+  - if @is_version
+    = render 'versions/info'
+
   - cache(clinic_path(@clinic)) do
     .content
       .row

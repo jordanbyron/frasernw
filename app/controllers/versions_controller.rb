@@ -12,14 +12,9 @@ class VersionsController < ApplicationController
     @version = Version.find(params[:id])
     @klass = @version.reify.class.to_s.downcase
     eval("@#{@klass} = @version.reify" )
+    eval("@feedback = @#{@klass}.feedback_items.build" )
     @is_version = true
-    if @klass == "specialist"
-      render 'specialists/show', :layout => 'ajax' if request.headers['X-PJAX']
-    elsif @klass == "clinic"
-      render 'clinics/show', :layout => 'ajax' if request.headers['X-PJAX']
-    else
-      redirect_to root_url and return;
-    end
+    render :template => "#{@klass.pluralize}/show"
   end
 
   def show_all

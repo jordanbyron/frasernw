@@ -1,8 +1,8 @@
 module VersionsHelper
   def whodunnit_name(version)
-    if version.whodunnit.to_i.to_s == version.whodunnit
-      if User.find_by_id(version.whodunnit).present?
-        User.find_by_id(version.whodunnit).name
+    if version.terminator.to_i.to_s == version.terminator
+      if User.find_by_id(version.terminator).present?
+        User.find_by_id(version.terminator).name
       else
         'unknown'
       end
@@ -270,6 +270,14 @@ module VersionsHelper
           end
         when "SpecializationOption"
           ""
+        when "Division"
+          if version.event == "create"
+            "#{link_to version.item.name, division_path(version.item_id), :class => 'division ajax'} was created"
+          elsif version.event == "update"
+            "#{link_to version.item.name, division_path(version.item_id), :class => 'division ajax'} was updated"
+          else
+            "#{link_to version.reify.name, show_division_path(version.item_id), :class => 'division ajax'} was deleted"
+          end
         when "DivisionUser"
           ""
         when "ReferralForm"

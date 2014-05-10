@@ -16,13 +16,14 @@
 = render 'partials/specialization_dropdown_menu'
 
 = render 'partials/specialization_nav', :specialization => specialization, :selected => 'specialists'
-
-- if @is_version
-  = render 'versions/info'
    
 - specialist_offices = @specialist.specialist_offices.reject{ |specialist_office| specialist_office.empty? }
      
 .content-wrapper
+
+  - if @is_version
+    = render 'versions/info'
+
   - cache(specialist_path(@specialist)) do
   
     - show_details = false

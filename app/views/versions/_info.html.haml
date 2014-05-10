@@ -1,18 +1,17 @@
-.alert.alert-info
-  %h3 You are viewing an older version of this #{@klass} record
-  %p
-    This version was saved #{@version.created_at.strftime("%B %d, %Y")} by #{whodunnit_name(@version)}.
-    =link_to "View current site version", url_for(@version.reify), :class => "ajax" 
-  / 
-    %p
-      The changes made to this version included: #{@version.previous.changeset.to_s}
+.alert.alert-success
+  %h4 You are viewing an prior version of this #{@klass} record
+  This version was saved #{@version.previous.created_at.to_s(:date_ordinal)} by #{whodunnit_name(@version.previous)}.
+  = link_to "View live site version", url_for(@version.reify), :class => "ajax"
     
   %ul.pager
-    - if @version.previous
+    - if @version.previous.reify.present?
       %li
-        = link_to "<i class='icon-arrow-left icon-blue'></i>previous version".html_safe, show_version_path(@version.previous), :class => "ajax"
+        = link_to "<i class='icon-arrow-left icon-blue'></i>Older version".html_safe, show_version_path(@version.previous), :class => "ajax"
     %li
-      = link_to "list all versions", url_for(@version.reify) + "/versions", :class => "ajax"
+      = link_to "List all versions", url_for(@version.reify) + "/versions", :class => "ajax"
     - if @version.next
       %li
-        = link_to "next version <i class='icon-arrow-right icon-blue'></i>".html_safe, show_version_path(@version.next), :class => "ajax"
+        = link_to "Newer version <i class='icon-arrow-right icon-blue'></i>".html_safe, show_version_path(@version.next), :class => "ajax"
+    - else
+      %li
+        = link_to "View live site version <i class='icon-arrow-right icon-blue'></i>".html_safe, url_for(@version.reify), :class => "ajax"
