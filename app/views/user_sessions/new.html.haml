@@ -38,7 +38,7 @@
         %script{"type" => "text/javascript"}
           :plain
             var new_user_changed = function() {
-              if ($(this).val() == 'yes') {
+              if ($('#new_user_yes').is(':checked')) {
                 $(".returning_user_block").fadeOut(150, function() {
                   $(".new_user_block").fadeIn(150);
                 });
