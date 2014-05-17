@@ -1,6 +1,6 @@
 class Division < ActiveRecord::Base
   
-  attr_accessible :name, :city_ids, :shared_sc_item_ids, :primary_contact_id
+  attr_accessible :name, :city_ids, :shared_sc_item_ids, :primary_contact_id, :division_primary_contacts_attributes
    
   has_many :division_cities, :dependent => :destroy
   has_many :cities, :through => :division_cities
@@ -14,7 +14,9 @@ class Division < ActiveRecord::Base
   has_many :division_display_sc_items, :dependent => :destroy
   has_many :shared_sc_items, :through => :division_display_sc_items, :source => "sc_item", :class_name => "ScItem"
   
-  belongs_to :primary_contact, :class_name => 'User'
+  has_many :division_primary_contacts, :dependent => :destroy
+  has_many :primary_contacts, :through => :division_primary_contacts, :class_name => "User"
+  accepts_nested_attributes_for :division_primary_contacts, :allow_destroy => true
   
   has_many :specialization_options, :dependent => :destroy
   

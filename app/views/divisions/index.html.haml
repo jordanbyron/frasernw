@@ -7,14 +7,16 @@
   %table.table.table-condensed.table-striped
     %tr
       %th Name
-      %th Primary Contact
+      %th Primary Contacts
       %th Cities
       %th.admin
 
     - @divisions.each do |division|
       %tr
         %td= link_to division.name, division, :class => 'ajax'
-        %td= link_to division.primary_contact.name, division.primary_contact, :class => 'ajax'
+        %td
+          - division.primary_contacts.each do |primary_contact|
+            = link_to primary_contact.name, primary_contact, :class => 'ajax'
         %td
           %ul
             -division.cities.each do |city|

@@ -5,12 +5,18 @@ class MessagesMailer < ActionMailer::Base
   def new_message(message, user)
     @message = message
     
-    begin
-      primary_contact = user.divisions.first.primary_contact.email
-    rescue Exception => e
-      primary_contact = 'administration@pathwaysbc.ca'
-    end
+    primary_contacts = user.divisions.map{ |d| d.primary_contacts}.flatten.uniq
     
-    mail(:to => primary_contact, :subject => "Pathways: #{message.subject}", :reply_to => message.email)
+    if primary_contacts.present? && (primary_contacts.length > 0)
+      primary_contacts.each do |primary_contact|
+        begin
+          mail(:to => primary_contact.email, :subject => "Pathways: #{message.subject}", :reply_to => message.email)
+        rescue Exception => e
+          mail(:to => 'administration@pathwaysbc.ca', :subject => "Pathways: #{message.subject}", :reply_to => message.email)
+        end
+      end
+    else
+      mail(:to => 'administration@pathwaysbc.ca', :subject => "Pathways: #{message.subject}", :reply_to => message.email)
+    end
   end
 end

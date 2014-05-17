@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140503191117) do
+ActiveRecord::Schema.define(:version => 20140517162420) do
 
   create_table "addresses", :force => true do |t|
     t.string   "address1"
@@ -213,6 +213,13 @@ ActiveRecord::Schema.define(:version => 20140503191117) do
   create_table "division_display_sc_items", :force => true do |t|
     t.integer  "division_id"
     t.integer  "sc_item_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "division_primary_contacts", :force => true do |t|
+    t.integer  "division_id"
+    t.integer  "primary_contact_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -3,18 +3,21 @@
 .content-wrapper
 
   %h2= @division.name
-
-  %p.no_indent.space
-    %strong Primary contact:
-    = link_to @division.primary_contact.name, @division.primary_contact, :class => 'ajax'
   
   %p.no_indent.space
     %strong Cities Encompassed
-    
     %ul
       - @division.cities.each do |city|
         %li= link_to city.name, city_path(city), :class => 'ajax'
 
+  %p.no_indent.space
+    %strong Primary contacts
+    %ul
+      - @division.primary_contacts.each do |primary_contact|
+        %li= link_to primary_contact.name, primary_contact, :class => 'ajax'
+
+  %p.no_indent.space
+    %strong Local Referral Area
   %div{:style => "overflow-x:scroll"}
     %table.local_referral_area
       %thead
