@@ -8,6 +8,6 @@
 
   = simple_form_for @user, :url => {:controller => "password_resets", :action => "update"} do |f|
     
-    = f.input :password
+    = f.input :password, :hint => "Your password must be at least 8 characters long
     = f.input :password_confirmation
     = f.button :submit, "Set password", :class => "btn btn-primary"
