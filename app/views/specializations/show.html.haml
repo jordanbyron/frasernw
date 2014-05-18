@@ -27,7 +27,7 @@
             .row
               .span8half                    
                 .toggle-filters.visible-phone
-                  %a{"href" => "javascript:void(0)", "onclick" => "$('#specialist_filters').toggle()"}
+                  %a{"href" => "javascript:void(0)", "onclick" => "$('#specialist_filters, #specialist_table').toggle()"}
                     %i.icon-blue.icon-cog.icon-small
                     Show / Hide Specialist Filters
               
@@ -236,7 +236,7 @@
             .row
               .span8half
                 .toggle-filters.visible-phone
-                  %a{"href" => "javascript:void(0)", "onclick" => "$('#clinic_filters').toggle()"}
+                  %a{"href" => "javascript:void(0)", "onclick" => "$('#clinic_filters, #clinic_table').toggle()"}
                     %i.icon-blue.icon-cog.icon-small
                     Show / Hide Clinic Filters
                     
@@ -455,7 +455,7 @@
                 .row
                   .span8half
                     .toggle-filters.visible-phone
-                      %a{"href" => "javascript:void(0)", "onclick" => "$('##{sc_category.id}_filters').toggle()"}
+                      %a{"href" => "javascript:void(0)", "onclick" => "$('##{sc_category.id}_filters, ##{sc_category.id}_table').toggle();"}
                         %i.icon-blue.icon-cog.icon-small
                         Show / Hide #{sc_category.name} Filters
                         
