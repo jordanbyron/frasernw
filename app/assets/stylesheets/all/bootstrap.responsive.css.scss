@@ -944,7 +944,7 @@
           display: inline-block;
         }
         
-        td.sp, th.sp, td.c, th.c
+        td.sp, th.sp, td.ct, th.c
         {
           width: 60%;  
         }
@@ -980,7 +980,7 @@
         {
           padding-top: 4px;
         }
-        td.wt, td.c
+        td.wt, td.ct
         {
           padding-bottom: 4px;
           background: none;
@@ -990,7 +990,7 @@
           clear: both;
           margin-left: 60%;
         }
-        td.c
+        td.ct
         {
           margin-left: -100%;
         }
