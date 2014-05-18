@@ -1275,6 +1275,24 @@
     padding-left: 10px;
   }
 }
+
+@media only screen and (device-aspect-ratio: 40/71) {
+  /* iphone >= 5  */
+  #search_results
+  {
+    max-height: 200px;
+    overflow-y: scroll;
+  }
+}
+
+@media only screen and (device-aspect-ratio: 2/3) {
+  /* iphone < 5 */
+  #search_results
+  {
+    max-height: 100px;
+    overflow-y: scroll;
+  }
+}
   
 @media only screen and (min--moz-device-pixel-ratio: 2) and (max-width: 767px),
 only screen and (-o-min-device-pixel-ratio: 2/1) and (max-width: 767px),
