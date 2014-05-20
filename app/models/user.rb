@@ -1,9 +1,11 @@
 class User < ActiveRecord::Base
   acts_as_authentic do |c|
     c.merge_validates_length_of_password_field_options({:minimum => 8})
-    c.merge_validates_uniqueness_of_email_field_options({:message => "has already been used to set up another account."})
+    c.merge_validates_uniqueness_of_email_field_options({:message => "has already been used to set up another account. Pleast use a different email address to sign up, or sign into your existing account."})
     c.logged_in_timeout = 1.week
   end
+
+  validates_format_of :password, :with => /^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){8,}$/, :if => :require_password?, :message => "must include one number, one letter and be at least 8 characters long"
   
   has_many :user_divisions, :source => :division_users, :class_name => "DivisionUser", :dependent => :destroy
   has_many :divisions, :through => :user_divisions
