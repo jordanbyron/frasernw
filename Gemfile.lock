@@ -279,6 +279,7 @@ GEM
       rack
       raindrops (~> 0.6)
     uuidtools (2.1.2)
+    validates_email_format_of (1.5.3)
     webrobots (0.1.1)
     will_paginate (3.0.2)
 
@@ -327,4 +328,5 @@ DEPENDENCIES
   turn
   uglifier
   unicorn
+  validates_email_format_of
   will_paginate (~> 3.0.0)

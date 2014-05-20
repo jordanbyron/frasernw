@@ -71,6 +71,7 @@ end
 
 gem 'ancestry'
 gem 'mechanize'
+gem 'validates_email_format_of'
 
 # Google Analytics
 gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'

@@ -10,6 +10,8 @@ class MailToPatientsController < ApplicationController
   def create  
     if params.blank? || params[:patient_email].blank? || params[:sc_item_id].blank?
       redirect_to root_url
+    elsif !ValidatesEmailFormatOf::validate_email_format(params[:patient_email]).nil?
+      redirect_to compose_mail_to_patients_path(ScItem.find(params[:sc_item_id])), :alert => "Email address does not appear to be valid"
     else
       @sc_item = ScItem.find(params[:sc_item_id])
       @patient_email = params[:patient_email]
