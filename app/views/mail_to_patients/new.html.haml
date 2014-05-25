@@ -5,13 +5,21 @@
   %h2 Email to patient
 
   %p.space.no_indent 
-    Enter the patient's email address to send the link to 
+    Enter the patient's email address you would like to send the link for
     %strong #{@sc_item.title} 
-    to. Please note that this email address is not stored by Pathways, nor will it be used again for any other purpose.
+    to. 
+    
+  %p.space.no_indent 
+    Please note that the patient's email address is not stored by Pathways, nor will it be used again for any other purpose. The email will be sent to the patient from a
+    %strong noreply@pathwaysbc.ca 
+    email address, and will not expose your email address to the patient.
   
   %form.form-horizontal{"accept-charset" => "UTF-8", "action" => "/mail_to_patients/create", "method" => "post", "novalidate" => "novalidate"}
   
-    %input{:type => "email", :name => "patient_email", "autocorrect" => "off", "autocapitalize" => "none"}
+    .control-group
+      %labl.control-label{"for" => "patient_email"} Patient's Email Address
+      .controls
+        %input#patient_email{:type => "email", :name => "patient_email", "autocorrect" => "off", "autocapitalize" => "none"}
     %input{:type => "hidden", :name => "sc_item_id", :value => @sc_item.id}
     
     .form-actions

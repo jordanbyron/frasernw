@@ -16,7 +16,7 @@ class MailToPatientsController < ApplicationController
       @sc_item = ScItem.find(params[:sc_item_id])
       @patient_email = params[:patient_email]
       @sc_item.mail_to_patient(current_user, @patient_email)
-      redirect_to @sc_item, :alert => "Successfully e-mailed to #{@patient_email}."
+      redirect_to @sc_item, :alert => "Successfully sent e-mail to patient."
     end
   end  
 end
