@@ -10,6 +10,12 @@ class SpecializationOption < ActiveRecord::Base
     division_ids = divisions.map{ |d| d.id }
     where("specialization_options.division_id IN (?)", division_ids)
   end
+  
+  def self.for_divisions_and_specializations(divisions, specializations)
+    division_ids = divisions.map{ |d| d.id }
+    specialization_ids = specializations.map{ |s| s.id }
+    where("specialization_options.division_id IN (?) AND specialization_options.specialization_id IN (?)", division_ids, specialization_ids)
+  end
 
   def self.is_new
     where("specialization_options.is_new = (?)", true)

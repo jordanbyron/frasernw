@@ -4,15 +4,10 @@
 
   %h2 Review Queue Archive
   
-  - divisions = current_user_is_admin? ? Division.all : current_user_divisions
+  - divisions = current_user_is_super_admin? ? Division.all : current_user_divisions
   
   - specialist_reviews = @review_items.reject{ |review_item| review_item.item.class != Specialist }.reject{ |review_item| (review_item.item.divisions & divisions).blank? }
   - clinic_reviews = @review_items.reject{ |review_item| review_item.item.class != Clinic }.reject{ |review_item| (review_item.item.divisions & divisions).blank? }
-  
-  - if current_user_is_super_admin?
-  
-    - other_specialist_reviews = @review_items.reject{ |review_item| review_item.item.class != Specialist }.reject{ |review_item| (review_item.item.divisions & divisions).length > 0 }
-    - other_clinic_reviews = @review_items.reject{ |review_item| review_item.item.class != Clinic }.reject{ |review_item| (review_item.item.divisions & divisions).length > 0 }
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
 
@@ -25,15 +20,6 @@
       %li
         %a{"href" => "#clinics_tab", "data-toggle" => "tab"}
           Clinic Review Items
-  
-      - if current_user_is_super_admin?
-  
-        %li
-          %a{"href" => "#other_specialists_tab", "data-toggle" => "tab"}
-            Other Divisions' Specialist Review Items
-        %li
-          %a{"href" => "#other_clinics_tab", "data-toggle" => "tab"}
-            Other Divisions' Clinic Review Items
 
     .tab-content
       #specialists_tab.tab-pane.active
@@ -42,6 +28,7 @@
           %tr
             %th Specialist
             %th Specialty
+            %th Cities
             %th From
             %th When
             %th Any Updates?
@@ -51,6 +38,14 @@
             %tr
               %td= review_item.item.name
               %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
+              %td
+                - cities = review_item.item.cities
+                - if cities.length > 1
+                  %ul
+                    - cities.each do |city|
+                      %li= city.name
+                - else
+                  #{cities.map{ |c| c.name }.to_sentence}
               %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
               %td= ReviewItem::STATUS_HASH[review_item.status]
@@ -64,6 +59,7 @@
           %tr
             %th Clinic
             %th Specialty
+            %th Cities
             %th From
             %th When
             %th Any Updates?
@@ -73,57 +69,19 @@
             %tr
               %td= review_item.item.name
               %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
+              %td
+                - cities = review_item.item.cities
+                - if cities.length > 1
+                  %ul
+                    - cities.each do |city|
+                      %li= city.name
+                - else
+                  #{cities.map{ |c| c.name }.to_sentence}
               %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
               %td= ReviewItem::STATUS_HASH[review_item.status]
               %td
                 -if review_item.base_object.present?
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", clinic_rereview_path(review_item.item, review_item.id), :class => "btn btn-mini ajax")
-                
-      - if current_user_is_super_admin?
-        
-        #other_specialists_tab.tab-pane
-
-          %table.table.table-condensed.table-striped
-            %tr
-              %th Specialist
-              %th Specialty
-              %th From
-              %th When
-              %th Any Updates?
-              %th
-
-            - other_specialist_reviews.each do |review_item|
-              %tr
-                %td= review_item.item.name
-                %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
-                %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
-                %td= "#{time_ago_in_words(review_item.created_at)} ago"
-                %td= ReviewItem::STATUS_HASH[review_item.status]
-                %td
-                  -if review_item.base_object.present?
-                    = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", specialist_rereview_path(review_item.item, review_item.id), :class => "btn btn-mini ajax")
-                  
-        #other_clinics_tab.tab-pane
-
-          %table.table.table-condensed.table-striped
-            %tr
-              %th Clinic
-              %th Specialty
-              %th From
-              %th When
-              %th Any Updates?
-              %th
-
-            - other_clinic_reviews.each do |review_item|
-              %tr
-                %td= review_item.item.name
-                %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
-                %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
-                %td= "#{time_ago_in_words(review_item.created_at)} ago"
-                %td= ReviewItem::STATUS_HASH[review_item.status]
-                %td
-                  -if review_item.base_object.present?
-                    = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", clinic_rereview_path(review_item.item, review_item.id), :class => "btn btn-mini ajax")
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2

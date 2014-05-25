@@ -125,33 +125,19 @@ class Clinic < ActiveRecord::Base
     return cities.map{ |city| city.divisions }.flatten.uniq
   end
 
-  def owner_for_divisions(input_divisions)
+  def owners
     if specializations.blank? || divisions.blank?
-      return default_owner
-    elsif input_divisions.present?
-      #interesect the passed in divisions with the divisions the specialist is in, to find a match
-      intersecting_divisions = input_divisions & divisions
-      if intersecting_divisions.present?
-        options = []
-        specializations.each{ |specialization| options << specialization.specialization_options.for_divisions(intersecting_divisions) }
-        options.flatten.each do |so|
-          return so.owner if so.owner.present?
-        end
+      return [default_owner]
+    else
+      owners = SpecializationOption.for_divisions_and_specializations(divisions, specializations).map{ |so| so.owner }.uniq
+      if owners.present?
+        return owners
+      else
+        return [default_owner]
       end
     end
-    
-    #We either didn't pass in a division, or the interesection was blank with the clinic's actual divisions.
-    #So just return the owner for the clinic's division
-    specializations.each do |specialization|
-      specialization.specialization_options.for_divisions(divisions).each do |so|
-        return so.owner if so.owner.present?
-      end
-    end
-    
-    #There is no owner for the any of the specializations this clinic is in...
-    return default_owner
   end
-  
+
   def attendances?
     attendances.each do |attendance|
       if attendance.is_specialist && attendance.specialist

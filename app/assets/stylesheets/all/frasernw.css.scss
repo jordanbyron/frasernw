@@ -608,6 +608,11 @@ body.loading #email
         margin-bottom: 6px;
       }
     }
+    
+    tr.owned
+    {
+      color: $FNW_ORANGE;
+    }
   
     td.subcategory
     {

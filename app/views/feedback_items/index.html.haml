@@ -4,6 +4,7 @@
 
   %h2 Feedback Queue
   
+  - cuser = current_user
   - divisions = current_user_is_admin? ? Division.all : current_user_divisions
   
   - specialist_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Specialist }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
@@ -13,62 +14,40 @@
   - specialist_count  = specialist_feedback.length
   - clinic_count      = clinic_feedback.length
   - sc_item_count     = sc_item_feedback.length
-  
-  - if current_user_is_super_admin?
-  
-    - other_specialist_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Specialist }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).length > 0 }
-    - other_clinic_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Clinic }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).length > 0 }
-    - other_sc_item_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != ScItem }.reject{ |feedback_item| ([feedback_item.item.division] & divisions).length > 0 }
 
-    - other_specialist_count  = other_specialist_feedback.length
-    - other_clinic_count      = other_clinic_feedback.length
-    - other_sc_item_count     = other_sc_item_feedback.length
+  - specialist_user_count  = specialist_feedback.reject{|feedback_item| !feedback_item.item.owners.include? cuser }.length
+  - clinic_user_count      = clinic_feedback.reject{|feedback_item| !feedback_item.item.owners.include? cuser }.length
+  - sc_item_user_count     = sc_item_feedback.reject{|feedback_item| feedback_item.item.owner != cuser }.length
     
-    - feedback = [specialist_feedback, clinic_feedback, sc_item_feedback, other_specialist_feedback, other_clinic_feedback, other_sc_item_feedback]
-
-  - else
-    
-    - feedback = [specialist_feedback, clinic_feedback, sc_item_feedback]
+  - feedback = [specialist_feedback, clinic_feedback, sc_item_feedback]
 
   .tabbable
     %ul.nav.nav-tabs
       %li.active
         %a{"href" => "#0_tab", "data-toggle" => "tab"}
           Specialist
-          - if specialist_count > 0
-            %span.badge.badge-warning= specialist_count
+          - if specialist_user_count > 0
+            %span.badge.badge-warning #{specialist_user_count}/#{specialist_count}
+          - else
+            %span.badge= specialist_count
       %li
         %a{"href" => "#1_tab", "data-toggle" => "tab"}
           Clinic
-          - if clinic_count > 0
-            %span.badge.badge-warning= clinic_count
+          - if clinic_user_count > 0
+            %span.badge.badge-warning #{clinic_user_count}/#{clinic_count}
+          - else
+            %span.badge= clinic_count
       %li
         %a{"href" => "#2_tab", "data-toggle" => "tab"}
           Content
-          - if sc_item_count > 0
-            %span.badge.badge-warning= sc_item_count
-            
-      - if current_user_is_super_admin?
-      
-        %li
-          %a{"href" => "#3_tab", "data-toggle" => "tab"}
-            Other Divisions' Specialist
-            - if other_specialist_count > 0
-              %span.badge.badge-warning= other_specialist_count
-        %li
-          %a{"href" => "#4_tab", "data-toggle" => "tab"}
-            Other Divisions' Specialist
-            - if other_clinic_count > 0
-              %span.badge.badge-warning= other_clinic_count
-        %li
-          %a{"href" => "#5_tab", "data-toggle" => "tab"}
-            Other Divisions' Content
-            - if other_sc_item_count > 0
-              %span.badge.badge-warning= other_sc_item_count
+          - if sc_item_user_count > 0
+            %span.badge.badge-warning #{sc_item_user_count}/#{sc_item_count}
+          - else
+            %span.badge= sc_item_count
 
     .tab-content
     
-      - classes = current_user_is_super_admin? ? ["Specialist", "Clinic", "ScItem", "Specialist", "Clinic", "ScItem"] : ["Specialist", "Clinic", "ScItem"]      
+      - classes = ["Specialist", "Clinic", "ScItem"]
     
       - classes.each_with_index do |feedback_type, index|
       
@@ -77,7 +56,7 @@
           %table.table.table-condensed.table-striped
             %tr
               %th Feedback on
-              %th Specialty
+              %th Assigned To
               %th Provided by
               %th Provided when
               %th Feedback
@@ -85,9 +64,22 @@
               %th.admin
 
             - feedback[index].each do |feedback_item|
-              %tr
-                %td= link_to (feedback_item.item.respond_to?('name') ? feedback_item.item.name : feedback_item.item.title), feedback_item.item, :class => 'ajax'
-                %td= feedback_item.item.specializations.map{ |s| s.name }.to_sentence
+              - owned = feedback_item.item.respond_to?('owners') ? (feedback_item.item.owners.include? cuser) : (feedback_item.item.owner == cuser)
+              %tr{:class => owned && "owned"}
+                %td
+                  = link_to (feedback_item.item.respond_to?('name') ? feedback_item.item.name : feedback_item.item.title), feedback_item.item, :class => 'ajax'
+                  %br
+                  #{feedback_item.item.specializations.map{ |s| s.name }.to_sentence} - #{feedback_item.item.cities.map{ |c| c.name }.to_sentence}
+                %td
+                  - if feedback_item.item.respond_to?('owners')
+                    - if feedback_item.item.owners.present?
+                      %ul
+                        - feedback_item.item.owners.each do |owner|
+                          %li= owner.name
+                    - else
+                      No owner
+                  - else
+                    = feedback_item.item.owner.name
                 %td= feedback_item.user.blank? ? "unavailable" : feedback_item.user.name
                 %td= "#{time_ago_in_words(feedback_item.created_at)} ago"
                 %td{"style" => "width: 30%"}= feedback_item.feedback
