@@ -126,6 +126,14 @@ class ScItem < ActiveRecord::Base
     return default_content_owner
   end
 
+  def owners
+    [owner]
+  end
+
+  def divisions
+    [division]
+  end
+
   def root_category
     if sc_category.parent.present?
       sc_category.parent
