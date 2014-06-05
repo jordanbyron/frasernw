@@ -17,7 +17,7 @@
 
   - specialist_user_count  = specialist_feedback.reject{|feedback_item| !feedback_item.item.owners.include? cuser }.length
   - clinic_user_count      = clinic_feedback.reject{|feedback_item| !feedback_item.item.owners.include? cuser }.length
-  - sc_item_user_count     = sc_item_feedback.reject{|feedback_item| feedback_item.item.owners.include? cuser }.length
+  - sc_item_user_count     = sc_item_feedback.reject{|feedback_item| !feedback_item.item.owners.include? cuser }.length
     
   - feedback = [specialist_feedback, clinic_feedback, sc_item_feedback]
 
