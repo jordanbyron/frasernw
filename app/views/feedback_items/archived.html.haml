@@ -14,7 +14,7 @@
   
     - other_specialist_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Specialist }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).length > 0 }
     - other_clinic_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Clinic }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).length > 0 }
-    - other_sc_item_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != ScItem }.reject{ |feedback_item| ([feedback_item.item.division] & divisions).length > 0 }
+    - other_sc_item_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != ScItem }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).length > 0 }
     
     - feedback = [specialist_feedback, clinic_feedback, sc_item_feedback, other_specialist_feedback, other_clinic_feedback, other_sc_item_feedback]
 

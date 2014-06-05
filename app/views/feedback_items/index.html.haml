@@ -9,7 +9,7 @@
   
   - specialist_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Specialist }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
   - clinic_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Clinic }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
-  - sc_item_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != ScItem }.reject{ |feedback_item| ([feedback_item.item.division] & divisions).blank? }
+  - sc_item_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != ScItem }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
 
   - specialist_count  = specialist_feedback.length
   - clinic_count      = clinic_feedback.length
@@ -17,7 +17,7 @@
 
   - specialist_user_count  = specialist_feedback.reject{|feedback_item| !feedback_item.item.owners.include? cuser }.length
   - clinic_user_count      = clinic_feedback.reject{|feedback_item| !feedback_item.item.owners.include? cuser }.length
-  - sc_item_user_count     = sc_item_feedback.reject{|feedback_item| feedback_item.item.owner != cuser }.length
+  - sc_item_user_count     = sc_item_feedback.reject{|feedback_item| feedback_item.item.owners.include? cuser }.length
     
   - feedback = [specialist_feedback, clinic_feedback, sc_item_feedback]
 
@@ -69,7 +69,10 @@
                 %td
                   = link_to (feedback_item.item.respond_to?('name') ? feedback_item.item.name : feedback_item.item.title), feedback_item.item, :class => 'ajax'
                   %br
-                  #{feedback_item.item.specializations.map{ |s| s.name }.to_sentence} - #{feedback_item.item.cities.map{ |c| c.name }.to_sentence}
+                  - if feedback_item.item.respond_to?('cities')
+                    #{feedback_item.item.specializations.map{ |s| s.name }.to_sentence} - #{feedback_item.item.cities.map{ |c| c.name }.to_sentence}
+                  - else
+                    #{feedback_item.item.specializations.map{ |s| s.name }.to_sentence}
                 %td
                   - if feedback_item.item.respond_to?('owners')
                     - if feedback_item.item.owners.present?
