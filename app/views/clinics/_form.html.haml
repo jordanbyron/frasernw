@@ -135,7 +135,7 @@
             break;
           case('TEXTAREA'):
             old_entry_value = form_element.val();
-            if (old_entry_value != new_entry_value)
+            if (old_entry_value.replace(/(\r\n|\n|\r)/gm,"") != new_entry_value.replace(/(\r\n|\n|\r)/gm,""))
             {
               form_element.val(new_entry_value);
               if (highlight_changes) 
