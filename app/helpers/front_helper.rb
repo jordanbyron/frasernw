@@ -62,7 +62,7 @@ module FrontHelper
         elsif version.item_type == "SpecialistOffice"
         
           specialist_office = version.item
-          next if specialist_office.specialist.blank?
+          next if specialist_office.specialist.blank? || specialist_office.specialist.in_progress_for_divisions(divisions)
           
           specialist = specialist_office.specialist
           
@@ -84,7 +84,7 @@ module FrontHelper
         elsif version.item_type == "ClinicLocation"
         
           clinic_location = version.item
-          next if clinic_location.clinic.blank?
+          next if clinic_location.clinic.blank? || clinic_location.clinic.in_progress_for_divisions(divisions)
           
           clinic = clinic_location.clinic
           
