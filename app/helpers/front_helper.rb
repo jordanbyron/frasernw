@@ -66,6 +66,9 @@ module FrontHelper
           
           specialist = specialist_office.specialist
           
+          specialist_divisions = specialist.cities_for_front_page.map{ |city| city.divisions }.flatten.uniq
+          next if (specialist_divisions & divisions).blank?
+          
           if (["create", "update"].include? version.event) && specialist.accepting_new_patients? && specialist_office.opened_recently?
             
             if (version.event == "update")
@@ -84,7 +87,7 @@ module FrontHelper
         elsif version.item_type == "ClinicLocation"
         
           clinic_location = version.item
-          next if clinic_location.clinic.blank? || clinic_location.clinic.in_progress_for_divisions(divisions)
+          next if clinic_location.clinic.blank? || clinic_location.clinic.in_progress_for_divisions(divisions) || (clinic_location.clinic.divisions && divisions).blank?
           
           clinic = clinic_location.clinic
           
