@@ -18,7 +18,8 @@
     - content_owner_id = specialization_option.present? && specialization_option.content_owner.present? ? specialization_option.content_owner.id : nil
     - is_new = specialization_option.present? && specialization_option.is_new
     - in_progress = specialization_option.present? && specialization_option.in_progress
-    - open_to_clinic_tab = specialization_option.present? && specialization_option.open_to_clinic_tab
+    - open_to_type = specialization_option.present? && specialization_option.open_to_type
+    - open_to_sc_category_id = specialization_option.present? && specialization_option.open_to_sc_category_id
     %hr
     %h4=division.name
     .control-group
@@ -43,9 +44,9 @@
         = check_box_tag "is_new[#{division.id}]", "is_new[#{division.id}]", is_new, :name => "is_new[#{division.id}]"
     .control-group
       %label.control-label
-        Open to Clinic Tab
+        Open to
       .controls
-        = check_box_tag "open_to_clinic_tab[#{division.id}]", "open_to_clinic_tab[#{division.id}]", open_to_clinic_tab, :name => "open_to_clinic_tab[#{division.id}]"
+        = select_tag "open_to_type[#{division.id}]", options_from_collection_for_select(SpecializationOption::OPEN_TO_HASH, :first, :last, open_to_type), :name => "open_to_type[#{division.id}]", :class => "select"
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
