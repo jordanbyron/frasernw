@@ -6,18 +6,18 @@
 
 %h6 Your Appointment Information
 
-%p#specific_appointment_block
-  %input.specific_appointment#specific_appointment_check{"type" => "radio", "name" => "appointment", "checked" => "checked"}
+%p#specific_appointment_block.empty
+  %input.specific_appointment#specific_appointment_check{"type" => "radio", "name" => "appointment"}
   Your appointment is on 
   %input.specific_appointment{"type" => "text"}
   at
   %input.specific_appointment{"type" => "text"}
 
-%p#future_appointment_block.empty
-  %input.future_appointment#future_appointment_check{"type" => "radio", "name" => "appointment"}
+%p#future_appointment_block
+  %input.future_appointment#future_appointment_check{"type" => "radio", "name" => "appointment", "checked" => "checked"}
   %select.future_appointment
     %option Our office
-    %option The #{@clinic.name}
+    %option{"selected" => "selected"} #{@clinic.name}
   will call you once your appointment is booked.  
 
 %p.indent#future_appointment_followup_block.empty
@@ -130,10 +130,6 @@
     
     $('#future_appointment_followup_check').bind('change', function(){
       set_future_followup_block_print_visibility();
-    });
-  
-    $(document).ready( function(){
-      $('#future_appointment_followup_block').hide();
     });
         
 %input.btn{"type" => "button", "value" => "Print", "onclick" => "print_patient_information()"}
