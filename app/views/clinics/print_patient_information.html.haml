@@ -38,10 +38,13 @@
     %option 24 months (by #{DateTime.now.since(24.month).to_date.strftime("%b %d, %Y")})
   please call
   %select.future_appointment_followup
-    %option
-    %option our office.
-    %option The #{@clinic.name}.
-   
+    - if @clinic.respond_to_patient?
+      %option our office.
+      %option{"selected" => "selected"} The #{@clinic.name}.
+    - else
+      %option{"selected" => "selected"} our office.
+      %option The #{@clinic.name}.
+
   %h6#patient_instruction_header Appointment Instructions
   
   -if @clinic.patient_instructions.present?
