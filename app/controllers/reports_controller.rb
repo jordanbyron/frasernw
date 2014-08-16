@@ -216,7 +216,8 @@ class ReportsController < ApplicationController
       Specialization.all.each do |s|
         next if s.fully_in_progress_for_divisions(@divisions)
         specialization = []
-        s.specialists.sort_by{ |sp| sp.locations.first.present? ? sp.locations.first.short_address : ""}.each do |sp|
+        specialists = @report.divisional? ? s.specialists.in_divisions(@divisions) : s.specialists
+        specialists.sort_by{ |sp| sp.locations.first.present? ? sp.locations.first.short_address : ""}.each do |sp|
           next if !sp.responded? || sp.not_available?
           active_controlling_users = sp.controlling_users.reject{ |u| u.pending? || !u.active? }
           entry = {}
