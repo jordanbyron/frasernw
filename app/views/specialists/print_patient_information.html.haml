@@ -21,9 +21,13 @@
 %p#future_appointment_block
   %input.future_appointment#future_appointment_check{"type" => "radio", "name" => "appointment", "checked" => "checked"}
   %select.future_appointment
-    %option Our office
-    %option{"selected" => "selected"} #{@specialist.formal_name}'s office
-  will call you once your appointment is booked.  
+    - if @specialist.respond_to_patient?
+      %option Our office
+      %option{"selected" => "selected"} #{@specialist.formal_name}'s office
+    - else
+      %option{"selected" => "selected"} Our office
+      %option #{@specialist.formal_name}'s office 
+  will call you once your appointment is booked.
 
 %p.indent#future_appointment_followup_block.empty
   %input#future_appointment_followup_check{"type" => "checkbox"}
@@ -43,13 +47,10 @@
     %option 24 months (by #{DateTime.now.since(24.month).to_date.strftime("%b %d, %Y")})
   please call
   %select.future_appointment_followup
-    - if @specialist.respond_to_patient?
-      %option our office.
-      %option{"selected" => "selected"} #{@specialist.formal_name}'s office.
-    - else
-      %option{"selected" => "selected"} our office.
-      %option #{@specialist.formal_name}'s office.
-      
+    %option
+    %option our office.
+    %option #{@specialist.formal_name}'s office.
+
   %h6#patient_instruction_header Appointment Instructions
   
   -if @specialist.patient_instructions.present?

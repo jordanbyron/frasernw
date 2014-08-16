@@ -16,9 +16,13 @@
 %p#future_appointment_block
   %input.future_appointment#future_appointment_check{"type" => "radio", "name" => "appointment", "checked" => "checked"}
   %select.future_appointment
-    %option Our office
-    %option{"selected" => "selected"} #{@clinic.name}
-  will call you once your appointment is booked.  
+    - if @clinic.respond_to_patient?
+      %option Our office
+      %option{"selected" => "selected"} #{@clinic.name}
+    - else
+      %option{"selected" => "selected"} Our office
+      %option #{@clinic.name}
+  will call you once your appointment is booked.
 
 %p.indent#future_appointment_followup_block.empty
   %input#future_appointment_followup_check{"type" => "checkbox"}
@@ -38,12 +42,8 @@
     %option 24 months (by #{DateTime.now.since(24.month).to_date.strftime("%b %d, %Y")})
   please call
   %select.future_appointment_followup
-    - if @clinic.respond_to_patient?
-      %option our office.
-      %option{"selected" => "selected"} The #{@clinic.name}.
-    - else
-      %option{"selected" => "selected"} our office.
-      %option The #{@clinic.name}.
+    %option our office.
+    %option #{@clinic.name}.
 
   %h6#patient_instruction_header Appointment Instructions
   
