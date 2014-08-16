@@ -76,11 +76,11 @@
                 - if entry[:reviewed_at].present?
                   = entry[:reviewed_at].strftime("%Y-%m-%d")
                 - else
-                  no changes
+                  review queue not used
               - elsif entry[:linked_pending_account_count] > 0
-                not activated
+                account not activated
               - else
-                no account
+                no user account linked to office
             %td= link_to "http://www.pathwaysbc.ca#{specialist_self_edit_path(entry[:id], entry[:token], :only_path => true)}", "http://www.pathwaysbc.ca#{specialist_self_edit_path(entry[:id], entry[:token], :only_path => true)}"
 
 
