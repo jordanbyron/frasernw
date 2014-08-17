@@ -58,6 +58,8 @@ function reset_numbers(address_number)
   $("#specialist_specialist_offices_attributes_" + address_number + "_direct_phone_extension").val("");
   $("#specialist_specialist_offices_attributes_" + address_number + "_email").val("");
   $("#specialist_specialist_offices_attributes_" + address_number + "_url").val("");
+  reset_select("specialist_specialist_offices_attributes_" + address_number + "_location_opened");
+  $("#specialist_specialist_offices_attributes_" + address_number + "_sector_mask_4").prop('checked', true);
 }
 
 var address_location_changed = function(address_number)
