@@ -1,5 +1,5 @@
 class City < ActiveRecord::Base
-  attr_accessible :name, :province_id
+  attr_accessible :name, :province_id, :hidden
   has_paper_trail
   
   belongs_to :province
