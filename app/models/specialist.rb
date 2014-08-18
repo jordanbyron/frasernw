@@ -163,9 +163,9 @@ class Specialist < ActiveRecord::Base
 
   def cities_for_display
     if responded? && !not_available?
-      offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
+      offices.map{ |o| o.city }.reject{ |c| c.blank? || c.hidden? }.uniq
     elsif hospital_or_clinic_only?
-      (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq
+      (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| (i == nil) || i.hidden? }.uniq
     else
       []
     end
