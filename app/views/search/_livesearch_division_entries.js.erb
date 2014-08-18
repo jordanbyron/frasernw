@@ -21,19 +21,33 @@
   
   Specialization.all.each do |specialization|
 
-    specialists += specialization.specialists.not_in_progress
+    specialists += specialization.specialists
   
-    clinics += specialization.clinics.not_in_progress
+    clinics += specialization.clinics
 
+  end
+  
+  #find all the specializations that are not in progress for each division
+  not_in_progress_specialization_ids = {};
+  
+  Division.all.each do |d|
+    not_in_progress_specialization_ids[d.id] = Specialization.not_in_progress_for_divisions([d]).map{ |s| s.id }
   end
 
   specialists.flatten.uniq.each do |specialist|
-
-    #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
+  
+    #find the specializations that are not in progress for this specialist
+    specialist_not_in_progress_specialization_ids = []
+    specialist.divisions.each do |d|
+      specialist_not_in_progress_specialization_ids |= not_in_progress_specialization_ids[d.id]
+    end
+  
+    specialization_ids = specialist.specializations.map{ |s| s.id } & specialist_not_in_progress_specialization_ids
+    next if specialization_ids.blank?
     
     entry = {
       "n" => specialist.billing_number_padded ? specialist.name + " - MSP #" + specialist.billing_number_padded: specialist.name,
-      "sp" => specialist.specializations.not_in_progress_for_divisions([division]).map{ |s| s.id }, 
+      "sp" => specialization_ids,
       "c" => specialist.cities_for_display.map{ |city| city.id },
       "st" => specialist.status_class_hash,
       "id" => specialist.id,
@@ -42,12 +56,18 @@
   end
 
   clinics.flatten.uniq.each do |clinic|
-
-    #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
+  
+    clinic_not_in_progress_specialization_ids = []
+    clinic.divisions.each do |d|
+      clinic_not_in_progress_specialization_ids |= not_in_progress_specialization_ids[d.id]
+    end
+  
+    specialization_ids = clinic.specializations.map{ |s| s.id }  & clinic_not_in_progress_specialization_ids
+    next if specialization_ids.blank?
     
     entry = { 
       "n" => clinic.name, 
-      "sp" => clinic.specializations.not_in_progress_for_divisions([division]).map{ |s| s.id },
+      "sp" => specialization_ids,
       "c" => clinic.cities.map{ |city| city.id },
       "st" => clinic.status_class_hash,
       "id" => clinic.id,
