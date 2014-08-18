@@ -38,4 +38,8 @@ class City < ActiveRecord::Base
       return divisional
     end
   end
+  
+  def self.not_hidden
+    where("cities.hidden = (?)", false)
+  end
 end
