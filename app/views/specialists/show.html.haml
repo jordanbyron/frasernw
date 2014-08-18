@@ -450,6 +450,7 @@
           %span.caret
         %ul.dropdown-menu
           - specialist_offices.each do |specialist_office|
+            - next if specialist_office.office.blank?
             %li
               %a{"href" => specialist_patient_information_office_path(@specialist, specialist_office), "target" => "_blank"}
                 = specialist_office.office.short_address

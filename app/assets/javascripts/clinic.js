@@ -92,6 +92,9 @@ function clinic_reset_numbers(address_number)
   $("#clinic_clinic_locations_attributes_" + address_number + "_location_attributes_address_attributes_address1").val("");
   $("#clinic_clinic_locations_attributes_" + address_number + "_location_attributes_address_attributes_address2").val("");
   $("#clinic_clinic_locations_attributes_" + address_number + "_location_attributes_address_attributes_postalcode").val("");
+  clinic_reset_select("clinic_clinic_locations_attributes_" + address_number + "_location_opened");
+  $("#clinic_clinic_locations_attributes_" + address_number + "_sector_mask_4").prop('checked', true);
+  $("#clinic_clinic_locations_attributes_" + address_number + "_wheelchair_accessible_mask_3").prop('checked', true);
 }
 
 var clinic_address_location_changed = function(address_number)
