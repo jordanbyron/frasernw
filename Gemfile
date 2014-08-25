@@ -1,7 +1,9 @@
 source 'https://rubygems.org'
 
 ruby "1.9.3"
-gem 'rails', '3.1.10'
+#gem 'rails', '3.1.10'
+gem 'rails', '3.2.18'
+
 gem 'pg'
 
 group :production do
@@ -9,13 +11,23 @@ group :production do
   gem 'heroku_cloud_backup'
 end
 
-# Asset template engines
-gem 'sass-rails', "~> 3.1.0"
-gem 'coffee-script'
-gem 'uglifier'
+# # Asset template engines
+# gem 'sass-rails', "~> 3.1.0"
+# gem 'coffee-script'
+# gem 'uglifier'
+gem "sass-rails"
+
+#added for rails 3.2 upgrade
+group :assets do
+  gem 'coffee-rails', '~> 3.2.2'
+  gem 'uglifier',     '>= 1.0.3'
+end
 
 gem 'jquery-rails'
-gem 'haml-rails'
+#gem 'haml-rails'
+gem "haml-rails", "~> 0.4.0"
+gem 'html2haml'
+
 
 gem 'authlogic'
 gem 'paper_trail', '~> 2'
@@ -68,6 +80,7 @@ group :development, :test do
   gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
   gem 'rb-fsevent', '~> 0.9.1'
   gem 'awesome_print'
+  gem 'oink'
 end
 
 gem 'ancestry'
@@ -77,4 +90,6 @@ gem 'validates_email_format_of'
 # Google Analytics
 gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
 gem 'lazy_high_charts'
-gem 'jquery-datatables-rails'
+#gem 'jquery-datatables-rails'
+gem 'jquery-datatables-rails', '~> 2.2.1'
+

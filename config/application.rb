@@ -11,6 +11,8 @@ module Frasernw
   class Application < Rails::Application
     config.autoload_paths << "#{config.root}/lib"    # Settings in config/environments/* take precedence over those specified here.
     config.assets.paths << "#{Rails.root}/app/assets/fonts"
+    # Defaults to '/assets'
+    config.assets.prefix = '/asset-files'
     
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -48,6 +50,8 @@ module Frasernw
 
     # Enable the asset pipeline
     config.assets.enabled = true
+
+    config.assets.version = '1.0'
 
     # mailer
     config.action_mailer.delivery_method = :smtp
