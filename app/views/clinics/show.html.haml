@@ -39,7 +39,7 @@
                 %i.icon-heart{"id" => "user_favorite_clinics_#{@clinic.id}"}
         
             %h3.specialty_links
-              - self_in_progress = @clinic.in_progress_for_divisions(@clinic.divisions)
+              - self_in_progress = @clinic.in_progress
               = @clinic.specializations.reject{ |s| !self_in_progress && s.fully_in_progress_for_divisions(@clinic.divisions) }.map{ |s| "<a href='#{specialization_path(s)}' class='#{ s.fully_in_progress_for_divisions(@clinic.divisions) ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
             
             - if @clinic.not_responded?

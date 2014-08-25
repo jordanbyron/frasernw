@@ -33,7 +33,7 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
       specialist_data[s.id]['status_class'] = "#{s.status_class_hash}"
       specialist_data[s.id]['wait_time'] = s.show_wait_time_in_table? ? "#{s.waittime_mask.present? ? s.waittime_mask : -1}" : -1
       specialist_data[s.id]['cities'] = s.cities_for_display.map{ |c| c.id }
-      specialist_data[s.id]['in_progress'] = true if s.in_progress_for_divisions(s.divisions)
+      specialist_data[s.id]['in_progress'] = true if s.in_progress
       specialist_data[s.id]['is_gp'] = true if s.is_gp?
       specialist_data[s.id]['is_new'] = true if s.new?
       specialist_procedures += s.not_available? ? [] : specialist_procedure_filtering_attributes(s)
@@ -51,7 +51,7 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
         specialist_data[s.id]['status_class'] = "#{s.status_class_hash}"
         specialist_data[s.id]['wait_time'] = s.show_wait_time_in_table? ? "#{s.waittime_mask.present? ? s.waittime_mask : -1}" : -1
         specialist_data[s.id]['cities'] = s.cities_for_display.map{ |c| c.id }
-        specialist_data[s.id]['in_progress'] = true if s.in_progress_for_divisions(s.divisions)
+        specialist_data[s.id]['in_progress'] = true if s.in_progress
         specialist_data[s.id]['is_gp'] = true if s.is_gp?
         specialist_data[s.id]['is_new'] = true if s.new?
       end
@@ -81,7 +81,7 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
       clinic_data[c.id]['status_class'] = "#{c.status_class_hash}"
       clinic_data[c.id]['wait_time'] = c.show_wait_time_in_table? ? "#{c.waittime_mask.present? ? c.waittime_mask : -1}" : -1
       clinic_data[c.id]['cities'] = c.cities.map{ |c| c.id }
-      clinic_data[c.id]['in_progress'] = true if c.in_progress_for_divisions(c.divisions)
+      clinic_data[c.id]['in_progress'] = true if c.in_progress
       clinic_data[c.id]['is_new'] = true if c.new?
       clinic_data[c.id]['is_private'] = true if c.private?
       clinic_procedures += clinic_procedure_filtering_attributes(c)
@@ -99,7 +99,7 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
         clinic_data[c.id]['status_class'] = "#{c.status_class_hash}"
         clinic_data[c.id]['wait_time'] = c.show_wait_time_in_table? ? "#{c.waittime_mask.present? ? c.waittime_mask : -1}" : -1
         clinic_data[c.id]['cities'] = c.cities.map{ |c| c.id }
-        clinic_data[c.id]['in_progress'] = true if c.in_progress_for_divisions(c.divisions)
+        clinic_data[c.id]['in_progress'] = true if c.in_progress
         clinic_data[c.id]['is_new'] = true if c.new?
         clinic_data[c.id]['is_private'] = true if c.private?
       end

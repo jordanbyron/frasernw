@@ -91,6 +91,8 @@ en:
         sector_mask: "Public or private"
         url: "Website address"
         wheelchair_accessible_mask: "Wheelchair accessible?"
+      city:
+        hidden: "Hide from search / filtering?"
       division:
         cities: Cities Encompassed
       location:

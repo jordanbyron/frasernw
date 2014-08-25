@@ -46,19 +46,21 @@ class Clinic < ActiveRecord::Base
   has_many :feedback_items, :as => :item, :conditions => { "archived" => false }
   
   default_scope order('clinics.name')
-  
-  def self.not_in_progress_for_divisions(divisions)
-    division_ids = divisions.map{ |division| division.id }
-    joins('INNER JOIN "clinic_specializations" ON "clinics"."id" = "clinic_specializations"."clinic_id" INNER JOIN "specialization_options" ON "specialization_options"."specialization_id" = "clinic_specializations"."specialization_id"').where('"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)', division_ids, false)
-  end
-  
+
   def self.not_in_progress
-    joins('INNER JOIN "clinic_specializations" AS "cs2" ON "clinics"."id" = "cs2"."clinic_id" INNER JOIN "specialization_options" ON "specialization_options"."specialization_id" = "cs2"."specialization_id"').where('"specialization_options"."in_progress" = (?)', false)
+    not_in_progress
   end
 
-  def in_progress_for_divisions(divisions)
-    specialization_options = specializations.map{ |s| s.specialization_options.for_divisions(divisions) }.flatten
-    (specialization_options.length > 0) && (specialization_options.reject{ |so| so.in_progress }.length == 0)
+  def self.in_progress
+    in_progress
+  end
+
+  def not_in_progress
+    (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length > 0) || (divisions.length == 0)
+  end
+
+  def in_progress
+    (divisions.length > 0) && (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length == 0)
   end
   
   CATEGORIZATION_HASH = {

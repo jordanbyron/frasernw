@@ -30,15 +30,21 @@ class ScItem < ActiveRecord::Base
   validates_presence_of :title, :on => :create, :message => "can't be blank"
   
   default_scope order('sc_items.title')
-  
-  def self.not_in_progress_for_divisions(divisions)
-    division_ids = divisions.map{ |division| division.id }
-    joins('INNER JOIN "sc_item_specializations" ON "sc_item"."id" = "sc_item_specializations"."sc_item_id" INNER JOIN "specialization_options" ON "specialization_options"."specialization_id" = "sc_item_specializations"."specialization_id"').where('"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)', division_ids, false)
+
+  def self.not_in_progress
+    not_in_progress
   end
 
-  def in_progress_for_divisions(divisions)
-    specialization_options = specializations.map{ |s| s.specialization_options.for_divisions(divisions) }.flatten
-    (specialization_options.length > 0) && (specialization_options.reject{ |so| so.in_progress }.length == 0)
+  def self.in_progress
+    in_progress
+  end
+
+  def not_in_progress
+    division.blank? || (SpecializationOption.not_in_progress_for_divisions_and_specializations([division], specializations).length > 0)
+  end
+
+  def in_progress
+    division.present? && (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length == 0)
   end
   
   def self.for_specialization_in_divisions(specialization, divisions)
@@ -103,7 +109,7 @@ class ScItem < ActiveRecord::Base
   end
 
   def available_to_divisions(divisions)
-    (divisions.include? division) || (shareable? && (divisions & divisions_sharing).present?)
+    ((divisions.include? division) || (shareable? && (divisions & divisions_sharing).present?)) && !in_progress
   end
 
   def mail_to_patient(current_user, patient_email)
