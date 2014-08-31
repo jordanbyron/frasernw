@@ -42,6 +42,7 @@
     %option 24 months (by #{DateTime.now.since(24.month).to_date.strftime("%b %d, %Y")})
   please call
   %select.future_appointment_followup
+    %option
     %option our office.
     %option #{@clinic.name}.
 
