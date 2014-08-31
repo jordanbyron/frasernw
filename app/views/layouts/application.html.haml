@@ -15,11 +15,28 @@
       = stylesheet_link_tag "font-awesome-ie7.css", :media => 'screen, print'
     = stylesheet_link_tag "print", :media => 'print'
     = javascript_include_tag "application"
+    = javascript_include_tag '../livesearch'
     = csrf_meta_tag
     = yield(:head)
               
     :javascript
       var livesearch;
+      $(document).ready(function() 
+      {
+        livesearch = $('#search').livesearch({
+          container: '#search_results',
+          search_all: '#search_all',
+          search_all_url: '/livesearch_all_entries.js',
+          global_data: pathways_global_search_data,
+          division_entry_data: pathways_division_search_data_entries,
+          division_content_data: pathways_division_search_data_content,
+          scorer: pathways_scorer,
+          grouper: pathways_grouper,
+          searcher: pathways_searcher,
+          data_formatter: pathways_data_formatter,
+          group_formatter: pathways_group_formatter,
+          min_score: 0.6
+        });
         
         if ($(window).width() <= 480) 
         { 
