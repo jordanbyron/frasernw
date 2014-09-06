@@ -31,14 +31,6 @@ class ScItem < ActiveRecord::Base
   
   default_scope order('sc_items.title')
 
-  def self.not_in_progress
-    not_in_progress
-  end
-
-  def self.in_progress
-    in_progress
-  end
-
   def not_in_progress
     division.blank? || (SpecializationOption.not_in_progress_for_divisions_and_specializations([division], specializations).length > 0)
   end
