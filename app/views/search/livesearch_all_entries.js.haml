@@ -2,3 +2,7 @@
   var pathways_all_search_data = [];
   - Specialization.all.each do |specialization|
     = render 'livesearch_all_entries.js', :specialization => specialization
+    
+  function sort_all_data(a, b) { return (a.id == b.id) ? 0 : ((a.id < b.id) ? -1 : 1); }
+  
+  pathways_all_search_data = pathways_all_search_data.sort(sort_all_data).filter(function(item, pos) { return !pos || item.id != pathways_all_search_data[pos - 1].id; });
