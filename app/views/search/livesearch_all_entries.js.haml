@@ -1,1 +1,4 @@
-= render 'livesearch_all_entries.js'
+- cache("livesearch_all_entries") do
+  var pathways_all_search_data = [];
+  - Specialization.all.each do |specialization|
+    = render 'livesearch_all_entries.js', :specialization => specialization

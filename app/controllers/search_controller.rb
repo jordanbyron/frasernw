@@ -23,6 +23,7 @@ class SearchController < ApplicationController
   
   #sitewide specialist and clinic data
   def refresh_livesearch_all_entries
+    @specialization = Specialization.find(params[:specialization_id])
     respond_to do |format|
       format.js
     end

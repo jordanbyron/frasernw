@@ -110,7 +110,7 @@ Frasernw::Application.routes.draw do
   match '/livesearch' => 'search#livesearch', :as => :livesearch
   match '/livesearch_all_entries' => 'search#livesearch_all_entries', :as => :livesearch_all_entries
   match '/refresh_livesearch_global' => 'search#refresh_livesearch_global', :as => :refresh_livesearch_global
-  match '/refresh_livesearch_all_entries' => 'search#refresh_livesearch_all_entries', :as => :refresh_livesearch_all_entries
+  match '/refresh_livesearch_all_entries/:specialization_id' => 'search#refresh_livesearch_all_entries', :as => :refresh_livesearch_all_entries
   match '/refresh_livesearch_division_entries/:division_id/:specialization_id' => 'search#refresh_livesearch_division_entries', :as => :refresh_livesearch_division_entries
   match '/refresh_livesearch_division_content/:division_id' => 'search#refresh_livesearch_division_content', :as => :refresh_livesearch_division_content
   

@@ -1,4 +1,4 @@
-<% cache("livesearch_all_entries") do
+<% cache("livesearch_all_entries_" + specialization_path(specialization)) do
 
   search_data = Array.new
 
@@ -19,18 +19,10 @@
   #specialists = Specialist.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:location_in => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}]}})
   #clinics = Clinic.includes(:locations => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}])
 
-  specialists = []
-  clinics = []
-  
-  Specialization.all.each do |specialization|
+  specialists = Specialist.not_in_progress_for_specialization(specialization)
+  clinics = Clinic.not_in_progress_for_specialization(specialization)
 
-    specialists += Specialist.not_in_progress_for_specialization(specialization)
-  
-    clinics += Clinic.not_in_progress_for_specialization(specialization)
-
-  end
-
-  specialists.flatten.uniq.each do |specialist|
+  specialists.each do |specialist|
     
     entry = {
       "n" => specialist.billing_number_padded ? specialist.name + " - MSP #" + specialist.billing_number_padded: specialist.name,
@@ -43,7 +35,7 @@
     search_data << entry
   end
 
-  clinics.flatten.uniq.each do |clinic|
+  clinics.each do |clinic|
     
     entry = { 
       "n" => clinic.name,
@@ -57,6 +49,6 @@
   end
 
   -%>
-  var pathways_all_search_data = <%=search_data.to_json.html_safe %>
+  pathways_all_search_data = pathways_all_search_data.concat(<%= search_data.to_json.html_safe %>);
 
 <% end -%>

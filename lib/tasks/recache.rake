@@ -80,10 +80,19 @@ namespace :pathways do
   
     task :search => :environment do
       puts "Recaching search..."
+      
+      puts "Global"
       expire_fragment "livesearch_global"
       Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/refresh_livesearch_global.js") )
+      
+      puts "All entries"
       expire_fragment "livesearch_all_entries"
-      Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/refresh_livesearch_all_entries.js") )
+      Specialization.all.each do |s|
+        puts "All entries specialization #{s.id}"
+        expire_fragment "livesearch_all_entries_#{specialization_path(s)}"
+        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/refresh_livesearch_all_entries/#{s.id}.js") )
+      end
+      
       Division.all.each do |d|
         puts "Search division #{d.id}"
         expire_fragment "livesearch_#{division_path(d)}_entries"

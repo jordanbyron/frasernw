@@ -77,7 +77,7 @@ class Specialist < ActiveRecord::Base
       in_progress_cities |= City.in_progress_for_division_and_specialization(division, specialization)
     end
 
-    self.in_cities(City.all - in_progress_cities)
+    self.in_cities_and_specialization(City.all - in_progress_cities, specialization)
   end
     
   def self.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
