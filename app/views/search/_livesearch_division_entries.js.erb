@@ -1,4 +1,4 @@
-<% cache("livesearch_" + division_path(division) + "_entries") do
+<% cache("livesearch_" + division_path(division) + "_" + specialization_path(specialization) + "_entries") do
 
   search_data = Array.new
 
@@ -16,16 +16,8 @@
     order_map[ category.name ] = ( order_map.length + 1 ).to_s
   end
 
-  specialists = []
-  clinics = []
-  
-  Specialization.all.each do |specialization|
-
-    specialists += Specialist.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
-  
-    clinics += Clinic.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
-
-  end
+  specialists = Specialist.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
+  clinics = Clinic.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
 
   specialists.flatten.uniq.each do |specialist|
     
@@ -54,6 +46,6 @@
   end
 
   -%>
-  pathways_division_search_data_entries["<%= division.id %>"] = <%=search_data.to_json.html_safe %>
+  pathways_division_search_data_entries["<%= division.id %>"] = pathways_division_search_data_entries["<%= division.id %>"].concat(<%= search_data.to_json.html_safe %>);
 
 <% end -%>
