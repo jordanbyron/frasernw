@@ -46,6 +46,21 @@ class Clinic < ActiveRecord::Base
   has_many :feedback_items, :as => :item, :conditions => { "archived" => false }
   
   default_scope order('clinics.name')
+    
+  def self.not_in_progress_for_specialization(specialization)
+    not_in_progress_cities = City.all
+    
+    Division.all.each do |division|
+      not_in_progress_cities &= City.not_in_progress_for_division_and_specialization(division, specialization)
+    end
+
+    self.in_cities(not_in_progress_cities)
+  end
+    
+  def self.not_in_progress_for_division_and_specialization(division, specialization)
+    not_in_progress_cities = City.not_in_progress_for_division_and_specialization(division, specialization)
+    self.in_cities(not_in_progress_cities)
+  end
 
   def not_in_progress
     (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length > 0) || (divisions.length == 0)

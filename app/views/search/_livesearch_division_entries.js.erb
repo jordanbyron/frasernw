@@ -21,57 +21,35 @@
   
   Specialization.all.each do |specialization|
 
-    specialists += specialization.specialists
+    specialists += Specialist.not_in_progress_for_division_and_specialization(division, specialization)
   
-    clinics += specialization.clinics
+    clinics += Clinic.not_in_progress_for_division_and_specialization(division, specialization)
 
-  end
-  
-  #find all the specializations that are not in progress for each division
-  not_in_progress_specialization_ids = {};
-  
-  Division.all.each do |d|
-    not_in_progress_specialization_ids[d.id] = Specialization.not_in_progress_for_divisions([d]).map{ |s| s.id }
   end
 
   specialists.flatten.uniq.each do |specialist|
-  
-    #find the specializations that are not in progress for this specialist
-    specialist_not_in_progress_specialization_ids = []
-    specialist.divisions.each do |d|
-      specialist_not_in_progress_specialization_ids |= not_in_progress_specialization_ids[d.id]
-    end
-  
-    specialization_ids = specialist.specializations.map{ |s| s.id } & specialist_not_in_progress_specialization_ids
-    next if specialization_ids.blank?
     
     entry = {
       "n" => specialist.billing_number_padded ? specialist.name + " - MSP #" + specialist.billing_number_padded: specialist.name,
-      "sp" => specialization_ids,
+      "sp" => specialist.specialist_specializations.map { |ss| ss.specialization_id },
       "c" => specialist.cities_for_display.map{ |city| city.id },
       "st" => specialist.status_class_hash,
       "id" => specialist.id,
-      "go" => order_map["Specialists"] }
+      "go" => order_map["Specialists"] 
+    }
     search_data << entry
   end
 
   clinics.flatten.uniq.each do |clinic|
-  
-    clinic_not_in_progress_specialization_ids = []
-    clinic.divisions.each do |d|
-      clinic_not_in_progress_specialization_ids |= not_in_progress_specialization_ids[d.id]
-    end
-  
-    specialization_ids = clinic.specializations.map{ |s| s.id }  & clinic_not_in_progress_specialization_ids
-    next if specialization_ids.blank?
     
     entry = { 
-      "n" => clinic.name, 
-      "sp" => specialization_ids,
+      "n" => clinic.name,
+      "sp" => clinic.clinic_specializations.map{ |cs| cs.specialization_id },
       "c" => clinic.cities.map{ |city| city.id },
       "st" => clinic.status_class_hash,
       "id" => clinic.id,
-      "go" => order_map["Clinics"] }
+      "go" => order_map["Clinics"] 
+    }
     search_data << entry
   end
 

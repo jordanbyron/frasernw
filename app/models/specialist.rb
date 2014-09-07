@@ -67,6 +67,23 @@ class Specialist < ActiveRecord::Base
       :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
       :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
     }
+  
+  before_save :destroy_photo?
+    
+  def self.not_in_progress_for_specialization(specialization)
+    not_in_progress_cities = City.all
+    
+    Division.all.each do |division|
+      not_in_progress_cities &= City.not_in_progress_for_division_and_specialization(division, specialization)
+    end
+
+    self.in_cities(not_in_progress_cities)
+  end
+    
+  def self.not_in_progress_for_division_and_specialization(division, specialization)
+    not_in_progress_cities = City.not_in_progress_for_division_and_specialization(division, specialization)
+    self.in_cities(not_in_progress_cities)
+  end
 
   def not_in_progress
     (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length > 0) || (divisions.length == 0)
@@ -75,8 +92,6 @@ class Specialist < ActiveRecord::Base
   def in_progress
     (divisions.length > 0) && (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length == 0)
   end
-  
-  before_save :destroy_photo?
 
   def self.in_cities(c)
   #for specialists that haven't responded or are purosely not yet surveyed we just try to grab any city that makes sense

@@ -22,6 +22,10 @@ class City < ActiveRecord::Base
     joins('INNER JOIN "division_cities" ON "cities".id = "division_cities".city_id').where('"division_cities".division_id IN (?)', division_ids)
   end
   
+  def self.not_in_progress_for_division_and_specialization(division, specialization)
+    joins('INNER JOIN "division_cities" ON "cities".id = "division_cities".city_id INNER JOIN "specialization_options" ON "specialization_options".division_id = "division_cities".division_id').where('"division_cities".division_id = (?) AND "specialization_options".specialization_id = (?) AND "specialization_options".in_progress = (?)', division.id, specialization.id, false)
+  end
+  
   def self.for_user_in_specialization(user, specialization)
     #user defined
     per_user = joins('INNER JOIN "user_cities" ON "user_cities".city_id = "cities".id INNER JOIN "user_city_specializations" ON "user_cities".id = "user_city_specializations".user_city_id').where('"user_city_specializations".specialization_id = (?) AND "user_cities".user_id = (?)', specialization.id, user.id)
