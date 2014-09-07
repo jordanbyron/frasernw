@@ -31,7 +31,7 @@ class SearchController < ApplicationController
   #divisional specialist and clinic data
   def refresh_livesearch_division_entries
     @division = Division.find(params[:division_id])
-    @specialization = Division.find(params[:specialization_id])
+    @specialization = Specialization.find(params[:specialization_id])
     respond_to do |format|
       format.js
     end
