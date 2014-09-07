@@ -19,7 +19,7 @@
   specialists = Specialist.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
   clinics = Clinic.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
 
-  specialists.flatten.uniq.each do |specialist|
+  specialists.each do |specialist|
     
     entry = {
       "n" => specialist.billing_number_padded ? specialist.name + " - MSP #" + specialist.billing_number_padded: specialist.name,
@@ -32,7 +32,7 @@
     search_data << entry
   end
 
-  clinics.flatten.uniq.each do |clinic|
+  clinics.each do |clinic|
     
     entry = { 
       "n" => clinic.name,
@@ -46,6 +46,6 @@
   end
 
   -%>
-  pathways_division_search_data_entries["<%= division.id %>"] = pathways_division_search_data_entries["<%= division.id %>"].concat(<%= search_data.to_json.html_safe %>);
+  pathways_division_search_data_entries["<%= division.id %>"] = (pathways_division_search_data_entries["<%= division.id %>"] || []).concat(<%= search_data.to_json.html_safe %>);
 
 <% end -%>

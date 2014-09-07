@@ -5,7 +5,6 @@ var pathways_division_search_data_entries = {};
 
 - current_user_divisions.each do |division|
   - cache("livesearch_" + division_path(division) + "_entries") do
-    var pathways_division_search_data_entries["<%= division.id %>"] = [];
     - Specialization.all.each do |specialization|
       = render 'livesearch_division_entries.js', :division => division, :specialization => specialization
   = render 'livesearch_division_content.js', :division => division
