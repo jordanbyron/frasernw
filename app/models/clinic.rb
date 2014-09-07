@@ -48,17 +48,17 @@ class Clinic < ActiveRecord::Base
   default_scope order('clinics.name')
     
   def self.not_in_progress_for_specialization(specialization)
-    not_in_progress_cities = City.all
+    in_progress_cities = []
     
     Division.all.each do |division|
-      not_in_progress_cities &= City.not_in_progress_for_division_and_specialization(division, specialization)
+      in_progress_cities |= City.in_progress_for_division_and_specialization(division, specialization)
     end
 
-    self.in_cities(not_in_progress_cities)
+    self.in_cities(City.all - in_progress_cities)
   end
     
-  def self.not_in_progress_for_division_and_specialization(division, specialization)
-    not_in_progress_cities = City.not_in_progress_for_division_and_specialization(division, specialization)
+  def self.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
+    not_in_progress_cities = City.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
     self.in_cities(not_in_progress_cities)
   end
 

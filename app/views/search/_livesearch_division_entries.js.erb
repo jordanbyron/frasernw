@@ -21,9 +21,9 @@
   
   Specialization.all.each do |specialization|
 
-    specialists += Specialist.not_in_progress_for_division_and_specialization(division, specialization)
+    specialists += Specialist.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
   
-    clinics += Clinic.not_in_progress_for_division_and_specialization(division, specialization)
+    clinics += Clinic.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
 
   end
 
