@@ -5,7 +5,6 @@ gem 'rails', '3.1.10'
 gem 'pg'
 
 group :production do
-  gem 'newrelic_rpm'
   gem 'heroku_cloud_backup'
 end
 
@@ -78,3 +77,9 @@ gem 'validates_email_format_of'
 gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
 gem 'lazy_high_charts'
 gem 'jquery-datatables-rails'
+
+#New Relic guide recommends placing New Relic gem at bottom of Gemfile
+group :development, :production do
+  gem 'newrelic_rpm'
+end
+
