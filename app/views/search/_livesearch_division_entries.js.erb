@@ -1,4 +1,4 @@
-<% cache("livesearch_" + division_path(division) + "_entries") do
+<% cache("livesearch_" + division_path(division) + "_" + specialization_path(specialization) + "_entries") do
 
   search_data = Array.new
 
@@ -16,46 +16,36 @@
     order_map[ category.name ] = ( order_map.length + 1 ).to_s
   end
 
-  specialists = []
-  clinics = []
-  
-  Specialization.all.each do |specialization|
+  specialists = Specialist.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
+  clinics = Clinic.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
 
-    specialists += specialization.specialists.not_in_progress
-  
-    clinics += specialization.clinics.not_in_progress
-
-  end
-
-  specialists.flatten.uniq.each do |specialist|
-
-    #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
+  specialists.each do |specialist|
     
     entry = {
       "n" => specialist.billing_number_padded ? specialist.name + " - MSP #" + specialist.billing_number_padded: specialist.name,
-      "sp" => specialist.specializations.not_in_progress_for_divisions([division]).map{ |s| s.id }, 
+      "sp" => specialist.specialist_specializations.map { |ss| ss.specialization_id },
       "c" => specialist.cities_for_display.map{ |city| city.id },
       "st" => specialist.status_class_hash,
       "id" => specialist.id,
-      "go" => order_map["Specialists"] }
+      "go" => order_map["Specialists"] 
+    }
     search_data << entry
   end
 
-  clinics.flatten.uniq.each do |clinic|
-
-    #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
+  clinics.each do |clinic|
     
     entry = { 
-      "n" => clinic.name, 
-      "sp" => clinic.specializations.not_in_progress_for_divisions([division]).map{ |s| s.id },
+      "n" => clinic.name,
+      "sp" => clinic.clinic_specializations.map{ |cs| cs.specialization_id },
       "c" => clinic.cities.map{ |city| city.id },
       "st" => clinic.status_class_hash,
       "id" => clinic.id,
-      "go" => order_map["Clinics"] }
+      "go" => order_map["Clinics"] 
+    }
     search_data << entry
   end
 
   -%>
-  pathways_division_search_data_entries["<%= division.id %>"] = <%=search_data.to_json.html_safe %>
+  pathways_division_search_data_entries["<%= division.id %>"] = (pathways_division_search_data_entries["<%= division.id %>"] || []).concat(<%= search_data.to_json.html_safe %>);
 
 <% end -%>

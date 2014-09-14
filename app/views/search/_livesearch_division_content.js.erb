@@ -17,7 +17,7 @@
   end
 
   ScCategory.all.each do |category|
-    category.all_sc_items_in_divisions([division]).reject{ |item| !item.searchable? || item.in_progress_for_divisions([division]) }.each do |item|
+    category.all_sc_items_in_divisions([division]).reject{ |item| !item.searchable? || item.in_progress }.each do |item|
       entry = { 
         "n" => item.title, 
         "sp" => item.specializations.not_in_progress_for_divisions([division]).uniq.collect{ |s| s.id },

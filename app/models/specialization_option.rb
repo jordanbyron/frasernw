@@ -18,6 +18,12 @@ class SpecializationOption < ActiveRecord::Base
     where("specialization_options.division_id IN (?) AND specialization_options.specialization_id IN (?)", division_ids, specialization_ids)
   end
 
+  def self.not_in_progress_for_divisions_and_specializations(divisions, specializations)
+    division_ids = divisions.map{ |d| d.id }
+    specialization_ids = specializations.map{ |s| s.id }
+    where("specialization_options.division_id IN (?) AND specialization_options.specialization_id IN (?) and in_progress = (?)", division_ids, specialization_ids, false)
+  end
+
   def self.is_new
     where("specialization_options.is_new = (?)", true)
   end

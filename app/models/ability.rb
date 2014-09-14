@@ -123,7 +123,7 @@ class Ability
         end
         
         can :show, [Specialist, Clinic] do |entity|
-          !entity.in_progress_for_divisions(entity.divisions)
+          !entity.in_progress
         end
         
         can :show, ScItem do |item|

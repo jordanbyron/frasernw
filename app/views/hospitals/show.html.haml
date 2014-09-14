@@ -28,8 +28,8 @@
     - if (@hospital.phone_and_fax.present?)
       %p.no_indent= @hospital.phone_and_fax
       
-  - specialists = @hospital.specialists.reject{ |s| s.in_progress_for_divisions(Division.all) || !s.show_in_table? }
-  - clinics_in = @hospital.clinics_in.reject{ |c| c.in_progress_for_divisions(Division.all) || !c.show_in_table? }
+  - specialists = @hospital.specialists.reject{ |s| s.in_progress || !s.show_in_table? }
+  - clinics_in = @hospital.clinics_in.reject{ |c| c.in_progress || !c.show_in_table? }
 
   - has_specialists = specialists.length > 0
   - has_clinics_in = clinics_in.length > 0

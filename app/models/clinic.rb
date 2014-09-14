@@ -46,19 +46,28 @@ class Clinic < ActiveRecord::Base
   has_many :feedback_items, :as => :item, :conditions => { "archived" => false }
   
   default_scope order('clinics.name')
-  
-  def self.not_in_progress_for_divisions(divisions)
-    division_ids = divisions.map{ |division| division.id }
-    joins('INNER JOIN "clinic_specializations" ON "clinics"."id" = "clinic_specializations"."clinic_id" INNER JOIN "specialization_options" ON "specialization_options"."specialization_id" = "clinic_specializations"."specialization_id"').where('"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)', division_ids, false)
+    
+  def self.not_in_progress_for_specialization(specialization)
+    in_progress_cities = []
+    
+    Division.all.each do |division|
+      in_progress_cities |= City.in_progress_for_division_and_specialization(division, specialization)
+    end
+
+    self.in_cities_and_specialization(City.all - in_progress_cities, specialization)
   end
-  
-  def self.not_in_progress
-    joins('INNER JOIN "clinic_specializations" AS "cs2" ON "clinics"."id" = "cs2"."clinic_id" INNER JOIN "specialization_options" ON "specialization_options"."specialization_id" = "cs2"."specialization_id"').where('"specialization_options"."in_progress" = (?)', false)
+    
+  def self.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
+    not_in_progress_cities = City.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
+    self.in_cities_and_specialization(not_in_progress_cities, specialization)
   end
 
-  def in_progress_for_divisions(divisions)
-    specialization_options = specializations.map{ |s| s.specialization_options.for_divisions(divisions) }.flatten
-    (specialization_options.length > 0) && (specialization_options.reject{ |so| so.in_progress }.length == 0)
+  def not_in_progress
+    (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length > 0) || (divisions.length == 0)
+  end
+
+  def in_progress
+    (divisions.length > 0) && (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length == 0)
   end
   
   CATEGORIZATION_HASH = {
@@ -71,6 +80,21 @@ class Clinic < ActiveRecord::Base
     city_ids = cities.map{ |city| city.id }
     direct = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL', "ClinicLocation", city_ids)
     in_hospital = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id').where('"direct_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?)', "ClinicLocation", "Hospital", city_ids)
+    (direct + in_hospital).uniq
+  end
+  
+  def self.in_cities_and_specialization(cities, specialization)
+    city_ids = cities.map{ |city| city.id }
+    direct = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id INNER JOIN "clinic_specializations" on "clinic_specializations".clinic_id = "clinics".id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL AND "clinic_specializations".specialization_id = (?)', "ClinicLocation", city_ids, specialization.id)
+    in_hospital = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id INNER JOIN "clinic_specializations" on "clinic_specializations".clinic_id = "clinics".id').where('"direct_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "clinic_specializations".specialization_id = (?)', "ClinicLocation", "Hospital", city_ids, specialization.id)
+    (direct + in_hospital).uniq
+  end
+
+  def self.in_cities_and_performs_procedures_in_specialization(cities, specialization)
+    city_ids = cities.map{ |city| city.id }
+
+    direct = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id INNER JOIN "focuses" ON "focuses".clinic_id = "clinics".id INNER JOIN "procedure_specializations" AS "ps1" on "ps1".id = "focuses".procedure_specialization_id INNER JOIN "procedure_specializations" AS "ps2" ON "ps2".procedure_id = "ps1".procedure_id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL AND "ps2".specialization_id = (?)', "ClinicLocation", city_ids, specialization.id)
+    in_hospital = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id INNER JOIN "focuses" ON "focuses".clinic_id = "clinics".id INNER JOIN "procedure_specializations" AS "ps1" on "ps1".id = "focuses".procedure_specialization_id INNER JOIN "procedure_specializations" AS "ps2" ON "ps2".procedure_id = "ps1".procedure_id').where('"direct_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "ps2".specialization_id = (?)', "ClinicLocation", "Hospital", city_ids, specialization.id)
     (direct + in_hospital).uniq
   end
 

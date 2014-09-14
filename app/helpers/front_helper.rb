@@ -21,7 +21,7 @@ module FrontHelper
         if version.item_type == "Specialist"
           
           specialist = version.item
-          next if specialist.blank? || specialist.in_progress_for_divisions(divisions)
+          next if specialist.blank? || specialist.in_progress
           specialist_divisions = specialist.cities_for_front_page.map{ |city| city.divisions }.flatten.uniq
           next if (specialist_divisions & divisions).blank?
           
@@ -62,7 +62,7 @@ module FrontHelper
         elsif version.item_type == "SpecialistOffice"
         
           specialist_office = version.item
-          next if specialist_office.specialist.blank? || specialist_office.specialist.in_progress_for_divisions(divisions)
+          next if specialist_office.specialist.blank? || specialist_office.specialist.in_progress
           
           specialist = specialist_office.specialist
           
@@ -87,7 +87,7 @@ module FrontHelper
         elsif version.item_type == "ClinicLocation"
         
           clinic_location = version.item
-          next if clinic_location.clinic.blank? || clinic_location.clinic.in_progress_for_divisions(divisions) || (clinic_location.clinic.divisions && divisions).blank?
+          next if clinic_location.clinic.blank? || clinic_location.clinic.in_progress || (clinic_location.clinic.divisions && divisions).blank?
           
           clinic = clinic_location.clinic
           
