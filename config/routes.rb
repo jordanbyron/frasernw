@@ -40,6 +40,8 @@ Frasernw::Application.routes.draw do
   match '/divisions/:id/shared_content_items' => 'divisions#shared_sc_items', :as => 'shared_content_items'
   put   '/divisions/:id/update_shared' => 'divisions#update_shared', :as => 'update_shared'
   
+  #match 'subscriptions' => 'subscriptions#show', :as => 'subscriptions', :via => :get
+  resources :subscriptions
   resources :news_items
   resources :reports
   

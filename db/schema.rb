@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140817165228) do
+ActiveRecord::Schema.define(:version => 20140915115416) do
 
   create_table "addresses", :force => true do |t|
     t.string   "address1"
@@ -716,6 +716,38 @@ ActiveRecord::Schema.define(:version => 20140817165228) do
     t.string   "saved_token"
     t.string   "member_name"
     t.boolean  "deprecated_open_to_clinic_tab", :default => false
+  end
+
+  create_table "subscription_divisions", :force => true do |t|
+    t.integer  "division_id"
+    t.integer  "subscription_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "subscription_divisions", ["division_id"], :name => "index_subscription_divisions_on_division_id"
+  add_index "subscription_divisions", ["subscription_id"], :name => "index_subscription_divisions_on_subscription_id"
+
+  create_table "subscription_specializations", :force => true do |t|
+    t.integer  "specialization_id"
+    t.integer  "subscription_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "subscription_specializations", ["specialization_id"], :name => "index_subscription_specializations_on_specialization_id"
+  add_index "subscription_specializations", ["subscription_id"], :name => "index_subscription_specializations_on_subscription_id"
+
+  create_table "subscriptions", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "classification"
+    t.boolean  "content_item"
+    t.boolean  "news_item"
+    t.string   "item_type"
+    t.string   "news_type"
+    t.string   "interval"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "user_cities", :force => true do |t|

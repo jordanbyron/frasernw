@@ -1,0 +1,10 @@
+= simple_form_for(@subscription) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :user_id, collection: current_user.id, as: :hidden
+    = f.input :classification, collection: [ScCategory.name, NewsItem.name], as: :check_boxes 
+    = f.collection_check_boxes :news_type, collection: NewsItem.all
+
+  .form-actions
+    = f.button :submit

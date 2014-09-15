@@ -124,6 +124,8 @@
                         - else
                           = link_to "Feedback Queue", feedback_items_path, :class => "feedback ajax"
                       - if current_user_is_super_admin?
+                        %li= link_to "Manage Email Updates", subscriptions_path, :class => "subscriptions ajax"
+                      - if current_user_is_super_admin?
                         %li= link_to "Reports", reports_path, :class => "reports ajax"
                       %li.divider
                       %li.nav-header Pathways
