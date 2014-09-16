@@ -11,4 +11,8 @@ class Subscription < ActiveRecord::Base
 	has_many :subscription_specializations, dependent: :destroy
 	has_many :specializations, through: :subscription_specializations
 
+	accepts_nested_attributes_for :divisions
+	accepts_nested_attributes_for :specializations
+	
+
 end

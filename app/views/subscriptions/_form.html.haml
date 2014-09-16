@@ -1,10 +1,34 @@
-= simple_form_for(@subscription) do |f|
+= simple_form_for(@subscription, :html => {:class => 'form-horizontal'}, :wrapper_mappings => { check_boxes: :horizontal_radio_and_checkboxes, boolean: :horizontal_boolean  }, label: :none) do |f|
   = f.error_notification
 
   .form-inputs
+    %h2
+      Update Notification type:
+    = f.input :classification, collection: ['News Updates', 'Resource Updates'], as: :radio_buttons, label: false
+    
+
     = f.input :user_id, collection: current_user.id, as: :hidden
-    = f.input :classification, collection: [ScCategory.name, NewsItem.name], as: :check_boxes 
-    = f.collection_check_boxes :news_type, collection: NewsItem.all
+
+    %h2 
+      Divisions to receive updates from:
+    = f.association :divisions, collection: Division.all, label_method: :name, value_method: :id, as: :check_boxes, presence: true, required: true, label: "Select a division"
+
+    %h2
+      Notify me about News Updates on these topics:
+    = f.input :news_type, :as => :check_boxes, :collection => NewsItem::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
+
+    %h2
+      Notify me when the following Resources change:
+    = f.input :item_type, collection: ScCategory.all, as: :check_boxes
+
+    %h2 
+      Notify me of Updates to the following Specializations:  
+    = f.association :specializations, collection: Specialization.all, label_method: :name, value_method: :id, as: :check_boxes, presence: true, required: true, label: "Notify me about:" 
+
+    %h2 
+      Receive Updates How Often?:
+    = f.input :interval, collection: interval_options, as: :radio_buttons, label: false
+
 
   .form-actions
     = f.button :submit

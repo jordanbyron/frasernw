@@ -5,11 +5,14 @@ class SubscriptionsController < ApplicationController
   # GET /subscriptions.json
   def index
     @subscriptions = Subscription.all
+    @owned_news_items = NewsItem.in_divisions(current_user_divisions).paginate(:page => params[:owned_page], :per_page => 30)
+    @other_news_items = NewsItem.in_divisions(Division.all - current_user_divisions).paginate(:page => params[:other_page], :per_page => 30)
+    render :layout => 'ajax' if request.headers['X-PJAX']
 
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @subscriptions }
-    end
+    # respond_to do |format|
+    #   format.html # index.html.erb
+    #   format.json { render json: @subscriptions }
+    # end
   end
 
   # GET /subscriptions/1
