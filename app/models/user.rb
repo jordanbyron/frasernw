@@ -32,6 +32,9 @@ class User < ActiveRecord::Base
   has_many :user_cities, :dependent => :destroy
   has_many :user_city_specializations, :through => :user_cities
 
+  has_many :user_subscriptions, :dependent => :destroy
+  has_many :subscriptions, :through => :user_subscriptions
+
   # times that the user (as admin) has contacted specialists
   has_many :contacts
 
