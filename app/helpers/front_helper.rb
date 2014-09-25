@@ -23,8 +23,7 @@ module FrontHelper
           specialist = version.item
           next if specialist.blank? || specialist.in_progress
           specialist_divisions = specialist.cities_for_front_page.map{ |city| city.divisions }.flatten.uniq
-          next if (specialist_divisions & divisions).blank?
-          
+          next unless current_user.shares_local_referral_city_with_division?(specialist_divisions)
           if version.event == "update"
           
             if specialist.moved_away?
@@ -67,8 +66,7 @@ module FrontHelper
           specialist = specialist_office.specialist
           
           specialist_divisions = specialist.cities_for_front_page.map{ |city| city.divisions }.flatten.uniq
-          next if (specialist_divisions & divisions).blank?
-          
+          next unless current_user.shares_local_referral_city_with_division?(specialist_divisions)
           if (["create", "update"].include? version.event) && specialist.accepting_new_patients? && specialist_office.opened_recently?
             
             if (version.event == "update")
@@ -87,8 +85,8 @@ module FrontHelper
         elsif version.item_type == "ClinicLocation"
         
           clinic_location = version.item
-          next if clinic_location.clinic.blank? || clinic_location.clinic.in_progress || (clinic_location.clinic.divisions && divisions).blank?
-          
+          next if clinic_location.clinic.blank? || clinic_location.clinic.in_progress
+          next unless current_user.shares_local_referral_city_with_division?(clinic_location.clinic.divisions)
           clinic = clinic_location.clinic
           
           if (["create", "update"].include? version.event) && clinic.accepting_new_patients? && clinic_location.opened_recently?
@@ -116,5 +114,4 @@ module FrontHelper
     #mix in the news updates with the automatic updates
     return automated_events.merge(manual_events).values.sort{ |a, b| b[0] <=> a[0] }.map{ |x| x[1] }
   end
-  
 end
