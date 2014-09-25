@@ -5,7 +5,6 @@ class Division < ActiveRecord::Base
   has_many :division_cities, :dependent => :destroy
 
   has_many :cities, :through => :division_cities
-  
   has_many :division_referral_cities, :dependent => :destroy
   
   # # returns all cities in division's local referral area
