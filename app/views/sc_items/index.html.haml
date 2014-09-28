@@ -4,7 +4,7 @@
 
   %h2 Content Items
   
-  - categories = ScCategory.all.reject{ |category| category.parent.present? || category.all_sc_items_in_divisions([@division]).blank? }
+  - categories = ScCategory.all.reject{ |category| category.parent.present? || category.all_owned_sc_items_in_divisions([@division]).blank? }
 
   .tabbable
     %ul.nav.nav-tabs

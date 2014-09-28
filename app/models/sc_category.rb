@@ -84,10 +84,13 @@ class ScCategory < ActiveRecord::Base
     items
   end
 
-  def all_sc_items_in_divisions(divisions)
+  def all_sc_items_in_divisions(divisions, options = {})
+    options[:exclude_subcategories] ||= false;
     items = sc_items.all_in_divisions(divisions)
-    self.children.each do |child|
-      items += child.all_sc_items_in_divisions(divisions)
+    if (!options[:exclude_subcategories])
+      self.children.each do |child|
+        items += child.all_sc_items_in_divisions(divisions, options)
+      end
     end
     items
   end
