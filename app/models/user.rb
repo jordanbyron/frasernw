@@ -161,7 +161,7 @@ LIMITED_ROLE_HASH = {
 
   # returns true when a user referral_city matches with an inputted division's cities
   def shares_local_referral_city_with_division?(divisions)
-   !( divisions.each{|d| d.referral_cities}  &  self.divisions.each{|d| d.referral_cities} ).blank?
+    !(divisions.map{|d| d.referral_cities}.flatten.uniq  &  self.divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
   end
 
   def owns(specializations)
