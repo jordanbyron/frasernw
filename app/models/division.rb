@@ -3,9 +3,14 @@ class Division < ActiveRecord::Base
   attr_accessible :name, :city_ids, :shared_sc_item_ids, :primary_contact_id, :division_primary_contacts_attributes
    
   has_many :division_cities, :dependent => :destroy
+
   has_many :cities, :through => :division_cities
-  
   has_many :division_referral_cities, :dependent => :destroy
+  
+  # # returns all cities in division's local referral area
+  # e.g. returns true:  d.referral_cities === d.division_referral_cities.map{|drc| drc.city}
+  has_many :referral_cities, through: :division_referral_cities, source: :city
+
   has_many :division_referral_city_specializations, :through => :division_referral_cities
   
   has_many :division_users, :dependent => :destroy
@@ -29,7 +34,7 @@ class Division < ActiveRecord::Base
   def to_s
     self.name
   end
-  
+
   def local_referral_cities_for_specialization(specialization)
     refined_cities = division_referral_city_specializations.reject{ |drcs| drcs.specialization_id != specialization.id }.map{ |drcs| drcs.division_referral_city.city }
     if refined_cities.present?
