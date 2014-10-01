@@ -22,8 +22,9 @@ module FrontHelper
           
           specialist = version.item
           next if specialist.blank? || specialist.in_progress
-          specialist_divisions = specialist.cities_for_front_page.map{ |city| city.divisions }.flatten.uniq
-          next unless current_user.shares_local_referral_city_with_division?(specialist_divisions)
+          specialist_cities = specialist.cities_for_front_page.flatten.uniq
+          next unless current_user.shares_local_referral_city?(specialist_cities)
+
           if version.event == "update"
           
             if specialist.moved_away?
@@ -65,8 +66,9 @@ module FrontHelper
           
           specialist = specialist_office.specialist
           
-          specialist_divisions = specialist.cities_for_front_page.map{ |city| city.divisions }.flatten.uniq
-          next unless current_user.shares_local_referral_city_with_division?(specialist_divisions)
+          specialist_cities = specialist.cities_for_front_page.flatten.uniq
+          next unless current_user.shares_local_referral_city?(specialist_cities)
+
           if (["create", "update"].include? version.event) && specialist.accepting_new_patients? && specialist_office.opened_recently?
             
             if (version.event == "update")
@@ -85,8 +87,8 @@ module FrontHelper
         elsif version.item_type == "ClinicLocation"
         
           clinic_location = version.item
-          next if clinic_location.clinic.blank? || clinic_location.clinic.in_progress
-          next unless current_user.shares_local_referral_city_with_division?(clinic_location.clinic.divisions)
+          next if clinic_location.clinic.blank? || clinic_location.clinic.in_progress #devnoteperformance: in_progress query creates 13 ActiveRecord Selects
+          next unless current_user.shares_local_referral_city?(clinic_location.clinic.cities)
           clinic = clinic_location.clinic
           
           if (["create", "update"].include? version.event) && clinic.accepting_new_patients? && clinic_location.opened_recently?
