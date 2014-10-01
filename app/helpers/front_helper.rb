@@ -25,7 +25,7 @@ module FrontHelper
 
           next if specialist.blank? || specialist.in_progress
           #next if current_user.does_not_share_local_referral_city?(specialist_cities)
-          next if (specialist_cities & current_user.divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
+          next if (specialist_cities & divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
  
 
           if version.event == "update"
@@ -71,7 +71,7 @@ module FrontHelper
           
           specialist_cities = specialist.cities_for_front_page.flatten.uniq
           #next if current_user.does_not_share_local_referral_city?(specialist_cities)
-          next if (specialist_cities & current_user.divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
+          next if (specialist_cities & divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
 
 
           if (["create", "update"].include? version.event) && specialist.accepting_new_patients? && specialist_office.opened_recently?
@@ -94,7 +94,7 @@ module FrontHelper
           clinic_location = version.item
           next if clinic_location.clinic.blank? || clinic_location.clinic.in_progress #devnoteperformance: in_progress query creates 13 ActiveRecord Selects
           #next if current_user.does_not_share_local_referral_city?(clinic_location.clinic.cities)
-          next if (clinic_location.clinic.cities & current_user.divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
+          next if (clinic_location.clinic.cities & divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
           clinic = clinic_location.clinic
           
           if (["create", "update"].include? version.event) && clinic.accepting_new_patients? && clinic_location.opened_recently?
