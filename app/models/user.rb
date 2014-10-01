@@ -164,6 +164,11 @@ LIMITED_ROLE_HASH = {
     !(cities & self.divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
   end
 
+  # returns true if a user does not have an overlapping referral_city from a given array of cities (e.g. specialist.cities / clinic.cities)
+  def does_not_share_local_referral_city?(cities)
+    (cities & self.divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
+  end
+
   def owns(specializations)
     does_own = false
     specializations.each do |specialization|
