@@ -10,7 +10,7 @@
     $(document).ready(function() { 
     has_specialists = false;
     has_clinics = false;
-    open_to = #{@specialization.open_to_tab_for_divisions(user_divisions)};
+    open_to = "#{@specialization.open_to_tab_for_divisions(user_divisions)}";
     = render 'global_lookup.js', :specializations => [@specialization]
     - user_cities_for_specialization.each do |city|
       = render 'city_lookup.js', :city => city, :specializations => [@specialization], :other => true
