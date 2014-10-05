@@ -5,7 +5,7 @@ class SpecializationOption < ActiveRecord::Base
   belongs_to :owner, :class_name => "User"
   belongs_to :content_owner, :class_name => "User"
   belongs_to :division
-  belongs_to :open_to_sc_category, :class_name => "User"
+  belongs_to :open_to_sc_category, :class_name => "ScCategory"
   
   def self.for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
