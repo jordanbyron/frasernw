@@ -310,7 +310,7 @@ class Specialist < ActiveRecord::Base
   end
   
   STATUS_CLASS_AVAILABLE    = "icon-ok icon-green"
-  STATUS_CLASS_CONDITIONAL  = "icon-ok icon-orange"
+  STATUS_CLASS_CONDITIONAL  = "icon-plus icon-orange"
   STATUS_CLASS_UNAVAILABLE  = "icon-remove icon-red"
   STATUS_CLASS_WARNING      = "icon-warning-sign icon-orange"
   STATUS_CLASS_UNKNOWN      = "icon-question-sign"
