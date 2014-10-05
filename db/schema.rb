@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140817165228) do
+ActiveRecord::Schema.define(:version => 20140517162420) do
 
   create_table "addresses", :force => true do |t|
     t.string   "address1"
@@ -702,10 +702,12 @@ ActiveRecord::Schema.define(:version => 20140817165228) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "division_id"
-    t.boolean  "in_progress",        :default => false
-    t.boolean  "open_to_clinic_tab", :default => false
-    t.boolean  "is_new",             :default => false
+    t.boolean  "in_progress",            :default => false
+    t.boolean  "open_to_clinic_tab_old", :default => false
+    t.boolean  "is_new",                 :default => false
     t.integer  "content_owner_id"
+    t.integer  "open_to_type",           :default => 1
+    t.integer  "open_to_sc_category_id"
   end
 
   create_table "specializations", :force => true do |t|

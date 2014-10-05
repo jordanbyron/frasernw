@@ -32,7 +32,8 @@ class SpecializationsController < ApplicationController
         so.content_owner = User.find_by_id(params[:content_owner]["#{division.id}"])
         so.in_progress = params[:in_progress].present? && params[:in_progress]["#{division.id}"].present?
         so.is_new = params[:is_new].present? && params[:is_new]["#{division.id}"].present?
-        so.open_to_clinic_tab = params[:open_to_clinic_tab].present? && params[:open_to_clinic_tab]["#{division.id}"].present?
+        so.open_to_type = params[:open_to_type]["#{division.id}"]
+        so.open_to_sc_category = (params[:open_to_type]["#{division.id}"] == SpecializationOption::OPEN_TO_SC_CATEGORY.to_s) ? ScCategory.find(params[:open_to_sc_category_id]["#{division.id}"]) : nil
         so.save
       end
       redirect_to @specialization, :notice => "Successfully created specialty."
@@ -64,7 +65,8 @@ class SpecializationsController < ApplicationController
         so.content_owner = User.find_by_id(params[:content_owner]["#{division.id}"])
         so.in_progress = params[:in_progress].present? && params[:in_progress]["#{division.id}"].present?
         so.is_new = params[:is_new].present? && params[:is_new]["#{division.id}"].present?
-        so.open_to_clinic_tab = params[:open_to_clinic_tab].present? && params[:open_to_clinic_tab]["#{division.id}"].present?
+        so.open_to_type = params[:open_to_type]["#{division.id}"]
+        so.open_to_sc_category = (params[:open_to_type]["#{division.id}"] == SpecializationOption::OPEN_TO_SC_CATEGORY.to_s) ? ScCategory.find(params[:open_to_sc_category]["#{division.id}"]) : nil
         so.save
       end
       redirect_to @specialization, :notice  => "Successfully updated specialty."

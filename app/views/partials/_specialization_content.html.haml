@@ -10,7 +10,7 @@
     $(document).ready(function() { 
     has_specialists = false;
     has_clinics = false;
-    open_to_clinics = #{@specialization.open_to_clinic_tab_for_divisions(user_divisions) ? "true" : "false"};
+    open_to = #{@specialization.open_to_tab_for_divisions(user_divisions)};
     = render 'global_lookup.js', :specializations => [@specialization]
     - user_cities_for_specialization.each do |city|
       = render 'city_lookup.js', :city => city, :specializations => [@specialization], :other => true
@@ -25,8 +25,12 @@
     init_tables(-1, [], []);
     if (!has_specialists) { $('#specialist_tab_label').hide(); }
     if (!has_clinics) { $('#clinic_tab_label').hide(); }
-    var show_clinics = ((!has_specialists && has_clinics) || (open_to_clinics && has_clinics));
-    if (show_clinics) { $('#content_tabs a#clinics').tab('show'); } else { $('#content_tabs a#specialists').tab('show'); }
+    if (open_to == "specialists")
+    { has_specialists ? $('#content_tabs a#specialists').tab('show') : $('#content_tabs a#clinics').tab('show'); }
+    else if (open_to == "clinics")
+    { has_clinics ? $('#content_tabs a#clinics').tab('show') : $('#content_tabs a#specialists').tab('show'); }
+    else
+    { $('#content_tabs a.sc_category_' + open_to + '_tab').tab('show');}
     });
   
   - categories = ScCategory.specialty.reject{ |sc_category| sc_category.all_sc_items_for_specialization_in_divisions(@specialization, current_user_divisions).blank? }
@@ -46,5 +50,5 @@
         %span Clinics
     - categories.each do |sc_category|
       %li
-        %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "id" => sc_category.name.remove_whitespace, "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
+        %a{"href" => "##{sc_category.name.remove_whitespace}_tab", "id" => sc_category.name.remove_whitespace, :class => "sc_category_#{sc_category.id}_tab", "data-toggle" => "tab", "onclick" => "_gaq.push(['_trackEvent', 'tab_type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;"}
           %span= sc_category.name
