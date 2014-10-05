@@ -28,14 +28,26 @@ class SpecializationOption < ActiveRecord::Base
     where("specialization_options.is_new = (?)", true)
   end
 
+  def open_to
+    if open_to_type == OPEN_TO_SPECIALISTS
+      "specialists"
+    elsif open_to_type == OPEN_TO_CLINICS
+      "clinics"
+    elsif open_to_sc_category.present? && open_to_sc_category.all_sc_items_for_specialization_in_divisions(specialization, [division]).length > 0
+      open_to_sc_category.id
+    else
+      "specialists"
+    end
+  end
+
   OPEN_TO_SPECIALISTS = 1
   OPEN_TO_CLINICS = 2
-  OPEN_TO_CONTENT_CATEGORY = 3
+  OPEN_TO_SC_CATEGORY = 3
 
   OPEN_TO_HASH = {
     OPEN_TO_SPECIALISTS => "Specialists",
     OPEN_TO_CLINICS => "Clinics",
-    OPEN_TO_CONTENT_CATEGORY => "Content Category"
+    OPEN_TO_SC_CATEGORY => "Content Category"
   }
 
   has_paper_trail
