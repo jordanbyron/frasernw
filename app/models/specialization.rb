@@ -54,7 +54,7 @@ class Specialization < ActiveRecord::Base
 
   def open_to_clinic_tab_for_divisions(divisions)
     #start at clinic tab if all divisions passed in want this. not necessarily 'correct', but the best we can do
-    specialization_options.for_divisions(divisions).reject{ |so| so.open_to_clinic_tab }.length == 0
+    specialization_options.for_divisions(divisions).reject{ |so| so.open_to_clinic_tab_old }.length == 0
   end
   
   def procedure_specializations_arranged
