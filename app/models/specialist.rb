@@ -279,6 +279,7 @@ class Specialist < ActiveRecord::Base
   
   STATUS_HASH = { 
     1 => "Accepting new referrals",
+    11 => "Accepting new referrals with conditions",
     2 => "Only doing follow up on previous patients", 
     4 => "Retired as of",
     5 => "Retiring as of",
@@ -309,8 +310,9 @@ class Specialist < ActiveRecord::Base
   end
   
   STATUS_CLASS_AVAILABLE    = "icon-ok icon-green"
+  STATUS_CLASS_CONDITIONAL  = "icon-plus icon-orange"
   STATUS_CLASS_UNAVAILABLE  = "icon-remove icon-red"
-  STATUS_CLASS_WARNING      = "icon-exclamation-sign icon-orange"
+  STATUS_CLASS_WARNING      = "icon-warning-sign icon-orange"
   STATUS_CLASS_UNKNOWN      = "icon-question-sign"
   STATUS_CLASS_EXTERNAL     = "icon-signout icon-blue"
   STATUS_CLASS_BLANK        = ""
@@ -323,6 +325,7 @@ class Specialist < ActiveRecord::Base
     STATUS_CLASS_UNAVAILABLE => 4,
     STATUS_CLASS_UNKNOWN => 5,
     STATUS_CLASS_BLANK => 6,
+    STATUS_CLASS_CONDITIONAL => 7,
   }
   
   def status_class
@@ -332,6 +335,8 @@ class Specialist < ActiveRecord::Base
       return STATUS_CLASS_BLANK
     elsif hospital_or_clinic_only?
       return STATUS_CLASS_EXTERNAL
+    elsif accepting_with_conditions?
+      return STATUS_CLASS_CONDITIONAL
     elsif (accepting_new_patients? || ((status_mask == 6) && (unavailable_to < Date.today)))
       #marked as available, or the "unavailable between" period has passed
       return STATUS_CLASS_AVAILABLE
@@ -354,6 +359,10 @@ class Specialist < ActiveRecord::Base
   
   def accepting_new_patients?
     status_mask == 1
+  end
+  
+  def accepting_with_conditions?
+    status_mask == 11
   end
 
   def follow_up_only?

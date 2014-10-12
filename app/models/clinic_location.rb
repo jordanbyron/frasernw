@@ -3,7 +3,7 @@ class ClinicLocation < ActiveRecord::Base
   attr_accessible :clinic_id, :phone, :phone_extension, :fax, :contact_details, :sector_mask, :url, :public_email, :email, :wheelchair_accessible_mask, :schedule_attributes, :location_attributes, :attendances_attributes, :location_opened
 
   belongs_to :clinic
-  has_one :location, :as => :locatable
+  has_one :location, :as => :locatable, :dependent => :destroy
   accepts_nested_attributes_for :location
   
   has_one :schedule, :as => :schedulable, :dependent => :destroy

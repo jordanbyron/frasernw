@@ -380,8 +380,11 @@
   {
     ul.nav-tabs
     {
-      height: 34px;
-      background: $FNW_BLUE_GRAY url(/img/tab-background.gif) repeat-x;
+      height: auto;
+      background-color: $FNW_BLUE_GRAY;
+      background-image: url(/img/tab-background-half.gif), url(/img/tab-background-half.gif);
+      background-position: left top, left bottom;
+      background-repeat: repeat-x, repeat-x;
       margin: 0 0-$FNW_BODY_BREATHING 4px 0-$FNW_BODY_BREATHING ;
       padding: 0;
       border: none;

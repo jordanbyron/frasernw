@@ -162,9 +162,14 @@ LIMITED_ROLE_HASH = {
     end
   end
 
-  # returns true when a user referral_city matches with an inputted division's cities
-  def shares_local_referral_city_with_division?(divisions)
-   !( divisions.each{|d| d.referral_cities}  &  self.divisions.each{|d| d.referral_cities} ).blank?
+  # returns true when a user has an overlapping referral_city from a given array of cities (e.g. specialist.cities / clinic.cities)
+  def shares_local_referral_city?(cities)
+    !(cities & self.divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
+  end
+
+  # returns true if a user does not have an overlapping referral_city from a given array of cities (e.g. specialist.cities / clinic.cities)
+  def does_not_share_local_referral_city?(cities)
+    (cities & self.divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
   end
 
   def owns(specializations)

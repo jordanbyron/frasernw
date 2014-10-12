@@ -69,6 +69,10 @@ group :development, :test do
   gem 'awesome_print'
 end
 
+group :development do
+  gem 'pry-rails' # loads pry by default with rails c
+end
+
 gem 'ancestry'
 gem 'mechanize'
 gem 'validates_email_format_of'
