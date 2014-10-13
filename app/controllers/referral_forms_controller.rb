@@ -3,7 +3,15 @@ class ReferralFormsController < ApplicationController
 
   def index
     user_divisions = current_user_divisions
-    @referral_forms = ReferralForm.all.reject{ |rf| rf.referrable.blank? || rf.referrable.not_available? || !rf.in_divisions(user_divisions)  }
+    
+    @referral_forms = []
+    
+    Specialization.all.each do |specialization|
+      cities = current_user.divisions.map{ |d| d.local_referral_cities_for_specialization(specialization) }.flatten.uniq
+      @referral_forms += specialization.specialists.in_cities(cities).map{ |s| s.referral_forms }.flatten.uniq
+      @referral_forms += specialization.clinics.in_cities(cities).map{ |c| c.referral_forms }.flatten.uniq
+    end
+    
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 end
