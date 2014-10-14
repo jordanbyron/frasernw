@@ -752,6 +752,8 @@ ActiveRecord::Schema.define(:version => 20140916023910) do
     t.datetime "updated_at"
   end
 
+  add_index "subscriptions", ["user_id"], :name => "index_subscriptions_on_user_id"
+
   create_table "user_cities", :force => true do |t|
     t.integer  "user_id"
     t.integer  "city_id"

@@ -1,8 +1,7 @@
 class CreateSubscriptions < ActiveRecord::Migration
   def change
     create_table :subscriptions do |t|
-
-     t.references :user, index: true
+     t.references :user
      t.string :classification
      t.boolean :content_item
      t.boolean :news_item
@@ -10,7 +9,8 @@ class CreateSubscriptions < ActiveRecord::Migration
      t.string :news_type
      t.string :interval
 
-      t.timestamps
+     t.timestamps
     end
+    add_index :subscriptions, :user_id
   end
 end
