@@ -28,6 +28,9 @@ Frasernw::Application.configure do
   
   #imagemagick path
   Paperclip.options[:command_path] = "/usr/local/bin/"
+
+  #kelseydevnote: added to find bad queries
+  Rails.application.middleware.use Oink::Middleware
 end
 
 ActionMailer::Base.smtp_settings = {

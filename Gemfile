@@ -71,6 +71,7 @@ end
 
 group :development do
   gem 'pry-rails' # loads pry by default with rails c
+  gem 'oink'
 end
 
 gem 'ancestry'

@@ -132,6 +132,7 @@ GEM
       fog (>= 0.7.2)
       heroku (>= 2.1.4)
     hike (1.2.1)
+    hodel_3000_compliant_logger (0.1.1)
     hpricot (0.8.6)
     htmlentities (4.3.1)
     http-cookie (1.0.2)
@@ -180,6 +181,9 @@ GEM
     nifty-generators (0.4.6)
     nokogiri (1.5.0)
     ntlm-http (0.1.1)
+    oink (0.10.1)
+      activerecord
+      hodel_3000_compliant_logger
     paper_trail (2.4.0)
       rails (~> 3)
     paperclip (2.7.0)
@@ -324,6 +328,7 @@ DEPENDENCIES
   nested_form!
   newrelic_rpm
   nifty-generators
+  oink
   paper_trail (~> 2)
   paperclip (~> 2.7)
   pg
