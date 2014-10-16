@@ -15,10 +15,10 @@ end
 # gem 'sass-rails', "~> 3.1.0"
 # gem 'coffee-script'
 # gem 'uglifier'
-gem "sass-rails"
 
 #added for rails 3.2 upgrade
 group :assets do
+  gem "sass-rails"
   gem 'coffee-rails', '~> 3.2.2'
   gem 'uglifier',     '>= 1.0.3'
 end
