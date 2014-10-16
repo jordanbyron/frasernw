@@ -1,5 +1,6 @@
 class SubscriptionsController < ApplicationController
- authorize_resource :class => false
+ #authorize_resource :class => false
+ load_and_authorize_resource
 
   # GET /subscriptions
   # GET /subscriptions.json
@@ -29,7 +30,8 @@ class SubscriptionsController < ApplicationController
   # GET /subscriptions/new
   # GET /subscriptions/new.json
   def new
-    @subscription = Subscription.new
+    @user = current_user
+    @subscription = Subscription.new(user_id: @user.id)
 
     respond_to do |format|
       format.html # new.html.erb

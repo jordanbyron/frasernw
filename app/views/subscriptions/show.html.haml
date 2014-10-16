@@ -1,6 +1,7 @@
-- if @subscription.nil? ||  !@subscription.present?
+- if !@subscription.nil? ||  @subscription.present?
   %p#notice= notice
-
+  = @subscription.id
+  = @subscription.classification
   = link_to 'Edit', edit_subscription_path(@subscription)
   \|
   = link_to 'Back', subscriptions_path
