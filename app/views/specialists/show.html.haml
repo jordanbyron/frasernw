@@ -242,8 +242,8 @@
                 
               - if @specialist.required_investigations.present?
                 %p.space
-                  %strong Required investigations
-                  for all patients:
+                  %strong Required information / investigations
+                  for all referrals:
                   = @specialist.required_investigations.end_with_period.convert_newlines_to_br
 
               -if @specialist.waittime.present?
