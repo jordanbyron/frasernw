@@ -67,6 +67,11 @@ class Hospital < ActiveRecord::Base
     return nil
   end
   
+  def short_address
+    return "" if location.blank?
+    return location.short_address
+  end
+  
   def token
     if self.saved_token
       return self.saved_token
