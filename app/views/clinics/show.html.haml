@@ -151,8 +151,8 @@
                 
               - if @clinic.required_investigations.present?
                 %p.space
-                  %strong Required investigations
-                  for all patients:
+                  %strong Required investigations / investigations
+                  for all referrals:
                   = @clinic.required_investigations.end_with_period.convert_newlines_to_br
                 
               -if @clinic.waittime.present?
