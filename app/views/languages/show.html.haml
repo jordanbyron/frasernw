@@ -33,8 +33,8 @@
 
   %h2= @language.name
   
-- specialists = @language.specialists.reject{ |s| s.in_progress_for_divisions(Division.all) || !s.show_in_table? }
-- clinics = @language.clinics.reject{ |c| c.in_progress_for_divisions(Division.all) || !c.show_in_table? }
+- specialists = @language.specialists.reject{ |s| s.in_progress || !s.show_in_table? }
+- clinics = @language.clinics.reject{ |c| c.in_progress || !c.show_in_table? }
 
 - has_specialists = specialists.length > 0
 - has_clinics = clinics.length > 0

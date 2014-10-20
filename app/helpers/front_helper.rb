@@ -21,10 +21,13 @@ module FrontHelper
         if version.item_type == "Specialist"
           
           specialist = version.item
-          next if specialist.blank? || specialist.in_progress_for_divisions(divisions)
-          specialist_divisions = specialist.cities_for_front_page.map{ |city| city.divisions }.flatten.uniq
-          next if (specialist_divisions & divisions).blank?
-          
+          specialist_cities = specialist.cities_for_front_page.flatten.uniq
+
+          next if specialist.blank? || specialist.in_progress
+          #next if current_user.does_not_share_local_referral_city?(specialist_cities)
+          next if (specialist_cities & divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
+ 
+
           if version.event == "update"
           
             if specialist.moved_away?
@@ -62,13 +65,15 @@ module FrontHelper
         elsif version.item_type == "SpecialistOffice"
         
           specialist_office = version.item
-          next if specialist_office.specialist.blank? || specialist_office.specialist.in_progress_for_divisions(divisions)
+          next if specialist_office.specialist.blank? || specialist_office.specialist.in_progress
           
           specialist = specialist_office.specialist
           
-          specialist_divisions = specialist.cities_for_front_page.map{ |city| city.divisions }.flatten.uniq
-          next if (specialist_divisions & divisions).blank?
-          
+          specialist_cities = specialist.cities_for_front_page.flatten.uniq
+          #next if current_user.does_not_share_local_referral_city?(specialist_cities)
+          next if (specialist_cities & divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
+
+
           if (["create", "update"].include? version.event) && specialist.accepting_new_patients? && specialist_office.opened_recently?
             
             if (version.event == "update")
@@ -87,8 +92,9 @@ module FrontHelper
         elsif version.item_type == "ClinicLocation"
         
           clinic_location = version.item
-          next if clinic_location.clinic.blank? || clinic_location.clinic.in_progress_for_divisions(divisions) || (clinic_location.clinic.divisions && divisions).blank?
-          
+          next if clinic_location.clinic.blank? || clinic_location.clinic.in_progress #devnoteperformance: in_progress query creates 13 ActiveRecord Selects
+          #next if current_user.does_not_share_local_referral_city?(clinic_location.clinic.cities)
+          next if (clinic_location.clinic.cities & divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
           clinic = clinic_location.clinic
           
           if (["create", "update"].include? version.event) && clinic.accepting_new_patients? && clinic_location.opened_recently?
@@ -116,5 +122,4 @@ module FrontHelper
     #mix in the news updates with the automatic updates
     return automated_events.merge(manual_events).values.sort{ |a, b| b[0] <=> a[0] }.map{ |x| x[1] }
   end
-  
 end

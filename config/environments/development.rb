@@ -11,7 +11,7 @@ Frasernw::Application.configure do
   ##
 
   # turn off asset pipline
-  config.assets.debug = false
+  config.assets.debug = true
 
   # Do not compress assets
   config.assets.compress = false

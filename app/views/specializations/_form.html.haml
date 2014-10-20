@@ -1,3 +1,17 @@
+%script{"type" => "text/javascript"}
+  :plain
+    function setContentCategoryVisibility(select, division_id)
+    {
+      if ( $(select).val() == 3 )
+      {
+        $("#open_to_sc_category_" + division_id).show();
+      }
+      else
+      {
+        $("#open_to_sc_category_" + division_id).hide();
+      }
+    }
+
 = simple_nested_form_for @specialization, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
@@ -18,7 +32,10 @@
     - content_owner_id = specialization_option.present? && specialization_option.content_owner.present? ? specialization_option.content_owner.id : nil
     - is_new = specialization_option.present? && specialization_option.is_new
     - in_progress = specialization_option.present? && specialization_option.in_progress
-    - open_to_clinic_tab = specialization_option.present? && specialization_option.open_to_clinic_tab
+    - open_to_type = specialization_option.present? && specialization_option.open_to_type
+    - open_to_sc_category_id = specialization_option.present? && specialization_option.open_to_sc_category_id
+    - content_categories = ScCategory.specialty.map{ |category| [category.name, category.id] }
+    - content_categories_id = specialization_option.present? && specialization_option.open_to_sc_category.present? ? specialization_option.open_to_sc_category.id : nil
     %hr
     %h4=division.name
     .control-group
@@ -43,9 +60,17 @@
         = check_box_tag "is_new[#{division.id}]", "is_new[#{division.id}]", is_new, :name => "is_new[#{division.id}]"
     .control-group
       %label.control-label
-        Open to Clinic Tab
+        Open to
       .controls
-        = check_box_tag "open_to_clinic_tab[#{division.id}]", "open_to_clinic_tab[#{division.id}]", open_to_clinic_tab, :name => "open_to_clinic_tab[#{division.id}]"
+        = select_tag "open_to_type[#{division.id}]", options_from_collection_for_select(SpecializationOption::OPEN_TO_HASH, :first, :last, open_to_type), :name => "open_to_type[#{division.id}]", :class => "select"
+        = select_tag "open_to_sc_category[#{division.id}]", options_for_select(content_categories, content_categories_id), :name => "open_to_sc_category[#{division.id}]", :class => "select"
+      
+    %script{"type" => "text/javascript"}
+      :plain
+        $(document).ready(function() { 
+          $("#open_to_type_#{division.id}").each( function() { setContentCategoryVisibility(this, #{division.id}) });
+          $("#open_to_type_#{division.id}").live("change", function() { setContentCategoryVisibility(this, #{division.id}) });
+        });
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

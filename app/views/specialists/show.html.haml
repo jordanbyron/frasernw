@@ -45,7 +45,7 @@
             %h3.specialty_links
               - if @specialist.is_gp
                 GP with a focus in
-              - self_in_progress = @specialist.in_progress_for_divisions(@specialist.divisions)
+              - self_in_progress = @specialist.in_progress
               = @specialist.specializations.reject{ |s| !self_in_progress && s.fully_in_progress_for_divisions(@specialist.divisions) }.map{ |s| "<a href='#{specialization_path(s)}' class='#{ s.fully_in_progress_for_divisions(@specialist.divisions) ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
             - if @specialist.sex? && @specialist.billing_number_padded.present?
               %h5= " #{@specialist.sex}, MSP ##{@specialist.billing_number_padded}"

@@ -54,7 +54,7 @@
     $(document).ready(function() { 
     var has_specialists = false;
     var has_clinics = false;
-    var open_to_clinics = #{procedure_specialization.specialization.open_to_clinic_tab_for_divisions(current_user_divisions) ? "true" : "false"};
+    var open_to_clinics = #{procedure_specialization.specialization.open_to_tab_for_divisions(current_user_divisions) == "clinics" ? "true" : "false"};
     = render 'specializations/global_lookup.js', :specializations => procedure_specializations.map{|ps| ps.specialization}
     - current_user_cities_for_specializations(@procedure.specializations).each do |city|
       = render 'specializations/city_lookup.js', :city => city, :specializations => procedure_specializations.map{|ps| ps.specialization}, :other => false
@@ -243,7 +243,7 @@
                         Expand Search Area
                       #specialist-filter-cities.collapsable.collapse
                         .filter-group-content
-                          - City.all.each do |c|
+                          - City.not_hidden.each do |c|
                             %label.half
                               = check_box_tag c.id, c.id, false, :class => "sct", :id => "city_s_#{c.id}"
                               = c.name
@@ -412,7 +412,7 @@
                         Expand Search Area
                       #clinic-filter-cities.collapsable.collapse
                         .filter-group-content
-                          - City.all.each do |c|
+                          - City.not_hidden.each do |c|
                             %label.half
                               = check_box_tag c.id, c.id, false, :class => "cct", :id => "city_c_#{c.id}"
                               = c.name

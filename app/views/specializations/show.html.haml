@@ -214,7 +214,7 @@
                         Expand Search Area
                       #specialist-filter-cities.collapsable.collapse
                         .filter-group-content
-                          - City.all.each do |c|
+                          - City.not_hidden.each do |c|
                             %label.half
                               = check_box_tag c.id, c.id, false, :class => "sct", :id => "city_s_#{c.id}"
                               = c.name
@@ -429,7 +429,7 @@
                         Expand Search Area
                       #clinic-filter-cities.collapsable.collapse
                         .filter-group-content
-                          - City.all.each do |c|
+                          - City.not_hidden.each do |c|
                             %label.half
                               = check_box_tag c.id, c.id, false, :class => "cct", :id => "city_c_#{c.id}"
                               = c.name

@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(:version => 20140517162420) do
     t.integer  "province_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "hidden",      :default => false
   end
 
   add_index "cities", ["province_id"], :name => "index_cities_on_province_id"
@@ -701,10 +702,12 @@ ActiveRecord::Schema.define(:version => 20140517162420) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "division_id"
-    t.boolean  "in_progress",        :default => false
-    t.boolean  "open_to_clinic_tab", :default => false
-    t.boolean  "is_new",             :default => false
+    t.boolean  "in_progress",            :default => false
+    t.boolean  "open_to_clinic_tab_old", :default => false
+    t.boolean  "is_new",                 :default => false
     t.integer  "content_owner_id"
+    t.integer  "open_to_type",           :default => 1
+    t.integer  "open_to_sc_category_id"
   end
 
   create_table "specializations", :force => true do |t|

@@ -11,7 +11,7 @@
  *= require ./all/frasernw
  *= require ./all/bootstrap.responsive
  *= require ./all/chosen
- *= require dataTables/jquery.dataTables.bootstrap
+ *= require dataTables/bootstrap/2/jquery.dataTables.bootstrap
  *= require_tree ./all 
  *= require vendor
 */

@@ -4,6 +4,7 @@
 
   = f.input :name
   = f.association :province, as: :select, collection: Province.all(:order => "name ASC"), :include_blank => true
+  = f.input :hidden
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
