@@ -13,7 +13,9 @@
       Divisions to receive updates from:
     = f.association :divisions, as: :check_boxes, collection: Division.all, label_method: :name, value_method: :id, presence: true, required: true, label: "Select a division"
     = simple_fields_for :subscription_news_item_types do |n|
-      = n.input :news_item_type, as: :check_boxes, collection: NewsItem::TYPE_HASH.map{|k, v| [k,v]}, label_method: :last, value_method: :first, label: false, label: "pick news item types"
+      = n.input :news_item_type, as: :check_boxes, collection: NewsItem::TYPE_HASH, label_method: :last, value_method: :first, label: false, label: "pick news item types"
+
+      = n.input :type_mask, as: :select, collection: ScItem::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
 
     %h2
       Receive News Updates on these topics:
