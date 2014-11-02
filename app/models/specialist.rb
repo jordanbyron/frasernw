@@ -194,7 +194,7 @@ class Specialist < ActiveRecord::Base
       offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
     elsif hospital_or_clinic_only?
       (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq
-    elsif not_responded? || purposely_not_yet_surveyed?
+    elsif not_responded? || purposely_not_yet_surveyed? || hospital_or_clinic_referrals_only?
       (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? }.uniq
     else
       []
@@ -237,12 +237,18 @@ class Specialist < ActiveRecord::Base
     end
   end
   
+  CATEGORIZATION_HASH_1    = "Responded to survey"
+  CATEGORIZATION_HASH_2    = "Not responded to survey"
+  CATEGORIZATION_HASH_3    = "Only works out of hospitals or clinics"
+  CATEGORIZATION_HASH_5    = "Only accepts referrals through hospitals or clinics"
+  CATEGORIZATION_HASH_4    = "Purposely not yet surveyed"
+  
   CATEGORIZATION_HASH = {
-    1 => "Responded to survey",
-    2 => "Not responded to survey",
-    3 => "Only works out of hospitals or clinics",
-    5 => "Only accepts referrals through hospitals or clinics",
-    4 => "Purposely not yet surveyed"
+    1 => CATEGORIZATION_HASH_1,
+    2 => CATEGORIZATION_HASH_2,
+    3 => CATEGORIZATION_HASH_3,
+    5 => CATEGORIZATION_HASH_5,
+    4 => CATEGORIZATION_HASH_4
   }
   
   def responded?
