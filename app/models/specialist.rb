@@ -184,6 +184,8 @@ class Specialist < ActiveRecord::Base
       return o.city
     elsif hospital_or_clinic_only?
       (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq.first
+    elsif hospital_or_clinic_referrals_only?
+      (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? }.uniq.first
     else
       nil
     end
@@ -215,6 +217,8 @@ class Specialist < ActiveRecord::Base
       offices.map{ |o| o.city }.reject{ |c| c.blank? || c.hidden? }.uniq
     elsif hospital_or_clinic_only?
       (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| (i == nil) || i.hidden? }.uniq
+    elsif hospital_or_clinic_referrals_only?
+      (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? || c.hidden? }.uniq
     else
       []
     end
@@ -263,16 +267,16 @@ class Specialist < ActiveRecord::Base
     categorization_mask == 3
   end
   
-  def hospital_or_clinic_referrals_only?
-    categorization_mask == 5
-  end
-  
   def purposely_not_yet_surveyed?
     categorization_mask == 4
   end
   
+  def hospital_or_clinic_referrals_only?
+    categorization_mask == 5
+  end
+  
   def show_in_table?
-    not_responded? || hospital_or_clinic_only? || (responded? && !unavailable_for_a_while?)
+    not_responded? || hospital_or_clinic_only? || hospital_or_clinic_referrals_only? || (responded? && !unavailable_for_a_while?)
   end
 
   def show_wait_time_in_table?
