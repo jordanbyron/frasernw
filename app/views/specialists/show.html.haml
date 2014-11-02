@@ -18,7 +18,8 @@
 = render 'partials/specialization_nav', :specialization => specialization, :selected => 'specialists'
    
 - specialist_offices = @specialist.specialist_offices.reject{ |specialist_office| specialist_office.empty? }
-     
+- has_office = specialist_offices.length > 0
+
 .content-wrapper
 
   - if @is_version
@@ -110,6 +111,35 @@
                 %p.space.no_indent
                   %strong Clinic associations:
                   != @specialist.clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'>#{clinic.name}</a>" }.to_sentence
+              
+            - elsif @specialist.hospital_or_clinic_referrals_only?
+            
+              - show_areas_of_practice = true
+              - show_details = true
+
+              - hospital_count = @specialist.hospitals.length
+              - clinic_count = @specialist.clinics.length
+
+              %p.space.no_indent
+                %i{:class => @specialist.status_class}
+                - if hospital_count > 0 && clinic_count > 0
+                  %strong This physician only accepts referrals through #{ hospital_count > 1 ? "hospitals" : "a hospital"} and #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through these locations.
+                - elsif clinic_count > 0
+                  %strong This physician only accepts referrals through #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
+                - elsif hospital_count > 0
+                  %strong This physician only accepts referrals through #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
+                - else
+                  %strong This physician only accepts referrals through hospitals and / or clinics, but we do not yet have data on which ones.
+
+                - if has_office
+                  %p.space.no_indent
+                    This physician also sees their own patients for ongoing care at their #{ specialist_offices.length > 1 ? "offices" : "office"} listed below.
+
+                
+              - if @specialist.hospital_clinic_details.present?
+                %p.space.no_indent
+                  %strong Details:
+                  = @specialist.hospital_clinic_details
                 
             - else
             
@@ -131,10 +161,6 @@
           .headline-footer
           
           - if show_details
-          
-            - has_office = false
-            - @specialist.specialist_offices.each do |specialist_office|
-              - has_office = true if not specialist_office.empty?
               
             - if has_office || @specialist.languages.present? || @specialist.interpreter_available
             

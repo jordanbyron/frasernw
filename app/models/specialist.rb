@@ -241,6 +241,7 @@ class Specialist < ActiveRecord::Base
     1 => "Responded to survey",
     2 => "Not responded to survey",
     3 => "Only works out of hospitals or clinics",
+    5 => "Only accepts referrals through hospitals or clinics",
     4 => "Purposely not yet surveyed"
   }
   
@@ -254,6 +255,10 @@ class Specialist < ActiveRecord::Base
   
   def hospital_or_clinic_only?
     categorization_mask == 3
+  end
+  
+  def hospital_or_clinic_referrals_only?
+    categorization_mask == 5
   end
   
   def purposely_not_yet_surveyed?
@@ -333,7 +338,7 @@ class Specialist < ActiveRecord::Base
       return STATUS_CLASS_UNKNOWN
     elsif purposely_not_yet_surveyed?
       return STATUS_CLASS_BLANK
-    elsif hospital_or_clinic_only?
+    elsif hospital_or_clinic_only? || hospital_or_clinic_referrals_only?
       return STATUS_CLASS_EXTERNAL
     elsif accepting_with_limitations?
       return STATUS_CLASS_LIMITATIONS

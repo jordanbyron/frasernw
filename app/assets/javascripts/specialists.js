@@ -171,16 +171,26 @@ $(".scheduled").live("change", scheduled_changed)
 
 var specialist_categorization_changed = function()
 {
-  if ($(this).val() == 1 || $(this).val() == 2)
+  //these map to specialist CATEGORIZATION_HASH
+  if ($(this).val() == 1 || $(this).val() == 2 || $(this).val() == 5)
   {
     //surveyed (may or may not have fully responded)
     $("#section_contact").show();
     $("#section_moa").show();
-    $("#section_status").show();
+    if ($(this).val() == 5)
+    {
+      //if we are "only take referrals through hospital or clinic" then our status should be determined by that
+      $("#section_status").hide();
+      $("#section_hospital_clinic_details").show();
+    }
+    else
+    {
+      $("#section_status").show();
+      $("#section_hospital_clinic_details").hide();
+    }
     $("#section_aop").show();
     $("#section_referrals").show();
     $("#section_for_patients").show();
-    $("#section_hospital_clinic_details").hide();
     $("#section_associations").show();
     $("#section_admin").show();
   }
