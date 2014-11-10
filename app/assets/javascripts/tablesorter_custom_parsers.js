@@ -51,16 +51,18 @@ $.tablesorter.addParser({
         case("1"): //available
         case("7"): //conditional (sort with available)
           return 0;
-        case("3"): //warning
+        case("7"): //limitations
           return 1;
-        case("5"): //external
+        case("3"): //warning
           return 2;
-        case("2"): //unavailable
+        case("5"): //external
           return 3;
-        case("4"): //unknown
+        case("2"): //unavailable
           return 4;
-        default:
+        case("4"): //unknown
           return 5;
+        default:
+          return 6;
       }
 		}, 
     // set type, either numeric or text 

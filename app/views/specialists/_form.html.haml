@@ -532,7 +532,7 @@
   
     %h3 Associations
     
-    = f.association :hospitals, as: :check_boxes, collection: Hospital.all(:order => "name ASC") 
+    = f.association :hospitals, as: :check_boxes, collection: Hospital.all(:order => "name ASC").map{ |h| ["#{h.name} - #{h.short_address}", h.id] }
     
     = f.association :clinic_locations, as: :check_boxes, collection: @specializations_clinic_locations
   
