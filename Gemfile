@@ -1,8 +1,9 @@
 source 'https://rubygems.org'
 
 ruby "1.9.3"
+
 gem 'nokogiri'
-#gem 'rails', '3.1.10'
+#gem 'rails', '3.1.12'
 gem 'rails', '3.2.18'
 
 gem 'pg'
@@ -23,11 +24,10 @@ group :assets do
   gem 'uglifier',     '>= 1.0.3'
 end
 
-gem 'jquery-rails'
+gem 'jquery-rails', "~> 1.0.16"
 #gem 'haml-rails'
 gem "haml-rails", "~> 0.4.0"
 gem 'html2haml'
-
 
 gem 'authlogic'
 gem 'paper_trail', '~> 2'
@@ -96,6 +96,7 @@ gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
 gem 'lazy_high_charts'
 
 gem 'jquery-datatables-rails'
+
 
 #New Relic guide recommends placing New Relic gem at bottom of Gemfile
 group :development, :production do
