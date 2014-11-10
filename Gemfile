@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby "1.9.3"
+ruby "2.1.2"
 
 gem 'nokogiri'
 #gem 'rails', '3.1.12'
