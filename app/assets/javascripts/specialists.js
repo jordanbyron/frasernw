@@ -182,14 +182,15 @@ var specialist_categorization_changed = function()
       //if we are "only take referrals through hospital or clinic" then our status should be determined by that
       $("#section_status").hide();
       $("#section_hospital_clinic_details").show();
+      $("#section_referrals").hide();
     }
     else
     {
       $("#section_status").show();
       $("#section_hospital_clinic_details").hide();
+      $("#section_referrals").show();
     }
     $("#section_aop").show();
-    $("#section_referrals").show();
     $("#section_for_patients").show();
     $("#section_associations").show();
     $("#section_admin").show();
