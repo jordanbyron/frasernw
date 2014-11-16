@@ -238,7 +238,7 @@
                 %p
                   Interpreter available upon request.
             
-            - if @specialist.accepts_referrals_via.present? || @specialist.responds_via.present? || @specialist.referral_form_mask != 3 || @specialist.required_investigations.present? || @specialist.waittime.present? || @specialist.lagtime.present? || @specialist.patient_can_book_mask != 3
+            - if !@specialist.hospital_or_clinic_referrals_only? && (@specialist.accepts_referrals_via.present? || @specialist.responds_via.present? || @specialist.referral_form_mask != 3 || @specialist.required_investigations.present? || @specialist.waittime.present? || @specialist.lagtime.present? || @specialist.patient_can_book_mask != 3)
             
               %h6 Referrals
 
@@ -303,7 +303,7 @@
               - elsif @specialist.patient_can_book_mask == 2
                 %p.space This office does not accept direct calls from patients after referral to book their own appointments.
             
-            - if @specialist.red_flags.present? || @specialist.urgent_referrals_via.present?
+            - if !@specialist.hospital_or_clinic_referrals_only? && (@specialist.red_flags.present? || @specialist.urgent_referrals_via.present?)
               %h6 Urgent Referrals
               
               - if @specialist.urgent_referrals_via.present?
