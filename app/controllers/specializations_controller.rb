@@ -34,6 +34,11 @@ class SpecializationsController < ApplicationController
         so.is_new = params[:is_new].present? && params[:is_new]["#{division.id}"].present?
         so.open_to_type = params[:open_to_type]["#{division.id}"]
         so.open_to_sc_category = (params[:open_to_type]["#{division.id}"] == SpecializationOption::OPEN_TO_SC_CATEGORY.to_s) ? ScCategory.find(params[:open_to_sc_category_id]["#{division.id}"]) : nil
+        so.show_specialist_categorization_1 = params[:show_specialist_categorization_1].present? && params[:show_specialist_categorization_1]["#{division.id}"].present?
+        so.show_specialist_categorization_2 = params[:show_specialist_categorization_2].present? && params[:show_specialist_categorization_2]["#{division.id}"].present?
+        so.show_specialist_categorization_3 = params[:show_specialist_categorization_3].present? && params[:show_specialist_categorization_3]["#{division.id}"].present?
+        so.show_specialist_categorization_4 = params[:show_specialist_categorization_4].present? && params[:show_specialist_categorization_4]["#{division.id}"].present?
+        so.show_specialist_categorization_5 = params[:show_specialist_categorization_5].present? && params[:show_specialist_categorization_5]["#{division.id}"].present?
         so.save
       end
       redirect_to @specialization, :notice => "Successfully created specialty."
@@ -67,6 +72,11 @@ class SpecializationsController < ApplicationController
         so.is_new = params[:is_new].present? && params[:is_new]["#{division.id}"].present?
         so.open_to_type = params[:open_to_type]["#{division.id}"]
         so.open_to_sc_category = (params[:open_to_type]["#{division.id}"] == SpecializationOption::OPEN_TO_SC_CATEGORY.to_s) ? ScCategory.find(params[:open_to_sc_category]["#{division.id}"]) : nil
+        so.show_specialist_categorization_1 = params[:show_specialist_categorization_1].present? && params[:show_specialist_categorization_1]["#{division.id}"].present?
+        so.show_specialist_categorization_2 = params[:show_specialist_categorization_2].present? && params[:show_specialist_categorization_2]["#{division.id}"].present?
+        so.show_specialist_categorization_3 = params[:show_specialist_categorization_3].present? && params[:show_specialist_categorization_3]["#{division.id}"].present?
+        so.show_specialist_categorization_4 = params[:show_specialist_categorization_4].present? && params[:show_specialist_categorization_4]["#{division.id}"].present?
+        so.show_specialist_categorization_5 = params[:show_specialist_categorization_5].present? && params[:show_specialist_categorization_5]["#{division.id}"].present?
         so.save
       end
       redirect_to @specialization, :notice  => "Successfully updated specialty."

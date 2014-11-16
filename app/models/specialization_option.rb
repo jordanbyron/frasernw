@@ -1,6 +1,6 @@
 class SpecializationOption < ActiveRecord::Base
-  attr_accessible :specialization, :owner, :content_owner, :division, :in_progress, :is_new, :open_to_clinic_tab_old, :open_to_type, :open_to_sc_category
-  
+  attr_accessible :specialization, :owner, :content_owner, :division, :in_progress, :is_new, :open_to_clinic_tab_old, :open_to_type, :open_to_sc_category, :show_specialist_categorization_1, :show_specialist_categorization_2, :show_specialist_categorization_3, :show_specialist_categorization_4, :show_specialist_categorization_5
+
   belongs_to :specialization
   belongs_to :owner, :class_name => "User"
   belongs_to :content_owner, :class_name => "User"
@@ -38,6 +38,16 @@ class SpecializationOption < ActiveRecord::Base
     else
       "specialists"
     end
+  end
+
+  def specialist_categorization_hash
+    categorization_hash = {}
+    categorization_hash[1] = Specialist::CATEGORIZATION_HASH_1 if show_specialist_categorization_1?
+    categorization_hash[2] = Specialist::CATEGORIZATION_HASH_2 if show_specialist_categorization_2?
+    categorization_hash[3] = Specialist::CATEGORIZATION_HASH_3 if show_specialist_categorization_3?
+    categorization_hash[4] = Specialist::CATEGORIZATION_HASH_4 if show_specialist_categorization_4?
+    categorization_hash[5] = Specialist::CATEGORIZATION_HASH_5 if show_specialist_categorization_5?
+    categorization_hash
   end
 
   OPEN_TO_SPECIALISTS = 1
