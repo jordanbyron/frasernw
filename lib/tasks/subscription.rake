@@ -5,7 +5,7 @@ namespace :pathways do
       # users.with_subscriptions.each do |user|
           # message_items = []
           # content_items.each do |ci|
-          # 
+          #
           # (user.subscription && subscription_preferences)
 
       # end
