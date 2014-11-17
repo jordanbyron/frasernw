@@ -184,6 +184,8 @@ class Specialist < ActiveRecord::Base
       return o.city
     elsif hospital_or_clinic_only?
       (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq.first
+    elsif hospital_or_clinic_referrals_only?
+      (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? }.uniq.first
     else
       nil
     end
@@ -194,7 +196,7 @@ class Specialist < ActiveRecord::Base
       offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
     elsif hospital_or_clinic_only?
       (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq
-    elsif not_responded? || purposely_not_yet_surveyed?
+    elsif not_responded? || purposely_not_yet_surveyed? || hospital_or_clinic_referrals_only?
       (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? }.uniq
     else
       []
@@ -215,11 +217,13 @@ class Specialist < ActiveRecord::Base
       offices.map{ |o| o.city }.reject{ |c| c.blank? || c.hidden? }.uniq
     elsif hospital_or_clinic_only?
       (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| (i == nil) || i.hidden? }.uniq
+    elsif hospital_or_clinic_referrals_only?
+      (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? || c.hidden? }.uniq
     else
       []
     end
   end
-    
+
   def divisions
     return cities.map{ |city| city.divisions }.flatten.uniq
   end
@@ -236,32 +240,43 @@ class Specialist < ActiveRecord::Base
       end
     end
   end
-  
+
+  CATEGORIZATION_HASH_1    = "Responded to survey"
+  CATEGORIZATION_HASH_2    = "Not responded to survey"
+  CATEGORIZATION_HASH_3    = "Only works out of hospitals or clinics"
+  CATEGORIZATION_HASH_5    = "Only accepts referrals through hospitals or clinics"
+  CATEGORIZATION_HASH_4    = "Purposely not yet surveyed"
+
   CATEGORIZATION_HASH = {
-    1 => "Responded to survey",
-    2 => "Not responded to survey",
-    3 => "Only works out of hospitals or clinics",
-    4 => "Purposely not yet surveyed"
+    1 => CATEGORIZATION_HASH_1,
+    2 => CATEGORIZATION_HASH_2,
+    3 => CATEGORIZATION_HASH_3,
+    5 => CATEGORIZATION_HASH_5,
+    4 => CATEGORIZATION_HASH_4
   }
-  
+
   def responded?
     categorization_mask == 1
   end
-  
+
   def not_responded?
     categorization_mask == 2
   end
-  
+
   def hospital_or_clinic_only?
     categorization_mask == 3
   end
-  
+
   def purposely_not_yet_surveyed?
     categorization_mask == 4
   end
-  
+
+  def hospital_or_clinic_referrals_only?
+    categorization_mask == 5
+  end
+
   def show_in_table?
-    not_responded? || hospital_or_clinic_only? || (responded? && !unavailable_for_a_while?)
+    not_responded? || hospital_or_clinic_only? || hospital_or_clinic_referrals_only? || (responded? && !unavailable_for_a_while?)
   end
 
   def show_wait_time_in_table?
@@ -272,15 +287,15 @@ class Specialist < ActiveRecord::Base
   def not_available?
     retired? || permanently_unavailable? || moved_away?
   end
-     
+
   def unavailable_for_a_while?
     (retired? || moved_away? || permanently_unavailable?) && (unavailable_from <= (Date.today - 2.years))
   end
-  
-  STATUS_HASH = { 
+
+  STATUS_HASH = {
     1 => "Accepting new referrals",
     11 => "Accepting limited new referrals",
-    2 => "Only doing follow up on previous patients", 
+    2 => "Only doing follow up on previous patients",
     4 => "Retired as of",
     5 => "Retiring as of",
     6 => "Unavailable between",
@@ -289,7 +304,7 @@ class Specialist < ActiveRecord::Base
     10 => "Moved away",
     7 => "Didn't answer"
   }
-  
+
   def status
     if retired?
       "Retired"
@@ -308,7 +323,7 @@ class Specialist < ActiveRecord::Base
       Specialist::STATUS_HASH[status_mask]
     end
   end
-  
+
   STATUS_CLASS_AVAILABLE    = "icon-ok icon-green"
   STATUS_CLASS_LIMITATIONS  = "icon-ok icon-orange"
   STATUS_CLASS_UNAVAILABLE  = "icon-remove icon-red"
@@ -316,7 +331,7 @@ class Specialist < ActiveRecord::Base
   STATUS_CLASS_UNKNOWN      = "icon-question-sign"
   STATUS_CLASS_EXTERNAL     = "icon-signout icon-blue"
   STATUS_CLASS_BLANK        = ""
-  
+
   #match clinic
   STATUS_CLASS_HASH = {
     STATUS_CLASS_AVAILABLE => 1,
@@ -327,13 +342,13 @@ class Specialist < ActiveRecord::Base
     STATUS_CLASS_BLANK => 6,
     STATUS_CLASS_LIMITATIONS => 7,
   }
-  
+
   def status_class
     if not_responded?
       return STATUS_CLASS_UNKNOWN
     elsif purposely_not_yet_surveyed?
       return STATUS_CLASS_BLANK
-    elsif hospital_or_clinic_only?
+    elsif hospital_or_clinic_only? || hospital_or_clinic_referrals_only?
       return STATUS_CLASS_EXTERNAL
     elsif accepting_with_limitations?
       return STATUS_CLASS_LIMITATIONS
@@ -352,15 +367,15 @@ class Specialist < ActiveRecord::Base
       return STATUS_CLASS_BLANK
     end
   end
-  
+
   def status_class_hash
     STATUS_CLASS_HASH[status_class]
   end
-  
+
   def accepting_new_patients?
     status_mask == 1
   end
-  
+
   def accepting_with_limitations?
     status_mask == 11
   end
@@ -368,27 +383,27 @@ class Specialist < ActiveRecord::Base
   def follow_up_only?
     status_mask == 2
   end
-  
+
   def retired?
     (status_mask == 4) || ((status_mask == 5) && (unavailable_from <= Date.today))
   end
-  
+
   def retiring?
     (status_mask == 5) && (unavailable_from > Date.today)
   end
-  
+
   def indefinitely_unavailable?
     status_mask == 8
   end
-  
+
   def permanently_unavailable?
     status_mask == 9
   end
-  
+
   def moved_away?
     status_mask == 10
   end
-  
+
   WAITTIME_HASH = { 
     1 => "Within one week", 
     2 => "1-2 weeks", 
@@ -404,11 +419,11 @@ class Specialist < ActiveRecord::Base
     12 => "2.5-3 years",
     13 => ">3 years"
   }
-  
+
   def waittime
     waittime_mask.present? ? Specialist::WAITTIME_HASH[waittime_mask] : ""
   end
-  
+
   LAGTIME_HASH = { 
     1 => "Book by phone when office calls for referral", 
     2 => "Within one week", 
@@ -425,21 +440,21 @@ class Specialist < ActiveRecord::Base
     13 => "2.5-3 years",
     14 => ">3 years"
   }
-  
+
   def lagtime
     Specialist::LAGTIME_HASH[lagtime_mask]
   end
-  
+
   BOOLEAN_HASH = { 
     1 => "Yes", 
     2 => "No", 
     3 => "Didn't answer", 
   }
-  
+
   def patient_can_book?
     patient_can_book_mask == 1
   end
-  
+
   def name
     if goes_by_name.present?
       "#{goes_by_name} (#{firstname}) #{lastname}"
@@ -447,33 +462,33 @@ class Specialist < ActiveRecord::Base
       "#{firstname} #{lastname}"
     end
   end
-  
+
   def formal_name
     "Dr. #{lastname}"
   end
-  
+
   SEX_HASH = { 
     1 => "Male", 
     2 => "Female", 
     3 => "Didn't answer", 
   }
-  
+
   def sex
     Specialist::SEX_HASH[sex_mask]
   end
-  
+
   def male?
     sex_mask == 1
   end
-  
+
   def female?
     sex_mask == 2
   end
-  
+
   def sex?
     sex_mask != 3
   end
-  
+
   def billing_number_padded
     if billing_number.present?
       "%05d" % billing_number
@@ -481,11 +496,11 @@ class Specialist < ActiveRecord::Base
       billing_number
     end
   end
-    
+
   def practice_limitations
     return practise_limitations
   end
-  
+
   def accepts_referrals_via
     if referral_phone && referral_fax && referral_other_details.present?
       output = "phone, fax, or #{referral_other_details}"
@@ -508,7 +523,7 @@ class Specialist < ActiveRecord::Base
     else
       output = ""
     end
-    
+
     if referral_clinic.present?
       through = "through <a class='ajax' href='/clinics/#{referral_clinic.id}'>#{referral_clinic.name}</a>"
       output = output.blank? ? through : "#{through}, or #{output}"
@@ -519,7 +534,7 @@ class Specialist < ActiveRecord::Base
       return output.punctuate
     end
   end
-  
+
   def responds_via
     if (not respond_by_phone) && (not respond_by_fax) && (not respond_by_mail) && (not respond_to_patient)
       return ""
@@ -541,7 +556,7 @@ class Specialist < ActiveRecord::Base
       else
         output = "mail to referring office"
       end
-      
+
       if respond_to_patient
         return output.capitalize_first_letter + ", and by directly contacting the patient."
       else
@@ -549,7 +564,7 @@ class Specialist < ActiveRecord::Base
       end
     end
   end
-  
+
   def urgent_referrals_via
     if urgent_phone && urgent_fax
       if urgent_other_details.present?
@@ -574,14 +589,14 @@ class Specialist < ActiveRecord::Base
     else
       output = ""
     end
-    
+
     if urgent_details.present?
       return "#{output.punctuate} #{urgent_details.convert_newlines_to_br.punctuate}".html_safe
     else
       return output.punctuate
     end
   end
-  
+
   def child_procedures(procedure)
     result = []
     procedure.procedure_specializations.each do |ps|
@@ -595,15 +610,15 @@ class Specialist < ActiveRecord::Base
   def opened_recently?
     specialist_offices.reject{ |so| !so.opened_recently? }.present?
   end
-  
+
   def open_saturday?
     specialist_offices.reject{ |so| !so.open_saturday }.present?
   end
-  
+
   def open_sunday?
     specialist_offices.reject{ |so| !so.open_sunday }.present?
   end
-  
+
   def new?
     (created_at > 3.week.ago.utc) && opened_recently?
   end
@@ -618,9 +633,9 @@ class Specialist < ActiveRecord::Base
   end
 
 private
-  
+
   def destroy_photo?
     self.photo.clear if @photo_delete == "1"
   end
-  
+
 end
