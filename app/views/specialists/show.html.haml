@@ -279,7 +279,9 @@
 
               -if @specialist.lagtime.present?
                 %p
-                  Average length of time to notify GP of a booking date:
+                  Average length of time to notify
+                  = @specialist.responds_to
+                  of a booking date:
                   %strong= @specialist.lagtime
                   
               - @specialist.capacities.specialist_wait_time.each do |capacity|
@@ -295,7 +297,9 @@
                           
                   -if capacity.lagtime.present?
                     %p
-                      Average length of time to notify GP of a booking date:
+                      Average length of time to notify 
+                      = @specialist.responds_to
+                      of a booking date:
                       %strong= capacity.lagtime
 
               - if @specialist.patient_can_book_mask == 1
