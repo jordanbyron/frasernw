@@ -98,6 +98,7 @@ gem 'lazy_high_charts'
 
 gem 'jquery-datatables-rails'
 
+gem 'rails_12factor'
 
 #New Relic guide recommends placing New Relic gem at bottom of Gemfile
 group :development, :production do
