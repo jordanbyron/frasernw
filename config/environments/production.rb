@@ -2,10 +2,12 @@ Frasernw::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
   # ExceptionNotifier rack middleware
-  Frasernw::Application.config.middleware.use ExceptionNotifier,
-    :email_prefix => "[mdpathway exception] ",
-    :sender_address => %{"Pathways" <system@mdpathwaysbc.com>},
-    :exception_recipients => %w{warneboldt@gmail.com}
+  Frasernw::Application.config.middleware.use ExceptionNotification::Rack,
+    :email => {
+      :email_prefix => "[mdpathway exception] ",
+      :sender_address => %{"Pathways" <system@mdpathwaysbc.com>},
+      :exception_recipients => %w{warneboldt@gmail.com}
+    }
 
   # Code is not reloaded between requests
   config.cache_classes = true
