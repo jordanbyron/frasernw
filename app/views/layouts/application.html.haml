@@ -15,7 +15,7 @@
       = stylesheet_link_tag "font-awesome-ie7.css", :media => 'screen, print'
     = stylesheet_link_tag "print", :media => 'print'
     = javascript_include_tag "application"
-    = javascript_include_tag '../livesearch'
+    %script{src: "../livesearch.js"}
     = csrf_meta_tag
     = yield(:head)
               
