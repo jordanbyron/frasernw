@@ -4,7 +4,7 @@ ruby "2.1.2"
 
 gem 'nokogiri'
 #gem 'rails', '3.1.12'
-gem 'rails', '3.2.18'
+gem 'rails', '3.2.21'
 
 gem 'pg'
 
