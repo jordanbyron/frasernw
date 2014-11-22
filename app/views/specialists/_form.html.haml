@@ -267,7 +267,9 @@
   %h3 General Information
 
   - categorization_hash = {}
-  - @specialist.specializations.map{ |sp| sp.specialization_options.for_divisions(@specialist.divisions) }.flatten.uniq.each{ |so| categorization_hash.merge!(so.specialist_categorization_hash) }
+  - categorization_divisions = @specialist.divisions.blank? ? current_user_divisions : @specialist.divisions
+  - categorization_specializations = @specialization.present? ? [@specialization] : @specialist.specializations
+  - categorization_specializations.map{ |sp| sp.specialization_options.for_divisions(categorization_divisions) }.flatten.uniq.each{ |so| categorization_hash.merge!(so.specialist_categorization_hash) }
 
   = f.input :firstname
   = f.input :lastname
