@@ -42,6 +42,14 @@ namespace :pathways do
       end
     end
   
+    task :procedures => :environment do
+      puts "Recaching procedures..."
+      Procedure.all.sort{ |a,b| a.id <=> b.id }.each do |p|
+        puts "Procedure #{p.id}"
+        expire_fragment procedure_path(s)
+      end
+    end
+  
     task :specialists => :environment do
       puts "Recaching specialists..."
       Specialist.all.sort{ |a,b| a.id <=> b.id }.each do |s|
@@ -136,7 +144,7 @@ namespace :pathways do
     end
 
     #purposeful order from least important to most important, to keep cache 'hot'
-    task :all => [:languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front] do
+    task :all => [:procedures, :languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front] do
       puts "All pages recached."
     end
   
