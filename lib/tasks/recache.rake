@@ -46,7 +46,7 @@ namespace :pathways do
       puts "Recaching procedures..."
       Procedure.all.sort{ |a,b| a.id <=> b.id }.each do |p|
         puts "Procedure #{p.id}"
-        expire_fragment procedure_path(s)
+        expire_fragment procedure_path(p)
       end
     end
   
