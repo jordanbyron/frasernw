@@ -141,8 +141,29 @@
                         %td
                               
                 #other_specialists.filter-others
-                    
-                    
+
+                #icon_key
+                  .title Icon Key
+                  %ul.no-marker
+                    %li
+                      %i.icon-ok.icon-green
+                      Accepting new referrals
+                    %li
+                      %i.icon-ok.icon-orange
+                      Accepting limited new referrals
+                    %li
+                      %i.icon-signout.icon-blue
+                      Only works out of, and possibly accepts referrals through, clinics and/or hospitals
+                    %li
+                      %i.icon-remove.icon-red
+                      Not accepting new referrals
+                    %li
+                      %i.icon-warning-sign.icon-orange
+                      Referral status will change soon
+                    %li
+                      %i.icon-question-sign
+                      Referral status is unknown
+
               .span3.offsethalf
                 .well.filter#specialist_filters
                   .title
@@ -303,6 +324,19 @@
                       %td
                       - if multiple_specialties
                         %td
+
+                #icon_key
+                  .title Icon Key
+                  %ul.no-marker
+                    %li
+                      %i.icon-ok.icon-green
+                      Accepting new referrals
+                    %li
+                      %i.icon-remove.icon-red
+                      Not accepting new referrals
+                    %li
+                      %i.icon-question-sign
+                      Referral status is unknown
                         
               .span3.offsethalf
                 .well.filter#clinic_filters
