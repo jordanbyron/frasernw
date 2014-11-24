@@ -219,6 +219,28 @@
                               = check_box_tag c.id, c.id, false, :class => "sct", :id => "city_s_#{c.id}"
                               = c.name
 
+                #icon_key
+                  .title Icon Key
+                  %ul.no-marker
+                    %li
+                      %i.icon-ok.icon-green
+                      Accepting new referrals
+                    %li
+                      %i.icon-ok.icon-orange
+                      Accepting limited new referrals
+                    %li
+                      %i.icon-remove.icon-red
+                      Not accepting new referrals
+                    %li
+                      %i.icon-signout.icon-blue
+                      Only works out of, and possibly accepts referrals through, clinics and/or hospitals
+                    %li
+                      %i.icon-warning-sign.icon-orange
+                      Referral status will change soon
+                    %li
+                      %i.icon-question-sign.icon-text
+                      Referral status is unknown
+
               %script{"type" => "text/javascript"}
                 :plain
                   $(document).ready(function() {
@@ -433,6 +455,19 @@
                             %label.half
                               = check_box_tag c.id, c.id, false, :class => "cct", :id => "city_c_#{c.id}"
                               = c.name
+
+                #icon_key
+                  .title Icon Key
+                  %ul.no-marker
+                    %li
+                      %i.icon-ok.icon-green
+                      Accepting new referrals
+                    %li
+                      %i.icon-remove.icon-red
+                      Not accepting new referrals
+                    %li
+                      %i.icon-question-sign.icon-text
+                      Referral status is unknown
 
               %script{"type" => "text/javascript"}
                 :plain
