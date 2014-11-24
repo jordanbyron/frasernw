@@ -1,6 +1,10 @@
 - user_divisions = current_user_divisions
 - user_cities_for_specialization = current_user_cities_for_specialization(@specialization)
 
+%script{"type" => "text/javascript"}
+  has_specialists = #{current_user_is_admin? ? "true" : "false"};
+  has_clinics = #{current_user_is_admin? ? "true" : "false"};
+
 - cache("specialization_#{@specialization.id}_content_cities_#{user_cities_for_specialization.map{|c| c.id}.join('_')}") do
   
   %script{"type" => "text/javascript"}
@@ -8,8 +12,6 @@
     filtering = null;
     should_show_others = false;
     $(document).ready(function() { 
-    has_specialists = #{current_user_is_admin? ? "true" : "false"};
-    has_clinics = #{current_user_is_admin? ? "true" : "false"};
     open_to = "#{@specialization.open_to_tab_for_divisions(user_divisions)}";
     = render 'global_lookup.js', :specializations => [@specialization]
     - user_cities_for_specialization.each do |city|
