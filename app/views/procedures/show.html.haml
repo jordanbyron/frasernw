@@ -52,8 +52,8 @@
     var filtering = null;
     var should_show_others = false;
     $(document).ready(function() { 
-    var has_specialists = false;
-    var has_clinics = false;
+    var has_specialists = #{current_user_is_admin? ? "true" : "false"};
+    var has_clinics = #{current_user_is_admin? ? "true" : "false"};
     var open_to_clinics = #{procedure_specialization.specialization.open_to_tab_for_divisions(current_user_divisions) == "clinics" ? "true" : "false"};
     = render 'specializations/global_lookup.js', :specializations => procedure_specializations.map{|ps| ps.specialization}
     - current_user_cities_for_specializations(@procedure.specializations).each do |city|
