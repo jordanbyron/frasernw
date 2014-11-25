@@ -535,6 +535,20 @@ class Specialist < ActiveRecord::Base
     end
   end
 
+  def responds_to
+    if respond_to_patient
+      if !respond_by_phone && !respond_by_fax && !respond_by_mail
+        return "patient"
+      else
+        return "GP and patient"
+      end
+    elsif !respond_by_phone && !respond_by_fax && !respond_by_mail
+      return "GP or patient"
+    else
+      return "GP"
+    end
+  end
+
   def responds_via
     if (not respond_by_phone) && (not respond_by_fax) && (not respond_by_mail) && (not respond_to_patient)
       return ""

@@ -43,6 +43,14 @@ namespace :pathways do
       end
     end
   
+    task :procedures => :environment do
+      puts "Recaching procedures..."
+      Procedure.all.sort{ |a,b| a.id <=> b.id }.each do |p|
+        puts "Procedure #{p.id}"
+        expire_fragment procedure_path(p)
+      end
+    end
+  
     task :specialists => :environment do
       puts "Recaching specialists..."
       Specialist.all.sort{ |a,b| a.id <=> b.id }.each do |s|
@@ -137,7 +145,7 @@ namespace :pathways do
     end
 
     #purposeful order from least important to most important, to keep cache 'hot'
-    task :all => [:languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front] do
+    task :all => [:procedures, :languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front] do
       puts "All pages recached."
     end
   
@@ -148,17 +156,18 @@ namespace :pathways do
       Specialization.all.each do |s|
         puts "Specialization #{s.name}"
         expire_fragment specialization_path(s)
-        
+
         #expire the grouped together cities
         User.all.map{ |u| City.for_user_in_specialization(u, s).map{ |c| c.id } }.uniq.each do |city_group|
-          puts "Cities #{city_group.join(' ')}"
           expire_fragment "specialization_#{s.id}_content_cities_#{city_group.join('_')}"
         end
-        
-        #expire the grouped together divisions
-        User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
+      end
+
+      #expire the grouped together divisions
+      User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
+        puts "Divisions #{division_group.join(' ')}"
+        Specialization.all.each do |s|
           expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
-          puts "Divisions #{division_group.join(' ')}"
         end
       end
     end

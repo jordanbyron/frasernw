@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140517162420) do
+ActiveRecord::Schema.define(:version => 20141116224225) do
 
   create_table "addresses", :force => true do |t|
     t.string   "address1"
@@ -373,8 +373,8 @@ ActiveRecord::Schema.define(:version => 20140517162420) do
     t.text     "body"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "show_start_date", :default => true
-    t.boolean  "show_end_date",   :default => true
+    t.boolean  "show_start_date", :default => false
+    t.boolean  "show_end_date",   :default => false
     t.integer  "type_mask"
     t.integer  "division_id"
   end
