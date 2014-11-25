@@ -16,12 +16,15 @@ class Subscription < ActiveRecord::Base
   has_many :specializations, through: :subscription_specializations
 
   accepts_nested_attributes_for :divisions
+  accepts_nested_attributes_for :sc_categories
   accepts_nested_attributes_for :specializations
   accepts_nested_attributes_for :subscription_news_item_types
   
   #Update Classifications
   NEWS_UPDATES = 1
   RESOURCE_UPDATES = 2
+
+  NEWS_ITEM_TYPE_HASH = NewsItem::TYPE_HASH
 
   UPDATE_CLASSIFICATION_HASH = {
     NEWS_UPDATES => "News Updates",
