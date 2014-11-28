@@ -22,17 +22,16 @@
 
     %h2
       Notify me when the following Resources change:
-    = f.input :item_type, collection: ScCategory.all, as: :check_boxes, label: false
-
+    =# f.input :item_type, collection: ScCategory.all, as: :check_boxes, label: false
     = f.association :sc_categories, as: :check_boxes, collection: ScCategory.all, label_method: :name, value_method: :id, presence: true
 
     %h2
-      Notify me of Updates to the following Specializations:
+      Notify me of Resource Updates to the following Specializations:
     = f.association :specializations, collection: Specialization.all, label_method: :name, value_method: :id, as: :check_boxes, presence: true, required: true, label: "Notify me about:"
 
     %h2
       Receive Updates How Often?:
-    = f.input :interval, collection: interval_options, as: :radio_buttons, label: false, required: :true
+    = f.input :interval, collection: Subscription::INTERVAL_HASH, as: :radio_buttons, label: false, required: :true, label_method: :last, value_method: :first
 
 
   .form-actions

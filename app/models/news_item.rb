@@ -65,7 +65,13 @@ class NewsItem < ActiveRecord::Base
   end
   
   default_scope order('news_items.start_date DESC')
-  
+
+  def self.copy(news_item)
+    copied_item = news_item.clone
+    copied_item.divisions << news_item.divisions.map(&:clone)
+    return copied_item
+  end
+
   def self.in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     where("news_items.division_id IN (?)", division_ids)

@@ -32,7 +32,7 @@ class SubscriptionsController < ApplicationController
   def new
     @user = current_user
     @subscription = Subscription.new(user_id: @user.id)
-    @subscription.subscription_news_item_type.build unless @subscription.subscription_news_item_type.present?
+    #@subscription.subscription_news_item_type.build unless @subscription.subscription_news_item_type.present?
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @subscription }

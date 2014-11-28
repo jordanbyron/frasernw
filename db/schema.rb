@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141124224508) do
+ActiveRecord::Schema.define(:version => 20141126080827) do
 
   create_table "addresses", :force => true do |t|
     t.string   "address1"
@@ -377,6 +377,7 @@ ActiveRecord::Schema.define(:version => 20141124224508) do
     t.boolean  "show_end_date",   :default => false
     t.integer  "type_mask"
     t.integer  "division_id"
+    t.integer  "parent_id"
   end
 
   create_table "offices", :force => true do |t|
@@ -771,9 +772,9 @@ ActiveRecord::Schema.define(:version => 20141124224508) do
     t.boolean  "news_item"
     t.string   "item_type"
     t.string   "news_type"
-    t.string   "interval"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "interval"
   end
 
   add_index "subscriptions", ["user_id"], :name => "index_subscriptions_on_user_id"

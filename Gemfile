@@ -58,10 +58,13 @@ group :development, :test do
   # gem 'ruby-debug19', :require => 'ruby-debug'
   # can't include rb-fsevent here as heroku doesn't like it
   # gem 'rb-fsevent', :require => false if RUBY_PLATFORM =~ /darwin/i
-  gem 'guard'
-  gem 'guard-rspec'
-  gem 'guard-livereload'
-  gem 'guard-spork'
+
+  group :development do
+    gem 'guard', '>= 2.2.2',       :require => false
+    gem 'guard-livereload',        :require => false
+    gem 'rack-livereload'
+    gem 'rb-fsevent',              :require => false
+  end
   #gem 'heroku'
   gem 'taps'
   gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
