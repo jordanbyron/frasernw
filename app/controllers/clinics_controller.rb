@@ -156,11 +156,6 @@ class ClinicsController < ApplicationController
           #save any other focuses that have the same procedure and are in a specialization our clinic is in
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
-      else
-        #destroy all focuses, as they must have edited to have none
-        @clinic.focuses.each do |original_focus|
-          Focus.destroy(original_focus.id)
-        end
       end
       @clinic.review_object = ActiveSupport::JSON::encode(params)
       @clinic.save

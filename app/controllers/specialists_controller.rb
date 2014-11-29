@@ -171,11 +171,6 @@ class SpecialistsController < ApplicationController
           #save any other capacities that have the same procedure and are in a specialization our specialist is in
           capacity.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.map{ |ps2| Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps2.id) }.map{ |c| c.save }
         end
-      else
-        #destroy all capacities, as they must have edited to have none
-        @specialist.capacities.each do |original_capacity|
-          Capacity.destroy(original_capacity.id)
-        end
       end
       @specialist.review_object = ActiveSupport::JSON::encode(params)
       @specialist.save
