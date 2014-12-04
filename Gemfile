@@ -4,7 +4,7 @@ ruby "2.1.2"
 
 gem 'nokogiri'
 #gem 'rails', '3.1.12'
-gem 'rails', '3.2.21'
+gem 'rails', '3.2.18'
 
 gem 'pg'
 
@@ -17,10 +17,17 @@ end
 # gem 'coffee-script'
 # gem 'uglifier'
 
-#added for rails 3.2 upgrade
+#sass here breaks with sprockets:
+# group :assets do
+#   gem "sass-rails", '~> 4.0.5'
+#   gem "sass"
+#   gem 'coffee-rails', '~> 3.2.2'
+#   gem 'uglifier',     '>= 1.0.3'
+# end
+
+#Rails 3.2 upgrade gemfile recommendation
 group :assets do
-  gem "sass-rails"
-  gem "sass"
+  gem 'sass-rails',   '~> 3.2.6'
   gem 'coffee-rails', '~> 3.2.2'
   gem 'uglifier',     '>= 1.0.3'
 end
