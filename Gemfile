@@ -12,6 +12,8 @@ group :production do
   gem 'heroku_cloud_backup'
 end
 
+gem 'sass', '~> 3.1.10'
+
 # # Asset template engines
 # gem 'sass-rails', "~> 3.1.0"
 # gem 'coffee-script'
