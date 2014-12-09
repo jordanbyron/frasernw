@@ -4,7 +4,7 @@ ruby "2.1.2"
 
 gem 'nokogiri'
 #gem 'rails', '3.1.12'
-gem 'rails', '3.2.17'
+gem 'rails', '3.2.21'
 
 gem 'pg'
 
@@ -12,7 +12,6 @@ group :production do
   gem 'heroku_cloud_backup'
 end
 
-gem 'sass', '~> 3.1.10'
 
 # # Asset template engines
 # gem 'sass-rails', "~> 3.1.0"
@@ -29,6 +28,7 @@ gem 'sass', '~> 3.1.10'
 
 #Rails 3.2 upgrade gemfile recommendation
 group :assets do
+  gem 'sass', '~> 3.1.10'
   gem 'sass-rails',   '~> 3.2.6'
   gem 'coffee-rails', '~> 3.2.2'
   gem 'uglifier',     '>= 1.0.3'
