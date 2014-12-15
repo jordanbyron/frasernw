@@ -95,6 +95,7 @@ end
 
 group :development do
   gem 'pry-rails' # loads pry by default with rails c
+  gem 'rake-benchmark', require: false
 end
 
 gem 'ancestry'
