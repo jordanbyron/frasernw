@@ -53,6 +53,8 @@ module Frasernw
 
     config.assets.version = '1.0'
 
+    Sprockets::Compressors.register_css_compressor(:scss, 'Sass::Rails::CssCompressor', :require => 'sass/rails/compressor') #added due to heroku error, read: https://github.com/rails/sass-rails/issues/111
+
     # mailer
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.raise_delivery_errors = true
@@ -63,7 +65,6 @@ module Frasernw
       :password             => ENV['SMTP_PASS'],
       :authentication       => "plain",
       :enable_starttls_auto => true
-    }   
-    
+    }
   end
 end
