@@ -98,7 +98,7 @@ group :development do
   gem 'rake-benchmark', require: false
 end
 
-gem 'ancestry'
+gem 'ancestry', '~> 1.3.0' #ancestry breaks specialization.rb arrange methods in higher versions
 gem 'mechanize'
 gem 'validates_email_format_of'
 
