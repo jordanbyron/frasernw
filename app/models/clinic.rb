@@ -176,6 +176,7 @@ class Clinic < ActiveRecord::Base
   STATUS_HASH = { 
     1 => "Accepting new referrals", 
     2 => "Only doing follow up on previous patients",
+    4 => "Permanently closed"
     3 => "Didn't answer"
   }
   
@@ -202,14 +203,17 @@ class Clinic < ActiveRecord::Base
   }
   
   def status_class
-    if not_responded? || (status_mask == 3) || status_mask.blank?
+    #purposely handle categorization prior to status
+    if not_responded?
       return STATUS_CLASS_UNKNOWN
     elsif purposely_not_yet_surveyed?
       return STATUS_CLASS_BLANK
     elsif accepting_new_patients?
       return STATUS_CLASS_AVAILABLE
-    elsif (status_mask == 2)
+    elsif only_doing_follow_up? || closed?
       return STATUS_CLASS_UNAVAILABLE
+    elsif did_not_answer?
+      return STATUS_CLASS_UNKNOWN
     else
       #this shouldn't really happen
       return STATUS_CLASS_BLANK
@@ -222,6 +226,18 @@ class Clinic < ActiveRecord::Base
   
   def accepting_new_patients?
     status_mask == 1
+  end
+  
+  def only_doing_follow_up?
+    status_mask == 2
+  end
+  
+  def did_not_answer?
+    (status_mask == 3) || status_mask.blank?
+  end
+  
+  def closed?
+    status_mask == 4
   end
   
   WAITTIME_HASH = { 

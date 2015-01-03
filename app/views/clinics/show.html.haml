@@ -46,6 +46,10 @@
 
               %p.space.no_indent This clinic has not yet provided Pathways their information.
               
+            - elsif @clinic.closed?
+
+              %p.space.no_indent This clinic has closed.
+              
             - elsif @clinic.purposely_not_yet_surveyed?
             
               - show_areas_of_practice = true
