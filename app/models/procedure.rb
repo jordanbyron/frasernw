@@ -18,14 +18,34 @@ class Procedure < ActiveRecord::Base
   def to_s
     self.name
   end
-  
-  def full_name
+
+  def full_name_array
     ps_with_parents = procedure_specializations.reject{ |ps| ps.parent.blank? }
     if ps_with_parents.count > 0
-      return ps_with_parents.first.parent.procedure.full_name + " " + self.name.uncapitalize_first_letter
+      return ps_with_parents.first.parent.procedure.full_name_array + self.name.uncapitalize_first_letter.split(' ')
     else
-      return self.name
+      return self.name.uncapitalize_first_letter.split(' ')
     end
+  end
+
+  def parents_name_array
+    ps_with_parents = procedure_specializations.reject{ |ps| ps.parent.blank? }
+    if ps_with_parents.count > 0
+      return ps_with_parents.first.parent.procedure.parents_name_array + ps_with_parents.first.parent.procedure.name.uncapitalize_first_letter.split(' ')
+    else
+      return []
+    end
+  end
+
+  def full_name
+    #names should only show each word once, to clarify our heirarchies
+    full_name_array.uniq.join(' ').capitalize_first_letter
+  end
+  
+  def name_relative_to_parents
+    #remove any words that also appear in the parents' names
+    parents_names = parents_name_array
+    self.name.uncapitalize_first_letter.split(' ').reject{ |word| parents_names.include? word }.join(' ').capitalize_first_letter
   end
   
   def fully_in_progress_for_divisions(divisions)

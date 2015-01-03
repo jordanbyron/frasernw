@@ -175,7 +175,7 @@
                                   - grandchild_wait_time = grandchild_procedure.procedure_specializations.specialist_wait_time.length > 0
                                   %label.indent
                                     %input.sp{"type" => "checkbox", "id" => "sp#{grandchild_procedure.id}_", "class" => "child_sp#{child_procedure.id}_", :name => "#{grandchild_wait_time ? 1 : 0}"}
-                                    %span= grandchild_procedure.name
+                                    %span= grandchild_procedure.name_relative_to_parents
                   .filter-group
                     %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#specialist-filter-referral"}
                       Referrals
@@ -358,7 +358,7 @@
                                   - grandchild_wait_time = grandchild_procedure.procedure_specializations.clinic_wait_time.length > 0
                                   %label.indent{:class => grandchild_wait_time && "custom_wait_time"}
                                     %input.cp{"type" => "checkbox", "id" => "cp#{grandchild_procedure.id}_", "class" => "child_cp#{child_procedure.id}_", :name => "#{grandchild_wait_time ? 1 : 0}"}
-                                    %span= grandchild_procedure.name
+                                    %span= grandchild_procedure.name_relative_to_parents
                   .filter-group
                     %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#clinic-filter-referral"}
                       Referrals
