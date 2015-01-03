@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141116224225) do
+ActiveRecord::Schema.define(:version => 20150103200215) do
 
   create_table "addresses", :force => true do |t|
     t.string   "address1"
@@ -66,7 +66,6 @@ ActiveRecord::Schema.define(:version => 20141116224225) do
     t.boolean  "hidden",      :default => false
   end
 
-  add_index "cities", ["hidden"], :name => "index_cities_on_hidden"
   add_index "cities", ["province_id"], :name => "index_cities_on_province_id"
 
   create_table "clinic_addresses", :force => true do |t|
@@ -101,8 +100,6 @@ ActiveRecord::Schema.define(:version => 20141116224225) do
     t.string   "public_email"
     t.string   "location_opened"
   end
-
-  add_index "clinic_locations", ["clinic_id"], :name => "index_clinic_locations_on_clinic_id"
 
   create_table "clinic_speaks", :force => true do |t|
     t.integer  "clinic_id"
@@ -178,6 +175,7 @@ ActiveRecord::Schema.define(:version => 20141116224225) do
     t.string   "deprecated_url"
     t.string   "deprecated_email"
     t.text     "review_object"
+    t.date     "unavailable_from"
   end
 
   create_table "contacts", :force => true do |t|
@@ -214,9 +212,6 @@ ActiveRecord::Schema.define(:version => 20141116224225) do
     t.datetime "updated_at"
   end
 
-  add_index "division_cities", ["city_id"], :name => "index_division_cities_on_city_id"
-  add_index "division_cities", ["division_id"], :name => "index_division_cities_on_division_id"
-
   create_table "division_display_sc_items", :force => true do |t|
     t.integer  "division_id"
     t.integer  "sc_item_id"
@@ -251,9 +246,6 @@ ActiveRecord::Schema.define(:version => 20141116224225) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "division_users", ["division_id"], :name => "index_division_users_on_division_id"
-  add_index "division_users", ["user_id"], :name => "index_division_users_on_user_id"
 
   create_table "divisions", :force => true do |t|
     t.string   "name"
@@ -332,9 +324,6 @@ ActiveRecord::Schema.define(:version => 20141116224225) do
     t.datetime "updated_at"
   end
 
-  add_index "hospital_addresses", ["address_id"], :name => "index_hospital_addresses_on_address_id"
-  add_index "hospital_addresses", ["hospital_id"], :name => "index_hospital_addresses_on_hospital_id"
-
   create_table "hospitals", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -365,7 +354,6 @@ ActiveRecord::Schema.define(:version => 20141116224225) do
     t.integer  "location_in_id"
   end
 
-  add_index "locations", ["address_id"], :name => "index_locations_on_address_id"
   add_index "locations", ["clinic_in_id"], :name => "index_locations_on_clinic_in_id"
   add_index "locations", ["hospital_in_id"], :name => "index_locations_on_hospital_in_id"
   add_index "locations", ["locatable_id", "locatable_type"], :name => "index_locations_on_locatable_id_and_locatable_type"
@@ -728,9 +716,6 @@ ActiveRecord::Schema.define(:version => 20141116224225) do
     t.boolean  "show_specialist_categorization_5", :default => false
   end
 
-  add_index "specialization_options", ["in_progress"], :name => "index_specialization_options_on_in_progress"
-  add_index "specialization_options", ["specialization_id"], :name => "index_specialization_options_on_specialization_id"
-
   create_table "specializations", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -748,9 +733,6 @@ ActiveRecord::Schema.define(:version => 20141116224225) do
     t.datetime "updated_at"
   end
 
-  add_index "user_cities", ["city_id"], :name => "index_user_cities_on_city_id"
-  add_index "user_cities", ["user_id"], :name => "index_user_cities_on_user_id"
-
   create_table "user_city_specializations", :force => true do |t|
     t.integer  "user_city_id"
     t.integer  "specialization_id"
@@ -758,18 +740,12 @@ ActiveRecord::Schema.define(:version => 20141116224225) do
     t.datetime "updated_at"
   end
 
-  add_index "user_city_specializations", ["specialization_id"], :name => "index_user_city_specializations_on_specialization_id"
-  add_index "user_city_specializations", ["user_city_id"], :name => "index_user_city_specializations_on_user_city_id"
-
   create_table "user_controls_clinic_locations", :force => true do |t|
     t.integer  "user_id"
     t.integer  "clinic_location_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "user_controls_clinic_locations", ["clinic_location_id"], :name => "index_user_controls_clinic_locations_on_clinic_location_id"
-  add_index "user_controls_clinic_locations", ["user_id"], :name => "index_user_controls_clinic_locations_on_user_id"
 
   create_table "user_controls_clinics", :force => true do |t|
     t.integer  "user_id"
@@ -787,9 +763,6 @@ ActiveRecord::Schema.define(:version => 20141116224225) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "user_controls_specialist_offices", ["specialist_office_id"], :name => "index_user_controls_specialist_offices_on_specialist_office_id"
-  add_index "user_controls_specialist_offices", ["user_id"], :name => "index_user_controls_specialist_offices_on_user_id"
 
   create_table "user_controls_specialists", :force => true do |t|
     t.integer  "user_id"
