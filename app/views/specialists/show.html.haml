@@ -333,7 +333,7 @@
                   %strong Cancellation policy:
                   = @specialist.cancellation_policy.end_with_period.convert_newlines_to_br
             
-            - clinics = @specialist.clinics
+            - clinics = @specialist.clinics.reject{ |c| c.closed? }
             - hospitals = @specialist.hospitals
             - if hospitals.present? || clinics.present?
               %h6 Associations
