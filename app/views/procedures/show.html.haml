@@ -23,23 +23,13 @@
   %li.subsequent= @procedure.name
     
 = render 'partials/specialization_dropdown_menu'
-  
-- multiple_specialties = (@procedure.specializations.length > 1)
 
-- if multiple_specialties
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready(function() {
-        $('#specialist_table').tablesorter({sortList: [[2,0],[3,0],[4,0]]});
-        $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0],[4,0]]});
-      });
-- else
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready(function() {
-        $('#specialist_table').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
-        $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0]]});
-      });
+%script{"type" => "text/javascript"}
+  :plain
+    $(document).ready(function() {
+      $('#specialist_table').tablesorter({sortList: [[2,0],[3,0],[4,0]]});
+      $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0],[4,0]]});
+    });
 
 #page_scripts
   %script{"type" => "text/javascript"}
@@ -50,7 +40,7 @@
     - if procedure_specializations.reject{ |ps| !ps.clinic_wait_time? }.length > 0
       root_procedures['c'] = #{@procedure.id};
     var filtering = null;
-    var should_show_others = false;
+    var should_show_others = true;
     $(document).ready(function() { 
     var has_specialists = #{current_user_is_admin? ? "true" : "false"};
     var has_clinics = #{current_user_is_admin? ? "true" : "false"};
@@ -122,12 +112,11 @@
                   %i.icon-link
                   You have chosen multiple areas of practice, and in one or more of which specialists have optionally provided a specific wait time. Due to the conflicing wait times, the wait time column is blank.
                 
-                %table.table.table-condensed.tablesorter#specialist_table{:class => multiple_specialties && 'five'}
+                %table.table.table-condensed.tablesorter.five#specialist_table
                   %thead
                     %tr{:class => 'tableheader'}
                       %th{:class => "sp {sorter: 'bylastname'} name_column"} Specialist
-                      - if multiple_specialties
-                        %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
+                      %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
                       %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Referrals?
                       %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
                       %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
@@ -137,8 +126,7 @@
                       %td
                       %td
                       %td
-                      - if multiple_specialties
-                        %td
+                      %td
                               
                 #other_specialists.filter-others
 
@@ -307,12 +295,11 @@
                   %i.icon-link
                   You have chosen multiple areas of practice, and in one or more of which clinics have optionally provided a specific wait time. Due to the conflicting wait times, the wait time column is blank.
                   
-                %table.table.table-condensed.tablesorter#clinic_table{:class => multiple_specialties && 'five'}
+                %table.table.table-condensed.tablesorter.five#clinic_table
                   %thead
                     %tr{:class => 'tableheader'}
                       %th{:class => "sp {sorter: 'text'} name_column"} Clinic
-                      - if multiple_specialties
-                        %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
+                      %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
                       %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Referrals?
                       %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
                       %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
@@ -322,8 +309,7 @@
                       %td
                       %td
                       %td
-                      - if multiple_specialties
-                        %td
+                      %td
                         
               .span3.offsethalf
                 .well.filter#clinic_filters

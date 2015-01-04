@@ -267,6 +267,24 @@ var update_table = function(prefix, entity_id, entity_name)
   });
   
   var found = false;
+  var other_specialties = false;
+  var current_specialties_string_arr = $.map(filtering.current_specialties, function(a) { return a.toString(); });
+  
+  var other_results = 0;
+  if((procedures.length >= 1))
+  {
+    $('#' + entity_id + '_table tbody tr').each(function () {
+      var row = $(this);
+      if ( row.hasClass('other') )
+      {
+        var row_filter = row.data('attributes');
+        if (row_filter && matches_filters(row_filter, current_filters))
+        {
+          other_results++;
+        }
+      }
+    });
+  }
              
   //loop over each row of the table, hiding those which don't match our filters
   $('#' + entity_id + '_table tbody tr').each(function () {
@@ -279,7 +297,7 @@ var update_table = function(prefix, entity_id, entity_name)
     }
     else if ( current_filters.length == 0 )
     {
-      row.show();
+      row.hasClass('other') ? row.hide() : row.show();
     }
     else if ( !row_filter )
     {
@@ -296,7 +314,19 @@ var update_table = function(prefix, entity_id, entity_name)
       //doesn't match
       row.hide();
     }
+    
+    if (row.is(":visible"))
+    {
+      //if we have a specialist that has no specialties in common with the current specialties, we should show the specialties column
+      row_specialties = row.data('specialties').split(' ');
+      other_specialties |= (row_specialties.length > 0) && (row_specialties.intersect(current_specialties_string_arr).length == 0)
+    }
   });
+  
+  //We need the specialty column if we have more than one specialty (e.g. viewing an area of practice) or if we are filtering and other specialties are involved.
+  var needs_specialty_column = (filtering.current_specialties.length > 1) || ((current_filters.length > 0) && other_specialties);
+  var col = $('#' + entity_id + '_table tbody tr td:nth-child(2), #' + entity_id + '_table thead tr th:nth-child(2)');
+  needs_specialty_column ? col.show() : col.hide();
   
   var wait_time_hash = ["","Within one week","1-2 weeks","2-4 weeks","1-2 months","2-4 months","4-6 months","6-9 months","9-12 months","12-18 months","18-24 months", "2-2.5 years", "2.5-3 years", ">3 years"];
   
@@ -348,7 +378,14 @@ var update_table = function(prefix, entity_id, entity_name)
     $("#" + entity_id + "_no_wait_time").hide();
   }
   
-  var description = found ? 'Showing all ' + sex + ' <span id=\'' + entity_id + '_description_entity\'>' + entity_name + '</span>' : 'There are no ' + sex + ' ' + entity_name;
+  var display_entity_name = entity_name;
+  if ((prefix == 's') && should_show_others && (other_results > 0))
+  {
+    //override the "specialization specific" entity name, e.g. "rheumatologist"
+    display_entity_name = 'specialists';
+  }
+  
+  var description = found ? 'Showing all ' + sex + ' <span id=\'' + entity_id + '_description_entity\'>' + display_entity_name + '</span>' : 'There are no ' + sex + ' ' + display_entity_name;
   
   var fragments = new Array()
   if ( specializations.length >= 1 )
@@ -408,20 +445,8 @@ var update_table = function(prefix, entity_id, entity_name)
   
   // handle 'other specialists
   var others = $('#' + entity_id + '_others');
-  var other_results = 0;
   if((procedures.length >= 1))
   {
-    $('#' + entity_id + '_table tbody tr').each(function () {
-      var row = $(this);
-      if ( row.hasClass('other') )
-      {
-        var row_filter = row.data('attributes');
-        if (row_filter && matches_filters(row_filter, current_filters))
-        {
-          other_results++;
-        }
-      }
-    });
     if (!should_show_others && (other_results > 0))
     {
       others.show();
