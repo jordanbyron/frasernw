@@ -1,7 +1,7 @@
 = simple_nested_form_for @procedure, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
-  
+
   = f.input :name
 
   %h3 Specialities This Area of Practice Belongs To
