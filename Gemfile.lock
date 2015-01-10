@@ -206,6 +206,7 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
+    rack-timeout (0.1.1)
     rails (3.1.12)
       actionmailer (= 3.1.12)
       actionpack (= 3.1.12)
@@ -331,6 +332,7 @@ DEPENDENCIES
   pg
   pry-rails
   rack-mini-profiler
+  rack-timeout
   rails (= 3.1.12)
   rails-dev-boost!
   rb-fsevent (~> 0.9.1)

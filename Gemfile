@@ -83,6 +83,7 @@ gem 'validates_email_format_of'
 gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
 gem 'lazy_high_charts'
 gem 'jquery-datatables-rails'
+gem "rack-timeout"
 
 
 #New Relic guide recommends placing New Relic gem at bottom of Gemfile
