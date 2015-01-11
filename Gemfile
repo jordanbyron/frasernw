@@ -26,6 +26,7 @@ gem 'exception_notification'
 gem "cancan", "~> 1.6.7"
 gem "paperclip", "~> 2.7"
 gem "aws-sdk"
+gem 'public_activity'
 
 # Use unicorn as the web server
 gem 'unicorn'
