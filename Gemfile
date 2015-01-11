@@ -96,6 +96,8 @@ end
 group :development do
   gem 'pry-rails' # loads pry by default with rails c
   gem 'rake-benchmark', require: false
+  gem 'rack-mini-profiler'
+  #latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
 end
 
 gem 'ancestry', '~> 1.3.0' #ancestry breaks specialization.rb arrange methods in higher versions
@@ -107,6 +109,8 @@ gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
 gem 'lazy_high_charts'
 
 gem 'jquery-datatables-rails'
+gem "rack-timeout"
+
 
 gem 'rails_12factor'
 

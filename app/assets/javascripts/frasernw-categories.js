@@ -34,6 +34,7 @@ function add_items_from_division(category_data, category_id, inline, procedure_f
     var title = item.title;
     var full_title = inline ? item.full_title : "";
     var subcategory = inline ? "" : filtering.global_categories[item.subcategory];
+    var type_mask = item.type || -1;
     var url = item.url;
     var markdown = inline ? item.markdown : "";
     var body = inline ? item.body : "";
@@ -41,11 +42,11 @@ function add_items_from_division(category_data, category_id, inline, procedure_f
     var shared_care = item.shared_care;
     var is_new = item.is_new;
     var attributes = item.attributes;
-    add_item(category_id, item_id, title, full_title, url, markdown, body, subcategory, can_email, shared_care, is_new, attributes, inline);
+    add_item(category_id, item_id, title, full_title, url, markdown, body, subcategory, type_mask, can_email, shared_care, is_new, attributes, inline);
   }
 }
 
-function add_item(category_id, item_id, title, full_title, url, markdown, body, subcategory, can_email, shared_care, is_new, attributes, inline)
+function add_item(category_id, item_id, title, full_title, url, markdown, body, subcategory, type_mask, can_email, shared_care, is_new, attributes, inline)
 {
   var entry_id = category_id + "_" + item_id;
   if ($("#" + entry_id).length > 0)
@@ -78,7 +79,7 @@ function add_item(category_id, item_id, title, full_title, url, markdown, body, 
     //add it to the table
     var shared_care_icon = shared_care ? "<i class=\"icon-blue icon-star\"></i>" : ""
     var email = can_email ? "<a href=\"/content_items/" + item_id + "/email\" class=\"ajax\" title=\"E-mail to patient\"><i class=\"icon-envelope-alt icon-blue\"></i></a>" : ""
-    var row_html = $("<tr id='" + entry_id + "'><td class=\"title\">" + new_tag + "" + shared_care_icon + "<a href=\"" + url + "\" class=\"ajax\">" + title + "</a></td><td class=\"subcategory\">" + subcategory + "</td><td class=\"favorite\">" + favorite + "</td><td class=\"email\">" + email + "</td><td class=\"fb\">" + feedback + "</td></tr>");
+    var row_html = $("<tr id='" + entry_id + "'><td class=\"title\">" + new_tag + "" + shared_care_icon + "<a href=\"" + url + "\" class=\"ajax\" onclick=\"_gaq.push(['_trackEvent', 'content_item_id', '" + type_mask + "', '" + item_id + "']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;\">" + title + "</a></td><td class=\"subcategory\">" + subcategory + "</td><td class=\"favorite\">" + favorite + "</td><td class=\"email\">" + email + "</td><td class=\"fb\">" + feedback + "</td></tr>");
     
     if (typeof $.fn.ajaxify !== 'function')
     {

@@ -344,6 +344,7 @@ class Specialist < ActiveRecord::Base
   }
 
   def status_class
+    #purposely handle categorization prior to status
     if not_responded?
       return STATUS_CLASS_UNKNOWN
     elsif purposely_not_yet_surveyed?

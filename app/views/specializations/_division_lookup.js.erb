@@ -22,6 +22,7 @@ filtering.current_subcategories["<%= division.id %>"] = {};
         items.each do |item|
           category_data[item.id] = Hash.new
           category_data[item.id]['title'] = HTMLEntities.new.encode(item.title, :decimal)
+          category_data[item.id]['type'] = item.type_mask
           category_data[item.id]['url'] = item.resolved_url
           category_data[item.id]['can_email'] = item.can_email?
           category_data[item.id]['shared_care'] = item.shared_care?

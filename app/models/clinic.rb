@@ -1,7 +1,7 @@
 class Clinic < ActiveRecord::Base
   include ApplicationHelper
   
-  attr_accessible :name, :deprecated_phone, :deprecated_phone_extension, :deprecated_fax, :deprecated_contact_details, :categorization_mask, :deprecated_sector_mask, :deprecated_url, :deprecated_email, :deprecated_wheelchair_accessible_mask, :status, :status_details, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened_old, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :patient_instructions, :cancellation_policy, :interpreter_available, :specialization_ids, :deprecated_schedule_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinic_locations_attributes, :admin_notes, :referral_forms_attributes, :clinic_locations_attributes, :review_object
+  attr_accessible :name, :deprecated_phone, :deprecated_phone_extension, :deprecated_fax, :deprecated_contact_details, :categorization_mask, :deprecated_sector_mask, :deprecated_url, :deprecated_email, :deprecated_wheelchair_accessible_mask, :status, :status_details, :unavailable_from, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened_old, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :patient_instructions, :cancellation_policy, :interpreter_available, :specialization_ids, :deprecated_schedule_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinic_locations_attributes, :admin_notes, :referral_forms_attributes, :clinic_locations_attributes, :review_object
   has_paper_trail :ignore => [:saved_token, :review_item, :review_object]
   
   #clinics can have multiple specializations
@@ -119,7 +119,7 @@ class Clinic < ActiveRecord::Base
   end
   
   def show_in_table?
-    responded? || not_responded?
+    (responded? && !unavailable_for_a_while?) || not_responded?
   end
 
   def show_wait_time_in_table?
@@ -176,6 +176,7 @@ class Clinic < ActiveRecord::Base
   STATUS_HASH = { 
     1 => "Accepting new referrals", 
     2 => "Only doing follow up on previous patients",
+    4 => "Permanently closed",
     3 => "Didn't answer"
   }
   
@@ -187,41 +188,42 @@ class Clinic < ActiveRecord::Base
     end
   end
   
-  
-  STATUS_CLASS_AVAILABLE    = "icon-ok icon-green"
-  STATUS_CLASS_UNAVAILABLE  = "icon-remove icon-red"
-  STATUS_CLASS_UNKNOWN      = "icon-question-sign"
-  STATUS_CLASS_BLANK        = ""
-  
-  #match specialist
-  STATUS_CLASS_HASH = {
-    STATUS_CLASS_AVAILABLE => 1,
-    STATUS_CLASS_UNAVAILABLE => 2,
-    STATUS_CLASS_UNKNOWN => 4,
-    STATUS_CLASS_BLANK => 6,
-  }
-  
   def status_class
-    if not_responded? || (status_mask == 3) || status_mask.blank?
-      return STATUS_CLASS_UNKNOWN
+    #purposely handle categorization prior to status
+    if not_responded?
+      return Specialist::STATUS_CLASS_UNKNOWN
     elsif purposely_not_yet_surveyed?
-      return STATUS_CLASS_BLANK
+      return Specialist::STATUS_CLASS_BLANK
     elsif accepting_new_patients?
-      return STATUS_CLASS_AVAILABLE
-    elsif (status_mask == 2)
-      return STATUS_CLASS_UNAVAILABLE
+      return Specialist::STATUS_CLASS_AVAILABLE
+    elsif only_doing_follow_up? || closed?
+      return Specialist::STATUS_CLASS_UNAVAILABLE
+    elsif did_not_answer?
+      return Specialist::STATUS_CLASS_UNKNOWN
     else
       #this shouldn't really happen
-      return STATUS_CLASS_BLANK
+      return Specialist::STATUS_CLASS_BLANK
     end
   end
   
   def status_class_hash
-    STATUS_CLASS_HASH[status_class]
+    Specialist::STATUS_CLASS_HASH[status_class]
   end
   
   def accepting_new_patients?
     status_mask == 1
+  end
+  
+  def only_doing_follow_up?
+    status_mask == 2
+  end
+  
+  def did_not_answer?
+    (status_mask == 3) || status_mask.blank?
+  end
+  
+  def closed?
+    status_mask == 4
   end
   
   WAITTIME_HASH = { 
@@ -385,6 +387,10 @@ class Clinic < ActiveRecord::Base
   
   def new?
     (created_at > 3.week.ago.utc) && opened_recently?
+  end
+     
+  def unavailable_for_a_while?
+    closed? && (unavailable_from <= (Date.today - 2.years))
   end
 
   def token

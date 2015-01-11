@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141116224225) do
+ActiveRecord::Schema.define(:version => 20150103200215) do
 
   create_table "addresses", :force => true do |t|
     t.string   "address1"
@@ -175,6 +175,7 @@ ActiveRecord::Schema.define(:version => 20141116224225) do
     t.string   "deprecated_url"
     t.string   "deprecated_email"
     t.text     "review_object"
+    t.date     "unavailable_from"
   end
 
   create_table "contacts", :force => true do |t|
