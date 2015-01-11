@@ -1,5 +1,6 @@
 Frasernw::Application.routes.draw do
 
+
   post '/versions/:id/revert' => 'versions#revert', :as => 'revert_version'
 
   match '/versions'                 => 'versions#show_all', :as => 'all_versions'
@@ -41,6 +42,7 @@ Frasernw::Application.routes.draw do
   put   '/divisions/:id/update_shared' => 'divisions#update_shared', :as => 'update_shared'
   
   #match 'subscriptions' => 'subscriptions#show', :as => 'subscriptions', :via => :get
+  resources :notifications
   resources :subscriptions
   resources :news_items
   resources :reports

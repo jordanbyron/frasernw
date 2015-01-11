@@ -1,0 +1,13 @@
+= link_to activity.trackable.division.name, activity.trackable.division if activity.trackable.division
+updated shared content item:
+= link_to activity.trackable.title, activity.trackable
+
+
+Shared content item was updated
+- if activity.trackable
+  by
+  = link_to activity.trackable.division.name, activity.trackable.division if activity.trackable.division
+  Division for
+  = link_to activity.trackable.title, activity.trackable
+- else
+  which has since been removed.

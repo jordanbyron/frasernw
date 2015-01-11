@@ -1,0 +1,7 @@
+- if activity.trackable
+  The
+  = link_to activity.trackable.division.name, activity.trackable.division if activity.trackable.division
+  Division created a shared content item: 
+  = link_to activity.trackable.title, activity.trackable
+- else
+  A shared content item was created which has since been removed.

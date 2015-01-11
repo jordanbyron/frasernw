@@ -23,7 +23,7 @@ class NewsItemsController < ApplicationController
       render :action => 'new', :notice  => "Can't create a news item in that division."
     elsif @news_item.save
       division = @news_item.division
-      
+      @news_item.create_activity :create, owner: division
       #expire all the front-page news content for users that are in the divisions that we just updated
       User.in_divisions([division]).map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
         expire_fragment "latest_updates_#{division_group.join('_')}"

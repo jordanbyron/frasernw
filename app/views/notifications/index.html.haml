@@ -1,0 +1,15 @@
+%h1 Notifications#index
+%p Find me in app/views/notifications/index.html.haml
+%p
+  Latest news and resource updates to Pathways:
+  - @notifications.each do |notification|
+    = notification.inspect
+    ______________
+
+    %div.notification
+      = link_to notification.owner.name, notification.owner if notification.owner
+      added __ to
+      = link_to notification.trackable.title, notification.trackable
+
+.notification
+  %p= render_activities(@notifications)
