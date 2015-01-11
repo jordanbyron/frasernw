@@ -51,4 +51,11 @@ class Subscription < ActiveRecord::Base
     INTERVAL_HASH[interval]
   end
 
+  def self.news_update_type
+    UPDATE_CLASSIFICATION_HASH[NEWS_UPDATES]
+  end
+
+  def self.resource_update_type
+    UPDATE_CLASSIFICATION_HASH[RESOURCE_UPDATES]
+  end
 end
