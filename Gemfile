@@ -71,6 +71,8 @@ end
 
 group :development do
   gem 'pry-rails' # loads pry by default with rails c
+  gem 'rack-mini-profiler'
+  #latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
 end
 
 gem 'ancestry'
@@ -81,6 +83,8 @@ gem 'validates_email_format_of'
 gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
 gem 'lazy_high_charts'
 gem 'jquery-datatables-rails'
+gem "rack-timeout"
+
 
 #New Relic guide recommends placing New Relic gem at bottom of Gemfile
 group :development, :production do
