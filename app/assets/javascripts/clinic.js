@@ -164,3 +164,18 @@ $(".clinic_location_4").live("change", function() { clinic_address_location_chan
 $(".clinic_location_5").live("change", function() { clinic_address_location_changed(5) });
 $(".clinic_location_6").live("change", function() { clinic_address_location_changed(6) });
 $(".clinic_location_7").live("change", function() { clinic_address_location_changed(7) });
+
+var clinic_status_changed = function()
+{
+  if ( $(this).val() == "4" )
+  {
+    //closed
+    $(".unavailable_from").show();
+  }
+  else
+  {
+    $(".unavailable_from").hide();
+  }
+}
+
+$("#clinic_status_mask").live("change", clinic_status_changed );

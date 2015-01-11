@@ -58,13 +58,11 @@ group :development, :test do
   # gem 'ruby-debug19', :require => 'ruby-debug'
   # can't include rb-fsevent here as heroku doesn't like it
   # gem 'rb-fsevent', :require => false if RUBY_PLATFORM =~ /darwin/i
-
-  group :development do
-    gem 'guard', '>= 2.2.2',       :require => false
-    gem 'guard-livereload',        :require => false
-    gem 'rack-livereload'
-    gem 'rb-fsevent',              :require => false
-  end
+  gem 'guard'
+  gem 'guard-rspec'
+  gem 'guard-livereload'
+  gem 'guard-spork'
+  gem 'rack-livereload'
   #gem 'heroku'
   gem 'taps'
   gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
@@ -75,6 +73,8 @@ end
 group :development do
   gem 'pry-rails' # loads pry by default with rails c
   gem 'oink'
+  gem 'rack-mini-profiler'
+  #latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
 end
 
 gem 'ancestry'
@@ -85,6 +85,8 @@ gem 'validates_email_format_of'
 gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
 gem 'lazy_high_charts'
 gem 'jquery-datatables-rails'
+gem "rack-timeout"
+
 
 #New Relic guide recommends placing New Relic gem at bottom of Gemfile
 group :development, :production do
