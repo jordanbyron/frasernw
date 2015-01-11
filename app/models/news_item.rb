@@ -1,5 +1,7 @@
 class NewsItem < ActiveRecord::Base
-  
+  include PublicActivity::Model
+  tracked
+
   attr_accessible :division_id, :title, :body, :breaking, :start_date, :end_date, :show_start_date, :show_end_date, :type_mask
   
   belongs_to :division

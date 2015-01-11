@@ -1,6 +1,8 @@
 class ScItem < ActiveRecord::Base
   include ApplicationHelper
-  
+  include PublicActivity::Model
+  tracked
+
   attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :shared_care, :url, :markdown_content, :document, :can_email_document, :can_email_link, :shareable, :division_id
   
   belongs_to  :sc_category
