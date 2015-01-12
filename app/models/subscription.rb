@@ -1,15 +1,16 @@
 class Subscription < ActiveRecord::Base
-  attr_accessible :interval
+  #attr_accessible :interval, :user_id, :classification, :content_item, :item_type
+  serialize :news_type
+
+  #before_action save_subscription_news_item_types
 
   belongs_to :user
 
-  has_many :subscription_divisions, dependent: :destroy
-  has_many :divisions, through: :subscription_divisions
+  has_and_belongs_to_many :divisions, join_table: :subscription_divisions
 
   has_many :news_items, through: :divisions #unsure if will use this
 
-  has_many :subscription_sc_categories, dependent: :destroy
-  has_many :sc_categories, through: :subscription_sc_categories, include: :true
+  has_and_belongs_to_many :sc_categories, join_table: :subscription_sc_categories
 
   has_many :subscription_news_item_types, dependent: :destroy # not a join table with news_item, only stores NewsItem::TYPE_HASH integer
 
@@ -51,11 +52,27 @@ class Subscription < ActiveRecord::Base
     INTERVAL_HASH[interval]
   end
 
-  def self.news_update_type
+  def self.classifications
+    UPDATE_CLASSIFICATION_HASH.map{|k, v|  v}
+  end
+
+  def news_type_masks
+    news_type.reject(&:empty?).map{|nt| nt.to_i}
+  end
+
+  def news_type_masks_strings
+    news_type_masks.map{|nt| Subscription::NEWS_ITEM_TYPE_HASH[nt]}
+  end
+
+  def self.news_update
     UPDATE_CLASSIFICATION_HASH[NEWS_UPDATES]
   end
 
-  def self.resource_update_type
+  def self.resource_update
     UPDATE_CLASSIFICATION_HASH[RESOURCE_UPDATES]
   end
+
+  # def save_subscription_news_item_types
+  #   @subscription_news_item_types = 
+  # end
 end

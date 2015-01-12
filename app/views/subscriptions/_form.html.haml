@@ -4,18 +4,27 @@
   .form-inputs
     %h2
       Update Notification type:
-    = f.input :classification,  as: :radio_buttons, collection: classification_options, label_method: :last, value_method: :first, include_blank: false, label: "Pick the update type:"
+    = f.input :classification,  as: :radio_buttons, collection: classification_options, label_method: :last, value_method: :last, include_blank: false, label: "Pick the update type:"
 
-    = f.input :user_id, collection: current_user.id, as: :hidden
+    = f.input :user_id, as: :hidden
 
     %h2
       Divisions to receive updates from:
-    = f.association :divisions, as: :check_boxes, collection: Division.all, label_method: :name, value_method: :id, presence: true, required: true, label: "Select a division"
-    //=# f.collection_check_boxes :subscription_news_item_types, as: :check_boxes, collection: NewsItem::TYPE_HASH, label_method: :last, value_method: :first, label: "News updates on these topics:"
+    = f.association :divisions, collection: Division.all, label_method: :name, as: :check_boxes, label: "Select a division"
+    / %tbody
+    /   -# NewsItem::TYPE_HASH.each do |k, v|
+    /     %tr
+    /       %td=# check_box_tag "subscription_news_item_types[#{k}]".html_safe, v, name: "#{k}[#{v}]", :class => "subscription_news_item_type_check"
+    /       %th=# v
+    /       %br
+
+
+    =# f.collection_check_boxes :subscription_news_item_types, as: :check_boxes, collection: NewsItem::TYPE_HASH, label_method: :last, value_method: :first, label: "News updates on these topics:"
+
     -# if f.object.subscription_news_item_types.empty?
-    / =# f.simple_fields_for :subscription_news_item_types, f.object.subscription_news_item_types.build(subscription_id: @subscription.id) do |n|
-    /   =# n.input :news_item_type, as: :check_boxes, collection: NewsItem::TYPE_HASH, label_method: :last, value_method: :first, label: false, label: "pick news item types"
-    /   =# n.input :subscription_id, as: :hidden
+      =# f.simple_fields_for :subscription_news_item_types, f.object.subscription_news_item_types.build(subscription_id: @subscription.id) do |n|
+        =# n.input :news_item_type, as: :check_boxes, collection: NewsItem::TYPE_HASH, label_method: :last, value_method: :first, label: false, label: "pick news item types"
+        =# n.input :subscription_id, as: :hidden
     %h2
       Receive News Updates on these topics:
     = f.input :news_type, :as => :check_boxes, :collection => NewsItem::TYPE_HASH.to_a, label_method: :last, value_method: :first, :include_blank => false
