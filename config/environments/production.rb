@@ -6,7 +6,7 @@ Frasernw::Application.configure do
     :email => {
       :email_prefix => "[mdpathway exception] ",
       :sender_address => %{"Pathways" <system@mdpathwaysbc.com>},
-      :exception_recipients => %w{warneboldt@gmail.com}
+      :exception_recipients => %w{warneboldt@gmail.com khannan@mdpathwaysbc.com}
     }
 
   # Code is not reloaded between requests
