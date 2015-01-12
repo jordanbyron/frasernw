@@ -1,15 +1,16 @@
-%h1 Notifications#index
-%p Find me in app/views/notifications/index.html.haml
-%p
+%h1
   Latest news and resource updates to Pathways:
-  - @notifications.each do |notification|
-    = notification.inspect
-    ______________
+- @notifications.each do |notification|
+  =# notification.inspect
 
-    %div.notification
-      = link_to notification.owner.name, notification.owner if notification.owner
-      added __ to
-      = link_to notification.trackable.title, notification.trackable
+  / %div.notification
+  /   =# link_to notification.owner.name, notification.owner if notification.owner
+  /   added __ to
+  /   =# link_to notification.trackable.title, notification.trackable
 
-.notification
-  %p= render_activities(@notifications)
+  .notification
+    %p
+      %span{:class=> "muted"}= "#{time_ago_in_words(notification.trackable.created_at)} ago"
+
+      = render_activity(notification, fallback: :default)
+    %br
