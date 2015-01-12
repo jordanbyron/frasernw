@@ -54,8 +54,9 @@ gem "aws-sdk"
 gem 'unicorn'
 
 # Heroku caching
-gem 'memcachier'
+gem 'kgio'
 gem 'dalli'
+gem 'memcachier'
 gem 'delayed_job_active_record'
 gem 'daemons'
 
