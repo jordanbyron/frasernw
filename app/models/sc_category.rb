@@ -9,8 +9,9 @@ class ScCategory < ActiveRecord::Base
   
   has_many :featured_contents, :dependent => :destroy
 
-  has_many :subscriptions, through: :subscription_sc_categories
-  has_many :subscription_sc_categories, dependent: :destroy
+  has_and_belongs_to_many :subscriptions, join_table: :subscription_sc_categories
+  # has_many :subscriptions, through: :subscription_sc_categories
+  # has_many :subscription_sc_categories, dependent: :destroy
   
   has_ancestry
   
