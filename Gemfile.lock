@@ -332,6 +332,7 @@ DEPENDENCIES
   htmlentities
   jquery-datatables-rails
   jquery-rails
+  kgio
   lazy_high_charts
   mechanize
   memcachier
