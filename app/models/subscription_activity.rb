@@ -1,18 +1,22 @@
 class SubscriptionActivity < PublicActivity::Activity
 
-  def self.by_divisions(divisions)
-    where('owner_type = ?', "Division").where(owner_id: divisions)
-  end
-
   def self.created_at(date)
     where('created_at >= ?', date)
   end
 
-  def self.by_update_classifications(classifications)
-    where(update_classification_type: classifications)
+  def self.by_update_classification(classification)
+    where(update_classification_type: classification)
   end
 
-  def self.by_categorization(categorization)
-    where(categorization: :categorization)
+  def self.by_divisions(divisions)
+    where('owner_type = ?', "Division").where(owner_id: divisions)
+  end
+
+  def self.by_type_mask(type_mask_integer)
+    where(type_mask: type_mask_integer)
+  end
+
+  def self.collect_activities(date, classification, divisions, type_mask_integer)
+    self.created_at(date).by_update_classification(classification).by_divisions(divisions).by_type_mask(type_mask_integer)
   end
 end

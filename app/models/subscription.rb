@@ -72,7 +72,14 @@ class Subscription < ActiveRecord::Base
     UPDATE_CLASSIFICATION_HASH[RESOURCE_UPDATES]
   end
 
-  # def save_subscription_news_item_types
-  #   @subscription_news_item_types = 
-  # end
+  def interval_to_datetime
+    case interval
+    when ::Subscription::INTERVAL_DAILY
+      return 1.days.ago
+    when ::Subscription::INTERVAL_WEEKLY
+      return 1.weeks.ago
+    when ::Subscription::INTERVAL_MONTHLY
+      return 1.months.ago
+    end
+  end
 end
