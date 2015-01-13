@@ -1,0 +1,21 @@
+!!!
+%html
+  %head
+    %title #{@user.name} -- Pathways: Your #{@interval} update
+  %body
+    %p
+      = "Hi #{@user.name}, here is your customized #{@interval} Pathways news update:"
+    %br
+    - @activities.each do |activity|
+      =# activity.inspect
+
+      / %div.activity
+      /   =# link_to activity.owner.name, activity.owner if activity.owner
+      /   added __ to
+      /   =# link_to activity.trackable.title, activity.trackable
+      .activity
+        %p
+          %span{:class=> "muted"}= "#{time_ago_in_words(activity.trackable.created_at)} ago"
+
+          = render_activity(activity, fallback: :default)
+        %br
