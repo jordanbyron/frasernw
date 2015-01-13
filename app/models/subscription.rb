@@ -82,4 +82,15 @@ class Subscription < ActiveRecord::Base
       return 1.months.ago
     end
   end
+
+    def interval_to_words
+    case interval
+    when ::Subscription::INTERVAL_DAILY
+      return "Daily"
+    when ::Subscription::INTERVAL_WEEKLY
+      return "Weekly"
+    when ::Subscription::INTERVAL_MONTHLY
+      return "Monthly"
+    end
+  end
 end

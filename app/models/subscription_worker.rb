@@ -11,12 +11,12 @@ class SubscriptionWorker
 
   private
 
-  def send_and_filter_by_subscription_classsfication(activities_for_subscription, subscription)
-    @tracked_objects = @activities_for_subscription.to_tracked_objects
+  def send_and_filter_by_subscription_classification(activities_for_subscription, subscription)
+    @tracked_objects = activities_for_subscription.to_tracked_objects
     if subscription.classification == Subscription.resource_updates
-      ResourceUpdatesSubscriptionMailer.deliver(@tracked_objects.only_with_specialization)
+      ResourceUpdatesSubscriptionMailer.send_subscription_email(activities_for_subscription, @tracked_objects.only_with_specialization, subscription, subscription.interval_to_datetime).deliver!
     elsif subscription.classification == Subscription.news_updates
-      NewsUpdatesSubscriptionMailer.deliver(@tracked_objects)
+      NewsUpdatesSubscriptionMailer.send_subscription_email(activities_for_subscription, @tracked_objects, subscription, subscription.interval_to_datetime).deliver!
     end
   end
 
