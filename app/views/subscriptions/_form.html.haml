@@ -14,7 +14,7 @@
 
     %h2
       Receive News Updates on these topics:
-    = f.input :news_type, :as => :check_boxes, :collection => NewsItem::TYPE_HASH.to_a.map {|k,v| [k.to_s, v.to_s]}, label_method: :last, value_method: :first, :include_blank => false
+    = f.input :news_type, :as => :check_boxes, :collection => NewsItem.type_hash_as_array, label_method: :last, value_method: :first, :include_blank => false
 
     %h2
       Notify me when the following Physician Resources change:
