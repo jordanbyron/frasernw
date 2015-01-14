@@ -1,11 +1,11 @@
 class SubscriptionMailer < ActionMailer::Base
   default from: "noreply@pathwaysbc.ca"
 
-  def send_subscription_email(message_items, user, interval, subscription, tracked_activity_objects)
-    #@subscription = subscription
-    # @user = user
-    mail(:to => @subscription.owners.map{|owner| owner.email}, :from => 'noreply@pathwaysbc.ca', :subject => "Pathways: Your WEEKLY/DAILY/MONTHLY Resource Update")
-  end
+  # def send_subscription_email(message_items, user, interval, subscription, tracked_activity_objects)
+  #   #@subscription = subscription
+  #   # @user = user
+  #   mail(:to => @subscription.owners.map{|owner| owner.email}, :from => 'noreply@pathwaysbc.ca', :subject => "Pathways: Your WEEKLY/DAILY/MONTHLY Resource Update")
+  # end
 
     def send_resource_update_subscription_email(activities_for_subscription, tracked_activity_objects, subscription)
     @subscription = subscription

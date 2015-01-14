@@ -11,28 +11,14 @@
     %h2
       Divisions to receive updates from:
     = f.association :divisions, collection: Division.all, label_method: :name, as: :check_boxes, label: "Select a division"
-    / %tbody
-    /   -# NewsItem::TYPE_HASH.each do |k, v|
-    /     %tr
-    /       %td=# check_box_tag "subscription_news_item_types[#{k}]".html_safe, v, name: "#{k}[#{v}]", :class => "subscription_news_item_type_check"
-    /       %th=# v
-    /       %br
 
-
-    =# f.collection_check_boxes :subscription_news_item_types, as: :check_boxes, collection: NewsItem::TYPE_HASH, label_method: :last, value_method: :first, label: "News updates on these topics:"
-
-    -# if f.object.subscription_news_item_types.empty?
-      =# f.simple_fields_for :subscription_news_item_types, f.object.subscription_news_item_types.build(subscription_id: @subscription.id) do |n|
-        =# n.input :news_item_type, as: :check_boxes, collection: NewsItem::TYPE_HASH, label_method: :last, value_method: :first, label: false, label: "pick news item types"
-        =# n.input :subscription_id, as: :hidden
     %h2
       Receive News Updates on these topics:
-    = f.input :news_type, :as => :check_boxes, :collection => NewsItem::TYPE_HASH.to_a, label_method: :last, value_method: :first, :include_blank => false
+    = f.input :news_type, :as => :check_boxes, :collection => NewsItem::TYPE_HASH.to_a.map {|k,v| [k.to_s, v.to_s]}, label_method: :last, value_method: :first, :include_blank => false
 
     %h2
-      Notify me when the following Resources change:
-    =# f.input :item_type, collection: ScCategory.all, as: :check_boxes, label: false
-    = f.association :sc_categories, as: :check_boxes, collection: ScCategory.all, label_method: :name, value_method: :id, presence: true
+      Notify me when the following Physician Resources change:
+    = f.association :sc_categories, as: :check_boxes, collection: ScCategory.all, label_method: :name, value_method: :id, presence: true, label: "Content categories:"
 
     %h2
       Notify me of Resource Updates to the following Specializations:

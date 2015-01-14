@@ -15,7 +15,8 @@
       = stylesheet_link_tag "font-awesome-ie7.css", :media => 'screen, print'
     = stylesheet_link_tag "print", :media => 'print'
     = javascript_include_tag "application"
-    = javascript_include_tag '../livesearch'
+    - if !Rails.env.development?
+      = javascript_include_tag '../livesearch'
     = csrf_meta_tag
     = yield(:head)
               
@@ -124,7 +125,7 @@
                         - else
                           = link_to "Feedback Queue", feedback_items_path, :class => "feedback ajax"
                       - if current_user_is_super_admin?
-                        %li= link_to "Manage Email Updates", subscriptions_path, :class => "subscriptions ajax"
+                        %li= link_to "Manage Notifications", subscriptions_path, :class => "subscriptions ajax"
                       - if current_user_is_super_admin?
                         %li= link_to "Reports", reports_path, :class => "reports ajax"
                       %li.divider

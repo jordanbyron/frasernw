@@ -9,7 +9,6 @@ class SubscriptionWorker < Subscription
     self.send_and_filter_by_subscription_classification(@activities_for_subscription, subscription)
   end
 
-
   def self.send_and_filter_by_subscription_classification(activities_for_subscription, subscription)
     @activities_for_subscription = activities_for_subscription
     @tracked_objects = self.to_tracked_objects(@activities_for_subscription)
@@ -27,6 +26,4 @@ class SubscriptionWorker < Subscription
   def self.only_with_specialization(tracked_objects)
     tracked_objects.reject{|i| i.specializations != s.specializations}
   end
-  private
-
 end
