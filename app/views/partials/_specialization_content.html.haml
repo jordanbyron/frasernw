@@ -36,6 +36,7 @@
     });
   
   - categories = ScCategory.specialty.reject{ |sc_category| sc_category.all_sc_items_for_specialization_in_divisions(@specialization, current_user_divisions).blank? }
+  -#long_query_warning:320ms ^^
 
   %script{"type" => "text/javascript"}
     $(document).ready( function(){
