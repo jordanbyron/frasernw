@@ -12,6 +12,8 @@
       = stylesheet_link_tag "font-awesome-ie7.css", :media => 'screen, print'
     = javascript_include_tag "application"
     = csrf_meta_tag
+    = render "layouts/ie8_or_lower_compatibility_warning"
+
     = yield(:head)
 
     :javascript
