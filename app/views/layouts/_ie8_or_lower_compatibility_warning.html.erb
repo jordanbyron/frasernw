@@ -1,5 +1,11 @@
 <!--[if lt IE 9 ]>
 <script>
-alert('Sorry, Internet Explorer 8 and lower is not compatible with this website.  To view this page correctly, please change web browsers or upgrade Internet Explorer to version 9 or higher.');
+
+$(document).ready(function(){
+  $('#ie_compatibility_warning').show();
+});
 </script>
 <![endif]-->
+<div class="alert alert-danger" id="ie_compatibility_warning" style="display: none">
+  <i class="icon-ban-circle icon-red"></i> You are using an outdated Web Browser (Internet Explorer 8 or lower)<br>It is limiting your browsing experience.  Please upgrade your browser to use Pathways correctly.
+</div>
