@@ -294,7 +294,7 @@ GEM
     uuidtools (2.1.2)
     validates_email_format_of (1.5.3)
     webrobots (0.1.1)
-    will_paginate (3.0.2)
+    will_paginate (3.0.7)
 
 PLATFORMS
   ruby
