@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150103200215) do
+ActiveRecord::Schema.define(:version => 20150127065131) do
 
   create_table "addresses", :force => true do |t|
     t.string   "address1"
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.string   "area_of_focus"
   end
 
+  add_index "attendances", ["clinic_location_id", "specialist_id"], :name => "index_attendances_on_clinic_location_id_and_specialist_id"
   add_index "attendances", ["clinic_location_id"], :name => "index_attendances_on_clinic_id"
   add_index "attendances", ["specialist_id"], :name => "index_attendances_on_specialist_id"
 
@@ -75,6 +76,9 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.datetime "updated_at"
   end
 
+  add_index "clinic_addresses", ["address_id"], :name => "index_clinic_addresses_on_address_id"
+  add_index "clinic_addresses", ["clinic_id"], :name => "index_clinic_addresses_on_clinic_id"
+
   create_table "clinic_healthcare_providers", :force => true do |t|
     t.integer  "clinic_id"
     t.integer  "healthcare_provider_id"
@@ -100,6 +104,8 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.string   "public_email"
     t.string   "location_opened"
   end
+
+  add_index "clinic_locations", ["clinic_id"], :name => "index_clinic_locations_on_clinic_id"
 
   create_table "clinic_speaks", :force => true do |t|
     t.integer  "clinic_id"
@@ -212,12 +218,20 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.datetime "updated_at"
   end
 
+  add_index "division_cities", ["city_id", "division_id"], :name => "index_division_cities_on_city_id_and_division_id"
+  add_index "division_cities", ["city_id"], :name => "index_division_cities_on_city_id"
+  add_index "division_cities", ["division_id"], :name => "index_division_cities_on_division_id"
+
   create_table "division_display_sc_items", :force => true do |t|
     t.integer  "division_id"
     t.integer  "sc_item_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "division_display_sc_items", ["division_id", "sc_item_id"], :name => "index_division_display_sc_items_on_division_id_and_sc_item_id"
+  add_index "division_display_sc_items", ["division_id"], :name => "index_division_display_sc_items_on_division_id"
+  add_index "division_display_sc_items", ["sc_item_id"], :name => "index_division_display_sc_items_on_sc_item_id"
 
   create_table "division_primary_contacts", :force => true do |t|
     t.integer  "division_id"
@@ -226,12 +240,19 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.datetime "updated_at"
   end
 
+  add_index "division_primary_contacts", ["division_id"], :name => "index_division_primary_contacts_on_division_id"
+  add_index "division_primary_contacts", ["primary_contact_id"], :name => "index_division_primary_contacts_on_primary_contact_id"
+
   create_table "division_referral_cities", :force => true do |t|
     t.integer  "division_id"
     t.integer  "city_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "division_referral_cities", ["city_id", "division_id"], :name => "index_division_referral_cities_on_city_id_and_division_id"
+  add_index "division_referral_cities", ["city_id"], :name => "index_division_referral_cities_on_city_id"
+  add_index "division_referral_cities", ["division_id"], :name => "index_division_referral_cities_on_division_id"
 
   create_table "division_referral_city_specializations", :force => true do |t|
     t.integer  "division_referral_city_id"
@@ -240,12 +261,18 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.datetime "updated_at"
   end
 
+  add_index "division_referral_city_specializations", ["division_referral_city_id"], :name => "index_drcs_on_div_ref_city_id"
+  add_index "division_referral_city_specializations", ["specialization_id"], :name => "index_drcs_on_specialization_id"
+
   create_table "division_users", :force => true do |t|
     t.integer  "division_id"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "division_users", ["division_id"], :name => "index_division_users_on_division_id"
+  add_index "division_users", ["user_id"], :name => "index_division_users_on_user_id"
 
   create_table "divisions", :force => true do |t|
     t.string   "name"
@@ -283,6 +310,13 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.integer  "division_id"
   end
 
+  add_index "featured_contents", ["division_id"], :name => "index_featured_contents_on_division_id"
+  add_index "featured_contents", ["front_id", "sc_category_id"], :name => "index_featured_contents_on_front_id_and_sc_category_id"
+  add_index "featured_contents", ["front_id", "sc_item_id"], :name => "index_featured_contents_on_front_id_and_sc_item_id"
+  add_index "featured_contents", ["front_id"], :name => "index_featured_contents_on_front_id"
+  add_index "featured_contents", ["sc_category_id"], :name => "index_featured_contents_on_sc_category_id"
+  add_index "featured_contents", ["sc_item_id"], :name => "index_featured_contents_on_sc_item_id"
+
   create_table "feedback_items", :force => true do |t|
     t.string   "item_type"
     t.integer  "item_id"
@@ -292,6 +326,9 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.datetime "updated_at"
     t.boolean  "archived",   :default => false
   end
+
+  add_index "feedback_items", ["item_id", "item_type"], :name => "index_feedback_items_on_item_id_and_item_type"
+  add_index "feedback_items", ["user_id"], :name => "index_feedback_items_on_user_id"
 
   create_table "focuses", :force => true do |t|
     t.integer  "clinic_id"
@@ -324,6 +361,10 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.datetime "updated_at"
   end
 
+  add_index "hospital_addresses", ["address_id"], :name => "index_hospital_addresses_on_address_id"
+  add_index "hospital_addresses", ["hospital_id", "address_id"], :name => "index_hospital_addresses_on_hospital_id_and_address_id"
+  add_index "hospital_addresses", ["hospital_id"], :name => "index_hospital_addresses_on_hospital_id"
+
   create_table "hospitals", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -354,9 +395,14 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.integer  "location_in_id"
   end
 
+  add_index "locations", ["address_id", "location_in_id"], :name => "index_locations_on_address_id_and_location_in_id"
+  add_index "locations", ["address_id"], :name => "index_locations_on_address_id"
   add_index "locations", ["clinic_in_id"], :name => "index_locations_on_clinic_in_id"
+  add_index "locations", ["hospital_in_id", "location_in_id"], :name => "index_locations_on_hospital_in_id_and_location_in_id"
   add_index "locations", ["hospital_in_id"], :name => "index_locations_on_hospital_in_id"
   add_index "locations", ["locatable_id", "locatable_type"], :name => "index_locations_on_locatable_id_and_locatable_type"
+  add_index "locations", ["locatable_id", "location_in_id"], :name => "index_locations_on_locatable_id_and_location_in_id"
+  add_index "locations", ["location_in_id"], :name => "index_locations_on_location_in_id"
 
   create_table "moderations", :force => true do |t|
     t.integer  "moderatable_id"
@@ -379,6 +425,8 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.integer  "type_mask"
     t.integer  "division_id"
   end
+
+  add_index "news_items", ["division_id"], :name => "index_news_items_on_division_id"
 
   create_table "offices", :force => true do |t|
     t.datetime "created_at"
@@ -458,6 +506,9 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.datetime "updated_at"
   end
 
+  add_index "reports", ["city_id"], :name => "index_reports_on_city_id"
+  add_index "reports", ["division_id"], :name => "index_reports_on_division_id"
+
   create_table "review_items", :force => true do |t|
     t.string   "item_type"
     t.integer  "item_id"
@@ -503,6 +554,7 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.datetime "updated_at"
   end
 
+  add_index "sc_item_specialization_procedure_specializations", ["procedure_specialization_id", "sc_item_specialization_id"], :name => "index_sc_item_s_p_s_on_psid_sc_item_s_id"
   add_index "sc_item_specialization_procedure_specializations", ["procedure_specialization_id"], :name => "index_sc_item_sps_on_procedure_specialization_id"
   add_index "sc_item_specialization_procedure_specializations", ["sc_item_specialization_id"], :name => "index_sc_item_sps_on_sc_item_specialization_id"
 
@@ -536,6 +588,7 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.boolean  "shareable",             :default => true
   end
 
+  add_index "sc_items", ["division_id"], :name => "index_sc_items_on_division_id"
   add_index "sc_items", ["sc_category_id"], :name => "index_sc_items_on_sc_category_id"
 
   create_table "schedule_days", :force => true do |t|
@@ -588,6 +641,9 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.datetime "updated_at"
   end
 
+  add_index "specialist_addresses", ["address_id"], :name => "index_specialist_addresses_on_address_id"
+  add_index "specialist_addresses", ["specialist_id"], :name => "index_specialist_addresses_on_specialist_id"
+
   create_table "specialist_offices", :force => true do |t|
     t.integer  "specialist_id"
     t.integer  "office_id"
@@ -609,6 +665,7 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
   end
 
   add_index "specialist_offices", ["office_id"], :name => "index_specialist_offices_on_office_id"
+  add_index "specialist_offices", ["specialist_id", "office_id"], :name => "index_specialist_offices_on_specialist_id_and_office_id"
   add_index "specialist_offices", ["specialist_id"], :name => "index_specialist_offices_on_specialist_id"
 
   create_table "specialist_speaks", :force => true do |t|
@@ -711,6 +768,13 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.integer  "open_to_sc_category_id"
   end
 
+  add_index "specialization_options", ["content_owner_id"], :name => "index_specialization_options_on_content_owner_id"
+  add_index "specialization_options", ["division_id"], :name => "index_specialization_options_on_division_id"
+  add_index "specialization_options", ["open_to_sc_category_id"], :name => "index_specialization_options_on_open_to_sc_category_id"
+  add_index "specialization_options", ["owner_id", "specialization_id"], :name => "index_specialization_options_on_owner_id_and_specialization_id"
+  add_index "specialization_options", ["owner_id"], :name => "index_specialization_options_on_owner_id"
+  add_index "specialization_options", ["specialization_id"], :name => "index_specialization_options_on_specialization_id"
+
   create_table "specializations", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -728,6 +792,10 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.datetime "updated_at"
   end
 
+  add_index "user_cities", ["city_id"], :name => "index_user_cities_on_city_id"
+  add_index "user_cities", ["user_id", "city_id"], :name => "index_user_cities_on_user_id_and_city_id"
+  add_index "user_cities", ["user_id"], :name => "index_user_cities_on_user_id"
+
   create_table "user_city_specializations", :force => true do |t|
     t.integer  "user_city_id"
     t.integer  "specialization_id"
@@ -735,12 +803,20 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.datetime "updated_at"
   end
 
+  add_index "user_city_specializations", ["specialization_id", "user_city_id"], :name => "index_ucs_on_spec_id_and_ucity_id"
+  add_index "user_city_specializations", ["specialization_id"], :name => "index_user_city_specializations_on_specialization_id"
+  add_index "user_city_specializations", ["user_city_id"], :name => "index_user_city_specializations_on_user_city_id"
+
   create_table "user_controls_clinic_locations", :force => true do |t|
     t.integer  "user_id"
     t.integer  "clinic_location_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "user_controls_clinic_locations", ["clinic_location_id", "user_id"], :name => "index_uccl_clinic_l_id_on_user_id"
+  add_index "user_controls_clinic_locations", ["clinic_location_id"], :name => "index_user_controls_clinic_locations_on_clinic_location_id"
+  add_index "user_controls_clinic_locations", ["user_id"], :name => "index_user_controls_clinic_locations_on_user_id"
 
   create_table "user_controls_clinics", :force => true do |t|
     t.integer  "user_id"
@@ -758,6 +834,10 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "user_controls_specialist_offices", ["specialist_office_id", "user_id"], :name => "index_ucso_soi_user_id"
+  add_index "user_controls_specialist_offices", ["specialist_office_id"], :name => "index_ucso_on_specialist_office_id"
+  add_index "user_controls_specialist_offices", ["user_id"], :name => "index_ucso_user_id"
 
   create_table "user_controls_specialists", :force => true do |t|
     t.integer  "user_id"
@@ -798,6 +878,8 @@ ActiveRecord::Schema.define(:version => 20150103200215) do
     t.text     "object_changes"
   end
 
+  add_index "versions", ["created_at"], :name => "index_versions_on_created_at"
+  add_index "versions", ["item_id"], :name => "index_versions_on_item_id"
   add_index "versions", ["item_type", "item_id"], :name => "index_versions_on_item_type_and_item_id"
 
   create_table "views", :force => true do |t|

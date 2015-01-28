@@ -64,6 +64,9 @@ gem 'daemons'
 gem 'bluecloth'
 gem 'htmlentities'
 
+gem 'wannabe_bool', "~> 0.1.0" #get access to handy to_b boolean method
+
+
 # Deploy with Capistrano
 # gem 'capistrano'
 
@@ -99,6 +102,7 @@ group :development do
   gem 'rake-benchmark', require: false
   gem 'rack-mini-profiler'
   #latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
+  gem 'lol_dba'
 end
 
 gem 'ancestry', '~> 1.3.0' #ancestry breaks specialization.rb arrange methods in higher versions
