@@ -95,6 +95,7 @@ group :development, :test do
   gem 'rb-fsevent', '~> 0.9.1'
   gem 'awesome_print'
   gem 'oink'
+  gem 'peek'
 end
 
 group :development do
