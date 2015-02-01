@@ -16,14 +16,9 @@
     order_map[ category.name ] = ( order_map.length + 1 ).to_s
   end
 
-  #specialists = Specialist.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:location_in => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}]}})
-  #clinics = Clinic.includes(:locations => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}])
-
-  specialists = Specialist.not_in_progress_for_specialization(specialization)
-  clinics = Clinic.not_in_progress_for_specialization(specialization)
-
+  specialists = Specialist.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:location_in => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}]}}).not_in_progress_for_specialization(specialization) #with includes: 194 ms vs without includes: 392ms
   specialists.each do |specialist|
-    
+
     entry = {
       "n" => specialist.billing_number_padded ? specialist.name + " - MSP #" + specialist.billing_number_padded: specialist.name,
       "sp" => specialist.specialist_specializations.map { |ss| ss.specialization_id },
@@ -35,9 +30,11 @@
     search_data << entry
   end
 
+
+  clinics = Clinic.includes(:clinic_specializations, :locations => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]).not_in_progress_for_specialization(specialization) #twice as fast with includes
   clinics.each do |clinic|
-    
-    entry = { 
+
+    entry = {
       "n" => clinic.name,
       "sp" => clinic.clinic_specializations.map{ |cs| cs.specialization_id },
       "c" => clinic.cities.map{ |city| city.id },
