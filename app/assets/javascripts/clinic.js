@@ -164,6 +164,7 @@ $(".clinic_location_4").live("change", function() { clinic_address_location_chan
 $(".clinic_location_5").live("change", function() { clinic_address_location_changed(5) });
 $(".clinic_location_6").live("change", function() { clinic_address_location_changed(6) });
 $(".clinic_location_7").live("change", function() { clinic_address_location_changed(7) });
+$(".clinic_location_8").live("change", function() { clinic_address_location_changed(8) });
 
 var clinic_status_changed = function()
 {
