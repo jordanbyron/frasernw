@@ -1,22 +1,17 @@
 - if @subscriptions.present?
-  %h1 Listing Update Notifications
+  .content-wrapper
+    %h1 My Notifications
+    
+    - @subscriptions.each do |subscription|
+      %table.table.table-condensed.table-striped
 
-  %table
-    %tr
-      %th
-      %th
-      %th
-.content-wrapper
- 
-  - @subscriptions.each do |subscription|
-    %tr
-      %td= subscription.id
-      %td= link_to 'Show', subscription
-      %td= link_to 'Edit', edit_subscription_path(subscription)
-      %td= link_to 'Destroy', subscription, :confirm => 'Are you sure?', :method => :delete
-%br
-= link_to 'Create New Update Notification', new_subscription_path
+        %tr
+          %td= link_to "#{subscription.classification} Notifications", subscription
+          %td= link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_subscription_path(subscription), :class => "btn btn-mini ajax")
+          %td= link_to("<i class='icon-trash'></i>".html_safe + " Delete", subscription, :confirm => "Delete Notification Setting #{subscription.id}?", :method => :delete, :class => "btn btn-mini")
 
+    %br
+    %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " Create New Update Notification", new_subscription_path, :class => "btn ajax")
 
 - title "News Items"
 

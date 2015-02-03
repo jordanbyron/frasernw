@@ -1,6 +1,7 @@
 class SubscriptionsController < ApplicationController
  #authorize_resource :class => false
- load_and_authorize_resource
+ #load_and_authorize_resource
+ skip_authorization_check
 
   # GET /subscriptions
   # GET /subscriptions.json

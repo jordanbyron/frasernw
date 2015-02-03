@@ -125,7 +125,7 @@
                           = link_to "Feedback Queue <span class=\"badge #{user_feedback_item_count > 0 ? "badge-warning" : ""}\">#{user_feedback_item_count}/#{total_feedback_item_count}</span>".html_safe, feedback_items_path, :class => "feedback ajax"
                         - else
                           = link_to "Feedback Queue", feedback_items_path, :class => "feedback ajax"
-                      - if current_user_is_super_admin?
+                      - if current_user_is_super_admin? || current_user_is_admin?
                         %li= link_to "Manage Notifications", subscriptions_path, :class => "subscriptions ajax"
                       - if current_user_is_super_admin?
                         %li= link_to "Reports", reports_path, :class => "reports ajax"

@@ -1,4 +1,4 @@
-class SubscriptionWorker < Subscription
+class SubscriptionWorker < ActiveRecord::Base
 
   def initialize(subscription)
     @subscription = subscription
