@@ -8,21 +8,22 @@
 
     = f.input :user_id, as: :hidden
 
-    %h2
-      Divisions to receive updates from:
-    = f.association :divisions, collection: Division.all, label_method: :name, as: :check_boxes, label: "Select a division"
 
     %h2
       Receive News Updates on these topics:
     = f.input :news_type, :as => :check_boxes, :collection => NewsItem.type_hash_as_array, label_method: :last, value_method: :first, :include_blank => false
 
     %h2
-      Notify me when the following Physician Resources change:
+      Notify me when the following Content Item change:
     = f.association :sc_categories, as: :check_boxes, collection: ScCategory.all, label_method: :name, value_method: :id, presence: true, label: "Content categories:"
 
     %h2
-      Notify me of Resource Updates to the following Specializations:
+      Notify me of Resource Updates to the following Specialties:
     = f.association :specializations, collection: Specialization.all, label_method: :name, value_method: :id, as: :check_boxes, presence: true, required: true, label: "Notify me about:"
+
+    %h2
+      Divisions to receive updates from:
+    = f.association :divisions, collection: Division.all, label_method: :name, as: :check_boxes, label: "Select a division"
 
     %h2
       Receive Updates How Often?:

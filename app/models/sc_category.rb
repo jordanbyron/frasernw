@@ -24,6 +24,10 @@ class ScCategory < ActiveRecord::Base
     1 => "Filterable on specialty pages",
     3 => "Inline on specialty pages"
   }
+
+  def self.all_parents
+    all.reject{|c| c.parent.present?}
+  end
   
   def display
     ScCategory::DISPLAY_HASH[display_mask]
