@@ -9,12 +9,24 @@ class CreateActivities < ActiveRecord::Migration
       t.text    :parameters
       t.belongs_to :recipient, :polymorphic => true
 
-      ##custom fields added that were not default to public_activity gem:
+      #############BEGIN devnote:
+      # custom fields added that were not default to public_activity gem:
       t.string :update_classification_type #e.g. News Update or Resource Update
-      t.string :categorization #e.g. #NewsItem::TYPE_HASH
       t.integer :type_mask
-      t.text :type_mask_description
-      t.belongs_to :parent, :polymorphic => true #e.g. ScCategory -> ScItem, Division -> NewsItem
+      t.text :type_mask_description #e.g. #NewsItem::TYPE_HASH
+      t.belongs_to :parent, :polymorphic => true
+
+
+      ## ScItem activity association guide:
+      # Division :owner, ==>
+      #                     #ScCategory#root_category :parent
+      #                                                      #==> ScItem :trackable
+
+      ## NewsItem activity association guide:
+      # Division :parent, :owner ==>
+      #                              NewsItem :trackable
+
+      ############END
 
       t.timestamps
     end
@@ -23,6 +35,7 @@ class CreateActivities < ActiveRecord::Migration
     add_index :activities, [:owner_id, :owner_type]
     add_index :activities, [:recipient_id, :recipient_type]
     add_index :activities, [:parent_id, :parent_type]
+    add_index :activities, [:type_mask, :type_mask_description]
   end
   # Drop table
   def self.down

@@ -1,6 +1,4 @@
 class ScCategory < ActiveRecord::Base
-  include PublicActivity::Model
-  tracked owner: ->(controller, model){controller && controller.current_user} #PublicActivity gem callback method
 
   attr_accessible :name, :show_on_front_page, :show_as_dropdown, :display_mask, :sort_order, :parent_id, :searchable
   validates_presence_of :name, :on => :create, :message => "can't be blank"

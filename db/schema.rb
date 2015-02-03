@@ -23,7 +23,6 @@ ActiveRecord::Schema.define(:version => 20150127065131) do
     t.integer  "recipient_id"
     t.string   "recipient_type"
     t.string   "update_classification_type"
-    t.string   "categorization"
     t.integer  "type_mask"
     t.text     "type_mask_description"
     t.integer  "parent_id"
@@ -36,6 +35,7 @@ ActiveRecord::Schema.define(:version => 20150127065131) do
   add_index "activities", ["parent_id", "parent_type"], :name => "index_activities_on_parent_id_and_parent_type"
   add_index "activities", ["recipient_id", "recipient_type"], :name => "index_activities_on_recipient_id_and_recipient_type"
   add_index "activities", ["trackable_id", "trackable_type"], :name => "index_activities_on_trackable_id_and_trackable_type"
+  add_index "activities", ["type_mask", "type_mask_description"], :name => "index_activities_on_type_mask_and_type_mask_description"
 
   create_table "addresses", :force => true do |t|
     t.string   "address1"

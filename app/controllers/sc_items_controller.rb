@@ -58,6 +58,7 @@ class ScItemsController < ApplicationController
         #remove existing specializations that no longer exist
         ScItemSpecialization.destroy(sis.id) if !params[:specialization].include? sis.specialization_id
       end
+      #DevNote: ^^potentially dangerous use of destroy
       params[:specialization].each do |specialization_id, set|
         #add new specializations
         ScItemSpecialization.find_or_create_by_sc_item_id_and_specialization_id( @sc_item.id, specialization_id )
@@ -66,6 +67,7 @@ class ScItemsController < ApplicationController
         #remove existing procedure specializations that no longer exist
         ScItemSpecializationProcedureSpecialization.destroy(sisps.id) if !params[:procedure_specialization].include? sisps.procedure_specialization_id
       end
+      #DevNote: ^^potentially dangerous use of destroy
       params[:procedure_specialization].each do |ps_id, set|
         #add new procedure specializations
         specialization = ProcedureSpecialization.find(ps_id).specialization

@@ -38,14 +38,16 @@ class Subscription < ActiveRecord::Base
     RESOURCE_UPDATES => "Resource Updates"
   }
 
-  INTERVAL_DAILY = 1
-  INTERVAL_WEEKLY = 2
-  INTERVAL_MONTHLY = 3
+  INTERVAL_IMMEDIATE = 1
+  INTERVAL_DAILY     = 2
+  INTERVAL_WEEKLY    = 3
+  INTERVAL_MONTHLY   = 4
 
   INTERVAL_HASH = {
     INTERVAL_DAILY => "Daily",
     INTERVAL_WEEKLY => "Weekly",
-    INTERVAL_MONTHLY => "Monthly"
+    INTERVAL_MONTHLY => "Monthly",
+    INTERVAL_IMMEDIATE => "Immediate"
   }
 
   def interval_type
@@ -74,6 +76,8 @@ class Subscription < ActiveRecord::Base
 
   def interval_to_datetime
     case interval
+    when ::Subscription::INTERVAL_IMMEDIATE
+      return 1.hours.ago
     when ::Subscription::INTERVAL_DAILY
       return 1.days.ago
     when ::Subscription::INTERVAL_WEEKLY
@@ -83,8 +87,10 @@ class Subscription < ActiveRecord::Base
     end
   end
 
-    def interval_to_words
+  def interval_to_words
     case interval
+    when ::Subscription::INTERVAL_IMMEDIATE
+      return "Immediate"
     when ::Subscription::INTERVAL_DAILY
       return "Daily"
     when ::Subscription::INTERVAL_WEEKLY
