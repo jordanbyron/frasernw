@@ -226,12 +226,14 @@
                 %strong Healthcare providers 
                 ="who see patients at the clinic: #{@clinic.healthcare_providers.map{ |x| x.name }.join(", ")}"
 
-            - if @clinic.attendances?
+            - clinic_attendances = @clinic.attendances.reject{ |attendance| attendance.clinic_location.blank? || attendance.clinic_location.empty? }
+
+            - if clinic_attendances.length > 0
             
               %h6 Physicians who see patients at the clinic
               
               %ul
-                - @clinic.attendances.reject{ |attendance| attendance.clinic_location.blank? || attendance.clinic_location.empty? }.each do |attendance|
+                - @clinic_attendances.each do |attendance|
                   - if attendance.is_specialist
                     - if attendance.specialist && !attendance.specialist.not_available? && !attendance.specialist.in_progress
                       %li
