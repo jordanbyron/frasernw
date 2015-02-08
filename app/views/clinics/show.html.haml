@@ -233,7 +233,7 @@
               %h6 Physicians who see patients at the clinic
               
               %ul
-                - @clinic_attendances.each do |attendance|
+                - clinic_attendances.each do |attendance|
                   - if attendance.is_specialist
                     - if attendance.specialist && !attendance.specialist.not_available? && !attendance.specialist.in_progress
                       %li
