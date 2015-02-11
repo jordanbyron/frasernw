@@ -12,6 +12,7 @@ group :production do
   gem 'heroku_cloud_backup'
 end
 
+gem 'goldiloader' #automate eagerloading to squash N+1 queries
 
 # # Asset template engines
 # gem 'sass-rails', "~> 3.1.0"

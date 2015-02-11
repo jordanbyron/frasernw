@@ -188,6 +188,9 @@ GEM
       fog-core
       nokogiri (~> 1.5, >= 1.5.11)
     formatador (0.2.5)
+    goldiloader (0.0.8)
+      activerecord (>= 3.2, < 4.3)
+      activesupport (>= 3.2, < 4.3)
     guard (2.11.1)
       formatador (>= 0.2.4)
       listen (~> 2.7)
@@ -464,6 +467,7 @@ DEPENDENCIES
   delayed_job_active_record
   exception_notification
   gattica!
+  goldiloader
   guard
   guard-livereload
   guard-rspec
