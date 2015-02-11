@@ -14,6 +14,7 @@ end
 
 gem 'goldiloader' #automate eagerloading to squash N+1 queries
 
+
 # # Asset template engines
 # gem 'sass-rails', "~> 3.1.0"
 # gem 'coffee-script'
@@ -97,6 +98,7 @@ group :development, :test do
   gem 'awesome_print'
   gem 'oink'
   gem 'peek'
+  gem 'annotate', '~> 2.6.5' #inserts schema as a comment into model code, to run~> annotate
 end
 
 group :development do
