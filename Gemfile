@@ -99,6 +99,7 @@ group :development, :test do
   gem 'oink'
   gem 'peek'
   gem 'annotate', '~> 2.6.5' #inserts schema as a comment into model code, to run~> annotate
+  gem 'rails-erd'
 end
 
 group :development do
