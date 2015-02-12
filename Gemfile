@@ -95,11 +95,6 @@ group :development, :test do
   gem 'taps'
   gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
   gem 'rb-fsevent', '~> 0.9.1'
-  gem 'awesome_print'
-  gem 'oink'
-  gem 'peek'
-  gem 'annotate', '~> 2.6.5' #inserts schema as a comment into model code, to run~> annotate
-  gem 'rails-erd'
 end
 
 group :development do
@@ -108,6 +103,11 @@ group :development do
   gem 'rack-mini-profiler'
   #latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
   gem 'lol_dba'
+  gem 'awesome_print'
+  gem 'oink'
+  gem 'peek'
+  gem 'annotate', '~> 2.6.5' #inserts schema as a comment into model code, to run~> annotate
+  gem 'rails-erd'
 end
 
 gem 'ancestry', '~> 1.3.0' #ancestry breaks specialization.rb arrange methods in higher versions
