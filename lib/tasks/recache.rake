@@ -19,7 +19,7 @@ namespace :pathways do
             Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_city_cache/#{c.id}.js") )
           end
           
-          Division.sort{ |a,b| a.id <=> b.id }.all.each do |d|
+          Division.all.sort{ |a,b| a.id <=> b.id }.each do |d|
             puts "Specialization Division #{d.id}"
             expire_fragment "#{specialization_path(s)}_#{division_path(d)}"
             Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_division_cache/#{d.id}.js") )
