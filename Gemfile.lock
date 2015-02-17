@@ -153,6 +153,8 @@ GEM
     lazy_high_charts (1.5.1)
       bundler (>= 1.0)
       hash-deep-merge
+    letter_opener (0.0.2)
+      launchy
     listen (0.7.2)
     lol_dba (1.6.4)
       actionpack (>= 3.0)
@@ -339,6 +341,7 @@ DEPENDENCIES
   jquery-rails
   kgio
   lazy_high_charts
+  letter_opener
   lol_dba
   mechanize
   memcachier
