@@ -17,9 +17,10 @@ class Subscription < ActiveRecord::Base
   has_many :subscription_specializations, dependent: :destroy
   has_many :specializations, through: :subscription_specializations
 
-  scope :daily,   -> {where(interval: 1)}
-  scope :weekly,  -> {where(interval: 2)}
-  scope :monthly, -> {where(interval: 3)}
+  scope :daily,   -> {where(interval: INTERVAL_DAILY)}
+  scope :weekly,  -> {where(interval: INTERVAL_WEEKLY)}
+  scope :monthly, -> {where(interval: INTERVAL_MONTHLY)}
+  scope :immediate, -> {where(interval: INTERVAL_IMMEDIATE)}
 
   accepts_nested_attributes_for :divisions
   accepts_nested_attributes_for :sc_categories

@@ -1,17 +1,19 @@
-- if @subscriptions.present?
-  .content-wrapper
-    %h1 My Notifications
-    
-    - @subscriptions.each do |subscription|
-      %table.table.table-condensed.table-striped
+.content-wrapper
+  %h1 My Notifications
+  .well
+    - if @subscriptions.present?
+      - @subscriptions.each do |subscription|
+        %table.table.table-condensed.table-striped
 
-        %tr
-          %td= link_to "#{subscription.classification} Notifications", subscription
-          %td= link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_subscription_path(subscription), :class => "btn btn-mini ajax")
-          %td= link_to("<i class='icon-trash'></i>".html_safe + " Delete", subscription, :confirm => "Delete Notification Setting #{subscription.id}?", :method => :delete, :class => "btn btn-mini")
-
+          %tr
+            %td= link_to "#{subscription.classification} Notifications", subscription
+            %td= link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_subscription_path(subscription), :class => "btn btn-mini ajax")
+            %td= link_to("<i class='icon-trash'></i>".html_safe + " Delete", subscription, :confirm => "Delete Notification Setting #{subscription.id}?", :method => :delete, :class => "btn btn-mini")
+    - else
+      %br
+      %p.no_indent You currently do not have any subscription notifications created yet.  Click the button below to create your first one.
     %br
-    %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " Create New Update Notification", new_subscription_path, :class => "btn ajax")
+    %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " Create New Update Notification", new_subscription_path, :class => "btn ajax btn btn-primary")
 
 - title "News Items"
 
