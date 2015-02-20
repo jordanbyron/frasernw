@@ -1,26 +1,27 @@
+require 'letter_opener'
 namespace :pathways do
   namespace :subscription do
 
     task daily: :environment do
-      # users.with_subscriptions.each do |user|
-          # message_items = []
-          # content_items.each do |ci|
-          #
-          # (user.subscription && subscription_preferences)
-
-      # end
-
-
+      puts "Mailing Daily subscriptions..... "
+      SubscriptionUserWorker.mail_subscriptions_by_date!(Subscription::INTERVAL_DAILY)
+      puts "Daily subscriptions sent!"
     end
 
     task weekly: :environment do
+      puts "Mailing Weekly subscriptions..... "
+      SubscriptionUserWorker.mail_subscriptions_by_date!(Subscription::INTERVAL_WEEKLY)
+      puts "Weekly subscriptions sent!"
     end
 
     task monthly: :environment do
+      puts "Mailing Monthly subscriptions..... "
+      SubscriptionUserWorker.mail_subscriptions_by_date!(Subscription::INTERVAL_MONTHLY)
+      puts "Monthly subscriptions sent!"
     end
 
-    task all: [:monthly, :weekly, :daily] do
-
+    task all: [:daily, :weekly, :monthly] do
+      puts "All subscriptions sent!"
     end
   end
 end

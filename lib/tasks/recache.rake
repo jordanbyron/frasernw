@@ -170,7 +170,7 @@ namespace :pathways do
         end
       end
     end
-    
+
     task :specialization_content => :environment do
       puts "Expiring specialization content..."
       Specialization.all.each do |s|
@@ -182,7 +182,7 @@ namespace :pathways do
         end
       end
     end
-    
+
     task :specific_specialization, [:specialization_id] => [:environment] do |t, args|
       specialization_id = args[:specialization_id] || -1
       if specialization_id == -1
@@ -193,24 +193,24 @@ namespace :pathways do
       puts "Specialization #{s.id}"
       expire_fragment specialization_path(s)
       Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_cache") )
-      
+
       City.all.each do |c|
         puts "Specialization City #{c.id}"
         expire_fragment "#{specialization_path(s)}_#{city_path(c)}"
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_city_cache/#{c.id}.js") )
       end
-      
+
       Division.all.each do |d|
         puts "Specialization Division #{d.id}"
         expire_fragment "#{specialization_path(s)}_#{division_path(d)}"
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_division_cache/#{d.id}.js") )
       end
-        
+
       #expire the grouped together cities
       User.all.map{ |u| City.for_user_in_specialization(u, s).map{ |c| c.id } }.uniq.each do |city_group|
         expire_fragment "specialization_#{s.id}_content_cities_#{city_group.join('_')}"
       end
-      
+
       #expire the grouped together divisions
       User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
         expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
@@ -219,19 +219,19 @@ namespace :pathways do
 
     # The following methods are defined to fake out the ActionController
     # requirements of the Rails cache
-    
+
     def cache_store
       ActionController::Base.cache_store
     end
-    
+
     def self.benchmark( *params )
       yield
     end
-    
+
     def cache_configured?
       true
     end
-  
-    
+
+
   end
 end
