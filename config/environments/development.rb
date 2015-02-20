@@ -28,24 +28,26 @@ Frasernw::Application.configure do
   # config.action_mailer.raise_delivery_errors = false
   config.action_mailer.raise_delivery_errors = true
 
+  config.action_mailer.delivery_method = :letter_opener
+
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
 
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
-  
+
   #imagemagick path
   Paperclip.options[:command_path] = "/usr/local/bin/"
 
   #kelseydevnote: added to find bad queries
   Rails.application.middleware.use Oink::Middleware
-end
 
-ActionMailer::Base.smtp_settings = {
-  :address              => "smtp.gmail.com",
-  :port                 => 587,
-  :user_name            => ENV['SMTP_USER'],
-  :password             => ENV['SMTP_PASS'],
-  :authentication       => "plain",
-  :enable_starttls_auto => true
-}
+  # ActionMailer::Base.smtp_settings = {
+  #   :address              => "smtp.gmail.com",
+  #   :port                 => 587,
+  #   :user_name            => ENV['SMTP_USER'],
+  #   :password             => ENV['SMTP_PASS'],
+  #   :authentication       => "plain",
+  #   :enable_starttls_auto => true
+  # }
+end
