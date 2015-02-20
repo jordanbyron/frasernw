@@ -19,7 +19,6 @@ class SubscriptionMailer < ActionMailer::Base
   end
 
     def send_news_update_subscription_email(activities_for_subscription, tracked_activity_objects, subscription)
-
     @subscription = subscription
     @user = subscription.user
     @interval = @subscription.interval_to_words

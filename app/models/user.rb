@@ -32,15 +32,14 @@ class User < ActiveRecord::Base
   has_many :user_cities, :dependent => :destroy
   has_many :user_city_specializations, :through => :user_cities
 
-  has_many :user_subscriptions, :dependent => :destroy
-  has_many :subscriptions, :through => :user_subscriptions
+  has_many :subscriptions, :dependent => :destroy
 
   # times that the user (as admin) has contacted specialists
   has_many :contacts
 
   validates_presence_of :name
   validates :agree_to_toc, presence: true
-  
+
   default_scope order('users.name')
 
 LIMITED_ROLE_HASH = {
@@ -94,6 +93,10 @@ LIMITED_ROLE_HASH = {
     where("users.active = (?)", false)
   end
 
+  def self.with_subscriptions #return only admins/super-admins with subscriptions created
+    admin.reject{|u| u.subscriptions.empty?}
+  end
+
   def self.in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     joins(:user_divisions).where('"division_users"."division_id" IN (?)', division_ids)
@@ -126,6 +129,10 @@ LIMITED_ROLE_HASH = {
   
   def pending?
     self.email.blank?
+  end
+
+  def subscriptions_by_date_interval(date_interval)
+    subscriptions.select{|s| s.interval == date_interval}
   end
 
   def role_full

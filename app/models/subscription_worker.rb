@@ -12,9 +12,10 @@ class SubscriptionWorker < ActiveRecord::Base
   def self.send_and_filter_by_subscription_classification(activities_for_subscription, subscription)
     @activities_for_subscription = activities_for_subscription
     @tracked_objects = self.to_tracked_objects(@activities_for_subscription)
+
     if subscription.classification == Subscription.resource_update
       SubscriptionMailer.send_resource_update_subscription_email(activities_for_subscription, self.only_with_specialization(@tracked_objects), subscription).deliver!
-    elsif subscription.classification == Subscription.news_update
+    else subscription.classification == Subscription.news_update
       SubscriptionMailer.send_news_update_subscription_email(activities_for_subscription, @tracked_objects, subscription).deliver!
     end
   end
