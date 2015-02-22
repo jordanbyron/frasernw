@@ -6,8 +6,17 @@ namespace :pathways do
     vancouverDivision = Division.find_by_name("Vancouver")
     vancouverCity = City.find_by_name("Vancouver")
 
-    #todo:
-    #trim all hospital and clinic names first?
+    Hospital.all.each do |h|
+      next if h.name.blank?
+      h.name = h.name.strip
+      h.save
+    end
+
+    Clinic.all.each do |c|
+      next if c.name.blank?
+      c.name = c.name.strip
+      c.save
+    end
 
     puts "--------------- Hospitals ---------------"
 
@@ -24,9 +33,19 @@ namespace :pathways do
         puts "Found duplicate hospital #{other_hospital.name} at #{other_hospital.short_address}"
 
         hospital.locations_in.each do |location|
-          puts "- migrating #{location.full_address} to #{other_hospital.short_address}"
-          location.hospital_in_id = other_hospital.id
-          location.save
+
+          if (location.locatable.present? &&
+            (location.locatable_type == "ClinicLocation") &&
+            location.locatable.clinic.present? &&
+            (Clinic.find_all_by_name(location.locatable.clinic.name).reject{ |other_clinic| (other_clinic.id == location.locatable.clinic.id) || (other_clinic.locations.reject{ |l| l.blank? || l.city.blank? || (l.city.id == vancouverHiddenCity.id) }.length == 0) }.length >= 1))
+
+            puts "- leaving duplicate clinic #{location.locatable.clinic.name} in Vancouver (Hidden) to be merged later"
+          else
+            puts "- migrating #{location.full_address} to #{other_hospital.short_address}"
+            location.hospital_in_id = other_hospital.id
+            location.save
+          end
+
         end
 
         hospital.privileges.each do |privilege|
@@ -38,9 +57,22 @@ namespace :pathways do
 
       else
         address = hospital.address
-        puts "- migrating #{hospital.name} at #{hospital.short_address} to Vancouver"
+        puts "Moving #{hospital.name} at #{hospital.short_address} to Vancouver"
         address.city = vancouverCity
         address.save
+
+        #if there are clinics attached that are duplicates, move them back into Vancouver (Hidden) so they will merge with their non-duplicate below
+        hospital.locations_in.each do |location|
+          if (location.locatable.present? &&
+            (location.locatable_type == "ClinicLocation") &&
+            location.locatable.clinic.present? &&
+            (Clinic.find_all_by_name(location.locatable.clinic.name).reject{ |other_clinic| (other_clinic.id == location.locatable.clinic.id) || (other_clinic.locations.reject{ |l| l.blank? || l.city.blank? || (l.city.id == vancouverHiddenCity.id) }.length == 0) }.length >= 1))
+            puts "- migrating clinic #{clinic.name} back to Vancouver (Hidden) to merge later"
+            location.hospital_in = nil
+            location.address = Address.create :city_id => vancouverHiddenCity.id
+            location.save
+          end
+        end
       end
     end
 
@@ -120,8 +152,6 @@ namespace :pathways do
 
     puts "--------------- Specialists ---------------"
 
-    vancouver_offices = Office.in_cities([vancouverCity])
-
     Specialist.in_divisions([vancouverHiddenDivision]).each do |specialist|
 
       puts specialist.name
@@ -134,36 +164,17 @@ namespace :pathways do
         end
 
         if specialist_office.office.location.in_clinic?
-          puts "ERROR: specialist #{specialist.name} at #{specialist_office.office.location.short_address} is still in a hospital that is in Vancouver (Hidden)"
+          puts "ERROR: specialist #{specialist.name} at #{specialist_office.office.location.short_address} is still in a clinic that is in Vancouver (Hidden)"
           next
         end
 
         specialist_address = specialist_office.office.location.address
 
-        matching_offices = vancouver_offices.reject{ |office| (office.location.address.address1 != specialist_address.address1) || (office.location.address.address2 != specialist_address.address2) || (office.location.address.suite != specialist_address.suite) || (office.location.address.postalcode != specialist_address.postalcode) }
-
-        if matching_offices.length >= 1
-
-          if matching_offices.length >= 2
-            puts "ERROR: Found more than one offcie with the address #{specialist_address.address}"
-          end
-
-          matching_office = matching_offices.first
-
-          puts "- migrating #{specialist.name} at #{specialist_address.address} to #{matching_office.full_address}"
-          specialist_office.office = matching_office
-          specialist_office.save
-
-        else
-
-          puts "- migrating #{specialist.name} at #{specialist_office.office.location.short_address} to Vancouver"
-          address = specialist_office.office.location.address
-          address.city = vancouverCity
-          address.save
-
-        end
+        puts "- migrating #{specialist.name} at #{specialist_office.office.location.short_address} to Vancouver"
+        address = specialist_office.office.location.address
+        address.city = vancouverCity
+        address.save
       end
     end
-
   end
 end
