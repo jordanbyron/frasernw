@@ -176,28 +176,5 @@ namespace :pathways do
         address.save
       end
     end
-
-    puts "--------------- Offices ---------------"
-
-    vancouver_offices = Office.in_cities([vancouverCity]).uniq
-
-    vancouver_offices.each do |office1|
-      next if office1.specialist_offices.blank?
-      matching_offices = vancouver_offices.reject{ |office2| (office1.id == office2.id) ||
-        (office1.location.address.address1.strip != office2.location.address.address1.strip) ||
-        (office1.location.address.address2.strip != office2.location.address.address2.strip) ||
-        (office1.location.address.suite.strip != office2.location.address.suite.strip) ||
-        (office1.location.address.postalcode.strip != office2.location.address.postalcode.strip) }
-
-      matching_offices.each do |office2|
-        puts "- merging offices at #{office1.location.short_address}"
-
-        office2.specialist_offices.each do |specialist_office|
-          puts " - #{specialist_office.specialist.name}" if specialist_office.specialist.present?
-          specialist_office.office = office1
-          specialist_office.save
-        end
-      end
-    end
   end
 end

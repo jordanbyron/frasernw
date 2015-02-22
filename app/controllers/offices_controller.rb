@@ -5,11 +5,7 @@ class OfficesController < ApplicationController
   def index
     if params[:city_id].present?
       @city = City.includes(:addresses => :locations).find(params[:city_id])
-      @offices = []
-      
-      @city.addresses.each do |a|
-        @offices << a.offices
-      end
+      @offices = Office.in_cities([@city])
       
       @offices = @offices.flatten.uniq.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}
     elsif current_user_is_super_admin?
