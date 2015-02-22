@@ -9,41 +9,6 @@ namespace :pathways do
     #todo:
     #trim all hospital and clinic names first?
 
-    puts "--------------- Hospitals ---------------"
-
-    Hospital.in_divisions([vancouverHiddenDivision]).each do |hospital|
-      other_hospitals = Hospital.find_all_by_name(hospital.name).reject{ |h| !h.city || (h.city.id == vancouverHiddenCity.id) }
-      if other_hospitals.length >= 1
-
-        if other_hospitals.length >= 2
-          puts "ERROR: Found more than one hospital with the name #{hospital.name}"
-        end
-
-        other_hospital = other_hospitals.first
-
-        puts "Found duplicate hospital #{other_hospital.name} at #{other_hospital.short_address}"
-
-        hospital.locations_in.each do |location|
-          puts "- migrating #{location.full_address} to #{other_hospital.short_address}"
-          location.hospital_in_id = other_hospital.id
-          location.save
-        end
-
-        hospital.privileges.each do |privilege|
-          next if privilege.specialist.blank?
-          puts "- migrating #{privilege.specialist.name} to #{other_hospital.short_address}"
-          privilege.hospital = other_hospital
-          privilege.save
-        end
-
-      else
-        address = hospital.address
-        puts "- migrating #{hospital.name} at #{hospital.short_address} to Vancouver"
-        address.city = vancouverCity
-        address.save
-      end
-    end
-
     puts "--------------- Clinics ---------------"
 
     Clinic.in_divisions([vancouverHiddenDivision]).each do |clinic|
@@ -105,16 +70,46 @@ namespace :pathways do
         clinic.locations.each do |location|
           next if (location.empty? || location.blank? || location.city.blank? || (location.city.id != vancouverHiddenCity.id))
 
-          if location.in_hospital?
-            puts "ERROR: clinic #{clinic.name} at #{location.short_address} is still in a hospital that is in Vancouver (Hidden)"
-            next
-          end
-
           puts "Migrating #{clinic.name} at #{location.short_address} to Vancouver"
           address = location.address
           address.city = vancouverCity
           address.save
         end
+      end
+    end
+
+    puts "--------------- Hospitals ---------------"
+
+    Hospital.in_divisions([vancouverHiddenDivision]).each do |hospital|
+      other_hospitals = Hospital.find_all_by_name(hospital.name).reject{ |h| !h.city || (h.city.id == vancouverHiddenCity.id) }
+      if other_hospitals.length >= 1
+
+        if other_hospitals.length >= 2
+          puts "ERROR: Found more than one hospital with the name #{hospital.name}"
+        end
+
+        other_hospital = other_hospitals.first
+
+        puts "Found duplicate hospital #{other_hospital.name} at #{other_hospital.short_address}"
+
+        hospital.locations_in.each do |location|
+          puts "- migrating #{location.full_address} to #{other_hospital.short_address}"
+          location.hospital_in_id = other_hospital.id
+          location.save
+        end
+
+        hospital.privileges.each do |privilege|
+          next if privilege.specialist.blank?
+          puts "- migrating #{privilege.specialist.name} to #{other_hospital.short_address}"
+          privilege.hospital = other_hospital
+          privilege.save
+        end
+
+      else
+        address = hospital.address
+        puts "- migrating #{hospital.name} at #{hospital.short_address} to Vancouver"
+        address.city = vancouverCity
+        address.save
       end
     end
 
