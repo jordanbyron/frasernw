@@ -16,7 +16,7 @@ class Clinic < ActiveRecord::Base
   has_many :addresses, :through => :locations
   
   #clinics speak many languages
-  has_many   :clinic_speaks, :dependent => :destroy, :dependent => :destroy
+  has_many   :clinic_speaks, :dependent => :destroy
   has_many   :languages, :through => :clinic_speaks, :order => "name ASC"
   
   #clinics have multiple referral forms
