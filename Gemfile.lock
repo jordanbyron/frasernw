@@ -184,8 +184,9 @@ GEM
     nifty-generators (0.4.6)
     nokogiri (1.5.0)
     ntlm-http (0.1.1)
-    paper_trail (2.4.0)
-      rails (~> 3)
+    paper_trail (2.7.2)
+      activerecord (~> 3.0)
+      railties (~> 3.0)
     paperclip (2.7.0)
       activerecord (>= 2.3.0)
       activesupport (>= 2.3.2)
@@ -333,7 +334,7 @@ DEPENDENCIES
   nested_form!
   newrelic_rpm
   nifty-generators
-  paper_trail (~> 2)
+  paper_trail (~> 2.7)
   paperclip (~> 2.7)
   pg
   pry-rails
