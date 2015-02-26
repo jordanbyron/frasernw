@@ -190,8 +190,9 @@ GEM
     oink (0.10.1)
       activerecord
       hodel_3000_compliant_logger
-    paper_trail (2.4.0)
-      rails (~> 3)
+    paper_trail (2.7.2)
+      activerecord (~> 3.0)
+      railties (~> 3.0)
     paperclip (2.7.0)
       activerecord (>= 2.3.0)
       activesupport (>= 2.3.2)
@@ -349,7 +350,7 @@ DEPENDENCIES
   newrelic_rpm
   nifty-generators
   oink
-  paper_trail (~> 2)
+  paper_trail (~> 2.7)
   paperclip (~> 2.7)
   pg
   pry-rails
