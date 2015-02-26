@@ -499,7 +499,7 @@ DEPENDENCIES
   nifty-generators
   nokogiri
   oink
-  paper_trail (~> 2)
+  paper_trail (~> 2.7)
   paperclip (~> 2.7)
   peek
   pg
