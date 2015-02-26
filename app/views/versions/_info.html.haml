@@ -1,5 +1,5 @@
 .alert.alert-success
-  - if @version.event = "create"
+  - if (@version.event = "create") && !(@version.reify.present?)
     %h4 You are viewing the first version of this #{@klass} record.
     - if @version.previous.present?
       This version was saved #{@version.previous.created_at.to_s(:date_ordinal)} by #{whodunnit_name(@version.previous)}.
