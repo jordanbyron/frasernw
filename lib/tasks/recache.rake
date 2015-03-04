@@ -1,6 +1,3 @@
-if Rails.env.development?
-  require 'rake/benchmark'
-end
 namespace :pathways do
   namespace :recache do
     include ActionController::Caching::Actions
