@@ -67,9 +67,25 @@ class Specialist < ActiveRecord::Base
       :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
       :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
     }
-  
+
   before_save :destroy_photo?
-    
+
+  # # # Cache actions
+  after_commit :flush_cached_find
+
+  # def self.all_cached
+  #   Rails.cache.fetch('Specialist.all') { all }
+  # end
+
+  def self.cached_find(id)
+    Rails.cache.fetch([name, id]) { find(id) }
+  end
+
+  def flush_cached_find
+    Rails.cache.delete([self.class.name, id])
+  end
+  # # #
+
   def self.not_in_progress_for_specialization(specialization)
     in_progress_cities = []
     

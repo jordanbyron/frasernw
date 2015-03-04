@@ -46,6 +46,22 @@ class Clinic < ActiveRecord::Base
   has_many :feedback_items, :as => :item, :conditions => { "archived" => false }
   
   default_scope order('clinics.name')
+
+  # # # Cache actions
+  after_commit :flush_cached_find
+
+  # def self.all_cached
+  #   Rails.cache.fetch('Clinic.all') { all }
+  # end
+
+  def self.cached_find(id)
+    Rails.cache.fetch([name, id]) { find(id) }
+  end
+
+  def flush_cached_find
+    Rails.cache.delete([self.class.name, id])
+  end
+  # # #
     
   def self.not_in_progress_for_specialization(specialization)
     in_progress_cities = []

@@ -20,6 +20,22 @@ class Specialization < ActiveRecord::Base
   has_many :content_owners, :through => :specialization_options, :class_name => "User"
   
   default_scope order('specializations.name')
+
+  # # # Cache actions
+  after_commit :flush_cached_find
+
+  # def self.all_cached
+  #   Rails.cache.fetch('Specialization.all') { all }
+  # end
+
+  def self.cached_find(id)
+    Rails.cache.fetch([name, id]) { find(id) }
+  end
+
+  def flush_cached_find
+    Rails.cache.delete([self.class.name, id])
+  end
+  # # #
   
   def self.in_progress_for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }

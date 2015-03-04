@@ -30,7 +30,24 @@ class Division < ActiveRecord::Base
   default_scope order('divisions.name')
   
   validates_presence_of :name, :on => :create, :message => "can't be blank"
-  
+
+  # # # Cache actions
+  after_commit :flush_cached_find
+
+  # def self.all_cached
+  #   Rails.cache.fetch('Division.all', :expires_in => 8.hours) { all }
+  # end
+
+  def self.cached_find(id)
+    Rails.cache.fetch([name, id]) { find(id) }
+  end
+
+  def flush_cached_find
+    Rails.cache.delete([self.class.name, id])
+  end
+
+  # # #
+
   def to_s
     self.name
   end

@@ -31,6 +31,22 @@ class ScItem < ActiveRecord::Base
   
   default_scope order('sc_items.title')
 
+  # # # Cache actions
+  after_commit :flush_cached_find
+
+  # def self.all_cached
+  #   Rails.cache.fetch('ScItem.all') { all }
+  # end
+
+  def self.cached_find(id)
+    Rails.cache.fetch([name, id]) { find(id) }
+  end
+
+  def flush_cached_find
+    Rails.cache.delete([self.class.name, id])
+  end
+  # # #
+
   def not_in_progress
     division.blank? || (SpecializationOption.not_in_progress_for_divisions_and_specializations([division], specializations).length > 0)
   end

@@ -1,7 +1,7 @@
 class City < ActiveRecord::Base
   attr_accessible :name, :province_id, :hidden
   has_paper_trail
-  
+
   belongs_to :province
   has_many :addresses
   has_many :locations, :through => :addresses
@@ -12,11 +12,27 @@ class City < ActiveRecord::Base
   default_scope order('cities.name')
   
   validates_presence_of :name, :on => :create, :message => "can't be blank"
-  
+
+  # # # Caching methods
+  after_commit :flush_cached_find
+
+  # def self.all_cached
+  #   Rails.cache.fetch('City.all') { all }
+  # end
+
+  def self.cached_find(id)
+    Rails.cache.fetch([name, id]) { find(id) }
+  end
+
+  def flush_cached_find
+    Rails.cache.delete([self.class.name, id])
+  end
+  # # #
+
   def to_s
     self.name
   end
-  
+
   def self.in_divisions(divisions)
     division_ids = divisions.map{ |division| division.id }
     joins('INNER JOIN "division_cities" ON "cities".id = "division_cities".city_id').where('"division_cities".division_id IN (?)', division_ids).uniq
