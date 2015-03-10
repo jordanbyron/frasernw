@@ -3,6 +3,7 @@ class Subscription < ActiveRecord::Base
   serialize :news_type
 
   #before_action save_subscription_news_item_types
+  validates :classification, :interval, presence: true
 
   belongs_to :user
 
@@ -35,8 +36,8 @@ class Subscription < ActiveRecord::Base
   RESOURCE_UPDATES = 2
 
   UPDATE_CLASSIFICATION_HASH = {
-    NEWS_UPDATES => "News Updates",
-    RESOURCE_UPDATES => "Resource Updates"
+    NEWS_UPDATES => "News Updates".freeze,
+    RESOURCE_UPDATES => "Resource Updates".freeze
   }
 
   INTERVAL_IMMEDIATE = 1
@@ -45,10 +46,10 @@ class Subscription < ActiveRecord::Base
   INTERVAL_MONTHLY   = 4
 
   INTERVAL_HASH = {
-    INTERVAL_DAILY => "Daily",
-    INTERVAL_WEEKLY => "Weekly",
-    INTERVAL_MONTHLY => "Monthly",
-    INTERVAL_IMMEDIATE => "Immediate"
+    INTERVAL_DAILY => "Daily".freeze,
+    INTERVAL_WEEKLY => "Weekly".freeze,
+    INTERVAL_MONTHLY => "Monthly".freeze,
+    INTERVAL_IMMEDIATE => "Immediate".freeze
   }
 
   def interval_type
@@ -91,7 +92,7 @@ class Subscription < ActiveRecord::Base
   def interval_to_words
     case interval
     when ::Subscription::INTERVAL_IMMEDIATE
-      return "Immediate"
+      return "Immediate".freeze
     when ::Subscription::INTERVAL_DAILY
       return "Daily"
     when ::Subscription::INTERVAL_WEEKLY
