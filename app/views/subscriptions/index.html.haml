@@ -2,13 +2,19 @@
   %h1 My Notifications
   .well
     - if @subscriptions.present?
-      - @subscriptions.each do |subscription|
-        %table.table.table-condensed.table-striped
 
+      %table.table.table-condensed.table-striped
+        %tr
+          %th Notification Type
+          %th Interval
+          %th Options
+        - @subscriptions.each do |subscription|
           %tr
-            %td= link_to "#{subscription.classification} Notifications", subscription
-            %td= link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_subscription_path(subscription), :class => "btn btn-mini ajax")
-            %td= link_to("<i class='icon-trash'></i>".html_safe + " Delete", subscription, :confirm => "Delete Notification Setting #{subscription.id}?", :method => :delete, :class => "btn btn-mini")
+            %td{:style => "white-space: nowrap"}= link_to "#{subscription.classification} Notifications", subscription
+            %td{:style => "white-space: nowrap"}= subscription.interval_type
+            %td{:style => "white-space: nowrap"}
+              = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_subscription_path(subscription), :class => "btn btn-mini ajax")
+              = link_to("<i class='icon-trash'></i>".html_safe + " Delete", subscription, :confirm => "Delete Notification Setting #{subscription.id}?", :method => :delete, :class => "btn btn-mini")
     - else
       %br
       %p.no_indent You currently do not have any subscription notifications created yet.  Click the button below to create your first one.
