@@ -1,6 +1,6 @@
-require 'letter_opener'
+require 'delayed_job'
 namespace :pathways do
-  namespace :subscription do
+  namespace :subscription => :environment do
 
     task daily: :environment do
       puts "Mailing Daily subscriptions..... "
