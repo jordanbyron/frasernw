@@ -81,7 +81,8 @@ group :development do
   gem 'rack-mini-profiler'
   #latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
   gem 'lol_dba'
-  gem "letter_opener"
+  gem 'letter_opener'
+  gem 'debugger'
 end
 
 gem 'ancestry'
