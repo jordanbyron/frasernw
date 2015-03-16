@@ -1,4 +1,4 @@
-require 'debugger'
+#require 'debugger'
 class SubscriptionWorker < ActiveRecord::Base
   def initialize(subscription)
     @subscription = subscription
