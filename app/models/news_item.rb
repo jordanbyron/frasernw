@@ -67,8 +67,8 @@ class NewsItem < ActiveRecord::Base
     TYPE_HASH[type_mask]
   end
 
-  def self.type_hash_as_array
-    TYPE_HASH.to_a.map {|k,v| [k.to_s, v.to_s]}
+  def self.type_hash_as_form_array
+    TYPE_HASH.to_a.map {|k,v| [k.to_s, v.to_s.pluralize]}
   end
 
   default_scope order('news_items.start_date DESC')
