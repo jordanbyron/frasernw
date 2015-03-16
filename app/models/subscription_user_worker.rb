@@ -4,7 +4,7 @@ class SubscriptionUserWorker < ActiveRecord::Base
     User.with_subscriptions.each do |user|
       next unless user.subscriptions.present?
       user.subscriptions_by_date_interval(date_interval).each do |subscription|
-        SubscriptionWorker.process_subscriptions!(subscription)
+        SubscriptionWorker.mail_subscriptions!(subscription)
       end
     end
   end

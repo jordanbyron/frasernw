@@ -4,14 +4,20 @@ class SubscriptionWorker < ActiveRecord::Base
     @subscription = subscription
   end
 
-  def self.process_subscriptions!(subscription)
-    @activities_for_subscription = SubscriptionActivity.collect_activities(subscription.interval_to_datetime, subscription.classification, subscription.divisions, subscription.news_type_masks)
-    return if @activities_for_subscription.empty?
-    #debugger
-    mail_subscription_by_classification(@activities_for_subscription, subscription)
+  def self.collect_activities(subscription)
+    @activities_for_subscription = SubscriptionActivity.collect_activities(subscription.interval_to_datetime,
+                                                                           subscription.classification,
+                                                                           subscription.divisions,
+                                                                           subscription.news_type_masks)
   end
 
-  def self.mail_subscription_by_classification(activities_for_subscription, subscription)
+  def self.mail_subscriptions!(subscription)
+    @activities_for_subscription = collect_activities(subscription)
+    return if @activities_for_subscription.empty?
+    mail_by_classification!(@activities_for_subscription, subscription)
+  end
+
+  def self.mail_by_classification!(activities_for_subscription, subscription)
     @tracked_objects = to_tracked_objects(activities_for_subscription)
 
     if subscription.classification == Subscription.resource_update
