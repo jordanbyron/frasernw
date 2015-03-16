@@ -19,7 +19,7 @@ gem 'haml-rails'
 gem 'authlogic'
 gem 'paper_trail', '~> 2.7'
 gem 'will_paginate', '~> 3.0.0'
-gem "simple_form", "~> 2.0.1"
+gem "simple_form", '~> 2.1'
 gem "nested_form", :git => "https://github.com/warneboldt/nested_form.git", :ref => "35a2cf060680280413880337a3f89bdec469301c"
 #gem 'nested_form', '0.3.2', :path => '~/Documents/Programming/Pathways/warneboldt/nested_form/'
 gem 'exception_notification'
