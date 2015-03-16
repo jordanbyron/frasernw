@@ -22,7 +22,7 @@
         = f.input :all_news_types, label: "All News Items", as: :fake_string, input_html: { value: nil, type: "checkbox"}
         = f.input :news_type, :as => :check_boxes, :collection => NewsItem.type_hash_as_form_array, label_method: :last, value_method: :first, :include_blank => false, label: "Only for:", input_html: {:class => "news_type-option"}
 
-    .news-updates
+    .resource-updates
       %hr
       %h2
         Notify me of changes to these Content Categories:
@@ -36,7 +36,7 @@
       .alert.alert-info
         #container
           %h2
-            Notify me when resources for these Specialties change:
+            Notify me when Resources for these Specialties change:
 
           = f.input :all_specializations, label: "All Specialties", as: :fake_string, input_html: { value: nil, type: "checkbox"}
           = f.association :specializations, collection: Specialization.all, label_method: :name, value_method: :id, as: :check_boxes, presence: true, required: true, label: "Only for:", input_html: { :class => "specialization-option"}
