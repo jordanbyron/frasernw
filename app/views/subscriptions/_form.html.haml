@@ -32,13 +32,6 @@
         #container
           %h2
             Notify me when Resources are updated in the following Specialties:
-          =# f.label "<label><input checked='checked' class='spec' id='specall' name='spec#specall' type='checkbox'>All</label>".html_safe
-
-          / %label
-          /   %input.spec#specall{"type" => "checkbox", "name" => "spec#specall", "checked" => "checked"} All
-          / %br
-          =# f.input :create_key, input_html: {type: :checkbox, value: nil, :class => "all_specializations"}, label: "All"
-          =# f.input :all, as: :fake
           = f.input :all_specializations, label: "All Specializations", as: :fake_string, input_html: { value: nil, type: "checkbox"}
           = f.association :specializations, collection: Specialization.all, label_method: :name, value_method: :id, as: :check_boxes, presence: true, required: true, label: "Notify me specifically about:"
     %hr

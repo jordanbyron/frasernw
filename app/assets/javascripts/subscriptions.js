@@ -1,6 +1,47 @@
 // Place all the behaviors and hooks related to the matching controller here.
 // All this logic will automatically be available in application.js.
 
+$(document).ready(function() {
+
+
+  $("#subscription_classification_news_updates").change(function(){ 
+    console.log("news update change");
+    update_for_classification_change();
+  });
+
+  $("#subscription_classification_resource_updates").change(function(){ 
+    console.log("resource update change");
+    update_for_classification_change();
+  });
+
+
+  var update_for_classification_change = function()
+  {
+    $('.all-updates').show(); // show form submit options again
+    if ($("#subscription_classification_news_updates").is(":checked"))
+    {
+      console.log("news update checked");
+      $(".news-updates").show();
+      $(".resource-updates").hide();
+    }
+    else if ($("#subscription_classification_resource_updates").is(":checked"))
+    {
+      console.log("resource update checked");
+      $(".news-updates").hide();
+      $(".resource-updates").show();
+    }
+
+  }
+  // var news_updates_changed = function(){
+  //   alert("news_updates_changed");
+  // }
+  //$("#subscription_classification_news_updates").live("change", resource_updates_changed);
+
+  //$("#subscription_classification_resource_updates").live("change", news_updates_changed);
+
+  //$("#subscription_classification_resource_updates").prop('checked', true).show()
+
+});
 
 // var hideall = function(){
 
@@ -12,10 +53,10 @@
 
 // hideall;
 
-// $("#subscription_classification_news_updates").change(alert("hello"));
+//                                                           
 
 
-// BEST Working example ATM:
+//BEST Working example ATM:
 // $(document).on(function() {
 
 //   $.fn.fix_radios = function() {
