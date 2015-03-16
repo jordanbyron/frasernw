@@ -67,6 +67,9 @@ GEM
       uuidtools (~> 2.1)
     bluecloth (2.2.0)
     builder (3.0.4)
+    bullet (4.13.1)
+      activesupport (>= 3.0.0)
+      uniform_notifier (>= 1.6.0)
     cancan (1.6.7)
     cocaine (0.2.1)
     coderay (1.1.0)
@@ -316,6 +319,7 @@ GEM
       kgio (~> 2.4)
       rack
       raindrops (~> 0.6)
+    uniform_notifier (1.6.2)
     uuidtools (2.1.2)
     validates_email_format_of (1.5.3)
     wannabe_bool (0.1.0)
@@ -331,6 +335,7 @@ DEPENDENCIES
   awesome_print
   aws-sdk
   bluecloth
+  bullet
   cancan (~> 1.6.7)
   coffee-script
   daemons

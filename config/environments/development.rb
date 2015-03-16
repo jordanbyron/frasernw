@@ -42,12 +42,26 @@ Frasernw::Application.configure do
   #kelseydevnote: added to find bad queries
   Rails.application.middleware.use Oink::Middleware
 
-  # ActionMailer::Base.smtp_settings = {
-  #   :address              => "smtp.gmail.com",
-  #   :port                 => 587,
-  #   :user_name            => ENV['SMTP_USER'],
-  #   :password             => ENV['SMTP_PASS'],
-  #   :authentication       => "plain",
-  #   :enable_starttls_auto => true
-  # }
+  config.after_initialize do
+    #bullet actions only run if explicitly enabled
+    Bullet.enable = true
+    #Bullet.alert = false
+    Bullet.bullet_logger = true
+    Bullet.console = true
+    ##Bullet.growl = true
+    Bullet.rails_logger = true
+    ## Bullet.bugsnag = true
+    ## #Bullet.airbrake = true
+    Bullet.add_footer = false
+    ##Bullet.stacktrace_includes = [ 'your_gem', 'your_middleware' ]
+  end
+
+  ActionMailer::Base.smtp_settings = {
+    :address              => "smtp.gmail.com",
+    :port                 => 587,
+    :user_name            => ENV['SMTP_USER'],
+    :password             => ENV['SMTP_PASS'],
+    :authentication       => "plain",
+    :enable_starttls_auto => true
+  }
 end

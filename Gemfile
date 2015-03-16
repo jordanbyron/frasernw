@@ -83,6 +83,7 @@ group :development do
   gem 'lol_dba'
   gem 'letter_opener'
   gem 'debugger'
+  gem 'bullet'
 end
 
 gem 'ancestry'
