@@ -16,11 +16,15 @@ class SubscriptionActivity < PublicActivity::Activity
     where(type_mask: type_mask_integer)
   end
 
-  def to_tracked_objects
+  def self.to_tracked_objects
     map(&:trackable).reject{|i| i != nil}
   end
 
   def self.collect_activities(date, classification, divisions, type_mask_integer)
-    self.created_at(date).by_update_classification(classification).by_divisions(divisions).by_type_mask(type_mask_integer)
+    self.created_at(date)
+    .by_update_classification(classification)
+    .by_divisions(divisions)
+    .by_type_mask(type_mask_integer)
+    .reverse
   end
 end

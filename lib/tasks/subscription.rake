@@ -1,6 +1,5 @@
-require 'delayed_job'
 namespace :pathways do
-  namespace :subscription => :environment do
+  namespace :subscription do
 
     task daily: :environment do
       puts "Mailing Daily subscriptions..... "

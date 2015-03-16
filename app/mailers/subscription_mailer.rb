@@ -7,10 +7,10 @@ class SubscriptionMailer < ActionMailer::Base
   #   mail(:to => @subscription.owners.map{|owner| owner.email}, :from => 'noreply@pathwaysbc.ca', :subject => "Pathways: Your WEEKLY/DAILY/MONTHLY Resource Update")
   # end
 
-    def send_resource_update_subscription_email(activities_for_subscription, tracked_activity_objects, subscription)
+  def resource_update_email(activities_for_subscription, tracked_activity_objects, subscription)
     @subscription = subscription
     @user = subscription.user
-    @interval = @subscription.interval_to_words
+    @interval = subscription.interval_to_words
     @email = @user.email
     @tracked_activity_objects = tracked_activity_objects
     @activities = activities_for_subscription
@@ -18,15 +18,15 @@ class SubscriptionMailer < ActionMailer::Base
     mail(:to => @subscription.user.email, :from => 'noreply@pathwaysbc.ca', :subject => "Pathways: Your #{@interval} Resource Update")
   end
 
-    def send_news_update_subscription_email(activities_for_subscription, tracked_activity_objects, subscription)
+  def news_update_email(activities_for_subscription, tracked_activity_objects, subscription)
     @subscription = subscription
     @user = subscription.user
-    @interval = @subscription.interval_to_words
+    @interval = subscription.interval_to_words
     @email = @user.email
     @tracked_activity_objects = tracked_activity_objects
     @activities = activities_for_subscription
 
     mail(:to => @subscription.user.email, :from => 'noreply@pathwaysbc.ca', :subject => "Pathways: Your #{@interval} News Update")
-
   end
+
 end
