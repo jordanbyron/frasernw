@@ -94,7 +94,7 @@ LIMITED_ROLE_HASH = {
   end
 
   def self.with_subscriptions #return only admins/super-admins with subscriptions created
-    admin.reject{|u| u.subscriptions.empty?}
+    includes(:subscriptions).admin.reject{|u| u.subscriptions.empty?}
   end
 
   def self.in_divisions(divisions)
