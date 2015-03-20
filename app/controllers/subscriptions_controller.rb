@@ -16,7 +16,6 @@ class SubscriptionsController < ApplicationController
   # GET /subscriptions/1.json
   def show
     @subscription = current_user.subscriptions.find(params[:id])
-
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @subscription }
@@ -41,7 +40,7 @@ class SubscriptionsController < ApplicationController
   # POST /subscriptions
   # POST /subscriptions.json
   def create
-    @subscription = Subscription.new(params[:subscription])
+    @subscription = Subscription.new(subscription_params)
     @subscription.user = current_user
     respond_to do |format|
       if @subscription.save
@@ -59,7 +58,7 @@ class SubscriptionsController < ApplicationController
   def update
     @subscription = current_user.subscriptions.find(params[:id])
     respond_to do |format|
-      if @subscription.update_attributes(params[:subscription])
+      if @subscription.update_attributes(subscription_params)
         format.html { redirect_to subscriptions_url, notice: "Subscription was successfully updated." }
         format.json { head :ok }
       else
@@ -89,6 +88,15 @@ class SubscriptionsController < ApplicationController
   private
   # add custom param parsing here
   def subscription_params
-    params[:subscription]
+    if params[:subscription][:classification] == "Resource Updates"
+      params[:subscription].delete(:news_type)
+      return params[:subscription]
+    elsif params[:subscription][:classification] == "News Updates"
+      params[:subscription].delete(:sc_category_ids)
+      params[:subscription].delete(:specialization_ids)
+      return params[:subscription]
+    else
+     return params[:subscription]
+    end
   end
 end
