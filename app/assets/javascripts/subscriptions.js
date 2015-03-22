@@ -1,7 +1,7 @@
 // Place all the behaviors and hooks related to the matching controller here.
 // All this logic will automatically be available in application.js.
+$(document).ready(function(){
 
-$(document).ready(function() {
   $("#subscription_classification_news_updates").change(function (){ 
     update_for_classification_change();
   });
@@ -33,39 +33,39 @@ $(document).ready(function() {
 
     if ($('.news_type-option').length === $('.news_type-option').filter(':checked').length)
     {
-      document.getElementById('all_news_types').checked = 1
+      document.getElementById('all_news_types').checked = 1;
     }
     else if($('.news_type-option').length != $('.news_type-option').filter(':checked').length)
     {
-      document.getElementById('all_news_types').checked = 0
+      document.getElementById('all_news_types').checked = 0;
     }
 
     if ($('.sc_category-option').length === $('.sc_category-option').filter(':checked').length)
     {
-      document.getElementById('all_sc_categories').checked = 1
+      document.getElementById('all_sc_categories').checked = 1;
     }
     else if($('.sc_category-option').length != $('.sc_category-option').filter(':checked').length)
     {
-      document.getElementById('all_sc_categories').checked = 0
+      document.getElementById('all_sc_categories').checked = 0;
     }
 
     if ($('.specialization-option').length === $('.specialization-option').filter(':checked').length)
     {
-      document.getElementById('all_specializations').checked = 1
+      document.getElementById('all_specializations').checked = 1;
     }
     else if($('.specialization-option').length != $('.specialization-option').filter(':checked').length)
     {
-      document.getElementById('all_specializations').checked = 0
+      document.getElementById('all_specializations').checked = 0;
     }
 
 
     if ($('.division-option').length === $('.division-option').filter(':checked').length)
     {
-      document.getElementById('all_divisions').checked = 1
+      document.getElementById('all_divisions').checked = 1;
     }
     else if($('.division-option').length != $('.division-option').filter(':checked').length)
     {
-      document.getElementById('all_divisions').checked = 0
+      document.getElementById('all_divisions').checked = 0;
     }
 
 
@@ -74,44 +74,44 @@ $(document).ready(function() {
   $('.news_type-option').on( "click", function() {
     if ($('.news_type-option').length === $('.news_type-option').filter(':checked').length)
     {
-      document.getElementById('all_news_types').checked = 1
+      document.getElementById('all_news_types').checked = 1;
     }
     else if($('.news_type-option').length != $('.news_type-option').filter(':checked').length)
     {
-      document.getElementById('all_news_types').checked = 0
+      document.getElementById('all_news_types').checked = 0;
     }
   });
 
   $('.sc_category-option').on( "click", function() {
     if ($('.sc_category-option').length === $('.sc_category-option').filter(':checked').length)
     {
-      document.getElementById('all_sc_categories').checked = 1
+      document.getElementById('all_sc_categories').checked = 1;
     }
     else if($('.sc_category-option').length != $('.sc_category-option').filter(':checked').length)
     {
-      document.getElementById('all_sc_categories').checked = 0
+      document.getElementById('all_sc_categories').checked = 0;
     }
   });
 
   $('.specialization-option').on( "click", function() {
     if ($('.specialization-option').length === $('.specialization-option').filter(':checked').length)
     {
-      document.getElementById('all_specializations').checked = 1
+      document.getElementById('all_specializations').checked = 1;
     }
     else if($('.specialization-option').length != $('.specialization-option').filter(':checked').length)
     {
-      document.getElementById('all_specializations').checked = 0
+      document.getElementById('all_specializations').checked = 0;
     }
   });
 
   $('.division-option').on( "click", function() {
     if ($('.division-option').length === $('.division-option').filter(':checked').length)
     {
-      document.getElementById('all_divisions').checked = 1
+      document.getElementById('all_divisions').checked = 1;
     }
     else if($('.division-option').length != $('.division-option').filter(':checked').length)
     {
-      document.getElementById('all_divisions').checked = 0
+      document.getElementById('all_divisions').checked = 0;
     }
   });
 
@@ -132,5 +132,5 @@ $(document).ready(function() {
   $('#all_divisions').on('click', function(e) {
        $('.division-option').prop('checked', $(e.target).prop('checked'));
    });
-
 });
+
