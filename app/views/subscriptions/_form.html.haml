@@ -15,12 +15,11 @@
     = f.input :user_id, as: :hidden
     .news-updates
       %hr
-      .alert.alert-info
-        %h2
-          Receive News Updates on these topics:
+      %h2
+        Receive News Updates on these topics:
 
-        = f.input :all_news_types, label: "All News Items", as: :fake_string, input_html: { value: nil, type: "checkbox"}
-        = f.input :news_type, :as => :check_boxes, :collection => NewsItem.type_hash_as_form_array, label_method: :last, value_method: :first, :include_blank => false, label: "Only for:", input_html: {:class => "news_type-option"}
+      = f.input :all_news_types, label: "All News Items", as: :fake_string, input_html: { value: nil, type: "checkbox"}
+      = f.input :news_type, :as => :check_boxes, :collection => NewsItem.type_hash_as_form_array, label_method: :last, value_method: :first, :include_blank => false, label: "Only for:", input_html: {:class => "news_type-option"}
 
     .resource-updates
       %hr
@@ -33,13 +32,12 @@
 
     .resource-updates
       %hr
-      .alert.alert-info
-        #container
-          %h2
-            Notify me when Resources for these Specialties change:
+      #container
+        %h2
+          Notify me when Resources for these Specialties change:
 
-          = f.input :all_specializations, label: "All Specialties", as: :fake_string, input_html: { value: nil, type: "checkbox"}
-          = f.association :specializations, collection: Specialization.all, label_method: :name, value_method: :id, as: :check_boxes, presence: true, required: true, label: "Only for:", input_html: { :class => "specialization-option"}
+        = f.input :all_specializations, label: "All Specialties", as: :fake_string, input_html: { value: nil, type: "checkbox"}
+        = f.association :specializations, collection: Specialization.all, label_method: :name, value_method: :id, as: :check_boxes, presence: true, required: true, label: "Only for:", input_html: { :class => "specialization-option"}
     %hr
     .all-updates
       %h2
@@ -48,11 +46,10 @@
       = f.input :all_divisions, label: "All Divisions", as: :fake_string, input_html: { value: nil, type: "checkbox"}
       = f.association :divisions, collection: Division.all, label_method: :name, as: :check_boxes, label: "Only for", input_html: {:class => "division-option"}
       %hr
-      .alert.alert-info
-        %h2
-          How Often?:
+      %h2
+        How Often?:
 
-        = f.input :interval, collection: Subscription::INTERVAL_HASH, as: :radio_buttons, label: false, required: :true, label_method: :last, value_method: :first
+      = f.input :interval, collection: Subscription::INTERVAL_HASH, as: :radio_buttons, label: false, required: :true, label_method: :last, value_method: :first
       .form-actions
         = f.button :submit, :class => "btn btn-primary"
         = link_to 'Cancel', users_path, :class => "btn btn-danger ajax"
