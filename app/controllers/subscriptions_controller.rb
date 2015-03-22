@@ -4,12 +4,12 @@ class SubscriptionsController < ApplicationController
   # GET /subscriptions.json
   def index
     @subscriptions = current_user.subscriptions.includes(:specializations, :divisions, :sc_categories).all
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    # render :layout => 'ajax' if request.headers['X-PJAX']
 
-    # respond_to do |format|
-    #   format.html # index.html.erb
-    #   format.json { render json: @subscriptions }
-    # end
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: @subscriptions }
+    end
   end
 
   # GET /subscriptions/1
