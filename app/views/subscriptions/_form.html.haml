@@ -54,3 +54,17 @@
         = f.button :submit, :class => "btn btn-primary"
         = link_to 'Cancel', users_path, :class => "btn btn-danger ajax"
 
+:javascript
+  $(document).ready(function() {
+    if ($("#subscription_classification_news_updates").is(":checked"))
+    {
+      $(".resource-updates").hide();
+      $(".news-updates").fadeIn(300).show();
+
+    }
+    else if ($("#subscription_classification_resource_updates").is(":checked"))
+    {
+      $(".news-updates").hide();
+      $(".resource-updates").fadeIn(300).show();
+    }
+  });
