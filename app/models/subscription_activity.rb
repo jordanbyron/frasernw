@@ -33,7 +33,8 @@ class SubscriptionActivity < PublicActivity::Activity
   end
 
   def self.collect_activities(date, classification, divisions, type_mask_integer)
-    self.created_at(date)
+    self.includes(:trackable)
+    .created_at(date)
     .by_update_classification(classification)
     .by_divisions(divisions)
     .by_type_mask(type_mask_integer)
