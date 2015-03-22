@@ -1,5 +1,6 @@
 namespace :pathways do
   namespace :subscription do
+  include Rails.application.routes.url_helpers
 
     task daily: :environment do
       puts "Mailing Daily subscriptions..... "

@@ -135,6 +135,16 @@ LIMITED_ROLE_HASH = {
     subscriptions.select{|s| s.interval == date_interval}
   end
 
+  # classification e.g.: Subscription.resource_update or Subscription.news_update
+  def subscriptions_by_classification(classification)
+    subscriptions.select{|s| s.classification == classification}
+  end
+
+  def subscriptions_by_date_interval_and_classification(date_interval, classification)
+    subscriptions_by_date_interval(date_interval) && subscriptions_by_classification(classification)
+  end
+
+
   def role_full
     User::ROLE_HASH[self.role]
   end
