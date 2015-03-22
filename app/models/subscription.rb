@@ -18,9 +18,9 @@ class Subscription < ActiveRecord::Base
   has_many :subscription_specializations, dependent: :destroy
   has_many :specializations, through: :subscription_specializations
 
-  scope :daily,   -> {where(interval: INTERVAL_DAILY)}
-  scope :weekly,  -> {where(interval: INTERVAL_WEEKLY)}
-  scope :monthly, -> {where(interval: INTERVAL_MONTHLY)}
+  scope :daily,     -> {where(interval: INTERVAL_DAILY)}
+  scope :weekly,    -> {where(interval: INTERVAL_WEEKLY)}
+  scope :monthly,   -> {where(interval: INTERVAL_MONTHLY)}
   scope :immediate, -> {where(interval: INTERVAL_IMMEDIATELY)}
 
   accepts_nested_attributes_for :divisions
@@ -61,6 +61,7 @@ class Subscription < ActiveRecord::Base
   end
 
   def news_type_masks
+    return "" if news_type.blank?
     news_type.reject(&:empty?).map(&:to_i)
   end
 
@@ -73,6 +74,7 @@ class Subscription < ActiveRecord::Base
   end
 
   def news_type_present?
+    return false if news_type.blank?
     news_type.reject(&:blank?).present?
   end
 
