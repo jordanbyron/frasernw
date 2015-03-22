@@ -2,8 +2,6 @@
 // All this logic will automatically be available in application.js.
 
 $(document).ready(function() {
-
-
   $("#subscription_classification_news_updates").change(function (){ 
     update_for_classification_change();
   });
@@ -13,6 +11,7 @@ $(document).ready(function() {
   });
 
 
+  // Make form section appear/disappear
   var update_for_classification_change = function ()
   {
     $('.all-updates').show(); // show form options applying to both categories again
@@ -30,6 +29,93 @@ $(document).ready(function() {
 
   }
 
+   // On page load, make sure "Check All" style checkbox is pre-checked if every choice was already checked
+
+    if ($('.news_type-option').length === $('.news_type-option').filter(':checked').length)
+    {
+      document.getElementById('all_news_types').checked = 1
+    }
+    else if($('.news_type-option').length != $('.news_type-option').filter(':checked').length)
+    {
+      document.getElementById('all_news_types').checked = 0
+    }
+
+    if ($('.sc_category-option').length === $('.sc_category-option').filter(':checked').length)
+    {
+      document.getElementById('all_sc_categories').checked = 1
+    }
+    else if($('.sc_category-option').length != $('.sc_category-option').filter(':checked').length)
+    {
+      document.getElementById('all_sc_categories').checked = 0
+    }
+
+    if ($('.specialization-option').length === $('.specialization-option').filter(':checked').length)
+    {
+      document.getElementById('all_specializations').checked = 1
+    }
+    else if($('.specialization-option').length != $('.specialization-option').filter(':checked').length)
+    {
+      document.getElementById('all_specializations').checked = 0
+    }
+
+
+    if ($('.division-option').length === $('.division-option').filter(':checked').length)
+    {
+      document.getElementById('all_divisions').checked = 1
+    }
+    else if($('.division-option').length != $('.division-option').filter(':checked').length)
+    {
+      document.getElementById('all_divisions').checked = 0
+    }
+
+
+  // Refresh 'Check All' checkbox after each checklist change
+
+  $('.news_type-option').on( "click", function() {
+    if ($('.news_type-option').length === $('.news_type-option').filter(':checked').length)
+    {
+      document.getElementById('all_news_types').checked = 1
+    }
+    else if($('.news_type-option').length != $('.news_type-option').filter(':checked').length)
+    {
+      document.getElementById('all_news_types').checked = 0
+    }
+  });
+
+  $('.sc_category-option').on( "click", function() {
+    if ($('.sc_category-option').length === $('.sc_category-option').filter(':checked').length)
+    {
+      document.getElementById('all_sc_categories').checked = 1
+    }
+    else if($('.sc_category-option').length != $('.sc_category-option').filter(':checked').length)
+    {
+      document.getElementById('all_sc_categories').checked = 0
+    }
+  });
+
+  $('.specialization-option').on( "click", function() {
+    if ($('.specialization-option').length === $('.specialization-option').filter(':checked').length)
+    {
+      document.getElementById('all_specializations').checked = 1
+    }
+    else if($('.specialization-option').length != $('.specialization-option').filter(':checked').length)
+    {
+      document.getElementById('all_specializations').checked = 0
+    }
+  });
+
+  $('.division-option').on( "click", function() {
+    if ($('.division-option').length === $('.division-option').filter(':checked').length)
+    {
+      document.getElementById('all_divisions').checked = 1
+    }
+    else if($('.division-option').length != $('.division-option').filter(':checked').length)
+    {
+      document.getElementById('all_divisions').checked = 0
+    }
+  });
+
+  // 'Check all' action for filling every checkbox within each list"
 
   $('#all_news_types').on('click', function(e) {
        $('.news_type-option').prop('checked', $(e.target).prop('checked'));
