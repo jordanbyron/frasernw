@@ -9,8 +9,8 @@ class SubscriptionMailer < ActionMailer::Base
 
   def resource_update_email(activities_for_subscription, tracked_activity_objects, subscription)
     @subscription = subscription
-    @user = subscription.user
-    @interval = subscription.interval_to_words
+    @user = @subscription.user
+    @interval = @subscription.interval_to_words
     @email = @user.email
     @tracked_activity_objects = tracked_activity_objects
     @activities = activities_for_subscription
@@ -20,8 +20,8 @@ class SubscriptionMailer < ActionMailer::Base
 
   def news_update_email(activities_for_subscription, tracked_activity_objects, subscription)
     @subscription = subscription
-    @user = subscription.user
-    @interval = subscription.interval_to_words
+    @user = @subscription.user
+    @interval = @subscription.interval_to_words
     @email = @user.email
     @tracked_activity_objects = tracked_activity_objects
     @activities = activities_for_subscription
