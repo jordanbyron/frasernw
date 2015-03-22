@@ -88,15 +88,12 @@ class SubscriptionsController < ApplicationController
   private
   # add custom param parsing here
   def subscription_params
-    if params[:subscription][:classification] == "Resource Updates"
+    if params[:subscription][:classification] == Subscription.resource_update
       params[:subscription].delete(:news_type)
-      return params[:subscription]
-    elsif params[:subscription][:classification] == "News Updates"
+    else params[:subscription][:classification] == Subscription.news_update
       params[:subscription].delete(:sc_category_ids)
       params[:subscription].delete(:specialization_ids)
-      return params[:subscription]
-    else
-     return params[:subscription]
     end
+     params[:subscription]
   end
 end
