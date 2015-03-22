@@ -20,6 +20,12 @@ namespace :pathways do
       puts "Monthly subscriptions sent!"
     end
 
+    task immediately: :environment do
+      puts "Mailing Immediately subscriptions..... "
+      SubscriptionUserWorker.mail_subscriptions_by_date!(Subscription::INTERVAL_IMMEDIATE)
+      puts "Immediate subscriptions sent!"
+    end
+
     task all: [:daily, :weekly, :monthly] do
       puts "All subscriptions sent!"
     end
