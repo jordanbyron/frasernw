@@ -5,11 +5,11 @@ class FeedbackItem < ActiveRecord::Base
   
   class << self
     def active
-      where(:archived => false)
+      includes(:item).where(:archived => false)
     end
     
     def archived
-      where(:archived => true)
+      includes(:item).where(:archived => true)
     end
   end
 end
