@@ -6,15 +6,9 @@
     %p
       = "Hi #{@user.name},"
     %p
-      = "Here is your customized #{@interval.downcase} Pathways Resource Update for #{DateTime.now.strftime("%B, %d, %Y")}:"
+      = "Here is your #{@interval} Pathways Resources Update for #{DateTime.now.strftime("%B, %d, %Y")}:"
     %br
     - @activities.each do |activity|
-      /=# activity.inspect
-
-      / %div.activity
-      /   =# link_to activity.owner.name, activity.owner if activity.owner
-      /   added __ to
-      /   =# link_to activity.trackable.title, activity.trackable
       .activity
         %p
           %span{:class=> "muted"}= "#{time_ago_in_words(activity.trackable.created_at)} ago"
