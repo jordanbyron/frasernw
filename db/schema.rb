@@ -825,6 +825,15 @@ ActiveRecord::Schema.define(:version => 20150322111112) do
   add_index "subscription_divisions", ["division_id"], :name => "index_subscription_divisions_on_division_id"
   add_index "subscription_divisions", ["subscription_id"], :name => "index_subscription_divisions_on_subscription_id"
 
+  create_table "subscription_news_item_types", :force => true do |t|
+    t.integer  "subscription_id"
+    t.integer  "news_item_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "subscription_news_item_types", ["subscription_id"], :name => "index_subscription_news_item_types_on_subscription_id"
+
   create_table "subscription_sc_categories", :force => true do |t|
     t.integer  "subscription_id"
     t.integer  "sc_category_id"
