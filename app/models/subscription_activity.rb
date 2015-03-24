@@ -16,7 +16,7 @@ class SubscriptionActivity < PublicActivity::Activity
     if divisions.present?
       where('owner_type = ?', "Division").where(owner_id: divisions)
     else
-      all
+      where('owner_type = ?', "Division").where(owner_id: "") # defaults to ALL divisions to stop break in method chaining (e.g.: .all.all)
     end
   end
 
@@ -33,11 +33,6 @@ class SubscriptionActivity < PublicActivity::Activity
   end
 
   def self.collect_activities(date, classification, divisions, type_mask_integer)
-    self.includes(:trackable)
-    .created_at(date)
-    .by_update_classification(classification)
-    .by_divisions(divisions)
-    .by_type_mask(type_mask_integer)
-    .reverse
+    self.includes(:trackable).created_at(date).by_update_classification(classification).by_divisions(divisions).by_type_mask(type_mask_integer).reverse
   end
 end
