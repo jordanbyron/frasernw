@@ -16,7 +16,7 @@ class SubscriptionActivity < PublicActivity::Activity
     if divisions.present?
       where('owner_type = ?', "Division").where(owner_id: divisions)
     else
-      where('owner_type = ?', "Division").where(owner_id: "") # defaults to ALL divisions to stop break in method chaining (e.g.: .all.all)
+      where('owner_type = ?', "Division").where(owner_id: "") # defaults to blank string to stop break in method chaining (e.g.: .all.all)
     end
   end
 
