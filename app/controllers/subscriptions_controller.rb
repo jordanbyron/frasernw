@@ -72,14 +72,14 @@ class SubscriptionsController < ApplicationController
   # DELETE /subscriptions/1.json
   def destroy
     @subscription = Subscription.find(params[:id])
-    if @subscription.user == current_user && @subscription.destroy
+    if (@subscription.user == current_user) && @subscription.destroy
       respond_to do |format|
         format.html { redirect_to subscriptions_url }
         format.json { head :ok }
       end
     else
       respond_to do |format|
-        format.html { redirect_to @subscription, alert: "We had trouble deleting this subscription"}
+        format.html { redirect_to subscriptions_url, alert: "We had trouble deleting this subscription"}
         format.json { render json: @subscription.errors, status: :unprocessable_entity }
       end
     end
