@@ -29,46 +29,6 @@ $(document).ready(function(){
 
   }
 
-   // On page load, make sure "Check All" style checkbox is pre-checked if every choice was already checked
-
-    if ($('.news_type-option').length === $('.news_type-option').filter(':checked').length)
-    {
-      document.getElementById('all_news_types').checked = 1;
-    }
-    else if($('.news_type-option').length != $('.news_type-option').filter(':checked').length)
-    {
-      document.getElementById('all_news_types').checked = 0;
-    }
-
-    if ($('.sc_category-option').length === $('.sc_category-option').filter(':checked').length)
-    {
-      document.getElementById('all_sc_categories').checked = 1;
-    }
-    else if($('.sc_category-option').length != $('.sc_category-option').filter(':checked').length)
-    {
-      document.getElementById('all_sc_categories').checked = 0;
-    }
-
-    if ($('.specialization-option').length === $('.specialization-option').filter(':checked').length)
-    {
-      document.getElementById('all_specializations').checked = 1;
-    }
-    else if($('.specialization-option').length != $('.specialization-option').filter(':checked').length)
-    {
-      document.getElementById('all_specializations').checked = 0;
-    }
-
-
-    if ($('.division-option').length === $('.division-option').filter(':checked').length)
-    {
-      document.getElementById('all_divisions').checked = 1;
-    }
-    else if($('.division-option').length != $('.division-option').filter(':checked').length)
-    {
-      document.getElementById('all_divisions').checked = 0;
-    }
-
-
   // Refresh 'Check All' checkbox after each checklist change
 
   $('.news_type-option').on( "click", function() {
