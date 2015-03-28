@@ -1,5 +1,6 @@
 Frasernw::Application.routes.draw do
 
+  match "/delayed_job" => DelayedJobWeb, :anchor => false, via: [:get, :post] # private delayed_job_web interface
 
   post '/versions/:id/revert' => 'versions#revert', :as => 'revert_version'
 
