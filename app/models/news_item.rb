@@ -1,6 +1,7 @@
 class NewsItem < ActiveRecord::Base
   include PublicActivity::Model
-  tracked except: :update, owner: ->(controller, model){controller && controller.current_user} #PublicActivity gem callback method
+  # not used as activity is created in controller
+  # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user} #PublicActivity gem callback method
 
 
   attr_accessible :division_id, :title, :body, :breaking, :start_date, :end_date, :show_start_date, :show_end_date, :type_mask
