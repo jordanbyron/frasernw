@@ -532,7 +532,7 @@ var clear_filters = function(prefix, entity_id, entity_name) {
     $(this).val(0)
   });
   
-  should_show_others = false;
+  should_show_others = true;
   update_table(prefix, entity_id, entity_name);
 }
 
