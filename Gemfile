@@ -1,11 +1,15 @@
 source 'https://rubygems.org'
 
-ruby "1.9.3"
-gem 'rails', '3.1.12'
-gem 'pg'
+gem 'rails', '3.1.10'
+
+# Bundle edge Rails instead:
+# gem 'rails',     :git => 'git://github.com/rails/rails.git'
+# gem 'rails',      :git => "git://github.com/rails/rails.git", :branch => "3-1-stable"
+
 
 group :production do
-  gem 'heroku_cloud_backup'
+  gem 'pg'
+  gem 'therubyracer-heroku', '0.8.1.pre3'
 end
 
 # Asset template engines
@@ -20,8 +24,7 @@ gem 'authlogic'
 gem 'paper_trail', '~> 2'
 gem 'will_paginate', '~> 3.0.0'
 gem "simple_form", "~> 2.0.1"
-gem "nested_form", :git => "https://github.com/warneboldt/nested_form.git", :ref => "35a2cf060680280413880337a3f89bdec469301c"
-#gem 'nested_form', '0.3.2', :path => '~/Documents/Programming/Pathways/warneboldt/nested_form/'
+gem "nested_form", :git => "https://github.com/warneboldt/nested_form.git", :ref => "230e366a35a2fabd1f2b51d0102237ba684174f0"
 gem 'exception_notification'
 gem "cancan", "~> 1.6.7"
 gem "paperclip", "~> 2.7"
@@ -38,10 +41,6 @@ gem 'daemons'
 
 # markdown
 gem 'bluecloth'
-gem 'htmlentities'
-
-gem 'wannabe_bool', "~> 0.1.0" #get access to handy to_b boolean method
-
 
 # Deploy with Capistrano
 # gem 'capistrano'
@@ -52,46 +51,26 @@ group :test do
 end
 
 group :development, :test do
-  #gem 'sqlite3'
+  gem 'sqlite3'
   gem "nifty-generators"
   gem 'rspec'
   gem 'rspec-rails'
   gem 'spork', '> 0.9.0rc'
   # To use debugger
-  # gem 'ruby-debug19', :require => 'ruby-debug'
+  gem 'ruby-debug19', :require => 'ruby-debug'
   # can't include rb-fsevent here as heroku doesn't like it
   # gem 'rb-fsevent', :require => false if RUBY_PLATFORM =~ /darwin/i
   gem 'guard'
   gem 'guard-rspec'
   gem 'guard-livereload'
   gem 'guard-spork'
-  #gem 'heroku'
+  gem 'heroku'
   gem 'taps'
-  gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
-  gem 'rb-fsevent', '~> 0.9.1'
-  gem 'awesome_print'
 end
 
-group :development do
-  gem 'pry-rails' # loads pry by default with rails c
-  gem 'rack-mini-profiler'
-  #latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
-  gem 'lol_dba'
-end
+# gem "mocha", :group => :test
+
+# Automated Heroku DB backups (to Google Storage)
+gem 'heroku_cloud_backup'
 
 gem 'ancestry'
-gem 'mechanize'
-gem 'validates_email_format_of'
-
-# Google Analytics
-gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
-gem 'lazy_high_charts'
-gem 'jquery-datatables-rails'
-gem "rack-timeout"
-
-
-#New Relic guide recommends placing New Relic gem at bottom of Gemfile
-group :development, :production do
-  gem 'newrelic_rpm'
-end
-
