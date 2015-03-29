@@ -1,7 +1,7 @@
 # config/unicorn.rb
 
 worker_processes Integer(ENV["UNICORN_PROCESSES"] || 5)
-timeout 60
+timeout 50
 preload_app true
 
 before_fork do |server, worker|

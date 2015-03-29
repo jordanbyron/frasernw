@@ -1,28 +1,29 @@
 namespace :pathways do
   namespace :visit_every_page do
-    include ActionController::Caching::Actions
-    include ActionController::Caching::Fragments
     include Net
     include Rails.application.routes.url_helpers
   
     task :specializations => :environment do
-      puts "Recaching specializations..."
+      puts "Visiting specializations..."
       Specialization.all.sort{ |a,b| a.id <=> b.id }.each do |s|
-        puts "Specialization #{s.id}"
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_cache") )
-      end
-    end
-  
-    task :procedures => :environment do
-      puts "Recaching procedures..."
-      Procedure.all.sort{ |a,b| a.id <=> b.id }.each do |p|
-        puts "Procedure #{p.id}"
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/areas_of_practice/#{p.id}/#{p.token}/refresh_cache") )
+        begin
+          puts "Specialization #{s.id}"
+          
+          City.all.sort{ |a,b| a.id <=> b.id }.each do |c|
+            puts "Specialization City #{c.id}"
+            Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_city_cache/#{c.id}.js") )
+          end
+          
+          Division.all.sort{ |a,b| a.id <=> b.id }.each do |d|
+            puts "Specialization Division #{d.id}"
+            Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_division_cache/#{d.id}.js") )
+          end
+        end
       end
     end
   
     task :specialists => :environment do
-      puts "Recaching specialists..."
+      puts "Visiting specialists..."
       Specialist.all.sort{ |a,b| a.id <=> b.id }.each do |s|
         puts "Specialist #{s.id}"
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialists/#{s.id}/#{s.token}/refresh_cache") )
@@ -30,7 +31,7 @@ namespace :pathways do
     end
   
     task :clinics => :environment do
-      puts "Recaching clinics..."
+      puts "Visiting clinics..."
       Clinic.all.sort{ |a,b| a.id <=> b.id }.each do |c|
         puts "Clinic #{c.id}"
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/clinics/#{c.id}/#{c.token}/refresh_cache") )
@@ -38,7 +39,7 @@ namespace :pathways do
     end
   
     task :hospitals => :environment do
-      puts "Recaching hospitals..."
+      puts "Visiting hospitals..."
       Hospital.all.sort{ |a,b| a.id <=> b.id }.each do |h|
         puts "Hospital #{h.id}"
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/hospitals/#{h.id}/#{h.token}/refresh_cache") )
@@ -46,7 +47,7 @@ namespace :pathways do
     end
   
     task :languages => :environment do
-      puts "Recaching languages..."
+      puts "Visiting languages..."
       Language.all.sort{ |a,b| a.id <=> b.id }.each do |l|
         puts "Language #{l.id}"
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/languages/#{l.id}/#{l.token}/refresh_cache") )
@@ -54,30 +55,30 @@ namespace :pathways do
     end
   
     task :search => :environment do
-      puts "Recaching search..."
-      Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/livesearch.js") )
+      puts "Visiting search..."
+      
+      puts "Global"
+      Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/refresh_livesearch_global.js") )
+      
+      puts "All entries"
+      Specialization.all.each do |s|
+        puts "All entries specialization #{s.id}"
+        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/refresh_livesearch_all_entries/#{s.id}.js") )
+      end
+      
+      Division.all.each do |d|
+        puts "Search division #{d.id}"
+        Specialization.all.each do |s|
+          puts "Search division #{d.id} specialization #{s.id}"
+          Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/refresh_livesearch_division_entries/#{d.id}/#{s.id}.js") )
+        end
+        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/refresh_livesearch_division_content/#{d.id}.js") )
+      end
     end
 
     #purposeful order from least important to most important, to keep cache 'hot'
-    task :all => [:languages, :hospitals, :procedures, :clinics, :specialists, :specializations, :search] do
-      puts "All pages recached."
+    task :all => [:languages, :hospitals, :clinics, :specialists, :specializations, :search] do
+      puts "All pages visited."
     end
-    
-    # The following methods are defined to fake out the ActionController
-    # requirements of the Rails cache
-    
-    def cache_store
-      ActionController::Base.cache_store
-    end
-    
-    def self.benchmark( *params )
-      yield
-    end
-    
-    def cache_configured?
-      true
-    end
-  
-    
   end
 end

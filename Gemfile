@@ -17,7 +17,7 @@ gem 'jquery-rails'
 gem 'haml-rails'
 
 gem 'authlogic'
-gem 'paper_trail', '~> 2'
+gem 'paper_trail', '~> 2.7'
 gem 'will_paginate', '~> 3.0.0'
 gem "simple_form", "~> 2.0.1"
 gem "nested_form", :git => "https://github.com/warneboldt/nested_form.git", :ref => "35a2cf060680280413880337a3f89bdec469301c"
@@ -39,6 +39,9 @@ gem 'daemons'
 # markdown
 gem 'bluecloth'
 gem 'htmlentities'
+
+gem 'wannabe_bool', "~> 0.1.0" #get access to handy to_b boolean method
+
 
 # Deploy with Capistrano
 # gem 'capistrano'
@@ -71,6 +74,9 @@ end
 
 group :development do
   gem 'pry-rails' # loads pry by default with rails c
+  gem 'rack-mini-profiler'
+  #latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
+  gem 'lol_dba'
 end
 
 gem 'ancestry'
@@ -81,6 +87,8 @@ gem 'validates_email_format_of'
 gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
 gem 'lazy_high_charts'
 gem 'jquery-datatables-rails'
+gem "rack-timeout"
+
 
 #New Relic guide recommends placing New Relic gem at bottom of Gemfile
 group :development, :production do

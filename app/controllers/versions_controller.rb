@@ -10,11 +10,17 @@ class VersionsController < ApplicationController
   
   def show
     @version = Version.find(params[:id])
-    @klass = @version.reify.class.to_s.downcase
-    eval("@#{@klass} = @version.reify" )
-    eval("@feedback = @#{@klass}.feedback_items.build" )
-    @is_version = true
-    render :template => "#{@klass.pluralize}/show"
+    if @version.reify.present? # fixes issue of first version record returning nil when reify is called on it
+      @klass = @version.reify.class.to_s.downcase
+      eval("@#{@klass} = @version.reify" )
+    else
+      @klass = @version.next.reify.class.to_s.downcase
+      eval("@#{@klass} = @version.next.reify" )
+    end
+      eval("@feedback = @#{@klass}.feedback_items.build" )
+      @is_version = true
+      render :template => "#{@klass.pluralize}/show"
+
   end
 
   def show_all

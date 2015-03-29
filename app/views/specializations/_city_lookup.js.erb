@@ -20,7 +20,7 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
     specialist_associations = Array.new
     specialist_languages = Array.new
     
-    specialists = specialization.specialists.in_cities([city]).reject{ |s| !s.show_in_table? }
+    specialists = specialization.specialists.includes([{:specialist_offices => {:office => {:location => :address}}}]).in_cities([city]).reject{ |s| !s.show_in_table? }
     if specialists.length > 0
       -%> has_specialists = true; <%
     end
@@ -43,7 +43,6 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
 
     #broken apart as we only want to record the procedures and associations for the specialists directly in our city, and only for specialization pages
     if other
-      #other_specialists_in_cities(specialization, [city]).flatten.uniq.reject{ |s| !s.show_in_table? }.each do |s|
       Specialist.in_cities_and_performs_procedures_in_specialization([city], specialization).reject{ |s| !s.show_in_table? }.each do |s|
         specialist_data[s.id] = Hash.new
         specialist_data[s.id]['attributes'] = s.not_available? ? '' : specialist_filtering_attributes(s, false).join(' ')
@@ -69,7 +68,7 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
     clinic_languages = Array.new
     clinic_healthcare_providers = Array.new
     
-    clinics = specialization.clinics.in_cities([city]).reject{ |c| !c.show_in_table? }
+    clinics = specialization.clinics.includes([{:clinic_locations => [{:schedule => [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday]}, {:location => :address}]}, {:focuses => :procedure_specialization}]).in_cities([city]).reject{ |c| !c.show_in_table? }
     if clinics.length > 0
       -%> has_clinics = true; <%
     end
@@ -92,8 +91,7 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
 
     #broken apart as we only want to record the procedures and associations for the clinics directly in our city, and only for specialization pages
     if other
-      #other_clinics_in_cities(specialization, [city]).flatten.uniq.reject{ |c| !c.show_in_table? }.each do |c|
-      Clinic.in_cities_and_performs_procedures_in_specialization([city], specialization).reject{ |c| !c.show_in_table? }.each do |c|
+      Clinic.includes([{:clinic_locations => {:schedule => [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday]}}]).in_cities_and_performs_procedures_in_specialization([city], specialization).reject{ |c| !c.show_in_table? }.each do |c|
         clinic_data[c.id] = Hash.new
         clinic_data[c.id]['attributes'] = clinic_filtering_attributes(c, false).join(' ')
         clinic_data[c.id]['name'] = c.name

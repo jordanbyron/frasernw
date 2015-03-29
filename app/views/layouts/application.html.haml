@@ -17,6 +17,7 @@
     = javascript_include_tag "application"
     = javascript_include_tag '../livesearch'
     = csrf_meta_tag
+    = render "layouts/ie8_or_lower_compatibility_warning"
     = yield(:head)
               
     :javascript
@@ -355,7 +356,7 @@
                     %li= mail_to "administration@pathwaysbc.ca", "Contact Us", :class => 'contact'
                     
                     %li.nav-header Legal
-                    %li= link_to "Terms and Conditions", terms_and_conditions_path, :class => 'tac ajax'
+                    %li= link_to "Terms of Use", terms_and_conditions_path, :class => 'tac ajax'
                     
                     %li.nav-header Settings
                     -# %li= link_to "Change name", change_name_path, :class => 'change_name ajax'
