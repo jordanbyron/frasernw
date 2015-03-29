@@ -27,7 +27,7 @@
           
             = f.button :submit, "Log in to Pathways", :class => "btn btn-primary"
             %a#password_reset_link{"href" => new_password_reset_path} Forgot your password?
-            %p.space.no_indent= "By logging in you agree to the <a href='javascript:void(0)' data-toggle='collapse' data-target='#toc'>Terms and Conditions</a>".html_safe
+            %p.space.no_indent= "By logging in you agree to the <a href='javascript:void(0)' data-toggle='collapse' data-target='#toc'>Terms of Use</a>".html_safe
             
         = simple_form_for @user, :url => {:controller => "users", :action => "validate"}, :method => "put" do |f|
           .new_user_block.hide

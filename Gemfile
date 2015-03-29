@@ -21,7 +21,7 @@ gem 'jquery-rails'
 gem 'haml-rails'
 
 gem 'authlogic'
-gem 'paper_trail', '~> 2'
+gem 'paper_trail', '~> 2.7'
 gem 'will_paginate', '~> 3.0.0'
 gem "simple_form", "~> 2.0.1"
 gem "nested_form", :git => "https://github.com/warneboldt/nested_form.git", :ref => "230e366a35a2fabd1f2b51d0102237ba684174f0"
