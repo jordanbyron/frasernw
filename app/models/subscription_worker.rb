@@ -46,7 +46,6 @@ class SubscriptionWorker < ActiveRecord::Base
   end
 
   def self.only_with_specialization(tracked_objects, subscription)
-    binding.pry
     tracked_objects.reject{|i| i.specializations != subscription.specializations}
   end
 end
