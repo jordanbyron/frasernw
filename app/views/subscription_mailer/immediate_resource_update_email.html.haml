@@ -1,0 +1,19 @@
+!!!
+%html
+  %head
+    %title
+      = "#{@user.name} -- Pathways: a #{@type_mask_description} has been added to #{@division} [#{@update_classification_type}]"
+  %body
+    %p
+      = "#{@user.name}, a #{@type_mask_description.downcase} was just added "
+      = if @division.present?
+        = "to #{@division} "
+      = "today on #{DateTime.now.strftime("%B, %d, %Y")}:"
+    %br
+    .activity
+      %p
+        %span{:class=> "muted"}= "#{time_ago_in_words(@activity.trackable.created_at)} ago"
+
+        = render_activity(@activity, fallback: :default)
+      %br
+    = render partial: "subscription_mailer/automatic_email_message", locals: {:interval => @interval}

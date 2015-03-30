@@ -15,3 +15,4 @@
 
           = render_activity(activity, fallback: :default)
         %br
+    = render partial: "subscription_mailer/automatic_email_message", locals: {:interval => @interval}

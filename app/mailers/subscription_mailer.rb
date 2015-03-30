@@ -28,4 +28,32 @@ class SubscriptionMailer < ActionMailer::Base
     mail(:to => @subscription.user.email, :from => 'noreply@pathwaysbc.ca', :subject => "Pathways: Your #{@interval} News Update")
   end
 
+  def immediate_resource_update_email(activity_id, user_id)
+    @user = User.find_by_id(user_id)
+    @activity = SubscriptionActivity.find_by_id(activity_id)
+    @interval = Subscription::INTERVAL_HASH[Subscription::INTERVAL_IMMEDIATELY]
+    @trackable = @activity.trackable
+    @type_mask_description = @activity.type_mask_description
+    @update_classification_type = @activity.update_classification_type
+    @parent_type = @activity.parent_type
+
+
+    mail(:to => @user.email, :from => 'noreply@pathwaysbc.ca', :subject => "Pathways: A #{@type_mask_description} was just added to #{@parent_type} [#{@update_classification_type}]")
+
+  end
+
+  def immediate_news_update_email(activity_id, user_id)
+    @user = User.find_by_id(user_id)
+    @activity = SubscriptionActivity.find_by_id(activity_id)
+    @interval = Subscription::INTERVAL_HASH[Subscription::INTERVAL_IMMEDIATELY]
+    @trackable = @activity.trackable
+    @division = Division.find(@activity.owner_id) if @activity.owner_type == "Division"
+    @type_mask_description = @activity.type_mask_description
+    @update_classification_type = @activity.update_classification_type
+
+    mail(:to => @user.email, :from => 'noreply@pathwaysbc.ca', :subject => "Pathways: A #{@type_mask_description} #{@update_classification_type} was just added to #{@division}")
+
+  end
+
+
 end
