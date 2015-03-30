@@ -18,10 +18,11 @@ class Subscription < ActiveRecord::Base
   has_many :subscription_specializations, dependent: :destroy
   has_many :specializations, through: :subscription_specializations
 
-  scope :daily,     -> {where(interval: INTERVAL_DAILY)}
-  scope :weekly,    -> {where(interval: INTERVAL_WEEKLY)}
-  scope :monthly,   -> {where(interval: INTERVAL_MONTHLY)}
-  scope :immediate, -> {where(interval: INTERVAL_IMMEDIATELY)}
+  scope :all_daily,     -> {where(interval: INTERVAL_DAILY)}
+  scope :all_weekly,    -> {where(interval: INTERVAL_WEEKLY)}
+  scope :all_monthly,   -> {where(interval: INTERVAL_MONTHLY)}
+  scope :all_immediately, -> {where(interval: INTERVAL_IMMEDIATELY)}
+  scope :all_by_date_interval, lambda { |date_interval| where(interval: date_interval)}
 
   accepts_nested_attributes_for :divisions
   accepts_nested_attributes_for :sc_categories
@@ -32,7 +33,7 @@ class Subscription < ActiveRecord::Base
   NEWS_ITEM_TYPE_HASH = NewsItem::TYPE_HASH
 
   #Update Classifications
-  NEWS_UPDATES = 1
+  NEWS_UPDATES     = 1
   RESOURCE_UPDATES = 2
 
   UPDATE_CLASSIFICATION_HASH = {
@@ -41,9 +42,9 @@ class Subscription < ActiveRecord::Base
   }
 
   INTERVAL_IMMEDIATELY = 1
-  INTERVAL_DAILY     = 2
-  INTERVAL_WEEKLY    = 3
-  INTERVAL_MONTHLY   = 4
+  INTERVAL_DAILY       = 2
+  INTERVAL_WEEKLY      = 3
+  INTERVAL_MONTHLY     = 4
 
   INTERVAL_HASH = {
     INTERVAL_IMMEDIATELY => "Immediately".freeze,
@@ -52,12 +53,18 @@ class Subscription < ActiveRecord::Base
     INTERVAL_MONTHLY => "Monthly".freeze
   }
 
-  def interval_type
-    INTERVAL_HASH[interval]
-  end
-
   def self.classifications
     UPDATE_CLASSIFICATION_HASH.map{|k, v|  v}
+  end
+
+  def self.all_by_activity(activity)
+    includes(:divisions).all.reject{|subscription| subscription.includes_activity?(activity)}
+  end
+
+  def includes_activity?(activity)
+    @ary = Array.new
+    @ary << activity
+    (SubscriptionWorker.collect_activities(self) & @ary).present?
   end
 
   def news_type_masks
@@ -86,7 +93,7 @@ class Subscription < ActiveRecord::Base
     UPDATE_CLASSIFICATION_HASH[RESOURCE_UPDATES]
   end
 
-  def interval_to_datetime
+  def interval_to_datetime # returns equivalent datetime value
     case interval
     when ::Subscription::INTERVAL_IMMEDIATELY
       return 1.hours.ago
@@ -99,17 +106,8 @@ class Subscription < ActiveRecord::Base
     end
   end
 
-  def interval_to_words
-    case interval
-    when ::Subscription::INTERVAL_IMMEDIATELY
-      return "Immediately"
-    when ::Subscription::INTERVAL_DAILY
-      return "Daily"
-    when ::Subscription::INTERVAL_WEEKLY
-      return "Weekly"
-    when ::Subscription::INTERVAL_MONTHLY
-      return "Monthly"
-    end
+  def interval_to_words # returns string e.g.: "Daily"
+    INTERVAL_HASH[interval]
   end
 
   #decorate data
