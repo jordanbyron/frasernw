@@ -3,7 +3,7 @@ class ScItem < ActiveRecord::Base
   include PublicActivity::Model
   # not used here since activity is created in controller:
   # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user}
-
+  has_many :activities, as: :trackable, class_name: 'PublicActivity::Activity', dependent: :destroy
 
   attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :shared_care, :url, :markdown_content, :document, :can_email_document, :can_email_link, :shareable, :division_id
   
