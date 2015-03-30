@@ -4,13 +4,13 @@ require 'clockwork'
 
 include Clockwork
 
-  # # You can trigger rake tasks like this:
-  # every(4.minutes, 'bundle exec rake jobs:workoff') {
-  #   `bundle exec rake jobs:workoff`
-  # }
+  # You can trigger rake tasks like this:
+  every(1.minutes, 'bundle exec rake jobs:workoff') {
+    `bundle exec rake jobs:workoff`
+  }
 
   # Temporary Test
-  Clockwork.every(1.day, 'Mail out TEST Monthly Subscriptions job', :at => 'Monday 04:26', :tz => 'UTC', :if => lambda { |t| t.day == 30 }) do
+  Clockwork.every(1.day, 'Mail out TEST Monthly Subscriptions job', :at => 'Monday 07:00', :tz => 'UTC', :if => lambda { |t| t.day == 30 }) do
    SubscriptionUserWorker.delay.mail_subscriptions_by_date!(Subscription::INTERVAL_MONTHLY)
   end
 
