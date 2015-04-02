@@ -208,22 +208,17 @@ class ScItem < ActiveRecord::Base
   }
   
   def format_type
-    begin
-      if link? || document?
-        theurl = link? ? url : document.url
-        theurl = theurl.slice(theurl.rindex('.')+1..-1).downcase unless theurl.blank?   #take everything after the last period
-        theurl = theurl.slice(0...theurl.rindex('?')) if theurl.rindex('?')   #take off anything after a ?
-        theurl = theurl.slice(0...theurl.rindex('#')) if theurl.rindex('#')   #take off anything after a #
-        ftype = FORMAT_HASH[theurl]
-        ftype = FORMAT_HASH[domain] if ftype.blank?
-        ftype = FORMAT_TYPE_HTML if ftype.blank? #external
-        ftype
-      else
-        FORMAT_TYPE_HTML #internal
-      end
-    rescue Exception => e
-      puts e.message
-      debugger
+    if link? || document?
+      theurl = link? ? url : document.url
+      theurl = theurl.slice(theurl.rindex('.')+1..-1).downcase unless theurl.blank?   #take everything after the last period
+      theurl = theurl.slice(0...theurl.rindex('?')) if theurl.rindex('?')   #take off anything after a ?
+      theurl = theurl.slice(0...theurl.rindex('#')) if theurl.rindex('#')   #take off anything after a #
+      ftype = FORMAT_HASH[theurl]
+      ftype = FORMAT_HASH[domain] if ftype.blank?
+      ftype = FORMAT_TYPE_HTML if ftype.blank? #external
+      ftype
+    else
+      FORMAT_TYPE_HTML #internal
     end
   end
 
