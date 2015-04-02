@@ -36,9 +36,9 @@ class SubscriptionMailer < ActionMailer::Base
     @type_mask_description = @activity.type_mask_description
     @update_classification_type = @activity.update_classification_type
     @parent_type = @activity.parent_type
+    @division = Division.find_by_id(@activity.owner_id) if @activity.owner_type == "Division"
 
-
-    mail(:to => @user.email, :from => 'noreply@pathwaysbc.ca', :subject => "Pathways: A #{@type_mask_description} was just added to #{@parent_type} [#{@update_classification_type}]")
+    mail(:to => @user.email, :from => 'noreply@pathwaysbc.ca', :subject => "[#{@update_classification_type}] #{@division} just added a #{@type_mask_description.downcase} to #{@parent_type}")
 
   end
 
