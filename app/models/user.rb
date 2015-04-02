@@ -37,6 +37,8 @@ class User < ActiveRecord::Base
   # times that the user (as admin) has contacted specialists
   has_many :contacts
 
+  delegate :with_activity, to: :subscriptions, prefix: true
+
   validates_presence_of :name
   validates :agree_to_toc, presence: true
 
@@ -131,18 +133,23 @@ LIMITED_ROLE_HASH = {
     self.email.blank?
   end
 
+  ##### Subscription User Methods
   def subscriptions_by_date_interval(date_interval)
     subscriptions.select{|s| s.interval == date_interval}
   end
 
-  # classification e.g.: Subscription.resource_update or Subscription.news_update
-  def subscriptions_by_classification(classification)
+  def subscriptions_by_classification(classification) # e.g.: Subscription.resource_update or Subscription.news_update
     subscriptions.select{|s| s.classification == classification}
   end
 
-  def subscriptions_by_date_interval_and_classification(date_interval, classification)
-    subscriptions_by_date_interval(date_interval) && subscriptions_by_classification(classification)
+  def subscriptions_by_interval_and_classification(date_interval, classification)
+    subscriptions_by_date_interval(date_interval) & subscriptions_by_classification(classification)
   end
+
+  def subscriptions_with_activity_in_interval_in_class(activity, date_interval, classification)
+    subscriptions_by_interval_and_classification(date_interval, classification) & subscriptions_with_activity(activity)
+  end
+  #####
 
 
   def role_full
