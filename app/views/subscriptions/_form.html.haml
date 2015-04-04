@@ -27,7 +27,7 @@
         Notify me of changes to these Content Categories:
 
       = f.input :all_sc_categories, label: "All Content Categories", as: :fake_string, input_html: { value: nil, type: "checkbox"}
-      = f.association :sc_categories, as: :check_boxes, collection: ScCategory.all_parents, label_method: :name, value_method: :id, presence: true, label: "Only for:", input_html: {:class => "sc_category-option"}
+      = f.association :sc_categories, as: :check_boxes, collection: ScCategory.all_for_subscription, label_method: :name, value_method: :id, presence: true, label: "Only for:", input_html: {:class => "sc_category-option"}
 
     .resource-updates
       %hr
