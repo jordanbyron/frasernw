@@ -66,6 +66,6 @@ class NewsItemsController < ApplicationController
   private
 
   def create_news_item_activity
-    @news_item.create_activity action: :create, update_classification_type: Subscription.news_update, type_mask: @news_item.type_mask, type_mask_description: @news_item.type, parent_id: @news_item.division.id, parent_type: "Division",  owner: @news_item.division
+    @news_item.create_activity action: :create, update_classification_type: Subscription.news_update, type_mask: @news_item.type_mask, type_mask_description: @news_item.type, format_type: 0, format_type_description: "Internal", parent_id: @news_item.division.id, parent_type: "Division",  owner: @news_item.division
   end
 end

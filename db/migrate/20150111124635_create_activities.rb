@@ -14,8 +14,10 @@ class CreateActivities < ActiveRecord::Migration
       t.string :update_classification_type #e.g. News Update or Resource Update
       t.integer :type_mask
       t.text :type_mask_description #e.g. #NewsItem::TYPE_HASH
-      t.belongs_to :parent, :polymorphic => true
+      t.integer :format_type
+      t.text :format_type_description
 
+      t.belongs_to :parent, :polymorphic => true
 
       ## ScItem activity association guide:
       # Division :owner, ==>

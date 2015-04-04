@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150322111112) do
+ActiveRecord::Schema.define(:version => 20150404125548) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -25,6 +25,8 @@ ActiveRecord::Schema.define(:version => 20150322111112) do
     t.string   "update_classification_type"
     t.integer  "type_mask"
     t.text     "type_mask_description"
+    t.integer  "format_type"
+    t.text     "format_type_description"
     t.integer  "parent_id"
     t.string   "parent_type"
     t.datetime "created_at"
@@ -861,6 +863,7 @@ ActiveRecord::Schema.define(:version => 20150322111112) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "interval"
+    t.string   "sc_item_format_type"
   end
 
   add_index "subscriptions", ["user_id"], :name => "index_subscriptions_on_user_id"

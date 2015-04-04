@@ -3,7 +3,7 @@ class ScItem < ActiveRecord::Base
   include PublicActivity::Model
   # not used here since activity is created in controller:
   # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user}
-  has_many :activities, as: :trackable, class_name: 'PublicActivity::Activity', dependent: :destroy
+  has_many :activities, as: :trackable, class_name: 'SubscriptionActivity', dependent: :destroy
 
   attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :shared_care, :url, :markdown_content, :document, :can_email_document, :can_email_link, :shareable, :division_id
   
@@ -151,7 +151,7 @@ class ScItem < ActiveRecord::Base
       title
     end
   end
-
+  
   TYPE_LINK = 1
   TYPE_MARKDOWN = 2
   TYPE_DOCUMENT = 3
@@ -189,6 +189,10 @@ class ScItem < ActiveRecord::Base
     FORMAT_TYPE_WORD_DOC => "Word Document",
     FORMAT_TYPE_VIDEO => "Video"
   }
+
+  def self.filter_format_hash_as_form_array
+    FILTER_FORMAT_HASH.to_a.map {|k,v| [k.to_s, v.to_s]}
+  end
 
   FORMAT_HASH = {
     "pdf" => FORMAT_TYPE_PDF,

@@ -42,6 +42,17 @@ $(document).ready(function(){
     }
   });
 
+  $('.sc_item_format_type-option').on( "click", function() {
+    if ($('.sc_item_format_type-option').length === $('.sc_item_format_type-option').filter(':checked').length)
+    {
+      document.getElementById('all_sc_item_format_types').checked = 1;
+    }
+    else if($('.sc_item_format_type-option').length != $('.sc_item_format_type-option').filter(':checked').length)
+    {
+      document.getElementById('all_sc_item_format_types').checked = 0;
+    }
+  });
+
   $('.sc_category-option').on( "click", function() {
     if ($('.sc_category-option').length === $('.sc_category-option').filter(':checked').length)
     {
@@ -79,6 +90,10 @@ $(document).ready(function(){
 
   $('#all_news_types').on('click', function(e) {
        $('.news_type-option').prop('checked', $(e.target).prop('checked'));
+   });
+
+  $('#all_sc_item_format_types').on('click', function(e) {
+       $('.sc_item_format_type-option').prop('checked', $(e.target).prop('checked'));
    });
 
   $('#all_sc_categories').on('click', function(e) {

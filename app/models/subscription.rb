@@ -1,6 +1,7 @@
 class Subscription < ActiveRecord::Base
   #attr_accessible :interval, :user_id, :classification, :content_item, :item_type
   serialize :news_type
+  serialize :sc_item_format_type
 
   #before_action save_subscription_news_item_types
   validates :classification, :interval, presence: true
@@ -29,6 +30,7 @@ class Subscription < ActiveRecord::Base
   accepts_nested_attributes_for :specializations
   accepts_nested_attributes_for :subscription_news_item_types
 
+  SC_ITEM_FORMAT_TYPE_HASH = ScItem::FILTER_FORMAT_HASH
 
   NEWS_ITEM_TYPE_HASH = NewsItem::TYPE_HASH
 
@@ -57,7 +59,7 @@ class Subscription < ActiveRecord::Base
     UPDATE_CLASSIFICATION_HASH.map{|k, v|  v}
   end
 
-  def self.all_by_activity(activity)
+  def self.with_activity(activity)
     includes(:divisions).all.reject{|subscription| subscription.includes_activity?(activity)}
   end
 
@@ -67,16 +69,19 @@ class Subscription < ActiveRecord::Base
     (SubscriptionWorker.collect_activities(self) & @ary).present?
   end
 
+  # # #BEGIN news_type:
   def news_type_masks
     return "" if news_type.blank?
     news_type.reject(&:empty?).map(&:to_i)
   end
 
   def news_types_pluralized
+    return "" if news_type.blank?
     news_type_strings.map(&:pluralize)
   end
 
   def news_type_strings
+    return "" if news_type.blank?
     news_type_masks.map{|nt| Subscription::NEWS_ITEM_TYPE_HASH[nt]}
   end
 
@@ -84,6 +89,29 @@ class Subscription < ActiveRecord::Base
     return false if news_type.blank?
     news_type.reject(&:blank?).present?
   end
+  # # # END
+
+  # # #BEGIN sc_item_format_type:
+  def sc_item_format_type_masks
+    return "" if sc_item_format_type.blank?
+    sc_item_format_type.reject(&:empty?).map(&:to_i)
+  end
+
+  def sc_item_format_type_strings
+    return "" if sc_item_format_type.blank?
+    sc_item_format_type_masks.map{|nt| Subscription::SC_ITEM_FORMAT_TYPE_HASH[nt]}
+  end
+
+  def sc_item_format_types_pluralized
+    return "" if sc_item_format_type.blank?
+    sc_item_format_type_strings.map(&:pluralize)
+  end
+
+  def sc_item_format_type_present?
+    return false if sc_item_format_type.blank?
+    sc_item_format_type.reject(&:blank?).present?
+  end
+  # # # END
 
   def self.news_update
     UPDATE_CLASSIFICATION_HASH[NEWS_UPDATES]
@@ -117,5 +145,9 @@ class Subscription < ActiveRecord::Base
 
   def news_item_type_hash_array
     news_type.reject(&:blank?).map(&:to_i).map{|n| Subscription::NEWS_ITEM_TYPE_HASH[n]}
+  end
+
+  def sc_item_format_type_hash_array
+    sc_item_format_type.reject(&:blank?).map(&:to_i).map{|n| Subscription::SC_ITEM_FORMAT_TYPE_HASH[n]}
   end
 end

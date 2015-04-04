@@ -29,7 +29,6 @@
       = f.input :all_sc_categories, label: "All Content Categories", as: :fake_string, input_html: { value: nil, type: "checkbox"}
       = f.association :sc_categories, as: :check_boxes, collection: ScCategory.all_parents, label_method: :name, value_method: :id, presence: true, label: "Only for:", input_html: {:class => "sc_category-option"}
 
-
     .resource-updates
       %hr
       #container
@@ -38,6 +37,15 @@
 
         = f.input :all_specializations, label: "All Specialties", as: :fake_string, input_html: { value: nil, type: "checkbox"}
         = f.association :specializations, collection: Specialization.all, label_method: :name, value_method: :id, as: :check_boxes, presence: true, required: true, label: "Only for:", input_html: { :class => "specialization-option"}
+
+    .resource-updates
+      %hr
+      %h2
+        When in these formats:
+
+      = f.input :all_sc_item_format_types, label: "All Content Formats", as: :fake_string, input_html: { value: nil, type: "checkbox"}
+      = f.input :sc_item_format_type, as: :check_boxes, collection: ScItem.filter_format_hash_as_form_array, label_method: :last, value_method: :first, :include_blank => false, label: "Only for:", input_html: {:class => "sc_item_format_type-option"}
+
     %hr
     .all-updates
       %h2
@@ -77,6 +85,15 @@
     else if($('.news_type-option').length != $('.news_type-option').filter(':checked').length)
     {
       document.getElementById('all_news_types').checked = 0;
+    }
+
+    if ($('.sc_item_format_type-option').length === $('.sc_item_format_type-option').filter(':checked').length)
+    {
+      document.getElementById('all_sc_item_format_types').checked = 1;
+    }
+    else if($('.sc_item_format_type-option').length != $('.sc_item_format_type-option').filter(':checked').length)
+    {
+      document.getElementById('all_sc_item_format_types').checked = 0;
     }
 
     if ($('.sc_category-option').length === $('.sc_category-option').filter(':checked').length)
