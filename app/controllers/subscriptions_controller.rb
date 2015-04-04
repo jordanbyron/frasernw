@@ -92,6 +92,7 @@ class SubscriptionsController < ApplicationController
       params[:subscription][:specialization_ids].reject!(&:blank?) if params[:subscription][:specialization_ids].present?
       params[:subscription][:news_type].reject!(&:blank?) if params[:subscription][:news_type].present?
       params[:subscription][:division_ids].reject!(&:blank?) if params[:subscription][:division_ids].present?
+      params[:subscription][:sc_item_format_type].reject!(&:blank?) if params[:subscription][:sc_item_format_type].present?
 
     if params[:subscription][:classification] == Subscription.resource_update
       params[:subscription].delete(:news_type)
@@ -99,8 +100,10 @@ class SubscriptionsController < ApplicationController
     else params[:subscription][:classification] == Subscription.news_update
       params[:subscription].delete(:sc_category_ids)
       params[:subscription].delete(:specialization_ids)
+      params[:subscription].delete(:sc_item_format_type)
       params[:subscription][:sc_category_ids] = ""
       params[:subscription][:specialization_ids] = ""
+      params[:subscription][:sc_item_format_type] = ""
     end
     params[:subscription]
   end
