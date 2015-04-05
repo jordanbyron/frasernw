@@ -17,14 +17,19 @@ class SubscriptionUserWorker < ActiveRecord::Base
 
   ## Email flow 2:
   # Deliver Immediate Emails to all users subscribed to a given activity
-  def self.mail_subscriptions_by_activity!(activity) # task for mailing IMMEDIATE notifications of single activities
+  def self.mail_subscriptions_by_activity!(activity_id) # task for mailing IMMEDIATE notifications of single activities
+    @activity = SubscriptionActivity.find(activity_id)
     User.with_subscriptions.each do |user|
       next unless user.subscriptions.all_immediately.present?
       Subscription::UPDATE_CLASSIFICATION_HASH.map do |key, value| # send merged emails by classification & date
-        @subscriptions = user.subscriptions_with_activity_in_interval_in_class(activity, Subscription::INTERVAL_IMMEDIATELY, value)
-        next unless @subscriptions.present? # Do not mail unless user has Immediate Subscription for activity
-        SubscriptionMailer.immediate_resource_update_email(activity.id, user.id).deliver if activity.update_classification_type == Subscription.resource_update
-        SubscriptionMailer.immediate_news_update_email(activity.id, user.id).deliver if activity.update_classification_type == Subscription.news_update
+        @subscriptions = user.subscriptions_with_activity_in_interval_in_class(@activity, Subscription::INTERVAL_IMMEDIATELY, value)
+        next unless @subscriptions.present? # Do not mail unless user has Immediate Subscription for @activity
+        if @activity.update_classification_type == Subscription.resource_update
+          @specializations = @subscriptions.map(&:specializations).each{|specialization| specialization & @activity.trackable.specializations}.flatten.uniq!
+          next unless @specializations.present? # Do not mail unless user has Immediate Subscription for @activity
+          SubscriptionMailer.immediate_resource_update_email(@activity.id, user.id).deliver
+        end
+        SubscriptionMailer.immediate_news_update_email(@activity.id, user.id).deliver if @activity.update_classification_type == Subscription.news_update
       end
     end
   end

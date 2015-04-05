@@ -1,13 +1,9 @@
 #require 'debugger'
 class SubscriptionWorker < ActiveRecord::Base
-  def initialize(subscription)
-    @subscription = subscription
-  end
 
   def self.collect_activities(subscription) # processes one subscription
-    SubscriptionActivity.collect_activities(subscription.interval_to_datetime, subscription.classification, subscription.divisions, subscription.news_type_masks)
+    SubscriptionActivity.collect_activities(subscription: subscription)
   end
-
 
   def self.collect_all_activities_for_subscriptions(subscriptions) # processes multiple subscriptions
     @_activities_for_subscriptions = Array.new
@@ -16,7 +12,6 @@ class SubscriptionWorker < ActiveRecord::Base
     activities_for_subscription = @_activities_for_subscriptions.flatten.sort{|a,b| b.created_at <=> a.created_at } # return collection of unique activities from subscription
     activities_for_subscription.uniq! # must be on separate line or uniq! returns nil if collection is unique
     return activities_for_subscription
-
   end
 
   def self.mail_subscriptions!(subscriptions)
@@ -39,6 +34,10 @@ class SubscriptionWorker < ActiveRecord::Base
                                             @tracked_objects,
                                             subscription.id )
     end
+  end
+  
+  def self.collect_subscriptions_by_activities(activity)
+      self.collect_all_activities_for_subscriptions(subscription) & activity
   end
 
   def self.to_tracked_objects(activities_for_subscriptions)
