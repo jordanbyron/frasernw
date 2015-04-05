@@ -76,6 +76,7 @@ class SubscriptionActivity < PublicActivity::Activity
     @arr = Array.new
     if specializations.present? # added for performance boost, tough due to trackable Single Table Inheritance
       @activities = self.includes(:trackable => [:specializations]).created_at(date).by_update_classification(classification).by_divisions(divisions).by_type_mask(type_mask_integer).by_format_type(format_type).by_specializations(specializations).reverse
+
     else
       @activities = self.includes(:trackable).created_at(date).by_update_classification(classification).by_divisions(divisions).by_type_mask(type_mask_integer).by_format_type(format_type).by_specializations(specializations).reverse
     end
@@ -96,7 +97,6 @@ class SubscriptionActivity < PublicActivity::Activity
       @sc_activities.flatten! if @spec_activities.present? # if sc_categories present but not found, otherwise we want to return [] for @arr.reduce method below to filter out all activities
       @arr << @sc_activities
     end
-
     return @arr.reduce(:&) # runs an & operation against total array for each @arr element present, e.g.: (@activities & @sc_activities & @spec_activities) or (@activities & @sc_activities)
   end
 
