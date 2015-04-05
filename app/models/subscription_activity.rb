@@ -70,8 +70,8 @@ class SubscriptionActivity < PublicActivity::Activity
     divisions           = options[:divisions]           || (subscription.divisions                  if subscription.present?)
     type_mask_integer   = options[:type_mask_integer]   || (subscription.news_type_masks            if subscription.present?)
     format_type         = options[:format_type_integer] || (subscription.sc_item_format_type_masks  if subscription.present?)
-    specializations     = options[:specializations]     || (subscription.specializations            if subscription.specializations.present?)
-    sc_categories       = options[:sc_categories]       || (subscription.sc_categories              if subscription.sc_categories.present?)
+    specializations     = options[:specializations]     || (subscription.specializations            if (subscription.present? && subscription.specializations.present?))
+    sc_categories       = options[:sc_categories]       || (subscription.sc_categories              if (subscription.present? && subscription.sc_categories.present?))
 
     @arr = Array.new
     if specializations.present? # added for performance boost, tough due to trackable Single Table Inheritance
