@@ -4,13 +4,13 @@ require 'clockwork'
 
 include Clockwork
 
-  # # You can trigger rake tasks like this:
-  # every(1.minutes, 'bundle exec rake jobs:workoff') {
-  #   `bundle exec rake pathways:recache:all`
-  # }
+  # Delete sessions older than every week
+  every(1.weeks, 'bundle exec rake pathways:delete_old_sessions', :at => 'Sunday 06:20',  :tz => 'UTC') {
+    `bundle exec rake pathways:delete_old_sessions`
+  }
 
   # Used for testing:
-  Clockwork.every(1.day, 'Mail out TEST Monthly Subscriptions job', :at => 'Monday 07:20', :tz => 'UTC', :if => lambda { |t| t.day == 30 }) do
+  Clockwork.every(1.day, 'Mail out TEST Monthly Subscriptions job', :at => 'Sunday 09:20', :tz => 'UTC', :if => lambda { |t| t.day == 5 }) do
    SubscriptionUserWorker.delay.mail_subscriptions_by_date!(Subscription::INTERVAL_MONTHLY)
   end
 
