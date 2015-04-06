@@ -1,7 +1,7 @@
 class BackfillPublicActivity < ActiveRecord::Migration
   def up
     NewsItem.find_each do |item|
-      item.create_activity action: :create, update_classification_type: Subscription.news_update, type_mask: item.type_mask, type_mask_description: item.type, parent_id: item.division.id, parent_type: "Division",  owner: item.division
+      item.create_activity action: :create, update_classification_type: Subscription.news_update, type_mask: item.type_mask, type_mask_description: item.type, format_type: 0, format_type_description: 'Internal', parent_id: item.division.id, parent_type: "Division",  owner: item.division
     end
 
     ScItem.find_each do |item|
