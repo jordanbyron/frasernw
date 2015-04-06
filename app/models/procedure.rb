@@ -19,15 +19,6 @@ class Procedure < ActiveRecord::Base
     self.name
   end
 
-  def full_name_array
-    ps_with_parents = procedure_specializations.reject{ |ps| ps.parent.blank? }
-    if ps_with_parents.count > 0
-      return ps_with_parents.first.parent.procedure.full_name_array + self.name.uncapitalize_first_letter.split(' ')
-    else
-      return self.name.uncapitalize_first_letter.split(' ')
-    end
-  end
-
   def parents_name_array
     ps_with_parents = procedure_specializations.reject{ |ps| ps.parent.blank? }
     if ps_with_parents.count > 0
@@ -38,8 +29,12 @@ class Procedure < ActiveRecord::Base
   end
 
   def full_name
-    #names should only show each word once, to clarify our heirarchies
-    full_name_array.uniq.join(' ').capitalize_first_letter
+    ps_with_parents = procedure_specializations.reject{ |ps| ps.parent.blank? }
+    if ps_with_parents.count > 0
+      return ps_with_parents.first.parent.procedure.full_name + name_relative_to_parents.uncapitalize_first_letter
+    else
+      return self.name
+    end
   end
   
   def name_relative_to_parents
