@@ -5,12 +5,12 @@ require 'clockwork'
 include Clockwork
 
   # Delete sessions older than every week
-  every(1.weeks, 'bundle exec rake pathways:delete_old_sessions', :at => 'Sunday 06:20',  :tz => 'UTC') {
-    `bundle exec rake pathways:delete_old_sessions`
-  }
+  # every(1.weeks, 'bundle exec rake pathways:delete_old_sessions', :at => 'Sunday 06:20',  :tz => 'UTC') {
+  #   `bundle exec rake pathways:delete_old_sessions`
+  # }
 
   # Used for testing:
-  Clockwork.every(1.day, 'Mail out TEST Monthly Subscriptions job', :at => 'Sunday 09:20', :tz => 'UTC', :if => lambda { |t| t.day == 5 }) do
+  Clockwork.every(1.day, 'Mail out TEST Monthly Subscriptions job', :at => 'Monday 00:45', :tz => 'UTC', :if => lambda { |t| t.day == 6 }) do
    SubscriptionUserWorker.delay.mail_subscriptions_by_date!(Subscription::INTERVAL_MONTHLY)
   end
 
