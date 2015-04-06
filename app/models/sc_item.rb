@@ -1,6 +1,10 @@
 class ScItem < ActiveRecord::Base
   include ApplicationHelper
-  
+  include PublicActivity::Model
+  # not used here since activity is created in controller:
+  # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user}
+  has_many :activities, as: :trackable, class_name: 'SubscriptionActivity', dependent: :destroy
+
   attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :shared_care, :url, :markdown_content, :document, :can_email_document, :can_email_link, :shareable, :division_id
   
   belongs_to  :sc_category
@@ -147,7 +151,7 @@ class ScItem < ActiveRecord::Base
       title
     end
   end
-
+  
   TYPE_LINK = 1
   TYPE_MARKDOWN = 2
   TYPE_DOCUMENT = 3
@@ -186,10 +190,15 @@ class ScItem < ActiveRecord::Base
     FORMAT_TYPE_VIDEO => "Video"
   }
 
+  def self.filter_format_hash_as_form_array
+    FILTER_FORMAT_HASH.to_a.map {|k,v| [k.to_s, v.to_s]}
+  end
+
   FORMAT_HASH = {
     "pdf" => FORMAT_TYPE_PDF,
     "html" => FORMAT_TYPE_HTML,
     "htm" => FORMAT_TYPE_HTML,
+    "xml" => FORMAT_TYPE_HTML,
     "php" => FORMAT_TYPE_HTML,
     "asp" => FORMAT_TYPE_HTML,
     "doc" => FORMAT_TYPE_WORD_DOC,
@@ -205,7 +214,7 @@ class ScItem < ActiveRecord::Base
   def format_type
     if link? || document?
       theurl = link? ? url : document.url
-      theurl = theurl.slice(theurl.rindex('.')+1..-1).downcase              #take everything after the last period
+      theurl = theurl.slice(theurl.rindex('.')+1..-1).downcase unless theurl.blank?   #take everything after the last period
       theurl = theurl.slice(0...theurl.rindex('?')) if theurl.rindex('?')   #take off anything after a ?
       theurl = theurl.slice(0...theurl.rindex('#')) if theurl.rindex('#')   #take off anything after a #
       ftype = FORMAT_HASH[theurl]

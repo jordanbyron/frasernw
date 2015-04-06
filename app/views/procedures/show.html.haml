@@ -70,6 +70,7 @@
 -# TABS ARE USER SPECIFIC, BASED OFF CONTENT (OR LACK THEREOF)
 
 - categories = ScCategory.specialty.reject{ |sc_category| sc_category.all_sc_items_for_procedure_in_divisions(@procedure, current_user_divisions).blank? }
+-#long_query_warning:1400ms ^^
 
 %script{"type" => "text/javascript"}
   $(document).ready( function(){

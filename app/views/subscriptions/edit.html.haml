@@ -1,0 +1,10 @@
+.content-wrapper
+  %h2 Edit Notification Setting
+  %hr
+  = render partial: "introduction"
+
+  = render 'form'
+
+  = link_to 'Show', @subscription
+  \|
+  = link_to 'Back', subscriptions_path

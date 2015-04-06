@@ -1,0 +1,259 @@
+Date: Mon Mar 30 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/84076755
+    update subscription mailer to include immediate email templates and automated bottom message
+
+Date: Mon Mar 30 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/338b5b8b
+    add activity parsing methods to return subscriptions relevant to a given activity, refactor subscription model
+
+Date: Mon Mar 30 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/19404463
+    update cron job, insert test mail task
+
+Date: Mon Mar 30 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/c1f40467
+    add rails_12factor gem to production gemfile to skip plugin injection
+
+Date: Mon Mar 30 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/76daa079
+    test cron task
+
+Date: Mon Mar 30 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/8fa9c612
+    add cron job for subscription
+
+Date: Mon Mar 30 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/75ce1a31
+    add activities dependent/destroy option
+
+Date: Sun Mar 29 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/ecc99810
+    remove leftover pry session
+
+Date: Sun Mar 29 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/0fc84cc3
+    add note about performance regarding the eager load in city_lookup
+
+Date: Sun Mar 29 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/39fb83f9
+    Updating "migrate users" script
+
+Date: Sat Mar 28 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/0ccb8bef
+    remove comments, uncomment public activity callback, keeping for now as documentation of public activity implement
+
+Date: Fri Mar 27 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/d534abac
+    add delayed_job to subscription_worker, add config for delayed_job_web
+
+Date: Fri Mar 27 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/f84107c6
+    update mailer performance by receiving id not subscription object
+
+Date: Fri Mar 27 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/36e4a44a
+    add clockwork gem, still need to configure rake tasks
+
+Date: Fri Mar 27 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/ace5f006
+    modify backfill activity task
+
+Date: Fri Mar 27 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/418409d7
+    create notification only on create
+
+Date: Fri Mar 27 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/f6fc5ce3
+    scope JS to form so it doesn't affect rest of app
+
+Date: Tue Mar 24 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/fbbf49d9
+    minor: fix comment
+
+Date: Mon Mar 23 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/7f64d65a
+    default to blank string to prevent break in method chaining
+
+Date: Mon Mar 23 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/84ecb33b
+    clarify destroy syntax
+
+Date: Mon Mar 23 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/5c4af916
+    fix migration to avoid PG error
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/41ffe146
+    Updating terms and conditions / terms of use
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/1ca55490
+    add immediate rake task
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/4d3b135c
+    remove ajax
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/d9f5aed4
+    remove n+1
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/c12c2a28
+    fix javascript
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/ec1b81da
+    remove unused columns
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/5f3feaf3
+    update form javascript for checkboxes for better/consistent UI/UX
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/35861ae3
+    hide/show correct form field
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/0deb3dc1
+    filter subscription form params
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/da7265c6
+    eager load activity collection
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/9aa2516f
+    make url helper accessible to action mailer
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/8bbc76ae
+    remove blue shading from subscription form
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/adca87ff
+    update subscription mailer syntax
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/229b84e4
+    update public activity notification to include more detail
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/cc94cde2
+    add url helper to subscription & subscription_user_worker methods in user.rb
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/1a11af34
+    update subscription worker for edge cases
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/6c1b7ba7
+    merge update_classifications in mailer task
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/9ee93e65
+    fix nils on subscription
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/1c096ed8
+    add xml to accepted format types
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/a63fc3f3
+    use instance variables for subscription mailer
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/362b2685
+    move dependency of subscription controller action
+
+Date: Sun Mar 22 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/4966469a
+    eager load notifications
+
+Date: Fri Mar 20 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/f54c0986
+    filter subscription params
+
+Date: Fri Mar 20 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/02699338
+    DEVELOPMENT CHANGE:  don't load livesearch in local development for faster dev time, rmeove if needed during local development
+
+Date: Tue Mar 17 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/a2a6ffc1
+    remove subcription JS cruft
+
+Date: Mon Mar 16 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/0365b770
+    fix views of notification system
+
+Date: Mon Mar 16 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/5c729270
+    lower size of subscription title header
+
+Date: Mon Mar 16 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/6514b2eb
+    remove N+1 to subscription task
+
+Date: Mon Mar 16 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/07015786
+    remove debugger from rakefile
+
+Date: Mon Mar 16 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/be155366
+    remove memcachier to debug dalli error
+
+Date: Mon Mar 16 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/623b70a8
+    refactor/simplify subscription_user_worker & subscription worker methods
+
+Date: Mon Mar 16 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/84dad937
+    fix subscription selector class for resource update
+
+Date: Mon Mar 16 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/81c108f9
+    remove outdated welcome URL for admins
+
+Date: Mon Mar 16 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/d63bf9de
+    subscriptions index now has summary table of options selected; refactor of existing subscription model
+
+Date: Mon Mar 16 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/0de4fe1e
+    update subscriptions controller
+
+Date: Mon Mar 16 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/dcdd253f
+    add bullet gem for n+1 detection
+
+Date: Mon Mar 16 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/30329c53
+    update/refactor subscription mailer/activity/worker classes
+
+Date: Mon Mar 16 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/36b55544
+    pluralize news item type_hash_as_array output
+
+Date: Mon Mar 16 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/9b2aad15
+    improve subscription edit form
+
+Date: Mon Mar 16 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/716b806d
+    update subscription edit page and add JS
+
+Date: Sun Mar 15 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/d00166c8
+    update subscription form, check multiple selectors here before removing
+
+Date: Sun Mar 15 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/0afb6a74
+    add simple_form input helper as: :fake_string for creating dummy form fields
+
+Date: Sun Mar 15 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/376ddede
+    upgrade simple_form from 2.0.1 to 2.1
+
+Date: Sun Mar 15 2015
+Commit: https://github.com/KelseyDH/frasernw/commit/72df757b
+    upgrade letter_opener to fix bug opening emails

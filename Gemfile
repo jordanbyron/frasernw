@@ -19,22 +19,26 @@ gem 'haml-rails'
 gem 'authlogic'
 gem 'paper_trail', '~> 2.7'
 gem 'will_paginate', '~> 3.0.0'
-gem "simple_form", "~> 2.0.1"
+gem "simple_form", '~> 2.1'
 gem "nested_form", :git => "https://github.com/warneboldt/nested_form.git", :ref => "35a2cf060680280413880337a3f89bdec469301c"
 #gem 'nested_form', '0.3.2', :path => '~/Documents/Programming/Pathways/warneboldt/nested_form/'
 gem 'exception_notification'
 gem "cancan", "~> 1.6.7"
 gem "paperclip", "~> 2.7"
 gem "aws-sdk"
+gem 'public_activity'
 
 # Use unicorn as the web server
 gem 'unicorn'
 
 # Heroku caching
-gem 'memcachier'
+gem 'kgio'
 gem 'dalli'
+gem 'delayed_job'
 gem 'delayed_job_active_record'
+gem 'delayed_job_web'
 gem 'daemons'
+gem 'clockwork'
 
 # markdown
 gem 'bluecloth'
@@ -65,6 +69,7 @@ group :development, :test do
   gem 'guard-rspec'
   gem 'guard-livereload'
   gem 'guard-spork'
+  gem 'rack-livereload'
   #gem 'heroku'
   gem 'taps'
   gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
@@ -74,9 +79,13 @@ end
 
 group :development do
   gem 'pry-rails' # loads pry by default with rails c
+  gem 'oink'
   gem 'rack-mini-profiler'
   #latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
   gem 'lol_dba'
+  gem 'letter_opener'
+  gem 'debugger'
+  gem 'bullet'
 end
 
 gem 'ancestry'
@@ -89,6 +98,8 @@ gem 'lazy_high_charts'
 gem 'jquery-datatables-rails'
 gem "rack-timeout"
 
+#for Heroku deployment
+gem 'rails_12factor', group: :production
 
 #New Relic guide recommends placing New Relic gem at bottom of Gemfile
 group :development, :production do

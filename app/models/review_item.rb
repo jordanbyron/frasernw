@@ -15,11 +15,11 @@ class ReviewItem < ActiveRecord::Base
   
   class << self
     def active
-      where(:archived => false)
+      includes(:item).where(:archived => false)
     end
     
     def archived
-      where(:archived => true)
+      includes(:item).where(:archived => true)
     end
     
     def for_specialist(specialist)

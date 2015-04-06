@@ -1,0 +1,18 @@
+!!!
+%html
+  %head
+    %title
+      = "#{@user.name} -- Pathways: #{@division} just added a #{@type_mask_description.downcase} to #{@parent_type} [#{@update_classification_type}]"
+  %body
+    %p
+      = "#{@user.name}, a #{@type_mask_description.downcase} was just added "
+      - if @parent_type.present?
+        = "to #{@parent_type}"
+      - if @division.present?
+        = "by #{@division}: "
+    %br
+    .activity
+      %p
+        = render_activity(@activity, fallback: :default)
+      %br
+    = render partial: "subscription_mailer/automatic_email_message", locals: {:interval => @interval}

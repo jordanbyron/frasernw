@@ -51,7 +51,7 @@ GEM
       activesupport (= 3.1.12)
     activesupport (3.1.12)
       multi_json (~> 1.0)
-    addressable (2.2.6)
+    addressable (2.3.7)
     ancestry (1.2.4)
       activerecord (>= 2.2.2)
     ansi (1.3.0)
@@ -67,20 +67,37 @@ GEM
       uuidtools (~> 2.1)
     bluecloth (2.2.0)
     builder (3.0.4)
+    bullet (4.13.1)
+      activesupport (>= 3.0.0)
+      uniform_notifier (>= 1.6.0)
     cancan (1.6.7)
+    clockwork (1.1.0)
+      activesupport
+      tzinfo
     cocaine (0.2.1)
     coderay (1.1.0)
     coffee-script (2.2.0)
       coffee-script-source
       execjs
     coffee-script-source (1.1.2)
+    columnize (0.9.0)
     daemons (1.1.8)
     dalli (2.0.5)
-    delayed_job (3.0.2)
-      activesupport (~> 3.0)
-    delayed_job_active_record (0.3.2)
-      activerecord (> 2.1.0)
-      delayed_job (~> 3.0.0)
+    debugger (1.6.8)
+      columnize (>= 0.3.1)
+      debugger-linecache (~> 1.2.0)
+      debugger-ruby_core_source (~> 1.3.5)
+    debugger-linecache (1.2.0)
+    debugger-ruby_core_source (1.3.8)
+    delayed_job (4.0.6)
+      activesupport (>= 3.0, < 5.0)
+    delayed_job_active_record (4.0.3)
+      activerecord (>= 3.0, < 5.0)
+      delayed_job (>= 3.0, < 4.1)
+    delayed_job_web (1.2.5)
+      activerecord (> 3.0.0)
+      delayed_job (> 2.0.3)
+      sinatra (>= 0.9.2)
     diff-lcs (1.1.3)
     domain_name (0.5.14)
       unf (>= 0.0.5, < 1.0.0)
@@ -132,6 +149,7 @@ GEM
       fog (>= 0.7.2)
       heroku (>= 2.1.4)
     hike (1.2.3)
+    hodel_3000_compliant_logger (0.1.1)
     hpricot (0.8.6)
     htmlentities (4.3.1)
     http-cookie (1.0.2)
@@ -139,7 +157,7 @@ GEM
     httparty (0.8.1)
       multi_json
       multi_xml
-    i18n (0.6.11)
+    i18n (0.7.0)
     jquery-datatables-rails (1.11.2)
       jquery-rails
     jquery-rails (1.0.16)
@@ -147,11 +165,13 @@ GEM
       thor (~> 0.14)
     json (1.8.1)
     kgio (2.6.0)
-    launchy (2.0.5)
-      addressable (~> 2.2.6)
+    launchy (2.4.3)
+      addressable (~> 2.3)
     lazy_high_charts (1.5.1)
       bundler (>= 1.0)
       hash-deep-merge
+    letter_opener (1.3.0)
+      launchy (~> 2.2)
     listen (0.7.2)
     lol_dba (1.6.4)
       actionpack (>= 3.0)
@@ -170,7 +190,6 @@ GEM
       nokogiri (~> 1.4)
       ntlm-http (~> 0.1, >= 0.1.1)
       webrobots (>= 0.0.9, < 0.2)
-    memcachier (0.0.1)
     method_source (0.8.2)
     mime-types (1.25.1)
     multi_json (1.0.4)
@@ -184,6 +203,9 @@ GEM
     nifty-generators (0.4.6)
     nokogiri (1.5.0)
     ntlm-http (0.1.1)
+    oink (0.10.1)
+      activerecord
+      hodel_3000_compliant_logger
     paper_trail (2.7.2)
       activerecord (~> 3.0)
       railties (~> 3.0)
@@ -200,16 +222,23 @@ GEM
       slop (~> 3.4)
     pry-rails (0.3.2)
       pry (>= 0.9.10)
+    public_activity (1.4.2)
+      actionpack (>= 3.0.0)
+      activerecord (>= 3.0)
+      i18n (>= 0.5.0)
+      railties (>= 3.0.0)
     rack (1.3.10)
     rack-cache (1.2)
       rack (>= 0.4)
+    rack-livereload (0.3.15)
+      rack
     rack-mini-profiler (0.9.2)
       rack (>= 1.1.3)
     rack-mount (0.8.3)
       rack (>= 1.0.0)
     rack-ssl (1.3.4)
       rack
-    rack-test (0.6.2)
+    rack-test (0.6.3)
       rack (>= 1.0)
     rack-timeout (0.1.1)
     rails (3.1.12)
@@ -220,6 +249,11 @@ GEM
       activesupport (= 3.1.12)
       bundler (~> 1.0)
       railties (= 3.1.12)
+    rails_12factor (0.0.3)
+      rails_serve_static_assets
+      rails_stdout_logging
+    rails_serve_static_assets (0.0.4)
+    rails_stdout_logging (0.0.3)
     railties (3.1.12)
       actionpack (= 3.1.12)
       activesupport (= 3.1.12)
@@ -257,14 +291,14 @@ GEM
       sprockets (~> 2.0.0)
       tilt (~> 1.3.2)
     sequel (3.20.0)
-    simple_form (2.0.1)
+    simple_form (2.1.2)
       actionpack (~> 3.0)
       activemodel (~> 3.0)
     sinatra (1.0)
       rack (>= 1.0)
     slop (3.6.0)
     spork (0.9.0.rc9)
-    sprockets (2.0.4)
+    sprockets (2.0.5)
       hike (~> 1.2)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
@@ -285,7 +319,7 @@ GEM
       polyglot (>= 0.3.1)
     turn (0.8.3)
       ansi
-    tzinfo (0.3.41)
+    tzinfo (0.3.43)
     uglifier (1.0.4)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
@@ -296,6 +330,7 @@ GEM
       kgio (~> 2.4)
       rack
       raindrops (~> 0.6)
+    uniform_notifier (1.6.2)
     uuidtools (2.1.2)
     validates_email_format_of (1.5.3)
     wannabe_bool (0.1.0)
@@ -311,11 +346,16 @@ DEPENDENCIES
   awesome_print
   aws-sdk
   bluecloth
+  bullet
   cancan (~> 1.6.7)
+  clockwork
   coffee-script
   daemons
   dalli
+  debugger
+  delayed_job
   delayed_job_active_record
+  delayed_job_web
   exception_notification
   gattica!
   guard
@@ -327,26 +367,31 @@ DEPENDENCIES
   htmlentities
   jquery-datatables-rails
   jquery-rails
+  kgio
   lazy_high_charts
+  letter_opener
   lol_dba
   mechanize
-  memcachier
   nested_form!
   newrelic_rpm
   nifty-generators
+  oink
   paper_trail (~> 2.7)
   paperclip (~> 2.7)
   pg
   pry-rails
+  public_activity
+  rack-livereload
   rack-mini-profiler
   rack-timeout
   rails (= 3.1.12)
   rails-dev-boost!
+  rails_12factor
   rb-fsevent (~> 0.9.1)
   rspec
   rspec-rails
   sass-rails (~> 3.1.0)
-  simple_form (~> 2.0.1)
+  simple_form (~> 2.1)
   spork (> 0.9.0rc)
   taps
   turn
