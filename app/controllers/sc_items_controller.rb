@@ -16,9 +16,7 @@ class ScItemsController < ApplicationController
   
   def new
     @sc_item = ScItem.new
-    @has_specializations = []
-    @has_procedure_specializations = []
-    @hierarchy = ancestry_options_limited(ScCategory.unscoped.arrange(:order => 'name'), nil)
+    new_sc_item_preload
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
@@ -38,9 +36,7 @@ class ScItemsController < ApplicationController
       create_sc_item_activity
       redirect_to @sc_item, :notice => "Successfully created content item."
     else
-      @has_specializations = []
-      @has_procedure_specializations = []
-      @hierarchy = ancestry_options_limited(ScCategory.unscoped.arrange(:order => 'name'), nil)
+      new_sc_item_preload
       render :action => 'new'
     end
   end
@@ -99,6 +95,12 @@ class ScItemsController < ApplicationController
     if !(current_user_is_super_admin? || (current_user_divisions.include? Division.find(params[:id])))
       redirect_to root_url, :notice => "You are not allowed to access this page"
     end
+  end
+
+  def new_sc_item_preload
+    @has_specializations = []
+    @has_procedure_specializations = []
+    @hierarchy = ancestry_options_limited(ScCategory.unscoped.arrange(:order => 'name'), nil)
   end
 
   def create_sc_item_activity
