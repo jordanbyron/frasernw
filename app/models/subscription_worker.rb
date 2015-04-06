@@ -20,13 +20,11 @@ class SubscriptionWorker < ActiveRecord::Base
     if @activities_for_subscriptions.blank?
       @activities_for_subscriptions = SubscriptionActivity.collect_activities(subscription: subscriptions.first)
     end
-    # binding.pry
     return unless @activities_for_subscriptions.present?
     mail_by_classification!(@activities_for_subscriptions, subscriptions.first)
   end
 
   def self.mail_by_classification!(activities_for_subscriptions, subscription)
-    @tracked_objects = self.to_tracked_objects(activities_for_subscriptions)
     if subscription.classification == Subscription.resource_update
       SubscriptionMailer.delay.resource_update_email( activities_for_subscriptions,
                                                 subscription.id )
