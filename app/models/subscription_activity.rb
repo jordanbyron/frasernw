@@ -75,8 +75,8 @@ class SubscriptionActivity < PublicActivity::Activity
     
     @arr = Array.new
     if specializations.present? # added for performance boost, tough due to trackable Single Table Inheritance
-      @activities = self.includes(:trackable => [:specializations]).created_at(date).by_update_classification(classification).by_divisions(divisions).by_type_mask(type_mask_integer).by_format_type(format_type).by_specializations(specializations).reverse
-      #@activities = self.includes(:trackable => [:specializations]).created_at(date).by_update_classification(classification).by_divisions(divisions).by_type_mask(type_mask_integer).by_specializations(specializations).reverse
+      # @activities = self.includes(:trackable => [:specializations]).created_at(date).by_update_classification(classification).by_divisions(divisions).by_type_mask(type_mask_integer).by_format_type(format_type).by_specializations(specializations).reverse
+      @activities = self.includes(:trackable => [:specializations]).created_at(date).by_update_classification(classification).by_divisions(divisions).by_type_mask(type_mask_integer).by_specializations(specializations).reverse
 
     else
       @activities = self.includes(:trackable).created_at(date).by_update_classification(classification).by_divisions(divisions).by_type_mask(type_mask_integer).by_format_type(format_type).by_specializations(specializations).reverse

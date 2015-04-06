@@ -99,6 +99,8 @@ class ScItemsController < ApplicationController
   end
 
   def create_sc_item_activity
-    @sc_item.create_activity action: :create, parameters: {}, update_classification_type: Subscription.resource_update, type_mask: @sc_item.type_mask, type_mask_description: @sc_item.type, format_type: @sc_item.format_type, format_type_description: @sc_item.format, parent_id: @sc_item.sc_category.root.id, parent_type: @sc_item.sc_category.root.name, owner: @sc_item.division
+    # @sc_item.create_activity action: :create, parameters: {}, update_classification_type: Subscription.resource_update, type_mask: @sc_item.type_mask, type_mask_description: @sc_item.type, format_type: @sc_item.format_type, format_type_description: @sc_item.format, parent_id: @sc_item.sc_category.root.id, parent_type: @sc_item.sc_category.root.name, owner: @sc_item.division
+    @sc_item.create_activity action: :create, parameters: {}, update_classification_type: Subscription.resource_update, type_mask: @sc_item.type_mask, type_mask_description: @sc_item.type, parent_id: @sc_item.sc_category.root.id, parent_type: @sc_item.sc_category.root.name, owner: @sc_item.division
+
   end
 end
