@@ -10,7 +10,7 @@
   %script{"type" => "text/javascript"}
     root_procedures = [];
     filtering = null;
-    should_show_others = false;
+    should_show_others = true;
     $(document).ready(function() { 
     open_to = "#{@specialization.open_to_tab_for_divisions(user_divisions)}";
     = render 'global_lookup.js', :specializations => [@specialization]

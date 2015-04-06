@@ -47,15 +47,17 @@
                   %a{"href" => "javascript:void(0)", "onclick" => "hide_others('s', 'specialist', '#{@specialization.member_name.uncapitalize_first_letter.pluralize}')"}Hide
                   results from other specialties.
               
-                %table.table.table-condensed.tablesorter#specialist_table
+                %table.table.table-condensed.tablesorter.five#specialist_table
                   %thead
                     %tr{:class => 'tableheader'}
                       %th{:class => "sp {sorter: 'bylastname'} name_column"} Specialist
+                      %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
                       %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Referrals?
                       %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
                       %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                   %tbody
                     %tr.placeholder
+                      %td
                       %td
                       %td
                       %td
@@ -278,15 +280,17 @@
                   %a{"href" => "javascript:void(0)", "onclick" => "hide_others('c', 'clinic', 'clinics')"}Hide
                   results from other specialties.
                     
-                %table.table.table-condensed.tablesorter#clinic_table
+                %table.table.table-condensed.tablesorter.five#clinic_table
                   %thead
                     %tr{:class => 'tableheader'}
                       %th{:class => "sp {sorter: 'text'} name_column"} Clinic
+                      %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
                       %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Referrals?
                       %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
                       %th{:class => "c {sorter: 'blanks_to_bottom'} city_column"} City
                   %tbody
                     %tr.placeholder
+                      %td
                       %td
                       %td
                       %td
@@ -599,8 +603,8 @@
             $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
           });
           $(document).ready(function() {
-            $('#specialist_table').tablesorter({sortList: [[1,0],[2,0],[3,0]]});
-            $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0]]});
+            $('#specialist_table').tablesorter({sortList: [[2,0],[3,0],[4,0]]});
+            $('#clinic_table').tablesorter({sortList: [[0,0],[2,0],[3,0],[4,0]]});
             $('.category_table').tablesorter({sortList: [[0,0],[1,0],[2,0]]});
             
             //flip to a tab if appropriate
@@ -627,7 +631,7 @@
               {
                 link.click();
               } 
-              else 
+              else
               {
                 window.open(link.attr('href'));
               }
