@@ -32,7 +32,8 @@ class ScItem < ActiveRecord::Base
   }
  
   validates_presence_of :title, :on => :create, :message => "can't be blank"
-  
+  validates :url, :url => true
+
   default_scope order('sc_items.title')
 
   def not_in_progress

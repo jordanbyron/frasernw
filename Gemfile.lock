@@ -332,6 +332,9 @@ GEM
       raindrops (~> 0.6)
     uniform_notifier (1.6.2)
     uuidtools (2.1.2)
+    valid_url (0.0.4)
+      addressable
+      rails
     validates_email_format_of (1.5.3)
     wannabe_bool (0.1.0)
     webrobots (0.1.1)
@@ -397,6 +400,7 @@ DEPENDENCIES
   turn
   uglifier
   unicorn
+  valid_url
   validates_email_format_of
   wannabe_bool (~> 0.1.0)
   will_paginate (~> 3.0.0)
