@@ -98,7 +98,6 @@ class SubscriptionActivity < PublicActivity::Activity
       @sc_activities.flatten! if @spec_activities.present? # if sc_categories present but not found, otherwise we want to return [] for @arr.reduce method below to filter out all activities
       @arr << @sc_activities
     end
-    binding.pry
     return @arr.reduce(:&) # runs an & operation against total array for each @arr element present, e.g.: (@activities & @sc_activities & @spec_activities) or (@activities & @sc_activities)
   end
 
