@@ -32,7 +32,7 @@ class ScItem < ActiveRecord::Base
   }
  
   validates_presence_of :title, :on => :create, :message => "can't be blank"
-  validates :url, :url => true
+  validates :url, :url => true, :allow_blank => true
 
   default_scope order('sc_items.title')
 
