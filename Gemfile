@@ -46,6 +46,7 @@ gem 'htmlentities'
 
 gem 'wannabe_bool', "~> 0.1.0" #get access to handy to_b boolean method
 gem 'valid_url' #parse urls for validity
+gem 'indefinite_article' # parse words for "a" or "an"
 
 
 
