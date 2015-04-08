@@ -60,13 +60,13 @@ class Subscription < ActiveRecord::Base
   end
 
   def self.with_activity(activity)
-    includes(:divisions).all.reject{|subscription| subscription.includes_activity?(activity)}
+    includes(:divisions, :sc_categories).all.reject{|subscription| subscription.includes_activity?(activity) == false}
   end
 
   def includes_activity?(activity)
-    @ary = Array.new
-    @ary << activity
-    (SubscriptionWorker.collect_activities(self) & @ary).present?
+    ary = Array.new
+    ary << activity
+    (SubscriptionActivity.collect_activities(subscription: self) & ary).present?
   end
 
   # # #BEGIN news_type:
