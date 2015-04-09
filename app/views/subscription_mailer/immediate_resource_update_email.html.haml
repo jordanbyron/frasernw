@@ -5,7 +5,8 @@
       = "#{@user.name} -- Pathways: #{@division} just added a #{@type_mask_description.downcase} to #{@parent_type} [#{@update_classification_type}]"
   %body
     %p
-      = "#{@user.name}, a #{@type_mask_description.downcase} was just added "
+      = "#{@user.name}, "
+      = "a #{@type_mask_description.downcase} was just added "
       - if @parent_type.present?
         = "to #{@parent_type}"
       - if @division.present?
@@ -13,6 +14,8 @@
     %br
     .activity
       %p
-        = render_activity(@activity, fallback: :default)
+        = link_to "#{@trackable_full_title} [#{@activity.trackable.format.downcase}]", sc_item_url(@activity.trackable)
+        - if @specializations.present?
+          = "(#{@activity.trackable.specializations.uniq.map(&:name).to_sentence})"
       %br
     = render partial: "subscription_mailer/automatic_email_message", locals: {:interval => @interval}

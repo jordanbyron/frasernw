@@ -31,10 +31,12 @@ class SubscriptionMailer < ActionMailer::Base
     @activity = SubscriptionActivity.find_by_id(activity_id)
     @interval = Subscription::INTERVAL_HASH[Subscription::INTERVAL_IMMEDIATELY]
     @trackable = @activity.trackable
+    @trackable_full_title = @trackable.full_title
     @type_mask_description = @activity.type_mask_description
     @update_classification_type = @activity.update_classification_type
     @parent_type = @activity.parent_type
     @division = Division.find_by_id(@activity.owner_id) if @activity.owner_type == "Division"
+    @specializations = @activity.trackable.specializations if @activity.trackable.specializations.present?
 
     mail(:to => @user.email, :from => 'noreply@pathwaysbc.ca', :subject => "[#{@update_classification_type}] #{@division} just added a #{@type_mask_description.downcase} to #{@parent_type}")
 
