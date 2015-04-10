@@ -17,25 +17,25 @@ namespace :pathways do
       
       users.each do |user|
         if user.divisions.include? division
-          #puts "user #{user.name} is already in #{division.name}"
+          puts "user #{user.name} is already in #{division.name}"
           next
         end
 
         if (user.controlled_specialists.reject{ |s| s.divisions.length == 1 }.length > 0)
-          #puts "user #{user.name} also has prividleges to edit a specialist outside of #{division.name}"
+          puts "user #{user.name} also has prividleges to edit a specialist outside of #{division.name}"
           next
         end
 
         if (user.controlled_clinics.reject{ |c| c.divisions.length == 1 }.length > 0)
-          #puts "user #{user.name} also has prividleges to edit a clinic outside of #{division.name}"
+          puts "user #{user.name} also has prividleges to edit a clinic outside of #{division.name}"
           next
         end
 
         user.user_divisions.each do |ud|
           #remove the old division, if any
-          #DivisionUser.destroy(ud.id)
+          DivisionUser.destroy(ud.id)
         end
-        #DivisionUser.create(:user_id => user.id, :division_id => division.id)
+        DivisionUser.create(:user_id => user.id, :division_id => division.id)
 
         puts "user #{user.name} - #{user.id} has been moved to #{division.name}"
       end
