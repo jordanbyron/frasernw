@@ -406,7 +406,11 @@
           = f.input :item_id, :as => :hidden, :value => @specialist.id
 
           .form-actions
-            %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" } Send Feedback
+            %a.btn.btn-primary{:id => "sendFeedbackButton", "href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" }
+              .before-click
+                Send Feedback
+              .after-click.hidden
+                Sending
             %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
                     
     #feedback_thanks
@@ -422,17 +426,23 @@
             
     %script{"type" => "text/javascript"}
       :plain
-        $(document).ready(function() { 
+        $(document).ready(function() {
           $('.tt').tooltip({trigger: 'manual'});
           $('#user_favorite_specialists_#{@specialist.id}').addClass('#{favorite_class}');
         });
         
-        function send_feedback(form) { 
+        function send_feedback(form) {
+          $("#sendFeedbackButton").addClass('disabled');
+          $('.before-click').addClass('hidden');
+          $('.after-click').removeClass('hidden');
           $.ajax({
               url: form.attr('action'),
               data: form.serialize(),
               type: 'POST'
           }).success(function(json) {
+              $("#sendFeedbackButton").removeClass('disabled');
+              $('.after-click').addClass('hidden');
+              $('.before-click').removeClass('hidden');
               $('#feedback').fadeOut(200);
               $('#feedback_item_feedback').val('')
               $('#feedback_thanks').fadeIn(200);
