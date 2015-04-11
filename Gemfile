@@ -89,6 +89,7 @@ group :development do
   gem 'letter_opener'
   gem 'debugger'
   gem 'bullet'
+  gem 'thin'
 end
 
 gem 'ancestry'
