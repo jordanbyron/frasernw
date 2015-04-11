@@ -1,17 +1,17 @@
 - title "#{@sc_category.name}"
-    
+
 %ul#specialties-menu
   %li.dropdown.no-caret
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       All Specialties
       %b.caret
-    
+
 = render 'partials/specialization_dropdown_menu'
 
 - current_divisions = current_user_divisions
 
 .content-wrapper
-  
+
   - cache("content_#{@sc_category.id}_category_#{current_divisions.map{|d| d.id}.join('_')}") do
 
     %script{"type" => "text/javascript"}
@@ -21,8 +21,8 @@
         });
 
 
-    %h2= @sc_category.full_name 
-          
+    %h2= @sc_category.full_name
+
     - if @sc_category.inline?
 
       - @sc_items.reject{ |i| i.in_progress }.sort{ |a,b| a.sc_category.sort_order <=> a.sc_category.sort_order }.each do |sc_item|
@@ -42,15 +42,15 @@
             = BlueCloth.new(sc_item.markdown_content).to_html.html_safe
           - else
             = link_to sc_item.title, sc_item.resolved_url, :target => "_blank"
-            
+
       - if @sc_category.parent.present?
         %hr
         = link_to "<i class='icon-arrow-right icon-blue'></i> Browse all #{@sc_category.parent.name} content".html_safe, sc_category_path(@sc_category.parent), :class => 'ajax'
-    
+
     - else
-    
+
       - has_children = @sc_category.has_children?
-    
+
       %script{"type" => "text/javascript"}
         $(document).ready(function() {
         - @sc_items.each do |sc_item|
@@ -64,7 +64,7 @@
               %a{"href" => "javascript:void(0)", "onclick" => "$('##{@sc_category.id}_filters').toggle()"}
                 %i.icon-blue.icon-cog.icon-small
                 Show / Hide #{@sc_category.name} Filters
-                
+
             .filter-phrase{:id => "#{@sc_category.id}_phrase"}
 
             %table.table.table-condensed.tablesorter.category_table{:id => "#{@sc_category.id}_table"}
@@ -96,16 +96,16 @@
                     %td.fb
                       %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
                         %i.icon-bullhorn
-            
+
             - if @sc_category.parent.present?
               = link_to "<i class='icon-arrow-right icon-blue'></i> Browse all #{@sc_category.parent.name} content".html_safe, sc_category_path(@sc_category.parent), :class => 'ajax'
-                  
+
           .span3.offsethalf
             .well.filter{:id => "#{@sc_category.id}_filters"}
               .title
                 Filter #{@sc_category.name}
-                        
-              - if has_children  
+
+              - if has_children
                 .filter-group
                   %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "##{@sc_category.id}-filter-subcategories"}
                     Subcategories
@@ -117,7 +117,7 @@
                         - next if subcategory.all_sc_items_in_divisions(current_divisions).blank?
                         %label
                           %input.ic{"type" => "radio", "name" => "ic#{@sc_category.id}", "id" => "ic#{subcategory.id}_"}= subcategory.name
-                          
+
               .filter-group
                 %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "##{@sc_category.id}-filter-specialties"}
                   Specialties
@@ -132,13 +132,13 @@
 
           %script{"type" => "text/javascript"}
             :plain
-              $('table tr').click( function() { 
+              $('table tr').click( function() {
                 var link = $(this).find('td.title a');
                 if (link.hasClass('ajax'))
                 {
                   link.click();
-                } 
-                else 
+                }
+                else
                 {
                   window.open(link.attr('href'));
                 }
@@ -146,14 +146,14 @@
               $('table tr a').click( function(e) { e.stopPropagation(); });
               var update_category_#{@sc_category.id}_table = function() { update_category_table(#{@sc_category.id}, '#{@sc_category.name}'); }
               $(document).ready(function() {
-                $("input.ic[name='ic#{@sc_category.id}'], input.is[name='is#{@sc_category.id}']").click( update_category_#{@sc_category.id}_table ); 
+                $("input.ic[name='ic#{@sc_category.id}'], input.is[name='is#{@sc_category.id}']").click( update_category_#{@sc_category.id}_table );
               });
-              
+
     %hr
     %i.icon-envelope-alt
     Send us suggestions for #{@sc_category.name.downcase} content for Pathways:
     = mail_to "submissions@pathwaysbc.ca", "submissions@pathwaysbc.ca", :subject => "#{@sc_category.name} content suggestion for Pathways"
-      
+
     #feedback
       .inner
         = simple_form_for @feedback, :html => { :class => "ajax feedback_form" } do |f|
@@ -163,24 +163,28 @@
           = f.input :item_id, :as => :hidden
 
           .form-actions
-            %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" } Send Feedback
+            %a.btn.btn-primary{:id =>"sendFeedbackButton", "href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" }
+              .before-click
+                Send Feedback
+              .after-click.hidden
+                Sending
             %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
-      
+
     #feedback_thanks
       .inner
         %h2 Thank you!
-        
+
         %p.space.no_indent= "Thank you for providing your feedback  on '<span class='feedback_item_title'></span>'. Your contributions help make Pathways a valuable resource for the community.".html_safe
-        
+
         %p.space.no_indent We will review your feedback in the near future and take action as necessary.
-        
+
         %p.space.no_indent
-          %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close     
-               
+          %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close
+
     %script{"type" => "text/javascript"}
       :plain
         $(document).ready(function() { $('.tt').tooltip({trigger: 'manual'}) });
-        
+
         function show_feedback(item_title, item_id)
         {
           $('.feedback_item_title').text(item_title);
@@ -189,12 +193,18 @@
           $('#feedback').fadeIn(200);
         }
 
-        function send_feedback(form) { 
+        function send_feedback(form) {
+          $("#sendFeedbackButton").addClass('disabled');
+          $('.before-click').addClass('hidden');
+          $('.after-click').removeClass('hidden');
           $.ajax({
               url: form.attr('action'),
               data: form.serialize(),
               type: 'POST'
           }).success(function(json) {
+              $("#sendFeedbackButton").removeClass('disabled');
+              $('.after-click').addClass('hidden');
+              $('.before-click').removeClass('hidden');
               $('#feedback').fadeOut(200);
               $('#feedback_item_feedback').val('')
               $('#feedback_thanks').fadeIn(200);
