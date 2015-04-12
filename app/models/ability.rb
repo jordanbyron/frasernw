@@ -105,6 +105,10 @@ class Ability
         
         #can send email messages
         can :create, Message
+
+        can :index, Notification
+
+        can :manage, Subscription
         
       elsif user.user?
         
