@@ -1,5 +1,8 @@
 namespace :pathways do
   task :create_single_specialist_access_keys => :environment do
+    # # # # # # # # # #
+    # THIS RAKE TASK IS DEPRECATED/OLD/OUTDATED, IGNORE DO NOT USE/RUN!
+    # # # # # # # # # #
     Office.all.reject{ 
       |o| o.num_specialists != 1 || 
       o.specialists.first.specializations.blank? || 
