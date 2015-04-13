@@ -32,6 +32,7 @@ namespace :pathways do
         end
 
         user.user_divisions.each do |ud|
+          puts "DELETING #{user.name} old division membership in: #{ud.division.name}"
           #remove the old division, if any
           DivisionUser.destroy(ud.id)
         end
