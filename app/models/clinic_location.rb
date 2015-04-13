@@ -17,8 +17,8 @@ class ClinicLocation < ActiveRecord::Base
   
   has_paper_trail
   
-  def self.all_clinic_locations_formatted_for_user_form
-    @all_clinic_locations_formatted_for_user_form ||= includes([:clinic, :location => [ {:address => :city}, {:hospital_in => {:location => {:address => :city}}} ]]).all.reject{ |cl| cl.location.blank? || cl.empty? || cl.clinic.blank? }.sort{ |a,b| a.clinic.name <=> b.clinic.name }.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id]}
+  def self.all_formatted_for_user_form
+    includes([:clinic, :location => [ {:address => :city}, {:hospital_in => {:location => {:address => :city}}} ]]).all.reject{ |cl| cl.location.blank? || cl.empty? || cl.clinic.blank? }.sort{ |a,b| a.clinic.name <=> b.clinic.name }.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id]}
   end
 
   def opened_recently?
