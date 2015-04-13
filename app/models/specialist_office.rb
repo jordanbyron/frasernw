@@ -70,4 +70,8 @@ class SpecialistOffice < ActiveRecord::Base
   def empty?
     phone.blank? && phone_extension.blank? && fax.blank? && direct_phone.blank? && direct_phone_extension.blank? && (office.blank? || office.empty?)
   end
+
+  def self.all_specialist_offices_formatted_for_user_form
+    @all_specialist_offices_formatted_for_user_form ||= includes([:specialist, :office => [:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]]]).all.reject{ |so| so.office.blank? || so.empty? || so.specialist.blank? }.sort{ |a,b| (a.specialist.lastname || "zzz") <=> (b.specialist.lastname || "zzz") }.map{ |so| ["#{so.specialist.name} - #{so.office.short_address}", so.id]}
+  end
 end
