@@ -83,13 +83,13 @@ end
 group :development do
   gem 'pry-rails' # loads pry by default with rails c
   gem 'oink'
-  gem 'rack-mini-profiler'
+  #gem 'rack-mini-profiler'
   #latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
-  gem 'lol_dba'
+  #gem 'lol_dba'
   gem 'letter_opener'
-  gem 'debugger'
+  #gem 'debugger'
   gem 'bullet'
-  gem 'thin'
+  #gem 'thin'
 end
 
 gem 'ancestry'

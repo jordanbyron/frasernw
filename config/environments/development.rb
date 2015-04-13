@@ -44,7 +44,7 @@ Frasernw::Application.configure do
 
   config.after_initialize do
     #bullet actions only run if explicitly enabled
-    Bullet.enable = true
+    Bullet.enable = false
     #Bullet.alert = false
     Bullet.bullet_logger = true
     Bullet.console = true
