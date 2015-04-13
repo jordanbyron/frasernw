@@ -20,6 +20,7 @@ class Ability
       elsif user.admin_only?
         
         #admin
+        can :manage, [Subscription, Notification]
         
         #can edit specialists, clinics, hospitals, and offices in their division
         can :manage, [Specialist, Clinic, Hospital, Office] do |entity|
@@ -104,6 +105,10 @@ class Ability
         
         #can send email messages
         can :create, Message
+
+        can :index, Notification
+
+        can :manage, Subscription
         
       elsif user.user?
         

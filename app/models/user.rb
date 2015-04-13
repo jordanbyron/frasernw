@@ -33,12 +33,16 @@ class User < ActiveRecord::Base
   has_many :user_cities, :dependent => :destroy
   has_many :user_city_specializations, :through => :user_cities
 
+  has_many :subscriptions, :dependent => :destroy
+
   # times that the user (as admin) has contacted specialists
   has_many :contacts
 
+  delegate :with_activity, to: :subscriptions, prefix: true
+
   validates_presence_of :name
   validates :agree_to_toc, presence: true
-  
+
   default_scope order('users.name')
 
 LIMITED_ROLE_HASH = {
@@ -92,6 +96,10 @@ LIMITED_ROLE_HASH = {
     where("users.active = (?)", false)
   end
 
+  def self.with_subscriptions #return only admins/super-admins with subscriptions created
+    includes(:subscriptions).admin.reject{|u| u.subscriptions.empty?}
+  end
+
   def self.in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     joins(:user_divisions).where('"division_users"."division_id" IN (?)', division_ids)
@@ -125,6 +133,25 @@ LIMITED_ROLE_HASH = {
   def pending?
     self.email.blank?
   end
+
+  ##### Subscription User Methods
+  def subscriptions_by_date_interval(date_interval)
+    subscriptions.select{|s| s.interval == date_interval}
+  end
+
+  def subscriptions_by_classification(classification) # e.g.: Subscription.resource_update or Subscription.news_update
+    subscriptions.select{|s| s.classification == classification}
+  end
+
+  def subscriptions_by_interval_and_classification(date_interval, classification)
+    subscriptions_by_date_interval(date_interval) & subscriptions_by_classification(classification)
+  end
+
+  def subscriptions_with_activity_in_interval_in_class(activity, date_interval, classification)
+    subscriptions_by_interval_and_classification(date_interval, classification) & subscriptions_with_activity(activity)
+  end
+  #####
+
 
   def role_full
     User::ROLE_HASH[self.role]

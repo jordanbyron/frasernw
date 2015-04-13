@@ -1,0 +1,15 @@
+!!!
+%html
+  %head
+    %title
+      = "#{@user.name} -- Pathways: a #{@type_mask_description} has been added to #{@division} [#{@update_classification_type}]"
+  %body
+    %p
+      = "#{@user.name}, "
+      = "#{@type_mask_description.downcase} was just added to #{@division} on #{DateTime.now.strftime("%B, %d, %Y")}:"
+    %br
+    .activity
+      %p
+        = link_to "#{activity.trackable.type}", news_item_url(activity.trackable)
+      %br
+    = render partial: "subscription_mailer/automatic_email_message", locals: {:interval => @interval}

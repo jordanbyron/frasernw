@@ -70,6 +70,7 @@
 
 .review:before,
 .feedback:before,
+.subscriptions:before,
 .change_local_referral_area:before,
 .change_name:before,
 .change_email:before,
@@ -115,6 +116,11 @@
 .feedback:before
 {
   content: "\f0a1";
+}
+
+.subscriptions:before
+{
+  content: "\f0e0";
 }
 
 .change_local_referral_area:before

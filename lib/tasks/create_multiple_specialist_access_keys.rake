@@ -1,5 +1,8 @@
 namespace :pathways do
   task :create_multiple_specialist_access_keys => :environment do
+    # # # # # # # # # #
+    # THIS RAKE TASK IS DEPRECATED/OLD/OUTDATED, IGNORE DO NOT USE/RUN!
+    # # # # # # # # # #
     Office.all.reject{ |o| o.num_specialists <= 1 || o.specialists.reject{ |s| !s.responded? || s.retired? || s.status_mask == 8 }.blank?
     }.each do |o|
       specialist_last_names = o.specialists.map{ |s| s.lastname }

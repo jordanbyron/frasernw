@@ -1,0 +1,21 @@
+- if activity.trackable
+  = link_to activity.trackable.division.name, activity.trackable.division if activity.trackable.division
+  - if activity.trackable.type.present?
+    = "added"
+    - if activity.trackable.format.present?
+      - if activity.trackable.type == "Markdown"
+        = "to #{activity.trackable.sc_category.name}: "
+        = link_to "#{activity.trackable.title}", sc_item_url(activity.trackable)
+      - else
+        = " a #{activity.trackable.type.downcase}" #e.g.: ' a link'
+        = "to #{activity.trackable.sc_category.name}: " #e.g.: "to Pearls: "
+        = link_to "#{activity.trackable.title} [#{activity.trackable.format.downcase}]", sc_item_url(activity.trackable) # e.g.: "Pathways Newsletter [pdf]"
+    - else
+      = "to #{activity.trackable.sc_category.name} a "
+      = link_to "#{activity.trackable.type.downcase}", sc_item_url(activity.trackable)
+  - if activity.trackable.specializations.present?
+    - @specializations = activity.trackable.specializations
+    = "(#{@specializations.uniq.map(&:name).to_sentence})"
+
+- else
+  A shared content item was created which has since been removed.

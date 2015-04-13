@@ -1,6 +1,8 @@
 namespace :pathways do
   task :create_gp_access_keys => :environment do
-  
+    # # # # # # # # # #
+    # THIS RAKE TASK IS DEPRECATED/OLD/OUTDATED, IGNORE DO NOT USE/RUN!
+    # # # # # # # # # #
     gp_list = ""
     while (x = STDIN.gets) do
       gp_list += x.chomp

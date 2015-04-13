@@ -16,9 +16,7 @@ class ScItemsController < ApplicationController
   
   def new
     @sc_item = ScItem.new
-    @has_specializations = []
-    @has_procedure_specializations = []
-    @hierarchy = ancestry_options_limited(ScCategory.unscoped.arrange(:order => 'name'), nil)
+    new_sc_item_preload
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
   
@@ -35,8 +33,10 @@ class ScItemsController < ApplicationController
         sc_item_specialization = ScItemSpecialization.find_by_sc_item_id_and_specialization_id( @sc_item.id, specialization.id )
         ScItemSpecializationProcedureSpecialization.create( :sc_item_specialization_id => sc_item_specialization.id, :procedure_specialization_id => ps_id ) if sc_item_specialization.present?
       end
+      create_sc_item_activity
       redirect_to @sc_item, :notice => "Successfully created content item."
     else
+      new_sc_item_preload
       render :action => 'new'
     end
   end
@@ -58,6 +58,7 @@ class ScItemsController < ApplicationController
         #remove existing specializations that no longer exist
         ScItemSpecialization.destroy(sis.id) if !params[:specialization].include? sis.specialization_id
       end
+      #DevNote: ^^potentially dangerous use of destroy
       params[:specialization].each do |specialization_id, set|
         #add new specializations
         ScItemSpecialization.find_or_create_by_sc_item_id_and_specialization_id( @sc_item.id, specialization_id )
@@ -66,6 +67,7 @@ class ScItemsController < ApplicationController
         #remove existing procedure specializations that no longer exist
         ScItemSpecializationProcedureSpecialization.destroy(sisps.id) if !params[:procedure_specialization].include? sisps.procedure_specialization_id
       end
+      #DevNote: ^^potentially dangerous use of destroy
       params[:procedure_specialization].each do |ps_id, set|
         #add new procedure specializations
         specialization = ProcedureSpecialization.find(ps_id).specialization
@@ -93,5 +95,15 @@ class ScItemsController < ApplicationController
     if !(current_user_is_super_admin? || (current_user_divisions.include? Division.find(params[:id])))
       redirect_to root_url, :notice => "You are not allowed to access this page"
     end
+  end
+
+  def new_sc_item_preload
+    @has_specializations = []
+    @has_procedure_specializations = []
+    @hierarchy = ancestry_options_limited(ScCategory.unscoped.arrange(:order => 'name'), nil)
+  end
+
+  def create_sc_item_activity
+    @sc_item.create_activity action: :create, parameters: {}, update_classification_type: Subscription.resource_update, type_mask: @sc_item.type_mask, type_mask_description: @sc_item.type, format_type: @sc_item.format_type, format_type_description: @sc_item.format, parent_id: @sc_item.sc_category.root.id, parent_type: @sc_item.sc_category.root.name, owner: @sc_item.division
   end
 end

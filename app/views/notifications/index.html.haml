@@ -1,0 +1,16 @@
+.content-wrapper
+  %h2
+    All latest notifications of Pathways news and resource updates:
+  - @notifications.each do |notification|
+    - if !notification.present?
+      .notification
+        %p
+          You currently do not have any notifications.
+        %br
+    - cache("latest_notifications_for_#{notification.id}") do
+      .notification
+        %p
+          %span{:class=> "muted"}= "#{time_ago_in_words(notification.trackable.created_at)} ago"
+          = render_activity(notification, fallback: :default)
+
+        %br

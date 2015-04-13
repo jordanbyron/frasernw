@@ -20,6 +20,9 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
     specialist_associations = Array.new
     specialist_languages = Array.new
     
+    # PERF NOTE: Expensive eager load below:  2925 ms without includes, 5438 ms with includes
+    # specialists = specialization.specialists.in_cities([city]).reject{ |s| !s.show_in_table? }
+    # ^^above is faster, but need to benchmark it page wide
     specialists = specialization.specialists.includes([{:specialist_offices => {:office => {:location => :address}}}]).in_cities([city]).reject{ |s| !s.show_in_table? }
     if specialists.length > 0
       -%> has_specialists = true; <%
