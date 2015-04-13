@@ -4,8 +4,8 @@ require 'clockwork'
 
 include Clockwork
 
-  # Delete sessions older than every week
-  # every(1.weeks, 'bundle exec rake pathways:delete_old_sessions', :at => 'Sunday 06:20',  :tz => 'UTC') {
+  # Delete sessions older than every Sunday at 1:30pm UTC(13:30), 5:30 AM PST
+  # every(1.weeks, 'bundle exec rake pathways:delete_old_sessions', :at => 'Sunday 13:30',  :tz => 'UTC') {
   #   `bundle exec rake pathways:delete_old_sessions`
   # }
 
