@@ -7,14 +7,10 @@
         %p
           You currently do not have any notifications.
         %br
-    / %div.notification
-    /   =# link_to notification.owner.name, notification.owner if notification.owner
-    /   added __ to
-    /   =# link_to notification.trackable.title, notification.trackable
     - cache("latest_notifications_for_#{notification.id}") do
       .notification
         %p
-          = render_activity(notification, fallback: :default)
           %span{:class=> "muted"}= "#{time_ago_in_words(notification.trackable.created_at)} ago"
+          = render_activity(notification, fallback: :default)
 
         %br

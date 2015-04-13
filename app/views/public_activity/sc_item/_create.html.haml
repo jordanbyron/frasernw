@@ -13,6 +13,9 @@
     - else
       = "to #{activity.trackable.sc_category.name} a "
       = link_to "#{activity.trackable.type.downcase}", sc_item_url(activity.trackable)
+  - if activity.trackable.specializations.present?
+    - @specializations = activity.trackable.specializations
+    = "(#{@specializations.uniq.map(&:name).to_sentence})"
 
 - else
   A shared content item was created which has since been removed.
