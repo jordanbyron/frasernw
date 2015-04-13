@@ -26,6 +26,7 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
+    build_user_form
     @new_user = true
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
