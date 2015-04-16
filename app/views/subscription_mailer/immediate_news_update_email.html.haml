@@ -10,6 +10,6 @@
     %br
     .activity
       %p
-        = link_to "#{activity.trackable.type}", news_item_url(activity.trackable)
+        = link_to "#{@activity.trackable.type}", news_item_url(@activity.trackable)
       %br
     = render partial: "subscription_mailer/automatic_email_message", locals: {:interval => @interval}
