@@ -10,9 +10,9 @@ include Clockwork
   # }
 
   # Used for testing:
-  Clockwork.every(1.day, 'Mail out TEST Monthly Subscriptions job', :at => 'Monday 00:45', :tz => 'UTC', :if => lambda { |t| t.day == 6 }) do
-   SubscriptionUserWorker.delay.mail_subscriptions_by_date!(Subscription::INTERVAL_MONTHLY)
-  end
+  # Clockwork.every(1.day, 'Mail out TEST Monthly Subscriptions job', :at => 'Monday 00:45', :tz => 'UTC', :if => lambda { |t| t.day == 6 }) do
+  #  SubscriptionUserWorker.delay.mail_subscriptions_by_date!(Subscription::INTERVAL_MONTHLY)
+  # end
 
   # Mails subscriptions DAILY at 2:30pm UTC (14:30), 6:30 am PST
   every(1.day, 'Mail Daily Subscriptions job', :at => '14:30',  :tz => 'UTC') do
