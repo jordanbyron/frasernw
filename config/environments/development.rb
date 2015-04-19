@@ -28,7 +28,7 @@ Frasernw::Application.configure do
   # config.action_mailer.raise_delivery_errors = false
   config.action_mailer.raise_delivery_errors = true
 
-  config.action_mailer.delivery_method = :letter_opener
+  # config.action_mailer.delivery_method = :letter_opener
 
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
@@ -56,7 +56,7 @@ Frasernw::Application.configure do
     ##Bullet.stacktrace_includes = [ 'your_gem', 'your_middleware' ]
   end
 
-  ActionMailer::Base.smtp_settings = {
+  config.action_mailer.smtp_settings = {
     :address              => "smtp.gmail.com",
     :port                 => 587,
     :user_name            => ENV['SMTP_USER'],
@@ -65,5 +65,6 @@ Frasernw::Application.configure do
     :enable_starttls_auto => true
   }
 
-  config.action_mailer.default_url_options = { :host => "localhost:3000" }
+  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+
 end
