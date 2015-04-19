@@ -106,7 +106,7 @@ end
 
 group :development do
   gem 'pry-rails' # loads pry by default with rails c
-  gem 'rack-mini-profiler'
+  #gem 'rack-mini-profiler'
   #latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
   gem 'lol_dba'
   gem 'awesome_print'

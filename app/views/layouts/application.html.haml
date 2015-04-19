@@ -12,12 +12,13 @@
     /[if lte IE 7]
       = stylesheet_link_tag "ie.css", :media => 'screen'
     /[if IE 7]
-      = stylesheet_link_tag "font-awesome-ie7.css", :media => 'screen, print'
+    = stylesheet_link_tag "font-awesome-ie7.css", :media => 'screen, print'
     = stylesheet_link_tag "print", :media => 'print'
     = javascript_include_tag "application"
     -#rails3.2 fix: %script{src: "../livesearch.js"}
     - if !Rails.env.development?
       = javascript_include_tag '../livesearch'
+      /%script{src: "../livesearch.js"}
     = csrf_meta_tag
     = render "layouts/ie8_or_lower_compatibility_warning"
     = yield(:head)
