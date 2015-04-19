@@ -272,6 +272,7 @@ GEM
       rspec (~> 2.7.0)
     ruby-hmac (0.4.0)
     rubyzip (0.9.4)
+    safety_mailer (0.0.10)
     sass (3.1.10)
     sass-rails (3.1.4)
       actionpack (~> 3.1.0)
@@ -380,6 +381,7 @@ DEPENDENCIES
   rb-fsevent (~> 0.9.1)
   rspec
   rspec-rails
+  safety_mailer
   sass-rails (~> 3.1.0)
   simple_form (~> 2.1)
   spork (> 0.9.0rc)
