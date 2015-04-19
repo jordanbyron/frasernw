@@ -202,7 +202,7 @@ GEM
       fog-core
       nokogiri (~> 1.5, >= 1.5.11)
     formatador (0.2.5)
-    goldiloader (0.0.8)
+    goldiloader (0.0.9)
       activerecord (>= 3.2, < 4.3)
       activesupport (>= 3.2, < 4.3)
     guard (2.11.1)
@@ -309,7 +309,7 @@ GEM
     mime-types (1.25.1)
     mini_portile (0.6.2)
     minitest (4.7.5)
-    multi_json (1.10.1)
+    multi_json (1.11.0)
     nenv (0.2.0)
     net-http-digest_auth (1.4)
     net-http-persistent (2.9.4)
