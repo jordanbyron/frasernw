@@ -219,6 +219,6 @@ class UsersController < ApplicationController
     @user.user_controls_specialist_offices.build
     @user.user_controls_clinic_locations.build
     @formatted_clinic_locations = ClinicLocation.all_formatted_for_user_form
-    @formatted_specialist_offices = SpecialistOffice.all_formatted_for_user_form
+    @formatted_specialist_offices = SpecialistOffice.cached_all_formatted_for_user_form
   end
 end
