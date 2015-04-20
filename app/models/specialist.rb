@@ -72,13 +72,14 @@ class Specialist < ActiveRecord::Base
 
   # # # Cache actions
   after_commit :flush_cached_find
+  after_touch  :flush_cached_find
 
   # def self.all_cached
   #   Rails.cache.fetch('Specialist.all') { all }
   # end
 
   def self.cached_find(id)
-    Rails.cache.fetch([name, id]) { find(id) }
+    Rails.cache.fetch([name, id], expires_in: 4000.seconds) { find(id) }
   end
 
   def flush_cached_find
