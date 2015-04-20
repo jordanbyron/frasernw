@@ -114,6 +114,7 @@ GEM
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
     erubis (2.7.0)
+    escape_utils (1.1.0)
     eventmachine (1.0.4)
     exception_notification (4.0.1)
       actionmailer (>= 3.0.4)
@@ -225,13 +226,11 @@ GEM
       guard (~> 2.0)
       guard-compat (~> 1.0)
       spork (>= 0.8.4)
-    haml (4.0.6)
+    hamlit (1.0.0)
+      escape_utils
+      temple (~> 0.7.3)
+      thor
       tilt
-    haml-rails (0.4)
-      actionpack (>= 3.1, < 4.1)
-      activesupport (>= 3.1, < 4.1)
-      haml (>= 3.1, < 4.1)
-      railties (>= 3.1, < 4.1)
     hash-deep-merge (0.1.1)
     heroku (3.9.3)
       heroku-api (~> 0.3.19)
@@ -249,11 +248,6 @@ GEM
     hitimes (1.2.2)
     hodel_3000_compliant_logger (0.1.1)
     hpricot (0.8.6)
-    html2haml (2.0.0)
-      erubis (~> 2.7.0)
-      haml (~> 4.0.0)
-      nokogiri (~> 1.6.0)
-      ruby_parser (~> 3.5)
     htmlentities (4.3.3)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
@@ -416,8 +410,6 @@ GEM
       rspec-support (~> 3.1.0)
     rspec-support (3.1.2)
     ruby-graphviz (1.0.9)
-    ruby_parser (3.6.4)
-      sexp_processor (~> 4.1)
     rubyzip (1.1.6)
     safety_mailer (0.0.10)
     sass (3.1.21)
@@ -429,7 +421,6 @@ GEM
       ffi-compiler (>= 0.0.2)
       rake
     sequel (3.20.0)
-    sexp_processor (4.4.5)
     shellany (0.0.1)
     simple_form (2.1.2)
       actionpack (~> 3.0)
@@ -448,6 +439,7 @@ GEM
       rest-client (>= 1.4.0, < 1.7.0)
       sequel (~> 3.20.0)
       sinatra (~> 1.0.0)
+    temple (0.7.5)
     thin (1.6.3)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0)
@@ -508,9 +500,8 @@ DEPENDENCIES
   guard-livereload
   guard-rspec
   guard-spork
-  haml-rails (~> 0.4.0)
+  hamlit
   heroku_cloud_backup
-  html2haml
   htmlentities
   indefinite_article
   jquery-datatables-rails
