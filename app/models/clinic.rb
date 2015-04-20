@@ -17,7 +17,7 @@ class Clinic < ActiveRecord::Base
   
   #clinics speak many languages
   has_many   :clinic_speaks, :dependent => :destroy
-  has_many   :languages, :through => :clinic_speaks, :order => "name ASC"
+  has_many   :languages, :through => :clinic_speaks, :order => "name ASC", auto_include: false
   
   #clinics have multiple referral forms
   has_many   :referral_forms, :as => :referrable
@@ -35,7 +35,7 @@ class Clinic < ActiveRecord::Base
   
   #clinics have many healthcare providers
   has_many   :clinic_healthcare_providers, :dependent => :destroy
-  has_many   :healthcare_providers, :through => :clinic_healthcare_providers, :order => "name ASC"
+  has_many   :healthcare_providers, :through => :clinic_healthcare_providers, :order => "name ASC", auto_include: false
   
   #clinics are controlled (e.g. can be edited) by users of the system
   has_many :user_controls_clinic_locations, :through => :clinic_locations
