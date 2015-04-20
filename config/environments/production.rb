@@ -49,7 +49,7 @@ Frasernw::Application.configure do
   else
     config.action_mailer.delivery_method = :safety_mailer
     config.action_mailer.safety_mailer_settings = {
-      allowed_matchers: [ /khannan@mdpathwaysbc.com/, /warneboldt@gmail.com/, /kelseyh@gmail.com/ ],
+      allowed_matchers: [ /khannan@mdpathwaysbc.com/, /warneboldt@gmail.com/, /kelseyh@gmail.com/, /system@mdpathwaysbc.com/],
       delivery_method: :smtp,
       delivery_method_settings: {
         :address => "smtp.gmail.com",
