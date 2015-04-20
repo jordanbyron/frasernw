@@ -2,7 +2,7 @@ class Province < ActiveRecord::Base
   attr_accessible :name, :abbreviation, :symbol
   has_paper_trail
   
-  has_many :cities, :order => "name ASC"
+  has_many :cities, :order => "name ASC", auto_include: false
   has_many :addresses, :through => :cities
   
   default_scope order('provinces.name')

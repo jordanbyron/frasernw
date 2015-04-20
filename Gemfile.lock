@@ -114,7 +114,6 @@ GEM
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
     erubis (2.7.0)
-    escape_utils (1.1.0)
     eventmachine (1.0.4)
     exception_notification (4.0.1)
       actionmailer (>= 3.0.4)
@@ -203,6 +202,9 @@ GEM
       fog-core
       nokogiri (~> 1.5, >= 1.5.11)
     formatador (0.2.5)
+    goldiloader (0.0.9)
+      activerecord (>= 3.2, < 4.3)
+      activesupport (>= 3.2, < 4.3)
     guard (2.11.1)
       formatador (>= 0.2.4)
       listen (~> 2.7)
@@ -226,11 +228,13 @@ GEM
       guard (~> 2.0)
       guard-compat (~> 1.0)
       spork (>= 0.8.4)
-    hamlit (1.0.0)
-      escape_utils
-      temple (~> 0.7.3)
-      thor
+    haml (4.0.6)
       tilt
+    haml-rails (0.4)
+      actionpack (>= 3.1, < 4.1)
+      activesupport (>= 3.1, < 4.1)
+      haml (>= 3.1, < 4.1)
+      railties (>= 3.1, < 4.1)
     hash-deep-merge (0.1.1)
     heroku (3.9.3)
       heroku-api (~> 0.3.19)
@@ -439,7 +443,6 @@ GEM
       rest-client (>= 1.4.0, < 1.7.0)
       sequel (~> 3.20.0)
       sinatra (~> 1.0.0)
-    temple (0.7.5)
     thin (1.6.3)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0)
@@ -496,11 +499,12 @@ DEPENDENCIES
   delayed_job_web
   exception_notification
   gattica!
+  goldiloader
   guard
   guard-livereload
   guard-rspec
   guard-spork
-  hamlit
+  haml-rails (~> 0.4)
   heroku_cloud_backup
   htmlentities
   indefinite_article

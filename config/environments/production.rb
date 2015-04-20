@@ -4,7 +4,7 @@ Frasernw::Application.configure do
   # ExceptionNotifier rack middleware
   Frasernw::Application.config.middleware.use ExceptionNotification::Rack,
     :email => {
-      :email_prefix => "[mdpathway exception] #{APP_CONFIG}",
+      :email_prefix => "[mdpathway exception] #{ENV['APP_NAME']}",
       :sender_address => %{"Pathways" <system@mdpathwaysbc.com>},
       :exception_recipients => %w{warneboldt@gmail.com khannan@mdpathwaysbc.com}
     }
@@ -49,7 +49,7 @@ Frasernw::Application.configure do
   else
     config.action_mailer.delivery_method = :safety_mailer
     config.action_mailer.safety_mailer_settings = {
-      allowed_matchers: [ /khannan@mdpathwaysbc.com/, /warneboldt@gmail.com/, /kelseyh@gmail.com/ ],
+      allowed_matchers: [ /khannan@mdpathwaysbc.com/, /warneboldt@gmail.com/, /kelseyh@gmail.com/, /system@mdpathwaysbc.com/],
       delivery_method: :smtp,
       delivery_method_settings: {
         :address => "smtp.gmail.com",
