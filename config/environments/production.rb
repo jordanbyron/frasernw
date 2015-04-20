@@ -45,6 +45,23 @@ Frasernw::Application.configure do
       config.cache_store = :dalli_store
   end
 
+  if ENV['APP_NAME'] = "pathwaysbc" #unless Production, override and do not send mail unless to these emails:
+  else
+    config.action_mailer.delivery_method = :safety_mailer
+    config.action_mailer.safety_mailer_settings = {
+      allowed_matchers: [ /khannan@mdpathwaysbc.com/, /warneboldt@gmail.com/, /kelseyh@gmail.com/ ],
+      delivery_method: :smtp,
+      delivery_method_settings: {
+        :address => "smtp.gmail.com",
+        :port => 587,
+        :domain => "http://pathwaysbc.ca",
+        :authentication => :plain,
+        :user_name => ENV['SMTP_USER'],
+        :password => ENV['SMTP_PASS']
+      }
+    }
+  end
+
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
   # config.action_controller.asset_host = "http://assets.example.com"
 

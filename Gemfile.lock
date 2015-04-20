@@ -419,6 +419,7 @@ GEM
     ruby_parser (3.6.4)
       sexp_processor (~> 4.1)
     rubyzip (1.1.6)
+    safety_mailer (0.0.10)
     sass (3.1.21)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
@@ -539,6 +540,7 @@ DEPENDENCIES
   rb-fsevent (~> 0.9.1)
   rspec
   rspec-rails
+  safety_mailer
   sass (~> 3.1.10)
   sass-rails (~> 3.2.6)
   simple_form (~> 2.1)
