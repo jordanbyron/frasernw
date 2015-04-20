@@ -49,7 +49,6 @@ $.tablesorter.addParser({
 			switch($.trim(s))
       {
         case("1"): //available
-        case("7"): //conditional (sort with available)
           return 0;
         case("7"): //limitations
           return 1;
