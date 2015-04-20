@@ -37,11 +37,8 @@ group :assets do
 end
 
 gem 'jquery-rails', "~> 1.0.16"
-#gem 'haml-rails'
-gem 'hamlit'
 
-#gem "haml-rails", "~> 0.4.0"
-#gem 'html2haml'
+gem 'haml-rails', '~> 0.4'
 
 gem 'authlogic'
 gem 'paper_trail', '~> 2.7'
