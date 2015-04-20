@@ -22,11 +22,14 @@ class Specialization < ActiveRecord::Base
   default_scope order('specializations.name')
 
   # # # Cache actions
+  after_touch  :flush_cached_find
+  after_touch  :flush_cache
   after_commit :flush_cached_find
+  after_commit :flush_cache
 
-  # def self.all_cached
-  #   Rails.cache.fetch('Specialization.all') { all }
-  # end
+  def self.all_cached
+    Rails.cache.fetch([name, 'Specialization.all'], :expires_in => 1.hours) { all }
+  end
 
   def self.cached_find(id)
     Rails.cache.fetch([name, id]) { find(id) }
@@ -35,6 +38,14 @@ class Specialization < ActiveRecord::Base
   def flush_cached_find
     Rails.cache.delete([self.class.name, id])
   end
+
+  def flush_cache #called during after_commit or after_touch
+    Rails.cache.delete([self.class.name, "Specialization.all"])
+    Specialization.all.each do |specialization|
+      Rails.cache.delete([specialization.class.name, specialization.id])
+    end
+  end
+
   # # #
   
   def self.in_progress_for_divisions(divisions)

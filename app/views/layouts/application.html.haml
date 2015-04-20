@@ -83,7 +83,7 @@
                 #loading
                   #loading-spinner
                 %ul
-                - if Division.all.length > 1
+                - if Division.all_cached.length > 1
                   #search_location
                     %label
                       %input#search_all{"type" => "checkbox"}
@@ -139,7 +139,7 @@
                             %li
                               = link_to "New Area of Practice in...", "#", :class => "arrow-right-after"
                               %ul.dropdown-menu.sub-menu
-                                - Specialization.all.each do |specialization|
+                                - Specialization.all_cached.each do |specialization|
                                   %li=link_to specialization.name, new_specialization_procedure_path(specialization), :class => "ajax"
                           - if can? :create, City
                             %li= link_to "New City", new_city_path, :class => "ajax"
@@ -147,7 +147,7 @@
                             %li
                               = link_to "New Clinic in...", "#", :class => "arrow-right-after"
                               %ul.dropdown-menu
-                                - Specialization.all.each do |specialization|
+                                - Specialization.all_cached.each do |specialization|
                                   %li=link_to specialization.name, new_specialization_clinic_path(specialization), :class => "ajax"
                           - if can? :create, Division
                             %li= link_to "New Division", new_division_path, :class => "ajax"
@@ -165,7 +165,7 @@
                             %li
                               = link_to "New Specialist in...", "#", :class => "arrow-right-after"
                               %ul.dropdown-menu
-                                - Specialization.all.each do |specialization|
+                                - Specialization.all_cached.each do |specialization|
                                   %li=link_to specialization.name, new_specialization_specialist_path(specialization), :class => 'ajax'
                           - if can? :create, Specialization
                             %li= link_to "New Specialty", new_specialization_path, :class => "ajax"
@@ -178,7 +178,7 @@
                           = link_to "Areas of Practice in...", "#", :class => "arrow-right-after"
                           %ul.dropdown-menu.sub-menu
                             %li= link_to "All Specialties", procedures_path, :class => "ajax"
-                            - Specialization.all.each do |specialization|
+                            - Specialization.all_cached.each do |specialization|
                               %li=link_to specialization.name, specialization_procedures_path(specialization), :class => "ajax"
                       - if can? :index, City
                         %li= link_to "Cities", cities_path, :class => "ajax"
@@ -187,7 +187,7 @@
                           = link_to "Clinics", "#", :class => "arrow-right-after"
                           %ul.dropdown-menu
                             %li=link_to "All Clinics", clinics_path, :class => "ajax"
-                            - Specialization.all.each do |specialization|
+                            - Specialization.all_cached.each do |specialization|
                               %li=link_to "#{specialization.name} Clinics", specialization_clinics_path(specialization), :class => 'division ajax'
                       - if can? :index, Division
                         %li= link_to "Divisions", divisions_path, :class => "ajax"
@@ -222,7 +222,7 @@
                           = link_to "Specialists", "#", :class => "arrow-right-after"
                           %ul.dropdown-menu
                             %li=link_to "All Specialists", specialists_path, :class => "ajax"
-                            - Specialization.all.each do |specialization|
+                            - Specialization.all_cached.each do |specialization|
                               %li=link_to specialization.member_name.pluralize, specialization_specialists_path(specialization), :class => 'division ajax'
                       - if can? :index, Specialization
                         %li= link_to "Specialties", specializations_path, :class => "ajax"
@@ -231,7 +231,7 @@
                           = link_to "Users", "#", :class => "arrow-right-after"
                           %ul.dropdown-menu
                             %li=link_to "All Users", users_path, :class => "ajax"
-                            - Division.all.each do |division|
+                            - Division.all_cached.each do |division|
                               %li=link_to "#{division.name} Users", division_users_path(division), :class => 'division ajax'
                       %li.divider
                       %li.nav-header Content Management
@@ -245,16 +245,16 @@
                       - if can? :read, ScCategory
                         %li= link_to "Content Categories", sc_categories_path, :class => "sc_category ajax"
                       - if can? :read, ScItem
-                        - if current_user_is_super_admin? && Division.all.length > 1
+                        - if current_user_is_super_admin? && Division.all_cached.length > 1
                           %li
                             = link_to "Owned Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
-                              - Division.all.each do |division|
+                              - Division.all_cached.each do |division|
                                 %li= link_to "#{division.name}", division_content_items_path(division), :class => "sc_item ajax"
                           %li
                             = link_to "Shared Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
-                              - Division.all.each do |division|
+                              - Division.all_cached.each do |division|
                                 %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
                         - elsif user_divisions.length > 1
                           %li
@@ -269,7 +269,7 @@
                                 %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
                         - else
                           %li= link_to "Content Items", division_content_items_path(user_divisions.first), :class => "sc_item ajax"
-                          - if Division.all.length > 1
+                          - if Division.all_cached.length > 1
                             %li= link_to "Manage Shared Content Items", shared_content_items_path(user_divisions.first), :class => "sc_item ajax"
                   
                 - dropdown_categories = ScCategory.global_resources_dropdown.reject{ |category| category.all_sc_items_in_divisions(user_divisions).blank? }
@@ -364,7 +364,7 @@
                     
                     %li.nav-header Settings
                     -# %li= link_to "Change name", change_name_path, :class => 'change_name ajax'
-                    -# if Division.all.length > 1
+                    -# if Division.all_cached.length > 1
                       %li= link_to "Change local referral area", change_local_referral_area_path, :class => 'change_local_referral_area ajax'
                     %li= link_to "Change e-mail address", change_email_path, :class => 'change_email ajax'
                     %li= link_to "Change password", change_password_path, :class => 'change_password ajax'
