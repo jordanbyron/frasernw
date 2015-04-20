@@ -149,10 +149,13 @@ module ApplicationHelper
   end
   
   def current_user_divisions
-    if current_user
-      return current_user.divisions
-    else
-      return []
+    return @current_user_divisions if defined?(@current_user_divisions)
+    @current_user_divisions = begin
+      if current_user
+        current_user.divisions
+      else
+        []
+      end
     end
   end
   
@@ -162,10 +165,13 @@ module ApplicationHelper
   end
   
   def current_user_cities
-    if current_user
-      return current_user.divisions.map { |d| d.cities }.flatten.uniq
-    else
-      return []
+    return @current_user_cities if defined?(@current_user_cities)
+    @current_user_cities = begin
+      if current_user
+        current_user.divisions.map { |d| d.cities }.flatten.uniq
+      elsif
+        []
+      end
     end
   end
   
