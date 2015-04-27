@@ -114,6 +114,7 @@ class SpecialistsController < ApplicationController
       l = o.build_location
     end
     @offices = Office.includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+    @hospitals = Hospital.all_formatted_for_form
     @specializations_clinics = []
     @specializations_clinic_locations = []
     @specialist.specializations.each { |s|
