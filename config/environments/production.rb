@@ -43,7 +43,7 @@ Frasernw::Application.configure do
       config.cache_store = :dalli_store
   end
 
-  if ENV['APP_NAME'] = "pathwaysbc" #unless Production, override and do not send mail unless to these emails:
+  if ENV['APP_NAME'] == "pathwaysbc" #unless Production, override and do not send mail unless to these emails:
   else
     config.action_mailer.delivery_method = :safety_mailer
     config.action_mailer.safety_mailer_settings = {
