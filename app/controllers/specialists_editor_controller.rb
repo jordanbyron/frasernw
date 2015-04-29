@@ -14,20 +14,10 @@ class SpecialistsEditorController < ApplicationController
     if @specialist.capacities.count == 0
       @specialist.capacities.build
     end
-    while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
-      os = @specialist.specialist_offices.build
-      s = os.build_phone_schedule
-      s.build_monday
-      s.build_tuesday
-      s.build_wednesday
-      s.build_thursday
-      s.build_friday
-      s.build_saturday
-      s.build_sunday
-      o = os.build_office
-      l = o.build_location
-    end
-    @offices = Office.includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+
+    build_specialist_offices
+    load_form_variables
+
     @specializations_clinics = []
     @specializations_clinic_locations = []
     @specialist.specializations.each { |s|
@@ -113,20 +103,10 @@ class SpecialistsEditorController < ApplicationController
     if @specialist.capacities.count == 0
       @specialist.capacities.build
     end
-    while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
-      os = @specialist.specialist_offices.build
-      s = os.build_phone_schedule
-      s.build_monday
-      s.build_tuesday
-      s.build_wednesday
-      s.build_thursday
-      s.build_friday
-      s.build_saturday
-      s.build_sunday
-      o = os.build_office
-      l = o.build_location
-    end
-    @offices = Office.includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+
+    build_specialist_offices
+    load_form_variables
+
     @specializations_clinics = []
     @specializations_clinic_locations = []
     @specialist.specializations.each { |s|
@@ -185,6 +165,30 @@ class SpecialistsEditorController < ApplicationController
       :lagtime => capacity.present? ? capacity.lagtime_mask : 0,
       :offset => offset
     }
+  end
+
+  private
+
+  def load_form_variables
+    @offices = Office.includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+    @hospitals = Hospital.all_formatted_for_form
+  end
+
+  def build_specialist_offices
+    # build office & phone schedule.
+    while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
+      so = @specialist.specialist_offices.build
+      s = so.build_phone_schedule
+      s.build_monday
+      s.build_tuesday
+      s.build_wednesday
+      s.build_thursday
+      s.build_friday
+      s.build_saturday
+      s.build_sunday
+      o = so.build_office
+      l = o.build_location
+    end
   end
 
 end
