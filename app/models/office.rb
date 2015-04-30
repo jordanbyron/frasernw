@@ -52,9 +52,7 @@ class Office < ActiveRecord::Base
 
   def flush_cache #called during after_commit or after_touch
     Rails.cache.delete([self.class.name, "all_offices_formatted_for_form"])
-    Office.all.each do |office|
-      Rails.cache.delete([office.class.name, office.id])
-    end
+    Rails.cache.delete([self.class.name, office.id])
   end
 
   def self.refresh_cache
