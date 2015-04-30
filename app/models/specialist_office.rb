@@ -24,6 +24,10 @@ class SpecialistOffice < ActiveRecord::Base
     includes([:specialist, :office => [:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]]]).all.reject{ |so| so.office.blank? || so.empty? || so.specialist.blank? }.sort{ |a,b| (a.specialist.lastname || "zzz") <=> (b.specialist.lastname || "zzz") }.map{ |so| ["#{so.specialist.name} - #{so.office.short_address}", so.id]}
   end
 
+  def self.refresh_cached_all_formatted_for_user_form
+    Rails.cache.write([name, "all_specialist_office_formatted_for_user_form"], self.all_formatted_for_user_form)
+  end
+
   def self.cached_all_formatted_for_user_form
     Rails.cache.fetch([name, "all_specialist_office_formatted_for_user_form"], expires_in: 6.hours) {self.all_formatted_for_user_form}
   end
@@ -34,8 +38,15 @@ class SpecialistOffice < ActiveRecord::Base
 
   def flush_cache #called during after_commit or after_touch
     Rails.cache.delete([self.class.name, "all_specialist_office_formatted_for_user_form"])
-    SpecialistOffice.all.each do |so|
-      Rails.cache.delete([so.class.name, so.id])
+    SpecialistOffice.all.each do |office|
+      Rails.cache.delete([office.class.name, office.id])
+    end
+  end
+
+  def self.refresh_cache
+    Rails.cache.write([name, "all_specialist_office_formatted_for_user_form"], self.all_formatted_for_user_form)
+    SpecialistOffice.all.each do |office|
+      Rails.cache.write([office.class.name, office.id], SpecialistOffice.find(office.id))
     end
   end
   # # # # # # # #

@@ -14,6 +14,9 @@ class Office < ActiveRecord::Base
   has_many :hospitals, :through => :specialists
   has_many :languages, :through => :specialists
   
+  after_commit :flush_cache
+  after_touch  :flush_cache
+
   has_paper_trail
   
   def self.in_cities(c)
@@ -32,7 +35,37 @@ class Office < ActiveRecord::Base
   def self.in_divisions(divisions)
     self.in_cities(divisions.map{ |division| division.cities }.flatten.uniq)
   end
-  
+
+
+  # # # # # # # # CACHING METHODS
+  def self.all_formatted_for_form
+    includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+  end
+
+  def self.cached_all_formatted_for_form
+    Rails.cache.fetch([name, "all_offices_formatted_for_form"], expires_in: 2.hours) {self.all_formatted_for_form}
+  end
+
+  def self.cached_find(id)
+    Rails.cache.fetch([name, id]){find(id)}
+  end
+
+  def flush_cache #called during after_commit or after_touch
+    Rails.cache.delete([self.class.name, "all_offices_formatted_for_form"])
+    Office.all.each do |office|
+      Rails.cache.delete([office.class.name, office.id])
+    end
+  end
+
+  def self.refresh_cache
+    Rails.cache.write([name, "all_offices_formatted_for_form"], self.all_formatted_for_form)
+    Office.all.each do |office|
+      Rails.cache.write([office.class.name, office.id], Office.find(office.id))
+    end
+  end
+
+  # # # # # # # #
+
   def empty?
     location.blank? || location.empty?
   end

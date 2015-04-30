@@ -398,7 +398,7 @@ class SpecialistsController < ApplicationController
   private
 
   def load_form_variables
-    @offices = Office.includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+    @offices = Office.cached_all_formatted_for_form
     @hospitals = Hospital.all_formatted_for_form
   end
 
