@@ -90,6 +90,7 @@ group :development do
   #gem 'debugger'
   gem 'bullet'
   #gem 'thin'
+  gem 'rails-erd'
 end
 
 gem 'ancestry'

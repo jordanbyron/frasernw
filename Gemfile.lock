@@ -71,6 +71,7 @@ GEM
       activesupport (>= 3.0.0)
       uniform_notifier (>= 1.6.0)
     cancan (1.6.7)
+    choice (0.1.6)
     clockwork (1.1.0)
       activesupport
       tzinfo
@@ -238,6 +239,11 @@ GEM
       activesupport (= 3.1.12)
       bundler (~> 1.0)
       railties (= 3.1.12)
+    rails-erd (1.1.0)
+      activerecord (>= 3.0)
+      activesupport (>= 3.0)
+      choice (~> 0.1.6)
+      ruby-graphviz (~> 1.0.4)
     rails_12factor (0.0.3)
       rails_serve_static_assets
       rails_stdout_logging
@@ -270,6 +276,7 @@ GEM
       activesupport (~> 3.0)
       railties (~> 3.0)
       rspec (~> 2.7.0)
+    ruby-graphviz (1.0.9)
     ruby-hmac (0.4.0)
     rubyzip (0.9.4)
     safety_mailer (0.0.10)
@@ -377,6 +384,7 @@ DEPENDENCIES
   rack-timeout
   rails (= 3.1.12)
   rails-dev-boost!
+  rails-erd
   rails_12factor
   rb-fsevent (~> 0.9.1)
   rspec
