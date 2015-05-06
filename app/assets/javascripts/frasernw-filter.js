@@ -99,6 +99,8 @@ var update_table = function(prefix, entity_id, entity_name)
                                                                                                                                           
   });
   
+  var checked_procedures_length = checked_procedures.length;
+  
   // adjust wait time based off checked custom wait time procedures
   var checked_custom_wait_times = checked_procedures.filter('[name="1"]');
   //console.log("checked_procedures : " + checked_procedures)
@@ -120,7 +122,7 @@ var update_table = function(prefix, entity_id, entity_name)
   }
   else if (checked_custom_wait_times.length == 1)
   {
-    if (checked_procedures.length == 1)
+    if (checked_procedures_length == 1)
     {
       //console.log("replace with custom wait time");
       wait_time_procedure = checked_procedures.attr('id').substring((prefix + 'p').length);
@@ -275,7 +277,7 @@ var update_table = function(prefix, entity_id, entity_name)
   {
     $('#' + entity_id + '_table tbody tr').each(function () {
       var row = $(this);
-      if ( row.hasClass('other') )
+      if ( row.hasClass('other') && (checked_procedures_length >= 1) )
       {
         var row_filter = row.data('attributes');
         if (row_filter && matches_filters(row_filter, current_filters))
@@ -291,7 +293,7 @@ var update_table = function(prefix, entity_id, entity_name)
     var row = $(this)
       , row_filter = row.data('attributes');
     
-    if ( !should_show_others && row.hasClass('other') )
+    if ( (!should_show_others || (checked_procedures_length == 0)) && row.hasClass('other') )
     {
       row.hide();
     }
