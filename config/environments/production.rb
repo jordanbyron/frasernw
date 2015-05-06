@@ -5,7 +5,7 @@ Frasernw::Application.configure do
   config.middleware.use ExceptionNotifier,
     :email_prefix => "[mdpathway exception] ",
     :sender_address => %{"Pathways" <system@mdpathwaysbc.com>},
-    :exception_recipients => %w{warneboldt@gmail.com khannan@mdpathwaysbc.com}
+    :exception_recipients => %w{warneboldt@gmail.com khannan@mdpathwaysbc.com bgracie@pathwaysbc.ca}
 
   # Code is not reloaded between requests
   config.cache_classes = true
@@ -47,7 +47,7 @@ Frasernw::Application.configure do
   else
     config.action_mailer.delivery_method = :safety_mailer
     config.action_mailer.safety_mailer_settings = {
-      allowed_matchers: [ /khannan@mdpathwaysbc.com/, /warneboldt@gmail.com/, /kelseyh@gmail.com/ ],
+      allowed_matchers: [ /khannan@mdpathwaysbc.com/, /warneboldt@gmail.com/, /kelseyh@gmail.com/, /bgracie@pathwaysbc.ca/ ],
       delivery_method: :smtp,
       delivery_method_settings: {
         :address => "smtp.gmail.com",
