@@ -1,11 +1,11 @@
 - title "Users"
 
 .content-wrapper
-
-  - if @division.present?
-    %h2 #{@division.name} Users
-  - else
-    %h2 Users
+  %h2
+    - if @division.present?
+      #{@division.name} Users
+    - else
+      Users
 
   .tabbable
     %ul.nav.nav-tabs
@@ -24,6 +24,7 @@
     .tab-content
       - if (current_user_is_super_admin?)
         #super_admin_tab.tab-pane.active
+
           %table.table.table-condensed.table-striped.tablesorter
             %thead
               %tr.tableheader
@@ -50,9 +51,14 @@
                           Specializations owned in #{division.name}
                           - specialization_options.each do |so|
                             %li= link_to so.specialization.name, so.specialization, :class => 'ajax'
-            
+
                   %td.admin.btn-group
                     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
+          %h4
+            Total
+            = render partial: "division_label"
+            Super Administrators:
+            = @super_admin_users.count
 
       #admin_tab.tab-pane{:class => !current_user_is_super_admin? && "active"}
         %table.table.table-condensed.table-striped.tablesorter
@@ -83,7 +89,11 @@
                 %td.admin.btn-group
                   - if can? :update, user
                     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
-
+        %h4
+          Total
+          = render partial: "division_label"
+          Administrators:
+          = @admin_users.count
       #user_tab.tab-pane
         %table.table.table-condensed.table-striped.tablesorter
           %thead
@@ -114,6 +124,11 @@
                 %td.admin.btn-group
                   - if can? :update, user
                     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
+        %h4
+          Total
+          = render partial: "division_label"
+          Users:
+          = @users.count
 
       #pending_user_tab.tab-pane
         %table.table.table-condensed.table-striped.tablesorter
@@ -126,7 +141,7 @@
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Type
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Access key
               %th.admin
-              
+
           %tbody
             - @pending_users.each do |user|
               %tr
@@ -139,6 +154,11 @@
                 %td.admin.btn-group
                   - if can? :update, user
                     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
+        %h4
+          Total
+          = render partial: "division_label"
+          Pending Users:
+          = @pending_users.count
 
       #disabled_user_tab.tab-pane
         %table.table.table-condensed.table-striped.tablesorter
@@ -179,9 +199,14 @@
                 %td
                 %td
                 %td
+        %h4
+          Total
+          = render partial: "division_label"
+          Inactive Users:
+          = @inactive_users.count
 
       %script{"type" => "text/javascript"}
         :plain
           $(document).ready(function() { $('.tablesorter').tablesorter({sortList: [[0,0]]}) });
-            
+  %br
   %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New User", new_user_path, :class => "btn ajax")
