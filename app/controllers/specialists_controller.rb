@@ -23,27 +23,16 @@ class SpecialistsController < ApplicationController
   end
 
   def new
+    load_form_variables
     @is_new = true
     @is_review = false
     #specialization passed in to facilitate javascript "checking off" of starting speciality, since build below doesn't seem to work
     @specialization = Specialization.find(params[:specialization_id])     
     @specialist = Specialist.new
     @specialist.specialist_specializations.build( :specialization_id => @specialization.id )
-    while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
-      so = @specialist.specialist_offices.build
-      s = so.build_phone_schedule
-      s.build_monday
-      s.build_tuesday
-      s.build_wednesday
-      s.build_thursday
-      s.build_friday
-      s.build_saturday
-      s.build_sunday
-      o = so.build_office
-      l = o.build_location
-      l.build_address
-    end
-    @offices = Office.includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+
+    build_specialist_offices
+
     @specializations_clinics = (current_user_is_super_admin? ? @specialization.clinics : @specialization.clinics.in_divisions(current_user_divisions)).map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} - #{l.short_address}", l.id] }
     @specializations_clinic_locations = (current_user_is_super_admin? ? @specialization.clinics : @specialization.clinics.in_divisions(current_user_divisions)).map{ |c| c.clinic_locations.reject{ |cl| cl.empty? } }.flatten.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id] }
     @specializations_procedures = ancestry_options( @specialization.non_assumed_procedure_specializations_arranged )
@@ -93,6 +82,7 @@ class SpecialistsController < ApplicationController
   end
 
   def edit
+    load_form_variables
     @is_new = false
     @is_review = false
     @is_rereview = false
@@ -100,21 +90,9 @@ class SpecialistsController < ApplicationController
     if @specialist.capacities.count == 0
       @specialist.capacities.build
     end
-    while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
-      os = @specialist.specialist_offices.build
-      s = os.build_phone_schedule
-      s.build_monday
-      s.build_tuesday
-      s.build_wednesday
-      s.build_thursday
-      s.build_friday
-      s.build_saturday
-      s.build_sunday
-      o = os.build_office
-      l = o.build_location
-    end
-    @offices = Office.includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
-    @hospitals = Hospital.all_formatted_for_form
+
+    build_specialist_offices
+
     @specializations_clinics = []
     @specializations_clinic_locations = []
     @specialist.specializations.each { |s|
@@ -177,6 +155,7 @@ class SpecialistsController < ApplicationController
       @specialist.save
       redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
     else
+      load_form_variables
       render :edit
     end
   end
@@ -216,6 +195,7 @@ class SpecialistsController < ApplicationController
         @specialist.save
         redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
       else
+        load_form_variables
         render :edit
       end
     end
@@ -249,6 +229,7 @@ class SpecialistsController < ApplicationController
   end
   
   def review
+    load_form_variables
     @is_new = false
     @is_review = false
     @is_rereview = false
@@ -258,20 +239,9 @@ class SpecialistsController < ApplicationController
     if @review_item.blank?
       redirect_to specialists_path, :notice => "There are no review items for this specialist"
       else
-      while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
-        os = @specialist.specialist_offices.build
-        s = os.build_phone_schedule
-        s.build_monday
-        s.build_tuesday
-        s.build_wednesday
-        s.build_thursday
-        s.build_friday
-        s.build_saturday
-        s.build_sunday
-        o = os.build_office
-        l = o.build_location
-      end
-      @offices = Office.includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+
+      build_specialist_offices
+
       @specializations_clinics = []
       @specializations_clinic_locations = []
       @specialist.specializations.each { |s|
@@ -312,6 +282,7 @@ class SpecialistsController < ApplicationController
   end
   
   def rereview
+    load_form_variables
     @is_new = false
     @is_review = false
     @is_rereview = true
@@ -323,20 +294,9 @@ class SpecialistsController < ApplicationController
     elsif @review_item.base_object.blank?
       redirect_to specialists_path, :notice => "There is no base review item for this specialist to re-review from"
     else
-      while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
-        os = @specialist.specialist_offices.build
-        s = os.build_phone_schedule
-        s.build_monday
-        s.build_tuesday
-        s.build_wednesday
-        s.build_thursday
-        s.build_friday
-        s.build_saturday
-        s.build_sunday
-        o = os.build_office
-        l = o.build_location
-      end
-      @offices = Office.includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+
+      build_specialist_offices
+
       @specializations_clinics = []
       @specializations_clinic_locations = []
       @specialist.specializations.each { |s|
@@ -436,4 +396,29 @@ class SpecialistsController < ApplicationController
         :offset => offset
       }
     end
+
+  private
+
+  def load_form_variables
+    @offices = Office.cached_all_formatted_for_form
+    @hospitals = Hospital.all_formatted_for_form
+  end
+
+  def build_specialist_offices
+    # build office & phone schedule, build address only with a new entry.
+    while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
+      so = @specialist.specialist_offices.build
+      s = so.build_phone_schedule
+      s.build_monday
+      s.build_tuesday
+      s.build_wednesday
+      s.build_thursday
+      s.build_friday
+      s.build_saturday
+      s.build_sunday
+      o = so.build_office
+      l = o.build_location
+      l.build_address if @is_new == true
+    end
+  end
 end

@@ -362,7 +362,7 @@
                             
             - if specializations_with_results_count > 0 || @specialist.interest.present? || @specialist.not_performed.present?
               .well.areas-of-practice
-                %h6 Areas of Practice
+                %h6 Accepts Referrals For
                       
                 - @specialist.specializations.each do |s|
                   - focused_procedures, focused_count, focused_has_investigations = areas_of_practice_focused_results[s.id]

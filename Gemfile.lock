@@ -283,10 +283,6 @@ GEM
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
-    lol_dba (1.6.4)
-      actionpack (>= 3.0)
-      activerecord (>= 3.0)
-      railties (>= 3.0)
     lumberjack (1.0.9)
     mail (2.5.4)
       mime-types (~> 1.16)
@@ -513,7 +509,6 @@ DEPENDENCIES
   kgio
   lazy_high_charts
   letter_opener
-  lol_dba
   mechanize
   nested_form!
   newrelic_rpm

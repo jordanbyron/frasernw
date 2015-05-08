@@ -56,7 +56,7 @@
         = select_tag "content_owner[#{division.id}]", options_for_select(division_admins, content_owner_id), :name => "content_owner[#{division.id}]", :class => "select"
     .control-group
       %label.control-label
-        In Progress
+        In Progress / Hidden
       .controls
         = check_box_tag "in_progress[#{division.id}]", "in_progress[#{division.id}]", in_progress, :name => "in_progress[#{division.id}]"
     .control-group

@@ -150,7 +150,7 @@
             
             - ScCategory.all.reject{ |c| !c.show_on_front_page? }.each do |category|
             
-              - featured_items = category.featured_contents.in_divisions(user_divisions).order("created_at").reject{|fc| fc.sc_item.blank? }
+              - featured_items = category.featured_contents.in_divisions(user_divisions).order("created_at").includes(:sc_item).reject{|fc| fc.sc_item.blank? }
               - next if featured_items.blank?
            
               %h3= link_to "#{category.name} <span class='all'> - Browse All <i class='icon-arrow-right icon-blue icon-small'></i></span>".html_safe, sc_category_path(category), :class => 'ajax'
