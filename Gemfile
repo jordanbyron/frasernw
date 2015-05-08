@@ -81,7 +81,6 @@ group :development, :test do
 end
 
 group :development do
-  gem 'pry-rails' # loads pry by default with rails c
   gem 'oink'
   #gem 'rack-mini-profiler'
   #latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
@@ -91,6 +90,10 @@ group :development do
   gem 'bullet'
   #gem 'thin'
   gem 'rails-erd'
+end
+
+group :development, :test do
+  gem 'pry-rails'
 end
 
 gem 'ancestry'
@@ -111,4 +114,3 @@ gem 'rails_12factor', group: :production
 group :development, :production do
   gem 'newrelic_rpm'
 end
-
