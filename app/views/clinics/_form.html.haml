@@ -1,3 +1,6 @@
+- content_for(:javascript_footer) do
+  = javascript_include_tag "pages/clinic/edit"
+
 -# multiple controllers use this form
 - form_method    = params[:action] == 'new' ? :post   : :put
 - current_action = params[:action] == 'new' ? :create : :update
@@ -277,11 +280,13 @@
 
     - clocs = @clinic.ordered_clinic_locations
 
-    .tabbable
+    .tabbable.clinic_location_tabs
       %ul.nav.nav-tabs
         - clocs.each_with_index do |cl, index|
-          %li{:class => index == 0 ? "active" : ""}
-            %a{"href" => "#location_tab_#{index}", "data-toggle" => "tab"}= "Location #{index+1}"
+          = tablist_item active: index == 0, emphasized: cl.has_data?, class: ["clinic_location_#{index}"] do
+            %a{"href" => "#location_tab_#{index}", "data-toggle" => "tab"}
+              %span
+                = "Location #{index+1}"
 
     .tab-content
       - index = 0
@@ -298,7 +303,12 @@
             .controls
               - location_class = "clinic_location_#{index}"
               - [['Not used', is_unused], ['Standalone', is_standalone], ['In a hospital', is_in_hospital]].each do |option|
-                = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
+                = label_tag "#{location_class}_#{option.first}" do
+                  = radio_button_tag location_class,
+                    option.first,
+                    option.second,
+                    :class => [location_class, "clinic_location"]
+                  = option.first
           %div{:class => "numbers_#{index}"}
             = cl.input :phone do
               = cl.input_field :phone, :class => "span3"

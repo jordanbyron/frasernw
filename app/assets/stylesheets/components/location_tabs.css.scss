@@ -1,0 +1,44 @@
+
+/* reset normal 'active' behaviour */
+#content #container .tabbable.clinic_location_tabs ul.nav-tabs li.active a {
+  font-weight: normal;
+}
+
+@media (max-width: 767px) {
+  #content #container .tabbable.clinic_location_tabs ul.nav-tabs li.active a {
+    background-color: transparent;
+    color: white;
+  }
+}
+
+/* new 'active' behaviour */
+.clinic_location_tabs li.active span {
+  border-bottom: 1px solid white;
+}
+
+@media (max-width: 767px) {
+  .clinic_location_tabs li.active.emphasized span {
+    border-bottom: 1px solid #424242;
+  }
+}
+
+/* 'emphasized' behaviour */
+@media (max-width: 767px) {
+  #content #container .tabbable.clinic_location_tabs ul.nav-tabs li.emphasized a {
+    background-color: white;
+    color: #424242;
+  }
+
+  #content #container .tabbable.clinic_location_tabs ul.nav-tabs li.active.emphasized a {
+    background-color: white;
+    color: #424242;
+  }
+}
+
+#content #container .tabbable.clinic_location_tabs ul.nav-tabs li.emphasized a {
+  font-weight: bold;
+}
+
+#content #container .tabbable.clinic_location_tabs ul.nav-tabs li.active.emphasized a {
+  font-weight: bold;
+}
