@@ -18,9 +18,34 @@ class Specialization < ActiveRecord::Base
   accepts_nested_attributes_for :specialization_options
   has_many :owners, :through => :specialization_options, :class_name => "User"
   has_many :content_owners, :through => :specialization_options, :class_name => "User"
-  
+
+  after_commit :flush_cache
+  after_touch  :flush_cache
+
   default_scope order('specializations.name')
-  
+
+  # # # # # # CACHING METHODS
+  def self.all_cached
+    Rails.cache.fetch([name, "all_specializations"], expires_in: 6.hours) {self.all}
+  end
+
+  def self.cached_find(id)
+    Rails.cache.fetch([name, id]){find(id)}
+  end
+
+  def self.refresh_cache
+    Rails.cache.write([name, "all_specializations"], self.all)
+    SpecialistOffice.all.each do |office|
+      Rails.cache.write([office.class.name, office.id], SpecialistOffice.find(office.id))
+    end
+  end
+
+  def flush_cache #called during after_commit or after_touch
+    Rails.cache.delete([self.class.name, "all_specializations"])
+    Rails.cache.delete([self.class.name, self.id])
+  end
+  # # # # # #
+
   def self.in_progress_for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     joins(:specialization_options).where('"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)', division_ids, true)

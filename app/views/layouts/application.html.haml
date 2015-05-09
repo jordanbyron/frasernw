@@ -138,7 +138,7 @@
                             %li
                               = link_to "New Area of Practice in...", "#", :class => "arrow-right-after"
                               %ul.dropdown-menu.sub-menu
-                                - Specialization.all.each do |specialization|
+                                - Specialization.all_cached.each do |specialization|
                                   %li=link_to specialization.name, new_specialization_procedure_path(specialization), :class => "ajax"
                           - if can? :create, City
                             %li= link_to "New City", new_city_path, :class => "ajax"
@@ -146,7 +146,7 @@
                             %li
                               = link_to "New Clinic in...", "#", :class => "arrow-right-after"
                               %ul.dropdown-menu
-                                - Specialization.all.each do |specialization|
+                                - Specialization.all_cached.each do |specialization|
                                   %li=link_to specialization.name, new_specialization_clinic_path(specialization), :class => "ajax"
                           - if can? :create, Division
                             %li= link_to "New Division", new_division_path, :class => "ajax"
@@ -164,7 +164,7 @@
                             %li
                               = link_to "New Specialist in...", "#", :class => "arrow-right-after"
                               %ul.dropdown-menu
-                                - Specialization.all.each do |specialization|
+                                - Specialization.all_cached.each do |specialization|
                                   %li=link_to specialization.name, new_specialization_specialist_path(specialization), :class => 'ajax'
                           - if can? :create, Specialization
                             %li= link_to "New Specialty", new_specialization_path, :class => "ajax"
@@ -177,7 +177,7 @@
                           = link_to "Areas of Practice in...", "#", :class => "arrow-right-after"
                           %ul.dropdown-menu.sub-menu
                             %li= link_to "All Specialties", procedures_path, :class => "ajax"
-                            - Specialization.all.each do |specialization|
+                            - Specialization.all_cached.each do |specialization|
                               %li=link_to specialization.name, specialization_procedures_path(specialization), :class => "ajax"
                       - if can? :index, City
                         %li= link_to "Cities", cities_path, :class => "ajax"
@@ -186,7 +186,7 @@
                           = link_to "Clinics", "#", :class => "arrow-right-after"
                           %ul.dropdown-menu
                             %li=link_to "All Clinics", clinics_path, :class => "ajax"
-                            - Specialization.all.each do |specialization|
+                            - Specialization.all_cached.each do |specialization|
                               %li=link_to "#{specialization.name} Clinics", specialization_clinics_path(specialization), :class => 'division ajax'
                       - if can? :index, Division
                         %li= link_to "Divisions", divisions_path, :class => "ajax"
@@ -221,7 +221,7 @@
                           = link_to "Specialists", "#", :class => "arrow-right-after"
                           %ul.dropdown-menu
                             %li=link_to "All Specialists", specialists_path, :class => "ajax"
-                            - Specialization.all.each do |specialization|
+                            - Specialization.all_cached.each do |specialization|
                               %li=link_to specialization.member_name.pluralize, specialization_specialists_path(specialization), :class => 'division ajax'
                       - if can? :index, Specialization
                         %li= link_to "Specialties", specializations_path, :class => "ajax"
@@ -270,16 +270,16 @@
                           %li= link_to "Content Items", division_content_items_path(user_divisions.first), :class => "sc_item ajax"
                           - if Division.all.length > 1
                             %li= link_to "Manage Shared Content Items", shared_content_items_path(user_divisions.first), :class => "sc_item ajax"
-                  
-                - dropdown_categories = ScCategory.global_resources_dropdown.reject{ |category| category.all_sc_items_in_divisions(user_divisions).blank? }
-                - if dropdown_categories.present?
-                  %li.dropdown
-                    %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-                      Resources
-                      %b.caret
-                    %ul.dropdown-menu
-                      - dropdown_categories.each do |category|
-                        %li=link_to category.name, category, :class => 'ajax'
+                - cache("resources_dropdown_categories_#{user_divisions.map(&:id).join('_')}") do
+                  - dropdown_categories = ScCategory.global_resources_dropdown.reject{ |category| category.all_sc_items_in_divisions(user_divisions).blank? }
+                  - if dropdown_categories.present?
+                    %li.dropdown
+                      %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                        Resources
+                        %b.caret
+                      %ul.dropdown-menu
+                        - dropdown_categories.each do |category|
+                          %li=link_to category.name, category, :class => 'ajax'
                 
                 - ScCategory.global_navbar.reject{ |category| category.all_sc_items_in_divisions(user_divisions).blank? }.each do |category|
                   %li= link_to category.name, category, :class => 'ajax'
@@ -335,7 +335,7 @@
                     -if current_user.favorites.present?
                       :javascript
                         $(document).ready(function() { $('#add_favorites').hide(); });
-                        
+
                 %li.dropdown
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
                     %i.icon-user
@@ -343,24 +343,24 @@
                     %b.caret
                   %ul.dropdown-menu
                     %li.nav-header.name= current_user.name
-                    
+
                     - if current_user.controlled_specialists.present?
                       %li.nav-header Your specialists
                       - current_user.controlled_specialists.each do |specialist|
                         %li= link_to specialist.name, specialist, :class => 'ajax'
-                    
+
                     - if current_user.controlled_clinics.present?
                       %li.nav-header Your clinics
                       - current_user.controlled_clinics.each do |clinic|
                         %li= link_to clinic.name, clinic, :class => 'ajax'
-                    
+
                     %li.nav-header Help
                     %li= link_to "FAQ", faq_path, :class => 'faq ajax'
                     %li= mail_to "administration@pathwaysbc.ca", "Contact Us", :class => 'contact'
-                    
+
                     %li.nav-header Legal
                     %li= link_to "Terms of Use", terms_and_conditions_path, :class => 'tac ajax'
-                    
+
                     %li.nav-header Settings
                     -# %li= link_to "Change name", change_name_path, :class => 'change_name ajax'
                     -# if Division.all.length > 1
@@ -371,7 +371,6 @@
 
     #body.container
       .row
-                    
         #content.span12
           #container
             - flash.each do |type, msg|
@@ -383,9 +382,9 @@
             #message_sent
               .inner
                 %h2 Message sent!
-                
+
                 %p.space.no_indent Thank you for providing your comments to Pathways. We will review your message in the near future, and respond as necessary.
-                
+
                 %p.space.no_indent
                   %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#message_sent').fadeOut(200)" } Close
 
@@ -393,6 +392,5 @@
         #email.content-wrapper
           Contact us:
           %a{:href => '#', :onclick => "$('#message .inner').load('#{messages_path}', function() { show_message(); }); return false;"} administration@pathwaysbc.ca
-            
     #loading
       #loading-spinner

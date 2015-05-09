@@ -42,6 +42,8 @@ class User < ActiveRecord::Base
   validates_presence_of :name
   validates :agree_to_toc, presence: true
 
+  after_commit :flush_cache
+
   default_scope order('users.name')
 
 LIMITED_ROLE_HASH = {
@@ -104,15 +106,29 @@ LIMITED_ROLE_HASH = {
     joins(:user_divisions).where('"division_users"."division_id" IN (?)', division_ids)
   end
 
+  # # # CACHING methods
+  def self.all_user_division_groups
+    all.map{ |u| u.divisions.map{ |d| d.id } }.uniq
+  end
+
+  def self.all_user_division_groups_cached
+    Rails.cache.fetch("all_user_division_groups", expires_in: 6.hours){self.all_user_division_groups}
+  end
+
+  def flush_cache
+    Rails.cache.delete("all_user_division_groups")
+  end
+  # # #
+
   def deliver_password_reset_instructions!
-    reset_perishable_token!  
+    reset_perishable_token!
     PasswordResetMailer.password_reset_instructions(self).deliver
-  end  
-  
+  end
+
   def active?
     active
   end
-  
+
   def user?
     (self.role == 'user')
   end

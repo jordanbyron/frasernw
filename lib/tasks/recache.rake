@@ -31,7 +31,7 @@ namespace :pathways do
           end
           
           #expire the grouped together divisions
-          User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
+          User.all_user_division_groups_cached.each do |division_group|
             expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
           end
         rescue Exception => e
@@ -116,7 +116,7 @@ namespace :pathways do
   
     task :sc_categories => :environment do
       puts "Recaching content categories..."
-      User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
+      User.all_user_division_groups_cached.each do |division_group|
         ScCategory.all.sort{ |a,b| a.id <=> b.id }.each do |cc|
           puts "Content Category #{cc.id}"
           expire_fragment "content_#{cc.id}_category_#{division_group.join('_')}"
@@ -127,7 +127,7 @@ namespace :pathways do
     task :menus => :environment do
       expire_fragment 'specialization_dropdown_admin'
       
-      User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
+      User.all_user_division_groups_cached.each do |division_group|
         expire_fragment "specialization_dropdown_#{division_group.join('_')}"
         
         Specialization.all.each do |specialization|
@@ -137,14 +137,20 @@ namespace :pathways do
     end
     
     task :front => :environment do
-      User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
+      User.all_user_division_groups_cached.each do |division_group|
         expire_fragment "latest_updates_#{division_group.join('_')}"
         expire_fragment "featured_content_#{division_group.join('_')}"
       end
     end
 
+    task :application_layout => :environment do
+      User.all_user_division_groups_cached.each do |division_group|
+        expire_fragment("resources_dropdown_categories_#{division_group.join('_')}")
+      end
+    end
+
     #purposeful order from least important to most important, to keep cache 'hot'
-    task :all => [:procedures, :languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front] do
+    task :all => [:procedures, :languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front, :application_layout] do
       puts "All pages recached."
     end
   
@@ -163,7 +169,7 @@ namespace :pathways do
       end
 
       #expire the grouped together divisions
-      User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
+      User.all_user_division_groups_cached.each do |division_group|
         puts "Divisions #{division_group.join(' ')}"
         Specialization.all.each do |s|
           expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
@@ -212,7 +218,7 @@ namespace :pathways do
       end
 
       #expire the grouped together divisions
-      User.all.map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
+      User.all_user_division_groups_cached.each do |division_group|
         expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
       end
     end
