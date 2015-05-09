@@ -1,5 +1,5 @@
 - content_for(:javascript_footer) do
-  = javascript_include_tag "pages/clinic/edit"
+  = javascript_include_tag "components/location_tabs"
 
 -# multiple controllers use this form
 - form_method    = params[:action] == 'new' ? :post   : :put
@@ -280,7 +280,7 @@
 
     - clocs = @clinic.ordered_clinic_locations
 
-    .tabbable.clinic_location_tabs
+    .tabbable.location_tabs
       %ul.nav.nav-tabs
         - clocs.each_with_index do |cl, index|
           = tablist_item active: index == 0, emphasized: cl.has_data?, class: ["clinic_location_#{index}"] do
@@ -307,7 +307,7 @@
                   = radio_button_tag location_class,
                     option.first,
                     option.second,
-                    :class => [location_class, "clinic_location"]
+                    :class => [location_class, "location"]
                   = option.first
           %div{:class => "numbers_#{index}"}
             = cl.input :phone do

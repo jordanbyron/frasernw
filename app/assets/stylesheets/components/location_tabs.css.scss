@@ -1,44 +1,64 @@
+// Hopefully someday we'll be able to unscope this
 
-/* reset normal 'active' behaviour */
-#content #container .tabbable.clinic_location_tabs ul.nav-tabs li.active a {
-  font-weight: normal;
-}
+#content #container .tabbable.location_tabs ul.nav-tabs {
+  // reset normal 'active' behaviour
+  li.active a {
+    font-weight: normal;
+  }
 
-@media (max-width: 767px) {
-  #content #container .tabbable.clinic_location_tabs ul.nav-tabs li.active a {
+  @media (max-width: 767px) {
+    li.active a {
+      background-color: transparent;
+      color: white;
+    }
+  }
+
+  // new 'active' behaviour
+  li.active span {
+    border-bottom: 1px solid white;
+  }
+
+  @media (max-width: 767px) {
+    li.active.emphasized a {
+      background-color: white;
+      color: #424242;
+    }
+    li.active.emphasized span {
+      border-bottom: 1px solid #424242;
+    }
+  }
+
+  // reset normal hover behaviour
+  li:hover a {
+    font-weight: normal;
     background-color: transparent;
     color: white;
   }
-}
 
-/* new 'active' behaviour */
-.clinic_location_tabs li.active span {
-  border-bottom: 1px solid white;
-}
-
-@media (max-width: 767px) {
-  .clinic_location_tabs li.active.emphasized span {
-    border-bottom: 1px solid #424242;
-  }
-}
-
-/* 'emphasized' behaviour */
-@media (max-width: 767px) {
-  #content #container .tabbable.clinic_location_tabs ul.nav-tabs li.emphasized a {
-    background-color: white;
-    color: #424242;
+  // new hover behaviour
+  li:hover span {
+    border-bottom: 1px solid white;
   }
 
-  #content #container .tabbable.clinic_location_tabs ul.nav-tabs li.active.emphasized a {
-    background-color: white;
-    color: #424242;
+  @media (max-width: 767px) {
+    li:hover span {
+      border-bottom: 1px solid white;
+    }
   }
-}
 
-#content #container .tabbable.clinic_location_tabs ul.nav-tabs li.emphasized a {
-  font-weight: bold;
-}
+  // new 'emphasized' behaviour
+  li.emphasized a {
+    font-weight: bold;
+  }
 
-#content #container .tabbable.clinic_location_tabs ul.nav-tabs li.active.emphasized a {
-  font-weight: bold;
+  li.active.emphasized a {
+    font-weight: bold;
+  }
+
+  @media (max-width: 767px) {
+    li.emphasized a {
+      background-color: white;
+      color: #424242;
+    }
+  }
 }
