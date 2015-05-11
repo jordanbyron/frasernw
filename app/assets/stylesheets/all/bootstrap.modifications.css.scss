@@ -1,10 +1,10 @@
 @import "_globals";
 
-/* 
+/*
   ADDING NEW SPANS
   1 'unit' = 80 pixels wide, 20 pixels of that is padding
 */
-   
+
 
 .spanhalf {
   width: 20px;
@@ -29,22 +29,22 @@
 
 /* NAVBAR */
 
-.navbar 
+.navbar
 {
   margin-bottom: 24px;
-    
+
   .navbar-inner
   {
     background-color: $FNW_NAV_BACKGROUND;
     background-image: none;
     border-radius: 0;
     box-shadow: none;
-    
+
     .navbar-search
     {
       margin: 28px 0 0 12px;
-      padding: 0; 
-      
+      padding: 0;
+
       .search-query, .search-query:focus
       {
         font-family: Bitter;
@@ -56,84 +56,84 @@
         background: $FNW_WHITE;
         width: 200px;
       }
-      
+
       .search-query :-moz-placeholder, .search-query::-webkit-input-placeholder
       {
         color: $FNW_MID_GRAY;
       }
     }
-    
+
     .nav
     {
       margin-top: 30px;
     }
-    
+
     .nav > li > a
     {
       font-size: 13px;
       color: $FNW_MID_GRAY;
       padding: 0 8px;
     }
-    
+
     .nav > li
     {
       border-left: 1px solid #666666;
     }
-    
+
     .nav > li > a:hover
     {
       color: $FNW_WHITE;
     }
-    
+
     .nav > li a i[class^="icon-"],
     .nav > li a i[class*=" icon-"] {
       color: $FNW_MID_GRAY;
     }
-    
+
     .nav > li a:hover i[class^="icon-"],
     .nav > li a:hover i[class*=" icon-"] {
       color: $FNW_WHITE;
     }
   }
 }
-  
+
 /* DROPDOWN MENUS */
-   
-.navbar, #content #container 
+
+.navbar, #content #container
 {
   li.dropdown:hover ul.dropdown-menu
   {
-    /* display: block; */    
+    /* display: block; */
   }
-    
-  ul.dropdown-menu 
+
+  ul.dropdown-menu
   {
     z-index: 3000;
-  
+
     margin-top: 5px;
 
     border: none;
-    
+
     -webkit-box-shadow: 2px 2px 8px #888;
     -moz-box-shadow: 2px 2px 8px #888;
     box-shadow: 2px 2px 8px #888;
-    
+
     li a:hover
     {
       color: $FNW_BLUE;
       background-color: $FNW_HEADLINE_BACKGROUND;
     }
-    
+
     li.nav-header
     {
       color: $FNW_BLUE;
     }
-    
+
     li.nav-header.name
     {
       color: $FNW_DARK_GRAY;
     }
-    
+
     li p
     {
       color: $FNW_TEXT;
@@ -148,8 +148,8 @@
 {
   min-width: 225px;
 }
-    
-#content #container ul.dropdown-menu 
+
+#content #container ul.dropdown-menu
 {
   margin-top: -8px;
 }
@@ -163,7 +163,7 @@
   .table tbody tr:hover th {
     background-color: $FNW_WHITE;
   }
-  
+
   .table-striped tbody tr:nth-child(odd) td, .table-striped tbody tr:nth-child(odd):hover td,
   .table-striped tbody tr:nth-child(odd) th, .table-striped tbody tr:nth-child(odd):hover th {
     background-color: $FNW_LIGHT_GRAY;
@@ -177,12 +177,12 @@
     {
       clear: both;
     }
-    
+
     textarea
     {
       height: 70px;
     }
-    
+
     .help-block
     {
       padding-top: 3px;
@@ -202,22 +202,22 @@
     {
       margin-bottom: 0px;
     }
-    
+
     .control-label
     {
       width: 220px;
     }
-    
-    .controls 
+
+    .controls
     {
       margin-left: 220px;
       padding-left: 20px;
-      
+
       max-width: 390px;
     }
-    
+
     /* fixed span width within forms */
-    
+
     /* first, some defaults for those without span specifications (e.g. simple form auto layouts) */
     input[type="text"]:not([class*="span"]),
     input[type="tel"]:not([class*="span"]),
@@ -227,18 +227,18 @@
       /* remove some for input padding */
       width: 380px;
     }
-    
+
     select:not([class*="span"])
     {
       width: 390px;
     }
-    
+
     /* now, specifics for each span width */
     [class*="span"] {
       float: left;
       margin-left: 20px;
     }
-    input[class*="span"], 
+    input[class*="span"],
     select[class*="span"]
     {
       margin-left: 0;
@@ -333,14 +333,14 @@
     {
       padding-left: 48px;
     }
-    
+
     .help-block
     {
       margin: 6px 0 0 0;
       max-width: 350px;
       color: $FNW_DARK_GRAY;
     }
-    
+
     .row.changed label,
     .changed > label,
     .changed .help-block,
@@ -361,12 +361,12 @@
       -moz-box-shadow: 0 0 6px $FNW_ORANGE;
       box-shadow: 0 0 6px $FNW_ORANGE;
     }
-    
+
     select.auto:not([class*="span"])
     {
       width: auto;
     }
-    
+
     .form-actions
     {
       padding-left: 240px;
@@ -388,13 +388,13 @@
       margin: 0 0-$FNW_BODY_BREATHING 4px 0-$FNW_BODY_BREATHING ;
       padding: 0;
       border: none;
-      
+
       li
       {
         margin: 0;
         padding: 0;
         border: 0;
-        
+
         a
         {
           font-family: Bitter;
@@ -408,13 +408,13 @@
           line-height: 34px;
           text-align: center;
         }
-        
+
         a.changed
         {
           color: $FNW_ORANGE;
         }
       }
-    
+
       li.active
       {
         a
@@ -425,13 +425,13 @@
           border: none;
           margin-top: -1px;
         }
-        
+
         a.changed
         {
           color: $FNW_ORANGE;
         }
       }
-      
+
       li:not(.active) a:hover
       {
         border: none;
@@ -439,13 +439,13 @@
         background: transparent;
         color: $FNW_WHITE;
       }
-      
+
       li:not(.active) a.changed:hover
       {
         font-weight: bold;
         color: $FNW_ORANGE;
       }
-      
+
       li + li
       {
         padding-left: 2px;
@@ -453,7 +453,7 @@
       }
     }
   }
-  
+
   .content-wrapper + .tabbable
   {
     ul.nav-tabs
@@ -463,7 +463,7 @@
   }
 
   /* PILLS */
-        
+
   ul.nav-pills
   {
     margin-left: 0;
@@ -478,7 +478,7 @@
       color: $FNW_LIGHT_GRAY;
       background-color: $FNW_LIGHT_BLUE;
     }
-    
+
     li:hover a
     {
       text-decoration: none;
@@ -486,7 +486,7 @@
     }
   }
 
-  .nav-pills.small > li > a 
+  .nav-pills.small > li > a
   {
     padding: 5px 8px;
     margin: 2px;
@@ -496,7 +496,7 @@
   }
 
   /* PAGINATION */
-    
+
   .pagination
   {
     a
@@ -504,20 +504,20 @@
       padding: 0 8px;
       line-height: 30px;
     }
-    
+
     a:hover
     {
       text-decoration: none;
     }
-    
+
     .disabled a
     {
       color: $FNW_TEXT;
     }
   }
-  
+
   /* WELL */
-  
+
   .well
   {
     background-color: $FNW_LIGHT_GRAY;
@@ -527,7 +527,7 @@
   }
 
   /* BUTTONS */
-  
+
   .btn-group
   {
     margin-top: 24px;
@@ -541,7 +541,7 @@
   border-top-color: $FNW_LIGHT_BLUE;
 }
 
-.tooltip.bottom .tooltip-arrow, 
+.tooltip.bottom .tooltip-arrow,
 {
   border-bottom-color: $FNW_LIGHT_BLUE;
 }
@@ -550,7 +550,7 @@
 {
   opacity: 1.0;
 }
-  
+
 .tooltip-inner
 {
   background: $FNW_LIGHT_BLUE;
@@ -561,26 +561,26 @@
   -moz-box-shadow: 0px 0px 2px $FNW_MID_GRAY;
   box-shadow: 0px 0px 2px $FNW_MID_GRAY;
   max-width: 400px;
-  
+
   ul
   {
     list-style-type: none;
     margin: 5px;
     padding: 0;
   }
-  
+
   ul.specialties
   {
     font-family: Bitter;
     text-transform: uppercase;
   }
-  
+
   a
   {
     color: $FNW_BLUE;
     text-decoration: none;
   }
-  
+
   a:hover
   {
     text-decoration: underline;
@@ -605,17 +605,17 @@
   text-overflow: ellipsis;
 }
 
-.nav li.dropdown ul.dropdown-menu li:hover > ul 
+.nav li.dropdown ul.dropdown-menu li:hover > ul
 {
-  display:block; 
-  position:absolute; 
+  display:block;
+  position:absolute;
   left:100%;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
 
-.nav li.dropdown > ul.dropdown-menu ul 
+.nav li.dropdown > ul.dropdown-menu ul
 {
   width: 200px;
   display: none;
@@ -625,7 +625,7 @@
   margin-top: -30px;
 }
 
-.nav li.dropdown ul.dropdown-menu ul.dropdown-menu:before 
+.nav li.dropdown ul.dropdown-menu ul.dropdown-menu:before
 {
   border: none;
   content: none;
@@ -656,10 +656,9 @@
     font-size: 16px;
     margin: 0;
   }
-  
+
   p, ul
   {
     margin: 5px 0 0 0;
   }
 }
-  
