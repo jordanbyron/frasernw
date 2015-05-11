@@ -19,6 +19,8 @@
       = javascript_include_tag '../livesearch'
     = csrf_meta_tag
     = render "layouts/ie8_or_lower_compatibility_warning"
+    - if Rails.env.development? || (ENV['APP_NAME'] == ('pathwaysbcdev' || 'pathwaysbctest'))
+      = render "shared/test_debugging_info"
     = yield(:head)
     - if !Rails.env.development?
       :javascript
