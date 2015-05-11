@@ -4,7 +4,7 @@ class ClinicsEditorController < ApplicationController
   skip_authorization_check
   before_filter :check_pending, :except => [:pending, :temp_edit, :temp_update]
   before_filter :check_token
-  
+
   def edit
     @token = params[:token]
     @is_review = true
@@ -29,7 +29,7 @@ class ClinicsEditorController < ApplicationController
     end
     @specializations_procedures = []
     procedure_specializations = {}
-    @clinic.specializations.each { |s| 
+    @clinic.specializations.each { |s|
       @specializations_procedures << [ "----- #{s.name} -----", nil ] if @clinic.specializations.count > 1
       @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
       procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
@@ -63,9 +63,9 @@ class ClinicsEditorController < ApplicationController
 
   def update
     @clinic = Clinic.find(params[:id])
-    
+
     ReviewItem.delete(@clinic.review_item) if @clinic.review_item.present?
-    
+
     review_item = ReviewItem.new
     review_item.item_type = "Clinic"
     review_item.item_id = @clinic.id
@@ -74,26 +74,26 @@ class ClinicsEditorController < ApplicationController
     review_item.whodunnit = current_user.id if current_user.present?
     review_item.status = params[:no_updates] ? ReviewItem::STATUS_NO_UPDATES: ReviewItem::STATUS_UPDATES
     review_item.save
-    
+
     EventMailer.mail_review_queue_entry(review_item).deliver
-    
+
     render
   end
-  
+
   def pending
     @clinic = Clinic.find(params[:id])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def check_pending
     clinic = Clinic.find(params[:id])
     redirect_to clinic_self_pending_path(clinic) if clinic.review_item.present? && (!current_user || (clinic.review_item.whodunnit != current_user.id.to_s))
   end
-  
+
   def check_token
     token_required( Clinic, params[:token], params[:id] )
   end
-  
+
   def temp_edit
     @token = params[:token]
     @is_review = true
@@ -118,7 +118,7 @@ class ClinicsEditorController < ApplicationController
     end
     @specializations_procedures = []
     procedure_specializations = {}
-    @clinic.specializations.each { |s| 
+    @clinic.specializations.each { |s|
       @specializations_procedures << [ "----- #{s.name} -----", nil ] if @clinic.specializations.count > 1
       @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
       procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
@@ -152,7 +152,7 @@ class ClinicsEditorController < ApplicationController
     @clinic.save
     redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
   end
-  
+
   protected
   def generate_focus(clinic, procedure_specialization, offset)
     focus = clinic.present? ? Focus.find_by_clinic_id_and_procedure_specialization_id(clinic.id, procedure_specialization.id) : nil

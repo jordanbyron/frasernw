@@ -30,7 +30,7 @@ class ClinicLocation < ActiveRecord::Base
     return nil if l.blank?
     return l.city
   end
-  
+
   def resolved_address
     return location.resolved_address if location.present?
     return nil

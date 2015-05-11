@@ -8,7 +8,7 @@ class CreateAddresses < ActiveRecord::Migration
       t.string :province
       t.string :phone1
       t.string :fax
-      
+
       t.timestamps
     end
   end

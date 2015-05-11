@@ -1,21 +1,21 @@
 class CitiesController < ApplicationController
   load_and_authorize_resource
-  
+
   def index
     @citys = City.all
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def show
     @city = City.find(params[:id])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def new
     @city = City.new
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def create
     @city = City.new(params[:city])
     if @city.save
@@ -24,12 +24,12 @@ class CitiesController < ApplicationController
       render :action => 'new'
     end
   end
-  
+
   def edit
     @city = City.find(params[:id])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def update
     @city = City.find(params[:id])
     if @city.update_attributes(params[:city])
@@ -38,7 +38,7 @@ class CitiesController < ApplicationController
       render :action => 'edit'
     end
   end
-  
+
   def destroy
     @city = City.find(params[:id])
     @city.destroy

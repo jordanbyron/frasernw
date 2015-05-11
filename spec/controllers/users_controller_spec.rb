@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe UsersController do
   fixtures :all
   # render_views
-  
+
   # before :all do
   #   let(:user) => User.first
   # end
@@ -54,7 +54,7 @@ describe UsersController do
     put :update, :id => User.first, :user => {:name => "Spiro Agnew"} # need to pass a change otherwise - no update
     response.should redirect_to(users_url)
   end
-  
+
   it 'show action should render show template' do
     @controller.stubs(:current_user).returns(User.first)
     get :show, :id => "ignored"

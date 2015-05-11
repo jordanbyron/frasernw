@@ -1,7 +1,7 @@
 class AddPhoneScheduleToSpecialistOffice < ActiveRecord::Migration
   def change
     add_column :specialist_offices, :schedule_id, :integer
-    
+
     SpecialistOffice.all.each do |so|
       s = so.build_phone_schedule
       s.build_monday.save

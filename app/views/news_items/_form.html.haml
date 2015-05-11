@@ -20,9 +20,9 @@
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
     = link_to 'Cancel', news_items_path, :class => "btn btn-danger ajax"
-      
+
   %script{"type" => "text/javascript"}
     :plain
-      $(document).ready(function() { 
+      $(document).ready(function() {
         $("input.datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
       });

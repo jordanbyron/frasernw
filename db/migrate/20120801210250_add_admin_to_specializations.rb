@@ -3,10 +3,10 @@ class AddAdminToSpecializations < ActiveRecord::Migration
     create_table :specialization_owners do |t|
       t.integer :specialization_id
       t.integer :owner_id
-      
+
       t.timestamps
     end
-    
+
     owner_map = {
       "Addiction Medicine" => 11,
       "Allergy" => 7,
@@ -39,7 +39,7 @@ class AddAdminToSpecializations < ActiveRecord::Migration
       "Urology" => 7,
       "Vascular Surgery" => 11
     }
-    
+
     owner_map.each do |specialization_name, user_id|
       specialization_id = Specialization.find_by_name(specialization_name).id
       specialization_owner = SpecializationOwner.new

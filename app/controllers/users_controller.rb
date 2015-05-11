@@ -46,12 +46,12 @@ class UsersController < ApplicationController
     @new_user = false
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def show
     @user = User.find(params[:id])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def update
     @user = User.find(params[:id])
     @user.attributes = params[:user]
@@ -62,7 +62,7 @@ class UsersController < ApplicationController
       render :action => 'edit'
     end
   end
-  
+
   def validate
     if params.blank? || params[:user].blank?
       redirect_to login_url
@@ -78,7 +78,7 @@ class UsersController < ApplicationController
       end
     end
   end
-  
+
   def setup
     if params.blank? || params[:user].blank?
       redirect_to login_url

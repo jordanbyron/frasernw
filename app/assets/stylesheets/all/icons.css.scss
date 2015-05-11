@@ -1,27 +1,27 @@
 @import "_globals";
 
-[class^="icon-"]:before, [class*=" icon-"]:before 
+[class^="icon-"]:before, [class*=" icon-"]:before
 {
   font-size: 15px;
 }
 
-[class^="icon-small"]:before, [class*=" icon-small"]:before 
+[class^="icon-small"]:before, [class*=" icon-small"]:before
 {
   font-size: 10px;
 }
 
-[class^="icon-"]:hover:before, [class*=" icon-"]:hover:before 
+[class^="icon-"]:hover:before, [class*=" icon-"]:hover:before
 {
   text-decoration: none;
 }
 
 .btn-mini
 {
-  [class^="icon-"]:before, [class*=" icon-"]:before 
+  [class^="icon-"]:before, [class*=" icon-"]:before
   {
     font-size: 12px;
   }
-} 
+}
 
 .icon-heart:before
 {

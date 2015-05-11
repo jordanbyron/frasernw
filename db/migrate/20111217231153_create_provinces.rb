@@ -4,10 +4,10 @@ class CreateProvinces < ActiveRecord::Migration
       t.string :name
       t.string :abbreviation
       t.string :symbol
-      
+
       t.timestamps
     end
-    
+
     Province.create :name => "British Columbia", :abbreviation => "B.C.", :symbol => "BC"
     Province.create :name => "Alberta", :abbreviation => "Alta.", :symbol => "AB"
     Province.create :name => "Manitoba", :abbreviation => "Man.", :symbol => "MB"

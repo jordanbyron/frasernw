@@ -3,7 +3,7 @@
 .content-wrapper
 
   %h2 Areas of Practice
-        
+
   .btn-group
     %a.btn.btn-bottom-pad.btn-top-pad.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
       = "<i class='icon-plus-sign'></i>".html_safe + " New Area of Practice in"
@@ -17,7 +17,7 @@
       %th Area of Practice
       %th Hierarchy
       %th.admin
-      
+
     - if (@specialization.present?)
       - procedures = @specialization.procedures
     - else

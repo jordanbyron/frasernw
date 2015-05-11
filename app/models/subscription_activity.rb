@@ -72,7 +72,7 @@ class SubscriptionActivity < PublicActivity::Activity
     format_type         = options[:format_type_integer] || (subscription.sc_item_format_type_masks  if subscription.present?)
     specializations     = options[:specializations]     || (subscription.specializations            if (subscription.present? && subscription.specializations.present?))
     sc_categories       = options[:sc_categories]       || (subscription.sc_categories              if (subscription.present? && subscription.sc_categories.present?))
-    
+
     @arr = Array.new
     if specializations.present? # added for performance boost, tough due to trackable Single Table Inheritance
       # @activities = self.includes(:trackable => [:specializations]).created_at(date).by_update_classification(classification).by_divisions(divisions).by_type_mask(type_mask_integer).by_format_type(format_type).by_specializations(specializations).reverse

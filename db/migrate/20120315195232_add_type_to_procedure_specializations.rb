@@ -1,7 +1,7 @@
 class AddTypeToProcedureSpecializations < ActiveRecord::Migration
   def change
     add_column :procedure_specializations, :classification, :integer
-    
+
     ProcedureSpecialization.all.each do |ps|
       p = ps.procedure
       if p.blank?

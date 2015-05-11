@@ -1,11 +1,11 @@
 class UserSessionsController < ApplicationController
   skip_before_filter :login_required
   skip_authorization_check
-  
+
   def index
     redirect_to root_url
   end
-  
+
   def show
     redirect_to root_url
   end
@@ -31,7 +31,7 @@ class UserSessionsController < ApplicationController
     if @user_session.nil?
       redirect_to '/', :notice => "You are not logged in."
     else
-      @user_session.destroy 
+      @user_session.destroy
       redirect_to '/', :notice => "You have been logged out."
     end
   end

@@ -4,7 +4,7 @@ class SpecialistsController < ApplicationController
   before_filter :check_token, :only => :refresh_cache
   skip_authorization_check :only => :refresh_cache
   include ApplicationHelper
-  
+
   cache_sweeper :specialist_sweeper, :only => [:create, :update, :update_photo, :accept, :destroy]
 
   def index
@@ -27,7 +27,7 @@ class SpecialistsController < ApplicationController
     @is_new = true
     @is_review = false
     #specialization passed in to facilitate javascript "checking off" of starting speciality, since build below doesn't seem to work
-    @specialization = Specialization.find(params[:specialization_id])     
+    @specialization = Specialization.find(params[:specialization_id])
     @specialist = Specialist.new
     @specialist.specialist_specializations.build( :specialization_id => @specialization.id )
 
@@ -68,7 +68,7 @@ class SpecialistsController < ApplicationController
           capacity.waittime_mask = params[:capacities_waittime][updated_capacity] if params[:capacities_waittime].present?
           capacity.lagtime_mask = params[:capacities_lagtime][updated_capacity] if params[:capacities_lagtime].present?
           capacity.save
-          
+
           #save any other capacities that have the same procedure and are in a specialization our specialist is in
           capacity.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.map{ |ps2| Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps2.id) }.map{ |c| c.save }
         end
@@ -146,7 +146,7 @@ class SpecialistsController < ApplicationController
           capacity.waittime_mask = params[:capacities_waittime][updated_capacity] if params[:capacities_waittime].present?
           capacity.lagtime_mask = params[:capacities_lagtime][updated_capacity] if params[:capacities_lagtime].present?
           capacity.save
-          
+
           #save any other capacities that have the same procedure and are in a specialization our specialist is in
           capacity.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.map{ |ps2| Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps2.id) }.map{ |c| c.save }
         end
@@ -163,15 +163,15 @@ class SpecialistsController < ApplicationController
   def accept
     #accept changes, archive the review item so that we can save the specialist
     @specialist = Specialist.find(params[:id])
-    
+
     review_item = @specialist.review_item
-    
+
     if review_item.blank?
       redirect_to specialist_path(@specialist), :notice => "There are no review items for this specialist"
     else
       review_item.archived = true;
       review_item.save
-      
+
       SpecialistSweeper.instance.before_controller_update(@specialist)
       if @specialist.update_attributes(params[:specialist])
         if params[:capacities_mapped].present?
@@ -185,7 +185,7 @@ class SpecialistsController < ApplicationController
             capacity.waittime_mask = params[:capacities_waittime][updated_capacity] if params[:capacities_waittime].present?
             capacity.lagtime_mask = params[:capacities_lagtime][updated_capacity] if params[:capacities_lagtime].present?
             capacity.save
-            
+
             #save any other capacities that have the same procedure and are in a specialization our specialist is in
             capacity.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.map{ |ps2| Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps2.id) }.map{ |c| c.save }
           end
@@ -200,13 +200,13 @@ class SpecialistsController < ApplicationController
       end
     end
   end
-  
+
   def archive
     #archive the review item so that we can save the specialist
     @specialist = Specialist.find(params[:id])
-    
+
     review_item = @specialist.review_item
-    
+
     if review_item.blank?
       redirect_to specialist_path(@specialist), :notice => "There are no review items for this specialist"
     else
@@ -227,7 +227,7 @@ class SpecialistsController < ApplicationController
   def undo_link
     #view_context.link_to("undo", revert_version_path(@specialist.versions.scoped.last), :method => :post).html_safe
   end
-  
+
   def review
     load_form_variables
     @is_new = false
@@ -235,7 +235,7 @@ class SpecialistsController < ApplicationController
     @is_rereview = false
     @specialist = Specialist.find(params[:id])
     @review_item = @specialist.review_item;
-    
+
     if @review_item.blank?
       redirect_to specialists_path, :notice => "There are no review items for this specialist"
       else
@@ -280,7 +280,7 @@ class SpecialistsController < ApplicationController
       render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
-  
+
   def rereview
     load_form_variables
     @is_new = false
@@ -288,7 +288,7 @@ class SpecialistsController < ApplicationController
     @is_rereview = true
     @specialist = Specialist.find(params[:id])
     @review_item = ReviewItem.find(params[:review_item_id])
-    
+
     if @review_item.blank?
       redirect_to specialists_path, :notice => "There are no review items for this specialist"
     elsif @review_item.base_object.blank?
@@ -335,31 +335,31 @@ class SpecialistsController < ApplicationController
       render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
-  
+
   def edit_referral_forms
     @entity = Specialist.find(params[:id])
     @entity.referral_forms.build if @entity.referral_forms.length == 0
     @entity_type = "office"
-    render :template => 'referral_form/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true 
+    render :template => 'referral_form/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
   end
-  
+
   def print_patient_information
     @specialist = Specialist.find(params[:id])
     @specialist_office = @specialist.specialist_offices.reject{ |so| so.empty? }.first
     render :layout => 'print'
   end
-  
+
   def print_office_patient_information
     @specialist = Specialist.find(params[:id])
     @specialist_office = SpecialistOffice.find(params[:office_id])
     render :print_patient_information, :layout => 'print'
   end
-  
+
   def photo
     @specialist = Specialist.find(params[:id])
     render :layout => request.headers['X-PJAX'] ? 'ajax' : true
   end
-  
+
   def update_photo
     @specialist = Specialist.find(params[:id])
     SpecialistSweeper.instance.before_controller_update(@specialist)
@@ -369,17 +369,17 @@ class SpecialistsController < ApplicationController
       render :action => 'photo'
     end
   end
-  
+
   def check_token
     token_required( Specialist, params[:token], params[:id] )
   end
-  
+
   def refresh_cache
     @specialist = Specialist.find(params[:id])
     @feedback = @specialist.feedback_items.build
     render :show, :layout => 'ajax'
   end
-  
+
   protected
     def generate_capacity(specialist, procedure_specialization, offset)
       capacity = specialist.present? ? Capacity.find_by_specialist_id_and_procedure_specialization_id(specialist.id, procedure_specialization.id) : nil

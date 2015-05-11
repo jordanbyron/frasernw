@@ -3,8 +3,8 @@ class AddCityToAddresses < ActiveRecord::Migration
     rename_column :addresses, :city, :city_old
     rename_column :addresses, :province, :province_old
     add_column :addresses, :city_id, :integer
-    
-    Address.all.each { |address| 
+
+    Address.all.each { |address|
       next if address.city_old.blank?
       city_name = address.city_old.strip
       city_name = "Langley" if city_name == "Langely"

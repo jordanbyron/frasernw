@@ -7,13 +7,13 @@
 %h5.specialty_links= @specialist.specializations.collect(){ |s| s.name }.to_sentence
 
 %h6#name
-  Appointment Information 
+  Appointment Information
   %span#for.empty for
   %input.name.empty{"type" => "text", "placeholder" => "Patient Name"}
 
 %p#specific_appointment_block.empty
   %input.specific_appointment#specific_appointment_check{"type" => "radio", "name" => "appointment"}
-  Your appointment is on 
+  Your appointment is on
   %input.specific_appointment{"type" => "text", "placeholder" => "Date"}
   at
   %input.specific_appointment{"type" => "text", "placeholder" => "Time"}
@@ -26,7 +26,7 @@
       %option{"selected" => "selected"} #{@specialist.formal_name}'s office
     - else
       %option{"selected" => "selected"} Our office
-      %option #{@specialist.formal_name}'s office 
+      %option #{@specialist.formal_name}'s office
   will call you once your appointment is booked.
 
 %p.indent#future_appointment_followup_block.empty
@@ -52,19 +52,19 @@
     %option #{@specialist.formal_name}'s office.
 
   %h6#patient_instruction_header Appointment Instructions
-  
+
   -if @specialist.patient_instructions.present?
     %p= @specialist.patient_instructions.end_with_period.convert_newlines_to_br
-  
+
   %textarea#custom_patient_instructions{:placeholder => "Additional patient instructions"}
   #custom_patient_instructions_print
-    
+
 - if @specialist.cancellation_policy.present?
   %h6 Cancellation Policy
   %p= @specialist.cancellation_policy.end_with_period.convert_newlines_to_br
-  
+
 %h6 #{@specialist.formal_name}'s Office Information
-  
+
 - if @specialist_office.office.present?
   %p= @specialist_office.phone_only if @specialist_office.phone_only.present?
   %p= @specialist_office.public_email if @specialist_office.public_email.present?
@@ -96,7 +96,7 @@
     - elsif address.present?
       %p= address.address if address.present? && !address.empty?
       %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
-  
+
 %script{"type" => "text/javascript"}
   :plain
     function print_patient_information()
@@ -104,7 +104,7 @@
       copy_to_print_helper();
       window.print();
     }
-    
+
     function copy_to_print_helper(){
       $('#custom_patient_instructions_print').text($('#custom_patient_instructions').val());
       if ( $('#custom_patient_instructions').val().trim() == "" )
@@ -126,7 +126,7 @@
         $('#name .name').removeClass('empty');
       }
     }
-    
+
     function set_future_followup_block_print_visibility()
     {
       if ( $('#future_appointment_followup_check').attr('checked') )
@@ -138,32 +138,32 @@
         $('#future_appointment_followup_block').addClass('empty');
       }
     }
-    
+
     $('#custom_patient_instructions, .name').bind('keydown keyup keypress cut copy past blur change', function(){
       copy_to_print_helper();
     });
-    
+
     $('.specific_appointment').bind('keydown keyup keypress cut copy past blur change', function(){
       $('#specific_appointment_check').attr('checked', true);
       $('#specific_appointment_block').removeClass('empty');
       $('#future_appointment_block').addClass('empty');
       $('#future_appointment_followup_block').hide();
     });
-    
+
     $('.future_appointment').bind('change', function(){
       $('#specific_appointment_block').addClass('empty');
       $('#future_appointment_check').attr('checked', true);
       $('#future_appointment_block').removeClass('empty');
       $('#future_appointment_followup_block').show();
     });
-    
+
     $('.future_appointment_followup').bind('change', function(){
       $('#future_appointment_followup_check').attr('checked', true);
       set_future_followup_block_print_visibility();
     });
-    
+
     $('#future_appointment_followup_check').bind('change', function(){
       set_future_followup_block_print_visibility();
     });
-        
+
 %input.btn{"type" => "button", "value" => "Print", "onclick" => "print_patient_information()"}

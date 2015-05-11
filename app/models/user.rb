@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   end
 
   validates_format_of :password, :with => /^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){8,}$/, :if => :require_password?, :message => "must include one number, one letter and be at least 8 characters long"
-  
+
   has_many :user_divisions, :source => :division_users, :class_name => "DivisionUser", :dependent => :destroy
   has_many :divisions, :through => :user_divisions
   #has_many :cities, :through => :divisions
@@ -15,12 +15,12 @@ class User < ActiveRecord::Base
   has_many :favorite_specialists, :through => :favorites, :source => :favoritable, :source_type => "Specialist", :class_name => "Specialist"
   has_many :favorite_clinics, :through => :favorites, :source => :favoritable, :source_type => "Clinic", :class_name => "Clinic"
   has_many :favorite_content_items, :through => :favorites, :source => :favoritable, :source_type => "ScItem", :class_name => "ScItem"
-  
+
   has_many :user_controls_specialist_offices, :dependent => :destroy
   has_many :controlled_specialist_offices, :through => :user_controls_specialist_offices, :source => :specialist_office, :class_name => "SpecialistOffice"
   has_many :controlled_specialists, :through => :controlled_specialist_offices, :source => :specialist, :class_name => "Specialist"
   accepts_nested_attributes_for :user_controls_specialist_offices, :reject_if => lambda { |ucso| ucso[:specialist_office_id].blank? }, :allow_destroy => true
-  
+
   has_many :user_controls_clinic_locations, :dependent => :destroy
   has_many :controlled_clinic_locations, :through => :user_controls_clinic_locations, :source => :clinic_location, :class_name => "ClinicLocation"
   has_many :controlled_clinics, :through => :controlled_clinic_locations, :source => :clinic, :class_name => "Clinic"
@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
 
   has_many :specialization_options, :dependent => :destroy, :foreign_key => "owner_id"
   has_many :specializations_owned, :through => :specialization_options, :class_name => "Specialization", :source => :specialization
-  
+
   has_many :user_cities, :dependent => :destroy
   has_many :user_city_specializations, :through => :user_cities
 
@@ -132,19 +132,19 @@ LIMITED_ROLE_HASH = {
   def user?
     (self.role == 'user')
   end
-  
+
   def admin_only?
     (self.role == 'admin')
   end
-  
+
   def admin?
     admin_only? || super_admin?
   end
-  
+
   def super_admin?
     self.role == 'super'
   end
-  
+
   def pending?
     self.email.blank?
   end

@@ -3,13 +3,13 @@
 .content-wrapper
 
   %h2 Review Queue
-  
+
   - cuser = current_user
   - divisions = current_user_is_super_admin? ? Division.all : current_user_divisions
-  
+
   - specialist_reviews = @review_items.reject{ |review_item| review_item.item.class != Specialist }.reject{ |review_item| (review_item.item.divisions & divisions).blank? }
   - clinic_reviews = @review_items.reject{ |review_item| review_item.item.class != Clinic }.reject{ |review_item| (review_item.item.divisions & divisions).blank? }
-  
+
   - specialist_count        = specialist_reviews.length
   - clinic_count            = clinic_reviews.length
   - user_specialist_reviews = specialist_reviews.reject{ |review_item| !review_item.item.owners.include? cuser }.length
@@ -66,7 +66,7 @@
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Archive", specialist_archive_path(review_item.item), :class => "btn btn-mini ajax")
                 - else
                   = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
-                
+
       #clinics_tab.tab-pane
 
         %table.table.table-condensed.table-striped

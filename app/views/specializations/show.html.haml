@@ -1,5 +1,5 @@
 - title "#{@specialization.name}"
-    
+
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
@@ -12,41 +12,41 @@
 = render 'partials/specialization_dropdown_menu'
 
 .tabbable
-  
+
   = render 'partials/specialization_content'
-  
+
   - cache(specialization_path(@specialization)) do
-    
+
     .content-wrapper
-        
+
       .tab-content
-      
-        #specialist_tab.tab-pane 
-        
+
+        #specialist_tab.tab-pane
+
           .content
             .row
-              .span8half                    
+              .span8half
                 .toggle-filters.visible-phone
                   %a{"href" => "javascript:void(0)", "onclick" => "$('#specialist_filters, #specialist_table').toggle()"}
                     %i.icon-blue.icon-cog.icon-small
                     Show / Hide Specialist Filters
-              
+
                 #specialist_phrase.filter-phrase
-                        
+
                 #specialist_custom_wait_time.wait-time-phrase
                   %i.icon-link
                   You have chosen an area of practice in which specialists have optionally provided a specific wait time. The wait time column has been updated accordingly.
-                          
+
                 #specialist_no_wait_time.wait-time-phrase.none
                   %i.icon-link
                   You have chosen multiple areas of practice, and in one or more of which specialists have optionally provided a specific wait time. Due to the conflicting wait times, the wait time column is blank.
-                          
+
                 #specialist_others.other-phrase
-                
+
                 #specialist_hide_others.other-phrase
                   %a{"href" => "javascript:void(0)", "onclick" => "hide_others('s', 'specialist', '#{@specialization.member_name.uncapitalize_first_letter.pluralize}')"}Hide
                   results from other specialties.
-              
+
                 %table.table.table-condensed.tablesorter.five#specialist_table
                   %thead
                     %tr{:class => 'tableheader'}
@@ -62,13 +62,13 @@
                       %td
                       %td
                       %td
-                        
+
                 #specialist_assumed_list
                   - if @specialization.procedure_specializations.assumed_specialist.reject{ |ps| ps.parent.present? }.present?
                     %i.icon-asterisk.icon-disabled.icon-small
                     Areas of practice we assume all #{@specialization.member_name.uncapitalize_first_letter.pluralize} see or do:
                     = @specialization.procedure_specializations.assumed_specialist.reject{ |ps| ps.parent.present? }.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
-                    
+
               .span3.offsethalf
                 .well.filter#specialist_filters
                   .title
@@ -91,7 +91,7 @@
                                 %script{"type" => "text/javascript"}
                                   :plain
                                     $(document).ready(function() {
-                                      $('#children_sp#{ps.procedure.id}_').collapse({toggle: false}); 
+                                      $('#children_sp#{ps.procedure.id}_').collapse({toggle: false});
                                     });
                                 - children.each do |child_ps, grandchildren|
                                   %label.indent{:class => child_ps.specialist_wait_time && "custom_wait_time"}
@@ -102,15 +102,15 @@
                                       %script{"type" => "text/javascript"}
                                         :plain
                                           $(document).ready(function() {
-                                            $('#grandchildren_sp#{child_ps.procedure.id}_').collapse({toggle: false}); 
+                                            $('#grandchildren_sp#{child_ps.procedure.id}_').collapse({toggle: false});
                                           });
                                       - grandchildren.each do |grandchild_ps, greatgrandchildren|
                                         %label.indent2{:class => grandchild_ps.specialist_wait_time && "custom_wait_time"}
                                           %input.sp{"type" => "checkbox", "id" => "sp#{grandchild_ps.procedure.id}_", "class" => "grandchild_sp#{child_ps.procedure.id}_", :name => "#{grandchild_ps.specialist_wait_time? ? 1 : 0}"}
                                           %span= grandchild_ps.procedure.name
-                          
+
                           %a.more#s_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_s_procedures"} More...
-                          
+
                           %script{"type" => "text/javascript"}
                             :plain
                               $(document).ready(function() {
@@ -121,7 +121,7 @@
                                   $('#s_procedures_more').html('More...');
                                 });
                               });
-                    
+
                           #more_s_procedures.more.collapse
                             - @specialization.non_focused_procedure_specializations_arranged.each do |ps, children|
                               %label{:class => ps.specialist_wait_time && "custom_wait_time"}
@@ -132,7 +132,7 @@
                                   %script{"type" => "text/javascript"}
                                     :plain
                                       $(document).ready(function() {
-                                        $('#children_sp#{ps.procedure.id}_').collapse({toggle: false}); 
+                                        $('#children_sp#{ps.procedure.id}_').collapse({toggle: false});
                                       });
                                   - children.each do |child_ps, grandchildren|
                                     %label.indent{:class => child_ps.specialist_wait_time && "custom_wait_time"}
@@ -143,7 +143,7 @@
                                         %script{"type" => "text/javascript"}
                                           :plain
                                             $(document).ready(function() {
-                                              $('#grandchildren_sp#{child_ps.procedure.id}_').collapse({toggle: false}); 
+                                              $('#grandchildren_sp#{child_ps.procedure.id}_').collapse({toggle: false});
                                             });
                                         - grandchildren.each do |grandchild_ps, greatgrandchildren|
                                           %label.indent2{:class => grandchild_ps.specialist_wait_time && "custom_wait_time"}
@@ -165,7 +165,7 @@
                               %option{"value" => "sc#{lag_index}_"}= lag_value
                         %label
                           %input#srpb.sr{"type" => "checkbox"} Patients can call to book after referral
-      
+
                   .filter-group
                     %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-sex"}
                       Sex
@@ -175,7 +175,7 @@
                           %input#ssm.ss{"type" => "checkbox"} Male
                         %label.half
                           %input#ssf.ss{"type" => "checkbox"} Female
-                      
+
                   .filter-group
                     %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-schedule"}
                       Schedule
@@ -185,7 +185,7 @@
                           %input.ssh{"type" => "checkbox", "id" => "sshsat"} Saturday
                         %label.half
                           %input.ssh{"type" => "checkbox", "id" => "sshsun"} Sunday
-                
+
                   .filter-group#sl-filter-group
                     %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-language"}
                       Languages
@@ -196,7 +196,7 @@
                         - Language.all.each do |l|
                           %label.half
                             %input.sl{"type" => "checkbox", "id" => "sl#{l.id}_"}= l.name
-                          
+
                   .filter-group#sa-filter-group
                     %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-association"}
                       Associations
@@ -209,7 +209,7 @@
                         %label.indent
                           Hospital:
                           %select.sa#hospital_associations
-                          
+
                   - if Division.all.length > 1
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-cities"}
@@ -253,9 +253,9 @@
                     $('.sp, .sc, .sr, .ss, .si, .ssh, .sl, .sa').click( update_custom_specialist_table );
                     $('.sct').click( function() { expand_city($(this).prop('checked'), [#{@specialization.id}], $(this).attr('name'), -1, [], []) });
                   });
-            
+
         #clinic_tab.tab-pane
-        
+
           .content
             .row
               .span8half
@@ -263,23 +263,23 @@
                   %a{"href" => "javascript:void(0)", "onclick" => "$('#clinic_filters, #clinic_table').toggle()"}
                     %i.icon-blue.icon-cog.icon-small
                     Show / Hide Clinic Filters
-                    
+
                 #clinic_phrase.filter-phrase
-                  
+
                 #clinic_custom_wait_time.wait-time-phrase
                   %i.icon-link
                   You have chosen an area of practice in which clinics have optionally provided a specific wait time. The wait time column has been updated accordingly.
-                        
+
                 #clinic_no_wait_time.wait-time-phrase.none
                   %i.icon-link
                   You have chosen multiple areas of practice, and in one or more of which clinics have optionally provided a specific wait time. Due to the conflicing wait times, the wait time column is blank.
-                          
+
                 #clinic_others.other-phrase
-                
+
                 #clinic_hide_others.other-phrase
                   %a{"href" => "javascript:void(0)", "onclick" => "hide_others('c', 'clinic', 'clinics')"}Hide
                   results from other specialties.
-                    
+
                 %table.table.table-condensed.tablesorter.five#clinic_table
                   %thead
                     %tr{:class => 'tableheader'}
@@ -295,13 +295,13 @@
                       %td
                       %td
                       %td
-                        
+
                 #clinic_assumed_list
                   - if @specialization.procedure_specializations.assumed_clinic.reject{ |ps| ps.parent.present? }.present?
                     %i.icon-asterisk.icon-disabled.icon-small
                     Areas of practice we assume all #{@specialization.name} clinics see or do:
                     = @specialization.procedure_specializations.assumed_clinic.reject{ |ps| ps.parent.present? }.sort{ |a,b| a.procedure.name <=> b.procedure.name }.map{ |ps| ps.procedure.name.uncapitalize_first_letter }.to_sentence
-                        
+
               .span3.offsethalf
                 .well.filter#clinic_filters
                   .title
@@ -323,7 +323,7 @@
                               %script{"type" => "text/javascript"}
                                 :plain
                                   $(document).ready(function() {
-                                    $('#children_cp#{ps.procedure.id}_').collapse({toggle: false}); 
+                                    $('#children_cp#{ps.procedure.id}_').collapse({toggle: false});
                                   });
                               - children.each do |child_ps, grandchildren|
                                 %label.indent{:class => child_ps.clinic_wait_time && "custom_wait_time"}
@@ -334,15 +334,15 @@
                                     %script{"type" => "text/javascript"}
                                       :plain
                                         $(document).ready(function() {
-                                          $('#grandchildren_cp#{child_ps.procedure.id}_').collapse({toggle: false}); 
+                                          $('#grandchildren_cp#{child_ps.procedure.id}_').collapse({toggle: false});
                                         });
                                     - grandchildren.each do |grandchild_ps, greatgrandchildren|
                                       %label.indent2{:class => grandchild_ps.clinic_wait_time && "custom_wait_time"}
                                         %input.cp{"type" => "checkbox", "id" => "cp#{grandchild_ps.procedure.id}_", "class" => "grandchild_cp#{child_ps.procedure.id}_", :name => "#{grandchild_ps.clinic_wait_time? ? 1 : 0}"}
                                         %span= grandchild_ps.procedure.name
-                 
+
                         %a.more#c_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_c_procedures"} More...
-                        
+
                         %script{"type" => "text/javascript"}
                           :plain
                             $(document).ready(function() {
@@ -353,7 +353,7 @@
                                 $('#c_procedures_more').html('More...');
                               });
                             });
-                  
+
                         #more_c_procedures.more.collapse
                           - @specialization.non_focused_procedure_specializations_arranged.each do |ps, children|
                             %label{:class => ps.clinic_wait_time && "custom_wait_time"}
@@ -364,7 +364,7 @@
                                 %script{"type" => "text/javascript"}
                                   :plain
                                     $(document).ready(function() {
-                                      $('#children_cp#{ps.procedure.id}_').collapse({toggle: false}); 
+                                      $('#children_cp#{ps.procedure.id}_').collapse({toggle: false});
                                     });
                                 - children.each do |child_ps, grandchildren|
                                   %label.indent{:class => child_ps.clinic_wait_time && "custom_wait_time"}
@@ -375,7 +375,7 @@
                                       %script{"type" => "text/javascript"}
                                         :plain
                                           $(document).ready(function() {
-                                            $('#grandchildren_cp#{child_ps.procedure.id}_').collapse({toggle: false}); 
+                                            $('#grandchildren_cp#{child_ps.procedure.id}_').collapse({toggle: false});
                                           });
                                       - grandchildren.each do |grandchild_ps, greatgrandchildren|
                                         %label.indent2{:class => grandchild_ps.clinic_wait_time && "custom_wait_time"}
@@ -397,7 +397,7 @@
                               %option{"value" => "csc#{lag_index}_"}= lag_value
                         %label
                           %input#crpb.cr{"type" => "checkbox"} Patients can call to book after referral
-    
+
                   .filter-group
                     %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-details"}
                       Clinic Details
@@ -409,7 +409,7 @@
                           %input#cdpv.cd{"type" => "checkbox"} Private
                         %label
                           %input.cd{"type" => "checkbox", "id" => "cdwa"} Wheelchair Accessible
-                      
+
                   .filter-group
                     %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-schedule"}
                       Schedule
@@ -429,7 +429,7 @@
                           %input.csh{"type" => "checkbox", "id" => "cshsat"} Saturday
                         %label
                           %input.csh{"type" => "checkbox", "id" => "cshsun"} Sunday
-                      
+
                   .filter-group#ch-filter-group
                     %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-healthcare-providers"}
                       Care Providers
@@ -438,7 +438,7 @@
                         - HealthcareProvider.all.each do |h|
                           %label
                             %input.ch{"type" => "checkbox", "id" => "ch#{h.id}_"}= h.name
-                
+
                   .filter-group#cl-filter-group
                     %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-language"}
                       Languages
@@ -481,15 +481,15 @@
                   });
 
         - ScCategory.specialty.each do |sc_category|
-        
-          .tab-pane{"id" => "#{sc_category.name.remove_whitespace}_tab"}  
-        
+
+          .tab-pane{"id" => "#{sc_category.name.remove_whitespace}_tab"}
+
             - if sc_category.inline?
-      
+
               %div{:id => "#{sc_category.id}_items"}
-                          
+
             - else
-          
+
               .content
                 .row
                   .span8half
@@ -497,9 +497,9 @@
                       %a{"href" => "javascript:void(0)", "onclick" => "$('##{sc_category.id}_filters, ##{sc_category.id}_table').toggle();"}
                         %i.icon-blue.icon-cog.icon-small
                         Show / Hide #{sc_category.name} Filters
-                        
+
                     .filter-phrase{:id => "#{sc_category.id}_phrase"}
-        
+
                     %table.table.table-condensed.tablesorter.category_table{:id => "#{sc_category.id}_table"}
                       %thead
                         %tr{:class => 'tableheader'}
@@ -514,14 +514,14 @@
                           %td
                           %td
                           %td
-                          
-                          
+
+
                   - if sc_category.has_children?
                     .span3.offsethalf
                       .well.filter{:id => "#{sc_category.id}_filters"}
                         .title
                           Filter #{sc_category.name}
-                                    
+
                         .filter-group
                           %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "##{sc_category.id}-filter-subcategories"}
                             Subcategories
@@ -537,12 +537,12 @@
                     :plain
                       var update_category_#{sc_category.id}_table = function() { update_category_table(#{sc_category.id}, '#{sc_category.name}'); }
                       $(document).ready(function() {
-                        $("input.ic[name='ic#{sc_category.id}'], input.if[name='if#{sc_category.id}']").click( update_category_#{sc_category.id}_table ); 
+                        $("input.ic[name='ic#{sc_category.id}'], input.if[name='if#{sc_category.id}']").click( update_category_#{sc_category.id}_table );
                       });
-                    
+
             %hr
             = link_to "<i class='icon-arrow-right icon-blue'></i> Browse #{sc_category.name} content from all specialties".html_safe, sc_category_path(sc_category), :class => 'ajax'
-    
+
       #feedback
         .inner
           = simple_form_for @feedback, :html => { :class => "ajax feedback_form" } do |f|
@@ -554,22 +554,22 @@
             .form-actions
               %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" } Send Feedback
               %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
-        
+
       #feedback_thanks
         .inner
           %h2 Thank you!
-          
+
           %p.space.no_indent= "Thank you for providing your feedback  on '<span class='feedback_item_title'></span>'. Your contributions help make Pathways a valuable resource for the community.".html_safe
-          
+
           %p.space.no_indent We will review your feedback in the near future and take action as necessary.
-          
+
           %p.space.no_indent
-            %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close     
-                 
+            %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close
+
       %script{"type" => "text/javascript"}
         :plain
           $(document).ready(function() { $('.tt').tooltip({trigger: 'manual'}) });
-          
+
           function show_feedback(item_title, item_id)
           {
             $('.feedback_item_title').text(item_title);
@@ -578,7 +578,7 @@
             $('#feedback').fadeIn(200);
           }
 
-          function send_feedback(form) { 
+          function send_feedback(form) {
             $.ajax({
                 url: form.attr('action'),
                 data: form.serialize(),
@@ -593,7 +593,7 @@
       - tab_javascript = ""
       - ScCategory.specialty.each do |sc_category|
         - tab_javascript += "else if (hash == '##{sc_category.name.remove_whitespace}') { _gaq.push(['_trackEvent', 'tab_type', '#{sc_category.id}']); _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); $('#content_tabs a##{sc_category.name.remove_whitespace}').tab('show'); } "
-        
+
       %script{"type" => "text/javascript"}
         :plain
           $('.collapsable').on('shown', function() {
@@ -606,31 +606,31 @@
             $('#specialist_table').tablesorter({sortList: [[2,0],[3,0],[4,0]]});
             $('#clinic_table').tablesorter({sortList: [[0,0],[2,0],[3,0],[4,0]]});
             $('.category_table').tablesorter({sortList: [[0,0],[1,0],[2,0]]});
-            
+
             //flip to a tab if appropriate
             var hash = window.location.hash;
-            
+
             if (hash == '#specialists')
             {
-              _gaq.push(['_trackEvent', 'tab_type', 'specialists']); 
+              _gaq.push(['_trackEvent', 'tab_type', 'specialists']);
               _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]);
               $('#content_tabs a#specialists').tab('show');
             }
             else if (hash == '#clinics')
             {
-              _gaq.push(['_trackEvent', 'tab_type', 'clinics']); 
+              _gaq.push(['_trackEvent', 'tab_type', 'clinics']);
               _gaq.push(['_trackEvent', 'tab_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]);
               $('#content_tabs a#clinics').tab('show');
             }
             #{tab_javascript}
             //make full rows clickable
             $('#specialist_table tr, #clinic_table tr').click( function() { $(this).find('a').click(); });
-            $('.category_table tr').click( function() { 
+            $('.category_table tr').click( function() {
               var link = $(this).find('td.title a');
               if (link.hasClass('ajax'))
               {
                 link.click();
-              } 
+              }
               else
               {
                 window.open(link.attr('href'));

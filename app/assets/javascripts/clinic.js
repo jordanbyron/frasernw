@@ -1,11 +1,11 @@
-var hideShowPhysicians = function() 
+var hideShowPhysicians = function()
 {
   var currentId = $(this).attr('id');
-  
+
   var specialists = "#" + currentId.replace("is_specialist","specialist_id");
   var firstname = "#" + currentId.replace("is_specialist","freeform_firstname");
   var lastname = "#" + currentId.replace("is_specialist","freeform_lastname");
-  
+
   if ( $(this).is(":checked") )
   {
     //we have indicated a specialist
@@ -43,7 +43,7 @@ var clinic_categorization_changed = function()
   else
   {
     //purposely not surveyed
-    //in this case we will show their associations but nothing else, as all the rest is personal to them 
+    //in this case we will show their associations but nothing else, as all the rest is personal to them
     $("#section_contact").hide();
     $("#section_moa").hide();
     $("#section_status").hide();

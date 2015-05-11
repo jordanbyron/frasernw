@@ -4,6 +4,6 @@ class SortSpecialistOffices < ActiveRecord::Migration
       specialist.specialist_offices.each do |so|
         specialist.specialist_offices.destroy(so) if so.empty?
       end
-    end   
+    end
   end
 end

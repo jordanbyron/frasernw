@@ -3,10 +3,10 @@
 .content-wrapper
 
   %h2 Feedback Queue
-  
+
   - cuser = current_user
   - divisions = current_user_is_admin? ? Division.all : current_user_divisions
-  
+
   - specialist_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Specialist }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
   - clinic_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Clinic }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
   - sc_item_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != ScItem }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
@@ -18,7 +18,7 @@
   - specialist_user_count  = specialist_feedback.reject{|feedback_item| !feedback_item.item.owners.include? cuser }.length
   - clinic_user_count      = clinic_feedback.reject{|feedback_item| !feedback_item.item.owners.include? cuser }.length
   - sc_item_user_count     = sc_item_feedback.reject{|feedback_item| !feedback_item.item.owners.include? cuser }.length
-    
+
   - feedback = [specialist_feedback, clinic_feedback, sc_item_feedback]
 
   .tabbable
@@ -46,13 +46,13 @@
             %span.badge= sc_item_count
 
     .tab-content
-    
+
       - classes = ["Specialist", "Clinic", "ScItem"]
-    
+
       - classes.each_with_index do |feedback_type, index|
-      
+
         .tab-pane{"id" => "#{index}_tab", "class" => (index == 0) && "active"}
-      
+
           %table.table.table-condensed.table-striped
             %tr
               %th Feedback on

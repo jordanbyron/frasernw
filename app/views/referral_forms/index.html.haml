@@ -1,17 +1,17 @@
 - title "Referral Forms"
-    
+
 %ul#specialties-menu
   %li.dropdown.no-caret
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       All Specialties
       %b.caret
-  
+
 %script{"type" => "text/javascript"}
   :plain
     var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); return false; });
     $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
     $(document).ready(function() { update_favorites() });
-  
+
 #specialties-dropdown-menu
   .inner
     - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions).uniq
@@ -19,7 +19,7 @@
     - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
     - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
     - fourth = specializations - first - second - third
-    
+
     - [first, second, third, fourth].each do |list|
       %ul
         - list.each do |specialization|
@@ -37,8 +37,8 @@
       });
 
 
-  %h2 Referral Forms 
-  
+  %h2 Referral Forms
+
   %script{"type" => "text/javascript"}
     $(document).ready(function() {
     - @referral_forms.each do |referral_form|
@@ -56,7 +56,7 @@
           %a{"href" => "javascript:void(0)", "onclick" => "$('#referral_form_filters').toggle()"}
             %i.icon-blue.icon-cog.icon-small
             Show / Hide Referral Form Filters
-            
+
         .filter-phrase{:id => "referral_form_phrase"}
 
         %table.table.table-condensed.tablesorter.category_table{:id => "referral_form_table"}
@@ -74,12 +74,12 @@
                   - form_name = referral_form.description.present? ? referral_form.description.capitalize_first_letter : "Referral form"
                   = link_to(form_name, referral_form.form.url, :target => "_blank")
                 %td.subcategory= referral_form.referrable.specializations.map{ |s| s.name }.to_sentence
-              
+
       .span3.offsethalf
         .well.filter{:id => "referral_form_filters"}
           .title
             Filter Referral Forms
-                    
+
           .filter-group
             %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#referral-forms-filter-subcategories"}
               Specialists or Clinics
@@ -105,18 +105,18 @@
 
       %script{"type" => "text/javascript"}
         :plain
-          $('table tr').click( function() { 
+          $('table tr').click( function() {
             var link = $(this).find('td.title a');
             if (link.hasClass('ajax'))
             {
               link.click();
-            } 
-            else 
+            }
+            else
             {
               window.open(link.attr('href'));
             }
           });
           $('table tr a').click( function(e) { e.stopPropagation(); });
           $(document).ready(function() {
-            $("input.ft, input.fs").click( update_referral_form_table ); 
+            $("input.ft, input.fs").click( update_referral_form_table );
           });
