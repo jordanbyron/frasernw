@@ -4,7 +4,7 @@
     - next if event.blank?
     %li
       = event.html_safe
-      %ul       
+      %ul
 
         - if version.changeset.present?
           - version.changeset.each do |attribute, changeset|
@@ -22,8 +22,8 @@
               - elsif changeset[1].present?
                 became
                 = translate_changes(version, attribute, changeset[1])
-          
+
         %li
           Changed by
           = whodunnit_name(version)
-          #{time_ago_in_words(version.created_at)} ago 
+          #{time_ago_in_words(version.created_at)} ago

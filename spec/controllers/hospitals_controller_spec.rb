@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe HospitalsController do
   fixtures :all
   # render_views
-  
+
   before(:each) do
     controller.stub!(:logged_in?).and_return(true)
     # controller.class.skip_before_filter :login_required

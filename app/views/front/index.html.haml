@@ -1,5 +1,5 @@
 - title "Home"
-  
+
 %ul#specialties-menu
   %li.dropdown.no-caret
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
@@ -7,15 +7,15 @@
       %b.caret
 
 = render 'partials/specialization_dropdown_menu'
-  
+
 %script{"type" => "text/javascript"}
   $(document).ready(function() { update_favorites() });
-    
+
 - user_divisions = current_user_divisions
 
 - if current_user_is_admin?
   - user_divisions = @division.present? ? [@division] : [user_divisions.first]
-  
+
 - can_edit = current_user_is_super_admin? || (current_user_divisions & user_divisions).present?
 
 - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(user_divisions).uniq
@@ -45,40 +45,40 @@
                 = BlueCloth.new(news_item.body).to_html.html_safe
 
     .row
-       
+
       .span3.hidden-phone.front
-       
+
         %h2 Specialties
-        
+
         %ul.space
           - specializations.each do |specialization|
             %li
               = link_to specialization.name, specialization, :class => specialization.fully_in_progress_for_divisions(user_divisions) ? "in-progress ajax" : "ajax"
               = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(user_divisions)
-       
+
       .span4half.front
-      
+
         %h2 What is Pathways?
-        
+
         %p
           Pathways is a web based resource to streamline and optimize patient referrals.
           = "<a href='javascript:void(0)' data-toggle='collapse' data-target='#what_is'>Learn more.</a>".html_safe
-        
+
         #what_is.collapse
-          %p 
+          %p
             Originally a project of the Fraser NW Division of Family Practice, Pathways provides a comprehensive, searchable database of specialists, specialty clinics and services organized by specialty.
-          
-          %p 
+
+          %p
             Pathways contributes to improved patient outcomes by
             %strong incorporating learnings from our Shared Care initiatives,
             including decision tools, care pathways, pearls, red flags, and patient education materials.
-            
+
           %p
             If you have any comments or questions while using the site, please contact us at
             = mail_to "administration@pathwaysbc.ca", "administration@pathwaysbc.ca"
-      
+
         %h2 Latest Specialist and Clinic Updates
-        
+
         - cache("latest_updates_#{user_divisions.map{|d| d.id }.join('_')}") do
           - latest_events(5, user_divisions).each do |event|
             %p= event
@@ -86,14 +86,14 @@
         - if current_user_is_admin? && can_edit
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Latest Specialist and Clinic Updates", news_items_path, :class => "btn btn-mini ajax")
-            
+
         - divisional_updates = NewsItem.divisional_in_divisions(user_divisions)
         - if divisional_updates.length > 0
-          
+
           %h2 Division Updates
-        
+
           - divisional_updates.each do |news_item|
-            
+
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
               %div{:class => news_item.date.present? ? "news_item_title" : "news_item_date"}= news_item.title if news_item.title.present?
@@ -103,14 +103,14 @@
         - if current_user_is_admin? && can_edit
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Division Updates", news_items_path, :class => "btn btn-mini ajax")
-            
+
         - attachment_updates = NewsItem.attachment_in_divisions(user_divisions)
         - if attachment_updates.length > 0
-          
+
           %h2 Attachment Updates
-        
+
           - attachment_updates.each do |news_item|
-            
+
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
               %div{:class => news_item.date.present? ? "news_item_title" : "news_item_date"}= news_item.title if news_item.title.present?
@@ -120,16 +120,16 @@
         - if current_user_is_admin? && can_edit
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Attachment Updates", news_items_path, :class => "btn btn-mini ajax")
-            
+
         - shared_care_updates = NewsItem.shared_care_in_divisions(user_divisions)
         - if shared_care_updates.length > 0
-            
+
           %h2
             %i.icon-red.icon-star
             Shared Care Updates
-        
+
           - shared_care_updates.each do |news_item|
-            
+
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
               %div{:class => news_item.date.present? ? "news_item_title" : "news_item_date"}= news_item.title if news_item.title.present?
@@ -139,23 +139,23 @@
         - if current_user_is_admin? && can_edit
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Shared Care Updates", news_items_path, :class => "btn btn-mini ajax")
-              
+
       .span4.offsethalf
-      
+
         .well
-        
+
           %h2.center Featured Content
 
           - cache("featured_content_#{user_divisions.map{|d| d.id }.join('_')}") do
-            
+
             - ScCategory.all.reject{ |c| !c.show_on_front_page? }.each do |category|
-            
+
               - featured_items = category.featured_contents.in_divisions(user_divisions).order("created_at").includes(:sc_item).reject{|fc| fc.sc_item.blank? }
               - next if featured_items.blank?
-           
+
               %h3= link_to "#{category.name} <span class='all'> - Browse All <i class='icon-arrow-right icon-blue icon-small'></i></span>".html_safe, sc_category_path(category), :class => 'ajax'
 
-            
+
               %ul.space
                 - featured_items.map{|fc| fc.sc_item}.each do |featured_sc_item|
                   %li{:style => "margin-left: 0"}
@@ -166,9 +166,9 @@
                     = link_to(featured_sc_item.title, featured_sc_item.resolved_url, :class => featured_sc_item.markdown? && "ajax", :target => featured_sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{featured_sc_item.type_mask}', '#{featured_sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
                     %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{featured_sc_item.id},'#{escape_javascript(featured_sc_item.title)}')", "title" => "Favourite / un-favourite"}
                       %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{featured_sc_item.id}"}
-          
+
           .featured-content
-            %i.icon-star.icon-blue 
+            %i.icon-star.icon-blue
             Indicates content from our Shared Care initiative
 
         - if current_user_is_admin? && can_edit

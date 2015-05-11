@@ -2,24 +2,24 @@ class ScItemsController < ApplicationController
   include ScCategoriesHelper
   load_and_authorize_resource
   before_filter :authorize_division_for_user, :only => :index
-  
+
   def index
     @division = Division.find(params[:id])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def show
     @sc_item = ScItem.find(params[:id])
     @feedback = @sc_item.feedback_items.build
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def new
     @sc_item = ScItem.new
     new_sc_item_preload
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def create
     @sc_item = ScItem.new(params[:sc_item])
     params[:specialization] = {} if params[:specialization].blank?
@@ -40,7 +40,7 @@ class ScItemsController < ApplicationController
       render :action => 'new'
     end
   end
-  
+
   def edit
     @sc_item = ScItem.find(params[:id])
     @has_specializations = @sc_item.specializations.map{ |s| s.id }
@@ -48,7 +48,7 @@ class ScItemsController < ApplicationController
     @hierarchy = ancestry_options_limited(ScCategory.unscoped.arrange(:order => 'name'), nil)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def update
     @sc_item = ScItem.find(params[:id])
     params[:specialization] = {} if params[:specialization].blank?
@@ -82,15 +82,15 @@ class ScItemsController < ApplicationController
       render :action => 'edit'
     end
   end
-  
+
   def destroy
     @sc_item = ScItem.find(params[:id])
     @sc_item.destroy
     redirect_to sc_items_url, :notice => "Successfully deleted content item."
   end
-  
+
   private
-  
+
   def authorize_division_for_user
     if !(current_user_is_super_admin? || (current_user_divisions.include? Division.find(params[:id])))
       redirect_to root_url, :notice => "You are not allowed to access this page"

@@ -10,7 +10,7 @@ function init_tables(procedure_filter, assumed_specialist_specialties, assumed_c
     add_entities_from_city('s', 'specialist', filtering.specialist_data, city_id, procedure_filter, assumed_specialist_specialties);
     add_entities_from_city('c', 'clinic', filtering.clinic_data, city_id, procedure_filter, assumed_clinic_specialties);
   }
-  
+
   update_ui();
 }
 
@@ -18,7 +18,7 @@ function clear_tables()
 {
   $('#specialist_table tbody').find('tr').not('.placeholder').remove();
   $('#specialist_table').trigger('update');
-  
+
   $('#clinic_table tbody').find('tr').not('.placeholder').remove();
   $('#clinic_table').trigger('update');
 }
@@ -31,7 +31,7 @@ function update_ui()
   update_specialist_table();
   $('#specialist_table').trigger('update');
   $('#specialist_table').trigger('sorton', [[[2,0],[3,0],[4,0]]]);
-  
+
   update_procedures('c', filtering.clinic_procedures);
   update_languages('c', filtering.clinic_languages);
   update_healthcare_providers('c', filtering.clinic_healthcare_providers);
@@ -77,22 +77,22 @@ function add_row( entity_type, entity_id, url, name, status_class, status_sort, 
   {
     return;
   }
-  
+
   var row_id = entity_type + "_" + entity_id;
   if ($("#" + row_id).length > 0)
   {
     //row already exists
     return;
   }
-  
+
   var row_class = other ? (in_progress ? "class='other in-progress'" : "class='other'") : (in_progress ? "class='in-progress'" : "");
   var row_specialties = "<td class='s'>" + specialties + "</td>";
   var gp_tag = is_gp ? "<span class='gp'>GP</span> " : ""
   var new_tag = is_new ? "<span class='new'>new</span> " : ""
   var private_tag = is_private ? "<span class='private'>private</span> " : ""
-  
+
   var row_html = $("<tr id='" + row_id + "' " + row_class + "><td class=\"sp\"><a href=\"" + url + "\" class=\"ajax\">" + name + "</a> " + gp_tag + "" + new_tag + "" + private_tag + "</td>" + row_specialties + "<td class=\"st\"><i class=\"" + status_class + "\"></i><div class=\"status\">" + status_sort + "</div></td><td class=\"wt\">" + wait_time + "</td><td class=\"ct\">" + city + "</td></tr>");
-  
+
   if (typeof $.fn.ajaxify !== 'function')
   {
     $('#' + entity_type + '_table tr:last').after(row_html);
@@ -108,7 +108,7 @@ function add_row( entity_type, entity_id, url, name, status_class, status_sort, 
 function update_procedures(prefix, city_procedures)
 {
   var current_procedures = [];
-  
+
   for(var city_id in filtering.current_cities)
   {
     if (!filtering.current_cities[city_id])
@@ -116,12 +116,12 @@ function update_procedures(prefix, city_procedures)
       //'unloaded' city
       continue
     }
-    
+
     current_procedures = current_procedures.concat(city_procedures[city_id]);
   }
-  
+
   current_procedures = current_procedures.unique();
-  
+
   //hide procedures that no entity performs
   $('input.' + prefix + 'p').each( function() {
     $this = $(this)
@@ -134,7 +134,7 @@ function update_procedures(prefix, city_procedures)
       $this.parent().show();
     }
   });
-  
+
   //hide 'more' if there are no more
   has_more = false
   $('#more_' + prefix + '_procedures').children('label').each( function() {
@@ -144,7 +144,7 @@ function update_procedures(prefix, city_procedures)
       return false;
     }
   });
-  
+
   if (has_more)
   {
     $('#more_' + prefix + '_procedures').show()
@@ -160,7 +160,7 @@ function update_procedures(prefix, city_procedures)
 function update_associations(prefix, city_associations)
 {
   var current_associations = [];
-  
+
   for(var city_id in filtering.current_cities)
   {
     if (!filtering.current_cities[city_id])
@@ -168,14 +168,14 @@ function update_associations(prefix, city_associations)
       //'unloaded' city
       continue
     }
-    
+
     current_associations = current_associations.concat(city_associations[city_id]);
   }
-  
+
   current_associations = current_associations.unique();
-  
+
   var showing_something = false;
-  
+
   //only add hopsitals that someone works in
   var hospital_select = $('.' + prefix + 'a#hospital_associations');
   hospital_select.find('option').remove();
@@ -188,7 +188,7 @@ function update_associations(prefix, city_associations)
       showing_something = true;
     }
   });
-  
+
   //only add clinics that someone works in
   var clinic_select = $('.' + prefix + 'a#clinic_associations');
   clinic_select.find('option').remove();
@@ -201,7 +201,7 @@ function update_associations(prefix, city_associations)
       showing_something = true;
     }
   });
-  
+
   //hide the whole filtering group if we hid everything above
   if (showing_something)
   {
@@ -216,7 +216,7 @@ function update_associations(prefix, city_associations)
 function update_languages(prefix, city_languages)
 {
   var current_languages = [];
-  
+
   for(var city_id in filtering.current_cities)
   {
     if (!filtering.current_cities[city_id])
@@ -224,12 +224,12 @@ function update_languages(prefix, city_languages)
       //'unloaded' city
       continue
     }
-    
+
     current_languages = current_languages.concat(city_languages[city_id]);
   }
-  
+
   var showing_something = false;
-  
+
   //hide langauges that no entity performs
   $('input.' + prefix + 'l, input.' + prefix + 'i').each( function() {
     $this = $(this)
@@ -243,7 +243,7 @@ function update_languages(prefix, city_languages)
       showing_something = true;
     }
   });
-  
+
   //hide the whole filtering group if we hid everything above
   if (showing_something)
   {
@@ -258,7 +258,7 @@ function update_languages(prefix, city_languages)
 function update_healthcare_providers(prefix, city_healthcare_providers)
 {
   var current_healthcare_providers = [];
-  
+
   for(var city_id in filtering.current_cities)
   {
     if (!filtering.current_cities[city_id])
@@ -266,12 +266,12 @@ function update_healthcare_providers(prefix, city_healthcare_providers)
       //'unloaded' city
       continue
     }
-    
+
     current_healthcare_providers = current_healthcare_providers.concat(city_healthcare_providers[city_id]);
   }
-  
+
   var showing_something = false;
-  
+
   //hide healthcare providers that no entity has
   $('input.' + prefix + 'h').each( function() {
     $this = $(this)
@@ -285,7 +285,7 @@ function update_healthcare_providers(prefix, city_healthcare_providers)
       showing_something = true;
     }
   });
-  
+
   //hide the whole filtering group if we hid everything above
   if (showing_something)
   {
@@ -300,7 +300,7 @@ function update_healthcare_providers(prefix, city_healthcare_providers)
 function expand_city(is_checked, specialization_ids, city_id, procedure_filter, assumed_specialist_specialties, assumed_clinic_specialties)
 {
   var $body = $(document.body);
-  
+
   if (filtering.current_cities[city_id.toString()] === undefined)
   {
     if (specialization_ids.length == 0)
@@ -310,7 +310,7 @@ function expand_city(is_checked, specialization_ids, city_id, procedure_filter, 
     //we need to load it
     filtering.current_cities[city_id.toString()] = true;
     $body.addClass('loading');
-    
+
     for(var i = 0; i < specialization_ids.length - 1; ++i)
     {
       $.getScript("/specialties/" + specialization_ids[i] + "/cities/" + city_id + ".js").done( function(script, textStatus) {

@@ -44,7 +44,7 @@ SimpleForm.setup do |config|
     b.use :hint,  :wrap_with => { :tag => :span, :class => :hint }
     b.use :error, :wrap_with => { :tag => :span, :class => :error }
     end
-  
+
   config.wrappers :bootstrap, :tag => 'div', :class => 'control-group', :error_class => 'error' do |b|
     b.use :html5
     b.use :placeholder
@@ -55,7 +55,7 @@ SimpleForm.setup do |config|
       ba.use :hint,  :wrap_with => { :tag => 'p', :class => 'help-block' }
     end
   end
-  
+
   config.wrappers :bootstrap_tight, :tag => 'div', :class => 'control-group control-group-tight', :error_class => 'error' do |b|
     b.use :html5
     b.use :placeholder
@@ -92,7 +92,7 @@ SimpleForm.setup do |config|
       input.use :error, :wrap_with => { :tag => 'span', :class => 'help-inline' }
     end
   end
-  
+
   config.wrappers :no_wrapper, :tag => false, :error_class => 'error' do |b|
     b.use :html5
     b.use :placeholder

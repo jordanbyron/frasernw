@@ -12,7 +12,7 @@ module VersionsHelper
       'unknown'
     end
   end
-  
+
   def version_event(version)
     begin
       case version.item_type

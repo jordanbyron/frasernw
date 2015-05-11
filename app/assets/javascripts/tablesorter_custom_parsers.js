@@ -1,8 +1,8 @@
-$.tablesorter.addParser({ 
-    id: 'waittime', 
-    is: function(s) { 
-      return false; 
-    }, 
+$.tablesorter.addParser({
+    id: 'waittime',
+    is: function(s) {
+      return false;
+    },
 		format: function(s) {
 			switch(s)
       {
@@ -35,16 +35,16 @@ $.tablesorter.addParser({
         default:
           return 13;
       }
-		}, 
-    // set type, either numeric or text 
-    type: 'numeric' 
+		},
+    // set type, either numeric or text
+    type: 'numeric'
 });
 
-$.tablesorter.addParser({ 
-    id: 'status', 
-    is: function(s) { 
-      return false; 
-    }, 
+$.tablesorter.addParser({
+    id: 'status',
+    is: function(s) {
+      return false;
+    },
 		format: function(s) {
 			switch($.trim(s))
       {
@@ -63,52 +63,52 @@ $.tablesorter.addParser({
         default:
           return 6;
       }
-		}, 
-    // set type, either numeric or text 
-    type: 'numeric' 
+		},
+    // set type, either numeric or text
+    type: 'numeric'
 });
 
 
 // added by krh to push blanks to bottom
-$.tablesorter.addParser({ 
-    // set a unique id 
-    id: 'blanks_to_bottom', 
-    is: function(s) { 
-      return false; 
-    }, 
+$.tablesorter.addParser({
+    // set a unique id
+    id: 'blanks_to_bottom',
+    is: function(s) {
+      return false;
+    },
 		format: function(s) {
       if ($.trim(s) === '') {
   			return "zzzzzz";
 			} else {
 			  return s;
 			}
-		}, 
-    // set type, either numeric or text 
+		},
+    // set type, either numeric or text
     type: 'text'
 });
 // added by rpw to sort by last name
-$.tablesorter.addParser({ 
-    // set a unique id 
-    id: 'bylastname', 
-    is: function(s) { 
-      return false; 
+$.tablesorter.addParser({
+    // set a unique id
+    id: 'bylastname',
+    is: function(s) {
+      return false;
     },
 		format: function(s, table, cell, cellIndex) {
       return $(cell).children('a').text().trim().split(" ").reverse().toString().toLowerCase();
     },
-    // set type, either numeric or text 
+    // set type, either numeric or text
     type: 'text'
 });
 // added by rpw to sort by link
-$.tablesorter.addParser({ 
-    // set a unique id 
-    id: 'link_only', 
-    is: function(s) { 
-      return false; 
+$.tablesorter.addParser({
+    // set a unique id
+    id: 'link_only',
+    is: function(s) {
+      return false;
     },
 		format: function(s, table, cell, cellIndex) {
       return $(cell).children('a').text().toLowerCase();
     },
-    // set type, either numeric or text 
+    // set type, either numeric or text
     type: 'text'
 });

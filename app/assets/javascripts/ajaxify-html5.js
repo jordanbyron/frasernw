@@ -61,7 +61,7 @@
       .replace(/<(html|head|body|title|script)([\s\>])/gi,'<div class="document-$1"$2')
       .replace(/<\/(html|head|body|title|script)\>/gi,'</div>')
       ;
-        
+
 			// Return
 			return result;
 		};
@@ -74,7 +74,7 @@
 			// Ajaxify
 			$this.find('a.ajaxDisable:internal').click(function(event){
 				// Prepare
-        form = null;       
+        form = null;
 				var
 					$this = $(this),
 					url = $this.attr('href'),
@@ -83,7 +83,7 @@
 				// Continue as normal for cmd clicks etc
 				if ( event.which == 2 || event.metaKey ) { return true; }
 				
-				// Ajaxify this link                     
+				// Ajaxify this link
         History.pushState(null,title,url);
 				event.preventDefault();
 				return true;
@@ -146,9 +146,9 @@
 					var
 						$data = $(documentHtml(data)),
 						$dataContent = $data.find('.document-body:first'),
-            contentHtml, 
+            contentHtml,
             $scripts;
-             
+
           // Fetch the scripts
           $scripts = $dataContent.find('.document-script');
           if ( $scripts.length ) {

@@ -86,7 +86,7 @@ class SpecialistOffice < ActiveRecord::Base
     1 => "Public (MSP billed)",
     2 => "Private (Patient pays)",
     3 => "Public and Private",
-    4 => "Didn't answer", 
+    4 => "Didn't answer",
   }
 
   def sector

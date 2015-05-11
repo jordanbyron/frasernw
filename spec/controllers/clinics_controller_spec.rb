@@ -3,13 +3,13 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe ClinicsController do
   fixtures :all
   # render_views
-  
+
   before(:each) do
     controller.stub!(:logged_in?).and_return(true)
     # controller.class.skip_before_filter :login_required
   end
-  
-  
+
+
   it "index action should render index template" do
     get :index, :specialization_id => Specialization.first
     response.should render_template(:index)

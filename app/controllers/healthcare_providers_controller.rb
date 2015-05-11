@@ -1,21 +1,21 @@
 class HealthcareProvidersController < ApplicationController
   load_and_authorize_resource
-  
+
   def index
     @healthcare_providers = HealthcareProvider.all
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def show
     @healthcare_provider = HealthcareProvider.find(params[:id])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def new
     @healthcare_provider = HealthcareProvider.new
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def create
     @healthcare_provider = HealthcareProvider.new(params[:healthcare_provider])
     if @healthcare_provider.save
@@ -24,12 +24,12 @@ class HealthcareProvidersController < ApplicationController
       render :action => 'new'
     end
   end
-  
+
   def edit
     @healthcare_provider = HealthcareProvider.find(params[:id])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def update
     @healthcare_provider = HealthcareProvider.find(params[:id])
     if @healthcare_provider.update_attributes(params[:healthcare_provider])
@@ -38,7 +38,7 @@ class HealthcareProvidersController < ApplicationController
       render :action => 'edit'
     end
   end
-  
+
   def destroy
     @healthcare_provider = HealthcareProvider.find(params[:id])
     @healthcare_provider.destroy

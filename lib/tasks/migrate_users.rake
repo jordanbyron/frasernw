@@ -1,6 +1,6 @@
 namespace :pathways do
   namespace :migrate_users do
-    
+
     task :division, [:division_id] => [:environment] do |t, args|
       division_id = args[:division_id] || -1
       if division_id == -1
@@ -9,12 +9,12 @@ namespace :pathways do
       end
       division = Division.find(Integer(division_id))
       puts "#{division.name}"
-      
+
       specialist_users = Specialist.in_divisions([division]).reject{ |s| s.divisions.length != 1 }.map{ |s| s.controlling_users }.flatten
       clinic_users = Clinic.in_divisions([division]).reject{ |c| c.divisions.length != 1 }.map{ |c| c.controlling_users }.flatten
-      
+
       users = (specialist_users + clinic_users).uniq
-      
+
       users.each do |user|
         if user.divisions.include? division
           puts "user #{user.name} is already in #{division.name}"

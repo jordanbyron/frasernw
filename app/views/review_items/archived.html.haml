@@ -3,9 +3,9 @@
 .content-wrapper
 
   %h2 Review Queue Archive
-  
+
   - divisions = current_user_is_super_admin? ? Division.all : current_user_divisions
-  
+
   - specialist_reviews = @review_items.reject{ |review_item| review_item.item.class != Specialist }.reject{ |review_item| (review_item.item.divisions & divisions).blank? }
   - clinic_reviews = @review_items.reject{ |review_item| review_item.item.class != Clinic }.reject{ |review_item| (review_item.item.divisions & divisions).blank? }
 
@@ -16,7 +16,7 @@
       %li.active
         %a{"href" => "#specialists_tab", "data-toggle" => "tab"}
           Specialist Review Items
-          
+
       %li
         %a{"href" => "#clinics_tab", "data-toggle" => "tab"}
           Clinic Review Items
@@ -52,7 +52,7 @@
               %td
                 -if review_item.base_object.present?
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", specialist_rereview_path(review_item.item, review_item.id), :class => "btn btn-mini ajax")
-                
+
       #clinics_tab.tab-pane
 
         %table.table.table-condensed.table-striped

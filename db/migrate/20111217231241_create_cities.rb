@@ -3,10 +3,10 @@ class CreateCities < ActiveRecord::Migration
     create_table :cities do |t|
       t.string :name
       t.references :province
-      
+
       t.timestamps
     end
-    
+
     City.reset_column_information
     City.create(:name => "White Rock") { |c| c.province_id = Province.find_by_symbol("BC").id }
     City.create(:name => "Abbotsford") { |c| c.province_id = Province.find_by_symbol("BC").id }

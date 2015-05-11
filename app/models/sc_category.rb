@@ -2,19 +2,19 @@ class ScCategory < ActiveRecord::Base
 
   attr_accessible :name, :show_on_front_page, :show_as_dropdown, :display_mask, :sort_order, :parent_id, :searchable
   validates_presence_of :name, :on => :create, :message => "can't be blank"
-  
+
   has_many :sc_items
-  
+
   has_many :featured_contents, :dependent => :destroy
 
   has_and_belongs_to_many :subscriptions, join_table: :subscription_sc_categories
   # has_many :subscriptions, through: :subscription_sc_categories
   # has_many :subscription_sc_categories, dependent: :destroy
-  
+
   has_ancestry
-  
+
   default_scope order('sc_categories.sort_order, sc_categories.name')
-  
+
   DISPLAY_HASH = {
     2 => "In global navigation",
     4 => "In global navigation and filterable on specialty pages",

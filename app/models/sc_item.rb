@@ -6,23 +6,23 @@ class ScItem < ActiveRecord::Base
   has_many :activities, as: :trackable, class_name: 'SubscriptionActivity', dependent: :destroy
 
   attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :shared_care, :url, :markdown_content, :document, :can_email_document, :can_email_link, :shareable, :division_id
-  
+
   belongs_to  :sc_category
-  
+
   has_many    :sc_item_specializations, :dependent => :destroy
   has_many    :specializations, :through => :sc_item_specializations
 
   has_many    :sc_item_specialization_procedure_specializations, :through => :sc_item_specializations
   has_many    :procedure_specializations, :through => :sc_item_specialization_procedure_specializations
-  
+
   has_many    :feedback_items, :as => :item, :conditions => { "archived" => false }
   has_many    :archived_feedback_items, :as => :item, :foreign_key => "item_id", :class_name => "FeedbackItem"
-  
+
   belongs_to  :division
-  
+
   has_many    :division_display_sc_items, :dependent => :destroy
   has_many    :divisions_sharing, :through => :division_display_sc_items, :class_name => "Division", :source => :division
-  
+
   has_attached_file :document,
   :storage => :s3,
   :bucket => ENV['S3_BUCKET_NAME_CONTENT_DOCUMENTS'],
@@ -30,7 +30,7 @@ class ScItem < ActiveRecord::Base
   :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
   :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
   }
- 
+
   validates_presence_of :title, :on => :create, :message => "can't be blank"
   validates :url, :url => true, :allow_blank => true
 
@@ -43,52 +43,52 @@ class ScItem < ActiveRecord::Base
   def in_progress
     division.present? && (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length == 0)
   end
-  
+
   def self.for_specialization_in_divisions(specialization, divisions)
     division_ids = divisions.map{ |d| d.id }
     owned = joins(:sc_item_specializations).where('"sc_item_specializations"."specialization_id" = (?) AND "sc_items"."division_id" IN (?)', specialization.id, division_ids)
     shared = joins(:sc_item_specializations, :division_display_sc_items).where('"sc_item_specializations"."specialization_id" = (?) AND "division_display_sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', specialization.id, division_ids, true)
     (owned + shared).uniq
   end
-  
+
   def self.for_procedure_in_divisions(procedure, divisions)
     division_ids = divisions.map{ |d| d.id }
     owned = joins([:sc_item_specializations, :sc_item_specialization_procedure_specializations, :procedure_specializations]).where('sc_item_specializations.id = sc_item_specialization_procedure_specializations.sc_item_specialization_id AND sc_item_specialization_procedure_specializations.procedure_specialization_id = procedure_specializations.id AND procedure_specializations.procedure_id = (?) AND "sc_items"."division_id" IN (?)', procedure.id, division_ids)
     shared = joins([:sc_item_specializations, :sc_item_specialization_procedure_specializations, :procedure_specializations, :division_display_sc_items]).where('sc_item_specializations.id = sc_item_specialization_procedure_specializations.sc_item_specialization_id AND sc_item_specialization_procedure_specializations.procedure_specialization_id = procedure_specializations.id AND procedure_specializations.procedure_id = (?) AND "division_display_sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', procedure.id, division_ids, true)
     (owned + shared).uniq
   end
-  
+
   def self.owned_in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     where('"sc_items"."division_id" IN (?)', division_ids)
   end
-  
+
   def self.shared_in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     joins('INNER JOIN "division_display_sc_items" ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"').where('"division_display_sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', division_ids, true)
   end
-  
+
   def self.shareable_by_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     where('"sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', division_ids, true)
   end
-  
+
   def self.shareable
     where('"sc_items"."shareable" = (?)', true)
   end
-  
+
   def self.inline
     joins('INNER JOIN "sc_categories" ON "sc_items"."sc_category_id" = "sc_categories"."id"').where('"sc_categories"."display_mask" IN (?)', ScCategory::INLINE_MASKS)
   end
-  
+
   def self.not_inline
     joins('INNER JOIN "sc_categories" ON "sc_items"."sc_category_id" = "sc_categories"."id"').where('"sc_categories"."display_mask" NOT IN (?)', ScCategory::INLINE_MASKS)
   end
-  
+
   def self.all_in_divisions(divisions)
     (owned_in_divisions(divisions) + shared_in_divisions(divisions)).uniq
   end
-  
+
   def self.searchable
     where("sc_items.searchable = (?)", true)
   end
@@ -117,14 +117,14 @@ class ScItem < ActiveRecord::Base
     if specializations.blank? || division.blank?
       return default_content_owner
     end
-    
+
     #We only have one division for each conten item, so lets find that the first owner in one of the specializations
     specializations.each do |specialization|
       specialization.specialization_options.for_divisions([division]).each do |so|
         return so.content_owner if so.content_owner.present?
       end
     end
-    
+
     #There is no owner for the any of the specializations this content item is in...
     return default_content_owner
   end
@@ -152,7 +152,7 @@ class ScItem < ActiveRecord::Base
       title
     end
   end
-  
+
   TYPE_LINK = 1
   TYPE_MARKDOWN = 2
   TYPE_DOCUMENT = 3
@@ -211,7 +211,7 @@ class ScItem < ActiveRecord::Base
     "svg" => FORMAT_TYPE_IMAGE,
     "www.youtube.com" => FORMAT_TYPE_VIDEO
   }
-  
+
   def format_type
     if link? || document?
       theurl = link? ? url : document.url
@@ -256,7 +256,7 @@ class ScItem < ActiveRecord::Base
         ""
       end
   end
-  
+
   def type
     ScItem::TYPE_HASH[type_mask]
   end
@@ -264,11 +264,11 @@ class ScItem < ActiveRecord::Base
   def link?
     type_mask == ScItem::TYPE_LINK
   end
-      
+
   def markdown?
     type_mask == ScItem::TYPE_MARKDOWN
   end
-      
+
   def document?
     type_mask == ScItem::TYPE_DOCUMENT
   end

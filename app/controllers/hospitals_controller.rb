@@ -3,7 +3,7 @@ class HospitalsController < ApplicationController
   load_and_authorize_resource :except => :refresh_cache
   before_filter :check_token, :only => :refresh_cache
   skip_authorization_check :only => :refresh_cache
-  
+
   cache_sweeper :hospital_sweeper, :only => [:create, :update, :destroy]
 
   def index
@@ -61,11 +61,11 @@ class HospitalsController < ApplicationController
     @hospital.destroy
     redirect_to hospitals_url, :notice => "Successfully deleted #{@name}."
   end
-  
+
   def check_token
     token_required( Hospital, params[:token], params[:id] )
   end
-  
+
   def refresh_cache
     @hospital = Hospital.find(params[:id])
     @specialists_with_offices_in = @hospital.offices_in.map{ |o| o.specialists }.flatten.uniq

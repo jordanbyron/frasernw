@@ -10,5 +10,5 @@ ActiveSupport::Inflector.inflections do |inflect|
   # inflect.irregular 'focuses', 'focus'
   # inflect.irregular 'person', 'people'
   # inflect.uncountable %w( fish sheep )
-  inflect.irregular 'specializations_including_in_progress', 'specializations_including_in_progress' 
+  inflect.irregular 'specializations_including_in_progress', 'specializations_including_in_progress'
 end

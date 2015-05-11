@@ -4,7 +4,7 @@ namespace :pathways do
     include ActionController::Caching::Fragments
     include Net
     include Rails.application.routes.url_helpers
-  
+
     task :specializations => :environment do
       puts "Recaching specializations..."
       Specialization.all.sort{ |a,b| a.id <=> b.id }.each do |s|
@@ -12,24 +12,24 @@ namespace :pathways do
           puts "Specialization #{s.id}"
           expire_fragment specialization_path(s)
           Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_cache") )
-          
+
           City.all.sort{ |a,b| a.id <=> b.id }.each do |c|
             puts "Specialization City #{c.id}"
             expire_fragment "#{specialization_path(s)}_#{city_path(c)}"
             Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_city_cache/#{c.id}.js") )
           end
-          
+
           Division.all.sort{ |a,b| a.id <=> b.id }.each do |d|
             puts "Specialization Division #{d.id}"
             expire_fragment "#{specialization_path(s)}_#{division_path(d)}"
             Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_division_cache/#{d.id}.js") )
           end
-          
+
           #expire the grouped together cities
           User.all.map{ |u| City.for_user_in_specialization(u, s).map{ |c| c.id } }.uniq.each do |city_group|
             expire_fragment "specialization_#{s.id}_content_cities_#{city_group.join('_')}"
           end
-          
+
           #expire the grouped together divisions
           User.all_user_division_groups_cached.each do |division_group|
             expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
@@ -41,7 +41,7 @@ namespace :pathways do
         end
       end
     end
-  
+
     task :procedures => :environment do
       puts "Recaching procedures..."
       Procedure.all.sort{ |a,b| a.id <=> b.id }.each do |p|
@@ -49,7 +49,7 @@ namespace :pathways do
         expire_fragment procedure_path(p)
       end
     end
-  
+
     task :specialists => :environment do
       puts "Recaching specialists..."
       Specialist.all.sort{ |a,b| a.id <=> b.id }.each do |s|
@@ -58,7 +58,7 @@ namespace :pathways do
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialists/#{s.id}/#{s.token}/refresh_cache") )
       end
     end
-  
+
     task :clinics => :environment do
       puts "Recaching clinics..."
       Clinic.all.sort{ |a,b| a.id <=> b.id }.each do |c|
@@ -67,7 +67,7 @@ namespace :pathways do
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/clinics/#{c.id}/#{c.token}/refresh_cache") )
       end
     end
-  
+
     task :hospitals => :environment do
       puts "Recaching hospitals..."
       Hospital.all.sort{ |a,b| a.id <=> b.id }.each do |h|
@@ -76,7 +76,7 @@ namespace :pathways do
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/hospitals/#{h.id}/#{h.token}/refresh_cache") )
       end
     end
-  
+
     task :languages => :environment do
       puts "Recaching languages..."
       Language.all.sort{ |a,b| a.id <=> b.id }.each do |l|
@@ -85,14 +85,14 @@ namespace :pathways do
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/languages/#{l.id}/#{l.token}/refresh_cache") )
       end
     end
-  
+
     task :search => :environment do
       puts "Recaching search..."
-      
+
       puts "Global"
       expire_fragment "livesearch_global"
       Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/refresh_livesearch_global.js") )
-      
+
       puts "All entries"
       expire_fragment "livesearch_all_entries"
       Specialization.all.each do |s|
@@ -100,7 +100,7 @@ namespace :pathways do
         expire_fragment "livesearch_all_entries_#{specialization_path(s)}"
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/refresh_livesearch_all_entries/#{s.id}.js") )
       end
-      
+
       Division.all.each do |d|
         puts "Search division #{d.id}"
         expire_fragment "livesearch_#{division_path(d)}_entries"
@@ -113,7 +113,7 @@ namespace :pathways do
         Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/refresh_livesearch_division_content/#{d.id}.js") )
       end
     end
-  
+
     task :sc_categories => :environment do
       puts "Recaching content categories..."
       User.all_user_division_groups_cached.each do |division_group|
@@ -123,19 +123,19 @@ namespace :pathways do
         end
       end
     end
-    
+
     task :menus => :environment do
       expire_fragment 'specialization_dropdown_admin'
-      
+
       User.all_user_division_groups_cached.each do |division_group|
         expire_fragment "specialization_dropdown_#{division_group.join('_')}"
-        
+
         Specialization.all.each do |specialization|
           expire_fragment "specialization_#{specialization.id}_nav_#{division_group.join('_')}"
         end
       end
     end
-    
+
     task :front => :environment do
       User.all_user_division_groups_cached.each do |division_group|
         expire_fragment "latest_updates_#{division_group.join('_')}"
@@ -153,7 +153,7 @@ namespace :pathways do
     task :all => [:procedures, :languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front, :application_layout] do
       puts "All pages recached."
     end
-  
+
     #utility expiration tasks
 
     task :specialization_pages => :environment do

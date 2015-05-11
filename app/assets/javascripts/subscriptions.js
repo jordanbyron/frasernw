@@ -2,11 +2,11 @@
 // All this logic will automatically be available in application.js.
 $(document).ready(function(){
 
-  $("#subscription_classification_news_updates").change(function (){ 
+  $("#subscription_classification_news_updates").change(function (){
     update_for_classification_change();
   });
 
-  $("#subscription_classification_resource_updates").change(function (){ 
+  $("#subscription_classification_resource_updates").change(function (){
     update_for_classification_change();
   });
 

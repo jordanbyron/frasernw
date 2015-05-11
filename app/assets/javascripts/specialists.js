@@ -1,4 +1,4 @@
-var status_changed = function() 
+var status_changed = function()
 {
   if ( $(this).val() == "4" || $(this).val() == "5" || $(this).val() == "9" || $(this).val() == "10" )
   {
@@ -38,7 +38,7 @@ function reset_hospital(address_number)
 {
   //specialist edit page
   reset_select("specialist_specialist_offices_attributes_" + address_number + "_office_attributes_location_attributes_hospital_in_id");
-  
+
   //offices edit
   reset_select("office_location_attributes_location_in_id");
   reset_select("office_location_attributes_hospital_in_id");
@@ -148,12 +148,12 @@ $(".location_0").live("change", function() { address_location_changed(0) });
 $(".location_1").live("change", function() { address_location_changed(1) });
 $(".location_2").live("change", function() { address_location_changed(2) });
 
-$("#add_address").live("click", function() 
+$("#add_address").live("click", function()
 {
   $(this).hide()
 });
 
-var scheduled_changed = function() 
+var scheduled_changed = function()
 {
   if ($(this).is(":checked"))
   {
@@ -198,7 +198,7 @@ var specialist_categorization_changed = function()
   else
   {
     //only works in clinics or hospitals, or purposely not surveyed
-    //in this case we will show their associations but nothing else, as all the rest is personal to them 
+    //in this case we will show their associations but nothing else, as all the rest is personal to them
     $("#section_contact").hide();
     $("#section_moa").hide();
     $("#section_status").hide();

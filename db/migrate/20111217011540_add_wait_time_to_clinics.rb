@@ -1,17 +1,17 @@
 class AddWaitTimeToClinics < ActiveRecord::Migration
-  
+
   def migrate_values(migrate_class)
-    
+
     migrate_class.find(:all).each do |c|
       next if (not c.waittime_old) or (c.waittime_old == "") or (not c.wait_uom_old) or (c.wait_uom_old == "")
-      
+
       days = case c.wait_uom_old
         when "days" then c.waittime_old.to_i
         when "weeks" then c.waittime_old.to_i * 7
         when "months" then c.waittime_old.to_i * 7 * 4
         else 0
       end
-      
+
       #this matches with our options for clinic / specialist waittime_mask, assuming a month is four weeks
       c.waittime_mask = case days
         when 0..7 then 1
@@ -25,20 +25,20 @@ class AddWaitTimeToClinics < ActiveRecord::Migration
         when 337..504 then 9
         else 10
       end
-      
+
       c.save
     end
-    
+
     migrate_class.find(:all).each do |c|
       next if (not c.lagtime_old) or (c.lagtime_old == "") or (not c.lag_uom_old) or (c.lag_uom_old == "")
-      
+
       days = case c.lag_uom_old
         when "days" then c.lagtime_old.to_i
         when "weeks" then c.lagtime_old.to_i * 7
         when "months" then c.lagtime_old.to_i * 7 * 4
         else 0
       end
-      
+
       #this matches with our options for clinic / specialist lagtime_mask, assuming a month is four weeks
       c.lagtime_mask = case days
         when 0..7 then 2
@@ -52,30 +52,30 @@ class AddWaitTimeToClinics < ActiveRecord::Migration
         when 337..504 then 10
         else 11
       end
-      
+
       c.save
     end
   end
-  
+
   def change
     add_column :clinics, :waittime_mask, :integer
     rename_column :clinics, :waittime, :waittime_old
     rename_column :clinics, :wait_uom, :wait_uom_old
-    
+
     add_column :clinics, :lagtime_mask, :integer
     rename_column :clinics, :lagtime, :lagtime_old
     rename_column :clinics, :lag_uom, :lag_uom_old
-    
+
     migrate_values(Clinic)
-    
+
     add_column :specialists, :waittime_mask, :integer
     rename_column :specialists, :waittime, :waittime_old
     rename_column :specialists, :wait_uom, :wait_uom_old
-    
+
     add_column :specialists, :lagtime_mask, :integer
     rename_column :specialists, :lagtime, :lagtime_old
     rename_column :specialists, :lag_uom, :lag_uom_old
-    
+
     migrate_values(Specialist)
   end
 end

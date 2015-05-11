@@ -18,7 +18,7 @@
           = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
   .row
     = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another primary contact", :division_primary_contacts, class: "btn offset3")
-  
+
   %br
   %h4 Local Referral Area
   .row
@@ -49,7 +49,7 @@
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
     %a.btn.btn-danger.ajax{"href" => divisions_path} Cancel
-          
+
 %script{"type" => "text/javascript"}
   :plain
     function city_checked(checkbox)
@@ -58,20 +58,20 @@
       $(city_class).prop('checked',($(checkbox).prop('checked')));
       return true;
     }
-    
-    $('.city_check').click(function() { 
+
+    $('.city_check').click(function() {
       city_checked(this);
-    }); 
-    
+    });
+
     function update_city(city)
     {
       var city_id = "#" + city;
       var city_class = "." + city;
-      
+
       var all = true;
       var none = true;
       $(city_class).each(function(){ if ($(this).prop('checked')) { none = false; } else { all = false; } });
-      
+
       if (all)
       {
         $(city_id).prop('checked', true);
@@ -87,20 +87,20 @@
         $(city_id).prop('checked', true);
         $(city_id).prop('indeterminate', true);
       }
-      
+
       return true;
     }
-    
+
     function city_specialization_checked(checkbox)
     {
       var city_id = "city_" + $(checkbox).prop('id').split('_')[0];
       return update_city(city_id)
     }
-    
-    $('.city_specialization').click(function() { 
+
+    $('.city_specialization').click(function() {
       city_specialization_checked(this);
-    });  
-    
+    });
+
 - City.all.each do |city|
   %script{"type" => "text/javascript"}
     :plain

@@ -3,9 +3,9 @@
 .content-wrapper
 
   %h2= "Add or Change #{@specialist.formal_name}'s Photo"
-  
+
   = simple_form_for @specialist, :url => {:action => :update_photo}, :html => { :class => "form-horizontal", :multipart => true } do |f|
-  
+
     - if not f.error_messages.blank?
       .alert.alert-error= f.error_messages
 
@@ -13,10 +13,10 @@
       = f.input :photo_delete, :as => :radio, :collection => [[0, 'Update photo'], [1, 'Remove photo']], label_method: :last, value_method: :first, :class => 'photo_change', :label => "Update photo or remove photo?"
       #change_photo
         = f.input :photo, :lable => "New photo"
-      
+
       %script{"type" => "text/javascript"}
         :plain
-          var photo_delete_changed = function() 
+          var photo_delete_changed = function()
           {
             if ($('#specialist_photo_delete_1').is(":checked"))
             {
@@ -30,11 +30,11 @@
 
           $(".radio_buttons").live("change", photo_delete_changed);
           $(".radio_buttons").each(photo_delete_changed);
-          
+
     - else
       = f.input :photo
-    
-        
+
+
     .form-actions
       = f.button :submit, :class => "btn btn-primary", :value => "Submit"
       = link_to 'Cancel', url_for(@specialist), :class => "btn btn-danger ajax"

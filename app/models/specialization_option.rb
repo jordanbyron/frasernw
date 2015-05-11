@@ -6,12 +6,12 @@ class SpecializationOption < ActiveRecord::Base
   belongs_to :content_owner, :class_name => "User"
   belongs_to :division
   belongs_to :open_to_sc_category, :class_name => "ScCategory"
-  
+
   def self.for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     where("specialization_options.division_id IN (?)", division_ids)
   end
-  
+
   def self.for_divisions_and_specializations(divisions, specializations)
     division_ids = divisions.map{ |d| d.id }
     specialization_ids = specializations.map{ |s| s.id }

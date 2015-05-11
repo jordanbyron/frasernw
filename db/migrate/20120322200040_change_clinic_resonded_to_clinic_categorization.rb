@@ -1,7 +1,7 @@
 class ChangeClinicResondedToClinicCategorization < ActiveRecord::Migration
   def change
     add_column :clinics, :categorization_mask, :integer, :default => 1
-    
+
     Clinic.all.each do |c|
       if c.responded
         c.categorization_mask = 1
@@ -10,7 +10,7 @@ class ChangeClinicResondedToClinicCategorization < ActiveRecord::Migration
       end
       c.save
     end
-    
+
     remove_column :clinics, :responded
   end
 end

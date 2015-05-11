@@ -11,7 +11,7 @@ class DropInvestigationsTable < ActiveRecord::Migration
 
       t.timestamps
     end
-    
+
     add_index :investigations, [:specialist_id, :procedure_id]
   end
 end
