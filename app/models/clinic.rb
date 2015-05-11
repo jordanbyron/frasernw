@@ -1,50 +1,50 @@
 class Clinic < ActiveRecord::Base
   include ApplicationHelper
-  
+
   attr_accessible :name, :deprecated_phone, :deprecated_phone_extension, :deprecated_fax, :deprecated_contact_details, :categorization_mask, :deprecated_sector_mask, :deprecated_url, :deprecated_email, :deprecated_wheelchair_accessible_mask, :status, :status_details, :unavailable_from, :referral_criteria, :referral_process, :contact_name, :contact_email, :contact_phone, :contact_notes, :status_mask, :limitations, :required_investigations, :location_opened_old, :not_performed, :referral_fax, :referral_phone, :referral_other_details, :referral_details, :referral_form_old, :referral_form_mask, :lagtime_mask, :waittime_mask, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :patient_can_book_old, :patient_can_book_mask, :red_flags, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :responds_via, :patient_instructions, :cancellation_policy, :interpreter_available, :specialization_ids, :deprecated_schedule_attributes, :language_ids, :attendances_attributes, :focuses_attributes, :healthcare_provider_ids, :user_controls_clinic_locations_attributes, :admin_notes, :referral_forms_attributes, :clinic_locations_attributes, :review_object
   has_paper_trail :ignore => [:saved_token, :review_item, :review_object]
-  
+
   #clinics can have multiple specializations
   has_many :clinic_specializations, :dependent => :destroy
   has_many :specializations, :through => :clinic_specializations
-  
+
   #clinics have multiple locations
   MAX_LOCATIONS = 9
   has_many :clinic_locations, :dependent => :destroy
   accepts_nested_attributes_for :clinic_locations
   has_many :locations, :through => :clinic_locations
   has_many :addresses, :through => :locations
-  
+
   #clinics speak many languages
   has_many   :clinic_speaks, :dependent => :destroy
-  has_many   :languages, :through => :clinic_speaks, :order => "name ASC", auto_include: false
-  
+  has_many   :languages, :through => :clinic_speaks, :order => "name ASC"
+
   #clinics have multiple referral forms
   has_many   :referral_forms, :as => :referrable
   accepts_nested_attributes_for :referral_forms, :allow_destroy => true
-  
+
   #clinics focus on procedures
   has_many   :focuses, :dependent => :destroy
   has_many   :procedure_specializations, :through => :focuses
   has_many   :procedures, :through => :procedure_specializations
   accepts_nested_attributes_for :focuses, :reject_if => lambda { |a| a[:procedure_specialization_id].blank? }, :allow_destroy => true
-  
+
   #clinics have attendance (of specialists and freeform physicians)
   has_many :attendances, :through => :clinic_locations
   has_many :specialists, :through => :attendances
-  
+
   #clinics have many healthcare providers
   has_many   :clinic_healthcare_providers, :dependent => :destroy
-  has_many   :healthcare_providers, :through => :clinic_healthcare_providers, :order => "name ASC", auto_include: false
-  
+  has_many   :healthcare_providers, :through => :clinic_healthcare_providers, :order => "name ASC"
+
   #clinics are controlled (e.g. can be edited) by users of the system
   has_many :user_controls_clinic_locations, :through => :clinic_locations
   has_many :controlling_users, :through => :user_controls_clinic_locations, :source => :user, :class_name => "User"
   accepts_nested_attributes_for :user_controls_clinic_locations, :reject_if => lambda { |uccl| uccl[:user_id].blank? }, :allow_destroy => true
-  
+
   has_one :review_item, :as => :item, :conditions => { "archived" => false }
   has_many :feedback_items, :as => :item, :conditions => { "archived" => false }
-  
+
   default_scope order('clinics.name')
 
   # # # Cache actions
@@ -62,17 +62,17 @@ class Clinic < ActiveRecord::Base
     Rails.cache.delete([self.class.name, id])
   end
   # # #
-    
+
   def self.not_in_progress_for_specialization(specialization)
     in_progress_cities = []
-    
+
     Division.all.each do |division|
       in_progress_cities |= City.in_progress_for_division_and_specialization(division, specialization)
     end
 
     self.in_cities_and_specialization(City.all - in_progress_cities, specialization)
   end
-    
+
   def self.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
     not_in_progress_cities = City.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
     self.in_cities_and_specialization(not_in_progress_cities, specialization)
@@ -85,20 +85,20 @@ class Clinic < ActiveRecord::Base
   def in_progress
     (divisions.length > 0) && (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length == 0)
   end
-  
+
   CATEGORIZATION_HASH = {
     1 => "Responded to survey",
     2 => "Not responded to survey",
     3 => "Purposely not yet surveyed",
   }
-  
+
   def self.in_cities(cities)
     city_ids = cities.map{ |city| city.id }
     direct = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL', "ClinicLocation", city_ids)
     in_hospital = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id').where('"direct_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?)', "ClinicLocation", "Hospital", city_ids)
     (direct + in_hospital).uniq
   end
-  
+
   def self.in_cities_and_specialization(cities, specialization)
     city_ids = cities.map{ |city| city.id }
     direct = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id INNER JOIN "clinic_specializations" on "clinic_specializations".clinic_id = "clinics".id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL AND "clinic_specializations".specialization_id = (?)', "ClinicLocation", city_ids, specialization.id)
@@ -121,19 +121,19 @@ class Clinic < ActiveRecord::Base
   def self.in_local_referral_area_for_specializaton_and_division(specialization, division)
     self.in_cities(division.local_referral_cities_for_specialization(specialization))
   end
-  
+
   def responded?
     categorization_mask == 1
   end
-  
+
   def not_responded?
     categorization_mask == 2
   end
-  
+
   def purposely_not_yet_surveyed?
     categorization_mask == 3
   end
-  
+
   def show_in_table?
     (responded? && !unavailable_for_a_while?) || not_responded?
   end
@@ -145,7 +145,7 @@ class Clinic < ActiveRecord::Base
   def not_available?
     false #to line up with specialists; all are "available" if they exist
   end
-  
+
   def city_old
     l = locations.first
     return nil if l.blank?
@@ -188,14 +188,14 @@ class Clinic < ActiveRecord::Base
     end
     return false
   end
-  
-  STATUS_HASH = { 
-    1 => "Accepting new referrals", 
+
+  STATUS_HASH = {
+    1 => "Accepting new referrals",
     2 => "Only doing follow up on previous patients",
     4 => "Permanently closed",
     3 => "Didn't answer"
   }
-  
+
   def status
     if (status_mask == 3) || status_mask.blank?
       "It is unknown if this clinic is accepting new patients (this clinic didn't respond)"
@@ -203,7 +203,7 @@ class Clinic < ActiveRecord::Base
       Clinic::STATUS_HASH[status_mask]
     end
   end
-  
+
   def status_class
     #purposely handle categorization prior to status
     if not_responded?
@@ -221,78 +221,78 @@ class Clinic < ActiveRecord::Base
       return Specialist::STATUS_CLASS_BLANK
     end
   end
-  
+
   def status_class_hash
     Specialist::STATUS_CLASS_HASH[status_class]
   end
-  
+
   def accepting_new_patients?
     status_mask == 1
   end
-  
+
   def only_doing_follow_up?
     status_mask == 2
   end
-  
+
   def did_not_answer?
     (status_mask == 3) || status_mask.blank?
   end
-  
+
   def closed?
     status_mask == 4
   end
-  
-  WAITTIME_HASH = { 
-    1 => "Within one week", 
-    2 => "1-2 weeks", 
-    3 => "2-4 weeks", 
-    4 => "1-2 months", 
-    5 => "2-4 months", 
-    6 => "4-6 months", 
-    7 => "6-9 months", 
-    8 => "9-12 months", 
-    9 => "12-18 months", 
+
+  WAITTIME_HASH = {
+    1 => "Within one week",
+    2 => "1-2 weeks",
+    3 => "2-4 weeks",
+    4 => "1-2 months",
+    5 => "2-4 months",
+    6 => "4-6 months",
+    7 => "6-9 months",
+    8 => "9-12 months",
+    9 => "12-18 months",
     10 => "18-24 months",
     11 => "2-2.5 years",
     12 => "2.5-3 years",
     13 => ">3 years"
   }
-  
+
   def waittime
     waittime_mask.present? ? Clinic::WAITTIME_HASH[waittime_mask] : ""
   end
-  
-  LAGTIME_HASH = { 
-    1 => "Book by phone when office calls for referral", 
-    2 => "Within one week", 
-    3 => "1-2 weeks", 
-    4 => "2-4 weeks", 
-    5 => "1-2 months", 
-    6 => "2-4 months", 
-    7 => "4-6 months", 
-    8 => "6-9 months", 
-    9 => "9-12 months", 
-    10 => "12-18 months", 
+
+  LAGTIME_HASH = {
+    1 => "Book by phone when office calls for referral",
+    2 => "Within one week",
+    3 => "1-2 weeks",
+    4 => "2-4 weeks",
+    5 => "1-2 months",
+    6 => "2-4 months",
+    7 => "4-6 months",
+    8 => "6-9 months",
+    9 => "9-12 months",
+    10 => "12-18 months",
     11 => "18-24 months",
     12 => "2-2.5 years",
     13 => "2.5-3 years",
     14 => ">3 years"
   }
-  
+
   def lagtime
     Clinic::LAGTIME_HASH[lagtime_mask]
   end
-  
-  BOOLEAN_HASH = { 
-    1 => "Yes", 
-    2 => "No", 
-    3 => "Didn't answer", 
+
+  BOOLEAN_HASH = {
+    1 => "Yes",
+    2 => "No",
+    3 => "Didn't answer",
   }
-  
+
   def patient_can_book?
     patient_can_book_mask == 1
   end
-  
+
   def accepts_referrals_via
     if referral_phone && referral_fax && referral_other_details.present?
       output = "phone, fax, or #{referral_other_details}"
@@ -315,14 +315,14 @@ class Clinic < ActiveRecord::Base
     else
       output = ""
     end
-    
+
     if referral_details.present?
       return "#{output.punctuate} #{referral_details.punctuate.convert_newlines_to_br}".html_safe
     else
       return output.punctuate
     end
   end
-  
+
   def responds_via
     if (not respond_by_phone) && (not respond_by_fax) && (not respond_by_mail) && (not respond_to_patient)
       return ""
@@ -344,7 +344,7 @@ class Clinic < ActiveRecord::Base
       else
         output = "mail to referring office"
       end
-      
+
       if respond_to_patient
         return output.capitalize_first_letter + ", and by directly contacting the patient."
       else
@@ -352,7 +352,7 @@ class Clinic < ActiveRecord::Base
       end
     end
   end
-  
+
   def urgent_referrals_via
     if urgent_phone && urgent_fax
       if urgent_other_details.present?
@@ -377,7 +377,7 @@ class Clinic < ActiveRecord::Base
     else
       output = ""
     end
-    
+
     if urgent_details.present?
       return "#{output.punctuate} #{urgent_details.punctuate.convert_newlines_to_br}".html_safe
     else
@@ -400,11 +400,17 @@ class Clinic < ActiveRecord::Base
   def private?
     clinic_locations.reject{ |cl| !cl.private? }.present?
   end
-  
+
+  def ordered_clinic_locations
+    clinic_locations.sort_by do |location|
+      [ (location.has_data? ? 0 : 1), location.created_at ]
+    end
+  end
+
   def new?
     (created_at > 3.week.ago.utc) && opened_recently?
   end
-     
+
   def unavailable_for_a_while?
     closed? && (unavailable_from <= (Date.today - 2.years))
   end

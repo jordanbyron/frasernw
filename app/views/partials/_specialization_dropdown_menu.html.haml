@@ -1,5 +1,5 @@
 - if current_user_is_admin?
-  
+
   - cache("specialization_dropdown_admin") do
 
     %script{"type" => "text/javascript"}
@@ -14,7 +14,7 @@
         - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
         - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
         - fourth = specializations - first - second - third
-        
+
         - [first, second, third, fourth].each do |list|
           %ul
             - list.each do |specialization|
@@ -24,7 +24,7 @@
                   = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
 
 - else
-  
+
   - cache("specialization_dropdown_#{current_user_divisions.map{|d| d.id}.join('_')}") do
 
     %script{"type" => "text/javascript"}
@@ -39,7 +39,7 @@
         - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
         - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
         - fourth = specializations - first - second - third
-        
+
         - [first, second, third, fourth].each do |list|
           %ul
             - list.each do |specialization|

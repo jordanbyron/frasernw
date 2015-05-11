@@ -20,27 +20,27 @@
   clinics = Clinic.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
 
   specialists.each do |specialist|
-    
+
     entry = {
       "n" => specialist.billing_number_padded ? specialist.name + " - MSP #" + specialist.billing_number_padded: specialist.name,
       "sp" => specialist.specialist_specializations.map { |ss| ss.specialization_id },
       "c" => specialist.cities_for_display.map{ |city| city.id },
       "st" => specialist.status_class_hash,
       "id" => specialist.id,
-      "go" => order_map["Specialists"] 
+      "go" => order_map["Specialists"]
     }
     search_data << entry
   end
 
   clinics.each do |clinic|
-    
-    entry = { 
+
+    entry = {
       "n" => clinic.name,
       "sp" => clinic.clinic_specializations.map{ |cs| cs.specialization_id },
       "c" => clinic.cities.map{ |city| city.id },
       "st" => clinic.status_class_hash,
       "id" => clinic.id,
-      "go" => order_map["Clinics"] 
+      "go" => order_map["Clinics"]
     }
     search_data << entry
   end

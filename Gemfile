@@ -118,6 +118,7 @@ group :development do
 end
 
 gem 'ancestry', '~> 1.3.0' #ancestry breaks specialization.rb arrange methods in higher versions
+
 gem 'mechanize'
 gem 'validates_email_format_of'
 gem "safety_mailer" # prevent emails getting sent in staging

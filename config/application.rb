@@ -13,7 +13,7 @@ module Frasernw
     config.assets.paths << "#{Rails.root}/app/assets/fonts"
     # Defaults to '/assets'
     config.assets.prefix = '/asset-files'
-    
+
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 

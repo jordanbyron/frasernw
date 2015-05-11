@@ -1,21 +1,21 @@
 class ReportsController < ApplicationController
   load_and_authorize_resource
-  
+
   def index
     @reports = Report.all
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def show
     @report = Report.find(params[:id])
-    
+
     ga = Gattica.new({ :email => ENV['GA_USER'], :password => ENV['GA_PASS'] })
     accounts = ga.accounts
     ga.profile_id = accounts.first.profile_id
-    
+
     case @report.type_mask
     when Report::ReportType::PAGE_VIEWS
-      
+
       dates = get_start_end_date(@report)
       start_date = dates.first
       end_date = dates.last
@@ -23,7 +23,7 @@ class ReportsController < ApplicationController
       dimensions = []
       filters = []
       sort = []
-      
+
       if @report.user_type_mask == -1
         #non admin
         dimensions << 'customVarValue2'
@@ -35,22 +35,22 @@ class ReportsController < ApplicationController
         dimensions << 'customVarValue2'
         filters << "customVarValue2 == #{@report.user_type_mask}"
       end
-      
+
       results = get_data_by_date(start_date, end_date, dimensions, metrics, filters, sort)
-      
+
       puts results
-      
+
       @visits = []
       @visitors = []
       @pageviews = []
-      
+
       Array(dates.first..dates.last).each do |date|
         date_string = date.to_s(:yyyymmdd)
         @visits << results[date_string][:visits]
         @visitors << results[date_string][:visitors]
         @pageviews << results[date_string][:pageviews]
       end
-      
+
       @h = LazyHighCharts::HighChart.new('graph') do |f|
         f.options[:chart][:defaultSeriesType] = "area"
         f.options[:plotOptions] = {areaspline: {pointInterval: 1.day, pointStart: dates.first.day}}
@@ -61,7 +61,7 @@ class ReportsController < ApplicationController
         f.series(:name => 'Visits', :data => @visits)
         f.series(:name => 'Visitors', :data => @visitors)
       end
-      
+
       if @report.by_user
         user_dimensions = dimensions
         user_dimensions.delete('date')
@@ -72,9 +72,9 @@ class ReportsController < ApplicationController
           @user_results << [ user.name, metrics[:visits], metrics[:visitors], metrics[:pageviews] ] if user.present?
         end
       end
-      
+
     when Report::ReportType::CONTENT_ITEMS
-    
+
       #grab the page views
       dates = get_start_end_date(@report)
       start_date = dates.first
@@ -83,7 +83,7 @@ class ReportsController < ApplicationController
       dimensions = []
       filters = ["pagePath =@ content_items"]
       sort = []
-      
+
       if @report.user_type_mask == -1
         #non admin
         dimensions << 'customVarValue2'
@@ -95,15 +95,15 @@ class ReportsController < ApplicationController
         dimensions << 'customVarValue2'
         filters << "customVarValue2 == #{@report.user_type_mask}"
       end
-      
+
       results_markdown = get_data_by_date_and_path(start_date, end_date, dimensions, metrics, filters, sort)
-      
+
       total_pageviews = []
-      
+
       # we conly care about markdown content items; links and documents we will get via the 'outgoing links' events
       markdown_ids = ScItem.markdown.reject{ |i| @report.only_shared_care && !i.shared_care }.map{ |c| c.id }
       inline_ids = ScItem.inline.map{ |c| c.id }
-      
+
       Array(dates.first..dates.last).each_with_index do |date, date_index|
         date_string = date.to_s(:yyyymmdd)
         total_pageviews[date_index] = 0
@@ -134,14 +134,14 @@ class ReportsController < ApplicationController
           end
         end
       end
-      
+
       #grab the 'outgoing links' events, cobmine into results
-      
+
       metrics = ['totalEvents']
       dimensions = ['date', 'eventCategory', 'eventAction', 'eventLabel']
       filters = ["eventCategory =@ content_item_id", "eventAction == #{ScItem::TYPE_LINK}"]
       sort = []
-      
+
       if @report.user_type_mask == -1
         #non admin
         dimensions = ['customVarValue2'] + dimensions
@@ -153,12 +153,12 @@ class ReportsController < ApplicationController
         dimensions = ['customVarValue2'] + dimensions
         filters << "customVarValue2 == #{@report.user_type_mask}"
       end
-      
+
       results_outgoing = get_data_by_dimensions(['date', 'eventAction', 'eventLabel'], start_date, end_date, dimensions, metrics, filters, sort)
-      
+
       date_lookup = {}
       Array(dates.first..dates.last).each_with_index{ |date, date_index| date_lookup[date.to_s(:yyyymmdd)] = date_index }
-      
+
       results_outgoing.each do |date, level1|
         date_index = date_lookup[date]
         level1.each do |action, level2|
@@ -178,7 +178,7 @@ class ReportsController < ApplicationController
           end
         end
       end
-      
+
       if @report.by_pageview
         by_pageviews_count = 0
         @by_page_pageviews = []
@@ -192,14 +192,14 @@ class ReportsController < ApplicationController
         end
         puts "!!!!!!!!!!!!!!!!!!!!! by_pageviews_count #{by_pageviews_count}"
       end
-      
+
       total_pageviews_count = 0
       total_pageviews.each{ |t| total_pageviews_count += t }
-      
+
       puts "!!!!!!!!!!!!!!!!!!!!! total_pageviews_count #{total_pageviews_count}"
-      
+
       #Graph it
-      
+
       @h = LazyHighCharts::HighChart.new('graph') do |f|
         f.options[:chart][:defaultSeriesType] = "area"
         f.options[:plotOptions] = {areaspline: {pointInterval: 1.day, pointStart: dates.first.day}}
@@ -208,9 +208,9 @@ class ReportsController < ApplicationController
         f.options[:xAxis][:labels][:step] = 7
         f.series(:name => 'Pageviews', :data => total_pageviews)
       end
-      
+
       when Report::ReportType::SPECIALIST_CONTACT_HISTORY
-      
+
       @specialist_email_table = {}
       @divisions = @report.divisional? ? [@report.division] : Division.all
       Specialization.all.each do |s|
@@ -252,16 +252,16 @@ class ReportsController < ApplicationController
     else
       @data = nil
     end
-    
+
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def new
     @report = Report.new
     @ReportType = Report::ReportType
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def create
     @report = Report.new(params[:report])
     if @report.save
@@ -270,13 +270,13 @@ class ReportsController < ApplicationController
       render :action => 'new'
     end
   end
-  
+
   def edit
     @report = Report.find(params[:id])
     @ReportType = Report::ReportType
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def update
     @report = Report.find(params[:id])
     if @report.update_attributes(params[:report])
@@ -285,21 +285,21 @@ class ReportsController < ApplicationController
       render :action => 'edit'
     end
   end
-  
+
   def destroy
     @report = Report.find(params[:id])
     @report.destroy
     redirect_to reports_url, :notice => "Successfully deleted report."
   end
-  
+
   private
-  
+
   def get_data(start_date, end_date, dimensions, metrics, filters, sort)
-    
+
     ga = Gattica.new({ :email => ENV['GA_USER'], :password => ENV['GA_PASS'] })
     accounts = ga.accounts
     ga.profile_id = accounts.first.profile_id
-    
+
     options = {
       :start_date => start_date.to_s,
       :end_date => end_date.to_s,
@@ -309,22 +309,22 @@ class ReportsController < ApplicationController
       :sort => sort,
       :max_results => 10000
     }
-  
+
     return ga.get(options)
   end
-  
+
   def get_data_by_date(start_date, end_date, dimensions, metrics, filters, sort)
-    
+
     dimensions =  ['date'] + dimensions
     data = get_data(start_date, end_date, dimensions, metrics, filters, sort)
-    
+
     results = {}
     data.to_h['points'].each do |entry|
       entry_date = entry.to_h['dimensions'].first[:date]
       entry_metrics = entry.to_h['metrics'].reduce({}) { |h, pairs| pairs.each { |k, v| h[k] = v }; h }
       results[entry_date] = entry_metrics
     end
-    
+
     #fill in any missing data with zeros
     Array(start_date..end_date).each do |date|
       date_string = date.to_s(:yyyymmdd)
@@ -333,15 +333,15 @@ class ReportsController < ApplicationController
         results[date_string][metric.to_sym] = 0 if results[date_string][metric.to_sym].blank?
       end
     end
-    
+
     results
   end
-  
+
   def get_data_by_date_and_path(start_date, end_date, dimensions, metrics, filters, sort)
-    
+
     dimensions =  ['date', 'pagePath'] + dimensions
     data = get_data(start_date, end_date, dimensions, metrics, filters, sort)
-    
+
     results = {}
     result_count = 0
     data.to_h['points'].each do |entry|
@@ -354,23 +354,23 @@ class ReportsController < ApplicationController
       results[entry_date] = {} if results[entry_date].blank?
       results[entry_date][entry_path] = entry_metrics
     end
-    
+
     puts "!!!!!!!!!!!!!!!!!!!!!#{result_count}"
-    
+
     #fill in any missing data with zeros
     Array(start_date..end_date).each do |date|
       date_string = date.to_s(:yyyymmdd)
       results[date_string] = {} if results[date_string].blank?
     end
-    
+
     results
   end
-  
+
   def get_data_by_path(start_date, end_date, dimensions, metrics, filters, sort)
-    
+
     dimensions =  ['pagePath'] + dimensions
     data = get_data(start_date, end_date, dimensions, metrics, filters, sort)
-    
+
     results = {}
     data.to_h['points'].each do |entry|
       entry_hash = entry.to_h
@@ -378,31 +378,31 @@ class ReportsController < ApplicationController
       entry_metrics = entry_hash['metrics'].reduce({}) { |h, pairs| pairs.each { |k, v| h[k] = v }; h }
       results[entry_path] = entry_metrics
     end
-    
+
     results
   end
-  
+
   def get_data_by_user(start_date, end_date, dimensions, metrics, filters, sort)
-    
+
     dimensions =  ['customVarValue1'] + dimensions
     data = get_data(start_date, end_date, dimensions, metrics, filters, sort)
-    
+
     results = {}
-    
+
     data.to_h['points'].each do |entry|
       entry_user_id = entry.to_h['dimensions'].first[:customVarValue1]
       entry_metrics = entry.to_h['metrics'].reduce({}) { |h, pairs| pairs.each { |k, v| h[k] = v }; h }
       results[entry_user_id] = entry_metrics
     end
-    
+
     results
   end
-  
+
   def get_data_by_dimensions(dimension_to_get, start_date, end_date, dimensions, metrics, filters, sort)
-    
+
     data = get_data(start_date, end_date, dimensions, metrics, filters, sort)
     dimension_symbols = dimensions.map{ |d| d.to_sym }
-    
+
     results = {}
     data.to_h['points'].each do |entry|
       entry_hash = entry.to_h
@@ -427,12 +427,12 @@ class ReportsController < ApplicationController
         end
       end
     end
-    
+
     puts results
-    
+
     return results
   end
-  
+
   def get_start_end_date(report)
     case report.time_frame_mask
       when Report::TimeFrame::YESTERDAY

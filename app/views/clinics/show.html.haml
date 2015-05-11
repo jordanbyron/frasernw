@@ -1,9 +1,9 @@
 - title "#{@clinic.name}"
 
 - specialization = (current_user_is_admin? ? @clinic.specializations : @clinic.specializations.not_in_progress_for_divisions(current_user_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
-  
+
 - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @clinic.id, "Clinic").present? ? "icon-red" : "icon-text") : "icon-text"
-  
+
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
@@ -12,7 +12,7 @@
   %li.subsequent{:class => specialization.fully_in_progress_for_divisions(current_user_divisions) && "in-progress"}
     = link_to specialization.name, specialization_path(specialization), :class => 'ajax'
     = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
-  
+
 = render 'partials/specialization_dropdown_menu'
 
 = render 'partials/specialization_nav', :specialization => specialization, :selected => 'clinics'
@@ -32,40 +32,40 @@
         .span7half
           .headline-header
           .headline
-  
+
             %h2
               = @clinic.name
               %a{"href" => "javascript:void(0)", "onclick" => "favorite('clinics',#{@clinic.id},'#{escape_javascript(@clinic.name)}')", "title" => "Favourite / un-favourite"}
                 %i.icon-heart{"id" => "user_favorite_clinics_#{@clinic.id}"}
-        
+
             %h3.specialty_links
               - self_in_progress = @clinic.in_progress
               = @clinic.specializations.reject{ |s| !self_in_progress && s.fully_in_progress_for_divisions(@clinic.divisions) }.map{ |s| "<a href='#{specialization_path(s)}' class='#{ s.fully_in_progress_for_divisions(@clinic.divisions) ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
-            
+
             - if @clinic.not_responded?
 
               %p.space.no_indent This clinic has not yet provided Pathways their information.
-              
+
             - elsif @clinic.closed?
 
               %p.space.no_indent This clinic has closed.
-              
+
             - elsif @clinic.purposely_not_yet_surveyed?
-            
+
               - show_areas_of_practice = true
 
               %p.space.no_indent This clinic has purposely not yet been surveyed by Pathways. It may be out of our current catchment area, or in a speciality we have yet to fully survey.
-              
+
               - if @clinic.specialists.present?
                 %p.space.no_indent
                   %strong Specialists that work in this clinic:
-                  != @clinic.specialists.map{ |specialist| "<a href='#{specialist_path(specialist)}' class='ajax')\">#{specialist.name}</a>" }.to_sentence 
-              
+                  != @clinic.specialists.map{ |specialist| "<a href='#{specialist_path(specialist)}' class='ajax')\">#{specialist.name}</a>" }.to_sentence
+
             - else
-            
+
               - show_details = true
               - show_areas_of_practice = true
-                    
+
               %p.space.no_indent
                 %i{:class => @clinic.status_class}
                 %strong.status= @clinic.status.end_with_period
@@ -77,15 +77,15 @@
                 %p.no_indent
                   %strong Limitations:
                   = @clinic.limitations.end_with_period.convert_newlines_to_br
-          
+
           .headline-footer
-   
+
           - if show_details
-        
+
             - if clinic_locations.present? || @clinic.languages.present? || @clinic.interpreter_available
-              
+
               %h6 Clinic Information
-            
+
               - clinic_locations.each do |cl|
                 - address = cl.resolved_address
 
@@ -120,15 +120,15 @@
                 %p.space
                   = @clinic.languages.map{ |x| "<a class='ajax' href='#{language_path(x)}'>#{x.name}</a>" }.to_sentence.html_safe
                   = "#{@clinic.languages.count == 1 ? 'is' : 'are' } spoken at this clinic."
-              
+
               - if @clinic.interpreter_available
                 %p
                   Interpreter available upon request.
 
             - if @clinic.accepts_referrals_via.present? || @clinic.responds_via.present? || @clinic.referral_form_mask != 3  || @clinic.required_investigations.present? || @clinic.waittime.present? || @clinic.lagtime.present? || @clinic.patient_can_book_mask != 3
-              
+
               %h6 Referrals
-                
+
               - if @clinic.accepts_referrals_via.present?
                 %p
                   %strong Accepted by:
@@ -149,37 +149,37 @@
                     - type = referral_form.form_content_type.split('/').last
                     %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, :target => "_blank"
               - elsif @clinic.referral_form_mask == 2
-                %p 
+                %p
                   %strong Referral form:
                   No.
-                
+
               - if @clinic.required_investigations.present?
                 %p.space
                   %strong Required information / investigations
                   for all referrals:
                   = @clinic.required_investigations.end_with_period.convert_newlines_to_br
-                
+
               -if @clinic.waittime.present?
                 %p.space
                   Average non-urgent patient wait time from referral to appointment:
                   %strong= @clinic.waittime
-                      
+
               -if @clinic.lagtime.present?
                 %p
                   Average length of time to notify GP of a booking date:
                   %strong= @clinic.lagtime
-                  
+
               - @clinic.focuses.clinic_wait_time.each do |focus|
-              
+
                 - if focus.waittime.present? || focus.lagtime.present?
                   %p.space
                     %strong= "#{focus.procedure_specialization.procedure.full_name}:"
-                
+
                   -if focus.waittime.present?
                     %p
                       Average non-urgent patient wait time from referral to appointment:
                       %strong= focus.waittime
-                          
+
                   -if focus.lagtime.present?
                     %p
                       Average length of time to notify GP of a booking date:
@@ -189,49 +189,49 @@
                 %p.space This office accepts direct calls from patients after referral to book their own appointments.
               - elsif @clinic.patient_can_book_mask == 2
                 %p.space This office does not accept direct calls from patients after referral to book their own appointments.
-            
+
             - if @clinic.red_flags.present? || @clinic.urgent_referrals_via.present?
-              
+
               %h6 Urgent Referrals
-                  
+
               - if @clinic.urgent_referrals_via.present?
                 %p
-                  %strong Accepted by: 
+                  %strong Accepted by:
                   = @clinic.urgent_referrals_via
-              
+
               - if @clinic.red_flags.present?
                 %p
                   %strong Red flags
                   that this clinic feels warrants urgent consultation:
                   = @clinic.red_flags.end_with_period.convert_newlines_to_br
-            
+
             - if @clinic.patient_instructions.present? || @clinic.cancellation_policy.present?
               %h6 Patient Information
-            
+
               - if @clinic.patient_instructions.present?
                 %p.space
                   %strong Patient instructions:
                   = @clinic.patient_instructions.end_with_period.convert_newlines_to_br
-                  
+
               - if @clinic.cancellation_policy.present?
                 %p.space
                   %strong Cancellation policy:
                   = @clinic.cancellation_policy.end_with_period.convert_newlines_to_br
-              
+
             - if @clinic.healthcare_providers.present?
-            
+
               %h6 Healthcare providers
-              
+
               %p
-                %strong Healthcare providers 
+                %strong Healthcare providers
                 ="who see patients at the clinic: #{@clinic.healthcare_providers.map{ |x| x.name }.join(", ")}"
 
             - clinic_attendances = @clinic.attendances.reject{ |attendance| attendance.clinic_location.blank? || attendance.clinic_location.empty? }
 
             - if clinic_attendances.length > 0
-            
+
               %h6 Physicians who see patients at the clinic
-              
+
               %ul
                 - clinic_attendances.each do |attendance|
                   - if attendance.is_specialist
@@ -245,9 +245,9 @@
                     %li
                       = attendance.freeform_name
                       = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
-                      
+
         - if show_details  || show_areas_of_practice
-        
+
           .span4.offsethalf
             - areas_of_practice_focused_results = {}
             - areas_of_practice_nonfocused_results = {}
@@ -256,21 +256,21 @@
               - areas_of_practice_focused_results[s.id] = compressed_procedures_indented(@clinic, ProcedureSpecialization::CLASSIFICATION_FOCUSED, s)
               - areas_of_practice_nonfocused_results[s.id] = compressed_procedures_indented(@clinic, ProcedureSpecialization::CLASSIFICATION_NONFOCUSED, s)
               - specializations_with_results_count += 1 if ((areas_of_practice_focused_results[s.id][1] > 0) || (areas_of_practice_nonfocused_results[s.id][1] > 0))
-                            
+
             - if specializations_with_results_count > 0 || @clinic.not_performed.present?
               .well.areas-of-practice
                 %h6 Areas of Practice
-                      
+
                 - @clinic.specializations.each do |s|
                   - focused_procedures, focused_count, focused_has_investigations = areas_of_practice_focused_results[s.id]
                   - nonfocused_procedures, nonfocused_count, nonfocused_has_investigations = areas_of_practice_nonfocused_results[s.id]
 
                   - next if focused_count == 0 && nonfocused_count == 0
-                  
+
                   - if specializations_with_results_count > 1
                     %strong.investigation-name= s.name
-                  
-                  .investigation.space  
+
+                  .investigation.space
                     - if focused_count > 0
                       - if focused_has_investigations
                         %p (with any additional details)
@@ -290,7 +290,7 @@
                   %p= @clinic.not_performed.end_with_period.convert_newlines_to_br
 
     #feedback
-      .inner   
+      .inner
         = simple_form_for @feedback, :html => { :class => "ajax feedback_form" } do |f|
 
           = f.input :feedback, :label => "Please provide us with any updates to #{@clinic.name}'s information"
@@ -304,25 +304,25 @@
               .after-click.hidden
                 Sending
             %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
-                    
+
     #feedback_thanks
       .inner
         %h2 Thank you!
-        
+
         %p.space.no_indent= "Thank you for providing your feedback  on #{@clinic.name}. Your contributions help make Pathways a valuable resource for the community."
-        
+
         %p.space.no_indent We will review your feedback in the near future and take action as necessary.
-        
+
         %p.space.no_indent
           %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close
-            
+
     %script{"type" => "text/javascript"}
       :plain
-        $(document).ready(function() { 
-          $('.tt').tooltip({trigger: 'manual'}); 
-          $('#user_favorite_clinics_#{@clinic.id}').addClass('#{favorite_class}'); 
+        $(document).ready(function() {
+          $('.tt').tooltip({trigger: 'manual'});
+          $('#user_favorite_clinics_#{@clinic.id}').addClass('#{favorite_class}');
         });
-        
+
         function send_feedback(form) {
           $("#sendFeedbackButton").addClass('disabled');
           $('.before-click').addClass('hidden');
@@ -340,9 +340,9 @@
               $('#feedback_thanks').fadeIn(200);
           });
         }
-  
-              
-  - if current_user_is_admin? 
+
+
+  - if current_user_is_admin?
     - controlling_users = @clinic.controlling_users.uniq
     - if controlling_users.present?
       %h6 Users that can edit this clinic
@@ -350,9 +350,9 @@
         - controlling_users.each do |user|
           %li
             = link_to user.name, user, :class => !user.active && "in-progress"
-            - if !user.active 
+            - if !user.active
               (inactive)
-              
+
     %h6 Review Queue Updates
     - review_items = ReviewItem.for_clinic(@clinic)
     %ul
@@ -369,7 +369,7 @@
               = link_to '(Review)', clinic_review_path(review_item.item, review_item.id)
       - else
         %li None
-            
+
   .btn-group
     - if true || show_details
       - if clinic_locations.length == 1
@@ -396,24 +396,24 @@
         Incorrect Information? Let us know
 
   - if current_user_is_admin?
-    
+
     %p.admin.btn-group
-        
+
       - if @clinic.review_item.present?
-        
+
         = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", clinic_review_path(@clinic), :class => "btn ajax")
 
       - elsif can? :update, @clinic
-        
+
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Clinic", edit_clinic_path(@clinic), :class => "btn ajax")
         = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", clinic_referral_forms_path(@clinic), :class => "btn ajax")
         %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
           %i.icon-share
           Share
         = link_to("<i class='icon-folder-open'></i>".html_safe + " History", clinic_versions_path(@clinic), :class => "btn ajax")
-          
+
       - if can? :destroy, @clinic
-        
+
         = link_to("<i class='icon-trash'></i>".html_safe + " Delete Clinic", @clinic, :confirm => "Delete #{@clinic.name}?", :method => :delete, :class => "btn")
 
   - if current_user_is_admin?

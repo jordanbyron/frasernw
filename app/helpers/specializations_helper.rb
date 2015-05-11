@@ -34,7 +34,7 @@ module SpecializationsHelper
     filtering_attributes += specialist_language_filtering_attributes(s)
     return filtering_attributes
   end
-  
+
   def specialist_procedure_filtering_attributes(s)
     filtering_attributes = []
     s.procedure_specializations.each do |ps|
@@ -47,7 +47,7 @@ module SpecializationsHelper
     end
     filtering_attributes
   end
-  
+
   def specialist_association_filtering_attributes(s)
     filtering_attributes = []
     s.clinics.each do |c|
@@ -58,7 +58,7 @@ module SpecializationsHelper
     end
     filtering_attributes
   end
-  
+
   def specialist_language_filtering_attributes(s)
     filtering_attributes = []
     filtering_attributes << "si" if s.interpreter_available
@@ -67,7 +67,7 @@ module SpecializationsHelper
     end
     filtering_attributes
   end
-  
+
   def office_filtering_attributes(s, include_assumed)
     filtering_attributes = []
     s.procedure_specializations.each do |ps|
@@ -119,7 +119,7 @@ module SpecializationsHelper
     end
     return filtering_attributes
   end
-    
+
   def clinic_filtering_attributes(c, include_assumed)
     filtering_attributes = clinic_procedure_filtering_attributes(c)
     filtering_attributes << "cwt_#{c.waittime_mask.present? ? c.waittime_mask : 0}"
@@ -165,7 +165,7 @@ module SpecializationsHelper
     filtering_attributes += clinic_language_filtering_attributes(c)
     return filtering_attributes
   end
-  
+
   def clinic_procedure_filtering_attributes(c)
     filtering_attributes = []
     c.procedure_specializations.each do |ps|
@@ -178,7 +178,7 @@ module SpecializationsHelper
     end
     filtering_attributes
   end
-  
+
   def clinic_language_filtering_attributes(c)
     filtering_attributes = []
     filtering_attributes << "ci" if c.interpreter_available
@@ -187,7 +187,7 @@ module SpecializationsHelper
     end
     filtering_attributes
   end
-  
+
   def clinic_healthcare_provider_filtering_attributes(c)
     filtering_attributes = []
     c.clinic_healthcare_providers.each do |chp|
@@ -195,7 +195,7 @@ module SpecializationsHelper
     end
     filtering_attributes
   end
-  
+
   def other_specialists_in_cities(specialization, cities)
     other_specialists = []
     specialization.procedures.each do |p|
@@ -209,7 +209,7 @@ module SpecializationsHelper
     #remove any specialists that are also in this specialization, sort
     return (other_specialists - specialization.specialists.in_cities(cities)).sort{ |a,b| "#{a.waittime_mask}" <=> "#{b.waittime_mask}" }
   end
-  
+
   def other_clinics_in_cities(specialization, cities)
     other_clinics = []
     specialization.procedures.each do |p|

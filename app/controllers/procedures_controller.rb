@@ -1,26 +1,26 @@
 class ProceduresController < ApplicationController
   load_and_authorize_resource
-  
+
   cache_sweeper :procedure_sweeper, :only => [:create, :update, :destroy]
-  
+
   def index
     @specialization = Specialization.find(params[:specialization_id]) if params[:specialization_id].present?
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def show
     @procedure = Procedure.find(params[:id])
     @feedback = FeedbackItem.new
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def new
     @procedure = Procedure.new(params[:id])
     Specialization.all.each { |specialization| ProcedureSpecialization.find_or_create_by_procedure_id_and_specialization_id(params[:id], specialization.id) }
     @specializations = [Specialization.find(params[:specialization_id])]
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def create
     @procedure = Procedure.new(params[:procedure])
     if @procedure.save
@@ -29,14 +29,14 @@ class ProceduresController < ApplicationController
       render :action => 'new'
     end
   end
-  
+
   def edit
     @procedure = Procedure.find(params[:id])
     @specializations = @procedure.specializations
     Specialization.all.each { |specialization| ProcedureSpecialization.find_or_create_by_procedure_id_and_specialization_id(params[:id], specialization.id) }
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def update
     @procedure = Procedure.find(params[:id])
     ProcedureSweeper.instance.before_controller_update(@procedure)
@@ -45,14 +45,14 @@ class ProceduresController < ApplicationController
       so_value[:specialist_wait_time] = 0 if so_value[:specialist_wait_time].blank?
       so_value[:clinic_wait_time] = 0 if so_value[:clinic_wait_time].blank?
     }
-    
+
     if @procedure.update_attributes(params[:procedure])
       redirect_to @procedure, :notice  => "Successfully updated area of practice."
     else
       render :action => 'edit'
     end
   end
-  
+
   def destroy
     @procedure = Procedure.find(params[:id])
     ProcedureSweeper.instance.before_controller_destroy(@procedure)

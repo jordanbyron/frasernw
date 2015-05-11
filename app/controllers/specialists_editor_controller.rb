@@ -4,7 +4,7 @@ class SpecialistsEditorController < ApplicationController
   skip_authorization_check
   before_filter :check_pending, :except => [:pending, :temp_edit, :temp_update]
   before_filter :check_token
-  
+
   def edit
     @token = params[:token]
     @is_review = true
@@ -28,7 +28,7 @@ class SpecialistsEditorController < ApplicationController
     @specializations_clinic_locations.sort!
     @specializations_procedures = []
     procedure_specializations = {}
-    @specialist.specializations.each { |s| 
+    @specialist.specializations.each { |s|
       @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations.count > 1
       @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
       procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
@@ -64,9 +64,9 @@ class SpecialistsEditorController < ApplicationController
 
   def update
     @specialist = Specialist.find(params[:id])
-    
+
     ReviewItem.delete(@specialist.review_item) if @specialist.review_item.present?
-    
+
     review_item = ReviewItem.new
     review_item.item_type = "Specialist"
     review_item.item_id = @specialist.id
@@ -75,26 +75,26 @@ class SpecialistsEditorController < ApplicationController
     review_item.whodunnit = current_user.id if current_user.present?
     review_item.status = params[:no_updates] ? ReviewItem::STATUS_NO_UPDATES: ReviewItem::STATUS_UPDATES
     review_item.save
-    
+
     EventMailer.mail_review_queue_entry(review_item).deliver
-    
+
     render
   end
-  
+
   def pending
     @specialist = Specialist.find(params[:id])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def check_pending
     specialist = Specialist.find(params[:id])
     redirect_to specialist_self_pending_path(specialist) if specialist.review_item.present? && (!current_user || (specialist.review_item.whodunnit != current_user.id.to_s))
   end
-  
+
   def check_token
     token_required( Specialist, params[:token], params[:id] )
   end
-  
+
   def temp_edit
     @is_new = false
     @is_review = false
@@ -144,14 +144,14 @@ class SpecialistsEditorController < ApplicationController
     }
     render :template => 'specialists/edit'
   end
-  
+
   def temp_update
     @specialist = Specialist.find(params[:id])
     @specialist.review_object = ActiveSupport::JSON::encode(params)
     @specialist.save
     redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}."
   end
-  
+
   protected
   def generate_capacity(specialist, procedure_specialization, offset)
     capacity = specialist.present? ? Capacity.find_by_specialist_id_and_procedure_specialization_id(specialist.id, procedure_specialization.id) : nil

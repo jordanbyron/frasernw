@@ -22,15 +22,15 @@ $.fn.livesearch = function(options)
   var that = this;
   var data;
   use_division_data();
-  
+
   container.mouseover( function() { set_selected(-1) });
-  
+
   this
     .keyup(filter_search).keyup()
     .focus(filter_search)
     .blur(function(){ setTimeout(hide_search,100) })
     .parents('form').submit( function() { if (results.length > 0) { that.blur(); return searcher_fnc(results[selected].data_entry) } else { return false; } });
-  
+
   search_all.click(function() {
     if ($(this).prop('checked') == true)
     {
@@ -40,7 +40,7 @@ $.fn.livesearch = function(options)
         that.trigger('focus'); //maintain focus
         container.addClass('loading');
         $.ajax({
-          url: search_all_url, 
+          url: search_all_url,
           dataType: 'script'
         }).success(function() {
           use_all_data();
@@ -63,9 +63,9 @@ $.fn.livesearch = function(options)
       that.trigger('focus'); //maintain focus
     }
   }).blur(function(){ setTimeout(hide_search,100) });
-  
+
 	return this;
-  
+
   function hide_search()
   {
     if (!(that.is(':focus')))
@@ -73,7 +73,7 @@ $.fn.livesearch = function(options)
       container.animate({height: "hide"}, 200)
     }
   }
-  
+
   function use_all_data()
   {
     data = global_data.concat(pathways_all_search_data);
@@ -84,7 +84,7 @@ $.fn.livesearch = function(options)
     data = $(data);
     that.trigger('focus'); //refresh results
   }
-  
+
   function use_division_data()
   {
     data = global_data;
@@ -99,7 +99,7 @@ $.fn.livesearch = function(options)
     data = $(data);
     that.trigger('focus'); //refresh results
   }
-    
+
 	function filter_search(event)
   {
     if (event && event.keyCode == 38)
@@ -122,37 +122,37 @@ $.fn.livesearch = function(options)
       set_selected(selected)
       return;
     }
-    
+
 		var term = $.trim( $(this).val().toLowerCase() )
 		
-		if ( !term ) 
+		if ( !term )
     {
-      container.animate({height: "hide"}, 200) 
+      container.animate({height: "hide"}, 200)
       return
-		} 
-    
+		}
+
     list.empty()
-    
+
     results = [];
-    
+
     var best_match = null;
-    
+
     data.each(function()
     {
       var total_score = 0
       var total_items = 0
       var scores_matches = scorer_fnc(this, term, fuzziness)
-    
+
       $.each(scores_matches, function(k, v) { total_items += 1; total_score += v } );
       total_score /= total_items
-              
+
       if ( !best_match || total_score > best_match.total_score )
         best_match = {total_score: total_score, scores_matches: scores_matches, data_entry: this}
-    
-      if (total_score >= min_score) 
+
+      if (total_score >= min_score)
         results.push({total_score: total_score, scores_matches: scores_matches, data_entry: this})
     });
-  
+
     if (results.length == 0)
     {
       if (always_match_something)
@@ -162,13 +162,13 @@ $.fn.livesearch = function(options)
       else
       {
         list.append( empty_fnc() )
-        container.animate({height: "show"}, 200) 
+        container.animate({height: "show"}, 200)
         return
       }
     }
-    
+
     results = results.sort(function(a, b){return b.total_score - a.total_score}).slice(0,max_results);
-    
+
     var last_group = -999;
     $.each(results.sort(grouper_fnc), function()
     {
@@ -179,18 +179,18 @@ $.fn.livesearch = function(options)
       }
       list.append(data_formatter_fnc(this.total_score, this.scores_matches, this.data_entry, term))
     });
-    
+
     selected = 0
     set_selected(selected)
-    
-    container.animate({height: "show"}, 200) 
+
+    container.animate({height: "show"}, 200)
 	}
-  
-  function scorer(data_entry, term, fuzziness) 
+
+  function scorer(data_entry, term, fuzziness)
   {
     return { value: score_matches( term, data_entry.value, fuzziness) };
   }
-  
+
   function grouper(a, b)
   {
     if (a.data_entry.go && b.data_entry.go)
@@ -198,29 +198,29 @@ $.fn.livesearch = function(options)
     else
       return (b.total_score - a.total_score)
   }
-  
+
   function data_formatter(total_score, scores_matches, data_entry, term)
   {
     return "<li class='search-result'><a href=\'" + data_entry.url + "'>" + data_entry.value + '</a></li>';
   }
-  
+
   function group_formatter(group_id)
   {
     var result = "<li class='group'>" + group_id + "</li>";
-    
+
     return result;
   }
-  
+
   function empty()
   {
     return "<li class='empty'>No results</li>";
   }
-  
+
   function searcher(data_entry)
   {
     return false;
   }
-  
+
   function set_selected(index)
   {
     container.find('.search-result').each( function(i) {
@@ -244,8 +244,8 @@ Array.prototype.hasValue = function(value)
 
  /*!
  * score_matches, very loosely built off of string_score
- * 
- * string_score.js: String Scoring Algorithm 0.1.10 
+ *
+ * string_score.js: String Scoring Algorithm 0.1.10
  *
  * http://joshaven.com/string_score
  * https://github.com/joshaven/string_score
@@ -270,29 +270,29 @@ var score_matches = function(string1, string2, fuzziness)
   {
     return 0.0;
   }
-  
+
   var arr1 = string1.trim().toLowerCase().split(' ');
   var arr2 = string2.trim().toLowerCase().split(' ');
-  
+
   var best_match = new Array(arr1.length);
-  
+
   for(var x = 0; x < arr1.length; ++x)
   {
     best_match[x] = 0;
     var piece1 = arr1[x];
     var piece1_length = piece1.length;
-    
+
     for (var y = 0; y < arr2.length; ++y )
     {
       var piece2 = arr2[y]
-      
+
       // perfect match?
-      if (piece1 == piece2) 
+      if (piece1 == piece2)
       {
         best_match[x] = 1.0;
         break;
       }
-      
+
       var total_character_score = 0;
       var piece2_length = piece2.length;
       var max_length = Math.max(piece1_length, piece2_length);
@@ -300,20 +300,20 @@ var score_matches = function(string1, string2, fuzziness)
       var num_matches = 0;
       var fuzzies = 1;
       var piece_score;
-      
+
       var piece1_index = 0;
       var bonuses = 0;
-      
-      while (piece1_index < piece1_length) 
+
+      while (piece1_index < piece1_length)
       {
         // Find the longest match remaining.
         var found = false;
         var piece2_index = -1;
-        
+
         for (var match_length = 1; match_length <= piece1_length - piece1_index; ++match_length)
         {
           var cur_index = piece2.indexOf( piece1.substr(piece1_index, match_length) );
-          
+
           if (cur_index != -1)
           {
             found = true;
@@ -325,65 +325,65 @@ var score_matches = function(string1, string2, fuzziness)
             break;
           }
         }
-        
+
         if (!found)
-        { 
+        {
           fuzzies += 1-fuzziness;
           ++piece1_index;
           continue;
         }
-        
+
         ++num_matches;
-        
+
         var match_score = match_length / max_length;
-        
-        if (piece2_index == 0) 
+
+        if (piece2_index == 0)
         {
           //matching the start of a search term
           ++start_of_word_matches;
         }
-        
+
         //bonuses!
         if ((match_length >= 2) && (piece1_index == 0) && (piece2_index == 0))
         {
           //matching the start of a search term to the start of a term
           bonuses += 0.1;
-          
+
           if ((x == 0) && (y == 0))
           {
             //matched the start of our search to the start of the result
             bonuses += 0.2;
           }
         }
-        
+
         // Left trim the already matched part of the string (forces sequential matching).
         piece1_index += match_length;
         piece2 = piece2.substring(piece2_index + match_length, piece2_length);
-        
+
         total_character_score += match_score;
-      } 
-      
+      }
+
       if (num_matches == 0)
       {
         continue;
       }
-      
+
       //penalize each match that isn't a start of string
       piece_score = total_character_score - ((num_matches-start_of_word_matches) * 0.1);
-      
+
       //take into account errors and bonuses
       piece_score = (piece_score / fuzzies) + bonuses;
-      
+
       best_match[x] = Math.max(piece_score, best_match[x]);
     }
   }
-  
+
   overall_score = 0;
   for ( var x = 0; x < best_match.length; ++x )
   {
     overall_score += best_match[x];
   }
   overall_score /= best_match.length;
-  
+
   return overall_score;
 };

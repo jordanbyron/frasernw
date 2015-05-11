@@ -1,28 +1,28 @@
 class FrontController < ApplicationController
   load_and_authorize_resource
   include ApplicationHelper
-  
+
   def index
     @front = Front.first
     @front = Front.create if @front.blank?
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def as_division
     @division = Division.find(params[:division_id])
     render :action => 'index'
   end
-  
+
   def faq
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def terms_and_conditions
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
-  
-  
+
+
+
   def edit
     @front = Front.first
     @front = Front.create if @front.blank?
@@ -51,7 +51,7 @@ class FrontController < ApplicationController
     end
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def update
     @front = Front.first
     division = Division.find(params[:division_id])
@@ -62,7 +62,7 @@ class FrontController < ApplicationController
       User.in_divisions([division]).map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
         expire_fragment "featured_content_#{division_group.join('_')}"
       end
-      
+
       redirect_to front_as_division_path(division), :notice  => "Successfully updated featured content."
     else
       render :action => 'edit'

@@ -1,12 +1,12 @@
 namespace :pathways do
   task :list_single_specialist_offices => :environment do
-    Office.all.reject{ 
-      |o| o.num_specialists != 1 || 
-      o.specialists.first.specializations.blank? || 
-      o.empty? || 
-      !o.specialists.first.responded? || 
-      o.specialists.first.retired? || 
-      o.specialists.first.status_mask == 8 
+    Office.all.reject{
+      |o| o.num_specialists != 1 ||
+      o.specialists.first.specializations.blank? ||
+      o.empty? ||
+      !o.specialists.first.responded? ||
+      o.specialists.first.retired? ||
+      o.specialists.first.status_mask == 8
     }.sort{ |a,b| a.specialists.first.specializations.first.owner.name + " " + a.specialists.first.specializations.first.name <=> b.specialists.first.specializations.first.owner.name + " " + b.specialists.first.specializations.first.name }.each do |o|
       puts "Assigned to #{o.specialists.first.specializations.first.owner.name}"
       o.specialist_offices.reject{ |so| so.specialist.blank? || so.controlling_users.blank? }.each do |so|
@@ -19,6 +19,6 @@ namespace :pathways do
       end
       puts ""
       puts ""
-    end  
+    end
   end
 end

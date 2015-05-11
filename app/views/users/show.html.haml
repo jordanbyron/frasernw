@@ -11,27 +11,27 @@
     %p.no_indent.space
       %strong Email address:
       = @user.email
-      
+
   %p.no_indent.space
     %strong Role:
     = @user.role_full
-    
+
   - if @user.pending?
     %p.no_indent.space
       %strong Access Key:
       = @user.token
 
   - if @user.divisions.present?
-    %p.no_indent.space 
+    %p.no_indent.space
       %strong Belongs to divisions
       %ul
         - @user.divisions.each do |d|
           %li= link_to d.name, d, :class => 'ajax'
-    
+
   - @user.divisions.each do |division|
     - specialization_options = @user.specialization_options.for_divisions([division]).reject{ |so| so.specialization.blank? }
     - if @user.admin? && specialization_options.present?
-      %p.no_indent.space 
+      %p.no_indent.space
         %strong Specializations owned in #{division.name}
         %ul
           - specialization_options.each do |so|
@@ -45,7 +45,7 @@
         - @user.controlled_specialists.each do |specialist|
           %li= link_to specialist.name, specialist, :class => 'ajax'
     - if @user.controlled_clinics.length > 0
-      %p 
+      %p
         %strong Can edit clinics
       %ul
         - @user.controlled_clinics.each do |clinic|
@@ -54,4 +54,3 @@
   %p.admin.btn-group
     - if can? :update, @user
       = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(@user), :class => "btn ajax")
-      

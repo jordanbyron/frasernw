@@ -10,10 +10,10 @@
   %p.no_indent= "Generated on #{Time.now.strftime('%A %B %d')} at #{Time.now.strftime('%I:%M %p')}"
 
   - if @h
-  
+
     = javascript_include_tag :highcharts
     = high_chart("my_id", @h)
-    
+
   - if @report.by_user && @user_results.present?
 
     %table#user_table.table.table-condensed
@@ -31,7 +31,7 @@
         "asSorting": [[1,'desc']],
         "sPaginationType": "bootstrap"
       } );
-      
+
   - if @report.by_pageview
 
     %table#pageviews_table.table.table-condensed
@@ -46,9 +46,9 @@
         ],
         "sPaginationType": "bootstrap"
       } );
-      
+
   - if @specialist_email_table.present?
-  
+
     %table.table.table-condensed.table-striped
       %tr
         %th Specialist

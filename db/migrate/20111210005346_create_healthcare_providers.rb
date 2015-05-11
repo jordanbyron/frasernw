@@ -5,7 +5,7 @@ class CreateHealthcareProviders < ActiveRecord::Migration
 
       t.timestamps
     end
-    
+
     HealthcareProvider.reset_column_information
     HealthcareProvider.create :name => "Nurse"
     HealthcareProvider.create :name => "Nurse Practitioner"

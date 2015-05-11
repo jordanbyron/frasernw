@@ -8,7 +8,7 @@ describe ReviewsController do
     controller.stub!(:logged_in?).and_return(true)
     # controller.class.skip_before_filter :login_required
   end
-  
+
   it "index action should render index template" do
     get :index
     response.should render_template(:index)

@@ -5,7 +5,7 @@ class RenameMoaEntries < ActiveRecord::Migration
     rename_column :specialists, :moa_name, :contact_name
   end
 end
-# 
+#
 # t.string   "moa_name"
 # t.string   "moa_phone"
 # t.string   "moa_email"

@@ -3,44 +3,44 @@
     .alert.alert-error= f.error_messages
 
   = f.input :name
-  
+
   = f.input :type_mask, as: :select, collection: Report::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
-  
+
   #report_level
     = f.input :level_mask, as: :select, collection: Report::LEVEL_HASH, label_method: :last, value_method: :first, :include_blank => false
     #report_divison_level
       = f.input :division_id,  as: :select, collection: Division.all, :include_blank => false
     #report_city_level
       = f.input :city_id,  as: :select, collection: City.all, :include_blank => false
-      
+
   #report_user_type
     = f.input :user_type_mask, as: :select, collection: Report::USER_TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
-      
+
   #report_time_frame
     = f.input :time_frame_mask, as: :select, collection: Report::TIME_FRAME_HASH, label_method: :last, value_method: :first, :include_blank => false
     #report_custom_time_frame
       = f.input :start_date, :as => :datepicker
       = f.input :end_date, :as => :datepicker
-      
+
   #report_by_user
     = f.input :by_user
-      
+
   #report_by_pageview
     = f.input :by_pageview
-    
+
   #report_content
     = f.input :only_shared_care
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
     = link_to 'Cancel', reports_path, :class => "btn btn-danger ajax"
-    
+
   %script{"type" => "text/javascript"}
     :plain
-      var change_type = function() 
+      var change_type = function()
       {
         var val = $(this).val();
-        
+
         if ( val == 1 )
         {
           //general page views
@@ -111,14 +111,14 @@
           $('#report_content').hide()
         }
       }
-      
+
       $("#report_type_mask").each( change_type )
       $("#report_type_mask").click( change_type )
-      
-      var change_level = function() 
+
+      var change_level = function()
       {
         var val = $(this).val();
-        
+
         if ( val == 1 )
         {
           $('#report_divison_level').hide();
@@ -135,31 +135,30 @@
           $('#report_city_level').show();
         }
       }
-      
+
       $("#report_level_mask").each( change_level )
       $("#report_level_mask").click( change_level )
-      
-      var change_time_frame = function() 
+
+      var change_time_frame = function()
       {
         var val = $(this).val();
-        
+
         if ( val == 6 )
         {
           $('#report_custom_time_frame').show();
         }
-        else 
+        else
         {
           $('#report_custom_time_frame').hide();
         }
       }
-      
+
       $("#report_time_frame_mask").each( change_time_frame )
       $("#report_time_frame_mask").click( change_time_frame )
-      
-      $(document).ready(function() { 
+
+      $(document).ready(function() {
         $("input.datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
       });
-      
-      
-      
-      
+
+
+

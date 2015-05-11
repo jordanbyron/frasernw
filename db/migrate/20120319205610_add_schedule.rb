@@ -1,6 +1,6 @@
 class AddSchedule < ActiveRecord::Migration
   def change
-    
+
     create_table :schedules do |t|
       t.string  :schedulable_type
       t.integer :schedulable_id
@@ -11,20 +11,20 @@ class AddSchedule < ActiveRecord::Migration
       t.integer :friday_id
       t.integer :saturday_id
       t.integer :sunday_id
-      
+
       t.timestamps
     end
-    
+
     create_table :schedule_days do |t|
       t.boolean :scheduled
       t.time    :from
       t.time    :to
-      
+
       t.timestamps
     end
-    
+
     add_column :clinics, :schedule_id, :integer
-    
+
     Clinic.all.each do |c|
       s = c.build_schedule
       s.build_monday
@@ -36,6 +36,6 @@ class AddSchedule < ActiveRecord::Migration
       s.build_sunday
       c.save
     end
-    
+
   end
 end

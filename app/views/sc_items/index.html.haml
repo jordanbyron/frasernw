@@ -3,7 +3,7 @@
 .content-wrapper
 
   %h2 Content Items
-  
+
   - categories = ScCategory.all.reject{ |category| category.parent.present? || category.all_owned_sc_items_in_divisions([@division]).blank? }
 
   .tabbable
@@ -14,7 +14,7 @@
           %a{"href" => "##{category.name.remove_whitespace}_tab", "data-toggle" => "tab"}= category.name
         - active = false
 
-  
+
     .tab-content
       - active = true
       - categories.each do |category|
@@ -35,7 +35,7 @@
                 %th{:class => "{sorter: 'text'}", :style => "min-width: 40px"}
                   %i.icon-star
                 %th.admin
-            
+
             %tbody
               - category.all_owned_sc_items_in_divisions([@division]).each do |sc_item|
                 %tr

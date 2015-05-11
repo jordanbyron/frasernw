@@ -19,7 +19,7 @@
   ScCategory.all.each do |category|
     category.all_sc_items_in_divisions([division], :exclude_subcategories => true).reject{ |item| !item.searchable? || item.in_progress }.each do |item|
       entry = {
-        "n" => item.title, 
+        "n" => item.title,
         "sp" => item.specializations.not_in_progress_for_divisions([division]).uniq.collect{ |s| s.id },
         "id" => item.id,
         "go" => order_map[category.name] }

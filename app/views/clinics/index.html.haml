@@ -14,11 +14,11 @@
           %a{"href" => "##{division.id}_tab", "data-toggle" => "tab"}= division.name
       %li
         %a{"href" => "#no_division_tab", "data-toggle" => "tab"} No Division
-          
+
     .tab-content
       - Division.all.each do |division|
         - can_edit = user_divisions.include? division
-        .tab-pane{:id => "#{division.id}_tab", :class => (division == first_division) && "active"} 
+        .tab-pane{:id => "#{division.id}_tab", :class => (division == first_division) && "active"}
           %table.table.table-condensed.table-striped
             - @specializations.each do |specialization|
               - clinics = specialization.clinics.in_divisions([division]).sort{ |a,b| a.name <=> b.name }

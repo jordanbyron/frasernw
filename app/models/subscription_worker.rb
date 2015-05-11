@@ -33,7 +33,7 @@ class SubscriptionWorker < ActiveRecord::Base
                                             subscription.id )
     end
   end
-  
+
   def self.collect_subscriptions_by_activities(activity)
       self.collect_all_activities_for_subscriptions(subscription) & activity
   end

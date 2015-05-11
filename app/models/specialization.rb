@@ -1,72 +1,70 @@
 class Specialization < ActiveRecord::Base
   attr_accessible :name, :member_name, :in_progress, :specialization_options_attributes, :open_to_clinic
   has_paper_trail :ignore => :saved_token
-  
+
   has_many :specialist_specializations, :dependent => :destroy
   has_many :specialists, :through => :specialist_specializations
-  
+
   has_many :clinic_specializations, :dependent => :destroy
   has_many :clinics, :through => :clinic_specializations
-  
+
   has_many :procedure_specializations, :dependent => :destroy, :conditions => { "mapped" => true }
-  has_many :procedures, :through => :procedure_specializations, :order => 'name ASC', auto_include: false
-  
+  has_many :procedures, :through => :procedure_specializations, :order => 'name ASC'
+
   has_many :sc_item_specializations, :dependent => :destroy
   has_many :sc_items, :through => :sc_items_specializations
-  
+
   has_many :specialization_options, :dependent => :destroy
   accepts_nested_attributes_for :specialization_options
   has_many :owners, :through => :specialization_options, :class_name => "User"
   has_many :content_owners, :through => :specialization_options, :class_name => "User"
-  
+
+  after_commit :flush_cache
+  after_touch  :flush_cache
+
   default_scope order('specializations.name')
 
-  # # # Cache actions
-  after_touch  :flush_cached_find
-  after_touch  :flush_cache
-  after_commit :flush_cached_find
-  after_commit :flush_cache
-
+  # # # # # # CACHING METHODS
   def self.all_cached
-    Rails.cache.fetch([name, 'Specialization.all'], :expires_in => 1.hours) { all }
+    Rails.cache.fetch([name, "all_specializations"], expires_in: 6.hours) {self.all}
   end
 
   def self.cached_find(id)
-    Rails.cache.fetch([name, id]) { find(id) }
+    Rails.cache.fetch([name, id]){find(id)}
   end
 
-  def flush_cached_find
-    Rails.cache.delete([self.class.name, id])
-  end
-
-  def flush_cache #called during after_commit or after_touch
-    Rails.cache.delete([self.class.name, "Specialization.all"])
-    Specialization.all.each do |specialization|
-      Rails.cache.delete([specialization.class.name, specialization.id])
+  def self.refresh_cache
+    Rails.cache.write([name, "all_specializations"], self.all)
+    SpecialistOffice.all.each do |office|
+      Rails.cache.write([office.class.name, office.id], SpecialistOffice.find(office.id))
     end
   end
 
-  # # #
-  
+  def flush_cache #called during after_commit or after_touch
+    Rails.cache.delete([self.class.name, "all_specializations"])
+    Rails.cache.delete([self.class.name, self.id])
+  end
+  # # # # # #
+
   def self.in_progress_for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     joins(:specialization_options).where('"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)', division_ids, true)
   end
-    
+
   def self.not_in_progress_for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     joins(:specialization_options).where('"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)', division_ids, false)
   end
-    
+
   def self.new_for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     joins(:specialization_options).where('"specialization_options"."division_id" IN (?) AND "specialization_options"."is_new" = (?)', division_ids, true)
   end
-  
+
   def not_fully_in_progress
     specialization_options.reject{ |so| so.in_progress }.length > 0
   end
-  
+
   def fully_in_progress
     specialization_options.reject{ |so| so.in_progress }.length == 0
   end
@@ -74,7 +72,7 @@ class Specialization < ActiveRecord::Base
   def fully_in_progress_for_divisions(divisions)
     (specialization_options.for_divisions(divisions).length > 0) && (specialization_options.for_divisions(divisions).reject{ |so| so.in_progress }.length == 0)
   end
-    
+
   def new_for_divisions(divisions)
     specialization_options.for_divisions(divisions).is_new.length > 0
   end
@@ -88,27 +86,27 @@ class Specialization < ActiveRecord::Base
       so.first.open_to
     end
   end
-  
+
   def procedure_specializations_arranged
     return procedure_specializations.arrange(:joins => "JOIN procedures ON procedure_specializations.procedure_id = procedures.id", :conditions => "procedure_specializations.specialization_id = #{self.id} AND procedure_specializations.mapped = 't'", :order => "procedures.name")
   end
-  
+
   def focused_procedure_specializations_arranged
     return procedure_specializations.focused.arrange(:joins => "JOIN procedures ON procedure_specializations.procedure_id = procedures.id", :conditions => "procedure_specializations.specialization_id = #{self.id} AND procedure_specializations.mapped = 't'", :order => "procedures.name")
   end
-  
+
   def non_focused_procedure_specializations_arranged
     return procedure_specializations.non_focused.arrange(:joins => "JOIN procedures ON procedure_specializations.procedure_id = procedures.id", :conditions => "procedure_specializations.specialization_id = #{self.id} AND procedure_specializations.mapped = 't'", :order => "procedures.name")
   end
-  
+
   def assumed_specialist_procedure_specializations_arranged
     return procedure_specializations.assumed_specialist.arrange(:joins => "JOIN procedures ON procedure_specializations.procedure_id = procedures.id", :conditions => "procedure_specializations.specialization_id = #{self.id} AND procedure_specializations.mapped = 't'", :order => "procedures.name")
   end
-  
+
   def assumed_clinic_procedure_specializations_arranged
     return procedure_specializations.assumed_clinic.arrange(:joins => "JOIN procedures ON procedure_specializations.procedure_id = procedures.id", :conditions => "procedure_specializations.specialization_id = #{self.id} AND procedure_specializations.mapped = 't'", :order => "procedures.name")
   end
-  
+
   def non_assumed_procedure_specializations_arranged
     return procedure_specializations.non_assumed.arrange(:joins => "JOIN procedures ON procedure_specializations.procedure_id = procedures.id", :conditions => "procedure_specializations.specialization_id = #{self.id} AND procedure_specializations.mapped = 't'", :order => "procedures.name")
   end

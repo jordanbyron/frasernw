@@ -1,23 +1,23 @@
 = simple_nested_form_for @front, :url => {:controller => 'front', :action => :update}, :html => { :class => "ajax" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
-    
+
   = hidden_field_tag 'division_id', @division.id
-  
+
   - last_category = nil
-            
+
   - ScCategory.all.reject{ |c| !c.show_on_front_page? }.each do |category|
     %h4= category.name
 
     - category.featured_contents.in_divisions([@division]).order("created_at").each do |fc|
-      
+
       - if last_category != fc.sc_category.name
         - last_category = fc.sc_category.name
 
       - count = 0
       = f.simple_fields_for :featured_contents, fc do |fcf|
         = fcf.association :sc_item, :collection => fc.sc_category.all_sc_items_in_divisions([@division]), :label => false, input_html: { :class => "span12" }
-      
+
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
     = link_to 'Cancel', root_url, :class => "btn btn-danger ajax"

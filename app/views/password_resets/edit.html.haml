@@ -7,7 +7,7 @@
   %p.space.no_indent= "#{@user.name}, please set a new password below."
 
   = simple_form_for @user, :url => {:controller => "password_resets", :action => "update"} do |f|
-    
+
     = f.input :password, :hint => "Your password must be at least 8 characters long, and include at least one number and one letter."
     = f.input :password_confirmation
     = f.button :submit, "Set password", :class => "btn btn-primary"

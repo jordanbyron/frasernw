@@ -93,7 +93,7 @@
 
     %script{"type" => "text/javascript"}
       :plain
-        $(document).ready(function() { 
+        $(document).ready(function() {
           $("#open_to_type_#{division.id}").each( function() { setContentCategoryVisibility(this, #{division.id}) });
           $("#open_to_type_#{division.id}").live("change", function() { setContentCategoryVisibility(this, #{division.id}) });
         });
