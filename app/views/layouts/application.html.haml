@@ -23,7 +23,7 @@
     - if !Rails.env.development?
       :javascript
         var livesearch;
-        $(document).ready(function() 
+        $(document).ready(function()
         {
           livesearch = $('#search').livesearch({
             container: '#search_results',
@@ -39,12 +39,12 @@
             group_formatter: pathways_group_formatter,
             min_score: 0.6
           });
-          
-          if ($(window).width() <= 480) 
-          { 
+
+          if ($(window).width() <= 480)
+          {
             $('meta[name=viewport]').attr('content','initial-scale=1.0, user-scalable=no');
           }
-          
+
           $('body').data('GLOBAL_USER_ID', #{current_user_id});
           $('body').data('GLOBAL_USER_TYPE', #{current_user_type_mask});
         });
@@ -66,16 +66,16 @@
     #main-nav.navbar
       .navbar-inner
         .container
-        
+
           %a.btn.btn-navbar{"data-toggle" => "collapse", "data-target" => ".nav-collapse"}
             %span.icon-bar
             %span.icon-bar
             %span.icon-bar
-            
+
           %a#logo.brand.ajax{"href" => root_url}
-          
+
           - if logged_in?
-            
+
             %form.navbar-search.pull-right
               %input.span3.search-query#search{"type" => "search", "placeholder" => "Search"}
               #search_results{:style => 'display:none'}
@@ -90,14 +90,14 @@
 
           .nav-collapse
             - if logged_in?
-                  
+
               %ul.nav.pull-right
-              
+
                 %li.dropdown.visible-desktop
                   %a.ajax{"href" => root_url} Home
-                  
+
                 - if current_user_is_admin?
-                
+
                   %li.dropdown.admin
                     %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
                       Admin
@@ -111,7 +111,7 @@
                         %span.badge{ :class => ((user_review_item_count + user_feedback_item_count) > 0) && "badge-warning"}
                           #{user_review_item_count + user_feedback_item_count}/#{total_review_item_count + total_feedback_item_count}
                       %b.caret
-                      
+
                     %ul.dropdown-menu
                       - if current_user_is_super_admin?
                         %li= link_to "Activity Feed", all_versions_path, :class => "history ajax"
@@ -270,7 +270,7 @@
                           %li= link_to "Content Items", division_content_items_path(user_divisions.first), :class => "sc_item ajax"
                           - if Division.all.length > 1
                             %li= link_to "Manage Shared Content Items", shared_content_items_path(user_divisions.first), :class => "sc_item ajax"
-                  
+
                 - dropdown_categories = ScCategory.global_resources_dropdown.reject{ |category| category.all_sc_items_in_divisions(user_divisions).blank? }
                 - if dropdown_categories.present?
                   %li.dropdown
@@ -280,7 +280,7 @@
                     %ul.dropdown-menu
                       - dropdown_categories.each do |category|
                         %li=link_to category.name, category, :class => 'ajax'
-                
+
                 - ScCategory.global_navbar.reject{ |category| category.all_sc_items_in_divisions(user_divisions).blank? }.each do |category|
                   %li= link_to category.name, category, :class => 'ajax'
 
@@ -288,9 +288,9 @@
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
                     Forms
                     %b.caret
-                    
+
                   %ul#forms_dropdown.dropdown-menu
-                        
+
                     %li= link_to 'General forms', '/content_categories/9', :class => 'ajax'
                     %li= link_to 'Referral forms', referral_forms_path, :class => 'ajax'
 
@@ -299,43 +299,43 @@
                     %i.icon-heart
                     Favourites
                     %b.caret
-                    
+
                   %ul#favorites_dropdown.dropdown-menu
-                        
+
                     %li#specialists_favorites.nav-header.specialist Specialists
                     - current_user.favorite_specialists.each do |s|
                       %li.favorite{"id" => "specialists_#{s.id}"}= link_to s.name, specialist_path(s), :class => 'ajax'
-                        
+
                     %li#clinics_favorites.nav-header.clinic Clinics
                     - current_user.favorite_clinics.each do |c|
                       %li.favorite{"id" => "clinics_#{c.id}"}= link_to c.name, clinic_path(c), :class => 'ajax'
-                        
+
                     %li#content_items_favorites.nav-header.clinic Content
                     - current_user.favorite_content_items.each do |c|
                       %li.favorite{"id" => "content_items_#{c.id}"}= link_to c.title, "/content_items/#{c.id}", :class => 'ajax'
-                        
+
                     %li#add_favorites
                       %p
                         Add specialists, clinics, and content to this menu for quick reference by viewing their full details and pressing the
                         %i.icon-text.icon-heart
                         beside their name.
-                        
+
                     -if current_user.favorite_specialists.blank?
                       :javascript
                         $(document).ready(function() { $('#specialists_favorites').hide(); });
-                        
+
                     -if current_user.favorite_clinics.blank?
                       :javascript
                         $(document).ready(function() { $('#clinics_favorites').hide(); });
-                        
+
                     -if current_user.favorite_content_items.blank?
                       :javascript
                         $(document).ready(function() { $('#content_items_favorites').hide(); });
-                        
+
                     -if current_user.favorites.present?
                       :javascript
                         $(document).ready(function() { $('#add_favorites').hide(); });
-                        
+
                 %li.dropdown
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
                     %i.icon-user
@@ -343,24 +343,24 @@
                     %b.caret
                   %ul.dropdown-menu
                     %li.nav-header.name= current_user.name
-                    
+
                     - if current_user.controlled_specialists.present?
                       %li.nav-header Your specialists
                       - current_user.controlled_specialists.each do |specialist|
                         %li= link_to specialist.name, specialist, :class => 'ajax'
-                    
+
                     - if current_user.controlled_clinics.present?
                       %li.nav-header Your clinics
                       - current_user.controlled_clinics.each do |clinic|
                         %li= link_to clinic.name, clinic, :class => 'ajax'
-                    
+
                     %li.nav-header Help
                     %li= link_to "FAQ", faq_path, :class => 'faq ajax'
                     %li= mail_to "administration@pathwaysbc.ca", "Contact Us", :class => 'contact'
-                    
+
                     %li.nav-header Legal
                     %li= link_to "Terms of Use", terms_and_conditions_path, :class => 'tac ajax'
-                    
+
                     %li.nav-header Settings
                     -# %li= link_to "Change name", change_name_path, :class => 'change_name ajax'
                     -# if Division.all.length > 1
@@ -371,7 +371,7 @@
 
     #body.container
       .row
-                    
+
         #content.span12
           #container
             - flash.each do |type, msg|
@@ -383,9 +383,9 @@
             #message_sent
               .inner
                 %h2 Message sent!
-                
+
                 %p.space.no_indent Thank you for providing your comments to Pathways. We will review your message in the near future, and respond as necessary.
-                
+
                 %p.space.no_indent
                   %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#message_sent').fadeOut(200)" } Close
 
@@ -393,6 +393,8 @@
         #email.content-wrapper
           Contact us:
           %a{:href => '#', :onclick => "$('#message .inner').load('#{messages_path}', function() { show_message(); }); return false;"} administration@pathwaysbc.ca
-            
+
     #loading
       #loading-spinner
+
+    = yield(:javascript_footer)

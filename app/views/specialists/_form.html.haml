@@ -1,3 +1,6 @@
+- content_for(:javascript_footer) do
+  = javascript_include_tag "components/location_tabs"
+
 -# multiple controllers use this form
 - form_method    = params[:action] == 'new' ? :post   : :put
 - current_action = params[:action] == 'new' ? :create : :update
@@ -10,29 +13,29 @@
   %script{"type" => "text/javascript"}
     :plain
       function show_old_value(form_element, old_value_formatted)
-      { 
+      {
         form_element.closest('div.control-group, div.changed_wrapper').addClass('changed');
         help_span = $(document.createElement('span'));
         help_span.addClass('help-inline');
         help_span.html("Was: " + old_value_formatted.replace(/(\r\n|\n|\r)/gm,"<br>"));
         form_element.parent().append(help_span);
-      } 
-      
+      }
+
       function generate_button_name(form_element_id_array)
       {
         return form_element_id_array[0] + '[' + form_element_id_array.slice(1).join('][') + ']';
       }
-    
+
       function compare_form(form_element_id_array, new_entry_value, highlight_changes)
       {
         //console.log(form_element_id_array + " : " + new_entry_value)
-        
+
         if ( $.isArray( new_entry_value ) )
         {
           //try as array of checkboxes
           checkbox_selector = "input:checkbox[name='" + generate_button_name(form_element_id_array) + "[]']"
           form_element = $(checkbox_selector);
-          
+
           if (form_element)
           {
             $.each(form_element, function( index, checkbox )
@@ -56,28 +59,28 @@
           {
             //console.log( "No check boxes for array " + new_entry_value );
           }
-          
+
           return;
         }
-        
+
         //try just as id
         form_element = $('#' + form_element_id_array.join('_'));
-        
+
         if (!form_element || form_element.length != 1)
         {
           //try as radio button
           radio_selector = "input:radio[name='" + generate_button_name(form_element_id_array) + "']:checked"
           form_element = $(radio_selector);
         }
-        
+
         if (!form_element || form_element.length != 1)
         {
           //console.log("Found nothing with id " + form_element_id_array);
           return;
         }
-                
+
         //console.log("tag: " + form_element.prop("tagName"));
-        
+
         switch(form_element.prop("tagName"))
         {
           case('INPUT'):
@@ -93,7 +96,7 @@
                   new_entry_value_offset = new_entry_value - 1; //eq is zero indexed, our forms are 1
                   $("input:radio[name='" + generate_button_name(form_element_id_array) + "']:eq(" + new_entry_value_offset + ")").prop('checked', true);              //check new value
                   if (highlight_changes)
-                  { 
+                  {
                     old_value_formatted = form_element.closest('label').text()
                     show_old_value(form_element, old_value_formatted);
                   }
@@ -140,7 +143,7 @@
             {
               //console.log("TEXTAREA: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
               form_element.val(new_entry_value);
-              if (highlight_changes) 
+              if (highlight_changes)
               {
                 old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
                 show_old_value(form_element, old_value_formatted);
@@ -153,7 +156,7 @@
             {
               //console.log("SELECT: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
               form_element.val(new_entry_value);
-              if (highlight_changes) 
+              if (highlight_changes)
               {
                 old_value_formatted = old_entry_value != "" ? $('#' + form_element_id_array.join('_') + ' option[value=\'' + old_entry_value + '\']').text(): "blank";
                 show_old_value(form_element, old_value_formatted);
@@ -165,7 +168,7 @@
             break;
         }
       }
-      
+
       function traverse_review_item(id_array, review_item, highlight_changes)
       {
         $.each(review_item, function(entry_key, new_entry_value) {
@@ -183,7 +186,7 @@
           }
         });
       }
-      
+
       function traverse_capacities(review_item, highlight_changes)
       {
         capacities_mapped = review_item["capacities_mapped"];
@@ -192,7 +195,7 @@
           //handle when no areas of practice are checked off
           capacities_mapped = {}
         }
-        
+
         $("input.capacity").each( function() {
           var $this = $(this);
           if ($this.prop('checked'))
@@ -217,8 +220,8 @@
           traverse_review_item(["capacities_lagtime"], review_item["capacities_lagtime"], highlight_changes);
         }
       }
-      
-      $(document).ready(function() 
+
+      $(document).ready(function()
       {
         if (#{@is_rereview && @review_item.base_object.present?})
         {
@@ -231,7 +234,7 @@
         //console.log(review_item);
         traverse_review_item(["specialist"], review_item["specialist"], true);
         traverse_capacities(review_item, true);
-        
+
         for (var i = 0; i < #{Specialist::MAX_OFFICES}; ++i)
         {
           if ($('#location_tab_' + i + ' .changed').length !== 0)
@@ -247,12 +250,12 @@
 - if @specialization
   %script{"type" => "text/javascript"}
     :plain
-      $(document).ready(function() 
+      $(document).ready(function()
       {
         var specialty_checkbox_id = "#specialist_specialization_ids_#{@specialization.id}";
         $(specialty_checkbox_id).prop("checked", true);
       });
-    
+
 - if @is_review
   .alert.alert-info
     %h3 You are editing #{@specialist.name}'s entry in Pathways.
@@ -263,7 +266,7 @@
 = simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => form_action}, :method => form_method, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
-      
+
   %h3 General Information
 
   - categorization_hash = {}
@@ -281,54 +284,66 @@
   = f.input :is_gp
   .no-print
     = f.association :specializations, as: :check_boxes, :hint => "If you are adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
-    
+
   #section_hospital_clinic_details
-  
+
     %hr
-    
+
     %h3 Details
-    
+
     = f.input :hospital_clinic_details
 
   #section_contact
-  
+
     %hr
-    
+
     %h3 Office Contact Information
-    
-    .tabbable
+
+    .tabbable.location_tabs
       %ul.nav.nav-tabs
         - @specialist.specialist_offices.each_with_index do |so, index|
-          %li{:class => index == 0 ? "active" : ""} 
-            %a{"href" => "#location_tab_#{index}", "data-toggle" => "tab"}= "Location #{index+1}"
-            
+          = tablist_item active: index == 0, emphasized: !so.empty?, class: ["location_#{index}"] do
+            %a{"href" => "#location_tab_#{index}", "data-toggle" => "tab"}
+              %span
+                = "Location #{index+1}"
+
     .tab-content
       - index = 0
       = f.simple_fields_for :specialist_offices, :nested_wrapper => false do |so|
-        .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"} 
+        .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"}
           %h4.print-only= "Location #{index+1}"
           .control-group.no-print
             %label.control-label Location is
             .controls
               - location_class = "location_#{index}"
               - if @is_new
-                - [['Not used', true], ['In an existing office', false], ['In a new standalone office', false], ['In a new office in a hospital', false], ['In a new office in a clinic', false]].each do |option| 
-                  = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
+                - [['Not used', true], ['In an existing office', false], ['In a new standalone office', false], ['In a new office in a hospital', false], ['In a new office in a clinic', false]].each do |option|
+                  = label_tag "#{location_class}_#{option.first}" do
+                    = radio_button_tag location_class,
+                      option.first,
+                      option.second,
+                      :class => [location_class, "location"]
+                    = option.first
               - else
                 - is_location = @specialist.specialist_offices[index].present? && !@specialist.specialist_offices[index].empty?
-                - [['Not used', !is_location], ['In an office', is_location]].each do |option| 
-                  = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, :class => location_class)} #{option.first}".html_safe
+                - [['Not used', !is_location], ['In an office', is_location]].each do |option|
+                  = label_tag "#{location_class}_#{option.first}" do
+                    = radio_button_tag location_class,
+                      option.first,
+                      option.second,
+                      :class => [location_class, "location"]
+                    = option.first
           %div{:class => "numbers_#{index}"}
             = so.input :phone do
               = so.input_field :phone, :class => "span3"
               .span1
-                ext: 
+                ext:
               = so.input_field :phone_extension, :class => "span1"
             = so.input :fax, :input_html => { :class => "span3" }
             = so.input :direct_phone, :hint => "For physician use only" do
               = so.input_field :direct_phone, :class => "span3"
               .span1
-                ext: 
+                ext:
               = so.input_field :direct_phone_extension, :class => "span1"
             = so.input :email, :input_html => { :class => "span3" }, :hint => "For physician office use only"
             = so.input :public_email, :input_html => { :class => "span3" }, :hint => "Okay for patient use to contact your office"
@@ -362,7 +377,7 @@
             = so.input :open_sunday
             = so.input :location_opened, as: :select, collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a), prompt: "Select ..."
             = so.input :sector_mask, as: :radio_buttons, collection: SpecialistOffice::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
-            
+
             %h4 What days and times are your phone lines open?
             = so.simple_fields_for :phone_schedule, :nested_wrapper => false do |s|
               - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
@@ -390,7 +405,7 @@
             %script{"type" => "text/javascript"}
               :plain
                 $(".scheduled").each(scheduled_changed)
-                
+
           %script{"type" => "text/javascript"}
             :plain
               $(document).ready( address_location_changed(#{index}) );
@@ -398,29 +413,29 @@
     %script{"type" => "text/javascript"}
       :plain
         $(document).ready( $(".chzn-select").chosen() );
-        
+
     - if @review_item || @is_review
       = f.input :address_update, :label => "If you have any address updates, please enter them here"
-    
+
   - if current_user_is_admin? || @is_review
-  
+
     #section_moa.no-print
-    
-      %hr  
-    
+
+      %hr
+
       %h3 Senior Office Contact Information
       .alert.alert-info
         %p.no_indent Please note: the following Senior office contact information is never shown on Pathways to users.
         %p.space.no_indent It will only be used for contact by Pathways administrators related to keeping your office's information up-to-date.
-        
+
       = f.input :contact_name
       = f.input :contact_email
       = f.input :contact_phone
       - if current_user_is_admin?
         = f.input :contact_notes, hint: "Include contact's role (MOA, etc.) and anything else we should know."
-        
+
   #section_status
-  
+
     %hr
 
     %h3 Status
@@ -437,29 +452,29 @@
     = f.input :practise_limitations
     = f.association :languages, as: :check_boxes, :item_wrapper_class => 'inline'
     = f.input :interpreter_available
-  
+
   #section_aop
-  
+
     %hr
 
     %h3 Areas of Practice
     = f.input :required_investigations, :hint => "eg. XRs, MRIs, scans, blood work, etc."
-      
+
     %hr{ "style" => "visibility:hidden" }
-    
+
     %h4 Accepts Referrals For
-    
+
     .content
       .row
         .span4
           %strong Referrals accepted in the following areas of practice.
-        .span4 
+        .span4
           %strong Additional information/investigations required for the specified area of practice.
         .span2
           %strong Lag Time
         .span2
           %strong Wait Time
-      
+
       - @capacities.each do |c|
         .row.spaced
           .span4.changed_wrapper{:class => "pad#{c[:offset]}"}
@@ -472,12 +487,12 @@
             .span2.changed_wrapper.waittime= select_tag "capacities_waittime[#{c[:id]}]", options_from_collection_for_select(Specialist::WAITTIME_HASH, :first, :last, c[:waittime]), :class => "span2", :include_blank => true
 
     %hr{ "style" => "visibility:hidden" }
-    
+
     = f.input :interest, as: :text
     = f.input :not_performed, as: :text
 
   #section_referrals
-  
+
     %hr
 
     %h3 Referral Details
@@ -488,20 +503,20 @@
     = f.input :referral_other_details
     = f.input :referral_details
     = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does the office have a referral form?", :hint => @is_review ? "If you would like to add or correct any referral forms, please email them to #{ @specialist.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ') }".html_safe : ""
-    
+
     - if @is_review && @specialist.referral_form_mask == 1 && @specialist.referral_forms.reject{ |referral_form| referral_form.form.blank? }.present?
-   
+
       .control-group
         .controls
-          
+
           %ul
             - @specialist.referral_forms.each do |referral_form|
               - next if not referral_form.form.present?
               - type = referral_form.form_content_type.split('/').last
-              %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, :target => "_blank" 
-    
-    = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_HASH, label_method: :last, value_method: :first  
-  
+              %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, :target => "_blank"
+
+    = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_HASH, label_method: :last, value_method: :first
+
     = f.input :waittime_mask, as: :select, collection: Specialist::WAITTIME_HASH, label_method: :last, value_method: :first
 
     %label Our office will respond to referral requests:
@@ -509,46 +524,46 @@
     = f.input :respond_by_phone, as: :boolean, wrapper: :bootstrap_tight
     = f.input :respond_by_mail, as: :boolean, wrapper: :bootstrap_tight
     = f.input :respond_to_patient, as: :boolean
-        
+
     = f.input :patient_can_book_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
     = f.input :red_flags, as: :text
-    
+
     %label Optimal method of referral for urgent appointments:
     = f.input :urgent_fax, as: :boolean, wrapper: :bootstrap_tight
     = f.input :urgent_phone, as: :boolean, wrapper: :bootstrap_tight
     = f.input :urgent_other_details
     = f.input :urgent_details
-    
+
   #section_for_patients
-  
+
     %hr
-    
+
     %h3 Information for Patients
-    
+
     .alert.alert-info
       %p.no_indent Please note: the following information will be made available to patients when the 'Print Information for Patients' button is used.
-    
+
     = f.input :patient_instructions, hint: "e.g. call two days in advance to confirm, bring a list of medications."
     = f.input :cancellation_policy
 
   #section_associations
-  
+
     %hr
-  
+
     %h3 Associations
-    
+
     = f.association :hospitals, as: :check_boxes, collection: @hospitals
-    
+
     = f.association :clinic_locations, as: :check_boxes, collection: @specializations_clinic_locations
-  
+
   -if current_user_is_admin? && !@is_review
-  
+
     #section_admin.no-print
-    
+
       %hr
-    
+
       %h3 Admin
-      
+
       = f.input :admin_notes
 
   .form-actions
@@ -573,7 +588,7 @@
         $options.each(function() {
           var selected = $(this).prop('selected') ? "class='selected'" : "";
           $curPrintBox.append("<li " + selected + ">"+$(this).text()+"</li>");
-        });    
+        });
       });
     });
     $(document).ready( $("#specialist_categorization_mask").each(specialist_categorization_changed) );

@@ -1,0 +1,68 @@
+// Hopefully someday we'll be able to unscope this
+
+#content #container .tabbable.location_tabs ul.nav-tabs {
+  // reset normal 'active' behaviour
+  li.active a {
+    font-weight: normal;
+  }
+
+  @media (max-width: 767px) {
+    li.active a {
+      background-color: transparent;
+      color: white;
+    }
+  }
+
+  // new 'active' behaviour
+  li.active span {
+    border-bottom: 1px solid white;
+  }
+
+  @media (max-width: 767px) {
+    li.active.emphasized a {
+      background-color: white;
+      color: #424242;
+    }
+    li.active.emphasized span {
+      border-bottom: 1px solid #424242;
+    }
+  }
+
+  // reset normal hover behaviour
+  li:hover a {
+    font-weight: normal;
+    background-color: transparent;
+    color: white;
+  }
+
+  // new hover behaviour
+  li:hover span {
+    border-bottom: 1px solid white;
+  }
+
+  @media (max-width: 767px) {
+    li:hover span {
+      border-bottom: 1px solid white;
+    }
+
+    li.emphasized:hover span {
+      border-bottom: 1px solid #424242;
+    }
+  }
+
+  // new 'emphasized' behaviour
+  li.emphasized a {
+    font-weight: bold;
+  }
+
+  li.active.emphasized a {
+    font-weight: bold;
+  }
+
+  @media (max-width: 767px) {
+    li.emphasized a {
+      background-color: white;
+      color: #424242;
+    }
+  }
+}
