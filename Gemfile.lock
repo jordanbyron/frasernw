@@ -211,6 +211,9 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-doc (0.6.0)
+      pry (~> 0.9)
+      yard (~> 0.8)
     pry-rails (0.3.2)
       pry (>= 0.9.10)
     public_activity (1.4.2)
@@ -335,6 +338,7 @@ GEM
     wannabe_bool (0.1.0)
     webrobots (0.1.1)
     will_paginate (3.0.7)
+    yard (0.8.7.6)
 
 PLATFORMS
   ruby
@@ -377,6 +381,7 @@ DEPENDENCIES
   paper_trail (~> 2.7)
   paperclip (~> 2.7)
   pg
+  pry-doc
   pry-rails
   public_activity
   rack-livereload

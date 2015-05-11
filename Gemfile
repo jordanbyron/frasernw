@@ -94,6 +94,7 @@ end
 
 group :development, :test do
   gem 'pry-rails'
+  gem 'pry-doc'
 end
 
 gem 'ancestry'
