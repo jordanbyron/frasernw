@@ -102,8 +102,14 @@ gem 'mechanize'
 gem 'validates_email_format_of'
 gem "safety_mailer" # prevent emails getting sent in staging
 
-# Google Analytics
+# Google analytics
+
+# DEPRECATED: do not use anymore, not maintained and inferior to Google's library
 gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
+
+# to hit the GA API
+gem 'google-api-client', '0.7.1'
+
 gem 'lazy_high_charts'
 gem 'jquery-datatables-rails'
 gem "rack-timeout"
