@@ -1,27 +1,31 @@
+-# # # Instance Variables Used:
+-# @specializations = Will be either Specialization.all or Specialization.find(param[:id])
+-# @all_divisions = Division.all
+-# @user_divisions = current_user_divisions
+-# @first_division = @user_divisions.first
+
 - title "Specialists"
 
 .content-wrapper
 
   %h2 Specialists
-
-  - user_divisions = current_user_divisions
-  - first_division = user_divisions.first
+  %small (Updated Daily)
 
   .tabbable
     %ul#content_tabs.nav.nav-tabs
-      - Division.all.each do |division|
-        %li{:class => (division == first_division) && "active"}
+      - @all_divisions.each do |division|
+        %li{:class => (division == @first_division) && "active"}
           %a{"href" => "##{division.id}_tab", "data-toggle" => "tab"}= division.name
       %li
         %a{"href" => "#no_division_tab", "data-toggle" => "tab"} No Division
-    - cache("specialists_index_#{user_divisions.map(&:id).join('_')}_for_specializations_#{@specializations.sort.map(&:id).join('_')}") do
+    - cache("specialists_index_#{@user_divisions.map(&:id).join('_')}_for_specializations_#{@specializations.sort.map(&:id).join('_')}") do
       .tab-content
-        - Division.all.each do |division|
-          - can_edit = user_divisions.include? division
-          .tab-pane{:id => "#{division.id}_tab", :class => (division == first_division) && "active"}
+        - @all_divisions.each do |division|
+          - can_edit = @user_divisions.include? division
+          .tab-pane{:id => "#{division.id}_tab", :class => (division == @first_division) && "active"}
             %table.table.table-condensed.table-striped
               - @specializations.each do |specialization|
-                - cache("specialists_index_#{specialization.id}_#{division}_#{can_edit}") do
+                - cache("specialists_index_#{specialization.id}_#{division.id}_#{can_edit}") do
                   - specialists = specialization.specialists.in_divisions([division]).sort{ |a,b| (a.lastname || "zzz") <=> (b.lastname || "zzz") }
                   - next if specialists.blank?
                   %tr{ :class => specialization.fully_in_progress_for_divisions([division]) ? "in-progress" : "" }
