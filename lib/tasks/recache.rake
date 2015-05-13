@@ -59,6 +59,21 @@ namespace :pathways do
       end
     end
 
+    task :specialists_index => :environment do
+      puts "Recaching Specialists Index..."
+      User.all_user_division_groups_cached.each do |division_group|
+
+        puts "Specialist Index User Division #{division_group.join('_')}"
+        expire_fragment("specialists_index_#{division_group.join('_')}_for_specializations_#{Specialization.all.sort{ |a,b| a.id <=> b.id }.map(&:id).join('_')}")
+
+        Specialization.all.sort{ |a,b| a.id <=> b.id }.each do |s|
+          puts "Specialist Index Specialization #{s.id} User Division #{division_group.join('_')}"
+          expire_fragment("specialists_index_no_division_tab_#{s.id}")
+          expire_fragment("specialists_index_#{division_group.join('_')}_for_specializations_#{s.id}")
+        end
+      end
+    end
+
     task :clinics => :environment do
       puts "Recaching clinics..."
       Clinic.all.sort{ |a,b| a.id <=> b.id }.each do |c|
@@ -150,7 +165,7 @@ namespace :pathways do
     end
 
     #purposeful order from least important to most important, to keep cache 'hot'
-    task :all => [:procedures, :languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front, :application_layout] do
+    task :all => [:specialists_index, :procedures, :languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front, :application_layout] do
       puts "All pages recached."
     end
 
