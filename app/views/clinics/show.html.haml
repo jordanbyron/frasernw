@@ -19,7 +19,7 @@
 
 - show_details = false
 - show_areas_of_practice = false
-- clinic_locations = @clinic.clinic_locations.reject{ |cl| cl.empty? }
+- clinic_locations = @clinic.clinic_locations.order(:created_at).reject{ |cl| cl.empty? }
 
 .content-wrapper
 
@@ -423,4 +423,3 @@
           %h3 Secret edit link
           %p Anyone can edit this clinic if they have the following secret address:
           %p= clinic_self_edit_path(@clinic, @clinic.token, :only_path => false)
-
