@@ -34,6 +34,7 @@ gem 'unicorn'
 # Heroku caching
 gem 'kgio'
 gem 'dalli'
+gem 'rack-cache'
 gem 'delayed_job'
 gem 'delayed_job_active_record'
 gem 'delayed_job_web'
