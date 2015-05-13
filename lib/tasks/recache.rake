@@ -61,6 +61,13 @@ namespace :pathways do
 
     task :specialists_index => :environment do
       puts "Recaching Specialists Index..."
+      Division.all.sort{ |a,b| a.id <=> b.id }.each do |d|
+        Specialization.all.sort{ |a,b| a.id <=> b.id }.each do |s|
+          # true / false represent can_edit? variable in view
+          expire_fragment "specialists_index_#{s.id}_#{d.id}_#{false}"
+          expire_fragment "specialists_index_#{s.id}_#{d.id}_#{true}"
+        end
+      end
       User.all_user_division_groups_cached.each do |division_group|
 
         puts "Specialist Index User Division #{division_group.join('_')}"

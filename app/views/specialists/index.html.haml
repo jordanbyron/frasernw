@@ -21,20 +21,21 @@
           .tab-pane{:id => "#{division.id}_tab", :class => (division == first_division) && "active"}
             %table.table.table-condensed.table-striped
               - @specializations.each do |specialization|
-                - specialists = specialization.specialists.in_divisions([division]).sort{ |a,b| (a.lastname || "zzz") <=> (b.lastname || "zzz") }
-                - next if specialists.blank?
-                %tr{ :class => specialization.fully_in_progress_for_divisions([division]) ? "in-progress" : "" }
-                  %th{:style => "width:100%"}=specialization.name
-                  - if can_edit
-                    %th.admin
-
-                - specialists.each do |specialist|
-                  %tr
-                    %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
+                - cache("specialists_index_#{specialization.id}_#{division}_#{can_edit}") do
+                  - specialists = specialization.specialists.in_divisions([division]).sort{ |a,b| (a.lastname || "zzz") <=> (b.lastname || "zzz") }
+                  - next if specialists.blank?
+                  %tr{ :class => specialization.fully_in_progress_for_divisions([division]) ? "in-progress" : "" }
+                    %th{:style => "width:100%"}=specialization.name
                     - if can_edit
-                      %td.admin.btn-group
-                        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
-                        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")
+                      %th.admin
+
+                  - specialists.each do |specialist|
+                    %tr
+                      %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
+                      - if can_edit
+                        %td.admin.btn-group
+                          = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
+                          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")
         .tab-pane{:id => "no_division_tab"}
           %table.table.table-condensed.table-striped
             - @specializations.each do |specialization|
