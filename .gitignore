@@ -17,3 +17,4 @@ config/database.yml
 .ruby-gemset
 config/google_analytics.json
 config/google_oauth.p12
+/reports

@@ -1,7 +1,7 @@
 require 'google/api_client'
 require 'google/api_client/auth/installed_app'
 
-# Concrete Analytics API Client for this app
+# Handles setup and authorization of google's api client
 class AnalyticsApiClient
   KEY_PASS = 'notasecret'
   KEY_PATH = Rails.root.join('config', 'google_oauth.p12')

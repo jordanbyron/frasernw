@@ -1,4 +1,4 @@
-# Handles construction of request params and parsing of responses
+# Handles construction of request params from simple query api and parsing of responses
 class AnalyticsApiAdapter
 
   PROFILE_IDS_QUERY_PARAM = "ga:61207403"
@@ -18,22 +18,54 @@ class AnalyticsApiAdapter
 
   def self.construct_query(query_params)
     query = {
-      api_method: analytics.data.ga.get,
-      parameters: {
+      :api_method => analytics.data.ga.get,
+      :parameters => {
         "ids" => PROFILE_IDS_QUERY_PARAM,
         "start-date" => format_date(query_params[:start_date]),
         "end-date"   => format_date(query_params[:end_date]),
-        "metrics"    => query_params[:metrics]
+        "metrics"    => format_metrics(query_params[:metrics])
       }
     }
 
-    [:dimensions, :filters].each do |optional_param|
-      if query_params[optional_param].present?
-        query[:parameters][optional_param.to_s] = query_params[optional_param]
-      end
+    if query_params[:dimensions].present?
+      query[:parameters]["dimensions"] =
+        format_dimensions(query_params[:dimensions])
+    end
+
+    if query_params[:filters].present?
+      query[:parameters]["filters"] =
+        format_filters(query_params[:filters])
     end
 
     query
+  end
+
+  METRICS = {
+    page_views: "ga:pageviews",
+    sessions: "ga:sessions"
+  }
+  def self.format_metrics(metrics)
+    metrics.map do |elem|
+      METRICS[elem]
+    end.join(",")
+  end
+
+  DIMENSIONS = {
+    user_id: "ga:customVarValue1",
+    user_type_key: "ga:customVarValue2",
+    division_id: "ga:customVarValue3",
+    page_path: "ga:pagePath"
+  }
+  def self.format_dimensions(dimensions)
+    dimensions.map do |elem|
+      DIMENSIONS[elem]
+    end.join(",")
+  end
+
+  def self.format_filters(filters)
+    filters.map do |key, value|
+      "#{DIMENSIONS[key]}==#{value.to_s}"
+    end.join(";")
   end
 
   def self.format_date(date)
@@ -44,14 +76,16 @@ class AnalyticsApiAdapter
     AnalyticsApiClient.discovered_api
   end
 
-  # returns simple array of hashes
-  # [{"ga_key_1" => "value", "ga_key_2" => "value"}]
+  # returns an array of hashes with symbol keys (column name)
+  # and int values
+  # [{ user_id: "1", sessions: "2" }]
   def self.parse_response(response)
-    column_names = response.data.column_headers.map(&:name)
+    adapter_column_names = METRICS.merge(DIMENSIONS)
+    response_column_names = response.data.column_headers.map(&:name)
 
     response.data.rows.map do |row|
-      column_names.each_with_index.reduce({}) do |memo, (column_name, index)|
-        memo.merge({ column_name => row[index] })
+      response_column_names.each_with_index.reduce({}) do |memo, (column_name, index)|
+        memo.merge({ adapter_column_names.key(column_name) => row[index] })
       end
     end
   end
