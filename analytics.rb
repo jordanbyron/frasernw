@@ -34,4 +34,5 @@ result = client.execute!({
   }
 })
 
-puts result.data.to_h
+puts analytics.data.ga.get
+puts result.data

@@ -75,7 +75,6 @@ group :development, :test do
   gem 'rack-livereload'
   #gem 'heroku'
   gem 'taps'
-  gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
   gem 'rb-fsevent', '~> 0.9.1'
   gem 'awesome_print'
 end
@@ -95,6 +94,8 @@ end
 group :development, :test do
   gem 'pry-rails'
   gem 'pry-doc'
+  gem 'pry-nav'
+  gem 'pry-stack_explorer'
 end
 
 gem 'ancestry'
