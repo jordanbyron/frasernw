@@ -23,6 +23,7 @@ class AnalyticsApiClient
   end
 
   def execute!(query)
+    # attempt the query, resque from unauthorized, authorize, then try again
     authorized_client.execute! query
   end
 
