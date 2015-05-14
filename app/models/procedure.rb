@@ -45,7 +45,7 @@ class Procedure < ActiveRecord::Base
             #only add the specialists that do the parent procedure we are assumed for
             results += child.parent.procedure.all_specialists_for_specialization_in_cities(child.specialization, cities)
           else
-            results += ps.specialization.specialists.in_cities(cities)
+            results += ps.specialization.specialists.in_cities_cached(cities)
           end
         else
           Capacity.find_all_by_procedure_specialization_id(child.id).each do |capacity|
@@ -86,7 +86,7 @@ class Procedure < ActiveRecord::Base
     results = []
     ps = ProcedureSpecialization.find_by_specialization_id_and_procedure_id(specialization.id, self.id)
     if ps.assumed_specialist?
-      results += ps.specialization.specialists.in_cities(cities)
+      results += ps.specialization.specialists.in_cities_cached(cities)
     else
       ps.subtree.each do |child|
         Capacity.find_all_by_procedure_specialization_id(child.id).each do |capacity|
