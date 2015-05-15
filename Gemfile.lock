@@ -412,6 +412,7 @@ DEPENDENCIES
   pry-rails
   pry-stack_explorer
   public_activity
+  rack-cache
   rack-livereload
   rack-timeout
   rails (= 3.1.12)

@@ -13,6 +13,10 @@ class SpecialistsController < ApplicationController
     else
       @specializations = Specialization.all
     end
+    @all_divisions = Division.all
+    @user_divisions = current_user_divisions
+    @first_division = @user_divisions.first
+
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -379,6 +383,15 @@ class SpecialistsController < ApplicationController
     @feedback = @specialist.feedback_items.build
     render :show, :layout => 'ajax'
   end
+
+  #TO DO make this work to reload cache with pathways:recache:specialists_index
+  # def refresh_index_cache
+  #   if params[:specialization_id].present?
+  #     @specializations = [Specialization.find(params[:specialization_id])]
+  #   else
+  #     @specializations = Specialization.all
+  #   end
+  # end
 
   protected
     def generate_capacity(specialist, procedure_specialization, offset)
