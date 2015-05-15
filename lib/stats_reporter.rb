@@ -1,18 +1,25 @@
 # Standard set of stats queries
 class StatsReporter
   # requires at least start date and end date
-  def self.full_users_breakdown(options)
+  def self.users(options)
     response = AnalyticsApiAdapter.get({
-      metrics: [:pageviews, :sessions],
+      metrics: [:page_views, :sessions],
       dimensions: [:user_id, :user_type_key, :division_id]
     }.merge(options))
   end
 
-  def self.division_users(options)
+  def self.user_types(options)
     response = AnalyticsApiAdapter.get({
-      metrics: [:pageviews, :sessions],
-      dimensions: [:user_id, :user_type_key, :division_id]
+      metrics: [:page_views, :sessions],
+      dimensions: [:user_type_key]
     }.merge(options))
+  end
+
+  def self.total_users(options)
+    AnalyticsApiAdapter.get({
+      metrics: [:page_views],
+      dimensions: [:user_id]
+    }.merge(options)).count
   end
 
   def self.divisions(options)

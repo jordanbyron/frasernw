@@ -23,9 +23,24 @@ namespace :pathways do
 
     total_sessions = StatsReporter.sessions(common_options).first[:sessions]
 
+    total_users =
+      StatsReporter.total_users(common_options)
+
     page_views_by_page = StatsReporter.page_views(
       common_options.merge(dimensions: [:page_path, :user_type_key])
     )
+
+    user_types = StatsReporter.user_types(common_options)
+    user_types_table = Table.new(user_types)
+
+    # transform user types table
+    user_types_table.transform_column!(:page_views) do |row|
+      row[:page_views].to_i
+    end
+    user_types_table.transform_column!(:sessions) do |row|
+      row[:sessions].to_i
+    end
+
 
     ## Transform pageviews table
 
@@ -148,17 +163,34 @@ namespace :pathways do
       csv << [ "End Date"]
       csv << [ args[:end_date].to_s]
       csv << [ ]
-      csv << [ "Total Pageviews" ]
-      csv << [ total_pageviews.to_s ]
+
+      ### Summary Table
+      csv << [ "SUMMARY" ]
+      csv << [ "Total Pageviews", "Total Sessions", "Total Users"]
+      csv << [ total_pageviews, total_sessions, total_users ]
       csv << [ ]
-      csv << [ "Total Sessions" ]
-      csv << [ total_sessions.to_s ]
+
+      ### User types table
+
+      csv << [ "METRICS BY USER TYPE" ]
+      csv << [ "User type", "Page Views", "Sessions"]
+      user_types_table.rows.each do |row|
+        csv << [
+          current_user_type_hash[row[:user_type_key].to_i],
+          row[:page_views],
+          row[:sessions]
+        ]
+      end
+      csv << [
+        "All types",
+        user_types_table.sum_column(:page_views),
+        user_types_table.sum_column(:sessions)
+      ]
       csv << [ ]
 
       ### Pageviews table
 
-      csv << [ "Pageviews by Page" ]
-
+      csv << [ "METRICS BY PAGE" ]
 
       typed_pageview_headings = current_user_type_hash.keys.sort.map do |key|
         "Page Views (#{current_user_type_hash[key]})"
