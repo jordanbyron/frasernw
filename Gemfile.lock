@@ -521,6 +521,7 @@ DEPENDENCIES
   pg
   pry-rails
   public_activity
+  rack-cache
   rack-livereload
   rack-timeout
   rails (= 3.2.21)

@@ -30,11 +30,22 @@ Frasernw::Application.configure do
   config.action_controller.perform_caching = (ENV["PERFORM_CACHING"].to_b || false)
   config.cache_store = :dalli_store
 
-  # PathwaysDevNote: use $~> BENCHMARK=true rails s
-  # for more production-like configs during local benchmarking; turns cache_classes & perform_caching to true
+  # # # # # Development Feature Switches:
+  # Use to gain more production-like configs in local development; turns cache_classes & perform_caching to true, or includes livesearch.js
+  # DevNote: to use switch each on, e.g.:
+  # $~> BENCHMARKING=true PERFORM_CACHING=true LIVESEARCH=true rails s
   if ENV["BENCHMARKING"].to_b == true
     puts "==> BENCHMARKING TURNED ON -- REPEAT REQUESTS CACHE CODE TO IMITATE PRODUCTION"
   end
+
+  if ENV["PERFORM_CACHING"].to_b == true
+    puts "==> PERFORM CACHING TURNED ON -- MEMCACHE IS ON TO IMITATE PRODUCTION"
+  end
+
+  if ENV["LIVESEARCH"].to_b == true
+    puts "==> LIVESEARCH.js file will be included"
+  end
+  # # # # #
 
   # Don't care if the mailer can't send
   # config.action_mailer.raise_delivery_errors = false

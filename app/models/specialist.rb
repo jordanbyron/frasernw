@@ -59,6 +59,9 @@ class Specialist < ActiveRecord::Base
   has_many :controlling_users, :through => :user_controls_specialist_offices, :source => :user, :class_name => "User"
   accepts_nested_attributes_for :user_controls_specialist_offices, :reject_if => lambda { |ucso| ucso[:user_id].blank? }, :allow_destroy => true
 
+  after_commit :flush_cached_find
+  after_touch  :flush_cached_find
+
   has_attached_file :photo,
     :styles => { :thumb => "200x200#" },
     :storage => :s3,
@@ -110,9 +113,43 @@ class Specialist < ActiveRecord::Base
     (divisions.length > 0) && (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length == 0)
   end
 
+  # # # # CACHING METHODS
+
+  def self.cache_key
+    max_updated_at = maximum(:updated_at).try(:utc).try(:to_s, :number)
+    "specialists/all-#{count}-#{max_updated_at}"
+    #Debug note: with a subset of Specialists record, there is a small chance of a false cache hit if two collections have different values but matching count / max updated_at values
+  end
+
+  # TODO: See if .map(&:id) could use .pluck(&:id) here after upgrading to Rails3.2
+  def self.in_cities_cached(c)
+    # Called using Specialist.in_cities but also @specialization.specialists in places
+    # This model cache has potential here for many Cache keys, since the key is dependent on value of 'self's array
+    city_ids = Array.wrap(c).map{ |city| city.id }.sort
+      specialist_ids_array = Rails.cache.fetch("#{self.cache_key}/-in_cities-#{Digest::SHA1::hexdigest(city_ids.to_s)}", :expires_in => 23.hours) {
+       self.in_cities(c).map(&:id)
+      }# Not ideal as Cache key is dependent on value of 'self's array
+      where(id: specialist_ids_array).all # find(specialist_ids_array) is slower but also works
+  end
+
+  def self.in_divisions_cached(divisions)
+    divs = Array.wrap(divisions)
+    self.in_cities_cached(divs.map{ |division| division.cities }.flatten.uniq)
+  end
+
+  def self.cached_find(id)
+    Rails.cache.fetch([name, id]){find(id)}
+  end
+
+  def flush_cached_find
+  # only flushes Specialst.cached_find(id)
+    Rails.cache.delete([self.class.name, self.id])
+  end
+  # # # #
+
   def self.in_cities(c)
   #for specialists that haven't responded or are purosely not yet surveyed we just try to grab any city that makes sense
-    city_ids = c.map{ |city| city.id }
+    city_ids = Array.wrap(c).map{ |city| city.id }.sort
     responded_direct = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL AND "direct_location".location_in_id IS NULL AND "specialists".categorization_mask in (?)', "Office", city_ids, [1, 2, 4, 5])
 
     responded_in_hospital = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id').where('"direct_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "specialists".categorization_mask in (?)', "Office", "Hospital", city_ids, [1, 2, 4, 5])
@@ -130,9 +167,9 @@ class Specialist < ActiveRecord::Base
     (responded_direct + responded_in_hospital + responded_in_clinic + responded_in_clinic_in_hospital + hoc_hospital + hoc_clinic + hoc_clinic_in_hospital).uniq
   end
 
-  def self.in_cities_and_specialization(c, specialization)
+  def self.in_cities_and_specialization(c, specialization) # (IGNORE, not used in actual project but may be used)
   #for specialists that haven't responded or are purosely not yet surveyed we just try to grab any city that makes sense
-    city_ids = c.map{ |city| city.id }
+    city_ids = Array.wrap(c).map{ |city| city.id }.sort
     responded_direct = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id INNER JOIN "specialist_specializations" on "specialist_specializations".specialist_id = "specialists".id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL AND "direct_location".location_in_id IS NULL AND "specialists".categorization_mask in (?) AND "specialist_specializations".specialization_id = (?)', "Office", city_ids, [1, 2, 4, 5], specialization.id)
 
     responded_in_hospital = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id INNER JOIN "specialist_specializations" on "specialist_specializations".specialist_id = "specialists".id').where('"direct_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "specialists".categorization_mask in (?) AND "specialist_specializations".specialization_id = (?)', "Office", "Hospital", city_ids, [1, 2, 4, 5], specialization.id)
@@ -151,7 +188,9 @@ class Specialist < ActiveRecord::Base
   end
 
   def self.in_divisions(divisions)
-    self.in_cities(divisions.map{ |division| division.cities }.flatten.uniq)
+    divs = Array.wrap(divisions)
+
+    self.in_cities(divs.map{ |division| division.cities }.flatten.uniq)
   end
 
   def self.in_local_referral_area_for_specializaton_and_division(specialization, division)

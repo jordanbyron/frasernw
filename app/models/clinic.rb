@@ -401,9 +401,10 @@ class Clinic < ActiveRecord::Base
     clinic_locations.reject{ |cl| !cl.private? }.present?
   end
 
+  # Some locations are built on page load, so they won't have timestamps
   def ordered_clinic_locations
     clinic_locations.sort_by do |location|
-      [ (location.has_data? ? 0 : 1), location.created_at ]
+      [ (location.has_data? ? 0 : 1), ( location.created_at || DateTime.now ) ]
     end
   end
 

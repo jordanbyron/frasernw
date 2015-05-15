@@ -4,10 +4,28 @@ require 'clockwork'
 
 include Clockwork
 
-  # Delete sessions older than every Sunday at 1:30pm UTC(13:30), 5:30 AM PST
-  # every(1.weeks, 'bundle exec rake pathways:delete_old_sessions', :at => 'Sunday 13:30',  :tz => 'UTC') {
-  #   `bundle exec rake pathways:delete_old_sessions`
-  # }
+  # Delete sessions older than every week
+  if ENV['APP_NAME'] == "pathwaysbctest" # production
+    # every(1.day, 'bundle exec rake backup_db', :at => '08:00',  :tz => 'UTC') {
+    #   `bundle exec rake backup_db`
+    # }
+
+    every(1.weeks, 'bundle exec rake pathways:delete_old_sessions', :at => 'Sunday 08:10',  :tz => 'UTC') {
+      `bundle exec rake pathways:delete_old_sessions`
+    }
+
+    # every(1.weeks, 'bundle exec rake backup_db', :at => 'Sunday 08:15',  :tz => 'UTC') {
+    #   `bundle exec rake backup_db`
+    # }
+  end
+
+  every(1.day, 'heroku restart', :at => '13:00',  :tz => 'UTC') {
+    `heroku restart`
+  }
+
+  every(1.day, 'bundle exec rake pathways:visit_every_page:specializations', :at => '12:30',  :tz => 'UTC') {
+    `bundle exec rake pathways:visit_every_page:specializations`
+  }
 
   # Used for testing:
   # Clockwork.every(1.day, 'Mail out TEST Monthly Subscriptions job', :at => 'Monday 00:45', :tz => 'UTC', :if => lambda { |t| t.day == 6 }) do

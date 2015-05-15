@@ -207,7 +207,7 @@ module SpecializationsHelper
     end
     other_specialists = other_specialists.flatten.uniq
     #remove any specialists that are also in this specialization, sort
-    return (other_specialists - specialization.specialists.in_cities(cities)).sort{ |a,b| "#{a.waittime_mask}" <=> "#{b.waittime_mask}" }
+    return (other_specialists - specialization.specialists.in_cities_cached(cities)).sort{ |a,b| "#{a.waittime_mask}" <=> "#{b.waittime_mask}" }
   end
 
   def other_clinics_in_cities(specialization, cities)
