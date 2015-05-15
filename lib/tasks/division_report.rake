@@ -21,10 +21,32 @@ namespace :pathways do
     total_pageviews =
       StatsReporter.page_views(common_options).first[:page_views]
 
+    total_sessions = StatsReporter.sessions(common_options).first[:sessions]
+
     page_views_by_page =
       StatsReporter.page_views_by_page(common_options)
 
-    total_sessions = StatsReporter.sessions(common_options).first[:sessions]
+    page_views_table = Table.new(page_views_by_page)
+
+    # collapse different users types for the same path down to one row per path
+    page_views_table.collapse_duplicate_rows!(
+      Proc.new { |row| row[:page_path] },
+      {
+        page_path: "",
+        page_views: 0
+      },
+      Proc.new do |accumulator, row|
+        accumulator[:page_path] = row[:page_path]
+        accumulator[:page_views] += row[:page_views]
+        accumulator[row[:user_type]] = row[:page_views]
+      end
+    )
+
+    # add a column for resource type
+    
+
+    # add
+
 
     ### Write the CSV
 
