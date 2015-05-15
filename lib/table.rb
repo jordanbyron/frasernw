@@ -12,55 +12,41 @@ class Table
     end
   end
 
-  def collapse_duplicate_rows!(uniq_function, base_accumulator, accumulator_function)
-    # Get the duplicate rows
-    dupe_sets = rows.dupe_sets uniq_function
-
-    # Delete them from the table
-    rows.delete_if  do |row|
-      dupe_sets.flatten.include? row
-    end
+  def collapse_subsets!(uniq_function, base_accumulator, accumulator_function)
+    subsets = rows.subsets uniq_function
 
     # Construct the collapsed rows to put back into the table
-    collapsed_rows = dupe_sets.map do |set|
+    collapsed_rows = subsets.map do |set|
       accumulator = base_accumulator.dup
 
-      set.inject(accumulator) do |row|
+      set.inject(accumulator) do |accumulator, row|
         accumulator_function.call(accumulator, row)
       end
     end
 
-    rows + collapsed_rows
+    puts collapsed_rows
+
+    @rows = collapsed_rows
   end
 
-  def collapse_rows!(test, base_accumulator, accumulator_function)
+  def collapse_subset!(test, base_accumulator, accumulator_function)
     # Get the rows we want to collapse
-    rows_to_collapse = rows.select test
+    subset = rows.select {|row| test.call(row) }
 
     # Delete them from the table
-    rows.delete_if {|row| rows_to_collapse.include? row }
+    rows.reject! {|row| test.call(row) }
 
     # Build a collapsed row to put back into the table
-    rows_to_collapse.each do |row|
-      accumulator_function.call(base_accumulator, row)
+    accumulator_row = subset.inject(base_accumulator) do |memo, row|
+      accumulator_function.call(memo, row)
     end
 
-    rows << accumulator_row
+    @rows = rows << accumulator_row
   end
 
   def transform_column!(column_key)
     rows.map do |row|
       row[column_key] = yield(row)
-    end
-  end
-
-  def add_column!(key, default_value)
-    rows.map! do |row|
-      if block_given?
-        row[key] = yield(row)
-      else
-        row[key] = default_value
-      end
     end
   end
 end

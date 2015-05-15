@@ -10,20 +10,22 @@ class Array
     self
   end
 
-  def dupe_sets(uniq_function)
-    ary = self.clone
+  # based on a uniquing function
+  def subsets(uniq_function)
+    # we're going to gradually reduce this clone down as we pull out matching elements
+    copy = self.clone
 
-    ary.inject([]) do |memo, elem|
-      inner_dupes = ary.inject([]) do |inner_memo, inner_elem|
-        if uniq_function.call(elem) == uniq_function.call(inner_elem)
-          inner_memo << ary.delete(inner_elem)
-        end
-        inner_memo
+    self.inject([]) do |memo, elem|
+      # get the items in the copy that match this one according to our function
+      subset = copy.select do |inner_elem|
+        uniq_function.call(inner_elem) == uniq_function.call(elem)
       end
 
-      # one of those 'dupes' will be the original elem
-      if inner_dupes.count > 1
-        memo << inner_dupes
+      memo << subset if subset.any?
+
+      # so we don't get duplicate dupe sets...
+      copy.delete_if do |inner_elem|
+        uniq_function.call(inner_elem) == uniq_function.call(elem)
       end
 
       memo

@@ -23,29 +23,73 @@ namespace :pathways do
 
     total_sessions = StatsReporter.sessions(common_options).first[:sessions]
 
-    page_views_by_page =
-      StatsReporter.page_views_by_page(common_options)
+    page_views_by_page = StatsReporter.page_views(
+      common_options.merge(dimensions: [:page_path, :user_type_key])
+    )
 
     page_views_table = Table.new(page_views_by_page)
 
+    # we want all of the page views to be integers so we can do arithmetic on them
+    page_views_table.transform_column!(:page_views) do |row|
+      row[:page_views].to_i
+    end
+
+    current_user_type_hash = User::TYPE_HASH.merge(
+      -1 => "Bounced",
+      0 => "Admin"
+    )
+
     # collapse different users types for the same path down to one row per path
-    page_views_table.collapse_duplicate_rows!(
+    # with the user type breakdown as columns
+    page_views_table.collapse_subsets!(
       Proc.new { |row| row[:page_path] },
       {
         page_path: "",
         page_views: 0
-      },
+      }.merge(current_user_type_hash.all_values(0)),
       Proc.new do |accumulator, row|
-        accumulator[:page_path] = row[:page_path]
-        accumulator[:page_views] += row[:page_views]
-        accumulator[row[:user_type]] = row[:page_views]
+        accumulator.dup.merge(
+          :page_path => row[:page_path],
+          :page_views => accumulator[:page_views] + row[:page_views],
+          row[:user_type_key].to_i =>  row[:page_views]
+        )
       end
     )
 
-    # add a column for resource type
-    
+    ## users by user type
 
-    # add
+    # add a column for resource name
+
+
+
+    # collapse specialists paths down
+    page_views_table.collapse_subset!(
+      Proc.new {|row| row[:page_path][/\/specialists/] },
+      {
+        page_path: "/specialists/*",
+        page_views: 0
+      }.merge(current_user_type_hash.all_values(0)),
+      Proc.new do |accumulator, row|
+        new_accumulator = accumulator.dup.merge(
+          page_views: accumulator[:page_views] + row[:page_views],
+        )
+
+        current_user_type_hash.each do |key, value|
+          if row[key].present?
+            new_accumulator[key] = accumulator[key] + row[key]
+          end
+        end
+
+        new_accumulator
+      end
+    )
+
+
+    # collapse clinic names down
+
+    # collapse user names down
+
+    # sort by pathname
 
 
     ### Write the CSV
@@ -61,7 +105,8 @@ namespace :pathways do
     CSV.open(file_path, "w+") do |csv|
       csv << [ "Pathways Usage Report"]
       csv << [ "Division: #{args[:division].name}"]
-      csv << [ "All Stats for Date Range:"]
+      csv << [ "Compiled on #{timestamp}" ]
+      csv << [ "**All stats are for date range specified below***"]
       csv << [ ]
       csv << [ "Start Date"]
       csv << [ args[:start_date].to_s]
@@ -69,21 +114,29 @@ namespace :pathways do
       csv << [ "End Date"]
       csv << [ args[:end_date].to_s]
       csv << [ ]
-      csv << [ ]
-      csv << [ "Compiled on" ]
-      csv << [ timestamp ]
-      csv << [ ]
       csv << [ "Total Pageviews" ]
       csv << [ total_pageviews.to_s ]
       csv << [ ]
       csv << [ "Total Sessions" ]
       csv << [ total_sessions.to_s ]
       csv << [ ]
-      csv << [ "Pageviews by Page" ]
-      csv << [ "Path", "Pageviews" ]
 
-      page_views_by_page.each do |row|
-        csv << [ row[:page_path], row[:page_views] ]
+
+      csv << [ "Pageviews by Page" ]
+
+
+      typed_pageview_headings = current_user_type_hash.keys.sort.map do |key|
+        "Page Views (#{current_user_type_hash[key]})"
+      end
+
+      csv << ([ "Path", "Total Page Views" ] + typed_pageview_headings)
+
+      page_views_table.rows.each do |row|
+        typed_pageviews = current_user_type_hash.keys.sort.map do |key|
+          row[key] || 0
+        end
+
+        csv << ([ row[:page_path], row[:page_views] ] + typed_pageviews)
       end
     end
   end

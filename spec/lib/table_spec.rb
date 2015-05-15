@@ -3,11 +3,10 @@ require 'spec_helper'
 describe Table do
 
   sample_data = [
-    row_1: { column_1: 1, column_2: 2, column_3: 3 },
-    row_2: { column_1: 1, column_2: 2, column_3: 3 },
-    row_5: { column_1: 10, column_2: 11, column_3: 12 }
+    { column_1: 1, column_2: 2, column_3: 3 },
+    { column_1: 1, column_2: 2, column_3: 3 },
+    { column_1: 10, column_2: 11, column_3: 12 }
   ]
-
 
   let(:table) { Table.new(sample_data) }
 
@@ -21,13 +20,14 @@ describe Table do
           column_3: 0
         },
         Proc.new do |accumulator, row|
-          accumulator[:]
+          accumulator.dup.merge(
+            column_1: accumulator[:column_1] += 4
+          )
         end
       )
 
-
+      table.rows.find
     end
-
   end
 
 end
