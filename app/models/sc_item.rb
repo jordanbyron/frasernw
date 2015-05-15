@@ -284,4 +284,8 @@ class ScItem < ActiveRecord::Base
   def new?
     created_at > 3.week.ago.utc
   end
+
+  def name
+    title
+  end
 end

@@ -8,6 +8,13 @@ class StatsReporter
     }.merge(options))
   end
 
+  def self.division_users(options)
+    response = AnalyticsApiAdapter.get({
+      metrics: [:pageviews, :sessions],
+      dimensions: [:user_id, :user_type_key, :division_id]
+    }.merge(options))
+  end
+
   def self.divisions(options)
   end
 

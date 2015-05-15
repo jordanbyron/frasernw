@@ -24,8 +24,6 @@ class Table
       end
     end
 
-    puts collapsed_rows
-
     @rows = collapsed_rows
   end
 
@@ -47,6 +45,12 @@ class Table
   def transform_column!(column_key)
     rows.map do |row|
       row[column_key] = yield(row)
+    end
+  end
+
+  def sum_column(column_key)
+    rows.inject(0) do |memo, row|
+      memo += row[column_key]
     end
   end
 end
