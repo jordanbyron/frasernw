@@ -16,7 +16,7 @@
     = stylesheet_link_tag "print", :media => 'print'
     = javascript_include_tag "application"
     - if !Rails.env.development? || ENV['LIVESEARCH'].to_b
-      = javascript_include_tag '../livesearch'
+      =# javascript_include_tag '../livesearch'
       -#rails3.2 fix since = javascript_include_tag "livesearch" fails
       %script{src: "../livesearch.js"}
     = csrf_meta_tag
