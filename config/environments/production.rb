@@ -4,7 +4,7 @@ Frasernw::Application.configure do
   # ExceptionNotifier rack middleware
   Frasernw::Application.config.middleware.use ExceptionNotification::Rack,
     :email => {
-      :email_prefix => "[mdpathway exception] [#{ENV['APP_NAME']] }",
+      :email_prefix => "[mdpathway exception] #{ENV['APP_NAME'] }",
       :sender_address => %{"Pathways" <system@mdpathwaysbc.com>},
       :exception_recipients => %w{warneboldt@gmail.com khannan@mdpathwaysbc.com bgracie@pathwaysbc.ca}
     }
