@@ -1,15 +1,15 @@
-require 'spec_helper'
+require 'config/initializers/ruby_extensions/array.rb'
 
 describe Array do
 
-  describe "#dupe_sets" do
+  describe "#subsets" do
     let(:ary) { [ 1, 1, 1, 2, 3, 3] }
 
     let(:prc) { Proc.new {|elem| elem }}
 
     it "returns arrays of the duplicate items" do
-      ary.dupe_sets(prc).count.should == 2
-      ary.dupe_sets(prc)[0].should == [1, 1, 1]
+      ary.subsets(prc).count.should == 3
+      ary.subsets(prc)[0].should == [1, 1, 1]
     end
   end
 end
