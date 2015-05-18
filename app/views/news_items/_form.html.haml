@@ -15,7 +15,7 @@
   = f.input :show_start_date
   = f.input :end_date, :as => :datepicker
   = f.input :show_end_date, :hint => "The end date can be blank: if no end date is provided, the news item will expire after the start date, otherwise it will expire after the end date."
-  = f.input :body, :hint => "Accepts Markdown"
+  = f.input :body, :hint => "Accepts Markdown.  When adding a link to external website URLs, please link with <strong>http<u>s</u>://</strong> not http://".html_safe
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
