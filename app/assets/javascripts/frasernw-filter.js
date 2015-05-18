@@ -396,7 +396,7 @@ var update_table = function(prefix, entity_id, entity_name)
   }
   if ( procedures.length >= 1 )
   {
-    fragments.push('practice in ' + procedures.to_sentence());
+    fragments.push('accept referrals in ' + procedures.to_sentence());
   }
   if ( referrals.length >= 1 )
   {
