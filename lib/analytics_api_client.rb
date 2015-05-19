@@ -23,8 +23,12 @@ class AnalyticsApiClient
   end
 
   def execute!(query)
-    # attempt the query, resque from unauthorized, authorize, then try again
-    authorized_client.execute! query
+    begin
+      client.execute! query
+    rescue Google::APIClient::AuthorizationError
+      authorize client
+      client.execute! query
+    end
   end
 
   def self.discovered_api
@@ -41,20 +45,18 @@ class AnalyticsApiClient
     @@instance ||= new
   end
 
-  def client
-    @client ||= Google::APIClient.new(
-      :application_name => 'Pathways',
-      :application_version => '1.0.0'
-    )
+  def authorize(client)
+    client.authorization = authorization
+    client.authorization.fetch_access_token!
+
+    client
   end
 
-  def authorized_client
-    # TODO don't reauth every time
-
-    client.tap do |client|
-      client.authorization = authorization
-      client.authorization.fetch_access_token!
-    end
+  def client
+    @client ||= authorize(Google::APIClient.new(
+      :application_name => 'Pathways',
+      :application_version => '1.0.0'
+    ))
   end
 
   def authorization
