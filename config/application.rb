@@ -55,6 +55,11 @@ module Frasernw
 
     Sprockets::Compressors.register_css_compressor(:scss, 'Sass::Rails::CssCompressor', :require => 'sass/rails/compressor') #added due to heroku error, read: https://github.com/rails/sass-rails/issues/111
 
+    #compress assets before serving, only use below if not on CDN:
+    config.middleware.insert_before ActionDispatch::Static, Rack::Deflater
+    #if with CDN (https://robots.thoughtbot.com/content-compression-with-rack-deflater):
+    # config.middleware.use Rack::Deflater
+
     # mailer
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.raise_delivery_errors = true
