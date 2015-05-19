@@ -91,7 +91,7 @@ class DivisionsController < ApplicationController
       @division.division_referral_city_specializations.each do |ucs|
         #remove existing specializations that no longer exist
         DivisionReferralCitySpecialization.destroy(ucs.id) if (!(params[:local_referral_cities].include? ucs.city_id) || !(params[:local_referral_cities][usc.city_id].include? usc.specialization_id))
-      end
+      end ## ^^^DevNote: dangerous code if params incorrect
       if params[:local_referral_cities].present?
         #add new specializations
         params[:local_referral_cities].each do |city_id, specializations|

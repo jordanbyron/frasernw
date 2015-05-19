@@ -64,7 +64,7 @@ class Address < ActiveRecord::Base
     search += "#{address1}, " if address1.present?
     search += "#{city}, #{city.province}, " if city.present?
     search += "#{postalcode}, " if postalcode.present?
-    return "http://maps.google.com?q=#{search} Canada"
+    return "https://maps.google.com?q=#{search} Canada"
   end
 
   def map_image(width, height, zoom, scale)
