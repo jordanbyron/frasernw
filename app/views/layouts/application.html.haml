@@ -18,7 +18,7 @@
     - if !Rails.env.development? || ENV['LIVESEARCH'].to_b
       =# javascript_include_tag '../livesearch'
       -#rails3.2 fix since = javascript_include_tag "livesearch" fails
-      %script{src: '//#{APP_CONFIG[:domain]}/livesearch'}
+      %script{:src => "//#{APP_CONFIG[:domain]}/livesearch"}
     = csrf_meta_tag
     - cache("ie8_or_lower_compatibility_warning") do
       = render "layouts/ie8_or_lower_compatibility_warning"
