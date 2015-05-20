@@ -1,26 +1,23 @@
 module CSVReport
   # gets an abstract table (array of hashes) and converts it to an array of arrays, a format the CSV service can handle
   class Users
-    def self.exec(options)
-      new(options).exec
+    def self.exec(abstract)
+      new(abstract).exec
     end
 
-    attr_reader :options
+    attr_reader :abstract
 
-    def initialize(options = {})
-      @options = options.reverse_merge!(
-        start_month: Month.new(2014, 1),
-        end_month: Month.new(2014, 12),
-      )
+    def initialize(abstract, title="users")
+      @abstract = abstract
     end
 
     def exec
-      [ headings ] + by_user_type + by_division
+      headings + by_user_type + by_division
     end
 
     def headings
       [
-        ["Users"],
+        [title],
         (["User type", "Division"] + months.map(&:name))
       ]
     end
@@ -45,13 +42,6 @@ module CSVReport
           division_from_id(division.first[:division_id])
         ] + months.map {|month| Table.sum_column(division, month)})
       end
-    end
-
-    def abstract
-      @abstract ||= Reporter::Users.time_series(
-        options[:start_month],
-        options[:end_month]
-      )
     end
 
     def months

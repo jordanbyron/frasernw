@@ -1,11 +1,12 @@
 module Reporter
   # number of users by user type and then division
   class Users
-    def self.time_series(start_month, end_month)
-      Month.for_interval(start_month, end_month).inject(Table.new([])) do |table, month|
+    def self.time_series(options)
+      Month.for_interval(options[:start_month], options[:end_month]).inject(Table.new([])) do |table, month|
         month_table = period(
           start_date: month.start_date,
-          end_date: month.end_date
+          end_date: month.end_date,
+          min_sessions: (options[:min_sessions] || 0)
         )
         table.add_column(
           other_table: month_table,
@@ -16,12 +17,11 @@ module Reporter
       end
     end
 
-    def self.period(date_opts)
-      # we're asking for page views b.c. analytics needs a metric, even though we're only really interested in user ids
+    def self.period(options)
       data = AnalyticsApiAdapter.get({
-        metrics: [:page_views],
+        metrics: [:sessions],
         dimensions: [:user_id, :user_type_key, :division_id]
-      }.merge(date_opts))
+      }.merge(options.slice(:start_date, :end_date)))
 
       Table.new(data).collapse_subsets(
         Proc.new { |row| [ row[:user_type_key], row[:division_id] ]  },
@@ -34,7 +34,7 @@ module Reporter
           accumulator.dup.merge(
             user_type_key: row[:user_type_key],
             division_id: row[:division_id],
-            users: accumulator[:users] += 1
+            users: (row[:sessions].to_i > options[:min_sessions] ? (accumulator[:users] += 1) : accumulator[:users])
           )
         end
       )
