@@ -1,26 +1,21 @@
-module DialogueReport
-  # takes an abstract table (array of hashes) and writes it to a CSV
-  # TODO extract common functionality to service superclass
+module CSVReport
+  # gets an abstract table (array of hashes) and converts it to an array of arrays, a format the CSV service can handle
   class UserTypeUsers
+    def self.exec(options)
+      new(options).exec
+    end
+
     attr_reader :options
 
     def initialize(options = {})
       @options = options.reverse_merge!(
         start_month: Month.new(2014, 1),
         end_month: Month.new(2014, 12),
-        folder_path: Rails.root.join('reports', 'dialogue', 'latest').to_s
       )
     end
 
     def exec
-      CSV.write_from_array(
-        "#{options[:folder_path]}/user_type_users.csv",
-        concrete
-      )
-    end
-
-    def concrete
-      @concrete ||= [ headings ] + body_rows
+      [ headings ] + body_rows
     end
 
     def abstract

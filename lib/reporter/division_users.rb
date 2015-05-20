@@ -20,13 +20,12 @@ module Reporter
       # we're asking for page views b.c. analytics needs a metric, even though we're only really interested in user ids
       data = AnalyticsApiAdapter.get({
         metrics: [:page_views],
-        dimensions: [:user_id, :user_type_key, :division_id]
+        dimensions: [:user_id, :division_id]
       }.merge(date_opts))
 
       Table.new(data).collapse_subsets(
         Proc.new { |row| [ row[:user_type_key], row[:division_id] ]  },
         {
-          user_type_key: nil,
           division_id: nil,
           users: 0
         },
