@@ -11,21 +11,21 @@ class Array
   end
 
   # based on a uniquing function
-  def subsets(uniq_function)
+  def subsets
     # we're going to gradually reduce this clone down as we pull out matching elements
     copy = self.clone
 
     self.inject([]) do |memo, elem|
       # get the items in the copy that match this one according to our function
       subset = copy.select do |inner_elem|
-        uniq_function.call(inner_elem) == uniq_function.call(elem)
+        yield(inner_elem) == yield(elem)
       end
 
       memo << subset if subset.any?
 
       # so we don't get duplicate dupe sets...
       copy.delete_if do |inner_elem|
-        uniq_function.call(inner_elem) == uniq_function.call(elem)
+        yield(inner_elem) == yield(elem)
       end
 
       memo

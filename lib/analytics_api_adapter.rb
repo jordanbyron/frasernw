@@ -16,6 +16,15 @@ class AnalyticsApiAdapter
     parse_response response
   end
 
+  def self.user_type_from_key(key)
+    User::TYPE_HASH.merge(
+      -1 => "Bounced",
+      0 => "Admin"
+    )[key.to_i]
+  end
+
+  private
+
   def self.construct_query(query_params)
     query = {
       :api_method => analytics.data.ga.get,

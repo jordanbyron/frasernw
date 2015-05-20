@@ -8,4 +8,10 @@ class Hash
 
     new_hash
   end
+
+  def match?(other_hash, keys)
+    keys.all? do |key|
+      self[key] == other_hash[key]
+    end
+  end
 end
