@@ -3,9 +3,6 @@ require 'google/api_client/auth/installed_app'
 
 # Handles setup and authorization of google's api client
 class AnalyticsApiClient
-  KEY_PASS = 'notasecret'
-  KEY_PATH = Rails.root.join('config', 'google_oauth.p12')
-
   PROFILE_IDS_QUERY_PARAM = "ga:61207403"
 
   # example query
@@ -70,6 +67,6 @@ class AnalyticsApiClient
   end
 
   def key
-    @key ||= Google::APIClient::KeyUtils.load_from_pkcs12(KEY_PATH, KEY_PASS)
+    @key ||= OpenSSL::PKey::RSA.new ENV['GOOGLE_OAUTH_P12_KEY'], 'notasecret'
   end
 end

@@ -49,6 +49,14 @@ module Frasernw
     # Enable the asset pipeline
     config.assets.enabled = true
 
+    #compress assets before serving, only use below if not on CDN:
+    config.middleware.insert_before ActionDispatch::Static, Rack::Deflater
+    #if with CDN (https://robots.thoughtbot.com/content-compression-with-rack-deflater):
+    # config.middleware.use Rack::Deflater
+
+
+
+
     # mailer
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.raise_delivery_errors = true

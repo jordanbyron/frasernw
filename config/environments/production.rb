@@ -26,7 +26,7 @@ Frasernw::Application.configure do
   config.action_dispatch.x_sendfile_header = "X-Sendfile" # Use 'X-Accel-Redirect' for nginx
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = ENV["FORCE_SSL"].to_b
 
   # See everything in the log (default is :info)
   # config.log_level = :debug

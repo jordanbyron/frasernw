@@ -32,7 +32,7 @@ class Specialist < ActiveRecord::Base
   accepts_nested_attributes_for :referral_forms, :allow_destroy => true
 
   # specialists are favorited by users of the system
-  has_many   :favorites
+  has_many   :favorites, :as => :favoritable, :dependent => :destroy
   has_many   :favorite_users, :through => :favorites, :source => :user, :class_name => "User"
 
   # has many contacts - dates and times they were contacted
