@@ -1,6 +1,6 @@
 module CSVReport
   # gets an abstract table (array of hashes) and converts it to an array of arrays, a format the CSV service can handle
-  class UserTypeUsers
+  class Users
     def self.exec(options)
       new(options).exec
     end
@@ -15,11 +15,40 @@ module CSVReport
     end
 
     def exec
-      [ headings ] + body_rows
+      [ headings ] + by_user_type + by_division
+    end
+
+    def headings
+      [
+        ["Users"],
+        (["User type", "Division"] + months.map(&:name))
+      ]
+    end
+
+    def by_user_type
+      abstract_by_user_type.inject([]) do |memo, abstract_for_user_type|
+        memo + rows_for_user_type(abstract_for_user_type)
+      end
+    end
+
+    def by_division
+      rows = []
+
+      rows << ([
+        "All User Types",
+        "All Divisions"
+      ] + months.map {|month| Table.sum_column(abstract.rows, month)})
+
+      rows + abstract_by_division.inject([]) do |memo, division|
+        memo << ([
+          "",
+          division_from_id(division.first[:division_id])
+        ] + months.map {|month| Table.sum_column(division, month)})
+      end
     end
 
     def abstract
-      @abstract ||= Reporter::UserTypeUsers.time_series(
+      @abstract ||= Reporter::Users.time_series(
         options[:start_month],
         options[:end_month]
       )
@@ -29,18 +58,12 @@ module CSVReport
       @months ||= abstract.columns.select {|column| column.is_a? Month }
     end
 
-    def headings
-      ["User type", "Division"] + months.map(&:name)
-    end
-
-    def user_type_rows_sets
+    def abstract_by_user_type
       abstract.rows.subsets{|row| row[:user_type_key] }
     end
 
-    def body_rows
-      user_type_rows_sets.inject([]) do |memo, row_set|
-        memo + user_type_rows(row_set)
-      end
+    def abstract_by_division
+      abstract.rows.subsets{|row| row[:division_id] }
     end
 
     def divisions
@@ -57,21 +80,21 @@ module CSVReport
       end
     end
 
-    def user_type_rows(abstract_user_type_rows)
+    def rows_for_user_type(abstract_for_user_type)
       rows = []
 
       user_type = AnalyticsApiAdapter.user_type_from_key(
-        abstract_user_type_rows.first[:user_type_key]
-        )
+        abstract_for_user_type.first[:user_type_key]
+      )
 
       # Totals
       rows << [
         user_type,
         "All Divisions"
-      ] + months.map {|month| Table.sum_column(abstract_user_type_rows, month)}
+      ] + months.map {|month| Table.sum_column(abstract_for_user_type, month)}
 
       # Breakdown by division
-      abstract_user_type_rows.each do |division|
+      abstract_for_user_type.each do |division|
         rows << [
           "",
           division_from_id(division[:division_id])
