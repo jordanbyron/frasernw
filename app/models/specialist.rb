@@ -238,7 +238,7 @@ class Specialist < ActiveRecord::Base
     elsif not_responded? || purposely_not_yet_surveyed? || hospital_or_clinic_referrals_only?
       (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? }.uniq
     else
-      City.none
+      []
     end
   end
 
