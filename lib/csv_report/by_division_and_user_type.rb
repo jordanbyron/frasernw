@@ -1,14 +1,25 @@
+# gets an abstract table (array of hashes) and converts it to an array of arrays, a format the CSV service can handle
 module CSVReport
-  # gets an abstract table (array of hashes) and converts it to an array of arrays, a format the CSV service can handle
   class ByDivisionAndUserType
-    def self.exec(abstract, title)
-      new(abstract, title).exec
+    def self.exec(options)
+      new(options).exec
     end
 
-    attr_reader :abstract, :title
+    attr_reader :options
 
-    def initialize(abstract, title="users")
-      @abstract, @title = abstract, title
+    def initialize(options)
+      @options = options
+    end
+
+    def abstract
+      @abstract ||= Reporter::ByDivisionAndUserType.time_series(
+        options[:metric],
+        options.slice(:start_month, :end_month)
+      )
+    end
+
+    def title
+      options[:title]
     end
 
     def exec

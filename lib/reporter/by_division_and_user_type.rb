@@ -1,5 +1,6 @@
 module Reporter
-  # number of users by user type and then division
+  # supported metrics:
+  # :users, :users_min_5_sessions, :users_min_10_sessions, :average_session_duration, :average_page_view_duration, :page_views, :sessions
   class ByDivisionAndUserType
     def self.time_series(metric, options)
       Month.for_interval(options[:start_month], options[:end_month]).inject(Table.new([])) do |table, month|
