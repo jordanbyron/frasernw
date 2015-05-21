@@ -51,7 +51,9 @@ class AnalyticsApiAdapter
 
   METRICS = {
     page_views: "ga:pageviews",
-    sessions: "ga:sessions"
+    sessions: "ga:sessions",
+    average_page_view_duration: "ga:avgTimeOnPage",
+    average_session_duration: "ga:avgSessionDuration"
   }
   def self.format_metrics(metrics)
     metrics.map do |elem|

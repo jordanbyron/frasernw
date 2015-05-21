@@ -1,14 +1,14 @@
 module CSVReport
   # gets an abstract table (array of hashes) and converts it to an array of arrays, a format the CSV service can handle
-  class Users
-    def self.exec(abstract)
-      new(abstract).exec
+  class ByDivisionAndUserType
+    def self.exec(abstract, title)
+      new(abstract, title).exec
     end
 
-    attr_reader :abstract
+    attr_reader :abstract, :title
 
     def initialize(abstract, title="users")
-      @abstract = abstract
+      @abstract, @title = abstract, title
     end
 
     def exec
@@ -17,7 +17,7 @@ module CSVReport
 
     def headings
       [
-        [title],
+        [ title ],
         (["User type", "Division"] + months.map(&:name))
       ]
     end

@@ -16,7 +16,7 @@ module CSVReport
 
     def concatenated_tables
       tables.inject([]) do |memo, table|
-        memo + table + [""]
+        memo + (table << [""])
       end
     end
   end

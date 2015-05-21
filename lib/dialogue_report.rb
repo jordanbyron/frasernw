@@ -13,32 +13,36 @@ class DialogueReport
   ### "Number of accounts who make more than 5 visits"
   ### "Number of accounts who make more than 10 visits"
   ### "Number of visitors to Pathways by user category"
+  # TODO cleanup this method
   def self.users
     period = {
       start_month: Month.new(2014, 1),
       end_month: Month.new(2014, 12)
     }
 
-    abstract_users = Reporter::Users.time_series(
-      period.merge(min_sessions: 0)
+    abstract_users = Reporter::ByDivisionAndUserType.time_series(
+      :users,
+      period
     )
-    users = CSVReport::Users.exec(
+    users = CSVReport::ByDivisionAndUserType.exec(
       abstract_users,
       "Users"
     )
 
-    abstract_min_five = Reporter::Users.time_series(
-      period.merge(min_sessions: 5)
+    abstract_min_five = Reporter::ByDivisionAndUserType.time_series(
+      :users_min_5_sessions,
+      period
     )
-    min_five = CSVReport::Users.exec(
+    min_five = CSVReport::ByDivisionAndUserType.exec(
       abstract_min_five,
       "Users (> 5 Sessions)"
     )
 
-    abstract_min_ten = Reporter::Users.time_series(
-      period.merge(min_sessions: 10)
+    abstract_min_ten = Reporter::ByDivisionAndUserType.time_series(
+      :users_min_10_sessions,
+      period
     )
-    min_ten = CSVReport::Users.exec(
+    min_ten = CSVReport::ByDivisionAndUserType.exec(
       abstract_min_ten,
       "Users (> 10 Sessions)"
     )
