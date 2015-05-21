@@ -8,6 +8,8 @@ class DialogueReport
 
   def self.exec
     users
+    page_views
+    sessions
   end
 
   ### Each method below should generate a different file for the report
