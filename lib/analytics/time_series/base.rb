@@ -3,6 +3,7 @@ module Analytics
   # supported metrics:
   # :users, :users_min_5_sessions, :users_min_10_sessions, :average_session_duration, :average_page_view_duration, :page_views, :sessions
 
+  # Factory class for a time series analytics table
   module TimeSeries
     class Base
       # TODO get actual start month
@@ -17,15 +18,25 @@ module Analytics
       end
 
       def exec
-        Analytics::AbstractTable.new(
-          Rails.cache.fetch(cache_key, force: options[:force]) { generate }
-        )
+        cache_fetch = Rails.cache.fetch(cache_key, force: options[:force]) do
+          generate
+        end
+
+        Analytics::AnalyticsTable::Division.new(cache_fetch)
       end
 
       def generate
-        months.inject(Table.new([])) do |memo, month|
+        table = months.inject(HashTable.new([])) do |memo, month|
           accumulate_to_table(memo, month)
-        end.rows
+        end
+
+        months.each do |column|
+          table.transform_column!(column) do |row|
+            row[column].to_i
+          end
+        end
+
+        table.rows
       end
 
       def months
@@ -55,6 +66,7 @@ module Analytics
         )
       end
 
+      # TODO dependency inject
       def frame_class
         if [:users, :users_min_5_sessions, :users_min_10_sessions].include? metric
           Analytics::Frame::Users

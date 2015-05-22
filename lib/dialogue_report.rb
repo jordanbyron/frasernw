@@ -73,7 +73,7 @@ class DialogueReport
   end
 
   # "Average time per visit by user category
-  def self.average_time_per_session
+  def self.average_session_duration
     table = Analytics::CsvPresenter.exec({
       metric: :average_session_duration,
       title: "Average time per session"

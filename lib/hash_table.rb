@@ -1,4 +1,4 @@
-class Table
+class HashTable
   attr_reader :rows
 
   # takes an array of hashes
@@ -108,7 +108,7 @@ class Table
   end
 
   def add_rows(rows)
-    Table.new(self.rows.clone + rows)
+    HashTable.new(self.rows.clone + rows)
   end
 
   protected

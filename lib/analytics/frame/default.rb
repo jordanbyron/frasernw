@@ -7,7 +7,7 @@ module Analytics
   module Frame
     class Default < Base
       def exec
-        Table.new(by_division_and_user_type).
+        HashTable.new(by_division_and_user_type).
           add_rows(by_division).
           add_rows(by_user_type).
           add_rows(total)

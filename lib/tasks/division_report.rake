@@ -31,7 +31,7 @@ namespace :pathways do
     )
 
     user_types = StatsReporter.user_types(common_options)
-    user_types_table = Table.new(user_types)
+    user_types_table = HashTable.new(user_types)
 
     # transform user types table
     user_types_table.transform_column!(:page_views) do |row|
@@ -44,7 +44,7 @@ namespace :pathways do
 
     ## Transform pageviews table
 
-    page_views_table = Table.new(page_views_by_page)
+    page_views_table = HashTable.new(page_views_by_page)
 
     # we want all of the page views to be integers so we can do arithmetic on them
     page_views_table.transform_column!(:page_views) do |row|

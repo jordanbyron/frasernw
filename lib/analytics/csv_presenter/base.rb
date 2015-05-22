@@ -51,13 +51,13 @@ module Analytics
         rows << ([
           "All User Types",
           "All Divisions"
-        ] + months.map {|month| abstract.total.first[month]})
+        ] + months.map {|month| abstract.total.first[month] })
 
         rows + abstract.by_division.inject([]) do |memo, division|
           memo << ([
             "",
             division_from_id(division[:division_id])
-          ] + months.map {|month| division[month]})
+          ] + months.map {|month| division[month] })
         end
       end
 

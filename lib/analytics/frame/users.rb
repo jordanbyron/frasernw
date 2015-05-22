@@ -19,7 +19,7 @@ module Analytics
           dimensions: [:user_id, :user_type_key, :division_id]
         }.merge(options.slice(:start_date, :end_date)))
 
-        @by_division_and_user_type = Table.new(data).collapse_subsets(
+        @by_division_and_user_type = HashTable.new(data).collapse_subsets(
           Proc.new { |row| [ row[:user_type_key], row[:division_id] ]  },
           {
             :user_type_key => nil,
@@ -89,7 +89,7 @@ module Analytics
       end
 
       def grand_total
-        sum = Table.sum_column(by_division_and_user_type.rows, metric)
+        sum = HashTable.sum_column(by_division_and_user_type.rows, metric)
         {
           :division_id => nil,
           :user_type_key => nil,

@@ -8,7 +8,7 @@ describe Table do
     { column_1: 10, column_2: 11, column_3: 12 }
   ]
 
-  let(:table) { Table.new(sample_data) }
+  let(:table) { HashTable.new(sample_data) }
 
   describe "#collapse_duplicate_rows!" do
     it "collapses duplicates using the test given" do

@@ -8,7 +8,7 @@ describe Table do
       { user_type: 10, division: 11, jan: 12 }
     ]
   end
-  let(:table) { Table.new(sample_data) }
+  let(:table) { HashTable.new(sample_data) }
 
   let(:sample_data_2) do
     [
@@ -16,7 +16,7 @@ describe Table do
       { user_type: 10, division: 11, views: 12 }
     ]
   end
-  let(:table_2) { Table.new(sample_data_2) }
+  let(:table_2) { HashTable.new(sample_data_2) }
 
   describe "#add_column" do
     it "adds a new column with the name provided" do

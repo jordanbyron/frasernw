@@ -1,5 +1,6 @@
 require 'google/api_client'
 require 'google/api_client/auth/installed_app'
+require 'google/api_client/errors'
 
   # Handles setup and authorization of google's api client
 module Analytics
