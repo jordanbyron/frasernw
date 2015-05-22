@@ -31,20 +31,28 @@ class City < ActiveRecord::Base
   end
 
   def self.for_user_in_specialization(user, specialization)
-    #user defined
-    per_user = joins('INNER JOIN "user_cities" ON "user_cities".city_id = "cities".id INNER JOIN "user_city_specializations" ON "user_cities".id = "user_city_specializations".user_city_id').where('"user_city_specializations".specialization_id = (?) AND "user_cities".user_id = (?)', specialization.id, user.id)
-    #user is in division which has cities for specialization
-    per_specialty = joins('INNER JOIN "division_referral_cities" ON "division_referral_cities".city_id = "cities".id INNER JOIN "division_referral_city_specializations" ON "division_referral_cities".id = "division_referral_city_specializations".division_referral_city_id INNER JOIN "division_users" ON "division_users".division_id = "division_referral_cities".division_id').where('"division_referral_city_specializations".specialization_id = (?) AND "division_users".user_id = (?)', specialization.id, user.id)  # DevNote: flagged by heroku as time consuming query: 29% (Time cons.), 2ms (Avg. time), 38/min (Throughput), 0ms (I/O time)
-    #user is in division which has default cities
-    divisional = joins('INNER JOIN "division_cities" ON "division_cities".city_id = "cities".id INNER JOIN "division_users" ON "division_users".division_id = "division_cities".division_id').where('"division_users".user_id = (?)', user.id)
+    Rails.cache.fetch([user.cache_key, specialization.cache_key], expires_in: 7.days) do
+      #user defined
+      per_user = joins('INNER JOIN "user_cities" ON "user_cities".city_id = "cities".id INNER JOIN "user_city_specializations" ON "user_cities".id = "user_city_specializations".user_city_id').where('"user_city_specializations".specialization_id = (?) AND "user_cities".user_id = (?)', specialization.id, user.id)
+      return per_user if per_user.present?
 
-    if per_user.present?
-      return per_user
-    elsif per_specialty.present?
-      return per_specialty
-    else
+      #user is in division which has cities for specialization
+      per_specialty = joins('INNER JOIN "division_referral_cities" ON "division_referral_cities".city_id = "cities".id INNER JOIN "division_referral_city_specializations" ON "division_referral_cities".id = "division_referral_city_specializations".division_referral_city_id INNER JOIN "division_users" ON "division_users".division_id = "division_referral_cities".division_id').where('"division_referral_city_specializations".specialization_id = (?) AND "division_users".user_id = (?)', specialization.id, user.id)  # DevNote: flagged by heroku as time consuming query: 29% (Time cons.), 2ms (Avg. time), 38/min (Throughput), 0ms (I/O time)
+      return per_specialty if per_specialty.present?
+
+      #user is in division which has default cities
+      divisional = joins('INNER JOIN "division_cities" ON "division_cities".city_id = "cities".id INNER JOIN "division_users" ON "division_users".division_id = "division_cities".division_id').where('"division_users".user_id = (?)', user.id)
       return divisional
     end
+
+    #^^^ refactored for performance from below:
+    # if per_user.present?
+    #   return per_user
+    # elsif per_specialty.present?
+    #   return per_specialty
+    # else
+    #   return divisional
+    # end
   end
 
   def self.not_hidden

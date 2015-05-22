@@ -44,6 +44,8 @@ class Clinic < ActiveRecord::Base
 
   has_one :review_item, :as => :item, :conditions => { "archived" => false }
   has_many :feedback_items, :as => :item, :conditions => { "archived" => false }
+  has_many :archived_feedback_items, :as => :item, :foreign_key => "item_id", :class_name => "FeedbackItem"
+
 
   default_scope order('clinics.name')
 
