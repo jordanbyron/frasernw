@@ -129,7 +129,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def flush_cache_for_record
-  # only flushes Specialist.cached_find(id), @specialist.city @specialist.cities @specialist.cities_for_display
+  # only flushes Specialist.cached_find(id), @specialist.city @specialist.cities @specialist.cities_for_display @specialist.cities_for_front_page
     Rails.cache.delete([self.class.name, self.id, "city"])
     Rails.cache.delete([self.class.name, self.id, "cities"])
     Rails.cache.delete([self.class.name, self.id, "cities_for_display"])
@@ -236,8 +236,7 @@ class Specialist < ActiveRecord::Base
   #clinic that referrals are done through
   belongs_to :referral_clinic, :class_name => "Clinic"
 
-
-  def city # NullData.new() pattern used here since memcache is not working with Nil: http://stackoverflow.com/questions/30383704/how-to-store-nil-with-rails-cache-fetch-memcache
+  def city # NullData.new() used since memcache doesn't work with nil: http://stackoverflow.com/questions/30383704/how-to-store-nil-with-rails-cache-fetch-memcache
     result = Rails.cache.fetch([self.class.name, self.id, "city"], expires_in: 23.hours) do
       if responded?
         o = offices.first
