@@ -31,4 +31,10 @@ class Array
       memo
     end
   end
+
+  def combinations
+    (1..array.length).inject([]) do |memo, size|
+      memo + self.combination(size)
+    end
+  end
 end

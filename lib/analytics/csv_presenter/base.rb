@@ -82,7 +82,7 @@ module Analytics
         if !division.nil?
           division.name
         else
-          "No Division"
+          "User Division Not Known"
         end
       end
 

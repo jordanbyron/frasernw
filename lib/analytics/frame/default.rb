@@ -7,26 +7,21 @@ module Analytics
   module Frame
     class Default < Base
       def exec
-        HashTable.new(by_division_and_user_type).
-          add_rows(by_division).
-          add_rows(by_user_type).
-          add_rows(total)
+        raw_table = HashTable.new(by_division_and_user_type)
+
+        totals = Analytics::Totaler::Sum.new(
+          original_table: raw_table,
+          dimensions: [:division_id, :users_type_key],
+          metric: metric,
+          start_date: options[:start_date],
+          end_date: options[:end_date]
+        )
+
+        raw_table.add_rows(totals)
       end
 
       def by_division_and_user_type
         Analytics::ApiAdapter.get(construct_query([:division_id, :user_type_key]))
-      end
-
-      def by_division
-        Analytics::ApiAdapter.get(construct_query([:division_id]))
-      end
-
-      def by_user_type
-        Analytics::ApiAdapter.get(construct_query([:user_type_key]))
-      end
-
-      def total
-        Analytics::ApiAdapter.get(construct_query(nil))
       end
 
       def base_query

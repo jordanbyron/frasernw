@@ -4,11 +4,14 @@ module Analytics
     class Users < Base
       def exec
         table = by_division_and_user_type
-        table = table.add_rows(sums_by_user_type)
-        table = table.add_rows(sums_by_division)
-        table = table.add_rows([grand_total])
 
-        table
+        totals = Analytics::Totaler::Sum.new(
+          original_table: table,
+          dimensions: [:user_type_key, :division_id],
+          metric: metric
+        )
+
+        table.add_rows(totals)
       end
 
       def by_division_and_user_type
@@ -48,53 +51,6 @@ module Analytics
         else
           raise "Don't know that metric"
         end
-      end
-
-      def sums_by_user_type
-        by_division_and_user_type.rows.subsets do |row|
-          row[:user_type_key]
-        end.inject([]) do |memo, set|
-          sum = set.inject(0) do |memo, row|
-            if row[:division_id].present?
-              memo += row[metric].to_i
-            else
-              memo
-            end
-          end
-
-          memo << {
-            :user_type_key => set.first[:user_type_key],
-            metric => sum
-          }
-        end
-      end
-
-      def sums_by_division
-        by_division_and_user_type.rows.subsets do |row|
-          row[:division_id]
-        end.inject([]) do |memo, set|
-          sum = set.inject(0) do |memo, row|
-            if row[:user_type_key].present?
-              memo += row[metric].to_i
-            else
-              memo
-            end
-          end
-
-          memo << {
-            :division_id => set.first[:division_id],
-            metric => sum
-          }
-        end
-      end
-
-      def grand_total
-        sum = HashTable.sum_column(by_division_and_user_type.rows, metric)
-        {
-          :division_id => nil,
-          :user_type_key => nil,
-          metric => sum
-        }
       end
     end
   end

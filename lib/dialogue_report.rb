@@ -2,8 +2,8 @@
 class DialogueReport
   FOLDER_PATH = Rails.root.join('reports','dialogue','latest').to_s
   PERIOD = {
-    start_month: Month.new(2014, 1),
-    end_month: Month.new(2014, 12)
+    start_month: Month.new(2014, 4),
+    end_month: Month.new(2015, 4)
   }
 
   def self.exec
