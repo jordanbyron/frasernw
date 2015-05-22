@@ -103,8 +103,12 @@ class Table
 
   def sum_column(column_key)
     rows.inject(0) do |memo, row|
-      memo += row[column_key]
+      memo += row[column_key].to_i
     end
+  end
+
+  def add_rows(rows)
+    Table.new(self.rows.clone + rows)
   end
 
   protected

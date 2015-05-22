@@ -1,4 +1,20 @@
 class Month
+
+  def self.prev
+    new(
+      Date.today.year,
+      (Date.today.month - 1)
+    )
+  end
+
+  # the current month
+  def self.current
+    new(
+      Date.today.year,
+      Date.today.month
+    )
+  end
+
   def self.for_interval(first, second)
     (first.year..second.year).inject([]) do |memo, year|
       if year == first.year && year == second.year
@@ -26,11 +42,15 @@ class Month
   attr_reader :year, :month
 
   def initialize(year, month)
-    @month = month
     @year  = year
+    @month = month
   end
 
   def name
+    start_date.strftime("%m-%Y")
+  end
+
+  def to_cache_key
     start_date.strftime("%m-%Y")
   end
 

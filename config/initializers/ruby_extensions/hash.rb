@@ -14,4 +14,10 @@ class Hash
       self[key] == other_hash[key]
     end
   end
+
+  def lazy_match?(other_hash)
+    other_hash.keys.all? do |key|
+      self[key] == other_hash[key] || self[key].to_s == other_hash[key].to_s
+    end
+  end
 end

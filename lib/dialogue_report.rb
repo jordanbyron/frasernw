@@ -10,6 +10,8 @@ class DialogueReport
     users
     page_views
     sessions
+    average_page_view_duration
+    average_session_duration
   end
 
   ### Each method below should generate a different file for the report
@@ -22,17 +24,17 @@ class DialogueReport
   def self.users
     tables = []
 
-    tables << CSVReport::ByDivisionAndUserType.exec({
+    tables << Analytics::CsvPresenter.exec({
       metric: :users,
       title: "Users"
     }.merge(PERIOD))
 
-    tables << CSVReport::ByDivisionAndUserType.exec({
+    tables << Analytics::CsvPresenter.exec({
       metric: :users_min_5_sessions,
       title: "Users (> 5 Sessions)"
     }.merge(PERIOD))
 
-    tables << CSVReport::ByDivisionAndUserType.exec({
+    tables << Analytics::CsvPresenter.exec({
       metric: :users_min_10_sessions,
       title: "Users (> 10 Sessions)"
     }.merge(PERIOD))
@@ -42,7 +44,7 @@ class DialogueReport
 
   # "Number of page views by visit by user category"
   def self.page_views
-    table = CSVReport::ByDivisionAndUserType.exec({
+    table = Analytics::CsvPresenter.exec({
       metric: :page_views,
       title: "Page Views"
     }.merge(PERIOD))
@@ -52,7 +54,7 @@ class DialogueReport
 
   # "Number of visits to pathways by user category"
   def self.sessions
-    table = CSVReport::ByDivisionAndUserType.exec({
+    table = Analytics::CsvPresenter.exec({
       metric: :sessions,
       title: "Sessions"
     }.merge(PERIOD))
@@ -62,7 +64,7 @@ class DialogueReport
 
   # "Average time per page view by user category"
   def self.average_page_view_duration
-    table = CSVReport::ByDivisionAndUserType.exec({
+    table = Analytics::CsvPresenter.exec({
       metric: :average_page_view_duration,
       title: "Average time per page view"
     }.merge(PERIOD))
@@ -70,7 +72,14 @@ class DialogueReport
     write_tables([table], "average_page_view_duration")
   end
 
+  # "Average time per visit by user category
   def self.average_time_per_session
+    table = Analytics::CsvPresenter.exec({
+      metric: :average_session_duration,
+      title: "Average time per session"
+    }.merge(PERIOD))
+
+    write_tables([table], "average_session_duration")
   end
 
   def self.write_tables(tables, filename)
