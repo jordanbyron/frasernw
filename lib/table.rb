@@ -94,7 +94,7 @@ class Table
   def self.sum_column(ary, column_key)
     ary.inject(0) do |memo, row|
       if !row[column_key].nil?
-        memo += row[column_key]
+        memo += row[column_key].to_i
       else
         memo
       end
