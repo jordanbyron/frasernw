@@ -52,27 +52,19 @@ module Analytics
       end
 
       def accumulate_to_table(memo, month)
-        month_table = frame_class.new(
+        month_table = Analytics::Frame.for(metric).exec(
           metric,
+          dimensions,
           start_date: month.start_date,
           end_date: month.end_date
-        ).exec
+        )
 
         memo.add_column(
           other_table: month_table,
-          keys_to_match: [:division_id, :user_type_key],
+          keys_to_match: dimensions,
           old_column_key: metric,
           new_column_key: month
         )
-      end
-
-      # TODO dependency inject
-      def frame_class
-        if [:users, :users_min_5_sessions, :users_min_10_sessions].include? metric
-          Analytics::Frame::Users
-        else
-          Analytics::Frame::Default
-        end
       end
     end
   end

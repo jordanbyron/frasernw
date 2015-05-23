@@ -1,7 +1,6 @@
 module Analytics
   module Totaler
     # generates totals across dimensions for one a one-frame table
-
     class Base
       attr_reader :original_table, :dimensions, :metric, :options
 
@@ -13,8 +12,8 @@ module Analytics
       end
 
       def totals
-        dimensions.combinations.inject([]) do |memo, permutation|
-          memo << total_permutation(permutation)
+        dimensions.combinations.inject([]) do |memo, combination|
+          memo << total_combination(combination)
         end
       end
     end

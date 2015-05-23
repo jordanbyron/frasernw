@@ -1,13 +1,8 @@
-# gets an abstract table (array of hashes) and converts it to an array of arrays, a format the CSV service can handle
-# displays metrics by division and user type
 module Analytics
   module CsvPresenter
-    class Base
+    # displays metrics by division and user type
+    class Default
       attr_reader :options
-
-      def self.exec(options)
-        new(options).exec
-      end
 
       def initialize(options)
         @options = options
@@ -18,10 +13,7 @@ module Analytics
       end
 
       def abstract
-        @abstract ||= Analytics::TimeSeries.exec(
-          options[:metric],
-          force: true
-        )
+        @abstract ||= Analytics::TimeSeries.exec(options.merge(force: true))
       end
 
       def date_options
