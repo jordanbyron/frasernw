@@ -789,17 +789,12 @@ ActiveRecord::Schema.define(:version => 20150505073245) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "division_id"
-    t.boolean  "in_progress",                      :default => false
-    t.boolean  "open_to_clinic_tab_old",           :default => false
-    t.boolean  "is_new",                           :default => false
+    t.boolean  "in_progress",            :default => false
+    t.boolean  "open_to_clinic_tab_old", :default => false
+    t.boolean  "is_new",                 :default => false
     t.integer  "content_owner_id"
-    t.integer  "open_to_type",                     :default => 1
+    t.integer  "open_to_type",           :default => 1
     t.integer  "open_to_sc_category_id"
-    t.boolean  "show_specialist_categorization_1", :default => true
-    t.boolean  "show_specialist_categorization_2", :default => true
-    t.boolean  "show_specialist_categorization_3", :default => true
-    t.boolean  "show_specialist_categorization_4", :default => true
-    t.boolean  "show_specialist_categorization_5", :default => false
   end
 
   add_index "specialization_options", ["content_owner_id"], :name => "index_specialization_options_on_content_owner_id"

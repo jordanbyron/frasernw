@@ -13,6 +13,22 @@ class City < ActiveRecord::Base
 
   validates_presence_of :name, :on => :create, :message => "can't be blank"
 
+  # # # Caching methods
+  after_commit :flush_cached_find
+
+  # def self.all_cached
+  #   Rails.cache.fetch('City.all') { all }
+  # end
+
+  def self.cached_find(id)
+    Rails.cache.fetch([name, id]) { find(id) }
+  end
+
+  def flush_cached_find
+    Rails.cache.delete([self.class.name, id])
+  end
+  # # #
+
   def to_s
     self.name
   end

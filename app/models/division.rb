@@ -33,6 +33,33 @@ class Division < ActiveRecord::Base
 
   validates_presence_of :name, :on => :create, :message => "can't be blank"
 
+  # # # Cache actions
+  after_commit :flush_cached_find
+  after_commit :flush_cache
+  after_touch  :flush_cached_find
+  after_touch  :flush_cache
+
+  def self.all_cached
+    Rails.cache.fetch([name, 'Division.all'], :expires_in => 8.hours) { all }
+  end
+
+  def self.cached_find(id)
+    Rails.cache.fetch([name, id]) { find(id) }
+  end
+
+  def flush_cached_find
+    Rails.cache.delete([self.class.name, id])
+  end
+
+  def flush_cache #called during after_commit or after_touch
+    Rails.cache.delete([self.class.name, "Division.all"])
+    Division.all.each do |division|
+      Rails.cache.delete([division.class.name, division.id])
+    end
+  end
+
+  # # #
+
   def to_s
     self.name
   end
