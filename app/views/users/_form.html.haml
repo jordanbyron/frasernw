@@ -2,7 +2,7 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
-  = f.input :name
+  = f.input :name, input_html: {:autocomplete => "off"}
   = f.input :email if !@new_user
   = f.input :role, :as => :select, collection: (current_user_is_super_admin? ? User::ROLE_HASH : User::LIMITED_ROLE_HASH), label_method: :last, value_method: :first, :include_blank => false
   = f.input :active
