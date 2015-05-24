@@ -12,7 +12,7 @@ group :production do
   gem 'heroku_cloud_backup'
 end
 
-gem 'goldiloader' #automate eagerloading to squash N+1 queries
+# gem 'goldiloader' #automate eagerloading to squash N+1 queries
 
 
 # # Asset template engines
