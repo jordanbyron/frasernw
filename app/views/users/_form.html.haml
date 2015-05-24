@@ -6,7 +6,7 @@
   = f.input :email if !@new_user
   = f.input :role, :as => :select, collection: (current_user_is_super_admin? ? User::ROLE_HASH : User::LIMITED_ROLE_HASH), label_method: :last, value_method: :first, :include_blank => false
   = f.input :active
-  = f.association :divisions, as: :check_boxes, collection: (current_user_is_super_admin? ? Division.all : current_user_divisions), checked: (user_edit_checkbox_value_for_division), hint: ( @new_user && ( current_user_is_super_admin? || current_user_has_multiple_user_divisions?) ? "Please select a division for this user.".html_safe : "" )
+  = f.association :divisions, as: :check_boxes, collection: (current_user_is_super_admin? ? Division.all : current_user_divisions), checked: (user_edit_checkbox_value_for_division), hint: "<div id='user_form_divisions_hint'>Please select a division for this user. </div>".html_safe, input_html: {:class => "user-form-division-option"}, label_method: :name, value_method: :id, presence: true, include_blank: false
   #super_admin_pane
 
   #admin_pane
@@ -75,4 +75,26 @@
       $(document).ready(function() {
         $("#user_role").each( swapRole );
         $("#user_role").live("change", swapRole );
+
+        if ($('.user-form-division-option').filter(':checked').length >= 1)
+        {
+          $("#user_form_divisions_hint").hide();
+        }
+        else if($('.user-form-division-option').filter(':checked').length <= 0)
+        {
+          $("#user_form_divisions_hint").show();
+        }
+
+        // Reminder message for user to select a division when no divisions are selected
+        $('.user-form-division-option').on( "click", function() {
+          if ($('.user-form-division-option').filter(':checked').length >= 1)
+          {
+            $("#user_form_divisions_hint").hide();
+          }
+          else if ($('.user-form-division-option').filter(':checked').length <= 0)
+          {
+            $("#user_form_divisions_hint").show();
+          }
+        });
+
       });

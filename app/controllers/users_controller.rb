@@ -33,10 +33,11 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(params[:user])
+    redirect_to new_user_url, :alert => "Create New User Failed:  At least one division must be chosen." and return if @user.divisions.blank?
     if @user.save :validate => false #so we can avoid setting up with emails or passwords
       redirect_to @user, :notice => "User #{@user.name} successfully created."
     else
-      render :action => 'new'
+      render :action => 'new', :notice => "User Create Failed"
     end
   end
 
