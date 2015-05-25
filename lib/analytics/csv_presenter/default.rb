@@ -57,7 +57,7 @@ module Analytics
       def division_labeler
         Analytics::Labeler::Id.new(
           Division.all,
-          "User Division Not Found"
+          fallback_message: "User Division Not Found"
         )
       end
 

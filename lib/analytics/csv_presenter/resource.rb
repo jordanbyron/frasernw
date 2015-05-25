@@ -1,19 +1,24 @@
+# filter down by division, if there is a division
+# filter down by path to resource category
 # takes an abstract table, applies any necessary filters to it, and outputs table in array format (which the csv service can handle)
-
 module Analytics
   module CsvPresenter
     # displays metrics by specialty name and user type
-    class Specialty < Base
+    class Resource < Base
       attr_reader :options
 
       def exec
         headings + body_rows
       end
 
+      def parsed_dimensions
+        options[:dimensions].delete(:resource_category).push(:page_path)
+      end
+
       def abstract
         @abstract ||= Analytics::TimeSeries.exec(
           metric: options[:metric],
-          dimension: options[:dimensions].delete(:specialty).push(:page_path)
+          dimension: parsed_dimensions
           force: true
         )
       end
@@ -22,7 +27,7 @@ module Analytics
         [
           Analytics::Filter::Search.new(division_id: options[:division_id]),
           Analytics::Filter::PathMatch.new(
-            path_regexp: /\/specialties\/[[:digit:]]+/
+            path_regexp: /\/content_items\/[[:digit:]]+/
           )
         ]
       end
@@ -34,11 +39,8 @@ module Analytics
         ]
       end
 
-      def specialty_labeler
-        @specialty_labeler ||= Analytics::Labeler::Path.new(
-          Specialization.all,
-          "/specialties/"
-        )
+      def resource_labeler
+        @resource_labeler ||= Analytics::Labeler::Resource.new
       end
 
       def body_rows
@@ -52,15 +54,17 @@ module Analytics
       def for_path(abstract_rows)
         all_user_types = abstract_rows.search(user_type_key: nil).rows.first
         user_type_breakdown = abstract_rows.breakdown_by(:user_type_key).rows
+        resource_label = resource_labeler.exec(all_user_types[:page_path])
 
-        rows = [
+        result = [
           ([
-            specialty_labeler.exec(all_user_types[:page_path]),
+            resource_label[:resource],
+            resource_label[:category],
             "All user types",
           ] + months.map {|month| all_user_types[month] })
         ]
 
-        rows << user_type_breakdown.inject([]) do |memo, row|
+        result + user_type_breakdown.inject([]) do |memo, row|
           memo << ([
             "",
             user_type_labeler.exec(row[:user_type_key]),
