@@ -6,6 +6,7 @@ module Metrics
     #   # self.joins([:specialist_specializations => :specialization]).order('specialists, specializations.name ASC').all.map{|s| s.specializations.first.name}
     # end
 
+    # CSVReport::Service.new("specialist_metrics.csv", *tables)
     attr_accessor :table
 
     def initialize(*args)
@@ -36,8 +37,11 @@ module Metrics
     end
 
     def as_csv
-      CSVReport::ConvertHashArray.new(self).exec
+      CSVReport::ConvertHashArray.new(self.table).exec
     end
 
+    def to_csv_file
+      CSVReport::Service.new("reports/specialist_metrics.csv", self.as_csv).exec
+    end
   end
 end
