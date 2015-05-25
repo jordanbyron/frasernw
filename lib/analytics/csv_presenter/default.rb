@@ -25,7 +25,32 @@ module Analytics
 
       def by_user_type
         Analytics::ApiAdapter.user_type_keys.inject([]) do |memo, key|
-          memo + rows_for_user_type(key)
+          memo + for_user_type(key)
+        end
+      end
+
+      def by_division
+        grand_total = abstract.
+          search(user_type_key: nil, :division_id: nil).
+          first
+
+        divisional_breakdown = abstract.
+          search(user_type_key: nil).
+          exists(:division_id).
+          rows
+
+        result = []
+
+        result << ([
+          "All User Types",
+          "All Divisions"
+        ] + months.map {|month| abstract.total.first[month] })
+
+        result + divisional_breakdown.inject([]) do |memo, division|
+          memo << ([
+            "",
+            division_labeler.exec(division[:division_id])
+          ] + months.map {|month| division[month] })
         end
       end
 
@@ -36,46 +61,30 @@ module Analytics
         )
       end
 
-      def by_division
-        rows = []
+      def for_user_type(user_type)
+        abstract_rows = abstract.search(user_type_key: user_type)
+        abstract_total_row = abstract_rows.total_across(:division_id).rows.first
+        abstract_divisional_rows = abstract_rows.breakdown_by(:division_id).rows
 
-        rows << ([
-          "All User Types",
-          "All Divisions"
-        ] + months.map {|month| abstract.total.first[month] })
-
-        rows + abstract.by_division.inject([]) do |memo, division|
-          memo << ([
-            "",
-            division_labeler.exec(division[:division_id])
-          ] + months.map {|month| division[month] })
-        end
-      end
-
-      def abstract_by_division
-        abstract.rows.subsets{|row| row[:division_id] }
-      end
-
-      def rows_for_user_type(user_type)
-        rows = []
+        result = []
 
         # Totals
-        rows << [
+        result << [
           user_type_labeler.exec(user_type),
           "All Divisions"
         ] + months.map do |month|
-          abstract.total_for_user_type(user_type.to_s).first[month]
+          abstract_total_row[month]
         end
 
         # Breakdown by division
-        abstract.user_type_divisions(user_type).each do |division|
-          rows << [
+        abstract_divisional_rows.each do |division|
+          result << [
             "",
             division_labeler.exec(division[:division_id])
           ] + months.map {|month| (division[month] || 0) }
         end
 
-        rows
+        result
       end
     end
   end
