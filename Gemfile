@@ -59,21 +59,26 @@ gem 'unicorn'
 gem 'kgio'
 gem 'dalli'
 gem 'rack-cache'
+
+# Work Queuing
 gem 'delayed_job'
 gem 'delayed_job_active_record'
 gem 'delayed_job_web'
 gem 'daemons'
+
+# cron jobs
 gem 'clockwork'
 
 # markdown
 gem 'bluecloth'
 gem 'htmlentities'
 
+#Helper Gems
 gem 'wannabe_bool', "~> 0.1.0" #get access to handy to_b boolean method
 gem 'valid_url' #parse urls for validity
 gem 'indefinite_article' # parse words for "a" or "an"
 
-
+gem 'hirefire-resource' # auto-scale heroku dynos based on demand
 
 # Deploy with Capistrano
 # gem 'capistrano'
