@@ -38,7 +38,7 @@ Frasernw::Application.configure do
 
   # Use a different cache store in production
   if ENV["MEMCACHEDCLOUD_SERVERS"]
-      config.cache_store = :dalli_store, ENV["MEMCACHEDCLOUD_SERVERS"].split(','), { :username => ENV["MEMCACHEDCLOUD_USERNAME"], :password => ENV["MEMCACHEDCLOUD_PASSWORD"] }
+      config.cache_store = :dalli_store, ENV["MEMCACHEDCLOUD_SERVERS"].split(','), { :username => ENV["MEMCACHEDCLOUD_USERNAME"], :password => ENV["MEMCACHEDCLOUD_PASSWORD"] , :value_max_bytes => 10485760}
   elsif ENV["MEMCACHIER_SERVERS"]
       config.cache_store = :dalli_store
   else
