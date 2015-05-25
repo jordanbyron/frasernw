@@ -140,8 +140,10 @@ namespace :pathways do
       puts "Recaching content categories..."
       User.all_user_division_groups_cached.each do |division_group|
         ScCategory.all.sort{ |a,b| a.id <=> b.id }.each do |cc|
-          puts "Content Category #{cc.id}"
-          expire_fragment "content_#{cc.id}_category_#{division_group.join('_')}"
+          puts "Expiring Content Category #{cc.id} SuperAdmin"
+          expire_fragment "content_#{cc.id}_category_#{division_group.join('_')}_#{true}" #true/false represents @is_super_admin boolean
+          puts "Expiring Content Category #{cc.id} User"
+          expire_fragment "content_#{cc.id}_category_#{division_group.join('_')}_#{false}"
         end
       end
     end

@@ -12,7 +12,7 @@
 
 .content-wrapper
 
-  - cache("content_#{@sc_category.id}_category_#{current_divisions.map{|d| d.id}.join('_')}") do
+  - cache("content_#{@sc_category.id}_category_#{current_divisions.map{|d| d.id}.join('_')}_#{@is_super_admin}") do
 
     %script{"type" => "text/javascript"}
       :plain
