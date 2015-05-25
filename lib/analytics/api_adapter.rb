@@ -28,10 +28,6 @@ module Analytics
       )
     end
 
-    def self.user_type_from_key(key)
-      self.user_type_hash[key.to_i]
-    end
-
     private
 
     def self.construct_query(query_params)

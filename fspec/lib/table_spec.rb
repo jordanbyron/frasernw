@@ -1,7 +1,7 @@
-require 'lib/table.rb'
+require 'lib/hash_table.rb'
 require 'config/initializers/ruby_extensions/hash.rb'
 
-describe Table do
+describe HashTable do
   let(:sample_data) do
     [
       { user_type: 1, division: 2, jan: 3 },

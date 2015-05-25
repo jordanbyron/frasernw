@@ -9,19 +9,11 @@ module Analytics
       end
 
       def exec
-        headings + for_user_types + for_divisions
+        headings + by_user_type + by_division
       end
 
       def abstract
         @abstract ||= Analytics::TimeSeries.exec(options.merge(force: true))
-      end
-
-      def date_options
-        options.slice(:start_month, :end_month)
-      end
-
-      def title
-        options[:title]
       end
 
       def headings
@@ -31,73 +23,68 @@ module Analytics
         ]
       end
 
-      def for_user_types
+      def by_user_type
         Analytics::ApiAdapter.user_type_keys.inject([]) do |memo, key|
-          memo + rows_for_user_type(key)
+          memo + for_user_type(key)
         end
       end
 
-      def for_divisions
-        rows = []
+      def by_division
+        grand_total = abstract.
+          search(user_type_key: nil, :division_id: nil).
+          first
 
-        rows << ([
+        divisional_breakdown = abstract.
+          search(user_type_key: nil).
+          exists(:division_id).
+          rows
+
+        result = []
+
+        result << ([
           "All User Types",
           "All Divisions"
-        ] + months.map {|month| abstract.total.first[month] })
+        ] + months.map {|month| grand_total[month] })
 
-        rows + abstract.by_division.inject([]) do |memo, division|
+        result + divisional_breakdown.inject([]) do |memo, division|
           memo << ([
             "",
-            division_from_id(division[:division_id])
+            division_labeler.exec(division[:division_id])
           ] + months.map {|month| division[month] })
         end
       end
 
-      def months
-        @months ||= Month.for_interval(
-          options[:start_month],
-          options[:end_month]
+      def division_labeler
+        Analytics::Labeler::Id.new(
+          Division.all,
+          fallback_message: "User Division Not Found"
         )
       end
 
-      def abstract_by_division
-        abstract.rows.subsets{|row| row[:division_id] }
-      end
+      def for_user_type(user_type)
+        abstract_rows = abstract.search(user_type_key: user_type)
+        abstract_total_row = abstract_rows.total_across(:division_id).rows.first
+        abstract_divisional_rows = abstract_rows.breakdown_by(:division_id).rows
 
-      def divisions
-        @divisions ||= Division.all
-      end
-
-      def division_from_id(id)
-        division = divisions.find {|division| division.id == id.to_i }
-
-        if !division.nil?
-          division.name
-        else
-          "User Division Not Known"
-        end
-      end
-
-      def rows_for_user_type(user_type)
-        rows = []
+        result = []
 
         # Totals
-        rows << [
-          Analytics::ApiAdapter.user_type_from_key(user_type),
+        result << [
+          user_type_labeler.exec(user_type),
           "All Divisions"
         ] + months.map do |month|
-          abstract.total_for_user_type(user_type.to_s).first[month]
+          abstract_total_row[month]
         end
 
         # Breakdown by division
-        abstract.user_type_divisions(user_type).each do |division|
-          rows << [
+        abstract_divisional_rows.each do |division|
+          result << [
             "",
-            division_from_id(division[:division_id])
+            division_labeler.exec(division[:division_id])
           ] + months.map {|month| (division[month] || 0) }
         end
 
-        rows
+        result
       end
     end
   end

@@ -12,6 +12,10 @@ class DialogueReport
     sessions
     average_page_view_duration
     average_session_duration
+    specialty_visitors
+    specialty_page_views
+    resource_visitors
+    resource_page_views
   end
 
   ### Each method below should generate a different file for the report
@@ -80,6 +84,63 @@ class DialogueReport
     }.merge(PERIOD))
 
     write_tables([table], "average_session_duration")
+  end
+
+  # "Number of visitors by specialty by user category"
+  def self.specialty_visitors
+    tables = for_divisions({
+      metric: :users,
+      dimensions: [:specialty, :user_type_key],
+      title: "Specialty Visitors"
+    }.merge(PERIOD))
+
+    write_tables(tables, "specialty_visitors")
+  end
+
+  def self.specialty_page_views
+    tables = for_divisions({
+      metric: :page_views,
+      dimensions: [:specialty, :user_type_key],
+      title: "Specialty Page Views"
+    }.merge(PERIOD))
+
+    write_tables(tables, "specialty_page_views")
+  end
+
+  def self.resource_visitors
+    tables = for_divisions({
+      metric: :users,
+      dimensions: [:resource, :user_type_key],
+      title: "Resource Visitors",
+    }.merge(PERIOD))
+
+    write_tables(tables, "resource_visitors")
+  end
+
+  def self.resource_page_views
+    tables = for_divisions({
+      metric: :users,
+      dimensions: [:resource, :user_type_key],
+      title: "Resource Page Views",
+    }.merge(PERIOD))
+
+    write_tables(tables, "resource_page_views")
+  end
+
+  def for_divisions(config)
+    tables = []
+
+    tables << Analytics::CsvPresenter.exec(
+      config.merge(title: "#{config[:title]}, All Divisions")
+    )
+
+    Divisions.all.each do |division|
+      tables << Analytics::CsvPresenter.exec(
+        config.merge(title: "#{config[:title]}, #{division.name}", division_id: division.id)
+      )
+    end
+
+    tables
   end
 
   def self.write_tables(tables, filename)
