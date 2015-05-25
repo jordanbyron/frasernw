@@ -50,7 +50,7 @@ module Frasernw
     config.assets.enabled = true
 
     #compress assets before serving, only use below if not on CDN:
-    config.middleware.insert_before ActionDispatch::Static, Rack::Deflater
+    # config.middleware.insert_before ActionDispatch::Static, Rack::Deflater
     #if with CDN (https://robots.thoughtbot.com/content-compression-with-rack-deflater):
     # config.middleware.use Rack::Deflater
 
