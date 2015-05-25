@@ -44,7 +44,7 @@ module Analytics
         result << ([
           "All User Types",
           "All Divisions"
-        ] + months.map {|month| abstract.total.first[month] })
+        ] + months.map {|month| grand_total[month] })
 
         result + divisional_breakdown.inject([]) do |memo, division|
           memo << ([
