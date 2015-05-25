@@ -9,19 +9,11 @@ module Analytics
       end
 
       def exec
-        headings + for_user_types + for_divisions
+        headings + by_user_type + by_division
       end
 
       def abstract
         @abstract ||= Analytics::TimeSeries.exec(options.merge(force: true))
-      end
-
-      def date_options
-        options.slice(:start_month, :end_month)
-      end
-
-      def title
-        options[:title]
       end
 
       def headings
@@ -31,13 +23,20 @@ module Analytics
         ]
       end
 
-      def for_user_types
+      def by_user_type
         Analytics::ApiAdapter.user_type_keys.inject([]) do |memo, key|
           memo + rows_for_user_type(key)
         end
       end
 
-      def for_divisions
+      def division_labeler
+        Analytics::Labeler::Id.new(
+          Division.all,
+          "User Division Not Found"
+        )
+      end
+
+      def by_division
         rows = []
 
         rows << ([
@@ -48,34 +47,13 @@ module Analytics
         rows + abstract.by_division.inject([]) do |memo, division|
           memo << ([
             "",
-            division_from_id(division[:division_id])
+            division_labeler.exec(division[:division_id])
           ] + months.map {|month| division[month] })
         end
       end
 
-      def months
-        @months ||= Month.for_interval(
-          options[:start_month],
-          options[:end_month]
-        )
-      end
-
       def abstract_by_division
         abstract.rows.subsets{|row| row[:division_id] }
-      end
-
-      def divisions
-        @divisions ||= Division.all
-      end
-
-      def division_from_id(id)
-        division = divisions.find {|division| division.id == id.to_i }
-
-        if !division.nil?
-          division.name
-        else
-          "User Division Not Known"
-        end
       end
 
       def rows_for_user_type(user_type)
@@ -83,7 +61,7 @@ module Analytics
 
         # Totals
         rows << [
-          Analytics::ApiAdapter.user_type_from_key(user_type),
+          user_type_labeler.exec(user_type),
           "All Divisions"
         ] + months.map do |month|
           abstract.total_for_user_type(user_type.to_s).first[month]
@@ -93,7 +71,7 @@ module Analytics
         abstract.user_type_divisions(user_type).each do |division|
           rows << [
             "",
-            division_from_id(division[:division_id])
+            division_labeler.exec(division[:division_id])
           ] + months.map {|month| (division[month] || 0) }
         end
 

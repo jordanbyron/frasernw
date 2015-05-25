@@ -1,12 +1,10 @@
+# takes an abstract table, applies any necessary filters to it, and outputs table in array format (which the csv service can handle)
+
 module Analytics
   module CsvPresenter
-    # displays metrics by division and user type
-    class Specialty
+    # displays metrics by specialty name and user type
+    class Specialty < Base
       attr_reader :options
-
-      def initialize(options)
-        @options = options
-      end
 
       def exec
         headings + body_rows
@@ -18,17 +16,15 @@ module Analytics
           dimension: options[:dimensions].delete(:specialty).push(:page_path)
           force: true
         )
-
-        # Filter by division, if there is a division
-        # Filter by path down to specialty
       end
 
-      def date_options
-        options.slice(:start_month, :end_month)
-      end
-
-      def title
-        options[:title]
+      def filters
+        [
+          Analytics::Filter::Search.new(division_id: options[:division_id]),
+          Analytics::Filter::PathMatch.new(
+            path_regexp: /\/specialties\/[[:digit:]]+/
+          )
+        ]
       end
 
       def headings
@@ -38,27 +34,37 @@ module Analytics
         ]
       end
 
-      def for_division
-        @for_division ||= abstract.search division_id: options[:division_id]
-      end
-
-      def subsets_by_
-      end
-
-      def body_rows
-        for_division.rows.subsets do |row|
-          row[:
-        end
-      end
-
-
-      def months
-        @months ||= Month.for_interval(
-          options[:start_month],
-          options[:end_month]
+      def specialty_labeler
+        @specialty_labeler ||= Analytics::Labeler::Path.new(
+          Specialization.all,
+          "/specialties/"
         )
       end
 
+      def body_rows
+        filtered.rows.subsets do |row|
+          row[:page_path]
+        end.inject([]) do |memo, rows_for_path|
+          for_path(Table.new(rows_for_path))
+        end
+      end
+
+      def for_path(abstract_rows)
+        total_row = abstract_rows.search(user_type_key: nil).first
+        rows = [
+          ([
+            specialty_labeler.exec(total_row[:page_path]),
+            "All user types",
+          ] + months.map {|month| total_row[month] })
+        ]
+
+        rows << abstract_rows.inject([]) do |memo, row|
+          memo << ([
+            "",
+            user_type_labeler.exec(row[:user_type_key]),
+          ] + months.map {|month| row[month] })
+        end
+      end
     end
   end
 end
