@@ -20,7 +20,6 @@ describe Analytics::Reducer::User do
         sample_table,
         dimensions: [ :user_type_key, :division_id ]
       )
-
     end
   end
 end

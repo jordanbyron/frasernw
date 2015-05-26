@@ -27,12 +27,15 @@ describe Analytics::Reducer::User do
         dimensions: [ :user_type_key, :division_id ]
       )
 
-      reducer.exec.rows == [
-        {:user_type_key=>"-1", :division_id=>"-1",:users=>2},
+      puts reducer.exec.rows
+
+      expect(reducer.exec.rows).to contain_exactly(
+        {:user_type_key=>"-1", :division_id=>"-1",:users=>1},
+        {:user_type_key=>"-1", :division_id=>"1", :users=>1},
         {:user_type_key=>"-1", :division_id=>"2", :users=>1},
-        {:user_type_key=>"-1", :division_id=>"3", :users=>2},
+        {:user_type_key=>"-1", :division_id=>"3", :users=>1},
         {:user_type_key=>"0", :division_id=>"1", :users=>6}
-      ]
+      )
     end
   end
 end

@@ -26,7 +26,7 @@ describe HashTable do
         old_column_key: :views,
         new_column_key: :feb
       )
-      new_table.columns.should include(:feb)
+      expect(new_table.columns).to include(:feb)
     end
 
     it "assigns the appropriate value to that column" do
@@ -36,7 +36,7 @@ describe HashTable do
         old_column_key: :views,
         new_column_key: :feb
       )
-      new_table.rows.first[:feb].should == 3
+      expect(new_table.rows.first[:feb]).to eq(3)
     end
   end
 end

@@ -8,8 +8,8 @@ describe Array do
     let(:prc) { Proc.new {|elem| elem }}
 
     it "returns arrays of the duplicate items" do
-      ary.subsets(&prc).count.should == 3
-      ary.subsets(&prc)[0].should == [1, 1, 1]
+      expect(ary.subsets(&prc).count).to eq(3)
+      expect(ary.subsets(&prc)[0]).to eq([1, 1, 1])
     end
   end
 end
