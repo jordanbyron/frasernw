@@ -27,8 +27,6 @@ describe Analytics::Reducer::User do
         dimensions: [ :user_type_key, :division_id ]
       )
 
-      puts reducer.exec.rows
-
       expect(reducer.exec.rows).to contain_exactly(
         {:user_type_key=>"-1", :division_id=>"-1",:users=>1},
         {:user_type_key=>"-1", :division_id=>"1", :users=>1},

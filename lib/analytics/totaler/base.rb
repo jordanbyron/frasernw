@@ -11,9 +11,13 @@ module Analytics
       end
 
       def totals
-        dimensions.combinations.inject([]) do |memo, combination|
+        combinations.inject([]) do |memo, combination|
           memo + total_combination(combination)
         end
+      end
+
+      def combinations
+        dimensions.combinations(dimensions.length - 1)
       end
     end
   end
