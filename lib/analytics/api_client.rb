@@ -1,8 +1,4 @@
-require 'google/api_client'
-require 'google/api_client/auth/installed_app'
-require 'google/api_client/errors'
-
-  # Handles setup and authorization of google's api client
+# Handles setup and authorization of google's api client
 module Analytics
   class ApiClient
     PROFILE_IDS_QUERY_PARAM = "ga:61207403"

@@ -110,7 +110,7 @@ gem "safety_mailer" # prevent emails getting sent in staging
 gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
 
 # to hit the GA API
-gem 'google-api-client', '0.7.1'
+gem 'google-api-client', '0.7.1', require: "google/api_client"
 
 gem 'lazy_high_charts'
 gem 'jquery-datatables-rails'

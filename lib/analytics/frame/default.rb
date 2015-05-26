@@ -4,7 +4,7 @@ module Analytics
     class Default < Base
       def query
         {
-          metrics: [ metric ],
+          metrics: [ options[:metric] ],
           dimensions: options[:dimensions],
         }.merge(options.slice(:start_date, :end_date))
       end
@@ -14,7 +14,7 @@ module Analytics
       end
 
       def reducer
-        Analytics::NullReducer
+        Analytics::Reducer::Null
       end
     end
   end

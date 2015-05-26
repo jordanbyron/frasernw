@@ -2,10 +2,11 @@ module Analytics
   module Labeler
     class Id
       # takes a set of records, and produces labels from the id given to #exec
-      attr_reader :records
+      attr_reader :records, :options
 
       def initialize(records, options = {})
         @records = records
+        @options = options
       end
 
       def key_to_match

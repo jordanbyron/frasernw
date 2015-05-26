@@ -13,7 +13,7 @@ module Analytics
       def abstract
         @abstract ||= Analytics::TimeSeries.exec(
           metric: options[:metric],
-          dimension: options[:dimensions].delete(:specialty).push(:page_path)
+          dimension: options[:dimensions].delete(:specialty).push(:page_path),
           force: true
         )
       end

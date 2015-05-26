@@ -4,10 +4,10 @@ module Analytics
 
     class Sum < Base
       def total_combination(combination)
-        original_table.rows.subsets do |row|
-          combination.map {|dimension| row[dimension] }
+        table.rows.subsets do |row|
+          combination.map { |dimension| row[dimension] }
         end.inject([]) do |memo, set|
-          total_set(set, combination)
+          memo << total_set(set, combination)
         end
       end
 

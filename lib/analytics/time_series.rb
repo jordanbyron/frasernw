@@ -21,7 +21,7 @@ module Analytics
         generate
       end
 
-      Analytics::AnalyticsTable::Division.new(cache_fetch)
+      Analytics::AnalyticsTable.new(cache_fetch)
     end
 
     def cache_key
@@ -37,13 +37,18 @@ module Analytics
     end
 
     def dimensions_cache_key
-      dimensions.map(&:to_s).sort.join(":")
+      options[:dimensions].map(&:to_s).sort.join(":")
     end
 
     def generate
       table = months.inject(HashTable.new([])) do |memo, month|
+        puts "frame for #{month.to_s}"
+
+        t = month_table(month)
+        puts "adding table for #{month.to_s}, row count #{t.rows.count}"
+
         memo.add_column(
-          other_table: month_table(month),
+          other_table: t,
           keys_to_match: options[:dimensions],
           old_column_key: metric,
           new_column_key: month
@@ -60,7 +65,7 @@ module Analytics
     end
 
 
-    def month_table
+    def month_table(month)
       Analytics::Frame.exec frame_options(month)
     end
 

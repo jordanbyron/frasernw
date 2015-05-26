@@ -1,13 +1,7 @@
 module Analytics
   module CsvPresenter
     # displays metrics by division and user type
-    class Default
-      attr_reader :options
-
-      def initialize(options)
-        @options = options
-      end
-
+    class Default < Base
       def exec
         headings + by_user_type + by_division
       end
@@ -31,7 +25,8 @@ module Analytics
 
       def by_division
         grand_total = abstract.
-          search(user_type_key: nil, :division_id: nil).
+          search(user_type_key: nil, division_id: nil).
+          rows.
           first
 
         divisional_breakdown = abstract.
@@ -62,8 +57,12 @@ module Analytics
       end
 
       def for_user_type(user_type)
-        abstract_rows = abstract.search(user_type_key: user_type)
-        abstract_total_row = abstract_rows.total_across(:division_id).rows.first
+        abstract_rows = abstract.
+          search(user_type_key: user_type)
+        abstract_total_row = abstract_rows.
+          search(division_id: nil).
+          rows.
+          first
         abstract_divisional_rows = abstract_rows.breakdown_by(:division_id).rows
 
         result = []

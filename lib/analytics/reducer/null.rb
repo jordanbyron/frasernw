@@ -1,8 +1,8 @@
 module Analytics
   module Reducer
     class Null
-      def initialize(options={})
-        @table = options[:table]
+      def initialize(table, options = {})
+        @table = table
       end
 
       def exec

@@ -1,8 +1,9 @@
 # takes an abstract table, applies any necessary filters to it, and outputs table in array format (which the csv service can handle)
 
 module Analytics
-  module CSVPresenter
+  module CsvPresenter
     class Base
+      attr_reader :options
 
       def initialize(options)
         @options = options

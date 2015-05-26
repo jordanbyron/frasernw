@@ -2,10 +2,9 @@ module Analytics
   # Factory class for a single frame (time period) table
   module Frame
     class Base
-      attr_reader :metric, :options
+      attr_reader :options
 
-      def initialize(metric, options)
-        @metric = metric
+      def initialize(options)
         @options = options
       end
 
@@ -14,11 +13,15 @@ module Analytics
       end
 
       def totals
-        totaler.exec(reduced_table)
+        puts "totaling"
+
+        totaler.new(reduced_table, options).totals
       end
 
       def reduced_table
-        @reduced_table ||= reducer.exec(base_table, options)
+        puts "reducing"
+
+        @reduced_table ||= reducer.new(base_table, options).exec
       end
 
       # Unreduced, without toals
@@ -27,7 +30,7 @@ module Analytics
       end
 
       def base_table
-        HashTable.new(base_data)
+        @base_table ||= HashTable.new(base_data)
       end
 
       def query

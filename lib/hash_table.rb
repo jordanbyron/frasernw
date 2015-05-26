@@ -68,6 +68,7 @@ class HashTable
   # add column from a second table
   def add_column(options)
     new_table = self.clone
+
     options[:other_table].rows.each do |row|
       matched_row = new_table.rows.find do |inner_row|
         inner_row.match?(row, options[:keys_to_match])

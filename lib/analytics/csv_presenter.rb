@@ -17,10 +17,10 @@ module Analytics
     def self.exec(options)
       options[:dimensions] ||= DEFAULT_DIMENSIONS
 
-      klass_for(options[:dimensions).new(options)
+      klass_for(options[:dimensions]).new(options).exec
     end
 
-    def klass_for(dimensions)
+    def self.klass_for(dimensions)
       PRESENTER_CLASSES[dimensions[0]][dimensions[1]]
     end
   end

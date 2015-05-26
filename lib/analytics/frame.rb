@@ -6,7 +6,7 @@ module Analytics
     }
 
     def self.exec(options)
-      klass_for(options[:metric]).exec(options)
+      klass_for(options[:metric]).new(options).exec
     end
 
     def self.klass_for(metric)

@@ -2,9 +2,9 @@ module Analytics
   module Frame
     class Users < Base
       def query
-        {
+        @query ||= {
           metrics: [ :sessions ],
-          dimensions: (options[:dimensions] << :user_id),
+          dimensions: [ options[:dimensions], :user_id ].flatten,
         }.merge(options.slice(:start_date, :end_date))
       end
 
@@ -13,7 +13,7 @@ module Analytics
       end
 
       def reducer
-        Analytics::UserReducer
+        Analytics::Reducer::User
       end
     end
   end

@@ -18,7 +18,7 @@ module Analytics
       def abstract
         @abstract ||= Analytics::TimeSeries.exec(
           metric: options[:metric],
-          dimension: parsed_dimensions
+          dimension: parsed_dimensions,
           force: true
         )
       end
