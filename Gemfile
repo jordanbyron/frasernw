@@ -62,7 +62,7 @@ end
 group :development, :test do
   #gem 'sqlite3'
   gem "nifty-generators"
-  gem 'rspec'
+  gem 'rspec', '~> 3.2'
   gem 'rspec-rails'
   gem 'spork', '> 0.9.0rc'
   # To use debugger
