@@ -2,7 +2,9 @@
   <i class="icon-info-sign"></i> THIS IS A TEST SITE.  CHANGES DO NOT SAVE TO MAIN SITE.
   <!-- Button to trigger modal -->
   <a href="#testdebugModal" role="button" class="btn" data-toggle="modal">Debug Info</a>
+  <% if current_user.present? %>
   Current User: <%= current_user.name %> (<%= current_user.email %>)
+  <% end %>
   <a class="close" data-dismiss="alert" href="#">&times;</a>
 </div>
 
