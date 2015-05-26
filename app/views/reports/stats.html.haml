@@ -96,6 +96,37 @@
       %th Hospitals
       %td= hospitals.length
 
+    %tr
+      %th
+
+
+    %tr
+      %th Specialists by Specialty
+
+    %tr
+      %th
+    - specializations.each do |specialization|
+      - @specialization_specialists = specialists.reject{|specialist| !specialist.specializations.include?(specialization)}
+      %tr
+        %th
+        %th Total
+        %th Completed Survey
+        %th Not Completed Survey
+        %th Purposely Not Yet Surveyed
+        %th Hospital/Clinic Only
+        %th Moved Away
+        %th Retired
+      %tr
+        %th= specialization.name
+        %td= @specialization_specialists.length
+        %td= @specialization_specialists.reject{|s| !s.responded?}.length
+        %td= @specialization_specialists.reject{|s| !s.not_responded?}.length
+        %td= @specialization_specialists.reject{|s| !s.purposely_not_yet_surveyed?}.length
+        %td= @specialization_specialists.reject{|s| !s.hospital_or_clinic_only?}.length
+        %td= @specialization_specialists.reject{|s| !s.moved_away?}.length
+        %td= @specialization_specialists.reject{|s| !s.retired?}.length
+
+
   %p.admin.btn-group
     - if can? :update, @report
       = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Report", edit_report_path(@report), :class => "btn ajax")
