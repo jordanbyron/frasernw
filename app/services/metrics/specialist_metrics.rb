@@ -19,6 +19,7 @@ module Metrics
         specialist_row[:favorites]            =   specialist.favorites.count                           if ((options[:all] || options[:favorites])            == true)
         specialist_row[:specialist_id]        =   specialist.id                                        if ((options[:all] || options[:id])                   == true)
         specialist_row[:name]                 =   specialist.name                                      if ((options[:all] || options[:favorites])            == true)
+        specialist_row[:status]               =   specialist.status                                    if ((options[:all] || options[:status])               == true)
         specialist_row[:specialty]            =   specialist.specializations.map{|s| s.name}.join(",") if ((options[:all] || options[:specialty])            == true)
         specialist_row[:specialty_count]      =   specialist.specialist_specializations.count          if ((options[:all] || options[:specialty_count])      == true)
         specialist_row[:division]             =   specialist.divisions.map { |d| d.name  }.join(",")   if ((options[:all] || options[:division])             == true)

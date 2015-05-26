@@ -15,6 +15,7 @@ module Metrics
         clinic_row = Hash.new
         clinic_row[:id]                  = clinic.id
         clinic_row[:name]                = clinic.name
+        clinic_row[:status]              = clinic.status
         clinic_row[:specialty]           = clinic.specializations.map{|s| s.name}.join(",")
         clinic_row[:division]            = clinic.divisions.map { |d| d.name  }.join(",")
         clinic_row[:first_version]       = clinic.versions.last.created_at
