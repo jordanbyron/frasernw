@@ -21,9 +21,11 @@
   <p>Controller:   <%= debug controller_name %></p>
   <p>Action:  <%= debug action_name %></p>
   <p>URL Route: <%= link_to url_for(controller: controller_name, action: action_name) %></p>
-  <p>current_user_divisions: <%= current_user_divisions.map{|ud| "#{ud.id} #{ud.name}"}.join(",") %></p>
-  <p>User Role: <%= current_user.role_full %></p>
-  <p>User Type: <%= current_user.type %>
+  <% if current_user.present? %>
+    <p>current_user_divisions: <%= current_user_divisions.map{|ud| "#{ud.id} #{ud.name}"}.join(",") %></p>
+    <p>User Role: <%= current_user.role_full %></p>
+    <p>User Type: <%= current_user.type %>
+  <% end %>
   </div>
   <div class="modal-footer">
     <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
