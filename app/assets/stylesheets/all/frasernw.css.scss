@@ -768,12 +768,16 @@ body.loading #email
       margin: 0;
       padding: 0;
       text-align: left;
-      -moz-transform:rotate(-90deg);
+      -ms-transform: rotate(-90deg);
+      -ms-transform-origin: top left;
+      -moz-transform:rotate(-90deg); 
       -moz-transform-origin: top left;
       -webkit-transform: rotate(-90deg);
       -webkit-transform-origin: top left;
       -o-transform: rotate(-90deg);
       -o-transform-origin: top left;
+      transform: rotate(-90deg);
+      transform-origin: top left;
       position:relative;
       top:150px;
       left: -125px;
