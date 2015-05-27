@@ -33,7 +33,7 @@ module Analytics
       end
 
       def filtered
-        filters.inject(abstract) do |memo, filter|
+        @filtered ||= filters.inject(abstract) do |memo, filter|
           filter.exec(memo)
         end
       end

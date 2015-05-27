@@ -13,12 +13,14 @@ module Analytics
       def abstract
         @abstract ||= Analytics::TimeSeries.exec(
           metric: options[:metric],
-          dimension: options[:dimensions].delete(:specialty).push(:page_path),
+          dimensions: options[:dimensions].except(:specialty).push(:page_path, :division_id),
           force: true
         )
       end
 
       def filters
+        puts options[:division_id]
+
         [
           Analytics::Filter::Search.new(division_id: options[:division_id]),
           Analytics::Filter::PathMatch.new(
@@ -45,7 +47,7 @@ module Analytics
         filtered.rows.subsets do |row|
           row[:page_path]
         end.inject([]) do |memo, rows_for_path|
-          for_path(Table.new(rows_for_path))
+          for_path(AnalyticsTable.new(rows_for_path))
         end
       end
 

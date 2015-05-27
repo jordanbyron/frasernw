@@ -20,7 +20,9 @@ module Analytics
     def execute!(query)
       begin
         client.execute! query
-      rescue Google::APIClient::AuthorizationError
+      # rescue Google::APIClient::AuthorizationError
+      # why does this break? should be required on app load...
+      rescue
         authorize client
         client.execute! query
       end

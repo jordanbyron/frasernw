@@ -37,4 +37,8 @@ class Array
       memo + self.combination(size).to_a
     end
   end
+
+  def except(*values)
+    self - values
+  end
 end

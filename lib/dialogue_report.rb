@@ -1,12 +1,17 @@
 # Generates the CSVs for the dialogue report
 class DialogueReport
-  FOLDER_PATH = Rails.root.join('reports','dialogue','latest').to_s
+  attr_reader :timestamp
+
   PERIOD = {
     start_month: Month.new(2014, 4),
     end_month: Month.new(2015, 4)
   }
 
-  def self.exec
+  def initialize
+    @timestamp = DateTime.now.to_s
+  end
+
+  def exec
     users
     page_views
     sessions
@@ -25,7 +30,7 @@ class DialogueReport
   ### "Number of accounts who make more than 5 visits"
   ### "Number of accounts who make more than 10 visits"
   ### "Number of visitors to Pathways by user category"
-  def self.users
+  def users
     tables = []
 
     tables << Analytics::CsvPresenter.exec({
@@ -34,12 +39,14 @@ class DialogueReport
     }.merge(PERIOD))
 
     tables << Analytics::CsvPresenter.exec({
-      metric: :users_min_5_sessions,
+      metric: :users,
+      min_sessions: 5,
       title: "Users (> 5 Sessions)"
     }.merge(PERIOD))
 
     tables << Analytics::CsvPresenter.exec({
-      metric: :users_min_10_sessions,
+      metric: :users,
+      min_sessions: 10,
       title: "Users (> 10 Sessions)"
     }.merge(PERIOD))
 
@@ -47,7 +54,7 @@ class DialogueReport
   end
 
   # "Number of page views by visit by user category"
-  def self.page_views
+  def page_views
     table = Analytics::CsvPresenter.exec({
       metric: :page_views,
       title: "Page Views"
@@ -57,7 +64,7 @@ class DialogueReport
   end
 
   # "Number of visits to pathways by user category"
-  def self.sessions
+  def sessions
     table = Analytics::CsvPresenter.exec({
       metric: :sessions,
       title: "Sessions"
@@ -67,7 +74,7 @@ class DialogueReport
   end
 
   # "Average time per page view by user category"
-  def self.average_page_view_duration
+  def average_page_view_duration
     table = Analytics::CsvPresenter.exec({
       metric: :average_page_view_duration,
       title: "Average time per page view"
@@ -77,7 +84,7 @@ class DialogueReport
   end
 
   # "Average time per visit by user category
-  def self.average_session_duration
+  def average_session_duration
     table = Analytics::CsvPresenter.exec({
       metric: :average_session_duration,
       title: "Average time per session"
@@ -87,7 +94,7 @@ class DialogueReport
   end
 
   # "Number of visitors by specialty by user category"
-  def self.specialty_visitors
+  def specialty_visitors
     tables = for_divisions({
       metric: :users,
       dimensions: [:specialty, :user_type_key],
@@ -97,7 +104,7 @@ class DialogueReport
     write_tables(tables, "specialty_visitors")
   end
 
-  def self.specialty_page_views
+  def specialty_page_views
     tables = for_divisions({
       metric: :page_views,
       dimensions: [:specialty, :user_type_key],
@@ -107,7 +114,7 @@ class DialogueReport
     write_tables(tables, "specialty_page_views")
   end
 
-  def self.resource_visitors
+  def resource_visitors
     tables = for_divisions({
       metric: :users,
       dimensions: [:resource, :user_type_key],
@@ -117,7 +124,7 @@ class DialogueReport
     write_tables(tables, "resource_visitors")
   end
 
-  def self.resource_page_views
+  def resource_page_views
     tables = for_divisions({
       metric: :users,
       dimensions: [:resource, :user_type_key],
@@ -134,7 +141,7 @@ class DialogueReport
       config.merge(title: "#{config[:title]}, All Divisions")
     )
 
-    Divisions.all.each do |division|
+    Division.all.each do |division|
       tables << Analytics::CsvPresenter.exec(
         config.merge(title: "#{config[:title]}, #{division.name}", division_id: division.id)
       )
@@ -143,9 +150,21 @@ class DialogueReport
     tables
   end
 
-  def self.write_tables(tables, filename)
+  def safe_timestamp
+    @safe_timestamp ||= @timestamp.to_s.safe_for_filename
+  end
+
+  def folder_path
+    @folder_path ||= Rails.root.join('reports','dialogue', safe_timestamp).to_s
+  end
+
+  def write_tables(tables, filename)
+    unless File.exists? folder_path
+      FileUtils::mkdir_p folder_path
+    end
+
     CSVReport::Service.new(
-      "#{FOLDER_PATH}/#{filename}.csv",
+      "#{folder_path}/#{filename}.csv",
       *tables
     ).exec
   end

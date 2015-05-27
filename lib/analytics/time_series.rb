@@ -17,7 +17,7 @@ module Analytics
     end
 
     def exec
-      cache_fetch = Rails.cache.fetch(cache_key, force: options[:force]) do
+      cache_fetch = Rails.cache.fetch(cache_key) do
         generate
       end
 
@@ -42,10 +42,10 @@ module Analytics
 
     def generate
       table = months.inject(HashTable.new([])) do |memo, month|
-        puts "frame for #{month.to_s}"
+        puts "frame for #{month.name}"
 
         t = month_table(month)
-        puts "adding table for #{month.to_s}, row count #{t.rows.count}"
+        puts "adding table for #{month.name}, row count #{t.rows.count}"
 
         memo.add_column(
           other_table: t,

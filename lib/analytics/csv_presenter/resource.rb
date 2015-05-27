@@ -12,7 +12,7 @@ module Analytics
       end
 
       def parsed_dimensions
-        options[:dimensions].delete(:resource_category).push(:page_path)
+        options[:dimensions].delete(:resource_category).push(:page_path, :division_id)
       end
 
       def abstract

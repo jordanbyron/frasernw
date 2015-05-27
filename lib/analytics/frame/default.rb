@@ -10,7 +10,7 @@ module Analytics
       end
 
       def totaler
-        Analytics::Totaler::Analytics
+        Analytics::Totaler::Query
       end
 
       def reducer
