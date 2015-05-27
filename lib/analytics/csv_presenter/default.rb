@@ -6,6 +6,7 @@ module Analytics
         headings + by_user_type + by_division
       end
 
+      # data_source
       def abstract
         @abstract ||= Analytics::TimeSeries.exec(options.merge(force: true))
       end
@@ -59,6 +60,8 @@ module Analytics
       def for_user_type(user_type)
         abstract_rows = abstract.
           search(user_type_key: user_type)
+
+
         abstract_total_row = abstract_rows.
           search(division_id: nil).
           rows.
@@ -72,10 +75,12 @@ module Analytics
           user_type_labeler.exec(user_type),
           "All Divisions"
         ] + months.map do |month|
+          #  GaMetric.agg_row(user_type_key: user_type)[month]
           abstract_total_row[month]
         end
 
         # Breakdown by division
+        # GaMetric.breakdown_rows(user_type_key: user_type, breakdown: :division_id)
         abstract_divisional_rows.each do |division|
           result << [
             "",
