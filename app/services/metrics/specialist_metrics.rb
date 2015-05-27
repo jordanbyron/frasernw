@@ -6,6 +6,7 @@ module Metrics
     #   # self.joins([:specialist_specializations => :specialization]).order('specialists, specializations.name ASC').all.map{|s| s.specializations.first.name}
     # end
 
+    # CSVReport::Service.new("specialist_metrics.csv", *tables)
     attr_accessor :table
 
     def initialize(*args)
@@ -18,6 +19,7 @@ module Metrics
         specialist_row[:favorites]            =   specialist.favorites.count                           if ((options[:all] || options[:favorites])            == true)
         specialist_row[:specialist_id]        =   specialist.id                                        if ((options[:all] || options[:id])                   == true)
         specialist_row[:name]                 =   specialist.name                                      if ((options[:all] || options[:favorites])            == true)
+        specialist_row[:status]               =   specialist.status                                    if ((options[:all] || options[:status])               == true)
         specialist_row[:specialty]            =   specialist.specializations.map{|s| s.name}.join(",") if ((options[:all] || options[:specialty])            == true)
         specialist_row[:specialty_count]      =   specialist.specialist_specializations.count          if ((options[:all] || options[:specialty_count])      == true)
         specialist_row[:division]             =   specialist.divisions.map { |d| d.name  }.join(",")   if ((options[:all] || options[:division])             == true)
@@ -36,8 +38,11 @@ module Metrics
     end
 
     def as_csv
-      CSVReport::ConvertHashArray.new(self).exec
+      CSVReport::ConvertHashArray.new(self.table).exec
     end
 
+    def to_csv_file
+      CSVReport::Service.new("reports/specialist_metrics.csv", self.as_csv).exec
+    end
   end
 end

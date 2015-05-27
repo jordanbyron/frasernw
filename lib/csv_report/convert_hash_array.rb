@@ -11,14 +11,15 @@ module CSVReport
 
     # # Usage
     # Creates a CSV ready object:  CSVReport::ConvertHashArray.new(table).exec
-    attr_reader :abstract
+    # Then, once created call     CSVReport::Service.new("#{FOLDER_PATH}/#{filename}.csv", *tables).exec
+    attr_reader :abstract_table
 
     def initialize(abstract_table)
-      @abstract = abstract_table
+      @abstract_table = abstract_table
     end
 
     def column_keys
-      abstract.first.map { |k,v| k } # ~> [:id, :name]
+      abstract_table.first.map { |k,v| k } # ~> [:id, :name]
     end
 
     def header_row # header_row defined by hash keys of the first array:
@@ -26,7 +27,7 @@ module CSVReport
     end
 
     def body_rows
-      abstract.inject([]) do |body_rows, row|
+      abstract_table.inject([]) do |body_rows, row|
         body_rows << column_keys.map do |key|
           row[key]
         end
