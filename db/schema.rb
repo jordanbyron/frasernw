@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150505073245) do
+ActiveRecord::Schema.define(:version => 20150526221614) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -812,6 +812,7 @@ ActiveRecord::Schema.define(:version => 20150505073245) do
     t.string   "saved_token"
     t.string   "member_name"
     t.boolean  "deprecated_open_to_clinic_tab", :default => false
+    t.string   "label_name",                    :default => "Specialist"
   end
 
   create_table "subscription_divisions", :force => true do |t|
