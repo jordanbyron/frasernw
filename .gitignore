@@ -16,3 +16,4 @@ config/heroku_env.rb
 config/database.yml
 .ruby-gemset
 notes
+ssl/
