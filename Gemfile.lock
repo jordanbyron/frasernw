@@ -98,6 +98,8 @@ GEM
       eventmachine (>= 0.12.9)
     erubis (2.7.0)
     eventmachine (0.12.10)
+    exception_details (0.1.0)
+      binding_of_caller
     exception_notification (2.5.2)
       actionmailer (>= 3.0.4)
     excon (0.7.9)
@@ -391,6 +393,7 @@ DEPENDENCIES
   delayed_job
   delayed_job_active_record
   delayed_job_web
+  exception_details
   exception_notification
   gattica!
   google-api-client (= 0.7.1)

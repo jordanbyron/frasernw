@@ -22,7 +22,7 @@ module Analytics
 
       def base_accumulator
         {
-          :users => 0
+          :visitor_accounts => 0
         }
       end
 
@@ -30,15 +30,15 @@ module Analytics
         Proc.new do |accumulator, row|
           dimensions.inject({}) do |memo, dimension|
             memo.merge(dimension => row[dimension])
-          end.merge(:users => new_metric_value(row, accumulator) )
+          end.merge(:visitor_accounts => new_metric_value(row, accumulator) )
         end
       end
 
       def new_metric_value(row, accumulator)
         if min_sessions < row[:sessions].to_i
-          accumulator[:users] + 1
+          accumulator[:visitor_accounts] + 1
         else
-          accumulator[:users]
+          accumulator[:visitor_accounts]
         end
       end
     end

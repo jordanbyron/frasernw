@@ -46,6 +46,10 @@ class Month
     @month = month
   end
 
+  def to_i
+    start_date.strftime("%Y%m").to_i
+  end
+
   def name
     start_date.strftime("%m-%Y")
   end

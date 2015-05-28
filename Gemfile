@@ -97,6 +97,7 @@ group :development, :test do
   gem 'pry-doc'
   gem 'pry-nav'
   gem 'pry-stack_explorer'
+  gem 'exception_details'
 end
 
 gem 'ancestry'

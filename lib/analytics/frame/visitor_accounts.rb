@@ -1,6 +1,6 @@
 module Analytics
   module Frame
-    class Users < Base
+    class VisitorAccounts < Base
       def query
         @query ||= {
           metrics: [ :sessions ],

@@ -11,31 +11,19 @@ module Analytics
         headings + body_rows
       end
 
-      def parsed_dimensions
-        options[:dimensions].delete(:resource_category).push(:page_path, :division_id)
-      end
-
-      def abstract
-        @abstract ||= Analytics::TimeSeries.exec(
+      def data_source
+        @data_source ||= QueryScope.new(
+          Metric,
           metric: options[:metric],
-          dimension: parsed_dimensions,
-          force: true
+          division_id: options[:division_id],
+          path_regexp: '/content_items/\d+'
         )
-      end
-
-      def filters
-        [
-          Analytics::Filter::Search.new(division_id: options[:division_id]),
-          Analytics::Filter::PathMatch.new(
-            path_regexp: /\/content_items\/[[:digit:]]+/
-          )
-        ]
       end
 
       def headings
         [
           [ title ],
-          (["Specialty", "User Type"] + months.map(&:name))
+          (["Path", "Resource", "User Type"] + months.map(&:name))
         ]
       end
 
@@ -43,31 +31,38 @@ module Analytics
         @resource_labeler ||= Analytics::Labeler::Resource.new
       end
 
+      def resource_paths
+        @paths ||= data_source.all.map(&:page_path)
+      end
+
       def body_rows
-        filtered.rows.subsets do |row|
-          row[:page_path]
-        end.inject([]) do |memo, rows_for_path|
-          for_path(Table.new(rows_for_path))
+        resource_paths.inject([]) do |memo, path|
+          memo + for_path(path)
         end
       end
 
-      def for_path(abstract_rows)
-        all_user_types = abstract_rows.search(user_type_key: nil).rows.first
-        user_type_breakdown = abstract_rows.breakdown_by(:user_type_key).rows
-        resource_label = resource_labeler.exec(all_user_types[:page_path])
+      def for_path(path)
+        total = data_source.aggregate(page_path: path)
+        breakdown = data_source.aggregate(
+          page_path: path,
+          breakdown: :user_type_key
+        )
+        resource_label = resource_labeler.exec(total.page_path)
 
         result = [
           ([
+            path,
             resource_label[:resource],
             resource_label[:category],
             "All user types",
-          ] + months.map {|month| all_user_types[month] })
+          ] + months.map {|month| total[month] })
         ]
 
-        result + user_type_breakdown.inject([]) do |memo, row|
+        result + breakdown.inject([]) do |memo, row|
           memo << ([
             "",
-            user_type_labeler.exec(row[:user_type_key]),
+            "",
+              user_type_labeler.exec(row.user_type_key),
           ] + months.map {|month| row[month] })
         end
       end

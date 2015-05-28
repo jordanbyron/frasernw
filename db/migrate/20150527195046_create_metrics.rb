@@ -3,28 +3,21 @@ class CreateMetrics < ActiveRecord::Migration
     create_table :metrics, force: true do |t|
       t.integer :month_stamp, null: false
       t.integer :division_id, default: nil
-      t.integer :page_path, default: nil
+      t.string  :page_path, default: nil
       t.integer :user_type_key, default: nil
-      t.hstore :metrics
-      t.integer :
-
-      table.integer :priority, default: 0, null: false # Allows some jobs to jump to the front of the queue
-      table.integer :attempts, default: 0, null: false # Provides for retries, but still fail eventually.
-      table.text :handler,                 null: false # YAML-encoded string of the object that will do work
-      table.text :last_error                           # reason for last failure (See Note below)
-      table.datetime :run_at                           # When to run. Could be Time.zone.now for immediately, or sometime in the future.
-      table.datetime :locked_at                        # Set when a client is working on this object
-      table.datetime :failed_at                        # Set when all retries have failed (actually, by default, the record is deleted instead)
-      table.string :locked_by                          # Who is working on this object (if locked)
-      table.string :queue                              # The name of the queue this job is in
-      table.timestamps
+      t.integer :sessions
+      t.integer :page_views
+      t.integer :visitor_accounts_min5sessions
+      t.integer :visitor_accounts_min10sessions
+      t.integer :visitor_accounts
+      t.integer :average_session_duration
+      t.integer :average_page_view_duration
     end
 
-    add_index :delayed_jobs, [:priority, :run_at], name: "delayed_jobs_priority"
+    add_index :metrics, [:user_type_key, :division_id, :page_path], name: "metrics_dimensions"
   end
 
   def down
     drop_table :metrics
   end
-
 end

@@ -1,5 +1,14 @@
 module Analytics
   class AnalyticsTable < HashTable
+    attr_reader :metric, :min_sessions, :dimensions
+
+    def initialize(rows, options)
+      super(rows)
+      @metric = options[:metric]
+      @min_sessions = options[:min_sessions]
+      @dimensions = options[:dimensions]
+    end
+
     def search(query)
       result = rows.select { |row| row.lazy_match? query }
 

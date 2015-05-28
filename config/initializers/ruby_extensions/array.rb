@@ -41,4 +41,10 @@ class Array
   def except(*values)
     self - values
   end
+
+  def to_nil_hash
+    self.inject({}) do |memo, elem|
+      memo.merge(elem => nil)
+    end
+  end
 end
