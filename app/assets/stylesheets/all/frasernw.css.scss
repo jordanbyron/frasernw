@@ -54,14 +54,14 @@ body #loading
   -moz-transition: opacity 1s;
   -webkit-transition: opacity 1s;
   -o-transition: opacity 1s;
-  display: block;
+  display: none;
   position: fixed;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
   background-color: #000;
-  opacity: .18;
+  opacity: 0;
 
   #loading-spinner
   {
@@ -77,31 +77,49 @@ body #loading
   }
 }
 
-#loading2 {
-   width: 100%;
-   height: 100%;
-   top: 0px;
-   left: 0px;
-   position: fixed;
-   display: block;
-   opacity: 0.7;
-   background-color: #fff;
-   z-index: 99;
-   text-align: center;
-}
-
-#loading2-image {
-  position: absolute;
-  top: 100px;
-  left: 240px;
-  z-index: 100;
-}
-
 body.loading #loading
 {
   display: block;
   opacity: 0.25;
 }
+
+/* for page load spinning, not search */
+body #loading2
+{
+  z-index: 4000;
+  transition: opacity 1s;
+  -moz-transition: opacity 1s;
+  -webkit-transition: opacity 1s;
+  -o-transition: opacity 1s;
+  display: block;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #000;
+  opacity: .17;
+
+  #loading2-spinner
+  {
+    position: fixed;
+    width: 4%;
+    min-width: 32px;
+    height: 4%;
+    min-height: 32px;
+    top: 48%;
+    left: 48%;
+    background-image: url(/img/ajax-loader.gif);
+    background-repeat: no-repeat;
+  }
+}
+
+body.loading2 #loading2
+{
+  display: block;
+  opacity: 0.25;
+}
+
 
 body #email
 {
