@@ -151,7 +151,7 @@ GEM
       multi_json
       multi_xml
     i18n (0.7.0)
-    indefinite_article (0.2.0)
+    indefinite_article (0.2.4)
       activesupport
     jquery-datatables-rails (1.11.2)
       jquery-rails
