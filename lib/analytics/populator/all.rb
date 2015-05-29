@@ -35,6 +35,12 @@ module Analytics
         }
       ]
 
+      def self.for_configs(range)
+        CONFIGS[range].each do |config|
+          Analytics::Populator::TimeSeries.exec(config)
+        end
+      end
+
       def self.exec
         CONFIGS.each do |config|
           Analytics::Populator::TimeSeries.exec(config)

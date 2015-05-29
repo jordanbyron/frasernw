@@ -7,7 +7,10 @@ module Analytics
       end
 
       def metric
-        @metric ||= Metric.transform_metric(options[:metric])
+        @metric ||= Metric.transform_metric(
+          options[:metric],
+          options.slice(*:min_sessions)
+        )
       end
 
       def data_source
@@ -33,19 +36,21 @@ module Analytics
         result << ([
           "All User Types",
           "All Divisions"
-        ] + months.map {|month| data_source.aggregate({})[month] })
+        ] + months.map do |month|
+          data_source.aggregate({}).first.safe_val(month)
+        end)
 
-        divisional_breakdown = data_source.aggregate(breakdown_by: :division_id)
+        divisional_breakdown = data_source.aggregate(breakdown: :division_id)
         result + divisional_breakdown.inject([]) do |memo, division|
           memo << ([
             "",
-            division_labeler.exec(division[:division_id])
-          ] + months.map {|month| division[month] })
+            division_labeler.exec(division.division_id)
+          ] + months.map {|month| division.safe_val(month) })
         end
       end
 
       def division_labeler
-        Analytics::Labeler::Id.new(
+        @division_labeler ||= Analytics::Labeler::Id.new(
           Division.all,
           fallback_message: "User Division Not Found"
         )
@@ -55,22 +60,23 @@ module Analytics
         result = []
 
         # Totals
+        total = data_source.aggregate(user_type_key: user_type)
         result << [
           user_type_labeler.exec(user_type),
           "All Divisions"
         ] + months.map do |month|
-          data_source.aggregate(user_type_key: user_type)[month]
+          total.first.safe_val(month)
         end
 
         # Breakdown by division
         divisional_breakdown = data_source.
-          aggregate(user_type_key: user_type, breakdown_by: :division_id)
+          aggregate(user_type_key: user_type, breakdown: :division_id)
 
         divisional_breakdown.each do |division|
           result << [
             "",
             division_labeler.exec(division.division_id)
-          ] + months.map {|month| (division[month] || 0) }
+          ] + months.map {|month| division.safe_val(month) }
         end
 
         result

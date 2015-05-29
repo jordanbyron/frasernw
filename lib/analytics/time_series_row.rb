@@ -13,11 +13,18 @@ module Analytics
       end
     end
 
+    def first_record_attributes
+      HashWithIndifferentAccess.new(@cells.first.attributes)
+    end
+
     def dimensions
-      @dimensions ||= @cells.
-        first.
-        attributes.
-        slice(*Metric::DIMENSIONS.map(&:to_s))
+      @dimensions ||= first_record_attributes.
+        slice(*Metric::DIMENSIONS).
+        symbolize_keys
+    end
+
+    def safe_val(month)
+      self[month] || 0
     end
 
     def [](month)
@@ -27,6 +34,5 @@ module Analytics
     private
 
     attr_reader :cells, :values
-
   end
 end

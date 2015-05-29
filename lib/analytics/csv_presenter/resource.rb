@@ -15,8 +15,7 @@ module Analytics
         @data_source ||= QueryScope.new(
           Metric,
           metric: options[:metric],
-          division_id: options[:division_id],
-          path_regexp: '/content_items/\d+'
+          division_id: options[:division_id]
         )
       end
 
@@ -32,7 +31,12 @@ module Analytics
       end
 
       def resource_paths
-        @paths ||= data_source.all.map(&:page_path)
+        @paths ||= Metric.
+          where("page_path ~* ?", '/content_items/\d+').
+          where(division_id: options[:division_id]).
+          select(:page_path).
+          map(&:page_path).
+          uniq
       end
 
       def body_rows
@@ -42,7 +46,7 @@ module Analytics
       end
 
       def for_path(path)
-        total = data_source.aggregate(page_path: path)
+        total = data_source.aggregate(page_path: path).first
         breakdown = data_source.aggregate(
           page_path: path,
           breakdown: :user_type_key
@@ -55,7 +59,7 @@ module Analytics
             resource_label[:resource],
             resource_label[:category],
             "All user types",
-          ] + months.map {|month| total[month] })
+          ] + months.map {|month| total.safe_val(month) })
         ]
 
         result + breakdown.inject([]) do |memo, row|
@@ -63,7 +67,7 @@ module Analytics
             "",
             "",
               user_type_labeler.exec(row.user_type_key),
-          ] + months.map {|month| row[month] })
+          ] + months.map {|month| row.safe_val(month) })
         end
       end
     end

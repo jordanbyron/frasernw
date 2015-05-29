@@ -10,12 +10,11 @@ module Analytics
         headings + body_rows
       end
 
-      def abstract
+      def data_source
         @data_source ||= QueryScope.new(
           Metric,
           metric: options[:metric],
-          division_id: options[:division_id],
-          path_regexp: '/specialties/\d+'
+          division_id: options[:division_id]
         )
       end
 
@@ -34,7 +33,12 @@ module Analytics
       end
 
       def specialty_paths
-        @paths ||= data_source.all.map(&:page_path)
+        @paths ||= Metric.
+          where("page_path ~* ?", "/specialties/").
+          where(division_id: options[:division_id]).
+          select(:page_path).
+          map(&:page_path).
+          uniq
       end
 
       def body_rows
@@ -43,21 +47,19 @@ module Analytics
         end
       end
 
-      def for_path(abstract_rows)
-        total = data_source.aggregate(page_path: path)
+      def for_path(path)
+        total = data_source.aggregate(page_path: path).first
         breakdown = data_source.aggregate(
           page_path: path,
           breakdown: :user_type_key
         )
-        specialty_label = specialty_labeler.exec(total.page_path)
 
         result = [
           ([
             path,
-            specialty_label[:specialty],
-            specialty_label[:category],
+            specialty_labeler.exec(total.page_path),
             "All user types",
-          ] + months.map {|month| total[month] })
+          ] + months.map {|month| total.safe_val(month) })
         ]
 
         result + breakdown.inject([]) do |memo, row|
@@ -65,7 +67,7 @@ module Analytics
             "",
             "",
               user_type_labeler.exec(row.user_type_key),
-          ] + months.map {|month| row[month] })
+          ] + months.map {|month| row.safe_val(month) })
         end
       end
     end

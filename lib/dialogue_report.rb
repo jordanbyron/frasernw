@@ -12,7 +12,7 @@ class DialogueReport
   end
 
   def exec
-    users
+    visitor_accounts
     page_views
     sessions
     average_page_view_duration
@@ -30,27 +30,27 @@ class DialogueReport
   ### "Number of accounts who make more than 5 visits"
   ### "Number of accounts who make more than 10 visits"
   ### "Number of visitors to Pathways by user category"
-  def users
+  def visitor_accounts
     tables = []
 
     tables << Analytics::CsvPresenter.exec({
-      metric: :users,
+      metric: :visitor_accounts,
       title: "Users"
     }.merge(PERIOD))
 
     tables << Analytics::CsvPresenter.exec({
-      metric: :users,
+      metric: :visitor_accounts,
       min_sessions: 5,
       title: "Users (> 5 Sessions)"
     }.merge(PERIOD))
 
     tables << Analytics::CsvPresenter.exec({
-      metric: :users,
+      metric: :visitor_accounts,
       min_sessions: 10,
       title: "Users (> 10 Sessions)"
     }.merge(PERIOD))
 
-    write_tables(tables, "users")
+    write_tables(tables, "visitor_accounts")
   end
 
   # "Number of page views by visit by user category"
@@ -96,7 +96,7 @@ class DialogueReport
   # "Number of visitors by specialty by user category"
   def specialty_visitors
     tables = for_divisions({
-      metric: :users,
+      metric: :visitor_accounts,
       dimensions: [:specialty, :user_type_key],
       title: "Specialty Visitors"
     }.merge(PERIOD))
@@ -116,7 +116,7 @@ class DialogueReport
 
   def resource_visitors
     tables = for_divisions({
-      metric: :users,
+      metric: :visitor_accounts,
       dimensions: [:resource, :user_type_key],
       title: "Resource Visitors",
     }.merge(PERIOD))
@@ -126,7 +126,7 @@ class DialogueReport
 
   def resource_page_views
     tables = for_divisions({
-      metric: :users,
+      metric: :page_views,
       dimensions: [:resource, :user_type_key],
       title: "Resource Page Views",
     }.merge(PERIOD))

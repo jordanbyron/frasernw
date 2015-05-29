@@ -37,7 +37,8 @@ module Analytics
           "ids" => PROFILE_IDS_QUERY_PARAM,
           "start-date" => format_date(query_params[:start_date]),
           "end-date"   => format_date(query_params[:end_date]),
-          "metrics"    => format_metrics(query_params[:metrics])
+          "metrics"    => format_metrics(query_params[:metrics]),
+          "max-results" => "1000000"
         }
       }
 

@@ -3,23 +3,13 @@ module Analytics
     class Resource
       # takes a set of records + path string to match, and produces labels from the path given to #exec
 
-      attr_reader :records, :path_string
-
-      def resources
-        @resource ||= ScItem.all
-      end
-
-      def categories
-        @categories ||= ScCategory.all
-      end
-
       def id_regexp
         @id_regexp ||= /(?<=\/content_items\/)[[:digit:]]+/
       end
 
       def exec(page_path)
         item_id = page_path[id_regexp].to_i
-        item = resource.find {|resource| resource.id == item_id }
+        item = ScItem.where(id: item_id).first
 
         if item.nil?
           {
@@ -27,13 +17,9 @@ module Analytics
             category: "Not found"
           }
         else
-          category = categories.find do |category|
-            category.id == item.sc_category_id
-          end
-
           {
             resource: item.name,
-            category: category.name
+            category: item.sc_category.try(:name)
           }
         end
       end

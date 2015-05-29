@@ -23,6 +23,7 @@ module Analytics
       # rescue Google::APIClient::AuthorizationError
       # why does this break? should be required on app load...
       rescue
+        puts "rescuing!!!!"
         authorize client
         client.execute! query
       end

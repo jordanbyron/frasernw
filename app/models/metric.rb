@@ -1,7 +1,7 @@
 class Metric < ActiveRecord::Base
   DIMENSIONS = [:page_path, :user_type_key, :division_id]
 
-  def self.transform_metric(metric)
+  def self.transform_metric(metric, options)
     if options[:min_sessions].nil?
       metric
     else
@@ -22,16 +22,21 @@ class Metric < ActiveRecord::Base
     # will be set to null to aggregate over those dimensions
     total_over = DIMENSIONS
     total_over = total_over - [ breakdown_by ] if breakdown_by.present?
-    total_over = total_over - [ page_path ] if page_path.present?
+    total_over = total_over - [ :page_path ] if path_regexp.present?
     total_over = total_over - options.keys
 
     records = where(options)
-    records = where(total_over.to_nil_hash)
-    records = where("? != ?", breakdown_by.to_s, nil) if breakdown_by.present?
-    records = where("page_path ~* ?", path_regexp) if path_regexp.present?
+    records = records.where(total_over.to_nil_hash)
+
+    if breakdown_by.present?
+      raise "Invalid Dimension" unless DIMENSIONS.include? breakdown_by
+      records = records.where("#{breakdown_by.to_s} IS NOT NULL")
+    end
+
+    if path_regexp.present?
+      records = records.where("page_path ~* ?", path_regexp)
+    end
 
     Analytics::CellAggregator.time_series(records, metric)
   end
-
-
 end

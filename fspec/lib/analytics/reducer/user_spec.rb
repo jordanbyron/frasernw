@@ -28,11 +28,11 @@ describe Analytics::Reducer::User do
       )
 
       expect(reducer.exec.rows).to contain_exactly(
-        {:user_type_key=>"-1", :division_id=>"-1",:users=>1},
-        {:user_type_key=>"-1", :division_id=>"1", :users=>1},
-        {:user_type_key=>"-1", :division_id=>"2", :users=>1},
-        {:user_type_key=>"-1", :division_id=>"3", :users=>1},
-        {:user_type_key=>"0", :division_id=>"1", :users=>6}
+        {:user_type_key=>"-1", :division_id=>"-1",:visitor_accounts=>1},
+        {:user_type_key=>"-1", :division_id=>"1", :visitor_accounts=>1},
+        {:user_type_key=>"-1", :division_id=>"2", :visitor_accounts=>1},
+        {:user_type_key=>"-1", :division_id=>"3", :visitor_accounts=>1},
+        {:user_type_key=>"0", :division_id=>"1", :visitor_accounts=>6}
       )
     end
   end

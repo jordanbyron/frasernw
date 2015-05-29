@@ -5,6 +5,8 @@ end
 
 require 'lib/analytics/time_series_row'
 require 'active_support/core_ext/hash/slice'
+require 'active_support/core_ext/hash/keys'
+require 'active_support/hash_with_indifferent_access'
 require 'ostruct'
 require 'lib/month'
 

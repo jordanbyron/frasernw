@@ -16,7 +16,6 @@ module Analytics
       end
 
       def exec
-        puts new_row_attrs
         if existing_row.present?
           existing_row.update_attribute(column_key, row[metric])
         else
