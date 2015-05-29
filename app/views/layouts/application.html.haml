@@ -66,8 +66,8 @@
         })();
 
   %body{:id => "#{params[:controller]}_page"}
-    #loading
-      %img#loading-spinner{:alt => "Loading...", :src => "img/ajax-loader.gif"}/
+    #loading2
+      %img#loading2-image{:alt => "Loading...", :src => "img/ajax-loader.gif"}/
     #main-nav.navbar
       .navbar-inner
         .container
@@ -404,7 +404,6 @@
     = yield(:javascript_footer)
 
     %script{:language => "javascript", :type => "text/javascript"}
-      :cdata
-        $(window).load(function() {
-        $('#loading').hide();
-        });
+      $(window).load(function() {
+        $('#loading2').hide();
+      });
