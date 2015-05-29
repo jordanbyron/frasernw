@@ -66,8 +66,10 @@
         })();
 
   %body{:id => "#{params[:controller]}_page"}
-    #loading2
-      %img#loading2-image{:alt => "Loading...", :src => "img/ajax-loader.gif"}/
+    / #loading2
+    /   %img#loading2-image{:alt => "Loading...", :src => "img/ajax-loader.gif"}
+    #loading
+      #loading-spinner
     #main-nav.navbar
       .navbar-inner
         .container
