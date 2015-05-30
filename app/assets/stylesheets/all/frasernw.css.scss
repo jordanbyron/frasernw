@@ -114,6 +114,19 @@ body #loading2
   }
 }
 
+.heartbeat-loader-position{
+  position: fixed;
+  z-index: 4000;
+  transition: opacity 1s;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  margin-left: -100px;
+  margin-top: -100px;
+}
+
+
 body.loading2 #loading2
 {
   display: block;
