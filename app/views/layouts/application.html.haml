@@ -66,6 +66,8 @@
         })();
 
   %body{:id => "#{params[:controller]}_page"}
+    #loading2
+      #loading2-spinner
     #main-nav.navbar
       .navbar-inner
         .container
@@ -400,3 +402,9 @@
       #loading-spinner
 
     = yield(:javascript_footer)
+
+    %script{:language => "javascript", :type => "text/javascript"}
+      $(window).load(function() {
+      $("#loading2").remove();
+      });
+
