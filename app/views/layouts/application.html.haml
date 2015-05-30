@@ -405,5 +405,8 @@
 
     %script{:language => "javascript", :type => "text/javascript"}
       $(window).load(function() {
-      $("#loading2").remove();
+      $("#loading2").fadeOut(300, function(){
+      $(this).remove();
       });
+      });
+
