@@ -471,7 +471,7 @@ GEM
       rails
     validates_email_format_of (1.6.1)
       i18n
-    wannabe_bool (0.1.0)
+    wannabe_bool (0.1.1)
     webrobots (0.1.1)
     will_paginate (3.0.7)
 
