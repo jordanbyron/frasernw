@@ -1,16 +1,23 @@
 module Analytics
   module Frame
-    DEFAULT_FRAME = Analytics::Frame::Default
-    SPECIALIZED_FRAMES = {
-      visitor_accounts: Analytics::Frame::VisitorAccounts
-    }
-
     def self.exec(options)
-      klass_for(options[:metric]).new(options).exec
+      Analytics::Frame::Default.new(
+        query_for(options),
+        reducer_for(options),
+        totaler_for(options),
+      ).exec
     end
 
-    def self.klass_for(metric)
-      SPECIALIZED_FRAMES[metric] || DEFAULT_FRAME
+    def self.reducer_for(options)
+      Analytics::Reducer.for(options)
+    end
+
+    def self.query_for(options)
+      Analytics::Query.for(options)
+    end
+
+    def self.totaler_for(options)
+      Analytics::Totaler.for(options)
     end
   end
 end

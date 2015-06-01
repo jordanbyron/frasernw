@@ -35,19 +35,19 @@ class DialogueReport
 
     tables << Analytics::CsvPresenter.exec({
       metric: :visitor_accounts,
-      title: "Users"
+      title: "Visitor Accounts"
     }.merge(PERIOD))
 
     tables << Analytics::CsvPresenter.exec({
       metric: :visitor_accounts,
       min_sessions: 5,
-      title: "Users (> 5 Sessions)"
+      title: "Visitor Accounts (> 5 Sessions)"
     }.merge(PERIOD))
 
     tables << Analytics::CsvPresenter.exec({
       metric: :visitor_accounts,
       min_sessions: 10,
-      title: "Users (> 10 Sessions)"
+      title: "Visitor Accounts (> 10 Sessions)"
     }.merge(PERIOD))
 
     write_tables(tables, "visitor_accounts")
@@ -98,7 +98,7 @@ class DialogueReport
     tables = for_divisions({
       metric: :visitor_accounts,
       dimensions: [:specialty, :user_type_key],
-      title: "Specialty Visitors"
+      title: "Specialty Visitor Accounts"
     }.merge(PERIOD))
 
     write_tables(tables, "specialty_visitors")
@@ -118,7 +118,7 @@ class DialogueReport
     tables = for_divisions({
       metric: :visitor_accounts,
       dimensions: [:resource, :user_type_key],
-      title: "Resource Visitors",
+      title: "Resource Visitor Accounts",
     }.merge(PERIOD))
 
     write_tables(tables, "resource_visitors")
@@ -143,7 +143,7 @@ class DialogueReport
 
     Division.all.each do |division|
       tables << Analytics::CsvPresenter.exec(
-        config.merge(title: "#{config[:title]}, #{division.name}", division_id: division.id)
+        config.merge(title: "#{config[:title]}, Division: #{division.name}", division_id: division.id)
       )
     end
 

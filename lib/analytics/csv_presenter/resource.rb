@@ -22,7 +22,7 @@ module Analytics
       def headings
         [
           [ title ],
-          (["Path", "Resource", "User Type"] + months.map(&:name))
+          (["Path", "Resource", "Resource Category", "User Type"] + months.map(&:name))
         ]
       end
 
@@ -66,7 +66,8 @@ module Analytics
           memo << ([
             "",
             "",
-              user_type_labeler.exec(row.user_type_key),
+            "",
+            user_type_labeler.exec(row.user_type_key),
           ] + months.map {|month| row.safe_val(month) })
         end
       end

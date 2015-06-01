@@ -1,16 +1,26 @@
 module Analytics
   module Reducer
     # Collapses a user id dimension down to a 'users' metric
-    class User
+    class VisitorAccounts
       attr_reader :table, :dimensions, :min_sessions, :options
 
-      def initialize(table, options = {})
-        @table = table
+      def initialize(options = {})
         @dimensions = options[:dimensions]
         @min_sessions = options[:min_sessions] || 0
+        @options = options
       end
 
-      def exec
+      def returned_metric
+        @returned_metric ||= begin
+          if options[:dimensions].include? :page_path
+            :page_views
+          else
+            :sessions
+          end
+        end
+      end
+
+      def exec(table)
         table.collapse_subsets(comparator, base_accumulator, accumulator_function)
       end
 
@@ -35,7 +45,7 @@ module Analytics
       end
 
       def new_metric_value(row, accumulator)
-        if min_sessions < row[:sessions].to_i
+        if min_sessions < row[returned_metric].to_i
           accumulator[:visitor_accounts] + 1
         else
           accumulator[:visitor_accounts]

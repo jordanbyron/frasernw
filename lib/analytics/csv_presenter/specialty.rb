@@ -21,7 +21,7 @@ module Analytics
       def headings
         [
           [ title ],
-          (["Specialty", "User Type"] + months.map(&:name))
+          (["Route", "Specialty Name", "User Type"] + months.map(&:name))
         ]
       end
 

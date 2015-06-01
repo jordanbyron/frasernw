@@ -1,7 +1,6 @@
 module Analytics
   module Totaler
     # generates totals across dimensions for one a one-frame table
-
     class Query < Base
       def total_combination(combination)
         Analytics::ApiAdapter.get(

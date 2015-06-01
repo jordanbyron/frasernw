@@ -74,10 +74,11 @@ GEM
       tzinfo
     cocaine (0.2.1)
     coderay (1.1.0)
-    coffee-script (2.2.0)
+    coffee-script (2.4.1)
       coffee-script-source
       execjs
-    coffee-script-source (1.1.2)
+    coffee-script-source (1.9.1.1)
+    connection_pool (2.2.0)
     daemons (1.1.8)
     dalli (2.0.5)
     debug_inspector (0.0.2)
@@ -103,8 +104,7 @@ GEM
     exception_notification (2.5.2)
       actionmailer (>= 3.0.4)
     excon (0.7.9)
-    execjs (1.2.9)
-      multi_json (~> 1.0)
+    execjs (2.5.2)
     extlib (0.9.16)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
@@ -282,11 +282,13 @@ GEM
     rb-fsevent (0.9.3)
     rdoc (3.12.2)
       json (~> 1.4)
-    react-rails (0.13.0.0)
+    react-rails (1.0.0)
+      coffee-script-source (~> 1.8)
+      connection_pool
       execjs
       rails (>= 3.1)
-      react-source (= 0.13.0)
-    react-source (0.13.0)
+      react-source (~> 0.13)
+    react-source (0.13.3)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     retriable (2.0.2)
@@ -433,7 +435,7 @@ DEPENDENCIES
   rails-erd
   rails_12factor
   rb-fsevent (~> 0.9.1)
-  react-rails
+  react-rails (= 1.0)
   rspec (~> 3.2)
   rspec-rails
   safety_mailer
