@@ -9,10 +9,11 @@ class Metric < ActiveRecord::Base
     end.to_sym
   end
 
-  def self.aggregate_find(query)
-    where(DIMENSIONS.to_nil_hash.merge(query)).first
+  def self.aggregate_cells(query)
+    where(DIMENSIONS.to_nil_hash.merge(query))
   end
 
+  # aggregate rows
   def self.aggregate(options)
     # parse the options to a valid 'where clause'
     breakdown_by = options.delete(:breakdown)

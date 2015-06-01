@@ -16,11 +16,19 @@ module Analytics
       end
 
       def exec
-        if existing_row.present?
-          existing_row.update_attribute(column_key, row[metric])
-        else
+        unless updated_existing_row?
           table.create new_row_attrs
         end
+      end
+
+      def updated_existing_row?
+        update_existing_row == 1
+      end
+
+      def update_existing_row
+        count = table.aggregate_cell(query).update_all(new_row_attrs)
+        raise if count > 1
+        count
       end
 
       def existing_row
@@ -28,7 +36,7 @@ module Analytics
       end
 
       def new_row_attrs
-        query.merge(column_key => row[metric])
+        @new_row_attrs ||= query.merge(column_key => row[metric])
       end
 
       def query

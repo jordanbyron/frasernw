@@ -15,7 +15,6 @@ gem 'uglifier'
 
 gem 'jquery-rails'
 gem 'haml-rails'
-gem 'react-rails', '1.0'
 gem 'highcharts-rails'
 
 gem 'authlogic'

@@ -78,7 +78,6 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.9.1.1)
-    connection_pool (2.2.0)
     daemons (1.1.8)
     dalli (2.0.5)
     debug_inspector (0.0.2)
@@ -282,13 +281,6 @@ GEM
     rb-fsevent (0.9.3)
     rdoc (3.12.2)
       json (~> 1.4)
-    react-rails (1.0.0)
-      coffee-script-source (~> 1.8)
-      connection_pool
-      execjs
-      rails (>= 3.1)
-      react-source (~> 0.13)
-    react-source (0.13.3)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     retriable (2.0.2)
@@ -435,7 +427,6 @@ DEPENDENCIES
   rails-erd
   rails_12factor
   rb-fsevent (~> 0.9.1)
-  react-rails (= 1.0)
   rspec (~> 3.2)
   rspec-rails
   safety_mailer
