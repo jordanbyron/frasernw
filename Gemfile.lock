@@ -74,10 +74,10 @@ GEM
       tzinfo
     cocaine (0.2.1)
     coderay (1.1.0)
-    coffee-script (2.2.0)
+    coffee-script (2.4.1)
       coffee-script-source
       execjs
-    coffee-script-source (1.1.2)
+    coffee-script-source (1.9.1.1)
     daemons (1.1.8)
     dalli (2.0.5)
     debug_inspector (0.0.2)
@@ -98,11 +98,12 @@ GEM
       eventmachine (>= 0.12.9)
     erubis (2.7.0)
     eventmachine (0.12.10)
+    exception_details (0.1.0)
+      binding_of_caller
     exception_notification (2.5.2)
       actionmailer (>= 3.0.4)
     excon (0.7.9)
-    execjs (1.2.9)
-      multi_json (~> 1.0)
+    execjs (2.5.2)
     extlib (0.9.16)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
@@ -145,7 +146,6 @@ GEM
       activesupport (~> 3.0)
       haml (~> 3.0)
       railties (~> 3.0)
-    hash-deep-merge (0.1.1)
     heroku (2.10.0)
       launchy (>= 0.3.2)
       rest-client (~> 1.6.1)
@@ -154,6 +154,8 @@ GEM
     heroku_cloud_backup (0.0.6)
       fog (>= 0.7.2)
       heroku (>= 2.1.4)
+    highcharts-rails (4.1.5)
+      railties (>= 3.1)
     hike (1.2.3)
     hodel_3000_compliant_logger (0.1.1)
     hpricot (0.8.6)
@@ -176,9 +178,6 @@ GEM
     kgio (2.6.0)
     launchy (2.4.3)
       addressable (~> 2.3)
-    lazy_high_charts (1.5.1)
-      bundler (>= 1.0)
-      hash-deep-merge
     letter_opener (1.3.0)
       launchy (~> 2.2)
     mail (2.4.4)
@@ -391,6 +390,7 @@ DEPENDENCIES
   delayed_job
   delayed_job_active_record
   delayed_job_web
+  exception_details
   exception_notification
   gattica!
   google-api-client (= 0.7.1)
@@ -400,12 +400,12 @@ DEPENDENCIES
   guard-spork
   haml-rails
   heroku_cloud_backup
+  highcharts-rails
   htmlentities
   indefinite_article
   jquery-datatables-rails
   jquery-rails
   kgio
-  lazy_high_charts
   letter_opener
   mechanize
   nested_form!

@@ -24,7 +24,7 @@ class Array
       memo << subset if subset.any?
 
       # so we don't get duplicate dupe sets...
-      copy.delete_if do |inner_elem|
+      copy.reject! do |inner_elem|
         yield(inner_elem) == yield(elem)
       end
 
@@ -40,5 +40,11 @@ class Array
 
   def except(*values)
     self - values
+  end
+
+  def to_nil_hash
+    self.inject({}) do |memo, elem|
+      memo.merge(elem => nil)
+    end
   end
 end

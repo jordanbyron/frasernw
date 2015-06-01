@@ -15,6 +15,7 @@ gem 'uglifier'
 
 gem 'jquery-rails'
 gem 'haml-rails'
+gem 'highcharts-rails'
 
 gem 'authlogic'
 gem 'paper_trail', '~> 2.7'
@@ -97,6 +98,7 @@ group :development, :test do
   gem 'pry-doc'
   gem 'pry-nav'
   gem 'pry-stack_explorer'
+  gem 'exception_details'
 end
 
 gem 'ancestry'
@@ -112,7 +114,6 @@ gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
 # to hit the GA API
 gem 'google-api-client', '0.7.1', require: "google/api_client"
 
-gem 'lazy_high_charts'
 gem 'jquery-datatables-rails'
 gem "rack-timeout"
 

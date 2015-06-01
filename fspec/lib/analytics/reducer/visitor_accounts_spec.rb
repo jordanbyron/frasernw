@@ -1,7 +1,8 @@
 require 'lib/hash_table'
-require 'lib/analytics/reducer/user'
+require 'lib/analytics/reducer/visitor_accounts'
+require 'active_support/core_ext/array/grouping'
 
-describe Analytics::Reducer::User do
+describe Analytics::Reducer::VisitorAccounts do
   let(:sample_data) do
     [
       {:user_type_key=>"-1", :division_id=>"-1", :user_id=>"-1", :sessions=>"8"},
@@ -22,17 +23,16 @@ describe Analytics::Reducer::User do
 
   describe "exec" do
     it "should return the data collapsed by user id" do
-      reducer = Analytics::Reducer::User.new(
-        sample_table,
+      reducer = Analytics::Reducer::VisitorAccounts.new(
         dimensions: [ :user_type_key, :division_id ]
       )
 
-      expect(reducer.exec.rows).to contain_exactly(
-        {:user_type_key=>"-1", :division_id=>"-1",:users=>1},
-        {:user_type_key=>"-1", :division_id=>"1", :users=>1},
-        {:user_type_key=>"-1", :division_id=>"2", :users=>1},
-        {:user_type_key=>"-1", :division_id=>"3", :users=>1},
-        {:user_type_key=>"0", :division_id=>"1", :users=>6}
+      expect(reducer.exec(sample_table).rows).to contain_exactly(
+        {:user_type_key=>"-1", :division_id=>"-1",:visitor_accounts=>1},
+        {:user_type_key=>"-1", :division_id=>"1", :visitor_accounts=>1},
+        {:user_type_key=>"-1", :division_id=>"2", :visitor_accounts=>1},
+        {:user_type_key=>"-1", :division_id=>"3", :visitor_accounts=>1},
+        {:user_type_key=>"0", :division_id=>"1", :visitor_accounts=>6}
       )
     end
   end

@@ -17,6 +17,8 @@ module Analytics
     end
 
     def exec
+      puts cache_key
+
       cache_fetch = Rails.cache.fetch(cache_key) do
         generate
       end

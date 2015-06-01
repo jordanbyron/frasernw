@@ -28,16 +28,6 @@ module Analytics
         )
       end
 
-      def filters
-        []
-      end
-
-      def filtered
-        @filtered ||= filters.inject(abstract) do |memo, filter|
-          filter.exec(memo)
-        end
-      end
-
       def user_type_labeler
         @user_type_labeler ||= Analytics::Labeler::UserType.new
       end
