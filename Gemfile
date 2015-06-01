@@ -1,21 +1,45 @@
 source 'https://rubygems.org'
 
-ruby "1.9.3"
-gem 'rails', '3.1.12'
+ruby "2.1.2"
+
+gem 'nokogiri'
+#gem 'rails', '3.1.12'
+gem 'rails', '3.2.21'
+
 gem 'pg'
 
 group :production do
   gem 'heroku_cloud_backup'
 end
 
-# Asset template engines
-gem 'sass-rails', "~> 3.1.0"
-gem 'coffee-script'
-gem 'uglifier'
+# gem 'goldiloader' #automate eagerloading to squash N+1 queries
 
-gem 'jquery-rails'
-gem 'haml-rails'
+
+# # Asset template engines
+# gem 'sass-rails', "~> 3.1.0"
+# gem 'coffee-script'
+# gem 'uglifier'
+
+#sass here breaks with sprockets:
+# group :assets do
+#   gem "sass-rails", '~> 4.0.5'
+#   gem "sass"
+#   gem 'coffee-rails', '~> 3.2.2'
+#   gem 'uglifier',     '>= 1.0.3'
+# end
+
+#Rails 3.2 upgrade gemfile recommendation
+group :assets do
+  gem 'sass', '~> 3.1.10'
+  gem 'sass-rails',   '~> 3.2.6'
+  gem 'coffee-rails', '~> 3.2.2'
+  gem 'uglifier',     '>= 1.0.3'
+end
+
+gem 'jquery-rails', "~> 1.0.16"
+
 gem 'highcharts-rails'
+gem 'haml-rails', '~> 0.4'
 
 gem 'authlogic'
 gem 'paper_trail', '~> 2.7'
@@ -36,21 +60,26 @@ gem 'unicorn'
 gem 'kgio'
 gem 'dalli'
 gem 'rack-cache'
+
+# Work Queuing
 gem 'delayed_job'
 gem 'delayed_job_active_record'
 gem 'delayed_job_web'
 gem 'daemons'
+
+# cron jobs
 gem 'clockwork'
 
 # markdown
 gem 'bluecloth'
 gem 'htmlentities'
 
+#Helper Gems
 gem 'wannabe_bool', "~> 0.1.0" #get access to handy to_b boolean method
 gem 'valid_url' #parse urls for validity
 gem 'indefinite_article' # parse words for "a" or "an"
 
-
+gem 'hirefire-resource' # auto-scale heroku dynos based on demand
 
 # Deploy with Capistrano
 # gem 'capistrano'
@@ -78,20 +107,21 @@ group :development, :test do
   #gem 'heroku'
   gem 'taps'
   gem 'rb-fsevent', '~> 0.9.1'
-  gem 'awesome_print'
 end
 
 group :development do
+  #gem 'rack-mini-profiler' # latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
+  #gem 'lol_dba' # looks for places to add indexes
+  gem 'awesome_print'
   gem 'oink'
-  #gem 'rack-mini-profiler'
-  #latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
-  #gem 'lol_dba'
-  gem 'letter_opener'
-  #gem 'debugger'
-  gem 'bullet'
-  #gem 'thin'
-  gem 'rails-erd'
+  gem 'peek'
+  gem 'annotate', '~> 2.6.5' #inserts schema as a comment into model code, to run~> annotate
+  gem 'letter_opener' # opens mail in browser
+  gem 'rails-erd' # makes graph of schema
+  gem 'bullet' #warns about N+1 queries
+  gem 'thin'
 end
+
 
 group :development, :test do
   gem 'pry-rails'
@@ -101,7 +131,8 @@ group :development, :test do
   gem 'exception_details'
 end
 
-gem 'ancestry'
+gem 'ancestry', '~> 1.3.0' #ancestry breaks specialization.rb arrange methods in higher versions
+
 gem 'mechanize'
 gem 'validates_email_format_of'
 gem "safety_mailer" # prevent emails getting sent in staging

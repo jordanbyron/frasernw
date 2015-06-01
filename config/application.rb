@@ -5,12 +5,14 @@ require 'csv'
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
-Bundler.require(:default, Rails.env) if defined?(Bundler)
+Bundler.require(*Rails.groups(:assets => %w(development test))) if defined?(Bundler)
 
 module Frasernw
   class Application < Rails::Application
     config.autoload_paths << "#{config.root}/lib"    # Settings in config/environments/* take precedence over those specified here.
     config.assets.paths << "#{Rails.root}/app/assets/fonts"
+    # Defaults to '/assets'
+    config.assets.prefix = '/asset-files'
 
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -49,13 +51,14 @@ module Frasernw
     # Enable the asset pipeline
     config.assets.enabled = true
 
+    config.assets.version = '1.0'
+
+    Sprockets::Compressors.register_css_compressor(:scss, 'Sass::Rails::CssCompressor', :require => 'sass/rails/compressor') #added due to heroku error, read: https://github.com/rails/sass-rails/issues/111
+
     #compress assets before serving, only use below if not on CDN:
-    config.middleware.insert_before ActionDispatch::Static, Rack::Deflater
+    # config.middleware.insert_before ActionDispatch::Static, Rack::Deflater
     #if with CDN (https://robots.thoughtbot.com/content-compression-with-rack-deflater):
     # config.middleware.use Rack::Deflater
-
-
-
 
     # mailer
     config.action_mailer.delivery_method = :smtp
@@ -69,6 +72,7 @@ module Frasernw
       :authentication       => "plain",
       :enable_starttls_auto => true
     }
+
     config.action_mailer.default_url_options = { :host => "pathwaysbc.ca" }
   end
 end

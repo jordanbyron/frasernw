@@ -49,6 +49,22 @@ class Clinic < ActiveRecord::Base
 
   default_scope order('clinics.name')
 
+  # # # Cache actions
+  after_commit :flush_cached_find
+
+  # def self.all_cached
+  #   Rails.cache.fetch('Clinic.all') { all }
+  # end
+
+  def self.cached_find(id)
+    Rails.cache.fetch([name, id]) { find(id) }
+  end
+
+  def flush_cached_find
+    Rails.cache.delete([self.class.name, id])
+  end
+  # # #
+
   def self.not_in_progress_for_specialization(specialization)
     in_progress_cities = []
 
@@ -162,6 +178,11 @@ class Clinic < ActiveRecord::Base
         return [default_owner]
       end
     end
+  end
+
+  def primary_specialization
+    # we arbitrarily take the first specialization of a clinic and use this on the front page to determine what specialization a clinic falls under when doing logic about what to show on the home page
+    specializations.first
   end
 
   def attendances?

@@ -3,6 +3,7 @@ require File.expand_path('../../config/environment', __FILE__)
 require 'clockwork'
 
 include Clockwork
+
   # Delete sessions older than every week
   if ENV['APP_NAME'] == "pathwaysbctest" # production
     # every(1.day, 'bundle exec rake backup_db', :at => '08:00',  :tz => 'UTC') {
@@ -25,7 +26,6 @@ include Clockwork
   every(1.day, 'bundle exec rake pathways:visit_every_page:specializations', :at => '12:30',  :tz => 'UTC') {
     `bundle exec rake pathways:visit_every_page:specializations`
   }
-
 
   # Used for testing:
   # Clockwork.every(1.day, 'Mail out TEST Monthly Subscriptions job', :at => 'Monday 00:45', :tz => 'UTC', :if => lambda { |t| t.day == 6 }) do
