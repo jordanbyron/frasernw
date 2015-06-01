@@ -53,7 +53,7 @@ gem "aws-sdk"
 gem 'public_activity'
 
 # Use unicorn as the web server
-gem 'unicorn'
+gem 'puma'
 
 # Heroku caching
 gem 'kgio'
