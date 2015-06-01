@@ -68,9 +68,7 @@
   %body{:id => "#{params[:controller]}_page"}
     #loading2
       #loading2-spinner
-    .heartbeat-loader-position
-      .heartbeat-loader
-        Loading…
+
     #main-nav.navbar
       .navbar-inner
         .container
@@ -400,7 +398,9 @@
         #email.content-wrapper
           Contact us:
           %a{:href => '#', :onclick => "$('#message .inner').load('#{messages_path}', function() { show_message(); }); return false;"} administration@pathwaysbc.ca
-
+    .heartbeat-loader-position
+      .heartbeat-loader
+        Loading…
     #loading
       #loading-spinner
 
