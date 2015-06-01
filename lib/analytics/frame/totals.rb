@@ -3,6 +3,8 @@ module Analytics
   module Frame
     # Here we're skipping the totaling step because this already IS an iteration of the totaling step...
     class Totals
+      attr_reader :options
+
       def initialize(options)
         @options = options
       end

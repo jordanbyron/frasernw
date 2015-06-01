@@ -2,19 +2,21 @@ module Analytics
   module Totaler
     # generates totals across dimensions for one a one-frame table
     class Base
-      attr_reader :table, :dimensions, :metric
+      attr_reader :options
 
       def initialize(options)
-        @dimensions = options[:dimensions]
-        @metric = options[:metric]
+        @options = options
       end
 
       def totals(table)
-        @table = table
-
+        puts "totaling #{options[:metric]}"
         combinations.inject([]) do |memo, combination|
           memo + total_combination(combination)
         end
+      end
+
+      def dimensions
+        options[:dimensions]
       end
 
       def combinations

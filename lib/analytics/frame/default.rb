@@ -36,6 +36,10 @@ module Analytics
       def query
         Analytics::Query.for(options)
       end
+
+      def totaler
+        Analytics::Totaler.for(options)
+      end
     end
   end
 end

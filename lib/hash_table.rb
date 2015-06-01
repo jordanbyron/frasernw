@@ -29,7 +29,7 @@ class HashTable
   end
 
   def collapse_subsets(uniq_function, base_accumulator, accumulator_function)
-    subsets = rows.subsets &uniq_function
+    subsets = rows.group_by(&uniq_function).values
 
     # Construct the collapsed rows to put back into the table
     collapsed_rows = subsets.map do |set|

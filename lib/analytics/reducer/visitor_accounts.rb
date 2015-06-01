@@ -21,6 +21,7 @@ module Analytics
       end
 
       def exec(table)
+        puts "reducing #{returned_metric} to #{options[:metric]}"
         table.collapse_subsets(comparator, base_accumulator, accumulator_function)
       end
 

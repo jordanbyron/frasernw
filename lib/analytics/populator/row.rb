@@ -26,7 +26,7 @@ module Analytics
       end
 
       def update_existing_row
-        count = table.aggregate_cell(query).update_all(new_row_attrs)
+        count = table.aggregate_cells(query).update_all(new_row_attrs)
         raise if count > 1
         count
       end

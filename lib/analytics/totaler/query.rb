@@ -3,6 +3,8 @@ module Analytics
     # generates totals across dimensions for one a one-frame table
     class Query < Base
       def total_combination(combination)
+        puts "totaling combination #{combination}"
+
         Analytics::Frame::Totals.new(
           combination_options(combination)
         ).exec.rows

@@ -21,6 +21,8 @@ module Analytics
 
       def exec
         months.each do |month|
+          puts "adding frame for month #{month.name}"
+
           frame_populator.add_frame(
             frame: month_table(month),
             dimensions: options[:dimensions],
