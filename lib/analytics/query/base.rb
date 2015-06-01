@@ -9,10 +9,13 @@ module Analytics
       end
 
       def exec
-        {
+        query = {
           metrics: [ metric ],
           dimensions: dimensions,
         }.merge(date_options)
+
+        puts "querying for #{query}"
+        query
       end
 
       def date_options

@@ -15,7 +15,6 @@ module Analytics
       end
 
       def exec
-        puts "populating for frame #{options}"
         frame.rows.each do |row|
           row_populator.add_row(
             row,

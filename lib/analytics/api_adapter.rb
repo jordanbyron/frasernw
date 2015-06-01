@@ -1,8 +1,8 @@
 # Handles construction of request params from simple query api and parsing of responses
 module Analytics
   class ApiAdapter
-
     PROFILE_IDS_QUERY_PARAM = "ga:61207403"
+    MAX_RESULTS = 10000
 
     # example params
     # {
@@ -11,10 +11,20 @@ module Analytics
     #   metrics:    "ga:pageviews"
     # }
 
-    def self.get(query_params)
-      response = Analytics::ApiClient.execute! construct_query(query_params)
+    def self.get(query_params, options = {})
+      options[:batch] = true if options[:batch].nil?
 
-      parse_response response
+      query_params[:page] ||= 1
+
+      response = Analytics::ApiClient.execute! construct_query(query_params)
+      puts "got response"
+      wrapped_response = Analytics::Response.new(response)
+
+      if options[:batch] && wrapped_response.max_reached?
+        Analytics::BatchHandler.new(wrapped_response, query_params).exec
+      else
+        wrapped_response.parse_rows
+      end
     end
 
     def self.user_type_keys
@@ -30,15 +40,17 @@ module Analytics
 
     private
 
+    # TODO extract to own object
     def self.construct_query(query_params)
       query = {
         :api_method => analytics.data.ga.get,
         :parameters => {
           "ids" => PROFILE_IDS_QUERY_PARAM,
-          "start-date" => format_date(query_params[:start_date]),
-          "end-date"   => format_date(query_params[:end_date]),
-          "metrics"    => format_metrics(query_params[:metrics]),
-          "max-results" => "1000000"
+          "start-date"  => format_date(query_params[:start_date]),
+          "end-date"    => format_date(query_params[:end_date]),
+          "metrics"     => format_metrics(query_params[:metrics]),
+          "start-index" => start_index(query_params[:page]),
+          "max-results" => MAX_RESULTS.to_s
         }
       }
 
@@ -51,6 +63,8 @@ module Analytics
         query[:parameters]["filters"] =
           format_filters(query_params[:filters])
       end
+
+      puts query
 
       query
     end
@@ -85,6 +99,10 @@ module Analytics
       end.join(";")
     end
 
+    def self.start_index(current_page)
+      ((current_page - 1) * MAX_RESULTS) + 1
+    end
+
     def self.format_date(date)
       date.strftime("%F")
     end
@@ -96,15 +114,5 @@ module Analytics
     # returns an array of hashes with symbol keys (column name)
     # and int values
     # [{ user_id: "1", sessions: "2" }]
-    def self.parse_response(response)
-      adapter_column_names = METRICS.merge(DIMENSIONS)
-      response_column_names = response.data.column_headers.map(&:name)
-
-      response.data.rows.map do |row|
-        response_column_names.each_with_index.reduce({}) do |memo, (column_name, index)|
-          memo.merge({ adapter_column_names.key(column_name) => row[index] })
-        end
-      end
-    end
   end
 end

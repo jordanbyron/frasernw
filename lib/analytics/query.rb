@@ -1,5 +1,5 @@
 module Analytics
-  # parses options fed to frame module to construct a query
+  # parses options fed to frame module to construct a query params for the api adapter
   module Query
     def self.for(options)
       case options[:metric]

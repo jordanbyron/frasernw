@@ -16,9 +16,9 @@ module Analytics
       end
 
       def exec
-        unless updated_existing_row?
-          table.create new_row_attrs
-        end
+        # unless updated_existing_row?
+        #   table.create new_row_attrs
+        # end
       end
 
       def updated_existing_row?
