@@ -114,6 +114,17 @@ body #loading2
   }
 }
 
+#heartbeat-loader-position{
+  position: fixed;
+  z-index: 4000;
+  transition: opacity 1s;
+  top: 50%;
+  left: 46%;
+  width: 5em;
+  height: 5em;
+}
+
+
 body.loading2 #loading2
 {
   display: block;
