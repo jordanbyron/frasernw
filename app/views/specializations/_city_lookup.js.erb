@@ -11,6 +11,7 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
 <% specializations.each do |specialization| %>
 
   <% cache(specialization_path(specialization) + "_" + city_path(city)) do %>
+    <%# e.g. sample cache key: "/specialties/33_/cities/33"%>
 
     filtering.current_cities["<%= city.id %>"] = true
     <%
