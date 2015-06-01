@@ -42,7 +42,7 @@ module Analytics
         }
       }
 
-      if query_params[:dimensions].present?
+      if query_params[:dimensions].try(:any?)
         query[:parameters]["dimensions"] =
           format_dimensions(query_params[:dimensions])
       end
