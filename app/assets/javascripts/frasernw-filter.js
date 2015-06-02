@@ -34,6 +34,8 @@ function hide_others( prefix, entity_id, entity_name )
 
 var update_table = function(prefix, entity_id, entity_name)
 {
+  $('#' + entity_id + '_table tbody').find('tr').not('.placeholder').remove();
+  
   var current_filters = new Array();
   var specializations = new Array();
   var procedures = new Array();
@@ -270,17 +272,14 @@ var update_table = function(prefix, entity_id, entity_name)
 
   var found = false;
   var other_specialties = false;
-  var current_specialties_string_arr = $.map(filtering.current_specialties, function(a) { return a.toString(); });
-
+  
   var other_results = 0;
   if((procedures.length >= 1))
   {
-    $('#' + entity_id + '_table tbody tr').each(function () {
-      var row = $(this);
-      if ( row.hasClass('other') && (checked_procedures_length >= 1) )
+    $.each(table_data[entity_id], function (key, entry) {
+      if ( entry.other && (checked_procedures_length >= 1) )
       {
-        var row_filter = row.data('attributes');
-        if (row_filter && matches_filters(row_filter, current_filters))
+        if (entry.attributes && matches_filters(entry.attributes, current_filters))
         {
           other_results++;
         }
@@ -289,39 +288,31 @@ var update_table = function(prefix, entity_id, entity_name)
   }
 
   //loop over each row of the table, hiding those which don't match our filters
-  $('#' + entity_id + '_table tbody tr').each(function () {
-    var row = $(this)
-      , row_filter = row.data('attributes');
-
-    if ( (!should_show_others || (checked_procedures_length == 0)) && row.hasClass('other') )
+  $.each(table_data[entity_id], function (key, entry) {
+    if ((!should_show_others || (checked_procedures_length == 0)) && entry.other)
     {
-      row.hide();
+      //not showing others
+      //continue
+      return true;
     }
-    else if ( current_filters.length == 0 )
+    else if ((current_filters.length == 0) && entry.other)
     {
-      row.hasClass('other') ? row.hide() : row.show();
+      //a entry outside of the current specialty, and we aren't filtering any areas of practice to show it
+      //continue
+      return true;
     }
-    else if ( !row_filter )
+    else if ((current_filters.length == 0) || (entry.attributes && matches_filters(entry.attributes, current_filters)) )
     {
-      //a very blank specialist or clinic entry
-      row.hide();
-    }
-    else if ( matches_filters( row_filter, current_filters ) )
-    {
-      row.show();
+      //match!, show it
+      $('#' + entity_id + '_table tr:last').after($(entry.html).ajaxify());
+      other_specialties |= (entry.specialties.length > 0) && (entry.specialties.intersect(filtering.current_specialties).length == 0);
       found = true;
     }
     else
     {
       //doesn't match
-      row.hide();
-    }
-
-    if (row.is(":visible"))
-    {
-      //if we have a specialist that has no specialties in common with the current specialties, we should show the specialties column
-      row_specialties = row.data('specialties').split(' ');
-      other_specialties |= (row_specialties.length > 0) && (row_specialties.intersect(current_specialties_string_arr).length == 0)
+      //continue
+      return true;
     }
   });
 
@@ -475,6 +466,8 @@ var update_table = function(prefix, entity_id, entity_name)
   {
     (should_show_others && (other_results > 0)) ? hide_others.show() : hide_others.hide();
   }
+  
+  $('#' + entity_id + '_table').trigger('update');
 }
 
 var clear_filters = function(prefix, entity_id, entity_name) {
