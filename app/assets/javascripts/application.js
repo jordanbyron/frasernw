@@ -9,7 +9,7 @@
 //= require jquery_ujs
 //= require jquery.scrollto.min.js
 //= require dataTables/jquery.dataTables
-//= require dataTables/jquery.dataTables.bootstrap
+//= require dataTables/bootstrap/2/jquery.dataTables.bootstrap
 //= require json2.js
 //= require jquery.history.js
 //= require jquery_nested_form.js

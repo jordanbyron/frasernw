@@ -83,6 +83,55 @@ body.loading #loading
   opacity: 0.25;
 }
 
+/* for page load spinning, not search */
+body #loading2
+{
+  z-index: 4000;
+  transition: opacity 1s;
+  -moz-transition: opacity 1s;
+  -webkit-transition: opacity 1s;
+  -o-transition: opacity 1s;
+  display: block;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #000;
+  opacity: 0.15;
+
+  #loading2-spinner
+  {
+    position: fixed;
+    width: 4%;
+    min-width: 32px;
+    height: 4%;
+    min-height: 32px;
+    top: 48%;
+    left: 48%;
+    background-image: url(/img/ajax-loader.gif);
+    background-repeat: no-repeat;
+  }
+}
+
+#heartbeat-loader-position{
+  position: fixed;
+  z-index: 4000;
+  transition: opacity 1s;
+  top: 50%;
+  left: 46%;
+  width: 5em;
+  height: 5em;
+}
+
+
+body.loading2 #loading2
+{
+  display: block;
+  opacity: 0.20;
+}
+
+
 body #email
 {
   border-bottom-left-radius: $FNW_BODY_BREATHING/2;
