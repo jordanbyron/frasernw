@@ -48,7 +48,7 @@ gem "simple_form", '~> 2.1'
 gem "nested_form", :git => "https://github.com/warneboldt/nested_form.git", :ref => "35a2cf060680280413880337a3f89bdec469301c"
 #gem 'nested_form', '0.3.2', :path => '~/Documents/Programming/Pathways/warneboldt/nested_form/'
 gem 'exception_notification'
-gem "cancan", "~> 1.6.7"
+gem 'cancan', '1.6.7'
 gem "paperclip", "~> 2.7"
 gem "aws-sdk"
 gem 'public_activity'

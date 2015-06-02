@@ -293,7 +293,7 @@
       = f.simple_fields_for :clinic_locations, clocs, :nested_wrapper => false do |cl|
         - cloc = clocs[index]
         - loc = cloc.location
-        - is_unused = loc.empty?
+        - is_unused = cloc.empty?
         - is_standalone = !is_unused && !loc.in_hospital?
         - is_in_hospital = !is_unused && loc.in_hospital?
         .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"}
