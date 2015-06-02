@@ -75,7 +75,7 @@ GEM
     bullet (4.14.4)
       activesupport (>= 3.0.0)
       uniform_notifier (>= 1.6.0)
-    cancan (1.6.10)
+    cancan (1.6.7)
     celluloid (0.16.0)
       timers (~> 4.0.0)
     childprocess (0.5.5)
@@ -483,7 +483,7 @@ DEPENDENCIES
   aws-sdk
   bluecloth
   bullet
-  cancan (~> 1.6.7)
+  cancan (= 1.6.7)
   clockwork
   coffee-rails (~> 3.2.2)
   daemons
