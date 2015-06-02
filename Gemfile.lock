@@ -467,7 +467,7 @@ GEM
     ruby-graphviz (1.2.2)
     rubyzip (1.1.7)
     safety_mailer (0.0.10)
-    sass (3.4.14)
+    sass (3.1.21)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
@@ -600,7 +600,7 @@ DEPENDENCIES
   rspec (~> 3.2)
   rspec-rails
   safety_mailer
-  sass (>= 3.2)
+  sass (~> 3.1.10)
   sass-rails (~> 3.2.6)
   simple_form (~> 2.1)
   spork (> 0.9.0rc)
