@@ -29,7 +29,7 @@
                 .toggle-filters.visible-phone
                   %a{"href" => "javascript:void(0)", "onclick" => "$('#specialist_filters, #specialist_table').toggle()"}
                     %i.icon-blue.icon-cog.icon-small
-                    Show / Hide Specialist Filters
+                    = "Show / Hide #{@specialization.label_name.titleize} Filters"
 
                 #specialist_phrase.filter-phrase
 
@@ -50,7 +50,7 @@
                 %table.table.table-condensed.tablesorter.five#specialist_table
                   %thead
                     %tr{:class => 'tableheader'}
-                      %th{:class => "sp {sorter: 'bylastname'} name_column"} Specialist
+                      %th{:class => "sp {sorter: 'bylastname'} name_column"}= @specialization.label_name.titleize
                       %th{:class => "s {sorter: 'text'} specialty_column"} Specialty
                       %th{:class => "st {sorter: 'status'} status_column"} Accepting New<br>Referrals?
                       %th{:class => "wt {sorter: 'waittime'} wait_time_column"} Average Non-<br>Urgent Patient<br>Wait Time
@@ -71,8 +71,7 @@
 
               .span3.offsethalf
                 .well.filter#specialist_filters
-                  .title
-                    Filter Specialists
+                  .title= "Filter #{@specialization.label_name.titleize.pluralize}"
                   - if @specialization.procedure_specializations.non_assumed.present?
                     .filter-group
                       %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#specialist-filter-aop"}
