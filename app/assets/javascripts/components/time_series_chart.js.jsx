@@ -1,41 +1,24 @@
-var chartConfig = {
-  title: {
-      text: 'Monthly Average Temperature',
-      x: -20 //center
-  },
-  subtitle: {
-      text: 'Source: WorldClimate.com',
-      x: -20
-  },
-  xAxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  },
+var STATIC_CONFIG = {
   yAxis: {
-      title: {
-          text: 'Temperature (°C)'
-      },
-      plotLines: [{
-          value: 0,
-          width: 1,
-          color: '#808080'
-      }]
-  },
-  tooltip: {
-      valueSuffix: '°C'
-  },
-  legend: {
-      layout: 'vertical',
-      align: 'right',
-      verticalAlign: 'middle',
-      borderWidth: 0
+    title: {
+      text: 'Value'
+    }
   }
 };
 
 var TimeSeriesChart = React.createClass({
+  chartConfig: function() {
+    $.extend({
+      xAxis: {
+        categories: this.props.months
+      },
+      series: {
+        data: []
+      }
+    }, STATIC_CONFIG);
+  },
   createChart: function() {
-    params = $.extend(chartConfig, {series: [ this.props.data] });
-    $('#container').highcharts(params);
+    $('#chartContainer').highcharts(this.chartConfig());
   },
   componentDidMount: function() {
     this.createChart();
@@ -48,7 +31,7 @@ var TimeSeriesChart = React.createClass({
   },
   render: function() {
     return (
-      <div id="container" style={{minWidth: "310px", height: "400px", margin: "0 auto"}}>
+      <div id="chartContainer" style={{minWidth: "310px", height: "400px", margin: "0 auto"}}>
       </div>
     );
   }

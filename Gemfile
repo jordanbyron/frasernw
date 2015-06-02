@@ -36,9 +36,9 @@ group :assets do
   gem 'uglifier',     '>= 1.0.3'
 end
 
-gem 'jquery-rails', "~> 1.0.16"
-
+gem 'react-rails'
 gem 'highcharts-rails'
+gem 'jquery-rails', "~> 1.0.16"
 gem 'haml-rails', '~> 0.4'
 
 gem 'authlogic'
@@ -128,7 +128,6 @@ group :development, :test do
   gem 'pry-doc'
   gem 'pry-nav'
   gem 'pry-stack_explorer'
-  gem 'exception_details'
 end
 
 gem 'ancestry', '~> 1.3.0' #ancestry breaks specialization.rb arrange methods in higher versions
@@ -145,7 +144,7 @@ gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
 # to hit the GA API
 gem 'google-api-client', '0.7.1', require: "google/api_client"
 
-gem 'jquery-datatables-rails'
+gem 'jquery-datatables-rails', '3.1.1'
 gem "rack-timeout"
 
 #for Heroku deployment

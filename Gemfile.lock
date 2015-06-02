@@ -84,6 +84,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.9.1.1)
+    connection_pool (2.2.0)
     daemons (1.1.8)
     dalli (2.0.5)
     debug_inspector (0.0.2)
@@ -104,8 +105,6 @@ GEM
       eventmachine (>= 0.12.9)
     erubis (2.7.0)
     eventmachine (0.12.10)
-    exception_details (0.1.0)
-      binding_of_caller
     exception_notification (2.5.2)
       actionmailer (>= 3.0.4)
     excon (0.7.9)
@@ -177,8 +176,11 @@ GEM
     indefinite_article (0.2.0)
       activesupport
     journey (1.0.4)
-    jquery-datatables-rails (1.11.2)
+    jquery-datatables-rails (3.1.1)
+      actionpack (>= 3.1)
       jquery-rails
+      railties (>= 3.1)
+      sass-rails
     jquery-rails (1.0.16)
       railties (~> 3.0)
       thor (~> 0.14)
@@ -290,6 +292,13 @@ GEM
     rb-fsevent (0.9.3)
     rdoc (3.12.2)
       json (~> 1.4)
+    react-rails (1.0.0)
+      coffee-script-source (~> 1.8)
+      connection_pool
+      execjs
+      rails (>= 3.1)
+      react-source (~> 0.13)
+    react-source (0.13.3)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     retriable (2.0.2)
@@ -403,7 +412,6 @@ DEPENDENCIES
   delayed_job
   delayed_job_active_record
   delayed_job_web
-  exception_details
   exception_notification
   gattica!
   google-api-client (= 0.7.1)
@@ -417,7 +425,7 @@ DEPENDENCIES
   hirefire-resource
   htmlentities
   indefinite_article
-  jquery-datatables-rails
+  jquery-datatables-rails (= 3.1.1)
   jquery-rails (~> 1.0.16)
   kgio
   letter_opener
@@ -443,6 +451,7 @@ DEPENDENCIES
   rails-erd
   rails_12factor
   rb-fsevent (~> 0.9.1)
+  react-rails
   rspec (~> 3.2)
   rspec-rails
   safety_mailer

@@ -1,4 +1,4 @@
-var SeriesSelector = React.createClass({
+var DimensionSelector = React.createClass({
   emitChanged: function(e) {
     target = $(event.target);
     $(document).trigger({type: "seriesChanged", key: target.val()});
