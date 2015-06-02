@@ -30,13 +30,14 @@ end
 
 #Rails 3.2 upgrade gemfile recommendation
 group :assets do
-  gem 'sass', '~> 3.1.10'
+  gem 'sass', '>= 3.2'
   gem 'sass-rails',   '~> 3.2.6'
   gem 'coffee-rails', '~> 3.2.2'
   gem 'uglifier',     '>= 1.0.3'
 end
 
 gem 'react-rails'
+gem 'connection_pool'
 gem 'highcharts-rails'
 gem 'jquery-rails', "~> 1.0.16"
 gem 'haml-rails', '~> 0.4'

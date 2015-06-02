@@ -71,13 +71,7 @@ GEM
       activesupport (>= 3.0.0)
       uniform_notifier (>= 1.6.0)
     cancan (1.6.7)
-    celluloid (0.16.0)
-      timers (~> 4.0.0)
-    childprocess (0.5.5)
-      ffi (~> 1.0, >= 1.0.11)
     choice (0.1.7)
-    climate_control (0.0.3)
-      activesupport (>= 3.0)
     clockwork (1.1.0)
       activesupport
       tzinfo
@@ -90,8 +84,10 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.8.0)
+    connection_pool (2.2.0)
     daemons (1.1.9)
     dalli (2.7.4)
+    debug_inspector (0.0.2)
     delayed_job (4.0.6)
       activesupport (>= 3.0, < 5.0)
     delayed_job_active_record (4.0.3)
@@ -331,7 +327,7 @@ GEM
     ruby-hmac (0.4.0)
     rubyzip (0.9.4)
     safety_mailer (0.0.10)
-    sass (3.1.10)
+    sass (3.4.14)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
@@ -411,6 +407,7 @@ DEPENDENCIES
   cancan (= 1.6.7)
   clockwork
   coffee-rails (~> 3.2.2)
+  connection_pool
   daemons
   dalli
   delayed_job
@@ -459,7 +456,7 @@ DEPENDENCIES
   rspec (~> 3.2)
   rspec-rails
   safety_mailer
-  sass (~> 3.1.10)
+  sass (>= 3.2)
   sass-rails (~> 3.2.6)
   simple_form (~> 2.1)
   spork (> 0.9.0rc)

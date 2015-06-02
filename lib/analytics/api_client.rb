@@ -25,7 +25,7 @@ module Analytics
       rescue
         puts "rescuing!!!!"
         authorize client
-        client.execute! query
+        self.execute! query
       end
     end
 
