@@ -12,6 +12,7 @@ class CreateMetrics < ActiveRecord::Migration
       t.integer :visitor_accounts
       t.integer :average_session_duration
       t.integer :average_page_view_duration
+      t.timestamps
     end
 
     add_index :metrics, [:user_type_key, :division_id, :page_path], name: "metrics_dimensions"
