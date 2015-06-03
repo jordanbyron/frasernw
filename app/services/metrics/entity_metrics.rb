@@ -4,7 +4,7 @@ module Metrics
     def initialize(divisions = [])
       @divisions = Array.wrap(divisions)
 
-      if @divisions.any?
+      if @divisions.any? && (@divisions != Division.all)
         @division_label = @divisions.map{|d| d.name.gsub(/\s+/, "")}.join("_").gsub(/\W/, '-')
         @specialists = Specialist.in_divisions(@divisions)
         @clinics = Clinic.in_divisions(@divisions)
@@ -12,7 +12,7 @@ module Metrics
         @specializations = Specialization.all.reject{ |s| [s.specialists.in_divisions(@divisions) + s.clinics.in_divisions(@divisions)].flatten.length == 0 }
         @hospitals = Hospital.in_divisions(@divisions)
       else
-        @division_label = "All Divisions"
+        @division_label = "All-Divisions"
         @specialists = Specialist.all
         @clinics = Clinic.all
         @procedures = Procedure.all
@@ -42,6 +42,7 @@ module Metrics
           ""
         ],
         [
+          "",
           "Total Focused & Non Focused",
           "Focused",
           "Non Focused",
@@ -60,6 +61,7 @@ module Metrics
           ""
         ],
         [
+          "",
           "Total",
           "Completed Survey",
           "Not Completed Survey",
@@ -82,6 +84,7 @@ module Metrics
           ""
         ],
         [
+          "",
           "Total",
           "Completed Survey",
           "Not Completed Survey",
@@ -98,6 +101,7 @@ module Metrics
           ""
         ],
         [
+          "",
           "Total"
         ],
         [
@@ -137,7 +141,7 @@ module Metrics
     end
 
     def to_csv_file
-      CSVReport::Service.new("reports/dialogue/entitymetrics/em-#{@division_label}_entity_metrics.csv", (self.csv_stamp + self.data)).exec
+      CSVReport::Service.new("reports/dialogue/entitymetrics/#{@division_label}_entity_metrics.csv", (self.csv_stamp + self.data)).exec
     end
 
   end
