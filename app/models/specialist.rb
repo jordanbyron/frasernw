@@ -237,6 +237,12 @@ class Specialist < ActiveRecord::Base
   end
   # # #
 
+  def self.filter(specialists, filter)
+    specialists.select do |specialist|
+      specialist.divisions.include? filter[:division]
+    end
+  end
+
   def photo_delete
     @photo_delete ||= "0"
   end

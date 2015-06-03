@@ -21,6 +21,7 @@ class DialogueReport
     specialty_page_views
     resource_visitors
     resource_page_views
+    specialist_waittimes
   end
 
   ### Each method below should generate a different file for the report
@@ -132,6 +133,12 @@ class DialogueReport
     }.merge(PERIOD))
 
     write_tables(tables, "resource_page_views")
+  end
+
+  def specialist_waittimes
+    table = CsvReport::Presenters::SpecialistWaittimes.new.exec
+
+    write_tables([table], "specialist_waittimes")
   end
 
   def for_divisions(config)
