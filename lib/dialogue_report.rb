@@ -11,7 +11,7 @@ class DialogueReport
     @timestamp = DateTime.now.to_s
   end
 
-  def exec
+  def exec #to generate the mother of all reports
     visitor_accounts
     page_views
     sessions
@@ -22,6 +22,9 @@ class DialogueReport
     resource_visitors
     resource_page_views
     specialist_waittimes
+    clinic_metrics
+    specialist_metrics
+    feedback_metrics
   end
 
   ### Each method below should generate a different file for the report
@@ -139,6 +142,22 @@ class DialogueReport
     table = CsvReport::Presenters::SpecialistWaittimes.new.exec
 
     write_tables([table], "specialist_waittimes")
+  end
+
+  def clinic_metrics
+    Metrics::ClinicMetrics.new(all: true, folder_path: folder_path).to_csv_file
+  end
+
+  def specialist_metrics
+    Metrics::ClinicMetrics.new(all: true, folder_path: folder_path).to_csv_file
+  end
+
+  def feedback_metrics
+    Metrics::FeedbackMetrics.new(folder_path).to_csv_file
+  end
+
+  def entity_metrics
+    Metrics::EntityMetrics.new(Division.all, folder_path).to_csv_file
   end
 
   def for_divisions(config)

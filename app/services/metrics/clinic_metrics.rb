@@ -1,13 +1,15 @@
+# E.g.:  Metrics::ClinicMetrics.new(all: true, folder_path: "reports/dialogue/").to_csv_file
+
 module Metrics
   class ClinicMetrics
-
     attr_accessor :table
+    attr_reader   :folder_path
+
     def initialize(*args)
       options = args.extract_options!
       # options[] defines which table columns to use.
       # (all: true) uses all tables
-
-
+      @folder_path = options[:folder_path]
       table = Array.new
 
       Clinic.includes([:specializations, :versions, :archived_feedback_items, :feedback_items]).all.each do |clinic|
@@ -37,7 +39,7 @@ module Metrics
     end
 
     def to_csv_file
-      CSVReport::Service.new("reports/dialogue/clinic_metrics-#{DateTime.now.to_date.iso8601}.csv", self.as_csv).exec
+      CSVReport::Service.new("#{folder_path}/clinic_metrics-#{DateTime.now.to_date.iso8601}.csv", self.as_csv).exec
     end
   end
 end

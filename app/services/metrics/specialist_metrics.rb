@@ -1,18 +1,16 @@
+#e.g. Metrics::SpecialistMetrics.new(all: true, folder_path: "reports/dialogue/").to_csv_file
+
 module Metrics
   class SpecialistMetrics
 
-    # def self.all_by_specialty
-    #   # can't get this working
-    #   # self.joins([:specialist_specializations => :specialization]).order('specialists, specializations.name ASC').all.map{|s| s.specializations.first.name}
-    # end
-
-    # CSVReport::Service.new("specialist_metrics.csv", *tables)
     attr_accessor :table
+    attr_reader   :folder_path
 
     def initialize(*args)
       options = args.extract_options!
       # options[] defines which table columns to use.
       # (all: true) uses all tables
+      @folder_path = options[:folder_path]
       table = []
       Specialist.includes([:specializations, :favorites, :versions, :archived_feedback_items, :feedback_items]).all.each do |specialist|
         specialist_row = Hash.new
@@ -42,7 +40,7 @@ module Metrics
     end
 
     def to_csv_file
-      CSVReport::Service.new("reports/dialogue/specialist_metrics-#{DateTime.now.to_date.iso8601}.csv", self.as_csv).exec
+      CSVReport::Service.new("#{folder_path}/specialist_metrics-#{DateTime.now.to_date.iso8601}.csv", self.as_csv).exec
     end
   end
 end

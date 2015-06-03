@@ -1,8 +1,13 @@
+# Returns stats about total number of Specialists/Clinics/AreasofPractice/by specialty
+# e.g. Metrics::EntityMetrics.new(Division.all, "reports/dialogue").to_csv_file
 module Metrics
   class EntityMetrics
     attr_accessor :table
-    def initialize(divisions = [])
+    attr_reader   :folder_path
+
+    def initialize(divisions = [], folder_path)
       @divisions = Array.wrap(divisions)
+      @folder_path = folder_path
 
       if @divisions.any? && (@divisions != Division.all)
         @division_label = @divisions.map{|d| d.name.gsub(/\s+/, "")}.join("_").gsub(/\W/, '-')
@@ -142,7 +147,8 @@ module Metrics
     end
 
     def to_csv_file
-      CSVReport::Service.new("reports/dialogue/entitymetrics/#{@division_label}_entity_metrics-#{DateTime.now.to_date.iso8601}.csv", (self.csv_stamp + self.data)).exec
+      FileUtils.ensure_folder_exists("#{folder_path}/entitymetrics")
+      CSVReport::Service.new("#{folder_path}/entitymetrics/#{@division_label}_entity_metrics-#{DateTime.now.to_date.iso8601}.csv", (self.csv_stamp + self.data)).exec
     end
 
   end

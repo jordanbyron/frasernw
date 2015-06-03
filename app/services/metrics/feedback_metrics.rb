@@ -1,10 +1,12 @@
+# Returns list of Feedback items
+# e.g. Metrics::FeedbackMetrics.new("reports/dialogue").to_csv_file
+
 module Metrics
   class FeedbackMetrics
+    attr_reader :folder_path
 
-    def initialize(*args)
-      options = args.extract_options!
-      # options[] defines which table columns to use.
-      # (all: true) uses all tables
+    def initialize(folder_path)
+      @folder_path = folder_path
     end
 
     def table
@@ -47,7 +49,7 @@ module Metrics
     end
 
     def to_csv_file
-      CSVReport::Service.new("reports/dialogue/feedback_item_metrics-#{DateTime.now.to_date.iso8601}.csv", self.as_csv).exec
+      CSVReport::Service.new("#{folder_path}/feedback_item_metrics-#{DateTime.now.to_date.iso8601}.csv", self.as_csv).exec
     end
   end
 end
