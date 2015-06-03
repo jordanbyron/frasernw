@@ -75,11 +75,11 @@ class Division < ActiveRecord::Base
     end
   end
 
-  def waittime_counts
-    WaitTime.counts(division: self)
+  def waittime_counts(klass)
+    WaitTimeReporter.new(klass, division: self).counts
   end
 
-  def median_waittime
-    WaitTime.median(division: self)
+  def median_waittime(klass)
+    WaitTimeReporter.new(klass, division: self).median
   end
 end
