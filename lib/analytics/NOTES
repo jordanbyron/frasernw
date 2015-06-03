@@ -1,0 +1,23 @@
+Visitors
+- visitors are the number of unique pathways user accounts that have been recorded for the given time period
+- by default, criteria is that the user account record a pageview
+- however we also gather visitor metrics based on the visitor having recorded a minimum number of sessions
+
+Bounced Users
+- 'bounced' user type indicates 'not logged in'
+- all 'bounced' users are assigned the same fake user account id for analytics purposes, '-1'
+
+Sessions
+- sessions are groups of hits (pageviews)
+- they are defined by the timeout period, which in our case is 30 minutes
+- a session ends if the user is inactive (does not view any pages) for more than the timeout period
+- after that, the next hit recorded will start a new session
+- a session can be longer than 30 minutes if there are a series of pageviews for which the first hit and the last hit are more than 30 minutes apart and each of the intervening periods between hits are no longer than 30 minutes
+
+Totals
+- we don't do totals across dimension values manually (i.e. add up metrics for each division to get the figure for all divisions), since these totals might not be simple sums
+- rather, we query Analytics for this data
+
+Divisions
+- "User division not found" indicates that Google Analytics recorded a hit for a user account which didn't have a division assigned to it on Pathways (division_id = -1 sent to analytics)
+- prior to May 2014, it is also possible that hits were recorded for which no division id was sent to analytics, and this would explain why totals across all divisions are greater than the sum of divisional breakdowns for some April 2014 stats
