@@ -22,6 +22,7 @@ class DialogueReport
     resource_visitors
     resource_page_views
     specialist_waittimes
+    clinic_waittimes
     clinic_metrics
     specialist_metrics
     feedback_metrics
@@ -139,7 +140,13 @@ class DialogueReport
   end
 
   def specialist_waittimes
-    table = CsvReport::Presenters::SpecialistWaittimes.new.exec
+    table = CsvReport::Presenters::Waittimes.new(Specialist).exec
+
+    write_tables([table], "specialist_waittimes")
+  end
+
+  def clinic_waittimes
+    table = CsvReport::Presenters::Waittimes.new(Clinic).exec
 
     write_tables([table], "specialist_waittimes")
   end
@@ -185,9 +192,7 @@ class DialogueReport
   end
 
   def write_tables(tables, filename)
-    unless File.exists? folder_path
-      FileUtils::mkdir_p folder_path
-    end
+    FileUtils.ensure_folder_exists folder_path
 
     CSVReport::Service.new(
       "#{folder_path}/#{filename}.csv",

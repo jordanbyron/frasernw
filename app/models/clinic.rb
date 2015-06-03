@@ -65,6 +65,12 @@ class Clinic < ActiveRecord::Base
   end
   # # #
 
+  def self.filter(clinics, filter)
+    clinics.select do |clinic|
+      clinic.divisions.include? filter[:division]
+    end
+  end
+
   def self.not_in_progress_for_specialization(specialization)
     in_progress_cities = []
 
