@@ -36,7 +36,7 @@ module Analytics
       end
 
       def new_row_attrs
-        @new_row_attrs ||= query.merge(column_key => row[metric])
+        @new_row_attrs ||= query.merge(column_key => row[metric].to_i)
       end
 
       def query
