@@ -32,6 +32,7 @@ module Metrics
 
       [
         [
+          "",
           "Total"
         ],
         [
