@@ -142,7 +142,7 @@ module Metrics
     end
 
     def to_csv_file
-      CSVReport::Service.new("reports/dialogue/entitymetrics/#{@division_label}_entity_metrics.csv", (self.csv_stamp + self.data)).exec
+      CSVReport::Service.new("reports/dialogue/entitymetrics/#{@division_label}_entity_metrics-#{DateTime.now.to_date.iso8601}.csv", (self.csv_stamp + self.data)).exec
     end
 
   end

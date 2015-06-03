@@ -18,7 +18,7 @@ module Metrics
         specialist_row = Hash.new
         specialist_row[:favorites]            =   specialist.favorites.count                           if ((options[:all] || options[:favorites])            == true)
         specialist_row[:specialist_id]        =   specialist.id                                        if ((options[:all] || options[:id])                   == true)
-        specialist_row[:name]                 =   specialist.name                                      if ((options[:all] || options[:favorites])            == true)
+        # specialist_row[:name]                 =   specialist.name                                      if ((options[:all] || options[:favorites])            == true)
         specialist_row[:status]               =   specialist.status                                    if ((options[:all] || options[:status])               == true)
         specialist_row[:specialty]            =   specialist.specializations.map{|s| s.name}.join(",") if ((options[:all] || options[:specialty])            == true)
         specialist_row[:specialty_count]      =   specialist.specialist_specializations.count          if ((options[:all] || options[:specialty_count])      == true)
@@ -27,11 +27,11 @@ module Metrics
         specialist_row[:first_version]        =   specialist.versions.last.created_at                  if ((options[:all] || options[:first_version])        == true)
         specialist_row[:last_version]         =   specialist.versions.first.created_at                 if ((options[:all] || options[:last_version])         == true)
         specialist_row[:version_number]       =   specialist.versions.count                            if ((options[:all] || options[:version_number])       == true)
-        specialist_row[:feedback_items]       = ( specialist.feedback_items +
-                                                  specialist.archived_feedback_items).
-                                                  map { |f| f.feedback  }.join("  <<<< >>>>  ")        if ((options[:all] || options[:version_number])       == true)
-        specialist_row[:feedback_items_count] = ( 0 + specialist.feedback_items.count +
-                                                  specialist.archived_feedback_items.count)            if ((options[:all] || options[:feedback_items_count]) == true)
+        # specialist_row[:feedback_items]       = ( specialist.feedback_items +
+        #                                           specialist.archived_feedback_items).
+        #                                           map { |f| f.feedback  }.join("  <<<< >>>>  ")        if ((options[:all] || options[:version_number])       == true)
+        # specialist_row[:feedback_items_count] = ( 0 + specialist.feedback_items.count +
+        #                                           specialist.archived_feedback_items.count)            if ((options[:all] || options[:feedback_items_count]) == true)
         table << specialist_row
       end
       @table = table
@@ -42,7 +42,7 @@ module Metrics
     end
 
     def to_csv_file
-      CSVReport::Service.new("reports/specialist_metrics.csv", self.as_csv).exec
+      CSVReport::Service.new("reports/dialogue/specialist_metrics-#{DateTime.now.to_date.iso8601}.csv", self.as_csv).exec
     end
   end
 end
