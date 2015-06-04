@@ -1,5 +1,6 @@
 class ReferralForm < ActiveRecord::Base
   belongs_to :referrable, :polymorphic => true
+  has_many :notes, as: :noteable
 
   has_attached_file :form,
     :storage => :s3,

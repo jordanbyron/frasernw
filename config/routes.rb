@@ -28,6 +28,7 @@ Frasernw::Application.routes.draw do
   resources :divisions do
     resources :users
   end
+  resources :notes, only: [:index, :create, :destroy]
 
   match '/review_items/archived' => 'review_items#archived', :as => 'archived_review_items'
   resources :review_items
@@ -87,7 +88,7 @@ Frasernw::Application.routes.draw do
   get  '/languages/:id/:token/refresh_cache'       => 'languages#refresh_cache',       :as => 'language_refesh_cache'
 
   get  '/specialties/:id/cities/:city_id' => 'specializations#city', :as => 'specialization_city'
-  
+
   #need improve performance:
   get  '/specialties/:id/:token/refresh_city_cache/:city_id' => 'specializations#refresh_city_cache', :as => 'specialization_refresh_city_cache'
   get  '/specialties/:id/:token/refresh_division_cache/:division_id' => 'specializations#refresh_division_cache', :as => 'specialization_refresh_division_cache'

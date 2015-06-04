@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150526221614) do
+ActiveRecord::Schema.define(:version => 20150604210854) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -430,6 +430,22 @@ ActiveRecord::Schema.define(:version => 20150526221614) do
   add_index "locations", ["locatable_id", "location_in_id"], :name => "index_locations_on_locatable_id_and_location_in_id"
   add_index "locations", ["location_in_id"], :name => "index_locations_on_location_in_id"
 
+  create_table "metrics", :force => true do |t|
+    t.integer "month_stamp",                    :null => false
+    t.integer "division_id"
+    t.string  "page_path"
+    t.integer "user_type_key"
+    t.integer "sessions"
+    t.integer "page_views"
+    t.integer "visitor_accounts_min5sessions"
+    t.integer "visitor_accounts_min10sessions"
+    t.integer "visitor_accounts"
+    t.integer "average_session_duration"
+    t.integer "average_page_view_duration"
+  end
+
+  add_index "metrics", ["user_type_key", "division_id", "page_path"], :name => "metrics_dimensions"
+
   create_table "moderations", :force => true do |t|
     t.integer  "moderatable_id"
     t.string   "moderatable_type",               :null => false
@@ -454,6 +470,15 @@ ActiveRecord::Schema.define(:version => 20150526221614) do
   end
 
   add_index "news_items", ["division_id"], :name => "index_news_items_on_division_id"
+
+  create_table "notes", :force => true do |t|
+    t.text     "content"
+    t.integer  "user_id"
+    t.integer  "noteable_id"
+    t.string   "noteable_type"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
 
   create_table "offices", :force => true do |t|
     t.datetime "created_at"
@@ -789,12 +814,17 @@ ActiveRecord::Schema.define(:version => 20150526221614) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "division_id"
-    t.boolean  "in_progress",            :default => false
-    t.boolean  "open_to_clinic_tab_old", :default => false
-    t.boolean  "is_new",                 :default => false
+    t.boolean  "in_progress",                      :default => false
+    t.boolean  "open_to_clinic_tab_old",           :default => false
+    t.boolean  "is_new",                           :default => false
     t.integer  "content_owner_id"
-    t.integer  "open_to_type",           :default => 1
+    t.integer  "open_to_type",                     :default => 1
     t.integer  "open_to_sc_category_id"
+    t.boolean  "show_specialist_categorization_1", :default => true
+    t.boolean  "show_specialist_categorization_2", :default => true
+    t.boolean  "show_specialist_categorization_3", :default => true
+    t.boolean  "show_specialist_categorization_4", :default => true
+    t.boolean  "show_specialist_categorization_5", :default => false
   end
 
   add_index "specialization_options", ["content_owner_id"], :name => "index_specialization_options_on_content_owner_id"

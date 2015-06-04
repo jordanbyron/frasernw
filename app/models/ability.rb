@@ -110,6 +110,12 @@ class Ability
 
         can :manage, Subscription
 
+        can [:index, :create], Note
+
+        can :destroy, Note do |note|
+          note.user == user
+        end
+
       elsif user.user?
 
         #user

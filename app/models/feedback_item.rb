@@ -1,6 +1,8 @@
 class FeedbackItem < ActiveRecord::Base
   belongs_to :item, :polymorphic => true
 
+  has_many :notes, as: :noteable
+
   belongs_to :user
 
   class << self

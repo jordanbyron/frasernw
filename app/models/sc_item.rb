@@ -23,6 +23,8 @@ class ScItem < ActiveRecord::Base
   has_many    :division_display_sc_items, :dependent => :destroy
   has_many    :divisions_sharing, :through => :division_display_sc_items, :class_name => "Division", :source => :division
 
+  has_many    :notes, as: :noteable
+
   has_attached_file :document,
   :storage => :s3,
   :bucket => ENV['S3_BUCKET_NAME_CONTENT_DOCUMENTS'],

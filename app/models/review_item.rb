@@ -1,4 +1,6 @@
 class ReviewItem < ActiveRecord::Base
+  include Noteable
+
   belongs_to :item, :polymorphic => true
 
   STATUS_UPDATES = 0
