@@ -60,6 +60,9 @@ gem 'kgio'
 gem 'dalli'
 gem 'rack-cache'
 
+# Make shell pretty
+gem 'awesome_print', :require => false
+
 # Work Queuing
 gem 'delayed_job'
 gem 'delayed_job_active_record'
@@ -113,7 +116,6 @@ group :development do
   gem 'pry-rails' # loads pry by default with rails c
   #gem 'rack-mini-profiler' # latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
   #gem 'lol_dba' # looks for places to add indexes
-  gem 'awesome_print'
   gem 'oink'
   gem 'peek'
   gem 'annotate', '~> 2.6.5' #inserts schema as a comment into model code, to run~> annotate
