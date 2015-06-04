@@ -26,6 +26,7 @@ class DialogueReport
     clinic_metrics
     specialist_metrics
     feedback_metrics
+    entity_metrics
   end
 
   ### Each method below should generate a different file for the report
@@ -148,7 +149,7 @@ class DialogueReport
   def clinic_waittimes
     table = CsvReport::Presenters::Waittimes.new(Clinic).exec
 
-    write_tables([table], "specialist_waittimes")
+    write_tables([table], "clinic_waittimes")
   end
 
   def clinic_metrics
@@ -156,7 +157,7 @@ class DialogueReport
   end
 
   def specialist_metrics
-    Metrics::ClinicMetrics.new(all: true, folder_path: folder_path).to_csv_file
+    Metrics::SpecialistMetrics.new(all: true, folder_path: folder_path).to_csv_file
   end
 
   def feedback_metrics
@@ -165,6 +166,9 @@ class DialogueReport
 
   def entity_metrics
     Metrics::EntityMetrics.new(Division.all, folder_path).to_csv_file
+    Division.all.each do |division|
+      Metrics::EntityMetrics.new(division, folder_path).to_csv_file
+    end
   end
 
   def for_divisions(config)
