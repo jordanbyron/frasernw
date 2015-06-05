@@ -246,6 +246,7 @@ GEM
       fog (>= 1.6.0)
       heroku (>= 2.32.14)
     hike (1.2.3)
+    hirb (0.7.3)
     hirefire-resource (0.3.7)
     hitimes (1.2.2)
     hodel_3000_compliant_logger (0.1.1)
@@ -499,6 +500,7 @@ DEPENDENCIES
   guard-spork
   haml-rails (~> 0.4)
   heroku_cloud_backup
+  hirb
   hirefire-resource
   htmlentities
   indefinite_article

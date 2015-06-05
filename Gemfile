@@ -60,9 +60,6 @@ gem 'kgio'
 gem 'dalli'
 gem 'rack-cache'
 
-# Make shell pretty
-gem 'awesome_print', :require => false
-
 # Work Queuing
 gem 'delayed_job'
 gem 'delayed_job_active_record'
@@ -82,6 +79,10 @@ gem 'valid_url' #parse urls for validity
 gem 'indefinite_article' # parse words for "a" or "an"
 
 gem 'hirefire-resource' # auto-scale heroku dynos based on demand
+
+# Make shell pretty
+gem 'hirb', :require => false
+gem 'awesome_print', :require => false
 
 # Deploy with Capistrano
 # gem 'capistrano'
