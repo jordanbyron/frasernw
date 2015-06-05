@@ -1,6 +1,7 @@
 class ScItem < ActiveRecord::Base
   include ApplicationHelper
   include PublicActivity::Model
+  include Noteable
   # not used here since activity is created in controller:
   # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user}
   has_many :activities, as: :trackable, class_name: 'SubscriptionActivity', dependent: :destroy
@@ -22,8 +23,6 @@ class ScItem < ActiveRecord::Base
 
   has_many    :division_display_sc_items, :dependent => :destroy
   has_many    :divisions_sharing, :through => :division_display_sc_items, :class_name => "Division", :source => :division
-
-  has_many    :notes, as: :noteable
 
   has_attached_file :document,
   :storage => :s3,
@@ -301,5 +300,9 @@ class ScItem < ActiveRecord::Base
 
   def new?
     created_at > 3.week.ago.utc
+  end
+
+  def label
+    self.title
   end
 end

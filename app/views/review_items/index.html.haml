@@ -60,12 +60,14 @@
               %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
               %td= ReviewItem::STATUS_HASH[review_item.status]
-              %td.admin.btn-group.wide
-                = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", specialist_review_path(review_item.item), :class => "btn btn-mini ajax")
-                - if review_item.no_updates?
-                  = link_to("<i class='icon-pencil'></i>".html_safe + " Archive", specialist_archive_path(review_item.item), :class => "btn btn-mini ajax")
-                - else
-                  = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
+              %td
+                .admin.btn-group.wide
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", specialist_review_path(review_item.item), :class => "btn btn-mini ajax")
+                  - if review_item.no_updates?
+                    = link_to("<i class='icon-pencil'></i>".html_safe + " Archive", specialist_archive_path(review_item.item), :class => "btn btn-mini ajax")
+                  - else
+                    = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
+                = notes_button(review_item)
 
       #clinics_tab.tab-pane
 
@@ -102,4 +104,3 @@
                   = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini")
 
   .btn-group= link_to "View archived review queue items", archived_review_items_path, :class => 'btn ajax'
-

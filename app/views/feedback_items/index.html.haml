@@ -89,5 +89,6 @@
                 %td= feedback_item.user.blank? ? "unavailable" : (mail_to feedback_item.user.email, feedback_item.user.email, :subject => "Your Pathways Feedback", :body => "#{feedback_item.feedback} \n\n Pathways: http://www.pathwaysbc.ca")
                 %td.admin.btn-group
                   = link_to("<i class='icon-folder-open'></i>".html_safe + " Archive", feedback_item, :method => :delete, :class => "btn btn-mini ajax")
+                  = notes_button(feedback_item)
 
   .btn-group= link_to "View archived feedback items", archived_feedback_items_path, :class => 'btn ajax'

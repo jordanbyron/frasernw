@@ -1,6 +1,8 @@
 class ReferralForm < ActiveRecord::Base
+  include Noteable
+  include ActionView::Helpers::TextHelper
+
   belongs_to :referrable, :polymorphic => true
-  has_many :notes, as: :noteable
 
   has_attached_file :form,
     :storage => :s3,
@@ -11,6 +13,10 @@ class ReferralForm < ActiveRecord::Base
     }
 
   has_paper_trail
+
+  def label
+    truncate(self.description)
+  end
 
   def in_divisions(divisions)
     referrable.present? && (referrable.divisions & divisions).present?

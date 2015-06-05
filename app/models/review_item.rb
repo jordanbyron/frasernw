@@ -15,6 +15,10 @@ class ReviewItem < ActiveRecord::Base
     status == STATUS_NO_UPDATES
   end
 
+  def label
+    "Review Item #{self.id}"
+  end
+
   class << self
     def active
       includes(:item).where(:archived => false)

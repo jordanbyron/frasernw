@@ -4,9 +4,9 @@ class NotesController < ApplicationController
     authorize! :index, Note
 
     noteable_klass = params[:noteable_type].constantize
-    noteable       = noteable_klass.find params[:noteable_id]
-    @note          = noteable.notes.build
-    @notes         = noteable.persisted_notes
+    @noteable      = noteable_klass.find params[:noteable_id]
+    @note          = @noteable.notes.build
+    @notes         = @noteable.persisted_notes
   end
 
   def create

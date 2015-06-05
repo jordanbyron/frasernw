@@ -1,9 +1,13 @@
 class FeedbackItem < ActiveRecord::Base
+  include Noteable
+
   belongs_to :item, :polymorphic => true
 
-  has_many :notes, as: :noteable
-
   belongs_to :user
+
+  def label
+    "Feedback Item #{self.id}"
+  end
 
   class << self
     def active
