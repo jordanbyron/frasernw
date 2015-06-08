@@ -1,0 +1,35 @@
+# Change Log
+All notable changes to this project will be documented in this file.  In the future, this project may adhere to Semantic Versioning.
+
+CR = Change Request item
+
+## [2015-06-08] [Since April 27, 2015 User Update]
+
+### Added:
+- CR:  Added support for custom labels so that specialties can be referred to with names other than "Specialist" (e.g. Nurse Practitioners, Midwives, Family Physician).
+- CR:  Purchased SSL Certificate, added SSL (https://), all requests are now encrypted and redirect to https://pathwaysbc.ca
+- CR:  Added major upgrade to analytics system; CSV report tools now allow fetching comprehensive division-specific usage analytics and entity metrics.
+- Added a heartbeat loading animation in between periods where a user is waiting for their browser to render HTML.
+- Add indexes and update database queries for content items (providing a measured ~150ms boost to page speed loads). 
+
+### Changed
+- Renamed "Areas of Practice" to "Accepts Referrals For" where appropriate.
+- Specialty pages now load much faster (~1 to ~2 seconds) due to replacing hide/show table filtering with a table filtering system that destroys/recreates table rows on each filter.
+- User edit form now warns admins if a user is missing a division.
+- Upgrade to Rails 3.2 now fully complete.
+- Added browser caching via Cloudflare CDN to increase page loading speeds.
+- Moved DNS lookup server to fault tolerant Cloudflare from Vancouver-based Namespro to prevent emergency downtimes (e.g. if a major earthquake hits in Vancouver).
+- Rename "In Progress" Speciality edit checkbox to "In Progress / Hidden"
+- Moved open-source Github repository to "pathwaysmedical" from "warneboldt"
+
+### Fixed
+- CR:  Clinic location rearranging issue now fixed.
+- "Latest Specialists and Clinics Updates" now hides specialists/clinics updates if the specialty and city of the clinic/specialist does not match with the local referral area of the Division for that specialty.
+- User edit form now correctly places users into divisions.
+- User edit form now disables HTML autocomplete.
+- On Division edit pages, Internet Explorer browsers now correctly render specialty/city checkboxes in the local referral area table.
+- Content Item pages now cache correctly so that different versions of the page are shown for admins and users.
+- Referral form feedback button now disables during submission to prevent duplicate submissions.
+
+### Removed:
+- Removed old reporting interface graphs from the codebase that were already disabled by earlier developers.
