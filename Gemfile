@@ -117,6 +117,9 @@ group :development do
   gem 'pry-rails' # loads pry by default with rails c
   #gem 'rack-mini-profiler' # latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
   #gem 'lol_dba' # looks for places to add indexes
+  gem 'pry-nav'
+  gem 'pry-stack_explorer'
+  gem 'pry-doc'
   gem 'oink'
   gem 'peek'
   gem 'annotate', '~> 2.6.5' #inserts schema as a comment into model code, to run~> annotate

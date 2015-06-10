@@ -17,3 +17,5 @@ config/database.yml
 .ruby-gemset
 notes
 ssl/
+reports/
+config/google_oauth.p12

@@ -70,6 +70,8 @@ GEM
     aws-sdk-v1 (1.61.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
+    binding_of_caller (0.7.2)
+      debug_inspector (>= 0.0.1)
     bluecloth (2.2.0)
     builder (3.0.4)
     bullet (4.14.4)
@@ -98,6 +100,7 @@ GEM
     coffee-script-source (1.8.0)
     daemons (1.1.9)
     dalli (2.7.4)
+    debug_inspector (0.0.2)
     delayed_job (4.0.6)
       activesupport (>= 3.0, < 5.0)
     delayed_job_active_record (4.0.3)
@@ -335,8 +338,16 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-doc (0.6.0)
+      pry (~> 0.9)
+      yard (~> 0.8)
+    pry-nav (0.2.4)
+      pry (>= 0.9.10, < 0.11.0)
     pry-rails (0.3.2)
       pry (>= 0.9.10)
+    pry-stack_explorer (0.4.9.2)
+      binding_of_caller (>= 0.7)
+      pry (>= 0.9.11)
     public_activity (1.4.2)
       actionpack (>= 3.0.0)
       activerecord (>= 3.0)
@@ -472,6 +483,7 @@ GEM
     wannabe_bool (0.1.1)
     webrobots (0.1.1)
     will_paginate (3.0.7)
+    yard (0.8.7.6)
 
 PLATFORMS
   ruby
@@ -519,7 +531,10 @@ DEPENDENCIES
   paperclip (~> 2.7)
   peek
   pg
+  pry-doc
+  pry-nav
   pry-rails
+  pry-stack_explorer
   public_activity
   rack-cache
   rack-livereload

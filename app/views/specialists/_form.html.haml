@@ -283,8 +283,10 @@
     = f.input :categorization_mask, as: :select, collection: categorization_hash, label_method: :last, value_method: :first, :include_blank => false
   = f.input :is_gp
   .no-print
+    -# conditionalize to disable
     = f.association :specializations, as: :check_boxes, :hint => "If you are adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
 
+    -# new comment box - value: nil -- js will update with review item content if necessary
   #section_hospital_clinic_details
 
     %hr

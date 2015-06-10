@@ -270,7 +270,9 @@
   .no-print
     = f.input :categorization_mask, as: :select, collection: Clinic::CATEGORIZATION_HASH, label_method: :last, value_method: :first, :include_blank => false
   .no-print
+    -# conditionalize to disable
     = f.association :specializations, as: :check_boxes, :hint => "When adding or removing specialities please save and then edit this clinic again to update the list of available areas of practices and specialists."
+    -# new comment box - value: nil -- js will update with review item content if necessary
 
   #section_contact
 
@@ -325,7 +327,7 @@
             .controls
               - text_address = cloc.location.resolved_address.address if cloc.location.present? && cloc.location.resolved_address.present?
               %input{"type" => "text", "value" => "#{text_address}"}
-
+          -# conditionalize to disable
           = cl.simple_fields_for :location, :nested_wrapper => false do |l|
             %div{:class => "address_#{index}"}
               = l.simple_fields_for :address do |a|
@@ -334,6 +336,7 @@
                 = a.input :address2
                 = a.association :city, as: :select, collection: (current_user_is_super_admin? ? City.all : City.in_divisions(current_user_divisions)).map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
                 = a.input :postalcode, :input_html => { :class => "span1" }
+            -# conditional comment box, value nil - js will update with review item if necessary
             %div{:class => "hospital_#{index}"}
               = l.association :hospital_in, as: :select, collection: (current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(current_user_divisions)).reject{ |h| h.location.blank? }.map{ |h| ["#{h.name}, #{h.location.short_address}", h.id] }, :include_blank => true
             %div{:class => "details_#{index}"}

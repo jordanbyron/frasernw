@@ -14,6 +14,7 @@ Frasernw::Application.routes.draw do
     resources :procedures, :path => 'areas_of_practice'
     resources :clinics
   end
+  # except #edit --> go to new controller
   resources :clinics
   resources :specialists
   resources :procedures, :path => 'areas_of_practice'
@@ -87,7 +88,7 @@ Frasernw::Application.routes.draw do
   get  '/languages/:id/:token/refresh_cache'       => 'languages#refresh_cache',       :as => 'language_refesh_cache'
 
   get  '/specialties/:id/cities/:city_id' => 'specializations#city', :as => 'specialization_city'
-  
+
   #need improve performance:
   get  '/specialties/:id/:token/refresh_city_cache/:city_id' => 'specializations#refresh_city_cache', :as => 'specialization_refresh_city_cache'
   get  '/specialties/:id/:token/refresh_division_cache/:division_id' => 'specializations#refresh_division_cache', :as => 'specialization_refresh_division_cache'

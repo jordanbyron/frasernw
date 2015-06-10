@@ -370,6 +370,7 @@ class ClinicsController < ApplicationController
   end
 
   protected
+
   def generate_focus(clinic, procedure_specialization, offset)
     focus = clinic.present? ? Focus.find_by_clinic_id_and_procedure_specialization_id(clinic.id, procedure_specialization.id) : nil
     return {
