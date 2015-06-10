@@ -11,8 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150526221614) do
-
+ActiveRecord::Schema.define(:version => 20150527195046) do
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
     t.string   "trackable_type"
@@ -429,6 +428,22 @@ ActiveRecord::Schema.define(:version => 20150526221614) do
   add_index "locations", ["locatable_id", "locatable_type"], :name => "index_locations_on_locatable_id_and_locatable_type"
   add_index "locations", ["locatable_id", "location_in_id"], :name => "index_locations_on_locatable_id_and_location_in_id"
   add_index "locations", ["location_in_id"], :name => "index_locations_on_location_in_id"
+
+  create_table "metrics", :force => true do |t|
+    t.integer "month_stamp",                    :null => false
+    t.integer "division_id"
+    t.string  "page_path"
+    t.integer "user_type_key"
+    t.integer "sessions"
+    t.integer "page_views"
+    t.integer "visitor_accounts_min5sessions"
+    t.integer "visitor_accounts_min10sessions"
+    t.integer "visitor_accounts"
+    t.integer "average_session_duration"
+    t.integer "average_page_view_duration"
+  end
+
+  add_index "metrics", ["user_type_key", "division_id", "page_path"], :name => "metrics_dimensions"
 
   create_table "moderations", :force => true do |t|
     t.integer  "moderatable_id"

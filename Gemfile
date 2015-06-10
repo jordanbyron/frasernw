@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby "2.1.2"
+ruby "2.1.6"
 
 gem 'nokogiri'
 #gem 'rails', '3.1.12'
@@ -36,8 +36,10 @@ group :assets do
   gem 'uglifier',     '>= 1.0.3'
 end
 
+gem 'react-rails'
+gem 'connection_pool'
+gem 'highcharts-rails'
 gem 'jquery-rails', "~> 1.0.16"
-
 gem 'haml-rails', '~> 0.4'
 
 gem 'authlogic'
@@ -95,7 +97,7 @@ end
 group :development, :test do
   #gem 'sqlite3'
   gem "nifty-generators"
-  gem 'rspec'
+  gem 'rspec', '~> 3.2'
   gem 'rspec-rails'
   gem 'spork', '> 0.9.0rc'
   # To use debugger
@@ -109,12 +111,10 @@ group :development, :test do
   gem 'rack-livereload'
   #gem 'heroku'
   gem 'taps'
-  gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
   gem 'rb-fsevent', '~> 0.9.1'
 end
 
 group :development do
-  gem 'pry-rails' # loads pry by default with rails c
   #gem 'rack-mini-profiler' # latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
   #gem 'lol_dba' # looks for places to add indexes
   gem 'oink'
@@ -126,6 +126,14 @@ group :development do
   gem 'thin'
 end
 
+
+group :development, :test do
+  gem 'pry-rails'
+  gem 'pry-doc'
+  gem 'pry-nav'
+  gem 'pry-stack_explorer'
+end
+
 gem 'ancestry', '~> 1.3.0' #ancestry breaks specialization.rb arrange methods in higher versions
 
 gem 'mechanize'
@@ -133,10 +141,9 @@ gem 'validates_email_format_of'
 gem "safety_mailer" # prevent emails getting sent in staging
 
 # Google Analytics
-gem 'gattica', :git => 'git://github.com/chrisle/gattica.git'
-gem 'lazy_high_charts'
+gem 'google-api-client', '0.7.1', require: "google/api_client"
 
-gem 'jquery-datatables-rails'
+gem 'jquery-datatables-rails', '3.1.1'
 gem "rack-timeout"
 
 #for Heroku deployment

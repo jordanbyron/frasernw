@@ -15,5 +15,7 @@ config/heroku_env.rb
 .idea
 config/database.yml
 .ruby-gemset
+config/google_oauth.p12
+/reports
 notes
 ssl/
