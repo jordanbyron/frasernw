@@ -355,7 +355,7 @@ class Specialist < ActiveRecord::Base
 
   STATUS_HASH = {
     1 => "Accepting new referrals",
-    11 => "Accepting limited new referrals",
+    11 => "Accepting limited new referrals by geography or # of patients",
     2 => "Only doing follow up on previous patients",
     4 => "Retired as of",
     5 => "Retiring as of",
@@ -404,6 +404,17 @@ class Specialist < ActiveRecord::Base
     STATUS_CLASS_LIMITATIONS => 7,
   }
 
+  #match tooltip to status_class 
+  STATUS_TOOLTIP_HASH = {
+    STATUS_CLASS_AVAILABLE   => "Accepting new referrals",
+    STATUS_CLASS_LIMITATIONS => "Accepting limited new referrals by geography or # of patients",
+    STATUS_CLASS_UNAVAILABLE => "Not accepting new referrals",
+    STATUS_CLASS_WARNING     => "Referral status will change soon",
+    STATUS_CLASS_UNKNOWN     => "Referral status is unknown",
+    STATUS_CLASS_EXTERNAL    => "Referral status will change soon",
+    STATUS_CLASS_BLANK       => ""
+  }
+
   def status_class
     #purposely handle categorization prior to status
     if not_responded?
@@ -432,6 +443,10 @@ class Specialist < ActiveRecord::Base
 
   def status_class_hash
     STATUS_CLASS_HASH[status_class]
+  end
+
+  def status_tooltip
+    STATUS_TOOLTIP_HASH[status_class]
   end
 
   def accepting_new_patients?
