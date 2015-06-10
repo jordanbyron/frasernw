@@ -15,7 +15,7 @@ module Analytics
         @metric = options[:metric]
         @options = options
         @frame_populator = Analytics::Populator::Frame
-        @start_month = Month.new(2014, 1)
+        @start_month = Month.new(2012, 1)
         @end_month = Month.prev
       end
 
