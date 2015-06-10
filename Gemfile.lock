@@ -278,6 +278,7 @@ GEM
     highcharts-rails (4.1.5)
       railties (>= 3.1)
     hike (1.2.3)
+    hirb (0.7.3)
     hirefire-resource (0.3.7)
     hitimes (1.2.2)
     hodel_3000_compliant_logger (0.1.1)
@@ -558,6 +559,7 @@ DEPENDENCIES
   haml-rails (~> 0.4)
   heroku_cloud_backup
   highcharts-rails
+  hirb
   hirefire-resource
   htmlentities
   indefinite_article

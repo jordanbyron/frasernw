@@ -82,6 +82,10 @@ gem 'indefinite_article' # parse words for "a" or "an"
 
 gem 'hirefire-resource' # auto-scale heroku dynos based on demand
 
+# Make shell pretty
+gem 'hirb', :require => false
+gem 'awesome_print', :require => false
+
 # Deploy with Capistrano
 # gem 'capistrano'
 
@@ -113,7 +117,6 @@ end
 group :development do
   #gem 'rack-mini-profiler' # latest: gem 'rack-mini-profiler', git: 'git://github.com/MiniProfiler/rack-mini-profiler.git'
   #gem 'lol_dba' # looks for places to add indexes
-  gem 'awesome_print'
   gem 'oink'
   gem 'peek'
   gem 'annotate', '~> 2.6.5' #inserts schema as a comment into model code, to run~> annotate
