@@ -14,10 +14,7 @@
 //= require jquery.history.js
 //= require jquery_nested_form.js
 //= require ajaxify-html5.js
-//= require react
-//= require react_ujs
 //= require highcharts
-//= require components
 //= require_directory .
 
 function current_user_is_admin()
