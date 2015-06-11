@@ -36,7 +36,9 @@ module Analytics
       end
 
       def new_row_attrs
-        @new_row_attrs ||= query.merge(column_key => row[metric].to_i)
+        @new_row_attrs ||= table.ensure_safe_attrs(
+          query.merge(column_key => row[metric].to_i)
+        )
       end
 
       def query

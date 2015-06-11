@@ -1,6 +1,16 @@
 class Metric < ActiveRecord::Base
   DIMENSIONS = [:page_path, :user_type_key, :division_id]
 
+  def self.ensure_safe_attrs(attrs)
+    path = if attrs[:page_path].present?
+      attrs[:page_path].truncate(254)
+    else
+      nil
+    end
+
+    attrs.merge(page_path: path)
+  end
+
   def self.transform_metric(metric, options)
     if options[:min_sessions].nil?
       metric
