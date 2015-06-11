@@ -169,7 +169,7 @@ namespace :pathways do
 
     task :application_layout => :environment do
       expire_fragment("ie8_or_lower_compatibility_warning")
-      expire_fragment("ie9_or_lower_compatibility_warning")
+      expire_fragment("ie_compatibility_warning")
       User.all_user_division_groups_cached.each do |division_group|
         expire_fragment([division_group, 'sc_category_global_navbar'])
         expire_fragment([division_group, 'resources_dropdown_categories'])

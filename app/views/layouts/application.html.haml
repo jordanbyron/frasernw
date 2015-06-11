@@ -18,8 +18,8 @@
     - if !Rails.env.development? || ENV['LIVESEARCH'].to_b
       = javascript_include_tag '../livesearch'
     = csrf_meta_tag
-    - cache("ie9_or_lower_compatibility_warning") do
-      = render "layouts/ie9_or_lower_compatibility_warning"
+    - cache("ie_compatibility_warning") do
+      = render "layouts/ie_compatibility_warning"
     - if Rails.env.development? || (ENV['APP_NAME'] != 'pathwaysbc')
       = render "shared/test_debugging_info"
     = yield(:head)
