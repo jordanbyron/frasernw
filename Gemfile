@@ -86,6 +86,8 @@ gem 'hirefire-resource' # auto-scale heroku dynos based on demand
 gem 'hirb', :require => false
 gem 'awesome_print', :require => false
 
+gem 'bugsnag'
+
 # Deploy with Capistrano
 # gem 'capistrano'
 
