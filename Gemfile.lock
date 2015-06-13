@@ -66,6 +66,8 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     bluecloth (2.2.0)
+    bugsnag (2.8.7)
+      multi_json (~> 1.0)
     builder (3.0.4)
     bullet (4.14.7)
       activesupport (>= 3.0.0)
@@ -540,6 +542,7 @@ DEPENDENCIES
   awesome_print
   aws-sdk
   bluecloth
+  bugsnag
   bullet
   cancan (= 1.6.7)
   clockwork
