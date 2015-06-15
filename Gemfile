@@ -51,7 +51,10 @@ gem "nested_form", :git => "https://github.com/warneboldt/nested_form.git", :ref
 gem 'exception_notification'
 gem 'cancan', '1.6.7'
 gem "paperclip", "~> 2.7"
-gem "aws-sdk"
+
+#Avoid known issue w/ paperclip
+#http://stackoverflow.com/questions/28374401/nameerror-uninitialized-constant-paperclipstorages3aws
+gem "aws-sdk", "< 2.0"
 gem 'public_activity'
 
 # Use unicorn as the web server
