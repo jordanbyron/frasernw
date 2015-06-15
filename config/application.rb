@@ -74,5 +74,6 @@ module Frasernw
     }
 
     config.action_mailer.default_url_options = { :host => "pathwaysbc.ca" }
+    config.action_dispatch.session_store = :active_record_store
   end
 end
