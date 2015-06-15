@@ -74,7 +74,6 @@ module Frasernw
     }
 
     config.action_mailer.default_url_options = { :host => "pathwaysbc.ca" }
-    config.action_dispatch.session_store = :active_record_store
 
     # Explicitly set the primary key, since AR seems to be unable to find it
     ActiveRecord::SessionStore::Session.primary_key = 'id'
