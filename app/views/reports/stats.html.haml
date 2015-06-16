@@ -106,7 +106,7 @@
     %tr
       %th
     - specializations.each do |specialization|
-      - @specialization_specialists = specialists.reject{|specialist| !specialist.specializations.include?(specialization)}
+      - @specialization_specialists = specialization.specialists & specialists
       %tr
         %th
         %th Total

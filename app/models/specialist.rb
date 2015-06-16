@@ -32,7 +32,7 @@ class Specialist < ActiveRecord::Base
   accepts_nested_attributes_for :referral_forms, :allow_destroy => true
 
   # specialists are favorited by users of the system
-  has_many   :favorites
+  has_many   :favorites, :as => :favoritable, :dependent => :destroy
   has_many   :favorite_users, :through => :favorites, :source => :user, :class_name => "User"
 
   # has many contacts - dates and times they were contacted
@@ -59,8 +59,8 @@ class Specialist < ActiveRecord::Base
   has_many :controlling_users, :through => :user_controls_specialist_offices, :source => :user, :class_name => "User"
   accepts_nested_attributes_for :user_controls_specialist_offices, :reject_if => lambda { |ucso| ucso[:user_id].blank? }, :allow_destroy => true
 
-  after_commit :flush_cached_find
-  after_touch  :flush_cached_find
+  after_commit :flush_cache_for_record
+  after_touch  :flush_cache_for_record
 
   has_attached_file :photo,
     :styles => { :thumb => "200x200#" },
@@ -137,12 +137,20 @@ class Specialist < ActiveRecord::Base
     self.in_cities_cached(divs.map{ |division| division.cities }.flatten.uniq)
   end
 
+  def self.in_multiple_divisions_cached
+
+  end
+
   def self.cached_find(id)
     Rails.cache.fetch([name, id]){find(id)}
   end
 
-  def flush_cached_find
-  # only flushes Specialst.cached_find(id)
+  def flush_cache_for_record
+  # only flushes Specialist.cached_find(id), @specialist.city @specialist.cities @specialist.cities_for_display @specialist.cities_for_front_page
+    Rails.cache.delete([self.class.name, self.id, "city"])
+    Rails.cache.delete([self.class.name, self.id, "cities"])
+    Rails.cache.delete([self.class.name, self.id, "cities_for_display"])
+    Rails.cache.delete([self.class.name, self.id, "cities_for_front_page"])
     Rails.cache.delete([self.class.name, self.id])
   end
   # # # #
@@ -217,6 +225,24 @@ class Specialist < ActiveRecord::Base
     (responded_direct + responded_in_hospital + responded_in_clinic + responded_in_clinic_in_hospital + hoc_hospital + hoc_clinic + hoc_clinic_in_hospital).uniq
   end
 
+  # # # Reporting Methods
+  # on May 18 2015 there was 196 specialists in multiple specialties
+  def self.in_multiple_specialties
+    @specialists_with_multiple_specialties ||= self.joins(:specialist_specializations).group('specialists.id').having('count(specialist_id) > 1').all
+  end
+
+  #on May 18 2015 there was 100 specialists in multiple divisions
+  def self.in_multiple_divisions
+    @specialists_in_multiple_divisions ||= self.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:location_in => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}]}}).select{|specialist| specialist.divisions.count > 1}
+  end
+  # # #
+
+  def self.filter(specialists, filter)
+    specialists.select do |specialist|
+      specialist.divisions.include? filter[:division]
+    end
+  end
+
   def photo_delete
     @photo_delete ||= "0"
   end
@@ -233,51 +259,71 @@ class Specialist < ActiveRecord::Base
   #clinic that referrals are done through
   belongs_to :referral_clinic, :class_name => "Clinic"
 
-  def city
-    if responded?
-      o = offices.first
-      return nil if o.blank?
-      return o.city
-    elsif hospital_or_clinic_only?
-      (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq.first
-    elsif hospital_or_clinic_referrals_only?
-      (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? }.uniq.first
-    else
-      nil
+  def city # NullData.new() used since memcache doesn't work with nil: http://stackoverflow.com/questions/30383704/how-to-store-nil-with-rails-cache-fetch-memcache
+    result = Rails.cache.fetch([self.class.name, self.id, "city"], expires_in: 23.hours) do
+      if responded?
+        o = offices.first
+        if o.blank?
+          NullData.new()
+        else
+          o.city.id
+        end
+      elsif hospital_or_clinic_only?
+        citee = (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq.first
+        if citee.nil?
+          NullData.new()
+        else
+          citee.id
+        end
+      elsif hospital_or_clinic_referrals_only?
+        (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? }.uniq.first
+      else
+        NullData.new()
+      end
     end
+    return result.is_a?(NullData) ? nil : result
   end
 
   def cities
-    if responded?
-      offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
-    elsif hospital_or_clinic_only?
-      (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq
-    elsif not_responded? || purposely_not_yet_surveyed? || hospital_or_clinic_referrals_only?
-      (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? }.uniq
-    else
-      []
+    result = Rails.cache.fetch([self.class.name, self.id, "cities"], expires_in: 23.hours) do
+      if responded?
+        citees = offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
+      elsif hospital_or_clinic_only?
+        citees = (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq
+      elsif not_responded? || purposely_not_yet_surveyed? || hospital_or_clinic_referrals_only?
+        (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? }.uniq
+      else
+        []
+      end
     end
+    return result.is_a?(NullData) ? nil : result
   end
 
   #we need to know their 'old' cities if they moved away
   def cities_for_front_page
-    if moved_away?
-      offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
-    else
-      cities
+    result = Rails.cache.fetch([self.class.name, self.id, "cities_for_front_page"], expires_in: 23.hours) do
+      if moved_away?
+        offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq || NullData.new()
+      else
+       cities || NullData.new()
+      end
     end
+    return result.is_a?(NullData) ? nil : result
   end
 
   def cities_for_display
-    if responded? && !not_available?
-      offices.map{ |o| o.city }.reject{ |c| c.blank? || c.hidden? }.uniq
-    elsif hospital_or_clinic_only?
-      (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| (i == nil) || i.hidden? }.uniq
-    elsif hospital_or_clinic_referrals_only?
-      (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? || c.hidden? }.uniq
-    else
-      []
+    result = Rails.cache.fetch([self.class.name, self.id, "cities_for_display"], expires_in: 23.hours) do
+      if responded? && !not_available?
+        (  offices.map{ |o| o.city }.reject{ |c| c.blank? || c.hidden? }.uniq    || NullData.new() )
+      elsif hospital_or_clinic_only?
+        ( (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| (i == nil) || i.hidden? }.uniq     || NullData.new() )
+      elsif hospital_or_clinic_referrals_only?
+        ( (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? || c.hidden? }.uniq  || NullData.new() )
+      else
+        []
+      end
     end
+    return result.is_a?(NullData) ? nil : result
   end
 
   def primary_specialization
@@ -355,7 +401,7 @@ class Specialist < ActiveRecord::Base
 
   STATUS_HASH = {
     1 => "Accepting new referrals",
-    11 => "Accepting limited new referrals",
+    11 => "Accepting limited new referrals by geography or # of patients",
     2 => "Only doing follow up on previous patients",
     4 => "Retired as of",
     5 => "Retiring as of",
@@ -404,6 +450,17 @@ class Specialist < ActiveRecord::Base
     STATUS_CLASS_LIMITATIONS => 7,
   }
 
+  #match tooltip to status_class 
+  STATUS_TOOLTIP_HASH = {
+    STATUS_CLASS_AVAILABLE   => "Accepting new referrals",
+    STATUS_CLASS_LIMITATIONS => "Accepting limited new referrals by geography or # of patients",
+    STATUS_CLASS_UNAVAILABLE => "Not accepting new referrals",
+    STATUS_CLASS_WARNING     => "Referral status will change soon",
+    STATUS_CLASS_UNKNOWN     => "Referral status is unknown",
+    STATUS_CLASS_EXTERNAL    => "Referral status will change soon",
+    STATUS_CLASS_BLANK       => ""
+  }
+
   def status_class
     #purposely handle categorization prior to status
     if not_responded?
@@ -432,6 +489,10 @@ class Specialist < ActiveRecord::Base
 
   def status_class_hash
     STATUS_CLASS_HASH[status_class]
+  end
+
+  def status_tooltip
+    STATUS_TOOLTIP_HASH[status_class]
   end
 
   def accepting_new_patients?

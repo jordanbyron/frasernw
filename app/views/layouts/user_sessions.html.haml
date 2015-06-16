@@ -12,7 +12,7 @@
       = stylesheet_link_tag "font-awesome-ie7.css", :media => 'screen, print'
     = javascript_include_tag "application"
     = csrf_meta_tag
-    = render "layouts/ie8_or_lower_compatibility_warning"
+    = render "layouts/ie_compatibility_warning"
 
     = yield(:head)
 
@@ -22,6 +22,8 @@
       _gaq.push(['_trackPageview']);
       _gaq.push(['_setCustomVar', 1, 'ID', '#{current_user_id}', 1]);
       _gaq.push(['_setCustomVar', 2, 'Type', '#{current_user_type_mask}', 1]);
+      _gaq.push(['_setCustomVar', 3, 'Division', '#{current_user_division_id}', 1]);
+
 
       (function() {
         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;

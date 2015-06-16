@@ -1,0 +1,11 @@
+# Commandments
+
+1. Thou shalt not hit the database
+2. Thou shalt not make requests to external services
+3. Thou shalt not load the rails environment
+
+# Usage
+
+- give rspec the -I option to specify the app root as a load path
+- suggested bash alias: fspec='bex rspec -I . ./fspec'
+- (run all tests from app root)
