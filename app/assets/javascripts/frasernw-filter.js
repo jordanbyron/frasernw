@@ -304,7 +304,7 @@ var update_table = function(prefix, entity_id, entity_name)
     else if ((current_filters.length == 0) || (entry.attributes && matches_filters(entry.attributes, current_filters)) )
     {
       //match!, show it
-      $('#' + entity_id + '_table tr:last').after($(entry.html).ajaxify());
+      $('#' + entity_id + '_table tr:last').after($(entry.html));
       other_specialties |= (entry.specialties.length > 0) && (entry.specialties.intersect(filtering.current_specialties).length == 0);
       found = true;
     }
