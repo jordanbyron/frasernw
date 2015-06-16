@@ -74,4 +74,12 @@ class Division < ActiveRecord::Base
       return cities
     end
   end
+
+  def waittime_counts(klass)
+    WaitTimeReporter.new(klass, division: self).counts
+  end
+
+  def median_waittime(klass)
+    WaitTimeReporter.new(klass, division: self).median
+  end
 end

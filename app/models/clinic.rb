@@ -44,6 +44,8 @@ class Clinic < ActiveRecord::Base
 
   has_one :review_item, :as => :item, :conditions => { "archived" => false }
   has_many :feedback_items, :as => :item, :conditions => { "archived" => false }
+  has_many :archived_feedback_items, :as => :item, :foreign_key => "item_id", :class_name => "FeedbackItem"
+
 
   default_scope order('clinics.name')
 
@@ -62,6 +64,12 @@ class Clinic < ActiveRecord::Base
     Rails.cache.delete([self.class.name, id])
   end
   # # #
+
+  def self.filter(clinics, filter)
+    clinics.select do |clinic|
+      clinic.divisions.include? filter[:division]
+    end
+  end
 
   def self.not_in_progress_for_specialization(specialization)
     in_progress_cities = []

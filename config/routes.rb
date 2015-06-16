@@ -30,6 +30,9 @@ Frasernw::Application.routes.draw do
     resources :users
   end
 
+  # until this controller action is finished
+  # get '/analytics/' => 'analytics#show'
+
   match '/review_items/archived' => 'review_items#archived', :as => 'archived_review_items'
   resources :review_items
 
