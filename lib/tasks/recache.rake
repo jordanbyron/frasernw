@@ -250,6 +250,8 @@ namespace :pathways do
       User.all_user_division_groups_cached.each do |division_group|
         expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
       end
+
+      HttpGetter.exec("specialties/#{s.id}/#{s.token}/refresh_cache")
     end
 
     # The following methods are defined to fake out the ActionController
