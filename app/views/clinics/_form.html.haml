@@ -326,11 +326,11 @@
                 = a.input :suite, :input_html => { :class => "span1" }
                 = a.input :address1
                 = a.input :address2
-                = a.association :city, as: :select, collection: (current_user_is_super_admin? ? City.all : City.in_divisions(current_user_divisions)).map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
+                = a.association :city, as: :select, collection: (current_user_is_super_admin? ? City.all : City.in_divisions(@form_modifier.divisions)).map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
                 = a.input :postalcode, :input_html => { :class => "span1" }
             -# conditional comment box, value nil - js will update with review item if necessary
             %div{:class => "hospital_#{index}"}
-              = l.association :hospital_in, as: :select, collection: (current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(current_user_divisions)).reject{ |h| h.location.blank? }.map{ |h| ["#{h.name}, #{h.location.short_address}", h.id] }, :include_blank => true
+              = l.association :hospital_in, as: :select, collection: (current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(@form_modifier.divisions)).reject{ |h| h.location.blank? }.map{ |h| ["#{h.name}, #{h.location.short_address}", h.id] }, :include_blank => true
             %div{:class => "details_#{index}"}
               = l.input :suite_in, :input_html => { :class => "span1" }
               = l.input :details_in

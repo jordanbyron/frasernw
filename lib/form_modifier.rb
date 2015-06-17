@@ -67,4 +67,12 @@ class FormModifier
   def new_record?
     interaction_type == :new
   end
+
+  def divisions
+    if current_user.present?
+      current_user.divisions
+    else
+      Division.all
+    end
+  end
 end
