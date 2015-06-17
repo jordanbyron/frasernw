@@ -23,8 +23,7 @@ class ClinicsController < ApplicationController
   end
 
   def new
-    @is_review = false
-    @is_rereview = false
+    @form_modifier = ClinicFormModifier.new(:new, current_user)
     #specialization passed in to facilitate javascript "checking off" of starting speciality, since build below doesn't seem to work
     @specialization = Specialization.find(params[:specialization_id])
     @clinic = Clinic.new
@@ -83,8 +82,7 @@ class ClinicsController < ApplicationController
   end
 
   def edit
-    @is_review = false
-    @is_rereview = false
+    @form_modifier = ClinicFormModifier.new(:edit, current_user)
     @clinic = Clinic.find(params[:id])
     while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
       puts "location #{@clinic.clinic_locations.length}"
@@ -182,8 +180,7 @@ class ClinicsController < ApplicationController
 
   def review
     @clinic = Clinic.find(params[:id])
-    @is_review = false
-    @is_rereview = false
+    @form_modifier = ClinicFormModifier.new(:review, current_user)
     @review_item = @clinic.review_item;
 
     if @review_item.blank?
@@ -240,8 +237,7 @@ class ClinicsController < ApplicationController
 
   def rereview
     @clinic = Clinic.find(params[:id])
-    @is_review = false
-    @is_rereview = true
+    @form_modifier = ClinicFormModifier.new(:rereview, current_user)
     @review_item = ReviewItem.find(params[:review_item_id])
 
     if @review_item.blank?
@@ -331,7 +327,7 @@ class ClinicsController < ApplicationController
       render :action => 'edit'
     end
   end
-  
+
   def archive
     #archive the review item so that we can save the clinic
     @clinic = Clinic.find(params[:id])

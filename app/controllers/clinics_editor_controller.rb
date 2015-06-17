@@ -7,8 +7,7 @@ class ClinicsEditorController < ApplicationController
 
   def edit
     @token = params[:token]
-    @is_review = true
-    @is_rereview = false
+    @form_modifier = ClinicFormModifier.new(:edit, current_user)
     @clinic = Clinic.find(params[:id])
     @review_item = @clinic.review_item;
     if @clinic.focuses.count == 0
@@ -96,8 +95,7 @@ class ClinicsEditorController < ApplicationController
 
   def temp_edit
     @token = params[:token]
-    @is_review = true
-    @is_rereview = false
+    @form_modifier = ClinicFormModifier.new(:edit, current_user, bot: true)
     @clinic = Clinic.find(params[:id])
     @review_item = @clinic.review_item;
     if @clinic.focuses.count == 0
