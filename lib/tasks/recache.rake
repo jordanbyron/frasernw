@@ -11,18 +11,18 @@ namespace :pathways do
         begin
           puts "Specialization #{s.id}"
           expire_fragment specialization_path(s)
-          Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_cache") )
+          HttpGetter.exec("specialties/#{s.id}/#{s.token}/refresh_cache")
 
           City.all.sort{ |a,b| a.id <=> b.id }.each do |c|
             puts "Specialization City #{c.id}"
             expire_fragment "#{specialization_path(s)}_#{city_path(c)}"
-            Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_city_cache/#{c.id}.js") )
+            HttpGetter.exec("specialties/#{s.id}/#{s.token}/refresh_city_cache/#{c.id}.js")
           end
 
           Division.all.sort{ |a,b| a.id <=> b.id }.each do |d|
             puts "Specialization Division #{d.id}"
             expire_fragment "#{specialization_path(s)}_#{division_path(d)}"
-            Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_division_cache/#{d.id}.js") )
+            HttpGetter.exec("specialties/#{s.id}/#{s.token}/refresh_division_cache/#{d.id}.js")
           end
 
           #expire the grouped together cities
@@ -55,7 +55,7 @@ namespace :pathways do
       Specialist.all.sort{ |a,b| a.id <=> b.id }.each do |s|
         puts "Specialist #{s.id}"
         expire_fragment specialist_path(s)
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialists/#{s.id}/#{s.token}/refresh_cache") )
+        HttpGetter.exec("specialists/#{s.id}/#{s.token}/refresh_cache")
       end
     end
 
@@ -86,7 +86,7 @@ namespace :pathways do
       Clinic.all.sort{ |a,b| a.id <=> b.id }.each do |c|
         puts "Clinic #{c.id}"
         expire_fragment clinic_path(c)
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/clinics/#{c.id}/#{c.token}/refresh_cache") )
+        HttpGetter.exec("clinics/#{c.id}/#{c.token}/refresh_cache")
       end
     end
 
@@ -95,7 +95,7 @@ namespace :pathways do
       Hospital.all.sort{ |a,b| a.id <=> b.id }.each do |h|
         puts "Hospital #{h.id}"
         expire_fragment hospital_path(h)
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/hospitals/#{h.id}/#{h.token}/refresh_cache") )
+        HttpGetter.exec("hospitals/#{h.id}/#{h.token}/refresh_cache")
       end
     end
 
@@ -104,7 +104,7 @@ namespace :pathways do
       Language.all.sort{ |a,b| a.id <=> b.id }.each do |l|
         puts "Language #{l.id}"
         expire_fragment language_path(l)
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/languages/#{l.id}/#{l.token}/refresh_cache") )
+        HttpGetter.exec("languages/#{l.id}/#{l.token}/refresh_cache")
       end
     end
 
@@ -113,14 +113,14 @@ namespace :pathways do
 
       puts "Global"
       expire_fragment "livesearch_global"
-      Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/refresh_livesearch_global.js") )
+      HttpGetter.exec("refresh_livesearch_global.js")
 
       puts "All entries"
       expire_fragment "livesearch_all_entries"
       Specialization.all.each do |s|
         puts "All entries specialization #{s.id}"
         expire_fragment "livesearch_all_entries_#{specialization_path(s)}"
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/refresh_livesearch_all_entries/#{s.id}.js") )
+        HttpGetter.exec("refresh_livesearch_all_entries/#{s.id}.js")
       end
 
       Division.all.each do |d|
@@ -129,10 +129,12 @@ namespace :pathways do
         Specialization.all.each do |s|
           puts "Search division #{d.id} specialization #{s.id}"
           expire_fragment "livesearch_#{division_path(d)}_#{specialization_path(s)}_entries"
-          Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/refresh_livesearch_division_entries/#{d.id}/#{s.id}.js") )
+
+          HttpGetter.exec("refresh_livesearch_division_entries/#{d.id}/#{s.id}.js")
+
         end
         expire_fragment "livesearch_#{division_path(d)}_content"
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/refresh_livesearch_division_content/#{d.id}.js") )
+        HttpGetter.exec("refresh_livesearch_division_content/#{d.id}.js")
       end
     end
 
@@ -225,18 +227,18 @@ namespace :pathways do
       s = Specialization.find(Integer(specialization_id))
       puts "Specialization #{s.id}"
       expire_fragment specialization_path(s)
-      Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_cache") )
+      HttpGetter.exec("specialties/#{s.id}/#{s.token}/refresh_cache")
 
       City.all.sort{ |a,b| a.id <=> b.id }.each do |c|
         puts "Specialization City #{c.id}"
         expire_fragment "#{specialization_path(s)}_#{city_path(c)}"
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_city_cache/#{c.id}.js") )
+        HttpGetter.exec("specialties/#{s.id}/#{s.token}/refresh_city_cache/#{c.id}.js")
       end
 
       Division.all.sort{ |a,b| a.id <=> b.id }.each do |d|
         puts "Specialization Division #{d.id}"
         expire_fragment "#{specialization_path(s)}_#{division_path(d)}"
-        Net::HTTP.get( URI("http://#{APP_CONFIG[:domain]}/specialties/#{s.id}/#{s.token}/refresh_division_cache/#{d.id}.js") )
+        HttpGetter.exec("specialties/#{s.id}/#{s.token}/refresh_division_cache/#{d.id}.js")
       end
 
       #expire the grouped together cities
@@ -248,6 +250,8 @@ namespace :pathways do
       User.all_user_division_groups_cached.each do |division_group|
         expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
       end
+
+      HttpGetter.exec("specialties/#{s.id}/#{s.token}/refresh_cache")
     end
 
     # The following methods are defined to fake out the ActionController
