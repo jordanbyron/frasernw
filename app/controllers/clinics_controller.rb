@@ -331,7 +331,7 @@ class ClinicsController < ApplicationController
       render :action => 'edit'
     end
   end
-
+  
   def archive
     #archive the review item so that we can save the clinic
     @clinic = Clinic.find(params[:id])
