@@ -13,7 +13,7 @@ class HttpGetter
   end
 
   def exec
-    SCHEMES.each do |scheme|
+    SCHEMES.map do |scheme|
       begin
         request_for_scheme(scheme)
       rescue Exception => exc
@@ -23,11 +23,11 @@ class HttpGetter
   end
 
   def request_for_scheme(scheme)
+    puts "GET #{uri(scheme)}"
     Net::HTTP.get(uri(scheme))
   end
 
   def uri(scheme)
-    puts "GET #{scheme}://#{APP_CONFIG[:domain]}/#{path}"
     URI("#{scheme}://#{APP_CONFIG[:domain]}/#{path}")
   end
 end
