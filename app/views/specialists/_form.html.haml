@@ -2,12 +2,6 @@
   = javascript_include_tag "views/location_tabs"
 
 -# multiple controllers use this form
-- form_method    = params[:action] == 'new' ? :post   : :put
-- current_action = params[:action] == 'new' ? :create : :update
-- current_action = params[:action] == 'review' ? :accept : current_action                   #if we are reviewing a review queue edit
-- current_action = params[:controller] == 'specialists_editor' ? (params[:action] == 'temp_edit' ? :temp_update : :update ) : current_action   #if we are making a review queue edit
-- form_action    = current_action
-- cancel_path    = (params[:controller] == 'specialists_editor') ? root_url : (@is_rereview ? archived_review_items_path : specialists_path)
 
 - if @review_item
   %script{"type" => "text/javascript"}
@@ -223,7 +217,7 @@
 
       $(document).ready(function()
       {
-        if (#{@is_rereview && @review_item.base_object.present?})
+        if (#{@form_modifier.admin_rereview? && @review_item.base_object.present?})
         {
           var base_review_item = #{@review_item.base_object || 'null'};
           traverse_review_item(["specialist"], base_review_item["specialist"], false);
@@ -256,14 +250,14 @@
         $(specialty_checkbox_id).prop("checked", true);
       });
 
-- if @is_review
+- if @form_modifier.secret_edit?
   .alert.alert-info
     %h3 You are editing #{@specialist.name}'s entry in Pathways.
     %p.space.no_indent If you have any questions while editing, please contact #{ @specialist.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ').html_safe }.
     %p.space.no_indent This database exists to make our practices and your practice more efficient. By providing the information requested below you are making it easier for family doctors to find your practice, ensuring that the scope of your practice is fully understood, and guiding offices in providing you with the correct information when making referrals.
     %p.space.no_indent Unless otherwise indicated, all provided information will be available to all users of Pathways.
 
-= simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => form_action}, :method => form_method, :html => { :class => "form-horizontal ajax" } do |f|
+= simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => @form_modifier.form_action}, :method => @form_modifier.form_method, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
@@ -318,7 +312,7 @@
             %label.control-label Location is
             .controls
               - location_class = "location_#{index}"
-              - if @is_new
+              - if @form_modifier.new_record?
                 - [['Not used', true], ['In an existing office', false], ['In a new standalone office', false], ['In a new office in a hospital', false], ['In a new office in a clinic', false]].each do |option|
                   = label_tag "#{location_class}_#{option.first}" do
                     = radio_button_tag location_class,
@@ -357,7 +351,7 @@
             .controls
               - text_address = @specialist.locations[index].resolved_address.address if @specialist.locations[index].present? && @specialist.locations[index].resolved_address.present?
               %input{"type" => "text", "value" => "#{text_address}"}
-          - if @is_new
+          - if @form_modifier.new_record?
             = so.simple_fields_for :office, :nested_wrapper => false do |o|
               = o.simple_fields_for :location, :nested_wrapper => false do |l|
                 %div{:class => "address_#{index}"}
@@ -416,10 +410,10 @@
       :plain
         $(document).ready( $(".chzn-select").chosen() );
 
-    - if @review_item || @is_review
+    - if @review_item || @form_modifier.secret_edit?
       = f.input :address_update, :label => "If you have any address updates, please enter them here"
 
-  - if current_user_is_admin? || @is_review
+  - if current_user_is_admin? || @form_modifier.secret_edit?
 
     #section_moa.no-print
 
@@ -504,9 +498,9 @@
     -#= f.association :referral_clinic, as: :select, :prompt => "None", :include_blank => true
     = f.input :referral_other_details
     = f.input :referral_details
-    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does the office have a referral form?", :hint => @is_review ? "If you would like to add or correct any referral forms, please email them to #{ @specialist.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ') }".html_safe : ""
+    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does the office have a referral form?", :hint => @form_modifier.secret_edit? ? "If you would like to add or correct any referral forms, please email them to #{ @specialist.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ') }".html_safe : ""
 
-    - if @is_review && @specialist.referral_form_mask == 1 && @specialist.referral_forms.reject{ |referral_form| referral_form.form.blank? }.present?
+    - if @form_modifier.secret_edit? && @specialist.referral_form_mask == 1 && @specialist.referral_forms.reject{ |referral_form| referral_form.form.blank? }.present?
 
       .control-group
         .controls
@@ -558,7 +552,7 @@
 
     = f.association :clinic_locations, as: :check_boxes, collection: @specializations_clinic_locations
 
-  -if current_user_is_admin? && !@is_review
+  -if current_user_is_admin? && !@form_modifier.secret_edit?
 
     #section_admin.no-print
 
@@ -569,15 +563,15 @@
       = f.input :admin_notes
 
   .form-actions
-    - if params[:controller] == 'specialists_editor'
+    - if @form_modifier.token_edit?
       = f.button :submit, 'Update Specialist with My Changes', :class => "btn btn-primary"
-      - if params[:action] != 'temp_edit'
+      - if !@form_modifier.bot_edit?
         = f.button :submit, 'There are No Updates to this Specialist', :class => "btn btn-success", :name => 'no_updates'
-    - elsif @is_rereview
+    - elsif @form_modifier.admin_rereview?
       = f.button :submit, 'Done', :class => "btn btn-primary"
     - else
       = f.button :submit, :class => "btn btn-primary"
-      = link_to 'Cancel', cancel_path, :class => "btn btn-danger ajax"
+      = link_to 'Cancel', @form_modifier.cancel_path, :class => "btn btn-danger ajax"
 
 %script{"type" => "text/javascript"}
   :plain

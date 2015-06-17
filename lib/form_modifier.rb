@@ -3,6 +3,8 @@
 # @is_review == secret edit or automated_edit
 
 class FormModifier
+  include Rails.application.routes.url_helpers
+
   INTERACTION_TYPES = [
     :new,
     :edit,
@@ -24,6 +26,28 @@ class FormModifier
     @options          = options
   end
 
+  def form_action
+    if interaction_type == :new
+      :create
+    elsif interaction_type == :review
+      :accept
+    elsif secret_edit?
+      :update
+    elsif bot_edit?
+      :temp_update
+    else
+      :update
+    end
+  end
+
+  def method
+    case interaction_type
+    when :new then :post
+    else :put
+    end
+  end
+
+  # extract to metadata?
   def secret_edit?
     token_edit? && !bot_edit?
   end

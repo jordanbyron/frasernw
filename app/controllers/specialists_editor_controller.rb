@@ -7,8 +7,7 @@ class SpecialistsEditorController < ApplicationController
 
   def edit
     @token = params[:token]
-    @is_review = true
-    @is_rereview = false
+    @form_modifier = ClinicFormModifier.new(:edit, current_user)
     @specialist = Specialist.find(params[:id])
     @review_item = @specialist.review_item
     if @specialist.capacities.count == 0
@@ -96,9 +95,7 @@ class SpecialistsEditorController < ApplicationController
   end
 
   def temp_edit
-    @is_new = false
-    @is_review = false
-    @is_rereview = false
+    @form_modifier = ClinicFormModifier.new(:new, current_user, bot: true)
     @specialist = Specialist.find(params[:id])
     if @specialist.capacities.count == 0
       @specialist.capacities.build
