@@ -84,6 +84,10 @@ Frasernw::Application.routes.draw do
   match '/clinics/:id/print/location/:location_id'  => 'clinics#print_location_patient_information',       :as => 'clinic_patient_information_location'
 
   get  '/specialties/:id/:token/refresh_cache'     => 'specializations#refresh_cache', :as => 'specialization_refesh_cache'
+
+  #routes through specialty, but is domain of specialists controller
+  get  '/specialties/:specialization_id/:token/specialists/refresh_index_cache/:division_id'     => 'specialists#refresh_index_cache', :as => 'specialist_refresh_index_cache'
+
   get  '/specialists/:id/:token/refresh_cache'     => 'specialists#refresh_cache',     :as => 'specialist_refesh_cache'
   get  '/clinics/:id/:token/refresh_cache'         => 'clinics#refresh_cache',         :as => 'clinic_refesh_cache'
   get  '/hospitals/:id/:token/refresh_cache'       => 'hospitals#refresh_cache',       :as => 'hospital_refesh_cache'
