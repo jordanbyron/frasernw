@@ -63,11 +63,6 @@ namespace :pathways do
       puts "Recaching Specialists Index..."
       Division.all.sort{ |a,b| a.id <=> b.id }.each do |d|
         Specialization.all.sort{ |a,b| a.id <=> b.id }.each do |s|
-          # # #DEPRECATED:
-          expire_fragment "specialists_index_#{s.id}_#{d.id}_#{false}"
-          expire_fragment "specialists_index_#{s.id}_#{d.id}_#{true}"
-          # # #
-
           # true / false represent can_edit? variable in view
           puts "Specialists Index Specialization #{s.id} Division #{d.id}"
           expire_fragment "specialists_index_#{s.cache_key}_#{s.specialists.cache_key}_#{d.cache_key}_#{true}"
@@ -76,16 +71,6 @@ namespace :pathways do
           HttpGetter.exec("specialties/#{s.id}/#{s.token}/specialists/refresh_index_cache/#{d.id}")
         end
       end
-
-      # # #DEPRECATED:
-      User.all_user_division_groups_cached.each do |division_group|
-        Specialization.all.sort{ |a,b| a.id <=> b.id }.each do |s|
-          puts "Specialist Index Specialization #{s.id} User Division #{division_group.join('_')}"
-          expire_fragment("specialists_index_no_division_tab_#{s.id}")
-          expire_fragment("specialists_index_#{division_group.join('_')}_for_specializations_#{s.id}")
-        end
-      end
-      # # #
     end
 
     task :clinics => :environment do
