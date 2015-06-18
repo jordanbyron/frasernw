@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150527195046) do
+ActiveRecord::Schema.define(:version => 20150618021016) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -76,10 +76,10 @@ ActiveRecord::Schema.define(:version => 20150527195046) do
     t.integer  "specialist_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "investigation"
+    t.string   "investigation",               :limit => nil
     t.integer  "procedure_specialization_id"
-    t.integer  "waittime_mask",               :default => 0
-    t.integer  "lagtime_mask",                :default => 0
+    t.integer  "waittime_mask",                              :default => 0
+    t.integer  "lagtime_mask",                               :default => 0
   end
 
   add_index "capacities", ["procedure_specialization_id"], :name => "index_capacities_on_procedure_specialization_id"
