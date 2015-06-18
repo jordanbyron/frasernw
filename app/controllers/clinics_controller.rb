@@ -303,7 +303,9 @@ class ClinicsController < ApplicationController
     review_item.save
 
     ClinicSweeper.instance.before_controller_update(@clinic)
-    if @clinic.update_attributes(params[:clinic])
+
+    parsed_params = ParamParser::Clinic.new(params).exec
+    if @clinic.update_attributes(parsed_params)
       clinic_specializations = @clinic.specializations
       if params[:focuses_mapped].present?
         @clinic.focuses.each do |original_focus|
