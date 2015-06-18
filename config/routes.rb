@@ -31,6 +31,7 @@ Frasernw::Application.routes.draw do
   end
 
   scope "/clinics/:id/:token", controller: "clinics_editor" do
+    # Secret edit or owner edit
     get :edit,        as: "clinic_self_edit"
     put :update,      as: "clinic_self_update"
     get :pending,     as: "clinic_self_pending"
@@ -57,6 +58,7 @@ Frasernw::Application.routes.draw do
   end
 
   scope "/specialists/:id/:token", controller: "specialists_editor" do
+    # Secret edit or owner edit
     get :edit,        as: "specialist_self_edit"
     put :update,      as: "specialist_self_update"
     get :pending,     as: "specialist_self_pending"
