@@ -81,11 +81,11 @@ class FormModifier
 
   # we don't want regular users to be able to edit all the fields directly
   def restrict_editing?
-    secret_edit? || owner_edit?
+    token_edit?
   end
 
   # instead, we'll give them generic comment boxes, which the admins can use to update the records later
   def show_comment_boxes?
-    secret_edit? || owner_edit? || admin_review? || admin_rereview?
+    token_edit? || admin_review? || admin_rereview?
   end
 end

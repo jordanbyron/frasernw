@@ -266,6 +266,9 @@
       as: :check_boxes,
       hint: "When adding or removing specialities please save and then edit this clinic again to update the list of available areas of practices and specialists.",
       disabled: @form_modifier.restrict_editing?
+    - if @form_modifier.restrict_editing?
+      = f.association :specializations,
+        as: :hidden
 
     - if @form_modifier.show_comment_boxes?
       = f.input :specializations_comments,
@@ -344,16 +347,23 @@
                 = a.input :postalcode,
                   :input_html => { :class => "span1" },
                   disabled: @form_modifier.restrict_editing?
-                - if @form_modifier.show_comment_boxes?
-                  = a.input :comments,
-                    label: "If you have any updates to your address, please enter them here",
-                    input_html: {value: ""},
-                    as: :text
             %div{:class => "hospital_#{index}"}
-              = l.association :hospital_in, as: :select, collection: (current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(@form_modifier.divisions)).reject{ |h| h.location.blank? }.map{ |h| ["#{h.name}, #{h.location.short_address}", h.id] }, :include_blank => true
+              = l.association :hospital_in,
+                as: :select,
+                collection: (current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(@form_modifier.divisions)).reject{ |h| h.location.blank? }.map{ |h| ["#{h.name}, #{h.location.short_address}", h.id] },
+                include_blank: true,
+                disabled: @form_modifier.restrict_editing?
             %div{:class => "details_#{index}"}
-              = l.input :suite_in, :input_html => { :class => "span1" }
-              = l.input :details_in
+              = l.input :suite_in,
+                input_html: { :class => "span1" },
+                disabled: @form_modifier.restrict_editing?
+              = l.input :details_in,
+                disabled: @form_modifier.restrict_editing?
+            - if @form_modifier.show_comment_boxes?
+              = l.input :comments,
+                label: "If you have any updates to your address, please enter them here",
+                input_html: {value: ""},
+                as: :text
           %div{:class => "universal_#{index}"}
             = cl.input :location_opened, as: :select, collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a), prompt: "Select ..."
             = cl.input :sector_mask, as: :radio_buttons, collection: ClinicLocation::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
@@ -516,7 +526,7 @@
 
   #section_associations
 
-    - if current_user_is_admin? && !@form_modifier.token_edit
+    - if current_user_is_admin? && !@form_modifier.token_edit?
 
       %hr
 

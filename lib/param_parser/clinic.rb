@@ -27,7 +27,6 @@ module ParamParser
       clinic_locations_attributes.each do |attrs|
         attrs.
           try(:[], "location_attributes").
-          try(:[], "address_attributes").
           try(:delete, "comments")
       end
     end

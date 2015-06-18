@@ -21,10 +21,11 @@ RSpec.describe ParamParser::Clinic do
          "url"=>"",
          "location_attributes"=>
           {"address_attributes"=>
-            {"suite"=>"", "address1"=>"123 Fake St", "address2"=>"", "city_id"=>"11", "postalcode"=>"", "comments"=>"blah blah blah updates", "id"=>"607"},
+            {"suite"=>"", "address1"=>"123 Fake St", "address2"=>"", "city_id"=>"11", "postalcode"=>"","id"=>"607"},
            "hospital_in_id"=>"",
            "suite_in"=>"",
            "details_in"=>"",
+           "comments"=>"asdfasdfasfdasfdsaf",
            "id"=>"466"},
          "location_opened"=>"Prior to 2010",
          "sector_mask"=>"4",
@@ -1475,7 +1476,7 @@ RSpec.describe ParamParser::Clinic do
 
   it "removes the address 'comments' key from each of the clinic locations attributes" do
     expect(
-      ParamParser::Clinic.new(params).exec["clinic"]["clinic_locations_attributes"]["0"]["location_attributes"]["address_attributes"]["comments"]
+      ParamParser::Clinic.new(params).exec["clinic"]["clinic_locations_attributes"]["0"]["location_attributes"]["comments"]
     ).to eq(nil)
   end
 end

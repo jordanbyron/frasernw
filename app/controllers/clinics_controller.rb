@@ -138,7 +138,9 @@ class ClinicsController < ApplicationController
     params[:clinic][:procedure_ids] ||= []
     @clinic = Clinic.find(params[:id])
     ClinicSweeper.instance.before_controller_update(@clinic)
-    if @clinic.update_attributes(params[:clinic])
+
+    parsed_params = ParamParser::Clinic.new(params).exec
+    if @clinic.update_attributes(parsed_params[:clinic])
       clinic_specializations = @clinic.specializations
       if params[:focuses_mapped].present?
         @clinic.focuses.each do |original_focus|
@@ -305,7 +307,7 @@ class ClinicsController < ApplicationController
     ClinicSweeper.instance.before_controller_update(@clinic)
 
     parsed_params = ParamParser::Clinic.new(params).exec
-    if @clinic.update_attributes(parsed_params)
+    if @clinic.update_attributes(parsed_params[:clinic])
       clinic_specializations = @clinic.specializations
       if params[:focuses_mapped].present?
         @clinic.focuses.each do |original_focus|
