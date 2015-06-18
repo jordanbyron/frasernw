@@ -250,7 +250,7 @@
         $(specialty_checkbox_id).prop("checked", true);
       });
 
-- if @form_modifier.secret_edit? || @form_modifier.owner_edit?
+- if @form_modifier.token_edit?
   .alert.alert-info
     %h3 You are editing #{@specialist.name}'s entry in Pathways.
     %p.space.no_indent If you have any questions while editing, please contact #{ @specialist.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ').html_safe }.
@@ -410,10 +410,10 @@
       :plain
         $(document).ready( $(".chzn-select").chosen() );
 
-    - if @review_item || @form_modifier.secret_edit? || @form_modifier.owner_edit?
+    - if @review_item || @form_modifier.token_edit?
       = f.input :address_update, :label => "If you have any address updates, please enter them here"
 
-  - if current_user_is_admin? || @form_modifier.secret_edit? || @form_modifier.owner_edit?
+  - if current_user_is_admin? || @form_modifier.token_edit?
 
     #section_moa.no-print
 
@@ -498,9 +498,9 @@
     -#= f.association :referral_clinic, as: :select, :prompt => "None", :include_blank => true
     = f.input :referral_other_details
     = f.input :referral_details
-    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does the office have a referral form?", :hint => (@form_modifier.secret_edit? || @form_modifier.owner_edit?) ? "If you would like to add or correct any referral forms, please email them to #{ @specialist.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ') }".html_safe : ""
+    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does the office have a referral form?", :hint => @form_modifier.token_edit? ? "If you would like to add or correct any referral forms, please email them to #{ @specialist.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ') }".html_safe : ""
 
-    - if (@form_modifier.secret_edit? || @form_modifier.owner_edit?) && @specialist.referral_form_mask == 1 && @specialist.referral_forms.reject{ |referral_form| referral_form.form.blank? }.present?
+    - if @form_modifier.token_edit? && @specialist.referral_form_mask == 1 && @specialist.referral_forms.reject{ |referral_form| referral_form.form.blank? }.present?
 
       .control-group
         .controls
@@ -565,8 +565,7 @@
   .form-actions
     - if @form_modifier.token_edit?
       = f.button :submit, 'Update Specialist with My Changes', :class => "btn btn-primary"
-      - if !@form_modifier.bot_edit?
-        = f.button :submit, 'There are No Updates to this Specialist', :class => "btn btn-success", :name => 'no_updates'
+      = f.button :submit, 'There are No Updates to this Specialist', :class => "btn btn-success", :name => 'no_updates'
     - elsif @form_modifier.admin_rereview?
       = f.button :submit, 'Done', :class => "btn btn-primary"
     - else

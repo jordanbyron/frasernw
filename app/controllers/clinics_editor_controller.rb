@@ -7,7 +7,7 @@ class ClinicsEditorController < ApplicationController
 
   def edit
     @token = params[:token]
-    @form_modifier = ClinicFormModifier.new(:edit, current_user)
+    @form_modifier = ClinicFormModifier.new(:edit, current_user, token: true)
     @clinic = Clinic.find(params[:id])
     @review_item = @clinic.review_item;
     if @clinic.focuses.count == 0

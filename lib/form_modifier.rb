@@ -31,10 +31,6 @@ class FormModifier
       :create
     elsif interaction_type == :review
       :accept
-    elsif secret_edit?
-      :update
-    elsif bot_edit?
-      :temp_update
     else
       :update
     end
@@ -47,22 +43,16 @@ class FormModifier
     end
   end
 
-  # extract to metadata?
   def secret_edit?
-    current_user.nil? && !bot_edit?
-  end
-
-  def bot_edit?
-    current_user.nil? && options[:bot] == true
+    current_user.nil? && token_edit?
   end
 
   def owner_edit?
     current_user.present? && !current_user.admin? && interaction_type == :edit
   end
 
-  # somewhat unintuitively, we give clinic/specialist owners the token edit endpoint
   def token_edit?
-    owner_edit? || secret_edit? || bot_edit?
+    options[:token] == true && interaction_type == :edit
   end
 
   def admin?
