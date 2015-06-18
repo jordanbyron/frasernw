@@ -49,19 +49,20 @@ class FormModifier
 
   # extract to metadata?
   def secret_edit?
-    token_edit? && !bot_edit?
+    current_user.nil? && !bot_edit?
   end
 
   def bot_edit?
-    token_edit? && options[:bot] == true
+    current_user.nil? && options[:bot] == true
   end
 
   def owner_edit?
     current_user.present? && !current_user.admin? && interaction_type == :edit
   end
 
+  # somewhat unintuitively, we give clinic/specialist owners the token edit endpoint
   def token_edit?
-    current_user.nil? && interaction_type == :edit
+    owner_edit? || secret_edit? || bot_edit?
   end
 
   def admin?

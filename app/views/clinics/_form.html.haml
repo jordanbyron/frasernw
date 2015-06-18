@@ -516,7 +516,7 @@
 
   #section_associations
 
-    - if current_user_is_admin?
+    - if current_user_is_admin? && !@form_modifier.token_edit
 
       %hr
 
@@ -559,7 +559,7 @@
 
       = f.association :healthcare_providers, as: :check_boxes
 
-  - if current_user_is_admin?
+  - if current_user_is_admin? && !@form_modifier.token_edit?
 
     #section_admin.no-print
 
