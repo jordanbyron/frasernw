@@ -93,64 +93,6 @@ class ClinicsEditorController < ApplicationController
     token_required( Clinic, params[:token], params[:id] )
   end
 
-  def temp_edit
-    @token = params[:token]
-    @form_modifier = ClinicFormModifier.new(:edit, current_user, bot: true)
-    @clinic = Clinic.find(params[:id])
-    @review_item = @clinic.review_item;
-    if @clinic.focuses.count == 0
-      @clinic.focuses.build
-    end
-    while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
-      cl = @clinic.clinic_locations.build
-      s = cl.build_schedule
-      s.build_monday
-      s.build_tuesday
-      s.build_wednesday
-      s.build_thursday
-      s.build_friday
-      s.build_saturday
-      s.build_sunday
-      l = cl.build_location
-      l.build_address
-    end
-    @specializations_procedures = []
-    procedure_specializations = {}
-    @clinic.specializations.each { |s|
-      @specializations_procedures << [ "----- #{s.name} -----", nil ] if @clinic.specializations.count > 1
-      @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
-      procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
-    }
-    focuses_procedure_list = []
-    @focuses = []
-    procedure_specializations.each { |ps, children|
-      if !focuses_procedure_list.include?(ps.procedure.id)
-        @focuses << generate_focus(@clinic, ps, 0)
-        focuses_procedure_list << ps.procedure.id
-      end
-      children.each { |child_ps, grandchildren|
-        if !focuses_procedure_list.include?(child_ps.procedure.id)
-          @focuses << generate_focus(@clinic, child_ps, 1)
-          focuses_procedure_list << child_ps.procedure.id
-        end
-        grandchildren.each { |grandchild_ps, greatgrandchildren|
-          if !focuses_procedure_list.include?(grandchild_ps.procedure.id)
-            @focuses << generate_focus(@clinic, grandchild_ps, 2)
-            focuses_procedure_list << grandchild_ps.procedure.id
-          end
-        }
-      }
-    }
-    render :template => 'clinics/edit'
-  end
-
-  def temp_update
-    @clinic = Clinic.find(params[:id])
-    @clinic.review_object = ActiveSupport::JSON::encode(params)
-    @clinic.save
-    redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
-  end
-
   protected
   def generate_focus(clinic, procedure_specialization, offset)
     focus = clinic.present? ? Focus.find_by_clinic_id_and_procedure_specialization_id(clinic.id, procedure_specialization.id) : nil

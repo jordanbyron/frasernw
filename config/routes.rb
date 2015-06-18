@@ -35,10 +35,6 @@ Frasernw::Application.routes.draw do
     get :edit,        as: "clinic_self_edit"
     put :update,      as: "clinic_self_update"
     get :pending,     as: "clinic_self_pending"
-
-    # update_all_specialists_and_clinic.rake
-    get :temp_edit,   as: "clinic_temp_edit"
-    put :temp_update, as: "clinic_temp_update"
   end
 
   resources :specialists do
@@ -62,10 +58,6 @@ Frasernw::Application.routes.draw do
     get :edit,        as: "specialist_self_edit"
     put :update,      as: "specialist_self_update"
     get :pending,     as: "specialist_self_pending"
-
-    # update_all_specialists_and_clinic.rake
-    get :temp_edit,   as: "specialist_temp_edit"
-    put :temp_update, as: "specialist_temp_update"
   end
 
   resources :procedures, :path => 'areas_of_practice'

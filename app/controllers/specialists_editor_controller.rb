@@ -94,61 +94,6 @@ class SpecialistsEditorController < ApplicationController
     token_required( Specialist, params[:token], params[:id] )
   end
 
-  def temp_edit
-    @form_modifier = ClinicFormModifier.new(:new, current_user, bot: true)
-    @specialist = Specialist.find(params[:id])
-    if @specialist.capacities.count == 0
-      @specialist.capacities.build
-    end
-
-    build_specialist_offices
-    load_form_variables
-
-    @specializations_clinics = []
-    @specializations_clinic_locations = []
-    @specialist.specializations.each { |s|
-      @specializations_clinics += (current_user_is_super_admin? ? s.clinics : s.clinics.in_divisions(current_user_divisions)).map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} - #{l.short_address}", l.id] }
-      @specializations_clinic_locations += s.clinics.map{ |c| c.clinic_locations.reject{ |cl| cl.empty? } }.flatten.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id] }
-    }
-    @specializations_clinics.sort!
-    @specializations_clinic_locations.sort!
-    @specializations_procedures = []
-    procedure_specializations = {}
-    @specialist.specializations.each { |s|
-      @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations.count > 1
-      @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
-      procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
-    }
-    capacities_procedure_list = []
-    @capacities = []
-    procedure_specializations.each { |ps, children|
-      if !capacities_procedure_list.include?(ps.procedure.id)
-        @capacities << generate_capacity(@specialist, ps, 0)
-        capacities_procedure_list << ps.procedure.id
-      end
-      children.each { |child_ps, grandchildren|
-        if !capacities_procedure_list.include?(child_ps.procedure.id)
-          @capacities << generate_capacity(@specialist, child_ps, 1)
-          capacities_procedure_list << child_ps.procedure.id
-        end
-        grandchildren.each { |grandchild_ps, greatgrandchildren|
-          if !capacities_procedure_list.include?(grandchild_ps.procedure.id)
-            @capacities << generate_capacity(@specialist, grandchild_ps, 2)
-            capacities_procedure_list << grandchild_ps.procedure.id
-          end
-        }
-      }
-    }
-    render :template => 'specialists/edit'
-  end
-
-  def temp_update
-    @specialist = Specialist.find(params[:id])
-    @specialist.review_object = ActiveSupport::JSON::encode(params)
-    @specialist.save
-    redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}."
-  end
-
   protected
   def generate_capacity(specialist, procedure_specialization, offset)
     capacity = specialist.present? ? Capacity.find_by_specialist_id_and_procedure_specialization_id(specialist.id, procedure_specialization.id) : nil
