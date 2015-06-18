@@ -16,7 +16,7 @@ class FormModifier
   attr_reader :interaction_type, :current_user, :options
 
   # Defined in controller
-  def initialize(interaction_type, user_type, options = {})
+  def initialize(interaction_type, current_user, options = {})
     if !INTERACTION_TYPES.include? interaction_type
       raise "invalid interaction type"
     end
@@ -56,12 +56,24 @@ class FormModifier
     token_edit? && options[:bot] == true
   end
 
+  def owner_edit?
+    current_user.present? && !current_user.admin? && interaction_type == :edit
+  end
+
   def token_edit?
     current_user.nil? && interaction_type == :edit
   end
 
+  def admin?
+    current_user.present? && current_user.admin?
+  end
+
   def admin_rereview?
-    current_user.present? && current_user.admin? && interaction_type == :rereview
+    admin? && interaction_type == :rereview
+  end
+
+  def admin_review?
+    admin? && interaction_type == :review
   end
 
   def new_record?
@@ -74,5 +86,15 @@ class FormModifier
     else
       Division.all
     end
+  end
+
+  # we don't want regular users to be able to edit all the fields directly
+  def restrict_editing?
+    secret_edit? || owner_edit?
+  end
+
+  # instead, we'll give them generic comment boxes, which the admins can use to update the records later
+  def show_comment_boxes?
+    secret_edit? || owner_edit? || admin_review? || admin_rereview?
   end
 end

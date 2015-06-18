@@ -56,7 +56,7 @@ Frasernw::Application.routes.draw do
     get :refresh_cache
   end
 
-  cope "/specialists/:id/:token", controller: "specialists_editor" do
+  scope "/specialists/:id/:token", controller: "specialists_editor" do
     get :edit,        as: "specialist_self_edit"
     put :update,      as: "specialist_self_update"
     get :pending,     as: "specialist_self_pending"
