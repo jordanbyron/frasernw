@@ -14,9 +14,14 @@ module ParamParser
 
     def exec
       remove_specializations_comments!
+      remove_address_updates!
       remove_office_comments!
 
       cloned_params
+    end
+
+    def remove_address_updates!
+      cloned_params["specialist"].delete("address_updates")
     end
 
     def remove_specializations_comments!

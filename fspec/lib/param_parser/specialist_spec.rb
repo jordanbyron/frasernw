@@ -16,6 +16,7 @@ RSpec.describe ParamParser::Clinic do
    "specialization_ids"=>["28", ""],
    "specializations_comments"=>"asdgasgadsgasdg",
    "hospital_clinic_details"=>"",
+   "address_updates"=>"my address changed!!!!",
    "specialist_offices_attributes"=>
     {"0"=>
       {"phone"=>"asdgag",
@@ -611,6 +612,12 @@ RSpec.describe ParamParser::Clinic do
   it "removes the 'specializations_comments' key from the params hash" do
     expect(
       ParamParser::Specialist.new(params).exec["specialist"]["specializations_comments"]
+    ).to eq(nil)
+  end
+
+  it "removes the 'address_updates' key from the params hash" do
+    expect(
+      ParamParser::Specialist.new(params).exec["specialist"]["address_updates"]
     ).to eq(nil)
   end
 
