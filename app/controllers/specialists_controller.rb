@@ -28,7 +28,7 @@ class SpecialistsController < ApplicationController
 
   def new
     load_form_variables
-    @form_modifier = ClinicFormModifier.new(:new, current_user)
+    @form_modifier = SpecialistFormModifier.new(:new, current_user)
     #specialization passed in to facilitate javascript "checking off" of starting speciality, since build below doesn't seem to work
     @specialization = Specialization.find(params[:specialization_id])
     @specialist = Specialist.new
@@ -86,7 +86,7 @@ class SpecialistsController < ApplicationController
 
   def edit
     load_form_variables
-    @form_modifier = ClinicFormModifier.new(:edit, current_user)
+    @form_modifier = SpecialistFormModifier.new(:edit, current_user)
     @specialist = Specialist.find(params[:id])
     if @specialist.capacities.count == 0
       @specialist.capacities.build
@@ -234,7 +234,7 @@ class SpecialistsController < ApplicationController
 
   def review
     load_form_variables
-    @form_modifier = ClinicFormModifier.new(:review, current_user)
+    @form_modifier = SpecialistFormModifier.new(:review, current_user)
     @specialist = Specialist.find(params[:id])
     @review_item = @specialist.review_item;
 
@@ -285,7 +285,7 @@ class SpecialistsController < ApplicationController
 
   def rereview
     load_form_variables
-    @form_modifier = ClinicFormModifier.new(:rereview, current_user)
+    @form_modifier = SpecialistFormModifier.new(:rereview, current_user)
     @specialist = Specialist.find(params[:id])
     @review_item = ReviewItem.find(params[:review_item_id])
 

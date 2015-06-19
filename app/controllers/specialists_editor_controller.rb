@@ -7,7 +7,7 @@ class SpecialistsEditorController < ApplicationController
 
   def edit
     @token = params[:token]
-    @form_modifier = ClinicFormModifier.new(:edit, current_user, token: true)
+    @form_modifier = SpecialistFormModifier.new(:edit, current_user, token: true)
     @specialist = Specialist.find(params[:id])
     @review_item = @specialist.review_item
     if @specialist.capacities.count == 0
