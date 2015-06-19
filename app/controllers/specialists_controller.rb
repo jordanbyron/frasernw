@@ -1,8 +1,9 @@
 class SpecialistsController < ApplicationController
-  skip_before_filter :login_required, :only => :refresh_cache
-  load_and_authorize_resource :except => :refresh_cache
+  skip_before_filter :login_required, :only => [:refresh_cache, :refresh_index_cache]
+  load_and_authorize_resource :except => [:refresh_cache, :refresh_index_cache]
   before_filter :check_token, :only => :refresh_cache
-  skip_authorization_check :only => :refresh_cache
+  before_filter :check_specialization_token, :only => :refresh_index_cache
+  skip_authorization_check :only => [:refresh_cache, :refresh_index_cache]
   include ApplicationHelper
 
   cache_sweeper :specialist_sweeper, :only => [:create, :update, :update_photo, :accept, :destroy]
@@ -374,6 +375,10 @@ class SpecialistsController < ApplicationController
     token_required( Specialist, params[:token], params[:id] )
   end
 
+  def check_specialization_token
+    token_required( Specialization, params[:token], params[:specialization_id])
+  end
+
   def refresh_cache
     @specialist = Specialist.find(params[:id])
     @specialist.flush_cached_find
@@ -383,13 +388,22 @@ class SpecialistsController < ApplicationController
   end
 
   #TO DO make this work to reload cache with pathways:recache:specialists_index
-  # def refresh_index_cache
-  #   if params[:specialization_id].present?
-  #     @specializations = [Specialization.find(params[:specialization_id])]
-  #   else
-  #     @specializations = Specialization.all
-  #   end
-  # end
+  def refresh_index_cache
+    if params[:specialization_id].present?
+      @specializations = [Specialization.find(params[:specialization_id])]
+    else
+      @specializations = Specialization.all
+    end
+
+    if params[:division_id].present?
+      @user_divisions = [Division.find(params[:division_id])]
+    else
+      @user_divisions = Division.all
+    end
+    @all_divisions = Division.all
+    @first_division = @user_divisions.first
+    render :index, :layout => 'ajax'
+  end
 
   protected
     def generate_capacity(specialist, procedure_specialization, offset)

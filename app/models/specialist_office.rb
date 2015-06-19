@@ -1,7 +1,7 @@
 class SpecialistOffice < ActiveRecord::Base
   attr_accessible :phone, :phone_extension, :fax, :direct_phone, :direct_phone_extension, :sector_mask, :public_email, :email, :open_saturday, :open_sunday, :office_id, :office_attributes, :phone_schedule_attributes, :url, :location_opened
 
-  belongs_to :specialist
+  belongs_to :specialist, touch: true
   belongs_to :office
   accepts_nested_attributes_for :office
 
