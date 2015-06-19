@@ -257,7 +257,7 @@
     %p.space.no_indent This database exists to make our practices and your practice more efficient. By providing the information requested below you are making it easier for family doctors to find your practice, ensuring that the scope of your practice is fully understood, and guiding offices in providing you with the correct information when making referrals.
     %p.space.no_indent Unless otherwise indicated, all provided information will be available to all users of Pathways.
 
-= simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => @form_modifier.form_action}, :method => @form_modifier.form_method, :html => { :class => "form-horizontal ajax" } do |f|
+= simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => @form_modifier.form_action}, :method => @form_modifier.method, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
@@ -277,10 +277,21 @@
     = f.input :categorization_mask, as: :select, collection: categorization_hash, label_method: :last, value_method: :first, :include_blank => false
   = f.input :is_gp
   .no-print
-    -# conditionalize to disable
-    = f.association :specializations, as: :check_boxes, :hint => "If you are adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics."
+    = f.association :specializations,
+      as: :check_boxes,
+      hint: "If you are adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics.",
+      disabled: @form_modifier.restrict_editing?
+    - # b/c disabled checkboxes are not sent as formdata
+    - if @form_modifier.restrict_editing?
+      = f.association :specializations,
+        as: :hidden
 
-    -# new comment box - value: nil -- js will update with review item content if necessary
+    - if @form_modifier.show_comment_boxes?
+      = f.input :specializations_comments,
+        label: "If you have any updates to your specializations, please enter them here.",
+        input_html: {value: ""},
+        as: :text
+
   #section_hospital_clinic_details
 
     %hr
@@ -345,7 +356,17 @@
             = so.input :public_email, :input_html => { :class => "span3" }, :hint => "Okay for patient use to contact your office"
             = so.input :url, :input_html => { :class => "span3" }
           %div.no-print{:class => "office_#{index}"}
-            = so.association :office, as: :select, collection: @offices, :include_blank => true, :input_html => { :class => "chzn-select no-print" }
+            = so.association :office,
+              as: :select,
+              collection: @offices,
+              include_blank: true,
+              input_html: { :class => "chzn-select no-print" },
+              disabled: @form_modifier.restrict_editing?
+            - if @form_modifier.show_comment_boxes?
+              = so.input :comments,
+                label: "If you have any updates to your office, please enter them here",
+                input_html: {value: ""},
+                as: :text
           .control-group.print-only
             %label.control-label Address
             .controls
@@ -409,9 +430,6 @@
     %script{"type" => "text/javascript"}
       :plain
         $(document).ready( $(".chzn-select").chosen() );
-
-    - if @review_item || @form_modifier.token_edit?
-      = f.input :address_update, :label => "If you have any address updates, please enter them here"
 
   - if current_user_is_admin? || @form_modifier.token_edit?
 
