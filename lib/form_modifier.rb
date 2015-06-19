@@ -9,8 +9,7 @@ class FormModifier
     :new,
     :edit,
     :review,
-    :rereview,
-    :review
+    :rereview
   ]
 
   attr_reader :interaction_type, :current_user, :options
