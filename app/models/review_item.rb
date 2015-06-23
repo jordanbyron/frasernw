@@ -13,12 +13,32 @@ class ReviewItem < ActiveRecord::Base
     status == STATUS_NO_UPDATES
   end
 
-  def decoded_base_object
-    ActiveSupport::JSON.decode self.base_object
+  def encode(params)
+    ActiveSupport::JSON.encode params
   end
 
-  def decoded_object
-    ActiveSupport::JSON.decode self.object
+  def decode(params)
+    ActiveSupport::JSON.decode params
+  end
+
+  def transformed_base_object(passed_item)
+    raise NotImplementedError unless passed_item.is_a? Clinic
+
+    encode FormDataMatcher::Clinic.new(decoded_base_object, passed_item).exec
+  end
+
+  def transformed_review_object(passed_item)
+    raise NotImplementedError unless passed_item.is_a? Clinic
+
+    encode FormDataMatcher::Clinic.new(decoded_review_object, passed_item).exec
+  end
+
+  def decoded_base_object
+    decode self.base_object
+  end
+
+  def decoded_review_object
+    decode self.object
   end
 
   class << self

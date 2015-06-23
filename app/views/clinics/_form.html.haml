@@ -6,8 +6,8 @@
     :plain
       // pass variables to the review script
       (function( clinicFormData ) {
-        clinicFormData.baseReviewItem = #{@review_item.base_object || 'null'};
-        clinicFormData.reviewItem = #{@review_item.object || 'null'};
+        clinicFormData.baseReviewItem = #{@review_item.transformed_base_object(@clinic) || 'null'};
+        clinicFormData.reviewItem = #{@review_item.transformed_review_object(@clinic) || 'null'};
         clinicFormData.maxLocations = #{Clinic::MAX_LOCATIONS};
         clinicFormData.interactionType = "#{@form_modifier.interaction_type.to_s}";
       }( window.clinicFormData = {} ));
