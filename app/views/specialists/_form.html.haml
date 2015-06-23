@@ -431,7 +431,7 @@
       :plain
         $(document).ready( $(".chzn-select").chosen() );
 
-  - if @form_modifer.admin_review? || @form_modifier.admin_rereview?
+  - if @form_modifier.admin_review? || @form_modifier.admin_rereview?
     = f.input :address_update,
       label: "DEPRECATED old address comments field (this field is no longer provided to users, see new 'per office' fields above)",
       input_html: {value: ""}

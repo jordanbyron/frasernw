@@ -21,8 +21,13 @@ class ReviewItem < ActiveRecord::Base
     ActiveSupport::JSON.decode params
   end
 
-  delegate :encode to: :class
-  delegate :decode to: :class
+  def encode(params)
+    self.class.encode params
+  end
+
+  def decode(params)
+    self.class.decode params
+  end
 
   def transformed_base_object(passed_item)
     raise NotImplementedError unless passed_item.is_a? Clinic
@@ -30,7 +35,7 @@ class ReviewItem < ActiveRecord::Base
     encode FormDataMatcher::Clinic.new(
       decoded_base_object,
       passed_item
-    ).exec
+    ).exec.to_hash
   end
 
   def transformed_review_object(passed_item)
@@ -39,7 +44,7 @@ class ReviewItem < ActiveRecord::Base
     encode FormDataMatcher::Clinic.new(
       decoded_review_object,
       passed_item
-    ).exec
+    ).exec.to_hash
   end
 
   def decoded_base_object

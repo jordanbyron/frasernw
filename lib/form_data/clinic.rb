@@ -7,6 +7,10 @@ module FormData
       @hsh     = hsh
     end
 
+    def to_hash
+      hsh
+    end
+
     def clone
       self.class.new hsh.clone
     end
