@@ -1,4 +1,5 @@
 require 'lib/form_data_matcher/clinic'
+require 'lib/form_data/clinic'
 
 RSpec.describe FormDataMatcher::Clinic do
   form_data = {"utf8"=>"✓",
