@@ -86,12 +86,6 @@ class Clinic < ActiveRecord::Base
     self.in_cities_and_specialization(not_in_progress_cities, specialization)
   end
 
-  # we save the form params on the model so we can later save it as the 'base'
-  # state on a review item when a the user edits the object via secret edit link
-  def form_params=(params)
-    self.review_object = ActiveSupport::JSON::encode(params)
-  end
-
   def not_in_progress
     (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length > 0) || (divisions.length == 0)
   end

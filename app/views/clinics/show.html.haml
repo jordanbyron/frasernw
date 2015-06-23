@@ -366,7 +366,7 @@
               - if review_item.base_object.present?
                 = link_to '(Re-review)', rereview_clinic_path(review_item.item, review_item_id: review_item.id)
             - else
-              = link_to '(Review)', review_clinic_path(review_item.item, review_item.id)
+              = link_to '(Review)', review_clinic_path(review_item.item, review_item_id: review_item.id)
       - else
         %li None
 

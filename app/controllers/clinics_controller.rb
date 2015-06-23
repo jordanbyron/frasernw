@@ -73,7 +73,6 @@ class ClinicsController < ApplicationController
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
-      @clinic.form_params = params
       @clinic.save
       redirect_to clinic_path(@clinic), :notice => "Successfully created #{@clinic.name}."
     else
@@ -157,7 +156,6 @@ class ClinicsController < ApplicationController
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
-      @clinic.form_params = params
       @clinic.save
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else
@@ -324,7 +322,6 @@ class ClinicsController < ApplicationController
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
-      @clinic.form_params = params
       @clinic.save
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else
