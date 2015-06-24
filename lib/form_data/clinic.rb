@@ -15,6 +15,10 @@ module FormData
       self.class.new hsh.clone
     end
 
+    def has_location_attrs?
+      hsh["clinic"].present? && hsh["clinic_locations_attributes"].present?
+    end
+
     def update_location_data!(index, data)
       hsh["clinic"]["clinic_locations_attributes"][index.to_s] = data
     end

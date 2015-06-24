@@ -10,6 +10,9 @@ module FormDataMatcher
     end
 
     def exec
+      # account for malformed ReviewItems with referral form data saved as the base object on them
+      return form_data unless form_data.has_location_attrs?
+
       rearrange_clinic_location_attrs!
 
       cloned_form_data
