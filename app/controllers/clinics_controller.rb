@@ -73,6 +73,10 @@ class ClinicsController < ApplicationController
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
+      ## TODO: remove when we're certain the new review system is working
+      params.delete(:pre_edit_form_data)
+      @clinic.review_object = ActiveSupport::JSON::encode(params)
+
       @clinic.save
       redirect_to clinic_path(@clinic), :notice => "Successfully created #{@clinic.name}."
     else
@@ -156,6 +160,9 @@ class ClinicsController < ApplicationController
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
+      ## TODO: remove when we're certain the new review system is working
+      params.delete(:pre_edit_form_data)
+      @clinic.review_object = ActiveSupport::JSON::encode(params)
       @clinic.save
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else
@@ -322,6 +329,10 @@ class ClinicsController < ApplicationController
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
+      ## TODO: remove when we're certain the new review system is working
+      params.delete(:pre_edit_form_data)
+      @clinic.review_object = ActiveSupport::JSON::encode(params)
+
       @clinic.save
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else
