@@ -15,16 +15,20 @@
 
   function compareFormElement(form_element_id_array, new_entry_value, options)
   {
-    var highlight_changes = options.highlightChanges
-    //console.log(form_element_id_array + " : " + new_entry_value)
+    var highlight_changes = options.highlightChanges;
+    // console.log(form_element_id_array + " : " + new_entry_value)
     if ( $.isArray( new_entry_value ) )
     {
       //try as array of checkboxes
       checkbox_selector = "input:checkbox[name='" + generate_button_name(form_element_id_array) + "[]']"
+      // console.log(checkbox_selector);
+
       form_element = $(checkbox_selector);
 
       if (form_element)
       {
+        // console.log(new_entry_value);
+        // console.log(form_element_id_array);
         $.each(form_element, function( index, checkbox )
         {
           checkbox = $(checkbox);

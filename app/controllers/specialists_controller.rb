@@ -206,7 +206,7 @@ class SpecialistsController < ApplicationController
         # TODO: remove when we're sure the review system changes are stable
         params.delete(:pre_edit_form_data)
         @specialist.review_object = ActiveSupport::JSON::encode(params)
-        
+
         @specialist.save
         redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
       else
@@ -236,7 +236,7 @@ class SpecialistsController < ApplicationController
     SpecialistSweeper.instance.before_controller_destroy(@specialist)
     name = @specialist.name;
     @specialist.destroy
-    redirect_to specialists_url, :notice => "Successfully deleted #{name}. #{undo_link}"
+    redirect_to root_url, :notice => "Successfully deleted #{name}. #{undo_link}"
   end
 
   def undo_link

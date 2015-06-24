@@ -394,4 +394,6 @@
 
 - content_for(:javascript_footer) do
   = javascript_include_tag "views/location_tabs"
-  = javascript_include_tag "views/clinic_form_copier"
+
+  - if @form_modifier.token_edit?
+    = javascript_include_tag "views/clinic_form_copier"
