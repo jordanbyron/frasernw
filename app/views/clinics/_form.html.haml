@@ -40,10 +40,11 @@
       as: :check_boxes,
       hint: "When adding or removing specialities please save and then edit this clinic again to update the list of available areas of practices and specialists.",
       disabled: @form_modifier.restrict_editing?
-    - # b/c disabled checkboxes are not sent as formdata
     - if @form_modifier.restrict_editing?
-      = f.association :specializations,
-        as: :hidden
+      .hidden
+        - # b/c disabled checkboxes are not sent as formdata
+        = f.association :specializations,
+          as: :check_boxes
 
     - if @form_modifier.show_comment_boxes?
       = f.input :specializations_comments,
