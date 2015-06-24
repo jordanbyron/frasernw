@@ -278,12 +278,6 @@
       as: :check_boxes,
       hint: "If you are adding or removing specialities please save and then edit this specialist again to update the list of available areas of practices and clinics.",
       disabled: @form_modifier.restrict_editing?
-    - if @form_modifier.restrict_editing?
-      .hidden
-        - # b/c disabled checkboxes are not sent as formdata
-        = f.association :specializations,
-          as: :check_boxes
-
     - if @form_modifier.show_comment_boxes?
       = f.input :specializations_comments,
         label: "If you have any updates to your specializations, please enter them here.",
@@ -614,4 +608,4 @@
 
 - content_for(:javascript_footer) do
   = javascript_include_tag "views/location_tabs"
-  = javascript_include_tag "views/specialist_form_copier"
+  = javascript_include_tag "views/form_data_manager"
