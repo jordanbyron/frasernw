@@ -16,6 +16,7 @@ class Ability
 
         #can do anything
         can :manage, :all
+        can :show, :analytics
 
       elsif user.admin_only?
 

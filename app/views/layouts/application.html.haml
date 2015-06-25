@@ -18,8 +18,8 @@
     - if !Rails.env.development? || ENV['LIVESEARCH'].to_b
       = javascript_include_tag '../livesearch'
     = csrf_meta_tag
-    - cache("ie8_or_lower_compatibility_warning") do
-      = render "layouts/ie8_or_lower_compatibility_warning"
+    - cache("ie_compatibility_warning") do
+      = render "layouts/ie_compatibility_warning"
     - if Rails.env.development? || (ENV['APP_NAME'] != 'pathwaysbc')
       = render "shared/test_debugging_info"
     = yield(:head)
@@ -400,6 +400,13 @@
           %a{:href => '#', :onclick => "$('#message .inner').load('#{messages_path}', function() { show_message(); }); return false;"} administration@pathwaysbc.ca
     #loading
       #loading-spinner
+    - if ENV["CRAZYEGG"].to_b
+      %script{:language => "javascript", :type => "text/javascript"}
+        setTimeout(function(){var a=document.createElement("script");
+        var b=document.getElementsByTagName("script")[0];
+        a.src=document.location.protocol+"//script.crazyegg.com/pages/scripts/0035/0086.js?"+Math.floor(new Date().getTime()/3600000);
+        a.async=true;a.type="text/javascript";b.parentNode.insertBefore(a,b)}, 1);
+
 
     = yield(:javascript_footer)
 
@@ -407,4 +414,3 @@
       $(window).load(function() {
       $("#heartbeat-loader-position").remove();
       });
-

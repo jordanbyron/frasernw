@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150604210854) do
+ActiveRecord::Schema.define(:version => 20150618021016) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -76,10 +76,10 @@ ActiveRecord::Schema.define(:version => 20150604210854) do
     t.integer  "specialist_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "investigation"
+    t.string   "investigation",               :limit => nil
     t.integer  "procedure_specialization_id"
-    t.integer  "waittime_mask",               :default => 0
-    t.integer  "lagtime_mask",                :default => 0
+    t.integer  "waittime_mask",                              :default => 0
+    t.integer  "lagtime_mask",                               :default => 0
   end
 
   add_index "capacities", ["procedure_specialization_id"], :name => "index_capacities_on_procedure_specialization_id"
@@ -431,17 +431,19 @@ ActiveRecord::Schema.define(:version => 20150604210854) do
   add_index "locations", ["location_in_id"], :name => "index_locations_on_location_in_id"
 
   create_table "metrics", :force => true do |t|
-    t.integer "month_stamp",                    :null => false
-    t.integer "division_id"
-    t.string  "page_path"
-    t.integer "user_type_key"
-    t.integer "sessions"
-    t.integer "page_views"
-    t.integer "visitor_accounts_min5sessions"
-    t.integer "visitor_accounts_min10sessions"
-    t.integer "visitor_accounts"
-    t.integer "average_session_duration"
-    t.integer "average_page_view_duration"
+    t.integer  "month_stamp",                    :null => false
+    t.integer  "division_id"
+    t.string   "page_path"
+    t.integer  "user_type_key"
+    t.integer  "sessions"
+    t.integer  "page_views"
+    t.integer  "visitor_accounts_min5sessions"
+    t.integer  "visitor_accounts_min10sessions"
+    t.integer  "visitor_accounts"
+    t.integer  "average_session_duration"
+    t.integer  "average_page_view_duration"
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
   end
 
   add_index "metrics", ["user_type_key", "division_id", "page_path"], :name => "metrics_dimensions"

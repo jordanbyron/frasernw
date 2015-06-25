@@ -73,7 +73,7 @@
             - @referral_forms.each do |referral_form|
               %tr{:id => "i#{referral_form.id}"}
                 %td.title
-                  = link_to(referral_form.referrable.name, referral_form.form.url, :target => "_blank")
+                  = link_to(referral_form.referrable.name, referral_form.referrable, :target => "_blank")
                 %td.title
                   - form_name = referral_form.description.present? ? referral_form.description.capitalize_first_letter : "Referral form"
                   = link_to(form_name, referral_form.form.url, :target => "_blank")

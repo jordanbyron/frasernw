@@ -302,7 +302,5 @@ class ScItem < ActiveRecord::Base
     created_at > 3.week.ago.utc
   end
 
-  def label
-    self.title
-  end
+  alias_method :label, :title
 end
