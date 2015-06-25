@@ -40,6 +40,10 @@ class Hospital < ActiveRecord::Base
     self.in_cities(divisions.map{ |division| division.cities }.flatten.uniq)
   end
 
+  def self.all_formatted_for_select
+    self.all.map(&:formatted_for_select)
+  end
+
   def offices_in
     direct_offices_in + offices_in_clinics_in
   end
@@ -86,5 +90,9 @@ class Hospital < ActiveRecord::Base
       update_column(:saved_token, SecureRandom.hex(16)) #avoid callbacks / validation as we don't want to trigger a sweeper for this
       return self.saved_token
     end
+  end
+
+  def formatted_for_select
+    ["#{self.name}, #{self.location.short_address}", self.id]
   end
 end

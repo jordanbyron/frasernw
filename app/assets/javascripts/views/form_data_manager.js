@@ -4,7 +4,9 @@
 
 (function( $ ) {
   $(document).ready(function() {
-    var forbiddenInputs = $("input[disabled='disabled']")
+    var forbiddenInputs = $(
+      "input[disabled='disabled'], select[disabled='disabled']"
+    )
     forbiddenInputs.attr("disabled", false);
 
     var form = $("form.clinic_form, form.specialist_form");

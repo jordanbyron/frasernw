@@ -111,7 +111,7 @@
                   disabled: @form_modifier.restrict_editing?
                 = a.association :city,
                   as: :select,
-                  collection: (current_user_is_super_admin? ? City.all : City.in_divisions(@form_modifier.divisions)).map { |c| ["#{c.name}, #{c.province.symbol}", c.id] },
+                  collection: City.all_formatted_for_select,
                   include_blank: true,
                   disabled: @form_modifier.restrict_editing?
                 = a.input :postalcode,
@@ -120,7 +120,7 @@
             %div{:class => "hospital_#{index}"}
               = l.association :hospital_in,
                 as: :select,
-                collection: (current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(@form_modifier.divisions)).reject{ |h| h.location.blank? }.map{ |h| ["#{h.name}, #{h.location.short_address}", h.id] },
+                collection: Hospital.all_formatted_for_select,
                 include_blank: true,
                 disabled: @form_modifier.restrict_editing?
             %div{:class => "details_#{index}"}
