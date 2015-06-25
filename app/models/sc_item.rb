@@ -302,5 +302,6 @@ class ScItem < ActiveRecord::Base
     created_at > 3.week.ago.utc
   end
 
-  alias_method :label, :title
+  alias_attribute :label, :title
+  alias_attribute :name, :title
 end

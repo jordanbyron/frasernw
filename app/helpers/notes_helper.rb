@@ -7,7 +7,7 @@ module NotesHelper
   end
 
   def notes_button(noteable)
-    link_to("<i class='icon-tag'></i>".html_safe + " Notes " + "(#{noteable.notes.count})" , notes_index(noteable), class: "btn btn-mini", target: "_blank")
+    link_to("<i class='icon-tag'></i>".html_safe + " Notes " + "(#{noteable.notes.count})" , notes_index(noteable), class: "btn btn-mini stacked-button", target: "_blank")
   end
 
   def notes_index(noteable)

@@ -68,7 +68,7 @@
               %th{:class => "title {sorter: 'link_only'}"} Form Name
               %th{:class => "subcategory {sorter: 'text'}"} Specialty
               - if can? :index, Note
-                %th.notes_column
+                %th.referral_form_table__notes_column
           %tbody
             - @referral_forms.each do |referral_form|
               %tr{:id => "i#{referral_form.id}"}

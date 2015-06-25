@@ -6,7 +6,7 @@ class FeedbackItem < ActiveRecord::Base
   belongs_to :user
 
   def label
-    "Feedback Item #{self.id}"
+    "#{item.name} (Feedback Item)"
   end
 
   class << self

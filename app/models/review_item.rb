@@ -16,7 +16,7 @@ class ReviewItem < ActiveRecord::Base
   end
 
   def label
-    "Review Item #{self.id}"
+    "#{item.name} (Review Item)"
   end
 
   class << self

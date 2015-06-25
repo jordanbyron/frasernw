@@ -15,7 +15,7 @@ class ReferralForm < ActiveRecord::Base
   has_paper_trail
 
   def label
-    truncate(self.description)
+    "#{referrable.name} (Referral Form)"
   end
 
   def in_divisions(divisions)
