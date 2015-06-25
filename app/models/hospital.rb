@@ -93,6 +93,6 @@ class Hospital < ActiveRecord::Base
   end
 
   def formatted_for_select
-    ["#{self.name}, #{self.location.short_address}", self.id]
+    ["#{self.name}, #{self.location.try(:short_address)}", self.id]
   end
 end

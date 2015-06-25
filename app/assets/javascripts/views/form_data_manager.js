@@ -18,7 +18,7 @@
     var preEditStash = $("input#pre_edit_form_data");
     preEditStash.val(serializedForm);
 
-    $("form.clinic_form").on("submit", function(e) {
+    form.on("submit", function(e) {
       e.preventDefault();
       forbiddenInputs.attr("disabled", false);
       this.submit();
