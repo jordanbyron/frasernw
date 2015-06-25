@@ -1,0 +1,9 @@
+= simple_form_for @note do |f|
+  = f.input :content,
+    type: :text,
+    input_html: {rows: 5, cols: 80, class: "notes__input"},
+    label: false
+  = f.input :noteable_id, as: :hidden
+  = f.input :noteable_type, as: :hidden
+  = f.input :user_id, as: :hidden, input_html: { value: current_user.id }
+  = f.button :submit

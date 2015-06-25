@@ -19,5 +19,4 @@ reports/
 .ruby-gemset
 config/google_oauth.p12
 /reports
-notes
 ssl/
