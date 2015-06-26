@@ -1,13 +1,23 @@
 Frasernw::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
-  # ExceptionNotifier rack middleware
-  Frasernw::Application.config.middleware.use ExceptionNotification::Rack,
-    :email => {
-      :email_prefix => "[mdpathway exception] [#{ENV['APP_NAME']}]",
-      :sender_address => %{"Pathways" <system@mdpathwaysbc.com>},
-      :exception_recipients => %w{warneboldt@gmail.com khannan@mdpathwaysbc.com bgracie@pathwaysbc.ca}
-    }
+  if ENV['APP_NAME'] == "pathwaysbc" #unless Production, override and do not send mail to warneboldt@gmail.com:
+    # ExceptionNotifier rack middleware
+    Frasernw::Application.config.middleware.use ExceptionNotification::Rack,
+      :email => {
+        :email_prefix => "[mdpathway exception] [#{ENV['APP_NAME']}]",
+        :sender_address => %{"Pathways" <system@mdpathwaysbc.com>},
+        :exception_recipients => %w{warneboldt@gmail.com khannan@mdpathwaysbc.com bgracie@pathwaysbc.ca}
+      }
+  else
+    # ExceptionNotifier rack middleware
+    Frasernw::Application.config.middleware.use ExceptionNotification::Rack,
+      :email => {
+        :email_prefix => "[mdpathway exception] [#{ENV['APP_NAME']}]",
+        :sender_address => %{"Pathways" <system@mdpathwaysbc.com>},
+        :exception_recipients => %w{khannan@mdpathwaysbc.com bgracie@pathwaysbc.ca}
+      }
+  end
 
   # Code is not reloaded between requests
   config.cache_classes = true
@@ -77,7 +87,7 @@ Frasernw::Application.configure do
   ##
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w( ie.css print.css font-awesome-ie7.css patient_information.css jquery-1.7.2.min.js components/*.js views/*.js)
+  config.assets.precompile += %w( ie.css print.css font-awesome-ie7.css patient_information.css jquery-1.7.2.min.js views/*.js)
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false

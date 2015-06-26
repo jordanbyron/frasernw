@@ -1,6 +1,7 @@
 class ScItem < ActiveRecord::Base
   include ApplicationHelper
   include PublicActivity::Model
+  include Noteable
   # not used here since activity is created in controller:
   # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user}
   has_many :activities, as: :trackable, class_name: 'SubscriptionActivity', dependent: :destroy
@@ -301,7 +302,6 @@ class ScItem < ActiveRecord::Base
     created_at > 3.week.ago.utc
   end
 
-  def name
-    title
-  end
+  alias_attribute :label, :title
+  alias_attribute :name, :title
 end

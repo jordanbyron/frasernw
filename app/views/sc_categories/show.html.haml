@@ -76,6 +76,8 @@
                   %th.favorite
                   %th.email
                   %th.fb
+                  - if can? :index, Note
+                    %th.note
               %tbody
                 - @sc_items.reject{ |i| i.in_progress }.each do |sc_item|
                   %tr{:id => "i#{sc_item.id}"}
@@ -96,6 +98,8 @@
                     %td.fb
                       %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
                         %i.icon-bullhorn
+                    - if can? :index, Note
+                      %td= notes_icon(sc_item)
 
             - if @sc_category.parent.present?
               = link_to "<i class='icon-arrow-right icon-blue'></i> Browse all #{@sc_category.parent.name} content".html_safe, sc_category_path(@sc_category.parent), :class => 'ajax'
