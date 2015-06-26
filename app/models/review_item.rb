@@ -15,6 +15,48 @@ class ReviewItem < ActiveRecord::Base
     status == STATUS_NO_UPDATES
   end
 
+  def self.encode(params)
+    ActiveSupport::JSON.encode params
+  end
+
+  def self.decode(params)
+    ActiveSupport::JSON.decode params
+  end
+
+  def encode(params)
+    self.class.encode params
+  end
+
+  def decode(params)
+    self.class.decode params
+  end
+
+  def transformed_base_object(passed_item)
+    raise NotImplementedError unless passed_item.is_a? Clinic
+
+    encode FormDataMatcher::Clinic.new(
+      decoded_base_object,
+      passed_item
+    ).exec.to_hash
+  end
+
+  def transformed_review_object(passed_item)
+    raise NotImplementedError unless passed_item.is_a? Clinic
+
+    encode FormDataMatcher::Clinic.new(
+      decoded_review_object,
+      passed_item
+    ).exec.to_hash
+  end
+
+  def decoded_base_object
+    decode self.base_object
+  end
+
+  def decoded_review_object
+    decode self.object
+  end
+
   def label
     "#{item.name} (Review Item)"
   end

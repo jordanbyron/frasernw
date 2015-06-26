@@ -51,7 +51,7 @@
               %td= ReviewItem::STATUS_HASH[review_item.status]
               %td
                 -if review_item.base_object.present?
-                  = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", specialist_rereview_path(review_item.item, review_item.id), :class => "btn btn-mini ajax")
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", rereview_specialist_path(review_item.item, review_item_id: review_item.id), :class => "btn btn-mini ajax")
 
       #clinics_tab.tab-pane
 
@@ -82,6 +82,6 @@
               %td= ReviewItem::STATUS_HASH[review_item.status]
               %td
                 -if review_item.base_object.present?
-                  = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", clinic_rereview_path(review_item.item, review_item.id), :class => "btn btn-mini ajax")
+                  = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", rereview_clinic_path(review_item.item, review_item_id: review_item.id), :class => "btn btn-mini ajax")
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2

@@ -1,4 +1,8 @@
 class Hash
+  def clone
+    Marshal.load(Marshal.dump(self))
+  end
+
   def all_values(new_value)
     new_hash = self.dup
 

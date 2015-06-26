@@ -14,8 +14,52 @@ Frasernw::Application.routes.draw do
     resources :procedures, :path => 'areas_of_practice'
     resources :clinics
   end
-  resources :clinics
-  resources :specialists
+
+  resources :clinics do
+    member do
+      get :review
+      get :rereview
+      get :archive
+      put :accept, as: "accept_review"
+      get :print, as: "patient_information", action: "print_patient_information"
+      get :edit_referral_forms, as: "referral_forms"
+    end
+  end
+
+  scope "/clinics/:id/:token", controller: "clinics" do
+    get :refresh_cache
+  end
+
+  scope "/clinics/:id/:token", controller: "clinics_editor" do
+    # Secret edit or owner edit
+    get :edit,        as: "clinic_self_edit"
+    put :update,      as: "clinic_self_update"
+    get :pending,     as: "clinic_self_pending"
+  end
+
+  resources :specialists do
+    member do
+      get :review
+      get :rereview
+      get :archive
+      put :accept
+      get :photo
+      put :update_photo
+      get :edit_referral_forms, as: "referral_forms"
+    end
+  end
+
+  scope "/specialists/:id/:token", controller: "specialists" do
+    get :refresh_cache
+  end
+
+  scope "/specialists/:id/:token", controller: "specialists_editor" do
+    # Secret edit or owner edit
+    get :edit,        as: "specialist_self_edit"
+    put :update,      as: "specialist_self_update"
+    get :pending,     as: "specialist_self_pending"
+  end
+
   resources :procedures, :path => 'areas_of_practice'
   resources :hospitals
   resources :languages
@@ -52,45 +96,14 @@ Frasernw::Application.routes.draw do
   resources :news_items
   resources :reports
 
-  match '/specialists/:id/:token/edit'   => 'specialists_editor#edit',   :as => 'specialist_self_edit'
-  put   '/specialists/:id/:token/update' => 'specialists_editor#update', :as => 'specialist_self_update'
-  get   '/specialists/:id/:token/pending'=> 'specialists_editor#pending',:as => 'specialist_self_pending'
-  match '/specialists/:id/review'        => 'specialists#review',        :as => 'specialist_review'
-  match '/specialists/:id/rereview/:review_item_id' => 'specialists#rereview',  :as => 'specialist_rereview'
-  match '/specialists/:id/archive'       => 'specialists#archive',       :as => 'specialist_archive'
-  match '/specialists/:id/accept'        => 'specialists#accept',        :as => 'specialist_accept_review'
-  match '/specialists/:id/photo'         => 'specialists#photo',         :as => 'specialist_photo'
-  put   '/specialists/:id/update_photo'  => 'specialists#update_photo',  :as => 'specialist_update_photo'
 
-  match '/clinics/:id/:token/edit'       => 'clinics_editor#edit',       :as => 'clinic_self_edit'
-  put   '/clinics/:id/:token/update'     => 'clinics_editor#update',     :as => 'clinic_self_update'
-  get   '/clinics/:id/:token/pending'    => 'clinics_editor#pending',    :as => 'clinic_self_pending'
-  match '/clinics/:id/review'            => 'clinics#review',            :as => 'clinic_review'
-  match '/clinics/:id/rereview/:review_item_id' => 'clinics#rereview',   :as => 'clinic_rereview'
-  match '/clinics/:id/archive'           => 'clinics#archive',           :as => 'clinic_archive'
-  match '/clinics/:id/accept'            => 'clinics#accept',            :as => 'clinic_accept_review'
-
-  match '/specialists/:id/:token/temp_edit'   => 'specialists_editor#temp_edit',   :as => 'specialist_temp_edit'
-  put   '/specialists/:id/:token/temp_update' => 'specialists_editor#temp_update', :as => 'specialist_temp_update'
-  match '/clinics/:id/:token/temp_edit'   => 'clinics_editor#temp_edit',   :as => 'clinic_temp_edit'
-  put   '/clinics/:id/:token/temp_update' => 'clinics_editor#temp_update', :as => 'clinic_temp_update'
-
-  match '/specialists/:id/edit_referral_forms'  => 'specialists#edit_referral_forms', :as => 'specialist_referral_forms'
-  match '/clinics/:id/edit_referral_forms'      => 'clinics#edit_referral_forms',     :as => 'clinic_referral_forms'
   match '/referral_forms'               => 'referral_forms#index',      :as => 'referral_forms'
 
   match '/specialists/:id/print'        => 'specialists#print_patient_information',   :as => 'specialist_patient_information'
   match '/specialists/:id/print/office/:office_id' => 'specialists#print_office_patient_information',   :as => 'specialist_patient_information_office'
-  match '/clinics/:id/print'            => 'clinics#print_patient_information',       :as => 'clinic_patient_information'
   match '/clinics/:id/print/location/:location_id'  => 'clinics#print_location_patient_information',       :as => 'clinic_patient_information_location'
 
   get  '/specialties/:id/:token/refresh_cache'     => 'specializations#refresh_cache', :as => 'specialization_refesh_cache'
-
-  #routes through specialty, but is domain of specialists controller
-  get  '/specialties/:specialization_id/:token/specialists/refresh_index_cache/:division_id'     => 'specialists#refresh_index_cache', :as => 'specialist_refresh_index_cache'
-
-  get  '/specialists/:id/:token/refresh_cache'     => 'specialists#refresh_cache',     :as => 'specialist_refesh_cache'
-  get  '/clinics/:id/:token/refresh_cache'         => 'clinics#refresh_cache',         :as => 'clinic_refesh_cache'
   get  '/hospitals/:id/:token/refresh_cache'       => 'hospitals#refresh_cache',       :as => 'hospital_refesh_cache'
   get  '/languages/:id/:token/refresh_cache'       => 'languages#refresh_cache',       :as => 'language_refesh_cache'
 

@@ -20,3 +20,5 @@ reports/
 config/google_oauth.p12
 /reports
 ssl/
+reports/
+config/google_oauth.p12

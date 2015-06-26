@@ -471,9 +471,9 @@
               = "(#{ReviewItem::STATUS_HASH[review_item.status]})"
             - elsif review_item.archived?
               - if review_item.base_object.present?
-                = link_to '(Re-review)', specialist_rereview_path(review_item.item, review_item.id)
+                = link_to '(Re-review)', rereview_specialist_path(review_item.item, review_item_id: review_item.id)
             - else
-              = link_to '(Review)', specialist_review_path(review_item.item, review_item.id)
+              = link_to '(Review)', review_specialist_path(review_item.item, review_item_id: review_item.id)
       - else
         %li None
 
@@ -504,7 +504,7 @@
         %i.icon-bullhorn.icon-text
         Incorrect Information? Let us know
     - if !current_user_is_admin? && (can? :update, @specialist)
-      %a.btn.ajax{"href" => specialist_photo_path(@specialist)}
+      %a.btn.ajax{"href" => photo_specialist_path(@specialist)}
         %i.icon-picture.icon-white
         #{@specialist.photo.present? ? "Change" : "Add"} #{@specialist.name}'s photo
 
@@ -514,13 +514,13 @@
 
       - if @specialist.review_item.present?
 
-        = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", specialist_review_path(@specialist), :class => "btn ajax")
+        = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", review_specialist_path(@specialist), :class => "btn ajax")
 
       - elsif can? :update, @specialist
 
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialist", edit_specialist_path(@specialist), :class => "btn ajax")
-        = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", specialist_referral_forms_path(@specialist), :class => "btn ajax")
-        = link_to("<i class='icon-picture'></i>".html_safe + " Photo", specialist_photo_path(@specialist), :class => "btn ajax")
+        = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", referral_forms_specialist_path(@specialist), :class => "btn ajax")
+        = link_to("<i class='icon-picture'></i>".html_safe + " Photo", photo_specialist_path(@specialist), :class => "btn ajax")
         %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
           %i.icon-share
           Share
