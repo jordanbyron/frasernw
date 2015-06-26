@@ -36,7 +36,6 @@ group :assets do
   gem 'uglifier',     '>= 1.0.3'
 end
 
-gem 'react-rails'
 gem 'connection_pool'
 gem 'highcharts-rails'
 gem 'jquery-rails', "~> 1.0.16"

@@ -1,4 +1,6 @@
 class ReviewItem < ActiveRecord::Base
+  include Noteable
+
   belongs_to :item, :polymorphic => true
 
   STATUS_UPDATES = 0
@@ -11,6 +13,10 @@ class ReviewItem < ActiveRecord::Base
 
   def no_updates?
     status == STATUS_NO_UPDATES
+  end
+
+  def label
+    "#{item.name} (Review Item)"
   end
 
   class << self

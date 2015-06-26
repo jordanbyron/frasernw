@@ -1,4 +1,7 @@
 class ReferralForm < ActiveRecord::Base
+  include Noteable
+  include ActionView::Helpers::TextHelper
+
   belongs_to :referrable, :polymorphic => true
 
   has_attached_file :form,
@@ -10,6 +13,10 @@ class ReferralForm < ActiveRecord::Base
     }
 
   has_paper_trail
+
+  def label
+    "#{referrable.name} (Referral Form)"
+  end
 
   def in_divisions(divisions)
     referrable.present? && (referrable.divisions & divisions).present?

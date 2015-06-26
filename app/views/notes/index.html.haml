@@ -1,0 +1,23 @@
+- title "Notes"
+
+= stylesheet_link_tag "views/notes"
+
+.content-wrapper
+  %h2= "Notes on \"#{@noteable.label}\""
+
+  .notes__index
+    - @notes.each do |note|
+      .notes__note
+        %p.notes__line_item
+          %strong= note.author_name
+        %p.notes__line_item
+          %i
+            = "on #{note.created_at.to_date}"
+        %p.notes__line_item= "\"#{note.content}\""
+        %p.notes__line_item
+          = link_to "Delete",
+            note_path(note),
+            method: :delete,
+            class: "btn btn-mini"
+
+  = render "form", note: @note

@@ -1,0 +1,12 @@
+$stacked-buttons-vertical-margin: 4px;
+
+.stacked-button {
+  display: block;
+  margin-top: $stacked-buttons-vertical-margin;
+  text-align: left;
+  min-width: 80px;
+}
+.stacked-button:last-child {
+  display: block;
+  margin-bottom: $stacked-buttons-vertical-margin;
+}

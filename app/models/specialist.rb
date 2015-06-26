@@ -450,7 +450,7 @@ class Specialist < ActiveRecord::Base
     STATUS_CLASS_LIMITATIONS => 7,
   }
 
-  #match tooltip to status_class 
+  #match tooltip to status_class
   STATUS_TOOLTIP_HASH = {
     STATUS_CLASS_AVAILABLE   => "Accepting new referrals",
     STATUS_CLASS_LIMITATIONS => "Accepting limited new referrals by geography or # of patients",
