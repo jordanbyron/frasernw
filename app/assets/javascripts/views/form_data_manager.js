@@ -5,7 +5,7 @@
 (function( $ ) {
   $(document).ready(function() {
     var forbiddenInputs = $(
-      "input[disabled='disabled'], select[disabled='disabled']"
+      "input[disabled='disabled'], select[disabled='disabled'], textarea[disabled='disabled']"
     )
     forbiddenInputs.attr("disabled", false);
 
