@@ -12,7 +12,8 @@ Local-only = Changes not reflected in Source Code
 - ENV["FORCE_SSL"] can be set to "true" or "false" as an environment variable to enable or disable SSL.
 - CR:  Added major upgrade to analytics system; CSV report tools now allow fetching comprehensive division-specific usage analytics and entity metrics.
 - Added a heartbeat loading animation in between periods where a user is waiting for their browser to render HTML.
-- Add indexes and update database queries for content items (providing a measured ~150ms boost to page speed loads). 
+- Add indexes and update database queries for content items (providing a measured ~150ms boost to page speed loads).
+- Added notes pages for review items, feedback items, content items, and referral forms
 
 ### Changed
 - Renamed "Areas of Practice" to "Accepts Referrals For" where appropriate.
@@ -23,6 +24,7 @@ Local-only = Changes not reflected in Source Code
 - Local-only:  Moved DNS lookup server to fault tolerant Cloudflare to prevent emergency downtimes (e.g. if a major earthquake hits local servers).
 - Rename "In Progress" Speciality edit checkbox to "In Progress / Hidden"
 - Moved open-source Github repository to "pathwaysmedical" from "warneboldt"
+- Address and specialization fields are now replaced with comment boxes when user edit clinics and specializations
 
 ### Fixed
 - CR:  Clinic location rearranging issue now fixed.
