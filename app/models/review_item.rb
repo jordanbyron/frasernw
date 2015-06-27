@@ -1,5 +1,6 @@
 class ReviewItem < ActiveRecord::Base
   include Noteable
+  include Historical
 
   belongs_to :item, :polymorphic => true
 

@@ -9,7 +9,21 @@ Bundler.require(*Rails.groups(:assets => %w(development test))) if defined?(Bund
 
 module Frasernw
   class Application < Rails::Application
-    config.autoload_paths << "#{config.root}/lib"    # Settings in config/environments/* take precedence over those specified here.
+    # Settings in config/environments/* take precedence over those specified here.
+
+    # Reusable use cases
+    config.autoload_paths << "#{config.root}/app/services"
+
+    # Classes that we could use outside of this app
+    config.autoload_paths << "#{config.root}/lib"
+
+    # Domain objects ("things") that don't have a directly corresponding table
+    config.autoload_paths << "#{config.root}/app/domain"
+
+    # Mixins for domain objects, regardless of whether
+    # they inherit from ActiveSupport::Concern or not
+    config.autoload_paths << "#{config.root}/app/concerns"
+
     config.assets.paths << "#{Rails.root}/app/assets/fonts"
     config.assets.paths << "#{Rails.root}/vendor/assets/javascripts"
     # Defaults to '/assets'

@@ -1,5 +1,6 @@
 class ReferralForm < ActiveRecord::Base
   include Noteable
+  include Historical
   include ActionView::Helpers::TextHelper
 
   belongs_to :referrable, :polymorphic => true
