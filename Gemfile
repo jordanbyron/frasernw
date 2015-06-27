@@ -36,7 +36,6 @@ group :assets do
   gem 'uglifier',     '>= 1.0.3'
 end
 
-gem 'react-rails'
 gem 'connection_pool'
 gem 'highcharts-rails'
 gem 'jquery-rails', "~> 1.0.16"
@@ -141,7 +140,6 @@ end
 
 gem 'ancestry', '~> 1.3.0' #ancestry breaks specialization.rb arrange methods in higher versions
 
-gem 'mechanize'
 gem 'validates_email_format_of'
 gem "safety_mailer" # prevent emails getting sent in staging
 

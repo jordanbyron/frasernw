@@ -364,16 +364,16 @@
               = "(#{ReviewItem::STATUS_HASH[review_item.status]})"
             - elsif review_item.archived?
               - if review_item.base_object.present?
-                = link_to '(Re-review)', clinic_rereview_path(review_item.item, review_item.id)
+                = link_to '(Re-review)', rereview_clinic_path(review_item.item, review_item_id: review_item.id)
             - else
-              = link_to '(Review)', clinic_review_path(review_item.item, review_item.id)
+              = link_to '(Review)', review_clinic_path(review_item.item, review_item_id: review_item.id)
       - else
         %li None
 
   .btn-group
     - if true || show_details
       - if clinic_locations.length == 1
-        %a.btn{"href" => clinic_patient_information_path(@clinic), "target" => "_blank"}
+        %a.btn{"href" => patient_information_clinic_path(@clinic), "target" => "_blank"}
           %i.icon-print.icon-text
           Print Information for Patient
       - else
@@ -401,12 +401,12 @@
 
       - if @clinic.review_item.present?
 
-        = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", clinic_review_path(@clinic), :class => "btn ajax")
+        = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", review_clinic_path(@clinic), :class => "btn ajax")
 
       - elsif can? :update, @clinic
 
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Clinic", edit_clinic_path(@clinic), :class => "btn ajax")
-        = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", clinic_referral_forms_path(@clinic), :class => "btn ajax")
+        = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", referral_forms_clinic_path(@clinic), :class => "btn ajax")
         %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
           %i.icon-share
           Share

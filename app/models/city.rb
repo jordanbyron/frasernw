@@ -24,6 +24,10 @@ class City < ActiveRecord::Base
     Rails.cache.fetch([name, id]) { find(id) }
   end
 
+  def self.all_formatted_for_select
+    self.all.map(&:formatted_for_select)
+  end
+
   def flush_cached_find
     Rails.cache.delete([self.class.name, id])
   end
@@ -31,6 +35,10 @@ class City < ActiveRecord::Base
 
   def to_s
     self.name
+  end
+
+  def formatted_for_select
+    ["#{self.name}, #{self.province.symbol}", self.id]
   end
 
   def self.in_divisions(divisions)

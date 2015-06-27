@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150618021016) do
+ActiveRecord::Schema.define(:version => 20150619000023) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -473,6 +473,15 @@ ActiveRecord::Schema.define(:version => 20150618021016) do
 
   add_index "news_items", ["division_id"], :name => "index_news_items_on_division_id"
 
+  create_table "notes", :force => true do |t|
+    t.text     "content"
+    t.integer  "user_id"
+    t.integer  "noteable_id"
+    t.string   "noteable_type"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
   create_table "offices", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -790,7 +799,6 @@ ActiveRecord::Schema.define(:version => 20150618021016) do
     t.integer  "referral_clinic_id"
     t.text     "hospital_clinic_details"
     t.boolean  "interpreter_available",      :default => false
-    t.text     "address_update"
     t.string   "photo_file_name"
     t.string   "photo_content_type"
     t.integer  "photo_file_size"

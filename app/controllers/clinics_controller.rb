@@ -23,8 +23,7 @@ class ClinicsController < ApplicationController
   end
 
   def new
-    @is_review = false
-    @is_rereview = false
+    @form_modifier = ClinicFormModifier.new(:new, current_user)
     #specialization passed in to facilitate javascript "checking off" of starting speciality, since build below doesn't seem to work
     @specialization = Specialization.find(params[:specialization_id])
     @clinic = Clinic.new
@@ -74,7 +73,10 @@ class ClinicsController < ApplicationController
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
+      ## TODO: remove when we're certain the new review system is working
+      params.delete(:pre_edit_form_data)
       @clinic.review_object = ActiveSupport::JSON::encode(params)
+
       @clinic.save
       redirect_to clinic_path(@clinic), :notice => "Successfully created #{@clinic.name}."
     else
@@ -83,8 +85,7 @@ class ClinicsController < ApplicationController
   end
 
   def edit
-    @is_review = false
-    @is_rereview = false
+    @form_modifier = ClinicFormModifier.new(:edit, current_user)
     @clinic = Clinic.find(params[:id])
     while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
       puts "location #{@clinic.clinic_locations.length}"
@@ -140,7 +141,9 @@ class ClinicsController < ApplicationController
     params[:clinic][:procedure_ids] ||= []
     @clinic = Clinic.find(params[:id])
     ClinicSweeper.instance.before_controller_update(@clinic)
-    if @clinic.update_attributes(params[:clinic])
+
+    parsed_params = ParamParser::Clinic.new(params).exec
+    if @clinic.update_attributes(parsed_params[:clinic])
       clinic_specializations = @clinic.specializations
       if params[:focuses_mapped].present?
         @clinic.focuses.each do |original_focus|
@@ -157,6 +160,8 @@ class ClinicsController < ApplicationController
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
+      ## TODO: remove when we're certain the new review system is working
+      params.delete(:pre_edit_form_data)
       @clinic.review_object = ActiveSupport::JSON::encode(params)
       @clinic.save
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
@@ -182,8 +187,7 @@ class ClinicsController < ApplicationController
 
   def review
     @clinic = Clinic.find(params[:id])
-    @is_review = false
-    @is_rereview = false
+    @form_modifier = ClinicFormModifier.new(:review, current_user)
     @review_item = @clinic.review_item;
 
     if @review_item.blank?
@@ -240,8 +244,7 @@ class ClinicsController < ApplicationController
 
   def rereview
     @clinic = Clinic.find(params[:id])
-    @is_review = false
-    @is_rereview = true
+    @form_modifier = ClinicFormModifier.new(:rereview, current_user)
     @review_item = ReviewItem.find(params[:review_item_id])
 
     if @review_item.blank?
@@ -307,7 +310,9 @@ class ClinicsController < ApplicationController
     review_item.save
 
     ClinicSweeper.instance.before_controller_update(@clinic)
-    if @clinic.update_attributes(params[:clinic])
+
+    parsed_params = ParamParser::Clinic.new(params).exec
+    if @clinic.update_attributes(parsed_params[:clinic])
       clinic_specializations = @clinic.specializations
       if params[:focuses_mapped].present?
         @clinic.focuses.each do |original_focus|
@@ -324,7 +329,10 @@ class ClinicsController < ApplicationController
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
+      ## TODO: remove when we're certain the new review system is working
+      params.delete(:pre_edit_form_data)
       @clinic.review_object = ActiveSupport::JSON::encode(params)
+
       @clinic.save
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else
@@ -370,6 +378,7 @@ class ClinicsController < ApplicationController
   end
 
   protected
+
   def generate_focus(clinic, procedure_specialization, offset)
     focus = clinic.present? ? Focus.find_by_clinic_id_and_procedure_specialization_id(clinic.id, procedure_specialization.id) : nil
     return {

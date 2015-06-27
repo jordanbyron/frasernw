@@ -104,8 +104,6 @@ GEM
       delayed_job (> 2.0.3)
       sinatra (>= 0.9.2)
     diff-lcs (1.2.5)
-    domain_name (0.5.24)
-      unf (>= 0.0.5, < 1.0.0)
     em-websocket (0.5.1)
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
@@ -282,8 +280,6 @@ GEM
     hitimes (1.2.2)
     hodel_3000_compliant_logger (0.1.1)
     htmlentities (4.3.3)
-    http-cookie (1.0.2)
-      domain_name (~> 0.5)
     http_parser.rb (0.6.0)
     i18n (0.7.0)
     indefinite_article (0.2.4)
@@ -314,15 +310,6 @@ GEM
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    mechanize (2.7.2)
-      domain_name (~> 0.5, >= 0.5.1)
-      http-cookie (~> 1.0.0)
-      mime-types (~> 1.17, >= 1.17.2)
-      net-http-digest_auth (~> 1.1, >= 1.1.1)
-      net-http-persistent (~> 2.5, >= 2.5.2)
-      nokogiri (~> 1.4)
-      ntlm-http (~> 0.1, >= 0.1.1)
-      webrobots (>= 0.0.9, < 0.2)
     method_source (0.8.2)
     mime-types (1.25.1)
     mini_portile (0.6.2)
@@ -330,8 +317,6 @@ GEM
     multi_json (1.11.0)
     multipart-post (2.0.0)
     nenv (0.2.0)
-    net-http-digest_auth (1.4)
-    net-http-persistent (2.9.4)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
@@ -343,7 +328,6 @@ GEM
     notiffany (0.0.6)
       nenv (~> 0.1)
       shellany (~> 0.0)
-    ntlm-http (0.1.1)
     oink (0.10.1)
       activerecord
       hodel_3000_compliant_logger
@@ -421,13 +405,6 @@ GEM
       ffi (>= 0.5.0)
     rdoc (3.12.2)
       json (~> 1.4)
-    react-rails (1.0.0)
-      coffee-script-source (~> 1.8)
-      connection_pool
-      execjs
-      rails (>= 3.1)
-      react-source (~> 0.13)
-    react-source (0.13.3)
     request_store (1.1.0)
     rest-client (1.6.8)
       mime-types (~> 1.16)
@@ -508,9 +485,6 @@ GEM
     uglifier (2.7.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
-    unf (0.1.4)
-      unf_ext
-    unf_ext (0.0.7.1)
     unicorn (4.9.0)
       kgio (~> 2.6)
       rack
@@ -523,7 +497,6 @@ GEM
     validates_email_format_of (1.6.2)
       i18n
     wannabe_bool (0.1.1)
-    webrobots (0.1.1)
     will_paginate (3.0.7)
     yard (0.8.7.6)
 
@@ -565,7 +538,6 @@ DEPENDENCIES
   jquery-rails (~> 1.0.16)
   kgio
   letter_opener
-  mechanize
   nested_form!
   newrelic_rpm
   nifty-generators
@@ -587,7 +559,6 @@ DEPENDENCIES
   rails-erd
   rails_12factor
   rb-fsevent (~> 0.9.1)
-  react-rails
   rspec (~> 3.2)
   rspec-rails
   safety_mailer

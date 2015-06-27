@@ -38,6 +38,8 @@ class User < ActiveRecord::Base
   # times that the user (as admin) has contacted specialists
   has_many :contacts
 
+  has_many :notes
+
   delegate :with_activity, to: :subscriptions, prefix: true
 
   validates_presence_of :name

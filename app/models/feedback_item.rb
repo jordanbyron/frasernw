@@ -1,7 +1,13 @@
 class FeedbackItem < ActiveRecord::Base
+  include Noteable
+
   belongs_to :item, :polymorphic => true
 
   belongs_to :user
+
+  def label
+    "#{item.name} (Feedback Item)"
+  end
 
   class << self
     def active

@@ -18,7 +18,7 @@ module Analytics
           }
         else
           {
-            resource: item.name,
+            resource: item.label,
             category: item.sc_category.try(:name)
           }
         end

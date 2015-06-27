@@ -29,8 +29,7 @@ class SpecialistsController < ApplicationController
 
   def new
     load_form_variables
-    @is_new = true
-    @is_review = false
+    @form_modifier = SpecialistFormModifier.new(:new, current_user)
     #specialization passed in to facilitate javascript "checking off" of starting speciality, since build below doesn't seem to work
     @specialization = Specialization.find(params[:specialization_id])
     @specialist = Specialist.new
@@ -78,7 +77,10 @@ class SpecialistsController < ApplicationController
           capacity.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.map{ |ps2| Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps2.id) }.map{ |c| c.save }
         end
       end
+      # TODO: remove when we're sure the review system changes are stable
+      params.delete(:pre_edit_form_data)
       @specialist.review_object = ActiveSupport::JSON::encode(params)
+
       @specialist.save
       redirect_to @specialist, :notice => "Successfully created #{@specialist.name}. #{undo_link}"
     else
@@ -88,9 +90,7 @@ class SpecialistsController < ApplicationController
 
   def edit
     load_form_variables
-    @is_new = false
-    @is_review = false
-    @is_rereview = false
+    @form_modifier = SpecialistFormModifier.new(:edit, current_user)
     @specialist = Specialist.find(params[:id])
     if @specialist.capacities.count == 0
       @specialist.capacities.build
@@ -139,7 +139,9 @@ class SpecialistsController < ApplicationController
   def update
     @specialist = Specialist.find(params[:id])
     SpecialistSweeper.instance.before_controller_update(@specialist)
-    if @specialist.update_attributes(params[:specialist])
+
+    parsed_params = ParamParser::Specialist.new(params).exec
+    if @specialist.update_attributes(parsed_params[:specialist])
       if params[:capacities_mapped].present?
         specialist_specializations = @specialist.specializations
         @specialist.capacities.each do |original_capacity|
@@ -156,7 +158,10 @@ class SpecialistsController < ApplicationController
           capacity.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.map{ |ps2| Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps2.id) }.map{ |c| c.save }
         end
       end
+      # TODO: remove when we're sure the review system changes are stable
+      params.delete(:pre_edit_form_data)
       @specialist.review_object = ActiveSupport::JSON::encode(params)
+
       @specialist.save
       redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
     else
@@ -178,7 +183,9 @@ class SpecialistsController < ApplicationController
       review_item.save
 
       SpecialistSweeper.instance.before_controller_update(@specialist)
-      if @specialist.update_attributes(params[:specialist])
+
+      parsed_params = ParamParser::Specialist.new(params).exec
+      if @specialist.update_attributes(parsed_params[:specialist])
         if params[:capacities_mapped].present?
           specialist_specializations = @specialist.specializations
           @specialist.capacities.each do |original_capacity|
@@ -195,8 +202,11 @@ class SpecialistsController < ApplicationController
             capacity.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.map{ |ps2| Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps2.id) }.map{ |c| c.save }
           end
         end
-        @specialist.update_attributes( :address_update => "" )
+
+        # TODO: remove when we're sure the review system changes are stable
+        params.delete(:pre_edit_form_data)
         @specialist.review_object = ActiveSupport::JSON::encode(params)
+
         @specialist.save
         redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
       else
@@ -226,7 +236,7 @@ class SpecialistsController < ApplicationController
     SpecialistSweeper.instance.before_controller_destroy(@specialist)
     name = @specialist.name;
     @specialist.destroy
-    redirect_to specialists_url, :notice => "Successfully deleted #{name}. #{undo_link}"
+    redirect_to root_url, :notice => "Successfully deleted #{name}. #{undo_link}"
   end
 
   def undo_link
@@ -235,9 +245,7 @@ class SpecialistsController < ApplicationController
 
   def review
     load_form_variables
-    @is_new = false
-    @is_review = false
-    @is_rereview = false
+    @form_modifier = SpecialistFormModifier.new(:review, current_user)
     @specialist = Specialist.find(params[:id])
     @review_item = @specialist.review_item;
 
@@ -288,9 +296,7 @@ class SpecialistsController < ApplicationController
 
   def rereview
     load_form_variables
-    @is_new = false
-    @is_review = false
-    @is_rereview = true
+    @form_modifier = SpecialistFormModifier.new(:rereview, current_user)
     @specialist = Specialist.find(params[:id])
     @review_item = ReviewItem.find(params[:review_item_id])
 
