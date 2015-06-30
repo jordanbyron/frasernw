@@ -5,5 +5,5 @@ class UserCity < ActiveRecord::Base
   has_many :user_city_specializations, :dependent => :destroy
   has_many :specializations, :through => :user_city_specializations
 
-  has_paper_trail
+  include PaperTrailable
 end

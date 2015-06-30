@@ -13,7 +13,8 @@ class ReferralForm < ActiveRecord::Base
       :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
     }
 
-  has_paper_trail
+  include PaperTrailable
+  include PaperTrailable
 
   def label
     "#{referrable.name} (Referral Form)"

@@ -1,7 +1,7 @@
 class ScheduleDay < ActiveRecord::Base
   attr_accessible :scheduled, :from, :to, :break_from, :break_to
   has_one :schedule
-  has_paper_trail
+  include PaperTrailable
 
   def time?
     from.present? && to.present? && (from.hour != 0 || from.min != 0 || to.hour != 0 || to.min != 0)

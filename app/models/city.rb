@@ -1,6 +1,6 @@
 class City < ActiveRecord::Base
   attr_accessible :name, :province_id, :hidden
-  has_paper_trail
+  include PaperTrailable
 
   belongs_to :province
   has_many :addresses

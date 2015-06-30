@@ -2,14 +2,10 @@
 
 module Historical
   def history
-    history_generator.exec
+    GenerateHistory.new(self).exec
   end
 
-  def history_generator
-    history_generator_klass.new(self)
-  end
-
-  def history_generator_klass
-    "GenerateHistory::#{self.klass}".constantize
+  def tracks?(event_type)
+    GenerateHistory.can_get?(event_type, for: self)
   end
 end

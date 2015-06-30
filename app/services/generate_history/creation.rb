@@ -1,9 +1,13 @@
 module GenerateHistory
-  module AnonymousCreation
-    def creation
+  class Creation < Base
+    def self.exec(target)
+      new(target).exec
+    end
+
+    def exec
       HistoryNode.new(
         target: target,
-        user: UnknownUser.new,
+        user: target.creator,
         datetime: target.created_at,
         verb: :created
       )

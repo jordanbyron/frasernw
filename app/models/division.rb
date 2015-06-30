@@ -27,7 +27,7 @@ class Division < ActiveRecord::Base
 
   has_many :specialization_options, :dependent => :destroy
 
-  has_paper_trail
+  include PaperTrailable
 
   default_scope order('divisions.name')
 

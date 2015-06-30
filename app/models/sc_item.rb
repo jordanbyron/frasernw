@@ -303,6 +303,10 @@ class ScItem < ActiveRecord::Base
     created_at > 3.week.ago.utc
   end
 
+  def creator
+    AnonymousUser.new
+  end
+
   alias_attribute :label, :title
   alias_attribute :name, :title
 end

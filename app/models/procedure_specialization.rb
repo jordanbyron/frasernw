@@ -28,7 +28,7 @@ class ProcedureSpecialization < ActiveRecord::Base
   has_many :focuses, :dependent => :destroy
   has_many :clinics, :through => :focuses
 
-  has_paper_trail
+  include PaperTrailable
   has_ancestry
 
   # # # Cache actions

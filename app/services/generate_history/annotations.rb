@@ -1,7 +1,7 @@
 module GenerateHistory
   module Annotations
     def annotations
-      target.notes.each do |note|
+      target.persisted_notes.map do |note|
         HistoryNode.new(
           target: target,
           user: note.user,

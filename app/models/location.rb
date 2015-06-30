@@ -9,7 +9,7 @@ class Location < ActiveRecord::Base
 
   has_many :locations_in, :foreign_key => :location_in_id, :class_name => "Location"
 
-  has_paper_trail
+  include PaperTrailable
 
   def empty?
     a = resolved_address

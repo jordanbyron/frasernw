@@ -1,6 +1,7 @@
 class Language < ActiveRecord::Base
   attr_accessible :name
-  has_paper_trail :ignore => :saved_token
+
+  include PaperTrailable
 
   has_many :specialist_speaks, :dependent => :destroy
   has_many :specialists, :through => :specialist_speaks

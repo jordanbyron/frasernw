@@ -15,7 +15,7 @@ class SpecialistOffice < ActiveRecord::Base
   after_commit :flush_cache
   after_touch  :flush_cache
 
-  has_paper_trail
+  include PaperTrailable
 
   default_scope order('specialist_offices.id ASC')
 

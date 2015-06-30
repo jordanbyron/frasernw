@@ -5,5 +5,5 @@ class DivisionReferralCity < ActiveRecord::Base
   has_many :division_referral_city_specializations, :dependent => :destroy
   has_many :specializations, :through => :division_referral_city_specializations
 
-  has_paper_trail
+  include PaperTrailable
 end

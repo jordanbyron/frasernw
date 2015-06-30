@@ -1,6 +1,7 @@
 class Specialization < ActiveRecord::Base
   attr_accessible :name, :member_name, :in_progress, :specialization_options_attributes, :open_to_clinic
-  has_paper_trail :ignore => :saved_token
+
+  include PaperTrailable
 
   has_many :specialist_specializations, :dependent => :destroy
   has_many :specialists, :through => :specialist_specializations
@@ -121,4 +122,3 @@ class Specialization < ActiveRecord::Base
   end
 
 end
-

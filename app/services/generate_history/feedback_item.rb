@@ -1,9 +1,10 @@
 module GenerateHistory
   class FeedbackItem
     include Annotations
+    include LastUpdated
 
     def exec
-      [ creation ] + annotations
+      [ creation, last_updated ] + annotations
     end
 
     def creation

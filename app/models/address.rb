@@ -1,5 +1,5 @@
 class Address < ActiveRecord::Base
-  has_paper_trail
+  include PaperTrailable
   belongs_to :city
   has_many :locations
 

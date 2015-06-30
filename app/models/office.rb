@@ -17,7 +17,7 @@ class Office < ActiveRecord::Base
   after_commit :flush_cache
   after_touch  :flush_cache
 
-  has_paper_trail
+  include PaperTrailable
 
   def self.in_cities(c)
     city_ids = c.map{ |city| city.id }

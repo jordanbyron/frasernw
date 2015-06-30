@@ -15,7 +15,7 @@ class ClinicLocation < ActiveRecord::Base
   has_many :attendances, :dependent => :destroy
   accepts_nested_attributes_for :attendances, :allow_destroy => true
 
-  has_paper_trail
+  include PaperTrailable
 
   def self.all_formatted_for_user_form
     includes([:clinic, :location => [ {:address => :city}, {:hospital_in => {:location => {:address => :city}}} ]]).all.reject{ |cl| cl.location.blank? || cl.empty? || cl.clinic.blank? }.sort{ |a,b| a.clinic.name <=> b.clinic.name }.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id]}

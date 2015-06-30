@@ -10,6 +10,10 @@ class FeedbackItem < ActiveRecord::Base
     "#{item.name} (Feedback Item)"
   end
 
+  def creator
+    user
+  end
+
   class << self
     def active
       includes(:item).where(:archived => false)

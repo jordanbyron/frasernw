@@ -25,7 +25,7 @@ class Hospital < ActiveRecord::Base
 
   default_scope order('hospitals.name')
 
-  has_paper_trail :ignore => :saved_token
+  include PaperTrailable
 
   def self.all_formatted_for_form
     all(:order => "name ASC").map{ |h| ["#{h.name} - #{h.short_address}", h.id] }

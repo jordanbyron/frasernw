@@ -80,7 +80,7 @@
                 %td.subcategory= referral_form.referrable.specializations.map{ |s| s.name }.to_sentence
                 - if can? :index, Note
                   %td.notes_column
-                    = notes_button(referral_form)
+                    = history_button(referral_form)
 
       .span3.offsethalf
         .well.filter{:id => "referral_form_filters"}

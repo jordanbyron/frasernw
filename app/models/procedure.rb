@@ -1,6 +1,7 @@
 class Procedure < ActiveRecord::Base
   attr_accessible :name, :parent_id, :specialization_ids, :all_procedure_specializations_attributes
-  has_paper_trail :ignore => :saved_token
+
+  include PaperTrailable
 
   has_many :all_procedure_specializations, :dependent => :destroy, :class_name => "ProcedureSpecialization"
   has_many :procedure_specializations, :dependent => :destroy, :conditions => { "mapped" => true }

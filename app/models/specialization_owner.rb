@@ -7,5 +7,5 @@ class SpecializationOwner < ActiveRecord::Base
     where("specialization_owners.division_id = (?)", division.id)
   end
 
-  has_paper_trail
+  include PaperTrailable
 end

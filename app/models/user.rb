@@ -240,4 +240,8 @@ LIMITED_ROLE_HASH = {
     end
     users
   end
+
+  def self.safe_find(id)
+    where(id: whodunnit.id).first || UnknownUser.new
+  end
 end

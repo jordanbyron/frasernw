@@ -61,5 +61,5 @@ class SpecializationOption < ActiveRecord::Base
     OPEN_TO_SC_CATEGORY => "Content Category"
   }
 
-  has_paper_trail
+  include PaperTrailable
 end

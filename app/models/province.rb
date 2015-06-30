@@ -1,6 +1,6 @@
 class Province < ActiveRecord::Base
   attr_accessible :name, :abbreviation, :symbol
-  has_paper_trail
+  include PaperTrailable
 
   has_many :cities, :order => "name ASC"
   has_many :addresses, :through => :cities

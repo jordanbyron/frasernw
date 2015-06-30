@@ -62,6 +62,10 @@ class ReviewItem < ActiveRecord::Base
     "#{item.name} (Review Item)"
   end
 
+  def creator
+    User.safe_find(whodunnit)
+  end
+
   class << self
     def active
       includes(:item).where(:archived => false)

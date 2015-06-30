@@ -47,4 +47,9 @@ class Array
       memo.merge(elem => nil)
     end
   end
+
+  # takes n elements off the array and returns it
+  def clip(n = 1)
+    take(size - n)
+  end
 end

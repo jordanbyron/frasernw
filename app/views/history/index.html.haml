@@ -1,0 +1,29 @@
+- title "History"
+
+.content-wrapper
+  %h2= "History for \"#{@item.label}\""
+
+  .history__index
+    - @item.history.each do |history_node|
+      .history__node
+        - if history_node.target == @item
+          %p.history__line_item
+            %span
+              %strong= history_node.verb
+            %span= " by "
+            %span= history_node.user_name
+            %span= " on "
+            %span= history_node.date_label
+        - else
+          %p.history__line_item
+            %span= history_node.user_name
+            %span
+              %strong= history_node.verb
+            %span= history_node.target_label
+            %span= " on "
+            %span= history_node.date_label
+        - if history_node.has_content?
+          %p.history__line_item
+            = "\"#{history_node.content}\""
+
+  = render "notes/form", note: @new_note

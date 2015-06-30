@@ -11,12 +11,6 @@ class HistoryNode < OpenStruct
 
   # add 'parent'?/ 'on'?
 
-  CHILD_KLASSES = [
-    FeedbackItem,
-    ReviewItem,
-    Note
-  ]
-
   def to_s
     "#{user_name} #{verb_label} #{target_label} on #{date_label}"
   end
@@ -37,7 +31,7 @@ class HistoryNode < OpenStruct
     target.label
   end
 
-  def targets_child_item?
-    CHILD_KLASSES.include? target.class
+  def has_content?
+    content.present?
   end
 end

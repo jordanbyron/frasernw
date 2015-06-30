@@ -66,7 +66,7 @@
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Archive", archive_specialist_path(review_item.item), :class => "btn btn-mini ajax stacked-button")
                 - else
                   = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini stacked-button")
-                = notes_button(review_item)
+                = history_button(review_item)
 
       #clinics_tab.tab-pane
 
@@ -101,6 +101,6 @@
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Archive", archive_clinic_path(review_item.item), :class => "btn btn-mini ajax stacked-button")
                 - else
                   = link_to("<i class='icon-trash'></i>".html_safe + " Discard changes", review_item, :confirm => "Discard these changes?", :method => :delete, :class => "btn btn-mini stacked-button")
-                = notes_button(review_item)
+                = history_button(review_item)
 
   .btn-group= link_to "View archived review queue items", archived_review_items_path, :class => 'btn ajax'

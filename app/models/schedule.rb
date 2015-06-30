@@ -22,7 +22,7 @@ class Schedule < ActiveRecord::Base
   belongs_to :sunday, :class_name => "ScheduleDay"
   accepts_nested_attributes_for :sunday
 
-  has_paper_trail
+  include PaperTrailable
 
   def scheduled?
     monday.scheduled || tuesday.scheduled || wednesday.scheduled || thursday.scheduled || friday.scheduled || saturday.scheduled || sunday.scheduled

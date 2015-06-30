@@ -1,6 +1,6 @@
 class HealthcareProvider < ActiveRecord::Base
   attr_accessible :name
-  has_paper_trail
+  include PaperTrailable
 
   has_many :clinic_healthcare_provider, :dependent => :destroy
   has_many :clinics, :through => :clinic_healthcare_provider

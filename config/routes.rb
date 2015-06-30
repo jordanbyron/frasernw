@@ -72,7 +72,9 @@ Frasernw::Application.routes.draw do
   resources :divisions do
     resources :users
   end
-  resources :notes, only: [:index, :create, :destroy]
+
+  resources :notes, only: [:create, :destroy]
+  get "/history" => "history#index"
 
   # until this controller action is finished
   # get '/analytics/' => 'analytics#show'

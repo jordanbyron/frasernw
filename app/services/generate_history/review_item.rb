@@ -1,15 +1,16 @@
 module GenerateHistory
   class ReviewItem < Base
     include Annotations
+    include LastUpdated
 
     def exec
-      [ creation ] + annotations
+      [ creation, last_updated] + annotations
     end
 
     def creation
       HistoryNode.new(
         target: target,
-        user: (target.whodunnit || UnauthenticatedUser.new),
+        user: User.safe_find(target.whodunnit),
         datetime: target.created_at,
         verb: :created
       )
