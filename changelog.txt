@@ -12,7 +12,7 @@ Local-only = Changes not reflected in Source Code
 - ENV["FORCE_SSL"] can be set to "true" or "false" as an environment variable to enable or disable SSL.
 - CR:  Added major upgrade to analytics system; CSV report tools now allow fetching comprehensive division-specific usage analytics and entity metrics.
 - Added a heartbeat loading animation in between periods where a user is waiting for their browser to render HTML.
-- Add indexes and update database queries for content items (providing a measured ~150ms boost to page speed loads). 
+- Add indexes and update database queries for content items (providing a measured ~150ms boost to page speed loads).
 
 ### Changed
 - Renamed "Areas of Practice" to "Accepts Referrals For" where appropriate.
@@ -32,6 +32,7 @@ Local-only = Changes not reflected in Source Code
 - On Division edit pages, Internet Explorer browsers now correctly render specialty/city checkboxes in the local referral area table.
 - Content Item pages now cache correctly so that different versions of the page are shown for admins and users.
 - Referral form feedback button now disables during submission to prevent duplicate submissions.
+- Error on referral form update
 
 ### Removed:
 - Removed old reporting interface graphs from the codebase that were already disabled by earlier developers.

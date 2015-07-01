@@ -1,5 +1,5 @@
 class ReferralFormsController < ApplicationController
-  load_and_authorize_resource
+  load_and_authorize_resource except: [:edit, :update]
 
   def index
     user_divisions = current_user_divisions
@@ -15,5 +15,35 @@ class ReferralFormsController < ApplicationController
     @referral_forms.uniq!
 
     render :layout => 'ajax' if request.headers['X-PJAX']
+  end
+
+  def edit
+    parent_klass = params[:parent_type].constantize
+    @entity = parent_klass.find params[:parent_id]
+
+    authorize! :edit, @entity
+
+    @entity.referral_forms.build if @entity.referral_forms.length == 0
+    @entity_type = @entity.class == Clinic ? "clinic" : "office"
+
+    render(
+      template: 'referral_form/edit',
+      layout: request.headers['X-PJAX'] ? 'ajax' : true
+    )
+  end
+
+  def update
+    parent_klass = params[:parent_type].constantize
+    @entity = parent_klass.find params[:parent_id]
+
+    authorize! :update, @entity
+
+    sweeper = parent_klass == Clinic ? ClinicSweeper : SpecialistSweeper
+    sweeper.instance.before_controller_update(@entity)
+
+    entity_param_key = params[:parent_type].downcase.to_sym
+    @entity.update_attributes params[entity_param_key]
+
+    redirect_to @entity, :notice  => "Successfully updated #{@entity.name}."
   end
 end
