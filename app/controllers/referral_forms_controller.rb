@@ -38,11 +38,17 @@ class ReferralFormsController < ApplicationController
 
     authorize! :update, @entity
 
-    sweeper = parent_klass == Clinic ? ClinicSweeper : SpecialistSweeper
-    sweeper.instance.before_controller_update(@entity)
-
     entity_param_key = params[:parent_type].downcase.to_sym
     @entity.update_attributes params[entity_param_key]
+
+    cache_path = begin
+      if parent_klass == Clinic
+        clinic_path(@entity)
+      else
+        specialist_path(@entity)
+      end
+    end
+    expire_fragment cache_path
 
     redirect_to @entity, :notice  => "Successfully updated #{@entity.name}."
   end
