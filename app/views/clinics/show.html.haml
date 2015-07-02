@@ -406,7 +406,7 @@
       - elsif can? :update, @clinic
 
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Clinic", edit_clinic_path(@clinic), :class => "btn ajax")
-        = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", referral_forms_clinic_path(@clinic), :class => "btn ajax")
+        = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", edit_referral_forms_path(parent_type: "Clinic", parent_id: @clinic.id), :class => "btn ajax")
         %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
           %i.icon-share
           Share

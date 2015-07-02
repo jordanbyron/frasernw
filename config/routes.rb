@@ -22,7 +22,6 @@ Frasernw::Application.routes.draw do
       get :archive
       put :accept, as: "accept_review"
       get :print, as: "patient_information", action: "print_patient_information"
-      get :edit_referral_forms, as: "referral_forms"
     end
   end
 
@@ -45,7 +44,6 @@ Frasernw::Application.routes.draw do
       put :accept
       get :photo
       put :update_photo
-      get :edit_referral_forms, as: "referral_forms"
     end
   end
 
@@ -97,7 +95,13 @@ Frasernw::Application.routes.draw do
   resources :reports
 
 
-  match '/referral_forms'               => 'referral_forms#index',      :as => 'referral_forms'
+  resources :referral_forms, only: [:index] do
+    # Polymorphic routes
+    collection do
+      get :edit
+      put :update
+    end
+  end
 
   match '/specialists/:id/print'        => 'specialists#print_patient_information',   :as => 'specialist_patient_information'
   match '/specialists/:id/print/office/:office_id' => 'specialists#print_office_patient_information',   :as => 'specialist_patient_information_office'
