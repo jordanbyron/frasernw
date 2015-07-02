@@ -3,22 +3,20 @@
 module PaperTrailable
   extend ActiveSupport::Concern
 
+  def creation
+    versions.where(event: "create").first
+  end
+
   def creator
-    User.safe_find(
-      versions.where(event: "create").first.whodunnit
-    )
+    creation.safe_user
   end
 
   def last_update
-    User.safe_find(
-      versions.where(event: "update").first.whodunnit
-    )
+    versions.where(event: "update").first
   end
 
   def last_updater
-    User.safe_find(
-      versions.where(event: "update").first.whodunnit
-    )
+    last_update.safe_user
   end
 
   included do

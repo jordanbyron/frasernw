@@ -1,9 +1,6 @@
 module HistoryHelper
   def history_icon(item)
-    classes = ["icon-tag"]
-    classes << "icon-black" unless noteable.history.any?
-
-    link_to("<i class='#{classes.join(' ')}'></i>".html_safe, history_index(item), target: "_blank")
+    link_to("<i class='icon-tag icon-black'></i>".html_safe, history_index(item), target: "_blank")
   end
 
   def history_button(item)

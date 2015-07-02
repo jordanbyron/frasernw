@@ -8,13 +8,13 @@ class GenerateHistory
     end
 
     def prior_update_versions
-      target.versions.where(event: "updated").clip(1)
+      target.versions.where(event: "update").clip(1)
     end
 
     def node(version)
       HistoryNode.new(
         target: target,
-        user: User.safe_find(version.whodunnit),
+        user: version.safe_user,
         datetime: version.created_at,
         verb: :updated
       )

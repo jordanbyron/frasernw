@@ -241,7 +241,7 @@ LIMITED_ROLE_HASH = {
     users
   end
 
-  def self.safe_find(id)
-    where(id: id).first || UnknownUser.new
+  def self.safe_find(id, fallback_klass = UnknownUser)
+    where(id: id).first || fallback_klass.new
   end
 end

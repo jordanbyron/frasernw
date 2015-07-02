@@ -304,7 +304,7 @@ class ScItem < ActiveRecord::Base
   end
 
   def creator
-    AnonymousUser.new
+    UnknownUser.new
   end
 
   alias_attribute :label, :title

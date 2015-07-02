@@ -3,4 +3,11 @@ class Version < ActiveRecord::Base
   def evented
     self.event.gsub('update','updated').gsub('destroy','destroyed').gsub('create','created')
   end
+
+  def safe_user
+    User.safe_find(
+      self.whodunnit,
+      UnauthenticatedUser.new
+    )
+  end
 end
