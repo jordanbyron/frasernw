@@ -15,4 +15,9 @@ class String
       year_month[1].to_i
     )
   end
+
+  # "ReviewItem" => "Review Item"
+  def split_on_capitals
+    scan(/[A-Z][^A-Z]*/).join(' ')
+  end
 end

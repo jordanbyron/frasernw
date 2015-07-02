@@ -28,7 +28,7 @@ class HistoryNode < OpenStruct
   end
 
   def target_label
-    target.label
+    target.numbered_label
   end
 
   def has_content?
