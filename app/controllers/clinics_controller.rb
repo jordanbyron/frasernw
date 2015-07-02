@@ -178,13 +178,6 @@ class ClinicsController < ApplicationController
     redirect_to clinics_url, :notice => "Successfully deleted #{name}."
   end
 
-  def edit_referral_forms
-    @entity = Clinic.find(params[:id])
-    @entity.referral_forms.build if @entity.referral_forms.length == 0
-    @entity_type = "clinic"
-    render :template => 'referral_form/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
-  end
-
   def review
     @clinic = Clinic.find(params[:id])
     @form_modifier = ClinicFormModifier.new(:review, current_user)

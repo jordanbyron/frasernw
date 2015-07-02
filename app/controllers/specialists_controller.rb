@@ -347,13 +347,6 @@ class SpecialistsController < ApplicationController
     end
   end
 
-  def edit_referral_forms
-    @entity = Specialist.find(params[:id])
-    @entity.referral_forms.build if @entity.referral_forms.length == 0
-    @entity_type = "office"
-    render :template => 'referral_form/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
-  end
-
   def print_patient_information
     @specialist = Specialist.cached_find(params[:id])
     @specialist_office = @specialist.specialist_offices.reject{ |so| so.empty? }.first

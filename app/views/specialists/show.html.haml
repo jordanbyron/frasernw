@@ -519,7 +519,7 @@
       - elsif can? :update, @specialist
 
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialist", edit_specialist_path(@specialist), :class => "btn ajax")
-        = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", referral_forms_specialist_path(@specialist), :class => "btn ajax")
+        = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", edit_referral_forms_path(parent_type: "Specialist", parent_id: @specialist.id), :class => "btn ajax")
         = link_to("<i class='icon-picture'></i>".html_safe + " Photo", photo_specialist_path(@specialist), :class => "btn ajax")
         %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
           %i.icon-share
