@@ -28,7 +28,7 @@ class ReportsController < ApplicationController
           entry[:moa_email] = sp.contact_email.split.flatten.reject{ |e| !(e.include? '@') }
           entry[:token] = sp.token
           entry[:updated_at] = sp.updated_at
-          review_item = sp.archived_review_items.sort_by{ |x| x.id }.last
+          review_item = sp.review_items.sort_by{ |x| x.id }.last
           entry[:reviewed_at] = review_item.present? ? review_item.updated_at : nil
           entry[:linked_active_account_count] = active_controlling_users.count
           entry[:linked_pending_account_count] = sp.controlling_users.reject{ |u| !u.pending? }.count

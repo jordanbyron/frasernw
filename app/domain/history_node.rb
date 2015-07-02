@@ -24,7 +24,7 @@ class HistoryNode < OpenStruct
   end
 
   def verb_label
-    verb.to_s
+    verb.to_s.gsub("_", " ")
   end
 
   def target_label

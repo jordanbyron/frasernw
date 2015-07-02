@@ -63,7 +63,7 @@ class ReviewItem < ActiveRecord::Base
   end
 
   def creator
-    User.safe_find(whodunnit)
+    User.safe_find whodunnit
   end
 
   class << self

@@ -25,11 +25,11 @@ module Metrics
         specialist_row[:first_version]        =   specialist.versions.last.created_at                  if ((options[:all] || options[:first_version])        == true)
         specialist_row[:last_version]         =   specialist.versions.first.created_at                 if ((options[:all] || options[:last_version])         == true)
         specialist_row[:version_number]       =   specialist.versions.count                            if ((options[:all] || options[:version_number])       == true)
-        # specialist_row[:feedback_items]       = ( specialist.feedback_items +
-        #                                           specialist.archived_feedback_items).
+        # specialist_row[:feedback_items]       = ( specialist.active_feedback_items +
+        #                                           specialist.feedback_items).
         #                                           map { |f| f.feedback  }.join("  <<<< >>>>  ")        if ((options[:all] || options[:version_number])       == true)
-        # specialist_row[:feedback_items_count] = ( 0 + specialist.feedback_items.count +
-        #                                           specialist.archived_feedback_items.count)            if ((options[:all] || options[:feedback_items_count]) == true)
+        # specialist_row[:feedback_items_count] = ( 0 + specialist.active_feedback_items.count +
+        #                                           specialist.feedback_items.count)            if ((options[:all] || options[:feedback_items_count]) == true)
         table << specialist_row
       end
       @table = table

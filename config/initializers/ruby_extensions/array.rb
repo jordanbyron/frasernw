@@ -50,6 +50,10 @@ class Array
 
   # takes n elements off the array and returns it
   def clip(n = 1)
-    take(size - n)
+    if (size - n) < 0
+      self
+    else
+      take (size - n)
+    end
   end
 end

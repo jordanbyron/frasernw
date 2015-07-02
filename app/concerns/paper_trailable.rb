@@ -1,7 +1,7 @@
 # use this module to add paper trail to a model
 
 module PaperTrailable
-  extends ActiveSupport::Concern
+  extend ActiveSupport::Concern
 
   def creator
     User.safe_find(
@@ -11,17 +11,17 @@ module PaperTrailable
 
   def last_update
     User.safe_find(
-      versions.where(event: "last").first.whodunnit
+      versions.where(event: "update").first.whodunnit
     )
   end
 
   def last_updater
     User.safe_find(
-      versions.where(event: "last").first.whodunnit
+      versions.where(event: "update").first.whodunnit
     )
   end
 
   included do
-    include PaperTrailable, ignore: [:saved_token, :review_object, :review_item]
+    has_paper_trail ignore: [:saved_token, :review_object, :review_item]
   end
 end

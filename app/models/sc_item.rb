@@ -1,8 +1,11 @@
 class ScItem < ActiveRecord::Base
-  include ApplicationHelper
-  include PublicActivity::Model
   include Noteable
   include Historical
+  include Feedbackable
+
+  include ApplicationHelper
+  include PublicActivity::Model
+
   # not used here since activity is created in controller:
   # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user}
   has_many :activities, as: :trackable, class_name: 'SubscriptionActivity', dependent: :destroy
@@ -16,9 +19,6 @@ class ScItem < ActiveRecord::Base
 
   has_many    :sc_item_specialization_procedure_specializations, :through => :sc_item_specializations
   has_many    :procedure_specializations, :through => :sc_item_specialization_procedure_specializations
-
-  has_many    :feedback_items, :as => :item, :conditions => { "archived" => false }
-  has_many    :archived_feedback_items, :as => :item, :foreign_key => "item_id", :class_name => "FeedbackItem"
 
   belongs_to  :division
 

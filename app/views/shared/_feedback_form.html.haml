@@ -1,5 +1,5 @@
 -#Not Yet fully working with Feedback queue.  Refactor to this nearly working abstraction to build a unified partial for feedback items.
--# To use this partial, in controller add: :feedback_item = item.feedback_items.build
+-# To use this partial, in controller add: :feedback_item = item.active_feedback_items.build
 -#item is local partial abstraction of @specialist, @sc_item, @clinic
 - if item.class.name == "ScItem"
   - item_js_name = "content_items" # e.g.: $('#user_favorite_content_items_#{item.id}')

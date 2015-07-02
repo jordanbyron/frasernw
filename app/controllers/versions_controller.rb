@@ -17,7 +17,7 @@ class VersionsController < ApplicationController
       @klass = @version.next.reify.class.to_s.downcase
       eval("@#{@klass} = @version.next.reify" )
     end
-      eval("@feedback = @#{@klass}.feedback_items.build" )
+      eval("@feedback = @#{@klass}.active_feedback_items.build" )
       @is_version = true
       render :template => "#{@klass.pluralize}/show"
 

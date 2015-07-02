@@ -18,7 +18,7 @@ class ClinicsController < ApplicationController
 
   def show
     @clinic = Clinic.find(params[:id])
-    @feedback = @clinic.feedback_items.build
+    @feedback = @clinic.active_feedback_items.build
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -373,7 +373,7 @@ class ClinicsController < ApplicationController
 
   def refresh_cache
     @clinic = Clinic.find(params[:id])
-    @feedback = @clinic.feedback_items.build
+    @feedback = @clinic.active_feedback_items.build
     render :show, :layout => 'ajax'
   end
 

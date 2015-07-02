@@ -1,15 +1,7 @@
 class GenerateHistory
   class Base
-    def self.generator_for?(model_class)
-      generator_for(model_class).present?
-    end
-
-    def self.generator_for(model_class)
-      true
-    end
-
-    def self.exec(target)
-      generator_for(target.class).new(target).exec
+    def self.for(target)
+      self.new(target).exec
     end
 
     attr_reader :target

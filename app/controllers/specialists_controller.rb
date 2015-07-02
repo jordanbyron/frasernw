@@ -23,7 +23,7 @@ class SpecialistsController < ApplicationController
 
   def show
     @specialist = Specialist.cached_find(params[:id])
-    @feedback = @specialist.feedback_items.build
+    @feedback = @specialist.active_feedback_items.build
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -393,7 +393,7 @@ class SpecialistsController < ApplicationController
     @specialist = Specialist.find(params[:id])
     @specialist.flush_cached_find
     @specialist = Specialist.cached_find(params[:id])
-    @feedback = @specialist.feedback_items.build
+    @feedback = @specialist.active_feedback_items.build
     render :show, :layout => 'ajax'
   end
 

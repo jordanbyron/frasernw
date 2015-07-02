@@ -1,6 +1,8 @@
 class ReferralForm < ActiveRecord::Base
   include Noteable
   include Historical
+  include PaperTrailable
+
   include ActionView::Helpers::TextHelper
 
   belongs_to :referrable, :polymorphic => true
@@ -12,9 +14,6 @@ class ReferralForm < ActiveRecord::Base
       :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
       :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
     }
-
-  include PaperTrailable
-  include PaperTrailable
 
   def label
     "#{referrable.name} (Referral Form)"
