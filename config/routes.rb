@@ -173,7 +173,7 @@ Frasernw::Application.routes.draw do
 
   resources :faq_categories, only: [:show] do
     member do
-      put :update_ordering
+      post :update_ordering
     end
   end
   resources :faqs, only: [:new, :create, :edit, :update, :destroy]
