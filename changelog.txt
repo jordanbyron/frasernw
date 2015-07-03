@@ -38,3 +38,4 @@ Local-only = Changes not reflected in Source Code
 
 ### Removed:
 - Removed old reporting interface graphs from the codebase that were already disabled by earlier developers.
+- Option to delete review item from index view.
