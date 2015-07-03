@@ -13,16 +13,6 @@ class FrontController < ApplicationController
     render :action => 'index'
   end
 
-  def faq
-    render :layout => 'ajax' if request.headers['X-PJAX']
-  end
-
-  def terms_and_conditions
-    render :layout => 'ajax' if request.headers['X-PJAX']
-  end
-
-
-
   def edit
     @front = Front.first
     @front = Front.create if @front.blank?

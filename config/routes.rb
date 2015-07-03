@@ -146,12 +146,20 @@ Frasernw::Application.routes.draw do
   match '/refresh_livesearch_division_entries/:division_id/:specialization_id' => 'search#refresh_livesearch_division_entries', :as => :refresh_livesearch_division_entries
   match '/refresh_livesearch_division_content/:division_id' => 'search#refresh_livesearch_division_content', :as => :refresh_livesearch_division_content
 
-  match '/front' => 'front#index', :as => :front
-  get '/front/:division_id' => 'front#as_division', :as => :front_as_division
-  match '/faq' => 'front#faq', :as => :faq
-  match '/terms_and_conditions' => 'front#terms_and_conditions', :as => :terms_and_conditions
-  match '/front/edit/:division_id' => 'front#edit', :as => :edit_front_as_division
-  match '/front/update' => 'front#update', :as => :update_front
+
+  scope "/front", controller: :front do
+    get "/", action: :index
+    get "/:division_id", action: :as_division, :as => :front_as_division
+    get "/edit/:division_id", action: :edit, :as => :edit_front_as_division
+    put "/update", action: :update, as: :update_front
+  end
+  root :to => 'front#index'
+
+  scope "/", controller: :info do
+    get :faq
+    get :terms_and_conditions
+  end
+
   match '/stats' => 'stats#index', :as => :stats
 
   match 'messages' => 'messages#new', :as => 'messages', :via => :get
@@ -165,6 +173,4 @@ Frasernw::Application.routes.draw do
       post :import
     end
   end
-
-  root :to => 'front#index'
 end
