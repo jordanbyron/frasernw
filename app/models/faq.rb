@@ -3,4 +3,8 @@ class Faq < ActiveRecord::Base
 
   belongs_to :faq_category
 
+  def category_name
+    faq_category.name
+  end
+
 end

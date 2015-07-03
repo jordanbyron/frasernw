@@ -11,6 +11,11 @@
 
         - @category.sorted_by_index.each do |faq|
           %h2
-            = faq.question
+            %span= faq.question
+            - if can? :update, Faq
+              %span
+                = link_to edit_faq_path(faq), target: "_blank" do
+                  %i.icon-pencil
+
           %p
             = BlueCloth.new(faq.answer_markdown).to_html.html_safe

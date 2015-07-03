@@ -2,15 +2,16 @@
   - if action == :new
     = f.association :faq_category
   - else
-    %p
-      = "Category: #{@faq.category.name}"
+    = f.label :faq_category, "Category: #{@faq.category_name}"
   = f.input :question,
     as: :text,
     input_html: { class: "faq_editor__textarea faq_editor__textarea--question" }
   = f.input :answer_markdown,
     as: :text,
-    label: "Answer (markdown)",
+    label: "Answer",
     hint: "*Learn more about markdown syntax #{link_to('here', ' http://daringfireball.net/projects/markdown/syntax')}".html_safe,
     input_html: { class: "faq_editor__textarea faq_editor__textarea--answer" }
 
-  = f.button :submit
+  = f.button :submit, class: "btn btn-primary inline-buttons"
+  - if action == :edit
+    = link_to "Delete", faq_path(faq), method: :delete, class: "btn btn-default inline-button"
