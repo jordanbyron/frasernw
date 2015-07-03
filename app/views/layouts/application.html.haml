@@ -361,7 +361,7 @@
                         %li= link_to clinic.name, clinic, :class => 'ajax'
 
                     %li.nav-header Help
-                    %li= link_to "FAQ", faq_path, :class => 'faq ajax'
+                    %li= link_to "FAQ", faq_category_path(FaqCategory.help), :class => 'faq ajax'
                     %li= mail_to "administration@pathwaysbc.ca", "Contact Us", :class => 'contact'
 
                     %li.nav-header Legal

@@ -1,5 +1,3 @@
-- title "FAQ"
-
 %ul#specialties-menu
   %li.dropdown.no-caret
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
@@ -10,16 +8,3 @@
 
 %script{"type" => "text/javascript"}
   $(document).ready(function() { update_favorites() });
-
-.content-wrapper
-  .content#faq
-    .row
-      .span8.offset2
-        %h1
-          = "#{@category.name} FAQ"
-
-        - @category.faqs.each do |faq|
-          %h2
-            = faq.question
-          %p
-            = BlueCloth.new(faq.answer_markdown).to_html.html_safe

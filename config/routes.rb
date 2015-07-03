@@ -155,10 +155,7 @@ Frasernw::Application.routes.draw do
   end
   root :to => 'front#index'
 
-  scope "/", controller: :info do
-    get :faq
-    get :terms_and_conditions
-  end
+  resources :terms_and_conditions, only: [:index]
 
   match '/stats' => 'stats#index', :as => :stats
 
@@ -173,4 +170,6 @@ Frasernw::Application.routes.draw do
       post :import
     end
   end
+
+  resources :faq_categories, only: [:show]
 end

@@ -10,8 +10,8 @@ class Ability
 
     else
       # all categories of logged in
-      can :view, :faq
-      can :view, :terms_and_conditions
+      can :show, FaqCategory
+      can :index, :terms_and_conditions
 
       if user.super_admin?
 
