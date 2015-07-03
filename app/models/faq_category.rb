@@ -8,4 +8,8 @@ class FaqCategory < ActiveRecord::Base
   def sorted_by_index
     faqs.order(:index)
   end
+
+  def next_available_index
+    sorted_by_index.last.index + 1
+  end
 end

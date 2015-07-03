@@ -247,6 +247,8 @@
                             %li= link_to "New Content Category", new_sc_category_path, :class => "ajax"
                           - if can? :create, ScItem
                             %li= link_to "New Content Item", new_sc_item_path, :class => "ajax"
+                          - if can? :create, Faq
+                            %li= link_to "New Faq", new_faq_path
                       - if can? :read, ScCategory
                         %li= link_to "Content Categories", sc_categories_path, :class => "sc_category ajax"
                       - if can? :read, ScItem

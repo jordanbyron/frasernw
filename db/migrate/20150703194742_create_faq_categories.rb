@@ -5,9 +5,6 @@ class CreateFaqCategories < ActiveRecord::Migration
 
       t.timestamps
     end
-
-    FaqCategory.create(name: "Help")
-    FaqCategory.create(name: "Privacy")
   end
 
   def down

@@ -1,0 +1,16 @@
+= simple_form_for(@faq, method: action == :new ? :post : :put) do |f|
+  - if action == :new
+    = f.association :faq_category
+  - else
+    %p
+      = "Category: #{@faq.category.name}"
+  = f.input :question,
+    as: :text,
+    input_html: { class: "faq_editor__textarea faq_editor__textarea--question" }
+  = f.input :answer_markdown,
+    as: :text,
+    label: "Answer (markdown)",
+    hint: "*Learn more about markdown syntax #{link_to('here', ' http://daringfireball.net/projects/markdown/syntax')}".html_safe,
+    input_html: { class: "faq_editor__textarea faq_editor__textarea--answer" }
+
+  = f.button :submit
