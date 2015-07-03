@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150619000023) do
+ActiveRecord::Schema.define(:version => 20150703200928) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -315,6 +315,23 @@ ActiveRecord::Schema.define(:version => 20150619000023) do
   end
 
   add_index "edits", ["specialist_id"], :name => "index_edits_on_specialist_id"
+
+  create_table "faq_categories", :force => true do |t|
+    t.string   "name",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "faqs", :force => true do |t|
+    t.text     "question",        :null => false
+    t.text     "answer_markdown", :null => false
+    t.integer  "index",           :null => false
+    t.integer  "faq_category_id", :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "faqs", ["faq_category_id"], :name => "faqs_category_id"
 
   create_table "favorites", :force => true do |t|
     t.integer  "user_id"

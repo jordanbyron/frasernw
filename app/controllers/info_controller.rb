@@ -2,14 +2,18 @@ class InfoController < ApplicationController
   include ApplicationHelper
 
   def faq
-    authorize! :view, :faq
+    @category = FaqCategory.where(name: "Help").first
 
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    authorize! :view, :faq
   end
 
   def terms_and_conditions
-    authorize! :view, :faq
-
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    authorize! :view, :terms_and_conditions
   end
+
+  def privacy_faq
+    authorize! :view, :privacy_faq
+  end
+
+
 end

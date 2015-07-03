@@ -14,66 +14,12 @@
 .content-wrapper
   .content#faq
     .row
-
       .span8.offset2
+        %h1
+          = "#{@category.name} FAQ"
 
-        %h1 FAQ
-
-        %h2 I see some information that is wrong or out-of-date for a specialist or clinic. What can I do?
-
-        %p
-          At the bottom of each specialist or clinic page is a button labelled
-          %strong Incorrect Information? Let us know.
-          If you press this button, a form will appear that will allow you to ender any comments about the specialist or clinic that you have. Type your feedback, and press "Send Feedback". Your comments will be sent directly to your administration team, who will review and act on them, possibly getting in touch with you for follow up.
-
-        %p We encourage all users to send feedback any time they see something they think is incorrect; Pathways is built on the concept of local ownership, and your feedback helps keep the site accurate for everyone.
-
-
-        %h2 What are Favourites and how do I use them?
-
-        %p A favourite is a quick shortcut to a specialist or clinic, one that you or your office regularly references.
-
-        %p
-          You can make a favourite by pressing the
-          %i.icon-text.icon-heart
-          on the specialist or clinic page beside their name. It will change to a
-          %i.icon-red.icon-heart
-          and is now in your Favourites list, which is accessible from the top of every page, under
-          %strong Favourites.
-
-        %p
-          Similarly, you can remove a favourite at any time by clicking on the red heart, which will change back to black. You can also favourite content that you regularly reference, such as Red Flags or Pearls.
-
-
-        %h2 What can I type into the search box?
-
-        %p
-          The search box accepts the name of any
-          %strong specialty, specialist, clinic, area of practice, hospital, clinic, or GP resource
-          = "- anything that exists on Pathways."
-        %p
-          You don't have to spell what you are looking for correctly nor completely; results will start to match as you type. We think you will find it a very fast way to navigate Pathways.
-
-
-        %h2 How can I change the e-mail or password we use to log in?
-
-        %p
-          From the
-          %strong You
-          menu at the top of each page you are able to change the e-mail and password associated with your account. Note that changing either will log you out, and ask you to log back in with your new settings.
-
-
-        %h2 How can I use or share the information on Pathways?
-
-        %p
-          Please see the
-          =link_to "Terms of Use", terms_and_conditions_path, :class => 'ajax'
-          for details.
-
-
-        %h2 I have a question or comment not addressed here. Who can I contact?
-
-        %p
-          Please send us an e-mail at
-          = mail_to "administration@pathwaysbc.ca", "administration@pathwaysbc.ca"
-          and we will get back to you as soon as possible.
+        - @category.faqs.each do |faq|
+          %h2
+            = faq.question
+          %p
+            = BlueCloth.new(faq.answer_markdown).to_html.html_safe
