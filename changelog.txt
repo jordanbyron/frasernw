@@ -13,7 +13,8 @@ Local-only = Changes not reflected in Source Code
 - CR:  Added major upgrade to analytics system; CSV report tools now allow fetching comprehensive division-specific usage analytics and entity metrics.
 - Added a heartbeat loading animation in between periods where a user is waiting for their browser to render HTML.
 - Add indexes and update database queries for content items (providing a measured ~150ms boost to page speed loads).
-- Added notes pages for review items, feedback items, content items, and referral forms
+- CR: notes pages for review items, feedback items, content items, and referral forms
+- CR: history pages for review items, feedback items, content items, and referral forms
 
 ### Changed
 - Renamed "Areas of Practice" to "Accepts Referrals For" where appropriate.
