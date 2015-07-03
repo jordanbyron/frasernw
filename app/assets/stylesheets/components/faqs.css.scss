@@ -11,4 +11,8 @@
   .faqs__admin_icon--handle {
     margin-left: 4px;
   }
+  .faqs__admin_icon--handle:hover {
+    margin-left: 4px;
+    cursor: ns-resize;
+  }
 }
