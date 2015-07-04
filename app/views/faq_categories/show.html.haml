@@ -8,6 +8,10 @@
       .span8.offset2
         %h1
           = "#{@category.name} FAQ"
+        - if @category.description.present?
+          %p
+            = @category.description
+          %br
 
         .faqs{"data-update-url" => update_ordering_faq_category_path(@category)}
           - @category.sorted_by_index.each do |faq|
