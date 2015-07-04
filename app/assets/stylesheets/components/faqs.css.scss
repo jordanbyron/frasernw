@@ -1,4 +1,4 @@
-#content #container {
+#content #container #faq {
   .faqs__admin_icon {
     color: rgb(64, 64, 64);
   }
@@ -14,5 +14,15 @@
   .faqs__admin_icon--handle:hover {
     margin-left: 4px;
     cursor: ns-resize;
+  }
+  .faqs {
+    ul {
+      list-style-type: initial;
+      li {
+        list-style-position: inside;
+        text-indent: -1em;
+        padding-left: 1em;
+      }
+    }
   }
 }

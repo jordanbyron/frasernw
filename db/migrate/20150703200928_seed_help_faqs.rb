@@ -36,7 +36,7 @@ class SeedHelpFaqs < ActiveRecord::Migration
   end
 
   def down
-    help_category = FaqCategory.where(name: "Help")
+    help_category = FaqCategory.where(name: "Help").first
 
     help_category.faqs.destroy_all
   end
