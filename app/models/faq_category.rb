@@ -5,6 +5,10 @@ class FaqCategory < ActiveRecord::Base
     where(name: "Help").first
   end
 
+  def self.privacy
+    where(name: "Privacy Compliance").first
+  end
+
   def sorted_by_index
     faqs.order(:index)
   end

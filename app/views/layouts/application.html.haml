@@ -363,10 +363,11 @@
                         %li= link_to clinic.name, clinic, :class => 'ajax'
 
                     %li.nav-header Help
-                    %li= link_to "FAQ", faq_category_path(FaqCategory.help), :class => 'faq ajax'
+                    %li= link_to "Help FAQ", faq_category_path(FaqCategory.help), :class => 'faq_link ajax'
                     %li= mail_to "administration@pathwaysbc.ca", "Contact Us", :class => 'contact'
 
                     %li.nav-header Legal
+                    %li= link_to "Privacy FAQ", faq_category_path(FaqCategory.privacy), :class => 'faq_link ajax'
                     %li= link_to "Terms of Use", terms_and_conditions_path, :class => 'tac ajax'
 
                     %li.nav-header Settings

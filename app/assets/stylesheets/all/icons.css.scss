@@ -80,6 +80,7 @@
 .change_email:before,
 .change_password:before,
 .tac:before,
+.faq_link:before,
 .contact:before,
 .logout:before,
 .history:before,
@@ -144,6 +145,11 @@
 .change_password:before
 {
   content: "\f084";
+}
+
+.faq_link:before
+{
+  content: "\f059";
 }
 
 .tac:before
