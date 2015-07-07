@@ -27,7 +27,7 @@ class ReferralFormsController < ApplicationController
     @entity_type = @entity.class == Clinic ? "clinic" : "office"
 
     render(
-      template: 'referral_form/edit',
+      template: 'referral_forms/edit',
       layout: request.headers['X-PJAX'] ? 'ajax' : true
     )
   end
