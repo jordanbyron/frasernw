@@ -73,5 +73,6 @@
                 %td= "#{time_ago_in_words(feedback_item.created_at)} ago"
                 %td{"style" => "width: 30%"}= feedback_item.feedback
                 %td= feedback_item.user.blank? ? "unavailable" : (mail_to feedback_item.user.email, feedback_item.user.email, :subject => "Your Pathways Feedback", :body => "#{feedback_item.feedback} \n\n Pathways: http://www.pathwaysbc.ca")
+                %td.admin= history_button(feedback_item)
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
