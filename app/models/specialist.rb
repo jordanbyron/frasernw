@@ -66,6 +66,7 @@ class Specialist < ActiveRecord::Base
     :styles => { :thumb => "200x200#" },
     :storage => :s3,
     :bucket => ENV['S3_BUCKET_NAME_SPECIALIST_PHOTOS'],
+    :s3_protocol => :https,
     :s3_credentials => {
       :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
       :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']

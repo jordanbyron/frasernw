@@ -82,6 +82,11 @@ module FrontHelper
                 next if version.reify.opened_recently? #opened this year status hasn't changed)
             end
 
+            # we're actually gonna use this event
+            # make sure we're not getting a cached version
+            # (TODO upgrade paper trail?...)
+            specialist_office = specialist_office.reload
+
             if specialist_office.city.present?
               automated_events["Specialist_#{specialist.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{specialist_office.city.name} and is accepting new referrals.".html_safe]
             else

@@ -26,6 +26,7 @@ class ScItem < ActiveRecord::Base
 
   has_attached_file :document,
   :storage => :s3,
+  :s3_protocol => :https,
   :bucket => ENV['S3_BUCKET_NAME_CONTENT_DOCUMENTS'],
   :s3_credentials => {
   :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
