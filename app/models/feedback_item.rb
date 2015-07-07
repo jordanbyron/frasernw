@@ -1,6 +1,8 @@
 class FeedbackItem < ActiveRecord::Base
   include Noteable
   include Historical
+  include PaperTrailable
+  include Archivable
 
   belongs_to :item, :polymorphic => true
 
@@ -12,15 +14,5 @@ class FeedbackItem < ActiveRecord::Base
 
   def creator
     user
-  end
-
-  class << self
-    def active
-      includes(:item).where(:archived => false)
-    end
-
-    def archived
-      includes(:item).where(:archived => true)
-    end
   end
 end

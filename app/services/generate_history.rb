@@ -3,6 +3,7 @@ class GenerateHistory
   EVENT_TYPES = [
     Creation,
     LastUpdated,
+    Archived,
     PriorUpdates,
     Annotations,
     ChildEvents

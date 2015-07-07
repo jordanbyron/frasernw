@@ -1,6 +1,8 @@
 class ReviewItem < ActiveRecord::Base
   include Noteable
   include Historical
+  include PaperTrailable
+  include Archivable
 
   belongs_to :item, :polymorphic => true
 
@@ -67,14 +69,6 @@ class ReviewItem < ActiveRecord::Base
   end
 
   class << self
-    def active
-      includes(:item).where(:archived => false)
-    end
-
-    def archived
-      includes(:item).where(:archived => true)
-    end
-
     def for_specialist(specialist)
       where("item_type = ? AND item_id = ?", 'Specialist', specialist.id)
     end
