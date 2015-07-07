@@ -3,6 +3,7 @@
 .content-wrapper
   %h2= "History for \"#{@item.label}\""
 
-  = render 'history/nodes', item: @item
+  .history__index
+    = render 'history/nodes', item: @item
 
   = render "notes/form", note: @new_note
