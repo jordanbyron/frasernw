@@ -14,22 +14,24 @@
     .row
       .span3 Description
       .span4 Referral Form
-    - referral_forms = @entity.referral_forms
-    - index = 0
-    = f.simple_fields_for :referral_forms, :class => "row" do |i|
+    = f.simple_fields_for :referral_forms, :class => "row" do |fields|
       .row.spaced
         .span3
-          = i.input :description, label: false, wrapper: :no_wrapper, input_html: { class: "span3" }
+          = fields.input :description, label: false, wrapper: :no_wrapper, input_html: { class: "span3" }
         .span4
-          - referral_form = referral_forms[index]
-          - if referral_form.present? && referral_form.form.present?
-            = link_to referral_form.form_file_name, referral_form.form.url, :target => "_blank"
+          - if fields.object.present? && fields.object.form.present?
+            = link_to fields.object.form_file_name,
+              fields.object.form.url,
+              :target => "_blank"
           - else
-            = i.input :form, as: :file, label: false, wrapper: :no_wrapper, input_html: { class: "span4" }
+            = fields.input :form,
+              as: :file,
+              label: false,
+              wrapper: :no_wrapper,
+              input_html: { class: "span4" }
         .spanhalf
-          = i.hidden_field :_destroy
-          = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
-      - index += 1
+          = fields.hidden_field :_destroy
+          = fields.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
     = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another referral form", :referral_forms, class: "btn")
 
   %script{"type" => "text/javascript"}
