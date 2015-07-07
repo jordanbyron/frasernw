@@ -5,43 +5,48 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
-  = f.input :referral_form_mask,
-    as: :radio_buttons,
-    collection: Specialist::BOOLEAN_HASH,
-    label_method: :last,
-    value_method: :first,
-    label: "Does the #{@entity_type} have a referral form?",
-    input_html: { class: "referral_form_mask" },
-    label_html: { class: "input_label input_label--align-left" }
+  = f.label :referral_form_mask,
+    text: "Does the #{@entity_type} have a referral form?",
+    class: "referral_form_editor__input_label input_label"
+  .referral_form_editor__radio_wrapper
+    = f.input :referral_form_mask,
+      as: :radio_buttons,
+      collection: Specialist::BOOLEAN_HASH,
+      label_method: :last,
+      value_method: :first,
+      input_html: { class: "referral_form_editor__radio_button_label referral_form_mask" },
+      label: false,
+      wrapper: :no_wrapper
+
 
   .content#referral_forms
 
     %h4 Referral Forms
 
-    .row
-      .span4 Description
-      .span4 Referral Form
     = f.simple_fields_for :referral_forms, :class => "row" do |fields|
-      .row.spaced
-        .span4
-          = fields.input :description, label: false, wrapper: :no_wrapper, input_html: { class: "span3" }
-        .span4
-          - if fields.object.present? && fields.object.form.present?
-            = link_to truncate(fields.object.form_file_name),
-              fields.object.form.url,
-              :target => "_blank"
-          - else
-            = fields.input :form,
-              as: :file,
-              label: false,
-              wrapper: :no_wrapper,
-              input_html: { class: "span4" }
-        .spanhalf
+      .well.referral_form_editor__fieldset
+        .pull-right
           = fields.hidden_field :_destroy
-          = fields.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
-      - if fields.object.present? && fields.object.form.present?
-        .row
-          .span8
+          = fields.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
+        - if fields.object.present? && fields.object.form.present?
+          %p.referral_form_editor__form_link_item
+            = link_to fields.object.form.url,
+              target: "_blank" do
+              %i.icon-share
+              %span= fields.object.form_file_name
+        - else
+          = fields.input :form,
+            as: :file,
+            label: false,
+            wrapper: :no_wrapper,
+            input_html: { class: "referral_form_editor__input" }
+          %br
+        = fields.input :description,
+          label: false,
+          wrapper: :no_wrapper,
+          input_html: {class: "referral_form_editor__input"}
+        - if fields.object.present? && fields.object.form.present?
+          .referral_form_editor__history_nodes
             = render 'history/nodes', item: fields.object
     = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another referral form", :referral_forms, class: "btn")
 
