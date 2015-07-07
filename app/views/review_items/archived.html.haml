@@ -23,65 +23,12 @@
 
     .tab-content
       #specialists_tab.tab-pane.active
-
-        %table.table.table-condensed.table-striped
-          %tr
-            %th Specialist
-            %th Specialty
-            %th Cities
-            %th From
-            %th When
-            %th Any Updates?
-            %th
-
-          - specialist_reviews.reject{ |item| item.item.blank? || item.item_type != "Specialist" }.each do |review_item|
-            %tr
-              %td= review_item.item.name
-              %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
-              %td
-                - cities = review_item.item.cities
-                - if cities.length > 1
-                  %ul
-                    - cities.each do |city|
-                      %li= city.name
-                - else
-                  #{cities.map{ |c| c.name }.to_sentence}
-              %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
-              %td= "#{time_ago_in_words(review_item.created_at)} ago"
-              %td= ReviewItem::STATUS_HASH[review_item.status]
-              %td
-                -if review_item.base_object.present?
-                  = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", rereview_specialist_path(review_item.item, review_item_id: review_item.id), :class => "btn btn-mini ajax")
-
+        = render "review_items/archived_table",
+          target_type: "Specialist",
+          review_items: specialist_reviews
       #clinics_tab.tab-pane
-
-        %table.table.table-condensed.table-striped
-          %tr
-            %th Clinic
-            %th Specialty
-            %th Cities
-            %th From
-            %th When
-            %th Any Updates?
-            %th
-
-          - clinic_reviews.reject{ |item| item.item.blank? || item.item_type != "Clinic" }.each do |review_item|
-            %tr
-              %td= review_item.item.name
-              %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
-              %td
-                - cities = review_item.item.cities
-                - if cities.length > 1
-                  %ul
-                    - cities.each do |city|
-                      %li= city.name
-                - else
-                  #{cities.map{ |c| c.name }.to_sentence}
-              %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
-              %td= "#{time_ago_in_words(review_item.created_at)} ago"
-              %td= ReviewItem::STATUS_HASH[review_item.status]
-              %td
-                -if review_item.base_object.present?
-                  = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", rereview_clinic_path(review_item.item, review_item_id: review_item.id), :class => "btn btn-mini ajax")
+        = render "review_items/archived_table",
+          target_type: "Clinic",
+          review_items: clinic_reviews
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
