@@ -9,6 +9,7 @@ class ReferralForm < ActiveRecord::Base
 
   has_attached_file :form,
     :storage => :s3,
+    :s3_protocol => :https,
     :bucket => ENV['S3_BUCKET_NAME'],
     :s3_credentials => {
       :access_key_id => ENV['AWS_ACCESS_KEY_ID'],

@@ -36,6 +36,9 @@ Local-only = Changes not reflected in Source Code
 - Content Item pages now cache correctly so that different versions of the page are shown for admins and users.
 - Referral form feedback button now disables during submission to prevent duplicate submissions.
 - Error on referral form update
+- Correct version of specialist office now used in specialist and clinic updates
+- S3 uses SSL to serve attachment
+- Can enter addresses for new specialist offices
 
 ### Removed:
 - Removed old reporting interface graphs from the codebase that were already disabled by earlier developers.

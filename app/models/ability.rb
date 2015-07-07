@@ -9,6 +9,9 @@ class Ability
       can [:validate, :signup, :setup], User
 
     else
+      # all categories of logged in
+      can :show, FaqCategory
+      can :index, :terms_and_conditions
 
       if user.super_admin?
 
@@ -123,7 +126,7 @@ class Ability
         #user
 
         #landing page
-        can [:index, :faq, :terms_and_conditions], Front
+        can [:index], Front
 
         #can show pages that aren't in progress
         can :show, [Specialization, Procedure] do |entity|
