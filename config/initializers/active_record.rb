@@ -1,5 +1,9 @@
 module ActiveRecord
   class Base
+    def creator
+      UnknownUser.new
+    end
+
     def last_updated_at
       updated_at
     end
