@@ -44,10 +44,21 @@
         = fields.input :description,
           label: false,
           wrapper: :no_wrapper,
-          input_html: {class: "referral_form_editor__input"}
-        - if fields.object.present? && fields.object.form.present?
-          .referral_form_editor__history_nodes
+          input_html: {class: "referral_form_editor__input"},
+          placeholder: "Description"
+        .referral_form_editor__history_nodes
+          - if fields.object.present? && fields.object.form.present?
             = render 'history/nodes', item: fields.object
+          - fields.object.build_new_note!(current_user)
+          = fields.simple_fields_for :notes,
+            fields.object.new_notes do |note_fields|
+            = note_fields.input :content,
+              label: false,
+              as: :string,
+              wrapper: :no_wrapper,
+              placeholder: "Administrative Note (Optional)"
+            = note_fields.input :user_id,
+              as: :hidden
     = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another referral form", :referral_forms, class: "btn")
 
   %script{"type" => "text/javascript"}

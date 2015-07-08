@@ -1,12 +1,8 @@
 class Note < ActiveRecord::Base
-  # review item
-  # feedback item
-  # sc item
-  # referral form
   belongs_to :noteable, polymorphic: true
   belongs_to :user
 
-  attr_accessible :content
+  attr_accessible :content, :user, :user_id
 
   def self.find_by_noteable(id, type)
     where(noteable_id: id, noteable_type: type).first
