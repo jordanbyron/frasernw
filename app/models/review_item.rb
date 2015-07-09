@@ -31,22 +31,22 @@ class ReviewItem < ActiveRecord::Base
     self.class.decode params
   end
 
-  def transformed_base_object(passed_item)
-    raise NotImplementedError unless passed_item.is_a? Clinic
-
-    encode FormDataMatcher::Clinic.new(
+  def transformed_base_object(parent)
+    encode form_data_matcher(parent).new(
       decoded_base_object,
-      passed_item
+      parent
     ).exec.to_hash
   end
 
-  def transformed_review_object(passed_item)
-    raise NotImplementedError unless passed_item.is_a? Clinic
-
-    encode FormDataMatcher::Clinic.new(
+  def transformed_review_object(parent)
+    encode form_data_matcher(parent).new(
       decoded_review_object,
-      passed_item
+      parent
     ).exec.to_hash
+  end
+
+  def form_data_matcher(parent)
+    "FormDataMatcher::#{parent.class.name}".constantize
   end
 
   def decoded_base_object

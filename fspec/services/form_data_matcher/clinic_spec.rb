@@ -1,4 +1,4 @@
-require 'lib/form_data_matcher/clinic'
+require 'app/services/form_data_matcher/clinic'
 require 'lib/form_data/clinic'
 
 RSpec.describe FormDataMatcher::Clinic do

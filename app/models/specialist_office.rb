@@ -104,7 +104,15 @@ class SpecialistOffice < ActiveRecord::Base
     return o.city
   end
 
+  def has_data?
+    !empty?
+  end
+
   def empty?
     phone.blank? && phone_extension.blank? && fax.blank? && direct_phone.blank? && direct_phone_extension.blank? && (office.blank? || office.empty?)
+  end
+
+  def location
+    office.try(:location)
   end
 end
