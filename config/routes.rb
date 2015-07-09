@@ -5,8 +5,6 @@ Frasernw::Application.routes.draw do
   post '/versions/:id/revert' => 'versions#revert', :as => 'revert_version'
 
   match '/versions'                 => 'versions#show_all', :as => 'all_versions'
-  match '/specialists/:id/versions' => 'versions#index',    :as => 'specialist_versions', :model => 'specialists'
-  match '/clinics/:id/versions'     => 'versions#index',    :as => 'clinic_versions',     :model => 'clinics'
   match '/versions/:id'             => 'versions#show',     :as => 'show_version'
 
   resources :specializations, :path => 'specialties' do

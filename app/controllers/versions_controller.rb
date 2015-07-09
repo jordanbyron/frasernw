@@ -5,14 +5,6 @@ class VersionsController < ApplicationController
     Clinic,
     Specialist
   ]
-
-  def index
-    klass = params[:model].singularize.camelize.constantize
-    @item = klass.find params[:id]
-    @versions = @item.versions
-    render :layout => 'ajax' if request.headers['X-PJAX']
-  end
-
   def show
     @version = Version.find(params[:id])
     if @version.reify.present? # fixes issue of first version record returning nil when reify is called on it
