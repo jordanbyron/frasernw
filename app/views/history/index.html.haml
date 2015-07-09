@@ -7,4 +7,5 @@
     = render 'history/nodes', item: @item
 
   - if @item.is_a? Noteable
-    = render "notes/form", note: @new_note
+    .history__notes_field
+      = render "notes/form", note: @new_note

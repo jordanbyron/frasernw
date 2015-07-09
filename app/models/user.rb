@@ -1,4 +1,7 @@
 class User < ActiveRecord::Base
+  include Historical
+  include Noteable
+
   acts_as_authentic do |c|
     c.merge_validates_length_of_password_field_options({:minimum => 8})
     c.merge_validates_uniqueness_of_email_field_options({:message => "has already been used to set up another account. Pleast use a different email address to sign up, or sign into your existing account."})
@@ -37,8 +40,6 @@ class User < ActiveRecord::Base
 
   # times that the user (as admin) has contacted specialists
   has_many :contacts
-
-  has_many :notes
 
   delegate :with_activity, to: :subscriptions, prefix: true
 
@@ -243,5 +244,9 @@ LIMITED_ROLE_HASH = {
 
   def self.safe_find(id, fallback_klass = UnknownUser)
     where(id: id).first || fallback_klass.new
+  end
+
+  def label
+    name
   end
 end
