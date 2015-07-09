@@ -10,4 +10,12 @@ module HistoryHelper
   def history_index(item)
     history_path(item_id: item.id, item_type: item.class.to_s)
   end
+
+  def history_verb(node)
+    if node.show_new_version_path?
+      link_to node.verb, node.new_version_path, target: "_blank"
+    else
+      content_tag :strong, node.verb
+    end
+  end
 end

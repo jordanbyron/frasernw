@@ -8,7 +8,9 @@ class GenerateHistory
           target: target,
           user: target.last_updater,
           datetime: target.last_updated_at,
-          verb: :last_updated
+          verb: :last_updated,
+          new_version: target,
+          changeset: target.last_update_changeset
         )
       ]
     end

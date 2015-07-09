@@ -6,4 +6,5 @@
   .history__index
     = render 'history/nodes', item: @item
 
-  = render "notes/form", note: @new_note
+  - if @item.is_a? Noteable
+    = render "notes/form", note: @new_note

@@ -47,10 +47,12 @@
           input_html: {class: "referral_form_editor__input"},
           placeholder: "Description"
         .referral_form_editor__history_nodes
-          = render 'history/nodes', item: fields.object
-          = render "notes/fields",
-            parent_fields: fields,
-            user: current_user
+          - if can? :index, :history
+            = render 'history/nodes', item: fields.object
+          - if can? :create, Note
+            = render "notes/fields",
+              parent_fields: fields,
+              user: current_user
     = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another referral form", :referral_forms, class: "btn")
 
   %script{"type" => "text/javascript"}

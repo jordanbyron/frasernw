@@ -7,6 +7,8 @@ class ReferralForm < ActiveRecord::Base
 
   belongs_to :referrable, :polymorphic => true
 
+  attr_accessible :description, :form
+
   has_attached_file :form,
     :storage => :s3,
     :s3_protocol => :https,

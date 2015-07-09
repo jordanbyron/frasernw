@@ -1,10 +1,11 @@
-- parent_fields.object.build_new_note!(user)
-= parent_fields.simple_fields_for :notes,
-  parent_fields.object.new_notes do |note_fields|
-  = note_fields.input :content,
-    label: false,
-    as: :string,
-    wrapper: :no_wrapper,
-    placeholder: "Administrative Note (Optional)"
-  = note_fields.input :user_id,
-    as: :hidden
+.notes__short_input
+  - parent_fields.object.build_new_note!(user)
+  = parent_fields.simple_fields_for :notes,
+    parent_fields.object.new_notes do |note_fields|
+    = note_fields.input :content,
+      label: false,
+      as: :string,
+      wrapper: :no_wrapper,
+      placeholder: "Administrative Note (Optional)"
+    = note_fields.input :user_id,
+      as: :hidden

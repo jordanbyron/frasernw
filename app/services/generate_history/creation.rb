@@ -6,7 +6,8 @@ class GenerateHistory
           target: target,
           user: target.creator,
           datetime: target.created_at,
-          verb: :created
+          verb: :created,
+          new_version: target.post_creation_version
         )
       ]
     end

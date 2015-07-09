@@ -4,12 +4,24 @@ module ActiveRecord
       UnknownUser.new
     end
 
+    def post_creation_version
+      if created_at == updated_at
+        self
+      else
+        nil
+      end
+    end
+
     def last_updated_at
       updated_at
     end
 
     def last_updater
       UnknownUser.new
+    end
+
+    def last_update_changeset
+      nil
     end
 
     def class_label

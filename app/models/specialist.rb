@@ -2,6 +2,8 @@ class Specialist < ActiveRecord::Base
   include PaperTrailable
   include Reviewable
   include Feedbackable
+  include Historical
+  include Noteable
 
   include ApplicationHelper
 
@@ -765,6 +767,10 @@ class Specialist < ActiveRecord::Base
       update_column(:saved_token, SecureRandom.hex(16)) #avoid callbacks / validation as we don't want to trigger a sweeper for this
       return self.saved_token
     end
+  end
+
+  def label
+    name
   end
 
 private

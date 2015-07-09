@@ -15,7 +15,7 @@ class GenerateHistory
       def exec
         return [] unless target.is_a? Feedbackable
 
-        target.active_feedback_items.inject([]) do |memo, feedback_item|
+        target.feedback_items.inject([]) do |memo, feedback_item|
           memo + feedback_item.history
         end
       end

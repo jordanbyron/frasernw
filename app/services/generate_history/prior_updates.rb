@@ -16,7 +16,9 @@ class GenerateHistory
         target: target,
         user: version.safe_user,
         datetime: version.created_at,
-        verb: :updated
+        verb: :updated,
+        new_version: version.next,
+        changeset: version.changeset
       )
     end
   end

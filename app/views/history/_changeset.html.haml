@@ -1,0 +1,20 @@
+%ul
+  - node.changeset.each do |attribute, changeset|
+    - next if attribute == 'review_object'
+    - if (changeset[0].present? and changeset[1].present?)
+      %li
+        = node.target_klass.human_attribute_name(attribute)
+        = "changed from"
+        %em= human_attribute_value(node.target_klass, attribute, changeset[0])
+        = "to"
+        %em= human_attribute_value(node.target_klass, attribute, changeset[1])
+    - elsif changeset[0].present?
+      %li
+        = node.target_klass.human_attribute_name(attribute)
+        = "is no longer"
+        %em= human_attribute_value(node.target_klass, attribute, changeset[0])
+    - elsif changeset[1].present?
+      %li
+        = node.target_klass.human_attribute_name(attribute)
+        = "became"
+        %em= human_attribute_value(node.target_klass, attribute, changeset[1])

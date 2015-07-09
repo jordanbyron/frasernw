@@ -1,6 +1,11 @@
 class VersionsController < ApplicationController
   load_and_authorize_resource
 
+  SUPPORTED_KLASSES_FOR_SHOW = [
+    Clinic,
+    Specialist
+  ]
+
   def index
     klass = params[:model].singularize.camelize.constantize
     @item = klass.find params[:id]
@@ -47,4 +52,3 @@ class VersionsController < ApplicationController
   end
 
 end
-

@@ -7,6 +7,7 @@ module PaperTrailable
   def creation
     versions.where(event: "create").first || OpenStruct.new(
       safe_user: UnknownUser.new,
+      next: nil
     )
   end
 
@@ -14,12 +15,25 @@ module PaperTrailable
     creation.safe_user
   end
 
+  def post_creation_version
+    if created_at == updated_at
+      self
+    else
+      creation.next
+    end
+  end
+
   # Once again, have fallbacks just in case there isn't an updated version
   def last_update
     versions.where(event: "update").last || OpenStruct.new(
       created_at: updated_at,
-      safe_user: UnknownUser.new
+      safe_user: UnknownUser.new,
+      changeset: nil
     )
+  end
+
+  def last_update_changeset
+    last_update.changeset
   end
 
   def last_updated_at

@@ -12,7 +12,7 @@ class GenerateHistory
         user: note.user,
         datetime: note.created_at,
         verb: :annotated,
-        content: note.content
+        note: note.content
       )
     end
   end
