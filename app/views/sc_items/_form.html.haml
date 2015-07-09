@@ -51,9 +51,17 @@
     = f.input :document, as: :file
     = f.input :can_email_document
 
+  %h3
+    = "History & Notes"
+  = render 'history/nodes', item: f.object
+  = render "notes/fields",
+    parent_fields: f,
+    user: current_user
+
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
     = link_to 'Cancel', root_url, :class => "btn btn-danger ajax"
+
 
 
   %script{"type" => "text/javascript"}

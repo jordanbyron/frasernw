@@ -3,6 +3,7 @@ module Noteable
 
   included do
     has_many :notes, as: :noteable
+    attr_accessible :notes_attributes
     accepts_nested_attributes_for :notes,
       reject_if: Proc.new {|attrs| !attrs["content"].present? }
   end

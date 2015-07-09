@@ -20,6 +20,8 @@ class GenerateHistory
   end
 
   def exec
+    return [] unless target.id.present?
+
     unsorted.sort_by {|node| node.datetime }
   end
 
