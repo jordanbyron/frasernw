@@ -31,7 +31,11 @@ class HistoryNode
   end
 
   def verb
-    raw.verb.to_s.gsub("_", " ")
+    if archiving?
+      "archived"
+    else
+      raw.verb.to_s.gsub("_", " ")
+    end
   end
 
   def target
@@ -60,6 +64,10 @@ class HistoryNode
 
   def target_klass
     raw.target.class
+  end
+
+  def archiving?
+    changeset.present? && changeset.keys[0] == "archived"
   end
 
   def target_link

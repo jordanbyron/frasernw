@@ -8,6 +8,8 @@ class FeedbackItem < ActiveRecord::Base
 
   belongs_to :user
 
+  attr_accessible :feedback, :item_type, :item_id
+
   def label
     "#{item.name} (Feedback Item)"
   end

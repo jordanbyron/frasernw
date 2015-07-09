@@ -9,3 +9,5 @@
   - if @item.is_a? Noteable
     .history__notes_field
       = render "notes/form", note: @new_note
+
+      = link_to "Back to record", duck_path(@item)

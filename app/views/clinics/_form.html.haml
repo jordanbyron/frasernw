@@ -26,6 +26,10 @@
     %p.space.no_indent If you have any questions while editing, please contact #{ @clinic.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ').html_safe }.
     %p.space.no_indent This database exists to make our practices and your clinic more efficient. By providing the information requested below you are making it easier for family doctors to find your clinic, ensuring that the scope of your clinic is fully understood, and guiding offices in providing you with the correct information when making referrals.
     %p.space.no_indent Unless otherwise indicated, all provided information will be available to all users of Pathways.
+- elsif @form_modifier.admin_review?
+  = review_warning(@review_item)
+- elsif @form_modifier.admin_rereview?
+  = rereview_warning(@review_item)
 
 = simple_nested_form_for @clinic, :url => {:controller => params[:controller], :action => @form_modifier.form_action}, :method => @form_modifier.method, :html => { :class => "form-horizontal ajax clinic_form" } do |f|
   - if not f.error_messages.blank?
@@ -360,17 +364,17 @@
       = f.input :referral_criteria
 
   = hidden_field_tag :pre_edit_form_data
-
   = render 'reviewables/notes_fields',
     form_modifier: @form_modifier,
-    reviewable: @clinic
+    reviewable: @clinic,
+    review_item: @review_item
 
   .form-actions
     - if @form_modifier.token_edit?
       = f.button :submit, 'Update Clinic with My Changes', :class => "btn btn-primary"
       = f.button :submit, 'There are No Updates to this Clinic', :class => "btn btn-success", :name => 'no_updates'
     - elsif @form_modifier.admin_rereview?
-      = link_to "Back to record", clinic_path(@clinic), class: "btn btn-success"
+      = link_to "Back to record", clinic_path(@clinic), class: "btn btn-primary"
     - else
       = f.button :submit, :class => "btn btn-primary"
       = link_to 'Cancel', @form_modifier.cancel_path, :class => "btn btn-danger ajax"

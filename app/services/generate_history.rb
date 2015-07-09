@@ -1,9 +1,11 @@
 class GenerateHistory
   # one subgenerator for each kind of lifecycle event
+  # events should be mutually exclusive!
+  # i.e. before I had 'archived' here, but that duplicates the 'update' events
+
   EVENT_TYPES = [
     Creation,
     LastUpdated,
-    Archived,
     PriorUpdates,
     Annotations,
     ChildEvents

@@ -9,7 +9,7 @@
         class: "text"
 - if form_modifier.admin_review? || form_modifier.admin_rereview?
   %h3 Review Item History
-  = render 'history/nodes', item: reviewable.review_item
+  = render 'history/nodes', item: review_item
 - if form_modifier.admin_review?
   %hr
   .control-group.text

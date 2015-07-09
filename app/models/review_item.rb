@@ -72,6 +72,17 @@ class ReviewItem < ActiveRecord::Base
     !archived?
   end
 
+  def safe_user
+    if self.whodunnit.nil?
+      UnauthenticatedUser.new
+    else
+      User.safe_find(
+        self.whodunnit,
+        UnknownUser
+      )
+    end
+  end
+
   class << self
     def for_specialist(specialist)
       where("item_type = ? AND item_id = ?", 'Specialist', specialist.id)

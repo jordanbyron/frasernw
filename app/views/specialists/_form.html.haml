@@ -253,6 +253,10 @@
     %p.space.no_indent If you have any questions while editing, please contact #{ @specialist.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ').html_safe }.
     %p.space.no_indent This database exists to make our practices and your practice more efficient. By providing the information requested below you are making it easier for family doctors to find your practice, ensuring that the scope of your practice is fully understood, and guiding offices in providing you with the correct information when making referrals.
     %p.space.no_indent Unless otherwise indicated, all provided information will be available to all users of Pathways.
+- elsif @form_modifier.admin_review?
+  = review_warning(@review_item)
+- elsif @form_modifier.admin_rereview?
+  = rereview_warning(@review_item)
 
 = simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => @form_modifier.form_action}, :method => @form_modifier.method, :html => { :class => "form-horizontal ajax specialist_form" } do |f|
   - if not f.error_messages.blank?
@@ -595,7 +599,7 @@
       = f.button :submit, 'Update Specialist with My Changes', :class => "btn btn-primary"
       = f.button :submit, 'There are No Updates to this Specialist', :class => "btn btn-success", :name => 'no_updates'
     - elsif @form_modifier.admin_rereview?
-      = link_to "Back to record", specialist_path(@clinic), class: "btn btn-success"
+      = link_to "Back to record", specialist_path(@clinic), class: "btn btn-primary"
     - else
       = f.button :submit, :class => "btn btn-primary"
       = link_to 'Cancel', @form_modifier.cancel_path, :class => "btn btn-danger ajax"

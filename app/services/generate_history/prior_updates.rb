@@ -4,13 +4,7 @@ class GenerateHistory
     def exec
       return [] unless target.is_a? PaperTrailable
 
-      prior_update_versions.inject([]) do |memo, version|
-        if version.null_changeset?
-          memo
-        else
-          memo << node(version)
-        end
-      end
+      prior_update_versions.map {|version| node(version) }
     end
 
     def prior_update_versions

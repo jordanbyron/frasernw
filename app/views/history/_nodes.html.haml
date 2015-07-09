@@ -23,5 +23,5 @@
         %ul
           %li
             = history_node.note
-      - if history_node.changeset.present?
+      - if history_node.changeset.present? && !history_node.archiving?
         = render "history/changeset", node: history_node
