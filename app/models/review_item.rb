@@ -68,6 +68,10 @@ class ReviewItem < ActiveRecord::Base
     User.safe_find whodunnit
   end
 
+  def active?
+    !archived?
+  end
+
   class << self
     def for_specialist(specialist)
       where("item_type = ? AND item_id = ?", 'Specialist', specialist.id)

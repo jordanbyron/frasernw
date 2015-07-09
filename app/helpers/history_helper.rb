@@ -8,18 +8,20 @@ module HistoryHelper
   end
 
   def large_history_button(item)
-    link_to("<i class='icon-folder-open'></i>".html_safe + " History", history_index(item), :class => "btn ajax")
+    link_to("<i class='icon-folder-open'></i>".html_safe + " History", history_index(item), class: "btn", target: "_blank")
   end
 
   def history_index(item)
     history_path(item_id: item.id, item_type: item.class.to_s)
   end
 
-  def history_verb(node)
+  def history_verb(node, item)
     if node.show_new_version_path?
       link_to node.verb, node.new_version_path, target: "_blank"
-    else
+    elsif node.target_is? item
       content_tag :strong, node.verb
+    else
+      node.verb
     end
   end
 end

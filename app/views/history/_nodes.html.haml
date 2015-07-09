@@ -3,15 +3,21 @@
     %li.history__node
       - if history_node.target_is?(item)
         %p.history__line_item
-          %span= history_verb(history_node)
+          %span= history_verb(history_node, item)
           %span= " by "
           %span= history_node.user
           %span= "(#{history_node.date})"
       - else
         %p.history__line_item
           %span= history_node.user
-          %span= history_verb(history_node)
-          %span= history_node.target
+          %span= history_verb(history_node, item)
+          %span
+            - if history_node.target_link.present?
+              = link_to history_node.target,
+                history_node.target_link,
+                target: "_blank"
+            - else
+              = history_node.target
           %span= "(#{history_node.date})"
       - if history_node.has_note?
         %ul

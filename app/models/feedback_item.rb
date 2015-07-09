@@ -15,4 +15,8 @@ class FeedbackItem < ActiveRecord::Base
   def creator
     user
   end
+
+  def active?
+    !archived?
+  end
 end

@@ -524,7 +524,7 @@
         %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
           %i.icon-share
           Share
-        = link_to("<i class='icon-folder-open'></i>".html_safe + " History", specialist_versions_path(@specialist), :class => "btn ajax")
+        = large_history_button(@specialist)
 
       - if can? :destroy, @specialist
 

@@ -28,7 +28,8 @@ module PaperTrailable
     versions.where(event: "update").last || OpenStruct.new(
       created_at: updated_at,
       safe_user: UnknownUser.new,
-      changeset: nil
+      changeset: nil,
+      null_changeset?: true
     )
   end
 

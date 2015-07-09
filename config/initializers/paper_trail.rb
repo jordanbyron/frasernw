@@ -9,10 +9,20 @@ class Version < ActiveRecord::Base
     changeset.has_key?('archived') && changeset['archived'][1] == true
   end
 
+  def null_changeset?
+    changeset == nil ||
+      changeset == {} ||
+      (changeset.keys.length == 1 && changeset.keys[0] == "review_object")
+  end
+
   def safe_user
-    User.safe_find(
-      self.whodunnit,
+    if self.whodunnit.nil?
       UnauthenticatedUser.new
-    )
+    else
+      User.safe_find(
+        self.whodunnit,
+        UnknownUser
+      )
+    end
   end
 end

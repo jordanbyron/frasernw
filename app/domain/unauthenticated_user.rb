@@ -1,6 +1,6 @@
 class UnauthenticatedUser
 
   def name
-    "Unauthenticated user"
+    "an unauthenticated user"
   end
 end

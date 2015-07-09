@@ -3,6 +3,6 @@
 
 class UnknownUser
   def name
-    "Unknown user"
+    "an anonymous user"
   end
 end

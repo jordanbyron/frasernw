@@ -2,6 +2,8 @@
 
 class HistoryNode
   include CustomPathHelper
+  include Rails.application.routes.url_helpers
+  include ReviewItemsHelper
 
   # {
   #   user: current_user,
@@ -58,5 +60,23 @@ class HistoryNode
 
   def target_klass
     raw.target.class
+  end
+
+  def target_link
+    if raw.target.is_a?(ReviewItem)
+      if raw.target.active?
+        review_path(raw.target)
+      else
+        rereview_path(raw.target)
+      end
+    elsif raw.target.is_a?(FeedbackItem)
+      if raw.target.active?
+        feedback_items_path
+      else
+        ""
+      end
+    else
+      duck_path(raw.target)
+    end
   end
 end
