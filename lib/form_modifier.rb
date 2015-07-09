@@ -66,6 +66,10 @@ class FormModifier
     admin? && interaction_type == :review
   end
 
+  def admin_edit?
+    admin? && !admin_review? && !admin_rereview?
+  end
+
   def new_record?
     interaction_type == :new
   end

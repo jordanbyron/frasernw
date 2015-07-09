@@ -3,7 +3,10 @@ module CustomPathHelper
     if object.is_a? NilClass
       ""
     else
-      "/#{object.class.name.tableize}/#{object.id}"
+      send(
+        "#{object.class.name.underscore}_path",
+        object
+      )
     end
   end
 end

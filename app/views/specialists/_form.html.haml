@@ -592,7 +592,10 @@
 
   = render 'reviewables/notes_fields',
     form_modifier: @form_modifier,
-    reviewable: @specialist
+    reviewable: @specialist,
+    review_item: @review_item,
+    user: current_user,
+    form: f
 
   .form-actions
     - if @form_modifier.token_edit?

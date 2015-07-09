@@ -15,12 +15,12 @@
   %ul.pager
     - if @version.previous.present? && @version.previous.reify.present?
       %li
-        = link_to "<i class='icon-arrow-left icon-blue'></i>Older version".html_safe, show_version_path(@version.previous), :class => "ajax"
+        = link_to "<i class='icon-arrow-left icon-blue'></i>Older version".html_safe, version_path(@version.previous), :class => "ajax"
     %li
       = link_to "List all versions", url_for(@version.reify) + "/versions", :class => "ajax"
     - if @version.next
       %li
-        = link_to "Newer version <i class='icon-arrow-right icon-blue'></i>".html_safe, show_version_path(@version.next), :class => "ajax"
+        = link_to "Newer version <i class='icon-arrow-right icon-blue'></i>".html_safe, version_path(@version.next), :class => "ajax"
     - else
       %li
         = link_to "View live site version <i class='icon-arrow-right icon-blue'></i>".html_safe, url_for(@version.reify), :class => "ajax"

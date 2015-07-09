@@ -110,6 +110,8 @@
       Incorrect Information? Let us know
 
   %p.admin.btn-group
+    - if can? :index, :history
+      = large_history_button(@sc_item)
     - if can? :update, @sc_item
       = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_sc_item_path(@sc_item), :class => "btn ajax")
     - if can? :destroy, @sc_item

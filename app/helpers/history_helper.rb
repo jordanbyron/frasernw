@@ -15,10 +15,10 @@ module HistoryHelper
     history_path(item_id: item.id, item_type: item.class.to_s)
   end
 
-  def history_verb(node, item)
+  def history_verb(node, item, options= {})
     if node.show_new_version_path?
       link_to node.verb, node.new_version_path, target: "_blank"
-    elsif node.target_is? item
+    elsif options[:bold]
       content_tag :strong, node.verb
     else
       node.verb

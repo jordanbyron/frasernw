@@ -349,7 +349,7 @@
 
       %hr
 
-      = f.input :admin_notes
+      = f.input :admin_notes, label: "Admin only notes: (Deprecated! Please use the field below which makes a new note per each update)"
 
     -#section_deprecated.no-print
 
@@ -367,7 +367,9 @@
   = render 'reviewables/notes_fields',
     form_modifier: @form_modifier,
     reviewable: @clinic,
-    review_item: @review_item
+    review_item: @review_item,
+    user: current_user,
+    form: f
 
   .form-actions
     - if @form_modifier.token_edit?
