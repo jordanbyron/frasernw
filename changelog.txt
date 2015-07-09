@@ -28,7 +28,7 @@ Local-only = Changes not reflected in Source Code
 - CR: Address and specialization fields are now replaced with comment boxes when user edit clinics and specializations
 
 ### Fixed
-- CR:  Clinic location rearranging issue now fixed.
+- CR:  Clinic location/specialist office rearranging issue now fixed.
 - "Latest Specialists and Clinics Updates" now hides specialists/clinics updates if the specialty and city of the clinic/specialist does not match with the local referral area of the Division for that specialty.
 - User edit form now correctly places users into divisions.
 - User edit form now disables HTML autocomplete.
