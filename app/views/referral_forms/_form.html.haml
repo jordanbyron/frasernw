@@ -47,8 +47,7 @@
           input_html: {class: "referral_form_editor__input"},
           placeholder: "Description"
         .referral_form_editor__history_nodes
-          - if fields.object.present? && fields.object.form.present?
-            = render 'history/nodes', item: fields.object
+          = render 'history/nodes', item: fields.object
           = render "notes/fields",
             parent_fields: fields,
             user: current_user

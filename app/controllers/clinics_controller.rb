@@ -302,6 +302,12 @@ class ClinicsController < ApplicationController
     review_item.archived = true;
     review_item.save
 
+    BuildReviewItemNote.new(
+      params: params,
+      current_user: current_user,
+      review_item: review_item
+    ).exec
+
     ClinicSweeper.instance.before_controller_update(@clinic)
 
     parsed_params = ParamParser::Clinic.new(params).exec

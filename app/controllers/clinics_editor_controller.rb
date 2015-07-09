@@ -74,6 +74,12 @@ class ClinicsEditorController < ApplicationController
     review_item.status = params[:no_updates] ? ReviewItem::STATUS_NO_UPDATES: ReviewItem::STATUS_UPDATES
     review_item.save
 
+    BuildReviewItemNote.new(
+      params: params,
+      current_user: current_user,
+      review_item: review_item
+    ).exec
+
     EventMailer.mail_review_queue_entry(review_item).deliver
 
     render
