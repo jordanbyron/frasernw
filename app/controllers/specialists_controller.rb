@@ -182,6 +182,12 @@ class SpecialistsController < ApplicationController
       review_item.archived = true;
       review_item.save
 
+      BuildReviewItemNote.new(
+        params: params,
+        current_user: current_user,
+        review_item: review_item
+      ).exec
+
       SpecialistSweeper.instance.before_controller_update(@specialist)
 
       parsed_params = ParamParser::Specialist.new(params).exec

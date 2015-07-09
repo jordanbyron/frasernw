@@ -586,6 +586,10 @@
 
   = hidden_field_tag :pre_edit_form_data
 
+  = render 'reviewables/notes_fields',
+    form_modifier: @form_modifier,
+    reviewable: @specialist
+
   .form-actions
     - if @form_modifier.token_edit?
       = f.button :submit, 'Update Specialist with My Changes', :class => "btn btn-primary"
