@@ -25,6 +25,11 @@ module CustomPathHelper
       else
         archived_feedback_items_path
       end
+    elsif object.is_a?(ReferralForm)
+      edit_referral_forms_path(
+        parent_type: object.referrable_type,
+        parent_id: object.referrable_id
+      )
     else
       duck_path(object)
     end
