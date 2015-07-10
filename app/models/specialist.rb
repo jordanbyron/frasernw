@@ -773,6 +773,12 @@ class Specialist < ActiveRecord::Base
     name
   end
 
+  def ordered_specialist_offices
+    @ordered_specialist_offices ||= specialist_offices.sort_by do |office|
+      [ (office.has_data? ? 0 : 1), ( office.created_at || DateTime.now ) ]
+    end
+  end
+
 private
 
   def destroy_photo?

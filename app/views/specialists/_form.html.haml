@@ -216,12 +216,12 @@
       {
         if (#{@form_modifier.admin_rereview? && @review_item.base_object.present?})
         {
-          var base_review_item = #{@review_item.base_object || 'null'};
+          var base_review_item = #{@review_item.transformed_base_object(@specialist) || 'null'};
           traverse_review_item(["specialist"], base_review_item["specialist"], false);
           traverse_capacities(base_review_item, false);
         }
 
-        var review_item = #{@review_item.object};
+        var review_item = #{@review_item.transformed_review_object(@specialist)};
         //console.log(review_item);
         traverse_review_item(["specialist"], review_item["specialist"], true);
         traverse_capacities(review_item, true);
@@ -304,7 +304,7 @@
 
     .tabbable.location_tabs
       %ul.nav.nav-tabs
-        - @specialist.specialist_offices.each_with_index do |so, index|
+        - @specialist.ordered_specialist_offices.each_with_index do |so, index|
           = tablist_item active: index == 0, emphasized: !so.empty?, class: ["location_#{index}"] do
             %a{"href" => "#location_tab_#{index}", "data-toggle" => "tab"}
               %span
@@ -312,7 +312,9 @@
 
     .tab-content
       - index = 0
-      = f.simple_fields_for :specialist_offices, :nested_wrapper => false do |so|
+      = f.simple_fields_for :specialist_offices,
+        @specialist.ordered_specialist_offices,
+        nested_wrapper: false do |so|
         .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"}
           %h4.print-only= "Location #{index+1}"
           .control-group.no-print
@@ -328,7 +330,7 @@
                       :class => [location_class, "location"]
                     = option.first
               - else
-                - is_location = @specialist.specialist_offices[index].present? && !@specialist.specialist_offices[index].empty?
+                - is_location = so.object.present? && !so.object.empty?
                 - [['Not used', !is_location], ['In an office', is_location]].each do |option|
                   = label_tag "#{location_class}_#{option.first}" do
                     = radio_button_tag location_class,
@@ -366,7 +368,7 @@
           .control-group.print-only
             %label.control-label Address
             .controls
-              - text_address = @specialist.locations[index].resolved_address.address if @specialist.locations[index].present? && @specialist.locations[index].resolved_address.present?
+              - text_address = so.object.location.resolved_address.address if so.object.location.present? && so.object.location.resolved_address.present?
               %input{"type" => "text", "value" => "#{text_address}"}
           - if @form_modifier.new_record?
             = so.simple_fields_for :office, :nested_wrapper => false do |o|

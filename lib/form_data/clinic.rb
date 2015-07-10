@@ -16,7 +16,7 @@ module FormData
     end
 
     def has_location_attrs?
-      hsh["clinic"].present? && hsh["clinic_locations_attributes"].present?
+      !(hsh["clinic"].nil?) && !(hsh["clinic"]["clinic_locations_attributes"].nil?)
     end
 
     def update_location_data!(index, data)
