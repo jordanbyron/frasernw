@@ -73,14 +73,10 @@ class ReviewItem < ActiveRecord::Base
   end
 
   def safe_user
-    if self.whodunnit.nil?
-      UnauthenticatedUser.new
-    else
-      User.safe_find(
-        self.whodunnit,
-        UnknownUser
-      )
-    end
+    User.safe_find(
+      self.whodunnit,
+      UnknownUser
+    )
   end
 
   class << self
