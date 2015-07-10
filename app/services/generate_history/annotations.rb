@@ -9,7 +9,7 @@ class GenerateHistory
     def node(note)
       HistoryNode.new(
         target: target,
-        user: note.user,
+        user: (note.user || UnknownUser.new),
         datetime: note.created_at,
         verb: :annotated,
         note: note.content

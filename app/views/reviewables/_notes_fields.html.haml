@@ -1,9 +1,9 @@
 - #(form, form_modifier, user, reviewable, review_item)
-
+%hr
 - if form_modifier.token_edit?
   .control-group.text
     = label_tag :review_item_note,
-      "If you have any comments for the admin team, please leave them here:",
+      "Please leave your contact information and any comments for the admin team here:",
       class: "text control-label"
     .controls
       = text_area_tag :review_item_note,
@@ -22,13 +22,13 @@
       = text_area_tag :review_item_note,
         "",
         class: "text"
-- if form_modifier.admin_edit?
+- if form_modifier.admin_edit? && !form_modifier.token_edit?
   %hr
   - form.object.build_new_note!(user)
   = form.simple_fields_for :notes,
     form.object.new_notes do |note_fields|
     = note_fields.input :content,
       as: :text,
-      label: "If you have any notes to append to this update, please leave them here"
+      label: "If you have any notes to append to this update, please leave them here:"
     = note_fields.input :user_id,
       as: :hidden

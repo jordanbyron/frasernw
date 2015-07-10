@@ -11,10 +11,6 @@ class GenerateHistory
     ChildEvents
   ]
 
-  def self.can_get?(event_type, options)
-    event_type.generator_for? options[:for]
-  end
-
   attr_reader :target
 
   def initialize(target)

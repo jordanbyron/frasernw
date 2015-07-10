@@ -26,6 +26,7 @@ Local-only = Changes not reflected in Source Code
 - Rename "In Progress" Speciality edit checkbox to "In Progress / Hidden"
 - Moved open-source Github repository to "pathwaysmedical" from "warneboldt"
 - CR: Address and specialization fields are now replaced with comment boxes when user edit clinics and specializations
+- history for Clinics and Specialists now includes their review and feedback items
 
 ### Fixed
 - CR:  Clinic location/specialist office rearranging issue now fixed.

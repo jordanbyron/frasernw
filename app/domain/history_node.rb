@@ -51,7 +51,7 @@ class HistoryNode
   end
 
   def show_new_version_path?
-    new_version_path.present? && VersionsController::SUPPORTED_KLASSES_FOR_SHOW.include?(raw.target.class)
+    VersionsController::SUPPORTED_KLASSES_FOR_SHOW.include?(raw.target.class) && new_version_path.present?
   end
 
   def new_version_path
@@ -71,20 +71,6 @@ class HistoryNode
   end
 
   def target_link
-    if raw.target.is_a?(ReviewItem)
-      if raw.target.active?
-        review_path(raw.target)
-      else
-        rereview_path(raw.target)
-      end
-    elsif raw.target.is_a?(FeedbackItem)
-      if raw.target.active?
-        feedback_items_path
-      else
-        ""
-      end
-    else
-      duck_path(raw.target)
-    end
+    smart_duck_path(raw.target)
   end
 end
