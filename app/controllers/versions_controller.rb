@@ -1,13 +1,10 @@
 class VersionsController < ApplicationController
   load_and_authorize_resource
 
-  def index
-    klass = params[:model].singularize.camelize.constantize
-    @item = klass.find params[:id]
-    @versions = @item.versions
-    render :layout => 'ajax' if request.headers['X-PJAX']
-  end
-  
+  SUPPORTED_KLASSES_FOR_SHOW = [
+    Clinic,
+    Specialist
+  ]
   def show
     @version = Version.find(params[:id])
     if @version.reify.present? # fixes issue of first version record returning nil when reify is called on it
@@ -17,7 +14,7 @@ class VersionsController < ApplicationController
       @klass = @version.next.reify.class.to_s.downcase
       eval("@#{@klass} = @version.next.reify" )
     end
-      eval("@feedback = @#{@klass}.feedback_items.build" )
+      eval("@feedback = @#{@klass}.active_feedback_items.build" )
       @is_version = true
       render :template => "#{@klass.pluralize}/show"
 
@@ -47,4 +44,3 @@ class VersionsController < ApplicationController
   end
 
 end
-

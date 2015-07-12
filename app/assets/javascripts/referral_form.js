@@ -1,4 +1,4 @@
-var hideShowReferralForms = function() 
+var hideShowReferralForms = function()
 {
   if ( $(this).val() == 1 )
   {
@@ -12,12 +12,12 @@ var hideShowReferralForms = function()
 
 $(".referral_form_mask").live("change", hideShowReferralForms);
 
-var initReferralForms = function() 
+var initReferralForms = function()
 {
   if ( $(this).val() != 1 )
   {
     return;
   }
-  
+
   $(this).is(":checked") ? $("#referral_forms").show() : $("#referral_forms").hide();
 }

@@ -1,15 +1,20 @@
 class ScCategory < ActiveRecord::Base
+
   attr_accessible :name, :show_on_front_page, :show_as_dropdown, :display_mask, :sort_order, :parent_id, :searchable
   validates_presence_of :name, :on => :create, :message => "can't be blank"
-  
+
   has_many :sc_items
-  
+
   has_many :featured_contents, :dependent => :destroy
-  
+
+  has_and_belongs_to_many :subscriptions, join_table: :subscription_sc_categories
+  # has_many :subscriptions, through: :subscription_sc_categories
+  # has_many :subscription_sc_categories, dependent: :destroy
+
   has_ancestry
-  
+
   default_scope order('sc_categories.sort_order, sc_categories.name')
-  
+
   DISPLAY_HASH = {
     2 => "In global navigation",
     4 => "In global navigation and filterable on specialty pages",
@@ -17,23 +22,31 @@ class ScCategory < ActiveRecord::Base
     1 => "Filterable on specialty pages",
     3 => "Inline on specialty pages"
   }
-  
+
+  def self.all_parents
+    all.reject{|c| c.parent.present?}
+  end
+
+  def self.all_for_subscription
+    all_parents.reject{|c| c.name == "Inactive" }
+  end
+
   def display
     ScCategory::DISPLAY_HASH[display_mask]
   end
-  
+
   def self.global_resources_dropdown
     where("sc_categories.display_mask IN (?) AND sc_categories.show_as_dropdown = (?)", [2,4,5], true)
   end
-  
+
   def self.global_navbar
     where("sc_categories.display_mask IN (?) AND sc_categories.show_as_dropdown = (?)", [2,4,5], false)
   end
-  
+
   def self.specialty
     where("sc_categories.display_mask IN (?) AND sc_categories.ancestry is null", [1,3,4,5])
   end
-  
+
   def self.searchable
     where("sc_categories.searchable = (?)", true)
   end
@@ -51,11 +64,11 @@ class ScCategory < ActiveRecord::Base
       name
     end
   end
-  
+
   def show_as_dropdown?
     show_as_dropdown
   end
-  
+
   def show_on_front_page?
     show_on_front_page
   end

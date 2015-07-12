@@ -1,6 +1,6 @@
 class AddReports < ActiveRecord::Migration
   def change
-    
+
     create_table :reports do |t|
       t.string  :name
       t.integer :type_mask
@@ -14,9 +14,9 @@ class AddReports < ActiveRecord::Migration
       t.boolean :by_user, :default => false
       t.boolean :by_pageview, :default => false
       t.boolean :only_shared_care, :default => false
-      
+
       t.timestamps
     end
-    
+
   end
 end

@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include ControllerAuthentication
+  include PublicActivity::StoreController
   before_filter :login_required
   protect_from_forgery
   check_authorization

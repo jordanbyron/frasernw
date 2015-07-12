@@ -5,7 +5,7 @@ class AddFieldsToSpecialist < ActiveRecord::Migration
     add_column :specialists, :location_opened, :string
     rename_column :specialists, :status, :practise_limitations
     add_column :specialists, :status_mask, :integer
-    
+
     # Fields for Referrals
     add_column :specialists, :referral_fax, :boolean
     add_column :specialists, :referral_phone, :boolean

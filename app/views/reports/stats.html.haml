@@ -5,7 +5,7 @@
   %h2= @report.name
   %h4= "#{@report.level_name} #{@report.type}"
   %p.no_indent= "Generated on #{Time.now.strftime('%A %B %d')} at #{Time.now.strftime('%I:%M %p')}"
-  
+
   - if (@divisional)
     - specialists = Specialist.in_divisions(@divisions)
     - clinics = Clinic.in_divisions(@divisions)
@@ -22,17 +22,17 @@
     - hospitals = Hospital.all
 
   %table#stats.table
-    
+
     %tr
       %th
       %th Total
     %tr
       %th Specialties
       %td= specializations.length
-      
+
     %tr
       %th
-    
+
     %tr
       %th
       %th Total Focused & Non Focused
@@ -47,10 +47,10 @@
       %td= procedures.reject{|p| !p.procedure_specializations.first.nonfocused?}.length
       %td= Procedure.all.reject{|p| !p.procedure_specializations.first.assumed_specialist?}.length
       %td= Procedure.all.reject{|p| !p.procedure_specializations.first.assumed_clinic?}.length
-      
+
     %tr
       %th
-      
+
     %tr
       %th
       %th Total
@@ -69,10 +69,10 @@
       %td= specialists.reject{|s| !s.hospital_or_clinic_only?}.length
       %td= specialists.reject{|s| !s.moved_away?}.length
       %td= specialists.reject{|s| !s.retired?}.length
-      
+
     %tr
       %th
-    
+
     %tr
       %th
       %th Total
@@ -85,16 +85,47 @@
       %td= clinics.reject{|s| !s.responded?}.length
       %td= clinics.reject{|s| !s.not_responded?}.length
       %td= clinics.reject{|s| !s.purposely_not_yet_surveyed?}.length
-      
+
     %tr
       %th
-    
+
     %tr
       %th
       %th Total
     %tr
       %th Hospitals
       %td= hospitals.length
+
+    %tr
+      %th
+
+
+    %tr
+      %th Specialists by Specialty
+
+    %tr
+      %th
+    - specializations.each do |specialization|
+      - @specialization_specialists = specialization.specialists & specialists
+      %tr
+        %th
+        %th Total
+        %th Completed Survey
+        %th Not Completed Survey
+        %th Purposely Not Yet Surveyed
+        %th Hospital/Clinic Only
+        %th Moved Away
+        %th Retired
+      %tr
+        %th= specialization.name
+        %td= @specialization_specialists.length
+        %td= @specialization_specialists.reject{|s| !s.responded?}.length
+        %td= @specialization_specialists.reject{|s| !s.not_responded?}.length
+        %td= @specialization_specialists.reject{|s| !s.purposely_not_yet_surveyed?}.length
+        %td= @specialization_specialists.reject{|s| !s.hospital_or_clinic_only?}.length
+        %td= @specialization_specialists.reject{|s| !s.moved_away?}.length
+        %td= @specialization_specialists.reject{|s| !s.retired?}.length
+
 
   %p.admin.btn-group
     - if can? :update, @report

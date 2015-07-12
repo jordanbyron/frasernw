@@ -1,0 +1,15 @@
+.content-wrapper
+  %h2 Create a New Custom Notification
+  = render partial: "introduction"
+
+  = render 'form'
+
+  = link_to 'Back', subscriptions_path
+
+
+:javascript
+  $(document).ready(function() {
+    $('.news-updates').hide();
+    $('.resource-updates').hide();
+    $('.all-updates').hide();
+  });

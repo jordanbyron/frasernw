@@ -1,0 +1,32 @@
+- title "FAQ"
+
+= render "faq_categories/specialization_dropdown"
+
+.content-wrapper
+  .content#faq
+    .row
+      .span8.offset2
+        %h1
+          = "#{@category.name} FAQ"
+        - if @category.description.present?
+          %p
+            = @category.description
+          %br
+
+        .faqs{"data-update-url" => update_ordering_faq_category_path(@category)}
+          - @category.sorted_by_index.each do |faq|
+            = content_tag_for :div, faq do
+              %h2
+                %span= faq.question
+                - if can? :update, Faq
+                  %span
+                    = link_to edit_faq_path(faq), target: "_blank", class: "faqs__admin_link" do
+                      %i.icon-pencil.faqs__admin_icon
+                - if can? :update_ordering, FaqCategory
+                  %i.icon-resize-vertical.faqs__admin_icon.faqs__admin_icon--handle
+
+              %p
+                = BlueCloth.new(faq.answer_markdown).to_html.html_safe
+
+- content_for :javascript_footer do
+  = javascript_include_tag "views/faqs"

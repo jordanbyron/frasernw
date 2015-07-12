@@ -11,7 +11,8 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
 <% specializations.each do |specialization| %>
 
   <% cache(specialization_path(specialization) + "_" + city_path(city)) do %>
-  
+    <%# e.g. sample cache key: "/specialties/33_/cities/33"%>
+
     filtering.current_cities["<%= city.id %>"] = true
     <%
 
@@ -19,8 +20,11 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
     specialist_procedures = Array.new
     specialist_associations = Array.new
     specialist_languages = Array.new
-    
-    specialists = specialization.specialists.includes([{:specialist_offices => {:office => {:location => :address}}}]).in_cities([city]).reject{ |s| !s.show_in_table? }
+
+    # PERF NOTE: Expensive eager load below:  2925 ms without includes, 5438 ms with includes
+    # specialists = specialization.specialists.in_cities([city]).reject{ |s| !s.show_in_table? }
+    # ^^above is faster, but need to benchmark it page wide
+    specialists = specialization.specialists.includes([{:specialist_offices => {:office => {:location => :address}}}]).in_cities_cached([city]).reject{ |s| !s.show_in_table? }
     if specialists.length > 0
       -%> has_specialists = true; <%
     end
@@ -67,7 +71,7 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
     clinic_procedures = Array.new
     clinic_languages = Array.new
     clinic_healthcare_providers = Array.new
-    
+
     clinics = specialization.clinics.includes([{:clinic_locations => [{:schedule => [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday]}, {:location => :address}]}, {:focuses => :procedure_specialization}]).in_cities([city]).reject{ |c| !c.show_in_table? }
     if clinics.length > 0
       -%> has_clinics = true; <%
@@ -110,7 +114,7 @@ filtering.clinic_healthcare_providers["<%= city.id %>"] = [];
     filtering.clinic_procedures["<%= city.id %>"] = filtering.clinic_procedures["<%= city.id %>"].concat(<%=clinic_procedures.flatten.uniq.to_json.html_safe %>);
     filtering.clinic_languages["<%= city.id %>"] = filtering.clinic_languages["<%= city.id %>"].concat(<%=clinic_languages.flatten.uniq.to_json.html_safe %>);
     filtering.clinic_healthcare_providers["<%= city.id %>"] = filtering.clinic_healthcare_providers["<%= city.id %>"].concat(<%=clinic_healthcare_providers.flatten.uniq.to_json.html_safe %>);
-    
+
   <% end %>
-  
+
 <% end %>

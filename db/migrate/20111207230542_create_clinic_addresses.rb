@@ -4,7 +4,7 @@ class CreateClinicAddresses < ActiveRecord::Migration
       t.integer :clinic_id
       t.integer :address_id
       t.integer :hospital_id
-      
+
       t.timestamps
     end
   end

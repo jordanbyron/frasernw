@@ -26,34 +26,33 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
-    @user.user_controls_specialist_offices.build
-    @user.user_controls_clinic_locations.build
+    build_user_form
     @new_user = true
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def create
     @user = User.new(params[:user])
+    redirect_to new_user_url, :alert => "Create New User Failed:  At least one division must be chosen." and return if @user.divisions.blank?
     if @user.save :validate => false #so we can avoid setting up with emails or passwords
       redirect_to @user, :notice => "User #{@user.name} successfully created."
     else
-      render :action => 'new'
+      render :action => 'new', :notice => "User Create Failed"
     end
   end
 
   def edit
     @user = User.find(params[:id])
-    @user.user_controls_specialist_offices.build
-    @user.user_controls_clinic_locations.build
+    build_user_form
     @new_user = false
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def show
     @user = User.find(params[:id])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def update
     @user = User.find(params[:id])
     @user.attributes = params[:user]
@@ -64,7 +63,7 @@ class UsersController < ApplicationController
       render :action => 'edit'
     end
   end
-  
+
   def validate
     if params.blank? || params[:user].blank?
       redirect_to login_url
@@ -80,7 +79,7 @@ class UsersController < ApplicationController
       end
     end
   end
-  
+
   def setup
     if params.blank? || params[:user].blank?
       redirect_to login_url
@@ -99,12 +98,12 @@ class UsersController < ApplicationController
       end
     end
   end
-  
+
   def change_name
     @user = current_user
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def update_name
     @user = current_user
     if @user.update_attributes(params[:user])
@@ -113,7 +112,7 @@ class UsersController < ApplicationController
       render :action => :change_name, :layout => 'user_sessions'
     end
   end
-  
+
   def change_local_referral_area
     @user = current_user
     @local_referral_cities = {}
@@ -131,7 +130,7 @@ class UsersController < ApplicationController
     end
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def update_local_referral_area
     @user = current_user
     @user.user_cities.each do |uc|
@@ -162,12 +161,12 @@ class UsersController < ApplicationController
     end
     redirect_to root_url, :layout => 'ajax', :notice => "Your local referral area was successfully updated."
   end
-  
+
   def change_email
     @user = current_user
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def update_email
     @user = current_user
     if @user.update_attributes(params[:user])
@@ -176,12 +175,12 @@ class UsersController < ApplicationController
       render :action => :change_email, :layout => 'user_sessions'
     end
   end
-  
+
   def change_password
     @user = current_user
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def update_password
     @user = current_user
     if @user.update_attributes(params[:user])
@@ -190,11 +189,11 @@ class UsersController < ApplicationController
       render :action => :change_password, :layout => 'user_sessions'
     end
   end
-  
+
   def upload
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
-  
+
   def import
     divisions = []
     params[:division_ids].each do |division_id|
@@ -208,11 +207,19 @@ class UsersController < ApplicationController
       render :layout => 'ajax' if request.headers['X-PJAX']
     end
   end
-  
+
   def destroy
     @user = User.find(params[:id])
     @user.destroy
     redirect_to users_url, :notice => "Successfully deleted user."
   end
-  
+
+  private
+
+  def build_user_form
+    @user.user_controls_specialist_offices.build
+    @user.user_controls_clinic_locations.build
+    @formatted_clinic_locations = ClinicLocation.all_formatted_for_user_form
+    @formatted_specialist_offices = SpecialistOffice.cached_all_formatted_for_user_form
+  end
 end

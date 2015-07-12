@@ -9,12 +9,14 @@
 //= require jquery_ujs
 //= require jquery.scrollto.min.js
 //= require dataTables/jquery.dataTables
-//= require dataTables/jquery.dataTables.bootstrap
+//= require dataTables/bootstrap/2/jquery.dataTables.bootstrap
 //= require json2.js
 //= require jquery.history.js
 //= require jquery_nested_form.js
 //= require ajaxify-html5.js
-//= require_tree .
+//= require jquery.serializejson
+//= require highcharts
+//= require_directory .
 
 function current_user_is_admin()
 {
@@ -59,28 +61,28 @@ Array.prototype.intersect = function(a2)
 // Reference: http://es5.github.com/#x15.4.4.19
 if (!Array.prototype.map) {
   Array.prototype.map = function(callback, thisArg) {
-    
+
     var T, A, k;
-    
+
     if (this == null) {
       throw new TypeError(" this is null or not defined");
     }
-    
+
     var O = Object(this);
     var len = O.length >>> 0;
-    
+
     if (typeof callback !== "function") {
       throw new TypeError(callback + " is not a function");
     }
-    
+
     if (thisArg) {
       T = thisArg;
     }
-    
+
     A = new Array(len);
-    
+
     k = 0;
-    
+
     while(k < len) {
       var kValue, mappedValue;
       if (k in O) {
@@ -90,9 +92,45 @@ if (!Array.prototype.map) {
       }
       k++;
     }
-    
+
     return A;
-  };      
+  };
+}
+
+//see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+if (!Array.prototype.filter) {
+  Array.prototype.filter = function(fun/*, thisArg*/) {
+    'use strict';
+
+    if (this === void 0 || this === null) {
+      throw new TypeError();
+    }
+
+    var t = Object(this);
+    var len = t.length >>> 0;
+    if (typeof fun !== 'function') {
+      throw new TypeError();
+    }
+
+    var res = [];
+    var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+    for (var i = 0; i < len; i++) {
+      if (i in t) {
+        var val = t[i];
+
+        // NOTE: Technically this should Object.defineProperty at
+        //       the next index, as push can be affected by
+        //       properties on Object.prototype and Array.prototype.
+        //       But that method's new, and collisions should be
+        //       rare, so use the more-compatible alternative.
+        if (fun.call(thisArg, val, i, t)) {
+          res.push(val);
+        }
+      }
+    }
+
+    return res;
+  };
 }
 
 if(!Array.indexOf) {
@@ -137,7 +175,7 @@ function favorite(type, id, name) {
         if ( $('#favorites_dropdown li[id^=' + type + ']').length == 1 )
         {
           //hide the favorites section header if there isn't any other items
-          $('#' + type + '_favorites').hide();        
+          $('#' + type + '_favorites').hide();
         }
         if ( $('#favorites_dropdown li').length == 4 )
         {

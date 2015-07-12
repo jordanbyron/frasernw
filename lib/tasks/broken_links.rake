@@ -4,7 +4,7 @@ namespace :pathways do
     include ActionController::Caching::Fragments
     include Net
     include Rails.application.routes.url_helpers
-  
+
     task :check => :environment do
       ScItem.all.reject{ |sc| !sc.link? }.each do |sc|
         begin
@@ -22,7 +22,7 @@ namespace :pathways do
         end
       end
     end
-    
+
     task :check_division, [:division_id] => [:environment] do |t, args|
       d = Division.find(args[:division_id])
       ScItem.owned_in_divisions([d]).reject{ |sc| !sc.link? }.each do |sc|
@@ -44,19 +44,19 @@ namespace :pathways do
 
     # The following methods are defined to fake out the ActionController
     # requirements of the Rails cache
-    
+
     def cache_store
       ActionController::Base.cache_store
     end
-    
+
     def self.benchmark( *params )
       yield
     end
-    
+
     def cache_configured?
       true
     end
-  
-    
+
+
   end
 end

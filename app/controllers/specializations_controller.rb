@@ -3,7 +3,7 @@ class SpecializationsController < ApplicationController
   load_and_authorize_resource :except => [:refresh_cache, :refresh_city_cache, :refresh_division_cache]
   before_filter :check_token, :only => [:refresh_cache, :refresh_city_cache, :refresh_division_cache]
   skip_authorization_check :only => [:refresh_cache, :refresh_city_cache, :refresh_division_cache]
-  
+
   cache_sweeper :specialization_sweeper, :only => [:create, :update, :destroy]
 
   def index
@@ -61,7 +61,7 @@ class SpecializationsController < ApplicationController
     else
       divisions = current_user_divisions
     end
-    
+
     if @specialization.update_attributes(params[:specialization])
       divisions.each do |division|
         puts division.name
@@ -91,29 +91,29 @@ class SpecializationsController < ApplicationController
     @specialization.destroy
     redirect_to specializations_url, :notice => "Successfully deleted specialty."
   end
-  
+
   def check_token
     token_required( Specialization, params[:token], params[:id] )
   end
-  
+
   def city
     @specialization = Specialization.find(params[:id])
     @city = City.find(params[:city_id])
     render 'refresh_city.js'
   end
-  
+
   def refresh_cache
     @specialization = Specialization.find(params[:id])
     @feedback = FeedbackItem.new
     render :show, :layout => 'ajax'
   end
-  
+
   def refresh_city_cache
     @specialization = Specialization.find(params[:id])
     @city = City.find(params[:city_id])
     render 'refresh_city.js'
   end
-  
+
   def refresh_division_cache
     @specialization = Specialization.find(params[:id])
     @division = Division.find(params[:division_id])

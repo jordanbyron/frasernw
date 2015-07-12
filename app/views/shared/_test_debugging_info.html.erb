@@ -1,0 +1,33 @@
+<div class="alert alert-danger">
+  <i class="icon-info-sign"></i> THIS IS A TEST SITE.  CHANGES DO NOT SAVE TO MAIN SITE.
+  <!-- Button to trigger modal -->
+  <a href="#testdebugModal" role="button" class="btn" data-toggle="modal">Debug Info</a>
+  <% if current_user.present? %>
+  Current User: <%= current_user.name %> (<%= current_user.email %>)
+  <% end %>
+  <a class="close" data-dismiss="alert" href="#">&times;</a>
+</div>
+
+
+
+<!-- Modal -->
+<div id="testdebugModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="testDebugModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="testDebugModalLabel">Debug Info</h3>
+  </div>
+  <div class="modal-body">
+  <p>APP_NAME: <%= ENV['APP_NAME'] %></p>
+  <p>Controller:   <%= debug controller_name %></p>
+  <p>Action:  <%= debug action_name %></p>
+  <p>URL Route: <%= link_to url_for(controller: controller_name, action: action_name) %></p>
+  <% if current_user.present? %>
+    <p>current_user_divisions: <%= current_user_divisions.map{|ud| "#{ud.id} #{ud.name}"}.join(",") %></p>
+    <p>User Role: <%= current_user.role_full %></p>
+    <p>User Type: <%= current_user.type %>
+  <% end %>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
+</div>

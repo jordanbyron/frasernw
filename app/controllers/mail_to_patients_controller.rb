@@ -1,13 +1,13 @@
 class MailToPatientsController < ApplicationController
   skip_authorization_check
-  
-  def new  
+
+  def new
     @user = current_user
     @sc_item = ScItem.find(params[:id])
     render :layout => 'ajax' if request.headers['X-PJAX']
-  end  
-  
-  def create  
+  end
+
+  def create
     if params.blank? || params[:patient_email].blank? || params[:sc_item_id].blank?
       redirect_to root_url
     elsif !ValidatesEmailFormatOf::validate_email_format(params[:patient_email]).nil?
@@ -18,5 +18,5 @@ class MailToPatientsController < ApplicationController
       @sc_item.mail_to_patient(current_user, @patient_email)
       redirect_to @sc_item, :alert => "Successfully sent e-mail to patient."
     end
-  end  
+  end
 end

@@ -1,4 +1,5 @@
 class SpecializationOption < ActiveRecord::Base
+
   attr_accessible :specialization, :owner, :content_owner, :division, :in_progress, :is_new, :open_to_clinic_tab_old, :open_to_type, :open_to_sc_category, :show_specialist_categorization_1, :show_specialist_categorization_2, :show_specialist_categorization_3, :show_specialist_categorization_4, :show_specialist_categorization_5
 
   belongs_to :specialization
@@ -6,12 +7,12 @@ class SpecializationOption < ActiveRecord::Base
   belongs_to :content_owner, :class_name => "User"
   belongs_to :division
   belongs_to :open_to_sc_category, :class_name => "ScCategory"
-  
+
   def self.for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     where("specialization_options.division_id IN (?)", division_ids)
   end
-  
+
   def self.for_divisions_and_specializations(divisions, specializations)
     division_ids = divisions.map{ |d| d.id }
     specialization_ids = specializations.map{ |s| s.id }
@@ -60,5 +61,5 @@ class SpecializationOption < ActiveRecord::Base
     OPEN_TO_SC_CATEGORY => "Content Category"
   }
 
-  has_paper_trail
+  include PaperTrailable
 end

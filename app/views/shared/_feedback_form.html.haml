@@ -1,0 +1,58 @@
+-#Not Yet fully working with Feedback queue.  Refactor to this nearly working abstraction to build a unified partial for feedback items.
+-# To use this partial, in controller add: :feedback_item = item.active_feedback_items.build
+-#item is local partial abstraction of @specialist, @sc_item, @clinic
+- if item.class.name == "ScItem"
+  - item_js_name = "content_items" # e.g.: $('#user_favorite_content_items_#{item.id}')
+- else
+  - item_js_name = item.class.name.downcase.pluralize # e.g.: $('#user_favorite_specialists_#{item.id}')
+#feedback
+  .inner
+    = simple_form_for :feedback_item, :html => { :class => "ajax feedback_form" } do |f|
+
+      = f.input :feedback, :label => "Please provide us with any updates to #{item.name}'s information"
+      = f.input :item_type, :as => [:hidden, :text], :value => "#{item.class.name}"
+      = f.input :item_id, :as => :hidden, :value => item.id
+
+      .form-actions
+        %a.btn.btn-primary{:id => "sendFeedbackButton", "href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" }
+          .before-click
+            Send Feedback
+          .after-click.hidden
+            Sending
+        %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
+
+#feedback_thanks
+  .inner
+    %h2 Thank you!
+
+    %p.space.no_indent= "Thank you for providing your feedback  on #{item.name}. Your contributions help make Pathways a valuable resource for the community."
+
+    %p.space.no_indent We will review your feedback in the near future and take action as necessary.
+
+    %p.space.no_indent
+      %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close
+
+%script{"type" => "text/javascript"}
+  :plain
+    $(document).ready(function() {
+      $('.tt').tooltip({trigger: 'manual'});
+      $('#user_favorite_#{item_js_name}_#{item.id}').addClass('#{favorite_class}');
+    });
+
+    function send_feedback(form) {
+      $("#sendFeedbackButton").addClass('disabled');
+      $('.before-click').addClass('hidden');
+      $('.after-click').removeClass('hidden');
+      $.ajax({
+          url: form.attr('action'),
+          data: form.serialize(),
+          type: 'POST'
+      }).success(function(json) {
+          $("#sendFeedbackButton").removeClass('disabled');
+          $('.after-click').addClass('hidden');
+          $('.before-click').removeClass('hidden');
+          $('#feedback').fadeOut(200);
+          $('#feedback_item_feedback').val('')
+          $('#feedback_thanks').fadeIn(200);
+      });
+    }

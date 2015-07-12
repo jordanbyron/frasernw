@@ -1,6 +1,6 @@
 class UserControlsClinic < ActiveRecord::Base
-  belongs_to :user
-  belongs_to :clinic
-  
-  has_paper_trail
+  belongs_to :user, touch: true
+  belongs_to :clinic, touch: true
+
+  include PaperTrailable
 end

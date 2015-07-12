@@ -1,20 +1,21 @@
 class Procedure < ActiveRecord::Base
   attr_accessible :name, :parent_id, :specialization_ids, :all_procedure_specializations_attributes
-  has_paper_trail :ignore => :saved_token
-  
+
+  include PaperTrailable
+
   has_many :all_procedure_specializations, :dependent => :destroy, :class_name => "ProcedureSpecialization"
   has_many :procedure_specializations, :dependent => :destroy, :conditions => { "mapped" => true }
-  has_many :specializations, :through => :procedure_specializations, :uniq => true, :conditions => { "procedure_specializations.mapped" => true }, :order => 'name ASC'  
+  has_many :specializations, :through => :procedure_specializations, :conditions => { "procedure_specializations.mapped" => true }, :order => 'name ASC'
   accepts_nested_attributes_for :all_procedure_specializations, :allow_destroy => true
-  
+
   has_many :capacities, :through => :procedure_specializations
   has_many :specialists, :through => :capacities
-  
+
   has_many :focuses, :through => :procedure_specializations
   has_many :clinics, :through => :focuses
 
   validates_presence_of :name, :on => :save, :message => "can't be blank"
-  
+
   def to_s
     self.name
   end
@@ -42,14 +43,14 @@ class Procedure < ActiveRecord::Base
     parents_names = parents_name_array
     self.name.uncapitalize_first_letter.split(' ').reject{ |word| parents_names.include? word }.join(' ').capitalize_first_letter
   end
-  
+
   def fully_in_progress_for_divisions(divisions)
     specializations.each do |s|
      return false if (s.specialization_options.for_divisions(divisions).length == 0) || (s.specialization_options.for_divisions(divisions).reject{ |so| so.in_progress }.length != 0)
     end
     return true
   end
-  
+
   def all_specialists_in_cities(cities)
     #look at this procedure as well as its children to find any specialists
     results = []
@@ -60,7 +61,7 @@ class Procedure < ActiveRecord::Base
             #only add the specialists that do the parent procedure we are assumed for
             results += child.parent.procedure.all_specialists_for_specialization_in_cities(child.specialization, cities)
           else
-            results += ps.specialization.specialists.in_cities(cities)
+            results += ps.specialization.specialists.in_cities_cached(cities)
           end
         else
           Capacity.find_all_by_procedure_specialization_id(child.id).each do |capacity|
@@ -72,7 +73,7 @@ class Procedure < ActiveRecord::Base
     results.uniq!
     return (results ? results.compact : [])
   end
-  
+
   def all_clinics_in_cities(cities)
     #look at this procedure as well as its children to find any clinics
     results = []
@@ -95,13 +96,13 @@ class Procedure < ActiveRecord::Base
     results.uniq!
     return (results ? results.compact : [])
   end
-  
+
   def all_specialists_for_specialization_in_cities(specialization, cities)
     #look at this procedure as well as its children to find any specialists
     results = []
     ps = ProcedureSpecialization.find_by_specialization_id_and_procedure_id(specialization.id, self.id)
     if ps.assumed_specialist?
-      results += ps.specialization.specialists.in_cities(cities)
+      results += ps.specialization.specialists.in_cities_cached(cities)
     else
       ps.subtree.each do |child|
         Capacity.find_all_by_procedure_specialization_id(child.id).each do |capacity|
@@ -112,7 +113,7 @@ class Procedure < ActiveRecord::Base
     results.uniq!
     return (results ? results.compact : [])
   end
-  
+
   def all_clinics_for_specialization_in_cities(specialization, cities)
     #look at this procedure as well as its children to find any clinics
     results = []
@@ -129,11 +130,11 @@ class Procedure < ActiveRecord::Base
     results.uniq!
     return (results ? results.compact : [])
   end
-  
+
   def empty?
     return ((all_specialists_in_cities(City.all).length == 0) and (all_clinics_in_cities(City.all).length == 0))
   end
-  
+
   def has_children?
     result = false
     procedure_specializations.each do |ps|
@@ -141,7 +142,7 @@ class Procedure < ActiveRecord::Base
     end
     return result
   end
-  
+
   def children
     result = []
     procedure_specializations.each do |ps|
@@ -152,7 +153,7 @@ class Procedure < ActiveRecord::Base
     end
     return result.flatten.uniq
   end
-  
+
   def focused_children
     result = []
     procedure_specializations.focused.each do |ps|
@@ -163,7 +164,7 @@ class Procedure < ActiveRecord::Base
     end
     return result.flatten.uniq
   end
-  
+
   def non_focused_children
     result = []
     procedure_specializations.non_focused.each do |ps|
@@ -174,7 +175,7 @@ class Procedure < ActiveRecord::Base
     end
     return result.flatten.uniq
   end
-  
+
   def token
     if self.saved_token
       return self.saved_token

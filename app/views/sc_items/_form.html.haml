@@ -5,7 +5,7 @@
   %h3 Content Classification
 
   = f.association :sc_category, as: :select, :collection => @hierarchy, :include_blank => false
-  
+
   .control-group
     .control-label
       Item Specialties & Areas of Practice
@@ -14,7 +14,7 @@
         %label
           = check_box_tag "specialization_#{specialization.id}", 1, @has_specializations.include?(specialization.id), :name => "specialization[#{specialization.id}", :class => "specialty_check"
           = specialization.name
-        
+
         .procedures_list{"id" => "specialization_#{specialization.id}_procedures"}
           - specialization.non_assumed_procedure_specializations_arranged.each do |ps,children|
             %label
@@ -26,20 +26,20 @@
                 = child_ps.procedure.name
 
   %h3 Content Options
-  
+
   - if current_user_is_super_admin?
     = f.input :division_id, as: :select, :collection => Division.all, :include_blank => false
   - elsif current_user_divisions.length > 1
     = f.input :division_id, as: :select, :collection => current_user_divisions
   - else
     = f.input :division_id, as: :hidden, :input_html => { :value => current_user_divisions.first.id }
-    
+
   = f.input :searchable
   = f.input :shareable
   = f.input :shared_care
 
   %h3 Content
-      
+
   = f.input :title
   = f.input :type_mask, as: :select, collection: ScItem::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
   #link_section
@@ -50,19 +50,27 @@
   #document_section
     = f.input :document, as: :file
     = f.input :can_email_document
-        
+
+  %h3
+    = "History & Notes"
+  = render 'history/nodes', item: f.object
+  = render "notes/fields",
+    parent_fields: f,
+    user: current_user
+
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
-    = link_to 'Cancel', sc_items_path, :class => "btn btn-danger ajax"
-            
-            
+    = link_to 'Cancel', root_url, :class => "btn btn-danger ajax"
+
+
+
   %script{"type" => "text/javascript"}
     :plain
       function hide_show_procedures( checkbox )
       {
         id = "#" + $(checkbox).prop('id') + "_procedures";
         if ($(checkbox).prop('checked'))
-        {  
+        {
           $(id).show();
         }
         else
@@ -71,12 +79,12 @@
         }
         return true;
       }
-      
-      $(document).ready(function() { 
+
+      $(document).ready(function() {
         $.each($('.specialty_check'), function() { hide_show_procedures(this) });
       });
-      
-      $('.specialty_check').click(function() { 
+
+      $('.specialty_check').click(function() {
         hide_show_procedures(this);
       });
 
@@ -87,7 +95,7 @@
           $("#link_section").show();
           $("#mardown_section").hide();
           $("#document_section").hide();
-        } 
+        }
         else if ($(this).val() == 2)
         {
           $("#link_section").hide();
@@ -101,8 +109,8 @@
           $("#document_section").show();
         }
       }
-      
-      $(document).ready(function() { 
+
+      $(document).ready(function() {
         $("#sc_item_type_mask").each(type_mask_changed);
         $("#sc_item_type_mask").live("change", type_mask_changed);
       });

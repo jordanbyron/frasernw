@@ -6,7 +6,7 @@ class AddNewsItems < ActiveRecord::Migration
       t.date :end_date, :default => nil
       t.string :title
       t.text :body
-      
+
       t.timestamps
     end
   end

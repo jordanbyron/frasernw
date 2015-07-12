@@ -1,9 +1,9 @@
 class Focus < ActiveRecord::Base
   belongs_to :clinic
   belongs_to :procedure_specialization
-  
-  has_paper_trail
-  
+
+  include PaperTrailable
+
   def self.clinic_wait_time
     joins(:procedure_specialization).where('procedure_specializations.clinic_wait_time = (?)', true)
   end

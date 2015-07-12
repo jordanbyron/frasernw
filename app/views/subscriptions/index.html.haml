@@ -1,0 +1,51 @@
+.content-wrapper
+  %h2
+    My Custom Notification Settings
+  - if @subscriptions.present?
+
+    %table.table.table-condensed.table-striped
+      %container
+        %tr
+          %th Type
+          %th Interval
+          %th Content
+          %th Division(s)
+          %th Options
+        - @subscriptions.each do |subscription|
+          %tr
+            %td{:style => "white-space: nowrap"}= link_to "#{subscription.classification.singularize}", edit_subscription_path(subscription)
+            %td{:style => "white-space: nowrap"}= subscription.interval_to_words
+            %td{:style => "white-space: nowrap container-fluid"}
+              - if subscription.sc_categories.present?
+                %p
+                  %strong Resources:
+                  %br= subscription.sc_categories.map(&:name).join(", ")
+              - if subscription.news_type_present?
+                %p
+                  %strong News Updates:
+                  %br= subscription.news_types_pluralized.join(", ")
+              - if subscription.specializations.present?
+                %p
+                  %strong Specialities:
+                  %br= subscription.specializations_comma_separated
+            %td{:style => "white-space: nowrap container-fluid"}
+              = subscription.divisions.join(", ")
+            %td{:style => "white-space: nowrap"}
+              = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_subscription_path(subscription), :class => "btn btn-mini ajax")
+              = link_to("<i class='icon-trash'></i>".html_safe + " Delete", subscription, :confirm => "Delete Notification Setting #{subscription.id}?", :method => :delete, :class => "btn btn-mini")
+
+            / %td{:style => "white-space: nowrap"}= link_to "#{subscription.classification}", edit_subscription_path(subscription)
+            / %td{:style => "white-space: nowrap"}= subscription.interval_to_words
+            / %td{:style => "white-space: nowrap container-fluid"}= subscription.sc_categories.map(&:name).join(", ")
+            / %td{:style => "white-space: nowrap container-fluid"}= subscription.news_item_type_hash_array.join(", ")
+            / %td{:style => "white-space: nowrap container-fluid"}= subscription.specializations_comma_separated
+            / %td{:style => "white-space: nowrap container-fluid"}
+            /   = subscription.divisions.join(", ")
+            / %td{:style => "white-space: nowrap"}
+            /   = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_subscription_path(subscription), :class => "btn btn-mini ajax")
+            /   = link_to("<i class='icon-trash'></i>".html_safe + " Delete", subscription, :confirm => "Delete Notification Setting #{subscription.id}?", :method => :delete, :class => "btn btn-mini")
+  - else
+    %br
+    %p.no_indent You currently do not have any subscription notifications created yet.  Click the button below to create your first one.
+  %br
+  %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " Create New Update Notification", new_subscription_path, :class => "btn ajax btn btn-primary")

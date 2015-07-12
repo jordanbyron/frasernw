@@ -3,7 +3,7 @@
 .content-wrapper
 
   %h2 Content Items Created by Other Divisions that can be Shared with #{@division.name}
-  
+
   = simple_nested_form_for @division, :url => {:action => 'update_shared'}, :html => { :class => "form-horizontal ajax" } do |f|
     - if not f.error_messages.blank?
       .alert.alert-error= f.error_messages
@@ -20,7 +20,7 @@
             %a{"href" => "##{category.name.remove_whitespace}_tab", "data-toggle" => "tab"}= category.name
           - active = false
 
-    
+
       .tab-content
         - active = true
         - categories.each do |category|
@@ -52,7 +52,7 @@
                   %td= sc_item.type
                   %td= sc_item.searchable ? "Yes" : "No"
                   %td= sc_item.shared_care? ? "Yes" : "No"
-                  
+
           - active = false
 
     .form-actions

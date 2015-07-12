@@ -1,0 +1,13 @@
+- title "History"
+
+.content-wrapper
+  %h2= "History for \"#{@item.label}\""
+
+  .history__index
+    = render 'history/nodes', item: @item
+
+  - if @item.is_a? Noteable
+    .history__notes_field
+      = render "notes/form", note: @new_note
+
+      = link_to "View record", smart_duck_path(@item)

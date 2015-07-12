@@ -94,6 +94,6 @@ namespace :pathways do
       end
       puts ""
       puts ""
-    end  
+    end
   end
 end

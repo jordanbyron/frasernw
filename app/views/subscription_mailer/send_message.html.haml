@@ -1,0 +1,12 @@
+!!!
+%html
+  %head
+    %title #{@user.name} -- Pathways: Your Daily update
+
+  %body
+    %p
+      #{@user.name} has sent you a link to a medical resource "#{@sc_item.title}" which is available at #{@sc_item.resolved_url}.
+    %br
+    %p
+      - @message_items.each do |message_item|
+        = render "content_item", :message_item => message_item

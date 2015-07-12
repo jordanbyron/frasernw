@@ -3,23 +3,23 @@
 .content-wrapper
 
   %h2 Feedback Queue Archive
-  
+
   - divisions = current_user_is_admin? ? Division.all : current_user_divisions
-  
+
   - specialist_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Specialist }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
   - clinic_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Clinic }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
   - sc_item_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != ScItem }.reject{ |feedback_item| ([feedback_item.item.division] & divisions).blank? }
-  
+
   - if current_user_is_super_admin?
-  
+
     - other_specialist_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Specialist }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).length > 0 }
     - other_clinic_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Clinic }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).length > 0 }
     - other_sc_item_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != ScItem }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).length > 0 }
-    
+
     - feedback = [specialist_feedback, clinic_feedback, sc_item_feedback, other_specialist_feedback, other_clinic_feedback, other_sc_item_feedback]
 
   - else
-    
+
     - feedback = [specialist_feedback, clinic_feedback, sc_item_feedback]
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
@@ -35,9 +35,9 @@
       %li
         %a{"href" => "#2_tab", "data-toggle" => "tab"}
           Content
-            
+
       - if current_user_is_super_admin?
-      
+
         %li
           %a{"href" => "#3_tab", "data-toggle" => "tab"}
             Other Divisions' Specialist
@@ -47,15 +47,15 @@
         %li
           %a{"href" => "#5_tab", "data-toggle" => "tab"}
             Other Divisions' Content
-        
+
     .tab-content
-    
-      - classes = current_user_is_super_admin? ? ["Specialist", "Clinic", "ScItem", "Specialist", "Clinic", "ScItem"] : ["Specialist", "Clinic", "ScItem"]      
-    
+
+      - classes = current_user_is_super_admin? ? ["Specialist", "Clinic", "ScItem", "Specialist", "Clinic", "ScItem"] : ["Specialist", "Clinic", "ScItem"]
+
       - classes.each_with_index do |feedback_type, index|
-      
+
         .tab-pane{"id" => "#{index}_tab", "class" => (index == 0) && "active"}
-      
+
           %table.table.table-condensed.table-striped
             %tr
               %th Feedback on
@@ -73,5 +73,6 @@
                 %td= "#{time_ago_in_words(feedback_item.created_at)} ago"
                 %td{"style" => "width: 30%"}= feedback_item.feedback
                 %td= feedback_item.user.blank? ? "unavailable" : (mail_to feedback_item.user.email, feedback_item.user.email, :subject => "Your Pathways Feedback", :body => "#{feedback_item.feedback} \n\n Pathways: http://www.pathwaysbc.ca")
+                %td.admin= history_button(feedback_item)
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2

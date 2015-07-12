@@ -8,7 +8,7 @@
 
 %p#specific_appointment_block.empty
   %input.specific_appointment#specific_appointment_check{"type" => "radio", "name" => "appointment"}
-  Your appointment is on 
+  Your appointment is on
   %input.specific_appointment{"type" => "text"}
   at
   %input.specific_appointment{"type" => "text"}
@@ -47,17 +47,17 @@
     %option #{@clinic.name}.
 
   %h6#patient_instruction_header Appointment Instructions
-  
+
   -if @clinic.patient_instructions.present?
     %p= @clinic.patient_instructions.end_with_period.convert_newlines_to_br
-  
+
   %textarea#custom_patient_instructions{:placeholder => "Additional patient instructions"}
   #custom_patient_instructions_print
-    
+
 - if @clinic.cancellation_policy.present?
   %h6 Cancellation Policy
   %p= @clinic.cancellation_policy.end_with_period.convert_newlines_to_br
-  
+
 %h6 Clinic Information
 
 %p= @clinic_location.phone_only if @clinic_location.phone_only.present?
@@ -70,13 +70,13 @@
     - hospital = @clinic_location.location.hospital_in
     %p= "In #{hospital.name}"
     - if address.present? && !address.empty?
-      %p= address.address 
+      %p= address.address
       %p= @clinic_location.location.in_details if @clinic_location.location.in_details.present?
       %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
   - elsif address.present? && !address.empty?
     %p= address.address
     %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
-  
+
 %script{"type" => "text/javascript"}
   :plain
     function print_patient_information()
@@ -84,7 +84,7 @@
       copy_to_print_helper();
       window.print();
     }
-    
+
     function copy_to_print_helper(){
       $('#custom_patient_instructions_print').text($('#custom_patient_instructions').val());
       if ( $('#custom_patient_instructions').val().trim() == "" )
@@ -96,7 +96,7 @@
         $('#patient_instruction_header').removeClass('empty');
       }
     }
-    
+
     function set_future_followup_block_print_visibility()
     {
       if ( $('#future_appointment_followup_check').attr('checked') )
@@ -108,32 +108,32 @@
         $('#future_appointment_followup_block').addClass('empty');
       }
     }
-    
+
     $('#custom_patient_instructions').bind('keydown keyup keypress cut copy past blur change', function(){
       copy_to_print_helper();
     });
-    
+
     $('.specific_appointment').bind('keydown keyup keypress cut copy past blur change', function(){
       $('#specific_appointment_check').attr('checked', true);
       $('#specific_appointment_block').removeClass('empty');
       $('#future_appointment_block').addClass('empty');
       $('#future_appointment_followup_block').hide();
     });
-    
+
     $('.future_appointment').bind('change', function(){
       $('#specific_appointment_block').addClass('empty');
       $('#future_appointment_check').attr('checked', true);
       $('#future_appointment_block').removeClass('empty');
       $('#future_appointment_followup_block').show();
     });
-    
+
     $('.future_appointment_followup').bind('change', function(){
       $('#future_appointment_followup_check').attr('checked', true);
       set_future_followup_block_print_visibility();
     });
-    
+
     $('#future_appointment_followup_check').bind('change', function(){
       set_future_followup_block_print_visibility();
     });
-        
+
 %input.btn{"type" => "button", "value" => "Print", "onclick" => "print_patient_information()"}

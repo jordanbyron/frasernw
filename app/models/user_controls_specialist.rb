@@ -1,6 +1,6 @@
 class UserControlsSpecialist < ActiveRecord::Base
-  belongs_to :user
-  belongs_to :specialist
-  
-  has_paper_trail
+  belongs_to :user, touch: true
+  belongs_to :specialist, touch: true
+
+  include PaperTrailable
 end

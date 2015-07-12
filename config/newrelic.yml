@@ -168,10 +168,10 @@ common: &default_settings
     enabled: true
 
     ###DevNoteKelsey: Added this back to new version of newrelic.yml
-    # Rails Only - tells error collector whether or not to capture a 
-    # source snippet around the place of the error when errors are View 
+    # Rails Only - tells error collector whether or not to capture a
+    # source snippet around the place of the error when errors are View
     # related.
-    capture_source: true  
+    capture_source: true
 
     # To stop specific errors from reporting to New Relic, set this property
     # to comma-separated values.  Default is to ignore routing errors,

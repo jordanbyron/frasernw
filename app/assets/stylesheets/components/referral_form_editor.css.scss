@@ -1,0 +1,30 @@
+#content #container {
+  input.referral_form_editor__input {
+    margin-bottom: 15px;
+  }
+
+  label.input_label.referral_form_editor__input_label {
+    text-align: left;
+    margin-bottom: 10px;
+  }
+
+  .referral_form_editor__radio_wrapper {
+    margin-left: 5px;
+    margin-bottom: 15px;
+    padding-left: 0px;
+    label {
+      clear: both;
+    }
+  }
+
+  .referral_form_editor__form_link_item {
+    margin-left: 0px;
+    margin-bottom: 15px;
+  }
+  .referral_form_editor__history_nodes {
+    margin-left: 15px;
+  }
+  .referral_form_editor__fieldset {
+    width:750px;
+  }
+}

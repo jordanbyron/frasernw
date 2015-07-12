@@ -12,7 +12,7 @@ module VersionsHelper
       'unknown'
     end
   end
-  
+
   def version_event(version)
     begin
       case version.item_type
@@ -23,7 +23,7 @@ module VersionsHelper
           elsif version.event == "update"
             "#{link_to version.item.name, specialization_path(version.item_id), :class => 'specialty ajax'} was updated"
           else
-            "#{link_to version.reify.name, show_version_path(version.item_id), :class => 'specialty ajax'} was deleted"
+            "#{link_to version.reify.name, version_path(version.item_id), :class => 'specialty ajax'} was deleted"
         end
         #SPECIALISTS
         when "Specialist"
@@ -32,7 +32,7 @@ module VersionsHelper
           elsif version.event == "update"
             "#{link_to version.item.name, specialist_path(version.item_id), :class => 'specialist ajax'} was updated"
           else
-            "#{link_to version.reify.name, show_version_path(version.item_id), :class => 'specialist ajax'} was deleted"
+            "#{link_to version.reify.name, version_path(version.item_id), :class => 'specialist ajax'} was deleted"
           end
         when "SpecialistSpecialization"
           if version.event == "create"
@@ -79,7 +79,7 @@ module VersionsHelper
           elsif version.event == "update"
             "#{link_to version.item.specialist.name, specialist_path(version.item.specialist), :class => 'specialist ajax'}'s association with clinic #{link_to version.item.clinic.name, clinic_path(version.item.clinic), :class => 'ajax'} was updated"
           else
-            "#{link_to version.reify.specialist.name, show_version_path(version.reify.specialist), :class => 'specialist ajax'} no longer works in #{link_to version.reify.clinic.name, clinic_path(version.reify.clinic), :class => 'ajax'}"
+            "#{link_to version.reify.specialist.name, version_path(version.reify.specialist), :class => 'specialist ajax'} no longer works in #{link_to version.reify.clinic.name, clinic_path(version.reify.clinic), :class => 'ajax'}"
           end
         when "SpecialistSpeak"
           if version.event == "create"
@@ -104,7 +104,7 @@ module VersionsHelper
           elsif version.event == "update"
             "#{link_to version.item.name, clinic_path(version.item_id), :class => 'clinic ajax'} was updated"
           else
-            "#{link_to version.reify.name, show_version_path(version.item_id), :class => 'clinic ajax'} was deleted"
+            "#{link_to version.reify.name, version_path(version.item_id), :class => 'clinic ajax'} was deleted"
           end
         when "ClinicLocation"
           if version.event == "create"
@@ -168,7 +168,7 @@ module VersionsHelper
           elsif version.event == "update"
             "#{link_to version.item.name, hospital_path(version.item_id), :class => 'hospital ajax'} was updated"
           else
-            "#{link_to version.reify.name, show_version_path(version.item_id), :class => 'hospital ajax'} was deleted"
+            "#{link_to version.reify.name, version_path(version.item_id), :class => 'hospital ajax'} was deleted"
           end
         when "HospitalAddress"
           #handled by Address
@@ -190,7 +190,7 @@ module VersionsHelper
           elsif version.event == "update"
             "#{link_to version.item.name, procedure_path(version.item_id), :class => 'procedure ajax'} was updated"
           else
-            "#{link_to version.reify.name, show_version_path(version.item_id), :class => 'procedure ajax'} was deleted"
+            "#{link_to version.reify.name, version_path(version.item_id), :class => 'procedure ajax'} was deleted"
           end
         when "ProcedureSpecialization"
           if version.event == "create"
@@ -222,7 +222,7 @@ module VersionsHelper
           elsif version.event == "update"
             "#{link_to version.item.name, language_path(version.item_id), :class => 'language ajax'} was updated"
           else
-            "#{link_to version.reify.name, show_version_path(version.item_id), :class => 'language ajax'} was deleted"
+            "#{link_to version.reify.name, version_path(version.item_id), :class => 'language ajax'} was deleted"
           end
         #HEALTHCARE PROVIDERS
         when "HealthcareProvider"
@@ -231,7 +231,7 @@ module VersionsHelper
           elsif version.event == "update"
             "#{link_to version.item.name, healthcare_provider_path(version.item_id), :class => 'clinic ajax'} was updated"
           else
-            "#{link_to version.reify.name, show_version_path(version.item_id), :class => 'clinic ajax'} was deleted"
+            "#{link_to version.reify.name, version_path(version.item_id), :class => 'clinic ajax'} was deleted"
           end
         when "Schedule"
           if version.event == "create" || version.event == "update"

@@ -5,23 +5,23 @@ class AddProcedureSpecializations < ActiveRecord::Migration
       t.integer :specialization_id
       t.string :ancestry
       t.boolean :mapped, :default => false
-      
+
       t.timestamps
     end
-    
+
     add_index :procedure_specializations, :ancestry
-    
+
     add_column :capacities, :procedure_specialization_id, :integer
-    
+
     add_column :focuses, :procedure_specialization_id, :integer
-    
+
     #migrate the current procedures specialization to the new join table
-    Procedure.all.each { 
+    Procedure.all.each {
       |p| ProcedureSpecialization.create(:procedure_id => p.id,
                                          :specialization_id => p.specialization_id,
                                          :mapped => true)
     }
-    
+
     #migrate the current procedures parent to the new join table
     Procedure.all.each {
       |p|
@@ -31,7 +31,7 @@ class AddProcedureSpecializations < ActiveRecord::Migration
       ps.parent = parent_ps
       ps.save
     }
-    
+
     #migrate capacities to point at a procedure_specialization, not procedure (as a capacities specialization can be ambigious otherwise)
     Capacity.all.each {
       |c|
@@ -41,7 +41,7 @@ class AddProcedureSpecializations < ActiveRecord::Migration
       c.procedure_specialization_id = ps.id
       c.save
     }
-    
+
     #migrate focuses to point at a procedure_specialization, not procedure (as a focuses specialization can be ambigious otherwise)
     Focus.all.each {
       |f|
@@ -51,7 +51,7 @@ class AddProcedureSpecializations < ActiveRecord::Migration
       f.procedure_specialization_id = ps.id
       f.save
     }
-    
+
     #TODO when it all works
     #remove_column :procedures, :specialization_id
     #remove_column :procedures, :ancestry

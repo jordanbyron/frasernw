@@ -13,3 +13,13 @@ config/heroku_env.rb
 /app/views/.DS_Store
 /logfile
 .idea
+config/database.yml
+config/google_oauth.p12
+reports/
+.ruby-gemset
+config/google_oauth.p12
+/reports
+ssl/
+scratchpad/
+reports/
+config/google_oauth.p12

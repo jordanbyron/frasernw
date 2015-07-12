@@ -8,7 +8,7 @@ class AddAttachmentFormToReferralForm < ActiveRecord::Migration
       t.string :form_content_type
       t.integer :form_file_size
       t.datetime :form_updated_at
-      
+
       t.timestamps
     end
   end

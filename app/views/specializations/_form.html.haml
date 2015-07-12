@@ -15,14 +15,15 @@
 = simple_nested_form_for @specialization, :html => { :class => "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
-    
+
   - if current_user_is_super_admin?
     = f.input :name
-    = f.input :member_name
+    = f.input :member_name, hint: "e.g. 'Opthalmologist', 'Cardiothoracic surgeon', 'Nurse practitioner', 'Sports medicine specialist'"
+    = f.input :label_name, hint: "Defines how this Specialty is labeled on columns and tables; e.g. as a 'Specialist', 'Family Physician', 'Nurse Practitioner', etc."
     - divisions = Division.all
   - else
     - divisions = current_user_divisions
-    
+
   - divisions.each do |division|
     - possible_admins = division.users.admin + User.super_admin
     - division_admins = [nil]
@@ -56,7 +57,7 @@
         = select_tag "content_owner[#{division.id}]", options_for_select(division_admins, content_owner_id), :name => "content_owner[#{division.id}]", :class => "select"
     .control-group
       %label.control-label
-        In Progress
+        In Progress / Hidden
       .controls
         = check_box_tag "in_progress[#{division.id}]", "in_progress[#{division.id}]", in_progress, :name => "in_progress[#{division.id}]"
     .control-group
@@ -90,10 +91,10 @@
         %label.checkbox
           = check_box_tag "show_specialist_categorization_4[#{division.id}]", "show_specialist_categorization_4[#{division.id}]", show_specialist_categorization_4, :name => "show_specialist_categorization_4[#{division.id}]"
           = Specialist::CATEGORIZATION_HASH_4
-      
+
     %script{"type" => "text/javascript"}
       :plain
-        $(document).ready(function() { 
+        $(document).ready(function() {
           $("#open_to_type_#{division.id}").each( function() { setContentCategoryVisibility(this, #{division.id}) });
           $("#open_to_type_#{division.id}").live("change", function() { setContentCategoryVisibility(this, #{division.id}) });
         });

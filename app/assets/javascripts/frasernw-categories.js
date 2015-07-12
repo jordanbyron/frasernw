@@ -4,7 +4,7 @@ function init_category(category_id, inline, procedure_filter)
   {
     add_items_from_division(filtering.content_data[division_id], category_id, inline, procedure_filter);
   }
-  
+
   update_ui(category_id, inline);
 }
 
@@ -54,11 +54,11 @@ function add_item(category_id, item_id, title, full_title, url, markdown, body, 
     //row or item already exists
     return;
   }
-  
+
   var favorite = "<a href=\"javascript:void(0)\" onclick=\"favorite('content_items'," + item_id + ",'" + title + "')\" title=\"Favourite / un-favourite\"><i class=\"icon-text icon-heart\" id=\"user_favorite_content_items_" + item_id + "\"></i></a>"
   var feedback = "<a href=\"javascript:void(0)\" onclick=\"show_feedback('" + title + "'," + item_id + ")\" title=\"Provide feedback on content\"><i class=\"icon-bullhorn\"></i></a>"
   var new_tag = is_new ? "<span class='new'>new</span> " : ""
-  
+
   if (inline)
   {
     //add it as an inline entry
@@ -80,7 +80,7 @@ function add_item(category_id, item_id, title, full_title, url, markdown, body, 
     var shared_care_icon = shared_care ? "<i class=\"icon-blue icon-star\"></i>" : ""
     var email = can_email ? "<a href=\"/content_items/" + item_id + "/email\" class=\"ajax\" title=\"E-mail to patient\"><i class=\"icon-envelope-alt icon-blue\"></i></a>" : ""
     var row_html = $("<tr id='" + entry_id + "'><td class=\"title\">" + new_tag + "" + shared_care_icon + "<a href=\"" + url + "\" class=\"ajax\" onclick=\"_gaq.push(['_trackEvent', 'content_item_id', '" + type_mask + "', '" + item_id + "']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;\">" + title + "</a></td><td class=\"subcategory\">" + subcategory + "</td><td class=\"favorite\">" + favorite + "</td><td class=\"email\">" + email + "</td><td class=\"fb\">" + feedback + "</td></tr>");
-    
+
     if (typeof $.fn.ajaxify !== 'function')
     {
       $('#' + category_id + '_table tr:last').after(row_html);
@@ -96,14 +96,14 @@ function add_item(category_id, item_id, title, full_title, url, markdown, body, 
 function update_subcategories(category_id)
 {
   var current_subcategories = [];
-  
+
   for(var division_id in filtering.current_divisions)
   {
     current_subcategories = current_subcategories.concat(filtering.current_subcategories[division_id][category_id]);
   }
-  
+
   current_subcategories = current_subcategories.unique();
-  
+
   //hide subcategories that no item has
   $('input.ic[name="ic' + category_id + '"]').each( function() {
     $this = $(this)

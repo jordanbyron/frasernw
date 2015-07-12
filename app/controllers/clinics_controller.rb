@@ -4,7 +4,7 @@ class ClinicsController < ApplicationController
   before_filter :check_token, :only => :refresh_cache
   skip_authorization_check :only => :refresh_cache
   include ApplicationHelper
-  
+
   cache_sweeper :clinic_sweeper, :only => [:create, :update, :destroy]
 
   def index
@@ -18,13 +18,12 @@ class ClinicsController < ApplicationController
 
   def show
     @clinic = Clinic.find(params[:id])
-    @feedback = @clinic.feedback_items.build
+    @feedback = @clinic.active_feedback_items.build
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def new
-    @is_review = false
-    @is_rereview = false
+    @form_modifier = ClinicFormModifier.new(:new, current_user)
     #specialization passed in to facilitate javascript "checking off" of starting speciality, since build below doesn't seem to work
     @specialization = Specialization.find(params[:specialization_id])
     @clinic = Clinic.new
@@ -69,12 +68,15 @@ class ClinicsController < ApplicationController
           focus.waittime_mask = params[:focuses_waittime][updated_focus] if params[:focuses_waittime].present?
           focus.lagtime_mask = params[:focuses_lagtime][updated_focus] if params[:focuses_lagtime].present?
           focus.save
-          
+
           #save any other focuses that have the same procedure and are in a specialization our clinic is in
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
+      ## TODO: remove when we're certain the new review system is working
+      params.delete(:pre_edit_form_data)
       @clinic.review_object = ActiveSupport::JSON::encode(params)
+
       @clinic.save
       redirect_to clinic_path(@clinic), :notice => "Successfully created #{@clinic.name}."
     else
@@ -83,8 +85,7 @@ class ClinicsController < ApplicationController
   end
 
   def edit
-    @is_review = false
-    @is_rereview = false
+    @form_modifier = ClinicFormModifier.new(:edit, current_user)
     @clinic = Clinic.find(params[:id])
     while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
       puts "location #{@clinic.clinic_locations.length}"
@@ -102,7 +103,7 @@ class ClinicsController < ApplicationController
       puts "locations #{@clinic.locations.length}"
     end
     @clinic_procedures = []
-    @clinic.specializations.each { |specialization| 
+    @clinic.specializations.each { |specialization|
       @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
       @clinic_procedures += ancestry_options( specialization.non_assumed_procedure_specializations_arranged )
     }
@@ -140,7 +141,9 @@ class ClinicsController < ApplicationController
     params[:clinic][:procedure_ids] ||= []
     @clinic = Clinic.find(params[:id])
     ClinicSweeper.instance.before_controller_update(@clinic)
-    if @clinic.update_attributes(params[:clinic])
+
+    parsed_params = ParamParser::Clinic.new(params).exec
+    if @clinic.update_attributes(parsed_params[:clinic])
       clinic_specializations = @clinic.specializations
       if params[:focuses_mapped].present?
         @clinic.focuses.each do |original_focus|
@@ -152,11 +155,13 @@ class ClinicsController < ApplicationController
           focus.waittime_mask = params[:focuses_waittime][updated_focus] if params[:focuses_waittime].present?
           focus.lagtime_mask = params[:focuses_lagtime][updated_focus] if params[:focuses_lagtime].present?
           focus.save
-          
+
           #save any other focuses that have the same procedure and are in a specialization our clinic is in
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
+      ## TODO: remove when we're certain the new review system is working
+      params.delete(:pre_edit_form_data)
       @clinic.review_object = ActiveSupport::JSON::encode(params)
       @clinic.save
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
@@ -172,20 +177,12 @@ class ClinicsController < ApplicationController
     @clinic.destroy
     redirect_to clinics_url, :notice => "Successfully deleted #{name}."
   end
-  
-  def edit_referral_forms
-    @entity = Clinic.find(params[:id])
-    @entity.referral_forms.build if @entity.referral_forms.length == 0
-    @entity_type = "clinic"
-    render :template => 'referral_form/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
-  end
-  
+
   def review
     @clinic = Clinic.find(params[:id])
-    @is_review = false
-    @is_rereview = false
+    @form_modifier = ClinicFormModifier.new(:review, current_user)
     @review_item = @clinic.review_item;
-    
+
     if @review_item.blank?
       redirect_to clinics_path, :notice => "There are no review items for this specialist"
     else
@@ -203,7 +200,7 @@ class ClinicsController < ApplicationController
         l.build_address
       end
       @clinic_procedures = []
-      @clinic.specializations.each { |specialization| 
+      @clinic.specializations.each { |specialization|
         @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
         @clinic_procedures += ancestry_options( specialization.non_assumed_procedure_specializations_arranged )
       }
@@ -237,13 +234,12 @@ class ClinicsController < ApplicationController
       render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
-  
+
   def rereview
     @clinic = Clinic.find(params[:id])
-    @is_review = false
-    @is_rereview = true
+    @form_modifier = ClinicFormModifier.new(:rereview, current_user)
     @review_item = ReviewItem.find(params[:review_item_id])
-    
+
     if @review_item.blank?
       redirect_to clinics_path, :notice => "There are no review items for this clinic"
     elsif @review_item.base_object.blank?
@@ -263,7 +259,7 @@ class ClinicsController < ApplicationController
         l.build_address
       end
       @clinic_procedures = []
-      @clinic.specializations.each { |specialization| 
+      @clinic.specializations.each { |specialization|
         @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
         @clinic_procedures += ancestry_options( specialization.non_assumed_procedure_specializations_arranged )
       }
@@ -297,17 +293,25 @@ class ClinicsController < ApplicationController
       render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
-  
+
   def accept
     #accept changes, archive the review item so that we can save the clinic
     @clinic = Clinic.find(params[:id])
-    
+
     review_item = @clinic.review_item
     review_item.archived = true;
     review_item.save
-    
+
+    BuildReviewItemNote.new(
+      params: params,
+      current_user: current_user,
+      review_item: review_item
+    ).exec
+
     ClinicSweeper.instance.before_controller_update(@clinic)
-    if @clinic.update_attributes(params[:clinic])
+
+    parsed_params = ParamParser::Clinic.new(params).exec
+    if @clinic.update_attributes(parsed_params[:clinic])
       clinic_specializations = @clinic.specializations
       if params[:focuses_mapped].present?
         @clinic.focuses.each do |original_focus|
@@ -319,25 +323,28 @@ class ClinicsController < ApplicationController
           focus.waittime_mask = params[:focuses_waittime][updated_focus] if params[:focuses_waittime].present?
           focus.lagtime_mask = params[:focuses_lagtime][updated_focus] if params[:focuses_lagtime].present?
           focus.save
-          
+
           #save any other focuses that have the same procedure and are in a specialization our clinic is in
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
+      ## TODO: remove when we're certain the new review system is working
+      params.delete(:pre_edit_form_data)
       @clinic.review_object = ActiveSupport::JSON::encode(params)
+
       @clinic.save
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else
       render :action => 'edit'
     end
   end
-  
+
   def archive
     #archive the review item so that we can save the clinic
     @clinic = Clinic.find(params[:id])
-    
+
     review_item = @clinic.review_item
-    
+
     if review_item.blank?
       redirect_to clinic_path(@clinic), :notice => "There are no review items for this clinic"
     else
@@ -346,30 +353,31 @@ class ClinicsController < ApplicationController
       redirect_to review_items_path, :notice => "Successfully archived review item for #{@clinic.name}."
     end
   end
-  
+
   def print_patient_information
     @clinic = Clinic.find(params[:id])
     @clinic_location = @clinic.clinic_locations.reject{ |cl| cl.empty? }.first
     render :layout => 'print'
   end
-  
+
   def print_location_patient_information
     @clinic = Clinic.find(params[:id])
     @clinic_location = ClinicLocation.find(params[:location_id])
     render :print_patient_information, :layout => 'print'
   end
-  
+
   def check_token
     token_required( Clinic, params[:token], params[:id] )
   end
-  
+
   def refresh_cache
     @clinic = Clinic.find(params[:id])
-    @feedback = @clinic.feedback_items.build
+    @feedback = @clinic.active_feedback_items.build
     render :show, :layout => 'ajax'
   end
-  
+
   protected
+
   def generate_focus(clinic, procedure_specialization, offset)
     focus = clinic.present? ? Focus.find_by_clinic_id_and_procedure_specialization_id(clinic.id, procedure_specialization.id) : nil
     return {

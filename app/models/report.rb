@@ -1,10 +1,10 @@
 class Report < ActiveRecord::Base
-  
+
   attr_accessible :name, :type_mask, :level_mask, :division_id, :city_id, :user_type_mask, :time_frame_mask, :start_date, :end_date, :by_user, :by_pageview, :only_shared_care
-  
+
   belongs_to :division
   belongs_to :city
-  
+
   module ReportType
     PAGE_VIEWS = 1
     USERS = 2
@@ -17,7 +17,7 @@ class Report < ActiveRecord::Base
     SPECIALIST_CONTACT_HISTORY = 9
     ENTITY_STATS = 10
   end
-  
+
   TYPE_HASH = {
     #ReportType::PAGE_VIEWS => "Page views",
     #ReportType::CONTENT_ITEMS => "Content items",
@@ -26,13 +26,13 @@ class Report < ActiveRecord::Base
     ReportType::SPECIALIST_CONTACT_HISTORY => "Specialist contact history",
     ReportType::ENTITY_STATS => "Entity Statistics",
   }
-  
+
   def type
     Report::TYPE_HASH[type_mask]
   end
-  
+
   USER_TYPE_HASH = {-1 => 'All Non-Admin Users', 0 => 'All Users' }.merge(User::TYPE_HASH)
-  
+
   def user_type
     if [ReportType::SPECIALIST_CONTACT_HISTORY, ReportType::SPECIALIST_WAIT_TIMES, ReportType::CLINIC_WAIT_TIMES, ReportType::ENTITY_STATS].include? type_mask
       "N/A"
@@ -45,12 +45,12 @@ class Report < ActiveRecord::Base
     SYSTEM_WIDE = 1
     DIVISIONAL = 2
   end
-  
+
   LEVEL_HASH = {
     ReportLevel::SYSTEM_WIDE => "System-wide",
     ReportLevel::DIVISIONAL => "Divisional",
   }
-  
+
   def level
     Report::LEVEL_HASH[level_mask]
   end
@@ -62,7 +62,7 @@ class Report < ActiveRecord::Base
       level
     end
   end
-  
+
   def divisional?
     level_mask == ReportLevel::DIVISIONAL
   end
@@ -84,7 +84,7 @@ class Report < ActiveRecord::Base
     TimeFrame::ALL_TIME => "All time",
     TimeFrame::CUSTOM_RANGE => "Custom range",
   }
-  
+
   def time_frame
     Report::TIME_FRAME_HASH[time_frame_mask]
   end

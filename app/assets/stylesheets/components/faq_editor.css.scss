@@ -1,0 +1,11 @@
+#content #container {
+  textarea.faq_editor__textarea {
+    width: 400px;
+  }
+  textarea.faq_editor__textarea--question {
+    height: 50px;
+  }
+  textarea.faq_editor__textarea--answer {
+    height: 200px;
+  }
+}

@@ -7,27 +7,27 @@
       %b.caret
 
 = render 'partials/specialization_dropdown_menu'
-          
+
 %script{"type" => "text/javascript"}
   :plain
     var root_procedures = [];
-    var should_show_others = false;
+    var should_show_others = true;
     $(document).ready(function() {
       $('#specialist_table, #office_table').tablesorter({sortList: [[1,0],[2,0],[3,0],[4,0]]});
       $('#clinic_table').tablesorter({sortList: [[0,0],[1,0],[2,0],[3,0],[4,0]]});
     });
 
 - cache(hospital_path(@hospital)) do
-    
+
   .content-wrapper
-      
+
     %h2= @hospital.name
-      
+
     - if @hospital.address.present? && !@hospital.address.empty?
       %p.no_indent= link_to @hospital.address.address, @hospital.address.map_url, :target => "_blank"
     - if (@hospital.phone_and_fax.present?)
       %p.no_indent= @hospital.phone_and_fax
-      
+
   - specialists = @hospital.specialists.reject{ |s| s.in_progress || !s.show_in_table? }
   - clinics_in = @hospital.clinics_in.reject{ |c| c.in_progress || !c.show_in_table? }
 
@@ -42,7 +42,7 @@
   .tabbable
     %ul.nav.nav-tabs
       - if has_specialists
-        %li{:class => specialist_tab_class} 
+        %li{:class => specialist_tab_class}
           %a{"href" => "#specialist_tab", "data-toggle" => "tab"}
             %span Specialists with Hospital Privileges
       - if has_clinics_in
@@ -51,9 +51,9 @@
             %span Clinics in Hospital
       - if has_specialists_with_offices_in
         %li{:class => specialist_offices_tab_class}
-          %a{"href" => "#specialist_offices_tab", "data-toggle" => "tab"} 
+          %a{"href" => "#specialist_offices_tab", "data-toggle" => "tab"}
             %span Specialists with Offices in Hospital
-    
+
     .content-wrapper
 
       %script{"type" => "text/javascript"}
@@ -80,17 +80,17 @@
 
       .tab-content
         - if has_specialists
-          #specialist_tab.tab-pane{:class => specialist_tab_class} 
+          #specialist_tab.tab-pane{:class => specialist_tab_class}
             .content
               .row
-                .span8half                  
+                .span8half
                   .toggle-filters.visible-phone
                     %a{"href" => "javascript:void(0)", "onclick" => "$('#specialist_filters').toggle()"}
                       %i.icon-blue.icon-cog.icon-small
                       Show / Hide Specialist Filters
-                      
+
                   #specialist_phrase.filter-phrase
-                  
+
                   %table.table.table-condensed.tablesorter.five#specialist_table
                     %thead
                       %tr{:class => 'tableheader'}
@@ -120,12 +120,12 @@
                             %ul
                               - specialist.cities_for_display.each do |city|
                                 %li= city
-                          
+
                 .span3.offsethalf
                   .well.filter#specialist_filters
                     .title
                       Filter Specialists
-                              
+
                     .filter-group
                       %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#specialist-filter-specialty"}
                         Specialties
@@ -134,7 +134,7 @@
                           - Specialization.all.reject{ |s| s.fully_in_progress }.each do |s|
                             %label
                               %input.ssp{"type" => "checkbox", "id" => "ssp#{s.id}_"}= s.name
-                              
+
                     .filter-group
                       %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#specialist-filter-referral"}
                         Referrals
@@ -150,7 +150,7 @@
                                 %option{"value" => "sc#{lag_index}_"}= lag_value
                           %label
                             %input#srpb.sr{"type" => "checkbox"} Patients can call to book after referral
-                              
+
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-sex"}
                         Sex
@@ -160,7 +160,7 @@
                             %input#ssm.ss{"type" => "checkbox"} Male
                           %label.half
                             %input#ssf.ss{"type" => "checkbox"} Female
-                        
+
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-schedule"}
                         Schedule
@@ -170,7 +170,7 @@
                             %input.ssh{"type" => "checkbox", "id" => "sshsat"} Saturday
                           %label.half
                             %input.ssh{"type" => "checkbox", "id" => "sshsun"} Sunday
-                              
+
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-language"}
                         Languages
@@ -181,7 +181,7 @@
                           - Language.all.each do |l|
                             %label.half
                               %input.sl{"type" => "checkbox", "id" => "sl#{l.id}_"}= l.name
-                            
+
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-association"}
                         Associations
@@ -193,27 +193,27 @@
                               %option{"value" => 0} Any
                               - Clinic.all.each do |c|
                                 %option{"value" => "sac#{c.id}_"}= c.name
-                              
+
 
                   %script{"type" => "text/javascript"}
                     :plain
                       $(document).ready(function() {
                         $('.ssp, .sc, .sr, .ss, .ssh, .sl, .sa, .si').click( update_specialist_table );
                       });
-              
+
         - if has_clinics_in
           #clinic_tab.tab-pane{:class => clinic_tab_class}
-          
+
             .content
               .row
-                .span8half                  
+                .span8half
                   .toggle-filters.visible-phone
                     %a{"href" => "javascript:void(0)", "onclick" => "$('#clinic_filters').toggle()"}
                       %i.icon-blue.icon-cog.icon-small
                       Show / Hide Clinic Filters
-                      
+
                   #clinic_phrase.filter-phrase
-                  
+
                   %table.table.table-condensed.tablesorter#clinic_table
                     %thead
                       %tr{:class => 'tableheader'}
@@ -238,12 +238,12 @@
                             %i{:class => clinic.status_class}
                             .status= clinic.status_class_hash
                           %td.wt= clinic.waittime
-                          
+
                 .span3.offsethalf
                   .well.filter#clinic_filters
                     .title
                       Filter Clinics
-                              
+
                     .filter-group
                       %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#clinic-filter-specialty"}
                         Specialties
@@ -252,7 +252,7 @@
                           - Specialization.all.reject{ |s| s.fully_in_progress }.each do |s|
                             %label
                               %input.csp{"type" => "checkbox", "id" => "csp#{s.id}_"}= s.name
-                              
+
                     .filter-group
                       %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#clinic-filter-referral"}
                         Referrals
@@ -268,7 +268,7 @@
                                 %option{"value" => "csc#{lag_index}_"}= lag_value
                           %label
                             %input#crpb.cr{"type" => "checkbox"} Patients can call to book after referral
-                              
+
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-detail"}
                         Details
@@ -280,7 +280,7 @@
                             %input#cdpv.cd{"type" => "checkbox"} Private
                           %label
                             %input.cd{"type" => "checkbox", "id" => "cdwa"} Wheelchair Accessible
-                              
+
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-schedule"}
                         Schedule
@@ -300,7 +300,7 @@
                             %input.csh{"type" => "checkbox", "id" => "cshsat"} Saturday
                           %label
                             %input.csh{"type" => "checkbox", "id" => "cshsun"} Sunday
-                              
+
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-healthcare-provider"}
                         Healthcare Providers
@@ -309,7 +309,7 @@
                           - HealthcareProvider.all.each do |h|
                             %label
                               %input.ch{"type" => "checkbox", "id" => "ch#{h.id}_"}= h.name
-                              
+
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#clinic-filter-language"}
                         Languages
@@ -326,19 +326,19 @@
                       $(document).ready(function() {
                         $('.csp, .cc, .cr, .cd, .csh, .ch, .cl, .ci').click( update_clinic_table );
                       });
-              
+
         - if has_specialists_with_offices_in
           #specialist_offices_tab.tab-pane{:class => specialist_offices_tab_class}
             .content
               .row
-                .span8half                  
+                .span8half
                   .toggle-filters.visible-phone
                     %a{"href" => "javascript:void(0)", "onclick" => "$('#office_filters').toggle()"}
                       %i.icon-blue.icon-cog.icon-small
                       Show / Hide Specialist Filters
-                      
+
                   #office_phrase.filter-phrase
-                  
+
                   %table.table.table-condensed.tablesorter#office_table
                     %thead
                       %tr{:class => 'tableheader'}
@@ -360,12 +360,12 @@
                             %i{:class => specialist.status_class}
                             .status= specialist.status_class_hash
                           %td.wt= specialist.not_available? ? "" : specialist.waittime
-                          
+
                 .span3.offsethalf
                   .well.filter#office_filters
                     .title
                       Filter Specialists
-                              
+
                     .filter-group
                       %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#office-filter-specialty"}
                         Specialties
@@ -374,7 +374,7 @@
                           - Specialization.all.reject{ |s| s.fully_in_progress }.each do |s|
                             %label
                               %input.osp{"type" => "checkbox", "id" => "osp#{s.id}_"}= s.name
-                              
+
                     .filter-group
                       %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#office-filter-referral"}
                         Referrals
@@ -390,7 +390,7 @@
                                 %option{"value" => "oc#{lag_index}_"}= lag_value
                           %label
                             %input#orpb.osr{"type" => "checkbox"} Patients can call to book after referral
-                                
+
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#office-filter-sex"}
                         Sex
@@ -400,7 +400,7 @@
                             %input#osm.os{"type" => "checkbox"} Male
                           %label.half
                             %input#osf.os{"type" => "checkbox"} Female
-                        
+
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#office-filter-schedule"}
                         Schedule
@@ -410,7 +410,7 @@
                             %input.osh{"type" => "checkbox", "id" => "oshsat"} Saturday
                           %label.half
                             %input.osh{"type" => "checkbox", "id" => "oshsun"} Sunday
-                              
+
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#office-filter-language"}
                         Languages
@@ -421,7 +421,7 @@
                           - Language.all.each do |l|
                             %label.half
                               %input.ol{"type" => "checkbox", "id" => "ol#{l.id}_"}= l.name
-                            
+
                     .filter-group
                       %a.filter-group-title.closed{"data-toggle" => "collapse", "href" => "#specialist-filter-association"}
                         Associations
