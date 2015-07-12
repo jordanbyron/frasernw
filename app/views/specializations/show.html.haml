@@ -338,7 +338,7 @@
                                     - grandchildren.each do |grandchild_ps, greatgrandchildren|
                                       %label.indent2{:class => grandchild_ps.clinic_wait_time && "custom_wait_time"}
                                         %input.cp{"type" => "checkbox", "id" => "cp#{grandchild_ps.procedure.id}_", "class" => "grandchild_cp#{child_ps.procedure.id}_", :name => "#{grandchild_ps.clinic_wait_time? ? 1 : 0}"}
-                                        %span= grandchild_ps.procedure.name
+                                        %span= grandchild_ps.procedure.name_relative_to_parents
 
                         %a.more#c_procedures_more{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#more_c_procedures"} More...
 

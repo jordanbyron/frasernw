@@ -151,7 +151,7 @@
                             - child_wait_time = child_procedure.procedure_specializations.specialist_wait_time.length > 0
                             %label{:class => child_wait_time && "custom_wait_time"}
                               %input.sp{"type" => "checkbox", "id" => "sp#{child_procedure.id}_", "onclick" => "$('#children_sp#{child_procedure.id}_').collapse('toggle')", :name => "#{child_wait_time ? 1 : 0}"}
-                              %span= child_procedure.name
+                              %span= child_procedure.name_relative_to_parents
                             - focused_grandchild_procedures = child_procedure.children
                             - if focused_grandchild_procedures.length > 0
                               .collapse{:id => "children_sp#{child_procedure.id}_"}
@@ -332,7 +332,7 @@
                           - child_wait_time = child_procedure.procedure_specializations.clinic_wait_time.length > 0
                             %label{:class => child_wait_time && "custom_wait_time"}
                               %input.cp{"type" => "checkbox", "id" => "cp#{child_procedure.id}_", "onclick" => "$('#children_cp#{child_procedure.id}_').collapse('toggle')", :name => "#{child_wait_time ? 1 : 0}"}
-                              %span= child_procedure.name
+                              %span= child_procedure.name_relative_to_parents
                             - focused_grandchild_procedures = child_procedure.children
                             - if focused_grandchild_procedures.length > 0
                               .collapse{:id => "children_cp#{child_procedure.id}_"}
