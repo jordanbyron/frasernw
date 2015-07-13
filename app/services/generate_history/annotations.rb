@@ -21,7 +21,7 @@ class GenerateHistory
     end
 
     def from_admin_notes_field
-      if !target.respond_to? :admin_notes || target.admin_notes == ""
+      if !target.respond_to? :admin_notes || !target.admin_notes.present?
         return []
       else
         [
