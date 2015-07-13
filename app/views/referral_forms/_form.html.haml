@@ -48,7 +48,9 @@
           placeholder: "Description"
         .referral_form_editor__history_nodes
           - if can? :index, :history
-            = render 'history/nodes', item: fields.object
+            = render 'history/nodes',
+              item: fields.object,
+              nodes: fields.object.history
           - if can? :create, Note
             = render "notes/fields",
               parent_fields: fields,

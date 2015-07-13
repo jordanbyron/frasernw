@@ -4,4 +4,8 @@ module Historical
   def history
     GenerateHistory.new(self).exec
   end
+
+  def notes_history
+    GenerateHistory.new(self, [:annotations]).exec
+  end
 end

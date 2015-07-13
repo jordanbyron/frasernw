@@ -580,16 +580,6 @@
 
     = f.association :clinic_locations, as: :check_boxes, collection: @specializations_clinic_locations
 
-  -if current_user_is_admin? && !@form_modifier.token_edit?
-
-    #section_admin.no-print
-
-      %hr
-
-      %h3 Admin
-
-      = f.input :admin_notes, label: "Admin only notes: (Deprecated! Please use the field below which makes a new note per each update)"
-
   = hidden_field_tag :pre_edit_form_data
 
   = render 'reviewables/notes_fields',

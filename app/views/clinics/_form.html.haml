@@ -343,14 +343,6 @@
 
       = f.association :healthcare_providers, as: :check_boxes
 
-  - if current_user_is_admin? && !@form_modifier.token_edit?
-
-    #section_admin.no-print
-
-      %hr
-
-      = f.input :admin_notes, label: "Admin only notes: (Deprecated! Please use the field below which makes a new note per each update)"
-
     -#section_deprecated.no-print
 
       %hr

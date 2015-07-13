@@ -53,7 +53,7 @@
 
   %h3
     = "History & Notes"
-  = render 'history/nodes', item: f.object
+  = render 'history/nodes', item: f.object, nodes: f.object.history
   = render "notes/fields",
     parent_fields: f,
     user: current_user

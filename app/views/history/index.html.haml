@@ -4,7 +4,7 @@
   %h2= "History for \"#{@item.label}\""
 
   .history__index
-    = render 'history/nodes', item: @item
+    = render 'history/nodes', item: @item, nodes: @item.history
 
   - if @item.is_a? Noteable
     .history__notes_field
