@@ -55,7 +55,11 @@ class User < ActiveRecord::Base
     :active,
     :division_ids,
     :user_controls_specialist_offices_attributes,
-    :user_controls_clinic_locations_attributes
+    :user_controls_clinic_locations_attributes,
+    :password,
+    :password_confirmation,
+    :email,
+    :agree_to_toc
 
 LIMITED_ROLE_HASH = {
     "user" => "User",
