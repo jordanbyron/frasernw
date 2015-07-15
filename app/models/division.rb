@@ -60,6 +60,10 @@ class Division < ActiveRecord::Base
 
   # # #
 
+  def search_data
+    @search_data ||= DivisionalSearchData.new(self)
+  end
+
   def to_s
     self.name
   end

@@ -117,16 +117,7 @@ namespace :pathways do
 
       Division.all.each do |d|
         puts "Search division #{d.id}"
-        expire_fragment "livesearch_#{division_path(d)}_entries"
-        Specialization.all.each do |s|
-          puts "Search division #{d.id} specialization #{s.id}"
-          expire_fragment "livesearch_#{division_path(d)}_#{specialization_path(s)}_entries"
-
-          HttpGetter.exec("refresh_livesearch_division_entries/#{d.id}/#{s.id}.js")
-
-        end
-        expire_fragment "livesearch_#{division_path(d)}_content"
-        HttpGetter.exec("refresh_livesearch_division_content/#{d.id}.js")
+        division.search_data.regenerate_cache
       end
     end
 

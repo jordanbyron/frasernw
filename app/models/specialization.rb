@@ -120,5 +120,4 @@ class Specialization < ActiveRecord::Base
       return self.saved_token
     end
   end
-
 end

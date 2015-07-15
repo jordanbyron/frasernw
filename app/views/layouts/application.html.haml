@@ -24,6 +24,14 @@
       = render "shared/test_debugging_info"
     = yield(:head)
     - if !Rails.env.development? || ENV['LIVESEARCH'].to_b
+      var pathways_division_search_data_content = {};
+      var pathways_division_search_data_entries = {};
+
+      - current_user_divisions.each do |division|
+        :javascript
+          pathways_divisional_entries_search_data[#{division.id.to_s}] = #{division.search_data.entries};
+          pathways_divisional_content_search_data[#{division.id.to_s}] = #{division.search_data.content};
+
       :javascript
         var livesearch;
         $(document).ready(function()
@@ -33,8 +41,8 @@
             search_all: '#search_all',
             search_all_url: '/livesearch_all_entries.js',
             global_data: pathways_global_search_data,
-            division_entry_data: pathways_division_search_data_entries,
-            division_content_data: pathways_division_search_data_content,
+            division_entry_data: pathways_divisional_entries_search_data,
+            division_content_data: pathways_divisional_content_search_data,
             scorer: pathways_scorer,
             grouper: pathways_grouper,
             searcher: pathways_searcher,
