@@ -1,4 +1,4 @@
-module SearchDataLabels
+class SearchDataLabels
 
   GenerateSearchDataLabels.generators.each do |label_type, generator|
     define_method label_type do
