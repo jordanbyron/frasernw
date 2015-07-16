@@ -115,8 +115,8 @@ namespace :pathways do
         HttpGetter.exec("refresh_livesearch_all_entries/#{s.id}.js")
       end
 
-      Division.all.each do |d|
-        puts "Search division #{d.id}"
+      Division.all.each do |division|
+        puts "Search division #{division.id}"
         division.search_data.regenerate_cache
       end
     end
