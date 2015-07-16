@@ -48,6 +48,13 @@
         // status icons
         var pathways_status_data = #{search_data_labels.statuses.to_json}
 
+
+      :javascript
+        //Base search data that is used regardless of whether
+        // User is searching divisionally or with the expanded area
+
+        var pathways_global_search_data = #{global_search_data.to_json}
+
       :javascript
         // base search entries (seen both with divisional and expanded search)
 

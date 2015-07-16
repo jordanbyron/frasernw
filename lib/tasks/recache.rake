@@ -103,10 +103,7 @@ namespace :pathways do
     task :search => :environment do
       puts "Recaching search..."
 
-      puts "Global"
-      expire_fragment "livesearch_global"
-      HttpGetter.exec("refresh_livesearch_global.js")
-
+      GlobalSearchData.new.regenerate_cache
       SearchDataLabels.new.regenerate_cache
 
       puts "All entries"

@@ -203,4 +203,11 @@ module ApplicationHelper
     return User.find(3) #Ron
   end
 
+  def global_search_data
+    GlobalSearchData.new.data
+  end
+
+  def search_data_labels
+    SearchDataLabels.new
+  end
 end
