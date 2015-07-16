@@ -107,6 +107,8 @@ namespace :pathways do
       expire_fragment "livesearch_global"
       HttpGetter.exec("refresh_livesearch_global.js")
 
+      SearchDataLabels.new.regenerate_cache
+
       puts "All entries"
       expire_fragment "livesearch_all_entries"
       Specialization.all.each do |s|
