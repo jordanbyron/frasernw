@@ -1,10 +1,10 @@
 - #(divisions, global_search_data, search_data_labels)
 
 :javascript
-  var pathways_division_search_data_content = {};
-  var pathways_division_search_data_entries = {};
+  var pathways_divisional_entries_search_data = {};
+  var pathways_divisional_content_search_data = {};
 
-- current_user_divisions.each do |division|
+- divisions.each do |division|
   :javascript
     pathways_divisional_entries_search_data[#{division.id.to_s}] = #{division.search_data.entries.to_json};
     pathways_divisional_content_search_data[#{division.id.to_s}] = #{division.search_data.content.to_json};
@@ -18,7 +18,7 @@
   // collection name for url strings
   var pathways_url_data = #{search_data_labels.urls.to_json}
 
-  var pathways_specialization_data = #{search_data_labels.urls.to_json}
+  var pathways_specialization_data = #{search_data_labels.specializations.to_json}
 
   var pathways_city_data = #{search_data_labels.cities.to_json}
 

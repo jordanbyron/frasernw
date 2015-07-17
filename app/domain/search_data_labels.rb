@@ -6,7 +6,7 @@ class SearchDataLabels
     end
   end
 
-  def regenerate_caches
+  def regenerate_cache
     GenerateSearchDataLabels.generators.each do |label_type, generator|
       invalidate_cache_for label_type
 
@@ -21,7 +21,7 @@ class SearchDataLabels
   end
 
   def generate(label_type)
-    GenerateSearchDataLabels.generators(method).call
+    GenerateSearchDataLabels.generators[label_type].call
   end
 
   def invalidate_cache_for(label_type)

@@ -13,11 +13,11 @@ module GenerateSearchData
 
     def from_specializations
       Specialization.all.inject([]) do |memo, specialization|
-        from_specialization(specialization)
+        memo + from_specialization(specialization)
       end
     end
 
-    def from_specialization
+    def from_specialization(specialization)
       GenerateSearchData::Entries::BySpecialization.new(
         division,
         specialization

@@ -15,8 +15,6 @@
       = stylesheet_link_tag "font-awesome-ie7.css", :media => 'screen, print'
     = stylesheet_link_tag "print", :media => 'print'
     = javascript_include_tag "application"
-    - if !Rails.env.development? || ENV['LIVESEARCH'].to_b
-      = javascript_include_tag '../livesearch'
     = csrf_meta_tag
     - cache("ie_compatibility_warning") do
       = render "layouts/ie_compatibility_warning"
@@ -25,7 +23,6 @@
     = yield(:head)
     - if !Rails.env.development? || ENV['LIVESEARCH'].to_b
       = render "partials/livesearch_vars", divisions: current_user_divisions
-      
       :javascript
         var livesearch;
         $(document).ready(function()

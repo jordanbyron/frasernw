@@ -6,10 +6,10 @@ class DivisionalSearchDataGenerator
   end
 
   def entries
-    GenerateSearchData::Entries.new(self).exec
+    GenerateSearchData::Entries.new(division).exec
   end
 
   def content
-    GenerateSearchData::Content.new(self).exec
+    GenerateSearchData::Content.new(division).exec
   end
 end

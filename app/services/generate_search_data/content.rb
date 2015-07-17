@@ -35,7 +35,7 @@ module GenerateSearchData
         end
       end
 
-      search_data.to_json
+      search_data
     end
   end
 end

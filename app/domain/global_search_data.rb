@@ -73,4 +73,8 @@ class GlobalSearchData
 
     search_data
   end
+
+  def order_map
+    GenerateSearchDataLabels::ORDER_MAP
+  end
 end
