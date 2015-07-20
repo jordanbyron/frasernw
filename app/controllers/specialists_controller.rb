@@ -141,7 +141,6 @@ class SpecialistsController < ApplicationController
     @specialist = Specialist.find(params[:id])
     SpecialistSweeper.instance.before_controller_update(@specialist)
 
-    # same
     parsed_params = ParamParser::Specialist.new(params).exec
     if @specialist.update_attributes(parsed_params[:specialist])
       UpdateSpecialistCapacities.exec(@specialist, parsed_params)

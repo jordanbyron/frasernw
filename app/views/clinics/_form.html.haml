@@ -2,14 +2,16 @@
   %script{"type" => "text/javascript"}
     :plain
       // pass variables to the review script
-      (function( clinicFormData ) {
-        clinicFormData.baseReviewItem = #{@review_item.transformed_base_object(@clinic) || 'null'};
-        clinicFormData.reviewItem = #{@review_item.transformed_review_object(@clinic) || 'null'};
-        clinicFormData.maxLocations = #{Clinic::MAX_LOCATIONS};
-        clinicFormData.interactionType = "#{@form_modifier.interaction_type.to_s}";
-      }( window.clinicFormData = {} ));
+      window.pathways = window.pathways || {};
+      (function( formData ) {
+        formData.baseReviewItem = #{@review_item.transformed_base_object(@clinic) || 'null'};
+        formData.reviewItem = #{@review_item.transformed_review_object(@clinic) || 'null'};
+        formData.maxLocations = #{Clinic::MAX_LOCATIONS};
+        formData.interactionType = "#{@form_modifier.interaction_type.to_s}";
+        formData.recordKey = "clinic";
+      }( window.pathways.formData = {} ));
 
-  = javascript_include_tag "views/clinic_form_review"
+  = javascript_include_tag "views/form_review"
 
 - if @specialization
   %script{"type" => "text/javascript"}

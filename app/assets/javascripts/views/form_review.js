@@ -1,4 +1,4 @@
-(function( clinicFormData ){
+(function( formData ){
   function show_old_value(form_element, old_value_formatted)
   {
     form_element.closest('div.control-group, div.changed_wrapper').addClass('changed');
@@ -239,7 +239,7 @@
   }
 
   var highlightChangedLocationTabs = function() {
-    for (var i = 0; i < clinicFormData.maxLocations; ++i)
+    for (var i = 0; i < formData.maxLocations; ++i)
     {
       if ($('#location_tab_' + i + ' .changed').length !== 0)
       {
@@ -250,31 +250,35 @@
   }
   var mimicBeforeEdit = function() {
     overlayFormData(
-      ["clinic"],
-      clinicFormData.baseReviewItem["clinic"],
+      [formData.recordKey],
+      formData.baseReviewItem[formData.recordKey],
       { highlightChanges: false }
     );
-    overlayFocusesFormData(
-      clinicFormData.baseReviewItem,
-      { highlightChanges: false }
-    );
+    if (formData.recordKey === "clinic"){
+      overlayFocusesFormData(
+        formData.baseReviewItem,
+        { highlightChanges: false }
+      );
+    }
   }
 
   var overlayUserChanges = function() {
     overlayFormData(
-      ["clinic"],
-      clinicFormData.reviewItem["clinic"],
+      [formData.recordKey],
+      formData.reviewItem[formData.recordKey],
       { highlightChanges: true }
     );
-    overlayFocusesFormData(
-      clinicFormData.reviewItem,
-      { highlightChanges: true }
-    );
+    if (formData.recordKey == "clinic") {
+      overlayFocusesFormData(
+        formData.reviewItem,
+        { highlightChanges: true }
+      );
+    }
   }
 
   $(document).ready(function()
   {
-    if (clinicFormData.interactionType == 'rereview')
+    if (formData.interactionType == 'rereview')
     {
       // roll back to the version the user would have seen before they started editing
       mimicBeforeEdit();
@@ -287,4 +291,4 @@
     // are we assuming that all '.scheduled' tags have changed??
     $(".scheduled").each(scheduled_changed);
   });
-}( window.clinicFormData ));
+}( window.pathways.formData ));
