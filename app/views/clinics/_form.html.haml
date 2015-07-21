@@ -234,6 +234,10 @@
         .row.spaced
           .span4.changed_wrapper{:class => "pad#{f[:offset]}"}
             %label{"for" => "focuses_mapped_#{f[:id]}"}
+              -# send 0 as unchecked value
+              = hidden_field_tag "focuses_mapped[#{f[:id]}]",
+                0,
+                id: "focuses_mapped_#{f[:id]}_hidden"
               = check_box_tag "focuses_mapped[#{f[:id]}]", 1, f[:mapped], :class => "focus"
               = f[:name]
           .span4.changed_wrapper= text_field_tag "focuses_investigations[#{f[:id]}]", f[:investigations], :class => "span4"

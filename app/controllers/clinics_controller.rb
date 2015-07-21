@@ -62,11 +62,13 @@ class ClinicsController < ApplicationController
     if @clinic.save
       if params[:focuses_mapped].present?
         clinic_specializations = @clinic.specializations
-        params[:focuses_mapped].each do |updated_focus, value|
-          focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
-          focus.investigation = params[:focuses_investigations][updated_focus]
-          focus.waittime_mask = params[:focuses_waittime][updated_focus] if params[:focuses_waittime].present?
-          focus.lagtime_mask = params[:focuses_lagtime][updated_focus] if params[:focuses_lagtime].present?
+        params[:focuses_mapped].select do |checkbox_key, value|
+          value == "1"
+        end.each do |checkbox_key, value|
+          focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, checkbox_key)
+          focus.investigation = params[:focuses_investigations][checkbox_key]
+          focus.waittime_mask = params[:focuses_waittime][checkbox_key] if params[:focuses_waittime].present?
+          focus.lagtime_mask = params[:focuses_lagtime][checkbox_key] if params[:focuses_lagtime].present?
           focus.save
 
           #save any other focuses that have the same procedure and are in a specialization our clinic is in
