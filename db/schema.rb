@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150703232728) do
+ActiveRecord::Schema.define(:version => 20150721014528) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -206,7 +206,6 @@ ActiveRecord::Schema.define(:version => 20150703232728) do
     t.text     "status_details"
     t.string   "deprecated_url"
     t.string   "deprecated_email"
-    t.text     "review_object"
     t.date     "unavailable_from"
   end
 
@@ -822,7 +821,6 @@ ActiveRecord::Schema.define(:version => 20150703232728) do
     t.integer  "photo_file_size"
     t.datetime "photo_updated_at"
     t.boolean  "is_gp",                      :default => false
-    t.text     "review_object"
   end
 
   add_index "specialists", ["referral_clinic_id"], :name => "index_specialists_on_referral_clinic_id"
