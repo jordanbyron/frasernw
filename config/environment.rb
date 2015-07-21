@@ -4,6 +4,10 @@ require File.expand_path('../application', __FILE__)
 heroku_env = File.join(Rails.root, 'config', 'heroku_env.rb')
 load(heroku_env) if File.exists?(heroku_env)
 
+def self.system_notification_recipients
+  (ENV['SYSTEM_NOTIFICATION_RECIPIENTS'] || "").split(";")
+end
+
 # Initialize the rails application
 Frasernw::Application.initialize!
 
