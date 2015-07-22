@@ -104,33 +104,8 @@ class SpecialistsController < ApplicationController
     }
     @specializations_clinics.sort!
     @specializations_clinic_locations.sort!
-    @specializations_procedures = []
-    procedure_specializations = {}
-    @specialist.specializations.each { |s|
-      @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations.count > 1
-      @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
-      procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
-    }
-    capacities_procedure_list = []
-    @capacities = []
-    procedure_specializations.each { |ps, children|
-      if !capacities_procedure_list.include?(ps.procedure.id)
-        @capacities << generate_capacity(@specialist, ps, 0)
-        capacities_procedure_list << ps.procedure.id
-      end
-      children.each { |child_ps, grandchildren|
-        if !capacities_procedure_list.include?(child_ps.procedure.id)
-          @capacities << generate_capacity(@specialist, child_ps, 1)
-          capacities_procedure_list << child_ps.procedure.id
-        end
-        grandchildren.each { |grandchild_ps, greatgrandchildren|
-          if !capacities_procedure_list.include?(grandchild_ps.procedure.id)
-            @capacities << generate_capacity(@specialist, grandchild_ps, 2)
-            capacities_procedure_list << grandchild_ps.procedure.id
-          end
-        }
-      }
-    }
+
+    @capacities = GenerateSpecialistCapacityInputs.exec(@specialist)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -230,33 +205,7 @@ class SpecialistsController < ApplicationController
       }
       @specializations_clinics.sort!
       @specializations_clinic_locations.sort!
-      @specializations_procedures = []
-      procedure_specializations = {}
-      @specialist.specializations.each { |s|
-        @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations.count > 1
-        @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
-        procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
-      }
-      capacities_procedure_list = []
-      @capacities = []
-      procedure_specializations.each { |ps, children|
-        if !capacities_procedure_list.include?(ps.procedure.id)
-          @capacities << generate_capacity(@specialist, ps, 0)
-          capacities_procedure_list << ps.procedure.id
-        end
-        children.each { |child_ps, grandchildren|
-          if !capacities_procedure_list.include?(child_ps.procedure.id)
-            @capacities << generate_capacity(@specialist, child_ps, 1)
-            capacities_procedure_list << child_ps.procedure.id
-          end
-          grandchildren.each { |grandchild_ps, greatgrandchildren|
-            if !capacities_procedure_list.include?(grandchild_ps.procedure.id)
-              @capacities << generate_capacity(@specialist, grandchild_ps, 2)
-              capacities_procedure_list << grandchild_ps.procedure.id
-            end
-          }
-        }
-      }
+      @capacities = GenerateSpecialistCapacityInputs.exec(@specialist)
       render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
@@ -283,33 +232,7 @@ class SpecialistsController < ApplicationController
       }
       @specializations_clinics.sort!
       @specializations_clinic_locations.sort!
-      @specializations_procedures = []
-      procedure_specializations = {}
-      @specialist.specializations.each { |s|
-        @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations.count > 1
-        @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
-        procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
-      }
-      capacities_procedure_list = []
-      @capacities = []
-      procedure_specializations.each { |ps, children|
-        if !capacities_procedure_list.include?(ps.procedure.id)
-          @capacities << generate_capacity(@specialist, ps, 0)
-          capacities_procedure_list << ps.procedure.id
-        end
-        children.each { |child_ps, grandchildren|
-          if !capacities_procedure_list.include?(child_ps.procedure.id)
-            @capacities << generate_capacity(@specialist, child_ps, 1)
-            capacities_procedure_list << child_ps.procedure.id
-          end
-          grandchildren.each { |grandchild_ps, greatgrandchildren|
-            if !capacities_procedure_list.include?(grandchild_ps.procedure.id)
-              @capacities << generate_capacity(@specialist, grandchild_ps, 2)
-              capacities_procedure_list << grandchild_ps.procedure.id
-            end
-          }
-        }
-      }
+      @capacities = GenerateSpecialistCapacityInputs.exec(@specialist)
       render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
@@ -374,21 +297,6 @@ class SpecialistsController < ApplicationController
     @first_division = @user_divisions.first
     render :index, :layout => 'ajax'
   end
-
-  protected
-    def generate_capacity(specialist, procedure_specialization, offset)
-      capacity = specialist.present? ? Capacity.find_by_specialist_id_and_procedure_specialization_id(specialist.id, procedure_specialization.id) : nil
-      return {
-        :mapped => capacity.present?,
-        :name => procedure_specialization.procedure.name,
-        :id => procedure_specialization.id,
-        :investigations => capacity.present? ? capacity.investigation : "",
-        :custom_wait_time => procedure_specialization.specialist_wait_time?,
-        :waittime => capacity.present? ? capacity.waittime_mask : 0,
-        :lagtime => capacity.present? ? capacity.lagtime_mask : 0,
-        :offset => offset
-      }
-    end
 
   private
 
