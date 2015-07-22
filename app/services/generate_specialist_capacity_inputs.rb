@@ -1,11 +1,11 @@
 module GenerateSpecialistCapacityInputs
-  def self.exec(specialist)
+  def self.exec(specialist, specializations)
     capacity_inputs = []
 
     # so we don't duplicate procedures
     procedures_covered = []
 
-    specialist.specializations.inject({}) do |memo, specialization|
+    specializations.inject({}) do |memo, specialization|
       memo.merge(specialization.non_assumed_procedure_specializations_arranged)
     end.each do |ps, children|
       if !procedures_covered.include?(ps.procedure.id)

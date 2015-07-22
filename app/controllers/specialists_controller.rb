@@ -39,28 +39,10 @@ class SpecialistsController < ApplicationController
 
     @specializations_clinics = (current_user_is_super_admin? ? @specialization.clinics : @specialization.clinics.in_divisions(current_user_divisions)).map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} - #{l.short_address}", l.id] }
     @specializations_clinic_locations = (current_user_is_super_admin? ? @specialization.clinics : @specialization.clinics.in_divisions(current_user_divisions)).map{ |c| c.clinic_locations.reject{ |cl| cl.empty? } }.flatten.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id] }
-    @capacities = []
-    @specialization.non_assumed_procedure_specializations_arranged.each { |ps, children|
-      @capacities << GenerateSpecialistCapacityInputs.generate_capacity(
-        nil,
-        ps,
-        0
-      )
-      children.each { |child_ps, grandchildren|
-        @capacities << GenerateSpecialistCapacityInputs.generate_capacity(
-          nil,
-          child_ps,
-          1
-        )
-        grandchildren.each { |grandchild_ps, greatgrandchildren|
-          @capacities << GenerateSpecialistCapacityInputs.generate_capacity(
-            nil,
-            grandchild_ps,
-            2
-          )
-        }
-      }
-    }
+    @capacities = GenerateSpecialistCapacityInputs.exec(
+      nil,
+      [ @specialization ]
+    )
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -116,7 +98,10 @@ class SpecialistsController < ApplicationController
     @specializations_clinics.sort!
     @specializations_clinic_locations.sort!
 
-    @capacities = GenerateSpecialistCapacityInputs.exec(@specialist)
+    @capacities = GenerateSpecialistCapacityInputs.exec(
+      @specialist,
+      @specialist.specializations
+    )
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -216,7 +201,10 @@ class SpecialistsController < ApplicationController
       }
       @specializations_clinics.sort!
       @specializations_clinic_locations.sort!
-      @capacities = GenerateSpecialistCapacityInputs.exec(@specialist)
+      @capacities = GenerateSpecialistCapacityInputs.exec(
+        @specialist,
+        @specialist.specializations
+      )
       render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
@@ -243,7 +231,10 @@ class SpecialistsController < ApplicationController
       }
       @specializations_clinics.sort!
       @specializations_clinic_locations.sort!
-      @capacities = GenerateSpecialistCapacityInputs.exec(@specialist)
+      @capacities = GenerateSpecialistCapacityInputs.exec(
+        @specialist,
+        @specialist.specializations
+      )
       render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end

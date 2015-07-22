@@ -25,7 +25,10 @@ class SpecialistsEditorController < ApplicationController
     }
     @specializations_clinics.sort!
     @specializations_clinic_locations.sort!
-    @capacities = GenerateSpecialistCapacityInputs.exec(@specialist)
+    @capacities = GenerateSpecialistCapacityInputs.exec(
+      @specialist,
+      @specialist.specializations
+    )
     @view = @specialist.views.build(:notes => request.remote_ip)
     @view.save
     if request.headers['X-PJAX']
