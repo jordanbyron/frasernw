@@ -161,8 +161,9 @@ namespace :pathways do
     end
 
     #purposeful order from least important to most important, to keep cache 'hot'
-    task :all => [:specialists_index, :procedures, :languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front, :application_layout] do
+    task :all => [:environment, :specialists_index, :procedures, :languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front, :application_layout] do
       puts "All pages recached."
+      SystemNotifier.notice("Recache successful")
     end
 
     #utility expiration tasks

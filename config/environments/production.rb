@@ -6,7 +6,7 @@ Frasernw::Application.configure do
     :email => {
       :email_prefix => "[mdpathway exception] [#{ENV['APP_NAME']}]",
       :sender_address => %{"Pathways" <system@mdpathwaysbc.com>},
-      :exception_recipients => system_notification_recipients
+      :exception_recipients => config.system_notification_recipients
     }
 
   # Code is not reloaded between requests
@@ -47,7 +47,7 @@ Frasernw::Application.configure do
 
   if !ENV['APP_NAME'] == "pathwaysbc"
     # if we're not on the live site, only send emails that match the system recipients
-    recipient_matchers = system_notification_recipients.map do |recipient|
+    recipient_matchers = config.system_notification_recipients.map do |recipient|
       Regexp.new(recipient)
     end
 
