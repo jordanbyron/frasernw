@@ -1,4 +1,5 @@
 module GenerateClinicSpecialistInputs
+  # for #update
   def self.exec(clinic)
     clinic.specializations.inject([]) do |memo, specialization|
       if clinic.specializations.count > 1

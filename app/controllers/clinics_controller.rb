@@ -42,21 +42,10 @@ class ClinicsController < ApplicationController
       l.build_address
     end
     @clinic.attendances.build
-    @clinic_specialists = @specialization.specialists.collect { |s| [s.name, s.id] }
-    @focuses = []
-    @specialization.non_assumed_procedure_specializations_arranged.each { |ps, children|
-      @focuses << GenerateClinicFocusInputs.generate_focus(nil, ps, 0)
-      children.each { |child_ps, grandchildren|
-        @focuses << GenerateClinicFocusInputs.generate_focus(nil, child_ps, 1)
-        grandchildren.each { |grandchild_ps, greatgrandchildren|
-          @focuses << GenerateClinicFocusInputs.generate_focus(
-            nil,
-            grandchild_ps,
-            2
-          )
-        }
-      }
-    }
+    @clinic_specialists = @specialization.specialists.collect do |s|
+      [s.name, s.id]
+    end
+    @focuses = GenerateClinicFocusInputs.exec(nil, [@specialization])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -105,7 +94,7 @@ class ClinicsController < ApplicationController
       puts "locations #{@clinic.locations.length}"
     end
     @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
-    @focuses = GenerateClinicFocusInputs.exec(@clinic)
+    @focuses = GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -155,7 +144,10 @@ class ClinicsController < ApplicationController
       end
 
       @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
-      @focuses = GenerateClinicFocusInputs.exec(@clinic)
+      @focuses = GenerateClinicFocusInputs.exec(
+        @clinic,
+        @clinic.specializations
+      )
 
       render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
@@ -185,7 +177,10 @@ class ClinicsController < ApplicationController
         l.build_address
       end
       @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
-      @focuses = GenerateClinicFocusInputs.exec(@clinic)
+      @focuses = GenerateClinicFocusInputs.exec(
+        @clinic,
+        @clinic.specializations
+      )
       render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end

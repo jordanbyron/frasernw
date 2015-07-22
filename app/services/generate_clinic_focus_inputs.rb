@@ -1,12 +1,12 @@
 module GenerateClinicFocusInputs
 
-  def self.exec(clinic)
+  def self.exec(clinic, specializations)
     focus_inputs = []
 
     # So we don't duplicate procedures
     procedures_covered = []
 
-    clinic.specializations.inject({}) do |memo, specialization|
+    specializations.inject({}) do |memo, specialization|
       memo.merge(specialization.non_assumed_procedure_specializations_arranged)
     end.each do |ps, children|
       if !procedures_covered.include?(ps.procedure.id)
