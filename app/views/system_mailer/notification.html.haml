@@ -1,0 +1,6 @@
+!!!
+%html
+  %body
+    - @body.each do |key, val|
+      %h3= "#{key.capitalize}:"
+      %p= val

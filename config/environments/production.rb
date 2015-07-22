@@ -1,23 +1,13 @@
 Frasernw::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
-  if ENV['APP_NAME'] == "pathwaysbc" #unless Production, override and do not send mail to warneboldt@gmail.com:
-    # ExceptionNotifier rack middleware
-    Frasernw::Application.config.middleware.use ExceptionNotification::Rack,
-      :email => {
-        :email_prefix => "[mdpathway exception] [#{ENV['APP_NAME']}]",
-        :sender_address => %{"Pathways" <system@mdpathwaysbc.com>},
-        :exception_recipients => %w{warneboldt@gmail.com khannan@mdpathwaysbc.com bgracie@pathwaysbc.ca}
-      }
-  else
-    # ExceptionNotifier rack middleware
-    Frasernw::Application.config.middleware.use ExceptionNotification::Rack,
-      :email => {
-        :email_prefix => "[mdpathway exception] [#{ENV['APP_NAME']}]",
-        :sender_address => %{"Pathways" <system@mdpathwaysbc.com>},
-        :exception_recipients => %w{khannan@mdpathwaysbc.com bgracie@pathwaysbc.ca}
-      }
-  end
+  # ExceptionNotifier rack middleware
+  Frasernw::Application.config.middleware.use ExceptionNotification::Rack,
+    :email => {
+      :email_prefix => "[mdpathway exception] [#{ENV['APP_NAME']}]",
+      :sender_address => %{"Pathways" <system@mdpathwaysbc.com>},
+      :exception_recipients => config.system_notification_recipients
+    }
 
   # Code is not reloaded between requests
   config.cache_classes = true
@@ -55,11 +45,15 @@ Frasernw::Application.configure do
       config.cache_store = :dalli_store
   end
 
-  if ENV['APP_NAME'] == "pathwaysbc" #unless Production, override and do not send mail unless to these emails:
-  else
+  if !ENV['APP_NAME'] == "pathwaysbc"
+    # if we're not on the live site, only send emails that match the system recipients
+    recipient_matchers = config.system_notification_recipients.map do |recipient|
+      Regexp.new(recipient)
+    end
+
     config.action_mailer.delivery_method = :safety_mailer
     config.action_mailer.safety_mailer_settings = {
-      allowed_matchers: [ /khannan@mdpathwaysbc.com/, /warneboldt@gmail.com/, /kelseyh@gmail.com/, /bgracie@pathwaysbc.ca/ ],
+      allowed_matchers: recipient_matchers,
       delivery_method: :smtp,
       delivery_method_settings: {
         :address => "smtp.gmail.com",

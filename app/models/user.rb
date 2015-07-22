@@ -59,7 +59,8 @@ class User < ActiveRecord::Base
     :password,
     :password_confirmation,
     :email,
-    :agree_to_toc
+    :agree_to_toc,
+    :type_mask
 
 LIMITED_ROLE_HASH = {
     "user" => "User",

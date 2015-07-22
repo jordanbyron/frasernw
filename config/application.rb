@@ -11,6 +11,16 @@ module Frasernw
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
 
+    # Load ENV vars from local file if it's there
+    config.before_configuration do
+      heroku_env = File.join(Rails.root, 'config', 'heroku_env.rb')
+      load(heroku_env) if File.exists?(heroku_env)
+    end
+
+    # So we have global access to a proper array
+    config.system_notification_recipients =
+      (ENV['SYSTEM_NOTIFICATION_RECIPIENTS'] || "").split(";")
+
     # Reusable use cases
     config.autoload_paths << "#{config.root}/app/services"
 
