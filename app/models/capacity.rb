@@ -4,6 +4,8 @@ class Capacity < ActiveRecord::Base
 
   include PaperTrailable
 
+  delegate :procedure, to: :procedure_specialization
+
   def self.specialist_wait_time
     joins(:procedure_specialization).where('procedure_specializations.specialist_wait_time = (?)', true)
   end
