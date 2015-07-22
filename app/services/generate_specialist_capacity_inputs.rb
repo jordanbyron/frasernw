@@ -1,30 +1,32 @@
 module GenerateSpecialistCapacityInputs
   def self.exec(specialist)
+    capacity_inputs = []
+
+    # so we don't duplicate procedures
     procedures_covered = []
-    capacities = []
 
     specialist.specializations.inject({}) do |memo, specialization|
       memo.merge(specialization.non_assumed_procedure_specializations_arranged)
     end.each do |ps, children|
       if !procedures_covered.include?(ps.procedure.id)
-        capacities << generate_capacity(specialist, ps, 0)
+        capacity_inputs << generate_capacity(specialist, ps, 0)
         procedures_covered << ps.procedure.id
       end
       children.each do |child_ps, grandchildren|
         if !procedures_covered.include?(child_ps.procedure.id)
-          capacities << generate_capacity(specialist, child_ps, 1)
+          capacity_inputs << generate_capacity(specialist, child_ps, 1)
           procedures_covered << child_ps.procedure.id
         end
         grandchildren.each do |grandchild_ps, greatgrandchildren|
           if !procedures_covered.include?(grandchild_ps.procedure.id)
-            capacities << generate_capacity(specialist, grandchild_ps, 2)
+            capacity_inputs << generate_capacity(specialist, grandchild_ps, 2)
             procedures_covered << grandchild_ps.procedure.id
           end
         end
       end
     end
 
-    capacities
+    capacity_inputs
   end
 
   def self.generate_capacity(specialist, procedure_specialization, offset)

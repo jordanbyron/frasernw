@@ -39,14 +39,25 @@ class SpecialistsController < ApplicationController
 
     @specializations_clinics = (current_user_is_super_admin? ? @specialization.clinics : @specialization.clinics.in_divisions(current_user_divisions)).map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} - #{l.short_address}", l.id] }
     @specializations_clinic_locations = (current_user_is_super_admin? ? @specialization.clinics : @specialization.clinics.in_divisions(current_user_divisions)).map{ |c| c.clinic_locations.reject{ |cl| cl.empty? } }.flatten.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id] }
-    @specializations_procedures = ancestry_options( @specialization.non_assumed_procedure_specializations_arranged )
     @capacities = []
     @specialization.non_assumed_procedure_specializations_arranged.each { |ps, children|
-      @capacities << generate_capacity(nil, ps, 0)
+      @capacities << GenerateSpecialistCapacityInputs.generate_capacity(
+        nil,
+        ps,
+        0
+      )
       children.each { |child_ps, grandchildren|
-        @capacities << generate_capacity(nil, child_ps, 1)
+        @capacities << GenerateSpecialistCapacityInputs.generate_capacity(
+          nil,
+          child_ps,
+          1
+        )
         grandchildren.each { |grandchild_ps, greatgrandchildren|
-          @capacities << generate_capacity(nil, grandchild_ps, 2)
+          @capacities << GenerateSpecialistCapacityInputs.generate_capacity(
+            nil,
+            grandchild_ps,
+            2
+          )
         }
       }
     }
