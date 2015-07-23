@@ -1,12 +1,25 @@
-module GenerateSpecialistCapacityInputs
+class GenerateSpecialistCapacityInputs
+  attr_reader :specialist, :specializations
+
   def self.exec(specialist, specializations)
+    new(specialist, specializations).exec
+  end
+
+  def initialize(specialist, specializations)
+    @specialist = specialist
+    @specializations = specializations
+  end
+
+  def exec
     capacity_inputs = []
 
     # so we don't duplicate procedures
     procedures_covered = []
 
     specializations.inject({}) do |memo, specialization|
-      memo.merge(specialization.non_assumed_procedure_specializations_arranged)
+      memo.merge(
+        specialization.non_assumed_procedure_specializations_arranged
+      )
     end.each do |ps, children|
       if !procedures_covered.include?(ps.procedure.id)
         capacity_inputs << generate_capacity(specialist, ps, 0)
@@ -29,14 +42,19 @@ module GenerateSpecialistCapacityInputs
     capacity_inputs
   end
 
-  def self.generate_capacity(specialist, procedure_specialization, offset)
-    if specialist.present?
-      capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(
-        specialist.id,
-        procedure_specialization.id
-      )
-    else
-      capacity = nil
+  def specialist_capacities
+    @specialist_capacities ||= begin
+      if specialist.present?
+        specialist.capacities
+      else
+        []
+      end
+    end
+  end
+
+  def generate_capacity(specialist, procedure_specialization, offset)
+    capacity = specialist_capacities.find do |capacity|
+      capacity.procedure_specialization_id = procedure_specialization.id
     end
 
     {
