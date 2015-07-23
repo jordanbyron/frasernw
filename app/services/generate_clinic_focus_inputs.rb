@@ -52,7 +52,7 @@ class GenerateClinicFocusInputs
 
   def generate_focus(procedure_specialization, offset)
     focus = clinic_focuses.find do |focus|
-      focus.procedure_specialization_id = procedure_specialization.id
+      focus.procedure_specialization_id == procedure_specialization.id
     end
 
     {

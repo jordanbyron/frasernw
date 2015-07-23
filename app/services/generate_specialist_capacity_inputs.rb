@@ -16,6 +16,8 @@ class GenerateSpecialistCapacityInputs
     # so we don't duplicate procedures
     procedures_covered = []
 
+    binding.pry
+
     specializations.inject({}) do |memo, specialization|
       memo.merge(
         specialization.arranged_procedure_specializations(:non_assumed)
@@ -54,7 +56,7 @@ class GenerateSpecialistCapacityInputs
 
   def generate_capacity(specialist, procedure_specialization, offset)
     capacity = specialist_capacities.find do |capacity|
-      capacity.procedure_specialization_id = procedure_specialization.id
+      capacity.procedure_specialization_id == procedure_specialization.id
     end
 
     {
