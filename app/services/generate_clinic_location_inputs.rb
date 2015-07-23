@@ -47,7 +47,9 @@ class GenerateClinicLocationInputs
   end
 
   def formatted_locations(clinic)
-    clinic.locations.map{ |location| format_location(location) }
+    clinic.locations.reject do |location|
+      location.empty?
+    end.map{ |location| format_location(location) }
   end
 
   def format_location(location)
