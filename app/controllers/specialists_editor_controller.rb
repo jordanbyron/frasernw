@@ -17,14 +17,9 @@ class SpecialistsEditorController < ApplicationController
     build_specialist_offices
     load_form_variables
 
-    @specializations_clinics = []
-    @specializations_clinic_locations = []
-    @specialist.specializations.each { |s|
-      @specializations_clinics += s.clinics.map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} #{l.short_address}", l.id] }
-      @specializations_clinic_locations += s.clinics.map{ |c| c.clinic_locations.reject{ |cl| cl.empty? } }.flatten.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id] }
-    }
-    @specializations_clinics.sort!
-    @specializations_clinic_locations.sort!
+    @specializations_clinics, @specializations_clinic_locations =
+      GenerateClinicLocationInputs.exec(@specialist.specializations)
+
     @capacities = GenerateSpecialistCapacityInputs.exec(
       @specialist,
       @specialist.specializations
