@@ -21,6 +21,8 @@ class ProcedureSpecialization < ActiveRecord::Base
   scope :assumed_specialist, where("classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST} OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}")
   scope :assumed_clinic, where("classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC} OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}")
   scope :non_assumed, where("classification = #{ProcedureSpecialization::CLASSIFICATION_FOCUSED} OR classification = #{ProcedureSpecialization::CLASSIFICATION_NONFOCUSED}")
+  scope :mapped, where(mapped: true)
+  scope :has_procedure, joins(:procedure)
 
   has_many :capacities, :dependent => :destroy
   has_many :specialists, :through => :capacities
