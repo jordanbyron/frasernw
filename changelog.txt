@@ -15,6 +15,9 @@ Local-only = Changes not reflected in Source Code
 - Add indexes and update database queries for content items (providing a measured ~150ms boost to page speed loads).
 - CR: notes for review items, feedback items, content items, referral forms, users, clinics, and specialists
 - CR: history for review items, feedback items, content items, referral forms, and users
+- If a 1000 class error occurs, Cloudflare now serves a notice to go directly
+to our heroku address
+- System notification sent when recache is successful
 
 ### Changed
 - Renamed "Areas of Practice" to "Accepts Referrals For" where appropriate.
@@ -40,6 +43,12 @@ Local-only = Changes not reflected in Source Code
 - Correct version of specialist office now used in specialist and clinic updates
 - S3 uses SSL to serve attachment
 - Can enter addresses for new specialist offices
+- Divisional search data no longer browser cached
+- Updating capacities and focuses for specialists and clinics with more than one
+specialty
+- Removing all areas of practice from specialists and clinics
+- System notification recipients standardized and configurable via
+environment variables
 
 ### Removed:
 - Removed old reporting interface graphs from the codebase that were already disabled by earlier developers.
