@@ -11,18 +11,14 @@ class GenerateClinicLocationInputs
   end
 
   def exec
-
     specializations_locations = []
     specializations_clinic_locations = []
 
-    specializations.each do |s|
-      specializations_locations += s.clinics.map do |clinic|
-        formatted_locations(clinic)
-      end.flatten(1)
-
-      specializations_clinic_locations += s.clinics.map do |clinic|
-        formatted_clinic_locations(clinic)
-      end.flatten(1)
+    specializations.each do |specialization|
+      specialization.clinics.includes_location_data.each do |clinic|
+        specializations_locations += formatted_locations(clinic)
+        specializations_clinic_locations += formatted_clinic_locations(clinic)
+      end
     end
 
     [
@@ -35,13 +31,13 @@ class GenerateClinicLocationInputs
     clinic.clinic_locations.reject do |clinic_location|
       clinic_location.empty?
     end.map do |clinic_location|
-      format_clinic_location(clinic_location)
+      format_clinic_location(clinic_location, clinic)
     end
   end
 
-  def format_clinic_location(clinic_location)
+  def format_clinic_location(clinic_location, clinic)
     [
-      "#{clinic_location.clinic.name} - #{clinic_location.location.short_address}",
+      "#{clinic.name} - #{clinic_location.location.short_address}",
       clinic_location.id
     ]
   end
@@ -49,12 +45,12 @@ class GenerateClinicLocationInputs
   def formatted_locations(clinic)
     clinic.locations.reject do |location|
       location.empty?
-    end.map{ |location| format_location(location) }
+    end.map{ |location| format_location(location, clinic) }
   end
 
-  def format_location(location)
+  def format_location(location, clinic)
     [
-      "#{location.locatable.clinic.name} - #{location.short_address}",
+      "#{clinic.name} - #{location.short_address}",
       location.id
     ]
   end

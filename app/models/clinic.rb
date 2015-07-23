@@ -56,6 +56,30 @@ class Clinic < ActiveRecord::Base
   #   Rails.cache.fetch('Clinic.all') { all }
   # end
 
+  def self.includes_location_data
+    includes_clinic_locations.includes_locations
+  end
+
+  def self.includes_clinic_locations
+    includes(
+      clinic_locations: {
+        location: [
+          {address: :city},
+          {hospital_in: {location: {address: :city}}},
+        ]
+      }
+    )
+  end
+
+  def self.includes_locations
+    includes(
+      locations: [
+        {address: :city},
+        {hospital_in: {location: {address: :city}}},
+      ]
+    )
+  end
+
   def self.cached_find(id)
     Rails.cache.fetch([name, id]) { find(id) }
   end
