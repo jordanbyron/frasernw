@@ -18,7 +18,7 @@ class GenerateSpecialistCapacityInputs
 
     specializations.inject({}) do |memo, specialization|
       memo.merge(
-        specialization.non_assumed_procedure_specializations_arranged
+        specialization.arranged_procedure_specializations(:non_assumed)
       )
     end.each do |ps, children|
       if !procedures_covered.include?(ps.procedure.id)
