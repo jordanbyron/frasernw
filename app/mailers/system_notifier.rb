@@ -5,7 +5,7 @@ module SystemNotifier
     notify(
       tag: :notice,
       subject: subject,
-      body: { timestamp: DateTime.now.to_s }
+      body: { timestamp: DateTime.now.to_s(:long_ordinal) }
     )
   end
 
