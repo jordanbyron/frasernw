@@ -41,7 +41,10 @@ class Hospital < ActiveRecord::Base
   end
 
   def self.all_formatted_for_select
-    self.all.map(&:formatted_for_select)
+    self.
+      includes(location: {address: :city}).
+      all.
+      map(&:formatted_for_select)
   end
 
   def offices_in
