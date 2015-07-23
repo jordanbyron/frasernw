@@ -16,8 +16,6 @@ class GenerateSpecialistCapacityInputs
     # so we don't duplicate procedures
     procedures_covered = []
 
-    binding.pry
-
     specializations.inject({}) do |memo, specialization|
       memo.merge(
         specialization.arranged_procedure_specializations(:non_assumed)

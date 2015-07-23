@@ -28,7 +28,13 @@ class Hospital < ActiveRecord::Base
   include PaperTrailable
 
   def self.all_formatted_for_form
-    all(:order => "name ASC").map{ |h| ["#{h.name} - #{h.short_address}", h.id] }
+    includes_location_data.all(
+      order: "name ASC"
+    ).map{ |h| ["#{h.name} - #{h.short_address}", h.id] }
+  end
+
+  def self.includes_location_data
+    includes(location: {address: :city})
   end
 
   def self.in_cities(cities)
@@ -42,7 +48,7 @@ class Hospital < ActiveRecord::Base
 
   def self.all_formatted_for_select
     self.
-      includes(location: {address: :city}).
+      includes_location_data.
       all.
       map(&:formatted_for_select)
   end
