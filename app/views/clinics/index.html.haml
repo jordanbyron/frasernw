@@ -38,14 +38,12 @@
 
       .tab-pane{:id => "no_division_tab"}
         %table.table.table-condensed.table-striped
-          - @specializations.each do |specialization|
-            - clinics = specialization.clinics.reject{ |c| c.cities.length > 0 }.sort{ |a,b| a.name <=> b.name }
-            - next if clinics.blank?
+          - @specializations.select(&:no_division_clinics?).each do |specialization|
             %tr
               %th{:style => "width:100%"}= specialization.name
               %th.admin
 
-            - clinics.each do |clinic|
+            - specialization.no_division_clinics.each do |clinic|
               %tr
                 %td= link_to clinic.name, clinic_path(clinic), :class => 'ajax'
                 %td.admin.btn-group

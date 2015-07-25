@@ -110,4 +110,16 @@ class Specialization < ActiveRecord::Base
       return self.saved_token
     end
   end
+
+  def no_division_clinics?
+    no_division_clinics.any?
+  end
+
+  def no_division_clinics
+    @no_division_clinics ||= clinics.includes_location_data.reject do |clinic|
+      clinic.cities.length > 0
+    end.sort do |a,b|
+      a.name <=> b.name
+    end
+  end
 end
