@@ -278,7 +278,7 @@
                           - if Division.all_cached.length > 1
                             %li= link_to "Manage Shared Content Items", shared_content_items_path(user_divisions.first), :class => "sc_item ajax"
                 - cache([user_divisions, 'resources_dropdown_categories']) do
-                  - dropdown_categories = ScCategory.global_resources_dropdown.reject{ |category| category.all_sc_items_in_divisions(user_divisions).blank? }
+                  - dropdown_categories = ScCategory.global_resources_dropdown(user_divisions)
                   - if dropdown_categories.present?
                     %li.dropdown
                       %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
@@ -288,7 +288,7 @@
                         - dropdown_categories.each do |category|
                           %li=link_to category.name, category, :class => 'ajax'
                 - cache([user_divisions, 'sc_category_global_navbar']) do
-                  - ScCategory.global_navbar.reject{ |category| category.all_sc_items_in_divisions(user_divisions).blank? }.each do |category|
+                  - ScCategory.global_navbar(user_divisions).each do |category|
                     %li= link_to category.name, category, :class => 'ajax'
 
                 %li.dropdown

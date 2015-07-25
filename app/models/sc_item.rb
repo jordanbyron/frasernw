@@ -104,19 +104,8 @@ class ScItem < ActiveRecord::Base
     joins('INNER JOIN "division_display_sc_items" ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"').where('"division_display_sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', division_ids, true)
   end
 
-  # owned in divisions + shared in divisions
   def self.all_in_divisions(divisions)
-    find_by_sql([<<-SQL, { division_ids: divisions.map(&:id) }])
-      SELECT DISTINCT ON ("sc_items"."id") "sc_items".*
-      FROM "sc_items"
-      LEFT JOIN "division_display_sc_items"
-      ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"
-      WHERE "sc_items"."division_id" IN (:division_ids)
-      OR (
-        "division_display_sc_items"."division_id" IN (:division_ids) AND
-        "sc_items"."shareable" = 't'
-      )
-    SQL
+    (owned_in_divisions(divisions) + shared_in_divisions(divisions)).uniq
   end
 
   def self.searchable

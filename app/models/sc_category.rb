@@ -35,12 +35,45 @@ class ScCategory < ActiveRecord::Base
     ScCategory::DISPLAY_HASH[display_mask]
   end
 
-  def self.global_resources_dropdown
-    where("sc_categories.display_mask IN (?) AND sc_categories.show_as_dropdown = (?)", [2,4,5], true)
+  # get all sc categories which either:
+  # have descendants that belong in users's divisions
+
+  def self.old_global_resources_dropdown(user_divisions)
+    where("sc_categories.display_mask IN (?) AND sc_categories.show_as_dropdown = (?)", [2,4,5], true).reject{ |category| category.all_sc_items_in_divisions(user_divisions).blank? }
   end
 
-  def self.global_navbar
-    where("sc_categories.display_mask IN (?) AND sc_categories.show_as_dropdown = (?)", [2,4,5], false)
+  def self.global_resources_dropdown(user_divisions)
+    GenerateScCategories.exec(user_divisions)
+  end
+
+  def self.with_items_for_divisions(divisions)
+    find_by_sql([<<-SQL, { division_ids: divisions.map(&:id) }])
+      SELECT DISTINCT ON ("sc_categories"."id") "sc_categories".*
+      FROM "sc_categories"
+      INNER JOIN "sc_items"
+      ON "sc_categories"."id" = "sc_items"."id"
+      LEFT JOIN "division_display_sc_items"
+      ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"
+      WHERE "sc_items"."division_id" IN (:division_ids)
+      OR (
+        "division_display_sc_items"."division_id" IN (:division_ids) AND
+        "sc_items"."shareable" = 't'
+      )
+    SQL
+  end
+
+  def show_in_global_resources_dropdown?
+    [2, 4, 5].include?(display_mask) && show_as_dropdown?
+  end
+
+  def self.global_navbar(user_divisions)
+    where(
+      "sc_categories.display_mask IN (?) AND sc_categories.show_as_dropdown = (?)",
+      [2,4,5],
+      false
+    ).reject do |category|
+      category.all_sc_items_in_divisions(user_divisions).blank?
+    end
   end
 
   def self.specialty
@@ -97,15 +130,10 @@ class ScCategory < ActiveRecord::Base
     items
   end
 
-  def all_sc_items_in_divisions(divisions, options = {})
-    options[:exclude_subcategories] ||= false;
-    items = sc_items.all_in_divisions(divisions)
-    if (!options[:exclude_subcategories])
-      self.children.each do |child|
-        items += child.all_sc_items_in_divisions(divisions, options)
-      end
+  def all_sc_items_in_divisions(divisions)
+    subtree.includes(:sc_items).inject([]) do |memo, sc_category|
+      memo << sc_category.sc_items.all_in_divisions(divisions)
     end
-    items
   end
 
   def all_sc_items_for_specialization_in_divisions(specialization, divisions)
