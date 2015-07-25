@@ -1,4 +1,4 @@
-class GenerateScCategories
+class GenerateResourcesDropdown
   attr_reader :user_divisions, :categories_with_resources
 
   def self.exec(user_divisions)

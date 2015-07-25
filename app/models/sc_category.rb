@@ -35,15 +35,8 @@ class ScCategory < ActiveRecord::Base
     ScCategory::DISPLAY_HASH[display_mask]
   end
 
-  # get all sc categories which either:
-  # have descendants that belong in users's divisions
-
-  def self.old_global_resources_dropdown(user_divisions)
-    where("sc_categories.display_mask IN (?) AND sc_categories.show_as_dropdown = (?)", [2,4,5], true).reject{ |category| category.all_sc_items_in_divisions(user_divisions).blank? }
-  end
-
   def self.global_resources_dropdown(user_divisions)
-    GenerateScCategories.exec(user_divisions)
+    GenerateResourcesDropdown.exec(user_divisions)
   end
 
   def self.with_items_for_divisions(divisions)
