@@ -104,11 +104,8 @@ class ScItem < ActiveRecord::Base
     joins('INNER JOIN "division_display_sc_items" ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"').where('"division_display_sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', division_ids, true)
   end
 
+  # owned in divisions + shared in divisions
   def self.all_in_divisions(divisions)
-    (owned_in_divisions(divisions) + shared_in_divisions(divisions)).uniq
-  end
-
-  def self.new_all_in_divisions(divisions=nil)
     find_by_sql([<<-SQL, { division_ids: divisions.map(&:id) }])
       SELECT DISTINCT ON ("sc_items"."id") "sc_items".*
       FROM "sc_items"
