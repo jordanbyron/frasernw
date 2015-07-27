@@ -77,7 +77,7 @@ class ClinicsController < ApplicationController
 
   def edit
     @form_modifier = ClinicFormModifier.new(:edit, current_user)
-    @clinic = Clinic.find(params[:id])
+    @clinic = Clinic.includes_clinic_locations.find(params[:id])
     while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
       puts "location #{@clinic.clinic_locations.length}"
       cl = @clinic.clinic_locations.build
@@ -122,7 +122,7 @@ class ClinicsController < ApplicationController
   end
 
   def review
-    @clinic = Clinic.find(params[:id])
+    @clinic = Clinic.includes_clinic_locations.find(params[:id])
     @form_modifier = ClinicFormModifier.new(:review, current_user)
     @review_item = @clinic.review_item;
 
@@ -154,7 +154,7 @@ class ClinicsController < ApplicationController
   end
 
   def rereview
-    @clinic = Clinic.find(params[:id])
+    @clinic = Clinic.includes_clinic_locations.find(params[:id])
     @form_modifier = ClinicFormModifier.new(:rereview, current_user)
     @review_item = ReviewItem.find(params[:review_item_id])
 
