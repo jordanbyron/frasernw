@@ -45,7 +45,7 @@ Frasernw::Application.configure do
       config.cache_store = :dalli_store
   end
 
-  if !ENV['APP_NAME'] == "pathwaysbc"
+  if !(ENV['APP_NAME'] == "pathwaysbc")
     # if we're not on the live site, only send emails that match the system recipients
     recipient_matchers = config.system_notification_recipients.map do |recipient|
       Regexp.new(recipient)
