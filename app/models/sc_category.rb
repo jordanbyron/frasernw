@@ -123,8 +123,14 @@ class ScCategory < ActiveRecord::Base
     items
   end
 
-  def all_sc_items_in_divisions(divisions)
-    subtree.includes(:sc_items).inject([]) do |memo, sc_category|
+  def all_sc_items_in_divisions(divisions, options = {})
+    if options[:exclude_subcategories]
+      scope = [ self ]
+    else
+      scope = subtree.includes(:sc_items)
+    end
+
+    scope.inject([]) do |memo, sc_category|
       memo + sc_category.sc_items.all_in_divisions(divisions)
     end
   end
