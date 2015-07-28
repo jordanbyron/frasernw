@@ -125,7 +125,7 @@ class ScCategory < ActiveRecord::Base
 
   def all_sc_items_in_divisions(divisions)
     subtree.includes(:sc_items).inject([]) do |memo, sc_category|
-      memo << sc_category.sc_items.all_in_divisions(divisions)
+      memo + sc_category.sc_items.all_in_divisions(divisions)
     end
   end
 
