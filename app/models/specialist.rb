@@ -119,7 +119,8 @@ class Specialist < ActiveRecord::Base
         :office => {
           :location => [
             {:address => :city},
-            {:hospital_in => {:location => { :address => :city}}}, {:location_in => [
+            {:hospital_in => {:location => { :address => :city}}},
+            {:location_in => [
               {:address => :city},
               {:hospital_in => {:location => { :address => :city}}}
             ]}

@@ -30,6 +30,9 @@ to our heroku address
 - Moved open-source Github repository to "pathwaysmedical" from "warneboldt"
 - CR: Address and specialization fields are now replaced with comment boxes when user edit clinics and specializations
 - history for Clinics and Specialists now includes their review and feedback items
+- optimized queries made for the specialists form, clinics form, navbar,
+specialists index, and clinic index, significantly improving page load
+speeds
 
 ### Fixed
 - CR:  Clinic location/specialist office rearranging issue now fixed.
