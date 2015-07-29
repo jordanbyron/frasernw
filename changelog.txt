@@ -57,7 +57,7 @@ specialty
 - Removing all areas of practice from specialists and clinics
 - System notification recipients standardized and configurable via
 environment variables
-- 'Physicians who see patients' heading now only appears when there
+- CR: 'Physicians who see patients' heading now only appears when there
 are actually physicians attending
 
 ### Removed:
