@@ -54,5 +54,5 @@
   %p.admin.btn-group
     - if can? :update, @user
       = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(@user), :class => "btn ajax")
-    - if can? :index, :history
+    - if can? :view_history, @user
       = large_history_button(@user)

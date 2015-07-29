@@ -118,8 +118,8 @@ class Ability
         can :destroy, Note do |note|
           note.user == user
         end
-
-        can :index, :history
+        
+        can :view_history, Historical
 
       elsif user.user?
 

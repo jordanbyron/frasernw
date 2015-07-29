@@ -407,7 +407,7 @@
         %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
           %i.icon-share
           Share
-      - if can? :index, :history
+      - if can? :view_history, @clinic
         = large_history_button(@clinic)
 
       - if can? :destroy, @clinic

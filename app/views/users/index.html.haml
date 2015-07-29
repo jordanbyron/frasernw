@@ -52,8 +52,9 @@
                           - specialization_options.each do |so|
                             %li= link_to so.specialization.name, so.specialization, :class => 'ajax'
 
-                  %td.admin.btn-group
-                    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
+                  %td.admin
+                    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax stacked-button")
+                    = history_button(user)
           %h4
             Total
             = render partial: "division_label"
