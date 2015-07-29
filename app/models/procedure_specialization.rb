@@ -49,10 +49,12 @@ class ProcedureSpecialization < ActiveRecord::Base
     where('procedure_specializations.specialization_id = (?)', specialization.id)
   end
 
-  def self.from_procedure_name(name)
-    joins(:procedure).where(procedure: {name: name})
-  end
-
+  # takes:
+  # ["x", "y", "z"] OR
+  # "x > y > z"
+  # where x, y, and z are procedure names
+  # and z is the procedure name for self
+  # and checks if self's ancestry matches those procedure names
   def matches_arrangement?(arrangement)
     if arrangement.is_a? String
       arrangement = arrangement.split(" > ")

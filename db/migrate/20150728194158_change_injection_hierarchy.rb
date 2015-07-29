@@ -1,6 +1,4 @@
 class ChangeInjectionHierarchy < ActiveRecord::Migration
-  # those who have 'knee > injection' should have 'joint injection > knee'
-
   AFFECTED_SPECIALIZATIONS = [
     "Orthopedics",
     "Rehabilitation Medicine",
@@ -23,9 +21,9 @@ class ChangeInjectionHierarchy < ActiveRecord::Migration
   ]
   def up
     # Test prep
-    # Record the clinics that have <body part> > "injection"
+    # Record the clinics that have "<body part>" > "injection"
     # after the migration, we'll make sure they have
-    # "joint injection > body part"
+    # "joint injection" > "<body part>"
 
     clinics = BODY_PARTS.inject({}) do |memo, body_part|
       ids = Clinic.
@@ -44,11 +42,8 @@ class ChangeInjectionHierarchy < ActiveRecord::Migration
       specialization_level: true
     )
 
-    # Currently we have "Injection" procedure specializations under
-    # "<Body Part>" procedure specializations
-    #
     # First we want to rename the "Injection" procedures to the parent
-    # <Body Part>
+    # "<Body Part>"
     # We'll stash the IDs of those procedures so we can find the
     # parent procedure specializations later
     affected_procedure_ids =
@@ -117,12 +112,13 @@ class ChangeInjectionHierarchy < ActiveRecord::Migration
         children.
         find{ |ps| ps.procedure.name == "Knee" }
 
-      viscosupplementation_procedure_specialization.ancestry =
-        knee_procedure_specialization.id.to_s
+      viscosupplementation_procedure_specialization.update_attributes(
+        ancestry: knee_procedure_specialization.id.to_s
+      )
     end
 
-    # Test to make sure clinics that had <body part> > "injection"
-    # before the migration have "joint injection" > <body part> now
+    # Test to make sure clinics that had "<body part>" > "injection"
+    # before the migration have "joint injection" > "<body part>" now
     clinics.each do |body_part, clinic_ids|
       new_ids = Clinic.
         with_ps_arrangement("Joint Injection > #{body_part}").
