@@ -8,4 +8,22 @@ class Attendance < ActiveRecord::Base
     freeform_firstname or ""
     #(freeform_firstname or "") + " " + (freeform_lastname or "")
   end
+
+  def has_clinic_location?
+    !(clinic_location.blank?) && !(clinic_location.empty?)
+  end
+
+  def has_available_specialist?
+    specialist.present? &&
+      !(specialist.not_available?) &&
+      !(specialist.in_progress)
+  end
+
+  def show?
+    if is_specialist?
+      has_clinic_location? && has_available_specialist?
+    else
+      has_clinic_Location? && !(attendance.freeform_name.blank?)
+    end
+  end
 end

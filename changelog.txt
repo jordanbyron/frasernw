@@ -52,6 +52,8 @@ specialty
 - Removing all areas of practice from specialists and clinics
 - System notification recipients standardized and configurable via
 environment variables
+- 'Physicians who see patients' heading now only appears when there
+are actually physicians attending
 
 ### Removed:
 - Removed old reporting interface graphs from the codebase that were already disabled by earlier developers.

@@ -465,4 +465,10 @@ class Clinic < ActiveRecord::Base
   def label
     name
   end
+
+  def visible_attendances
+    @visible_attendances ||= attendances.select do |attendance|
+      attendance.show?
+    end
+  end
 end
