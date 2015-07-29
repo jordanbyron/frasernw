@@ -23,7 +23,7 @@ class Attendance < ActiveRecord::Base
     if is_specialist?
       has_clinic_location? && has_available_specialist?
     else
-      has_clinic_location? && !(attendance.freeform_name.blank?)
+      has_clinic_location? && !(freeform_name.blank?)
     end
   end
 end
