@@ -64,6 +64,21 @@
           Pathways is a web based resource to streamline and optimize patient referrals.
           = "<a href='javascript:void(0)' data-toggle='collapse' data-target='#what_is'>Learn more.</a>".html_safe
 
+        %div{style: "margin-top: 10px;"}
+          = image_tag "pathways_newsletter.png", style: "height: 100px; border: 1px solid lightgray; padding: 2px; margin-right: 10px; float: left;"
+          %div{style: "display: inline-block;"}
+            %p{style: "margin-top: 0px;"}
+              = "The current Pathways newsletter is available #{link_to 'here', '#' }. It includes:".html_safe
+            %ul{style: "margin-bottom: 20px;"}
+              %li{style: "list-style-type: disc;"}
+                = "an overview of the new Pathways filter function"
+              %li{style: "list-style-type: disc;"}
+                = "a sample patient interaction with Pathways"
+
+            %p
+              = "You can also browse #{link_to 'previous issues', '#'}.".html_safe
+          %div{style: "clear: both;"}
+
         #what_is.collapse
           %p
             Originally a project of the Fraser NW Division of Family Practice, Pathways provides a comprehensive, searchable database of specialists, specialty clinics and services organized by specialty.
