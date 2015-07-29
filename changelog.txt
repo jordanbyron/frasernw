@@ -33,6 +33,10 @@ to our heroku address
 - optimized queries made for the specialists form, clinics form, navbar,
 specialists index, and clinic index, significantly improving page load
 speeds
+  - specialists/index: ~ 1000 ms improvement
+  - clinics/index: ~ 1000 ms improvement
+  - specialists/form: ~ 22000 ms improvement
+  - clinics/form: ~ 1100 ms improvement
 
 ### Fixed
 - CR:  Clinic location/specialist office rearranging issue now fixed.
