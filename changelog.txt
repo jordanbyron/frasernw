@@ -33,6 +33,7 @@ to our heroku address
 - optimized queries made for the specialists form, clinics form, navbar,
 specialists index, and clinic index, significantly improving page load
 speeds
+- migrate joint injection hierarchy to nest <body_part> under "Joint Injection"
 
 ### Fixed
 - CR:  Clinic location/specialist office rearranging issue now fixed.
