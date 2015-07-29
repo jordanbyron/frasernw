@@ -4,6 +4,7 @@ class Specialist < ActiveRecord::Base
   include Feedbackable
   include Historical
   include Noteable
+  include ProcedureSpecializable
 
   include ApplicationHelper
 

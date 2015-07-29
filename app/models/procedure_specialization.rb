@@ -49,6 +49,33 @@ class ProcedureSpecialization < ActiveRecord::Base
     where('procedure_specializations.specialization_id = (?)', specialization.id)
   end
 
+  def self.from_procedure_name(name)
+    joins(:procedure).where(procedure: {name: name})
+  end
+
+  def matches_arrangement?(arrangement)
+    if arrangement.is_a? String
+      arrangement = arrangement.split(" > ")
+    end
+
+    if arrangement.length == 1
+      procedure.name == arrangement.pop
+    else
+      procedure.name == arrangement.pop &&
+        safe_parent.present? &&
+        safe_parent.matches_arrangement?(arrangement)
+    end
+  end
+
+  def safe_parent
+    if ancestry.nil?
+      NullProcedureSpecialization.new
+    else
+      ProcedureSpecialization.where(id: ancestry).first ||
+        NullProcedureSpecialization.new
+    end
+  end
+
   def classification_text
     ProcedureSpecialization::CLASSIFICATION_HASH[classification]
   end

@@ -28,9 +28,9 @@ class ChangeInjectionHierarchy < ActiveRecord::Migration
     # "joint injection > body part"
 
     clinics = BODY_PARTS.inject({}) do |memo, body_part|
-      ids = Clinic.all.select do |clinic|
-        clinic.has_ps_arrangement?("#{body_part} > Injection")
-      end.map(&:id)
+      ids = Clinic.
+        with_ps_arrangement("#{body_part} > Injection").
+        map(&:id)
 
       memo.merge(
         body_part => ids
@@ -119,6 +119,16 @@ class ChangeInjectionHierarchy < ActiveRecord::Migration
 
       viscosupplementation_procedure_specialization.ancestry =
         knee_procedure_specialization.id.to_s
+    end
+
+    # Test to make sure clinics that had <body part> > "injection"
+    # before the migration have "joint injection" > <body part> now
+    clinics.each do |body_part, clinic_ids|
+      new_ids = Clinic.
+        with_ps_arrangement("Joint Injection > #{body_part}").
+        map(&:id)
+
+      raise unless new_ids.sort == clinic_ids.sort
     end
   end
 
