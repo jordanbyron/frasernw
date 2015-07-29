@@ -18,6 +18,7 @@ Local-only = Changes not reflected in Source Code
 - If a 1000 class error occurs, Cloudflare now serves a notice to go directly
 to our heroku address
 - System notification sent when recache is successful
+- History button in clinic/index
 
 ### Changed
 - Renamed "Areas of Practice" to "Accepts Referrals For" where appropriate.
