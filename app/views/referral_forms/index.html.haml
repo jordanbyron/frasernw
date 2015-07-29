@@ -67,7 +67,7 @@
               %th{:class => "title {sorter: 'link_only'}"} Specialist / Clinic
               %th{:class => "title {sorter: 'link_only'}"} Form Name
               %th{:class => "subcategory {sorter: 'text'}"} Specialty
-              - if can? :index, Note
+              - if can? :view_history, Historical
                 %th.referral_form_table__notes_column
           %tbody
             - @referral_forms.each do |referral_form|
@@ -78,7 +78,7 @@
                   - form_name = referral_form.description.present? ? referral_form.description.capitalize_first_letter : "Referral form"
                   = link_to(form_name, referral_form.form.url, :target => "_blank")
                 %td.subcategory= referral_form.referrable.specializations.map{ |s| s.name }.to_sentence
-                - if can? :index, Note
+                - if can? :view_history, referral_form
                   %td.notes_column
                     = history_button(referral_form)
 
