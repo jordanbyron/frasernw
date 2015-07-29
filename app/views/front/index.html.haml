@@ -186,6 +186,17 @@
                     %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{featured_sc_item.id},'#{escape_javascript(featured_sc_item.title)}')", "title" => "Favourite / un-favourite"}
                       %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{featured_sc_item.id}"}
 
+            %h3
+              = "Pathways Newsletter"
+
+            %ul.space
+              %li{:style => "margin-left: 0"}
+                %a
+                  = "April 2015"
+              %li{:style => "margin-left: 0"}
+                %a
+                  = "Previous Issues"
+
           .featured-content
             %i.icon-star.icon-blue
             Indicates content from our Shared Care initiative
