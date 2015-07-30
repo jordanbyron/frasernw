@@ -36,7 +36,7 @@
                 %th Searchable?
                 %th Shared Care?
 
-              - (category.all_shareable_sc_items - division_shareable_items).each do |sc_item|
+              - (category.all_shareable_sc_items - division_shareable_items).sort_by{ |sc_item| [ sc_item.division.name, sc_item.title ] }.each do |sc_item|
                 %tr
                   %td= check_box_tag "division_shared_sc_item_ids_#{sc_item.id}", sc_item.id, (division_shared_items.include? sc_item), :name => "division[shared_sc_item_ids][]", :class => "check_boxes optional"
                   %td{"width" => "40%"}= link_to sc_item.title, sc_item, :class => 'ajax'
