@@ -12,4 +12,8 @@
     = csrf_meta_tag
 
   %body
-    = react_component("TableBody")
+    %h3
+      = "Table Body"
+
+    .react_container
+      = react_component("Table", rows: @table_rows)

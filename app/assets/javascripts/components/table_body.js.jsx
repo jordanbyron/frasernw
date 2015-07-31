@@ -1,9 +1,15 @@
 var TableBody = React.createClass({
   render: function() {
     return (
-      <div className="commentBox">
-        Hello, world! I am a Table body.
-      </div>
+      <tbody>
+        {
+          this.props.rows.map(function (row, i) {
+            return (
+              <TableRow data={row} key={i} />
+            );
+          })
+        }
+      </tbody>
     );
   }
 });
