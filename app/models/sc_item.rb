@@ -124,6 +124,13 @@ class ScItem < ActiveRecord::Base
     where("sc_items.type_mask = (?)", TYPE_DOCUMENT)
   end
 
+  def self.includes_specialization_data
+    includes(sc_item_specializations: [
+      :specialization,
+      { procedure_specializations: :procedure },
+    ])
+  end
+
   def available_to_divisions(divisions)
     ((divisions.include? division) || (shareable? && (divisions & divisions_sharing).present?)) && !in_progress
   end

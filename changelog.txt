@@ -38,6 +38,7 @@ speeds
   - clinics/index: ~ 1000 ms improvement
   - specialists/form: ~ 22000 ms improvement
   - clinics/form: ~ 1100 ms improvement
+- borrowable resources now sorted automatically by division
 
 ### Fixed
 - CR:  Clinic location/specialist office rearranging issue now fixed.
@@ -59,6 +60,7 @@ specialty
 environment variables
 - CR: 'Physicians who see patients' heading now only appears when there
 are actually physicians attending
+- timeouts on borrowable resources page
 
 ### Removed:
 - Removed old reporting interface graphs from the codebase that were already disabled by earlier developers.

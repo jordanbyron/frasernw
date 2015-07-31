@@ -112,6 +112,7 @@ class DivisionsController < ApplicationController
 
   def shared_sc_items
     @division = Division.find(params[:id])
+    @categories = ScCategory.with_items_borrowable_by_division(@division)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
