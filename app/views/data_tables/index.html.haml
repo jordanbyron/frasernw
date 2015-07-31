@@ -1,0 +1,15 @@
+
+!!!
+%html
+
+  %head
+    %title= "FNW datatable"
+    %meta{"http-equiv"=>"Content-Type", :content=>"text/html; charset=utf-8"}
+    %meta{"name"=>"viewport", :content=>"initial-scale=1.0"}
+
+    = stylesheet_link_tag "application", :media => 'screen, print'
+    = javascript_include_tag "application"
+    = csrf_meta_tag
+
+  %body
+    = react_component("TableBody")

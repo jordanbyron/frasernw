@@ -16,6 +16,9 @@
 //= require ajaxify-html5.js
 //= require jquery.serializejson
 //= require highcharts
+//= require react
+//= require react_ujs
+//= require components
 //= require_directory .
 
 function current_user_is_admin()

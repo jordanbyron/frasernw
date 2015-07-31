@@ -7,6 +7,9 @@ Frasernw::Application.routes.draw do
   match '/versions'                 => 'versions#show_all', :as => 'all_versions'
   match '/versions/:id'             => 'versions#show',     :as => 'version'
 
+  # temporary endpoint to develop the fnw datatable
+  resources :data_tables, only: [:index]
+
   resources :specializations, :path => 'specialties' do
     resources :specialists
     resources :procedures, :path => 'areas_of_practice'
