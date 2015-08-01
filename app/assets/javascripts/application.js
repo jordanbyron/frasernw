@@ -19,6 +19,7 @@
 //= require highcharts
 //= require react
 //= require react_ujs
+//= require_directory ./modules
 //= require components
 //= require_directory .
 

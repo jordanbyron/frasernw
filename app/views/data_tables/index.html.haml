@@ -12,8 +12,8 @@
     = csrf_meta_tag
 
   %body
-    %h3
-      = "Table Body"
-
     .react_container
-      = react_component("Table", rows: @table_rows, headings: @table_headings)
+      = react_component "Table",
+        records: @records,
+        headings: @table_headings,
+        rowGenerator: "exampleTable"
