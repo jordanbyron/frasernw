@@ -1,4 +1,3 @@
-
 !!!
 %html
 
@@ -11,9 +10,18 @@
     = javascript_include_tag "application"
     = csrf_meta_tag
 
+  %script
+    :plain
+      (function(pathways) {
+        store = pathways.createAddressedTableDataStore({
+          address: "example",
+          rowGeneratorAddress: "exampleTable"
+        });
+        store.setRecords(#{@records.to_json});
+        store.setHeadings(#{@table_headings.to_json});
+      }(window.pathways))
+
   %body
     .react_container
-      = react_component "Table",
-        records: @records,
-        headings: @table_headings,
-        rowGenerator: "exampleTable"
+      = react_component "AddressedStoreTable",
+        storeAddress: "example"

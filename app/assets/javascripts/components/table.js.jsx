@@ -1,20 +1,24 @@
 var Table = React.createClass({
-  generateRows: function(records) {
-    return records.map(this.generateRow);
+  componentWillMount: function() {
+    this.setState({
+      data: {
+        bodyRows: [],
+        headings: []
+      }
+    });
+    this.props.setDataUpdateListener(this.onDataSourceUpdate);
+    this.onDataSourceUpdate();
   },
-  generateRow: function(record) {
-    return this.rowGenerator().map(function(fn) {
-      return fn(record);
-    })
-  },
-  rowGenerator: function() {
-    return window.pathways.rowGenerators[this.props.rowGenerator];
+  onDataSourceUpdate: function() {
+    this.setState(
+      { data: this.props.retrieveDataUpdates() }
+    );
   },
   render: function() {
     return (
       <table>
-        <TableHead data={this.props.headings}/>
-        <TableBody rows={this.generateRows(this.props.records)}/>
+        <TableHead data={this.state.data.headings}/>
+        <TableBody rows={this.state.data.bodyRows}/>
       </table>
     );
   }

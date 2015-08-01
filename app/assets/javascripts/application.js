@@ -20,6 +20,7 @@
 //= require react
 //= require react_ujs
 //= require_directory ./modules
+//= require_directory ./services
 //= require components
 //= require_directory .
 
