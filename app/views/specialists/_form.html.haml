@@ -61,7 +61,7 @@
       disabled: @form_modifier.restrict_editing?
     - if @form_modifier.show_comment_boxes?
       = f.input :specializations_comments,
-        label: "If you have any updates to your specializations, please enter them here.",
+        label: @form_modifier.specialization_comments_label,
         input_html: {value: ""},
         as: :text
 

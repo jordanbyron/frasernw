@@ -91,6 +91,14 @@ class FormModifier
     token_edit?
   end
 
+  def specialization_comments_label
+    if token_edit?
+      "If you have any updates to your specializations, please enter them here."
+    else
+      "These are the user's comments about how they would like their specializations modified. You must transfer them to the above checkboxes if you would like them included in the updated profile"
+    end
+  end
+
   # instead, we'll give them generic comment boxes, which the admins can use to update the records later
   def show_comment_boxes?
     token_edit? || admin_review? || admin_rereview?
