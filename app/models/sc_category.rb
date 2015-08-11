@@ -31,16 +31,49 @@ class ScCategory < ActiveRecord::Base
     all_parents.reject{|c| c.name == "Inactive" }
   end
 
+  def self.with_items_borrowable_by_division(division)
+    all.reject do |category|
+      category.parent.present? ||
+        (category.items_borrowable_by_division(division)).none?
+    end
+  end
+
   def display
     ScCategory::DISPLAY_HASH[display_mask]
   end
 
-  def self.global_resources_dropdown
-    where("sc_categories.display_mask IN (?) AND sc_categories.show_as_dropdown = (?)", [2,4,5], true)
+  def self.global_resources_dropdown(user_divisions)
+    GenerateResourcesDropdown.exec(user_divisions)
   end
 
-  def self.global_navbar
-    where("sc_categories.display_mask IN (?) AND sc_categories.show_as_dropdown = (?)", [2,4,5], false)
+  def self.with_items_for_divisions(divisions)
+    find_by_sql([<<-SQL, { division_ids: divisions.map(&:id) }])
+      SELECT DISTINCT ON ("sc_categories"."id") "sc_categories".*
+      FROM "sc_categories"
+      INNER JOIN "sc_items"
+      ON "sc_categories"."id" = "sc_items"."id"
+      LEFT JOIN "division_display_sc_items"
+      ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"
+      WHERE "sc_items"."division_id" IN (:division_ids)
+      OR (
+        "division_display_sc_items"."division_id" IN (:division_ids) AND
+        "sc_items"."shareable" = 't'
+      )
+    SQL
+  end
+
+  def show_in_global_resources_dropdown?
+    [2, 4, 5].include?(display_mask) && show_as_dropdown?
+  end
+
+  def self.global_navbar(user_divisions)
+    where(
+      "sc_categories.display_mask IN (?) AND sc_categories.show_as_dropdown = (?)",
+      [2,4,5],
+      false
+    ).reject do |category|
+      category.all_sc_items_in_divisions(user_divisions).blank?
+    end
   end
 
   def self.specialty
@@ -73,12 +106,15 @@ class ScCategory < ActiveRecord::Base
     show_on_front_page
   end
 
-  def all_shareable_sc_items
-    items = sc_items.shareable
-    self.children.each do |child|
-      items += child.all_shareable_sc_items
+  def all_borrowable_sc_items
+    subtree.inject([]) do |memo, category|
+      memo + (category.
+        sc_items.
+        includes_specialization_data.
+        includes([:sc_category, :division]).
+        shareable
+      )
     end
-    items
   end
 
   def all_owned_sc_items_in_divisions(divisions)
@@ -98,14 +134,15 @@ class ScCategory < ActiveRecord::Base
   end
 
   def all_sc_items_in_divisions(divisions, options = {})
-    options[:exclude_subcategories] ||= false;
-    items = sc_items.all_in_divisions(divisions)
-    if (!options[:exclude_subcategories])
-      self.children.each do |child|
-        items += child.all_sc_items_in_divisions(divisions, options)
-      end
+    if options[:exclude_subcategories]
+      scope = [ self ]
+    else
+      scope = subtree.includes(:sc_items)
     end
-    items
+
+    scope.inject([]) do |memo, sc_category|
+      memo + sc_category.sc_items.all_in_divisions(divisions)
+    end
   end
 
   def all_sc_items_for_specialization_in_divisions(specialization, divisions)
@@ -122,5 +159,9 @@ class ScCategory < ActiveRecord::Base
       items += child.all_sc_items_for_procedure_in_divisions(procedure, divisions)
     end
     items.flatten.uniq
+  end
+
+  def items_borrowable_by_division(division)
+    all_borrowable_sc_items - division.shareable_sc_items
   end
 end

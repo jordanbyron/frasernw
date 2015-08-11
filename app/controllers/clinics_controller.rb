@@ -17,7 +17,13 @@ class ClinicsController < ApplicationController
   end
 
   def show
-    @clinic = Clinic.find(params[:id])
+    @clinic = Clinic.
+      includes_location_data.
+      includes(:specialists).
+      includes(attendances: :specialist).
+      includes(:review_item).
+      find(params[:id])
+
     @feedback = @clinic.active_feedback_items.build
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
@@ -42,18 +48,10 @@ class ClinicsController < ApplicationController
       l.build_address
     end
     @clinic.attendances.build
-    @clinic_procedures = ancestry_options( @specialization.non_assumed_procedure_specializations_arranged )
-    @clinic_specialists = @specialization.specialists.collect { |s| [s.name, s.id] }
-    @focuses = []
-    @specialization.non_assumed_procedure_specializations_arranged.each { |ps, children|
-      @focuses << generate_focus(nil, ps, 0)
-      children.each { |child_ps, grandchildren|
-        @focuses << generate_focus(nil, child_ps, 1)
-        grandchildren.each { |grandchild_ps, greatgrandchildren|
-          @focuses << generate_focus(nil, grandchild_ps, 2)
-        }
-      }
-    }
+    @clinic_specialists = @specialization.specialists.collect do |s|
+      [s.name, s.id]
+    end
+    @focuses = GenerateClinicFocusInputs.exec(nil, [@specialization])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -62,20 +60,19 @@ class ClinicsController < ApplicationController
     if @clinic.save
       if params[:focuses_mapped].present?
         clinic_specializations = @clinic.specializations
-        params[:focuses_mapped].each do |updated_focus, value|
-          focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
-          focus.investigation = params[:focuses_investigations][updated_focus]
-          focus.waittime_mask = params[:focuses_waittime][updated_focus] if params[:focuses_waittime].present?
-          focus.lagtime_mask = params[:focuses_lagtime][updated_focus] if params[:focuses_lagtime].present?
+        params[:focuses_mapped].select do |checkbox_key, value|
+          value == "1"
+        end.each do |checkbox_key, value|
+          focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, checkbox_key)
+          focus.investigation = params[:focuses_investigations][checkbox_key]
+          focus.waittime_mask = params[:focuses_waittime][checkbox_key] if params[:focuses_waittime].present?
+          focus.lagtime_mask = params[:focuses_lagtime][checkbox_key] if params[:focuses_lagtime].present?
           focus.save
 
           #save any other focuses that have the same procedure and are in a specialization our clinic is in
           focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
         end
       end
-      ## TODO: remove when we're certain the new review system is working
-      params.delete(:pre_edit_form_data)
-      @clinic.review_object = ActiveSupport::JSON::encode(params)
 
       @clinic.save
       redirect_to clinic_path(@clinic), :notice => "Successfully created #{@clinic.name}."
@@ -86,7 +83,7 @@ class ClinicsController < ApplicationController
 
   def edit
     @form_modifier = ClinicFormModifier.new(:edit, current_user)
-    @clinic = Clinic.find(params[:id])
+    @clinic = Clinic.includes_clinic_locations.find(params[:id])
     while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
       puts "location #{@clinic.clinic_locations.length}"
       cl = @clinic.clinic_locations.build
@@ -102,38 +99,8 @@ class ClinicsController < ApplicationController
       l.build_address
       puts "locations #{@clinic.locations.length}"
     end
-    @clinic_procedures = []
-    @clinic.specializations.each { |specialization|
-      @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
-      @clinic_procedures += ancestry_options( specialization.non_assumed_procedure_specializations_arranged )
-    }
-    @clinic_specialists = []
-    procedure_specializations = {}
-    @clinic.specializations.each { |specialization|
-      @clinic_specialists << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
-      @clinic_specialists += specialization.specialists.collect { |s| [s.name, s.id] }
-      procedure_specializations.merge!(specialization.non_assumed_procedure_specializations_arranged)
-    }
-    focuses_procedure_list = []
-    @focuses = []
-    procedure_specializations.each { |ps, children|
-      if !focuses_procedure_list.include?(ps.procedure.id)
-        @focuses << generate_focus(@clinic, ps, 0)
-        focuses_procedure_list << ps.procedure.id
-      end
-      children.each { |child_ps, grandchildren|
-        if !focuses_procedure_list.include?(child_ps.procedure.id)
-          @focuses << generate_focus(@clinic, child_ps, 1)
-          focuses_procedure_list << child_ps.procedure.id
-        end
-        grandchildren.each { |grandchild_ps, greatgrandchildren|
-          if !focuses_procedure_list.include?(grandchild_ps.procedure.id)
-            @focuses << generate_focus(@clinic, grandchild_ps, 2)
-            focuses_procedure_list << grandchild_ps.procedure.id
-          end
-        }
-      }
-    }
+    @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
+    @focuses = GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -144,25 +111,7 @@ class ClinicsController < ApplicationController
 
     parsed_params = ParamParser::Clinic.new(params).exec
     if @clinic.update_attributes(parsed_params[:clinic])
-      clinic_specializations = @clinic.specializations
-      if params[:focuses_mapped].present?
-        @clinic.focuses.each do |original_focus|
-          Focus.destroy(original_focus.id) if params[:focuses_mapped][original_focus.procedure_specialization.id.to_s].blank?
-        end
-        params[:focuses_mapped].each do |updated_focus, value|
-          focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
-          focus.investigation = params[:focuses_investigations][updated_focus]
-          focus.waittime_mask = params[:focuses_waittime][updated_focus] if params[:focuses_waittime].present?
-          focus.lagtime_mask = params[:focuses_lagtime][updated_focus] if params[:focuses_lagtime].present?
-          focus.save
-
-          #save any other focuses that have the same procedure and are in a specialization our clinic is in
-          focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
-        end
-      end
-      ## TODO: remove when we're certain the new review system is working
-      params.delete(:pre_edit_form_data)
-      @clinic.review_object = ActiveSupport::JSON::encode(params)
+      UpdateClinicFocuses.exec(@clinic, parsed_params)
       @clinic.save
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else
@@ -179,7 +128,7 @@ class ClinicsController < ApplicationController
   end
 
   def review
-    @clinic = Clinic.find(params[:id])
+    @clinic = Clinic.includes_clinic_locations.find(params[:id])
     @form_modifier = ClinicFormModifier.new(:review, current_user)
     @review_item = @clinic.review_item;
 
@@ -199,44 +148,19 @@ class ClinicsController < ApplicationController
         l = cl.build_location
         l.build_address
       end
-      @clinic_procedures = []
-      @clinic.specializations.each { |specialization|
-        @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
-        @clinic_procedures += ancestry_options( specialization.non_assumed_procedure_specializations_arranged )
-      }
-      @clinic_specialists = []
-      procedure_specializations = {}
-      @clinic.specializations.each { |specialization|
-        @clinic_specialists << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
-        @clinic_specialists += specialization.specialists.collect { |s| [s.name, s.id] }
-        procedure_specializations.merge!(specialization.non_assumed_procedure_specializations_arranged)
-      }
-      focuses_procedure_list = []
-      @focuses = []
-      procedure_specializations.each { |ps, children|
-        if !focuses_procedure_list.include?(ps.procedure.id)
-          @focuses << generate_focus(@clinic, ps, 0)
-          focuses_procedure_list << ps.procedure.id
-        end
-        children.each { |child_ps, grandchildren|
-          if !focuses_procedure_list.include?(child_ps.procedure.id)
-            @focuses << generate_focus(@clinic, child_ps, 1)
-            focuses_procedure_list << child_ps.procedure.id
-          end
-          grandchildren.each { |grandchild_ps, greatgrandchildren|
-            if !focuses_procedure_list.include?(grandchild_ps.procedure.id)
-              @focuses << generate_focus(@clinic, grandchild_ps, 2)
-              focuses_procedure_list << grandchild_ps.procedure.id
-            end
-          }
-        }
-      }
+
+      @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
+      @focuses = GenerateClinicFocusInputs.exec(
+        @clinic,
+        @clinic.specializations
+      )
+
       render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
 
   def rereview
-    @clinic = Clinic.find(params[:id])
+    @clinic = Clinic.includes_clinic_locations.find(params[:id])
     @form_modifier = ClinicFormModifier.new(:rereview, current_user)
     @review_item = ReviewItem.find(params[:review_item_id])
 
@@ -258,38 +182,11 @@ class ClinicsController < ApplicationController
         l = cl.build_location
         l.build_address
       end
-      @clinic_procedures = []
-      @clinic.specializations.each { |specialization|
-        @clinic_procedures << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
-        @clinic_procedures += ancestry_options( specialization.non_assumed_procedure_specializations_arranged )
-      }
-      @clinic_specialists = []
-      procedure_specializations = {}
-      @clinic.specializations.each { |specialization|
-        @clinic_specialists << [ "----- #{specialization.name} -----", nil ] if @clinic.specializations.count > 1
-        @clinic_specialists += specialization.specialists.collect { |s| [s.name, s.id] }
-        procedure_specializations.merge!(specialization.non_assumed_procedure_specializations_arranged)
-      }
-      focuses_procedure_list = []
-      @focuses = []
-      procedure_specializations.each { |ps, children|
-        if !focuses_procedure_list.include?(ps.procedure.id)
-          @focuses << generate_focus(@clinic, ps, 0)
-          focuses_procedure_list << ps.procedure.id
-        end
-        children.each { |child_ps, grandchildren|
-          if !focuses_procedure_list.include?(child_ps.procedure.id)
-            @focuses << generate_focus(@clinic, child_ps, 1)
-            focuses_procedure_list << child_ps.procedure.id
-          end
-          grandchildren.each { |grandchild_ps, greatgrandchildren|
-            if !focuses_procedure_list.include?(grandchild_ps.procedure.id)
-              @focuses << generate_focus(@clinic, grandchild_ps, 2)
-              focuses_procedure_list << grandchild_ps.procedure.id
-            end
-          }
-        }
-      }
+      @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
+      @focuses = GenerateClinicFocusInputs.exec(
+        @clinic,
+        @clinic.specializations
+      )
       render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
@@ -312,25 +209,7 @@ class ClinicsController < ApplicationController
 
     parsed_params = ParamParser::Clinic.new(params).exec
     if @clinic.update_attributes(parsed_params[:clinic])
-      clinic_specializations = @clinic.specializations
-      if params[:focuses_mapped].present?
-        @clinic.focuses.each do |original_focus|
-          Focus.destroy(original_focus.id) if params[:focuses_mapped][original_focus.procedure_specialization.id.to_s].blank?
-        end
-        params[:focuses_mapped].each do |updated_focus, value|
-          focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, updated_focus)
-          focus.investigation = params[:focuses_investigations][updated_focus]
-          focus.waittime_mask = params[:focuses_waittime][updated_focus] if params[:focuses_waittime].present?
-          focus.lagtime_mask = params[:focuses_lagtime][updated_focus] if params[:focuses_lagtime].present?
-          focus.save
-
-          #save any other focuses that have the same procedure and are in a specialization our clinic is in
-          focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
-        end
-      end
-      ## TODO: remove when we're certain the new review system is working
-      params.delete(:pre_edit_form_data)
-      @clinic.review_object = ActiveSupport::JSON::encode(params)
+      UpdateClinicFocuses.exec(@clinic, parsed_params)
 
       @clinic.save
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
@@ -374,21 +253,5 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.find(params[:id])
     @feedback = @clinic.active_feedback_items.build
     render :show, :layout => 'ajax'
-  end
-
-  protected
-
-  def generate_focus(clinic, procedure_specialization, offset)
-    focus = clinic.present? ? Focus.find_by_clinic_id_and_procedure_specialization_id(clinic.id, procedure_specialization.id) : nil
-    return {
-      :mapped => focus.present?,
-      :name => procedure_specialization.procedure.name,
-      :id => procedure_specialization.id,
-      :investigations => focus.present? ? focus.investigation : "",
-      :custom_wait_time => procedure_specialization.clinic_wait_time?,
-      :waittime => focus.present? ? focus.waittime_mask : 0,
-      :lagtime => focus.present? ? focus.lagtime_mask : 0,
-      :offset => offset
-    }
   end
 end

@@ -64,7 +64,7 @@ $.fn.livesearch = function(options)
     }
   }).blur(function(){ setTimeout(hide_search,100) });
 
-	return this;
+  return this;
 
   function hide_search()
   {
@@ -100,7 +100,7 @@ $.fn.livesearch = function(options)
     that.trigger('focus'); //refresh results
   }
 
-	function filter_search(event)
+  function filter_search(event)
   {
     if (event && event.keyCode == 38)
     {
@@ -123,13 +123,13 @@ $.fn.livesearch = function(options)
       return;
     }
 
-		var term = $.trim( $(this).val().toLowerCase() )
-		
-		if ( !term )
+    var term = $.trim( $(this).val().toLowerCase() )
+
+    if ( !term )
     {
       container.animate({height: "hide"}, 200)
       return
-		}
+    }
 
     list.empty()
 
@@ -184,7 +184,7 @@ $.fn.livesearch = function(options)
     set_selected(selected)
 
     container.animate({height: "show"}, 200)
-	}
+  }
 
   function scorer(data_entry, term, fuzziness)
   {

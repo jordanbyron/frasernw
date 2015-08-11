@@ -41,6 +41,20 @@
     .row
       = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another clinic", :user_controls_clinic_locations, class: "btn offset3")
 
+    - if current_user.admin?
+      %h4
+        = "History & Notes"
+      .content
+        = render 'history/nodes', item: f.object, nodes: f.object.history
+        - f.object.build_new_note!(current_user)
+        = f.simple_fields_for :notes,
+          f.object.new_notes do |note_fields|
+          = note_fields.input :content,
+            as: :text,
+            label: "If you have any notes to append to this record, please leave them here:"
+          = note_fields.input :user_id,
+            as: :hidden
+
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
     = link_to 'Cancel', users_path, :class => "btn btn-danger ajax"

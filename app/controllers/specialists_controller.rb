@@ -37,19 +37,13 @@ class SpecialistsController < ApplicationController
 
     build_specialist_offices
 
-    @specializations_clinics = (current_user_is_super_admin? ? @specialization.clinics : @specialization.clinics.in_divisions(current_user_divisions)).map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} - #{l.short_address}", l.id] }
-    @specializations_clinic_locations = (current_user_is_super_admin? ? @specialization.clinics : @specialization.clinics.in_divisions(current_user_divisions)).map{ |c| c.clinic_locations.reject{ |cl| cl.empty? } }.flatten.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id] }
-    @specializations_procedures = ancestry_options( @specialization.non_assumed_procedure_specializations_arranged )
-    @capacities = []
-    @specialization.non_assumed_procedure_specializations_arranged.each { |ps, children|
-      @capacities << generate_capacity(nil, ps, 0)
-      children.each { |child_ps, grandchildren|
-        @capacities << generate_capacity(nil, child_ps, 1)
-        grandchildren.each { |grandchild_ps, greatgrandchildren|
-          @capacities << generate_capacity(nil, grandchild_ps, 2)
-        }
-      }
-    }
+    @specializations_clinics, @specializations_clinic_locations =
+      GenerateClinicLocationInputs.exec([ @specialization ])
+
+    @capacities = GenerateSpecialistCapacityInputs.exec(
+      nil,
+      [ @specialization ]
+    )
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -66,20 +60,18 @@ class SpecialistsController < ApplicationController
     if @specialist.save!
       if params[:capacities_mapped].present?
         specialist_specializations = @specialist.specializations
-        params[:capacities_mapped].each do |updated_capacity, value|
-          capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
-          capacity.investigation = params[:capacities_investigations][updated_capacity]
-          capacity.waittime_mask = params[:capacities_waittime][updated_capacity] if params[:capacities_waittime].present?
-          capacity.lagtime_mask = params[:capacities_lagtime][updated_capacity] if params[:capacities_lagtime].present?
+        params[:capacities_mapped].each do |checkbox_key, value|
+          next unless value == "1"
+          capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, checkbox_key)
+          capacity.investigation = params[:capacities_investigations][checkbox_key]
+          capacity.waittime_mask = params[:capacities_waittime][checkbox_key] if params[:capacities_waittime].present?
+          capacity.lagtime_mask = params[:capacities_lagtime][checkbox_key] if params[:capacities_lagtime].present?
           capacity.save
 
           #save any other capacities that have the same procedure and are in a specialization our specialist is in
           capacity.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.map{ |ps2| Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps2.id) }.map{ |c| c.save }
         end
       end
-      # TODO: remove when we're sure the review system changes are stable
-      params.delete(:pre_edit_form_data)
-      @specialist.review_object = ActiveSupport::JSON::encode(params)
 
       @specialist.save
       redirect_to @specialist, :notice => "Successfully created #{@specialist.name}. #{undo_link}"
@@ -98,41 +90,13 @@ class SpecialistsController < ApplicationController
 
     build_specialist_offices
 
-    @specializations_clinics = []
-    @specializations_clinic_locations = []
-    @specialist.specializations.each { |s|
-      @specializations_clinics += (current_user_is_super_admin? ? s.clinics : s.clinics.in_divisions(current_user_divisions)).map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} - #{l.short_address}", l.id] }
-      @specializations_clinic_locations += (current_user_is_super_admin? ? s.clinics : s.clinics.in_divisions(current_user_divisions)).map{ |c| c.clinic_locations.reject{ |cl| cl.empty? } }.flatten.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id] }
-    }
-    @specializations_clinics.sort!
-    @specializations_clinic_locations.sort!
-    @specializations_procedures = []
-    procedure_specializations = {}
-    @specialist.specializations.each { |s|
-      @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations.count > 1
-      @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
-      procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
-    }
-    capacities_procedure_list = []
-    @capacities = []
-    procedure_specializations.each { |ps, children|
-      if !capacities_procedure_list.include?(ps.procedure.id)
-        @capacities << generate_capacity(@specialist, ps, 0)
-        capacities_procedure_list << ps.procedure.id
-      end
-      children.each { |child_ps, grandchildren|
-        if !capacities_procedure_list.include?(child_ps.procedure.id)
-          @capacities << generate_capacity(@specialist, child_ps, 1)
-          capacities_procedure_list << child_ps.procedure.id
-        end
-        grandchildren.each { |grandchild_ps, greatgrandchildren|
-          if !capacities_procedure_list.include?(grandchild_ps.procedure.id)
-            @capacities << generate_capacity(@specialist, grandchild_ps, 2)
-            capacities_procedure_list << grandchild_ps.procedure.id
-          end
-        }
-      }
-    }
+    @specializations_clinics, @specializations_clinic_locations =
+      GenerateClinicLocationInputs.exec(@specialist.specializations)
+
+    @capacities = GenerateSpecialistCapacityInputs.exec(
+      @specialist,
+      @specialist.specializations
+    )
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -142,25 +106,7 @@ class SpecialistsController < ApplicationController
 
     parsed_params = ParamParser::Specialist.new(params).exec
     if @specialist.update_attributes(parsed_params[:specialist])
-      if params[:capacities_mapped].present?
-        specialist_specializations = @specialist.specializations
-        @specialist.capacities.each do |original_capacity|
-          Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity.procedure_specialization.id.to_s].blank?
-        end
-        params[:capacities_mapped].each do |updated_capacity, value|
-          capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
-          capacity.investigation = params[:capacities_investigations][updated_capacity]
-          capacity.waittime_mask = params[:capacities_waittime][updated_capacity] if params[:capacities_waittime].present?
-          capacity.lagtime_mask = params[:capacities_lagtime][updated_capacity] if params[:capacities_lagtime].present?
-          capacity.save
-
-          #save any other capacities that have the same procedure and are in a specialization our specialist is in
-          capacity.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.map{ |ps2| Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps2.id) }.map{ |c| c.save }
-        end
-      end
-      # TODO: remove when we're sure the review system changes are stable
-      params.delete(:pre_edit_form_data)
-      @specialist.review_object = ActiveSupport::JSON::encode(params)
+      UpdateSpecialistCapacities.exec(@specialist, parsed_params)
 
       @specialist.save
       redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
@@ -192,26 +138,7 @@ class SpecialistsController < ApplicationController
 
       parsed_params = ParamParser::Specialist.new(params).exec
       if @specialist.update_attributes(parsed_params[:specialist])
-        if params[:capacities_mapped].present?
-          specialist_specializations = @specialist.specializations
-          @specialist.capacities.each do |original_capacity|
-            Capacity.destroy(original_capacity.id) if params[:capacities_mapped][original_capacity.procedure_specialization.id.to_s].blank?
-          end
-          params[:capacities_mapped].each do |updated_capacity, value|
-            capacity = Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, updated_capacity)
-            capacity.investigation = params[:capacities_investigations][updated_capacity]
-            capacity.waittime_mask = params[:capacities_waittime][updated_capacity] if params[:capacities_waittime].present?
-            capacity.lagtime_mask = params[:capacities_lagtime][updated_capacity] if params[:capacities_lagtime].present?
-            capacity.save
-
-            #save any other capacities that have the same procedure and are in a specialization our specialist is in
-            capacity.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.map{ |ps2| Capacity.find_or_create_by_specialist_id_and_procedure_specialization_id(@specialist.id, ps2.id) }.map{ |c| c.save }
-          end
-        end
-
-        # TODO: remove when we're sure the review system changes are stable
-        params.delete(:pre_edit_form_data)
-        @specialist.review_object = ActiveSupport::JSON::encode(params)
+        UpdateSpecialistCapacities.exec(@specialist, parsed_params)
 
         @specialist.save
         redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
@@ -261,41 +188,13 @@ class SpecialistsController < ApplicationController
 
       build_specialist_offices
 
-      @specializations_clinics = []
-      @specializations_clinic_locations = []
-      @specialist.specializations.each { |s|
-        @specializations_clinics += s.clinics.map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} - #{l.short_address}", l.id] }
-        @specializations_clinic_locations += (current_user_is_super_admin? ? s.clinics : s.clinics.in_divisions(current_user_divisions)).map{ |c| c.clinic_locations.reject{ |cl| cl.empty? } }.flatten.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id] }
-      }
-      @specializations_clinics.sort!
-      @specializations_clinic_locations.sort!
-      @specializations_procedures = []
-      procedure_specializations = {}
-      @specialist.specializations.each { |s|
-        @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations.count > 1
-        @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
-        procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
-      }
-      capacities_procedure_list = []
-      @capacities = []
-      procedure_specializations.each { |ps, children|
-        if !capacities_procedure_list.include?(ps.procedure.id)
-          @capacities << generate_capacity(@specialist, ps, 0)
-          capacities_procedure_list << ps.procedure.id
-        end
-        children.each { |child_ps, grandchildren|
-          if !capacities_procedure_list.include?(child_ps.procedure.id)
-            @capacities << generate_capacity(@specialist, child_ps, 1)
-            capacities_procedure_list << child_ps.procedure.id
-          end
-          grandchildren.each { |grandchild_ps, greatgrandchildren|
-            if !capacities_procedure_list.include?(grandchild_ps.procedure.id)
-              @capacities << generate_capacity(@specialist, grandchild_ps, 2)
-              capacities_procedure_list << grandchild_ps.procedure.id
-            end
-          }
-        }
-      }
+      @specializations_clinics, @specializations_clinic_locations =
+        GenerateClinicLocationInputs.exec(@specialist.specializations)
+
+      @capacities = GenerateSpecialistCapacityInputs.exec(
+        @specialist,
+        @specialist.specializations
+      )
       render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
@@ -314,41 +213,13 @@ class SpecialistsController < ApplicationController
 
       build_specialist_offices
 
-      @specializations_clinics = []
-      @specializations_clinic_locations = []
-      @specialist.specializations.each { |s|
-        @specializations_clinics += s.clinics.map{ |c| c.locations }.flatten.map{ |l| ["#{l.locatable.clinic.name} - #{l.short_address}", l.id] }
-        @specializations_clinic_locations += (current_user_is_super_admin? ? s.clinics : s.clinics.in_divisions(current_user_divisions)).map{ |c| c.clinic_locations.reject{ |cl| cl.empty? } }.flatten.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id] }
-      }
-      @specializations_clinics.sort!
-      @specializations_clinic_locations.sort!
-      @specializations_procedures = []
-      procedure_specializations = {}
-      @specialist.specializations.each { |s|
-        @specializations_procedures << [ "----- #{s.name} -----", nil ] if @specialist.specializations.count > 1
-        @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
-        procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
-      }
-      capacities_procedure_list = []
-      @capacities = []
-      procedure_specializations.each { |ps, children|
-        if !capacities_procedure_list.include?(ps.procedure.id)
-          @capacities << generate_capacity(@specialist, ps, 0)
-          capacities_procedure_list << ps.procedure.id
-        end
-        children.each { |child_ps, grandchildren|
-          if !capacities_procedure_list.include?(child_ps.procedure.id)
-            @capacities << generate_capacity(@specialist, child_ps, 1)
-            capacities_procedure_list << child_ps.procedure.id
-          end
-          grandchildren.each { |grandchild_ps, greatgrandchildren|
-            if !capacities_procedure_list.include?(grandchild_ps.procedure.id)
-              @capacities << generate_capacity(@specialist, grandchild_ps, 2)
-              capacities_procedure_list << grandchild_ps.procedure.id
-            end
-          }
-        }
-      }
+      @specializations_clinics, @specializations_clinic_locations =
+        GenerateClinicLocationInputs.exec(@specialist.specializations)
+
+      @capacities = GenerateSpecialistCapacityInputs.exec(
+        @specialist,
+        @specialist.specializations
+      )
       render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
@@ -413,21 +284,6 @@ class SpecialistsController < ApplicationController
     @first_division = @user_divisions.first
     render :index, :layout => 'ajax'
   end
-
-  protected
-    def generate_capacity(specialist, procedure_specialization, offset)
-      capacity = specialist.present? ? Capacity.find_by_specialist_id_and_procedure_specialization_id(specialist.id, procedure_specialization.id) : nil
-      return {
-        :mapped => capacity.present?,
-        :name => procedure_specialization.procedure.name,
-        :id => procedure_specialization.id,
-        :investigations => capacity.present? ? capacity.investigation : "",
-        :custom_wait_time => procedure_specialization.specialist_wait_time?,
-        :waittime => capacity.present? ? capacity.waittime_mask : 0,
-        :lagtime => capacity.present? ? capacity.lagtime_mask : 0,
-        :offset => offset
-      }
-    end
 
   private
 

@@ -41,15 +41,13 @@
                         = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")
       .tab-pane{:id => "no_division_tab"}
         %table.table.table-condensed.table-striped
-          - @specializations.each do |specialization|
+          - @specializations.select(&:no_division_specialists?).each do |specialization|
             - cache("specialists_index_no_division_tab_#{specialization.cache_key}_#{specialization.specialists.cache_key}", expires_in: 7.days) do # expires_in used only as a fail safe in case recache fails
-              - specialists = specialization.specialists.reject{ |s| s.cities.length > 0 }
-              - next if specialists.blank?
               %tr
                 %th{:style => "width:100%"}=specialization.name
                 %th.admin
 
-              - specialists.each do |specialist|
+              - specialization.no_division_specialists.each do |specialist|
                 %tr
                   %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
                   %td.admin.btn-group

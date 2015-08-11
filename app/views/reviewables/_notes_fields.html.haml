@@ -1,6 +1,6 @@
 - #(form, form_modifier, user, reviewable, review_item)
-%hr
 - if form_modifier.token_edit?
+  %hr
   .control-group.text
     = label_tag :review_item_note,
       "Please leave your contact information and any comments for the admin team here:",
@@ -10,8 +10,17 @@
         "",
         class: "text"
 - if form_modifier.admin_review? || form_modifier.admin_rereview?
+  %hr
   %h3 Review Item History
-  = render 'history/nodes', item: review_item
+  = render 'history/nodes',
+    item: review_item,
+    nodes: review_item.history
+- if form_modifier.admin? && reviewable.full_notes_history.any?
+  %hr
+  %h3 Notes
+  = render "history/nodes",
+    item: reviewable,
+    nodes: reviewable.full_notes_history
 - if form_modifier.admin_review?
   %hr
   .control-group.text
@@ -22,13 +31,13 @@
       = text_area_tag :review_item_note,
         "",
         class: "text"
-- if form_modifier.admin_edit? && !form_modifier.token_edit?
+- if form_modifier.admin_edit? || form_modifier.admin_new?
   %hr
   - form.object.build_new_note!(user)
   = form.simple_fields_for :notes,
     form.object.new_notes do |note_fields|
     = note_fields.input :content,
       as: :text,
-      label: "If you have any notes to append to this update, please leave them here:"
+      label: "If you have any notes to append to this record, please leave them here:"
     = note_fields.input :user_id,
       as: :hidden

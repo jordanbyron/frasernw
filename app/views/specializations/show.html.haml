@@ -81,7 +81,7 @@
                             %i.icon-asterisk.icon-disabled.icon-small
                       #specialist-filter-aop.collapsable.in
                         .filter-group-content
-                          - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
+                          - @specialization.arranged_procedure_specializations(:focused).each do |ps, children|
                             %label{:class => ps.specialist_wait_time && "custom_wait_time"}
                               %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}_').collapse('toggle')", :name => "#{ps.specialist_wait_time? ? 1 : 0}"}
                               %span= ps.procedure.name
@@ -122,7 +122,7 @@
                               });
 
                           #more_s_procedures.more.collapse
-                            - @specialization.non_focused_procedure_specializations_arranged.each do |ps, children|
+                            - @specialization.arranged_procedure_specializations(:non_focused).each do |ps, children|
                               %label{:class => ps.specialist_wait_time && "custom_wait_time"}
                                 %input.sp{"type" => "checkbox", "id" => "sp#{ps.procedure.id}_", "onclick" => "$('#children_sp#{ps.procedure.id}_').collapse('toggle')", :name => "#{ps.specialist_wait_time? ? 1 : 0}"}
                                 %span= ps.procedure.name
@@ -313,7 +313,7 @@
                           %i.icon-asterisk.icon-disabled.icon-small
                     #clinic-filter-aop.collapsable.in
                       .filter-group-content
-                        - @specialization.focused_procedure_specializations_arranged.each do |ps, children|
+                        - @specialization.arranged_procedure_specializations(:focused).each do |ps, children|
                           %label{:class => ps.clinic_wait_time && "custom_wait_time"}
                             %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}_').collapse('toggle')", :name => "#{ps.clinic_wait_time? ? 1 : 0}"}
                             %span= ps.procedure.name
@@ -354,7 +354,7 @@
                             });
 
                         #more_c_procedures.more.collapse
-                          - @specialization.non_focused_procedure_specializations_arranged.each do |ps, children|
+                          - @specialization.arranged_procedure_specializations(:non_focused).each do |ps, children|
                             %label{:class => ps.clinic_wait_time && "custom_wait_time"}
                               %input.cp{"type" => "checkbox", "id" => "cp#{ps.procedure.id}_", "onclick" => "$('#children_cp#{ps.procedure.id}_').collapse('toggle')", :name => "#{ps.clinic_wait_time? ? 1 : 0}"}
                               %span= ps.procedure.name

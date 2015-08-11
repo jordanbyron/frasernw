@@ -1,4 +1,4 @@
-(function( clinicFormData ){
+(function( formData ){
   function show_old_value(form_element, old_value_formatted)
   {
     form_element.closest('div.control-group, div.changed_wrapper').addClass('changed');
@@ -188,14 +188,10 @@
     });
   }
 
+  // only for clinics
   function overlayFocusesFormData(review_item, options)
   {
-    focuses_mapped = review_item["focuses_mapped"];
-    if (!focuses_mapped)
-    {
-      //handle when no areas of practice are checked off
-      focuses_mapped = {}
-    }
+    var focuses_mapped = review_item["focuses_mapped"] || {};
 
     $("input.focus").each( function() {
       var $this = $(this);
@@ -238,43 +234,108 @@
     }
   }
 
+  // only for specialists
+  function overlayCapacitiesFormData(review_item, options)
+  {
+    var capacities_mapped = review_item["capacities_mapped"] || {};
+
+    $("input.capacity").each( function() {
+      var $this = $(this);
+      if ($this.prop('checked'))
+      {
+        var checkbox_id = $this.attr('id').substring("capacities_mapped_".length);
+        //console.log(checkbox_id);
+        if (!capacities_mapped[checkbox_id])
+        {
+          $this.prop('checked', false);
+          if (options.highlightChanges) { show_old_value($this, "checked"); }
+        }
+      }
+    });
+    overlayFormData(
+      ["capacities_mapped"],
+      capacities_mapped,
+      { highlightChanges: options.highlightChanges }
+    );
+    overlayFormData(
+      ["capacities_investigations"],
+      review_item["capacities_investigations"],
+      { highlightChanges: options.highlightChanges }
+    );
+
+    if (review_item["capacities_waittime"])
+    {
+      overlayFormData(
+        ["capacities_waittime"],
+        review_item["capacities_waittime"],
+        { highlightChanges: options.highlightChanges }
+      );
+    }
+    if (review_item["capacities_lagtime"])
+    {
+      overlayFormData(
+        ["capacities_lagtime"],
+        review_item["capacities_lagtime"],
+        { highlightChanges: options.highlightChanges }
+      );
+    }
+  }
+
   var highlightChangedLocationTabs = function() {
-    for (var i = 0; i < clinicFormData.maxLocations; ++i)
+    for (var i = 0; i < formData.maxLocations; ++i)
     {
       if ($('#location_tab_' + i + ' .changed').length !== 0)
       {
         $('a[href="#location_tab_' + i + '"]').addClass('changed');
-        clinic_address_details_changed(i);
+        if (formData.recordKey === "clinic") {
+          clinic_address_details_changed(i);
+        } else if (formData.recordKey === "specialist") {
+          specialist_address_details_changed(i);
+        }
       }
     }
   }
   var mimicBeforeEdit = function() {
     overlayFormData(
-      ["clinic"],
-      clinicFormData.baseReviewItem["clinic"],
+      [formData.recordKey],
+      formData.baseReviewItem[formData.recordKey],
       { highlightChanges: false }
     );
-    overlayFocusesFormData(
-      clinicFormData.baseReviewItem,
-      { highlightChanges: false }
-    );
+    if (formData.recordKey === "clinic"){
+      overlayFocusesFormData(
+        formData.baseReviewItem,
+        { highlightChanges: false }
+      );
+    } else if (formData.recordKey === "specialist") {
+      overlayCapacitiesFormData(
+        formData.reviewItem,
+        { highlightChanges: false }
+      );
+    }
   }
 
   var overlayUserChanges = function() {
     overlayFormData(
-      ["clinic"],
-      clinicFormData.reviewItem["clinic"],
+      [formData.recordKey],
+      formData.reviewItem[formData.recordKey],
       { highlightChanges: true }
     );
-    overlayFocusesFormData(
-      clinicFormData.reviewItem,
-      { highlightChanges: true }
-    );
+    if (formData.recordKey === "clinic") {
+      overlayFocusesFormData(
+        formData.reviewItem,
+        { highlightChanges: true }
+      );
+    } else if (formData.recordKey === "specialist") {
+      overlayCapacitiesFormData(
+        formData.reviewItem,
+        { highlightChanges: true }
+      );
+    }
   }
 
   $(document).ready(function()
   {
-    if (clinicFormData.interactionType == 'rereview')
+    if (formData.interactionType == 'rereview')
     {
       // roll back to the version the user would have seen before they started editing
       mimicBeforeEdit();
@@ -287,4 +348,4 @@
     // are we assuming that all '.scheduled' tags have changed??
     $(".scheduled").each(scheduled_changed);
   });
-}( window.clinicFormData ));
+}( window.pathways.formData ));

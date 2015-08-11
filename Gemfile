@@ -116,6 +116,7 @@ group :development, :test do
   #gem 'heroku'
   gem 'taps'
   gem 'rb-fsevent', '~> 0.9.1'
+  gem 'quiet_assets'
 end
 
 group :development do

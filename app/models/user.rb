@@ -50,6 +50,18 @@ class User < ActiveRecord::Base
 
   default_scope order('users.name')
 
+  attr_accessible :name,
+    :role,
+    :active,
+    :division_ids,
+    :user_controls_specialist_offices_attributes,
+    :user_controls_clinic_locations_attributes,
+    :password,
+    :password_confirmation,
+    :email,
+    :agree_to_toc,
+    :type_mask
+
 LIMITED_ROLE_HASH = {
     "user" => "User",
     "admin" => "Administrator"

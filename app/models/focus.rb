@@ -4,6 +4,8 @@ class Focus < ActiveRecord::Base
 
   include PaperTrailable
 
+  delegate :procedure, to: :procedure_specialization
+
   def self.clinic_wait_time
     joins(:procedure_specialization).where('procedure_specializations.clinic_wait_time = (?)', true)
   end

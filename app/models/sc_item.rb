@@ -77,16 +77,6 @@ class ScItem < ActiveRecord::Base
     (owned + shared).uniq
   end
 
-  def self.owned_in_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    where('"sc_items"."division_id" IN (?)', division_ids)
-  end
-
-  def self.shared_in_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    joins('INNER JOIN "division_display_sc_items" ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"').where('"division_display_sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', division_ids, true)
-  end
-
   def self.shareable_by_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     where('"sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', division_ids, true)
@@ -102,6 +92,16 @@ class ScItem < ActiveRecord::Base
 
   def self.not_inline
     joins('INNER JOIN "sc_categories" ON "sc_items"."sc_category_id" = "sc_categories"."id"').where('"sc_categories"."display_mask" NOT IN (?)', ScCategory::INLINE_MASKS)
+  end
+
+  def self.owned_in_divisions(divisions)
+    division_ids = divisions.map{ |d| d.id }
+    where('"sc_items"."division_id" IN (?)', division_ids)
+  end
+
+  def self.shared_in_divisions(divisions)
+    division_ids = divisions.map{ |d| d.id }
+    joins('INNER JOIN "division_display_sc_items" ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"').where('"division_display_sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', division_ids, true)
   end
 
   def self.all_in_divisions(divisions)
@@ -122,6 +122,13 @@ class ScItem < ActiveRecord::Base
 
   def self.document
     where("sc_items.type_mask = (?)", TYPE_DOCUMENT)
+  end
+
+  def self.includes_specialization_data
+    includes(sc_item_specializations: [
+      :specialization,
+      { procedure_specializations: :procedure },
+    ])
   end
 
   def available_to_divisions(divisions)

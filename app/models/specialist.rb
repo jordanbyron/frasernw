@@ -113,6 +113,23 @@ class Specialist < ActiveRecord::Base
     (divisions.length > 0) && (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length == 0)
   end
 
+  def self.includes_specialist_offices
+    includes(
+      :specialist_offices => {
+        :office => {
+          :location => [
+            {:address => :city},
+            {:hospital_in => {:location => { :address => :city}}},
+            {:location_in => [
+              {:address => :city},
+              {:hospital_in => {:location => { :address => :city}}}
+            ]}
+          ]
+        }
+      }
+    )
+  end
+
   # # # # CACHING METHODS
 
   def self.cache_key
@@ -233,7 +250,11 @@ class Specialist < ActiveRecord::Base
 
   #on May 18 2015 there was 100 specialists in multiple divisions
   def self.in_multiple_divisions
-    @specialists_in_multiple_divisions ||= self.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:location_in => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}]}}).select{|specialist| specialist.divisions.count > 1}
+    @specialists_in_multiple_divisions ||=
+      self.
+        includes(:specialist_specializations => :specialization).
+        includes_specialist_offices.
+        select{|specialist| specialist.divisions.count > 1}
   end
   # # #
 

@@ -1,5 +1,7 @@
+-# (item, nodes)
+
 %ol
-  - item.history.each_with_index do |history_node, index|
+  - nodes.each_with_index do |history_node, index|
     %li.history__node
       - if history_node.target_is?(item)
         %p.history__line_item

@@ -8,7 +8,7 @@ class ClinicsEditorController < ApplicationController
   def edit
     @token = params[:token]
     @form_modifier = ClinicFormModifier.new(:edit, current_user, token: true)
-    @clinic = Clinic.find(params[:id])
+    @clinic = Clinic.includes_clinic_locations.find(params[:id])
     @review_item = @clinic.review_item
     if @clinic.focuses.count == 0
       @clinic.focuses.build
@@ -26,33 +26,7 @@ class ClinicsEditorController < ApplicationController
       l = cl.build_location
       l.build_address
     end
-    @specializations_procedures = []
-    procedure_specializations = {}
-    @clinic.specializations.each { |s|
-      @specializations_procedures << [ "----- #{s.name} -----", nil ] if @clinic.specializations.count > 1
-      @specializations_procedures += ancestry_options( s.non_assumed_procedure_specializations_arranged )
-      procedure_specializations.merge!(s.non_assumed_procedure_specializations_arranged)
-    }
-    focuses_procedure_list = []
-    @focuses = []
-    procedure_specializations.each { |ps, children|
-      if !focuses_procedure_list.include?(ps.procedure.id)
-        @focuses << generate_focus(@clinic, ps, 0)
-        focuses_procedure_list << ps.procedure.id
-      end
-      children.each { |child_ps, grandchildren|
-        if !focuses_procedure_list.include?(child_ps.procedure.id)
-          @focuses << generate_focus(@clinic, child_ps, 1)
-          focuses_procedure_list << child_ps.procedure.id
-        end
-        grandchildren.each { |grandchild_ps, greatgrandchildren|
-          if !focuses_procedure_list.include?(grandchild_ps.procedure.id)
-            @focuses << generate_focus(@clinic, grandchild_ps, 2)
-            focuses_procedure_list << grandchild_ps.procedure.id
-          end
-        }
-      }
-    }
+    @focuses = GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
     if request.headers['X-PJAX']
       render :template => 'clinics/edit', :layout => 'ajax'
     else
@@ -98,20 +72,4 @@ class ClinicsEditorController < ApplicationController
   def check_token
     token_required( Clinic, params[:token], params[:id] )
   end
-
-  protected
-  def generate_focus(clinic, procedure_specialization, offset)
-    focus = clinic.present? ? Focus.find_by_clinic_id_and_procedure_specialization_id(clinic.id, procedure_specialization.id) : nil
-    return {
-      :mapped => focus.present?,
-      :name => procedure_specialization.procedure.name,
-      :id => procedure_specialization.id,
-      :investigations => focus.present? ? focus.investigation : "",
-      :custom_wait_time => procedure_specialization.clinic_wait_time?,
-      :waittime => focus.present? ? focus.waittime_mask : 0,
-      :lagtime => focus.present? ? focus.lagtime_mask : 0,
-      :offset => offset
-    }
-  end
-
 end

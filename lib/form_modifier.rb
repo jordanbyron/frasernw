@@ -67,7 +67,11 @@ class FormModifier
   end
 
   def admin_edit?
-    admin? && !admin_review? && !admin_rereview?
+    admin? && interaction_type == :edit
+  end
+
+  def admin_new?
+    admin? && new_record?
   end
 
   def new_record?
@@ -85,6 +89,14 @@ class FormModifier
   # we don't want regular users to be able to edit all the fields directly
   def restrict_editing?
     token_edit?
+  end
+
+  def specialization_comments_label
+    if token_edit?
+      "If you have any updates to your specializations, please enter them here."
+    else
+      "These are the user's comments about how they would like their specializations modified. You must transfer them to the above checkboxes if you would like them included in the updated profile"
+    end
   end
 
   # instead, we'll give them generic comment boxes, which the admins can use to update the records later

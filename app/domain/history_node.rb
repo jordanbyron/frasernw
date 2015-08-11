@@ -33,6 +33,8 @@ class HistoryNode
   def verb
     if archiving?
       "archived"
+    elsif raw.verb == :migrated_annotation
+      "'admin notes' field migrated"
     else
       raw.verb.to_s.gsub("_", " ")
     end

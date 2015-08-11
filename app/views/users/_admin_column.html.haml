@@ -1,0 +1,6 @@
+- # (user)
+%td.admin
+  - if can? :update, user
+    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax stacked-button")
+  - if can? :view_history, user
+    = history_button(user)

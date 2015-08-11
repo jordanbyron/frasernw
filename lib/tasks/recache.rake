@@ -103,9 +103,8 @@ namespace :pathways do
     task :search => :environment do
       puts "Recaching search..."
 
-      puts "Global"
-      expire_fragment "livesearch_global"
-      HttpGetter.exec("refresh_livesearch_global.js")
+      GlobalSearchData.new.regenerate_cache
+      SearchDataLabels.new.regenerate_cache
 
       puts "All entries"
       expire_fragment "livesearch_all_entries"
@@ -115,18 +114,9 @@ namespace :pathways do
         HttpGetter.exec("refresh_livesearch_all_entries/#{s.id}.js")
       end
 
-      Division.all.each do |d|
-        puts "Search division #{d.id}"
-        expire_fragment "livesearch_#{division_path(d)}_entries"
-        Specialization.all.each do |s|
-          puts "Search division #{d.id} specialization #{s.id}"
-          expire_fragment "livesearch_#{division_path(d)}_#{specialization_path(s)}_entries"
-
-          HttpGetter.exec("refresh_livesearch_division_entries/#{d.id}/#{s.id}.js")
-
-        end
-        expire_fragment "livesearch_#{division_path(d)}_content"
-        HttpGetter.exec("refresh_livesearch_division_content/#{d.id}.js")
+      Division.all.each do |division|
+        puts "Search division #{division.id}"
+        division.search_data.regenerate_cache
       end
     end
 
@@ -171,8 +161,9 @@ namespace :pathways do
     end
 
     #purposeful order from least important to most important, to keep cache 'hot'
-    task :all => [:specialists_index, :procedures, :languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front, :application_layout] do
+    task :all => [:environment, :specialists_index, :procedures, :languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front, :application_layout] do
       puts "All pages recached."
+      SystemNotifier.notice("Recache successful")
     end
 
     #utility expiration tasks

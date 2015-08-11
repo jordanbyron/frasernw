@@ -2,7 +2,7 @@ namespace :pathways do
   task :list_procedures => :environment do
     Specialization.all.each do |s|
       puts "#{s.name}: focused" if s.procedure_specializations.focused.length > 0
-      s.focused_procedure_specializations_arranged.each do |ps, children|
+      s.arranged_procedure_specializations(:focused).each do |ps, children|
         if ps.procedure.specializations.length > 1
           puts "- #{ps.procedure.name} (shared between #{ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
         else
@@ -25,7 +25,7 @@ namespace :pathways do
       end
       puts "" if s.procedure_specializations.non_focused.length > 0
       puts "#{s.name}: non focused" if s.procedure_specializations.non_focused.length > 0
-      s.non_focused_procedure_specializations_arranged.each do |ps, children|
+      s.arranged_procedure_specializations(:non_focused).each do |ps, children|
         if ps.procedure.specializations.length > 1
           puts "- #{ps.procedure.name} (shared between #{ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
         else
@@ -48,7 +48,7 @@ namespace :pathways do
       end
       puts "" if s.procedure_specializations.assumed_specialist.length > 0
       puts "#{s.name}: assumed specialist" if s.procedure_specializations.assumed_specialist.length > 0
-      s.assumed_specialist_procedure_specializations_arranged.each do |ps, children|
+      s.arranged_procedure_specializations(:assumed_specialist).each do |ps, children|
         if ps.procedure.specializations.length > 1
           puts "- #{ps.procedure.name} (shared between #{ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
         else
@@ -71,7 +71,7 @@ namespace :pathways do
       end
       puts "" if s.procedure_specializations.assumed_clinic.length > 0
       puts "#{s.name}: assumed clinic" if s.procedure_specializations.assumed_clinic.length > 0
-      s.assumed_clinic_procedure_specializations_arranged.each do |ps, children|
+      s.arranged_procedure_specializations(:assumed_clinic).each do |ps, children|
         if ps.procedure.specializations.length > 1
           puts "- #{ps.procedure.name} (shared between #{ps.procedure.specializations.map{ |specializations| specializations.name }.to_sentence})"
         else

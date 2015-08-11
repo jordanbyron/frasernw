@@ -2,14 +2,16 @@
   %script{"type" => "text/javascript"}
     :plain
       // pass variables to the review script
-      (function( clinicFormData ) {
-        clinicFormData.baseReviewItem = #{@review_item.transformed_base_object(@clinic) || 'null'};
-        clinicFormData.reviewItem = #{@review_item.transformed_review_object(@clinic) || 'null'};
-        clinicFormData.maxLocations = #{Clinic::MAX_LOCATIONS};
-        clinicFormData.interactionType = "#{@form_modifier.interaction_type.to_s}";
-      }( window.clinicFormData = {} ));
+      window.pathways = window.pathways || {};
+      (function( formData ) {
+        formData.baseReviewItem = #{@review_item.transformed_base_object(@clinic) || 'null'};
+        formData.reviewItem = #{@review_item.transformed_review_object(@clinic) || 'null'};
+        formData.maxLocations = #{Clinic::MAX_LOCATIONS};
+        formData.interactionType = "#{@form_modifier.interaction_type.to_s}";
+        formData.recordKey = "clinic";
+      }( window.pathways.formData = {} ));
 
-  = javascript_include_tag "views/clinic_form_review"
+  = javascript_include_tag "views/form_review"
 
 - if @specialization
   %script{"type" => "text/javascript"}
@@ -46,7 +48,7 @@
       disabled: @form_modifier.restrict_editing?
     - if @form_modifier.show_comment_boxes?
       = f.input :specializations_comments,
-        label: "If you have any updates to your specializations, please enter them here.",
+        label: @form_modifier.specialization_comments_label,
         input_html: {value: ""},
         as: :text
 
@@ -232,6 +234,10 @@
         .row.spaced
           .span4.changed_wrapper{:class => "pad#{f[:offset]}"}
             %label{"for" => "focuses_mapped_#{f[:id]}"}
+              -# send 0 as unchecked value
+              = hidden_field_tag "focuses_mapped[#{f[:id]}]",
+                0,
+                id: "focuses_mapped_#{f[:id]}_hidden"
               = check_box_tag "focuses_mapped[#{f[:id]}]", 1, f[:mapped], :class => "focus"
               = f[:name]
           .span4.changed_wrapper= text_field_tag "focuses_investigations[#{f[:id]}]", f[:investigations], :class => "span4"
@@ -342,14 +348,6 @@
       %hr{ "style" => "visibility:hidden" }
 
       = f.association :healthcare_providers, as: :check_boxes
-
-  - if current_user_is_admin? && !@form_modifier.token_edit?
-
-    #section_admin.no-print
-
-      %hr
-
-      = f.input :admin_notes, label: "Admin only notes: (Deprecated! Please use the field below which makes a new note per each update)"
 
     -#section_deprecated.no-print
 

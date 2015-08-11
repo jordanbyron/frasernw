@@ -16,7 +16,7 @@
           = specialization.name
 
         .procedures_list{"id" => "specialization_#{specialization.id}_procedures"}
-          - specialization.non_assumed_procedure_specializations_arranged.each do |ps,children|
+          - specialization.arranged_procedure_specializations(:non_assumed).each do |ps,children|
             %label
               = check_box_tag "procedure_specialization_#{ps.id}", 1, @has_procedure_specializations.include?(ps.id), :name => "procedure_specialization[#{ps.id}", :class => "offsethalf"
               = ps.procedure.name
@@ -53,7 +53,7 @@
 
   %h3
     = "History & Notes"
-  = render 'history/nodes', item: f.object
+  = render 'history/nodes', item: f.object, nodes: f.object.history
   = render "notes/fields",
     parent_fields: f,
     user: current_user

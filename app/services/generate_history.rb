@@ -4,17 +4,20 @@ class GenerateHistory
   # i.e. before I had 'archived' here, but that duplicates the 'update' events
 
   EVENT_TYPES = [
-    Creation,
-    LastUpdated,
-    PriorUpdates,
-    Annotations,
-    ChildEvents
+    :creation,
+    :last_updated,
+    :prior_updates,
+    :annotations,
+    :child_events
   ]
 
-  attr_reader :target
+  attr_reader :target, :event_types
 
-  def initialize(target)
+  def initialize(target, event_types = EVENT_TYPES)
     @target = target
+    @event_types = event_types.map do |type_sym|
+      "GenerateHistory::#{type_sym.to_s.camelize}".constantize
+    end
   end
 
   def exec
@@ -24,7 +27,7 @@ class GenerateHistory
   end
 
   def unsorted
-    EVENT_TYPES.inject([]) do |memo, event_type|
+    event_types.inject([]) do |memo, event_type|
       memo + event_type.for(target)
     end
   end

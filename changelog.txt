@@ -15,6 +15,10 @@ Local-only = Changes not reflected in Source Code
 - Add indexes and update database queries for content items (providing a measured ~150ms boost to page speed loads).
 - CR: notes for review items, feedback items, content items, referral forms, users, clinics, and specialists
 - CR: history for review items, feedback items, content items, referral forms, and users
+- If a 1000 class error occurs, Cloudflare now serves a notice to go directly
+to our heroku address
+- System notification sent when recache is successful
+- History button in clinic/index
 
 ### Changed
 - Renamed "Areas of Practice" to "Accepts Referrals For" where appropriate.
@@ -27,6 +31,14 @@ Local-only = Changes not reflected in Source Code
 - Moved open-source Github repository to "pathwaysmedical" from "warneboldt"
 - CR: Address and specialization fields are now replaced with comment boxes when user edit clinics and specializations
 - history for Clinics and Specialists now includes their review and feedback items
+- optimized queries made for the specialists form, clinics form, navbar,
+specialists index, and clinic index, significantly improving page load
+speeds
+  - specialists/index: ~ 1000 ms improvement
+  - clinics/index: ~ 1000 ms improvement
+  - specialists/form: ~ 22000 ms improvement
+  - clinics/form: ~ 1100 ms improvement
+- borrowable resources now sorted automatically by division
 
 ### Fixed
 - CR:  Clinic location/specialist office rearranging issue now fixed.
@@ -40,6 +52,15 @@ Local-only = Changes not reflected in Source Code
 - Correct version of specialist office now used in specialist and clinic updates
 - S3 uses SSL to serve attachment
 - Can enter addresses for new specialist offices
+- Divisional search data no longer browser cached
+- Updating capacities and focuses for specialists and clinics with more than one
+specialty
+- Removing all areas of practice from specialists and clinics
+- System notification recipients standardized and configurable via
+environment variables
+- CR: 'Physicians who see patients' heading now only appears when there
+are actually physicians attending
+- timeouts on borrowable resources page
 
 ### Removed:
 - Removed old reporting interface graphs from the codebase that were already disabled by earlier developers.

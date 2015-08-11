@@ -8,14 +8,10 @@
     - if not f.error_messages.blank?
       .alert.alert-error= f.error_messages
 
-    - division_shareable_items = ScItem.shareable_by_divisions([@division])
-    - division_shared_items = ScItem.shared_in_divisions([@division])
-    - categories = ScCategory.all.reject{ |category| category.parent.present? || (category.all_shareable_sc_items - division_shareable_items).blank? }
-
     .tabbable
       %ul.nav.nav-tabs
         - active = true
-        - categories.each do |category|
+        - @categories.each do |category|
           %li{:class => active && "active"}
             %a{"href" => "##{category.name.remove_whitespace}_tab", "data-toggle" => "tab"}= category.name
           - active = false
@@ -23,7 +19,7 @@
 
       .tab-content
         - active = true
-        - categories.each do |category|
+        - @categories.each do |category|
           .tab-pane{"id" => "#{category.name.remove_whitespace}_tab", :class => active && "active"}
             %table.table.table-condensed.table-striped
               %tr
@@ -35,10 +31,9 @@
                 %th Type
                 %th Searchable?
                 %th Shared Care?
-
-              - (category.all_shareable_sc_items - division_shareable_items).each do |sc_item|
+              - category.items_borrowable_by_division(@division).sort_by{ |sc_item| [ sc_item.division.name, sc_item.title ] }.each do |sc_item|
                 %tr
-                  %td= check_box_tag "division_shared_sc_item_ids_#{sc_item.id}", sc_item.id, (division_shared_items.include? sc_item), :name => "division[shared_sc_item_ids][]", :class => "check_boxes optional"
+                  %td= check_box_tag "division_shared_sc_item_ids_#{sc_item.id}", sc_item.id, (@division.borrowed_sc_items.include? sc_item), :name => "division[shared_sc_item_ids][]", :class => "check_boxes optional"
                   %td{"width" => "40%"}= link_to sc_item.title, sc_item, :class => 'ajax'
                   %td= sc_item.division.name
                   %td= sc_item.sc_category != category ? (link_to sc_item.sc_category.name, sc_item.sc_category, :class => 'ajax') : ""
