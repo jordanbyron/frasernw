@@ -1,4 +1,4 @@
-class AddParentProcedureSpecializations
+class AddParentProcedureSpecialization
   include ServiceObject.exec_with_args(:klasses, :hierarchy)
 
   def exec

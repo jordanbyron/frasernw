@@ -35,17 +35,38 @@ class ChangeInjectionHierarchy < ActiveRecord::Migration
       )
     end
 
-    # Atm, specialists who specialization only in "injection"
+    # Atm, specialists who specialize only in "injection"
     # at the data level implicitly also specialize in "body_part"
     # at the view level.  Let's make this explicit at the data level
     # before doing the migration, so there aren't suprising profile
     # changes
+
     BODY_PARTS.each do |body_part|
-      AddParentProcedureSpecializations.exec(
+      AddParentProcedureSpecialization.exec(
         klasses: [Clinic, Specialist],
         hierarchy: "#{body_part} > Injection"
       )
+
+      # Check
+      implicit = Clinic.
+        with_ps_with_ancestry("#{body_part} > Injection").
+        map(&:id).
+        sort
+
+      explicit = Clinic.
+        with_ps_ancestry("#{body_part} > Injection").
+        map(&:id).
+        sort
+
+      raise unless implicit == explicit
     end
+
+    AddParentProcedureSpecialization.exec(
+      klasses: [Clinic, Specialist],
+      hierarchy: "Knee > Viscosupplementation"
+    )
+
+    # Now do the actual migration
 
     # Create our new joint injection procedure
     joint_injection_procedure = Procedure.create(

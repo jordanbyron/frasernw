@@ -56,4 +56,8 @@ class Array
       take (size - n)
     end
   end
+
+  def includes_array?(ary)
+    ary.all?{ |elem| self.include?(elem) }
+  end
 end
