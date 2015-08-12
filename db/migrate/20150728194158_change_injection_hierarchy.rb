@@ -27,7 +27,7 @@ class ChangeInjectionHierarchy < ActiveRecord::Migration
 
     clinics = BODY_PARTS.inject({}) do |memo, body_part|
       ids = Clinic.
-        with_ps_arrangement("#{body_part} > Injection").
+        with_ps_with_ancestry("#{body_part} > Injection").
         map(&:id)
 
       memo.merge(
@@ -35,6 +35,17 @@ class ChangeInjectionHierarchy < ActiveRecord::Migration
       )
     end
 
+    # Atm, specialists who specialization only in "injection"
+    # at the data level implicitly also specialize in "body_part"
+    # at the view level.  Let's make this explicit at the data level
+    # before doing the migration, so there aren't suprising profile
+    # changes
+    BODY_PARTS.each do |body_part|
+      AddParentProcedureSpecializations.exec(
+        klasses: [Clinic, Specialist],
+        hierarchy: "#{body_part} > Injection"
+      )
+    end
 
     # Create our new joint injection procedure
     joint_injection_procedure = Procedure.create(
@@ -121,7 +132,7 @@ class ChangeInjectionHierarchy < ActiveRecord::Migration
     # before the migration have "joint injection" > "<body part>" now
     clinics.each do |body_part, clinic_ids|
       new_ids = Clinic.
-        with_ps_arrangement("Joint Injection > #{body_part}").
+        with_ps_with_ancestry("Joint Injection > #{body_part}").
         map(&:id)
 
       raise unless new_ids.sort == clinic_ids.sort
