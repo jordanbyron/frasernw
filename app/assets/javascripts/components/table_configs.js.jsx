@@ -7,7 +7,7 @@
 // setUpdateListener(callback): sets a listener which executes the provided
 // callback when data is updated
 
-var AddressedStoreTable = React.createClass({
+var TableWithStore = React.createClass({
   store: function() {
     return window.pathways.tableDataStores[this.props.storeAddress];
   },

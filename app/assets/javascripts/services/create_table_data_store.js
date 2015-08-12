@@ -1,21 +1,18 @@
 (function( pathways ) {
-  pathways.createAddressedTableDataStore = function( config ) {
-    var _records = [];
-    var _headings = [];
+  pathways.createTableDataStore = function( config ) {
+    var _records = config["records"] || [];
+    var _headings = config["headings"] || [];
     var _updateNotifiers = [];
+    var _rowGenerator = config["rowGenerator"];
 
     var _generateRows =  function( records ) {
       return _records.map(_generateRow);
     };
 
     var _generateRow =  function( record ) {
-      return _rowGenerator().map(function( fn ) {
+      return _rowGenerator.map(function( fn ) {
         return fn(record);
       })
-    };
-
-    var _rowGenerator = function() {
-      return window.pathways.rowGenerators[config.rowGeneratorAddress];
     };
 
     var _notifyUpdated = function() {

@@ -13,15 +13,15 @@
   %script
     :plain
       (function(pathways) {
-        store = pathways.createAddressedTableDataStore({
+        store = pathways.createTableDataStore({
           address: "example",
-          rowGeneratorAddress: "exampleTable"
+          rowGenerator: pathways.rowGenerators.exampleTable,
+          records: #{@records.to_json},
+          headings: #{@table_headings.to_json}
         });
-        store.setRecords(#{@records.to_json});
-        store.setHeadings(#{@table_headings.to_json});
       }(window.pathways))
 
   %body
     .react_container
-      = react_component "AddressedStoreTable",
+      = react_component "TableWithStore",
         storeAddress: "example"
