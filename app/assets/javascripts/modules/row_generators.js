@@ -1,5 +1,5 @@
 (function (pathways) {
-  var cellGenerators = {
+  var _cellGenerators = {
     attr: function(attrName) {
       return function(record) {
         return record[attrName]
@@ -7,22 +7,20 @@
     }
   }
 
-  window.pathways.rowGenerators = {
-    exampleTable: [
-      cellGenerators.attr("id"),
-      cellGenerators.attr("name"),
-      cellGenerators.attr("date"),
-      function(record) { return "www.google.ca" }
-    ]
+  var _createRowGenerator = function(cellGenerators) {
+    return function(record) {
+      return cellGenerators.map(function( cellGenerator ) {
+        return cellGenerator(record);
+      });
+    };
   }
 
-  window.pathways.applyRowGenerator = function(rowGenerator, records) {
-    var _generateRow =  function( record ) {
-      return rowGenerator.map(function( fn ) {
-        return fn(record);
-      })
-    };
-
-    return records.map(_generateRow);
+  window.pathways.rowGenerators = {
+    exampleTable: _createRowGenerator([
+      _cellGenerators.attr("id"),
+      _cellGenerators.attr("name"),
+      _cellGenerators.attr("date"),
+      function(record) { return "www.google.ca" }
+    ])
   }
 }(window.pathways = window.pathways || {}));

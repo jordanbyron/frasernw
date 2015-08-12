@@ -4,6 +4,8 @@
     var _headings = config["headings"] || [];
     var _updateNotifiers = [];
     var _rowGenerator = config["rowGenerator"];
+    var _filterPredicate = config["filterPredicate"] ||
+      function(record) { return true };
 
     var _notifyUpdated = function() {
       _updateNotifiers.forEach(function( callback ) {
@@ -12,10 +14,13 @@
     };
 
     var _bodyRows = function() {
-      return pathways.applyRowGenerator(_rowGenerator, _records);
+      return _records
+        .filter(_filterPredicate)
+        .map(_rowGenerator);
     }
 
     pathways.tableDataStores = pathways.tableDataStores || {};
+
     return pathways.tableDataStores[config.address] = {
       setRecords: function( records ) {
         _records = records;
