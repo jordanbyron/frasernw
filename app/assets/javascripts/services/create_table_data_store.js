@@ -5,21 +5,15 @@
     var _updateNotifiers = [];
     var _rowGenerator = config["rowGenerator"];
 
-    var _generateRows =  function( records ) {
-      return _records.map(_generateRow);
-    };
-
-    var _generateRow =  function( record ) {
-      return _rowGenerator.map(function( fn ) {
-        return fn(record);
-      })
-    };
-
     var _notifyUpdated = function() {
       _updateNotifiers.forEach(function( callback ) {
         callback.call();
       });
     };
+
+    var _bodyRows = function() {
+      return pathways.applyRowGenerator(_rowGenerator, _records);
+    }
 
     pathways.tableDataStores = pathways.tableDataStores || {};
     return pathways.tableDataStores[config.address] = {
@@ -34,7 +28,7 @@
       clientFunctions: {
         getData: function() {
           return {
-            bodyRows: _generateRows(_records),
+            bodyRows: _bodyRows(),
             headings: _headings
           };
         },
@@ -44,4 +38,4 @@
       }
     };
   };
-}(window.pathways = window.pathways || {}));
+}(window.pathways));
