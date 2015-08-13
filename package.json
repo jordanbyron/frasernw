@@ -1,0 +1,27 @@
+{
+  "name": "frasernw",
+  "version": "0.0.0",
+  "description": "NPM Package for Pathways",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pathwaysmedical/frasernw"
+  },
+  "keywords": [
+    "webpack",
+    "ruby-on-rails"
+  ],
+  "author": "Pathways BC",
+  "license": "GPLv3",
+  "bugs": {
+    "url": "https://github.com/pathwaysmedical/frasernw/issues"
+  },
+  "homepage": "https://github.com/pathwaysmedical/frasernw",
+  "dependencies": {
+    "babel-loader": "^5.3.2",
+    "webpack": "^1.11"
+  }
+}

@@ -23,3 +23,4 @@ ssl/
 scratchpad/
 reports/
 config/google_oauth.p12
+node_modules/
