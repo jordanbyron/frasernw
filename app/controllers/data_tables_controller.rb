@@ -4,9 +4,9 @@ class DataTablesController < ApplicationController
   # temporary endpoint to build our datatable module
   def index
     @select_options = [
-      { key: 1, label: "one"},
-      { key: 2, label: "two"},
-      { key: 3, label: "three"}
+      { key: "tricycle", label: "Trike"},
+      { key: "bicycle", label: "Bike"},
+      { key: "car", label: "Car"}
     ]
     @table_headings = [ "product_id", "product", "date", "link" ]
     @records = [
