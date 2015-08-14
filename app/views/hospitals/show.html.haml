@@ -449,7 +449,7 @@
               $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
             });
             //make full rows clickable
-            $('table tr').click( function() { $(this).find('a').click(); });
+            $('table tbody tr').click( function() { $(this).find('a').click(); });
             $('table a').click( function(e) { e.stopPropagation(); });
 
 .content-wrapper
