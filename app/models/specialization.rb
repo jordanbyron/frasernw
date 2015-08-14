@@ -133,4 +133,10 @@ class Specialization < ActiveRecord::Base
         specialist.cities.length > 0
       end
   end
+
+  def filter_by_self(records)
+    records.select do |record|
+      record.specializations.include? self
+    end
+  end
 end
