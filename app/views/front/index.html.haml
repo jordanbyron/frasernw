@@ -174,3 +174,7 @@
         - if current_user_is_admin? && can_edit
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Featured Content", edit_front_as_division_path(user_divisions.first), :class => "btn btn-mini ajax")
+
+%script
+  :plain
+    window.pathways.bootstrapTest()
