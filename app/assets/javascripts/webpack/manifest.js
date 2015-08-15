@@ -1,5 +1,2 @@
-console.log("hey");
-
-require("./expose_bootstraps");
-
-console.log("hi");
+require("./react_ujs.custom")
+  .mountComponentsOnLoad();
