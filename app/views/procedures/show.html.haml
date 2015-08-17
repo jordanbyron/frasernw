@@ -1,4 +1,4 @@
-- title "#{@procedure.full_name}"
+- set_page_specific_title "#{@procedure.full_name}"
 
 - procedure_specialization = @procedure.procedure_specializations.first || ProcedureSpecialization.first
 - procedure_specializations = @procedure.procedure_specializations.reject{ |ps| !current_user_is_admin? && ps.specialization.fully_in_progress_for_divisions(current_user_divisions) }

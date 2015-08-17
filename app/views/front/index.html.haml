@@ -1,4 +1,4 @@
-- title "Home"
+- set_page_specific_title "Home"
 
 %ul#specialties-menu
   %li.dropdown.no-caret
@@ -7,6 +7,8 @@
       %b.caret
 
 = render 'partials/specialization_dropdown_menu'
+
+= react_component "Hey"
 
 %script{"type" => "text/javascript"}
   $(document).ready(function() { update_favorites() });
