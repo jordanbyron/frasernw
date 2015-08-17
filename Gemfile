@@ -39,7 +39,6 @@ end
 gem 'connection_pool'
 gem 'highcharts-rails'
 gem 'jquery-rails', "~> 1.0.16"
-gem 'react-rails'
 gem 'haml-rails', '~> 0.4'
 
 gem 'authlogic'
