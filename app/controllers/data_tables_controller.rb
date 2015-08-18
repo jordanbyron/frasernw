@@ -30,6 +30,14 @@ class DataTablesController < ApplicationController
       }
     ]
 
+    @filters = {
+      id: {
+        1 => true,
+        2 => true,
+        3 => false
+      }
+    }
+
     render layout: false
   end
 end

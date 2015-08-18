@@ -1,17 +1,11 @@
 var React = require("react");
 
 module.exports = React.createClass({
-  getInitialState: function() {
-    return { value: this.props.initialValue} ;
-  },
-  handleChange: function(event) {
-    this.setState({ value: event.target.checked });
-  },
   render: function() {
     return (
       <label>
         <span>{this.props.label}</span>
-        <input type="checkbox" checked={this.state.value} onChange={this.handleChange}></input>
+        <input type="checkbox" checked={this.props.value} onChange={this.props.onChange}></input>
       </label>
     );
   }

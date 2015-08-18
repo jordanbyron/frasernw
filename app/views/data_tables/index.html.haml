@@ -17,7 +17,8 @@
             type: "INITIALIZE_FROM_SERVER",
             initialState: {
               records: #{@records.to_json},
-              headings: #{@table_headings.to_json}
+              headings: #{@table_headings.to_json},
+              filters: #{@filters.to_json}
             }
           })
         });
