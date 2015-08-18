@@ -15,11 +15,7 @@
         $("document").ready(function() {
           window.pathways.exampleTableStore.dispatch({
             type: "INITIALIZE_FROM_SERVER",
-            initialState: {
-              records: #{@records.to_json},
-              headings: #{@table_headings.to_json},
-              filters: #{@filters.to_json}
-            }
+            initialState: #{@init_data.to_json}
           })
         });
 

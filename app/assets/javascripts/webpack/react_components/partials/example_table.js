@@ -2,6 +2,7 @@ var React = require("react");
 var Table = require("../helpers/table");
 var CheckBox = require("../helpers/checkbox");
 var Redux = require("redux");
+var ToggleBox = require("../helpers/toggle_box");
 
 module.exports = React.createClass({
   generateSpecialistLink: function(record) {
@@ -54,31 +55,39 @@ module.exports = React.createClass({
     }
     return filters;
   },
+  handleFilterToggle: function(key) {
+    return () => {
+      return this.props.dispatch({
+        type: "TOGGLE_FILTER_VISIBILITY",
+        filterKey: key
+      });
+    };
+  },
   render: function() {
-    var onFilterUpdate = this.onFilterUpdate;
     return (
       <div className="row">
         <div className="span8">
           <Table
-            headings={this.props.headings}
+            headings={this.props.tableHeadings}
             bodyRows={this.bodyRows()}
           />
         </div>
         <div className="span4">
           <div className="well filter" id="specialist_filters">
             <div className="title">{ "Filter Specialists" }</div>
-            <div className="filter_group--title">{ "Id" }</div>
-            <div className="filter_group--filters">
+            <ToggleBox title={"Id"}
+              open={this.props.filterVisibility.id}
+              handleToggle={this.handleFilterToggle("id")}>
               {
-                this.idFilters().map(function(filter) {
+                this.idFilters().map((filter) => {
                   return <CheckBox
                     key={filter.key}
                     label={filter.key}
                     value={filter.value}
-                    onChange={onFilterUpdate("ID", filter.key)} />;
+                    onChange={this.onFilterUpdate("ID", filter.key)} />;
                 })
               }
-            </div>
+            </ToggleBox>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-.filter_group--title {
+.filter_group__title {
   background-attachment: scroll;
   background-clip: border-box;
   background-color: rgb(189, 226, 245);
@@ -24,7 +24,7 @@
   text-decoration: none;
 }
 
-.filter_group--filters {
+.filter_group__filters {
   color: rgb(66, 66, 66);
   display: block;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -41,4 +41,9 @@
     display: inline;
     margin-right: 5px;
   }
+}
+
+.filter_group__toggle {
+  float: right;
+  margin-right: 10px;
 }
