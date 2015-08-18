@@ -1,0 +1,44 @@
+.filter_group--title {
+  background-attachment: scroll;
+  background-clip: border-box;
+  background-color: rgb(189, 226, 245);
+  background-image: none;
+  background-origin: padding-box;
+  background-size: auto;
+  color: rgb(66, 66, 66);
+  cursor: auto;
+  display: block;
+  font-family: Bitter;
+  font-size: 12px;
+  font-weight: normal;
+  height: 18px;
+  line-height: 18px;
+  margin-bottom: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 2px;
+  padding-bottom: 4px;
+  padding-left: 10px;
+  padding-right: 0px;
+  padding-top: 4px;
+  text-decoration: none;
+}
+
+.filter_group--filters {
+  color: rgb(66, 66, 66);
+  display: block;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  height: 1266px;
+  line-height: 18px;
+  padding-bottom: 12px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 12px;
+  width: 142px;
+
+  input.checkbox {
+    display: inline;
+    margin-right: 5px;
+  }
+}

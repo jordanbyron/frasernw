@@ -44,21 +44,29 @@ module.exports = React.createClass({
   render: function() {
     var onFilterUpdate = this.onFilterUpdate;
     return (
-      <div>
-        <Table
-          headings={this.props.headings}
-          bodyRows={this.bodyRows()}
-        />
-        <div>
-          {
-            this.idFilters().map(function(filter) {
-              return <CheckBox
-                key={filter.key}
-                label={filter.key}
-                value={filter.value}
-                onChange={onFilterUpdate("ID", filter.key)} />;
-            })
-          }
+      <div className="row">
+        <div className="span8">
+          <Table
+            headings={this.props.headings}
+            bodyRows={this.bodyRows()}
+          />
+        </div>
+        <div className="span4">
+          <div className="well filter" id="specialist_filters">
+            <div className="title">{ "Filter Specialists" }</div>
+            <div className="filter_group--title">{ "Id" }</div>
+            <div className="filter_group--filters">
+              {
+                this.idFilters().map(function(filter) {
+                  return <CheckBox
+                    key={filter.key}
+                    label={filter.key}
+                    value={filter.value}
+                    onChange={onFilterUpdate("ID", filter.key)} />;
+                })
+              }
+            </div>
+          </div>
         </div>
       </div>
     );
