@@ -1,4 +1,6 @@
-var TableHead = React.createClass({
+var React = require("react");
+
+module.exports = React.createClass({
   render: function() {
     return (
       <thead>

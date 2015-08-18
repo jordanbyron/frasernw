@@ -1,4 +1,6 @@
-var Checkbox = React.createClass({
+var React = require("react");
+
+module.exports = React.createClass({
   getInitialState: function() {
     return { value: this.props.initialValue} ;
   },

@@ -696,6 +696,11 @@
         }
       }
     },
+    "object-assign": {
+      "version": "3.0.0",
+      "from": "object-assign@",
+      "resolved": "https://registry.npmjs.org/object-assign/-/object-assign-3.0.0.tgz"
+    },
     "react": {
       "version": "0.13.3",
       "from": "https://registry.npmjs.org/react/-/react-0.13.3.tgz",

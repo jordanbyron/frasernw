@@ -10,27 +10,17 @@
     = javascript_include_tag "application"
     = csrf_meta_tag
 
-  %script
-    :plain
-      (function(pathways) {
-        store = pathways.createTableDataStore({
-          address: "example",
-          rowGenerator: pathways.rowGenerators.exampleTable,
-          records: #{@records.to_json},
-          headings: #{@table_headings.to_json}
+    %script
+      :plain
+        $("document").ready(function() {
+          window.pathways.exampleTableStore.dispatch({
+            type: "INITIALIZE_FROM_SERVER",
+            initialState: {
+              records: #{@records.to_json},
+              headings: #{@table_headings.to_json}
+            }
+          })
         });
-      }(window.pathways))
 
   %body
-    .react_container
-      = react_component "TableWithStore",
-        storeAddress: "example"
-
-      #checkbox
-
-      = react_component "Selector",
-        label: "selector",
-        options: @select_options,
-        initialValue: 2
-
-    = javascript_include_tag "datatable_bootstrap"
+    #example_table
