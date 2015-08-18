@@ -15,19 +15,28 @@ module.exports = React.createClass({
       <i className={record.status_icon_classes}></i>
     );
   },
+  generateCities: function(record) {
+    return record
+      .cityIds
+      .map((id) => this.props.labels.city[id])
+      .join(" and ");
+  },
   rowGenerator: function(record) {
     return {
       cells: [
         this.generateSpecialistLink(record),
         this.generateStatusIcon(record),
         record.waittime,
-        record.cities
+        this.generateCities(record)
       ],
       reactKey: record.id
     }
   },
+  cityFilter: function(record) {
+    return record.cityIds.some((id) => this.props.filters.city[id]);
+  },
   filterPredicate: function(record) {
-    return true;
+    return this.cityFilter(record);
   },
   bodyRows: function() {
     return this.props.records
@@ -45,15 +54,18 @@ module.exports = React.createClass({
       });
     };
   },
-  idFilters: function() {
-    var obj = this.props.filters.id;
+  filtersAtKey: function(filterKey, labelFunction) {
+    var obj = this.props.filters[filterKey];
     var filters = [];
     for (var key in obj) {
       if (obj.hasOwnProperty(key)) {
-        filters.push({key: key, value: obj[key]});
+        filters.push({key: key, value: obj[key], label: labelFunction(key)});
       }
     }
     return filters;
+  },
+  labelCityFilter: function(cityId) {
+    return this.props.labels.city[cityId];
   },
   handleFilterToggle: function(key) {
     return () => {
@@ -62,6 +74,18 @@ module.exports = React.createClass({
         filterKey: key
       });
     };
+  },
+  selectAllCities: function(e) {
+    e.preventDefault();
+    this.props.dispatch({
+      type: "SELECT_ALL_CITIES"
+    });
+  },
+  deselectAllCities: function(e) {
+    e.preventDefault();
+    this.props.dispatch({
+      type: "DESELECT_ALL_CITIES"
+    });
   },
   render: function() {
     return (
@@ -75,18 +99,22 @@ module.exports = React.createClass({
         <div className="span4">
           <div className="well filter" id="specialist_filters">
             <div className="title">{ "Filter Specialists" }</div>
-            <ToggleBox title={"Id"}
-              open={this.props.filterVisibility.id}
-              handleToggle={this.handleFilterToggle("id")}>
+            <ToggleBox title={"City"}
+              open={this.props.filterVisibility.city}
+              handleToggle={this.handleFilterToggle("city")}>
               {
-                this.idFilters().map((filter) => {
+                this.filtersAtKey("city", this.labelCityFilter).map((filter) => {
                   return <CheckBox
                     key={filter.key}
-                    label={filter.key}
+                    label={filter.label}
                     value={filter.value}
-                    onChange={this.onFilterUpdate("ID", filter.key)} />;
+                    onChange={this.onFilterUpdate("city", filter.key)} />;
                 })
               }
+              <a onClick={this.selectAllCities}
+                className="filters__city_select">Select all cities</a>
+              <a onClick={this.deselectAllCities}
+                className="filters__city_select">Deselect all cities</a>
             </ToggleBox>
           </div>
         </div>

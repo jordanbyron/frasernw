@@ -9,8 +9,16 @@ class DataTablesController < ApplicationController
         name: specialist.name,
         status_icon_classes: specialist.status_class,
         waittime: specialist.waittime,
-        cities: specialist.cities.map(&:name).join(" and ")
+        cityIds: specialist.cities.map(&:id)
       }
+    end
+
+    city_index = City.all.inject({}) do |memo, city|
+      memo.merge(city.id => city.name)
+    end
+
+    city_filters = City.all.inject({}) do |memo, city|
+      memo.merge(city.id => true)
     end
 
     @init_data = {
@@ -22,14 +30,13 @@ class DataTablesController < ApplicationController
       ],
       records: records,
       filterVisibility: {
-        id: true,
+        city: true,
+      },
+      labels: {
+        city: city_index
       },
       filters: {
-        id: {
-          1 => true,
-          2 => true,
-          3 => false
-        }
+        city: city_filters
       }
     }
 
