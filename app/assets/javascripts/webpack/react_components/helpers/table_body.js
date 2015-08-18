@@ -6,9 +6,9 @@ module.exports = React.createClass({
     return (
       <tbody>
         {
-          this.props.rows.map(function (row, i) {
+          this.props.rows.map(function (row) {
             return (
-              <TableRow data={row} key={i} />
+              <TableRow data={row.cells} key={row.reactKey} />
             );
           })
         }

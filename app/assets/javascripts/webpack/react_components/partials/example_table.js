@@ -4,16 +4,29 @@ var CheckBox = require("../helpers/checkbox");
 var Redux = require("redux");
 
 module.exports = React.createClass({
+  generateSpecialistLink: function(record) {
+    return (
+      <a href={"/specialists/" + record.id}>{ record.name }</a>
+    );
+  },
+  generateStatusIcon: function(record) {
+    return (
+      <i className={record.status_icon_classes}></i>
+    );
+  },
   rowGenerator: function(record) {
-    return [
-      record.id,
-      record.name,
-      record.date,
-      "www.hey.com"
-    ];
+    return {
+      cells: [
+        this.generateSpecialistLink(record),
+        this.generateStatusIcon(record),
+        record.waittime,
+        record.cities
+      ],
+      reactKey: record.id
+    }
   },
   filterPredicate: function(record) {
-    return this.props.filters.id[record.id];
+    return true;
   },
   bodyRows: function() {
     return this.props.records
