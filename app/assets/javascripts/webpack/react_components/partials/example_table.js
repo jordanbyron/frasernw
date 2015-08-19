@@ -9,9 +9,6 @@ var configs = require("../../datatable_configs.manifest.js");
 
 module.exports = React.createClass({
   config: function() { return configs["specialist"]; },
-  labelCityFilter: function(cityId) {
-    return this.props.labels.city[cityId];
-  },
   bodyRows: function() {
     var unsorted = this.props.records
       .filter(this.config().filterRow, this)
@@ -28,35 +25,6 @@ module.exports = React.createClass({
       return sorted;
     }
   },
-  filtersAtKey: function(filterKey, labelFunction) {
-    var obj = this.props.filters[filterKey];
-    var filters = [];
-    for (var key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        filters.push({key: key, value: obj[key], label: labelFunction(key)});
-      }
-    }
-    return filters;
-  },
-  handleFilterUpdate: function(filterType, key) {
-    var dispatch = this.props.dispatch;
-    return function(event) {
-      dispatch({
-        type: "FILTER_UPDATED",
-        filterType: filterType,
-        filterKey: key,
-        filterValue: event.target.checked
-      });
-    };
-  },
-  handleFilterToggle: function(key) {
-    return () => {
-      return this.props.dispatch({
-        type: "TOGGLE_FILTER_VISIBILITY",
-        filterKey: key
-      });
-    };
-  },
   handleHeaderClick: function(key) {
     return () => {
       return this.props.dispatch({
@@ -65,17 +33,25 @@ module.exports = React.createClass({
       });
     };
   },
-  handleSelectAllCities: function(e) {
-    e.preventDefault();
-    this.props.dispatch({
-      type: "SELECT_ALL_CITIES"
-    });
-  },
-  handleDeselectAllCities: function(e) {
-    e.preventDefault();
-    this.props.dispatch({
-      type: "DESELECT_ALL_CITIES"
-    });
+  filtersProps: function() {
+    return {
+      filters: this.props.filters,
+      labels: this.props.labels,
+      filterVisibility: this.props.filterVisibility,
+      toggleFilterVisibility: (key) => {
+        return this.props.dispatch({
+          type: "TOGGLE_FILTER_VISIBILITY",
+          filterKey: key
+        });
+      },
+      updateFilter: (filterType, update) => {
+        return this.props.dispatch({
+          type: "FILTER_UPDATED",
+          filterType: filterType,
+          update: update
+        });
+      }
+    };
   },
   render: function() {
     return (
@@ -91,23 +67,12 @@ module.exports = React.createClass({
         <div className="span4">
           <div className="well filter" id="specialist_filters">
             <div className="title">{ "Filter Specialists" }</div>
-            <ToggleBox title={"City"}
-              open={this.props.filterVisibility.city}
-              handleToggle={this.handleFilterToggle("city")}>
-              {
-                this.filtersAtKey("city", this.labelCityFilter).map((filter) => {
-                  return <CheckBox
-                    key={filter.key}
-                    label={filter.label}
-                    value={filter.value}
-                    onChange={this.handleFilterUpdate("city", filter.key)} />;
-                })
-              }
-              <a onClick={this.handleSelectAllCities}
-                className="filters__city_select">Select all cities</a>
-              <a onClick={this.handleDeselectAllCities}
-                className="filters__city_select">Deselect all cities</a>
-            </ToggleBox>
+            {
+              React.createElement(
+                this.config()["Filters"],
+                this.filtersProps()
+              )
+            }
           </div>
         </div>
       </div>

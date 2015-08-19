@@ -275,8 +275,6 @@ class Specialist < ActiveRecord::Base
   validates_attachment_content_type :photo, :content_type => /image/
   validates_attachment_size :photo, :less_than => 2.megabytes
 
-  default_scope order('specialists.lastname, specialists.firstname')
-
   #clinic that referrals are done through
   belongs_to :referral_clinic, :class_name => "Clinic"
 

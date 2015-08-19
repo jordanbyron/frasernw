@@ -1,4 +1,5 @@
 var React = require("react");
+var Filters = require("../react_components/partials/specialist_filters");
 
 var labelSpecialistName = function(record) {
   return (
@@ -52,5 +53,6 @@ module.exports = {
     default:
       return function(row){ return row.record.name; };
     }
-  }
+  },
+  Filters: Filters
 }
