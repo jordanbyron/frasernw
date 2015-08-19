@@ -3,6 +3,8 @@ var Table = require("../helpers/table");
 var CheckBox = require("../helpers/checkbox");
 var Redux = require("redux");
 var ToggleBox = require("../helpers/toggle_box");
+var sortBy = require("lodash/collection/sortBy");
+var objectAssign = require("object-assign");
 
 module.exports = React.createClass({
   generateSpecialistLink: function(record) {
@@ -29,7 +31,8 @@ module.exports = React.createClass({
         record.waittime,
         this.generateCities(record)
       ],
-      reactKey: record.id
+      reactKey: record.id,
+      record: record
     }
   },
   cityFilter: function(record) {
@@ -38,10 +41,32 @@ module.exports = React.createClass({
   filterPredicate: function(record) {
     return this.cityFilter(record);
   },
+  sortFunction: function() {
+    switch(this.props.sortConfig.column) {
+    case "NAME":
+      return function(row){ return row.record.name; }
+    case "REFERRALS":
+      return function(row){ return row.record.status_icon_classes; }
+    case "WAITTIME":
+      return function(row){ return row.record.waittime; }
+    case "CITY":
+      return function(row){ return row.cells[3]; }
+    default:
+      return function(row){ return row.record.name; }
+    }
+  },
   bodyRows: function() {
-    return this.props.records
+    var unsorted = this.props.records
       .filter(this.filterPredicate)
       .map(this.rowGenerator);
+
+    var sorted = sortBy(unsorted, this.sortFunction());
+
+    if (this.props.sortConfig.order == "DESC"){
+      return sorted.reverse();
+    } else {
+      return sorted;
+    }
   },
   onFilterUpdate: function(filterType, key) {
     var dispatch = this.props.dispatch;
@@ -75,6 +100,14 @@ module.exports = React.createClass({
       });
     };
   },
+  handleHeaderClick: function(key) {
+    return () => {
+      return this.props.dispatch({
+        type: "HEADER_CLICK",
+        headerKey: key
+      });
+    };
+  },
   selectAllCities: function(e) {
     e.preventDefault();
     this.props.dispatch({
@@ -94,6 +127,8 @@ module.exports = React.createClass({
           <Table
             headings={this.props.tableHeadings}
             bodyRows={this.bodyRows()}
+            sortConfig={this.props.sortConfig}
+            handleHeaderClick={this.handleHeaderClick}
           />
         </div>
         <div className="span4">

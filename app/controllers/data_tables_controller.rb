@@ -23,10 +23,10 @@ class DataTablesController < ApplicationController
 
     @init_data = {
       tableHeadings: [
-        "Name",
-        "Accepting New Referrals?",
-        "Average Non-urgent Patient Waittime",
-        "City"
+        { label: "Name", key: "NAME" },
+        { label: "Accepting New Referrals?", key: "REFERRALS" },
+        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME" },
+        { label: "City", key: "CITY" }
       ],
       records: records,
       filterVisibility: {
@@ -37,6 +37,10 @@ class DataTablesController < ApplicationController
       },
       filters: {
         city: city_filters
+      },
+      sortConfig: {
+        column: "NAME",
+        order: "ASC"
       }
     }
 
