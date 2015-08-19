@@ -5,79 +5,28 @@ var Redux = require("redux");
 var ToggleBox = require("../helpers/toggle_box");
 var sortBy = require("lodash/collection/sortBy");
 var objectAssign = require("object-assign");
+var configs = require("../../datatable_configs.manifest.js");
 
 module.exports = React.createClass({
-  generateSpecialistLink: function(record) {
-    return (
-      <a href={"/specialists/" + record.id}>{ record.name }</a>
-    );
-  },
-  generateStatusIcon: function(record) {
-    return (
-      <i className={record.status_icon_classes}></i>
-    );
-  },
-  generateCities: function(record) {
-    return record
-      .cityIds
-      .map((id) => this.props.labels.city[id])
-      .join(" and ");
-  },
-  rowGenerator: function(record) {
-    return {
-      cells: [
-        this.generateSpecialistLink(record),
-        this.generateStatusIcon(record),
-        record.waittime,
-        this.generateCities(record)
-      ],
-      reactKey: record.id,
-      record: record
-    }
-  },
-  cityFilter: function(record) {
-    return record.cityIds.some((id) => this.props.filters.city[id]);
-  },
-  filterPredicate: function(record) {
-    return this.cityFilter(record);
-  },
-  sortFunction: function() {
-    switch(this.props.sortConfig.column) {
-    case "NAME":
-      return function(row){ return row.record.name; }
-    case "REFERRALS":
-      return function(row){ return row.record.status_icon_classes; }
-    case "WAITTIME":
-      return function(row){ return row.record.waittime; }
-    case "CITY":
-      return function(row){ return row.cells[3]; }
-    default:
-      return function(row){ return row.record.name; }
-    }
+  config: function() { return configs["specialist"]; },
+  labelCityFilter: function(cityId) {
+    return this.props.labels.city[cityId];
   },
   bodyRows: function() {
     var unsorted = this.props.records
-      .filter(this.filterPredicate)
-      .map(this.rowGenerator);
+      .filter(this.config().filterRow, this)
+      .map(this.config().generateRow, this);
 
-    var sorted = sortBy(unsorted, this.sortFunction());
+    var sorted = sortBy(
+      unsorted,
+      this.config().sortFunction(this.props.sortConfig)
+    );
 
     if (this.props.sortConfig.order == "DESC"){
       return sorted.reverse();
     } else {
       return sorted;
     }
-  },
-  onFilterUpdate: function(filterType, key) {
-    var dispatch = this.props.dispatch;
-    return function(event) {
-      dispatch({
-        type: "FILTER_UPDATED",
-        filterType: filterType,
-        filterKey: key,
-        filterValue: event.target.checked
-      });
-    };
   },
   filtersAtKey: function(filterKey, labelFunction) {
     var obj = this.props.filters[filterKey];
@@ -89,8 +38,16 @@ module.exports = React.createClass({
     }
     return filters;
   },
-  labelCityFilter: function(cityId) {
-    return this.props.labels.city[cityId];
+  handleFilterUpdate: function(filterType, key) {
+    var dispatch = this.props.dispatch;
+    return function(event) {
+      dispatch({
+        type: "FILTER_UPDATED",
+        filterType: filterType,
+        filterKey: key,
+        filterValue: event.target.checked
+      });
+    };
   },
   handleFilterToggle: function(key) {
     return () => {
@@ -108,13 +65,13 @@ module.exports = React.createClass({
       });
     };
   },
-  selectAllCities: function(e) {
+  handleSelectAllCities: function(e) {
     e.preventDefault();
     this.props.dispatch({
       type: "SELECT_ALL_CITIES"
     });
   },
-  deselectAllCities: function(e) {
+  handleDeselectAllCities: function(e) {
     e.preventDefault();
     this.props.dispatch({
       type: "DESELECT_ALL_CITIES"
@@ -143,12 +100,12 @@ module.exports = React.createClass({
                     key={filter.key}
                     label={filter.label}
                     value={filter.value}
-                    onChange={this.onFilterUpdate("city", filter.key)} />;
+                    onChange={this.handleFilterUpdate("city", filter.key)} />;
                 })
               }
-              <a onClick={this.selectAllCities}
+              <a onClick={this.handleSelectAllCities}
                 className="filters__city_select">Select all cities</a>
-              <a onClick={this.deselectAllCities}
+              <a onClick={this.handleDeselectAllCities}
                 className="filters__city_select">Deselect all cities</a>
             </ToggleBox>
           </div>
