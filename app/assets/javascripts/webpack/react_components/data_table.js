@@ -15,7 +15,7 @@ var labelReferentName = function(record) {
 
 var labelReferentStatus = function(record) {
   return (
-    <i className={record.status_icon_classes}></i>
+    <i className={record.statusIconClasses}></i>
   );
 }
 
@@ -61,7 +61,7 @@ var sortFunctions = {
     case "NAME":
       return function(row){ return row.record.name; };
     case "REFERRALS":
-      return function(row){ return row.record.status_icon_classes; };
+      return function(row){ return row.record.statusIconClasses; };
     case "WAITTIME":
       return function(row){ return row.record.waittime; };
     case "CITY":

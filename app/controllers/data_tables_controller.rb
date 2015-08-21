@@ -7,20 +7,20 @@ class DataTablesController < ApplicationController
       {
         id: specialist.id,
         name: specialist.name,
-        status_icon_classes: specialist.status_class,
+        statusIconClasses: specialist.status_class,
         waittime: specialist.waittime,
         cityIds: specialist.cities.map(&:id),
         collectionName: "specialists"
       }
     end
 
-    clinics = Specialization.find(4).clinics.map do |clinics|
+    clinics = Specialization.find(4).clinics.map do |clinic|
       {
-        id: clinics.id,
-        name: clinics.name,
-        status_icon_classes: clinics.status_class,
-        waittime: clinics.waittime,
-        cityIds: clinics.cities.map(&:id),
+        id: clinic.id,
+        name: clinic.name,
+        statusIconClasses: clinic.status_class,
+        waittime: clinic.waittime,
+        cityIds: clinic.cities.map(&:id),
         collectionName: "clinics"
       }
     end
