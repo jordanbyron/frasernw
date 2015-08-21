@@ -2,23 +2,24 @@ var React = require("react");
 var Redux = require("redux");
 var Provider = require("react-redux").Provider;
 var connect = require("react-redux").connect;
-var reducer = require("../reducers/example_table");
-var ExampleTable = require("../react_components/partials/example_table");
+var reducer = require("../reducers/specialization_show");
+var Component =
+  require("../react_components/specialization_show");
 
 var store = Redux.createStore(reducer);
 
-var ConnectedExampleTable = connect(
+var ConnectedComponent = connect(
   function(state){
     return state;
   }
-)(ExampleTable);
+)(Component);
 
 module.exports = function() {
   $("document").ready(function() {
-    var rootElement = $('#example_table')[0];
+    var rootElement = $('#show_specialization')[0];
     React.render(
       <Provider store={store}>
-        {function() { return <ConnectedExampleTable />;} }
+        {function() { return <ConnectedComponent />;} }
       </Provider>,
       rootElement
     );

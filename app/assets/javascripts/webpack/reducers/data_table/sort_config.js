@@ -10,8 +10,6 @@ var oppositeOrder = function(order) {
 
 module.exports = function(state = {}, action) {
   switch(action.type){
-  case "INITIALIZE_FROM_SERVER":
-    return action.initialState.sortConfig;
   case "HEADER_CLICK":
     if (action.headerKey == state.column) {
       return {

@@ -3,8 +3,7 @@ var React = require("react");
 module.exports = React.createClass({
   headerCell: function(cell, index) {
     return (
-      <th key={index}
-        onClick={this.props.handleClick(cell.key)}>
+      <th key={index} onClick={this.props.handleClick(cell.key)}>
         <span>{cell.label}</span>
         { this.arrow(cell) }
       </th>

@@ -1,6 +1,6 @@
 var React = require("react");
-var ToggleBox = require("../helpers/toggle_box");
-var CheckBox = require("../helpers/checkbox");
+var ToggleBox = require("./toggle_box");
+var CheckBox = require("./checkbox");
 var keys = require("lodash/object/keys");
 var mapValues = require("lodash/object/mapValues");
 

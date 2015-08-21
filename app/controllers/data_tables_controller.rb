@@ -22,26 +22,45 @@ class DataTablesController < ApplicationController
     end
 
     @init_data = {
-      tableHeadings: [
-        { label: "Name", key: "NAME" },
-        { label: "Accepting New Referrals?", key: "REFERRALS" },
-        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME" },
-        { label: "City", key: "CITY" }
+      selectedPanel: "specialists",
+      panelNav: [
+        {
+          key: "specialists",
+          label: "Specialists"
+        }
       ],
-      records: records,
-      filterVisibility: {
-        city: true,
+      panels: {
+        specialists: {
+          contentClass: "DataTable",
+          props: {
+            tableHeadings: [
+              { label: "Name", key: "NAME" },
+              { label: "Accepting New Referrals?", key: "REFERRALS" },
+              { label: "Average Non-urgent Patient Waittime", key: "WAITTIME" },
+              { label: "City", key: "CITY" }
+            ],
+            records: records,
+            filterVisibility: {
+              city: true,
+            },
+            labels: {
+              city: city_index,
+              filterSection: "Filter Specialists"
+            },
+            rowGenerator: "specialist",
+            filterFunction: "specialist",
+            sortFunction: "specialist",
+            filterComponents: ["city"],
+            filterValues: {
+              city: city_filters
+            },
+            sortConfig: {
+              column: "NAME",
+              order: "ASC"
+            }
+          }
+        }
       },
-      labels: {
-        city: city_index
-      },
-      filters: {
-        city: city_filters
-      },
-      sortConfig: {
-        column: "NAME",
-        order: "ASC"
-      }
     }
 
     render layout: false
