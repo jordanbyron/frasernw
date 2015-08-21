@@ -7,19 +7,19 @@ var filterComponents = {
   city: require("./city_filter")
 }
 
-var labelSpecialistName = function(record) {
+var labelReferentName = function(record) {
   return (
-    <a href={"/specialists/" + record.id}>{ record.name }</a>
+    <a href={"/" + record.collectionName + "/" + record.id}>{ record.name }</a>
   );
 }
 
-var labelSpecialistStatus = function(record) {
+var labelReferentStatus = function(record) {
   return (
     <i className={record.status_icon_classes}></i>
   );
 }
 
-var labelSpecialistCities = function(record, labels) {
+var labelReferentCities = function(record, labels) {
   return record
     .cityIds
     .map((id) => labels.city[id])
@@ -31,15 +31,15 @@ var filterByCities = function(record, filters) {
 }
 
 var rowGenerators = {
-  specialist: function(record) {
+  referents: function(record) {
     var labels = this;
 
     return {
       cells: [
-        labelSpecialistName(record),
-        labelSpecialistStatus(record),
+        labelReferentName(record),
+        labelReferentStatus(record),
         record.waittime,
-        labelSpecialistCities(record, labels)
+        labelReferentCities(record, labels)
       ],
       reactKey: record.id,
       record: record
@@ -48,7 +48,7 @@ var rowGenerators = {
 }
 
 var rowFilters = {
-  specialist: function(record) {
+  referents: function(record) {
     var filters = this;
 
     return filterByCities(record, filters);
@@ -56,7 +56,7 @@ var rowFilters = {
 }
 
 var sortFunctions = {
-  specialist: function(sortConfig) {
+  referents: function(sortConfig) {
     switch(sortConfig.column) {
     case "NAME":
       return function(row){ return row.record.name; };
@@ -131,9 +131,9 @@ module.exports = React.createClass({
   },
   sidebar: function() {
     return (
-      <Filters title={this.props.labels.filterSpecialist}>
+      <Filters title={this.props.labels.filterSection}>
         {
-          this.props.filterComponents.map((filterKey)=>{
+          this.props.filterComponents.map((filterKey, index)=>{
             return React.createElement(
               filterComponents[filterKey],
               {
@@ -141,7 +141,8 @@ module.exports = React.createClass({
                 labels: this.props.labels[filterKey],
                 visible: this.props.filterVisibility[filterKey],
                 toggleVisibility: this.toggleFilterVisibility,
-                updateFilter: this.updateFilter
+                updateFilter: this.updateFilter,
+                key: index
               }
             )
           })

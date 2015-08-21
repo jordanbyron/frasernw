@@ -3,7 +3,7 @@ var React = require("react");
 module.exports = React.createClass({
   render: function() {
     return (
-      <ul class="nav nav-tabs">
+      <ul className="nav nav-tabs">
         {
           this.props.tabs.map((tab, index) => {
             return(

@@ -3,13 +3,25 @@ class DataTablesController < ApplicationController
 
   # temporary endpoint to build our datatable module
   def index
-    records = Specialization.find(4).specialists.map do |specialist|
+    specialists = Specialization.find(4).specialists.map do |specialist|
       {
         id: specialist.id,
         name: specialist.name,
         status_icon_classes: specialist.status_class,
         waittime: specialist.waittime,
-        cityIds: specialist.cities.map(&:id)
+        cityIds: specialist.cities.map(&:id),
+        collectionName: "specialists"
+      }
+    end
+
+    clinics = Specialization.find(4).clinics.map do |clinics|
+      {
+        id: clinics.id,
+        name: clinics.name,
+        status_icon_classes: clinics.status_class,
+        waittime: clinics.waittime,
+        cityIds: clinics.cities.map(&:id),
+        collectionName: "clinics"
       }
     end
 
@@ -21,44 +33,62 @@ class DataTablesController < ApplicationController
       memo.merge(city.id => true)
     end
 
+    # specialists and clinics have the same config for alot of things
+    referent_common_config = {
+      tableHeadings: [
+        { label: "Name", key: "NAME" },
+        { label: "Accepting New Referrals?", key: "REFERRALS" },
+        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME" },
+        { label: "City", key: "CITY" }
+      ],
+      rowGenerator: "referents",
+      filterFunction: "referents",
+      sortFunction: "referents",
+      filterComponents: ["city"],
+      filterValues: {
+        city: city_filters
+      },
+      sortConfig: {
+        column: "NAME",
+        order: "ASC"
+      },
+      filterVisibility: {
+        city: true,
+      }
+    }
+
     @init_data = {
       selectedPanel: "specialists",
       panelNav: [
         {
           key: "specialists",
           label: "Specialists"
+        },
+        {
+          key: "clinics",
+          label: "Clinics"
         }
       ],
       panels: {
         specialists: {
           contentClass: "DataTable",
           props: {
-            tableHeadings: [
-              { label: "Name", key: "NAME" },
-              { label: "Accepting New Referrals?", key: "REFERRALS" },
-              { label: "Average Non-urgent Patient Waittime", key: "WAITTIME" },
-              { label: "City", key: "CITY" }
-            ],
-            records: records,
-            filterVisibility: {
-              city: true,
-            },
+            records: specialists,
             labels: {
               city: city_index,
               filterSection: "Filter Specialists"
             },
-            rowGenerator: "specialist",
-            filterFunction: "specialist",
-            sortFunction: "specialist",
-            filterComponents: ["city"],
-            filterValues: {
-              city: city_filters
+          }.merge(referent_common_config)
+        },
+        clinics: {
+          contentClass: "DataTable",
+          props: {
+            records: clinics,
+            labels: {
+              city: city_index,
+              filterSection: "Filter Clinics"
             },
-            sortConfig: {
-              column: "NAME",
-              order: "ASC"
-            }
-          }
+          }.merge(referent_common_config)
         }
       },
     }
