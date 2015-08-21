@@ -16,7 +16,6 @@ module.exports = React.createClass({
     return (event) => {
       this.props.dispatch({
         type: "SELECT_PANEL",
-        panelKey: this.props.selectedPanel,
         panel: panelName
       })
     };

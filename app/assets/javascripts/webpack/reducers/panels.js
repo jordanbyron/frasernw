@@ -8,6 +8,8 @@ module.exports = function(state = {}, action) {
   switch(action.type){
   case "@@redux/INIT":
     return state;
+  case "SELECT_PANEL":
+    return state;
   default:
     var contentClass = state[action.panelKey].contentClass
     var reducer = reducers[contentClass];
