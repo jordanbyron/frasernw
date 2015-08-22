@@ -96,7 +96,8 @@ class DataTablesController < ApplicationController
       ],
       globalData: {
         labels: {
-          procedureSpecializations: procedure_specialization_labels
+          procedureSpecializations: procedure_specialization_labels,
+          city: city_index
         }
       },
       panels: {
@@ -105,7 +106,6 @@ class DataTablesController < ApplicationController
           props: {
             records: specialists,
             labels: {
-              city: city_index,
               filterSection: "Filter Specialists"
             },
           }.merge(referent_common_config)
@@ -115,7 +115,6 @@ class DataTablesController < ApplicationController
           props: {
             records: clinics,
             labels: {
-              city: city_index,
               filterSection: "Filter Clinics"
             },
           }.merge(referent_common_config)

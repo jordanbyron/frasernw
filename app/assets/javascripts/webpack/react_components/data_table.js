@@ -5,6 +5,7 @@ var Filters = require("./filters");
 var sortBy = require("lodash/collection/sortBy");
 var values = require("lodash/object/values");
 var every = require("lodash/collection/every");
+var objectAssign = require("object-assign");
 var filterComponents = {
   city: require("./city_filter"),
   procedureSpecializations: require("./procedure_specializations_filter")
@@ -51,9 +52,7 @@ var rowFilters = {
 }
 
 var rowGenerators = {
-  referents: function(record) {
-    var labels = this;
-
+  referents: function(record, labels) {
     return {
       cells: [
         labelReferentName(record),
@@ -115,10 +114,19 @@ module.exports = React.createClass({
   rowGenerator: function() {
     return rowGenerators[this.props.rowGenerator];
   },
+  labels: function() {
+    return objectAssign(
+      {},
+      this.props.labels,
+      this.props.globalData.labels
+    );
+  },
   bodyRows: function() {
     var unsorted = this.props.records
       .filter(this.filterFunction(), this.props.filterValues)
-      .map(this.rowGenerator(), this.props.labels);
+      .map((row) => {
+        return this.rowGenerator()(row, this.labels())
+      });
 
     var sorted = sortBy(
       unsorted,
