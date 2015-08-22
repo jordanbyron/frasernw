@@ -3,25 +3,29 @@ class DataTablesController < ApplicationController
 
   # temporary endpoint to build our datatable module
   def index
-    specialists = Specialization.find(4).specialists.map do |specialist|
+    specialization = Specialization.find(4)
+
+    specialists = specialization.specialists.map do |specialist|
       {
         id: specialist.id,
         name: specialist.name,
         statusIconClasses: specialist.status_class,
         waittime: specialist.waittime,
         cityIds: specialist.cities.map(&:id),
-        collectionName: "specialists"
+        collectionName: "specialists",
+        procedureSpecializationIds: specialist.procedure_specializations.map(&:id)
       }
     end
 
-    clinics = Specialization.find(4).clinics.map do |clinic|
+    clinics = specialization.clinics.map do |clinic|
       {
         id: clinic.id,
         name: clinic.name,
         statusIconClasses: clinic.status_class,
         waittime: clinic.waittime,
         cityIds: clinic.cities.map(&:id),
-        collectionName: "clinics"
+        collectionName: "clinics",
+        procedureSpecializationIds: clinic.procedure_specializations.map(&:id)
       }
     end
 
@@ -32,6 +36,26 @@ class DataTablesController < ApplicationController
     city_filters = City.all.inject({}) do |memo, city|
       memo.merge(city.id => true)
     end
+
+    transform_procedure_specializations = Proc.new do |hash|
+      hash.map do |key, value|
+        {
+          key: key.id,
+          label: key.procedure.name,
+          children: transform_procedure_specializations.call(value)
+        }
+      end.sort_by{ |elem| elem[:label] }
+    end
+    procedure_specialization_labels = transform_procedure_specializations.call(
+      specialization.arranged_procedure_specializations(:focused)
+    )
+
+    procedure_specialization_filters = specialization.
+      procedure_specializations.
+      focused.
+      inject({}) do |memo, ps|
+        memo.merge(ps.id => false)
+      end
 
     # specialists and clinics have the same config for alot of things
     referent_common_config = {
@@ -44,8 +68,9 @@ class DataTablesController < ApplicationController
       rowGenerator: "referents",
       filterFunction: "referents",
       sortFunction: "referents",
-      filterComponents: ["city"],
+      filterComponents: ["city", "procedureSpecializations"],
       filterValues: {
+        procedureSpecializations: procedure_specialization_filters,
         city: city_filters
       },
       sortConfig: {
@@ -53,7 +78,7 @@ class DataTablesController < ApplicationController
         order: "ASC"
       },
       filterVisibility: {
-        city: true,
+        city: false,
       }
     }
 
@@ -69,6 +94,11 @@ class DataTablesController < ApplicationController
           label: "Clinics"
         }
       ],
+      globalData: {
+        labels: {
+          procedureSpecializations: procedure_specialization_labels
+        }
+      },
       panels: {
         specialists: {
           contentClass: "DataTable",

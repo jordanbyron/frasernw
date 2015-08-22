@@ -3,8 +3,11 @@ var Table = require("./table");
 var SidebarLayout = require("./sidebar_layout");
 var Filters = require("./filters");
 var sortBy = require("lodash/collection/sortBy");
+var values = require("lodash/object/values");
+var every = require("lodash/collection/every");
 var filterComponents = {
-  city: require("./city_filter")
+  city: require("./city_filter"),
+  procedureSpecializations: require("./procedure_specializations_filter")
 }
 
 var labelReferentName = function(record) {
@@ -26,8 +29,25 @@ var labelReferentCities = function(record, labels) {
     .join(" and ");
 }
 
-var filterByCities = function(record, filters) {
-  return record.cityIds.some((id) => filters.city[id]);
+var filterByCities = function(record, cityFilters) {
+  return record.cityIds.some((id) => cityFilters[id]);
+}
+
+var filterByProcedureSpecializations = function(record, psFilters) {
+  if (every((values(psFilters)), (value) => !value)) {
+    return true;
+  } else {
+    return record.procedureSpecializationIds.some((id) => psFilters[id]);
+  }
+}
+
+var rowFilters = {
+  referents: function(record) {
+    var filters = this;
+
+    return filterByCities(record, filters.city) &&
+      filterByProcedureSpecializations(record, filters.procedureSpecializations);
+  }
 }
 
 var rowGenerators = {
@@ -44,14 +64,6 @@ var rowGenerators = {
       reactKey: record.id,
       record: record
     }
-  }
-}
-
-var rowFilters = {
-  referents: function(record) {
-    var filters = this;
-
-    return filterByCities(record, filters);
   }
 }
 
@@ -129,6 +141,9 @@ module.exports = React.createClass({
       />
     );
   },
+  labelsForFilter: function(filterKey) {
+    return this.props.labels[filterKey] || this.props.globalData.labels[filterKey];
+  },
   sidebar: function() {
     return (
       <Filters title={this.props.labels.filterSection}>
@@ -138,7 +153,7 @@ module.exports = React.createClass({
               filterComponents[filterKey],
               {
                 filters: this.props.filterValues[filterKey],
-                labels: this.props.labels[filterKey],
+                labels: this.labelsForFilter(filterKey),
                 visible: this.props.filterVisibility[filterKey],
                 toggleVisibility: this.toggleFilterVisibility,
                 updateFilter: this.updateFilter,

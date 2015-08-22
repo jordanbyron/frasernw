@@ -11,6 +11,7 @@ module.exports = React.createClass({
           type="checkbox"
           checked={this.props.value} onChange={this.onChange}
           className="checkbox"
+          style={this.props.style}
         ></input>
         <span>{this.props.label}</span>
       </label>

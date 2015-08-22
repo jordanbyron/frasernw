@@ -35,7 +35,8 @@ module.exports = React.createClass({
     return objectAssign(
       {},
       this.selectedPanel().props,
-      { dispatch: this.dispatchAction() }
+      { dispatch: this.dispatchAction() },
+      { globalData: this.props.globalData }
     );
   },
   content: function() {

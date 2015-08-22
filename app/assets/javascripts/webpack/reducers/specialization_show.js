@@ -10,7 +10,8 @@ module.exports = function(state = {}, action) {
     return {
       selectedPanel: selectedPanel(state.selectedPanel, action),
       panelNav: (state.panelNav || []),
-      panels: panels(state.panels, action)
+      panels: panels(state.panels, action),
+      globalData: state.globalData
     };
   }
 }
