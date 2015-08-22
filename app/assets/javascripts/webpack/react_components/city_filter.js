@@ -2,17 +2,18 @@ var React = require("react");
 var ToggleBox = require("./toggle_box");
 var CheckBox = require("./checkbox");
 var keys = require("lodash/object/keys");
+var sortBy = require("lodash/collection/sortBy");
 var mapValues = require("lodash/object/mapValues");
 
 module.exports = React.createClass({
   generateFilters: function(filterType) {
-    return keys(this.props.filters).map((key) => {
+    return sortBy(keys(this.props.filters).map((key) => {
       return {
         key: key,
         value: this.props.filters[key],
         label: this.props.labels[key]
       };
-    });
+    }), (city) => city.label);
   },
   handleCheckboxUpdate: function(event, key) {
     this.props.updateFilter(
