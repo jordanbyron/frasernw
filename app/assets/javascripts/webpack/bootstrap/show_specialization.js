@@ -17,6 +17,7 @@ var ConnectedComponent = connect(
 module.exports = function() {
   $("document").ready(function() {
     var rootElement = $('#show_specialization')[0];
+
     React.render(
       <Provider store={store}>
         {function() { return <ConnectedComponent />;} }

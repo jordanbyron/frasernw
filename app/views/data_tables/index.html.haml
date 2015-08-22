@@ -12,6 +12,7 @@
 
     %script
       :plain
+        window.pathways.bootstrap.showSpecialization();
         $("document").ready(function() {
           window.pathways.exampleTableStore.dispatch({
             type: "INITIALIZE_FROM_SERVER",

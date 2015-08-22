@@ -1,3 +1,7 @@
 require("./react_ujs.custom")
   .mountComponentsOnLoad();
-require("./bootstrap/show_specialization")();
+
+window.pathways = window.pathways || {};
+window.pathways.bootstrap = {
+  showSpecialization: require("./bootstrap/show_specialization")
+}
