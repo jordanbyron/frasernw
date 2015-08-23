@@ -68,6 +68,20 @@ class DataTablesController < ApplicationController
       { key: key, label: value }
     end.sort_by{ |elem| elem[:key] }
 
+    referent_common_filter_values = {
+      procedureSpecializations: procedure_specialization_filters,
+      city: city_filters,
+      referrals: {
+        acceptsReferralsViaPhone: false,
+        respondsWithin: 0,
+        patientsCanBook: false
+      },
+      sex: {
+        male: false,
+        female: false
+      }
+    }
+
     # specialists and clinics have the same config for alot of things
     referent_common_config = {
       tableHeadings: [
@@ -78,19 +92,6 @@ class DataTablesController < ApplicationController
       ],
       rowGenerator: "referents",
       sortFunction: "referents",
-      filterValues: {
-        procedureSpecializations: procedure_specialization_filters,
-        city: city_filters,
-        referrals: {
-          acceptsReferralsViaPhone: false,
-          respondsWithin: 0,
-          patientsCanBook: false
-        },
-        sex: {
-          male: false,
-          female: false
-        }
-      },
       sortConfig: {
         column: "NAME",
         order: "ASC"
@@ -139,6 +140,15 @@ class DataTablesController < ApplicationController
               filterSection: "Filter Specialists"
             },
             filterFunction: "specialists",
+            filterValues: referent_common_filter_values.merge({
+              schedule: {
+                6 => false,
+                7 => false
+              }
+            }),
+            filterArrangements: {
+              schedule: [6, 7]
+            },
             filterComponents: ["procedureSpecializations", "referrals", "sex", "city"]
           }.merge(referent_common_config)
         },
@@ -148,6 +158,14 @@ class DataTablesController < ApplicationController
             records: clinics,
             labels: {
               filterSection: "Filter Clinics"
+            },
+            filterValues: referent_common_filter_values.merge({
+              schedule: Schedule::DAY_HASH.keys.inject({}) do |memo, day|
+                memo.merge(day => false)
+              end
+            }),
+            filterArrangements: {
+              schedule: Schedule::DAY_HASH.keys
             },
             filterFunction: "clinics",
             filterComponents: ["procedureSpecializations", "referrals", "city"]

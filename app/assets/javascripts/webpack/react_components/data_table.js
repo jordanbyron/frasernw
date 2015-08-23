@@ -205,6 +205,7 @@ module.exports = React.createClass({
               {
                 filters: this.props.filterValues[filterKey],
                 labels: this.labelsForFilter(filterKey),
+                arrangement: this.props.filterArrangements[filterKey],
                 visible: this.props.filterVisibility[filterKey],
                 toggleVisibility: this.toggleFilterVisibility,
                 updateFilter: this.updateFilter,
