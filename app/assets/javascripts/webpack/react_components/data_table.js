@@ -9,7 +9,8 @@ var objectAssign = require("object-assign");
 var filterComponents = {
   city: require("./city_filter"),
   procedureSpecializations: require("./procedure_specializations_filter"),
-  referrals: require("./referrals_filter")
+  referrals: require("./referrals_filter"),
+  sex: require("./sex_filter")
 }
 
 var labelReferentName = function(record) {
@@ -46,17 +47,25 @@ var filterByProcedureSpecializations = function(record, psFilters) {
 var filterByReferrals = function(record, referralsFilters) {
   var tests = [
     function(record, filters) {
-      return ((filters.acceptsReferralsViaPhone == false) || record.acceptsReferralsViaPhone);
+      return ((filters.acceptsReferralsViaPhone == false) ||
+        record.acceptsReferralsViaPhone);
     },
     function(record, filters) {
       return ((filters.patientsCanBook == false) || record.patientsCanBook);
     },
     function(record, filters) {
-      return ((filters.respondsWithin == 0) || (record.respondsWithin <= filters.respondsWithin));
+      return ((filters.respondsWithin == 0) ||
+        (record.respondsWithin <= filters.respondsWithin));
     }
   ]
 
   return every(tests, (test) => test(record, referralsFilters));
+}
+
+var filterBySex = function(record, sexFilters) {
+  return (every((values(sexFilters)), (value) => !value)) ||
+    (every((values(sexFilters)), (value) => value)) ||
+    sexFilters[record.sex];
 }
 
 var rowFilters = {
@@ -65,7 +74,8 @@ var rowFilters = {
 
     return filterByCities(record, filters.city) &&
       filterByProcedureSpecializations(record, filters.procedureSpecializations) &&
-      filterByReferrals(record, filters.referrals);
+      filterByReferrals(record, filters.referrals) &&
+      filterBySex(record, filters.sex);
   }
 }
 

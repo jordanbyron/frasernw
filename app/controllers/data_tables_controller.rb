@@ -16,7 +16,8 @@ class DataTablesController < ApplicationController
         procedureSpecializationIds: specialist.procedure_specializations.map(&:id),
         respondsWithin: specialist.lagtime_mask,
         acceptsReferralsViaPhone: specialist.referral_phone,
-        patientsCanBook: specialist.patient_can_book?
+        patientsCanBook: specialist.patient_can_book?,
+        sex: specialist.sex.downcase
       }
     end
 
@@ -78,7 +79,7 @@ class DataTablesController < ApplicationController
       rowGenerator: "referents",
       filterFunction: "referents",
       sortFunction: "referents",
-      filterComponents: ["procedureSpecializations", "city", "referrals"],
+      filterComponents: ["procedureSpecializations", "referrals", "sex", "city"],
       filterValues: {
         procedureSpecializations: procedure_specialization_filters,
         city: city_filters,
@@ -86,6 +87,10 @@ class DataTablesController < ApplicationController
           acceptsReferralsViaPhone: false,
           respondsWithin: 0,
           patientsCanBook: false
+        },
+        sex: {
+          male: false,
+          female: false
         }
       },
       sortConfig: {
@@ -111,16 +116,20 @@ class DataTablesController < ApplicationController
       ],
       globalData: {
         labels: {
-          procedureSpecializations: procedure_specialization_labels,
           city: city_index,
+          procedureSpecializations: procedure_specialization_labels,
           referrals: {
             acceptsReferralsViaPhone: "Accepts referrals Via phone",
             patientsCanBook: "Patients can call to book after referral",
             respondsWithin: {
               self: "Responded to within",
               values: [{key: 0, label: "Any timeframe"}] + lagtimes
-            }
-          }
+            },
+          },
+          sex: [
+            { key: :male, label: "Male"},
+            { key: :female, label: "Female"}
+          ]
         }
       },
       panels: {
