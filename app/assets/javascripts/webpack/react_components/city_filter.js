@@ -38,14 +38,14 @@ module.exports = React.createClass({
   },
   render: function() {
     return (
-      <ToggleBox title={"City"}
+      <ToggleBox title={"Expand Search Area"}
         open={this.props.visible}
         handleToggle={this.handleToggleVisibility}>
         {
           this.generateFilters().map((filter) => {
             return <CheckBox
               key={filter.key}
-              filterKey={filter.key}
+              changeKey={filter.key}
               label={filter.label}
               value={filter.value}
               onChange={this.handleCheckboxUpdate} />;

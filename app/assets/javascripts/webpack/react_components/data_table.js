@@ -8,7 +8,8 @@ var every = require("lodash/collection/every");
 var objectAssign = require("object-assign");
 var filterComponents = {
   city: require("./city_filter"),
-  procedureSpecializations: require("./procedure_specializations_filter")
+  procedureSpecializations: require("./procedure_specializations_filter"),
+  referrals: require("./referrals_filter")
 }
 
 var labelReferentName = function(record) {
@@ -42,12 +43,29 @@ var filterByProcedureSpecializations = function(record, psFilters) {
   }
 }
 
+var filterByReferrals = function(record, referralsFilters) {
+  var tests = [
+    function(record, filters) {
+      return ((filters.acceptsReferralsViaPhone == false) || record.acceptsReferralsViaPhone);
+    },
+    function(record, filters) {
+      return ((filters.patientsCanBook == false) || record.patientsCanBook);
+    },
+    function(record, filters) {
+      return ((filters.respondsWithin == 0) || (record.respondsWithin <= filters.respondsWithin));
+    }
+  ]
+
+  return every(tests, (test) => test(record, referralsFilters));
+}
+
 var rowFilters = {
   referents: function(record) {
     var filters = this;
 
     return filterByCities(record, filters.city) &&
-      filterByProcedureSpecializations(record, filters.procedureSpecializations);
+      filterByProcedureSpecializations(record, filters.procedureSpecializations) &&
+      filterByReferrals(record, filters.referrals);
   }
 }
 

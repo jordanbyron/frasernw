@@ -13,7 +13,10 @@ class DataTablesController < ApplicationController
         waittime: specialist.waittime,
         cityIds: specialist.cities.map(&:id),
         collectionName: "specialists",
-        procedureSpecializationIds: specialist.procedure_specializations.map(&:id)
+        procedureSpecializationIds: specialist.procedure_specializations.map(&:id),
+        respondsWithin: specialist.lagtime_mask,
+        acceptsReferralsViaPhone: specialist.referral_phone,
+        patientsCanBook: specialist.patient_can_book?
       }
     end
 
@@ -25,7 +28,10 @@ class DataTablesController < ApplicationController
         waittime: clinic.waittime,
         cityIds: clinic.cities.map(&:id),
         collectionName: "clinics",
-        procedureSpecializationIds: clinic.procedure_specializations.map(&:id)
+        procedureSpecializationIds: clinic.procedure_specializations.map(&:id),
+        respondsWithin: clinic.lagtime_mask,
+        acceptsReferralsViaPhone: clinic.referral_phone,
+        patientsCanBook: clinic.patient_can_book?
       }
     end
 
@@ -57,6 +63,10 @@ class DataTablesController < ApplicationController
         memo.merge(ps.id => false)
       end
 
+    lagtimes = Clinic::LAGTIME_HASH.map do |key, value|
+      { key: key, label: value }
+    end.sort_by{ |elem| elem[:key] }
+
     # specialists and clinics have the same config for alot of things
     referent_common_config = {
       tableHeadings: [
@@ -68,10 +78,15 @@ class DataTablesController < ApplicationController
       rowGenerator: "referents",
       filterFunction: "referents",
       sortFunction: "referents",
-      filterComponents: ["city", "procedureSpecializations"],
+      filterComponents: ["procedureSpecializations", "city", "referrals"],
       filterValues: {
         procedureSpecializations: procedure_specialization_filters,
-        city: city_filters
+        city: city_filters,
+        referrals: {
+          acceptsReferralsViaPhone: false,
+          respondsWithin: 0,
+          patientsCanBook: false
+        }
       },
       sortConfig: {
         column: "NAME",
@@ -97,7 +112,15 @@ class DataTablesController < ApplicationController
       globalData: {
         labels: {
           procedureSpecializations: procedure_specialization_labels,
-          city: city_index
+          city: city_index,
+          referrals: {
+            acceptsReferralsViaPhone: "Accepts referrals Via phone",
+            patientsCanBook: "Patients can call to book after referral",
+            respondsWithin: {
+              self: "Responded to within",
+              values: [{key: 0, label: "Any timeframe"}] + lagtimes
+            }
+          }
         }
       },
       panels: {

@@ -28,7 +28,7 @@ module.exports = React.createClass({
       <div>
         <CheckBox
           key={procedureSpecialization.key}
-          filterKey={procedureSpecialization.key}
+          changeKey={procedureSpecialization.key}
           label={procedureSpecialization.label}
           value={this.props.filters[procedureSpecialization.key]}
           onChange={this.handleCheckboxUpdate}

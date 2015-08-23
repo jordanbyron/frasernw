@@ -2,7 +2,7 @@ var React = require("react");
 
 module.exports = React.createClass({
   onChange: function(event) {
-    return this.props.onChange(event, this.props.filterKey);
+    return this.props.onChange(event, this.props.changeKey);
   },
   render: function() {
     return (
