@@ -68,14 +68,28 @@ var filterBySex = function(record, sexFilters) {
     sexFilters[record.sex];
 }
 
-var rowFilters = {
-  referents: function(record) {
-    var filters = this;
+var referentFilterPredicates = [
+  {key: "city", fn: filterByCities},
+  {key: "procedureSpecializations", fn: filterByProcedureSpecializations},
+  {key: "referrals", fn: filterByReferrals}
+]
 
-    return filterByCities(record, filters.city) &&
-      filterByProcedureSpecializations(record, filters.procedureSpecializations) &&
-      filterByReferrals(record, filters.referrals) &&
-      filterBySex(record, filters.sex);
+var specialistFilterPredicates = referentFilterPredicates.concat([
+  {key: "sex", fn: filterBySex}
+]);
+
+var clinicFilterPredicates = referentFilterPredicates;
+
+var rowFilters = {
+  specialists: function(record, filters) {
+    return every(specialistFilterPredicates, (predicate) => {
+      return predicate.fn(record, filters[predicate.key]);
+    });
+  },
+  clinics: function(record, filters) {
+    return every(clinicFilterPredicates, (predicate) => {
+      return predicate.fn(record, filters[predicate.key]);
+    });
   }
 }
 
@@ -151,8 +165,9 @@ module.exports = React.createClass({
   },
   bodyRows: function() {
     var unsorted = this.props.records
-      .filter(this.filterFunction(), this.props.filterValues)
-      .map((row) => {
+      .filter((row) => {
+        return this.filterFunction()(row, this.props.filterValues);
+      }).map((row) => {
         return this.rowGenerator()(row, this.labels())
       });
 

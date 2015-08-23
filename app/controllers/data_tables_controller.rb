@@ -77,9 +77,7 @@ class DataTablesController < ApplicationController
         { label: "City", key: "CITY" }
       ],
       rowGenerator: "referents",
-      filterFunction: "referents",
       sortFunction: "referents",
-      filterComponents: ["procedureSpecializations", "referrals", "sex", "city"],
       filterValues: {
         procedureSpecializations: procedure_specialization_filters,
         city: city_filters,
@@ -140,6 +138,8 @@ class DataTablesController < ApplicationController
             labels: {
               filterSection: "Filter Specialists"
             },
+            filterFunction: "specialists",
+            filterComponents: ["procedureSpecializations", "referrals", "sex", "city"]
           }.merge(referent_common_config)
         },
         clinics: {
@@ -149,6 +149,8 @@ class DataTablesController < ApplicationController
             labels: {
               filterSection: "Filter Clinics"
             },
+            filterFunction: "clinics",
+            filterComponents: ["procedureSpecializations", "referrals", "city"]
           }.merge(referent_common_config)
         }
       },
