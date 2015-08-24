@@ -1,8 +1,11 @@
 class GenerateSpecializationPage
-  include ServiceObject.exec_with_args(:specialization_id)
+  include ServiceObject.exec_with_args(
+    :specialization_id,
+    :current_user
+  )
 
   def exec
-    @init_data = {
+    {
       selectedPanel: "specialists",
       panelNav: panel_nav,
       globalData: GlobalData.exec(specialization: specialization),
@@ -36,7 +39,12 @@ class GenerateSpecializationPage
   end
 
   def referent_common_config
-    @referent_common_config = Referents.exec(specialization: specialization)
+    @referent_common_config = Referents.exec(
+      specialization: specialization,
+      referral_cities: current_user.divisions_referral_cities(
+        specialization
+      )
+    )
   end
 
   def specialization

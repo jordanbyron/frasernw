@@ -1,7 +1,8 @@
 class GenerateSpecializationPage
   class Referents
     include ServiceObject.exec_with_args(
-      :specialization
+      :specialization,
+      :referral_cities
     )
 
     def exec
@@ -59,7 +60,7 @@ class GenerateSpecializationPage
 
     def city_filters
       City.all.inject({}) do |memo, city|
-        memo.merge(city.id => true)
+        memo.merge(city.id => referral_cities.include?(city))
       end
     end
   end

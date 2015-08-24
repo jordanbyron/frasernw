@@ -7,7 +7,7 @@ class GenerateSpecializationPage
     def exec
       {
         labels: {
-          city: city_index,
+          city: city_labels,
           procedureSpecializations: procedure_specialization_labels,
           referrals: {
             acceptsReferralsViaPhone: "Accepts referrals Via phone",
@@ -34,8 +34,8 @@ class GenerateSpecializationPage
         { key: key, label: value }
       end.sort_by{ |elem| elem[:key] }
     end
-    
-    def city_index
+
+    def city_labels
       City.all.inject({}) do |memo, city|
         memo.merge(city.id => city.name)
       end

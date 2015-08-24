@@ -3,7 +3,10 @@ class DataTablesController < ApplicationController
 
   # temporary endpoint to build our datatable module
   def index
-    @init_data = GenerateSpecializationPage.exec(specialization_id: 4)
+    @init_data = GenerateSpecializationPage.exec(
+      specialization_id: 4,
+      current_user: current_user
+    )
 
     render layout: false
   end

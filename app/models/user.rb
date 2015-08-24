@@ -261,4 +261,10 @@ LIMITED_ROLE_HASH = {
   def label
     name
   end
+
+  def divisions_referral_cities(specialization)
+    divisions.map do |division|
+      division.local_referral_cities_for_specialization(specialization)
+    end.flatten.uniq
+  end
 end
