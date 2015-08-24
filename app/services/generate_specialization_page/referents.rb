@@ -59,7 +59,7 @@ class GenerateSpecializationPage
     end
 
     def city_filters
-      City.all.inject({}) do |memo, city|
+      City.not_hidden.inject({}) do |memo, city|
         memo.merge(city.id => referral_cities.include?(city))
       end
     end
