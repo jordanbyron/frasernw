@@ -40,6 +40,12 @@ class Schedule < ActiveRecord::Base
     return output
   end
 
+  def day_ids
+    DAY_HASH.select do |key, val|
+      self.send(val.downcase).scheduled?
+    end.keys
+  end
+
   def days_and_hours
     output = []
 

@@ -17,11 +17,15 @@ class DataTablesController < ApplicationController
         respondsWithin: specialist.lagtime_mask,
         acceptsReferralsViaPhone: specialist.referral_phone,
         patientsCanBook: specialist.patient_can_book?,
-        sex: specialist.sex.downcase
+        sex: specialist.sex.downcase,
+        scheduledDayIds: specialist.day_ids
       }
     end
 
-    clinics = specialization.clinics.map do |clinic|
+    clinics = specialization.
+      clinics.
+      includes(clinic_locations: {:schedule => [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday]}).
+      map do |clinic|
       {
         id: clinic.id,
         name: clinic.name,
@@ -32,7 +36,8 @@ class DataTablesController < ApplicationController
         procedureSpecializationIds: clinic.procedure_specializations.map(&:id),
         respondsWithin: clinic.lagtime_mask,
         acceptsReferralsViaPhone: clinic.referral_phone,
-        patientsCanBook: clinic.patient_can_book?
+        patientsCanBook: clinic.patient_can_book?,
+        scheduledDayIds: clinic.day_ids
       }
     end
 
@@ -128,7 +133,8 @@ class DataTablesController < ApplicationController
           sex: [
             { key: :male, label: "Male"},
             { key: :female, label: "Female"}
-          ]
+          ],
+          schedule: Schedule::DAY_HASH
         }
       },
       panels: {
@@ -149,7 +155,7 @@ class DataTablesController < ApplicationController
             filterArrangements: {
               schedule: [6, 7]
             },
-            filterComponents: ["procedureSpecializations", "referrals", "sex", "city"]
+            filterComponents: ["procedureSpecializations", "referrals", "sex", "schedule", "city"]
           }.merge(referent_common_config)
         },
         clinics: {
@@ -168,7 +174,7 @@ class DataTablesController < ApplicationController
               schedule: Schedule::DAY_HASH.keys
             },
             filterFunction: "clinics",
-            filterComponents: ["procedureSpecializations", "referrals", "city"]
+            filterComponents: ["procedureSpecializations", "referrals", "schedule", "city"]
           }.merge(referent_common_config)
         }
       },

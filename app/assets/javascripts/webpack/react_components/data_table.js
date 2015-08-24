@@ -4,13 +4,16 @@ var SidebarLayout = require("./sidebar_layout");
 var Filters = require("./filters");
 var sortBy = require("lodash/collection/sortBy");
 var values = require("lodash/object/values");
+var keys = require("lodash/object/keys");
 var every = require("lodash/collection/every");
 var objectAssign = require("object-assign");
+var pick = require("lodash/object/pick");
 var filterComponents = {
   city: require("./city_filter"),
   procedureSpecializations: require("./procedure_specializations_filter"),
   referrals: require("./referrals_filter"),
-  sex: require("./sex_filter")
+  sex: require("./sex_filter"),
+  schedule: require("./schedule_filter")
 }
 
 var labelReferentName = function(record) {
@@ -68,10 +71,24 @@ var filterBySex = function(record, sexFilters) {
     sexFilters[record.sex];
 }
 
+var filterBySchedule = function(record, scheduleFilters) {
+  if (every((values(scheduleFilters)), (value) => !value)) {
+    return true;
+  }
+
+  var activatedDays = pick(scheduleFilters, (val) => val)
+  var activatedDayIds = keys(activatedDays)
+
+  return every(activatedDayIds, (id) => {
+    return (record.scheduledDayIds.indexOf(id) > -1);
+  });
+}
+
 var referentFilterPredicates = [
   {key: "city", fn: filterByCities},
   {key: "procedureSpecializations", fn: filterByProcedureSpecializations},
-  {key: "referrals", fn: filterByReferrals}
+  {key: "referrals", fn: filterByReferrals},
+  {key: "schedule", fn: filterBySchedule}
 ]
 
 var specialistFilterPredicates = referentFilterPredicates.concat([

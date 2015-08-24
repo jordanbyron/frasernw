@@ -775,6 +775,13 @@ class Specialist < ActiveRecord::Base
     specialist_offices.reject{ |so| !so.open_sunday }.present?
   end
 
+  def day_ids
+    {
+      6 => open_saturday?,
+      7 => open_sunday?
+    }.select{ |key, value| value }.keys
+  end
+
   def new?
     (created_at > 3.week.ago.utc) && opened_recently?
   end
