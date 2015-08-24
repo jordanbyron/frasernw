@@ -3,7 +3,6 @@ var every = require("lodash/collection/every");
 var pick = require("lodash/object/pick");
 var values = require("lodash/object/values");
 
-
 var filterByCities = function(record, cityFilters) {
   return record.cityIds.some((id) => cityFilters[id]);
 }

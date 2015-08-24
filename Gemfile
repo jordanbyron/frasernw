@@ -14,7 +14,6 @@ end
 
 # gem 'goldiloader' #automate eagerloading to squash N+1 queries
 
-
 # # Asset template engines
 # gem 'sass-rails', "~> 3.1.0"
 # gem 'coffee-script'

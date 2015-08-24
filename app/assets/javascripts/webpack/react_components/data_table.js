@@ -11,59 +11,10 @@ var filterComponents = {
   sex: require("./sex_filter"),
   schedule: require("./schedule_filter")
 }
-var rowFilters = require("../datatable_filters");
+var rowFilters = require("../datatable_support/filters");
+var rowGenerators = require("../datatable_support/row_generators");
+var sortFunctions = require("../datatable_support/sort_functions");
 
-var labelReferentName = function(record) {
-  return (
-    <a href={"/" + record.collectionName + "/" + record.id}>{ record.name }</a>
-  );
-}
-
-var labelReferentStatus = function(record) {
-  return (
-    <i className={record.statusIconClasses}></i>
-  );
-}
-
-var labelReferentCities = function(record, labels) {
-  return record
-    .cityIds
-    .map((id) => labels.city[id])
-    .join(" and ");
-}
-
-
-var rowGenerators = {
-  referents: function(record, labels) {
-    return {
-      cells: [
-        labelReferentName(record),
-        labelReferentStatus(record),
-        record.waittime,
-        labelReferentCities(record, labels)
-      ],
-      reactKey: record.id,
-      record: record
-    }
-  }
-}
-
-var sortFunctions = {
-  referents: function(sortConfig) {
-    switch(sortConfig.column) {
-    case "NAME":
-      return function(row){ return row.record.name; };
-    case "REFERRALS":
-      return function(row){ return row.record.statusIconClasses; };
-    case "WAITTIME":
-      return function(row){ return row.record.waittime; };
-    case "CITY":
-      return function(row){ return row.cells[3]; };
-    default:
-      return function(row){ return row.record.name; };
-    }
-  }
-}
 
 module.exports = React.createClass({
   toggleFilterVisibility: function(key) {
