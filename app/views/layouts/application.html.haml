@@ -82,7 +82,7 @@
           - if logged_in?
 
             %form.navbar-search.pull-right
-              %input.span3.search-query#search{"type" => "search", "placeholder" => "Search"}
+              %input.span3.search-query#search.icon{"type" => "search", "placeholder" => "&#xf002; Search".html_safe}
               #search_results{:style => 'display:none'}
                 #loading
                   #loading-spinner
