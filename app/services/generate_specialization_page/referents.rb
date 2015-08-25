@@ -21,6 +21,7 @@ class GenerateSpecializationPage
           respondsWithin: 0,
           patientsCanBook: false
         },
+        languages: language_filters,
         sex: {
           male: false,
           female: false
@@ -48,7 +49,6 @@ class GenerateSpecializationPage
       }
     end
 
-
     def procedure_specialization_filters
       specialization.
         procedure_specializations.
@@ -62,6 +62,12 @@ class GenerateSpecializationPage
       City.not_hidden.inject({}) do |memo, city|
         memo.merge(city.id => referral_cities.include?(city))
       end
+    end
+
+    def language_filters
+      Language.all.inject({}) do |memo, language|
+        memo.merge(language.id => false)
+      end.merge(0 => false)
     end
   end
 end

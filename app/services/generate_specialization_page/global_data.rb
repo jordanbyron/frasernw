@@ -7,6 +7,14 @@ class GenerateSpecializationPage
     def exec
       {
         labels: {
+          filters: {
+            procedureSpecializations: "Areas of practice",
+            city: "Expand Search Area",
+            languages: "Languages",
+            referrals: "Referrals",
+            schedule: "Schedule",
+            sex: "Sex"
+          },
           city: city_labels,
           procedureSpecializations: procedure_specialization_labels,
           referrals: {
@@ -21,13 +29,19 @@ class GenerateSpecializationPage
             { key: :male, label: "Male"},
             { key: :female, label: "Female"}
           ],
-          schedule: Schedule::DAY_HASH
+          schedule: Schedule::DAY_HASH,
+          languages: language_labels
         }
       }
     end
 
     private
 
+    def language_labels
+      Language.all.inject({}) do |memo, language|
+        memo.merge(language.id => language.name)
+      end.merge(0 => "Interpreter Available")
+    end
 
     def lagtimes
       Clinic::LAGTIME_HASH.map do |key, value|

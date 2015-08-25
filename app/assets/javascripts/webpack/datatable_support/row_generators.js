@@ -19,7 +19,6 @@ var labelReferentCities = function(record, labels) {
     .join(" and ");
 }
 
-
 module.exports = {
   referents: function(record, labels) {
     return {

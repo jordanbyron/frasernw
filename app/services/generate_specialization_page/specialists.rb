@@ -24,7 +24,14 @@ class GenerateSpecializationPage
           filterArrangements: {
             schedule: [6, 7]
           },
-          filterComponents: ["procedureSpecializations", "referrals", "sex", "schedule", "city"]
+          filterComponents: [
+            "procedureSpecializations",
+            "referrals",
+            "sex",
+            "schedule",
+            "languages",
+            "city"
+          ]
         }.merge(referent_common_config[:top_level])
       }
     end

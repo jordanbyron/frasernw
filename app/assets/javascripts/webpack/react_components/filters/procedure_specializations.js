@@ -1,6 +1,6 @@
 var React = require("react");
-var ToggleBox = require("./toggle_box");
-var CheckBox = require("./checkbox");
+var ToggleBox = require("../toggle_box");
+var CheckBox = require("../checkbox");
 var transform = require("lodash/object/transform");
 
 module.exports = React.createClass({
@@ -19,9 +19,6 @@ module.exports = React.createClass({
       "procedureSpecializations",
       { [key] : event.target.checked }
     );
-  },
-  handleToggleVisibility: function(event) {
-    this.props.toggleVisibility("procedureSpecializations");
   },
   renderProcedureSpecialization: function(procedureSpecialization, level) {
     return(
@@ -47,9 +44,7 @@ module.exports = React.createClass({
   },
   render: function() {
     return (
-      <ToggleBox title={"Accepts Referrals For"}
-        open={this.props.visible}
-        handleToggle={this.handleToggleVisibility}>
+      <div>
         {
           this.props.labels.map((procedureSpecialization) => {
             return this.renderProcedureSpecialization(
@@ -58,7 +53,7 @@ module.exports = React.createClass({
             )
           })
         }
-      </ToggleBox>
+      </div>
     );
   }
 });

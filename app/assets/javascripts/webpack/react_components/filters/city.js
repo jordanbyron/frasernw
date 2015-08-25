@@ -1,6 +1,6 @@
 var React = require("react");
-var ToggleBox = require("./toggle_box");
-var CheckBox = require("./checkbox");
+var ToggleBox = require("../toggle_box");
+var CheckBox = require("../checkbox");
 var keys = require("lodash/object/keys");
 var sortBy = require("lodash/collection/sortBy");
 var mapValues = require("lodash/object/mapValues");
@@ -21,9 +21,6 @@ module.exports = React.createClass({
       { [key] : event.target.checked }
     );
   },
-  handleToggleVisibility: function(event) {
-    this.props.toggleVisibility("city");
-  },
   handleSelectAll: function(event) {
     this.props.updateFilter(
       "city",
@@ -38,9 +35,7 @@ module.exports = React.createClass({
   },
   render: function() {
     return (
-      <ToggleBox title={"Expand Search Area"}
-        open={this.props.visible}
-        handleToggle={this.handleToggleVisibility}>
+      <div>
         {
           this.generateFilters().map((filter) => {
             return <CheckBox
@@ -55,7 +50,7 @@ module.exports = React.createClass({
           className="filters__city_select">Select all cities</a>
         <a onClick={this.handleDeselectAll}
           className="filters__city_select">Deselect all cities</a>
-      </ToggleBox>
+      </div>
     );
   }
 });

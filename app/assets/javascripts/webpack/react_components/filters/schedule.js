@@ -1,6 +1,6 @@
 var React = require("react");
-var ToggleBox = require("./toggle_box");
-var CheckBox = require("./checkbox");
+var ToggleBox = require("../toggle_box");
+var CheckBox = require("../checkbox");
 
 module.exports = React.createClass({
   propTypes: {
@@ -14,14 +14,9 @@ module.exports = React.createClass({
       { [key] : event.target.checked }
     );
   },
-  handleToggleVisibility: function(event) {
-    this.props.toggleVisibility("schedule");
-  },
   render: function() {
     return (
-      <ToggleBox title={"Schedule"}
-        open={this.props.visible}
-        handleToggle={this.handleToggleVisibility}>
+      <div>
         {
           this.props.arrangement.map((key) => {
             return (
@@ -35,7 +30,7 @@ module.exports = React.createClass({
             );
           })
         }
-      </ToggleBox>
+      </div>
     );
   }
 });

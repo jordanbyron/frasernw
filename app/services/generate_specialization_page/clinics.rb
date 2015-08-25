@@ -22,7 +22,7 @@ class GenerateSpecializationPage
             schedule: Schedule::DAY_HASH.keys
           },
           filterFunction: "clinics",
-          filterComponents: ["procedureSpecializations", "referrals", "schedule", "city"]
+          filterComponents: ["procedureSpecializations", "referrals", "schedule", "languages", "city"]
         }.merge(referent_common_config[:top_level])
       }
     end
