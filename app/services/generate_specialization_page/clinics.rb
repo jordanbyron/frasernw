@@ -29,7 +29,10 @@ class GenerateSpecializationPage
           },
           filterArrangements: {
             schedule: Schedule::DAY_HASH.keys,
-            procedureSpecializations: procedure_specialization_arrangement
+            procedureSpecializations: procedure_specialization_arrangement,
+            respondsWithinOptions: lagtime_values_arrangement,
+            languages: Language.order(:name).map(&:id),
+            city: City.all.map(&:id)
           },
           filterFunction: "clinics",
           filterGroups: [
@@ -76,7 +79,8 @@ class GenerateSpecializationPage
           respondsWithin: clinic.lagtime_mask,
           acceptsReferralsViaPhone: clinic.referral_phone,
           patientsCanBook: clinic.patient_can_book?,
-          scheduledDayIds: clinic.day_ids
+          scheduledDayIds: clinic.day_ids,
+          languageIds: clinic.languages.map(&:id)
         }
       end
     end

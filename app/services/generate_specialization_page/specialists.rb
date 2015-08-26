@@ -33,7 +33,10 @@ class GenerateSpecializationPage
           },
           filterArrangements: {
             schedule: [6, 7],
-            procedureSpecializations: procedure_specialization_arrangement
+            procedureSpecializations: procedure_specialization_arrangement,
+            respondsWithinOptions: lagtime_values_arrangement,
+            languages: Language.order(:name).map(&:id),
+            city: City.order(:name).map(&:id)
           },
           filterGroups: [
             "procedureSpecializations",
@@ -79,7 +82,8 @@ class GenerateSpecializationPage
           acceptsReferralsViaPhone: specialist.referral_phone,
           patientsCanBook: specialist.patient_can_book?,
           sex: specialist.sex.downcase,
-          scheduledDayIds: specialist.day_ids
+          scheduledDayIds: specialist.day_ids,
+          languageIds: specialist.languages.map(&:id)
         }
       end
     end

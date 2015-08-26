@@ -10,7 +10,7 @@ module.exports = React.createClass({
       { [key] : event.target.checked }
     );
   },
-  renderProcedureSpecialization: function(procedureSpecialization, level) {
+  renderProcedureSpecialization: function(ps, level) {
     return(
       <div>
         <CheckBox
@@ -23,7 +23,7 @@ module.exports = React.createClass({
         />
         {
           this.renderProcedureSpecializations(
-            this.props.arrangement.procedureSpecializations[id].children,
+            ps.children,
             (level + 1)
           )
         }

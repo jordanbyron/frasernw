@@ -3,19 +3,21 @@ var every = require("lodash/collection/every");
 var pick = require("lodash/object/pick");
 var values = require("lodash/object/values");
 
-var filterByCities = function(record, cityFilters) {
-  return record.cityIds.some((id) => cityFilters[id]);
+var filterByCities = function(record, filters) {
+  return record.cityIds.some((id) => filters.city[id]);
 }
 
-var filterByProcedureSpecializations = function(record, psFilters) {
-  if (every((values(psFilters)), (value) => !value)) {
+var filterByProcedureSpecializations = function(record, filters) {
+  if (every((values(filters.procedureSpecializations)), (value) => !value)) {
     return true;
   } else {
-    return record.procedureSpecializationIds.some((id) => psFilters[id]);
+    return record.procedureSpecializationIds.some((id) => {
+      return filters.procedureSpecializations[id];
+    });
   }
 }
 
-var filterByReferrals = function(record, referralsFilters) {
+var filterByReferrals = function(record, filters) {
   var tests = [
     function(record, filters) {
       return ((filters.acceptsReferralsViaPhone == false) ||
@@ -30,21 +32,28 @@ var filterByReferrals = function(record, referralsFilters) {
     }
   ]
 
-  return every(tests, (test) => test(record, referralsFilters));
+  return every(tests, (test) => test(record, filters));
 }
 
-var filterBySex = function(record, sexFilters) {
-  return (every((values(sexFilters)), (value) => !value)) ||
-    (every((values(sexFilters)), (value) => value)) ||
-    sexFilters[record.sex];
+var filterBySex = function(record, filters) {
+  return (every((values(filters.sex)), (value) => !value)) ||
+    (every((values(filters.sex)), (value) => value)) ||
+    filters.sex[record.sex];
 }
 
-var filterBySchedule = function(record, scheduleFilters) {
-  if (every((values(scheduleFilters)), (value) => !value)) {
+
+var filterByLanguages = function(record, filters) {
+  return (every((values(filters.languages)), (value) => !value)) ||
+    (every((values(filters.languages)), (value) => value)) ||
+    record.languageIds.some((id) => filters.languages[id]);
+}
+
+var filterBySchedule = function(record, filters) {
+  if (every((values(filters.schedule)), (value) => !value)) {
     return true;
   }
 
-  var activatedDays = pick(scheduleFilters, (val) => val)
+  var activatedDays = pick(filters.schedule, (val) => val)
   var activatedDayIds = keys(activatedDays)
 
   return every(activatedDayIds, (id) => {
@@ -53,14 +62,15 @@ var filterBySchedule = function(record, scheduleFilters) {
 }
 
 var referentFilterPredicates = [
-  {key: "city", fn: filterByCities},
-  {key: "procedureSpecializations", fn: filterByProcedureSpecializations},
-  {key: "referrals", fn: filterByReferrals},
-  {key: "schedule", fn: filterBySchedule}
+  filterByCities,
+  filterByProcedureSpecializations,
+  filterByReferrals,
+  filterByLanguages,
+  filterBySchedule
 ]
 
 var specialistFilterPredicates = referentFilterPredicates.concat([
-  {key: "sex", fn: filterBySex}
+  filterBySex
 ]);
 
 var clinicFilterPredicates = referentFilterPredicates;
@@ -68,12 +78,12 @@ var clinicFilterPredicates = referentFilterPredicates;
 module.exports = {
   specialists: function(record, filters) {
     return every(specialistFilterPredicates, (predicate) => {
-      return predicate.fn(record, filters[predicate.key]);
+      return predicate(record, filters);
     });
   },
   clinics: function(record, filters) {
     return every(clinicFilterPredicates, (predicate) => {
-      return predicate.fn(record, filters[predicate.key]);
+      return predicate(record, filters);
     });
   }
 }

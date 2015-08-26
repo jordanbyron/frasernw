@@ -41,7 +41,7 @@ module.exports = React.createClass({
         <Selector
           label={this.props.labels.respondsWithin}
           options={this.respondsWithinOptions()}
-          value={this.props.filtersValues.respondsWithin}
+          value={this.props.filterValues.respondsWithin}
           onChange={this.handleRespondsWithinUpdate}
         />
         <CheckBox

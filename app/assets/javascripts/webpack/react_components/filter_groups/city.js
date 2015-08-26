@@ -15,13 +15,13 @@ module.exports = React.createClass({
   handleSelectAll: function(event) {
     this.props.updateFilter(
       "city",
-      mapValues(this.props.filters, (val) => true)
+      mapValues(this.props.filterValues.city, (val) => true)
     );
   },
   handleDeselectAll: function(event) {
     this.props.updateFilter(
       "city",
-      mapValues(this.props.filters, (val) => false)
+      mapValues(this.props.filterValues.city, (val) => false)
     );
   },
   render: function() {

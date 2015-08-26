@@ -1,6 +1,11 @@
 var React = require("react");
 
 module.exports = React.createClass({
+  // IMPORTANT: we're going to assume that toggle box contents stay the same
+  // if they're closed both before and after props change
+  shouldComponentUpdate: function(nextProps) {
+    return (this.props.open || nextProps.open);
+  },
   toggleIconClass: function() {
     if (this.props.open) {
       return "icon-plus";
