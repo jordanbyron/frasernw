@@ -2,11 +2,15 @@ var React = require("react");
 var buttonIsh = require("../stylesets").buttonIsh;
 
 module.exports = React.createClass({
+  iconStyle: {
+    background: "transparent url(/img/filtering-divider.png) 0% 50% repeat-y",
+    paddingLeft: "10px"
+  },
   toggleIconClass: function() {
     if (this.props.open) {
-      return "icon-plus";
-    } else {
       return "icon-minus";
+    } else {
+      return "icon-plus";
     }
   },
   contents: function() {
@@ -30,7 +34,8 @@ module.exports = React.createClass({
           style={buttonIsh}
         >
           <span>{ this.props.title }</span>
-          <i className={"icon-plus filter_group__toggle"}></i>
+          <i className={this.toggleIconClass() + " filter_group__toggle"}
+            style={this.iconStyle}></i>
         </div>
         { this.contents() }
       </div>
