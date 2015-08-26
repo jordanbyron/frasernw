@@ -59,7 +59,12 @@ class GenerateSpecializationPage
             order: "ASC"
           },
           filterVisibility: {
-            city: false
+            city: false,
+            languages: false,
+            procedureSpecializations: false,
+            referrals: false,
+            sex: false,
+            schedule: false
           }
         }
       }

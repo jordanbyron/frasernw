@@ -56,6 +56,7 @@ module.exports = React.createClass({
     return (
       <div>
         <NavTabs tabs={this.props.panelNav}
+          selectedTab={this.props.selectedPanel}
           onTabClick={this.onTabClick}/>
         { this.content() }
       </div>

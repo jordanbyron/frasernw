@@ -56,6 +56,10 @@ class GenerateSpecializationPage
           },
           filterVisibility: {
             city: false,
+            languages: false,
+            procedureSpecializations: false,
+            referrals: false,
+            schedule: false
           }
         }
       }
