@@ -28,7 +28,7 @@ module.exports = {
         record.waittime,
         labelReferentCities(record, labels)
       ],
-      reactKey: record.id,
+      reactKey: (record.collectionName + record.id),
       record: record
     }
   }

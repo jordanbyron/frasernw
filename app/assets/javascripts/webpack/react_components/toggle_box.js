@@ -1,4 +1,5 @@
 var React = require("react");
+var buttonIsh = require("../stylesets").buttonIsh;
 
 module.exports = React.createClass({
   toggleIconClass: function() {
@@ -25,7 +26,9 @@ module.exports = React.createClass({
     return (
       <div>
         <div className="filter_group__title open"
-          onClick={this.props.handleToggle}>
+          onClick={this.props.handleToggle}
+          style={buttonIsh}
+        >
           <span>{ this.props.title }</span>
           <i className={"icon-plus filter_group__toggle"}></i>
         </div>
