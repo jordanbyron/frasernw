@@ -11,9 +11,13 @@ module.exports = React.createClass({
         <select value={this.props.value}
           onChange={this.onChange}>
           {
-            this.props.options.map(function(option, i) {
+            this.props.options.map(function(option) {
               return (
-                <option key={i} value={option.key}>{option.label}</option>
+                <option key={option.key}
+                  value={option.key}
+                >
+                  {option.label}
+                </option>
               );
             })
           }

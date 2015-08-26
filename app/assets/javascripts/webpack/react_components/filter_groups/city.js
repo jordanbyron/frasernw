@@ -6,15 +6,6 @@ var sortBy = require("lodash/collection/sortBy");
 var mapValues = require("lodash/object/mapValues");
 
 module.exports = React.createClass({
-  generateFilters: function(filterType) {
-    return sortBy(keys(this.props.filters).map((key) => {
-      return {
-        key: key,
-        value: this.props.filters[key],
-        label: this.props.labels[key]
-      };
-    }), (city) => city.label);
-  },
   handleCheckboxUpdate: function(event, key) {
     this.props.updateFilter(
       "city",
@@ -37,12 +28,12 @@ module.exports = React.createClass({
     return (
       <div>
         {
-          this.generateFilters().map((filter) => {
+          this.props.arrangements.city.map((id) => {
             return <CheckBox
-              key={filter.key}
-              changeKey={filter.key}
-              label={filter.label}
-              value={filter.value}
+              key={id}
+              changeKey={id}
+              label={this.props.labels.city[id]}
+              value={this.props.filterValues.city[id]}
               onChange={this.handleCheckboxUpdate} />;
           })
         }

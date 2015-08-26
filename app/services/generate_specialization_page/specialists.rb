@@ -2,9 +2,9 @@ class GenerateSpecializationPage
   class Specialists
     include ServiceObject.exec_with_args(
       :specialization,
-      :referent_common_config
+      :referral_cities
     )
-
+    include Referents
 
     def exec
       {
@@ -15,24 +15,50 @@ class GenerateSpecializationPage
             filterSection: "Filter Specialists"
           },
           filterFunction: "specialists",
-          filterValues: referent_common_config[:filter_values].merge({
+          filterValues: {
+            procedureSpecializations: procedure_specialization_filters,
+            city: city_filters,
+            acceptsReferralsViaPhone: false,
+            respondsWithin: 0,
+            patientsCanBook: false,
+            languages: language_filters,
+            sex: {
+              male: false,
+              female: false
+            },
             schedule: {
               6 => false,
               7 => false
             }
-          }),
-          filterArrangements: {
-            schedule: [6, 7]
           },
-          filterComponents: [
+          filterArrangements: {
+            schedule: [6, 7],
+            procedureSpecializations: procedure_specialization_arrangement
+          },
+          filterGroups: [
             "procedureSpecializations",
             "referrals",
             "sex",
             "schedule",
             "languages",
             "city"
-          ]
-        }.merge(referent_common_config[:top_level])
+          ],
+          tableHeadings: [
+            { label: "Name", key: "NAME" },
+            { label: "Accepting New Referrals?", key: "REFERRALS" },
+            { label: "Average Non-urgent Patient Waittime", key: "WAITTIME" },
+            { label: "City", key: "CITY" }
+          ],
+          rowGenerator: "referents",
+          sortFunction: "referents",
+          sortConfig: {
+            column: "NAME",
+            order: "ASC"
+          },
+          filterVisibility: {
+            city: false
+          }
+        }
       }
     end
 

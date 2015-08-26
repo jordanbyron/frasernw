@@ -1,54 +1,5 @@
 class GenerateSpecializationPage
-  class Referents
-    include ServiceObject.exec_with_args(
-      :specialization,
-      :referral_cities
-    )
-
-    def exec
-      {
-        filter_values: filter_values,
-        top_level: top_level
-      }
-    end
-
-    def filter_values
-      {
-        procedureSpecializations: procedure_specialization_filters,
-        city: city_filters,
-        referrals: {
-          acceptsReferralsViaPhone: false,
-          respondsWithin: 0,
-          patientsCanBook: false
-        },
-        languages: language_filters,
-        sex: {
-          male: false,
-          female: false
-        }
-      }
-    end
-
-    def top_level
-      {
-        tableHeadings: [
-          { label: "Name", key: "NAME" },
-          { label: "Accepting New Referrals?", key: "REFERRALS" },
-          { label: "Average Non-urgent Patient Waittime", key: "WAITTIME" },
-          { label: "City", key: "CITY" }
-        ],
-        rowGenerator: "referents",
-        sortFunction: "referents",
-        sortConfig: {
-          column: "NAME",
-          order: "ASC"
-        },
-        filterVisibility: {
-          city: false,
-        }
-      }
-    end
-
+  module Referents
     def procedure_specialization_filters
       specialization.
         procedure_specializations.
@@ -67,7 +18,34 @@ class GenerateSpecializationPage
     def language_filters
       Language.all.inject({}) do |memo, language|
         memo.merge(language.id => false)
-      end.merge(0 => false)
+      end
+    end
+
+    def procedure_specialization_arrangement
+      transform_procedure_specializations = Proc.new do |hash|
+        hash.map do |key, value|
+          {
+            id: key.id,
+            children: transform_procedure_specializations.call(value)
+          }
+        end.sort_by{ |elem| elem[:label] }
+      end
+
+      transform_procedure_specializations.call(
+        specialization.arranged_procedure_specializations(:focused)
+      )
+    end
+
+    def city_arrangement
+      City.order(:name).map(&:id)
+    end
+
+    def languages_arrangement
+      Language.order(:name).map(&:id)
+    end
+
+    def lagtime_values_arrangement
+      ([ 0 ] + Clinic::LAGTIME_HASH.keys).sort
     end
   end
 end

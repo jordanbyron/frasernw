@@ -3,11 +3,6 @@ var ToggleBox = require("../toggle_box");
 var CheckBox = require("../checkbox");
 
 module.exports = React.createClass({
-  propTypes: {
-    filters: React.PropTypes.object,
-    labels: React.PropTypes.object,
-    arrangement: React.PropTypes.array
-  },
   handleCheckboxUpdate: function(event, key) {
     this.props.updateFilter(
       "schedule",
@@ -18,13 +13,13 @@ module.exports = React.createClass({
     return (
       <div>
         {
-          this.props.arrangement.map((key) => {
+          this.props.arrangements.schedule.map((key) => {
             return (
               <CheckBox
                 key={key}
                 changeKey={key}
-                label={this.props.labels[key]}
-                value={this.props.filters[key]}
+                label={this.props.labels.schedule[key]}
+                value={this.props.filterValues.schedule[key]}
                 onChange={this.handleCheckboxUpdate}
               />
             );

@@ -6,20 +6,20 @@ var ToggleBox = require("./toggle_box");
 var sortBy = require("lodash/collection/sortBy");
 var pick = require("lodash/object/pick");
 var objectAssign = require("object-assign");
-var filterComponents = {
-  city: require("./filters/city"),
-  procedureSpecializations: require("./filters/procedure_specializations"),
-  referrals: require("./filters/referrals"),
-  sex: require("./filters/sex"),
-  schedule: require("./filters/schedule"),
-  languages: require("./filters/languages")
+var filterGroups = {
+  city: require("./filter_groups/city"),
+  procedureSpecializations: require("./filter_groups/procedure_specializations"),
+  referrals: require("./filter_groups/referrals"),
+  sex: require("./filter_groups/sex"),
+  schedule: require("./filter_groups/schedule"),
+  languages: require("./filter_groups/languages")
 }
 var rowFilters = require("../datatable_support/filters");
 var rowGenerators = require("../datatable_support/row_generators");
 var sortFunctions = require("../datatable_support/sort_functions");
 
 module.exports = React.createClass({
-  toggleFilterVisibility: function(key) {
+  toggleFilterGroupVisibility: function(key) {
     return ()=> {
       return this.props.dispatch({
         type: "TOGGLE_FILTER_VISIBILITY",
@@ -87,33 +87,24 @@ module.exports = React.createClass({
       />
     );
   },
-  labelsForFilter: function(filterKey) {
-    return this.props.labels[filterKey] || this.props.globalData.labels[filterKey];
-  },
-  valuesForFilter: function(filterKey) {
-    return pick(
-      this.props.filterValues,
-      filterComponents[filterKey].filterValueDependencies
-    );
-  },
   sidebar: function() {
     return(
       <Filters title={this.props.labels.filterSection}>
         {
-          this.props.filterComponents.map((filterKey, index)=>{
+          this.props.filterGroups.map((filterKey, index)=>{
             return(
               <ToggleBox
-                title={this.props.globalData.labels.filters[filterKey]}
+                title={this.props.globalData.labels.filterGroups[filterKey]}
                 open={this.props.filterVisibility[filterKey]}
-                handleToggle={this.toggleFilterVisibility(filterKey)}
+                handleToggle={this.toggleFilterGroupVisibility(filterKey)}
               >
                 {
                   React.createElement(
-                    filterComponents[filterKey],
+                    filterGroups[filterKey],
                     {
-                      filters: this.props.filterValues[filterKey],
-                      labels: this.labelsForFilter(filterKey),
-                      arrangement: this.props.filterArrangements[filterKey],
+                      filterValues: this.props.filterValues,
+                      labels: this.labels(),
+                      arrangements: this.props.filterArrangements,
                       updateFilter: this.updateFilter,
                       key: index
                     }
@@ -127,7 +118,7 @@ module.exports = React.createClass({
     );
   },
   render: function() {
-    return (
+    return(
       <SidebarLayout
         main={this.table()}
         sidebar={this.sidebar()}

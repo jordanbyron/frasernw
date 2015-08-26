@@ -12,11 +12,11 @@ class GenerateSpecializationPage
       panels: {
         specialists: Specialists.exec(
           specialization: specialization,
-          referent_common_config: referent_common_config
+          referral_cities: referral_cities
         ),
         clinics: Clinics.exec(
           specialization: specialization,
-          referent_common_config: referent_common_config
+          referral_cities: referral_cities
         )
       }
     }
@@ -38,12 +38,9 @@ class GenerateSpecializationPage
     ]
   end
 
-  def referent_common_config
-    @referent_common_config = Referents.exec(
-      specialization: specialization,
-      referral_cities: current_user.divisions_referral_cities(
-        specialization
-      )
+  def referral_cities
+    current_user.divisions_referral_cities(
+      specialization
     )
   end
 

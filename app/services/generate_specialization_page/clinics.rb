@@ -2,8 +2,9 @@ class GenerateSpecializationPage
   class Clinics
     include ServiceObject.exec_with_args(
       :specialization,
-      :referent_common_config
+      :referral_cities
     )
+    include Referents
 
     def exec
       {
@@ -13,17 +14,47 @@ class GenerateSpecializationPage
           labels: {
             filterSection: "Filter Clinics"
           },
-          filterValues: referent_common_config[:filter_values].merge({
-            schedule: Schedule::DAY_HASH.keys.inject({}) do |memo, day|
-              memo.merge(day => false)
-            end
-          }),
+          filterValues: {
+            schedule: schedule_filters,
+            procedureSpecializations: procedure_specialization_filters,
+            city: city_filters,
+            acceptsReferralsViaPhone: false,
+            respondsWithin: 0,
+            patientsCanBook: false,
+            languages: language_filters,
+            sex: {
+              male: false,
+              female: false
+            }
+          },
           filterArrangements: {
-            schedule: Schedule::DAY_HASH.keys
+            schedule: Schedule::DAY_HASH.keys,
+            procedureSpecializations: procedure_specialization_arrangement
           },
           filterFunction: "clinics",
-          filterComponents: ["procedureSpecializations", "referrals", "schedule", "languages", "city"]
-        }.merge(referent_common_config[:top_level])
+          filterGroups: [
+            "procedureSpecializations",
+            "referrals",
+            "schedule",
+            "languages",
+            "city"
+          ],
+          tableHeadings: [
+            { label: "Name", key: "NAME" },
+            { label: "Accepting New Referrals?", key: "REFERRALS" },
+            { label: "Average Non-urgent Patient Waittime", key: "WAITTIME" },
+            { label: "City", key: "CITY" }
+          ],
+          rowGenerator: "referents",
+          sortFunction: "referents",
+          sortConfig: {
+            column: "NAME",
+            order: "ASC"
+          },
+          filterVisibility: {
+            city: false,
+          }
+        }
       }
     end
 
@@ -50,6 +81,10 @@ class GenerateSpecializationPage
       end
     end
 
+    def schedule_filters
+      Schedule::DAY_HASH.keys.inject({}) do |memo, day|
+        memo.merge(day => false)
+      end
+    end
   end
-
 end
