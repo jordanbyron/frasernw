@@ -61,7 +61,7 @@ class GenerateSpecializationPage
           filterVisibility: {
             city: false,
             languages: false,
-            procedureSpecializations: false,
+            procedureSpecializations: true,
             referrals: false,
             sex: false,
             schedule: false
