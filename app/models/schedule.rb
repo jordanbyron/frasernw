@@ -24,6 +24,10 @@ class Schedule < ActiveRecord::Base
 
   include PaperTrailable
 
+  def self.includes_days
+    includes([:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday])
+  end
+
   def scheduled?
     monday.scheduled || tuesday.scheduled || wednesday.scheduled || thursday.scheduled || friday.scheduled || saturday.scheduled || sunday.scheduled
   end
@@ -41,9 +45,21 @@ class Schedule < ActiveRecord::Base
   end
 
   def day_ids
-    DAY_HASH.select do |key, val|
-      self.send(val.downcase).scheduled?
-    end.keys
+    DAY_HASH.values.map{|val| self.send("#{val.downcase}_id")}
+  end
+
+  def days
+    [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
+  end
+
+  def days_with_keys
+    DAY_HASH.inject({}) do |memo, (key, value)|
+      memo.merge({key => self.send("#{value.downcase}")})
+    end
+  end
+
+  def scheduled_day_ids
+    days_with_keys.keep_if{|key, day| day.scheduled }.keys
   end
 
   def days_and_hours

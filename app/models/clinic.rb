@@ -434,9 +434,9 @@ class Clinic < ActiveRecord::Base
     clinic_locations.reject{ |cl| !cl.scheduled? }.map{ |cl| cl.schedule.days }.flatten.uniq
   end
 
-  def day_ids
-    clinic_locations.reject{ |cl| !cl.scheduled? }.map do |cl|
-      cl.schedule.day_ids
+  def scheduled_day_ids
+    clinic_locations.map do |cl|
+      cl.schedule.scheduled_day_ids
     end.flatten.uniq
   end
 

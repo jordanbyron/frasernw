@@ -70,7 +70,8 @@ class GenerateSpecializationPage
     def clinics
       specialization.
         clinics.
-        includes(clinic_locations: {:schedule => [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday]}).
+        includes_location_data.
+        includes(clinic_locations: {:schedule => [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday]}).
         map do |clinic|
         {
           id: clinic.id,
@@ -83,7 +84,7 @@ class GenerateSpecializationPage
           respondsWithin: clinic.lagtime_mask,
           acceptsReferralsViaPhone: clinic.referral_phone,
           patientsCanBook: clinic.patient_can_book?,
-          scheduledDayIds: clinic.day_ids,
+          scheduledDayIds: clinic.scheduled_day_ids,
           languageIds: clinic.languages.map(&:id)
         }
       end

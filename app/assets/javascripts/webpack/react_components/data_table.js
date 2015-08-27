@@ -1,6 +1,7 @@
 var React = require("react");
 var Table = require("./table");
 var SidebarLayout = require("./sidebar_layout");
+var ResultSummary = require("./result_summary");
 var Filters = require("./filters");
 var ToggleBox = require("./toggle_box");
 var sortBy = require("lodash/collection/sortBy");
@@ -79,12 +80,15 @@ module.exports = React.createClass({
   },
   table: function() {
     return (
-      <Table
-        headings={this.props.tableHeadings}
-        bodyRows={this.bodyRows()}
-        sortConfig={this.props.sortConfig}
-        handleHeaderClick={this.handleHeaderClick}
-      />
+      <div>
+        <ResultSummary/>
+        <Table
+          headings={this.props.tableHeadings}
+          bodyRows={this.bodyRows()}
+          sortConfig={this.props.sortConfig}
+          handleHeaderClick={this.handleHeaderClick}
+        />
+      </div>
     );
   },
   sidebar: function() {
