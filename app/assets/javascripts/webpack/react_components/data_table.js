@@ -43,6 +43,14 @@ module.exports = React.createClass({
       });
     };
   },
+  handleClearFilters: function(e) {
+    e.preventDefault();
+
+    return this.props.dispatch({
+      type: "CLEAR_FILTERS",
+      filterFunction: this.props.filterFunction
+    });
+  },
   filterFunction: function() {
     return rowFilters[this.props.filterFunction];
   },
@@ -89,6 +97,7 @@ module.exports = React.createClass({
           labels={this.labels()}
           collectionName={this.props.collectionName}
           filterFunction={this.props.filterFunction}
+          handleClearFilters={this.handleClearFilters}
         />
         <Table
           headings={this.props.tableHeadings}

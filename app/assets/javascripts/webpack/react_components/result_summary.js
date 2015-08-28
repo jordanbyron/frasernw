@@ -15,7 +15,8 @@ module.exports = React.createClass({
     if (text.length > 0) {
       return(
         <div className={this.className()} style={{display: "block"}}>
-          { filterSummary(this.props) }
+          <span>{ filterSummary(this.props) + ".  " }</span>
+          <a onClick={this.props.handleClearFilters}>Clear Filters</a>
         </div>
       );
     } else {
