@@ -16,7 +16,7 @@ class GenerateSpecializationPage
           },
           filterFunction: "specialists",
           filterValues: {
-            procedureSpecializations: procedure_specialization_filters,
+            procedures: procedure_filters,
             city: city_filters,
             acceptsReferralsViaPhone: false,
             respondsWithin: 0,
@@ -33,13 +33,13 @@ class GenerateSpecializationPage
           },
           filterArrangements: {
             schedule: [6, 7],
-            procedureSpecializations: procedure_specialization_arrangement,
+            procedures: procedure_arrangement,
             respondsWithinOptions: lagtime_values_arrangement,
             languages: Language.order(:name).map(&:id),
             city: City.order(:name).map(&:id)
           },
           filterGroups: [
-            "procedureSpecializations",
+            "procedures",
             "referrals",
             "sex",
             "schedule",
@@ -61,7 +61,7 @@ class GenerateSpecializationPage
           filterVisibility: {
             city: false,
             languages: false,
-            procedureSpecializations: true,
+            procedures: true,
             referrals: false,
             sex: false,
             schedule: false
@@ -83,7 +83,7 @@ class GenerateSpecializationPage
           waittime: specialist.waittime,
           cityIds: specialist.cities.map(&:id),
           collectionName: "specialists",
-          procedureSpecializationIds: specialist.procedure_specializations.map(&:id),
+          procedureIds: specialist.procedures.map(&:id),
           respondsWithin: specialist.lagtime_mask,
           acceptsReferralsViaPhone: specialist.referral_phone,
           patientsCanBook: specialist.patient_can_book?,

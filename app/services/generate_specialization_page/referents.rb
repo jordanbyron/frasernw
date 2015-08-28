@@ -1,11 +1,11 @@
 class GenerateSpecializationPage
   module Referents
-    def procedure_specialization_filters
+    def procedure_filters
       specialization.
         procedure_specializations.
         focused.
         inject({}) do |memo, ps|
-          memo.merge(ps.id => false)
+          memo.merge(ps.procedure.id => false)
         end
     end
 
@@ -21,11 +21,11 @@ class GenerateSpecializationPage
       end
     end
 
-    def procedure_specialization_arrangement
+    def procedure_arrangement
       transform_procedure_specializations = Proc.new do |hash|
         hash.map do |key, value|
           {
-            id: key.id,
+            id: key.procedure.id,
             children: transform_procedure_specializations.call(value)
           }
         end.sort_by{ |elem| elem[:label] }

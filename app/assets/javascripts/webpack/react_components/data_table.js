@@ -9,7 +9,7 @@ var pick = require("lodash/object/pick");
 var objectAssign = require("object-assign");
 var filterGroups = {
   city: require("./filter_groups/city"),
-  procedureSpecializations: require("./filter_groups/procedure_specializations"),
+  procedures: require("./filter_groups/procedures"),
   referrals: require("./filter_groups/referrals"),
   sex: require("./filter_groups/sex"),
   schedule: require("./filter_groups/schedule"),

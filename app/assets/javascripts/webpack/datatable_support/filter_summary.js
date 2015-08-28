@@ -3,13 +3,13 @@ var keysAtTruthyVals = require("../utils").keysAtTruthyVals;
 
 var referentTrailingFilterPredicates = [
   function(props) {
-    var activatedProcedureSpecializations = keysAtTruthyVals(
-      props.filterValues.procedureSpecializations
+    var activatedProcedures = keysAtTruthyVals(
+      props.filterValues.procedures
     )
 
-    if (activatedProcedureSpecializations.length > 0){
-      return "accept referrals in " + activatedProcedureSpecializations.map(
-        (ps) => props.labels.procedureSpecializations[ps]
+    if (activatedProcedures.length > 0){
+      return "accept referrals in " + activatedProcedures.map(
+        (ps) => props.labels.procedures[ps]
       ).join(" and ")
     } else {
       return ""

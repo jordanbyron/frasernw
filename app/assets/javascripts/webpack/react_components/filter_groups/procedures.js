@@ -6,36 +6,36 @@ var transform = require("lodash/object/transform");
 module.exports = React.createClass({
   handleCheckboxUpdate: function(event, key) {
     this.props.updateFilter(
-      "procedureSpecializations",
+      "procedures",
       { [key] : event.target.checked }
     );
   },
-  renderProcedureSpecialization: function(ps, level) {
+  renderProcedure: function(procedure, level) {
     return(
       <div>
         <CheckBox
-          key={ps.id}
-          changeKey={ps.id}
-          label={this.props.labels.procedureSpecializations[ps.id]}
-          value={this.props.filterValues.procedureSpecializations[ps.id]}
+          key={procedure.id}
+          changeKey={procedure.id}
+          label={this.props.labels.procedures[procedure.id]}
+          value={this.props.filterValues.procedures[procedure.id]}
           onChange={this.handleCheckboxUpdate}
           style={{marginLeft: ((level * 20).toString() + "px")}}
         />
         {
-          this.renderProcedureSpecializations(
-            ps.children,
+          this.renderProcedures(
+            procedure.children,
             (level + 1)
           )
         }
       </div>
     );
   },
-  renderProcedureSpecializations: function(procedureSpecializations, level) {
+  renderProcedures: function(procedures, level) {
     return(
       <div>
         {
-          procedureSpecializations.map((ps) => {
-            return this.renderProcedureSpecialization(ps, level);
+          procedures.map((procedure) => {
+            return this.renderProcedure(procedure, level);
           })
         }
       </div>
@@ -45,8 +45,8 @@ module.exports = React.createClass({
     return (
       <div>
         {
-          this.renderProcedureSpecializations(
-            this.props.arrangements.procedureSpecializations,
+          this.renderProcedures(
+            this.props.arrangements.procedures,
             0
           )
         }

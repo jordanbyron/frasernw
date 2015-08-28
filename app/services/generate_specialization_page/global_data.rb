@@ -8,7 +8,7 @@ class GenerateSpecializationPage
       {
         labels: {
           filterGroups: {
-            procedureSpecializations: "Areas of practice",
+            procedures: "Areas of practice",
             city: "Expand Search Area",
             languages: "Languages",
             referrals: "Referrals",
@@ -16,7 +16,7 @@ class GenerateSpecializationPage
             sex: "Sex"
           },
           city: city_labels,
-          procedureSpecializations: procedure_specialization_labels,
+          procedures: procedure_labels,
           acceptsReferralsViaPhone: "Accepts referrals Via phone",
           patientsCanBook: "Patients can call to book after referral",
           respondsWithin: "Responded to within",
@@ -43,9 +43,9 @@ class GenerateSpecializationPage
       end
     end
 
-    def procedure_specialization_labels
+    def procedure_labels
       specialization.procedure_specializations.includes(:procedure).all.inject({}) do |memo, ps|
-        memo.merge(ps.id => ps.procedure.try(:name))
+        memo.merge(ps.procedure.id => ps.procedure.try(:name))
       end
     end
 

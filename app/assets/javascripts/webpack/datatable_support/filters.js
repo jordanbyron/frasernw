@@ -7,12 +7,12 @@ var filterByCities = function(record, filters) {
   return record.cityIds.some((id) => filters.city[id]);
 }
 
-var filterByProcedureSpecializations = function(record, filters) {
-  if (every((values(filters.procedureSpecializations)), (value) => !value)) {
+var filterByProcedures = function(record, filters) {
+  if (every((values(filters.procedures)), (value) => !value)) {
     return true;
   } else {
-    return record.procedureSpecializationIds.some((id) => {
-      return filters.procedureSpecializations[id];
+    return record.procedureIds.some((id) => {
+      return filters.procedures[id];
     });
   }
 }
@@ -63,7 +63,7 @@ var filterBySchedule = function(record, filters) {
 
 var referentFilterPredicates = [
   filterByCities,
-  filterByProcedureSpecializations,
+  filterByProcedures,
   filterByReferrals,
   filterByLanguages,
   filterBySchedule
