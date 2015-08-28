@@ -72,12 +72,12 @@ var referentTrailingFilterPredicates = [
   }
 ]
 
-var trailingFilterPredicates = {
+var trailingFilterPredicateFunctions = {
   clinics: referentTrailingFilterPredicates,
   specialists: referentTrailingFilterPredicates
 }
 
-var leadingFilterPredicates = {
+var leadingFilterPredicateFunctions = {
   clinics: [],
   specialists: [
     function(props) {
@@ -92,49 +92,63 @@ var leadingFilterPredicates = {
   ]
 }
 
-var components = [
-  function(props) {
-    if (props.anyResults){
-      return "Showing all";
-    } else {
-      return "There are no";
-    }
-  },
-  function(props) {
-    return leadingFilterPredicates[props.filterFunction]
-      .map((predicate) => predicate(props))
-      .join(", ");
-  },
-  function(props) {
-    var fromRecords = uniq(
-      props.bodyRows.map((row) => row.record.collectionName)
-    ).join(" and ");
-
-    if (fromRecords.length > 0) {
-      return fromRecords;
-    } else {
-      return props.collectionName;
-    }
-  },
-  function(props) {
-    if (props.filterFunction === "clinics") {
-      return "that";
-    } else if (props.filterFunction === "specialists") {
-      return "who";
-    } else {
-      return "who";
-    }
-  },
-  function(props) {
-    return trailingFilterPredicates[props.filterFunction]
-      .map((segment) => segment(props))
-      .filter((segment) => segment.length > 0)
-      .join(" and ")
+var verb = function(props) {
+  if (props.anyResults){
+    return "Showing all";
+  } else {
+    return "There are no";
   }
-]
+}
+
+var getLeadingFilterPredicates = function(props) {
+  return leadingFilterPredicateFunctions[props.filterFunction]
+    .map((predicate) => predicate(props))
+    .join(", ");
+}
+
+var collection = function(props) {
+  var fromRecords = uniq(
+    props.bodyRows.map((row) => row.record.collectionName)
+  ).join(" and ");
+
+  if (fromRecords.length > 0) {
+    return fromRecords;
+  } else {
+    return props.collectionName;
+  }
+}
+
+var pronoun = function(props) {
+  if (props.filterFunction === "clinics") {
+    return "that";
+  } else if (props.filterFunction === "specialists") {
+    return "who";
+  } else {
+    return "who";
+  }
+}
+
+var getTrailingFilterPredicates = function(props) {
+  return trailingFilterPredicateFunctions[props.filterFunction]
+    .map((segment) => segment(props))
+    .filter((segment) => segment.length > 0)
+    .join(" and ");
+}
 
 module.exports = function(props) {
-  return components.map((component) => {
-    return component(props);
-  }).join(" ");
+  let leadingFilterPredicates = getLeadingFilterPredicates(props);
+  let trailingFilterPredicates = getTrailingFilterPredicates(props);
+
+  if (leadingFilterPredicates.length == 0 &&
+    trailingFilterPredicates.length == 0) {
+    return "";
+  } else {
+    return ([
+      verb(props),
+      leadingFilterPredicates,
+      collection(props),
+      pronoun(props),
+      trailingFilterPredicates
+    ]).join(" ");
+  }
 }
