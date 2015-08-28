@@ -142,6 +142,12 @@ module.exports = function(props) {
   if (leadingFilterPredicates.length == 0 &&
     trailingFilterPredicates.length == 0) {
     return "";
+  } else if (trailingFilterPredicates.length == 0) {
+    return ([
+      verb(props),
+      leadingFilterPredicates,
+      collection(props)
+    ]).join(" ");
   } else {
     return ([
       verb(props),
