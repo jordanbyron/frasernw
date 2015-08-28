@@ -60,7 +60,8 @@ class GenerateSpecializationPage
             procedureSpecializations: false,
             referrals: false,
             schedule: false
-          }
+          },
+          collectionName: "clinics"
         }
       }
     end

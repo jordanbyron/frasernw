@@ -22,7 +22,8 @@ class GenerateSpecializationPage
           respondsWithin: "Responded to within",
           respondsWithinOptions: responds_within_options,
           schedule: Schedule::DAY_HASH,
-          languages: language_labels
+          languages: language_labels,
+          respondsWithinSummaryLabels: responds_within_summary_labels
         }
       }
     end
@@ -51,5 +52,39 @@ class GenerateSpecializationPage
     def responds_within_options
       Clinic::LAGTIME_HASH.merge(0 => "Any timeframe")
     end
+
+    def responds_within_summary_labels
+      Clinic::LAGTIME_HASH.inject({}) do |memo, (key, value)|
+        label = begin
+          if key == 1
+            "by phone when office calls for appointment"
+          elsif key == 2
+            "within one week"
+          else
+            "within #{value}"
+          end
+        end
+
+        memo.merge({key => label})
+      end
+    end
+
+
+      LAGTIME_HASH = {
+        1 => "Book by phone when office calls for referral",
+        2 => "Within one week",
+        3 => "1-2 weeks",
+        4 => "2-4 weeks",
+        5 => "1-2 months",
+        6 => "2-4 months",
+        7 => "4-6 months",
+        8 => "6-9 months",
+        9 => "9-12 months",
+        10 => "12-18 months",
+        11 => "18-24 months",
+        12 => "2-2.5 years",
+        13 => "2.5-3 years",
+        14 => ">3 years"
+      }
   end
 end

@@ -1,3 +1,6 @@
+var pick = require("lodash/object/pick");
+var keys = require("lodash/object/keys");
+
 module.exports = {
   setAllOwnValues: function(obj, value) {
     for (var key in obj) {
@@ -7,5 +10,8 @@ module.exports = {
     }
 
     return obj;
+  },
+  keysAtTruthyVals: function(obj) {
+    return keys(pick(obj, (val) => val));
   }
 }

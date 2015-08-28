@@ -79,12 +79,20 @@ module.exports = React.createClass({
     }
   },
   table: function() {
+    var bodyRows = this.bodyRows();
+
     return (
       <div>
-        <ResultSummary/>
+        <ResultSummary anyResults={(bodyRows.length > 0)}
+          bodyRows={bodyRows}
+          filterValues={this.props.filterValues}
+          labels={this.labels()}
+          collectionName={this.props.collectionName}
+          filterFunction={this.props.filterFunction}
+        />
         <Table
           headings={this.props.tableHeadings}
-          bodyRows={this.bodyRows()}
+          bodyRows={bodyRows}
           sortConfig={this.props.sortConfig}
           handleHeaderClick={this.handleHeaderClick}
         />

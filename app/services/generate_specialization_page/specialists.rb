@@ -65,7 +65,8 @@ class GenerateSpecializationPage
             referrals: false,
             sex: false,
             schedule: false
-          }
+          },
+          collectionName: "specialists"
         }
       }
     end
