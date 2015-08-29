@@ -151,7 +151,7 @@ module.exports = React.createClass({
                 title={this.props.globalData.labels.filterGroups[filterKey]}
                 open={this.props.filterVisibility[filterKey]}
                 handleToggle={this.toggleFilterGroupVisibility(filterKey)}
-                key={index}
+                key={index + this.props.collectionName}
               >
                 {
                   React.createElement(
