@@ -23,12 +23,19 @@ class GenerateSpecializationPage
           respondsWithinOptions: responds_within_options,
           schedule: Schedule::DAY_HASH,
           languages: language_labels,
-          respondsWithinSummaryLabels: responds_within_summary_labels
+          respondsWithinSummaryLabels: responds_within_summary_labels,
+          specialties: specialization_labels
         }
       }
     end
 
     private
+
+    def specialization_labels
+      Specialization.all.inject({}) do |memo, specialization|
+        memo.merge(specialization.id => specialization.name)
+      end
+    end
 
     def language_labels
       Language.all.inject({}) do |memo, language|

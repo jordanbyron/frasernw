@@ -130,6 +130,14 @@ class Specialist < ActiveRecord::Base
     )
   end
 
+  def self.includes_specialization_page
+    includes([
+      {:specialist_offices => {:office => {:location => :address}}}, :procedures,
+      :specializations,
+      :languages
+    ])
+  end
+
   # # # # CACHING METHODS
 
   def self.cache_key
@@ -240,6 +248,19 @@ class Specialist < ActiveRecord::Base
     hoc_clinic_in_hospital = joins('INNER JOIN "attendances" ON "specialists"."id" = "attendances"."specialist_id" INNER JOIN "clinic_locations" AS "clinic_in_clinic_location" ON "attendances".clinic_location_id = "clinic_in_clinic_location".id INNER JOIN "locations" as "clinic_location" ON "clinic_location".locatable_id = "clinic_in_clinic_location".id INNER JOIN "hospitals" ON "clinic_location".hospital_in_id = "hospitals".id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id INNER JOIN "capacities" ON "capacities".specialist_id = "specialists".id INNER JOIN "procedure_specializations" AS "ps1" on "ps1".id = "capacities".procedure_specialization_id INNER JOIN "procedure_specializations" AS "ps2" ON "ps2".procedure_id = "ps1".procedure_id').where('"clinic_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "specialists".categorization_mask in (?) AND "ps2".specialization_id = (?)', "ClinicLocation", "Hospital", city_ids, [2, 3, 4], specialization.id)
 
     (responded_direct + responded_in_hospital + responded_in_clinic + responded_in_clinic_in_hospital + hoc_hospital + hoc_clinic + hoc_clinic_in_hospital).uniq
+  end
+
+  # performs procedures that are attached to the other specialization without
+  # performing them through that specialization
+  def self.performs_procedures_in(specialization)
+    joins(<<-SQL).where('"ps2".specialization_id = (?)', specialization.id)
+      INNER JOIN "capacities"
+      ON "capacities".specialist_id = "specialists".id
+      INNER JOIN "procedure_specializations" AS "ps1"
+      ON "ps1".id = "capacities".procedure_specialization_id
+      INNER JOIN "procedure_specializations" AS "ps2"
+      ON "ps2".procedure_id = "ps1".procedure_id
+    SQL
   end
 
   # # # Reporting Methods

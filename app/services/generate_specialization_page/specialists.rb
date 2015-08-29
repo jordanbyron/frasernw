@@ -10,7 +10,7 @@ class GenerateSpecializationPage
       {
         contentClass: "DataTable",
         props: {
-          records: specialists,
+          records: hashified_specialists,
           labels: {
             filterSection: "Filter Specialists"
           },
@@ -29,7 +29,8 @@ class GenerateSpecializationPage
             schedule: {
               6 => false,
               7 => false
-            }
+            },
+            specializationId: specialization.id
           },
           filterArrangements: {
             schedule: [6, 7],
@@ -48,6 +49,7 @@ class GenerateSpecializationPage
           ],
           tableHeadings: [
             { label: "Name", key: "NAME" },
+            { label: "Specialties", key: "SPECIALTIES" },
             { label: "Accepting New Referrals?", key: "REFERRALS" },
             { label: "Average Non-urgent Patient Waittime", key: "WAITTIME" },
             { label: "City", key: "CITY" }
@@ -71,27 +73,45 @@ class GenerateSpecializationPage
       }
     end
 
+    def hashified_specialists
+      Rails.cache.fetch("serialized_specialists") do
+        specialization.specialists.map do |specialist|
+          {
+            id: specialist.id,
+            name: specialist.name,
+            statusIconClasses: specialist.status_class,
+            waittime: specialist.waittime,
+            cityIds: specialist.cities.map(&:id),
+            collectionName: "specialists",
+            procedureIds: specialist.procedures.map(&:id),
+            respondsWithin: specialist.lagtime_mask,
+            acceptsReferralsViaPhone: specialist.referral_phone,
+            patientsCanBook: specialist.patient_can_book?,
+            sex: specialist.sex.downcase,
+            scheduledDayIds: specialist.day_ids,
+            languageIds: specialist.languages.map(&:id),
+            specializationIds: specialist.specializations.map(&:id)
+          }
+        end
+      end
+    end
+
     private
 
-
     def specialists
-      specialization.specialists.map do |specialist|
-        {
-          id: specialist.id,
-          name: specialist.name,
-          statusIconClasses: specialist.status_class,
-          waittime: specialist.waittime,
-          cityIds: specialist.cities.map(&:id),
-          collectionName: "specialists",
-          procedureIds: specialist.procedures.map(&:id),
-          respondsWithin: specialist.lagtime_mask,
-          acceptsReferralsViaPhone: specialist.referral_phone,
-          patientsCanBook: specialist.patient_can_book?,
-          sex: specialist.sex.downcase,
-          scheduledDayIds: specialist.day_ids,
-          languageIds: specialist.languages.map(&:id)
-        }
-      end
+      all
+    end
+
+    def all
+      Specialist.includes_specialization_page.all
+    end
+
+    def in_this_specialization
+      specialization.specialists.includes_specialization_page
+    end
+
+    def in_other_specializations
+      Specialist.includes_specialization_page.performs_procedures_in(specialization)
     end
 
   end

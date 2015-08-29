@@ -9,6 +9,9 @@ var customClearFunctions = {
   },
   city: function(state) {
     return state.city;
+  },
+  specializationId: function(state) {
+    return state.specializationId;
   }
 }
 

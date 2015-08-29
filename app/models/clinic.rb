@@ -22,7 +22,7 @@ class Clinic < ActiveRecord::Base
 
   #clinics speak many languages
   has_many   :clinic_speaks, :dependent => :destroy
-  has_many   :languages, :through => :clinic_speaks, :order => "name ASC"
+  has_many   :languages, :through => :clinic_speaks
 
   #clinics have multiple referral forms
   has_many   :referral_forms, :as => :referrable
@@ -69,6 +69,10 @@ class Clinic < ActiveRecord::Base
         ]
       }
     )
+  end
+
+  def self.includes_location_schedules
+    includes(clinic_locations: {:schedule => [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday]})
   end
 
   def self.includes_locations
@@ -144,6 +148,20 @@ class Clinic < ActiveRecord::Base
     direct = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id INNER JOIN "focuses" ON "focuses".clinic_id = "clinics".id INNER JOIN "procedure_specializations" AS "ps1" on "ps1".id = "focuses".procedure_specialization_id INNER JOIN "procedure_specializations" AS "ps2" ON "ps2".procedure_id = "ps1".procedure_id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL AND "ps2".specialization_id = (?)', "ClinicLocation", city_ids, specialization.id)
     in_hospital = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id INNER JOIN "focuses" ON "focuses".clinic_id = "clinics".id INNER JOIN "procedure_specializations" AS "ps1" on "ps1".id = "focuses".procedure_specialization_id INNER JOIN "procedure_specializations" AS "ps2" ON "ps2".procedure_id = "ps1".procedure_id').where('"direct_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "ps2".specialization_id = (?)', "ClinicLocation", "Hospital", city_ids, specialization.id)
     (direct + in_hospital).uniq
+  end
+
+
+  # performs procedures that are attached to the other specialization without
+  # performing them through that specialization
+  def self.performs_procedures_in(specialization)
+    joins(<<-SQL).where('"ps2".specialization_id = (?)', specialization.id)
+      INNER JOIN "focuses"
+      ON "focuses".specialist_id = "specialists".id
+      INNER JOIN "procedure_specializations" AS "ps1"
+      ON "ps1".id = "focuses".procedure_specialization_id
+      INNER JOIN "procedure_specializations" AS "ps2"
+      ON "ps2".procedure_id = "ps1".procedure_id
+    SQL
   end
 
   def self.in_divisions(divisions)

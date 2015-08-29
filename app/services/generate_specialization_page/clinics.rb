@@ -25,7 +25,8 @@ class GenerateSpecializationPage
             sex: {
               male: false,
               female: false
-            }
+            },
+            specializationId: specialization.id
           },
           filterArrangements: {
             schedule: Schedule::DAY_HASH.keys,
@@ -44,6 +45,7 @@ class GenerateSpecializationPage
           ],
           tableHeadings: [
             { label: "Name", key: "NAME" },
+            { label: "Specialties", key: "SPECIALTIES" },
             { label: "Accepting New Referrals?", key: "REFERRALS" },
             { label: "Average Non-urgent Patient Waittime", key: "WAITTIME" },
             { label: "City", key: "CITY" }
@@ -69,26 +71,48 @@ class GenerateSpecializationPage
     private
 
     def clinics
+      Rails.cache.fetch("serialized_clinics") do
+        all.map do |clinic|
+          {
+            id: clinic.id,
+            name: clinic.name,
+            statusIconClasses: clinic.status_class,
+            waittime: clinic.waittime,
+            cityIds: clinic.cities.map(&:id),
+            collectionName: "clinics",
+            procedureIds: clinic.procedures.map(&:id),
+            respondsWithin: clinic.lagtime_mask,
+            acceptsReferralsViaPhone: clinic.referral_phone,
+            patientsCanBook: clinic.patient_can_book?,
+            scheduledDayIds: clinic.scheduled_day_ids,
+            languageIds: clinic.languages.map(&:id),
+            specializationIds: clinic.specializations.map(&:id)
+          }
+        end
+      end
+    end
+
+    def all
+      Clinic.
+        includes([:procedures, :specializations, :languages]).
+        includes_location_data.
+        includes_location_schedules.
+        all
+    end
+
+    def in_this_specialization
       specialization.
         clinics.
+        includes([:procedures, :specializations, :languages]).
         includes_location_data.
-        includes(clinic_locations: {:schedule => [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday]}).
-        map do |clinic|
-        {
-          id: clinic.id,
-          name: clinic.name,
-          statusIconClasses: clinic.status_class,
-          waittime: clinic.waittime,
-          cityIds: clinic.cities.map(&:id),
-          collectionName: "clinics",
-          procedureIds: clinic.procedures.map(&:id),
-          respondsWithin: clinic.lagtime_mask,
-          acceptsReferralsViaPhone: clinic.referral_phone,
-          patientsCanBook: clinic.patient_can_book?,
-          scheduledDayIds: clinic.scheduled_day_ids,
-          languageIds: clinic.languages.map(&:id)
-        }
-      end
+        includes_location_schedules
+    end
+
+    def in_other_specializations
+      Clinic.
+        performs_procedures_in(specialization).
+        includes_location_data.
+        includes_location_schedules
     end
 
     def schedule_filters

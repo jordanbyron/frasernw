@@ -19,11 +19,19 @@ var labelReferentCities = function(record, labels) {
     .join(" and ");
 }
 
+var labelReferentSpecialties = function(record, labels) {
+  return record
+    .specializationIds
+    .map((id) => labels.specialties[id])
+    .join(" and ");
+}
+
 module.exports = {
   referents: function(record, labels) {
     return {
       cells: [
         labelReferentName(record),
+        labelReferentSpecialties(record, labels),
         labelReferentStatus(record),
         record.waittime,
         labelReferentCities(record, labels)
