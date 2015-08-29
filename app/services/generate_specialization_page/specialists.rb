@@ -30,7 +30,8 @@ class GenerateSpecializationPage
               6 => false,
               7 => false
             },
-            specializationId: specialization.id
+            specializationId: specialization.id,
+            specialization: false
           },
           filterArrangements: {
             schedule: [6, 7],
@@ -68,6 +69,7 @@ class GenerateSpecializationPage
             sex: false,
             schedule: false
           },
+          specializationFilter: true,
           collectionName: "specialists"
         }
       }

@@ -63,23 +63,12 @@ var filterBySchedule = function(record, filters) {
   });
 }
 
-var filterBySpecialization = function(record, filters) {
-  if (keysAtTruthyVals(filters.procedures).length === 1) {
-    return true;
-  } else {
-    return find(record.specializationIds, (id) => {
-      return (filters.specializationId === id);
-    });
-  }
-}
-
 var referentFilterPredicates = [
   filterByCities,
   filterByProcedures,
   filterByReferrals,
   filterByLanguages,
-  filterBySchedule,
-  filterBySpecialization
+  filterBySchedule
 ]
 
 var specialistFilterPredicates = referentFilterPredicates.concat([

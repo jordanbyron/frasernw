@@ -26,7 +26,8 @@ class GenerateSpecializationPage
               male: false,
               female: false
             },
-            specializationId: specialization.id
+            specializationId: specialization.id,
+            specialization: false
           },
           filterArrangements: {
             schedule: Schedule::DAY_HASH.keys,
@@ -56,6 +57,7 @@ class GenerateSpecializationPage
             column: "NAME",
             order: "ASC"
           },
+          specializationFilter: true,
           filterVisibility: {
             city: false,
             languages: false,

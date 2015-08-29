@@ -4,6 +4,7 @@ var SidebarLayout = require("./sidebar_layout");
 var ResultSummary = require("./result_summary");
 var Filters = require("./filters");
 var ToggleBox = require("./toggle_box");
+var SpecializationFilter = require("./specialization_filter");
 var sortBy = require("lodash/collection/sortBy");
 var pick = require("lodash/object/pick");
 var objectAssign = require("object-assign");
@@ -18,6 +19,8 @@ var filterGroups = {
 var rowFilters = require("../datatable_support/filters");
 var rowGenerators = require("../datatable_support/row_generators");
 var sortFunctions = require("../datatable_support/sort_functions");
+var keysAtTruthyVals = require("../utils").keysAtTruthyVals;
+var find = require("lodash/collection/find");
 
 module.exports = React.createClass({
   toggleFilterGroupVisibility: function(key) {
@@ -67,13 +70,10 @@ module.exports = React.createClass({
       this.props.globalData.labels
     );
   },
-  bodyRows: function() {
-    var unsorted = this.props.records
-      .filter((row) => {
-        return this.filterFunction()(row, this.props.filterValues);
-      }).map((row) => {
-        return this.rowGenerator()(row, this.labels())
-      });
+  generateBodyRows: function(filtered) {
+    var unsorted = filtered.map((row) => {
+      return this.rowGenerator()(row, this.labels())
+    });
 
     var sorted = sortBy(
       unsorted,
@@ -86,8 +86,35 @@ module.exports = React.createClass({
       return sorted;
     }
   },
+  shouldFilterBySpecialization: function() {
+    return this.props.specializationFilter &&
+      ( this.props.filterValues.specialization ||
+      (keysAtTruthyVals(this.props.filterValues.procedures).length != 1));
+  },
   table: function() {
-    var bodyRows = this.bodyRows();
+    var opaqueFiltered = this.props.records.filter((row) => {
+      return this.filterFunction()(row, this.props.filterValues);
+    });
+
+    // transparent filter informs the user how many records have been filtered
+    // out
+    var transparentFiltered = opaqueFiltered.filter((record) => {
+      return find(record.specializationIds, (id) => {
+        return (this.props.filterValues.specializationId === id);
+      });
+    });
+    var remainder = opaqueFiltered.length - transparentFiltered.length;
+
+    if (this.shouldFilterBySpecialization()) {
+      var bodyRows = this.generateBodyRows(transparentFiltered);
+    } else {
+      var bodyRows = this.generateBodyRows(opaqueFiltered);
+    }
+
+    var shouldShowSpecializationFilter = this.props.specializationFilter &&
+      (keysAtTruthyVals(this.props.filterValues.procedures).length === 1) &&
+      remainder > 0
+
 
     return (
       <div>
@@ -98,6 +125,12 @@ module.exports = React.createClass({
           collectionName={this.props.collectionName}
           filterFunction={this.props.filterFunction}
           handleClearFilters={this.handleClearFilters}
+        />
+        <SpecializationFilter
+          show={shouldShowSpecializationFilter}
+          remainder={remainder}
+          updateFilter={this.updateFilter}
+          showingOtherSpecialties={!this.props.filterValues.specialization}
         />
         <Table
           headings={this.props.tableHeadings}
