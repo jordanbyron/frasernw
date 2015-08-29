@@ -18,6 +18,7 @@ Local-only = Changes not reflected in Source Code
 - If a 1000 class error occurs, Cloudflare now serves a notice to go directly
 to our heroku address
 - System notification sent when recache is successful
+- History button in clinic/index
 
 ### Changed
 - Renamed "Areas of Practice" to "Accepts Referrals For" where appropriate.
@@ -33,7 +34,12 @@ to our heroku address
 - optimized queries made for the specialists form, clinics form, navbar,
 specialists index, and clinic index, significantly improving page load
 speeds
+  - specialists/index: ~ 1000 ms improvement
+  - clinics/index: ~ 1000 ms improvement
+  - specialists/form: ~ 22000 ms improvement
+  - clinics/form: ~ 1100 ms improvement
 - migrate joint injection hierarchy to nest <body_part> under "Joint Injection"
+- borrowable resources now sorted automatically by division
 
 ### Fixed
 - CR:  Clinic location/specialist office rearranging issue now fixed.
@@ -53,6 +59,9 @@ specialty
 - Removing all areas of practice from specialists and clinics
 - System notification recipients standardized and configurable via
 environment variables
+- CR: 'Physicians who see patients' heading now only appears when there
+are actually physicians attending
+- timeouts on borrowable resources page
 
 ### Removed:
 - Removed old reporting interface graphs from the codebase that were already disabled by earlier developers.

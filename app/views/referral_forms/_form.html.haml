@@ -47,7 +47,7 @@
           input_html: {class: "referral_form_editor__input"},
           placeholder: "Description"
         .referral_form_editor__history_nodes
-          - if can? :index, :history
+          - if can? :view_history, fields.object
             = render 'history/nodes',
               item: fields.object,
               nodes: fields.object.history

@@ -1,4 +1,4 @@
-- title "#{@clinic.name}"
+- set_page_specific_title "#{@clinic.name}"
 
 - specialization = (current_user_is_admin? ? @clinic.specializations : @clinic.specializations.not_in_progress_for_divisions(current_user_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
 
@@ -19,7 +19,7 @@
 
 - show_details = false
 - show_areas_of_practice = false
-- clinic_locations = @clinic.clinic_locations.order(:created_at).reject{ |cl| cl.empty? }
+- clinic_locations = @clinic.clinic_locations.sort_by{|cl| cl.created_at }.reject{ |cl| cl.empty? }
 
 .content-wrapper
 
@@ -226,27 +226,24 @@
                 %strong Healthcare providers
                 ="who see patients at the clinic: #{@clinic.healthcare_providers.map{ |x| x.name }.join(", ")}"
 
-            - clinic_attendances = @clinic.attendances.reject{ |attendance| attendance.clinic_location.blank? || attendance.clinic_location.empty? }
-
-            - if clinic_attendances.length > 0
+            - if @clinic.visible_attendances.any?
 
               %h6 Physicians who see patients at the clinic
 
               %ul
-                - clinic_attendances.each do |attendance|
+                - @clinic.visible_attendances.each do |attendance|
                   - if attendance.is_specialist
-                    - if attendance.specialist && !attendance.specialist.not_available? && !attendance.specialist.in_progress
-                      %li
-                        %a.ajax{"href" => specialist_path(attendance.specialist)}= attendance.specialist.name
-                        - if attendance.specialist.billing_number_padded.present?
-                          = "- MSP ##{attendance.specialist.billing_number_padded}"
-                        = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
-                  - elsif !attendance.freeform_name.blank?
+                    %li
+                      %a.ajax{"href" => specialist_path(attendance.specialist)}= attendance.specialist.name
+                      - if attendance.specialist.billing_number_padded.present?
+                        = "- MSP ##{attendance.specialist.billing_number_padded}"
+                      = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
+                  - else
                     %li
                       = attendance.freeform_name
                       = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
 
-        - if show_details  || show_areas_of_practice
+        - if show_details || show_areas_of_practice
 
           .span4.offsethalf
             - areas_of_practice_focused_results = {}
@@ -410,7 +407,7 @@
         %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
           %i.icon-share
           Share
-      - if can? :index, :history
+      - if can? :view_history, @clinic
         = large_history_button(@clinic)
 
       - if can? :destroy, @clinic

@@ -119,7 +119,7 @@ class Ability
           note.user == user
         end
 
-        can :index, :history
+        can :view_history, Historical
 
       elsif user.user?
 

@@ -3,13 +3,28 @@
 # to do so you may need to add this line to your ApplicationController
 #   helper :layout
 module LayoutHelper
-  def title(page_title, show_title = true)
-    content_for(:title) { h(page_title.to_s) }
-    @show_title = show_title
+  def page_title
+    if @page_specific_title.present?
+      "#{environment_title} | #{HTMLEntities.new.decode(@page_specific_title.html_safe)}"
+    else
+      environment_title
+    end
   end
 
-  def show_title?
-    @show_title
+  def environment_title
+    if Rails.env.development?
+      "PW Local"
+    elsif ENV['APP_NAME'] == "pathwaysbc"
+      "Pathways"
+    elsif ENV['APP_NAME'] == "pathwaysbctest"
+      "PW Test"
+    elsif ENV['APP_NAME'] == "pathwaysbcdev"
+      "PW Dev"
+    end
+  end
+
+  def set_page_specific_title(title)
+    @page_specific_title = h(title.to_s)
   end
 
   def stylesheet(*args)

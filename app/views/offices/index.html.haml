@@ -1,28 +1,32 @@
 - if @city.present?
-  - title "Offices in #{@city.name}"
+  - set_page_specific_title "Offices in #{@city.name}"
   %h2= "Offices in #{@city.name}"
 - else
-  - title "Offices"
-  %h2 Offices
+  - set_page_specific_title "Offices"
+  %h2 All Offices
 
 .content-wrapper
 
-  %table.table.table-condensed.table-striped
-    %tr
-      %th Address
-      %th.span3 Specialists
-      %th.admin
-
-    - @offices.each do |office|
-      - address = office.location.present? ? office.location.resolved_address : nil
-      %tr
-        %td= link_to office.short_address, office, :class => 'ajax'
-        %td
-          %ul
-            - office.specialists.each do |specialist|
-              %li= link_to specialist.name, specialist, :class => 'ajax'
-        %td.admin.btn-group
-          = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_office_path(office), :class => "btn btn-small ajax")
-          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", office, :confirm => "Delete #{office.short_address.present? ? office.short_address : "office"}?", :method => :delete, :class => "btn btn-small")
+  %table.table.table-condensed.table-striped.tablesorter
+    %thead
+      %tr.tableheader
+        %th{:class => "{sorter: 'text'}", :style => "width:60%"} Address
+        %th{:class => "{sorter: 'text'}", :style => "width:40%"} Specialists
+        %th.admin
+    %tbody
+      - @offices.each do |office|
+        - address = office.location.present? ? office.location.resolved_address : nil
+        %tr
+          %td= link_to office.short_address, office, :class => 'ajax'
+          %td
+            %ul
+              - office.specialists.each do |specialist|
+                %li= link_to specialist.name, specialist, :class => 'ajax'
+          %td.admin.btn-group
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_office_path(office), :class => "btn btn-small ajax")
+            = link_to("<i class='icon-trash'></i>".html_safe + " Delete", office, :confirm => "Delete #{office.short_address.present? ? office.short_address : "office"}?", :method => :delete, :class => "btn btn-small")
 
   -# %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Office", new_office_path, :class => "btn ajax")
+  %script{"type" => "text/javascript"}
+    :plain
+      $(document).ready(function() { $('.tablesorter').tablesorter() });

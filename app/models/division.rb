@@ -86,4 +86,12 @@ class Division < ActiveRecord::Base
   def median_waittime(klass)
     WaitTimeReporter.new(klass, division: self).median
   end
+
+  def shareable_sc_items
+    @shareable_sc_items ||= ScItem.shareable_by_divisions([ self ])
+  end
+
+  def borrowed_sc_items
+    @borrowed_sc_items ||= ScItem.shared_in_divisions([ self ])
+  end
 end

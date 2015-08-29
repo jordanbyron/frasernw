@@ -31,6 +31,13 @@ class ScCategory < ActiveRecord::Base
     all_parents.reject{|c| c.name == "Inactive" }
   end
 
+  def self.with_items_borrowable_by_division(division)
+    all.reject do |category|
+      category.parent.present? ||
+        (category.items_borrowable_by_division(division)).none?
+    end
+  end
+
   def display
     ScCategory::DISPLAY_HASH[display_mask]
   end
@@ -99,12 +106,15 @@ class ScCategory < ActiveRecord::Base
     show_on_front_page
   end
 
-  def all_shareable_sc_items
-    items = sc_items.shareable
-    self.children.each do |child|
-      items += child.all_shareable_sc_items
+  def all_borrowable_sc_items
+    subtree.inject([]) do |memo, category|
+      memo + (category.
+        sc_items.
+        includes_specialization_data.
+        includes([:sc_category, :division]).
+        shareable
+      )
     end
-    items
   end
 
   def all_owned_sc_items_in_divisions(divisions)
@@ -149,5 +159,9 @@ class ScCategory < ActiveRecord::Base
       items += child.all_sc_items_for_procedure_in_divisions(procedure, divisions)
     end
     items.flatten.uniq
+  end
+
+  def items_borrowable_by_division(division)
+    all_borrowable_sc_items - division.shareable_sc_items
   end
 end
