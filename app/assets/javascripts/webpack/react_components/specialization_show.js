@@ -22,6 +22,14 @@ module.exports = React.createClass({
       })
     };
   },
+  decorateWithPanelKey: function(actionCreator) {
+    return (...args) => {
+      return objectAssign(
+        { panelKey: this.props.selectedPanel },
+        actionCreator(...args)
+      );
+    };
+  },
   dispatchAction: function() {
     return (action) => {
       var decoratedAction = objectAssign(

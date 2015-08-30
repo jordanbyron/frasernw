@@ -8,6 +8,15 @@ var labels = function(props) {
   );
 }
 
+var decorateWithPanelKey = function(actionCreator, panelKey) {
+  return (...args) => {
+    return objectAssign(
+      { panelKey: panelKey },
+      actionCreator(...args)
+    );
+  };
+}
+
 module.exports  = {
   labels: labels,
   updateFilter: function(dispatch, filterType, update){
