@@ -1,4 +1,4 @@
-- title "#{@specialization.name}"
+- set_page_specific_title "#{@specialization.name}"
 
 %ul#specialties-menu
   %li.dropdown
@@ -633,8 +633,8 @@
             }
             #{tab_javascript}
             //make full rows clickable
-            $('#specialist_table tr, #clinic_table tr').click( function() { $(this).find('a').click(); });
-            $('.category_table tr').click( function() {
+            $('#specialist_table tbody tr, #clinic_table tbody tr').click( function() { $(this).find('a').click(); });
+            $('.category_table tbody tr').click( function() {
               var link = $(this).find('td.title a');
               if (link.hasClass('ajax'))
               {

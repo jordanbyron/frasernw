@@ -40,10 +40,23 @@
     border-radius: 0;
     box-shadow: none;
 
+
+
     .navbar-search
     {
       margin: 28px 0 0 12px;
       padding: 0;
+
+
+      input.icon::-webkit-input-placeholder {
+          font-family:'FontAwesome';
+      }
+      input.icon::-moz-placeholder {
+          font-family:'FontAwesome';
+      }
+      input.icon::-ms-input-placeholder {
+          font-family:'FontAwesome';
+      }
 
       .search-query, .search-query:focus
       {

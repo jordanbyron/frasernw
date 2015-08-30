@@ -4,7 +4,7 @@
 %html
 
   %head
-    %title= yield(:title) ? "Pathways | #{HTMLEntities.new.decode(yield(:title).html_safe)}" : "Pathways"
+    %title= page_title
     %meta{"http-equiv"=>"Content-Type", :content=>"text/html; charset=utf-8"}
     %meta{"name"=>"viewport", :content=>"initial-scale=1.0"}
 
@@ -82,7 +82,7 @@
           - if logged_in?
 
             %form.navbar-search.pull-right
-              %input.span3.search-query#search{"type" => "search", "placeholder" => "Search"}
+              %input.span3.search-query#search.icon{"type" => "search", "placeholder" => "&#xf002; Search".html_safe}
               #search_results{:style => 'display:none'}
                 #loading
                   #loading-spinner

@@ -15,8 +15,6 @@ class NotesController < ApplicationController
 
     if Validate::Note.exec(note)
       note.save
-    else
-      raise "Invalid"
     end
 
     redirect_params = {

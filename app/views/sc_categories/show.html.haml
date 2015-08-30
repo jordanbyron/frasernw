@@ -1,4 +1,4 @@
-- title "#{@sc_category.name}"
+- set_page_specific_title "#{@sc_category.name}"
 
 %ul#specialties-menu
   %li.dropdown.no-caret
@@ -136,7 +136,7 @@
 
           %script{"type" => "text/javascript"}
             :plain
-              $('table tr').click( function() {
+              $('table tbody tr').click( function() {
                 var link = $(this).find('td.title a');
                 if (link.hasClass('ajax'))
                 {

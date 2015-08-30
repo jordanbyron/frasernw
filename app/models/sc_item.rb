@@ -2,6 +2,7 @@ class ScItem < ActiveRecord::Base
   include Noteable
   include Historical
   include Feedbackable
+  include PaperTrailable
 
   include ApplicationHelper
   include PublicActivity::Model
@@ -309,10 +310,6 @@ class ScItem < ActiveRecord::Base
 
   def new?
     created_at > 3.week.ago.utc
-  end
-
-  def creator
-    UnknownUser.new
   end
 
   alias_attribute :label, :title

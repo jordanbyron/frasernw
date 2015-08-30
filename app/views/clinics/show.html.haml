@@ -1,4 +1,4 @@
-- title "#{@clinic.name}"
+- set_page_specific_title "#{@clinic.name}"
 
 - specialization = (current_user_is_admin? ? @clinic.specializations : @clinic.specializations.not_in_progress_for_divisions(current_user_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
 

@@ -1,4 +1,4 @@
-- title "#{@procedure.full_name}"
+- set_page_specific_title "#{@procedure.full_name}"
 
 - procedure_specialization = @procedure.procedure_specializations.first || ProcedureSpecialization.first
 - procedure_specializations = @procedure.procedure_specializations.reject{ |ps| !current_user_is_admin? && ps.specialization.fully_in_progress_for_divisions(current_user_divisions) }
@@ -518,8 +518,8 @@
               $(this).siblings('.filter-group-title').removeClass('open').addClass('closed');
             });
             //make full rows clickable
-            $('#specialist_table tr, #clinic_table tr').click( function() { $(this).find('a').click(); });
-            $('.category_table tr').click( function() {
+            $('#specialist_table tbody tr, #clinic_table tbody tr').click( function() { $(this).find('a').click(); });
+            $('.category_table tbody tr').click( function() {
               var link = $(this).find('td.title a');
               if (link.hasClass('ajax'))
               {
