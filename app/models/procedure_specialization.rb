@@ -49,6 +49,35 @@ class ProcedureSpecialization < ActiveRecord::Base
     where('procedure_specializations.specialization_id = (?)', specialization.id)
   end
 
+  # takes:
+  # ["x", "y", "z"] OR
+  # "x > y > z"
+  # where x, y, and z are procedure names
+  # and z is the procedure name for self
+  # and checks if self's ancestry matches those procedure names
+  def matches_ancestry?(ancestry)
+    if ancestry.is_a? String
+      ancestry = ancestry.split(" > ")
+    end
+
+    if ancestry.length == 1
+      procedure.name == ancestry.pop
+    else
+      procedure.name == ancestry.pop &&
+        safe_parent.present? &&
+        safe_parent.matches_ancestry?(ancestry)
+    end
+  end
+
+  def safe_parent
+    if ancestry.nil?
+      NullProcedureSpecialization.new
+    else
+      ProcedureSpecialization.where(id: ancestry).first ||
+        NullProcedureSpecialization.new
+    end
+  end
+
   def classification_text
     ProcedureSpecialization::CLASSIFICATION_HASH[classification]
   end

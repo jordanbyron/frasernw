@@ -4,6 +4,7 @@ class Clinic < ActiveRecord::Base
   include Feedbackable
   include Historical
   include Noteable
+  include ProcedureSpecializable
 
   include ApplicationHelper
 
@@ -30,6 +31,10 @@ class Clinic < ActiveRecord::Base
 
   #clinics focus on procedures
   has_many   :focuses, :dependent => :destroy
+
+  # we want to be using this generic alias so we can duck type
+  # procedure specializables
+  has_many   :procedure_specialization_links, class_name: "Focus"
   has_many   :procedure_specializations, :through => :focuses
   has_many   :procedures, :through => :procedure_specializations
   accepts_nested_attributes_for :focuses, :reject_if => lambda { |a| a[:procedure_specialization_id].blank? }, :allow_destroy => true

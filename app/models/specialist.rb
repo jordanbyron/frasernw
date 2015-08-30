@@ -4,6 +4,7 @@ class Specialist < ActiveRecord::Base
   include Feedbackable
   include Historical
   include Noteable
+  include ProcedureSpecializable
 
   include ApplicationHelper
 
@@ -15,6 +16,10 @@ class Specialist < ActiveRecord::Base
 
   # specialists have the capacity to perform procedures
   has_many   :capacities, :dependent => :destroy
+
+  # we want to be using this generic alias so we can duck type
+  # procedure specializables
+  has_many   :procedure_specialization_links, class_name: "Capacity"
   has_many   :procedure_specializations, :through => :capacities
   has_many   :procedures, :through => :procedure_specializations
   accepts_nested_attributes_for :capacities, :reject_if => lambda { |c| c[:procedure_specialization_id].blank? }, :allow_destroy => true

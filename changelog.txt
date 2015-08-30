@@ -38,6 +38,7 @@ speeds
   - clinics/index: ~ 1000 ms improvement
   - specialists/form: ~ 22000 ms improvement
   - clinics/form: ~ 1100 ms improvement
+- migrate joint injection hierarchy to nest <body_part> under "Joint Injection"
 - borrowable resources now sorted automatically by division
 
 ### Fixed
