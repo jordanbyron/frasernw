@@ -33,13 +33,25 @@ module.exports = React.createClass({
       </Filters>
     );
   },
+  rowFilters: function() {
+    return pick(rowFilters, [
+      "cities",
+      "acceptsReferralsViaPhone",
+      "patientsCanBook",
+      "respondsWithin",
+      "procedures"
+      "referrals",
+      "languages",
+      "sex"
+    ]);
+  },
   render: function() {
     return(
       <SidebarLayout
         main={
           <SpecializationReferentMainPanel
             {...this.props}
-            filterFunction={rowFilters.specialists}
+            filterPredicates={rowFilters.specialists}
             sortFunction={sortFunctions.referents}
             rowGenerator={rowGenerators.referents}
             filterFunctionName="specialists"

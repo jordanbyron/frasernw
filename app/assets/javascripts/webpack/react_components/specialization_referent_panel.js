@@ -29,8 +29,16 @@ module.exports = React.createClass({
       (keysAtTruthyVals(this.props.filterValues.procedures).length != 1));
   },
   render: function() {
+    var operativeFilters = select(
+      values(this.props.filterPredicates),
+      (predicate) => predicate.test(this.props.filterValues)
+    );
+
     var preSpecializationFiltered = this.props.records.filter((row) => {
-      return this.props.filterFunction(row, this.props.filterValues);
+      return every(
+        operativeFilters,
+        (filter) => filter.predicate(row, filterValues)
+      );
     });
 
     var specializationFiltered = preSpecializationFiltered.filter((record) => {

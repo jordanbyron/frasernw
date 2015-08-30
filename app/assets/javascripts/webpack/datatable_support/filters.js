@@ -3,73 +3,82 @@ var every = require("lodash/collection/every");
 var pick = require("lodash/object/pick");
 var values = require("lodash/object/values");
 var find = require("lodash/collection/find");
+var some = require("lodash/collection/some");
+var uniq = require("lodash/collection/uniq");
 var keysAtTruthyVals = require("../utils").keysAtTruthyVals;
 
-var filterByCities = function(record, filters) {
-  return record.cityIds.some((id) => filters.city[id]);
-}
-
-var filterByProcedures = function(record, filters) {
-  if (every((values(filters.procedures)), (value) => !value)) {
-    return true;
-  } else {
-    return record.procedureIds.some((id) => {
-      return filters.procedures[id];
-    });
-  }
-}
-
-var filterByReferrals = function(record, filters) {
-  var tests = [
-    function(record, filters) {
-      return ((filters.acceptsReferralsViaPhone == false) ||
-        record.acceptsReferralsViaPhone);
-    },
-    function(record, filters) {
-      return ((filters.patientsCanBook == false) || record.patientsCanBook);
-    },
-    function(record, filters) {
-      return ((filters.respondsWithin == 0) ||
-        (record.respondsWithin <= filters.respondsWithin));
+module.exports = {
+  cities: {
+    test: function(){ return true; },
+    predicate: function(record, filters) {
+      return record.cityIds.some((id) => filters.city[id]);
     }
-  ]
+  },
+  procedures: {
+    test: function(filters) {
+      return some((values(filters.procedures)), (value) => value);
+    },
+    predicate: function(record, filters) {
+      return record.procedureIds.some((id) => {
+        return filters.procedures[id];
+      });
+    }
+  },
+  acceptsReferralsViaPhone: {
+    test: function(filters) {
+      return filters.acceptsReferralsViaPhone;
+    },
+    predicate: function(record, filter) {
+      return record.acceptsReferralsViaPhone;
+    }
+  },
+  patientsCanBook: {
+    test: function(filters) {
+      return filters.patientsCanBook;
+    },
+    predicate: function(record, filter) {
+      return record.patientsCanBook;
+    }
+  },
+  respondsWithin: {
+    test: function(filters) {
+      return filters.respondsWithin != 0;
+    },
+    predicate: function(record, filters) {
+      return (record.respondsWithin <= filters.respondsWithin);
+    }
+  },
+  sex: {
+    test: function(filters) {
+      return uniq(values(filters.sex)).length > 1;
+    },
+    predicate: function(record, filters) {
+      return filters.sex[record.sex];
+    }
+  },
+  languages: {
+    test: function(filters) {
+      return some(values(filters.langages), (value) => value);
+    },
+    predicate: function(record, filters) {
+      return record.languageIds.some((id) => filters.languages[id]);
+    }
+  },
+  schedule: {
+    test: function(filters) {
+      some(values(filters.schedule), (value) => !value)
+    },
+    predicate: function(record, filters) {
+      var activatedDays = pick(filters.schedule, (val) => val)
+      var activatedDayIds = keys(activatedDays)
 
-  return every(tests, (test) => test(record, filters));
-}
-
-var filterBySex = function(record, filters) {
-  return (every((values(filters.sex)), (value) => !value)) ||
-    (every((values(filters.sex)), (value) => value)) ||
-    filters.sex[record.sex];
-}
-
-
-var filterByLanguages = function(record, filters) {
-  return (every((values(filters.languages)), (value) => !value)) ||
-    (every((values(filters.languages)), (value) => value)) ||
-    record.languageIds.some((id) => filters.languages[id]);
-}
-
-var filterBySchedule = function(record, filters) {
-  if (every((values(filters.schedule)), (value) => !value)) {
-    return true;
+      return every(activatedDayIds, (id) => {
+        return (record.scheduledDayIds.indexOf(id) > -1);
+      });
+    }
   }
-
-  var activatedDays = pick(filters.schedule, (val) => val)
-  var activatedDayIds = keys(activatedDays)
-
-  return every(activatedDayIds, (id) => {
-    return (record.scheduledDayIds.indexOf(id) > -1);
-  });
 }
 
-var referentFilterPredicates = [
-  filterByCities,
-  filterByProcedures,
-  filterByReferrals,
-  filterByLanguages,
-  filterBySchedule
-]
 
 var specialistFilterPredicates = referentFilterPredicates.concat([
   filterBySex
