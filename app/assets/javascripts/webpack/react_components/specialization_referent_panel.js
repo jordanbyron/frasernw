@@ -2,6 +2,8 @@ var React = require("react");
 var sortBy = require("lodash/collection/sortBy");
 var find = require("lodash/collection/find");
 var keysAtTruthyVals = require("../utils").keysAtTruthyVals;
+var values = require("lodash/object/values");
+var every = require("lodash/collection/every");
 var DataTable = require("../react_mixins/data_table");
 var ResultSummary = require("./result_summary");
 var SpecializationFilter = require("./specialization_filter");
@@ -29,15 +31,16 @@ module.exports = React.createClass({
       (keysAtTruthyVals(this.props.filterValues.procedures).length != 1));
   },
   render: function() {
-    var operativeFilters = select(
-      values(this.props.filterPredicates),
+    var operativeFilters = values(this.props.filterPredicates).filter(
       (predicate) => predicate.test(this.props.filterValues)
     );
+
+    console.log(operativeFilters);
 
     var preSpecializationFiltered = this.props.records.filter((row) => {
       return every(
         operativeFilters,
-        (filter) => filter.predicate(row, filterValues)
+        (filter) => filter.predicate(row, this.props.filterValues)
       );
     });
 

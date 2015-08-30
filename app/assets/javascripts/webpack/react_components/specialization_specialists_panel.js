@@ -7,6 +7,7 @@ var ToggleableFilterGroup = require("./toggleable_filter_group");
 var rowFilters = require("../datatable_support/filters");
 var rowGenerators = require("../datatable_support/row_generators");
 var sortFunctions = require("../datatable_support/sort_functions");
+var pick = require("lodash/object/pick");
 
 module.exports = React.createClass({
   sidebar: function() {
@@ -39,7 +40,7 @@ module.exports = React.createClass({
       "acceptsReferralsViaPhone",
       "patientsCanBook",
       "respondsWithin",
-      "procedures"
+      "procedures",
       "referrals",
       "languages",
       "sex"
@@ -51,7 +52,7 @@ module.exports = React.createClass({
         main={
           <SpecializationReferentMainPanel
             {...this.props}
-            filterPredicates={rowFilters.specialists}
+            filterPredicates={this.rowFilters()}
             sortFunction={sortFunctions.referents}
             rowGenerator={rowGenerators.referents}
             filterFunctionName="specialists"

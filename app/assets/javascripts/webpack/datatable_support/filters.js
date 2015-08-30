@@ -4,7 +4,7 @@ var pick = require("lodash/object/pick");
 var values = require("lodash/object/values");
 var find = require("lodash/collection/find");
 var some = require("lodash/collection/some");
-var uniq = require("lodash/collection/uniq");
+var uniq = require("lodash/array/uniq");
 var keysAtTruthyVals = require("../utils").keysAtTruthyVals;
 
 module.exports = {
@@ -76,25 +76,5 @@ module.exports = {
         return (record.scheduledDayIds.indexOf(id) > -1);
       });
     }
-  }
-}
-
-
-var specialistFilterPredicates = referentFilterPredicates.concat([
-  filterBySex
-]);
-
-var clinicFilterPredicates = referentFilterPredicates;
-
-module.exports = {
-  specialists: function(record, filters) {
-    return every(specialistFilterPredicates, (predicate) => {
-      return predicate(record, filters);
-    });
-  },
-  clinics: function(record, filters) {
-    return every(clinicFilterPredicates, (predicate) => {
-      return predicate(record, filters);
-    });
   }
 }

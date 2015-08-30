@@ -172,6 +172,7 @@ module.exports = React.createClass({
     );
   },
   render: function() {
+    console.log('hey');
     return(
       <SidebarLayout
         main={this.mainPanel()}

@@ -40,7 +40,7 @@ module.exports = React.createClass({
       "acceptsReferralsViaPhone",
       "patientsCanBook",
       "respondsWithin",
-      "procedures"
+      "procedures",
       "referrals",
       "languages"
     ]);
