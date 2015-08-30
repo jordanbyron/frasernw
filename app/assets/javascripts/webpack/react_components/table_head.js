@@ -1,5 +1,6 @@
 var React = require("react");
 var buttonIsh = require("../stylesets").buttonIsh;
+var handleHeaderClick = require("../react_mixins/data_table").handleHeaderClick;
 
 module.exports = React.createClass({
   arrowStyle: {
@@ -10,7 +11,7 @@ module.exports = React.createClass({
     return (
       <th
         key={index}
-        onClick={this.props.handleClick(cell.key)}
+        onClick={handleHeaderClick(this.props.dispatch, cell.key)}
         style={buttonIsh}
       >
         <span>{cell.label}</span>

@@ -8,13 +8,12 @@ class GenerateSpecializationPage
 
     def exec
       {
-        contentClass: "DataTable",
+        contentClass: "SpecializationSpecialistsPanel",
         props: {
           records: hashified_specialists,
           labels: {
             filterSection: "Filter Specialists"
           },
-          filterFunction: "specialists",
           filterValues: {
             procedures: procedure_filters,
             city: city_filters,
@@ -40,14 +39,6 @@ class GenerateSpecializationPage
             languages: Language.order(:name).map(&:id),
             city: City.order(:name).map(&:id)
           },
-          filterGroups: [
-            "procedures",
-            "referrals",
-            "sex",
-            "schedule",
-            "languages",
-            "city"
-          ],
           tableHeadings: [
             { label: "Name", key: "NAME" },
             { label: "Specialties", key: "SPECIALTIES" },
@@ -55,8 +46,6 @@ class GenerateSpecializationPage
             { label: "Average Non-urgent Patient Waittime", key: "WAITTIME" },
             { label: "City", key: "CITY" }
           ],
-          rowGenerator: "referents",
-          sortFunction: "referents",
           sortConfig: {
             column: "NAME",
             order: "ASC"
@@ -69,7 +58,6 @@ class GenerateSpecializationPage
             sex: false,
             schedule: false
           },
-          specializationFilter: true,
           collectionName: "specialists"
         }
       }
@@ -77,7 +65,7 @@ class GenerateSpecializationPage
 
     def hashified_specialists
       Rails.cache.fetch("serialized_specialists") do
-        specialization.specialists.map do |specialist|
+        all.map do |specialist|
           {
             id: specialist.id,
             name: specialist.name,

@@ -8,7 +8,7 @@ class GenerateSpecializationPage
 
     def exec
       {
-        contentClass: "DataTable",
+        contentClass: "SpecializationClinicsPanel",
         props: {
           records: clinics,
           labels: {
@@ -36,14 +36,6 @@ class GenerateSpecializationPage
             languages: Language.order(:name).map(&:id),
             city: City.all.map(&:id)
           },
-          filterFunction: "clinics",
-          filterGroups: [
-            "procedures",
-            "referrals",
-            "schedule",
-            "languages",
-            "city"
-          ],
           tableHeadings: [
             { label: "Name", key: "NAME" },
             { label: "Specialties", key: "SPECIALTIES" },
@@ -51,13 +43,10 @@ class GenerateSpecializationPage
             { label: "Average Non-urgent Patient Waittime", key: "WAITTIME" },
             { label: "City", key: "CITY" }
           ],
-          rowGenerator: "referents",
-          sortFunction: "referents",
           sortConfig: {
             column: "NAME",
             order: "ASC"
           },
-          specializationFilter: true,
           filterVisibility: {
             city: false,
             languages: false,

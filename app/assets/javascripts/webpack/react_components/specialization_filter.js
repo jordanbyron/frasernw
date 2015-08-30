@@ -1,10 +1,12 @@
 var React = require("react");
 var buttonIsh = require("../stylesets").buttonIsh;
+var updateFilter = require("../react_mixins/data_table").updateFilter;
 
 module.exports = React.createClass({
   handleFilterUpdate: function(val) {
     return(() => {
-      return this.props.updateFilter(
+      return updateFilter(
+        this.props.dispatch,
         "specialization",
         val
       );

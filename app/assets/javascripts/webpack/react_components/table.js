@@ -8,7 +8,8 @@ module.exports = React.createClass({
       <table className="table data_table">
         <TableHead data={this.props.headings}
           sortConfig={this.props.sortConfig}
-          handleClick={this.props.handleHeaderClick}/>
+          dispatch={this.props.dispatch}
+        />
         <TableBody rows={this.props.bodyRows}/>
       </table>
     );

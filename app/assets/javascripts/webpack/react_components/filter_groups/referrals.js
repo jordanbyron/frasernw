@@ -2,6 +2,8 @@ var React = require("react");
 var ToggleBox = require("../toggle_box");
 var CheckBox = require("../checkbox");
 var Selector = require("../selector");
+var updateFilter =
+  require("../../react_mixins/data_table").updateFilter;
 
 module.exports = React.createClass({
   respondsWithinOptions: function() {
@@ -13,19 +15,22 @@ module.exports = React.createClass({
     })
   },
   handlePhoneUpdate: function(event) {
-    this.props.updateFilter(
+    updateFilter(
+      this.props.dispatch,
       "acceptsReferralsViaPhone",
       event.target.checked
     );
   },
   handleRespondsWithinUpdate: function(event) {
-    this.props.updateFilter(
+    updateFilter(
+      this.props.dispatch,
       "respondsWithin",
       event.target.value
     );
   },
   handlePatientsCanBookUpdate: function(event) {
-    this.props.updateFilter(
+    updateFilter(
+      this.props.dispatch,
       "patientsCanBook",
       event.target.checked
     );

@@ -2,7 +2,9 @@ var React = require("react");
 var NavTabs = require("./nav_tabs");
 var objectAssign = require("object-assign");
 var contentClasses = {
-  DataTable: require("./data_table")
+  SpecializationSpecialistsPanel: require("./specialization_specialists_panel"),
+  SpecializationClinicsPanel:
+  require("./specialization_clinics_panel")
 }
 
 module.exports = React.createClass({

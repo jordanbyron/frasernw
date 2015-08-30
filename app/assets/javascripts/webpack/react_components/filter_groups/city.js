@@ -4,22 +4,26 @@ var CheckBox = require("../checkbox");
 var keys = require("lodash/object/keys");
 var sortBy = require("lodash/collection/sortBy");
 var mapValues = require("lodash/object/mapValues");
+var updateFilter = require("../../react_mixins/data_table").updateFilter;
 
 module.exports = React.createClass({
   handleCheckboxUpdate: function(event, key) {
-    this.props.updateFilter(
+    updateFilter(
+      this.props.dispatch,
       "city",
       { [key] : event.target.checked }
     );
   },
   handleSelectAll: function(event) {
-    this.props.updateFilter(
+    updateFilter(
+      this.props.dispatch,
       "city",
       mapValues(this.props.filterValues.city, (val) => true)
     );
   },
   handleDeselectAll: function(event) {
-    this.props.updateFilter(
+    updateFilter(
+      this.props.dispatch,
       "city",
       mapValues(this.props.filterValues.city, (val) => false)
     );

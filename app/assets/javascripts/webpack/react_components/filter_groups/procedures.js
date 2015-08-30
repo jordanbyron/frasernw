@@ -2,10 +2,13 @@ var React = require("react");
 var ToggleBox = require("../toggle_box");
 var CheckBox = require("../checkbox");
 var transform = require("lodash/object/transform");
+var updateFilter =
+  require("../../react_mixins/data_table").updateFilter;
 
 module.exports = React.createClass({
   handleCheckboxUpdate: function(event, key) {
-    this.props.updateFilter(
+    updateFilter(
+      this.props.dispatch,
       "procedures",
       { [key] : event.target.checked }
     );

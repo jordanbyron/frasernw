@@ -1,0 +1,50 @@
+var React = require("react");
+var DataTable = require("../react_mixins/data_table");
+var SpecializationReferentMainPanel = require("./specialization_referent_panel");
+var SidebarLayout = require("./sidebar_layout");
+var Filters = require("./filters");
+var ToggleableFilterGroup = require("./toggleable_filter_group");
+var rowFilters = require("../datatable_support/filters");
+var rowGenerators = require("../datatable_support/row_generators");
+var sortFunctions = require("../datatable_support/sort_functions");
+
+
+module.exports = React.createClass({
+  sidebar: function() {
+    var toggleableFilterProps =
+      DataTable.toggleableFilterProps(this.props)
+
+    return(
+      <Filters title={this.props.labels.filterSection}>
+        <ToggleableFilterGroup
+          dataKey={"procedures"}
+          {...toggleableFilterProps}/>
+        <ToggleableFilterGroup
+          dataKey={"referrals"}
+          {...toggleableFilterProps}/>
+        <ToggleableFilterGroup
+          dataKey={"schedule"}
+          {...toggleableFilterProps}/>
+        <ToggleableFilterGroup
+          dataKey={"languages"}
+          {...toggleableFilterProps}/>
+      </Filters>
+    );
+  },
+  render: function() {
+    return(
+      <SidebarLayout
+        main={
+          <SpecializationReferentMainPanel
+            {...this.props}
+            filterFunction={rowFilters.clinics}
+            sortFunction={sortFunctions.referents}
+            rowGenerator={rowGenerators.referents}
+            filterFunctionName="clinics"
+          />
+        }
+        sidebar={this.sidebar()}
+      />
+    );
+  }
+});

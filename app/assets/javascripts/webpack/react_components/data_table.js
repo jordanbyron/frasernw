@@ -91,30 +91,29 @@ module.exports = React.createClass({
       ( this.props.filterValues.specialization ||
       (keysAtTruthyVals(this.props.filterValues.procedures).length != 1));
   },
-  table: function() {
-    var opaqueFiltered = this.props.records.filter((row) => {
+  mainPanel: function() {
+    var preSpecializationFiltered = this.props.records.filter((row) => {
       return this.filterFunction()(row, this.props.filterValues);
     });
 
     // transparent filter informs the user how many records have been filtered
     // out
-    var transparentFiltered = opaqueFiltered.filter((record) => {
+    var specializationFiltered = preSpecializationFiltered.filter((record) => {
       return find(record.specializationIds, (id) => {
         return (this.props.filterValues.specializationId === id);
       });
     });
-    var remainder = opaqueFiltered.length - transparentFiltered.length;
+    var remainder = preSpecializationFiltered.length - specializationFiltered.length;
 
     if (this.shouldFilterBySpecialization()) {
-      var bodyRows = this.generateBodyRows(transparentFiltered);
+      var bodyRows = this.generateBodyRows(specializationFiltered);
     } else {
-      var bodyRows = this.generateBodyRows(opaqueFiltered);
+      var bodyRows = this.generateBodyRows(preSpecializationFiltered);
     }
 
     var shouldShowSpecializationFilter = this.props.specializationFilter &&
       (keysAtTruthyVals(this.props.filterValues.procedures).length === 1) &&
       remainder > 0
-
 
     return (
       <div>
@@ -175,7 +174,7 @@ module.exports = React.createClass({
   render: function() {
     return(
       <SidebarLayout
-        main={this.table()}
+        main={this.mainPanel()}
         sidebar={this.sidebar()}
       />
     );

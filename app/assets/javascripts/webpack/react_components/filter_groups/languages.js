@@ -2,16 +2,20 @@ var React = require("react");
 var CheckBox = require("../checkbox");
 var sortBy = require("lodash/collection/sortBy");
 var keys = require("lodash/object/keys");
+var updateFilter =
+  require("../../react_mixins/data_table").updateFilter;
 
 var component = React.createClass({
   handleLanguageUpdate: function(event, key) {
-    this.props.updateFilter(
+    updateFilter(
+      this.props.dispatch,
       "languages",
       { [key] : event.target.checked }
     );
   },
   handleInterpreterUpdate: function(event, key) {
-    this.props.updateFilter(
+    updateFilter(
+      this.props.dispatch,
       "interpreterAvailable",
       event.target.checked
     );
