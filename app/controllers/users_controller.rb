@@ -84,12 +84,10 @@ class UsersController < ApplicationController
     if params.blank? || params[:user].blank?
       redirect_to login_url
     else
-      @user = User.find_by_saved_token(params[:user][:saved_token].downcase)
-      if @user.present?
-        PaperTrail.whodunnit = @user.id.to_s
-        if @user.update_attributes(params[:user])
-          @user.activated_at = Date.today
-          @user.save
+      if user_from_saved_token.present?
+        if user_from_saved_token.update_attributes(params[:user])
+          user_from_saved_token.activated_at = Date.today
+          user_from_saved_token.save
           redirect_to login_url, :notice  => "Your account has been set up; please log in using #{@user.email} and your newly created password. Welcome to Pathways!"
         else
           render :action => 'signup'
@@ -216,6 +214,18 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def user_for_paper_trail
+    if self.action_name == "setup"
+      user_from_saved_token.id.to_s
+    else
+      current_user.try(:id).to_s
+    end
+  end
+
+  def user_from_saved_token
+    @user ||= User.find_by_saved_token(params[:user][:saved_token].downcase)
+  end
 
   def build_user_form
     @user.user_controls_specialist_offices.build
