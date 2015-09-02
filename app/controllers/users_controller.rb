@@ -86,6 +86,7 @@ class UsersController < ApplicationController
     else
       @user = User.find_by_saved_token(params[:user][:saved_token].downcase)
       if @user.present?
+        PaperTrail.whodunnit = @user.id.to_s
         if @user.update_attributes(params[:user])
           @user.activated_at = Date.today
           @user.save

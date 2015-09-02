@@ -4,6 +4,15 @@ class Version < ActiveRecord::Base
     self.event.gsub('update','updated').gsub('destroy','destroyed').gsub('create','created')
   end
 
+  def completely_masked?
+    masked_changeset == {}
+  end
+
+  def masked_changeset
+    changeset.reject do |key, value|
+      item.paper_trail_ignored_attributes.include?(key.to_sym)
+    end
+  end
 
   def archiving_item?
     changeset.has_key?('archived') && changeset['archived'][1] == true

@@ -1,6 +1,18 @@
 class User < ActiveRecord::Base
   include Historical
   include Noteable
+
+  PAPER_TRAIL_IGNORED_ATTRIBUTES = [
+    :persistence_token,
+    :crypted_password,
+    :password_salt,
+    :perishable_token,
+    :saved_token,
+    :type_mask,
+    :last_request_at,
+    :failed_login_count,
+    :activated_at
+  ]
   include PaperTrailable
 
   acts_as_authentic do |c|

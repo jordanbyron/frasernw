@@ -8,7 +8,9 @@ class GenerateHistory
     end
 
     def prior_update_versions
-      target.versions.where(event: "update").clip(1)
+      target.
+        masked_update_versions.
+        clip(1)
     end
 
     def node(version)
@@ -18,7 +20,7 @@ class GenerateHistory
         datetime: version.created_at,
         verb: :updated,
         new_version: version.next,
-        changeset: version.changeset
+        changeset: version.masked_changeset
       )
     end
   end
