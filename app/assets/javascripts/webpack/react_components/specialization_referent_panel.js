@@ -8,6 +8,8 @@ var DataTable = require("../react_mixins/data_table");
 var ResultSummary = require("./result_summary");
 var SpecializationFilter = require("./specialization_filter");
 var Table = require("./table");
+var getFilterSummary = require("../datatable_support/filter_summary");
+
 
 module.exports = React.createClass({
   generateBodyRows: function(filtered) {
@@ -35,8 +37,6 @@ module.exports = React.createClass({
       (predicate) => predicate.test(this.props.filterValues)
     );
 
-    console.log(operativeFilters);
-
     var preSpecializationFiltered = this.props.records.filter((row) => {
       return every(
         operativeFilters,
@@ -57,6 +57,13 @@ module.exports = React.createClass({
       var bodyRows = this.generateBodyRows(preSpecializationFiltered);
     }
 
+    var filterSummary = getFilterSummary(operativeFilters, {
+      labels: DataTable.labels(this.props),
+      filterValues: this.props.filterValues,
+      bodyRows: bodyRows,
+      filterFunction: this.props.filterFunctionName
+    });
+
     var shouldShowSpecializationFilter =
       (keysAtTruthyVals(this.props.filterValues.procedures).length === 1) &&
       remainder > 0
@@ -65,10 +72,7 @@ module.exports = React.createClass({
       <div>
         <ResultSummary anyResults={(bodyRows.length > 0)}
           bodyRows={bodyRows}
-          filterValues={this.props.filterValues}
-          labels={DataTable.labels(this.props)}
-          collectionName={this.props.collectionName}
-          filterFunction={this.props.filterFunctionName}
+          filterSummary={filterSummary}
           handleClearFilters={DataTable.handleClearFilters(this.props.dispatch, this.props.filterFunctionName)}
         />
         <SpecializationFilter

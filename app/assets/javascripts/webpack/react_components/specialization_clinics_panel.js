@@ -37,16 +37,17 @@ module.exports = React.createClass({
       </Filters>
     );
   },
+  filterKeys: [
+    "cities",
+    "acceptsReferralsViaPhone",
+    "patientsCanBook",
+    "respondsWithin",
+    "procedures",
+    "referrals",
+    "languages"
+  ],
   rowFilters: function() {
-    return pick(rowFilters, [
-      "cities",
-      "acceptsReferralsViaPhone",
-      "patientsCanBook",
-      "respondsWithin",
-      "procedures",
-      "referrals",
-      "languages"
-    ]);
+    return pick(rowFilters, this.filterKeys);
   },
   render: function() {
     return(

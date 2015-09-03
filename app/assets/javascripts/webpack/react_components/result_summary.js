@@ -1,5 +1,4 @@
 var React = require("react");
-var filterSummary = require("../datatable_support/filter_summary");
 var buttonIsh = require("../stylesets").buttonIsh;
 
 module.exports = React.createClass({
@@ -11,12 +10,12 @@ module.exports = React.createClass({
     }
   },
   render: function() {
-    var text = filterSummary(this.props);
+    var text = this.props.filterSummary;
 
     if (text.length > 0) {
       return(
         <div className={this.className()} style={{display: "block"}}>
-          <span>{ filterSummary(this.props) + ".  " }</span>
+          <span>{ text + ".  " }</span>
           <a onClick={this.props.handleClearFilters} style={buttonIsh}>
             Clear Filters
           </a>

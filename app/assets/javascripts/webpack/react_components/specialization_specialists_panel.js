@@ -48,6 +48,7 @@ module.exports = React.createClass({
       "respondsWithin",
       "procedures",
       "referrals",
+      "schedule",
       "languages",
       "sex",
       "clinicAssociation",
