@@ -30,14 +30,16 @@ class GenerateSpecializationPage
             specialization: false,
             public: false,
             private: false,
-            wheelchairAccessible: false
+            wheelchairAccessible: false,
+            careProviders: HealthcareProvider.id_hash{ false }
           },
           filterArrangements: {
             schedule: Schedule::DAY_HASH.keys,
             procedures: procedure_arrangement,
             respondsWithinOptions: lagtime_values_arrangement,
             languages: Language.order(:name).map(&:id),
-            city: City.all.map(&:id)
+            city: City.all.map(&:id),
+            careProviders: HealthcareProvider.order(:name).map(&:id)
           },
           tableHeadings: [
             { label: "Name", key: "NAME" },
@@ -53,10 +55,11 @@ class GenerateSpecializationPage
           filterVisibility: {
             city: false,
             languages: false,
-            procedures: false,
+            procedures: true,
             referrals: false,
             schedule: false,
-            clinicDetails: false
+            clinicDetails: false,
+            careProviders: false
           },
           collectionName: "clinics"
         }
@@ -83,7 +86,8 @@ class GenerateSpecializationPage
             languageIds: clinic.languages.map(&:id),
             specializationIds: clinic.specializations.map(&:id),
             wheelchairAccessible: clinic.wheelchair_accessible?,
-            private: clinic.private?
+            private: clinic.private?,
+            careProviderIds: clinic.healthcare_providers.map(&:id)
           }
         end
       end

@@ -52,13 +52,14 @@ module.exports  = {
       });
     };
   },
-  toggleableFilterProps: function(props) {
+  toggleableFilterProps: function(props, filterGroupKey) {
     return {
       labels: labels(props),
       filterVisibility: props.filterVisibility,
       filterValues: props.filterValues,
       arrangements: props.filterArrangements,
-      dispatch: props.dispatch
+      dispatch: props.dispatch,
+      filterGroupKey: filterGroupKey
     }
   }
 }

@@ -1,8 +1,5 @@
 var React = require("react");
-var ToggleBox = require("../toggle_box");
 var CheckBox = require("../checkbox");
-var keys = require("lodash/object/keys");
-var sortBy = require("lodash/collection/sortBy");
 var mapValues = require("lodash/object/mapValues");
 var updateFilter = require("../../react_mixins/data_table").updateFilter;
 

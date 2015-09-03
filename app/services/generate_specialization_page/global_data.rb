@@ -15,57 +15,27 @@ class GenerateSpecializationPage
             schedule: "Schedule",
             sex: "Sex",
             associations: "Associations",
-            clinicDetails: "Clinic Details"
+            clinicDetails: "Clinic Details",
+            careProviders: "Care Providers"
           },
-          city: city_labels,
-          hospitals: hospital_labels,
-          clinics: clinic_labels,
+          city: City.id_hash,
+          hospitals: Hospital.id_hash,
+          clinics: Clinic.id_hash,
           procedures: procedure_labels,
+          careProviders: HealthcareProvider.id_hash,
           acceptsReferralsViaPhone: "Accepts referrals Via phone",
           patientsCanBook: "Patients can call to book after referral",
           respondsWithin: "Responded to within",
           respondsWithinOptions: responds_within_options,
           schedule: Schedule::DAY_HASH,
-          languages: language_labels,
+          languages: Language.id_hash.merge(0 => "Interpreter Available"),
           respondsWithinSummaryLabels: responds_within_summary_labels,
-          specialties: specialization_labels
+          specialties: Specialization.id_hash
         }
       }
     end
 
     private
-
-    def clinic_labels
-      Clinic.all.inject({}) do |memo, clinic|
-        memo.merge(clinic.id => clinic.name)
-      end
-    end
-
-    def hospital_labels
-      Hospital.all.inject({}) do |memo, hospital|
-        memo.merge(hospital.id => hospital.name)
-      end
-    end
-
-
-    def specialization_labels
-      Specialization.all.inject({}) do |memo, specialization|
-        memo.merge(specialization.id => specialization.name)
-      end
-    end
-
-    def language_labels
-      Language.all.inject({}) do |memo, language|
-        memo.merge(language.id => language.name)
-      end.merge(0 => "Interpreter Available")
-    end
-
-
-    def city_labels
-      City.all.inject({}) do |memo, city|
-        memo.merge(city.id => city.name)
-      end
-    end
 
     def procedure_labels
       specialization.procedure_specializations.includes(:procedure).all.inject({}) do |memo, ps|
@@ -92,23 +62,5 @@ class GenerateSpecializationPage
         memo.merge({key => label})
       end
     end
-
-
-      LAGTIME_HASH = {
-        1 => "Book by phone when office calls for referral",
-        2 => "Within one week",
-        3 => "1-2 weeks",
-        4 => "2-4 weeks",
-        5 => "1-2 months",
-        6 => "2-4 months",
-        7 => "4-6 months",
-        8 => "6-9 months",
-        9 => "9-12 months",
-        10 => "12-18 months",
-        11 => "18-24 months",
-        12 => "2-2.5 years",
-        13 => "2.5-3 years",
-        14 => ">3 years"
-      }
   end
 end

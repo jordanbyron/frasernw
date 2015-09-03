@@ -9,34 +9,24 @@ var rowGenerators = require("../datatable_support/row_generators");
 var sortFunctions = require("../datatable_support/sort_functions");
 var pick = require("lodash/object/pick");
 
-
-
-
 module.exports = React.createClass({
   sidebar: function() {
-    var toggleableFilterProps =
-      DataTable.toggleableFilterProps(this.props)
-
     return(
       <Filters title={this.props.labels.filterSection}>
         <ToggleableFilterGroup
-          filterGroupKey="procedures"
-          {...toggleableFilterProps}/>
+          {...DataTable.toggleableFilterProps(this.props, "procedures")}/>
         <ToggleableFilterGroup
-          filterGroupKey="referrals"
-          {...toggleableFilterProps}/>
+          {...DataTable.toggleableFilterProps(this.props, "referrals")}/>
         <ToggleableFilterGroup
-          filterGroupKey="clinicDetails"
-          {...toggleableFilterProps}/>
+          {...DataTable.toggleableFilterProps(this.props, "clinicDetails")}/>
         <ToggleableFilterGroup
-          filterGroupKey="schedule"
-          {...toggleableFilterProps}/>
+          {...DataTable.toggleableFilterProps(this.props, "careProviders")}/>
         <ToggleableFilterGroup
-          filterGroupKey="languages"
-          {...toggleableFilterProps}/>
+          {...DataTable.toggleableFilterProps(this.props, "schedule")}/>
         <ToggleableFilterGroup
-          filterGroupKey="city"
-          {...toggleableFilterProps}/>
+          {...DataTable.toggleableFilterProps(this.props, "languages")}/>
+        <ToggleableFilterGroup
+          {...DataTable.toggleableFilterProps(this.props, "city")}/>
       </Filters>
     );
   },
@@ -51,7 +41,8 @@ module.exports = React.createClass({
     "schedule",
     "private",
     "public",
-    "wheelchairAccessible"
+    "wheelchairAccessible",
+    "careProviders"
   ],
   rowFilters: function() {
     return pick(rowFilters, this.filterKeys);

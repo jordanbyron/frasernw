@@ -38,7 +38,7 @@ module.exports = {
         return ""
       }
     },
-    summaryPlacement: "trailing",
+    summaryPlacement: "trailing"
   },
   acceptsReferralsViaPhone: {
     isActivated: function(filters) {
@@ -224,5 +224,33 @@ module.exports = {
       return "wheelchair accessible";
     },
     summaryPlacement: "leading"
+  },
+  careProviders: {
+    isActivated: function(filters) {
+      return some(values(filters.careProviders), (value) => value);
+    },
+    predicate: function(record, filters) {
+      var activatedCareProviders = keysAtTruthyVals(
+        filters.careProviders
+      )
+
+      return every(activatedCareProviders, (id) => {
+        return (record.careProviderIds.indexOf(id) > -1);
+      });
+    },
+    summary: function(props) {
+      var activatedCareProviders = keysAtTruthyVals(
+        props.filterValues.careProviders
+      )
+
+      if (activatedCareProviders.length > 0){
+        return "have a " + activatedCareProviders.map(
+          (id) => props.labels.careProviders[id]
+        ).join(" and ");
+      } else {
+        return "";
+      }
+    },
+    summaryPlacement: "trailing"
   }
 }
