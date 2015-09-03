@@ -76,5 +76,21 @@ module.exports = {
         return (record.scheduledDayIds.indexOf(id) > -1);
       });
     }
+  },
+  clinicAssociation: {
+    test: function(filters) {
+      return filters.clinicAssociation != 0;
+    },
+    predicate: function(record, filters) {
+      return find(record.clinicIds, (id) => id === filters.clinicAssociation);
+    }
+  },
+  hospitalAssociation: {
+    test: function(filters) {
+      return filters.hospitalAssociation != 0;
+    },
+    predicate: function(record, filters) {
+      return find(record.hospitalIds, (id) => id === filters.hospitalAssociation);
+    }
   }
 }

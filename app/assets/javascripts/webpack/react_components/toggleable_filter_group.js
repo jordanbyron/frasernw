@@ -8,29 +8,30 @@ var filterGroups = {
   referrals: require("./filter_groups/referrals"),
   sex: require("./filter_groups/sex"),
   schedule: require("./filter_groups/schedule"),
-  languages: require("./filter_groups/languages")
+  languages: require("./filter_groups/languages"),
+  associations: require("./filter_groups/associations")
 }
 
 module.exports = React.createClass({
   render: function() {
-    var filterKey = this.props.dataKey;
+    var filterGroupKey = this.props.filterGroupKey;
 
     return(
       <ToggleBox
-        title={this.props.labels.filterGroups[filterKey]}
-        open={this.props.filterVisibility[filterKey]}
-        handleToggle={toggleFilterGroupVisibility(this.props.dispatch, filterKey)}
-        key={filterKey + this.props.collectionName}
+        title={this.props.labels.filterGroups[filterGroupKey]}
+        open={this.props.filterVisibility[filterGroupKey]}
+        handleToggle={toggleFilterGroupVisibility(this.props.dispatch, filterGroupKey)}
+        key={filterGroupKey + this.props.collectionName}
       >
         {
           React.createElement(
-            filterGroups[filterKey],
+            filterGroups[filterGroupKey],
             {
               filterValues: this.props.filterValues,
               labels: this.props.labels,
               arrangements: this.props.arrangements,
               dispatch: this.props.dispatch,
-              key: filterKey
+              key: filterGroupKey
             }
           )
         }

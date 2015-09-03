@@ -18,6 +18,8 @@ class GenerateSpecializationPage
             procedures: procedure_filters,
             city: city_filters,
             acceptsReferralsViaPhone: false,
+            hospitalAssociation: 0,
+            clinicAssociation: 0,
             respondsWithin: 0,
             patientsCanBook: false,
             languages: language_filters,
@@ -37,7 +39,9 @@ class GenerateSpecializationPage
             procedures: procedure_arrangement,
             respondsWithinOptions: lagtime_values_arrangement,
             languages: Language.order(:name).map(&:id),
-            city: City.order(:name).map(&:id)
+            city: City.order(:name).map(&:id),
+            hospitalAssociations: Hospital.order(:name).map(&:id),
+            clinicAssociations: Clinic.order(:name).map(&:id)
           },
           tableHeadings: [
             { label: "Name", key: "NAME" },
@@ -56,7 +60,8 @@ class GenerateSpecializationPage
             procedures: true,
             referrals: false,
             sex: false,
-            schedule: false
+            schedule: false,
+            associations: false
           },
           collectionName: "specialists"
         }
@@ -80,6 +85,8 @@ class GenerateSpecializationPage
             sex: specialist.sex.downcase,
             scheduledDayIds: specialist.day_ids,
             languageIds: specialist.languages.map(&:id),
+            hospitalIds: specialist.hospitals.map(&:id),
+            clinicIds: specialist.clinics.map(&:id),
             specializationIds: specialist.specializations.map(&:id)
           }
         end

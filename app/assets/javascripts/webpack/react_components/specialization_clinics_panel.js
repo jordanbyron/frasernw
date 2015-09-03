@@ -20,16 +20,19 @@ module.exports = React.createClass({
     return(
       <Filters title={this.props.labels.filterSection}>
         <ToggleableFilterGroup
-          dataKey={"procedures"}
+          filterGroupKey={"procedures"}
           {...toggleableFilterProps}/>
         <ToggleableFilterGroup
-          dataKey={"referrals"}
+          filterGroupKey={"referrals"}
           {...toggleableFilterProps}/>
         <ToggleableFilterGroup
-          dataKey={"schedule"}
+          filterGroupKey={"schedule"}
           {...toggleableFilterProps}/>
         <ToggleableFilterGroup
-          dataKey={"languages"}
+          filterGroupKey={"languages"}
+          {...toggleableFilterProps}/>
+        <ToggleableFilterGroup
+          filterGroupKey={"city"}
           {...toggleableFilterProps}/>
       </Filters>
     );

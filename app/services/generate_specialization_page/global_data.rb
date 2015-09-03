@@ -13,9 +13,12 @@ class GenerateSpecializationPage
             languages: "Languages",
             referrals: "Referrals",
             schedule: "Schedule",
-            sex: "Sex"
+            sex: "Sex",
+            associations: "Associations"
           },
           city: city_labels,
+          hospitals: hospital_labels,
+          clinics: clinic_labels,
           procedures: procedure_labels,
           acceptsReferralsViaPhone: "Accepts referrals Via phone",
           patientsCanBook: "Patients can call to book after referral",
@@ -30,6 +33,19 @@ class GenerateSpecializationPage
     end
 
     private
+
+    def clinic_labels
+      Clinic.all.inject({}) do |memo, clinic|
+        memo.merge(clinic.id => clinic.name)
+      end
+    end
+
+    def hospital_labels
+      Hospital.all.inject({}) do |memo, hospital|
+        memo.merge(hospital.id => hospital.name)
+      end
+    end
+
 
     def specialization_labels
       Specialization.all.inject({}) do |memo, specialization|
