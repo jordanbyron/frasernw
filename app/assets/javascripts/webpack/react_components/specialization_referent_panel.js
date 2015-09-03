@@ -34,7 +34,7 @@ module.exports = React.createClass({
   },
   render: function() {
     var operativeFilters = values(this.props.filterPredicates).filter(
-      (predicate) => predicate.test(this.props.filterValues)
+      (predicate) => predicate.isActivated(this.props.filterValues)
     );
 
     var preSpecializationFiltered = this.props.records.filter((row) => {
@@ -61,7 +61,7 @@ module.exports = React.createClass({
       labels: DataTable.labels(this.props),
       filterValues: this.props.filterValues,
       bodyRows: bodyRows,
-      filterFunction: this.props.filterFunctionName
+      collectionName: this.props.collectionName
     });
 
     var shouldShowSpecializationFilter =

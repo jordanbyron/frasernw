@@ -6,7 +6,7 @@ var verb = function(props) {
   if (props.bodyRows.length > 0){
     return "Showing all";
   } else {
-    return "There are no " + props.filterFunction;
+    return "There are no";
   }
 }
 
@@ -36,7 +36,6 @@ module.exports = function(operativeFilters, props) {
   let trailingFilterPredicates = values(pick(operativeFilters, ((filter => {
     return filter.summaryPlacement === "trailing"
   }))))
-    .filter((filter) => filter.test(props.filterValues))
     .map((filter) => filter.summary(props))
     .filter((segment) => segment.length > 0)
     .join(" and ");
@@ -44,7 +43,6 @@ module.exports = function(operativeFilters, props) {
   let leadingFilterPredicates = values(pick(operativeFilters, ((filter => {
     return filter.summaryPlacement === "leading"
   }))))
-    .filter((filter) => filter.test(props.filterValues))
     .map((filter) => filter.summary(props))
     .filter((segment) => segment.length > 0)
     .join(", ");

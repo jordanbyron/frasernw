@@ -20,19 +20,22 @@ module.exports = React.createClass({
     return(
       <Filters title={this.props.labels.filterSection}>
         <ToggleableFilterGroup
-          filterGroupKey={"procedures"}
+          filterGroupKey="procedures"
           {...toggleableFilterProps}/>
         <ToggleableFilterGroup
-          filterGroupKey={"referrals"}
+          filterGroupKey="referrals"
           {...toggleableFilterProps}/>
         <ToggleableFilterGroup
-          filterGroupKey={"schedule"}
+          filterGroupKey="clinicDetails"
           {...toggleableFilterProps}/>
         <ToggleableFilterGroup
-          filterGroupKey={"languages"}
+          filterGroupKey="schedule"
           {...toggleableFilterProps}/>
         <ToggleableFilterGroup
-          filterGroupKey={"city"}
+          filterGroupKey="languages"
+          {...toggleableFilterProps}/>
+        <ToggleableFilterGroup
+          filterGroupKey="city"
           {...toggleableFilterProps}/>
       </Filters>
     );
@@ -44,7 +47,11 @@ module.exports = React.createClass({
     "respondsWithin",
     "procedures",
     "referrals",
-    "languages"
+    "languages",
+    "schedule",
+    "private",
+    "public",
+    "wheelchairAccessible"
   ],
   rowFilters: function() {
     return pick(rowFilters, this.filterKeys);

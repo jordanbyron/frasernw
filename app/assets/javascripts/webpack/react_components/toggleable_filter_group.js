@@ -9,7 +9,8 @@ var filterGroups = {
   sex: require("./filter_groups/sex"),
   schedule: require("./filter_groups/schedule"),
   languages: require("./filter_groups/languages"),
-  associations: require("./filter_groups/associations")
+  associations: require("./filter_groups/associations"),
+  clinicDetails: require("./filter_groups/clinic_details")
 }
 
 module.exports = React.createClass({

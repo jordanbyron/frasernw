@@ -9,7 +9,7 @@ var keysAtTruthyVals = require("../utils").keysAtTruthyVals;
 
 module.exports = {
   cities: {
-    test: function(){ return true; },
+    isActivated: function(){ return true; },
     predicate: function(record, filters) {
       return record.cityIds.some((id) => filters.city[id]);
     },
@@ -17,7 +17,7 @@ module.exports = {
     summaryPlacement: "none"
   },
   procedures: {
-    test: function(filters) {
+    isActivated: function(filters) {
       return some((values(filters.procedures)), (value) => value);
     },
     predicate: function(record, filters) {
@@ -41,7 +41,7 @@ module.exports = {
     summaryPlacement: "trailing",
   },
   acceptsReferralsViaPhone: {
-    test: function(filters) {
+    isActivated: function(filters) {
       return filters.acceptsReferralsViaPhone;
     },
     predicate: function(record, filter) {
@@ -57,7 +57,7 @@ module.exports = {
     summaryPlacement: "trailing"
   },
   patientsCanBook: {
-    test: function(filters) {
+    isActivated: function(filters) {
       return filters.patientsCanBook;
     },
     predicate: function(record, filter) {
@@ -73,7 +73,7 @@ module.exports = {
     summaryPlacement: "trailing"
   },
   respondsWithin: {
-    test: function(filters) {
+    isActivated: function(filters) {
       return filters.respondsWithin != 0;
     },
     predicate: function(record, filters) {
@@ -92,7 +92,7 @@ module.exports = {
     summaryPlacement: "trailing"
   },
   sex: {
-    test: function(filters) {
+    isActivated: function(filters) {
       return uniq(values(filters.sex)).length > 1;
     },
     predicate: function(record, filters) {
@@ -110,7 +110,7 @@ module.exports = {
     summaryPlacement: "leading"
   },
   languages: {
-    test: function(filters) {
+    isActivated: function(filters) {
       return some((values(filters.languages)), (value) => value);
     },
     predicate: function(record, filters) {
@@ -137,7 +137,7 @@ module.exports = {
     summaryPlacement: "trailing"
   },
   schedule: {
-    test: function(filters) {
+    isActivated: function(filters) {
       return some(values(filters.schedule), (value) => value);
     },
     predicate: function(record, filters) {
@@ -164,7 +164,7 @@ module.exports = {
     summaryPlacement: "trailing"
   },
   clinicAssociation: {
-    test: function(filters) {
+    isActivated: function(filters) {
       return filters.clinicAssociation != 0;
     },
     predicate: function(record, filters) {
@@ -177,7 +177,7 @@ module.exports = {
     summaryPlacement: "trailing"
   },
   hospitalAssociation: {
-    test: function(filters) {
+    isActivated: function(filters) {
       return filters.hospitalAssociation != 0;
     },
     predicate: function(record, filters) {
@@ -188,5 +188,41 @@ module.exports = {
         props.labels.hospitals[props.filterValues.hospitalAssociation]);
     },
     summaryPlacement: "trailing"
+  },
+  public: {
+    isActivated: function(filters) {
+      return filters.public
+    },
+    predicate: function(record, filters) {
+      return !record.private;
+    },
+    summary: function(props) {
+      return "public";
+    },
+    summaryPlacement: "leading"
+  },
+  private: {
+    isActivated: function(filters) {
+      return filters.private
+    },
+    predicate: function(record, filters) {
+      return record.private;
+    },
+    summary: function(props) {
+      return "private";
+    },
+    summaryPlacement: "leading"
+  },
+  wheelchairAccessible: {
+    isActivated: function(filters) {
+      return filters.wheelchairAccessible
+    },
+    predicate: function(record, filters) {
+      return record.wheelchairAccessible;
+    },
+    summary: function(props) {
+      return "wheelchair accessible";
+    },
+    summaryPlacement: "leading"
   }
 }

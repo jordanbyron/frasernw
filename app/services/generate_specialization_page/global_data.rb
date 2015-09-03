@@ -14,7 +14,8 @@ class GenerateSpecializationPage
             referrals: "Referrals",
             schedule: "Schedule",
             sex: "Sex",
-            associations: "Associations"
+            associations: "Associations",
+            clinicDetails: "Clinic Details"
           },
           city: city_labels,
           hospitals: hospital_labels,

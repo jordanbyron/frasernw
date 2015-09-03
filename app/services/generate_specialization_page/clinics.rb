@@ -27,7 +27,10 @@ class GenerateSpecializationPage
               female: false
             },
             specializationId: specialization.id,
-            specialization: false
+            specialization: false,
+            public: false,
+            private: false,
+            wheelchairAccessible: false
           },
           filterArrangements: {
             schedule: Schedule::DAY_HASH.keys,
@@ -52,7 +55,8 @@ class GenerateSpecializationPage
             languages: false,
             procedures: false,
             referrals: false,
-            schedule: false
+            schedule: false,
+            clinicDetails: false
           },
           collectionName: "clinics"
         }
@@ -77,7 +81,9 @@ class GenerateSpecializationPage
             patientsCanBook: clinic.patient_can_book?,
             scheduledDayIds: clinic.scheduled_day_ids,
             languageIds: clinic.languages.map(&:id),
-            specializationIds: clinic.specializations.map(&:id)
+            specializationIds: clinic.specializations.map(&:id),
+            wheelchairAccessible: clinic.wheelchair_accessible?,
+            private: clinic.private?
           }
         end
       end
