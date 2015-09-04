@@ -16,13 +16,15 @@ class GenerateSpecializationPage
             sex: "Sex",
             associations: "Associations",
             clinicDetails: "Clinic Details",
-            careProviders: "Care Providers"
+            careProviders: "Care Providers",
+            subcategories: "Subcategories"
           },
           city: City.id_hash,
           hospitals: Hospital.id_hash,
           clinics: Clinic.id_hash,
           procedures: procedure_labels,
           careProviders: HealthcareProvider.id_hash,
+          scCategories: ScCategory.id_hash,
           acceptsReferralsViaPhone: "Accepts referrals Via phone",
           patientsCanBook: "Patients can call to book after referral",
           respondsWithin: "Responded to within",

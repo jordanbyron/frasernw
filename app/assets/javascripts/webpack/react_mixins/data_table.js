@@ -26,13 +26,12 @@ module.exports  = {
       update: update
     });
   },
-  handleClearFilters: function(dispatch, filterFunctionName) {
+  handleClearFilters: function(dispatch) {
     return (e) => {
       e.preventDefault();
 
       return dispatch({
-        type: "CLEAR_FILTERS",
-        filterFunction: filterFunctionName
+        type: "CLEAR_FILTERS"
       });
     };
   },

@@ -28,7 +28,7 @@ var pronoun = function(props) {
   } else if (props.filterFunction === "specialists") {
     return "who";
   } else {
-    return "who";
+    return "that";
   }
 }
 

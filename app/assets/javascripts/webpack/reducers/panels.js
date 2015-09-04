@@ -2,7 +2,8 @@ var mapValues = require("lodash/object/mapValues");
 var objectAssign = require("object-assign");
 var reducers = {
   SpecializationClinicsPanel: require("./data_table"),
-  SpecializationSpecialistsPanel: require("./data_table")
+  SpecializationSpecialistsPanel: require("./data_table"),
+  FilterableSpecializationResources: require("./data_table")
 }
 
 module.exports = function(state = {}, action) {

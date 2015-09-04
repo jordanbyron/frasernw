@@ -4,7 +4,9 @@ var objectAssign = require("object-assign");
 var contentClasses = {
   SpecializationSpecialistsPanel: require("./specialization_specialists_panel"),
   SpecializationClinicsPanel:
-  require("./specialization_clinics_panel")
+  require("./specialization_clinics_panel"),
+  InlineSpecializationResources: require("./inline_specialization_resources"),
+  FilterableSpecializationResources: require("./filterable_specialization_resources")
 }
 
 module.exports = React.createClass({

@@ -11,7 +11,8 @@ var filterGroups = {
   languages: require("./filter_groups/languages"),
   associations: require("./filter_groups/associations"),
   clinicDetails: require("./filter_groups/clinic_details"),
-  careProviders: require("./filter_groups/care_providers")
+  careProviders: require("./filter_groups/care_providers"),
+  subcategories: require("./filter_groups/subcategories")
 }
 
 module.exports = React.createClass({

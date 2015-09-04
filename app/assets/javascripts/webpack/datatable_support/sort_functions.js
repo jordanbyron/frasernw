@@ -12,5 +12,15 @@ module.exports = {
     default:
       return function(row){ return row.record.name; };
     }
+  },
+  resources: function(sortConfig) {
+    switch(sortConfig.column) {
+    case "TITLE":
+      return function(row){ return row.record.title; };
+    case "SUBCATEGORY":
+      return function(row){ return row.cells[2]; };
+    default:
+      return function(row){ return row.record.title; };
+    }
   }
 }

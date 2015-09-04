@@ -9,16 +9,23 @@ var ResultSummary = require("./result_summary");
 var SpecializationFilter = require("./specialization_filter");
 var Table = require("./table");
 var getFilterSummary = require("../datatable_support/filter_summary");
+var rowFilters = require("../datatable_support/filters");
+var rowGenerators = require("../datatable_support/row_generators");
+var sortFunctions = require("../datatable_support/sort_functions");
+var SidebarLayout = require("./sidebar_layout");
+var pick = require("lodash/object/pick");
+var Filters = require("./filters");
+var ToggleableFilterGroup = require("./toggleable_filter_group");
 
 module.exports = React.createClass({
   generateBodyRows: function(filtered) {
     var unsorted = filtered.map((row) => {
-      return this.props.rowGenerator(row, DataTable.labels(this.props))
+      return rowGenerators.resources(row, DataTable.labels(this.props))
     });
 
     var sorted = sortBy(
       unsorted,
-      this.props.sortFunction(this.props.sortConfig)
+      sortFunctions.resources(this.props.sortConfig)
     );
 
     if (this.props.sortConfig.order == "DESC"){
@@ -27,34 +34,30 @@ module.exports = React.createClass({
       return sorted;
     }
   },
-  shouldFilterBySpecialization: function() {
-    return ( this.props.filterValues.specialization ||
-      (keysAtTruthyVals(this.props.filterValues.procedures).length != 1));
+  filters: function() {
+    return pick(rowFilters, ["subcategories"]);
   },
-  render: function() {
-    var operativeFilters = values(this.props.filterPredicates).filter(
+  sidebar: function() {
+    return(
+      <Filters title={this.props.labels.filterSection}>
+        <ToggleableFilterGroup
+          {...DataTable.toggleableFilterProps(this.props, "subcategories")}/>
+      </Filters>
+    );
+  },
+  mainPanel: function() {
+    var operativeFilters = values(this.filters()).filter(
       (predicate) => predicate.isActivated(this.props.filterValues)
     );
 
-    var preSpecializationFiltered = this.props.records.filter((row) => {
+    var filtered = this.props.records.filter((row) => {
       return every(
         operativeFilters,
         (filter) => filter.predicate(row, this.props.filterValues)
       );
     });
 
-    var specializationFiltered = preSpecializationFiltered.filter((record) => {
-      return find(record.specializationIds, (id) => {
-        return (this.props.filterValues.specializationId === id);
-      });
-    });
-    var remainder = preSpecializationFiltered.length - specializationFiltered.length;
-
-    if (this.shouldFilterBySpecialization()) {
-      var bodyRows = this.generateBodyRows(specializationFiltered);
-    } else {
-      var bodyRows = this.generateBodyRows(preSpecializationFiltered);
-    }
+    var bodyRows = this.generateBodyRows(filtered);
 
     var filterSummary = getFilterSummary(operativeFilters, {
       labels: DataTable.labels(this.props),
@@ -63,22 +66,12 @@ module.exports = React.createClass({
       collectionName: this.props.collectionName
     });
 
-    var shouldShowSpecializationFilter =
-      (keysAtTruthyVals(this.props.filterValues.procedures).length === 1) &&
-      remainder > 0
-
     return (
       <div>
         <ResultSummary anyResults={(bodyRows.length > 0)}
           bodyRows={bodyRows}
           filterSummary={filterSummary}
           handleClearFilters={DataTable.handleClearFilters(this.props.dispatch)}
-        />
-        <SpecializationFilter
-          show={shouldShowSpecializationFilter}
-          remainder={remainder}
-          dispatch={this.props.dispatch}
-          showingOtherSpecialties={!this.props.filterValues.specialization}
         />
         <Table
           headings={this.props.tableHeadings}
@@ -89,4 +82,12 @@ module.exports = React.createClass({
       </div>
     );
   },
+  render: function() {
+    return(
+      <SidebarLayout
+        main={this.mainPanel()}
+        sidebar={this.sidebar()}
+      />
+    );
+  }
 })

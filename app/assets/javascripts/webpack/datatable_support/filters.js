@@ -252,5 +252,31 @@ module.exports = {
       }
     },
     summaryPlacement: "trailing"
+  },
+  subcategories: {
+    isActivated: function(filters) {
+      return some(values(filters.subcategories), (value) => value);
+    },
+    predicate: function(record, filters) {
+      var activatedSubcategories = keysAtTruthyVals(
+        filters.subcategories
+      )
+
+      return find(activatedSubcategories, record.scCategoryId);
+    },
+    summary: function(props) {
+      var activatedSubcategories = keysAtTruthyVals(
+        props.filterValues.subcategories
+      )
+
+      if (activatedSubcategories.length > 0){
+        return "are in one of the following subcategories: " + activatedSubcategories.map(
+          (id) => props.labels.scCategories[id]
+        ).join(", ");
+      } else {
+        return "";
+      }
+    },
+    summaryPlacement: "trailing"
   }
 }

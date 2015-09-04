@@ -1,7 +1,7 @@
 module ActiveRecord
   class Base
     def self.id_hash
-      self.all.inject({}) do |memo, record|
+      all.inject({}) do |memo, record|
         if block_given?
           memo.merge(record.id => yield(record))
         else

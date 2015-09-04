@@ -39,5 +39,18 @@ module.exports = {
       reactKey: (record.collectionName + record.id),
       record: record
     }
+  },
+  resources: function(record, labels) {
+    return {
+      cells: [
+        record.title,
+        labels.scCategories[record.scCategoryId],
+        "",
+        "",
+        ""
+      ],
+      reactKey: (record.collectionName + record.id),
+      record: record
+    }
   }
 }

@@ -18,7 +18,7 @@ class GenerateSpecializationPage
           specialization: specialization,
           referral_cities: referral_cities
         )
-      }
+      }.merge(content_category_panels)
     }
   end
 
@@ -35,7 +35,36 @@ class GenerateSpecializationPage
         key: "clinics",
         label: "Clinics"
       }
-    ]
+    ] + content_categories.map do |category|
+      {
+        key: "CC_#{category[:category].id}",
+        label: category[:category].name
+      }
+    end
+  end
+
+  def content_categories
+    @content_categories ||= ScCategory.specialty.map do |category|
+      {
+        category: category,
+        items: category.all_sc_items_for_specialization_in_divisions(
+          specialization,
+          current_user.divisions
+        )
+      }
+    end.select{|category| category[:items].any?}
+  end
+
+  def content_category_panels
+    content_categories.inject({}) do |memo, category|
+      memo.merge({
+        "CC_#{category[:category].id}" => ContentCategory.exec(
+          specialization: specialization,
+          category: category[:category],
+          items: category[:items]
+        )
+      })
+    end
   end
 
   def referral_cities

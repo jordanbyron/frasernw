@@ -38,6 +38,14 @@ class ScCategory < ActiveRecord::Base
     end
   end
 
+  def filterable_on_specialty_pages?
+    [4, 1].include?(display_mask)
+  end
+
+  def inline_on_specialty_pages?
+    [5, 3].include?(display_mask)
+  end
+
   def display
     ScCategory::DISPLAY_HASH[display_mask]
   end
