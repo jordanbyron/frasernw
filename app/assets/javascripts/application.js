@@ -4,9 +4,9 @@
 // It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
 // the compiled file.
 //
-//= require jquery-1.7.2.min
-//= require jquery-ui
-//= require jquery_ujs
+//= require jquery-1.8.0.min
+//= require jquery-ui-1.8.16.min
+//= require jquery-ujs-1.0.4
 //= require jquery.scrollto.min.js
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/2/jquery.dataTables.bootstrap
