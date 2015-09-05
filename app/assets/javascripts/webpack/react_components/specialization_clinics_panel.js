@@ -12,22 +12,24 @@ var pick = require("lodash/object/pick");
 module.exports = React.createClass({
   sidebar: function() {
     return(
-      <Filters title={this.props.labels.filterSection}>
-        <ToggleableFilterGroup
-          {...DataTable.toggleableFilterProps(this.props, "procedures")}/>
-        <ToggleableFilterGroup
-          {...DataTable.toggleableFilterProps(this.props, "referrals")}/>
-        <ToggleableFilterGroup
-          {...DataTable.toggleableFilterProps(this.props, "clinicDetails")}/>
-        <ToggleableFilterGroup
-          {...DataTable.toggleableFilterProps(this.props, "careProviders")}/>
-        <ToggleableFilterGroup
-          {...DataTable.toggleableFilterProps(this.props, "schedule")}/>
-        <ToggleableFilterGroup
-          {...DataTable.toggleableFilterProps(this.props, "languages")}/>
-        <ToggleableFilterGroup
-          {...DataTable.toggleableFilterProps(this.props, "city")}/>
-      </Filters>
+      <div>
+        <Filters title={this.props.labels.filterSection}>
+          <ToggleableFilterGroup
+            {...DataTable.toggleableFilterProps(this.props, "procedures")}/>
+          <ToggleableFilterGroup
+            {...DataTable.toggleableFilterProps(this.props, "referrals")}/>
+          <ToggleableFilterGroup
+            {...DataTable.toggleableFilterProps(this.props, "clinicDetails")}/>
+          <ToggleableFilterGroup
+            {...DataTable.toggleableFilterProps(this.props, "careProviders")}/>
+          <ToggleableFilterGroup
+            {...DataTable.toggleableFilterProps(this.props, "schedule")}/>
+          <ToggleableFilterGroup
+            {...DataTable.toggleableFilterProps(this.props, "languages")}/>
+          <ToggleableFilterGroup
+            {...DataTable.toggleableFilterProps(this.props, "city")}/>
+        </Filters>
+      </div>
     );
   },
   filterKeys: [

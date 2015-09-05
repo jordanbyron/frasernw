@@ -46,6 +46,28 @@
                 %td
                   = check_box_tag "#{city.id}_#{specialization.id}", 1, (@local_referral_cities[city.id].present?) && (@local_referral_cities[city.id].include? specialization.id), :name => "local_referral_cities[#{city.id}][#{specialization.id}]", :class => "city_#{city.id} city_specialization"
 
+  %br
+  %h4 Customize City Proximities
+  .row
+    %div{style: "width: 100%; padding-left: 20px;"}
+      = f.label :sort_cities_by_proximity,
+        "Customize City Proximities",
+        style: "display: inline-block; font-weight: bold;"
+      = f.check_box :sort_cities_by_proximity,
+        style: "margin-left: 10px; margin-bottom: 7px;"
+      %p{style: "margin-left: 0px;"}
+        %i If enabled, cities will be sorted on specialization pages by the rankings below.  If disabled, the local referral area for that specialization will be used.
+      %br
+      #city_proximity_checkboxes
+        %p{style: "margin-left: 0px;"}
+          %strong City Proximity Customization
+        - @city_proximities.each do |proximity|
+          %div{style: "margin-top: 10px; display: inline-block; width: 100px;"}
+            = label_tag "city_proximities[#{proximity[:city_id]}]", proximity[:city_name]
+            = select_tag "city_proximities[#{proximity[:city_id]}]",
+              proximity[:options_for_select].html_safe,
+              style: "width: 100px;"
+
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
     %a.btn.btn-danger.ajax{"href" => divisions_path} Cancel
