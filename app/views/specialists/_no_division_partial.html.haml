@@ -1,0 +1,17 @@
+%table.table.table-condensed.table-striped
+  - no_division_specialists = Specialist.all - Specialist.in_cities(City.all)
+  - Specialist.preload_associations(no_division_specialists, :specializations)
+  - specializations.each do |specialization|
+    - for_specialization = no_division_specialists.select{|sp| sp.specializations.include?(specialization)}
+    - next unless for_specialization.any?
+    - cache("hey", expires_in: 7.days) do # expires_in used only as a fail safe in case recache fails
+      %tr
+        %th{:style => "width:100%"}=specialization.name
+        %th.admin
+
+      - for_specialization.each do |specialist|
+        %tr
+          %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
+          %td.admin.btn-group
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
+            = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")

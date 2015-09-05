@@ -104,6 +104,8 @@ GEM
       delayed_job (> 2.0.3)
       sinatra (>= 0.9.2)
     diff-lcs (1.2.5)
+    edge_rider (0.3.1)
+      activerecord
     em-websocket (0.5.1)
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
@@ -523,6 +525,7 @@ DEPENDENCIES
   delayed_job
   delayed_job_active_record
   delayed_job_web
+  edge_rider
   exception_notification
   google-api-client (= 0.7.1)
   guard
@@ -580,4 +583,4 @@ DEPENDENCIES
   will_paginate (~> 3.0.0)
 
 BUNDLED WITH
-   1.10.3
+   1.10.6

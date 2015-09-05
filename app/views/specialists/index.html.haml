@@ -6,6 +6,9 @@
 
 - set_page_specific_title "Specialists"
 
+-# - all_specialists = Specialist.with_cities.includes(:specializations).all
+
+
 .content-wrapper
   - if @specializations.length > 1
     %h2 All Specialists
@@ -14,42 +17,32 @@
   .tabbable
     %ul#content_tabs.nav.nav-tabs
       - @all_divisions.each do |division|
-        %li{:class => (division == @first_division) && "active"}
+        %li{:class => (division == @selected_division) && "active"}
           %a{"href" => "##{division.id}_tab", "data-toggle" => "tab"}= division.name
       %li
         %a{"href" => "#no_division_tab", "data-toggle" => "tab"} No Division
     .tab-content
       - @all_divisions.each do |division|
-        - can_edit = @user_divisions.include? division
-        .tab-pane{:id => "#{division.id}_tab", :class => (division == @first_division) && "active"}
-          %table.table.table-condensed.table-striped
-            - @specializations.each do |specialization|
-              - cache("specialists_index_#{specialization.cache_key}_#{specialization.specialists.cache_key}_#{division.cache_key}_#{can_edit}") do
-                - specialists = specialization.specialists.in_divisions([division]).sort{ |a,b| (a.lastname || "zzz") <=> (b.lastname || "zzz") }
-                - next if specialists.blank?
-                %tr{ :class => specialization.fully_in_progress_for_divisions([division]) ? "in-progress" : "" }
-                  %th{:style => "width:100%"}=specialization.name
-                  - if can_edit
-                    %th.admin
+        .tab-pane{:id => "#{division.id}_tab", :class => (division == @selected_division) && "active"}
+          - if division == @selected_division
+            = render "division_partial",
+              user_divisions: @user_divisions,
+              division: division,
+              specializations: @specializations
+          - else
+            #heartbeat-loader-position
+              .heartbeat-loader
+      .tab-pane{:id => "#0_tab"}
+        #heartbeat-loader-position
+          .heartbeat-loader
 
-                - specialists.each do |specialist|
-                  %tr
-                    %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
-                    - if can_edit
-                      %td.admin.btn-group
-                        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
-                        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")
-      .tab-pane{:id => "no_division_tab"}
-        %table.table.table-condensed.table-striped
-          - @specializations.select(&:no_division_specialists?).each do |specialization|
-            - cache("specialists_index_no_division_tab_#{specialization.cache_key}_#{specialization.specialists.cache_key}", expires_in: 7.days) do # expires_in used only as a fail safe in case recache fails
-              %tr
-                %th{:style => "width:100%"}=specialization.name
-                %th.admin
+:javascript
+  var href = "#{@follow_path}";
 
-              - specialization.no_division_specialists.each do |specialist|
-                %tr
-                  %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
-                  %td.admin.btn-group
-                    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
-                    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")
+  $.get(href).done(function(data){
+    $(document).ready(function(){
+      data.partials.map(function(partial){
+        $("#" + partial.id + "_tab").html(partial.html);
+      });
+    });
+  });

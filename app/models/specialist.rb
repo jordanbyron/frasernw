@@ -130,6 +130,26 @@ class Specialist < ActiveRecord::Base
     )
   end
 
+  def self.with_cities
+    includes({
+      :hospitals => { location: {address: :city}},
+      :offices => {location: [
+        {:address => :city},
+        {:hospital_in => {:location => { :address => :city}}},
+        {:location_in => [
+          {:address => :city},
+          {:hospital_in => {:location => { :address => :city}}}
+        ]}
+      ]},
+      :clinics => {
+        locations: [
+          {address: :city},
+          {hospital_in: {location: {address: :city}}},
+        ]
+      }
+    })
+  end
+
   def self.includes_specialization_page
     includes([
       {:specialist_offices => {:office => {:location => :address}}}, :procedures,
@@ -183,6 +203,7 @@ class Specialist < ActiveRecord::Base
   def self.in_cities(c)
   #for specialists that haven't responded or are purosely not yet surveyed we just try to grab any city that makes sense
     city_ids = Array.wrap(c).map{ |city| city.id }.sort
+    
     responded_direct = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL AND "direct_location".location_in_id IS NULL AND "specialists".categorization_mask in (?)', "Office", city_ids, [1, 2, 4, 5])
 
     responded_in_hospital = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id').where('"direct_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "specialists".categorization_mask in (?)', "Office", "Hospital", city_ids, [1, 2, 4, 5])

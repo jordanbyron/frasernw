@@ -68,6 +68,14 @@ class GenerateSpecializationPage
       }
     end
 
+    # TO pull in eagerly:
+    # city Ids
+    # procedure Ids
+    # day ids
+    # language ids
+    # hospital ids
+    # clinic ids
+    # specialization ids
     def hashified_specialists
       Rails.cache.fetch("serialized_specialists") do
         all.map do |specialist|

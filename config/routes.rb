@@ -38,6 +38,9 @@ Frasernw::Application.routes.draw do
   end
 
   resources :specialists do
+    collection do
+      get :just_partials
+    end
     member do
       get :review
       get :rereview

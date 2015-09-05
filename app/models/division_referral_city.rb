@@ -24,4 +24,8 @@ class DivisionReferralCity < ActiveRecord::Base
       selected: self.proximity
     )
   end
+
+  def city_id
+    city.id
+  end
 end

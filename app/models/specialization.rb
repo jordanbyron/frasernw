@@ -129,7 +129,7 @@ class Specialization < ActiveRecord::Base
 
   def no_division_specialists
     @no_division_specialists ||=
-      specialists.includes_specialist_offices.reject do |specialist|
+      specialists.with_cities.reject do |specialist|
         specialist.cities.length > 0
       end
   end

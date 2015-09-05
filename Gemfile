@@ -50,6 +50,8 @@ gem 'exception_notification'
 gem 'cancan', '1.6.7'
 gem "paperclip", "~> 2.7"
 
+gem 'edge_rider'
+
 #Avoid known issue w/ paperclip
 #http://stackoverflow.com/questions/28374401/nameerror-uninitialized-constant-paperclipstorages3aws
 gem "aws-sdk", "< 2.0"

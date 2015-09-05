@@ -16,9 +16,51 @@ class SpecialistsController < ApplicationController
     end
     @all_divisions = Division.all
     @user_divisions = current_user_divisions
-    @first_division = @user_divisions.first
+    @follow_path = begin
+      if params[:specialization_id].present?
+        just_partials_specialists_path(specialization_id: params[:specialization_id])
+      else
+        just_partials_specialists_path
+      end
+    end
+    @selected_division = @user_divisions.first
+  end
 
-    render :layout => 'ajax' if request.headers['X-PJAX']
+  def just_partials
+    if params[:specialization_id].present?
+      @specializations = [Specialization.find(params[:specialization_id])]
+    else
+      @specializations = Specialization.all
+    end
+    @user_divisions = current_user_divisions
+
+    no_division_partial = render_to_string(
+      partial: "no_division_partial",
+      locals: {
+        specializations: @specializations
+      }
+    )
+
+    partials = Division.all.map do |division|
+      {
+        id: division.id,
+        html: render_to_string(
+          partial: "division_partial",
+          locals: {
+            user_divisions: @user_divisions,
+            division: division,
+            specializations: @specializations
+          }
+        )
+      }
+    end << {
+      id: 0,
+      html: no_division_partial
+    }
+
+    render json: {
+      partials: partials
+    }
   end
 
   def show
