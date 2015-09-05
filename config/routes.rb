@@ -113,6 +113,9 @@ Frasernw::Application.routes.draw do
 
   get  '/specialties/:id/cities/:city_id' => 'specializations#city', :as => 'specialization_city'
 
+  #Used to cache fragments of admin All Specialists page
+  get  '/specialties/:specialization_id/:token/specialists/refresh_index_cache/:division_id'     => 'specialists#refresh_index_cache', :as => 'specialist_refresh_index_cache'
+
   #need improve performance:
   get  '/specialties/:id/:token/refresh_city_cache/:city_id' => 'specializations#refresh_city_cache', :as => 'specialization_refresh_city_cache'
   get  '/specialties/:id/:token/refresh_division_cache/:division_id' => 'specializations#refresh_division_cache', :as => 'specialization_refresh_division_cache'
