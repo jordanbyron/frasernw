@@ -139,8 +139,9 @@ class Specialist < ActiveRecord::Base
 
   def self.cache_key
     max_updated_at = maximum(:updated_at).try(:utc).try(:to_s, :number)
-    "specialists/all-#{count}-#{max_updated_at}"
-    #Debug note: with a subset of Specialists record, there is a small chance of a false cache hit if two collections have different values but matching count / max updated_at values
+    sum_of_ids = limit(100).pluck(:id).try(:compact).inject{|sum, id| sum + id }
+    "specialists/all-#{count}-#{max_updated_at}-#{sum_of_ids}"
+    # since cache_key acts on a subset of Specialist records; sum_of_ids was added to reduce the chance of an incorrect cache hit should two collections ever have matching count / max updated_at values
   end
 
   # TODO: See if .map(&:id) could use .pluck(&:id) here after upgrading to Rails3.2
