@@ -81,6 +81,85 @@ class Specialist < ActiveRecord::Base
   #   Rails.cache.fetch('Specialist.all') { all }
   # end
 
+  def self.with_city_ids
+    sql = <<-SQL
+      SELECT
+        specialist_id,
+        firstname,
+        lastname,
+        city_ids
+      FROM (
+        SELECT
+          id AS specialist_id,
+          firstname,
+          lastname,
+          categorization_mask
+        FROM specialists
+        GROUP BY specialist_id
+      ) e1 LEFT JOIN LATERAL (
+        WITH office_city_ids AS(
+          SELECT cities.id
+          FROM cities
+          INNER JOIN addresses
+          ON cities.id = addresses.city_id
+          INNER JOIN locations
+          ON locations.address_id = addresses.id
+          INNER JOIN offices
+          ON locations.locatable_id = offices.id
+          INNER JOIN specialist_offices
+          ON specialist_offices.id = offices.id
+          INNER JOIN specialists
+          ON specialist_offices.specialist_id = specialists.id
+          WHERE locations.locatable_type = 'Office'
+          AND specialists.id = e1.specialist_id
+        ), hospital_city_ids AS(
+          SELECT cities.id
+          FROM cities
+          INNER JOIN addresses
+          ON cities.id = addresses.city_id
+          INNER JOIN locations
+          ON locations.address_id = addresses.id
+          INNER JOIN hospitals
+          ON locations.locatable_id = hospitals.id
+          INNER JOIN privileges
+          ON privileges.hospital_id = hospitals.id
+          INNER JOIN specialists
+          ON specialists.id = privileges.specialist_id
+          WHERE locations.locatable_type = 'Hospital'
+          AND specialists.id = e1.specialist_id
+        ), clinic_city_ids AS(
+          SELECT cities.id
+          FROM cities
+          INNER JOIN addresses
+          ON cities.id = addresses.city_id
+          INNER JOIN locations
+          ON locations.address_id = addresses.id
+          INNER JOIN clinic_locations
+          ON locations.locatable_id = clinic_locations.id
+          INNER JOIN attendances
+          ON attendances.clinic_location_id = clinic_locations.id
+          INNER JOIN specialists
+          ON specialists.id = attendances.specialist_id
+          WHERE locations.locatable_type = 'Location'
+          AND specialists.id = e1.specialist_id
+        ) SELECT
+            CASE
+            WHEN e1.categorization_mask = '1'
+              THEN array(SELECT * FROM office_city_ids)
+            WHEN e1.categorization_mask = '3'
+              THEN (array(SELECT * FROM clinic_city_ids) || array(SELECT * FROM hospital_city_ids))
+            WHEN e1.categorization_mask IN ('4', '5', '2')
+              THEN (array(SELECT * FROM clinic_city_ids) || array(SELECT * FROM hospital_city_ids) || array(SELECT * FROM office_city_ids))
+            ELSE
+              ARRAY[]::integer[]
+            END
+            AS city_ids
+      ) e2 ON true;
+    SQL
+
+    ActiveRecord::Base.connection.execute(sql).to_a
+  end
+
   def self.cached_find(id)
     Rails.cache.fetch([name, id], expires_in: 4000.seconds) { find(id) }
   end
@@ -203,7 +282,7 @@ class Specialist < ActiveRecord::Base
   def self.in_cities(c)
   #for specialists that haven't responded or are purosely not yet surveyed we just try to grab any city that makes sense
     city_ids = Array.wrap(c).map{ |city| city.id }.sort
-    
+
     responded_direct = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL AND "direct_location".location_in_id IS NULL AND "specialists".categorization_mask in (?)', "Office", city_ids, [1, 2, 4, 5])
 
     responded_in_hospital = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id').where('"direct_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "specialists".categorization_mask in (?)', "Office", "Hospital", city_ids, [1, 2, 4, 5])
@@ -358,6 +437,30 @@ class Specialist < ActiveRecord::Base
       end
     end
     return result.is_a?(NullData) ? nil : result
+  end
+
+  def city_ids_through(key = :offices)
+    case key
+    when :offices
+      sql = <<-SQL
+        SELECT cities.id
+        FROM cities
+        INNER JOIN addresses
+        ON cities.id = addresses.city_id
+        INNER JOIN locations
+        ON locations.address_id = addresses.id
+        INNER JOIN offices
+        ON locations.locatable_id = offices.id
+        INNER JOIN specialist_offices
+        ON specialist_offices.id = offices.id
+        INNER JOIN specialists
+        ON specialist_offices.specialist_id = specialists.id
+        WHERE locations.locatable_type = 'Office'
+        AND specialists.id = #{self.id}
+      SQL
+
+      ActiveRecord::Base.connection.execute(sql).to_a
+    end
   end
 
   #we need to know their 'old' cities if they moved away
