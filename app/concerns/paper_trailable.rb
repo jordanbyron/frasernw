@@ -8,6 +8,7 @@ module PaperTrailable
   # If we can't find the appropriate version, default back to the model itself
   def creation
     versions.where(event: "create").first || OpenStruct.new(
+      created_at: created_at,
       safe_user: UnknownUser.new,
       next: nil
     )
@@ -25,14 +26,8 @@ module PaperTrailable
     end
   end
 
-  # Once again, have fallbacks just in case there isn't an updated version
   def last_update
-    masked_update_versions.last || OpenStruct.new(
-      created_at: updated_at,
-      safe_user: UnknownUser.new,
-      changeset: nil,
-      null_changeset?: true
-    )
+    masked_update_versions.last || creation
   end
 
   def masked_update_versions
