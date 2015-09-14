@@ -7,7 +7,7 @@ namespace :pathways do
     args.with_defaults(
       start_date:  Date.civil(2015, 4, 16),
       end_date:    Date.civil(2015, 4, 30),
-      division:    Division.find(7)
+      division:    Division.find(5)
     )
 
     ### Get the data
@@ -18,19 +18,27 @@ namespace :pathways do
       filters:    { division_id: args[:division].id }
     }
 
-    total_pageviews =
-      StatsReporter.page_views(common_options).first[:page_views]
+    total_pageviews = Analytics::ApiAdapter.get({
+      metrics: [:page_views],
+    }.merge(common_options)).first[:page_views]
 
-    total_sessions = StatsReporter.sessions(common_options).first[:sessions]
+    total_sessions = Analytics::ApiAdapter.get({
+      metrics: [:sessions],
+    }.merge(common_options)).first[:sessions]
 
-    total_users =
-      StatsReporter.total_users(common_options)
+    total_users = Analytics::ApiAdapter.get({
+      metrics: [:page_views],
+      dimensions: [:user_id]
+    }.merge(common_options)).count
 
-    page_views_by_page = StatsReporter.page_views(
-      common_options.merge(dimensions: [:page_path, :user_type_key])
-    )
+    page_views_by_page = Analytics::ApiAdapter.get({
+      metrics: [:page_views],
+    }.merge(common_options.merge(dimensions: [:page_path, :user_type_key])))
 
-    user_types = StatsReporter.user_types(common_options)
+    user_types = Analytics::ApiAdapter.get({
+      metrics: [:page_views, :sessions],
+      dimensions: [:user_type_key]
+    }.merge(common_options))
     user_types_table = HashTable.new(user_types)
 
     # transform user types table
@@ -149,7 +157,9 @@ namespace :pathways do
       args[:division].name,
       timestamp,
     ].join("_").safe_for_filename + ".csv"
-    file_path = Rails.root.join("reports", "divisions", filename)
+    folder_path = Rails.root.join("reports", "divisions")
+    FileUtils.ensure_folder_exists folder_path
+    file_path = folder_path.join(filename)
 
     CSV.open(file_path, "w+") do |csv|
       csv << [ "Pathways Usage Report"]
