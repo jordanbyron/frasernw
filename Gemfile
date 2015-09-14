@@ -59,6 +59,9 @@ gem 'public_activity'
 # Use unicorn as the web server
 gem 'unicorn'
 
+# Enables preloading associations of already loaded records to avoid n + 1's
+gem 'edge_rider'
+
 # Heroku caching
 gem 'kgio'
 gem 'dalli'
