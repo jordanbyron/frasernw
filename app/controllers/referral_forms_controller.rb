@@ -12,7 +12,7 @@ class ReferralFormsController < ApplicationController
       specialists = specialization.specialists.in_cities(cities)
       clinics = specialization.clinics.in_cities(cities)
 
-      # avoid n+1's
+      # avoid n+1's wtih edge_rider gem
       Specialist.preload_associations(specialists, :referral_forms)
       Clinic.preload_associations(clinics, :referral_forms)
 
