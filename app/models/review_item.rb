@@ -1,6 +1,17 @@
 class ReviewItem < ActiveRecord::Base
   include Noteable
   include Historical
+
+  # we only want archived
+  PAPER_TRAIL_IGNORED_ATTRIBUTES = [
+    :base_object,
+    :object,
+    :item_type,
+    :item_id,
+    :created_at,
+    :updated_at,
+    :id
+  ]
   include PaperTrailable
   include Archivable
 

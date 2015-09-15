@@ -1,7 +1,7 @@
 class GenerateHistory
   class LastUpdated < Base
     def exec
-      return [] if target.created_at == target.last_updated_at
+      return [] if target.created_at.to_i == target.last_updated_at.to_i
 
       [
         HistoryNode.new(
