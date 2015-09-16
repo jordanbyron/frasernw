@@ -7,6 +7,14 @@ Frasernw::Application.configure do
       :email_prefix => "[mdpathway exception] [#{ENV['APP_NAME']}]",
       :sender_address => %{"Pathways" <system@mdpathwaysbc.com>},
       :exception_recipients => config.system_notification_recipients
+    },
+    :slack => {
+      :webhook_url => "[#{ENV['SLACK_WEBHOOK_URL']}]",
+      :channel => "#server",
+      :additional_parameters => {
+        :icon_url => "https://pathwaysbc.ca/img/compass.png",
+        :mrkdwn => true
+      }
     }
 
   # Code is not reloaded between requests
