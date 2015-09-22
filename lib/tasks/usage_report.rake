@@ -1,6 +1,31 @@
 require 'csv'
 
-namespace :pathways do  
+
+
+namespace :pathways do
+  task :sept_2015_usage_report do
+    months = [
+      ["{2015-3-1}","{2015-3-31}"],
+      ["{2015-4-1}","{2015-4-30}"],
+      ["{2015-5-1}","{2015-5-31}"],
+      ["{2015-6-1}","{2015-6-30}"],
+      ["{2015-7-1}","{2015-7-31}"],
+      ["{2015-8-1}","{2015-8-31}"]
+    ]
+
+    months.each do |month|
+      Rake::Task["pathways:usage_report"].reenable
+      Rake::Task["pathways:usage_report"].invoke(*month)
+    end
+
+    Division.pluck(:id).reject{ |elem| elem == 13 || elem == 11 }.each do |division_id|
+      months.each do |month|
+        Rake::Task["pathways:usage_report"].reenable
+        Rake::Task["pathways:usage_report"].invoke(*[ month, division_id ].flatten)
+      end
+    end
+  end
+
   task :usage_report, [:start_date, :end_date, :division_id] => :environment do |t, args|
 
     ### Parse args
