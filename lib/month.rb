@@ -68,6 +68,10 @@ class Month
     Month.new(year, month)
   end
 
+  def friendly_name
+    start_date.strftime("%b %Y")
+  end
+
   def name
     start_date.strftime("%m-%Y")
   end

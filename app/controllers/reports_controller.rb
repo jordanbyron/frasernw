@@ -121,7 +121,7 @@ class ReportsController < ApplicationController
       Month.prev
     ).map do |month|
       [
-        month.name,
+        month.friendly_name,
         month.to_i
       ]
     end
