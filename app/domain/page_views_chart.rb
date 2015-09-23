@@ -1,14 +1,27 @@
 class PageViewsChart
   include ServiceObject.exec_with_args(:start_date, :end_date)
 
+  def self.generate_full_cache
+    exec(
+      start_date: Month.new(2014, 1).start_date,
+      end_date: Month.prev.end_date
+    )
+  end
+
   def exec
     {
+      title: {
+        text: ""
+      },
       xAxis: {
-        categories: categories,
+        title: {
+          text: "Week Starting On"
+        },
         labels: {
           staggerLines: 1,
           rotation: -45
-        }
+        },
+        type: "datetime"
       },
       yAxis: {
         title: {
@@ -79,9 +92,14 @@ class PageViewsChart
 
   def global_series
     {
-      name: "All of Pathways",
+      name: "All Divisions",
       data: weeks.map do |week|
-        global_data(week)
+        [
+          (week.start_date.at_midnight.to_i*1000),
+          Rails.cache.fetch("non_admin_page_views:#{week.start_date.to_s}:global") do
+            global_data(week)
+          end
+        ]
       end
     }
   end
@@ -90,7 +108,12 @@ class PageViewsChart
     {
       name: division.name,
       data: weeks.map do |week|
-        divisional_data[week][division.id]
+        [
+          (week.start_date.at_midnight.to_i*1000),
+          Rails.cache.fetch("non_admin_page_views:#{week.start_date.to_s}:#{division.id}") do
+            divisional_data[week][division.id]
+          end
+        ]
       end
     }
   end

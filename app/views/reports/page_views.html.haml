@@ -1,24 +1,26 @@
 - set_page_specific_title "User Page Views"
 
-
 .content-wrapper#body
   .row
     #content.span12
       %h2{style: "margin-bottom: 10px"} User Page Views
 
-      = label_tag "Start month:"
-      = select_tag "start_month",
-        options_for_select(@options_for_select, Month.prev.to_i),
-        id: "start_month",
-        class: "month_selector"
+      .pull-left
+        = label_tag "Start month:"
+        = select_tag "start_month",
+          options_for_select(@options_for_select, Month.prev.to_i),
+          id: "start_month",
+          class: "month_selector"
 
-      = label_tag "End Month:"
-      = select_tag "end_month",
-        options_for_select(@options_for_select, Month.prev.to_i),
-        id: "end_month",
-        class: "month_selector"
+      .pull-right
+        = label_tag "End Month:"
+        = select_tag "end_month",
+          options_for_select(@options_for_select, Month.prev.to_i),
+          id: "end_month",
+          class: "month_selector"
 
-      #chart_container
+      #chart_container{style: "clear: both; height: 400px;"}
+      %i *Excludes administrators and users who are not logged in
 
 :javascript
   var showLoader = function() {
