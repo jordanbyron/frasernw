@@ -40,7 +40,7 @@
     .alert.alert-error= f.error_messages
 
   %h3 General Information
-
+  -# TODO: Fix bug with categorization_hash (issue #212)
   - categorization_hash = {}
   - categorization_divisions = @specialist.divisions.blank? ? @form_modifier.divisions : @specialist.divisions
   - categorization_specializations = @specialization.present? ? [@specialization] : @specialist.specializations

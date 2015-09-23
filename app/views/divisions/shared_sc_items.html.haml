@@ -21,35 +21,41 @@
         - active = true
         - @categories.each do |category|
           .tab-pane{"id" => "#{category.name.remove_whitespace}_tab", :class => active && "active"}
-            %table.table.table-condensed.table-striped
-              %tr
-                %th Share?
-                %th Title
-                %th Created By
-                %th Subcategory
-                %th Specialties
-                %th Type
-                %th Searchable?
-                %th Shared Care?
-              - category.items_borrowable_by_division(@division).sort_by{ |sc_item| [ sc_item.division.name, sc_item.title ] }.each do |sc_item|
-                %tr
-                  %td= check_box_tag "division_shared_sc_item_ids_#{sc_item.id}", sc_item.id, (@division.borrowed_sc_items.include? sc_item), :name => "division[shared_sc_item_ids][]", :class => "check_boxes optional"
-                  %td{"width" => "40%"}= link_to sc_item.title, sc_item, :class => 'ajax'
-                  %td= sc_item.division.name
-                  %td= sc_item.sc_category != category ? (link_to sc_item.sc_category.name, sc_item.sc_category, :class => 'ajax') : ""
-                  %td
-                    %ul
-                      - sc_item.sc_item_specializations.each do |is|
-                        %li
-                          = link_to is.specialization.name, is.specialization, :class => 'ajax'
-                          - if is.procedure_specializations.present?
-                            = ": #{is.procedure_specializations.map{ |ps| link_to ps.procedure.name, ps.procedure, :class => 'ajax' }.to_sentence}".html_safe
-                  %td= sc_item.type
-                  %td= sc_item.searchable ? "Yes" : "No"
-                  %td= sc_item.shared_care? ? "Yes" : "No"
+            %table.table.table-condensed.table-striped.tablesorter
+              %thead
+                %tr.tableheader
+                  %th Share?
+                  %th{:class => "{sorter: 'text'}"} Title
+                  %th{:class => "{sorter: 'text'}"} Created By
+                  %th{:class => "{sorter: 'text'}"} Subcategory
+                  %th{:class => "{sorter: 'text'}"} Specialties
+                  %th{:class => "{sorter: 'text'}"} Type
+                  %th{:class => "{sorter: 'text'}"} Searchable?
+                  %th{:class => "{sorter: 'text'}"} Shared Care?
+              %tbody
+                - category.items_borrowable_by_division(@division).sort_by{ |sc_item| [ sc_item.division.name, sc_item.title ] }.each do |sc_item|
+                  %tr
+                    %td= check_box_tag "division_shared_sc_item_ids_#{sc_item.id}", sc_item.id, (@division.borrowed_sc_items.include? sc_item), :name => "division[shared_sc_item_ids][]", :class => "check_boxes optional"
+                    %td{"width" => "40%"}= link_to sc_item.title, sc_item, :class => 'ajax'
+                    %td= sc_item.division.name
+                    %td= sc_item.sc_category != category ? (link_to sc_item.sc_category.name, sc_item.sc_category, :class => 'ajax') : ""
+                    %td
+                      %ul
+                        - sc_item.sc_item_specializations.each do |is|
+                          %li
+                            = link_to is.specialization.name, is.specialization, :class => 'ajax'
+                            - if is.procedure_specializations.present?
+                              = ": #{is.procedure_specializations.map{ |ps| link_to ps.procedure.name, ps.procedure, :class => 'ajax' }.to_sentence}".html_safe
+                    %td= sc_item.type
+                    %td= sc_item.searchable ? "Yes" : "No"
+                    %td= sc_item.shared_care? ? "Yes" : "No"
 
           - active = false
 
     .form-actions
       = f.button :submit, "Update shared content items", :class => "btn btn-primary"
       %a.btn.btn-danger.ajax{"href" => divisions_path} Cancel
+
+  %script{"type" => "text/javascript"}
+    :plain
+      $(document).ready(function() { $('.tablesorter').tablesorter({sortList: [[2,0]] }) });
