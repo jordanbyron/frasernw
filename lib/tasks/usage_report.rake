@@ -1,22 +1,56 @@
 require 'csv'
 
+
+
 namespace :pathways do
-  task :division_report, [:division, :start_date, :end_date] => :environment do |t, args|
-    ### Defaults
-    ### set for the K/B report atm
-    args.with_defaults(
-      start_date:  Date.civil(2015, 4, 16),
-      end_date:    Date.civil(2015, 4, 30),
-      division:    Division.find(5)
-    )
+  task :sept_2015_usage_report do
+    months = [
+      ["{2015-3-1}","{2015-3-31}"],
+      ["{2015-4-1}","{2015-4-30}"],
+      ["{2015-5-1}","{2015-5-31}"],
+      ["{2015-6-1}","{2015-6-30}"],
+      ["{2015-7-1}","{2015-7-31}"],
+      ["{2015-8-1}","{2015-8-31}"]
+    ]
+
+    months.each do |month|
+      Rake::Task["pathways:usage_report"].reenable
+      Rake::Task["pathways:usage_report"].invoke(*month)
+    end
+
+    Division.pluck(:id).reject{ |elem| elem == 13 || elem == 11 }.each do |division_id|
+      months.each do |month|
+        Rake::Task["pathways:usage_report"].reenable
+        Rake::Task["pathways:usage_report"].invoke(*[ month, division_id ].flatten)
+      end
+    end
+  end
+
+  task :usage_report, [:start_date, :end_date, :division_id] => :environment do |t, args|
+
+    ### Parse args
+
+    start_date = Date.strptime(args[:start_date], "{%Y-%m-%d}")
+    end_date = Date.strptime(args[:end_date], "{%Y-%m-%d}")
+
+    if args[:division_id].present?
+      division = Division.find(args[:division_id])
+    end
 
     ### Get the data
 
-    common_options = {
-      start_date: args[:start_date],
-      end_date:   args[:end_date],
-      filters:    { division_id: args[:division].id }
-    }
+    if division.present?
+      common_options = {
+        start_date: start_date,
+        end_date:   end_date,
+        filters:    { division_id: division.id }
+      }
+    else
+      common_options = {
+        start_date: start_date,
+        end_date:   end_date
+      }
+    end
 
     total_pageviews = Analytics::ApiAdapter.get({
       metrics: [:page_views],
@@ -49,7 +83,6 @@ namespace :pathways do
       row[:sessions].to_i
     end
 
-
     ## Transform pageviews table
 
     page_views_table = HashTable.new(page_views_by_page)
@@ -80,7 +113,6 @@ namespace :pathways do
         )
       end
     )
-
 
     # add a column for resource name
 
@@ -151,27 +183,34 @@ namespace :pathways do
 
     ### Write the CSV
 
-    timestamp = DateTime.now.to_s
+    timestamp = DateTime.now.strftime("%Y-%m-%d-%H:%M")
     filename  = [
       "pathways_usage_report",
-      args[:division].name,
-      timestamp,
+      (division.try(:name) || "(global"),
+      "g@#{timestamp}",
+      "s@#{start_date.strftime("%Y-%m-%d")}",
+      "e@#{end_date.strftime("%Y-%m-%d")}"
     ].join("_").safe_for_filename + ".csv"
-    folder_path = Rails.root.join("reports", "divisions")
+
+    folder_path = Rails.root.join("reports", "usage")
     FileUtils.ensure_folder_exists folder_path
     file_path = folder_path.join(filename)
 
     CSV.open(file_path, "w+") do |csv|
       csv << [ "Pathways Usage Report"]
-      csv << [ "Division: #{args[:division].name}"]
+
+      if division.present?
+        csv << [ "Division: #{division.name}"]
+      end
+
       csv << [ "Compiled on #{timestamp}" ]
       csv << [ "**All stats are for date range specified below***"]
       csv << [ ]
       csv << [ "Start Date"]
-      csv << [ args[:start_date].to_s]
+      csv << [ start_date.to_s]
       csv << [ ]
       csv << [ "End Date"]
-      csv << [ args[:end_date].to_s]
+      csv << [ end_date.to_s]
       csv << [ ]
 
       ### Summary Table

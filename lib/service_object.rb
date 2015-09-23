@@ -17,7 +17,7 @@ class ServiceObject
 
       def self.included(receiver)
         class_methods = Module.new do
-          def exec(options)
+          def exec(options = {})
             new(options).exec
           end
         end
