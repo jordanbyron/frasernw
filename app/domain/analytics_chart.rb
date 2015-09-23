@@ -20,11 +20,16 @@ class AnalyticsChart
   def exec
     {
       title: {
-        text: ""
+        text: "Pathways #{metric_label}",
+        x: -50
+      },
+      subtitle: {
+        text: "#{start_date.strftime("%b %d %Y")} - #{end_date.strftime("%b %d %Y")}",
+        x: -50
       },
       xAxis: {
         title: {
-          text: "Week Starting On"
+          text: "Week"
         },
         labels: {
           staggerLines: 1,
@@ -34,7 +39,7 @@ class AnalyticsChart
       },
       yAxis: {
         title: {
-          text: "#{metric.to_s.split("_").map(&:capitalize).join(" ")}/ Week"
+          text: "#{metric_label}/ Week"
         },
         plotLines: [{
             value: 0,
@@ -148,5 +153,9 @@ class AnalyticsChart
 
   def categories
     weeks.map(&:label)
+  end
+
+  def metric_label
+    "#{metric.to_s.split("_").map(&:capitalize).join(" ")}"
   end
 end

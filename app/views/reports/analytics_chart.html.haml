@@ -23,12 +23,27 @@
       #chart_container{style: "clear: both; height: 400px;"}
       %i *Excludes administrators and users who are not logged in
 
+      %br
+      %a.print.btn.btn-default.pull-right{style: "margin-top: 20px;"}
+        %i.icon-print
+        %span= "Print"
+
 :javascript
   var dataPath = "#{@data_path}";
 
   var showLoader = function() {
     $("#chart_container").html("<div id='heartbeat-loader-position'><div class='heartbeat-loader'></div></div>")
   };
+
+  // enable back button
+  window.onpopstate = function() {
+    window.location.reload();
+  };
+
+  $("a.print").click(function() {
+    $("body").html($("#chart_container"));
+    window.history.pushState({}, "", "");
+  });
 
   var updateDOM = function() {
     var startMonth = $("#start_month").val();
