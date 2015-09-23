@@ -39,6 +39,13 @@ class PageViewsChart
         verticalAlign: 'middle',
         borderWidth: 0
       },
+      plotOptions: {
+        series: {
+          marker: {
+            enabled: false
+          }
+        }
+      },
       series: series
     }
   end
