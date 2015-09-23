@@ -26,3 +26,4 @@ config/google_oauth.p12
 node_modules/
 app/assets/javascripts/webpack.bundle.js
 dump.rdb
+x.rb
