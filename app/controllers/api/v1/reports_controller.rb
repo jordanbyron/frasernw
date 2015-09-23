@@ -4,15 +4,26 @@ module Api
       def page_views
         authorize! :view_report, :page_views
 
-        start_month = Month.from_i(params[:start_month])
-        end_month = Month.from_i(params[:end_month])
+        render json: AnalyticsChart.exec(chart_dates(params).merge(
+          metric: :page_views
+        ))
+      end
 
-        @chart_data = PageViewsChart.exec(
-          start_date: start_month.start_date,
-          end_date: end_month.end_date
-        )
+      def sessions
+        authorize! :view_report, :sessions
 
-        render json: @chart_data
+        render json: AnalyticsChart.exec(chart_dates(params).merge(
+          metric: :sessions
+        ))
+      end
+
+      private
+
+      def chart_dates(params)
+        {
+          start_date: Month.from_i(params[:start_month]).start_date,
+          end_date: Month.from_i(params[:end_month]).end_date
+        }
       end
     end
   end

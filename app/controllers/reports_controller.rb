@@ -9,15 +9,21 @@ class ReportsController < ApplicationController
   def page_views
     authorize! :view_report, :page_views
 
-    @options_for_select = Month.for_interval(
-      Month.new(2014, 1),
-      Month.prev
-    ).map do |month|
-      [
-        month.name,
-        month.to_i
-      ]
-    end
+    @options_for_select = analytics_chart_months
+    @page_title = "User Page Views"
+    @data_path = "/api/v1/reports/page_views"
+
+    render :analytics_chart
+  end
+
+  def sessions
+    authorize! :view_report, :sessions
+
+    @options_for_select = analytics_chart_months
+    @page_title = "User Sessions"
+    @data_path = "/api/v1/reports/sessions"
+
+    render :analytics_chart
   end
 
   def show
@@ -105,5 +111,19 @@ class ReportsController < ApplicationController
     @report = Report.find(params[:id])
     @report.destroy
     redirect_to reports_url, :notice => "Successfully deleted report."
+  end
+
+  private
+
+  def analytics_chart_months
+    Month.for_interval(
+      Month.new(2014, 1),
+      Month.prev
+    ).map do |month|
+      [
+        month.name,
+        month.to_i
+      ]
+    end
   end
 end

@@ -1,11 +1,20 @@
-class PageViewsChart
-  include ServiceObject.exec_with_args(:start_date, :end_date)
+class AnalyticsChart
+
+  include ServiceObject.exec_with_args(:start_date, :end_date, :metric)
+
+  SUPPORTED_METRICS = [
+    :page_views,
+    :sessions
+  ]
 
   def self.generate_full_cache
-    exec(
-      start_date: Month.new(2014, 1).start_date,
-      end_date: Month.prev.end_date
-    )
+    SUPPORTED_METRICS.each do |metric|
+      exec(
+        start_date: Month.new(2014, 1).start_date,
+        end_date: Month.prev.end_date,
+        metric: metric
+      )
+    end
   end
 
   def exec
@@ -25,7 +34,7 @@ class PageViewsChart
       },
       yAxis: {
         title: {
-            text: 'Page Views'
+          text: "#{metric.to_s.split("_").map(&:capitalize).join(" ")}/ Week"
         },
         plotLines: [{
             value: 0,
@@ -64,7 +73,7 @@ class PageViewsChart
     raw = Analytics::ApiAdapter.get(
       start_date: week.start_date,
       end_date: week.end_date,
-      metrics: [:page_views],
+      metrics: [metric],
       dimensions: [:division_id, :user_type_key]
     )
 
@@ -72,7 +81,7 @@ class PageViewsChart
       views = raw.select do |row|
         row[:division_id] == division.id.to_s &&
           User::TYPE_HASH.keys.include?(row[:user_type_key].to_i)
-      end.map{|row| row[:page_views]}.map(&:to_i).sum
+      end.map{|row| row[metric]}.map(&:to_i).sum
 
       memo.merge(division.id => views)
     end
@@ -82,13 +91,13 @@ class PageViewsChart
     raw = Analytics::ApiAdapter.get(
       start_date: week.start_date,
       end_date: week.end_date,
-      metrics: [:page_views],
+      metrics: [metric],
       dimensions: [:user_type_key]
     )
 
     raw.select do |row|
       User::TYPE_HASH.keys.include?(row[:user_type_key].to_i)
-    end.map{|row| row[:page_views]}.map(&:to_i).sum
+    end.map{|row| row[metric]}.map(&:to_i).sum
   end
 
   def divisions
@@ -103,7 +112,7 @@ class PageViewsChart
       data: weeks.map do |week|
         [
           (week.start_date.at_midnight.to_i*1000),
-          Rails.cache.fetch("non_admin_page_views:#{week.start_date.to_s}:global") do
+          Rails.cache.fetch("non_admin_#{metric.to_s}:#{week.start_date.to_s}:global") do
             global_data(week)
           end
         ]
@@ -117,7 +126,7 @@ class PageViewsChart
       data: weeks.map do |week|
         [
           (week.start_date.at_midnight.to_i*1000),
-          Rails.cache.fetch("non_admin_page_views:#{week.start_date.to_s}:#{division.id}") do
+          Rails.cache.fetch("non_admin_#{metric.to_s}:#{week.start_date.to_s}:#{division.id}") do
             divisional_data[week][division.id]
           end
         ]

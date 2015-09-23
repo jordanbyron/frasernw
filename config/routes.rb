@@ -95,6 +95,7 @@ Frasernw::Application.routes.draw do
   resources :reports do
     collection do
       get :page_views
+      get :sessions
     end
   end
 
@@ -185,6 +186,7 @@ Frasernw::Application.routes.draw do
       resources :reports, only: [] do
         collection do
           get :page_views
+          get :sessions
         end
       end
     end

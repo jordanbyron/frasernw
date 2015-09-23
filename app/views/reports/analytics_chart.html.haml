@@ -1,9 +1,10 @@
-- set_page_specific_title "User Page Views"
+- set_page_specific_title @page_title
 
 .content-wrapper#body
   .row
     #content.span12
-      %h2{style: "margin-bottom: 10px"} User Page Views
+      %h2{style: "margin-bottom: 10px"}
+        = @page_title
 
       .pull-left
         = label_tag "Start month:"
@@ -23,6 +24,8 @@
       %i *Excludes administrators and users who are not logged in
 
 :javascript
+  var dataPath = "#{@data_path}";
+
   var showLoader = function() {
     $("#chart_container").html("<div id='heartbeat-loader-position'><div class='heartbeat-loader'></div></div>")
   };
@@ -38,7 +41,7 @@
       var params = $.param({start_month: startMonth, end_month: endMonth});
       showLoader();
 
-      $.get("/api/v1/reports/page_views?" + params).success(function(data) {
+      $.get(dataPath + "?" + params).success(function(data) {
         $('#chart_container').highcharts(data);
       })
     }
