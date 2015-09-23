@@ -40,6 +40,7 @@ module Analytics
 
     private
 
+
     # TODO extract to own object
     def self.construct_query(query_params)
       query = {

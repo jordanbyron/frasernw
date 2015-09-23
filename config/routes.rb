@@ -92,7 +92,11 @@ Frasernw::Application.routes.draw do
   resources :notifications
   resources :subscriptions
   resources :news_items
-  resources :reports
+  resources :reports do
+    collection do
+      get :page_views
+    end
+  end
 
 
   resources :referral_forms, only: [:index] do
@@ -175,4 +179,14 @@ Frasernw::Application.routes.draw do
     end
   end
   resources :faqs, only: [:new, :create, :edit, :update, :destroy]
+
+  namespace :api do
+    namespace :v1 do
+      resources :reports, only: [] do
+        collection do
+          get :page_views
+        end
+      end
+    end
+  end
 end

@@ -1,9 +1,23 @@
 class ReportsController < ApplicationController
-  load_and_authorize_resource
+  load_and_authorize_resource except: :page_views
 
   def index
     @reports = Report.all
     render :layout => 'ajax' if request.headers['X-PJAX']
+  end
+
+  def page_views
+    authorize! :view_report, :page_views
+
+    @options_for_select = Month.for_interval(
+      Month.new(2014, 1),
+      Month.prev
+    ).map do |month|
+      [
+        month.name,
+        month.to_i
+      ]
+    end
   end
 
   def show

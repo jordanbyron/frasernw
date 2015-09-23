@@ -20,6 +20,7 @@ class Ability
         #can do anything
         can :manage, :all
         can :show, :analytics
+        can :view_report, :page_views
 
       elsif user.admin_only?
 
