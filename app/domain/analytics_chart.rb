@@ -61,6 +61,9 @@ class AnalyticsChart
           }
         }
       },
+      credits: {
+        enabled: false,
+      },
       series: series
     }
   end
