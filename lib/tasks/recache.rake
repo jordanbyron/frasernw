@@ -160,14 +160,14 @@ namespace :pathways do
       end
     end
 
-    task :page_views_report do
+    task :analytics_charts do
       if Date.today.day == 1
-        PageViewsChart.generate_full_cache
+        AnalyticsChart.generate_full_cache
       end
     end
 
     #purposeful order from least important to most important, to keep cache 'hot'
-    task :all => [:environment, :page_views_report, :specialists_index, :procedures, :languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front, :application_layout] do
+    task :all => [:environment, :analytics_charts, :specialists_index, :procedures, :languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front, :application_layout] do
       puts "All pages recached."
       SystemNotifier.notice("Recache successful")
     end
