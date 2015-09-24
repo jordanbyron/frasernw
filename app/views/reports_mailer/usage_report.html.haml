@@ -1,0 +1,19 @@
+!!!
+%html
+  %body
+    %p= "Hi, #{@args[:user].name}"
+    %p= "Below, you can find the link to your Pathways Usage Report with the following parameters:"
+    %p= "Start Date: #{@args[:start_date].strftime("%B %d, %Y")}"
+    %p= "End Date: #{@args[:end_date].strftime("%B %d, %Y")}"
+    - if @args[:division].present?
+      %p= "Scope: #{@args[:division].name} Division"
+    - else
+      %p= "Scope: Global"
+
+    %br
+    %p= usage_reports_path(@args[:object_key], format: :csv)
+
+    %p This link will expire in 24 hours
+
+    %p Best Regards,
+    %p The Pathways Team
