@@ -15,16 +15,17 @@ class UsageReportsController < ApplicationController
     authorize! :view_report, :usage
 
     PrepareUsageReport.delay.exec(AnalyticsChartMonths.parse(params).merge(
-      division_id: (params[:scope] == "global" ? nil : params[:scope])
+      division_id: (params[:scope] == "global" ? nil : params[:scope]),
+      user: current_user
     ))
+
+    render nothing: true, status: 200
   end
 
   def show
     authorize! :view_report, :usage
 
-    csv_string = S3.bucket[params[:id]].read
-
-    render plain: csv_string,
-      content_type: :csv
+    send_data S3.bucket.objects[params[:id]].read,
+      filename: "pathways_usage_report_(retrieved_#{Date.today.strftime("%Y-%m-%d")}).csv"
   end
 end

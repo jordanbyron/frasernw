@@ -153,6 +153,7 @@ class UsageReport
       csv << [ "Division: #{division.name}"]
     end
 
+    timestamp = DateTime.now.strftime("%Y-%m-%d-%H:%M")
     csv << [ "Compiled on #{timestamp}" ]
     csv << [ "**All stats are for date range specified below***"]
     csv << [ ]

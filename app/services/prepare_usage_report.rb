@@ -1,6 +1,6 @@
 class PrepareUsageReport
 
-  include ServiceObject.exec_with_args(:start_date, :end_date, :division, :user)
+  include ServiceObject.exec_with_args(:start_date, :end_date, :division_id, :user)
 
   def exec
     ## generate the report
@@ -24,9 +24,11 @@ class PrepareUsageReport
 
     ReportsMailer.usage_report(
       start_date: start_date,
-      end_date: end_date
-      division: division
-    )
+      end_date: end_date,
+      division: division,
+      user: user,
+      object_key: object_key
+    ).deliver
   end
 
   private
@@ -36,7 +38,11 @@ class PrepareUsageReport
   end
 
   def s3_object
-    @s3_object ||= S3.bucket[object_key]
+    @s3_object ||= s3_bucket.objects[object_key]
+  end
+
+  def s3_bucket
+    @s3_bucket ||= S3.bucket
   end
 
   def object_key
@@ -46,7 +52,7 @@ class PrepareUsageReport
   def generate_object_key
     key = "usage_report_#{SecureRandom.hex}"
 
-    if s3_bucket[key].exists?
+    if s3_bucket.objects[key].exists?
       generate_object_key
     else
       key

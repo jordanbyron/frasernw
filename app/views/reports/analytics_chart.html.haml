@@ -58,6 +58,7 @@
 
       $.get(dataPath + "?" + params).success(function(data) {
         $('#chart_container').highcharts(data);
+        $("#heartbeat-loader-position").remove();
       })
     }
   };
