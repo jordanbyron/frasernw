@@ -3,6 +3,15 @@
 .content-wrapper
 
   %h2 Reports
+  - @object = Specialist.last(20)
+
+  %i.icon-folder-open.icon-black
+  = render partial: "reports/analytics_box"
+
+  = render partial: "reports/table_widget", collection: @object, as: :object, locals: {table_title: "Most visited pages", row_number_value: 14124, row_name: "/clinics/3"}
+
+
+
 
   %table.table.table-condensed.table-striped
     %tr
