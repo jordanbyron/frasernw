@@ -7,7 +7,22 @@ class FeedbackItemsController < ApplicationController
   end
 
   def archived
-    @feedback_items = FeedbackItem.archived.order('id desc').paginate(:page => params[:page], :per_page => 30)
+    @divisions_scope = current_user_is_admin? ? Division.all : current_user_divisions
+    @feedback_items = FeedbackItem.
+      archived.
+      order('id desc').
+      select{|item| item.for_divisions?(@divisions_scope) }.
+      paginate(:page => params[:page], :per_page => 30)
+
+    @categorized_feedback_items = {
+      Specialist => @feedback_items.
+        select{ |feedback_item| feedback_item.item.is_a?(Specialist) },
+      Clinic => @feedback_items.
+        select{ |feedback_item| feedback_item.item.is_a?(Clinic) },
+      ScItem => @feedback_items.
+        select{ |feedback_item| feedback_item.item.is_a?(ScItem) }
+    }
+
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
