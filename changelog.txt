@@ -4,6 +4,59 @@ All notable changes to this project will be documented in this file.  In the fut
 CR = Change Request item
 Local-only = Changes not reflected in Source Code
 
+
+
+## [2015-06-08] [Since October 26, 2015 User Update]
+### Added:
+- Show history for referral forms on specialist and clinic pages
+- Added dynamic table sorting to Owned Content Items & Shared Content Items For datatables
+- Reporting updates:
+  - Export to CSV option added
+  - Added new graph interface to show Google Analytics Page Views and Session data by division.
+
+### Changed:
+- Reporting section now supports export to CSV via email
+
+### Fixed:
+- Fix CSS display problems in Owned Content Items / Shared Content Items For tables
+
+
+
+
+## [2015-06-08] [Since September 21, 2015 User Update]
+
+### Added:
+- Added History button to clinic/index
+- Add papertrail to users & content items
+
+### Changed:
+- Significant improvements to page load speeds by optimizing queries on various pages.  Measured improvements:
+  - specialists/index: ~ 1000 ms improvement
+  - clinics/index: ~ 1000 ms improvement
+  - specialists/form: ~ 22000 ms improvement
+  - clinics/form: ~ 1100 ms improvement
+  - referral_forms/index: ~ 5000 ms improvement
+- Upgrade Ruby on Rails framework version to 3.2.22 (from 3.2.21)
+- Major refactor of many modules to new services
+- Updates to versioning and papertrail logic
+- Updated Specialty Comment box labels
+- Office index page now has dynamic table sorting
+- Updates to caching:
+  - To prevent one-off cache key collisions, the plucked sum of object ids is now used to generate some Model level cache keys
+  - Moved recaching logic directly into ruby tasks, away from page based fragment cache building
+
+### Fixed:
+- CR: 'Physicians who see patients' heading now only appears when there
+are actually physicians attending
+- Removing all areas of practice from a specialist now works.
+- Hide object data attributes recorded by Papertrail from showing up in Administrator Review Queue
+- Fix typo in routes causing recache of languages to fail
+- Fix bug in table headers
+- Fix issue with capacities
+
+
+
+
 ## [2015-06-08] [Since April 27, 2015 User Update]
 
 ### Added:
@@ -18,7 +71,6 @@ Local-only = Changes not reflected in Source Code
 - If a 1000 class error occurs, Cloudflare now serves a notice to go directly
 to our heroku address
 - System notification sent when recache is successful
-- History button in clinic/index
 
 ### Changed
 - Renamed "Areas of Practice" to "Accepts Referrals For" where appropriate.
@@ -31,13 +83,6 @@ to our heroku address
 - Moved open-source Github repository to "pathwaysmedical" from "warneboldt"
 - CR: Address and specialization fields are now replaced with comment boxes when user edit clinics and specializations
 - history for Clinics and Specialists now includes their review and feedback items
-- optimized queries made for the specialists form, clinics form, navbar,
-specialists index, and clinic index, significantly improving page load
-speeds
-  - specialists/index: ~ 1000 ms improvement
-  - clinics/index: ~ 1000 ms improvement
-  - specialists/form: ~ 22000 ms improvement
-  - clinics/form: ~ 1100 ms improvement
 - migrate joint injection hierarchy to nest <body_part> under "Joint Injection"
 - borrowable resources now sorted automatically by division
 
@@ -59,8 +104,6 @@ specialty
 - Removing all areas of practice from specialists and clinics
 - System notification recipients standardized and configurable via
 environment variables
-- CR: 'Physicians who see patients' heading now only appears when there
-are actually physicians attending
 - timeouts on borrowable resources page
 
 ### Removed:
