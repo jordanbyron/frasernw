@@ -21,9 +21,20 @@ class GenerateHistory
       end
     end
 
+    class ReferralForm < Base
+      def exec
+        return [] unless target.is_a? Referrable
+
+        target.referral_forms.inject([]) do |memo, referral_form|
+          memo + referral_form.history
+        end
+      end
+    end
+
     CHILD_EVENT_TYPES = [
       ReviewItem,
-      FeedbackItem
+      FeedbackItem,
+      ReferralForm
     ]
 
     def exec
