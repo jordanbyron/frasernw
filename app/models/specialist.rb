@@ -5,6 +5,7 @@ class Specialist < ActiveRecord::Base
   include Historical
   include Noteable
   include ProcedureSpecializable
+  include Referrable
 
   include ApplicationHelper
 
@@ -36,10 +37,6 @@ class Specialist < ActiveRecord::Base
   # specialists "speak" many languages
   has_many   :specialist_speaks, :dependent => :destroy
   has_many   :languages, :through => :specialist_speaks
-
-  #specialists have multiple referral forms
-  has_many   :referral_forms, :as => :referrable, :dependent => :destroy
-  accepts_nested_attributes_for :referral_forms, :allow_destroy => true
 
   # specialists are favorited by users of the system
   has_many   :favorites, :as => :favoritable, :dependent => :destroy

@@ -541,3 +541,7 @@
           %h3 Secret edit link
           %p Anyone can edit this specialist if they have the following secret address:
           %p= specialist_self_edit_path(@specialist, @specialist.token, :only_path => false)
+
+  - if current_user.admin_only?
+    .alert.alert-info{style: "margin-top: 10px"}
+      If you would like to have this specialist deleted, please contact a provincial administrator.
