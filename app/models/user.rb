@@ -274,4 +274,8 @@ LIMITED_ROLE_HASH = {
   def label
     name
   end
+
+  def known?
+    true
+  end
 end
