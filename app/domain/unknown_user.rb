@@ -9,4 +9,8 @@ class UnknownUser
   def divisions
     []
   end
+
+  def known?
+    false
+  end
 end
