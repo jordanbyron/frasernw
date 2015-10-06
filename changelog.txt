@@ -6,7 +6,7 @@ Local-only = Changes not reflected in Source Code
 
 
 
-## [2015-06-08] [Since October 26, 2015 User Update]
+## [2015-10-26] [Since September 21, 2015 User Update]
 ### Added:
 - Show history for referral forms on specialist and clinic pages
 - Added dynamic table sorting to Owned Content Items & Shared Content Items For datatables
@@ -23,7 +23,7 @@ Local-only = Changes not reflected in Source Code
 
 
 
-## [2015-06-08] [Since September 21, 2015 User Update]
+## [2015-09-21] [Since May 08, 2015 User Update]
 
 ### Added:
 - Added History button to clinic/index
