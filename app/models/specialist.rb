@@ -440,6 +440,7 @@ class Specialist < ActiveRecord::Base
     6 => "Unavailable between",
     8 => "Indefinitely unavailable",
     9 => "Permanently unavailable",
+    12 => "Deceased",
     10 => "Moved away",
     7 => "Didn't answer"
   }
@@ -506,7 +507,7 @@ class Specialist < ActiveRecord::Base
     elsif (accepting_new_patients? || ((status_mask == 6) && (unavailable_to < Date.today)))
       #marked as available, or the "unavailable between" period has passed
       return STATUS_CLASS_AVAILABLE
-    elsif (follow_up_only? || retired? || ((status_mask == 6) && (unavailable_from <= Date.today) && (unavailable_to >= Date.today)) || indefinitely_unavailable? || permanently_unavailable? || moved_away?)
+    elsif (follow_up_only? || retired? || ((status_mask == 6) && (unavailable_from <= Date.today) && (unavailable_to >= Date.today)) || indefinitely_unavailable? || permanently_unavailable? || deceased? || moved_away?)
       #only seeing old patients, retired, "retiring as of" date has passed", or in midst of inavailability, indefinitely unavailable, permanently unavailable, or moved away
       return STATUS_CLASS_UNAVAILABLE
     elsif (retiring? || ((status_mask == 6) && (unavailable_from > Date.today)))
@@ -557,6 +558,10 @@ class Specialist < ActiveRecord::Base
 
   def moved_away?
     status_mask == 10
+  end
+
+  def deceased?
+    status_mask == 12
   end
 
   WAITTIME_HASH = {

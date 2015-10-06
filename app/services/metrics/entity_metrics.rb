@@ -74,7 +74,8 @@ module Metrics
           "Purposely Not Yet Surveyed",
           "Hospital/Clinic Only",
           "Moved Away",
-          "Retired"
+          "Retired",
+          "Deceased"
         ],
         [
           "Specialists",
@@ -84,7 +85,8 @@ module Metrics
           @specialists.reject{|s| !s.purposely_not_yet_surveyed?}.length,
           @specialists.reject{|s| !s.hospital_or_clinic_only?}.length,
           @specialists.reject{|s| !s.moved_away?}.length,
-          @specialists.reject{|s| !s.retired?}.length
+          @specialists.reject{|s| !s.retired?}.length,
+          @specialists.reject{|s| !s.deceased?}.length
         ],
         [
           ""
@@ -128,7 +130,8 @@ module Metrics
           "Purposely Not Yet Surveyed",
           "Hospital/Clinic Only",
           "Moved Away",
-          "Retired"
+          "Retired",
+          "Deceased"
         ]
       ] + @specializations.inject([]) do |memo, specialization|
         @specialization_specialists = specialization.specialists & @specialists
@@ -140,7 +143,8 @@ module Metrics
           @specialization_specialists.reject{|s| !s.purposely_not_yet_surveyed?}.length,
           @specialization_specialists.reject{|s| !s.hospital_or_clinic_only?}.length,
           @specialization_specialists.reject{|s| !s.moved_away?}.length,
-          @specialization_specialists.reject{|s| !s.retired?}.length
+          @specialization_specialists.reject{|s| !s.retired?}.length,
+          @specialization_specialists.reject{|s| !s.deceased?}.length
         ]
       end
 

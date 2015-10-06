@@ -63,6 +63,10 @@
 
               %p.space.no_indent This specialist has moved away.
 
+            - elsif @specialist.deceased?
+
+              %p.space.no_indent This specialist is deceased.
+
             - elsif @specialist.retired?
 
               %p.space.no_indent This specialist has retired.
