@@ -12,7 +12,9 @@ class Subscription < ActiveRecord::Base
 
   has_many :news_items, through: :divisions #unsure if will use this
 
-  has_and_belongs_to_many :sc_categories, join_table: :subscription_sc_categories
+  # has_and_belongs_to_many :sc_categories, join_table: :subscription_sc_categories
+  has_many :subscription_sc_categories, dependent: :destroy
+  has_many :sc_categories, through: :subscription_sc_categories
 
   has_many :subscription_news_item_types, dependent: :destroy # not a join table with news_item, only stores NewsItem::TYPE_HASH integer
 
