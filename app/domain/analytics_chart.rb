@@ -12,7 +12,8 @@ class AnalyticsChart
       exec(
         start_date: Month.new(2014, 1).start_date,
         end_date: Month.prev.end_date,
-        metric: metric
+        metric: metric,
+        divisions: Division.standard
       )
     end
   end
@@ -146,7 +147,9 @@ class AnalyticsChart
   end
 
   def weeks
-    @weeks = Week.for_interval(start_date, end_date)
+    @weeks = Week.for_interval(start_date, end_date).reject do |week|
+      week.end_date > Month.prev.end_date
+    end
   end
 
   def categories
