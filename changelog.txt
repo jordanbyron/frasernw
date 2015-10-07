@@ -13,6 +13,8 @@ Local-only = Changes not reflected in Source Code
 - Reporting updates:
   - Export to CSV option added
   - Added new graph interface to show Google Analytics Page Views and Session data by division.
+  - Support for division admins to see reports
+- New status option for deceased Specialists
 
 ### Changed:
 - Reporting section now supports export to CSV via email
@@ -20,6 +22,8 @@ Local-only = Changes not reflected in Source Code
 ### Fixed:
 - Fix CSS display problems in Owned Content Items / Shared Content Items For tables
 
+### Removed:
+- Remove tracking of "Inline Files" from Notifications
 
 
 
