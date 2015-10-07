@@ -278,4 +278,12 @@ LIMITED_ROLE_HASH = {
   def known?
     true
   end
+
+  def reporting_divisions
+    if super_admin?
+      Division.standard
+    else
+      divisions.not_hidden
+    end
+  end
 end

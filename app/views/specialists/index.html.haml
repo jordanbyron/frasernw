@@ -35,11 +35,7 @@
                 - specialists.each do |specialist|
                   %tr
                     %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
-                    - if can_edit && can?(:destroy, specialist)
-                      %td.admin.btn-group
-                        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
-                        = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")
-                    - elsif can_edit
+                    - if can_edit
                       %td{style: "min-width: 60px"}
                         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
       .tab-pane{:id => "no_division_tab"}
@@ -53,10 +49,5 @@
               - specialization.no_division_specialists.each do |specialist|
                 %tr
                   %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
-                  - if can? :destroy, specialist
-                    %td.admin.btn-group
-                      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
-                      = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialist, :confirm => "Delete #{specialist.name}?", :method => :delete, :class => "btn btn-mini")
-                  - else
-                    %td{style: "min-width: 60px"}
-                      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
+                  %td{style: "min-width: 60px"}
+                    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")

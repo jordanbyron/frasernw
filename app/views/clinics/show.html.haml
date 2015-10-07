@@ -421,6 +421,6 @@
           %p Anyone can edit this clinic if they have the following secret address:
           %p= clinic_self_edit_path(@clinic, @clinic.token, :only_path => false)
 
-  - if current_user.admin_only?
+  - if current_user_is_admin? && !current_user_is_super_admin?
     .alert.alert-info{style: "margin-top: 10px"}
       If you would like to have this clinic deleted, please contact a provincial administrator.

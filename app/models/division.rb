@@ -43,6 +43,16 @@ class Division < ActiveRecord::Base
     Rails.cache.fetch([name, 'Division.all'], :expires_in => 8.hours) { all }
   end
 
+  def self.standard
+    all.reject do |division|
+      division.name == "Provincial" || division.name == "Vancouver (Hidden)"
+    end
+  end
+
+  def self.not_hidden
+    where('"divisions".name != (?)', "Vancouver (Hidden)")
+  end
+
   def self.cached_find(id)
     Rails.cache.fetch([name, id]) { find(id) }
   end

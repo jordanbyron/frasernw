@@ -28,7 +28,7 @@ class ScCategory < ActiveRecord::Base
   end
 
   def self.all_for_subscription
-    all_parents.reject{|c| c.name == "Inactive" }
+    all_parents.reject{|c| c.name.include?("Inactive") || c.name.include?("Inline")}
   end
 
   def self.with_items_borrowable_by_division(division)

@@ -1,6 +1,6 @@
 class AnalyticsChart
 
-  include ServiceObject.exec_with_args(:start_date, :end_date, :metric)
+  include ServiceObject.exec_with_args(:start_date, :end_date, :metric, :divisions)
 
   SUPPORTED_METRICS = [
     :page_views,
@@ -12,7 +12,8 @@ class AnalyticsChart
       exec(
         start_date: Month.new(2014, 1).start_date,
         end_date: Month.prev.end_date,
-        metric: metric
+        metric: metric,
+        divisions: Division.standard
       )
     end
   end
@@ -109,12 +110,6 @@ class AnalyticsChart
     end.map{|row| row[metric]}.map(&:to_i).sum
   end
 
-  def divisions
-    Division.all.reject do |division|
-      division.name == "Provincial" || division.name == "Vancouver (Hidden)"
-    end
-  end
-
   def global_series
     {
       name: "All Divisions",
@@ -152,7 +147,9 @@ class AnalyticsChart
   end
 
   def weeks
-    @weeks = Week.for_interval(start_date, end_date)
+    @weeks = Week.for_interval(start_date, end_date).reject do |week|
+      week.end_date > Month.prev.end_date
+    end
   end
 
   def categories
