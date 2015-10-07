@@ -66,6 +66,9 @@
             - elsif @specialist.deceased?
 
               %p.space.no_indent This specialist is deceased.
+              - if @specialist.status_details.present?
+                %p.no_indent
+                  = @specialist.status_details.end_with_period.convert_newlines_to_br
 
             - elsif @specialist.retired?
 
