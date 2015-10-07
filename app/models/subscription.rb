@@ -12,7 +12,6 @@ class Subscription < ActiveRecord::Base
 
   has_many :news_items, through: :divisions #unsure if will use this
 
-  # has_and_belongs_to_many :sc_categories, join_table: :subscription_sc_categories
   has_many :subscription_sc_categories, dependent: :destroy
   has_many :sc_categories, through: :subscription_sc_categories
 
