@@ -4,15 +4,17 @@ class UsageReportsController < ApplicationController
 
     @submit_path = usage_reports_path
     @months = AnalyticsChartMonths.exec
-    @scopes = Division.all.reject do |division|
-      division.name == "Vancouver (Hidden)" || division.name == "Provincial"
-    end.map do |division|
+    @scopes = current_user.reporting_divisions.map do |division|
       [ division.name, division.id ]
     end << ["All Divisions", "global"]
   end
 
   def create
     authorize! :view_report, :usage
+
+    if params[:scope] != "global" && !current_user.reporting_divisions.map(&:id).include?(params[:scope].to_i)
+      raise "Not in your division"
+    end
 
     PrepareUsageReport.delay.exec(AnalyticsChartMonths.parse(params).merge(
       division_id: (params[:scope] == "global" ? nil : params[:scope]),

@@ -1,6 +1,6 @@
 class AnalyticsChart
 
-  include ServiceObject.exec_with_args(:start_date, :end_date, :metric)
+  include ServiceObject.exec_with_args(:start_date, :end_date, :metric, :divisions)
 
   SUPPORTED_METRICS = [
     :page_views,
@@ -107,12 +107,6 @@ class AnalyticsChart
     raw.select do |row|
       User::TYPE_HASH.keys.include?(row[:user_type_key].to_i)
     end.map{|row| row[metric]}.map(&:to_i).sum
-  end
-
-  def divisions
-    Division.all.reject do |division|
-      division.name == "Provincial" || division.name == "Vancouver (Hidden)"
-    end
   end
 
   def global_series
