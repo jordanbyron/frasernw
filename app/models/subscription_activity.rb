@@ -104,4 +104,15 @@ class SubscriptionActivity < PublicActivity::Activity
   def self.all_resource_activities
     by_update_classification(Subscription.resource_update).all
   end
+
+  def type_mask_description_formatted # helper to fix awkward language
+    case
+    when type_mask_description == "Markdown"
+      "Markdown content" #e.g. "Markdown Content" was just added ...
+    when ["Breaking News"].include?(type_mask_description)
+      type_mask_description #e.g. "Breaking News" was just added ...
+    else
+      type_mask_description.indefinitize # e.g. "an Attachment Update" was just added ...
+    end
+  end
 end
