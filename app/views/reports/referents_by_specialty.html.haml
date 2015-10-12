@@ -1,0 +1,20 @@
+#referents_by_specialty_react_component
+
+:javascript
+  $("document").ready(function() {
+    var store = window.pathways.bootstrapRedux({
+      domElementSelector: "#referents_by_specialty_react_component",
+      stateMapper: "ReferentsBySpecialty",
+      topLevelComponent: "ReferentsBySpecialty",
+      reducer: "ReferentsBySpecialty"
+    })
+
+    window.pathways.globalDataLoaded.done(function(data) {
+      store.dispatch({
+        type: "INTEGRATE_LOCALSTORAGE_DATA",
+        data: data
+      });
+
+      $("#heartbeat-loader-position").remove();
+    })
+  });

@@ -1,5 +1,5 @@
 class ReportsController < ApplicationController
-  load_and_authorize_resource except: [:page_views, :sessions]
+  load_and_authorize_resource except: [:page_views, :sessions, :referents_by_specialty]
 
   def index
     @reports = Report.all
@@ -24,6 +24,10 @@ class ReportsController < ApplicationController
     @data_path = "/api/v1/reports/sessions"
 
     render :analytics_chart
+  end
+
+  def referents_by_specialty
+    authorize! :view_report, :referents_by_specialty
   end
 
   def show
