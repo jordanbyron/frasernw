@@ -37,7 +37,7 @@ var filterGroups = function(state) {
   return [
     {
       title: "Record Type",
-      isOpen: true,
+      isOpen: _.get(state, ["ui", "filterVisibility", "recordTypes"], true),
       componentKey: "recordTypes",
       filters: {
         recordTypes: {
@@ -58,7 +58,7 @@ var filterGroups = function(state) {
     },
     {
       title: "Divisions",
-      isOpen: true,
+      isOpen: _.get(state, ["ui", "filterVisibility", "divisions"], true),
       componentKey: "divisions",
       filters: {
         divisions: {
@@ -115,5 +115,10 @@ var filterReferents = function(referents: Array, state: Object): Array {
 var specializationReferents = function(referents, specializationId) {
   return referents.filter((referent) => {
     return _.includes(referent.specializationIds, specializationId);
-  }).map((referent) => referent.name);
+  }).map((referent) => {
+    return {
+      content: referent.name,
+      reactKey: referent.id
+    };
+  });
 };

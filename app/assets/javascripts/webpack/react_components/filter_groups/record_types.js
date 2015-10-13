@@ -13,7 +13,7 @@ var RecordTypes = React.createClass({
       )
     })
   },
-  handleClick: function(event) {
+  handleChange: function(event) {
     if (event.target.checked) {
       this.props.dispatch({
         type: "UPDATE_FILTER",
@@ -27,7 +27,7 @@ var RecordTypes = React.createClass({
       <div>
         <RadioButtons
           options={this.props.filters.recordTypes.options}
-          handleClick={this.handleClick}
+          handleChange={this.handleChange}
         />
       </div>
     );

@@ -14,8 +14,8 @@ var List = React.createClass({
             {
               this.props.items.map((item) => {
                 return(
-                  <tr key={item}>
-                    <td>{item}</td>
+                  <tr key={item.reactKey}>
+                    <td>{item.content}</td>
                   </tr>
                 );
               })

@@ -9,7 +9,7 @@ module.exports = React.createClass({
     title: React.PropTypes.string,
     lists: React.PropTypes.arrayOf(React.PropTypes.shape({
       title: React.PropTypes.string,
-      entries: React.PropTypes.arrayOf(React.PropTypes.string)
+      entries: React.PropTypes.arrayOf(React.PropTypes.object)
     })),
     isLoading: React.PropTypes.bool
   },

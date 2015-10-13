@@ -2,12 +2,12 @@ var React = require("react");
 
 var RadioButtons = React.createClass({
   propTypes: {
-    handleClick: React.PropTypes.func,
-    options: React.PropTypes.arrayOf({
+    handleChange: React.PropTypes.func,
+    options: React.PropTypes.arrayOf(React.PropTypes.shape({
       key: React.PropTypes.string,
       checked: React.PropTypes.bool,
       label: React.PropTypes.string
-    })
+    }))
   },
   render: function() {
     return(
@@ -21,8 +21,9 @@ var RadioButtons = React.createClass({
                     type="radio"
                     value={option.key}
                     checked={option.checked}
-                    onClick={this.props.handleClick}
+                    onChange={this.props.handleChange}
                     style={{display: "inline-block", marginRight: "7px"}}
+                    key={option.key}
                   />
                   { option.label }
                 </label>
