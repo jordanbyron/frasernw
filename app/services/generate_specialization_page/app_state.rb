@@ -67,7 +67,7 @@ class GenerateSpecializationPage
 
       if specialization_option.open_to_sc_category?
         {
-          type: "contentCategory",
+          type: "contentCategories",
           id: specialization_option.open_to
         }
       else
