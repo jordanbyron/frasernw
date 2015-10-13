@@ -53,6 +53,7 @@ module Serialized
             lastName: specialist.lastname,
             statusIconClasses: specialist.status_class,
             statusClassKey: specialist.status_class_hash,
+            divisionIds: specialist.divisions.map(&:id),
             waittime: masked_waittime(specialist),
             cityIds: specialist.cities.reject{ |city| city.hidden }.map(&:id),
             collectionName: collection_name(specialist),
@@ -122,6 +123,7 @@ module Serialized
             patientsCanBook: clinic.patient_can_book?,
             scheduledDayIds: clinic.scheduled_day_ids,
             languageIds: clinic.languages.map(&:id),
+            divisionIds: clinic.divisions.map(&:id),
             specializationIds: clinic.specializations.map(&:id),
             wheelchairAccessible: clinic.wheelchair_accessible?,
             customLagtimes: custom_lagtimes(clinic),
@@ -217,6 +219,14 @@ module Serialized
         memo.merge(procedure.id => {
           nameRelativeToParents: procedure.try(:name_relative_to_parents),
           name: procedure.name
+        })
+      end
+    end,
+    divisions: Proc.new do
+      Division.not_hidden.all.inject({}) do |memo, division|
+        memo.merge(division.id => {
+          id: division.id,
+          name: division.name
         })
       end
     end

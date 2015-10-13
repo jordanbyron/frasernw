@@ -12,17 +12,13 @@ var Filters = React.createClass({
         <div className="title" key="title">{ this.props.title }</div>
         {
           this.props.groups.map((group, index) => {
-            if (group.filters) {
-              return(
-                <FilterGroup
-                  {...group}
-                  key={index}
-                  dispatch={this.props.dispatch}
-                />
-              );
-            } else {
-              return <div key={index}/>;
-            }
+            return(
+              <FilterGroup
+                {...group}
+                key={index}
+                dispatch={this.props.dispatch}
+              />
+            );
           })
         }
       </div>

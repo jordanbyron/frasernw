@@ -29,7 +29,8 @@ class ReportsController < ApplicationController
   def referents_by_specialty
     @init_data = {
       app: {
-        specializations: Serialized.fetch(:specializations)
+        specializations: Serialized.fetch(:specializations),
+        divisions: Serialized.fetch(:divisions)
       }
     }
 

@@ -1,6 +1,8 @@
 var React = require("react");
 var LoadingContainer = require("./loading_container");
 var List = require("./list");
+var SidebarLayout = require("./sidebar_layout");
+var Filters = require("./filters");
 
 module.exports = React.createClass({
   propTypes: {
@@ -14,12 +16,25 @@ module.exports = React.createClass({
   renderChildren: function(props) {
     return(
       <div className="content-wrapper">
-        <h2>{ props.title }</h2>
-        <div className="lists">
-          {
-            props.lists.map((list) => <List key={list.key} {...list}/>)
+        <SidebarLayout
+          main={
+            <div>
+              <h2 style={{marginBottom: "10px"}}>{ props.title }</h2>
+              <div className="lists">
+                {
+                  props.lists.map((list) => <List key={list.key} {...list}/>)
+                }
+              </div>
+            </div>
           }
-        </div>
+          sidebar={
+            <Filters
+              {...this.props.filters}
+              dispatch={this.props.dispatch}
+            />
+          }
+          reducedView={"main"}
+        />
       </div>
     );
   },

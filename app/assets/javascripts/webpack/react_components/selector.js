@@ -4,10 +4,17 @@ module.exports = React.createClass({
   onChange: function(event) {
     return this.props.onChange(event, this.props.changeKey);
   },
+  label: function() {
+    if (this.props.label) {
+      return (<span>{this.props.label}</span>);
+    } else {
+      return null;
+    }
+  },
   render: function() {
     return (
       <label>
-        <span>{this.props.label}</span>
+        { this.label() }
         <select value={this.props.value}
           style={this.props.style}
           onChange={this.onChange}>

@@ -10,7 +10,9 @@ var FILTER_GROUPS = {
   associations: require("./filter_groups/associations"),
   clinicDetails: require("./filter_groups/clinic_details"),
   careProviders: require("./filter_groups/care_providers"),
-  subcategories: require("./filter_groups/subcategories")
+  subcategories: require("./filter_groups/subcategories"),
+  divisions: require("./filter_groups/divisions"),
+  recordTypes: require("./filter_groups/record_types")
 }
 
 var FilterGroup = React.createClass({
