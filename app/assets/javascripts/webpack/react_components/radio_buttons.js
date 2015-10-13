@@ -15,7 +15,7 @@ var RadioButtons = React.createClass({
         {
           this.props.options.map((option) => {
             return(
-              <div>
+              <div key={option.key}>
                 <label>
                   <input
                     type="radio"

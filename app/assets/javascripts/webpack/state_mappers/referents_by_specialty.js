@@ -7,9 +7,18 @@ module.exports = function(stateProps, dispatchProps) {
   console.log(state);
 
   if (state.ui.hasBeenInitialized) {
+    var filterValues = _.transform(FILTER_VALUE_GENERATORS, (memo, fn, key) => {
+      memo[key] = fn(state)
+    });
+    var filtered = filterReferents(
+      _.values(state.app[filterValues.recordTypes]),
+      state,
+      filterValues
+    );
+
     return {
-      title: "Pathways Specialists",
-      lists: lists(state),
+      title: title(state, filterValues, filtered.length),
+      lists: lists(state, filtered),
       filters: {
         title: "Customize Report",
         groups: filterGroups(state)
@@ -22,6 +31,18 @@ module.exports = function(stateProps, dispatchProps) {
       isLoading: true
     };
   }
+};
+
+
+var scopeTitle = function(state, filterValues) {
+  if (filterValues.divisions === 0) {
+    return "Pathways";
+  } else {
+    return state.app.divisions[filterValues.divisions].name;
+  }
+}
+var title = function(state, filterValues, resultCount) {
+  return `${scopeTitle(state, filterValues)} ${_.capitalize(filterValues.recordTypes)} (${resultCount} total)`
 };
 
 const FILTER_VALUE_GENERATORS = {
@@ -87,23 +108,19 @@ var filters = {
 }
 
 
-var lists = function(state) {
-  var filtered = filterReferents(_.values(state.app[FILTER_VALUE_GENERATORS.recordTypes(state)]), state);
-
+var lists = function(state, filtered: Array) {
   return _.values(state.app.specializations).map((specialization) => {
+    var items = specializationReferents(filtered, specialization.id);
+
     return {
-      title: specialization.name,
+      title: `${specialization.name} (${items.length} total)`,
       items: specializationReferents(filtered, specialization.id),
       key: specialization.id
     };
   });
 };
 
-var filterReferents = function(referents: Array, state: Object): Array {
-  var filterValues = _.transform(FILTER_VALUE_GENERATORS, (memo, fn, key) => {
-    memo[key] = fn(state)
-  });
-
+var filterReferents = function(referents: Array, state: Object, filterValues: Object): Array {
   var activatedFilters =
     _.values(filters).filter((filter) => filter.isActivated(filterValues));
 
