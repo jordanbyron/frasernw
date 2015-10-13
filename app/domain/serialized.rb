@@ -172,6 +172,7 @@ module Serialized
     specializations: Proc.new do
       Specialization.includes(:specialization_options).all.inject({}) do |memo, specialization|
         memo.merge(specialization.id => {
+          id: specialization.id,
           name: specialization.name,
           assumedList: specialization.procedure_specializations.assumed_specialist.
             reject{ |ps| ps.parent.present? }.

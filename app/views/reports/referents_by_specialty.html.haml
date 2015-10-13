@@ -6,7 +6,12 @@
       domElementSelector: "#referents_by_specialty_react_component",
       stateMapper: "ReferentsBySpecialty",
       topLevelComponent: "ReferentsBySpecialty",
-      reducer: "ReferentsBySpecialty"
+      uiReducer: "ReferentsBySpecialty"
+    })
+
+    store.dispatch({
+      type: "INITIALIZE_FROM_SERVER",
+      initialState: #{@init_data.to_json}
     })
 
     window.pathways.globalDataLoaded.done(function(data) {

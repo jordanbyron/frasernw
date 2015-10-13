@@ -2,6 +2,7 @@ var PANEL_REDUCERS = {
   FilterTable: require("../filter_table"),
   InlineArticles: function(state, action) { return state }
 }
+var hasBeenInitialized = require("../has_been_initialized");
 
 module.exports = function(state = {}, action) {
   switch(action.type) {
@@ -51,15 +52,6 @@ var specializationId = function(state, action) {
   switch(action.type) {
   case "INITIALIZE_FROM_SERVER":
     return action.initialState.ui.specializationId;
-  default:
-    return state;
-  }
-}
-
-var hasBeenInitialized = function(state = false, action) {
-  switch(action.type) {
-  case "INTEGRATE_LOCALSTORAGE_DATA":
-    return true;
   default:
     return state;
   }

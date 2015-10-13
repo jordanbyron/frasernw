@@ -9,17 +9,14 @@ var TopLevelComponents = {
   SpecializationPage: require("./react_components/specialization_page"),
   ReferentsBySpecialty: require("./react_components/referents_by_specialty")
 }
-var Reducers = {
-  SpecializationPage: require("./reducers/specialization_page"),
-  ReferentsBySpecialty: require("./reducers/referents_by_specialty")
-}
+var generateReducer = require("./reducers/top_level");
 var StateMappers = {
   SpecializationPage: require("./state_mappers/specialization_page"),
   ReferentsBySpecialty: require("./state_mappers/referents_by_specialty"),
 }
 
 module.exports = function(config) {
-  var reducer = Reducers[config.reducer];
+  var reducer = generateReducer(config.uiReducer);
   var store = Redux.createStore(reducer);
   var rootElement = $(config.domElementSelector)[0];
   var Component = TopLevelComponents[config.topLevelComponent];

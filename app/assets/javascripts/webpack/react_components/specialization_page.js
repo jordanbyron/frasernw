@@ -10,18 +10,23 @@ module.exports = React.createClass({
     selectedPanel: React.PropTypes.object,
     dispatch: React.PropTypes.func
   },
+  renderChildren: function(props) {
+    return(
+      <Panels
+        tabs={props.tabs}
+        selectedPanel={props.selectedPanel}
+        dispatch={props.dispatch}
+      />
+    );
+  },
   render: function() {
     // console.log("TRANSFORMED_PROPS:");
     // console.log(this.props);
     return(
       <div>
-        <LoadingContainer isLoading={this.props.isLoading}>
-          <Panels
-            tabs={this.props.tabs}
-            selectedPanel={this.props.selectedPanel}
-            dispatch={this.props.dispatch}
-          />
-        </LoadingContainer>
+        <LoadingContainer isLoading={this.props.isLoading}
+          renderChildren={this.renderChildren}
+          childrenProps={this.props}/>
         <FeedbackModal
           dispatch={this.props.dispatch}
           {...this.props.feedbackModal}
