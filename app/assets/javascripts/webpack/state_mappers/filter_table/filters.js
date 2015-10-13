@@ -35,8 +35,9 @@ module.exports = {
       return every(_.keys(_.pick(filters.procedures, _.identity)), (id) => {
         return (_.includes(record.procedureIds, parseInt(id)) &&
           (
+            filters.respondsWithin === undefined ||
             record.customLagtimes[id] === undefined ||
-            record.customLagtimes[id] <= filters.respondsWithin
+            record.customLagtimes[id] <= parseInt(filters.respondsWithin)
           )
         );
       });
