@@ -13,7 +13,7 @@ class GenerateSpecializationPage
           },
           isAdmin: user.admin?,
           referralCities: {
-            specialization.id => user.divisions_referral_cities(specialization).map(&:id)
+            specialization.id => user.divisions_referral_cities(specialization).reject(&:hidden).map(&:id)
           },
           openToPanel: {
             specialization.id => open_to_panel(specialization)
