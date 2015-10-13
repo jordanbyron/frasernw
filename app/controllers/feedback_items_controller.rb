@@ -40,6 +40,8 @@ class FeedbackItemsController < ApplicationController
     else
       EventMailer.mail_specialist_clinic_feedback(@feedback_item).deliver
     end
+
+    render nothing: true, status: 200
   end
 
   def destroy

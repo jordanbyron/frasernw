@@ -116,8 +116,8 @@ class UsersController < ApplicationController
     end
     Specialization.all.each do |specialization|
       @user.divisions.each do |division|
-        cities = @user.local_referral_cities_for_specialization(specialization)
-        cities = division.local_referral_cities_for_specialization(specialization) if cities.blank?
+        cities = @user.local_referral_cities(specialization)
+        cities = division.local_referral_cities(specialization) if cities.blank?
         cities.each do |city|
           @local_referral_cities[city.id] << specialization.id
         end

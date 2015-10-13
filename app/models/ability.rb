@@ -12,6 +12,7 @@ class Ability
       # all categories of logged in
       can :show, FaqCategory
       can :index, :terms_and_conditions
+      can :get, :global_data
 
       if user.super_admin?
 
@@ -149,7 +150,7 @@ class Ability
         end
 
         can :show, ScItem do |item|
-          item.available_to_divisions(user.divisions)
+          item.available_to_divisions?(user.divisions)
         end
 
         can :show, [Hospital, Language, ScCategory]

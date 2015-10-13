@@ -16,6 +16,9 @@
 //= require ajaxify-html5.js
 //= require jquery.serializejson
 //= require highcharts
+//= require webpack.bundle
+//= require jquery_components/checkbox_slidedown
+//= require global_data
 //= require_directory .
 
 function current_user_is_admin()

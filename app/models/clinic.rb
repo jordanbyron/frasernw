@@ -23,7 +23,7 @@ class Clinic < ActiveRecord::Base
 
   #clinics speak many languages
   has_many   :clinic_speaks, :dependent => :destroy
-  has_many   :languages, :through => :clinic_speaks, :order => "name ASC"
+  has_many   :languages, :through => :clinic_speaks
 
   #clinics focus on procedures
   has_many   :focuses, :dependent => :destroy
@@ -70,6 +70,10 @@ class Clinic < ActiveRecord::Base
         ]
       }
     )
+  end
+
+  def self.includes_location_schedules
+    includes(clinic_locations: {:schedule => [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday]})
   end
 
   def self.includes_locations
@@ -147,12 +151,26 @@ class Clinic < ActiveRecord::Base
     (direct + in_hospital).uniq
   end
 
+
+  # performs procedures that are attached to the other specialization without
+  # performing them through that specialization
+  def self.performs_procedures_in(specialization)
+    joins(<<-SQL).where('"ps2".specialization_id = (?)', specialization.id)
+      INNER JOIN "focuses"
+      ON "focuses".clinic_id = "clinics".id
+      INNER JOIN "procedure_specializations" AS "ps1"
+      ON "ps1".id = "focuses".procedure_specialization_id
+      INNER JOIN "procedure_specializations" AS "ps2"
+      ON "ps2".procedure_id = "ps1".procedure_id
+    SQL
+  end
+
   def self.in_divisions(divisions)
     self.in_cities(divisions.map{ |division| division.cities }.flatten.uniq)
   end
 
   def self.in_local_referral_area_for_specializaton_and_division(specialization, division)
-    self.in_cities(division.local_referral_cities_for_specialization(specialization))
+    self.in_cities(division.local_referral_cities(specialization))
   end
 
   def responded?
@@ -433,6 +451,12 @@ class Clinic < ActiveRecord::Base
 
   def days
     clinic_locations.reject{ |cl| !cl.scheduled? }.map{ |cl| cl.schedule.days }.flatten.uniq
+  end
+
+  def scheduled_day_ids
+    clinic_locations.map do |cl|
+      cl.schedule.scheduled_day_ids
+    end.flatten.uniq
   end
 
   def private?

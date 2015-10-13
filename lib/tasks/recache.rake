@@ -10,8 +10,6 @@ namespace :pathways do
       Specialization.all.sort{ |a,b| a.id <=> b.id }.each do |s|
         begin
           puts "Specialization #{s.id}"
-          expire_fragment specialization_path(s)
-          HttpGetter.exec("specialties/#{s.id}/#{s.token}/refresh_cache")
 
           City.all.sort{ |a,b| a.id <=> b.id }.each do |c|
             puts "Specialization City #{c.id}"
@@ -160,6 +158,11 @@ namespace :pathways do
       end
     end
 
+    task :serialized_indices => :environment do
+      Serialized.regenerate_all
+      Serialized::BySpecialization.regenerate_all
+    end
+
     task :analytics_charts do
       if Date.today.day == 1
         AnalyticsChart.generate_full_cache
@@ -167,7 +170,22 @@ namespace :pathways do
     end
 
     #purposeful order from least important to most important, to keep cache 'hot'
-    task :all => [:environment, :analytics_charts, :specialists_index, :procedures, :languages, :hospitals, :clinics, :specialists, :sc_categories, :specializations, :menus, :search, :front, :application_layout] do
+    task :all => [
+      :environment,
+      :serialized_indices,
+      :specialists_index,
+      :procedures,
+      :languages,
+      :hospitals,
+      :clinics,
+      :specialists,
+      :sc_categories,
+      :specializations,
+      :menus,
+      :search,
+      :front,
+      :application_layout
+    ] do
       puts "All pages recached."
       SystemNotifier.notice("Recache successful")
     end

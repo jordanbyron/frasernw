@@ -7,7 +7,7 @@ class ReferralFormsController < ApplicationController
     @referral_forms = []
 
     Specialization.all.each do |specialization|
-      cities = current_user.divisions.map{ |d| d.local_referral_cities_for_specialization(specialization) }.flatten.uniq
+      cities = current_user.divisions.map{ |d| d.local_referral_cities(specialization) }.flatten.uniq
 
       specialists = specialization.specialists.in_cities(cities)
       clinics = specialization.clinics.in_cities(cities)

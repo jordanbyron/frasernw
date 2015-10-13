@@ -1,6 +1,7 @@
 class City < ActiveRecord::Base
   attr_accessible :name, :province_id, :hidden
   include PaperTrailable
+  include ActionView::Helpers::FormOptionsHelper
 
   belongs_to :province
   has_many :addresses
@@ -9,12 +10,31 @@ class City < ActiveRecord::Base
   has_many :division_cities, :dependent => :destroy
   has_many :divisions, :through => :division_cities
 
+  has_many :division_referral_cities
+
   default_scope order('cities.name')
 
   validates_presence_of :name, :on => :create, :message => "can't be blank"
 
   # # # Caching methods
   after_commit :flush_cached_find
+
+  PRIORITY_SETTINGS = 3
+  def self.priority_setting_options
+    (1..PRIORITY_SETTINGS).map do |t|
+      [t, t]
+    end
+  end
+
+  def self.options_for_priority_select(division)
+    not_hidden.map do |city|
+      {
+        city_name: city.name,
+        city_id: city.id,
+        options_for_select: city.options_for_priority_select(division)
+      }
+    end
+  end
 
   # def self.all_cached
   #   Rails.cache.fetch('City.all') { all }
@@ -35,6 +55,10 @@ class City < ActiveRecord::Base
 
   def to_s
     self.name
+  end
+
+  def division_referral_city(division)
+    division_referral_cities.where(division_id: division.id).first
   end
 
   def formatted_for_select
@@ -81,5 +105,14 @@ class City < ActiveRecord::Base
 
   def self.not_hidden
     where("cities.hidden = (?)", false)
+  end
+
+  def options_for_priority_select(division)
+    if division.new_record?
+      options_for_select(self.class.priority_setting_options, PRIORITY_SETTINGS)
+    else
+      division_referral_city(division).try(:options_for_priority_select) ||
+        options_for_select(self.class.priority_setting_options, PRIORITY_SETTINGS)
+    end
   end
 end

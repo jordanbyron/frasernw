@@ -20,6 +20,8 @@ class Specialization < ActiveRecord::Base
   has_many :owners, :through => :specialization_options, :class_name => "User"
   has_many :content_owners, :through => :specialization_options, :class_name => "User"
 
+  has_many :division_referral_city_specializations, :dependent => :destroy
+
   after_commit :flush_cache
   after_touch  :flush_cache
 
@@ -129,7 +131,7 @@ class Specialization < ActiveRecord::Base
 
   def no_division_specialists
     @no_division_specialists ||=
-      specialists.includes_specialist_offices.reject do |specialist|
+      specialists.with_cities.reject do |specialist|
         specialist.cities.length > 0
       end
   end

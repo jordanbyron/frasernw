@@ -29,12 +29,17 @@ class SpecializationOption < ActiveRecord::Base
     where("specialization_options.is_new = (?)", true)
   end
 
+  def open_to_sc_category?
+    Rails.logger.info("1")
+    open_to_sc_category.present? && open_to_sc_category.all_sc_items_for_specialization_in_divisions(specialization, [division]).length > 0
+  end
+
   def open_to
     if open_to_type == OPEN_TO_SPECIALISTS
       "specialists"
     elsif open_to_type == OPEN_TO_CLINICS
       "clinics"
-    elsif open_to_sc_category.present? && open_to_sc_category.all_sc_items_for_specialization_in_divisions(specialization, [division]).length > 0
+    elsif open_to_sc_category?
       open_to_sc_category.id
     else
       "specialists"

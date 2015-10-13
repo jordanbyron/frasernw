@@ -115,21 +115,34 @@ class Specialist < ActiveRecord::Base
     (divisions.length > 0) && (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length == 0)
   end
 
-  def self.includes_specialist_offices
-    includes(
-      :specialist_offices => {
-        :office => {
-          :location => [
-            {:address => :city},
-            {:hospital_in => {:location => { :address => :city}}},
-            {:location_in => [
-              {:address => :city},
-              {:hospital_in => {:location => { :address => :city}}}
-            ]}
-          ]
-        }
+
+  def self.with_cities
+    includes({
+      :hospitals => { location: {address: :city}},
+      :offices => {location: [
+        {:address => :city},
+        {:hospital_in => {:location => { :address => :city}}},
+        {:location_in => [
+          {:address => :city},
+          {:hospital_in => {:location => { :address => :city}}}
+        ]}
+      ]},
+      :clinics => {
+        locations: [
+          {address: :city},
+          {hospital_in: {location: {address: :city}}},
+        ]
       }
-    )
+    })
+  end
+
+  def self.includes_specialization_page
+    includes([
+      :procedures,
+      :specializations,
+      :languages,
+      {capacities: {procedure_specialization: :procedure}}
+    ]).with_cities
   end
 
   # # # # CACHING METHODS
@@ -225,7 +238,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def self.in_local_referral_area_for_specializaton_and_division(specialization, division)
-    self.in_cities(division.local_referral_cities_for_specialization(specialization))
+    self.in_cities(division.local_referral_cities(specialization))
   end
 
   def self.in_cities_and_performs_procedures_in_specialization(cities, specialization)
@@ -248,6 +261,19 @@ class Specialist < ActiveRecord::Base
     hoc_clinic_in_hospital = joins('INNER JOIN "attendances" ON "specialists"."id" = "attendances"."specialist_id" INNER JOIN "clinic_locations" AS "clinic_in_clinic_location" ON "attendances".clinic_location_id = "clinic_in_clinic_location".id INNER JOIN "locations" as "clinic_location" ON "clinic_location".locatable_id = "clinic_in_clinic_location".id INNER JOIN "hospitals" ON "clinic_location".hospital_in_id = "hospitals".id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id INNER JOIN "capacities" ON "capacities".specialist_id = "specialists".id INNER JOIN "procedure_specializations" AS "ps1" on "ps1".id = "capacities".procedure_specialization_id INNER JOIN "procedure_specializations" AS "ps2" ON "ps2".procedure_id = "ps1".procedure_id').where('"clinic_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "specialists".categorization_mask in (?) AND "ps2".specialization_id = (?)', "ClinicLocation", "Hospital", city_ids, [2, 3, 4, 5], specialization.id)
 
     (responded_direct + responded_in_hospital + responded_in_clinic + responded_in_clinic_in_hospital + hoc_hospital + hoc_clinic + hoc_clinic_in_hospital).uniq
+  end
+
+  # performs procedures that are attached to the other specialization without
+  # performing them through that specialization
+  def self.performs_procedures_in(specialization)
+    joins(<<-SQL).where('"ps2".specialization_id = (?)', specialization.id)
+      INNER JOIN "capacities"
+      ON "capacities".specialist_id = "specialists".id
+      INNER JOIN "procedure_specializations" AS "ps1"
+      ON "ps1".id = "capacities".procedure_specialization_id
+      INNER JOIN "procedure_specializations" AS "ps2"
+      ON "ps2".procedure_id = "ps1".procedure_id
+    SQL
   end
 
   # # # Reporting Methods
@@ -282,8 +308,6 @@ class Specialist < ActiveRecord::Base
 
   validates_attachment_content_type :photo, :content_type => /image/
   validates_attachment_size :photo, :less_than => 2.megabytes
-
-  default_scope order('specialists.lastname, specialists.firstname')
 
   #clinic that referrals are done through
   belongs_to :referral_clinic, :class_name => "Clinic"
@@ -788,6 +812,13 @@ class Specialist < ActiveRecord::Base
 
   def open_sunday?
     specialist_offices.reject{ |so| !so.open_sunday }.present?
+  end
+
+  def day_ids
+    {
+      6 => open_saturday?,
+      7 => open_sunday?
+    }.select{ |key, value| value }.keys
   end
 
   def new?

@@ -23,6 +23,13 @@ module ProcedureSpecializable
     end
   end
 
+  # We assume that they also do parent procedures
+  def procedure_ids_with_parents
+    procedure_specializations.includes(:procedure).map do |ps|
+      [ ps.procedure.id, ps.ancestors.map(&:procedure).map(&:id) ]
+    end.flatten
+  end
+
   module ClassMethods
     def with_ps_with_ancestry(ancestry)
       all.select do |procedure_specializable|

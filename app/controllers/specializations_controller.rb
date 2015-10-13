@@ -13,8 +13,11 @@ class SpecializationsController < ApplicationController
 
   def show
     @specialization = Specialization.find(params[:id])
-    @feedback = FeedbackItem.new
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    @init_data = GenerateSpecializationPage.exec(
+      specialization_id: params[:id].to_i,
+      current_user: current_user
+    )
+    @automatically_remove_heartbeat = false
   end
 
   def new
@@ -40,6 +43,8 @@ class SpecializationsController < ApplicationController
         so.show_specialist_categorization_4 = params[:show_specialist_categorization_4].present? && params[:show_specialist_categorization_4]["#{division.id}"].present?
         so.show_specialist_categorization_5 = params[:show_specialist_categorization_5].present? && params[:show_specialist_categorization_5]["#{division.id}"].present?
         so.save
+
+        division.refer_to_encompassed_cities(@specialization)
       end
       redirect_to @specialization, :notice => "Successfully created specialty."
     else

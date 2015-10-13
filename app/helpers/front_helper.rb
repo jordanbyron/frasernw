@@ -25,7 +25,7 @@ module FrontHelper
 
           next if specialist.blank? || specialist.in_progress
           #Below: Division's define what cities they refer to for specific specializations.  Do not show version if specialist specialization is not within local referral area of the division.
-          next if (specialist_cities & divisions.map{|d| d.local_referral_cities_for_specialization(specialist.primary_specialization)}.flatten.uniq).blank?
+          next if (specialist_cities & divisions.map{|d| d.local_referral_cities(specialist.primary_specialization)}.flatten.uniq).blank?
 
 
           if version.event == "update"
@@ -72,7 +72,7 @@ module FrontHelper
           specialist_cities = specialist.cities_for_front_page.flatten.uniq
 
           #Below: Division's define what cities they refer to for specific specializations.  Do not show version if specialist specialization is not within local referral area of the division.
-          next if (specialist_cities & divisions.map{|d| d.local_referral_cities_for_specialization(specialist.primary_specialization)}.flatten.uniq).blank?
+          next if (specialist_cities & divisions.map{|d| d.local_referral_cities(specialist.primary_specialization)}.flatten.uniq).blank?
 
 
           if (["create", "update"].include? version.event) && specialist.accepting_new_patients? && specialist_office.opened_recently?
@@ -103,7 +103,7 @@ module FrontHelper
           clinic = clinic_location.clinic
 
           #Below: Division's define what cities they refer to for specific specializations.  Do not show version if clinic specialization is not within local referral area of the division.
-          next if (clinic.cities & divisions.map{|d| d.local_referral_cities_for_specialization(clinic.primary_specialization)}.flatten.uniq).blank?
+          next if (clinic.cities & divisions.map{|d| d.local_referral_cities(clinic.primary_specialization)}.flatten.uniq).blank?
 
           if (["create", "update"].include? version.event) && clinic.accepting_new_patients? && clinic_location.opened_recently?
 

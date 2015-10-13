@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150728194158) do
+ActiveRecord::Schema.define(:version => 20150907224855) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -273,6 +273,7 @@ ActiveRecord::Schema.define(:version => 20150728194158) do
     t.integer  "city_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "priority",    :default => 3
   end
 
   add_index "division_referral_cities", ["city_id", "division_id"], :name => "index_division_referral_cities_on_city_id_and_division_id"
@@ -304,6 +305,7 @@ ActiveRecord::Schema.define(:version => 20150728194158) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "primary_contact_id"
+    t.boolean  "use_customized_city_priorities", :default => false
   end
 
   create_table "edits", :force => true do |t|

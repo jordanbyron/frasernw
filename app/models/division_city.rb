@@ -3,4 +3,5 @@ class DivisionCity < ActiveRecord::Base
   belongs_to :city
 
   include PaperTrailable
+
 end
