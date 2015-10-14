@@ -15,10 +15,10 @@ module.exports = function(stateProps, dispatchProps) {
       state,
       filterValues
     );
-
     return {
       title: title(state, filterValues, filtered.length),
-      lists: lists(state, filtered),
+      contentComponentType: filterValues.reportView,
+      contentComponentProps: contentComponentProps(filterValues, state, filtered),
       filters: {
         title: "Customize Report",
         groups: filterGroups(state)
@@ -33,6 +33,31 @@ module.exports = function(stateProps, dispatchProps) {
   }
 };
 
+var contentComponentProps = function(filterValues, state, filtered) {
+  if (filterValues.reportView === "expanded"){
+    return {
+      lists: lists(state, filtered)
+    };
+  } else {
+    return {
+      rows: rows(state, filtered),
+      collectionName: _.capitalize(filterValues.recordTypes)
+    };
+  }
+};
+
+var rows = function(state, filtered) {
+  return _.sortBy(_.values(state.app.specializations).map((specialization) => {
+    var matchingItems = filtered.filter((item) => {
+      return _.includes(item.specializationIds, specialization.id);
+    })
+
+    return {
+      reactKey: specialization.id,
+      cells: [ specialization.name, matchingItems.length ]
+    }
+  }).filter((row) => row.cells[1] > 0), (row) => row.cells[0]);
+}
 
 var scopeTitle = function(state, filterValues) {
   if (filterValues.divisions === 0) {
@@ -51,6 +76,9 @@ const FILTER_VALUE_GENERATORS = {
   },
   recordTypes: function(state) {
     return _.get(state, ["ui", "filterValues", "recordTypes"], "specialists");
+  },
+  reportView: function(state) {
+    return _.get(state, ["ui", "filterValues", "reportView"], "summary");
   }
 };
 
@@ -92,6 +120,27 @@ var filterGroups = function(state) {
           }).concat({key: 0, label: "All of Pathways"})
         }
       }
+    },
+    {
+      title: "Report View",
+      isOpen: _.get(state, ["ui", "filterVisibility", "reportView"], true),
+      componentKey: "reportView",
+      filters: {
+        reportView: {
+          options: [
+            {
+              label: "Summary",
+              key: "summary",
+              checked: FILTER_VALUE_GENERATORS.reportView(state) === "summary"
+            },
+            {
+              label: "Expanded",
+              key: "expanded",
+              checked: FILTER_VALUE_GENERATORS.reportView(state) === "expanded"
+            }
+          ]
+        }
+      }
     }
   ];
 };
@@ -109,15 +158,16 @@ var filters = {
 
 
 var lists = function(state, filtered: Array) {
-  return _.values(state.app.specializations).map((specialization) => {
+  return _.sortBy(_.values(state.app.specializations).map((specialization) => {
     var items = specializationReferents(filtered, specialization.id);
 
     return {
       title: `${specialization.name} (${items.length} total)`,
       items: specializationReferents(filtered, specialization.id),
+      isOpen: _.get(state, ["ui", "listVisibility", specialization.id], true),
       key: specialization.id
     };
-  });
+  }).filter((specialization) => specialization.items.length > 0), "title");
 };
 
 var filterReferents = function(referents: Array, state: Object, filterValues: Object): Array {

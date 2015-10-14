@@ -12,7 +12,8 @@ var FILTER_GROUPS = {
   careProviders: require("./filter_groups/care_providers"),
   subcategories: require("./filter_groups/subcategories"),
   divisions: require("./filter_groups/divisions"),
-  recordTypes: require("./filter_groups/record_types")
+  recordTypes: require("./filter_groups/record_types"),
+  reportView: require("./filter_groups/report_view")
 }
 
 var FilterGroup = React.createClass({
