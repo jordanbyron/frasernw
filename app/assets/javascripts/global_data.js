@@ -20,7 +20,7 @@
       window.localStorage.pathwaysGlobalData != undefined);
   };
 
-  pathways.setGlobalDataPromise = function(cacheVersion){
+  pathways.localstorage_cache_version = function(cacheVersion){
     pathways.globalDataLoaded = function(){
       var deferred = $.Deferred();
 

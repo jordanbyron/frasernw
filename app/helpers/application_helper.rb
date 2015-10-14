@@ -213,7 +213,7 @@ module ApplicationHelper
 
   # bump this if you want to force clients to recache the data they store
   # in localStorage
-  def global_data_cache_version
-    2
+  def localstorage_cache_version
+    Setting.localstorage_cache_version
   end
 end
