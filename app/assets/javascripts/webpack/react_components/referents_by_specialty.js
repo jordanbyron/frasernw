@@ -90,7 +90,6 @@ module.exports = React.createClass({
     );
   },
   render: function() {
-    console.log(this.props);
     return(
       <LoadingContainer
         isLoading={this.props.isLoading}

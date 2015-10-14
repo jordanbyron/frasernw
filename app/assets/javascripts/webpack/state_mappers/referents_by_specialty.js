@@ -5,8 +5,6 @@ module.exports = function(stateProps, dispatchProps) {
   var state = stateProps;
   var dispatch = dispatchProps.dispatch;
 
-  console.log(state);
-
   if (state.ui.hasBeenInitialized) {
     var filterValues = _.transform(FILTER_VALUE_GENERATORS, (memo, fn, key) => {
       memo[key] = fn(state)

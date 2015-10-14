@@ -10,9 +10,6 @@ var UIReducers = {
 // ui - what is true about this view in particular
 module.exports = function(uiReducerKey) {
   return function(state = {}, action) {
-    console.log("ACTION:");
-    console.log(action);
-
     switch(action.type){
     case "@@redux/INIT":
       return {
