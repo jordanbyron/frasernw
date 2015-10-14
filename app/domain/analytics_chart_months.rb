@@ -4,7 +4,7 @@ class AnalyticsChartMonths
   def exec
     Month.for_interval(
       Month.new(2014, 1),
-      Month.prev
+      Month.current
     ).map do |month|
       [
         month.friendly_name,

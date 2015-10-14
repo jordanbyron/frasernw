@@ -164,9 +164,7 @@ namespace :pathways do
     end
 
     task :analytics_charts do
-      if Date.today.day == 1
-        AnalyticsChart.generate_full_cache
-      end
+      AnalyticsChart.generate_full_cache
     end
 
     #purposeful order from least important to most important, to keep cache 'hot'

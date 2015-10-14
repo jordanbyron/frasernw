@@ -16,7 +16,7 @@
       .pull-right
         = label_tag "End Month:"
         = select_tag "end_month",
-          options_for_select(@options_for_select, Month.prev.to_i),
+          options_for_select(@options_for_select, Month.current.to_i),
           id: "end_month",
           class: "month_selector"
 

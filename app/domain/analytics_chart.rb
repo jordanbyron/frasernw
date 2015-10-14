@@ -11,7 +11,7 @@ class AnalyticsChart
     SUPPORTED_METRICS.each do |metric|
       exec(
         start_date: Month.new(2014, 1).start_date,
-        end_date: Month.prev.end_date,
+        end_date: Date.today,
         metric: metric,
         divisions: Division.standard
       )
@@ -30,11 +30,12 @@ class AnalyticsChart
       },
       xAxis: {
         title: {
-          text: "Week"
+          text: "Week Starting On"
         },
         labels: {
           staggerLines: 1,
-          rotation: -45
+          rotation: -45,
+          format: "{value:%b %e, %Y}"
         },
         type: "datetime"
       },
@@ -148,7 +149,7 @@ class AnalyticsChart
 
   def weeks
     @weeks = Week.for_interval(start_date, end_date).reject do |week|
-      week.end_date > Month.prev.end_date
+      week.end_date > Date.today
     end
   end
 
