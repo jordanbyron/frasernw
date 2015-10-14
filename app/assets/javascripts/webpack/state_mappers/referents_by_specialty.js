@@ -1,4 +1,5 @@
 var _ = require("lodash");
+var React = require("react");
 
 module.exports = function(stateProps, dispatchProps) {
   var state = stateProps;
@@ -36,7 +37,7 @@ module.exports = function(stateProps, dispatchProps) {
 var contentComponentProps = function(filterValues, state, filtered) {
   if (filterValues.reportView === "expanded"){
     return {
-      lists: lists(state, filtered)
+      lists: lists(state, filtered, filterValues.recordTypes)
     };
   } else {
     return {
@@ -157,13 +158,13 @@ var filters = {
 }
 
 
-var lists = function(state, filtered: Array) {
+var lists = function(state, filtered: Array, collectionName: string) {
   return _.sortBy(_.values(state.app.specializations).map((specialization) => {
     var items = specializationReferents(filtered, specialization.id);
 
     return {
       title: `${specialization.name} (${items.length} total)`,
-      items: specializationReferents(filtered, specialization.id),
+      items: specializationReferents(filtered, specialization.id, collectionName),
       isOpen: _.get(state, ["ui", "listVisibility", specialization.id], true),
       key: specialization.id
     };
@@ -179,12 +180,12 @@ var filterReferents = function(referents: Array, state: Object, filterValues: Ob
   });
 };
 
-var specializationReferents = function(referents, specializationId) {
+var specializationReferents = function(referents, specializationId, collectionName) {
   return referents.filter((referent) => {
     return _.includes(referent.specializationIds, specializationId);
   }).map((referent) => {
     return {
-      content: referent.name,
+      content: <a href={`/${collectionName}/${referent.id}`}>{referent.name}</a>,
       reactKey: referent.id
     };
   });
