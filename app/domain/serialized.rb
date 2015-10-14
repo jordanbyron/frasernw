@@ -55,7 +55,7 @@ module Serialized
             statusClassKey: specialist.status_class_hash,
             waittime: masked_waittime(specialist),
             cityIds: specialist.cities.reject{ |city| city.hidden }.map(&:id),
-            collectionName: collection_name(specialist),
+            collectionName: "specialists",
             procedureIds: specialist.procedure_ids_with_parents,
             respondsWithin: specialist.lagtime_mask,
             acceptsReferralsViaPhone: specialist.referral_phone,
@@ -71,14 +71,6 @@ module Serialized
             isNew: specialist.new?,
             isInProgress: specialist.in_progress
           })
-        end
-      end
-
-      def self.collection_name(specialist)
-        if specialist.specializations.any?
-          specialist.specializations.first.label_name.downcase.pluralize
-        else
-          ""
         end
       end
 
