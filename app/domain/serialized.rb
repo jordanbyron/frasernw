@@ -227,7 +227,7 @@ module Serialized
       end
     end,
     divisions: Proc.new do
-      Division.not_hidden.all.inject({}) do |memo, division|
+      Division.standard.all.inject({}) do |memo, division|
         memo.merge(division.id => {
           id: division.id,
           name: division.name
