@@ -56,7 +56,7 @@ module Serialized
             divisionIds: specialist.divisions.map(&:id),
             waittime: masked_waittime(specialist),
             cityIds: specialist.cities.reject{ |city| city.hidden }.map(&:id),
-            collectionName: collection_name(specialist),
+            collectionName: "specialists",
             procedureIds: specialist.procedure_ids_with_parents,
             respondsWithin: specialist.lagtime_mask,
             acceptsReferralsViaPhone: specialist.referral_phone,
@@ -74,14 +74,6 @@ module Serialized
             createdAt: specialist.created_at.to_date.to_s,
             updatedAt: specialist.updated_at.to_date.to_s
           })
-        end
-      end
-
-      def self.collection_name(specialist)
-        if specialist.specializations.any?
-          specialist.specializations.first.label_name.downcase.pluralize
-        else
-          ""
         end
       end
 
