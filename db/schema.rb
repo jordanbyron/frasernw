@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150907224855) do
+ActiveRecord::Schema.define(:version => 20151014191946) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -708,6 +708,15 @@ ActiveRecord::Schema.define(:version => 20150907224855) do
 
   add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
   add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
+
+  create_table "settings", :force => true do |t|
+    t.integer  "value",      :null => false
+    t.integer  "identifier", :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "settings", ["identifier"], :name => "settings_identifier"
 
   create_table "specialist_addresses", :force => true do |t|
     t.integer  "specialist_id"
