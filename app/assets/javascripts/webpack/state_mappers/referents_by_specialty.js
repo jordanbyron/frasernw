@@ -111,12 +111,14 @@ var filterGroups = function(state) {
       filters: {
         divisions: {
           value: FILTER_VALUE_GENERATORS.divisions(state),
-          options: _.values(state.app.divisions).map((division) => {
-            return {
-              label: division.name,
-              key: division.id
-            };
-          }).concat({key: 0, label: "All of Pathways"})
+          options: [{key: 0, label: "All of Pathways"}].concat(
+            _.sortBy(_.values(state.app.divisions).map((division) => {
+              return {
+                label: division.name,
+                key: division.id
+              };
+            }), "label")
+          )
         }
       }
     },
