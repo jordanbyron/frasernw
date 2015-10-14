@@ -210,4 +210,10 @@ module ApplicationHelper
   def search_data_labels
     SearchDataLabels.new
   end
+
+  # bump this if you want to force clients to recache the data they store
+  # in localStorage
+  def localstorage_cache_version
+    Setting.fetch(:localstorage_cache_version)
+  end
 end

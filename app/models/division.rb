@@ -49,9 +49,11 @@ class Division < ActiveRecord::Base
   end
 
   def self.standard
-    all.reject do |division|
-      division.name == "Provincial" || division.name == "Vancouver (Hidden)"
-    end
+    not_hidden.not_provincial
+  end
+
+  def self.not_provincial
+    where('"divisions".name != (?)', "Provincial")
   end
 
   def self.not_hidden

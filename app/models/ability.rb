@@ -26,6 +26,7 @@ class Ability
         can :view_report, :page_views
         can :view_report, :sessions
         can :view_report, :usage
+        can :view_report, :referents_by_specialty
 
         can :index, Report
 

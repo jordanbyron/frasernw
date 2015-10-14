@@ -16,16 +16,21 @@
   #show_specialization
 
 :javascript
-  window.pathways.bootstrap.showSpecialization();
-
   $("document").ready(function() {
-    window.pathways.specializationPageStoreStore.dispatch({
+    var store = window.pathways.bootstrapRedux({
+      domElementSelector: "#show_specialization",
+      stateMapper: "SpecializationPage",
+      topLevelComponent: "SpecializationPage",
+      uiReducer: "SpecializationPage"
+    })
+
+    store.dispatch({
       type: "INITIALIZE_FROM_SERVER",
       initialState: #{@init_data.to_json}
     })
 
     window.pathways.globalDataLoaded.done(function(data) {
-      window.pathways.specializationPageStoreStore.dispatch({
+      store.dispatch({
         type: "INTEGRATE_LOCALSTORAGE_DATA",
         data: data
       });

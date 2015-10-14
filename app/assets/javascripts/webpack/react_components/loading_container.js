@@ -14,13 +14,7 @@ module.exports = React.createClass({
         </div>
       );
     } else {
-      return(
-        <div>
-          {
-            React.Children.map(this.props.children, (child) => child)
-          }
-        </div>
-      );
+      return this.props.renderChildren(this.props.childrenProps);
     }
   }
 })

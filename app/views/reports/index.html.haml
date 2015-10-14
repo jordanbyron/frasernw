@@ -40,6 +40,15 @@
         %td > January 2014
         %td
 
+    - if can? :view_report, :referents_by_specialty
+      %tr
+        %td= link_to "Specialists and Clinics by Specialty", referents_by_specialty_reports_path
+        %td Analytics
+        %td System-wide
+        %td N/A
+        %td All Time
+        %td
+
 
     - if current_user_is_super_admin?
       - @reports.each do |report|

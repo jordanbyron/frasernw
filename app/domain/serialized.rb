@@ -53,6 +53,7 @@ module Serialized
             lastName: specialist.lastname,
             statusIconClasses: specialist.status_class,
             statusClassKey: specialist.status_class_hash,
+            divisionIds: specialist.divisions.map(&:id),
             waittime: masked_waittime(specialist),
             cityIds: specialist.cities.reject{ |city| city.hidden }.map(&:id),
             collectionName: "specialists",
@@ -69,7 +70,9 @@ module Serialized
             customLagtimes: custom_lagtimes(specialist),
             isGp: specialist.is_gp,
             isNew: specialist.new?,
-            isInProgress: specialist.in_progress
+            isInProgress: specialist.in_progress,
+            createdAt: specialist.created_at.to_date.to_s,
+            updatedAt: specialist.updated_at.to_date.to_s
           })
         end
       end
@@ -114,13 +117,16 @@ module Serialized
             patientsCanBook: clinic.patient_can_book?,
             scheduledDayIds: clinic.scheduled_day_ids,
             languageIds: clinic.languages.map(&:id),
+            divisionIds: clinic.divisions.map(&:id),
             specializationIds: clinic.specializations.map(&:id),
             wheelchairAccessible: clinic.wheelchair_accessible?,
             customLagtimes: custom_lagtimes(clinic),
             private: clinic.private?,
             careProviderIds: clinic.healthcare_providers.map(&:id),
             isNew: clinic.new?,
-            isInProgress: clinic.in_progress
+            isInProgress: clinic.in_progress,
+            createdAt: clinic.created_at.to_date.to_s,
+            updatedAt: clinic.updated_at.to_date.to_s
           })
         end
       end
@@ -164,6 +170,7 @@ module Serialized
     specializations: Proc.new do
       Specialization.includes(:specialization_options).all.inject({}) do |memo, specialization|
         memo.merge(specialization.id => {
+          id: specialization.id,
           name: specialization.name,
           assumedList: specialization.procedure_specializations.assumed_specialist.
             reject{ |ps| ps.parent.present? }.
@@ -208,6 +215,14 @@ module Serialized
         memo.merge(procedure.id => {
           nameRelativeToParents: procedure.try(:name_relative_to_parents),
           name: procedure.name
+        })
+      end
+    end,
+    divisions: Proc.new do
+      Division.standard.all.inject({}) do |memo, division|
+        memo.merge(division.id => {
+          id: division.id,
+          name: division.name
         })
       end
     end
