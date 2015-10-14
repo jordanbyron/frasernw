@@ -6,7 +6,8 @@ module Api
 
         render json: AnalyticsChart.exec(AnalyticsChartMonths.parse(params).merge(
           metric: :page_views,
-          divisions: current_user.reporting_divisions
+          divisions: current_user.reporting_divisions,
+          force: false
         ))
       end
 
@@ -15,7 +16,8 @@ module Api
 
         render json: AnalyticsChart.exec(AnalyticsChartMonths.parse(params).merge(
           metric: :sessions,
-          divisions: current_user.reporting_divisions
+          divisions: current_user.reporting_divisions,
+          force: false
         ))
       end
     end

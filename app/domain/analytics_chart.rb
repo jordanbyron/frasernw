@@ -1,6 +1,6 @@
 class AnalyticsChart
 
-  include ServiceObject.exec_with_args(:start_date, :end_date, :metric, :divisions)
+  include ServiceObject.exec_with_args(:start_date, :end_date, :metric, :divisions, :force)
 
   SUPPORTED_METRICS = [
     :page_views,
@@ -13,7 +13,8 @@ class AnalyticsChart
         start_date: Month.new(2014, 1).start_date,
         end_date: Date.today,
         metric: metric,
-        divisions: Division.standard
+        divisions: Division.standard,
+        force: true
       )
     end
   end
@@ -117,7 +118,7 @@ class AnalyticsChart
       data: weeks.map do |week|
         [
           (week.start_date.at_midnight.to_i*1000),
-          Rails.cache.fetch("non_admin_#{metric.to_s}:#{week.start_date.to_s}:global") do
+          Rails.cache.fetch("non_admin_#{metric.to_s}:#{week.start_date.to_s}:global", force: force) do
             global_data(week)
           end
         ]
@@ -131,7 +132,7 @@ class AnalyticsChart
       data: weeks.map do |week|
         [
           (week.start_date.at_midnight.to_i*1000),
-          Rails.cache.fetch("non_admin_#{metric.to_s}:#{week.start_date.to_s}:#{division.id}") do
+          Rails.cache.fetch("non_admin_#{metric.to_s}:#{week.start_date.to_s}:#{division.id}", force: force) do
             divisional_data[week][division.id]
           end
         ]
