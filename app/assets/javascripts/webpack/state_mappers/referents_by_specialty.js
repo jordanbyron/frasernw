@@ -186,6 +186,7 @@ var specializationReferents = function(referents, specializationId, collectionNa
   }).map((referent) => {
     return {
       content: <a href={`/${collectionName}/${referent.id}`}>{referent.name}</a>,
+      fadedContent: `Added: ${referent.createdAt}, Last Updated: ${referent.updatedAt}`,
       reactKey: referent.id
     };
   });

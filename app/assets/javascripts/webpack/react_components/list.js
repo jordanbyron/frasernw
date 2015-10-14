@@ -22,8 +22,17 @@ var List = React.createClass({
               {
                 this.props.items.map((item) => {
                   return(
-                    <tr key={item.reactKey}>
-                      <td>{item.content}</td>
+                    <tr
+                      className="referents_by_specialty__row"
+                      key={item.reactKey}
+                    >
+                      <td>
+                        {item.content}
+                        <div
+                          style={{float: "right"}}
+                          className="referents_by_specialty__faded_content"
+                        >{item.fadedContent}</div>
+                      </td>
                     </tr>
                   );
                 })

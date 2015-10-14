@@ -70,7 +70,9 @@ module Serialized
             customLagtimes: custom_lagtimes(specialist),
             isGp: specialist.is_gp,
             isNew: specialist.new?,
-            isInProgress: specialist.in_progress
+            isInProgress: specialist.in_progress,
+            createdAt: specialist.created_at.to_date.to_s,
+            updatedAt: specialist.updated_at.to_date.to_s
           })
         end
       end
@@ -130,7 +132,9 @@ module Serialized
             private: clinic.private?,
             careProviderIds: clinic.healthcare_providers.map(&:id),
             isNew: clinic.new?,
-            isInProgress: clinic.in_progress
+            isInProgress: clinic.in_progress,
+            createdAt: clinic.created_at.to_date.to_s,
+            updatedAt: clinic.updated_at.to_date.to_s
           })
         end
       end
