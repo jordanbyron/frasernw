@@ -214,6 +214,6 @@ module ApplicationHelper
   # bump this if you want to force clients to recache the data they store
   # in localStorage
   def localstorage_cache_version
-    Setting.localstorage_cache_version
+    Setting.fetch(:localstorage_cache_version)
   end
 end
