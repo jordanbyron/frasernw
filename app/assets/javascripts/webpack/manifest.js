@@ -10,4 +10,4 @@ require("console-polyfill");
 // partials and non-webpacked js
 
 window.pathways = window.pathways || {};
-window.pathways.bootstrapRedux = require("./bootstrap_redux");
+window.pathways.bootstrapReact = require("./bootstrap_react");

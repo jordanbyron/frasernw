@@ -27,14 +27,18 @@ class ReportsController < ApplicationController
   end
 
   def referents_by_specialty
+    authorize! :view_report, :referents_by_specialty
+
     @init_data = {
       app: {
         specializations: Serialized.fetch(:specializations),
         divisions: Serialized.fetch(:divisions)
       }
     }
+  end
 
-    authorize! :view_report, :referents_by_specialty
+  def usage
+    
   end
 
   def show

@@ -1,6 +1,6 @@
 class UsageReportsController < ApplicationController
   def new
-    authorize! :view_report, :usage
+    authorize! :view_report, :csv_usage
 
     @submit_path = usage_reports_path
     @months = AnalyticsChartMonths.exec
@@ -10,7 +10,7 @@ class UsageReportsController < ApplicationController
   end
 
   def create
-    authorize! :view_report, :usage
+    authorize! :view_report, :csv_usage
 
     if params[:scope] != "global" && !current_user.reporting_divisions.map(&:id).include?(params[:scope].to_i)
       raise "Not in your division"
@@ -25,7 +25,7 @@ class UsageReportsController < ApplicationController
   end
 
   def show
-    authorize! :view_report, :usage
+    authorize! :view_report, :csv_usage
 
     send_data S3.bucket.objects[params[:id]].read,
       filename: "pathways_usage_report_(retrieved_#{Date.today.strftime("%Y-%m-%d")}).csv"
