@@ -31,15 +31,6 @@
         %td > January 2014
         %td
 
-    - if can? :view_report, :csv_usage
-      %tr
-        %td= link_to "Usage (CSV View)", new_usage_report_path
-        %td Analytics
-        %td System-wide
-        %td N/A
-        %td > January 2014
-        %td
-
     - if can? :view_report, :referents_by_specialty
       %tr
         %td= link_to "Specialists and Clinics by Specialty", referents_by_specialty_reports_path
@@ -47,6 +38,15 @@
         %td System-wide
         %td N/A
         %td All Time
+        %td
+
+    - if can? :view_report, :csv_usage
+      %tr
+        %td= link_to "Usage (CSV View)", new_usage_report_path
+        %td Analytics
+        %td System-wide
+        %td N/A
+        %td > January 2014
         %td
 
     - if can? :view_report, :usage

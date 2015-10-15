@@ -14,7 +14,7 @@ module.exports = React.createClass({
         </div>
       );
     } else {
-      return this.props.renderChildren(this.props.childrenProps);
+      return this.props.renderChildren();
     }
   }
 })

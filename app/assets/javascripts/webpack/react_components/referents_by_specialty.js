@@ -93,8 +93,7 @@ module.exports = React.createClass({
     return(
       <LoadingContainer
         isLoading={this.props.isLoading}
-        renderChildren={this.renderChildren}
-        childrenProps={this.props}
+        renderChildren={this.renderChildren.bind(null, this.props)}
       />
     );
   }

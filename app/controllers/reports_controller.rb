@@ -38,7 +38,9 @@ class ReportsController < ApplicationController
   end
 
   def usage
-    
+    authorize! :view_report, :usage
+
+    @init_data = { app: {}}
   end
 
   def show
