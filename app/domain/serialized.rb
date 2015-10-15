@@ -35,7 +35,7 @@ module Serialized
             categoryId: item.sc_category.id,
             content: (item.markdown_content.present? ? BlueCloth.new(item.markdown_content).to_html : ""),
             resolvedUrl: item.resolved_url,
-            canEmail: item.can_email_document,
+            canEmail: item.can_email?,
             id: item.id,
             isNew: item.new?,
             isInProgress: item.in_progress

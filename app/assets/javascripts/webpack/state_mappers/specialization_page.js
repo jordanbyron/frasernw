@@ -272,7 +272,7 @@ var PANEL_PROPS_GENERATORS = {
       // TODO name this 'tableHeadings'
       headings: TABLE_HEADINGS_GENERATORS.referents(
         memberName,
-        !filterValues.specializationFilterActivated
+        config.includingOtherSpecializations
       ),
       bodyRows: bodyRows,
       resultSummary: {
