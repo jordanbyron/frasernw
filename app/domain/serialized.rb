@@ -38,7 +38,8 @@ module Serialized
             canEmail: item.can_email?,
             id: item.id,
             isNew: item.new?,
-            isInProgress: item.in_progress
+            isInProgress: item.in_progress,
+            isSharedCare: item.shared_care?
           }
         end
       end
