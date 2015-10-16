@@ -82,7 +82,13 @@ const GENERATE_FILTER_OPTIONS = {
     return [{key: 0, label: "All of Pathways"}].concat(
       _.chain(state.app.divisions)
         .values()
-        .filter((division) => _.includes(state.app.currentUser.divisionIds, division.id))
+        .filter((division) => {
+          if (state.app.currentUser.isSuperAdmin) {
+            return true;
+          } else {
+            return _.includes(state.app.currentUser.divisionIds, division.id);
+          }
+        })
         .map((division) => ({ label: division.name, key: division.id }))
         .sortBy("label")
         .value()
@@ -92,12 +98,12 @@ const GENERATE_FILTER_OPTIONS = {
     var startDate = moment("01-01-2014", "MM-DD-YYYY")
     var endDate = moment().startOf("month").subtract(1, "months");
 
-    return mapMonths(startDate, endDate, (moment) => {
+    return _.sortByOrder(mapMonths(startDate, endDate, (moment) => {
       return {
         label: moment.format("MMM YYYY"),
-        key: moment.format("MMYYYY")
+        key: moment.format("YYYYMM")
       };
-    });
+    }), "key", "desc");
   }
 }
 
@@ -125,7 +131,7 @@ const GENERATE_FILTER_VALUES = {
     return _.get(
       state,
       ["ui", "filterValues", "months"],
-      moment().subtract(1, "months").format("MMYYYY")
+      moment().subtract(1, "months").format("YYYYMM")
     );
   }
 };

@@ -6,10 +6,10 @@ var Months = React.createClass({
   propTypes: {
     filters: React.PropTypes.shape({
       months: React.PropTypes.shape({
-        value: React.PropTypes.number,
+        value: React.PropTypes.string,
         options: React.PropTypes.arrayOf(
           React.PropTypes.shape({
-            key: React.PropTypes.number,
+            key: React.PropTypes.string,
             label: React.PropTypes.string
           })
         )

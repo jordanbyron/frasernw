@@ -43,8 +43,10 @@ class ReportsController < ApplicationController
     @init_data = {
       app: {
         currentUser: {
-          divisionIds: current_user.divisions.map(&:id)
-        }
+          divisionIds: current_user.divisions.map(&:id),
+          isSuperAdmin: current_user.super_admin?
+        },
+        divisions: Serialized.fetch(:divisions)
       }
     }
   end
