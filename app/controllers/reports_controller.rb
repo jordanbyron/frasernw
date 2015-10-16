@@ -40,7 +40,13 @@ class ReportsController < ApplicationController
   def usage
     authorize! :view_report, :usage
 
-    @init_data = { app: {}}
+    @init_data = {
+      app: {
+        currentUser: {
+          divisionIds: current_user.divisions.map(&:id)
+        }
+      }
+    }
   end
 
   def show

@@ -701,6 +701,11 @@
       "from": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz",
       "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz"
     },
+    "moment": {
+      "version": "2.10.6",
+      "from": "moment@*",
+      "resolved": "https://registry.npmjs.org/moment/-/moment-2.10.6.tgz"
+    },
     "object-assign": {
       "version": "3.0.0",
       "from": "https://registry.npmjs.org/object-assign/-/object-assign-3.0.0.tgz",
