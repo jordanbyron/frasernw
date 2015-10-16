@@ -1,7 +1,7 @@
 var React = require("react");
 var LoadingContainer = require("./loading_container");
 var SidebarLayout = require("./sidebar_layout");
-var Filters = require("./filters");
+var ToggleBox = require("./toggle_box");
 
 module.exports = React.createClass({
   propTypes: {
@@ -9,6 +9,15 @@ module.exports = React.createClass({
     tableRows: React.PropTypes.array,
     filters: React.PropTypes.object,
     isLoading: React.PropTypes.bool
+  },
+  toggleFilterGroupVisibility: function(dispatch, key) {
+    return ()=> {
+      return dispatch({
+        type: "TOGGLE_FILTER_GROUP_VISIBILITY",
+        filterKey: key,
+        isOpen: this.props.isOpen
+      });
+    }
   },
   renderChildren: function(props) {
     return(
@@ -31,10 +40,23 @@ module.exports = React.createClass({
             </div>
           }
           sidebar={
-            <Filters
-              {...props.filters}
-              dispatch={props.dispatch}
-            />
+            <div className="well filter">
+              <div className="title" key="title">{ this.props.title }</div>
+              {
+                this.props.filters.groups.map((group, index) => {
+                  return(
+                    <ToggleBox
+                      title={group.title}
+                      open={group.isOpen}
+                      handleToggle={this.toggleFilterGroupVisibility(this.props.dispatch, group.componentKey)}
+                      key={index}
+                    >
+                      { group.contents }
+                    </ToggleBox>
+                  );
+                })
+              }
+            </div>
           }
           reducedView={"main"}
         />

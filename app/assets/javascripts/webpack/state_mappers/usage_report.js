@@ -1,5 +1,8 @@
 var _ = require("lodash");
 var moment = require("moment");
+var React = require("react");
+var RadioButtons = require("../react_components/radio_buttons");
+var Selector = require("../react_components/selector");
 
 module.exports = function(stateProps: Object, dispatchProps: Object): Object {
   var state = stateProps;
@@ -11,7 +14,7 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
       tableRows: [],
       filters: {
         title: "Customize Report",
-        groups: generateFilterGroups(state)
+        groups: generateFilterGroups(state, dispatch)
       },
       dispatch: dispatch,
       isLoading: false
@@ -23,43 +26,71 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
   }
 };
 
-var generateFilterGroups = function(state: Object): Array {
+var generateFilterGroups = function(state: Object, dispatch: Function): Array {
   return [
     {
       title: "Record Type",
       isOpen: _.get(state, ["ui", "filterVisibility", "recordTypes"], true),
       componentKey: "recordTypes",
-      filters: {
-        recordTypes: {
-          options: GENERATE_FILTER_OPTIONS.recordTypes(state)
-        }
-      }
+      contents: (
+        <RadioButtons
+          options={GENERATE_FILTER_OPTIONS.recordTypes(state)}
+          handleChange={
+            function(event) {
+              dispatch({
+                type: "UPDATE_FILTER",
+                filterType: "recordTypes",
+                update: event.target.value
+              });
+            }
+          }
+        />
+      )
     },
     {
       title: "Divisions",
       isOpen: _.get(state, ["ui", "filterVisibility", "divisions"], true),
       componentKey: "divisions",
-      filters: {
-        divisions: {
-          value: GENERATE_FILTER_VALUES.divisions(state),
-          options: GENERATE_FILTER_OPTIONS.divisions(state)
-        }
-      }
+      contents: (
+        <Selector
+          options={GENERATE_FILTER_OPTIONS.divisions(state)}
+          value={GENERATE_FILTER_VALUES.divisions(state)}
+          onChange={
+            function(event) {
+              dispatch({
+                type: "UPDATE_FILTER",
+                filterType: "divisions",
+                update: parseInt(event.target.value)
+              });
+            }
+          }
+          style={{width: "100%"}}
+        />
+      )
     },
     {
       title: "Month",
       isOpen: _.get(state, ["ui", "filterVisibility", "months"], true),
       componentKey: "months",
-      filters: {
-        months: {
-          value: GENERATE_FILTER_VALUES.months(state),
-          options: GENERATE_FILTER_OPTIONS.months(state)
-        }
-      }
+      contents: (
+        <Selector
+          options={GENERATE_FILTER_OPTIONS.months(state)}
+          value={GENERATE_FILTER_VALUES.months(state)}
+          onChange={
+            function(event) {
+              dispatch({
+                type: "UPDATE_FILTER",
+                filterType: "months",
+                update: parseInt(event.target.value)
+              });
+            }
+          }
+          style={{width: "100%"}}
+        />
+      )
     }
   ];
 }
-
 
 const GENERATE_FILTER_OPTIONS = {
   recordTypes: function(state: Object): Array {
