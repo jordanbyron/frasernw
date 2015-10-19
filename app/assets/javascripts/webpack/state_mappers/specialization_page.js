@@ -141,7 +141,7 @@ var filterReferentsInSteps = function(referents: Array, panelTypeKey: string, fi
 
 var computeReferentConfig = function(filtered, filterValues) {
   if ((filtered.withAllFilters.length > 0) &&
-    (_.values(_.pick(filterValues.procedures, _.identity)).length === 1) &&
+    (_.values(_.pick(filterValues.procedures, _.identity)).length > 0) &&
     (filtered.withoutSpecializationFilter.length > filtered.withAllFilters.length) &&
     (filterValues.specializationFilterActivated)) {
     return {
@@ -151,7 +151,7 @@ var computeReferentConfig = function(filtered, filterValues) {
       includingOtherSpecializations: false
     };
   } else if ((filtered.withAllFilters.length > 0) &&
-    (_.values(_.pick(filterValues.procedures, _.identity)).length === 1) &&
+    (_.values(_.pick(filterValues.procedures, _.identity)).length > 0) &&
     (filtered.withoutSpecializationFilter.length > filtered.withAllFilters.length) &&
     (!filterValues.specializationFilterActivated)) {
     return {
