@@ -31,7 +31,8 @@
         - if fields.object.present? && fields.object.form.present?
           %p.referral_form_editor__form_link_item
             = link_to fields.object.form.url,
-              target: "_blank" do
+              "target" => "_blank",
+              "onClick" => "window.pathways.trackForm(_gaq, #{fields.object.id})" do
               %i.icon-share
               %span= fields.object.form_file_name
         - else

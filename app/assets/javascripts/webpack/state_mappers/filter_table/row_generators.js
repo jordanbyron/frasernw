@@ -3,6 +3,7 @@ var FavoriteIcon = require("../../react_components/icons/favorite");
 var FeedbackIcon = require("../../react_components/icons/feedback");
 var Tags = require("../../react_components/tags");
 var reject = require("lodash/collection/reject");
+var trackContentItem = require("../../analytics_wrappers").trackContentItem;
 
 var labelReferentName = function(record) {
   return (
@@ -63,7 +64,11 @@ var dispatchOpenFeedbackModal = function(resource, dispatch) {
 var labelResourceTitle = function(record) {
   return(
     <span>
-      <a href={record.resolvedUrl}>{ record.title }</a>
+      <a
+        href={record.resolvedUrl}
+        target="_blank"
+        onClick={function() { trackContentItem(_gaq, record.id) }}
+      >{ record.title }</a>
       <Tags record={record}/>
     </span>
   );
