@@ -27,10 +27,16 @@ class Hospital < ActiveRecord::Base
 
   include PaperTrailable
 
-  def self.all_formatted_for_form
-    includes_location_data.all(
+  def self.all_formatted_for_form(scope = :presence)
+    includes_location_data.
+    all(
       order: "name ASC"
-    ).map{ |h| ["#{h.name} - #{h.short_address}", h.id] }
+    ).select(&scope).
+    map{ |h| ["#{h.name} - #{h.short_address}", h.id] }
+  end
+
+  def visible?
+    city && !(city.hidden?)
   end
 
   def self.includes_location_data
