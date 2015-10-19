@@ -2,7 +2,6 @@ module WebUsageReport
   def self.exec(month, division, record_type)
     self.
       get_views(month, division, record_type).
-      exec(args).
       sort_by{ |row| row[:views] }.
       first(20).
       map{|row| self.create_row(row)}
@@ -25,14 +24,17 @@ module WebUsageReport
       start_date: Month.from_i(month_key).start_date,
       end_date: Month.from_i(month_key).end_date,
       dimensions: [ :page_path ]
-    }.merge(self.query_filters(division))).filter do |row|
-      PATH_TESTS[record_type].call(row[:path])
+    }.merge(self.page_view_query_filters(division))).filter do |row|
+      RECORD_TYPE_PATH_TESTS[record_type].call(row[:path])
     end.map do |row|
-      row.merge(klass: PATH_KLASSES[record_type])
-    end
+      {
+        record: RECORD_TYPE_KLASSES[record_type].find(RECORD_TYPE_PATH_TESTS[record_type].call(row[:path])),
+        views: row[:page_views]
+      }
+    end.filter(PAGE_VIEW_FILTERS[record_type])
   end
 
-  def self.query_filters(division)
+  def self.page_view_query_filters(division)
     if division == 0
       {}
     else
@@ -40,7 +42,23 @@ module WebUsageReport
     end
   end
 
-  PATH_TESTS = {
+  # do we get their usage statistics from page views?
+  PAGE_VIEW_FILTERS {
+    clinics: Proc.new{ |record| true },
+    specialists: Proc.new{ |record| true },
+    patient_resources: Proc.new{ |record| record.inline_content? },
+    physician_resources: Proc.new{ |record| record.inline_content? },
+    forms: Proc.new do |record|
+      if record.is_a?(ScItem)
+        !record.inline_content?
+      else
+        true
+      end
+    end,
+    specialties: Proc.new{ |record| true },
+  }
+
+  RECORD_TYPE_PATH_TESTS = {
     clinics: Proc.new{ |path| /\/clinics\/[[:digit:]]+\//.include?(path) },
     specialists: Proc.new{ |path| /\/specialists\/[[:digit:]]+\//.include?(path) },
     patient_resources: Proc.new{ |path| /\/content_items\/[[:digit:]]+\//.include?(path) },
@@ -48,7 +66,7 @@ module WebUsageReport
     forms: Proc.new{ |path| /\/content_items\/[[:digit:]]+\//.include?(path) },
     specialties: Proc.new{ |path| /\/specialties\/[[:digit:]]+\//.include?(path) },
   }
-  PATH_KLASSES = {
+  RECORD_TYPE_KLASSES = {
     clinics: Clinic,
     specialists: Specialist,
     patient_resources: ScItem,
