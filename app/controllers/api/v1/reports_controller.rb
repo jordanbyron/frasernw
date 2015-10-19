@@ -20,6 +20,18 @@ module Api
           force: false
         ))
       end
+
+      def usage
+        authorize! :view_report, :usage
+
+        # unless user.super_admin?
+        #   raise
+        # end
+
+
+
+        render json: { rows: WebUsageReport.exec(params) }
+      end
     end
   end
 end

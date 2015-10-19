@@ -5,6 +5,7 @@ class ServiceObject
         args.each do |key, value|
           instance_variable_set("@#{key}", value)
         end
+        @args = args
       end
 
       def exec
@@ -14,6 +15,7 @@ class ServiceObject
       private
 
       attr_reader *generator_args
+      attr_reader :args
 
       def self.included(receiver)
         class_methods = Module.new do

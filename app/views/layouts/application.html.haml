@@ -66,6 +66,10 @@
     :javascript
       window.pathways.localstorage_cache_version(#{localstorage_cache_version})
 
+    - if Rails.env.development?
+      :javascript
+        var _gaq = [];
+
   %body{:id => "#{params[:controller]}_page"}
     #heartbeat-loader-position
       .heartbeat-loader

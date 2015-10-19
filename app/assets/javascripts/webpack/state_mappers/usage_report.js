@@ -11,7 +11,7 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
   if (state.ui.hasBeenInitialized) {
     return {
       title: "Usage report",
-      tableRows: [],
+      tableRows: _.get(state, ["ui", "rows"], []),
       filters: {
         title: "Customize Report",
         groups: generateFilterGroups(state, dispatch)
@@ -26,6 +26,15 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
   }
 };
 
+var requestNewData = function(dispatch) {
+  $.get("/api/v1/reports/usage").done(function(data) {
+    dispatch({
+      type: "UPDATE_ROWS",
+      rows: data.rows
+    })
+  })
+}
+
 var generateFilterGroups = function(state: Object, dispatch: Function): Array {
   return [
     {
@@ -38,10 +47,12 @@ var generateFilterGroups = function(state: Object, dispatch: Function): Array {
           handleChange={
             function(event) {
               dispatch({
-                type: "UPDATE_FILTER",
+                type: "ASYNC_FILTER_UPDATE",
                 filterType: "recordTypes",
                 update: event.target.value
               });
+
+              requestNewData(dispatch);
             }
           }
         />
@@ -58,10 +69,12 @@ var generateFilterGroups = function(state: Object, dispatch: Function): Array {
           onChange={
             function(event) {
               dispatch({
-                type: "UPDATE_FILTER",
+                type: "ASYNC_FILTER_UPDATE",
                 filterType: "divisions",
                 update: parseInt(event.target.value)
               });
+
+              requestNewData(dispatch)
             }
           }
           style={{width: "100%"}}
@@ -79,10 +92,12 @@ var generateFilterGroups = function(state: Object, dispatch: Function): Array {
           onChange={
             function(event) {
               dispatch({
-                type: "UPDATE_FILTER",
+                type: "ASYNC_FILTER_UPDATE",
                 filterType: "months",
                 update: parseInt(event.target.value)
               });
+
+              requestNewData(dispatch)
             }
           }
           style={{width: "100%"}}

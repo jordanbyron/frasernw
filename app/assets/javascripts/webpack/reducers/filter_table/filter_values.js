@@ -10,24 +10,10 @@ module.exports = function(state={}, action) {
   switch(action.type) {
   // values for checkboxes or selectors in filter section on right hand side
   // of filter table
+  case "ASYNC_FILTER_UPDATE":
+    return updateFilter(state, action);
   case "UPDATE_FILTER":
-    if (isPlainObject(action.update)) {
-      // filter has many keys and values
-      var newFilter = objectAssign(
-        {},
-        state[action.filterType],
-        action.update
-      );
-    } else {
-      // filter has a single value
-      var newFilter = action.update;
-    }
-
-    return objectAssign(
-      {},
-      state,
-      { [action.filterType]: newFilter }
-    );
+    return updateFilter(state, action);
   case "RESET_SEARCH_ALL_CITIES":
     // back to default
 
@@ -44,4 +30,24 @@ module.exports = function(state={}, action) {
   default:
     return state;
   }
+}
+
+var updateFilter = function(state, action) {
+  if (isPlainObject(action.update)) {
+    // filter has many keys and values
+    var newFilter = objectAssign(
+      {},
+      state[action.filterType],
+      action.update
+    );
+  } else {
+    // filter has a single value
+    var newFilter = action.update;
+  }
+
+  return objectAssign(
+    {},
+    state,
+    { [action.filterType]: newFilter }
+  );
 }

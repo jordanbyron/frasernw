@@ -11,3 +11,8 @@ require("console-polyfill");
 
 window.pathways = window.pathways || {};
 window.pathways.bootstrapReact = require("./bootstrap_react");
+window.pathways.trackContentItemClick = function(gaq, itemId, url) {
+  _gaq.push(['_trackEvent', 'content_items', 'clicked_item_with_id', "", itemId ])
+  console.log(_gaq);
+  window.location.href = url;
+}

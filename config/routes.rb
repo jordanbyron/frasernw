@@ -198,6 +198,7 @@ Frasernw::Application.routes.draw do
         collection do
           get :page_views
           get :sessions
+          get :usage
         end
       end
     end

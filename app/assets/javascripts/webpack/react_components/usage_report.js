@@ -10,16 +10,17 @@ module.exports = React.createClass({
     filters: React.PropTypes.object,
     isLoading: React.PropTypes.bool
   },
-  toggleFilterGroupVisibility: function(dispatch, key) {
-    return ()=> {
-      return dispatch({
-        type: "TOGGLE_FILTER_GROUP_VISIBILITY",
-        filterKey: key,
-        isOpen: this.props.isOpen
-      });
-    }
-  },
   renderChildren: function(props) {
+    var toggleFilterGroupVisibility = function(dispatch, key, isOpen) {
+      return ()=> {
+        return dispatch({
+          type: "TOGGLE_FILTER_GROUP_VISIBILITY",
+          filterKey: key,
+          isOpen: isOpen
+        });
+      }
+    }
+
     return(
       <div className="content-wrapper">
         <SidebarLayout
@@ -41,14 +42,14 @@ module.exports = React.createClass({
           }
           sidebar={
             <div className="well filter">
-              <div className="title" key="title">{ this.props.title }</div>
+              <div className="title" key="title">{ props.title }</div>
               {
                 this.props.filters.groups.map((group, index) => {
                   return(
                     <ToggleBox
                       title={group.title}
                       open={group.isOpen}
-                      handleToggle={this.toggleFilterGroupVisibility(this.props.dispatch, group.componentKey)}
+                      handleToggle={toggleFilterGroupVisibility(props.dispatch, group.componentKey, group.isOpen)}
                       key={index}
                     >
                       { group.contents }
