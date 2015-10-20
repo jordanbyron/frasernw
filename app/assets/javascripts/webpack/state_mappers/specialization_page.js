@@ -293,11 +293,7 @@ var PANEL_PROPS_GENERATORS = {
         collectionName: genericMembersName,
         showingOtherSpecialties: !filterValues.specializationFilterActivated
       },
-      assumedList: {
-        shouldDisplay: (panelTypeKey === "specialists" && state.app.specializations[state.ui.specializationId].assumedList.length > 0),
-        list: state.app.specializations[state.ui.specializationId].assumedList,
-        membersName: membersName
-      },
+      assumedList: assumedListProps(state, panelTypeKey, membersName),
       iconKey: panelTypeKey,
       reducedView: _.get(state, ["ui", "panels", panelTypeKey, "reducedView"], "main"),
       sortConfig: sortConfig,
@@ -429,6 +425,31 @@ var filterResources = function(rows, filterValues, userIsAdmin) {
   });
 }
 
+var assumedListProps = function(state: Object, panelTypeKey: string, membersName: string): Object {
+  var list = labeledAssumedList(state.app.nestedProcedureIds, state.app.procedures, panelTypeKey);
+
+  return {
+    shouldDisplay: list.length > 0,
+    list: list,
+    membersName: (panelTypeKey === "specialists" ? membersName : `${state.app.specializations[state.ui.specializationId].name} Clinics`)
+  };
+}
+
+var labeledAssumedList = function(nestedProcedures: Object, normalizedProcedures: Object, collectionName: string): Array {
+  return _.chain(createAssumedList(nestedProcedures, collectionName))
+    .map((id) => normalizedProcedures[id].name.toLowerCase())
+    .sortBy(_.identity)
+    .value()
+}
+
+var createAssumedList = function(nestedProcedures: Object, collectionName: string): Array {
+  return _.chain(nestedProcedures)
+    .pick((procedure, id) => procedure.assumed[collectionName])
+    .keys()
+    .concat(..._.flatten(_.values(nestedProcedures).map((procedure) => createAssumedList(procedure.children, collectionName))))
+    .uniq()
+    .value()
+}
 
 
 var generateBodyRows = function(state: Object, filtered: Array, config: Object, dispatch: Function, sortConfig: Object): Array {
