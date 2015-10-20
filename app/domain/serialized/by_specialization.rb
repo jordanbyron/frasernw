@@ -41,8 +41,8 @@ module Serialized
               ps.procedure.id => {
                 focused: ps.focused?,
                 assumed: {
-                  clinic: ps.assumed_clinic?,
-                  specialist: ps.assumed_specialist?
+                  clinics: ps.assumed_clinic?,
+                  specialists: ps.assumed_specialist?
                 },
                 children: transform_nested_procedure_specializations(children)
               }

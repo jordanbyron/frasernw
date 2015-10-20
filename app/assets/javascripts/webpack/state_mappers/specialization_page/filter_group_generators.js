@@ -3,18 +3,18 @@ var _ = require("lodash");
 
 module.exports = {
   procedures: function(panelKey, maskingSet, state) {
-    var generateProcedureFilters = function(nestedProcedureIds, maskedProcedureIds, normalizedProcedures, state) {
+    var generateProcedureFilters = function(nestedProcedures, maskedProcedureIds, normalizedProcedures, state) {
       var filterValues = FILTER_VALUE_GENERATORS["procedures"](state, maskingSet, panelKey);
 
-      return _.chain(nestedProcedureIds)
-        .pick((info, procedureId) => _.includes(_.keys(filterValues), procedureId))
-        .map((info, procedureId) => {
+      return _.chain(nestedProcedures)
+        .pick((procedure, procedureId) => _.includes(_.keys(filterValues), procedureId) && !procedure.assumed[panelKey])
+        .map((procedure, procedureId) => {
           return {
             id: procedureId,
             label: normalizedProcedures[parseInt(procedureId)].name,
             value: filterValues[procedureId],
-            focused: info.focused,
-            children: generateProcedureFilters(info.children, maskedProcedureIds, normalizedProcedures, state)
+            focused: procedure.focused,
+            children: generateProcedureFilters(procedure.children, maskedProcedureIds, normalizedProcedures, state)
           };
         })
         .sortBy("label")
