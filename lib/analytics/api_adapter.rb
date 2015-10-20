@@ -74,7 +74,8 @@ module Analytics
       page_views: "ga:pageviews",
       sessions: "ga:sessions",
       average_page_view_duration: "ga:avgTimeOnPage",
-      average_session_duration: "ga:avgSessionDuration"
+      average_session_duration: "ga:avgSessionDuration",
+      total_events: "ga:totalEvents"
     }
     def self.format_metrics(metrics)
       metrics.map do |elem|
@@ -86,7 +87,10 @@ module Analytics
       user_id: "ga:customVarValue1",
       user_type_key: "ga:customVarValue2",
       division_id: "ga:customVarValue3",
-      page_path: "ga:pagePath"
+      page_path: "ga:pagePath",
+      event_category: "ga:eventCategory",
+      event_label: "ga:eventLabel",
+      event_action: "ga:eventAction"
     }
     def self.format_dimensions(dimensions)
       dimensions.map do |elem|

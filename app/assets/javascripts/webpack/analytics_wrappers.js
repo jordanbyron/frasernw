@@ -1,7 +1,7 @@
 // we use these functions to standardize tracking navigation to external links
 
 var trackExternalPageView = function(_gaq, itemId, collection) {
-  _gaq.push(['_trackEvent', collection, 'clicked', "", itemId ])
+  _gaq.push(['_trackEvent', collection, 'clicked', itemId ])
 
   return true;
 }
