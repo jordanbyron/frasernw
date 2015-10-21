@@ -11,6 +11,8 @@ var rows = function(state, action) {
 };
 var isTableLoading = function(state, action) {
   switch(action.type) {
+  case "MAKE_INITIAL_API_QUERY":
+    return true;
   case "UPDATE_ROWS":
     return false;
   case "ASYNC_FILTER_UPDATE":

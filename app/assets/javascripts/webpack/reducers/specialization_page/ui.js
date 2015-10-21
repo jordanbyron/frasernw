@@ -50,7 +50,7 @@ var feedbackModal = function(state, action) {
 
 var specializationId = function(state, action) {
   switch(action.type) {
-  case "INITIALIZE_FROM_SERVER":
+  case "INTEGRATE_PAGE_RENDERED_DATA":
     return action.initialState.ui.specializationId;
   default:
     return state;

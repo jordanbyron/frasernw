@@ -4,12 +4,18 @@ var Provider = require("react-redux").Provider;
 var connect = require("react-redux").connect;
 var mapStateToProps = function(state) { return state; };
 var mapDispatchToProps = function(dispatch) { return { dispatch: dispatch }; };
+var getTopLevelProps = function(store, mapStateToProps, mapDispatchToProps, mergeProps) {
+  return mergeProps(
+    mapStateToProps(store.getState()),
+    mapDispatchToProps(store.dispatch)
+  );
+}
 
 var TopLevelComponents = {
   SpecializationPage: require("./react_components/specialization_page"),
   ReferentsBySpecialty: require("./react_components/referents_by_specialty"),
   UsageReport: require("./react_components/usage_report")
-}
+};
 var generateReducer = require("./reducers/top_level");
 var StateMappers = {
   SpecializationPage: require("./state_mappers/specialization_page"),
@@ -43,11 +49,12 @@ module.exports = function(config, initData) {
 
     // integrate data we render on the ruby partial
     store.dispatch({
-      type: "INITIALIZE_FROM_SERVER",
+      type: "INTEGRATE_PAGE_RENDERED_DATA",
       initialState: initData
     })
 
     // integrate data stashed in localStorage ( or AJAX requested if necessary )
+    // this is 'global' data that is used by many views
     window.pathways.globalDataLoaded.done(function(data) {
       store.dispatch({
         type: "INTEGRATE_LOCALSTORAGE_DATA",
@@ -55,6 +62,14 @@ module.exports = function(config, initData) {
       });
 
       $("#heartbeat-loader-position").remove();
+
+      // use our computed top level props to make the initial api query
+      var topLevelProps =
+        getTopLevelProps(store, mapStateToProps, mapDispatchToProps, mergeProps);
+
+      topLevelProps.query &&
+        topLevelProps.query() &&
+        store.dispatch({ type: "MAKE_INITIAL_API_QUERY" });
     })
   });
 }

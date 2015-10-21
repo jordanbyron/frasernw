@@ -8,17 +8,20 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
   var state = stateProps;
   var dispatch = dispatchProps.dispatch;
 
+  var requestNewData = generateQuery(state, dispatch);
+
   if (state.ui.hasBeenInitialized) {
     return {
       title: "Usage report",
       tableRows: _.get(state, ["ui", "rows"], []),
       filters: {
         title: "Customize Report",
-        groups: generateFilterGroups(state, dispatch)
+        groups: generateFilterGroups(state, dispatch, requestNewData)
       },
       dispatch: dispatch,
       isLoading: false,
-      isTableLoading: _.get(state, ["ui", "isTableLoading"], false)
+      isTableLoading: _.get(state, ["ui", "isTableLoading"], false),
+      query: requestNewData
     };
   } else {
     return {
@@ -27,15 +30,16 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
   }
 };
 
-
-var generateFilterGroups = function(state: Object, dispatch: Function): Array {
+var generateQuery = function(state: Object, dispatch: Function): Function {
   var currentParams = {
     record_type: GENERATE_FILTER_VALUES.recordTypes(state),
     division_id: GENERATE_FILTER_VALUES.divisions(state),
     month_key: GENERATE_FILTER_VALUES.months(state)
   };
 
-  var requestNewData = function(triggeringUpdate: Object) {
+  return function(triggeringUpdate) {
+    var _triggeringUpdate = triggeringUpdate || {};
+
     $.get("/api/v1/reports/usage", _.assign(
       {},
       currentParams,
@@ -46,8 +50,13 @@ var generateFilterGroups = function(state: Object, dispatch: Function): Array {
         rows: data.rows
       })
     })
-  };
 
+    return true;
+  };
+}
+
+
+var generateFilterGroups = function(state: Object, dispatch: Function, requestNewData: Function): Array {
   return [
     {
       title: "Record Type",

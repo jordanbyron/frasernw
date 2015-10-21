@@ -54,7 +54,7 @@ module.exports = React.createClass({
           }
           sidebar={
             <div className="well filter">
-              <div className="title" key="title">{ props.title }</div>
+              <div className="title" key="title">{ props.filters.title }</div>
               {
                 this.props.filters.groups.map((group, index) => {
                   return(
