@@ -124,6 +124,16 @@ body #loading2
   height: 5em;
 }
 
+#heartbeat-loader-position-noremove{
+  position: fixed;
+  z-index: 4000;
+  transition: opacity 1s;
+  top: 50%;
+  left: 46%;
+  width: 5em;
+  height: 5em;
+}
+
 
 body.loading2 #loading2
 {
