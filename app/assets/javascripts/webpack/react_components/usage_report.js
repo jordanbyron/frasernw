@@ -32,7 +32,10 @@ module.exports = React.createClass({
                   {
                     props.tableRows.map((row) => {
                       return(
-                        <tr><td>{ row }</td></tr>
+                        <tr key={row.link}>
+                          <td dangerouslySetInnerHTML={{__html: row.link}}/>
+                          <td>{ row.usage }</td>
+                        </tr>
                       )
                     })
                   }

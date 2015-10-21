@@ -26,16 +26,27 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
   }
 };
 
-var requestNewData = function(dispatch) {
-  $.get("/api/v1/reports/usage").done(function(data) {
-    dispatch({
-      type: "UPDATE_ROWS",
-      rows: data.rows
-    })
-  })
-}
 
 var generateFilterGroups = function(state: Object, dispatch: Function): Array {
+  var currentParams = {
+    record_type: GENERATE_FILTER_VALUES.recordTypes(state),
+    division_id: GENERATE_FILTER_VALUES.divisions(state),
+    month_key: GENERATE_FILTER_VALUES.months(state)
+  };
+
+  var requestNewData = function(triggeringUpdate: Object) {
+    $.get("/api/v1/reports/usage", _.assign(
+      {},
+      currentParams,
+      triggeringUpdate
+    )).done(function(data) {
+      dispatch({
+        type: "UPDATE_ROWS",
+        rows: data.rows
+      })
+    })
+  };
+
   return [
     {
       title: "Record Type",
@@ -52,7 +63,7 @@ var generateFilterGroups = function(state: Object, dispatch: Function): Array {
                 update: event.target.value
               });
 
-              requestNewData(dispatch);
+              requestNewData({ record_type: event.target.value });
             }
           }
         />
@@ -74,7 +85,7 @@ var generateFilterGroups = function(state: Object, dispatch: Function): Array {
                 update: parseInt(event.target.value)
               });
 
-              requestNewData(dispatch)
+              requestNewData({ division_id: event.target.value })
             }
           }
           style={{width: "100%"}}
@@ -97,7 +108,7 @@ var generateFilterGroups = function(state: Object, dispatch: Function): Array {
                 update: parseInt(event.target.value)
               });
 
-              requestNewData(dispatch)
+              requestNewData({ month_key: event.target.value })
             }
           }
           style={{width: "100%"}}

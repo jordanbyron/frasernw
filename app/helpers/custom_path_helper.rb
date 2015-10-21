@@ -4,7 +4,7 @@ module CustomPathHelper
     if object.is_a? NilClass
       ""
     else
-      send(
+      Rails.application.routes.url_helpers.send(
         "#{object.class.name.underscore}_path",
         object
       )

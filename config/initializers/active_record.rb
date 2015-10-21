@@ -1,5 +1,9 @@
 module ActiveRecord
   class Base
+    def self.safe_find(id)
+      where(id: id).first
+    end
+
     def self.label_hash
       select("*").pluck_multiple(:id, label_attr).inject({}) do |memo, record|
         memo.merge(record["id"] => record[label_attr.to_s])

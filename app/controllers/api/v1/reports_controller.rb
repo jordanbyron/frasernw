@@ -28,9 +28,13 @@ module Api
         #   raise
         # end
 
-
-
-        render json: { rows: WebUsageReport.exec(params) }
+        render json: {
+          rows: WebUsageReport.exec(
+            month_key: params[:month_key],
+            division_id: params[:division_id],
+            record_type: params[:record_type].underscore.to_sym
+          )
+        }
       end
     end
   end

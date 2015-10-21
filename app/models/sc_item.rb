@@ -326,6 +326,10 @@ class ScItem < ActiveRecord::Base
     markdown?
   end
 
+  def in_category?(category_name)
+    sc_category.name == category_name
+  end
+
   alias_attribute :label, :title
   alias_attribute :name, :title
 end
