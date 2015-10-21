@@ -71,9 +71,10 @@
         var _gaq = [];
 
   %body{:id => "#{params[:controller]}_page"}
-    #heartbeat-loader-position
-      .heartbeat-loader
-        Loading…
+    - if @layout_heartbeat_loader
+      #heartbeat-loader-position
+        .heartbeat-loader
+          Loading…
     #main-nav.navbar
       .navbar-inner
         .container

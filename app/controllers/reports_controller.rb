@@ -38,6 +38,8 @@ class ReportsController < ApplicationController
   end
 
   def usage
+    @layout_heartbeat_loader = false
+
     authorize! :view_report, :usage
 
     @init_data = {
