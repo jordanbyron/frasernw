@@ -322,7 +322,7 @@ var PANEL_PROPS_GENERATORS = {
         state.ui.specializationId,
         state.app.currentUser.divisionIds,
         category,
-        state.app.contentItems
+        _.values(state.app.contentItems)
       );
       var bodyRowConfig = {
         panelKey: panelKey,
@@ -398,7 +398,7 @@ var PANEL_PROPS_GENERATORS = {
         state.ui.specializationId,
         state.app.currentUser.divisionIds,
         category,
-        state.app.contentItems
+        _.values(state.app.contentItems)
       );
 
       return {

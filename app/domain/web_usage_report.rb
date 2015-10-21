@@ -1,7 +1,5 @@
 class WebUsageReport
   include ServiceObject.exec_with_args(:month_key, :division_id, :record_type)
-
-  include CustomPathHelper
   include ActionView::Helpers::UrlHelper
 
   def exec
@@ -16,17 +14,35 @@ class WebUsageReport
 
   def transform_row_for_view(row)
     {
-      link: link_to(row[:record].name, smart_duck_path(row[:record])),
+      link: link_to(*LABEL_SERIALIZED_COLLECTIONS[row[:serialized_collection]].call(row)),
       usage: row[:usage]
     }
   end
+
+  LABEL_SERIALIZED_COLLECTIONS = {
+    clinics: Proc.new do |row|
+      [ row[:record][:name], "/clinics/#{row[:record][:id]}" ]
+    end,
+    specialists: Proc.new do |row|
+      [ row[:record][:name], "/specialists/#{row[:record][:id]}" ]
+    end,
+    content_items: Proc.new do |row|
+      [ row[:record][:title], "/content_items/#{row[:record][:id]}" ]
+    end,
+    referral_forms: Proc.new do |row|
+      [ row[:record][:filename], "/#{row[:record][:referrableType].pluralize.downcase}/#{row[:record][:referrableId]}" ]
+    end,
+    specializations: Proc.new do |row|
+      [ row[:record][:name], "/specialties/#{row[:record][:id]}" ]
+    end
+  }
 
   def get_usage
     (get_usage_from_page_views +
       get_usage_from_events).reduce([]) do |memo, row|
         existing_row = memo.find do |existing_row|
           row[:record] == existing_row[:record] &&
-            row[:klass] == existing_row[:klass]
+            row[:serialized_collection] == existing_row[:serialized_collection]
         end
 
         if existing_row.present?
@@ -46,16 +62,23 @@ class WebUsageReport
       end_date: Month.from_i(month_key).end_date,
       dimensions: [ :page_path ],
       filters: division_filters(division_id)
-    }).select do |row|
-      extract_id(record_type, row[:page_path]).present? &&
-        PAGE_VIEW_KLASSES[record_type].safe_find(extract_id(record_type, row[:page_path])).present?
-    end.map do |row|
+    }).map do |row|
       {
-        record: PAGE_VIEW_KLASSES[record_type].find(extract_id(record_type, row[:page_path])),
-        usage: row[:page_views],
-        klass: PAGE_VIEW_KLASSES[record_type]
+        id: extract_id(record_type, row[:page_path]),
+        serialized_collection: PAGE_VIEW_SERIALIZED_COLLECTIONS[record_type],
+        usage: row[:page_views]
       }
-    end.select(&PAGE_VIEW_FILTERS[record_type])
+    end.select do |row|
+      row[:id].present?
+    end.sort_by do |row|
+      row[:usage].to_i
+    end.map do |row|
+      row.merge({
+        record: safe_find(row[:serialized_collection], row[:id].to_i)
+      })
+    end.select do |row|
+      row[:record].present? && PAGE_VIEW_FILTERS[record_type].call(row)
+    end
   end
 
   def get_usage_from_events
@@ -82,14 +105,14 @@ class WebUsageReport
     clinics: Proc.new{ |row| false },
     specialists: Proc.new{ |row| false },
     patient_resources: Proc.new do |row|
-      !row[:record].inline_content? && row[:record].in_category?("Patient Info")
+      !row[:record][:content].present? && row[:record][:categoryIds].include?(5)
     end,
     physician_resources: Proc.new do |row|
-      !row[:record].inline_content? && row[:record].in_category?("Physician Resources")
+      !row[:record][:content].present? && row[:record][:categoryIds].include?(11)
     end,
     forms: Proc.new do |row|
-      (row[:klass] == ScItem && !row[:record].inline_content? && row[:record].in_category?("Forms")) ||
-        row[:klass] == Form
+      (row[:serialized_collection] == :content_items && !row[:record][:content].present? && row[:record][:categoryIds].include?(9)) ||
+        row[:serialized_collection] == :referral_forms
     end,
     specialties: Proc.new{ |row| false },
   }
@@ -100,6 +123,17 @@ class WebUsageReport
     "form" => ReferralForm,
     "content_item" => ScItem
   }
+
+  def safe_find(collection, id)
+    all_records(collection)[id]
+  end
+
+  def all_records(collection)
+    @all_records ||= Hash.new do |h, key|
+      h[key] = Serialized.fetch(collection)
+    end
+    @all_records[collection]
+  end
 
   def division_filters(division)
     if division == "0"
@@ -114,13 +148,13 @@ class WebUsageReport
     clinics: Proc.new{ |row| true },
     specialists: Proc.new{ |row| true },
     patient_resources: Proc.new do |row|
-      row[:record].inline_content? && row[:record].in_category?("Patient Info")
+      row[:record][:content].present? && row[:record][:categoryIds].include?(5)
     end,
     physician_resources: Proc.new do |row|
-      row[:record].inline_content? && row[:record].in_category?("Physician Resources")
+      row[:record][:content].present? && row[:record][:categoryIds].include?(11)
     end,
     forms: Proc.new do |row|
-      row[:record].inline_content? && row[:record].in_category?("Forms")
+      row[:record][:content].present? && row[:record][:categoryIds].include?(9)
     end,
     specialties: Proc.new{ |row| true }
   }
@@ -139,13 +173,13 @@ class WebUsageReport
   end
 
   # when we extract an ID from a path according to the tests above,
-  # what klass does it refer to?
-  PAGE_VIEW_KLASSES = {
-    clinics: Clinic,
-    specialists: Specialist,
-    patient_resources: ScItem,
-    physician_resources: ScItem,
-    forms: ScItem,
-    specialties: Specialization,
+  # what serialized collection does it refer to?
+  PAGE_VIEW_SERIALIZED_COLLECTIONS = {
+    clinics: :clinics,
+    specialists: :specialists,
+    patient_resources: :content_items,
+    physician_resources: :content_items,
+    forms: :content_items,
+    specialties: :specializations
   }
 end

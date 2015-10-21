@@ -27,19 +27,20 @@ module Serialized
   GENERATORS = {
     content_items: Module.new do
       def self.call
-        ScItem.includes(:sc_category, :division, :divisions_sharing, :specializations).map do |item|
-          {
+        ScItem.includes(:sc_category, :division, :divisions_sharing, :specializations).inject({}) do |memo, item|
+          memo.merge(item.id => {
             availableToDivisionIds: item.available_to_divisions.map(&:id),
             specializationIds: item.specializations.map(&:id),
             title: item.title,
             categoryId: item.sc_category.id,
+            categoryIds: [ item.sc_category, item.sc_category.ancestors ].flatten.map(&:id),
             content: (item.markdown_content.present? ? BlueCloth.new(item.markdown_content).to_html : ""),
             resolvedUrl: item.resolved_url,
             canEmail: item.can_email_document,
             id: item.id,
             isNew: item.new?,
             isInProgress: item.in_progress
-          }
+          })
         end
       end
     end,
@@ -223,6 +224,17 @@ module Serialized
         memo.merge(division.id => {
           id: division.id,
           name: division.name
+        })
+      end
+    end,
+    referral_forms: Proc.new do
+      ReferralForm.all.inject({}) do |memo, form|
+        memo.merge(form.id => {
+          id: division.id,
+          name: division.name,
+          filename: record.form_file_name,
+          referrableType: record.referrable_type,
+          referrableId: record.referrable_id
         })
       end
     end
