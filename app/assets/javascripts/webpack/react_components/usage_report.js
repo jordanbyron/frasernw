@@ -28,6 +28,18 @@ module.exports = React.createClass({
       </table>
     );
   },
+  renderNotice: function(noticeProps) {
+    if (noticeProps.shouldDisplay) {
+      return(
+        <div
+          className="alert alert-info"
+          style={{marginTop: "10px"}}
+        >{noticeProps.text}</div>
+      );
+    } else {
+      return null;
+    }
+  },
   renderChildren: function(props) {
     var toggleFilterGroupVisibility = function(dispatch, key, isOpen) {
       return ()=> {
@@ -46,6 +58,7 @@ module.exports = React.createClass({
             <div>
               <h2 style={{marginBottom: "5px"}}>{ props.title }</h2>
               <h4>{ props.subtitle }</h4>
+              { this.renderNotice(props.notice) }
               <LoadingContainer
                 isLoading={props.isTableLoading}
                 renderChildren={this.renderTable.bind(null, props)}
