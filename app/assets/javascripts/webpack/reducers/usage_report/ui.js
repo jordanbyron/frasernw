@@ -8,13 +8,24 @@ var rows = function(state, action) {
   default:
     return state;
   }
-}
+};
+var isTableLoading = function(state, action) {
+  switch(action.type) {
+  case "UPDATE_ROWS":
+    return false;
+  case "ASYNC_FILTER_UPDATE":
+    return true;
+  default:
+    return state;
+  }
+};
 
 module.exports = function(state = {}, action) {
   return {
     hasBeenInitialized: hasBeenInitialized(state.hasBeenInitialized, action),
     filterValues: filterValues(state.filterValues, action),
     filterVisibility: filterVisibility(state.filterVisibility, action),
-    rows: rows(state.rows, action)
+    rows: rows(state.rows, action),
+    isTableLoading: isTableLoading(state.isTableLoading, action)
   };
 }

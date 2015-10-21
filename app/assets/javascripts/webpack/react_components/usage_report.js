@@ -10,6 +10,24 @@ module.exports = React.createClass({
     filters: React.PropTypes.object,
     isLoading: React.PropTypes.bool
   },
+  renderTable: function(props) {
+    return (
+      <table className="table">
+        <tbody>
+          {
+            props.tableRows.map((row) => {
+              return(
+                <tr key={row.link}>
+                  <td dangerouslySetInnerHTML={{__html: row.link}}/>
+                  <td>{ row.usage }</td>
+                </tr>
+              )
+            })
+          }
+        </tbody>
+      </table>
+    );
+  },
   renderChildren: function(props) {
     var toggleFilterGroupVisibility = function(dispatch, key, isOpen) {
       return ()=> {
@@ -27,20 +45,11 @@ module.exports = React.createClass({
           main={
             <div>
               <h2 style={{marginBottom: "10px"}}>{ props.title }</h2>
-              <table className="table">
-                <tbody>
-                  {
-                    props.tableRows.map((row) => {
-                      return(
-                        <tr key={row.link}>
-                          <td dangerouslySetInnerHTML={{__html: row.link}}/>
-                          <td>{ row.usage }</td>
-                        </tr>
-                      )
-                    })
-                  }
-                </tbody>
-              </table>
+              <LoadingContainer
+                isLoading={props.isTableLoading}
+                renderChildren={this.renderTable.bind(null, props)}
+                minHeight={"300px"}
+              />
             </div>
           }
           sidebar={

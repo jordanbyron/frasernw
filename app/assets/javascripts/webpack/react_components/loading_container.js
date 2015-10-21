@@ -7,8 +7,8 @@ module.exports = React.createClass({
   render: function() {
     if (this.props.isLoading){
       return(
-        <div>
-          <div id="heartbeat-loader-position">
+        <div style={{position: "relative", minHeight: this.props.minHeight}}>
+          <div id="heartbeat-loader-position" style={{position: "absolute"}}>
             <div className="heartbeat-loader"/>
           </div>
         </div>

@@ -17,7 +17,8 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
         groups: generateFilterGroups(state, dispatch)
       },
       dispatch: dispatch,
-      isLoading: false
+      isLoading: false,
+      isTableLoading: _.get(state, ["ui", "isTableLoading"], false)
     };
   } else {
     return {
