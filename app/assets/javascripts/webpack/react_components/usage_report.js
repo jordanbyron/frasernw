@@ -44,7 +44,8 @@ module.exports = React.createClass({
         <SidebarLayout
           main={
             <div>
-              <h2 style={{marginBottom: "10px"}}>{ props.title }</h2>
+              <h2 style={{marginBottom: "5px"}}>{ props.title }</h2>
+              <h4>{ props.subtitle }</h4>
               <LoadingContainer
                 isLoading={props.isTableLoading}
                 renderChildren={this.renderTable.bind(null, props)}

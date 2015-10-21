@@ -8,11 +8,20 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
   var state = stateProps;
   var dispatch = dispatchProps.dispatch;
 
+  var filterValues = _.reduce(GENERATE_FILTER_VALUES, (memo, fn, key) => {
+    return _.assign(
+      {},
+      memo,
+      {[key] : fn(state)}
+    );
+  }, {})
+
   var requestNewData = generateQuery(state, dispatch);
 
   if (state.ui.hasBeenInitialized) {
     return {
-      title: "Usage report",
+      title: title(filterValues, state),
+      subtitle: subtitle(filterValues.months),
       tableRows: _.get(state, ["ui", "rows"], []),
       filters: {
         title: "Customize Report",
@@ -55,6 +64,19 @@ var generateQuery = function(state: Object, dispatch: Function): Function {
   };
 }
 
+var scopeLabel = function(filterValues, divisions) {
+  if (filterValues.divisions === 0) {
+    return "by Usage";
+  } else {
+    return ` by ${divisions[filterValues.divisions].name} Users' Usage`
+  }
+}
+var title = function(filterValues, state) {
+  return `Top ${_.startCase(filterValues.recordTypes)} ${scopeLabel(filterValues, state.app.divisions)}`
+}
+var subtitle = function(monthsFilterValue) {
+  return moment(monthsFilterValue, "YYYYMM").format("MMMM YYYY");
+}
 
 var generateFilterGroups = function(state: Object, dispatch: Function, requestNewData: Function): Array {
   return [
