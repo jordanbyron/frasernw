@@ -1,14 +1,27 @@
 - set_page_specific_title "Reports"
 
 .content-wrapper
+  .content
 
-  %h2 Reports
+    %h1 Reports
+    .headline
+      .row-fluid
+        .span3
+          = render partial: "reports/analytics_box", locals: {color: '#0088CC', icon: 'icon-user-md', title: "Specialists"}
+        .span3
+          = render partial: "reports/analytics_box", locals: {color: '#404040', icon: 'icon-group', title: "Clinics"}
+        .span3
+          = render partial: "reports/analytics_box", locals: {color: '#366F9E', icon: 'icon-beaker', title: "Content Items"}
+        .span3
+          = render partial: "reports/analytics_box", locals: {color: '#C44D58', icon: 'icon-truck', title: "Hospitals"}
+
+
+  %h2 List of Reports
   - @object = Specialist.last(20)
 
-  %i.icon-folder-open.icon-black
-  = render partial: "reports/analytics_box"
+  / %i.icon-folder-open
 
-  = render partial: "reports/table_widget", collection: @object, as: :object, locals: {table_title: "Most visited pages", row_number_value: 14124, row_name: "/clinics/3"}
+  =# render partial: "reports/table_widget", collection: @object, as: :object, locals: {table_title: "Most visited pages", row_number_value: 14124, row_name: "/clinics/3"}
 
 
 
