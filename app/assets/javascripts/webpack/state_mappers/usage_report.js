@@ -225,7 +225,7 @@ const GENERATE_FILTER_VALUES = {
     return _.get(
       state,
       ["ui", "filterValues", "months"],
-      moment().subtract(1, "months").format("YYYYMM")
+      moment().format("YYYYMM")
     );
   }
 };

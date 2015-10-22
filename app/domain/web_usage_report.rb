@@ -41,7 +41,7 @@ class WebUsageReport
     (get_usage_from_page_views +
       get_usage_from_events).reduce([]) do |memo, row|
         existing_row = memo.find do |existing_row|
-          row[:record] == existing_row[:record] &&
+          row[:record][:id] == existing_row[:record][:id] &&
             row[:serialized_collection] == existing_row[:serialized_collection]
         end
 
@@ -88,20 +88,23 @@ class WebUsageReport
       end_date: Month.from_i(month_key).end_date,
       dimensions: [:event_category, :event_label],
       filter_literal: filter_literals(division_filters(division_id).merge({ event_action: "clicked_link" }))
-    }).select do |row|
-      EVENT_CATEGORY_KLASSES.keys.include?(row[:event_category]) &&
-        EVENT_CATEGORY_KLASSES[row[:event_category]].safe_find(row[:event_label]).present?
-    end.map do |row|
+    }).map do |row|
       {
-        record: EVENT_CATEGORY_KLASSES[row[:event_category]].find(row[:event_label]),
+        id: row[:event_label],
         usage: row[:total_events],
-        klass: EVENT_CATEGORY_KLASSES[row[:event_category]]
+        serialized_collection: EVENT_CATEGORY_SERIALIZED_COLLECTIONS[row[:event_category]]
       }
-    end.select(&EVENT_TYPE_FILTERS[record_type])
+    end.select do |row|
+      row[:serialized_collection].present?
+    end.map do |row|
+      row.merge(record: safe_find(row[:serialized_collection], row[:id].to_i))
+    end.select do |row|
+      row[:record].present? && EVENTS_FILTERS[record_type].call(row)
+    end
   end
 
-  # do we use the page views from this row in our usage calculations?
-  EVENT_TYPE_FILTERS = {
+  # do we use event count from this row in our usage calculations?
+  EVENTS_FILTERS = {
     clinics: Proc.new{ |row| false },
     specialists: Proc.new{ |row| false },
     patient_resources: Proc.new do |row|
@@ -114,14 +117,14 @@ class WebUsageReport
       (row[:serialized_collection] == :content_items && !row[:record][:content].present? && row[:record][:categoryIds].include?(9)) ||
         row[:serialized_collection] == :referral_forms
     end,
-    specialties: Proc.new{ |row| false },
+    specialties: Proc.new{ |row| false }
   }
 
   #  which event categories respond to which class of record
   # (see analytics_wrappers.js)
-  EVENT_CATEGORY_KLASSES = {
-    "form" => ReferralForm,
-    "content_item" => ScItem
+  EVENT_CATEGORY_SERIALIZED_COLLECTIONS = {
+    "form" => :referral_forms,
+    "content_item" => :content_items
   }
 
   def safe_find(collection, id)
