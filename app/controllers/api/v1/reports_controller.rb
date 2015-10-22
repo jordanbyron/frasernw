@@ -24,9 +24,12 @@ module Api
       def usage
         authorize! :view_report, :usage
 
-        # unless user.super_admin?
-        #   raise
-        # end
+        if current_user.admin_only? &&
+          params[:division_id] != "0" &&
+          !current_user.divisions.map(&:id).include?(params[:division_id].to_i)
+
+          raise "Unauthorized"
+        end
 
         render json: {
           rows: WebUsageReport.exec(

@@ -1,5 +1,10 @@
 class ReportsController < ApplicationController
-  load_and_authorize_resource except: [:page_views, :sessions, :referents_by_specialty]
+  load_and_authorize_resource except: [
+    :page_views,
+    :sessions,
+    :referents_by_specialty,
+    :usage
+  ]
 
   def index
     @reports = Report.all
