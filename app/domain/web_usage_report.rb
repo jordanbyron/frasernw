@@ -61,7 +61,7 @@ class WebUsageReport
       start_date: Month.from_i(month_key).start_date,
       end_date: Month.from_i(month_key).end_date,
       dimensions: [ :page_path ],
-      filters: division_filters(division_id)
+      filter_literal: filter_literals(division_filters(division_id))
     }).map do |row|
       {
         id: extract_id(record_type, row[:page_path]),
@@ -87,7 +87,7 @@ class WebUsageReport
       start_date: Month.from_i(month_key).start_date,
       end_date: Month.from_i(month_key).end_date,
       dimensions: [:event_category, :event_label],
-      filters: division_filters(division_id).merge({ event_action: "clicked_link" })
+      filter_literal: filter_literals(division_filters(division_id).merge({ event_action: "clicked_link" }))
     }).select do |row|
       EVENT_CATEGORY_KLASSES.keys.include?(row[:event_category]) &&
         EVENT_CATEGORY_KLASSES[row[:event_category]].safe_find(row[:event_label]).present?
@@ -133,6 +133,14 @@ class WebUsageReport
       h[key] = Serialized.fetch(collection)
     end
     @all_records[collection]
+  end
+
+  def filter_literals(equality_filters)
+    [
+      Analytics::ApiAdapter.format_filters(equality_filters, "=="),
+      Analytics::ApiAdapter.format_filters({user_type_key: "-1"}, "!="),
+      Analytics::ApiAdapter.format_filters({user_type_key: "0"}, "!=")
+    ].select(&:present?).join(";")
   end
 
   def division_filters(division)

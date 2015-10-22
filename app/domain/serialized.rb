@@ -230,11 +230,10 @@ module Serialized
     referral_forms: Proc.new do
       ReferralForm.all.inject({}) do |memo, form|
         memo.merge(form.id => {
-          id: division.id,
-          name: division.name,
-          filename: record.form_file_name,
-          referrableType: record.referrable_type,
-          referrableId: record.referrable_id
+          id: form.id,
+          filename: form.form_file_name,
+          referrableType: form.referrable_type,
+          referrableId: form.referrable_id
         })
       end
     end

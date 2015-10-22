@@ -190,7 +190,7 @@ const GENERATE_FILTER_OPTIONS = {
   },
   months: function(): Array {
     var startDate = moment("01-01-2014", "MM-DD-YYYY")
-    var endDate = moment().startOf("month").subtract(1, "months");
+    var endDate = moment().startOf("month");
 
     return _.sortByOrder(mapMonths(startDate, endDate, (moment) => {
       return {

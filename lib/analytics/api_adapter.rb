@@ -62,7 +62,12 @@ module Analytics
 
       if query_params[:filters].present?
         query[:parameters]["filters"] =
-          format_filters(query_params[:filters])
+          format_filters(query_params[:filters], "==")
+      end
+
+      # option for greater flexibility
+      if query_params[:filter_literal].present?
+        query[:parameters]["filters"] = query_params[:filter_literal]
       end
 
       puts query
@@ -98,9 +103,10 @@ module Analytics
       end.join(",")
     end
 
-    def self.format_filters(filters)
+    # ';' is 'AND'
+    def self.format_filters(filters, operator)
       filters.map do |key, value|
-        "#{DIMENSIONS[key]}==#{value.to_s}"
+        "#{DIMENSIONS[key]}#{operator}#{value.to_s}"
       end.join(";")
     end
 
