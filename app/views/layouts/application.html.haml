@@ -51,24 +51,11 @@
           $('body').data('GLOBAL_USER_TYPE', #{current_user_type_mask});
         });
 
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-32752873-1']);
-        _gaq.push(['_trackPageview']);
-        _gaq.push(['_setCustomVar', 1, 'ID', '#{current_user_id}', 1]);
-        _gaq.push(['_setCustomVar', 2, 'Type', '#{current_user_type_mask}', 1]);
-        _gaq.push(['_setCustomVar', 3, 'Division', '#{current_user_division_id}', 1]);
 
-        (function() {
-          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
     :javascript
       window.pathways.localstorage_cache_version(#{localstorage_cache_version})
 
-    - if Rails.env.development?
-      :javascript
-        var _gaq = [];
+    = render "partials/analytics_setup"
 
   %body{:id => "#{params[:controller]}_page"}
     - if @layout_heartbeat_loader
