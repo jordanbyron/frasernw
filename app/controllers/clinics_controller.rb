@@ -5,7 +5,7 @@ class ClinicsController < ApplicationController
   skip_authorization_check :only => :refresh_cache
   include ApplicationHelper
 
-  cache_sweeper :clinic_sweeper, :only => [:create, :update, :destroy]
+  cache_sweeper :clinic_sweeper, :only => [:create, :update, :destroy, :accept]
 
   def index
     if params[:specialization_id].present?

@@ -1,0 +1,71 @@
+- set_page_specific_title "Generate Usage Report"
+
+.content-wrapper#body
+  .row
+    #content.span12
+      %h2{style: "margin-bottom: 5px;"} Usage Report
+
+      #customization
+        %p{style: "margin-left: 0px; margin-bottom: 20px;"}
+          = "Generate a csv usage report showing page views, sessions, and users for one division or all of Pathways."
+
+        %strong Customize Report:
+
+        = label_tag "Start month:"
+        = select_tag "start_month",
+          options_for_select(@months, Month.new(2014, 1).to_i),
+          id: "start_month",
+          class: "month_selector"
+
+        = label_tag "End Month:"
+        = select_tag "end_month",
+          options_for_select(@months, Month.prev.to_i),
+          id: "end_month",
+          class: "month_selector"
+
+        = label_tag "Scope:"
+        = select_tag "scope",
+          options_for_select(@scopes, "global"),
+          id: "scope"
+
+        %br
+        %a.btn.btn-default#generate_report{style: "margin-top: 30px;"}
+          = "Generate Report"
+
+      #loading_icon{style: "display: none;"}
+        #heartbeat-loader-position
+          .heartbeat-loader
+
+      #success_message{style: "display: none;"}
+        = "Pathways is generating your report.  When it's done, we'll send you a download link to retrieve it."
+
+      :javascript
+        var submitPath = "#{@submit_path}";
+
+        var generateReport = function() {
+          var startMonth = $("#start_month").val();
+          var endMonth = $("#end_month").val();
+          var scope = $("#scope").val();
+
+          if (endMonth < startMonth) {
+            $("#start_month").val(parseInt(endMonth));
+            generateReport();
+          } else {
+            $("#content.span12").height($("#content.span12").height())
+            $("#customization").hide();
+            $("#loading_icon").show();
+
+            var params = $.param({start_month: startMonth, end_month: endMonth, scope: scope});
+            $.post(submitPath + "?" + params).success(function() {
+              $("#loading_icon").hide();
+              $("#success_message").show();
+            })
+          }
+        };
+
+        $(document).ready(function(){
+          $("a#generate_report").click(function(e) {
+            e.preventDefault()
+            generateReport();
+          })
+        })

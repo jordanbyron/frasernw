@@ -5,4 +5,12 @@ class UnknownUser
   def name
     "an unidentified user"
   end
+
+  def divisions
+    []
+  end
+
+  def known?
+    false
+  end
 end

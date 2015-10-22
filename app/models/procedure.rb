@@ -37,7 +37,7 @@ class Procedure < ActiveRecord::Base
       return self.name
     end
   end
-  
+
   def name_relative_to_parents
     #remove any words that also appear in the parents' names
     parents_names = parents_name_array

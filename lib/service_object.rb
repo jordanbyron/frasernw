@@ -1,7 +1,7 @@
 class ServiceObject
   def self.exec_with_args(*generator_args)
     Module.new do
-      def initialize(args)
+      def initialize(args = {})
         args.each do |key, value|
           instance_variable_set("@#{key}", value)
         end

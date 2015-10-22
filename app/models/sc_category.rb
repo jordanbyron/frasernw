@@ -28,7 +28,7 @@ class ScCategory < ActiveRecord::Base
   end
 
   def self.all_for_subscription
-    all_parents.reject{|c| c.name == "Inactive" }
+    all_parents.reject{|c| c.name.include?("Inactive") || c.name.include?("Inline")}
   end
 
   def self.with_items_borrowable_by_division(division)
@@ -36,6 +36,14 @@ class ScCategory < ActiveRecord::Base
       category.parent.present? ||
         (category.items_borrowable_by_division(division)).none?
     end
+  end
+
+  def filterable_on_specialty_pages?
+    [4, 1].include?(display_mask)
+  end
+
+  def inline_on_specialty_pages?
+    [5, 3].include?(display_mask)
   end
 
   def display

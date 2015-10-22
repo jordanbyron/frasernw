@@ -46,64 +46,92 @@
                 %td
                   = check_box_tag "#{city.id}_#{specialization.id}", 1, (@local_referral_cities[city.id].present?) && (@local_referral_cities[city.id].include? specialization.id), :name => "local_referral_cities[#{city.id}][#{specialization.id}]", :class => "city_#{city.id} city_specialization"
 
+  %br
+  %h4 Customize City Priorities
+  .row
+    %div{style: "width: 100%; padding-left: 20px;"}
+      = f.label :use_customized_city_priorities,
+        "Customize City Priorities",
+        style: "display: inline-block; font-weight: bold;"
+      = f.check_box :use_customized_city_priorities,
+        style: "margin-left: 10px; margin-bottom: 7px;"
+      %p{style: "margin-left: 0px;"}
+        %i If enabled, cities will be sorted on specialization pages by the rankings below.
+        %i When new cities are added they will automatically be assigned the lowest priority rating (3).
+        %i If this feature is disabled, the local referral area for that specialization will be used to sort by city instead.
+        %i (Cities outside of your referral area will appear after those inside it)
+      %br
+      #city_priority_checkboxes
+        %p{style: "margin-left: 0px;"}
+          %strong City Priority Customization
+        - @city_priorities.each do |priority|
+          %div{style: "margin-top: 10px; display: inline-block; width: 100px;"}
+            = label_tag "city_priorities[#{priority[:city_id]}]", priority[:city_name]
+            = select_tag "city_priorities[#{priority[:city_id]}]",
+              priority[:options_for_select].html_safe,
+              style: "width: 100px;"
+
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
     %a.btn.btn-danger.ajax{"href" => divisions_path} Cancel
 
-%script{"type" => "text/javascript"}
-  :plain
-    function city_checked(checkbox)
+:javascript
+  window.pathways.checkboxSlidedown({
+    contentContainerId: "city_priority_checkboxes",
+    checkboxId: "division_use_customized_city_priorities"
+  })
+
+  function city_checked(checkbox)
+  {
+    var city_class = "." + $(checkbox).prop('id');
+    $(city_class).prop('checked',($(checkbox).prop('checked')));
+    return true;
+  }
+
+  $('.city_check').click(function() {
+    city_checked(this);
+  });
+
+  function update_city(city)
+  {
+    var city_id = "#" + city;
+    var city_class = "." + city;
+
+    var all = true;
+    var none = true;
+    $(city_class).each(function(){ if ($(this).prop('checked')) { none = false; } else { all = false; } });
+
+    if (all)
     {
-      var city_class = "." + $(checkbox).prop('id');
-      $(city_class).prop('checked',($(checkbox).prop('checked')));
-      return true;
+      $(city_id).prop('checked', true);
+      $(city_id).prop('indeterminate', false);
+    }
+    else if (none)
+    {
+      $(city_id).prop('checked', false);
+      $(city_id).prop('indeterminate', false);
+    }
+    else
+    {
+      $(city_id).prop('checked', true);
+      $(city_id).prop('indeterminate', true);
     }
 
-    $('.city_check').click(function() {
-      city_checked(this);
-    });
+    return true;
+  }
 
-    function update_city(city)
-    {
-      var city_id = "#" + city;
-      var city_class = "." + city;
+  function city_specialization_checked(checkbox)
+  {
+    var city_id = "city_" + $(checkbox).prop('id').split('_')[0];
+    return update_city(city_id)
+  }
 
-      var all = true;
-      var none = true;
-      $(city_class).each(function(){ if ($(this).prop('checked')) { none = false; } else { all = false; } });
-
-      if (all)
-      {
-        $(city_id).prop('checked', true);
-        $(city_id).prop('indeterminate', false);
-      }
-      else if (none)
-      {
-        $(city_id).prop('checked', false);
-        $(city_id).prop('indeterminate', false);
-      }
-      else
-      {
-        $(city_id).prop('checked', true);
-        $(city_id).prop('indeterminate', true);
-      }
-
-      return true;
-    }
-
-    function city_specialization_checked(checkbox)
-    {
-      var city_id = "city_" + $(checkbox).prop('id').split('_')[0];
-      return update_city(city_id)
-    }
-
-    $('.city_specialization').click(function() {
-      city_specialization_checked(this);
-    });
+  $('.city_specialization').click(function() {
+    city_specialization_checked(this);
+  });
 
 - City.all.each do |city|
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready(function() {
-        update_city("city_#{city.id}");
-      });
+  :javascript
+    $(document).ready(function() {
+      update_city("city_#{city.id}");
+    });

@@ -250,7 +250,7 @@ LIMITED_ROLE_HASH = {
     does_own
   end
 
-  def local_referral_cities_for_specialization(specialization)
+  def local_referral_cities(specialization)
     return user_city_specializations.reject{ |ucs| ucs.specialization_id != specialization.id }.map{ |ucs| ucs.user_city.city }
   end
 
@@ -273,5 +273,27 @@ LIMITED_ROLE_HASH = {
 
   def label
     name
+  end
+
+  def divisions_referral_cities(specialization)
+    divisions.map do |division|
+      division.local_referral_cities(specialization)
+    end.flatten.uniq
+  end
+
+  def city_rankings
+    divisions.first.city_rankings
+  end
+
+  def known?
+    true
+  end
+
+  def reporting_divisions
+    if super_admin?
+      Division.standard
+    else
+      divisions.not_hidden
+    end
   end
 end

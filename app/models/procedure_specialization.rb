@@ -110,6 +110,14 @@ class ProcedureSpecialization < ActiveRecord::Base
     procedure.to_s
   end
 
+  def with_ancestor_names
+    if parent.present?
+      "#{parent.with_ancestor_names} #{procedure.name_relative_to_parents.downcase}"
+    else
+      procedure.try(:name)
+    end
+  end
+
   def investigation(specialist_or_clinic)
     if specialist_or_clinic.instance_of? Clinic
       f = Focus.find_by_clinic_id_and_procedure_specialization_id(specialist_or_clinic.id, self.id)

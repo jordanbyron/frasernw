@@ -22,15 +22,54 @@
       %th Time Period
       %th.admin
 
-    - @reports.each do |report|
+    - if can? :view_report, :page_views
       %tr
-        %td= link_to report.name, report, :class => 'ajax'
-        %td= report.type
-        %td= report.level_name
-        %td= report.user_type
-        %td= report.time_frame_name
-        %td.admin.btn-group
-          = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_report_path(report), :class => "btn btn-mini ajax")
-          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", report, :confirm => "Delete #{report.name}?", :method => :delete, :class => "btn btn-mini")
+        %td= link_to "Page Views", page_views_reports_path
+        %td Analytics
+        %td System-wide
+        %td N/A
+        %td > January 2014
+        %td
 
-  %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Report", new_report_path, :class => "btn ajax")
+    - if can? :view_report, :sessions
+      %tr
+        %td= link_to "Sessions", sessions_reports_path
+        %td Analytics
+        %td System-wide
+        %td N/A
+        %td > January 2014
+        %td
+
+    - if can? :view_report, :usage
+      %tr
+        %td= link_to "Usage", new_usage_report_path
+        %td Analytics
+        %td System-wide
+        %td N/A
+        %td > January 2014
+        %td
+
+    - if can? :view_report, :referents_by_specialty
+      %tr
+        %td= link_to "Specialists and Clinics by Specialty", referents_by_specialty_reports_path
+        %td Analytics
+        %td System-wide
+        %td N/A
+        %td All Time
+        %td
+
+
+    - if current_user_is_super_admin?
+      - @reports.each do |report|
+        %tr
+          %td= link_to report.name, report, :class => 'ajax'
+          %td= report.type
+          %td= report.level_name
+          %td= report.user_type
+          %td= report.time_frame_name
+          %td.admin.btn-group
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_report_path(report), :class => "btn btn-mini ajax")
+            = link_to("<i class='icon-trash'></i>".html_safe + " Delete", report, :confirm => "Delete #{report.name}?", :method => :delete, :class => "btn btn-mini")
+
+  - if current_user_is_super_admin?
+    %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Report", new_report_path, :class => "btn ajax")

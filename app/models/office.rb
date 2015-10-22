@@ -38,16 +38,26 @@ class Office < ActiveRecord::Base
 
 
   # # # # # # # # CACHING METHODS
-  def self.all_formatted_for_form
-    includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]} ]).all.reject{|o| o.empty? }.sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+  def self.all_formatted_for_form(scope = :presence)
+    includes(:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]} ]).
+      all.
+      reject{|o| o.empty? }.
+      select(&scope).
+      sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
   end
 
-  def self.cached_all_formatted_for_form
-    Rails.cache.fetch([name, "all_offices_formatted_for_form"], expires_in: 2.hours) {self.all_formatted_for_form}
+  def self.cached_all_formatted_for_form(scope = :presence)
+    Rails.cache.fetch([name, "all_offices_formatted_for_form:#{scope}"], expires_in: 2.hours) do
+      self.all_formatted_for_form(scope)
+    end
   end
 
   def self.cached_find(id)
     Rails.cache.fetch([name, id]){find(id)}
+  end
+
+  def visible?
+    city && !(city.hidden?)
   end
 
   def flush_cache #called during after_commit or after_touch

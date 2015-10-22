@@ -50,7 +50,7 @@ Frasernw::Application.configure do
   elsif ENV["MEMCACHIER_SERVERS"]
       config.cache_store = :dalli_store
   else
-      config.cache_store = :dalli_store
+      config.cache_store = :dalli_store, { :value_max_bytes => 10485760 }
   end
 
   if !(ENV['APP_NAME'] == "pathwaysbc")

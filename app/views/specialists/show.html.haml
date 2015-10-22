@@ -63,6 +63,13 @@
 
               %p.space.no_indent This specialist has moved away.
 
+            - elsif @specialist.deceased?
+
+              %p.space.no_indent This specialist is deceased.
+              - if @specialist.status_details.present?
+                %p.no_indent
+                  = @specialist.status_details.end_with_period.convert_newlines_to_br
+
             - elsif @specialist.retired?
 
               %p.space.no_indent This specialist has retired.
@@ -537,3 +544,7 @@
           %h3 Secret edit link
           %p Anyone can edit this specialist if they have the following secret address:
           %p= specialist_self_edit_path(@specialist, @specialist.token, :only_path => false)
+
+  - if current_user_is_admin? && !current_user_is_super_admin? # only normal admins
+    .alert.alert-info{style: "margin-top: 10px"}
+      If you would like to have this specialist deleted, please contact a provincial administrator.

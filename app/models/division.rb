@@ -1,6 +1,11 @@
 class Division < ActiveRecord::Base
 
-  attr_accessible :name, :city_ids, :shared_sc_item_ids, :primary_contact_id, :division_primary_contacts_attributes
+  attr_accessible :name,
+    :city_ids,
+    :shared_sc_item_ids,
+    :primary_contact_id,
+    :division_primary_contacts_attributes,
+    :use_customized_city_priorities
 
   has_many :division_cities, :dependent => :destroy
 
@@ -43,6 +48,18 @@ class Division < ActiveRecord::Base
     Rails.cache.fetch([name, 'Division.all'], :expires_in => 8.hours) { all }
   end
 
+  def self.standard
+    not_hidden.not_provincial
+  end
+
+  def self.not_provincial
+    where('"divisions".name != (?)', "Provincial")
+  end
+
+  def self.not_hidden
+    where('"divisions".name != (?)', "Vancouver (Hidden)")
+  end
+
   def self.cached_find(id)
     Rails.cache.fetch([name, id]) { find(id) }
   end
@@ -68,15 +85,19 @@ class Division < ActiveRecord::Base
     self.name
   end
 
-  def local_referral_cities_for_specialization(specialization)
-    refined_cities = division_referral_city_specializations.reject{ |drcs| drcs.specialization_id != specialization.id }.map{ |drcs| drcs.division_referral_city.city }
-    if refined_cities.present?
-      #division has overriden this specialty
-      return refined_cities
-    else
-      #division has not overriden this specialty
-      return cities
-    end
+  def specializations_referred_to(city)
+    Specialization.
+      joins({ division_referral_city_specializations: { division_referral_city: [:city, :division]}}).
+      where(cities: {id: city.id}).
+      where(divisions: {id: self.id})
+  end
+
+  def local_referral_cities(specialization)
+    division_referral_city_specializations.
+      includes([:specialization, {division_referral_city: :city}]).
+      where(specialization_id: specialization.id).map do |drcs|
+        drcs.division_referral_city.city
+      end
   end
 
   def waittime_counts(klass)
@@ -93,5 +114,33 @@ class Division < ActiveRecord::Base
 
   def borrowed_sc_items
     @borrowed_sc_items ||= ScItem.shared_in_divisions([ self ])
+  end
+
+  def refer_to_encompassed_cities(specialization)
+    cities.each do |city|
+      DivisionReferralCitySpecialization.find_or_create_by(
+        division: self,
+        specialization: specialization,
+        city: city
+      )
+    end
+  end
+
+  def city_rankings
+    city_ids = cities.pluck(:id)
+
+    if use_customized_city_priorities
+      division_referral_cities.inject({}) do |memo, drc|
+        memo.merge(drc.city_id => drc.priority)
+      end
+    else
+      City.pluck(:id).inject({}) do |memo, city|
+        if city_ids.include?(city)
+          memo.merge(city => 1)
+        else
+          memo.merge(city => 2)
+        end
+      end
+    end
   end
 end

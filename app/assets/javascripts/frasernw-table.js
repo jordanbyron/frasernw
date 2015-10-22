@@ -3,7 +3,7 @@ function init_tables(procedure_filter, assumed_specialist_specialties, assumed_c
   table_data = {};
   table_data['specialist'] = {};
   table_data['clinic'] = {};
-  
+
   for(var city_id in filtering.current_cities)
   {
     if (!filtering.current_cities[city_id])
@@ -81,7 +81,7 @@ function add_row( entity_type, entity_id, url, name, status_class, status_sort, 
   }
 
   var row_id = entity_type + "_" + entity_id;
-  
+
   if (table_data[entity_type][row_id])
   {
     //duplicate
@@ -93,9 +93,9 @@ function add_row( entity_type, entity_id, url, name, status_class, status_sort, 
   var gp_tag = is_gp ? "<span class='gp'>GP</span> " : ""
   var new_tag = is_new ? "<span class='new'>new</span> " : ""
   var private_tag = is_private ? "<span class='private'>private</span> " : ""
-  
+
   var row_html = $("<tr id='" + row_id + "' " + row_class + "><td class=\"sp\"><a href=\"" + url + "\" class=\"ajax\">" + name + "</a> " + gp_tag + "" + new_tag + "" + private_tag + "</td>" + row_specialties + "<td class=\"st\"><i class=\"" + status_class + "\"></i><div class=\"status\">" + status_sort + "</div></td><td class=\"wt\">" + wait_time + "</td><td class=\"ct\">" + city + "</td></tr>");
-  
+
   table_data[entity_type][row_id] = { html:row_html, attributes:attributes, specialties:specialties_id, other:other };
 }
 

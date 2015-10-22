@@ -132,7 +132,17 @@ class ScItem < ActiveRecord::Base
     ])
   end
 
-  def available_to_divisions(divisions)
+  def available_to_divisions
+    return [] if in_progress
+
+    if shareable
+      [ division ] | divisions_sharing
+    else
+      [ division ]
+    end
+  end
+
+  def available_to_divisions?(divisions)
     ((divisions.include? division) || (shareable? && (divisions & divisions_sharing).present?)) && !in_progress
   end
 

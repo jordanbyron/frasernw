@@ -63,4 +63,8 @@ class Location < ActiveRecord::Base
   def to_s
     return address.to_s
   end
+
+  def visible?
+    city && !city.hidden?
+  end
 end

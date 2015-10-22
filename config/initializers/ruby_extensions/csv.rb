@@ -9,4 +9,12 @@ class CSV
       end
     end
   end
+
+  def self.write_to_string(array)
+    CSV.generate do |csv|
+      array.each do |row|
+        csv << row
+      end
+    end
+  end
 end

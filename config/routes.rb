@@ -7,6 +7,13 @@ Frasernw::Application.routes.draw do
   match '/versions'                 => 'versions#show_all', :as => 'all_versions'
   match '/versions/:id'             => 'versions#show',     :as => 'version'
 
+  # temporary endpoint to develop the fnw datatable
+  resources :data_tables, only: [] do
+    collection do
+      get :global_data
+    end
+  end
+
   resources :specializations, :path => 'specialties' do
     resources :specialists
     resources :procedures, :path => 'areas_of_practice'
@@ -95,6 +102,8 @@ Frasernw::Application.routes.draw do
   resources :reports do
     collection do
       get :page_views
+      get :sessions
+      get :referents_by_specialty
     end
   end
 
@@ -180,11 +189,14 @@ Frasernw::Application.routes.draw do
   end
   resources :faqs, only: [:new, :create, :edit, :update, :destroy]
 
+  resources :usage_reports, only: [:new, :create, :show]
+
   namespace :api do
     namespace :v1 do
       resources :reports, only: [] do
         collection do
           get :page_views
+          get :sessions
         end
       end
     end

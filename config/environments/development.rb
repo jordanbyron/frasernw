@@ -28,7 +28,7 @@ Frasernw::Application.configure do
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = (ENV["PERFORM_CACHING"].to_b || false)
-  config.cache_store = :dalli_store
+  config.cache_store = :dalli_store, { :value_max_bytes => 10485760 }
 
   # # # # # Development Feature Switches:
   # Use to gain more production-like configs in local development; turns cache_classes & perform_caching to true, or includes livesearch.js
