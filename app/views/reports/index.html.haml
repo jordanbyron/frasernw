@@ -31,6 +31,15 @@
         %td > January 2014
         %td
 
+    - if can? :view_report, :user_ids
+      %tr
+        %td= link_to "User Ids", user_ids_reports_path
+        %td Analytics
+        %td System-wide
+        %td N/A
+        %td > January 2014
+        %td
+
     - if can? :view_report, :usage
       %tr
         %td= link_to "Usage", new_usage_report_path

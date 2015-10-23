@@ -73,15 +73,15 @@ class AnalyticsChart
 
   private
 
-  def divisional_data
-    @divisional_data ||= weeks.inject({}) do |memo, week|
+  def data
+    @data ||= weeks.inject({}) do |memo, week|
       memo.merge(
-        week => divisional_data_for_week(week)
+        week => data_for_week(week)
       )
     end
   end
 
-  def divisional_data_for_week(week)
+  def data_for_week(week)
     raw = Analytics::ApiAdapter.get(
       start_date: week.start_date,
       end_date: week.end_date,
@@ -89,27 +89,22 @@ class AnalyticsChart
       dimensions: [:division_id, :user_type_key]
     )
 
-    divisions.inject({}) do |memo, division|
-      views = raw.select do |row|
-        row[:division_id] == division.id.to_s &&
+    (divisions.map(&:id) << 0).inject({}) do |memo, division_id|
+      result = raw.select do |row|
+        filter_by_division(row, division_id) &&
           User::TYPE_HASH.keys.include?(row[:user_type_key].to_i)
       end.map{|row| row[metric]}.map(&:to_i).sum
 
-      memo.merge(division.id => views)
+      memo.merge(division_id => result)
     end
   end
 
-  def global_data(week)
-    raw = Analytics::ApiAdapter.get(
-      start_date: week.start_date,
-      end_date: week.end_date,
-      metrics: [metric],
-      dimensions: [:user_type_key]
-    )
-
-    raw.select do |row|
-      User::TYPE_HASH.keys.include?(row[:user_type_key].to_i)
-    end.map{|row| row[metric]}.map(&:to_i).sum
+  def filter_by_division(row, division_id)
+    if division_id == 0
+      return true
+    else
+      return  row[:division_id] == division_id.to_s
+    end
   end
 
   def global_series
@@ -119,7 +114,7 @@ class AnalyticsChart
         [
           (week.start_date.at_midnight.to_i*1000),
           Rails.cache.fetch("non_admin_#{metric.to_s}:#{week.start_date.to_s}:global", force: force) do
-            global_data(week)
+            data[week][0]
           end
         ]
       end
@@ -133,7 +128,7 @@ class AnalyticsChart
         [
           (week.start_date.at_midnight.to_i*1000),
           Rails.cache.fetch("non_admin_#{metric.to_s}:#{week.start_date.to_s}:#{division.id}", force: force) do
-            divisional_data[week][division.id]
+            data[week][division.id]
           end
         ]
       end

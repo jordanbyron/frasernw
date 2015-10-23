@@ -20,6 +20,16 @@ module Api
           force: false
         ))
       end
+
+      def user_ids
+        authorize! :view_report, :user_ids
+
+        render json: AnalyticsChart.exec(AnalyticsChartMonths.parse(params).merge(
+          metric: :user_ids,
+          divisions: current_user.reporting_divisions,
+          force: false
+        ))
+      end
     end
   end
 end
