@@ -29,7 +29,7 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
       },
       notice: {
         shouldDisplay: moment(filterValues.month).isBefore("2015-11-01", "months") &&
-          _.includes(["physicianResources", "forms", "patientResources"], filterValues.recordTypes),
+          _.includes(["physicianResources", "forms", "patientInfo"], filterValues.recordTypes),
         text: `${_.startCase(filterValues.recordTypes )} usage data prior to November 2015 is not considered to be reliable`
       },
       dispatch: dispatch,
@@ -161,7 +161,7 @@ const GENERATE_FILTER_OPTIONS = {
       "specialists",
       "clinics",
       "physicianResources",
-      "patientResources",
+      "patientInfo",
       "forms",
       "specialties"
     ].map((key) => {
