@@ -2,6 +2,7 @@ var React = require("react");
 var React = require("react");
 var FavoriteIcon = require("./icons/favorite");
 var FeedbackIcon = require("./icons/feedback");
+var SharedCareIcon = require("./icons/shared_care");
 
 module.exports = React.createClass({
   propTypes: {
@@ -26,6 +27,7 @@ module.exports = React.createClass({
             return(
               <div className="scm" key={this.props.panelKey + resource.id}>
                 <h1>
+                  <SharedCareIcon shouldDisplay={resource.isSharedCare} color="red"/>
                   <span>{resource.title}</span>
                   <FavoriteIcon record={resource}
                     favorites={this.props.favorites}

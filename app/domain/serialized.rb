@@ -36,11 +36,12 @@ module Serialized
             categoryIds: [ item.sc_category, item.sc_category.ancestors ].flatten.map(&:id),
             content: (item.markdown_content.present? ? BlueCloth.new(item.markdown_content).to_html : ""),
             resolvedUrl: item.resolved_url,
-            canEmail: item.can_email_document,
+            canEmail: item.can_email?,
             id: item.id,
             isNew: item.new?,
-            isInProgress: item.in_progress
-          })
+            isInProgress: item.in_progress,
+            isSharedCare: item.shared_care?
+          }
         end
       end
     end,

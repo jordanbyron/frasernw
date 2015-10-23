@@ -125,6 +125,6 @@ module.exports = {
      .value();
   },
   specializationFilterActivated: function(state: Object, maskingSet: Array, panelKey: string): boolean {
-    return _.get(state, ["ui", "panels", panelKey, "filterValues", "specializationFilterActivated"], true);
+    return _.get(state, ["ui", "panels", panelKey, "filterValues", "specializationFilterActivated"], false);
   }
 }

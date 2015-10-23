@@ -119,4 +119,12 @@ class FormModifier
       "When adding or removing specialities please save and then edit this record again to update the list of available areas of practices and specialists."
     end
   end
+
+  def scope
+    if token_edit?
+      :visible?
+    else
+      :presence
+    end
+  end
 end

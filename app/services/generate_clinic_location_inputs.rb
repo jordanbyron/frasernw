@@ -1,13 +1,14 @@
 # for specialists#edit
 class GenerateClinicLocationInputs
-  attr_reader :specializations
+  attr_reader :specializations, :scope
 
-  def self.exec(specializations)
-    new(specializations).exec
+  def self.exec(specializations, scope = :presence)
+    new(specializations, scope).exec
   end
 
-  def initialize(specializations)
+  def initialize(specializations, scope)
     @specializations = specializations
+    @scope = scope
   end
 
   def exec
@@ -30,7 +31,7 @@ class GenerateClinicLocationInputs
   def formatted_clinic_locations(clinic)
     clinic.clinic_locations.reject do |clinic_location|
       clinic_location.empty?
-    end.map do |clinic_location|
+    end.select(&scope).map do |clinic_location|
       format_clinic_location(clinic_location, clinic)
     end
   end
@@ -45,7 +46,7 @@ class GenerateClinicLocationInputs
   def formatted_locations(clinic)
     clinic.locations.reject do |location|
       location.empty?
-    end.map{ |location| format_location(location, clinic) }
+    end.select(&scope).map{ |location| format_location(location, clinic) }
   end
 
   def format_location(location, clinic)

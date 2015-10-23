@@ -88,4 +88,8 @@ class ClinicLocation < ActiveRecord::Base
   def has_data?
     !empty?
   end
+
+  def visible?
+    city && !city.hidden?
+  end
 end

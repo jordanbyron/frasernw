@@ -118,7 +118,7 @@
                   disabled: @form_modifier.restrict_editing?
                 = a.association :city,
                   as: :select,
-                  collection: City.all_formatted_for_select,
+                  collection: City.all_formatted_for_select(@form_modifier.scope),
                   include_blank: true,
                   disabled: @form_modifier.restrict_editing?
                 = a.input :postalcode,
@@ -127,7 +127,7 @@
             %div{:class => "hospital_#{index}"}
               = l.association :hospital_in,
                 as: :select,
-                collection: Hospital.all_formatted_for_select,
+                collection: Hospital.all_formatted_for_select(@form_modifier.scope),
                 include_blank: true,
                 disabled: @form_modifier.restrict_editing?
             %div{:class => "details_#{index}"}

@@ -44,8 +44,8 @@ class City < ActiveRecord::Base
     Rails.cache.fetch([name, id]) { find(id) }
   end
 
-  def self.all_formatted_for_select
-    self.all.map(&:formatted_for_select)
+  def self.all_formatted_for_select(scope = :presence)
+    self.all.select(&scope).map(&:formatted_for_select)
   end
 
   def flush_cached_find
@@ -114,5 +114,9 @@ class City < ActiveRecord::Base
       division_referral_city(division).try(:options_for_priority_select) ||
         options_for_select(self.class.priority_setting_options, PRIORITY_SETTINGS)
     end
+  end
+
+  def visible?
+    !hidden?
   end
 end

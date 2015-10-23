@@ -40,6 +40,10 @@ module Serialized
             memo.merge({
               ps.procedure.id => {
                 focused: ps.focused?,
+                assumed: {
+                  clinics: ps.assumed_clinic?,
+                  specialists: ps.assumed_specialist?
+                },
                 children: transform_nested_procedure_specializations(children)
               }
             })

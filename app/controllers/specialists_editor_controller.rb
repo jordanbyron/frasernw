@@ -15,10 +15,10 @@ class SpecialistsEditorController < ApplicationController
     end
 
     build_specialist_offices
-    load_form_variables
+    load_form_variables(:visible?)
 
     @specializations_clinics, @specializations_clinic_locations =
-      GenerateClinicLocationInputs.exec(@specialist.specializations)
+      GenerateClinicLocationInputs.exec(@specialist.specializations, :visible?)
 
     @capacities = GenerateSpecialistCapacityInputs.exec(
       @specialist,
@@ -74,9 +74,9 @@ class SpecialistsEditorController < ApplicationController
 
   private
 
-  def load_form_variables
-    @offices = Office.cached_all_formatted_for_form
-    @hospitals = Hospital.all_formatted_for_form
+  def load_form_variables(scope = :presence)
+    @offices = Office.cached_all_formatted_for_form(scope)
+    @hospitals = Hospital.all_formatted_for_form(scope)
   end
 
   def build_specialist_offices
