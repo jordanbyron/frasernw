@@ -1,8 +1,31 @@
 - set_page_specific_title "Reports"
 
 .content-wrapper
+  .content
 
-  %h2 Reports
+    %h2 Pathways Usage Reports and Statistics
+    .headline
+      .row-fluid
+        .span3.offset1
+          = render partial: "reports/analytics_box", locals: {color: '#366F9E', icon: 'icon-user-md', title: "Specialists", count: Specialist.all.count}
+        .span3.offset1
+          = render partial: "reports/analytics_box", locals: {color: '#404040', icon: 'icon-home', title: "Clinics", count: Clinic.all.count}
+        .span3.offset1
+          = render partial: "reports/analytics_box", locals: {color: '#C44D58', icon: 'icon-hospital', title: "Hospitals", count: Hospital.all.count}
+        .span3.offset1
+          = render partial: "reports/analytics_box", locals: {color: '#0088CC', icon: 'icon-medkit', title: "Resources", count: ScItem.all.count}
+
+
+
+  %h2 Detailed Reports
+  - @object = Specialist.last(20)
+
+  / %i.icon-folder-open
+
+  =# render partial: "reports/table_widget", collection: @object, as: :object, locals: {table_title: "Most visited pages", row_number_value: 14124, row_name: "/clinics/3"}
+
+
+
 
   %table.table.table-condensed.table-striped
     %tr
