@@ -164,7 +164,7 @@ namespace :pathways do
     end
 
     task :analytics_charts do
-      AnalyticsChart.generate_full_cache
+      AnalyticsChart.regenerate_all
     end
 
     #purposeful order from least important to most important, to keep cache 'hot'

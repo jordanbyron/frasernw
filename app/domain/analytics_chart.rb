@@ -4,19 +4,24 @@ class AnalyticsChart
 
   SUPPORTED_METRICS = [
     :page_views,
-    :sessions
+    :sessions,
+    :user_ids
   ]
 
-  def self.generate_full_cache
+  def self.regenerate_all
     SUPPORTED_METRICS.each do |metric|
-      exec(
-        start_date: Month.new(2014, 1).start_date,
-        end_date: Date.today,
-        metric: metric,
-        divisions: Division.standard,
-        force: true
-      )
+      regenerate(metric)
     end
+  end
+
+  def self.regenerate(metric)
+    exec(
+      start_date: Month.new(2014, 1).start_date,
+      end_date: Date.today,
+      metric: metric,
+      divisions: Division.standard,
+      force: true
+    )
   end
 
   def exec
@@ -85,25 +90,50 @@ class AnalyticsChart
     raw = Analytics::ApiAdapter.get(
       start_date: week.start_date,
       end_date: week.end_date,
-      metrics: [metric],
-      dimensions: [:division_id, :user_type_key]
+      metrics: [:page_views, :sessions],
+      dimensions: dimensions
     )
 
     (divisions.map(&:id) << 0).inject({}) do |memo, division_id|
-      result = raw.select do |row|
+      filtered_rows = raw.select do |row|
         filter_by_division(row, division_id) &&
           User::TYPE_HASH.keys.include?(row[:user_type_key].to_i)
-      end.map{|row| row[metric]}.map(&:to_i).sum
+      end
 
-      memo.merge(division_id => result)
+      memo.merge(division_id => metric_from_rows(filtered_rows))
     end
   end
 
+  def dimensions
+    if metric == :user_ids
+      [:division_id, :user_type_key, :user_id]
+    else
+      [:division_id, :user_type_key]
+    end
+  end
+
+  def metric_from_rows(rows)
+    if metric == :user_ids
+      METRIC_FROM_ROWS_ABSTRACT[:from_ga_dimension].call(rows, :user_id)
+    else
+      METRIC_FROM_ROWS_ABSTRACT[:from_ga_metric].call(rows, metric)
+    end
+  end
+
+  METRIC_FROM_ROWS_ABSTRACT = {
+    from_ga_metric: Proc.new do |rows, metric|
+      rows.map{|row| row[metric]}.map(&:to_i).sum
+    end,
+    from_ga_dimension: Proc.new do |rows, dimension|
+      rows.group_by{|row| row[dimension]}.keys.count
+    end
+  }
+
   def filter_by_division(row, division_id)
     if division_id == 0
-      return true
+      true
     else
-      return  row[:division_id] == division_id.to_s
+      row[:division_id] == division_id.to_s
     end
   end
 
