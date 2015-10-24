@@ -7,9 +7,17 @@ class ReferralFormsController < ApplicationController
     @referral_forms = []
 
     Specialization.all.each do |specialization|
-      cities = current_user.divisions.map{ |d| d.local_referral_cities_for_specialization(specialization) }.flatten.uniq
-      @referral_forms += specialization.specialists.in_cities(cities).map{ |s| s.referral_forms }.flatten
-      @referral_forms += specialization.clinics.in_cities(cities).map{ |c| c.referral_forms }.flatten
+      cities = current_user.divisions.map{ |d| d.local_referral_cities(specialization) }.flatten.uniq
+
+      specialists = specialization.specialists.in_cities(cities)
+      clinics = specialization.clinics.in_cities(cities)
+
+      # avoid n+1's wtih edge_rider gem
+      Specialist.preload_associations(specialists, :referral_forms)
+      Clinic.preload_associations(clinics, :referral_forms)
+
+      @referral_forms += specialists.map{ |s| s.referral_forms }.flatten
+      @referral_forms += clinics.map{ |c| c.referral_forms }.flatten
     end
 
     @referral_forms.uniq!

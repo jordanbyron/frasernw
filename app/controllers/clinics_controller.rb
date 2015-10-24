@@ -5,7 +5,7 @@ class ClinicsController < ApplicationController
   skip_authorization_check :only => :refresh_cache
   include ApplicationHelper
 
-  cache_sweeper :clinic_sweeper, :only => [:create, :update, :destroy]
+  cache_sweeper :clinic_sweeper, :only => [:create, :update, :destroy, :accept]
 
   def index
     if params[:specialization_id].present?
@@ -17,7 +17,13 @@ class ClinicsController < ApplicationController
   end
 
   def show
-    @clinic = Clinic.find(params[:id])
+    @clinic = Clinic.
+      includes_location_data.
+      includes(:specialists).
+      includes(attendances: :specialist).
+      includes(:review_item).
+      find(params[:id])
+
     @feedback = @clinic.active_feedback_items.build
     render :layout => 'ajax' if request.headers['X-PJAX']
   end

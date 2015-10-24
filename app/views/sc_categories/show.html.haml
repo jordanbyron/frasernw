@@ -1,4 +1,4 @@
-- title "#{@sc_category.name}"
+- set_page_specific_title "#{@sc_category.name}"
 
 %ul#specialties-menu
   %li.dropdown.no-caret
@@ -76,7 +76,7 @@
                   %th.favorite
                   %th.email
                   %th.fb
-                  - if can? :index, Note
+                  - if can? :view_history, Historical
                     %th.note
               %tbody
                 - @sc_items.reject{ |i| i.in_progress }.each do |sc_item|
@@ -98,7 +98,7 @@
                     %td.fb
                       %a{"href" => "javascript:void(0)", "onclick" => "show_feedback('#{escape_javascript(sc_item.title)}',#{sc_item.id})", :title => "Provide feedback on content"}
                         %i.icon-bullhorn
-                    - if can? :index, Note
+                    - if can? :view_history, sc_item
                       %td= history_icon(sc_item)
 
             - if @sc_category.parent.present?
@@ -136,7 +136,7 @@
 
           %script{"type" => "text/javascript"}
             :plain
-              $('table tr').click( function() {
+              $('table tbody tr').click( function() {
                 var link = $(this).find('td.title a');
                 if (link.hasClass('ajax'))
                 {

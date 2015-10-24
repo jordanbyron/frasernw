@@ -3,9 +3,12 @@
 module PaperTrailable
   extend ActiveSupport::Concern
 
+  DEFAULT_IGNORED_ATTRIBUTES = [:saved_token, :review_object, :review_item]
+
   # If we can't find the appropriate version, default back to the model itself
   def creation
     versions.where(event: "create").first || OpenStruct.new(
+      created_at: created_at,
       safe_user: UnknownUser.new,
       next: nil
     )
@@ -23,18 +26,16 @@ module PaperTrailable
     end
   end
 
-  # Once again, have fallbacks just in case there isn't an updated version
   def last_update
-    versions.where(event: "update").last || OpenStruct.new(
-      created_at: updated_at,
-      safe_user: UnknownUser.new,
-      changeset: nil,
-      null_changeset?: true
-    )
+    masked_update_versions.last || creation
+  end
+
+  def masked_update_versions
+    versions.where(event: "update").reject{|version| version.completely_masked?}
   end
 
   def last_update_changeset
-    last_update.changeset
+    last_update.masked_changeset
   end
 
   def last_updated_at
@@ -45,7 +46,21 @@ module PaperTrailable
     last_update.safe_user
   end
 
+  def paper_trail_ignored_attributes
+    self.class.paper_trail_ignored_attributes
+  end
+
+  module ClassMethods
+    def paper_trail_ignored_attributes
+      if defined?(self::PAPER_TRAIL_IGNORED_ATTRIBUTES)
+        self::PAPER_TRAIL_IGNORED_ATTRIBUTES
+      else
+        DEFAULT_IGNORED_ATTRIBUTES
+      end
+    end
+  end
+
   included do
-    has_paper_trail ignore: [:saved_token, :review_object, :review_item]
+    has_paper_trail ignore: paper_trail_ignored_attributes
   end
 end

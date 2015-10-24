@@ -28,12 +28,12 @@ Frasernw::Application.configure do
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = (ENV["PERFORM_CACHING"].to_b || false)
-  config.cache_store = :dalli_store
+  config.cache_store = :dalli_store, { :value_max_bytes => 10485760 }
 
   # # # # # Development Feature Switches:
   # Use to gain more production-like configs in local development; turns cache_classes & perform_caching to true, or includes livesearch.js
-  # DevNote: to use switch each on, e.g.:
-  # $~> BENCHMARKING=true PERFORM_CACHING=true LIVESEARCH=true rails s
+  # To use switches, call them when booting a local rails server, e.g.:
+  # $~> BENCHMARKING=true PERFORM_CACHING=true LIVESEARCH=true BULLET=true rails s
   if ENV["BENCHMARKING"].to_b == true
     puts "==> BENCHMARKING TURNED ON -- REPEAT REQUESTS CACHE CODE TO IMITATE PRODUCTION"
   end
@@ -44,6 +44,10 @@ Frasernw::Application.configure do
 
   if ENV["LIVESEARCH"].to_b == true
     puts "==> LIVESEARCH.js file will be included"
+  end
+
+  if ENV["BULLET"].to_b == true
+    puts "==> BULLET GEM ENABLED --- DETECTED N+1 QUERIES NOW TRIGGER WARNINGS"
   end
   # # # # #
 
@@ -67,7 +71,7 @@ Frasernw::Application.configure do
 
   config.after_initialize do
     #bullet actions only run if explicitly enabled
-    Bullet.enable = false
+    Bullet.enable = (ENV["BULLET"].to_b || false)
     #Bullet.alert = false
     Bullet.bullet_logger = true
     Bullet.console = true
@@ -75,7 +79,7 @@ Frasernw::Application.configure do
     Bullet.rails_logger = true
     ## Bullet.bugsnag = true
     ## #Bullet.airbrake = true
-    Bullet.add_footer = false
+    Bullet.add_footer = true
     ##Bullet.stacktrace_includes = [ 'your_gem', 'your_middleware' ]
   end
 

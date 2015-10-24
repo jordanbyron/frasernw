@@ -1,5 +1,4 @@
 class Month
-
   def self.prev
     new(
       Date.today.year,
@@ -46,8 +45,31 @@ class Month
     @month = month
   end
 
+  def first_week
+    Week.new(start_date.previous_monday)
+  end
+
+  def last_week
+    Week.new(end_date.previous_monday)
+  end
+
+  def weeks
+    Week.for_interval(start_date, end_date)
+  end
+
   def to_i
     start_date.strftime("%Y%m").to_i
+  end
+
+  def self.from_i(integer)
+    year = integer.to_s[0..3].to_i
+    month = integer.to_s[4..5].to_i
+
+    Month.new(year, month)
+  end
+
+  def friendly_name
+    start_date.strftime("%b %Y")
   end
 
   def name

@@ -7,6 +7,13 @@ Frasernw::Application.routes.draw do
   match '/versions'                 => 'versions#show_all', :as => 'all_versions'
   match '/versions/:id'             => 'versions#show',     :as => 'version'
 
+  # temporary endpoint to develop the fnw datatable
+  resources :data_tables, only: [] do
+    collection do
+      get :global_data
+    end
+  end
+
   resources :specializations, :path => 'specialties' do
     resources :specialists
     resources :procedures, :path => 'areas_of_practice'
@@ -92,7 +99,14 @@ Frasernw::Application.routes.draw do
   resources :notifications
   resources :subscriptions
   resources :news_items
-  resources :reports
+  resources :reports do
+    collection do
+      get :page_views
+      get :sessions
+      get :referents_by_specialty
+      get :user_ids
+    end
+  end
 
 
   resources :referral_forms, only: [:index] do
@@ -107,11 +121,14 @@ Frasernw::Application.routes.draw do
   match '/specialists/:id/print/office/:office_id' => 'specialists#print_office_patient_information',   :as => 'specialist_patient_information_office'
   match '/clinics/:id/print/location/:location_id'  => 'clinics#print_location_patient_information',       :as => 'clinic_patient_information_location'
 
-  get  '/specialties/:id/:token/refresh_cache'     => 'specializations#refresh_cache', :as => 'specialization_refesh_cache'
-  get  '/hospitals/:id/:token/refresh_cache'       => 'hospitals#refresh_cache',       :as => 'hospital_refesh_cache'
-  get  '/languages/:id/:token/refresh_cache'       => 'languages#refresh_cache',       :as => 'language_refesh_cache'
+  get  '/specialties/:id/:token/refresh_cache'     => 'specializations#refresh_cache', :as => 'specialization_refresh_cache'
+  get  '/hospitals/:id/:token/refresh_cache'       => 'hospitals#refresh_cache',       :as => 'hospital_refresh_cache'
+  get  '/languages/:id/:token/refresh_cache'       => 'languages#refresh_cache',       :as => 'language_refresh_cache'
 
   get  '/specialties/:id/cities/:city_id' => 'specializations#city', :as => 'specialization_city'
+
+  #Used to cache fragments of admin All Specialists page
+  get  '/specialties/:specialization_id/:token/specialists/refresh_index_cache/:division_id'     => 'specialists#refresh_index_cache', :as => 'specialist_refresh_index_cache'
 
   #need improve performance:
   get  '/specialties/:id/:token/refresh_city_cache/:city_id' => 'specializations#refresh_city_cache', :as => 'specialization_refresh_city_cache'
@@ -172,4 +189,18 @@ Frasernw::Application.routes.draw do
     end
   end
   resources :faqs, only: [:new, :create, :edit, :update, :destroy]
+
+  resources :usage_reports, only: [:new, :create, :show]
+
+  namespace :api do
+    namespace :v1 do
+      resources :reports, only: [] do
+        collection do
+          get :page_views
+          get :sessions
+          get :user_ids
+        end
+      end
+    end
+  end
 end

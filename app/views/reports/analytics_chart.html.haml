@@ -1,0 +1,75 @@
+- set_page_specific_title @page_title
+
+.content-wrapper#body
+  .row
+    #content.span12
+      %h2{style: "margin-bottom: 10px"}
+        = @page_title
+
+      .pull-left
+        = label_tag "Start month:"
+        = select_tag "start_month",
+          options_for_select(@options_for_select, Month.new(2014, 1).to_i),
+          id: "start_month",
+          class: "month_selector"
+
+      .pull-right
+        = label_tag "End Month:"
+        = select_tag "end_month",
+          options_for_select(@options_for_select, Month.current.to_i),
+          id: "end_month",
+          class: "month_selector"
+
+      #chart_container{style: "clear: both; height: 400px;"}
+      %i *Excludes administrators and users who are not logged in
+
+      %br
+      %a.print.btn.btn-default.pull-right{style: "margin-top: 20px;"}
+        %i.icon-print
+        %span= "Print"
+
+:javascript
+  var dataPath = "#{@data_path}";
+
+  var showLoader = function() {
+    $("#chart_container").html("<div id='heartbeat-loader-position'><div class='heartbeat-loader'></div></div>")
+  };
+
+  var updateDOM = function() {
+    var startMonth = $("#start_month").val();
+    var endMonth = $("#end_month").val();
+
+    if (endMonth < startMonth) {
+      $("#start_month").val(parseInt(endMonth));
+      updateDOM();
+    } else {
+      var params = $.param({start_month: startMonth, end_month: endMonth});
+      showLoader();
+
+      $.get(dataPath + "?" + params).success(function(data) {
+        $('#chart_container').highcharts(data);
+        $("#heartbeat-loader-position").remove();
+      })
+    }
+  };
+
+  $(".month_selector").change(function() {
+    updateDOM();
+  });
+
+  $(document).ready(function() {
+    // enable back button
+    window.onpopstate = function(event) {
+      if (event.state) {
+        window.location.reload();
+      }
+    };
+    window.history.replaceState({print: false}, "", "#configure");
+
+    $("a.print").click(function() {
+      $("body").html($("#chart_container")).css("background-color", "white");
+      window.history.pushState({print: true}, "", "#print");
+    });
+
+    updateDOM();
+  });

@@ -1,9 +1,50 @@
 class ReportsController < ApplicationController
-  load_and_authorize_resource
+  load_and_authorize_resource except: [:page_views, :sessions, :referents_by_specialty]
 
   def index
     @reports = Report.all
     render :layout => 'ajax' if request.headers['X-PJAX']
+  end
+
+  def page_views
+    authorize! :view_report, :page_views
+
+    @options_for_select = AnalyticsChartMonths.exec
+    @page_title = "User Page Views"
+    @data_path = "/api/v1/reports/page_views"
+
+    render :analytics_chart
+  end
+
+  def sessions
+    authorize! :view_report, :sessions
+
+    @options_for_select = AnalyticsChartMonths.exec
+    @page_title = "User Sessions"
+    @data_path = "/api/v1/reports/sessions"
+
+    render :analytics_chart
+  end
+
+  def user_ids
+    authorize! :view_report, :sessions
+
+    @options_for_select = AnalyticsChartMonths.exec
+    @page_title = "User Ids"
+    @data_path = "/api/v1/reports/user_ids"
+
+    render :analytics_chart
+  end
+
+  def referents_by_specialty
+    @init_data = {
+      app: {
+        specializations: Serialized.fetch(:specializations),
+        divisions: Serialized.fetch(:divisions)
+      }
+    }
+
+    authorize! :view_report, :referents_by_specialty
   end
 
   def show

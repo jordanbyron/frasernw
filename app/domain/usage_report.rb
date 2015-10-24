@@ -1,36 +1,43 @@
-require 'csv'
+class UsageReport
+  include ServiceObject.exec_with_args(:start_date, :end_date, :division)
 
-namespace :pathways do
-  task :division_report, [:division, :start_date, :end_date] => :environment do |t, args|
-    ### Defaults
-    ### set for the K/B report atm
-    args.with_defaults(
-      start_date:  Date.civil(2015, 4, 16),
-      end_date:    Date.civil(2015, 4, 30),
-      division:    Division.find(7)
-    )
-
+  def exec
     ### Get the data
 
-    common_options = {
-      start_date: args[:start_date],
-      end_date:   args[:end_date],
-      filters:    { division_id: args[:division].id }
-    }
+    if division.present?
+      common_options = {
+        start_date: start_date,
+        end_date:   end_date,
+        filters:    { division_id: division.id }
+      }
+    else
+      common_options = {
+        start_date: start_date,
+        end_date:   end_date
+      }
+    end
 
-    total_pageviews =
-      StatsReporter.page_views(common_options).first[:page_views]
+    total_pageviews = Analytics::ApiAdapter.get({
+      metrics: [:page_views],
+    }.merge(common_options)).first[:page_views]
 
-    total_sessions = StatsReporter.sessions(common_options).first[:sessions]
+    total_sessions = Analytics::ApiAdapter.get({
+      metrics: [:sessions],
+    }.merge(common_options)).first[:sessions]
 
-    total_users =
-      StatsReporter.total_users(common_options)
+    total_users = Analytics::ApiAdapter.get({
+      metrics: [:page_views],
+      dimensions: [:user_id]
+    }.merge(common_options)).count
 
-    page_views_by_page = StatsReporter.page_views(
-      common_options.merge(dimensions: [:page_path, :user_type_key])
-    )
+    page_views_by_page = Analytics::ApiAdapter.get({
+      metrics: [:page_views],
+    }.merge(common_options.merge(dimensions: [:page_path, :user_type_key])))
 
-    user_types = StatsReporter.user_types(common_options)
+    user_types = Analytics::ApiAdapter.get({
+      metrics: [:page_views, :sessions],
+      dimensions: [:user_type_key]
+    }.merge(common_options))
     user_types_table = HashTable.new(user_types)
 
     # transform user types table
@@ -40,7 +47,6 @@ namespace :pathways do
     user_types_table.transform_column!(:sessions) do |row|
       row[:sessions].to_i
     end
-
 
     ## Transform pageviews table
 
@@ -72,7 +78,6 @@ namespace :pathways do
         )
       end
     )
-
 
     # add a column for resource name
 
@@ -140,76 +145,72 @@ namespace :pathways do
     # sort by pathname
     page_views_table.rows.sort_by! {|row| row[:page_path]}
 
+    # create the csv array
+    csv = []
+    csv << [ "Pathways Usage Report"]
 
-    ### Write the CSV
-
-    timestamp = DateTime.now.to_s
-    filename  = [
-      "pathways_usage_report",
-      args[:division].name,
-      timestamp,
-    ].join("_").safe_for_filename + ".csv"
-    file_path = Rails.root.join("reports", "divisions", filename)
-
-    CSV.open(file_path, "w+") do |csv|
-      csv << [ "Pathways Usage Report"]
-      csv << [ "Division: #{args[:division].name}"]
-      csv << [ "Compiled on #{timestamp}" ]
-      csv << [ "**All stats are for date range specified below***"]
-      csv << [ ]
-      csv << [ "Start Date"]
-      csv << [ args[:start_date].to_s]
-      csv << [ ]
-      csv << [ "End Date"]
-      csv << [ args[:end_date].to_s]
-      csv << [ ]
-
-      ### Summary Table
-      csv << [ "SUMMARY" ]
-      csv << [ "Total Pageviews", "Total Sessions", "Total Users"]
-      csv << [ total_pageviews, total_sessions, total_users ]
-      csv << [ ]
-
-      ### User types table
-
-      csv << [ "METRICS BY USER TYPE" ]
-      csv << [ "User type", "Page Views", "Sessions"]
-      user_types_table.rows.each do |row|
-        csv << [
-          current_user_type_hash[row[:user_type_key].to_i],
-          row[:page_views],
-          row[:sessions]
-        ]
-      end
-      csv << [
-        "All types",
-        user_types_table.sum_column(:page_views),
-        user_types_table.sum_column(:sessions)
-      ]
-      csv << [ ]
-
-      ### Pageviews table
-
-      csv << [ "METRICS BY PAGE" ]
-
-      typed_pageview_headings = current_user_type_hash.keys.sort.map do |key|
-        "Page Views (#{current_user_type_hash[key]})"
-      end
-
-      csv << ([ "Path", "Resource Name", "Total Page Views" ] + typed_pageview_headings )
-
-      page_views_table.rows.each do |row|
-        typed_pageviews = current_user_type_hash.keys.sort.map do |key|
-          row[key] || 0
-        end
-
-        csv << ([ row[:page_path], row[:record_name], row[:page_views] ] + typed_pageviews)
-      end
-
-      typed_pageview_totals = current_user_type_hash.keys.sort.map do |key|
-        page_views_table.sum_column(key)
-      end
-      csv << (["All paths", "", page_views_table.sum_column(:page_views)] + typed_pageview_totals)
+    if division.present?
+      csv << [ "Division: #{division.name}"]
     end
+
+    timestamp = DateTime.now.strftime("%Y-%m-%d-%H:%M")
+    csv << [ "Compiled on #{timestamp}" ]
+    csv << [ "**All stats are for date range specified below***"]
+    csv << [ ]
+    csv << [ "Start Date"]
+    csv << [ start_date.to_s]
+    csv << [ ]
+    csv << [ "End Date"]
+    csv << [ end_date.to_s]
+    csv << [ ]
+
+    ### Summary Table
+    csv << [ "SUMMARY" ]
+    csv << [ "Total Pageviews", "Total Sessions", "Total Users"]
+    csv << [ total_pageviews, total_sessions, total_users ]
+    csv << [ ]
+
+    ### User types table
+
+    csv << [ "METRICS BY USER TYPE" ]
+    csv << [ "User type", "Page Views", "Sessions"]
+    user_types_table.rows.each do |row|
+      csv << [
+        current_user_type_hash[row[:user_type_key].to_i],
+        row[:page_views],
+        row[:sessions]
+      ]
+    end
+    csv << [
+      "All types",
+      user_types_table.sum_column(:page_views),
+      user_types_table.sum_column(:sessions)
+    ]
+    csv << [ ]
+
+    ### Pageviews table
+
+    csv << [ "METRICS BY PAGE" ]
+
+    typed_pageview_headings = current_user_type_hash.keys.sort.map do |key|
+      "Page Views (#{current_user_type_hash[key]})"
+    end
+
+    csv << ([ "Path", "Resource Name", "Total Page Views" ] + typed_pageview_headings )
+
+    page_views_table.rows.each do |row|
+      typed_pageviews = current_user_type_hash.keys.sort.map do |key|
+        row[key] || 0
+      end
+
+      csv << ([ row[:page_path], row[:record_name], row[:page_views] ] + typed_pageviews)
+    end
+
+    typed_pageview_totals = current_user_type_hash.keys.sort.map do |key|
+      page_views_table.sum_column(key)
+    end
+    csv << (["All paths", "", page_views_table.sum_column(:page_views)] + typed_pageview_totals)
+
+    csv
   end
 end

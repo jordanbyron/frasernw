@@ -4,7 +4,7 @@ ruby "2.1.6"
 
 gem 'nokogiri'
 #gem 'rails', '3.1.12'
-gem 'rails', '3.2.21'
+gem 'rails', '3.2.22'
 
 gem 'pg'
 
@@ -13,7 +13,6 @@ group :production do
 end
 
 # gem 'goldiloader' #automate eagerloading to squash N+1 queries
-
 
 # # Asset template engines
 # gem 'sass-rails', "~> 3.1.0"
@@ -38,8 +37,9 @@ end
 
 gem 'connection_pool'
 gem 'highcharts-rails'
-gem 'jquery-rails', "~> 1.0.16"
+gem 'jquery-rails', '~> 1.0.16'
 gem 'haml-rails', '~> 0.4'
+gem 'brakeman'
 
 gem 'authlogic'
 gem 'paper_trail', '~> 2.7'
@@ -48,6 +48,7 @@ gem "simple_form", '~> 2.1'
 gem "nested_form", :git => "https://github.com/warneboldt/nested_form.git", :ref => "35a2cf060680280413880337a3f89bdec469301c"
 #gem 'nested_form', '0.3.2', :path => '~/Documents/Programming/Pathways/warneboldt/nested_form/'
 gem 'exception_notification'
+gem 'slack-notifier'
 gem 'cancan', '1.6.7'
 gem "paperclip", "~> 2.7"
 
@@ -58,6 +59,9 @@ gem 'public_activity'
 
 # Use unicorn as the web server
 gem 'unicorn'
+
+# Enables preloading associations of already loaded records to avoid n + 1's
+gem 'edge_rider'
 
 # Heroku caching
 gem 'kgio'
@@ -130,7 +134,6 @@ group :development do
   gem 'bullet' #warns about N+1 queries
   gem 'thin'
 end
-
 
 group :development, :test do
   gem 'pry-rails'

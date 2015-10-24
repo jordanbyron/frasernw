@@ -1,4 +1,4 @@
-- title "Users"
+- set_page_specific_title "Users"
 
 .content-wrapper
   %h2
@@ -52,8 +52,7 @@
                           - specialization_options.each do |so|
                             %li= link_to so.specialization.name, so.specialization, :class => 'ajax'
 
-                  %td.admin.btn-group
-                    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
+                  = render "users/admin_column", user: user
           %h4
             Total
             = render partial: "division_label"
@@ -86,9 +85,7 @@
                         Specializations owned in #{division.name}
                         - specialization_options.each do |so|
                           %li= link_to so.specialization.name, so.specialization, :class => 'ajax'
-                %td.admin.btn-group
-                  - if can? :update, user
-                    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
+                = render "users/admin_column", user: user
         %h4
           Total
           = render partial: "division_label"
@@ -121,9 +118,7 @@
                       %li= "#{specialist_office.specialist.name} - #{specialist_office.office.short_address}"
                     - user.controlled_clinics.each do |clinic|
                       %li= clinic.name
-                %td.admin.btn-group
-                  - if can? :update, user
-                    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
+                = render "users/admin_column", user: user
         %h4
           Total
           = render partial: "division_label"
@@ -151,9 +146,7 @@
                 %td= user.role_full
                 %td= user.admin? ? "Admin" : user.type
                 %td= user.token
-                %td.admin.btn-group
-                  - if can? :update, user
-                    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
+                = render "users/admin_column", user: user
         %h4
           Total
           = render partial: "division_label"
@@ -185,9 +178,7 @@
                 %td= user.admin? ? "Admin" : user.type
                 %td= user.email
                 %td= user.pending? ? user.token : "Was activated"
-                %td.admin.btn-group
-                  - if can? :update, user
-                    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(user), :class => "btn btn-mini ajax")
+                = render "users/admin_column", user: user
             - if !has_user
               %tr
                 %td

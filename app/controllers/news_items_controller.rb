@@ -19,8 +19,8 @@ class NewsItemsController < ApplicationController
 
   def create
     @news_item = NewsItem.new(params[:news_item])
-    if current_user_is_admin? && !current_user_divisions.include?(@news_item.division)
-      redirect_to new_news_item_path, :notice  => "Can't create a news item in that division."
+    if current_user_is_admin? && !current_user_divisions.include?(@news_item.division) && !current_user_is_super_admin?
+      render :action => 'new', :notice  => "Can't create a news item in that division."
     elsif @news_item.save
       create_news_item_activity
       division = @news_item.division

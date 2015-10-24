@@ -19,6 +19,14 @@ class CitiesController < ApplicationController
   def create
     @city = City.new(params[:city])
     if @city.save
+      Division.all.each do |division|
+        DivisionReferralCity.create(
+          division_id: division.id,
+          city_id: @city.id,
+          priority: division.division_referral_cities.map(&:priority).max
+        )
+      end
+
       redirect_to @city, :notice => "Successfully created city."
       else
       render :action => 'new'

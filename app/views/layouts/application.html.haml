@@ -4,7 +4,7 @@
 %html
 
   %head
-    %title= yield(:title) ? "Pathways | #{HTMLEntities.new.decode(yield(:title).html_safe)}" : "Pathways"
+    %title= page_title
     %meta{"http-equiv"=>"Content-Type", :content=>"text/html; charset=utf-8"}
     %meta{"name"=>"viewport", :content=>"initial-scale=1.0"}
 
@@ -63,6 +63,8 @@
           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
+    :javascript
+      window.pathways.localstorage_cache_version(#{localstorage_cache_version})
 
   %body{:id => "#{params[:controller]}_page"}
     #heartbeat-loader-position
@@ -82,7 +84,7 @@
           - if logged_in?
 
             %form.navbar-search.pull-right
-              %input.span3.search-query#search{"type" => "search", "placeholder" => "Search"}
+              %input.span3.search-query#search.icon{"type" => "search", "placeholder" => "&#xf002; Search".html_safe}
               #search_results{:style => 'display:none'}
                 #loading
                   #loading-spinner
@@ -132,7 +134,7 @@
                           = link_to "Feedback Queue", feedback_items_path, :class => "feedback ajax"
                       - if current_user_is_super_admin? || current_user_is_admin?
                         %li= link_to "Manage Notifications", subscriptions_path, :class => "subscriptions ajax"
-                      - if current_user_is_super_admin?
+                      - if current_user_is_super_admin? || current_user_is_admin?
                         %li= link_to "Reports", reports_path, :class => "reports ajax"
                       %li.divider
                       %li.nav-header Pathways
@@ -282,6 +284,7 @@
                   - if dropdown_categories.present?
                     %li.dropdown
                       %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                        %i.icon-medkit
                         Resources
                         %b.caret
                       %ul.dropdown-menu
@@ -293,6 +296,7 @@
 
                 %li.dropdown
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                    %i.icon-folder-open
                     Forms
                     %b.caret
 
@@ -412,7 +416,8 @@
 
     = yield(:javascript_footer)
 
-    %script{:language => "javascript", :type => "text/javascript"}
-      $(window).load(function() {
-      $("#heartbeat-loader-position").remove();
-      });
+    - unless defined?(@automatically_remove_heartbeat) && @automatically_remove_heartbeat == false
+      :javascript
+        $(window).load(function() {
+          $("#heartbeat-loader-position").remove();
+        });

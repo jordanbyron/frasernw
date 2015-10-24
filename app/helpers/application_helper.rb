@@ -69,9 +69,9 @@ module ApplicationHelper
 
           if child_investigation && child_investigation.strip.length != 0
             has_investigation = true
-            child_results << "<a class='ajax' href='#{procedure_path(child[:parent])}'>#{child[:parent].name}</a> (#{child_investigation})"
+            child_results << "<a class='ajax' href='#{procedure_path(child[:parent])}'>#{child[:parent].name_relative_to_parents}</a> (#{child_investigation})"
           else
-            child_results <<"<a class='ajax' href='#{procedure_path(child[:parent])}'>#{child[:parent].name}</a>"
+            child_results << "<a class='ajax' href='#{procedure_path(child[:parent])}'>#{child[:parent].name_relative_to_parents}</a>"
           end
 
           if child[:children].present?
@@ -81,9 +81,9 @@ module ApplicationHelper
               grandchild_investigation = grandchild_investigation.strip_period if grandchild_investigation.present?
               if grandchild_investigation && grandchild_investigation.strip.length != 0
                 has_investigation = true
-                child_results << "<a class='ajax' href='#{procedure_path(grandchild[:parent])}'>#{child[:parent].name} #{grandchild[:parent].name}</a> (#{grandchild_investigation})"
+                child_results << "<a class='ajax' href='#{procedure_path(grandchild[:parent])}'>#{child[:parent].name_relative_to_parents} #{grandchild[:parent].name_relative_to_parents}</a> (#{grandchild_investigation})"
               else
-                child_results << "<a class='ajax' href='#{procedure_path(grandchild[:parent])}'>#{child[:parent].name} #{grandchild[:parent].name}</a>"
+                child_results << "<a class='ajax' href='#{procedure_path(grandchild[:parent])}'>#{child[:parent].name_relative_to_parents} #{grandchild[:parent].name_relative_to_parents}</a>"
               end
             end
           end
@@ -209,5 +209,11 @@ module ApplicationHelper
 
   def search_data_labels
     SearchDataLabels.new
+  end
+
+  # bump this if you want to force clients to recache the data they store
+  # in localStorage
+  def localstorage_cache_version
+    Setting.fetch(:localstorage_cache_version)
   end
 end

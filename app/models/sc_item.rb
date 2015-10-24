@@ -2,6 +2,7 @@ class ScItem < ActiveRecord::Base
   include Noteable
   include Historical
   include Feedbackable
+  include PaperTrailable
 
   include ApplicationHelper
   include PublicActivity::Model
@@ -124,7 +125,24 @@ class ScItem < ActiveRecord::Base
     where("sc_items.type_mask = (?)", TYPE_DOCUMENT)
   end
 
-  def available_to_divisions(divisions)
+  def self.includes_specialization_data
+    includes(sc_item_specializations: [
+      :specialization,
+      { procedure_specializations: :procedure },
+    ])
+  end
+
+  def available_to_divisions
+    return [] if in_progress
+
+    if shareable
+      [ division ] | divisions_sharing
+    else
+      [ division ]
+    end
+  end
+
+  def available_to_divisions?(divisions)
     ((divisions.include? division) || (shareable? && (divisions & divisions_sharing).present?)) && !in_progress
   end
 
@@ -302,10 +320,6 @@ class ScItem < ActiveRecord::Base
 
   def new?
     created_at > 3.week.ago.utc
-  end
-
-  def creator
-    UnknownUser.new
   end
 
   alias_attribute :label, :title

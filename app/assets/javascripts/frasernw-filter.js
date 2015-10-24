@@ -35,7 +35,7 @@ function hide_others( prefix, entity_id, entity_name )
 var update_table = function(prefix, entity_id, entity_name)
 {
   $('#' + entity_id + '_table tbody').find('tr').not('.placeholder').remove();
-  
+
   var current_filters = new Array();
   var specializations = new Array();
   var procedures = new Array();
@@ -272,7 +272,7 @@ var update_table = function(prefix, entity_id, entity_name)
 
   var found = false;
   var other_specialties = false;
-  
+
   var other_results = 0;
   if((procedures.length >= 1))
   {
@@ -466,7 +466,7 @@ var update_table = function(prefix, entity_id, entity_name)
   {
     (should_show_others && (other_results > 0)) ? hide_others.show() : hide_others.hide();
   }
-  
+
   $('#' + entity_id + '_table').trigger('update');
 }
 

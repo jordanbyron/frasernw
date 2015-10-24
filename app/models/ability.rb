@@ -12,6 +12,7 @@ class Ability
       # all categories of logged in
       can :show, FaqCategory
       can :index, :terms_and_conditions
+      can :get, :global_data
 
       if user.super_admin?
 
@@ -22,6 +23,13 @@ class Ability
         can :show, :analytics
 
       elsif user.admin_only?
+        can :view_report, :page_views
+        can :view_report, :sessions
+        can :view_report, :usage
+        can :view_report, :referents_by_specialty
+        can :view_report, :user_ids
+
+        can :index, Report
 
         #admin
         can :manage, [Subscription, Notification]
@@ -30,6 +38,7 @@ class Ability
         can :manage, [Specialist, Clinic, Hospital, Office] do |entity|
           entity.divisions.blank? || (entity.divisions & user.divisions).present?
         end
+        cannot :destroy, [Specialist, Clinic]
         can :create, [Specialist, Clinic, Hospital, Office]
 
         can :manage, Version
@@ -119,7 +128,7 @@ class Ability
           note.user == user
         end
 
-        can :index, :history
+        can :view_history, Historical
 
       elsif user.user?
 
@@ -143,7 +152,7 @@ class Ability
         end
 
         can :show, ScItem do |item|
-          item.available_to_divisions(user.divisions)
+          item.available_to_divisions?(user.divisions)
         end
 
         can :show, [Hospital, Language, ScCategory]

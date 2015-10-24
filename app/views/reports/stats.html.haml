@@ -1,4 +1,4 @@
-- title "#{@report.name}"
+- set_page_specific_title "#{@report.name}"
 
 .content-wrapper
 
@@ -14,12 +14,18 @@
     - procedures.uniq!
     - specializations = Specialization.all.reject{ |s| [s.specialists.in_divisions(@divisions) + s.clinics.in_divisions(@divisions)].flatten.length == 0 }
     - hospitals = Hospital.in_divisions(@divisions)
+    - sc_categories = ScCategory.all_parents
+    - sc_items = ScItem.all_in_divisions(@divisions)
+    - news_items = NewsItem.in_divisions(@divisions)
   - else
     - specialists = Specialist.all
     - clinics = Clinic.all
     - procedures = Procedure.all
     - specializations = Specialization.all
     - hospitals = Hospital.all
+    - sc_categories = ScCategory.all_parents
+    - sc_items = ScItem.all
+    - news_items = NewsItem.all
 
   %table#stats.table
 
@@ -100,8 +106,34 @@
       %th
 
 
+
     %tr
-      %th Specialists by Specialty
+      %th
+      %th Total
+    %tr
+      %th Resources
+      %td= sc_items.count
+
+    %tr
+      %th
+
+
+    %tr
+      %th
+      %th Total
+    %tr
+      %th News Items
+      %td= news_items.count
+
+    %tr
+      %th
+
+    %tr
+      %th
+        %h3
+          = "Specialists by Specialty"
+          %br
+          %small= "(#{@report.level_name})"
 
     %tr
       %th
@@ -125,6 +157,37 @@
         %td= @specialization_specialists.reject{|s| !s.hospital_or_clinic_only?}.length
         %td= @specialization_specialists.reject{|s| !s.moved_away?}.length
         %td= @specialization_specialists.reject{|s| !s.retired?}.length
+
+        %tr
+      %th
+
+
+
+    %tr
+      %th
+
+
+    %tr
+      %th
+        %h3
+          = "Resources / Content Items"
+          %br
+          %small= "(#{@report.level_name})"
+
+    - sc_categories.each do |sc_category|
+      %tr
+        %th
+        %th Total
+      %tr
+        %th= sc_category.name
+        -# For getting the total count of sc_items for the system or division in each parent category, we take the sc_items of parent categories and the sc_items of children categories, then compare those items against the total sc_items for the system or division
+        %td= ((sc_category.sc_items & sc_items).count + sc_category.children.inject(0) {|result, sc_category_child| result + (sc_category_child.sc_items & sc_items).count})
+        %tr
+      %th
+
+
+
+
 
 
   %p.admin.btn-group

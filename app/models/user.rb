@@ -2,6 +2,19 @@ class User < ActiveRecord::Base
   include Historical
   include Noteable
 
+  PAPER_TRAIL_IGNORED_ATTRIBUTES = [
+    :persistence_token,
+    :crypted_password,
+    :password_salt,
+    :perishable_token,
+    :saved_token,
+    :type_mask,
+    :last_request_at,
+    :failed_login_count,
+    :activated_at
+  ]
+  include PaperTrailable
+
   acts_as_authentic do |c|
     c.merge_validates_length_of_password_field_options({:minimum => 8})
     c.merge_validates_uniqueness_of_email_field_options({:message => "has already been used to set up another account. Pleast use a different email address to sign up, or sign into your existing account."})
@@ -237,7 +250,7 @@ LIMITED_ROLE_HASH = {
     does_own
   end
 
-  def local_referral_cities_for_specialization(specialization)
+  def local_referral_cities(specialization)
     return user_city_specializations.reject{ |ucs| ucs.specialization_id != specialization.id }.map{ |ucs| ucs.user_city.city }
   end
 
@@ -260,5 +273,27 @@ LIMITED_ROLE_HASH = {
 
   def label
     name
+  end
+
+  def divisions_referral_cities(specialization)
+    divisions.map do |division|
+      division.local_referral_cities(specialization)
+    end.flatten.uniq
+  end
+
+  def city_rankings
+    divisions.first.city_rankings
+  end
+
+  def known?
+    true
+  end
+
+  def reporting_divisions
+    if super_admin?
+      Division.standard
+    else
+      divisions.not_hidden
+    end
   end
 end

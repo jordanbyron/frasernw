@@ -1,4 +1,4 @@
-- title "#{@sc_item.title}"
+- set_page_specific_title "#{@sc_item.title}"
 
 - specialization = (current_user_is_admin? ? @sc_item.specializations : @sc_item.specializations.not_in_progress_for_divisions(current_user_divisions)).first
 
@@ -38,7 +38,7 @@
           %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
         - if @sc_item.can_email?
           = link_to "<i class='icon-envelope-alt icon-blue'></i>".html_safe, compose_mail_to_patients_path(@sc_item), :class => 'ajax', :title => "E-mail to patient"
-        - if can? :index, :history
+        - if can? :view_history, @sc_item
           = history_icon(@sc_item)
 
   - elsif @sc_item.markdown?
@@ -110,7 +110,7 @@
       Incorrect Information? Let us know
 
   %p.admin.btn-group
-    - if can? :index, :history
+    - if can? :view_history, @sc_item
       = large_history_button(@sc_item)
     - if can? :update, @sc_item
       = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_sc_item_path(@sc_item), :class => "btn ajax")

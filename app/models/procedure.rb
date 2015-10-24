@@ -20,13 +20,28 @@ class Procedure < ActiveRecord::Base
     self.name
   end
 
+  def parents_name_array
+    ps_with_parents = procedure_specializations.reject{ |ps| ps.parent.blank? }
+    if ps_with_parents.count > 0
+      return ps_with_parents.first.parent.procedure.parents_name_array + ps_with_parents.first.parent.procedure.name.uncapitalize_first_letter.split(' ')
+    else
+      return []
+    end
+  end
+
   def full_name
     ps_with_parents = procedure_specializations.reject{ |ps| ps.parent.blank? }
     if ps_with_parents.count > 0
-      return ps_with_parents.first.parent.procedure.full_name + " " + self.name.uncapitalize_first_letter
+      return ps_with_parents.first.parent.procedure.full_name + name_relative_to_parents.uncapitalize_first_letter
     else
       return self.name
     end
+  end
+
+  def name_relative_to_parents
+    #remove any words that also appear in the parents' names
+    parents_names = parents_name_array
+    self.name.uncapitalize_first_letter.split(' ').reject{ |word| parents_names.include? word }.join(' ').capitalize_first_letter
   end
 
   def fully_in_progress_for_divisions(divisions)

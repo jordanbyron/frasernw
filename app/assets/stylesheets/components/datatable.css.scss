@@ -1,0 +1,96 @@
+#content {
+  #container {
+    .datatable__row {
+      &:hover {
+        td.datatable__cell {
+          background-color: #f3f8fc;
+        }
+      }
+    }
+
+    .specialization_table__table_head--name {
+      width: 30%;
+    }
+    @media (max-width: 767px) {
+      .hide-when-reduced {
+        display: none;
+      }
+      // override the existing solution
+      .well.filter {
+        .title {
+          display: block;
+        }
+        display: block;
+        position: static;
+      }
+      .span3.offsethalf.datatable-sidebar {
+        margin-top: 0px;
+      }
+
+      .specialization_table__table_head--name {
+        width: 60%;
+      }
+
+      .specialization_table__th--referrals {
+        width: 10%;
+      }
+
+      .specialization_table__th--specialties {
+        width: 10%;
+      }
+
+      .specialization_table__th--waittime {
+        width: 10%;
+      }
+
+      .specialization_table__th--city {
+        width: 10%;
+      }
+
+    }
+
+    #icon_key i {
+      margin-right: 5px;
+    }
+
+    .specialization_table__city_filter_pill {
+      display: inline-block;
+      padding: 8px 9px;
+      margin-right: 3px;
+      margin-bottom: 6px;
+      background-color: #f0ede8;
+      border-radius: 5px;
+      color: #0088cc;
+
+      &:hover {
+        background-color: #a3d9f5;
+      }
+    }
+
+    .specialization_table__table_head--name {
+      width: 30%;
+    }
+
+    .specialization_table__th--referrals {
+      width: 15%;
+    }
+
+    .specialization_table__th--specialties {
+      width: 15%;
+    }
+
+    .specialization_table__th--waittime {
+      width: 15%;
+    }
+
+    .specialization_table__th--city {
+      width: 20%;
+    }
+  }
+
+  @media (max-width: 979px) {
+    .specialization_table__filter_toggle {
+      display: none;
+    }
+  }
+}

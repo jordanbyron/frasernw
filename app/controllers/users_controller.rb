@@ -6,20 +6,20 @@ class UsersController < ApplicationController
     if params[:division_id].present?
       @division = Division.find(params[:division_id])
       if current_user_is_super_admin?
-        @super_admin_users = User.includes(:divisions).in_divisions([@division]).active_super_admin
+        @super_admin_users = User.includes(:divisions, [:specialization_options => :specialization]).in_divisions([@division]).active_super_admin
       end
-      @admin_users = User.includes(:divisions).in_divisions([@division]).active_admin_only
+      @admin_users = User.includes(:divisions, [:specialization_options => :specialization]).in_divisions([@division]).active_admin_only
       @users = User.includes(:divisions).in_divisions([@division]).active_user
       @pending_users = User.includes(:divisions).in_divisions([@division]).active_pending
       @inactive_users = User.includes(:divisions).in_divisions([@division]).inactive
     else
       if current_user_is_super_admin?
-        @super_admin_users = User.active_super_admin
+        @super_admin_users = User.includes(:divisions, [:specialization_options => :specialization]).active_super_admin
       end
-      @admin_users = User.active_admin_only
-      @users = User.active_user
-      @pending_users = User.active_pending
-      @inactive_users = User.inactive
+      @admin_users = User.includes(:divisions, [:specialization_options => :specialization]).active_admin_only
+      @users = User.includes(:divisions).active_user
+      @pending_users = User.includes(:divisions).active_pending
+      @inactive_users = User.includes(:divisions).inactive
     end
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
@@ -81,21 +81,16 @@ class UsersController < ApplicationController
   end
 
   def setup
-    if params.blank? || params[:user].blank?
-      redirect_to login_url
-    else
-      @user = User.find_by_saved_token(params[:user][:saved_token].downcase)
-      if @user.present?
-        if @user.update_attributes(params[:user])
-          @user.activated_at = Date.today
-          @user.save
-          redirect_to login_url, :notice  => "Your account has been set up; please log in using #{@user.email} and your newly created password. Welcome to Pathways!"
-        else
-          render :action => 'signup'
-        end
+    if user_from_saved_token.known?
+      if user_from_saved_token.update_attributes(params[:user])
+        user_from_saved_token.activated_at = Date.today
+        user_from_saved_token.save
+        redirect_to login_url, :notice  => "Your account has been set up; please log in using #{@user.email} and your newly created password. Welcome to Pathways!"
       else
-        redirect_to login_url, :alert  => "Sorry, your access key was not recognized."
+        render :action => 'signup'
       end
+    else
+      redirect_to login_url, :alert  => "Sorry, your access key was not recognized."
     end
   end
 
@@ -121,8 +116,8 @@ class UsersController < ApplicationController
     end
     Specialization.all.each do |specialization|
       @user.divisions.each do |division|
-        cities = @user.local_referral_cities_for_specialization(specialization)
-        cities = division.local_referral_cities_for_specialization(specialization) if cities.blank?
+        cities = @user.local_referral_cities(specialization)
+        cities = division.local_referral_cities(specialization) if cities.blank?
         cities.each do |city|
           @local_referral_cities[city.id] << specialization.id
         end
@@ -215,6 +210,28 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def user_for_paper_trail
+    if self.action_name == "setup"
+      if user_from_saved_token.known?
+        user_from_saved_token.id.to_s
+      else
+        nil
+      end
+    else
+      current_user.try(:id).to_s
+    end
+  end
+
+  def user_from_saved_token
+    @user ||= begin
+      if params.blank? || params[:user].blank?
+        UnknownUser.new
+      else
+        User.find_by_saved_token(params[:user][:saved_token].downcase)
+      end
+    end
+  end
 
   def build_user_form
     @user.user_controls_specialist_offices.build
