@@ -3,17 +3,18 @@
 .content-wrapper
   .content
 
-    %h1 Reports
+    %h2 Pathways Usage Reports and Statistics
     .headline
       .row-fluid
-        .span3
-          = render partial: "reports/analytics_box", locals: {color: '#0088CC', icon: 'icon-user-md', title: "Specialists"}
-        .span3
-          = render partial: "reports/analytics_box", locals: {color: '#404040', icon: 'icon-group', title: "Clinics"}
-        .span3
-          = render partial: "reports/analytics_box", locals: {color: '#366F9E', icon: 'icon-beaker', title: "Content Items"}
-        .span3
-          = render partial: "reports/analytics_box", locals: {color: '#C44D58', icon: 'icon-truck', title: "Hospitals"}
+        .span3.offset1
+          = render partial: "reports/analytics_box", locals: {color: '#366F9E', icon: 'icon-user-md', title: "Specialists", count: Specialist.all.count}
+        .span3.offset1
+          = render partial: "reports/analytics_box", locals: {color: '#404040', icon: 'icon-home', title: "Clinics", count: Clinic.all.count}
+        .span3.offset1
+          = render partial: "reports/analytics_box", locals: {color: '#C44D58', icon: 'icon-hospital', title: "Hospitals", count: Hospital.all.count}
+        .span3.offset1
+          = render partial: "reports/analytics_box", locals: {color: '#0088CC', icon: 'icon-medkit', title: "Resources", count: ScItem.all.count}
+
 
 
   %h2 List of Reports
