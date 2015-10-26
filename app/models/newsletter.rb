@@ -2,7 +2,7 @@ class Newsletter < ActiveRecord::Base
   has_attached_file :newsletter,
   :storage => :s3,
   :s3_protocol => :https,
-  :bucket => ENV['S3_BUCKET_NAME_NEWSLETTER'],
+  :bucket => ENV['S3_BUCKET_NAME_NEWSLETTERS'],
   :s3_credentials => {
     :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
     :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
@@ -14,8 +14,16 @@ class Newsletter < ActiveRecord::Base
     :description_items_attributes,
     :newsletter
 
+  def self.current
+    ordered.first
+  end
+
+  def self.ordered
+    order("month_key DESC")
+  end
+
   def month
-    Month.from_i(month_key).name
+    Month.from_i(month_key).friendly_name
   end
 
   def url

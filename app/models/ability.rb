@@ -13,6 +13,7 @@ class Ability
       can :show, FaqCategory
       can :index, :terms_and_conditions
       can :get, :global_data
+      can :index, Newsletter
 
       if user.super_admin?
 

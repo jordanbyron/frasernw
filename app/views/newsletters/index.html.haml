@@ -8,4 +8,17 @@
     %tbody
       - @newsletters.each do |newsletter|
         %tr
-          %td= link_to newsletter.month, newsletter.url, target: "_blank"
+          %td
+            = link_to newsletter.month, newsletter.url, target: "_blank"
+
+            - if can? :edit, Newsletter
+              = link_to "Edit",
+                edit_newsletter_path(newsletter),
+                class: "btn btn-mini",
+                style: "float: right; margin-left: 10px;"
+            - if can? :destroy, Newsletter
+              = link_to "Delete",
+                newsletter_path(newsletter),
+                class: "btn btn-mini",
+                style: "float: right; margin-left: 10px;",
+                method: :delete

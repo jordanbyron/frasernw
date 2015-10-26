@@ -144,13 +144,15 @@
           %h2 Pathways Newsletter
 
           %div{style: "margin-top: 10px;"}
-            = image_tag "pathways_newsletter.png", style: "height: 100px; border: 1px solid lightgray; padding: 2px; margin-right: 10px; float: left;"
-            %div{style: "display: inline-block;"}
-              %p{style: "margin-top: 0px;"}
-                = "The current Pathways newsletter is available #{link_to('here', "#" )}.".html_safe
-
-              %p
-                = "You can also browse #{link_to('previous issues', "#")}.".html_safe
+            = image_tag "pathways_newsletter.png", style: "height: 120px; border: 1px solid lightgray; padding: 2px; margin-right: 10px; float: left;"
+            %p{style: "margin-top: 0px;"}
+              = "The current Pathways newsletter (#{@current_newsletter.month} edition) is available #{link_to('here', @current_newsletter.url, target: '_blank')}.  It includes:".html_safe
+            %ul{style: "margin-bottom: 20px;"}
+              - @current_newsletter.description_items.each do |item|
+                %li{style: "list-style-type: disc;"}
+                  = item.description_item
+            %p
+              = "You can also browse #{link_to('previous issues', newsletters_path)}.".html_safe
             %div{style: "clear: both;"}
 
       .span4.offsethalf
