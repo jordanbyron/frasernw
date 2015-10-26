@@ -247,6 +247,7 @@ class Clinic < ActiveRecord::Base
 
   STATUS_HASH = {
     1 => "Accepting new referrals",
+    7 => "Accepting limited new referrals by geography or # of patients",
     2 => "Only doing follow up on previous patients",
     4 => "Permanently closed",
     3 => "Didn't answer"
@@ -268,6 +269,8 @@ class Clinic < ActiveRecord::Base
       return Specialist::STATUS_CLASS_BLANK
     elsif accepting_new_patients?
       return Specialist::STATUS_CLASS_AVAILABLE
+    elsif accepting_limited_referrals?
+      return Specialist::STATUS_CLASS_LIMITATIONS
     elsif only_doing_follow_up? || closed?
       return Specialist::STATUS_CLASS_UNAVAILABLE
     elsif did_not_answer?
@@ -296,6 +299,10 @@ class Clinic < ActiveRecord::Base
 
   def closed?
     status_mask == 4
+  end
+
+  def accepting_limited_referrals?
+    status_mask == 7
   end
 
   WAITTIME_HASH = {

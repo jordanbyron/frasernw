@@ -11,6 +11,10 @@ module.exports = React.createClass({
             <span>Accepting New referrals</span>
           </li>
           <li>
+            <i className="icon-ok icon-orange"/>
+            <span>Accepting limited new referrals by geography or # of patients</span>
+          </li>
+          <li>
             <i className="icon-remove icon-red"/>
             <span>Not accepting new referrals</span>
           </li>
