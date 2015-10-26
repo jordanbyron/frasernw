@@ -13,7 +13,7 @@
 
         = label_tag "Start month:"
         = select_tag "start_month",
-          options_for_select(@months, Month.new(2014, 1).to_i),
+          options_for_select(@months, Month.new(2014, 4).to_i),
           id: "start_month",
           class: "month_selector"
 

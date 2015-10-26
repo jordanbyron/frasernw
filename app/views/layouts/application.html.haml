@@ -242,8 +242,12 @@
                             %li= link_to "New Content Item", new_sc_item_path, :class => "ajax"
                           - if can? :create, Faq
                             %li= link_to "New Faq", new_faq_path
+                          - if can? :create, Newsletter
+                            %li= link_to "New Newsletter", new_newsletter_path
                       - if can? :read, ScCategory
                         %li= link_to "Content Categories", sc_categories_path, :class => "sc_category ajax"
+                      - if can? :index, Newsletter
+                        %li= link_to "Newsletters", newsletters_path
                       - if can? :read, ScItem
                         - if current_user_is_super_admin? && Division.all_cached.length > 1
                           %li
@@ -276,6 +280,7 @@
                   - if dropdown_categories.present?
                     %li.dropdown
                       %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                        %i.icon-medkit
                         Resources
                         %b.caret
                       %ul.dropdown-menu
@@ -287,6 +292,7 @@
 
                 %li.dropdown
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                    %i.icon-file-text
                     Forms
                     %b.caret
 

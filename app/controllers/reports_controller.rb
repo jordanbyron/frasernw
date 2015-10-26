@@ -31,6 +31,16 @@ class ReportsController < ApplicationController
     render :analytics_chart
   end
 
+  def user_ids
+    authorize! :view_report, :sessions
+
+    @options_for_select = AnalyticsChartMonths.exec
+    @page_title = "User Ids"
+    @data_path = "/api/v1/reports/user_ids"
+
+    render :analytics_chart
+  end
+
   def referents_by_specialty
     authorize! :view_report, :referents_by_specialty
 

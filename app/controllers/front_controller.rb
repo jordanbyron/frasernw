@@ -5,6 +5,7 @@ class FrontController < ApplicationController
   def index
     @front = Front.first
     @front = Front.create if @front.blank?
+    @current_newsletter = Newsletter.current
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 

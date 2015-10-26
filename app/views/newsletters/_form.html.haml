@@ -1,0 +1,10 @@
+= simple_form_for newsletter do |f|
+  = f.input :document, as: :file, label: false
+
+  = f.label :month_key, "Month Key (YYYYMM)"
+  = f.input :month_key, label: false
+
+  = f.simple_fields_for :description_items, newsletter.description_items do |f|
+    = f.input :description_item, input_html: { rows: 2 }
+
+  = f.button :submit

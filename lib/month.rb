@@ -72,6 +72,10 @@ class Month
     start_date.strftime("%b %Y")
   end
 
+  def full_name
+    start_date.strftime("%B %Y")
+  end
+
   def name
     start_date.strftime("%m-%Y")
   end

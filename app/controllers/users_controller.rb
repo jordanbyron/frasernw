@@ -6,20 +6,20 @@ class UsersController < ApplicationController
     if params[:division_id].present?
       @division = Division.find(params[:division_id])
       if current_user_is_super_admin?
-        @super_admin_users = User.includes(:divisions).in_divisions([@division]).active_super_admin
+        @super_admin_users = User.includes(:divisions, [:specialization_options => :specialization]).in_divisions([@division]).active_super_admin
       end
-      @admin_users = User.includes(:divisions).in_divisions([@division]).active_admin_only
+      @admin_users = User.includes(:divisions, [:specialization_options => :specialization]).in_divisions([@division]).active_admin_only
       @users = User.includes(:divisions).in_divisions([@division]).active_user
       @pending_users = User.includes(:divisions).in_divisions([@division]).active_pending
       @inactive_users = User.includes(:divisions).in_divisions([@division]).inactive
     else
       if current_user_is_super_admin?
-        @super_admin_users = User.active_super_admin
+        @super_admin_users = User.includes(:divisions, [:specialization_options => :specialization]).active_super_admin
       end
-      @admin_users = User.active_admin_only
-      @users = User.active_user
-      @pending_users = User.active_pending
-      @inactive_users = User.inactive
+      @admin_users = User.includes(:divisions, [:specialization_options => :specialization]).active_admin_only
+      @users = User.includes(:divisions).active_user
+      @pending_users = User.includes(:divisions).active_pending
+      @inactive_users = User.includes(:divisions).inactive
     end
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
