@@ -16,7 +16,8 @@ var labelReferentName = function(record) {
 
 var labelReferentStatus = function(record) {
   return (
-    <i className={record.statusIconClasses}></i>
+    <i id={record.collectionName + id} data-toggle="tooltip" placement="right" trigger="hover" animation="true" title={record.statusClassDescription} className={record.statusIconClasses}></i>
+    $(#{record.collectionName + id}).tooltip("show");
   );
 }
 
