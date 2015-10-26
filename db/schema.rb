@@ -502,13 +502,13 @@ ActiveRecord::Schema.define(:version => 20151024160907) do
   add_index "newsletter_description_items", ["newsletter_id"], :name => "newsletter_description_items_newsletter_id"
 
   create_table "newsletters", :force => true do |t|
-    t.integer  "month_key",               :null => false
-    t.string   "newsletter_file_name"
-    t.string   "newsletter_content_type"
-    t.integer  "newsletter_file_size"
-    t.datetime "newsletter_updated_at"
-    t.datetime "created_at",              :null => false
-    t.datetime "updated_at",              :null => false
+    t.integer  "month_key",             :null => false
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
   end
 
   add_index "newsletters", ["month_key"], :name => "newsletters_month_key"

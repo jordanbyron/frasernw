@@ -1,5 +1,5 @@
 class Newsletter < ActiveRecord::Base
-  has_attached_file :newsletter,
+  has_attached_file :document,
   :storage => :s3,
   :s3_protocol => :https,
   :bucket => ENV['S3_BUCKET_NAME_NEWSLETTERS'],
@@ -12,7 +12,7 @@ class Newsletter < ActiveRecord::Base
   accepts_nested_attributes_for :description_items
   attr_accessible :month_key,
     :description_items_attributes,
-    :newsletter
+    :document
 
   def self.current
     ordered.first
@@ -27,6 +27,6 @@ class Newsletter < ActiveRecord::Base
   end
 
   def url
-    newsletter.url
+    document.url
   end
 end
