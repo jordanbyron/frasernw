@@ -5,7 +5,7 @@ var trackExternalPageView = function(_gaq, itemId, collection) {
   // action: 'clicked'
   // label: itemId
 
-  _gaq.push(['_trackEvent', collection, 'clicked_link', itemId ])
+  _gaq.push(['_trackEvent', collection, 'clicked_link', itemId.toString() ])
 
   return true;
 }
