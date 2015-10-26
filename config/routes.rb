@@ -104,11 +104,8 @@ Frasernw::Application.routes.draw do
       get :page_views
       get :sessions
       get :referents_by_specialty
-<<<<<<< HEAD
       get :usage
-=======
       get :user_ids
->>>>>>> origin/master
     end
   end
 
