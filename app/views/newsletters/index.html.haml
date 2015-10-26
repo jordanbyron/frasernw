@@ -1,0 +1,11 @@
+- set_page_specific_title "Pathways Newsletters"
+
+.content-wrapper
+
+  %h2= "Pathways Newsletters"
+
+  %table.table
+    %tbody
+      - @newsletters.each do |newsletter|
+        %tr
+          %td= link_to newsletter.month, newsletter.url, target: "_blank"

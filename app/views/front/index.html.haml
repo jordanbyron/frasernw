@@ -64,21 +64,6 @@
           Pathways is a web based resource to streamline and optimize patient referrals.
           = "<a href='javascript:void(0)' data-toggle='collapse' data-target='#what_is'>Learn more.</a>".html_safe
 
-        %div{style: "margin-top: 10px;"}
-          = image_tag "pathways_newsletter.png", style: "height: 100px; border: 1px solid lightgray; padding: 2px; margin-right: 10px; float: left;"
-          %div{style: "display: inline-block;"}
-            %p{style: "margin-top: 0px;"}
-              = "The current Pathways newsletter is available #{link_to 'here', '#' }. It includes:".html_safe
-            %ul{style: "margin-bottom: 20px;"}
-              %li{style: "list-style-type: disc;"}
-                = "an overview of the new Pathways filter function"
-              %li{style: "list-style-type: disc;"}
-                = "a sample patient interaction with Pathways"
-
-            %p
-              = "You can also browse #{link_to 'previous issues', '#'}.".html_safe
-          %div{style: "clear: both;"}
-
         #what_is.collapse
           %p
             Originally a project of the Fraser NW Division of Family Practice, Pathways provides a comprehensive, searchable database of specialists, specialty clinics and services organized by specialty.
@@ -162,15 +147,10 @@
             = image_tag "pathways_newsletter.png", style: "height: 100px; border: 1px solid lightgray; padding: 2px; margin-right: 10px; float: left;"
             %div{style: "display: inline-block;"}
               %p{style: "margin-top: 0px;"}
-                = "The current Pathways newsletter is available #{link_to 'here', '#' }. It includes:".html_safe
-              %ul{style: "margin-bottom: 20px;"}
-                %li{style: "list-style-type: disc;"}
-                  = "an overview of the new Pathways filter function"
-                %li{style: "list-style-type: disc;"}
-                  = "a sample patient interaction with Pathways"
+                = "The current Pathways newsletter is available #{link_to('here', "#" )}.".html_safe
 
               %p
-                = "You can also browse #{link_to 'previous issues', '#'}.".html_safe
+                = "You can also browse #{link_to('previous issues', "#")}.".html_safe
             %div{style: "clear: both;"}
 
       .span4.offsethalf
@@ -199,17 +179,6 @@
                     = link_to(featured_sc_item.title, featured_sc_item.resolved_url, :class => featured_sc_item.markdown? && "ajax", :target => featured_sc_item.markdown? ? "" : "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{featured_sc_item.type_mask}', '#{featured_sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
                     %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{featured_sc_item.id},'#{escape_javascript(featured_sc_item.title)}')", "title" => "Favourite / un-favourite"}
                       %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{featured_sc_item.id}"}
-
-            %h3
-              = "Pathways Newsletter"
-
-            %ul.space
-              %li{:style => "margin-left: 0"}
-                %a
-                  = "April 2015"
-              %li{:style => "margin-left: 0"}
-                %a
-                  = "Previous Issues"
 
           .featured-content
             %i.icon-star.icon-blue

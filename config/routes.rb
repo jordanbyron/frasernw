@@ -192,6 +192,8 @@ Frasernw::Application.routes.draw do
 
   resources :usage_reports, only: [:new, :create, :show]
 
+  resources :newsletters, only: [:index, :create, :new, :edit, :destroy]
+
   namespace :api do
     namespace :v1 do
       resources :reports, only: [] do
