@@ -107,7 +107,7 @@ class WebUsageReport
   EVENTS_FILTERS = {
     clinics: Proc.new{ |row| false },
     specialists: Proc.new{ |row| false },
-    patient_resources: Proc.new do |row|
+    patient_info: Proc.new do |row|
       !row[:record][:content].present? && row[:record][:categoryIds].include?(5)
     end,
     physician_resources: Proc.new do |row|
@@ -158,7 +158,7 @@ class WebUsageReport
   PAGE_VIEW_FILTERS = {
     clinics: Proc.new{ |row| true },
     specialists: Proc.new{ |row| true },
-    patient_resources: Proc.new do |row|
+    patient_info: Proc.new do |row|
       row[:record][:content].present? && row[:record][:categoryIds].include?(5)
     end,
     physician_resources: Proc.new do |row|
@@ -174,7 +174,7 @@ class WebUsageReport
     collection_path = {
       clinics: "clinics",
       specialists: "specialists",
-      patient_resources: "content_items",
+      patient_info: "content_items",
       physician_resources: "content_items",
       forms: "content_items",
       specialties: "specialties"
@@ -188,7 +188,7 @@ class WebUsageReport
   PAGE_VIEW_SERIALIZED_COLLECTIONS = {
     clinics: :clinics,
     specialists: :specialists,
-    patient_resources: :content_items,
+    patient_info: :content_items,
     physician_resources: :content_items,
     forms: :content_items,
     specialties: :specializations
