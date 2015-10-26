@@ -41,7 +41,7 @@ module Serialized
             isNew: item.new?,
             isInProgress: item.in_progress,
             isSharedCare: item.shared_care?
-          }
+          })
         end
       end
     end,

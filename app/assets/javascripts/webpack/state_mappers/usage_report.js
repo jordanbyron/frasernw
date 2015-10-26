@@ -30,7 +30,7 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
       notice: {
         shouldDisplay: moment(filterValues.month).isBefore("2015-11-01", "months") &&
           _.includes(["physicianResources", "forms", "patientInfo"], filterValues.recordTypes),
-        text: `${_.startCase(filterValues.recordTypes )} usage data prior to November 2015 is not considered to be reliable`
+        text: `${_.startCase(filterValues.recordTypes )} usage data prior to November 2015 are not considered to be reliable`
       },
       dispatch: dispatch,
       isLoading: false,
