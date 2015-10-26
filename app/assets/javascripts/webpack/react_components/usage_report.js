@@ -28,16 +28,29 @@ module.exports = React.createClass({
       </table>
     );
   },
-  renderNotice: function(noticeProps) {
-    if (noticeProps.shouldDisplay) {
+  renderNotice: function(props) {
+    if (!props.isPeriodValid) {
       return(
         <div
           className="alert alert-info"
           style={{marginTop: "10px"}}
-        >{noticeProps.text}</div>
+        >{props.noticeText}</div>
       );
     } else {
       return null;
+    }
+  },
+  renderInnerContainer: function(props) {
+    if (!props.isPeriodValid) {
+      return null;
+    } else {
+      return (
+        <LoadingContainer
+          isLoading={props.isTableLoading}
+          renderChildren={this.renderTable.bind(null, props)}
+          minHeight={"300px"}
+        />
+      );
     }
   },
   renderChildren: function(props) {
@@ -58,12 +71,8 @@ module.exports = React.createClass({
             <div>
               <h2 style={{marginBottom: "5px"}}>{ props.title }</h2>
               <h4>{ props.subtitle }</h4>
-              { this.renderNotice(props.notice) }
-              <LoadingContainer
-                isLoading={props.isTableLoading}
-                renderChildren={this.renderTable.bind(null, props)}
-                minHeight={"300px"}
-              />
+              { this.renderNotice(props) }
+              { this.renderInnerContainer(props) }
             </div>
           }
           sidebar={
