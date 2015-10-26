@@ -23,7 +23,7 @@ class Newsletter < ActiveRecord::Base
   end
 
   def month
-    Month.from_i(month_key).friendly_name
+    Month.from_i(month_key).full_name
   end
 
   def url

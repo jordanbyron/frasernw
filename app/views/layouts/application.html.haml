@@ -254,6 +254,8 @@
                             %li= link_to "New Newsletter", new_newsletter_path
                       - if can? :read, ScCategory
                         %li= link_to "Content Categories", sc_categories_path, :class => "sc_category ajax"
+                      - if can? :index, Newsletter
+                        %li= link_to "Newsletters", newsletters_path
                       - if can? :read, ScItem
                         - if current_user_is_super_admin? && Division.all_cached.length > 1
                           %li
