@@ -21,7 +21,8 @@
           class: "month_selector"
 
       #chart_container{style: "clear: both; height: 400px;"}
-      %i *Excludes administrators and users who are not logged in
+      .annotation{style: "color: #999;"}
+        = @annotation
 
       %br
       %a.print.btn.btn-default.pull-right{style: "margin-top: 20px;"}
@@ -33,6 +34,7 @@
 
   var showLoader = function() {
     $("#chart_container").html("<div id='heartbeat-loader-position'><div class='heartbeat-loader'></div></div>")
+    $(".annotation").hide()
   };
 
   var updateDOM = function() {
@@ -49,6 +51,7 @@
       $.get(dataPath + "?" + params).success(function(data) {
         $('#chart_container').highcharts(data);
         $("#heartbeat-loader-position").remove();
+        $(".annotation").show();
       })
     }
   };

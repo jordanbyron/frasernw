@@ -1,3 +1,5 @@
+// ended up being labeled 'Entity Page Views'
+
 var React = require("react");
 var LoadingContainer = require("./loading_container");
 var SidebarLayout = require("./sidebar_layout");
@@ -12,20 +14,23 @@ module.exports = React.createClass({
   },
   renderTable: function(props) {
     return (
-      <table className="table">
-        <tbody>
-          {
-            props.tableRows.map((row) => {
-              return(
-                <tr key={row.link}>
-                  <td dangerouslySetInnerHTML={{__html: row.link}}/>
-                  <td>{ row.usage }</td>
-                </tr>
-              )
-            })
-          }
-        </tbody>
-      </table>
+      <div style={{marginTop: "10px"}}>
+        <table className="table">
+          <tbody>
+            {
+              props.tableRows.map((row) => {
+                return(
+                  <tr key={row.link}>
+                    <td dangerouslySetInnerHTML={{__html: row.link}}/>
+                    <td>{ row.usage }</td>
+                  </tr>
+                )
+              })
+            }
+          </tbody>
+        </table>
+        <div style={{color: "#999", marginTop: "10px"}}>{props.annotation}</div>
+      </div>
     );
   },
   renderNotice: function(props) {
@@ -100,7 +105,6 @@ module.exports = React.createClass({
     );
   },
   render: function() {
-    console.log(this.props);
     return(
       <LoadingContainer
         isLoading={this.props.isLoading}
