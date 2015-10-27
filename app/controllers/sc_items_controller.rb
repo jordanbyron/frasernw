@@ -10,6 +10,7 @@ class ScItemsController < ApplicationController
 
   def show
     @sc_item = ScItem.find(params[:id])
+    @division = current_user_divisions.first
     @feedback = @sc_item.active_feedback_items.build
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
@@ -87,6 +88,36 @@ class ScItemsController < ApplicationController
     @sc_item = ScItem.find(params[:id])
     @sc_item.destroy
     redirect_to sc_items_url, :notice => "Successfully deleted content item."
+  end
+
+  def share
+    @sc_item = ScItem.find(params[:id])
+    @division = Division.find(params[:division_id])
+    # raise params.inspect
+    binding.pry
+    if request.xhr?
+      head :ok
+    else
+      redirect_to @content
+    end
+
+    # redirect_to shared_content_items_path(@division), :notice  => "Successfully updated shared content items."
+
+    # render :action => 'show'
+  end
+
+  def unshare
+    @sc_item = ScItem.find(params[:id])
+    @division = Division.find(params[:division_id])
+    if request.xhr?
+      head :ok
+    else
+      redirect_to @content
+    end
+
+    # redirect_to shared_content_items_path(@division), :notice  => "Successfully updated shared content items."
+
+    render :action => 'show'
   end
 
   private
