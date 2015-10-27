@@ -40,7 +40,8 @@ module Serialized
             id: item.id,
             isNew: item.new?,
             isInProgress: item.in_progress,
-            isSharedCare: item.shared_care?
+            isSharedCare: item.shared_care?,
+            typeMask: item.type_mask
           })
         end
       end

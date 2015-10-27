@@ -14,7 +14,7 @@
         %span= "Scope: Global"
 
     %p
-      = link_to "Download report", usage_report_url(@args[:object_key], format: :csv)
+      = link_to "Download report", csv_usage_report_url(@args[:object_key], format: :csv)
 
     %p This link will expire in 24 hours
 
