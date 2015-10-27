@@ -184,7 +184,7 @@ class WebUsageReport
       specialties: "specialties"
     }[record_type]
 
-    /(?<=\/#{Regexp.quote(collection_path)}\/)[[:digit:]]+/.match(path).to_s
+    /(?<=\/#{Regexp.quote(collection_path)}\/)[[:digit:]]+(?=\/?\z)/.match(path).to_s
   end
 
   # when we extract an ID from a path according to the tests above,
