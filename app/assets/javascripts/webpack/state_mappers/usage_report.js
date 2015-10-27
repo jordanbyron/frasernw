@@ -34,7 +34,7 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
         _.includes(["physicianResources", "forms", "patientInfo"], filterValues.recordTypes)),
       isTableLoading: _.get(state, ["ui", "isTableLoading"], false),
       query: requestNewData,
-      annotation: (ANNOTATIONS[filterValues.recordTypes] || "")
+      annotation: ((ANNOTATIONS[filterValues.recordTypes] || "") + "  Views by admins are excluded.")
     };
   } else {
     return {
@@ -46,13 +46,16 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
 const SC_ITEM_ANNOTATION = `
   'Page Views' are defined as views of the page at the url that is linked to on user-facing tables
   (i.e. specialization pages).
-  Depending on the format of the resource, this may be an external page or a page on Pathways.
+  Depending on the format of the resource, this may be an external page or a page on Pathways ('/content_items/<id>').
 `
 
 const ANNOTATIONS = {
   physicianResources: SC_ITEM_ANNOTATION,
   patientInfo: SC_ITEM_ANNOTATION,
-  forms: "'Page Views' are defined as views of the uploaded form."
+  forms: "'Page Views' are defined as views of the uploaded form.",
+  specialties: "'Page Views' are defined as views at '/specialties/<id>.'",
+  clinics: "'Page Views' are defined as views at '/clinics/<id>.'",
+  specialists: "'Page Views' are defined as views at '/specialists/<id>.'"
 }
 
 
