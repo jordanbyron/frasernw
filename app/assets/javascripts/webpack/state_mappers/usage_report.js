@@ -27,13 +27,14 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
         title: "Customize Report",
         groups: generateFilterGroups(state, dispatch, requestNewData)
       },
-      noticeText: `${_.startCase(filterValues.recordTypes )} usage data is only available for November 2015 and later.`,
+      noticeText: `${_.startCase(filterValues.recordTypes )} page views are only available for November 2015 and later.`,
       dispatch: dispatch,
       isLoading: false,
       isPeriodValid: !(moment(filterValues.month).isBefore("2015-11-01", "months") &&
         _.includes(["physicianResources", "forms", "patientInfo"], filterValues.recordTypes)),
       isTableLoading: _.get(state, ["ui", "isTableLoading"], false),
-      query: requestNewData
+      query: requestNewData,
+      annotation: (ANNOTATIONS[filterValues.recordTypes] || "")
     };
   } else {
     return {
@@ -41,6 +42,19 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
     };
   }
 };
+
+const SC_ITEM_ANNOTATION = `
+  'Page Views' are defined as views of the page at the url that is linked to on user-facing tables
+  (i.e. specialization pages).
+  Depending on the format of the resource, this may be an external page or a page on Pathways.
+`
+
+const ANNOTATIONS = {
+  physicianResources: SC_ITEM_ANNOTATION,
+  patientInfo: SC_ITEM_ANNOTATION,
+  forms: "'Page Views' are defined as views of the uploaded form."
+}
+
 
 var generateQuery = function(state: Object, dispatch: Function): Function {
   var currentParams = {
@@ -69,9 +83,9 @@ var generateQuery = function(state: Object, dispatch: Function): Function {
 
 var scopeLabel = function(filterValues, divisions) {
   if (filterValues.divisions === 0) {
-    return "by Usage";
+    return "by Page Views";
   } else {
-    return ` by ${divisions[filterValues.divisions].name} Users' Usage`
+    return ` by ${divisions[filterValues.divisions].name} Users' Page Views`
   }
 }
 var title = function(filterValues, state) {
@@ -84,7 +98,7 @@ var subtitle = function(monthsFilterValue) {
 var generateFilterGroups = function(state: Object, dispatch: Function, requestNewData: Function): Array {
   return [
     {
-      title: "Record Type",
+      title: "Entity Type",
       isOpen: _.get(state, ["ui", "filterVisibility", "recordTypes"], true),
       componentKey: "recordTypes",
       contents: (
