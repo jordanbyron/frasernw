@@ -2,6 +2,7 @@ class ReportsController < ApplicationController
   load_and_authorize_resource except: [
     :page_views,
     :sessions,
+    :user_ids,
     :referents_by_specialty,
     :usage
   ]
