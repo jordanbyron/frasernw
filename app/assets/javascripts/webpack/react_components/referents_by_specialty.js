@@ -68,7 +68,7 @@ module.exports = React.createClass({
       <div className="content-wrapper">
         <SidebarLayout
           main={
-            <div>
+            <div id="print_container">
               <h2 style={{marginBottom: "10px"}}>{ props.title }</h2>
               {
                 React.createElement(

@@ -73,7 +73,7 @@ module.exports = React.createClass({
       <div className="content-wrapper">
         <SidebarLayout
           main={
-            <div>
+            <div id="print_container">
               <h2 style={{marginBottom: "5px"}}>{ props.title }</h2>
               <h4>{ props.subtitle }</h4>
               { this.renderNotice(props) }
