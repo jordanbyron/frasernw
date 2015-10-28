@@ -4,6 +4,7 @@ var List = require("./list");
 var SidebarLayout = require("./sidebar_layout");
 var Filters = require("./filters");
 var TableRow = require("./table_row");
+var TableHead = require("./table_head");
 
 var Lists = React.createClass({
   propTypes: {
@@ -35,10 +36,7 @@ var Table = React.createClass({
   render: function() {
     return (
       <table className="table">
-        <thead>
-          <th style={{width: "400px"}}>Specialty</th>
-          <th>{ `Total ${this.props.collectionName}` }</th>
-        </thead>
+        <TableHead {...this.props.tableHead} dispatch={this.props.dispatch}/>
         <tbody>
           {
             this.props.rows.map((row) => {

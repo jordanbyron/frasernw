@@ -17,7 +17,7 @@ module.exports = function(stateProps, dispatchProps) {
     return {
       title: title(state, filterValues, filtered.length),
       contentComponentType: filterValues.reportView,
-      contentComponentProps: contentComponentProps(filterValues, state, filtered),
+      contentComponentProps: contentComponentProps(filterValues, state, filtered, dispatch),
       filters: {
         title: "Customize Report",
         groups: filterGroups(state)
@@ -32,21 +32,40 @@ module.exports = function(stateProps, dispatchProps) {
   }
 };
 
-var contentComponentProps = function(filterValues, state, filtered) {
+
+var contentComponentProps = function(filterValues, state, filtered, dispatch) {
   if (filterValues.reportView === "expanded"){
     return {
       lists: lists(state, filtered, filterValues.recordTypes)
     };
   } else {
+    var sortConfig = {
+      order: _.get(state, ["ui", "sortConfig", "order"], "DOWN"),
+      column: _.get(state, ["ui", "sortConfig", "column"], "SPECIALTY")
+    }
+
     return {
-      rows: rows(state, filtered),
-      collectionName: _.capitalize(filterValues.recordTypes)
+      rows: rows(state, filtered, sortConfig),
+      tableHead: tableHead(sortConfig, filterValues),
+      dispatch: dispatch
     };
   }
 };
 
-var rows = function(state, filtered) {
-  return _.sortBy(_.values(state.app.specializations).map((specialization) => {
+var tableHead = function(sortConfig, filterValues) {
+  return {
+    data: [
+      { label: "Specialty", key: "SPECIALTY" },
+      { label: _.capitalize(filterValues.recordTypes), key: "ENTITY_COUNT" }
+    ],
+    sortConfig: sortConfig
+  };
+};
+
+var rows = function(state, filtered, sortConfig) {
+  return _.chain(state.app.specializations)
+    .values()
+    .map((specialization) => {
     var matchingItems = filtered.filter((item) => {
       return _.includes(item.specializationIds, specialization.id);
     })
@@ -55,8 +74,29 @@ var rows = function(state, filtered) {
       reactKey: specialization.id,
       cells: [ specialization.name, matchingItems.length ]
     }
-  }).filter((row) => row.cells[1] > 0), (row) => row.cells[0]);
+  }).filter((row) => row.cells[1] > 0)
+  .sortByOrder(sortByOrderCallback(sortConfig.column), sortByOrderDirection(sortConfig))
+  .value();
 }
+
+var sortByOrderCallback = _.curry(function(sortConfigColumn, row) {
+  return row.cells[{
+    SPECIALTY: 0,
+    ENTITY_COUNT: 1
+  }[sortConfigColumn]];
+});
+
+var availableMappings = {
+  reverse: { DOWN: "asc", UP: "desc" },
+  normal: { DOWN: "desc", UP: "asc" }
+};
+var mappingAssignments = {
+  SPECIALTY: availableMappings.reverse,
+  ENTITY_COUNT: availableMappings.normal
+};
+var sortByOrderDirection = function(sortConfig) {
+  return mappingAssignments[sortConfig.column][sortConfig.order];
+};
 
 var scopeTitle = function(state, filterValues) {
   if (filterValues.divisions === 0) {
