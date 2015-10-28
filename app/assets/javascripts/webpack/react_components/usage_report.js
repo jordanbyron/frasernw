@@ -53,6 +53,7 @@ module.exports = React.createClass({
         <LoadingContainer
           isLoading={props.isTableLoading}
           renderChildren={this.renderTable.bind(null, props)}
+          showHeart={props.showTableHeart}
           minHeight={"300px"}
         />
       );

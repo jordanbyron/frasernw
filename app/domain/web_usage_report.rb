@@ -3,6 +3,16 @@ class WebUsageReport
   include ActionView::Helpers::UrlHelper
 
   def exec
+    if month == Month.current
+      generate
+    else
+      Rails.cache.fetch(
+        "entity_page_views:#{month_key}:#{division_id}:#{record_type}"
+      ){ generate }
+    end
+  end
+
+  def generate
     get_usage.
       sort_by{ |row| row[:usage].to_i }.
       reverse().
@@ -55,11 +65,15 @@ class WebUsageReport
       end
   end
 
+  def month
+    @month ||= Month.from_i(month_key)
+  end
+
   def get_usage_from_page_views
     Analytics::ApiAdapter.get({
       metrics: [:page_views],
-      start_date: Month.from_i(month_key).start_date,
-      end_date: Month.from_i(month_key).end_date,
+      start_date: month.start_date,
+      end_date: month.end_date,
       dimensions: [ :page_path ],
       filter_literal: filter_literals(division_filters(division_id))
     }).map do |row|

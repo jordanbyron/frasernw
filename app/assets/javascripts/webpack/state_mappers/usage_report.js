@@ -30,9 +30,10 @@ module.exports = function(stateProps: Object, dispatchProps: Object): Object {
       noticeText: `${_.startCase(filterValues.recordTypes )} page views are only available for November 2015 and later.`,
       dispatch: dispatch,
       isLoading: false,
-      isPeriodValid: !(moment(filterValues.month).isBefore("2015-11-01", "months") &&
+      isPeriodValid: !(moment(filterValues.months, "YYYYMM").isBefore("2015-11-01", "months") &&
         _.includes(["physicianResources", "forms", "patientInfo"], filterValues.recordTypes)),
       isTableLoading: _.get(state, ["ui", "isTableLoading"], false),
+      showTableHeart: moment(filterValues.months, "YYYYMM").isSame(moment(), "month"),
       query: requestNewData,
       annotation: ((ANNOTATIONS[filterValues.recordTypes] || "") + "  Views by admins are excluded.")
     };
