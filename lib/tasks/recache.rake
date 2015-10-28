@@ -143,9 +143,14 @@ namespace :pathways do
     end
 
     task :front => :environment do
+      puts "Expiring Front page..."
       User.all_user_division_groups_cached.each do |division_group|
         expire_fragment "latest_updates_#{division_group.join('_')}"
         expire_fragment "featured_content_#{division_group.join('_')}"
+        expire_fragment "front_#{Specialization.cache_key}_#{division_group.join('_')}"
+        Specialization.all.each do |specialization|
+          expire_fragment "front_#{specialization.cache_key}_#{division_group.join('_')}"
+        end
       end
     end
 
