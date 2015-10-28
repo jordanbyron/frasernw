@@ -6,51 +6,64 @@ var values = require("lodash/object/values");
 var some = require("lodash/collection/some");
 var every = require("lodash/collection/every");
 
+var handleUpdateCities = function(dispatch, update) {
+  dispatch({
+    type: "UPDATE_FILTER",
+    filterType: "cities",
+    update: update
+  })
+}
+
 module.exports = React.createClass({
   propTypes: {
     filters: React.PropTypes.shape({
       cities: React.PropTypes.arrayOf(React.PropTypes.shape({
         value: React.PropTypes.boolean,
-        key: React.PropTypes.string,
+        filterId: React.PropTypes.string,
         label: React.PropTypes.string
       }))
     })
-  },
-  handleCheckboxUpdate: function(event, key) {
-    this.props.dispatch({
-      type: "UPDATE_FILTER",
-      filterType: "cities",
-      update: { [key] : event.target.checked }
-    });
-  },
-  handleSearchAll: function(event) {
-    if (event.target.checked) {
-      this.props.dispatch({
-        type: "UPDATE_FILTER",
-        filterType: "searchAllCities",
-        update: true
-      });
-    } else {
-      this.props.dispatch({
-        type: "RESET_SEARCH_ALL_CITIES"
-      });
-    };
   },
   hrStyle: {
     margin: "0px",
     borderColor: "#CEC9C9",
     marginBottom: "6px",
+    marginTop: "4px",
     borderWidth: "1px"
+  },
+  handleOneCityUpdate: function(event, key) {
+    handleUpdateCities(this.props.dispatch, { [key] : event.target.checked });
+  },
+  everyCityUpdate: function(cities, value) {
+    return cities.reduce((memo, city) => {
+      return _.assign(
+        memo,
+        { [ city.filterId ] : value }
+      );
+    }, {});
   },
   render: function() {
     return (
       <div>
-        <CheckBox
-          key="All"
-          label="All Cities"
-          value={this.props.filters.searchAllCities.value}
-          onChange={this.handleSearchAll}
-        />
+        <div style={{color: "#CEC9C9"}}>
+          <a style={{cursor: "pointer"}}
+            onClick={handleUpdateCities.bind(this, this.props.dispatch, this.everyCityUpdate(this.props.filters.cities, true))}
+          >
+            All Cities
+          </a>
+          <span style={{marginLeft: "3px", marginRight: "3px"}}>|</span>
+          <a style={{cursor: "pointer"}}
+            onClick={handleUpdateCities.bind(this, this.props.dispatch, undefined)}
+          >
+            Default Cities
+          </a>
+          <span style={{marginLeft: "3px", marginRight: "3px"}}>|</span>
+          <a style={{cursor: "pointer"}}
+            onClick={handleUpdateCities.bind(this, this.props.dispatch, this.everyCityUpdate(this.props.filters.cities, false))}
+          >
+            No Cities
+          </a>
+        </div>
         <hr style={this.hrStyle}/>
         {
           this.props.filters.cities.map(function(filter: Object){
@@ -59,7 +72,7 @@ module.exports = React.createClass({
               changeKey={filter.filterId}
               label={filter.label}
               value={filter.value}
-              onChange={this.handleCheckboxUpdate}
+              onChange={this.handleOneCityUpdate}
               labelStyle={checkboxLabelStyle}
             />);
           }, this)
