@@ -275,7 +275,7 @@
                           %li= link_to "Content Items", division_content_items_path(user_divisions.first), :class => "sc_item ajax"
                           - if Division.all_cached.length > 1
                             %li= link_to "Manage Shared Content Items", shared_content_items_path(user_divisions.first), :class => "sc_item ajax"
-                - cache([user_divisions, 'resources_dropdown_categories']) do
+                - cache("resources_dropdown_categories_#{user_divisions.map{|d| d.id}.join('_')}") do
                   - dropdown_categories = ScCategory.global_resources_dropdown(user_divisions)
                   - if dropdown_categories.present?
                     %li.dropdown
@@ -286,7 +286,7 @@
                       %ul.dropdown-menu
                         - dropdown_categories.each do |category|
                           %li=link_to category.name, category, :class => 'ajax'
-                - cache([user_divisions, 'sc_category_global_navbar']) do
+                - cache("sc_category_global_navbar_#{user_divisions.map{|d| d.id}.join('_')}") do
                   - ScCategory.global_navbar(user_divisions).each do |category|
                     %li= link_to category.name, category, :class => 'ajax'
 
