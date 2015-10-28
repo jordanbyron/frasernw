@@ -220,14 +220,19 @@ var filterReferents = function(referents: Array, state: Object, filterValues: Ob
   });
 };
 
+
+
 var specializationReferents = function(referents, specializationId, collectionName) {
-  return referents.filter((referent) => {
-    return _.includes(referent.specializationIds, specializationId);
-  }).map((referent) => {
-    return {
-      content: <a href={`/${collectionName}/${referent.id}`}>{referent.name}</a>,
-      fadedContent: `Added: ${referent.createdAt}, Last Updated: ${referent.updatedAt}`,
-      reactKey: referent.id
-    };
-  });
+  return _.chain(referents)
+    .filter((referent) => {
+      return _.includes(referent.specializationIds, specializationId);
+    })
+    .sortBy({clinics: "name", specialists: "lastName"}[collectionName])
+    .map((referent) => {
+      return {
+        content: <a href={`/${collectionName}/${referent.id}`}>{referent.name}</a>,
+        fadedContent: `Added: ${referent.createdAt}, Last Updated: ${referent.updatedAt}`,
+        reactKey: referent.id
+      };
+    }).value();
 };
