@@ -2,7 +2,7 @@ class SpecializationOption < ActiveRecord::Base
 
   attr_accessible :specialization, :owner, :content_owner, :division, :in_progress, :is_new, :open_to_clinic_tab_old, :open_to_type, :open_to_sc_category, :show_specialist_categorization_1, :show_specialist_categorization_2, :show_specialist_categorization_3, :show_specialist_categorization_4, :show_specialist_categorization_5
 
-  belongs_to :specialization
+  belongs_to :specialization, touch: true
   belongs_to :owner, :class_name => "User"
   belongs_to :content_owner, :class_name => "User"
   belongs_to :division
