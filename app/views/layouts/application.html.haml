@@ -81,7 +81,7 @@
                 #loading
                   #loading-spinner
                 %ul
-                - if Division.all_cached.length > 1
+                - if @divisions.length > 1
                   #search_location
                     %label
                       %input#search_all{"type" => "checkbox"}
@@ -229,7 +229,7 @@
                           = link_to "Users", "#", :class => "arrow-right-after"
                           %ul.dropdown-menu
                             %li=link_to "All Users", users_path, :class => "ajax"
-                            - Division.all_cached.each do |division|
+                            - @divisions.each do |division|
                               %li=link_to "#{division.name} Users", division_users_path(division), :class => 'division ajax'
                       %li.divider
                       %li.nav-header Content Management
@@ -249,16 +249,16 @@
                       - if can? :index, Newsletter
                         %li= link_to "Newsletters", newsletters_path
                       - if can? :read, ScItem
-                        - if current_user_is_super_admin? && Division.all_cached.length > 1
+                        - if current_user_is_super_admin? && @divisions.length > 1
                           %li
                             = link_to "Owned Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
-                              - Division.all_cached.each do |division|
+                              - @divisions.each do |division|
                                 %li= link_to "#{division.name}", division_content_items_path(division), :class => "sc_item ajax"
                           %li
                             = link_to "Shared Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
-                              - Division.all_cached.each do |division|
+                              - @divisions.each do |division|
                                 %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
                         - elsif user_divisions.length > 1
                           %li
@@ -273,7 +273,7 @@
                                 %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
                         - else
                           %li= link_to "Content Items", division_content_items_path(user_divisions.first), :class => "sc_item ajax"
-                          - if Division.all_cached.length > 1
+                          - if @divisions.length > 1
                             %li= link_to "Manage Shared Content Items", shared_content_items_path(user_divisions.first), :class => "sc_item ajax"
                 - cache("resources_dropdown_categories_#{user_divisions.map{|d| d.id}.join('_')}") do
                   - dropdown_categories = ScCategory.global_resources_dropdown(user_divisions)
@@ -371,7 +371,7 @@
 
                     %li.nav-header Settings
                     -# %li= link_to "Change name", change_name_path, :class => 'change_name ajax'
-                    -# if Division.all_cached.length > 1
+                    -# if @divisions.length > 1
                       %li= link_to "Change local referral area", change_local_referral_area_path, :class => 'change_local_referral_area ajax'
                     %li= link_to "Change e-mail address", change_email_path, :class => 'change_email ajax'
                     %li= link_to "Change password", change_password_path, :class => 'change_password ajax'

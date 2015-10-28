@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   include PublicActivity::StoreController
   before_filter :login_required
   before_filter :set_heartbeat_loader
+  before_filter :load_application_layout_data
   protect_from_forgery
   check_authorization
 
@@ -12,5 +13,9 @@ class ApplicationController < ActionController::Base
 
   def set_heartbeat_loader
     @layout_heartbeat_loader = true
+  end
+
+  def load_application_layout_data
+    @divisions = Division.all_cached
   end
 end
