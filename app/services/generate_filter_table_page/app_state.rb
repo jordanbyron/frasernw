@@ -1,4 +1,4 @@
-class GenerateSpecializationPage
+class GenerateFilterTablePage
   class AppState
     include ServiceObject.exec_with_args(:user, :specialization)
 

@@ -1,8 +1,7 @@
-var ui = require("./specialization_page/ui");
 var app = require("./app");
 var _ = require("lodash");
 var UIReducers = {
-  SpecializationPage: require("./specialization_page/ui"),
+  FilterTablePage: require("./filter_table_page/ui"),
   ReferentsBySpecialty: require("./referents_by_specialty/ui"),
   UsageReport: require("./usage_report/ui")
 }

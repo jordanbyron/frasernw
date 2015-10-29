@@ -1,6 +1,5 @@
 - set_page_specific_title "#{@specialization.name}"
 
-
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
@@ -18,9 +17,9 @@
 :javascript
   window.pathways.bootstrapReact({
     domElementSelector: "#show_specialization",
-    stateMapper: "SpecializationPage",
-    topLevelComponent: "SpecializationPage",
-    uiReducer: "SpecializationPage",
+    stateMapper: "FilterTablePage",
+    topLevelComponent: "FilterTablePage",
+    uiReducer: "FilterTablePage",
     mapperConfig: "hey"
   }, #{@init_data.to_json})
 

@@ -13,7 +13,7 @@ class SpecializationsController < ApplicationController
 
   def show
     @specialization = Specialization.find(params[:id])
-    @init_data = GenerateSpecializationPage.exec(
+    @init_data = GenerateFilterTablePage.exec(
       specialization_id: params[:id].to_i,
       current_user: current_user
     )

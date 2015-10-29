@@ -1,8 +1,8 @@
 var _ = require("lodash");
 var Filters = require("./filter_table/filters");
 var RowGenerators = require("./filter_table/row_generators");
-var FILTER_VALUE_GENERATORS = require("./specialization_page/filter_value_generators");
-var FILTER_GROUP_GENERATORS = require("./specialization_page/filter_group_generators");
+var FILTER_VALUE_GENERATORS = require("./filter_table/filter_value_generators");
+var FILTER_GROUP_GENERATORS = require("./filter_table/filter_group_generators");
 var sortFunctions = require("./filter_table/sort_functions");
 var sortOrders = require("./filter_table/sort_orders");
 var generateResultSummary = require("./filter_table/generate_result_summary");
@@ -10,8 +10,6 @@ var generateResultSummary = require("./filter_table/generate_result_summary");
 module.exports = function(state, dispatch, config) {
   // console.log("STATE:");
   // console.log(state);
-
-  console.log(config);
 
   if (state.ui.hasBeenInitialized) {
     return {

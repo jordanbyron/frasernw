@@ -12,13 +12,13 @@ var getTopLevelProps = function(store, mapStateToProps, mapDispatchToProps, merg
 };
 
 var TopLevelComponents = {
-  SpecializationPage: require("./react_components/specialization_page"),
+  FilterTablePage: require("./react_components/filter_table_page"),
   ReferentsBySpecialty: require("./react_components/referents_by_specialty"),
   UsageReport: require("./react_components/usage_report")
 };
 var generateReducer = require("./reducers/top_level");
 var StateMappers = {
-  SpecializationPage: require("./state_mappers/specialization_page"),
+  FilterTablePage: require("./state_mappers/filter_table_page"),
   ReferentsBySpecialty: require("./state_mappers/referents_by_specialty"),
   UsageReport: require("./state_mappers/usage_report")
 };

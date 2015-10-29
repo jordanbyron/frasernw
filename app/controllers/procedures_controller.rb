@@ -9,9 +9,12 @@ class ProceduresController < ApplicationController
   end
 
   def show
-    @procedure = Procedure.find(params[:id])
-    @feedback = FeedbackItem.new
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    @specialization = Specialization.find(1)
+    @init_data = GenerateFilterTablePage.exec(
+      specialization_id: 1,
+      current_user: current_user
+    )
+    @automatically_remove_heartbeat = false
   end
 
   def new
