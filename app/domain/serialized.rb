@@ -238,6 +238,26 @@ module Serialized
           referrableId: form.referrable_id
         })
       end
+    end,
+    respondsWithinOptions: Proc.new do
+      Clinic::LAGTIME_HASH.inject({}) do |memo, (key, value)|
+        memo.merge(key.to_i => value)
+      end.merge(0 => "Any timeframe")
+    end,
+    respondsWithinSummaryLabels: Proc.new do
+      Clinic::LAGTIME_HASH.inject({}) do |memo, (key, value)|
+        label = begin
+          if key == 1
+            "by phone when office calls for appointment"
+          elsif key == 2
+            "within one week"
+          else
+            "within #{value}"
+          end
+        end
+
+        memo.merge({key => label})
+      end
     end
   }
 end
