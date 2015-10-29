@@ -7,12 +7,11 @@ var sortFunctions = require("./filter_table/sort_functions");
 var sortOrders = require("./filter_table/sort_orders");
 var generateResultSummary = require("./filter_table/generate_result_summary");
 
-module.exports = function(stateProps, dispatchProps) {
-  var state = stateProps;
-  var dispatch = dispatchProps.dispatch;
-
+module.exports = function(state, dispatch, config) {
   // console.log("STATE:");
   // console.log(state);
+
+  console.log(config);
 
   if (state.ui.hasBeenInitialized) {
     return {

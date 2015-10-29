@@ -4,10 +4,7 @@ var React = require("react");
 var RadioButtons = require("../react_components/radio_buttons");
 var Selector = require("../react_components/selector");
 
-module.exports = function(stateProps: Object, dispatchProps: Object): Object {
-  var state = stateProps;
-  var dispatch = dispatchProps.dispatch;
-
+module.exports = function(state, dispatch): Object {
   var filterValues = _.reduce(GENERATE_FILTER_VALUES, (memo, fn, key) => {
     return _.assign(
       {},

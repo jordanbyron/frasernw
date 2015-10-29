@@ -9,7 +9,7 @@ var getTopLevelProps = function(store, mapStateToProps, mapDispatchToProps, merg
     mapStateToProps(store.getState()),
     mapDispatchToProps(store.dispatch)
   );
-}
+};
 
 var TopLevelComponents = {
   SpecializationPage: require("./react_components/specialization_page"),
@@ -21,7 +21,7 @@ var StateMappers = {
   SpecializationPage: require("./state_mappers/specialization_page"),
   ReferentsBySpecialty: require("./state_mappers/referents_by_specialty"),
   UsageReport: require("./state_mappers/usage_report")
-}
+};
 
 module.exports = function(config, initData) {
   $("document").ready(function() {
@@ -31,7 +31,13 @@ module.exports = function(config, initData) {
     var store = Redux.createStore(reducer);
     var rootElement = $(config.domElementSelector)[0];
     var Component = TopLevelComponents[config.topLevelComponent];
-    var mergeProps = StateMappers[config.stateMapper];
+    var mergeProps = function(stateProps, dispatchProps) {
+      return StateMappers[config.stateMapper](
+        stateProps,
+        dispatchProps.dispatch,
+        config.mapperConfig
+      );
+    }
 
     var ConnectedComponent = connect(
       mapStateToProps,
