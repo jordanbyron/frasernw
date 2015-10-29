@@ -423,7 +423,11 @@ var filterResources = function(rows, filterValues, userIsAdmin) {
 }
 
 var assumedListProps = function(state: Object, panelTypeKey: string, membersName: string): Object {
-  var list = labeledAssumedList(state.app.nestedProcedureIds, state.app.procedures, panelTypeKey);
+  var list = labeledAssumedList(
+    state.app.specializations[state.ui.specializationId].nestedProcedureIds,
+    state.app.procedures,
+    panelTypeKey
+  );
 
   return {
     shouldDisplay: list.length > 0,

@@ -27,7 +27,6 @@ class GenerateFilterTablePage
         respondsWithinOptions: Serialized.fetch(:respondsWithinOptions),
         respondsWithinSummaryLabels: Serialized.fetch(:respondsWithinSummaryLabels),
         dayKeys: Schedule::DAY_HASH,
-        nestedProcedureIds: Serialized::BySpecialization.fetch(:nested_procedure_ids, specialization),
         languages: Serialized.fetch(:languages),
         careProviders: Serialized.fetch(:healthcare_providers)
       }

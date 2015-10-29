@@ -164,7 +164,6 @@ namespace :pathways do
 
     task :serialized_indices => :environment do
       Serialized.regenerate_all
-      Serialized::BySpecialization.regenerate_all
     end
 
     task :analytics_charts do

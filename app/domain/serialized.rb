@@ -180,7 +180,29 @@ module Serialized
             sort{ |a,b| a.procedure.name <=> b.procedure.name }.
             map{ |ps| ps.procedure.name.uncapitalize_first_letter },
           memberName: specialization.member_name,
-          membersName: specialization.member_name.pluralize
+          membersName: specialization.member_name.pluralize,
+          nestedProcedureIds: Module.new do
+            def self.call(specialization)
+              transform_nested_procedure_specializations(
+                specialization.procedure_specializations.includes(:procedure).arrange
+              )
+            end
+
+            def self.transform_nested_procedure_specializations(procedure_specializations)
+              procedure_specializations.inject({}) do |memo, (ps, children)|
+                memo.merge({
+                  ps.procedure.id => {
+                    focused: ps.focused?,
+                    assumed: {
+                      clinics: ps.assumed_clinic?,
+                      specialists: ps.assumed_specialist?
+                    },
+                    children: transform_nested_procedure_specializations(children)
+                  }
+                })
+              end
+            end
+          end.call(specialization)
         })
       end
     end,

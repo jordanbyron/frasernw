@@ -22,7 +22,7 @@ module.exports = {
     };
 
     var procedureFilters = generateProcedureFilters(
-      state.app.nestedProcedureIds,
+      state.app.specializations[state.ui.specializationId].nestedProcedureIds,
       _.flatten(maskingSet.map((record) => record.procedureIds)),
       state.app.procedures,
       state
