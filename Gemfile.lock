@@ -381,6 +381,8 @@ GEM
     quiet_assets (1.1.0)
       railties (>= 3.1, < 5.0)
     rack (1.4.7)
+    rack-attack (4.3.0)
+      rack
     rack-cache (1.2)
       rack (>= 0.4)
     rack-livereload (0.3.15)
@@ -584,6 +586,7 @@ DEPENDENCIES
   pry-stack_explorer
   public_activity
   quiet_assets
+  rack-attack
   rack-cache
   rack-livereload
   rack-timeout
