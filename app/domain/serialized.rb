@@ -34,6 +34,7 @@ module Serialized
             title: item.title,
             categoryId: item.sc_category.id,
             categoryIds: [ item.sc_category, item.sc_category.ancestors ].flatten.map(&:id),
+            procedureIds: procedure.procedure_specializations.map(&:procedure).map(&:id),
             content: (item.markdown_content.present? ? BlueCloth.new(item.markdown_content).to_html : ""),
             resolvedUrl: item.resolved_url,
             canEmail: item.can_email?,

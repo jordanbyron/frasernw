@@ -11,6 +11,8 @@ class UserSessionsController < ApplicationController
   end
 
   def new
+    
+
     @user_session = UserSession.new
     @user = User.new
     render :layout => 'ajax' if request.headers['X-PJAX']

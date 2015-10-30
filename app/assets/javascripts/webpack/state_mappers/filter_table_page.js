@@ -71,7 +71,7 @@ var contentCategoryTabs = function(state) {
   var divisionIds = state.app.currentUser.divisionIds;
 
   return _.values(
-    findActiveContentCategories(contentCategories, contentItems, specializationId, divisionIds)
+    findActiveContentCategories(state)
   ).map((category) => {
     return { key: generatePanelKey("contentCategories", category.id), label: category.name };
   });
@@ -203,9 +203,20 @@ var PANEL_PROPS_GENERATORS = {
     return this.referents(state, dispatch, "clinics");
   },
   referents: function(state, dispatch, panelTypeKey) {
-    var maskingSet = _.values(state.app[panelTypeKey]).filter((record) => {
-      return _.includes(record.specializationIds, state.ui.specializationId);
-    })
+    // what are the records we're using to mask filters?
+    var maskingSet = {
+      specialization: function() {
+        return _.values(state.app[panelTypeKey]).filter((record) => {
+          return _.includes(record.specializationIds, state.ui.specializationId);
+        });
+      },
+      procedure: function() {
+        return _.values(state.app[panelTypeKey]).filter((record) => {
+          return _.includes(record.procedureIds, state.ui.procedureId);
+        });
+      }
+    }[state.ui.pageType]();
+
     var sortConfig = referentSortConfig(state, { panelTypeKey: panelTypeKey });
     var filterValues = generateFilterValuesForPanel(
       state,
@@ -311,12 +322,8 @@ var PANEL_PROPS_GENERATORS = {
   },
   contentCategories: {
     FilterTable: function(state: Object, panelKey: string, category: Object, dispatch: Function) {
-      var maskingSet = itemsForContentCategory(
-        state.ui.specializationId,
-        state.app.currentUser.divisionIds,
-        category,
-        _.values(state.app.contentItems)
-      );
+      var forCategory = itemsForContentCategory(category, state);
+      var maskingSet = forCategory;
       var bodyRowConfig = {
         panelKey: panelKey,
         panelTypeKey: "contentCategories",
@@ -334,13 +341,6 @@ var PANEL_PROPS_GENERATORS = {
           panelTypeKey: "contentCategories"
         }
       );
-
-      var forCategory = itemsForContentCategory(
-        state.ui.specializationId,
-        state.app.currentUser.divisionIds,
-        category,
-        _.values(state.app.contentItems)
-      )
       var filtered = filterResources(forCategory, filterValues, state.app.currentUser.isAdmin)
       var bodyRows = generateBodyRows(state, filtered, bodyRowConfig, dispatch, sortConfig);
       var resultSummaryText = generateResultSummary({
@@ -387,12 +387,7 @@ var PANEL_PROPS_GENERATORS = {
       };
     },
     InlineArticles: function(state: Object, panelKey: string, category: Object, dispatch: Function) {
-      var records = itemsForContentCategory(
-        state.ui.specializationId,
-        state.app.currentUser.divisionIds,
-        category,
-        _.values(state.app.contentItems)
-      );
+      var records = itemsForContentCategory(category, state);
 
       return {
         panelKey: panelKey,
@@ -574,24 +569,33 @@ var TABLE_HEADINGS_GENERATORS = {
   }
 }
 
-var itemsForContentCategory = function(specializationId, divisionIds, category, contentItems) {
-  return _.filter(
-    contentItems,
-    (contentItem) => {
-      return (contentItem.specializationIds.indexOf(specializationId) > -1 &&
+var itemsForContentCategory = function(category, state) {
+  var pageSpecificFilter = {
+    specialization: function(contentItem) {
+      return _.includes(contentItem.specializationIds, state.ui.specializationId);
+    },
+    procedure: function(contentItem) {
+      return _.includes(contentItem.specializationIds, state.ui.specializationId);
+    }
+  }
+
+  return _.chain(state.app.contentItems)
+    .values()
+    .filter((contentItem) => {
+      return (pageSpecificFilter(contentItem) &&
         _.intersection(contentItem.availableToDivisionIds, divisionIds).length > 0 &&
         category.subtreeIds.indexOf(contentItem.categoryId) > -1);
-    }
-  );
+    })
+    .value();
 };
 
-var findActiveContentCategories = function(contentCategories, contentItems, specializationId, divisionIds) {
+var findActiveContentCategories = function(state) {
   return _.filter(
-    contentCategories,
+    state.app.contentCategories,
     (category) => {
       return ([1, 3, 4, 5].indexOf(category.displayMask) > -1 &&
         category.ancestry == null &&
-        _.keys(itemsForContentCategory(specializationId, divisionIds, category, contentItems)).length > 0);
+        _.keys(itemsForContentCategory(category, state)).length > 0);
     }
   );
 };
