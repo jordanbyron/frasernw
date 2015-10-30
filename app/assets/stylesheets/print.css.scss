@@ -18,9 +18,26 @@ body
   border: 0;
 }
 
-.navbar, .admin, .form-actions, .tabbable
+.navbar, .admin, .form-actions, .tabbable, .test-warning
 {
   display: none;
+}
+
+#print_container {
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+  top: 0px;
+  background-color: white;
+  height: auto;
+
+  tr {
+    border-bottom: 1px solid black !important;
+  }
+
+  td {
+    background: none !important;
+  }
 }
 
 #content #container

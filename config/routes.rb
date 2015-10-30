@@ -200,7 +200,7 @@ Frasernw::Application.routes.draw do
   end
   resources :faqs, only: [:new, :create, :edit, :update, :destroy]
 
-  resources :usage_reports, only: [:new, :create, :show]
+  resources :csv_usage_reports, only: [:new, :create, :show]
 
   resources :newsletters, only: [:index, :create, :new, :edit, :update, :destroy]
 

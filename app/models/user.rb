@@ -59,7 +59,8 @@ class User < ActiveRecord::Base
   validates_presence_of :name
   validates :agree_to_toc, presence: true
 
-  after_commit :flush_cache
+  # after_commit :flush_cache
+  after_touch :flush_cache
 
   default_scope order('users.name')
 

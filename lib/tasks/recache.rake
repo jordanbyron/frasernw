@@ -143,18 +143,22 @@ namespace :pathways do
     end
 
     task :front => :environment do
+      puts "Expiring Front page..."
       User.all_user_division_groups_cached.each do |division_group|
         expire_fragment "latest_updates_#{division_group.join('_')}"
         expire_fragment "featured_content_#{division_group.join('_')}"
+        expire_fragment "front_#{Specialization.cache_key}_#{division_group.join('_')}"
+        Specialization.all.each do |specialization|
+          expire_fragment "front_#{specialization.cache_key}_#{division_group.join('_')}"
+        end
       end
     end
 
     task :application_layout => :environment do
-      expire_fragment("ie8_or_lower_compatibility_warning")
       expire_fragment("ie_compatibility_warning")
       User.all_user_division_groups_cached.each do |division_group|
-        expire_fragment([division_group, 'sc_category_global_navbar'])
-        expire_fragment([division_group, 'resources_dropdown_categories'])
+        expire_fragment("sc_category_global_navbar_#{division_group.join('_')}")
+        expire_fragment("resources_dropdown_categories_#{division_group.join('_')}")
       end
     end
 

@@ -14,17 +14,6 @@ module.exports = function(state={}, action) {
     return updateFilter(state, action);
   case "UPDATE_FILTER":
     return updateFilter(state, action);
-  case "RESET_SEARCH_ALL_CITIES":
-    // back to default
-
-    return _.assign(
-      {},
-      state,
-      {
-        searchAllCities: false,
-        cities: undefined
-      }
-    );
   case "CLEAR_FILTERS":
     return {};
   default:

@@ -39,7 +39,7 @@ module Api
           )
         }
       end
-      
+
       def user_ids
         authorize! :view_report, :user_ids
 

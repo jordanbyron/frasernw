@@ -28,6 +28,14 @@ class Specialization < ActiveRecord::Base
   default_scope order('specializations.name')
 
   # # # # # # CACHING METHODS
+
+  def self.cache_key
+    max_updated_at = maximum(:updated_at).try(:utc).try(:to_s, :number)
+    sum_of_ids = limit(100).pluck(:id).try(:compact).inject{|sum, id| sum + id }
+    "specializations/all-#{count}-#{max_updated_at}-#{sum_of_ids}"
+    # since cache_key can act on a subset of Specialization records; sum_of_ids was added to reduce the chance of an incorrect cache hit should two collections ever have matching count / max updated_at values
+  end
+
   def self.all_cached
     Rails.cache.fetch([name, "all_specializations"], expires_in: 6.hours) {self.all}
   end

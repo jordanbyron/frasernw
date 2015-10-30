@@ -66,17 +66,11 @@ module.exports = {
     return _.reduce(
       _.values(state.app.cities),
       function(memo: Object, city: Object): Object {
-        var value = function() {
-          if(_.get(state, ["ui", "panels", panelKey, "filterValues", "searchAllCities"])) {
-            return true;
-          } else {
-            return _.get(
-              state,
-              ["ui", "panels", panelKey, "filterValues", "cities", city.id ],
-              _.includes(state.app.currentUser.referralCities[state.ui.specializationId], parseInt(city.id))
-            );
-          }
-        }();
+        var value = _.get(
+          state,
+          ["ui", "panels", panelKey, "filterValues", "cities", city.id ],
+          _.includes(state.app.currentUser.referralCities[state.ui.specializationId], parseInt(city.id))
+        );
 
         return _.assign(
           { [city.id] : value },

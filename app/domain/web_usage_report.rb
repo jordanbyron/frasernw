@@ -3,11 +3,21 @@ class WebUsageReport
   include ActionView::Helpers::UrlHelper
 
   def exec
+    if month == Month.current
+      generate
+    else
+      Rails.cache.fetch(
+        "entity_page_views:#{month_key}:#{division_id}:#{record_type}"
+      ){ generate }
+    end
+  end
+
+  def generate
     get_usage.
       sort_by{ |row| row[:usage].to_i }.
       reverse().
       first(20).
-      map{|row| transform_row_for_view(row)}
+      map{ |row| transform_row_for_view(row) }
   end
 
   private
@@ -55,11 +65,15 @@ class WebUsageReport
       end
   end
 
+  def month
+    @month ||= Month.from_i(month_key)
+  end
+
   def get_usage_from_page_views
     Analytics::ApiAdapter.get({
       metrics: [:page_views],
-      start_date: Month.from_i(month_key).start_date,
-      end_date: Month.from_i(month_key).end_date,
+      start_date: month.start_date,
+      end_date: month.end_date,
       dimensions: [ :page_path ],
       filter_literal: filter_literals(division_filters(division_id))
     }).map do |row|
@@ -108,13 +122,17 @@ class WebUsageReport
     clinics: Proc.new{ |row| false },
     specialists: Proc.new{ |row| false },
     patient_info: Proc.new do |row|
-      !row[:record][:content].present? && row[:record][:categoryIds].include?(5)
+      row[:serialized_collection] == :content_items &&
+        row[:record][:typeMask] != ScItem::TYPE_MARKDOWN &&
+        row[:record][:categoryIds].include?(5)
     end,
     physician_resources: Proc.new do |row|
-      !row[:record][:content].present? && row[:record][:categoryIds].include?(11)
+      row[:serialized_collection] == :content_items &&
+        row[:record][:typeMask] != ScItem::TYPE_MARKDOWN &&
+        row[:record][:categoryIds].include?(11)
     end,
     forms: Proc.new do |row|
-      (row[:serialized_collection] == :content_items && !row[:record][:content].present? && row[:record][:categoryIds].include?(9)) ||
+      (row[:serialized_collection] == :content_items && row[:record][:typeMask] != ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(9)) ||
         row[:serialized_collection] == :referral_forms
     end,
     specialties: Proc.new{ |row| false }
@@ -123,8 +141,8 @@ class WebUsageReport
   #  which event categories respond to which class of record
   # (see analytics_wrappers.js)
   EVENT_CATEGORY_SERIALIZED_COLLECTIONS = {
-    "form" => :referral_forms,
-    "content_item" => :content_items
+    "forms" => :referral_forms,
+    "content_items" => :content_items
   }
 
   def safe_find(collection, id)
@@ -133,7 +151,7 @@ class WebUsageReport
 
   def all_records(collection)
     @all_records ||= Hash.new do |h, key|
-      h[key] = Serialized.fetch(collection)
+      h[key] = Serialized.fetch(key)
     end
     @all_records[collection]
   end
@@ -159,13 +177,13 @@ class WebUsageReport
     clinics: Proc.new{ |row| true },
     specialists: Proc.new{ |row| true },
     patient_info: Proc.new do |row|
-      row[:record][:content].present? && row[:record][:categoryIds].include?(5)
+      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(5)
     end,
     physician_resources: Proc.new do |row|
-      row[:record][:content].present? && row[:record][:categoryIds].include?(11)
+      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(11)
     end,
     forms: Proc.new do |row|
-      row[:record][:content].present? && row[:record][:categoryIds].include?(9)
+      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(9)
     end,
     specialties: Proc.new{ |row| true }
   }
@@ -180,7 +198,7 @@ class WebUsageReport
       specialties: "specialties"
     }[record_type]
 
-    /(?<=\/#{Regexp.quote(collection_path)}\/)[[:digit:]]+/.match(path).to_s
+    /(?<=\/#{Regexp.quote(collection_path)}\/)[[:digit:]]+(?=\/?\z)/.match(path).to_s
   end
 
   # when we extract an ID from a path according to the tests above,
