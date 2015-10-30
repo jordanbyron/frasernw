@@ -4,20 +4,44 @@ All notable changes to this project will be documented in this file.  In the fut
 CR = Change Request item
 Local-only = Changes not reflected in Source Code
 
+## [2015-10-30] [Since October 26, 2015 User Update]
+### Added:
+- New security feature to prevent brute force login attempts from botnets
+
+### Changed:
+- Add "No Cities" bulk deselect option for the City filter on the Specialities page
+- New icons added to top navbar
+- New caching and performance optimizations:
+  - Home page now ~100ms faster
+  - users/index: ~14000 ms improvement (yes really...)
+  - New servers with 2x faster mean and 95th percentile response times
+
+### Fixed:
+- Fix broken specialist icon
+
+### Removed:
+- Remove incorrect resources data from reporting.
 
 
 ## [2015-10-26] [Since September 21, 2015 User Update]
 ### Added:
-- Show history for referral forms on specialist and clinic pages
+- History for Referral Forms on specialist and clinic pages
 - Added dynamic table sorting to Owned Content Items & Shared Content Items For datatables
-- Reporting updates:
+- Major updates to Reporting:
+  - New dashboard interface
   - Export to CSV option added
   - Added new graph interface to show Google Analytics Page Views and Session data by division.
   - Support for division admins to see reports
+  - Add Print view
 - New status option for deceased Specialists
+- Newsletter section on home page
 
 ### Changed:
 - Reporting section now supports export to CSV via email
+- Finish Change Request: Add "Accepting limited referrals" to Clinics
+- Finish Change Request: Add "Deceased" to Specialists
+- Updated Subscription notification email wording
+
 
 ### Fixed:
 - Fix CSS display problems in Owned Content Items / Shared Content Items For tables
