@@ -55,7 +55,7 @@ module.exports = React.createClass({
           <a style={{cursor: "pointer"}}
             onClick={handleUpdateCities.bind(this, this.props.dispatch, undefined)}
           >
-            Default Cities
+            Regional Cities
           </a>
           <span style={{marginLeft: "3px", marginRight: "3px"}}>|</span>
           <a style={{cursor: "pointer"}}
