@@ -10,11 +10,15 @@ class ProceduresController < ApplicationController
 
   def show
     @specialization = Specialization.find(1)
-    @init_data = GenerateProcedurePage.exec(
-      specialization_id: 1,
-      current_user: current_user,
-      procedure_id: params[:id].to_i
-    )
+    @procedure = Procedure.find(params[:id])
+    @init_data = {
+      app: FilterTableAppState.exec(current_user: current_user),
+      ui: {
+        pageType: "procedure",
+        specializationId: @procedure.id,
+        hasBeenInitialized: false
+      }
+    }
     @automatically_remove_heartbeat = false
   end
 
