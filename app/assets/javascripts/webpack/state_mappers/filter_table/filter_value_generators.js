@@ -1,4 +1,5 @@
 var _ = require("lodash");
+var specializationReferralCities = require("./specialization_referral_cities");
 
 module.exports = {
   procedures: function(state, maskingSet, panelKey) {
@@ -69,7 +70,7 @@ module.exports = {
         var value = _.get(
           state,
           ["ui", "panels", panelKey, "filterValues", "cities", city.id ],
-          _.includes(state.app.currentUser.referralCities[state.ui.specializationId], parseInt(city.id))
+          _.includes(specializationReferralCities(state), parseInt(city.id))
         );
 
         return _.assign(

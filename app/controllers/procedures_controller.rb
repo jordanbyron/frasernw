@@ -10,9 +10,10 @@ class ProceduresController < ApplicationController
 
   def show
     @specialization = Specialization.find(1)
-    @init_data = GenerateFilterTablePage.exec(
+    @init_data = GenerateProcedurePage.exec(
       specialization_id: 1,
-      current_user: current_user
+      current_user: current_user,
+      procedure_id: params[:id].to_i
     )
     @automatically_remove_heartbeat = false
   end

@@ -243,12 +243,40 @@ module Serialized
         })
       end
     end,
-    divisions: Proc.new do
-      Division.standard.all.inject({}) do |memo, division|
-        memo.merge(division.id => {
-          id: division.id,
-          name: division.name
-        })
+    divisions: Module.new do
+      def self.call
+        Division.standard.all.inject({}) do |memo, division|
+          memo.merge(division.id => {
+            id: division.id,
+            name: division.name,
+            referralCities: Specialization.all.inject({}) do |memo, specialization|
+              memo.merge(specialization.id => division.local_referral_cities(specialization).reject(&:hidden).map(&:id))
+            end,
+            openToSpecializationPanel: Specialization.all.inject({}) do |memo, specialization|
+              memo.merge(specialization.id => self.open_to_panel(specialization, division))
+            end
+          })
+        end
+      end
+
+      def self.open_to_panel(specialization, division)
+        specialization_option = specialization.
+          specialization_options.
+          to_a.
+          find do |option|
+            option.division_id == division.id
+          end
+
+        if specialization_option.open_to_sc_category?
+          {
+            type: "contentCategories",
+            id: specialization_option.open_to
+          }
+        else
+          {
+            type: specialization_option.open_to
+          }
+        end
       end
     end,
     referral_forms: Proc.new do

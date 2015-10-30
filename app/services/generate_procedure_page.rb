@@ -1,4 +1,4 @@
-class GenerateFilterTablePage
+class GenerateProcedurePage
   include ServiceObject.exec_with_args(
     :specialization_id,
     :current_user

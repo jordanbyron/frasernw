@@ -6,6 +6,7 @@ var FILTER_GROUP_GENERATORS = require("./filter_table/filter_group_generators");
 var sortFunctions = require("./filter_table/sort_functions");
 var sortOrders = require("./filter_table/sort_orders");
 var generateResultSummary = require("./filter_table/generate_result_summary");
+var specializationReferralCities = require("./filter_table/specialization_referral_cities");
 
 module.exports = function(state, dispatch, config) {
   // console.log("STATE:");
@@ -33,10 +34,9 @@ var feedbackModal = function(state) {
 }
 
 var selectedPanel = function(state, dispatch) {
-  var selectedPanelKey = (state.ui.selectedPanel ||
-    generatePanelKey(state.app.currentUser.openToPanel[state.ui.specializationId].type,
-      state.app.currentUser.openToPanel[state.ui.specializationId].id)
-    );
+  var defaultPanel =
+    state.app.divisions[state.app.currentUser.divisionIds[0]].openToSpecializationPanel[state.ui.specializationId];
+  var selectedPanelKey = (state.ui.selectedPanel || generatePanelKey(defaultPanel.type, defaultPanel.id));
   var selectedPanelType = panelTypeKey(selectedPanelKey);
 
   return PANEL_GENERATORS[selectedPanelType](state, dispatch, selectedPanelKey);
@@ -252,7 +252,7 @@ var PANEL_PROPS_GENERATORS = {
       bodyRows: bodyRows,
       labelName: genericMembersName,
       panelTypeKey: panelTypeKey,
-      referralCities: state.app.currentUser.referralCities[state.ui.specializationId],
+      referralCities: specializationReferralCities(state),
       filterValues: filterValues,
       availableFilters: PANEL_TYPE_SUMMARY_FILTERS[panelTypeKey]
     });
@@ -348,7 +348,7 @@ var PANEL_PROPS_GENERATORS = {
         bodyRows: bodyRows,
         labelName: category.name.toLowerCase(),
         panelTypeKey: "contentCategories",
-        referralCities: state.app.currentUser.referralCities[state.ui.specializationId],
+        referralCities: specializationReferralCities(state),
         filterValues: filterValues,
         availableFilters: PANEL_TYPE_SUMMARY_FILTERS["contentCategories"]
       });
