@@ -58,7 +58,7 @@ module ControllerAuthentication
 
   def login_required
     unless logged_in?
-      $redis.hincrby("login_required", request.remote_ip, 1)
+      $redis.hincrby("login_required", request.remote_ip, 1) if $redis.connected?
       store_target_location
       redirect_to login_url, :alert => (request.url != root_url) ? "You must log in to access this page." : false
     end
