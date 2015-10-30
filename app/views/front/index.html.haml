@@ -18,7 +18,7 @@
 
 - can_edit = current_user_is_super_admin? || (current_user_divisions & user_divisions).present?
 
-- specializations = current_user_is_admin? ? Specialization.all_cached : Specialization.not_in_progress_for_divisions(user_divisions).uniq
+- specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(user_divisions).uniq
 
 .content-wrapper
   .content#front{:style => current_user_is_admin? && 'margin-top: -15px'}
@@ -45,18 +45,15 @@
                 = BlueCloth.new(news_item.body).to_html.html_safe
 
     .row
-      -# Specialization cache only needs to break here to show display of specializations differently for user_division groupings
-      - cache("front_#{Specialization.cache_key}_#{user_divisions.map{|d| d.id}.join('_')}", expires_in: 23.hours) do
-        .span3.hidden-phone.front
+      .span3.hidden-phone.front
 
-          %h2 Specialties
+        %h2 Specialties
 
-          %ul.space
-            - specializations.each do |specialization|
-              - cache("front_#{specialization.cache_key}_#{user_divisions.map{|d| d.id}.join('_')}", expires_in: 23.hours) do
-                %li
-                  = link_to specialization.name, specialization, :class => specialization.fully_in_progress_for_divisions(user_divisions) ? "in-progress ajax" : "ajax"
-                  = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(user_divisions)
+        %ul.space
+          - specializations.each do |specialization|
+            %li
+              = link_to specialization.name, specialization, :class => specialization.fully_in_progress_for_divisions(user_divisions) ? "in-progress ajax" : "ajax"
+              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(user_divisions)
 
       .span4half.front
 
@@ -88,6 +85,22 @@
         - if current_user_is_admin? && can_edit
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Latest Specialist and Clinic Updates", news_items_path, :class => "btn btn-mini ajax")
+
+        - if @current_newsletter.present?
+          %div{style: "margin-top: 18px;"}
+            %h2 Pathways Newsletter
+
+            %div{style: "margin-top: 10px;"}
+              = image_tag "pathways_newsletter.png", style: "height: 120px; border: 1px solid lightgray; padding: 2px; margin-right: 10px; float: left;"
+              %p{style: "margin-top: 0px;"}
+                = "The current Pathways newsletter (#{@current_newsletter.month} Edition) is available #{link_to('here', @current_newsletter.url, target: '_blank')}.  It includes:".html_safe
+              %ul{style: "margin-bottom: 20px;"}
+                - @current_newsletter.description_items.each do |item|
+                  %li{style: "list-style-type: disc;"}
+                    = item.description_item
+              %p
+                = "You can also #{link_to('browse previous issues', newsletters_path)}.".html_safe
+              %div{style: "clear: both;"}
 
         - divisional_updates = NewsItem.divisional_in_divisions(user_divisions)
         - if divisional_updates.length > 0
@@ -142,21 +155,6 @@
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Shared Care Updates", news_items_path, :class => "btn btn-mini ajax")
 
-        - if @current_newsletter.present?
-          %div{style: "margin-top: 20px;"}
-            %h2 Pathways Newsletter
-
-            %div{style: "margin-top: 10px;"}
-              = image_tag "pathways_newsletter.png", style: "height: 120px; border: 1px solid lightgray; padding: 2px; margin-right: 10px; float: left;"
-              %p{style: "margin-top: 0px;"}
-                = "The current Pathways newsletter (#{@current_newsletter.month} Edition) is available #{link_to('here', @current_newsletter.url, target: '_blank')}.  It includes:".html_safe
-              %ul{style: "margin-bottom: 20px;"}
-                - @current_newsletter.description_items.each do |item|
-                  %li{style: "list-style-type: disc;"}
-                    = item.description_item
-              %p
-                = "You can also browse #{link_to('previous issues', newsletters_path)}.".html_safe
-              %div{style: "clear: both;"}
 
       .span4.offsethalf
 
