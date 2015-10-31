@@ -4,6 +4,19 @@ var PANEL_REDUCERS = {
 }
 var hasBeenInitialized = require("../has_been_initialized");
 
+var pageRenderedKey = function(key, stateAtKey, action) {
+  switch(action.type) {
+  case "INTEGRATE_PAGE_RENDERED_DATA":
+    return action.initialState.ui[key];
+  default:
+    return stateAtKey;
+  }
+};
+var procedureId = _.partial(pageRenderedKey, "procedureId");
+var specializationId = _.partial(pageRenderedKey, "specializationId");
+var pageType = _.partial(pageRenderedKey, "pageType");
+
+
 module.exports = function(state = {}, action) {
   switch(action.type) {
   default:
@@ -11,6 +24,8 @@ module.exports = function(state = {}, action) {
       hasBeenInitialized: hasBeenInitialized(state.hasBeenInitialized, action),
       selectedPanel: selectedPanel(state.selectedPanel, action),
       specializationId: specializationId(state.specializationId, action),
+      procedureId: procedureId(state.procedureId, action),
+      pageType: pageType(state.pageType, action),
       panels: panels(state.panels, action),
       feedbackModal: feedbackModal(state.feedbackModal, action)
     }
@@ -48,14 +63,6 @@ var feedbackModal = function(state, action) {
   }
 };
 
-var specializationId = function(state, action) {
-  switch(action.type) {
-  case "INTEGRATE_PAGE_RENDERED_DATA":
-    return action.initialState.ui.specializationId;
-  default:
-    return state;
-  }
-}
 
 // (tabs e.g. 'specialists', 'clinics', 'physician resources')
 var panels = function(state = {}, action) {

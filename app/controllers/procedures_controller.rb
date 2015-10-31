@@ -15,7 +15,8 @@ class ProceduresController < ApplicationController
       app: FilterTableAppState.exec(current_user: current_user),
       ui: {
         pageType: "procedure",
-        specializationId: @procedure.id,
+        specializationId: @specialization.id,
+        procedureId: @procedure.id,
         hasBeenInitialized: false
       }
     }

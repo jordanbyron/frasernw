@@ -182,11 +182,9 @@ module Serialized
             map{ |ps| ps.procedure.name.uncapitalize_first_letter },
           memberName: specialization.member_name,
           membersName: specialization.member_name.pluralize,
-          nestedProcedureIds: Proc.new do |specialization|
-            Serialized.transform_nested_procedure_specializations(
-              specialization.procedure_specializations.includes(:procedure).arrange
-            )
-          end
+          nestedProcedureIds: Serialized.transform_nested_procedure_specializations(
+            specialization.procedure_specializations.includes(:procedure).arrange
+          )
         })
       end
     end,
@@ -220,10 +218,11 @@ module Serialized
       end
     end,
     procedures: Proc.new do
-      Procedure.all.inject({}) do |memo, procedure|
+      Procedure.includes(:specializations).all.inject({}) do |memo, procedure|
         memo.merge(procedure.id => {
           nameRelativeToParents: procedure.try(:name_relative_to_parents),
           name: procedure.name,
+          specializationIds: procedure.specializations.map(&:id),
           tree: Serialized.transform_nested_procedure_specializations(procedure.procedure_specializations.first.subtree.arrange)
         })
       end

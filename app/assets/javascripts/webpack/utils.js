@@ -38,6 +38,6 @@ module.exports = {
   },
   source: function(...args) {
     var startingVal = args.pop();
-    return _.flowRight(args)(startingVal);
+    return _.flowRight(...args)(startingVal);
   }
 }

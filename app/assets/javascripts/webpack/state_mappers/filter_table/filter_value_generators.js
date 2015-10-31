@@ -1,6 +1,6 @@
 var _ = require("lodash");
 var utils = require("utils");
-var specializationReferralCities = require("./specialization_referral_cities");
+var referralCities = require("./referral_cities");
 
 module.exports = {
   procedures: function(state, maskingSet, panelKey) {
@@ -10,8 +10,8 @@ module.exports = {
         _.get(state, ["ui", "panels", panelKey, "filterValues", "procedures", parseInt(procedureId)], false)
       ];
     };
-    var assignValues = function(ids) {
-      return ids.map(assignValue).zipObject();
+    var assignedValues = function(ids) {
+      return _.zipObject(ids.map(assignValue));
     };
 
     return {
@@ -20,17 +20,14 @@ module.exports = {
           _.partialRight(_.map, (record) => record.procedureIds);
 
         return utils.source(
-          assignValues,
+          assignedValues,
           _.uniq,
-          _.flattened,
+          _.flatten,
           eachProcedureIds,
           maskingSet
         );
       },
-      procedure: function(state, maskingset, panelType) {
-        var eachExtractedProcedureIds =
-          _.partialRight(_.map, (tree) => extractProcedureIds(tree));
-
+      procedure: function(state, maskingset, panelKey) {
         var extractedProcedureIds = function(tree) {
           return _.keys(tree).concat(utils.source(
             _.flatten,
@@ -39,6 +36,8 @@ module.exports = {
             tree
           ))
         };
+        var eachExtractedProcedureIds =
+          _.partialRight(_.map, (tree) => extractedProcedureIds(tree));
 
         return utils.source(
           assignedValues,
@@ -46,7 +45,7 @@ module.exports = {
           state.app.procedures[state.ui.procedureId].tree
         );
       }
-    }[state.ui.pageType];
+    }[state.ui.pageType](state, maskingSet, panelKey);
   },
   acceptsReferralsViaPhone: function(state, maskingSet, panelKey) {
     return _.get(state, ["ui", "panels", panelKey, "filterValues", "acceptsReferralsViaPhone"], false);
@@ -103,7 +102,7 @@ module.exports = {
         var value = _.get(
           state,
           ["ui", "panels", panelKey, "filterValues", "cities", city.id ],
-          _.includes(specializationReferralCities(state), parseInt(city.id))
+          _.includes(referralCities(state), parseInt(city.id))
         );
 
         return _.assign(

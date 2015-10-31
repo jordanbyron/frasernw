@@ -6,7 +6,7 @@ var FILTER_GROUP_GENERATORS = require("./filter_table/filter_group_generators");
 var sortFunctions = require("./filter_table/sort_functions");
 var sortOrders = require("./filter_table/sort_orders");
 var generateResultSummary = require("./filter_table/generate_result_summary");
-var specializationReferralCities = require("./filter_table/specialization_referral_cities");
+var referralCities = require("./filter_table/referral_cities");
 
 module.exports = function(state, dispatch, config) {
   // console.log("STATE:");
@@ -263,7 +263,7 @@ var PANEL_PROPS_GENERATORS = {
       bodyRows: bodyRows,
       labelName: genericMembersName,
       panelTypeKey: panelTypeKey,
-      referralCities: specializationReferralCities(state),
+      referralCities: referralCities(state),
       filterValues: filterValues,
       availableFilters: PANEL_TYPE_SUMMARY_FILTERS[panelTypeKey]
     });
@@ -348,7 +348,7 @@ var PANEL_PROPS_GENERATORS = {
         bodyRows: bodyRows,
         labelName: category.name.toLowerCase(),
         panelTypeKey: "contentCategories",
-        referralCities: specializationReferralCities(state),
+        referralCities: referralCities(state),
         filterValues: filterValues,
         availableFilters: PANEL_TYPE_SUMMARY_FILTERS["contentCategories"]
       });
@@ -578,9 +578,9 @@ var itemsForContentCategory = function(category, state) {
   return _.chain(state.app.contentItems)
     .values()
     .filter((contentItem) => {
-      return (pageSpecificFilter(contentItem) &&
-        _.intersection(contentItem.availableToDivisionIds, divisionIds).length > 0 &&
-        category.subtreeIds.indexOf(contentItem.categoryId) > -1);
+      return (pageSpecificFilter[state.ui.pageType](contentItem) &&
+        _.any(_.intersection(contentItem.availableToDivisionIds, state.app.currentUser.divisionIds)) &&
+        _.includes(category.subtreeIds, contentItem.categoryId));
     })
     .value();
 };

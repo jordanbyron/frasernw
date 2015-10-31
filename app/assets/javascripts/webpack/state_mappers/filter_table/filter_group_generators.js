@@ -21,19 +21,27 @@ module.exports = {
         .value()
     };
 
+    var nestedProcedureIds = {
+      specialization: function() { return state.app.specializations[state.ui.specializationId].nestedProcedureIds; },
+      procedure: function() { return state.app.procedures[state.ui.procedureId].tree[state.ui.procedureId].children; }
+    }[state.ui.pageType]();
     var procedureFilters = generateProcedureFilters(
-      state.app.specializations[state.ui.specializationId].nestedProcedureIds,
+      nestedProcedureIds,
       _.flatten(maskingSet.map((record) => record.procedureIds)),
       state.app.procedures,
       state
     )
+    var title = {
+      specialization: "Accepts referrals for",
+      procedure: "Sub-Areas of Practice"
+    }[state.ui.pageType];
 
     return {
       filters: {
         focusedProcedures: procedureFilters.filter((filter) => filter.focused),
         unfocusedProcedures: procedureFilters.filter((filter) => !filter.focused)
       },
-      title: "Accepts referrals for",
+      title: title,
       isOpen: _.get(state, ["ui", "panels", panelKey, "filterGroupVisibility", "procedures"], true),
       isExpanded: _.get(state, ["ui", "panels", panelKey, "filterExpansion", "procedures"], false),
       componentKey: "procedures"
