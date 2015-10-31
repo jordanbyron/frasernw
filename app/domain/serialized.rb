@@ -34,7 +34,7 @@ module Serialized
             title: item.title,
             categoryId: item.sc_category.id,
             categoryIds: [ item.sc_category, item.sc_category.ancestors ].flatten.map(&:id),
-            procedureIds: procedure.procedure_specializations.map(&:procedure).map(&:id),
+            procedureIds: item.procedure_specializations.map(&:subtree).flatten.uniq.map(&:procedure_id),
             content: (item.markdown_content.present? ? BlueCloth.new(item.markdown_content).to_html : ""),
             resolvedUrl: item.resolved_url,
             canEmail: item.can_email?,
@@ -182,28 +182,11 @@ module Serialized
             map{ |ps| ps.procedure.name.uncapitalize_first_letter },
           memberName: specialization.member_name,
           membersName: specialization.member_name.pluralize,
-          nestedProcedureIds: Module.new do
-            def self.call(specialization)
-              transform_nested_procedure_specializations(
-                specialization.procedure_specializations.includes(:procedure).arrange
-              )
-            end
-
-            def self.transform_nested_procedure_specializations(procedure_specializations)
-              procedure_specializations.inject({}) do |memo, (ps, children)|
-                memo.merge({
-                  ps.procedure.id => {
-                    focused: ps.focused?,
-                    assumed: {
-                      clinics: ps.assumed_clinic?,
-                      specialists: ps.assumed_specialist?
-                    },
-                    children: transform_nested_procedure_specializations(children)
-                  }
-                })
-              end
-            end
-          end.call(specialization)
+          nestedProcedureIds: Proc.new do |specialization|
+            Serialized.transform_nested_procedure_specializations(
+              specialization.procedure_specializations.includes(:procedure).arrange
+            )
+          end
         })
       end
     end,
@@ -240,7 +223,8 @@ module Serialized
       Procedure.all.inject({}) do |memo, procedure|
         memo.merge(procedure.id => {
           nameRelativeToParents: procedure.try(:name_relative_to_parents),
-          name: procedure.name
+          name: procedure.name,
+          tree: Serialized.transform_nested_procedure_specializations(procedure.procedure_specializations.first.subtree.arrange)
         })
       end
     end,
@@ -311,4 +295,19 @@ module Serialized
       end
     end
   }
+
+  def self.transform_nested_procedure_specializations(procedure_specializations)
+    procedure_specializations.inject({}) do |memo, (ps, children)|
+      memo.merge({
+        ps.procedure.id => {
+          focused: ps.focused?,
+          assumed: {
+            clinics: ps.assumed_clinic?,
+            specialists: ps.assumed_specialist?
+          },
+          children: transform_nested_procedure_specializations(children)
+        }
+      })
+    end
+  end
 end

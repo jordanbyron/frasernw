@@ -510,12 +510,8 @@ var generateFilterValuesForPanel = function(state, maskingSet, config) {
 
 var generateFilterGroups = function(maskingSet, state, config) {
   return PANEL_TYPE_FILTER_GROUPS[config.panelTypeKey].map((groupKey) => {
-    if (FILTER_GROUP_GENERATORS[groupKey]) {
-      return FILTER_GROUP_GENERATORS[groupKey](config.panelKey, maskingSet, state);
-    } else {
-      return {};
-    }
-  })
+    return FILTER_GROUP_GENERATORS[groupKey](config.panelKey, maskingSet, state);
+  });
 }
 
 var generateSortConfig = function(state, functionConfig) {

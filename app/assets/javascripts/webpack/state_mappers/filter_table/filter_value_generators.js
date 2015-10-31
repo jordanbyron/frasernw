@@ -1,19 +1,52 @@
 var _ = require("lodash");
+var utils = require("utils");
 var specializationReferralCities = require("./specialization_referral_cities");
 
 module.exports = {
   procedures: function(state, maskingSet, panelKey) {
-    return _.chain(maskingSet)
-      .map((record) => record.procedureIds)
-      .flatten()
-      .uniq()
-      .map((procedureId) => {
-        return [
-          procedureId,
-          _.get(state, ["ui", "panels", panelKey, "filterValues", "procedures", parseInt(procedureId)], false)
-        ];
-      }).zipObject()
-      .value();
+    var assignValue = function(procedureId) {
+      return [
+        procedureId,
+        _.get(state, ["ui", "panels", panelKey, "filterValues", "procedures", parseInt(procedureId)], false)
+      ];
+    };
+    var assignValues = function(ids) {
+      return ids.map(assignValue).zipObject();
+    };
+
+    return {
+      specialization: function(state, maskingSet, panelKey) {
+        var eachProcedureIds =
+          _.partialRight(_.map, (record) => record.procedureIds);
+
+        return utils.source(
+          assignValues,
+          _.uniq,
+          _.flattened,
+          eachProcedureIds,
+          maskingSet
+        );
+      },
+      procedure: function(state, maskingset, panelType) {
+        var eachExtractedProcedureIds =
+          _.partialRight(_.map, (tree) => extractProcedureIds(tree));
+
+        var extractedProcedureIds = function(tree) {
+          return _.keys(tree).concat(utils.source(
+            _.flatten,
+            eachExtractedProcedureIds,
+            _.values,
+            tree
+          ))
+        };
+
+        return utils.source(
+          assignedValues,
+          extractedProcedureIds,
+          state.app.procedures[state.ui.procedureId].tree
+        );
+      }
+    }[state.ui.pageType];
   },
   acceptsReferralsViaPhone: function(state, maskingSet, panelKey) {
     return _.get(state, ["ui", "panels", panelKey, "filterValues", "acceptsReferralsViaPhone"], false);

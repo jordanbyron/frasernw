@@ -1,9 +1,10 @@
+var objectAssign = require("object-assign");
 var pick = require("lodash/object/pick");
 var keys = require("lodash/object/keys");
 var union = require("lodash/array/union");
 var reduce = require("lodash/collection/reduce");
 var isObject = require("lodash/lang/isObject");
-var objectAssign = require("object-assign");
+var _ = require("lodash");
 
 module.exports = {
   setAllOwnValues: function(obj, value) {
@@ -34,5 +35,9 @@ module.exports = {
   },
   mask: function(array, mask) {
     return array.filter((elem) => mask.indexOf(elem) > -1 );
+  },
+  source: function(...args) {
+    var startingVal = args.pop();
+    return _.flowRight(args)(startingVal);
   }
 }
