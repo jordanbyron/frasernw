@@ -65,11 +65,6 @@ var tabs = function(state) {
 }
 
 var contentCategoryTabs = function(state) {
-  var contentCategories = state.app.contentCategories;
-  var contentItems = state.app.contentItems;
-  var specializationId = state.ui.specializationId;
-  var divisionIds = state.app.currentUser.divisionIds;
-
   return _.values(
     findActiveContentCategories(state)
   ).map((category) => {
@@ -255,7 +250,7 @@ var PANEL_PROPS_GENERATORS = {
       clinics: "Clinics"
     }[panelTypeKey];
     var membersName = {
-      specialists: state.app.specializations[state.ui.specializationId].membersName,
+      specialists: (state.ui.pageType == "specialization" ? state.app.specializations[state.ui.specializationId].membersName : "Specialists"),
       clinics: "Clinics"
     }[panelTypeKey];
     var resultSummaryText = generateResultSummary({
