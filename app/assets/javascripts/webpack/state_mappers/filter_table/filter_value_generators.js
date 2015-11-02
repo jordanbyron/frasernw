@@ -19,7 +19,7 @@ module.exports = {
         var eachProcedureIds =
           _.partialRight(_.map, (record) => record.procedureIds);
 
-        return utils.source(
+        return utils.from(
           assignedValues,
           _.uniq,
           _.flatten,
@@ -29,7 +29,7 @@ module.exports = {
       },
       procedure: function(state, maskingset, panelKey) {
         var extractedProcedureIds = function(tree) {
-          return _.keys(tree).concat(utils.source(
+          return _.keys(tree).concat(utils.from(
             _.flatten,
             eachExtractedProcedureIds,
             _.values,
@@ -39,7 +39,7 @@ module.exports = {
         var eachExtractedProcedureIds =
           _.partialRight(_.map, (tree) => extractedProcedureIds(tree));
 
-        return utils.source(
+        return utils.from(
           assignedValues,
           extractedProcedureIds,
           state.app.procedures[state.ui.procedureId].tree

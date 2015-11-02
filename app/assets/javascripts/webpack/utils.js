@@ -36,7 +36,7 @@ module.exports = {
   mask: function(array, mask) {
     return array.filter((elem) => mask.indexOf(elem) > -1 );
   },
-  source: function(...args) {
+  from: function(...args) {
     var startingVal = args.pop();
     return _.flowRight(...args)(startingVal);
   }

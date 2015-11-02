@@ -7,6 +7,7 @@ var sortFunctions = require("./filter_table/sort_functions");
 var sortOrders = require("./filter_table/sort_orders");
 var generateResultSummary = require("./filter_table/generate_result_summary");
 var referralCities = require("./filter_table/referral_cities");
+var utils = require("utils");
 
 module.exports = function(state, dispatch, config) {
   // console.log("STATE:");
@@ -97,97 +98,77 @@ var PANEL_GENERATORS = {
     };
   }
 }
-
-
-var filterReferentsInSteps = function(referents: Array, panelTypeKey: string, filterValues: Object, config: Object) {
+var opaqueFiltered = function(referents: Array, panelTypeKey: string, filterValues: Object, config: Object) {
   var operativeOpaqueFilters = _.values(_.pick(Filters, PANEL_TYPE_OPAQUE_FILTERS[panelTypeKey])).filter(
     function(predicate: Object): boolean {
       return  predicate.isActivated(filterValues);
     }
   );
 
-  var specializationFilter = function(record){
-    return _.includes(record.specializationIds, config.specializationId);
-  }
-  var cityFilter = function(record){
-    return record.cityIds.some((id) => filterValues.cities[id]);
-  }
-  var withOpaqueFilters = referents.filter((row) => {
+  return referents.filter((row) => {
     return _.every(
       operativeOpaqueFilters,
       (filter) => filter.predicate(row, filterValues, config.userIsAdmin)
     );
   });
-  var withoutSpecializationFilter = withOpaqueFilters.filter(cityFilter);
-  var withoutCityFilter = withOpaqueFilters.filter(specializationFilter)
-  var withAllFilters = withOpaqueFilters
-    .filter(specializationFilter)
-    .filter(cityFilter)
+};
 
-  return {
-    withAllFilters: withAllFilters,
-    withoutSpecializationFilter: withoutSpecializationFilter,
-    withoutCityFilter: withoutCityFilter
-  };
-}
+var cityFilter = function(filterValues, record){
+  return record.cityIds.some((id) => filterValues.cities[id]);
+};
 
-var computeReferentConfig = function(filtered, filterValues) {
-  if ((filtered.withAllFilters.length > 0) &&
-    (_.values(_.pick(filterValues.procedures, _.identity)).length > 0) &&
-    (filtered.withoutSpecializationFilter.length > filtered.withAllFilters.length) &&
-    (filterValues.specializationFilterActivated)) {
-    return {
-      finalSet: filtered.withAllFilters,
-      shouldShowSpecializationFilter: true,
-      shouldShowCityFilterMessage: false,
-      includingOtherSpecializations: false
-    };
-  } else if ((filtered.withAllFilters.length > 0) &&
-    (_.values(_.pick(filterValues.procedures, _.identity)).length > 0) &&
-    (filtered.withoutSpecializationFilter.length > filtered.withAllFilters.length) &&
-    (!filterValues.specializationFilterActivated)) {
-    return {
-      finalSet: filtered.withoutSpecializationFilter,
-      shouldShowSpecializationFilter: true,
-      shouldShowCityFilterMessage: false,
-      includingOtherSpecializations: true
-    };
-  } else if (filtered.withAllFilters.length > 0) {
-    return {
-      finalSet: filtered.withAllFilters,
-      shouldShowSpecializationFilter: false,
-      shouldShowCityFilterMessage: false,
-      includingOtherSpecializations: false
-    };
-  } else if (filtered.withoutSpecializationFilter.length > 0 && filterValues.specializationFilterActivated){
-    return {
-      finalSet: filtered.withAllFilters,
-      shouldShowSpecializationFilter: true,
-      shouldShowCityFilterMessage: false,
-      includingOtherSpecializations: false
-    };
-  } else if (filtered.withoutSpecializationFilter.length > 0 && !filterValues.specializationFilterActivated){
-    return {
-      finalSet: filtered.withoutSpecializationFilter,
-      shouldShowSpecializationFilter: true,
-      shouldShowCityFilterMessage: false,
-      includingOtherSpecializations: true
-    };
-  } else if (filtered.withoutCityFilter.length > 0){
-    return {
-      finalSet: filtered.withAllFilters,
-      shouldShowSpecializationFilter: false,
-      shouldShowCityFilterMessage: true,
-      includingOtherSpecializations: false
-    };
-  } else {
-    return {
-      finalSet: filtered.withAllFilters,
-      shouldShowSpecializationFilter: false,
-      shouldShowCityFilterMessage: false,
-      includingOtherSpecializations: false
-    };
+var specializationFilter = function(specializationId, pageType, record){
+  return (pageType !== "specialization" ||
+    _.includes(record.specializationIds, specializationId));
+};
+
+var filterBySpecialization = function(set, specializationId, pageType){
+  return set.filter(_.partial(specializationFilter, specializationId, pageType))
+};
+
+var filterByCities = function(set, filterValues){
+  return set.filter(_.partial(cityFilter, filterValues));
+};
+
+var anyFiltersActivated = function(filterValueOverrides) {
+  return !_.every(_.values(filterValueOverrides), (filterValue) => {
+    return (filterValue === undefined ||
+      !_.any(_.values(filterValue)))
+  });
+};
+
+var finalSet = function(filtered, filterValues, pageType, filterValueOverrides) {
+  if (shouldIncludeOtherSpecializations(filtered, filterValues, pageType, filterValueOverrides)){
+    return filtered.withoutSpecializationFilter;
   }
+  else {
+    return filtered.withAllFilters;
+  }
+};
+
+var shouldIncludeOtherSpecializations = function(filtered, filterValues, pageType, filterValueOverrides) {
+  return (shouldShowSpecializationFilter(filtered, filterValues, pageType, filterValueOverrides) &&
+    !filterValues.specializationFilterActivated);
+};
+
+var shouldShowCityFilterMessage = function(filtered, filterValues, pageType) {
+  return (filtered.withAllFilters.length === 0 &&
+    filtered.withoutSpecializationFilter.length === 0);
+};
+
+var shouldShowSpecializationFilter = function(filtered, filterValues, pageType, filterValueOverrides) {
+  return ((pageType === "specialization") &&
+    ((
+      (filtered.withAllFilters.length > 0) &&
+      (_.values(_.pick(filterValues.procedures, _.identity)).length > 0) &&
+      (filtered.withoutSpecializationFilter.length > filtered.withAllFilters.length)
+    ) ||
+    (
+      (filtered.withAllFilters.length === 0) &&
+      (filtered.withoutSpecializationFilter.length > 0) &&
+      (anyFiltersActivated(filterValueOverrides))
+    ))
+  );
 };
 
 var PANEL_PROPS_GENERATORS = {
@@ -221,26 +202,38 @@ var PANEL_PROPS_GENERATORS = {
         panelTypeKey: panelTypeKey
       }
     );
-
-    var filtered = filterReferentsInSteps(
+    var _filterValueOverrides = _.get(state, ["ui", "panels", panelTypeKey, "filterValues"], {});
+    var _opaqueFiltered = opaqueFiltered(
       _.values(state.app[panelTypeKey]),
       panelTypeKey,
       filterValues,
-      {
-        userIsAdmin: state.app.currentUser.isAdmin,
-        specializationId: state.ui.specializationId
-      }
+      { userIsAdmin: state.app.currentUser.isAdmin }
     );
-    var config = computeReferentConfig(filtered, filterValues);
+    var filtered = {
+      withAllFilters: utils.from(
+        _.partialRight(filterBySpecialization, state.ui.specializationId, state.ui.pageType),
+        _.partialRight(filterByCities, filterValues),
+        _opaqueFiltered
+      ),
+      withoutSpecializationFilter: filterByCities(_opaqueFiltered, filterValues),
+      withoutCityFilter: filterBySpecialization(_opaqueFiltered, state.ui.specializationId, state.ui.pageType)
+    };
+
     var bodyRowConfig = {
       panelTypeKey: panelTypeKey,
       panelKey: panelTypeKey,
       rowGenerator: "referents",
       rowGeneratorConfig: {
-        includingOtherSpecialties: config.includingOtherSpecializations
+        includingOtherSpecialties: shouldIncludeOtherSpecializations(filtered, filterValues, state.ui.pageType, _filterValueOverrides)
       }
     };
-    var bodyRows = generateBodyRows(state, config.finalSet, bodyRowConfig, dispatch, sortConfig);
+    var bodyRows = generateBodyRows(
+      state,
+      finalSet(filtered, filterValues, state.ui.pageType, _filterValueOverrides),
+      bodyRowConfig,
+      dispatch,
+      sortConfig
+    );
     var memberName = {
       specialists: state.app.specializations[state.ui.specializationId].memberName,
       clinics: "Clinic"
@@ -275,7 +268,7 @@ var PANEL_PROPS_GENERATORS = {
       // TODO name this 'tableHeadings'
       headings: TABLE_HEADINGS_GENERATORS.referents(
         memberName,
-        config.includingOtherSpecializations
+        shouldIncludeOtherSpecializations(filtered, filterValues, state.ui.pageType, _filterValueOverrides)
       ),
       bodyRows: bodyRows,
       resultSummary: {
@@ -284,13 +277,13 @@ var PANEL_PROPS_GENERATORS = {
         text: resultSummaryText
       },
       cityFilterPills: {
-        shouldDisplay: config.shouldShowCityFilterMessage,
+        shouldDisplay: shouldShowCityFilterMessage(filtered, filterValues, state.ui.pageType),
         availableFromOtherCities: availableFromOtherCities,
         cityFilterValues: filterValues.cities,
         cities: state.app.cities
       },
       specializationFilterMessage: {
-        shouldDisplay: config.shouldShowSpecializationFilter,
+        shouldDisplay: shouldShowSpecializationFilter(filtered, filterValues, state.ui.pageType, _filterValueOverrides),
         remainderCount: specializationRemainderCount,
         dispatch: dispatch,
         collectionName: genericMembersName,
@@ -540,7 +533,7 @@ var TABLE_HEADINGS_GENERATORS = {
       { label: "", key: "PROVIDE_FEEDBACK" }
     ];
   },
-  referents: function(labelName, includingOtherSpecializations) {
+  referents: function(labelName, includingOtherSpecializations, pageType) {
     if (includingOtherSpecializations) {
       return [
         { label: labelName, key: "NAME", className: "specialization_table__th--name" },

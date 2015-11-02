@@ -218,7 +218,7 @@ module Serialized
       end
     end,
     procedures: Proc.new do
-      Procedure.includes(:specializations).all.inject({}) do |memo, procedure|
+      Procedure.all.inject({}) do |memo, procedure|
         memo.merge(procedure.id => {
           nameRelativeToParents: procedure.try(:name_relative_to_parents),
           name: procedure.name,

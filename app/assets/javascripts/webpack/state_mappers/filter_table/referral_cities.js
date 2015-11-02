@@ -13,7 +13,7 @@ module.exports = function(state) {
     }));
   });
 
-  return utils.source(
+  return utils.from(
     _.uniq,
     _.flatten,
     eachReferralCities,
