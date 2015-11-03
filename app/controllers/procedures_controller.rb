@@ -9,13 +9,11 @@ class ProceduresController < ApplicationController
   end
 
   def show
-    @specialization = Specialization.find(1)
     @procedure = Procedure.find(params[:id])
     @init_data = {
       app: FilterTableAppState.exec(current_user: current_user),
       ui: {
         pageType: "procedure",
-        specializationId: @specialization.id,
         procedureId: @procedure.id,
         hasBeenInitialized: false
       }

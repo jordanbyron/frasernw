@@ -1,4 +1,4 @@
-- set_page_specific_title "#{@specialization.name}"
+- set_page_specific_title "#{@procedure.name}"
 
 - procedure_specialization = @procedure.procedure_specializations.first || ProcedureSpecialization.first
 - procedure_specializations = @procedure.procedure_specializations.reject{ |ps| !current_user_is_admin? && ps.specialization.fully_in_progress_for_divisions(current_user_divisions) }
@@ -38,7 +38,7 @@
 
 .content-wrapper
   %p.admin.btn-group
-    - if can? :update, @specialization
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialty", edit_specialization_path(@specialization), :class => "btn ajax")
-    - if can? :destroy, @specialization
-      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Specialty", @specialization, :confirm => "Delete #{@specialization.name}?", :method => :delete, :class => "btn")
+    - if can? :update, @procedure
+      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialty", edit_specialization_path(@procedure), :class => "btn ajax")
+    - if can? :destroy, @procedure
+      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Specialty", @procedure, :confirm => "Delete #{@procedure.name}?", :method => :delete, :class => "btn")

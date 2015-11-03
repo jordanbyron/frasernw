@@ -34,10 +34,18 @@ var feedbackModal = function(state) {
   return (state.ui.feedbackModal || { state: "HIDDEN"});
 }
 
+var defaultPanel = function(state) {
+  return {
+    specialization: function() {
+      return state.app.divisions[state.app.currentUser.divisionIds[0]].openToSpecializationPanel[state.ui.specializationId];
+    },
+    procedure: function() { return { type: "specialists" } },
+  }[state.ui.pageType]();
+}
+
 var selectedPanel = function(state, dispatch) {
-  var defaultPanel =
-    state.app.divisions[state.app.currentUser.divisionIds[0]].openToSpecializationPanel[state.ui.specializationId];
-  var selectedPanelKey = (state.ui.selectedPanel || generatePanelKey(defaultPanel.type, defaultPanel.id));
+  var _defaultPanel = defaultPanel(state);
+  var selectedPanelKey = (state.ui.selectedPanel || generatePanelKey(_defaultPanel.type, _defaultPanel.id));
   var selectedPanelType = panelTypeKey(selectedPanelKey);
 
   return PANEL_GENERATORS[selectedPanelType](state, dispatch, selectedPanelKey);
@@ -241,7 +249,7 @@ var PANEL_PROPS_GENERATORS = {
       sortConfig
     );
     var memberName = {
-      specialists: state.app.specializations[state.ui.specializationId].memberName,
+      specialists: (state.ui.pageType == "specialization" ? state.app.specializations[state.ui.specializationId].memberName : "Specialist"),
       clinics: "Clinic"
     }[panelTypeKey];
     var genericMembersName = {
@@ -572,7 +580,7 @@ var itemsForContentCategory = function(category, state) {
       return _.includes(contentItem.specializationIds, state.ui.specializationId);
     },
     procedure: function(contentItem) {
-      return _.includes(contentItem.specializationIds, state.ui.specializationId);
+      return _.includes(contentItem.procedureIds, state.ui.procedureId);
     }
   }
 
