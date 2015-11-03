@@ -414,17 +414,22 @@ var filterResources = function(rows, filterValues, userIsAdmin) {
 }
 
 var assumedListProps = function(state: Object, panelTypeKey: string, membersName: string): Object {
-  var list = labeledAssumedList(
-    state.app.specializations[state.ui.specializationId].nestedProcedureIds,
-    state.app.procedures,
-    panelTypeKey
-  );
+  if(state.ui.pageType === "specialization") {
+    var list = labeledAssumedList(
+      state.app.specializations[state.ui.specializationId].nestedProcedureIds,
+      state.app.procedures,
+      panelTypeKey
+    );
 
-  return {
-    shouldDisplay: list.length > 0,
-    list: list,
-    membersName: (panelTypeKey === "specialists" ? membersName : `${state.app.specializations[state.ui.specializationId].name} Clinics`)
-  };
+    return {
+      shouldDisplay: list.length > 0,
+      list: list,
+      membersName: (panelTypeKey === "specialists" ? membersName : `${state.app.specializations[state.ui.specializationId].name} Clinics`)
+    };
+  }
+  else {
+    return { shouldDisplay: false };
+  }
 }
 
 var labeledAssumedList = function(nestedProcedures: Object, normalizedProcedures: Object, collectionName: string): Array {
