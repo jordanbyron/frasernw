@@ -33,8 +33,8 @@ module.exports = React.createClass({
       </div>
     );
   },
-  renderNotice: function(props) {
-    if (!props.isPeriodValid) {
+  renderUnavailableNotice: function(props) {
+    if (!props.shouldShowData) {
       return(
         <div
           className="alert alert-info"
@@ -45,8 +45,23 @@ module.exports = React.createClass({
       return null;
     }
   },
+  renderReliabilityNotice: function(props) {
+    if (props.shouldShowData && props.isDataDubious) {
+      return(
+        <div
+          className="alert alert-info"
+          style={{marginTop: "10px"}}
+        >Please note that this data (pre- November 2015) can only be relied on to count clicks
+        on links to resources which are hosted ON PATHWAYS as inline content.
+        It's highly suggested that this data is not used for decisionmaking.
+        </div>
+      );
+    } else {
+      return null;
+    }
+  },
   renderInnerContainer: function(props) {
-    if (!props.isPeriodValid) {
+    if (!props.shouldShowData) {
       return null;
     } else {
       return (
@@ -77,7 +92,8 @@ module.exports = React.createClass({
             <div id="print_container">
               <h2 style={{marginBottom: "5px"}}>{ props.title }</h2>
               <h4>{ props.subtitle }</h4>
-              { this.renderNotice(props) }
+              { this.renderUnavailableNotice(props) }
+              { this.renderReliabilityNotice(props) }
               { this.renderInnerContainer(props) }
             </div>
           }
