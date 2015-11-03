@@ -18,7 +18,7 @@
 
 - can_edit = current_user_is_super_admin? || (current_user_divisions & user_divisions).present?
 
-- specializations = current_user_is_admin? ? Specialization.all_cached : Specialization.not_in_progress_for_divisions(user_divisions).uniq
+- specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(user_divisions).uniq
 
 .content-wrapper
   .content#front{:style => current_user_is_admin? && 'margin-top: -15px'}
@@ -45,18 +45,15 @@
                 = BlueCloth.new(news_item.body).to_html.html_safe
 
     .row
-      -# Specialization cache only needs to break here to show display of specializations differently for user_division groupings
-      - cache("front_#{Specialization.cache_key}_#{user_divisions.map{|d| d.id}.join('_')}", expires_in: 23.hours) do
-        .span3.hidden-phone.front
+      .span3.hidden-phone.front
 
-          %h2 Specialties
+        %h2 Specialties
 
-          %ul.space
-            - specializations.each do |specialization|
-              - cache("front_#{specialization.cache_key}_#{user_divisions.map{|d| d.id}.join('_')}", expires_in: 23.hours) do
-                %li
-                  = link_to specialization.name, specialization, :class => specialization.fully_in_progress_for_divisions(user_divisions) ? "in-progress ajax" : "ajax"
-                  = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(user_divisions)
+        %ul.space
+          - specializations.each do |specialization|
+            %li
+              = link_to specialization.name, specialization, :class => specialization.fully_in_progress_for_divisions(user_divisions) ? "in-progress ajax" : "ajax"
+              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(user_divisions)
 
       .span4half.front
 
