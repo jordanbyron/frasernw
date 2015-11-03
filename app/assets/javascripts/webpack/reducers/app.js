@@ -35,7 +35,7 @@ module.exports = function(state = {}, action) {
       state,
       action.data
     );
-  case "INITIALIZE_FROM_SERVER":
+  case "INTEGRATE_PAGE_RENDERED_DATA":
     return action.initialState.app;
   default:
     return _.assign(

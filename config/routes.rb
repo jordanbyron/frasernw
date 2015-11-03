@@ -104,6 +104,7 @@ Frasernw::Application.routes.draw do
       get :page_views
       get :sessions
       get :referents_by_specialty
+      get :usage
       get :user_ids
     end
   end
@@ -190,7 +191,9 @@ Frasernw::Application.routes.draw do
   end
   resources :faqs, only: [:new, :create, :edit, :update, :destroy]
 
-  resources :usage_reports, only: [:new, :create, :show]
+  resources :csv_usage_reports, only: [:new, :create, :show]
+
+  resources :newsletters, only: [:index, :create, :new, :edit, :update, :destroy]
 
   namespace :api do
     namespace :v1 do
@@ -198,6 +201,7 @@ Frasernw::Application.routes.draw do
         collection do
           get :page_views
           get :sessions
+          get :usage
           get :user_ids
         end
       end

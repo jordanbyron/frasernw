@@ -51,25 +51,17 @@
           $('body').data('GLOBAL_USER_TYPE', #{current_user_type_mask});
         });
 
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-32752873-1']);
-        _gaq.push(['_trackPageview']);
-        _gaq.push(['_setCustomVar', 1, 'ID', '#{current_user_id}', 1]);
-        _gaq.push(['_setCustomVar', 2, 'Type', '#{current_user_type_mask}', 1]);
-        _gaq.push(['_setCustomVar', 3, 'Division', '#{current_user_division_id}', 1]);
 
-        (function() {
-          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
     :javascript
       window.pathways.localstorage_cache_version(#{localstorage_cache_version})
 
+    = render "partials/analytics_setup"
+
   %body{:id => "#{params[:controller]}_page"}
-    #heartbeat-loader-position
-      .heartbeat-loader
-        Loading…
+    - if @layout_heartbeat_loader
+      #heartbeat-loader-position
+        .heartbeat-loader
+          Loading…
     #main-nav.navbar
       .navbar-inner
         .container
@@ -89,7 +81,7 @@
                 #loading
                   #loading-spinner
                 %ul
-                - if Division.all_cached.length > 1
+                - if @divisions.length > 1
                   #search_location
                     %label
                       %input#search_all{"type" => "checkbox"}
@@ -237,7 +229,7 @@
                           = link_to "Users", "#", :class => "arrow-right-after"
                           %ul.dropdown-menu
                             %li=link_to "All Users", users_path, :class => "ajax"
-                            - Division.all_cached.each do |division|
+                            - @divisions.each do |division|
                               %li=link_to "#{division.name} Users", division_users_path(division), :class => 'division ajax'
                       %li.divider
                       %li.nav-header Content Management
@@ -250,19 +242,23 @@
                             %li= link_to "New Content Item", new_sc_item_path, :class => "ajax"
                           - if can? :create, Faq
                             %li= link_to "New Faq", new_faq_path
+                          - if can? :create, Newsletter
+                            %li= link_to "New Newsletter", new_newsletter_path
                       - if can? :read, ScCategory
                         %li= link_to "Content Categories", sc_categories_path, :class => "sc_category ajax"
+                      - if can? :index, Newsletter
+                        %li= link_to "Newsletters", newsletters_path
                       - if can? :read, ScItem
-                        - if current_user_is_super_admin? && Division.all_cached.length > 1
+                        - if current_user_is_super_admin? && @divisions.length > 1
                           %li
                             = link_to "Owned Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
-                              - Division.all_cached.each do |division|
+                              - @divisions.each do |division|
                                 %li= link_to "#{division.name}", division_content_items_path(division), :class => "sc_item ajax"
                           %li
                             = link_to "Shared Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
-                              - Division.all_cached.each do |division|
+                              - @divisions.each do |division|
                                 %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
                         - elsif user_divisions.length > 1
                           %li
@@ -277,26 +273,26 @@
                                 %li= link_to "#{division.name}", shared_content_items_path(division), :class => "sc_item ajax"
                         - else
                           %li= link_to "Content Items", division_content_items_path(user_divisions.first), :class => "sc_item ajax"
-                          - if Division.all_cached.length > 1
+                          - if @divisions.length > 1
                             %li= link_to "Manage Shared Content Items", shared_content_items_path(user_divisions.first), :class => "sc_item ajax"
-                - cache([user_divisions, 'resources_dropdown_categories']) do
+                - cache("resources_dropdown_categories_#{user_divisions.map{|d| d.id}.join('_')}") do
                   - dropdown_categories = ScCategory.global_resources_dropdown(user_divisions)
                   - if dropdown_categories.present?
                     %li.dropdown
                       %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-                        %i.icon-medkit
+                        %i.icon-book
                         Resources
                         %b.caret
                       %ul.dropdown-menu
                         - dropdown_categories.each do |category|
                           %li=link_to category.name, category, :class => 'ajax'
-                - cache([user_divisions, 'sc_category_global_navbar']) do
+                - cache("sc_category_global_navbar_#{user_divisions.map{|d| d.id}.join('_')}") do
                   - ScCategory.global_navbar(user_divisions).each do |category|
                     %li= link_to category.name, category, :class => 'ajax'
 
                 %li.dropdown
                   %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-                    %i.icon-file-text
+                    %i.icon-edit
                     Forms
                     %b.caret
 
@@ -375,7 +371,7 @@
 
                     %li.nav-header Settings
                     -# %li= link_to "Change name", change_name_path, :class => 'change_name ajax'
-                    -# if Division.all_cached.length > 1
+                    -# if @divisions.length > 1
                       %li= link_to "Change local referral area", change_local_referral_area_path, :class => 'change_local_referral_area ajax'
                     %li= link_to "Change e-mail address", change_email_path, :class => 'change_email ajax'
                     %li= link_to "Change password", change_password_path, :class => 'change_password ajax'

@@ -1,5 +1,11 @@
 class ReportsController < ApplicationController
-  load_and_authorize_resource except: [:page_views, :sessions, :referents_by_specialty]
+  load_and_authorize_resource except: [
+    :page_views,
+    :sessions,
+    :user_ids,
+    :referents_by_specialty,
+    :usage
+  ]
 
   def index
     @reports = Report.all
@@ -12,6 +18,12 @@ class ReportsController < ApplicationController
     @options_for_select = AnalyticsChartMonths.exec
     @page_title = "User Page Views"
     @data_path = "/api/v1/reports/page_views"
+    @annotation = <<-STR
+      This report shows the number of times users have viewed pages on Pathways for each week in the given month range.
+      The divisional series show the number of page views that are made by each division's users.
+      All series exclude page views by admins and users who are not logged in,
+      as well as page views on external sites (i.e. external resource links and uploaded items).
+    STR
 
     render :analytics_chart
   end
@@ -22,6 +34,12 @@ class ReportsController < ApplicationController
     @options_for_select = AnalyticsChartMonths.exec
     @page_title = "User Sessions"
     @data_path = "/api/v1/reports/sessions"
+    @annotation = <<-STR
+      This report shows the number of sessions that have been recorded on Pathways for each week in the given month range.
+      A session is a group of page views by the same user which are no more than 30 minutes apart.
+      The divisional series show the number of sessions attributable to each division's users.
+      All series exclude sessions attributable to admins and users who are not logged in.
+    STR
 
     render :analytics_chart
   end
@@ -30,21 +48,43 @@ class ReportsController < ApplicationController
     authorize! :view_report, :sessions
 
     @options_for_select = AnalyticsChartMonths.exec
-    @page_title = "User Ids"
+    @page_title = "User IDs"
     @data_path = "/api/v1/reports/user_ids"
+    @annotation = <<-STR
+      This report shows the number of user IDs (email and password combinations)
+      that have logged into Pathways for each week in the given month range.
+      The divisional series show the number of logged in user IDs linked to each division.
+      All series exclude admin user IDs.
+    STR
 
     render :analytics_chart
   end
 
   def referents_by_specialty
+    authorize! :view_report, :referents_by_specialty
+
     @init_data = {
       app: {
         specializations: Serialized.fetch(:specializations),
         divisions: Serialized.fetch(:divisions)
       }
     }
+  end
 
-    authorize! :view_report, :referents_by_specialty
+  def usage
+    @layout_heartbeat_loader = false
+
+    authorize! :view_report, :usage
+
+    @init_data = {
+      app: {
+        currentUser: {
+          divisionIds: current_user.divisions.map(&:id),
+          isSuperAdmin: current_user.super_admin?
+        },
+        divisions: Serialized.fetch(:divisions)
+      }
+    }
   end
 
   def show

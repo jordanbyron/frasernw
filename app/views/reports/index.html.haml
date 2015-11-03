@@ -56,16 +56,7 @@
 
     - if can? :view_report, :user_ids
       %tr
-        %td= link_to "User Ids", user_ids_reports_path
-        %td Analytics
-        %td System-wide
-        %td N/A
-        %td > April 2014
-        %td
-
-    - if can? :view_report, :usage
-      %tr
-        %td= link_to "Usage", new_usage_report_path
+        %td= link_to "User IDs", user_ids_reports_path
         %td Analytics
         %td System-wide
         %td N/A
@@ -81,6 +72,23 @@
         %td All Time
         %td
 
+    - if can? :view_report, :csv_usage
+      %tr
+        %td= link_to "Usage (CSV Report)", new_csv_usage_report_path
+        %td Analytics
+        %td System-wide
+        %td N/A
+        %td > April 2014
+        %td
+
+    - if can? :view_report, :usage
+      %tr
+        %td= link_to "Entity Page Views", usage_reports_path
+        %td Analytics
+        %td System-wide
+        %td N/A
+        %td > April 2014
+        %td
 
     - if current_user_is_super_admin?
       - @reports.each do |report|

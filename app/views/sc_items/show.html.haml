@@ -32,7 +32,7 @@
       %li
         - if @sc_item.shared_care?
           %i.icon-blue.icon-star
-        = link_to(@sc_item.title, @sc_item.resolved_url, :target => "_blank", "onclick" => "_gaq.push(['_trackEvent', 'content_item_id', '#{@sc_item.type_mask}', '#{@sc_item.id}']); _gaq.push(['_trackEvent', 'content_item_user', $('body').data('GLOBAL_USER_TYPE').toString(), $('body').data('GLOBAL_USER_ID').toString()]); return true;")
+        = link_to(@sc_item.title, @sc_item.resolved_url, :target => "_blank", "onclick" => "window.pathways.trackContentItem(_gaq, #{@sc_item.id})")
       %li
         %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
           %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}

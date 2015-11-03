@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151014191946) do
+ActiveRecord::Schema.define(:version => 20151024160907) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -491,6 +491,27 @@ ActiveRecord::Schema.define(:version => 20151014191946) do
   end
 
   add_index "news_items", ["division_id"], :name => "index_news_items_on_division_id"
+
+  create_table "newsletter_description_items", :force => true do |t|
+    t.text     "description_item"
+    t.integer  "newsletter_id"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "newsletter_description_items", ["newsletter_id"], :name => "newsletter_description_items_newsletter_id"
+
+  create_table "newsletters", :force => true do |t|
+    t.integer  "month_key",             :null => false
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
+  add_index "newsletters", ["month_key"], :name => "newsletters_month_key"
 
   create_table "notes", :force => true do |t|
     t.text     "content"

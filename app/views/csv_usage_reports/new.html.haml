@@ -7,13 +7,13 @@
 
       #customization
         %p{style: "margin-left: 0px; margin-bottom: 20px;"}
-          = "Generate a csv usage report showing page views, sessions, and users for one division or all of Pathways."
+          = "Generate a CSV report showing page views, sessions, and number of logged in user IDs for one division or all of Pathways."
 
         %strong Customize Report:
 
         = label_tag "Start month:"
         = select_tag "start_month",
-          options_for_select(@months, Month.new(2014, 1).to_i),
+          options_for_select(@months, Month.new(2014, 4).to_i),
           id: "start_month",
           class: "month_selector"
 

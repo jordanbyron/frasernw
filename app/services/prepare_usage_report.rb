@@ -5,7 +5,7 @@ class PrepareUsageReport
   def exec
     ## generate the report
     csv_string = CSV.write_to_string(
-      UsageReport.exec(
+      CsvUsageReport.exec(
         start_date: start_date,
         end_date: end_date,
         division: Division.where(id: division_id).first

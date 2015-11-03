@@ -147,7 +147,11 @@
                   - @clinic.referral_forms.each do |referral_form|
                     - next if not referral_form.form.present?
                     - type = referral_form.form_content_type.split('/').last
-                    %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, :target => "_blank"
+                    %li
+                      = link_to "#{referral_form.description} (#{type})",
+                        referral_form.form.url,
+                        :target => "_blank",
+                        "onClick" => "window.pathways.trackForm(_gaq, #{referral_form.id})"
               - elsif @clinic.referral_form_mask == 2
                 %p
                   %strong Referral form:

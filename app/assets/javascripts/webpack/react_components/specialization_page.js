@@ -25,8 +25,8 @@ module.exports = React.createClass({
     return(
       <div>
         <LoadingContainer isLoading={this.props.isLoading}
-          renderChildren={this.renderChildren}
-          childrenProps={this.props}/>
+          renderChildren={this.renderChildren.bind(null, this.props)}
+        />
         <FeedbackModal
           dispatch={this.props.dispatch}
           {...this.props.feedbackModal}

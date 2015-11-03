@@ -124,6 +124,16 @@ body #loading2
   height: 5em;
 }
 
+#heartbeat-loader-position-noremove{
+  position: fixed;
+  z-index: 4000;
+  transition: opacity 1s;
+  top: 50%;
+  left: 46%;
+  width: 5em;
+  height: 5em;
+}
+
 
 body.loading2 #loading2
 {
@@ -425,7 +435,7 @@ body.loading #email
         line-height: 125px;
         text-align: baseline;
         background-color: $FNW_LIGHT_GRAY;
-        content: "\f200";
+        content: "\f0f0";
         color: $FNW_LIGHT_BLUE;
         text-align: center;
       }
@@ -819,7 +829,7 @@ body.loading #email
       text-align: left;
       -ms-transform: rotate(-90deg);
       -ms-transform-origin: top left;
-      -moz-transform:rotate(-90deg); 
+      -moz-transform:rotate(-90deg);
       -moz-transform-origin: top left;
       -webkit-transform: rotate(-90deg);
       -webkit-transform-origin: top left;

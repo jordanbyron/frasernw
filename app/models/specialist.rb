@@ -170,9 +170,6 @@ class Specialist < ActiveRecord::Base
     self.in_cities_cached(divs.map{ |division| division.cities }.flatten.uniq)
   end
 
-  def self.in_multiple_divisions_cached
-
-  end
 
   def self.cached_find(id)
     Rails.cache.fetch([name, id]){find(id)}

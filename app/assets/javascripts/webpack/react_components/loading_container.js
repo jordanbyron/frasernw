@@ -5,16 +5,18 @@ module.exports = React.createClass({
     isLoading: React.PropTypes.bool
   },
   render: function() {
-    if (this.props.isLoading){
+    if (this.props.isLoading && (this.props.showHeart === undefined || this.props.showHeart)){
       return(
-        <div>
-          <div id="heartbeat-loader-position">
+        <div style={{position: "relative", minHeight: this.props.minHeight}}>
+          <div id="heartbeat-loader-position-noremove" style={{position: "absolute"}}>
             <div className="heartbeat-loader"/>
           </div>
         </div>
       );
+    } else if (this.props.isLoading) {
+      return null;
     } else {
-      return this.props.renderChildren(this.props.childrenProps);
+      return this.props.renderChildren();
     }
   }
 })

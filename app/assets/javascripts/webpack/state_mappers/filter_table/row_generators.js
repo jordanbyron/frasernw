@@ -4,6 +4,7 @@ var FeedbackIcon = require("../../react_components/icons/feedback");
 var SharedCareIcon = require("../../react_components/icons/shared_care");
 var Tags = require("../../react_components/tags");
 var reject = require("lodash/collection/reject");
+var trackContentItem = require("../../analytics_wrappers").trackContentItem;
 
 var labelReferentName = function(record) {
   return (
@@ -66,7 +67,11 @@ var labelResourceTitle = function(record) {
   return(
     <span>
       <SharedCareIcon color="blue" shouldDisplay={record.isSharedCare}/>
-      <a href={record.resolvedUrl}>{ record.title }</a>
+      <a
+        href={record.resolvedUrl}
+        target="_blank"
+        onClick={function() { trackContentItem(_gaq, record.id) }}
+      >{ record.title }</a>
       <Tags record={record}/>
     </span>
   );

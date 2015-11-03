@@ -13,14 +13,17 @@ module FrontHelper
 
     Version.includes(:item).order("id desc").where("item_type in (?)", ["Specialist", "SpecialistOffice", "ClinicLocation"]).limit(2000).each do |version|
 
-      next if version.item.blank?
+      # for some reason stale cached versions of this are being served up below if we don't reload...
+      item = version.item.try(:reload)
+
+      next if item.blank?
       break if automated_events.length >= max_automated_events
 
       begin
 
         if version.item_type == "Specialist"
 
-          specialist = version.item
+          specialist = item
           specialist_cities = specialist.cities_for_front_page.flatten.uniq
 
           next if specialist.blank? || specialist.in_progress
@@ -38,7 +41,7 @@ module FrontHelper
 
               #newly moved away
 
-              automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has moved away.".html_safe]
+              automated_events["#{version.item_type}_#{item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has moved away.".html_safe]
 
             elsif specialist.retired?
 
@@ -48,7 +51,7 @@ module FrontHelper
 
               #newly retired
 
-              automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has retired.".html_safe]
+              automated_events["#{version.item_type}_#{item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has retired.".html_safe]
 
             elsif specialist.retiring?
 
@@ -56,7 +59,7 @@ module FrontHelper
               next if version.reify.retiring? #retiring status hasn't changed
               current_specialist = Specialist.find(specialist.id);
 
-              automated_events["#{version.item_type}_#{version.item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{current_specialist.unavailable_from.to_s(:long_ordinal)}.".html_safe]
+              automated_events["#{version.item_type}_#{item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{current_specialist.unavailable_from.to_s(:long_ordinal)}.".html_safe]
 
             end
 
@@ -64,7 +67,7 @@ module FrontHelper
 
         elsif version.item_type == "SpecialistOffice"
 
-          specialist_office = version.item
+          specialist_office = item
           next if specialist_office.specialist.blank? || specialist_office.specialist.in_progress
 
           specialist = specialist_office.specialist
@@ -82,22 +85,17 @@ module FrontHelper
                 next if version.reify.opened_recently? #opened this year status hasn't changed)
             end
 
-            # we're actually gonna use this event
-            # make sure we're not getting a cached version
-            # (TODO upgrade paper trail?...)
-            specialist_office = specialist_office.reload
-
             if specialist_office.city.present?
               automated_events["Specialist_#{specialist.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{specialist_office.city.name} and is accepting new referrals.".html_safe]
             else
-              automated_events["Specialist_#{version.item.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe]
+              automated_events["Specialist_#{item.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", specialist_path(specialist), :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe]
             end
 
           end
 
         elsif version.item_type == "ClinicLocation"
 
-          clinic_location = version.item
+          clinic_location = item
           next if clinic_location.clinic.blank? || clinic_location.clinic.in_progress #devnoteperformance: in_progress query creates 13 ActiveRecord Selects
 
           clinic = clinic_location.clinic
@@ -113,9 +111,9 @@ module FrontHelper
             end
 
             if clinic_location.city.present?
-              automated_events["Clinic_#{version.item.id}"] = ["#{version.created_at}", "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{clinic_location.city.name} and is accepting new referrals.".html_safe]
+              automated_events["Clinic_#{item.id}"] = ["#{version.created_at}", "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{clinic_location.city.name} and is accepting new referrals.".html_safe]
             else
-              automated_events["Clinic_#{version.item.id}"] = ["#{version.created_at}", "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe]
+              automated_events["Clinic_#{item.id}"] = ["#{version.created_at}", "#{link_to clinic.name, clinic_path(clinic), :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe]
             end
 
           end

@@ -3,7 +3,8 @@ var app = require("./app");
 var _ = require("lodash");
 var UIReducers = {
   SpecializationPage: require("./specialization_page/ui"),
-  ReferentsBySpecialty: require("./referents_by_specialty/ui")
+  ReferentsBySpecialty: require("./referents_by_specialty/ui"),
+  UsageReport: require("./usage_report/ui")
 }
 
 // app - what is true 'objectively' about Pathways
