@@ -1,14 +1,11 @@
 var app = require("./app");
 var _ = require("lodash");
-var UIReducers = {
-  FilterTablePage: require("./filter_table_page/ui"),
-  ReferentsBySpecialty: require("./referents_by_specialty/ui"),
-  UsageReport: require("./usage_report/ui")
-}
 
 // app - what is true 'objectively' about Pathways
 // ui - what is true about this view in particular
 module.exports = function(uiReducerKey) {
+  var reducer = require(`./${_.snakeCase(uiReducerKey)}/ui`);
+
   return function(state = {}, action) {
     switch(action.type){
     case "@@redux/INIT":
@@ -19,7 +16,7 @@ module.exports = function(uiReducerKey) {
     default:
       return {
         app: app(state.app, action),
-        ui: UIReducers[uiReducerKey](state.ui, action)
+        ui: reducer(state.ui, action)
       };
     }
   }
