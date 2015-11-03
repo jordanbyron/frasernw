@@ -113,21 +113,25 @@ var opaqueFiltered = function(referents: Array, panelTypeKey: string, filterValu
   });
 };
 
-var cityFilter = function(filterValues, record){
-  return record.cityIds.some((id) => filterValues.cities[id]);
-};
-
-var specializationFilter = function(specializationId, pageType, record){
-  return (pageType !== "specialization" ||
-    _.includes(record.specializationIds, specializationId));
-};
-
-var filterBySpecialization = function(set, specializationId, pageType){
-  return set.filter(_.partial(specializationFilter, specializationId, pageType))
+var filterByPageType = function(records, state) {
+  return {
+    specialization() {
+      return records.filter((record) => {
+        return _.includes(record.specializationIds, state.ui.specializationId);
+      });
+    },
+    procedure() {
+      return records.filter((record) => {
+        return (_.includes(record.procedureIds, state.ui.procedureId));
+      });
+    },
+  }[state.ui.pageType]();
 };
 
 var filterByCities = function(set, filterValues){
-  return set.filter(_.partial(cityFilter, filterValues));
+  return set.filter((record) => {
+    return record.cityIds.some((id) => filterValues.cities[id]);
+  });
 };
 
 var anyFiltersActivated = function(filterValueOverrides) {
@@ -138,8 +142,8 @@ var anyFiltersActivated = function(filterValueOverrides) {
 };
 
 var finalSet = function(filtered, filterValues, pageType, filterValueOverrides) {
-  if (shouldIncludeOtherSpecializations(filtered, filterValues, pageType, filterValueOverrides)){
-    return filtered.withoutSpecializationFilter;
+  if (shouldIncludeOtherSpecializations(filtered, filterValues, pageType, filterValueOverrides) && pageType === "specialization"){
+    return filtered.withoutPageTypeFilter;
   }
   else {
     return filtered.withAllFilters;
@@ -147,13 +151,15 @@ var finalSet = function(filtered, filterValues, pageType, filterValueOverrides) 
 };
 
 var shouldIncludeOtherSpecializations = function(filtered, filterValues, pageType, filterValueOverrides) {
-  return (shouldShowSpecializationFilter(filtered, filterValues, pageType, filterValueOverrides) &&
-    !filterValues.specializationFilterActivated);
+  return (pageType !== "specialization" ||
+    (shouldShowSpecializationFilter(filtered, filterValues, pageType, filterValueOverrides) &&
+      !filterValues.specializationFilterActivated));
 };
 
 var shouldShowCityFilterMessage = function(filtered, filterValues, pageType) {
   return (filtered.withAllFilters.length === 0 &&
-    filtered.withoutSpecializationFilter.length === 0);
+    ((pageType !== "specialization") ||
+      (filtered.withoutPageTypeFilter.length === 0)));
 };
 
 var shouldShowSpecializationFilter = function(filtered, filterValues, pageType, filterValueOverrides) {
@@ -161,11 +167,11 @@ var shouldShowSpecializationFilter = function(filtered, filterValues, pageType, 
     ((
       (filtered.withAllFilters.length > 0) &&
       (_.values(_.pick(filterValues.procedures, _.identity)).length > 0) &&
-      (filtered.withoutSpecializationFilter.length > filtered.withAllFilters.length)
+      (filtered.withoutPageTypeFilter.length > filtered.withAllFilters.length)
     ) ||
     (
       (filtered.withAllFilters.length === 0) &&
-      (filtered.withoutSpecializationFilter.length > 0) &&
+      (filtered.withoutPageTypeFilter.length > 0) &&
       (anyFiltersActivated(filterValueOverrides))
     ))
   );
@@ -211,17 +217,17 @@ var PANEL_PROPS_GENERATORS = {
     );
     var filtered = {
       withAllFilters: utils.from(
-        _.partialRight(filterBySpecialization, state.ui.specializationId, state.ui.pageType),
+        _.partialRight(filterByPageType, state),
         _.partialRight(filterByCities, filterValues),
         _opaqueFiltered
       ),
-      withoutSpecializationFilter: filterByCities(_opaqueFiltered, filterValues),
-      withoutCityFilter: filterBySpecialization(_opaqueFiltered, state.ui.specializationId, state.ui.pageType)
+      withoutPageTypeFilter: filterByCities(_opaqueFiltered, filterValues),
+      withoutCityFilter: filterByPageType(_opaqueFiltered, state)
     };
 
     var bodyRowConfig = {
       panelTypeKey: panelTypeKey,
-      panelKey: panelTypeKey,
+      panelKey: state.ui.panelTypeKey,
       rowGenerator: "referents",
       rowGeneratorConfig: {
         includingOtherSpecialties: shouldIncludeOtherSpecializations(filtered, filterValues, state.ui.pageType, _filterValueOverrides)
@@ -256,7 +262,7 @@ var PANEL_PROPS_GENERATORS = {
       availableFilters: PANEL_TYPE_SUMMARY_FILTERS[panelTypeKey]
     });
     var specializationRemainderCount =
-      filtered.withoutSpecializationFilter.length - filtered.withAllFilters.length;
+      filtered.withoutPageTypeFilter.length - filtered.withAllFilters.length;
     var availableFromOtherCities = _.difference(
       filtered.withoutCityFilter,
       filtered.withAllFilters
@@ -274,7 +280,8 @@ var PANEL_PROPS_GENERATORS = {
       resultSummary: {
         anyResults: (bodyRows.length > 0),
         isVisible: (resultSummaryText.length > 1),
-        text: resultSummaryText
+        text: resultSummaryText,
+        showClearButton: anyFiltersActivated(_filterValueOverrides)
       },
       cityFilterPills: {
         shouldDisplay: shouldShowCityFilterMessage(filtered, filterValues, state.ui.pageType),
@@ -348,7 +355,8 @@ var PANEL_PROPS_GENERATORS = {
         resultSummary: {
           anyResults: (bodyRows.length > 0),
           isVisible: (resultSummaryText.length > 1),
-          text: resultSummaryText
+          text: resultSummaryText,
+          showClearButton: true
         },
         cityFilterPills: {
           shouldDisplay: false
