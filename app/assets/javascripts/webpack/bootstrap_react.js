@@ -1,4 +1,5 @@
 var React = require("react");
+var ReactDOM = require("react-dom");
 var Redux = require("redux");
 var Provider = require("react-redux").Provider;
 var connect = require("react-redux").connect;
@@ -37,9 +38,9 @@ module.exports = function(config, initData) {
     )(Component);
 
     // render the component
-    React.render(
+    ReactDOM.render(
       <Provider store={store}>
-        {function() { return <ConnectedComponent />;} }
+        <ConnectedComponent />
       </Provider>,
       rootElement
     );
