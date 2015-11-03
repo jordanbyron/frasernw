@@ -10,6 +10,7 @@ gem 'pg'
 
 group :production do
   gem 'heroku_cloud_backup'
+  gem 'rack-attack'
 end
 
 gem 'redis'
@@ -53,8 +54,6 @@ gem 'exception_notification'
 gem 'slack-notifier'
 gem 'cancan', '1.6.7'
 gem "paperclip", "~> 2.7"
-
-gem 'rack-attack'
 
 #Avoid known issue w/ paperclip
 #http://stackoverflow.com/questions/28374401/nameerror-uninitialized-constant-paperclipstorages3aws
