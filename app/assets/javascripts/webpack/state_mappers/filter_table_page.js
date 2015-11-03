@@ -9,7 +9,7 @@ var generateResultSummary = require("./filter_table/generate_result_summary");
 var referralCities = require("./filter_table/referral_cities");
 var utils = require("utils");
 
-module.exports = function(state, dispatch, config) {
+module.exports = function(state, dispatch) {
   // console.log("STATE:");
   // console.log(state);
 
