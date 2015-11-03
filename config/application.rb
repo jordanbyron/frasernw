@@ -39,8 +39,6 @@ module Frasernw
     # Defaults to '/assets'
     config.assets.prefix = '/asset-files'
 
-    config.middleware.use Rack::Attack
-
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 

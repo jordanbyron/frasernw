@@ -42,6 +42,7 @@ module.exports = {
         unfocusedProcedures: procedureFilters.filter((filter) => !filter.focused)
       },
       title: title,
+      shouldDisplay: _.any(procedureFilters),
       isOpen: _.get(state, ["ui", "panels", panelKey, "filterGroupVisibility", "procedures"], true),
       isExpanded: _.get(state, ["ui", "panels", panelKey, "filterExpansion", "procedures"], false),
       componentKey: "procedures"

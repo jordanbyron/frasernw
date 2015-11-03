@@ -36,24 +36,29 @@ var FilterGroup = React.createClass({
     }
   },
   render: function() {
-    return(
-      <ToggleBox
-        title={this.props.title}
-        open={this.props.isOpen}
-        handleToggle={this.toggleFilterGroupVisibility(this.props.dispatch, this.props.componentKey)}
-      >
-        {
-          React.createElement(
-            FILTER_GROUPS[this.props.componentKey],
-            {
-              filters: this.props.filters,
-              dispatch: this.props.dispatch,
-              isExpanded: this.props.isExpanded
-            }
-          )
-        }
-      </ToggleBox>
-    );
+    if(this.props.shouldDisplay === false) {
+      return null;
+    }
+    else {
+      return(
+        <ToggleBox
+          title={this.props.title}
+          open={this.props.isOpen}
+          handleToggle={this.toggleFilterGroupVisibility(this.props.dispatch, this.props.componentKey)}
+        >
+          {
+            React.createElement(
+              FILTER_GROUPS[this.props.componentKey],
+              {
+                filters: this.props.filters,
+                dispatch: this.props.dispatch,
+                isExpanded: this.props.isExpanded
+              }
+            )
+          }
+        </ToggleBox>
+      );
+    }
   }
 })
 module.exports = FilterGroup;

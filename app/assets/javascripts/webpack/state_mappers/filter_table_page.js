@@ -143,10 +143,12 @@ var filterByCities = function(set, filterValues){
 };
 
 var anyFiltersActivated = function(filterValueOverrides) {
-  return !_.every(_.values(filterValueOverrides), (filterValue) => {
-    return (filterValue === undefined ||
-      !_.any(_.values(filterValue)))
-  });
+  return _.any(_.values(filterValueOverrides), (filterValue) => {
+    return (_.isBoolean(filterValue) ||
+      _.isString(filterValue) ||
+      _.isNumber(filterValue) ||
+      (_.isObject(filterValue) && _.any(_.values(filterValue))));
+  })
 };
 
 var finalSet = function(filtered, filterValues, pageType, filterValueOverrides) {
