@@ -103,41 +103,58 @@
             $('#feedback_thanks').fadeIn(200);
         });
       }
-  
-  - current_user_divisions.each do |division|
-    - if !division.borrowed_sc_items.include?(@sc_item)
-      = link_to "Share with #{division.name}", share_sc_item_path(@sc_item, division), class: 'share', method: :put, remote: true, data: { toggle_text: 'Unshare from #{division.name}', toggle_href: unshare_sc_item_path(@sc_item, division), id: @sc_item.id, division_id: division.id }
-    - else
-      = link_to "Unshare from #{division.name}", unshare_sc_item_path(@sc_item, division), class: 'share', method: :put, remote: true, data: { toggle_text: 'Share with #{division.name}', toggle_href: share_sc_item_path(@sc_item, division), id: @sc_item.id, division_id: division.id }
-
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).on('ajax:success', 'a.share', function(status, data, xhr) {
-        / $(".shares-count[data-id=" + data.id + "]").text(data.count);
-        $("a.share[data-id=" + data.id + "]").each(function() {
-          var $a, href, text;
-          $a = $(this);
-          href = $a.attr('href');
-          text = $a.text();
-          $a.text($a.data('toggle-text')).attr('href', $a.data('toggle-href'));
-          $a.data('toggle-text', text).data('toggle-href', href);
-        });
-      });
 
 
-  %p
+
+  %table
+    %thead
+      %tr.tableheader Shared?
+    %tbody
+      %tr
+        %td Division
+
     - if @sc_item.shareable?
+      - current_user_divisions.reject{ |division| division == @sc_item.division }.each do |division|
 
-      = simple_nested_form_for @division, :url => {:action => 'update_shared', :controller => 'divisions'}, :html => { :class => "form-horizontal ajax" } do |f|
-        - if not f.error_messages.blank?
-          .alert.alert-error= f.error_messages
+        %p
+          = check_box_tag "share_sc_item",
+            division.id,
+            division.borrowed_sc_items.include?(@sc_item),
+            class: "share_sc_item check_boxes optional",
+            label: division.name
+          %span= label_tag "share_sc_item", division.name
 
-        Share?
-        = check_box_tag "division_shared_sc_item_ids_#{@sc_item.id}", @sc_item.id, (@division.borrowed_sc_items.include? @sc_item), :name => "division[shared_sc_item_ids][]", :class => "check_boxes optional"
-        = f.button :submit, "Update Item", :class => "btn btn-primary"
 
-    -# if current_user_divisions.first && @sc_item
-    =# link_to("<i class='icon-plus'></i>".html_safe + "Share with #{current_user_divisions.first.name}".html_safe, @sc_item, :confirm => "Share #{@sc_item.title} with ?", :method => :update, :class => "btn")
+
+
+  :javascript
+    var shareUrl = "#{@share_url}";
+
+    $(".share_sc_item").change(function(event){
+      $.ajax({
+        url: shareUrl,
+        type: "PUT",
+        data: {
+          is_shared: event.target.checked,
+          division_id: event.target.value
+        }
+      }).done(function() {
+        console.log("updated succesfully");
+      }).fail(function() {
+        event.target.checked = !event.target.checked;
+      });
+    })
+
+
+
+
+
+
+
+
+
+
+
 
   %p.admin.btn-group
     %a.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}

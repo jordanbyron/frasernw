@@ -12,6 +12,7 @@ class ScItemsController < ApplicationController
     @sc_item = ScItem.find(params[:id])
     @division = current_user_divisions.first
     @feedback = @sc_item.active_feedback_items.build
+    @share_url = share_sc_item_path(@sc_item)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -93,31 +94,20 @@ class ScItemsController < ApplicationController
   def share
     @sc_item = ScItem.find(params[:id])
     @division = Division.find(params[:division_id])
-    # raise params.inspect
-    binding.pry
-    if request.xhr?
-      head :ok
-    else
-      redirect_to @content
+    existing_record =
+      DivisionDisplayScItem.where(sc_item_id: @sc_item.id, division_id: @division.id).first
+
+    return unless params[:is_shared].present?
+    return unless @sc_item.present?
+    return unless @division.present?
+
+    if params[:is_shared].to_b && !existing_record.present?
+      DivisionDisplayScItem.create(sc_item_id: @sc_item.id, division_id: @division.id)
+    elsif !params[:is_shared].to_b && existing_record.present?
+      existing_record.destroy
     end
 
-    # redirect_to shared_content_items_path(@division), :notice  => "Successfully updated shared content items."
-
-    # render :action => 'show'
-  end
-
-  def unshare
-    @sc_item = ScItem.find(params[:id])
-    @division = Division.find(params[:division_id])
-    if request.xhr?
-      head :ok
-    else
-      redirect_to @content
-    end
-
-    # redirect_to shared_content_items_path(@division), :notice  => "Successfully updated shared content items."
-
-    render :action => 'show'
+    render nothing: true, status: 200
   end
 
   private

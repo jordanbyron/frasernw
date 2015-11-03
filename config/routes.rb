@@ -91,15 +91,10 @@ Frasernw::Application.routes.draw do
   resources :sc_categories, :path => 'content_categories'
   match '/divisions/:id/content_items/' => 'sc_items#index', :as => 'division_content_items'
   resources :sc_items, :path => 'content_items' do
-    # member do
-    #   put "share", to: "sc_items#share"
-    #   put "unshare", to: "sc_items#unshare"
-    # end
+    member do
+      put :share, to: "sc_items#share"
+    end
   end
-
-  put  '/content_items/:id/division/:division_id' => 'sc_items#share', :as => 'share_sc_item', :model => 'sc_items'
-  put  '/content_items/:id/division/:division_id' => 'sc_items#unshare', :as => 'unshare_sc_item', :model => 'sc_items'
-
 
   match '/divisions/:id/shared_content_items' => 'divisions#shared_sc_items', :as => 'shared_content_items'
   put   '/divisions/:id/update_shared' => 'divisions#update_shared', :as => 'update_shared'
