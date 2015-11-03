@@ -508,7 +508,7 @@ class Specialist < ActiveRecord::Base
     STATUS_CLASS_UNAVAILABLE => "Not accepting new referrals",
     STATUS_CLASS_WARNING     => "Referral status will change soon",
     STATUS_CLASS_UNKNOWN     => "Referral status is unknown",
-    STATUS_CLASS_EXTERNAL    => "Referral status will change soon",
+    STATUS_CLASS_EXTERNAL    => "Only works out of, and possibly accepts referrals through, clinics and/or hospitals",
     STATUS_CLASS_BLANK       => ""
   }
 
