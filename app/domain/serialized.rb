@@ -56,7 +56,7 @@ module Serialized
             lastName: specialist.lastname,
             statusIconClasses: specialist.status_class,
             statusClassKey: specialist.status_class_hash,
-            statusClassDescription: specialist.status,
+            statusClassDescription: specialist.status_tooltip,
             divisionIds: specialist.divisions.map(&:id),
             waittime: masked_waittime(specialist),
             cityIds: specialist.cities.reject{ |city| city.hidden }.map(&:id),
