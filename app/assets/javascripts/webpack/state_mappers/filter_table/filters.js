@@ -277,7 +277,7 @@ module.exports = {
       });
     },
     summary: function(props) {
-      return "are in one of the following specializations: " + _.keys(_.pick(props.filterValues.subcategories, _.identity)).map(
+      return "are related to one of the following specialties: " + _.keys(_.pick(props.filterValues.specializations, _.identity)).map(
         (id) => props.app.specializations[id].name
       ).join(", ");
     },

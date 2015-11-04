@@ -5,6 +5,8 @@ import itemsForCategory from "domain/content_category_items";
 import SortFunctions from "state_mappers/filter_table/sort_functions";
 import SortOrders from "state_mappers/filter_table/sort_orders";
 import Filters from "state_mappers/filter_table/filters"
+import resultSummary from "state_mappers/filter_table/generate_result_summary"
+import anyFiltersActivated from "state_mappers/filter_table/any_filters_activated"
 
 export default function(state, dispatch) {
   console.log(state);
@@ -16,10 +18,28 @@ export default function(state, dispatch) {
     const _sortConfig = sortConfig(state);
     const _filterValues =
       _.mapValues(FilterValues, (value) => value(state, _maskingSet));
+    const _bodyRows =
+      bodyRows(state, dispatch, _sortConfig, _maskingSet, _filterValues)
+    const _category = state.app.contentCategories[state.ui.contentCategoryId];
+
+    const _resultSummary = resultSummary({
+      app: state.app,
+      bodyRows: _bodyRows,
+      labelName: _category.name.toLowerCase(),
+      panelTypeKey: "contentCategories",
+      referralCities: [],
+      filterValues: _filterValues,
+      availableFilters: operativeFilterKeys
+    });
 
     return {
-      bodyRows: bodyRows(state, dispatch, _sortConfig, _maskingSet, _filterValues),
-      resultSummary: { isVisible: false },
+      bodyRows: _bodyRows,
+      resultSummary: {
+        anyResults: (_bodyRows.length > 0),
+        isVisible: (_resultSummary.length > 1),
+        text: _resultSummary,
+        showClearButton: anyFiltersActivated(state.ui.filterValues)
+      },
       cityFilterPills: { shouldDisplay: false },
       specializationFilterMessage: { shouldDisplay: false },
       assumedList: { shouldDisplay: false },
@@ -28,7 +48,7 @@ export default function(state, dispatch) {
       headings: TableHeadingGenerators.contentCategories(),
       // TODO name this 'sidebarFilteringSection'
       filters: {
-        title: `Filter ${state.app.contentCategories[state.ui.contentCategoryId].name}`,
+        title: `Filter ${_category.name}`,
         // TODO: name this 'sidebarFilteringSectionGroups'
         groups: _.map(FilterGroups, (group) => group(state, _filterValues)),
       },

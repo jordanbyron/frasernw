@@ -10,6 +10,7 @@ var generateResultSummary = require("./filter_table/generate_result_summary");
 var itemsForContentCategory = require("domain/content_category_items");
 var referralCities = require("./filter_table/referral_cities");
 var utils = require("utils");
+var anyFiltersActivatd = require("state_mappers/filter_table/any_filters_activated");
 
 module.exports = function(state, dispatch) {
   // console.log("STATE:");
@@ -142,15 +143,6 @@ var filterByCities = function(set, filterValues){
   return set.filter((record) => {
     return record.cityIds.some((id) => filterValues.cities[id]);
   });
-};
-
-var anyFiltersActivated = function(filterValueOverrides) {
-  return _.any(_.values(filterValueOverrides), (filterValue) => {
-    return (_.isBoolean(filterValue) ||
-      _.isString(filterValue) ||
-      _.isNumber(filterValue) ||
-      (_.isObject(filterValue) && _.any(_.values(filterValue))));
-  })
 };
 
 var finalSet = function(filtered, filterValues, pageType, filterValueOverrides) {
