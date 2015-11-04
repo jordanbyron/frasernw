@@ -13,14 +13,20 @@ class ScCategoriesController < ApplicationController
     @init_data = {
       app: {
         currentUser: {
-          isSuperAdmin: current_user.super_admin?
+          isSuperAdmin: current_user.super_admin?,
+          divisionIds: current_user.divisions.map(&:id),
+          favorites: {
+            contentItems: current_user.favorite_content_items.pluck(:id)
+          }
         },
         contentCategories: Serialized.fetch(:content_categories),
-        contentItems: Serialized.fetch(:content_items)
+        contentItems: Serialized.fetch(:content_items),
+        divisions: Serialized.fetch(:divisions)
       },
       ui: {
         contentCategoryId: @sc_category.id,
-        hasBeenInitialized: false
+        hasBeenInitialized: false,
+        pageType: "contentCategory"
       }
     }
   end

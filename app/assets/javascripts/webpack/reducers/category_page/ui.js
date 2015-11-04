@@ -4,11 +4,13 @@ import sortConfig from "reducers/filter_table/sort_config";
 import _ from "lodash";
 
 const contentCategoryId = _.partial(pageRenderedKey, "contentCategoryId");
+const pageType = _.partial(pageRenderedKey, "pageType");
 
 export default function(state = {}, action) {
   return {
     hasBeenInitialized: hasBeenInitialized(state.hasBeenInitialized, action),
     contentCategoryId: contentCategoryId(state.contentCategoryId, action),
+    pageType: pageType(state.pageType, action),
     sortConfig: sortConfig(state.sortConfig, action),
   };
   // return {

@@ -7,6 +7,7 @@ var TABLE_HEADINGS_GENERATORS = require("./filter_table/table_headings_generator
 var sortFunctions = require("./filter_table/sort_functions");
 var sortOrders = require("./filter_table/sort_orders");
 var generateResultSummary = require("./filter_table/generate_result_summary");
+var itemsForContentCategory = require("domain/content_category_items");
 var referralCities = require("./filter_table/referral_cities");
 var utils = require("utils");
 
@@ -328,7 +329,7 @@ var PANEL_PROPS_GENERATORS = {
   },
   contentCategories: {
     FilterTable: function(state: Object, panelKey: string, category: Object, dispatch: Function) {
-      var forCategory = itemsForContentCategory(category, state);
+      var forCategory = itemsForContentCategory(category.id, state, state.app.currentUser.divisionIds);
       var maskingSet = forCategory;
       var bodyRowConfig = {
         panelKey: panelKey,
@@ -394,7 +395,7 @@ var PANEL_PROPS_GENERATORS = {
       };
     },
     InlineArticles: function(state: Object, panelKey: string, category: Object, dispatch: Function) {
-      var records = itemsForContentCategory(category, state);
+      var records = itemsForContentCategory(category.id, state, state.app.currentUser.divisionIds);
 
       return {
         panelKey: panelKey,
@@ -462,7 +463,7 @@ var createAssumedList = function(nestedProcedures: Object, collectionName: strin
 
 var generateBodyRows = function(state: Object, filtered: Array, config: Object, dispatch: Function, sortConfig: Object): Array {
   var unsorted = filtered.map((row) => {
-    return RowGenerators[config.rowGenerator](row, state.app, dispatch, config.rowGeneratorConfig);
+    return RowGenerators[config.rowGenerator](state.app, dispatch, config.rowGeneratorConfig, row);
   });
 
   return _.sortByOrder(
@@ -547,25 +548,7 @@ var referentSortConfig = function(state, config) {
   );
 };
 
-var itemsForContentCategory = function(category, state) {
-  var pageSpecificFilter = {
-    specialization: function(contentItem) {
-      return _.includes(contentItem.specializationIds, state.ui.specializationId);
-    },
-    procedure: function(contentItem) {
-      return _.includes(contentItem.procedureIds, state.ui.procedureId);
-    }
-  }
 
-  return _.chain(state.app.contentItems)
-    .values()
-    .filter((contentItem) => {
-      return (pageSpecificFilter[state.ui.pageType](contentItem) &&
-        _.any(_.intersection(contentItem.availableToDivisionIds, state.app.currentUser.divisionIds)) &&
-        _.includes(category.subtreeIds, contentItem.categoryId));
-    })
-    .value();
-};
 
 var findActiveContentCategories = function(state) {
   return _.filter(
@@ -573,7 +556,7 @@ var findActiveContentCategories = function(state) {
     (category) => {
       return ([1, 3, 4, 5].indexOf(category.displayMask) > -1 &&
         category.ancestry == null &&
-        _.keys(itemsForContentCategory(category, state)).length > 0);
+        _.keys(itemsForContentCategory(category.id, state, state.app.currentUser.divisionIds)).length > 0);
     }
   );
 };

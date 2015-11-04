@@ -88,7 +88,7 @@ var email = function(record) {
 }
 
 module.exports = {
-  referents: function(record, app, dispatch, config) {
+  referents: function(app, dispatch, config, record) {
     return {
       cells: reject([
         labelReferentName(record),
@@ -101,7 +101,7 @@ module.exports = {
       record: record
     }
   },
-  resources: function(record, app, dispatch, config) {
+  resources: function(app, dispatch, config, record) {
     return {
       cells: [
         labelResourceTitle(record),
