@@ -3,15 +3,8 @@ var PANEL_REDUCERS = {
   InlineArticles: function(state, action) { return state }
 }
 var hasBeenInitialized = require("../has_been_initialized");
+var pageRenderedKey = require("reducers/page_rendered_key");
 
-var pageRenderedKey = function(key, stateAtKey, action) {
-  switch(action.type) {
-  case "INTEGRATE_PAGE_RENDERED_DATA":
-    return action.initialState.ui[key];
-  default:
-    return stateAtKey;
-  }
-};
 var procedureId = _.partial(pageRenderedKey, "procedureId");
 var specializationId = _.partial(pageRenderedKey, "specializationId");
 var pageType = _.partial(pageRenderedKey, "pageType");

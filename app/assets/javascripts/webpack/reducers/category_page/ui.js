@@ -1,5 +1,16 @@
+import hasBeenInitialized from "reducers/has_been_initialized";
+import pageRenderedKey from "reducers/page_rendered_key";
+import sortConfig from "reducers/filter_table/sort_config";
+import _ from "lodash";
+
+const contentCategoryId = _.partial(pageRenderedKey, "contentCategoryId");
+
 module.exports = function(state = {}, action) {
-  return {};
+  return {
+    hasBeenInitialized: hasBeenInitialized(state.hasBeenInitialized, action),
+    contentCategoryId: contentCategoryId(state.contentCategoryId, action),
+    sortConfig: sortConfig(state.sortConfig, action),
+  };
   // return {
   //   hasBeenInitialized: hasBeenInitialized(state.hasBeenInitialized, action),
   //   filterValues: filterValues(state.filterValues, action),

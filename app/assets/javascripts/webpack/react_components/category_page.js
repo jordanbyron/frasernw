@@ -1,5 +1,9 @@
 import React from "react";
-// 
+import LoadingContainer from "react_components/loading_container";
+import Filters from "react_components/filters";
+import SidebarLayout from "react_components/sidebar_layout";
+import TableHead from "react_components/table_head";
+//
 // var Table = React.createClass({
 //   propTypes: {
 //     rows: React.PropTypes.arrayOf(
@@ -37,44 +41,38 @@ import React from "react";
 //     contentComponentProps: React.PropTypes.object,
 //     isLoading: React.PropTypes.bool
 //   },
-//   renderChildren: function(props) {
-//     return(
-//       <div className="content-wrapper">
-//         <SidebarLayout
-//           main={
-//             <div id="print_container">
-//               <h2 style={{marginBottom: "10px"}}>{ props.title }</h2>
-//               {
-//                 React.createElement(
-//                   CONTENT_COMPONENTS[this.props.contentComponentType],
-//                   this.props.contentComponentProps
-//                 )
-//               }
-//             </div>
-//           }
-//           sidebar={
-//             <Filters
-//               {...this.props.filters}
-//               dispatch={this.props.dispatch}
-//             />
-//           }
-//           reducedView={"main"}
-//         />
-//       </div>
 //     );
 //   },
 //   render: function() {
 //     return(
 //       <LoadingContainer
 //         isLoading={this.props.isLoading}
-//         renderChildren={this.renderChildren.bind(null, this.props)}
+//         renderContents={this.renderContents.bind(null, this.props)}
 //       />
 //     );
 //   }
 // });
 
-const CategoryPage = () => (
-  <div>Hey</div>
+
+const MainPanel = (props) => (
+  <table className="table">
+    <TableHead {...props.tableHead} dispatch={props.dispatch}/>
+  </table>
+)
+
+const CategoryPageContents = (props) => (
+  <SidebarLayout
+    main={<MainPanel {...props}/>}
+    sidebar={<Filters {...props.filters}/>}
+    reducedView={"main"}
+  />
+);
+
+const CategoryPage = (props) => (
+  <LoadingContainer
+    isLoading={props.isLoading}
+    renderContents={CategoryPageContents.bind(null, props)}
+  />
 );
 
 export default CategoryPage;

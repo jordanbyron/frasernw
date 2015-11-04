@@ -1,5 +1,5 @@
 var _ = require("lodash");
-var sortConfig = require("./sort_config");
+var sortConfig = require("reducers/filter_table/sort_config");
 var filterGroupVisibility = require("./filter_table/filter_group_visibility");
 var filterValues = require("./filter_table/filter_values");
 var reducedView = function(state, action) {
