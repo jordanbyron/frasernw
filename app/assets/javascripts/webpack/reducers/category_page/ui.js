@@ -5,7 +5,7 @@ import _ from "lodash";
 
 const contentCategoryId = _.partial(pageRenderedKey, "contentCategoryId");
 
-module.exports = function(state = {}, action) {
+export default function(state = {}, action) {
   return {
     hasBeenInitialized: hasBeenInitialized(state.hasBeenInitialized, action),
     contentCategoryId: contentCategoryId(state.contentCategoryId, action),
