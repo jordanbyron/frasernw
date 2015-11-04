@@ -29,8 +29,8 @@
     "object-assign": "^3.0.0",
     "react": "^0.14.2",
     "react-dom": "^0.14.2",
-    "react-redux": "^1.0.1",
-    "redux": "^1.0.1",
+    "react-redux": "^4.0.0",
+    "redux": "^3.0.4",
     "webpack": "^1.11"
   },
   "devDependencies": {

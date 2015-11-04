@@ -4,7 +4,7 @@ var _ = require("lodash");
 // app - what is true 'objectively' about Pathways
 // ui - what is true about this view in particular
 module.exports = function(uiReducerKey) {
-  var reducer = require(`./${_.snakeCase(uiReducerKey)}/ui`);
+  var uiReducer = require(`./${_.snakeCase(uiReducerKey)}/ui`);
 
   return function(state = {}, action) {
     switch(action.type){
@@ -16,7 +16,7 @@ module.exports = function(uiReducerKey) {
     default:
       return {
         app: app(state.app, action),
-        ui: reducer(state.ui, action)
+        ui: uiReducer(state.ui, action)
       };
     }
   }

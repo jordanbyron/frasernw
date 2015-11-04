@@ -8,19 +8,22 @@
 
 = render 'partials/specialization_dropdown_menu'
 
-#show_category
+.content-wrapper
+  %h2= @sc_category.name
+
+  #show_category
 
 
-%hr
-%i.icon-envelope-alt
-Send us suggestions for #{@sc_category.name.downcase} content for Pathways:
-= mail_to "submissions@pathwaysbc.ca", "submissions@pathwaysbc.ca", :subject => "#{@sc_category.name} content suggestion for Pathways"
+  %hr
+  %i.icon-envelope-alt
+  Send us suggestions for #{@sc_category.name.downcase} content for Pathways:
+  = mail_to "submissions@pathwaysbc.ca", "submissions@pathwaysbc.ca", :subject => "#{@sc_category.name} content suggestion for Pathways"
 
-%p.admin.btn-group
-- if can? :update, @sc_category
-  = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_sc_category_path(@sc_category), :class => "btn ajax")
-- if can? :destroy, @sc_category
-  = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @sc_category, :confirm => "Delete #{@sc_category.name}?", :method => :delete, :class => "btn")
+  %p.admin.btn-group
+  - if can? :update, @sc_category
+    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_sc_category_path(@sc_category), :class => "btn ajax")
+  - if can? :destroy, @sc_category
+    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @sc_category, :confirm => "Delete #{@sc_category.name}?", :method => :delete, :class => "btn")
 
 
 :javascript

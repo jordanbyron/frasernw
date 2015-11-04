@@ -3,6 +3,7 @@ var Filters = require("./filter_table/filters");
 var RowGenerators = require("./filter_table/row_generators");
 var FILTER_VALUE_GENERATORS = require("./filter_table/filter_value_generators");
 var FILTER_GROUP_GENERATORS = require("./filter_table/filter_group_generators");
+var TABLE_HEADINGS_GENERATORS = require("./filter_table/table_headings_generators");
 var sortFunctions = require("./filter_table/sort_functions");
 var sortOrders = require("./filter_table/sort_orders");
 var generateResultSummary = require("./filter_table/generate_result_summary");
@@ -545,36 +546,6 @@ var referentSortConfig = function(state, config) {
     }
   );
 };
-
-var TABLE_HEADINGS_GENERATORS = {
-  contentCategories: function() {
-    return [
-      { label: "Title", key: "TITLE" },
-      { label: "Category", key: "SUBCATEGORY" },
-      { label: "", key: "FAVOURITE" },
-      { label: "", key: "EMAIL_TO_PATIENT" },
-      { label: "", key: "PROVIDE_FEEDBACK" }
-    ];
-  },
-  referents: function(labelName, includingOtherSpecializations, pageType) {
-    if (includingOtherSpecializations) {
-      return [
-        { label: labelName, key: "NAME", className: "specialization_table__th--name" },
-        { label: "Specialties", key: "SPECIALTIES", className: "specialization_table__th--specialties" },
-        { label: "Accepting New Referrals?", key: "REFERRALS", className: "specialization_table__th--referrals" },
-        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME", className: "specialization_table__th--waittime" },
-        { label: "City", key: "CITY", className: "specialization_table__th--city" }
-      ];
-    } else {
-      return [
-        { label: labelName, key: "NAME", className: "specialization_table__th--name" },
-        { label: "Accepting New Referrals?", key: "REFERRALS", className: "specialization_table__th--referrals" },
-        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME", className: "specialization_table__th--waittime" },
-        { label: "City", key: "CITY", className: "specialization_table__th--city" }
-      ];
-    }
-  }
-}
 
 var itemsForContentCategory = function(category, state) {
   var pageSpecificFilter = {

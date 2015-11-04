@@ -9,10 +9,20 @@ class ScCategoriesController < ApplicationController
 
   def show
     @sc_category = ScCategory.find(params[:id])
-    @is_super_admin = current_user_is_super_admin?
-    @sc_items = @sc_category.all_sc_items_in_divisions( current_user_is_super_admin? ? Division.all : current_user_divisions )
-    @feedback = FeedbackItem.new
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    # @sc_items = @sc_category.all_sc_items_in_divisions( current_user_is_super_admin? ? Division.all : current_user_divisions )
+    @init_data = {
+      app: {
+        currentUser: {
+          isSuperAdmin: current_user.super_admin?
+        },
+        contentCategories: Serialized.fetch(:content_categories),
+        contentItems: Serialized.fetch(:content_items)
+      },
+      ui: {
+        contentCategoryId: @sc_category.id,
+        hasBeenInitialized: false
+      }
+    }
   end
 
   def new
