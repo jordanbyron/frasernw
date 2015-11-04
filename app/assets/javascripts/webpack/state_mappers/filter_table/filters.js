@@ -266,5 +266,21 @@ module.exports = {
     predicate: function(record) {
       return record.statusClassKey != 6;
     }
+  },
+  specializations: {
+    isActivated: function(filters) {
+      return some(filters.specializations, _.identity);
+    },
+    predicate: function(record, filters) {
+      return _.find(_.keys(_.pick(filters.specializations, _.identity)), (id) => {
+        return _.includes(record.specializationIds, parseInt(id));
+      });
+    },
+    summary: function(props) {
+      return "are in one of the following specializations: " + _.keys(_.pick(props.filterValues.subcategories, _.identity)).map(
+        (id) => props.app.specializations[id].name
+      ).join(", ");
+    },
+    summaryPlacement: "trailing"
   }
 }

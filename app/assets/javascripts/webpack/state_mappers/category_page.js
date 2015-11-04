@@ -40,7 +40,7 @@ export default function(state, dispatch) {
   }
 };
 
-const operativeFilterKeys = ["subcategories", "specialties"];
+const operativeFilterKeys = ["subcategories", "specializations"];
 const bodyRows = (state, dispatch, sortConfig, maskingSet, filterValues) => {
   const _operativeFilters = _.values(_.pick(Filters, operativeFilterKeys))
     .filter((filter) => filter.isActivated(filterValues))
@@ -83,9 +83,45 @@ const FilterValues = {
      }, {})
      .value();
   },
+  specializations: function(state, maskingSet) {
+    const assignValues = _.partialRight(_.reduce, (memo, id) => {
+      return _.assign(
+        { [id]: _.get(state, ["ui", "filterValues", "specializations", id], false) },
+        memo
+      );
+    }, {});
+
+    return from(
+      assignValues,
+      _.uniq,
+      _.flatten,
+      _.partialRight(_.map, _.property("specializationIds")),
+      maskingSet
+    );
+  }
 }
 
 const FilterGroups = {
+  specializations: function(state: Object, filterValues: Object): Object {
+    return {
+      filters: {
+        specializations: _.map(
+          filterValues.specializations,
+          function(value: boolean, specializationId: string) {
+            return {
+              filterId: specializationId,
+              label: state.app.specializations[specializationId].name,
+              value: value
+            };
+          }
+        ),
+      },
+      title: "Specialties",
+      isOpen: _.get(state, ["ui" ,"filterGroupVisibility", "specializations"], true),
+      shouldDisplay: _.any(_.keys(filterValues.specializations)),
+      componentKey: "specializations",
+    };
+  },
   subcategories: function(state: Object, filterValues: Object): Object {
     return {
       filters: {

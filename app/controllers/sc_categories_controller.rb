@@ -21,7 +21,8 @@ class ScCategoriesController < ApplicationController
         },
         contentCategories: Serialized.fetch(:content_categories),
         contentItems: Serialized.fetch(:content_items),
-        divisions: Serialized.fetch(:divisions)
+        divisions: Serialized.fetch(:divisions),
+        specializations: Serialized.fetch(:specializations)
       },
       ui: {
         contentCategoryId: @sc_category.id,
