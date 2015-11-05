@@ -55,7 +55,6 @@ module Serialized
             name: specialist.name,
             firstName: specialist.firstname,
             lastName: specialist.lastname,
-            statusIconClasses: specialist.status_class,
             statusClassKey: specialist.status_class_hash,
             statusClassDescription: specialist.status_tooltip,
             divisionIds: specialist.divisions.map(&:id),
@@ -111,7 +110,6 @@ module Serialized
           memo.merge(clinic.id => {
             id: clinic.id,
             name: clinic.name,
-            statusIconClasses: clinic.status_class,
             statusClassKey: clinic.status_class_hash,
             statusClassDescription: clinic.status,
             waittime: masked_waittime(clinic),

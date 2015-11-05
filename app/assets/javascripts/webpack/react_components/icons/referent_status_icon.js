@@ -4,11 +4,11 @@ const ReferentStatusIcon = React.createClass({
   propTypes: {
     record: React.PropTypes.shape({
       statusClassDescription: React.PropTypes.string.isRequired,
-      statusIconClasses: React.PropTypes.string.isRequired
+      statusClassKey: React.PropTypes.number.isRequired
     }).isRequired
   },
   componentDidMount: function() {
-    $(React.findDOMNode(this.refs.icon)).tooltip({
+    $(this.refs.icon).tooltip({
       placement: "right",
       trigger: "hover",
       animation: "true",
@@ -24,7 +24,7 @@ const ReferentStatusIcon = React.createClass({
       <i
         id={this.elemId()}
         ref="icon"
-        className={this.props.record.statusIconClasses}
+        className={this.props.statusIcons[this.props.record.statusClassKey]}
       />
     );
   }

@@ -22,7 +22,8 @@ class FilterTableAppState
       dayKeys: Schedule::DAY_HASH,
       languages: Serialized.fetch(:languages),
       careProviders: Serialized.fetch(:healthcare_providers),
-      divisions: Serialized.fetch(:divisions)
+      divisions: Serialized.fetch(:divisions),
+      referentStatusIcons: Specialist::STATUS_CLASS_HASH.invert
     }
   end
 end
