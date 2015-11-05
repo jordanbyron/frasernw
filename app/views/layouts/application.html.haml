@@ -412,8 +412,7 @@
 
     = yield(:javascript_footer)
 
-    - unless defined?(@automatically_remove_heartbeat) && @automatically_remove_heartbeat == false
-      :javascript
-        $(window).load(function() {
-          $("#heartbeat-loader-position").remove();
-        });
+    :javascript
+      $(window).load(function() {
+        $("#heartbeat-loader-position").remove();
+      });

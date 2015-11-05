@@ -12,6 +12,7 @@ class SpecializationsController < ApplicationController
   end
 
   def show
+    @layout_heartbeat_loader = false
     @specialization = Specialization.find(params[:id])
     @init_data = {
       app: FilterTableAppState.exec(current_user: current_user),
@@ -21,7 +22,6 @@ class SpecializationsController < ApplicationController
         hasBeenInitialized: false
       }
     }
-    @automatically_remove_heartbeat = false
   end
 
   def new

@@ -26,6 +26,7 @@ module.exports = React.createClass({
       <div>
         <LoadingContainer isLoading={this.props.isLoading}
           renderContents={this.renderContents.bind(null, this.props)}
+          minHeight={"300px"}
         />
         <FeedbackModal
           dispatch={this.props.dispatch}
