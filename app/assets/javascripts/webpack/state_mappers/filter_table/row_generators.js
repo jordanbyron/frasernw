@@ -16,9 +16,9 @@ var labelReferentName = function(record) {
   );
 }
 
-var labelReferentStatus = function(record, statusIcons) {
+var labelReferentStatus = function(record, statusIcons, tooltips) {
   return (
-    <ReferentStatusIcon record={record} statusIcons={statusIcons}/>
+    <ReferentStatusIcon record={record} statusIcons={statusIcons} tooltips={tooltips}/>
   );
 }
 
@@ -94,7 +94,7 @@ module.exports = {
       cells: reject([
         labelReferentName(record),
         labelReferentSpecialties(record, app, config.includingOtherSpecialties),
-        labelReferentStatus(record, app.referentStatusIcons),
+        labelReferentStatus(record, app.referentStatusIcons, app.tooltips),
         (record.waittime || ""),
         labelReferentCities(record, app)
       ], (cell) => cell === null),

@@ -23,7 +23,16 @@ class FilterTableAppState
       languages: Serialized.fetch(:languages),
       careProviders: Serialized.fetch(:healthcare_providers),
       divisions: Serialized.fetch(:divisions),
-      referentStatusIcons: Specialist::STATUS_CLASS_HASH.invert
+      referentStatusIcons: Specialist::STATUS_CLASS_HASH.invert,
+      tooltips: {
+        specialists: Specialist::STATUS_TOOLTIP_HASH.inject({}) do |memo, (k, v)|
+          memo.merge(Specialist::STATUS_CLASS_HASH[k] => v)
+        end,
+        clinics: Clinic::STATUS_HASH.merge({
+          0 => Clinic::UNKNOWN_STATUS,
+          3 => Clinic::UNKNOWN_STATUS
+        })
+      }
     }
   end
 end

@@ -252,10 +252,12 @@ class Clinic < ActiveRecord::Base
     4 => "Permanently closed",
     3 => "Didn't answer"
   }
+  
+  UNKNOWN_STATUS = "It is unknown if this clinic is accepting new patients (this clinic didn't respond)"
 
   def status
     if (status_mask == 3) || status_mask.blank?
-      "It is unknown if this clinic is accepting new patients (this clinic didn't respond)"
+      UNKNOWN_STATUS
     else
       Clinic::STATUS_HASH[status_mask]
     end
