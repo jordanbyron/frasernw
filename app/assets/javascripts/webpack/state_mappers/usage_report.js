@@ -3,6 +3,10 @@ var moment = require("moment");
 var React = require("react");
 var RadioButtons = require("../react_components/radio_buttons");
 var Selector = require("../react_components/selector");
+var isDataDubious = function(filterValues) {
+  return moment(filterValues.months, "YYYYMM").isBefore("2015-11-01", "months") &&
+    _.includes(["physicianResources", "forms", "patientInfo"], filterValues.recordTypes)
+}
 
 module.exports = function(state, dispatch): Object {
   var filterValues = _.reduce(GENERATE_FILTER_VALUES, (memo, fn, key) => {
@@ -27,8 +31,8 @@ module.exports = function(state, dispatch): Object {
       noticeText: `${_.startCase(filterValues.recordTypes )} page views are only available for November 2015 and later.`,
       dispatch: dispatch,
       isLoading: false,
-      isPeriodValid: !(moment(filterValues.months, "YYYYMM").isBefore("2015-11-01", "months") &&
-        _.includes(["physicianResources", "forms", "patientInfo"], filterValues.recordTypes)),
+      shouldShowData: (state.app.currentUser.isSuperAdmin || !isDataDubious(filterValues)),
+      isDataDubious: isDataDubious(filterValues),
       isTableLoading: _.get(state, ["ui", "isTableLoading"], false),
       showTableHeart: moment(filterValues.months, "YYYYMM").isSame(moment(), "month"),
       query: requestNewData,
