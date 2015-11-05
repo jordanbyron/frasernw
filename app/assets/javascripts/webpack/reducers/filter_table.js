@@ -2,14 +2,8 @@ var _ = require("lodash");
 var sortConfig = require("reducers/filter_table/sort_config");
 var filterGroupVisibility = require("./filter_table/filter_group_visibility");
 var filterValues = require("./filter_table/filter_values");
-var reducedView = function(state, action) {
-  switch(action.type){
-  case "TOGGLE_REDUCED_VIEW":
-    return action.newView;
-  default:
-    return state;
-  }
-}
+var reducedView = require("reducers/filter_table/reduced_view");
+
 var filterExpansion = function(state, action) {
   switch(action.type){
   case "TOGGLE_FILTER_EXPANSION":

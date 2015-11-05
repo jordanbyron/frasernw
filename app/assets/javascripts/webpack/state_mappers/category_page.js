@@ -43,7 +43,6 @@ export default function(state, dispatch) {
       cityFilterPills: { shouldDisplay: false },
       specializationFilterMessage: { shouldDisplay: false },
       assumedList: { shouldDisplay: false },
-      reducedView: _.get(state, ["ui", "reducedView"], "main"),
       sortConfig: _sortConfig,
       headings: TableHeadingGenerators.contentCategories(),
       // TODO name this 'sidebarFilteringSection'
@@ -52,13 +51,19 @@ export default function(state, dispatch) {
         // TODO: name this 'sidebarFilteringSectionGroups'
         groups: _.map(FilterGroups, (group) => group(state, _filterValues)),
       },
-      dispatch: dispatch
+      feedbackModal: feedbackModal(state),
+      reducedView: _.get(state, ["ui", "reducedView"], "main"),
+      dispatch: dispatch,
     }
   }
   else {
     return { isLoading: true };
   }
 };
+
+const feedbackModal = function(state) {
+  return (state.ui.feedbackModal || { state: "HIDDEN"});
+}
 
 const operativeFilterKeys = ["subcategories", "specializations"];
 const bodyRows = (state, dispatch, sortConfig, maskingSet, filterValues) => {

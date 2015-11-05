@@ -4,6 +4,7 @@ var PANEL_REDUCERS = {
 }
 var hasBeenInitialized = require("../has_been_initialized");
 var pageRenderedKey = require("reducers/page_rendered_key");
+var feedbackModal = require("reducers/feedback_modal");
 
 var procedureId = _.partial(pageRenderedKey, "procedureId");
 var specializationId = _.partial(pageRenderedKey, "specializationId");
@@ -24,38 +25,6 @@ module.exports = function(state = {}, action) {
     }
   }
 }
-
-var feedbackModal = function(state, action) {
-  switch(action.type){
-  case "OPEN_FEEDBACK_MODAL":
-    return _.assign(
-      {},
-      {
-        state: "PRE_SUBMIT"
-      },
-      action.data
-    );
-  case "CLOSE_FEEDBACK_MODAL":
-    return {
-      state: "HIDDEN"
-    };
-  case "SUBMITTING_FEEDBACK":
-    return _.assign(
-      {},
-      state,
-      { state: "SUBMITTING" }
-    );
-  case "SUBMITTED_FEEDBACK":
-    return _.assign(
-      {},
-      state,
-      { state: "POST_SUBMIT" }
-    );
-  default:
-    return state;
-  }
-};
-
 
 // (tabs e.g. 'specialists', 'clinics', 'physician resources')
 var panels = function(state = {}, action) {
