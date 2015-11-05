@@ -9,12 +9,13 @@
 = render 'partials/specialization_dropdown_menu'
 
 .content-wrapper
-  %h2= @sc_category.name
+  %h2= @sc_category.full_name
 
   #show_category
 
 
   %hr
+  
   %i.icon-envelope-alt
   Send us suggestions for #{@sc_category.name.downcase} content for Pathways:
   = mail_to "submissions@pathwaysbc.ca", "submissions@pathwaysbc.ca", :subject => "#{@sc_category.name} content suggestion for Pathways"

@@ -4,12 +4,13 @@ import RowGenerators from "state_mappers/filter_table/row_generators";
 import itemsForCategory from "domain/content_category_items";
 import SortFunctions from "state_mappers/filter_table/sort_functions";
 import SortOrders from "state_mappers/filter_table/sort_orders";
-import Filters from "state_mappers/filter_table/filters"
-import resultSummary from "state_mappers/filter_table/generate_result_summary"
-import anyFiltersActivated from "state_mappers/filter_table/any_filters_activated"
+import Filters from "state_mappers/filter_table/filters";
+import resultSummary from "state_mappers/filter_table/generate_result_summary";
+import anyFiltersActivated from "state_mappers/filter_table/any_filters_activated";
+import React from "react";
 
 export default function(state, dispatch) {
-  console.log(state);
+  // console.log(state);
 
   if(state.ui.hasBeenInitialized) {
     const _divisionIds = divisionIds(state);
@@ -53,6 +54,7 @@ export default function(state, dispatch) {
       },
       feedbackModal: feedbackModal(state),
       reducedView: _.get(state, ["ui", "reducedView"], "main"),
+      arbitraryFooter: arbitraryFooter(_category, state.app.contentCategories),
       dispatch: dispatch,
     }
   }
@@ -60,6 +62,20 @@ export default function(state, dispatch) {
     return { isLoading: true };
   }
 };
+
+const arbitraryFooter = (category, categories) => {
+  if(category.ancestry) {
+    return(
+      <a href={`/content_categories/${category.ancestry}`}>
+        <i className='icon-arrow-right icon-blue' style={{margin: "0px 7px"}}/>
+        <span>{`Browse all ${categories[category.ancestry].name} content`}</span>
+      </a>
+    );
+  }
+  else {
+    return <div></div>;
+  }
+}
 
 const feedbackModal = function(state) {
   return (state.ui.feedbackModal || { state: "HIDDEN"});
@@ -81,7 +97,7 @@ const bodyRows = (state, dispatch, sortConfig, maskingSet, filterValues) => {
 
 const divisionIds = (state) => {
   if(state.app.currentUser.isSuperAdmin) {
-    return _.values(state.app.divisions).map(_.property("id"));
+    return _.values(state.app.divisions).map(_.property("id")).concat([13, 11]);
   }
   else {
     return state.app.currentUser.divisionIds;

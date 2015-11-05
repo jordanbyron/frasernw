@@ -11,7 +11,7 @@ const contentCategoryId = _.partial(pageRenderedKey, "contentCategoryId");
 const pageType = _.partial(pageRenderedKey, "pageType");
 
 export default function(state = {}, action) {
-  console.log(action);
+  // console.log(action);
   return {
     hasBeenInitialized: hasBeenInitialized(state.hasBeenInitialized, action),
     contentCategoryId: contentCategoryId(state.contentCategoryId, action),

@@ -83,7 +83,7 @@ module.exports = {
   contentCategories: function(sortConfig) {
     switch(sortConfig.column) {
     case "TITLE":
-      return [ function(row){ return row.record.title; } ];
+      return [ function(row){ return row.record.title.toLowerCase(); } ];
     case "SUBCATEGORY":
       return [ function(row){ return row.cells[1]; } ];
     default:

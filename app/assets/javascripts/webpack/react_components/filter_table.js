@@ -11,6 +11,7 @@ var IconKeys = {
 }
 var ReducedViewSelector = require("./reduced_view_selector");
 var AssumedList = require("./assumed_list");
+var ArbitraryContent = require("react_components/arbitrary_content");
 
 module.exports = React.createClass({
   propTypes: {
@@ -46,6 +47,7 @@ module.exports = React.createClass({
                 sortConfig={this.props.sortConfig}
                 dispatch={this.props.dispatch}
               />
+              <ArbitraryContent contents={this.props.arbitraryFooter}/>
               <AssumedList {...this.props.assumedList}/>
             </div>
           }
