@@ -4,7 +4,7 @@ class FilterTableAppState
   def exec
     {
       currentUser: {
-        divisionIds: current_user.divisions.map(&:id),
+        divisionIds: current_user.divisions.standard.map(&:id),
         cityRankings: current_user.city_rankings,
         favorites: {
           contentItems: current_user.favorite_content_items.pluck(:id)

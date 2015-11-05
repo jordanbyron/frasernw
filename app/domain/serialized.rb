@@ -222,7 +222,26 @@ module Serialized
           nameRelativeToParents: procedure.try(:name_relative_to_parents),
           name: procedure.name,
           specializationIds: procedure.specializations.map(&:id),
-          tree: Serialized.transform_nested_procedure_specializations(procedure.procedure_specializations.first.subtree.arrange)
+          tree: {
+            procedure.id => {
+              focused: true,
+              assumed: {
+                clinics: false,
+                specialists: false
+              },
+              children: procedure.children.inject({}) do |memo, procedure|
+                memo.merge({
+                  procedure.id => {
+                    focused: true,
+                    assumed: {
+                      clinics: false,
+                      specialists: false
+                    }
+                  }
+                })
+              end
+            }
+          }
         })
       end
     end,
