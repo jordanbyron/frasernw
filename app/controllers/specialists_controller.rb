@@ -93,7 +93,7 @@ class SpecialistsController < ApplicationController
     @specializations_clinics, @specializations_clinic_locations =
       GenerateClinicLocationInputs.exec(@specialist.specializations)
 
-    @capacities = GenerateSpecialistCapacityInputs.exec(
+    @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
       @specialist,
       @specialist.specializations
     )
