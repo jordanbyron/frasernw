@@ -1,6 +1,22 @@
 class ClinicLocation < ActiveRecord::Base
 
-  attr_accessible :clinic_id, :phone, :phone_extension, :fax, :contact_details, :sector_mask, :url, :public_email, :email, :wheelchair_accessible_mask, :schedule_attributes, :location_attributes, :attendances_attributes, :location_opened
+  attr_accessible :clinic_id,
+    :phone,
+    :phone_extension,
+    :fax,
+    :contact_details,
+    :sector_mask,
+    :url,
+    :public_email,
+    :email,
+    :wheelchair_accessible_mask,
+    :schedule_attributes,
+    :location_attributes,
+    :attendances_attributes,
+    :location_opened,
+    :public,
+    :private,
+    :volunteer
 
   belongs_to :clinic
   has_one :location, :as => :locatable, :dependent => :destroy
@@ -65,16 +81,24 @@ class ClinicLocation < ActiveRecord::Base
     4 => "Didn't answer",
   }
 
+  SECTORS = [
+    :public,
+    :private,
+    :volunteer
+  ]
+
   def sector
     ClinicLocation::SECTOR_HASH[sector_mask]
   end
 
-  def sector?
-    sector_mask != 4
+  def sector_info_available
+    SECTORS.any? do |sector|
+      send(sector).is_a?(TrueClass) || send(sector).is_a?(FalseClass)
+    end
   end
 
-  def private?
-    sector_mask == 2
+  def sector?
+    sector_mask != 4
   end
 
   def scheduled?

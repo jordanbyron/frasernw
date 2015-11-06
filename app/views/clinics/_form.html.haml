@@ -143,7 +143,10 @@
                 as: :text
           %div{:class => "universal_#{index}"}
             = cl.input :location_opened, as: :select, collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a), prompt: "Select ..."
-            = cl.input :sector_mask, as: :radio_buttons, collection: ClinicLocation::SECTOR_HASH, label_method: :last, value_method: :first, :include_blank => false
+            .sector_wrapper
+              = cl.input :sector_info_available, label: "Fee structure information available", as: :boolean, input_html: { class: "sector_info_available_input" }
+              - ClinicLocation::SECTORS.each do |sector|
+                = cl.input sector, label: sector.to_s.capitalize, as: :boolean, input_html: { class: "sector_type_input" }
             = cl.input :wheelchair_accessible_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
 
             %h4 Location schedule
@@ -399,6 +402,9 @@
       });
     });
     $(document).ready( $("#clinic_categorization_mask").each(clinic_categorization_changed) );
+
+:javascript
+  window.pathways.handleSectorCheckboxes;
 
 - content_for(:javascript_footer) do
   = javascript_include_tag "views/location_tabs"
