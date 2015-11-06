@@ -252,7 +252,7 @@ class Clinic < ActiveRecord::Base
     4 => "Permanently closed",
     3 => "Didn't answer"
   }
-  
+
   UNKNOWN_STATUS = "It is unknown if this clinic is accepting new patients (this clinic didn't respond)"
 
   def status
@@ -468,8 +468,10 @@ class Clinic < ActiveRecord::Base
     end.flatten.uniq
   end
 
-  def private?
-    clinic_locations.reject{ |cl| !cl.private? }.present?
+  ClinicLocation::SECTORS.each do |sector|
+    define_method "#{sector.to_s}?" do
+      clinic_locations.any?(&("#{sector.to_s}?".to_sym))
+    end
   end
 
   # Some locations are built on page load, so they won't have timestamps

@@ -93,7 +93,7 @@ class SpecialistOffice < ActiveRecord::Base
     SpecialistOffice::SECTOR_HASH[sector_mask]
   end
 
-  def sector?
+  def sector_info_available?
     #we assume public for specialists
     sector_mask != 1 && sector_mask != 4
   end

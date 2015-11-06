@@ -19,6 +19,7 @@ class ClinicLocation < ActiveRecord::Base
     :private,
     :volunteer
   ]
+  DEFAULT_SECTORS = [:public]
 
   attr_accessible *SECTORS
 
@@ -78,26 +79,31 @@ class ClinicLocation < ActiveRecord::Base
     wheelchair_accessible_mask == 1
   end
 
-  SECTOR_HASH = {
-    1 => "Public (MSP billed)",
-    2 => "Private (Patient pays)",
-    3 => "Public and Private",
-    4 => "Didn't answer",
-  }
-
   def sector
     ClinicLocation::SECTOR_HASH[sector_mask]
   end
 
-  def sector_info_available
+  def sector
+    return "Didn't answer" unless sector_info_available?
+
+    SECTORS.select{|sector| self.send(sector) }.map(&:capitalize).to_sentence
+  end
+
+  def sector_info_available?
     SECTORS.any? do |sector|
       send(sector).is_a?(TrueClass) || send(sector).is_a?(FalseClass)
     end
   end
-
-  def sector?
-    sector_mask != 4
-  end
+  #
+  # ClinicLocation::SECTORS.each do |sector|
+  #   define_method "#{sector.to_s}?" do
+  #     if send(sector).is_a?(NilClass)
+  #       DEFAULT_SECTORS.include?(sector)
+  #     else
+  #       send(sector)
+  #     end
+  #   end
+  # end
 
   def scheduled?
     schedule.scheduled?

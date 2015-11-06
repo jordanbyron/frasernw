@@ -100,11 +100,11 @@
                   - hospital = cl.location.hospital_in
                   %p
                     = "In #{link_to hospital.name, hospital_path(hospital), :class => 'ajax'}".html_safe
-                    = "(#{cl.sector})" if cl.sector?
+                    = "(#{cl.sector})" if cl.sector_info_available?
                   %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
                   %p= cl.location.in_details if cl.location.in_details.present?
                 - elsif address.present? && !address.empty?
-                  %p= "(#{cl.sector})" if cl.sector?
+                  %p= "(#{cl.sector})" if cl.sector_info_available?
                   %p= link_to address.address, address.map_url, :target => "_blank"
                 - if cl.location_opened.present?
                   %p
