@@ -16,13 +16,34 @@ export default function(state, dispatch) {
     const _divisionIds = divisionIds(state);
     const _maskingSet =
       itemsForCategory(state.ui.contentCategoryId, state, _divisionIds);
+    const _category = state.app.contentCategories[state.ui.contentCategoryId];
+    const _componentType = _category.componentType
+
+    return {
+      componentProps: ComponentProps[_componentType](
+        state,
+        dispatch,
+        _divisionIds,
+        _maskingSet,
+        _category
+      ),
+      componentType: _componentType,
+      feedbackModal: feedbackModal(state),
+      dispatch: dispatch,
+    };
+  }
+  else {
+    return { isLoading: true };
+  }
+};
+
+const ComponentProps = {
+  FilterTable: (state, dispatch, _divisionIds, _maskingSet, _category) => {
     const _sortConfig = sortConfig(state);
     const _filterValues =
       _.mapValues(FilterValues, (value) => value(state, _maskingSet));
     const _bodyRows =
       bodyRows(state, dispatch, _sortConfig, _maskingSet, _filterValues)
-    const _category = state.app.contentCategories[state.ui.contentCategoryId];
-
     const _resultSummary = resultSummary({
       app: state.app,
       bodyRows: _bodyRows,
@@ -52,14 +73,31 @@ export default function(state, dispatch) {
         // TODO: name this 'sidebarFilteringSectionGroups'
         groups: _.map(FilterGroups, (group) => group(state, _filterValues)),
       },
-      feedbackModal: feedbackModal(state),
       reducedView: _.get(state, ["ui", "reducedView"], "main"),
       arbitraryFooter: arbitraryFooter(_category, state.app.contentCategories),
-      dispatch: dispatch,
+      dispatch: dispatch
+    };
+  },
+  InlineArticles: (state, dispatch, _divisionIds, _maskingSet, _category) => {
+    return {
+      panelKey: "scCategory",
+      records: _maskingSet,
+      categoryLink: categoryLink(_category, state.app.categories),
+      favorites: state.app.currentUser.favorites,
+      dispatch: dispatch
+    };
+  }
+}
+
+const categoryLink = (category, categories) => {
+  if(category.ancestry) {
+    return {
+      text: `Browse all ${categories[category.ancestry].name} content.`,
+      link: `/content_categories/${category.ancestry}`
     }
   }
   else {
-    return { isLoading: true };
+    return null;
   }
 };
 
