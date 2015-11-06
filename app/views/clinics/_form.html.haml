@@ -146,7 +146,7 @@
             .sector_wrapper
               = cl.input :sector_info_available?, label: "Fee structure information available (public/private/volunteer)", as: :boolean, input_html: { class: "sector_info_available_input" }
               .sector_type_inputs
-                - ClinicLocation::SECTORS.each do |sector|
+                - Sectorable::SECTORS.each do |sector|
                   = cl.input sector, label: sector.to_s.capitalize, as: :boolean, input_html: { class: "sector_type_input" }
             = cl.input :wheelchair_accessible_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
 

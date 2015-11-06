@@ -468,7 +468,7 @@ class Clinic < ActiveRecord::Base
     end.flatten.uniq
   end
 
-  ClinicLocation::SECTORS.each do |sector|
+  Sectorable::SECTORS.each do |sector|
     define_method "#{sector.to_s}?" do
       clinic_locations.any?(&("#{sector.to_s}?".to_sym))
     end

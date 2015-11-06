@@ -1,4 +1,6 @@
 class ClinicLocation < ActiveRecord::Base
+  include Sectorable
+
   attr_accessible :clinic_id,
     :phone,
     :phone_extension,
@@ -13,15 +15,6 @@ class ClinicLocation < ActiveRecord::Base
     :location_attributes,
     :attendances_attributes,
     :location_opened
-
-  SECTORS = [
-    :public,
-    :private,
-    :volunteer
-  ]
-  DEFAULT_SECTORS = [:public]
-
-  attr_accessible *SECTORS
 
   belongs_to :clinic
   has_one :location, :as => :locatable, :dependent => :destroy
@@ -78,32 +71,6 @@ class ClinicLocation < ActiveRecord::Base
   def wheelchair_accessible?
     wheelchair_accessible_mask == 1
   end
-
-  def sector
-    ClinicLocation::SECTOR_HASH[sector_mask]
-  end
-
-  def sector
-    return "Didn't answer" unless sector_info_available?
-
-    SECTORS.select{|sector| self.send(sector) }.map(&:capitalize).to_sentence
-  end
-
-  def sector_info_available?
-    SECTORS.any? do |sector|
-      send(sector).is_a?(TrueClass) || send(sector).is_a?(FalseClass)
-    end
-  end
-  #
-  # ClinicLocation::SECTORS.each do |sector|
-  #   define_method "#{sector.to_s}?" do
-  #     if send(sector).is_a?(NilClass)
-  #       DEFAULT_SECTORS.include?(sector)
-  #     else
-  #       send(sector)
-  #     end
-  #   end
-  # end
 
   def scheduled?
     schedule.scheduled?

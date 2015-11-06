@@ -770,6 +770,9 @@ ActiveRecord::Schema.define(:version => 20151106032439) do
     t.integer  "schedule_id"
     t.string   "public_email"
     t.string   "location_opened"
+    t.boolean  "public"
+    t.boolean  "private"
+    t.boolean  "volunteer"
   end
 
   add_index "specialist_offices", ["office_id"], :name => "index_specialist_offices_on_office_id"
