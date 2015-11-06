@@ -51,7 +51,7 @@ class ClinicsController < ApplicationController
     @clinic_specialists = @specialization.specialists.collect do |s|
       [s.name, s.id]
     end
-    @focuses = GenerateClinicFocusInputs.exec(nil, [@specialization])
+    @specializations_focuses = GenerateClinicFocusInputs.exec(nil, [@specialization])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -100,7 +100,7 @@ class ClinicsController < ApplicationController
       puts "locations #{@clinic.locations.length}"
     end
     @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
-    @focuses = GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
+    @specializations_focuses = GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -150,7 +150,7 @@ class ClinicsController < ApplicationController
       end
 
       @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
-      @focuses = GenerateClinicFocusInputs.exec(
+      @specializations_focuses = GenerateClinicFocusInputs.exec(
         @clinic,
         @clinic.specializations
       )
@@ -183,7 +183,7 @@ class ClinicsController < ApplicationController
         l.build_address
       end
       @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
-      @focuses = GenerateClinicFocusInputs.exec(
+      @specializations_focuses = GenerateClinicFocusInputs.exec(
         @clinic,
         @clinic.specializations
       )
