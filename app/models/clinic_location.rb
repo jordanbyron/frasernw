@@ -1,5 +1,4 @@
 class ClinicLocation < ActiveRecord::Base
-
   attr_accessible :clinic_id,
     :phone,
     :phone_extension,
@@ -13,10 +12,15 @@ class ClinicLocation < ActiveRecord::Base
     :schedule_attributes,
     :location_attributes,
     :attendances_attributes,
-    :location_opened,
+    :location_opened
+
+  SECTORS = [
     :public,
     :private,
     :volunteer
+  ]
+
+  attr_accessible *SECTORS
 
   belongs_to :clinic
   has_one :location, :as => :locatable, :dependent => :destroy
@@ -80,12 +84,6 @@ class ClinicLocation < ActiveRecord::Base
     3 => "Public and Private",
     4 => "Didn't answer",
   }
-
-  SECTORS = [
-    :public,
-    :private,
-    :volunteer
-  ]
 
   def sector
     ClinicLocation::SECTOR_HASH[sector_mask]
