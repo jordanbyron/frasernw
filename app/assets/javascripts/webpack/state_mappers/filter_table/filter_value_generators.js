@@ -119,6 +119,9 @@ module.exports = {
   private: function(state: Object, maskingSet: Array, panelKey: string): boolean {
     return _.get(state, ["ui", "panels", panelKey, "filterValues", "private"], false)
   },
+  volunteer: function(state: Object, maskingSet: Array, panelKey: string): boolean {
+    return _.get(state, ["ui", "panels", panelKey, "filterValues", "volunteer"], false)
+  },
   wheelchairAccessible: function(state: Object, maskingSet: Array, panelKey: string): boolean {
     return _.get(state, ["ui", "panels", panelKey, "filterValues", "wheelchairAccessible"], false)
   },

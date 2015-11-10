@@ -487,6 +487,7 @@ var PANEL_TYPE_OPAQUE_FILTERS = {
     "languages",
     "public",
     "private",
+    "volunteer",
     "wheelchairAccessible",
     "careProviders",
     "status"

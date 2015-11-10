@@ -197,7 +197,8 @@ module.exports = {
       filters: {
         public: { value: FILTER_VALUE_GENERATORS["public"](state, maskingSet, panelKey) },
         private: { value: FILTER_VALUE_GENERATORS["private"](state, maskingSet, panelKey) },
-        wheelchairAccessible: { value: FILTER_VALUE_GENERATORS["wheelchairAccessible"](state, maskingSet, panelKey) }
+        volunteer: { value: FILTER_VALUE_GENERATORS["volunteer"](state, maskingSet, panelKey) },
+        wheelchairAccessible: { value: FILTER_VALUE_GENERATORS["wheelchairAccessible"](state, maskingSet, panelKey) },
       },
       title: "Clinic Details",
       isOpen: _.get(state, ["ui", "panels", panelKey, "filterGroupVisibility", "clinicDetails"], false),

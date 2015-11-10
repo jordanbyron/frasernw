@@ -176,7 +176,7 @@ module.exports = {
       return filters.public
     },
     predicate: function(record, filters) {
-      return !record.private;
+      return record.isPublic;
     },
     summary: function(props) {
       return "public";
@@ -188,10 +188,22 @@ module.exports = {
       return filters.private
     },
     predicate: function(record, filters) {
-      return record.private;
+      return record.isPrivate;
     },
     summary: function(props) {
       return "private";
+    },
+    summaryPlacement: "leading"
+  },
+  volunteer: {
+    isActivated: function(filters) {
+      return filters.volunteer;
+    },
+    predicate: function(record, filters) {
+      return record.isVolunteer;
+    },
+    summary: function(props) {
+      return "volunteer";
     },
     summaryPlacement: "leading"
   },

@@ -1,6 +1,20 @@
 class ClinicLocation < ActiveRecord::Base
+  include Sectorable
 
-  attr_accessible :clinic_id, :phone, :phone_extension, :fax, :contact_details, :sector_mask, :url, :public_email, :email, :wheelchair_accessible_mask, :schedule_attributes, :location_attributes, :attendances_attributes, :location_opened
+  attr_accessible :clinic_id,
+    :phone,
+    :phone_extension,
+    :fax,
+    :contact_details,
+    :sector_mask,
+    :url,
+    :public_email,
+    :email,
+    :wheelchair_accessible_mask,
+    :schedule_attributes,
+    :location_attributes,
+    :attendances_attributes,
+    :location_opened
 
   belongs_to :clinic
   has_one :location, :as => :locatable, :dependent => :destroy
@@ -56,25 +70,6 @@ class ClinicLocation < ActiveRecord::Base
 
   def wheelchair_accessible?
     wheelchair_accessible_mask == 1
-  end
-
-  SECTOR_HASH = {
-    1 => "Public (MSP billed)",
-    2 => "Private (Patient pays)",
-    3 => "Public and Private",
-    4 => "Didn't answer",
-  }
-
-  def sector
-    ClinicLocation::SECTOR_HASH[sector_mask]
-  end
-
-  def sector?
-    sector_mask != 4
-  end
-
-  def private?
-    sector_mask == 2
   end
 
   def scheduled?
