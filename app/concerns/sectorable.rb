@@ -1,5 +1,4 @@
 module Sectorable
-
   extend ActiveSupport::Concern
 
   SECTORS = [
@@ -13,9 +12,18 @@ module Sectorable
   end
 
   def sector
+    sector_annotations = {
+      public: " (MSP billed)",
+      private: " (Patient pays)",
+      volunteer: ""
+    }
+
     return "Didn't answer" unless sector_info_available?
 
-    SECTORS.select{|sector| self.send(sector) }.map(&:capitalize).to_sentence
+    SECTORS.
+      select{|sector| self.send(sector) }.
+      map{|sector| "#{sector.capitalize}#{sector_annotations[sector]}" }.
+      to_sentence
   end
 
   def sector_info_available?
