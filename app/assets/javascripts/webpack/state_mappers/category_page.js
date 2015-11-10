@@ -181,26 +181,6 @@ const FilterValues = {
 }
 
 const FilterGroups = {
-  specializations: function(state: Object, filterValues: Object): Object {
-    return {
-      filters: {
-        specializations: _.sortBy(_.map(
-          filterValues.specializations,
-          function(value: boolean, specializationId: string) {
-            return {
-              filterId: specializationId,
-              label: state.app.specializations[specializationId].name,
-              value: value
-            };
-          }
-        ), "label"),
-      },
-      title: "Specialties",
-      isOpen: _.get(state, ["ui" ,"filterGroupVisibility", "specializations"], true),
-      shouldDisplay: _.any(_.keys(filterValues.specializations)),
-      componentKey: "specializations",
-    };
-  },
   subcategories: function(state: Object, filterValues: Object): Object {
     return {
       filters: {
@@ -219,6 +199,26 @@ const FilterGroups = {
       isOpen: _.get(state, ["ui" ,"filterGroupVisibility", "subcategories"], true),
       shouldDisplay: _.any(_.keys(filterValues.subcategories)),
       componentKey: "subcategories",
+    };
+  },
+  specializations: function(state: Object, filterValues: Object): Object {
+    return {
+      filters: {
+        specializations: _.sortBy(_.map(
+          filterValues.specializations,
+          function(value: boolean, specializationId: string) {
+            return {
+              filterId: specializationId,
+              label: state.app.specializations[specializationId].name,
+              value: value
+            };
+          }
+        ), "label"),
+      },
+      title: "Specialties",
+      isOpen: _.get(state, ["ui" ,"filterGroupVisibility", "specializations"], true),
+      shouldDisplay: _.any(_.keys(filterValues.specializations)),
+      componentKey: "specializations",
     };
   },
 }
