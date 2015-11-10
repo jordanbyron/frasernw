@@ -184,7 +184,7 @@ const FilterGroups = {
   specializations: function(state: Object, filterValues: Object): Object {
     return {
       filters: {
-        specializations: _.map(
+        specializations: _.sortBy(_.map(
           filterValues.specializations,
           function(value: boolean, specializationId: string) {
             return {
@@ -193,7 +193,7 @@ const FilterGroups = {
               value: value
             };
           }
-        ),
+        ), "label"),
       },
       title: "Specialties",
       isOpen: _.get(state, ["ui" ,"filterGroupVisibility", "specializations"], true),
@@ -204,7 +204,7 @@ const FilterGroups = {
   subcategories: function(state: Object, filterValues: Object): Object {
     return {
       filters: {
-        subcategories: _.map(
+        subcategories: _.sortBy(_.map(
           filterValues.subcategories,
           function(value: boolean, subcategoryId: string) {
             return {
@@ -213,7 +213,7 @@ const FilterGroups = {
               value: value
             };
           }
-        ),
+        ), "label"),
       },
       title: "Subcategories",
       isOpen: _.get(state, ["ui" ,"filterGroupVisibility", "subcategories"], true),
