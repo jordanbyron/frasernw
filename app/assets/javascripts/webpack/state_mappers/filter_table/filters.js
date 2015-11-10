@@ -31,7 +31,7 @@ module.exports = {
     isActivated: function(filters) {
       return some((values(filters.procedures)), (value) => value);
     },
-    predicate: function(record, filters) {      
+    predicate: function(record, filters) {
       return every(_.keys(_.pick(filters.procedures, _.identity)), (id) => {
         return (_.includes(record.procedureIds, parseInt(id)) &&
           (
@@ -264,7 +264,8 @@ module.exports = {
       return true;
     },
     predicate: function(record) {
-      return record.statusClassKey != 6;
+      // no blank statuses
+      return record.statusClassKey !== 6;
     }
-  }
+  },
 }

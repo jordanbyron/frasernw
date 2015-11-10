@@ -485,6 +485,7 @@ var PANEL_TYPE_OPAQUE_FILTERS = {
     "languages",
     "clinicAssociations",
     "hospitalAssociations",
+    "status",
   ],
   clinics: [
     "procedures",
@@ -493,7 +494,8 @@ var PANEL_TYPE_OPAQUE_FILTERS = {
     "public",
     "private",
     "wheelchairAccessible",
-    "careProviders"
+    "careProviders",
+    "status"
   ],
   contentCategories: [
     "subcategories"
