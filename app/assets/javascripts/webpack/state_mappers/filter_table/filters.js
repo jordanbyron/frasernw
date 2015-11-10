@@ -264,7 +264,8 @@ module.exports = {
       return true;
     },
     predicate: function(record) {
-      return record.statusClassKey != 6;
+      // no blank statuses
+      return record.statusClassKey !== 6;
     }
   },
   specializations: {
@@ -282,5 +283,5 @@ module.exports = {
       ).join(", ");
     },
     summaryPlacement: "trailing"
-  }
+  },
 }

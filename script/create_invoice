@@ -1,0 +1,83 @@
+#!/usr/bin/env ruby
+
+# this tool is for creating invoices from toggl timesheets
+# view your weekly report in detailed view and export the csv to TIMESHEET_FOLDER
+# then run script/create_invoice
+
+require 'csv'
+
+# get our customizable settings
+
+require File.expand_path("../../config/heroku_env.rb", __FILE__)
+timesheet_directory = ENV["TIMESHEET_FOLDER"]
+invoice_folder = ENV["INVOICE_FOLDER"]
+invoice_name = ENV["INVOICE_NAME"]
+
+# get the file
+
+filepath = Dir.glob("#{timesheet_directory}/*").max_by {|f| File.mtime(f)}
+
+raw_timesheet = CSV.read(filepath)
+
+# get column info
+
+header_row = raw_timesheet[0]
+
+start_date_column_index = header_row.index("Start date")
+duration_column_index = header_row.index("Duration")
+description_column_index = header_row.index("Description")
+
+# parse entry rows down to day rows
+
+grouped_by_days = raw_timesheet.drop(1).group_by do |row|
+  row[start_date_column_index]
+end
+
+export_rows = grouped_by_days.map do |day, rows|
+  total_minutes = rows.inject(0) do |memo, row|
+    raw_time = row[duration_column_index].split(":")
+    hours = raw_time[0].to_i
+    minutes = raw_time[1].to_i
+
+    memo + (hours * 60) + minutes
+  end
+  rounded_minutes = ((total_minutes.to_f / 15).ceil * 15)
+  hours_float = rounded_minutes.to_f / 60
+  descriptions = rows.map{|row| row[description_column_index] }.uniq.join(", ")
+
+  [
+    day,
+    hours_float,
+    descriptions
+  ]
+end.sort_by{ |row| row[0] }
+
+# miscellaneous other info needed for the doc
+
+start_date = export_rows[0][0]
+end_date = export_rows.last[0]
+total_hours = export_rows.inject(0.0) do |memo, row|
+  memo + row[1]
+end
+
+# write to CSV
+
+filename =
+  "#{invoice_name.gsub(" ", "_")}_pw_invoice_s#{start_date.gsub("/", ".")}_e#{end_date.gsub("/", ".")}.csv"
+file_path = "#{invoice_folder}/#{filename}"
+
+CSV.open(file_path, "w+") do |csv|
+  csv << [ "Pathways Invoice" ]
+  csv << [ "Submitted by #{invoice_name}" ]
+  csv << [ "" ]
+  csv << [ "Start Date: #{start_date}" ]
+  csv << [ "End Date: #{end_date}" ]
+  csv << [ "" ]
+
+  csv << [ "Date", "Hours", "Entry Descriptions" ]
+  export_rows.each do |row|
+    csv << row
+  end
+
+  csv << [ "Total", total_hours ]
+end
