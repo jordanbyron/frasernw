@@ -2,10 +2,10 @@ export default {
   contentCategories: function(): Array {
     return [
       { label: "Title", key: "TITLE" },
-      { label: "Category", key: "SUBCATEGORY" },
-      { label: "", key: "FAVOURITE" },
-      { label: "", key: "EMAIL_TO_PATIENT" },
-      { label: "", key: "PROVIDE_FEEDBACK" }
+      { label: "Category", key: "SUBCATEGORY", className: "filter_table__th--subcategory" },
+      { label: "", key: "FAVOURITE", className: "filter_table__th--icon" },
+      { label: "", key: "EMAIL_TO_PATIENT", className: "filter_table__th--icon" },
+      { label: "", key: "PROVIDE_FEEDBACK", className: "filter_table__th--icon" }
     ];
   },
   referents: function(labelName: string, includingOtherSpecializations: boolean): Array {

@@ -56,7 +56,7 @@ const categoryLink = (categoryLinkProps) => {
     return(
       <div>
         <i className='icon-arrow-right icon-blue' style={{marginRight: "5px"}}></i>
-        <a href={this.props.categoryLink.link}>{this.props.categoryLink.text}</a>
+        <a href={categoryLinkProps.link}>{categoryLinkProps.text}</a>
       </div>
     );
   }
