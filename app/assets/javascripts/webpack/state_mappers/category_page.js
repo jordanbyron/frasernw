@@ -148,44 +148,48 @@ const sortConfig = (state) => ({
 })
 
 const FilterValues = {
-  subcategories: function(state, maskingSet) {
-    return _.chain(maskingSet)
-     .map((record) => record.categoryId)
-     .flatten()
-     .uniq()
-     .without(state.ui.contentCategoryId)
-     .reduce((memo, id) => {
-       return _.assign(
-         { [id]: _.get(state, ["ui", "filterValues", "subcategories", id], false) },
-         memo
-       );
-     }, {})
-     .value();
+  subcategories: function(state) {
+    return _.get(state, ["ui", "filterValues", "subcategories"], "0");
   },
-  specializations: function(state, maskingSet) {
+  specializations: function(state) {
     return _.get(state, ["ui", "filterValues", "specializations"], "0");
   }
 }
 
 const FilterGroups = {
-  subcategories: function(state: Object, filterValues: Object): Object {
+  subcategories: function(state: Object, filterValues: Object, maskingSet: Array): Object {
+    const createOption = function(categoryId) {
+      return {
+        key: `${categoryId}`,
+        checked: (`${categoryId}` === filterValues.subcategories),
+        label: state.app.contentCategories[categoryId].name
+      };
+    };
+
+    const allSubcategoriesOption = {
+      key: "0",
+      checked: "0" === filterValues.subcategories,
+      label: "All"
+    };
+
+    const options = from(
+      Array.prototype.concat.bind(allSubcategoriesOption),
+      _.partialRight(_.sortBy, "label"),
+      _.partialRight(_.map, createOption),
+      _.partialRight(_.without, state.ui.contentCategoryId),
+      _.uniq,
+      _.partialRight(_.map, _.property("categoryId")),
+      maskingSet
+    );
+
     return {
       filters: {
-        subcategories: _.sortBy(_.map(
-          filterValues.subcategories,
-          function(value: boolean, subcategoryId: string) {
-            return {
-              filterId: subcategoryId,
-              label: state.app.contentCategories[subcategoryId].name,
-              value: value
-            };
-          }
-        ), "label"),
+        subcategories: { options: options },
       },
       title: "Subcategories",
-      isOpen: _.get(state, ["ui" ,"filterGroupVisibility", "subcategories"], true),
-      shouldDisplay: _.any(_.keys(filterValues.subcategories)),
-      componentKey: "subcategories",
+      isOpen: _.get(state, ["ui" ,"filterGroupVisibility", "subcategoriesRadioButtons"], true),
+      shouldDisplay: (options.length > 1),
+      componentKey: "subcategoriesRadioButtons",
     };
   },
   specializations: function(state: Object, filterValues: Object, maskingSet: Array): Object {

@@ -249,17 +249,29 @@ module.exports = {
   },
   subcategories: {
     isActivated: function(filters) {
-      return some(values(filters.subcategories), (value) => value);
+      if(_.isObject(filters.subcategories)){
+        return some(values(filters.subcategories), (value) => value);
+      } else {
+        return (filters.subcategories !== "0");
+      }
     },
     predicate: function(record, filters) {
-      return _.find(_.keys(_.pick(filters.subcategories, _.identity)), (id) => {
-        return record.categoryId === parseInt(id);
-      });
+      if(_.isObject(filters.subcategories)){
+        return _.find(_.keys(_.pick(filters.subcategories, _.identity)), (id) => {
+          return record.categoryId === parseInt(id);
+        });
+      } else {
+        return record.categoryId === parseInt(filters.subcategories);
+      }
     },
     summary: function(props) {
-      return "are in one of the following subcategories: " + _.keys(_.pick(props.filterValues.subcategories, _.identity)).map(
-        (id) => props.app.contentCategories[id].name
-      ).join(", ");
+      if(_.isObject(props.filterValues.subcategories)){
+        return "are in one of the following subcategories: " + _.keys(_.pick(props.filterValues.subcategories, _.identity)).map(
+          (id) => props.app.contentCategories[id].name
+        ).join(", ");
+      } else {
+        return `are in subcategory ${props.app.contentCategories[props.filterValues.subcategories].name}`;
+      }
     },
     summaryPlacement: "trailing"
   },
@@ -288,7 +300,7 @@ module.exports = {
       return _.includes(record.specializationIds, parseInt(filters.specializations));
     },
     summary: function(props) {
-      return `are related to ${props.app.specializations[props.filterValues.specializations].name}`;
+      return `pertain to ${props.app.specializations[props.filterValues.specializations].name}`;
     },
     summaryPlacement: "trailing"
   },
