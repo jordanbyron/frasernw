@@ -47,7 +47,7 @@ const ComponentProps = {
     const _resultSummary = resultSummary({
       app: state.app,
       bodyRows: _bodyRows,
-      labelName: _category.name.toLowerCase(),
+      labelName: _category.name,
       panelTypeKey: "contentCategories",
       referralCities: [],
       filterValues: _filterValues,

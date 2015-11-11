@@ -23,7 +23,7 @@ var collection = function(props) {
   }
 }
 
-var pronoun = function(props) {
+var pronoun = function(props) {  
   if (props.panelTypeKey === "clinics") {
     return "that";
   } else if (props.panelTypeKey === "specialists") {

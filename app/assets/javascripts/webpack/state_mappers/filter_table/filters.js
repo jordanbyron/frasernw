@@ -270,7 +270,7 @@ module.exports = {
           (id) => props.app.contentCategories[id].name
         ).join(", ");
       } else {
-        return `are in subcategory ${props.app.contentCategories[props.filterValues.subcategories].name}`;
+        return `are subcategorized as ${props.app.contentCategories[props.filterValues.subcategories].name}`;
       }
     },
     summaryPlacement: "trailing"
