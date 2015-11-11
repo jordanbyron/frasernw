@@ -58,6 +58,9 @@ class DivisionsController < ApplicationController
         new_so.show_specialist_categorization_5 = old_so.show_specialist_categorization_5
         new_so.save
       end
+
+      Serialized.delay.regenerate(:divisions)
+
       redirect_to @division, :notice => "Successfully created division."
     else
       render :action => 'new'
@@ -95,6 +98,8 @@ class DivisionsController < ApplicationController
           drcs.destroy
         end
       end
+      Serialized.delay.regenerate(:divisions)
+
       redirect_to @division, :notice  => "Successfully updated division."
     else
       render :action => 'edit'
