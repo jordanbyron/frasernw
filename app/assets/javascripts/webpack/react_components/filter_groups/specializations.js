@@ -1,28 +1,24 @@
-import CheckBox from "react_components/checkbox";
 import React from "react";
+import RadioButtons from "react_components/radio_buttons";
 import { mapValues } from "lodash";
 
 const SpecializationsFilterGroup = React.createClass({
-  handleCheckboxUpdate: function(event, key) {
-    this.props.dispatch({
-      type: "UPDATE_FILTER",
-      filterType: "specializations",
-      update: { [key] : event.target.checked }
-    });
+  handleChange: function(event) {
+    if (event.target.checked) {
+      this.props.dispatch({
+        type: "UPDATE_FILTER",
+        filterType: "specializations",
+        update: event.target.value
+      })
+    }
   },
   render: function() {
     return (
       <div>
-        {
-          this.props.filters.specializations.map((specialization) => {
-            return <CheckBox
-              key={specialization.filterId}
-              changeKey={specialization.filterId}
-              label={specialization.label}
-              value={specialization.value}
-              onChange={this.handleCheckboxUpdate} />;
-          })
-        }
+        <RadioButtons
+          options={this.props.filters.specializations.options}
+          handleChange={this.handleChange}
+        />
       </div>
     );
   }

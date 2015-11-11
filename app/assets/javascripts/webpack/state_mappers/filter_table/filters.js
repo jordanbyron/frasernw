@@ -282,17 +282,13 @@ module.exports = {
   },
   specializations: {
     isActivated: function(filters) {
-      return some(filters.specializations, _.identity);
+      return (filters.specializations !== "0");
     },
     predicate: function(record, filters) {
-      return _.find(_.keys(_.pick(filters.specializations, _.identity)), (id) => {
-        return _.includes(record.specializationIds, parseInt(id));
-      });
+      return _.includes(record.specializationIds, parseInt(filters.specializations));
     },
     summary: function(props) {
-      return "are related to one of the following specialties: " + _.keys(_.pick(props.filterValues.specializations, _.identity)).map(
-        (id) => props.app.specializations[id].name
-      ).join(", ");
+      return `are related to ${props.app.specializations[props.filterValues.specializations].name}`;
     },
     summaryPlacement: "trailing"
   },

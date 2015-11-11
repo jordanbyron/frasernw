@@ -71,7 +71,7 @@ const ComponentProps = {
       filters: {
         title: `Filter ${_category.name}`,
         // TODO: name this 'sidebarFilteringSectionGroups'
-        groups: _.map(FilterGroups, (group) => group(state, _filterValues)),
+        groups: _.map(FilterGroups, (group) => group(state, _filterValues, _maskingSet)),
       },
       reducedView: _.get(state, ["ui", "reducedView"], "main"),
       arbitraryFooter: arbitraryFooter(_category, state.app.contentCategories),
@@ -163,20 +163,7 @@ const FilterValues = {
      .value();
   },
   specializations: function(state, maskingSet) {
-    const assignValues = _.partialRight(_.reduce, (memo, id) => {
-      return _.assign(
-        { [id]: _.get(state, ["ui", "filterValues", "specializations", id], false) },
-        memo
-      );
-    }, {});
-
-    return from(
-      assignValues,
-      _.uniq,
-      _.flatten,
-      _.partialRight(_.map, _.property("specializationIds")),
-      maskingSet
-    );
+    return _.get(state, ["ui", "filterValues", "specializations"], "0");
   }
 }
 
@@ -201,24 +188,39 @@ const FilterGroups = {
       componentKey: "subcategories",
     };
   },
-  specializations: function(state: Object, filterValues: Object): Object {
+  specializations: function(state: Object, filterValues: Object, maskingSet: Array): Object {
+    const createOption = function(specializationId) {
+      return {
+        key: `${specializationId}`,
+        checked: (`${specializationId}` === filterValues.specializations),
+        label: state.app.specializations[specializationId].name
+      };
+    };
+    const allSpecialtiesOption = {
+      key: "0",
+      checked: "0" === filterValues.specializations,
+      label: "All"
+    };
+
+    const options = from(
+      Array.prototype.concat.bind(allSpecialtiesOption),
+      _.partialRight(_.sortBy, "label"),
+      _.partialRight(_.map, createOption),
+      _.uniq,
+      _.flatten,
+      _.partialRight(_.map, _.property("specializationIds")),
+      maskingSet
+    );
+
     return {
       filters: {
-        specializations: _.sortBy(_.map(
-          filterValues.specializations,
-          function(value: boolean, specializationId: string) {
-            return {
-              filterId: specializationId,
-              label: state.app.specializations[specializationId].name,
-              value: value
-            };
-          }
-        ), "label"),
+        specializations: { options: options }
       },
       title: "Specialties",
       isOpen: _.get(state, ["ui" ,"filterGroupVisibility", "specializations"], true),
-      shouldDisplay: _.any(_.keys(filterValues.specializations)),
+      shouldDisplay: true,
       componentKey: "specializations",
     };
+
   },
 }
