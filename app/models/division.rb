@@ -75,6 +75,10 @@ class Division < ActiveRecord::Base
     end
   end
 
+  def admins
+    (users.admin + User.super_admin).uniq
+  end
+
   # # #
 
   def search_data
