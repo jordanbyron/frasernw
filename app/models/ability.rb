@@ -34,6 +34,8 @@ class Ability
 
         can :index, Report
 
+        can :manage, SecretToken
+
         #admin
         can :manage, [Subscription, Notification]
 

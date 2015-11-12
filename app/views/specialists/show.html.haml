@@ -543,11 +543,18 @@
 
   - if current_user_is_admin?
     #share.collapse
-      %p
-        .alert.alert-info
-          %h3 Secret edit link
-          %p Anyone can edit this specialist if they have the following secret address:
-          %p= specialist_self_edit_path(@specialist, @specialist.token, :only_path => false)
+
+    :javascript
+      window.pathways.attachSecretEditLinks({
+        containerId: "share",
+        props: {
+          addLink: '#{secret_tokens_path}',
+          accessibleId: #{@specialist.id},
+          accessibleType: "Specialist",
+          links: #{@specialist.valid_secret_edit_links.to_json},
+          canEdit: #{can?(:edit, @specialist)}
+        }
+      })
 
   - if current_user_is_admin? && !current_user_is_super_admin? # only normal admins
     .alert.alert-info{style: "margin-top: 10px"}
