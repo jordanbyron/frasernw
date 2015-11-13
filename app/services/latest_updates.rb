@@ -5,7 +5,7 @@ class LatestUpdates
   def exec
     # puts "DIVISIONS: #{divisions.map(&:id)}"
 
-    Rails.cache.fetch("#{max_automated_events}_#{divisions.map(&:id).sort.join("_")}", force: force) do
+    Rails.cache.fetch("latest_updates:#{max_automated_events}:#{divisions.map(&:id).sort.join("_")}", force: force) do
       manual_events = {}
       automated_events = {}
 
@@ -142,7 +142,7 @@ class LatestUpdates
       end
 
       #mix in the news updates with the automatic updates
-      return automated_events.merge(manual_events).values.sort{ |a, b| b[0] <=> a[0] }.map{ |x| x[1] }
+      automated_events.merge(manual_events).values.sort{ |a, b| b[0] <=> a[0] }.map{ |x| x[1] }
     end
   end
 end
