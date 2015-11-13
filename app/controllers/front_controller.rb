@@ -10,6 +10,7 @@ class FrontController < ApplicationController
   end
 
   def as_division
+    @current_newsletter = Newsletter.current
     @division = Division.find(params[:division_id])
     render :action => 'index'
   end
