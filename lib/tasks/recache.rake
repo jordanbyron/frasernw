@@ -154,6 +154,16 @@ namespace :pathways do
       end
     end
 
+    task :latest_updates => :environment do
+      User.all_user_division_groups_cached.each do |division_group|
+        LatestUpdates.exec(
+          max_automated_events: 5,
+          divisions: division_group.map{|id| Division.find(id)},
+          force: true
+        )
+      end
+    end
+
     task :application_layout => :environment do
       expire_fragment("ie_compatibility_warning")
       User.all_user_division_groups_cached.each do |division_group|
@@ -185,6 +195,7 @@ namespace :pathways do
       :menus,
       :search,
       :front,
+      :latest_events,
       :application_layout
     ] do
       puts "All pages recached."

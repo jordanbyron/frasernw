@@ -1,7 +1,5 @@
 module FrontHelper
-
   def latest_events(max_automated_events, divisions)
-
     manual_events = {}
     automated_events = {}
 
@@ -128,4 +126,12 @@ module FrontHelper
     #mix in the news updates with the automatic updates
     return automated_events.merge(manual_events).values.sort{ |a, b| b[0] <=> a[0] }.map{ |x| x[1] }
   end
+
+  # def latest_events(max_automated_events, divisions)
+  #   LatestUpdates.exec(
+  #     max_automated_events: max_automated_events,
+  #     divisions: divisions,
+  #     force: false
+  #   )
+  # end
 end
