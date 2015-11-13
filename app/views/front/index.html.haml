@@ -78,8 +78,9 @@
 
         %h2 Latest Specialist and Clinic Updates
 
-        - latest_events(5, user_divisions).each do |event|
-          %p= event
+        - cache("latest_updates_#{user_divisions.map{|d| d.id }.join('_')}") do
+          - latest_events(5, user_divisions).each do |event|
+            %p= event
 
         - if current_user_is_admin? && can_edit
           %p.admin.btn-group
