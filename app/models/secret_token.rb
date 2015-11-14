@@ -4,6 +4,10 @@ class SecretToken < ActiveRecord::Base
 
   include Rails.application.routes.url_helpers
 
+  def self.not_expired
+    where(expired: false)
+  end
+
   def creator_name
     if creator_id == 0
       "System"
@@ -12,17 +16,17 @@ class SecretToken < ActiveRecord::Base
     end
   end
 
-  def link
-    send("#{accessible_type.downcase}_self_edit_path", accessible, token)
+  def link(host)
+    send("#{accessible_type.downcase}_self_edit_url", accessible, token, host: host)
   end
 
-  def as_hash
+  def as_hash(host)
     {
       id: id,
       creator: creator_name,
       recipient: recipient,
       created_at: created_at.strftime("%Y-%m-%d"),
-      link: link
+      link: link(host)
     }
   end
 

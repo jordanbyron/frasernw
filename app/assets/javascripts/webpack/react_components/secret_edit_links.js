@@ -1,5 +1,6 @@
 import React from "react";
 import _ from "lodash";
+import Modal from "react_components/modal";
 
 const SecretEditLinkTable = (props) => (
   <table className="table">
@@ -54,8 +55,22 @@ const GenerateButton = React.createClass({
       return <div></div>;
     }
   }
-})
+});
 
+const margins = { marginBottom: "10px" }
+const ModalContents = (modalProps) => (
+  <div>
+    <h4 style={margins}>Secret Edit Link Created!</h4>
+    <div style={margins}>{ `Your secret edit link for ${modalProps.link.recipient} is:` }</div>
+    <div style={_.assign({fontWeight: "bold"}, margins)}>{ modalProps.link.link }</div>
+    <div style={margins}>This link will not be visible after this notification is closed, in order to preserve knowledge of its creator and recipients.</div>
+    <div className="btn btn-primary" onClick={modalProps.close}>Done</div>
+  </div>
+)
+
+const SecretEditModal = (modalProps) => (
+  <Modal isVisible={modalProps.isVisible} renderContents={ModalContents.bind(null, modalProps)}/>
+)
 
 const SecretEditLinks = React.createClass({
   getInitialState() {
@@ -70,15 +85,21 @@ const SecretEditLinks = React.createClass({
       accessible_id: this.props.accessibleId,
       accessible_type: this.props.accessibleType
     }).done((data) => {
-      let lineOne = `Your secret edit link for ${data.link.recipient} is:`
-      let lineThree = "This link will not be visible after this notification is closed, in order to preserve knowledge of its creator and recipients."
-      
-      alert(`${lineOne}\n\n${data.link.link}\n\n${lineThree}`);
-
       this.setState({
-        links: this.links().concat(data.link)
+        links: this.links().concat(data.link),
+        modal: { isVisible: true, link: data.link }
       });
     })
+  },
+  modalProps() {
+    return _.assign(
+      {},
+      (this.state.modal || this.props.modal),
+      { close: this.closeModal }
+    );
+  },
+  closeModal() {
+    this.setState({modal: { isVisible: false }});;
   },
   render() {
     return(
@@ -87,6 +108,7 @@ const SecretEditLinks = React.createClass({
         <i style={{marginLeft: "5px"}}>Anyone can edit the record if they have one of the following links:</i>
         <SecretEditLinkTable links={this.links()}/>
         <GenerateButton canEdit={this.props.canEdit} addLink={this.addLink}/>
+        <SecretEditModal {...this.modalProps()}/>
       </div>
     );
   }

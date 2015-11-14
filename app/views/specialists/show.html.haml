@@ -551,8 +551,10 @@
           addLink: '#{secret_tokens_path}',
           accessibleId: #{@specialist.id},
           accessibleType: "Specialist",
-          links: #{@specialist.valid_secret_edit_links.to_json},
-          canEdit: #{can?(:edit, @specialist)}
+          links: #{@specialist.valid_secret_edit_links(request.host).to_json},
+          canEdit: #{can?(:edit, @specialist)},
+          modal: { isVisible: false },
+          recipient: ""
         }
       })
 
