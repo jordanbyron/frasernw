@@ -75,8 +75,18 @@ class ReviewItem < ActiveRecord::Base
     "#{item.name} (Review Item)"
   end
 
+  def secret_token_id
+    decoded_review_object[item_type.downcase]["secret_token_id"]
+  end
+
   def creator
-    User.safe_find whodunnit
+    if whodunnit.present?
+      User.safe_find whodunnit
+    elsif secret_token_id.present?
+      SecretEditor.new(SecretToken.safe_find(secret_token_id).try(:recipient))
+    else
+      UnknownUser.new
+    end
   end
 
   def active?
