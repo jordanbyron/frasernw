@@ -419,7 +419,7 @@
 
   - if current_user_is_admin?
     #share.collapse
-    
+
     :javascript
       window.pathways.attachSecretEditLinks({
         containerId: "share",
@@ -427,7 +427,7 @@
           addLink: '#{secret_tokens_path}',
           accessibleId: #{@clinic.id},
           accessibleType: "Clinic",
-          links: #{@clinic.valid_secret_edit_links(request.host).to_json},
+          links: #{@clinic.valid_secret_edit_links(request.host, current_user).to_json},
           canEdit: #{can?(:edit, @clinic)},
           modal: { isVisible: false }
         }

@@ -17,7 +17,18 @@ class SecretTokensController < ApplicationController
     ))
 
     render json: {
-      link: token.as_hash(request.host)
+      link: token.as_hash(request.host, current_user)
     }
+  end
+
+  def destroy
+    authorize! :destroy, SecretToken
+
+    token = SecretToken.find(params[:id])
+    raise "Not allowed" unless token.expirable_by?(current_user)
+
+    token.update_attributes(expired: true)
+
+    render nothing: true, status: 200
   end
 end

@@ -5,8 +5,8 @@ module TokenAccessible
     has_many :secret_tokens, as: :accessible
   end
 
-  def valid_secret_edit_links(host)
-    secret_tokens.not_expired.map{|token| token.as_hash(host) }
+  def valid_secret_edit_links(host, user)
+    secret_tokens.not_expired.map{|token| token.as_hash(host, user) }
   end
 
 end

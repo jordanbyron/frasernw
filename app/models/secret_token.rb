@@ -1,4 +1,11 @@
 class SecretToken < ActiveRecord::Base
+  attr_accessible :expired,
+    :creator_id,
+    :recipient,
+    :accessible_id,
+    :accessible_type,
+    :token
+
   belongs_to :accessible, polymorphic: true
   belongs_to :creator, class_name: "User"
 
@@ -20,14 +27,22 @@ class SecretToken < ActiveRecord::Base
     send("#{accessible_type.downcase}_self_edit_url", accessible, token, host: host)
   end
 
-  def as_hash(host)
+  def as_hash(host, user)
     {
       id: id,
       creator: creator_name,
       recipient: recipient,
       created_at: created_at.strftime("%Y-%m-%d"),
-      link: link(host)
+      link: link(host),
+      canExpire: expirable_by?(user)
     }
   end
 
+  def expirable_by?(user)
+    return true if user.super_admin?
+    return true if user == creator
+    return true if creator.nil? && user.admin?
+
+    false
+  end
 end

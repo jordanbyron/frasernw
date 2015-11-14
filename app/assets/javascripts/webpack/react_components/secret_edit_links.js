@@ -2,6 +2,15 @@ import React from "react";
 import _ from "lodash";
 import Modal from "react_components/modal";
 
+const ExpireIcon = (props) => {
+  if(props.link.canExpire) {
+    return(<i className="icon-remove" onClick={props.onClick}/>);
+  }
+  else {
+    return(<div></div>);
+  }
+}
+
 const SecretEditLinkTable = (props) => (
   <table className="table">
     <thead>
@@ -9,6 +18,7 @@ const SecretEditLinkTable = (props) => (
         <th>Recipient</th>
         <th>Creator</th>
         <th>Created At</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -18,6 +28,7 @@ const SecretEditLinkTable = (props) => (
             <td>{link.recipient}</td>
             <td>{link.creator}</td>
             <td>{link.created_at}</td>
+            <td><ExpireIcon link={link} onClick={props.expireLink.bind(null, link.id)}/></td>
           </tr>
         ))
       }
@@ -45,7 +56,7 @@ const GenerateButton = React.createClass({
           >Generate new link for</div>
           <input
             style={{marginBottom: "0px", marginLeft: "5px"}}
-            placeholder="recipient"
+            placeholder="Recipient Email"
             ref="recipient"
             onChange={this.props.onUpdateRecipient}
             value={this.props.recipient}
@@ -107,6 +118,18 @@ const SecretEditLinks = React.createClass({
   onUpdateRecipient: function(e) {
     this.setState({ recipient: e.target.value });
   },
+  expireLink: function(id) {
+    if(confirm("Are you sure you would like to expire this secret edit link?")){
+      $.ajax({
+        url: `/secret_tokens/${id}`,
+        type: "DELETE"
+      }).done((data) => {
+        this.setState({
+          links: _.filter(this.state.links, (link) => link.id !== id)
+        });
+      })
+    }
+  },
   recipient() {
     return (this.state.recipient || "");
   },
@@ -115,7 +138,7 @@ const SecretEditLinks = React.createClass({
       <div style={{marginTop: "10px"}}>
         <h6 style={{margin: "0px", marginBottom: "5px"}}>Secret Edit Links</h6>
         <i style={{marginLeft: "5px"}}>Anyone can edit the record if they have one of the following links:</i>
-        <SecretEditLinkTable links={this.links()}/>
+        <SecretEditLinkTable links={this.links()} expireLink={this.expireLink}/>
         <GenerateButton
           canEdit={this.props.canEdit}
           addLink={this.addLink}
