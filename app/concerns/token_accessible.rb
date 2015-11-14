@@ -9,4 +9,7 @@ module TokenAccessible
     secret_tokens.not_expired.map{|token| token.as_hash(host, user) }
   end
 
+  def valid_tokens
+    [ saved_token ] + secret_tokens.not_expired.map(&:token)
+  end
 end

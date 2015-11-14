@@ -1,4 +1,6 @@
 class SecretTokensController < ApplicationController
+  include UrlHelper
+
   def create
     authorize! :create, SecretToken
 
@@ -17,7 +19,7 @@ class SecretTokensController < ApplicationController
     ))
 
     render json: {
-      link: token.as_hash(request.host, current_user)
+      link: token.as_hash(base_url, current_user)
     }
   end
 

@@ -24,7 +24,7 @@ class SecretToken < ActiveRecord::Base
   end
 
   def link(host)
-    send("#{accessible_type.downcase}_self_edit_url", accessible, token, host: host)
+    "#{host}#{send("#{accessible_type.downcase}_self_edit_path", accessible, token)}"
   end
 
   def as_hash(host, user)

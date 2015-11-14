@@ -427,7 +427,7 @@
           addLink: '#{secret_tokens_path}',
           accessibleId: #{@clinic.id},
           accessibleType: "Clinic",
-          links: #{@clinic.valid_secret_edit_links(request.host, current_user).to_json},
+          links: #{@clinic.valid_secret_edit_links(base_url, current_user).to_json},
           canEdit: #{can?(:edit, @clinic)},
           modal: { isVisible: false }
         }

@@ -52,6 +52,10 @@ module ActiveRecord
     def numbered_label
       "#{class_label} ##{self.id}"
     end
+
+    def valid_tokens
+      [ saved_token ]
+    end
   end
 
   class Relation
