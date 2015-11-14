@@ -724,13 +724,14 @@ ActiveRecord::Schema.define(:version => 20151112002910) do
   add_index "schedules", ["wednesday_id"], :name => "index_schedules_on_wednesday_id"
 
   create_table "secret_tokens", :force => true do |t|
-    t.integer  "creator_id",      :null => false
-    t.string   "recipient",       :null => false
-    t.integer  "accessible_id",   :null => false
-    t.string   "accessible_type", :null => false
-    t.string   "token",           :null => false
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.integer  "creator_id",                         :null => false
+    t.string   "recipient",                          :null => false
+    t.integer  "accessible_id",                      :null => false
+    t.string   "accessible_type",                    :null => false
+    t.string   "token",                              :null => false
+    t.boolean  "expired",         :default => false, :null => false
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
   end
 
   add_index "secret_tokens", ["accessible_id", "accessible_type"], :name => "secret_token_item"
