@@ -1,6 +1,8 @@
 class Version < ActiveRecord::Base
   belongs_to :secret_token
 
+  attr_accessible :secret_token_id
+
   # nice past tense events for paper_trail
   def evented
     self.event.gsub('update','updated').gsub('destroy','destroyed').gsub('create','created')
