@@ -47,6 +47,8 @@ const GenerateButton = React.createClass({
             style={{marginBottom: "0px", marginLeft: "5px"}}
             placeholder="recipient"
             ref="recipient"
+            onChange={this.props.onUpdateRecipient}
+            value={this.props.recipient}
           ></input>
         </div>
       );
@@ -86,8 +88,9 @@ const SecretEditLinks = React.createClass({
       accessible_type: this.props.accessibleType
     }).done((data) => {
       this.setState({
-        links: this.links().concat(data.link),
-        modal: { isVisible: true, link: data.link }
+        links: [ data.link ].concat(this.links()),
+        modal: { isVisible: true, link: data.link },
+        recipient: ""
       });
     })
   },
@@ -101,13 +104,24 @@ const SecretEditLinks = React.createClass({
   closeModal() {
     this.setState({modal: { isVisible: false }});;
   },
+  onUpdateRecipient: function(e) {
+    this.setState({ recipient: e.target.value });
+  },
+  recipient() {
+    return (this.state.recipient || "");
+  },
   render() {
     return(
       <div style={{marginTop: "10px"}}>
         <h6 style={{margin: "0px", marginBottom: "5px"}}>Secret Edit Links</h6>
         <i style={{marginLeft: "5px"}}>Anyone can edit the record if they have one of the following links:</i>
         <SecretEditLinkTable links={this.links()}/>
-        <GenerateButton canEdit={this.props.canEdit} addLink={this.addLink}/>
+        <GenerateButton
+          canEdit={this.props.canEdit}
+          addLink={this.addLink}
+          recipient={this.recipient()}
+          onUpdateRecipient={this.onUpdateRecipient}
+        />
         <SecretEditModal {...this.modalProps()}/>
       </div>
     );
