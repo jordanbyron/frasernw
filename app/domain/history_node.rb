@@ -16,7 +16,7 @@ class HistoryNode
   # add 'parent'?/ 'on'?
 
   attr_reader :raw
-  delegate :datetime, :changeset, to: :raw
+  delegate :datetime, :changeset, :secret_editor, to: :raw
 
   def initialize(attrs)
     @raw = OpenStruct.new(attrs)
@@ -38,6 +38,10 @@ class HistoryNode
     else
       raw.verb.to_s.gsub("_", " ")
     end
+  end
+
+  def review?
+    secret_editor.present?
   end
 
   def target

@@ -18,6 +18,10 @@ class Version < ActiveRecord::Base
     end
   end
 
+  def secret_editor
+    SecretToken.safe_find(secret_token_id).try(:recipient)
+  end
+
   def archiving_item?
     changeset.has_key?('archived') && changeset['archived'][1] == true
   end

@@ -10,7 +10,8 @@ module PaperTrailable
     versions.where(event: "create").first || OpenStruct.new(
       created_at: created_at,
       safe_user: UnknownUser.new,
-      next: nil
+      next: nil,
+      secret_editor: ""
     )
   end
 
@@ -40,6 +41,10 @@ module PaperTrailable
 
   def last_updated_at
     last_update.created_at
+  end
+
+  def last_update_editor
+    last_update.secret_editor
   end
 
   def last_updater

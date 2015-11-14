@@ -9,6 +9,7 @@ class GenerateHistory
           user: target.last_updater,
           datetime: target.last_updated_at,
           verb: :last_updated,
+          secret_editor: target.last_update_editor,
           new_version: target,
           changeset: target.last_update_changeset
         )

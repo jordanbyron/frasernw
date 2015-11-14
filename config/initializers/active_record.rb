@@ -41,6 +41,10 @@ module ActiveRecord
       UnknownUser.new
     end
 
+    def last_update_editor
+      ""
+    end
+
     def last_update_changeset
       nil
     end
