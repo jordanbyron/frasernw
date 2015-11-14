@@ -8,6 +8,7 @@ class ModifySecretEditLinks < ActiveRecord::Migration
       t.integer :accessible_id, null: false
       t.string :accessible_type, null: false
       t.string :token, null: false
+      t.boolean :expired, default: false, null: false
 
       t.timestamps
     end
