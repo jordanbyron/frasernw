@@ -419,11 +419,19 @@
 
   - if current_user_is_admin?
     #share.collapse
-      %p
-        .alert.alert-info
-          %h3 Secret edit link
-          %p Anyone can edit this clinic if they have the following secret address:
-          %p= clinic_self_edit_path(@clinic, @clinic.token, :only_path => false)
+    
+    :javascript
+      window.pathways.attachSecretEditLinks({
+        containerId: "share",
+        props: {
+          addLink: '#{secret_tokens_path}',
+          accessibleId: #{@clinic.id},
+          accessibleType: "Clinic",
+          links: #{@clinic.valid_secret_edit_links(request.host).to_json},
+          canEdit: #{can?(:edit, @clinic)},
+          modal: { isVisible: false }
+        }
+      })
 
   - if current_user_is_admin? && !current_user_is_super_admin?
     .alert.alert-info{style: "margin-top: 10px"}
