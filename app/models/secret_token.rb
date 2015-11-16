@@ -29,7 +29,7 @@ class SecretToken < ActiveRecord::Base
   end
 
   def numbered_label
-    "Secret Edit Link ##{id} for #{recipient}"
+    "Secret Edit Link ##{id} (sent to #{recipient})"
   end
 
   def as_hash(host, user)

@@ -35,7 +35,7 @@ class ModifySecretEditLinks < ActiveRecord::Migration
           accessible_type: klass.name,
           accessible_id: record.id,
           token: SecureRandom.hex(16),
-          recipient: "Unknown (from previous system)",
+          recipient: "Unknown (link from previous system)",
           creator_id: 0
         )
       end
