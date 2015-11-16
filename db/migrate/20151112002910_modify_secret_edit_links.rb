@@ -14,9 +14,15 @@ class ModifySecretEditLinks < ActiveRecord::Migration
     end
     add_index :secret_tokens, [:accessible_id, :accessible_type], name: "secret_token_item"
 
-    # allow us to associate versions with them
+    # allow us to make 'editor' polymorphic -- user or secret token
+    rename_column :review_items, :whodunnit, :edit_source_id
 
-    add_column :versions, :secret_token_id, :integer
+    add_column :review_items, :edit_source_type, :string
+
+    ReviewItem.where("edit_source_id IS NOT NULL").update_all(edit_source_type: "User")
+
+    # allow us to record who edited the update that's being saved
+    add_column :versions, :review_item_id, :integer
 
     # migrate existing tokens to new system
 

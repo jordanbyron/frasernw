@@ -136,11 +136,10 @@ class SpecialistsController < ApplicationController
 
       SpecialistSweeper.instance.before_controller_update(@specialist)
 
-      secret_token_id = params[:specialist][:secret_token_id]
       parsed_params = ParamParser::Specialist.new(params).exec
       if @specialist.update_attributes(parsed_params[:specialist])
         UpdateSpecialistCapacities.exec(@specialist, parsed_params)
-        @specialist.reload.versions.last.update_attributes(secret_token_id: secret_token_id)
+        @specialist.reload.versions.last.update_attributes(review_item_id: review_item.id)
         @specialist.save
         redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
       else

@@ -7,7 +7,7 @@
         %p.history__line_item
           %span= history_node.user
           %span= "accepted changes made by"
-          %span= history_node.secret_editor
+          %span= history_node.secret_editor.name
           %span= "(#{history_node.date})"
       - elsif history_node.target_is?(item)
         %p.history__line_item

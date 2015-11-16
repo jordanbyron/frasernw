@@ -44,7 +44,7 @@ class ClinicsEditorController < ApplicationController
     review_item.item_id = @clinic.id
     review_item.base_object = params.delete(:pre_edit_form_data)
     review_item.object = ReviewItem.encode params
-    review_item.whodunnit = current_user.id if current_user.present?
+    review_item.set_edit_source!(current_user, params[:secret_token_id])
     review_item.status = params[:no_updates] ? ReviewItem::STATUS_NO_UPDATES: ReviewItem::STATUS_UPDATES
     review_item.save
 
@@ -66,7 +66,9 @@ class ClinicsEditorController < ApplicationController
 
   def check_pending
     clinic = Clinic.find(params[:id])
-    redirect_to clinic_self_pending_path(clinic) if clinic.review_item.present? && (!current_user || (clinic.review_item.whodunnit != current_user.id.to_s))
+    if clinic.review_item.present? && (!current_user || (clinic.review_item.editor != current_user))
+      redirect_to clinic_self_pending_path(clinic)
+    end
   end
 
   def check_token

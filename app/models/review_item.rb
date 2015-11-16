@@ -10,7 +10,9 @@ class ReviewItem < ActiveRecord::Base
     :item_id,
     :created_at,
     :updated_at,
-    :id
+    :id,
+    :edit_source_type,
+    :edit_source_id
   ]
   include PaperTrailable
   include Archivable
@@ -75,29 +77,43 @@ class ReviewItem < ActiveRecord::Base
     "#{item.name} (Review Item)"
   end
 
-  def secret_token_id
-    decoded_review_object[item_type.downcase]["secret_token_id"]
+  def set_edit_source!(current_user, secret_token_id)
+    if current_user.present?
+      self.edit_source_id = current_user.id
+      self.edit_source_type = "User"
+    else
+      self.edit_source_id = secret_token_id
+      self.edit_source_type = "SecretToken"
+    end
   end
 
-  def creator
-    if whodunnit.present?
-      User.safe_find whodunnit
-    elsif secret_token_id.present?
-      SecretEditor.new(SecretToken.safe_find(secret_token_id).try(:recipient))
+  def secret_edit?
+    edit_source.is_a?(SecretToken)
+  end
+
+  def edit_source
+    if edit_source_id.present? && edit_source_type.present?
+      edit_source_type.constantize.where(id: edit_source_id).first || UnknownUser.new
     else
       UnknownUser.new
     end
   end
 
+  def editor
+    if secret_edit?
+      OpenStruct.new(
+        name: edit_source.recipient
+      )
+    else
+      # User or UnknownUser
+
+      edit_source
+    end
+  end
+  alias_method :creator, :editor
+
   def active?
     !archived?
-  end
-
-  def safe_user
-    User.safe_find(
-      self.whodunnit,
-      UnknownUser
-    )
   end
 
   class << self

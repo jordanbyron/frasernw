@@ -1,7 +1,7 @@
 class Version < ActiveRecord::Base
-  belongs_to :secret_token
+  belongs_to :review_item
 
-  attr_accessible :secret_token_id
+  attr_accessible :review_item_id
 
   # nice past tense events for paper_trail
   def evented
@@ -19,7 +19,11 @@ class Version < ActiveRecord::Base
   end
 
   def secret_editor
-    SecretToken.safe_find(secret_token_id).try(:recipient)
+    if review_item.present?
+      review_item.editor
+    else
+      nil
+    end
   end
 
   def archiving_item?

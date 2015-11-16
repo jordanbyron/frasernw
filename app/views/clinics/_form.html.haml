@@ -371,7 +371,7 @@
       = f.input :referral_criteria
 
   = hidden_field_tag :pre_edit_form_data
-  = f.input :secret_token_id, input_html: { value: @secret_token_id }, as: :hidden
+  = hidden_field_tag :secret_token_id, @secret_token_id
   = render 'reviewables/notes_fields',
     form_modifier: @form_modifier,
     reviewable: @clinic,

@@ -193,11 +193,11 @@ class Ability
 
       # No one can update items that need review unless they are the ones who made the review.
       cannot :update, Specialist do |specialist|
-        specialist.review_item.present? && specialist.review_item.whodunnit != user.id.to_s
+        specialist.review_item.present? && specialist.review_item.editor != user
       end
 
       cannot :update, Clinic do |clinic|
-        clinic.review_item.present? && clinic.review_item.whodunnit != user.id.to_s
+        clinic.review_item.present? && clinic.review_item.editor != user
       end
 
     end

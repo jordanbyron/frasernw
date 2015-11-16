@@ -209,11 +209,10 @@ class ClinicsController < ApplicationController
 
     ClinicSweeper.instance.before_controller_update(@clinic)
 
-    secret_token_id = params[:clinic][:secret_token_id]
     parsed_params = ParamParser::Clinic.new(params).exec
     if @clinic.update_attributes(parsed_params[:clinic])
       UpdateClinicFocuses.exec(@clinic, parsed_params)
-      @clinic.reload.versions.last.update_attributes(secret_token_id: secret_token_id)
+      @clinic.reload.versions.last.update_attributes(review_item_id: review_item.id)
       @clinic.save
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else
