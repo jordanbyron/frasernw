@@ -163,7 +163,8 @@ var shouldIncludeOtherSpecializations = function(filtered, filterValues, pageTyp
 var shouldShowCityFilterMessage = function(filtered, filterValues, pageType) {
   return (filtered.withAllFilters.length === 0 &&
     ((pageType !== "specialization") ||
-      (filtered.withoutPageTypeFilter.length === 0)));
+      (filtered.withoutPageTypeFilter.length === 0)) &&
+      (filtered.withoutCityFilter.length > 0));
 };
 
 var shouldShowSpecializationFilter = function(filtered, filterValues, pageType, filterValueOverrides) {
