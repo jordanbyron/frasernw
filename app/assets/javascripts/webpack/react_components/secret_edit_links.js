@@ -2,9 +2,11 @@ import React from "react";
 import _ from "lodash";
 import Modal from "react_components/modal";
 
-const ExpireIcon = (props) => {
+const ExpireButton = (props) => {
   if(props.link.canExpire) {
-    return(<i className="icon-remove" onClick={props.onClick}/>);
+    return(
+      <i className="icon-remove" onClick={props.onClick}/>
+    );
   }
   else {
     return(<div></div>);
@@ -28,10 +30,11 @@ const SecretEditLinkTable = (props) => (
             <td>{link.recipient}</td>
             <td>{link.creator}</td>
             <td>{link.created_at}</td>
-            <td><ExpireIcon link={link} onClick={props.expireLink.bind(null, link.id)}/></td>
+            <td><ExpireButton link={link} onClick={props.expireLink.bind(null, link.id)}/></td>
           </tr>
         ))
       }
+      <GenerateButton {...props.generateButton}/>
     </tbody>
   </table>
 )
@@ -48,24 +51,29 @@ const GenerateButton = React.createClass({
   render() {
     if(this.props.canEdit) {
       return(
-        <div>
-          <hr/>
-          <div
-            className="btn btn-default"
-            onClick={this.onGenerateClick}
-          >Generate new link for</div>
-          <input
-            style={{marginBottom: "0px", marginLeft: "5px"}}
-            placeholder="Recipient Email"
-            ref="recipient"
-            onChange={this.props.onUpdateRecipient}
-            value={this.props.recipient}
-          ></input>
-        </div>
+        <tr>
+          <td>
+            <input
+              style={{margin: "5px 0px"}}
+              placeholder="Email"
+              ref="recipient"
+              onChange={this.props.onUpdateRecipient}
+              value={this.props.recipient}>
+            </input>
+          </td>
+          <td></td>
+          <td></td>
+          <td>
+            <i
+              className="icon-plus"
+              onClick={this.onGenerateClick}
+            />
+          </td>
+        </tr>
       );
     }
     else {
-      return <div></div>;
+      return <tr></tr>;
     }
   }
 });
@@ -76,7 +84,7 @@ const ModalContents = (modalProps) => (
     <h4 style={margins}>Secret Edit Link Created!</h4>
     <div style={margins}>{ `Your secret edit link for ${modalProps.link.recipient} is:` }</div>
     <div style={_.assign({fontWeight: "bold"}, margins)}>{ modalProps.link.link }</div>
-    <div style={margins}>This link will not be visible after this notification is closed, in order to preserve knowledge of its creator and recipients.</div>
+    <div style={margins}>Please copy and email the link now, since it will not be visible after this dialogue is closed.</div>
     <div className="btn btn-primary" onClick={modalProps.close}>Done</div>
   </div>
 )
@@ -133,17 +141,23 @@ const SecretEditLinks = React.createClass({
   recipient() {
     return (this.state.recipient || "");
   },
+  generateButtonProps() {
+    return({
+      canEdit: this.props.canEdit,
+      addLink: this.addLink,
+      recipient: this.recipient(),
+      onUpdateRecipient: this.onUpdateRecipient
+    });
+  },
   render() {
     return(
       <div style={{marginTop: "10px"}}>
-        <h6 style={{margin: "0px", marginBottom: "5px"}}>Secret Edit Links</h6>
+        <h6 style={{marginBottom: "5px"}}>Secret Edit Links</h6>
         <i style={{marginLeft: "5px"}}>Anyone can edit the record if they have one of the following links:</i>
-        <SecretEditLinkTable links={this.links()} expireLink={this.expireLink}/>
-        <GenerateButton
-          canEdit={this.props.canEdit}
-          addLink={this.addLink}
-          recipient={this.recipient()}
-          onUpdateRecipient={this.onUpdateRecipient}
+        <SecretEditLinkTable
+          links={this.links()}
+          expireLink={this.expireLink}
+          generateButton={this.generateButtonProps()}
         />
         <SecretEditModal {...this.modalProps()}/>
       </div>
