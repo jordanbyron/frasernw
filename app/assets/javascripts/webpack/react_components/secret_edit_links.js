@@ -24,6 +24,7 @@ const SecretEditLinkTable = (props) => (
       </tr>
     </thead>
     <tbody>
+      <GenerateButton {...props.generateButton}/>
       {
         props.links.map((link, index) => (
           <tr key={link.id}>
@@ -34,7 +35,6 @@ const SecretEditLinkTable = (props) => (
           </tr>
         ))
       }
-      <GenerateButton {...props.generateButton}/>
     </tbody>
   </table>
 )
@@ -52,7 +52,7 @@ const GenerateButton = React.createClass({
     if(this.props.canEdit) {
       return(
         <tr>
-          <td>
+          <td style={{backgroundColor: "#F3F8FC"}}>
             <input
               style={{margin: "5px 0px"}}
               placeholder="Email"
@@ -61,9 +61,9 @@ const GenerateButton = React.createClass({
               value={this.props.recipient}>
             </input>
           </td>
-          <td></td>
-          <td></td>
-          <td>
+          <td style={{backgroundColor: "#F3F8FC"}}>{this.props.currentUserName}</td>
+          <td style={{backgroundColor: "#F3F8FC"}}></td>
+          <td style={{backgroundColor: "#F3F8FC"}}>
             <i
               className="icon-plus"
               onClick={this.onGenerateClick}
@@ -146,6 +146,7 @@ const SecretEditLinks = React.createClass({
       canEdit: this.props.canEdit,
       addLink: this.addLink,
       recipient: this.recipient(),
+      currentUserName: this.props.currentUserName,
       onUpdateRecipient: this.onUpdateRecipient
     });
   },

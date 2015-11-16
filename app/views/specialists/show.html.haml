@@ -551,6 +551,7 @@
           addLink: '#{secret_tokens_path}',
           accessibleId: #{@specialist.id},
           accessibleType: "Specialist",
+          currentUserName: "#{@current_user.name}",
           links: #{@specialist.valid_secret_edit_links(base_url, current_user).to_json},
           canEdit: #{can?(:edit, @specialist)},
           modal: { isVisible: false }
