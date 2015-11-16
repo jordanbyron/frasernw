@@ -30,12 +30,24 @@ class GenerateHistory
         end
       end
     end
+    
+    class SecretToken < Base
+      def exec
+        return [] unless target.is_a? TokenAccessible
+
+        target.secret_tokens.inject([]) do |memo, secret_token|
+          memo + secret_token.history
+        end
+      end
+    end
 
     CHILD_EVENT_TYPES = [
       ReviewItem,
       FeedbackItem,
-      ReferralForm
+      ReferralForm,
+      SecretToken
     ]
+
 
     def exec
       CHILD_EVENT_TYPES.inject([]) do |memo, event_type|

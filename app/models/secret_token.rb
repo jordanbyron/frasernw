@@ -7,24 +7,28 @@ class SecretToken < ActiveRecord::Base
     :token
 
   belongs_to :accessible, polymorphic: true
-  belongs_to :creator, class_name: "User"
 
   include Rails.application.routes.url_helpers
+  include Historical
 
   def self.not_expired
     where(expired: false)
   end
 
+  def creator
+    User.where(id: creator_id).first || OpenStruct.new(name: "System")
+  end
+
   def creator_name
-    if creator_id == 0
-      "System"
-    else
-      creator.try(:name) || "Unknown User"
-    end
+    creator.name
   end
 
   def link(host)
     "#{host}#{send("#{accessible_type.downcase}_self_edit_path", accessible, token)}"
+  end
+
+  def numbered_label
+    "Secret Edit Link ##{id} for #{recipient}"
   end
 
   def as_hash(host, user)

@@ -43,7 +43,6 @@ class SpecialistsEditorController < ApplicationController
     review_item.item_id = @specialist.id
     review_item.base_object = params.delete(:pre_edit_form_data)
     review_item.object = ActiveSupport::JSON::encode(params)
-    binding.pry
     review_item.set_edit_source!(current_user, params[:secret_token_id])
     review_item.status = params[:no_updates] ? ReviewItem::STATUS_NO_UPDATES: ReviewItem::STATUS_UPDATES
     review_item.save
