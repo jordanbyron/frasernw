@@ -40,13 +40,21 @@ const SecretEditLinkTable = (props) => (
 )
 
 const GenerateButton = React.createClass({
-  onGenerateClick() {
+  generateLink() {
     if(this.refs.recipient.value.length > 0){
       this.props.addLink(this.refs.recipient.value);
     }
     else {
       alert("Recipient must be present");
     }
+  },
+  onKeyPress(e) {
+    if(e.keyCode === 13) {
+      this.generateLink();
+    }
+  },
+  onGenerateClick() {
+    this.generateLink();
   },
   render() {
     if(this.props.canEdit) {
@@ -58,6 +66,7 @@ const GenerateButton = React.createClass({
               placeholder="Email"
               ref="recipient"
               onChange={this.props.onUpdateRecipient}
+              onKeyUp={this.onKeyPress}
               value={this.props.recipient}>
             </input>
           </td>
