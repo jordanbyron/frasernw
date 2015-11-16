@@ -88,18 +88,34 @@ const GenerateButton = React.createClass({
 });
 
 const margins = { marginBottom: "10px" }
-const ModalContents = (modalProps) => (
+const ViewModalContents = (viewModalProps) => (
   <div>
     <h4 style={margins}>Secret Edit Link Created!</h4>
-    <div style={margins}>{ `Your secret edit link for ${modalProps.link.recipient} is:` }</div>
-    <div style={_.assign({fontWeight: "bold"}, margins)}>{ modalProps.link.link }</div>
+    <div style={margins}>{ `Your secret edit link for ${viewModalProps.link.recipient} is:` }</div>
+    <div style={_.assign({fontWeight: "bold"}, margins)}>{ viewModalProps.link.link }</div>
     <div style={margins}>Please copy and email the link now, since it will not be visible after this dialogue is closed.</div>
-    <div className="btn btn-primary" onClick={modalProps.close}>Done</div>
+    <div className="btn btn-primary" onClick={viewModalProps.close}>Done</div>
   </div>
 )
 
-const SecretEditModal = (modalProps) => (
-  <Modal isVisible={modalProps.isVisible} renderContents={ModalContents.bind(null, modalProps)}/>
+const ViewLinkModal = (viewModalProps) => (
+  <Modal isVisible={viewModalProps.isVisible} renderContents={ViewModalContents.bind(null, viewModalProps)}/>
+)
+
+const CancelModalContents = (props) => (
+  <div>
+    <h4 style={margins}>Cancel Secret Edit Link</h4>
+    <div style={{marginBottom: "20px"}}>Are you sure you want to cancel this secret edit link?</div>
+    <div className="btn btn-primary" style={{marginRight: "5px"}} onClick={props.continue}>Yes</div>
+    <div className="btn btn-default" onClick={props.abort}>No</div>
+  </div>
+)
+
+const CancelModal = (props) => (
+  <Modal
+    isVisible={props.isVisible}
+    renderContents={CancelModalContents.bind(null, props)}
+  />
 )
 
 const SecretEditLinks = React.createClass({
@@ -117,38 +133,57 @@ const SecretEditLinks = React.createClass({
     }).done((data) => {
       this.setState({
         links: [ data.link ].concat(this.links()),
-        modal: { isVisible: true, link: data.link },
+        viewModal: { isVisible: true, link: data.link },
         recipient: ""
       });
     })
   },
-  modalProps() {
+  viewModalProps() {
     return _.assign(
       {},
-      (this.state.modal || this.props.modal),
-      { close: this.closeModal }
+      (this.state.viewModal || this.props.viewModal),
+      { close: this.closeViewModal }
     );
   },
-  closeModal() {
-    this.setState({modal: { isVisible: false }});;
+  closeViewModal() {
+    this.setState({viewModal: { isVisible: false }});;
   },
   onUpdateRecipient: function(e) {
     this.setState({ recipient: e.target.value });
   },
   expireLink: function(id) {
-    if(confirm("Are you sure you would like to expire this secret edit link?")){
-      $.ajax({
-        url: `/secret_tokens/${id}`,
-        type: "DELETE"
-      }).done((data) => {
-        this.setState({
-          links: _.filter(this.state.links, (link) => link.id !== id)
-        });
-      })
-    }
+    this.setState({
+      cancelModal: { isVisible: true, idToCancel: id }
+    });
+  },
+  continueCancel() {
+    $.ajax({
+      url: `/secret_tokens/${this.state.cancelModal.idToCancel}`,
+      type: "DELETE"
+    }).done((data) => {
+      this.setState({
+        links: _.filter(this.links(), (link) => link.id !== this.state.cancelModal.idToCancel),
+        cancelModal: { isVisible: false, idToCancel: null }
+      });
+    })
+  },
+  abortCancel() {
+    this.setState({
+      cancelModal: { isVisible: false, idToCancel: null }
+    })
   },
   recipient() {
     return (this.state.recipient || "");
+  },
+  cancelModalProps() {
+    return _.assign(
+      {},
+      (this.state.cancelModal || { isVisible: false, idToCancel: null }),
+      {
+        continue: this.continueCancel,
+        abort: this.abortCancel
+      }
+    );
   },
   generateButtonProps() {
     return({
@@ -169,7 +204,8 @@ const SecretEditLinks = React.createClass({
           expireLink={this.expireLink}
           generateButton={this.generateButtonProps()}
         />
-        <SecretEditModal {...this.modalProps()}/>
+        <ViewLinkModal {...this.viewModalProps()}/>
+        <CancelModal {...this.cancelModalProps()}/>
       </div>
     );
   }
