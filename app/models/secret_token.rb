@@ -10,6 +10,7 @@ class SecretToken < ActiveRecord::Base
 
   include Rails.application.routes.url_helpers
   include Historical
+  include PaperTrailable
 
   def self.not_expired
     where(expired: false)
