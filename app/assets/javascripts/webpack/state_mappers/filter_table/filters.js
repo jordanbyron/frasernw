@@ -195,18 +195,6 @@ module.exports = {
     },
     summaryPlacement: "leading"
   },
-  volunteer: {
-    isActivated: function(filters) {
-      return filters.volunteer;
-    },
-    predicate: function(record, filters) {
-      return record.isVolunteer;
-    },
-    summary: function(props) {
-      return "volunteer";
-    },
-    summaryPlacement: "leading"
-  },
   interpreterAvailable: {
     isActivated: function(filters) {
       return filters.interpreterAvailable

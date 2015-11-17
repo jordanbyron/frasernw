@@ -126,7 +126,6 @@ module Serialized
             customLagtimes: custom_lagtimes(clinic),
             isPrivate: clinic.private?,
             isPublic: clinic.public?,
-            isVolunteer: clinic.volunteer?,
             careProviderIds: clinic.healthcare_providers.map(&:id),
             isNew: clinic.new?,
             isInProgress: clinic.in_progress,

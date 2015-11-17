@@ -3,8 +3,7 @@ module Sectorable
 
   SECTORS = [
     :public,
-    :private,
-    :volunteer
+    :private
   ]
 
   included do
@@ -14,8 +13,7 @@ module Sectorable
   def sector
     sector_annotations = {
       public: " (MSP billed)",
-      private: " (Patient pays)",
-      volunteer: ""
+      private: " (Patient pays)"
     }
 
     return "Didn't answer" unless sector_info_available?

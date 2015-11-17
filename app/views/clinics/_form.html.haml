@@ -144,7 +144,7 @@
           %div{:class => "universal_#{index}"}
             = cl.input :location_opened, as: :select, collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a), prompt: "Select ..."
             .sector_wrapper
-              = cl.input :sector_info_available?, label: "Fee structure information available (public/private/volunteer)", as: :boolean, input_html: { class: "sector_info_available_input" }
+              = cl.input :sector_info_available?, label: "Fee structure information available (public/private)", as: :boolean, input_html: { class: "sector_info_available_input" }
               .sector_type_inputs
                 - Sectorable::SECTORS.each do |sector|
                   = cl.input sector, label: sector.to_s.capitalize, as: :boolean, input_html: { class: "sector_type_input" }
@@ -386,7 +386,7 @@
         disabled: true
       = f.button :submit,
         'There are No Updates to this Clinic',
-        :class => "btn btn-success submit-referents-form", 
+        :class => "btn btn-success submit-referents-form",
         :name => 'no_updates',
         disabled: true
     - elsif @form_modifier.admin_rereview?
