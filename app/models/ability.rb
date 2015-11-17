@@ -73,7 +73,7 @@ class Ability
         #can manage their own news items
         can [:index, :new, :create, :show], NewsItem
         can [:edit, :update], NewsItem do |news_item|
-          user.divisions.include? news_item.division
+          user.divisions.include? news_item.owner_division
         end
 
         #can edit their own divisions

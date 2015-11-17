@@ -32,7 +32,7 @@
                 - title = truncate(ActionView::Base.full_sanitizer.sanitize(BlueCloth.new(news_item.body).to_html), :length => 40, :separator => ' ')
               %td= link_to title, news_item, :class => 'ajax'
               - if multiple_divisions
-                %td{:style => "white-space: nowrap"}= news_item.division.name
+                %td{:style => "white-space: nowrap"}= news_item.owner_division.name
               %td{:style => "white-space: nowrap"}= news_item.type
               %td{:style => "white-space: nowrap"}
                 - if news_item.start_date.present?
@@ -65,7 +65,7 @@
               - if title.blank?
                 - title = truncate(ActionView::Base.full_sanitizer.sanitize(BlueCloth.new(news_item.body).to_html), :length => 40, :separator => ' ')
               %td= link_to title, news_item, :class => 'ajax'
-              %td{:style => "white-space: nowrap"}= news_item.division.name
+              %td{:style => "white-space: nowrap"}= news_item.owner_division.name
               %td{:style => "white-space: nowrap"}= news_item.type
               %td{:style => "white-space: nowrap"}
                 - if news_item.start_date.present?

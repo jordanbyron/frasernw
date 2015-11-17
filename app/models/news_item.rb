@@ -6,7 +6,9 @@ class NewsItem < ActiveRecord::Base
 
   attr_accessible :division_id, :title, :body, :breaking, :start_date, :end_date, :show_start_date, :show_end_date, :type_mask
 
-  belongs_to :division
+  belongs_to :owner_division
+  has_many :divisions, through: :division_display_news_items
+  has_many :division_display_news_items
 
   def date
     if start_date_full.present? && end_date_full.present? && (start_date.to_s != end_date.to_s)
@@ -74,54 +76,49 @@ class NewsItem < ActiveRecord::Base
 
   default_scope order('news_items.start_date DESC')
 
-  def self.copy(news_item)
-    copied_item = news_item.clone
-    copied_item.divisions << news_item.divisions.map(&:clone)
-    return copied_item
-  end
-
   def self.in_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    where("news_items.division_id IN (?)", division_ids)
+    joins(:division_display_news_items).
+      where("division_display_news_items.division_id IN (?)", divisions.map(&:id))
   end
 
   def self.breaking_in_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    where("news_items.type_mask = (?) AND (" +
-    "(news_items.start_date IS NOT NULL AND news_items.end_date IS NOT NULL AND news_items.start_date <= (?) AND news_items.end_date >= (?)) OR " +
-    "(news_items.start_date IS NULL AND news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR " +
-    "(news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?))) AND news_items.division_id IN (?)", TYPE_BREAKING, Date.today, Date.today, Date.today, Date.today, division_ids)
+    type_in_divisions(TYPE_BREAKING, divisions)
   end
 
   def self.divisional_in_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    where("news_items.type_mask = (?) AND (" +
-    "(news_items.start_date IS NOT NULL AND news_items.end_date IS NOT NULL AND news_items.start_date <= (?) AND news_items.end_date >= (?)) OR " +
-    "(news_items.start_date IS NULL AND news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR " +
-    "(news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?))) AND news_items.division_id IN (?)", TYPE_DIVISIONAL, Date.today, Date.today, Date.today, Date.today, division_ids)
+    type_in_divisions(TYPE_DIVISIONAL, divisions)
   end
 
   def self.shared_care_in_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    where("news_items.type_mask = (?) AND (" +
-    "(news_items.start_date IS NOT NULL AND news_items.end_date IS NOT NULL AND news_items.start_date <= (?) AND news_items.end_date >= (?)) OR " +
-    "(news_items.start_date IS NULL AND news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR " +
-    "(news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?))) AND news_items.division_id IN (?)", TYPE_SHARED_CARE, Date.today, Date.today, Date.today, Date.today, division_ids)
+    type_in_divisions(TYPE_SHARED_CARE, divisions)
   end
 
   def self.specialist_clinic_in_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    where("news_items.type_mask = (?) AND (" +
-    "(news_items.start_date IS NOT NULL AND news_items.end_date IS NOT NULL AND news_items.start_date <= (?) AND news_items.end_date >= (?)) OR " +
-    "(news_items.start_date IS NULL AND news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR " +
-    "(news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?))) AND news_items.division_id IN (?)", TYPE_SPECIALIST_CLINIC_UPDATE, Date.today, Date.today, Date.today, Date.today, division_ids)
+    type_in_divisions(TYPE_SPECIALIST_CLINIC_UPDATE, divisions)
   end
 
   def self.attachment_in_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    where("news_items.type_mask = (?) AND (" +
-    "(news_items.start_date IS NOT NULL AND news_items.end_date IS NOT NULL AND news_items.start_date <= (?) AND news_items.end_date >= (?)) OR " +
-    "(news_items.start_date IS NULL AND news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR " +
-    "(news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?))) AND news_items.division_id IN (?)", TYPE_ATTACHMENT_UPDATE, Date.today, Date.today, Date.today, Date.today, division_ids)
+    type_in_divisions(TYPE_ATTACHMENT_UPDATE, divisions)
+  end
+
+  def self.current
+    where(<<-SQL, Date.today, Date.today, Date.today, Date.today)
+      (news_items.start_date IS NOT NULL AND
+        news_items.end_date IS NOT NULL AND
+        news_items.start_date <= (?) AND
+        news_items.end_date >= (?)) OR
+      (news_items.start_date IS NULL AND
+        news_items.end_date IS NOT NULL AND
+        news_items.end_date >= (?)) OR
+      (news_items.end_date IS NULL AND
+        news_items.start_date IS NOT NULL AND
+        news_items.start_date >= (?))
+    SQL
+  end
+
+  def self.type_in_divisions(type, divisions)
+    in_divisions(divisions).
+    where(type_mask: type).
+      current
   end
 end
