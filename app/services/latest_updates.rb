@@ -1,5 +1,5 @@
 class LatestUpdates
-  include ServiceObject.exec_with_args(:max_automated_events, :divisions, :force)
+  include ServiceObjectModule.exec_with_args(:max_automated_events, :divisions, :force)
   include ActionView::Helpers::UrlHelper
 
   def exec

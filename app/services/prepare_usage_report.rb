@@ -1,6 +1,6 @@
 class PrepareUsageReport
 
-  include ServiceObject.exec_with_args(:start_date, :end_date, :division_id, :user)
+  include ServiceObjectModule.exec_with_args(:start_date, :end_date, :division_id, :user)
 
   def exec
     ## generate the report

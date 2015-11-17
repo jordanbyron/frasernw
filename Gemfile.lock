@@ -60,6 +60,10 @@ GEM
     aws-sdk-v1 (1.64.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
+    axiom-types (0.1.1)
+      descendants_tracker (~> 0.0.4)
+      ice_nine (~> 0.11.0)
+      thread_safe (~> 0.3, >= 0.3.1)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     bluecloth (2.2.0)
@@ -94,6 +98,8 @@ GEM
     cocaine (0.5.7)
       climate_control (>= 0.0.3, < 1.0)
     coderay (1.1.0)
+    coercible (1.0.0)
+      descendants_tracker (~> 0.0.1)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
       railties (~> 3.2.0)
@@ -114,12 +120,15 @@ GEM
       activerecord (> 3.0.0)
       delayed_job (> 2.0.3)
       sinatra (>= 0.9.2)
+    descendants_tracker (0.0.4)
+      thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.2.5)
     edge_rider (0.3.1)
       activerecord
     em-websocket (0.5.1)
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
+    equalizer (0.0.11)
     erubis (2.7.0)
     eventmachine (1.0.7)
     exception_notification (4.1.0)
@@ -297,6 +306,7 @@ GEM
     htmlentities (4.3.3)
     http_parser.rb (0.6.0)
     i18n (0.7.0)
+    ice_nine (0.11.1)
     indefinite_article (0.2.4)
       activesupport
     inflecto (0.0.2)
@@ -504,6 +514,7 @@ GEM
       eventmachine (~> 1.0)
       rack (~> 1.0)
     thor (0.19.1)
+    thread_safe (0.3.5)
     tilt (1.4.1)
     timers (4.0.1)
       hitimes
@@ -528,6 +539,11 @@ GEM
       rails
     validates_email_format_of (1.6.2)
       i18n
+    virtus (1.0.5)
+      axiom-types (~> 0.1)
+      coercible (~> 1.0)
+      descendants_tracker (~> 0.0, >= 0.0.3)
+      equalizer (~> 0.0, >= 0.0.9)
     wannabe_bool (0.1.1)
     will_paginate (3.0.7)
     yard (0.8.7.6)
@@ -611,6 +627,7 @@ DEPENDENCIES
   unicorn
   valid_url
   validates_email_format_of
+  virtus
   wannabe_bool (~> 0.1.0)
   will_paginate (~> 3.0.0)
 

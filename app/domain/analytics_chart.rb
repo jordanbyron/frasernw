@@ -1,6 +1,6 @@
 class AnalyticsChart
 
-  include ServiceObject.exec_with_args(:start_date, :end_date, :metric, :divisions, :force)
+  include ServiceObjectModule.exec_with_args(:start_date, :end_date, :metric, :divisions, :force)
 
   SUPPORTED_METRICS = [
     :page_views,

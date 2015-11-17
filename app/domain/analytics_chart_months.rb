@@ -1,5 +1,5 @@
 class AnalyticsChartMonths
-  include ServiceObject.exec_with_args
+  include ServiceObjectModule.exec_with_args
 
   def exec
     Month.for_interval(
