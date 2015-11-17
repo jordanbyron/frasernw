@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151112002910) do
+ActiveRecord::Schema.define(:version => 20151117224715) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -250,6 +250,13 @@ ActiveRecord::Schema.define(:version => 20151112002910) do
   add_index "division_cities", ["city_id"], :name => "index_division_cities_on_city_id"
   add_index "division_cities", ["division_id"], :name => "index_division_cities_on_division_id"
 
+  create_table "division_display_news_items", :force => true do |t|
+    t.integer  "division_id",  :null => false
+    t.integer  "news_item_id", :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
   create_table "division_display_sc_items", :force => true do |t|
     t.integer  "division_id"
     t.integer  "sc_item_id"
@@ -486,14 +493,14 @@ ActiveRecord::Schema.define(:version => 20151112002910) do
     t.text     "body"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "show_start_date", :default => false
-    t.boolean  "show_end_date",   :default => false
+    t.boolean  "show_start_date",   :default => false
+    t.boolean  "show_end_date",     :default => false
     t.integer  "type_mask"
-    t.integer  "division_id"
+    t.integer  "owner_division_id"
     t.integer  "parent_id"
   end
 
-  add_index "news_items", ["division_id"], :name => "index_news_items_on_division_id"
+  add_index "news_items", ["owner_division_id"], :name => "index_news_items_on_division_id"
 
   create_table "newsletter_description_items", :force => true do |t|
     t.text     "description_item"
@@ -722,18 +729,6 @@ ActiveRecord::Schema.define(:version => 20151112002910) do
   add_index "schedules", ["thursday_id"], :name => "index_schedules_on_thursday_id"
   add_index "schedules", ["tuesday_id"], :name => "index_schedules_on_tuesday_id"
   add_index "schedules", ["wednesday_id"], :name => "index_schedules_on_wednesday_id"
-
-  create_table "secret_tokens", :force => true do |t|
-    t.integer  "creator_id",      :null => false
-    t.string   "recipient",       :null => false
-    t.integer  "accessible_id",   :null => false
-    t.string   "accessible_type", :null => false
-    t.string   "token",           :null => false
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
-  end
-
-  add_index "secret_tokens", ["accessible_id", "accessible_type"], :name => "secret_token_item"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false
@@ -1047,14 +1042,13 @@ ActiveRecord::Schema.define(:version => 20151112002910) do
   end
 
   create_table "versions", :force => true do |t|
-    t.string   "item_type",       :null => false
-    t.integer  "item_id",         :null => false
-    t.string   "event",           :null => false
+    t.string   "item_type",      :null => false
+    t.integer  "item_id",        :null => false
+    t.string   "event",          :null => false
     t.string   "whodunnit"
     t.text     "object"
     t.datetime "created_at"
     t.text     "object_changes"
-    t.integer  "secret_token_id"
   end
 
   add_index "versions", ["created_at"], :name => "index_versions_on_created_at"
