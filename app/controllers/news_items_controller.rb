@@ -22,19 +22,12 @@ class NewsItemsController < ApplicationController
   def create
     @news_item = NewsItem.new(params[:news_item])
     # TODO #division
-    if current_user_is_admin? && !current_user_divisions.include?(@news_item.division) && !current_user_is_super_admin?
+    if current_user_is_admin? && !current_user_divisions.include?(@news_item.owner_division) && !current_user_is_super_admin?
       render :action => 'new', :notice  => "Can't create a news item in that division."
     elsif @news_item.save
-      create_news_item_activity
+      @news_item.display_in_divisions!(@news_item.owner_division)
 
-      # TODO #division
-      division = @news_item.division
-      #expire all the front-page news content for users that are in the divisions that we just updated
-      User.in_divisions([division]).map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
-        expire_fragment "latest_updates_#{division_group.join('_')}"
-      end
-
-      redirect_to front_as_division_path(division), :notice  => "Successfully created news item."
+      redirect_to front_as_division_path(@news_item.owner_division), :notice  => "Successfully created news item."
     else
       render :action => 'new'
     end
@@ -48,16 +41,9 @@ class NewsItemsController < ApplicationController
   def update
     @news_item = NewsItem.find(params[:id])
     if @news_item.update_attributes(params[:news_item])
+      @news_item.display_in_divisions!(@news_item.owner_division)
 
-      # TODO: #division
-      division = @news_item.division
-
-      #expire all the front-page news content for users that are in the divisions that we just updated
-      User.in_divisions([division]).map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
-        expire_fragment "latest_updates_#{division_group.join('_')}"
-      end
-
-      redirect_to front_as_division_path(division), :notice  => "Successfully updated news item."
+      redirect_to front_as_division_path(@news_item.owner_division), :notice  => "Successfully updated news item."
     else
       render :action => 'edit'
     end

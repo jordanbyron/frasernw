@@ -1,14 +1,15 @@
 class NewsItem < ActiveRecord::Base
   include PublicActivity::Model
+  include FragmentExpirer
   # not used as activity is created in controller
   # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user} #PublicActivity gem callback method
   has_many :activities, as: :trackable, class_name: 'SubscriptionActivity', dependent: :destroy
 
-  attr_accessible :division_id, :title, :body, :breaking, :start_date, :end_date, :show_start_date, :show_end_date, :type_mask
+  attr_accessible :owner_division_id, :title, :body, :breaking, :start_date, :end_date, :show_start_date, :show_end_date, :type_mask
 
-  belongs_to :owner_division
+  belongs_to :owner_division, class_name: "Division"
   has_many :divisions, through: :division_display_news_items
-  has_many :division_display_news_items
+  has_many :division_display_news_items, dependent: :destroy
 
   def date
     if start_date_full.present? && end_date_full.present? && (start_date.to_s != end_date.to_s)
@@ -68,6 +69,35 @@ class NewsItem < ActiveRecord::Base
 
   def type
     TYPE_HASH[type_mask]
+  end
+
+  def join_for(division)
+    division_display_news_items.where(division_id: division.id).first
+  end
+
+  def display_in_divisions!(*divisions)
+    to_recache = divisions | self.divisions
+
+    # add new
+    divisions.each do |division|
+      if !self.divisions.include?(division)
+        self.division_display_news_items.create(
+          division_id: division.id
+        )
+      end
+    end
+
+    # cleanup
+    (self.divisions - divisions).each do |division|
+      self.join_for(division).destroy
+    end
+
+    # recache
+    User.in_divisions(to_recache).map do |user|
+      user.divisions.map(&:id)
+    end.uniq.each do |division_group|
+      expire_fragment "latest_updates_#{division_group.join('_')}"
+    end
   end
 
   def self.type_hash_as_form_array
