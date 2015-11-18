@@ -2,10 +2,24 @@ class NewsItemsController < ApplicationController
   load_and_authorize_resource
 
   def index
-    # TODO
-    @owned_news_items = NewsItem.in_divisions(current_user_divisions).paginate(:page => params[:owned_page], :per_page => 30)
-    # TODO
-    @other_news_items = NewsItem.in_divisions(Division.all - current_user_divisions).paginate(:page => params[:other_page], :per_page => 30)
+    @props = {
+      app: {
+        currentUser: {
+          isSuperAdmin: current_user.super_admin?,
+          divisionIds: current_user.divisions.map(&:id)
+        },
+        divisions: Division.all.inject({}) do |memo, division|
+          memo.merge(division.id => {
+            name: division.name
+          })
+        end,
+        newsItems: Serialized.generate(:news_items)
+      },
+      ui: {
+        divisionId: 1
+      }
+    }
+
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 

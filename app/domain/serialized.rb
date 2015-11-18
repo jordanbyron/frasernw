@@ -311,6 +311,19 @@ module Serialized
 
         memo.merge({key => label})
       end
+    end,
+    news_items: Proc.new do
+      NewsItem.includes(:divisions).all.inject({}) do |memo, item|
+        memo.merge(item.id => {
+          id: item.id,
+          title: item.label,
+          type: item.type,
+          ownerDivisionId: item.owner_division_id,
+          divisionDisplayIds: item.divisions.map(&:id),
+          startDate: item.start_date,
+          endDate: item.end_date
+        })
+      end
     end
   }
 

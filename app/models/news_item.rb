@@ -1,5 +1,6 @@
 class NewsItem < ActiveRecord::Base
   include PublicActivity::Model
+  include ActionView::Helpers::TextHelper
   include FragmentExpirer
   # not used as activity is created in controller
   # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user} #PublicActivity gem callback method
@@ -10,6 +11,20 @@ class NewsItem < ActiveRecord::Base
   belongs_to :owner_division, class_name: "Division"
   has_many :divisions, through: :division_display_news_items
   has_many :division_display_news_items, dependent: :destroy
+
+  def label
+    title.presence || titleized_body
+  end
+
+  def titleized_body
+    truncate(
+      ActionView::Base.full_sanitizer.sanitize(
+        BlueCloth.new(body).to_html
+      ),
+      :length => 40,
+      :separator => ' '
+    )
+  end
 
   def date
     if start_date_full.present? && end_date_full.present? && (start_date.to_s != end_date.to_s)
