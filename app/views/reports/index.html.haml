@@ -11,7 +11,7 @@
         .span3.offset1
           = render partial: "reports/analytics_box", locals: {color: '#404040', icon: 'icon-home', title: "Clinics", count: Clinic.all.count}
         .span3.offset1
-          = render partial: "reports/analytics_box", locals: {color: '#C44D58', icon: 'icon-hospital', title: "Hospitals", count: Hospital.all.count}
+          = render partial: "reports/analytics_box", locals: {color: '#C44D58', icon: 'icon-hospital', title: "Hospitals", count: Hospital.all_real.count}
         .span3.offset1
           = render partial: "reports/analytics_box", locals: {color: '#0088CC', icon: 'icon-medkit', title: "Resources", count: ScItem.all.count}
 
