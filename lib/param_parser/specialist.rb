@@ -16,8 +16,13 @@ module ParamParser
       remove_specializations_comments!
       remove_address_updates!
       remove_office_comments!
+      set_sectors!
 
       cloned_params
+    end
+
+    def set_sectors!
+      specialist_offices_attributes.each(&SetSectors)
     end
 
     def remove_address_updates!

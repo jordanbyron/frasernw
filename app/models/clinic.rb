@@ -253,9 +253,11 @@ class Clinic < ActiveRecord::Base
     3 => "Didn't answer"
   }
 
+  UNKNOWN_STATUS = "It is unknown if this clinic is accepting new patients (this clinic didn't respond)"
+
   def status
     if (status_mask == 3) || status_mask.blank?
-      "It is unknown if this clinic is accepting new patients (this clinic didn't respond)"
+      UNKNOWN_STATUS
     else
       Clinic::STATUS_HASH[status_mask]
     end
@@ -466,8 +468,10 @@ class Clinic < ActiveRecord::Base
     end.flatten.uniq
   end
 
-  def private?
-    clinic_locations.reject{ |cl| !cl.private? }.present?
+  Sectorable::SECTORS.each do |sector|
+    define_method "#{sector.to_s}?" do
+      clinic_locations.any?(&("#{sector.to_s}?".to_sym))
+    end
   end
 
   # Some locations are built on page load, so they won't have timestamps

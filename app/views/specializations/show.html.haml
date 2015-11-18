@@ -19,13 +19,10 @@
     domElementSelector: "#show_specialization",
     stateMapper: "FilterTablePage",
     topLevelComponent: "FilterTablePage",
-    uiReducer: "FilterTablePage",
-    mapperConfig: "hey"
+    uiReducer: "FilterTablePage"
   }, #{@init_data.to_json})
 
 .content-wrapper
   %p.admin.btn-group
     - if can? :update, @specialization
       = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialty", edit_specialization_path(@specialization), :class => "btn ajax")
-    - if can? :destroy, @specialization
-      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Specialty", @specialization, :confirm => "Delete #{@specialization.name}?", :method => :delete, :class => "btn")

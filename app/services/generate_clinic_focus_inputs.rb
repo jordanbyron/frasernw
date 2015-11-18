@@ -37,7 +37,12 @@ class GenerateClinicFocusInputs
       end
     end
 
-    focus_inputs
+    specializations.map do |specialization|
+      {
+        specialization_name: specialization.name,
+        focuses: focus_inputs.select{|input| input[:specialization_id] == specialization.id}
+      }
+    end
   end
 
   def clinic_focuses
@@ -59,6 +64,7 @@ class GenerateClinicFocusInputs
       :mapped => focus.present?,
       :name => procedure_specialization.procedure.name,
       :id => procedure_specialization.id,
+      :specialization_id => procedure_specialization.specialization_id,
       :investigations => focus.present? ? focus.investigation : "",
       :custom_wait_time => procedure_specialization.clinic_wait_time?,
       :waittime => focus.present? ? focus.waittime_mask : 0,

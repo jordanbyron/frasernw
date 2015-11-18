@@ -67,14 +67,14 @@ module.exports = React.createClass({
       return (
         <LoadingContainer
           isLoading={props.isTableLoading}
-          renderChildren={this.renderTable.bind(null, props)}
+          renderContents={this.renderTable.bind(null, props)}
           showHeart={props.showTableHeart}
           minHeight={"300px"}
         />
       );
     }
   },
-  renderChildren: function(props) {
+  renderContents: function(props) {
     var toggleFilterGroupVisibility = function(dispatch, key, isOpen) {
       return ()=> {
         return dispatch({
@@ -125,7 +125,7 @@ module.exports = React.createClass({
     return(
       <LoadingContainer
         isLoading={this.props.isLoading}
-        renderChildren={this.renderChildren.bind(null, this.props)}
+        renderContents={this.renderContents.bind(null, this.props)}
       />
     )
   }

@@ -16,7 +16,7 @@ module.exports = React.createClass({
     } else if (this.props.isLoading) {
       return null;
     } else {
-      return this.props.renderChildren();
+      return this.props.renderContents();
     }
   }
 })

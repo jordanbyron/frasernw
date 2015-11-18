@@ -14,7 +14,9 @@ var FILTER_GROUPS = {
   divisions: require("./filter_groups/divisions"),
   recordTypes: require("./filter_groups/record_types"),
   reportView: require("./filter_groups/report_view"),
-  months: require("./filter_groups/months")
+  months: require("./filter_groups/months"),
+  specializations: require("./filter_groups/specializations"),
+  subcategoriesRadioButtons: require("./filter_groups/subcategories_radio_buttons")
 }
 
 var FilterGroup = React.createClass({

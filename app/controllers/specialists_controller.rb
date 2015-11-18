@@ -40,7 +40,7 @@ class SpecialistsController < ApplicationController
     @specializations_clinics, @specializations_clinic_locations =
       GenerateClinicLocationInputs.exec([ @specialization ])
 
-    @capacities = GenerateSpecialistCapacityInputs.exec(
+    @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
       nil,
       [ @specialization ]
     )
@@ -93,7 +93,7 @@ class SpecialistsController < ApplicationController
     @specializations_clinics, @specializations_clinic_locations =
       GenerateClinicLocationInputs.exec(@specialist.specializations)
 
-    @capacities = GenerateSpecialistCapacityInputs.exec(
+    @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
       @specialist,
       @specialist.specializations
     )
@@ -191,7 +191,7 @@ class SpecialistsController < ApplicationController
       @specializations_clinics, @specializations_clinic_locations =
         GenerateClinicLocationInputs.exec(@specialist.specializations)
 
-      @capacities = GenerateSpecialistCapacityInputs.exec(
+      @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
         @specialist,
         @specialist.specializations
       )
@@ -216,7 +216,7 @@ class SpecialistsController < ApplicationController
       @specializations_clinics, @specializations_clinic_locations =
         GenerateClinicLocationInputs.exec(@specialist.specializations)
 
-      @capacities = GenerateSpecialistCapacityInputs.exec(
+      @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
         @specialist,
         @specialist.specializations
       )

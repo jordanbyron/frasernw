@@ -16,6 +16,14 @@
       - @division.primary_contacts.each do |primary_contact|
         %li= link_to primary_contact.name, primary_contact, :class => 'ajax'
 
+  - if can? :edit_permissions, @division
+    %p.no_indent.space
+      %strong Bulk Edit Permissions
+      %ul
+        - {"Specialists and Clinics Owner" => "owner", "Content Owner" => "content_owner"}.each do |label, type|
+          %li
+            = link_to label, edit_permissions_division_path(@division, permission_type: type)
+
   %p.no_indent.space
     %strong Local Referral Area
   %div{:style => "overflow-x:scroll"}

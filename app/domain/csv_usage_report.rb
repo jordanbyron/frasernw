@@ -1,5 +1,5 @@
 class CsvUsageReport
-  include ServiceObject.exec_with_args(:start_date, :end_date, :division)
+  include ServiceObjectModule.exec_with_args(:start_date, :end_date, :division)
 
   def exec
     ### Get the data

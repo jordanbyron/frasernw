@@ -20,7 +20,7 @@ class SpecialistsEditorController < ApplicationController
     @specializations_clinics, @specializations_clinic_locations =
       GenerateClinicLocationInputs.exec(@specialist.specializations, :visible?)
 
-    @capacities = GenerateSpecialistCapacityInputs.exec(
+    @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
       @specialist,
       @specialist.specializations
     )

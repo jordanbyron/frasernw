@@ -10,7 +10,7 @@ module.exports = React.createClass({
     selectedPanel: React.PropTypes.object,
     dispatch: React.PropTypes.func
   },
-  renderChildren: function(props) {
+  renderContents: function(props) {
     return(
       <Panels
         tabs={props.tabs}
@@ -25,7 +25,8 @@ module.exports = React.createClass({
     return(
       <div>
         <LoadingContainer isLoading={this.props.isLoading}
-          renderChildren={this.renderChildren.bind(null, this.props)}
+          renderContents={this.renderContents.bind(null, this.props)}
+          minHeight={"300px"}
         />
         <FeedbackModal
           dispatch={this.props.dispatch}

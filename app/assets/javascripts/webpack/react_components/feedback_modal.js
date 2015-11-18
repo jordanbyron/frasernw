@@ -10,7 +10,7 @@ module.exports = React.createClass({
   handleSubmit: function(e){
     e.preventDefault();
 
-    var comment = React.findDOMNode(this.refs.feedback).value.trim()
+    var comment = this.refs.feedback.value.trim()
 
     if(!comment){
       return;

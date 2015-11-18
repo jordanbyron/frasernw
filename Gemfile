@@ -98,6 +98,9 @@ gem 'awesome_print', :require => false
 
 gem 'bugsnag'
 
+# nice object attribute definition syntax
+gem 'virtus'
+
 # Deploy with Capistrano
 # gem 'capistrano'
 

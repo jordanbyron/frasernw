@@ -16,14 +16,14 @@ module.exports = React.createClass({
   },
   componentDidMount: function(){
     if (this.props.open){
-      $(React.findDOMNode(this.refs.contents)).show();
+      $(this.refs.contents).show();
     }
   },
   componentDidUpdate: function(prevProps) {
     if (prevProps.open == false && this.props.open == true) {
-      $(React.findDOMNode(this.refs.contents)).slideDown();
+      $(this.refs.contents).slideDown();
     } else if (prevProps.open == true && this.props.open == false){
-      $(React.findDOMNode(this.refs.contents)).slideUp();
+      $(this.refs.contents).slideUp();
     }
   },
   render: function() {

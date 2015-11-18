@@ -23,5 +23,8 @@
       forbiddenInputs.attr("disabled", false);
       this.submit();
     });
+
+    // only allow them to submit the form once all this is done
+    $(".submit-referents-form").attr("disabled", false);
   });
 }( window.$ ))

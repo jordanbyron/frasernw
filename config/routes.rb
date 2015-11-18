@@ -74,6 +74,10 @@ Frasernw::Application.routes.draw do
   resources :healthcare_providers
   resources :divisions do
     resources :users
+    member do
+      get :edit_permissions
+      put :update_permissions
+    end
   end
 
   resources :notes, only: [:create, :destroy]

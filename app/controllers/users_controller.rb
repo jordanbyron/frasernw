@@ -87,7 +87,7 @@ class UsersController < ApplicationController
         user_from_saved_token.save
         redirect_to login_url, :notice  => "Your account has been set up; please log in using #{@user.email} and your newly created password. Welcome to Pathways!"
       else
-        render :action => 'signup'
+        render :action => 'signup', layout: "user_sessions"
       end
     else
       redirect_to login_url, :alert  => "Sorry, your access key was not recognized."

@@ -9,6 +9,7 @@ class ProceduresController < ApplicationController
   end
 
   def show
+    @layout_heartbeat_loader = false
     @procedure = Procedure.find(params[:id])
     @init_data = {
       app: FilterTableAppState.exec(current_user: current_user),
@@ -18,7 +19,6 @@ class ProceduresController < ApplicationController
         hasBeenInitialized: false
       }
     }
-    @automatically_remove_heartbeat = false
   end
 
   def new

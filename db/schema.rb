@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151024160907) do
+ActiveRecord::Schema.define(:version => 20151112002910) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -129,6 +129,9 @@ ActiveRecord::Schema.define(:version => 20151024160907) do
     t.datetime "updated_at"
     t.string   "public_email"
     t.string   "location_opened"
+    t.boolean  "public"
+    t.boolean  "private"
+    t.boolean  "volunteer"
   end
 
   add_index "clinic_locations", ["clinic_id"], :name => "index_clinic_locations_on_clinic_id"
@@ -720,6 +723,18 @@ ActiveRecord::Schema.define(:version => 20151024160907) do
   add_index "schedules", ["tuesday_id"], :name => "index_schedules_on_tuesday_id"
   add_index "schedules", ["wednesday_id"], :name => "index_schedules_on_wednesday_id"
 
+  create_table "secret_tokens", :force => true do |t|
+    t.integer  "creator_id",      :null => false
+    t.string   "recipient",       :null => false
+    t.integer  "accessible_id",   :null => false
+    t.string   "accessible_type", :null => false
+    t.string   "token",           :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "secret_tokens", ["accessible_id", "accessible_type"], :name => "secret_token_item"
+
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false
     t.text     "data"
@@ -767,6 +782,9 @@ ActiveRecord::Schema.define(:version => 20151024160907) do
     t.integer  "schedule_id"
     t.string   "public_email"
     t.string   "location_opened"
+    t.boolean  "public"
+    t.boolean  "private"
+    t.boolean  "volunteer"
   end
 
   add_index "specialist_offices", ["office_id"], :name => "index_specialist_offices_on_office_id"
@@ -1029,13 +1047,14 @@ ActiveRecord::Schema.define(:version => 20151024160907) do
   end
 
   create_table "versions", :force => true do |t|
-    t.string   "item_type",      :null => false
-    t.integer  "item_id",        :null => false
-    t.string   "event",          :null => false
+    t.string   "item_type",       :null => false
+    t.integer  "item_id",         :null => false
+    t.string   "event",           :null => false
     t.string   "whodunnit"
     t.text     "object"
     t.datetime "created_at"
     t.text     "object_changes"
+    t.integer  "secret_token_id"
   end
 
   add_index "versions", ["created_at"], :name => "index_versions_on_created_at"

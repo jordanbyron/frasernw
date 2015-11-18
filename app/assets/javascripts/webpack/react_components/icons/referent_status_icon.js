@@ -3,18 +3,26 @@ const React = require("react");
 const ReferentStatusIcon = React.createClass({
   propTypes: {
     record: React.PropTypes.shape({
-      statusClassDescription: React.PropTypes.string.isRequired,
-      statusIconClasses: React.PropTypes.string.isRequired
+      statusClassKey: React.PropTypes.number.isRequired
     }).isRequired
   },
   componentDidMount: function() {
-    $(React.findDOMNode(this.refs.icon)).tooltip({
+    $(this.refs.icon).tooltip({
       placement: "right",
       trigger: "hover",
       animation: "true",
-      title: this.props.record.statusClassDescription,
+      title: this.tooltip(),
       container: this.elemId(),
     });
+  },
+  tooltip: function() {
+    return this.props.tooltips[this.props.record.collectionName][this.props.record[this.tooltipKey()]];
+  },
+  tooltipKey: function() {
+    return {
+      specialists: "statusClassKey",
+      clinics: "statusMask",
+    }[this.props.record.collectionName];
   },
   elemId: function() {
     return `${this.props.record.collectionName}${this.props.record.id}-status-icon`
@@ -24,7 +32,7 @@ const ReferentStatusIcon = React.createClass({
       <i
         id={this.elemId()}
         ref="icon"
-        className={this.props.record.statusIconClasses}
+        className={this.props.statusIcons[this.props.record.statusClassKey]}
       />
     );
   }

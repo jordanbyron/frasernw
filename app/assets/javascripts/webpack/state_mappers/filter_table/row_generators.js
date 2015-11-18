@@ -16,9 +16,9 @@ var labelReferentName = function(record) {
   );
 }
 
-var labelReferentStatus = function(record) {
+var labelReferentStatus = function(record, statusIcons, tooltips) {
   return (
-    <ReferentStatusIcon record={record}/>
+    <ReferentStatusIcon record={record} statusIcons={statusIcons} tooltips={tooltips}/>
   );
 }
 
@@ -89,12 +89,12 @@ var email = function(record) {
 }
 
 module.exports = {
-  referents: function(record, app, dispatch, config) {
+  referents: function(app, dispatch, config, record) {
     return {
       cells: reject([
         labelReferentName(record),
         labelReferentSpecialties(record, app, config.includingOtherSpecialties),
-        labelReferentStatus(record),
+        labelReferentStatus(record, app.referentStatusIcons, app.tooltips),
         (record.waittime || ""),
         labelReferentCities(record, app)
       ], (cell) => cell === null),
@@ -102,7 +102,7 @@ module.exports = {
       record: record
     }
   },
-  resources: function(record, app, dispatch, config) {
+  resources: function(app, dispatch, config, record) {
     return {
       cells: [
         labelResourceTitle(record),

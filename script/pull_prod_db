@@ -1,0 +1,4 @@
+#!/bin/bash
+
+dropdb pathways_production
+heroku pg:pull HEROKU_POSTGRESQL_GOLD_URL pathways_production --app pathwaysbc

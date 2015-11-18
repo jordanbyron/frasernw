@@ -1,5 +1,5 @@
 class AddParentProcedureSpecialization
-  include ServiceObject.exec_with_args(:klasses, :hierarchy)
+  include ServiceObjectModule.exec_with_args(:klasses, :hierarchy)
 
   def exec
     klasses.each do |klass|

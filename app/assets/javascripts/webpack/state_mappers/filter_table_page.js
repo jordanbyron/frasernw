@@ -3,13 +3,16 @@ var Filters = require("./filter_table/filters");
 var RowGenerators = require("./filter_table/row_generators");
 var FILTER_VALUE_GENERATORS = require("./filter_table/filter_value_generators");
 var FILTER_GROUP_GENERATORS = require("./filter_table/filter_group_generators");
+var TABLE_HEADINGS_GENERATORS = require("./filter_table/table_headings_generators");
 var sortFunctions = require("./filter_table/sort_functions");
 var sortOrders = require("./filter_table/sort_orders");
 var generateResultSummary = require("./filter_table/generate_result_summary");
+var itemsForContentCategory = require("domain/content_category_items");
 var referralCities = require("./filter_table/referral_cities");
 var utils = require("utils");
+var anyFiltersActivated = require("state_mappers/filter_table/any_filters_activated");
 
-module.exports = function(state, dispatch, config) {
+module.exports = function(state, dispatch) {
   // console.log("STATE:");
   // console.log(state);
 
@@ -142,15 +145,6 @@ var filterByCities = function(set, filterValues){
   });
 };
 
-var anyFiltersActivated = function(filterValueOverrides) {
-  return _.any(_.values(filterValueOverrides), (filterValue) => {
-    return (_.isBoolean(filterValue) ||
-      _.isString(filterValue) ||
-      _.isNumber(filterValue) ||
-      (_.isObject(filterValue) && _.any(_.values(filterValue))));
-  })
-};
-
 var finalSet = function(filtered, filterValues, pageType, filterValueOverrides) {
   if (shouldIncludeOtherSpecializations(filtered, filterValues, pageType, filterValueOverrides) && pageType === "specialization"){
     return filtered.withoutPageTypeFilter;
@@ -169,7 +163,8 @@ var shouldIncludeOtherSpecializations = function(filtered, filterValues, pageTyp
 var shouldShowCityFilterMessage = function(filtered, filterValues, pageType) {
   return (filtered.withAllFilters.length === 0 &&
     ((pageType !== "specialization") ||
-      (filtered.withoutPageTypeFilter.length === 0)));
+      (filtered.withoutPageTypeFilter.length === 0)) &&
+      (filtered.withoutCityFilter.length > 0));
 };
 
 var shouldShowSpecializationFilter = function(filtered, filterValues, pageType, filterValueOverrides) {
@@ -327,7 +322,7 @@ var PANEL_PROPS_GENERATORS = {
   },
   contentCategories: {
     FilterTable: function(state: Object, panelKey: string, category: Object, dispatch: Function) {
-      var forCategory = itemsForContentCategory(category, state);
+      var forCategory = itemsForContentCategory(category.id, state, state.app.currentUser.divisionIds);
       var maskingSet = forCategory;
       var bodyRowConfig = {
         panelKey: panelKey,
@@ -393,7 +388,7 @@ var PANEL_PROPS_GENERATORS = {
       };
     },
     InlineArticles: function(state: Object, panelKey: string, category: Object, dispatch: Function) {
-      var records = itemsForContentCategory(category, state);
+      var records = itemsForContentCategory(category.id, state, state.app.currentUser.divisionIds);
 
       return {
         panelKey: panelKey,
@@ -461,7 +456,7 @@ var createAssumedList = function(nestedProcedures: Object, collectionName: strin
 
 var generateBodyRows = function(state: Object, filtered: Array, config: Object, dispatch: Function, sortConfig: Object): Array {
   var unsorted = filtered.map((row) => {
-    return RowGenerators[config.rowGenerator](row, state.app, dispatch, config.rowGeneratorConfig);
+    return RowGenerators[config.rowGenerator](state.app, dispatch, config.rowGeneratorConfig, row);
   });
 
   return _.sortByOrder(
@@ -548,55 +543,7 @@ var referentSortConfig = function(state, config) {
   );
 };
 
-var TABLE_HEADINGS_GENERATORS = {
-  contentCategories: function() {
-    return [
-      { label: "Title", key: "TITLE" },
-      { label: "Category", key: "SUBCATEGORY" },
-      { label: "", key: "FAVOURITE" },
-      { label: "", key: "EMAIL_TO_PATIENT" },
-      { label: "", key: "PROVIDE_FEEDBACK" }
-    ];
-  },
-  referents: function(labelName, includingOtherSpecializations, pageType) {
-    if (includingOtherSpecializations) {
-      return [
-        { label: labelName, key: "NAME", className: "specialization_table__th--name" },
-        { label: "Specialties", key: "SPECIALTIES", className: "specialization_table__th--specialties" },
-        { label: "Accepting New Referrals?", key: "REFERRALS", className: "specialization_table__th--referrals" },
-        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME", className: "specialization_table__th--waittime" },
-        { label: "City", key: "CITY", className: "specialization_table__th--city" }
-      ];
-    } else {
-      return [
-        { label: labelName, key: "NAME", className: "specialization_table__th--name" },
-        { label: "Accepting New Referrals?", key: "REFERRALS", className: "specialization_table__th--referrals" },
-        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME", className: "specialization_table__th--waittime" },
-        { label: "City", key: "CITY", className: "specialization_table__th--city" }
-      ];
-    }
-  }
-}
 
-var itemsForContentCategory = function(category, state) {
-  var pageSpecificFilter = {
-    specialization: function(contentItem) {
-      return _.includes(contentItem.specializationIds, state.ui.specializationId);
-    },
-    procedure: function(contentItem) {
-      return _.includes(contentItem.procedureIds, state.ui.procedureId);
-    }
-  }
-
-  return _.chain(state.app.contentItems)
-    .values()
-    .filter((contentItem) => {
-      return (pageSpecificFilter[state.ui.pageType](contentItem) &&
-        _.any(_.intersection(contentItem.availableToDivisionIds, state.app.currentUser.divisionIds)) &&
-        _.includes(category.subtreeIds, contentItem.categoryId));
-    })
-    .value();
-};
 
 var findActiveContentCategories = function(state) {
   return _.filter(
@@ -604,7 +551,7 @@ var findActiveContentCategories = function(state) {
     (category) => {
       return ([1, 3, 4, 5].indexOf(category.displayMask) > -1 &&
         category.ancestry == null &&
-        _.keys(itemsForContentCategory(category, state)).length > 0);
+        _.keys(itemsForContentCategory(category.id, state, state.app.currentUser.divisionIds)).length > 0);
     }
   );
 };
