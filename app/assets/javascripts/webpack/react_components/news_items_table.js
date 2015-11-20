@@ -1,5 +1,6 @@
 import React from "react";
 import NavTabs from "react_components/nav_tabs";
+import Pagination from "react_components/pagination";
 import _ from "lodash";
 import { from } from "utils";
 
@@ -102,6 +103,15 @@ const shouldDisplayRecord = (divisionId, tabKey, record) => {
   }
 }
 
+
+const paginate = (currentPage, rowsPerPage, array) => {
+  let startIndex = (currentPage - 1) * rowsPerPage;
+  let endIndex = (currentPage * rowsPerPage);
+
+  return array.slice(startIndex, endIndex);
+}
+
+const ROWS_PER_PAGE = 30;
 const NewsItemsTable = React.createClass({
   getInitialState() {
     return {
@@ -120,6 +130,21 @@ const NewsItemsTable = React.createClass({
       this.props.ui.divisionId,
       this.state.selectedTab
     )
+    const _currentPage = (this.state.currentPage || 1);
+
+    const _bodyRows = from(
+      _.partialRight(_.map, _row),
+      _.partial(paginate, _currentPage, ROWS_PER_PAGE),
+      _.partialRight(_.sortByOrder, [ "startDate" ], [ "desc" ]),
+      _.partialRight(_.filter, _shouldDisplayRecord),
+      _.values(this.props.app.newsItems)
+    );
+
+    const _paginationProps = {
+      currentPage: _currentPage,
+      setPage: _.partial(function(table, page) { table.setState({currentPage: page}) }, this),
+      totalPages: _.ceil(_bodyRows.length / ROWS_PER_PAGE)
+    }
 
     return(
       <div className="tabbable">
@@ -135,16 +160,10 @@ const NewsItemsTable = React.createClass({
             </tr>
           </thead>
           <tbody>
-            {
-              from(
-                _.partialRight(_.map, _row),
-                _.partialRight(_.sortByOrder, [ "startDate" ], [ "desc" ]),
-                _.partialRight(_.filter, _shouldDisplayRecord),
-                _.values(this.props.app.newsItems)
-              )
-            }
+            { _bodyRows }
           </tbody>
         </table>
+        <Pagination {..._paginationProps}/>
       </div>
     )
   }
