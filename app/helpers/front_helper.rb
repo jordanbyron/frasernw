@@ -3,7 +3,8 @@ module FrontHelper
     LatestUpdates.exec(
       max_automated_events: max_automated_events,
       divisions: divisions,
-      force: false
+      force: false,
+      force_automatic: false
     )
   end
 end

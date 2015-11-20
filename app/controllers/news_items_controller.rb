@@ -25,8 +25,13 @@ class NewsItemsController < ApplicationController
       create_news_item_activity
       division = @news_item.division
       #expire all the front-page news content for users that are in the divisions that we just updated
-      User.in_divisions([division]).map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
-        expire_fragment "latest_updates_#{division_group.join('_')}"
+      User.in_divisions([division]).map(&:divisions).uniq.each do |division_group|
+        LatestUpdates.exec(
+          max_automated_events: 5,
+          divisions: division_group,
+          force: true,
+          force_automatic: false
+        )
       end
 
       redirect_to front_as_division_path(division), :notice  => "Successfully created news item."
@@ -46,9 +51,13 @@ class NewsItemsController < ApplicationController
 
       division = @news_item.division
 
-      #expire all the front-page news content for users that are in the divisions that we just updated
-      User.in_divisions([division]).map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
-        expire_fragment "latest_updates_#{division_group.join('_')}"
+      User.in_divisions([division]).map(&:divisions).uniq.each do |division_group|
+        LatestUpdates.exec(
+          max_automated_events: 5,
+          divisions: division_group,
+          force: true,
+          force_automatic: false
+        )
       end
 
       redirect_to front_as_division_path(division), :notice  => "Successfully updated news item."
