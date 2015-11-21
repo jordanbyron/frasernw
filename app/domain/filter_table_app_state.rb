@@ -1,5 +1,5 @@
 class FilterTableAppState
-  include ServiceObject.exec_with_args(:current_user)
+  include ServiceObjectModule.exec_with_args(:current_user)
 
   def exec
     {

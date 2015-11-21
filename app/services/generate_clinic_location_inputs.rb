@@ -23,8 +23,8 @@ class GenerateClinicLocationInputs
     end
 
     [
-      specializations_locations.sort,
-      specializations_clinic_locations.sort
+      specializations_locations.uniq.sort,
+      specializations_clinic_locations.uniq.sort
     ]
   end
 

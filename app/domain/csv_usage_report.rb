@@ -1,5 +1,5 @@
 class CsvUsageReport
-  include ServiceObject.exec_with_args(:start_date, :end_date, :division)
+  include ServiceObjectModule.exec_with_args(:start_date, :end_date, :division)
 
   def exec
     ### Get the data
@@ -141,6 +141,7 @@ class CsvUsageReport
     collapse_by_path.call(page_views_table, "/specialists/")
     collapse_by_path.call(page_views_table, "/clinics/")
     collapse_by_path.call(page_views_table, "/users/")
+    collapse_by_path.call(page_views_table, "/password_resets/")
 
     # sort by pathname
     page_views_table.rows.sort_by! {|row| row[:page_path]}

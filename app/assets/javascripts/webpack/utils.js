@@ -39,5 +39,11 @@ module.exports = {
   from: function(...args) {
     var startingVal = args.pop();
     return _.flowRight(...args)(startingVal);
+  },
+  pwConcat: function(ary, obj) {
+    return ary.concat(obj);
+    // return _.reduce(args, function(memo, val) {
+    //   return memo.concat(val);
+    // }, [])
   }
 }

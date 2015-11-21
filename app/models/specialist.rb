@@ -88,6 +88,8 @@ class Specialist < ActiveRecord::Base
     Rails.cache.fetch([name, id], expires_in: 4000.seconds) { find(id) }
   end
 
+  scope :deceased, -> { where(status_mask: STATUS_MASK_DECEASED) }
+
   def flush_cached_find
     Rails.cache.delete([self.class.name, id])
   end
@@ -386,6 +388,14 @@ class Specialist < ActiveRecord::Base
     return cities.map{ |city| city.divisions }.flatten.uniq
   end
 
+  def version_marked_deceased
+    versions.select do |version|
+      version.changeset["status_mask"].present? &&
+        version.changeset["status_mask"][1] == STATUS_MASK_DECEASED &&
+        version.changeset["status_mask"][0] != STATUS_MASK_DECEASED
+    end.last
+  end
+
   def owners
     if specializations.blank? || divisions.blank?
       return [default_owner]
@@ -579,8 +589,9 @@ class Specialist < ActiveRecord::Base
     status_mask == 10
   end
 
+  STATUS_MASK_DECEASED = 12
   def deceased?
-    status_mask == 12
+    status_mask == STATUS_MASK_DECEASED
   end
 
   WAITTIME_HASH = {

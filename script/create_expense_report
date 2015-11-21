@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+# this tool bills $100 for on-call hours last week
+
+require 'csv'
+require 'date'
+
+# get our customizable settings
+
+require File.expand_path("../../config/heroku_env.rb", __FILE__)
+expense_report_folder = ENV["EXPENSE_REPORT_FOLDER"]
+invoice_name = ENV["INVOICE_NAME"]
+today = Date.today
+# previous Monday - Sunday
+start_date = (today - today.wday - 6).to_s
+end_date = (today - today.wday).to_s
+# write to CSV
+
+filename =
+  "#{invoice_name.gsub(" ", "_")}_pw_expense_report_s#{start_date}_e#{end_date}.csv"
+file_path = "#{expense_report_folder}/#{filename}"
+
+CSV.open(file_path, "w+") do |csv|
+  csv << [ "Pathways Expense Report" ]
+  csv << [ "Submitted by #{invoice_name}" ]
+  csv << [ "" ]
+  csv << [ "Start Date: #{start_date}" ]
+  csv << [ "End Date: #{end_date}" ]
+  csv << [ "" ]
+  csv << [ "Expense", "Cost" ]
+  csv << [ "Pathways On Call Hours", "$100" ]
+
+  csv << [ "Total", "$100"]
+end

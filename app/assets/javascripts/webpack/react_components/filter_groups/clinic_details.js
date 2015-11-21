@@ -25,13 +25,6 @@ module.exports = React.createClass({
       update: event.target.checked
     });
   },
-  handleVolunteerUpdate: function(event) {
-    this.props.dispatch({
-      type: "UPDATE_FILTER",
-      filterType: "volunteer",
-      update: event.target.checked
-    });
-  },
   handleWheelchairAccessibleUpdate: function(event) {
     this.props.dispatch({
       type: "UPDATE_FILTER",
@@ -51,11 +44,6 @@ module.exports = React.createClass({
           label="Private"
           value={this.props.filters.private.value}
           onChange={this.handlePrivateUpdate}
-        />
-        <CheckBox
-          label="Volunteer"
-          value={this.props.filters.volunteer.value}
-          onChange={this.handleVolunteerUpdate}
         />
         <CheckBox
           label="Wheelchair Accessible"

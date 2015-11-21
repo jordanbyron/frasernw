@@ -1,6 +1,6 @@
 class GenerateFilterTablePage
   class AppState
-    include ServiceObject.exec_with_args(:user, :specialization)
+    include ServiceObjectModule.exec_with_args(:user, :specialization)
 
     def exec
       {

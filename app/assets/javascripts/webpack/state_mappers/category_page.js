@@ -1,5 +1,5 @@
 import TableHeadingGenerators from "state_mappers/filter_table/table_headings_generators";
-import { from } from "utils";
+import { from, pwConcat } from "utils";
 import RowGenerators from "state_mappers/filter_table/row_generators";
 import itemsForCategory from "domain/content_category_items";
 import SortFunctions from "state_mappers/filter_table/sort_functions";
@@ -173,7 +173,7 @@ const FilterGroups = {
     };
 
     const options = from(
-      Array.prototype.concat.bind(allSubcategoriesOption),
+      _.partial(pwConcat, [ allSubcategoriesOption ] ),
       _.partialRight(_.sortBy, "label"),
       _.partialRight(_.map, createOption),
       _.partialRight(_.without, state.ui.contentCategoryId),
@@ -207,7 +207,7 @@ const FilterGroups = {
     };
 
     const options = from(
-      Array.prototype.concat.bind(allSpecialtiesOption),
+      _.partial(pwConcat, [ allSpecialtiesOption ]),
       _.partialRight(_.sortBy, "label"),
       _.partialRight(_.map, createOption),
       _.uniq,
