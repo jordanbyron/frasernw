@@ -1049,18 +1049,14 @@ ActiveRecord::Schema.define(:version => 20151112002910) do
   end
 
   create_table "versions", :force => true do |t|
-    t.string   "item_type",       :null => false
-    t.integer  "item_id",         :null => false
-    t.string   "event",           :null => false
+    t.string   "item_type",      :null => false
+    t.integer  "item_id",        :null => false
+    t.string   "event",          :null => false
     t.string   "whodunnit"
     t.text     "object"
     t.datetime "created_at"
     t.text     "object_changes"
-<<<<<<< HEAD
     t.integer  "review_item_id"
-=======
-    t.integer  "secret_token_id"
->>>>>>> origin/master
   end
 
   add_index "versions", ["created_at"], :name => "index_versions_on_created_at"
