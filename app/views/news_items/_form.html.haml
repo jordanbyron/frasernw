@@ -31,10 +31,11 @@
   = f.input :body,
     :hint => "Accepts Markdown.  When adding a link to external website URLs, please link with <strong>http<u>s</u>://</strong> not http://".html_safe,
     disabled: !@can_edit
-  = f.association :divisions,
-    as: :check_boxes,
-    collection: @divisions,
-    label: "Divisions Showing"
+  - if @divisions.count == 1 && @news_item.new_record?
+    - checked_option = { input_html: {checked: true}}
+  - else
+    - checked_option = {}
+  = f.association(:divisions, { as: :check_boxes, collection: @divisions, label: "Divisions Showing" }.merge(checked_option))
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
