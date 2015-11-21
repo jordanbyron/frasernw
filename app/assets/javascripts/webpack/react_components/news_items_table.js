@@ -42,22 +42,27 @@ const DateCell = (props) => (
   </div>
 );
 
-const shouldAllowEdit = (record, currentUser) => (
+const shouldAllowDelete = (record, currentUser) => (
   _.includes(currentUser.divisionIds, record.ownerDivisionId) ||
     currentUser.isSuperAdmin
-)
+);
+
+
+const EditButton = (props) => (
+  <a
+    href={`/news_items/${props.record.id}/edit`}
+    className="btn btn-mini"
+  >
+    <i className="icon icon-pencil"/>
+    <span>Edit</span>
+  </a>
+);
 
 const EditCell = (props) => {
-  if(shouldAllowEdit(props.record, props.currentUser)) {
+  if(shouldAllowDelete(props.record, props.currentUser)) {
     return (
       <div>
-        <a
-          href={`/news_items/edit/${props.record.id}`}
-          className="btn btn-mini"
-        >
-          <i className="icon icon-pencil"/>
-          <span>Edit</span>
-        </a>
+        <EditButton {...props}/>
         <a
           href={`/news_items/${props.record.id}`}
           dataMethod="delete"
@@ -70,10 +75,7 @@ const EditCell = (props) => {
     )
   } else {
     return(
-      <a
-        href={`/news_items/${props.record.id}`}
-        className="btn btn-mini"
-      >Show</a>
+      <EditButton {...props}/>
     );
   }
 }

@@ -3,19 +3,39 @@
     .alert.alert-error= f.error_messages
 
   - if current_user_is_super_admin?
-    = f.association :owner_division, as: :select, :collection => Division.all, :include_blank => false
+    = f.association :owner_division, as: :select, :collection => Division.all, :include_blank => false, disabled: !@can_edit
   - elsif current_user_divisions.length > 1
-    = f.association :owner_division, as: :select, :collection => current_user_divisions
+    = f.association :owner_division, as: :select, :collection => current_user_divisions, disabled: !@can_edit
   - else
-    = f.association :owner_division, as: :hidden, :input_html => { :value => current_user_divisions.first.id }
+    = f.association :owner_division, as: :hidden, :input_html => { :value => current_user_divisions.first.id }, disabled: !@can_edit
 
-  = f.input :title
-  = f.input :type_mask, :as => :select, :collection => NewsItem::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
-  = f.input :start_date, :as => :datepicker
-  = f.input :show_start_date
-  = f.input :end_date, :as => :datepicker
-  = f.input :show_end_date, :hint => "The end date can be blank: if no end date is provided, the news item will expire after the start date, otherwise it will expire after the end date."
-  = f.input :body, :hint => "Accepts Markdown.  When adding a link to external website URLs, please link with <strong>http<u>s</u>://</strong> not http://".html_safe
+  = f.input :title, disabled: !@can_edit
+  = f.input :type_mask,
+    :as => :select,
+    :collection => NewsItem::TYPE_HASH,
+    label_method: :last,
+    value_method: :first,
+    :include_blank => false,
+    disabled: !@can_edit
+  = f.input :start_date,
+    :as => :datepicker,
+    disabled: !@can_edit
+  = f.input :show_start_date,
+    disabled: !@can_edit
+  = f.input :end_date,
+    :as => :datepicker,
+    disabled: !@can_edit
+  = f.input :show_end_date,
+    :hint => "The end date can be blank: if no end date is provided, the news item will expire after the start date, otherwise it will expire after the end date.",
+    disabled: !@can_edit
+  = f.input :body,
+    :hint => "Accepts Markdown.  When adding a link to external website URLs, please link with <strong>http<u>s</u>://</strong> not http://".html_safe,
+    disabled: !@can_edit
+  = f.association :divisions,
+    as: :check_boxes,
+    collection: @divisions,
+    checked_method: Proc.new{ |division| @news_item.divisions.include?(division) },
+    label: "Divisions Showing"
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

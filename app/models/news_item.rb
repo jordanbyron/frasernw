@@ -16,6 +16,20 @@ class NewsItem < ActiveRecord::Base
     title.presence || titleized_body
   end
 
+  def self.permitted_division_assignments(user)
+    if user.super_admin?
+      Division.not_hidden
+    else
+      user.divisions.not_hidden
+    end
+  end
+
+  def check_assignment_permissions(divisions, user)
+    divisions.all? do |division|
+      self.class.permitted_division_assignments(user).include?(division)
+    end
+  end
+
   def titleized_body
     truncate(
       ActionView::Base.full_sanitizer.sanitize(
@@ -90,28 +104,32 @@ class NewsItem < ActiveRecord::Base
     division_display_news_items.where(division_id: division.id).first
   end
 
-  def display_in_divisions!(*divisions)
-    to_recache = divisions | self.divisions
-
-    # add new
-    divisions.each do |division|
-      if !self.divisions.include?(division)
-        self.division_display_news_items.create(
-          division_id: division.id
-        )
+  def display_in_divisions!(divisions, user)
+    if check_assignment_permissions(divisions, user)
+      # add new
+      divisions.each do |division|
+        if !self.divisions.include?(division)
+          self.division_display_news_items.create(
+            division_id: division.id
+          )
+        end
       end
-    end
 
-    # cleanup
-    (self.divisions - divisions).each do |division|
-      self.join_for(division).destroy
-    end
+      # cleanup
+      (NewsItem.permitted_division_assignments(user) - divisions).each do |division|
+        self.join_for(division).destroy
+      end
 
-    # recache
-    User.in_divisions(to_recache).map do |user|
-      user.divisions.map(&:id)
-    end.uniq.each do |division_group|
-      expire_fragment "latest_updates_#{division_group.join('_')}"
+      # recache
+      User.in_divisions(NewsItem.permitted_division_assignments(user)).map do |user|
+        user.divisions.map(&:id)
+      end.uniq.each do |division_group|
+        expire_fragment "latest_updates_#{division_group.join('_')}"
+      end
+
+      true
+    else
+      false
     end
   end
 
