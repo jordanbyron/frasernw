@@ -1,7 +1,5 @@
 class NewsItemsController < ApplicationController
   load_and_authorize_resource
-  # because we want to be able to edit displaying without editing the record
-  skip_authorization_check only: [:edit, :update]
 
   def index
     @division = begin
@@ -39,7 +37,6 @@ class NewsItemsController < ApplicationController
   end
 
   def new
-    @can_edit = true
     @news_item = NewsItem.new
     @divisions = NewsItem.permitted_division_assignments(current_user)
     render :layout => 'ajax' if request.headers['X-PJAX']
@@ -47,10 +44,11 @@ class NewsItemsController < ApplicationController
 
   def create
     @news_item = NewsItem.new(params[:news_item])
-    if @news_item.save && @news_item.display_in_divisions!(divisions_to_assign, current_user)
+    if @news_item.save && @news_item.display_in_divisions!(divisions_to_assign(params, @news_item), current_user)
       create_news_item_activity
 
-      redirect_to front_as_division_path(@news_item.owner_division), :notice  => "Successfully created news item."
+      redirect_to front_as_division_path(@news_item.owner_division),
+        :notice  => "Successfully created news item.  Please allow a couple minutes for the front page to show your changes."
     else
       render text: "Unauthorized to assign to that division"
     end
@@ -58,7 +56,6 @@ class NewsItemsController < ApplicationController
 
   def edit
     @news_item = NewsItem.find(params[:id])
-    @can_edit = current_user.divisions.include?(@news_item.owner_division)
     @divisions = NewsItem.permitted_division_assignments(current_user)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
@@ -70,8 +67,9 @@ class NewsItemsController < ApplicationController
       render(action: :edit) unless @news_item.update_attributes(params[:news_item])
     end
 
-    if @news_item.display_in_divisions!(divisions_to_assign, current_user)
-      redirect_to front_as_division_path(current_user.divisions.first), :notice  => "Successfully updated news item."
+    if @news_item.display_in_divisions!(divisions_to_assign(params, @news_item), current_user)
+      redirect_to front_as_division_path(current_user.divisions.first),
+        :notice  => "Successfully updated news item. Please allow a couple minutes for the front page to show your changes."
     else
       render :action => 'edit'
     end
@@ -85,8 +83,14 @@ class NewsItemsController < ApplicationController
 
   private
 
-  def divisions_to_assign
-    params[:news_item][:division_ids].select(&:present?).map{|id| Division.find(id) }
+  def divisions_to_assign(params, news_item)
+    if params[:news_item][:division_ids]
+      params[:news_item][:division_ids].select(&:present?).map do |id|
+        Division.find(id)
+      end
+    else
+      [ news_item.owner_division ]
+    end
   end
 
   def create_news_item_activity

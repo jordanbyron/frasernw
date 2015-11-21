@@ -9,15 +9,15 @@ const navTabsProps = (page) => {
   return {
     tabs: [
       {
-        label: "Owned News Items",
+        label: "Own Division's News Items",
         key: "OWNED"
       },
       {
-        label: "Borrowed News Items",
+        label: "Alerts",
         key: "BORROWED"
       },
       {
-        label: "Borrowable News Items",
+        label: "Other Divisions' News Items",
         key: "BORROWABLE"
       }
     ],
@@ -58,6 +58,15 @@ const EditButton = (props) => (
   </a>
 );
 
+const ViewButton = (props) => (
+  <a
+    href={`/news_items/${props.record.id}`}
+    className="btn btn-mini"
+  >
+    <span>View</span>
+  </a>
+)
+
 const EditCell = (props) => {
   if(shouldAllowDelete(props.record, props.currentUser)) {
     return (
@@ -75,7 +84,7 @@ const EditCell = (props) => {
     )
   } else {
     return(
-      <EditButton {...props}/>
+      <ViewButton {...props}/>
     );
   }
 }

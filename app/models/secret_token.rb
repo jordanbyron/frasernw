@@ -22,7 +22,9 @@ class SecretToken < ActiveRecord::Base
 
   def creator
     if creator_id == 0
-      OpenStruct.new(name: "System")
+      # migrated from previous system
+
+      SystemUser.new
     else
       User.where(id: creator_id).first || UnknownUser.new
     end
@@ -37,12 +39,15 @@ class SecretToken < ActiveRecord::Base
   end
 
   def numbered_label
-    "Secret Edit Link ##{id} (sent to #{recipient})"
+    if creator.is_a?(SystemUser)
+      "Secret Edit Link ##{id} (migrated from previous system)"
+    else
+      "Secret Edit Link ##{id} (recipient: #{recipient})"
+    end
   end
 
   def last_used
-    if creator_id == 0
-      # legacy token
+    if creator.is_a?(SystemUser)
       "Unknown"
     else
       review_items.last.try(:created_at).try(:to_date).try(:to_s, :ordinal) || ""
@@ -65,7 +70,7 @@ class SecretToken < ActiveRecord::Base
     return true if user.super_admin?
     return true if user == creator
     return true if creator.is_a?(UnknownUser) && user.admin?
-    return true if creator.name == "System" && user.admin?
+    return true if creator.is_a?(SystemUser) && user.admin?
 
     false
   end

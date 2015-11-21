@@ -122,7 +122,7 @@ class NewsItem < ActiveRecord::Base
 
       # recache
       User.in_divisions(NewsItem.permitted_division_assignments(user)).map(&:divisions).uniq.each do |division_group|
-        LatestUpdates.exec(
+        LatestUpdates.delay.exec(
           max_automated_events: 5,
           divisions: division_group,
           force: true,
