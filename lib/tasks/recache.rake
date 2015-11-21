@@ -158,7 +158,8 @@ namespace :pathways do
         LatestUpdates.exec(
           max_automated_events: 5,
           divisions: division_group.map{|id| Division.find(id)},
-          force: true
+          force: true,
+          force_automatic: true
         )
       end
     end

@@ -311,6 +311,9 @@ GEM
       activesupport
     inflecto (0.0.2)
     ipaddress (0.8.0)
+    iron_fixture_extractor (1.1.1)
+      activerecord (~> 3.2.1)
+      activesupport (~> 3.2.1)
     journey (1.0.4)
     jquery-datatables-rails (3.1.1)
       actionpack (>= 3.1)
@@ -502,6 +505,7 @@ GEM
       multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
+    table_print (1.5.4)
     taps (0.3.24)
       rack (>= 1.0.1)
       rest-client (>= 1.4.0, < 1.7.0)
@@ -584,6 +588,7 @@ DEPENDENCIES
   hirefire-resource
   htmlentities
   indefinite_article
+  iron_fixture_extractor
   jquery-datatables-rails (= 3.1.1)
   jquery-rails (~> 1.0.16)
   kgio
@@ -620,6 +625,7 @@ DEPENDENCIES
   simple_form (~> 2.1)
   slack-notifier
   spork (> 0.9.0rc)
+  table_print
   taps
   thin
   turn

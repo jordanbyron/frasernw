@@ -65,6 +65,7 @@ class NewsItemsController < ApplicationController
 
   def update
     @news_item = NewsItem.find(params[:id])
+
     if current_user.divisions.include?(@news_item.owner_division)
       render(action: :edit) unless @news_item.update_attributes(params[:news_item])
     end

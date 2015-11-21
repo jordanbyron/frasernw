@@ -39,6 +39,10 @@ class Hospital < ActiveRecord::Base
     city && !(city.hidden?)
   end
 
+  def self.all_real # used for reporting, remove if Vancouver (hidden) artifacts are removed
+    all.reject{|hospital| hospital.divisions.include?(Division.find_by_name("Vancouver (Hidden)")) }
+  end
+
   def self.includes_location_data
     includes(location: {address: :city})
   end

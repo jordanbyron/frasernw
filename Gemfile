@@ -140,6 +140,8 @@ group :development do
   gem 'rails-erd' # makes graph of schema
   gem 'bullet' #warns about N+1 queries
   gem 'thin'
+  gem 'iron_fixture_extractor' # extract out data into fixtures
+  gem 'table_print' # print nice tables in IRB with tp command
 end
 
 group :development, :test do

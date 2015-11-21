@@ -1,26 +1,51 @@
 class LatestUpdates
-  include ServiceObjectModule.exec_with_args(:max_automated_events, :divisions, :force)
-  include ActionView::Helpers::UrlHelper
+  include ServiceObjectModule.exec_with_args(:max_automated_events, :divisions, :force, :force_automatic)
 
   def exec
     # puts "DIVISIONS: #{divisions.map(&:id)}"
 
     Rails.cache.fetch("latest_updates:#{max_automated_events}:#{divisions.map(&:id).sort.join("_")}", force: force) do
-      manual_events = {}
-      automated_events = {}
+      #mix in the news updates with the automatic updates
+      AutomatedEvents.call(
+        max_automated_events: max_automated_events,
+        divisions: divisions,
+        force: force_automatic
+      ).merge(manual_events).values.sort{ |a, b| b[0] <=> a[0] }.map{ |x| x[1] }
+    end
+  end
 
-      NewsItem.specialist_clinic_in_divisions(divisions).each do |news_item|
-        item = news_item.title.present? ? BlueCloth.new(news_item.title + ". " + news_item.body).to_html : BlueCloth.new(news_item.body).to_html
+  def manual_events
+    manual_events = {}
 
-        manual_events["NewsItem_#{news_item.id}"] = ["#{news_item.start_date || news_item.end_date}", item.html_safe]
+    NewsItem.specialist_clinic_in_divisions(divisions).each do |news_item|
+      item = news_item.title.present? ? BlueCloth.new(news_item.title + ". " + news_item.body).to_html : BlueCloth.new(news_item.body).to_html
+
+      manual_events["NewsItem_#{news_item.id}"] = ["#{news_item.start_date || news_item.end_date}", item.html_safe]
+    end
+
+    manual_events
+  end
+
+  class AutomatedEvents < ServiceObject
+    attribute :max_automated_events, Integer
+    attribute :divisions, Array
+    attribute :force, Boolean
+
+    include ActionView::Helpers::UrlHelper
+
+    def call
+      Rails.cache.fetch("latest_automated_updates:#{max_automated_events}:#{divisions.map(&:id).sort.join("_")}", force: force) do
+        generate
       end
+    end
 
+    def generate
+      automated_events = {}
       versions = Version.
         includes(:item).
         order("id desc").
         where("item_type in (?)", ["Specialist", "SpecialistOffice", "ClinicLocation"]).
         where("created_at > ?", (Date.today - 3.months))
-
       versions.each do |version|
 
         # for some reason stale cached versions of this are being served up below if we don't reload...
@@ -139,10 +164,10 @@ class LatestUpdates
         rescue Exception => exc
           #automated_events['error_error'] = ["ding", exc]
         end
+
       end
 
-      #mix in the news updates with the automatic updates
-      automated_events.merge(manual_events).values.sort{ |a, b| b[0] <=> a[0] }.map{ |x| x[1] }
+      automated_events
     end
   end
 end

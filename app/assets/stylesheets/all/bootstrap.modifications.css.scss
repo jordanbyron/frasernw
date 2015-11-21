@@ -660,6 +660,10 @@
   content: none;
 }
 
+li.dropdown.admin.open > ul > li > a{
+  white-space: normal;
+}
+
 /* ALERTS */
 
 .alert-success,

@@ -121,10 +121,13 @@ class NewsItem < ActiveRecord::Base
       end
 
       # recache
-      User.in_divisions(NewsItem.permitted_division_assignments(user)).map do |user|
-        user.divisions.map(&:id)
-      end.uniq.each do |division_group|
-        expire_fragment "latest_updates_#{division_group.join('_')}"
+      User.in_divisions(NewsItem.permitted_division_assignments(user)).map(&:divisions).uniq.each do |division_group|
+        LatestUpdates.exec(
+          max_automated_events: 5,
+          divisions: division_group,
+          force: true,
+          force_automatic: false
+        )
       end
 
       true
