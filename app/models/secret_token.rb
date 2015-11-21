@@ -16,6 +16,10 @@ class SecretToken < ActiveRecord::Base
     where(expired: false)
   end
 
+  def review_items
+    ReviewItem.where(edit_source_type: "SecretToken", edit_source_id: id.to_s)
+  end
+
   def creator
     User.where(id: creator_id).first || OpenStruct.new(name: "System")
   end
@@ -32,6 +36,15 @@ class SecretToken < ActiveRecord::Base
     "Secret Edit Link ##{id} (sent to #{recipient})"
   end
 
+  def last_used
+    if creator_id == 0
+      # legacy token
+      "Unknown"
+    else
+      review_items.last.try(:created_at).try(:to_date).try(:to_s, :ordinal) || ""
+    end
+  end
+
   def as_hash(host, user)
     {
       id: id,
@@ -39,6 +52,7 @@ class SecretToken < ActiveRecord::Base
       recipient: recipient,
       created_at: created_at.strftime("%Y-%m-%d"),
       link: link(host),
+      last_used: last_used,
       canExpire: expirable_by?(user)
     }
   end

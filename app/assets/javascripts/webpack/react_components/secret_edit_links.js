@@ -20,6 +20,7 @@ const SecretEditLinkTable = (props) => (
         <th>Recipient</th>
         <th>Creator</th>
         <th>Created At</th>
+        <th>Last Used</th>
         <th></th>
       </tr>
     </thead>
@@ -31,6 +32,7 @@ const SecretEditLinkTable = (props) => (
             <td>{link.recipient}</td>
             <td>{link.creator}</td>
             <td>{link.created_at}</td>
+            <td>{link.last_used}</td>
             <td><ExpireButton link={link} onClick={props.expireLink.bind(null, link.id)}/></td>
           </tr>
         ))
@@ -71,6 +73,7 @@ const GenerateButton = React.createClass({
             </input>
           </td>
           <td style={{backgroundColor: "#F3F8FC"}}>{this.props.currentUserName}</td>
+          <td style={{backgroundColor: "#F3F8FC"}}></td>
           <td style={{backgroundColor: "#F3F8FC"}}></td>
           <td style={{backgroundColor: "#F3F8FC"}}>
             <i
