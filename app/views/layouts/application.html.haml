@@ -204,13 +204,14 @@
                         %li= link_to "Hospitals", hospitals_path, :class => "ajax"
                       - if can? :index, Language
                         %li= link_to "Languages", languages_path, :class => "ajax"
-                      - if can?(:index, NewsItem) && current_user_divisions.count == 1
+                      - news_item_divisions = current_user_divisions.reject(&:hidden?)
+                      - if can?(:index, NewsItem) && news_item_divisions.count == 1
                         %li= link_to "News Items", news_items_path, :class => "ajax"
-                      - if can?(:index, NewsItem) && current_user_divisions.count > 1
+                      - if can?(:index, NewsItem) && news_item_divisions.count > 1
                         %li
                           = link_to "News Items", "#", :class => "arrow-right-after"
                           %ul.dropdown-menu
-                            - current_user_divisions.each do |division|
+                            - news_item_divisions.reject(&:hidden?).each do |division|
                               %li=link_to division.name, news_items_path(division_id: division.id), :class => 'office ajax'
                       - if can? :index, Office
                         %li

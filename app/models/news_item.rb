@@ -117,7 +117,7 @@ class NewsItem < ActiveRecord::Base
 
       # cleanup
       (NewsItem.permitted_division_assignments(user) - divisions).each do |division|
-        self.join_for(division).destroy
+        self.join_for(division).try(:destroy)
       end
 
       # recache

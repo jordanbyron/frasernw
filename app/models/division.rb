@@ -64,6 +64,10 @@ class Division < ActiveRecord::Base
     Rails.cache.fetch([name, id]) { find(id) }
   end
 
+  def hidden?
+    name == "Vancouver (Hidden)"
+  end
+
   def flush_cached_find
     Rails.cache.delete([self.class.name, id])
   end

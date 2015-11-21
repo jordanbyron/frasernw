@@ -34,7 +34,6 @@
   = f.association :divisions,
     as: :check_boxes,
     collection: @divisions,
-    checked_method: Proc.new{ |division| @news_item.divisions.include?(division) },
     label: "Divisions Showing"
 
   .form-actions
