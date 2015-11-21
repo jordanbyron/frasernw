@@ -132,18 +132,24 @@ const NewsItemsTable = React.createClass({
     )
     const _currentPage = (this.state.currentPage || 1);
 
+    const _filtered = from(
+      _.partialRight(_.filter, _shouldDisplayRecord),
+      _.values(this.props.app.newsItems)
+    )
+
     const _bodyRows = from(
       _.partialRight(_.map, _row),
       _.partial(paginate, _currentPage, ROWS_PER_PAGE),
       _.partialRight(_.sortByOrder, [ "startDate" ], [ "desc" ]),
-      _.partialRight(_.filter, _shouldDisplayRecord),
-      _.values(this.props.app.newsItems)
+      _filtered
     );
 
     const _paginationProps = {
       currentPage: _currentPage,
-      setPage: _.partial(function(table, page) { table.setState({currentPage: page}) }, this),
-      totalPages: _.ceil(_bodyRows.length / ROWS_PER_PAGE)
+      setPage: _.partial(function(table, page, event) {
+        table.setState({currentPage: page});
+      }, this),
+      totalPages: _.ceil(_filtered.length / ROWS_PER_PAGE)
     }
 
     return(

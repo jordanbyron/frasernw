@@ -1,15 +1,18 @@
 import React from "react";
 import _ from "lodash";
-import { noSelect } from "stylesets";
+import { buttonIsh } from "stylesets";
 
 const Relative = (direction, setPage) => {
   return(
     <li
       className={`${direction}_page disabled`}
       onClick={setPage}
-      style={noSelect}
+      style={buttonIsh}
     >
-      <a className={`#{direction}_page disabled ajax`}>{_.capitalize(direction)}</a>
+      <a
+        className={`#{direction}_page disabled ajax`}
+        style={buttonIsh}
+      >{_.capitalize(direction)}</a>
     </li>
   );
 };
@@ -26,7 +29,7 @@ const PreviousArrow = (setPage, currentPage) => {
 
 const Page = (page, setPage, currentPage) => (
   <li
-    style={noSelect}
+    style={buttonIsh}
     onClick={_.partial(setPage, page)}
     className={page === currentPage ? "active" : ""}
     key={page}
@@ -44,15 +47,19 @@ const Pages = (totalPages, setPage, currentPage) => {
 }
 
 const Pagination = (props) => {
-  return (
-    <div className="pagination">
-      <ul>
-        { PreviousArrow(props.setPage, props.currentPage) }
-        { Pages(props.totalPages, props.setPage, props.currentPage) }
-        { NextArrow(props.setPage, props.currentPage, props.totalPages) }
-      </ul>
-    </div>
-  );
+  if(props.totalPages === 0) {
+    return <div></div>;
+  } else {  
+    return (
+      <div className="pagination">
+        <ul>
+          { PreviousArrow(props.setPage, props.currentPage) }
+          { Pages(props.totalPages, props.setPage, props.currentPage) }
+          { NextArrow(props.setPage, props.currentPage, props.totalPages) }
+        </ul>
+      </div>
+    );
+  }
 };
 
 export default Pagination;
