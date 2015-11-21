@@ -2,6 +2,14 @@ class NewsItemsController < ApplicationController
   load_and_authorize_resource
 
   def index
+    @division = begin
+      if params[:division_id].present?
+        Division.find(params[:division_id])
+      else
+        current_user.divisions.first
+      end
+    end
+
     @props = {
       app: {
         currentUser: {
@@ -16,7 +24,7 @@ class NewsItemsController < ApplicationController
         newsItems: Serialized.generate(:news_items)
       },
       ui: {
-        divisionId: 1
+        divisionId: @division.id
       }
     }
 
