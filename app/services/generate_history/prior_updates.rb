@@ -18,6 +18,7 @@ class GenerateHistory
         target: target,
         user: version.safe_user,
         datetime: version.created_at,
+        secret_editor: version.secret_editor,
         verb: :updated,
         new_version: version.next,
         changeset: version.masked_changeset

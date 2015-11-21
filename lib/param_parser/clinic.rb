@@ -15,6 +15,7 @@ module ParamParser
     def exec
       remove_specializations_comments!
       remove_address_comments!
+      params.delete("secret_token_id")
       parse_attendances!
       set_sectors!
 

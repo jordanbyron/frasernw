@@ -20,6 +20,8 @@ Frasernw::Application.routes.draw do
     resources :clinics
   end
 
+  resources :secret_tokens, only: [:create, :destroy]
+
   resources :clinics do
     member do
       get :review

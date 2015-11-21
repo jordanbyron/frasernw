@@ -41,6 +41,10 @@ module ActiveRecord
       UnknownUser.new
     end
 
+    def last_update_editor
+      ""
+    end
+
     def last_update_changeset
       nil
     end
@@ -51,6 +55,10 @@ module ActiveRecord
 
     def numbered_label
       "#{class_label} ##{self.id}"
+    end
+
+    def valid_tokens
+      [ saved_token ]
     end
   end
 

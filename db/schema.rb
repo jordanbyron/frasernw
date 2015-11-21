@@ -616,13 +616,14 @@ ActiveRecord::Schema.define(:version => 20151117224715) do
   create_table "review_items", :force => true do |t|
     t.string   "item_type"
     t.integer  "item_id"
-    t.string   "whodunnit"
+    t.string   "edit_source_id"
     t.text     "object"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "archived",    :default => false
-    t.integer  "status",      :default => 0
+    t.boolean  "archived",         :default => false
+    t.integer  "status",           :default => 0
     t.text     "base_object"
+    t.string   "edit_source_type"
   end
 
   add_index "review_items", ["item_id", "item_type"], :name => "index_review_items_on_item_id_and_item_type"
@@ -729,6 +730,19 @@ ActiveRecord::Schema.define(:version => 20151117224715) do
   add_index "schedules", ["thursday_id"], :name => "index_schedules_on_thursday_id"
   add_index "schedules", ["tuesday_id"], :name => "index_schedules_on_tuesday_id"
   add_index "schedules", ["wednesday_id"], :name => "index_schedules_on_wednesday_id"
+
+  create_table "secret_tokens", :force => true do |t|
+    t.integer  "creator_id",                         :null => false
+    t.string   "recipient",                          :null => false
+    t.integer  "accessible_id",                      :null => false
+    t.string   "accessible_type",                    :null => false
+    t.string   "token",                              :null => false
+    t.boolean  "expired",         :default => false, :null => false
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
+  end
+
+  add_index "secret_tokens", ["accessible_id", "accessible_type"], :name => "secret_token_item"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false
@@ -1049,6 +1063,7 @@ ActiveRecord::Schema.define(:version => 20151117224715) do
     t.text     "object"
     t.datetime "created_at"
     t.text     "object_changes"
+    t.integer  "review_item_id"
   end
 
   add_index "versions", ["created_at"], :name => "index_versions_on_created_at"

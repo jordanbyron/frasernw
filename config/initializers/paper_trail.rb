@@ -1,4 +1,8 @@
 class Version < ActiveRecord::Base
+  belongs_to :review_item
+
+  attr_accessible :review_item_id
+
   # nice past tense events for paper_trail
   def evented
     self.event.gsub('update','updated').gsub('destroy','destroyed').gsub('create','created')
@@ -11,6 +15,14 @@ class Version < ActiveRecord::Base
   def masked_changeset
     changeset.reject do |key, value|
       item.paper_trail_ignored_attributes.include?(key.to_sym)
+    end
+  end
+
+  def secret_editor
+    if review_item.present?
+      review_item.editor
+    else
+      nil
     end
   end
 

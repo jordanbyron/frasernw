@@ -1,6 +1,7 @@
 import handleSectorCheckboxes from "window_scripts/sectors";
 import simpleBootstrapReact from "window_scripts/simple_bootstrap_react";
 import NewsItemsTable from "react_components/news_items_table";
+import attachSecretEditLinks from "window_scripts/secret_edit_links";
 
 // These libraries are required to support React.js in older browsers
 // (see http://facebook.github.io/react/docs/working-with-the-browser.html)
@@ -21,3 +22,4 @@ window.pathways.bootstrapNewsItems = simpleBootstrapReact(NewsItemsTable);
 window.pathways.trackForm = require("./analytics_wrappers").trackForm;
 window.pathways.trackContentItem = require("./analytics_wrappers").trackContentItem;
 window.pathways.handleSectorCheckboxes = handleSectorCheckboxes;
+window.pathways.attachSecretEditLinks = attachSecretEditLinks;
