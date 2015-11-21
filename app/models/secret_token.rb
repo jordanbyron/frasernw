@@ -21,7 +21,11 @@ class SecretToken < ActiveRecord::Base
   end
 
   def creator
-    User.where(id: creator_id).first || OpenStruct.new(name: "System")
+    if creator_id == 0
+      OpenStruct.new(name: "System")
+    else
+      User.where(id: creator_id).first || UnknownUser.new
+    end
   end
 
   def creator_name
@@ -60,7 +64,8 @@ class SecretToken < ActiveRecord::Base
   def expirable_by?(user)
     return true if user.super_admin?
     return true if user == creator
-    return true if creator.nil? && user.admin?
+    return true if creator.is_a?(UnknownUser) && user.admin?
+    return true if creator.name == "System" && user.admin?
 
     false
   end
