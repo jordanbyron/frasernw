@@ -3,8 +3,11 @@
 .content-wrapper
 
   %h2{style: "margin-bottom: 5px"}
-    ="News Items for #{@division.name}"
+    = "News Items for #{@division.name}"
 
   #newsitem-react-container
+
+  = link_to "Create News Item", new_news_item_path, class: "btn btn-default"
+
   :javascript
     window.pathways.bootstrapNewsItems("newsitem-react-container", #{@props.to_json})
