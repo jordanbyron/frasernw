@@ -48,8 +48,9 @@ class LatestUpdates
         where("created_at > ?", (Date.today - 3.months))
       versions.each do |version|
 
-        # for some reason stale cached versions of this are being served up below if we don't reload...
-        item = version.item.try(:reload)
+        # #dup so #reify doesn't overwrite item back to old version
+        # #reload so we make sure we're not picking up an old copy from a previous iteration
+        item = version.item.try(:reload).try(:dup)
 
         next if item.blank?
         break if automated_events.length >= max_automated_events
@@ -82,7 +83,10 @@ class LatestUpdates
 
                 #newly moved away
 
-                automated_events["#{version.item_type}_#{item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has moved away.".html_safe]
+                automated_events["#{version.item_type}_#{item.id}"] = [
+                  "#{version.created_at}",
+                  "#{link_to specialist.name, "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has moved away.".html_safe
+                ]
 
               elsif specialist.retired?
 
@@ -92,7 +96,10 @@ class LatestUpdates
 
                 #newly retired
 
-                automated_events["#{version.item_type}_#{item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has retired.".html_safe]
+                automated_events["#{version.item_type}_#{item.id}"] = [
+                  "#{version.created_at}",
+                  "#{link_to specialist.name, "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has retired.".html_safe
+                ]
 
               elsif specialist.retiring?
 
@@ -100,7 +107,10 @@ class LatestUpdates
                 next if version.reify.retiring? #retiring status hasn't changed
                 current_specialist = Specialist.find(specialist.id);
 
-                automated_events["#{version.item_type}_#{item.id}"] = ["#{version.created_at}", "#{link_to specialist.name, "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{current_specialist.unavailable_from.to_s(:long_ordinal)}.".html_safe]
+                automated_events["#{version.item_type}_#{item.id}"] = [
+                  "#{version.created_at}",
+                  "#{link_to specialist.name, "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{current_specialist.unavailable_from.to_s(:long_ordinal)}.".html_safe
+                ]
 
               end
 
@@ -117,18 +127,22 @@ class LatestUpdates
             #Below: Division's define what cities they refer to for specific specializations.  Do not show version if specialist specialization is not within local referral area of the division.
             next if (specialist_cities & divisions.map{|d| d.local_referral_cities(specialist.primary_specialization)}.flatten.uniq).blank?
 
-
             if (["create", "update"].include? version.event) && specialist.accepting_new_patients? && specialist_office.opened_recently?
-
               if (version.event == "update")
-                  next if version.reify.blank?
-                  next if version.reify.opened_recently? #opened this year status hasn't changed)
+                next if version.reify.blank?
+                next if version.reify.opened_recently? #opened this year status hasn't changed)
               end
 
               if specialist_office.city.present?
-                automated_events["Specialist_#{specialist.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{specialist_office.city.name} and is accepting new referrals.".html_safe]
+                automated_events["Specialist_#{specialist.id}"] = [
+                  "#{version.created_at}",
+                  "#{link_to "#{specialist.name}'s office", "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{specialist_office.city.name} and is accepting new referrals.".html_safe
+                ]
               else
-                automated_events["Specialist_#{item.id}"] = ["#{version.created_at}", "#{link_to "#{specialist.name}'s office", "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe]
+                automated_events["Specialist_#{item.id}"] = [
+                  "#{version.created_at}",
+                  "#{link_to "#{specialist.name}'s office", "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe
+                ]
               end
 
             end
@@ -153,9 +167,15 @@ class LatestUpdates
               end
 
               if clinic_location.city.present?
-                automated_events["Clinic_#{item.id}"] = ["#{version.created_at}", "#{link_to clinic.name, "/clinics/#{clinic.id}", :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{clinic_location.city.name} and is accepting new referrals.".html_safe]
+                automated_events["Clinic_#{item.id}"] = [
+                  "#{version.created_at}",
+                  "#{link_to clinic.name, "/clinics/#{clinic.id}", :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{clinic_location.city.name} and is accepting new referrals.".html_safe
+                ]
               else
-                automated_events["Clinic_#{item.id}"] = ["#{version.created_at}", "#{link_to clinic.name, "/clinics/#{clinic.id}", :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe]
+                automated_events["Clinic_#{item.id}"] = [
+                  "#{version.created_at}",
+                  "#{link_to clinic.name, "/clinics/#{clinic.id}", :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe
+                ]
               end
 
             end
