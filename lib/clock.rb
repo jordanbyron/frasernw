@@ -16,8 +16,13 @@ include Clockwork
 
     every(1.weeks, 'bundle exec rake deploy:backup', :at => 'Sunday 08:15',  :tz => 'UTC') {
       `bundle exec rake deploy:backup`
-      `bundle exec rake pathways:remove_deceased_specialist_records`
     }
+
+    every(1.weeks, 'bundle exec rake pathways:remove_deceased_specialist_records', :at => 'Sunday 08:20',  :tz => 'UTC') {
+      `bundle exec rake pathways:remove_deceased_specialist_records`
+
+    }
+
   end
 
   every(1.day, 'heroku restart', :at => '13:00',  :tz => 'UTC') {
