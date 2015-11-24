@@ -47,7 +47,7 @@ module.exports = React.createClass({
                 sortConfig={this.props.sortConfig}
                 dispatch={this.props.dispatch}
               />
-              <ArbitraryContent contents={this.props.arbitraryFooter}/>
+              <ArbitraryContent contents={this.props.arbitraryTableFooter}/>
               <AssumedList {...this.props.assumedList}/>
             </div>
           }
@@ -62,6 +62,7 @@ module.exports = React.createClass({
           }
           reducedView={this.props.reducedView}
         />
+        <ArbitraryContent contents={this.props.arbitraryPageFooter}/>
       </div>
     );
   }

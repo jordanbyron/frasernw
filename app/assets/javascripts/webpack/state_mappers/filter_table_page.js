@@ -11,6 +11,8 @@ var itemsForContentCategory = require("domain/content_category_items");
 var referralCities = require("./filter_table/referral_cities");
 var utils = require("utils");
 var anyFiltersActivated = require("state_mappers/filter_table/any_filters_activated");
+var React = require("react");
+var CategoryLink = require("react_components/category_link");
 
 module.exports = function(state, dispatch) {
   // console.log("STATE:");
@@ -384,7 +386,8 @@ var PANEL_PROPS_GENERATORS = {
               panelKey: panelKey
             }
           )
-        }
+        },
+        arbitraryPageFooter: <AllSpecialtiesCategoryLink category={category}/>
       };
     },
     InlineArticles: function(state: Object, panelKey: string, category: Object, dispatch: Function) {
@@ -393,15 +396,22 @@ var PANEL_PROPS_GENERATORS = {
       return {
         panelKey: panelKey,
         records: records,
-        categoryLink: {
-          link: ("/content_categories/" + category.id),
-          text: ("Browse " + category.name + " content from all specialties")
-        },
+        categoryLink: <AllSpecialtiesCategoryLink category={category}/>,
         favorites: state.app.currentUser.favorites
       };
     }
   }
 }
+
+const AllSpecialtiesCategoryLink = (props) => (
+  <div>
+    <hr/>
+    <CategoryLink
+      link={`/content_categories/${props.category.id}`}
+      text={`Browse ${props.category.name} content from all specialties`}
+    />
+  </div>
+)
 
 var filterResources = function(rows, filterValues, userIsAdmin) {
   var operativeOpaqueFilters = _.values(_.pick(Filters, PANEL_TYPE_OPAQUE_FILTERS["contentCategories"])).filter(
