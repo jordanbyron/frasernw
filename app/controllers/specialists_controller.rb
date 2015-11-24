@@ -216,7 +216,7 @@ class SpecialistsController < ApplicationController
 
       @specializations_clinics, @specializations_clinic_locations =
         GenerateClinicLocationInputs.exec(@specialist.specializations)
-      @secret_token_id = @specialist.review_item.decoded_review_object["specialist"]["secret_token_id"]
+      @secret_token_id = @review_item.decoded_review_object["specialist"]["secret_token_id"]
       @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
         @specialist,
         @specialist.specializations

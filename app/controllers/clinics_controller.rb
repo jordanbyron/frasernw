@@ -188,7 +188,7 @@ class ClinicsController < ApplicationController
         @clinic,
         @clinic.specializations
       )
-      @secret_token_id = @clinic.review_item.decoded_review_object["clinic"]["secret_token_id"]
+      @secret_token_id = @review_item.decoded_review_object["clinic"]["secret_token_id"]
       render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
