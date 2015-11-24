@@ -33,7 +33,7 @@ var ProcedureCheckbox = React.createClass({
   },
   componentDidMount: function(){
     if (this.props.value){
-      $(React.findDOMNode(this.refs.children)).show();
+      $(this.refs.children).show();
     }
   },
   componentDidUpdate: function(prevProps) {
@@ -41,9 +41,9 @@ var ProcedureCheckbox = React.createClass({
     var selectedInPrevProps = prevProps.value;
 
     if (selectedInPrevProps == false && selectedInCurrentProps == true && this.props.children.length > 0) {
-      $(React.findDOMNode(this.refs.children)).slideDown();
+      $(this.refs.children).slideDown();
     } else if (selectedInPrevProps == true && selectedInCurrentProps == false){
-      $(React.findDOMNode(this.refs.children)).slideUp();
+      $(this.refs.children).slideUp();
     }
   },
   render: function() {

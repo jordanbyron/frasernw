@@ -1,10 +1,9 @@
-class GenerateSpecializationPage
+class GenerateFilterTablePage
   class AppState
-    include ServiceObject.exec_with_args(:user, :specialization)
+    include ServiceObjectModule.exec_with_args(:user, :specialization)
 
     def exec
       {
-        specializations: Serialized.fetch(:specializations),
         currentUser: {
           divisionIds: user.divisions.map(&:id),
           cityRankings: user.city_rankings,
@@ -16,18 +15,18 @@ class GenerateSpecializationPage
             specialization.id => user.divisions_referral_cities(specialization).reject(&:hidden).map(&:id)
           },
           openToPanel: {
-            specialization.id => open_to_panel(specialization)
+            specialization.id => open_to_panel
           }
         },
+        specializations: Serialized.fetch(:specializations),
         contentCategories: Serialized.fetch(:content_categories),
         contentItems: Serialized.fetch(:content_items),
         cities: Serialized.fetch(:cities),
         hospitals: Serialized.fetch(:hospitals),
         procedures: Serialized.fetch(:procedures),
-        respondsWithinOptions: responds_within_options,
-        respondsWithinSummaryLabels: responds_within_summary_labels,
+        respondsWithinOptions: Serialized.fetch(:respondsWithinOptions),
+        respondsWithinSummaryLabels: Serialized.fetch(:respondsWithinSummaryLabels),
         dayKeys: Schedule::DAY_HASH,
-        nestedProcedureIds: Serialized::BySpecialization.fetch(:nested_procedure_ids, specialization),
         languages: Serialized.fetch(:languages),
         careProviders: Serialized.fetch(:healthcare_providers)
       }
@@ -35,29 +34,7 @@ class GenerateSpecializationPage
 
     private
 
-    def responds_within_options
-      Clinic::LAGTIME_HASH.inject({}) do |memo, (key, value)|
-        memo.merge(key.to_i => value)
-      end.merge(0 => "Any timeframe")
-    end
-
-    def responds_within_summary_labels
-      Clinic::LAGTIME_HASH.inject({}) do |memo, (key, value)|
-        label = begin
-          if key == 1
-            "by phone when office calls for appointment"
-          elsif key == 2
-            "within one week"
-          else
-            "within #{value}"
-          end
-        end
-
-        memo.merge({key => label})
-      end
-    end
-
-    def open_to_panel(specialization)
+    def open_to_panel
       specialization_option = specialization.
         specialization_options.
         to_a.

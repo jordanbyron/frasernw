@@ -2,6 +2,7 @@ var React = require("react");
 var FavoriteIcon = require("../../react_components/icons/favorite");
 var FeedbackIcon = require("../../react_components/icons/feedback");
 var SharedCareIcon = require("../../react_components/icons/shared_care");
+var ReferentStatusIcon = require("../../react_components/icons/referent_status_icon");
 var Tags = require("../../react_components/tags");
 var reject = require("lodash/collection/reject");
 var trackContentItem = require("../../analytics_wrappers").trackContentItem;
@@ -15,9 +16,9 @@ var labelReferentName = function(record) {
   );
 }
 
-var labelReferentStatus = function(record) {
+var labelReferentStatus = function(record, statusIcons, tooltips) {
   return (
-    <i className={record.statusIconClasses}></i>
+    <ReferentStatusIcon record={record} statusIcons={statusIcons} tooltips={tooltips}/>
   );
 }
 
@@ -88,12 +89,12 @@ var email = function(record) {
 }
 
 module.exports = {
-  referents: function(record, app, dispatch, config) {
+  referents: function(app, dispatch, config, record) {
     return {
       cells: reject([
         labelReferentName(record),
         labelReferentSpecialties(record, app, config.includingOtherSpecialties),
-        labelReferentStatus(record),
+        labelReferentStatus(record, app.referentStatusIcons, app.tooltips),
         (record.waittime || ""),
         labelReferentCities(record, app)
       ], (cell) => cell === null),
@@ -101,7 +102,7 @@ module.exports = {
       record: record
     }
   },
-  resources: function(record, app, dispatch, config) {
+  resources: function(app, dispatch, config, record) {
     return {
       cells: [
         labelResourceTitle(record),

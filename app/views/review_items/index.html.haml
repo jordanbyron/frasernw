@@ -57,7 +57,7 @@
                       %li= owner.name
                 - else
                   No owner
-              %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
+              %td= review_item.editor.name
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
               %td= ReviewItem::STATUS_HASH[review_item.status]
               %td.admin
@@ -90,7 +90,7 @@
                       %li= owner.name
                 - else
                   No owner
-              %td= review_item.whodunnit.present? ? User.find(review_item.whodunnit).name : "Unknown"
+              %td= review_item.editor.name
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
               %td= ReviewItem::STATUS_HASH[review_item.status]
               %td.admin

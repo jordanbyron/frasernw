@@ -6,6 +6,7 @@ class Specialist < ActiveRecord::Base
   include Noteable
   include ProcedureSpecializable
   include Referrable
+  include TokenAccessible
 
   include ApplicationHelper
 
@@ -86,6 +87,8 @@ class Specialist < ActiveRecord::Base
   def self.cached_find(id)
     Rails.cache.fetch([name, id], expires_in: 4000.seconds) { find(id) }
   end
+
+  scope :deceased, -> { where(status_mask: STATUS_MASK_DECEASED) }
 
   def flush_cached_find
     Rails.cache.delete([self.class.name, id])
@@ -385,6 +388,14 @@ class Specialist < ActiveRecord::Base
     return cities.map{ |city| city.divisions }.flatten.uniq
   end
 
+  def version_marked_deceased
+    versions.select do |version|
+      version.changeset["status_mask"].present? &&
+        version.changeset["status_mask"][1] == STATUS_MASK_DECEASED &&
+        version.changeset["status_mask"][0] != STATUS_MASK_DECEASED
+    end.last
+  end
+
   def owners
     if specializations.blank? || divisions.blank?
       return [default_owner]
@@ -508,7 +519,7 @@ class Specialist < ActiveRecord::Base
     STATUS_CLASS_UNAVAILABLE => "Not accepting new referrals",
     STATUS_CLASS_WARNING     => "Referral status will change soon",
     STATUS_CLASS_UNKNOWN     => "Referral status is unknown",
-    STATUS_CLASS_EXTERNAL    => "Referral status will change soon",
+    STATUS_CLASS_EXTERNAL    => "Only works out of, and possibly accepts referrals through, clinics and/or hospitals",
     STATUS_CLASS_BLANK       => ""
   }
 
@@ -578,8 +589,9 @@ class Specialist < ActiveRecord::Base
     status_mask == 10
   end
 
+  STATUS_MASK_DECEASED = 12
   def deceased?
-    status_mask == 12
+    status_mask == STATUS_MASK_DECEASED
   end
 
   WAITTIME_HASH = {

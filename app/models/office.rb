@@ -47,6 +47,7 @@ class Office < ActiveRecord::Base
   end
 
   def self.cached_all_formatted_for_form(scope = :presence)
+    # remember to add new scopes to flush_cache also
     Rails.cache.fetch([name, "all_offices_formatted_for_form:#{scope}"], expires_in: 2.hours) do
       self.all_formatted_for_form(scope)
     end
@@ -61,15 +62,17 @@ class Office < ActiveRecord::Base
   end
 
   def flush_cache #called during after_commit or after_touch
-    Rails.cache.delete([self.class.name, "all_offices_formatted_for_form"])
+    Rails.cache.delete([self.class.name, "all_offices_formatted_for_form:visible?"])
+    Rails.cache.delete([self.class.name, "all_offices_formatted_for_form:presence"])
     Rails.cache.delete([self.class.name, id])
   end
 
   def self.refresh_cache
-    Rails.cache.write([name, "all_offices_formatted_for_form"], self.all_formatted_for_form)
-    Office.all.each do |office|
-      Rails.cache.write([office.class.name, office.id], Office.find(office.id))
-    end
+    Rails.cache.write([name, "all_offices_formatted_for_form:presence"], self.all_formatted_for_form)
+    Rails.cache.write([name, "all_offices_formatted_for_form:visible?"], self.all_formatted_for_form(:visible?))
+    # Office.all.each do |office|
+    #   Rails.cache.write([office.class.name, office.id], Office.find(office.id))
+    # end
   end
 
   # # # # # # # #

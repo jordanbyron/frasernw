@@ -58,6 +58,9 @@ class DivisionsController < ApplicationController
         new_so.show_specialist_categorization_5 = old_so.show_specialist_categorization_5
         new_so.save
       end
+
+      Serialized.delay.regenerate(:divisions)
+
       redirect_to @division, :notice => "Successfully created division."
     else
       render :action => 'new'
@@ -95,6 +98,8 @@ class DivisionsController < ApplicationController
           drcs.destroy
         end
       end
+      Serialized.delay.regenerate(:divisions)
+
       redirect_to @division, :notice  => "Successfully updated division."
     else
       render :action => 'edit'
@@ -120,6 +125,39 @@ class DivisionsController < ApplicationController
     @division = Division.find(params[:id])
     @division.destroy
     redirect_to divisions_path, :notice => "Successfully deleted division."
+  end
+
+  def edit_permissions
+    @permission_type = params[:permission_type]
+    @division = Division.find(params[:id])
+    @dropdown_options = @division.
+      admins.
+      map{ |admin| [ admin.name, admin.id ] }.
+      push([ "Please select", 0 ])
+
+    @permission_type_label = {
+      "owner" => "Specialist and Clinic Owner",
+      "content_owner" => "Content Owner"
+    }[@permission_type]
+  end
+
+  def update_permissions
+    @user = User.find(params[:admin_id])
+    @division = Division.find(params[:id])
+
+    raise unless @division.admins.include?(@user)
+    raise unless ["owner", "content_owner"].include?(params[:permission_type])
+
+    Specialization.all.each do |specialization|
+      specialization_option =
+        (specialization.specialization_options.where(division_id: @division.id).first ||
+          specialization.specialization_options.create(division_id: @division.id))
+
+
+      specialization_option.update_attributes(params[:permission_type] => @user)
+    end
+
+    redirect_to specializations_path, notice: "Update Successful"
   end
 
   private

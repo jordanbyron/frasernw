@@ -4,14 +4,14 @@ var buttonIsh = require("../stylesets").buttonIsh;
 module.exports = React.createClass({
   componentDidMount: function(){
     if (this.props.expanded){
-      $(React.findDOMNode(this.refs.contents)).show();
+      $(this.refs.contents).show();
     }
   },
   componentDidUpdate: function(prevProps) {
     if (prevProps.expanded == false && this.props.expanded == true) {
-      $(React.findDOMNode(this.refs.contents)).slideDown();
+      $(this.refs.contents).slideDown();
     } else if (prevProps.expanded == true && this.props.expanded == false){
-      $(React.findDOMNode(this.refs.contents)).slideUp();
+      $(this.refs.contents).slideUp();
     }
   },
   toggleText: function() {

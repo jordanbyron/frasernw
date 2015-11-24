@@ -40,7 +40,7 @@ class SpecialistsController < ApplicationController
     @specializations_clinics, @specializations_clinic_locations =
       GenerateClinicLocationInputs.exec([ @specialization ])
 
-    @capacities = GenerateSpecialistCapacityInputs.exec(
+    @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
       nil,
       [ @specialization ]
     )
@@ -93,7 +93,7 @@ class SpecialistsController < ApplicationController
     @specializations_clinics, @specializations_clinic_locations =
       GenerateClinicLocationInputs.exec(@specialist.specializations)
 
-    @capacities = GenerateSpecialistCapacityInputs.exec(
+    @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
       @specialist,
       @specialist.specializations
     )
@@ -139,7 +139,7 @@ class SpecialistsController < ApplicationController
       parsed_params = ParamParser::Specialist.new(params).exec
       if @specialist.update_attributes(parsed_params[:specialist])
         UpdateSpecialistCapacities.exec(@specialist, parsed_params)
-
+        @specialist.reload.versions.last.update_attributes(review_item_id: review_item.id)
         @specialist.save
         redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
       else
@@ -191,7 +191,8 @@ class SpecialistsController < ApplicationController
       @specializations_clinics, @specializations_clinic_locations =
         GenerateClinicLocationInputs.exec(@specialist.specializations)
 
-      @capacities = GenerateSpecialistCapacityInputs.exec(
+      @secret_token_id = @specialist.review_item.decoded_review_object["specialist"]["secret_token_id"]
+      @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
         @specialist,
         @specialist.specializations
       )
@@ -215,8 +216,8 @@ class SpecialistsController < ApplicationController
 
       @specializations_clinics, @specializations_clinic_locations =
         GenerateClinicLocationInputs.exec(@specialist.specializations)
-
-      @capacities = GenerateSpecialistCapacityInputs.exec(
+      @secret_token_id = @review_item.decoded_review_object["specialist"]["secret_token_id"]
+      @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
         @specialist,
         @specialist.specializations
       )

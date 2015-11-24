@@ -20,14 +20,24 @@ module.exports = React.createClass({
       return "filter-phrase none";
     }
   },
+  clearAllFilters: function() {
+    if(this.props.showClearButton) {
+      return(
+        <a onClick={this.handleClearFilters} style={buttonIsh}>
+          Clear all filters.
+        </a>
+      );
+    }
+    else {
+      return null;
+    }
+  },
   render: function() {
     if (this.props.isVisible) {
       return(
         <div className={this.className()} style={{display: "block"}}>
           <span>{ this.props.text + ".   " }</span>
-          <a onClick={this.handleClearFilters} style={buttonIsh}>
-            Clear all filters.
-          </a>
+          { this.clearAllFilters() }
         </div>
       );
     } else {

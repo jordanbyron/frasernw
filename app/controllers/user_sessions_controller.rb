@@ -11,6 +11,8 @@ class UserSessionsController < ApplicationController
   end
 
   def new
+
+
     @user_session = UserSession.new
     @user = User.new
     render :layout => 'ajax' if request.headers['X-PJAX']
@@ -19,7 +21,7 @@ class UserSessionsController < ApplicationController
   def create
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
-      redirect_to_target_or_default root_url
+      redirect_to root_url
     else
       @user = User.new
       render :action => 'new'

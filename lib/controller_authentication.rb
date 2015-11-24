@@ -17,7 +17,7 @@
 #   before_filter :login_required, :except => [:index, :show]
 module ControllerAuthentication
   def self.included(controller)
-    controller.send :helper_method, :current_user, :logged_in?, :redirect_to_target_or_default
+    controller.send :helper_method, :current_user, :logged_in?
   end
 
   def current_user_session
@@ -73,15 +73,11 @@ module ControllerAuthentication
   end
 
   def token_required(klass, token, id)
-    klass_object = klass.find(id)
-    unless token == klass_object.token
+    @secret_token_id = SecretToken.where(token: token).first.try(:id)
+
+    unless klass.find(id).valid_tokens.include?(token)
       redirect_to login_url, :alert => "Invalid token. Please email millerjc@shaw.ca to request or reset your secret url for editing."
     end
-  end
-
-  def redirect_to_target_or_default(default, *args)
-    redirect_to(session[:return_to] || default, *args)
-    session[:return_to] = nil
   end
 
   private

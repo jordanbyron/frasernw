@@ -564,10 +564,20 @@
   opacity: 1.0;
 }
 
-.tooltip-inner
+.tooltip.top .tooltip-inner // we don't want colouring for tooltip right used for specialty icons
 {
   background: $FNW_LIGHT_BLUE;
   color: $FNW_BLUE;
+}
+
+.tooltip.bottom .tooltip-inner
+{
+  background: $FNW_LIGHT_BLUE;
+  color: $FNW_BLUE;
+}
+
+.tooltip-inner
+{
   font-size: 13px;
   text-align: left;
   -webkit-box-shadow: 0px 0px 2px $FNW_MID_GRAY;
@@ -648,6 +658,10 @@
 {
   border: none;
   content: none;
+}
+
+li.dropdown.admin.open > ul > li > a{
+  white-space: normal;
 }
 
 /* ALERTS */

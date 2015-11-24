@@ -176,7 +176,7 @@ module.exports = {
       return filters.public
     },
     predicate: function(record, filters) {
-      return !record.private;
+      return record.isPublic;
     },
     summary: function(props) {
       return "public";
@@ -188,7 +188,7 @@ module.exports = {
       return filters.private
     },
     predicate: function(record, filters) {
-      return record.private;
+      return record.isPrivate;
     },
     summary: function(props) {
       return "private";
@@ -237,17 +237,29 @@ module.exports = {
   },
   subcategories: {
     isActivated: function(filters) {
-      return some(values(filters.subcategories), (value) => value);
+      if(_.isObject(filters.subcategories)){
+        return some(values(filters.subcategories), (value) => value);
+      } else {
+        return (filters.subcategories !== "0");
+      }
     },
     predicate: function(record, filters) {
-      return _.find(_.keys(_.pick(filters.subcategories, _.identity)), (id) => {
-        return record.categoryId === parseInt(id);
-      });
+      if(_.isObject(filters.subcategories)){
+        return _.find(_.keys(_.pick(filters.subcategories, _.identity)), (id) => {
+          return record.categoryId === parseInt(id);
+        });
+      } else {
+        return record.categoryId === parseInt(filters.subcategories);
+      }
     },
     summary: function(props) {
-      return "are in one of the following subcategories: " + _.keys(_.pick(props.filterValues.subcategories, _.identity)).map(
-        (id) => props.app.contentCategories[id].name
-      ).join(", ");
+      if(_.isObject(props.filterValues.subcategories)){
+        return "are in one of the following subcategories: " + _.keys(_.pick(props.filterValues.subcategories, _.identity)).map(
+          (id) => props.app.contentCategories[id].name
+        ).join(", ");
+      } else {
+        return `are subcategorized as ${props.app.contentCategories[props.filterValues.subcategories].name}`;
+      }
     },
     summaryPlacement: "trailing"
   },
@@ -264,7 +276,20 @@ module.exports = {
       return true;
     },
     predicate: function(record) {
-      return record.statusClassKey != 6;
+      // no blank statuses
+      return record.statusClassKey !== 6;
     }
-  }
+  },
+  specializations: {
+    isActivated: function(filters) {
+      return (filters.specializations !== "0");
+    },
+    predicate: function(record, filters) {
+      return _.includes(record.specializationIds, parseInt(filters.specializations));
+    },
+    summary: function(props) {
+      return `pertain to ${props.app.specializations[props.filterValues.specializations].name}`;
+    },
+    summaryPlacement: "trailing"
+  },
 }

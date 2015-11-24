@@ -9,9 +9,16 @@ class ProceduresController < ApplicationController
   end
 
   def show
+    @layout_heartbeat_loader = false
     @procedure = Procedure.find(params[:id])
-    @feedback = FeedbackItem.new
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    @init_data = {
+      app: FilterTableAppState.exec(current_user: current_user),
+      ui: {
+        pageType: "procedure",
+        procedureId: @procedure.id,
+        hasBeenInitialized: false
+      }
+    }
   end
 
   def new

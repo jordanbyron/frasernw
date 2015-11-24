@@ -1,16 +1,20 @@
 var _ = require("lodash");
 var Filters = require("./filter_table/filters");
 var RowGenerators = require("./filter_table/row_generators");
-var FILTER_VALUE_GENERATORS = require("./specialization_page/filter_value_generators");
-var FILTER_GROUP_GENERATORS = require("./specialization_page/filter_group_generators");
+var FILTER_VALUE_GENERATORS = require("./filter_table/filter_value_generators");
+var FILTER_GROUP_GENERATORS = require("./filter_table/filter_group_generators");
+var TABLE_HEADINGS_GENERATORS = require("./filter_table/table_headings_generators");
 var sortFunctions = require("./filter_table/sort_functions");
 var sortOrders = require("./filter_table/sort_orders");
 var generateResultSummary = require("./filter_table/generate_result_summary");
+var itemsForContentCategory = require("domain/content_category_items");
+var referralCities = require("./filter_table/referral_cities");
+var utils = require("utils");
+var anyFiltersActivated = require("state_mappers/filter_table/any_filters_activated");
+var React = require("react");
+var CategoryLink = require("react_components/category_link");
 
-module.exports = function(stateProps, dispatchProps) {
-  var state = stateProps;
-  var dispatch = dispatchProps.dispatch;
-
+module.exports = function(state, dispatch) {
   // console.log("STATE:");
   // console.log(state);
 
@@ -35,11 +39,18 @@ var feedbackModal = function(state) {
   return (state.ui.feedbackModal || { state: "HIDDEN"});
 }
 
+var defaultPanel = function(state) {
+  return {
+    specialization: function() {
+      return state.app.divisions[state.app.currentUser.divisionIds[0]].openToSpecializationPanel[state.ui.specializationId];
+    },
+    procedure: function() { return { type: "specialists" } },
+  }[state.ui.pageType]();
+}
+
 var selectedPanel = function(state, dispatch) {
-  var selectedPanelKey = (state.ui.selectedPanel ||
-    generatePanelKey(state.app.currentUser.openToPanel[state.ui.specializationId].type,
-      state.app.currentUser.openToPanel[state.ui.specializationId].id)
-    );
+  var _defaultPanel = defaultPanel(state);
+  var selectedPanelKey = (state.ui.selectedPanel || generatePanelKey(_defaultPanel.type, _defaultPanel.id));
   var selectedPanelType = panelTypeKey(selectedPanelKey);
 
   return PANEL_GENERATORS[selectedPanelType](state, dispatch, selectedPanelKey);
@@ -68,13 +79,8 @@ var tabs = function(state) {
 }
 
 var contentCategoryTabs = function(state) {
-  var contentCategories = state.app.contentCategories;
-  var contentItems = state.app.contentItems;
-  var specializationId = state.ui.specializationId;
-  var divisionIds = state.app.currentUser.divisionIds;
-
   return _.values(
-    findActiveContentCategories(contentCategories, contentItems, specializationId, divisionIds)
+    findActiveContentCategories(state)
   ).map((category) => {
     return { key: generatePanelKey("contentCategories", category.id), label: category.name };
   });
@@ -105,97 +111,77 @@ var PANEL_GENERATORS = {
     };
   }
 }
-
-
-var filterReferentsInSteps = function(referents: Array, panelTypeKey: string, filterValues: Object, config: Object) {
+var opaqueFiltered = function(referents: Array, panelTypeKey: string, filterValues: Object, config: Object) {
   var operativeOpaqueFilters = _.values(_.pick(Filters, PANEL_TYPE_OPAQUE_FILTERS[panelTypeKey])).filter(
     function(predicate: Object): boolean {
       return  predicate.isActivated(filterValues);
     }
   );
 
-  var specializationFilter = function(record){
-    return _.includes(record.specializationIds, config.specializationId);
-  }
-  var cityFilter = function(record){
-    return record.cityIds.some((id) => filterValues.cities[id]);
-  }
-  var withOpaqueFilters = referents.filter((row) => {
+  return referents.filter((row) => {
     return _.every(
       operativeOpaqueFilters,
       (filter) => filter.predicate(row, filterValues, config.userIsAdmin)
     );
   });
-  var withoutSpecializationFilter = withOpaqueFilters.filter(cityFilter);
-  var withoutCityFilter = withOpaqueFilters.filter(specializationFilter)
-  var withAllFilters = withOpaqueFilters
-    .filter(specializationFilter)
-    .filter(cityFilter)
+};
 
+var filterByPageType = function(records, state) {
   return {
-    withAllFilters: withAllFilters,
-    withoutSpecializationFilter: withoutSpecializationFilter,
-    withoutCityFilter: withoutCityFilter
-  };
-}
+    specialization() {
+      return records.filter((record) => {
+        return _.includes(record.specializationIds, state.ui.specializationId);
+      });
+    },
+    procedure() {
+      return records.filter((record) => {
+        return (_.includes(record.procedureIds, state.ui.procedureId));
+      });
+    },
+  }[state.ui.pageType]();
+};
 
-var computeReferentConfig = function(filtered, filterValues) {
-  if ((filtered.withAllFilters.length > 0) &&
-    (_.values(_.pick(filterValues.procedures, _.identity)).length > 0) &&
-    (filtered.withoutSpecializationFilter.length > filtered.withAllFilters.length) &&
-    (filterValues.specializationFilterActivated)) {
-    return {
-      finalSet: filtered.withAllFilters,
-      shouldShowSpecializationFilter: true,
-      shouldShowCityFilterMessage: false,
-      includingOtherSpecializations: false
-    };
-  } else if ((filtered.withAllFilters.length > 0) &&
-    (_.values(_.pick(filterValues.procedures, _.identity)).length > 0) &&
-    (filtered.withoutSpecializationFilter.length > filtered.withAllFilters.length) &&
-    (!filterValues.specializationFilterActivated)) {
-    return {
-      finalSet: filtered.withoutSpecializationFilter,
-      shouldShowSpecializationFilter: true,
-      shouldShowCityFilterMessage: false,
-      includingOtherSpecializations: true
-    };
-  } else if (filtered.withAllFilters.length > 0) {
-    return {
-      finalSet: filtered.withAllFilters,
-      shouldShowSpecializationFilter: false,
-      shouldShowCityFilterMessage: false,
-      includingOtherSpecializations: false
-    };
-  } else if (filtered.withoutSpecializationFilter.length > 0 && filterValues.specializationFilterActivated){
-    return {
-      finalSet: filtered.withAllFilters,
-      shouldShowSpecializationFilter: true,
-      shouldShowCityFilterMessage: false,
-      includingOtherSpecializations: false
-    };
-  } else if (filtered.withoutSpecializationFilter.length > 0 && !filterValues.specializationFilterActivated){
-    return {
-      finalSet: filtered.withoutSpecializationFilter,
-      shouldShowSpecializationFilter: true,
-      shouldShowCityFilterMessage: false,
-      includingOtherSpecializations: true
-    };
-  } else if (filtered.withoutCityFilter.length > 0){
-    return {
-      finalSet: filtered.withAllFilters,
-      shouldShowSpecializationFilter: false,
-      shouldShowCityFilterMessage: true,
-      includingOtherSpecializations: false
-    };
-  } else {
-    return {
-      finalSet: filtered.withAllFilters,
-      shouldShowSpecializationFilter: false,
-      shouldShowCityFilterMessage: false,
-      includingOtherSpecializations: false
-    };
+var filterByCities = function(set, filterValues){
+  return set.filter((record) => {
+    return record.cityIds.some((id) => filterValues.cities[id]);
+  });
+};
+
+var finalSet = function(filtered, filterValues, pageType, filterValueOverrides) {
+  if (shouldIncludeOtherSpecializations(filtered, filterValues, pageType, filterValueOverrides) && pageType === "specialization"){
+    return filtered.withoutPageTypeFilter;
   }
+  else {
+    return filtered.withAllFilters;
+  }
+};
+
+var shouldIncludeOtherSpecializations = function(filtered, filterValues, pageType, filterValueOverrides) {
+  return (pageType !== "specialization" ||
+    (shouldShowSpecializationFilter(filtered, filterValues, pageType, filterValueOverrides) &&
+      !filterValues.specializationFilterActivated));
+};
+
+var shouldShowCityFilterMessage = function(filtered, filterValues, pageType) {
+  return (filtered.withAllFilters.length === 0 &&
+    ((pageType !== "specialization") ||
+      (filtered.withoutPageTypeFilter.length === 0)) &&
+      (filtered.withoutCityFilter.length > 0));
+};
+
+var shouldShowSpecializationFilter = function(filtered, filterValues, pageType, filterValueOverrides) {
+  return ((pageType === "specialization") &&
+    ((
+      (filtered.withAllFilters.length > 0) &&
+      (_.values(_.pick(filterValues.procedures, _.identity)).length > 0) &&
+      (filtered.withoutPageTypeFilter.length > filtered.withAllFilters.length)
+    ) ||
+    (
+      (filtered.withAllFilters.length === 0) &&
+      (filtered.withoutPageTypeFilter.length > 0) &&
+      (anyFiltersActivated(filterValueOverrides))
+    ))
+  );
 };
 
 var PANEL_PROPS_GENERATORS = {
@@ -206,9 +192,20 @@ var PANEL_PROPS_GENERATORS = {
     return this.referents(state, dispatch, "clinics");
   },
   referents: function(state, dispatch, panelTypeKey) {
-    var maskingSet = _.values(state.app[panelTypeKey]).filter((record) => {
-      return _.includes(record.specializationIds, state.ui.specializationId);
-    })
+    // what are the records we're using to mask filters?
+    var maskingSet = {
+      specialization: function() {
+        return _.values(state.app[panelTypeKey]).filter((record) => {
+          return _.includes(record.specializationIds, state.ui.specializationId);
+        });
+      },
+      procedure: function() {
+        return _.values(state.app[panelTypeKey]).filter((record) => {
+          return _.includes(record.procedureIds, state.ui.procedureId);
+        });
+      }
+    }[state.ui.pageType]();
+
     var sortConfig = referentSortConfig(state, { panelTypeKey: panelTypeKey });
     var filterValues = generateFilterValuesForPanel(
       state,
@@ -218,28 +215,40 @@ var PANEL_PROPS_GENERATORS = {
         panelTypeKey: panelTypeKey
       }
     );
-
-    var filtered = filterReferentsInSteps(
+    var _filterValueOverrides = _.get(state, ["ui", "panels", panelTypeKey, "filterValues"], {});
+    var _opaqueFiltered = opaqueFiltered(
       _.values(state.app[panelTypeKey]),
       panelTypeKey,
       filterValues,
-      {
-        userIsAdmin: state.app.currentUser.isAdmin,
-        specializationId: state.ui.specializationId
-      }
+      { userIsAdmin: state.app.currentUser.isAdmin }
     );
-    var config = computeReferentConfig(filtered, filterValues);
+    var filtered = {
+      withAllFilters: utils.from(
+        _.partialRight(filterByPageType, state),
+        _.partialRight(filterByCities, filterValues),
+        _opaqueFiltered
+      ),
+      withoutPageTypeFilter: filterByCities(_opaqueFiltered, filterValues),
+      withoutCityFilter: filterByPageType(_opaqueFiltered, state)
+    };
+
     var bodyRowConfig = {
       panelTypeKey: panelTypeKey,
-      panelKey: panelTypeKey,
+      panelKey: state.ui.panelTypeKey,
       rowGenerator: "referents",
       rowGeneratorConfig: {
-        includingOtherSpecialties: config.includingOtherSpecializations
+        includingOtherSpecialties: shouldIncludeOtherSpecializations(filtered, filterValues, state.ui.pageType, _filterValueOverrides)
       }
     };
-    var bodyRows = generateBodyRows(state, config.finalSet, bodyRowConfig, dispatch, sortConfig);
+    var bodyRows = generateBodyRows(
+      state,
+      finalSet(filtered, filterValues, state.ui.pageType, _filterValueOverrides),
+      bodyRowConfig,
+      dispatch,
+      sortConfig
+    );
     var memberName = {
-      specialists: state.app.specializations[state.ui.specializationId].memberName,
+      specialists: (state.ui.pageType == "specialization" ? state.app.specializations[state.ui.specializationId].memberName : "Specialist"),
       clinics: "Clinic"
     }[panelTypeKey];
     var genericMembersName = {
@@ -247,7 +256,7 @@ var PANEL_PROPS_GENERATORS = {
       clinics: "Clinics"
     }[panelTypeKey];
     var membersName = {
-      specialists: state.app.specializations[state.ui.specializationId].membersName,
+      specialists: (state.ui.pageType == "specialization" ? state.app.specializations[state.ui.specializationId].membersName : "Specialists"),
       clinics: "Clinics"
     }[panelTypeKey];
     var resultSummaryText = generateResultSummary({
@@ -255,12 +264,12 @@ var PANEL_PROPS_GENERATORS = {
       bodyRows: bodyRows,
       labelName: genericMembersName,
       panelTypeKey: panelTypeKey,
-      referralCities: state.app.currentUser.referralCities[state.ui.specializationId],
+      referralCities: referralCities(state),
       filterValues: filterValues,
       availableFilters: PANEL_TYPE_SUMMARY_FILTERS[panelTypeKey]
     });
     var specializationRemainderCount =
-      filtered.withoutSpecializationFilter.length - filtered.withAllFilters.length;
+      filtered.withoutPageTypeFilter.length - filtered.withAllFilters.length;
     var availableFromOtherCities = _.difference(
       filtered.withoutCityFilter,
       filtered.withAllFilters
@@ -272,22 +281,23 @@ var PANEL_PROPS_GENERATORS = {
       // TODO name this 'tableHeadings'
       headings: TABLE_HEADINGS_GENERATORS.referents(
         memberName,
-        config.includingOtherSpecializations
+        shouldIncludeOtherSpecializations(filtered, filterValues, state.ui.pageType, _filterValueOverrides)
       ),
       bodyRows: bodyRows,
       resultSummary: {
         anyResults: (bodyRows.length > 0),
         isVisible: (resultSummaryText.length > 1),
-        text: resultSummaryText
+        text: resultSummaryText,
+        showClearButton: anyFiltersActivated(_filterValueOverrides)
       },
       cityFilterPills: {
-        shouldDisplay: config.shouldShowCityFilterMessage,
+        shouldDisplay: shouldShowCityFilterMessage(filtered, filterValues, state.ui.pageType),
         availableFromOtherCities: availableFromOtherCities,
         cityFilterValues: filterValues.cities,
         cities: state.app.cities
       },
       specializationFilterMessage: {
-        shouldDisplay: config.shouldShowSpecializationFilter,
+        shouldDisplay: shouldShowSpecializationFilter(filtered, filterValues, state.ui.pageType, _filterValueOverrides),
         remainderCount: specializationRemainderCount,
         dispatch: dispatch,
         collectionName: genericMembersName,
@@ -314,12 +324,8 @@ var PANEL_PROPS_GENERATORS = {
   },
   contentCategories: {
     FilterTable: function(state: Object, panelKey: string, category: Object, dispatch: Function) {
-      var maskingSet = itemsForContentCategory(
-        state.ui.specializationId,
-        state.app.currentUser.divisionIds,
-        category,
-        _.values(state.app.contentItems)
-      );
+      var forCategory = itemsForContentCategory(category.id, state, state.app.currentUser.divisionIds);
+      var maskingSet = forCategory;
       var bodyRowConfig = {
         panelKey: panelKey,
         panelTypeKey: "contentCategories",
@@ -337,13 +343,6 @@ var PANEL_PROPS_GENERATORS = {
           panelTypeKey: "contentCategories"
         }
       );
-
-      var forCategory = itemsForContentCategory(
-        state.ui.specializationId,
-        state.app.currentUser.divisionIds,
-        category,
-        _.values(state.app.contentItems)
-      )
       var filtered = filterResources(forCategory, filterValues, state.app.currentUser.isAdmin)
       var bodyRows = generateBodyRows(state, filtered, bodyRowConfig, dispatch, sortConfig);
       var resultSummaryText = generateResultSummary({
@@ -351,7 +350,7 @@ var PANEL_PROPS_GENERATORS = {
         bodyRows: bodyRows,
         labelName: category.name.toLowerCase(),
         panelTypeKey: "contentCategories",
-        referralCities: state.app.currentUser.referralCities[state.ui.specializationId],
+        referralCities: referralCities(state),
         filterValues: filterValues,
         availableFilters: PANEL_TYPE_SUMMARY_FILTERS["contentCategories"]
       });
@@ -363,7 +362,8 @@ var PANEL_PROPS_GENERATORS = {
         resultSummary: {
           anyResults: (bodyRows.length > 0),
           isVisible: (resultSummaryText.length > 1),
-          text: resultSummaryText
+          text: resultSummaryText,
+          showClearButton: true
         },
         cityFilterPills: {
           shouldDisplay: false
@@ -386,29 +386,32 @@ var PANEL_PROPS_GENERATORS = {
               panelKey: panelKey
             }
           )
-        }
+        },
+        arbitraryPageFooter: <AllSpecialtiesCategoryLink category={category}/>
       };
     },
     InlineArticles: function(state: Object, panelKey: string, category: Object, dispatch: Function) {
-      var records = itemsForContentCategory(
-        state.ui.specializationId,
-        state.app.currentUser.divisionIds,
-        category,
-        _.values(state.app.contentItems)
-      );
+      var records = itemsForContentCategory(category.id, state, state.app.currentUser.divisionIds);
 
       return {
         panelKey: panelKey,
         records: records,
-        categoryLink: {
-          link: ("/content_categories/" + category.id),
-          text: ("Browse " + category.name + " content from all specialties")
-        },
+        categoryLink: <AllSpecialtiesCategoryLink category={category}/>,
         favorites: state.app.currentUser.favorites
       };
     }
   }
 }
+
+const AllSpecialtiesCategoryLink = (props) => (
+  <div>
+    <hr/>
+    <CategoryLink
+      link={`/content_categories/${props.category.id}`}
+      text={`Browse ${props.category.name} content from all specialties`}
+    />
+  </div>
+)
 
 var filterResources = function(rows, filterValues, userIsAdmin) {
   var operativeOpaqueFilters = _.values(_.pick(Filters, PANEL_TYPE_OPAQUE_FILTERS["contentCategories"])).filter(
@@ -426,13 +429,22 @@ var filterResources = function(rows, filterValues, userIsAdmin) {
 }
 
 var assumedListProps = function(state: Object, panelTypeKey: string, membersName: string): Object {
-  var list = labeledAssumedList(state.app.nestedProcedureIds, state.app.procedures, panelTypeKey);
+  if(state.ui.pageType === "specialization") {
+    var list = labeledAssumedList(
+      state.app.specializations[state.ui.specializationId].nestedProcedureIds,
+      state.app.procedures,
+      panelTypeKey
+    );
 
-  return {
-    shouldDisplay: list.length > 0,
-    list: list,
-    membersName: (panelTypeKey === "specialists" ? membersName : `${state.app.specializations[state.ui.specializationId].name} Clinics`)
-  };
+    return {
+      shouldDisplay: list.length > 0,
+      list: list,
+      membersName: (panelTypeKey === "specialists" ? membersName : `${state.app.specializations[state.ui.specializationId].name} Clinics`)
+    };
+  }
+  else {
+    return { shouldDisplay: false };
+  }
 }
 
 var labeledAssumedList = function(nestedProcedures: Object, normalizedProcedures: Object, collectionName: string): Array {
@@ -454,7 +466,7 @@ var createAssumedList = function(nestedProcedures: Object, collectionName: strin
 
 var generateBodyRows = function(state: Object, filtered: Array, config: Object, dispatch: Function, sortConfig: Object): Array {
   var unsorted = filtered.map((row) => {
-    return RowGenerators[config.rowGenerator](row, state.app, dispatch, config.rowGeneratorConfig);
+    return RowGenerators[config.rowGenerator](state.app, dispatch, config.rowGeneratorConfig, row);
   });
 
   return _.sortByOrder(
@@ -478,6 +490,7 @@ var PANEL_TYPE_OPAQUE_FILTERS = {
     "languages",
     "clinicAssociations",
     "hospitalAssociations",
+    "status",
   ],
   clinics: [
     "procedures",
@@ -486,7 +499,8 @@ var PANEL_TYPE_OPAQUE_FILTERS = {
     "public",
     "private",
     "wheelchairAccessible",
-    "careProviders"
+    "careProviders",
+    "status"
   ],
   contentCategories: [
     "subcategories"
@@ -514,12 +528,8 @@ var generateFilterValuesForPanel = function(state, maskingSet, config) {
 
 var generateFilterGroups = function(maskingSet, state, config) {
   return PANEL_TYPE_FILTER_GROUPS[config.panelTypeKey].map((groupKey) => {
-    if (FILTER_GROUP_GENERATORS[groupKey]) {
-      return FILTER_GROUP_GENERATORS[groupKey](config.panelKey, maskingSet, state);
-    } else {
-      return {};
-    }
-  })
+    return FILTER_GROUP_GENERATORS[groupKey](config.panelKey, maskingSet, state);
+  });
 }
 
 var generateSortConfig = function(state, functionConfig) {
@@ -543,54 +553,15 @@ var referentSortConfig = function(state, config) {
   );
 };
 
-var TABLE_HEADINGS_GENERATORS = {
-  contentCategories: function() {
-    return [
-      { label: "Title", key: "TITLE" },
-      { label: "Category", key: "SUBCATEGORY" },
-      { label: "", key: "FAVOURITE" },
-      { label: "", key: "EMAIL_TO_PATIENT" },
-      { label: "", key: "PROVIDE_FEEDBACK" }
-    ];
-  },
-  referents: function(labelName, includingOtherSpecializations) {
-    if (includingOtherSpecializations) {
-      return [
-        { label: labelName, key: "NAME", className: "specialization_table__th--name" },
-        { label: "Specialties", key: "SPECIALTIES", className: "specialization_table__th--specialties" },
-        { label: "Accepting New Referrals?", key: "REFERRALS", className: "specialization_table__th--referrals" },
-        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME", className: "specialization_table__th--waittime" },
-        { label: "City", key: "CITY", className: "specialization_table__th--city" }
-      ];
-    } else {
-      return [
-        { label: labelName, key: "NAME", className: "specialization_table__th--name" },
-        { label: "Accepting New Referrals?", key: "REFERRALS", className: "specialization_table__th--referrals" },
-        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME", className: "specialization_table__th--waittime" },
-        { label: "City", key: "CITY", className: "specialization_table__th--city" }
-      ];
-    }
-  }
-}
 
-var itemsForContentCategory = function(specializationId, divisionIds, category, contentItems) {
-  return _.filter(
-    contentItems,
-    (contentItem) => {
-      return (contentItem.specializationIds.indexOf(specializationId) > -1 &&
-        _.intersection(contentItem.availableToDivisionIds, divisionIds).length > 0 &&
-        category.subtreeIds.indexOf(contentItem.categoryId) > -1);
-    }
-  );
-};
 
-var findActiveContentCategories = function(contentCategories, contentItems, specializationId, divisionIds) {
+var findActiveContentCategories = function(state) {
   return _.filter(
-    contentCategories,
+    state.app.contentCategories,
     (category) => {
       return ([1, 3, 4, 5].indexOf(category.displayMask) > -1 &&
         category.ancestry == null &&
-        _.keys(itemsForContentCategory(specializationId, divisionIds, category, contentItems)).length > 0);
+        _.keys(itemsForContentCategory(category.id, state, state.app.currentUser.divisionIds)).length > 0);
     }
   );
 };

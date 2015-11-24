@@ -30,6 +30,8 @@ module CustomPathHelper
         parent_type: object.referrable_type,
         parent_id: object.referrable_id
       )
+    elsif object.is_a?(SecretToken)
+      ""
     else
       duck_path(object)
     end

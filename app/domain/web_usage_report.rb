@@ -1,5 +1,5 @@
 class WebUsageReport
-  include ServiceObject.exec_with_args(:month_key, :division_id, :record_type)
+  include ServiceObjectModule.exec_with_args(:month_key, :division_id, :record_type)
   include ActionView::Helpers::UrlHelper
 
   def exec

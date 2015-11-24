@@ -61,7 +61,7 @@ module.exports = React.createClass({
     contentComponentProps: React.PropTypes.object,
     isLoading: React.PropTypes.bool
   },
-  renderChildren: function(props) {
+  renderContents: function(props) {
     return(
       <div className="content-wrapper">
         <SidebarLayout
@@ -91,7 +91,7 @@ module.exports = React.createClass({
     return(
       <LoadingContainer
         isLoading={this.props.isLoading}
-        renderChildren={this.renderChildren.bind(null, this.props)}
+        renderContents={this.renderContents.bind(null, this.props)}
       />
     );
   }

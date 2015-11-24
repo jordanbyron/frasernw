@@ -1,7 +1,9 @@
 var React = require("react");
+var ReactDOM = require("react-dom");
 var Redux = require("redux");
 var Provider = require("react-redux").Provider;
 var connect = require("react-redux").connect;
+var _ = require("lodash");
 var mapStateToProps = function(state) { return state; };
 var mapDispatchToProps = function(dispatch) { return { dispatch: dispatch }; };
 var getTopLevelProps = function(store, mapStateToProps, mapDispatchToProps, mergeProps) {
@@ -9,19 +11,9 @@ var getTopLevelProps = function(store, mapStateToProps, mapDispatchToProps, merg
     mapStateToProps(store.getState()),
     mapDispatchToProps(store.dispatch)
   );
-}
-
-var TopLevelComponents = {
-  SpecializationPage: require("./react_components/specialization_page"),
-  ReferentsBySpecialty: require("./react_components/referents_by_specialty"),
-  UsageReport: require("./react_components/usage_report")
 };
+
 var generateReducer = require("./reducers/top_level");
-var StateMappers = {
-  SpecializationPage: require("./state_mappers/specialization_page"),
-  ReferentsBySpecialty: require("./state_mappers/referents_by_specialty"),
-  UsageReport: require("./state_mappers/usage_report")
-}
 
 module.exports = function(config, initData) {
   $("document").ready(function() {
@@ -30,8 +22,14 @@ module.exports = function(config, initData) {
     var reducer = generateReducer(config.uiReducer);
     var store = Redux.createStore(reducer);
     var rootElement = $(config.domElementSelector)[0];
-    var Component = TopLevelComponents[config.topLevelComponent];
-    var mergeProps = StateMappers[config.stateMapper];
+    var Component = require(`./react_components/${_.snakeCase(config.topLevelComponent)}`);
+    var mergeProps = function(stateProps, dispatchProps) {
+      return require(`./state_mappers/${_.snakeCase(config.stateMapper)}`)(
+        stateProps,
+        dispatchProps.dispatch,
+        config.mapperConfig
+      );
+    }
 
     var ConnectedComponent = connect(
       mapStateToProps,
@@ -40,9 +38,9 @@ module.exports = function(config, initData) {
     )(Component);
 
     // render the component
-    React.render(
+    ReactDOM.render(
       <Provider store={store}>
-        {function() { return <ConnectedComponent />;} }
+        <ConnectedComponent />
       </Provider>,
       rootElement
     );

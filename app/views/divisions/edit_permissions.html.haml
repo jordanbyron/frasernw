@@ -1,0 +1,13 @@
+- set_page_specific_title "Bulk Edit Permissions"
+
+.content-wrapper
+
+  %h2= "Bulk Edit #{@permission_type_label} - #{@division.name}"
+
+  = form_tag update_permissions_division_path(@division), method: :put do
+    = hidden_field_tag :permission_type, @permission_type
+
+    = select_tag :admin_id, options_for_select(@dropdown_options, 0)
+
+    %div
+      = submit_tag "Submit", class: "btn btn-default"

@@ -20,6 +20,8 @@ Frasernw::Application.routes.draw do
     resources :clinics
   end
 
+  resources :secret_tokens, only: [:create, :destroy]
+
   resources :clinics do
     member do
       get :review
@@ -74,6 +76,10 @@ Frasernw::Application.routes.draw do
   resources :healthcare_providers
   resources :divisions do
     resources :users
+    member do
+      get :edit_permissions
+      put :update_permissions
+    end
   end
 
   resources :notes, only: [:create, :destroy]

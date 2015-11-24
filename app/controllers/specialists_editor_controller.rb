@@ -20,7 +20,7 @@ class SpecialistsEditorController < ApplicationController
     @specializations_clinics, @specializations_clinic_locations =
       GenerateClinicLocationInputs.exec(@specialist.specializations, :visible?)
 
-    @capacities = GenerateSpecialistCapacityInputs.exec(
+    @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
       @specialist,
       @specialist.specializations
     )
@@ -43,7 +43,7 @@ class SpecialistsEditorController < ApplicationController
     review_item.item_id = @specialist.id
     review_item.base_object = params.delete(:pre_edit_form_data)
     review_item.object = ActiveSupport::JSON::encode(params)
-    review_item.whodunnit = current_user.id if current_user.present?
+    review_item.set_edit_source!(current_user, params[:secret_token_id])
     review_item.status = params[:no_updates] ? ReviewItem::STATUS_NO_UPDATES: ReviewItem::STATUS_UPDATES
     review_item.save
 
@@ -65,7 +65,9 @@ class SpecialistsEditorController < ApplicationController
 
   def check_pending
     specialist = Specialist.find(params[:id])
-    redirect_to specialist_self_pending_path(specialist) if specialist.review_item.present? && (!current_user || (specialist.review_item.whodunnit != current_user.id.to_s))
+    if specialist.review_item.present? && (!current_user || (specialist.review_item.editor != current_user))
+      redirect_to specialist_self_pending_path(specialist)
+    end
   end
 
   def check_token

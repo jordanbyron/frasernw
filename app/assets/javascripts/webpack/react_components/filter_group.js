@@ -14,7 +14,9 @@ var FILTER_GROUPS = {
   divisions: require("./filter_groups/divisions"),
   recordTypes: require("./filter_groups/record_types"),
   reportView: require("./filter_groups/report_view"),
-  months: require("./filter_groups/months")
+  months: require("./filter_groups/months"),
+  specializations: require("./filter_groups/specializations"),
+  subcategoriesRadioButtons: require("./filter_groups/subcategories_radio_buttons")
 }
 
 var FilterGroup = React.createClass({
@@ -36,24 +38,29 @@ var FilterGroup = React.createClass({
     }
   },
   render: function() {
-    return(
-      <ToggleBox
-        title={this.props.title}
-        open={this.props.isOpen}
-        handleToggle={this.toggleFilterGroupVisibility(this.props.dispatch, this.props.componentKey)}
-      >
-        {
-          React.createElement(
-            FILTER_GROUPS[this.props.componentKey],
-            {
-              filters: this.props.filters,
-              dispatch: this.props.dispatch,
-              isExpanded: this.props.isExpanded
-            }
-          )
-        }
-      </ToggleBox>
-    );
+    if(this.props.shouldDisplay === false) {
+      return null;
+    }
+    else {
+      return(
+        <ToggleBox
+          title={this.props.title}
+          open={this.props.isOpen}
+          handleToggle={this.toggleFilterGroupVisibility(this.props.dispatch, this.props.componentKey)}
+        >
+          {
+            React.createElement(
+              FILTER_GROUPS[this.props.componentKey],
+              {
+                filters: this.props.filters,
+                dispatch: this.props.dispatch,
+                isExpanded: this.props.isExpanded
+              }
+            )
+          }
+        </ToggleBox>
+      );
+    }
   }
 })
 module.exports = FilterGroup;

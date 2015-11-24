@@ -1,5 +1,28 @@
-if Rails.env.production?
-  class Rack::Attack
+class Rack::Attack
+  whitelist('allow all cloudflare IPs') do |req|
+    # Requests are allowed if the return value is truthy
+    # They don't hit the throttles or filters at all
+    [
+      "199.27.128.0",
+      "173.245.48.0",
+      "103.21.244.0",
+      "103.22.200.0",
+      "103.31.4.0",
+      "141.101.64.0",
+      "108.162.192.0",
+      "190.93.240.0",
+      "188.114.96.0",
+      "197.234.240.0",
+      "198.41.128.0",
+      "162.158.0.0",
+      "104.16.0.0",
+      "172.64.0.0"
+    ].include?(req.ip)
+  end
+
+  whitelist("localhost") do |req|
+    req.ip == '127.0.0.1'
+  end
 
     ### Configure Cache ###
 
@@ -22,12 +45,17 @@ if Rails.env.production?
     # counted by rack-attack and this throttle may be activated too
     # quickly. If so, enable the condition to exclude them from tracking.
 
-    # Throttle all requests by IP (60rpm)
-    #
-    # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.ip}"
-    throttle('req/ip', :limit => 300, :period => 5.minutes) do |req|
-      req.ip # unless req.path.starts_with?('/assets')
+  # Throttle all requests by IP (60rpm)
+  #
+  # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.ip}"
+  ALLOWED_ASSET_PATHS = ["/asset-files", "/img", "/fonts"]
+  throttle('req/ip', :limit => 300, :period => 5.minutes) do |req|
+    if ALLOWED_ASSET_PATHS.any?{|allowed_path| req.path.starts_with?(allowed_path) }
+      false
+    else
+      req.ip
     end
+  end
 
     ### Prevent Brute-Force Login Attacks ###
 

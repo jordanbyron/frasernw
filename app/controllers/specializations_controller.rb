@@ -12,12 +12,16 @@ class SpecializationsController < ApplicationController
   end
 
   def show
+    @layout_heartbeat_loader = false
     @specialization = Specialization.find(params[:id])
-    @init_data = GenerateSpecializationPage.exec(
-      specialization_id: params[:id].to_i,
-      current_user: current_user
-    )
-    @automatically_remove_heartbeat = false
+    @init_data = {
+      app: FilterTableAppState.exec(current_user: current_user),
+      ui: {
+        pageType: "specialization",
+        specializationId: @specialization.id,
+        hasBeenInitialized: false
+      }
+    }
   end
 
   def new

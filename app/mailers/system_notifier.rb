@@ -1,5 +1,4 @@
 module SystemNotifier
-
   # convenience wrappers for #notify
   def self.notice(subject)
     notify(

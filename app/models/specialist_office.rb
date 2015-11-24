@@ -1,4 +1,6 @@
 class SpecialistOffice < ActiveRecord::Base
+  include Sectorable
+
   attr_accessible :phone, :phone_extension, :fax, :direct_phone, :direct_phone_extension, :sector_mask, :public_email, :email, :open_saturday, :open_sunday, :office_id, :office_attributes, :phone_schedule_attributes, :url, :location_opened
 
   belongs_to :specialist, touch: true
@@ -82,21 +84,12 @@ class SpecialistOffice < ActiveRecord::Base
     return ""
   end
 
-  SECTOR_HASH = {
-    1 => "Public (MSP billed)",
-    2 => "Private (Patient pays)",
-    3 => "Public and Private",
-    4 => "Didn't answer",
-  }
+  def show_sector_info?
+    # because 'public' used to be default
 
-  def sector
-    SpecialistOffice::SECTOR_HASH[sector_mask]
+    sector_info_available? && !public?
   end
 
-  def sector?
-    #we assume public for specialists
-    sector_mask != 1 && sector_mask != 4
-  end
 
   def city
     o = office

@@ -51,7 +51,7 @@ class ClinicsController < ApplicationController
     @clinic_specialists = @specialization.specialists.collect do |s|
       [s.name, s.id]
     end
-    @focuses = GenerateClinicFocusInputs.exec(nil, [@specialization])
+    @specializations_focuses = GenerateClinicFocusInputs.exec(nil, [@specialization])
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -100,7 +100,7 @@ class ClinicsController < ApplicationController
       puts "locations #{@clinic.locations.length}"
     end
     @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
-    @focuses = GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
+    @specializations_focuses = GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -150,10 +150,11 @@ class ClinicsController < ApplicationController
       end
 
       @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
-      @focuses = GenerateClinicFocusInputs.exec(
+      @specializations_focuses = GenerateClinicFocusInputs.exec(
         @clinic,
         @clinic.specializations
       )
+      @secret_token_id = @clinic.review_item.decoded_review_object["clinic"]["secret_token_id"]
 
       render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
@@ -183,10 +184,11 @@ class ClinicsController < ApplicationController
         l.build_address
       end
       @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
-      @focuses = GenerateClinicFocusInputs.exec(
+      @specializations_focuses = GenerateClinicFocusInputs.exec(
         @clinic,
         @clinic.specializations
       )
+      @secret_token_id = @review_item.decoded_review_object["clinic"]["secret_token_id"]
       render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
@@ -210,7 +212,7 @@ class ClinicsController < ApplicationController
     parsed_params = ParamParser::Clinic.new(params).exec
     if @clinic.update_attributes(parsed_params[:clinic])
       UpdateClinicFocuses.exec(@clinic, parsed_params)
-
+      @clinic.reload.versions.last.update_attributes(review_item_id: review_item.id)
       @clinic.save
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else

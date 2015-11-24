@@ -192,7 +192,7 @@
                       - if located_in.location.present? && located_in.location.in_hospital?
                         - hopsital = located_in.location.hospital_in
                         = "which is in #{link_to hopsital.name, hospital_path(hopsital), :class => 'ajax'}".html_safe
-                      = "(#{specialist_office.sector})" if specialist_office.sector?
+                      = "(#{specialist_office.sector})" if specialist_office.show_sector_info?
                       - if num_specialists > 1
                         with
                         %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), :class => 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
@@ -206,7 +206,7 @@
                       - if located_in.location.present? && located_in.location.in_hospital?
                         - hopsital = located_in.location.hospital_in
                         = "which is in #{link_to hopsital.name, hospital_path(hopsital), :class => 'ajax'}".html_safe
-                      = "(#{specialist_office.sector})" if specialist_office.sector?
+                      = "(#{specialist_office.sector})" if specialist_office.show_sector_info?
                       - if num_specialists > 1
                         with
                         %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), :class => 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
@@ -215,7 +215,7 @@
                   - elsif address.present?
                     %p
                       = link_to address.address, address.map_url, :target => "_blank"
-                      = "(#{specialist_office.sector})" if specialist_office.sector?
+                      = "(#{specialist_office.sector})" if specialist_office.show_sector_info?
                       - if num_specialists > 1
                         with
                         %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), :class => 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
@@ -543,11 +543,20 @@
 
   - if current_user_is_admin?
     #share.collapse
-      %p
-        .alert.alert-info
-          %h3 Secret edit link
-          %p Anyone can edit this specialist if they have the following secret address:
-          %p= specialist_self_edit_path(@specialist, @specialist.token, :only_path => false)
+
+    :javascript
+      window.pathways.attachSecretEditLinks({
+        containerId: "share",
+        props: {
+          addLink: '#{secret_tokens_path}',
+          accessibleId: #{@specialist.id},
+          accessibleType: "Specialist",
+          currentUserName: "#{@current_user.name}",
+          links: #{@specialist.valid_secret_edit_links(base_url, current_user).to_json},
+          canEdit: #{can?(:edit, @specialist)},
+          modal: { isVisible: false }
+        }
+      })
 
   - if current_user_is_admin? && !current_user_is_super_admin? # only normal admins
     .alert.alert-info{style: "margin-top: 10px"}

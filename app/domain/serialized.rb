@@ -34,6 +34,7 @@ module Serialized
             title: item.title,
             categoryId: item.sc_category.id,
             categoryIds: [ item.sc_category, item.sc_category.ancestors ].flatten.map(&:id),
+            procedureIds: item.procedure_specializations.map(&:subtree).flatten.uniq.map(&:procedure_id),
             content: (item.markdown_content.present? ? BlueCloth.new(item.markdown_content).to_html : ""),
             resolvedUrl: item.resolved_url,
             canEmail: item.can_email?,
@@ -54,7 +55,6 @@ module Serialized
             name: specialist.name,
             firstName: specialist.firstname,
             lastName: specialist.lastname,
-            statusIconClasses: specialist.status_class,
             statusClassKey: specialist.status_class_hash,
             divisionIds: specialist.divisions.map(&:id),
             waittime: masked_waittime(specialist),
@@ -109,8 +109,8 @@ module Serialized
           memo.merge(clinic.id => {
             id: clinic.id,
             name: clinic.name,
-            statusIconClasses: clinic.status_class,
             statusClassKey: clinic.status_class_hash,
+            statusMask: (clinic.status_mask || 0),
             waittime: masked_waittime(clinic),
             cityIds: clinic.cities.reject{ |city| city.hidden }.map(&:id),
             collectionName: "clinics",
@@ -124,7 +124,8 @@ module Serialized
             specializationIds: clinic.specializations.map(&:id),
             wheelchairAccessible: clinic.wheelchair_accessible?,
             customLagtimes: custom_lagtimes(clinic),
-            private: clinic.private?,
+            isPrivate: clinic.private?,
+            isPublic: clinic.public?,
             careProviderIds: clinic.healthcare_providers.map(&:id),
             isNew: clinic.new?,
             isInProgress: clinic.in_progress,
@@ -180,7 +181,10 @@ module Serialized
             sort{ |a,b| a.procedure.name <=> b.procedure.name }.
             map{ |ps| ps.procedure.name.uncapitalize_first_letter },
           memberName: specialization.member_name,
-          membersName: specialization.member_name.pluralize
+          membersName: specialization.member_name.pluralize,
+          nestedProcedureIds: Serialized.transform_nested_procedure_specializations(
+            specialization.procedure_specializations.includes(:procedure).arrange
+          )
         })
       end
     end,
@@ -217,16 +221,65 @@ module Serialized
       Procedure.all.inject({}) do |memo, procedure|
         memo.merge(procedure.id => {
           nameRelativeToParents: procedure.try(:name_relative_to_parents),
-          name: procedure.name
+          name: procedure.name,
+          specializationIds: procedure.specializations.map(&:id),
+          tree: {
+            procedure.id => {
+              focused: true,
+              assumed: {
+                clinics: false,
+                specialists: false
+              },
+              children: procedure.children.inject({}) do |memo, procedure|
+                memo.merge({
+                  procedure.id => {
+                    focused: true,
+                    assumed: {
+                      clinics: false,
+                      specialists: false
+                    }
+                  }
+                })
+              end
+            }
+          }
         })
       end
     end,
-    divisions: Proc.new do
-      Division.standard.all.inject({}) do |memo, division|
-        memo.merge(division.id => {
-          id: division.id,
-          name: division.name
-        })
+    divisions: Module.new do
+      def self.call
+        Division.standard.all.inject({}) do |memo, division|
+          memo.merge(division.id => {
+            id: division.id,
+            name: division.name,
+            referralCities: Specialization.all.inject({}) do |memo, specialization|
+              memo.merge(specialization.id => division.local_referral_cities(specialization).reject(&:hidden).map(&:id))
+            end,
+            openToSpecializationPanel: Specialization.all.inject({}) do |memo, specialization|
+              memo.merge(specialization.id => self.open_to_panel(specialization, division))
+            end
+          })
+        end
+      end
+
+      def self.open_to_panel(specialization, division)
+        specialization_option = specialization.
+          specialization_options.
+          to_a.
+          find do |option|
+            option.division_id == division.id
+          end
+
+        if specialization_option.open_to_sc_category?
+          {
+            type: "contentCategories",
+            id: specialization_option.open_to
+          }
+        else
+          {
+            type: specialization_option.open_to
+          }
+        end
       end
     end,
     referral_forms: Proc.new do
@@ -238,6 +291,54 @@ module Serialized
           referrableId: form.referrable_id
         })
       end
+    end,
+    respondsWithinOptions: Proc.new do
+      Clinic::LAGTIME_HASH.inject({}) do |memo, (key, value)|
+        memo.merge(key.to_i => value)
+      end.merge(0 => "Any timeframe")
+    end,
+    respondsWithinSummaryLabels: Proc.new do
+      Clinic::LAGTIME_HASH.inject({}) do |memo, (key, value)|
+        label = begin
+          if key == 1
+            "by phone when office calls for appointment"
+          elsif key == 2
+            "within one week"
+          else
+            "within #{value}"
+          end
+        end
+
+        memo.merge({key => label})
+      end
+    end,
+    news_items: Proc.new do
+      NewsItem.includes(:divisions).all.inject({}) do |memo, item|
+        memo.merge(item.id => {
+          id: item.id,
+          title: item.label,
+          type: item.type,
+          ownerDivisionId: item.owner_division_id,
+          divisionDisplayIds: item.divisions.map(&:id),
+          startDate: item.start_date,
+          endDate: item.end_date
+        })
+      end
     end
   }
+
+  def self.transform_nested_procedure_specializations(procedure_specializations)
+    procedure_specializations.inject({}) do |memo, (ps, children)|
+      memo.merge({
+        ps.procedure.id => {
+          focused: ps.focused?,
+          assumed: {
+            clinics: ps.assumed_clinic?,
+            specialists: ps.assumed_specialist?
+          },
+          children: transform_nested_procedure_specializations(children)
+        }
+      })
+    end
+  end
 end

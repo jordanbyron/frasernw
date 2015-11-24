@@ -21,19 +21,28 @@ module.exports = {
         .value()
     };
 
+    var nestedProcedureIds = {
+      specialization: function() { return state.app.specializations[state.ui.specializationId].nestedProcedureIds; },
+      procedure: function() { return state.app.procedures[state.ui.procedureId].tree[state.ui.procedureId].children; }
+    }[state.ui.pageType]();
     var procedureFilters = generateProcedureFilters(
-      state.app.nestedProcedureIds,
+      nestedProcedureIds,
       _.flatten(maskingSet.map((record) => record.procedureIds)),
       state.app.procedures,
       state
     )
+    var title = {
+      specialization: "Accepts referrals for",
+      procedure: "Sub-Areas of Practice"
+    }[state.ui.pageType];
 
     return {
       filters: {
         focusedProcedures: procedureFilters.filter((filter) => filter.focused),
         unfocusedProcedures: procedureFilters.filter((filter) => !filter.focused)
       },
-      title: "Accepts referrals for",
+      title: title,
+      shouldDisplay: _.any(procedureFilters),
       isOpen: _.get(state, ["ui", "panels", panelKey, "filterGroupVisibility", "procedures"], true),
       isExpanded: _.get(state, ["ui", "panels", panelKey, "filterExpansion", "procedures"], false),
       componentKey: "procedures"
@@ -188,7 +197,7 @@ module.exports = {
       filters: {
         public: { value: FILTER_VALUE_GENERATORS["public"](state, maskingSet, panelKey) },
         private: { value: FILTER_VALUE_GENERATORS["private"](state, maskingSet, panelKey) },
-        wheelchairAccessible: { value: FILTER_VALUE_GENERATORS["wheelchairAccessible"](state, maskingSet, panelKey) }
+        wheelchairAccessible: { value: FILTER_VALUE_GENERATORS["wheelchairAccessible"](state, maskingSet, panelKey) },
       },
       title: "Clinic Details",
       isOpen: _.get(state, ["ui", "panels", panelKey, "filterGroupVisibility", "clinicDetails"], false),

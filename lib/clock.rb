@@ -5,18 +5,23 @@ require 'clockwork'
 include Clockwork
 
   # Delete sessions older than every week
-  if ENV['APP_NAME'] == "pathwaysbctest" # production
-    # every(1.day, 'bundle exec rake backup_db', :at => '08:00',  :tz => 'UTC') {
-    #   `bundle exec rake backup_db`
-    # }
+  if ENV['APP_NAME'] == "pathwaysbc" # production
+    every(1.weeks, 'bundle exec rake deploy:backup', :at => 'Sunday 08:05',  :tz => 'UTC') {
+      `bundle exec rake deploy:backup`
+    }
 
     every(1.weeks, 'bundle exec rake pathways:delete_old_sessions', :at => 'Sunday 08:10',  :tz => 'UTC') {
       `bundle exec rake pathways:delete_old_sessions`
     }
 
-    # every(1.weeks, 'bundle exec rake backup_db', :at => 'Sunday 08:15',  :tz => 'UTC') {
-    #   `bundle exec rake backup_db`
-    # }
+    every(1.weeks, 'bundle exec rake deploy:backup', :at => 'Sunday 08:15',  :tz => 'UTC') {
+      `bundle exec rake deploy:backup`
+    }
+
+    every(1.weeks, 'bundle exec rake pathways:remove_deceased_specialist_records', :at => 'Sunday 08:20',  :tz => 'UTC') {
+      `bundle exec rake pathways:remove_deceased_specialist_records`
+    }
+
   end
 
   every(1.day, 'heroku restart', :at => '13:00',  :tz => 'UTC') {

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+dropdb pathways_development
+createdb -O rusl -T pathways_production pathways_development

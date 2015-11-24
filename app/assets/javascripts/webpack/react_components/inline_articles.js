@@ -3,6 +3,8 @@ var React = require("react");
 var FavoriteIcon = require("./icons/favorite");
 var FeedbackIcon = require("./icons/feedback");
 var SharedCareIcon = require("./icons/shared_care");
+var CategoryLink = require("react_components/category_link");
+var ArbitraryContent = require("react_components/arbitrary_content");
 
 module.exports = React.createClass({
   propTypes: {
@@ -42,9 +44,7 @@ module.exports = React.createClass({
             );
           })
         }
-        <hr/>
-        <i className='icon-arrow-right icon-blue' style={{marginRight: "5px"}}></i>
-        <a href={this.props.categoryLink.link}>{this.props.categoryLink.text}</a>
+        <ArbitraryContent contents={this.props.categoryLink}/>
       </div>
     );
   }

@@ -1,18 +1,51 @@
 var _ = require("lodash");
+var utils = require("utils");
+var referralCities = require("./referral_cities");
 
 module.exports = {
   procedures: function(state, maskingSet, panelKey) {
-    return _.chain(maskingSet)
-      .map((record) => record.procedureIds)
-      .flatten()
-      .uniq()
-      .map((procedureId) => {
-        return [
-          procedureId,
-          _.get(state, ["ui", "panels", panelKey, "filterValues", "procedures", parseInt(procedureId)], false)
-        ];
-      }).zipObject()
-      .value();
+    var assignValue = function(procedureId) {
+      return [
+        procedureId,
+        _.get(state, ["ui", "panels", panelKey, "filterValues", "procedures", parseInt(procedureId)], false)
+      ];
+    };
+    var assignedValues = function(ids) {
+      return _.zipObject(ids.map(assignValue));
+    };
+
+    return {
+      specialization: function(state, maskingSet, panelKey) {
+        var eachProcedureIds =
+          _.partialRight(_.map, (record) => record.procedureIds);
+
+        return utils.from(
+          assignedValues,
+          _.uniq,
+          _.flatten,
+          eachProcedureIds,
+          maskingSet
+        );
+      },
+      procedure: function(state, maskingset, panelKey) {
+        var extractedProcedureIds = function(tree) {
+          return _.keys(tree).concat(utils.from(
+            _.flatten,
+            eachExtractedProcedureIds,
+            _.values,
+            tree
+          ))
+        };
+        var eachExtractedProcedureIds =
+          _.partialRight(_.map, (tree) => extractedProcedureIds(tree));
+
+        return utils.from(
+          assignedValues,
+          extractedProcedureIds,
+          state.app.procedures[state.ui.procedureId].tree
+        );
+      }
+    }[state.ui.pageType](state, maskingSet, panelKey);
   },
   acceptsReferralsViaPhone: function(state, maskingSet, panelKey) {
     return _.get(state, ["ui", "panels", panelKey, "filterValues", "acceptsReferralsViaPhone"], false);
@@ -69,7 +102,7 @@ module.exports = {
         var value = _.get(
           state,
           ["ui", "panels", panelKey, "filterValues", "cities", city.id ],
-          _.includes(state.app.currentUser.referralCities[state.ui.specializationId], parseInt(city.id))
+          _.includes(referralCities(state), parseInt(city.id))
         );
 
         return _.assign(

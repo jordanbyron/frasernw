@@ -1,12 +1,44 @@
 class NewsItem < ActiveRecord::Base
   include PublicActivity::Model
+  include ActionView::Helpers::TextHelper
+  include FragmentExpirer
   # not used as activity is created in controller
   # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user} #PublicActivity gem callback method
   has_many :activities, as: :trackable, class_name: 'SubscriptionActivity', dependent: :destroy
 
-  attr_accessible :division_id, :title, :body, :breaking, :start_date, :end_date, :show_start_date, :show_end_date, :type_mask
+  attr_accessible :owner_division_id, :title, :body, :breaking, :start_date, :end_date, :show_start_date, :show_end_date, :type_mask
 
-  belongs_to :division
+  belongs_to :owner_division, class_name: "Division"
+  has_many :divisions, through: :division_display_news_items
+  has_many :division_display_news_items, dependent: :destroy
+
+  def label
+    title.presence || titleized_body
+  end
+
+  def self.permitted_division_assignments(user)
+    if user.super_admin?
+      Division.not_hidden
+    else
+      user.divisions.not_hidden
+    end
+  end
+
+  def check_assignment_permissions(divisions, user)
+    divisions.all? do |division|
+      self.class.permitted_division_assignments(user).include?(division)
+    end
+  end
+
+  def titleized_body
+    truncate(
+      ActionView::Base.full_sanitizer.sanitize(
+        BlueCloth.new(body).to_html
+      ),
+      :length => 40,
+      :separator => ' '
+    )
+  end
 
   def date
     if start_date_full.present? && end_date_full.present? && (start_date.to_s != end_date.to_s)
@@ -68,60 +100,101 @@ class NewsItem < ActiveRecord::Base
     TYPE_HASH[type_mask]
   end
 
+  def join_for(division)
+    division_display_news_items.where(division_id: division.id).first
+  end
+
+  def display_in_divisions!(divisions, user)
+    if check_assignment_permissions(divisions, user)
+      # add new
+      divisions.each do |division|
+        if !self.divisions.include?(division)
+          self.division_display_news_items.create(
+            division_id: division.id
+          )
+        end
+      end
+
+      # cleanup
+      (NewsItem.permitted_division_assignments(user) - divisions).each do |division|
+        self.join_for(division).try(:destroy)
+      end
+
+      # recache
+      permitted_division_ids = NewsItem.
+        permitted_division_assignments(user).
+        map(&:id)
+
+      division_groups = User.
+        all_user_division_groups_cached.
+        select do |group|
+          permitted_division_ids.any?{|id| group.include?(id) }
+        end
+
+      division_groups.each do |division_group|
+        LatestUpdates.delay.exec(
+          max_automated_events: 5,
+          division_ids: division_group,
+          force: true,
+          force_automatic: false
+        )
+      end
+
+      true
+    else
+      false
+    end
+  end
+
   def self.type_hash_as_form_array
     TYPE_HASH.to_a.map {|k,v| [k.to_s, v.to_s.pluralize]}
   end
 
   default_scope order('news_items.start_date DESC')
 
-  def self.copy(news_item)
-    copied_item = news_item.clone
-    copied_item.divisions << news_item.divisions.map(&:clone)
-    return copied_item
-  end
-
   def self.in_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    where("news_items.division_id IN (?)", division_ids)
+    joins(:division_display_news_items).
+      where("division_display_news_items.division_id IN (?)", divisions.map(&:id))
   end
 
   def self.breaking_in_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    where("news_items.type_mask = (?) AND (" +
-    "(news_items.start_date IS NOT NULL AND news_items.end_date IS NOT NULL AND news_items.start_date <= (?) AND news_items.end_date >= (?)) OR " +
-    "(news_items.start_date IS NULL AND news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR " +
-    "(news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?))) AND news_items.division_id IN (?)", TYPE_BREAKING, Date.today, Date.today, Date.today, Date.today, division_ids)
+    type_in_divisions(TYPE_BREAKING, divisions)
   end
 
   def self.divisional_in_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    where("news_items.type_mask = (?) AND (" +
-    "(news_items.start_date IS NOT NULL AND news_items.end_date IS NOT NULL AND news_items.start_date <= (?) AND news_items.end_date >= (?)) OR " +
-    "(news_items.start_date IS NULL AND news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR " +
-    "(news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?))) AND news_items.division_id IN (?)", TYPE_DIVISIONAL, Date.today, Date.today, Date.today, Date.today, division_ids)
+    type_in_divisions(TYPE_DIVISIONAL, divisions)
   end
 
   def self.shared_care_in_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    where("news_items.type_mask = (?) AND (" +
-    "(news_items.start_date IS NOT NULL AND news_items.end_date IS NOT NULL AND news_items.start_date <= (?) AND news_items.end_date >= (?)) OR " +
-    "(news_items.start_date IS NULL AND news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR " +
-    "(news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?))) AND news_items.division_id IN (?)", TYPE_SHARED_CARE, Date.today, Date.today, Date.today, Date.today, division_ids)
+    type_in_divisions(TYPE_SHARED_CARE, divisions)
   end
 
   def self.specialist_clinic_in_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    where("news_items.type_mask = (?) AND (" +
-    "(news_items.start_date IS NOT NULL AND news_items.end_date IS NOT NULL AND news_items.start_date <= (?) AND news_items.end_date >= (?)) OR " +
-    "(news_items.start_date IS NULL AND news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR " +
-    "(news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?))) AND news_items.division_id IN (?)", TYPE_SPECIALIST_CLINIC_UPDATE, Date.today, Date.today, Date.today, Date.today, division_ids)
+    type_in_divisions(TYPE_SPECIALIST_CLINIC_UPDATE, divisions)
   end
 
   def self.attachment_in_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    where("news_items.type_mask = (?) AND (" +
-    "(news_items.start_date IS NOT NULL AND news_items.end_date IS NOT NULL AND news_items.start_date <= (?) AND news_items.end_date >= (?)) OR " +
-    "(news_items.start_date IS NULL AND news_items.end_date IS NOT NULL AND news_items.end_date >= (?)) OR " +
-    "(news_items.end_date IS NULL AND news_items.start_date IS NOT NULL AND news_items.start_date >= (?))) AND news_items.division_id IN (?)", TYPE_ATTACHMENT_UPDATE, Date.today, Date.today, Date.today, Date.today, division_ids)
+    type_in_divisions(TYPE_ATTACHMENT_UPDATE, divisions)
+  end
+
+  def self.current
+    where(<<-SQL, Date.today, Date.today, Date.today, Date.today)
+      (news_items.start_date IS NOT NULL AND
+        news_items.end_date IS NOT NULL AND
+        news_items.start_date <= (?) AND
+        news_items.end_date >= (?)) OR
+      (news_items.start_date IS NULL AND
+        news_items.end_date IS NOT NULL AND
+        news_items.end_date >= (?)) OR
+      (news_items.end_date IS NULL AND
+        news_items.start_date IS NOT NULL AND
+        news_items.start_date >= (?))
+    SQL
+  end
+
+  def self.type_in_divisions(type, divisions)
+    in_divisions(divisions).
+    where(type_mask: type).
+      current
   end
 end
