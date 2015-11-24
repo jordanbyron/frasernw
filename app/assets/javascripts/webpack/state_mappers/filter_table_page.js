@@ -11,6 +11,8 @@ var itemsForContentCategory = require("domain/content_category_items");
 var referralCities = require("./filter_table/referral_cities");
 var utils = require("utils");
 var anyFiltersActivated = require("state_mappers/filter_table/any_filters_activated");
+var React = require("react");
+var CategoryLink = require("react_components/category_link");
 
 module.exports = function(state, dispatch) {
   // console.log("STATE:");
@@ -384,7 +386,13 @@ var PANEL_PROPS_GENERATORS = {
               panelKey: panelKey
             }
           )
-        }
+        },
+        arbitraryPageFooter: (
+          <CategoryLink
+            link={`/content_categories/${category.id}`}
+            text={`Browse ${category.name} content from all specialties`}
+          />
+        )
       };
     },
     InlineArticles: function(state: Object, panelKey: string, category: Object, dispatch: Function) {

@@ -3,6 +3,7 @@ var React = require("react");
 var FavoriteIcon = require("./icons/favorite");
 var FeedbackIcon = require("./icons/feedback");
 var SharedCareIcon = require("./icons/shared_care");
+var CategoryLink = require("react_components/category_link");
 
 
 module.exports = React.createClass({
@@ -43,24 +44,8 @@ module.exports = React.createClass({
             );
           })
         }
-        <hr/>
-        { categoryLink(this.props.categoryLink) }
+        <CategoryLink {...this.props.categoryLink}/>
       </div>
     );
   }
 })
-
-
-const categoryLink = (categoryLinkProps) => {
-  if(categoryLinkProps) {
-    return(
-      <div>
-        <i className='icon-arrow-right icon-blue' style={{marginRight: "5px"}}></i>
-        <a href={categoryLinkProps.link}>{categoryLinkProps.text}</a>
-      </div>
-    );
-  }
-  else {
-    return null;
-  }
-};

@@ -74,7 +74,7 @@ const ComponentProps = {
         groups: _.map(FilterGroups, (group) => group(state, _filterValues, _maskingSet)),
       },
       reducedView: _.get(state, ["ui", "reducedView"], "main"),
-      arbitraryFooter: arbitraryFooter(_category, state.app.contentCategories),
+      arbitraryTableFooter: arbitraryTableFooter(_category, state.app.contentCategories),
       dispatch: dispatch
     };
   },
@@ -101,7 +101,7 @@ const categoryLink = (category, categories) => {
   }
 };
 
-const arbitraryFooter = (category, categories) => {
+const arbitraryTableFooter = (category, categories) => {
   if(category.ancestry) {
     return(
       <a href={`/content_categories/${category.ancestry}`}>
