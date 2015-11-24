@@ -121,10 +121,20 @@ class NewsItem < ActiveRecord::Base
       end
 
       # recache
-      User.in_divisions(NewsItem.permitted_division_assignments(user)).map(&:divisions).uniq.each do |division_group|
+      permitted_division_ids = NewsItem.
+        permitted_division_assignments(user).
+        map(&:id)
+
+      division_groups = User.
+        all_user_division_groups_cached.
+        select do |group|
+          permitted_division_ids.any?{|id| group.include?(id) }
+        end
+
+      division_groups.each do |division_group|
         LatestUpdates.delay.exec(
           max_automated_events: 5,
-          divisions: division_group,
+          division_ids: division_group,
           force: true,
           force_automatic: false
         )

@@ -157,7 +157,7 @@ namespace :pathways do
       User.all_user_division_groups_cached.each do |division_group|
         LatestUpdates.exec(
           max_automated_events: 5,
-          divisions: division_group.map{|id| Division.find(id)},
+          division_ids: division_group,
           force: true,
           force_automatic: true
         )

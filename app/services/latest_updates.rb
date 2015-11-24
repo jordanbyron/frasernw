@@ -1,20 +1,21 @@
 class LatestUpdates
-  include ServiceObjectModule.exec_with_args(:max_automated_events, :divisions, :force, :force_automatic)
+  include ServiceObjectModule.exec_with_args(:max_automated_events, :division_ids, :force, :force_automatic)
 
   def exec
     # puts "DIVISIONS: #{divisions.map(&:id)}"
 
-    Rails.cache.fetch("latest_updates:#{max_automated_events}:#{divisions.map(&:id).sort.join("_")}", force: force) do
+    Rails.cache.fetch("latest_updates:#{max_automated_events}:#{division_ids.sort.join("_")}", force: force) do
+      divisions = division_ids.map{ |id| Division.find(id) }
       #mix in the news updates with the automatic updates
       AutomatedEvents.call(
         max_automated_events: max_automated_events,
         divisions: divisions,
         force: force_automatic
-      ).merge(manual_events).values.sort{ |a, b| b[0] <=> a[0] }.map{ |x| x[1] }
+      ).merge(manual_events(divisions)).values.sort{ |a, b| b[0] <=> a[0] }.map{ |x| x[1] }
     end
   end
 
-  def manual_events
+  def manual_events(divisions)
     manual_events = {}
 
     NewsItem.specialist_clinic_in_divisions(divisions).each do |news_item|
