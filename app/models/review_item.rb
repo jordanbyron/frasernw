@@ -93,20 +93,17 @@ class ReviewItem < ActiveRecord::Base
 
   def edit_source
     if edit_source_id.present? && edit_source_type.present?
-      edit_source_type.constantize.where(id: edit_source_id).first || UnknownUser.new
+      edit_source_type.constantize.where(id: edit_source_id).first || DeletedUser.new
     else
-      UnknownUser.new
+      # review items before new secret token system was created
+      SecretEditor.new
     end
   end
 
   def editor
     if secret_edit?
-      OpenStruct.new(
-        name: edit_source.recipient
-      )
+      edit_source.recipient_user
     else
-      # User or UnknownUser
-
       edit_source
     end
   end
