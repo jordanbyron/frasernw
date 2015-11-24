@@ -2,7 +2,7 @@
 
 .content-wrapper
 
-  %h2 Content Items
+  %h2= "#{@division.name} Content Items"
 
   - categories = ScCategory.all.reject{ |category| category.parent.present? || category.all_owned_sc_items_in_divisions([@division]).blank? }
 
