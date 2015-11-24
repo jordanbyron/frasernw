@@ -4,7 +4,7 @@ var FavoriteIcon = require("./icons/favorite");
 var FeedbackIcon = require("./icons/feedback");
 var SharedCareIcon = require("./icons/shared_care");
 var CategoryLink = require("react_components/category_link");
-
+var ArbitraryContent = require("react_components/arbitrary_content");
 
 module.exports = React.createClass({
   propTypes: {
@@ -44,7 +44,7 @@ module.exports = React.createClass({
             );
           })
         }
-        <CategoryLink {...this.props.categoryLink}/>
+        <ArbitraryContent contents={this.props.categoryLink}/>
       </div>
     );
   }

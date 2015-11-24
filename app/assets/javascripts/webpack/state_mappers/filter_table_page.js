@@ -387,12 +387,7 @@ var PANEL_PROPS_GENERATORS = {
             }
           )
         },
-        arbitraryPageFooter: (
-          <CategoryLink
-            link={`/content_categories/${category.id}`}
-            text={`Browse ${category.name} content from all specialties`}
-          />
-        )
+        arbitraryPageFooter: <AllSpecialtiesCategoryLink category={category}/>
       };
     },
     InlineArticles: function(state: Object, panelKey: string, category: Object, dispatch: Function) {
@@ -401,15 +396,22 @@ var PANEL_PROPS_GENERATORS = {
       return {
         panelKey: panelKey,
         records: records,
-        categoryLink: {
-          link: ("/content_categories/" + category.id),
-          text: ("Browse " + category.name + " content from all specialties")
-        },
+        categoryLink: <AllSpecialtiesCategoryLink category={category}/>,
         favorites: state.app.currentUser.favorites
       };
     }
   }
 }
+
+const AllSpecialtiesCategoryLink = (props) => (
+  <div>
+    <hr/>
+    <CategoryLink
+      link={`/content_categories/${props.category.id}`}
+      text={`Browse ${props.category.name} content from all specialties`}
+    />
+  </div>
+)
 
 var filterResources = function(rows, filterValues, userIsAdmin) {
   var operativeOpaqueFilters = _.values(_.pick(Filters, PANEL_TYPE_OPAQUE_FILTERS["contentCategories"])).filter(

@@ -8,6 +8,7 @@ import Filters from "state_mappers/filter_table/filters";
 import resultSummary from "state_mappers/filter_table/generate_result_summary";
 import anyFiltersActivated from "state_mappers/filter_table/any_filters_activated";
 import React from "react";
+import CategoryLink from "react_components/category_link"
 
 export default function(state, dispatch) {
   // console.log(state);
@@ -74,7 +75,12 @@ const ComponentProps = {
         groups: _.map(FilterGroups, (group) => group(state, _filterValues, _maskingSet)),
       },
       reducedView: _.get(state, ["ui", "reducedView"], "main"),
-      arbitraryTableFooter: arbitraryTableFooter(_category, state.app.contentCategories),
+      arbitraryTableFooter: (
+        <AncestryCategoryLink
+          category={_category}
+          categories={state.app.contentCategories}
+        />
+      ),
       dispatch: dispatch
     };
   },
@@ -82,38 +88,33 @@ const ComponentProps = {
     return {
       panelKey: "scCategory",
       records: _maskingSet,
-      categoryLink: categoryLink(_category, state.app.categories),
+      categoryLink: (
+        <AncestryCategoryLink
+          category={_category}
+          categories={state.app.contentCategories}
+        />
+      ),
       favorites: state.app.currentUser.favorites,
       dispatch: dispatch
     };
   }
 }
 
-const categoryLink = (category, categories) => {
-  if(category.ancestry) {
-    return {
-      text: `Browse all ${categories[category.ancestry].name} content.`,
-      link: `/content_categories/${category.ancestry}`
-    }
-  }
-  else {
-    return null;
-  }
-};
+const AncestryCategoryLink = (props) => {
+  let category = props.category;
+  let categories = props.categories;
 
-const arbitraryTableFooter = (category, categories) => {
   if(category.ancestry) {
-    return(
-      <a href={`/content_categories/${category.ancestry}`}>
-        <i className='icon-arrow-right icon-blue' style={{margin: "0px 7px"}}/>
-        <span>{`Browse all ${categories[category.ancestry].name} content`}</span>
-      </a>
-    );
+    return <CategoryLink
+      text={`Browse all ${categories[category.ancestry].name} content`}
+      link={`/content_categories/${category.ancestry}`}
+    />;
   }
   else {
     return <div></div>;
   }
 }
+
 
 const feedbackModal = function(state) {
   return (state.ui.feedbackModal || { state: "HIDDEN"});
