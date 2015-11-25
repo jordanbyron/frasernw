@@ -228,6 +228,7 @@ module Serialized
           customWaittime: {
             specialist: procedure.procedure_specializations.first.specialist_wait_time,
             clinic: procedure.procedure_specializations.first.clinic_wait_time
+          },
           assumedSpecializationIds: {
             specialists: procedure.procedure_specializations.select(&:assumed_specialist?).map(&:specialization).map(&:id),
             clinics: procedure.procedure_specializations.select(&:assumed_clinic?).map(&:specialization).map(&:id)

@@ -224,7 +224,7 @@ const customWaittimeConfig = function(activatedProcedures, state, panelTypeKey) 
 
 const CustomWaittimeMessage = (props) => (
   <Alert type="info">
-    <i className="icon-link"/>
+    <i className="icon-link" style={{marginRight: "5px"}}/>
     <span>
       You have chosen an area of practice in which clinics have optionally provided a specific wait time. The wait time column has been updated accordingly.
     </span>
@@ -274,6 +274,7 @@ var PANEL_PROPS_GENERATORS = {
       state,
       panelTypeKey
     );
+
     var bodyRowConfig = {
       panelTypeKey: panelTypeKey,
       panelKey: state.ui.panelTypeKey,
@@ -284,7 +285,6 @@ var PANEL_PROPS_GENERATORS = {
       }
     };
 
-    console.log(bodyRowConfig.rowGeneratorConfig.customWaittime);
     var bodyRows = generateBodyRows(
       state,
       finalSet(filtered, filterValues, state.ui.pageType, _filterValueOverrides),
