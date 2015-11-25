@@ -126,7 +126,7 @@ var opaqueFiltered = function(referents: Array, panelTypeKey: string, filterValu
   });
 };
 
-var filterByPageType = function(records, state) {
+var filterByPageType = function(records, state, panelTypeKey) {
   return {
     specialization() {
       return records.filter((record) => {
@@ -134,8 +134,12 @@ var filterByPageType = function(records, state) {
       });
     },
     procedure() {
+      var assumedSpecializationIds =
+        state.app.procedures[state.ui.procedureId].assumedSpecializationIds[panelTypeKey];
+
       return records.filter((record) => {
-        return (_.includes(record.procedureIds, state.ui.procedureId));
+        return (_.includes(record.procedureIds, state.ui.procedureId) ||
+          _.any(_.intersection(record.specializationIds, assumedSpecializationIds)));
       });
     },
   }[state.ui.pageType]();
@@ -193,19 +197,8 @@ var PANEL_PROPS_GENERATORS = {
   },
   referents: function(state, dispatch, panelTypeKey) {
     // what are the records we're using to mask filters?
-    var maskingSet = {
-      specialization: function() {
-        return _.values(state.app[panelTypeKey]).filter((record) => {
-          return _.includes(record.specializationIds, state.ui.specializationId);
-        });
-      },
-      procedure: function() {
-        return _.values(state.app[panelTypeKey]).filter((record) => {
-          return _.includes(record.procedureIds, state.ui.procedureId);
-        });
-      }
-    }[state.ui.pageType]();
-
+    let maskingSet =
+      filterByPageType(_.values(state.app[panelTypeKey]), state, panelTypeKey);
     var sortConfig = referentSortConfig(state, { panelTypeKey: panelTypeKey });
     var filterValues = generateFilterValuesForPanel(
       state,
@@ -224,12 +217,12 @@ var PANEL_PROPS_GENERATORS = {
     );
     var filtered = {
       withAllFilters: utils.from(
-        _.partialRight(filterByPageType, state),
+        _.partialRight(filterByPageType, state, panelTypeKey),
         _.partialRight(filterByCities, filterValues),
         _opaqueFiltered
       ),
       withoutPageTypeFilter: filterByCities(_opaqueFiltered, filterValues),
-      withoutCityFilter: filterByPageType(_opaqueFiltered, state)
+      withoutCityFilter: filterByPageType(_opaqueFiltered, state, panelTypeKey)
     };
 
     var bodyRowConfig = {

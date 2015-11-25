@@ -223,6 +223,10 @@ module Serialized
           nameRelativeToParents: procedure.try(:name_relative_to_parents),
           name: procedure.name,
           specializationIds: procedure.specializations.map(&:id),
+          assumedSpecializationIds: {
+            specialists: procedure.procedure_specializations.select(&:assumed_specialist?).map(&:specialization).map(&:id),
+            clinics: procedure.procedure_specializations.select(&:assumed_clinic?).map(&:specialization).map(&:id)
+          },
           tree: {
             procedure.id => {
               focused: true,
