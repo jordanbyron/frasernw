@@ -184,6 +184,38 @@ var shouldShowSpecializationFilter = function(filtered, filterValues, pageType, 
   );
 };
 
+const customWaittimeConfig = function(activatedProcedures, state, panelTypeKey) {
+  if(state.ui.pageType === "specialization") {
+    let nestedProcedureIds = state.app.specializations[state.ui.specializationId].nestedProcedureIds
+
+    return {
+      shouldUse: (activatedProcedures.length === 1 &&
+        nestedProcedureIds[activatedProcedures[0]].customWaittime[panelTypeKey.slice(0, -1)]),
+      procedureId: activatedProcedures[0]
+    };
+  }
+  else if(state.ui.pageType === "procedure") {
+    let sources = {
+      page: {
+        test: (state.app.procedures[state.ui.procedureId].customWaittime[panelTypeKey.slice(0, -1)] &&
+          activatedProcedures.length === 0),
+        id: state.ui.procedureId
+      },
+      selection: {
+        test: (!state.app.procedures[state.ui.procedureId].customWaittime[panelTypeKey.slice(0, -1)] &&
+          activatedProcedures.length === 1 &&
+          activatedProcedures[0].customWaittime[panelTypeKey.slice(0, -1)]),
+        id: activatedProcedures[0]
+      }
+    }
+
+    return {
+      shouldUse: _.some(sources, _.property("test")),
+      procedureId: (_.find(sources, _.property("test")) || {}).id
+    }
+  }
+};
+
 var PANEL_PROPS_GENERATORS = {
   specialists: function(state, dispatch) {
     return this.referents(state, dispatch, "specialists");
@@ -232,14 +264,22 @@ var PANEL_PROPS_GENERATORS = {
       withoutCityFilter: filterByPageType(_opaqueFiltered, state)
     };
 
+    var _activatedProcedures = _.keys(_.pick(filterValues.procedures, _.identity));
     var bodyRowConfig = {
       panelTypeKey: panelTypeKey,
       panelKey: state.ui.panelTypeKey,
       rowGenerator: "referents",
       rowGeneratorConfig: {
-        includingOtherSpecialties: shouldIncludeOtherSpecializations(filtered, filterValues, state.ui.pageType, _filterValueOverrides)
+        includingOtherSpecialties: shouldIncludeOtherSpecializations(filtered, filterValues, state.ui.pageType, _filterValueOverrides),
+        customWaittime: customWaittimeConfig(
+          _activatedProcedures,
+          state,
+          panelTypeKey
+        )
       }
     };
+
+    console.log(bodyRowConfig.rowGeneratorConfig.customWaittime);
     var bodyRows = generateBodyRows(
       state,
       finalSet(filtered, filterValues, state.ui.pageType, _filterValueOverrides),

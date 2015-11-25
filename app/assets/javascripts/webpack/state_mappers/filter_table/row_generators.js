@@ -88,6 +88,14 @@ var email = function(record) {
   }
 }
 
+var labelWaittime = function(record, custom, procedureId, waittimeHash) {
+  if(custom){
+    return (waittimeHash[record.customWaittimes[procedureId]] || "");
+  } else {
+    return record.waittime
+  }
+};
+
 module.exports = {
   referents: function(app, dispatch, config, record) {
     return {
@@ -95,7 +103,7 @@ module.exports = {
         labelReferentName(record),
         labelReferentSpecialties(record, app, config.includingOtherSpecialties),
         labelReferentStatus(record, app.referentStatusIcons, app.tooltips),
-        (record.waittime || ""),
+        labelWaittime(record, config.customWaittime.shouldUse, config.customWaittime.procedureId, app.waittimeHash),
         labelReferentCities(record, app)
       ], (cell) => cell === null),
       reactKey: (record.collectionName + record.id),

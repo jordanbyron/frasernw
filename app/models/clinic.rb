@@ -308,21 +308,7 @@ class Clinic < ActiveRecord::Base
     status_mask == 7
   end
 
-  WAITTIME_HASH = {
-    1 => "Within one week",
-    2 => "1-2 weeks",
-    3 => "2-4 weeks",
-    4 => "1-2 months",
-    5 => "2-4 months",
-    6 => "4-6 months",
-    7 => "6-9 months",
-    8 => "9-12 months",
-    9 => "12-18 months",
-    10 => "18-24 months",
-    11 => "2-2.5 years",
-    12 => "2.5-3 years",
-    13 => ">3 years"
-  }
+  WAITTIME_HASH = Specialist::WAITTIME_HASH
 
   def waittime
     waittime_mask.present? ? Clinic::WAITTIME_HASH[waittime_mask] : ""
