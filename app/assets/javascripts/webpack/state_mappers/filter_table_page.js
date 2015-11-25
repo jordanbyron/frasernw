@@ -196,21 +196,21 @@ const customWaittimeConfig = function(activatedProcedures, state, panelTypeKey) 
 
     return {
       shouldUse: (activatedProcedures.length === 1 &&
-        nestedProcedureIds[activatedProcedures[0]].customWaittime[panelTypeKey.slice(0, -1)]),
+        nestedProcedureIds[activatedProcedures[0]].customWaittime[panelTypeKey]),
       procedureId: activatedProcedures[0]
     };
   }
   else if(state.ui.pageType === "procedure") {
     let sources = {
       page: {
-        test: (state.app.procedures[state.ui.procedureId].customWaittime[panelTypeKey.slice(0, -1)] &&
+        test: (state.app.procedures[state.ui.procedureId].customWaittime[panelTypeKey] &&
           activatedProcedures.length === 0),
         id: state.ui.procedureId
       },
       selection: {
-        test: (!state.app.procedures[state.ui.procedureId].customWaittime[panelTypeKey.slice(0, -1)] &&
+        test: (!state.app.procedures[state.ui.procedureId].customWaittime[panelTypeKey] &&
           activatedProcedures.length === 1 &&
-          activatedProcedures[0].customWaittime[panelTypeKey.slice(0, -1)]),
+          activatedProcedures[0].customWaittime[panelTypeKey]),
         id: activatedProcedures[0]
       }
     }

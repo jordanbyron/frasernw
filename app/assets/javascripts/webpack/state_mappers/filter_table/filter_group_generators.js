@@ -1,5 +1,21 @@
 var FILTER_VALUE_GENERATORS = require("./filter_value_generators");
 var _ = require("lodash");
+import React from "react";
+import MaybeContent from "react_components/maybe_content";
+
+const ProcedureLabel = (props) => {
+  let { procedure, panelKey } = props;
+
+  return(
+    <span>
+      <span>{procedure.name}</span>
+      <MaybeContent
+        shouldDisplay={procedure.customWaittime[panelKey]}
+        contents={_.partial(React.createElement, 'i', { className: "icon-link", style: { marginLeft: "5px"}})}
+      />
+    </span>
+  );
+};
 
 module.exports = {
   procedures: function(panelKey, maskingSet, state) {
@@ -11,13 +27,14 @@ module.exports = {
         .map((procedure, procedureId) => {
           return {
             id: procedureId,
-            label: normalizedProcedures[parseInt(procedureId)].name,
+            name: normalizedProcedures[parseInt(procedureId)].name,
+            label: <ProcedureLabel procedure={normalizedProcedures[parseInt(procedureId)]} panelKey={panelKey}/>,
             value: filterValues[procedureId],
             focused: procedure.focused,
             children: generateProcedureFilters(procedure.children, maskedProcedureIds, normalizedProcedures, state)
           };
         })
-        .sortBy("label")
+        .sortBy("name")
         .value()
     };
 
