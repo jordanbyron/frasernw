@@ -210,7 +210,7 @@ const customWaittimeConfig = function(activatedProcedures, state, panelTypeKey) 
       selection: {
         test: (!state.app.procedures[state.ui.procedureId].customWaittime[panelTypeKey] &&
           activatedProcedures.length === 1 &&
-          activatedProcedures[0].customWaittime[panelTypeKey]),
+          state.app.procedures[activatedProcedures[0]].customWaittime[panelTypeKey]),
         id: activatedProcedures[0]
       }
     }

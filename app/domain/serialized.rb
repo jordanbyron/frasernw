@@ -233,26 +233,7 @@ module Serialized
             specialists: procedure.procedure_specializations.select(&:assumed_specialist?).map(&:specialization).map(&:id),
             clinics: procedure.procedure_specializations.select(&:assumed_clinic?).map(&:specialization).map(&:id)
           },
-          tree: {
-            procedure.id => {
-              focused: true,
-              assumed: {
-                clinics: false,
-                specialists: false
-              },
-              children: procedure.children.inject({}) do |memo, procedure|
-                memo.merge({
-                  procedure.id => {
-                    focused: true,
-                    assumed: {
-                      clinics: false,
-                      specialists: false
-                    },
-                  }
-                })
-              end
-            }
-          }
+          childrenProcedureIds: procedure.children.map(&:id)
         })
       end
     end,

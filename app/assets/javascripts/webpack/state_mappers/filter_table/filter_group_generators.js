@@ -2,6 +2,7 @@ var FILTER_VALUE_GENERATORS = require("./filter_value_generators");
 var _ = require("lodash");
 import React from "react";
 import MaybeContent from "react_components/maybe_content";
+import { from } from "utils";
 
 const ProcedureLabel = (props) => {
   let { procedure, panelKey } = props;
@@ -19,47 +20,70 @@ const ProcedureLabel = (props) => {
 
 module.exports = {
   procedures: function(panelKey, maskingSet, state) {
-    var generateProcedureFilters = function(nestedProcedures, maskedProcedureIds, normalizedProcedures, state) {
-      var filterValues = FILTER_VALUE_GENERATORS["procedures"](state, maskingSet, panelKey);
+    let _filterValues =
+      FILTER_VALUE_GENERATORS["procedures"](state, maskingSet, panelKey);
 
-      return _.chain(nestedProcedures)
-        .pick((procedure, procedureId) => _.includes(_.keys(filterValues), procedureId) && !procedure.assumed[panelKey])
-        .map((procedure, procedureId) => {
-          return {
-            id: procedureId,
-            name: normalizedProcedures[parseInt(procedureId)].name,
-            label: <ProcedureLabel procedure={normalizedProcedures[parseInt(procedureId)]} panelKey={panelKey}/>,
-            value: filterValues[procedureId],
-            focused: procedure.focused,
-            children: generateProcedureFilters(procedure.children, maskedProcedureIds, normalizedProcedures, state)
-          };
+    let _normalizedProcedures = state.app.procedures;
+
+    let _procedureFilters = {
+      specialization: function() {
+        let _procedures = state.app.specializations[state.ui.specializationId].nestedProcedureIds;
+
+        let shouldShow = (procedure, id) => (
+          _.includes(_.keys(_filterValues), id) &&
+            !procedure.assumed[panelKey]
+        )
+
+        let procedureFilter = (procedure, procedureId) => ({
+          id: procedureId,
+          name: _normalizedProcedures[parseInt(procedureId)].name,
+          label: <ProcedureLabel procedure={_normalizedProcedures[parseInt(procedureId)]} panelKey={panelKey}/>,
+          value: _filterValues[procedureId],
+          focused: procedure.focused,
+          children: processNested(procedure.children)
         })
-        .sortBy("name")
-        .value()
-    };
 
-    var nestedProcedureIds = {
-      specialization: function() { return state.app.specializations[state.ui.specializationId].nestedProcedureIds; },
-      procedure: function() { return state.app.procedures[state.ui.procedureId].tree[state.ui.procedureId].children; }
-    }[state.ui.pageType]();
-    var procedureFilters = generateProcedureFilters(
-      nestedProcedureIds,
-      _.flatten(maskingSet.map((record) => record.procedureIds)),
-      state.app.procedures,
-      state
-    )
-    var title = {
+        let processNested = (procedures) => (
+          from(
+            _.partialRight(_.sortBy, "name"),
+            _.partialRight(_.map, procedureFilter),
+            _.partialRight(_.pick, shouldShow),
+            procedures
+          )
+        )
+
+        return processNested(_procedures);
+      },
+      procedure: function() {
+        let procedureFilter = (procedureId) => ({
+          id: `${procedureId}`,
+          name: _normalizedProcedures[parseInt(procedureId)].name,
+          label: <ProcedureLabel procedure={_normalizedProcedures[parseInt(procedureId)]} panelKey={panelKey}/>,
+          value: _filterValues[procedureId],
+          focused: true,
+          children: []
+        })
+
+        return from(
+          _.partialRight(_.sortBy, "name"),
+          _.partialRight(_.map, procedureFilter),
+          state.app.procedures[state.ui.procedureId].childrenProcedureIds
+        );
+      }
+    }[state.ui.pageType]()
+
+    let title = {
       specialization: "Accepts referrals for",
       procedure: "Sub-Areas of Practice"
     }[state.ui.pageType];
 
     return {
       filters: {
-        focusedProcedures: procedureFilters.filter((filter) => filter.focused),
-        unfocusedProcedures: procedureFilters.filter((filter) => !filter.focused)
+        focusedProcedures: _procedureFilters.filter((filter) => filter.focused),
+        unfocusedProcedures: _procedureFilters.filter((filter) => !filter.focused)
       },
       title: title,
-      shouldDisplay: _.any(procedureFilters),
+      shouldDisplay: _.any(_procedureFilters),
       isOpen: _.get(state, ["ui", "panels", panelKey, "filterGroupVisibility", "procedures"], true),
       isExpanded: _.get(state, ["ui", "panels", panelKey, "filterExpansion", "procedures"], false),
       componentKey: "procedures"
