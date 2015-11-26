@@ -231,6 +231,28 @@ const CustomWaittimeMessage = (props) => (
   </Alert>
 );
 
+const pageAssumedSpecializations = (state, panelTypeKey) => {
+  return state.app.procedures[state.ui.procedureId].assumedSpecializationIds[panelTypeKey];
+}
+
+const AssumedMessage = (props) => {
+  let { state, panelTypeKey } = props;
+  let _members = pageAssumedSpecializations(state, panelTypeKey).map((id) => {
+    if(panelTypeKey === "specialists"){
+      return state.app.specializations[id].membersName;
+    } else {
+      return `${state.app.specializations[id].name} clinics`;
+    }
+  })
+  let _procedureName = state.app.procedures[state.ui.procedureId].name;
+
+  return(
+    <div className="assumed-phrase">
+      { `It is assumed that all ${_members.join(" and ")} see ${_procedureName}.` }
+    </div>
+  );
+}
+
 var PANEL_PROPS_GENERATORS = {
   specialists: function(state, dispatch) {
     return this.referents(state, dispatch, "specialists");
@@ -348,6 +370,12 @@ var PANEL_PROPS_GENERATORS = {
         collectionName: genericMembersName,
         showingOtherSpecialties: !filterValues.specializationFilterActivated
       },
+      assumedMessage: (
+        <MaybeContent
+          shouldDisplay={state.ui.pageType === "procedure" && _.any(pageAssumedSpecializations(state, panelTypeKey))}
+          contents={_.partial(React.createElement, AssumedMessage, {state: state, panelTypeKey: panelTypeKey})}
+        />
+      ),
       customizedWaittimeMessage: (
         <MaybeContent
           shouldDisplay={_customWaittimeConfig.shouldUse}

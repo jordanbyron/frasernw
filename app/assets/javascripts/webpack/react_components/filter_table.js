@@ -40,6 +40,7 @@ module.exports = React.createClass({
             <div>
               <ResultSummary {...this.props.resultSummary} dispatch={this.props.dispatch}/>
               { this.props.customizedWaittimeMessage }
+              { this.props.assumedMessage }
               <ArbitraryContent contents={this.props.customizedWaittimeNotification}/>
               <SpecializationFilterMessage {...this.props.specializationFilterMessage} dispatch={this.props.dispatch}/>
               <CityFilterPills {...this.props.cityFilterPills} dispatch={this.props.dispatch}/>
