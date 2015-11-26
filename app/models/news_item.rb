@@ -24,6 +24,34 @@ class NewsItem < ActiveRecord::Base
     end
   end
 
+  def self.bust_cache_for(*divisions)
+    division_ids = divisions.map(&:id)
+
+    division_groups = User.
+      all_user_division_groups_cached.
+      select do |group|
+        division_ids.any?{ |id| group.include?(id) }
+      end
+
+    division_groups.each do |division_group|
+      LatestUpdates.delay.exec(
+        max_automated_events: 5,
+        division_ids: division_group,
+        force: true,
+        force_automatic: false
+      )
+    end
+  end
+
+  def borrowing_divisions
+    divisions - [ owner_division ]
+  end
+
+  def user_can_unborrow?(user, division)
+    self.class.permitted_division_assignments(user).include?(division) &&
+      division != owner_division
+  end
+
   def check_assignment_permissions(divisions, user)
     divisions.all? do |division|
       self.class.permitted_division_assignments(user).include?(division)
@@ -121,29 +149,18 @@ class NewsItem < ActiveRecord::Base
       end
 
       # recache
-      permitted_division_ids = NewsItem.
-        permitted_division_assignments(user).
-        map(&:id)
-
-      division_groups = User.
-        all_user_division_groups_cached.
-        select do |group|
-          permitted_division_ids.any?{|id| group.include?(id) }
-        end
-
-      division_groups.each do |division_group|
-        LatestUpdates.delay.exec(
-          max_automated_events: 5,
-          division_ids: division_group,
-          force: true,
-          force_automatic: false
-        )
-      end
+      self.class.bust_cache_for(*NewsItem.permitted_division_assignments(user))
 
       true
     else
       false
     end
+  end
+
+  def unborrow_from(division)
+    join_for(division).destroy
+
+    self.class.bust_cache_for(division)
   end
 
   def self.type_hash_as_form_array

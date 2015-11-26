@@ -18,6 +18,15 @@
   %p.space.no_indent
     %strong Markdown:
   %p= @news_item.body
+  - if @news_item.borrowing_divisions.any?
+    %p.space.no_indent
+      %strong Divisions Borrowing
+      %ul
+        - @news_item.borrowing_divisions.each do |division|
+          %li
+            %span= division.name
+            - if @news_item.user_can_unborrow?(current_user, division)
+              = link_to "(Stop Borrowing)", update_borrowing_news_item_path(@news_item, division_id: division.id, borrow: false)
 
   %p.admin.btn-group
     - if can? :update, @news_item
