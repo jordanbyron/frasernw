@@ -39,7 +39,8 @@
             searcher: pathways_searcher,
             data_formatter: pathways_data_formatter,
             group_formatter: pathways_group_formatter,
-            min_score: 0.6
+            min_score: 0.6,
+            always_match_something: false
           });
 
           if ($(window).width() <= 480)
@@ -74,12 +75,20 @@
           %a#logo.brand.ajax{"href" => root_url}
 
           - if logged_in?
-
             %form.navbar-search.pull-right
               %input.span3.search-query#search.icon{"type" => "search", "placeholder" => "&#xf002; Search".html_safe}
               #search_results{:style => 'display:none'}
                 #loading
                   #loading-spinner
+                #search_categories
+                  .search_category{"data-category" => "0", "data-selected" => "true"}
+                    = "All"
+                  .search_category{"data-category" => "2", "data-selected" => "false"}
+                    = "Specialists"
+                  .search_category{"data-category" => "3", "data-selected" => "false"}
+                    = "Clinics"
+                  .search_category{"data-category" => "4", "data-selected" => "false"}
+                    = "Resources"
                 %ul
                 - if @divisions.length > 1
                   #search_location

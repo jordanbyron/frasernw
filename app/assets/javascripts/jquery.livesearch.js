@@ -16,7 +16,7 @@ $.fn.livesearch = function(options)
   var fuzziness = options.fuzziness || 0.5;
   var max_results = options.max_results || 10;
   var min_score = options.min_score || 0.5;
-  var always_match_something = options.always_match_something || true;
+  var always_match_something = options.always_match_something;
   var results = [];
   var selected = -1;
   var that = this;
@@ -30,6 +30,12 @@ $.fn.livesearch = function(options)
     .focus(filter_search)
     .blur(function(){ setTimeout(hide_search,100) })
     .parents('form').submit( function() { if (results.length > 0) { that.blur(); return searcher_fnc(results[selected].data_entry) } else { return false; } });
+
+  $(".search_category").click(function() {
+    $(this).attr("data-selected", "true")
+    $(".search_category").not(this).attr("data-selected", "false")
+    that.trigger('focus'); // refresh results
+  });
 
   search_all.click(function() {
     if ($(this).prop('checked') == true)
@@ -137,8 +143,29 @@ $.fn.livesearch = function(options)
 
     var best_match = null;
 
+
+    selected_category =
+      $(".search_category[data-selected='true']").attr("data-category");
+
     data.each(function()
     {
+      // filter by cateogry
+      if(selected_category === "0") {
+        // Searching All
+        // noop
+      }
+      else if (selected_category === "4" && !(parseInt(this.go) > 7 )) {
+        // Searching for ScItem -- "go" refers to category, which is anything
+        // greater than 7
+        return;
+      }
+      else if (selected_category !== "4" && selected_category !== this.go) {
+        // Searching for anything else
+        return;
+      }
+
+      // proceed to scoring
+
       var total_score = 0
       var total_items = 0
       var scores_matches = scorer_fnc(this, term, fuzziness)
@@ -170,14 +197,14 @@ $.fn.livesearch = function(options)
     results = results.sort(function(a, b){return b.total_score - a.total_score}).slice(0,max_results);
 
     var last_group = -999;
-    $.each(results.sort(grouper_fnc), function()
+    $.each(results.sort(grouper_fnc), function(index, entry)
     {
-      if ( last_group != this.data_entry.go )
+      if (last_group != entry.data_entry.go )
       {
-        last_group = this.data_entry.go
-        list.append(group_formatter_fnc(this.data_entry.go))
+        last_group = entry.data_entry.go
+        list.append(group_formatter_fnc(entry.data_entry.go))
       }
-      list.append(data_formatter_fnc(this.total_score, this.scores_matches, this.data_entry, term))
+      list.append(data_formatter_fnc(entry.total_score, entry.scores_matches, entry.data_entry, term))
     });
 
     selected = 0
