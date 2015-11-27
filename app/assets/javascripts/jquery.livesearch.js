@@ -25,13 +25,21 @@ $.fn.livesearch = function(options)
 
   container.mouseover( function() { set_selected(-1) });
 
+  var onBlur = function(e) {
+    if($("#search_results").is(":hover")){
+      return false;
+    } else {
+      setTimeout(hide_search,100);
+    }
+  }
+
   this
     .keyup(filter_search).keyup()
     .focus(filter_search)
-    .blur(function(){ setTimeout(hide_search,100) })
+    .blur(onBlur)
     .parents('form').submit( function() { if (results.length > 0) { that.blur(); return searcher_fnc(results[selected].data_entry) } else { return false; } });
 
-  $(".livesearch__search-category").click(function() {
+  $(".livesearch__search-category").click(function(e) {
     $(this).addClass("livesearch__search-category--selected")
     $(".livesearch__search-category").not(this).removeClass("livesearch__search-category--selected")
     that.trigger('focus'); // refresh results
