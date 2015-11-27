@@ -216,4 +216,23 @@ module ApplicationHelper
   def localstorage_cache_version
     Setting.fetch(:localstorage_cache_version)
   end
+
+  # # # # TOOLTIPS
+  def show_tooltip(*args) # provides default tooltip behaviour for many icons, tooltips will not show unless bootstrap.js tooltip is initialized
+    options = args.extract_options!
+    return :title => options[:title] || "Title missing", :data => { toggle: "tooltip", placement: options[:placement] || "top", animation: options[:animation] || "true"}
+  end
+
+  def icon(icon_class, title=nil, placement="top") # icon will not have a tooltip unless a title is passed
+    if title.present?
+      "<i class='#{icon_class}' data-toggle='tooltip' data-original-title='#{title}' data-placement='#{placement}'</i>".html_safe
+    else
+      "<i class='#{icon_class}'</i>".html_safe
+    end
+  end
+
+  def template_for_blue_tooltip #custom html needed for displaying the tooltips that we've customized for showing links that has blue styling
+    '<div class="tooltip top blue" role="tooltip"><div class="tooltip-arrow blue"></div><div class="tooltip-inner"></div></div>'
+  end
+  # # # #
 end
