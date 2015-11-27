@@ -3,7 +3,7 @@ $.fn.livesearch = function(options)
   var container = $(options.container);
   var search_all = $(options.search_all);
   var search_all_url = options.search_all_url;
-  var list = container.children('ul');
+  var list = container.children('ul.search_results');
   var global_data = options.global_data;
   var division_entry_data = options.division_entry_data;
   var division_content_data = options.division_content_data;
@@ -31,9 +31,9 @@ $.fn.livesearch = function(options)
     .blur(function(){ setTimeout(hide_search,100) })
     .parents('form').submit( function() { if (results.length > 0) { that.blur(); return searcher_fnc(results[selected].data_entry) } else { return false; } });
 
-  $(".search_category").click(function() {
-    $(this).attr("data-selected", "true")
-    $(".search_category").not(this).attr("data-selected", "false")
+  $(".livesearch__search-category").click(function() {
+    $(this).addClass("livesearch__search-category--selected")
+    $(".livesearch__search-category").not(this).removeClass("livesearch__search-category--selected")
     that.trigger('focus'); // refresh results
   });
 
@@ -145,7 +145,7 @@ $.fn.livesearch = function(options)
 
 
     selected_category =
-      $(".search_category[data-selected='true']").attr("data-category");
+      $(".livesearch__search-category--selected").attr("data-category");
 
     data.each(function()
     {

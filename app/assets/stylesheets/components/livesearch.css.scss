@@ -1,0 +1,25 @@
+#livesearch {
+  #livesearch__search-categories {
+    li.livesearch__search-category {
+      display: inline-block;
+      border-left: 0px;
+      width: auto;
+      a {
+        width: 100px;
+        text-align: center;
+        margin-right: 10px;
+        color: rgb(0, 136, 204);
+        text-shadow: none;
+        display: inline-block;
+        cursor: pointer;
+        background-color: #f0ede8;
+      }
+      &.livesearch__search-category--selected {
+        a {
+          background-color: #8CD0F5;
+          color: white;
+        }
+      }
+    }
+  }
+}

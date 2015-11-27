@@ -75,21 +75,21 @@
           %a#logo.brand.ajax{"href" => root_url}
 
           - if logged_in?
-            %form.navbar-search.pull-right
+            %form.navbar-search.pull-right#livesearch
               %input.span3.search-query#search.icon{"type" => "search", "placeholder" => "&#xf002; Search".html_safe}
               #search_results{:style => 'display:none'}
                 #loading
                   #loading-spinner
-                #search_categories
-                  .search_category{"data-category" => "0", "data-selected" => "true"}
-                    = "All"
-                  .search_category{"data-category" => "2", "data-selected" => "false"}
-                    = "Specialists"
-                  .search_category{"data-category" => "3", "data-selected" => "false"}
-                    = "Clinics"
-                  .search_category{"data-category" => "4", "data-selected" => "false"}
-                    = "Resources"
-                %ul
+                %ul.nav.nav-pills#livesearch__search-categories
+                  %li.livesearch__search-category.livesearch__search-category--selected{"data-category" => "0"}
+                    %a= "All"
+                  %li.livesearch__search-category{"data-category" => "2"}
+                    %a= "Specialists"
+                  %li.livesearch__search-category{"data-category" => "3"}
+                    %a= "Clinics"
+                  %li.livesearch__search-category{"data-category" => "4"}
+                    %a= "Resources"
+                %ul.search_results
                 - if @divisions.length > 1
                   #search_location
                     %label
