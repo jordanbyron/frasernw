@@ -10,39 +10,39 @@ module ApplicationHelper
 
   alias :clinics_procedures :specialists_procedures
 
-  def procedure_ancestry(specialist_or_clinic_or_specialization, classification, specialization)
-    result = {}
-
-    specialist_or_clinic_or_specialization.procedure_specializations.for_specialization(specialization).each do |ps|
-      temp = { ps.procedure => {} }
-      next if ps.classification != classification
-      while ps.parent
-        temp = { ps.parent.procedure => temp }
-        ps = ps.parent
-      end
-      result.merge!(temp) { |key, a, b| a.merge(b) }
+  def procedure_ancestry(item, classification, specialization)
+    process_nested_procedure_specializations = Proc.new do |nested_procedure_specializations|
+      nested_procedure_specializations.inject([]) do |memo, (procedure_specialization, children)|
+        memo << {
+          parent: procedure_specialization.procedure,
+          children: process_nested_procedure_specializations.call(children)
+        }
+      end.sort_by{|hsh| hsh[:parent].name }
     end
 
-    return sort_array_of_hashes( hash_to_array( result ) )
-  end
+    # we take this roundabout path because we need to include
+    # the procedure specializations' ancestors
 
-  def hash_to_array( h )
-    a = []
-    h.each do |k,v|
-      a << {:parent => k, :children => hash_to_array( v )}
-    end
-    a
-  end
+    ids = item.
+      procedure_specializations.
+      classification(classification).
+      for_specialization(specialization).
+      map{|ps| (ps.ancestors + [ ps ]).map(&:id) }.
+      flatten.
+      uniq
 
-  def sort_array_of_hashes( a )
-    a.sort!{ |x, y| x[:parent].name <=> y[:parent].name }
-    a.each do |entry|
-      sort_array_of_hashes( entry[:children] )
-    end
+    nested_procedure_specializations = ProcedureSpecialization.
+      where("procedure_specializations.id IN (?)", ids).
+      arrange
+
+    process_nested_procedure_specializations.call(nested_procedure_specializations)
   end
 
   def compressed_procedures_indented(specialist_or_clinic, classification, specialty)
-    return compressed_procedures_indented_output( procedure_ancestry(specialist_or_clinic, classification, specialty), specialist_or_clinic )
+    compressed_procedures_indented_output(
+      procedure_ancestry(specialist_or_clinic, classification, specialty),
+      specialist_or_clinic
+    )
   end
 
   def compressed_procedures_indented_output(items, root)
