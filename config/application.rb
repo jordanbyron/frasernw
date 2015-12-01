@@ -2,6 +2,7 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 require 'csv'
+require 'wannabe_bool'
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
@@ -100,7 +101,9 @@ module Frasernw
 
     config.action_mailer.default_url_options = { :host => "pathwaysbc.ca" }
 
-    config.middleware.use Rack::Attack
+    if ENV['RACK_ATTACK'].to_b
+      config.middleware.use Rack::Attack
+    end
 
     # Explicitly set the primary key, since AR seems to be unable to find it
     ActiveRecord::SessionStore::Session.primary_key = 'id'
