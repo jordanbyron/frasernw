@@ -549,12 +549,12 @@
 
 /* TOOLTIPS */
 
-.tooltip.top .tooltip-arrow
+.tooltip.top.blue .tooltip-arrow
 {
   border-top-color: $FNW_LIGHT_BLUE;
 }
 
-.tooltip.bottom .tooltip-arrow,
+.tooltip.bottom.blue .tooltip-arrow,
 {
   border-bottom-color: $FNW_LIGHT_BLUE;
 }
@@ -564,13 +564,13 @@
   opacity: 1.0;
 }
 
-.tooltip.top .tooltip-inner // we don't want colouring for tooltip right used for specialty icons
+.tooltip.top.blue .tooltip-inner // we don't want colouring for tooltip right used for specialty icons
 {
   background: $FNW_LIGHT_BLUE;
   color: $FNW_BLUE;
 }
 
-.tooltip.bottom .tooltip-inner
+.tooltip.bottom.blue .tooltip-inner
 {
   background: $FNW_LIGHT_BLUE;
   color: $FNW_BLUE;

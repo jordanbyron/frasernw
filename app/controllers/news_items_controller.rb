@@ -1,5 +1,7 @@
 class NewsItemsController < ApplicationController
   load_and_authorize_resource
+  skip_authorization_check only: [:update_borrowing]
+  skip_authorize_resource only: [:update_borrowing]
 
   def index
     @division = begin
@@ -79,6 +81,21 @@ class NewsItemsController < ApplicationController
     @news_item = NewsItem.find(params[:id])
     @news_item.destroy
     redirect_to news_items_path, :notice => "Successfully deleted news item."
+  end
+
+  def update_borrowing
+    @news_item = NewsItem.find(params[:id])
+    @division = Division.find(params[:division_id])
+
+    if params[:borrow] == "false" && @news_item.user_can_unborrow?(current_user, @division)
+      @news_item.unborrow_from(@division)
+
+      redirect_to news_item_path(@news_item),
+        notice: "Successfully stopped borrowing news item for #{@division.name}."
+    else
+      redirect_to news_item_path(@news_item),
+        notice: "Unauthorized"
+    end
   end
 
   private

@@ -1,7 +1,9 @@
 class SecretEditor
-  attr_reader :name
-
-  def initialize(name)
+  def initialize(name = nil)
     @name = name
+  end
+
+  def name
+    @name || "A secret edit link user"
   end
 end

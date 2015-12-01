@@ -70,7 +70,8 @@ module Serialized
             hospitalIds: specialist.hospitals.map(&:id),
             clinicIds: specialist.clinics.map(&:id),
             specializationIds: specialist.specializations.map(&:id),
-            customLagtimes: custom_lagtimes(specialist),
+            customLagtimes: custom_procedure_times(specialist, :lagtime_mask),
+            customWaittimes: custom_procedure_times(specialist, :waittime_mask),
             isGp: specialist.is_gp,
             isNew: specialist.new?,
             isInProgress: specialist.in_progress,
@@ -88,10 +89,10 @@ module Serialized
         end
       end
 
-      def self.custom_lagtimes(specialist)
+      def self.custom_procedure_times(specialist, method)
         specialist.capacities.inject({}) do |memo, capacity|
-          if capacity.lagtime_mask
-            memo.merge(capacity.procedure.id => capacity.lagtime_mask)
+          if capacity.send(method)
+            memo.merge(capacity.procedure.id => capacity.send(method))
           else
             memo
           end
@@ -123,7 +124,8 @@ module Serialized
             divisionIds: clinic.divisions.map(&:id),
             specializationIds: clinic.specializations.map(&:id),
             wheelchairAccessible: clinic.wheelchair_accessible?,
-            customLagtimes: custom_lagtimes(clinic),
+            customLagtimes: self.custom_procedure_times(clinic, :lagtime_mask),
+            customWaittimes: self.custom_procedure_times(clinic, :waittime_mask),
             isPrivate: clinic.private?,
             isPublic: clinic.public?,
             careProviderIds: clinic.healthcare_providers.map(&:id),
@@ -143,10 +145,10 @@ module Serialized
         end
       end
 
-      def self.custom_lagtimes(clinic)
+      def self.custom_procedure_times(clinic, method)
         clinic.focuses.inject({}) do |memo, focus|
-          if focus.lagtime_mask
-            memo.merge(focus.procedure.id => focus.lagtime_mask)
+          if focus.send(method)
+            memo.merge(focus.procedure.id => focus.send(method))
           else
             memo
           end
@@ -223,26 +225,15 @@ module Serialized
           nameRelativeToParents: procedure.try(:name_relative_to_parents),
           name: procedure.name,
           specializationIds: procedure.specializations.map(&:id),
-          tree: {
-            procedure.id => {
-              focused: true,
-              assumed: {
-                clinics: false,
-                specialists: false
-              },
-              children: procedure.children.inject({}) do |memo, procedure|
-                memo.merge({
-                  procedure.id => {
-                    focused: true,
-                    assumed: {
-                      clinics: false,
-                      specialists: false
-                    }
-                  }
-                })
-              end
-            }
-          }
+          customWaittime: {
+            specialists: procedure.procedure_specializations.first.specialist_wait_time,
+            clinics: procedure.procedure_specializations.first.clinic_wait_time
+          },
+          assumedSpecializationIds: {
+            specialists: procedure.procedure_specializations.select(&:assumed_specialist?).map(&:specialization).map(&:id),
+            clinics: procedure.procedure_specializations.select(&:assumed_clinic?).map(&:specialization).map(&:id)
+          },
+          childrenProcedureIds: procedure.children.map(&:id)
         })
       end
     end,
@@ -335,6 +326,10 @@ module Serialized
           assumed: {
             clinics: ps.assumed_clinic?,
             specialists: ps.assumed_specialist?
+          },
+          customWaittime: {
+            specialists: ps.specialist_wait_time,
+            clinics: ps.clinic_wait_time
           },
           children: transform_nested_procedure_specializations(children)
         }

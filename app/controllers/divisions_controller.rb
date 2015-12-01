@@ -12,6 +12,8 @@ class DivisionsController < ApplicationController
   def show
     @division = Division.find(params[:id])
     @local_referral_cities = generate_local_referral_cities(@division)
+    @division_referral_cities_by_priority = DivisionReferralCity.includes(:city).where(division_id: @division.id).order("priority asc")
+    @priority_rankings = @division_referral_cities_by_priority.map(&:priority).uniq
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 

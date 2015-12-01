@@ -40,6 +40,33 @@
             - Specialization.all.each do |specialization|
               %td
                 = (@local_referral_cities[city.id].present?) && (@local_referral_cities[city.id].include? specialization.id) ? "&#10004;".html_safe : ""
+  %br
+  %p.no_indent.space
+    %strong Custom City Priorites:
+    - if !@division.use_customized_city_priorities?
+      %span="  Disabled"
+    - else
+      %span= "  Enabled"
+  #custom_city_priorities_explanation
+    %p.no_indent
+      %i When enabled, filter tables will sort results preferentially by a city's priority ranking (1-3).
+      %i New cities are automatically assigned the lowest priority rating (3).
+      %i When disabled, filter tables will sort results by the local referral area of each specialization instead.
+      %i Cities outside of your referral area will appear after those inside it
+  - if @division.use_customized_city_priorities?
+    - @priority_rankings.each do |priority|
+      %p.space
+        %strong
+          - if priority == @priority_rankings.min
+            = "Priority #{priority} (highest priority):"
+          - elsif priority == @priority_rankings.max
+            = "Priority #{priority} (lowest priority):"
+          - else
+            = "Priority #{priority}:"
+      %ul
+        - @division_referral_cities_by_priority.reject{|dr_city| dr_city.priority != priority}.each do |dr_city|
+          %li
+            = link_to dr_city.city.name, city_path(dr_city.city), :class => 'ajax'
 
   %p.admin.btn-group
     - if can? :update, @division

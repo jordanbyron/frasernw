@@ -108,7 +108,11 @@ Frasernw::Application.routes.draw do
   #match 'subscriptions' => 'subscriptions#show', :as => 'subscriptions', :via => :get
   resources :notifications
   resources :subscriptions
-  resources :news_items
+  resources :news_items do
+    member do
+      get :update_borrowing
+    end
+  end
   resources :reports do
     collection do
       get :page_views

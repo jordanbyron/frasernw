@@ -5,7 +5,6 @@ var CheckBox = require("../checkbox");
 var ProcedureCheckbox = React.createClass({
   propTypes: {
     filterId: React.PropTypes.string,
-    label: React.PropTypes.string.isRequired,
     level: React.PropTypes.number.isRequired,
     value: React.PropTypes.bool.isRequired,
     children: React.PropTypes.array

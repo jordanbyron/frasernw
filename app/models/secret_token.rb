@@ -74,4 +74,8 @@ class SecretToken < ActiveRecord::Base
 
     false
   end
+
+  def recipient_user
+    SecretEditor.new(recipient)
+  end
 end

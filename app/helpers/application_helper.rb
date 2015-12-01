@@ -10,39 +10,39 @@ module ApplicationHelper
 
   alias :clinics_procedures :specialists_procedures
 
-  def procedure_ancestry(specialist_or_clinic_or_specialization, classification, specialization)
-    result = {}
-
-    specialist_or_clinic_or_specialization.procedure_specializations.for_specialization(specialization).each do |ps|
-      temp = { ps.procedure => {} }
-      next if ps.classification != classification
-      while ps.parent
-        temp = { ps.parent.procedure => temp }
-        ps = ps.parent
-      end
-      result.merge!(temp) { |key, a, b| a.merge(b) }
+  def procedure_ancestry(item, classification, specialization)
+    process_nested_procedure_specializations = Proc.new do |nested_procedure_specializations|
+      nested_procedure_specializations.inject([]) do |memo, (procedure_specialization, children)|
+        memo << {
+          parent: procedure_specialization.procedure,
+          children: process_nested_procedure_specializations.call(children)
+        }
+      end.sort_by{|hsh| hsh[:parent].name }
     end
 
-    return sort_array_of_hashes( hash_to_array( result ) )
-  end
+    # we take this roundabout path because we need to include
+    # the procedure specializations' ancestors
 
-  def hash_to_array( h )
-    a = []
-    h.each do |k,v|
-      a << {:parent => k, :children => hash_to_array( v )}
-    end
-    a
-  end
+    ids = item.
+      procedure_specializations.
+      classification(classification).
+      for_specialization(specialization).
+      map{|ps| (ps.ancestors + [ ps ]).map(&:id) }.
+      flatten.
+      uniq
 
-  def sort_array_of_hashes( a )
-    a.sort!{ |x, y| x[:parent].name <=> y[:parent].name }
-    a.each do |entry|
-      sort_array_of_hashes( entry[:children] )
-    end
+    nested_procedure_specializations = ProcedureSpecialization.
+      where("procedure_specializations.id IN (?)", ids).
+      arrange
+
+    process_nested_procedure_specializations.call(nested_procedure_specializations)
   end
 
   def compressed_procedures_indented(specialist_or_clinic, classification, specialty)
-    return compressed_procedures_indented_output( procedure_ancestry(specialist_or_clinic, classification, specialty), specialist_or_clinic )
+    compressed_procedures_indented_output(
+      procedure_ancestry(specialist_or_clinic, classification, specialty),
+      specialist_or_clinic
+    )
   end
 
   def compressed_procedures_indented_output(items, root)
@@ -216,4 +216,23 @@ module ApplicationHelper
   def localstorage_cache_version
     Setting.fetch(:localstorage_cache_version)
   end
+
+  # # # # TOOLTIPS
+  def show_tooltip(*args) # provides default tooltip behaviour for many icons, tooltips will not show unless bootstrap.js tooltip is initialized
+    options = args.extract_options!
+    return :title => options[:title] || "Title missing", :data => { toggle: "tooltip", placement: options[:placement] || "top", animation: options[:animation] || "true"}
+  end
+
+  def icon(icon_class, title=nil, placement="top") # icon will not have a tooltip unless a title is passed
+    if title.present?
+      "<i class='#{icon_class}' data-toggle='tooltip' data-original-title='#{title}' data-placement='#{placement}'</i>".html_safe
+    else
+      "<i class='#{icon_class}'</i>".html_safe
+    end
+  end
+
+  def template_for_blue_tooltip #custom html needed for displaying the tooltips that we've customized for showing links that has blue styling
+    '<div class="tooltip top blue" role="tooltip"><div class="tooltip-arrow blue"></div><div class="tooltip-inner"></div></div>'
+  end
+  # # # #
 end

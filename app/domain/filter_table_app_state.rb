@@ -32,7 +32,8 @@ class FilterTableAppState
           0 => Clinic::UNKNOWN_STATUS,
           3 => Clinic::UNKNOWN_STATUS
         })
-      }
+      },
+      waittimeHash: Specialist::WAITTIME_HASH
     }
   end
 end

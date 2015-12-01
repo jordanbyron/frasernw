@@ -13,6 +13,8 @@ var utils = require("utils");
 var anyFiltersActivated = require("state_mappers/filter_table/any_filters_activated");
 var React = require("react");
 var CategoryLink = require("react_components/category_link");
+var Alert = require("react_components/alert");
+var MaybeContent = require("react_components/maybe_content");
 
 module.exports = function(state, dispatch) {
   // console.log("STATE:");
@@ -126,7 +128,7 @@ var opaqueFiltered = function(referents: Array, panelTypeKey: string, filterValu
   });
 };
 
-var filterByPageType = function(records, state) {
+var filterByPageType = function(records, state, panelTypeKey) {
   return {
     specialization() {
       return records.filter((record) => {
@@ -134,8 +136,12 @@ var filterByPageType = function(records, state) {
       });
     },
     procedure() {
+      var assumedSpecializationIds =
+        state.app.procedures[state.ui.procedureId].assumedSpecializationIds[panelTypeKey];
+
       return records.filter((record) => {
-        return (_.includes(record.procedureIds, state.ui.procedureId));
+        return (_.includes(record.procedureIds, state.ui.procedureId) ||
+          _.any(_.intersection(record.specializationIds, assumedSpecializationIds)));
       });
     },
   }[state.ui.pageType]();
@@ -184,6 +190,69 @@ var shouldShowSpecializationFilter = function(filtered, filterValues, pageType, 
   );
 };
 
+const customWaittimeConfig = function(activatedProcedures, state, panelTypeKey) {
+  if(state.ui.pageType === "specialization") {
+    let nestedProcedureIds = state.app.specializations[state.ui.specializationId].nestedProcedureIds
+
+    return {
+      shouldUse: (activatedProcedures.length === 1 &&
+        nestedProcedureIds[activatedProcedures[0]].customWaittime[panelTypeKey]),
+      procedureId: activatedProcedures[0]
+    };
+  }
+  else if(state.ui.pageType === "procedure") {
+    let sources = {
+      page: {
+        test: (state.app.procedures[state.ui.procedureId].customWaittime[panelTypeKey] &&
+          activatedProcedures.length === 0),
+        id: state.ui.procedureId
+      },
+      selection: {
+        test: (!state.app.procedures[state.ui.procedureId].customWaittime[panelTypeKey] &&
+          activatedProcedures.length === 1 &&
+          state.app.procedures[activatedProcedures[0]].customWaittime[panelTypeKey]),
+        id: activatedProcedures[0]
+      }
+    }
+
+    return {
+      shouldUse: _.some(sources, _.property("test")),
+      procedureId: (_.find(sources, _.property("test")) || {}).id
+    }
+  }
+};
+
+const CustomWaittimeMessage = (props) => (
+  <Alert type="info">
+    <i className="icon-link" style={{marginRight: "5px"}}/>
+    <span>
+      You have chosen an area of practice in which clinics have optionally provided a specific wait time. The wait time column has been updated accordingly.
+    </span>
+  </Alert>
+);
+
+const pageAssumedSpecializations = (state, panelTypeKey) => {
+  return state.app.procedures[state.ui.procedureId].assumedSpecializationIds[panelTypeKey];
+}
+
+const AssumedMessage = (props) => {
+  let { state, panelTypeKey } = props;
+  let _members = pageAssumedSpecializations(state, panelTypeKey).map((id) => {
+    if(panelTypeKey === "specialists"){
+      return state.app.specializations[id].membersName;
+    } else {
+      return `${state.app.specializations[id].name} clinics`;
+    }
+  })
+  let _procedureName = state.app.procedures[state.ui.procedureId].name;
+
+  return(
+    <div className="assumed-phrase">
+      { `It is assumed that all ${_members.join(" and ")} see ${_procedureName}.` }
+    </div>
+  );
+}
+
 var PANEL_PROPS_GENERATORS = {
   specialists: function(state, dispatch) {
     return this.referents(state, dispatch, "specialists");
@@ -193,19 +262,8 @@ var PANEL_PROPS_GENERATORS = {
   },
   referents: function(state, dispatch, panelTypeKey) {
     // what are the records we're using to mask filters?
-    var maskingSet = {
-      specialization: function() {
-        return _.values(state.app[panelTypeKey]).filter((record) => {
-          return _.includes(record.specializationIds, state.ui.specializationId);
-        });
-      },
-      procedure: function() {
-        return _.values(state.app[panelTypeKey]).filter((record) => {
-          return _.includes(record.procedureIds, state.ui.procedureId);
-        });
-      }
-    }[state.ui.pageType]();
-
+    let maskingSet =
+      filterByPageType(_.values(state.app[panelTypeKey]), state, panelTypeKey);
     var sortConfig = referentSortConfig(state, { panelTypeKey: panelTypeKey });
     var filterValues = generateFilterValuesForPanel(
       state,
@@ -224,22 +282,31 @@ var PANEL_PROPS_GENERATORS = {
     );
     var filtered = {
       withAllFilters: utils.from(
-        _.partialRight(filterByPageType, state),
+        _.partialRight(filterByPageType, state, panelTypeKey),
         _.partialRight(filterByCities, filterValues),
         _opaqueFiltered
       ),
       withoutPageTypeFilter: filterByCities(_opaqueFiltered, filterValues),
-      withoutCityFilter: filterByPageType(_opaqueFiltered, state)
+      withoutCityFilter: filterByPageType(_opaqueFiltered, state, panelTypeKey)
     };
+
+    var _activatedProcedures = _.keys(_.pick(filterValues.procedures, _.identity));
+    var _customWaittimeConfig = customWaittimeConfig(
+      _activatedProcedures,
+      state,
+      panelTypeKey
+    );
 
     var bodyRowConfig = {
       panelTypeKey: panelTypeKey,
       panelKey: state.ui.panelTypeKey,
       rowGenerator: "referents",
       rowGeneratorConfig: {
-        includingOtherSpecialties: shouldIncludeOtherSpecializations(filtered, filterValues, state.ui.pageType, _filterValueOverrides)
+        includingOtherSpecialties: shouldIncludeOtherSpecializations(filtered, filterValues, state.ui.pageType, _filterValueOverrides),
+        customWaittime: _customWaittimeConfig
       }
     };
+
     var bodyRows = generateBodyRows(
       state,
       finalSet(filtered, filterValues, state.ui.pageType, _filterValueOverrides),
@@ -303,6 +370,18 @@ var PANEL_PROPS_GENERATORS = {
         collectionName: genericMembersName,
         showingOtherSpecialties: !filterValues.specializationFilterActivated
       },
+      assumedMessage: (
+        <MaybeContent
+          shouldDisplay={state.ui.pageType === "procedure" && _.any(pageAssumedSpecializations(state, panelTypeKey))}
+          contents={_.partial(React.createElement, AssumedMessage, {state: state, panelTypeKey: panelTypeKey})}
+        />
+      ),
+      customizedWaittimeMessage: (
+        <MaybeContent
+          shouldDisplay={_customWaittimeConfig.shouldUse}
+          contents={_.partial(React.createElement, CustomWaittimeMessage, {})}
+        />
+      ),
       assumedList: assumedListProps(state, panelTypeKey, membersName),
       iconKey: panelTypeKey,
       reducedView: _.get(state, ["ui", "panels", panelTypeKey, "reducedView"], "main"),
@@ -552,8 +631,6 @@ var referentSortConfig = function(state, config) {
     }
   );
 };
-
-
 
 var findActiveContentCategories = function(state) {
   return _.filter(
