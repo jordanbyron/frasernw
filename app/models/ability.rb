@@ -64,6 +64,10 @@ class Ability
         end
         can :create, ScItem
 
+        can :manage, DivisionDisplayScItem do |item|
+          user.divisions.include? Division.find(item.division_id)
+        end
+
         #can edit non-admin/super-admin users
         can [:index, :new, :create, :show], User
         can [:edit, :update], User do |u|

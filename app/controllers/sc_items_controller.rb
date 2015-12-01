@@ -10,7 +10,9 @@ class ScItemsController < ApplicationController
 
   def show
     @sc_item = ScItem.find(params[:id])
+    @division = current_user_divisions.first
     @feedback = @sc_item.active_feedback_items.build
+    @share_url = share_sc_item_path(@sc_item)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -87,6 +89,25 @@ class ScItemsController < ApplicationController
     @sc_item = ScItem.find(params[:id])
     @sc_item.destroy
     redirect_to sc_items_url, :notice => "Successfully deleted content item."
+  end
+
+  def share
+    @sc_item = ScItem.find(params[:id])
+    @division = Division.find(params[:division_id])
+    existing_record =
+      DivisionDisplayScItem.where(sc_item_id: @sc_item.id, division_id: @division.id).first
+
+    return unless params[:is_shared].present?
+    return unless @sc_item.present?
+    return unless @division.present?
+
+    if params[:is_shared].to_b && !existing_record.present?
+      DivisionDisplayScItem.create(sc_item_id: @sc_item.id, division_id: @division.id)
+    elsif !params[:is_shared].to_b && existing_record.present?
+      existing_record.destroy
+    end
+
+    render nothing: true, status: 200
   end
 
   private

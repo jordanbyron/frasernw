@@ -38,6 +38,8 @@ Frasernw::Application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = ENV["FORCE_SSL"].to_b
 
+  config.middleware.use Rack::Attack
+
   # See everything in the log (default is :info)
   # config.log_level = :debug
 
