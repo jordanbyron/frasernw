@@ -104,38 +104,39 @@
         });
       }
 
-  %p.space
-    %strong
-      Share to:
-    %ul#specialties-menu
-    - if @sc_item.shareable?
-      - current_user_divisions.reject{ |division| !(division == @sc_item.division) }.each do |division|
-        %span
-          = check_box_tag "share_sc_item",
-            division.id,
-            division.borrowed_sc_items.include?(@sc_item),
-            class: "share_sc_item check_boxes optional",
-            label: division.name, :class => "checkbox inline"
-          = label_tag "share_sc_item", division.name, :class => "checkbox inline"
+  - if current_user_is_admin? || current_user_is_super_admin?
+    %p.space
+      %strong
+        Share to:
+      %ul#specialties-menu
+      - if @sc_item.shareable?
+        - current_user_divisions.reject{ |division| !(division == @sc_item.division) }.each do |division|
+          %span
+            = check_box_tag "share_sc_item",
+              division.id,
+              division.borrowed_sc_items.include?(@sc_item),
+              class: "share_sc_item check_boxes optional",
+              label: division.name, :class => "checkbox inline"
+            = label_tag "share_sc_item", division.name, :class => "checkbox inline"
 
 
-  :javascript
-    var shareUrl = "#{@share_url}";
+    :javascript
+      var shareUrl = "#{@share_url}";
 
-    $(".share_sc_item").change(function(event){
-      $.ajax({
-        url: shareUrl,
-        type: "PUT",
-        data: {
-          is_shared: event.target.checked,
-          division_id: event.target.value
-        }
-      }).done(function() {
-        console.log("updated succesfully");
-      }).fail(function() {
-        event.target.checked = !event.target.checked;
-      });
-    })
+      $(".share_sc_item").change(function(event){
+        $.ajax({
+          url: shareUrl,
+          type: "PUT",
+          data: {
+            is_shared: event.target.checked,
+            division_id: event.target.value
+          }
+        }).done(function() {
+          console.log("updated succesfully");
+        }).fail(function() {
+          event.target.checked = !event.target.checked;
+        });
+      })
 
 
 
