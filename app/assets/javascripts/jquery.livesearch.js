@@ -218,7 +218,16 @@ $.fn.livesearch = function(options)
     selected = 0
     set_selected(selected)
 
+    set_results_max_height();
     container.animate({height: "show"}, 200)
+  }
+
+  function set_results_max_height()
+  {
+    var top_y = $("#main-nav").offset().top + $("#main-nav").height();
+    var max_height = $(window).height() - top_y;
+
+    $("#search_results").css("max-height", max_height);
   }
 
   function scorer(data_entry, term, fuzziness)
