@@ -30,7 +30,9 @@ module GenerateSearchData
             "n" => item.title,
             "sp" => item.specializations.not_in_progress_for_divisions([division]).uniq.collect{ |s| s.id },
             "id" => item.id,
-            "go" => order_map[category.name] }
+            "go" => order_map[category.name],
+            "rc" => item.root_category.id
+          }
           search_data << entry
         end
       end

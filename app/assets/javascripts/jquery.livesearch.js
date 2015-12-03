@@ -151,9 +151,10 @@ $.fn.livesearch = function(options)
 
     var best_match = null;
 
-
-    selected_category =
-      $(".livesearch__search-category--selected").attr("data-category");
+    selected_button = $(".livesearch__search-category--selected")
+    selected_category = selected_button.attr("data-category");
+    // only relevant if we've selected a content category
+    selected_root_content_category = selected_button.attr("data-root-id");
 
     data.each(function()
     {
@@ -162,9 +163,8 @@ $.fn.livesearch = function(options)
         // Searching All
         // noop
       }
-      else if (selected_category === "4" && !(parseInt(this.go) > 7 )) {
-        // Searching for ScItem -- "go" refers to category, which is anything
-        // greater than 7
+      else if (selected_category === "4" && this.rc !== parseInt(selected_root_content_category)) {
+        // Searching for ScItem
         return;
       }
       else if (selected_category !== "4" && selected_category !== this.go) {

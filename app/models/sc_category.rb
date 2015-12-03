@@ -38,6 +38,10 @@ class ScCategory < ActiveRecord::Base
     end
   end
 
+  def self.by_name(name)
+    ScCategory.where(name: name).first
+  end
+
   def filterable_on_specialty_pages?
     [4, 1].include?(display_mask)
   end
