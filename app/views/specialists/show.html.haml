@@ -195,7 +195,7 @@
                       = "(#{specialist_office.sector})" if specialist_office.show_sector_info?
                       - if num_specialists > 1
                         with
-                        %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), :class => 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
+                        %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), :class => 'ajax'}</li>"}.join('').html_safe}</ul>" , :data => {:toggle => 'tooltip', 'original-title' => 'Can be emailed', 'placement' => 'top', 'template' => "#{template_for_blue_tooltip}".html_safe} }= "#{pluralize(num_specialists-1, 'other')}"
                     %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
                     %p= location.in_details if location.in_details.present?
                   - elsif location.in_clinic?
@@ -209,7 +209,7 @@
                       = "(#{specialist_office.sector})" if specialist_office.show_sector_info?
                       - if num_specialists > 1
                         with
-                        %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), :class => 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
+                        %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), :class => 'ajax'}</li>"}.join('').html_safe}</ul>", :data => {:toggle => 'tooltip', 'original-title' => 'Can be emailed', 'placement' => 'top', 'template' => "#{template_for_blue_tooltip}".html_safe} }= "#{pluralize(num_specialists-1, 'other')}"
                     %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
                     %p= location.in_details if location.in_details.present?
                   - elsif address.present?
@@ -218,7 +218,7 @@
                       = "(#{specialist_office.sector})" if specialist_office.show_sector_info?
                       - if num_specialists > 1
                         with
-                        %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), :class => 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{pluralize(num_specialists-1, 'other')}"
+                        %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), :class => 'ajax'}</li>"}.join('').html_safe}</ul>" , :data => {:toggle => 'tooltip', 'original-title' => 'Can be emailed', 'placement' => 'top', :template => "#{template_for_blue_tooltip}".html_safe} }= "#{pluralize(num_specialists-1, 'other')}"
                 - if specialist_office.location_opened.present?
                   %p
                     This practice opened at this location

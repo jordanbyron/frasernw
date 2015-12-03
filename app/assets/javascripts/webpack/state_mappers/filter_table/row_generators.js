@@ -92,7 +92,7 @@ var labelWaittime = function(record, custom, procedureId, waittimeHash) {
   if(custom){
     return (waittimeHash[record.customWaittimes[procedureId]] || "");
   } else {
-    return record.waittime
+    return (record.waittime || "");
   }
 };
 
