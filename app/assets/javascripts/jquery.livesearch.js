@@ -130,6 +130,15 @@ $.fn.livesearch = function(options)
     that.trigger('focus'); //refresh results
   }
 
+  function effective_max_results(max_results, selected_category) {
+    if(selected_category === "0") {
+      return max_results;
+    }
+    else {
+      return 999;
+    }
+  }
+
   function filter_search(event)
   {
     disable_page_scroll();
@@ -219,7 +228,9 @@ $.fn.livesearch = function(options)
       }
     }
 
-    results = results.sort(function(a, b){return b.total_score - a.total_score}).slice(0,max_results);
+    results = results
+      .sort(function(a, b){return b.total_score - a.total_score})
+      .slice(0, effective_max_results(max_results, selected_category));
 
     var last_group = -999;
     $.each(results.sort(grouper_fnc), function(index, entry)
