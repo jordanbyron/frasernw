@@ -25,7 +25,7 @@ $.fn.livesearch = function(options)
 
   container.mouseover( function() { set_selected(-1) });
 
-  var onBlur = function(e) {
+  var on_blur = function(e) {
     if($("#search_results").is(":hover")){
       return false;
     } else {
@@ -34,9 +34,9 @@ $.fn.livesearch = function(options)
   }
 
   this
-    .keyup(filter_search).keyup()
+    .keyup(filter_search)
     .focus(filter_search)
-    .blur(onBlur)
+    .blur(on_blur)
     .parents('form').submit( function() { if (results.length > 0) { that.blur(); return searcher_fnc(results[selected].data_entry) } else { return false; } });
 
   $(".livesearch__search-category").click(function(e) {
@@ -80,11 +80,27 @@ $.fn.livesearch = function(options)
 
   return this;
 
+  function disable_page_scroll()
+  {
+    $("html").css("height", "100%");
+    $("body").css("height", "100%");
+    $("body").css("padding-bottom", "0px");
+    $("body").css("overflow", "hidden");
+  }
+  function enable_page_scroll()
+  {
+    $("html").css("height", "");
+    $("body").css("height", "");
+    $("body").css("padding-bottom", "");
+    $("body").css("overflow", "");
+  }
+
   function hide_search()
   {
     if (!(that.is(':focus')))
     {
       container.animate({height: "hide"}, 200)
+      enable_page_scroll();
     }
   }
 
@@ -116,6 +132,7 @@ $.fn.livesearch = function(options)
 
   function filter_search(event)
   {
+    disable_page_scroll();
     if (event && event.keyCode == 38)
     {
       //up key
