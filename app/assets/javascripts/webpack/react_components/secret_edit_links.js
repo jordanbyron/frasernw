@@ -47,7 +47,7 @@ const GenerateButton = React.createClass({
       this.props.addLink(this.refs.recipient.value);
     }
     else {
-      alert("Recipient must be present");
+      alert("A new secret edit link was not created because you have not typed in a 'Recipient' for this new secret edit link.  Please type in who will be receiving this secret edit link under the 'Recipient' column in the secret edit link form and then try again.");
     }
   },
   onKeyPress(e) {
