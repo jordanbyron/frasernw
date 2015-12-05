@@ -1,4 +1,11 @@
 #livesearch {
+
+  @media (max-width: 767px) {
+    .livesearch__customize-container {
+      display: none;
+    }
+  }
+
   .livesearch__customize-header {
     font-weight: bold;
     color: #424242;
