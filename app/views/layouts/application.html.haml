@@ -80,23 +80,30 @@
               #search_results{:style => 'display:none'}
                 #loading
                   #loading-spinner
-                %ul.nav.nav-pills#livesearch__search-categories
-                  %li.livesearch__search-category.livesearch__search-category--selected{"data-category" => "0"}
-                    %a= "All"
-                  %li.livesearch__search-category{"data-category" => "2"}
-                    %a= "Specialists"
-                  %li.livesearch__search-category{"data-category" => "3"}
-                    %a= "Clinics"
-                  %li.livesearch__search-category{"data-category" => "4", "data-root-id" => ScCategory.by_name("Physician Resources").id}
-                    %a= "Physician Resources"
-                  %li.livesearch__search-category{"data-category" => "4", "data-root-id" => ScCategory.by_name("Patient Info").id }
-                    %a= "Patient Info"
+                .livesearch__customize-container
+                  .livesearch__filter-group
+                    %span.livesearch__prefix
+                      = "Show me:"
+                    %ul.nav.nav-pills#livesearch__search-categories
+                      %li.livesearch__search-category.livesearch__search-category--selected{"data-category" => "0"}
+                        %a= "Everything"
+                      %li.livesearch__search-category{"data-category" => "2"}
+                        %a= "Specialists"
+                      %li.livesearch__search-category{"data-category" => "3"}
+                        %a= "Clinics"
+                      %li.livesearch__search-category{"data-category" => "4", "data-root-id" => ScCategory.by_name("Physician Resources").id}
+                        %a= "Physician Resources"
+                      %li.livesearch__search-category{"data-category" => "4", "data-root-id" => ScCategory.by_name("Patient Info").id }
+                        %a= "Patient Info"
+                  .livesearch__filter-group.livesearch__filter-group--scopes
+                    %span.livesearch__prefix
+                      = "In:"
+                    %ul.nav.nav-pills#livesearch__search-categories
+                      %li.livesearch__search-scope.livesearch__search-scope--selected{"data-scope" => "local"}
+                        %a= "My Divisions"
+                      %li.livesearch__search-scope{"data-scope" => "global"}
+                        %a= "All Divisions"
                 %ul.search_results
-                - if @divisions.length > 1
-                  #search_location
-                    %label
-                      %input#search_all{"type" => "checkbox"}
-                      Search specialists and clinics in all divisions
 
           .nav-collapse
             - if logged_in?

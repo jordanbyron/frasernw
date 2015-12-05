@@ -29,7 +29,7 @@ $.fn.livesearch = function(options)
     if($("#search_results").is(":hover")){
       return false;
     } else {
-      setTimeout(hide_search,100);
+      setTimeout(hide_search_if_unfocused,100);
     }
   }
 
@@ -40,13 +40,24 @@ $.fn.livesearch = function(options)
     .parents('form').submit( function() { if (results.length > 0) { that.blur(); return searcher_fnc(results[selected].data_entry) } else { return false; } });
 
   $(".livesearch__search-category").click(function(e) {
+
     $(this).addClass("livesearch__search-category--selected")
     $(".livesearch__search-category").not(this).removeClass("livesearch__search-category--selected")
+    if($(this).attr("data-category") == 4){
+      $(".livesearch__filter-group--scopes").hide();
+    } else {
+      $(".livesearch__filter-group--scopes").show();
+    }
     that.trigger('focus'); // refresh results
   });
 
-  search_all.click(function() {
-    if ($(this).prop('checked') == true)
+  $(".livesearch__search-scope").click(function(e) {
+    if($(e.target).hasClass(".livesearch__search-scope--selected")) {
+      return;
+    }
+
+    $(".livesearch__search-scope").toggleClass("livesearch__search-scope--selected");
+    if ($(this).attr("data-scope") === "global")
     {
       if (typeof pathways_all_search_data == 'undefined')
       {
@@ -76,7 +87,7 @@ $.fn.livesearch = function(options)
       use_division_data();
       that.trigger('focus'); //maintain focus
     }
-  }).blur(function(){ setTimeout(hide_search,100) });
+  }).blur(function(){ setTimeout(hide_search_if_unfocused,100) });
 
   return this;
 
@@ -97,10 +108,16 @@ $.fn.livesearch = function(options)
 
   function hide_search()
   {
+    container.animate({height: "hide"}, 200)
+    enable_page_scroll();
+  }
+
+
+  function hide_search_if_unfocused()
+  {
     if (!(that.is(':focus')))
     {
-      container.animate({height: "hide"}, 200)
-      enable_page_scroll();
+      hide_search();
     }
   }
 
@@ -167,7 +184,7 @@ $.fn.livesearch = function(options)
 
     if ( !term )
     {
-      container.animate({height: "hide"}, 200)
+      hide_search();
       return
     }
 
