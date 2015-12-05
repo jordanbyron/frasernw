@@ -51,6 +51,10 @@ $.fn.livesearch = function(options)
     that.trigger('focus'); // refresh results
   });
 
+  $(".livesearch__close-button").click(function() {
+    hide_search();
+  })
+
   $(".livesearch__search-scope").click(function(e) {
     if($(e.target).hasClass(".livesearch__search-scope--selected")) {
       return;
