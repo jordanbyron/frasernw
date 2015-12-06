@@ -47,7 +47,11 @@ const GenerateButton = React.createClass({
       this.props.addLink(this.refs.recipient.value);
     }
     else {
-      alert("A new secret edit link was not created because you have not typed in a 'Recipient' for this new secret edit link.  Please type in who will be receiving this secret edit link under the 'Recipient' column in the secret edit link form and then try again.");
+
+
+      $( ".recipientinput" ).fadeIn( 3000, function() {
+        $('.recipientinput').removeClass('info').fadeIn( 3000 ).addClass('error');
+      });
     }
   },
   onKeyPress(e) {
@@ -59,18 +63,29 @@ const GenerateButton = React.createClass({
     this.generateLink();
   },
   render() {
+    var recipientInput = this.props.recipient.length > 0
     if(this.props.canEdit) {
       return(
         <tr>
           <td style={{backgroundColor: "#F3F8FC"}}>
-            <input
-              style={{margin: "5px 0px"}}
-              placeholder="Email"
-              ref="recipient"
-              onChange={this.props.onUpdateRecipient}
-              onKeyUp={this.onKeyPress}
-              value={this.props.recipient}>
-            </input>
+            <div className={recipientInput ? 'recipientinput control-group success' : 'recipientinput control-group'}>
+              <div className="controls">
+                <input
+                  style={{margin: "5px 0px"}}
+                  placeholder="Email"
+                  ref="recipient"
+                  onChange={this.props.onUpdateRecipient}
+                  onKeyUp={this.onKeyPress}
+                  value={this.props.recipient}>
+                </input>
+                <i>
+                <span className="help-inline">
+                  <i className={recipientInput ? "icon icon-ok" : "icon icon-warning-sign"}/>
+                  {recipientInput ? "  Ready to create link. Press + to create it." : " Secret edit links can not be created without a recipient"}
+                </span>
+                </i>
+              </div>
+            </div>
           </td>
           <td style={{backgroundColor: "#F3F8FC"}}>{this.props.currentUserName}</td>
           <td style={{backgroundColor: "#F3F8FC"}}></td>
