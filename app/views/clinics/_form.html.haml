@@ -356,7 +356,9 @@
 
       %hr{ "style" => "visibility:hidden" }
 
-      = f.association :healthcare_providers, as: :check_boxes
+      = f.association :healthcare_providers,
+        as: :check_boxes,
+        collection: HealthcareProvider.ordered_by_name
 
     -#section_deprecated.no-print
 

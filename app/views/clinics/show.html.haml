@@ -228,7 +228,7 @@
 
               %p
                 %strong Healthcare providers
-                ="who see patients at the clinic: #{@clinic.healthcare_providers.map{ |x| x.name }.join(", ")}"
+                ="who see patients at the clinic: #{@clinic.healthcare_providers.ordered_by_name.map{ |x| x.name }.join(", ")}"
 
             - if @clinic.visible_attendances.any?
 

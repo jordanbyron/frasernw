@@ -26,7 +26,7 @@ module ProcedureSpecializable
   # We assume that they also do parent procedures
   def procedure_ids_with_parents
     procedure_specializations.includes(:procedure).map do |ps|
-      [ ps.procedure.id, ps.ancestors.map(&:procedure).map(&:id) ]
+      [ ps.procedure.id, ps.ancestor_procedure_ids ]
     end.flatten
   end
 

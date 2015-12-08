@@ -6,4 +6,6 @@ class HealthcareProvider < ActiveRecord::Base
   has_many :clinics, :through => :clinic_healthcare_provider
 
   validates_presence_of :name, :on => :create, :message => "can't be blank"
+
+  scope :ordered_by_name, -> { order("name ASC") }
 end

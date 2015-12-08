@@ -103,6 +103,7 @@ module Serialized
       def self.call
         Clinic.
           includes([:procedures, :specializations, :languages]).
+          includes(:healthcare_providers).
           includes_location_data.
           includes_location_schedules.
           all.

@@ -21,7 +21,7 @@ class ProcedureSpecialization < ActiveRecord::Base
   scope :assumed_specialist, where("classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST} OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}")
   scope :assumed_clinic, where("classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC} OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}")
   scope :non_assumed, where("classification = #{ProcedureSpecialization::CLASSIFICATION_FOCUSED} OR classification = #{ProcedureSpecialization::CLASSIFICATION_NONFOCUSED}")
-  scope :classification, -> (classification){ where("classification = (?)", classification) } 
+  scope :classification, -> (classification){ where("classification = (?)", classification) }
   scope :mapped, where(mapped: true)
   scope :has_procedure, joins(:procedure)
 
@@ -68,6 +68,10 @@ class ProcedureSpecialization < ActiveRecord::Base
         safe_parent.present? &&
         safe_parent.matches_ancestry?(ancestry)
     end
+  end
+
+  def ancestor_procedure_ids(force = false)
+    ancestors.map(&:procedure).map(&:id)
   end
 
   def safe_parent
