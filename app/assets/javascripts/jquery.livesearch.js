@@ -97,17 +97,17 @@ $.fn.livesearch = function(options)
 
   function disable_page_scroll()
   {
-    // $("html").css("height", "100%");
-    // $("body").css("height", "100%");
-    // $("body").css("padding-bottom", "0px");
-    // $("body").css("overflow", "hidden");
+    $("html").css("height", "100%");
+    $("body").css("height", "100%");
+    $("body").css("padding-bottom", "0px");
+    $("body").css("overflow", "hidden");
   }
   function enable_page_scroll()
   {
-    // $("html").css("height", "");
-    // $("body").css("height", "");
-    // $("body").css("padding-bottom", "");
-    // $("body").css("overflow", "");
+    $("html").css("height", "");
+    $("body").css("height", "");
+    $("body").css("padding-bottom", "");
+    $("body").css("overflow", "");
   }
 
   function hide_search()
@@ -162,7 +162,6 @@ $.fn.livesearch = function(options)
 
   function filter_search(event)
   {
-    disable_page_scroll();
     if (event && event.keyCode == 38)
     {
       //up key
@@ -191,6 +190,7 @@ $.fn.livesearch = function(options)
       hide_search();
       return
     }
+    disable_page_scroll();
 
     list.empty()
 

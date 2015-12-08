@@ -72,3 +72,10 @@
     }
   }
 }
+
+// This is a hack to get I.E. 10 to re-render the body after we call
+// enable_page_scroll() in jquery.livesearch.css.
+// I have no idea why it works.
+body {
+  border-bottom: 1px solid #F0EDE8;
+}
