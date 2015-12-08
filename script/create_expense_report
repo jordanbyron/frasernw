@@ -11,9 +11,9 @@ require File.expand_path("../../config/heroku_env.rb", __FILE__)
 expense_report_folder = ENV["EXPENSE_REPORT_FOLDER"]
 invoice_name = ENV["INVOICE_NAME"]
 today = Date.today
-# previous Monday - Sunday
-start_date = (today - today.wday - 6).to_s
-end_date = (today - today.wday).to_s
+# previous Saturday - Sunday
+start_date = (today - today.wday - 7).to_s
+end_date = (today - today.wday - 1).to_s
 # write to CSV
 
 filename =

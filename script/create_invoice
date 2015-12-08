@@ -56,8 +56,9 @@ end.sort_by{ |row| row[0] }
 
 # miscellaneous other info needed for the doc
 
-start_date = export_rows[0][0]
-end_date = export_rows.last[0]
+filename = File.basename(filepath)
+start_date = filename.match(/(?<=Toggl_time_entries_).+(?=_to_)/).to_s
+end_date = filename.match(/(?<=_to_).+(?=.csv)/).to_s
 total_hours = export_rows.inject(0.0) do |memo, row|
   memo + row[1]
 end
