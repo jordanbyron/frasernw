@@ -12,6 +12,11 @@
     border-bottom: 1px dotted #a3d9f5;
   }
 
+  .livesearch__inner-results-container {
+    padding-top: 10px;
+    position: relative;
+  }
+
   .search_results {
     margin-top: 0px;
   }
@@ -22,12 +27,12 @@
   }
 
   .livesearch__filter-group {
-    margin-top: 10px;
     margin-bottom: 10px;
   }
 
   .livesearch__close-button {
     font-size: 23px;
+    cursor: pointer;
   }
 
   .livesearch__prefix {
