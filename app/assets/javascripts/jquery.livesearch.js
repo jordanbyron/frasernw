@@ -97,17 +97,17 @@ $.fn.livesearch = function(options)
 
   function disable_page_scroll()
   {
-    $("html").css("height", "100%");
-    $("body").css("height", "100%");
-    $("body").css("padding-bottom", "0px");
-    $("body").css("overflow", "hidden");
+    // $("html").css("height", "100%");
+    // $("body").css("height", "100%");
+    // $("body").css("padding-bottom", "0px");
+    // $("body").css("overflow", "hidden");
   }
   function enable_page_scroll()
   {
-    $("html").css("height", "");
-    $("body").css("height", "");
-    $("body").css("padding-bottom", "");
-    $("body").css("overflow", "");
+    // $("html").css("height", "");
+    // $("body").css("height", "");
+    // $("body").css("padding-bottom", "");
+    // $("body").css("overflow", "");
   }
 
   function hide_search()
