@@ -45,7 +45,8 @@ module.exports = React.createClass({
     width: "50%",
     backgroundColor: "white",
     padding: "30px",
-    boxShadow: "2px 2px 8px #888"
+    boxShadow: "2px 2px 8px #888",
+    zIndex: "999"
   },
   submitText: function() {
     if (this.props.state === "SUBMITTING"){
