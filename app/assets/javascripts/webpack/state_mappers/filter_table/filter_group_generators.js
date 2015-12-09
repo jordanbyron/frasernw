@@ -112,7 +112,7 @@ module.exports = {
         }
       },
       title: "Referrals",
-      isOpen: _.get(state, ["ui", "panels", panelKey, "filterGroupVisibility", "referrals"], false),
+      isOpen: _.get(state, ["ui", "panels", panelKey, "filterGroupVisibility", "referrals"], true),
       componentKey: "referrals"
     };
   },
