@@ -30,6 +30,12 @@ module ProcedureSpecializable
     end.flatten
   end
 
+  def primary_specialization_complete_in?(divisions)
+    Specialization.
+      not_in_progress_for_divisions(divisions).
+      include?(primary_specialization)
+  end
+
   module ClassMethods
     def with_ps_with_ancestry(ancestry)
       all.select do |procedure_specializable|

@@ -34,7 +34,7 @@ class NewsItem < ActiveRecord::Base
       end
 
     division_groups.each do |division_group|
-      LatestUpdates.delay.exec(
+      LatestUpdates.delay.call(
         max_automated_events: 5,
         division_ids: division_group,
         force: true,
