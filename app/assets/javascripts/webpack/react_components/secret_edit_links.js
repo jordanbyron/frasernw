@@ -165,7 +165,7 @@ const SecretEditLinks = React.createClass({
   },
   attemptAddLink(recipient) {
     if(recipient.length > 0) {
-      $.post(this.props.attemptAddLink, {
+      $.post(this.props.addLink, {
         recipient: recipient,
         accessible_id: this.props.accessibleId,
         accessible_type: this.props.accessibleType
