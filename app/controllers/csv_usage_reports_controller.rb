@@ -28,6 +28,6 @@ class CsvUsageReportsController < ApplicationController
     authorize! :view_report, :csv_usage
 
     send_data S3.bucket.objects[params[:id]].read,
-      filename: "pathways_usage_report_(retrieved_#{Date.today.strftime("%Y-%m-%d")}).csv"
+      filename: "pathways_usage_report_(retrieved_#{Date.current.strftime("%Y-%m-%d")}).csv"
   end
 end

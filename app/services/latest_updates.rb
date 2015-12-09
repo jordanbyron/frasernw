@@ -46,7 +46,7 @@ class LatestUpdates
         includes(:item).
         order("id desc").
         where("item_type in (?)", ["Specialist", "SpecialistOffice", "ClinicLocation"]).
-        where("created_at > ?", (Date.today - 3.months))
+        where("created_at > ?", (Date.current - 3.months))
       versions.each do |version|
 
         # #dup so #reify doesn't overwrite item back to old version
@@ -80,7 +80,7 @@ class LatestUpdates
 
                 next if version.reify.blank?
                 next if version.reify.moved_away? #moved away status hasn't changed
-                next if (version.reify.unavailable_from < Date.today - 11.months)
+                next if (version.reify.unavailable_from < Date.current - 11.months)
 
                 #newly moved away
 

@@ -1,16 +1,16 @@
 class Month
   def self.prev
     new(
-      Date.today.year,
-      (Date.today.month - 1)
+      Date.current.year,
+      (Date.current.month - 1)
     )
   end
 
   # the current month
   def self.current
     new(
-      Date.today.year,
-      Date.today.month
+      Date.current.year,
+      Date.current.month
     )
   end
 

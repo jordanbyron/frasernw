@@ -83,7 +83,7 @@ class UsersController < ApplicationController
   def setup
     if user_from_saved_token.known?
       if user_from_saved_token.update_attributes(params[:user])
-        user_from_saved_token.activated_at = Date.today
+        user_from_saved_token.activated_at = Date.current
         user_from_saved_token.save
         redirect_to login_url, :notice  => "Your account has been set up; please log in using #{@user.email} and your newly created password. Welcome to Pathways!"
       else

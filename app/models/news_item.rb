@@ -195,7 +195,7 @@ class NewsItem < ActiveRecord::Base
   end
 
   def self.current
-    where(<<-SQL, Date.today, Date.today, Date.today, Date.today)
+    where(<<-SQL, Date.current, Date.current, Date.current, Date.current)
       (news_items.start_date IS NOT NULL AND
         news_items.end_date IS NOT NULL AND
         news_items.start_date <= (?) AND

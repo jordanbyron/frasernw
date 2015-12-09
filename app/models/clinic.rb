@@ -473,7 +473,7 @@ class Clinic < ActiveRecord::Base
   end
 
   def unavailable_for_a_while?
-    closed? && (unavailable_from <= (Date.today - 2.years))
+    closed? && (unavailable_from <= (Date.current - 2.years))
   end
 
   def token

@@ -17,7 +17,7 @@ class AnalyticsChart
   def self.regenerate(metric)
     exec(
       start_date: Month.new(2014, 1).start_date,
-      end_date: Date.today,
+      end_date: Date.current,
       metric: metric,
       divisions: Division.standard,
       force: true
@@ -175,7 +175,7 @@ class AnalyticsChart
 
   def weeks
     @weeks = Week.for_interval(start_date, end_date).reject do |week|
-      week.end_date > Date.today
+      week.end_date > Date.current
     end
   end
 
