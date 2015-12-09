@@ -176,7 +176,7 @@ namespace :pathways do
       Serialized.regenerate_all
     end
 
-    task :analytics_charts do
+    task :analytics_charts => :environment do
       AnalyticsChart.regenerate_all
     end
 
