@@ -43,18 +43,11 @@ const SecretEditLinkTable = (props) => (
 
 const GenerateButton = React.createClass({
   generateLink() {
-    if(this.refs.recipient.value.length > 0){
-      this.props.addLink(this.refs.recipient.value);
-    }
-    else {
-
-
-      $( ".recipientinput" ).fadeIn( 3000, function() {
-        $('.recipientinput').removeClass('info').fadeIn( 3000 ).addClass('error');
-      });
-    }
+    this.props.attemptAddLink(this.refs.recipient.value);
   },
   onKeyPress(e) {
+    this.props.resetShowError();
+
     if(e.keyCode === 13) {
       this.generateLink();
     }
@@ -62,13 +55,40 @@ const GenerateButton = React.createClass({
   onGenerateClick() {
     this.generateLink();
   },
+  containerClassname() {
+    if(this.props.error) {
+      return "control-group error";
+    }
+    if(this.props.recipient.length > 0) {
+      return "control-group success";
+    }
+    else {
+      return "control-group";
+    }
+  },
+  iconClassName() {
+    if(this.props.recipient.length > 0) {
+      return "icon icon-ok";
+    }
+    else {
+      return "icon icon-warning-sign";
+    }
+  },
+  hint() {
+    if(this.props.recipient.length > 0) {
+      return "Ready to create link. Press + to create it.";
+    }
+    else {
+      return " Secret edit links can not be created without a recipient";
+    }
+  },
   render() {
     var recipientInput = this.props.recipient.length > 0
     if(this.props.canEdit) {
       return(
         <tr>
           <td style={{backgroundColor: "#F3F8FC"}}>
-            <div className={recipientInput ? 'recipientinput control-group success' : 'recipientinput control-group'}>
+            <div className={this.containerClassname()}>
               <div className="controls">
                 <input
                   style={{margin: "5px 0px"}}
@@ -80,8 +100,8 @@ const GenerateButton = React.createClass({
                 </input>
                 <i>
                 <span className="help-inline">
-                  <i className={recipientInput ? "icon icon-ok" : "icon icon-warning-sign"}/>
-                  {recipientInput ? "  Ready to create link. Press + to create it." : " Secret edit links can not be created without a recipient"}
+                  <i className={this.iconClassName()}/>
+                  { this.hint() }
                 </span>
                 </i>
               </div>
@@ -143,18 +163,22 @@ const SecretEditLinks = React.createClass({
   links() {
     return (this.state.links || this.props.links);
   },
-  addLink(recipient) {
-    $.post(this.props.addLink, {
-      recipient: recipient,
-      accessible_id: this.props.accessibleId,
-      accessible_type: this.props.accessibleType
-    }).done((data) => {
-      this.setState({
-        links: [ data.link ].concat(this.links()),
-        viewModal: { isVisible: true, link: data.link },
-        recipient: ""
-      });
-    })
+  attemptAddLink(recipient) {
+    if(recipient.length > 0) {
+      $.post(this.props.attemptAddLink, {
+        recipient: recipient,
+        accessible_id: this.props.accessibleId,
+        accessible_type: this.props.accessibleType
+      }).done((data) => {
+        this.setState({
+          links: [ data.link ].concat(this.links()),
+          viewModal: { isVisible: true, link: data.link },
+          recipient: ""
+        });
+      })
+    } else {
+      this.setState({ error: true })
+    }
   },
   viewModalProps() {
     return _.assign(
@@ -203,13 +227,21 @@ const SecretEditLinks = React.createClass({
       }
     );
   },
+  showError() {
+    return (this.state.error || false);
+  },
+  resetShowError() {
+    this.setState({ error: false })
+  },
   generateButtonProps() {
     return({
       canEdit: this.props.canEdit,
-      addLink: this.addLink,
+      attemptAddLink: this.attemptAddLink,
       recipient: this.recipient(),
       currentUserName: this.props.currentUserName,
-      onUpdateRecipient: this.onUpdateRecipient
+      onUpdateRecipient: this.onUpdateRecipient,
+      error: this.showError(),
+      resetShowError: this.resetShowError,
     });
   },
   render() {
@@ -228,5 +260,6 @@ const SecretEditLinks = React.createClass({
     );
   }
 });
+
 
 export default SecretEditLinks;
