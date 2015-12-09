@@ -1,13 +1,45 @@
-class WebUsageReport
-  include ServiceObjectModule.exec_with_args(:month_key, :division_id, :record_type)
+class WebUsageReport < ServiceObject
+  attribute :month_key
+  attribute :division_id
+  attribute :record_type
+  attribute :force, Axiom::Types::Boolean, default: false
+
   include ActionView::Helpers::UrlHelper
 
-  def exec
+  SUPPORTED_RECORD_TYPES = [
+    :clinics,
+    :specialists,
+    :patient_info,
+    :physician_resources,
+    :forms,
+    :specialties
+  ]
+
+  def self.regenerate_all
+    SUPPORTED_RECORD_TYPES.each do |type|
+      Division.standard.map(&:id).map(&:to_s).concat(["0"]).each do |id|
+        Month.for_interval(
+          Month.new(2014, 1),
+          Month.current
+        ).each do |month|
+          call(
+            month_key: month.to_i,
+            division_id: id,
+            record_type: type,
+            force: true
+          )
+        end
+      end
+    end
+  end
+
+  def call
     if month == Month.current
       generate
     else
       Rails.cache.fetch(
-        "entity_page_views:#{month_key}:#{division_id}:#{record_type}"
+        "entity_page_views:#{month_key}:#{division_id}:#{record_type}",
+        force: force
       ){ generate }
     end
   end
