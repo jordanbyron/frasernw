@@ -1,7 +1,10 @@
-class LatestUpdates
-  include ServiceObjectModule.exec_with_args(:max_automated_events, :division_ids, :force, :force_automatic)
+class LatestUpdates < ServiceObject
+  attribute :max_automated_events, Integer, default: 5
+  attribute :division_ids, Array
+  attribute :force, Axiom::Types::Boolean, default: false
+  attribute :force_automatic, Axiom::Types::Boolean, default: false
 
-  def exec
+  def call
     # puts "DIVISIONS: #{divisions.map(&:id)}"
 
     Rails.cache.fetch("latest_updates:#{max_automated_events}:#{division_ids.sort.join("_")}", force: force) do
@@ -69,9 +72,10 @@ class LatestUpdates
             specialist_cities = specialist.cities_for_front_page.flatten.uniq
 
             next if specialist.blank? || specialist.in_progress
+
+            next if !specialist.primary_specialization_complete_in?(divisions)
             #Below: Division's define what cities they refer to for specific specializations.  Do not show version if specialist specialization is not within local referral area of the division.
             next if (specialist_cities & divisions.map{|d| d.local_referral_cities(specialist.primary_specialization)}.flatten.uniq).blank?
-
 
             if version.event == "update"
 
@@ -125,6 +129,7 @@ class LatestUpdates
 
             specialist_cities = specialist.cities_for_front_page.flatten.uniq
 
+            next if !specialist.primary_specialization_complete_in?(divisions)
             #Below: Division's define what cities they refer to for specific specializations.  Do not show version if specialist specialization is not within local referral area of the division.
             next if (specialist_cities & divisions.map{|d| d.local_referral_cities(specialist.primary_specialization)}.flatten.uniq).blank?
 
@@ -157,6 +162,7 @@ class LatestUpdates
 
             clinic = clinic_location.clinic
 
+            next if !clinic.primary_specialization_complete_in?(divisions)
             #Below: Division's define what cities they refer to for specific specializations.  Do not show version if clinic specialization is not within local referral area of the division.
             next if (clinic.cities & divisions.map{|d| d.local_referral_cities(clinic.primary_specialization)}.flatten.uniq).blank?
 
