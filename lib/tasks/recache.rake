@@ -164,6 +164,13 @@ namespace :pathways do
       end
     end
 
+    task :notifications => :environment do
+      puts "Expiring Notification view fragments..."
+      PublicActivity::Activity.pluck(:id).each do |id|
+        Rails.cache.delete("views/latest_notifications_for_#{id}")
+      end
+    end
+
     task :application_layout => :environment do
       expire_fragment("ie_compatibility_warning")
       User.all_user_division_groups_cached.each do |division_group|
@@ -196,7 +203,8 @@ namespace :pathways do
       :search,
       :front,
       :latest_updates,
-      :application_layout
+      :application_layout,
+      :notifications
     ] do
       puts "All pages recached."
       SystemNotifier.notice("Recache successful")

@@ -5,23 +5,19 @@
     - "An unknown division "
   - if activity.trackable.type.present?
     = "added "
-    - if activity.trackable.type == NewsItem::TYPE_HASH[NewsItem::TYPE_BREAKING]
-      = "#{activity.trackable.type.indefinitize} item" # "a Breaking News item:"
+    - if !activity.trackable.title.present?
+      - if activity.trackable.type == NewsItem::TYPE_HASH[NewsItem::TYPE_BREAKING]
+        = link_to("a new untitled #{activity.trackable.type} item.", news_item_url(activity.trackable) )# "a new Breaking News item."
+      - else
+        = link_to("a new #{activity.trackable.type}.", news_item_url(activity.trackable) ) # "a new Attachment Update."
     - else
-      = " #{activity.trackable.type.indefinitize}" # "an Attachment Update:"
-
-
-    - if activity.trackable.title.present?
-      = link_to " - #{activity.trackable.title}", news_item_url(activity.trackable)
-    =":"
-    - if activity.trackable.body.present?
-      %div{style: "display:inline-block"}
-        - item = activity.trackable.title.present? ? BlueCloth.new(activity.trackable.title + ".  " + activity.trackable.body).to_html : BlueCloth.new(activity.trackable.body).to_html
-        %div{style: "float:left;"}=truncate(item, escape: false, length: 150, omission: '... ', separator: '. ').html_safe
-        %div{style: "float:left;"}=link_to(" ... continue", news_item_url(activity.trackable))
-      %br
-
-    - else
-      = link_to("click here to view it", news_item_url(activity.trackable))
+      - if activity.trackable.type == NewsItem::TYPE_HASH[NewsItem::TYPE_BREAKING]
+        = link_to("a new #{activity.trackable.type} item: ", news_item_url(activity.trackable))# "a new Breaking News item: "
+      - else
+        = link_to("a new #{activity.trackable.type}: ", news_item_url(activity.trackable) ) # "a new Attachment Update: "
+      %strong
+        = link_to " #{activity.trackable.title}", news_item_url(activity.trackable) # " Title of Item"
+  - else
+    = link_to("click here to view it", news_item_url(activity.trackable))
 - else
   A news item was created which has since been removed.
