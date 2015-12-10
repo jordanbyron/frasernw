@@ -57,6 +57,10 @@ class Specialization < ActiveRecord::Base
   end
   # # # # # #
 
+  def self.has_family_practice?
+    all.include?(Specialization.find_by_name("Family Practice"))
+  end
+
   def self.in_progress_for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     joins(:specialization_options).where('"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)', division_ids, true)

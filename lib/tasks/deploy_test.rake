@@ -1,9 +1,8 @@
 task :deploy_test => ['deploy_test:push', 'deploy_test:restart']
 
 namespace :deploy_test do
-  task :migrations => [:push, :off, :migrate, :restart, :on]
-  task :rollback => [:off, :push_previous, :restart, :on]
   task :update_database => [:reset_database, :import_production_database]
+  task :migrations => [:push, :off, :migrate, :restart, :on]
 
   task :push do
     puts 'Finding current git branch ...'
