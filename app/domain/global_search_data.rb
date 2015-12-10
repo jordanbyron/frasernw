@@ -6,17 +6,13 @@ class GlobalSearchData
   CACHE_KEY = "global_search_data"
 
   def data
-    cached
+    Rails.cache.fetch(CACHE_KEY) do
+      generate
+    end
   end
 
   def regenerate_cache
-    Rails.cache.delete CACHE_KEY
-
-    data
-  end
-
-  def cached
-    Rails.cache.fetch CACHE_KEY do
+    Rails.cache.fetch(CACHE_KEY, force: true) do
       generate
     end
   end
