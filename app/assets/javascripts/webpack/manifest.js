@@ -23,3 +23,6 @@ window.pathways.trackForm = require("./analytics_wrappers").trackForm;
 window.pathways.trackContentItem = require("./analytics_wrappers").trackContentItem;
 window.pathways.handleSectorCheckboxes = handleSectorCheckboxes;
 window.pathways.attachSecretEditLinks = attachSecretEditLinks;
+
+window.pathways.vendor = {}
+window.pathways.vendor._ = require("lodash");
