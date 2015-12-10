@@ -31,10 +31,11 @@ class Procedure < ActiveRecord::Base
 
   def full_name
     ps_with_parents = procedure_specializations.reject{ |ps| ps.parent.blank? }
+    
     if ps_with_parents.count > 0
-      return ps_with_parents.first.parent.procedure.full_name + name_relative_to_parents.uncapitalize_first_letter
+      "#{ps_with_parents.first.parent.procedure.full_name} #{name_relative_to_parents.uncapitalize_first_letter}"
     else
-      return self.name
+      self.name
     end
   end
 
