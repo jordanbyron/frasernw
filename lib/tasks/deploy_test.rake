@@ -1,4 +1,3 @@
-require 'open3'
 task :deploy_test => ['deploy_test:push', 'deploy_test:restart']
 
 namespace :deploy_test do
@@ -19,31 +18,6 @@ namespace :deploy_test do
     puts `heroku restart -a pathwaysbctest`
   end
 
-  # task :tag do
-
-  #   # time_zone_offset = 3600 * -8  # Use Pacific Time
-
-  #   # # find the zone with that offset
-  #   # zone_name = ActiveSupport::TimeZone::MAPPING.keys.find do |name|
-  #   #   ActiveSupport::TimeZone[name].utc_offset == time_zone_offset
-  #   # end
-
-  #   # # get time in the right time zone for the git tag
-  #   # zone = ActiveSupport::TimeZone[zone_name]
-  #   # time_zone = Time.zone
-  #   # time_zone = zone
-
-  #   # name git tag with time
-  #   # release_name = "#{time_zone.now.strftime("%Y_%m_%d_deploy_%H:%M:%S")}"
-  #   release_name = "release-#{Time.now.utc.strftime("%Y%m%d%H%M%S")}"
-
-  #   puts "Tagging release to git as: #{release_name}"
-  #   puts `git tag -a #{release_name} -m 'Tagged release'`
-
-  #   puts `git push origin #{release_name}`
-  #   # puts `git push --tags heroku`
-  # end
-
   task :reset_database do
     puts 'Resetting pathwaysbcTEST database'
     puts `heroku pg:reset DATABASE --app pathwaysbctest --confirm pathwaysbctest`
@@ -52,8 +26,6 @@ namespace :deploy_test do
   task :import_production_database do
     puts 'Copying production database to pathwaysbcTEST database'
     puts `heroku pg:reset DATABASE --app pathwaysbctest --confirm pathwaysbctest`
-    # system %x{heroku pg:backups restore HEROKU_POSTGRESQL_BLUE_URL -a pathwaysbctest `heroku pg:backups public-url -a pathwaysbc`}
-    # `heroku run 'cd vendor/my_engine && rake db:migrate' -a my-app`
   end
 
   task :migrate do
