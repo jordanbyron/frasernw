@@ -1,5 +1,8 @@
 - if activity.trackable.present?
-  = link_to activity.trackable.division.name, division_url(activity.trackable.division) if activity.trackable.division
+  - if activity.trackable.owner_division.present?
+    = link_to activity.trackable.owner_division.name, division_url(activity.trackable.owner_division)
+  - else
+    - "An unknown division "
   - if activity.trackable.type.present?
     = "added "
     - if activity.trackable.type == NewsItem::TYPE_HASH[NewsItem::TYPE_BREAKING]
