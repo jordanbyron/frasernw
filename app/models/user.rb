@@ -95,6 +95,14 @@ LIMITED_ROLE_HASH = {
     where("users.role = 'user' AND users.active = (?) AND COALESCE(users.email,'') != ''", true)
   end
 
+  def self.authorized_user
+    user.active.activated
+  end
+
+  def self.activated
+    where("users.email IS NOT NULL AND users.email != ''")
+  end
+
   def self.admin_only
     where("users.role = 'admin'")
   end
