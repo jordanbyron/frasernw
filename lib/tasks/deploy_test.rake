@@ -1,7 +1,7 @@
 task :deploy_test => ['deploy_test:push', 'deploy_test:restart']
 
 namespace :deploy_test do
-  task :update_database => [:reset_database, :import_production_database]
+  task :update_database => [:reset_database, :import_production_database, :restart]
   task :migrations => [:push, :off, :migrate, :restart, :on]
 
   task :push do
@@ -24,7 +24,7 @@ namespace :deploy_test do
 
   task :import_production_database do
     puts 'Copying production database to pathwaysbcTEST database'
-    puts `heroku pg:reset DATABASE --app pathwaysbctest --confirm pathwaysbctest`
+    puts `heroku pg:copy pathwaysbc::DATABASE_URL BLUE -a pathwaysbctest --confirm`
   end
 
   task :migrate do
