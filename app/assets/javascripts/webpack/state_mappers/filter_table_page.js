@@ -570,6 +570,7 @@ var PANEL_TYPE_OPAQUE_FILTERS = {
     "clinicAssociations",
     "hospitalAssociations",
     "status",
+    "showInTable",
   ],
   clinics: [
     "procedures",
@@ -579,7 +580,8 @@ var PANEL_TYPE_OPAQUE_FILTERS = {
     "private",
     "wheelchairAccessible",
     "careProviders",
-    "status"
+    "status",
+    "showInTable",
   ],
   contentCategories: [
     "subcategories"

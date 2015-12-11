@@ -76,7 +76,8 @@ module Serialized
             isNew: specialist.new?,
             isInProgress: specialist.in_progress,
             createdAt: specialist.created_at.to_date.to_s,
-            updatedAt: specialist.updated_at.to_date.to_s
+            updatedAt: specialist.updated_at.to_date.to_s,
+            showInTable: specialist.show_in_table?
           })
         end
       end
@@ -133,7 +134,8 @@ module Serialized
             isNew: clinic.new?,
             isInProgress: clinic.in_progress,
             createdAt: clinic.created_at.to_date.to_s,
-            updatedAt: clinic.updated_at.to_date.to_s
+            updatedAt: clinic.updated_at.to_date.to_s,
+            showInTable: clinic.show_in_table?
           })
         end
       end

@@ -280,6 +280,15 @@ module.exports = {
       return record.statusClassKey !== 6;
     }
   },
+  showInTable: {
+    isActivated: function() {
+      return true;
+    },
+    predicate: function(record) {
+      // no blank statuses
+      return record.showInTable;
+    }
+  },
   specializations: {
     isActivated: function(filters) {
       return (filters.specializations !== "0");
