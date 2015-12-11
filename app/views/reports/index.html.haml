@@ -7,7 +7,7 @@
     .headline
       .row-fluid
         .span3.offset1
-          = render partial: "reports/analytics_box", locals: {color: '#0B1E32', icon: 'icon-user', title: "Active Users", count: User.active.count}
+          = render partial: "reports/analytics_box", locals: {color: '#0B1E32', icon: 'icon-user', title: "Authorized Non-Admin Users", count: User.authorized_user.count}
         .span3.offset1
           = render partial: "reports/analytics_box", locals: {color: '#1B5D94', icon: 'icon-user-md', title: "Specialists", count: Specialist.all.count}
         .span3.offset1
