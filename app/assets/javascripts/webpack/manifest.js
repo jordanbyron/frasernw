@@ -24,5 +24,6 @@ window.pathways.trackContentItem = require("./analytics_wrappers").trackContentI
 window.pathways.handleSectorCheckboxes = handleSectorCheckboxes;
 window.pathways.attachSecretEditLinks = attachSecretEditLinks;
 
-window.pathways.vendor = {}
-window.pathways.vendor._ = require("lodash");
+window.vendor = {}
+window.vendor._ = require("lodash");
+window.vendor.lzString = require("lz-string");

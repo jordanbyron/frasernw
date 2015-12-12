@@ -1,3 +1,5 @@
+// globals: vendor.lzString, $
+
 (function(pathways){
 
   var expiryKey = function(cacheVersion) {
@@ -10,7 +12,7 @@
     $.get("/data_tables/global_data").done(function(data) {
       deferred.resolve(data);
 
-      window.localStorage.pathwaysGlobalData = JSON.stringify(data);
+      window.localStorage.pathwaysGlobalData = vendor.lzString.compress(JSON.stringify(data));
       window.localStorage.pathwaysGlobalDataExpiration = expiryKey(cacheVersion);
     })
   };
@@ -26,7 +28,7 @@
 
       if (isGlobalDataSet(cacheVersion)) {
         deferred.resolve(
-          JSON.parse(window.localStorage.pathwaysGlobalData)
+          JSON.parse(vendor.lzString.decompress(window.localStorage.pathwaysGlobalData))
         );
       } else {
         $(document).ready(function() {
