@@ -82,6 +82,7 @@ var email = function(record) {
     return(<i
       onClick={function(){ window.location.href=("/content_items/" + record.id + "/email")}}
       className="icon-envelope-alt icon-blue"
+      title="Email this item"
     />);
   } else {
     return null;

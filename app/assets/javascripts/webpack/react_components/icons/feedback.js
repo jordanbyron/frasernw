@@ -17,7 +17,9 @@ module.exports = React.createClass({
     return(
       <i className="icon-bullhorn icon-blue"
         style={buttonIsh}
-        onClick={this.handleOpenModal}/>
+        onClick={this.handleOpenModal}
+        title="Provide feedback on this item"
+      />
     );
   }
 })

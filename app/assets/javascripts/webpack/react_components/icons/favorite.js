@@ -38,12 +38,14 @@ module.exports = React.createClass({
         className="icon-heart icon-red"
         onClick={this.handleUnFavorite}
         style={buttonIsh}
+        title="Unfavourite this item"
       />);
     } else {
       return(<i
         className="icon-heart"
         onClick={this.handleFavorite}
         style={objectAssign({}, buttonIsh, {color: "#424242"})}
+        title="Favourite this item"
       />);
     }
   }
