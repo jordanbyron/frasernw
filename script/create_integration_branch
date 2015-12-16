@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require 'date'
+
+today = Date.today
+
+deploy_date = today + (6 - today.wday)
+
+branchname = "integration-#{deploy_date.to_s}"
+
+if system("git pull origin #{branchname}")
+  puts "Found remote"
+
+  `git checkout #{branchname}`
+else
+  puts "Did not find remote; branching off master"
+
+  `git checkout master`
+  `git checkout -b #{branchname}`
+  `git push --set-upstream origin #{branchname}`
+end
