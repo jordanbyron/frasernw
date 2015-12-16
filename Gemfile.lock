@@ -1,8 +1,8 @@
 GIT
   remote: git@github.com:pathwaysmedical/quick_spreadsheet.git
-  revision: 03180b3d23e1a90462a8ada8baf3c5359a25afd9
+  revision: aa1ffd8a46d1910f497cf0d69de293b3ccef2f64
   specs:
-    quick_spreadsheet (0.0.2)
+    quick_spreadsheet (0.0.3)
       spreadsheet (~> 1.0.9)
 
 GIT
@@ -617,7 +617,7 @@ DEPENDENCIES
   pry-rails
   pry-stack_explorer
   public_activity
-  quick_spreadsheet (= 0.0.2)!
+  quick_spreadsheet (= 0.0.3)!
   quiet_assets
   rack-attack
   rack-cache
