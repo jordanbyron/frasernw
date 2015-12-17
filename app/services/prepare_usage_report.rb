@@ -42,7 +42,7 @@ class PrepareUsageReport
   end
 
   def s3_bucket
-    @s3_bucket ||= S3.usage_reports_bucket
+    @s3_bucket ||= Pathways::S3.usage_reports_bucket
   end
 
   def object_key
