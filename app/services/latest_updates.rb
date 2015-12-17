@@ -135,7 +135,6 @@ class LatestUpdates < ServiceObject
 
             if (["create", "update"].include? version.event) && specialist.accepting_new_patients? && specialist_office.opened_recently?
               if (version.event == "update")
-                next if version.reify.blank?
                 next if version.reify.opened_recently? #opened this year status hasn't changed)
               end
 
@@ -169,8 +168,7 @@ class LatestUpdates < ServiceObject
             if (["create", "update"].include? version.event) && clinic.accepting_new_patients? && clinic_location.opened_recently?
 
               if (version.event == "update")
-                  next if version.reify.blank?
-                  next if version.reify.opened_recently? #opened this year status hasn't changed)
+                next if version.reify.opened_recently? #opened this year status hasn't changed)
               end
 
               if clinic_location.city.present?

@@ -9,6 +9,9 @@ Backend = Change is not user facing
 ### Added:
 - Backend: script to create and manage integration branch
 
+### Fixed:
+- #253: We no longer ignore clinic locations and specialist offices that have
+opened recently but had no data previous to the latest update
 
 ## [2015-10-30] [Since October 26, 2015 User Update]
 ### Added:
