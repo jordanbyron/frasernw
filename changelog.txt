@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.  In the fut
 
 CR = Change Request item
 Local-only = Changes not reflected in Source Code
+Backend = Change is not user facing
+
+## [2015-12-19] [Since 2015-12-12 Integration]
+### Added:
+- Backend: script to create and manage integration branch
+
 
 ## [2015-10-30] [Since October 26, 2015 User Update]
 ### Added:

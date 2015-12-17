@@ -33,5 +33,20 @@ else
   `git checkout master`
   `git pull origin master`
   `git checkout -b #{branchname}`
+
+  puts "Adding new entry to changelog:"
+
+  changelog = File.open("changelog.txt", "a+")
+  changelog_contents = changelog.read
+  changelog.close
+  new_entry_index = changelog_contents.index("## [")
+  new_entry_header = "## [#{deploy_date.to_s}] [Since #{(deploy_date - 7).to_s} Integration]"
+  new_changelog_contents = changelog_contents.insert(new_entry_index, "#{new_entry_header}\n\n\n")
+
+  IO.write("changelog.txt", new_changelog_contents, 0)
+
+  `git add changelog.txt`
+  `git commit -m "Create changelog entry for #{deploy_date.to_s} deploy"`
+
   `git push --set-upstream origin #{branchname}`
 end
