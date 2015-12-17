@@ -8,14 +8,30 @@ deploy_date = today + (6 - today.wday)
 
 branchname = "integration-#{deploy_date.to_s}"
 
-if system("git pull origin #{branchname}")
+if system("git checkout #{branchname}")
+  puts ""
+  puts "Found local"
+
+  puts ""
+  puts "Fetching remote:"
+  `git fetch origin #{branchname}`
+
+  puts ""
+  puts "Status:"
+  puts `git status`
+elsif system("git pull origin #{branchname}")
+  puts ""
   puts "Found remote"
+  puts ""
 
   `git checkout #{branchname}`
 else
+  puts ""
   puts "Did not find remote; branching off master"
+  puts ""
 
   `git checkout master`
+  `git pull origin master`
   `git checkout -b #{branchname}`
   `git push --set-upstream origin #{branchname}`
 end
