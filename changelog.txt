@@ -12,6 +12,8 @@ Backend = Change is not user facing
 ### Fixed:
 - #253: We no longer ignore clinic locations and specialist offices that have
 opened recently but had no data previous to the latest update
+- Change S3 to use different buckets per environment, so we can modify
+uploaded files on `test` and `local`
 
 ## [2015-10-30] [Since October 26, 2015 User Update]
 ### Added:
