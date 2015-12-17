@@ -67,7 +67,7 @@ class Specialist < ActiveRecord::Base
   has_attached_file :photo,
     :styles => { :thumb => "200x200#" },
     :storage => :s3,
-    :bucket => ENV['S3_BUCKET_NAME_SPECIALIST_PHOTOS'],
+    :bucket => Pathways::S3.bucket_name(:specialist_photos),
     :s3_protocol => :https,
     :s3_credentials => {
       :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
