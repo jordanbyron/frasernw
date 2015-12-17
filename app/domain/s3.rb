@@ -1,5 +1,5 @@
  module S3
-  def self.bucket
+  def self.usage_report_bucket
     repo.buckets[ENV['S3_BUCKET_NAME']]
   end
 
