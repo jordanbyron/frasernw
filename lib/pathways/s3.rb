@@ -12,7 +12,7 @@ module Pathways
     end
 
     def self.usage_reports_bucket
-      bucket_name(:usage_reports)
+      repo.buckets[bucket_name(:usage_reports)]
     end
 
     class CloneBucket < ServiceObject
