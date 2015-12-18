@@ -99,7 +99,9 @@ module Frasernw
       :enable_starttls_auto => true
     }
 
-    config.action_mailer.default_url_options = { :host => "pathwaysbc.ca" }
+    config.action_mailer.default_url_options = {
+      host: (ENV['EMAIL_HOST'] || ENV['DOMAIN'])
+    }
 
     if ENV['RACK_ATTACK'].to_b
       config.middleware.use Rack::Attack
