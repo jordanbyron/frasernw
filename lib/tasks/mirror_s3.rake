@@ -6,11 +6,11 @@ namespace :pathways do
       :referral_forms,
       :specialist_photos,
     ].each do |collection|
-      puts "Migrating #{old_bucket} to #{new_bucket}"
+      puts "Mirroring #{collection}"
 
       Pathways::S3::CloneBucket.call(
         source_bucket_name: Pathways::S3.bucket_name(collection, "pathwaysbc"),
-        destination_bucket_name: Pathways::S3.bucket_name(collection)
+        destination_bucket_name: Pathways::S3.bucket_name(collection, ENV['APP_NAME'])
       )
     end
   end
