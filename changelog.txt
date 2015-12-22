@@ -5,6 +5,9 @@ CR = Change Request item
 Local-only = Changes not reflected in Source Code
 Backend = Change is not user facing
 
+## [2015-12-26] [Since 2015-12-19 Integration]
+
+
 ## [2015-12-19] [Since 2015-12-12 Integration]
 ### Added:
 - Backend: script to create and manage integration branch
