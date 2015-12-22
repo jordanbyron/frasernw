@@ -6,7 +6,8 @@ Local-only = Changes not reflected in Source Code
 Backend = Change is not user facing
 
 ## [2015-12-26] [Since 2015-12-19 Integration]
-
+### Fixed:
+- Fix typos in Terms of Use
 
 ## [2015-12-19] [Since 2015-12-12 Integration]
 ### Added:
