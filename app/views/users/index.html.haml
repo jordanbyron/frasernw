@@ -40,7 +40,13 @@
                 %tr
                   %td= link_to user.name, user, :class => 'ajax'
                   %td= user.divisions.map{ |s| s.name }.to_sentence
-                  %td= user.activated_at.present? ? user.activated_at.strftime("%Y-%m-%d") : user.created_at.strftime("%Y-%m-%d")
+                  %td
+                    - if user.activated_at.present? # Signed Up uses activated_at or created_at
+                      %small{:title => "#{user.activated_at.to_datetime.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.activated_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.activated_at.strftime("%Y-%m-%d")
+                    - elsif user.created_at.present?
+                      %small{:title => "#{user.created_at.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.created_at)} ago </i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
+                    - else
+                      %small
                   %td= user.email
                   %td
                     - divisions = @division.present? ? [@division] : user.divisions
@@ -75,7 +81,13 @@
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
                 %td= user.divisions.map{ |s| s.name }.to_sentence
-                %td= user.activated_at.present? ? user.activated_at.strftime("%Y-%m-%d") : user.created_at.strftime("%Y-%m-%d")
+                %td
+                  - if user.activated_at.present? # Signed Up uses activated_at or created_at
+                    %small{:title => "#{user.activated_at.to_datetime.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.activated_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.activated_at.strftime("%Y-%m-%d")
+                  - elsif user.created_at.present?
+                    %small{:title => "#{user.created_at.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.created_at)} ago </i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
+                  - else
+                    %small
                 %td= user.email
                 %td
                   - user.divisions.each do |division|
@@ -97,6 +109,7 @@
             %tr.tableheader
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Name
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Division(s)
+              %th{:class => "{sorter: 'text'}", :style => "width:20%"} Last Visit
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Signed Up
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Type
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Email
@@ -108,7 +121,21 @@
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
                 %td= user.divisions.map{ |s| s.name }.to_sentence
-                %td= user.activated_at.present? ? user.activated_at.strftime("%Y-%m-%d") : user.created_at.strftime("%Y-%m-%d")
+                %td
+                  - if user.last_request_at.present?
+                    %small{:title => "#{user.last_request_at.to_s(:day_short_with_year)}".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}
+                      %div{:class => "timeago", :value => "value", :title => "#{user.last_request_at.to_datetime.getutc.iso8601}".html_safe }= user.last_request_at.to_s
+                  - else
+                    %small{:title => "This user has no recorded logins.".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}= " - "
+
+                %td
+                  - # Sadly Rails partials load too slow for Signed Up to be refactored into partial
+                  - if user.activated_at.present? # Signed Up uses activated_at or created_at
+                    %small{:title => "#{user.activated_at.to_datetime.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.activated_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.activated_at.strftime("%Y-%m-%d")
+                  - elsif user.created_at.present?
+                    %small{:title => "#{user.created_at.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.created_at)} ago </i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
+                  - else
+                    %small
                 %td= user.type
                 %td= user.email
                 -#%td
@@ -141,7 +168,8 @@
             - @pending_users.each do |user|
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
-                %td= user.created_at.strftime("%Y-%m-%d")
+                %td
+                  %small{:title => "#{user.created_at.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.created_at)} ago </i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
                 %td= user.divisions.map{ |s| s.name }.to_sentence
                 %td= user.role_full
                 %td= user.admin? ? "Admin" : user.type
@@ -158,8 +186,9 @@
           %thead
             %tr.tableheader
               %th{:class => "{sorter: 'text'}", :style => "width:15%"} Name
-              %th{:class => "{sorter: 'text'}", :style => "width:15%"} Division(s)
-              %th{:class => "{sorter: 'text'}", :style => "width:20%"} Signed Up
+              %th{:class => "{sorter: 'text'}", :style => "width:12%"} Division(s)
+              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Last Visit
+              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Signed Up
               %th{:class => "{sorter: 'text'}", :style => "width:10%"} Role
               %th{:class => "{sorter: 'text'}", :style => "width:10%"} Type
               %th{:class => "{sorter: 'text'}", :style => "width:15%"} Email
@@ -173,7 +202,20 @@
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
                 %td= user.divisions.map{ |s| s.name }.to_sentence
-                %td= user.activated_at.present? ? user.activated_at.strftime("%Y-%m-%d") : user.created_at.strftime("%Y-%m-%d")
+                %td
+                  - if user.last_request_at.present?
+                    %small{:title => "#{user.last_request_at.to_s(:day_short_with_year)}".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}
+                      %div{:class => "timeago", :value => "value", :title => "#{user.last_request_at.to_datetime.getutc.iso8601}".html_safe }= user.last_request_at.to_s
+                  - else
+                    %small{:title => "This user has no recorded logins.".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}= " - "
+
+                %td
+                  - if user.activated_at.present? # Signed Up uses activated_at or created_at
+                    %small{:title => "#{user.activated_at.to_datetime.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.activated_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.activated_at.strftime("%Y-%m-%d")
+                  - elsif user.created_at.present?
+                    %small{:title => "#{user.created_at.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.created_at)} ago </i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
+                  - else
+                    %small
                 %td= user.role_full
                 %td= user.admin? ? "Admin" : user.type
                 %td= user.email
@@ -198,6 +240,10 @@
 
       %script{"type" => "text/javascript"}
         :plain
-          $(document).ready(function() { $('.tablesorter').tablesorter({sortList: [[0,0]]}) });
+          $(document).ready(function() {
+            $('.tablesorter').tablesorter({sortList: [[0,0]]});
+            $(".timeago").timeago();
+            $('[data-toggle="tooltip"]').tooltip();
+          });
   %br
   %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New User", new_user_path, :class => "btn ajax")

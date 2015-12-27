@@ -15,6 +15,7 @@
 //= require jquery_nested_form.js
 //= require ajaxify-html5.js
 //= require jquery.serializejson
+//= require jquery.timeago
 //= require highcharts
 //= require webpack.bundle
 //= require jquery_components/checkbox_slidedown
