@@ -24,7 +24,7 @@ namespace :deploy_test do
 
   task :import_production_database do
     puts 'Copying production database to pathwaysbcTEST database'
-    puts `heroku pg:copy pathwaysbc::DATABASE_URL BLUE -a pathwaysbctest --confirm pathwaysbctest`
+    puts `heroku pg:copy pathwaysbc::DATABASE_URL WHITE -a pathwaysbctest --confirm pathwaysbctest`
   end
 
   task :migrate do
