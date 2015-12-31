@@ -24,7 +24,7 @@ namespace :deploy_dev do
 
   task :import_production_database do
     puts 'Copying production database to pathwaysbcDEV database'
-    puts `heroku pg:copy pathwaysbc::DATABASE_URL OLIVE --app pathwaysbcdev --confirm pathwaysbcdev`
+    puts `heroku pg:copy pathwaysbc::DATABASE_URL PURPLE --app pathwaysbcdev --confirm pathwaysbcdev`
   end
 
   task :migrate do
