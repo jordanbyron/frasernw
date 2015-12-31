@@ -24,7 +24,7 @@ namespace :deploy do
   end
 
   task :restart do
-    puts 'Restarting app servers ...'
+    puts 'Restarting Production app servers ...'
     puts `heroku restart -a pathwaysbc`
   end
 
