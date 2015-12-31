@@ -73,6 +73,8 @@ class UsersController < ApplicationController
         redirect_to login_url, :alert  => "Sorry, your access key was not recognized."
       elsif @user.email.present?
         redirect_to login_url, :alert  => "Your access key has already been used to set up an account. Please enter the e-mail address and password associated with your account, and press 'Log in'"
+      elsif @user.active == false
+        redirect_to login_url, :alert  => "Sorry, your access key is no longer active. Please contact a Pathways administrator at <a href='mailto:administration@pathwaysbc.ca'>administration@pathwaysbc.ca</a> to have your account access key reactivated.".html_safe
       else
         @email = params[:user][:email]
         render :action => 'signup', :layout => 'user_sessions'
