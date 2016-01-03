@@ -5,6 +5,12 @@ CR = Change Request item
 Local-only = Changes not reflected in Source Code
 Backend = Change is not user facing
 
+## [2016-01-02] [Since 2015-12-26 Integration]
+### Changed:
+- Change default behaviour for access keys so that sign ups for deactivated accounts do not work, and instead send a message to the person telling them to contact an administrator to reactive their account instead.
+- Update tooltips for User index page to allow mouseover for a wider area.
+- Update production, test and development deploy scripts to have clearer console outputs.
+
 ## [2015-12-26] [Since 2015-12-19 Integration]
 ### Changed:
 - Finish CR: Add a date stamp of when users last visited Pathways to the admin Users table

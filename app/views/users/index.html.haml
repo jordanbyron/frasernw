@@ -126,7 +126,8 @@
                     %small{:title => "#{user.last_request_at.to_s(:day_short_with_year)}".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}
                       %div{:class => "timeago", :value => "value", :title => "#{user.last_request_at.to_datetime.getutc.iso8601}".html_safe }= user.last_request_at.to_s
                   - else
-                    %small{:title => "This user has no recorded logins.".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}= " - "
+                    %small{:title => "This user has no recorded logins.".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}
+                      %p= "-      "
 
                 %td
                   - # Sadly Rails partials load too slow for Signed Up to be refactored into partial
@@ -207,7 +208,9 @@
                     %small{:title => "#{user.last_request_at.to_s(:day_short_with_year)}".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}
                       %div{:class => "timeago", :value => "value", :title => "#{user.last_request_at.to_datetime.getutc.iso8601}".html_safe }= user.last_request_at.to_s
                   - else
-                    %small{:title => "This user has no recorded logins.".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}= " - "
+                    %small{:title => "This user has no recorded logins.".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}
+                      %p= "-      "
+
 
                 %td
                   - if user.activated_at.present? # Signed Up uses activated_at or created_at
