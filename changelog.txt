@@ -5,6 +5,9 @@ CR = Change Request item
 Local-only = Changes not reflected in Source Code
 Backend = Change is not user facing
 
+## [2016-01-09] [Since 2016-01-02 Integration]
+
+
 ## [2016-01-02] [Since 2015-12-26 Integration]
 ### Changed:
 - Change default behaviour for access keys so that sign ups for deactivated accounts do not work, and instead send a message to the person telling them to contact an administrator to reactive their account instead.
