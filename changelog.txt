@@ -6,7 +6,8 @@ Local-only = Changes not reflected in Source Code
 Backend = Change is not user facing
 
 ## [2016-01-09] [Since 2016-01-02 Integration]
-
+### Changed:
+- System Notification recipients are now notified if a deceased specialist is deleted from the database.
 
 ## [2016-01-02] [Since 2015-12-26 Integration]
 ### Changed:
