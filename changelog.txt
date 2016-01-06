@@ -9,6 +9,9 @@ Backend = Change is not user facing
 ### Changed:
 - System Notification recipients are now notified if a deceased specialist is deleted from the database.
 
+### Fixed:
+- #276: Fixed 'y2k' date bug with CSV Usage Reports that made old months not display correctly when a new year rolls over.
+
 ## [2016-01-02] [Since 2015-12-26 Integration]
 ### Changed:
 - Change default behaviour for access keys so that sign ups for deactivated accounts do not work, and instead send a message to the person telling them to contact an administrator to reactive their account instead.
