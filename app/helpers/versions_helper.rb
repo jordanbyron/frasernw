@@ -305,6 +305,8 @@ module VersionsHelper
           end
         when "ReferralForm"
           ""
+        when "Secret Token"
+          ""
         else
           "TODO: #{version.item_type}"
       end
