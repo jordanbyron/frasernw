@@ -1,19 +1,21 @@
 class LatestUpdates < ServiceObject
   attribute :max_automated_events, Integer, default: 5
   attribute :division_ids, Array
+  attribute :version_ids, Array, default: nil
   attribute :force, Axiom::Types::Boolean, default: false
   attribute :force_automatic, Axiom::Types::Boolean, default: false
+  attribute :whitelisted, Array, default: ["Specialist".freeze, "SpecialistOffice".freeze, "ClinicLocation".freeze]
 
   def call
     # puts "DIVISIONS: #{divisions.map(&:id)}"
-
     Rails.cache.fetch("latest_updates:#{max_automated_events}:#{division_ids.sort.join("_")}", force: force) do
       divisions = division_ids.map{ |id| Division.find(id) }
       #mix in the news updates with the automatic updates
       AutomatedEvents.call(
         max_automated_events: max_automated_events,
         divisions: divisions,
-        force: force_automatic
+        force: force_automatic,
+        version_ids: version_ids,
       ).merge(manual_events(divisions)).values.sort{ |a, b| b[0] <=> a[0] }.map{ |x| x[1] }
     end
   end
@@ -34,6 +36,8 @@ class LatestUpdates < ServiceObject
     attribute :max_automated_events, Integer
     attribute :divisions, Array
     attribute :force, Boolean
+    attribute :version_ids, Array
+    attribute :whitelisted, Array, default: ["Specialist".freeze, "SpecialistOffice".freeze, "ClinicLocation".freeze]
 
     include ActionView::Helpers::UrlHelper
 
@@ -45,18 +49,27 @@ class LatestUpdates < ServiceObject
 
     def generate
       automated_events = {}
-      versions = Version.
-        includes(:item).
-        order("id desc").
-        where("item_type in (?)", ["Specialist", "SpecialistOffice", "ClinicLocation"]).
-        where("created_at > ?", (Date.current - 3.months))
+
+      if version_ids.present? # use below versions if passed in
+        versions = Version.find(version_ids)
+      else
+        versions = Version.
+          includes(:item).
+          order("id desc").
+          where("item_type in (?)", whitelisted).
+          where("created_at > ?", (Date.current - 3.months))
+      end
       versions.each do |version|
+
+        next if !whitelisted.include?(version.item_type)
 
         # #dup so #reify doesn't overwrite item back to old version
         # #reload so we make sure we're not picking up an old copy from a previous iteration
-        item = version.item.try(:reload).try(:dup)
+        item = version.item.try(:reload)
 
-        next if item.blank?
+        next if item.blank? || item.id.blank?
+        item = version.item_type.camelize.constantize.find(item.id)
+
         break if automated_events.length >= max_automated_events
         #
         # puts "Automated Events: #{automated_events}"
@@ -68,7 +81,7 @@ class LatestUpdates < ServiceObject
 
           if version.item_type == "Specialist"
 
-            specialist = item
+            specialist = Specialist.with_cities.find(item.id)
             specialist_cities = specialist.cities_for_front_page.flatten.uniq
 
             next if specialist.blank? || specialist.in_progress
@@ -137,7 +150,6 @@ class LatestUpdates < ServiceObject
               if (version.event == "update")
                 next if version.reify.opened_recently? #opened this year status hasn't changed)
               end
-
               if specialist_office.city.present?
                 automated_events["Specialist_#{specialist.id}"] = [
                   "#{version.created_at}",
@@ -191,7 +203,6 @@ class LatestUpdates < ServiceObject
         end
 
       end
-
       automated_events
     end
   end
