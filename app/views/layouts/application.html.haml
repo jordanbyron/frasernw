@@ -76,7 +76,7 @@
 
           - if logged_in?
             %form.navbar-search.pull-right#livesearch
-              %input.span3.search-query#search.icon{"type" => "search", "placeholder" => "&#xf002; Search".html_safe}
+              %input.span3.search-query#search.icon{"type" => "search", "autocomplete" =>"off", "placeholder" => "&#xf002; Search".html_safe}
               #search_results{:style => 'display:none'}
                 .livesearch__inner-results-container
                   #loading
