@@ -8,9 +8,11 @@ Backend = Change is not user facing
 ## [2016-01-09] [Since 2016-01-02 Integration]
 ### Changed:
 - System Notification recipients are now notified if a deceased specialist is deleted from the database.
+- Improve css hover effects on front page
 
 ### Fixed:
 - #276: Fixed 'y2k' date bug with CSV Usage Reports that made old months not display correctly when a new year rolls over.
+- Fix spacing issues with 'Specialities' dropdown when viewport is narrowed.
 
 ## [2016-01-02] [Since 2015-12-26 Integration]
 ### Changed:

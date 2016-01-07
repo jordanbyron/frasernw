@@ -52,7 +52,7 @@
         %ul.space
           - specializations.each do |specialization|
             %li
-              = link_to specialization.name, specialization, :class => specialization.fully_in_progress_for_divisions(user_divisions) ? "in-progress ajax" : "ajax"
+              = link_to specialization.name, specialization, :class => specialization.fully_in_progress_for_divisions(user_divisions) ? "in-progress ajax" : "ajax hoverlabel"
               = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(user_divisions)
 
       .span4half.front
