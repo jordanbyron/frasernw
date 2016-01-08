@@ -13,6 +13,7 @@ Backend = Change is not user facing
 - System Notification recipients are now notified if a deceased specialist is deleted from the database.
 - Improved css hover effects on front page for: Specialties / Featured Content
 - Search box now tells browsers to disable autocomplete
+- Security updates
 
 ### Fixed:
 - #275:  Fixed problem preventing newly retired specialists from showing up in the Latest Specialists and Clinic updates news feed.
