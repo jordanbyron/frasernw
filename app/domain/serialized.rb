@@ -73,6 +73,7 @@ module Serialized
             customLagtimes: custom_procedure_times(specialist, :lagtime_mask),
             customWaittimes: custom_procedure_times(specialist, :waittime_mask),
             isGp: specialist.is_gp,
+            suffix: specialist.suffix,
             isNew: specialist.new?,
             isInProgress: specialist.in_progress,
             createdAt: specialist.created_at.to_date.to_s,
