@@ -6,13 +6,17 @@ Local-only = Changes not reflected in Source Code
 Backend = Change is not user facing
 
 ## [2016-01-09] [Since 2016-01-02 Integration]
+### Added:
+- Finish CR (#276): Add GP-like suffix labels to Nurse Practitioners (Nurse), Midwives (Midwife), and Internal Medicine (Int Med) specialties in filter table.
+
 ### Changed:
 - System Notification recipients are now notified if a deceased specialist is deleted from the database.
 - Improved css hover effects on front page for: Specialties / Featured Content
 - Search box now tells browsers to disable autocomplete
 
 ### Fixed:
-- #276: Fixed 'y2k' date bug with CSV Usage Reports that made old months not display correctly when a new year rolls over.
+- #275:  Fixed problem preventing newly retired specialists from showing up in the Latest Specialists and Clinic updates news feed.
+- #272: Fixed 'y2k' date bug with CSV Usage Reports that made old months not display correctly when a new year rolls over.
 - Fix spacing issues with 'Specialities' dropdown when viewport is narrowed.
 
 ## [2016-01-02] [Since 2015-12-26 Integration]
