@@ -1,5 +1,5 @@
 class Specialization < ActiveRecord::Base
-  attr_accessible :name, :member_name, :in_progress, :specialization_options_attributes, :open_to_clinic
+  attr_accessible :name, :member_name, :label_name, :suffix, :in_progress, :specialization_options_attributes, :open_to_clinic
 
   include PaperTrailable
 

@@ -12,8 +12,8 @@ namespace :pathways do
     s3.suffix = "Midwife"
     s3.save!
 
-    s4 = Specialization.find_by_name("Nurse Practitioner")
-    s4.suffix = "Nurse"
-    s4.save!
+    # s4 = Specialization.find_by_name("Nurse Practitioner")
+    # s4.suffix = "Nurse"
+    # s4.save!
   end
 end
