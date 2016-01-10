@@ -66,14 +66,15 @@ function add_entities_from_city(prefix, entity_name, entity_data, city_id, proce
     var cities = entity.cities.map(function(city_id) { return filtering.global_cities[city_id] }).to_sentence();
     var other = filtering.current_specialties.intersect(entity.specialties).length == 0;
     var in_progress = entity.in_progress === true
+    var suffix = entity.suffix
     var is_gp = entity.is_gp === true
     var is_new = entity.is_new === true
     var is_private = entity.is_private === true
-    add_row(entity_name, entity_id, '/' + entity_name + 's/' + entity_id, name, status_class, status_sort, wait_time, cities, specialties_id, specialties, attributes, other, in_progress, is_gp, is_new, is_private);
+    add_row(entity_name, entity_id, '/' + entity_name + 's/' + entity_id, name, status_class, status_sort, wait_time, cities, specialties_id, specialties, attributes, other, in_progress, suffix, is_gp, is_new, is_private);
   }
 }
 
-function add_row( entity_type, entity_id, url, name, status_class, status_sort, wait_time, city, specialties_id, specialties, attributes, other, in_progress, is_gp, is_new, is_private )
+function add_row( entity_type, entity_id, url, name, status_class, status_sort, wait_time, city, specialties_id, specialties, attributes, other, in_progress, suffix, is_gp, is_new, is_private )
 {
   if (in_progress && !current_user_is_admin())
   {

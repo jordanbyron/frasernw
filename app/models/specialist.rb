@@ -847,6 +847,12 @@ class Specialist < ActiveRecord::Base
     name
   end
 
+  def suffix
+    return "GP" if is_gp?
+    return "" if specializations.reject{|s| !s.suffix.present?}.none? # if no suffix exists then show nothing
+    return specializations.reject{|s| !s.suffix.present?}.first.suffix # otherwise default to the first specialization with suffix
+  end
+
   def ordered_specialist_offices
     @ordered_specialist_offices ||= specialist_offices.sort_by do |office|
       [ (office.has_data? ? 0 : 1), ( office.created_at || DateTime.now ) ]

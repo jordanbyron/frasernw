@@ -7,21 +7,28 @@ var Tags = require("../../react_components/tags");
 var reject = require("lodash/collection/reject");
 var trackContentItem = require("../../analytics_wrappers").trackContentItem;
 
+// name of specialist / clinic
+// E.g. John Smith || St. Paul's Clinic
 var labelReferentName = function(record) {
   return (
     <span>
       <a href={"/" + record.collectionName + "/" + record.id}>{ record.name }</a>
+      <span  style={{marginLeft: "5px"}} className="suffix" key="suffix">{record.suffix}</span>
       <Tags record={record}/>
     </span>
   );
 }
 
+// status icon
+// e.g. 'Accepting Referrals' checkmark
 var labelReferentStatus = function(record, statusIcons, tooltips) {
   return (
     <ReferentStatusIcon record={record} statusIcons={statusIcons} tooltips={tooltips}/>
   );
 }
 
+// cities row
+// e.g. "Vancouver"
 var labelReferentCities = function(record, app) {
   if (record.cityIds.length > 0) {
     return record

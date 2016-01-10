@@ -3,7 +3,7 @@
 module PaperTrailable
   extend ActiveSupport::Concern
 
-  DEFAULT_IGNORED_ATTRIBUTES = [:saved_token, :review_object, :review_item]
+  DEFAULT_IGNORED_ATTRIBUTES = [:saved_token, :review_object, :review_item, :token]
 
   # If we can't find the appropriate version, default back to the model itself
   def creation

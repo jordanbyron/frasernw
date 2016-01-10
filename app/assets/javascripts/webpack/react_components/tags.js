@@ -1,9 +1,9 @@
 var React = require("react");
-
+// TAGS are suffix labels displayed after Specialist names
+// E.g. John Smith GP
 let TAGS = [
-  { key: "isGp", element: <span  style={{marginLeft: "5px"}} className="gp" key="gp">GP</span> },
   { key: "isNew", element: <span  style={{marginLeft: "5px"}} className="new" key="new">new</span> },
-  { key: "private", element: <span  style={{marginLeft: "5px"}} className="private" key="private">private</span> }
+  { key: "isPrivate", element: <span  style={{marginLeft: "5px"}} className="private" key="isPrivate">private</span> }
 ]
 
 module.exports = React.createClass({
