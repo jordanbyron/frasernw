@@ -63,19 +63,15 @@ class LatestUpdates < ServiceObject
 
         next if !whitelisted.include?(version.item_type)
 
-        # #dup so #reify doesn't overwrite item back to old version
         # #reload so we make sure we're not picking up an old copy from a previous iteration
         item = version.item.try(:reload)
 
         next if item.blank? || item.id.blank?
+
+        # we do this so when we call #reify on version it doesn't overwrite item back to old version
         item = version.item_type.camelize.constantize.find(item.id)
 
         break if automated_events.length >= max_automated_events
-        #
-        # puts "Automated Events: #{automated_events}"
-        # puts "# Automated Events: #{automated_events.length}"
-        # puts "Offset Multipler: #{offset_multiplier}"
-        # puts "Version Id: #{version.id}"
 
         begin
 
