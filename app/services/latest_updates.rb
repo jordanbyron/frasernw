@@ -97,9 +97,12 @@ class LatestUpdates < ServiceObject
 
                 #newly moved away
 
+                specialist_link = link_to(specialist.name, "/specialists/#{specialist.id}", :class => 'ajax')
+                moved_away = "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has moved away."
+
                 automated_events["#{version.item_type}_#{item.id}"] = [
-                  "#{version.created_at}",
-                  "#{link_to specialist.name, "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has moved away.".html_safe
+                  version.created_at.to_s,
+                  "#{specialist_link} #{moved_away}".html_safe
                 ]
 
               elsif specialist.retired?
@@ -110,9 +113,12 @@ class LatestUpdates < ServiceObject
 
                 #newly retired
 
+                specialist_link = link_to(specialist.name, "/specialists/#{specialist.id}", :class => 'ajax')
+                retired = "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has retired."
+
                 automated_events["#{version.item_type}_#{item.id}"] = [
-                  "#{version.created_at}",
-                  "#{link_to specialist.name, "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has retired.".html_safe
+                  version.created_at.to_s,
+                  "#{specialist_link} #{retired}".html_safe
                 ]
 
               elsif specialist.retiring?
@@ -121,9 +127,12 @@ class LatestUpdates < ServiceObject
                 next if version.reify.retiring? #retiring status hasn't changed
                 current_specialist = Specialist.find(specialist.id);
 
+                specialist_link = link_to(specialist.name, "/specialists/#{specialist.id}")
+                is_retiring = "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{current_specialist.unavailable_from.to_s(:long_ordinal)}"
+
                 automated_events["#{version.item_type}_#{item.id}"] = [
-                  "#{version.created_at}",
-                  "#{link_to specialist.name, "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{current_specialist.unavailable_from.to_s(:long_ordinal)}.".html_safe
+                  version.created_at.to_s,
+                  "#{specialist_link} #{is_retiring}".html_safe
                 ]
 
               end
@@ -147,14 +156,21 @@ class LatestUpdates < ServiceObject
                 next if version.reify.opened_recently? #opened this year status hasn't changed)
               end
               if specialist_office.city.present?
+
+                office_link = link_to("#{specialist.name}'s office", "/specialists/#{specialist.id}", :class => 'ajax')
+                recently_opened = "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{specialist_office.city.name} and is accepting new referrals."
+
                 automated_events["Specialist_#{specialist.id}"] = [
-                  "#{version.created_at}",
-                  "#{link_to "#{specialist.name}'s office", "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{specialist_office.city.name} and is accepting new referrals.".html_safe
+                  version.created_at.to_s,
+                  "#{office_link} #{recently_opened}".html_safe
                 ]
               else
+                office_link = link_to("#{specialist.name}'s office", "/specialists/#{specialist.id}", :class => 'ajax')
+                recently_opened = "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals."
+
                 automated_events["Specialist_#{item.id}"] = [
-                  "#{version.created_at}",
-                  "#{link_to "#{specialist.name}'s office", "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe
+                  version.created_at.to_s,
+                  "#{office_link} #{recently_opened}".html_safe
                 ]
               end
 
@@ -180,17 +196,22 @@ class LatestUpdates < ServiceObject
               end
 
               if clinic_location.city.present?
+                clinic_link = link_to(clinic.name, "/clinics/#{clinic.id}", :class => 'ajax')
+                recently_opened = "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{clinic_location.city.name} and is accepting new referrals."
+
                 automated_events["Clinic_#{item.id}"] = [
-                  "#{version.created_at}",
-                  "#{link_to clinic.name, "/clinics/#{clinic.id}", :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{clinic_location.city.name} and is accepting new referrals.".html_safe
+                  version.created_at.to_s,
+                  "#{clinic_link} #{recently_opened}".html_safe
                 ]
               else
+                clinic_link = link_to(clinic.name, "/clinics/#{clinic.id}", :class => 'ajax')
+                recently_opened = "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals."
+
                 automated_events["Clinic_#{item.id}"] = [
-                  "#{version.created_at}",
-                  "#{link_to clinic.name, "/clinics/#{clinic.id}", :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe
+                  version.created_at.to_s,
+                  "#{clinic_link} #{recently_opened}".html_safe
                 ]
               end
-
             end
 
           end
