@@ -61,9 +61,6 @@ class Specialist < ActiveRecord::Base
   has_many :controlling_users, :through => :user_controls_specialist_offices, :source => :user, :class_name => "User"
   accepts_nested_attributes_for :user_controls_specialist_offices, :reject_if => lambda { |ucso| ucso[:user_id].blank? }, :allow_destroy => true
 
-  after_commit :flush_cache_for_record
-  after_touch  :flush_cache_for_record
-
   has_attached_file :photo,
     :styles => { :thumb => "200x200#" },
     :storage => :s3,
@@ -76,24 +73,11 @@ class Specialist < ActiveRecord::Base
 
   before_save :destroy_photo?
 
-  # # # Cache actions
-  after_commit :flush_cached_find
-  after_touch  :flush_cached_find
-
-  # def self.all_cached
-  #   Rails.cache.fetch('Specialist.all') { all }
-  # end
-
-  def self.cached_find(id)
-    Rails.cache.fetch([name, id], expires_in: 4000.seconds) { find(id) }
-  end
+  after_commit :flush_cache_for_record
+  after_touch  :flush_cache_for_record
 
   scope :deceased, -> { where(status_mask: STATUS_MASK_DECEASED) }
 
-  def flush_cached_find
-    Rails.cache.delete([self.class.name, id])
-  end
-  # # #
 
   def self.not_in_progress_for_specialization(specialization)
     in_progress_cities = []
@@ -173,9 +157,8 @@ class Specialist < ActiveRecord::Base
     self.in_cities_cached(divs.map{ |division| division.cities }.flatten.uniq)
   end
 
-
   def self.cached_find(id)
-    Rails.cache.fetch([name, id]){find(id)}
+    Rails.cache.fetch([name, id], expires_in: 4000.seconds) { find(id) }
   end
 
   def flush_cache_for_record
