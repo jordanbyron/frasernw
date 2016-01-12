@@ -81,6 +81,9 @@
         - latest_events(5, user_divisions).each do |event|
           %p= event
 
+        %p
+          = link_to "More...", latest_updates_path
+
         - if current_user_is_admin? && can_edit
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Latest Specialist and Clinic Updates", news_items_path, :class => "btn btn-mini ajax")

@@ -15,6 +15,8 @@ class Ability
       can :get, :global_data
       can :index, Newsletter
 
+      can :index, :latest_updates
+
       if user.super_admin?
 
         #super admin

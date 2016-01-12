@@ -6,6 +6,7 @@ class NewLatestUpdates < ServiceObject
   def call
     (manual_events + automatic_events).
       sort_by{ |event| event[:date] }.
+      reverse.
       map{ |event| event[:markup] }
   end
 
