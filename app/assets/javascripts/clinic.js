@@ -97,8 +97,23 @@ function clinic_reset_numbers(address_number)
   $("#clinic_clinic_locations_attributes_" + address_number + "_wheelchair_accessible_mask_3").prop('checked', true);
 }
 
-var clinic_address_location_changed = function(address_number)
+var clinic_address_location_changed = function(address_number, options)
 {
+  if ((options || {}).confirmDelete === true && $('#clinic_location_' + address_number + '_Not_used').is(':checked')) {
+    if (!confirm("Are you sure you want to delete this location?")) {
+
+      // don't switch the radio buttons
+      return false;
+    }
+  }
+
+  modify_clinic_location(address_number);
+
+  // do switch the radio button
+  return true;
+}
+
+var modify_clinic_location = function(address_number) {
   if ($('#clinic_location_' + address_number + '_Not_used').is(':checked'))
   {
     $('.numbers_' + address_number).hide();
@@ -156,15 +171,15 @@ var clinic_address_details_changed = function(address_number)
   clinic_address_location_changed(address_number);
 }
 
-$(".clinic_location_0").live("change", function() { clinic_address_location_changed(0) });
-$(".clinic_location_1").live("change", function() { clinic_address_location_changed(1) });
-$(".clinic_location_2").live("change", function() { clinic_address_location_changed(2) });
-$(".clinic_location_3").live("change", function() { clinic_address_location_changed(3) });
-$(".clinic_location_4").live("change", function() { clinic_address_location_changed(4) });
-$(".clinic_location_5").live("change", function() { clinic_address_location_changed(5) });
-$(".clinic_location_6").live("change", function() { clinic_address_location_changed(6) });
-$(".clinic_location_7").live("change", function() { clinic_address_location_changed(7) });
-$(".clinic_location_8").live("change", function() { clinic_address_location_changed(8) });
+$("input.clinic_location_0").live("click", function() { return clinic_address_location_changed(0, { confirmDelete: true }); });
+$("input.clinic_location_1").live("click", function() { return clinic_address_location_changed(1, { confirmDelete: true }); });
+$("input.clinic_location_2").live("click", function() { return clinic_address_location_changed(2, { confirmDelete: true }); });
+$("input.clinic_location_3").live("click", function() { return clinic_address_location_changed(3, { confirmDelete: true }); });
+$("input.clinic_location_4").live("click", function() { return clinic_address_location_changed(4, { confirmDelete: true }); });
+$("input.clinic_location_5").live("click", function() { return clinic_address_location_changed(5, { confirmDelete: true }); });
+$("input.clinic_location_6").live("click", function() { return clinic_address_location_changed(6, { confirmDelete: true }); });
+$("input.clinic_location_7").live("click", function() { return clinic_address_location_changed(7, { confirmDelete: true }); });
+$("input.clinic_location_8").live("click", function() { return clinic_address_location_changed(8, { confirmDelete: true }); });
 
 var clinic_status_changed = function()
 {
