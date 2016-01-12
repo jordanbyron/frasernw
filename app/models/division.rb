@@ -101,11 +101,21 @@ class Division < ActiveRecord::Base
   end
 
   def local_referral_cities(specialization)
-    division_referral_city_specializations.
-      includes([:specialization, {division_referral_city: :city}]).
-      where(specialization_id: specialization.id).map do |drcs|
-        drcs.division_referral_city.city
-      end
+    @local_referral_cities ||= Hash.new do |h, key|
+      h[key] = division_referral_city_specializations.
+        includes([:specialization, {division_referral_city: :city}]).
+        where(specialization_id: key).map do |drcs|
+          drcs.division_referral_city.city
+        end
+    end
+    @local_referral_cities[specialization.id]
+  end
+
+  def specialization_complete?(specialization)
+    @specialization_complete ||= Hash.new do |h, key|
+      h[key] = specialization_options.complete.exists?(specialization_id: key)
+    end
+    @specialization_complete[specialization.id]
   end
 
   def waittime_counts(klass)
