@@ -100,11 +100,22 @@ function clinic_reset_numbers(address_number)
 var clinic_address_location_changed = function(address_number, options)
 {
   if ((options || {}).confirmDelete === true && $('#clinic_location_' + address_number + '_Not_used').is(':checked')) {
-    if (!confirm("Are you sure you want to delete this location?")) {
 
-      // don't switch the radio buttons
-      return false;
-    }
+    $(".location-delete-modal").show();
+
+    $(".location-delete-modal .yes").click(function() {
+      $('#clinic_location_' + address_number + '_Not_used').prop("checked", true)
+      modify_clinic_location(address_number);
+
+      $(".location-delete-modal").hide()
+    })
+
+    $(".location-delete-modal .no").click(function() {
+      $(".location-delete-modal").hide()
+    })
+
+    // don't switch the radio buttons
+    return false;
   }
 
   modify_clinic_location(address_number);
