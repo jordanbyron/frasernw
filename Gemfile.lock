@@ -88,7 +88,7 @@ GEM
     bugsnag (2.8.7)
       multi_json (~> 1.0)
     builder (3.0.4)
-    bullet (4.14.7)
+    bullet (5.0.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.9.0)
     cancan (1.6.7)
