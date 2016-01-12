@@ -10,9 +10,10 @@
 
   = simple_form_for @user, :url => {:controller => "users", :action => "setup"}, :method => "put", :html => { :class => "form-horizontal" } do |f|
 
-    = f.input :email, :input_html => { :class => "span4" }, input_html: {value: @email },  :hint => "Your e-mail address will also be your Pathways username. We suggest using an office e-mail address if possible, as you may want to share your account within your office."
+    = f.input :email, :input_html => { :class => "span4" }, input_html: {value: @email }
+    = f.input :email_confirmation, as: :fake_string, :hint => "Write your email again and check for correct spelling."
     = f.input :password, :input_html => { :class => "span4" }, :hint => "Your password must be at least 8 characters long, and include at least one number and one letter. Again, since you may want to share an account within your office, we do not recommment choosing a password that is personal to you."
-    = f.input :password_confirmation, :input_html => { :class => "span4" }, :hint => "Please confirm your new password by typing it again."
+    = f.input :password_confirmation, :input_html => { :class => "span4" }
 
     = f.input :agree_to_toc, :label => "I agree to the <a href='javascript:void(0)' data-toggle='collapse' data-target='#toc'>Terms of Use</a>".html_safe
 
@@ -23,4 +24,35 @@
     = f.input :saved_token, :as => :hidden, :value => @user.token
 
     .form-actions
-      =f.button :submit, "Set-up account", :class => "btn btn-primary"
+      =f.button :submit, "Set-up account", :class => "btn btn-primary", id: "setup-submit"
+
+
+
+%script{"type" => "text/javascript"}
+  :plain
+    nod.classes.successClass = 'success';
+    nod.classes.errorClass = 'error';
+    var myNod = nod();
+
+    / myNod.configure({
+    /     submit: '#setup-submit',
+    /     disableSubmit: true
+    / });
+
+    myNod.add([{
+        selector: '#user_email',
+        validate: 'email',
+        errorMessage: 'Email is not valid!'
+    }, {
+        selector: '#email_confirmation',
+        validate: 'same-as:#user_email',
+        errorMessage: 'Emails do not match.'
+    }, {
+        selector: '#user_password_confirmation',
+        validate: 'same-as:#user_password',
+        errorMessage: 'Passwords do not match'
+    },{
+        selector: '#user_agree_to_toc',
+        validate: 'checked',
+        errorMessage: 'You must check me!'
+    }]);

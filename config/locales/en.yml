@@ -187,6 +187,7 @@ en:
         time_frame_mask: "Time period"
       user:
         email: "E-mail address"
+        email_confirmation: "E-mail confirmation"
         password: "Password"
         saved_token: "Access key"
         type_mask: "User type"

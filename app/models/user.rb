@@ -73,6 +73,7 @@ class User < ActiveRecord::Base
     :password,
     :password_confirmation,
     :email,
+    :email_confirmation,
     :agree_to_toc,
     :type_mask
 
