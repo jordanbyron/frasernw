@@ -1,13 +1,16 @@
 class NewLatestUpdates < ServiceObject
   attribute :force, Axiom::Types::Boolean, default: false
+  attribute :force_automatic, Axiom::Types::Boolean, default: false
   attribute :max_automated_events, Integer, default: 1000
   attribute :division_ids, Array
 
   def call
-    (manual_events + automatic_events).
-      sort_by{ |event| event[:date].to_s }.
-      reverse.
-      map{ |event| event[:markup] }
+    Rails.cache.fetch("latest_updates:#{max_automated_events}:#{division_ids.sort.join('_')}", force: force) do
+      (manual_events + automatic_events).
+        sort_by{ |event| event[:date].to_s }.
+        reverse.
+        map{ |event| event[:markup] }
+    end
   end
 
   def divisions
@@ -92,7 +95,7 @@ class NewLatestUpdates < ServiceObject
 
   def automatic_events
     divisions.inject([]) do |memo, division|
-      memo + Rails.cache.fetch("latest_updates:automatic:division:#{division.id}", force: force) do
+      memo + Rails.cache.fetch("latest_updates:automatic:division:#{division.id}", force: force_automatic) do
         [
           Specialists,
           Clinics
