@@ -5,7 +5,7 @@ class NewLatestUpdates < ServiceObject
 
   def call
     (manual_events + automatic_events).
-      sort_by{ |event| event[:date] }.
+      sort_by{ |event| event[:date].to_s }.
       reverse.
       map{ |event| event[:markup] }
   end
@@ -74,6 +74,7 @@ class NewLatestUpdates < ServiceObject
     },
     "ClinicLocation" => {
       opened_recently: -> (clinic_location) {
+        clinic = clinic_location.clinic
         clinic_link = link_to(clinic.name, "/clinics/#{clinic.id}")
 
         if clinic_location.city.present?
@@ -144,6 +145,7 @@ class NewLatestUpdates < ServiceObject
     def call
       Clinic.
         includes_location_data.
+        includes(:specializations).
         all.
         inject([]) do |memo, clinic|
           memo + ClinicEvents.call(clinic: clinic, division: division)
@@ -169,7 +171,7 @@ class NewLatestUpdates < ServiceObject
           if clinic_location.opened_recently?
             memo << {
               id: clinic_location.id,
-              klass: "SpecialistOffice",
+              klass: "ClinicLocation",
               event: :opened_recently,
               date: NewLatestUpdates.event_date(clinic_location, :opened_recently?)
             }
@@ -275,3 +277,14 @@ class NewLatestUpdates < ServiceObject
     end
   end
 end
+
+### Potential algorithm for guessing old openings (past the year or so we track now):
+# for a SpecialistOffice or Clinic Location, the latest_change_version is the version which
+# changes the last change to location_opened
+#
+# if the LCV falls within the current location_opened, we just use the date of that version
+# if it falls before, we use Jan. 1st of location_opened
+# if it falls after, we use Dec. 31st of location_opened
+#
+# issue: this doesn't get around the potential for a location moving addresses after its opening date
+# at which it would probably be sensible to consider it having 'opened' again at the new address
