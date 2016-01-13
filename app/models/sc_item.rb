@@ -146,6 +146,16 @@ class ScItem < ActiveRecord::Base
     ((divisions.include? division) || (shareable? && (divisions & divisions_sharing).present?)) && !in_progress
   end
 
+  def borroweable_by_divisions
+    @borroweable_by_divisions ||= begin
+      if in_progress || !shareable
+        []
+      else
+        Division.all - available_to_divisions
+      end
+    end
+  end
+
   def mail_to_patient(current_user, patient_email)
     MailToPatientMailer.mail_to_patient(self, current_user, patient_email).deliver
   end
