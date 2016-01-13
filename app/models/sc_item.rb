@@ -151,7 +151,7 @@ class ScItem < ActiveRecord::Base
       if in_progress || !shareable
         []
       else
-        Division.all - available_to_divisions
+        Division.standard - available_to_divisions
       end
     end
   end

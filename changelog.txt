@@ -9,6 +9,9 @@ Backend = Change is not user facing
 ### Changed:
 - #154: Clinic form now asks users to confirm before deleting location
 
+### Fixed:
+- #251: Quick sharing/unsharing content items from their show page
+
 ## [2016-01-09] [Since 2016-01-02 Integration]
 ### Added:
 - Finish CR (#276): Add GP-like suffix labels to Nurse Practitioners (Nurse), Midwives (Midwife), and Internal Medicine (Int Med) specialties in filter table.
