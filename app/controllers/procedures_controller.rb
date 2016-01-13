@@ -54,6 +54,7 @@ class ProceduresController < ApplicationController
     }
 
     if @procedure.update_attributes(params[:procedure])
+      Serialized.delay.regenerate(:procedures)
       redirect_to @procedure, :notice  => "Successfully updated area of practice."
     else
       render :action => 'edit'
