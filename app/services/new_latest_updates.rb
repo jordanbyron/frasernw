@@ -55,8 +55,7 @@ class NewLatestUpdates < ServiceObject
       }
     },
     "SpecialistOffice" => {
-      opened_recently: -> (specialist_office) {
-        specialist = specialist_office.specialist
+      opened_recently: -> (specialist, specialist_office) {
         office_link = link_to("#{specialist.name}'s office", "/specialists/#{specialist.id}")
 
         if specialist_office.city.present?
@@ -73,8 +72,7 @@ class NewLatestUpdates < ServiceObject
       }
     },
     "ClinicLocation" => {
-      opened_recently: -> (clinic_location) {
-        clinic = clinic_location.clinic
+      opened_recently: -> (clinic, clinic_location) {
         clinic_link = link_to(clinic.name, "/clinics/#{clinic.id}")
 
         if clinic_location.city.present?
@@ -93,17 +91,6 @@ class NewLatestUpdates < ServiceObject
   }
 
   def automatic_events
-    raw_automatic_events.map do |event|
-      {
-        markup: MARKUP[event[:klass]][event[:event]].call(
-          event[:klass].constantize.find(event[:id])
-        ),
-        date: event[:date]
-      }
-    end
-  end
-
-  def raw_automatic_events
     divisions.inject([]) do |memo, division|
       memo + Rails.cache.fetch("latest_updates:automatic:division:#{division.id}", force: force) do
         [
@@ -173,7 +160,8 @@ class NewLatestUpdates < ServiceObject
               id: clinic_location.id,
               klass: "ClinicLocation",
               event: :opened_recently,
-              date: NewLatestUpdates.event_date(clinic_location, :opened_recently?)
+              date: NewLatestUpdates.event_date(clinic_location, :opened_recently?),
+              markup: NewLatestUpdates::MARKUP["ClinicLocation"][:opened_recently].call(clinic, clinic_location)
             }
           else
             memo
@@ -210,7 +198,8 @@ class NewLatestUpdates < ServiceObject
               id: specialist.id,
               klass: "Specialist",
               event: :moved_away,
-              date: NewLatestUpdates.event_date(specialist, :moved_away?)
+              date: NewLatestUpdates.event_date(specialist, :moved_away?),
+              markup: NewLatestUpdates::MARKUP["Specialist"][:moved_away].call(specialist)
             }
           }
         },
@@ -221,7 +210,8 @@ class NewLatestUpdates < ServiceObject
               id: specialist.id,
               klass: "Specialist",
               event: :retired,
-              date: NewLatestUpdates.event_date(specialist, :retired?)
+              date: NewLatestUpdates.event_date(specialist, :retired?),
+              markup: NewLatestUpdates::MARKUP["Specialist"][:retired].call(specialist)
             }
           }
         },
@@ -232,7 +222,8 @@ class NewLatestUpdates < ServiceObject
               id: specialist.id,
               klass: "Specialist",
               event: :retiring,
-              date: NewLatestUpdates.event_date(specialist, :retiring?)
+              date: NewLatestUpdates.event_date(specialist, :retiring?),
+              markup: NewLatestUpdates::MARKUP["Specialist"][:retiring].call(specialist)
             }
           }
         }
@@ -267,7 +258,8 @@ class NewLatestUpdates < ServiceObject
               id: specialist_office.id,
               klass: "SpecialistOffice",
               event: :opened_recently,
-              date: NewLatestUpdates.event_date(specialist_office, :opened_recently?)
+              date: NewLatestUpdates.event_date(specialist_office, :opened_recently?),
+              markup: NewLatestUpdates::MARKUP["SpecialistOffice"][:opened_recently].call(specialist, specialist_office)
             }
           else
             memo
