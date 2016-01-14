@@ -1,8 +1,5 @@
 namespace :pathways do
   namespace :recache do
-    include ActionController::Caching::Actions
-    include ActionController::Caching::Fragments
-    include Net
     include Rails.application.routes.url_helpers
 
     TASKS = {
@@ -14,44 +11,38 @@ namespace :pathways do
           Specialization.all.sort{ |a,b| a.id <=> b.id }.each do |s|
             # true / false represent can_edit? variable in view
             puts "Specialists Index Specialization #{s.id} Division #{d.id}"
-            expire_fragment "specialists_index_#{s.cache_key}_#{s.specialists.cache_key}_#{d.cache_key}_#{true}"
-            expire_fragment "specialists_index_#{s.cache_key}_#{s.specialists.cache_key}_#{d.cache_key}_#{false}"
-            expire_fragment "specialists_index_no_division_tab_#{s.cache_key}_#{s.specialists.cache_key}"
+            ExpireFragment.call "specialists_index_#{s.cache_key}_#{s.specialists.cache_key}_#{d.cache_key}_#{true}"
+            ExpireFragment.call "specialists_index_#{s.cache_key}_#{s.specialists.cache_key}_#{d.cache_key}_#{false}"
+            ExpireFragment.call "specialists_index_no_division_tab_#{s.cache_key}_#{s.specialists.cache_key}"
             HttpGetter.exec("specialties/#{s.id}/#{s.token}/specialists/refresh_index_cache/#{d.id}")
           end
-        end
-      },
-      procedures: -> {
-        Procedure.all.sort{ |a,b| a.id <=> b.id }.each do |p|
-          puts "Procedure #{p.id}"
-          expire_fragment procedure_path(p)
         end
       },
       languages: -> {
         Language.all.sort{ |a,b| a.id <=> b.id }.each do |l|
           puts "Language #{l.id}"
-          expire_fragment language_path(l)
+          ExpireFragment.call language_path(l)
           HttpGetter.exec("languages/#{l.id}/#{l.token}/refresh_cache")
         end
       },
       hospitals: -> {
         Hospital.all.sort{ |a,b| a.id <=> b.id }.each do |h|
           puts "Hospital #{h.id}"
-          expire_fragment hospital_path(h)
+          ExpireFragment.call hospital_path(h)
           HttpGetter.exec("hospitals/#{h.id}/#{h.token}/refresh_cache")
         end
       },
       clinics: -> {
         Clinic.all.sort{ |a,b| a.id <=> b.id }.each do |c|
           puts "Clinic #{c.id}"
-          expire_fragment clinic_path(c)
+          ExpireFragment.call clinic_path(c)
           HttpGetter.exec("clinics/#{c.id}/#{c.token}/refresh_cache")
         end
       },
       specialists: -> {
         Specialist.all.sort{ |a,b| a.id <=> b.id }.each do |s|
           puts "Specialist #{s.id}"
-          expire_fragment specialist_path(s)
+          ExpireFragment.call specialist_path(s)
           HttpGetter.exec("specialists/#{s.id}/#{s.token}/refresh_cache")
         end
       },
@@ -59,50 +50,20 @@ namespace :pathways do
         User.all_user_division_groups_cached.each do |division_group|
           ScCategory.all.sort{ |a,b| a.id <=> b.id }.each do |cc|
             puts "Expiring Content Category #{cc.id} SuperAdmin"
-            expire_fragment "content_#{cc.id}_category_#{division_group.join('_')}_#{true}" #true/false represents @is_super_admin boolean
+            ExpireFragment.call "content_#{cc.id}_category_#{division_group.join('_')}_#{true}" #true/false represents @is_super_admin boolean
             puts "Expiring Content Category #{cc.id} User"
-            expire_fragment "content_#{cc.id}_category_#{division_group.join('_')}_#{false}"
-          end
-        end
-      },
-      specializations: -> {
-        asdf = "hey"
-        asdf.hi
-
-        Specialization.all.sort{ |a,b| a.id <=> b.id }.each do |s|
-          puts "Specialization #{s.id}"
-
-          City.all.sort{ |a,b| a.id <=> b.id }.each do |c|
-            puts "Specialization City #{c.id}"
-            expire_fragment "#{specialization_path(s)}_#{city_path(c)}"
-            HttpGetter.exec("specialties/#{s.id}/#{s.token}/refresh_city_cache/#{c.id}.js")
-          end
-
-          Division.all.sort{ |a,b| a.id <=> b.id }.each do |d|
-            puts "Specialization Division #{d.id}"
-            expire_fragment "#{specialization_path(s)}_#{division_path(d)}"
-            HttpGetter.exec("specialties/#{s.id}/#{s.token}/refresh_division_cache/#{d.id}.js")
-          end
-
-          #expire the grouped together cities
-          User.all.map{ |u| City.for_user_in_specialization(u, s).map{ |c| c.id } }.uniq.each do |city_group|
-            expire_fragment "specialization_#{s.id}_content_cities_#{city_group.join('_')}"
-          end
-
-          #expire the grouped together divisions
-          User.all_user_division_groups_cached.each do |division_group|
-            expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
+            ExpireFragment.call "content_#{cc.id}_category_#{division_group.join('_')}_#{false}"
           end
         end
       },
       menus: -> {
-        expire_fragment 'specialization_dropdown_admin'
+        ExpireFragment.call 'specialization_dropdown_admin'
 
         User.all_user_division_groups_cached.each do |division_group|
-          expire_fragment "specialization_dropdown_#{division_group.join('_')}"
+          ExpireFragment.call "specialization_dropdown_#{division_group.join('_')}"
 
           Specialization.all.each do |specialization|
-            expire_fragment "specialization_#{specialization.id}_nav_#{division_group.join('_')}"
+            ExpireFragment.call "specialization_#{specialization.id}_nav_#{division_group.join('_')}"
           end
         end
       },
@@ -111,10 +72,10 @@ namespace :pathways do
         SearchDataLabels.new.regenerate_cache
 
         puts "All entries"
-        expire_fragment "livesearch_all_entries"
+        ExpireFragment.call "livesearch_all_entries"
         Specialization.all.each do |s|
           puts "All entries specialization #{s.id}"
-          expire_fragment "livesearch_all_entries_#{specialization_path(s)}"
+          ExpireFragment.call "livesearch_all_entries_#{specialization_path(s)}"
           HttpGetter.exec("refresh_livesearch_all_entries/#{s.id}.js")
         end
 
@@ -125,10 +86,10 @@ namespace :pathways do
       },
       front: -> {
         User.all_user_division_groups_cached.each do |division_group|
-          expire_fragment "featured_content_#{division_group.join('_')}"
-          expire_fragment "front_#{Specialization.cache_key}_#{division_group.join('_')}"
+          ExpireFragment.call "featured_content_#{division_group.join('_')}"
+          ExpireFragment.call "front_#{Specialization.cache_key}_#{division_group.join('_')}"
           Specialization.all.each do |specialization|
-            expire_fragment "front_#{specialization.cache_key}_#{division_group.join('_')}"
+            ExpireFragment.call "front_#{specialization.cache_key}_#{division_group.join('_')}"
           end
         end
       },
@@ -143,10 +104,10 @@ namespace :pathways do
         end
       },
       application_layout: -> {
-        expire_fragment("ie_compatibility_warning")
+        ExpireFragment.call("ie_compatibility_warning")
         User.all_user_division_groups_cached.each do |division_group|
-          expire_fragment("sc_category_global_navbar_#{division_group.join('_')}")
-          expire_fragment("resources_dropdown_categories_#{division_group.join('_')}")
+          ExpireFragment.call("sc_category_global_navbar_#{division_group.join('_')}")
+          ExpireFragment.call("resources_dropdown_categories_#{division_group.join('_')}")
         end
       },
       notifications: -> {
@@ -190,92 +151,5 @@ namespace :pathways do
 
       SystemNotifier.info("Recache successful")
     end
-
-    #utility expiration tasks
-
-    task :specialization_pages => :environment do
-      puts "Expiring specialization pages..."
-      Specialization.all.each do |s|
-        puts "Specialization #{s.name}"
-        expire_fragment specialization_path(s)
-
-        #expire the grouped together cities
-        User.all.map{ |u| City.for_user_in_specialization(u, s).map{ |c| c.id } }.uniq.each do |city_group|
-          expire_fragment "specialization_#{s.id}_content_cities_#{city_group.join('_')}"
-        end
-      end
-
-      #expire the grouped together divisions
-      User.all_user_division_groups_cached.each do |division_group|
-        puts "Divisions #{division_group.join(' ')}"
-        Specialization.all.each do |s|
-          expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
-        end
-      end
-    end
-
-    task :specialization_content => :environment do
-      puts "Expiring specialization content..."
-      Specialization.all.each do |s|
-        City.all.each do |c|
-          expire_fragment "#{specialization_path(s)}_#{city_path(c)}"
-        end
-        Division.all.each do |d|
-          expire_fragment "#{specialization_path(s)}_#{division_path(d)}"
-        end
-      end
-    end
-
-    task :specific_specialization, [:specialization_id] => [:environment] do |t, args|
-      specialization_id = args[:specialization_id] || -1
-      if specialization_id == -1
-        puts "Specify a specialization id with :specific_specialization[specialization_id]"
-        return
-      end
-      s = Specialization.find(Integer(specialization_id))
-      puts "Specialization #{s.id}"
-      expire_fragment specialization_path(s)
-      HttpGetter.exec("specialties/#{s.id}/#{s.token}/refresh_cache")
-
-      City.all.sort{ |a,b| a.id <=> b.id }.each do |c|
-        puts "Specialization City #{c.id}"
-        expire_fragment "#{specialization_path(s)}_#{city_path(c)}"
-        HttpGetter.exec("specialties/#{s.id}/#{s.token}/refresh_city_cache/#{c.id}.js")
-      end
-
-      Division.all.sort{ |a,b| a.id <=> b.id }.each do |d|
-        puts "Specialization Division #{d.id}"
-        expire_fragment "#{specialization_path(s)}_#{division_path(d)}"
-        HttpGetter.exec("specialties/#{s.id}/#{s.token}/refresh_division_cache/#{d.id}.js")
-      end
-
-      #expire the grouped together cities
-      User.all.map{ |u| City.for_user_in_specialization(u, s).map{ |c| c.id } }.uniq.each do |city_group|
-        expire_fragment "specialization_#{s.id}_content_cities_#{city_group.join('_')}"
-      end
-
-      #expire the grouped together divisions
-      User.all_user_division_groups_cached.each do |division_group|
-        expire_fragment "specialization_#{s.id}_content_divisions_#{division_group.join('_')}"
-      end
-
-      HttpGetter.exec("specialties/#{s.id}/#{s.token}/refresh_cache")
-    end
-
-    # The following methods are defined to fake out the ActionController
-    # requirements of the Rails cache
-
-    def cache_store
-      ActionController::Base.cache_store
-    end
-
-    def self.benchmark( *params )
-      yield
-    end
-
-    def cache_configured?
-      true
-    end
-
   end
 end
