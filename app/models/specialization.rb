@@ -37,7 +37,7 @@ class Specialization < ActiveRecord::Base
   end
 
   def self.all_cached
-    Rails.cache.fetch([name, "all_specializations"], expires_in: 6.hours) {self.all}
+    @_all_specializations_cached ||= Rails.cache.fetch([name, "all_specializations"], expires_in: 6.hours) {self.all}
   end
 
   def self.cached_find(id)
