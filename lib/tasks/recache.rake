@@ -156,7 +156,7 @@ namespace :pathways do
     task :latest_updates => :environment do
       User.all_user_division_groups_cached.each do |division_group|
         LatestUpdates.call(
-          max_automated_events: 5,
+          max_automatic_events: 5,
           division_ids: division_group,
           force: true,
           force_automatic: true
