@@ -8,6 +8,7 @@ Backend = Change is not user facing
 ## [2016-01-16] [Since 2016-01-09 Integration]
 ### Changed:
 - #154: Clinic form now asks users to confirm before deleting location
+- #283: Improved results sorting on specialization pages 
 
 ### Fixed:
 - #251: Quick sharing/unsharing content items from their show page
