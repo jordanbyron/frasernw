@@ -24,6 +24,12 @@ class User < ActiveRecord::Base
 
   validates_format_of :password, :with => /^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){8,}$/, :if => :require_password?, :message => "must include one number, one letter and be at least 8 characters long"
 
+  validates :email, confirmation: true
+  validates :email_confirmation, presence: true
+
+  validates_presence_of :name
+  validates :agree_to_toc, presence: {message: "must agree to Terms of Use"}
+
   has_many :user_divisions, :source => :division_users, :class_name => "DivisionUser", :dependent => :destroy
   has_many :divisions, :through => :user_divisions
   #has_many :cities, :through => :divisions
@@ -56,9 +62,6 @@ class User < ActiveRecord::Base
 
   delegate :with_activity, to: :subscriptions, prefix: true
 
-  validates_presence_of :name
-  validates :agree_to_toc, presence: true
-
   # after_commit :flush_cache
   after_touch :flush_cache
 
@@ -73,6 +76,7 @@ class User < ActiveRecord::Base
     :password,
     :password_confirmation,
     :email,
+    :email_confirmation,
     :agree_to_toc,
     :type_mask
 
