@@ -11,7 +11,7 @@
   = simple_form_for @user, :url => {:controller => "users", :action => "setup"}, :method => "put", :html => { :class => "form-horizontal" } do |f|
 
     = f.input :email, input_html: {value: @email, type: "email"}
-    = f.input :email_confirmation, as: :fake_string, input_html: {type: "email"}
+    = f.input :email_confirmation, input_html: {type: "email"}
     = f.input :password, :hint => "Your password must be at least <strong>8 characters long</strong>, and include at least <strong>one number</strong> and <strong>one letter</strong>. Again, since you may want to share an account within your office, we do not recommment choosing a password that is personal to you.".html_safe
     = f.input :password_confirmation
 
@@ -25,33 +25,3 @@
 
     .form-actions
       =f.button :submit, "Set-up account", :class => "btn btn-primary", id: "setup-submit"
-
-
-
-%script{"type" => "text/javascript"}
-  :plain
-    nod.classes.successClass = 'success';
-    nod.classes.successMessageClass = 'nod-success-message';
-    nod.classes.errorClass = 'error';
-    nod.classes.errorMessageClass = 'nod-error-message';
-
-    var myNod = nod();
-
-    myNod.configure({
-        parentClass: 'controls'
-    });
-
-    myNod.add([{
-        selector: '#user_email',
-        validate: 'email',
-        errorMessage: ' Not a valid email.'
-    }, {
-        selector: '#email_confirmation',
-        validate: 'same-as:#user_email',
-        errorMessage: ' Emails do not match.'
-    }, {
-        selector: '#user_password_confirmation',
-        validate: 'same-as:#user_password',
-        validate: 'min-length: 8',
-        errorMessage: ' Password is too short or does not match'
-    }]);
