@@ -3,7 +3,7 @@
   <!-- Button to trigger modal -->
   <a href="#testdebugModal" role="button" class="btn" data-toggle="modal">Debug Info</a>
   <% if current_user.present? %>
-  Current User: <%= current_user.name %> (<%= current_user.email %>)
+  Current User: <%= current_user.name %> (email: <%= current_user.email %>, id: <%= current_user.id %>)
   <% end %>
   <a class="close" data-dismiss="alert" href="#">&times;</a>
 </div>

@@ -44,60 +44,70 @@ var commonFunctions = {
     } else {
       return row.cells[4];
     }
+  },
+  specialties: function(row){ return row.cells[1] }
+}
+
+const commonFunctionSets = {
+  referrals: function(sortConfig, cityRankings, cityRankingsCustomized) {
+    if (cityRankingsCustomized) {
+      return [
+        commonFunctions.referrals,
+        commonFunctions.cityPriority(sortConfig, cityRankings),
+        commonFunctions.waittimes
+      ];
+    } else {
+      return [
+        commonFunctions.referrals,
+        commonFunctions.waittimes
+      ];
+    }
+  },
+  city: function(sortConfig, cityRankings, cityRankingsCustomized) {
+    return [
+      commonFunctions.cityPriority(sortConfig, cityRankings),
+      commonFunctions.referrals,
+      commonFunctions.waittimes
+    ];
+  },
+  waittime: function(sortConfig, cityRankings, cityRankingsCustomized) {
+    return [
+      commonFunctions.waittimes,
+      commonFunctions.cityPriority(sortConfig, cityRankings)
+    ];
   }
 }
 
 module.exports = {
-  clinics: function(sortConfig, cityRankings) {
+  clinics: function(sortConfig, cityRankings, cityRankingsCustomized) {
     switch(sortConfig.column) {
     case "NAME":
       return [ function(row){ return row.record.name; } ];
     case "SPECIALTIES":
-      return [ function(row){ return row.cells[1] } ];
+      return [ commonFunctions.specialties ];
     case "REFERRALS":
-      return [
-        commonFunctions.referrals,
-        commonFunctions.cityPriority(sortConfig, cityRankings),
-        commonFunctions.waittimes
-      ];
+
+      return commonFunctionSets.referrals(sortConfig, cityRankings, cityRankingsCustomized);
     case "WAITTIME":
-      return [
-        commonFunctions.waittimes,
-        commonFunctions.cityPriority(sortConfig, cityRankings)
-      ];
+      return commonFunctionSets.waittime(sortConfig, cityRankings, cityRankingsCustomized);
     case "CITY":
-      return [
-        commonFunctions.cityPriority(sortConfig, cityRankings),
-        commonFunctions.referrals,
-        commonFunctions.waittimes
-      ];
+      return commonFunctionSets.city(sortConfig, cityRankings, cityRankingsCustomized);
     default:
       return [ function(row){ return row.record.name; } ];
     }
   },
-  specialists: function(sortConfig, cityRankings) {
+  specialists: function(sortConfig, cityRankings, cityRankingsCustomized) {
     switch(sortConfig.column) {
     case "NAME":
       return [ function(row){ return row.record.lastName.toLowerCase(); } ];
     case "SPECIALTIES":
-      return [ function(row){ return row.cells[1] } ];
+      return [ commonFunctions.specialties ];
     case "REFERRALS":
-      return [
-        commonFunctions.referrals,
-        commonFunctions.cityPriority(sortConfig, cityRankings),
-        commonFunctions.waittimes
-      ];
+      return commonFunctionSets.referrals(sortConfig, cityRankings, cityRankingsCustomized);
     case "WAITTIME":
-      return [
-        commonFunctions.waittimes,
-        commonFunctions.cityPriority(sortConfig, cityRankings)
-      ];
+      return commonFunctionSets.waittime(sortConfig, cityRankings, cityRankingsCustomized);
     case "CITY":
-      return [
-        commonFunctions.cityPriority(sortConfig, cityRankings),
-        commonFunctions.referrals,
-        commonFunctions.waittimes
-      ];
+      return commonFunctionSets.city(sortConfig, cityRankings, cityRankingsCustomized);
     default:
       return [ function(row){ return row.record.lastName; } ];
     }

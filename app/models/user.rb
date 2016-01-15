@@ -294,6 +294,10 @@ LIMITED_ROLE_HASH = {
     end.flatten.uniq
   end
 
+  def customized_city_rankings?
+    divisions.first.use_customized_city_priorities?
+  end
+
   def city_rankings
     divisions.first.city_rankings
   end

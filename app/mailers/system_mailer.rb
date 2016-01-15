@@ -8,7 +8,7 @@ class SystemMailer < ActionMailer::Base
     mail(
       to: Rails.application.config.system_notification_recipients,
       from: "noreply@pathwaysbc.ca",
-      subject: "[pathways_system_#{options[:tag]}] [] #{options[:subject]}"
+      subject: "[pathways_system_#{options[:tag]}] [#{ENV['APP_NAME']}] #{options[:subject]}"
     )
   end
 end

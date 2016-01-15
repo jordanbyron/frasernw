@@ -550,8 +550,8 @@ var generateBodyRows = function(state: Object, filtered: Array, config: Object, 
 
   return _.sortByOrder(
     unsorted,
-    sortFunctions[config.panelTypeKey](sortConfig, state.app.currentUser.cityRankings),
-    sortOrders[config.panelTypeKey](sortConfig)
+    sortFunctions[config.panelTypeKey](sortConfig, state.app.currentUser.cityRankings, state.app.currentUser.cityRankingsCustomized),
+    sortOrders[config.panelTypeKey](sortConfig, state.app.currentUser.cityRankingsCustomized)
   );
 }
 

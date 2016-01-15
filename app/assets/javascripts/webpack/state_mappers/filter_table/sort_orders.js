@@ -8,39 +8,30 @@ var reverse = function(sortConfig, numCriteria) {
   return _.times(numCriteria, () => order);
 }
 
+var referents = function(sortConfig, cityRankingsCustomized) {
+  switch(sortConfig.column) {
+  case "NAME":
+    return reverse(sortConfig);
+  case "SPECIALTIES":
+    return reverse(sortConfig);
+  case "REFERRALS":
+    if (cityRankingsCustomized) {
+      return reverse(sortConfig, 3);
+    } else {
+      return reverse(sortConfig, 2);
+    }
+  case "WAITTIME":
+    return reverse(sortConfig, 2);
+  case "CITY":
+    return reverse(sortConfig, 3);
+  default:
+    return reverse(sortConfig);
+  }
+}
+
 module.exports = {
-  clinics: function(sortConfig) {
-    switch(sortConfig.column) {
-    case "NAME":
-      return reverse(sortConfig);
-    case "SPECIALTIES":
-      return reverse(sortConfig);
-    case "REFERRALS":
-      return reverse(sortConfig, 3);
-    case "WAITTIME":
-      return reverse(sortConfig, 2);
-    case "CITY":
-      return reverse(sortConfig, 3);
-    default:
-      return reverse(sortConfig);
-    }
-  },
-  specialists: function(sortConfig) {
-    switch(sortConfig.column) {
-    case "NAME":
-      return reverse(sortConfig);
-    case "SPECIALTIES":
-      return reverse(sortConfig);
-    case "REFERRALS":
-      return reverse(sortConfig, 3);
-    case "WAITTIME":
-      return reverse(sortConfig, 2);
-    case "CITY":
-      return reverse(sortConfig, 3);
-    default:
-      return reverse(sortConfig);
-    }
-  },
+  clinics: referents,
+  specialists: referents,
   contentCategories: function(sortConfig) {
     switch(sortConfig.column) {
     case "TITLE":

@@ -147,7 +147,7 @@ class Division < ActiveRecord::Base
   def city_rankings
     city_ids = cities.pluck(:id)
 
-    if use_customized_city_priorities
+    if use_customized_city_priorities?
       division_referral_cities.inject({}) do |memo, drc|
         memo.merge(drc.city_id => drc.priority)
       end
