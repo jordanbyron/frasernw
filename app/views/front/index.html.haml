@@ -78,7 +78,7 @@
 
         %h2 Latest Specialist and Clinic Updates
 
-        - latest_events(5, user_divisions).each do |event|
+        - LatestUpdates.for(:front, user_divisions).each do |event|
           %p= event
 
         %p

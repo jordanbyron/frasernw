@@ -1,13 +1,39 @@
 class LatestUpdates < ServiceObject
+  attribute :force, Axiom::Types::Boolean, default: false
   attribute :force_automatic, Axiom::Types::Boolean, default: false
   attribute :max_automatic_events, Integer, default: 100000
   attribute :division_ids, Array
 
+  MAX_EVENTS = {
+    front: 5,
+    index: 100000
+  }
+
+  def self.recache_for(division_ids, options)
+    MAX_EVENTS.each do |context, max|
+      call(
+        max_automatic_events: max,
+        division_ids: division_ids,
+        force: true,
+        force_automatic: options[:force_automatic]
+      )
+    end
+  end
+
+  def self.for(context, divisions)
+    call(
+      max_automatic_events: MAX_EVENTS[context],
+      division_ids: divisions.reject(&:hidden?).map(&:id)
+    )
+  end
+
   def call
-    (manual_events + automatic_events.take(max_automatic_events)).
-      sort_by{ |event| event[:date].to_s }.
-      reverse.
-      map{ |event| event[:markup] }
+    Rails.cache.fetch("latest_updates:#{division_ids.sort.join('_')}:#{max_automatic_events}", force: force) do
+      (manual_events + automatic_events.take(max_automatic_events)).
+        sort_by{ |event| event[:date].to_s }.
+        reverse.
+        map{ |event| event[:markup] }
+    end
   end
 
   def divisions
@@ -125,22 +151,10 @@ class LatestUpdates < ServiceObject
     end.created_at
   end
 
-  def self.guess_location_opened_date(item)
-    if item.location_opened == "Prior to 2010"
-      Date.strptime("{ 2009, 12, 31 }", "{ %Y, %m, %d }")
-    else
-      date_location_opened_entered = item.versions.find_last do |version|
-        !version.reify.present? || version.reify.location_opened != item.location_opened
-      end.created_at
-
-      if item.location_opened.to_i == date_location_opened_entered.year
-        date_location_opened_entered
-      elsif item.location_opened.to_i > date_location_opened_entered.year
-        Date.strptime("{ #{item.location_opened}, 1, 1 }", "{ %Y, %m, %d }")
-      elsif item.location_opened.to_i < date_location_opened_entered.year
-        Date.strptime("{ #{item.location_opened}, 12, 31 }", "{ %Y, %m, %d }")
-      end
-    end
+  def self.location_opened_entered(item)
+    item.versions.find_last do |version|
+      !version.reify.present? || version.reify.location_opened != item.location_opened
+    end.created_at
   end
 
   class Clinics < ServiceObject
@@ -177,7 +191,7 @@ class LatestUpdates < ServiceObject
               id: clinic_location.id,
               klass: "ClinicLocation",
               event: :is_open,
-              date: LatestUpdates.guess_location_opened_date(clinic_location),
+              date: LatestUpdates.location_opened_entered(clinic_location),
               markup: LatestUpdates::MARKUP["ClinicLocation"][:is_open].call(clinic, clinic_location)
             }
           else
@@ -275,7 +289,7 @@ class LatestUpdates < ServiceObject
               id: specialist_office.id,
               klass: "SpecialistOffice",
               event: :is_open,
-              date: LatestUpdates.guess_location_opened_date(specialist_office),
+              date: LatestUpdates.location_opened_entered(specialist_office),
               markup: LatestUpdates::MARKUP["SpecialistOffice"][:is_open].call(specialist, specialist_office)
             }
           else
@@ -286,14 +300,3 @@ class LatestUpdates < ServiceObject
     end
   end
 end
-
-### Potential algorithm for guessing old openings (past the year or so we track now):
-# for a SpecialistOffice or Clinic Location, the latest_change_version is the version which
-# changes the last change to location_opened
-#
-# if the LCV falls within the current location_opened, we just use the date of that version
-# if it falls before, we use Jan. 1st of location_opened
-# if it falls after, we use Dec. 31st of location_opened
-#
-# issue: this doesn't get around the potential for a location moving addresses after its opening date
-# at which it would probably be sensible to consider it having 'opened' again at the new address

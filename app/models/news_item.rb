@@ -32,6 +32,10 @@ class NewsItem < ActiveRecord::Base
       select do |group|
         division_ids.any?{ |id| group.include?(id) }
       end
+
+    division_groups.each do |group|
+      LatestUpdates.delay.recache_for(group, force_automatic: false)
+    end
   end
 
   def borrowing_divisions

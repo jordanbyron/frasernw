@@ -155,11 +155,7 @@ namespace :pathways do
 
     task :latest_updates => :environment do
       User.all_user_division_groups_cached.each do |division_group|
-        LatestUpdates.call(
-          max_automatic_events: 5,
-          division_ids: division_group,
-          force_automatic: true
-        )
+        LatestUpdates.delay.recache_for(division_group, force_automatic: true)
       end
     end
 
