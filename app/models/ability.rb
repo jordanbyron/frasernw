@@ -15,6 +15,8 @@ class Ability
       can :get, :global_data
       can :index, Newsletter
 
+      can :index, :latest_updates
+
       if user.super_admin?
 
         #super admin
@@ -63,6 +65,10 @@ class Ability
           user.divisions.include? item.division
         end
         can :create, ScItem
+
+        can :share, ScItem do |item|
+          item.shareable && !item.in_progress
+        end
 
         can :manage, DivisionDisplayScItem do |item|
           user.divisions.include? Division.find(item.division_id)

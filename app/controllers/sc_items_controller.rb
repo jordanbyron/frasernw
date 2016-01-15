@@ -93,21 +93,26 @@ class ScItemsController < ApplicationController
 
   def share
     @sc_item = ScItem.find(params[:id])
+    authorize! :share, @sc_item
     @division = Division.find(params[:division_id])
     existing_record =
       DivisionDisplayScItem.where(sc_item_id: @sc_item.id, division_id: @division.id).first
 
-    return unless params[:is_shared].present?
-    return unless @sc_item.present?
-    return unless @division.present?
+    if params[:is_shared].present? && @sc_item.present? && @division.present?
+      if params[:is_shared].to_b && !existing_record.present?
+        DivisionDisplayScItem.create(sc_item_id: @sc_item.id, division_id: @division.id)
 
-    if params[:is_shared].to_b && !existing_record.present?
-      DivisionDisplayScItem.create(sc_item_id: @sc_item.id, division_id: @division.id)
-    elsif !params[:is_shared].to_b && existing_record.present?
-      existing_record.destroy
+        notice = "Now displaying this item in #{@division.name}"
+      elsif !params[:is_shared].to_b && existing_record.present?
+        existing_record.destroy
+
+        notice = "No longer displaying this item in #{@division.name}"
+      end
     end
 
-    render nothing: true, status: 200
+    notice ||= "Unable to complete your request"
+
+    redirect_to sc_item_path(@sc_item), notice: notice
   end
 
   private

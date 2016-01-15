@@ -55,11 +55,22 @@ module.exports = {
     case "SPECIALTIES":
       return [ function(row){ return row.cells[1] } ];
     case "REFERRALS":
-      return [ commonFunctions.referrals, commonFunctions.waittimes ];
+      return [
+        commonFunctions.referrals,
+        commonFunctions.cityPriority(sortConfig, cityRankings),
+        commonFunctions.waittimes
+      ];
     case "WAITTIME":
-      return [ commonFunctions.waittimes ];
+      return [
+        commonFunctions.waittimes,
+        commonFunctions.cityPriority(sortConfig, cityRankings)
+      ];
     case "CITY":
-      return [ commonFunctions.cityPriority(sortConfig, cityRankings), commonFunctions.cityName ];
+      return [
+        commonFunctions.cityPriority(sortConfig, cityRankings),
+        commonFunctions.referrals,
+        commonFunctions.waittimes
+      ];
     default:
       return [ function(row){ return row.record.name; } ];
     }
@@ -71,11 +82,22 @@ module.exports = {
     case "SPECIALTIES":
       return [ function(row){ return row.cells[1] } ];
     case "REFERRALS":
-      return [ commonFunctions.referrals, commonFunctions.waittimes ];
+      return [
+        commonFunctions.referrals,
+        commonFunctions.cityPriority(sortConfig, cityRankings),
+        commonFunctions.waittimes
+      ];
     case "WAITTIME":
-      return [ commonFunctions.waittimes ];
+      return [
+        commonFunctions.waittimes,
+        commonFunctions.cityPriority(sortConfig, cityRankings)
+      ];
     case "CITY":
-      return [ commonFunctions.cityPriority(sortConfig, cityRankings), commonFunctions.cityName ];
+      return [
+        commonFunctions.cityPriority(sortConfig, cityRankings),
+        commonFunctions.referrals,
+        commonFunctions.waittimes
+      ];
     default:
       return [ function(row){ return row.record.lastName; } ];
     }

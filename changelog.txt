@@ -8,6 +8,15 @@ Backend = Change is not user facing
 ## [2016-01-16] [Since 2016-01-09 Integration]
 ### Changed:
 - #154: Clinic form now asks users to confirm before deleting location
+- #283: Improved results sorting on specialization pages
+- #50: Browse 'More' latest updates
+
+### Fixed:
+- #251: Quick sharing/unsharing content items from their show page
+- Recache tasks now fail individually and send error messages to our emails
+- We are notified via email when the recache begins
+- Latest Updates to office openings are shown even if the office hasn't opened
+recently
 
 ## [2016-01-09] [Since 2016-01-02 Integration]
 ### Added:

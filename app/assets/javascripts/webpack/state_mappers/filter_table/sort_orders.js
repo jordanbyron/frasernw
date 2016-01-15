@@ -1,19 +1,11 @@
-var reverse = function(sortConfig) {
-  switch(sortConfig.order){
-  case "UP":
-    return ["desc"];
-  case "DOWN":
-    return ["asc"];
-  };
-}
+var reverse = function(sortConfig, numCriteria) {
+  var numCriteria = numCriteria || 1;
+  var order = {
+    UP: "desc",
+    DOWN: "asc"
+  }[sortConfig.order]
 
-var doubleReverse = function(sortConfig) {
-  switch(sortConfig.order){
-  case "UP":
-    return ["desc", "desc"];
-  case "DOWN":
-    return ["asc", "asc"]
-  };
+  return _.times(numCriteria, () => order);
 }
 
 module.exports = {
@@ -24,11 +16,11 @@ module.exports = {
     case "SPECIALTIES":
       return reverse(sortConfig);
     case "REFERRALS":
-      return doubleReverse(sortConfig);
+      return reverse(sortConfig, 3);
     case "WAITTIME":
-      return reverse(sortConfig);
+      return reverse(sortConfig, 2);
     case "CITY":
-      return doubleReverse(sortConfig);
+      return reverse(sortConfig, 3);
     default:
       return reverse(sortConfig);
     }
@@ -40,11 +32,11 @@ module.exports = {
     case "SPECIALTIES":
       return reverse(sortConfig);
     case "REFERRALS":
-      return doubleReverse(sortConfig);
+      return reverse(sortConfig, 3);
     case "WAITTIME":
-      return reverse(sortConfig);
+      return reverse(sortConfig, 2);
     case "CITY":
-      return doubleReverse(sortConfig);
+      return reverse(sortConfig, 3);
     default:
       return reverse(sortConfig);
     }

@@ -15,7 +15,7 @@
     = f.input :password, :hint => "Your password must be at least <strong>8 characters long</strong>, and include at least <strong>one number</strong> and <strong>one letter</strong>. Again, since you may want to share an account within your office, we do not recommment choosing a password that is personal to you.".html_safe
     = f.input :password_confirmation
 
-    = f.input :agree_to_toc, :label => "I agree to the <a href='javascript:void(0)' data-toggle='collapse' data-target='#toc'>Terms of Use</a>".html_safe
+    = f.input :agree_to_toc, :input_html => {style: "float: inherit;"}, :label => "I agree to the <a href='javascript:void(0)' data-toggle='collapse' data-target='#toc'>Terms of Use</a>".html_safe
 
     #toc.collapse.offset3
 

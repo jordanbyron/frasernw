@@ -33,13 +33,8 @@ class NewsItem < ActiveRecord::Base
         division_ids.any?{ |id| group.include?(id) }
       end
 
-    division_groups.each do |division_group|
-      LatestUpdates.delay.call(
-        max_automated_events: 5,
-        division_ids: division_group,
-        force: true,
-        force_automatic: false
-      )
+    division_groups.each do |group|
+      LatestUpdates.delay.recache_for(group, force_automatic: false)
     end
   end
 

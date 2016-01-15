@@ -494,4 +494,6 @@ class Clinic < ActiveRecord::Base
       attendance.show?
     end
   end
+
+  alias_method :cities_for_front_page, :cities
 end

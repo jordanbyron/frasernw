@@ -1,0 +1,6 @@
+.content-wrapper
+  %h2
+    All updates for your division(s):
+
+  - LatestUpdates.for(:index, current_user_divisions).each do |event|
+    %p{style: "margin-top: 10px"}= event
