@@ -5,12 +5,10 @@ class LatestUpdates < ServiceObject
   attribute :division_ids, Array
 
   def call
-    Rails.cache.fetch("latest_updates:#{division_ids.sort.join('_')}", force: force) do
-      (manual_events + automatic_events.take(max_automatic_events)).
-        sort_by{ |event| event[:date].to_s }.
-        reverse.
-        map{ |event| event[:markup] }
-    end
+    (manual_events + automatic_events.take(max_automatic_events)).
+      sort_by{ |event| event[:date].to_s }.
+      reverse.
+      map{ |event| event[:markup] }
   end
 
   def divisions
