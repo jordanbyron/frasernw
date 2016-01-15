@@ -19,7 +19,6 @@
 //= require highcharts
 //= require webpack.bundle
 //= require jquery_components/checkbox_slidedown
-//= require nod
 //= require global_data
 //= require_directory .
 
