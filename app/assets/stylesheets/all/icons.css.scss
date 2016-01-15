@@ -171,26 +171,6 @@
   content: "\f011";
 }
 
-.nod-error-message:before,
-.nod-success-message:before,
-{
-  font-family: FontAwesome;
-  font-weight: normal;
-  font-style: normal;
-  text-decoration: inherit;
-  display: inline-block;
-}
-
-.nod-error-message:before
-{
-  content: "\f071";
-}
-
-.nod-success-message:before
-{
-  content: "\f00c"
-}
-
 .history:before
 {
   content: "\f07c";
