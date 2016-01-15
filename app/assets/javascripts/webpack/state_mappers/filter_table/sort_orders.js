@@ -18,9 +18,9 @@ module.exports = {
     case "REFERRALS":
       return reverse(sortConfig, 3);
     case "WAITTIME":
-      return reverse(sortConfig, 3);
+      return reverse(sortConfig, 2);
     case "CITY":
-      return reverse(sortConfig, 4);
+      return reverse(sortConfig, 3);
     default:
       return reverse(sortConfig);
     }
@@ -34,9 +34,9 @@ module.exports = {
     case "REFERRALS":
       return reverse(sortConfig, 3);
     case "WAITTIME":
-      return reverse(sortConfig, 3);
+      return reverse(sortConfig, 2);
     case "CITY":
-      return reverse(sortConfig, 4);
+      return reverse(sortConfig, 3);
     default:
       return reverse(sortConfig);
     }

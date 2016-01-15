@@ -63,13 +63,11 @@ module.exports = {
     case "WAITTIME":
       return [
         commonFunctions.waittimes,
-        commonFunctions.cityPriority(sortConfig, cityRankings),
-        commonFunctions.cityName
+        commonFunctions.cityPriority(sortConfig, cityRankings)
       ];
     case "CITY":
       return [
         commonFunctions.cityPriority(sortConfig, cityRankings),
-        commonFunctions.cityName,
         commonFunctions.referrals,
         commonFunctions.waittimes
       ];
@@ -92,13 +90,11 @@ module.exports = {
     case "WAITTIME":
       return [
         commonFunctions.waittimes,
-        commonFunctions.cityPriority(sortConfig, cityRankings),
-        commonFunctions.cityName
+        commonFunctions.cityPriority(sortConfig, cityRankings)
       ];
     case "CITY":
       return [
         commonFunctions.cityPriority(sortConfig, cityRankings),
-        commonFunctions.cityName,
         commonFunctions.referrals,
         commonFunctions.waittimes
       ];

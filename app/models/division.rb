@@ -152,12 +152,10 @@ class Division < ActiveRecord::Base
         memo.merge(drc.city_id => drc.priority)
       end
     else
-      City.pluck(:id).inject({}) do |memo, city|
-        if city_ids.include?(city)
-          memo.merge(city => 1)
-        else
-          memo.merge(city => 2)
-        end
+      City.order("name DESC").each_with_index.inject({}) do |memo, (city, index)|
+        memo.merge(
+          city.id => index
+        )
       end
     end
   end
