@@ -1,5 +1,4 @@
 class LatestUpdates < ServiceObject
-  attribute :force, Axiom::Types::Boolean, default: false
   attribute :force_automatic, Axiom::Types::Boolean, default: false
   attribute :max_automatic_events, Integer, default: 100000
   attribute :division_ids, Array
@@ -56,34 +55,34 @@ class LatestUpdates < ServiceObject
       }
     },
     "SpecialistOffice" => {
-      opened_recently: -> (specialist, specialist_office) {
+      is_open: -> (specialist, specialist_office) {
         office_link = link_to("#{specialist.name}'s office", "/specialists/#{specialist.id}")
 
         if specialist_office.city.present?
           recently_opened =
-            "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{specialist_office.city.name} and is accepting new referrals."
+            "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) is open in #{specialist_office.city.name} and is accepting new referrals."
 
           "#{office_link} #{recently_opened}".html_safe
         else
           recently_opened =
-            "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals."
+            "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) is open and is accepting new referrals."
 
           "#{office_link} #{recently_opened}".html_safe
         end
       }
     },
     "ClinicLocation" => {
-      opened_recently: -> (clinic, clinic_location) {
+      is_open: -> (clinic, clinic_location) {
         clinic_link = link_to(clinic.name, "/clinics/#{clinic.id}")
 
         if clinic_location.city.present?
           recently_opened =
-            "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{clinic_location.city.name} and is accepting new referrals."
+            "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) is open in #{clinic_location.city.name} and is accepting new referrals."
 
           "#{clinic_link} #{recently_opened}".html_safe
         else
           recently_opened =
-            "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals."
+            "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) is open and is accepting new referrals."
 
           "#{clinic_link} #{recently_opened}".html_safe
         end
@@ -103,7 +102,7 @@ class LatestUpdates < ServiceObject
       end
     end.
       uniq{ |event| [ event[:klass], event[:id], event[:event] ] }.
-      sort_by{ |event| event[:date] }.
+      sort_by{ |event| event[:date].to_s }.
       reverse
   end
 
@@ -124,6 +123,24 @@ class LatestUpdates < ServiceObject
     item.versions.order(:created_at).find_last do |version|
       !version.reify.present? || !version.reify.send(event_method)
     end.created_at
+  end
+
+  def self.guess_location_opened_date(item)
+    if item.location_opened == "Prior to 2010"
+      Date.strptime("{ 2009, 12, 31 }", "{ %Y, %m, %d }")
+    else
+      date_location_opened_entered = item.versions.find_last do |version|
+        !version.reify.present? || version.reify.location_opened != item.location_opened
+      end.created_at
+
+      if item.location_opened.to_i == date_location_opened_entered.year
+        date_location_opened_entered
+      elsif item.location_opened.to_i > date_location_opened_entered.year
+        Date.strptime("{ #{item.location_opened}, 1, 1 }", "{ %Y, %m, %d }")
+      elsif item.location_opened.to_i < date_location_opened_entered.year
+        Date.strptime("{ #{item.location_opened}, 12, 31 }", "{ %Y, %m, %d }")
+      end
+    end
   end
 
   class Clinics < ServiceObject
@@ -155,13 +172,13 @@ class LatestUpdates < ServiceObject
         return [] unless clinic.accepting_new_patients?
 
         clinic.clinic_locations.inject([]) do |memo, clinic_location|
-          if clinic_location.opened_recently?
+          if clinic_location.location_opened.present?
             memo << {
               id: clinic_location.id,
               klass: "ClinicLocation",
-              event: :opened_recently,
-              date: LatestUpdates.event_date(clinic_location, :opened_recently?),
-              markup: LatestUpdates::MARKUP["ClinicLocation"][:opened_recently].call(clinic, clinic_location)
+              event: :is_open,
+              date: LatestUpdates.guess_location_opened_date(clinic_location),
+              markup: LatestUpdates::MARKUP["ClinicLocation"][:is_open].call(clinic, clinic_location)
             }
           else
             memo
@@ -253,13 +270,13 @@ class LatestUpdates < ServiceObject
         return [] unless specialist.accepting_new_patients?
 
         specialist.specialist_offices.inject([]) do |memo, specialist_office|
-          if specialist_office.opened_recently?
+          if specialist_office.location_opened.present?
             memo << {
               id: specialist_office.id,
               klass: "SpecialistOffice",
-              event: :opened_recently,
-              date: LatestUpdates.event_date(specialist_office, :opened_recently?),
-              markup: LatestUpdates::MARKUP["SpecialistOffice"][:opened_recently].call(specialist, specialist_office)
+              event: :is_open,
+              date: LatestUpdates.guess_location_opened_date(specialist_office),
+              markup: LatestUpdates::MARKUP["SpecialistOffice"][:is_open].call(specialist, specialist_office)
             }
           else
             memo

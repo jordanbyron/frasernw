@@ -32,15 +32,6 @@ class NewsItem < ActiveRecord::Base
       select do |group|
         division_ids.any?{ |id| group.include?(id) }
       end
-
-    division_groups.each do |division_group|
-      LatestUpdates.delay.call(
-        max_automatic_events: 5,
-        division_ids: division_group,
-        force: true,
-        force_automatic: false
-      )
-    end
   end
 
   def borrowing_divisions

@@ -158,7 +158,6 @@ namespace :pathways do
         LatestUpdates.call(
           max_automatic_events: 5,
           division_ids: division_group,
-          force: true,
           force_automatic: true
         )
       end
