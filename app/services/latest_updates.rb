@@ -1,205 +1,302 @@
 class LatestUpdates < ServiceObject
-  attribute :max_automated_events, Integer, default: 5
-  attribute :division_ids, Array
-  attribute :version_ids, Array, default: nil
   attribute :force, Axiom::Types::Boolean, default: false
   attribute :force_automatic, Axiom::Types::Boolean, default: false
-  attribute :whitelisted, Array, default: ["Specialist".freeze, "SpecialistOffice".freeze, "ClinicLocation".freeze]
+  attribute :max_automatic_events, Integer, default: 100000
+  attribute :division_ids, Array
+
+  MAX_EVENTS = {
+    front: 5,
+    index: 100000
+  }
+
+  def self.recache_for(division_ids, options)
+    MAX_EVENTS.each do |context, max|
+      call(
+        max_automatic_events: max,
+        division_ids: division_ids,
+        force: true,
+        force_automatic: options[:force_automatic]
+      )
+    end
+  end
+
+  def self.for(context, divisions)
+    call(
+      max_automatic_events: MAX_EVENTS[context],
+      division_ids: divisions.reject(&:hidden?).map(&:id)
+    )
+  end
 
   def call
-    # puts "DIVISIONS: #{divisions.map(&:id)}"
-    Rails.cache.fetch("latest_updates:#{max_automated_events}:#{division_ids.sort.join("_")}", force: force) do
-      divisions = division_ids.map{ |id| Division.find(id) }
-      #mix in the news updates with the automatic updates
-      AutomatedEvents.call(
-        max_automated_events: max_automated_events,
-        divisions: divisions,
-        force: force_automatic,
-        version_ids: version_ids,
-      ).merge(manual_events(divisions)).values.sort{ |a, b| b[0] <=> a[0] }.map{ |x| x[1] }
+    Rails.cache.fetch("latest_updates:#{division_ids.sort.join('_')}:#{max_automatic_events}", force: force) do
+      (manual_events + automatic_events.take(max_automatic_events)).
+        sort_by{ |event| event[:date].to_s }.
+        reverse.
+        map{ |event| event[:markup] }
     end
   end
 
-  def manual_events(divisions)
-    manual_events = {}
-
-    NewsItem.specialist_clinic_in_divisions(divisions).each do |news_item|
-      item = news_item.title.present? ? BlueCloth.new(news_item.title + ". " + news_item.body).to_html : BlueCloth.new(news_item.body).to_html
-
-      manual_events["NewsItem_#{news_item.id}"] = ["#{news_item.start_date || news_item.end_date}", item.html_safe]
-    end
-
-    manual_events
+  def divisions
+    @divisions ||= Division.find(division_ids)
   end
 
-  class AutomatedEvents < ServiceObject
-    attribute :max_automated_events, Integer
-    attribute :divisions, Array
-    attribute :force, Boolean
-    attribute :version_ids, Array
-    attribute :whitelisted, Array, default: ["Specialist".freeze, "SpecialistOffice".freeze, "ClinicLocation".freeze]
+  def manual_events
+    NewsItem.specialist_clinic_in_divisions(divisions).inject([]) do |memo, news_item|
+      if news_item.title.present?
+        memo << {
+          markup: BlueCloth.new("#{news_item.title}. #{news_item.body}").to_html.html_safe,
+          date: (news_item.start_date || news_item.end_date)
+        }
+      else
+        memo << {
+          markup: BlueCloth.new(news_item.body).to_html.html_safe,
+          date: (news_item.start_date || news_item.end_date)
+        }
+      end
+    end
+  end
 
-    include ActionView::Helpers::UrlHelper
+  extend ActionView::Helpers::UrlHelper
+  extend ActionView::Helpers::TagHelper
+
+  MARKUP = {
+    "Specialist" => {
+      moved_away: -> (specialist) {
+        specialist_link = link_to(specialist.name, "/specialists/#{specialist.id}")
+        moved_away = "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has moved away."
+
+        "#{specialist_link} #{moved_away}".html_safe
+      },
+      retired: -> (specialist) {
+        specialist_link = link_to(specialist.name, "/specialists/#{specialist.id}")
+        retired = "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has retired."
+
+        "#{specialist_link} #{retired}".html_safe
+      },
+      retiring: -> (specialist) {
+        specialist_link = link_to(specialist.name, "/specialists/#{specialist.id}")
+        is_retiring = "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{specialist.unavailable_from.to_s(:long_ordinal)}"
+
+        "#{specialist_link} #{is_retiring}".html_safe
+      }
+    },
+    "SpecialistOffice" => {
+      is_open: -> (specialist, specialist_office) {
+        office_link = link_to("#{specialist.name}'s office", "/specialists/#{specialist.id}")
+
+        if specialist_office.city.present?
+          recently_opened =
+            "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) is open in #{specialist_office.city.name} and is accepting new referrals."
+
+          "#{office_link} #{recently_opened}".html_safe
+        else
+          recently_opened =
+            "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) is open and is accepting new referrals."
+
+          "#{office_link} #{recently_opened}".html_safe
+        end
+      }
+    },
+    "ClinicLocation" => {
+      is_open: -> (clinic, clinic_location) {
+        clinic_link = link_to(clinic.name, "/clinics/#{clinic.id}")
+
+        if clinic_location.city.present?
+          recently_opened =
+            "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) is open in #{clinic_location.city.name} and is accepting new referrals."
+
+          "#{clinic_link} #{recently_opened}".html_safe
+        else
+          recently_opened =
+            "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) is open and is accepting new referrals."
+
+          "#{clinic_link} #{recently_opened}".html_safe
+        end
+      }
+    }
+  }
+
+  def automatic_events
+    divisions.inject([]) do |memo, division|
+      memo + Rails.cache.fetch("latest_updates:automatic:division:#{division.id}", force: force_automatic) do
+        [
+          Specialists,
+          Clinics
+        ].inject([]) do |memo, klass|
+          memo + klass.call(division: division)
+        end
+      end
+    end.
+      uniq{ |event| [ event[:klass], event[:id], event[:event] ] }.
+      sort_by{ |event| event[:date].to_s }.
+      reverse
+  end
+
+  CONDITIONS = [
+    -> (item, division) { item.blank? },
+    -> (item, division) { !item.primary_specialization.present? },
+    -> (item, division) { !item.primary_specialization_complete_in?([division]) },
+    -> (item, division) {
+      item_cities = item.cities_for_front_page.flatten.uniq
+      local_referral_cities = division.
+        local_referral_cities(item.primary_specialization)
+
+      (item_cities & local_referral_cities).none?
+    }
+  ]
+
+  def self.event_date(item, event_method)
+    item.versions.order(:created_at).find_last do |version|
+      !version.reify.present? || !version.reify.send(event_method)
+    end.created_at
+  end
+
+  def self.location_opened_entered(item)
+    item.versions.find_last do |version|
+      !version.reify.present? || version.reify.location_opened != item.location_opened
+    end.created_at
+  end
+
+  class Clinics < ServiceObject
+    attribute :division, Division
 
     def call
-      Rails.cache.fetch("latest_automated_updates:#{max_automated_events}:#{divisions.map(&:id).sort.join("_")}", force: force) do
-        generate
-      end
+      Clinic.
+        includes_location_data.
+        includes(:specializations).
+        all.
+        inject([]) do |memo, clinic|
+          memo + ClinicEvents.call(clinic: clinic, division: division)
+        end
     end
 
-    def generate
-      automated_events = {}
+    class ClinicEvents < ServiceObject
+      attribute :clinic, Clinic
+      attribute :division, Division
 
-      if version_ids.present? # use below versions if passed in
-        versions = Version.find(version_ids)
-      else
-        versions = Version.
-          includes(:item).
-          order("id desc").
-          where("item_type in (?)", whitelisted).
-          where("created_at > ?", (Date.current - 3.months))
-      end
-      versions.each do |version|
-
-        next if !whitelisted.include?(version.item_type)
-
-        # #reload so we make sure we're not picking up an old copy from a previous iteration
-        item = version.item.try(:reload)
-
-        next if item.blank? || item.id.blank?
-
-        # we do this so when we call #reify on version it doesn't overwrite item back to old version
-        item = version.item_type.camelize.constantize.find(item.id)
-
-        break if automated_events.length >= max_automated_events
-
-        begin
-
-          if version.item_type == "Specialist"
-
-            specialist = Specialist.with_cities.find(item.id)
-            specialist_cities = specialist.cities_for_front_page.flatten.uniq
-
-            next if specialist.blank? || specialist.in_progress
-
-            next if !specialist.primary_specialization_complete_in?(divisions)
-            #Below: Division's define what cities they refer to for specific specializations.  Do not show version if specialist specialization is not within local referral area of the division.
-            next if (specialist_cities & divisions.map{|d| d.local_referral_cities(specialist.primary_specialization)}.flatten.uniq).blank?
-
-            if version.event == "update"
-
-              if specialist.moved_away?
-
-
-                next if version.reify.blank?
-                next if version.reify.moved_away? #moved away status hasn't changed
-                next if (version.reify.unavailable_from < Date.current - 11.months)
-
-                #newly moved away
-
-                automated_events["#{version.item_type}_#{item.id}"] = [
-                  "#{version.created_at}",
-                  "#{link_to specialist.name, "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has moved away.".html_safe
-                ]
-
-              elsif specialist.retired?
-
-                next if version.reify.blank?
-                next if version.reify.retired? #retired status hasn't changed
-                next if specialist.id == 242
-
-                #newly retired
-
-                automated_events["#{version.item_type}_#{item.id}"] = [
-                  "#{version.created_at}",
-                  "#{link_to specialist.name, "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has retired.".html_safe
-                ]
-
-              elsif specialist.retiring?
-
-                next if version.reify.blank?
-                next if version.reify.retiring? #retiring status hasn't changed
-                current_specialist = Specialist.find(specialist.id);
-
-                automated_events["#{version.item_type}_#{item.id}"] = [
-                  "#{version.created_at}",
-                  "#{link_to specialist.name, "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{current_specialist.unavailable_from.to_s(:long_ordinal)}.".html_safe
-                ]
-
-              end
-
-            end
-
-          elsif version.item_type == "SpecialistOffice"
-            specialist_office = item
-            next if specialist_office.specialist.blank? || specialist_office.specialist.in_progress
-
-            specialist = specialist_office.specialist
-
-            specialist_cities = specialist.cities_for_front_page.flatten.uniq
-
-            next if !specialist.primary_specialization_complete_in?(divisions)
-            #Below: Division's define what cities they refer to for specific specializations.  Do not show version if specialist specialization is not within local referral area of the division.
-            next if (specialist_cities & divisions.map{|d| d.local_referral_cities(specialist.primary_specialization)}.flatten.uniq).blank?
-
-            if (["create", "update"].include? version.event) && specialist.accepting_new_patients? && specialist_office.opened_recently?
-              if (version.event == "update")
-                next if version.reify.opened_recently? #opened this year status hasn't changed)
-              end
-              if specialist_office.city.present?
-                automated_events["Specialist_#{specialist.id}"] = [
-                  "#{version.created_at}",
-                  "#{link_to "#{specialist.name}'s office", "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{specialist_office.city.name} and is accepting new referrals.".html_safe
-                ]
-              else
-                automated_events["Specialist_#{item.id}"] = [
-                  "#{version.created_at}",
-                  "#{link_to "#{specialist.name}'s office", "/specialists/#{specialist.id}", :class => 'ajax'} (#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe
-                ]
-              end
-
-            end
-
-          elsif version.item_type == "ClinicLocation"
-
-            next if version.changeset.keys == ["public", "private", "volunteer"]
-
-            clinic_location = item
-            next if clinic_location.clinic.blank? || clinic_location.clinic.in_progress #devnoteperformance: in_progress query creates 13 ActiveRecord Selects
-
-            clinic = clinic_location.clinic
-
-            next if !clinic.primary_specialization_complete_in?(divisions)
-            #Below: Division's define what cities they refer to for specific specializations.  Do not show version if clinic specialization is not within local referral area of the division.
-            next if (clinic.cities & divisions.map{|d| d.local_referral_cities(clinic.primary_specialization)}.flatten.uniq).blank?
-
-            if (["create", "update"].include? version.event) && clinic.accepting_new_patients? && clinic_location.opened_recently?
-
-              if (version.event == "update")
-                next if version.reify.opened_recently? #opened this year status hasn't changed)
-              end
-
-              if clinic_location.city.present?
-                automated_events["Clinic_#{item.id}"] = [
-                  "#{version.created_at}",
-                  "#{link_to clinic.name, "/clinics/#{clinic.id}", :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{clinic_location.city.name} and is accepting new referrals.".html_safe
-                ]
-              else
-                automated_events["Clinic_#{item.id}"] = [
-                  "#{version.created_at}",
-                  "#{link_to clinic.name, "/clinics/#{clinic.id}", :class => 'ajax'} (#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened and is accepting new referrals.".html_safe
-                ]
-              end
-
-            end
-
-          end
-        rescue Exception => exc
-          #automated_events['error_error'] = ["ding", exc]
+      def call
+        LatestUpdates::CONDITIONS.each do |condition|
+          return [] if condition.call(clinic, division)
         end
 
+        clinic_location_events
       end
-      automated_events
+
+      def clinic_location_events
+        return [] unless clinic.accepting_new_patients?
+
+        clinic.clinic_locations.inject([]) do |memo, clinic_location|
+          if clinic_location.location_opened.present?
+            memo << {
+              id: clinic_location.id,
+              klass: "ClinicLocation",
+              event: :is_open,
+              date: LatestUpdates.location_opened_entered(clinic_location),
+              markup: LatestUpdates::MARKUP["ClinicLocation"][:is_open].call(clinic, clinic_location)
+            }
+          else
+            memo
+          end
+        end
+      end
+    end
+  end
+
+  class Specialists < ServiceObject
+    attribute :division, Division
+
+    def call
+      Specialist.
+        includes_specialization_page.
+        includes(:versions).
+        includes(specialist_offices: :versions).
+        all.
+        inject([]) do |memo, specialist|
+
+          memo + SpecialistEvents.call(specialist: specialist, division: division)
+        end
+    end
+
+    class SpecialistEvents < ServiceObject
+      attribute :specialist, Specialist
+      attribute :division, Division
+
+      SPECIALIST_EVENTS = [
+        {
+          test: -> (specialist) { specialist.moved_away? },
+          event: -> (specialist) {
+            {
+              id: specialist.id,
+              klass: "Specialist",
+              event: :moved_away,
+              date: LatestUpdates.event_date(specialist, :moved_away?),
+              markup: LatestUpdates::MARKUP["Specialist"][:moved_away].call(specialist)
+            }
+          }
+        },
+        {
+          test: -> (specialist) { specialist.retired? },
+          event: -> (specialist) {
+            {
+              id: specialist.id,
+              klass: "Specialist",
+              event: :retired,
+              date: LatestUpdates.event_date(specialist, :retired?),
+              markup: LatestUpdates::MARKUP["Specialist"][:retired].call(specialist)
+            }
+          }
+        },
+        {
+          test: -> (specialist) { specialist.retiring? },
+          event: -> (specialist) {
+            {
+              id: specialist.id,
+              klass: "Specialist",
+              event: :retiring,
+              date: LatestUpdates.event_date(specialist, :retiring?),
+              markup: LatestUpdates::MARKUP["Specialist"][:retiring].call(specialist)
+            }
+          }
+        }
+      ]
+
+      def call
+        LatestUpdates::CONDITIONS.each do |condition|
+          return [] if condition.call(specialist, division)
+        end
+
+        specialist_events + specialist_office_events
+      end
+
+      def specialist_events
+        SPECIALIST_EVENTS.inject([]) do |memo, event|
+          if event[:test].call(specialist)
+            memo << event[:event].call(specialist)
+          else
+            memo
+          end
+        end
+      end
+
+      ## opened_recently --> opened?
+
+      def specialist_office_events
+        return [] unless specialist.accepting_new_patients?
+
+        specialist.specialist_offices.inject([]) do |memo, specialist_office|
+          if specialist_office.location_opened.present?
+            memo << {
+              id: specialist_office.id,
+              klass: "SpecialistOffice",
+              event: :is_open,
+              date: LatestUpdates.location_opened_entered(specialist_office),
+              markup: LatestUpdates::MARKUP["SpecialistOffice"][:is_open].call(specialist, specialist_office)
+            }
+          else
+            memo
+          end
+        end
+      end
     end
   end
 end

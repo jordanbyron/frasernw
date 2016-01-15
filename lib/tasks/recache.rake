@@ -95,12 +95,7 @@ namespace :pathways do
       },
       latest_updates: -> {
         User.all_user_division_groups_cached.each do |division_group|
-          LatestUpdates.call(
-            max_automated_events: 5,
-            division_ids: division_group,
-            force: true,
-            force_automatic: true
-          )
+          LatestUpdates.delay.recache_for(division_group, force_automatic: true)
         end
       },
       application_layout: -> {

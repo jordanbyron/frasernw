@@ -1,10 +1,8 @@
 module FrontHelper
-  def latest_events(max_automated_events, divisions)
+  def latest_events(max_automatic_events, divisions)
     LatestUpdates.call(
-      max_automated_events: max_automated_events,
-      division_ids: divisions.map(&:id),
-      force: false,
-      force_automatic: false
+      max_automatic_events: max_automatic_events,
+      division_ids: divisions.reject(&:hidden?)
     )
   end
 end
