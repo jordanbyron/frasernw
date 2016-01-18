@@ -5,6 +5,9 @@ CR = Change Request item
 Local-only = Changes not reflected in Source Code
 Backend = Change is not user facing
 
+## [2016-01-23] [Since 2016-01-16 Integration]
+
+
 ## [2016-01-16] [Since 2016-01-09 Integration]
 ### Changed:
 - #154: Clinic form now asks users to confirm before deleting location
