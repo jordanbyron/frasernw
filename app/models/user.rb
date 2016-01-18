@@ -25,7 +25,6 @@ class User < ActiveRecord::Base
   validates_format_of :password, :with => /^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){8,}$/, :if => :require_password?, :message => "must include one number, one letter and be at least 8 characters long"
 
   validates :email, confirmation: true
-  validates :email_confirmation, presence: true
 
   validates_presence_of :name
   validates :agree_to_toc, presence: {message: "must agree to Terms of Use"}
