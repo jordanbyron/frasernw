@@ -176,11 +176,8 @@
             = so.input :open_sunday
             = so.input :location_opened, as: :select, collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a), prompt: "Select ..."
 
-            .sector_wrapper
-              = so.input :sector_info_available?, label: "Fee structure information available (public/private)", as: :boolean, input_html: { class: "sector_info_available_input" }
-              .sector_type_inputs
-                - Sectorable::SECTORS.each do |sector|
-                  = so.input sector, label: sector.to_s.capitalize, as: :boolean, input_html: { class: "sector_type_input" }
+            - Sectorable::SECTORS.each do |sector|
+              = so.input sector, label: sector.to_s.capitalize, as: :boolean, input_html: { class: "sector_type_input" }
 
             %h4 What days and times are your phone lines open?
             = so.simple_fields_for :phone_schedule, :nested_wrapper => false do |s|
@@ -395,9 +392,6 @@
     - else
       = f.button :submit, :class => "btn btn-primary"
       = link_to 'Cancel', @form_modifier.cancel_path, :class => "btn btn-danger ajax"
-
-:javascript
-  window.pathways.handleSectorCheckboxes();
 
 %script{"type" => "text/javascript"}
   :plain
