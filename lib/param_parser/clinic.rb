@@ -17,7 +17,6 @@ module ParamParser
       remove_address_comments!
       params.delete("secret_token_id")
       parse_attendances!
-      set_sectors!
 
       cloned_params
     end
@@ -36,10 +35,6 @@ module ParamParser
       clinic_locations_attributes.map do |attrs|
         attrs["attendances_attributes"]
       end.select(&:present?)
-    end
-
-    def set_sectors!
-      clinic_locations_attributes.each(&SetSectors)
     end
 
     def remove_specializations_comments!
