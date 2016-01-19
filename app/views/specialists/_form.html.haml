@@ -95,7 +95,8 @@
         nested_wrapper: false do |so|
         .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"}
           %h4.print-only= "Location #{index+1}"
-          .control-group.no-print
+          - is_location = so.object.present? && !so.object.empty?
+          .control-group.no-print{style: (is_location && @form_modifier.token_edit? ? "visibility: hidden; position: absolute;" : "")}
             %label.control-label Location is
             .controls
               - location_class = "location_#{index}"
@@ -108,7 +109,6 @@
                       :class => [location_class, "location"]
                     = option.first
               - else
-                - is_location = so.object.present? && !so.object.empty?
                 - [['Not used', !is_location], ['In an office', is_location]].each do |option|
                   = label_tag "#{location_class}_#{option.first}" do
                     = radio_button_tag location_class,
@@ -140,7 +140,7 @@
               disabled: @form_modifier.restrict_editing?
             - if @form_modifier.show_comment_boxes?
               = so.input :comments,
-                label: "If you have any updates to your office, please enter them here",
+                label: "If you have any updates to this office, or the office has closed, please provide details here.",
                 input_html: {value: ""},
                 as: :text
           .control-group.print-only

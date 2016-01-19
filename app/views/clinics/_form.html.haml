@@ -79,7 +79,7 @@
         - is_in_hospital = !is_unused && loc.in_hospital?
         .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"}
           %h4.print-only= "Location #{index+1}"
-          .control-group.no-print
+          .control-group.no-print{style: (!is_unused && @form_modifier.token_edit? ? "visibility: hidden; position: absolute;" : "")}
             %label.control-label Location is
             .controls
               - location_class = "clinic_location_#{index}"
@@ -138,7 +138,7 @@
                 disabled: @form_modifier.restrict_editing?
             - if @form_modifier.show_comment_boxes?
               = l.input :comments,
-                label: "If you have any updates to your address, please enter them here",
+                label: "If you have any updates to this location, or the location has closed, please provide details here.",
                 input_html: {value: ""},
                 as: :text
           %div{:class => "universal_#{index}"}
