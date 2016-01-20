@@ -1,7 +1,22 @@
 class SpecialistOffice < ActiveRecord::Base
   include Sectorable
 
-  attr_accessible :phone, :phone_extension, :fax, :direct_phone, :direct_phone_extension, :sector_mask, :public_email, :email, :open_saturday, :open_sunday, :office_id, :office_attributes, :phone_schedule_attributes, :url, :location_opened
+  attr_accessible :phone,
+    :phone_extension,
+    :fax,
+    :direct_phone,
+    :direct_phone_extension,
+    :sector_mask,
+    :public_email,
+    :email,
+    :open_saturday,
+    :open_sunday,
+    :office_id,
+    :office_attributes,
+    :phone_schedule_attributes,
+    :url,
+    :location_opened,
+    :location_is
 
   belongs_to :specialist, touch: true
   belongs_to :office
@@ -107,5 +122,30 @@ class SpecialistOffice < ActiveRecord::Base
 
   def location
     office.try(:location)
+  end
+
+  LOCATION_IS_OPTIONS = {
+    0 => 'Not used',
+    1 => 'In an existing office',
+    2 => 'In a new standalone office',
+    3 => 'In a new office in a hospital',
+    4 => 'In a new office in a clinic',
+    5 => 'In an office'
+  }
+
+  def location_is
+    if new_record? || empty?
+      0
+    else
+      5
+    end
+  end
+
+  def location_is_options
+    if new_record?
+      LOCATION_IS_OPTIONS.slice(0, 1, 2, 3, 4)
+    else
+      LOCATION_IS_OPTIONS.slice(0, 5)
+    end
   end
 end

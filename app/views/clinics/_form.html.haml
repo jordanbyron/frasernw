@@ -399,12 +399,6 @@
     });
     $(document).ready( $("#clinic_categorization_mask").each(clinic_categorization_changed) );
 
-.modal__background.location-delete-modal{style: "display: none;"}
-  .modal__body
-    %p{style: "margin-bottom: 10px"}
-      = "Switching this location to 'Not used' will delete its information.  Do you still want to switch this location to 'Not used'?"
-    .btn.btn-primary.yes Yes
-    .btn.btn-danger.no No
 
 - content_for(:javascript_footer) do
   = javascript_include_tag "views/location_tabs"

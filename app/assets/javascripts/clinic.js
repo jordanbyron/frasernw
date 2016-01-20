@@ -97,7 +97,7 @@ function clinic_reset_numbers(address_number)
   $("#clinic_clinic_locations_attributes_" + address_number + "_wheelchair_accessible_mask_3").prop('checked', true);
 }
 
-var clinic_address_location_changed = function(address_number, options)
+var clinic_address_location_changed = function(address_number)
 {
   if (is_clinic_location_status_checked(address_number, 1))
   {
@@ -139,29 +139,9 @@ var is_clinic_location_status_checked = function(clinic_location, status_code) {
   return $('#clinic_clinic_locations_attributes_' + clinic_location + '_location_is_' + status_code).is(':checked');
 }
 
-//review queue may poke at details; update their location seleciton
-var clinic_address_details_changed = function(address_number)
-{
-  if (!$("[id=clinic_clinic_locations_attributes_" + address_number + "_location_attributes_address_attributes_city_id] option:first").prop('selected'))
-  {
-    $('#clinic_location_' + address_number + '_Standalone').prop('checked', true);
-  }
-  else if (!$("[id=clinic_clinic_locations_attributes_" + address_number + "_location_attributes_hospital_in_id] option:first").prop('selected'))
-  {
-    //in a hospital
-    $('#clinic_location_' + address_number + '_In_a_hospital').prop('checked', true);
-  }
-  else
-  {
-    //must be unused
-    $('#clinic_location_' + address_number + '_Not_used').prop('checked', true);
-  }
-  clinic_address_location_changed(address_number);
-}
-
 _.times(9, function(index) {
   $("input[name='clinic[clinic_locations_attributes][" + index + "][location_is]']").live("click", function() {
-    return clinic_address_location_changed(index, { confirmDelete: true });
+    return clinic_address_location_changed(index);
   });
 })
 
