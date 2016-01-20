@@ -379,6 +379,7 @@ GEM
       railties (>= 3.0.0)
     pg (0.18.2)
     polyglot (0.3.5)
+    power_assert (0.2.2)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -523,6 +524,8 @@ GEM
       sinatra (~> 1.0.0)
     temple (0.7.6)
     terminal-table (1.4.5)
+    test-unit (3.1.7)
+      power_assert
     thin (1.6.3)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0)
@@ -638,6 +641,7 @@ DEPENDENCIES
   spork (> 0.9.0rc)
   table_print
   taps
+  test-unit (~> 3.0)
   thin
   turn
   uglifier (>= 1.0.3)
@@ -649,4 +653,4 @@ DEPENDENCIES
   will_paginate (~> 3.0.0)
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
