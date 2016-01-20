@@ -15,6 +15,7 @@ module ParamParser
     def exec
       remove_specializations_comments!
       remove_address_comments!
+      remove_statuses!
       params.delete("secret_token_id")
       parse_attendances!
 
@@ -46,6 +47,13 @@ module ParamParser
         attrs.
           try(:[], "location_attributes").
           try(:delete, "comments")
+      end
+    end
+
+    def remove_statuses!
+      clinic_locations_attributes.each do |attrs|
+        attrs.
+          try(:delete, "location_is")
       end
     end
 
