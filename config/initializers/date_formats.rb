@@ -7,5 +7,6 @@ Time::DATE_FORMATS.merge!(
    :day      => lambda { |time| time.strftime("%A, %b #{time.day.ordinalize}") },
    :day_with_year      => lambda { |time| time.strftime("%A, %b #{time.day.ordinalize}, %Y") },
    :day_short      => lambda { |time| time.strftime("%a, %b #{time.day.ordinalize}") },
-   :day_short_with_year      => lambda { |time| time.strftime("%a, %b #{time.day.ordinalize}, %Y") }
+   :day_short_with_year      => lambda { |time| time.strftime("%a, %b #{time.day.ordinalize}, %Y") },
+   :date_with_year => lambda {|time| time.strftime("%b #{time.day.ordinalize}, %Y") }
 )

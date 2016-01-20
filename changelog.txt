@@ -6,6 +6,9 @@ Local-only = Changes not reflected in Source Code
 Backend = Change is not user facing
 
 ## [2016-01-23] [Since 2016-01-16 Integration]
+### Added:
+- User profile page now shows date of Last Vist and Sign Up
+
 ### Fixed:
 - #254: removed 'fee structure info available' checkbox
 
