@@ -6,7 +6,17 @@ class NewsItem < ActiveRecord::Base
   # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user} #PublicActivity gem callback method
   has_many :activities, as: :trackable, class_name: 'SubscriptionActivity', dependent: :destroy
 
-  attr_accessible :owner_division_id, :title, :body, :breaking, :start_date, :end_date, :show_start_date, :show_end_date, :type_mask
+  validates :owner_division_id, presence: true
+
+  attr_accessible :owner_division_id,
+    :title,
+    :body,
+    :breaking,
+    :start_date,
+    :end_date,
+    :show_start_date,
+    :show_end_date,
+    :type_mask
 
   belongs_to :owner_division, class_name: "Division"
   has_many :divisions, through: :division_display_news_items

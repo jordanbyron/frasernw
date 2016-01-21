@@ -52,7 +52,7 @@ class NewsItemsController < ApplicationController
       redirect_to root_path(division_id: @news_item.owner_division.id),
         :notice  => "Successfully created news item.  Please allow a couple minutes for the front page to show your changes."
     else
-      render text: "Unauthorized to assign to that division"
+      render :edit
     end
   end
 
