@@ -95,27 +95,8 @@
         nested_wrapper: false do |so|
         .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"}
           %h4.print-only= "Location #{index+1}"
-          - is_location = so.object.present? && !so.object.empty?
-          .control-group.no-print{style: (is_location && @form_modifier.token_edit? ? "visibility: hidden; position: absolute;" : "")}
-            %label.control-label Location is
-            .controls
-              - location_class = "location_#{index}"
-              - if @form_modifier.new_record?
-                - [['Not used', true], ['In an existing office', false], ['In a new standalone office', false], ['In a new office in a hospital', false], ['In a new office in a clinic', false]].each do |option|
-                  = label_tag "#{location_class}_#{option.first}" do
-                    = radio_button_tag location_class,
-                      option.first,
-                      option.second,
-                      :class => [location_class, "location"]
-                    = option.first
-              - else
-                - [['Not used', !is_location], ['In an office', is_location]].each do |option|
-                  = label_tag "#{location_class}_#{option.first}" do
-                    = radio_button_tag location_class,
-                      option.first,
-                      option.second,
-                      :class => [location_class, "location"]
-                    = option.first
+          .control-group.no-print{style: (!so.object.empty? && @form_modifier.token_edit? ? "visibility: hidden; position: absolute;" : "")}
+            = so.input :location_is, as: :radio_buttons, collection: so.object.location_is_options, label_method: :last, value_method: :first
           %div{:class => "numbers_#{index}"}
             = so.input :phone do
               = so.input_field :phone, :class => "span3"

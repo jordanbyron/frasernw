@@ -35,6 +35,13 @@ module ParamParser
       end
     end
 
+    def remove_statuses!
+      specialist_offices_attributes.each do |attrs|
+        attrs.
+          try(:delete, "location_is")
+      end
+    end
+
     def specialist_offices_attributes
       cloned_params["specialist"]["specialist_offices_attributes"].values
     end
