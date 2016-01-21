@@ -172,13 +172,14 @@ Frasernw::Application.routes.draw do
   match '/livesearch_all_entries' => 'search#livesearch_all_entries', :as => :livesearch_all_entries
   match '/refresh_livesearch_all_entries/:specialization_id' => 'search#refresh_livesearch_all_entries', :as => :refresh_livesearch_all_entries
 
-  scope "/front", controller: :front do
-    get "/", action: :index
-    get "/:division_id", action: :as_division, :as => :front_as_division
-    get "/edit/:division_id", action: :edit, :as => :edit_front_as_division
-    put "/update", action: :update, as: :update_front
-  end
   root :to => 'front#index'
+
+  resources :featured_contents, only: [] do
+    collection do
+      get :edit
+      put :update
+    end
+  end
 
   resources :terms_and_conditions, only: [:index]
 

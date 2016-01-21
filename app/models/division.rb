@@ -5,7 +5,8 @@ class Division < ActiveRecord::Base
     :shared_sc_item_ids,
     :primary_contact_id,
     :division_primary_contacts_attributes,
-    :use_customized_city_priorities
+    :use_customized_city_priorities,
+    :featured_contents_attributes
 
   has_many :division_cities, :dependent => :destroy
 
@@ -25,6 +26,9 @@ class Division < ActiveRecord::Base
   has_many :shared_sc_items, :through => :division_display_sc_items, :source => "sc_item", :class_name => "ScItem"
 
   has_and_belongs_to_many :subscriptions, join_table: :subscription_divisions
+
+  has_many :featured_contents
+  accepts_nested_attributes_for :featured_contents
 
   has_many :division_primary_contacts, :dependent => :destroy
   has_many :primary_contacts, :through => :division_primary_contacts, :class_name => "User"
@@ -156,6 +160,14 @@ class Division < ActiveRecord::Base
         memo.merge(
           city.id => index
         )
+      end
+    end
+  end
+
+  def build_featured_contents!
+    ScCategory.front_page.each do |category|
+      (FeaturedContent::MAX_FEATURED_ITEMS - featured_contents.in_category(category).count).times do
+        featured_contents.build(sc_category_id: category.id)
       end
     end
   end
