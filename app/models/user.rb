@@ -26,8 +26,7 @@ class User < ActiveRecord::Base
 
   validates :email, confirmation: true
 
-  validates_presence_of :name
-  validates :agree_to_toc, presence: {message: "must agree to Terms of Use"}
+  validates :name, presence: true
 
   has_many :user_divisions, :source => :division_users, :class_name => "DivisionUser", :dependent => :destroy
   has_many :divisions, :through => :user_divisions
@@ -188,6 +187,12 @@ LIMITED_ROLE_HASH = {
 
   def pending?
     self.email.blank?
+  end
+
+  def validate_signup
+    # we add validations for agree_to_toc here so that other parts of the user forms don't break from this field being validated
+    valid?
+    errors.add(:agree_to_toc, "must be agreed to") if agree_to_toc.blank?
   end
 
   ##### Subscription User Methods
