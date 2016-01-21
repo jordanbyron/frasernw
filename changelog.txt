@@ -8,6 +8,8 @@ Backend = Change is not user facing
 ## [2016-01-23] [Since 2016-01-16 Integration]
 ### Fixed:
 - #254: removed 'fee structure info available' checkbox
+- #154: token editors can no longer remove clinic locations or specialist offices
+- #298: updates to specialist offices and clinic locations being lost
 
 ## [2016-01-16] [Since 2016-01-09 Integration]
 ### Changed:
