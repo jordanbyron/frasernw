@@ -9,6 +9,9 @@ Backend = Change is not user facing
 ### Added:
 - User profile page now shows date of Last Vist and Sign Up
 
+### Changed:
+- All Specialists admin page now shows total numbers of Specialists by division
+
 ### Fixed:
 - #254: removed 'fee structure info available' checkbox
 - #154: token editors can no longer remove clinic locations or specialist offices
@@ -19,6 +22,7 @@ Backend = Change is not user facing
 - #154: Clinic form now asks users to confirm before deleting location
 - #283: Improved results sorting on specialization pages
 - #50: Browse 'More' latest updates
+- CR #245: Emails must now be written in twice on sign up to confirm accuracy.
 
 ### Fixed:
 - #251: Quick sharing/unsharing content items from their show page
