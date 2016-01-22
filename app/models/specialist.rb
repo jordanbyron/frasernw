@@ -220,6 +220,10 @@ class Specialist < ActiveRecord::Base
     self.in_cities(divs.map{ |division| division.cities }.flatten.uniq)
   end
 
+  def self.no_division
+    @_specialist_no_division ||= self.all - self.in_divisions(Division.all)
+  end
+
   def self.in_local_referral_area_for_specializaton_and_division(specialization, division)
     self.in_cities(division.local_referral_cities(specialization))
   end
