@@ -11,7 +11,7 @@ Backend = Change is not user facing
 
 ### Changed:
 - All Specialists admin page now shows total numbers of Specialists by division
-- Backend: Upgraded Ruby version to 2.2.2 from 2.1.6
+- Backend: Upgraded Ruby version to 2.2.3 from 2.1.6
 
 ### Fixed:
 - #254: removed 'fee structure info available' checkbox
