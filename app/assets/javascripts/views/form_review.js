@@ -84,10 +84,9 @@
             old_entry_value = form_element.val();
             if (old_entry_value != new_entry_value)
             {
-              //console.log("RADIO: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
+              // console.log("RADIO: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
               form_element.prop('checked', false);          // uncheck old value
-              new_entry_value_offset = new_entry_value - 1; //eq is zero indexed, our forms are 1
-              $("input:radio[name='" + generate_button_name(form_element_id_array) + "']:eq(" + new_entry_value_offset + ")").prop('checked', true);              //check new value
+              $("input:radio[name='" + generate_button_name(form_element_id_array) + "']:[value='" + new_entry_value + "']").prop('checked', true);              //check new value
               if (highlight_changes)
               {
                 old_value_formatted = form_element.closest('label').text()
@@ -281,16 +280,17 @@
     }
   }
 
-  var highlightChangedLocationTabs = function() {
+  // 'location_is' may have changed; update inputs accordingly
+  var maskLocationInputs = function() {
     for (var i = 0; i < formData.maxLocations; ++i)
     {
       if ($('#location_tab_' + i + ' .changed').length !== 0)
       {
         $('a[href="#location_tab_' + i + '"]').addClass('changed');
         if (formData.recordKey === "clinic") {
-          clinic_address_details_changed(i);
+          clinic_address_location_changed(i);
         } else if (formData.recordKey === "specialist") {
-          specialist_address_details_changed(i);
+          address_location_changed(i);
         }
       }
     }
@@ -342,7 +342,7 @@
     }
     overlayUserChanges();
 
-    highlightChangedLocationTabs();
+    maskLocationInputs();
 
     // I have no idea about this one
     // are we assuming that all '.scheduled' tags have changed??

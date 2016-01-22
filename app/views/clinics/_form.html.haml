@@ -73,23 +73,10 @@
       - index = 0
       = f.simple_fields_for :clinic_locations, clocs, :nested_wrapper => false do |cl|
         - cloc = clocs[index]
-        - loc = cloc.location
-        - is_unused = cloc.empty?
-        - is_standalone = !is_unused && !loc.in_hospital?
-        - is_in_hospital = !is_unused && loc.in_hospital?
         .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"}
           %h4.print-only= "Location #{index+1}"
-          .control-group.no-print{style: (!is_unused && @form_modifier.token_edit? ? "visibility: hidden; position: absolute;" : "")}
-            %label.control-label Location is
-            .controls
-              - location_class = "clinic_location_#{index}"
-              - [['Not used', is_unused], ['Standalone', is_standalone], ['In a hospital', is_in_hospital]].each do |option|
-                = label_tag "#{location_class}_#{option.first}" do
-                  = radio_button_tag location_class,
-                    option.first,
-                    option.second,
-                    :class => [location_class, "location"]
-                  = option.first
+          .control-group.no-print{style: (!cloc.empty? && @form_modifier.token_edit? ? "visibility: hidden; position: absolute;" : "")}
+            = cl.input :location_is, as: :radio_buttons, collection: ClinicLocation::LOCATION_IS_OPTIONS, label_method: :last, value_method: :first
           %div{:class => "numbers_#{index}"}
             = cl.input :phone do
               = cl.input_field :phone, :class => "span3"
@@ -412,12 +399,6 @@
     });
     $(document).ready( $("#clinic_categorization_mask").each(clinic_categorization_changed) );
 
-.modal__background.location-delete-modal{style: "display: none;"}
-  .modal__body
-    %p{style: "margin-bottom: 10px"}
-      = "Switching this location to 'Not used' will delete its information.  Do you still want to switch this location to 'Not used'?"
-    .btn.btn-primary.yes Yes
-    .btn.btn-danger.no No
 
 - content_for(:javascript_footer) do
   = javascript_include_tag "views/location_tabs"

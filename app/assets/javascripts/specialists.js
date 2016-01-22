@@ -62,9 +62,13 @@ function reset_numbers(address_number)
   $("#specialist_specialist_offices_attributes_" + address_number + "_sector_mask_4").prop('checked', true);
 }
 
+var is_specialist_office_status_checked = function(specialist_office, status_code) {
+  return $('#specialist_specialist_offices_attributes_' + specialist_office + '_location_is_' + status_code).is(':checked');
+}
+
 var address_location_changed = function(address_number)
 {
-  if ($('#location_' + address_number + '_Not_used').is(':checked'))
+  if (is_specialist_office_status_checked(address_number, 0))
   {
     $('.numbers_' + address_number).hide();
     $('.office_' + address_number).hide();
@@ -78,7 +82,7 @@ var address_location_changed = function(address_number)
     reset_clinic(address_number);
     reset_numbers(address_number);
   }
-  else if ($('#location_' + address_number + '_Standalone').is(':checked') || $('#location_' + address_number + '_In_a_new_standalone_office').is(':checked'))
+  else if (is_specialist_office_status_checked(address_number, 2))
   {
     $('.numbers_' + address_number).show();
     $('.office_' + address_number).hide();
@@ -90,7 +94,7 @@ var address_location_changed = function(address_number)
     reset_hospital(address_number);
     reset_clinic(address_number);
   }
-  else if ($('#location_' + address_number + '_In_an_office').is(':checked') || $('#location_' + address_number + '_In_an_existing_office').is(':checked'))
+  else if (is_specialist_office_status_checked(address_number, 1) || is_specialist_office_status_checked(address_number, 5))
   {
     $('.numbers_' + address_number).show();
     $('.office_' + address_number).show();
@@ -102,7 +106,7 @@ var address_location_changed = function(address_number)
     reset_hospital(address_number);
     reset_clinic(address_number);
   }
-  else if ($('#location_' + address_number + '_In_a_hospital').is(':checked') || $('#location_' + address_number + '_In_a_new_office_in_a_hospital').is(':checked'))
+  else if (is_specialist_office_status_checked(address_number, 3))
   {
     $('.numbers_' + address_number).show();
     $('.office_' + address_number).hide();
@@ -114,7 +118,7 @@ var address_location_changed = function(address_number)
     reset_office(address_number);
     reset_clinic(address_number);
   }
-  else if ($('#location_' + address_number + '_In_a_clinic').is(':checked') || $('#location_' + address_number + '_In_a_new_office_in_a_clinic').is(':checked'))
+  else if (is_specialist_office_status_checked(address_number, 4))
   {
     $('.numbers_' + address_number).show();
     $('.office_' + address_number).hide();
@@ -128,25 +132,11 @@ var address_location_changed = function(address_number)
   }
 }
 
-//review queue may poke at details; update their location seleciton
-var specialist_address_details_changed = function(address_number)
-{
-  if (!$("[id=specialist_specialist_offices_attributes_" + address_number + "_office_id] option:first").prop('selected'))
-  {
-    //In an office
-    $('#location_' + address_number + '_In_an_office').prop('checked', true);
-  }
-  else
-  {
-    //must be unused
-    $('#location_' + address_number + '_Not_used').prop('checked', true);
-  }
-  address_location_changed(address_number);
-}
-
-$(".location_0").live("change", function() { address_location_changed(0) });
-$(".location_1").live("change", function() { address_location_changed(1) });
-$(".location_2").live("change", function() { address_location_changed(2) });
+_.times(3, function(index) {
+  $("input[name='specialist[specialist_offices_attributes][" + index + "][location_is]']").live("click", function() {
+    return address_location_changed(index);
+  });
+})
 
 $("#add_address").live("click", function()
 {

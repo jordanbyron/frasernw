@@ -1,12 +1,16 @@
 class FeaturedContent < ActiveRecord::Base
+  attr_accessible :division_id,
+    :sc_category_id,
+    :sc_item_id
+
   belongs_to :division
   belongs_to :sc_category
   belongs_to :sc_item
-  belongs_to :front
+
+  scope :in_category, -> (category) { where(sc_category_id: category.id) }
 
   def self.in_divisions(divisions)
-    division_ids = divisions.map{ |division| division.id }
-    where('"division_id" IN (?)', division_ids)
+    where('"division_id" IN (?)', divisions.map(&:id))
   end
 
   MAX_FEATURED_ITEMS = 4

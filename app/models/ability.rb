@@ -10,6 +10,8 @@ class Ability
 
     else
       # all categories of logged in
+
+      can [:index], :front
       can :show, FaqCategory
       can :index, :terms_and_conditions
       can :get, :global_data
@@ -37,6 +39,8 @@ class Ability
         can :index, Report
 
         can :manage, SecretToken
+
+        can :manage, FeaturedContent
 
         #admin
         can :manage, [Subscription, Notification]
@@ -109,7 +113,7 @@ class Ability
         end
 
         #landing page, per-division restrictions are handled in controller
-        can :manage, Front
+        can :manage, FeaturedContent
 
         #can show pages, regardless of 'in progress'
         can :show, [Specialization, Procedure, Specialist, Clinic, Hospital, Language, ScCategory, ScItem]
@@ -149,8 +153,6 @@ class Ability
 
         #user
 
-        #landing page
-        can [:index], Front
 
         #can show pages that aren't in progress
         can :show, [Specialization, Procedure] do |entity|

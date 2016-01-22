@@ -15,6 +15,15 @@ class ScCategory < ActiveRecord::Base
 
   default_scope order('sc_categories.sort_order, sc_categories.name')
 
+  scope :front_page, -> { where(show_on_front_page: true) }
+
+  def self.front_page_for_divisions(divisions)
+    joins(featured_contents: [ :division, :sc_item]).
+      where("divisions.id IN (?)", divisions.map(&:id)).
+      where("sc_items.title IS NOT NULL").
+      uniq
+  end
+
   DISPLAY_HASH = {
     2 => "In global navigation",
     4 => "In global navigation and filterable on specialty pages",
@@ -48,6 +57,15 @@ class ScCategory < ActiveRecord::Base
 
   def inline_on_specialty_pages?
     [5, 3].include?(display_mask)
+  end
+
+  def featured_for_divisions(divisions)
+    featured_contents.
+      in_divisions(divisions).
+      order("created_at").
+      includes(:sc_item).
+      map(&:sc_item).
+      reject(&:blank?)
   end
 
   def display

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160107232724) do
+ActiveRecord::Schema.define(:version => 20160120231637) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -359,16 +359,12 @@ ActiveRecord::Schema.define(:version => 20160107232724) do
   create_table "featured_contents", :force => true do |t|
     t.integer  "sc_category_id"
     t.integer  "sc_item_id"
-    t.integer  "front_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "division_id"
   end
 
   add_index "featured_contents", ["division_id"], :name => "index_featured_contents_on_division_id"
-  add_index "featured_contents", ["front_id", "sc_category_id"], :name => "index_featured_contents_on_front_id_and_sc_category_id"
-  add_index "featured_contents", ["front_id", "sc_item_id"], :name => "index_featured_contents_on_front_id_and_sc_item_id"
-  add_index "featured_contents", ["front_id"], :name => "index_featured_contents_on_front_id"
   add_index "featured_contents", ["sc_category_id"], :name => "index_featured_contents_on_sc_category_id"
   add_index "featured_contents", ["sc_item_id"], :name => "index_featured_contents_on_sc_item_id"
 
@@ -397,11 +393,6 @@ ActiveRecord::Schema.define(:version => 20160107232724) do
 
   add_index "focuses", ["clinic_id"], :name => "index_focuses_on_clinic_id"
   add_index "focuses", ["procedure_specialization_id"], :name => "index_focuses_on_procedure_specialization_id"
-
-  create_table "fronts", :force => true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "healthcare_providers", :force => true do |t|
     t.string   "name"
