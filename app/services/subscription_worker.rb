@@ -1,5 +1,5 @@
 #require 'debugger'
-class SubscriptionWorker < ActiveRecord::Base
+class SubscriptionWorker
 
   def self.collect_activities(subscription_object) # processes one subscription
     SubscriptionActivity.collect_activities(subscription: subscription_object)

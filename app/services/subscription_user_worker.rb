@@ -1,4 +1,4 @@
-class SubscriptionUserWorker < ActiveRecord::Base
+class SubscriptionUserWorker
   ## Email flow 1:
   # Deliver Immediate Emails to User based if classification matches:
   def self.mail_subscriptions_by_date!(date_interval) #date_interval is integer value in Subscription
