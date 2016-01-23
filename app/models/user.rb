@@ -47,7 +47,7 @@ class User < ActiveRecord::Base
   has_many :controlled_clinics, :through => :controlled_clinic_locations, :source => :clinic, :class_name => "Clinic"
   accepts_nested_attributes_for :user_controls_clinic_locations, :reject_if => lambda { |uccl| uccl[:clinic_location_id].blank? }, :allow_destroy => true
 
-  has_many :specialization_options, :dependent => :destroy, :foreign_key => "owner_id"
+  has_many :specialization_options, :foreign_key => "owner_id"
   has_many :specializations_owned, :through => :specialization_options, :class_name => "Specialization", :source => :specialization
 
   has_many :user_cities, :dependent => :destroy
