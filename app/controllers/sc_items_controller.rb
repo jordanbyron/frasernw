@@ -45,10 +45,7 @@ class ScItemsController < ApplicationController
 
   def edit
     @sc_item = ScItem.find(params[:id])
-    @has_specializations = @sc_item.specializations.map{ |s| s.id }
-    @has_procedure_specializations = @sc_item.procedure_specializations.map{ |ps| ps.id }
-    @hierarchy = ancestry_options_limited(ScCategory.unscoped.arrange(:order => 'name'), nil)
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    set_form_variables!(@sc_item)
   end
 
   def update
@@ -80,7 +77,8 @@ class ScItemsController < ApplicationController
         end
       end
       redirect_to @sc_item, :notice  => "Successfully updated content item."
-      else
+    else
+      set_form_variables!(@sc_item)
       render :action => 'edit'
     end
   end
@@ -116,6 +114,12 @@ class ScItemsController < ApplicationController
   end
 
   private
+
+  def set_form_variables!(sc_item)
+    @has_specializations = sc_item.specializations.map{ |s| s.id }
+    @has_procedure_specializations = sc_item.procedure_specializations.map{ |ps| ps.id }
+    @hierarchy = ancestry_options_limited(ScCategory.unscoped.arrange(:order => 'name'), nil)
+  end
 
   def authorize_division_for_user
     if !(current_user_is_super_admin? || (current_user_divisions.include? Division.find(params[:id])))
