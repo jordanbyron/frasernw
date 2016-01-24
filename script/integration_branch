@@ -4,7 +4,15 @@ require 'date'
 
 today = Date.today
 
-deploy_date = today + (6 - today.wday)
+if [0, 1, 2, 3, 4].include?(today) # if today is Sun, Mon, Tues, Wed, or Thurs?
+
+  deploy_date = today + (6 - today.wday) # set branch's date to this saturday
+
+elsif [5, 6].include?(today) # but if today is Fri or Sat
+
+  deploy_date = today + (7 + (6 - today.wday)) # set branch's deployment date to the saturday after this week
+
+end
 
 branchname = "integration-#{deploy_date.to_s}"
 
