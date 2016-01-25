@@ -4,39 +4,45 @@ require 'date'
 
 today = Date.today
 
-if ARGV[0] == "--next"
-  deploy_date = today + 7 + (6 - today.wday)
-else
-  deploy_date = today + (6 - today.wday)
-end
+# week changes saturday at midnight
 
-branchname = "integration-#{deploy_date.to_s}"
+goto_next = ARGV[0] == "--next"
 
-if system("git checkout #{branchname}")
+this_deploy_date = today + (6 - today.wday)
+next_deploy_date = today + 7 + (6 - today.wday)
+
+this_branchname = "integration-#{this_deploy_date.to_s}"
+next_branchname = "integration-#{next_deploy_date.to_s}"
+
+goto_branchname = goto_next ? next_branchname : this_branchname
+
+if system("git checkout #{goto_branchname}")
   puts ""
   puts "Found local"
 
   puts ""
   puts "Fetching remote:"
-  `git fetch origin #{branchname}`
+  `git fetch origin #{goto_branchname}`
 
   puts ""
   puts "Status:"
   puts `git status`
-elsif system("git pull origin #{branchname}")
+elsif system("git pull origin #{goto_branchname}")
   puts ""
   puts "Found remote"
   puts ""
 
-  `git checkout #{branchname}`
+  `git checkout #{goto_branchname}`
 else
+  base_branch = goto_next ? this_branchname : "master"
+
   puts ""
-  puts "Did not find remote; branching off master"
+  puts "Did not find remote; branching off #{base_branch}"
   puts ""
 
-  `git checkout master`
-  `git pull origin master`
-  `git checkout -b #{branchname}`
+  `git checkout #{base_branch}`
+  `git pull origin #{base_branch}`
+  `git checkout -b #{goto_branchname}`
 
   puts "Adding new entry to changelog:"
 
@@ -52,5 +58,5 @@ else
   `git add changelog.txt`
   `git commit -m "Create changelog entry for #{deploy_date.to_s} deploy"`
 
-  `git push --set-upstream origin #{branchname}`
+  `git push --set-upstream origin #{goto_branchname}`
 end
