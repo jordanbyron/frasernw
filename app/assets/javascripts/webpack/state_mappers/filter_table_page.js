@@ -169,25 +169,34 @@ var shouldIncludeOtherSpecializations = function(filtered, filterValues, pageTyp
 };
 
 var shouldShowCityFilterMessage = function(filtered, filterValues, pageType) {
-  return (filtered.withAllFilters.length === 0 &&
-    ((pageType !== "specialization") ||
-      (filtered.withoutPageTypeFilter.length === 0)) &&
-      (filtered.withoutCityFilter.length > 0));
+  return (
+    filtered.withAllFilters.length === 0 &&
+    (
+      (pageType !== "specialization") ||
+      (filtered.withoutPageTypeFilter.length === 0) ||
+      (!procedureFiltersActivated(filterValues))
+    ) &&
+    filtered.withoutCityFilter.length > 0
+  );
 };
 
 var shouldShowSpecializationFilter = function(filtered, filterValues, pageType, filterValueOverrides) {
   return ((pageType === "specialization") &&
     ((
       (filtered.withAllFilters.length > 0) &&
-      (_.values(_.pick(filterValues.procedures, _.identity)).length > 0) &&
+      (procedureFiltersActivated(filterValues)) &&
       (filtered.withoutPageTypeFilter.length > filtered.withAllFilters.length)
     ) ||
     (
       (filtered.withAllFilters.length === 0) &&
-      (filtered.withoutPageTypeFilter.length > 0) &&
-      (anyFiltersActivated(filterValueOverrides))
+      (procedureFiltersActivated(filterValues)) &&
+      (filtered.withoutPageTypeFilter.length > 0)
     ))
   );
+};
+
+const procedureFiltersActivated = function(filterValues) {
+  return (_.values(_.pick(filterValues.procedures, _.identity)).length > 0);
 };
 
 const customWaittimeConfig = function(activatedProcedures, state, panelTypeKey) {
