@@ -15,6 +15,7 @@ this_branchname = "integration-#{this_deploy_date.to_s}"
 next_branchname = "integration-#{next_deploy_date.to_s}"
 
 goto_branchname = goto_next ? next_branchname : this_branchname
+deploy_date     = goto_next ? next_deploy_date : this_deploy_date
 
 if system("git checkout #{goto_branchname}")
   puts ""
