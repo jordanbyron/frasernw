@@ -54,6 +54,7 @@
   .no-print
     = f.input :categorization_mask, as: :select, collection: categorization_hash, label_method: :last, value_method: :first, :include_blank => false
   = f.input :is_gp
+  = f.input :is_internal_medicine
   .no-print
     = f.association :specializations,
       as: :check_boxes,

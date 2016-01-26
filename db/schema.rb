@@ -12,7 +12,7 @@
 # It's strongly recommended to check this file into your version control system.
 
 ActiveRecord::Schema.define(:version => 20160126222202) do
-
+  
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
     t.string   "trackable_type"
@@ -881,6 +881,7 @@ ActiveRecord::Schema.define(:version => 20160126222202) do
     t.integer  "photo_file_size"
     t.datetime "photo_updated_at"
     t.boolean  "is_gp",                      :default => false
+    t.boolean  "is_internal_medicine",       :default => false
   end
 
   add_index "specialists", ["referral_clinic_id"], :name => "index_specialists_on_referral_clinic_id"
