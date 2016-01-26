@@ -27,7 +27,7 @@
           - if @specializations.length > 1
             = "(#{Specialist.no_division.count})"
           - else
-            = @specializations.select(&:no_division_specialists?).first.try(:specialists).try(:count)
+            = "(#{@specializations.first.specialists.reject{|s| s.divisions.present?}.count})"
     .tab-content
       - @all_divisions.each do |division|
         - can_edit = @user_divisions.include? division
@@ -65,10 +65,15 @@
             %h3{:style => "font-family: bitter;"}
               No Division Specialists
               = "<small>(#{Specialist.no_division.count} total)</small>".html_safe
+          - else
+            %h3{:style => "font-family: bitter;"}
+              = "#{@specializations.first.member_name.pluralize}"
+              with No Division
+              = "<small>(#{@specializations.first.no_division_specialists.count} total)</small>".html_safe
           - @specializations.select(&:no_division_specialists?).each do |specialization|
             - cache("specialists_index_no_division_tab_#{specialization.cache_key}_#{specialization.specialists.cache_key}", expires_in: 7.days) do # expires_in used only as a fail safe in case recache fails
               %tr
-                %th{:style => "width:100%"}=specialization.name
+                %th{:style => "width:100%"}= "#{specialization.name} (#{specialization.no_division_specialists.count})"
                 %th.admin
 
               - specialization.no_division_specialists.each do |specialist|
