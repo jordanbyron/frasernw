@@ -1,6 +1,6 @@
 class SpecialistsController < ApplicationController
   skip_before_filter :login_required, :only => [:refresh_cache, :refresh_index_cache]
-  load_and_authorize_resource :except => [:refresh_cache, :refresh_index_cache]
+  load_and_authorize_resource :except => [:refresh_cache, :refresh_index_cache, :create]
   before_filter :check_token, :only => :refresh_cache
   before_filter :check_specialization_token, :only => :refresh_index_cache
   skip_authorization_check :only => [:refresh_cache, :refresh_index_cache]
@@ -48,14 +48,17 @@ class SpecialistsController < ApplicationController
   end
 
   def create
+    authorize! :create, Specialist
     #can only have one of office_id or office_attributes, otherwise create gets confused
-    params[:specialist][:specialist_offices_attributes].each{ |so_key, so_value|
+    params[:specialist][:specialist_offices_attributes].each do |so_key, so_value|
+      so_value.delete(:location_is)
+
       if so_value[:office_id].blank?
         so_value.delete(:office_id)
       else
         so_value.delete(:office_attributes)
       end
-    }
+    end
     @specialist = Specialist.new(params[:specialist])
     if @specialist.save!
       if params[:capacities_mapped].present?
