@@ -1,5 +1,6 @@
 require 'lib/param_parser/specialist'
 require 'active_support/core_ext/object/try'
+require 'active_support/core_ext/object/blank'
 
 RSpec.describe ParamParser::Clinic do
   params = {"utf8"=>"✓",
