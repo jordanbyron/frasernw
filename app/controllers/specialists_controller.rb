@@ -48,17 +48,8 @@ class SpecialistsController < ApplicationController
   end
 
   def create
-    #can only have one of office_id or office_attributes, otherwise create gets confused
-    params[:specialist][:specialist_offices_attributes].each do |so_key, so_value|
-      so_value.delete(:location_is)
-
-      if so_value[:office_id].blank?
-        so_value.delete(:office_id)
-      else
-        so_value.delete(:office_attributes)
-      end
-    end
-    @specialist = Specialist.new(params[:specialist])
+    parsed_params = ParamParser::Specialist::Create.new(params).exec
+    @specialist = Specialist.new(parsed_params[:specialist])
     authorize! :create, @specialist
     if @specialist.save!
       if params[:capacities_mapped].present?

@@ -56,10 +56,8 @@ class ClinicsController < ApplicationController
   end
 
   def create
-    params[:clinic][:clinic_locations_attributes].each do |index, location|
-      location.delete(:location_is)
-    end
-    @clinic = Clinic.new(params[:clinic])
+    parsed_params = ParamParser::Clinic.new(params).exec
+    @clinic = Clinic.new(parsed_params[:clinic])
     authorize! :create, @clinic
     if @clinic.save
       if params[:focuses_mapped].present?
