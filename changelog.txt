@@ -10,6 +10,9 @@ Backend = Change is not user facing
 - #304: Only try to go to another specialization if procedure filters have been activated
 - #305: Collapse updates by date and record
 
+### Added:
+- #51: Ability to hide automatic latest updates
+
 ## [2016-01-23] [Since 2016-01-16 Integration]
 ### Added:
 - User profile page now shows date of Last Vist and Sign Up

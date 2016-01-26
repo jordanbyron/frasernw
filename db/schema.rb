@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160120231637) do
+ActiveRecord::Schema.define(:version => 20160126222202) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -426,6 +426,16 @@ ActiveRecord::Schema.define(:version => 20160120231637) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "saved_token"
+  end
+
+  create_table "latest_updates_masks", :force => true do |t|
+    t.integer  "event_code"
+    t.integer  "division_id"
+    t.date     "date"
+    t.string   "item_type"
+    t.integer  "item_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "locations", :force => true do |t|

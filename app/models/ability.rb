@@ -93,7 +93,7 @@ class Ability
         end
 
         #can edit their own divisions
-        can [:show, :edit, :update], Division do |division|
+        can [:show, :edit, :update, :hide_updates], Division do |division|
           user.divisions.include? division
         end
 
