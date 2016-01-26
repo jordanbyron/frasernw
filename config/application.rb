@@ -72,7 +72,7 @@ module Frasernw
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password, :password_confirmation, :saved_token, :secret_token, :access_key_id, :secret_access_key, :persistence_token, :crypted_password, :password_salt, :perishable_token]
+    config.filter_parameters += [:password, :password_confirmation, :saved_token, :secret_token, :access_key_id, :secret_access_key, :persistence_token, :crypted_password, :password_salt, :perishable_token, :patient_email]
 
     # Enable the asset pipeline
     config.assets.enabled = true
