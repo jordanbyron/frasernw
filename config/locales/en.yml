@@ -136,6 +136,7 @@ en:
         hospitals: "Hospital privileges"
         hospital_clinic_details: "Additional details"
         is_gp: "Is a GP"
+        is_internal_medicine: "Is currently doing a fellowship in Internal Medicine that's not specific to a specialty?"
         status_mask: "Current status"
         status_details: "Additional details (if any)"
         practise_limitations: "Other practice limitations (if any)"
