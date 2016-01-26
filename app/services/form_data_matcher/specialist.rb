@@ -28,10 +28,6 @@ module FormDataMatcher
           index,
           form_data.specialist_office_data(specialist_office_id)
         )
-        cloned_form_data.update_specialist_office_use_status!(
-          index,
-          form_data.specialist_office_use_status(specialist_office_id)
-        )
       end
     end
 

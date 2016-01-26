@@ -23,16 +23,8 @@ module FormData
       hsh["specialist"]["specialist_offices_attributes"][index.to_s] = data
     end
 
-    def update_specialist_office_use_status!(index, status)
-      hsh["location_#{index}"] = status
-    end
-
     def specialist_office_data(specialist_office_id)
       specialist_office_attrs[specialist_office_data_index(specialist_office_id)]
-    end
-
-    def specialist_office_use_status(specialist_office_id)
-      hsh["location_#{specialist_office_data_index(specialist_office_id)}"]
     end
 
     def [](key)
