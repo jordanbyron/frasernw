@@ -78,15 +78,14 @@ class LatestUpdates < ServiceObject
         is_retiring = "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring on #{specialist.unavailable_from.to_s(:long_ordinal)}"
 
         "#{specialist_link} #{is_retiring}".html_safe
-      }
-    },
-    "SpecialistOffice" => {
-      opened_recently: -> (specialist, specialist_office) {
+      },
+      opened_recently: -> (specialist, specialist_offices) {
         office_link = link_to("#{specialist.name}'s office", "/specialists/#{specialist.id}")
+        opening_cities = specialist_offices.map(&:city).select(&:present?).map(&:name).uniq
 
-        if specialist_office.city.present?
+        if opening_cities.any?
           recently_opened =
-            "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{specialist_office.city.name} and is accepting new referrals."
+            "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{opening_cities.to_sentence} and is accepting new referrals."
 
           "#{office_link} #{recently_opened}".html_safe
         else
@@ -97,13 +96,14 @@ class LatestUpdates < ServiceObject
         end
       }
     },
-    "ClinicLocation" => {
-      opened_recently: -> (clinic, clinic_location) {
+    "Clinic" => {
+      opened_recently: -> (clinic, clinic_locations) {
         clinic_link = link_to(clinic.name, "/clinics/#{clinic.id}")
+        opening_cities = clinic_locations.map(&:city).select(&:present?).map(&:name).uniq
 
-        if clinic_location.city.present?
+        if opening_cities.any?
           recently_opened =
-            "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{clinic_location.city.name} and is accepting new referrals."
+            "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently opened in #{opening_cities.to_sentence} and is accepting new referrals."
 
           "#{clinic_link} #{recently_opened}".html_safe
         else
@@ -148,7 +148,7 @@ class LatestUpdates < ServiceObject
   def self.event_date(item, event_method)
     item.versions.order(:created_at).find_last do |version|
       !version.reify.present? || !version.reify.send(event_method)
-    end.created_at
+    end.created_at.to_date
   end
 
   class Clinics < ServiceObject
@@ -173,7 +173,7 @@ class LatestUpdates < ServiceObject
           return [] if condition.call(clinic, division)
         end
 
-        clinic_location_events
+        collapse(clinic_location_events)
       end
 
       def clinic_location_events
@@ -182,15 +182,29 @@ class LatestUpdates < ServiceObject
         clinic.clinic_locations.inject([]) do |memo, clinic_location|
           if clinic_location.opened_recently?
             memo << {
-              id: clinic_location.id,
-              klass: "ClinicLocation",
-              event: :opened_recently,
               date: LatestUpdates.event_date(clinic_location, :opened_recently?),
-              markup: LatestUpdates::MARKUP["ClinicLocation"][:opened_recently].call(clinic, clinic_location)
+              record: clinic_location
             }
           else
             memo
           end
+        end
+      end
+
+      def collapse(clinic_location_events)
+        clinic_location_events.group_by do |event|
+          event[:date]
+        end.map do |date, events|
+          {
+            id: clinic.id,
+            klass: "Clinic",
+            event: :opened_recently,
+            date: date,
+            markup: LatestUpdates::MARKUP["Clinic"][:opened_recently].call(
+              clinic,
+              events.map{|event| event[:record] }
+            )
+          }
         end
       end
     end
@@ -206,7 +220,6 @@ class LatestUpdates < ServiceObject
         includes(specialist_offices: :versions).
         all.
         inject([]) do |memo, specialist|
-
           memo + SpecialistEvents.call(specialist: specialist, division: division)
         end
     end
@@ -259,7 +272,7 @@ class LatestUpdates < ServiceObject
           return [] if condition.call(specialist, division)
         end
 
-        specialist_events + specialist_office_events
+        specialist_events + collapse(specialist_office_events)
       end
 
       def specialist_events
@@ -272,23 +285,35 @@ class LatestUpdates < ServiceObject
         end
       end
 
-      ## opened_recently --> opened?
-
       def specialist_office_events
         return [] unless specialist.accepting_new_patients?
 
         specialist.specialist_offices.inject([]) do |memo, specialist_office|
           if specialist_office.opened_recently?
             memo << {
-              id: specialist_office.id,
-              klass: "SpecialistOffice",
-              event: :opened_recently,
+              record: specialist_office,
               date: LatestUpdates.event_date(specialist_office, :opened_recently?),
-              markup: LatestUpdates::MARKUP["SpecialistOffice"][:opened_recently].call(specialist, specialist_office)
             }
           else
             memo
           end
+        end
+      end
+
+      def collapse(specialist_office_events)
+        specialist_office_events.group_by do |event|
+          event[:date]
+        end.map do |date, events|
+          {
+            id: specialist.id,
+            klass: "Specialist",
+            event: :opened_recently,
+            date: date,
+            markup: LatestUpdates::MARKUP["Specialist"][:opened_recently].call(
+              specialist,
+              events.map{|event| event[:record]}
+            )
+          }
         end
       end
     end

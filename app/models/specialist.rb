@@ -366,11 +366,6 @@ class Specialist < ActiveRecord::Base
     return result.is_a?(NullData) ? nil : result
   end
 
-  def primary_specialization
-    # we arbitrarily take the first specialization of a specialist and use this on the front page to determine what specialization a specialist falls under when doing logic about what to show on the home page
-    specializations.first
-  end
-
   def divisions
     return cities.map{ |city| city.divisions }.flatten.uniq
   end
