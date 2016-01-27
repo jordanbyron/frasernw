@@ -1,6 +1,9 @@
 {
   "name": "frasernw",
   "version": "0.0.0",
+  "engines": {
+    "node": "5.4.1"
+  },
   "description": "NPM Package for Pathways",
   "main": "index.js",
   "scripts": {
