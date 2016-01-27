@@ -1,0 +1,21 @@
+.latest_updates__update {
+  padding: 10px;
+  border-radius: 2px;
+}
+
+.latest_updates__update:hover {
+  background-color: #f3f8fc;
+
+  .latest_updates__toggle {
+    visibility: visible;
+  }
+}
+
+.latest_updates__toggle {
+  width: 100px;
+  visibility: hidden;
+  text-align: right;
+  float: right;
+  clear: right;
+  text-decoration: none;
+}

@@ -9,13 +9,17 @@ class LatestUpdates < ServiceObject
     index: 100000
   }
 
+  def self.event_code(event)
+    LatestUpdatesMask::EVENTS.key(event)
+  end
+
   def self.recache_for(division_ids, options)
-    MAX_EVENTS.each do |context, max|
+    MAX_EVENTS.each_with_index do |(context, max), index|
       call(
         max_automatic_events: max,
         division_ids: division_ids,
         force: true,
-        force_automatic: options[:force_automatic]
+        force_automatic: (options[:force_automatic] && index == 0)
       )
     end
   end
@@ -31,8 +35,7 @@ class LatestUpdates < ServiceObject
     Rails.cache.fetch("latest_updates:#{division_ids.sort.join('_')}:#{max_automatic_events}", force: force) do
       (manual_events + automatic_events.take(max_automatic_events)).
         sort_by{ |event| event[:date].to_s }.
-        reverse.
-        map{ |event| event[:markup] }
+        reverse
     end
   end
 
@@ -127,7 +130,8 @@ class LatestUpdates < ServiceObject
         end
       end
     end.
-      uniq{ |event| [ event[:klass], event[:id], event[:event] ] }.
+      reject{ |event| LatestUpdatesMask.exists?(event.except(:markup)) }.
+      uniq{ |event| [ event[:item_type], event[:item_id], event[:event] ] }.
       sort_by{ |event| event[:date].to_s }.
       reverse
   end
@@ -196,9 +200,10 @@ class LatestUpdates < ServiceObject
           event[:date]
         end.map do |date, events|
           {
-            id: clinic.id,
-            klass: "Clinic",
-            event: :opened_recently,
+            item_id: clinic.id,
+            item_type: "Clinic",
+            event_code: LatestUpdates.event_code(:opened_recently),
+            division_id: division.id,
             date: date,
             markup: LatestUpdates::MARKUP["Clinic"][:opened_recently].call(
               clinic,
@@ -231,11 +236,12 @@ class LatestUpdates < ServiceObject
       SPECIALIST_EVENTS = [
         {
           test: -> (specialist) { specialist.moved_away? },
-          event: -> (specialist) {
+          event: -> (specialist, division) {
             {
-              id: specialist.id,
-              klass: "Specialist",
-              event: :moved_away,
+              item_id: specialist.id,
+              item_type: "Specialist",
+              event_code: LatestUpdates.event_code(:moved_away),
+              division_id: division.id,
               date: LatestUpdates.event_date(specialist, :moved_away?),
               markup: LatestUpdates::MARKUP["Specialist"][:moved_away].call(specialist)
             }
@@ -243,11 +249,12 @@ class LatestUpdates < ServiceObject
         },
         {
           test: -> (specialist) { specialist.retired? },
-          event: -> (specialist) {
+          event: -> (specialist, division) {
             {
-              id: specialist.id,
-              klass: "Specialist",
-              event: :retired,
+              item_id: specialist.id,
+              item_type: "Specialist",
+              event_code: LatestUpdates.event_code(:retired),
+              division_id: division.id,
               date: LatestUpdates.event_date(specialist, :retired?),
               markup: LatestUpdates::MARKUP["Specialist"][:retired].call(specialist)
             }
@@ -255,11 +262,12 @@ class LatestUpdates < ServiceObject
         },
         {
           test: -> (specialist) { specialist.retiring? },
-          event: -> (specialist) {
+          event: -> (specialist, division) {
             {
-              id: specialist.id,
-              klass: "Specialist",
-              event: :retiring,
+              item_id: specialist.id,
+              item_type: "Specialist",
+              event_code: LatestUpdates.event_code(:retiring),
+              division_id: division.id,
               date: LatestUpdates.event_date(specialist, :retiring?),
               markup: LatestUpdates::MARKUP["Specialist"][:retiring].call(specialist)
             }
@@ -278,7 +286,7 @@ class LatestUpdates < ServiceObject
       def specialist_events
         SPECIALIST_EVENTS.inject([]) do |memo, event|
           if event[:test].call(specialist)
-            memo << event[:event].call(specialist)
+            memo << event[:event].call(specialist, division)
           else
             memo
           end
@@ -305,9 +313,10 @@ class LatestUpdates < ServiceObject
           event[:date]
         end.map do |date, events|
           {
-            id: specialist.id,
-            klass: "Specialist",
-            event: :opened_recently,
+            item_id: specialist.id,
+            item_type: "Specialist",
+            event_code: LatestUpdates.event_code(:opened_recently),
+            division_id: division.id,
             date: date,
             markup: LatestUpdates::MARKUP["Specialist"][:opened_recently].call(
               specialist,

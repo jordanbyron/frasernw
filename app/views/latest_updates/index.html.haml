@@ -4,5 +4,14 @@
   %h2
     = "Specialist and Clinic Updates for #{@divisions.map(&:name).to_sentence}:"
 
+  %br
+
   - LatestUpdates.for(:index, @divisions).each do |event|
-    %p{style: "margin-top: 10px"}= event
+    .latest_updates__update
+      - if current_user_divisions.include?(@divisions.first) && current_user_is_admin?
+        = link_to latest_updates_masks_path(event.except(:markup, :division_id).merge(division_id: @divisions.first.id)),
+          class: "latest_updates__toggle",
+          method: :post do
+          %i.icon-remove
+          %span= "Hide"
+      %span= event[:markup]
