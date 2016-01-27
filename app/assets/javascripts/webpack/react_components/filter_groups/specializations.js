@@ -24,4 +24,4 @@ const SpecializationsFilterGroup = React.createClass({
   }
 });
 
-export default SpecializationsFilterGroup;
+module.exports = SpecializationsFilterGroup;

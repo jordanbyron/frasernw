@@ -3,18 +3,18 @@ var Filters = require("./filter_table/filters");
 var RowGenerators = require("./filter_table/row_generators");
 var FILTER_VALUE_GENERATORS = require("./filter_table/filter_value_generators");
 var FILTER_GROUP_GENERATORS = require("./filter_table/filter_group_generators");
-var TABLE_HEADINGS_GENERATORS = require("./filter_table/table_headings_generators");
+import TABLE_HEADINGS_GENERATORS from "./filter_table/table_headings_generators";
 var sortFunctions = require("./filter_table/sort_functions");
 var sortOrders = require("./filter_table/sort_orders");
 var generateResultSummary = require("./filter_table/generate_result_summary");
-var itemsForContentCategory = require("domain/content_category_items");
+import itemsForContentCategory from "domain/content_category_items";
 var referralCities = require("./filter_table/referral_cities");
 var utils = require("utils");
-var anyFiltersActivated = require("state_mappers/filter_table/any_filters_activated");
+import anyFiltersActivated from "state_mappers/filter_table/any_filters_activated";
 var React = require("react");
-var CategoryLink = require("react_components/category_link");
+import CategoryLink from "react_components/category_link";
 var Alert = require("react_components/alert");
-var MaybeContent = require("react_components/maybe_content");
+import MaybeContent from "react_components/maybe_content";
 
 module.exports = function(state, dispatch) {
   // console.log("STATE:");

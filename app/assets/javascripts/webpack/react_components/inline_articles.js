@@ -3,8 +3,8 @@ var React = require("react");
 var FavoriteIcon = require("./icons/favorite");
 var FeedbackIcon = require("./icons/feedback");
 var SharedCareIcon = require("./icons/shared_care");
-var CategoryLink = require("react_components/category_link");
-var ArbitraryContent = require("react_components/arbitrary_content");
+import CategoryLink from "react_components/category_link";
+import ArbitraryContent from "react_components/arbitrary_content";
 
 module.exports = React.createClass({
   propTypes: {

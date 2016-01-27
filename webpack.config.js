@@ -40,7 +40,11 @@ module.exports = {
         // @see https://github.com/shama/es6-loader
         // It was installed with 'npm install es6-loader --save' and transpiles
         // es6 to es5.
-        loaders: ['babel?optional[]=flow', 'flowcheck']
+        loader: [ 'babel-loader' ],
+        query: {
+          plugins: ['transform-flow-strip-types'],
+          presets: ['react', 'es2015']
+        }
       }
     ]
   }
