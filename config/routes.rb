@@ -22,8 +22,11 @@ Frasernw::Application.routes.draw do
 
   resources :secret_tokens, only: [:create, :destroy]
 
-  resources :latest_updates, only: [:index]
-  resources :latest_updates_masks, only: [:create]
+  resources :latest_updates, only: [:index] do
+    collection do
+      put :toggle_visibility
+    end
+  end
 
   resources :clinics do
     member do

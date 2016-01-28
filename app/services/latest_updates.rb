@@ -130,8 +130,9 @@ class LatestUpdates < ServiceObject
         end
       end
     end.
-      reject{ |event| LatestUpdatesMask.exists?(event.except(:markup)) }.
-      uniq{ |event| [ event[:item_type], event[:item_id], event[:event] ] }.
+      map{ |event| event.merge(hidden: LatestUpdatesMask.exists?(event.except(:markup))) }.
+      group_by{ |event| [ event[:item_type], event[:item_id], event[:event] ] }.
+      map{ |k, v| v[0].merge(hidden: v.any?{|event| event[:hidden] }) }.
       sort_by{ |event| event[:date].to_s }.
       reverse
   end

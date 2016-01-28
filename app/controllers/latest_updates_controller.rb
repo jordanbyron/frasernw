@@ -24,4 +24,24 @@ class LatestUpdatesController < ApplicationController
 
     authorize! :index, :latest_updates
   end
+
+  def toggle_visibility
+    @division = Division.find(params[:update][:division_id])
+
+    authorize! :hide_updates, @division
+
+
+    @mask = LatestUpdatesMask.where(params[:update].except(:hide)).first
+
+    if @mask.present? && params[:update][:hide] == "false"
+      @mask.destroy
+    elsif params[:update][:hide] == "true"
+      LatestUpdatesMask.create(params[:update].except(:hide))
+    end
+
+
+    NewsItem.bust_cache_for(@division)
+
+    render nothing: true, status: 200
+  end
 end
