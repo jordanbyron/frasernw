@@ -25,7 +25,8 @@ class LatestUpdates < ServiceObject
         max_automatic_events: max,
         division_ids: division_ids,
         force: true,
-        force_automatic: (options[:force_automatic] && index == 0)
+        force_automatic: (options[:force_automatic] && index == 0),
+        show_hidden: SHOW_HIDDEN[context]
       )
     end
   end
@@ -63,11 +64,15 @@ class LatestUpdates < ServiceObject
       if news_item.title.present?
         memo << {
           markup: BlueCloth.new("#{news_item.title}. #{news_item.body}").to_html.html_safe,
+          manual: true,
+          hidden: false,
           date: (news_item.start_date || news_item.end_date)
         }
       else
         memo << {
           markup: BlueCloth.new(news_item.body).to_html.html_safe,
+          manual: true,
+          hidden: false,
           date: (news_item.start_date || news_item.end_date)
         }
       end
@@ -147,7 +152,7 @@ class LatestUpdates < ServiceObject
     end.
       map{ |event| event.merge(hidden: LatestUpdatesMask.exists?(event.except(:markup))) }.
       group_by{ |event| [ event[:item_type], event[:item_id], event[:event] ] }.
-      map{ |k, v| v[0].merge(hidden: v.any?{|event| event[:hidden] }) }.
+      map{ |k, v| v[0].merge(hidden: v.any?{|event| event[:hidden] }, manual: false) }.
       sort_by{ |event| event[:date].to_s }.
       reverse
   end

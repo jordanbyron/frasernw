@@ -44,7 +44,7 @@ class NewsItem < ActiveRecord::Base
       end
 
     division_groups.each do |group|
-      LatestUpdates.recache_for(group, force_automatic: false)
+      LatestUpdates.delay.recache_for(group, force_automatic: false)
     end
   end
 

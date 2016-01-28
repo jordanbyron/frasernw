@@ -30,7 +30,6 @@ class LatestUpdatesController < ApplicationController
 
     authorize! :hide_updates, @division
 
-
     @mask = LatestUpdatesMask.where(params[:update].except(:hide)).first
 
     if @mask.present? && params[:update][:hide] == "false"
@@ -39,8 +38,7 @@ class LatestUpdatesController < ApplicationController
       LatestUpdatesMask.create(params[:update].except(:hide))
     end
 
-
-    NewsItem.bust_cache_for(@division)
+    LatestUpdates.recache_for([ @division.id ], force_automatic: false)
 
     render nothing: true, status: 200
   end
