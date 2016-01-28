@@ -1,5 +1,6 @@
 class LatestUpdates < ServiceObject
   attribute :force, Axiom::Types::Boolean, default: false
+  attribute :show_hidden, Axiom::Types::Boolean, default: false
   attribute :force_automatic, Axiom::Types::Boolean, default: false
   attribute :max_automatic_events, Integer, default: 100000
   attribute :division_ids, Array
@@ -7,6 +8,11 @@ class LatestUpdates < ServiceObject
   MAX_EVENTS = {
     front: 5,
     index: 100000
+  }
+
+  SHOW_HIDDEN = {
+    front: false,
+    index: true
   }
 
   def self.event_code(event)
@@ -27,13 +33,22 @@ class LatestUpdates < ServiceObject
   def self.for(context, divisions)
     call(
       max_automatic_events: MAX_EVENTS[context],
-      division_ids: divisions.reject(&:hidden?).map(&:id)
+      division_ids: divisions.reject(&:hidden?).map(&:id),
+      show_hidden: SHOW_HIDDEN[context]
     )
   end
 
   def call
-    Rails.cache.fetch("latest_updates:#{division_ids.sort.join('_')}:#{max_automatic_events}", force: force) do
-      (manual_events + automatic_events.take(max_automatic_events)).
+    Rails.cache.fetch("latest_updates:#{division_ids.sort.join('_')}:#{max_automatic_events}:#{show_hidden}", force: force) do
+      automatic_events = begin
+        if show_hidden
+          all_automatic_events
+        else
+          all_automatic_events.select{ |event| !event[:hidden] }
+        end
+      end.take(max_automatic_events)
+
+      (manual_events + automatic_events).
         sort_by{ |event| event[:date].to_s }.
         reverse
     end
@@ -119,7 +134,7 @@ class LatestUpdates < ServiceObject
     }
   }
 
-  def automatic_events
+  def all_automatic_events
     divisions.inject([]) do |memo, division|
       memo + Rails.cache.fetch("latest_updates:automatic:division:#{division.id}", force: force_automatic) do
         [
