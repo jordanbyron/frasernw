@@ -8,7 +8,6 @@ class LatestUpdatesMasksController < ApplicationController
 
     NewsItem.bust_cache_for(@division)
 
-    redirect_to latest_updates_path(division_id: params[:division_id]),
-      notice: "Update to '#{@mask.item_name}' was hidden."
+    render nothing: true, status: 200
   end
 end

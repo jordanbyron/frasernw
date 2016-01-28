@@ -1,17 +1,11 @@
 - set_page_specific_title "Latest Updates (#{@divisions.map(&:name).to_sentence})"
 
-.content-wrapper
-  %h2
-    = "Specialist and Clinic Updates for #{@divisions.map(&:name).to_sentence}:"
+#latest_updates_react_component
 
-  %br
-
-  - LatestUpdates.for(:index, @divisions).each do |event|
-    .latest_updates__update
-      - if current_user_divisions.include?(@divisions.first) && current_user_is_admin?
-        = link_to latest_updates_masks_path(event.except(:markup, :division_id).merge(division_id: @divisions.first.id)),
-          class: "latest_updates__toggle",
-          method: :post do
-          %i.icon-remove
-          %span= "Hide"
-      %span= event[:markup]
+:javascript
+  window.pathways.bootstrapReact({
+    domElementSelector: "#latest_updates_react_component",
+    stateMapper: "PassThrough",
+    topLevelComponent: "LatestUpdates",
+    uiReducer: "LatestUpdates"
+  }, #{@init_data.to_json})
