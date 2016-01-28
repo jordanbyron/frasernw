@@ -5,6 +5,8 @@ class LatestUpdatesController < ApplicationController
     @divisions = begin
       if params[:division_id].present?
         [ Division.find(params[:division_id]) ]
+      elsif current_user_is_admin?
+        [ current_user_divisions.first ]
       else
         current_user_divisions
       end
@@ -38,7 +40,9 @@ class LatestUpdatesController < ApplicationController
       LatestUpdatesMask.create(params[:update].except(:hide))
     end
 
-    LatestUpdates.recache_for([ @division.id ], force_automatic: false)
+    User.division_groups_for(@division).each do |group|
+      LatestUpdates.recache_for(group, force_automatic: false)
+    end
 
     render nothing: true, status: 200
   end

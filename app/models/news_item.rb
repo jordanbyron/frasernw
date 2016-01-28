@@ -35,15 +35,7 @@ class NewsItem < ActiveRecord::Base
   end
 
   def self.bust_cache_for(*divisions)
-    division_ids = divisions.map(&:id)
-
-    division_groups = User.
-      all_user_division_groups_cached.
-      select do |group|
-        division_ids.any?{ |id| group.include?(id) }
-      end
-
-    division_groups.each do |group|
+    User.division_groups_for(*divisions).each do |group|
       LatestUpdates.delay.recache_for(group, force_automatic: false)
     end
   end
