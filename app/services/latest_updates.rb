@@ -50,7 +50,7 @@ class LatestUpdates < ServiceObject
       end.take(max_automatic_events)
 
       (manual_events + automatic_events).
-        sort_by{ |event| event[:date].to_s }.
+        sort_by{ |event| [ event[:date].to_s, event[:markup] ] }.
         reverse
     end
   end
