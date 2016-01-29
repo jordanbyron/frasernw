@@ -18,7 +18,7 @@ class LatestUpdatesController < ApplicationController
       },
       ui: {
         divisionIds: @divisions.map(&:id),
-        canHide: current_user_is_admin? && current_user_divisions.include?(@divisions.first),
+        canHide: ((current_user.admin_only? && current_user_divisions.include?(@divisions.first)) || current_user.super_admin?),
         latestUpdates: LatestUpdates.for(:index, @divisions),
         hasBeenInitialized: false
       }
