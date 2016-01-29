@@ -299,75 +299,58 @@ class Specialist < ActiveRecord::Base
   #clinic that referrals are done through
   belongs_to :referral_clinic, :class_name => "Clinic"
 
-  def city # NullData.new() used since memcache doesn't work with nil: http://stackoverflow.com/questions/30383704/how-to-store-nil-with-rails-cache-fetch-memcache
-    result = Rails.cache.fetch([self.class.name, self.id, "city"], expires_in: 23.hours) do
-      if responded?
-        o = offices.first
-        if o.blank?
-          NullData.new()
-        else
-          o.city.id
-        end
-      elsif hospital_or_clinic_only?
-        citee = (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq.first
-        if citee.nil?
-          NullData.new()
-        else
-          citee.id
-        end
-      elsif hospital_or_clinic_referrals_only?
-        (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? }.uniq.first
-      else
-        NullData.new()
-      end
+  def city
+    if responded? || hospital_or_clinic_only? || hospital_or_clinic_referrals_only?
+      cities.first
+    else
+      nil
     end
-    return result.is_a?(NullData) ? nil : result
   end
 
-  def cities
-    result = Rails.cache.fetch([self.class.name, self.id, "cities"], expires_in: 23.hours) do
+  def cities(force: false)
+    Rails.cache.fetch([self.class.name, self.id, "cities"], force: force) do
       if responded?
-        citees = offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
+        offices.map(&:city).reject(&:blank?).uniq
       elsif hospital_or_clinic_only?
-        citees = (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq
+        (hospitals.map(&:city) + clinics.map(&:cities)).flatten.reject(&:blank?).uniq
       elsif not_responded? || purposely_not_yet_surveyed? || hospital_or_clinic_referrals_only?
-        (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? }.uniq
+        (offices.map(&:city) + hospitals.map(&:city) + clinics.map(&:cities)).flatten.reject(&:blank?).uniq
       else
         []
       end
     end
-    return result.is_a?(NullData) ? nil : result
   end
 
   #we need to know their 'old' cities if they moved away
-  def cities_for_front_page
-    result = Rails.cache.fetch([self.class.name, self.id, "cities_for_front_page"], expires_in: 23.hours) do
+  def cities_for_front_page(force: false)
+    Rails.cache.fetch([self.class.name, self.id, "cities_for_front_page"], force: force) do
       if moved_away?
-        offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq || NullData.new()
+        offices.map(&:city).reject(&:blank?).uniq
       else
-       cities || NullData.new()
+        cities
       end
     end
-    return result.is_a?(NullData) ? nil : result
   end
 
-  def cities_for_display
-    result = Rails.cache.fetch([self.class.name, self.id, "cities_for_display"], expires_in: 23.hours) do
+  def cities_for_display(force: false)
+    Rails.cache.fetch([self.class.name, self.id, "cities_for_display"], force: force) do
       if responded? && !not_available?
-        (  offices.map{ |o| o.city }.reject{ |c| c.blank? || c.hidden? }.uniq    || NullData.new() )
+        offices.map(&:city).reject{ |city| city.blank? || city.hidden? }.uniq
       elsif hospital_or_clinic_only?
-        ( (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| (i == nil) || i.hidden? }.uniq     || NullData.new() )
+        (hospitals.map(&:city) + clinics.map(&:cities)).flatten.reject{ |city| city.blank? || city.hidden?}.uniq
       elsif hospital_or_clinic_referrals_only?
-        ( (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? || c.hidden? }.uniq  || NullData.new() )
+        (offices.map(&:city) + hospitals.map(&:city) + clinics.map(&:cities)).
+          flatten.
+          reject{ |city| city.blank? || city.hidden? }.
+          uniq
       else
         []
       end
     end
-    return result.is_a?(NullData) ? nil : result
   end
 
   def divisions
-    return cities.map{ |city| city.divisions }.flatten.uniq
+    cities.map(&:divisions).flatten.uniq
   end
 
   def version_marked_deceased

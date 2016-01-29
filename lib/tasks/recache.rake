@@ -3,6 +3,18 @@ namespace :pathways do
     include Rails.application.routes.url_helpers
 
     TASKS = {
+      specialists: -> {
+        Specialist.all.sort{ |a,b| a.id <=> b.id }.each do |specialist|
+          puts "Specialist #{specialist.id}"
+
+          specialist.cities(force: true)
+          specialist.cities_for_display(force: true)
+          specialist.cities_for_front_page(force: true)
+
+          ExpireFragment.call specialist_path(specialist)
+          HttpGetter.exec("specialists/#{specialist.id}/#{specialist.token}/refresh_cache")
+        end
+      },
       serialized_indices: -> {
         Serialized.regenerate_all
       },
@@ -37,13 +49,6 @@ namespace :pathways do
           puts "Clinic #{c.id}"
           ExpireFragment.call clinic_path(c)
           HttpGetter.exec("clinics/#{c.id}/#{c.token}/refresh_cache")
-        end
-      },
-      specialists: -> {
-        Specialist.all.sort{ |a,b| a.id <=> b.id }.each do |s|
-          puts "Specialist #{s.id}"
-          ExpireFragment.call specialist_path(s)
-          HttpGetter.exec("specialists/#{s.id}/#{s.token}/refresh_cache")
         end
       },
       sc_categories: -> {

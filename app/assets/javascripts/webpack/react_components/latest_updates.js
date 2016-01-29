@@ -9,8 +9,6 @@ import Checkbox from 'react_components/checkbox';
 
 
 const LatestUpdates = ({state, dispatch}) => {
-  console.log(state);
-
   if(state.ui.hasBeenInitialized) {
     const divisionNames = state.ui.divisionIds.map((id) => state.app.divisions[id].name);
     const showHiddenUpdates = _.get(state, ["ui", "showHiddenUpdates"], false);
