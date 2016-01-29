@@ -6,12 +6,17 @@ Local-only = Changes not reflected in Source Code
 Backend = Change is not user facing
 
 ## [2016-01-30] [Since 2016-01-23 Integration]
+### Added:
+- #51: Division admin's can now hide automatic Latest Updates inside the "more" page.
+- #276:  Administrators can now label Internal Medicine specialists as "Int Med" using a checkbox when editing a Specialist
+
+### Changed:
+- Shorten wording of specialist status from "This physician only works out of ..." to "Only works out of ..."
+- Backend: implemented security updates and removed old database cruft.
+
 ### Fixed:
 - #304: Only try to go to another specialization if procedure filters have been activated
 - #305: Collapse updates by date and record
-
-### Added:
-- #51: Ability to hide automatic latest updates
 
 ## [2016-01-23] [Since 2016-01-16 Integration]
 ### Added:
