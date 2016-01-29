@@ -6,12 +6,19 @@ Local-only = Changes not reflected in Source Code
 Backend = Change is not user facing
 
 ## [2016-01-30] [Since 2016-01-23 Integration]
-### Fixed:
-- #304: Only try to go to another specialization if procedure filters have been activated
-- #305: Collapse updates by date and record
-
 ### Added:
-- #51: Ability to hide automatic latest updates
+- #51: Division admin's can now hide / show automatic Latest Updates from the "More ..." page.
+- #276: Administrators can now label Internal Medicine specialists with Int Med by checking a checkbox in the edit form that asks about what kind of Internal Medicine fellowship they have
+
+### Changed:
+- Changed wording of specialist page statuses from "This physician only works out of ..." to "Only works out of ..."
+- Backend Maintenance: implemented security / privacy protection updates and removed old database cruft.
+
+### Fixed:
+- #304: Fix issue in Specialty city filter that caused the filter to incorrectly scope clinics down under a few conditions, such as if "No Cities" was checked and then another city was checked
+- #305: Revert change in Latest Updates so that updates now collapse again by date and record
+- #307: Fixed bug that temporarily affected the creation of new Specialists
+- Fix incorrect No Division count summaries on All Specialists pages
 
 ## [2016-01-23] [Since 2016-01-16 Integration]
 ### Added:

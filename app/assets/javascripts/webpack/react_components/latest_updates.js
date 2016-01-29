@@ -22,7 +22,7 @@ const LatestUpdates = ({state, dispatch}) => {
 
     return(
       <div className="content-wrapper">
-        <h2 style={{marginBottom: "10px"}}>{`Specialist and Clinic Updates for ${toSentence(divisionNames)}`}</h2>
+        <h2 style={{marginBottom: "10px"}}>{`Latest Specialist and Clinic Updates for ${toSentence(divisionNames)}`}</h2>
         <PageBody showHiddenUpdates={showHiddenUpdates} updatesToShow={updatesToShow} dispatch={dispatch} canHide={state.ui.canHide}/>
       </div>
     );
