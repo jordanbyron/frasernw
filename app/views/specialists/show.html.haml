@@ -28,6 +28,7 @@
   - cache(specialist_path(@specialist)) do
 
     - show_details = false
+    - show_clinic_details = false
     - show_areas_of_practice = false
 
     .content
@@ -94,11 +95,12 @@
               - elsif @specialist.hospital_or_clinic_only?
 
                 - show_areas_of_practice = true
+                - show_clinic_details = true
 
                 %p.space.no_indent
                   %i{:class => @specialist.status_class}
                   - if hospital_count > 0 && clinic_count > 0
-                    %strong Only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"} and #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through these locations.
+                    %strong Only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"} and #{ hospital_count > 1 ? "hospitals" : "a hospital"}, and in general all referrals should be made through these locations.
                   - elsif clinic_count > 0
                     %strong Only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
                   - elsif hospital_count > 0
@@ -111,16 +113,6 @@
                     %strong Details:
                     = @specialist.hospital_clinic_details
 
-              - if hospital_count > 0
-                %p.space.no_indent
-                  %strong Hospital privileges:
-                  != @specialist.hospitals.map{ |hospital| "<a href='#{hospital_path(hospital)}' class='ajax')\">#{hospital.name}</a>" }.to_sentence
-
-              - if clinic_count > 0
-                %p.space.no_indent
-                  %strong Clinic associations:
-                  != @specialist.clinics.reject{ |c| c.closed? }.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'>#{clinic.name}</a>" }.to_sentence
-
             - elsif @specialist.hospital_or_clinic_referrals_only?
 
               - show_areas_of_practice = true
@@ -132,7 +124,7 @@
               %p.space.no_indent
                 %i{:class => @specialist.status_class}
                 - if hospital_count > 0 && clinic_count > 0
-                  %strong Only accepts referrals through #{ hospital_count > 1 ? "hospitals" : "a hospital"} and #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through these locations.
+                  %strong Only accepts referrals through #{ clinic_count > 1 ? "clinics" : "a clinic"} and #{ hospital_count > 1 ? "hospitals" : "a hospital"}, and in general all referrals should be made through these locations.
                 - elsif clinic_count > 0
                   %strong Only accepts referrals through #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
                 - elsif hospital_count > 0
@@ -360,6 +352,61 @@
                 %p
                   %strong Clinic associations:
                   != clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'}'>#{clinic.name}</a>" }.to_sentence
+
+          - elsif show_clinic_details
+
+            - @specialist.clinics.reject{ |c| c.closed? }.each do |clinic|
+
+              - clinic_locations = clinic.clinic_locations.sort_by{|cl| cl.created_at }.reject{ |cl| cl.empty? }
+
+              %h6= clinic.name
+
+              %p.space
+                %i{:class => clinic.status_class}
+                %strong.status= clinic.status.end_with_period
+              - if clinic.status_details.present?
+                %p
+                  %strong Details:
+                  = clinic.status_details.end_with_period.convert_newlines_to_br
+              - if clinic.limitations.present?
+                %p
+                  %strong Limitations:
+                  = clinic.limitations.end_with_period.convert_newlines_to_br
+
+              - clinic_locations.each do |cl|
+                - address = cl.resolved_address
+
+                %p.space
+                  %strong= cl.phone_only if cl.phone_only.present?
+                %p= "Fax: #{cl.fax}" if cl.fax.present?
+                %p= "Public e-mail (okay for patient use): #{mail_to cl.public_email, cl.public_email, :target => '_blank'}".html_safe if cl.public_email.present?
+                %p= "Private e-mail (for physician office use only): #{mail_to cl.email, cl.email, :target => '_blank'}".html_safe if cl.email.present?
+                %p= "Website: #{link_to cl.url, cl.url, :target => '_blank'}".html_safe if cl.url.present?
+                %p= cl.contact_details.convert_newlines_to_br if cl.contact_details.present?
+                - if cl.location.present? && cl.location.in_hospital?
+                  - hospital = cl.location.hospital_in
+                  %p
+                    = "In #{link_to hospital.name, hospital_path(hospital), :class => 'ajax'}".html_safe
+                    = "(#{cl.sector})" if cl.sector_info_available?
+                  %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
+                  %p= cl.location.in_details if cl.location.in_details.present?
+                - elsif address.present? && !address.empty?
+                  %p= "(#{cl.sector})" if cl.sector_info_available?
+                  %p= link_to address.address, address.map_url, :target => "_blank"
+                - if cl.scheduled?
+                  %p
+                    %strong Schedule:
+                    = cl.schedule.collapsed_days_and_hours.join(". ").end_with_period
+
+              %p.space
+                %strong Referrals:
+                = "<a href='#{clinic_path(clinic)}'>Full referral details</a>".html_safe
+
+            - hospitals = @specialist.hospitals
+            - if hospitals.present?
+              %h6 Hospital privileges
+              %p
+                != hospitals.map{ |hospital| "<a href='#{hospital_path(hospital)}' class='ajax')\">#{hospital.name}</a>" }.to_sentence
 
         - if show_details || show_areas_of_practice
 
