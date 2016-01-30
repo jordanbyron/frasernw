@@ -538,8 +538,9 @@ body.loading #email
     font-size: 11px;
   }
 
-  .gp
+  .gp, .suffix
   {
+    margin-left: 5px;
     font-weight: bold;
     font-size: 11px;
   }
@@ -1269,6 +1270,7 @@ body.loading #email
     {
       padding: 12px 24px;
 
+
       h2.center
       {
         text-align: center;
@@ -1397,6 +1399,19 @@ body.loading #email
   a:hover
   {
     text-decoration: underline;
+  }
+
+  .hoverlabel
+  {
+    margin: 0 -6px;
+    padding: 4px 6px;
+  }
+
+  .hoverlabel:hover
+  {
+      text-decoration: none;
+      background-color: $FNW_HEADLINE_BACKGROUND;
+      border-radius: 4px;
   }
 
   #feedback, #feedback_thanks, #message, #message_sent
@@ -1617,7 +1632,7 @@ body.loading #email
       ul
       {
         list-style: none;
-        display: inline-block;
+        display: inline-table;
         width: 175px;
         margin: 0;
         border: 0;

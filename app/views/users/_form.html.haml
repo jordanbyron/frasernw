@@ -6,7 +6,7 @@
   = f.input :email if !@new_user
   = f.input :role, :as => :select, collection: (current_user_is_super_admin? ? User::ROLE_HASH : User::LIMITED_ROLE_HASH), label_method: :last, value_method: :first, :include_blank => false
   = f.input :active
-  = f.association :divisions, as: :check_boxes, collection: (current_user_is_super_admin? ? Division.all : current_user_divisions), checked: (user_edit_checkbox_value_for_division), hint: "<div id='user_form_divisions_hint'><i class='icon-warning-sign'></i> Please select a division for this user. </div>".html_safe, input_html: {:class => "user-form-division-option"}, label_method: :name, value_method: :id, presence: true, include_blank: false
+  = f.association :divisions, as: :check_boxes, collection: (current_user_is_super_admin? ? Division.standard : current_user_divisions), checked: (user_edit_checkbox_value_for_division), hint: "<div id='user_form_divisions_hint'><i class='icon-warning-sign'></i> Please select a division for this user. </div>".html_safe, input_html: {:class => "user-form-division-option"}, label_method: :name, value_method: :id, presence: true, include_blank: false
   #super_admin_pane
 
   #admin_pane

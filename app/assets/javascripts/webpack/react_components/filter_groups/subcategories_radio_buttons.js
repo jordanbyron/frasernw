@@ -23,4 +23,4 @@ const SubcategoriesRadioButtons = React.createClass({
   }
 });
 
-export default SubcategoriesRadioButtons;
+module.exports = SubcategoriesRadioButtons;

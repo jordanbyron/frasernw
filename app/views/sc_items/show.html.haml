@@ -104,50 +104,30 @@
         });
       }
 
-  - if current_user_is_admin? || current_user_is_super_admin?
-    %p.space
-      %strong
-        Share to:
-      %ul#specialties-menu
-      - if @sc_item.shareable?
-        - current_user_divisions.reject{ |division| !(division == @sc_item.division) }.each do |division|
-          %span
-            = check_box_tag "share_sc_item",
-              division.id,
-              division.borrowed_sc_items.include?(@sc_item),
-              class: "share_sc_item check_boxes optional",
-              label: division.name, :class => "checkbox inline"
-            = label_tag "share_sc_item", division.name, :class => "checkbox inline"
+  - if (current_user_is_admin? || current_user_is_super_admin?) && @sc_item.shareable?
+    - if @sc_item.divisions.any?
+      %h6
+        = "Currently Displayed In: "
 
+      %ul
+        %li= "#{@sc_item.division.name} (owner)"
+        - @sc_item.divisions_sharing.each do |division|
+          %li
+            %span= division.name
+            - if current_user_divisions.include?(division)
+              %span
+                = link_to "(Stop displaying)",
+                  share_sc_item_path(@sc_item, division_id: division.id, is_shared: false),
+                  method: :put
 
-    :javascript
-      var shareUrl = "#{@share_url}";
-
-      $(".share_sc_item").change(function(event){
-        $.ajax({
-          url: shareUrl,
-          type: "PUT",
-          data: {
-            is_shared: event.target.checked,
-            division_id: event.target.value
-          }
-        }).done(function() {
-          console.log("updated succesfully");
-        }).fail(function() {
-          event.target.checked = !event.target.checked;
-        });
-      })
-
-
-
-
-
-
-
-
-
-
-
+    - if (current_user_divisions & @sc_item.borroweable_by_divisions).any?
+      %h6= "Display This Item In:"
+      %ul
+        - (current_user_divisions & @sc_item.borroweable_by_divisions).each do |division|
+          %li
+            = link_to division.name,
+              share_sc_item_path(@sc_item, division_id: division.id, is_shared: true),
+              method: :put
 
   %p.admin.btn-group
     %a.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}

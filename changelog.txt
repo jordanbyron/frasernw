@@ -5,6 +5,63 @@ CR = Change Request item
 Local-only = Changes not reflected in Source Code
 Backend = Change is not user facing
 
+## [2016-01-30] [Since 2016-01-23 Integration]
+### Added:
+- #51: Division admin's can now hide / show automatic Latest Updates from the "More ..." page.
+- #276: Administrators can now label Internal Medicine specialists with Int Med by checking a checkbox in the edit form that asks about what kind of Internal Medicine fellowship they have
+
+### Changed:
+- Changed wording of specialist page statuses from "This physician only works out of ..." to "Only works out of ..."
+- Backend Maintenance: implemented security / privacy protection updates and removed old database cruft.
+
+### Fixed:
+- #304: Fix issue in Specialty city filter that caused the filter to incorrectly scope clinics down under a few conditions, such as if "No Cities" was checked and then another city was checked
+- #305: Revert change in Latest Updates so that updates now collapse again by date and record
+- #307: Fixed bug that temporarily affected the creation of new Specialists
+- Fix incorrect No Division count summaries on All Specialists pages
+
+## [2016-01-23] [Since 2016-01-16 Integration]
+### Added:
+- User profile page now shows date of Last Vist and Sign Up
+
+### Changed:
+- All Specialists admin page now shows total numbers of Specialists by division
+- Backend: Upgraded Ruby version to 2.2.3 from 2.1.6
+
+### Fixed:
+- #254: removed 'fee structure info available' checkbox
+- #154: token editors can no longer remove clinic locations or specialist offices
+- #298: updates to specialist offices and clinic locations being lost
+
+## [2016-01-16] [Since 2016-01-09 Integration]
+### Changed:
+- #154: Clinic form now asks users to confirm before deleting location
+- #283: Improved results sorting on specialization pages
+- #50: Browse 'More' latest updates
+- CR #245: Emails must now be written in twice on sign up to confirm accuracy.
+
+### Fixed:
+- #251: Quick sharing/unsharing content items from their show page
+- Recache tasks now fail individually and send error messages to our emails
+- We are notified via email when the recache begins
+- Latest Updates to office openings are shown even if the office hasn't opened
+recently
+
+## [2016-01-09] [Since 2016-01-02 Integration]
+### Added:
+- Finish CR (#276): Add GP-like suffix labels to Nurse Practitioners (Nurse), Midwives (Midwife), and Internal Medicine (Int Med) specialties in filter table.
+
+### Changed:
+- System Notification recipients are now notified if a deceased specialist is deleted from the database.
+- Improved css hover effects on front page for: Specialties / Featured Content
+- Search box now tells browsers to disable autocomplete
+- Security updates
+
+### Fixed:
+- #275:  Fixed problem preventing newly retired specialists from showing up in the Latest Specialists and Clinic updates news feed.
+- #272: Fixed 'y2k' date bug with CSV Usage Reports that made old months not display correctly when a new year rolls over.
+- Fix spacing issues with 'Specialities' dropdown when viewport is narrowed.
+
 ## [2016-01-02] [Since 2015-12-26 Integration]
 ### Changed:
 - Change default behaviour for access keys so that sign ups for deactivated accounts do not work, and instead send a message to the person telling them to contact an administrator to reactive their account instead.

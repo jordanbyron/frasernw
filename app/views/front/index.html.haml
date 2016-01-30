@@ -11,15 +11,6 @@
 %script{"type" => "text/javascript"}
   $(document).ready(function() { update_favorites() });
 
-- user_divisions = current_user_divisions
-
-- if current_user_is_admin?
-  - user_divisions = @division.present? ? [@division] : [user_divisions.first]
-
-- can_edit = current_user_is_super_admin? || (current_user_divisions & user_divisions).present?
-
-- specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(user_divisions).uniq
-
 .content-wrapper
   .content#front{:style => current_user_is_admin? && 'margin-top: -15px'}
 
@@ -29,15 +20,14 @@
           Show front page for:
           %ul.nav.nav-pills
             - Division.all.each do |division|
-              %li{:class => (division == user_divisions.first) && 'active'}
-                = link_to division.name, front_as_division_path(division)
+              %li{:class => (division == @as_division) && 'active'}
+                = link_to division.name, root_path(division_id: division.id)
       %hr
 
-    - news_items = NewsItem.breaking_in_divisions(user_divisions)
-    - if news_items.length > 0
+    - if @news_items.any?
       .row
         .span12
-          - news_items.each do |news_item|
+          - @news_items.each do |news_item|
             .news_item.breaking
               .news_item_date= news_item.date if news_item.date.present?
               %div{:class => news_item.date.present? ? "news_item_title" : "news_item_date"}= news_item.title if news_item.title.present?
@@ -50,10 +40,10 @@
         %h2 Specialties
 
         %ul.space
-          - specializations.each do |specialization|
+          - @specializations.each do |specialization|
             %li
-              = link_to specialization.name, specialization, :class => specialization.fully_in_progress_for_divisions(user_divisions) ? "in-progress ajax" : "ajax"
-              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(user_divisions)
+              = link_to specialization.name, specialization, :class => specialization.fully_in_progress_for_divisions(@as_divisions) ? "in-progress ajax" : "ajax hoverlabel"
+              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(@as_divisions)
 
       .span4half.front
 
@@ -77,13 +67,17 @@
             = mail_to "administration@pathwaysbc.ca", "administration@pathwaysbc.ca"
 
         %h2 Latest Specialist and Clinic Updates
+        - LatestUpdates.for(:front, @as_divisions).each do |event|
+          %p= event[:markup]
 
-        - latest_events(5, user_divisions).each do |event|
-          %p= event
+        %p
+          = link_to "More...", @more_updates_url
 
-        - if current_user_is_admin? && can_edit
+        - if current_user_is_admin? && @can_edit_division
           %p.admin.btn-group
-            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Latest Specialist and Clinic Updates", news_items_path, :class => "btn btn-mini ajax")
+            = link_to "<i class='icon-pencil'></i> Edit Manual Specialist and Clinic Updates".html_safe,
+              news_items_path(division_id: @as_division.id),
+              :class => "btn btn-mini ajax"
 
         - if @current_newsletter.present?
           %div{style: "margin-top: 18px;"}
@@ -101,12 +95,11 @@
                 = "You can also #{link_to('browse previous issues', newsletters_path)}.".html_safe
               %div{style: "clear: both;"}
 
-        - divisional_updates = NewsItem.divisional_in_divisions(user_divisions)
-        - if divisional_updates.length > 0
+        - if @divisional_updates.any?
 
           %h2 Division Updates
 
-          - divisional_updates.each do |news_item|
+          - @divisional_updates.each do |news_item|
 
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
@@ -114,16 +107,15 @@
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
 
-        - if current_user_is_admin? && can_edit
+        - if @can_edit_division
           %p.admin.btn-group
-            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Division Updates", news_items_path, :class => "btn btn-mini ajax")
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Division Updates", news_items_path(division_id: @as_division.id), :class => "btn btn-mini ajax")
 
-        - attachment_updates = NewsItem.attachment_in_divisions(user_divisions)
-        - if attachment_updates.length > 0
+        - if @attachment_updates.any?
 
           %h2 Attachment Updates
 
-          - attachment_updates.each do |news_item|
+          - @attachment_updates.each do |news_item|
 
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
@@ -131,18 +123,17 @@
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
 
-        - if current_user_is_admin? && can_edit
+        - if current_user_is_admin? && @can_edit_division
           %p.admin.btn-group
-            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Attachment Updates", news_items_path, :class => "btn btn-mini ajax")
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Attachment Updates", news_items_path(division_id: @as_division.id), :class => "btn btn-mini ajax")
 
-        - shared_care_updates = NewsItem.shared_care_in_divisions(user_divisions)
-        - if shared_care_updates.length > 0
+        - if @shared_care_updates.any?
 
           %h2
             %i.icon-red.icon-star
             Shared Care Updates
 
-          - shared_care_updates.each do |news_item|
+          - @shared_care_updates.each do |news_item|
 
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
@@ -150,9 +141,9 @@
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
 
-        - if current_user_is_admin? && can_edit
+        - if current_user_is_admin? && @can_edit_division
           %p.admin.btn-group
-            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Shared Care Updates", news_items_path, :class => "btn btn-mini ajax")
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Shared Care Updates", news_items_path(division_id: @as_division.id), :class => "btn btn-mini ajax")
 
 
       .span4.offsethalf
@@ -161,18 +152,16 @@
 
           %h2.center Featured Content
 
-          - cache("featured_content_#{user_divisions.map{|d| d.id }.join('_')}") do
-
-            - ScCategory.all.reject{ |c| !c.show_on_front_page? }.each do |category|
-
-              - featured_items = category.featured_contents.in_divisions(user_divisions).order("created_at").includes(:sc_item).reject{|fc| fc.sc_item.blank? }
-              - next if featured_items.blank?
-
-              %h3= link_to "#{category.name} <span class='all'> - Browse All <i class='icon-arrow-right icon-blue icon-small'></i></span>".html_safe, sc_category_path(category), :class => 'ajax'
+          - cache("featured_content_#{@as_divisions.map{|d| d.id }.join('_')}") do
+            - ScCategory.front_page_for_divisions(@as_divisions).each do |category|
+              %h3
+                = link_to "#{category.name} <span class='all'> - Browse All <i class='icon-arrow-right icon-blue icon-small'></i></span>".html_safe,
+                  sc_category_path(category),
+                  :class => 'ajax'
 
 
               %ul.space
-                - featured_items.map{|fc| fc.sc_item}.each do |featured_sc_item|
+                - category.featured_for_divisions(@as_divisions).each do |featured_sc_item|
                   %li{:style => "margin-left: 0"}
                     - if featured_sc_item.new?
                       %span.new new
@@ -186,6 +175,6 @@
             %i.icon-star.icon-blue
             Indicates content from our Shared Care initiative
 
-        - if current_user_is_admin? && can_edit
+        - if current_user_is_admin? && @can_edit_division
           %p.admin.btn-group
-            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Featured Content", edit_front_as_division_path(user_divisions.first), :class => "btn btn-mini ajax")
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Featured Content", edit_featured_contents_path(division_id: @as_divisions.first.id), :class => "btn btn-mini ajax")

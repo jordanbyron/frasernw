@@ -136,6 +136,7 @@ en:
         hospitals: "Hospital privileges"
         hospital_clinic_details: "Additional details"
         is_gp: "Is a GP"
+        is_internal_medicine: "Has a fellowship in General Internal Medicine and does not have an Internal Medicine Sub-Specialty fellowship"
         status_mask: "Current status"
         status_details: "Additional details (if any)"
         practise_limitations: "Other practice limitations (if any)"
@@ -187,6 +188,7 @@ en:
         time_frame_mask: "Time period"
       user:
         email: "E-mail address"
+        email_confirmation: "E-mail confirmation"
         password: "Password"
         saved_token: "Access key"
         type_mask: "User type"

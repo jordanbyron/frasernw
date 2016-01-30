@@ -54,6 +54,9 @@
   .no-print
     = f.input :categorization_mask, as: :select, collection: categorization_hash, label_method: :last, value_method: :first, :include_blank => false
   = f.input :is_gp
+
+  - if current_user_is_admin? || current_user_is_super_admin?
+    = f.input :is_internal_medicine
   .no-print
     = f.association :specializations,
       as: :check_boxes,
@@ -95,27 +98,8 @@
         nested_wrapper: false do |so|
         .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"}
           %h4.print-only= "Location #{index+1}"
-          .control-group.no-print
-            %label.control-label Location is
-            .controls
-              - location_class = "location_#{index}"
-              - if @form_modifier.new_record?
-                - [['Not used', true], ['In an existing office', false], ['In a new standalone office', false], ['In a new office in a hospital', false], ['In a new office in a clinic', false]].each do |option|
-                  = label_tag "#{location_class}_#{option.first}" do
-                    = radio_button_tag location_class,
-                      option.first,
-                      option.second,
-                      :class => [location_class, "location"]
-                    = option.first
-              - else
-                - is_location = so.object.present? && !so.object.empty?
-                - [['Not used', !is_location], ['In an office', is_location]].each do |option|
-                  = label_tag "#{location_class}_#{option.first}" do
-                    = radio_button_tag location_class,
-                      option.first,
-                      option.second,
-                      :class => [location_class, "location"]
-                    = option.first
+          .control-group.no-print{style: (!so.object.empty? && @form_modifier.token_edit? ? "visibility: hidden; position: absolute;" : "")}
+            = so.input :location_is, as: :radio_buttons, collection: so.object.location_is_options, label_method: :last, value_method: :first
           %div{:class => "numbers_#{index}"}
             = so.input :phone do
               = so.input_field :phone, :class => "span3"
@@ -140,7 +124,7 @@
               disabled: @form_modifier.restrict_editing?
             - if @form_modifier.show_comment_boxes?
               = so.input :comments,
-                label: "If you have any updates to your office, please enter them here",
+                label: "If you have any updates to this office, or the office has closed, please provide details here.",
                 input_html: {value: ""},
                 as: :text
           .control-group.print-only
@@ -176,11 +160,8 @@
             = so.input :open_sunday
             = so.input :location_opened, as: :select, collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a), prompt: "Select ..."
 
-            .sector_wrapper
-              = so.input :sector_info_available?, label: "Fee structure information available (public/private)", as: :boolean, input_html: { class: "sector_info_available_input" }
-              .sector_type_inputs
-                - Sectorable::SECTORS.each do |sector|
-                  = so.input sector, label: sector.to_s.capitalize, as: :boolean, input_html: { class: "sector_type_input" }
+            - Sectorable::SECTORS.each do |sector|
+              = so.input sector, label: sector.to_s.capitalize, as: :boolean, input_html: { class: "sector_type_input" }
 
             %h4 What days and times are your phone lines open?
             = so.simple_fields_for :phone_schedule, :nested_wrapper => false do |s|
@@ -395,9 +376,6 @@
     - else
       = f.button :submit, :class => "btn btn-primary"
       = link_to 'Cancel', @form_modifier.cancel_path, :class => "btn btn-danger ajax"
-
-:javascript
-  window.pathways.handleSectorCheckboxes();
 
 %script{"type" => "text/javascript"}
   :plain

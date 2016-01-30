@@ -10,10 +10,14 @@ class Ability
 
     else
       # all categories of logged in
+
+      can [:index], :front
       can :show, FaqCategory
       can :index, :terms_and_conditions
       can :get, :global_data
       can :index, Newsletter
+
+      can :index, :latest_updates
 
       if user.super_admin?
 
@@ -35,6 +39,8 @@ class Ability
         can :index, Report
 
         can :manage, SecretToken
+
+        can :manage, FeaturedContent
 
         #admin
         can :manage, [Subscription, Notification]
@@ -64,6 +70,10 @@ class Ability
         end
         can :create, ScItem
 
+        can :share, ScItem do |item|
+          item.shareable && !item.in_progress
+        end
+
         can :manage, DivisionDisplayScItem do |item|
           user.divisions.include? Division.find(item.division_id)
         end
@@ -83,7 +93,7 @@ class Ability
         end
 
         #can edit their own divisions
-        can [:show, :edit, :update], Division do |division|
+        can [:show, :edit, :update, :hide_updates], Division do |division|
           user.divisions.include? division
         end
 
@@ -103,7 +113,7 @@ class Ability
         end
 
         #landing page, per-division restrictions are handled in controller
-        can :manage, Front
+        can :manage, FeaturedContent
 
         #can show pages, regardless of 'in progress'
         can :show, [Specialization, Procedure, Specialist, Clinic, Hospital, Language, ScCategory, ScItem]
@@ -143,8 +153,6 @@ class Ability
 
         #user
 
-        #landing page
-        can [:index], Front
 
         #can show pages that aren't in progress
         can :show, [Specialization, Procedure] do |entity|

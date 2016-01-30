@@ -45,5 +45,30 @@ module.exports = {
     // return _.reduce(args, function(memo, val) {
     //   return memo.concat(val);
     // }, [])
+  },
+  toSentence: function(array) {
+    //source: https://gist.github.com/mudge/1076046
+
+    var wordsConnector = ", ",
+        twoWordsConnector = " and ",
+        lastWordConnector = ", and ",
+        sentence;
+
+    switch(array.length) {
+      case 0:
+        sentence = "";
+        break;
+      case 1:
+        sentence = array[0];
+        break;
+      case 2:
+        sentence = array[0] + twoWordsConnector + array[1];
+        break;
+      default:
+        sentence = array.slice(0, -1).join(wordsConnector) + lastWordConnector + array[array.length - 1];
+        break;
+    }
+
+    return sentence;
   }
 }

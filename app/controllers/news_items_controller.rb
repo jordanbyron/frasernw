@@ -49,10 +49,10 @@ class NewsItemsController < ApplicationController
     if @news_item.save && @news_item.display_in_divisions!(divisions_to_assign(params, @news_item), current_user)
       create_news_item_activity
 
-      redirect_to front_as_division_path(@news_item.owner_division),
+      redirect_to root_path(division_id: @news_item.owner_division.id),
         :notice  => "Successfully created news item.  Please allow a couple minutes for the front page to show your changes."
     else
-      render text: "Unauthorized to assign to that division"
+      render :edit
     end
   end
 
@@ -70,7 +70,7 @@ class NewsItemsController < ApplicationController
     end
 
     if @news_item.display_in_divisions!(divisions_to_assign(params, @news_item), current_user)
-      redirect_to front_as_division_path(current_user.divisions.first),
+      redirect_to root_path(division_id: current_user.divisions.first.id),
         :notice  => "Successfully updated news item. Please allow a couple minutes for the front page to show your changes."
     else
       render :action => 'edit'

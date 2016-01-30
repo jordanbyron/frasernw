@@ -14,7 +14,8 @@ class ClinicLocation < ActiveRecord::Base
     :schedule_attributes,
     :location_attributes,
     :attendances_attributes,
-    :location_opened
+    :location_opened,
+    :location_is
 
   belongs_to :clinic
   has_one :location, :as => :locatable, :dependent => :destroy
@@ -86,5 +87,21 @@ class ClinicLocation < ActiveRecord::Base
 
   def visible?
     city && !city.hidden?
+  end
+
+  LOCATION_IS_OPTIONS = {
+    1 => "Not used",
+    2 => "Standalone",
+    3 => "In a hospital"
+  }
+
+  def location_is
+    if empty?
+      1
+    elsif location.in_hospital?
+      3
+    else
+      2
+    end
   end
 end

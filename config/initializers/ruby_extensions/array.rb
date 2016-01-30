@@ -1,4 +1,8 @@
 class Array
+  def find_last(&block)
+    reverse.find(&block)
+  end
+
   # deep copy
   def clone
     Marshal.load(Marshal.dump(self))

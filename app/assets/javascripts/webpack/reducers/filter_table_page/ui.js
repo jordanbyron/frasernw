@@ -2,9 +2,9 @@ var PANEL_REDUCERS = {
   FilterTable: require("../filter_table"),
   InlineArticles: function(state, action) { return state }
 }
-var hasBeenInitialized = require("../has_been_initialized");
-var pageRenderedKey = require("reducers/page_rendered_key");
-var feedbackModal = require("reducers/feedback_modal");
+import hasBeenInitialized from "../has_been_initialized";
+import pageRenderedKey from "reducers/page_rendered_key";
+import feedbackModal from "reducers/feedback_modal";
 
 var procedureId = _.partial(pageRenderedKey, "procedureId");
 var specializationId = _.partial(pageRenderedKey, "specializationId");

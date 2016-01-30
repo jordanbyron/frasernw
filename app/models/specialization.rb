@@ -1,5 +1,5 @@
 class Specialization < ActiveRecord::Base
-  attr_accessible :name, :member_name, :in_progress, :specialization_options_attributes, :open_to_clinic
+  attr_accessible :name, :member_name, :label_name, :suffix, :in_progress, :specialization_options_attributes, :open_to_clinic
 
   include PaperTrailable
 
@@ -37,7 +37,7 @@ class Specialization < ActiveRecord::Base
   end
 
   def self.all_cached
-    Rails.cache.fetch([name, "all_specializations"], expires_in: 6.hours) {self.all}
+    @_all_specializations_cached ||= Rails.cache.fetch([name, "all_specializations"], expires_in: 6.hours) {self.all}
   end
 
   def self.cached_find(id)

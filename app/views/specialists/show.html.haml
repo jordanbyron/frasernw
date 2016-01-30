@@ -100,13 +100,13 @@
                 %p.space.no_indent
                   %i{:class => @specialist.status_class}
                   - if hospital_count > 0 && clinic_count > 0
-                    %strong This physician only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"} and #{ hospital_count > 1 ? "hospitals" : "a hospital"}, and in general all referrals should be made through these locations.
+                    %strong Only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"} and #{ hospital_count > 1 ? "hospitals" : "a hospital"}, and in general all referrals should be made through these locations.
                   - elsif clinic_count > 0
-                    %strong This physician only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
+                    %strong Only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
                   - elsif hospital_count > 0
-                    %strong This physician only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
+                    %strong Only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
                   - else
-                    %strong This physician only works out of hospitals and / or clinics, but we do not yet have data on which ones.
+                    %strong Only works out of hospitals and / or clinics, but we do not yet have data on which ones.
 
                 - if @specialist.hospital_clinic_details.present?
                   %p.space.no_indent
@@ -124,13 +124,17 @@
               %p.space.no_indent
                 %i{:class => @specialist.status_class}
                 - if hospital_count > 0 && clinic_count > 0
+<<<<<<< HEAD
                   %strong This physician only accepts referrals through #{ clinic_count > 1 ? "clinics" : "a clinic"} and #{ hospital_count > 1 ? "hospitals" : "a hospital"}, and in general all referrals should be made through these locations.
+=======
+                  %strong Only accepts referrals through #{ hospital_count > 1 ? "hospitals" : "a hospital"} and #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through these locations.
+>>>>>>> 0e47458cf291ac2ea669ebba6924bc0e715a7d68
                 - elsif clinic_count > 0
-                  %strong This physician only accepts referrals through #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
+                  %strong Only accepts referrals through #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
                 - elsif hospital_count > 0
-                  %strong This physician only accepts referrals through #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
+                  %strong Only accepts referrals through #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
                 - else
-                  %strong This physician only accepts referrals through hospitals and / or clinics, but we do not yet have data on which ones.
+                  %strong Only accepts referrals through hospitals and / or clinics, but we do not yet have data on which ones.
 
                 - if has_office
                   %p.space.no_indent

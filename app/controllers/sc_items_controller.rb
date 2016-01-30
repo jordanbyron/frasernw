@@ -45,10 +45,7 @@ class ScItemsController < ApplicationController
 
   def edit
     @sc_item = ScItem.find(params[:id])
-    @has_specializations = @sc_item.specializations.map{ |s| s.id }
-    @has_procedure_specializations = @sc_item.procedure_specializations.map{ |ps| ps.id }
-    @hierarchy = ancestry_options_limited(ScCategory.unscoped.arrange(:order => 'name'), nil)
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    set_form_variables!(@sc_item)
   end
 
   def update
@@ -80,7 +77,8 @@ class ScItemsController < ApplicationController
         end
       end
       redirect_to @sc_item, :notice  => "Successfully updated content item."
-      else
+    else
+      set_form_variables!(@sc_item)
       render :action => 'edit'
     end
   end
@@ -93,24 +91,35 @@ class ScItemsController < ApplicationController
 
   def share
     @sc_item = ScItem.find(params[:id])
+    authorize! :share, @sc_item
     @division = Division.find(params[:division_id])
     existing_record =
       DivisionDisplayScItem.where(sc_item_id: @sc_item.id, division_id: @division.id).first
 
-    return unless params[:is_shared].present?
-    return unless @sc_item.present?
-    return unless @division.present?
+    if params[:is_shared].present? && @sc_item.present? && @division.present?
+      if params[:is_shared].to_b && !existing_record.present?
+        DivisionDisplayScItem.create(sc_item_id: @sc_item.id, division_id: @division.id)
 
-    if params[:is_shared].to_b && !existing_record.present?
-      DivisionDisplayScItem.create(sc_item_id: @sc_item.id, division_id: @division.id)
-    elsif !params[:is_shared].to_b && existing_record.present?
-      existing_record.destroy
+        notice = "Now displaying this item in #{@division.name}"
+      elsif !params[:is_shared].to_b && existing_record.present?
+        existing_record.destroy
+
+        notice = "No longer displaying this item in #{@division.name}"
+      end
     end
 
-    render nothing: true, status: 200
+    notice ||= "Unable to complete your request"
+
+    redirect_to sc_item_path(@sc_item), notice: notice
   end
 
   private
+
+  def set_form_variables!(sc_item)
+    @has_specializations = sc_item.specializations.map{ |s| s.id }
+    @has_procedure_specializations = sc_item.procedure_specializations.map{ |ps| ps.id }
+    @hierarchy = ancestry_options_limited(ScCategory.unscoped.arrange(:order => 'name'), nil)
+  end
 
   def authorize_division_for_user
     if !(current_user_is_super_admin? || (current_user_divisions.include? Division.find(params[:id])))

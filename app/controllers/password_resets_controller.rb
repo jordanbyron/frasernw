@@ -21,7 +21,9 @@ class PasswordResetsController < ApplicationController
         redirect_to login_url, :layout => 'user_sessions', :notice => "Instructions to reset your password have been e-mailed to #{@user.email}. Please check your e-mail."
       else
         @user = User.new
-        redirect_to new_password_reset_url, :layout => 'user_sessions', :notice => "We do not have any account associated with #{params[:user][:email]}. Please check the e-mail address you used and try again."
+        redirect_to new_password_reset_url,
+          :layout => 'user_sessions',
+          :notice => "We do not have any account associated with #{params[:user][:email]}. Please check the e-mail address you used and try again.  Email addresses are case sensitive.  Please contact administration@pathwaysbc.ca if you continue encountering problems."
       end
     end
   end
@@ -36,7 +38,7 @@ class PasswordResetsController < ApplicationController
       @user.save!
       redirect_to login_url, :layout => 'user_sessions', :notice => "Your password was successfully changed."
     else
-      render :action => :edit, :layout => 'user_sessions'
+      render :action => :edit, :layout => 'user_sessions', :notice => "We had problems updating your password.  Please try again.  If you continue to encounter problems please contact administration@pathwaysbc.ca"
     end
   end
 

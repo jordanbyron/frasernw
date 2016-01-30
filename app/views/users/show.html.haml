@@ -21,6 +21,20 @@
       %strong Access Key:
       = @user.token
 
+  %p.no_indent.space
+    %strong Last Visit:
+    - if @user.last_request_at.present?
+      = "#{@user.last_request_at.to_s(:date_with_year)} <i>(#{time_ago_in_words(@user.last_request_at)} ago) </i>".html_safe
+    - else
+      This user has no recorded logins.
+
+  %p.no_indent.space
+    %strong Signed Up:
+    - if @user.activated_at.present? # Signed Up uses activated_at or created_at
+      = "#{@user.activated_at.to_datetime.to_s(:date_with_year)} <i>(#{time_ago_in_words(@user.activated_at)} ago) </i>".html_safe
+    - elsif @user.created_at.present?
+      = "#{@user.created_at.to_s(:date_with_year)} <i>(#{time_ago_in_words(@user.created_at)} ago) </i>".html_safe
+
   - if @user.divisions.present?
     %p.no_indent.space
       %strong Belongs to divisions

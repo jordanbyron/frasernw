@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151117224715) do
+ActiveRecord::Schema.define(:version => 20160126222202) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -359,16 +359,12 @@ ActiveRecord::Schema.define(:version => 20151117224715) do
   create_table "featured_contents", :force => true do |t|
     t.integer  "sc_category_id"
     t.integer  "sc_item_id"
-    t.integer  "front_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "division_id"
   end
 
   add_index "featured_contents", ["division_id"], :name => "index_featured_contents_on_division_id"
-  add_index "featured_contents", ["front_id", "sc_category_id"], :name => "index_featured_contents_on_front_id_and_sc_category_id"
-  add_index "featured_contents", ["front_id", "sc_item_id"], :name => "index_featured_contents_on_front_id_and_sc_item_id"
-  add_index "featured_contents", ["front_id"], :name => "index_featured_contents_on_front_id"
   add_index "featured_contents", ["sc_category_id"], :name => "index_featured_contents_on_sc_category_id"
   add_index "featured_contents", ["sc_item_id"], :name => "index_featured_contents_on_sc_item_id"
 
@@ -397,11 +393,6 @@ ActiveRecord::Schema.define(:version => 20151117224715) do
 
   add_index "focuses", ["clinic_id"], :name => "index_focuses_on_clinic_id"
   add_index "focuses", ["procedure_specialization_id"], :name => "index_focuses_on_procedure_specialization_id"
-
-  create_table "fronts", :force => true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "healthcare_providers", :force => true do |t|
     t.string   "name"
@@ -435,6 +426,16 @@ ActiveRecord::Schema.define(:version => 20151117224715) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "saved_token"
+  end
+
+  create_table "latest_updates_masks", :force => true do |t|
+    t.integer  "event_code"
+    t.integer  "division_id"
+    t.date     "date"
+    t.string   "item_type"
+    t.integer  "item_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "locations", :force => true do |t|
@@ -880,6 +881,7 @@ ActiveRecord::Schema.define(:version => 20151117224715) do
     t.integer  "photo_file_size"
     t.datetime "photo_updated_at"
     t.boolean  "is_gp",                      :default => false
+    t.boolean  "is_internal_medicine",       :default => false
   end
 
   add_index "specialists", ["referral_clinic_id"], :name => "index_specialists_on_referral_clinic_id"
@@ -919,6 +921,7 @@ ActiveRecord::Schema.define(:version => 20151117224715) do
     t.string   "member_name"
     t.boolean  "deprecated_open_to_clinic_tab", :default => false
     t.string   "label_name",                    :default => "Specialist"
+    t.string   "suffix"
   end
 
   create_table "subscription_divisions", :force => true do |t|

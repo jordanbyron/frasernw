@@ -1,0 +1,32 @@
+#content #container {
+
+  .latest_updates__update {
+    padding: 10px;
+    border-radius: 2px;
+    p {
+      margin: 0px;
+    }
+  }
+  .latest_updates__update--editable {
+    &:hover {
+      background-color: #f3f8fc;
+      .latest_updates__toggle {
+        visibility: visible;
+      }
+    }
+    .latest_updates__update_text {
+      display: inline-block;
+      width: calc(100% - 60px);
+    }
+  }
+
+  .latest_updates__toggle {
+    vertical-align: top;
+    display: inline-block;
+    width: 60px;
+    visibility: hidden;
+    text-align: right;
+    text-decoration: none;
+  }
+
+}

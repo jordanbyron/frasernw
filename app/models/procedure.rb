@@ -31,7 +31,7 @@ class Procedure < ActiveRecord::Base
 
   def full_name
     ps_with_parents = procedure_specializations.reject{ |ps| ps.parent.blank? }
-    
+
     if ps_with_parents.count > 0
       "#{ps_with_parents.first.parent.procedure.full_name} #{name_relative_to_parents.uncapitalize_first_letter}"
     else
@@ -184,5 +184,13 @@ class Procedure < ActiveRecord::Base
       update_column(:saved_token, SecureRandom.hex(16)) #avoid callbacks / validation as we don't want to trigger a sweeper for this
       return self.saved_token
     end
+  end
+
+  def specialist_wait_time
+    procedure_specializations.first.try(:specialist_wait_time) || false
+  end
+
+  def clinic_wait_time
+    procedure_specializations.first.try(:clinic_wait_time) || false
   end
 end

@@ -6,7 +6,17 @@ class NewsItem < ActiveRecord::Base
   # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user} #PublicActivity gem callback method
   has_many :activities, as: :trackable, class_name: 'SubscriptionActivity', dependent: :destroy
 
-  attr_accessible :owner_division_id, :title, :body, :breaking, :start_date, :end_date, :show_start_date, :show_end_date, :type_mask
+  validates :owner_division_id, presence: true
+
+  attr_accessible :owner_division_id,
+    :title,
+    :body,
+    :breaking,
+    :start_date,
+    :end_date,
+    :show_start_date,
+    :show_end_date,
+    :type_mask
 
   belongs_to :owner_division, class_name: "Division"
   has_many :divisions, through: :division_display_news_items
@@ -25,21 +35,8 @@ class NewsItem < ActiveRecord::Base
   end
 
   def self.bust_cache_for(*divisions)
-    division_ids = divisions.map(&:id)
-
-    division_groups = User.
-      all_user_division_groups_cached.
-      select do |group|
-        division_ids.any?{ |id| group.include?(id) }
-      end
-
-    division_groups.each do |division_group|
-      LatestUpdates.delay.call(
-        max_automated_events: 5,
-        division_ids: division_group,
-        force: true,
-        force_automatic: false
-      )
+    User.division_groups_for(*divisions).each do |group|
+      LatestUpdates.delay.recache_for(group, force_automatic: false)
     end
   end
 

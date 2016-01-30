@@ -33,7 +33,9 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(params[:user])
-    redirect_to new_user_url, :alert => "Create New User Failed:  At least one division must be chosen." and return if @user.divisions.blank?
+    redirect_to new_user_url, :notice => "User create failed: User is missing a Name and a Division" and return if (@user.name.blank? && @user.divisions.blank?)
+    redirect_to new_user_url, :notice => "User create failed: User is missing a Name" and return if @user.name.blank?
+    redirect_to new_user_url, :notice => "User create failed: User is missing a Division" and return if @user.divisions.blank?
     if @user.save :validate => false #so we can avoid setting up with emails or passwords
       redirect_to @user, :notice => "User #{@user.name} successfully created."
     else
@@ -84,7 +86,10 @@ class UsersController < ApplicationController
 
   def setup
     if user_from_saved_token.known?
-      if user_from_saved_token.update_attributes(params[:user])
+      @user_object = user_from_saved_token
+      @user_object.assign_attributes(params[:user])
+      @user_object.validate_signup
+      if !@user_object.errors.present? && user_from_saved_token.update_attributes(params[:user])
         user_from_saved_token.activated_at = Date.current
         user_from_saved_token.save
         redirect_to login_url, :notice  => "Your account has been set up; please log in using #{@user.email} and your newly created password. Welcome to Pathways!"

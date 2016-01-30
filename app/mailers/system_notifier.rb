@@ -1,10 +1,25 @@
 module SystemNotifier
   # convenience wrappers for #notify
-  def self.notice(subject)
+
+
+  def self.info(subject)
     notify(
-      tag: :notice,
+      tag: :info,
       subject: subject,
-      body: { timestamp: DateTime.now.to_s(:long_ordinal) }
+      timestamp: DateTime.now.to_s(:long_ordinal),
+      body: {}
+    )
+  end
+
+  def self.error(e, options = {})
+    notify(
+      tag: :error,
+      subject: e.message,
+      timestamp: DateTime.now.to_s(:long_ordinal),
+      body: {
+        annotation: (options[:annotation] || "None"),
+        backtrace: e.backtrace
+      }
     )
   end
 

@@ -24,6 +24,10 @@ class User < ActiveRecord::Base
 
   validates_format_of :password, :with => /^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){8,}$/, :if => :require_password?, :message => "must include one number, one letter and be at least 8 characters long"
 
+  validates :email, confirmation: true
+
+  validates :name, presence: true
+
   has_many :user_divisions, :source => :division_users, :class_name => "DivisionUser", :dependent => :destroy
   has_many :divisions, :through => :user_divisions
   #has_many :cities, :through => :divisions
@@ -43,7 +47,7 @@ class User < ActiveRecord::Base
   has_many :controlled_clinics, :through => :controlled_clinic_locations, :source => :clinic, :class_name => "Clinic"
   accepts_nested_attributes_for :user_controls_clinic_locations, :reject_if => lambda { |uccl| uccl[:clinic_location_id].blank? }, :allow_destroy => true
 
-  has_many :specialization_options, :dependent => :destroy, :foreign_key => "owner_id"
+  has_many :specialization_options, :foreign_key => "owner_id"
   has_many :specializations_owned, :through => :specialization_options, :class_name => "Specialization", :source => :specialization
 
   has_many :user_cities, :dependent => :destroy
@@ -55,9 +59,6 @@ class User < ActiveRecord::Base
   has_many :contacts
 
   delegate :with_activity, to: :subscriptions, prefix: true
-
-  validates_presence_of :name
-  validates :agree_to_toc, presence: true
 
   # after_commit :flush_cache
   after_touch :flush_cache
@@ -73,6 +74,7 @@ class User < ActiveRecord::Base
     :password,
     :password_confirmation,
     :email,
+    :email_confirmation,
     :agree_to_toc,
     :type_mask
 
@@ -153,6 +155,16 @@ LIMITED_ROLE_HASH = {
     Rails.cache.fetch("all_user_division_groups", expires_in: 6.hours){self.all_user_division_groups}
   end
 
+  def self.division_groups_for(*divisions)
+    division_ids = divisions.map(&:id)
+
+    User.
+      all_user_division_groups_cached.
+      select do |group|
+        division_ids.any?{ |id| group.include?(id) }
+      end
+  end
+
   def flush_cache
     Rails.cache.delete("all_user_division_groups")
   end
@@ -185,6 +197,12 @@ LIMITED_ROLE_HASH = {
 
   def pending?
     self.email.blank?
+  end
+
+  def validate_signup
+    # we add validations for agree_to_toc here so that other parts of the user forms don't break from this field being validated
+    valid?
+    errors.add(:agree_to_toc, "must be agreed to") if agree_to_toc.blank?
   end
 
   ##### Subscription User Methods
@@ -288,6 +306,10 @@ LIMITED_ROLE_HASH = {
     divisions.map do |division|
       division.local_referral_cities(specialization)
     end.flatten.uniq
+  end
+
+  def customized_city_rankings?
+    divisions.first.use_customized_city_priorities?
   end
 
   def city_rankings

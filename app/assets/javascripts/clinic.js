@@ -99,7 +99,7 @@ function clinic_reset_numbers(address_number)
 
 var clinic_address_location_changed = function(address_number)
 {
-  if ($('#clinic_location_' + address_number + '_Not_used').is(':checked'))
+  if (is_clinic_location_status_checked(address_number, 1))
   {
     $('.numbers_' + address_number).hide();
     $('.office_' + address_number).hide();
@@ -112,7 +112,7 @@ var clinic_address_location_changed = function(address_number)
     clinic_reset_hospital(address_number);
     clinic_reset_numbers(address_number);
   }
-  else if ($('#clinic_location_' + address_number + '_Standalone').is(':checked'))
+  else if (is_clinic_location_status_checked(address_number, 2))
   {
     $('.numbers_' + address_number).show();
     $('.office_' + address_number).hide();
@@ -123,7 +123,7 @@ var clinic_address_location_changed = function(address_number)
     $('.universal_' + address_number).show();
     clinic_reset_hospital(address_number);
   }
-  else if ($('#clinic_location_' + address_number + '_In_a_hospital').is(':checked'))
+  else if (is_clinic_location_status_checked(address_number, 3))
   {
     $('.numbers_' + address_number).show();
     $('.office_' + address_number).hide();
@@ -135,36 +135,16 @@ var clinic_address_location_changed = function(address_number)
   }
 }
 
-//review queue may poke at details; update their location seleciton
-var clinic_address_details_changed = function(address_number)
-{
-  if (!$("[id=clinic_clinic_locations_attributes_" + address_number + "_location_attributes_address_attributes_city_id] option:first").prop('selected'))
-  {
-    //standalone
-    $('#clinic_location_' + address_number + '_Standalone').prop('checked', true);
-  }
-  else if (!$("[id=clinic_clinic_locations_attributes_" + address_number + "_location_attributes_hospital_in_id] option:first").prop('selected'))
-  {
-    //in a hospital
-    $('#clinic_location_' + address_number + '_In_a_hospital').prop('checked', true);
-  }
-  else
-  {
-    //must be unused
-    $('#clinic_location_' + address_number + '_Not_used').prop('checked', true);
-  }
-  clinic_address_location_changed(address_number);
+var is_clinic_location_status_checked = function(clinic_location, status_code) {
+  return $('#clinic_clinic_locations_attributes_' + clinic_location + '_location_is_' + status_code).is(':checked');
 }
 
-$(".clinic_location_0").live("change", function() { clinic_address_location_changed(0) });
-$(".clinic_location_1").live("change", function() { clinic_address_location_changed(1) });
-$(".clinic_location_2").live("change", function() { clinic_address_location_changed(2) });
-$(".clinic_location_3").live("change", function() { clinic_address_location_changed(3) });
-$(".clinic_location_4").live("change", function() { clinic_address_location_changed(4) });
-$(".clinic_location_5").live("change", function() { clinic_address_location_changed(5) });
-$(".clinic_location_6").live("change", function() { clinic_address_location_changed(6) });
-$(".clinic_location_7").live("change", function() { clinic_address_location_changed(7) });
-$(".clinic_location_8").live("change", function() { clinic_address_location_changed(8) });
+_.times(9, function(index) {
+  $("input[name='clinic[clinic_locations_attributes][" + index + "][location_is]']").live("click", function() {
+    return clinic_address_location_changed(index);
+  });
+})
+
 
 var clinic_status_changed = function()
 {

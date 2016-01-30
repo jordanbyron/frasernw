@@ -73,6 +73,7 @@ module Serialized
             customLagtimes: custom_procedure_times(specialist, :lagtime_mask),
             customWaittimes: custom_procedure_times(specialist, :waittime_mask),
             isGp: specialist.is_gp,
+            suffix: specialist.suffix,
             isNew: specialist.new?,
             isInProgress: specialist.in_progress,
             createdAt: specialist.created_at.to_date.to_s,
@@ -229,8 +230,8 @@ module Serialized
           name: procedure.name,
           specializationIds: procedure.specializations.map(&:id),
           customWaittime: {
-            specialists: procedure.procedure_specializations.first.specialist_wait_time,
-            clinics: procedure.procedure_specializations.first.clinic_wait_time
+            specialists: procedure.specialist_wait_time,
+            clinics: procedure.clinic_wait_time
           },
           assumedSpecializationIds: {
             specialists: procedure.procedure_specializations.select(&:assumed_specialist?).map(&:specialization).map(&:id),

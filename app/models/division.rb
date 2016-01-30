@@ -5,7 +5,8 @@ class Division < ActiveRecord::Base
     :shared_sc_item_ids,
     :primary_contact_id,
     :division_primary_contacts_attributes,
-    :use_customized_city_priorities
+    :use_customized_city_priorities,
+    :featured_contents_attributes
 
   has_many :division_cities, :dependent => :destroy
 
@@ -25,6 +26,9 @@ class Division < ActiveRecord::Base
   has_many :shared_sc_items, :through => :division_display_sc_items, :source => "sc_item", :class_name => "ScItem"
 
   has_and_belongs_to_many :subscriptions, join_table: :subscription_divisions
+
+  has_many :featured_contents
+  accepts_nested_attributes_for :featured_contents
 
   has_many :division_primary_contacts, :dependent => :destroy
   has_many :primary_contacts, :through => :division_primary_contacts, :class_name => "User"
@@ -101,11 +105,21 @@ class Division < ActiveRecord::Base
   end
 
   def local_referral_cities(specialization)
-    division_referral_city_specializations.
-      includes([:specialization, {division_referral_city: :city}]).
-      where(specialization_id: specialization.id).map do |drcs|
-        drcs.division_referral_city.city
-      end
+    @local_referral_cities ||= Hash.new do |h, key|
+      h[key] = division_referral_city_specializations.
+        includes([:specialization, {division_referral_city: :city}]).
+        where(specialization_id: key).map do |drcs|
+          drcs.division_referral_city.city
+        end
+    end
+    @local_referral_cities[specialization.id]
+  end
+
+  def specialization_complete?(specialization)
+    @specialization_complete ||= Hash.new do |h, key|
+      h[key] = specialization_options.complete.exists?(specialization_id: key)
+    end
+    @specialization_complete[specialization.id]
   end
 
   def waittime_counts(klass)
@@ -137,17 +151,23 @@ class Division < ActiveRecord::Base
   def city_rankings
     city_ids = cities.pluck(:id)
 
-    if use_customized_city_priorities
+    if use_customized_city_priorities?
       division_referral_cities.inject({}) do |memo, drc|
         memo.merge(drc.city_id => drc.priority)
       end
     else
-      City.pluck(:id).inject({}) do |memo, city|
-        if city_ids.include?(city)
-          memo.merge(city => 1)
-        else
-          memo.merge(city => 2)
-        end
+      City.order("name DESC").each_with_index.inject({}) do |memo, (city, index)|
+        memo.merge(
+          city.id => index
+        )
+      end
+    end
+  end
+
+  def build_featured_contents!
+    ScCategory.front_page.each do |category|
+      (FeaturedContent::MAX_FEATURED_ITEMS - featured_contents.in_category(category).count).times do
+        featured_contents.build(sc_category_id: category.id)
       end
     end
   end

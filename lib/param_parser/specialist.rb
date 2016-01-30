@@ -16,14 +16,10 @@ module ParamParser
       remove_specializations_comments!
       remove_address_updates!
       remove_office_comments!
-      params.delete("secret_token_id")
-      set_sectors!
+      remove_statuses!
+      cloned_params.delete("secret_token_id")
 
       cloned_params
-    end
-
-    def set_sectors!
-      specialist_offices_attributes.each(&SetSectors)
     end
 
     def remove_address_updates!
@@ -40,8 +36,33 @@ module ParamParser
       end
     end
 
+    def remove_statuses!
+      specialist_offices_attributes.each do |attrs|
+        attrs.
+          try(:delete, "location_is")
+      end
+    end
+
     def specialist_offices_attributes
       cloned_params["specialist"]["specialist_offices_attributes"].values
+    end
+
+    class Create < self
+      def exec
+        modify_office_attributes!
+
+        super
+      end
+
+      def modify_office_attributes!
+        specialist_offices_attributes.each do |attrs|
+          if attrs[:office_id].blank?
+            attrs.delete(:office_id)
+          else
+            attrs.delete(:office_attributes)
+          end
+        end
+      end
     end
   end
 end

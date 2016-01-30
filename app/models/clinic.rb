@@ -230,11 +230,6 @@ class Clinic < ActiveRecord::Base
     end
   end
 
-  def primary_specialization
-    # we arbitrarily take the first specialization of a clinic and use this on the front page to determine what specialization a clinic falls under when doing logic about what to show on the home page
-    specializations.first
-  end
-
   def attendances?
     attendances.each do |attendance|
       if attendance.is_specialist && attendance.specialist
@@ -494,4 +489,6 @@ class Clinic < ActiveRecord::Base
       attendance.show?
     end
   end
+
+  alias_method :cities_for_front_page, :cities
 end

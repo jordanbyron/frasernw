@@ -31,9 +31,13 @@ module ProcedureSpecializable
   end
 
   def primary_specialization_complete_in?(divisions)
-    Specialization.
-      not_in_progress_for_divisions(divisions).
-      include?(primary_specialization)
+    divisions.any? do |division|
+      division.specialization_complete?(primary_specialization)
+    end
+  end
+
+  def primary_specialization
+    specializations.sort_by{ |specialization| specialization.name }.first
   end
 
   module ClassMethods

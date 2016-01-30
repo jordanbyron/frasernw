@@ -1,6 +1,6 @@
 class ClinicsController < ApplicationController
   skip_before_filter :login_required, :only => :refresh_cache
-  load_and_authorize_resource :except => :refresh_cache
+  load_and_authorize_resource :except => [:refresh_cache, :create]
   before_filter :check_token, :only => :refresh_cache
   skip_authorization_check :only => :refresh_cache
   include ApplicationHelper
@@ -56,7 +56,9 @@ class ClinicsController < ApplicationController
   end
 
   def create
-    @clinic = Clinic.new(params[:clinic])
+    parsed_params = ParamParser::Clinic.new(params).exec
+    @clinic = Clinic.new(parsed_params[:clinic])
+    authorize! :create, @clinic
     if @clinic.save
       if params[:focuses_mapped].present?
         clinic_specializations = @clinic.specializations

@@ -1,8 +1,9 @@
 class Month
   def self.prev
+    date = (Date.current.beginning_of_month - 1.day)
     new(
-      Date.current.year,
-      (Date.current.month - 1)
+      date.year,
+      date.month
     )
   end
 

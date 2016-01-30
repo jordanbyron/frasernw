@@ -238,12 +238,4 @@ RSpec.describe FormDataMatcher::Clinic do
       "4690"
     )
   end
-
-  it "reorders the clinic location 'used' data to match the current order" do
-    new_data = FormDataMatcher::Clinic.new(form_data, clinic).exec
-
-    expect(new_data["clinic_location_0"]).to eq(
-      "In a hospital"
-    )
-  end
 end

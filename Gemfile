@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby "2.1.6"
+ruby "2.2.3"
 
 gem 'nokogiri'
 #gem 'rails', '3.1.12'
@@ -166,6 +166,9 @@ gem "rack-timeout"
 
 #for Heroku deployment
 gem 'rails_12factor', group: :production
+
+# Added to deal with error booting in Ruby 2.2: https://github.com/drapergem/draper/issues/690
+gem 'test-unit', '~> 3.0'
 
 #New Relic guide recommends placing New Relic gem at bottom of Gemfile
 group :development, :production do

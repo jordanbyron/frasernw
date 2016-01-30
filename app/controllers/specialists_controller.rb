@@ -1,6 +1,6 @@
 class SpecialistsController < ApplicationController
   skip_before_filter :login_required, :only => [:refresh_cache, :refresh_index_cache]
-  load_and_authorize_resource :except => [:refresh_cache, :refresh_index_cache]
+  load_and_authorize_resource :except => [:refresh_cache, :refresh_index_cache, :create]
   before_filter :check_token, :only => :refresh_cache
   before_filter :check_specialization_token, :only => :refresh_index_cache
   skip_authorization_check :only => [:refresh_cache, :refresh_index_cache]
@@ -48,15 +48,9 @@ class SpecialistsController < ApplicationController
   end
 
   def create
-    #can only have one of office_id or office_attributes, otherwise create gets confused
-    params[:specialist][:specialist_offices_attributes].each{ |so_key, so_value|
-      if so_value[:office_id].blank?
-        so_value.delete(:office_id)
-      else
-        so_value.delete(:office_attributes)
-      end
-    }
-    @specialist = Specialist.new(params[:specialist])
+    parsed_params = ParamParser::Specialist::Create.new(params).exec
+    @specialist = Specialist.new(parsed_params[:specialist])
+    authorize! :create, @specialist
     if @specialist.save!
       if params[:capacities_mapped].present?
         specialist_specializations = @specialist.specializations
@@ -262,7 +256,7 @@ class SpecialistsController < ApplicationController
 
   def refresh_cache
     @specialist = Specialist.find(params[:id])
-    @specialist.flush_cached_find
+    @specialist.flush_cache_for_record
     @specialist = Specialist.cached_find(params[:id])
     @feedback = @specialist.active_feedback_items.build
     render :show, :layout => 'ajax'

@@ -22,6 +22,12 @@ Frasernw::Application.routes.draw do
 
   resources :secret_tokens, only: [:create, :destroy]
 
+  resources :latest_updates, only: [:index] do
+    collection do
+      put :toggle_visibility
+    end
+  end
+
   resources :clinics do
     member do
       get :review
@@ -136,7 +142,6 @@ Frasernw::Application.routes.draw do
   match '/specialists/:id/print/office/:office_id' => 'specialists#print_office_patient_information',   :as => 'specialist_patient_information_office'
   match '/clinics/:id/print/location/:location_id'  => 'clinics#print_location_patient_information',       :as => 'clinic_patient_information_location'
 
-  get  '/specialties/:id/:token/refresh_cache'     => 'specializations#refresh_cache', :as => 'specialization_refresh_cache'
   get  '/hospitals/:id/:token/refresh_cache'       => 'hospitals#refresh_cache',       :as => 'hospital_refresh_cache'
   get  '/languages/:id/:token/refresh_cache'       => 'languages#refresh_cache',       :as => 'language_refresh_cache'
 
@@ -146,9 +151,6 @@ Frasernw::Application.routes.draw do
   get  '/specialties/:specialization_id/:token/specialists/refresh_index_cache/:division_id'     => 'specialists#refresh_index_cache', :as => 'specialist_refresh_index_cache'
 
   #need improve performance:
-  get  '/specialties/:id/:token/refresh_city_cache/:city_id' => 'specializations#refresh_city_cache', :as => 'specialization_refresh_city_cache'
-  get  '/specialties/:id/:token/refresh_division_cache/:division_id' => 'specializations#refresh_division_cache', :as => 'specialization_refresh_division_cache'
-
   put  '/favorites/specialists/:id' => 'favorites#edit', :as => 'specialist_favorite', :model => 'specialists'
   put  '/favorites/clinics/:id' => 'favorites#edit', :as => 'clinic_favorite', :model => 'clinics'
   put  '/favorites/content_items/:id' => 'favorites#edit', :as => 'content_items_favorite', :model => 'sc_items'
@@ -174,13 +176,14 @@ Frasernw::Application.routes.draw do
   match '/livesearch_all_entries' => 'search#livesearch_all_entries', :as => :livesearch_all_entries
   match '/refresh_livesearch_all_entries/:specialization_id' => 'search#refresh_livesearch_all_entries', :as => :refresh_livesearch_all_entries
 
-  scope "/front", controller: :front do
-    get "/", action: :index
-    get "/:division_id", action: :as_division, :as => :front_as_division
-    get "/edit/:division_id", action: :edit, :as => :edit_front_as_division
-    put "/update", action: :update, as: :update_front
-  end
   root :to => 'front#index'
+
+  resources :featured_contents, only: [] do
+    collection do
+      get :edit
+      put :update
+    end
+  end
 
   resources :terms_and_conditions, only: [:index]
 
