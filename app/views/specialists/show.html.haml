@@ -388,6 +388,7 @@
 
               %p.space
                 %strong Referrals:
+                %span{:class => @specialist.status_class}
                 = "<a href='#{clinic_path(clinic)}'>Full contact and referral details</a>".html_safe
 
             - hospitals = @specialist.hospitals
