@@ -16,7 +16,7 @@ module ParamParser
       remove_specializations_comments!
       remove_address_comments!
       remove_statuses!
-      params.delete("secret_token_id")
+      cloned_params.delete("secret_token_id")
       parse_attendances!
 
       cloned_params

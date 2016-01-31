@@ -86,9 +86,7 @@ class Office < ActiveRecord::Base
   end
 
   def city
-    l = location
-    return nil if l.blank?
-    return l.city
+    location.blank? ? nil : location.city
   end
 
   def divisions

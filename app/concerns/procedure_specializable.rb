@@ -36,6 +36,10 @@ module ProcedureSpecializable
     end
   end
 
+  def primary_specialization
+    specializations.sort_by{ |specialization| specialization.name }.first
+  end
+
   module ClassMethods
     def with_ps_with_ancestry(ancestry)
       all.select do |procedure_specializable|
