@@ -55,12 +55,12 @@ const PageBody = ({showHiddenUpdates, updatesToShow, dispatch, canHide}) => {
           <Updates dispatch={dispatch} updatesToShow={updatesToShow} canHide={true}/>
         }
         sidebar={
-          <SidebarWell title="Filter Updates">
-            <SidebarWellSection title="Visibility">
+          <SidebarWell title="Admin-Only Options">
+            <SidebarWellSection title="Hidden Updates">
               <div style={{marginTop: "10px"}}>
-                <Checkbox label="Visible to users"
+                <Checkbox label="Show updates that are hidden from users"
                   onChange={_.partial(toggleHiddenUpdateVisibility, dispatch, !showHiddenUpdates)}
-                  value={!showHiddenUpdates}
+                  value={showHiddenUpdates}
                 />
               </div>
             </SidebarWellSection>
