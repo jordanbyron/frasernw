@@ -36,6 +36,21 @@ class NewsItem < ActiveRecord::Base
 
   def self.bust_cache_for(*divisions)
     LatestUpdates.delay.recache_for_groups(User.division_groups_for(*divisions))
+    User.division_groups_for(*divisions).each do |division_group|
+      ExpireFragment.call "front_#{Specialization.cache_key}_#{division_group.join('_')}"
+    end
+  end
+
+  def copyable_to(user)
+    self.class.permitted_division_assignments(user) - [ owner_division ]
+  end
+
+  def copy_to(division, current_user)
+    return false unless current_user.super_admin? || current_user.divisions.include?(division)
+
+    NewsItem.
+      create(self.attributes.merge(owner_division_id: division.id)).
+      display_in_divisions!([ division ], current_user)
   end
 
   def borrowing_divisions

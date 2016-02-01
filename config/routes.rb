@@ -117,6 +117,7 @@ Frasernw::Application.routes.draw do
   resources :news_items do
     member do
       get :update_borrowing
+      post :copy
     end
   end
   resources :reports do

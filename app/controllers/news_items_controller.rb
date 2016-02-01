@@ -29,19 +29,15 @@ class NewsItemsController < ApplicationController
         divisionId: @division.id
       }
     }
-
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def show
     @news_item = NewsItem.find(params[:id])
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def new
     @news_item = NewsItem.new
     @divisions = NewsItem.permitted_division_assignments(current_user)
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def create
@@ -59,7 +55,6 @@ class NewsItemsController < ApplicationController
   def edit
     @news_item = NewsItem.find(params[:id])
     @divisions = NewsItem.permitted_division_assignments(current_user)
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def update
@@ -94,6 +89,17 @@ class NewsItemsController < ApplicationController
         notice: "Successfully stopped borrowing news item for #{@division.name}."
     else
       redirect_to news_item_path(@news_item),
+        notice: "Unauthorized"
+    end
+  end
+
+  def copy
+    @division = Division.find(params[:target_division_id])
+    if @news_item.copy_to(@division, current_user)
+      redirect_to news_items_path(division_id: @division.id),
+        notice: "Successfully copied '#{@news_item.label}' to #{@division.name}"
+    else
+      redirect_to news_items_path(division_id: @division.id),
         notice: "Unauthorized"
     end
   end
