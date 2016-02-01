@@ -10,7 +10,7 @@ import anyFiltersActivated from "state_mappers/filter_table/any_filters_activate
 import React from "react";
 import CategoryLink from "react_components/category_link"
 
-export default function(state, dispatch) {
+module.exports = function(state, dispatch) {
   // console.log(state);
 
   if(state.ui.hasBeenInitialized) {

@@ -13,6 +13,6 @@ namespace :assets do
 
   desc "Compile assets with webpack"
   task :webpack do
-    sh "NODE_ENV=production $(npm bin)/webpack --config webpack.prod.config.js"
+    sh "NODE_ENV=production $(npm bin)/webpack --config webpack.config.js"
   end
 end

@@ -155,6 +155,16 @@ LIMITED_ROLE_HASH = {
     Rails.cache.fetch("all_user_division_groups", expires_in: 6.hours){self.all_user_division_groups}
   end
 
+  def self.division_groups_for(*divisions)
+    division_ids = divisions.map(&:id)
+
+    User.
+      all_user_division_groups_cached.
+      select do |group|
+        division_ids.any?{ |id| group.include?(id) }
+      end
+  end
+
   def flush_cache
     Rails.cache.delete("all_user_division_groups")
   end

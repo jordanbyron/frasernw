@@ -1,7 +1,7 @@
 task :deploy => ['deploy:backup', 'deploy:show_backups', 'deploy:push', 'deploy:restart', 'deploy:tag']
 
 namespace :deploy do
-  task :migrations => [:backup, :push, :off, :migrate, :restart, :on, :tag]
+  task :migrations => [:backup, :show_backups, :push, :off, :migrate, :restart, :on, :tag]
   task :rollback => [:off, :push_previous, :restart, :on]
 
   task :backup do

@@ -27,4 +27,4 @@ const CategoryPage = (props) => (
   </div>
 );
 
-export default CategoryPage;
+module.exports = CategoryPage;

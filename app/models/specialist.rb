@@ -10,7 +10,7 @@ class Specialist < ActiveRecord::Base
 
   include ApplicationHelper
 
-  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :categorization_mask, :billing_number, :is_gp, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_location_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened_old, :referral_fax, :referral_phone, :referral_clinic_id, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :patient_instructions, :cancellation_policy, :hospital_clinic_details, :interpreter_available, :photo, :photo_delete, :hospital_ids, :specialization_ids, :capacities_attributes, :language_ids, :user_controls_specialist_offices_attributes, :specialist_offices_attributes, :admin_notes, :referral_forms_attributes, :review_object
+  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :categorization_mask, :billing_number, :is_gp, :is_internal_medicine, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_location_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened_old, :referral_fax, :referral_phone, :referral_clinic_id, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :patient_instructions, :cancellation_policy, :hospital_clinic_details, :interpreter_available, :photo, :photo_delete, :hospital_ids, :specialization_ids, :capacities_attributes, :language_ids, :user_controls_specialist_offices_attributes, :specialist_offices_attributes, :admin_notes, :referral_forms_attributes, :review_object
 
   # specialists can have multiple specializations
   has_many :specialist_specializations, :dependent => :destroy
@@ -299,80 +299,58 @@ class Specialist < ActiveRecord::Base
   #clinic that referrals are done through
   belongs_to :referral_clinic, :class_name => "Clinic"
 
-  def city # NullData.new() used since memcache doesn't work with nil: http://stackoverflow.com/questions/30383704/how-to-store-nil-with-rails-cache-fetch-memcache
-    result = Rails.cache.fetch([self.class.name, self.id, "city"], expires_in: 23.hours) do
-      if responded?
-        o = offices.first
-        if o.blank?
-          NullData.new()
-        else
-          o.city.id
-        end
-      elsif hospital_or_clinic_only?
-        citee = (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq.first
-        if citee.nil?
-          NullData.new()
-        else
-          citee.id
-        end
-      elsif hospital_or_clinic_referrals_only?
-        (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? }.uniq.first
-      else
-        NullData.new()
-      end
+  def city
+    if responded? || hospital_or_clinic_only? || hospital_or_clinic_referrals_only?
+      cities.first
+    else
+      nil
     end
-    return result.is_a?(NullData) ? nil : result
   end
 
-  def cities
-    result = Rails.cache.fetch([self.class.name, self.id, "cities"], expires_in: 23.hours) do
+  def cities(force: false)
+    Rails.cache.fetch([self.class.name, self.id, "cities"], force: force) do
       if responded?
-        citees = offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq
+        offices.map(&:city).reject(&:blank?).uniq
       elsif hospital_or_clinic_only?
-        citees = (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| i == nil }.uniq
+        (hospitals.map(&:city) + clinics.map(&:cities)).flatten.reject(&:blank?).uniq
       elsif not_responded? || purposely_not_yet_surveyed? || hospital_or_clinic_referrals_only?
-        (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? }.uniq
+        (offices.map(&:city) + hospitals.map(&:city) + clinics.map(&:cities)).flatten.reject(&:blank?).uniq
       else
         []
       end
     end
-    return result.is_a?(NullData) ? nil : result
   end
 
   #we need to know their 'old' cities if they moved away
-  def cities_for_front_page
-    result = Rails.cache.fetch([self.class.name, self.id, "cities_for_front_page"], expires_in: 23.hours) do
+  def cities_for_front_page(force: false)
+    Rails.cache.fetch([self.class.name, self.id, "cities_for_front_page"], force: force) do
       if moved_away?
-        offices.map{ |o| o.city }.reject{ |c| c.blank? }.uniq || NullData.new()
+        offices.map(&:city).reject(&:blank?).uniq
       else
-       cities || NullData.new()
+        cities
       end
     end
-    return result.is_a?(NullData) ? nil : result
   end
 
-  def cities_for_display
-    result = Rails.cache.fetch([self.class.name, self.id, "cities_for_display"], expires_in: 23.hours) do
+  def cities_for_display(force: false)
+    Rails.cache.fetch([self.class.name, self.id, "cities_for_display"], force: force) do
       if responded? && !not_available?
-        (  offices.map{ |o| o.city }.reject{ |c| c.blank? || c.hidden? }.uniq    || NullData.new() )
+        offices.map(&:city).reject{ |city| city.blank? || city.hidden? }.uniq
       elsif hospital_or_clinic_only?
-        ( (hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |i| (i == nil) || i.hidden? }.uniq     || NullData.new() )
+        (hospitals.map(&:city) + clinics.map(&:cities)).flatten.reject{ |city| city.blank? || city.hidden?}.uniq
       elsif hospital_or_clinic_referrals_only?
-        ( (offices.map{ |o| o.city } + hospitals.map{ |h| h.city } + clinics.map{ |c| c.cities }).flatten.reject{ |c| c.blank? || c.hidden? }.uniq  || NullData.new() )
+        (offices.map(&:city) + hospitals.map(&:city) + clinics.map(&:cities)).
+          flatten.
+          reject{ |city| city.blank? || city.hidden? }.
+          uniq
       else
         []
       end
     end
-    return result.is_a?(NullData) ? nil : result
-  end
-
-  def primary_specialization
-    # we arbitrarily take the first specialization of a specialist and use this on the front page to determine what specialization a specialist falls under when doing logic about what to show on the home page
-    specializations.first
   end
 
   def divisions
-    return cities.map{ |city| city.divisions }.flatten.uniq
+    cities.map(&:divisions).flatten.uniq
   end
 
   def version_marked_deceased
@@ -836,6 +814,7 @@ class Specialist < ActiveRecord::Base
 
   def suffix
     return "GP" if is_gp?
+    return "Int Med" if is_internal_medicine?
     return "" if specializations.reject{|s| !s.suffix.present?}.none? # if no suffix exists then show nothing
     return specializations.reject{|s| !s.suffix.present?}.first.suffix # otherwise default to the first specialization with suffix
   end

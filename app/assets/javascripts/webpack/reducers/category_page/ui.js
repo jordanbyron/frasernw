@@ -10,7 +10,7 @@ import _ from "lodash";
 const contentCategoryId = _.partial(pageRenderedKey, "contentCategoryId");
 const pageType = _.partial(pageRenderedKey, "pageType");
 
-export default function(state = {}, action) {
+module.exports = function(state = {}, action) {
   // console.log(action);
   return {
     hasBeenInitialized: hasBeenInitialized(state.hasBeenInitialized, action),

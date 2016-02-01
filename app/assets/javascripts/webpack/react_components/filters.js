@@ -1,4 +1,5 @@
 var React = require("react");
+import SidebarWell from "./sidebar_well";
 var FilterGroup = require('./filter_group');
 
 var Filters = React.createClass({
@@ -8,8 +9,7 @@ var Filters = React.createClass({
   },
   render: function() {
     return (
-      <div className="well filter">
-        <div className="title" key="title">{ this.props.title }</div>
+      <SidebarWell title={this.props.title}>
         {
           this.props.groups.map((group, index) => {
             return(
@@ -21,7 +21,7 @@ var Filters = React.createClass({
             );
           })
         }
-      </div>
+      </SidebarWell>
     );
   }
 });

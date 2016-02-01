@@ -11,7 +11,7 @@ var IconKeys = {
 }
 var ReducedViewSelector = require("./reduced_view_selector");
 var AssumedList = require("./assumed_list");
-var ArbitraryContent = require("react_components/arbitrary_content");
+import ArbitraryContent from "react_components/arbitrary_content";
 
 module.exports = React.createClass({
   propTypes: {

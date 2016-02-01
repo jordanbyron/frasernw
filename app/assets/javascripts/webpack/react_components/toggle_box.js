@@ -29,7 +29,7 @@ module.exports = React.createClass({
   render: function() {
     return (
       <div>
-        <div className="filter_group__title open"
+        <div className="filter_group__title filter_group__title--clickable open"
           onClick={this.props.handleToggle}
           style={buttonIsh}
           key="title"

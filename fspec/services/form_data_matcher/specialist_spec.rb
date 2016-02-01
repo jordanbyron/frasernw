@@ -215,12 +215,4 @@ form_data = {"utf8"=>"✓",
      "2330"
    )
  end
-
- it "reorders the clinic location 'used' data to match the current order" do
-   new_data = FormDataMatcher::Specialist.new(form_data, specialist).exec
-
-   expect(new_data["location_0"]).to eq(
-    "In an office"
-   )
- end
 end
