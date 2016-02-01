@@ -35,9 +35,7 @@ class NewsItem < ActiveRecord::Base
   end
 
   def self.bust_cache_for(*divisions)
-    User.division_groups_for(*divisions).each do |group|
-      LatestUpdates.delay.recache_for(group, force_automatic: false)
-    end
+    LatestUpdates.delay.recache_for_groups(User.division_groups_for(*divisions))
   end
 
   def borrowing_divisions

@@ -19,13 +19,25 @@ class LatestUpdates < ServiceObject
     LatestUpdatesMask::EVENTS.key(event)
   end
 
-  def self.recache_for(division_ids, options)
+  def self.recache_for_groups(division_id_groups, force_automatic: false)
+    if force_automatic
+      division_id_groups.flatten.uniq.each do |id|
+        self.automatic(Division.find(id), force: true)
+      end
+    end
+
+    division_id_groups.each do |group|
+      self.recache_for(group)
+    end
+  end
+
+  def self.recache_for(division_ids, force_automatic: false)
     MAX_EVENTS.each_with_index do |(context, max), index|
       call(
         max_automatic_events: max,
         division_ids: division_ids,
         force: true,
-        force_automatic: (options[:force_automatic] && index == 0),
+        force_automatic: force_automatic,
         show_hidden: SHOW_HIDDEN[context]
       )
     end
@@ -37,6 +49,17 @@ class LatestUpdates < ServiceObject
       division_ids: divisions.reject(&:hidden?).map(&:id),
       show_hidden: SHOW_HIDDEN[context]
     )
+  end
+
+  def self.automatic(division, force: false)
+    Rails.cache.fetch("latest_updates:automatic:division:#{division.id}", force: force) do
+      [
+        Specialists,
+        Clinics
+      ].inject([]) do |memo, klass|
+        memo + klass.call(division: division)
+      end
+    end
   end
 
   def call
@@ -141,14 +164,7 @@ class LatestUpdates < ServiceObject
 
   def all_automatic_events
     divisions.inject([]) do |memo, division|
-      memo + Rails.cache.fetch("latest_updates:automatic:division:#{division.id}", force: force_automatic) do
-        [
-          Specialists,
-          Clinics
-        ].inject([]) do |memo, klass|
-          memo + klass.call(division: division)
-        end
-      end
+      memo + LatestUpdates.automatic(division, force: force_automatic)
     end.
       map{ |event| event.merge(hidden: LatestUpdatesMask.exists?(event.except(:markup))) }.
       group_by{ |event| [ event[:item_type], event[:item_id], event[:event] ] }.

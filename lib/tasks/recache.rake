@@ -99,9 +99,10 @@ namespace :pathways do
         end
       },
       latest_updates: -> {
-        User.all_user_division_groups_cached.each do |division_group|
-          LatestUpdates.delay.recache_for(division_group, force_automatic: true)
-        end
+        LatestUpdates.recache_for_groups(
+          User.all_user_division_groups_cached,
+          force_automatic: true
+        )
       },
       application_layout: -> {
         ExpireFragment.call("ie_compatibility_warning")
