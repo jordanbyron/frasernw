@@ -99,12 +99,16 @@ class ScItemsController < ApplicationController
     authorized_for_division = current_user.super_admin? || current_user_divisions.include?(@division)
 
     if authorized_for_division && params[:is_shared].present? && @sc_item.present? && @division.present?
-      if params[:is_shared].to_b && !existing_record.present?
-        DivisionDisplayScItem.create(sc_item_id: @sc_item.id, division_id: @division.id)
+      if params[:is_shared].to_b
+        if !existing_record.present?
+          DivisionDisplayScItem.create(sc_item_id: @sc_item.id, division_id: @division.id)
+        end
 
         notice = "Now displaying this item in #{@division.name}"
-      elsif !params[:is_shared].to_b && existing_record.present?
-        existing_record.destroy
+      elsif !params[:is_shared].to_b
+        if existing_record.present?
+          existing_record.destroy
+        end
 
         notice = "No longer displaying this item in #{@division.name}"
       end
