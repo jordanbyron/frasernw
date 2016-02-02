@@ -7,7 +7,23 @@ class SubscriptionMailer < ActionMailer::Base
     @interval = @subscription.interval_to_words
     @email = @user.email
     @activities = activities_for_subscription
-    mail(:to => @subscription.user.email, :from => 'noreply@pathwaysbc.ca', :subject => "Pathways: Your #{@interval} Resource Update")
+
+
+    @share_with_divisions = @user.divisions.inject({}) do |memo, division|
+      eligible_resources = @activities.
+        map(&:trackable).
+        select{ |resource| resource.borrowable_by_divisions.include?(division) }
+
+      memo.merge({
+        division => eligible_resources.map(&:id)
+      })
+    end.keep_if{ |k, v| v.any? }
+
+    mail(
+      :to => @subscription.user.email,
+      :from => 'noreply@pathwaysbc.ca',
+      :subject => "Pathways: Your #{@interval} Resource Update"
+    )
   end
 
   def news_update_email(activities_for_subscription, subscription_id)

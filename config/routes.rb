@@ -103,6 +103,9 @@ Frasernw::Application.routes.draw do
   resources :sc_categories, :path => 'content_categories'
   match '/divisions/:id/content_items/' => 'sc_items#index', :as => 'division_content_items'
   resources :sc_items, :path => 'content_items' do
+    collection do
+      get :bulk_share
+    end
     member do
       put :share, to: "sc_items#share"
 

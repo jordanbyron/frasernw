@@ -68,7 +68,7 @@ class Ability
         can :manage, ScItem do |item|
           user.divisions.include? item.division
         end
-        can :create, ScItem
+        can [:create, :bulk_share], ScItem
 
         can :share, ScItem do |item|
           item.shareable &&

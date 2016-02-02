@@ -93,30 +93,48 @@ class ScItemsController < ApplicationController
     @sc_item = ScItem.find(params[:id])
     authorize! :share, @sc_item
     @division = Division.find(params[:division_id])
-    existing_record =
-      DivisionDisplayScItem.where(sc_item_id: @sc_item.id, division_id: @division.id).first
 
-    authorized_for_division = current_user.super_admin? || current_user_divisions.include?(@division)
+    success = params[:is_shared].present? &&
+      @sc_item.present? &&
+      @division.present? &&
+      UpdateScItemSharing.call(
+        division: @division,
+        sc_item: @sc_item,
+        is_shared: params[:is_shared].to_b,
+        current_user: current_user
+      )
 
-    if authorized_for_division && params[:is_shared].present? && @sc_item.present? && @division.present?
-      if params[:is_shared].to_b
-        if !existing_record.present?
-          DivisionDisplayScItem.create(sc_item_id: @sc_item.id, division_id: @division.id)
+    notice = begin
+      if success
+        if params[:is_shared].to_b
+          "Now displaying this item in #{@division.name}"
+        else
+          "No longer displaying this item in #{@division.name}"
         end
-
-        notice = "Now displaying this item in #{@division.name}"
-      elsif !params[:is_shared].to_b
-        if existing_record.present?
-          existing_record.destroy
-        end
-
-        notice = "No longer displaying this item in #{@division.name}"
+      else
+        "Unable to complete your request"
       end
     end
 
-    notice ||= "Unable to complete your request"
-
     redirect_to sc_item_path(@sc_item), notice: notice
+  end
+
+  def bulk_share
+    @sc_items = ScItem.find(params[:item_ids])
+    authorize! :bulk_share, ScItem
+    @division = Division.find(params[:division_id])
+
+    @sc_items.select do |sc_item|
+      UpdateScItemSharing.call(
+        division: @division,
+        current_user: current_user,
+        sc_item: sc_item,
+        is_shared: true
+      )
+    end
+
+    redirect_to shared_content_items_path(@division),
+      notice: "Now displaying #{@sc_items.map(&:title).to_sentence} in #{@division.name}."
   end
 
   private
