@@ -23,6 +23,7 @@ class ReportsController < ApplicationController
       The divisional series show the number of page views that are made by each division's users.
       All series exclude page views by admins and users who are not logged in,
       as well as page views on external sites (i.e. external resource links and uploaded items).
+      Only complete weeks (Mon-Sun) are shown.
     STR
 
     render :analytics_chart
@@ -39,6 +40,7 @@ class ReportsController < ApplicationController
       A session is a group of page views by the same user which are no more than 30 minutes apart.
       The divisional series show the number of sessions attributable to each division's users.
       All series exclude sessions attributable to admins and users who are not logged in.
+      Only complete weeks (Mon-Sun) are shown.
     STR
 
     render :analytics_chart
@@ -55,6 +57,7 @@ class ReportsController < ApplicationController
       that have logged into Pathways for each week in the given month range.
       The divisional series show the number of logged in user IDs linked to each division.
       All series exclude admin user IDs.
+      Only complete weeks (Mon-Sun) are shown.
     STR
 
     render :analytics_chart
