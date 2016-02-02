@@ -96,7 +96,9 @@ class ScItemsController < ApplicationController
     existing_record =
       DivisionDisplayScItem.where(sc_item_id: @sc_item.id, division_id: @division.id).first
 
-    if params[:is_shared].present? && @sc_item.present? && @division.present?
+    authorized_for_division = current_user.super_admin? || current_user_divisions.include?(@division)
+
+    if authorized_for_division && params[:is_shared].present? && @sc_item.present? && @division.present?
       if params[:is_shared].to_b && !existing_record.present?
         DivisionDisplayScItem.create(sc_item_id: @sc_item.id, division_id: @division.id)
 
@@ -134,6 +136,15 @@ class ScItemsController < ApplicationController
   end
 
   def create_sc_item_activity
-    @sc_item.create_activity action: :create, parameters: {}, update_classification_type: Subscription.resource_update, type_mask: @sc_item.type_mask, type_mask_description: @sc_item.type, format_type: @sc_item.format_type, format_type_description: @sc_item.format, parent_id: @sc_item.sc_category.root.id, parent_type: @sc_item.sc_category.root.name, owner: @sc_item.division
+    @sc_item.create_activity action: :create,
+      parameters: {},
+      update_classification_type: Subscription.resource_update,
+      type_mask: @sc_item.type_mask,
+      type_mask_description: @sc_item.type,
+      format_type: @sc_item.format_type,
+      format_type_description: @sc_item.format,
+      parent_id: @sc_item.sc_category.root.id,
+      parent_type: @sc_item.sc_category.root.name,
+      owner: @sc_item.division
   end
 end

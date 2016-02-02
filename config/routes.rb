@@ -105,6 +105,9 @@ Frasernw::Application.routes.draw do
   resources :sc_items, :path => 'content_items' do
     member do
       put :share, to: "sc_items#share"
+
+      # since emails can't 'put'
+      get :share
     end
   end
 

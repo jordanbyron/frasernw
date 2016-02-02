@@ -32,8 +32,11 @@ class SubscriptionMailer < ActionMailer::Base
     @division = Division.find_by_id(@activity.owner_id) if @activity.owner_type == "Division"
     @specializations = @activity.trackable.specializations if @activity.trackable.specializations.present?
 
-    mail(:to => @user.email, :from => 'noreply@pathwaysbc.ca', :subject => "Pathways: #{@division} just added #{@type_mask_description_formatted} to #{@parent_type} [#{@update_classification_type.singularize}] ")
-
+    mail(
+      :to => @user.email,
+      :from => 'noreply@pathwaysbc.ca',
+      :subject => "Pathways: #{@division} just added #{@type_mask_description_formatted} to #{@parent_type} [#{@update_classification_type.singularize}] "
+    )
   end
 
   def immediate_news_update_email(activity_id, user_id)

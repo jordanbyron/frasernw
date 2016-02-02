@@ -120,10 +120,10 @@
                   share_sc_item_path(@sc_item, division_id: division.id, is_shared: false),
                   method: :put
 
-    - if (current_user_divisions & @sc_item.borroweable_by_divisions).any?
+    - if (current_user_divisions & @sc_item.borrowable_by_divisions).any?
       %h6= "Display This Item In:"
       %ul
-        - (current_user_divisions & @sc_item.borroweable_by_divisions).each do |division|
+        - (current_user_divisions & @sc_item.borrowable_by_divisions).each do |division|
           %li
             = link_to division.name,
               share_sc_item_path(@sc_item, division_id: division.id, is_shared: true),

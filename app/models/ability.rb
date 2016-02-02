@@ -71,7 +71,8 @@ class Ability
         can :create, ScItem
 
         can :share, ScItem do |item|
-          item.shareable && !item.in_progress
+          item.shareable &&
+            !item.in_progress
         end
 
         can :manage, DivisionDisplayScItem do |item|

@@ -146,12 +146,12 @@ class ScItem < ActiveRecord::Base
     ((divisions.include? division) || (shareable? && (divisions & divisions_sharing).present?)) && !in_progress
   end
 
-  def borroweable_by_divisions
-    @borroweable_by_divisions ||= begin
+  def borrowable_by_divisions
+    @borrowable_by_divisions ||= begin
       if in_progress || !shareable
         []
       else
-        Division.standard - available_to_divisions
+        Division.not_hidden - available_to_divisions
       end
     end
   end
