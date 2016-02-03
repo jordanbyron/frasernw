@@ -10,7 +10,67 @@ class Specialist < ActiveRecord::Base
 
   include ApplicationHelper
 
-  attr_accessible :firstname, :lastname, :goes_by_name, :sex_mask, :categorization_mask, :billing_number, :is_gp, :is_internal_medicine, :practise_limitations, :interest, :procedure_ids, :direct_phone_old, :direct_phone_extension_old, :red_flags, :clinic_location_ids, :responds_via, :contact_name, :contact_email, :contact_phone, :contact_notes, :referral_criteria, :status_mask, :location_opened_old, :referral_fax, :referral_phone, :referral_clinic_id, :referral_other_details, :referral_details, :urgent_fax, :urgent_phone, :urgent_other_details, :urgent_details, :respond_by_fax, :respond_by_phone, :respond_by_mail, :respond_to_patient, :status_details, :required_investigations, :not_performed, :patient_can_book_old, :patient_can_book_mask, :lagtime_mask, :waittime_mask, :referral_form_old, :referral_form_mask, :unavailable_from, :unavailable_to, :patient_instructions, :cancellation_policy, :hospital_clinic_details, :interpreter_available, :photo, :photo_delete, :hospital_ids, :specialization_ids, :capacities_attributes, :language_ids, :user_controls_specialist_offices_attributes, :specialist_offices_attributes, :admin_notes, :referral_forms_attributes, :review_object
+  attr_accessible :firstname,
+    :lastname,
+    :goes_by_name,
+    :sex_mask,
+    :categorization_mask,
+    :billing_number,
+    :is_gp,
+    :is_internal_medicine,
+    :practise_limitations,
+    :interest,
+    :procedure_ids,
+    :direct_phone_old,
+    :direct_phone_extension_old,
+    :red_flags,
+    :clinic_location_ids,
+    :responds_via,
+    :contact_name,
+    :contact_email,
+    :contact_phone,
+    :contact_notes,
+    :referral_criteria,
+    :status_mask,
+    :location_opened_old,
+    :referral_fax,
+    :referral_phone,
+    :referral_clinic_id,
+    :referral_other_details,
+    :referral_details,
+    :urgent_fax,
+    :urgent_phone,
+    :urgent_other_details,
+    :urgent_details,
+    :respond_by_fax,
+    :respond_by_phone,
+    :respond_by_mail,
+    :respond_to_patient,
+    :status_details,
+    :required_investigations,
+    :not_performed,
+    :patient_can_book_old,
+    :patient_can_book_mask,
+    :lagtime_mask,
+    :waittime_mask,
+    :referral_form_old,
+    :referral_form_mask,
+    :unavailable_from,
+    :unavailable_to,
+    :patient_instructions,
+    :cancellation_policy,
+    :hospital_clinic_details,
+    :interpreter_available,
+    :photo,
+    :photo_delete,
+    :hospital_ids,
+    :specialization_ids,
+    :capacities_attributes,
+    :language_ids,
+    :specialist_offices_attributes,
+    :admin_notes,
+    :referral_forms_attributes,
+    :review_object
 
   # specialists can have multiple specializations
   has_many :specialist_specializations, :dependent => :destroy
@@ -57,9 +117,11 @@ class Specialist < ActiveRecord::Base
   accepts_nested_attributes_for :specialist_offices
 
   #specialist are controlled (e.g. can be edited) by users of the system
-  has_many :user_controls_specialist_offices, :through => :specialist_offices
-  has_many :controlling_users, :through => :user_controls_specialist_offices, :source => :user, :class_name => "User"
-  accepts_nested_attributes_for :user_controls_specialist_offices, :reject_if => lambda { |ucso| ucso[:user_id].blank? }, :allow_destroy => true
+  has_many :controlling_users,
+    :through => :user_controls_specialists,
+    :source => :user,
+    :class_name => "User"
+  has_many :user_controls_specialists, dependent: :destroy
 
   has_attached_file :photo,
     :styles => { :thumb => "200x200#" },

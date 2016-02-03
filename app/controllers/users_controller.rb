@@ -26,7 +26,7 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
-    build_user_form
+    build_user_form!
     @new_user = true
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
@@ -45,7 +45,7 @@ class UsersController < ApplicationController
 
   def edit
     @user = User.find(params[:id])
-    build_user_form
+    build_user_form!
     @new_user = false
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
@@ -240,10 +240,10 @@ class UsersController < ApplicationController
     end
   end
 
-  def build_user_form
-    @user.user_controls_specialist_offices.build
-    @user.user_controls_clinic_locations.build
-    @formatted_clinic_locations = ClinicLocation.all_formatted_for_user_form
-    @formatted_specialist_offices = SpecialistOffice.cached_all_formatted_for_user_form
+  def build_user_form!
+    @user.user_controls_specialists.build
+    @user.user_controls_clinics.build
+    @formatted_clinics = Clinic.all.select{|clinic| clinic.name.present? }.sort_by(&:name)
+    @formatted_specialists = Specialist.all.select{|specialist| specialist.name.present? }.sort_by(&:lastname)
   end
 end

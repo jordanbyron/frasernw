@@ -7,7 +7,6 @@ class Office < ActiveRecord::Base
   has_many :specialist_offices, :dependent => :destroy
   has_many :specialists, :through => :specialist_offices
   has_many :user_controls_specialist_offices, :through => :specialist_offices
-  has_many :controlling_users, :through => :user_controls_specialist_offices, :source => :user, :class_name => "User"
 
   has_many :specializations, :through => :specialists
   has_many :procedures, :through => :specialists

@@ -18,28 +18,42 @@
 
     %h4 Specialist user can edit
     .content
-      = f.simple_fields_for :user_controls_specialist_offices do |i|
+      = f.simple_fields_for :user_controls_specialists do |fields|
         .row.spaced
           .span5.offset3
-            = i.association :specialist_office, as: :select, :label => false, collection: @formatted_specialist_offices, prompt: 'Select ...', wrapper: :no_wrapper, :include_blank => true
+            = fields.association :specialist,
+              as: :select,
+              label: false,
+              collection: @formatted_specialists,
+              prompt: 'Select ...',
+              wrapper: :no_wrapper
 
           .spanhalf.offsethalf
-            = i.hidden_field :_destroy
-            = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
+            = fields.hidden_field :_destroy
+            = fields.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
     .row
-      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another specialist", :user_controls_specialist_offices, class: "btn offset3")
+      = f.link_to_add "<i class='icon-plus-sign'></i>".html_safe + " Add another specialist",
+        :user_controls_specialists,
+        class: "btn offset3"
 
     %h4 Clinics user can edit
     .content
-      = f.simple_fields_for :user_controls_clinic_locations do |j|
+      = f.simple_fields_for :user_controls_clinics do |fields|
         .row.spaced
           .span5.offset3
-            = j.association :clinic_location, as: :select, :label => false, collection: @formatted_clinic_locations, prompt: 'Select ...', wrapper: :no_wrapper, :include_blank => true
+            = fields.association :clinic,
+              as: :select,
+              label: false,
+              collection: @formatted_clinics,
+              prompt: 'Select ...',
+              wrapper: :no_wrapper
           .spanhalf.offsethalf
-            = j.hidden_field :_destroy
-            = j.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
+            = fields.hidden_field :_destroy
+            = fields.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
     .row
-      = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another clinic", :user_controls_clinic_locations, class: "btn offset3")
+      = f.link_to_add "<i class='icon-plus-sign'></i>".html_safe + " Add another clinic",
+        :user_controls_clinics,
+        class: "btn offset3"
 
     - if current_user.admin?
       %h4
