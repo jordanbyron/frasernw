@@ -8,9 +8,13 @@ Backend = Change is not user facing
 ## [2016-02-06] [Since 2016-01-30 Integration]
 ### Added:
 - #313: Allow divisional admins and super admins to easily copy news items to other divisions
+- #285: Ability for users to control specialists and clinics even if they don't
+have offices or locations
+- #226: Ability for admins to borrow resources for their division directly from
+resource update notification emails
 
 ### Fixed:
-- optimize regeneration of LatestUpdates
+- Backend: optimize regeneration of LatestUpdates
 
 
 ## [2016-01-30] [Since 2016-01-23 Integration]
