@@ -139,7 +139,7 @@ const DeleteButton = (props) => {
 const ViewButton = (props) => (
   <a
     href={`/news_items/${props.record.id}`}
-    className="btn btn-mini"
+    className="btn btn-mini button--right_margin"
   >
     <span>View</span>
   </a>
