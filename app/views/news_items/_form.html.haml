@@ -26,7 +26,10 @@
   = f.input :body,
     :hint => "Accepts Markdown.  When adding a link to external website URLs, please link with <strong>http<u>s</u>://</strong> not http://".html_safe
   - if current_user.super_admin?
-    = f.association(:divisions, { as: :check_boxes, collection: @divisions, label: "Share this item with these divisions" })
+    = f.association :divisions,
+      as: :check_boxes,
+      collection: @divisions,
+      label: "Share this item with other divisions.  (Any changes made to this item will be reflected in those divisions.)"
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"

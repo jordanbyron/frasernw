@@ -204,6 +204,12 @@ class NewsItem < ActiveRecord::Base
     type_in_divisions(TYPE_ATTACHMENT_UPDATE, divisions)
   end
 
+  def current?
+    (start_date.present? && end_date.present? && start_date <= Date.current && end_date >= Date.current) ||
+      (start_date.nil? && end_date.present? && end_date >= Date.current) ||
+      (end_date.nil? && start_date.present? && start_date >= Date.current)
+  end
+
   def self.current
     where(<<-SQL, Date.current, Date.current, Date.current, Date.current)
       (news_items.start_date IS NOT NULL AND
