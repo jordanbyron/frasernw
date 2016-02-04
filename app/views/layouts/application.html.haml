@@ -273,6 +273,8 @@
                             %li= link_to "New Newsletter", new_newsletter_path
                       - if can? :read, ScCategory
                         %li= link_to "Content Categories", sc_categories_path, :class => "sc_category ajax"
+                      - if can? :index, Evidence
+                        %li= link_to "Levels Of Evidence", evidences_path
                       - if can? :index, Newsletter
                         %li= link_to "Newsletters", newsletters_path
                       - if can? :read, ScItem

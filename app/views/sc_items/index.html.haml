@@ -27,6 +27,8 @@
                 %th{:class => "{sorter: 'text'}"} Specialties
                 %th{:class => "{sorter: 'text'}"} Type
                 %th{:class => "{sorter: 'text'}", :style => "min-width: 40px"}
+                  %span{show_tooltip(title: "Level of Evidence")} LOE
+                %th{:class => "{sorter: 'text'}", :style => "min-width: 40px"}
                   %i.icon-search{show_tooltip(title: "Searchable") }
                 %th{:class => "{sorter: 'text'}", :style => "min-width: 40px"}
                   %i.icon-envelope{show_tooltip(title: "Can be emailed") }
@@ -49,6 +51,7 @@
                           - if is.procedure_specializations.present?
                             = ": #{is.procedure_specializations.map{ |ps| link_to ps.procedure.name, ps.procedure, :class => 'ajax' }.to_sentence}".html_safe
                   %td= sc_item.type
+                  %td= sc_item.evidence.present? ? sc_item.evidence.level : ""
                   %td= sc_item.searchable? ? icon("icon-search", "Searchable") : ""
                   %td= sc_item.can_email? ? icon("icon-envelope", "Can be emailed") : ""
                   %td= sc_item.shareable? ? icon("icon-share-alt", "Shareable") : ""

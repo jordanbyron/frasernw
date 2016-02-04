@@ -1,6 +1,6 @@
 class ScCategory < ActiveRecord::Base
 
-  attr_accessible :name, :show_on_front_page, :show_as_dropdown, :display_mask, :sort_order, :parent_id, :searchable
+  attr_accessible :name, :show_on_front_page, :show_as_dropdown, :display_mask, :sort_order, :parent_id, :searchable, :evidential
   validates_presence_of :name, :on => :create, :message => "can't be blank"
 
   has_many :sc_items
@@ -134,6 +134,12 @@ class ScCategory < ActiveRecord::Base
 
   def show_on_front_page?
     show_on_front_page
+  end
+
+  def evidential? # Children categories show evidence if Parent allows
+    return evidential if evidential == true
+    return parent.evidential? unless parent.blank?
+    return false
   end
 
   def all_borrowable_sc_items

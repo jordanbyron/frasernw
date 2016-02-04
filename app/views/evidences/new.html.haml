@@ -1,0 +1,9 @@
+- set_page_specific_title "New #{@evidence.level}"
+
+.content-wrapper
+
+  %h2 New Level of Evidence
+
+  = render 'form'
+
+  = link_to '<< Back to Levels of Evidence', evidences_path
