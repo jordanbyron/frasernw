@@ -49,9 +49,9 @@
       = @sc_item.full_title
       %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
         %i.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
-    - if @sc_item.evidence.present? && ENV['LEVEL_OF_EVIDENCE'].to_b
+    - if @sc_item.evidence.present? && (current_user_is_admin? || ENV['LEVEL_OF_EVIDENCE'].to_b)
       %h2
-        Level of Evidence: 
+        Level of Evidence:
         %strong
           %span= @sc_item.evidence.level
 

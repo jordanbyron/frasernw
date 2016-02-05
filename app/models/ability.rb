@@ -49,8 +49,10 @@ class Ability
         can :manage, [Specialist, Clinic, Hospital, Office] do |entity|
           entity.divisions.blank? || (entity.divisions & user.divisions).present?
         end
-        cannot :destroy, [Specialist, Clinic]
+        cannot :destroy, [Specialist, Clinic, Evidence]
         can :create, [Specialist, Clinic, Hospital, Office]
+
+        can :read, Evidence
 
         can :manage, Version
 
