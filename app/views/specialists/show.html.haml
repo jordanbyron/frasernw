@@ -377,7 +377,7 @@
                 - address = cl.resolved_address
                 %p.space
                   %strong= cl.phone_only if cl.phone_only.present?
-
+                  %p= "Fax: #{cl.fax}" if cl.fax.present?
                 - if cl.location.present? && cl.location.in_hospital?
                   - hospital = cl.location.hospital_in
                   %p= "In #{link_to hospital.name, hospital_path(hospital), :class => 'ajax'}".html_safe
