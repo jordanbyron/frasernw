@@ -24,7 +24,7 @@
   = f.input :show_end_date,
     :hint => "The end date can be blank: if no end date is provided, the news item will expire after the start date, otherwise it will expire after the end date."
   = f.input :body,
-    :hint => "Accepts Markdown.  When adding a link to external website URLs, please link with <strong>http<u>s</u>://</strong> not http://".html_safe
+    :hint => "Accepts Markdown.  When adding a link to external website URLs, please link using <strong>http<u>s</u>://</strong> rather than http:// when possible to help protect the security & privacy of our users.".html_safe
   - if current_user.super_admin?
     = f.association :divisions,
       as: :check_boxes,
