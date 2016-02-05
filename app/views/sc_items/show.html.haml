@@ -34,6 +34,8 @@
           %i.icon-blue.icon-star
         = link_to(@sc_item.title, @sc_item.resolved_url, :target => "_blank", "onclick" => "window.pathways.trackContentItem(_gaq, #{@sc_item.id})")
       %li
+        - if @sc_item.evidence.present? && (current_user_is_admin? || ENV['LEVEL_OF_EVIDENCE'].to_b)
+          %strong= @sc_item.evidence.level
         %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
           %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
         - if @sc_item.can_email?
