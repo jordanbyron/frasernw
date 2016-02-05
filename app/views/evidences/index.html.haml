@@ -1,0 +1,28 @@
+
+- set_page_specific_title "Levels of Evidence"
+
+.content-wrapper
+
+  %h2 Levels of Evidence
+
+  %table.table.table-condensed.table-striped
+    %tr
+      %th Level
+      %th Description
+      %th # Items
+      %th.admin
+
+    - @evidences.each do |evidence|
+      %tr
+        %td= link_to evidence.level, evidence
+        %td= evidence.description
+        %td= link_to evidence.sc_items.count, evidence
+        %td.admin.btn-group
+          - if can? :update, evidence
+            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_evidence_path(evidence.id), :class => "btn btn-mini ajax")
+          - if can? :destroy, evidence
+            = link_to("<i class='icon-trash'></i>".html_safe + " Delete", evidence, :confirm => "Please do not delete levels of evidence without consulting IT or a Medical Lead.  Are you sure you want to delete Level of Evidence: #{evidence.level} #{evidence.description}?", :method => :delete, :class => "btn btn-mini")
+
+  %br
+  - if can? :create, Evidence
+    %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Level of Evidence", new_evidence_path, :class => "btn ajax")

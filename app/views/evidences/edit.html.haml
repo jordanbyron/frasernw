@@ -1,0 +1,14 @@
+- set_page_specific_title "Edit #{@evidence.level}"
+
+.content-wrapper
+
+  %h2
+    Edit Level of Evidence:
+    = "#{@evidence.level}"
+
+
+  = render 'form'
+
+  = link_to 'Show', @evidence
+  \|
+  = link_to 'Back', evidences_path
