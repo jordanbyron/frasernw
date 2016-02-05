@@ -136,12 +136,6 @@ class ScCategory < ActiveRecord::Base
     show_on_front_page
   end
 
-  def evidential? # Children categories show evidence if Parent allows
-    return evidential if evidential == true
-    return parent.evidential? unless parent.blank?
-    return false
-  end
-
   def all_borrowable_sc_items
     subtree.inject([]) do |memo, category|
       memo + (category.

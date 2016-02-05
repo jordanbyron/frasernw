@@ -658,7 +658,7 @@ ActiveRecord::Schema.define(:version => 20160204092917) do
     t.boolean  "show_as_dropdown",   :default => false
     t.string   "ancestry"
     t.boolean  "searchable",         :default => true
-    t.boolean  "evidential"
+    t.boolean  "evidential",         :default => false
   end
 
   add_index "sc_categories", ["ancestry"], :name => "index_sc_categories_on_ancestry"

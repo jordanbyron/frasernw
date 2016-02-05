@@ -217,7 +217,7 @@ class ScItem < ActiveRecord::Base
   end
 
   def evidential?
-    root_category.evidential?
+    sc_category.evidential?
   end
 
   def resolved_url
