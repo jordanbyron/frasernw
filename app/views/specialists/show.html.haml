@@ -359,7 +359,10 @@
 
               - clinic_locations = clinic.clinic_locations.sort_by{|cl| cl.created_at }.reject{ |cl| cl.empty? }
 
-              %h6= clinic.name
+              %h6.clinic_header_link
+                = link_to "<i class='icon-signout icon-blue'></i> #{clinic.name} <span class='all'> - Referral Details <i class='icon-arrow-right icon-blue icon-small'></i></span>".html_safe,
+                  clinic_path(clinic),
+                  :class => 'ajax'
 
               %p.space
                 %i{:class => clinic.status_class}
