@@ -34,8 +34,8 @@
           %i.icon-blue.icon-star
         = link_to(@sc_item.title, @sc_item.resolved_url, :target => "_blank", "onclick" => "window.pathways.trackContentItem(_gaq, #{@sc_item.id})")
       %li
-        - if @sc_item.evidence.present? && (current_user_is_admin? || ENV['LEVEL_OF_EVIDENCE'].to_b)
-          %strong= @sc_item.evidence.level
+        - if show_evidence?(@sc_item.evidence)
+          %strong= render partial: "evidences/level", locals: {evidence: @sc_item.evidence}
         %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
           %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
         - if @sc_item.can_email?
@@ -51,7 +51,7 @@
       = @sc_item.full_title
       %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
         %i.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
-    - if @sc_item.evidence.present? && (current_user_is_admin? || ENV['LEVEL_OF_EVIDENCE'].to_b)
+    - if show_evidence?(@sc_item.evidence)
       %h2
         Level of Evidence:
         %strong
@@ -90,6 +90,7 @@
     :plain
       $(document).ready(function() {
         $('.tt').tooltip({trigger: 'manual'});
+        $('[data-toggle="tooltip"]').tooltip();
         $('#user_favorite_content_items_#{@sc_item.id}').addClass('#{favorite_class}');
       });
 
