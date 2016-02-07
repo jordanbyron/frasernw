@@ -11,7 +11,7 @@ class ScItem < ActiveRecord::Base
   # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user}
   has_many :activities, as: :trackable, class_name: 'SubscriptionActivity', dependent: :destroy
 
-  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :shared_care, :url, :markdown_content, :document, :can_email_document, :can_email_link, :shareable, :division_id
+  attr_accessible :sc_category_id, :specialization_ids, :type_mask, :title, :searchable, :shared_care, :url, :markdown_content, :document, :can_email_document, :can_email_link, :shareable, :division_id, :evidence_id
 
   belongs_to  :sc_category
 
@@ -25,6 +25,8 @@ class ScItem < ActiveRecord::Base
 
   has_many    :division_display_sc_items, :dependent => :destroy
   has_many    :divisions_sharing, :through => :division_display_sc_items, :class_name => "Division", :source => :division
+
+  belongs_to  :evidence
 
   has_attached_file :document,
   :storage => :s3,
@@ -146,12 +148,12 @@ class ScItem < ActiveRecord::Base
     ((divisions.include? division) || (shareable? && (divisions & divisions_sharing).present?)) && !in_progress
   end
 
-  def borroweable_by_divisions
-    @borroweable_by_divisions ||= begin
+  def borrowable_by_divisions
+    @borrowable_by_divisions ||= begin
       if in_progress || !shareable
         []
       else
-        Division.standard - available_to_divisions
+        Division.not_hidden - available_to_divisions
       end
     end
   end
@@ -212,6 +214,10 @@ class ScItem < ActiveRecord::Base
 
   def can_email?
     ((type_mask == 1 && can_email_link?) || (type_mask == 3 && can_email_document?))
+  end
+
+  def evidential?
+    sc_category.evidential?
   end
 
   def resolved_url

@@ -37,15 +37,30 @@ class User < ActiveRecord::Base
   has_many :favorite_clinics, :through => :favorites, :source => :favoritable, :source_type => "Clinic", :class_name => "Clinic"
   has_many :favorite_content_items, :through => :favorites, :source => :favoritable, :source_type => "ScItem", :class_name => "ScItem"
 
-  has_many :user_controls_specialist_offices, :dependent => :destroy
-  has_many :controlled_specialist_offices, :through => :user_controls_specialist_offices, :source => :specialist_office, :class_name => "SpecialistOffice"
-  has_many :controlled_specialists, :through => :controlled_specialist_offices, :source => :specialist, :class_name => "Specialist"
-  accepts_nested_attributes_for :user_controls_specialist_offices, :reject_if => lambda { |ucso| ucso[:specialist_office_id].blank? }, :allow_destroy => true
 
+  ### TODO: Delete after migration
+  has_many :controlled_specialist_offices, :through => :user_controls_specialist_offices, :source => :specialist_office, :class_name => "SpecialistOffice"
+  has_many :user_controls_specialist_offices, :dependent => :destroy
+  accepts_nested_attributes_for :user_controls_specialist_offices, :reject_if => lambda { |ucso| ucso[:specialist_office_id].blank? }, :allow_destroy => true
+  ###
+
+  has_many :user_controls_specialists, dependent: :destroy
+  accepts_nested_attributes_for :user_controls_specialists,
+    reject_if: -> (ucs) { ucs[:specialist_id].blank? },
+    allow_destroy: true
+  has_many :controlled_specialists, :through => :user_controls_specialists, :source => :specialist, :class_name => "Specialist"
+
+  ### TODO: Delete after migration
   has_many :user_controls_clinic_locations, :dependent => :destroy
   has_many :controlled_clinic_locations, :through => :user_controls_clinic_locations, :source => :clinic_location, :class_name => "ClinicLocation"
-  has_many :controlled_clinics, :through => :controlled_clinic_locations, :source => :clinic, :class_name => "Clinic"
   accepts_nested_attributes_for :user_controls_clinic_locations, :reject_if => lambda { |uccl| uccl[:clinic_location_id].blank? }, :allow_destroy => true
+  ###
+
+  has_many :user_controls_clinics, dependent: :destroy
+  accepts_nested_attributes_for :user_controls_clinics,
+    reject_if: -> (ucc) { ucc[:clinic_id].blank? },
+    allow_destroy: true
+  has_many :controlled_clinics, :through => :user_controls_clinics, :source => :clinic, :class_name => "Clinic"
 
   has_many :specialization_options, :foreign_key => "owner_id"
   has_many :specializations_owned, :through => :specialization_options, :class_name => "Specialization", :source => :specialization
@@ -69,8 +84,8 @@ class User < ActiveRecord::Base
     :role,
     :active,
     :division_ids,
-    :user_controls_specialist_offices_attributes,
-    :user_controls_clinic_locations_attributes,
+    :user_controls_specialists_attributes,
+    :user_controls_clinics_attributes,
     :password,
     :password_confirmation,
     :email,

@@ -93,24 +93,48 @@ class ScItemsController < ApplicationController
     @sc_item = ScItem.find(params[:id])
     authorize! :share, @sc_item
     @division = Division.find(params[:division_id])
-    existing_record =
-      DivisionDisplayScItem.where(sc_item_id: @sc_item.id, division_id: @division.id).first
 
-    if params[:is_shared].present? && @sc_item.present? && @division.present?
-      if params[:is_shared].to_b && !existing_record.present?
-        DivisionDisplayScItem.create(sc_item_id: @sc_item.id, division_id: @division.id)
+    success = params[:is_shared].present? &&
+      @sc_item.present? &&
+      @division.present? &&
+      UpdateScItemSharing.call(
+        division: @division,
+        sc_item: @sc_item,
+        is_shared: params[:is_shared].to_b,
+        current_user: current_user
+      )
 
-        notice = "Now displaying this item in #{@division.name}"
-      elsif !params[:is_shared].to_b && existing_record.present?
-        existing_record.destroy
-
-        notice = "No longer displaying this item in #{@division.name}"
+    notice = begin
+      if success
+        if params[:is_shared].to_b
+          "Now displaying this item in #{@division.name}"
+        else
+          "No longer displaying this item in #{@division.name}"
+        end
+      else
+        "Unable to complete your request"
       end
     end
 
-    notice ||= "Unable to complete your request"
-
     redirect_to sc_item_path(@sc_item), notice: notice
+  end
+
+  def bulk_share
+    @sc_items = ScItem.find(params[:item_ids])
+    authorize! :bulk_share, ScItem
+    @division = Division.find(params[:division_id])
+
+    @sc_items.select do |sc_item|
+      UpdateScItemSharing.call(
+        division: @division,
+        current_user: current_user,
+        sc_item: sc_item,
+        is_shared: true
+      )
+    end
+
+    redirect_to shared_content_items_path(@division),
+      notice: "Now displaying #{@sc_items.map(&:title).to_sentence} in #{@division.name}."
   end
 
   private
@@ -134,6 +158,15 @@ class ScItemsController < ApplicationController
   end
 
   def create_sc_item_activity
-    @sc_item.create_activity action: :create, parameters: {}, update_classification_type: Subscription.resource_update, type_mask: @sc_item.type_mask, type_mask_description: @sc_item.type, format_type: @sc_item.format_type, format_type_description: @sc_item.format, parent_id: @sc_item.sc_category.root.id, parent_type: @sc_item.sc_category.root.name, owner: @sc_item.division
+    @sc_item.create_activity action: :create,
+      parameters: {},
+      update_classification_type: Subscription.resource_update,
+      type_mask: @sc_item.type_mask,
+      type_mask_description: @sc_item.type,
+      format_type: @sc_item.format_type,
+      format_type_description: @sc_item.format,
+      parent_id: @sc_item.sc_category.root.id,
+      parent_type: @sc_item.sc_category.root.name,
+      owner: @sc_item.division
   end
 end

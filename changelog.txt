@@ -3,7 +3,24 @@ All notable changes to this project will be documented in this file.  In the fut
 
 CR = Change Request item
 Local-only = Changes not reflected in Source Code
-Backend = Change is not user facing
+Backend Maintenance = Change is not user facing
+
+## [2016-02-06] [Since 2016-01-30 Integration]
+### Added:
+- CR #233: Admins can now add Level of Evidence (LOE) scores to resources. (To allow time for data entry, Level of Evidence scores are only visible to administrators when they edit or view a resource.)
+- CR #313: Divisional admins and super admins can now easily "copy" news items from other divisions into their division.
+- CR #285: Users can now control the profiles of specialists and clinics who "only work out of hospitals and clinics" [Follow up from #256]
+- CR #226: Admins can now borrow resources for their division directly from
+resource update notification emails [NOTE: This feature can not be demoed on the test site because email is disabled on the test site]
+
+### Changed:
+- #317: If a person clicks a link to somewhere on Pathways, but needs to log in first, Pathways will now send the person correctly back to the page link they were trying to visit rather than to the home page.
+- News Items edit page tabs are now labeled "Owned (Editable)", "Currently Showing", "Available from Other Divisions"
+- Specialist profiles who "only work out of..." now have an icon and fax number in their clinic summaries.
+
+### Fixed:
+- Backend Maintenance #310: optimize regeneration of LatestUpdates
+
 
 ## [2016-01-30] [Since 2016-01-23 Integration]
 ### Added:
@@ -26,7 +43,7 @@ Backend = Change is not user facing
 
 ### Changed:
 - All Specialists admin page now shows total numbers of Specialists by division
-- Backend: Upgraded Ruby version to 2.2.3 from 2.1.6
+- Backend Maintenance: Upgraded Ruby version to 2.2.3 from 2.1.6
 
 ### Fixed:
 - #254: removed 'fee structure info available' checkbox
@@ -77,7 +94,7 @@ recently
 
 ## [2015-12-19] [Since 2015-12-12 Integration]
 ### Added:
-- Backend: script to create and manage integration branch
+- Backend Maintenance: script to create and manage integration branch
 
 ### Fixed:
 - #253: We no longer ignore clinic locations and specialist offices that have

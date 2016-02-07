@@ -1,0 +1,10 @@
+= simple_form_for(@evidence, :html => { :class => "form-horizontal ajax" }) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :level
+    = f.input :summary
+
+  .form-actions
+    = f.button :submit, :class => "btn btn-primary"
+    = link_to 'Cancel', evidences_path, :class => "btn btn-danger ajax"
