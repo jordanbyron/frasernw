@@ -51,7 +51,7 @@
                             - if is.procedure_specializations.present?
                               = ": #{is.procedure_specializations.map{ |ps| link_to ps.procedure.name, ps.procedure, :class => 'ajax' }.to_sentence}".html_safe
                     %td= sc_item.type
-                    -# # tablesorter can't sort icons so we use hidden text to sort missing entries correctly:
+                    -# # tablesorter can't sort icons so we use hidden text ('a', 'z') to sort missing entries correctly:
                     %td= sc_item.evidence.present? ? link_to(sc_item.evidence.level, sc_item.evidence) : content_tag(:span, 'z', class: 'opacity-0')
                     %td= sc_item.searchable? ? icon('icon-search') + content_tag(:span, 'a', class: 'opacity-0') : content_tag(:span, 'z', class: 'opacity-0')
                     %td= sc_item.shared_care? ? icon('icon-star') + content_tag(:span, 'a', class: 'opacity-0') : content_tag(:span, 'z', class: 'opacity-0')
