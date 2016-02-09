@@ -1,5 +1,8 @@
 Frasernw::Application.routes.draw do
 
+  resources :evidences
+
+
   match "/delayed_job" => DelayedJobWeb, :anchor => false, via: [:get, :post] # private delayed_job_web interface
 
   post '/versions/:id/revert' => 'versions#revert', :as => 'revert_version'
@@ -103,8 +106,14 @@ Frasernw::Application.routes.draw do
   resources :sc_categories, :path => 'content_categories'
   match '/divisions/:id/content_items/' => 'sc_items#index', :as => 'division_content_items'
   resources :sc_items, :path => 'content_items' do
+    collection do
+      get :bulk_share
+    end
     member do
       put :share, to: "sc_items#share"
+
+      # since emails can't 'put'
+      get :share
     end
   end
 
@@ -117,6 +126,7 @@ Frasernw::Application.routes.draw do
   resources :news_items do
     member do
       get :update_borrowing
+      post :copy
     end
   end
   resources :reports do

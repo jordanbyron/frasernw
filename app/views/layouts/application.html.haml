@@ -224,12 +224,12 @@
                         %li= link_to "Hospitals", hospitals_path, :class => "ajax"
                       - if can? :index, Language
                         %li= link_to "Languages", languages_path, :class => "ajax"
-                      - news_item_divisions = current_user_divisions.reject(&:hidden?)
+                      - news_item_divisions = current_user_is_super_admin? ? Division.not_hidden : current_user_divisions.reject(&:hidden?)
                       - if can?(:index, NewsItem) && news_item_divisions.count == 1
                         %li= link_to "News Items", news_items_path, :class => "ajax"
                       - if can?(:index, NewsItem) && news_item_divisions.count > 1
                         %li
-                          = link_to "News Items", "#", :class => "arrow-right-after"
+                          = link_to "News Items", news_items_path(division_id: current_user_divisions.first.id), :class => "arrow-right-after"
                           %ul.dropdown-menu
                             - news_item_divisions.reject(&:hidden?).each do |division|
                               %li=link_to division.name, news_items_path(division_id: division.id), :class => 'office ajax'
@@ -273,6 +273,8 @@
                             %li= link_to "New Newsletter", new_newsletter_path
                       - if can? :read, ScCategory
                         %li= link_to "Content Categories", sc_categories_path, :class => "sc_category ajax"
+                      - if can? :index, Evidence
+                        %li= link_to "Levels Of Evidence", evidences_path
                       - if can? :index, Newsletter
                         %li= link_to "Newsletters", newsletters_path
                       - if can? :read, ScItem

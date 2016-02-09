@@ -34,6 +34,8 @@
           %i.icon-blue.icon-star
         = link_to(@sc_item.title, @sc_item.resolved_url, :target => "_blank", "onclick" => "window.pathways.trackContentItem(_gaq, #{@sc_item.id})")
       %li
+        - if show_evidence?(@sc_item.evidence)
+          %strong= render partial: "evidences/level", locals: {evidence: @sc_item.evidence}
         %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
           %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
         - if @sc_item.can_email?
@@ -49,6 +51,11 @@
       = @sc_item.full_title
       %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
         %i.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
+    - if show_evidence?(@sc_item.evidence)
+      %h2
+        Level of Evidence:
+        %strong
+          %span= @sc_item.evidence.level
 
     %p= BlueCloth.new(@sc_item.markdown_content).to_html.html_safe
 
@@ -83,6 +90,7 @@
     :plain
       $(document).ready(function() {
         $('.tt').tooltip({trigger: 'manual'});
+        $('[data-toggle="tooltip"]').tooltip();
         $('#user_favorite_content_items_#{@sc_item.id}').addClass('#{favorite_class}');
       });
 
@@ -120,10 +128,10 @@
                   share_sc_item_path(@sc_item, division_id: division.id, is_shared: false),
                   method: :put
 
-    - if (current_user_divisions & @sc_item.borroweable_by_divisions).any?
+    - if (current_user_divisions & @sc_item.borrowable_by_divisions).any?
       %h6= "Display This Item In:"
       %ul
-        - (current_user_divisions & @sc_item.borroweable_by_divisions).each do |division|
+        - (current_user_divisions & @sc_item.borrowable_by_divisions).each do |division|
           %li
             = link_to division.name,
               share_sc_item_path(@sc_item, division_id: division.id, is_shared: true),

@@ -25,13 +25,17 @@
               %thead
                 %tr.tableheader
                   %th{:class => "{sorter: 'text'}", :style => "width:10%"}= "Share with #{@division.name}?"
-                  %th{:class => "{sorter: 'text'}", :style => "width:30%"} Title
+                  %th{:class => "{sorter: 'text'}", :style => "width:25%"} Title
                   %th{:class => "{sorter: 'text'}", :style => "width:10%"} Created By
                   %th{:class => "{sorter: 'text'}", :style => "width:10%"} Subcategory
-                  %th{:class => "{sorter: 'text'}", :style => "width:8.5%"} Specialties
-                  %th{:class => "{sorter: 'text'}", :style => "width:8.5%"} Type
-                  %th{:class => "{sorter: 'text'}", :style => "width:10%"} Searchable?
-                  %th{:class => "{sorter: 'text'}", :style => "width:10%"} Shared Care?
+                  %th{:class => "{sorter: 'text'}", :style => "width:10%"} Specialties
+                  %th{:class => "{sorter: 'text'}", :style => "width:10.5%"} Type
+                  %th{:class => "{sorter: 'text'}", :style => "width:6%"}
+                    %span{show_tooltip(title: "Level of Evidence")} LOE
+                  %th{:class => "{sorter: 'text'}", :style => "width:5%"}
+                    %i.icon-search{show_tooltip(title: "Searchable") }
+                  %th{:class => "{sorter: 'text'}", :style => "width:6.66%"}
+                    %i.icon-star{show_tooltip(title: "Shared Care")}
               %tbody
                 - category.items_borrowable_by_division(@division).sort_by{ |sc_item| [ sc_item.division.name, sc_item.title ] }.each do |sc_item|
                   %tr
@@ -47,9 +51,10 @@
                             - if is.procedure_specializations.present?
                               = ": #{is.procedure_specializations.map{ |ps| link_to ps.procedure.name, ps.procedure, :class => 'ajax' }.to_sentence}".html_safe
                     %td= sc_item.type
-                    %td= sc_item.searchable ? "Yes" : "No"
-                    %td= sc_item.shared_care? ? "Yes" : "No"
-
+                    -# # tablesorter can't sort icons so we use hidden text ('a', 'z') to sort missing entries correctly:
+                    %td= sc_item.evidence.present? ? link_to(sc_item.evidence.level, sc_item.evidence) : content_tag(:span, 'z', class: 'opacity-0')
+                    %td= sc_item.searchable? ? icon('icon-search') + content_tag(:span, 'a', class: 'opacity-0') : content_tag(:span, 'z', class: 'opacity-0')
+                    %td= sc_item.shared_care? ? icon('icon-star') + content_tag(:span, 'a', class: 'opacity-0') : content_tag(:span, 'z', class: 'opacity-0')
           - active = false
 
     .form-actions
@@ -58,4 +63,7 @@
 
   %script{"type" => "text/javascript"}
     :plain
-      $(document).ready(function() { $('.tablesorter').tablesorter({sortList: [[2,0]] }) });
+      $(document).ready(function() {
+        $('.tablesorter').tablesorter({sortList: [[2,0]]})
+        $('[data-toggle="tooltip"]').tooltip();
+      });

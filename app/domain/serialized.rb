@@ -315,6 +315,7 @@ module Serialized
           type: item.type,
           ownerDivisionId: item.owner_division_id,
           divisionDisplayIds: item.divisions.map(&:id),
+          isCurrent: item.current?,
           startDate: item.start_date,
           endDate: item.end_date
         })

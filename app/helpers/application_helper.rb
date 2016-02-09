@@ -225,9 +225,9 @@ module ApplicationHelper
 
   def icon(icon_class, title=nil, placement="top") # icon will not have a tooltip unless a title is passed
     if title.present?
-      "<i class='#{icon_class}' data-toggle='tooltip' data-original-title='#{title}' data-placement='#{placement}'</i>".html_safe
+      "<i class='#{icon_class}' data-toggle='tooltip' data-original-title='#{title}' data-placement='#{placement}'></i>".html_safe
     else
-      "<i class='#{icon_class}'</i>".html_safe
+      "<i class='#{icon_class}'></i>".html_safe
     end
   end
 

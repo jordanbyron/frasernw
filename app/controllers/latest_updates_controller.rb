@@ -40,9 +40,7 @@ class LatestUpdatesController < ApplicationController
       LatestUpdatesMask.create(params[:update].except(:hide))
     end
 
-    User.division_groups_for(@division).each do |group|
-      LatestUpdates.recache_for(group, force_automatic: false)
-    end
+    LatestUpdates.recache_for_groups(User.division_groups_for(@division))
 
     render nothing: true, status: 200
   end
