@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160126222202) do
+ActiveRecord::Schema.define(:version => 20160206022512) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -326,6 +326,13 @@ ActiveRecord::Schema.define(:version => 20160126222202) do
   end
 
   add_index "edits", ["specialist_id"], :name => "index_edits_on_specialist_id"
+
+  create_table "evidences", :force => true do |t|
+    t.string   "level",      :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.string   "summary"
+  end
 
   create_table "faq_categories", :force => true do |t|
     t.string   "name",        :null => false
@@ -651,6 +658,7 @@ ActiveRecord::Schema.define(:version => 20160126222202) do
     t.boolean  "show_as_dropdown",   :default => false
     t.string   "ancestry"
     t.boolean  "searchable",         :default => true
+    t.boolean  "evidential",         :default => false
   end
 
   add_index "sc_categories", ["ancestry"], :name => "index_sc_categories_on_ancestry"
@@ -694,9 +702,11 @@ ActiveRecord::Schema.define(:version => 20160126222202) do
     t.boolean  "can_email_link",        :default => true
     t.integer  "division_id"
     t.boolean  "shareable",             :default => true
+    t.integer  "evidence_id"
   end
 
   add_index "sc_items", ["division_id"], :name => "index_sc_items_on_division_id"
+  add_index "sc_items", ["evidence_id"], :name => "index_sc_items_on_evidence_id"
   add_index "sc_items", ["sc_category_id"], :name => "index_sc_items_on_sc_category_id"
 
   create_table "schedule_days", :force => true do |t|

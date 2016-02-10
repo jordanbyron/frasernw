@@ -109,6 +109,7 @@ en:
         display_mask: "Display items"
         show_as_dropdown: "Display in global navigation in resources dropdown menu"
         show_on_front_page: "Display featured items on front page"
+        evidential: "Has Levels of Evidence"
       sc_item:
         inline: "Show content inline on specialty pages"
         sc_category: "Content category"
@@ -118,6 +119,7 @@ en:
         shareable: "Shareable with other divisions"
         shared_care: "From a Shared Care Initiative"
         type_mask: "Content type"
+        evidence_id: "Level of Evidence"
         url: "Content URL"
         can_email_document: "Can email document to patient"
         can_email_link: "Can email URL to patient"

@@ -49,8 +49,10 @@ class Ability
         can :manage, [Specialist, Clinic, Hospital, Office] do |entity|
           entity.divisions.blank? || (entity.divisions & user.divisions).present?
         end
-        cannot :destroy, [Specialist, Clinic]
+        cannot :destroy, [Specialist, Clinic, Evidence]
         can :create, [Specialist, Clinic, Hospital, Office]
+
+        can :read, Evidence
 
         can :manage, Version
 
@@ -68,10 +70,11 @@ class Ability
         can :manage, ScItem do |item|
           user.divisions.include? item.division
         end
-        can :create, ScItem
+        can [:create, :bulk_share], ScItem
 
         can :share, ScItem do |item|
-          item.shareable && !item.in_progress
+          item.shareable &&
+            !item.in_progress
         end
 
         can :manage, DivisionDisplayScItem do |item|
@@ -87,7 +90,7 @@ class Ability
         can [:change_email, :update_email, :change_password, :update_password, :change_local_referral_area, :update_local_referral_area], User
 
         #can manage their own news items
-        can [:index, :new, :create, :show], NewsItem
+        can [:index, :new, :create, :show, :copy], NewsItem
         can [:edit, :update], NewsItem do |news_item|
           user.divisions.include? news_item.owner_division
         end
