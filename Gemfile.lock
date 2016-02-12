@@ -144,6 +144,8 @@ GEM
     excon (0.45.3)
     execjs (2.5.2)
     extlib (0.9.16)
+    faker (1.6.1)
+      i18n (~> 0.5)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
     fastercsv (1.5.5)
@@ -589,6 +591,7 @@ DEPENDENCIES
   delayed_job_web
   edge_rider
   exception_notification
+  faker
   google-api-client (= 0.7.1)
   guard
   guard-livereload
