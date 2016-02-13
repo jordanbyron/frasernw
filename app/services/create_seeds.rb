@@ -35,7 +35,7 @@ class CreateSeeds < ServiceObject
         to_a.
         each_with_index.
         map do |record, index|
-          puts "Masking #{klass} #{index}/#{count}, id: #{record.id}"
+          puts "Masking #{klass} #{(index + 1)}/#{count}, id: #{record.id}"
 
           @id = record.id
 
@@ -97,7 +97,9 @@ class CreateSeeds < ServiceObject
 
     def contains_identifying_info?(str)
       INDICATES_IDENTIFYING_INFO.any?{ |fragment| str.include?(fragment) } ||
-        VANCOUVER_COMMON_SURNAMES.any?{ |surname| str[/(?<![[:alnum:]])#{Regexp.quote(surname)}(?![[:alnum:]])/i] }
+        VANCOUVER_COMMON_SURNAMES.any? do |surname|
+          str[/(?<![[:alnum:]])#{Regexp.quote(surname)}(?![[:alnum:]])/i]
+        end
     end
 
     def mask_array(array, key)
@@ -122,7 +124,8 @@ class CreateSeeds < ServiceObject
 
     def masked_key?(key)
       config = masked_fragment_config(key)
-      config.present? && (!config.has_key?(:test) || config[:test].call(klass))
+
+      !(config.nil?) && (!(config.has_key?(:test)) || config[:test].call(klass))
     end
 
     def masked_fragment_config(key)
@@ -135,11 +138,34 @@ class CreateSeeds < ServiceObject
       if config[:faker].present?
         config[:faker].call(klass)
       else
-        "<#{key}>"
+        "seeded_#{key}"
       end
     end
 
+    KLASSES_ALLOWING_NAME = [
+      ScCategory,
+      City,
+      Division,
+      FaqCategory,
+      Specialization,
+      HealthcareProvider,
+      Language,
+      Hospital,
+      Procedure,
+      Province,
+      Report
+    ]
+
     MASKED_FRAGMENTS = {
+      "form_file_name" => {
+        :faker => -> (klass) { "seed_form" }
+      },
+      "photo_file_name" => {
+        :faker => -> (klass) { "seed_photo" }
+      },
+      "document_file_name" => {
+        :faker => -> (klass) { "seed_document" }
+      },
       "firstname" => {
         :faker => -> (klass) { Faker::Name.first_name }
       },
@@ -147,7 +173,7 @@ class CreateSeeds < ServiceObject
         :faker => -> (klass) { Faker::Name.last_name}
       },
       "name" => {
-        :test => -> (klass) { klass != ScCategory && klass != City },
+        :test => -> (klass) { !(KLASSES_ALLOWING_NAME.include?(klass)) },
         :faker => -> (klass) { klass == Clinic ? Faker::Company.name : Faker::Name.name }
       },
       "phone" => {
@@ -171,6 +197,7 @@ class CreateSeeds < ServiceObject
       "url" => {
         :faker => -> (klass) { "http://www.google.ca" }
       },
+      "body" => {},
       "referral_criteria" => {},
       "referral_process" => {},
       "content" => {},
@@ -193,10 +220,7 @@ class CreateSeeds < ServiceObject
       "interest" => {},
       "all_procedure_info" => {},
       "urgent_details" => {},
-      "cancellation_policy" => {},
-      "form_file_name" => {},
-      "photo_file_name" => {},
-      "document_file_name" => {}
+      "cancellation_policy" => {}
     }
 
     VANCOUVER_COMMON_SURNAMES = [

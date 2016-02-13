@@ -205,7 +205,7 @@ class UsersController < ApplicationController
     if divisions.blank?
       redirect_to upload_users_url, :layout => 'ajax', :notice => "At least one division must be chosen."
     else
-      @users = User.import(params[:file], divisions, params[:type_mask], 'user')
+      @users = User.csv_import(params[:file], divisions, params[:type_mask], 'user')
       render :layout => 'ajax' if request.headers['X-PJAX']
     end
   end
