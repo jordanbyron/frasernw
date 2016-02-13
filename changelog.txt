@@ -5,6 +5,9 @@ CR = Change Request item
 Local-only = Changes not reflected in Source Code
 Backend Maintenance = Change is not user facing
 
+## [2016-02-13] [Since 2016-02-06 Integration]
+
+
 ## [2016-02-06] [Since 2016-01-30 Integration]
 ### Added:
 - CR #233: Admins can now add Level of Evidence (LOE) scores to resources. (To allow time for data entry, Level of Evidence scores are only visible to administrators when they edit or view a resource.)

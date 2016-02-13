@@ -189,7 +189,7 @@ class LatestUpdates < ServiceObject
   def self.event_date(item, event_method)
     item.versions.order(:created_at).find_last do |version|
       !version.reify.present? || !version.reify.send(event_method)
-    end.created_at.to_date
+    end.try(:created_at).try(:to_date)
   end
 
   class Clinics < ServiceObject

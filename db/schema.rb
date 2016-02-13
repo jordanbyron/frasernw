@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160204092917) do
+ActiveRecord::Schema.define(:version => 20160212020651) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -328,10 +328,10 @@ ActiveRecord::Schema.define(:version => 20160204092917) do
   add_index "edits", ["specialist_id"], :name => "index_edits_on_specialist_id"
 
   create_table "evidences", :force => true do |t|
-    t.string   "level",       :null => false
-    t.string   "description"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.string   "level",      :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.string   "summary"
   end
 
   create_table "faq_categories", :force => true do |t|
@@ -485,15 +485,6 @@ ActiveRecord::Schema.define(:version => 20160204092917) do
 
   add_index "metrics", ["user_type_key", "division_id", "page_path"], :name => "metrics_dimensions"
 
-  create_table "moderations", :force => true do |t|
-    t.integer  "moderatable_id"
-    t.string   "moderatable_type",               :null => false
-    t.string   "attr_name",        :limit => 60, :null => false
-    t.text     "attr_value",                     :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "news_items", :force => true do |t|
     t.date     "start_date"
     t.date     "end_date"
@@ -635,18 +626,6 @@ ActiveRecord::Schema.define(:version => 20160204092917) do
   end
 
   add_index "review_items", ["item_id", "item_type"], :name => "index_review_items_on_item_id_and_item_type"
-
-  create_table "reviews", :force => true do |t|
-    t.string   "item_type",      :null => false
-    t.integer  "item_id",        :null => false
-    t.string   "whodunnit"
-    t.text     "object"
-    t.text     "object_changes"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "reviews", ["item_id", "item_type"], :name => "index_reviews_on_item_id_and_item_type"
 
   create_table "sc_categories", :force => true do |t|
     t.string   "name"

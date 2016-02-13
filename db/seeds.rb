@@ -6,6 +6,6 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-["A", "B", "C", "D", "E", "F"].each {|level|
+["A", "B", "C", "D"].each {|level|
   Evidence.create(level: level)
 } unless Evidence.any?

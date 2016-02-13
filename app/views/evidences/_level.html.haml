@@ -1,0 +1,4 @@
+- if evidence.summary.present?
+  %span{show_tooltip(title: "Level of Evidence #{evidence.level}: <br> #{evidence.summary}".html_safe, placement: "right")}= evidence.level
+- else
+  %span{show_tooltip(title: "Level of Evidence: #{evidence.level}", placement: "right")}= evidence.level

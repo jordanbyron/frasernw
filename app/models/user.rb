@@ -104,6 +104,18 @@ LIMITED_ROLE_HASH = {
     "super" => "Super Administrator"
   }
 
+  def self.create_admin(email, password)
+    create(
+      email: email,
+      email_confirmation: email,
+      password: password,
+      password_confirmation: password,
+      role: 'admin',
+      type_mask: 4,
+      name: email
+    ).user_divisions.create(division_id: 1)
+  end
+
   def self.user
     where("users.role = 'user'")
   end
@@ -296,7 +308,7 @@ LIMITED_ROLE_HASH = {
     return user_city_specializations.reject{ |ucs| ucs.specialization_id != specialization.id }.map{ |ucs| ucs.user_city.city }
   end
 
-  def self.import(file, divisions, type_mask, role)
+  def self.csv_import(file, divisions, type_mask, role)
     users = []
     CSV.foreach(file.path) do |row|
       user = User.new(:name => row[0], :divisions => divisions, :type_mask => type_mask, :role => role)
