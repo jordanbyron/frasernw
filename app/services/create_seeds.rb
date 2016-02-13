@@ -86,11 +86,11 @@ class CreateSeeds < ServiceObject
       end
 
       # double check values we pass through unmasked
-      if value.is_a?(String) && contains_identifying_info?(value)
-        log = File.open(IDENTIFYING_INFO_LOGFILE, "a+")
-        log.write("\nklass: #{klass}, id: #{@id}, key: #{key}, val: #{value}")
-        log.close
-      end
+      # if value.is_a?(String) && contains_identifying_info?(value)
+      #   log = File.open(IDENTIFYING_INFO_LOGFILE, "a+")
+      #   log.write("\nklass: #{klass}, id: #{@id}, key: #{key}, val: #{value}")
+      #   log.close
+      # end
 
       return [ key, value ]
     end
@@ -122,15 +122,15 @@ class CreateSeeds < ServiceObject
 
     def masked_key?(key)
       config = masked_fragment_config(key)
-      config.present? && (!config.has_key?(:test) || test.call(klass))
+      config.present? && (!config.has_key?(:test) || config[:test].call(klass))
     end
 
     def masked_fragment_config(key)
-      MASKED_FRAGMENTS.find{ |fragment, config| key.include?(fragment) }[1]
+      MASKED_FRAGMENTS.find{ |fragment, config| key.include?(fragment) }.try(:[], 1)
     end
 
     def mask_value(key)
-      config = MASKED_FRAGMENTS[key]
+      config = masked_fragment_config(key)
 
       if config[:faker].present?
         config[:faker].call(klass)
@@ -147,7 +147,7 @@ class CreateSeeds < ServiceObject
         :faker => -> (klass) { Faker::Name.last_name}
       },
       "name" => {
-        :test => -> (klass) { klass != ScCategory },
+        :test => -> (klass) { klass != ScCategory && klass != City },
         :faker => -> (klass) { klass == Clinic ? Faker::Company.name : Faker::Name.name }
       },
       "phone" => {
@@ -192,11 +192,8 @@ class CreateSeeds < ServiceObject
       "required_investigations" => {},
       "interest" => {},
       "all_procedure_info" => {},
-      "form_file_name" => {},
       "urgent_details" => {},
       "cancellation_policy" => {},
-      "interest" => {},
-      "all_procedure_info" => {},
       "form_file_name" => {},
       "photo_file_name" => {},
       "document_file_name" => {}
