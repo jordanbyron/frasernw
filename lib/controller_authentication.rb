@@ -76,7 +76,7 @@ module ControllerAuthentication
     @secret_token_id = SecretToken.where(token: token).first.try(:id)
 
     unless klass.find(id).valid_tokens.include?(token)
-      redirect_to login_url, :alert => "Invalid token. Please email millerjc@shaw.ca to request or reset your secret url for editing."
+      redirect_to login_url, :alert => "Invalid token. Please email ryanlammertsen@pathwaysbc.ca to request or reset your secret url for editing."
     end
   end
 

@@ -124,10 +124,12 @@ group :development, :test do
   gem 'guard-livereload'
   gem 'guard-spork'
   gem 'rack-livereload'
+  gem 'activerecord-import'
   #gem 'heroku'
   gem 'taps'
   gem 'rb-fsevent', '~> 0.9.1'
   gem 'quiet_assets'
+  gem 'faker'
 end
 
 group :development do

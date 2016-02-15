@@ -362,6 +362,46 @@ body.loading #email
     color: $FNW_TEXT;
   }
 
+  h6.clinic_header_link
+  {
+
+    color: $FNW_RED;
+
+    a
+    {
+      color: $FNW_RED;
+
+      .all
+      {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight: bold;
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #ffffff;
+
+        .icon-blue
+        {
+          color: #ffffff;
+        }
+      }
+    }
+
+    a:hover
+    {
+      color: $FNW_BLUE;
+      text-decoration: underline;
+
+      .all
+      {
+        color: $FNW_BLUE;
+
+        .icon-blue
+        {
+          color: $FNW_BLUE;
+        }
+      }
+    }
+  }
   h4
   {
     font-family: Bitter;
