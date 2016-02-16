@@ -93,27 +93,28 @@ class User < ActiveRecord::Base
     :agree_to_toc,
     :type_mask
 
-LIMITED_ROLE_HASH = {
-    "user" => "User",
-    "admin" => "Administrator"
-  }
-
-  ROLE_HASH = {
+  ROLE_LABELS = {
     "user" => "User",
     "admin" => "Administrator",
     "super" => "Super Administrator"
   }
 
-  def self.create_admin(email, password)
+  def self.seed(args)
+    email = args[:email]
+    password = args[:password]
+    division_id = args[:division_id]
+    role = args[:role]
+    name = args[:name]
+
     create(
       email: email,
       email_confirmation: email,
       password: password,
       password_confirmation: password,
-      role: 'admin',
+      role: role,
       type_mask: 4,
-      name: email
-    ).user_divisions.create(division_id: 1)
+      name: name
+    ).user_divisions.create(division_id: division_id)
   end
 
   def self.user
@@ -252,7 +253,7 @@ LIMITED_ROLE_HASH = {
 
 
   def role_full
-    User::ROLE_HASH[self.role]
+    User::ROLE_LABELS[self.role]
   end
 
   TYPE_HASH = {
