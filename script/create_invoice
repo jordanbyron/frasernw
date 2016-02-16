@@ -5,6 +5,7 @@
 # then run script/create_invoice
 
 require 'csv'
+require 'bigdecimal'
 
 # get our customizable settings
 
@@ -64,11 +65,11 @@ end.map do |start_date, day_rows|
   ]
 end.to_h
 
-week_total = 0.0
+week_total = BigDecimal.new(0)
 
 export_rows = days.inject([]) do |memo, (day, descriptions)|
-  day_total = descriptions.inject(0.0) do |memo, desc|
-    memo + (desc[:seconds].to_f / 3600).round(2)
+  day_total = descriptions.inject(BigDecimal.new(0)) do |memo, desc|
+    memo + (BigDecimal.new(desc[:seconds]) / 3600).round(2)
   end
 
   description_rows = descriptions.each_with_index.map do |description, index|
@@ -76,24 +77,24 @@ export_rows = days.inject([]) do |memo, (day, descriptions)|
       [
         day,
         description[:description],
-        (description[:seconds].to_f / 3600).round(2)
+        (BigDecimal.new(description[:seconds]) / 3600).round(2).to_s("F")
       ]
     else
       [
         "",
         description[:description],
-        (description[:seconds].to_f / 3600).round(2)
+        (BigDecimal.new(description[:seconds]) / 3600).round(2).to_s("F")
       ]
     end
   end
 
-  rounded_day_total = ((day_total * 4).ceil).to_f / 4
+  rounded_day_total = BigDecimal.new((day_total * 4).ceil) / 4
 
   sum_row = [
     "",
     "",
-    rounded_day_total,
-    "$#{rounded_day_total * rate}"
+    rounded_day_total.to_s("F"),
+    "$#{(rounded_day_total * rate).to_s("F")}"
   ]
 
   week_total = week_total + rounded_day_total
@@ -126,5 +127,5 @@ CSV.open(file_path, "w+") do |csv|
     csv << row
   end
 
-  csv << [ "Total", "", week_total, "$#{week_total * rate}" ]
+  csv << [ "Total", "", week_total.to_s("F"), "$#{(week_total * rate).to_s("F")}" ]
 end
