@@ -12,6 +12,7 @@ class CreateSeeds < ServiceObject
   ]
 
   IDENTIFYING_INFO_LOGFILE = Rails.root.join("tmp", "identifying_info.txt").to_s
+  UNMASKED_COLUMNS_LOGFILE = Rails.root.join("tmp", "unmasked_columns.txt").to_s
 
   def call
     Rails.application.eager_load!
@@ -19,6 +20,7 @@ class CreateSeeds < ServiceObject
 
     `rm #{Rails.root.join("seeds", "*").to_s}`
     `rm #{IDENTIFYING_INFO_LOGFILE}`
+    `rm #{UNMASKED_COLUMNS_LOGFILE}`
 
     (ActiveRecord::Base.connection.tables - IGNORED_TABLES).each do |table|
       Table.call(klass: table_klasses[table].constantize)
@@ -29,6 +31,8 @@ class CreateSeeds < ServiceObject
     attribute :klass, Class
 
     def call
+      check_text_columns!
+
       count = klass.count
 
       yaml = klass.
@@ -47,6 +51,20 @@ class CreateSeeds < ServiceObject
       filename = Rails.root.join("seeds", "#{klass.table_name}.yaml").to_s
       file = File.open(filename, "w+")
       file.write(yaml)
+    end
+
+    def check_text_columns!
+      klass.
+        columns.
+        select{ |column| column.type == "text" || column.type == "string"}.
+        map(&:name).
+        each do |name|
+          if !masked_key?(name)
+            log = File.open(UNMASKED_COLUMNS_LOGFILE, "a+")
+            log.write("\nklass: #{klass}, column: #{name}")
+            log.close
+          end
+        end
     end
 
     def mask_hash(hash)
