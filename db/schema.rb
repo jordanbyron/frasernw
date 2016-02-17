@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160216025741) do
+ActiveRecord::Schema.define(:version => 20160217221005) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -164,7 +164,6 @@ ActiveRecord::Schema.define(:version => 20160216025741) do
     t.datetime "updated_at"
     t.text     "referral_criteria"
     t.text     "referral_process"
-    t.string   "responds_via"
     t.string   "contact_name"
     t.string   "contact_phone"
     t.string   "contact_email"
@@ -822,14 +821,12 @@ ActiveRecord::Schema.define(:version => 20160216025741) do
     t.string   "contact_phone"
     t.string   "contact_email"
     t.text     "red_flags"
-    t.string   "responds_via"
     t.string   "referral_criteria"
     t.string   "saved_token"
     t.string   "contact_notes"
     t.text     "not_interested"
     t.text     "all_procedure_info"
     t.string   "referral_other_details"
-    t.string   "referral_request"
     t.boolean  "patient_can_book_old",       :default => false
     t.string   "urgent_other_details"
     t.text     "required_investigations"

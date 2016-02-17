@@ -1,6 +1,6 @@
 class CreateSeeds < ServiceObject
-  # TODO: skip test accounts
   # TODO: at the current rate, masking versions would take ~470 hours
+
 
   IGNORED_TABLES = [
     "metrics",
@@ -14,9 +14,30 @@ class CreateSeeds < ServiceObject
   IDENTIFYING_INFO_LOGFILE = Rails.root.join("tmp", "identifying_info.txt").to_s
   UNMASKED_COLUMNS_LOGFILE = Rails.root.join("tmp", "unmasked_columns.txt").to_s
 
+  # see if there are any string/text columns we've failed to explicitly whitelist or mask
+  # without actually going through all the data
+  def self.check_text_columns!
+    Rails.application.eager_load!
+    table_klasses = ActiveRecord::Base.
+      descendants.
+      map{ |c| [c.table_name, c.name] }.
+      to_h
+
+    `rm #{UNMASKED_COLUMNS_LOGFILE}`
+
+    (ActiveRecord::Base.connection.tables - IGNORED_TABLES).each do |table|
+      Table.
+        new(klass: table_klasses[table].constantize).
+        check_text_columns!(raise_on_miss: false)
+    end
+  end
+
   def call
     Rails.application.eager_load!
-    table_klasses = Hash[ActiveRecord::Base.send(:descendants).collect{|c| [c.table_name, c.name]}]
+    table_klasses = ActiveRecord::Base.
+      descendants.
+      map{ |c| [c.table_name, c.name] }.
+      to_h
 
     `rm #{Rails.root.join("seeds", "*").to_s}`
     `rm #{IDENTIFYING_INFO_LOGFILE}`
@@ -31,7 +52,7 @@ class CreateSeeds < ServiceObject
     attribute :klass, Class
 
     def call
-      check_text_columns!
+      check_text_columns!(raise_on_miss: true)
 
       count = klass.count
 
@@ -53,18 +74,28 @@ class CreateSeeds < ServiceObject
       file.write(yaml)
     end
 
-    def check_text_columns!
+    def check_text_columns!(raise_on_miss: false)
       klass.
         columns.
         select{ |column| column.type == :text || column.type == :string}.
         map(&:name).
         each do |name|
-          if !masked_key?(name)
-            log = File.open(UNMASKED_COLUMNS_LOGFILE, "a+")
-            log.write("\nklass: #{klass}, column: #{name}")
-            log.close
+          if !masked_key?(name) && !whitelisted?(name)
+            if raise_on_miss
+              raise "You forgot to mask or whitelist #{klass} #{name}"
+            else
+              log = File.open(UNMASKED_COLUMNS_LOGFILE, "a+")
+              log.write("\nklass: #{klass}, column: #{name}")
+              log.close
+            end
           end
         end
+    end
+
+    def whitelisted?(column_name)
+      WHITELISTED_TEXT_COLUMNS.find do |column|
+        column[:klass] == klass && column[:column] == column_name
+      end
     end
 
     def mask_hash(hash)
@@ -234,8 +265,8 @@ class CreateSeeds < ServiceObject
         :faker => -> (klass) { Faker::Lorem.sentence }
       },
       "description" => {
-        :test => -> (klass) { klass == ReferralForm },
-        :faker => -> (klass) { "Referral form description" }
+        :test => -> (klass) { klass == ReferralForm || klass == NewsletterDescriptionItem },
+        :faker => -> (klass) { Faker::Lorem.sentence }
       },
       "recipient" => {
         :faker => -> (klass) { Faker::Internet.email }
@@ -372,6 +403,53 @@ class CreateSeeds < ServiceObject
       "Dr.",
       "Doctor",
       "@"
+    ]
+
+    WHITELISTED_TEXT_COLUMNS = [
+      {klass: SubscriptionActivity, column: "trackable_type"},
+      {klass: SubscriptionActivity, column: "owner_type"},
+      {klass: SubscriptionActivity, column: "key"},
+      {klass: SubscriptionActivity, column: "parameters"},
+      {klass: SubscriptionActivity, column: "update_classification_type"},
+      {klass: SubscriptionActivity, column: "type_mask_description"},
+      {klass: SubscriptionActivity, column: "format_type_description"},
+      {klass: SubscriptionActivity, column: "parent_type"},
+      {klass: City, column: "name"},
+      {klass: ClinicLocation, column: "location_opened"},
+      {klass: Division, column: "name"},
+      {klass: Evidence, column: "level"},
+      {klass: Evidence, column: "summary"},
+      {klass: FaqCategory, column: "name"},
+      {klass: FaqCategory, column: "description"},
+      {klass: Faq, column: "question"},
+      {klass: Favorite, column: "favoritable_type"},
+      {klass: FeedbackItem, column: "item_type"},
+      {klass: HealthcareProvider, column: "name"},
+      {klass: Hospital, column: "name"},
+      {klass: Language, column: "name"},
+      {klass: LatestUpdatesMask, column: "item_type"},
+      {klass: Location, column: "locatable_type"},
+      {klass: ProcedureSpecialization, column: "ancestry"},
+      {klass: Procedure, column: "name"},
+      {klass: Province, column: "name"},
+      {klass: Province, column: "abbreviation"},
+      {klass: Province, column: "symbol"},
+      {klass: ReferralForm, column: "referrable_type"},
+      {klass: Report, column: "name"},
+      {klass: ScCategory, column: "name"},
+      {klass: ScCategory, column: "ancestry"},
+      {klass: Schedule, column: "schedulable_type"},
+      {klass: SecretToken, column: "accessible_type"},
+      {klass: SpecialistOffice, column: "location_opened"},
+      {klass: Specialization, column: "name"},
+      {klass: Specialization, column: "member_name"},
+      {klass: Specialization, column: "label_name"},
+      {klass: Specialization, column: "suffix"},
+      {klass: Subscription, column: "classification"},
+      {klass: Subscription, column: "news_type"},
+      {klass: Subscription, column: "sc_item_format_type"},
+      {klass: User, column: "role"},
+      {klass: UserMask, column: "role"}
     ]
   end
 end
