@@ -56,7 +56,7 @@ class CreateSeeds < ServiceObject
     def check_text_columns!
       klass.
         columns.
-        select{ |column| column.type == "text" || column.type == "string"}.
+        select{ |column| column.type == :text || column.type == :string}.
         map(&:name).
         each do |name|
           if !masked_key?(name)
@@ -114,11 +114,22 @@ class CreateSeeds < ServiceObject
       return [ key, value ]
     end
 
+    PHONE_NUMBER = /(?:\+?|\b)[0-9]{10}\b/
+
+    def surnames
+      return @surnames if defined?(@surnames)
+
+      joined_surnames = VANCOUVER_COMMON_SURNAMES.
+        map{ |name| Regexp.quote(name) }.
+        join('|')
+
+      @surnames = /(?<![[:alnum:]])(#{joined_surnames})(?![[:alnum:]])/i
+    end
+
     def contains_identifying_info?(str)
       INDICATES_IDENTIFYING_INFO.any?{ |fragment| str.include?(fragment) } ||
-        VANCOUVER_COMMON_SURNAMES.any? do |surname|
-          str[/(?<![[:alnum:]])#{Regexp.quote(surname)}(?![[:alnum:]])/i]
-        end
+        str[surnames] ||
+        str[PHONE_NUMBER]
     end
 
     def mask_array(array, key)
