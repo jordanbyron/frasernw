@@ -26,7 +26,7 @@ class UserMasksController < ApplicationController
 
     if !current_user.can_assign_roles.include?(@user_mask.role)
       render :new, notice: "Invalid role."
-    elsif !division_assignments_permitted && @user_mask.division_ids.none?
+    elsif !division_assignments_permitted || @user_mask.division_ids.none?
       render :new, notice: "Invalid divisions."
     else
 
