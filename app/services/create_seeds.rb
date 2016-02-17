@@ -68,7 +68,8 @@ class CreateSeeds < ServiceObject
           mask_hash(record.attributes)
         end.
         to_yaml
-
+      directory_name = "seeds"
+      Dir.mkdir(directory_name) unless File.directory?(directory_name)
       filename = Rails.root.join("seeds", "#{klass.table_name}.yaml").to_s
       file = File.open(filename, "w+")
       file.write(yaml)
