@@ -67,10 +67,10 @@ class SecretToken < ActiveRecord::Base
   end
 
   def expirable_by?(user)
-    return true if user.super_admin?
+    return true if user.as_super_admin?
     return true if user == creator
-    return true if creator.is_a?(UnknownUser) && user.admin?
-    return true if creator.is_a?(SystemUser) && user.admin?
+    return true if creator.is_a?(UnknownUser) && user.admin_or_super?
+    return true if creator.is_a?(SystemUser) && user.admin_or_super?
 
     false
   end

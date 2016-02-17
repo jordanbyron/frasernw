@@ -4,13 +4,13 @@ class FilterTableAppState
   def exec
     {
       currentUser: {
-        divisionIds: current_user.divisions.standard.map(&:id),
+        divisionIds: current_user.as_divisions.standard.map(&:id),
         cityRankings: current_user.city_rankings,
         cityRankingsCustomized: current_user.customized_city_rankings?,
         favorites: {
           contentItems: current_user.favorite_content_items.pluck(:id)
         },
-        isAdmin: current_user.admin?
+        isAdmin: current_user.as_admin_or_super?
       },
       specializations: Serialized.fetch(:specializations),
       contentCategories: Serialized.fetch(:content_categories),

@@ -1,5 +1,5 @@
 class LanguagesController < ApplicationController
-  skip_before_filter :login_required, :only => :refresh_cache
+  skip_before_filter :require_authentication, :only => :refresh_cache
   load_and_authorize_resource :except => :refresh_cache
   before_filter :check_token, :only => :refresh_cache
   skip_authorization_check :only => :refresh_cache

@@ -97,7 +97,7 @@ class AnalyticsChart
     (divisions.map(&:id) << 0).inject({}) do |memo, division_id|
       filtered_rows = raw.select do |row|
         filter_by_division(row, division_id) &&
-          User::TYPE_HASH.keys.include?(row[:user_type_key].to_i)
+          User::TYPES.keys.include?(row[:user_type_key].to_i)
       end
 
       memo.merge(division_id => metric_from_rows(filtered_rows))

@@ -78,7 +78,7 @@ class ReviewItem < ActiveRecord::Base
   end
 
   def set_edit_source!(current_user, secret_token_id)
-    if current_user.present?
+    if current_user.authenticated?
       self.edit_source_id = current_user.id
       self.edit_source_type = "User"
     else

@@ -27,12 +27,12 @@
 
   %h3 Content Options
 
-  - if current_user_is_super_admin?
+  - if current_user.as_super_admin?
     = f.input :division_id, as: :select, :collection => Division.all, :include_blank => false
-  - elsif current_user_divisions.length > 1
-    = f.input :division_id, as: :select, :collection => current_user_divisions
+  - elsif current_user.as_divisions.length > 1
+    = f.input :division_id, as: :select, :collection => current_user.as_divisions
   - else
-    = f.input :division_id, as: :hidden, :input_html => { :value => current_user_divisions.first.id }
+    = f.input :division_id, as: :hidden, :input_html => { :value => current_user.as_divisions.first.id }
 
   = f.input :searchable
   = f.input :shareable

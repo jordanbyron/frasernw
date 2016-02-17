@@ -4,22 +4,22 @@ class FrontController < ApplicationController
   def index
     authorize! :index, :front
 
-    if current_user_is_admin?
+    if current_user.as_admin_or_super?
       @as_division = begin
         if params[:division_id].present?
           Division.find(params[:division_id])
         else
-          current_user_divisions.first
+          current_user.as_divisions.first
         end
       end
-      @can_edit_division = current_user_is_super_admin? || current_user_divisions.include?(@as_division)
+      @can_edit_division = current_user.as_super_admin? || current_user.as_divisions.include?(@as_division)
 
       @as_divisions = [ @as_division ]
       @specializations = Specialization.all
       @more_updates_url = latest_updates_path(division_id: @as_division.id)
     else
-      @as_divisions = current_user_divisions
-      @specializations = Specialization.not_in_progress_for_divisions(current_user_divisions).uniq
+      @as_divisions = current_user.as_divisions
+      @specializations = Specialization.not_in_progress_for_divisions(current_user.as_divisions).uniq
       @more_updates_url = latest_updates_path
     end
 

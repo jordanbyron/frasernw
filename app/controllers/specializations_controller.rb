@@ -62,10 +62,10 @@ class SpecializationsController < ApplicationController
   def update
     @specialization = Specialization.find(params[:id])
     SpecializationSweeper.instance.before_controller_update(@specialization)
-    if current_user_is_super_admin?
+    if current_user.as_super_admin?
       divisions = Division.all
     else
-      divisions = current_user_divisions
+      divisions = current_user.as_divisions
     end
 
     if @specialization.update_attributes(params[:specialization])

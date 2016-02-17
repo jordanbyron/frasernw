@@ -10,7 +10,7 @@ class ScItemsController < ApplicationController
 
   def show
     @sc_item = ScItem.find(params[:id])
-    @division = current_user_divisions.first
+    @division = current_user.as_divisions.first
     @feedback = @sc_item.active_feedback_items.build
     @share_url = share_sc_item_path(@sc_item)
     render :layout => 'ajax' if request.headers['X-PJAX']
@@ -146,7 +146,7 @@ class ScItemsController < ApplicationController
   end
 
   def authorize_division_for_user
-    if !(current_user_is_super_admin? || (current_user_divisions.include? Division.find(params[:id])))
+    if !(current_user.as_super_admin? || (current_user.as_divisions.include? Division.find(params[:id])))
       redirect_to root_url, :notice => "You are not allowed to access this page"
     end
   end

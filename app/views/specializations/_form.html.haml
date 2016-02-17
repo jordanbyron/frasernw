@@ -16,7 +16,7 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
-  - if current_user_is_super_admin?
+  - if current_user.as_super_admin?
     = f.input :name
     = f.input :member_name, hint: "e.g. 'Opthalmologist', 'Cardiothoracic surgeon', 'Nurse practitioner', 'Sports medicine specialist'"
     = f.input :label_name, hint: "Defines how this Specialty is labeled on columns and tables; e.g. as a 'Specialist', 'Family Physician', 'Nurse Practitioner', etc."
@@ -35,7 +35,7 @@
 
     - divisions = Division.all
   - else
-    - divisions = current_user_divisions
+    - divisions = current_user.as_divisions
 
   - divisions.each do |division|
     - possible_admins = division.users.admin + User.super_admin

@@ -1,5 +1,5 @@
 class UserSessionsController < ApplicationController
-  skip_before_filter :login_required
+  skip_before_filter :require_authentication
   skip_authorization_check
 
   def index

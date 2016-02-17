@@ -7,7 +7,8 @@ class CreateSeeds < ServiceObject
     "delayed_jobs",
     "sessions",
     "versions",
-    "schema_migrations"
+    "schema_migrations",
+    "review_items"
   ]
 
   IDENTIFYING_INFO_LOGFILE = Rails.root.join("tmp", "identifying_info.txt").to_s
@@ -86,11 +87,11 @@ class CreateSeeds < ServiceObject
       end
 
       # double check values we pass through unmasked
-      # if value.is_a?(String) && contains_identifying_info?(value)
-      #   log = File.open(IDENTIFYING_INFO_LOGFILE, "a+")
-      #   log.write("\nklass: #{klass}, id: #{@id}, key: #{key}, val: #{value}")
-      #   log.close
-      # end
+      if value.is_a?(String) && contains_identifying_info?(value)
+        log = File.open(IDENTIFYING_INFO_LOGFILE, "a+")
+        log.write("\nklass: #{klass}, id: #{@id}, key: #{key}, val: #{value}")
+        log.close
+      end
 
       return [ key, value ]
     end
@@ -197,7 +198,27 @@ class CreateSeeds < ServiceObject
       "url" => {
         :faker => -> (klass) { "http://www.google.ca" }
       },
+      "answer_markdown" => {
+        :faker => -> (klass) { "This is an answer to an FAQ question" }
+      },
+      "title" => {
+        :faker => -> (klass) { "#{klass.to_s.tableize.gsub("_", " ")} title" }
+      },
+      "description" => {
+        :test => -> (klass) { klass == ReferralForm },
+        :faker => -> (klass) { "Referral form description" }
+      },
+      "recipient" => {
+        :faker => -> (klass) { Faker::Internet.email }
+      },
+      "city_id" => {
+        :test => -> (klass) { klass == Address },
+        :faker => -> (klass) { City.unscoped.select("id").first(order: "RANDOM()")[:id] }
+      },
+      "investigation" => {},
+      "suite" => {},
       "body" => {},
+      "area_of_focus" => {},
       "referral_criteria" => {},
       "referral_process" => {},
       "content" => {},
@@ -243,7 +264,6 @@ class CreateSeeds < ServiceObject
       "Taylor",
       "Singh",
       "Liu",
-      "Williams",
       "Ng",
       "Wu",
       "Ho",
@@ -320,7 +340,7 @@ class CreateSeeds < ServiceObject
     ]
 
     INDICATES_IDENTIFYING_INFO = [
-      "Dr",
+      "Dr.",
       "Doctor",
       "@"
     ]

@@ -14,7 +14,7 @@
 
   %p.no_indent.space
     %strong Role:
-    = @user.role_full
+    = @user.role_label
 
   - if @user.pending?
     %p.no_indent.space
@@ -44,14 +44,14 @@
 
   - @user.divisions.each do |division|
     - specialization_options = @user.specialization_options.for_divisions([division]).reject{ |so| so.specialization.blank? }
-    - if @user.admin? && specialization_options.present?
+    - if @user.admin_or_super? && specialization_options.present?
       %p.no_indent.space
         %strong Specializations owned in #{division.name}
         %ul
           - specialization_options.each do |so|
             %li= link_to so.specialization.name, so.specialization, :class => 'ajax'
 
-  - if !@user.admin?
+  - if !@user.admin_or_super?
     - if @user.controlled_specialists.length > 0
       %p.no_indent.space
         %strong Can edit specialists

@@ -12,9 +12,9 @@
   $(document).ready(function() { update_favorites() });
 
 .content-wrapper
-  .content#front{:style => current_user_is_admin? && 'margin-top: -15px'}
+  .content#front{:style => current_user.as_admin_or_super? && 'margin-top: -15px'}
 
-    - if current_user_is_admin?
+    - if current_user.as_admin_or_super?
       .row
         .span12
           Show front page for:
@@ -73,7 +73,7 @@
         %p
           = link_to "More...", @more_updates_url
 
-        - if current_user_is_admin? && @can_edit_division
+        - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
             = link_to "<i class='icon-pencil'></i> Edit Manual Specialist and Clinic Updates".html_safe,
               news_items_path(division_id: @as_division.id),
@@ -123,7 +123,7 @@
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
 
-        - if current_user_is_admin? && @can_edit_division
+        - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Attachment Updates", news_items_path(division_id: @as_division.id), :class => "btn btn-mini ajax")
 
@@ -141,7 +141,7 @@
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
 
-        - if current_user_is_admin? && @can_edit_division
+        - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Shared Care Updates", news_items_path(division_id: @as_division.id), :class => "btn btn-mini ajax")
 
@@ -175,6 +175,6 @@
             %i.icon-star.icon-blue
             Indicates content from our Shared Care initiative
 
-        - if current_user_is_admin? && @can_edit_division
+        - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Featured Content", edit_featured_contents_path(division_id: @as_divisions.first.id), :class => "btn btn-mini ajax")

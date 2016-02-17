@@ -2,7 +2,7 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
-  - if current_user_is_super_admin?
+  - if current_user.as_super_admin?
     = f.input :name
     = f.association :cities, as: :check_boxes, :hint => 'The cities that a divisional administrator can administer'
 

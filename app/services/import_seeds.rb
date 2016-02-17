@@ -26,6 +26,6 @@ class ImportSeeds < ServiceObject
       ActiveRecord::Base.connection.reset_pk_sequence!(t)
     end
 
-    User.create_admin(ENV['SEED_ADMIN_EMAIL'], ENV['SEED_ADMIN_PW'])
+    CreateSeedUsers.call
   end
 end

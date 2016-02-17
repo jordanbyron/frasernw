@@ -1,7 +1,7 @@
 class PasswordResetsController < ApplicationController
   skip_authorization_check
-  skip_before_filter :login_required
-  before_filter :not_login_required
+  skip_before_filter :require_authentication
+  before_filter :must_be_logged_out
   before_filter :load_user_using_perishable_token, :only => [ :edit, :update ]
 
   def new

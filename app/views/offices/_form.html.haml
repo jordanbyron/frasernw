@@ -18,10 +18,10 @@
         = a.input :suite, :input_html => { :class => "span1" }
         = a.input :address1
         = a.input :address2
-        = a.association :city, as: :select, collection: (current_user_is_super_admin? ? City.all : City.in_divisions(current_user_divisions)).map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
+        = a.association :city, as: :select, collection: (current_user.as_super_admin? ? City.all : City.in_divisions(current_user.as_divisions)).map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, :include_blank => true
         = a.input :postalcode, :input_html => { :class => "span1" }
     .hospital
-      = l.association :hospital_in, as: :select, collection: (current_user_is_super_admin? ? Hospital.all : Hospital.in_divisions(current_user_divisions)).reject{ |h| h.location.blank? }.map{ |h| ["#{h.name}, #{h.location.short_address}", h.id] }, :include_blank => true
+      = l.association :hospital_in, as: :select, collection: (current_user.as_super_admin? ? Hospital.all : Hospital.in_divisions(current_user.as_divisions)).reject{ |h| h.location.blank? }.map{ |h| ["#{h.name}, #{h.location.short_address}", h.id] }, :include_blank => true
     .clinic
       = l.association :location_in, as: :select, collection: Clinic.includes_location_data.all.map{ |c| c.locations }.flatten.reject{ |l| l.empty? }.map{ |l| ["#{l.locatable.clinic.name} #{l.short_address}", l.id] }, :include_blank => true
     .details

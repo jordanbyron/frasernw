@@ -32,7 +32,7 @@ module Analytics
     end
 
     def self.user_type_hash
-      User::TYPE_HASH.merge(
+      User::TYPES.merge(
         -1 => "Bounced",
         0 => "Admin"
       )

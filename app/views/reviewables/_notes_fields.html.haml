@@ -15,7 +15,7 @@
   = render 'history/nodes',
     item: review_item,
     nodes: review_item.history
-- if form_modifier.admin? && reviewable.full_notes_history.any?
+- if form_modifier.admin_or_super? && reviewable.full_notes_history.any?
   %hr
   %h3 Notes
   = render "history/nodes",

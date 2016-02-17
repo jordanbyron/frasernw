@@ -1,5 +1,5 @@
 class SpecialistsController < ApplicationController
-  skip_before_filter :login_required, :only => [:refresh_cache, :refresh_index_cache]
+  skip_before_filter :require_authentication, :only => [:refresh_cache, :refresh_index_cache]
   load_and_authorize_resource :except => [:refresh_cache, :refresh_index_cache, :create]
   before_filter :check_token, :only => :refresh_cache
   before_filter :check_specialization_token, :only => :refresh_index_cache
@@ -15,7 +15,7 @@ class SpecialistsController < ApplicationController
       @specializations = Specialization.all
     end
     @all_divisions = Division.all
-    @user_divisions = current_user_divisions
+    @user_divisions = current_user.as_divisions
     @first_division = @user_divisions.first
 
     render :layout => 'ajax' if request.headers['X-PJAX']
