@@ -220,7 +220,7 @@ class CreateSeeds < ServiceObject
         :faker => -> (klass) { "This is an answer to an FAQ question" }
       },
       "title" => {
-        :faker => -> (klass) { "#{klass.to_s.tableize.gsub("_", " ")} title" }
+        :faker => -> (klass) { Faker::Lorem.sentence }
       },
       "description" => {
         :test => -> (klass) { klass == ReferralForm },
