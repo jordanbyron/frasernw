@@ -26,14 +26,14 @@ class UserMasksController < ApplicationController
 
     if !current_user.can_assign_roles.include?(@user_mask.role)
       render :new, notice: "Invalid role."
-    elsif !division_assignments_permitted || @user_mask.division_ids.none?
+    elsif !division_assignments_permitted && @user_mask.division_ids.none?
       render :new, notice: "Invalid divisions."
     else
 
       @user_mask.save
 
       redirect_to root_path,
-        notice: "Now viewing Pathways as a #{current_user.as_role_label} in the following divisions: #{current_user.as_divisions.to_sentence}."
+        notice: "Now viewing Pathways as #{current_user.as_role_label.indefinitize} in the following divisions: #{current_user.as_divisions.to_sentence}."
     end
   end
 
