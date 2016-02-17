@@ -1,7 +1,28 @@
 .alert.alert-banner.mask_warning
   %i.icon-eye-open{style: "margin-right: 5px"}
-  = link_to "You are currently viewing the site as a #{current_user.as_role_label} in the following divisions: #{current_user.as_divisions.to_sentence}.",
+  - if current_user.as_divisions.one?
+    = link_to "You are currently viewing this site from the perspective of #{current_user.as_role_label.indefinite_article} <strong>#{current_user.as_role_label}</strong> in the division of <strong>#{current_user.as_divisions.to_sentence}</strong>.  ".html_safe,
     new_user_mask_path,
     style: "color: #C09853"
+  - elsif current_user.as_divisions.many?
+    = link_to "You are currently viewing this site from the perspective of #{current_user.as_role_label.indefinite_article} <strong>#{current_user.as_role_label}</strong> in the divisions of: <strong>#{current_user.as_divisions.to_sentence(words_connector: '<span style="font-weight:normal;">, </span>'.html_safe, two_words_connector: '<span style="font-weight:normal;"> and </span>'.html_safe, last_word_connector: '<span style="font-weight:normal;">, and </span>'.html_safe)  }</strong>. ".html_safe,
+      new_user_mask_path,
+      style: "color: #C09853"
+  - else
+    = link_to "You are currently viewing this site from the perspective of #{current_user.as_role_label.indefinite_article} <strong>#{current_user.as_role_label}</strong> in no division.  ".html_safe,
+      new_user_mask_path,
+      style: "color: #C09853"
+
+  = link_to "Change view to something else".html_safe,
+    new_user_mask_path,
+    style: "color: #C09853",
+    class: "btn btn-default btn-mini"
+
+  = link_to "Cancel / Go back to Default View",
+    user_masks_path,
+    method: :delete,
+    class: "btn btn-danger btn-mini",
+    style: "color: #ffffff;"
+
   %a.close{"data-dismiss" => "alert", "href" => "#"}
     = "&times;".html_safe
