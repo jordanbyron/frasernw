@@ -1,6 +1,6 @@
 class SpecialistsEditorController < ApplicationController
   include ApplicationHelper
-  skip_before_filter :login_required
+  skip_before_filter :require_authentication
   skip_authorization_check
   before_filter :check_pending, :except => [:pending, :temp_edit, :temp_update]
   before_filter :check_token

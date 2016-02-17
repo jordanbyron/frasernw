@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160212020651) do
+ActiveRecord::Schema.define(:version => 20160216025741) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -1027,6 +1027,20 @@ ActiveRecord::Schema.define(:version => 20160212020651) do
 
   add_index "user_controls_specialists", ["specialist_id"], :name => "index_user_controls_specialists_on_specialist_id"
   add_index "user_controls_specialists", ["user_id"], :name => "index_user_controls_specialists_on_user_id"
+
+  create_table "user_mask_divisions", :force => true do |t|
+    t.integer  "division_id"
+    t.integer  "user_mask_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  create_table "user_masks", :force => true do |t|
+    t.integer  "user_id",    :null => false
+    t.string   "role"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "users", :force => true do |t|
     t.string   "email"

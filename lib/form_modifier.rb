@@ -43,11 +43,11 @@ class FormModifier
   end
 
   def secret_edit?
-    current_user.nil? && token_edit?
+    !current_user.authenticated? && token_edit?
   end
 
   def owner_edit?
-    current_user.present? && !current_user.admin? && interaction_type == :edit
+    current_user.authenticated? && !current_user.as_admin_or_super? && interaction_type == :edit
   end
 
   def token_edit?
@@ -55,7 +55,7 @@ class FormModifier
   end
 
   def admin?
-    current_user.present? && current_user.admin?
+    current_user.authenticated? && current_user.as_admin_or_super?
   end
 
   def admin_rereview?
@@ -79,8 +79,8 @@ class FormModifier
   end
 
   def divisions
-    if current_user.present?
-      current_user.divisions
+    if current_user.authenticated?
+      current_user.as_divisions
     else
       Division.all
     end

@@ -1,0 +1,7 @@
+.alert.alert-banner.mask_warning
+  %i.icon-eye-open{style: "margin-right: 5px"}
+  = link_to "You are currently viewing the site as a #{current_user.as_role_label} in the following divisions: #{current_user.as_divisions.to_sentence}.",
+    new_user_mask_path,
+    style: "color: #C09853"
+  %a.close{"data-dismiss" => "alert", "href" => "#"}
+    = "&times;".html_safe

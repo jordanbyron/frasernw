@@ -24,9 +24,9 @@ module Api
       def usage
         authorize! :view_report, :usage
 
-        if current_user.admin_only? &&
+        if current_user.as_admin? &&
           params[:division_id] != "0" &&
-          !current_user.divisions.map(&:id).include?(params[:division_id].to_i)
+          !current_user.as_divisions.map(&:id).include?(params[:division_id].to_i)
 
           raise "Unauthorized"
         end

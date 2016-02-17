@@ -2,12 +2,12 @@ class ReferralFormsController < ApplicationController
   load_and_authorize_resource except: [:edit, :update]
 
   def index
-    user_divisions = current_user_divisions
+    user_divisions = current_user.as_divisions
 
     @referral_forms = []
 
     Specialization.all.each do |specialization|
-      cities = current_user.divisions.map{ |d| d.local_referral_cities(specialization) }.flatten.uniq
+      cities = current_user.as_divisions.map{ |d| d.local_referral_cities(specialization) }.flatten.uniq
 
       specialists = specialization.specialists.in_cities(cities)
       clinics = specialization.clinics.in_cities(cities)

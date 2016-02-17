@@ -31,7 +31,7 @@ class Report < ActiveRecord::Base
     Report::TYPE_HASH[type_mask]
   end
 
-  USER_TYPE_HASH = {-1 => 'All Non-Admin Users', 0 => 'All Users' }.merge(User::TYPE_HASH)
+  USER_TYPE_HASH = {-1 => 'All Non-Admin Users', 0 => 'All Users' }.merge(User::TYPES)
 
   def user_type
     if [ReportType::SPECIALIST_CONTACT_HISTORY, ReportType::SPECIALIST_WAIT_TIMES, ReportType::CLINIC_WAIT_TIMES, ReportType::ENTITY_STATS].include? type_mask

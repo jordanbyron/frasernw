@@ -5,10 +5,10 @@ class LatestUpdatesController < ApplicationController
     @divisions = begin
       if params[:division_id].present?
         [ Division.find(params[:division_id]) ]
-      elsif current_user_is_admin?
-        [ current_user_divisions.first ]
+      elsif current_user.as_admin_or_super?
+        [ current_user.as_divisions.first ]
       else
-        current_user_divisions
+        current_user.as_divisions
       end
     end
 
@@ -18,7 +18,7 @@ class LatestUpdatesController < ApplicationController
       },
       ui: {
         divisionIds: @divisions.map(&:id),
-        canHide: ((current_user.admin_only? && current_user_divisions.include?(@divisions.first)) || current_user.super_admin?),
+        canHide: ((current_user.as_admin? && current_user.as_divisions.include?(@divisions.first)) || current_user.as_super_admin?),
         latestUpdates: LatestUpdates.for(:index, @divisions),
         hasBeenInitialized: false
       }

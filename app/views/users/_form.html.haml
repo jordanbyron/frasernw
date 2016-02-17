@@ -6,12 +6,21 @@
   = f.input :email if !@new_user
   = f.input :role,
     :as => :select,
-    collection: (current_user_is_super_admin? ? User::ROLE_LABELS : User::ROLE_LABELS.except("super")), 
+    collection: current_user.as_can_assign_roles,
     label_method: :last,
     value_method: :first,
     :include_blank => false
   = f.input :active
-  = f.association :divisions, as: :check_boxes, collection: (current_user_is_super_admin? ? Division.standard : current_user_divisions), checked: (user_edit_checkbox_value_for_division), hint: "<div id='user_form_divisions_hint'><i class='icon-warning-sign'></i> Please select a division for this user. </div>".html_safe, input_html: {:class => "user-form-division-option"}, label_method: :name, value_method: :id, presence: true, include_blank: false
+  = f.association :divisions,
+    as: :check_boxes,
+    collection: current_user.as_can_assign_divisions,
+    checked: (user_edit_checkbox_value_for_division),
+    hint: "<div id='user_form_divisions_hint'><i class='icon-warning-sign'></i> Please select a division for this user. </div>".html_safe,
+    input_html: {:class => "user-form-division-option"},
+    label_method: :name,
+    value_method: :id,
+    presence: true,
+    include_blank: false
   #super_admin_pane
 
   #admin_pane
@@ -19,7 +28,7 @@
   #admin_and_super_admin_pane
 
   #user_pane
-    = f.input :type_mask, :as => :select, :collection => User::TYPE_HASH, :label_method => :last, :value_method => :first, :include_blank => false
+    = f.input :type_mask, :as => :select, :collection => User::TYPES, :label_method => :last, :value_method => :first, :include_blank => false
 
     %h4 Specialist user can edit
     .content
@@ -60,7 +69,7 @@
         :user_controls_clinics,
         class: "btn offset3"
 
-    - if current_user.admin?
+    - if current_user.as_admin_or_super?
       %h4
         = "History & Notes"
       .content

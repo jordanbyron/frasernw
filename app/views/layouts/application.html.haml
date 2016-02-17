@@ -1,4 +1,4 @@
-- user_divisions = current_user_divisions
+- user_divisions = current_user.as_divisions
 
 !!!
 %html
@@ -20,9 +20,11 @@
       = render "layouts/ie_compatibility_warning"
     - if Rails.env.development? || (ENV['APP_NAME'] != 'pathwaysbc')
       = render "shared/test_debugging_info"
+    - if current_user.mask.present?
+      = render "layouts/application/mask_warning"
     = yield(:head)
     - if !Rails.env.development? || ENV['LIVESEARCH'].to_b
-      = render "partials/livesearch_vars", divisions: current_user_divisions
+      = render "partials/livesearch_vars", divisions: current_user.as_divisions
       :javascript
         var livesearch;
         $(document).ready(function()
@@ -48,8 +50,8 @@
             $('meta[name=viewport]').attr('content','initial-scale=1.0, user-scalable=no');
           }
 
-          $('body').data('GLOBAL_USER_ID', #{current_user_id});
-          $('body').data('GLOBAL_USER_TYPE', #{current_user_type_mask});
+          $('body').data('GLOBAL_USER_ID', #{current_user.id});
+          $('body').data('GLOBAL_USER_TYPE', #{current_user.type_mask});
         });
 
 
@@ -115,7 +117,7 @@
                 %li.dropdown.visible-desktop
                   %a.ajax{"href" => root_url} Home
 
-                - if current_user_is_admin?
+                - if current_user.as_admin_or_super?
 
                   %li.dropdown.admin
                     %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
@@ -132,7 +134,7 @@
                       %b.caret
 
                     %ul.dropdown-menu
-                      - if current_user_is_super_admin?
+                      - if current_user.as_super_admin?
                         %li= link_to "Activity Feed", all_versions_path, :class => "history ajax"
                       %li
                         - if total_review_item_count > 0
@@ -144,9 +146,9 @@
                           = link_to "Feedback Queue <span class=\"badge #{user_feedback_item_count > 0 ? "badge-warning" : ""}\">#{user_feedback_item_count}/#{total_feedback_item_count}</span>".html_safe, feedback_items_path, :class => "feedback ajax"
                         - else
                           = link_to "Feedback Queue", feedback_items_path, :class => "feedback ajax"
-                      - if current_user_is_super_admin? || current_user_is_admin?
+                      - if current_user.as_super_admin? || current_user.as_admin_or_super?
                         %li= link_to "Manage Notifications", subscriptions_path, :class => "subscriptions ajax"
-                      - if current_user_is_super_admin? || current_user_is_admin?
+                      - if current_user.as_super_admin? || current_user.as_admin_or_super?
                         %li= link_to "Reports", reports_path, :class => "reports ajax"
                       %li.divider
                       %li.nav-header Pathways
@@ -189,7 +191,7 @@
                             %li= link_to "New Specialty", new_specialization_path, :class => "ajax"
                           - if can? :create, User
                             %li= link_to "New User", new_user_path, :class => "ajax"
-                            - if current_user_is_super_admin?
+                            - if current_user.as_super_admin?
                               %li= link_to "Bulk Create Users", upload_users_path, :class => "ajax"
                       - if can? :index, Procedure
                         %li
@@ -209,14 +211,14 @@
                               %li=link_to "#{specialization.name} Clinics", specialization_clinics_path(specialization), :class => 'division ajax'
                       - if can? :index, Division
                         %li= link_to "Divisions", divisions_path, :class => "ajax"
-                      - elsif current_user_is_admin?
-                        - if current_user.divisions.length == 1
-                          %li= link_to "Division", division_path(current_user.divisions.first), :class => "ajax"
+                      - elsif current_user.as_admin_or_super?
+                        - if current_user.as_divisions.length == 1
+                          %li= link_to "Division", division_path(current_user.as_divisions.first), :class => "ajax"
                         - else
                           %li
                             = link_to "Divisions", "#", :class => "arrow-right-after"
                             %ul.dropdown-menu.sub-menu
-                              - current_user.divisions.each do |division|
+                              - current_user.as_divisions.each do |division|
                                 %li= link_to division.name, division_path(division), :class => "ajax"
                       - if can? :index, HealthcareProvider
                         %li= link_to "Healthcare Providers", healthcare_providers_path, :class => "ajax"
@@ -224,12 +226,12 @@
                         %li= link_to "Hospitals", hospitals_path, :class => "ajax"
                       - if can? :index, Language
                         %li= link_to "Languages", languages_path, :class => "ajax"
-                      - news_item_divisions = current_user_is_super_admin? ? Division.not_hidden : current_user_divisions.reject(&:hidden?)
+                      - news_item_divisions = current_user.as_super_admin? ? Division.not_hidden : current_user.as_divisions.reject(&:hidden?)
                       - if can?(:index, NewsItem) && news_item_divisions.count == 1
                         %li= link_to "News Items", news_items_path, :class => "ajax"
                       - if can?(:index, NewsItem) && news_item_divisions.count > 1
                         %li
-                          = link_to "News Items", news_items_path(division_id: current_user_divisions.first.id), :class => "arrow-right-after"
+                          = link_to "News Items", news_items_path(division_id: current_user.as_divisions.first.id), :class => "arrow-right-after"
                           %ul.dropdown-menu
                             - news_item_divisions.reject(&:hidden?).each do |division|
                               %li=link_to division.name, news_items_path(division_id: division.id), :class => 'office ajax'
@@ -238,7 +240,7 @@
                           = link_to "Offices", "#", :class => "arrow-right-after"
                           %ul.dropdown-menu
                             %li=link_to "All Offices", offices_path, :class => "ajax"
-                            - (current_user_is_super_admin? ? City.all : current_user_cities).each do |city|
+                            - (current_user.as_super_admin? ? City.all : current_user.as_divisions.map(&:city).flatten.uniq).each do |city|
                               %li=link_to "#{city.name} Offices", city_offices_path(city), :class => 'office ajax'
                       - if can? :index, Province
                         %li= link_to "Provinces", provinces_path, :class => "ajax"
@@ -278,7 +280,7 @@
                       - if can? :index, Newsletter
                         %li= link_to "Newsletters", newsletters_path
                       - if can? :read, ScItem
-                        - if current_user_is_super_admin? && @divisions.length > 1
+                        - if current_user.as_super_admin? && @divisions.length > 1
                           %li
                             = link_to "Owned Content Items For...", "#", :class => "create arrow-right-after"
                             %ul.dropdown-menu
@@ -399,12 +401,23 @@
                     %li= link_to "Terms of Use", terms_and_conditions_path, :class => 'tac ajax'
 
                     %li.nav-header Settings
-                    -# %li= link_to "Change name", change_name_path, :class => 'change_name ajax'
-                    -# if @divisions.length > 1
-                      %li= link_to "Change local referral area", change_local_referral_area_path, :class => 'change_local_referral_area ajax'
-                    %li= link_to "Change e-mail address", change_email_path, :class => 'change_email ajax'
-                    %li= link_to "Change password", change_password_path, :class => 'change_password ajax'
-                    %li= link_to "Logout", logout_url, :class => 'logout'
+                    - if current_user.as_admin_or_super?
+                      %li
+                        = link_to "View Pathways as...",
+                          new_user_mask_path,
+                          class: "view_as"
+                    %li
+                      = link_to "Change e-mail address",
+                        change_email_path,
+                        class: 'change_email ajax'
+                    %li
+                      = link_to "Change password",
+                        change_password_path,
+                        class: 'change_password ajax'
+                    %li
+                      = link_to "Logout",
+                        logout_url,
+                        class: 'logout'
 
     #body.container
       .row

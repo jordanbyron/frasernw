@@ -1,9 +1,9 @@
 - set_page_specific_title "Specialties"
 
-- if current_user_is_super_admin?
+- if current_user.as_super_admin?
   - divisions = Division.all
 - else
-  - divisions = current_user_divisions
+  - divisions = current_user.as_divisions
 
 .content-wrapper
 

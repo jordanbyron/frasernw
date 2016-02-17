@@ -1,6 +1,6 @@
 - set_page_specific_title "#{@specialist.name}"
 
-- specialization = (current_user_is_admin? ? @specialist.specializations : @specialist.specializations.not_in_progress_for_divisions(current_user_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
+- specialization = (current_user.as_admin_or_super? ? @specialist.specializations : @specialist.specializations.not_in_progress_for_divisions(current_user.as_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
 
 - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @specialist.id, "Specialist").present? ? "icon-red" : "icon-text") : "icon-text"
 
@@ -9,9 +9,9 @@
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       All Specialties
       %b.caret
-  %li.subsequent{:class => specialization.fully_in_progress_for_divisions(current_user_divisions) && "in-progress"}
+  %li.subsequent{:class => specialization.fully_in_progress_for_divisions(current_user.as_divisions) && "in-progress"}
     = link_to specialization.name, specialization_path(specialization), :class => 'ajax'
-    = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
+    = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user.as_divisions)
 
 = render 'partials/specialization_dropdown_menu'
 
@@ -501,7 +501,7 @@
           });
         }
 
-  - if current_user_is_admin?
+  - if current_user.as_admin_or_super?
     - controlling_users = @specialist.controlling_users.uniq
     - if controlling_users.present?
       %h6 Users that can edit this specialist
@@ -547,7 +547,7 @@
               %a{"href" => specialist_patient_information_office_path(@specialist, specialist_office), "target" => "_blank"}
                 = specialist_office.office.short_address
 
-    - if !current_user_is_admin? && (can? :update, @specialist)
+    - if !current_user.as_admin_or_super? && (can? :update, @specialist)
       %a.btn.btn-primary.ajax{"href" => specialist_self_edit_path(@specialist, @specialist.token)}
         %i.icon-pencil.icon-white
         Update #{@specialist.name}'s information
@@ -555,12 +555,12 @@
       %a.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
         %i.icon-bullhorn.icon-text
         Incorrect Information? Let us know
-    - if !current_user_is_admin? && (can? :update, @specialist)
+    - if !current_user.as_admin_or_super? && (can? :update, @specialist)
       %a.btn.ajax{"href" => photo_specialist_path(@specialist)}
         %i.icon-picture.icon-white
         #{@specialist.photo.present? ? "Change" : "Add"} #{@specialist.name}'s photo
 
-  - if current_user_is_admin?
+  - if current_user.as_admin_or_super?
 
     %p.admin.btn-group
 
@@ -582,7 +582,7 @@
 
         = link_to("<i class='icon-trash'></i>".html_safe + " Delete Specialist", @specialist, :confirm => "Delete #{@specialist.name}?", :method => :delete, :class => "btn")
 
-  - if current_user_is_admin?
+  - if current_user.as_admin_or_super?
     #share.collapse
 
     :javascript
@@ -599,6 +599,6 @@
         }
       })
 
-  - if current_user_is_admin? && !current_user_is_super_admin? # only normal admins
+  - if current_user.as_admin_or_super? && !current_user.as_super_admin? # only normal admins
     .alert.alert-info{style: "margin-top: 10px"}
       If you would like to have this specialist deleted, please contact a provincial administrator.

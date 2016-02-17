@@ -1,0 +1,35 @@
+- set_page_specific_title "View Pathways As..."
+
+.content-wrapper
+
+  %h2= "View Pathways As"
+
+  = simple_form_for @user_mask,
+    url: user_masks_path,
+    method: :post do |f|
+    = f.input :role,
+      as: :select,
+      collection: current_user.can_assign_roles,
+      label_method: :last,
+      value_method: :first,
+      include_blank: false
+
+    = f.association :divisions,
+      as: :check_boxes,
+      collection: current_user.can_assign_divisions,
+      checked: @user_mask.division_ids,
+      input_html: {:class => "user-form-division-option"},
+      label_method: :name,
+      value_method: :id,
+      presence: true,
+      include_blank: false
+
+    .form-actions
+      = f.button :submit,
+        "View With Selected Role and Divisions",
+        class: "btn btn-primary",
+        label: "Submit"
+      = link_to "View With Default Role and Divisions",
+        user_masks_path,
+        class: "btn btn-default",
+        method: :delete

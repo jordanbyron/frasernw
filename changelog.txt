@@ -6,6 +6,9 @@ Local-only = Changes not reflected in Source Code
 Backend Maintenance = Change is not user facing
 
 ## [2016-02-20] [Since 2016-02-06 Integration]
+### Added:
+- Super admins can now view Pathways as other divisions and roles without logging out
+- Admins can now view Pathways as users in their divisions without logging out
 
 
 ## [2016-02-06] [Since 2016-01-30 Integration]

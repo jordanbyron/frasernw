@@ -1,4 +1,4 @@
-- if current_user_is_admin?
+- if current_user.as_admin_or_super?
 
   - cache("specialization_dropdown_admin") do
 
@@ -19,13 +19,13 @@
           %ul
             - list.each do |specialization|
               %li
-                %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}
+                %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user.as_divisions) ? "in-progress" : ""}
                   = specialization.name
-                  = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
+                  = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user.as_divisions)
 
 - else
 
-  - cache("specialization_dropdown_#{current_user_divisions.map{|d| d.id}.join('_')}") do
+  - cache("specialization_dropdown_#{current_user.as_divisions.map{|d| d.id}.join('_')}") do
 
     %script{"type" => "text/javascript"}
       :plain
@@ -34,7 +34,7 @@
 
     #specialties-dropdown-menu
       .inner
-        - specializations = current_user_is_admin? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user_divisions).uniq
+        - specializations = current_user.as_admin_or_super? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user.as_divisions).uniq
         - first = specializations[0, (specializations.length / 4.0).ceil]
         - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
         - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
@@ -44,6 +44,6 @@
           %ul
             - list.each do |specialization|
               %li
-                %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user_divisions) ? "in-progress" : ""}
+                %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user.as_divisions) ? "in-progress" : ""}
                   = specialization.name
-                  = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
+                  = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user.as_divisions)

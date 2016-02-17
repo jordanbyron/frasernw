@@ -8,15 +8,15 @@ class NewsItemsController < ApplicationController
       if params[:division_id].present?
         Division.find(params[:division_id])
       else
-        current_user.divisions.first
+        current_user.as_divisions.first
       end
     end
 
     @props = {
       app: {
         currentUser: {
-          isSuperAdmin: current_user.super_admin?,
-          divisionIds: current_user.divisions.map(&:id)
+          isSuperAdmin: current_user.as_super_admin?,
+          divisionIds: current_user.as_divisions.map(&:id)
         },
         divisions: Division.all.inject({}) do |memo, division|
           memo.merge(division.id => {
@@ -60,12 +60,12 @@ class NewsItemsController < ApplicationController
   def update
     @news_item = NewsItem.find(params[:id])
 
-    if current_user.divisions.include?(@news_item.owner_division)
+    if current_user.as_divisions.include?(@news_item.owner_division)
       render(action: :edit) unless @news_item.update_attributes(params[:news_item])
     end
 
     if @news_item.display_in_divisions!(divisions_to_assign(params, @news_item), current_user)
-      redirect_to root_path(division_id: current_user.divisions.first.id),
+      redirect_to root_path(division_id: current_user.as_divisions.first.id),
         :notice  => "Successfully updated news item. Please allow a couple minutes for the front page to show your changes."
     else
       render :action => 'edit'

@@ -5,10 +5,10 @@ class FeaturedContentsController < ApplicationController
     if params[:division_id].present?
       @division = Division.find(params[:division_id])
     else
-      @division = current_user_divisions.first
+      @division = current_user.as_divisions.first
     end
 
-    if (!current_user_is_super_admin? && !(current_user_divisions.include? @division))
+    if (!current_user.as_super_admin? && !(current_user.as_divisions.include? @division))
       redirect_to root_url, :notice  => "Not allowed to edit this division."
     end
 
@@ -18,13 +18,13 @@ class FeaturedContentsController < ApplicationController
   def update
     authorize! :update, FeaturedContent
     @division = Division.find(params[:division][:id])
-    if (!current_user_is_super_admin? && !(current_user_divisions.include? @division))
+    if (!current_user.as_super_admin? && !(current_user.as_divisions.include? @division))
       redirect_to root_url, :notice  => "Not allowed to edit this division."
     elsif @division.update_attributes(params[:division])
       @division.featured_contents.where(sc_item_id: nil).destroy_all
 
       #expire all the featured content for users that are in the divisions that we just updated
-      User.in_divisions([@division]).map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
+      User.in_divisions([@division]).map{ |u| u.as_divisions.map{ |d| d.id } }.uniq.each do |division_group|
         expire_fragment "featured_content_#{division_group.join('_')}"
       end
 

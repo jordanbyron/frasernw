@@ -4,7 +4,7 @@
 
   %h2 Review Queue Archive
 
-  - divisions = current_user_is_super_admin? ? Division.all : current_user_divisions
+  - divisions = current_user.as_super_admin? ? Division.all : current_user.as_divisions
 
   - specialist_reviews = @review_items.reject{ |review_item| review_item.item.class != Specialist }
   - clinic_reviews = @review_items.reject{ |review_item| review_item.item.class != Clinic }
