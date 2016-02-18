@@ -3,21 +3,42 @@ class VersionsController < ApplicationController
 
   SUPPORTED_KLASSES_FOR_SHOW = [
     Clinic,
-    Specialist
+    Specialist,
+    Language,
+    Procedure,
+    Hospital,
+    HealthcareProvider,
+    Specialization
   ]
   def show
     @version = Version.find(params[:id])
-    if @version.reify.present? # fixes issue of first version record returning nil when reify is called on it
-      @klass = @version.reify.class.to_s.downcase
-      eval("@#{@klass} = @version.reify" )
-    else
-      @klass = @version.next.reify.class.to_s.downcase
-      eval("@#{@klass} = @version.next.reify" )
-    end
-      eval("@feedback = @#{@klass}.active_feedback_items.build" )
-      @is_version = true
-      render :template => "#{@klass.pluralize}/show"
 
+    if @version.event == "destroy"
+      # pre-change version
+
+      item = @version.reify
+    else
+      # post-change version
+
+      item = @version.next.try(:reify) || @version.item
+    end
+
+    klass = item.class
+    instance_name = klass.to_s.downcase
+
+    instance_variable_set("@#{instance_name}", item)
+
+    if item.respond_to?(:active_feedback_items)
+      @feedback = item.active_feedback_items.build
+    end
+
+    @is_version = true
+
+    if SUPPORTED_KLASSES_FOR_SHOW.include?(klass)
+      render :template => "#{instance_name.pluralize}/show"
+    else
+      redirect_to root_url, notice: "Can't show this item"
+    end
   end
 
   def show_all

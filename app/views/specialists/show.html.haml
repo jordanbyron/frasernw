@@ -23,7 +23,7 @@
 .content-wrapper
 
   - if @is_version
-    = render 'versions/info'
+    = render 'versions/info', instance_name: "specialist"
 
   - cache(specialist_path(@specialist)) do
 
