@@ -50,10 +50,10 @@
     %tr
       %th Areas of practice
       %td= procedures.length
-      %td= procedures.reject{|p| !p.procedure_specializations.first.focused?}.length
-      %td= procedures.reject{|p| !p.procedure_specializations.first.nonfocused?}.length
-      %td= Procedure.all.reject{|p| !p.procedure_specializations.first.assumed_specialist?}.length
-      %td= Procedure.all.reject{|p| !p.procedure_specializations.first.assumed_clinic?}.length
+      %td= procedures.reject{|p| !p.procedure_specializations.first.try(:focused?)}.length
+      %td= procedures.reject{|p| !p.procedure_specializations.first.try(:nonfocused?)}.length
+      %td= Procedure.all.reject{|p| !p.procedure_specializations.first.try(:assumed_specialist?)}.length
+      %td= Procedure.all.reject{|p| !p.procedure_specializations.first.try(:assumed_clinic?)}.length
 
     %tr
       %th
