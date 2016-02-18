@@ -1,20 +1,15 @@
-# Show red environment name in pry prompt for non development environments, otherwise show blue
-# Append PRODUCTION in front for main server
-
-def production?
-  ENV['APP_NAME'] == "pathwaysbc" && !Rails.env.development?
+if ENV['APP_NAME'] == "pathwaysbc"
+  color = :red
+  warning = "[Production] "
+elsif ENV['APP_NAME'] == "pathwaysbctest" || ENV['APP_NAME'] == "pathwaysbcdev"
+  color = :yellow
+  warning = ""
+elsif ENV['APP_NAME'] == "pathwaysbclocal"
+  color = :green
+  warning = ""
 end
 
-if production?
-  warning = Pry::Helpers::Text.red("PRODUCTION")
-  env = Pry::Helpers::Text.red(ENV['APP_NAME'])
-  Pry.config.prompt_name = "#{warning} pry@#{env}"  # => [1] PRODUCTION pry@pathwaysbc(main)>
+colored_env = Pry::Helpers::Text.send(color, ENV['APP_NAME'])
+colored_warning = Pry::Helpers::Text.send(color, warning)
 
-elsif !Rails.env.development?                       # staging server console:
-  env = Pry::Helpers::Text.red(ENV['APP_NAME'])
-  Pry.config.prompt_name = "pry@#{env}"             # => [1] pry@pathwaysbctest(main)>
-
-else                                                # local development console:
-  env = Pry::Helpers::Text.blue(ENV['APP_NAME'])
-  Pry.config.prompt_name = "pry@#{env}"             # => [1] pry@pathwaysbcdevelopment(main)>
-end
+Pry.config.prompt_name = "#{colored_warning}pry@#{colored_env}"
