@@ -9,3 +9,17 @@
 ["A", "B", "C", "D"].each {|level|
   Evidence.create(level: level)
 } unless Evidence.any?
+
+
+if !Division.any?
+  divisions = Division.create([{name: "Vancouver"}, {name: "Burnaby"} ])
+end
+
+if !User.any?
+  user = User.new(:name => "First User", :type_mask => 4, :role => "super")
+  user.user_divisions.build(:division_id => Division.where("name = (?)", "Vancouver").first.id)
+  user.password = "test1234"
+  user.email = "test@test.com"
+  user.saved_token = "totallyfake"
+  user.save validate: false
+end
