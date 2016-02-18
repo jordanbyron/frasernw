@@ -131,7 +131,7 @@ class CreateSeeds < ServiceObject
       if masked_key?(key)
         if value.is_a?(Array)
           return [ key, mask_array(value, key) ]
-        elsif value.is_a?(String)
+        elsif value.is_a?(String) || value.is_a?(Integer)
           return [ key, mask_value(key) ]
         end
       end
