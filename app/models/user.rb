@@ -348,7 +348,7 @@ class User < ActiveRecord::Base
     :role
   ].each do |method_name|
     define_method "as_#{method_name}" do
-      if mask.present?
+      if mask.present? && mask.persisted?
         mask.send(method_name)
       else
         send(method_name)
