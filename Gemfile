@@ -148,6 +148,10 @@ group :development do
     git: "git@github.com:pathwaysmedical/quick_spreadsheet.git"
 end
 
+group :production do
+  gem 'pry-rails' # can be used in production if careful:  http://blog.bugsnag.com/production-pry
+end
+
 group :development, :test do
   gem 'pry-rails'
   gem 'pry-doc'
