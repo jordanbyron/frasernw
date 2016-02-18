@@ -8,15 +8,15 @@ class WaitTimeReporter
   end
 
   def all
-    model::WAITTIME_HASH
+    model::WAITTIME_LABELS
   end
 
   def masks
-    model::WAITTIME_HASH.keys
+    model::WAITTIME_LABELS.keys
   end
 
   def labels
-    model::WAITTIME_HASH.values
+    model::WAITTIME_LABELS.values
   end
 
   def counts

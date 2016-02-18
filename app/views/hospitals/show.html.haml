@@ -146,7 +146,7 @@
                             Responded to within:
                             %select.sc
                               %option{"value" => 0} Any timeframe
-                              - Specialist::LAGTIME_HASH.each do |lag_index, lag_value|
+                              - Specialist::LAGTIME_LABELS.each do |lag_index, lag_value|
                                 %option{"value" => "sc#{lag_index}_"}= lag_value
                           %label
                             %input#srpb.sr{"type" => "checkbox"} Patients can call to book after referral
@@ -264,7 +264,7 @@
                             Responded to within:
                             %select.cc
                               %option{"value" => 0} Any timeframe
-                              - Clinic::LAGTIME_HASH.each do |lag_index, lag_value|
+                              - Clinic::LAGTIME_LABELS.each do |lag_index, lag_value|
                                 %option{"value" => "csc#{lag_index}_"}= lag_value
                           %label
                             %input#crpb.cr{"type" => "checkbox"} Patients can call to book after referral
@@ -386,7 +386,7 @@
                             Responded to within:
                             %select.oc
                               %option{"value" => 0} Any timeframe
-                              - Specialist::LAGTIME_HASH.each do |lag_index, lag_value|
+                              - Specialist::LAGTIME_LABELS.each do |lag_index, lag_value|
                                 %option{"value" => "oc#{lag_index}_"}= lag_value
                           %label
                             %input#orpb.osr{"type" => "checkbox"} Patients can call to book after referral

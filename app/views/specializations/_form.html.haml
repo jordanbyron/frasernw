@@ -91,19 +91,19 @@
       .controls
         %label.checkbox
           = check_box_tag "show_specialist_categorization_1[#{division.id}]", "show_specialist_categorization_1[#{division.id}]", show_specialist_categorization_1, :name => "show_specialist_categorization_1[#{division.id}]"
-          = Specialist::CATEGORIZATION_HASH_1
+          = Specialist::CATEGORIZATION_LABELS[1]
         %label.checkbox
           = check_box_tag "show_specialist_categorization_2[#{division.id}]", "show_specialist_categorization_2[#{division.id}]", show_specialist_categorization_2, :name => "show_specialist_categorization_2[#{division.id}]"
-          = Specialist::CATEGORIZATION_HASH_2
+          = Specialist::CATEGORIZATION_LABELS[2]
         %label.checkbox
           = check_box_tag "show_specialist_categorization_3[#{division.id}]", "show_specialist_categorization_3[#{division.id}]", show_specialist_categorization_3, :name => "show_specialist_categorization_3[#{division.id}]"
-          = Specialist::CATEGORIZATION_HASH_3
+          = Specialist::CATEGORIZATION_LABELS[3]
         %label.checkbox
           = check_box_tag "show_specialist_categorization_5[#{division.id}]", "show_specialist_categorization_5[#{division.id}]", show_specialist_categorization_5, :name => "show_specialist_categorization_5[#{division.id}]"
-          = Specialist::CATEGORIZATION_HASH_5
+          = Specialist::CATEGORIZATION_LABELS[5]
         %label.checkbox
           = check_box_tag "show_specialist_categorization_4[#{division.id}]", "show_specialist_categorization_4[#{division.id}]", show_specialist_categorization_4, :name => "show_specialist_categorization_4[#{division.id}]"
-          = Specialist::CATEGORIZATION_HASH_4
+          = Specialist::CATEGORIZATION_LABELS[4]
 
     %script{"type" => "text/javascript"}
       :plain

@@ -7,7 +7,7 @@ module SpecializationsHelper
       next if capacity.blank?
       filtering_attributes << "swt#{ps.procedure_id}_#{capacity.waittime_mask}" if capacity.waittime_mask.present?
       if capacity.lagtime_mask.present?
-        (capacity.lagtime_mask..Specialist::LAGTIME_HASH.length+1).each do |i|
+        (capacity.lagtime_mask..Specialist::LAGTIME_LABELS.length+1).each do |i|
           filtering_attributes << "slt#{ps.procedure_id}_sc#{i}_"
         end
       end
@@ -20,7 +20,7 @@ module SpecializationsHelper
       end
     end
     if s.lagtime_mask.present?
-      (s.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
+      (s.lagtime_mask..Specialist::WAITTIME_LABELS.length+1).each do |i|
         filtering_attributes << "sc#{i}_"
       end
     end
@@ -84,7 +84,7 @@ module SpecializationsHelper
       next if capacity.blank?
       filtering_attributes << "owt#{ps.procedure_id}_#{capacity.waittime_mask}" if capacity.waittime_mask.present?
       if capacity.lagtime_mask.present?
-        (capacity.lagtime_mask..Specialist::LAGTIME_HASH.length+1).each do |i|
+        (capacity.lagtime_mask..Specialist::LAGTIME_LABELS.length+1).each do |i|
           filtering_attributes << "olt#{ps.procedure_id}_oc#{i}_"
         end
       end
@@ -97,7 +97,7 @@ module SpecializationsHelper
       end
     end
     if s.lagtime_mask.present?
-      (s.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
+      (s.lagtime_mask..Specialist::WAITTIME_LABELS.length+1).each do |i|
         filtering_attributes << "oc#{i}_"
       end
     end
@@ -128,7 +128,7 @@ module SpecializationsHelper
       next if focus.blank?
       filtering_attributes << "cwt#{ps.procedure_id}_#{focus.waittime_mask}" if focus.waittime_mask.present?
       if focus.lagtime_mask.present?
-        (focus.lagtime_mask..Clinic::LAGTIME_HASH.length+1).each do |i|
+        (focus.lagtime_mask..Clinic::LAGTIME_LABELS.length+1).each do |i|
           filtering_attributes << "clt#{ps.procedure_id}_cc#{i}_"
         end
       end
@@ -141,7 +141,7 @@ module SpecializationsHelper
       end
     end
     if c.lagtime_mask.present?
-      (c.lagtime_mask..Specialist::WAITTIME_HASH.length+1).each do |i|
+      (c.lagtime_mask..Specialist::WAITTIME_LABELS.length+1).each do |i|
         filtering_attributes << "cc#{i}_"
       end
     end

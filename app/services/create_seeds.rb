@@ -104,11 +104,11 @@ class CreateSeeds < ServiceObject
 
     def mask_hash(hash)
       hash.map do |key, value|
-        mask_hash_pair(key, value)
+        mask_hash_pair(key, value, hash)
       end.to_h
     end
 
-    def mask_hash_pair(key, value)
+    def mask_hash_pair(key, value, hash)
       if value == "" || value == nil
         return [ key, value ]
       elsif value.is_a?(Hash)
@@ -124,7 +124,7 @@ class CreateSeeds < ServiceObject
           if deserialized_value.is_a?(Hash)
             return [ key, mask_hash(deserialized_value).to_yaml ]
           else
-            masked = mask_hash_pair(key, deserialized_value)
+            masked = mask_hash_pair(key, deserialized_value, hash)
 
             return [ key, masked[1].to_yaml ]
           end
@@ -134,12 +134,12 @@ class CreateSeeds < ServiceObject
       if masked_key?(key)
         if value.is_a?(Array)
           return [ key, mask_array(value, key) ]
-        elsif value.is_a?(String) || value.is_a?(Integer)
-          return [ key, mask_value(key) ]
+        else
+          return [ key, mask_value(key, hash) ]
         end
       end
 
-      # double check values we pass through unmasked
+      # double check string values we pass through unmasked
       if value.is_a?(String) && contains_identifying_info?(value)
         log = File.open(IDENTIFYING_INFO_LOGFILE, "a+")
         log.write("\nklass: #{klass}, id: #{@id}, key: #{key}, val: #{value}")
@@ -167,12 +167,12 @@ class CreateSeeds < ServiceObject
         str[PHONE_NUMBER]
     end
 
-    def mask_array(array, key)
+    def mask_array(array, key, hash)
       array.map do |value|
         if value == "" || value == nil
           value
         else
-          mask_value(key)
+          mask_value(key, hash)
         end
       end
     end
@@ -197,11 +197,11 @@ class CreateSeeds < ServiceObject
       MASKED_FRAGMENTS.find{ |fragment, config| key.include?(fragment) }.try(:[], 1)
     end
 
-    def mask_value(key)
+    def mask_value(key, hash)
       config = masked_fragment_config(key)
 
       if config[:faker].present?
-        config[:faker].call(klass)
+        config[:faker].call(klass, hash)
       else
         "seeded_#{key}"
       end
@@ -221,66 +221,99 @@ class CreateSeeds < ServiceObject
       Report
     ]
 
+    RAND_BOOLEAN = Proc.new { [true, false].sample }
     MASKED_FRAGMENTS = {
       "form_file_name" => {
-        :faker => -> (klass) { "seed_form" }
+        :faker => Proc.new { |klass| "seed_form" }
       },
       "photo_file_name" => {
-        :faker => -> (klass) { "seed_photo" }
+        :faker => Proc.new { |klass| "seed_photo" }
       },
       "document_file_name" => {
-        :faker => -> (klass) { "seed_document" }
+        :faker => Proc.new { |klass| "seed_document" }
       },
       "firstname" => {
-        :faker => -> (klass) { Faker::Name.first_name }
+        :faker => Proc.new { |klass| Faker::Name.first_name }
       },
       "lastname" => {
-        :faker => -> (klass) { Faker::Name.last_name}
+        :faker => Proc.new { |klass| Faker::Name.last_name}
       },
       "name" => {
-        :test => -> (klass) { !(KLASSES_ALLOWING_NAME.include?(klass)) },
-        :faker => -> (klass) { klass == Clinic ? Faker::Company.name : Faker::Name.name }
+        :test => Proc.new { |klass| !(KLASSES_ALLOWING_NAME.include?(klass)) },
+        :faker => Proc.new { |klass| klass == Clinic ? Faker::Company.name : Faker::Name.name }
       },
       "phone" => {
-        :faker => -> (klass) { Faker::PhoneNumber.phone_number }
+        :faker => Proc.new { |klass| Faker::PhoneNumber.phone_number }
       },
       "fax" => {
-        :faker => -> (klass) { Faker::PhoneNumber.phone_number }
+        :faker => Proc.new { |klass| Faker::PhoneNumber.phone_number }
+      },
+      "hospital_id" => {
+        :test => Proc.new { |klass| klass == Privilege },
+        :faker => Proc.new { |klass| Hospital.random_id }
+      },
+      "clinic_id" => {
+        :test => Proc.new { |klass| klass == Attendance },
+        :faker => Proc.new { |klass| Clinic.random_id }
+      },
+      "unavailable_to" => {
+        :faker => Proc.new { |klass| rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) }
+      },
+      "unavailable_from" => {
+        :faker => Proc.new { |klass| rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) }
+      },
+      "created_at" => {
+        :faker => Proc.new { |klass, record| rand(Date.civil(2012, 1, 26)..record["created_at"]) }
+      },
+      "referral_fax" => { :faker => RAND_BOOLEAN },
+      "referral_phone" => { :faker => RAND_BOOLEAN },
+      "respond_by_fax" => { :faker => RAND_BOOLEAN },
+      "respond_by_phone" => { :faker => RAND_BOOLEAN },
+      "respond_by_mail" => { :faker => RAND_BOOLEAN },
+      "respond_to_patient" => { :faker => RAND_BOOLEAN },
+      "urgent_fax" => { :faker => RAND_BOOLEAN },
+      "urgent_phone" => { :faker => RAND_BOOLEAN },
+      "sex_mask" => { :faker => Proc.new { [1, 2, 3].sample } },
+      "waittime_mask" => { :faker => Proc.new {|klass| klass::WAITTIME_LABELS.keys.sample } },
+      "lagtime_mask" => { :faker => Proc.new {|klass| klass::LAGTIME_LABELS.keys.sample } },
+      "categorization_mask" => { :faker => Proc.new {|klass| klass::CATEGORIZATION_LABELS.keys.sample } },
+      "updated_at" => {
+        :faker => Proc.new { |klass, record| rand(record["updated_at"]..Date.current) }
       },
       "email" => {
-        :faker => -> (klass) { Faker::Internet.email }
+        :faker => Proc.new { |klass| Faker::Internet.email }
       },
       "billing_number" => {
-        :faker => -> (klass) { 55555 }
+        :faker => Proc.new { |klass| 55555 }
       },
       "address1" => {
-        :faker => -> (klass) { Faker::Address.street_address }
+        :faker => Proc.new { |klass| Faker::Address.street_address }
       },
       "address2" => {
-        :faker => -> (klass) { Faker::Address.street_address }
+        :faker => Proc.new { |klass| Faker::Address.street_address }
       },
       "postalcode" => {
-        :faker => -> (klass) { Faker::Address.postcode }
+        :faker => Proc.new { |klass| Faker::Address.postcode }
       },
       "url" => {
-        :faker => -> (klass) { "http://www.google.ca" }
+        :faker => Proc.new { |klass| "http://www.google.ca" }
       },
       "answer_markdown" => {
-        :faker => -> (klass) { "This is an answer to an FAQ question" }
+        :faker => Proc.new { |klass| "This is an answer to an FAQ question" }
       },
       "title" => {
-        :faker => -> (klass) { Faker::Lorem.sentence }
+        :faker => Proc.new { |klass| Faker::Lorem.sentence }
       },
       "description" => {
-        :test => -> (klass) { klass == ReferralForm || klass == NewsletterDescriptionItem },
-        :faker => -> (klass) { Faker::Lorem.sentence }
+        :test => Proc.new { |klass| klass == ReferralForm || klass == NewsletterDescriptionItem },
+        :faker => Proc.new { |klass| Faker::Lorem.sentence }
       },
       "recipient" => {
-        :faker => -> (klass) { Faker::Internet.email }
+        :faker => Proc.new { |klass| Faker::Internet.email }
       },
       "city_id" => {
-        :test => -> (klass) { klass == Address },
-        :faker => -> (klass) { City.unscoped.select("id").first(order: "RANDOM()")[:id] }
+        :test => Proc.new { |klass| klass == Address },
+        :faker => Proc.new { |klass| City.random_id }
       },
       "investigation" => {},
       "suite" => {},

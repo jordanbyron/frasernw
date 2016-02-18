@@ -50,11 +50,11 @@ class SpecializationOption < ActiveRecord::Base
 
   def specialist_categorization_hash
     categorization_hash = {}
-    categorization_hash[1] = Specialist::CATEGORIZATION_HASH_1 if show_specialist_categorization_1?
-    categorization_hash[2] = Specialist::CATEGORIZATION_HASH_2 if show_specialist_categorization_2?
-    categorization_hash[3] = Specialist::CATEGORIZATION_HASH_3 if show_specialist_categorization_3?
-    categorization_hash[4] = Specialist::CATEGORIZATION_HASH_4 if show_specialist_categorization_4?
-    categorization_hash[5] = Specialist::CATEGORIZATION_HASH_5 if show_specialist_categorization_5?
+    categorization_hash[1] = Specialist::CATEGORIZATION_LABELS[1] if show_specialist_categorization_1?
+    categorization_hash[2] = Specialist::CATEGORIZATION_LABELS[2] if show_specialist_categorization_2?
+    categorization_hash[3] = Specialist::CATEGORIZATION_LABELS[3] if show_specialist_categorization_3?
+    categorization_hash[4] = Specialist::CATEGORIZATION_LABELS[4] if show_specialist_categorization_4?
+    categorization_hash[5] = Specialist::CATEGORIZATION_LABELS[5] if show_specialist_categorization_5?
     categorization_hash
   end
 
