@@ -43,6 +43,10 @@ class CreateSeeds < ServiceObject
     `rm #{IDENTIFYING_INFO_LOGFILE}`
     `rm #{UNMASKED_COLUMNS_LOGFILE}`
 
+    FileUtils.ensure_folder_exists(
+      Rails.root.join("seeds").to_s
+    )
+
     (ActiveRecord::Base.connection.tables - IGNORED_TABLES).each do |table|
       Table.call(klass: table_klasses[table].constantize)
     end
@@ -68,8 +72,7 @@ class CreateSeeds < ServiceObject
           mask_hash(record.attributes)
         end.
         to_yaml
-      directory_name = "seeds"
-      Dir.mkdir(directory_name) unless File.directory?(directory_name)
+
       filename = Rails.root.join("seeds", "#{klass.table_name}.yaml").to_s
       file = File.open(filename, "w+")
       file.write(yaml)
