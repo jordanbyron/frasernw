@@ -247,6 +247,9 @@ class CreateSeeds < ServiceObject
       "email" => {
         :faker => -> (klass) { Faker::Internet.email }
       },
+      "billing_number" => {
+        :faker => -> (klass) { 55555 }
+      },
       "address1" => {
         :faker => -> (klass) { Faker::Address.street_address }
       },
