@@ -1,28 +1,29 @@
 .alert.alert-banner.mask_warning
   %i.icon-eye-open{style: "margin-right: 5px"}
   - if current_user.as_divisions.one?
-    = link_to "You are currently viewing this site from the perspective of #{current_user.as_role_label.indefinite_article} <strong>#{current_user.as_role_label}</strong> in the division of <strong>#{current_user.as_divisions.to_sentence}</strong>.  ".html_safe,
-    new_user_mask_path,
-    style: "color: #C09853"
+    = link_to new_user_mask_path,
+      style: "color: #C09853" do
+      %span= "You are currently viewing this site as #{current_user.as_role_label.indefinite_article} "
+      %strong= current_user.as_role_label
+      %span= "in the division of "
+      %strong= "#{current_user.as_divisions.to_sentence}.".html_safe
   - elsif current_user.as_divisions.many?
-    = link_to "You are currently viewing this site from the perspective of #{current_user.as_role_label.indefinite_article} <strong>#{current_user.as_role_label}</strong> in the divisions of: <strong>#{current_user.as_divisions.to_sentence(words_connector: '<span style="font-weight:normal;">, </span>'.html_safe, two_words_connector: '<span style="font-weight:normal;"> and </span>'.html_safe, last_word_connector: '<span style="font-weight:normal;">, and </span>'.html_safe)  }</strong>. ".html_safe,
-      new_user_mask_path,
-      style: "color: #C09853"
-  - else
-    = link_to "You are currently viewing this site from the perspective of #{current_user.as_role_label.indefinite_article} <strong>#{current_user.as_role_label}</strong> in no division.  ".html_safe,
-      new_user_mask_path,
-      style: "color: #C09853"
+    = link_to new_user_mask_path,
+      style: "color: #C09853" do
+      %span= "You are currently viewing this site as #{current_user.as_role_label.indefinite_article}"
+      %strong= current_user.as_role_label
+      %span=" in the divisions of "
+      %strong= "#{current_user.as_divisions.to_sentence(normal_weight_sentence_connectors)}.".html_safe
 
-  = link_to "Change view to something else".html_safe,
+  = link_to "Configure",
     new_user_mask_path,
     style: "color: #C09853",
-    class: "btn btn-default btn-mini"
+    class: "button--mask_warning"
 
-  = link_to "Cancel / Go back to Default View",
+  = link_to "View as Default Role and Divisions",
     user_masks_path,
     method: :delete,
-    class: "btn btn-danger btn-mini",
-    style: "color: #ffffff;"
+    class: "button--mask_warning"
 
   %a.close{"data-dismiss" => "alert", "href" => "#"}
     = "&times;".html_safe

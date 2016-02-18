@@ -18,3 +18,18 @@ $stacked-buttons-vertical-margin: 4px;
 .button--right_margin {
   margin-right: 5px;
 }
+
+.button--mask_warning {
+  color: #C09853;
+  border: 1px solid #C09853;
+  text-decoration: none;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-left: 5px;
+  &:visited {
+    color: #C09853;
+  }
+  &:hover {
+    text-decoration: none;
+  }
+}

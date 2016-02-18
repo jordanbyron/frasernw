@@ -4,11 +4,18 @@ class UserMasksController < ApplicationController
 
   def new
     redirect_to root_path unless current_user.admin_or_super?
-
     @user_mask = current_user.mask || current_user.build_mask(
       role: current_user.role,
       division_ids: current_user.divisions.map(&:id)
     )
+
+    @cancel_text = begin
+      if @user_mask.persisted?
+        "View as Default Role and Divisions"
+      else
+        "Cancel"
+      end
+    end
   end
 
   def create
@@ -25,11 +32,12 @@ class UserMasksController < ApplicationController
     end
 
     if !current_user.can_assign_roles.include?(@user_mask.role)
-      render :new, notice: "Invalid role."
-    elsif !division_assignments_permitted && @user_mask.division_ids.none?
-      render :new, notice: "Invalid divisions."
+      flash[:notice] = "Invalid role."
+      render :new
+    elsif !division_assignments_permitted || @user_mask.division_ids.none?
+      flash[:notice] = "Invalid divisions."
+      render :new
     else
-
       @user_mask.save
 
       redirect_to root_path,
