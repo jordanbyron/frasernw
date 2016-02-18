@@ -11,7 +11,7 @@ class UserMasksController < ApplicationController
 
     @cancel_text = begin
       if @user_mask.persisted?
-        "View as Default Role and Divisions"
+        "Return to Default View"
       else
         "Cancel"
       end
