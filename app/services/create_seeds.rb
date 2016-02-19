@@ -50,6 +50,147 @@ class CreateSeeds < ServiceObject
     (ActiveRecord::Base.connection.tables - IGNORED_TABLES).each do |table|
       Table.call(klass: table_klasses[table].constantize)
     end
+
+    PostProcess.call
+  end
+
+  class PostProcess < ServiceObject
+
+    def call
+      @new_specialist_specializations = new_specialist_specializations
+      @new_capacities = new_capacities(@new_specialist_specializations)
+
+      File.open(
+        Rails.root.join("seeds", "specialist_specializations.yaml").to_s,
+        "a+"
+      ).write(@new_specialist_specializations.to_yaml)
+
+      File.open(
+        Rails.root.join("seeds", "capacities.yaml").to_s,
+        "a+"
+      ).write(@new_capacities.to_yaml)
+    end
+
+    def new_specialist_specializations
+      original = YAML.load_file(
+        Rails.root.join("seeds", "specialist_specializations.yaml").to_s
+      )
+
+      specialists = original.count_by do |specialist_specialization|
+        specialist_specialization["specialist_id"]
+      end
+
+      specializations = original.count_by do |specialist_specialization|
+        specialist_specialization["specialization_id"]
+      end
+
+      id = 0
+
+      specializations.inject([]) do |memo, (specialization_id, count)|
+        memo + count.times.inject([]) do |inner_memo|
+          specialist_id = specialists.keys.sample
+          specialists[specialist_id] = specialists[specialist_id] - 1
+          specialists.delete(specialist_id) if specialists[specialist_id] == 0
+          created_at = rand(Date.civil(2012, 1, 26)..Date.current)
+          updated_at = rand(created_at..Date.current)
+          id += 1
+
+          inner_memo << {
+            "specialist_id" => specialist_id,
+            "specialization_id" => specialization_id,
+            "created_at" => created_at,
+            "updated_at" => updated_at,
+            "id" => id
+          }
+        end
+      end
+    end
+
+    def new_capacities(specialist_specializations)
+      original = YAML.load_file(
+        Rails.root.join("seeds", "capacities.yaml").to_s
+      )
+
+      specializations = original.select do |capacity|
+        capacity["procedure_specialization_id"].present?
+      end.map do |capacity|
+        ps = ProcedureSpecialization.
+          includes(:specialization).
+          where(id: capacity["procedure_specialization_id"]).
+          first
+
+        sp = ps.specialization
+        puts ps.try(:procedure).try(:name)
+        puts sp.try(:name)
+
+        capacity.merge(
+          "specialization_id" => sp.try(:id)
+        )
+      end.select do |capacity|
+        capacity["specialization_id"].present?
+      end.group_by do |capacity|
+        capacity["specialization_id"]
+      end.map do |specialization_id, capacities|
+        # take our new specialist assignments and map them to the existing
+        # distribution across procedure specializations
+        new_specialist_ids = specialist_specializations.select do |specialist_specialization|
+          specialist_specialization["specialization_id"] == specialization_id
+        end.map do |specialist_specialization|
+          specialist_specialization["specialist_id"]
+        end.uniq
+
+        specialists = capacities.count_by do |capacity|
+          capacity["specialist_id"]
+        end.map do |specialist_id, capacity_count|
+          next unless new_specialist_ids.any?
+
+          new_specialist_id = new_specialist_ids.sample
+          new_specialist_ids.delete(new_specialist_id)
+
+          [ new_specialist_id, capacity_count ]
+        end.select(&:present?).to_h
+
+        procedure_specializations = capacities.count_by do |capacity|
+          capacity["procedure_specialization_id"]
+        end
+
+        [
+          specialization_id,
+          {
+            specialists: specialists,
+            procedure_specializations: procedure_specializations
+          }
+        ]
+      end.to_h
+
+      id = 0
+
+      specializations.inject([]) do |memo, (specialization_id, associated)|
+        memo + associated[:procedure_specializations].inject([]) do |inner_memo, (procedure_specialization_id, count)|
+          specialists = associated[:specialists]
+          inner_memo + count.times.inject([]) do |ps_capacities|
+            if specialists.keys.any?
+              specialist_id = specialists.keys.sample
+              specialists[specialist_id] = specialists[specialist_id] - 1
+              specialists.delete(specialist_id) if specialists[specialist_id] == 0
+              created_at = rand(Date.civil(2012, 1, 26)..Date.current)
+              updated_at = rand(created_at..Date.current)
+              id += 1
+
+              ps_capacities << {
+                id: id,
+                procedure_specialization_id: procedure_specialization_id,
+                specialist_id: specialist_id,
+                created_at: created_at,
+                updated_at: updated_at
+              }
+            else
+              ps_capacities
+            end
+          end
+        end
+      end
+    end
   end
 
   class Table < ServiceObject
@@ -263,7 +404,7 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new { |klass| rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) }
       },
       "created_at" => {
-        :faker => Proc.new { |klass, record| rand(Date.civil(2012, 1, 26)..record["created_at"]) }
+        :faker => Proc.new { |klass, record| rand(Date.civil(2012, 1, 26)..record["created_at"].to_date) }
       },
       "referral_fax" => { :faker => RAND_BOOLEAN },
       "referral_phone" => { :faker => RAND_BOOLEAN },
@@ -278,7 +419,7 @@ class CreateSeeds < ServiceObject
       "lagtime_mask" => { :faker => Proc.new {|klass| klass::LAGTIME_LABELS.keys.sample } },
       "categorization_mask" => { :faker => Proc.new {|klass| klass::CATEGORIZATION_LABELS.keys.sample } },
       "updated_at" => {
-        :faker => Proc.new { |klass, record| rand(record["updated_at"]..Date.current) }
+        :faker => Proc.new { |klass, record| rand(record["updated_at"].to_date..Date.current) }
       },
       "email" => {
         :faker => Proc.new { |klass| Faker::Internet.email }
@@ -317,11 +458,15 @@ class CreateSeeds < ServiceObject
       },
       "investigation" => {},
       "suite" => {},
-      "body" => {},
+      "body" => {
+        :faker => Proc.new { |klass| Faker::Lorem.sentence }
+      },
       "area_of_focus" => {},
       "referral_criteria" => {},
       "referral_process" => {},
-      "content" => {},
+      "content" => {
+        :faker => Proc.new { |klass| Faker::Lorem.sentence }
+      },
       "data" => {},
       "session_id" => {},
       "feedback" => {},
