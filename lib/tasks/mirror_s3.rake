@@ -1,5 +1,9 @@
 namespace :pathways do
   task :mirror_s3 => :environment do
+    if ENV['APP_NAME'] == "pathwaysbc"
+      raise "Can't mirror production against itself"
+    end
+
     [
       :content_item_documents,
       :newsletters,
