@@ -48,7 +48,7 @@ class DivisionsController < ApplicationController
         old_so = SpecializationOption.find_by_division_id_and_specialization_id( first_division.id, s.id )
         new_so = SpecializationOption.find_or_create_by_division_id_and_specialization_id( @division.id, s.id )
         new_so.in_progress = old_so.in_progress
-        new_so.owner = old_so.owner.as_super_admin? ? old_so.owner : default_owner
+        new_so.owner = old_so.owner.super_admin? ? old_so.owner : default_owner
         new_so.content_owner = old_so.content_owner.as_super_admin? ? old_so.content_owner : default_owner
         new_so.open_to_type = old_so.open_to_type
         new_so.open_to_sc_category_id = old_so.open_to_sc_category_id

@@ -13,7 +13,7 @@ var utils = require("utils");
 import anyFiltersActivated from "state_mappers/filter_table/any_filters_activated";
 var React = require("react");
 import CategoryLink from "react_components/category_link";
-var Alert = require("react_components/alert");
+import Alert from "react_components/alert";
 import MaybeContent from "react_components/maybe_content";
 
 module.exports = function(state, dispatch) {
