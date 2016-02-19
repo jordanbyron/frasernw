@@ -371,4 +371,8 @@ class User < ActiveRecord::Base
   def as_can_assign_divisions
     as_super_admin? ? Division.not_hidden : as_divisions
   end
+
+  def division_id
+    divisions.first.try(:id) || -1
+  end
 end
