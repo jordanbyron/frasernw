@@ -313,7 +313,7 @@ class Clinic < ActiveRecord::Base
     if (status_mask == 3) || status_mask.blank?
       UNKNOWN_STATUS
     else
-      Clinic::STATUS_HASH[status_mask]
+      Clinic::STATUS_HASH[status_mask] || ""
     end
   end
 
