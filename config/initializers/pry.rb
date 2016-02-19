@@ -1,11 +1,12 @@
+# Colour rails console pry shell prompt differently based on environment
 if ENV['APP_NAME'] == "pathwaysbc"
   color = :red
-  warning = "[Production] "
-elsif ENV['APP_NAME'] == "pathwaysbctest" || ENV['APP_NAME'] == "pathwaysbcdev"
+  warning = "Production"
+elsif !Rails.env.development?
   color = :yellow
   warning = ""
-elsif ENV['APP_NAME'] == "pathwaysbclocal"
-  color = :green
+elsif Rails.env.development?
+  color = :cyan
   warning = ""
 end
 
