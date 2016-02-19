@@ -24,7 +24,7 @@ class FeaturedContentsController < ApplicationController
       @division.featured_contents.where(sc_item_id: nil).destroy_all
 
       #expire all the featured content for users that are in the divisions that we just updated
-      User.in_divisions([@division]).map{ |u| u.as_divisions.map{ |d| d.id } }.uniq.each do |division_group|
+      User.in_divisions([@division]).map{ |u| u.divisions.map{ |d| d.id } }.uniq.each do |division_group|
         expire_fragment "featured_content_#{division_group.join('_')}"
       end
 

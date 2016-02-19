@@ -273,44 +273,42 @@ class CreateSeeds < ServiceObject
     end
 
     def mask_hash_pair(key, value, hash)
-      if value == "" || value == nil
-        return [ key, value ]
-      elsif value.is_a?(Hash)
-        return [ key, mask_hash(value) ]
-      elsif value.is_a?(String)
-        if is_json?(value)
-          hashed_value = JSON.parse(value)
-
-          return [ key, mask_hash(hashed_value).to_json ]
-        elsif is_yaml?(value)
-          deserialized_value = YAML.load(value)
-
-          if deserialized_value.is_a?(Hash)
-            return [ key, mask_hash(deserialized_value).to_yaml ]
-          else
-            masked = mask_hash_pair(key, deserialized_value, hash)
-
-            return [ key, masked[1].to_yaml ]
-          end
-        end
-      end
-
       if masked_key?(key)
         if value.is_a?(Array)
-          return [ key, mask_array(value, key) ]
+          [ key, mask_array(value, key) ]
         else
-          return [ key, mask_value(key, hash) ]
+          [ key, mask_value(key, hash) ]
+        end
+      elsif value == "" || value == nil
+        [ key, value ]
+      elsif value.is_a?(Hash)
+        [ key, mask_hash(value) ]
+      elsif value.is_a?(String) && is_json?(value)
+          hashed_value = JSON.parse(value)
+
+          [ key, mask_hash(hashed_value).to_json ]
+      elsif value.is_a?(String) && is_yaml?(value)
+        deserialized_value = YAML.load(value)
+
+        if deserialized_value.is_a?(Hash)
+          [ key, mask_hash(deserialized_value).to_yaml ]
+        else
+          masked = mask_hash_pair(key, deserialized_value, hash)
+
+          [ key, masked[1].to_yaml ]
+        end
+      else
+        # double check string values we pass through unmasked
+        if value.is_a?(String) && contains_identifying_info?(value)
+          raise "#{klass}, #{key}, #{value} Contains identifying info!"
+
+          # log = File.open(IDENTIFYING_INFO_LOGFILE, "a+")
+          # log.write("\nklass: #{klass}, id: #{@id}, key: #{key}, val: #{value}")
+          # log.close
+        else
+          [ key, value ]
         end
       end
-
-      # double check string values we pass through unmasked
-      if value.is_a?(String) && contains_identifying_info?(value)
-        log = File.open(IDENTIFYING_INFO_LOGFILE, "a+")
-        log.write("\nklass: #{klass}, id: #{@id}, key: #{key}, val: #{value}")
-        log.close
-      end
-
-      return [ key, value ]
     end
 
     PHONE_NUMBER = /(?:\+?|\b)[0-9]{10}\b/
