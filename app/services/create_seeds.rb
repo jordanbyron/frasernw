@@ -3,11 +3,17 @@ class CreateSeeds < ServiceObject
 
 
   IGNORED_TABLES = [
+    "activities",
     "metrics",
     "delayed_jobs",
     "sessions",
     "versions",
     "schema_migrations",
+    "subscriptions",
+    "subscriptions_sc_categories",
+    "subscription_divisions",
+    "subscription_news_item_types",
+    "subscription_specialization",
     "review_items"
   ]
 
