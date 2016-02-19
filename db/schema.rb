@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160217221005) do
+ActiveRecord::Schema.define(:version => 20160219224656) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -879,7 +879,6 @@ ActiveRecord::Schema.define(:version => 20160217221005) do
     t.datetime "updated_at"
     t.integer  "division_id"
     t.boolean  "in_progress",                      :default => false
-    t.boolean  "open_to_clinic_tab_old",           :default => false
     t.boolean  "is_new",                           :default => false
     t.integer  "content_owner_id"
     t.integer  "open_to_type",                     :default => 1
