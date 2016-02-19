@@ -10,7 +10,7 @@ class CreateSeeds < ServiceObject
     "versions",
     "schema_migrations",
     "subscriptions",
-    "subscriptions_sc_categories",
+    "subscription_sc_categories",
     "subscription_divisions",
     "subscription_news_item_types",
     "subscription_specialization",
