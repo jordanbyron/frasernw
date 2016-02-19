@@ -70,22 +70,22 @@ class CreateSeeds < ServiceObject
 
       File.open(
         Rails.root.join("seeds", "specialist_specializations.yaml").to_s,
-        "a+"
+        "w+"
       ).write(new_specialist_specializations.to_yaml)
 
       File.open(
         Rails.root.join("seeds", "capacities.yaml").to_s,
-        "a+"
+        "w+"
       ).write(new_capacities.to_yaml)
 
       File.open(
         Rails.root.join("seeds", "clinic_specializations.yaml").to_s,
-        "a+"
+        "w+"
       ).write(new_clinic_specializations.to_yaml)
 
       File.open(
         Rails.root.join("seeds", "focuses.yaml").to_s,
-        "a+"
+        "w+"
       ).write(new_focuses.to_yaml)
     end
 
@@ -207,11 +207,11 @@ class CreateSeeds < ServiceObject
               id += 1
 
               ps_procedure_links << {
-                id: id,
-                procedure_specialization_id: procedure_specialization_id,
-                referrable_id: referrable_id,
-                created_at: created_at,
-                updated_at: updated_at
+                "id" => id,
+                "procedure_specialization_id" => procedure_specialization_id,
+                "#{referrable_type}_id" => referrable_id,
+                "created_at" => created_at,
+                "updated_at" => updated_at
               }
             else
               ps_procedure_links
@@ -443,7 +443,9 @@ class CreateSeeds < ServiceObject
       "urgent_phone" => { :faker => RAND_BOOLEAN },
       "sex_mask" => { :faker => Proc.new { [1, 2, 3].sample } },
       "waittime_mask" => { :faker => Proc.new {|klass| klass::WAITTIME_LABELS.keys.sample } },
-      "lagtime_mask" => { :faker => Proc.new {|klass| klass::LAGTIME_LABELS.keys.sample } },
+      "lagtime_mask" => {
+        :faker => Proc.new {|klass| klass::LAGTIME_LABELS.keys.sample }
+      },
       "categorization_mask" => { :faker => Proc.new {|klass| klass::CATEGORIZATION_LABELS.keys.sample } },
       "status_mask" => {
         :faker => Proc.new {|klass| klass == "Specialist" ? rand(1..11) : rand(1..7) }
