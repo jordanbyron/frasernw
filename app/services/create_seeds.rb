@@ -486,7 +486,7 @@ class CreateSeeds < ServiceObject
       },
       "city_id" => {
         :test => Proc.new { |klass| klass == Address },
-        :faker => Proc.new { |klass| City.random_id }
+        :faker => Proc.new { |klass, hash| hash["city_id"].nil? ? nil : City.random_id }
       },
       "investigation" => {},
       "suite" => {},
@@ -554,7 +554,6 @@ class CreateSeeds < ServiceObject
       "Martin",
       "Lau",
       "Young",
-      "Thompson",
       "Scott",
       "Nguyen",
       "Cheng",
