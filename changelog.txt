@@ -9,7 +9,14 @@ Backend Maintenance = Change is not user facing
 ### Added:
 - Super admins can now view Pathways as other divisions and roles without logging out
 - Admins can now view Pathways as users in their divisions without logging out
+- Service to create seeds for a fake database
 
+### Fixed:
+- 'Stats' report breaking if procedures don't have any procedure specializations
+- Search for bariatric general surgery
+- A specialty could be created without all divisions having settings for it
+- A new division would not have all of its specialty settings created if Fraser Northwest didn't have settings for all specialties.
+- Error in versions#show
 
 ## [2016-02-06] [Since 2016-01-30 Integration]
 ### Added:
