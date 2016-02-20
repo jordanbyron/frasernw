@@ -11,6 +11,9 @@ Backend Maintenance = Change is not user facing
 - Admins can now view Pathways as users in their divisions without logging out
 - Service to create seeds for a fake database
 
+### Changed:
+- Updated wording of subscription emails to be more natural
+
 ### Fixed:
 - 'Stats' report breaking if procedures don't have any procedure specializations
 - Search for bariatric general surgery

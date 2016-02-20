@@ -135,6 +135,19 @@ class Subscription < ActiveRecord::Base
     end
   end
 
+  def interval_phrase
+    case interval
+    when ::Subscription::INTERVAL_IMMEDIATELY
+      return "just now"
+    when ::Subscription::INTERVAL_DAILY
+      return "today"
+    when ::Subscription::INTERVAL_WEEKLY
+      return "this week"
+    when ::Subscription::INTERVAL_MONTHLY
+      return "this month"
+    end
+  end
+
   def interval_to_words # returns string e.g.: "Daily"
     INTERVAL_HASH[interval]
   end
