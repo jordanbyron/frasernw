@@ -13,6 +13,7 @@ Backend Maintenance = Change is not user facing
 
 ### Changed:
 - Updated wording of subscription emails to be more natural
+- Update Level of Evidences, show levels as "(LOE=A)" and have them link to https://www.essentialevidenceplus.com/product/ebm_loe.cfm?show=grade
 
 ### Fixed:
 - 'Stats' report breaking if procedures don't have any procedure specializations

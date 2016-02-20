@@ -1,4 +1,5 @@
-- if evidence.summary.present?
-  %span{show_tooltip(title: "Level of Evidence #{evidence.level}: <br> #{evidence.summary}".html_safe, placement: "right")}= evidence.level
-- else
-  %span{show_tooltip(title: "Level of Evidence: #{evidence.level}", placement: "right")}= evidence.level
+- if evidence.level.present?
+  %span{show_tooltip(title: evidence_tooltip_text(evidence), placement: "right")}
+    %strong
+      Level of Evidence
+    = link_to evidence.label, "https://www.essentialevidenceplus.com/product/ebm_loe.cfm?show=grade"
