@@ -2,7 +2,7 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    if user.blank?
+    if !user.authenticated?
 
       #not logged in
 
@@ -152,7 +152,7 @@ class Ability
 
         can :view_history, Historical
 
-      elsif user.user?
+      elsif user.as_user?
 
         #user
 
