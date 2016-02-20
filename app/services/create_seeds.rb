@@ -13,8 +13,9 @@ class CreateSeeds < ServiceObject
     "subscription_sc_categories",
     "subscription_divisions",
     "subscription_news_item_types",
-    "subscription_specialization",
-    "review_items"
+    "subscription_specializations",
+    "review_items",
+    "secret_tokens"
   ]
 
   IDENTIFYING_INFO_LOGFILE = Rails.root.join("tmp", "identifying_info.txt").to_s
@@ -390,6 +391,7 @@ class CreateSeeds < ServiceObject
     ]
 
     RAND_BOOLEAN = Proc.new { [true, false].sample }
+    RAND_MSP = [50000...60000]
     MASKED_FRAGMENTS = {
       "form_file_name" => {
         :faker => Proc.new { |klass| "seed_form" }
@@ -457,7 +459,7 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new { |klass| Faker::Internet.email }
       },
       "billing_number" => {
-        :faker => Proc.new { |klass| 55555 }
+        :faker => Proc.new { |klass| RAND_MSP.sample }
       },
       "address1" => {
         :faker => Proc.new { |klass| Faker::Address.street_address }
