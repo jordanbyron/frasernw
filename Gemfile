@@ -107,6 +107,8 @@ gem 'virtus'
 group :test do
   # Pretty printed test output
   gem 'turn', :require => false
+  gem 'capybara'
+  gem 'selenium-webdriver'
 end
 
 group :development, :test do
