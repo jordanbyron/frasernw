@@ -2,3 +2,9 @@
 
 dropdb pathways_development
 createdb -O rusl -T pathways_production pathways_development
+
+# # Usage notes:
+# For updating local database, the manual script order is:
+#   1. script/pull_prod_db      [attempts to pull latest heroku db backup to pathways_production_pull]
+#   2. script/replace_prod_db   [replaces pathways_production with pathways_production_pull (don't run unless step 1 was a success)]
+# > 3. script/import_prod_db    [resets pathways_development back to pathways_production]
