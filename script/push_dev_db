@@ -1,0 +1,4 @@
+#!/bin/bash
+
+heroku pg:reset DATABASE --app pathwaysbcdev --confirm pathwaysbcdev
+heroku pg:push pathways_development DATABASE_URL --app pathwaysbcdev
