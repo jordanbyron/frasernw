@@ -182,7 +182,7 @@ class Clinic < ActiveRecord::Base
     (divisions.length > 0) && (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length == 0)
   end
 
-  CATEGORIZATION_HASH = {
+  CATEGORIZATION_LABELS = {
     1 => "Responded to survey",
     2 => "Not responded to survey",
     3 => "Purposely not yet surveyed",
@@ -313,7 +313,7 @@ class Clinic < ActiveRecord::Base
     if (status_mask == 3) || status_mask.blank?
       UNKNOWN_STATUS
     else
-      Clinic::STATUS_HASH[status_mask]
+      Clinic::STATUS_HASH[status_mask] || ""
     end
   end
 
@@ -361,13 +361,13 @@ class Clinic < ActiveRecord::Base
     status_mask == 7
   end
 
-  WAITTIME_HASH = Specialist::WAITTIME_HASH
+  WAITTIME_LABELS = Specialist::WAITTIME_LABELS
 
   def waittime
-    waittime_mask.present? ? Clinic::WAITTIME_HASH[waittime_mask] : ""
+    waittime_mask.present? ? Clinic::WAITTIME_LABELS[waittime_mask] : ""
   end
 
-  LAGTIME_HASH = {
+  LAGTIME_LABELS = {
     1 => "Book by phone when office calls for referral",
     2 => "Within one week",
     3 => "1-2 weeks",
@@ -385,7 +385,7 @@ class Clinic < ActiveRecord::Base
   }
 
   def lagtime
-    Clinic::LAGTIME_HASH[lagtime_mask]
+    Clinic::LAGTIME_LABELS[lagtime_mask]
   end
 
   BOOLEAN_HASH = {

@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   include Historical
   include Noteable
+  include HasRole
 
   PAPER_TRAIL_IGNORED_ATTRIBUTES = [
     :persistence_token,
@@ -28,7 +29,10 @@ class User < ActiveRecord::Base
 
   validates :name, presence: true
 
-  has_many :user_divisions, :source => :division_users, :class_name => "DivisionUser", :dependent => :destroy
+  has_many :user_divisions,
+    :source => :division_users,
+    :class_name => "DivisionUser",
+    :dependent => :destroy
   has_many :divisions, :through => :user_divisions
   #has_many :cities, :through => :divisions
 
@@ -73,6 +77,8 @@ class User < ActiveRecord::Base
   # times that the user (as admin) has contacted specialists
   has_many :contacts
 
+  has_one :mask, dependent: :destroy, class_name: "UserMask"
+
   delegate :with_activity, to: :subscriptions, prefix: true
 
   # after_commit :flush_cache
@@ -93,16 +99,29 @@ class User < ActiveRecord::Base
     :agree_to_toc,
     :type_mask
 
-LIMITED_ROLE_HASH = {
-    "user" => "User",
-    "admin" => "Administrator"
-  }
-
-  ROLE_HASH = {
+  ROLE_LABELS = {
     "user" => "User",
     "admin" => "Administrator",
     "super" => "Super Administrator"
   }
+
+  def self.seed(args)
+    email = args[:email]
+    password = args[:password]
+    division_id = args[:division_id]
+    role = args[:role]
+    name = args[:name]
+
+    create(
+      email: email,
+      email_confirmation: email,
+      password: password,
+      password_confirmation: password,
+      role: role,
+      type_mask: 4,
+      name: name
+    ).user_divisions.create(division_id: division_id)
+  end
 
   def self.user
     where("users.role = 'user'")
@@ -194,24 +213,12 @@ LIMITED_ROLE_HASH = {
     active
   end
 
-  def user?
-    (self.role == 'user')
-  end
-
-  def admin_only?
-    (self.role == 'admin')
-  end
-
-  def admin?
-    admin_only? || super_admin?
-  end
-
-  def super_admin?
-    self.role == 'super'
-  end
-
   def pending?
     self.email.blank?
+  end
+
+  def adjusted_type_mask
+    admin_or_super? ? 0 : type_mask
   end
 
   def validate_signup
@@ -238,12 +245,7 @@ LIMITED_ROLE_HASH = {
   end
   #####
 
-
-  def role_full
-    User::ROLE_HASH[self.role]
-  end
-
-  TYPE_HASH = {
+  TYPES = {
     1 => "GP Office",
     2 => "Specialist Office",
     3 => "Clinic",
@@ -256,7 +258,7 @@ LIMITED_ROLE_HASH = {
   }
 
   def type
-    User::TYPE_HASH[type_mask]
+    User::TYPES[type_mask]
   end
 
   def token
@@ -273,17 +275,6 @@ LIMITED_ROLE_HASH = {
     end
   end
 
-  # # # User + Referral Cities methods, may be useful:
-  # # returns true when a user has an overlapping referral_city from a given array of cities (e.g. specialist.cities / clinic.cities)
-  # def shares_local_referral_city?(cities)
-  #   !(cities & self.divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
-  # end
-
-  # # returns true if a user does not have an overlapping referral_city from a given array of cities (e.g. specialist.cities / clinic.cities)
-  # def does_not_share_local_referral_city?(cities)
-  #   (cities & self.divisions.map{|d| d.referral_cities}.flatten.uniq).blank?
-  # end
-
   def owns(specializations)
     does_own = false
     specializations.each do |specialization|
@@ -296,7 +287,7 @@ LIMITED_ROLE_HASH = {
     return user_city_specializations.reject{ |ucs| ucs.specialization_id != specialization.id }.map{ |ucs| ucs.user_city.city }
   end
 
-  def self.import(file, divisions, type_mask, role)
+  def self.csv_import(file, divisions, type_mask, role)
     users = []
     CSV.foreach(file.path) do |row|
       user = User.new(:name => row[0], :divisions => divisions, :type_mask => type_mask, :role => role)
@@ -318,17 +309,17 @@ LIMITED_ROLE_HASH = {
   end
 
   def divisions_referral_cities(specialization)
-    divisions.map do |division|
+    as_divisions.map do |division|
       division.local_referral_cities(specialization)
     end.flatten.uniq
   end
 
   def customized_city_rankings?
-    divisions.first.use_customized_city_priorities?
+    as_divisions.first.use_customized_city_priorities?
   end
 
   def city_rankings
-    divisions.first.city_rankings
+    as_divisions.first.city_rankings
   end
 
   def known?
@@ -336,10 +327,52 @@ LIMITED_ROLE_HASH = {
   end
 
   def reporting_divisions
-    if super_admin?
+    if as_super_admin?
       Division.standard
     else
-      divisions.not_hidden
+      as_divisions.not_hidden
     end
+  end
+
+  def authenticated?
+    true
+  end
+
+  [
+    :divisions,
+    :super_admin?,
+    :admin?,
+    :admin_or_super?,
+    :user?,
+    :role_label,
+    :role
+  ].each do |method_name|
+    define_method "as_#{method_name}" do
+      if mask.present? && mask.persisted?
+        mask.send(method_name)
+      else
+        send(method_name)
+      end
+    end
+  end
+
+  def can_assign_roles
+    super_admin? ? User::ROLE_LABELS : User::ROLE_LABELS.except("super")
+  end
+
+  def as_can_assign_roles
+    as_super_admin? ? User::ROLE_LABELS : User::ROLE_LABELS.except("super")
+  end
+
+  def can_assign_divisions
+    super_admin? ? Division.not_hidden : divisions
+  end
+
+  def as_can_assign_divisions
+    as_super_admin? ? Division.not_hidden : as_divisions
+  end
+
+  def division_id
+    divisions.first.try(:id) || -1
   end
 end

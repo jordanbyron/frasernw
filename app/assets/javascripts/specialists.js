@@ -161,7 +161,7 @@ $(".scheduled").live("change", scheduled_changed)
 
 var specialist_categorization_changed = function()
 {
-  //these map to specialist CATEGORIZATION_HASH
+  //these map to specialist CATEGORIZATION_LABELS
   if ($(this).val() == 1 || $(this).val() == 2 || $(this).val() == 5)
   {
     //surveyed (may or may not have fully responded)

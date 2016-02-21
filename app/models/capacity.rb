@@ -2,6 +2,9 @@ class Capacity < ActiveRecord::Base
   belongs_to :specialist
   belongs_to :procedure_specialization
 
+  WAITTIME_LABELS = Specialist::WAITTIME_LABELS
+  LAGTIME_LABELS = Specialist::LAGTIME_LABELS
+
   include PaperTrailable
 
   delegate :procedure, to: :procedure_specialization
@@ -11,10 +14,10 @@ class Capacity < ActiveRecord::Base
   end
 
   def waittime
-    Specialist::WAITTIME_HASH[waittime_mask].present? ? Specialist::WAITTIME_HASH[waittime_mask] : ""
+    WAITTIME_LABELS[waittime_mask].present? ? WAITTIME_LABELS[waittime_mask] : ""
   end
 
   def lagtime
-    Specialist::LAGTIME_HASH[lagtime_mask].present? ? Specialist::LAGTIME_HASH[lagtime_mask] : ""
+    LAGTIME_LABELS[lagtime_mask].present? ? LAGTIME_LABELS[lagtime_mask] : ""
   end
 end

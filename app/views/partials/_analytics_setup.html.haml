@@ -3,9 +3,9 @@
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-32752873-1']);
     _gaq.push(['_trackPageview']);
-    _gaq.push(['_setCustomVar', 1, 'ID', '#{current_user_id}', 1]);
-    _gaq.push(['_setCustomVar', 2, 'Type', '#{current_user_type_mask}', 1]);
-    _gaq.push(['_setCustomVar', 3, 'Division', '#{current_user_division_id}', 1]);
+    _gaq.push(['_setCustomVar', 1, 'ID', '#{current_user.id}', 1]);
+    _gaq.push(['_setCustomVar', 2, 'Type', '#{current_user.adjusted_type_mask}', 1]);
+    _gaq.push(['_setCustomVar', 3, 'Division', '#{current_user.division_id}', 1]);
 
 
     (function() {

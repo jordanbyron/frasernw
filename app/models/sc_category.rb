@@ -81,7 +81,7 @@ class ScCategory < ActiveRecord::Base
       SELECT DISTINCT ON ("sc_categories"."id") "sc_categories".*
       FROM "sc_categories"
       INNER JOIN "sc_items"
-      ON "sc_categories"."id" = "sc_items"."id"
+      ON "sc_categories"."id" = "sc_items"."sc_category_id"
       LEFT JOIN "division_display_sc_items"
       ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"
       WHERE "sc_items"."division_id" IN (:division_ids)

@@ -16,7 +16,7 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
-  - if current_user_is_super_admin?
+  - if current_user.as_super_admin?
     = f.input :name
     = f.input :member_name, hint: "e.g. 'Opthalmologist', 'Cardiothoracic surgeon', 'Nurse practitioner', 'Sports medicine specialist'"
     = f.input :label_name, hint: "Defines how this Specialty is labeled on columns and tables; e.g. as a 'Specialist', 'Family Physician', 'Nurse Practitioner', etc."
@@ -35,7 +35,7 @@
 
     - divisions = Division.all
   - else
-    - divisions = current_user_divisions
+    - divisions = current_user.as_divisions
 
   - divisions.each do |division|
     - possible_admins = division.users.admin + User.super_admin
@@ -91,19 +91,19 @@
       .controls
         %label.checkbox
           = check_box_tag "show_specialist_categorization_1[#{division.id}]", "show_specialist_categorization_1[#{division.id}]", show_specialist_categorization_1, :name => "show_specialist_categorization_1[#{division.id}]"
-          = Specialist::CATEGORIZATION_HASH_1
+          = Specialist::CATEGORIZATION_LABELS[1]
         %label.checkbox
           = check_box_tag "show_specialist_categorization_2[#{division.id}]", "show_specialist_categorization_2[#{division.id}]", show_specialist_categorization_2, :name => "show_specialist_categorization_2[#{division.id}]"
-          = Specialist::CATEGORIZATION_HASH_2
+          = Specialist::CATEGORIZATION_LABELS[2]
         %label.checkbox
           = check_box_tag "show_specialist_categorization_3[#{division.id}]", "show_specialist_categorization_3[#{division.id}]", show_specialist_categorization_3, :name => "show_specialist_categorization_3[#{division.id}]"
-          = Specialist::CATEGORIZATION_HASH_3
+          = Specialist::CATEGORIZATION_LABELS[3]
         %label.checkbox
           = check_box_tag "show_specialist_categorization_5[#{division.id}]", "show_specialist_categorization_5[#{division.id}]", show_specialist_categorization_5, :name => "show_specialist_categorization_5[#{division.id}]"
-          = Specialist::CATEGORIZATION_HASH_5
+          = Specialist::CATEGORIZATION_LABELS[5]
         %label.checkbox
           = check_box_tag "show_specialist_categorization_4[#{division.id}]", "show_specialist_categorization_4[#{division.id}]", show_specialist_categorization_4, :name => "show_specialist_categorization_4[#{division.id}]"
-          = Specialist::CATEGORIZATION_HASH_4
+          = Specialist::CATEGORIZATION_LABELS[4]
 
     %script{"type" => "text/javascript"}
       :plain

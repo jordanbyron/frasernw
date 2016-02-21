@@ -7,6 +7,6 @@
       =user.name
   %td
     %span.role
-      =user.role if user.admin?
+      =user.role if user.admin_or_super?
   %td
     =link_to 'edit', edit_user_path(user)

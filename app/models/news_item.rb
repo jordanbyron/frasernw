@@ -27,10 +27,10 @@ class NewsItem < ActiveRecord::Base
   end
 
   def self.permitted_division_assignments(user)
-    if user.super_admin?
+    if user.as_super_admin?
       Division.not_hidden
     else
-      user.divisions.not_hidden
+      user.as_divisions.not_hidden
     end
   end
 
@@ -46,7 +46,7 @@ class NewsItem < ActiveRecord::Base
   end
 
   def copy_to(division, current_user)
-    return false unless current_user.super_admin? || current_user.divisions.include?(division)
+    return false unless current_user.as_super_admin? || current_user.as_divisions.include?(division)
 
     NewsItem.
       create(self.attributes.merge(owner_division_id: division.id)).

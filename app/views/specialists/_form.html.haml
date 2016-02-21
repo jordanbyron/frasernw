@@ -49,13 +49,13 @@
   = f.input :firstname
   = f.input :lastname
   = f.input :goes_by_name, :hint => "A name which colleagues refer to the specialist with, if different from his or her formal first name. E.g. \"Bill\" when the first name is \"William\""
-  = f.input :sex_mask, as: :select, collection: Specialist::SEX_HASH, label_method: :last, value_method: :first, :include_blank => false
+  = f.input :sex_mask, as: :select, collection: Specialist::SEX_LABELS, label_method: :last, value_method: :first, :include_blank => false
   = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.billing_number_padded }
   .no-print
     = f.input :categorization_mask, as: :select, collection: categorization_hash, label_method: :last, value_method: :first, :include_blank => false
   = f.input :is_gp
 
-  - if current_user_is_admin? || current_user_is_super_admin?
+  - if current_user.as_admin_or_super? || current_user.as_super_admin?
     = f.input :is_internal_medicine
   .no-print
     = f.association :specializations,
@@ -205,7 +205,7 @@
       input_html: {value: ""}
 
 
-  - if current_user_is_admin? || @form_modifier.token_edit?
+  - if current_user.as_admin_or_super? || @form_modifier.token_edit?
 
     #section_moa.no-print
 
@@ -219,7 +219,7 @@
       = f.input :contact_name
       = f.input :contact_email
       = f.input :contact_phone
-      - if current_user_is_admin?
+      - if current_user.as_admin_or_super?
         = f.input :contact_notes, hint: "Include contact's role (MOA, etc.) and anything else we should know."
 
   #section_status
@@ -277,8 +277,8 @@
                 = c[:name]
             .span4.changed_wrapper= text_field_tag "capacities_investigations[#{c[:id]}]", c[:investigations], :class => "span4"
             - if c[:custom_wait_time]
-              .span2.changed_wrapper.lagtime= select_tag "capacities_lagtime[#{c[:id]}]", options_from_collection_for_select(Specialist::LAGTIME_HASH, :first, :last, c[:lagtime]), :class => "span2", :include_blank => true
-              .span2.changed_wrapper.waittime= select_tag "capacities_waittime[#{c[:id]}]", options_from_collection_for_select(Specialist::WAITTIME_HASH, :first, :last, c[:waittime]), :class => "span2", :include_blank => true
+              .span2.changed_wrapper.lagtime= select_tag "capacities_lagtime[#{c[:id]}]", options_from_collection_for_select(Specialist::LAGTIME_LABELS, :first, :last, c[:lagtime]), :class => "span2", :include_blank => true
+              .span2.changed_wrapper.waittime= select_tag "capacities_waittime[#{c[:id]}]", options_from_collection_for_select(Specialist::WAITTIME_LABELS, :first, :last, c[:waittime]), :class => "span2", :include_blank => true
 
     %hr{ "style" => "visibility:hidden" }
 
@@ -309,9 +309,9 @@
               - type = referral_form.form_content_type.split('/').last
               %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, :target => "_blank"
 
-    = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_HASH, label_method: :last, value_method: :first
+    = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_LABELS, label_method: :last, value_method: :first
 
-    = f.input :waittime_mask, as: :select, collection: Specialist::WAITTIME_HASH, label_method: :last, value_method: :first
+    = f.input :waittime_mask, as: :select, collection: Specialist::WAITTIME_LABELS, label_method: :last, value_method: :first
 
     %label Our office will respond to referral requests:
     = f.input :respond_by_fax, as: :boolean, wrapper: :bootstrap_tight

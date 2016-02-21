@@ -5,6 +5,7 @@
 # then run script/create_invoice
 
 require 'csv'
+require 'bigdecimal'
 
 # get our customizable settings
 
@@ -34,34 +35,78 @@ grouped_by_days = raw_timesheet.drop(1).group_by do |row|
   row[start_date_column_index]
 end
 
-export_rows = grouped_by_days.map do |day, rows|
-  total_minutes = rows.inject(0) do |memo, row|
-    raw_time = row[duration_column_index].split(":")
-    hours = raw_time[0].to_i
-    minutes = raw_time[1].to_i
+def string_to_seconds(str)
+  split = str.split(":")
 
-    memo + (hours * 60) + minutes
+  hours = split[0].to_i
+  minutes = split[1].to_i
+  seconds = split[2].to_i
+
+  (hours * 3600) + (minutes * 60) + seconds
+end
+
+def group_by_description(day_rows, description_column_index, duration_column_index)
+  day_rows.group_by do |row|
+    row[description_column_index]
+  end.map do |description, rows|
+    {
+      description: description,
+      seconds: rows.inject(0){ |memo, row| memo + string_to_seconds(row[duration_column_index]) }
+    }
   end
-  rounded_minutes = ((total_minutes.to_f / 15).ceil * 15)
-  hours_float = rounded_minutes.to_f / 60
-  descriptions = rows.map{|row| row[description_column_index] }.uniq.join(", ")
+end
 
+days = raw_timesheet.drop(1).group_by do |row|
+  row[start_date_column_index]
+end.map do |start_date, day_rows|
   [
-    day,
-    hours_float,
-    "$#{hours_float * rate}",
-    descriptions
+    start_date,
+    group_by_description(day_rows, description_column_index, duration_column_index)
   ]
-end.sort_by{ |row| row[0] }
+end.to_h
+
+week_total = BigDecimal.new(0)
+
+export_rows = days.inject([]) do |memo, (day, descriptions)|
+  day_total = descriptions.inject(BigDecimal.new(0)) do |memo, desc|
+    memo + (BigDecimal.new(desc[:seconds]) / 3600).round(2)
+  end
+
+  description_rows = descriptions.each_with_index.map do |description, index|
+    if index == 0
+      [
+        day,
+        description[:description],
+        (BigDecimal.new(description[:seconds]) / 3600).round(2).to_s("F")
+      ]
+    else
+      [
+        "",
+        description[:description],
+        (BigDecimal.new(description[:seconds]) / 3600).round(2).to_s("F")
+      ]
+    end
+  end
+
+  rounded_day_total = BigDecimal.new((day_total * 4).ceil) / 4
+
+  sum_row = [
+    "",
+    "",
+    rounded_day_total.to_s("F"),
+    "$#{(rounded_day_total * rate).to_s("F")}"
+  ]
+
+  week_total = week_total + rounded_day_total
+
+  memo + description_rows + [ sum_row ]
+end
 
 # miscellaneous other info needed for the doc
 
 filename = File.basename(filepath)
 start_date = filename.match(/(?<=Toggl_time_entries_).+(?=_to_)/).to_s
 end_date = filename.match(/(?<=_to_).+(?=.csv)/).to_s
-total_hours = export_rows.inject(0.0) do |memo, row|
-  memo + row[1]
-end
 
 # write to CSV
 
@@ -77,10 +122,10 @@ CSV.open(file_path, "w+") do |csv|
   csv << [ "End Date: #{end_date}" ]
   csv << [ "" ]
 
-  csv << [ "Date", "Hours", "Earnings", "Entry Descriptions" ]
+  csv << [ "Date", "Entry Descriptions", "Hours", "Earnings" ]
   export_rows.each do |row|
     csv << row
   end
 
-  csv << [ "Total", total_hours, "$#{total_hours * rate}" ]
+  csv << [ "Total", "", week_total.to_s("F"), "$#{(week_total * rate).to_s("F")}" ]
 end

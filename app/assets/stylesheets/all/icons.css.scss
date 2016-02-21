@@ -82,6 +82,7 @@
 .change_local_referral_area:before,
 .change_name:before,
 .change_email:before,
+.view_as:before,
 .change_password:before,
 .tac:before,
 .faq_link:before,
@@ -149,6 +150,11 @@
 .change_password:before
 {
   content: "\f084";
+}
+
+.view_as:before
+{
+  content:"\f06e";
 }
 
 .faq_link:before

@@ -21,10 +21,10 @@ module Analytics
       end
 
       def exec(table)
-        puts "reducing #{returned_metric} to #{options[:metric]}, dimensions: #{dimensions}"
+        # puts "reducing #{returned_metric} to #{options[:metric]}, dimensions: #{dimensions}"
         new_table = table.collapse_subsets(comparator, base_accumulator, accumulator_function)
-        puts "starting with #{table.rows.count}"
-        puts "reduced to #{new_table.rows.count}"
+        # puts "starting with #{table.rows.count}"
+        # puts "reduced to #{new_table.rows.count}"
         new_table
       end
 

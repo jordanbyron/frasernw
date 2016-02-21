@@ -32,8 +32,8 @@ class SpecializationsController < ApplicationController
       Division.all.each do |division|
         puts division.name
         so = SpecializationOption.find_or_create_by_specialization_id_and_division_id(@specialization.id, division.id);
-        so.owner = User.find_by_id(params[:owner]["#{division.id}"])
-        so.content_owner = User.find_by_id(params[:content_owner]["#{division.id}"])
+        so.owner = User.find_by_id(params[:owner]["#{division.id}"]) || division.admins.first
+        so.content_owner = User.find_by_id(params[:content_owner]["#{division.id}"]) || division.admins.first
         so.in_progress = params[:in_progress].present? && params[:in_progress]["#{division.id}"].present?
         so.is_new = params[:is_new].present? && params[:is_new]["#{division.id}"].present?
         so.open_to_type = params[:open_to_type]["#{division.id}"]
@@ -62,10 +62,10 @@ class SpecializationsController < ApplicationController
   def update
     @specialization = Specialization.find(params[:id])
     SpecializationSweeper.instance.before_controller_update(@specialization)
-    if current_user_is_super_admin?
+    if current_user.as_super_admin?
       divisions = Division.all
     else
-      divisions = current_user_divisions
+      divisions = current_user.as_divisions
     end
 
     if @specialization.update_attributes(params[:specialization])

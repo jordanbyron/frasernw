@@ -8,7 +8,7 @@ class UpdateScItemSharing < ServiceObject
     existing_record =
       DivisionDisplayScItem.where(sc_item_id: sc_item.id, division_id: division.id).first
 
-    if current_user.super_admin? || current_user.divisions.include?(division)
+    if current_user.as_super_admin? || current_user.as_divisions.include?(division)
       if is_shared && !existing_record.present?
         DivisionDisplayScItem.create(sc_item_id: sc_item.id, division_id: division.id)
       elsif !is_shared && existing_record.present?

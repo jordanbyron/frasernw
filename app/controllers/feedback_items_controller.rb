@@ -7,7 +7,7 @@ class FeedbackItemsController < ApplicationController
   end
 
   def archived
-    @divisions_scope = current_user_is_admin? ? Division.all : current_user_divisions
+    @divisions_scope = current_user.as_admin_or_super? ? Division.all : current_user.as_divisions
     @feedback_items = FeedbackItem.
       archived.
       order('id desc').

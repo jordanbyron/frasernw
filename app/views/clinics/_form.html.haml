@@ -40,7 +40,7 @@
   %h3 General Information
   = f.input :name
   .no-print
-    = f.input :categorization_mask, as: :select, collection: Clinic::CATEGORIZATION_HASH, label_method: :last, value_method: :first, :include_blank => false
+    = f.input :categorization_mask, as: :select, collection: Clinic::CATEGORIZATION_LABELS, label_method: :last, value_method: :first, :include_blank => false
   .no-print
     = f.association :specializations,
       as: :check_boxes,
@@ -166,7 +166,7 @@
       :plain
         $(document).ready( $(".chzn-select").chosen() );
 
-  - if current_user_is_admin? || @form_modifier.token_edit?
+  - if current_user.as_admin_or_super? || @form_modifier.token_edit?
 
     #section_moa.no-print
 
@@ -179,7 +179,7 @@
       = f.input :contact_name
       = f.input :contact_email
       = f.input :contact_phone
-      - if current_user_is_admin?
+      - if current_user.as_admin_or_super?
         = f.input :contact_notes, hint: "Include contact's role (MOA, etc.) and anything else we should know."
 
   #section_status
@@ -236,8 +236,8 @@
                 = f[:name]
             .span4.changed_wrapper= text_field_tag "focuses_investigations[#{f[:id]}]", f[:investigations], :class => "span4"
             - if f[:custom_wait_time]
-              .span2.changed_wrapper.lagtime= select_tag "focuses_lagtime[#{f[:id]}]", options_from_collection_for_select(Clinic::LAGTIME_HASH, :first, :last, f[:lagtime]), :class => "span2", :include_blank => true
-              .span2.changed_wrapper.waittime= select_tag "focuses_waittime[#{f[:id]}]", options_from_collection_for_select(Clinic::WAITTIME_HASH, :first, :last, f[:waittime]), :class => "span2", :include_blank => true
+              .span2.changed_wrapper.lagtime= select_tag "focuses_lagtime[#{f[:id]}]", options_from_collection_for_select(Clinic::LAGTIME_LABELS, :first, :last, f[:lagtime]), :class => "span2", :include_blank => true
+              .span2.changed_wrapper.waittime= select_tag "focuses_waittime[#{f[:id]}]", options_from_collection_for_select(Clinic::WAITTIME_LABELS, :first, :last, f[:waittime]), :class => "span2", :include_blank => true
 
     %hr{ "style" => "visibility:hidden" }
 
@@ -266,9 +266,9 @@
               - type = referral_form.form_content_type.split('/').last
               %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, :target => "_blank"
 
-    = f.input :lagtime_mask, as: :select, collection: Clinic::LAGTIME_HASH, label_method: :last, value_method: :first
+    = f.input :lagtime_mask, as: :select, collection: Clinic::LAGTIME_LABELS, label_method: :last, value_method: :first
 
-    = f.input :waittime_mask, as: :select, collection: Clinic::WAITTIME_HASH, label_method: :last, value_method: :first
+    = f.input :waittime_mask, as: :select, collection: Clinic::WAITTIME_LABELS, label_method: :last, value_method: :first
 
     %label Our clinic will respond to referral requests:
     = f.input :respond_by_fax, as: :boolean, wrapper: :bootstrap_tight
@@ -300,7 +300,7 @@
 
   #section_associations
 
-    - if current_user_is_admin? && !@form_modifier.token_edit?
+    - if current_user.as_admin_or_super? && !@form_modifier.token_edit?
 
       %hr
 

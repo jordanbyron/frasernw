@@ -41,4 +41,9 @@ namespace :deploy_dev do
     puts 'Taking the app out of maintenance mode ...'
     puts `heroku maintenance:off -a pathwaysbcdev`
   end
+
+  task :push_local_db do
+    puts `heroku pg:reset DATABASE --app pathwaysbcdev --confirm pathwaysbcdev`
+    puts `heroku pg:push pathways_development DATABASE --app pathwaysbcdev`
+  end
 end

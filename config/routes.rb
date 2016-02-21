@@ -10,6 +10,12 @@ Frasernw::Application.routes.draw do
   match '/versions'                 => 'versions#show_all', :as => 'all_versions'
   match '/versions/:id'             => 'versions#show',     :as => 'version'
 
+  resources :user_masks, only: [:new, :create] do
+    collection do
+      delete :destroy
+    end
+  end
+
   # temporary endpoint to develop the fnw datatable
   resources :data_tables, only: [] do
     collection do

@@ -2,6 +2,9 @@ class Focus < ActiveRecord::Base
   belongs_to :clinic
   belongs_to :procedure_specialization
 
+  WAITTIME_LABELS = Clinic::WAITTIME_LABELS
+  LAGTIME_LABELS = Clinic::LAGTIME_LABELS
+
   include PaperTrailable
 
   delegate :procedure, to: :procedure_specialization
@@ -11,10 +14,10 @@ class Focus < ActiveRecord::Base
   end
 
   def waittime
-    Clinic::WAITTIME_HASH[waittime_mask].present? ? Clinic::WAITTIME_HASH[waittime_mask] : ""
+    WAITTIME_LABELS[waittime_mask].present? ? WAITTIME_LABELS[waittime_mask] : ""
   end
 
   def lagtime
-    Clinic::LAGTIME_HASH[lagtime_mask].present? ? Clinic::LAGTIME_HASH[lagtime_mask] : ""
+    LAGTIME_LABELS[lagtime_mask].present? ? LAGTIME_LABELS[lagtime_mask] : ""
   end
 end

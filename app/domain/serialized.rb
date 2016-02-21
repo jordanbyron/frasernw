@@ -288,12 +288,12 @@ module Serialized
       end
     end,
     respondsWithinOptions: Proc.new do
-      Clinic::LAGTIME_HASH.inject({}) do |memo, (key, value)|
+      Clinic::LAGTIME_LABELS.inject({}) do |memo, (key, value)|
         memo.merge(key.to_i => value)
       end.merge(0 => "Any timeframe")
     end,
     respondsWithinSummaryLabels: Proc.new do
-      Clinic::LAGTIME_HASH.inject({}) do |memo, (key, value)|
+      Clinic::LAGTIME_LABELS.inject({}) do |memo, (key, value)|
         label = begin
           if key == 1
             "by phone when office calls for appointment"

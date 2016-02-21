@@ -1,0 +1,29 @@
+.alert.alert-banner.mask_warning
+  %i.icon-eye-open{style: "margin-right: 5px"}
+  - if current_user.as_divisions.one?
+    = link_to new_user_mask_path,
+      style: "color: #C09853" do
+      %span= "You are currently viewing this site as #{current_user.as_role_label.indefinite_article} "
+      %strong= current_user.as_role_label
+      %span= "in the division of "
+      %strong= "#{current_user.as_divisions.to_sentence}.".html_safe
+  - elsif current_user.as_divisions.many?
+    = link_to new_user_mask_path,
+      style: "color: #C09853" do
+      %span= "You are currently viewing this site as #{current_user.as_role_label.indefinite_article}"
+      %strong= current_user.as_role_label
+      %span=" in the divisions of "
+      %strong= "#{current_user.as_divisions.to_sentence(normal_weight_sentence_connectors)}.".html_safe
+
+  = link_to "Configure View as..",
+    new_user_mask_path,
+    style: "color: #C09853",
+    class: "button--mask_warning"
+
+  = link_to "Return to Default View",
+    user_masks_path,
+    method: :delete,
+    class: "button--mask_warning"
+
+  %a.close{"data-dismiss" => "alert", "href" => "#"}
+    = "&times;".html_safe

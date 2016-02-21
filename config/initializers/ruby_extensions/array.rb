@@ -14,6 +14,12 @@ class Array
     self
   end
 
+  def count_by(&block)
+    group_by(&block).
+      map{ |grouped_by, group| [ grouped_by, group.count ] }.
+      to_h
+  end
+
   # based on a uniquing function
   def subsets
     # we're going to gradually reduce this clone down as we pull out matching elements

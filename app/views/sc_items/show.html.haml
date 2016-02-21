@@ -1,6 +1,6 @@
 - set_page_specific_title "#{@sc_item.title}"
 
-- specialization = (current_user_is_admin? ? @sc_item.specializations : @sc_item.specializations.not_in_progress_for_divisions(current_user_divisions)).first
+- specialization = (current_user.as_admin_or_super? ? @sc_item.specializations : @sc_item.specializations.not_in_progress_for_divisions(current_user.as_divisions)).first
 
 - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @sc_item.id, "ScItem").present? ? "icon-red" : "icon-text") : "icon-text"
 
@@ -15,9 +15,9 @@
       %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
         All Specialties
         %b.caret
-    %li.subsequent{:class => specialization.fully_in_progress_for_divisions(current_user_divisions) && "in-progress"}
+    %li.subsequent{:class => specialization.fully_in_progress_for_divisions(current_user.as_divisions) && "in-progress"}
       = link_to specialization.name, specialization_path(specialization), :class => 'ajax'
-      = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
+      = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user.as_divisions)
 
 = render 'partials/specialization_dropdown_menu'
 
@@ -34,14 +34,15 @@
           %i.icon-blue.icon-star
         = link_to(@sc_item.title, @sc_item.resolved_url, :target => "_blank", "onclick" => "window.pathways.trackContentItem(_gaq, #{@sc_item.id})")
       %li
-        - if show_evidence?(@sc_item.evidence)
-          %strong= render partial: "evidences/level", locals: {evidence: @sc_item.evidence}
         %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
           %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
         - if @sc_item.can_email?
           = link_to "<i class='icon-envelope-alt icon-blue'></i>".html_safe, compose_mail_to_patients_path(@sc_item), :class => 'ajax', :title => "E-mail to patient"
         - if can? :view_history, @sc_item
           = history_icon(@sc_item)
+      %li
+        - if show_evidence?(@sc_item.evidence)
+          = render partial: "evidences/level", locals: {evidence: @sc_item.evidence}
 
   - elsif @sc_item.markdown?
 
@@ -55,7 +56,7 @@
       %h2
         Level of Evidence:
         %strong
-          %span= @sc_item.evidence.level
+          %span= "LOE=#{ evidence.level}"
 
     %p= BlueCloth.new(@sc_item.markdown_content).to_html.html_safe
 
@@ -112,7 +113,7 @@
         });
       }
 
-  - if (current_user_is_admin? || current_user_is_super_admin?) && @sc_item.shareable?
+  - if (current_user.as_admin_or_super? || current_user.as_super_admin?) && @sc_item.shareable?
     - if @sc_item.divisions.any?
       %h6
         = "Currently Displayed In: "
@@ -122,16 +123,16 @@
         - @sc_item.divisions_sharing.each do |division|
           %li
             %span= division.name
-            - if current_user_divisions.include?(division)
+            - if current_user.as_divisions.include?(division)
               %span
                 = link_to "(Stop displaying)",
                   share_sc_item_path(@sc_item, division_id: division.id, is_shared: false),
                   method: :put
 
-    - if (current_user_divisions & @sc_item.borrowable_by_divisions).any?
+    - if (current_user.as_divisions & @sc_item.borrowable_by_divisions).any?
       %h6= "Display This Item In:"
       %ul
-        - (current_user_divisions & @sc_item.borrowable_by_divisions).each do |division|
+        - (current_user.as_divisions & @sc_item.borrowable_by_divisions).each do |division|
           %li
             = link_to division.name,
               share_sc_item_path(@sc_item, division_id: division.id, is_shared: true),

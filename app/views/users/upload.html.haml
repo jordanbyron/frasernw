@@ -12,7 +12,7 @@
     .control-group
       %label.control-label Role
       .controls
-        = select_tag 'type_mask', options_from_collection_for_select(User::TYPE_HASH, :first, :last, nil)
+        = select_tag 'type_mask', options_from_collection_for_select(User::TYPES, :first, :last, nil)
     .control-group
       %label.control-label Divisions
       .controls

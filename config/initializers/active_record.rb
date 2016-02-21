@@ -1,5 +1,10 @@
 module ActiveRecord
   class Base
+
+    def self.random_id
+      unscoped.select("id").first(order: "RANDOM()")[:id]
+    end
+        
     def self.safe_find(id)
       where(id: id).first
     end

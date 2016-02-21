@@ -436,18 +436,12 @@ class Specialist < ActiveRecord::Base
     end
   end
 
-  CATEGORIZATION_HASH_1    = "Responded to survey"
-  CATEGORIZATION_HASH_2    = "Not responded to survey"
-  CATEGORIZATION_HASH_3    = "Only works out of hospitals or clinics"
-  CATEGORIZATION_HASH_4    = "Purposely not yet surveyed"
-  CATEGORIZATION_HASH_5    = "Only accepts referrals through hospitals or clinics"
-
-  CATEGORIZATION_HASH = {
-    1 => CATEGORIZATION_HASH_1,
-    2 => CATEGORIZATION_HASH_2,
-    3 => CATEGORIZATION_HASH_3,
-    4 => CATEGORIZATION_HASH_4,
-    5 => CATEGORIZATION_HASH_5
+  CATEGORIZATION_LABELS = {
+    1 => "Responded to survey",
+    2 => "Not responded to survey",
+    3 => "Only works out of hospitals or clinics",
+    4 => "Purposely not yet surveyed",
+    5 => "Only accepts referrals through hospitals or clinics"
   }
 
   def responded?
@@ -621,7 +615,7 @@ class Specialist < ActiveRecord::Base
     status_mask == STATUS_MASK_DECEASED
   end
 
-  WAITTIME_HASH = {
+  WAITTIME_LABELS = {
     1 => "Within one week",
     2 => "1-2 weeks",
     3 => "2-4 weeks",
@@ -638,10 +632,10 @@ class Specialist < ActiveRecord::Base
   }
 
   def waittime
-    waittime_mask.present? ? Specialist::WAITTIME_HASH[waittime_mask] : ""
+    waittime_mask.present? ? Specialist::WAITTIME_LABELS[waittime_mask] : ""
   end
 
-  LAGTIME_HASH = {
+  LAGTIME_LABELS = {
     1 => "Book by phone when office calls for referral",
     2 => "Within one week",
     3 => "1-2 weeks",
@@ -659,7 +653,7 @@ class Specialist < ActiveRecord::Base
   }
 
   def lagtime
-    Specialist::LAGTIME_HASH[lagtime_mask]
+    Specialist::LAGTIME_LABELS[lagtime_mask]
   end
 
   BOOLEAN_HASH = {
@@ -684,14 +678,14 @@ class Specialist < ActiveRecord::Base
     "Dr. #{lastname}"
   end
 
-  SEX_HASH = {
+  SEX_LABELS = {
     1 => "Male",
     2 => "Female",
     3 => "Didn't answer",
   }
 
   def sex
-    Specialist::SEX_HASH[sex_mask]
+    Specialist::SEX_LABELS[sex_mask]
   end
 
   def male?

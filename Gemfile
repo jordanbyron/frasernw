@@ -124,10 +124,12 @@ group :development, :test do
   gem 'guard-livereload'
   gem 'guard-spork'
   gem 'rack-livereload'
+  gem 'activerecord-import'
   #gem 'heroku'
   gem 'taps'
   gem 'rb-fsevent', '~> 0.9.1'
   gem 'quiet_assets'
+  gem 'faker'
 end
 
 group :development do
@@ -144,6 +146,10 @@ group :development do
   gem 'table_print' # print nice tables in IRB with tp command
   gem 'quick_spreadsheet', '0.0.3',
     git: "git@github.com:pathwaysmedical/quick_spreadsheet.git"
+end
+
+group :production do
+  gem 'pry-rails' # can be used in production if careful:  http://blog.bugsnag.com/production-pry
 end
 
 group :development, :test do

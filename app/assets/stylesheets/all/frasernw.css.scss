@@ -362,6 +362,46 @@ body.loading #email
     color: $FNW_TEXT;
   }
 
+  h6.clinic_header_link
+  {
+
+    color: $FNW_RED;
+
+    a
+    {
+      color: $FNW_RED;
+
+      .all
+      {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight: bold;
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #ffffff;
+
+        .icon-blue
+        {
+          color: #ffffff;
+        }
+      }
+    }
+
+    a:hover
+    {
+      color: $FNW_BLUE;
+      text-decoration: underline;
+
+      .all
+      {
+        color: $FNW_BLUE;
+
+        .icon-blue
+        {
+          color: $FNW_BLUE;
+        }
+      }
+    }
+  }
   h4
   {
     font-family: Bitter;
@@ -1743,13 +1783,6 @@ body.loading #email
   }
 }
 
-.opacity-0 {
-  opacity: 0;
-}
-
-.opacity-1 {
-  opacity: 1;
-}
 
 #toc
 {
@@ -1761,3 +1794,20 @@ body.loading #email
     }
   }
 }
+
+/* Helper classes */
+.opacity-0 {  opacity: 0;}
+.opacity-1 {opacity: 1;}
+
+.pad5{margin-top: 5px;}
+.pad10{margin-top: 10px;}
+.pad20{margin-top: 20px;}
+.pad40{margin-top: 40px;}
+.pad50{margin-top: 50px;}
+.pad60{margin-top: 60px;}
+.pad70{margin-top: 70px;}
+.pad80{margin-top: 80px;}
+.pad90{margin-top: 90px;}
+.pad100{margin-top: 100px;}
+.pad120{margin-top: 120px;}
+.pad150 {margin-top: 150px;}

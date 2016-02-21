@@ -9,10 +9,10 @@
 
   .tabbable
     %ul.nav.nav-tabs
-      - if (current_user_is_super_admin?)
+      - if (current_user.as_super_admin?)
         %li.active
           %a{"href" => "#super_admin_tab", "data-toggle" => "tab"}= "Super Administrators"
-      %li{:class => !current_user_is_super_admin? && "active"}
+      %li{:class => !current_user.as_super_admin? && "active"}
         %a{"href" => "#admin_tab", "data-toggle" => "tab"}= "Administrators"
       %li
         %a{"href" => "#user_tab", "data-toggle" => "tab"}= "Users"
@@ -22,7 +22,7 @@
         %a{"href" => "#disabled_user_tab", "data-toggle" => "tab"}= "Inactive Accounts"
 
     .tab-content
-      - if (current_user_is_super_admin?)
+      - if (current_user.as_super_admin?)
         #super_admin_tab.tab-pane.active
 
           %table.table.table-condensed.table-striped.tablesorter
@@ -65,7 +65,7 @@
             Super Administrators:
             = @super_admin_users.count
 
-      #admin_tab.tab-pane{:class => !current_user_is_super_admin? && "active"}
+      #admin_tab.tab-pane{:class => !current_user.as_super_admin? && "active"}
         %table.table.table-condensed.table-striped.tablesorter
           %thead
             %tr.tableheader
@@ -172,8 +172,8 @@
                 %td
                   %small{:title => "#{user.created_at.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.created_at)} ago </i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
                 %td= user.divisions.map{ |s| s.name }.to_sentence
-                %td= user.role_full
-                %td= user.admin? ? "Admin" : user.type
+                %td= user.role_label
+                %td= user.admin_or_super? ? "Admin" : user.type
                 %td= user.token
                 = render "users/admin_column", user: user
         %h4
@@ -219,8 +219,8 @@
                     %small{:title => "#{user.created_at.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.created_at)} ago </i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
                   - else
                     %small
-                %td= user.role_full
-                %td= user.admin? ? "Admin" : user.type
+                %td= user.role_label
+                %td= user.admin_or_super? ? "Admin" : user.type
                 %td= user.email
                 %td= user.pending? ? user.token : "Was activated"
                 = render "users/admin_column", user: user

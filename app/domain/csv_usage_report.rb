@@ -57,7 +57,7 @@ class CsvUsageReport
       row[:page_views].to_i
     end
 
-    current_user_type_hash = User::TYPE_HASH.merge(
+    current_user_type_hash = User::TYPES.merge(
       -1 => "Bounced",
       0 => "Admin"
     )

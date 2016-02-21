@@ -42,24 +42,8 @@ class DivisionsController < ApplicationController
           end
         end
       end
-      first_division = Division.find(1)
-      default_owner = User.super_admin.first
-      Specialization.all.each do |s|
-        old_so = SpecializationOption.find_by_division_id_and_specialization_id( first_division.id, s.id )
-        new_so = SpecializationOption.find_or_create_by_division_id_and_specialization_id( @division.id, s.id )
-        new_so.in_progress = old_so.in_progress
-        new_so.owner = old_so.owner.super_admin? ? old_so.owner : default_owner
-        new_so.content_owner = old_so.content_owner.super_admin? ? old_so.content_owner : default_owner
-        new_so.open_to_type = old_so.open_to_type
-        new_so.open_to_sc_category_id = old_so.open_to_sc_category_id
-        new_so.is_new = old_so.is_new
-        new_so.show_specialist_categorization_1 = old_so.show_specialist_categorization_1
-        new_so.show_specialist_categorization_2 = old_so.show_specialist_categorization_2
-        new_so.show_specialist_categorization_3 = old_so.show_specialist_categorization_3
-        new_so.show_specialist_categorization_4 = old_so.show_specialist_categorization_4
-        new_so.show_specialist_categorization_5 = old_so.show_specialist_categorization_5
-        new_so.save
-      end
+
+      CreateSpecializationOptions.call(division: @division)
 
       Serialized.delay.regenerate(:divisions)
 
@@ -165,7 +149,7 @@ class DivisionsController < ApplicationController
   private
 
   def authorize_division_for_user
-    if !(current_user_is_super_admin? || (current_user_divisions.include? Division.find(params[:id])))
+    if !(current_user.as_super_admin? || (current_user.as_divisions.include? Division.find(params[:id])))
       redirect_to root_url, :notice => "You are not allowed to access this page"
     end
   end

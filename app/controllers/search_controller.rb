@@ -1,6 +1,6 @@
 class SearchController < ApplicationController
   skip_authorization_check
-  skip_before_filter :login_required
+  skip_before_filter :require_authentication
 
   def livesearch_all_entries
     respond_to do |format|

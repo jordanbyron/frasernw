@@ -2,12 +2,12 @@
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
-  - if current_user_is_super_admin?
+  - if current_user.as_super_admin?
     = f.association :owner_division, as: :select, :collection => Division.all, :include_blank => false
-  - elsif current_user_divisions.length > 1
-    = f.association :owner_division, as: :select, :collection => current_user_divisions
+  - elsif current_user.as_divisions.length > 1
+    = f.association :owner_division, as: :select, :collection => current_user.as_divisions
   - else
-    = f.association :owner_division, as: :hidden, :input_html => { :value => current_user_divisions.first.id }
+    = f.association :owner_division, as: :hidden, :input_html => { :value => current_user.as_divisions.first.id }
 
   = f.input :title
   = f.input :type_mask,
@@ -25,7 +25,7 @@
     :hint => "The end date can be blank: if no end date is provided, the news item will expire after the start date, otherwise it will expire after the end date."
   = f.input :body,
     :hint => "Accepts Markdown.  When adding a link to external website URLs, please link using <strong>http<u>s</u>://</strong> rather than http:// when possible to help protect the security & privacy of our users.".html_safe
-  - if current_user.super_admin?
+  - if current_user.as_super_admin?
     = f.association :divisions,
       as: :check_boxes,
       collection: @divisions,

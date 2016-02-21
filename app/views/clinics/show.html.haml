@@ -1,6 +1,6 @@
 - set_page_specific_title "#{@clinic.name}"
 
-- specialization = (current_user_is_admin? ? @clinic.specializations : @clinic.specializations.not_in_progress_for_divisions(current_user_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
+- specialization = (current_user.as_admin_or_super? ? @clinic.specializations : @clinic.specializations.not_in_progress_for_divisions(current_user.as_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
 
 - favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @clinic.id, "Clinic").present? ? "icon-red" : "icon-text") : "icon-text"
 
@@ -9,9 +9,9 @@
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       All Specialties
       %b.caret
-  %li.subsequent{:class => specialization.fully_in_progress_for_divisions(current_user_divisions) && "in-progress"}
+  %li.subsequent{:class => specialization.fully_in_progress_for_divisions(current_user.as_divisions) && "in-progress"}
     = link_to specialization.name, specialization_path(specialization), :class => 'ajax'
-    = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user_divisions)
+    = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user.as_divisions)
 
 = render 'partials/specialization_dropdown_menu'
 
@@ -24,7 +24,7 @@
 .content-wrapper
 
   - if @is_version
-    = render 'versions/info'
+    = render 'versions/info', instance_name: "clinic"
 
   - cache(clinic_path(@clinic)) do
     .content
@@ -343,7 +343,7 @@
         }
 
 
-  - if current_user_is_admin?
+  - if current_user.as_admin_or_super?
     - controlling_users = @clinic.controlling_users.uniq
     - if controlling_users.present?
       %h6 Users that can edit this clinic
@@ -387,7 +387,7 @@
             %li
               %a{"href" => clinic_patient_information_location_path(@clinic, clinic_location), "target" => "_blank"}
                 = clinic_location.location.short_address
-    - if !current_user_is_admin? && (can? :update, @clinic)
+    - if !current_user.as_admin_or_super? && (can? :update, @clinic)
       %a.btn.btn-primary.ajax{"href" => clinic_self_edit_path(@clinic, @clinic.token)}
         %i.icon-pencil.icon-white
         Update #{@clinic.name}'s information
@@ -396,7 +396,7 @@
         %i.icon-bullhorn.icon-text
         Incorrect Information? Let us know
 
-  - if current_user_is_admin?
+  - if current_user.as_admin_or_super?
 
     %p.admin.btn-group
 
@@ -417,7 +417,7 @@
       - if can? :destroy, @clinic
         = link_to("<i class='icon-trash'></i>".html_safe + " Delete Clinic", @clinic, :confirm => "Delete #{@clinic.name}?", :method => :delete, :class => "btn")
 
-  - if current_user_is_admin?
+  - if current_user.as_admin_or_super?
     #share.collapse
 
     :javascript
@@ -434,6 +434,6 @@
         }
       })
 
-  - if current_user_is_admin? && !current_user_is_super_admin?
+  - if current_user.as_admin_or_super? && !current_user.as_super_admin?
     .alert.alert-info{style: "margin-top: 10px"}
       If you would like to have this clinic deleted, please contact a provincial administrator.

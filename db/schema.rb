@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160206022512) do
+ActiveRecord::Schema.define(:version => 20160220075103) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -164,7 +164,6 @@ ActiveRecord::Schema.define(:version => 20160206022512) do
     t.datetime "updated_at"
     t.text     "referral_criteria"
     t.text     "referral_process"
-    t.string   "responds_via"
     t.string   "contact_name"
     t.string   "contact_phone"
     t.string   "contact_email"
@@ -328,10 +327,11 @@ ActiveRecord::Schema.define(:version => 20160206022512) do
   add_index "edits", ["specialist_id"], :name => "index_edits_on_specialist_id"
 
   create_table "evidences", :force => true do |t|
-    t.string   "level",      :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-    t.string   "summary"
+    t.string   "level",               :null => false
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.string   "quality_of_evidence"
+    t.text     "definition"
   end
 
   create_table "faq_categories", :force => true do |t|
@@ -485,15 +485,6 @@ ActiveRecord::Schema.define(:version => 20160206022512) do
 
   add_index "metrics", ["user_type_key", "division_id", "page_path"], :name => "metrics_dimensions"
 
-  create_table "moderations", :force => true do |t|
-    t.integer  "moderatable_id"
-    t.string   "moderatable_type",               :null => false
-    t.string   "attr_name",        :limit => 60, :null => false
-    t.text     "attr_value",                     :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "news_items", :force => true do |t|
     t.date     "start_date"
     t.date     "end_date"
@@ -635,18 +626,6 @@ ActiveRecord::Schema.define(:version => 20160206022512) do
   end
 
   add_index "review_items", ["item_id", "item_type"], :name => "index_review_items_on_item_id_and_item_type"
-
-  create_table "reviews", :force => true do |t|
-    t.string   "item_type",      :null => false
-    t.integer  "item_id",        :null => false
-    t.string   "whodunnit"
-    t.text     "object"
-    t.text     "object_changes"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "reviews", ["item_id", "item_type"], :name => "index_reviews_on_item_id_and_item_type"
 
   create_table "sc_categories", :force => true do |t|
     t.string   "name"
@@ -843,14 +822,12 @@ ActiveRecord::Schema.define(:version => 20160206022512) do
     t.string   "contact_phone"
     t.string   "contact_email"
     t.text     "red_flags"
-    t.string   "responds_via"
     t.string   "referral_criteria"
     t.string   "saved_token"
     t.string   "contact_notes"
     t.text     "not_interested"
     t.text     "all_procedure_info"
     t.string   "referral_other_details"
-    t.string   "referral_request"
     t.boolean  "patient_can_book_old",       :default => false
     t.string   "urgent_other_details"
     t.text     "required_investigations"
@@ -903,7 +880,6 @@ ActiveRecord::Schema.define(:version => 20160206022512) do
     t.datetime "updated_at"
     t.integer  "division_id"
     t.boolean  "in_progress",                      :default => false
-    t.boolean  "open_to_clinic_tab_old",           :default => false
     t.boolean  "is_new",                           :default => false
     t.integer  "content_owner_id"
     t.integer  "open_to_type",                     :default => 1
@@ -1048,6 +1024,20 @@ ActiveRecord::Schema.define(:version => 20160206022512) do
 
   add_index "user_controls_specialists", ["specialist_id"], :name => "index_user_controls_specialists_on_specialist_id"
   add_index "user_controls_specialists", ["user_id"], :name => "index_user_controls_specialists_on_user_id"
+
+  create_table "user_mask_divisions", :force => true do |t|
+    t.integer  "division_id"
+    t.integer  "user_mask_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  create_table "user_masks", :force => true do |t|
+    t.integer  "user_id",    :null => false
+    t.string   "role"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "users", :force => true do |t|
     t.string   "email"
