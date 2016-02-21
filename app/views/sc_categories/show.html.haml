@@ -22,9 +22,17 @@
 
   %p.admin.btn-group
   - if can? :update, @sc_category
-    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_sc_category_path(@sc_category), :class => "btn ajax")
+    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit #{@sc_category.name}", edit_sc_category_path(@sc_category), :class => "btn ajax")
   - if can? :destroy, @sc_category
-    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @sc_category, :confirm => "Delete #{@sc_category.name}?", :method => :delete, :class => "btn")
+    %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#delete-sc_category-msg"}
+      %i.icon-trash
+        = " Delete #{@sc_category.name}"
+  #delete-sc_category-msg.collapse
+    .alert.alert-info{style: "margin-top: 10px"}
+      %span
+        Please go to
+        = link_to "Content Categories", sc_categories_path
+        to delete the content category of #{@sc_category.name} in its entirety.
 
 
 :javascript
