@@ -3,7 +3,7 @@ class TestsController < ActionController::Base
     ActiveRecord::Base.connection.disconnect!
 
     raise "Can't drop db" unless system("dropdb pathways_test")
-    raise "Can't import db" system("createdb -O rusl -T pathways_production pathways_test")
+    raise "Can't import db" unless system("createdb -O rusl -T pathways_production pathways_test")
 
     ActiveRecord::Base.establish_connection
 
