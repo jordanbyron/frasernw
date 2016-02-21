@@ -577,10 +577,15 @@
           %i.icon-share
           Share
         = large_history_button(@specialist)
+        - if current_user.as_admin? # fake out delete button for normal admins
+          %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#delete-specialist-msg"}
+            %i.icon-trash
+              = " Delete Specialist"
 
       - if can? :destroy, @specialist
 
         = link_to("<i class='icon-trash'></i>".html_safe + " Delete Specialist", @specialist, :confirm => "Delete #{@specialist.name}?", :method => :delete, :class => "btn")
+
 
   - if current_user.as_admin_or_super?
     #share.collapse
@@ -599,6 +604,7 @@
         }
       })
 
-  - if current_user.as_admin_or_super? && !current_user.as_super_admin? # only normal admins
-    .alert.alert-info{style: "margin-top: 10px"}
-      If you would like to have this specialist deleted, please contact a provincial administrator.
+  - if (can? :update, @specialist) && current_user.as_admin? # fake out delete msg
+    #delete-specialist-msg.collapse
+      .alert.alert-info{style: "margin-top: 10px"}
+        If you would like to have this specialist deleted, please contact a provincial administrator.

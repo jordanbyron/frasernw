@@ -4,5 +4,6 @@ class RemoveReferralRequest < ActiveRecord::Migration
   end
 
   def down
+    add_column :specialists, :referral_request, :string
   end
 end

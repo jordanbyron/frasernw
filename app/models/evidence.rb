@@ -3,14 +3,17 @@ class Evidence < ActiveRecord::Base
   include Historical
   include Noteable
 
-  attr_accessible :summary, :level
+  attr_accessible :definition, :level, :quality_of_evidence
 
   validates :level, presence: true
 
   has_many :sc_items
 
   def label # needed for Historical
-    return "#{level}: #{summary}" if summary.present?
-    return level
+    "(LOE=#{level})"
+  end
+
+  def definition_as_html
+    BlueCloth.new(definition).to_html.html_safe
   end
 end

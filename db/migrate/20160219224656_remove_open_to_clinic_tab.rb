@@ -4,5 +4,6 @@ class RemoveOpenToClinicTab < ActiveRecord::Migration
   end
 
   def down
+    add_column :specialization_options, :open_to_clinic_tab_old, :boolean
   end
 end
