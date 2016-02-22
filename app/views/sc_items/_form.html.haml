@@ -43,10 +43,6 @@
   = f.input :title
   = f.input :type_mask, as: :select, collection: ScItem::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
 
-  - if current_user.as_super_admin?
-    #evidence_section
-      = f.input :evidence_id, as: :select, collection: Evidence.all, label_method: :level, value_method: :id
-
   #link_section
     = f.input :url, :input_html => { :class => "span5" }
     = f.input :can_email_link
@@ -54,6 +50,11 @@
     = f.input :markdown_content
   #document_section
     = f.input :document, as: :file
+
+  - if current_user.as_super_admin?
+    #evidence_section
+      = f.input :evidence_id, as: :select, collection: Evidence.all, label_method: :level, value_method: :id
+
     = f.input :can_email_document
 
   %h3
