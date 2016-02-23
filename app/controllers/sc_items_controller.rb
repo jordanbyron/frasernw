@@ -36,7 +36,7 @@ class ScItemsController < ApplicationController
         ScItemSpecializationProcedureSpecialization.create( :sc_item_specialization_id => sc_item_specialization.id, :procedure_specialization_id => ps_id ) if sc_item_specialization.present?
       end
       create_sc_item_activity
-      redirect_to root_path, :notice => "Successfully created content item."
+      redirect_to sc_item_path(@sc_item), :notice => "Successfully created content item."
     else
       new_sc_item_preload
       render :action => 'new'
