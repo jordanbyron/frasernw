@@ -132,7 +132,7 @@ var address_location_changed = function(address_number)
   }
 }
 
-_.times(3, function(index) {
+_.times(4, function(index) {
   $("input[name='specialist[specialist_offices_attributes][" + index + "][location_is]']").live("click", function() {
     return address_location_changed(index);
   });
