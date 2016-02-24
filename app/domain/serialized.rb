@@ -190,7 +190,8 @@ module Serialized
           membersName: specialization.member_name.pluralize,
           nestedProcedureIds: Serialized.transform_nested_procedure_specializations(
             specialization.procedure_specializations.includes(:procedure).arrange
-          )
+          ),
+          maskFiltersByReferralArea: specialization.mask_filters_by_referral_area
         })
       end
     end,

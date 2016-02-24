@@ -262,6 +262,18 @@ const AssumedMessage = (props) => {
   );
 }
 
+const createMaskingSet = (pageTypeFiltered, state) => {
+  let _localReferralArea = referralCities(state);
+  if (state.ui.pageType === "specialization" && state.app.specializations[state.ui.specializationId].maskFiltersByReferralArea) {
+    return pageTypeFiltered.filter((record) => {
+      return _.any(_.intersection(record.cityIds, _localReferralArea));
+    });
+  }
+  else {
+    return pageTypeFiltered;
+  }
+};
+
 var PANEL_PROPS_GENERATORS = {
   specialists: function(state, dispatch) {
     return this.referents(state, dispatch, "specialists");
@@ -271,8 +283,8 @@ var PANEL_PROPS_GENERATORS = {
   },
   referents: function(state, dispatch, panelTypeKey) {
     // what are the records we're using to mask filters?
-    let maskingSet =
-      filterByPageType(_.values(state.app[panelTypeKey]), state, panelTypeKey);
+    const pageTypeFiltered = filterByPageType(_.values(state.app[panelTypeKey]), state, panelTypeKey);
+    const maskingSet = createMaskingSet(pageTypeFiltered, state);
     var sortConfig = referentSortConfig(state, { panelTypeKey: panelTypeKey });
     var filterValues = generateFilterValuesForPanel(
       state,
