@@ -12,7 +12,9 @@ class WebUsageReport < ServiceObject
     :patient_info,
     :physician_resources,
     :forms,
-    :specialties
+    :specialties,
+    :red_flags,
+    :community_services
   ]
 
   def self.regenerate_all
@@ -164,8 +166,20 @@ class WebUsageReport < ServiceObject
         row[:record][:categoryIds].include?(11)
     end,
     forms: Proc.new do |row|
-      (row[:serialized_collection] == :content_items && row[:record][:typeMask] != ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(9)) ||
-        row[:serialized_collection] == :referral_forms
+      (row[:serialized_collection] == :content_items &&
+        row[:record][:typeMask] != ScItem::TYPE_MARKDOWN &&
+        row[:record][:categoryIds].include?(9)
+      ) || row[:serialized_collection] == :referral_forms
+    end,
+    community_services: Proc.new do |row|
+      row[:serialized_collection] == :content_items &&
+        row[:record][:typeMask] != ScItem::TYPE_MARKDOWN &&
+        row[:record][:categoryIds].include?(38)
+    end,
+    red_flags: Proc.new do |row|
+      row[:serialized_collection] == :content_items &&
+        row[:record][:typeMask] != ScItem::TYPE_MARKDOWN &&
+        row[:record][:categoryIds].include?(4)
     end,
     specialties: Proc.new{ |row| false }
   }
@@ -217,6 +231,12 @@ class WebUsageReport < ServiceObject
     forms: Proc.new do |row|
       row[:record][:typeMask] == ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(9)
     end,
+    red_flags: Proc.new do |row|
+      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(4)
+    end,
+    community_services: Proc.new do |row|
+      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(38)
+    end,
     specialties: Proc.new{ |row| true }
   }
 
@@ -227,7 +247,9 @@ class WebUsageReport < ServiceObject
       patient_info: "content_items",
       physician_resources: "content_items",
       forms: "content_items",
-      specialties: "specialties"
+      specialties: "specialties",
+      community_services: "content_items",
+      red_flags: "content_items"
     }[record_type]
 
     /(?<=\/#{Regexp.quote(collection_path)}\/)[[:digit:]]+(?=\/?\z)/.match(path).to_s
@@ -241,6 +263,8 @@ class WebUsageReport < ServiceObject
     patient_info: :content_items,
     physician_resources: :content_items,
     forms: :content_items,
+    community_services: :content_items,
+    red_flags: :content_items,
     specialties: :specializations
   }
 end

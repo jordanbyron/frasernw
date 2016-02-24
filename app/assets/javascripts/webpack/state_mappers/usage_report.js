@@ -5,7 +5,7 @@ var RadioButtons = require("../react_components/radio_buttons");
 var Selector = require("../react_components/selector");
 var isDataDubious = function(filterValues) {
   return moment(filterValues.months, "YYYYMM").isBefore("2015-11-01", "months") &&
-    _.includes(["physicianResources", "forms", "patientInfo"], filterValues.recordTypes)
+    _.includes(["physicianResources", "forms", "patientInfo", "redFlags", "communityServices"], filterValues.recordTypes)
 }
 
 module.exports = function(state, dispatch): Object {
@@ -54,6 +54,8 @@ const SC_ITEM_ANNOTATION = `
 const ANNOTATIONS = {
   physicianResources: SC_ITEM_ANNOTATION,
   patientInfo: SC_ITEM_ANNOTATION,
+  redFlags: SC_ITEM_ANNOTATION,
+  communityServices: SC_ITEM_ANNOTATION,
   forms: "'Page Views' are defined as views of the uploaded form.",
   specialties: "'Page Views' are defined as views at '/specialties/<id>.'",
   clinics: "'Page Views' are defined as views at '/clinics/<id>.'",
@@ -180,7 +182,9 @@ const GENERATE_FILTER_OPTIONS = {
       "physicianResources",
       "patientInfo",
       "forms",
-      "specialties"
+      "specialties",
+      "redFlags",
+      "communityServices"
     ].map((key) => {
       return {
         label: _.startCase(key),
