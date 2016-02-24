@@ -4,16 +4,31 @@ var Redux = require("redux");
 var Provider = require("react-redux").Provider;
 var connect = require("react-redux").connect;
 var _ = require("lodash");
-var mapStateToProps = function(state) { return state; };
-var mapDispatchToProps = function(dispatch) { return { dispatch: dispatch }; };
-var getTopLevelProps = function(store, mapStateToProps, mapDispatchToProps, mergeProps) {
-  return mergeProps(
-    mapStateToProps(store.getState()),
-    mapDispatchToProps(store.dispatch)
-  );
-};
 
 var generateReducer = require("./reducers/top_level");
+
+const Provider = React.createClass({
+  getInitialState: function() {
+    return this.props.store.getState();
+  },
+  componentWillMount: function() {
+    this.props.store.subscribe(() => {
+      this.setState(this.props.store.getState())
+    });
+  },
+  render: function() {
+    return(
+      React.createClass(
+        this.props.component,
+        {
+          dispatch: this.props.store.dispatch,
+          model: this.state,
+          derived: {}
+        }
+      )
+    );
+  }
+});
 
 module.exports = function(config, initData) {
   $("document").ready(function() {
@@ -23,25 +38,10 @@ module.exports = function(config, initData) {
     var store = Redux.createStore(reducer);
     var rootElement = $(config.domElementSelector)[0];
     var Component = require(`./react_components/${_.snakeCase(config.topLevelComponent)}`);
-    var mergeProps = function(stateProps, dispatchProps) {
-      return require(`./state_mappers/${_.snakeCase(config.stateMapper)}`)(
-        stateProps,
-        dispatchProps.dispatch,
-        config.mapperConfig
-      );
-    }
-
-    var ConnectedComponent = connect(
-      mapStateToProps,
-      mapDispatchToProps,
-      mergeProps
-    )(Component);
 
     // render the component
     ReactDOM.render(
-      <Provider store={store}>
-        <ConnectedComponent />
-      </Provider>,
+      <Provider store={store} component={Component}/>,
       rootElement
     );
 
@@ -62,12 +62,14 @@ module.exports = function(config, initData) {
       $("#heartbeat-loader-position").remove();
 
       // use our computed top level props to make the initial api query
-      var topLevelProps =
-        getTopLevelProps(store, mapStateToProps, mapDispatchToProps, mergeProps);
 
-      topLevelProps.query &&
-        topLevelProps.query() &&
-        store.dispatch({ type: "MAKE_INITIAL_API_QUERY" });
+      // TODO!
+      // var topLevelProps =
+      //   getTopLevelProps(store, mapStateToProps, mapDispatchToProps, mergeProps);
+      //
+      // topLevelProps.query &&
+      //   topLevelProps.query() &&
+      //   store.dispatch({ type: "MAKE_INITIAL_API_QUERY" });
     })
   });
 }
