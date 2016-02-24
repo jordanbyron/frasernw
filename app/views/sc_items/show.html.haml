@@ -56,7 +56,7 @@
       %h2
         Level of Evidence:
         %strong
-          %span= "LOE=#{ evidence.level}"
+          %span= "LOE=#{ @sc_item.evidence.level}"
 
     %p= BlueCloth.new(@sc_item.markdown_content).to_html.html_safe
 
