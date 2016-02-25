@@ -161,7 +161,16 @@
             = so.input :location_opened, as: :select, collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a), prompt: "Select ..."
 
             - Sectorable::SECTORS.each do |sector|
-              = so.input sector, label: sector.to_s.capitalize, as: :boolean, input_html: { class: "sector_type_input" }
+              - if sector == :public && (so.object.new_record? || so.object.no_sectors?)
+                = so.input sector,
+                  label: sector.to_s.capitalize,
+                  as: :boolean,
+                  input_html: { class: "sector_type_input", checked: true}
+              - else
+                = so.input sector,
+                  label: sector.to_s.capitalize,
+                  as: :boolean,
+                  input_html: { class: "sector_type_input" }
 
             %h4 What days and times are your phone lines open?
             = so.simple_fields_for :phone_schedule, :nested_wrapper => false do |s|

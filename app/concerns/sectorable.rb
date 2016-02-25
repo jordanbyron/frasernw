@@ -10,6 +10,12 @@ module Sectorable
     attr_accessible *SECTORS
   end
 
+  def no_sectors?
+    SECTORS.none? do |sector|
+      send(sector)
+    end
+  end
+
   def sector
     sector_annotations = {
       public: " (MSP billed)",
