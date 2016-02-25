@@ -161,7 +161,7 @@
             = so.input :location_opened, as: :select, collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a), prompt: "Select ..."
 
             - Sectorable::SECTORS.each do |sector|
-              - if sector == :public && (so.object.new_record? || so.object.no_sectors?)
+              - if sector == :public && so.object.new_record?
                 = so.input sector,
                   label: sector.to_s.capitalize,
                   as: :boolean,

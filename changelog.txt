@@ -9,6 +9,7 @@ Backend Maintenance = Change is not user facing
 ### Added:
 - #334: Increase number of specialist offices to four
 - #338: Add Pathways User guide to the navbar under "You"
+- New specialist and clinic offices are now automatically 'public' unless otherwise specified
 
 ## [2016-02-20] [Since 2016-02-06 Integration]
 ### Added:
