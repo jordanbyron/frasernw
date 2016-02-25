@@ -10,6 +10,9 @@ Backend Maintenance = Change is not user facing
 - #334: Increase number of specialist offices to four
 - #338: Add Pathways User guide to the navbar under "You"
 - New specialist and clinic offices are now automatically 'public' unless otherwise specified
+- #295: Limit area of practice filters shown to local referral area for Family Practice only
+- #282: Red Flags and Pearls now show under Physician Resources in navbar search
+- #314: Add Community Services and Red Flags to Entity Page Views
 
 ### Fixed:
 - Users now taken to correct tab on specialty page when the come there from a tab link on another page
