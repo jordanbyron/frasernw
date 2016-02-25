@@ -26,7 +26,7 @@ module Sectorable
 
   def sector_info_available?
     SECTORS.any? do |sector|
-      send(sector).is_a?(TrueClass) || send(sector).is_a?(FalseClass)
+      send(sector).is_a?(TrueClass)
     end
   end
 end
