@@ -187,10 +187,12 @@ class ScItem < ActiveRecord::Base
   end
 
   def root_category
-    if sc_category.parent.present?
-      sc_category.parent
-    else
-      sc_category
+    @root_category ||= begin
+      if sc_category.parent.present?
+        sc_category.parent
+      else
+        sc_category
+      end
     end
   end
 

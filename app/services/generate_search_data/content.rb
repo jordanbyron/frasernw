@@ -31,13 +31,24 @@ module GenerateSearchData
             "sp" => item.specializations.not_in_progress_for_divisions([division]).uniq.collect{ |s| s.id },
             "id" => item.id,
             "go" => order_map[category.name],
-            "rc" => item.root_category.id
+            "rc" => root_category_id(item)
           }
           search_data << entry
         end
       end
 
       search_data
+    end
+
+    PEARLS_ID = 3
+    RED_FLAGS_ID = 4
+    PHYSICIAN_RESOURCES_ID = 11
+    def root_category_id(sc_item)
+      if [PEARLS_ID, RED_FLAGS_ID].include?(sc_item.root_category.id)
+        PHYSICIAN_RESOURCES_ID
+      else
+        sc_item.root_category.id
+      end
     end
   end
 end
