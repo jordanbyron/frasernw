@@ -56,7 +56,6 @@ var panelKeyFromAnchor = (state) => {
   }
   else {
     const id = _.values(state.app.contentCategories).find((category) => {
-      console.log(category.name);
       return category.name.replace(" ", "") === state.ui.anchor;
     }).id
 
