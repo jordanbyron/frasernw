@@ -11,6 +11,9 @@ Backend Maintenance = Change is not user facing
 - #338: Add Pathways User guide to the navbar under "You"
 - New specialist and clinic offices are now automatically 'public' unless otherwise specified
 
+### Fixed:
+- Users now taken to correct tab on specialty page when the come there from a tab link on another page
+
 ## [2016-02-20] [Since 2016-02-06 Integration]
 ### Added:
 - Super admins can now view Pathways as other divisions and roles without logging out

@@ -15,6 +15,8 @@ var getTopLevelProps = function(store, mapStateToProps, mapDispatchToProps, merg
 
 var generateReducer = require("./reducers/top_level");
 
+const getAnchor = () => document.location.toString().split("#")[1];
+
 module.exports = function(config, initData) {
   $("document").ready(function() {
 
@@ -37,6 +39,17 @@ module.exports = function(config, initData) {
       mergeProps
     )(Component);
 
+    // integrate data we render on the ruby partial
+    store.dispatch({
+      type: "INTEGRATE_PAGE_RENDERED_DATA",
+      initialState: initData
+    });
+
+    store.dispatch({
+      type: "READ_ANCHOR",
+      anchor: getAnchor()
+    });
+
     // render the component
     ReactDOM.render(
       <Provider store={store}>
@@ -45,11 +58,6 @@ module.exports = function(config, initData) {
       rootElement
     );
 
-    // integrate data we render on the ruby partial
-    store.dispatch({
-      type: "INTEGRATE_PAGE_RENDERED_DATA",
-      initialState: initData
-    })
 
     // integrate data stashed in localStorage ( or AJAX requested if necessary )
     // this is 'global' data that is used by many views

@@ -50,13 +50,39 @@ var defaultPanel = function(state) {
   }[state.ui.pageType]();
 }
 
-var selectedPanel = function(state, dispatch) {
-  var _defaultPanel = defaultPanel(state);
-  var selectedPanelKey = (state.ui.selectedPanel || generatePanelKey(_defaultPanel.type, _defaultPanel.id));
-  var selectedPanelType = panelTypeKey(selectedPanelKey);
+var panelKeyFromAnchor = (state) => {
+  if(_.includes(["specialists", "clinics"], state.ui.anchor)){
+    return state.ui.anchor.toLowerCase();
+  }
+  else {
+    const id = _.values(state.app.contentCategories).find((category) => {
+      console.log(category.name);
+      return category.name.replace(" ", "") === state.ui.anchor;
+    }).id
 
-  return PANEL_GENERATORS[selectedPanelType](state, dispatch, selectedPanelKey);
-}
+    return generatePanelKey("contentCategories", id)
+  }
+};
+
+var selectedPanelKey = (state) => {
+  if (state.ui.selectedPanel) {
+    return state.ui.selectedPanel;
+  }
+  else if (state.ui.pageType == "specialization" && state.ui.anchor && state.ui.anchor.length > 0) {
+    return panelKeyFromAnchor(state);
+  }
+  else {
+    const _defaultPanel = defaultPanel(state);
+    return generatePanelKey(_defaultPanel.type, _defaultPanel.id);
+  }
+};
+
+var selectedPanel = function(state, dispatch) {
+  var _selectedPanelKey = selectedPanelKey(state);
+  var selectedPanelType = panelTypeKey(_selectedPanelKey);
+
+  return PANEL_GENERATORS[selectedPanelType](state, dispatch, _selectedPanelKey);
+};
 
 var generatePanelKey = function(type, id) {
   if (id) {

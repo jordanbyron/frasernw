@@ -21,8 +21,18 @@ module.exports = function(state = {}, action) {
       procedureId: procedureId(state.procedureId, action),
       pageType: pageType(state.pageType, action),
       panels: panels(state.panels, action),
-      feedbackModal: feedbackModal(state.feedbackModal, action)
+      feedbackModal: feedbackModal(state.feedbackModal, action),
+      anchor: anchor(state.anchor, action)
     }
+  }
+}
+
+var anchor = (state, action) => {
+  switch(action.type){
+  case "READ_ANCHOR":
+    return action.anchor;
+  default:
+    return state
   }
 }
 
