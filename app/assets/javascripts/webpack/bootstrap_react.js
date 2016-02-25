@@ -22,8 +22,7 @@ const Provider = React.createClass({
         this.props.component,
         {
           dispatch: this.props.store.dispatch,
-          model: this.state,
-          derived: {}
+          model: this.state
         }
       )
     );

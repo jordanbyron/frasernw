@@ -37,10 +37,6 @@ module.exports = function(state, dispatch) {
   }
 }
 
-var feedbackModal = function(state) {
-  return (state.ui.feedbackModal || { state: "HIDDEN"});
-}
-
 var defaultPanel = function(state) {
   return {
     specialization: function() {
@@ -50,7 +46,7 @@ var defaultPanel = function(state) {
   }[state.ui.pageType]();
 }
 
-var selectedPanel = function(state, dispatch) {
+var selectedPanel = function(state) {
   var _defaultPanel = defaultPanel(state);
   var selectedPanelKey = (state.ui.selectedPanel || generatePanelKey(_defaultPanel.type, _defaultPanel.id));
   var selectedPanelType = panelTypeKey(selectedPanelKey);
@@ -71,21 +67,6 @@ var panelTypeKey = function(panelKey) {
 
 var panelRecordId = function(panelKey) {
   return panelKey.match(/\d/g).join("");
-}
-
-var tabs = function(state) {
-  return [
-    { key: "specialists", label: "Specialists" },
-    { key: "clinics", label: "Clinics" },
-  ].concat(contentCategoryTabs(state))
-}
-
-var contentCategoryTabs = function(state) {
-  return _.values(
-    findActiveContentCategories(state)
-  ).map((category) => {
-    return { key: generatePanelKey("contentCategories", category.id), label: category.name };
-  });
 }
 
 var PANEL_GENERATORS = {
