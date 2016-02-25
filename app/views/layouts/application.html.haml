@@ -393,6 +393,8 @@
                         %li= link_to clinic.name, clinic, :class => 'ajax'
 
                     %li.nav-header Help
+                    - if user_guide.present? # this is the production Pathways User Guide content item
+                      %li= link_to "User Guide", user_guide.resolved_url, :class => 'user_guide_link ajax'
                     %li= link_to "Help FAQ", faq_category_path(FaqCategory.help), :class => 'faq_link ajax'
                     %li= mail_to "administration@pathwaysbc.ca", "Contact Us", :class => 'contact'
 

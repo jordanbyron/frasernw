@@ -8,7 +8,7 @@ Backend Maintenance = Change is not user facing
 ## [2016-02-27] [Since 2016-02-20 Integration]
 ### Added:
 - #334: Increase number of specialist offices to four
-
+- #338: Add Pathways User guide to the navbar under "You"
 
 ## [2016-02-20] [Since 2016-02-06 Integration]
 ### Added:

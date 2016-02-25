@@ -125,11 +125,15 @@ module ApplicationHelper
   end
 
   def default_owner
-    return User.find(10)
+    return User.safe_find(10)
   end
 
   def default_content_owner
-    return User.find(3) #Ron
+    return User.safe_find(3) #Ron
+  end
+
+  def user_guide
+    ScItem.safe_find(953) # the Pathways User Guide content item pdf on production
   end
 
   def global_search_data

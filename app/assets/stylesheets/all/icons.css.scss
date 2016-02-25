@@ -86,6 +86,7 @@
 .change_password:before,
 .tac:before,
 .faq_link:before,
+.user_guide_link:before,
 .contact:before,
 .logout:before,
 .history:before,
@@ -160,6 +161,11 @@
 .faq_link:before
 {
   content: "\f059";
+}
+
+.user_guide_link:before
+{
+  content: "\f109";
 }
 
 .tac:before
