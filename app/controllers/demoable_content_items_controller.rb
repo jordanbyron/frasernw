@@ -1,20 +1,20 @@
-class PublicContentItemsController < ApplicationController
+class DemoableContentItemsController < ApplicationController
   skip_authorization_check
 
   def edit
-    authorize! :update_public_visibility, ScItem
+    authorize! :update_demoable, ScItem
   end
 
   def update
-    authorize! :update_public_visibility, ScItem
+    authorize! :update_demoable, ScItem
 
     ScItem.
       where("sc_items.id NOT IN (?)", params[:sc_items]).
-      update_all(visible_to_public: false)
+      update_all(demoable: false)
 
     ScItem.
       where("sc_items.id IN (?)", params[:sc_items]).
-      update_all(visible_to_public: true)
+      update_all(demoable: true)
 
     redirect_to root_path,
       notice: "Successfully updated public content items"

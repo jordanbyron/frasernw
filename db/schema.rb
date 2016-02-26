@@ -682,7 +682,7 @@ ActiveRecord::Schema.define(:version => 20160226030421) do
     t.integer  "division_id"
     t.boolean  "shareable",             :default => true
     t.integer  "evidence_id"
-    t.boolean  "visible_to_public",     :default => true
+    t.boolean  "demoable",              :default => false
   end
 
   add_index "sc_items", ["division_id"], :name => "index_sc_items_on_division_id"

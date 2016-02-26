@@ -112,7 +112,7 @@ Frasernw::Application.routes.draw do
   resources :sc_categories, :path => 'content_categories'
   match '/divisions/:id/content_items/' => 'sc_items#index', :as => 'division_content_items'
 
-  resources :public_content_items, only: [] do
+  resources :demoable_content_items, only: [] do
     collection do
       get :edit
       put :update
@@ -122,8 +122,6 @@ Frasernw::Application.routes.draw do
   resources :sc_items, :path => 'content_items' do
     collection do
       get :bulk_share
-      get :edit_visible_to_public
-      put :update_visible_to_public
     end
     member do
       put :share, to: "sc_items#share"
