@@ -306,6 +306,8 @@
                           %li= link_to "Content Items", division_content_items_path(user_divisions.first), :class => "sc_item ajax"
                           - if @divisions.length > 1
                             %li= link_to "Manage Shared Content Items", shared_content_items_path(user_divisions.first), :class => "sc_item ajax"
+                      - if can? :update_public_visibility, ScItem
+                        %li= link_to "Edit Public Content Items", edit_public_content_items_path
                 - cache("resources_dropdown_categories_#{user_divisions.map{|d| d.id}.join('_')}") do
                   - dropdown_categories = ScCategory.global_resources_dropdown(user_divisions)
                   - if dropdown_categories.present?

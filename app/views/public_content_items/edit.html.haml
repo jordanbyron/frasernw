@@ -1,0 +1,23 @@
+- set_page_specific_title "Content Item Visibility"
+
+.content-wrapper
+
+  %h2 Public Content Items
+
+  %i Checked items will be included in publicly visible database dumps
+
+  = form_tag public_content_items_path,
+    method: :put,
+    class: "form-horizontal" do
+    - ScCategory.includes(:sc_items).all.each do |category|
+      %h3{style: "margin-top: 10px"}= category.name
+      - category.sc_items.each do |item|
+        %label
+          = check_box_tag "sc_items[]",
+            item.id,
+            item.visible_to_public,
+            style: "display: inline; margin-right: 10px"
+          %span= link_to item.title, sc_item_path(item), target: "_blank"
+
+
+    = submit_tag "Save", class: "btn btn-primary", style: "margin-top: 10px"

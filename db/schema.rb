@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160224040206) do
+ActiveRecord::Schema.define(:version => 20160226030421) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -682,6 +682,7 @@ ActiveRecord::Schema.define(:version => 20160224040206) do
     t.integer  "division_id"
     t.boolean  "shareable",             :default => true
     t.integer  "evidence_id"
+    t.boolean  "visible_to_public",     :default => true
   end
 
   add_index "sc_items", ["division_id"], :name => "index_sc_items_on_division_id"

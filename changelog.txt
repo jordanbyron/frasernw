@@ -13,6 +13,7 @@ Backend Maintenance = Change is not user facing
 - #295: Limit area of practice filters shown to local referral area for Family Practice only
 - #282: Red Flags and Pearls now show under Physician Resources in navbar search
 - #314: Add Community Services and Red Flags to Entity Page Views
+- #228: Add ability to mark content items 'visible to public' or not
 
 ### Fixed:
 - Users now taken to correct tab on specialty page when the come there from a tab link on another page
