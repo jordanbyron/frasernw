@@ -36,7 +36,8 @@
 
   = f.input :searchable
   = f.input :shareable
-  = f.input :demoable, label: "Available in demonstration database"
+  - if can? :update_demoable, ScItem
+    = f.input :demoable, label: "Available in demonstration database"
   = f.input :shared_care
 
   %h3 Content
