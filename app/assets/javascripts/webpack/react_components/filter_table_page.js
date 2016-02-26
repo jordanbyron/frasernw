@@ -36,11 +36,12 @@ const onTabClick = function(key, dispatch, event) {
   })
 };
 
-const NavTab = ({label, key, dispatch}) => {
+const NavTab = ({label, onClick, isSelected}) => {
+  const className = isSelected ? "active" : ""
+
   return(
     <li onClick={_.partial(key, dispatch)}
-      key={index}
-      className={this.className(tab.key)}
+      className={className}
     >
       <a>{ tab.label }</a>
     </li>
@@ -60,12 +61,13 @@ const activeContentCategories = (model) => {
 
 const contentCategoryTabs = (model, dispatch) =>
   return _.values(activeContentCategories(model)).map((category) => {
+    const _key = generatePanelKey("contentCategories", category.id)
+
     return(
       <NavTab
-        key={generatePanelKey("contentCategories", category.id)}
         label={category.name}
-        dispatch={dispatch}
-        selected={key === selectedPanelKey(model)}
+        onClick={_.partial(onTabClick, _key, dispatch)}
+        selected={_key === selectedPanelKey(model)}
       />
     );
   })
@@ -79,8 +81,16 @@ const selectedPanelKey = (model) => {
 const ConcreteNavTabs = ({model, dispatch}) {
   return(
     <NavTabs>
-      <NavTab key="specialists" label="Specialists" dispatch={dispatch} selected={key === selectedPanelKey(model)}/>
-      <NavTab key="clinics" label="Clinics" dispatch={dispatch} selected={key === selectedPanelKey(model)}/>
+      <NavTab
+        label="Specialists"
+        onClick={_.partial(onTabClick, dispatch, "specialists")}
+        selected={"specialists" === selectedPanelKey(model)}
+      />
+      <NavTab
+        label="Clinics"
+        onClick={_.partial(onTabClick, dispatch, "clinics")}
+        selected={"clinics" === selectedPanelKey(model)}
+      />
       {...contentCategoryTabs(model, dispatch)}
     </NavTabs>
   )
@@ -112,48 +122,253 @@ const SelectedPanel = ({model, dispatch}) => {
   );
 };
 
-const filteredRecords =
-
-const filteredRows =
-
-const bodyRows = function(state, filtered, config, dispatch, sortConfig) => {
-  var unsorted = filtered.map((row) => {
-    return RowGenerators[config.rowGenerator](state.app, dispatch, config.rowGeneratorConfig, row);
+const filterByCities = function(records, filterValues){
+  return records.filter((record) => {
+    return record.cityIds.some((id) => filterValues.cities[id]);
   });
-
-  return _.sortByOrder(
-    unsorted,
-    sortFunctions[config.panelTypeKey](sortConfig, state.app.currentUser.cityRankings, state.app.currentUser.cityRankingsCustomized),
-    sortOrders[config.panelTypeKey](sortConfig, state.app.currentUser.cityRankingsCustomized)
-  );
 };
 
-const resultSummaryText =
+const filterByPageType = (records, model, selectedPanelTypeKey) => {
+  return {
+    specialization() {
+      return records.filter((record) => {
+        return _.includes(record.specializationIds, model.ui.specializationId);
+      });
+    },
+    procedure() {
+      var assumedSpecializationIds =
+        model.app.procedures[model.ui.procedureId].assumedSpecializationIds[panelTypeKey];
 
-const userDefinedFilterValues = (model) => {
-  return _.get(model, ["ui", "panels", selectedPanelTypeKey(model), "filterValues"], {});
+      return records.filter((record) => {
+        return (_.includes(record.procedureIds, model.ui.procedureId) ||
+          _.any(_.intersection(record.specializationIds, assumedSpecializationIds)));
+      });
+    },
+  }[model.ui.pageType]();
 };
 
-var opaqueFiltered = (model) {
-  var operativeOpaqueFilters = _.values(_.pick(Filters, PANEL_TYPE_OPAQUE_FILTERS[panelTypeKey])).filter(
-    function(predicate: Object): boolean {
-      return  predicate.isActivated(filterValues);
+const filteredWithoutCityFilter = createSelector(
+  opaqueFiltered,
+  (model) => model,
+  selectedPanelTypeKey,
+  (opaqueFiltered, filterValues, selectedPanelTypeKey) => {
+    return filterByPageType(opaqueFiltered, model, selectedPanelTypeKey);
+  }
+)
+
+const filteredWithoutPageTypeFilter = createSelector(
+  opaqueFiltered,
+  filterValues,
+  (opaqueFiltered, filterValues) => {
+    return filterByCities(opaqueFiltered, filterValues);
+  }
+);
+
+const filteredWithAllFilters = createSelector(
+  opaqueFiltered,
+  selectedPanelTypeKey,
+  filterValues,
+  (opaqueFiltered, selectedPanelTypeKey, filterValues) => {
+    return utils.from(
+      _.partialRight(filterByPageType, state, selectedPanelTypeKey),
+      _.partialRight(filterByCities, filterValues),
+      _opaqueFiltered
+    );
+  }
+)
+
+const isAdmin = (model) => model.app.currentUser.isAdmin
+
+const operativeOpaqueFilters = createSelector(
+  selectedPanelTypeKey,
+  (selectedPanelTypeKey) => {
+    return _.values(_.pick(Filters, PANEL_TYPE_OPAQUE_FILTERS[panelTypeKey])).filter(
+      (predicate) => {
+        return  predicate.isActivated(filterValues);
+      }
+    );
+  }
+)
+
+const filterValues = createSelector(
+  (model) => model,
+  filterMaskingSet,
+  selectedPanelKey,
+  selectedPanelTypeKey,
+  (model, filterMaskingSet, selectedPanelKey, selectedPanelTypeKey) => {
+    return _.chain(FILTER_VALUE_GENERATORS)
+      .pick(PANEL_TYPE_FILTERS[selectedPanelTypeKey])
+      .mapValues((generator) => generator(model, filterMaskingSet, selectedPanelKey))
+      .value();
+  }
+);
+
+const panelCollection = createSelector(
+  selectedPanelTypeKey,
+  (model) => model.app,
+  (selectedPanelTypeKey, app) => app[selectedPanelTypeKey]
+);
+
+const opaqueFiltered = createSelector(
+  panelCollection,
+  operativeOpaqueFilters,
+  isAdmin,
+  filterValues,
+  (panelCollection, operativeOpaqueFilters, isAdmin, filterValues) => {
+    return panelCollection.filter((record) => {
+      return _.every(
+        operativeOpaqueFilters,
+        (filter) => filter.predicate(record, filterValues, isAdmin)
+      );
+    });
+  }
+);
+
+const recordsToDisplay = createSelector(
+  shouldIncludeOtherSpecializations,
+  pageType,
+  (shouldIncludeOtherSpecializations, pageType) => {
+    if (shouldIncludeOtherSpecializations) {
+      return filteredWithoutPageTypeFilter;
     }
-  );
+    else {
+      return filteredWithAllFilters;
+    }
+  }
+);
 
-  return referents.filter((row) => {
-    return _.every(
-      operativeOpaqueFilters,
-      (filter) => filter.predicate(row, filterValues, config.userIsAdmin)
+const filterMaskingSet = createSelector(
+  selectedPanelTypeKey,
+  (model) => model,
+  (selectedPanelTypeKey, model) => {
+    return filterByPageType(_.values(model.app[panelTypeKey]), model, panelTypeKey);
+  }
+);
+
+const rowGeneratorKey = createSelector(
+  selectedPanelTypeKey,
+  (selectedPanelTypeKey) => {
+    if (_.includes(["specialists", "clinics"], selectedPanelTypeKey)){
+      return "referents"
+    }
+    else {
+      return "resources"
+    }
+  }
+);
+
+const activatedProcedureFilters = createSelector(
+  filterValues,
+  (filterValues) => {
+    return _.keys(_.pick(filterValues.procedures, _.identity));
+  }
+);
+
+const customWaittimeConfig = createSelector(
+  activatedProcedureFilters,
+  model,
+  selectedPanelTypeKey,
+  (activatedProcedureFilters, model, panelTypeKey) => {
+    if(model.ui.pageType === "specialization") {
+      let nestedProcedureIds = model.app.specializations[model.ui.specializationId].nestedProcedureIds
+
+      return {
+        shouldUse: (activatedProcedureFilters.length === 1 &&
+          nestedProcedureIds[activatedProcedureFilters[0]].customWaittime[panelTypeKey]),
+        procedureId: activatedProcedureFilters[0]
+      };
+    }
+    else if(model.ui.pageType === "procedure") {
+      let sources = {
+        page: {
+          test: (model.app.procedures[model.ui.procedureId].customWaittime[panelTypeKey] &&
+            activatedProcedureFilters.length === 0),
+          id: model.ui.procedureId
+        },
+        selection: {
+          test: (!model.app.procedures[model.ui.procedureId].customWaittime[panelTypeKey] &&
+            activatedProcedureFilters.length === 1 &&
+            model.app.procedures[activatedProcedureFilters[0]].customWaittime[panelTypeKey]),
+          id: activatedProcedureFilters[0]
+        }
+      }
+
+      return {
+        shouldUse: _.some(sources, _.property("test")),
+        procedureId: (_.find(sources, _.property("test")) || {}).id
+      }
+    }
+  };
+);
+
+const tableRowContents = (model, dispatch) => {
+  const rowGeneratorConfig = {
+    includingOtherSpecialties: shouldIncludeOtherSpecializations(model),
+    customWaittime: customWaittimeConfig(model)
+  }
+
+  return recordsToDisplay(model).map((record) => {
+    return RowGenerators[rowGeneratorKey(model)](
+      state.app,
+      dispatch,
+      rowGeneratorConfig,
+      record
     );
   });
 };
 
-const opaqueFiltered = (model) => {
-  _.values(state.app[panelTypeKey]),
-  panelTypeKey,
-  filterValues,
-  { userIsAdmin: state.app.currentUser.isAdmin }
+const userDefinedSortConfig = createSelector(
+  selectedPanelKey,
+  (model) => model,
+  (selectedPanelKey) => {
+    return _.get(state, ["ui", "panels", functionConfig.panelKey, "sortConfig"], {});
+  }
+);
+
+const cityRankings = (model) => model.app.currentUser.cityRankings
+const areCityRankingsCustomized = (model) => model.app.currentUser.cityRankingsCustomized
+
+const sortConfig = createSelector(
+  defaultSortColumn,
+  userDefinedSortConfig,
+  cityRankings,
+  areCityRankingsCustomized,
+  (defaultSortColumn, userDefinedSortConfig) => {
+    return _.assign(
+      {
+        column: defaultSortColumn,
+        order: defaultSortOrder,
+        cityRankings: cityRankings,
+        areCityRankingsCustomized: areCityRankingsCustomized
+      },
+      userDefinedSortConfig
+    );
+  }
+);
+
+const defaultSortColumn = createSelector(
+  selectedPanelTypeKey,
+  (selectedPanelTypeKey) => {
+    if (_.includes(["specialists", "clinics"], selectedPanelTypeKey)) {
+      return "REFERRALS"
+    }
+    else {
+      return "TITLE"
+    }
+  }
+);
+const defaultSortOrder = "DOWN";
+
+const sortedTableRowContents = (model, dispatch) => {
+  return _.sortByOrder(
+    tableRowContents(model, dispatch),
+    sortByOrderFunctions[selectedPanelTypeKey(model)](sortConfig(model)),
+    sortByOrderOrders[selectedPanelTypeKey(model)](sortConfig(model))
+  );
+};
+
+const userDefinedFilterValues = (model) => {
+  return _.get(model, ["ui", "panels", selectedPanelTypeKey(model), "filterValues"], {});
 };
 
 const ConcreteResultSummary = ({model, dispatch}) => {
@@ -179,6 +394,12 @@ const Header = ({model, dispatch}) => {
   );
 };
 
+// TODO: implement TableHeading
+
+const tableHeadings = (model, dispatch) => {
+  return
+}
+
 const selectedPanelTypeKey = createSelector(
   selectedPanelKey,
   (selectedPanelKey) => panelKey.replace(/[0-9]/g, '')
@@ -192,6 +413,70 @@ const reducedView = (model) => {
   );
 };
 
+const labelName = (model) => {
+  // TODO
+}
+
+const tableHeadingContents = createSelector(
+  labelName,
+  shouldIncludeOtherSpecializations,
+  selectedPanelType,
+  (labelName, shouldIncludeOtherSpecializations, selectedPanelType) => {
+    if (_.includes(["specialists", "clinics"], selectedPanelType)) {
+      return TABLE_HEADING_GENERATORS.referents(labelName, shouldIncludeOtherSpecializations);
+    }
+    else {
+      return TABLE_HEADINGS_GENERATORS.contentCategories();
+    }
+  }
+);
+
+const onHeadingClick = (dispatch, key, currentOrder, currentColumn) => {
+  return dispatch({
+    type: "TOGGLE_ORDER_BY_COLUMN",
+    headerKey: key,
+    currentColumn: this.props.sortConfig.column,
+    currentOrder: this.props.sortConfig.order
+  });
+},
+
+const tableHeadings = ({model, dispatch}) => {
+  tableHeadingContents(model).map((cell, index) => {
+    const onClick = _.partial(
+      onHeadingClick,
+      dispatch,
+      cell.key,
+      sortConfig(model).column,
+      sortConfig(model).order
+    )
+
+    return(
+      <TableHeading
+        key={index}
+        showArrow={key == sortConfig(model).column}
+        arrowDirection={}
+        className={cell.className}
+        onClick={onClick}
+        label={cell.label}
+      />
+    );
+  })
+}
+
+const tableRows = (model, dispatch) => {
+  return sortedTableRowContents(model, dispatch).map((row) => {
+    return(
+      <TableRow key={row.reactKey}>
+        {
+          row.cells.map((cell, index) => {
+            return(<TableCell key={index}>{ cell }</TableCell>);
+          })
+        }
+      </TableRow>
+    )
+  })
+};
+
 const FilterTable = ({model, dispatch}) => {
   return(
     <div>
@@ -202,7 +487,16 @@ const FilterTable = ({model, dispatch}) => {
       <SidebarLayout>
         <Main>
           <Header model={model} dispatch={dispatch}/>
-          <ConcreteTable model={model} dispatch={dispatch}/>
+          <Table>
+            <thead>
+              <tr>
+                {...tableHeadings(model, dispatch)}
+              </tr>
+            </thead>
+            <tbody>
+              {...tableRows(model, dispatch)}
+            </tbody>
+          </Table>
           <Footer model={model} dispatch={dispatch}/>
         </Main>
         <Side>

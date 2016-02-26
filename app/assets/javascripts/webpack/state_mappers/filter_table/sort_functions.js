@@ -33,9 +33,9 @@ var commonFunctions = {
   waittimes: function(row){
     return (WAITTIME_RANKINGS[row.record.waittime] || 99);
   },
-  cityPriority: function(sortConfig, cityRankings) {
+  cityPriority: function(sortConfig, sortConfig.cityRankings) {
     return (row) => {
-      return min(row.record.cityIds.map((cityId) => cityRankings[cityId]));
+      return min(row.record.cityIds.map((cityId) => sortConfig.cityRankings[cityId]));
     }
   },
   cityName: function(row) {
@@ -49,11 +49,11 @@ var commonFunctions = {
 }
 
 const commonFunctionSets = {
-  referrals: function(sortConfig, cityRankings, cityRankingsCustomized) {
-    if (cityRankingsCustomized) {
+  referrals: function(sortConfig) {
+    if (sortConfig.areCityRankingsCustomized) {
       return [
         commonFunctions.referrals,
-        commonFunctions.cityPriority(sortConfig, cityRankings),
+        commonFunctions.cityPriority(sortConfig, sortConfig.cityRankings),
         commonFunctions.waittimes
       ];
     } else {
@@ -63,23 +63,23 @@ const commonFunctionSets = {
       ];
     }
   },
-  city: function(sortConfig, cityRankings, cityRankingsCustomized) {
+  city: function(sortConfig) {
     return [
-      commonFunctions.cityPriority(sortConfig, cityRankings),
+      commonFunctions.cityPriority(sortConfig, sortConfig.cityRankings),
       commonFunctions.referrals,
       commonFunctions.waittimes
     ];
   },
-  waittime: function(sortConfig, cityRankings, cityRankingsCustomized) {
+  waittime: function(sortConfig) {
     return [
       commonFunctions.waittimes,
-      commonFunctions.cityPriority(sortConfig, cityRankings)
+      commonFunctions.cityPriority(sortConfig, sortConfig.cityRankings)
     ];
   }
 }
 
 module.exports = {
-  clinics: function(sortConfig, cityRankings, cityRankingsCustomized) {
+  clinics: function(sortConfig) {
     switch(sortConfig.column) {
     case "NAME":
       return [ function(row){ return row.record.name; } ];
@@ -87,27 +87,27 @@ module.exports = {
       return [ commonFunctions.specialties ];
     case "REFERRALS":
 
-      return commonFunctionSets.referrals(sortConfig, cityRankings, cityRankingsCustomized);
+      return commonFunctionSets.referrals(sortConfig, sortConfig.cityRankings, sortConfig.areCityRankingsCustomized);
     case "WAITTIME":
-      return commonFunctionSets.waittime(sortConfig, cityRankings, cityRankingsCustomized);
+      return commonFunctionSets.waittime(sortConfig, sortConfig.cityRankings, sortConfig.areCityRankingsCustomized);
     case "CITY":
-      return commonFunctionSets.city(sortConfig, cityRankings, cityRankingsCustomized);
+      return commonFunctionSets.city(sortConfig, sortConfig.cityRankings, sortConfig.areCityRankingsCustomized);
     default:
       return [ function(row){ return row.record.name; } ];
     }
   },
-  specialists: function(sortConfig, cityRankings, cityRankingsCustomized) {
+  specialists: function(sortConfig) {
     switch(sortConfig.column) {
     case "NAME":
       return [ function(row){ return row.record.lastName.toLowerCase(); } ];
     case "SPECIALTIES":
       return [ commonFunctions.specialties ];
     case "REFERRALS":
-      return commonFunctionSets.referrals(sortConfig, cityRankings, cityRankingsCustomized);
+      return commonFunctionSets.referrals(sortConfig, sortConfig.cityRankings, sortConfig.areCityRankingsCustomized);
     case "WAITTIME":
-      return commonFunctionSets.waittime(sortConfig, cityRankings, cityRankingsCustomized);
+      return commonFunctionSets.waittime(sortConfig, sortConfig.cityRankings, sortConfig.areCityRankingsCustomized);
     case "CITY":
-      return commonFunctionSets.city(sortConfig, cityRankings, cityRankingsCustomized);
+      return commonFunctionSets.city(sortConfig, sortConfig.cityRankings, sortConfig.areCityRankingsCustomized);
     default:
       return [ function(row){ return row.record.lastName; } ];
     }
