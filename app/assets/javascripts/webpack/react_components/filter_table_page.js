@@ -78,24 +78,6 @@ const selectedPanelKey = (model) => {
     generatePanelKey(defaultPanel(model).type, defaultPanel(model).id));
 };
 
-const ConcreteNavTabs = ({model, dispatch}) {
-  return(
-    <NavTabs>
-      <NavTab
-        label="Specialists"
-        onClick={_.partial(onTabClick, dispatch, "specialists")}
-        selected={"specialists" === selectedPanelKey(model)}
-      />
-      <NavTab
-        label="Clinics"
-        onClick={_.partial(onTabClick, dispatch, "clinics")}
-        selected={"clinics" === selectedPanelKey(model)}
-      />
-      {...contentCategoryTabs(model, dispatch)}
-    </NavTabs>
-  )
-}
-
 const panelRecordId = function(panelKey) {
   return panelKey.match(/\d/g).join("");
 }

@@ -407,6 +407,11 @@
       "from": "debug@>=2.2.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/debug/-/debug-2.2.0.tgz"
     },
+    "deep-equal": {
+      "version": "1.0.1",
+      "from": "deep-equal@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/deep-equal/-/deep-equal-1.0.1.tgz"
+    },
     "detect-indent": {
       "version": "3.0.1",
       "from": "detect-indent@>=3.0.1 <4.0.0",
@@ -416,6 +421,11 @@
       "version": "4.1.13",
       "from": "https://registry.npmjs.org/es5-shim/-/es5-shim-4.1.13.tgz",
       "resolved": "https://registry.npmjs.org/es5-shim/-/es5-shim-4.1.13.tgz"
+    },
+    "es6-promise": {
+      "version": "3.1.2",
+      "from": "es6-promise@*",
+      "resolved": "https://registry.npmjs.org/es6-promise/-/es6-promise-3.1.2.tgz"
     },
     "escape-string-regexp": {
       "version": "1.0.4",
@@ -446,6 +456,11 @@
       "version": "2.0.0",
       "from": "has-ansi@>=2.0.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/has-ansi/-/has-ansi-2.0.0.tgz"
+    },
+    "history": {
+      "version": "2.0.0",
+      "from": "history@*",
+      "resolved": "https://registry.npmjs.org/history/-/history-2.0.0.tgz"
     },
     "home-or-tmp": {
       "version": "1.0.0",
@@ -586,6 +601,11 @@
       "from": "private@>=0.1.5 <0.2.0",
       "resolved": "https://registry.npmjs.org/private/-/private-0.1.6.tgz"
     },
+    "query-string": {
+      "version": "3.0.0",
+      "from": "query-string@>=3.0.0 <4.0.0",
+      "resolved": "https://registry.npmjs.org/query-string/-/query-string-3.0.0.tgz"
+    },
     "react": {
       "version": "0.14.2",
       "from": "https://registry.npmjs.org/react/-/react-0.14.2.tgz",
@@ -685,41 +705,15 @@
       "from": "https://registry.npmjs.org/react-dom/-/react-dom-0.14.2.tgz",
       "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-0.14.2.tgz"
     },
-    "react-redux": {
-      "version": "4.0.0",
-      "from": "https://registry.npmjs.org/react-redux/-/react-redux-4.0.0.tgz",
-      "resolved": "https://registry.npmjs.org/react-redux/-/react-redux-4.0.0.tgz",
-      "dependencies": {
-        "hoist-non-react-statics": {
-          "version": "1.0.3",
-          "from": "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-1.0.3.tgz",
-          "resolved": "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-1.0.3.tgz"
-        },
-        "invariant": {
-          "version": "2.1.2",
-          "from": "https://registry.npmjs.org/invariant/-/invariant-2.1.2.tgz",
-          "resolved": "https://registry.npmjs.org/invariant/-/invariant-2.1.2.tgz",
-          "dependencies": {
-            "loose-envify": {
-              "version": "1.1.0",
-              "from": "https://registry.npmjs.org/loose-envify/-/loose-envify-1.1.0.tgz",
-              "resolved": "https://registry.npmjs.org/loose-envify/-/loose-envify-1.1.0.tgz",
-              "dependencies": {
-                "js-tokens": {
-                  "version": "1.0.2",
-                  "from": "https://registry.npmjs.org/js-tokens/-/js-tokens-1.0.2.tgz",
-                  "resolved": "https://registry.npmjs.org/js-tokens/-/js-tokens-1.0.2.tgz"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "redux": {
       "version": "3.0.4",
       "from": "https://registry.npmjs.org/redux/-/redux-3.0.4.tgz",
       "resolved": "https://registry.npmjs.org/redux/-/redux-3.0.4.tgz"
+    },
+    "redux-logger": {
+      "version": "2.6.0",
+      "from": "redux-logger@*",
+      "resolved": "https://registry.npmjs.org/redux-logger/-/redux-logger-2.6.0.tgz"
     },
     "regenerate": {
       "version": "1.2.1",
@@ -773,6 +767,11 @@
         }
       }
     },
+    "strict-uri-encode": {
+      "version": "1.1.0",
+      "from": "strict-uri-encode@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/strict-uri-encode/-/strict-uri-encode-1.1.0.tgz"
+    },
     "strip-ansi": {
       "version": "3.0.0",
       "from": "strip-ansi@>=3.0.0 <4.0.0",
@@ -798,10 +797,20 @@
       "from": "trim-right@>=1.0.1 <2.0.0",
       "resolved": "https://registry.npmjs.org/trim-right/-/trim-right-1.0.1.tgz"
     },
+    "url-pattern": {
+      "version": "1.0.1",
+      "from": "url-pattern@*",
+      "resolved": "https://registry.npmjs.org/url-pattern/-/url-pattern-1.0.1.tgz"
+    },
     "user-home": {
       "version": "1.1.1",
       "from": "user-home@>=1.1.1 <2.0.0",
       "resolved": "https://registry.npmjs.org/user-home/-/user-home-1.1.1.tgz"
+    },
+    "warning": {
+      "version": "2.1.0",
+      "from": "warning@>=2.0.0 <3.0.0",
+      "resolved": "https://registry.npmjs.org/warning/-/warning-2.1.0.tgz"
     },
     "webpack": {
       "version": "1.11.0",

@@ -1,6 +1,25 @@
-var _ = require("lodash");
+import _ from "lodash";
 
-var favorites = function(state = {}, action) {
+const app = (state = {}, action) => {
+  switch(action.type){
+  case "INTEGRATE_LOCALSTORAGE_DATA":
+    return _.assign(
+      {},
+      state,
+      action.data
+    );
+  case "INTEGRATE_PAGE_RENDERED_DATA":
+    return action.initialState.app;
+  default:
+    return _.assign(
+      {},
+      state,
+      { currentUser: currentUser(state.currentUser, action) }
+    )
+  }
+}
+
+const favorites = (state = {}, action) => {
   switch(action.type) {
   case "FAVORITED_ITEM":
     return _.assign(
@@ -19,7 +38,7 @@ var favorites = function(state = {}, action) {
   }
 }
 
-var currentUser = function(state = {}, action) {
+const currentUser = (state = {}, action) => {
   return _.assign(
     {},
     state,
@@ -27,21 +46,4 @@ var currentUser = function(state = {}, action) {
   )
 }
 
-module.exports = function(state = {}, action) {
-  switch(action.type){
-  case "INTEGRATE_LOCALSTORAGE_DATA":
-    return _.assign(
-      {},
-      state,
-      action.data
-    );
-  case "INTEGRATE_PAGE_RENDERED_DATA":
-    return action.initialState.app;
-  default:
-    return _.assign(
-      {},
-      state,
-      { currentUser: currentUser(state.currentUser, action) }
-    )
-  }
-}
+export default app;

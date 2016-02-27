@@ -1,11 +1,48 @@
-var React = require("react");
-var ReactDOM = require("react-dom");
-var Redux = require("redux");
-var Provider = require("react-redux").Provider;
-var connect = require("react-redux").connect;
-var _ = require("lodash");
+import ReactDOM from "react-dom";
+import React from "react";
+import { createStore, applyMiddleware } from 'redux';
+import createBrowserHistory from 'history/lib/createBrowserHistory'
+import { useQueries } from 'history';
+import createLogger from 'redux-logger';
+import { locationChanged } from 'action_creators';
+import { Routes, matchedRoute, routeParams } from 'routes';
+import { Deferred } from 'utils';
+import BodyController from "controllers/body";
+import _ from 'lodash';
+import rootReducer from "reducers/top_level";
 
-var generateReducer = require("./reducers/top_level");
+// setup middleware
+
+let middlewares = []
+
+const logger = createLogger();
+middlewares.push(logger);
+
+const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
+const store = createStoreWithMiddleware(rootReducer);
+
+// only want to render the component when the store has a valid location
+
+const stateReadyForRender = new Deferred();
+store.subscribe(() => {
+  if (store.getState().ui.location) {
+    stateReadyForRender.resolve();
+  }
+});
+
+// setup history
+// think of this as middleware between the url bar and redux
+
+const browserHistory = useQueries(createBrowserHistory)();
+browserHistory.listen((location) => {
+  const _matchedRoute = matchedRoute(location);
+
+  store.dispatch(locationChanged({
+    route: _matchedRoute,
+    queryParams: location.query,
+    routeParams: routeParams(location.pathname, _matchedRoute)
+  }));
+});
 
 const Provider = React.createClass({
   getInitialState: function() {
@@ -18,13 +55,10 @@ const Provider = React.createClass({
   },
   render: function() {
     return(
-      React.createClass(
-        this.props.component,
-        {
-          dispatch: this.props.store.dispatch,
-          model: this.state
-        }
-      )
+      <BodyController
+        dispatch={this.props.store.dispatch}
+        model={this.state}
+      />
     );
   }
 });
@@ -33,16 +67,14 @@ module.exports = function(config, initData) {
   $("document").ready(function() {
 
     // connect the component to redux
-    var reducer = generateReducer(config.uiReducer);
-    var store = Redux.createStore(reducer);
     var rootElement = $(config.domElementSelector)[0];
-    var Component = require(`./react_components/${_.snakeCase(config.topLevelComponent)}`);
 
-    // render the component
-    ReactDOM.render(
-      <Provider store={store} component={Component}/>,
-      rootElement
-    );
+    stateReadyForRender.promise.then(() => {
+      ReactDOM.render(
+        <Provider store={store} component={BodyController}/>,
+        rootElement
+      );
+    }).catch((err) => { setTimeout(() => { throw err; }); });
 
     // integrate data we render on the ruby partial
     store.dispatch({
