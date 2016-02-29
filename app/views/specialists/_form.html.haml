@@ -132,29 +132,29 @@
             .controls
               - text_address = so.object.location.resolved_address.address if so.object.location.present? && so.object.location.resolved_address.present?
               %input{"type" => "text", "value" => "#{text_address}"}
-          - if @form_modifier.new_record?
-            = so.simple_fields_for :office, :nested_wrapper => false do |o|
-              = o.simple_fields_for :location, :nested_wrapper => false do |l|
-                %div{:class => "address_#{index}"}
-                  = l.simple_fields_for :address do |a|
-                    = a.input :suite, :input_html => { :class => "span1" }
-                    = a.input :address1
-                    = a.input :address2
-                    = a.association :city,
-                      as: :select,
-                      collection: City.all_formatted_for_select,
-                      include_blank: true
-                    = a.input :postalcode, :input_html => { :class => "span1" }
-                %div{:class => "hospital_#{index}"}
-                  = l.association :hospital_in,
+          = so.simple_fields_for :office, :nested_wrapper => false do |o|
+            - next unless so.object.new_record?
+            = o.simple_fields_for :location, :nested_wrapper => false do |l|
+              %div{:class => "address_#{index}"}
+                = l.simple_fields_for :address do |a|
+                  = a.input :suite, :input_html => { :class => "span1" }
+                  = a.input :address1
+                  = a.input :address2
+                  = a.association :city,
                     as: :select,
-                    collection: Hospital.all_formatted_for_select,
-                    :include_blank => true
-                %div{:class => "clinic_#{index}"}
-                  = l.association :location_in, as: :select, collection: @specializations_clinics, :include_blank => true
-                %div{:class => "details_#{index}"}
-                  = l.input :suite_in, :input_html => { :class => "span1" }
-                  = l.input :details_in
+                    collection: City.all_formatted_for_select,
+                    include_blank: true
+                  = a.input :postalcode, :input_html => { :class => "span1" }
+              %div{:class => "hospital_#{index}"}
+                = l.association :hospital_in,
+                  as: :select,
+                  collection: Hospital.all_formatted_for_select,
+                  :include_blank => true
+              %div{:class => "clinic_#{index}"}
+                = l.association :location_in, as: :select, collection: @specializations_clinics, :include_blank => true
+              %div{:class => "details_#{index}"}
+                = l.input :suite_in, :input_html => { :class => "span1" }
+                = l.input :details_in
           %div{:class => "universal_#{index}"}
             = so.input :open_saturday, wrapper: :bootstrap_tight
             = so.input :open_sunday

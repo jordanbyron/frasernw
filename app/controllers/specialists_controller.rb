@@ -301,7 +301,7 @@ class SpecialistsController < ApplicationController
       s.build_sunday
       o = so.build_office
       l = o.build_location
-      l.build_address if @form_modifier.new_record?
+      l.build_address if so.new_record?
     end
   end
 end
