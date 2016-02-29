@@ -3,8 +3,8 @@ $.tablesorter.addParser({
     is: function(s) {
       return false;
     },
-		format: function(s) {
-			switch(s)
+    format: function(s) {
+      switch(s)
       {
         case("Within one week"):
           return 0;
@@ -35,7 +35,7 @@ $.tablesorter.addParser({
         default:
           return 13;
       }
-		},
+    },
     // set type, either numeric or text
     type: 'numeric'
 });
@@ -45,8 +45,8 @@ $.tablesorter.addParser({
     is: function(s) {
       return false;
     },
-		format: function(s) {
-			switch($.trim(s))
+    format: function(s) {
+      switch($.trim(s))
       {
         case("1"): //available
           return 0;
@@ -63,9 +63,23 @@ $.tablesorter.addParser({
         default:
           return 6;
       }
-		},
+    },
     // set type, either numeric or text
     type: 'numeric'
+});
+
+$.tablesorter.addParser({
+  // set a unique id
+  id: 'lastRequestAt',
+  is: function(s, table, cell, $cell) {
+    // return false so this parser is not auto detected
+    return false;
+  },
+  format: function(s, table, cell, cellIndex) {
+    return $(cell).find("div").attr("data-last-request-at");
+  },
+  parsed: false,
+  type: 'numeric'
 });
 
 
@@ -76,13 +90,13 @@ $.tablesorter.addParser({
     is: function(s) {
       return false;
     },
-		format: function(s) {
+    format: function(s) {
       if ($.trim(s) === '') {
-  			return "zzzzzz";
-			} else {
-			  return s;
-			}
-		},
+        return "zzzzzz";
+      } else {
+        return s;
+      }
+    },
     // set type, either numeric or text
     type: 'text'
 });
@@ -93,7 +107,7 @@ $.tablesorter.addParser({
     is: function(s) {
       return false;
     },
-		format: function(s, table, cell, cellIndex) {
+    format: function(s, table, cell, cellIndex) {
       return $(cell).children('a').text().trim().split(" ").reverse().toString().toLowerCase();
     },
     // set type, either numeric or text
@@ -106,7 +120,7 @@ $.tablesorter.addParser({
     is: function(s) {
       return false;
     },
-		format: function(s, table, cell, cellIndex) {
+    format: function(s, table, cell, cellIndex) {
       return $(cell).children('a').text().toLowerCase();
     },
     // set type, either numeric or text

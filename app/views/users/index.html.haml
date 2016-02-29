@@ -109,7 +109,7 @@
             %tr.tableheader
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Name
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Division(s)
-              %th{:class => "{sorter: 'shortDate', dateFormat: 'YYYYMMDD'}", :style => "width:20%"} Last Visit
+              %th{:class => "{sorter: 'lastRequestAt'}", :style => "width:20%"} Last Visit
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Signed Up
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Type
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Email
@@ -123,9 +123,9 @@
                 %td= user.divisions.map{ |s| s.name }.to_sentence
                 %td
                   - if user.last_request_at.present?
-                    .hoverpad{:title => "Last Visit: </br> <i>#{time_ago_in_words(user.last_request_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}= user.last_request_at.strftime("%Y-%m-%d")
+                    .hoverpad{:title => "Last Visit: </br> <i>#{time_ago_in_words(user.last_request_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "left", "last-request-at" => user.last_request_at.to_i}}= user.last_request_at.strftime("%Y-%m-%d")
                   - else
-                    .hoverpad{:title => "This user has no recorded logins.".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}, :style => "padding-top:10px;padding-bottom:10px;"}= "-      "
+                    .hoverpad{:title => "This user has no recorded logins.".html_safe, :data =>{:toggle => "tooltip", :placement => "left", "last-request-at" => 0}, :style => "padding-top:10px;padding-bottom:10px;"}= "-      "
 
                 %td
                   - # Sadly Rails partials load too slow for Signed Up to be refactored into partial
@@ -186,7 +186,7 @@
             %tr.tableheader
               %th{:class => "{sorter: 'text'}", :style => "width:15%"} Name
               %th{:class => "{sorter: 'text'}", :style => "width:12%"} Division(s)
-              %th{:class => "{sorter: 'shortDate', dateFormat: 'YYYYMMDD'}", :style => "width:12%"} Last Visit
+              %th{:class => "{sorter: 'lastRequestAt'}", :style => "width:12%"} Last Visit
               %th{:class => "{sorter: 'text'}", :style => "width:12%"} Signed Up
               %th{:class => "{sorter: 'text'}", :style => "width:10%"} Role
               %th{:class => "{sorter: 'text'}", :style => "width:9%"} Type
@@ -203,9 +203,10 @@
                 %td= user.divisions.map{ |s| s.name }.to_sentence
                 %td
                   - if user.last_request_at.present?
-                    .hoverpad{:title => "Last Visit: </br> <i>#{time_ago_in_words(user.last_request_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}= user.last_request_at.strftime("%Y-%m-%d")
+                    .hoverpad{:title => "Last Visit: </br> <i>#{time_ago_in_words(user.last_request_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "left", "last-request-at" => user.last_request_at.to_i}}
+                      = user.last_request_at.strftime("%Y-%m-%d")
                   - else
-                    .hoverpad{:title => "This user has no recorded logins.".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}, :style => "padding-top:10px;padding-bottom:10px;"}= "-      "
+                    .hoverpad{:title => "This user has no recorded logins.".html_safe, :data =>{:toggle => "tooltip", :placement => "left", "last-request-at" => 0}, :style => "padding-top:10px;padding-bottom:10px;"}= "-      "
 
 
                 %td
