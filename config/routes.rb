@@ -10,7 +10,7 @@ Frasernw::Application.routes.draw do
   match '/versions'                 => 'versions#show_all', :as => 'all_versions'
   match '/versions/:id'             => 'versions#show',     :as => 'version'
 
-  resources :user_masks, only: [:new, :create] do
+  resources :user_masks, only: [:new, :create, :update] do
     collection do
       delete :destroy
     end

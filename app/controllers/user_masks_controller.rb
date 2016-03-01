@@ -22,26 +22,40 @@ class UserMasksController < ApplicationController
     redirect_to root_path unless current_user.admin_or_super?
 
     @user_mask = current_user.mask || current_user.build_mask
-    @user_mask.assign_attributes(
-      division_ids: params[:user_mask][:division_ids],
-      role: params[:user_mask][:role]
-    )
 
-    division_assignments_permitted = @user_mask.division_ids.all? do |id|
-      current_user.can_assign_divisions.map(&:id).include?(id)
-    end
+    validated_params = {
+      role: params[:user_mask][:role],
+      division_ids: params[:user_mask][:division_ids].select(&:present?).map(&:to_i)
+    }
 
-    if !current_user.can_assign_roles.include?(@user_mask.role)
-      flash[:notice] = "Invalid role."
-      render :new
-    elsif !division_assignments_permitted || @user_mask.division_ids.none?
-      flash[:notice] = "Invalid divisions."
-      render :new
-    else
-      @user_mask.save
+    if ValidateUserMask.call(existing_mask: @user_mask, new_params: validated_params)
+      @user_mask.update_attributes(validated_params)
 
       redirect_to root_path,
         notice: "Now viewing Pathways as #{current_user.as_role_label.indefinitize} in the following divisions: #{current_user.as_divisions.to_sentence}."
+    else
+      flash[:notice] = "Invalid divisions or role."
+
+      render :new
+    end
+  end
+
+  def update
+    redirect_to root_path unless current_user.admin_or_super?
+    redirect_to new_user_mask_path unless current_user.mask.present?
+
+
+    user_mask = current_user.mask
+    validated_params = params.slice(:role, :division_ids)
+
+    if ValidateUserMask.call(existing_mask: user_mask, params: validated_params)
+      user_mask.update_attributes(validated_params)
+
+      redirect_to request.referrer,
+        notice: "Now viewing Pathways as #{current_user.as_role_label.indefinitize} in the following divisions: #{current_user.as_divisions.to_sentence}."
+    else
+      redirect_to new_user_mask_path,
+        notice: "Invalid division or role"
     end
   end
 

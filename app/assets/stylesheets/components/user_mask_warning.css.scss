@@ -1,0 +1,21 @@
+.dropdown-menu li {
+  .user_mask_warning__item {
+    background-color: #fcf8e3;
+    &:hover {
+      background-color: #FEEDBA;
+    }
+  }
+}
+
+b.caret.user_mask_warning__caret {
+  vertical-align: middle;
+  margin-left: 3px;
+  color: #C09853;
+}
+span.btn-group.user_mask_warning__dropdown {
+  display: inline-block;
+}
+
+.user_mask_warning__dropdown_menu {
+  background-color: #fcf8e3;
+}

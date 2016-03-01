@@ -1,19 +1,49 @@
 .alert.alert-banner.mask_warning
   %i.icon-eye-open{style: "margin-right: 5px"}
-  - if current_user.as_divisions.one?
-    = link_to new_user_mask_path,
-      style: "color: #C09853" do
-      %span= "You are currently viewing this site as #{current_user.as_role_label.indefinite_article} "
-      %strong= current_user.as_role_label
+  %div{style: "display: inline-block;"}
+    %span= "You are currently viewing this site as #{current_user.as_role_label.indefinite_article} "
+    %span.btn-group.user_mask_warning__dropdown
+      .button--mask_warning{"data-toggle" => "dropdown", "href" => "#"}
+        %strong= current_user.as_role_label
+        %b.caret.user_mask_warning__caret
+      %ul.dropdown-menu.user_mask_warning__dropdown_menu
+        - current_user.can_assign_roles.each do |role, label|
+          %li
+            = link_to label,
+              user_mask_path(current_user.mask, role: role),
+              method: :put,
+              style: "color: #C09853;",
+              class: "user_mask_warning__item"
+
+    - if current_user.as_divisions.one?
       %span= "in the division of "
-      %strong= "#{current_user.as_divisions.to_sentence}.".html_safe
-  - elsif current_user.as_divisions.many?
-    = link_to new_user_mask_path,
-      style: "color: #C09853" do
-      %span= "You are currently viewing this site as #{current_user.as_role_label.indefinite_article}"
-      %strong= current_user.as_role_label
+      %span.btn-group.user_mask_warning__dropdown
+        .button--mask_warning{"data-toggle" => "dropdown", "href" => "#"}
+          %strong= current_user.as_divisions.first.name
+          %b.caret.user_mask_warning__caret
+        %ul.dropdown-menu.user_mask_warning__dropdown_menu
+          - current_user.can_assign_divisions.each do |division|
+            %li
+              = link_to division.name,
+                user_mask_path(current_user.mask, division_ids: [ division.id ]),
+                method: :put,
+                style: "color: #C09853;",
+                class: "user_mask_warning__item"
+    - else
       %span=" in the divisions of "
-      %strong= "#{current_user.as_divisions.to_sentence(normal_weight_sentence_connectors)}.".html_safe
+      %span.btn-group.user_mask_warning__dropdown
+        .button--mask_warning{"data-toggle" => "dropdown", "href" => "#"}
+          %strong= current_user.as_divisions.to_sentence(normal_weight_sentence_connectors).html_safe
+          %b.caret.user_mask_warning__caret
+        %ul.dropdown-menu.user_mask_warning__dropdown_menu
+          - current_user.can_assign_divisions.each do |division|
+            %li
+              = link_to division.name,
+                user_mask_path(current_user.mask, division_ids: [ division.id ]),
+                method: :put,
+                style: "color: #C09853;",
+                class: "user_mask_warning__item"
+    %span= "."
 
   = link_to "Configure View as..",
     new_user_mask_path,
