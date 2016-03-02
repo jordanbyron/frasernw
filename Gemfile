@@ -10,7 +10,7 @@ gem 'pg'
 
 group :production do
   gem 'heroku_cloud_backup',
-    git: "git@github.com:pathwaysmedical/heroku_cloud_backup.git"
+    git: "https://github.com/pathwaysmedical/heroku_cloud_backup.git"
 end
 
 gem 'redis'
