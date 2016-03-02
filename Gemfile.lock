@@ -7,10 +7,10 @@ GIT
 
 GIT
   remote: https://github.com/pathwaysmedical/heroku_cloud_backup.git
-  revision: 834beb11550f80b8a60962e8c97b8da3d7a84bc6
-  ref: 834beb11550f80b8a60962e8c97b8da3d7a84bc6
+  revision: 8e801df1ad59515c3a89456169770b641d8c39a2
+  ref: 8e801df1ad59515c3a89456169770b641d8c39a2
   specs:
-    heroku_cloud_backup (0.1.4)
+    heroku_cloud_backup (0.1.5)
       fog (>= 1.6.0)
       heroku (>= 3.42.38)
 
