@@ -9,7 +9,8 @@ gem 'rails', '3.2.22'
 gem 'pg'
 
 group :production do
-  gem 'heroku_cloud_backup'
+  gem 'heroku_cloud_backup',
+    git: "git@github.com:pathwaysmedical/heroku_cloud_backup.git"
 end
 
 gem 'redis'
@@ -127,7 +128,6 @@ group :development, :test do
   gem 'guard-spork'
   gem 'rack-livereload'
   gem 'activerecord-import'
-  #gem 'heroku'
   gem 'taps'
   gem 'rb-fsevent', '~> 0.9.1'
   gem 'quiet_assets'
@@ -150,12 +150,8 @@ group :development do
     git: "git@github.com:pathwaysmedical/quick_spreadsheet.git"
 end
 
-group :production do
-  gem 'pry-rails' # can be used in production if careful:  http://blog.bugsnag.com/production-pry
-end
-
+gem 'pry-rails'
 group :development, :test do
-  gem 'pry-rails'
   gem 'pry-doc'
   gem 'pry-nav'
   gem 'pry-stack_explorer'

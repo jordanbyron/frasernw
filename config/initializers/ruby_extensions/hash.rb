@@ -1,6 +1,10 @@
 class Hash
   def clone
-    Marshal.load(Marshal.dump(self))
+    begin
+      Marshal.load(Marshal.dump(self))
+    rescue
+      super
+    end
   end
 
   def except(*keys)
