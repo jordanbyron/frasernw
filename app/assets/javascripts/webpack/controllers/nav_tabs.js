@@ -1,19 +1,12 @@
-import ForRoutes from "controllers/for_routes";
+import FilterByRoute from "controllers/filter_by_route";
 import _ from "lodash";
 import contentCategoryItems from "selectors/content_category_items";
 import { selectedPanelKey, panelKey } from "selectors/panel_keys"; // TODO
 import { NavTabs, NavTab } from "helpers/nav_tabs";
+import { tabClicked } from "actions";
 import React from "react";
 
-
-const onTabClick = (key, dispatch, event) => {
-  dispatch({
-    type: "SELECT_PANEL",
-    panel: key
-  })
-};
-
-const contentCategoriesWithTabs = (model) => {
+const contentCategoriesShowingTabs = (model) => {
   return _.filter(
     model.app.contentCategories,
     (category) => {
@@ -26,13 +19,13 @@ const contentCategoriesWithTabs = (model) => {
 
 const contentCategoryTabs = (model, dispatch) => {
   return(
-    _.values(contentCategoriesWithTabs(model)).map((category) => {
+    _.values(contentCategoriesShowingTabs(model)).map((category) => {
       const _key = panelKey("contentCategories", category.id)
       return(
         <NavTab
           label={category.name}
           key={_key}
-          onClick={_.partial(onTabClick, _key, dispatch)}
+          onClick={_.partial(tabClicked, _key, dispatch)}
           isSelected={_key === selectedPanelKey(model)}
         />
       );
@@ -40,19 +33,19 @@ const contentCategoryTabs = (model, dispatch) => {
   );
 }
 
-const Klass = ({model, dispatch}) => {
+const Handler = ({model, dispatch}) => {
   return(
     <NavTabs>
       <NavTab
         label="Specialists"
         key="specialists"
-        onClick={_.partial(onTabClick, "specialists", dispatch)}
+        onClick={_.partial(tabClicked, "specialists", dispatch)}
         isSelected={"specialists" === selectedPanelKey(model)}
       />
       <NavTab
         label="Clinics"
         key="clinics"
-        onClick={_.partial(onTabClick, "clinics", dispatch)}
+        onClick={_.partial(tabClicked, "clinics", dispatch)}
         isSelected={"clinics" === selectedPanelKey(model)}
       />
       {contentCategoryTabs(model, dispatch)}
@@ -60,18 +53,18 @@ const Klass = ({model, dispatch}) => {
   );
 };
 
-const SUPPORTED_ROUTES = [
+const SHOWING_IN_ROUTES = [
   "/specialties/:id",
   "/areas_of_practice/:id"
 ];
 
 const NavTabsController = ({model, dispatch}) => {
   return(
-    <ForRoutes
+    <FilterByRoute
       model={model}
       dispatch={dispatch}
-      supportedRoutes={SUPPORTED_ROUTES}
-      klass={Klass}
+      showingInRoutes={SHOWING_IN_ROUTES}
+      handler={Handler}
     />
   );
 }

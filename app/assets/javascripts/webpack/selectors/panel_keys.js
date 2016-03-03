@@ -1,15 +1,18 @@
+import { route } from "selectors/routing";
+import { routeParams } from "selectors/routing";
+
 export function defaultPanel(model) {
   return {
     ["/specialties/:id"]: function() {
       return model.
         app.
         divisions[model.app.currentUser.divisionIds[0]].
-        openToSpecializationPanel[model.ui.location.routeParams.id];
+        openToSpecializationPanel[routeParams(model).id];
     },
     ["/areas_of_practice/:id"]: function() {
       return { type: "specialists" }
     }
-  }[model.ui.location.route]();
+  }[route(model)]();
 };
 
 export function selectedPanelKey(model){
