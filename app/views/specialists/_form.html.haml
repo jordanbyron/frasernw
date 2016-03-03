@@ -40,11 +40,6 @@
     .alert.alert-error= f.error_messages
 
   %h3 General Information
-  -# TODO: Fix bug with categorization_hash (issue #212)
-  - categorization_hash = {}
-  - categorization_divisions = @specialist.divisions.blank? ? @form_modifier.divisions : @specialist.divisions
-  - categorization_specializations = @specialization.present? ? [@specialization] : @specialist.specializations
-  - categorization_specializations.map{ |sp| sp.specialization_options.for_divisions(categorization_divisions) }.flatten.uniq.each{ |so| categorization_hash.merge!(so.specialist_categorization_hash) }
 
   = f.input :firstname
   = f.input :lastname
@@ -52,7 +47,12 @@
   = f.input :sex_mask, as: :select, collection: Specialist::SEX_LABELS, label_method: :last, value_method: :first, :include_blank => false
   = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.billing_number_padded }
   .no-print
-    = f.input :categorization_mask, as: :select, collection: categorization_hash, label_method: :last, value_method: :first, :include_blank => false
+    = f.input :categorization_mask,
+      as: :select,
+      collection: SpecialistCategorizationOptions.call(specialist: @specialist, default_divisions: @form_modifier.divisions, built_specialization: @specialization),
+      label_method: :last,
+      value_method: :first,
+      include_blank: false
   = f.input :is_gp
 
   - if current_user.as_admin_or_super? || current_user.as_super_admin?
