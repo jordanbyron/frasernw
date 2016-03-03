@@ -1,4 +1,5 @@
 import React from "react";
+import { buttonIsh } from "stylesets";
 
 export function SidebarLayout({children}) {
   return (
@@ -10,18 +11,18 @@ export function SidebarLayout({children}) {
   );
 };
 
-const classTogglingReducedVisibility = (sectionShowingWhenReduced, thisSection) => {
-  if (sectionShowingWhenReduced === thisSection){
+const classTogglingReducedVisibility = (reducedView, thisSection) => {
+  if (reducedView === thisSection){
     return "";
   } else {
     return "hide-when-reduced";
   }
 }
 
-export function SidebarLayoutMainPanel({children, sectionShowingWhenReduced}) {
+export function SidebarLayoutMainSection({children, reducedView}) {
   const className = [
     "span8half",
-    classTogglingReducedVisibility("main", sectionShowingWhenReduced)
+    classTogglingReducedVisibility("main", reducedView)
   ].join(" ")
 
   return (
@@ -31,12 +32,12 @@ export function SidebarLayoutMainPanel({children, sectionShowingWhenReduced}) {
   );
 };
 
-export function SidebarLayoutSidePanel({children, sectionShowingWhenReduced}) {
+export function SidebarLayoutSideSection({children, reducedView}) {
   const className = [
     "span3",
     "offsethalf",
     "datatable-sidebar",
-    classTogglingReducedVisibility("sidebar", sectionShowingWhenReduced)
+    classTogglingReducedVisibility("sidebar", reducedView)
   ].join(" ")
 
   return(
@@ -45,3 +46,14 @@ export function SidebarLayoutSidePanel({children, sectionShowingWhenReduced}) {
     </div>
   );
 };
+
+export function SidebarLayoutReducedViewSelector({onClick, text}){
+  return(
+    <div className="toggle-filters visible-phone">
+      <a onClick={onClick} style={buttonIsh}>
+        <i className="icon-blue icon-cog icon-small"></i>
+        <span style={{marginLeft: "3px"}}>{ text }</span>
+      </a>
+    </div>
+  );
+}

@@ -1,19 +1,17 @@
-var merge = require("lodash/object/merge");
+import _ from "lodash";
 
-var noSelect = {
+export const noSelect = {
   WebkitTouchCallout: "none",
   WebkitUserSelect: "none",
   KhtmlUserSelect: "none",
   MozUserSelect: "none",
   msUserSelect: "none",
   userSelect: "none"
-}
+};
 
-module.exports = {
-  noSelect: noSelect,
-  buttonIsh: merge({cursor: "pointer"}, noSelect),
-  halfColumnCheckbox: {
-    display: "inline-block",
-    width: "90px"
-  }
-}
+export const buttonIsh = _.merge({cursor: "pointer"}, noSelect);
+
+export const halfColumnCheckbox = {
+  display: "inline-block",
+  width: "90px"
+};

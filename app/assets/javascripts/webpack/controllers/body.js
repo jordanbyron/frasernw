@@ -1,27 +1,44 @@
 import NavTabsController from "controllers/nav_tabs";
 import React from "react";
-import { SidebarLayout, SidebarLayoutMainPanel, SidebarLayoutSidePanel } from "helpers/sidebar_layout";
+import {
+  SidebarLayout,
+  SidebarLayoutMainSection,
+  SidebarLayoutSideSection,
+  SidebarLayoutReducedViewSelector
+} from "helpers/sidebar_layout";
+import { reducedViewSelectorClicked } from "actions"
 
 const BodyController = ({model, dispatch}) => {
   return(
     <div>
       <NavTabsController model={model} dispatch={dispatch}/>
       <div className="content-wrapper">
+        <SidebarLayoutReducedViewSelector
+          onClick={_.partial(reducedViewSelectorClicked, dispatch, reducedView(model))}
+          text={reducedViewSelectorText(model)}
+        />
         <SidebarLayout>
-          <SidebarLayoutMainPanel sectionShowingWhenReduced={sectionShowingWhenReduced(model)}>
+          <SidebarLayoutMainSection reducedView={reducedView(model)}>
             { "main" }
-          </SidebarLayoutMainPanel>
-          <SidebarLayoutSidePanel sectionShowingWhenReduced={sectionShowingWhenReduced(model)}>
+          </SidebarLayoutMainSection>
+          <SidebarLayoutSideSection reducedView={reducedView(model)}>
             { "side" }
-          </SidebarLayoutSidePanel>
+          </SidebarLayoutSideSection>
         </SidebarLayout>
       </div>
     </div>
   )
 };
 
-const sectionShowingWhenReduced = (model) => {
-  return "sidebar";
+const reducedViewSelectorText = (model) => {
+  return({
+    main: "Show Filters",
+    sidebar: "Show Table"
+  }[reducedView(model)]);
+};
+
+const reducedView = (model) => {
+  return model.ui.reducedView || "main";
 }
 
 export default BodyController;

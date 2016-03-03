@@ -1,9 +1,19 @@
 const ui = (state = {}, action) => {
   return {
     selectedPanel: selectedPanel(state.selectedPanel, action),
-    location: location(state.location, action)
+    location: location(state.location, action),
+    reducedView: reducedView(state.reducedView, action)
   };
 };
+
+const reducedView = (state, action) => {
+  switch(action.type){
+  case "TOGGLE_REDUCED_VIEW":
+    return action.newView;
+  default:
+    return state;
+  }
+}
 
 
 const location = (state, action) => {
