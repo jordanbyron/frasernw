@@ -23,7 +23,7 @@ class SubscriptionMailer < ActionMailer::Base
     mail(
       :to => @subscription.user.email,
       :from => 'Pathways <noreply@pathwaysbc.ca>',
-      :subject => "Pathways: New resources were added #{@interval_phrase} to Pathways [Resource Update]"
+      :subject => "Pathways: New Resources were added #{@interval_phrase} to Pathways [Resource Update]"
     )
   end
 
@@ -35,7 +35,7 @@ class SubscriptionMailer < ActionMailer::Base
     @email = @user.email
     @activities = activities_for_subscription
 
-    mail(:to => @subscription.user.email, :from => 'noreply@pathwaysbc.ca', :subject => "Pathways: News items added #{@interval_phrase} to Pathways [News Update]")
+    mail(:to => @subscription.user.email, :from => 'noreply@pathwaysbc.ca', :subject => "Pathways: News Items added to Pathways #{@interval_phrase} [News Update]")
   end
 
   def immediate_resource_update_email(activity_id, user_id)
@@ -66,7 +66,7 @@ class SubscriptionMailer < ActionMailer::Base
     @type_mask_description_formatted = @activity.type_mask_description_formatted
     @update_classification_type = @activity.update_classification_type
 
-    mail(:to => @user.email, :from => 'Pathways <noreply@pathwaysbc.ca>', :subject => "Pathways: #{@type_mask_description_formatted.capitalize} was just added to #{@division} [#{@update_classification_type.singularize}]")
+    mail(:to => @user.email, :from => 'Pathways <noreply@pathwaysbc.ca>', :subject => "Pathways: #{@type_mask_description_formatted} was just added to #{@division} [#{@update_classification_type.singularize}]")
 
   end
 
