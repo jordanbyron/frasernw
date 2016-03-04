@@ -7,9 +7,14 @@ Backend Maintenance = Change is not user facing
 
 ## [2016-03-05] [Since 2016-02-27 Integration]
 ### Added:
+- Dropdowns from 'View Pathways As' notification bar
 
 ### Changed:
 - Small improvements to the wording of notification emails.
+- Database backups once again mirrored to S3
+
+### Fixed:
+- #212: Categorization options show up on specialist form even if they don't have any specialties
 
 ## [2016-02-27] [Since 2016-02-20 Integration]
 ### Added:
