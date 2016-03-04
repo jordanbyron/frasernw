@@ -36,6 +36,9 @@ class Division < ActiveRecord::Base
 
   has_many :specialization_options, :dependent => :destroy
 
+  has_many :subscription_divisions, :dependent => :destroy
+  has_many :subscriptions, :through => :subscription_divisions
+
   include PaperTrailable
 
   default_scope order('divisions.name')

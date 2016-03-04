@@ -8,14 +8,11 @@ class Subscription < ActiveRecord::Base
 
   belongs_to :user
 
-  has_and_belongs_to_many :divisions, join_table: :subscription_divisions
-
-  has_many :news_items, through: :divisions #unsure if will use this
+  has_many :subscription_divisions, dependent: :destroy
+  has_many :divisions, through: :subscription_divisions, source: :division, class_name: "Division"
 
   has_many :subscription_sc_categories, dependent: :destroy
   has_many :sc_categories, through: :subscription_sc_categories
-
-  has_many :subscription_news_item_types, dependent: :destroy # not a join table with news_item, only stores NewsItem::TYPE_HASH integer
 
   has_many :subscription_specializations, dependent: :destroy
   has_many :specializations, through: :subscription_specializations
@@ -26,10 +23,16 @@ class Subscription < ActiveRecord::Base
   scope :all_immediately, -> {where(interval: INTERVAL_IMMEDIATELY)}
   scope :all_by_date_interval, lambda { |date_interval| where(interval: date_interval)}
 
+  scope :resources, -> {where(classification: resource_update)}
+  scope :news,      -> {where(classification: news_update)}
+
+  scope :in_divisions,     lambda {|division|    joins(:divisions).where("subscription_divisions.division_id" => Array.wrap(division).map(&:id)).uniq }
+  scope :in_sc_categories, lambda {|sc_category| joins(:subscription_sc_categories).where(:subscription_sc_categories => {:sc_category_id => Array.wrap(sc_category).map(&:id)} ).uniq }
+
+
   accepts_nested_attributes_for :divisions
   accepts_nested_attributes_for :sc_categories
   accepts_nested_attributes_for :specializations
-  accepts_nested_attributes_for :subscription_news_item_types
 
   SC_ITEM_FORMAT_TYPE_HASH = ScItem::FILTER_FORMAT_HASH
 
@@ -68,6 +71,10 @@ class Subscription < ActiveRecord::Base
     ary = Array.new
     ary << activity
     (SubscriptionActivity.collect_activities(subscription: self) & ary).present?
+  end
+
+  def activities
+    SubscriptionActivity.collect_activities(subscription: self)
   end
 
   # # #BEGIN news_type:

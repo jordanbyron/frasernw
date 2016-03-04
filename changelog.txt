@@ -15,6 +15,7 @@ Backend Maintenance = Change is not user facing
 
 ### Fixed:
 - #212: Categorization options show up on specialist form even if they don't have any specialties
+- #352: Notification emails now correctly hide all updates by division.
 
 ## [2016-02-27] [Since 2016-02-20 Integration]
 ### Added:
