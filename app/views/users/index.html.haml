@@ -42,11 +42,11 @@
                   %td= user.divisions.map{ |s| s.name }.to_sentence
                   %td
                     - if user.activated_at.present? # Signed Up uses activated_at or created_at
-                      %small.hoverpad{:title => "Signed Up: </br> <i>#{time_ago_in_words(user.activated_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.activated_at.strftime("%Y-%m-%d")
+                      %small{:title => "#{user.activated_at.to_datetime.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.activated_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.activated_at.strftime("%Y-%m-%d")
                     - elsif user.created_at.present?
-                      %small.hoverpad{:title => "Signed Up: </br> <i>#{time_ago_in_words(user.created_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
+                      %small{:title => "#{user.created_at.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.created_at)} ago </i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
                     - else
-                      %small.hoverpad
+                      %small
                   %td= user.email
                   %td
                     - divisions = @division.present? ? [@division] : user.divisions
@@ -83,11 +83,11 @@
                 %td= user.divisions.map{ |s| s.name }.to_sentence
                 %td
                   - if user.activated_at.present? # Signed Up uses activated_at or created_at
-                    %small.hoverpad{:title => "Signed Up: </br> <i>#{time_ago_in_words(user.activated_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.activated_at.strftime("%Y-%m-%d")
+                    %small{:title => "#{user.activated_at.to_datetime.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.activated_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.activated_at.strftime("%Y-%m-%d")
                   - elsif user.created_at.present?
-                    %small.hoverpad{:title => "Signed Up: </br> <i>#{time_ago_in_words(user.created_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
+                    %small{:title => "#{user.created_at.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.created_at)} ago </i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
                   - else
-                    %small.hoverpad
+                    %small
                 %td= user.email
                 %td
                   - user.divisions.each do |division|
@@ -109,7 +109,7 @@
             %tr.tableheader
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Name
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Division(s)
-              %th{:class => "{sorter: 'shortDate', dateFormat: 'YYYYMMDD'}", :style => "width:20%"} Last Visit
+              %th{:class => "{sorter: 'text'}", :style => "width:20%"} Last Visit
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Signed Up
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Type
               %th{:class => "{sorter: 'text'}", :style => "width:20%"} Email
@@ -123,18 +123,20 @@
                 %td= user.divisions.map{ |s| s.name }.to_sentence
                 %td
                   - if user.last_request_at.present?
-                    .hoverpad{:title => "Last Visit: </br> <i>#{time_ago_in_words(user.last_request_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}= user.last_request_at.strftime("%Y-%m-%d")
+                    %small{:title => "#{user.last_request_at.to_s(:day_short_with_year)}".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}
+                      %div{:class => "timeago", :value => "value", :title => "#{user.last_request_at.to_datetime.getutc.iso8601}".html_safe }= user.last_request_at.to_s
                   - else
-                    .hoverpad{:title => "This user has no recorded logins.".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}, :style => "padding-top:10px;padding-bottom:10px;"}= "-      "
+                    %small{:title => "This user has no recorded logins.".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}
+                      %p= "-      "
 
                 %td
                   - # Sadly Rails partials load too slow for Signed Up to be refactored into partial
                   - if user.activated_at.present? # Signed Up uses activated_at or created_at
-                    %small.hoverpad{:title => "Signed Up: </br> <i>#{time_ago_in_words(user.activated_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.activated_at.strftime("%Y-%m-%d")
+                    %small{:title => "#{user.activated_at.to_datetime.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.activated_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.activated_at.strftime("%Y-%m-%d")
                   - elsif user.created_at.present?
-                    %small.hoverpad{:title => "Signed Up: </br> <i>#{time_ago_in_words(user.created_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
+                    %small{:title => "#{user.created_at.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.created_at)} ago </i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
                   - else
-                    %small.hoverpad
+                    %small
                 %td= user.type
                 %td= user.email
                 -#%td
@@ -168,7 +170,7 @@
               %tr
                 %td= link_to user.name, user, :class => 'ajax'
                 %td
-                  %small.hoverpad{:title => "Date Created: </br> <i>#{time_ago_in_words(user.created_at)} ago </i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
+                  %small{:title => "#{user.created_at.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.created_at)} ago </i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
                 %td= user.divisions.map{ |s| s.name }.to_sentence
                 %td= user.role_label
                 %td= user.admin_or_super? ? "Admin" : user.type
@@ -186,10 +188,10 @@
             %tr.tableheader
               %th{:class => "{sorter: 'text'}", :style => "width:15%"} Name
               %th{:class => "{sorter: 'text'}", :style => "width:12%"} Division(s)
-              %th{:class => "{sorter: 'shortDate', dateFormat: 'YYYYMMDD'}", :style => "width:12%"} Last Visit
-              %th{:class => "{sorter: 'text'}", :style => "width:12%"} Signed Up
+              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Last Visit
+              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Signed Up
               %th{:class => "{sorter: 'text'}", :style => "width:10%"} Role
-              %th{:class => "{sorter: 'text'}", :style => "width:9%"} Type
+              %th{:class => "{sorter: 'text'}", :style => "width:10%"} Type
               %th{:class => "{sorter: 'text'}", :style => "width:15%"} Email
               %th{:class => "{sorter: 'text'}", :style => "width:15%"} Access key
               %th.admin
@@ -203,18 +205,20 @@
                 %td= user.divisions.map{ |s| s.name }.to_sentence
                 %td
                   - if user.last_request_at.present?
-                    .hoverpad{:title => "Last Visit: </br> <i>#{time_ago_in_words(user.last_request_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}= user.last_request_at.strftime("%Y-%m-%d")
+                    %small{:title => "#{user.last_request_at.to_s(:day_short_with_year)}".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}
+                      %div{:class => "timeago", :value => "value", :title => "#{user.last_request_at.to_datetime.getutc.iso8601}".html_safe }= user.last_request_at.to_s
                   - else
-                    .hoverpad{:title => "This user has no recorded logins.".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}, :style => "padding-top:10px;padding-bottom:10px;"}= "-      "
+                    %small{:title => "This user has no recorded logins.".html_safe, :data =>{:toggle => "tooltip", :placement => "left"}}
+                      %p= "-      "
 
 
                 %td
                   - if user.activated_at.present? # Signed Up uses activated_at or created_at
-                    %small.hoverpad{:title => "Signed Up: </br> <i>#{time_ago_in_words(user.activated_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.activated_at.strftime("%Y-%m-%d")
+                    %small{:title => "#{user.activated_at.to_datetime.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.activated_at.to_datetime)} ago</i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.activated_at.strftime("%Y-%m-%d")
                   - elsif user.created_at.present?
-                    %small.hoverpad{:title => "Signed Up: </br> <i>#{time_ago_in_words(user.created_at)} ago </i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
+                    %small{:title => "#{user.created_at.to_s(:day_short_with_year)}: </br> <i>#{time_ago_in_words(user.created_at)} ago </i>".html_safe, :data =>{:toggle => "tooltip", :placement => "right"}}= user.created_at.strftime("%Y-%m-%d")
                   - else
-                    %small.hoverpad
+                    %small
                 %td= user.role_label
                 %td= user.admin_or_super? ? "Admin" : user.type
                 %td= user.email

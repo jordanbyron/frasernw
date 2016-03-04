@@ -23,13 +23,13 @@ class UserMasksController < ApplicationController
 
     @user_mask = current_user.mask || current_user.build_mask
 
-    validated_params = {
+    params_to_validate = {
       role: params[:user_mask][:role],
       division_ids: params[:user_mask][:division_ids].select(&:present?).map(&:to_i)
     }
 
-    if ValidateUserMask.call(existing_mask: @user_mask, new_params: validated_params)
-      @user_mask.update_attributes(validated_params)
+    if ValidateUserMask.call(existing_mask: @user_mask, new_params: params_to_validate)
+      @user_mask.update_attributes(params_to_validate)
 
       redirect_to root_path,
         notice: "Now viewing Pathways as #{current_user.as_role_label.indefinitize} in the following divisions: #{current_user.as_divisions.to_sentence}."
@@ -46,10 +46,10 @@ class UserMasksController < ApplicationController
 
 
     user_mask = current_user.mask
-    validated_params = params.slice(:role, :division_ids)
+    params_to_validated = params.slice(:role, :division_ids)
 
-    if ValidateUserMask.call(existing_mask: user_mask, params: validated_params)
-      user_mask.update_attributes(validated_params)
+    if ValidateUserMask.call(existing_mask: user_mask, params: params_to_validated)
+      user_mask.update_attributes(params_to_validated)
 
       redirect_to request.referrer,
         notice: "Now viewing Pathways as #{current_user.as_role_label.indefinitize} in the following divisions: #{current_user.as_divisions.to_sentence}."
