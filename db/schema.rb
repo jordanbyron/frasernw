@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160226030421) do
+ActiveRecord::Schema.define(:version => 20160304211311) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -237,6 +237,12 @@ ActiveRecord::Schema.define(:version => 20160226030421) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
+  create_table "demoable_news_items", :force => true do |t|
+    t.integer  "news_item_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
 
   create_table "division_cities", :force => true do |t|
     t.integer  "division_id"

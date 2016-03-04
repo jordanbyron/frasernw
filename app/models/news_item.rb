@@ -21,10 +21,20 @@ class NewsItem < ActiveRecord::Base
   belongs_to :owner_division, class_name: "Division"
   has_many :divisions, through: :division_display_news_items
   has_many :division_display_news_items, dependent: :destroy
+  has_one :demoable_news_item
 
-  def label
-    title.presence || titleized_body
+  def self.not_demoable
+    joins(<<-SQL)
+      FULL OUTER JOIN demoable_news_items
+      ON demoable_news_items.news_item_id = news_items.id
+      WHERE demoable_news_items.id IS NULL
+    SQL
   end
+
+  def self.demoable
+    joins(:demoable_news_item)
+  end
+
 
   def self.permitted_division_assignments(user)
     if user.as_super_admin?
@@ -41,6 +51,10 @@ class NewsItem < ActiveRecord::Base
     end
   end
 
+  def demoable!
+    create_demoable_news_item
+  end
+
   def copyable_to(user)
     self.class.permitted_division_assignments(user) - [ owner_division ]
   end
@@ -53,6 +67,9 @@ class NewsItem < ActiveRecord::Base
       display_in_divisions!([ division ], current_user)
   end
 
+  def label
+    title.presence || titleized_body
+  end
   def borrowing_divisions
     divisions - [ owner_division ]
   end
