@@ -464,11 +464,19 @@ class CreateSeeds < ServiceObject
       "sex_mask" => { :faker => Proc.new{ [1, 2, 3].sample } },
       "waittime_mask" => { :faker => Proc.new{|klass| klass::WAITTIME_LABELS.keys.sample } },
       "lagtime_mask" => {
-        :faker => Proc.new{|klass| klass::LAGTIME_LABELS.keys.sample }
+        :faker => Proc.new{ |klass| klass::LAGTIME_LABELS.keys.sample }
       },
-      "categorization_mask" => { :faker => Proc.new{|klass| klass::CATEGORIZATION_LABELS.keys.sample } },
+      "categorization_mask" => {
+        :faker => Proc.new{ |klass| klass::CATEGORIZATION_LABELS.keys.delete(2).sample }
+      },
       "status_mask" => {
-        :faker => Proc.new{|klass| klass == "Specialist" ? rand(1..11) : rand(1..7) }
+        :faker => Proc.new do |klass|
+          if klass == "Specialist"
+            rand((1..11).to_a.delete(3).delete(7))
+          else
+            rand((1..7).to_a.delete(3))
+          end
+        end
       },
       "updated_at" => {
         :faker => Proc.new{ |klass, record| rand(record["updated_at"].to_date..Date.current) }
