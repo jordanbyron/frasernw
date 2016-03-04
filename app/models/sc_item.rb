@@ -56,6 +56,14 @@ class ScItem < ActiveRecord::Base
 
   default_scope order('sc_items.title')
 
+  def self.demoable
+    where(demoable: true)
+  end
+
+  def self.provincial
+    where(division_id: 13)
+  end
+
   # # # Cache actions
   after_commit :flush_cached_find
 

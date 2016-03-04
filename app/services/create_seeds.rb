@@ -54,12 +54,29 @@ class CreateSeeds < ServiceObject
       Rails.root.join("seeds").to_s
     )
 
-    (ActiveRecord::Base.connection.tables - IGNORED_TABLES).each do |table|
+    tables_handled_automatically.each do |table|
       Table.call(klass: table_klasses[table].constantize)
+    end
+
+    TABLES_HANDLED_INDIVIDUALLY.values.each do |value|
+      value.call
     end
 
     PostProcess.call
   end
+
+  def tables_handled_automatically
+    ActiveRecord::Base.connection.tables - IGNORED_TABLES - TABLES_HANDLED_INDIVIDUALLY
+  end
+
+  TABLES_HANDLED_INDIVIDUALLY = {
+    "sc_items" => Proc.new{
+      File.write(
+        Rails.root.join("seeds", "sc_items.yaml"),
+        ScItem.demoable.provincial.map(&:attributes).to_yaml
+      )
+    }
+  }
 
   class PostProcess < ServiceObject
     def call
