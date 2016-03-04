@@ -87,7 +87,9 @@
             = cl.input :contact_details
             = cl.input :email, :input_html => { :class => "span3" }, :hint => "For physician office use only"
             = cl.input :public_email, :input_html => { :class => "span3" }, :hint => "Okay for patient use to contact your office"
-            = cl.input :url, :input_html => { :class => "span3" }
+            = cl.input :url,
+              :input_html => { :class => "span3" },
+              hint: "Remember 'http://'"
           .control-group.print-only
             %label.control-label Address
             .controls

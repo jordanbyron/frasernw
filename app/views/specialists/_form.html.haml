@@ -114,7 +114,9 @@
               = so.input_field :direct_phone_extension, :class => "span1"
             = so.input :email, :input_html => { :class => "span3" }, :hint => "For physician office use only"
             = so.input :public_email, :input_html => { :class => "span3" }, :hint => "Okay for patient use to contact your office"
-            = so.input :url, :input_html => { :class => "span3" }
+            = so.input :url,
+              input_html: { class: "span3" },
+              hint: "Remember 'http://'"
           %div.no-print{:class => "office_#{index}"}
             = so.association :office,
               as: :select,
