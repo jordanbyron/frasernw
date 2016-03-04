@@ -400,7 +400,7 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| "seed_photo" }
       },
       "document_file_name" => {
-        :test => Proc.new{ |klass| klass != NewsItem }
+        :test => Proc.new{ |klass| klass != NewsItem },
         :faker => Proc.new{ |klass| "seed_document" }
       },
       "firstname" => {
