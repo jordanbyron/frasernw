@@ -65,13 +65,19 @@ class SubscriptionActivity < PublicActivity::Activity
     # # Methods for defining / handling incoming *args.
     options = args.extract_options!
     subscription      = options[:subscription]
-    date              = options[:date]                        || (subscription.interval_to_datetime       if subscription.present?)
-    classification    = options[:classification]              || (subscription.classification             if subscription.present?)
-    divisions         = Array.wrap(options[:divisions])       || (subscription.divisions                  if subscription.present?)
-    type_mask_integer = options[:type_mask_integer]           || (subscription.news_type_masks            if subscription.present?)
-    format_type       = options[:format_type_integer]         || (subscription.sc_item_format_type_masks  if subscription.present?)
-    specializations   = Array.wrap(options[:specializations]) || (subscription.specializations            if (subscription.present? && subscription.specializations.present?))
-    sc_categories     = Array.wrap(options[:sc_categories])   || (subscription.sc_categories              if (subscription.present? && subscription.sc_categories.present?))
+    date              = options[:date]                        || (subscription.interval_to_datetime        if subscription.present?)
+    classification    = options[:classification]              || (subscription.classification              if subscription.present?)
+    divisions         = options[:divisions]                   || (subscription.divisions                   if subscription.present?)
+    type_mask_integer = options[:type_mask_integer]           || (subscription.news_type_masks             if subscription.present?)
+    format_type       = options[:format_type_integer]         || (subscription.sc_item_format_type_masks   if subscription.present?)
+    specializations   = options[:specializations]             || (subscription.specializations             if (subscription.present? && subscription.specializations.present?))
+    sc_categories     = options[:sc_categories]               || (subscription.sc_categories               if (subscription.present? && subscription.sc_categories.present?))
+
+    # wrap them as arrays in case option is used
+    divisions = Array.wrap(divisions)
+    specializations = Array.wrap(specializations)
+    sc_categories = Array.wrap(sc_categories)
+
 
     @arr = Array.new
     if specializations.present? # added for performance boost, tough due to trackable Single Table Inheritance
@@ -108,7 +114,7 @@ class SubscriptionActivity < PublicActivity::Activity
   def type_mask_description_formatted # helper to fix awkward language
     case
     when type_mask_description == "Markdown"
-      "Markdown content" #e.g. "Markdown Content" was just added ...
+      "Markdown content" #e.g. "Markdown content" was just added ...
     when ["Breaking News"].include?(type_mask_description)
       type_mask_description #e.g. "Breaking News" was just added ...
     else
