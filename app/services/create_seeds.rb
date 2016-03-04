@@ -428,7 +428,13 @@ class CreateSeeds < ServiceObject
       },
       "name" => {
         :test => Proc.new{ |klass| !(KLASSES_ALLOWING_NAME.include?(klass)) },
-        :faker => Proc.new{ |klass| klass == Clinic ? Faker::Company.name : "#{Faker::Name.first_name} #{Faker::Name.last_name}" }
+        :faker => Proc.new do |klass|
+          if klass == Clinic
+            Faker::Company.name
+          else
+            "#{Faker::Name.first_name} #{Faker::Name.last_name}"
+          end
+        end
       },
       "phone" => {
         :faker => Proc.new{ |klass| Faker::PhoneNumber.phone_number }

@@ -26,6 +26,17 @@ class ImportSeeds < ServiceObject
       ActiveRecord::Base.connection.reset_pk_sequence!(t)
     end
 
+    fixup_clinic_names!
+
     CreateSeedUsers.call
+  end
+
+  def fixup_clinic_names!
+    Clinic.all.each do |clinic|
+      clinic.update_attribute(
+        :name,
+        "#{clinic.cities.sample} #{clinic.specialization.sample} Clinic"
+      )
+    end
   end
 end
