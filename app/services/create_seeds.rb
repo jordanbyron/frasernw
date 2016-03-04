@@ -390,50 +390,51 @@ class CreateSeeds < ServiceObject
       Report
     ]
 
-    RAND_BOOLEAN = Proc.new { [true, false].sample }
+    RAND_BOOLEAN = Proc.new{ [true, false].sample }
     RAND_MSP = [50000...60000]
     MASKED_FRAGMENTS = {
       "form_file_name" => {
-        :faker => Proc.new { |klass| "seed_form" }
+        :faker => Proc.new{ |klass| "seed_form" }
       },
       "photo_file_name" => {
-        :faker => Proc.new { |klass| "seed_photo" }
+        :faker => Proc.new{ |klass| "seed_photo" }
       },
       "document_file_name" => {
-        :faker => Proc.new { |klass| "seed_document" }
+        :test => Proc.new{ |klass| klass != NewsItem }
+        :faker => Proc.new{ |klass| "seed_document" }
       },
       "firstname" => {
-        :faker => Proc.new { |klass| Faker::Name.first_name }
+        :faker => Proc.new{ |klass| Faker::Name.first_name }
       },
       "lastname" => {
-        :faker => Proc.new { |klass| Faker::Name.last_name}
+        :faker => Proc.new{ |klass| Faker::Name.last_name}
       },
       "name" => {
-        :test => Proc.new { |klass| !(KLASSES_ALLOWING_NAME.include?(klass)) },
-        :faker => Proc.new { |klass| klass == Clinic ? Faker::Company.name : Faker::Name.name }
+        :test => Proc.new{ |klass| !(KLASSES_ALLOWING_NAME.include?(klass)) },
+        :faker => Proc.new{ |klass| klass == Clinic ? Faker::Company.name : "#{Faker::Name.first_name} #{Faker::Name.last_name}" }
       },
       "phone" => {
-        :faker => Proc.new { |klass| Faker::PhoneNumber.phone_number }
+        :faker => Proc.new{ |klass| Faker::PhoneNumber.phone_number }
       },
       "fax" => {
-        :faker => Proc.new { |klass| Faker::PhoneNumber.phone_number }
+        :faker => Proc.new{ |klass| Faker::PhoneNumber.phone_number }
       },
       "hospital_id" => {
-        :test => Proc.new { |klass| klass == Privilege },
-        :faker => Proc.new { |klass| Hospital.random_id }
+        :test => Proc.new{ |klass| klass == Privilege },
+        :faker => Proc.new{ |klass| Hospital.random_id }
       },
       "clinic_id" => {
-        :test => Proc.new { |klass| klass == Attendance },
-        :faker => Proc.new { |klass| Clinic.random_id }
+        :test => Proc.new{ |klass| klass == Attendance },
+        :faker => Proc.new{ |klass| Clinic.random_id }
       },
       "unavailable_to" => {
-        :faker => Proc.new { |klass| rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) }
+        :faker => Proc.new{ |klass| rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) }
       },
       "unavailable_from" => {
-        :faker => Proc.new { |klass| rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) }
+        :faker => Proc.new{ |klass| rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) }
       },
       "created_at" => {
-        :faker => Proc.new { |klass, record| rand(Date.civil(2012, 1, 26)..record["created_at"].to_date) }
+        :faker => Proc.new{ |klass, record| rand(Date.civil(2012, 1, 26)..record["created_at"].to_date) }
       },
       "referral_fax" => { :faker => RAND_BOOLEAN },
       "referral_phone" => { :faker => RAND_BOOLEAN },
@@ -443,63 +444,63 @@ class CreateSeeds < ServiceObject
       "respond_to_patient" => { :faker => RAND_BOOLEAN },
       "urgent_fax" => { :faker => RAND_BOOLEAN },
       "urgent_phone" => { :faker => RAND_BOOLEAN },
-      "sex_mask" => { :faker => Proc.new { [1, 2, 3].sample } },
-      "waittime_mask" => { :faker => Proc.new {|klass| klass::WAITTIME_LABELS.keys.sample } },
+      "sex_mask" => { :faker => Proc.new{ [1, 2, 3].sample } },
+      "waittime_mask" => { :faker => Proc.new{|klass| klass::WAITTIME_LABELS.keys.sample } },
       "lagtime_mask" => {
-        :faker => Proc.new {|klass| klass::LAGTIME_LABELS.keys.sample }
+        :faker => Proc.new{|klass| klass::LAGTIME_LABELS.keys.sample }
       },
-      "categorization_mask" => { :faker => Proc.new {|klass| klass::CATEGORIZATION_LABELS.keys.sample } },
+      "categorization_mask" => { :faker => Proc.new{|klass| klass::CATEGORIZATION_LABELS.keys.sample } },
       "status_mask" => {
-        :faker => Proc.new {|klass| klass == "Specialist" ? rand(1..11) : rand(1..7) }
+        :faker => Proc.new{|klass| klass == "Specialist" ? rand(1..11) : rand(1..7) }
       },
       "updated_at" => {
-        :faker => Proc.new { |klass, record| rand(record["updated_at"].to_date..Date.current) }
+        :faker => Proc.new{ |klass, record| rand(record["updated_at"].to_date..Date.current) }
       },
       "email" => {
-        :faker => Proc.new { |klass| Faker::Internet.email }
+        :faker => Proc.new{ |klass| Faker::Internet.email }
       },
       "billing_number" => {
-        :faker => Proc.new { |klass| RAND_MSP.sample }
+        :faker => Proc.new{ |klass| RAND_MSP.sample }
       },
       "address1" => {
-        :faker => Proc.new { |klass| Faker::Address.street_address }
+        :faker => Proc.new{ |klass| Faker::Address.street_address }
       },
       "address2" => {
-        :faker => Proc.new { |klass| Faker::Address.street_address }
+        :faker => Proc.new{ |klass| Faker::Address.street_address }
       },
       "postalcode" => {
-        :faker => Proc.new { |klass| Faker::Address.postcode }
+        :faker => Proc.new{ |klass| Faker::Address.postcode }
       },
       "url" => {
-        :faker => Proc.new { |klass| "http://www.google.ca" }
+        :faker => Proc.new{ |klass| "http://www.google.ca" }
       },
       "answer_markdown" => {
-        :faker => Proc.new { |klass| "This is an answer to an FAQ question" }
+        :faker => Proc.new{ |klass| "This is an answer to an FAQ question" }
       },
       "title" => {
-        :faker => Proc.new { |klass| Faker::Lorem.sentence }
+        :faker => Proc.new{ |klass| Faker::Lorem.sentence }
       },
       "description" => {
-        :test => Proc.new { |klass| klass == ReferralForm || klass == NewsletterDescriptionItem },
-        :faker => Proc.new { |klass| Faker::Lorem.sentence }
+        :test => Proc.new{ |klass| klass == ReferralForm || klass == NewsletterDescriptionItem },
+        :faker => Proc.new{ |klass| Faker::Lorem.sentence }
       },
       "recipient" => {
-        :faker => Proc.new { |klass| Faker::Internet.email }
+        :faker => Proc.new{ |klass| Faker::Internet.email }
       },
       "city_id" => {
-        :test => Proc.new { |klass| klass == Address },
-        :faker => Proc.new { |klass, hash| hash["city_id"].nil? ? nil : City.random_id }
+        :test => Proc.new{ |klass| klass == Address },
+        :faker => Proc.new{ |klass, hash| hash["city_id"].nil? ? nil : City.random_id }
       },
       "investigation" => {},
       "suite" => {},
       "body" => {
-        :faker => Proc.new { |klass| Faker::Lorem.sentence }
+        :faker => Proc.new{ |klass| Faker::Lorem.sentence }
       },
       "area_of_focus" => {},
       "referral_criteria" => {},
       "referral_process" => {},
       "content" => {
-        :faker => Proc.new { |klass| Faker::Lorem.sentence }
+        :faker => Proc.new{ |klass| Faker::Lorem.sentence }
       },
       "data" => {},
       "session_id" => {},
