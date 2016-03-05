@@ -1,9 +1,6 @@
 !!!
 %html
   %body
-    - if (@review_item.secret_edit?)
-      %p= "#{@review_item.item.name} has been edited using the secret edit link and is in the review queue"
-    - else
-      %p= "#{@review_item.item.name} has been edited by #{@review_item.editor.name} and is in the review queue."
+    %p= "#{@review_item.item.name} has been #{@verb} #{@whodunnit} and is in the review queue"
     %p
       %a{:href => "http://www.pathwaysbc.ca/review_items"} Review this item
