@@ -79,4 +79,12 @@ class HistoryNode
   def target_link
     smart_duck_path(raw.target)
   end
+
+  def annotation
+    if raw.target.is_a?(ReviewItem) && raw.target.no_updates?
+      " (No changes)"
+    else
+      ""
+    end
+  end
 end

@@ -26,6 +26,7 @@
                 target: "_blank"
             - else
               = history_node.target
+          %span= history_node.annotation
           %span= "(#{history_node.date})"
       - if history_node.has_note?
         %ul
