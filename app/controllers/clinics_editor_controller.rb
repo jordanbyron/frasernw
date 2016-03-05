@@ -42,8 +42,15 @@ class ClinicsEditorController < ApplicationController
     review_item = ReviewItem.new
     review_item.item_type = "Clinic"
     review_item.item_id = @clinic.id
-    review_item.base_object = params.delete(:pre_edit_form_data)
-    review_item.object = ReviewItem.encode params
+    review_item.base_object = params[:pre_edit_form_data]
+    review_item.object = begin
+      if params[:no_updates]
+        params[:pre_edit_form_data]
+      else
+        params.delete(:pre_edit_form_data)
+        ActiveSupport::JSON::encode(params)
+      end
+    end
     review_item.set_edit_source!(current_user, params[:secret_token_id])
     review_item.status = params[:no_updates] ? ReviewItem::STATUS_NO_UPDATES: ReviewItem::STATUS_UPDATES
     review_item.save
