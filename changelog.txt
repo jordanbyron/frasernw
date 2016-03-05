@@ -6,7 +6,10 @@ Local-only = Changes not reflected in Source Code
 Backend Maintenance = Change is not user facing
 
 ## [2016-03-12] [Since 2016-03-05 Integration]
-
+### Changed:
+- Review queue email now says if there were no changes
+- History now indicates no changes on unchanged review items
+- If a user clicks the 'no changes' button when editing, we only save the pre-edit data
 
 ## [2016-03-05] [Since 2016-02-27 Integration]
 ### Added:
