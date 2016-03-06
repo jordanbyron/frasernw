@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
     c.crypto_provider = Authlogic::CryptoProviders::Sha512
   end
 
-  validates_format_of :password, :with => /^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){8,}$/, :if => :require_password?, :message => "must include one number, one letter and be at least 8 characters long"
+  validates_format_of :password, :with => /\A(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){8,}\z/, :if => :require_password?, :message => "must include one number, one letter and be at least 8 characters long"
 
   validates :email, confirmation: true
 
@@ -242,6 +242,10 @@ class User < ActiveRecord::Base
 
   def subscriptions_with_activity_in_interval_in_class(activity, date_interval, classification)
     subscriptions_by_interval_and_classification(date_interval, classification) & subscriptions_with_activity(activity)
+  end
+
+  def activities
+    subscriptions.map{|subscription| SubscriptionActivity.order("created_at ASC").collect_activities(subscription: subscription, date: 1.year.ago)}.flatten.uniq.sort{|x, y| y.send(:created_at) <=> x.send(:created_at)}
   end
   #####
 
