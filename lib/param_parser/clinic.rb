@@ -30,6 +30,22 @@ module ParamParser
           end
         end
       end
+
+      attendances_attributes.each do |attrs|
+        existing_specialists = []
+
+        attrs.each do |k, v|
+          next if v["is_specialist"] == "0"
+
+          keys_to_unique_by = [ v["specialist_id"], v["area_of_focus"].strip ]
+
+          if existing_specialists.include?(keys_to_unique_by)
+            attrs.delete(k)
+          else
+            existing_specialists << keys_to_unique_by
+          end
+        end
+      end
     end
 
     def attendances_attributes
