@@ -1,6 +1,6 @@
 class GenerateHistory
   class Annotations < Base
-    def exec
+    def call
       return [] unless target.is_a? Noteable
 
       from_notes_records + from_admin_notes_field

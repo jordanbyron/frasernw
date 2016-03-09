@@ -1,6 +1,6 @@
 class GenerateHistory
   class LastUpdated < Base
-    def exec
+    def call
       return [] if target.created_at.to_i == target.last_updated_at.to_i
 
       [

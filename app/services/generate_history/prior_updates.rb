@@ -1,7 +1,7 @@
 class GenerateHistory
   # prior to last
   class PriorUpdates < Base
-    def exec
+    def call
       return [] unless target.is_a? PaperTrailable
 
       prior_update_versions.map {|version| node(version) }

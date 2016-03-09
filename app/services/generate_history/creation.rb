@@ -1,6 +1,6 @@
 class GenerateHistory
   class Creation < Base
-    def exec
+    def call
       [
         HistoryNode.new(
           target: target,

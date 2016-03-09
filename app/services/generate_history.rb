@@ -15,8 +15,8 @@ class GenerateHistory
 
   def initialize(target, event_types = EVENT_TYPES)
     @target = target
-    @event_types = event_types.map do |type_sym|
-      "GenerateHistory::#{type_sym.to_s.camelize}".constantize
+    @event_types = event_types.map do |type|
+      GenerateHistory.const_get(type.to_s.camelize)
     end
   end
 
@@ -28,7 +28,7 @@ class GenerateHistory
 
   def unsorted
     event_types.inject([]) do |memo, event_type|
-      memo + event_type.for(target)
+      memo + event_type.call(target: target)
     end
   end
 end
