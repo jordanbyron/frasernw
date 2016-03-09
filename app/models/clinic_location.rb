@@ -24,11 +24,6 @@ class ClinicLocation < ActiveRecord::Base
   has_one :schedule, :as => :schedulable, :dependent => :destroy
   accepts_nested_attributes_for :schedule
 
-  ### TODO: Delete after migration
-  has_many :user_controls_clinic_locations, :dependent => :destroy
-  has_many :controlling_users, :through => :user_controls_clinic_locations, :source => :user, :class_name => "User"
-  ###
-
   has_many :attendances, :dependent => :destroy
   accepts_nested_attributes_for :attendances, :allow_destroy => true
 
