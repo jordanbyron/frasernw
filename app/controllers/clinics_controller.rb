@@ -25,7 +25,10 @@ class ClinicsController < ApplicationController
       find(params[:id])
 
     @feedback = @clinic.active_feedback_items.build
-    render :layout => 'ajax' if request.headers['X-PJAX']
+
+    if @clinic.controlling_users.include?(current_user)
+      current_user.viewed_controlled_clinic!(@clinic)
+    end
   end
 
   def new

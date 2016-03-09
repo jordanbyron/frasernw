@@ -342,17 +342,19 @@
           });
         }
 
-
   - if current_user.as_admin_or_super?
-    - controlling_users = @clinic.controlling_users.uniq
-    - if controlling_users.present?
+    - if @clinic.user_controls_clinics.any?
       %h6 Users that can edit this clinic
       %ul
-        - controlling_users.each do |user|
+        - @clinic.user_controls_clinics.each do |control|
           %li
-            = link_to user.name, user, :class => !user.active && "in-progress"
-            - if !user.active
-              (inactive)
+            = link_to control.user.name,
+              control.user,
+              class: (!control.user.active && "in-progress")
+            - if !control.last_visited.nil?
+              %span= "(Last Visited #{control.last_visited.strftime("%B %-d, %Y")}.)"
+            - if !control.user.active
+              %span= "(inactive)"
 
     %h6 Review Queue Updates
     - review_items = ReviewItem.for_clinic(@clinic)

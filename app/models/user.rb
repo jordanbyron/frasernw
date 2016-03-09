@@ -23,43 +23,73 @@ class User < ActiveRecord::Base
     c.crypto_provider = Authlogic::CryptoProviders::Sha512
   end
 
-  validates_format_of :password, :with => /^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){8,}$/, :if => :require_password?, :message => "must include one number, one letter and be at least 8 characters long"
+  validates_format_of :password,
+    with: /^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){8,}$/,
+    if: :require_password?,
+    message: "must include one number, one letter and be at least 8 characters long"
 
   validates :email, confirmation: true
 
   validates :name, presence: true
 
   has_many :user_divisions,
-    :source => :division_users,
-    :class_name => "DivisionUser",
-    :dependent => :destroy
-  has_many :divisions, :through => :user_divisions
-  #has_many :cities, :through => :divisions
+    source: :division_users,
+    class_name: "DivisionUser",
+    dependent: :destroy
+
+  has_many :divisions, through: :user_divisions
 
   has_many :favorites
-  has_many :favorite_specialists, :through => :favorites, :source => :favoritable, :source_type => "Specialist", :class_name => "Specialist"
-  has_many :favorite_clinics, :through => :favorites, :source => :favoritable, :source_type => "Clinic", :class_name => "Clinic"
-  has_many :favorite_content_items, :through => :favorites, :source => :favoritable, :source_type => "ScItem", :class_name => "ScItem"
+
+  has_many :favorite_specialists,
+    through: :favorites,
+    source: :favoritable,
+    source_type: "Specialist",
+    class_name: "Specialist"
+
+  has_many :favorite_clinics,
+    through: :favorites,
+    source: :favoritable,
+    source_type: "Clinic",
+    class_name: "Clinic"
+
+  has_many :favorite_content_items,
+    through: :favorites,
+    source: :favoritable,
+    source_type: "ScItem",
+    class_name: "ScItem"
 
   has_many :user_controls_specialists, dependent: :destroy
   accepts_nested_attributes_for :user_controls_specialists,
     reject_if: -> (ucs) { ucs[:specialist_id].blank? },
     allow_destroy: true
-  has_many :controlled_specialists, :through => :user_controls_specialists, :source => :specialist, :class_name => "Specialist"
+
+  has_many :controlled_specialists,
+    through: :user_controls_specialists,
+    source: :specialist,
+    class_name: "Specialist"
 
   has_many :user_controls_clinics, dependent: :destroy
   accepts_nested_attributes_for :user_controls_clinics,
     reject_if: -> (ucc) { ucc[:clinic_id].blank? },
     allow_destroy: true
-  has_many :controlled_clinics, :through => :user_controls_clinics, :source => :clinic, :class_name => "Clinic"
+  has_many :controlled_clinics,
+    through: :user_controls_clinics,
+    source: :clinic,
+    class_name: "Clinic"
 
-  has_many :specialization_options, :foreign_key => "owner_id"
-  has_many :specializations_owned, :through => :specialization_options, :class_name => "Specialization", :source => :specialization
+  has_many :specialization_options, foreign_key: "owner_id"
 
-  has_many :user_cities, :dependent => :destroy
-  has_many :user_city_specializations, :through => :user_cities
+  has_many :specializations_owned,
+    through: :specialization_options,
+    class_name: "Specialization",
+    source: :specialization
 
-  has_many :subscriptions, :dependent => :destroy
+  has_many :user_cities, dependent: :destroy
+
+  has_many :user_city_specializations, through: :user_cities
+
+  has_many :subscriptions, dependent: :destroy
 
   # times that the user (as admin) has contacted specialists
   has_many :contacts
@@ -361,5 +391,19 @@ class User < ActiveRecord::Base
 
   def division_id
     divisions.first.try(:id) || -1
+  end
+
+  def viewed_controlled_specialist!(specialist)
+    specialist.
+      user_controls_specialists.
+      where(user_id: self.id).
+      update_all(last_visited: DateTime.current)
+  end
+
+  def viewed_controlled_clinic!(clinic)
+    clinic.
+      user_controls_clinics.
+      where(user_id: self.id).
+      update_all(last_visited: DateTime.current)
   end
 end

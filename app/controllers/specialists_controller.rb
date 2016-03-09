@@ -17,14 +17,14 @@ class SpecialistsController < ApplicationController
     @all_divisions = Division.all
     @user_divisions = current_user.as_divisions
     @first_division = @user_divisions.first
-
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def show
     @specialist = Specialist.cached_find(params[:id])
     @feedback = @specialist.active_feedback_items.build
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    if @specialist.controlling_users.include?(current_user)
+      current_user.viewed_controlled_specialist!(@specialist)
+    end
   end
 
   def new
@@ -44,7 +44,6 @@ class SpecialistsController < ApplicationController
       nil,
       [ @specialization ]
     )
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def create
@@ -91,7 +90,6 @@ class SpecialistsController < ApplicationController
       @specialist,
       @specialist.specializations
     )
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def update

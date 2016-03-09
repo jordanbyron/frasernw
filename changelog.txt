@@ -16,6 +16,7 @@ Backend Maintenance = Change is not user facing
 ## [2016-03-05] [Since 2016-02-27 Integration]
 ### Added:
 - Dropdowns from 'View Pathways As' notification bar
+- Show when controlling users 'last visited' owned specialist or clinic
 
 ### Changed:
 - Small improvements to the wording of notification emails.
