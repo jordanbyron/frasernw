@@ -1,20 +1,26 @@
 class MessagesMailer < ActionMailer::Base
+  include ApplicationHelper
+  extend ApplicationHelper
 
-  default to: 'administration@pathwaysbc.ca', :from => 'noreply@pathwaysbc.ca'
+  default to: primary_support_emails, from: 'noreply@pathwaysbc.ca'
 
   def new_message(message, user)
     @message = message
 
-    primary_contacts = user.divisions.map{ |d| d.primary_contacts}.flatten.uniq
+    primary_contacts = user.divisions.map(&:primary_contacts).flatten.uniq
 
-    if primary_contacts.present? && (primary_contacts.length > 0)
-      begin
-        mail(:to => primary_contacts.map{ |primary_contact| primary_contact.email }, :subject => "Pathways: #{message.subject}", :reply_to => message.email)
-      rescue Exception => e
-        mail(:to => 'administration@pathwaysbc.ca', :subject => "Pathways: #{message.subject}", :reply_to => message.email)
-      end
+    if primary_contacts.any?
+      mail(
+        to: primary_contacts.map(&:email),
+        subject: "Pathways: #{message.subject}",
+        reply_to: message.email
+      )
     else
-      mail(:to => 'administration@pathwaysbc.ca', :subject => "Pathways: #{message.subject}", :reply_to => message.email)
+      mail(
+        to: primary_support_emails,
+        subject: "Pathways: #{message.subject}",
+        reply_to: message.email
+      )
     end
   end
 end

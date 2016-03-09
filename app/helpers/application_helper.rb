@@ -168,4 +168,8 @@ module ApplicationHelper
     '<div class="tooltip top blue" role="tooltip"><div class="tooltip-arrow blue"></div><div class="tooltip-inner"></div></div>'
   end
   # # # #
+
+  def primary_support_emails
+    Division.provincial.primary_contacts.map(&:email).join(',')
+  end
 end

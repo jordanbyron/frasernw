@@ -398,7 +398,11 @@
                     - if user_guide.present? # this is the production Pathways User Guide content item
                       %li= link_to "User Guide", user_guide.resolved_url, :class => 'user_guide_link ajax'
                     %li= link_to "Help FAQ", faq_category_path(FaqCategory.help), :class => 'faq_link ajax'
-                    %li= mail_to "administration@pathwaysbc.ca", "Contact Us", :class => 'contact'
+                    %li
+                      = mail_to Division.provincial.primary_contacts.map(&:email).join(','),
+                        "Contact Us",
+                        target: "_blank",
+                        class: 'contact'
 
                     %li.nav-header Legal
                     %li= link_to "Privacy FAQ", faq_category_path(FaqCategory.privacy), :class => 'faq_link ajax'
@@ -444,8 +448,7 @@
 
       .row
         #email.content-wrapper
-          Contact us:
-          %a{:href => '#', :onclick => "$('#message .inner').load('#{messages_path}', function() { show_message(); }); return false;"} administration@pathwaysbc.ca
+          %a{:href => '#', :onclick => "$('#message .inner').load('#{messages_path}', function() { show_message(); }); return false;"} Contact Us
     #loading
       #loading-spinner
     - if ENV["CRAZYEGG"].to_b

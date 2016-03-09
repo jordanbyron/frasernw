@@ -34,5 +34,7 @@
 
       .row
         #email.content-wrapper
-          Contact us:
-          = mail_to "administration@pathwaysbc.ca", "administration@pathwaysbc.ca", :encode => "javascript"
+          = mail_to primary_support_emails,
+            "Contact Us",
+            target: "_blank",
+            encode: "javascript"

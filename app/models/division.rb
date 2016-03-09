@@ -71,6 +71,10 @@ class Division < ActiveRecord::Base
     Rails.cache.fetch([name, id]) { find(id) }
   end
 
+  def self.provincial
+    where(name: "Provincial").first
+  end
+
   def hidden?
     name == "Vancouver (Hidden)"
   end
