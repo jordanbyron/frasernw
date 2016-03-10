@@ -8,16 +8,25 @@
     %p
       = "Here is your #{@interval} Pathways Resources Update for #{DateTime.now.strftime("%B, %d, %Y")}:"
     %br
-    - @activities.each do |activity|
-      .activity
-        %p
-          %span{:class=> "muted"}= "#{time_ago_in_words(activity.trackable.created_at)} ago"
+    - @divisions_activities.each do |division_activities|
+      %hr
+      %b= division_activities[:division].name
+      - division_activities[:activities].each do |activity|
+        .activity
+          %p
+            %span{:class=> "muted"}= "#{time_ago_in_words(activity.trackable.created_at)} ago"
 
-          = render_activity(activity, fallback: :default)
-        %br
+            = render_activity(activity, fallback: :default)
+          %br
+      - if division_activities[:share_with_divisions].any?
+        - division_activities[:share_with_divisions].each do |division, item_ids|
+          = link_to "Display eligible items from #{division_activities[:division].name} in #{division.name}",
+            bulk_share_sc_items_url(item_ids: item_ids, division_id: division_activities[:division].id)
 
-    - if @share_with_divisions.any?
-      - @share_with_divisions.each do |division, item_ids|
+
+    - if @division_activities.count > 1 && @share_all_with_divisions.any?
+      %hr
+      - @share_all_with_divisions.each do |division, item_ids|
         = link_to "Display eligible items from the above list in #{division.name}",
           bulk_share_sc_items_url(item_ids: item_ids, division_id: division.id)
 

@@ -26,10 +26,10 @@ class SubscriptionWorker
 
   def self.mail_by_classification!(activities_for_subscriptions, subscription)
     if subscription.classification == Subscription.resource_update
-      SubscriptionMailer.delay.resource_update_email( activities_for_subscriptions,
+      SubscriptionMailer.resource_update_email( activities_for_subscriptions,
                                                 subscription.id )
     else subscription.classification == Subscription.news_update
-      SubscriptionMailer.delay.news_update_email( activities_for_subscriptions,
+      SubscriptionMailer.news_update_email( activities_for_subscriptions,
                                             subscription.id )
     end
   end
