@@ -106,6 +106,7 @@ class Clinic < ActiveRecord::Base
     :source => :user,
     :class_name => "User"
   has_many :user_controls_clinics, dependent: :destroy
+  alias user_controls user_controls_clinics
 
   default_scope order('clinics.name')
 

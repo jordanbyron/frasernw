@@ -2,10 +2,13 @@
 
 module Historical
   def history
-    GenerateHistory.new(self).exec
+    GenerateHistory.call(target: self)
   end
 
   def notes_history
-    GenerateHistory.new(self, [:annotations]).exec
+    GenerateHistory.call(
+      target: self,
+      event_types: [ GenerateHistory::Annotations ]
+    )
   end
 end

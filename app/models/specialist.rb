@@ -122,6 +122,7 @@ class Specialist < ActiveRecord::Base
     :source => :user,
     :class_name => "User"
   has_many :user_controls_specialists, dependent: :destroy
+  alias user_controls user_controls_specialists
 
   has_attached_file :photo,
     :styles => { :thumb => "200x200#" },
