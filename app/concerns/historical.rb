@@ -8,7 +8,7 @@ module Historical
   def notes_history
     GenerateHistory.call(
       target: self,
-      event_types: [ GenerateHistory::Annotations ]
+      caller_event_types: [ GenerateHistory::Annotations ]
     )
   end
 end

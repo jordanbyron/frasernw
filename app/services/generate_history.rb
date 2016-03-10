@@ -5,7 +5,7 @@ class GenerateHistory < ServiceObject
   # i.e. before I had 'archived' here, but that duplicates the 'update' events
 
   attribute :target
-  attribute :event_types, Array
+  attribute :caller_event_types, Array
 
   def call
     return [] unless target.id.present?
@@ -13,21 +13,21 @@ class GenerateHistory < ServiceObject
     unsorted.sort_by {|node| node.datetime }
   end
 
-  def generators
-    event_types.any? ? event_types : GenerateHistory::Base.descendants
+  def event_types
+    caller_event_types.any? ? event_types : GenerateHistory::EventType.descendants
   end
 
   def unsorted
-    generators.inject([]) do |memo, generator|
-      memo + generator.call(target: target)
+    event_types.inject([]) do |memo, event_type|
+      memo + event_type.call(target: target)
     end
   end
 
-  class Base < ServiceObject
+  class EventType < ServiceObject
     attribute :target
   end
 
-  class Creation < Base
+  class Creation < EventType
     def call
       [
         HistoryNode.new(
@@ -42,7 +42,7 @@ class GenerateHistory < ServiceObject
     end
   end
 
-  class Annotations < Base
+  class Annotations < EventType
     def call
       return [] unless target.is_a? Noteable
 
@@ -85,7 +85,7 @@ class GenerateHistory < ServiceObject
     end
   end
 
-  class LastUpdated < Base
+  class LastUpdated < EventType
     def call
       return [] if target.created_at.to_i == target.last_updated_at.to_i
 
@@ -103,7 +103,7 @@ class GenerateHistory < ServiceObject
     end
   end
 
-  class PriorUpdates < Base
+  class PriorUpdates < EventType
     def call
       return [] unless target.is_a? PaperTrailable
 
@@ -130,7 +130,7 @@ class GenerateHistory < ServiceObject
   end
 
   module ChildEvents
-    class ReviewItem < GenerateHistory::Base
+    class ReviewItem < GenerateHistory::EventType
       def call
         return [] unless target.is_a? Reviewable
 
@@ -140,7 +140,7 @@ class GenerateHistory < ServiceObject
       end
     end
 
-    class FeedbackItem < GenerateHistory::Base
+    class FeedbackItem < GenerateHistory::EventType
       def call
         return [] unless target.is_a? Feedbackable
 
@@ -150,7 +150,7 @@ class GenerateHistory < ServiceObject
       end
     end
 
-    class ReferralForm < GenerateHistory::Base
+    class ReferralForm < GenerateHistory::EventType
       def call
         return [] unless target.is_a? Referrable
 
@@ -160,7 +160,7 @@ class GenerateHistory < ServiceObject
       end
     end
 
-    class SecretToken < GenerateHistory::Base
+    class SecretToken < GenerateHistory::EventType
       def call
         return [] unless target.is_a? TokenAccessible
 
@@ -170,7 +170,7 @@ class GenerateHistory < ServiceObject
       end
     end
 
-    class UserControls < GenerateHistory::Base
+    class UserControls < GenerateHistory::EventType
       def call
         if target.respond_to?(:user_controls)
           target.user_controls.inject([]) do |memo, control|
