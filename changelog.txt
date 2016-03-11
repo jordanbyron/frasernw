@@ -13,6 +13,8 @@ Backend Maintenance = Change is not user facing
 - 'Contact Us' on login page & navbar dropdown now goes to Provincial primary contacts
 - Ensure nobody enters duplicate specialist attendances
 - #347: Break down bulk import in email by division
+- On Specialist and Clinic pages, "Last Visited" shown next to each controlling user that has visited the profile
+- Specialist and Clinic history now shows "Last visited" by controlling users
 
 ### Fixed:
 - Notifications
