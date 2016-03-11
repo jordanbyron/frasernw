@@ -188,8 +188,8 @@ class User < ActiveRecord::Base
     where("users.active = (?)", false)
   end
 
-  def self.with_subscriptions #return only admins/super-admins with subscriptions created
-    includes(:subscriptions).admin.reject{|u| u.subscriptions.empty?}
+  def self.with_subscriptions
+    joins(:subscriptions).includes(:subscriptions).admin
   end
 
   def self.in_divisions(divisions)
@@ -244,23 +244,9 @@ class User < ActiveRecord::Base
     errors.add(:agree_to_toc, "must be agreed to") if agree_to_toc.blank?
   end
 
-  ##### Subscription User Methods
-  def subscriptions_by_date_interval(date_interval)
-    subscriptions.select{|s| s.interval == date_interval}
+  def subscriptions_by_interval_and_target(interval, target_type)
+    subscriptions.where(interval: interval, classification: target_type)
   end
-
-  def subscriptions_by_classification(classification) # e.g.: Subscription.resource_update or Subscription.news_update
-    subscriptions.select{|s| s.classification == classification}
-  end
-
-  def subscriptions_by_interval_and_classification(date_interval, classification)
-    subscriptions_by_date_interval(date_interval) & subscriptions_by_classification(classification)
-  end
-
-  def subscriptions_with_activity_in_interval_in_class(activity, date_interval, classification)
-    subscriptions_by_interval_and_classification(date_interval, classification) & subscriptions_with_activity(activity)
-  end
-  #####
 
   TYPES = {
     1 => "GP Office",

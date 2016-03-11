@@ -1,48 +1,51 @@
-#require 'debugger'
 class SubscriptionWorker
+  def self.mail_notifications_for_interval(date_interval)
+    User.with_subscriptions.each do |user|
+      Subscription::TARGET_TYPES.map do |key, type|
+        begin
+          subscriptions = user.
+            subscriptions_by_interval_and_target(date_interval, type)
 
-  def self.collect_activities(subscription_object) # processes one subscription
-    SubscriptionActivity.collect_activities(subscription: subscription_object)
-  end
+          activities = subscriptions.map(&:activities).flatten.uniq
 
-  def self.collect_all_activities_for_subscriptions(subscriptions) # processes multiple subscriptions
-    @_activities_for_subscriptions = Array.new
-    activities_for_subscription = Array.new
-    subscriptions.each{|subscription| @_activities_for_subscriptions  << SubscriptionActivity.collect_activities(subscription: subscription) }
-    activities_for_subscription = @_activities_for_subscriptions.flatten.sort{|a,b| b.created_at <=> a.created_at } # return collection of unique activities from subscription
-    activities_for_subscription.uniq! # must be on separate line or uniq! returns nil if collection is unique
-    return activities_for_subscription
-  end
+          if activities.any?
+            if key == Subscription::RESOURCE_UPDATES
+              SubscriptionMailer.periodic_resource_update(
+                activities,
+                user.id,
+                date_interval
+              )
 
-  def self.mail_subscriptions!(subscriptions)
-    @activities_for_subscriptions = Array.new
-    @activities_for_subscriptions = self.collect_all_activities_for_subscriptions(subscriptions)
-    if @activities_for_subscriptions.blank?
-      @activities_for_subscriptions = SubscriptionActivity.collect_activities(subscription: subscriptions.first)
-    end
-    return unless @activities_for_subscriptions.present?
-    mail_by_classification!(@activities_for_subscriptions, subscriptions.first)
-  end
-
-  def self.mail_by_classification!(activities_for_subscriptions, subscription)
-    if subscription.classification == Subscription.resource_update
-      SubscriptionMailer.resource_update_email( activities_for_subscriptions,
-                                                subscription.id )
-    else subscription.classification == Subscription.news_update
-      SubscriptionMailer.news_update_email( activities_for_subscriptions,
-                                            subscription.id )
+            elsif key == Subscription::NEWS_UPDATES
+              SubscriptionMailer.periodic_news_update(
+                activities,
+                user.id,
+                date_interval
+              )
+            end
+          end
+        rescue => e
+          SystemNotifier.error(e)
+        end
+      end
     end
   end
 
-  def self.collect_subscriptions_by_activities(activity)
-      self.collect_all_activities_for_subscriptions(subscription) & activity
-  end
+  def self.mail_notifications_for_activity(activity_id)
+    activity = SubscriptionActivity.find(activity_id)
 
-  def self.to_tracked_objects(activities_for_subscriptions)
-    activities_for_subscriptions.map(&:trackable).reject{|i| i == nil}
-  end
+    users = User.
+      with_subscriptions.
+      where("subscriptions.interval = (?)", Subscription::INTERVAL_IMMEDIATELY)
 
-  def self.only_with_specialization(tracked_objects, subscription)
-    tracked_objects.reject{|i| i.specializations != subscription.specializations}
+    users.each do |user|
+      if user.subscriptions.immediate.any?{|subscription| subscription.activities.include?(activity) }
+        if activity.update_classification_type == Subscription.resource_update
+          SubscriptionMailer.immediate_resource_update(activity.id, user.id).deliver
+        elsif activity.update_classification_type == Subscription.news_update
+          SubscriptionMailer.immediate_news_update(activity.id, user.id).deliver
+        end
+      end
+    end
   end
 end

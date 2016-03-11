@@ -24,11 +24,12 @@
             bulk_share_sc_items_url(item_ids: item_ids, division_id: division_activities[:division].id)
 
 
-    - if @division_activities.count > 1 && @share_all_with_divisions.any?
+    - if @divisions_activities.count > 1 && @share_all_with_divisions.any?
       %hr
       - @share_all_with_divisions.each do |division, item_ids|
         = link_to "Display eligible items from the above list in #{division.name}",
           bulk_share_sc_items_url(item_ids: item_ids, division_id: division.id)
 
 
-    = render partial: "subscription_mailer/automatic_email_message", locals: {:interval => @interval}
+    = render partial: "subscription_mailer/automatic_email_message",
+      locals: { interval: @interval }

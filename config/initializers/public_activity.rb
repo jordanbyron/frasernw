@@ -9,9 +9,9 @@ PublicActivity::Activity.class_eval do
     :format_type,
     :format_type_description
 
-  belongs_to :parent, :polymorphic => true
-  
+  belongs_to :parent, polymorphic: true
+
   after_create do
-    SubscriptionUserWorker.mail_subscriptions_by_activity!(self.id)
+    SubscriptionWorker.mail_notifications_for_activity(self.id)
   end
 end

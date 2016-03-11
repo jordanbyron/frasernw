@@ -57,7 +57,7 @@
       %h2
         How Often?:
 
-      = f.input :interval, collection: Subscription::INTERVAL_HASH, as: :radio_buttons, label: false, required: :true, label_method: :last, value_method: :first
+      = f.input :interval, collection: Subscription::INTERVAL_LABELS, as: :radio_buttons, label: false, required: :true, label_method: :last, value_method: :first
       .form-actions
         = f.button :submit, :class => "btn btn-primary"
         = link_to 'Cancel', users_path, :class => "btn btn-danger ajax"

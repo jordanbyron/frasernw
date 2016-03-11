@@ -17,11 +17,7 @@ class Subscription < ActiveRecord::Base
   has_many :subscription_specializations, dependent: :destroy
   has_many :specializations, through: :subscription_specializations
 
-  scope :all_daily,     -> {where(interval: INTERVAL_DAILY)}
-  scope :all_weekly,    -> {where(interval: INTERVAL_WEEKLY)}
-  scope :all_monthly,   -> {where(interval: INTERVAL_MONTHLY)}
-  scope :all_immediately, -> {where(interval: INTERVAL_IMMEDIATELY)}
-  scope :all_by_date_interval, lambda { |date_interval| where(interval: date_interval)}
+  scope :immediate, -> {where(interval: INTERVAL_IMMEDIATELY)}
 
   scope :resources, -> {where(classification: resource_update)}
   scope :news,      -> {where(classification: news_update)}
@@ -42,7 +38,7 @@ class Subscription < ActiveRecord::Base
   NEWS_UPDATES     = 1
   RESOURCE_UPDATES = 2
 
-  UPDATE_CLASSIFICATION_HASH = {
+  TARGET_TYPES = {
     NEWS_UPDATES => "News Updates".freeze,
     RESOURCE_UPDATES => "Resource Updates".freeze
   }
@@ -52,7 +48,7 @@ class Subscription < ActiveRecord::Base
   INTERVAL_WEEKLY      = 3
   INTERVAL_MONTHLY     = 4
 
-  INTERVAL_HASH = {
+  INTERVAL_LABELS = {
     INTERVAL_IMMEDIATELY => "Immediately".freeze,
     INTERVAL_DAILY => "Daily".freeze,
     INTERVAL_WEEKLY => "Weekly".freeze,
@@ -60,24 +56,9 @@ class Subscription < ActiveRecord::Base
   }
 
   def self.classifications
-    UPDATE_CLASSIFICATION_HASH.map{|k, v|  v}
+    TARGET_TYPES.map{|k, v|  v}
   end
 
-  def self.with_activity(activity)
-    includes(:divisions, :sc_categories).all.reject{|subscription| subscription.includes_activity?(activity) == false}
-  end
-
-  def includes_activity?(activity)
-    ary = Array.new
-    ary << activity
-    (SubscriptionActivity.collect_activities(subscription: self) & ary).present?
-  end
-
-  def activities
-    SubscriptionActivity.collect_activities(subscription: self)
-  end
-
-  # # #BEGIN news_type:
   def news_type_masks
     return "" if news_type.blank?
     news_type.reject(&:empty?).map(&:to_i)
@@ -97,42 +78,19 @@ class Subscription < ActiveRecord::Base
     return false if news_type.blank?
     news_type.reject(&:blank?).present?
   end
-  # # # END
-
-  # # #BEGIN sc_item_format_type:
-  def sc_item_format_type_masks
-    return "" if sc_item_format_type.blank?
-    sc_item_format_type.reject(&:empty?).map(&:to_i)
-  end
-
-  def sc_item_format_type_strings
-    return "" if sc_item_format_type.blank?
-    sc_item_format_type_masks.map{|nt| Subscription::SC_ITEM_FORMAT_TYPE_HASH[nt]}
-  end
-
-  def sc_item_format_types_pluralized
-    return "" if sc_item_format_type.blank?
-    sc_item_format_type_strings.map(&:pluralize)
-  end
-
-  def sc_item_format_type_present?
-    return false if sc_item_format_type.blank?
-    sc_item_format_type.reject(&:blank?).present?
-  end
-  # # # END
 
   def self.news_update
-    UPDATE_CLASSIFICATION_HASH[NEWS_UPDATES]
+    TARGET_TYPES[NEWS_UPDATES]
   end
 
   def self.resource_update
-    UPDATE_CLASSIFICATION_HASH[RESOURCE_UPDATES]
+    TARGET_TYPES[RESOURCE_UPDATES]
   end
 
-  def interval_to_datetime # returns equivalent datetime value
+  def interval_start_datetime # returns equivalent datetime value
     case interval
     when ::Subscription::INTERVAL_IMMEDIATELY
-      return 1.hours.ago
+      raise "No start time"
     when ::Subscription::INTERVAL_DAILY
       return 1.days.ago
     when ::Subscription::INTERVAL_WEEKLY
@@ -142,8 +100,8 @@ class Subscription < ActiveRecord::Base
     end
   end
 
-  def interval_phrase
-    case interval
+  def self.interval_period(interval_key)
+    case interval_key
     when ::Subscription::INTERVAL_IMMEDIATELY
       return "just now"
     when ::Subscription::INTERVAL_DAILY
@@ -155,8 +113,12 @@ class Subscription < ActiveRecord::Base
     end
   end
 
-  def interval_to_words # returns string e.g.: "Daily"
-    INTERVAL_HASH[interval]
+  def interval_period
+    self.class.interval_period(interval_key)
+  end
+
+  def interval_to_words
+    INTERVAL_LABELS[interval]
   end
 
   #decorate data
@@ -170,5 +132,36 @@ class Subscription < ActiveRecord::Base
 
   def sc_item_format_type_hash_array
     sc_item_format_type.reject(&:blank?).map(&:to_i).map{|n| Subscription::SC_ITEM_FORMAT_TYPE_HASH[n]}
+  end
+
+  def news_update?
+    classification == TARGET_TYPES[NEWS_UPDATES]
+  end
+
+  def resource_update?
+    classification == TARGET_TYPES[RESOURCE_UPDATES]
+  end
+
+  def activities
+    scope = SubscriptionActivity.
+      by_target_type(classification).
+      by_divisions(divisions).
+      order("activities.created_at DESC")
+
+    if interval != INTERVAL_IMMEDIATELY
+      scope = scope.where("activities.created_at > (?)", interval_start_datetime)
+    end
+
+    if news_update?
+      scope.
+        includes(:trackable).
+        by_news_item_type(news_type)
+    elsif resource_update?
+      scope.
+        includes(:trackable).
+        by_sc_item_format_type(sc_item_format_type).
+        select{ |activity| (activity.trackable.specializations & specializations).any? }.
+        select{ |activity| sc_categories.include?(activity.trackable.root_category) }
+    end
   end
 end
