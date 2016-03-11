@@ -135,7 +135,9 @@ Frasernw::Application.routes.draw do
   put   '/divisions/:id/update_shared' => 'divisions#update_shared', :as => 'update_shared'
 
   #match 'subscriptions' => 'subscriptions#show', :as => 'subscriptions', :via => :get
-  resources :notifications
+  get "notifications/master" => 'notifications#master', :as => 'master'
+  resources :notifications do
+  end
   resources :subscriptions
   resources :news_items do
     member do

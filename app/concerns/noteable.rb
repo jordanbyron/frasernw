@@ -17,6 +17,10 @@ module Noteable
   end
 
   def build_new_note!(user = nil)
-    notes.new(user: user)
+    if user.try(:authenticated?)
+      notes.new(user: user)
+    else
+      notes.new
+    end
   end
 end
