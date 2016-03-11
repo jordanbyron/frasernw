@@ -12,6 +12,10 @@ Backend Maintenance = Change is not user facing
 - If a user clicks the 'no changes' button when editing, we only save the pre-edit data
 - 'Contact Us' on login page & navbar dropdown now goes to Provincial primary contacts
 - Ensure nobody enters duplicate specialist attendances
+- #347: Break down bulk import in email by division
+
+### Fixed:
+- Notifications
 
 ## [2016-03-05] [Since 2016-02-27 Integration]
 ### Added:
