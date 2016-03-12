@@ -1,6 +1,8 @@
 class MessagesMailer < ActionMailer::Base
   include ApplicationHelper
 
+  default from: "noreply@pathwaysbc.ca"
+
   def new_message(message, user)
     @message = message
 
