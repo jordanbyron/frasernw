@@ -14,7 +14,7 @@ class GenerateHistory < ServiceObject
   end
 
   def event_types
-    caller_event_types.any? ? event_types : GenerateHistory::EventType.descendants
+    caller_event_types.any? ? caller_event_types : GenerateHistory::EventType.descendants
   end
 
   def unsorted
