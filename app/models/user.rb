@@ -129,7 +129,7 @@ class User < ActiveRecord::Base
     role = args[:role]
     name = args[:name]
 
-    create(
+    create!(
       email: email,
       email_confirmation: email,
       password: password,

@@ -28,14 +28,85 @@ class ImportSeeds < ServiceObject
 
     fixup_clinic_names!
 
+    PublicActivity.enabled = false
+
+    create_latest_updates!
+    clone_news_items!
+    display_news_items!
+
+    PublicActivity.enabled = true
+
     CreateSeedUsers.call
   end
 
   def fixup_clinic_names!
+    PaperTrail.enabled = false
+
     Clinic.all.each do |clinic|
       clinic.update_attribute(
         :name,
-        "#{clinic.cities.sample} #{clinic.specialization.sample} Clinic"
+        "#{clinic.cities.map(&:name).sample} #{clinic.specializations.map(&:name).sample} Clinic"
+      )
+    end
+
+    PaperTrail.enabled = true
+  end
+
+  def create_latest_updates!
+    latest_updates = []
+
+    specialists = Specialist.
+      all.
+      select{|specialist| specialist.accepting_new_patients? }.
+      select{|specialist| specialist.cities.any? }.
+      shuffle.
+      first(2)
+
+    specialists.each do |specialist|
+      office = "<a href='/specialists/#{specialist.id}'>#{specialist.name}'s office</a> (#{specialist.specializations.map(&:name).to_sentence})"
+      opened = "has just opened in #{specialist.cities.map(&:name).to_sentence} and is accepting new referrals."
+
+      latest_updates << "#{office} #{opened}"
+    end
+
+    clinics = Clinic.
+      all.
+      select{|clinic| clinic.accepting_new_patients? }.
+      select{|clinic| clinic.cities.any? }.
+      shuffle.
+      first(2)
+
+
+    clinics.each do |clinic|
+      clinic_location = "<a href='/clinics/#{clinic.id}'>#{clinic.name}</a> (#{clinic.specializations.map(&:name).to_sentence})"
+      opened = "has just opened in #{clinic.cities.map(&:name).to_sentence} and is accepting new referrals."
+
+      latest_updates << "#{clinic_location} #{opened}"
+    end
+
+    latest_updates.each do |update|
+      NewsItem.create(
+        owner_division_id: 1,
+        title: update,
+        type_mask: NewsItem::TYPE_SPECIALIST_CLINIC_UPDATE,
+        start_date: rand(1.year.ago..1.month.ago),
+        end_date: rand(10.years.from_now..11.years.from_now)
+      )
+    end
+  end
+
+  def clone_news_items!
+    Division.all.map(&:id).except(1).each do |division_id|
+      NewsItem.where(owner_division_id: 1).each do |item|
+        NewsItem.create(item.attributes.merge("owner_division_id" => division_id))
+      end
+    end
+  end
+
+  def display_news_items!
+    NewsItem.all.each do |item|
+      item.division_display_news_items.create(
+        division_id: item.owner_division_id
       )
     end
   end

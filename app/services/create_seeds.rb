@@ -15,7 +15,9 @@ class CreateSeeds < ServiceObject
     "subscription_news_item_types",
     "subscription_specializations",
     "review_items",
-    "secret_tokens"
+    "secret_tokens",
+    "demoable_news_items",
+    "division_display_news_items"
   ]
 
   IDENTIFYING_INFO_LOGFILE = Rails.root.join("tmp", "identifying_info.txt").to_s
@@ -54,19 +56,19 @@ class CreateSeeds < ServiceObject
       Rails.root.join("seeds").to_s
     )
 
-    tables_handled_automatically.each do |table|
-      Table.call(klass: table_klasses[table].constantize)
-    end
-
     TABLES_HANDLED_INDIVIDUALLY.values.each do |value|
       value.call
+    end
+
+    tables_handled_automatically.each do |table|
+      Table.call(klass: table_klasses[table].constantize)
     end
 
     PostProcess.call
   end
 
   def tables_handled_automatically
-    ActiveRecord::Base.connection.tables - IGNORED_TABLES - TABLES_HANDLED_INDIVIDUALLY
+    ActiveRecord::Base.connection.tables - IGNORED_TABLES - TABLES_HANDLED_INDIVIDUALLY.keys
   end
 
   TABLES_HANDLED_INDIVIDUALLY = {
@@ -74,6 +76,23 @@ class CreateSeeds < ServiceObject
       File.write(
         Rails.root.join("seeds", "sc_items.yaml"),
         ScItem.demoable.provincial.map(&:attributes).to_yaml
+      )
+    },
+    "news_items" => Proc.new{
+      news_items = NewsItem.
+        demoable.
+        map(&:attributes).
+        map do |attrs|
+          attrs.merge({
+            "owner_division_id" => 1,
+            "start_date" => Date.yesterday,
+            "end_date" => 10.years.from_now
+          })
+        end
+
+      File.write(
+        Rails.root.join("seeds", "news_items.yaml"),
+        news_items.to_yaml
       )
     }
   }
@@ -473,14 +492,14 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| klass::LAGTIME_LABELS.keys.sample }
       },
       "categorization_mask" => {
-        :faker => Proc.new{ |klass| klass::CATEGORIZATION_LABELS.keys.delete(2).sample }
+        :faker => Proc.new{ |klass| klass::CATEGORIZATION_LABELS.keys.except(2).sample }
       },
       "status_mask" => {
         :faker => Proc.new do |klass|
           if klass == "Specialist"
-            rand((1..11).to_a.delete(3).delete(7))
+            (1..11).to_a.except(3).except(7).sample
           else
-            rand((1..7).to_a.delete(3))
+            (1..7).to_a.except(3).sample
           end
         end
       },

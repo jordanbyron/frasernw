@@ -29,4 +29,3 @@ x.rb
 frasernw.sublime-project
 frasernw.sublime-workspace
 seeds/
-app/services/create_seed_users.rb
