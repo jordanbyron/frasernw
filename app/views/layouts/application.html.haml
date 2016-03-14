@@ -23,7 +23,7 @@
     - if current_user.mask.present? && current_user.mask.persisted?
       = render "layouts/application/mask_warning"
     = yield(:head)
-    - if !Rails.env.development? || ENV['LIVESEARCH'].to_b
+    - if !Rails.env.development? || ENV["NAVBAR_SEARCH"].to_b
       = render "partials/livesearch_vars", divisions: current_user.as_divisions
       :javascript
         var livesearch;
