@@ -74,7 +74,14 @@ class WebUsageReport < ServiceObject
       [ row[:record][:title], "/content_items/#{row[:record][:id]}" ]
     end,
     referral_forms: Proc.new do |row|
-      [ row[:record][:filename], "/#{row[:record][:referrableType].pluralize.downcase}/#{row[:record][:referrableId]}" ]
+      attached_referent = row[:record][:referrableType].
+        constantize.
+        safe_find(row[:record][:referrableId].to_i)
+
+      [
+        "#{attached_referent.try(:name)} - #{row[:record][:filename]}",
+        "/#{row[:record][:referrableType].pluralize.downcase}/#{row[:record][:referrableId]}"
+      ]
     end,
     specializations: Proc.new do |row|
       [ row[:record][:name], "/specialties/#{row[:record][:id]}" ]
@@ -122,7 +129,7 @@ class WebUsageReport < ServiceObject
       row[:usage].to_i
     end.map do |row|
       row.merge({
-        record: safe_find(row[:serialized_collection], row[:id].to_i)
+        record: find(row[:serialized_collection], row[:id].to_i)
       })
     end.select do |row|
       row[:record].present? && PAGE_VIEW_FILTERS[record_type].call(row)
@@ -145,7 +152,7 @@ class WebUsageReport < ServiceObject
     end.select do |row|
       row[:serialized_collection].present?
     end.map do |row|
-      row.merge(record: safe_find(row[:serialized_collection], row[:id].to_i))
+      row.merge(record: find(row[:serialized_collection], row[:id].to_i))
     end.select do |row|
       row[:record].present? && EVENTS_FILTERS[record_type].call(row)
     end
@@ -191,15 +198,15 @@ class WebUsageReport < ServiceObject
     "content_items" => :content_items
   }
 
-  def safe_find(collection, id)
-    all_records(collection)[id]
+  def find(collection_key, id)
+    collection(collection_key)[id]
   end
 
-  def all_records(collection)
-    @all_records ||= Hash.new do |h, key|
+  def collection(collection_key)
+    @collections ||= Hash.new do |h, key|
       h[key] = Serialized.fetch(key)
     end
-    @all_records[collection]
+    @collections[collection_key]
   end
 
   def filter_literals(equality_filters)
