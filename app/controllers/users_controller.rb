@@ -243,7 +243,14 @@ class UsersController < ApplicationController
   def build_user_form!
     @user.user_controls_specialists.build
     @user.user_controls_clinics.build
-    @formatted_clinics = Clinic.all.select{|clinic| clinic.name.present? }.sort_by(&:name)
-    @formatted_specialists = Specialist.all.select{|specialist| specialist.name.present? }.sort_by(&:lastname)
+    @formatted_clinics = Clinic.
+      all.
+      select{|clinic| clinic.name.present? }.
+      sort_by(&:name)
+
+    @formatted_specialists = Specialist.
+      all.
+      select{|specialist| specialist.name.present? }.
+      sort_by(&:lastname)
   end
 end

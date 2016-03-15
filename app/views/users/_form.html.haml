@@ -39,6 +39,7 @@
               as: :select,
               label: false,
               collection: @formatted_specialists,
+              label_method: ->(specialist){ "#{specialist.name} (##{specialist.id})" },
               prompt: 'Select ...',
               wrapper: :no_wrapper
 
