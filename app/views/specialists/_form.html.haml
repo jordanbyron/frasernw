@@ -55,8 +55,10 @@
       include_blank: false
   = f.input :is_gp
 
-  - if current_user.as_admin_or_super? || current_user.as_super_admin?
-    = f.input :is_internal_medicine
+  - if current_user.as_admin_or_super?
+    = f.input :is_internal_medicine,
+      label: "Show 'Internal Medicine' Tag",
+      hint: "Please only use this tag when linking an Internal Medicine specialist to another specialty in which they do not have a fellowship."
   .no-print
     = f.association :specializations,
       as: :check_boxes,
