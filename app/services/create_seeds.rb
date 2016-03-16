@@ -497,7 +497,7 @@ class CreateSeeds < ServiceObject
       "categorization_mask" => {
         :faker => Proc.new do |klass|
           if klass == Specialist
-            rand() < 0.95 ? 1 : [3, 5].sample
+            rand() < 0.9 ? 1 : [3, 5].sample
           else
             1
           end
