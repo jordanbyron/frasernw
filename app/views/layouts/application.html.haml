@@ -18,7 +18,7 @@
     = csrf_meta_tag
     - cache("ie_compatibility_warning") do
       = render "layouts/ie_compatibility_warning"
-    - if Rails.env.development? || (ENV['APP_NAME'] != 'pathwaysbc')
+    - if (Rails.env.development? || (ENV['APP_NAME'] != 'pathwaysbc')) && ENV["DEMO_SITE"] != "true"
       = render "shared/test_debugging_info"
     - if current_user.mask.present? && current_user.mask.persisted?
       = render "layouts/application/mask_warning"

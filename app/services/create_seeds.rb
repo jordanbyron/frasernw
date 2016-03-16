@@ -429,6 +429,9 @@ class CreateSeeds < ServiceObject
     RAND_BOOLEAN = Proc.new{ [true, false].sample }
     RAND_MSP = [50000...60000]
     MASKED_FRAGMENTS = {
+      "goes_by_name" => {
+        :faker => Proc.new{ |klass| "" }
+      },
       "form_file_name" => {
         :faker => Proc.new{ |klass| "seed_form" }
       },
@@ -492,11 +495,17 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| klass::LAGTIME_LABELS.keys.sample }
       },
       "categorization_mask" => {
-        :faker => Proc.new{ |klass| 1 }
+        :faker => Proc.new do |klass|
+          if klass == Specialist
+            rand() < 0.95 ? 1 : [3, 5].sample
+          else
+            1
+          end
+        end
       },
       "status_mask" => {
         :faker => Proc.new do |klass|
-          if klass == "Specialist"
+          if klass == Specialist
             if rand() < 0.9
               1
             else

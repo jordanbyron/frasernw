@@ -43,9 +43,13 @@ class ImportSeeds < ServiceObject
     PaperTrail.enabled = false
 
     Clinic.all.each do |clinic|
+      city_name = clinic.cities.map(&:name).sample
+      place_name = ["Square ", "Centre ", "Plaza ", ""].sample
+      specialty_name = clinic.specializations.map(&:name).sample
+
       clinic.update_attribute(
         :name,
-        "#{clinic.cities.map(&:name).sample} #{clinic.specializations.map(&:name).sample} Clinic"
+        "#{city_name} #{place_name}#{specialty_name} Clinic"
       )
     end
 
@@ -60,11 +64,11 @@ class ImportSeeds < ServiceObject
       select{|specialist| specialist.accepting_new_patients? }.
       select{|specialist| specialist.cities.any? }.
       shuffle.
-      first(2)
+      first(1)
 
     specialists.each do |specialist|
       office = "<a href='/specialists/#{specialist.id}'>#{specialist.name}'s office</a> (#{specialist.specializations.map(&:name).to_sentence})"
-      opened = "has just opened in #{specialist.cities.map(&:name).to_sentence} and is accepting new referrals."
+      opened = "has recently opened in #{specialist.cities.map(&:name).to_sentence} and is accepting new referrals."
 
       latest_updates << "#{office} #{opened}"
     end
@@ -74,12 +78,12 @@ class ImportSeeds < ServiceObject
       select{|clinic| clinic.accepting_new_patients? }.
       select{|clinic| clinic.cities.any? }.
       shuffle.
-      first(2)
+      first(1)
 
 
     clinics.each do |clinic|
       clinic_location = "<a href='/clinics/#{clinic.id}'>#{clinic.name}</a> (#{clinic.specializations.map(&:name).to_sentence})"
-      opened = "has just opened in #{clinic.cities.map(&:name).to_sentence} and is accepting new referrals."
+      opened = "has recently opened in #{clinic.cities.map(&:name).to_sentence} and is accepting new referrals."
 
       latest_updates << "#{clinic_location} #{opened}"
     end
