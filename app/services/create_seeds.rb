@@ -492,14 +492,22 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| klass::LAGTIME_LABELS.keys.sample }
       },
       "categorization_mask" => {
-        :faker => Proc.new{ |klass| klass::CATEGORIZATION_LABELS.keys.except(2).sample }
+        :faker => Proc.new{ |klass| 1 }
       },
       "status_mask" => {
         :faker => Proc.new do |klass|
           if klass == "Specialist"
-            (1..11).to_a.except(3).except(7).sample
+            if rand() < 0.9
+              1
+            else
+              (1..11).to_a.except(3).except(7).sample
+            end
           else
-            (1..7).to_a.except(3).sample
+            if rand() < 0.9
+              1
+            else
+              (1..7).to_a.except(3).sample
+            end
           end
         end
       },
@@ -531,7 +539,7 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| Faker::Lorem.sentence }
       },
       "description" => {
-        :test => Proc.new{ |klass| klass == ReferralForm || klass == NewsletterDescriptionItem },
+        :test => Proc.new{ |klass| klass == ReferralForm },
         :faker => Proc.new{ |klass| Faker::Lorem.sentence }
       },
       "recipient" => {
@@ -683,6 +691,7 @@ class CreateSeeds < ServiceObject
       {klass: SubscriptionActivity, column: "type_mask_description"},
       {klass: SubscriptionActivity, column: "format_type_description"},
       {klass: SubscriptionActivity, column: "parent_type"},
+      {klass: NewsletterDescriptionItem, column: "description_item"},
       {klass: City, column: "name"},
       {klass: ClinicLocation, column: "location_opened"},
       {klass: Division, column: "name"},
