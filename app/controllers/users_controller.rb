@@ -250,7 +250,7 @@ class UsersController < ApplicationController
 
     @formatted_specialists = Specialist.
       all.
-      select{|specialist| specialist.name.present? }.
-      sort_by(&:lastname)
+      select{ |specialist| specialist.name.present? }.
+      sort_by{ |specialist| [ specialist.lastname.capitalize, specialist.firstname ] }
   end
 end
