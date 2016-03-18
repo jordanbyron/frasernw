@@ -5,7 +5,7 @@ elsif !Rails.env.development?
   color = :yellow
   warning = ""
 elsif Rails.env.development?
-  color = :green
+  color = :cyan
   warning = ""
 end
 
