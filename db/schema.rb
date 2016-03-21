@@ -1057,7 +1057,6 @@ ActiveRecord::Schema.define(:version => 20160321175633) do
     t.boolean  "active",             :default => true
     t.integer  "failed_login_count", :default => 0
     t.date     "activated_at"
-    t.boolean  "clone_to_demo",      :default => false
     t.boolean  "persist_in_demo",    :default => false
   end
 

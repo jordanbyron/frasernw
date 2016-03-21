@@ -96,11 +96,11 @@ class CreateSeeds < ServiceObject
       )
     },
     "users" => Proc.new{
-      prod_users = Users.where(clone_to_demo: true).map(&:attributes)
+      prod_users = User.admin.map(&:attributes)
 
-      demo_users_cmd = '"puts(User.where(persist_in_demo: true).map(&:attributes).to_yaml)"'
+      demo_users_cmd = "\"puts('START_DUMP' + User.where(persist_in_demo: true).map(&:attributes).to_yaml)\""
       demo_users_cmd_result = `heroku run rails runner #{demo_users_cmd} --app pathwaysbcdev`
-      demo_users = YAML.load(demo_users_cmd_result.match(/(run\.\d+)(.+)/)[1])
+      demo_users = YAML.load(demo_users_cmd_result[/(?<=START_DUMP).+/m])
 
       users = demo_users + prod_users
 
