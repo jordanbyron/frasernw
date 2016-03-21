@@ -100,7 +100,7 @@ class CreateSeeds < ServiceObject
 
       demo_users_cmd = '"puts(User.where(persist_in_demo: true).map(&:attributes).to_yaml)"'
       demo_users_cmd_result = `heroku run rails runner #{demo_users_cmd} --app pathwaysbcdev`
-      demo_users = YAML.load(demo_users_cmd_result[/(?<=run\.\d+)/])
+      demo_users = YAML.load(demo_users_cmd_result.match(/(run\.\d+)(.+)/)[1])
 
       users = demo_users + prod_users
 
