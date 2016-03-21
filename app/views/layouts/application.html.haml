@@ -399,7 +399,7 @@
                       %li= link_to "User Guide", user_guide.resolved_url, :class => 'user_guide_link ajax'
                     %li= link_to "Help FAQ", faq_category_path(FaqCategory.help), :class => 'faq_link ajax'
                     %li
-                      = mail_to Division.provincial.primary_contacts.map(&:email).join(','),
+                      = mail_to primary_support_email,
                         "Contact Us",
                         target: "_blank",
                         class: 'contact'

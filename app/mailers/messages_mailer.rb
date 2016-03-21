@@ -16,7 +16,7 @@ class MessagesMailer < ActionMailer::Base
       )
     else
       mail(
-        to: primary_support_emails,
+        to: primary_support_email,
         subject: "Pathways: #{message.subject}",
         reply_to: message.email
       )

@@ -169,7 +169,7 @@ module ApplicationHelper
   end
   # # # #
 
-  def primary_support_emails
-    Division.provincial.primary_contacts.map(&:email).join(',')
+  def primary_support_email
+    "administration@pathwaysbc.ca"
   end
 end
