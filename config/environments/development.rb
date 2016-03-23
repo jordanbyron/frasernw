@@ -48,10 +48,7 @@ Frasernw::Application.configure do
     puts "==> Top nav search enabled."
   end
 
-  # Don't care if the mailer can't send
-  # config.action_mailer.raise_delivery_errors = false
   config.action_mailer.raise_delivery_errors = true
-
   config.action_mailer.delivery_method = :letter_opener
 
   # Print deprecation notices to the Rails logger
@@ -80,14 +77,4 @@ Frasernw::Application.configure do
     Bullet.rails_logger = true
     Bullet.add_footer = true
   end
-
-  config.action_mailer.smtp_settings = {
-    :address              => "smtp.gmail.com",
-    :port                 => 587,
-    :user_name            => ENV['SMTP_USER'],
-    :password             => ENV['SMTP_PASS'],
-    :authentication       => "plain",
-    :enable_starttls_auto => true
-  }
-
 end
