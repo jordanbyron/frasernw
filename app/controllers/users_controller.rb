@@ -32,7 +32,9 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(params[:user])
+    @user = User.new(
+      params[:user].merge({ persist_in_demo: (ENV['DEMO_SITE'] == "true") })
+    )
     redirect_to new_user_url, :notice => "User create failed: User is missing a Name and a Division" and return if (@user.name.blank? && @user.divisions.blank?)
     redirect_to new_user_url, :notice => "User create failed: User is missing a Name" and return if @user.name.blank?
     redirect_to new_user_url, :notice => "User create failed: User is missing a Division" and return if @user.divisions.blank?

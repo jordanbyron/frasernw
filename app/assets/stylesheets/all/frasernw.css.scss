@@ -1460,7 +1460,7 @@ body.loading #email
       border-radius: 4px;
   }
 
-  #feedback, #feedback_thanks, #message, #message_sent
+  #feedback, #feedback_thanks, #contact_admin_modal, #contacted_admin_modal
   {
     display: none;
     position: fixed;
@@ -1515,7 +1515,7 @@ body.loading #email
     }
   }
 
-  #message .url
+  #contact_admin_modal .url
   {
     display:none;
   }

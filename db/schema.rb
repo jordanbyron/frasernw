@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160318235114) do
+ActiveRecord::Schema.define(:version => 20160321175633) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id"
@@ -1057,6 +1057,7 @@ ActiveRecord::Schema.define(:version => 20160318235114) do
     t.boolean  "active",             :default => true
     t.integer  "failed_login_count", :default => 0
     t.date     "activated_at"
+    t.boolean  "persist_in_demo",    :default => false
   end
 
   create_table "versions", :force => true do |t|

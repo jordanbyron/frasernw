@@ -2,6 +2,8 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
+    can [:new, :create], Message
+
     if !user.authenticated?
 
       #not logged in
@@ -138,9 +140,6 @@ class Ability
         #can add feedback
         can [:create, :show], FeedbackItem
 
-        #can send email messages
-        can :create, Message
-
         can :index, Notification
 
         can :manage, Subscription
@@ -190,9 +189,6 @@ class Ability
 
         #can add feedback
         can [:create, :show], FeedbackItem
-
-        #can send email messages
-        can :create, Message
 
         #can update specialists they control
         can [:update, :photo, :update_photo], Specialist do |specialist|

@@ -54,24 +54,7 @@ Frasernw::Application.configure do
   end
 
   if !(ENV['APP_NAME'] == "pathwaysbc")
-    # if we're not on the live site, only send emails that match the system recipients
-    recipient_matchers = config.system_notification_recipients.map do |recipient|
-      Regexp.new(recipient)
-    end
-
-    config.action_mailer.delivery_method = :safety_mailer
-    config.action_mailer.safety_mailer_settings = {
-      allowed_matchers: recipient_matchers,
-      delivery_method: :smtp,
-      delivery_method_settings: {
-        :address => "smtp.gmail.com",
-        :port => 587,
-        :domain => "http://pathwaysbc.ca",
-        :authentication => :plain,
-        :user_name => ENV['SMTP_USER'],
-        :password => ENV['SMTP_PASS']
-      }
-    }
+    config.action_mailer.delivery_method = :pathways_dev_mailer
   end
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server

@@ -35,8 +35,6 @@ class ImportSeeds < ServiceObject
     display_news_items!
 
     PublicActivity.enabled = true
-
-    CreateSeedUsers.call
   end
 
   def fixup_clinic_names!

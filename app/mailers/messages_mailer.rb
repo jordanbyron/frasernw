@@ -11,13 +11,13 @@ class MessagesMailer < ActionMailer::Base
     if primary_contacts.any?
       mail(
         to: primary_contacts.map(&:email),
-        subject: "Pathways: #{message.subject}",
+        subject: "[Pathways Contact Form] #{message.subject}",
         reply_to: message.email
       )
     else
       mail(
         to: primary_support_email,
-        subject: "Pathways: #{message.subject}",
+        subject: "[Pathways Contact Form] #{message.subject}",
         reply_to: message.email
       )
     end

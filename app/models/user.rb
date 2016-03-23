@@ -114,7 +114,8 @@ class User < ActiveRecord::Base
     :email,
     :email_confirmation,
     :agree_to_toc,
-    :type_mask
+    :type_mask,
+    :persist_in_demo
 
   ROLE_LABELS = {
     "user" => "User",
