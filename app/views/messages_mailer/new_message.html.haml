@@ -1,6 +1,11 @@
 !!!
 %html
   %body
-    %p= @message.subject
+    %i= "The following message was submitted via a Pathways 'Contact Us' form."
+    %h3
+      = "From:"
     %p= "#{@message.name} ( #{@message.email} )"
+    %h3= "Subject:"
+    %p= @message.subject
+    %h3= "Body:"
     %p= @message.body
