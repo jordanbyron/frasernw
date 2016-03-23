@@ -14,20 +14,22 @@ class SubscriptionWorker
                 activities,
                 user.id,
                 date_interval
-              )
+              ).deliver
 
             elsif key == Subscription::NEWS_UPDATES
               SubscriptionMailer.periodic_news_update(
                 activities,
                 user.id,
                 date_interval
-              )
+              ).deliver
             end
           end
         rescue => e
           SystemNotifier.error(e)
         end
       end
+
+      true
     end
   end
 
