@@ -1,11 +1,7 @@
-class MessagesController < ApplicationController
-  authorize_resource
-
-  include ApplicationHelper
+class MessagesController < UserSessionsController
 
   def new
-    @message = Message.new
-    render layout: 'contact'
+    render :new, layout: "user_sessions"
   end
 
   def create
@@ -13,11 +9,20 @@ class MessagesController < ApplicationController
 
     if @message.valid?
       MessagesMailer.new_message(@message, current_user).deliver
-      redirect_to(root_path, :notice => "Message was successfully sent.")
+
+      respond_to do |format|
+        format.json{ render json: {}, status: 200 }
+        format.html{ render :create, layout: "user_sessions" }
+      end
     else
-      flash.now.alert = "Please fill all fields."
-      render :new, layout: 'contact'
+      respond_to do |format|
+        format.json{ render json: {}, status: 400 }
+        format.html do
+          flash.now.alert = "Please complete all the fields."
+
+          render :new, layout: "user_sessions"
+        end
+      end
     end
   end
-
 end

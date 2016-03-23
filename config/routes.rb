@@ -215,8 +215,8 @@ Frasernw::Application.routes.draw do
 
   match '/stats' => 'stats#index', :as => :stats
 
-  match 'messages' => 'messages#new', :as => 'messages', :via => :get
-  match 'messages' => 'messages#create', :as => 'messages', :via => :post
+  get 'contact' => "messages#new"
+  resources :messages, only: [:create]
 
   resources :user_sessions
 

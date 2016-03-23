@@ -399,10 +399,9 @@
                       %li= link_to "User Guide", user_guide.resolved_url, :class => 'user_guide_link ajax'
                     %li= link_to "Help FAQ", faq_category_path(FaqCategory.help), :class => 'faq_link ajax'
                     %li
-                      = mail_to primary_support_email,
-                        "Contact Us",
-                        target: "_blank",
-                        class: 'contact'
+                      = link_to "Contact Us",
+                        "javascript:void(0)",
+                        onclick: "show_contact_modal();"
 
                     %li.nav-header Legal
                     %li= link_to "Privacy FAQ", faq_category_path(FaqCategory.privacy), :class => 'faq_link ajax'
@@ -434,21 +433,13 @@
             - flash.each do |type, msg|
               .alert.alert-success= msg
             = yield
-            #message
-              .url= request.fullpath
-              .inner
-            #message_sent
-              .inner
-                %h2 Message sent!
-
-                %p.space.no_indent Thank you for providing your comments to Pathways. We will review your message in the near future, and respond as necessary.
-
-                %p.space.no_indent
-                  %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#message_sent').fadeOut(200)" } Close
+            = render "messages/modals"
 
       .row
         #email.content-wrapper
-          %a{:href => '#', :onclick => "$('#message .inner').load('#{messages_path}', function() { show_message(); }); return false;"} Contact Us
+          = link_to "Contact Us",
+            "javascript:void(0)",
+            onclick: "show_contact_modal();"
     #loading
       #loading-spinner
     - if ENV["CRAZYEGG"].to_b
