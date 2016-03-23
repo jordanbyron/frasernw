@@ -1,0 +1,1 @@
+ActionMailer::Base.add_delivery_method :pathways_dev_mailer, PathwaysDevMailer
