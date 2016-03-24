@@ -6,7 +6,8 @@ Local-only = Changes not reflected in Source Code
 Backend Maintenance = Change is not user facing
 
 ## [2016-03-26] [Since 2016-03-19 Integration]
-
+### Fixed:
+- Fix clinic #public & #private so that it only uses active locations
 
 ## [2016-03-19] [Since 2016-03-12 Integration]
 ### Changed:

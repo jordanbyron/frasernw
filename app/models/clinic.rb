@@ -511,7 +511,7 @@ class Clinic < ActiveRecord::Base
 
   Sectorable::SECTORS.each do |sector|
     define_method "#{sector.to_s}?" do
-      clinic_locations.any?(&("#{sector.to_s}?".to_sym))
+      clinic_locations.select(&:has_data?).any?(&("#{sector.to_s}?".to_sym))
     end
   end
 
