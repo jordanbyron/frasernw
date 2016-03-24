@@ -1,4 +1,5 @@
 if Rails::VERSION::MAJOR == 3
+# Source: http://stackoverflow.com/questions/30916375/errors-like-nomethoderror-undefined-method-sweep-for-hash-after-downgra
 
   module ActionDispatch
     class Flash
