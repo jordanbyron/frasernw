@@ -52,9 +52,9 @@ class SubscriptionMailer < ActionMailer::Base
     @specializations = @activity.trackable.specializations if @activity.trackable.specializations.present?
 
     mail(
-      :to => @user.email,
-      :from => 'Pathways <noreply@pathwaysbc.ca>',
-      :subject => "Pathways: #{@division} just added #{@type_mask_description_formatted} to #{@parent_type} [#{@update_classification_type.singularize}] "
+      to: @user.email,
+      from: 'Pathways <noreply@pathwaysbc.ca>',
+      subject: "Pathways: #{@division} just added #{@type_mask_description_formatted} to #{@parent_type} [#{@update_classification_type.singularize}] "
     )
   end
 
