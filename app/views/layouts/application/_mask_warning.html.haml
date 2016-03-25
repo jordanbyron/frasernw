@@ -45,8 +45,9 @@
                 class: "user_mask_warning__item"
     %span= "."
 
+  - mask_request_origin = "#{request.protocol}#{request.host_with_port}#{request.fullpath}"
   = link_to "Configure View as..",
-    new_user_mask_path,
+    new_user_mask_path(mask_request_origin: Base64.encode64(mask_request_origin) ),
     style: "color: #C09853",
     class: "button--mask_warning"
 

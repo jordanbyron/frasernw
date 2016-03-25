@@ -410,8 +410,9 @@
                     %li.nav-header Settings
                     - if current_user.as_admin_or_super?
                       %li
+                        - mask_request_origin = "#{request.protocol}#{request.host_with_port}#{request.fullpath}"
                         = link_to "View Pathways as...",
-                          new_user_mask_path,
+                          new_user_mask_path(mask_request_origin: Base64.encode64(mask_request_origin) ),
                           class: "view_as"
                     %li
                       = link_to "Change e-mail address",

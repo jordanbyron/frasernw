@@ -24,6 +24,8 @@
       presence: true,
       include_blank: false
 
+    = hidden_field_tag :mask_request_origin, params[:mask_request_origin].to_s
+
     .form-actions
       = f.button :submit,
         "View With Selected Role and Divisions",
