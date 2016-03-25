@@ -28,19 +28,16 @@ class UserMasksController < ApplicationController
       division_ids: params[:user_mask][:division_ids].select(&:present?).map(&:to_i)
     }
 
-    redirection = nil
-    if params[:mask_request_origin].present?
-      redirection = Base64.decode64(params[:mask_request_origin].to_s)
-    end
+    redirection_path =
+      if params[:mask_request_origin].present?
+        Base64.decode64(params[:mask_request_origin].to_s)
+      else
+        root_path
+      end
 
     if ValidateUserMask.call(existing_mask: @user_mask, new_params: params_to_validate)
       @user_mask.update_attributes(params_to_validate)
 
-      if redirection.present?
-        redirection_path = redirection
-      else
-        redirection_path = root_path
-      end
       redirect_to redirection_path,
         notice: "Now viewing Pathways as #{current_user.as_role_label.indefinitize} in the following divisions: #{current_user.as_divisions.to_sentence}."
     else
@@ -72,7 +69,14 @@ class UserMasksController < ApplicationController
   def destroy
     current_user.mask.try(:destroy)
 
-    redirect_to request.referrer,
+    redirection_path =
+      if params[:mask_request_origin].present?
+        Base64.decode64(params[:mask_request_origin].to_s)
+      else
+        root_path
+      end
+
+    redirect_to redirection_path,
       notice: "Now viewing Pathways with your default role and divisions."
   end
 end

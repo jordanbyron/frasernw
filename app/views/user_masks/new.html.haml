@@ -32,6 +32,6 @@
         class: "btn btn-primary",
         label: "Submit"
       = link_to @cancel_text,
-        user_masks_path,
+        user_masks_path(mask_request_origin: params[:mask_request_origin].to_s),
         class: "btn btn-default",
         method: :delete
