@@ -16,6 +16,7 @@ you came from
 - All users created on demo site now stay on demo site, even if we reset all the other data
 - Upgrade Ruby to 2.2.4
 - "Contact Me" links now all show a form to send administrators emails through the app
+- All emails on Pathways test servers now sent to developers to facilitate better testing
 
 ## [2016-03-19] [Since 2016-03-12 Integration]
 ### Changed:
