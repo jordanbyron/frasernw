@@ -7,7 +7,15 @@ Backend Maintenance = Change is not user facing
 
 ## [2016-03-26] [Since 2016-03-19 Integration]
 ### Fixed:
-- Fix clinic #public & #private so that it only uses active locations
+- Fix clinic #public & #private
+
+### Changed:
+- After you 'View Pathways As' a different role or division, you're redirected to the place
+you came from
+- Admin users from live site now included in demo site
+- All users created on demo site now stay on demo site, even if we reset all the other data
+- Upgrade Ruby to 2.2.4
+- "Contact Me" links now all show a form to send administrators emails through the app
 
 ## [2016-03-19] [Since 2016-03-12 Integration]
 ### Changed:
