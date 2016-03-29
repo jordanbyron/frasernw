@@ -250,7 +250,7 @@ class Clinic < ActiveRecord::Base
   end
 
   def show_wait_time_in_table?
-    responded? && accepting_new_patients?
+    !closed && responded? && accepting_new_patients?
   end
 
   def not_available?
