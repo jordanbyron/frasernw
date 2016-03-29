@@ -470,8 +470,16 @@ class Specialist < ActiveRecord::Base
   end
 
   def show_wait_time_in_table?
-    responded? && (accepting_new_patients? || retiring? ||
-                   ((status_mask == 6) && ((unavailable_to < Date.current) || (unavailable_from > Date.current))))  #not yet unavailable
+    responded? &&
+      (
+        accepting_new_patients? ||
+        retiring? ||
+        accepting_with_limitations? || 
+        (
+          status_mask == 6 &&
+          (unavailable_to < Date.current || unavailable_from > Date.current)
+        )
+      )
   end
 
   def not_available?
