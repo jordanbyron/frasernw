@@ -76,7 +76,7 @@
                 %th{:style => "width:100%"}= "#{specialization.name} (#{specialization.no_division_specialists.count})"
                 %th.admin
 
-              - specialization.no_division_specialists.each do |specialist|
+              - specialization.no_division_specialists.sort_by{|specialist| [ specialist.lastname, specialist.firstname ] }.each do |specialist|
                 %tr
                   %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
                   %td{style: "min-width: 60px"}
