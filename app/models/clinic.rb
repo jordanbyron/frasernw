@@ -550,4 +550,17 @@ class Clinic < ActiveRecord::Base
   end
 
   alias_method :cities_for_front_page, :cities
+
+  def specialists_with_offices_in
+    clinic_locations.
+      map(&:location).
+      map{|location| Location.where(location_in_id: location.id).first }.
+      reject(&:nil?).
+      map(&:locatable).
+      select{|locatable| locatable.is_a?(Office) }.
+      map{|office| SpecialistOffice.where(office_id: office.id).first }.
+      reject(&:nil?).
+      map(&:specialist).
+      uniq
+  end
 end
