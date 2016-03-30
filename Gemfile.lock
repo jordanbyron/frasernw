@@ -1,8 +1,9 @@
 GIT
   remote: git@github.com:pathwaysmedical/quick_spreadsheet.git
-  revision: aa1ffd8a46d1910f497cf0d69de293b3ccef2f64
+  revision: 919d009310e761fae9b7e963a50195d85734c705
+  branch: multiple_sheets
   specs:
-    quick_spreadsheet (0.0.3)
+    quick_spreadsheet (0.1.0)
       spreadsheet (~> 1.0.9)
 
 GIT
@@ -511,7 +512,7 @@ GEM
       rspec-support (~> 3.2.0)
     rspec-support (3.2.2)
     ruby-graphviz (1.2.2)
-    ruby-ole (1.2.11.8)
+    ruby-ole (1.2.12)
     ruby2ruby (2.2.0)
       ruby_parser (~> 3.1)
       sexp_processor (~> 4.0)
@@ -671,7 +672,7 @@ DEPENDENCIES
   pry-rails
   pry-stack_explorer
   public_activity
-  quick_spreadsheet (= 0.0.3)!
+  quick_spreadsheet (= 0.1.0)!
   quiet_assets
   rack-attack
   rack-cache

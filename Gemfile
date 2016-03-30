@@ -147,8 +147,8 @@ group :development do
   gem 'thin'
   gem 'iron_fixture_extractor' # extract out data into fixtures
   gem 'table_print' # print nice tables in IRB with tp command
-  gem 'quick_spreadsheet', '0.0.3',
-    git: "git@github.com:pathwaysmedical/quick_spreadsheet.git"
+  gem 'quick_spreadsheet', '0.1.0',
+    git: "git@github.com:pathwaysmedical/quick_spreadsheet.git", branch: 'multiple_sheets'
 end
 
 gem 'pry-rails'
