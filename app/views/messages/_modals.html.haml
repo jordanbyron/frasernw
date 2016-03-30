@@ -9,11 +9,11 @@
 
         = f.input :name,
           label: 'Your name',
-          input_html: { value: current_user.name }
+          input_html: { value: current_user.authenticated? ? current_user.name : "" }
 
         = f.input :email,
           label: 'Your e-mail',
-          input_html: { value: current_user.email }
+          input_html: { value: current_user.authenticated? ? current_user.email : "" } 
 
         = f.input :subject,
           label: 'Message subject',
