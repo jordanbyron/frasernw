@@ -41,12 +41,12 @@ namespace :pathways do
             body_rows: redirected_links
           },
           {
-            title: "Other responses",
-            header_row: ["Title","URL","Response Code"],
+            title: "Failed responses",
+            header_row: ["Title","URL","HTTP Response Code"],
             body_rows: other_response_links
           },
           {
-            title: "Errors",
+            title: "Request errors (no response)",
             header_row: ["Title","URL","Error message"],
             body_rows: error_links
           }
