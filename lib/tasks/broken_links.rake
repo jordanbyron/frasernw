@@ -33,7 +33,7 @@ namespace :pathways do
       end
       puts "Finished checking"
       QuickSpreadsheet.call(
-        filename: "pathways_broken_links_g#{Time.now.strftime("%Y-%m-%d-%H.%M")}",
+        file_title: "pathways_broken_links",
         sheets: [
           {
             title: "Redirections",
