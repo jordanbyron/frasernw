@@ -196,20 +196,6 @@ module SpecializationsHelper
     filtering_attributes
   end
 
-  def other_specialists_in_cities(specialization, cities)
-    other_specialists = []
-    specialization.procedures.each do |p|
-      next if p.specializations.length <= 1
-      p.specializations.each do |s|
-        next if s.id == specialization.id
-        other_specialists << p.all_specialists_for_specialization_in_cities(s, cities)
-      end
-    end
-    other_specialists = other_specialists.flatten.uniq
-    #remove any specialists that are also in this specialization, sort
-    return (other_specialists - specialization.specialists.in_cities_cached(cities)).sort{ |a,b| "#{a.waittime_mask}" <=> "#{b.waittime_mask}" }
-  end
-
   def other_clinics_in_cities(specialization, cities)
     other_clinics = []
     specialization.procedures.each do |p|

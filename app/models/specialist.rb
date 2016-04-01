@@ -73,35 +73,40 @@ class Specialist < ActiveRecord::Base
     :review_object
 
   # specialists can have multiple specializations
-  has_many :specialist_specializations, :dependent => :destroy
-  has_many :specializations, :through => :specialist_specializations
+  has_many :specialist_specializations, dependent: :destroy
+  has_many :specializations, through: :specialist_specializations
 
   # specialists have the capacity to perform procedures
-  has_many   :capacities, :dependent => :destroy
+  has_many :capacities, dependent: :destroy
 
   # we want to be using this generic alias so we can duck type
   # procedure specializables
-  has_many   :procedure_specialization_links, class_name: "Capacity"
-  has_many   :procedure_specializations, :through => :capacities
-  has_many   :procedures, :through => :procedure_specializations
-  accepts_nested_attributes_for :capacities, :reject_if => lambda { |c| c[:procedure_specialization_id].blank? }, :allow_destroy => true
+  has_many :procedure_specialization_links, class_name: "Capacity"
+  has_many :procedure_specializations, through: :capacities
+  has_many :procedures, through: :procedure_specializations
+  accepts_nested_attributes_for :capacities,
+    reject_if: lambda { |c| c[:procedure_specialization_id].blank? },
+    allow_destroy: true
 
   # specialists attend clinics
-  has_many   :attendances, :dependent => :destroy
-  has_many   :clinic_locations, :through => :attendances
-  has_many   :clinics, :through => :clinic_locations
+  has_many :attendances, dependent: :destroy
+  has_many :clinic_locations, through: :attendances
+  has_many :clinics, through: :clinic_locations
 
   # specialists have "priviliges" at hospitals
-  has_many   :privileges, :dependent => :destroy
-  has_many   :hospitals, :through => :privileges
+  has_many :privileges, dependent: :destroy
+  has_many :hospitals, through: :privileges
 
   # specialists "speak" many languages
-  has_many   :specialist_speaks, :dependent => :destroy
-  has_many   :languages, :through => :specialist_speaks
+  has_many :specialist_speaks, dependent: :destroy
+  has_many :languages, through: :specialist_speaks
 
   # specialists are favorited by users of the system
-  has_many   :favorites, :as => :favoritable, :dependent => :destroy
-  has_many   :favorite_users, :through => :favorites, :source => :user, :class_name => "User"
+  has_many :favorites, as: :favoritable, dependent: :destroy
+  has_many :favorite_users,
+    through: :favorites,
+    source: :user,
+    class_name: "User"
 
   # has many contacts - dates and times they were contacted
   has_many  :contacts
@@ -111,58 +116,68 @@ class Specialist < ActiveRecord::Base
   has_many  :edits
 
   MAX_OFFICES = 4
-  has_many :specialist_offices, :dependent => :destroy
-  has_many :offices, :through => :specialist_offices
-  has_many :locations, :through => :offices
+  has_many :specialist_offices, dependent: :destroy
+  has_many :offices, through: :specialist_offices
+  has_many :locations, through: :offices
   accepts_nested_attributes_for :specialist_offices
 
   #specialist are controlled (e.g. can be edited) by users of the system
   has_many :controlling_users,
-    :through => :user_controls_specialists,
-    :source => :user,
-    :class_name => "User"
+    through: :user_controls_specialists,
+    source: :user,
+    class_name: "User"
   has_many :user_controls_specialists, dependent: :destroy
   alias user_controls user_controls_specialists
 
   has_attached_file :photo,
-    :styles => { :thumb => "200x200#" },
-    :storage => :s3,
-    :bucket => Pathways::S3.bucket_name(:specialist_photos),
-    :s3_protocol => :https,
-    :s3_credentials => {
-      :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
-      :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
+    styles: { thumb: "200x200#" },
+    storage: :s3,
+    bucket: Pathways::S3.bucket_name(:specialist_photos),
+    s3_protocol: :https,
+    s3_credentials: {
+      access_key_id: ENV['AWS_ACCESS_KEY_ID'],
+      secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
     }
 
   before_save :destroy_photo?
 
   after_commit :flush_cache_for_record
-  after_touch  :flush_cache_for_record
+  after_touch :flush_cache_for_record
 
   scope :deceased, -> { where(status_mask: STATUS_MASK_DECEASED) }
 
 
   def self.not_in_progress_for_specialization(specialization)
-    in_progress_cities = []
-
-    Division.all.each do |division|
-      in_progress_cities |= City.in_progress_for_division_and_specialization(division, specialization)
+    in_progress_cities = Division.all.inject([]) do |memo, division|
+      memo | City.in_progress_for_division_and_specialization(
+        division,
+        specialization
+      )
     end
 
-    self.in_cities_and_specialization(City.all - in_progress_cities, specialization)
+    self.in_cities_and_specialization(
+      City.all - in_progress_cities,
+      specialization
+    )
   end
 
   def self.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
-    not_in_progress_cities = City.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
+    not_in_progress_cities = City.not_in_progress_for_division_local_referral_area_and_specialization(
+      division,
+      specialization
+    )
+
     self.in_cities_and_specialization(not_in_progress_cities, specialization)
   end
 
   def not_in_progress
-    (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length > 0) || (divisions.length == 0)
+    SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length > 0 ||
+      divisions.length == 0
   end
 
   def in_progress
-    (divisions.length > 0) && (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length == 0)
+    divisions.length > 0 &&
+      SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length == 0
   end
 
 
@@ -195,8 +210,6 @@ class Specialist < ActiveRecord::Base
     ]).with_cities
   end
 
-  # # # # CACHING METHODS
-
   def self.cache_key
     max_updated_at = maximum(:updated_at).try(:utc).try(:to_s, :number)
     sum_of_ids = limit(100).pluck(:id).try(:compact).inject{|sum, id| sum + id }
@@ -215,31 +228,34 @@ class Specialist < ActiveRecord::Base
       where(id: specialist_ids_array).all # find(specialist_ids_array) is slower but also works
   end
 
-  def self.in_divisions_cached(divisions)
-    divs = Array.wrap(divisions)
-    self.in_cities_cached(divs.map{ |division| division.cities }.flatten.uniq)
-  end
-
-  def self.cached_find(id)
-    Rails.cache.fetch([name, id], expires_in: 4000.seconds) { find(id) }
-  end
-
   def flush_cache_for_record
-  # only flushes Specialist.cached_find(id), @specialist.city @specialist.cities @specialist.cities_for_display @specialist.cities_for_front_page
     Rails.cache.delete([self.class.name, self.id, "city"])
     Rails.cache.delete([self.class.name, self.id, "cities"])
     Rails.cache.delete([self.class.name, self.id, "cities_for_display"])
     Rails.cache.delete([self.class.name, self.id, "cities_for_front_page"])
     Rails.cache.delete([self.class.name, self.id])
   end
-  # # # #
 
   def self.in_cities(c)
   #for specialists that haven't responded or are purosely not yet surveyed we just try to grab any city that makes sense
-    city_ids = Array.wrap(c).map{ |city| city.id }.sort
+    city_ids = Array.wrap(c).map(&:id).sort
 
     # responded_* location searches exclude specialist with CATEGORIZATION_3: "Only works out of hospitals or clinics"
-    responded_direct = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL AND "direct_location".location_in_id IS NULL AND "specialists".categorization_mask in (?)', "Office", city_ids, [1, 2, 4, 5])
+    joins(<<-SQL)
+      INNER JOIN specialist_offices
+      ON specialists.id = specialist_offices.specialist_id
+      INNER JOIN offices ON specialist_offices.office_id = offices.id
+      INNER JOIN "locations" AS "direct_locations"
+      ON "offices".id = "direct_locations".locatable_id
+      INNER JOIN "addresses" AS "direct_address"
+      ON "direct_locations".address_id = "direct_address".id
+    SQL.where(<<-SQL, "Office", city_ids, [1, 2, 4, 5])
+      "direct_locations".locatable_type = (?)
+      AND "direct_address".city_id IN (?)
+      AND "direct_locations".hospital_in_id IS NULL
+      AND "direct_locations".location_in_id IS NULL
+      AND "specialists".categorization_mask in (?)
+    SQL
 
     responded_in_hospital = joins('INNER JOIN "specialist_offices" ON "specialists"."id" = "specialist_offices"."specialist_id" INNER JOIN "offices" ON "specialist_offices".office_id = "offices".id INNER JOIN "locations" AS "direct_location" ON "offices".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id').where('"direct_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "specialists".categorization_mask in (?)', "Office", "Hospital", city_ids, [1, 2, 4, 5])
 
@@ -474,7 +490,7 @@ class Specialist < ActiveRecord::Base
       (
         accepting_new_patients? ||
         retiring? ||
-        accepting_with_limitations? || 
+        accepting_with_limitations? ||
         (
           status_mask == 6 &&
           (unavailable_to < Date.current || unavailable_from > Date.current)
@@ -502,6 +518,16 @@ class Specialist < ActiveRecord::Base
     12 => "Deceased",
     10 => "Moved away",
     7 => "Didn't answer"
+  }
+  AVAILABILITY = {
+    4 => "Retired",
+    8 => "Indefinitely unavailable",
+    7 => "Unknown",
+    9 => "Permanently unavailable",
+    10 => "Moved away",
+    12 => "Deceased",
+    13 => "Available",
+    14 => "Unavailable for a period"
   }
 
   def status

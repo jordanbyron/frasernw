@@ -20,7 +20,7 @@ class SpecialistsController < ApplicationController
   end
 
   def show
-    @specialist = Specialist.cached_find(params[:id])
+    @specialist = Specialist.find(params[:id])
     @feedback = @specialist.active_feedback_items.build
     if @specialist.controlling_users.include?(current_user)
       current_user.viewed_controlled_specialist!(@specialist)
@@ -218,19 +218,19 @@ class SpecialistsController < ApplicationController
   end
 
   def print_patient_information
-    @specialist = Specialist.cached_find(params[:id])
+    @specialist = Specialist.find(params[:id])
     @specialist_office = @specialist.specialist_offices.reject{ |so| so.empty? }.first
     render :layout => 'print'
   end
 
   def print_office_patient_information
-    @specialist = Specialist.cached_find(params[:id])
+    @specialist = Specialist.find(params[:id])
     @specialist_office = SpecialistOffice.find(params[:office_id])
     render :print_patient_information, :layout => 'print'
   end
 
   def photo
-    @specialist = Specialist.cached_find(params[:id])
+    @specialist = Specialist.find(params[:id])
     render :layout => request.headers['X-PJAX'] ? 'ajax' : true
   end
 
@@ -255,7 +255,7 @@ class SpecialistsController < ApplicationController
   def refresh_cache
     @specialist = Specialist.find(params[:id])
     @specialist.flush_cache_for_record
-    @specialist = Specialist.cached_find(params[:id])
+    @specialist = Specialist.find(params[:id])
     @feedback = @specialist.active_feedback_items.build
     render :show, :layout => 'ajax'
   end
