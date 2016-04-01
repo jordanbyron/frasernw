@@ -20,6 +20,8 @@
 - specialist_offices = @specialist.specialist_offices.order(:created_at).reject{ |specialist_office| specialist_office.empty? }
 - has_office = specialist_offices.length > 0
 
+- specialist_clinics = @specialist.clinics.order(:created_at)
+
 .content-wrapper
 
   - if @is_version
@@ -534,8 +536,12 @@
 
   .btn-group
     - if true || show_details
-      - if specialist_offices.length == 1
+      - if specialist_offices.length == 1 && !specialist_clinics.any?
         %a.btn{"href" => specialist_patient_information_path(@specialist), "target" => "_blank"}
+          %i.icon-print.icon-text
+          Print Information for Patient
+      - elsif specialist_clinics.length == 1
+        %a.btn{"href" => specialist_patient_information_clinic_path(@specialist, specialist_clinics.first), "target" => "_blank"}
           %i.icon-print.icon-text
           Print Information for Patient
       - else
@@ -549,6 +555,13 @@
             %li
               %a{"href" => specialist_patient_information_office_path(@specialist, specialist_office), "target" => "_blank"}
                 = specialist_office.office.short_address
+          - specialist_clinics.each do |clinic|
+            - if @specialist.clinic_locations.where(clinic_id: clinic.id).present?
+              - clinic_location = @specialist.clinic_locations.where(clinic_id: clinic.id).first
+            - next unless clinic_location.present?
+            %li
+              %a{"href" => specialist_patient_information_clinic_path(@specialist, clinic), "target" => "_blank"}
+                = clinic_location.clinic.name
 
     - if !current_user.as_admin_or_super? && (can? :update, @specialist)
       %a.btn.btn-primary.ajax{"href" => specialist_self_edit_path(@specialist, @specialist.token)}
