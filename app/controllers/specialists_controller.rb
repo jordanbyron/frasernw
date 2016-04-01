@@ -229,6 +229,13 @@ class SpecialistsController < ApplicationController
     render :print_patient_information, :layout => 'print'
   end
 
+  def print_clinic_patient_information
+    @specialist = Specialist.cached_find(params[:id])
+    @clinic = @specialist.clinics.find(params[:clinic_id])
+    @clinic_location = @specialist.clinic_locations.where(clinic_id: @clinic.id).first
+    render :print_patient_information, :layout => 'print'
+  end
+
   def photo
     @specialist = Specialist.cached_find(params[:id])
     render :layout => request.headers['X-PJAX'] ? 'ajax' : true

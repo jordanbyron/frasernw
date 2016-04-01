@@ -166,6 +166,7 @@ Frasernw::Application.routes.draw do
 
   match '/specialists/:id/print'        => 'specialists#print_patient_information',   :as => 'specialist_patient_information'
   match '/specialists/:id/print/office/:office_id' => 'specialists#print_office_patient_information',   :as => 'specialist_patient_information_office'
+  match '/specialists/:id/print/clinic/:clinic_id' => 'specialists#print_clinic_patient_information',   :as => 'specialist_patient_information_clinic'
   match '/clinics/:id/print/location/:location_id'  => 'clinics#print_location_patient_information',       :as => 'clinic_patient_information_location'
 
   get  '/hospitals/:id/:token/refresh_cache'       => 'hospitals#refresh_cache',       :as => 'hospital_refresh_cache'
