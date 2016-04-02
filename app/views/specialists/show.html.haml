@@ -536,11 +536,11 @@
 
   .btn-group
     - if true || show_details
-      - if specialist_offices.length == 1 && !specialist_clinics.any?
+      - if specialist_offices.one? && !specialist_clinics.any?
         %a.btn{"href" => specialist_patient_information_path(@specialist), "target" => "_blank"}
           %i.icon-print.icon-text
           Print Information for Patient
-      - elsif specialist_clinics.length == 1
+      - elsif specialist_clinics.one? && !specialist_offices.any?
         %a.btn{"href" => specialist_patient_information_clinic_path(@specialist, specialist_clinics.first), "target" => "_blank"}
           %i.icon-print.icon-text
           Print Information for Patient
