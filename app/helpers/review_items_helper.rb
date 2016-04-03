@@ -1,13 +1,13 @@
 module ReviewItemsHelper
-  def review_path(review_item)
-    send(
+  def self.review_path(review_item)
+    Rails.application.routes.url_helpers.send(
       "review_#{review_item.item.class.name.underscore}_path",
       review_item.item
     )
   end
 
-  def rereview_path(review_item)
-    send(
+  def self.rereview_path(review_item)
+    Rails.application.routes.url_helpers.send(
       "rereview_#{review_item.item.class.name.underscore}_path",
       review_item.item,
       review_item_id: review_item.id

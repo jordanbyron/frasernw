@@ -2,10 +2,11 @@ class CreateNewsletter < ActiveRecord::Migration
   def up
     create_table :newsletters do |t|
       t.integer :month_key, null: false
-      t.has_attached_file :document
+      t.attachment :document
 
       t.timestamps
     end
+
     add_index :newsletters, [:month_key], name: "newsletters_month_key"
 
     create_table :newsletter_description_items do |t|

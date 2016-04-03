@@ -1,12 +1,13 @@
 class SpecialistFormModifier < FormModifier
-
+  ROUTES = Rails.application.routes.url_helpers
+  
   def cancel_path
     if token_edit?
-      root_url
+      ROUTES.root_url
     elsif admin_rereview?
-      archived_review_items_path
+      ROUTES.archived_review_items_path
     else
-      specialists_path
+      ROUTES.specialists_path
     end
   end
 

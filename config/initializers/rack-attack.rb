@@ -49,7 +49,7 @@ if ENV['RACK_ATTACK'].to_b
     # Throttle all requests by IP (60rpm)
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.ip}"
-    ALLOWED_ASSET_PATHS = ["/asset-files", "/img", "/fonts"]
+    ALLOWED_ASSET_PATHS = ["/app/assets", "/public"]
     throttle('req/ip', :limit => 300, :period => 5.minutes) do |req|
       if ALLOWED_ASSET_PATHS.any?{|allowed_path| req.path.starts_with?(allowed_path) }
         false

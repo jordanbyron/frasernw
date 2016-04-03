@@ -23,7 +23,9 @@
           - if can? :update, evidence
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_evidence_path(evidence.id), :class => "btn btn-mini ajax")
           - if can? :destroy, evidence
-            = link_to("<i class='icon-trash'></i>".html_safe + " Delete", evidence, :confirm => "Please do not delete levels of evidence without consulting IT or a Medical Lead.  Are you sure you want to delete Level of Evidence: #{evidence.level} #{evidence.definition}?", :method => :delete, :class => "btn btn-mini")
+            = delete_button evidence_path(evidence),
+              "Please do not delete levels of evidence without consulting IT or a Medical Lead.  Are you sure you want to delete Level of Evidence: #{evidence.level} #{evidence.definition}?",
+              mini: true
 
   %br
   - if can? :create, Evidence

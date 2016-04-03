@@ -8,9 +8,11 @@ class SecretToken < ActiveRecord::Base
 
   belongs_to :accessible, polymorphic: true
 
-  include Rails.application.routes.url_helpers
+
   include Historical
   include PaperTrailable
+
+  ROUTES = Rails.application.routes.url_helpers
 
   def self.not_expired
     where(expired: false)
@@ -34,8 +36,12 @@ class SecretToken < ActiveRecord::Base
     creator.name
   end
 
-  def link(host)
-    "#{host}#{send("#{accessible_type.downcase}_self_edit_path", accessible, token)}"
+  def link
+    ROUTES.send(
+      "#{accessible_type.downcase}_self_edit_url",
+      accessible,
+      token
+    )
   end
 
   def numbered_label
@@ -54,13 +60,13 @@ class SecretToken < ActiveRecord::Base
     end
   end
 
-  def as_hash(host, user)
+  def as_hash(user)
     {
       id: id,
       creator: creator_name,
       recipient: recipient,
       created_at: created_at.strftime("%Y-%m-%d"),
-      link: link(host),
+      link: link,
       last_used: last_used,
       canExpire: expirable_by?(user)
     }

@@ -1,10 +1,6 @@
 namespace :pathways do
   namespace :broken_links do
-    include ActionController::Caching::Actions
-    include ActionController::Caching::Fragments
     include Net
-    include Rails.application.routes.url_helpers
-
     desc "Checks Pathways for broken links and creates a spreadsheet of them"
     task :check => :environment do
       redirected_links = []
@@ -83,22 +79,5 @@ namespace :pathways do
         colorize(31)
       end
     end
-
-    # The following methods are defined to fake out the ActionController
-    # requirements of the Rails cache
-
-    def cache_store
-      ActionController::Base.cache_store
-    end
-
-    def self.benchmark( *params )
-      yield
-    end
-
-    def cache_configured?
-      true
-    end
-
-
   end
 end

@@ -5,7 +5,7 @@ class PathwaysDevMailer
   def deliver!(mail)
     new_recipients = ENV['SYSTEM_NOTIFICATION_RECIPIENTS']
     new_body = "<p>Original Recipients: #{mail.to}</p><hr><br>#{mail.body}"
-    new_subject = "[DevMail][#{ENV['APP_NAME']}] #{mail.subject}"
+    new_subject = "[RedirectedMail][#{ENV['APP_NAME']}] #{mail.subject}"
 
     mail.to = new_recipients
     mail.body = new_body

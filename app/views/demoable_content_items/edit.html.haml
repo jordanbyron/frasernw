@@ -7,7 +7,7 @@
   %i Checked items will be included in demonstration database
 
   = form_tag demoable_content_items_path,
-    method: :put,
+    method: :patch,
     class: "form-horizontal" do
     - ScCategory.includes(:sc_items).all.each do |category|
       .category

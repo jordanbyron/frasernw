@@ -10,6 +10,7 @@ Backend Maintenance = Change is not user facing
 - Closed clinics no longer show waittimes on specialty pages
 - Display waittimes for specialists accepting referrals with limitations
 - Remove Vancouver (hidden)
+- Upgrade to Rails 4.0
 
 ## [2016-03-26] [Since 2016-03-19 Integration]
 ### Fixed:

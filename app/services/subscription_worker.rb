@@ -49,5 +49,7 @@ class SubscriptionWorker
         end
       end
     end
+
+    true
   end
 end

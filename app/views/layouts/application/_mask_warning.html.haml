@@ -11,7 +11,7 @@
           %li
             = link_to label,
               user_mask_path(current_user.mask, role: role),
-              method: :put,
+              method: :patch,
               style: "color: #C09853;",
               class: "user_mask_warning__item"
 
@@ -26,7 +26,7 @@
             %li
               = link_to division.name,
                 user_mask_path(current_user.mask, division_ids: [ division.id ]),
-                method: :put,
+                method: :patch,
                 style: "color: #C09853;",
                 class: "user_mask_warning__item"
     - else
@@ -40,7 +40,7 @@
             %li
               = link_to division.name,
                 user_mask_path(current_user.mask, division_ids: [ division.id ]),
-                method: :put,
+                method: :patch,
                 style: "color: #C09853;",
                 class: "user_mask_warning__item"
     %span= "."

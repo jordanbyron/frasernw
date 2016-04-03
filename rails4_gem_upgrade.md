@@ -1,0 +1,89 @@
+`Gemfile` checklist
+Checked without comment means no change needed, according to Ready4Rails4, Changelogs, etc.
+- [x] gem 'nokogiri'
+- [x] gem 'pg' **upgraded**
+- [x] gem 'heroku_cloud_backup', git: "https://github.com/pathwaysmedical/heroku_cloud_backup.git", ref: "8e801df1ad59515c3a89456169770b641d8c39a2" **probably OK**
+- [x] gem 'redis'
+- group :assets **`assets` is removed in R4**
+  - [x] gem 'sass', '~> 3.1.10' **upgrade after Rails**
+  - [x] gem 'sass-rails',   '~> 3.2.6' **upgrade after rails, to at least 4.0**
+  - [x] gem 'coffee-rails', '~> 3.2.2' **removed**
+  - [x] gem 'uglifier',     '>= 1.0.3' **upgraded**
+- [x] gem 'connection_pool' **removed**
+- [x] gem 'highcharts-rails' **removed**
+- [x] gem 'jquery-rails', '~> 1.0.16' **removed**
+- [x] gem 'haml-rails', '~> 0.4' **upgrade after rails**
+- [x] gem 'brakeman' **removed**
+- [x] gem 'authlogic'
+   - if there are issues, provide the following in your gemfile: `gem 'authlogic', github: 'binarylogic/authlogic', ref: 'e4b2990d6282f3f7b50249b4f639631aef68b939'`
+- [x] gem 'paper_trail', '~> 2.7' **upgraded**
+- [x] gem 'will_paginate', '~> 3.0.0'
+- [x] gem "simple_form", '~> 2.1' **upgrade after rails**
+- [x] gem "nested_form", :git => "https://github.com/warneboldt/nested_form.git", :ref => "35a2cf060680280413880337a3f89bdec469301c" **not maintained, but might be OK**
+- [x] gem 'exception_notification'
+- [x] gem 'slack-notifier' **removed**
+- [x] gem 'cancan', '1.6.7' **upgraded to cancancan**
+- [x] gem "paperclip", "~> 2.7" **upgraded to latest; make strong_params change after rails upgraded**
+- [x] gem 'rack-attack' **upgraded**
+- [x] gem "aws-sdk", **checked**
+- [x] gem 'public_activity' **upgraded**
+- [x] gem 'unicorn' **upgraded**
+- [x] gem 'edge_rider' **tested up til 4.1 -- remove or make a PR when we go to 4.2**
+- [x] gem 'kgio' **removed**
+- [x] gem 'dalli' **upgraded**
+- [x] gem 'rack-cache' **removed**
+- [x] gem 'delayed_job'
+- [x] gem 'delayed_job_active_record'
+- [x] gem 'delayed_job_web' **fine**
+- [x] gem 'daemons' **removed explicit dependency**
+- [x] gem 'clockwork'
+- [x] gem 'bluecloth' **not maintained, but should be OK**
+- [x] gem 'htmlentities' **removed**
+- [x] gem 'wannabe_bool' **updated; probably OK**
+- [x] gem 'valid_url' **probably OK**
+- [x] gem 'indefinite_article' **probably OK**
+- [x] gem 'hirefire-resource' **removed**
+- [x] gem 'hirb', :require => false
+- [x] gem 'awesome_print', :require => false
+- [x] gem 'bugsnag' **removed**
+- [x] gem 'virtus' **probably OK**
+- [x] gem 'turn', :require => false **removed**
+- [x] gem 'capybara'
+- [x] gem 'selenium-webdriver'
+- [x] gem "nifty-generators" **removed**
+- [x] gem 'rspec', '~> 3.2'
+- [x] gem 'rspec-rails'
+- [x] gem 'spork', '> 0.9.0rc'
+- [x] gem 'guard' **removed**
+- [x] gem 'guard-rspec' **removed**
+- [x] gem 'guard-livereload' **removed**
+- [x] gem 'guard-spork' **removed**
+- [x] gem 'rack-livereload' **removed**
+- [x] gem 'activerecord-import'
+- [x] gem 'taps' **removed**
+- [x] gem 'rb-fsevent', **removed**
+- [x] gem 'quiet_assets'
+- [x] gem 'faker' **upgraded**
+- [x] gem 'oink' **just rack middleware; OK**
+- [x] gem 'peek' **removed**
+- [x] gem 'annotate', '~> 2.6.5' **updated to 2.7.0**
+- [x] gem 'letter_opener'
+- [x] gem 'rails-erd' **updated**
+- [x] gem 'bullet'
+- [x] gem 'thin' **updated**
+- [x] gem 'iron_fixture_extractor' **removed**
+- [x] gem 'table_print' **updated**
+- [x] gem 'quick_spreadsheet', '0.0.3', git: "git@github.com:pathwaysmedical/quick_spreadsheet.git" **probably OK**
+- [x] gem 'pry-rails'
+- [x] gem 'pry-doc' **upgraded**
+- [x] gem 'pry-nav'
+- [x] gem 'pry-stack_explorer' **probably OK**
+- [x] gem 'ancestry', '~> 1.3.0' **upgraded, and determined that the potential issue we faced has been fixed**
+- [x] gem 'validates_email_format_of' **probably OK**
+- [x] gem "safety_mailer" **probably OK**
+- [x] gem 'google-api-client', '0.7.1', require: "google/api_client" **upgraded to 0.8.6; higher versions are possible, but incur non-backwards-compatible changes**
+- [x] gem 'jquery-datatables-rails', '3.1.1'
+- [x] gem "rack-timeout"
+- [x] gem 'rails_12factor'
+- [x] gem 'test-unit', '~> 3.0' **probably OK**
+- [x] gem 'newrelic_rpm'

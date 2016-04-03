@@ -49,7 +49,7 @@
       showLoader();
 
       $.get(dataPath + "?" + params).success(function(data) {
-        $('#chart_container').highcharts(data);
+        vendor.Highcharts.chart('chart_container', data);
         $("#heartbeat-loader-position").remove();
         $(".annotation").show();
       })

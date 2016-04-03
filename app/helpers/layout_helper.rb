@@ -5,7 +5,7 @@
 module LayoutHelper
   def page_title
     if @page_specific_title.present?
-      "#{environment_title} | #{HTMLEntities.new.decode(@page_specific_title.html_safe)}"
+      "#{environment_title} | #{@page_specific_title.html_safe}"
     else
       environment_title
     end

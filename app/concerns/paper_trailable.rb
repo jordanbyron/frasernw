@@ -66,6 +66,7 @@ module PaperTrailable
   end
 
   included do
-    has_paper_trail ignore: paper_trail_ignored_attributes
+    has_paper_trail ignore: paper_trail_ignored_attributes,
+      class_name: "Version"
   end
 end

@@ -47,7 +47,7 @@ class SpecialistsEditorController < ApplicationController
         params[:pre_edit_form_data]
       else
         params.delete(:pre_edit_form_data)
-        ActiveSupport::JSON::encode(params)
+        ReviewItem.encode(params)
       end
     end
     review_item.set_edit_source!(current_user, params[:secret_token_id])

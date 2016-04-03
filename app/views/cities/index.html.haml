@@ -18,6 +18,6 @@
         %td= city.divisions.map{ |d| d.name }.to_sentence
         %td.admin.btn-group
           = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_city_path(city), :class => "btn btn-mini ajax")
-          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", city, :confirm => "Delete #{city.name}?", :method => :delete, :class => "btn btn-mini")
+          = delete_button(city_path(city), "Delete #{city.name}?", mini: true)
 
   %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New City", new_city_path, :class => "btn ajax")

@@ -43,13 +43,20 @@ class ScItem < ActiveRecord::Base
   belongs_to  :evidence
 
   has_attached_file :document,
-  :storage => :s3,
-  :s3_protocol => :https,
-  :bucket => Pathways::S3.bucket_name(:content_item_documents),
-  :s3_credentials => {
-  :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
-  :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
+    :storage => :s3,
+    :s3_protocol => :https,
+    :bucket => Pathways::S3.bucket_name(:content_item_documents),
+    :s3_credentials => {
+    :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
+    :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
   }
+  validates_attachment_content_type :document,
+    content_type: [
+      /\Aimage\/.*\Z/,
+      "application/pdf",
+      "text/html",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ]
 
   validates_presence_of :title, :on => :create, :message => "can't be blank"
   validates :url, :url => true, :allow_blank => true

@@ -4,9 +4,9 @@ require 'rails/all'
 require 'csv'
 require 'wannabe_bool'
 
-# If you have a Gemfile, require the gems listed there, including any gems
+# Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
-Bundler.require(*Rails.groups(:assets => %w(development test))) if defined?(Bundler)
+Bundler.require(*Rails.groups)
 
 module Frasernw
   class Application < Rails::Application
@@ -38,20 +38,7 @@ module Frasernw
     config.assets.paths << "#{Rails.root}/app/assets/fonts"
     config.assets.paths << "#{Rails.root}/vendor/assets/javascripts"
     # Defaults to '/assets'
-    config.assets.prefix = '/asset-files'
-
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
-
-    # Custom directories with classes and modules you want to be autoloadable.
-    # config.autoload_paths += %W(#{config.root}/extras)
-
-    # Only load the plugins named here, in the order given (default is alphabetical).
-    # :all can be used as a placeholder for all plugins not explicitly named.
-    # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
-
-    # Activate observers that should always be running.
-    # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
+    config.assets.prefix = '/assets'
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -61,30 +48,8 @@ module Frasernw
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
-    # Please note that JavaScript expansions are *ignored altogether* if the asset
-    # pipeline is enabled (see config.assets.enabled below). Put your defaults in
-    # app/assets/javascripts/application.js in that case.
-    #
-    # JavaScript files you want as :defaults (application.js is always included).
-    # config.action_view.javascript_expansions[:defaults] = %w(prototype prototype_ujs)
-
-    # Configure the default encoding used in templates for Ruby 1.9.
-    config.encoding = "utf-8"
-
-    # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password, :password_confirmation, :saved_token, :secret_token, :access_key_id, :secret_access_key, :persistence_token, :crypted_password, :password_salt, :perishable_token, :patient_email]
-
-    # Enable the asset pipeline
-    config.assets.enabled = true
-
-    config.assets.version = '1.0'
-
-    Sprockets::Compressors.register_css_compressor(:scss, 'Sass::Rails::CssCompressor', :require => 'sass/rails/compressor') #added due to heroku error, read: https://github.com/rails/sass-rails/issues/111
-
-    #compress assets before serving, only use below if not on CDN:
-    # config.middleware.insert_before ActionDispatch::Static, Rack::Deflater
-    #if with CDN (https://robots.thoughtbot.com/content-compression-with-rack-deflater):
-    # config.middleware.use Rack::Deflater
+    # True expects attr_accessible to be defined in every model. Maybe one day ...
+    config.active_record.whitelist_attributes = false
 
     # mailer
     config.action_mailer.raise_delivery_errors = true
@@ -99,16 +64,16 @@ module Frasernw
       :enable_starttls_auto => true
     }
 
-    config.action_mailer.default_url_options = {
-      host: (ENV['EMAIL_HOST'] || ENV['DOMAIN'])
+    _default_url_options = {
+      host: ENV['DOMAIN'],
+      protocol: ENV['SCHEME']
     }
+    Rails.application.routes.default_url_options = _default_url_options
+    config.action_mailer.default_url_options = _default_url_options
 
     if ENV['RACK_ATTACK'].to_b
       config.middleware.use Rack::Attack
     end
-
-    # Explicitly set the primary key, since AR seems to be unable to find it
-    ActiveRecord::SessionStore::Session.primary_key = 'id'
 
   end
 end

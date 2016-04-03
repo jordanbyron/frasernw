@@ -17,6 +17,12 @@ class ReferralForm < ActiveRecord::Base
       :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
       :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
     }
+  validates_attachment_content_type :form,
+    content_type: [
+      /\Aimage\/.*\Z/,
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ]
 
   def label
     "#{referrable.name} (Referral Form)"

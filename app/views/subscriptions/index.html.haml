@@ -32,7 +32,7 @@
               = subscription.divisions.join(", ")
             %td{:style => "white-space: nowrap"}
               = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_subscription_path(subscription), :class => "btn btn-mini ajax")
-              = link_to("<i class='icon-trash'></i>".html_safe + " Delete", subscription, :confirm => "Delete Notification Setting #{subscription.id}?", :method => :delete, :class => "btn btn-mini")
+              = link_to("<i class='icon-trash'></i>".html_safe + " Delete", subscription, :data => { :confirm => "Delete Notification Setting #{subscription.id}?" }, :method => :delete, :class => "btn btn-mini")
 
             / %td{:style => "white-space: nowrap"}= link_to "#{subscription.classification}", edit_subscription_path(subscription)
             / %td{:style => "white-space: nowrap"}= subscription.interval_to_words
@@ -43,7 +43,7 @@
             /   = subscription.divisions.join(", ")
             / %td{:style => "white-space: nowrap"}
             /   = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_subscription_path(subscription), :class => "btn btn-mini ajax")
-            /   = link_to("<i class='icon-trash'></i>".html_safe + " Delete", subscription, :confirm => "Delete Notification Setting #{subscription.id}?", :method => :delete, :class => "btn btn-mini")
+            /   = link_to("<i class='icon-trash'></i>".html_safe + " Delete", subscription, :data => { :confirm => "Delete Notification Setting #{subscription.id}?" }, :method => :delete, :class => "btn btn-mini")
   - else
     %br
     %p.no_indent You currently do not have any subscription notifications created yet.  Click the button below to create your first one.

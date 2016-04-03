@@ -11,4 +11,4 @@
     - if can? :update, @city
       = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_city_path(@city), :class => "btn ajax")
     - if can? :destroy, @city
-      = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @city, :confirm => "Delete #{@city.name}?", :method => :delete, :class => "btn")
+      = delete_button(city_path(@city), "Delete #{@city.name}?")
