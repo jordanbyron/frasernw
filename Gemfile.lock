@@ -1,12 +1,4 @@
 GIT
-  remote: git@github.com:pathwaysmedical/quick_spreadsheet.git
-  revision: 919d009310e761fae9b7e963a50195d85734c705
-  branch: multiple_sheets
-  specs:
-    quick_spreadsheet (0.1.0)
-      spreadsheet (~> 1.0.9)
-
-GIT
   remote: https://github.com/pathwaysmedical/heroku_cloud_backup.git
   revision: 8e801df1ad59515c3a89456169770b641d8c39a2
   ref: 8e801df1ad59515c3a89456169770b641d8c39a2
@@ -14,6 +6,14 @@ GIT
     heroku_cloud_backup (0.1.5)
       fog (>= 1.6.0)
       heroku (>= 3.42.38)
+
+GIT
+  remote: https://github.com/pathwaysmedical/quick_spreadsheet.git
+  revision: b204ca5d314b30d7d134a7369be03b649c6c19d8
+  ref: b204ca5d314b30d7d134a7369be03b649c6c19d8
+  specs:
+    quick_spreadsheet (0.1.0)
+      spreadsheet (~> 1.0.9)
 
 GIT
   remote: https://github.com/warneboldt/nested_form.git
