@@ -4,7 +4,6 @@ namespace :pathways do
     include ActionController::Caching::Fragments
     include Net
     include Rails.application.routes.url_helpers
-    require 'quick_spreadsheet'
 
     desc "Checks Pathways for broken links and creates a spreadsheet of them"
     task :check => :environment do
