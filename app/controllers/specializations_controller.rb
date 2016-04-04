@@ -1,8 +1,6 @@
 class SpecializationsController < ApplicationController
   load_and_authorize_resource
 
-  cache_sweeper :specialization_sweeper, :only => [:create, :update, :destroy]
-
   def index
     @specializations = Specialization.all
     render :layout => 'ajax' if request.headers['X-PJAX']
@@ -61,7 +59,7 @@ class SpecializationsController < ApplicationController
 
   def update
     @specialization = Specialization.find(params[:id])
-    SpecializationSweeper.instance.before_controller_update(@specialization)
+    ExpireFragment.call "/specialties/#{@specialization}"
     if current_user.as_super_admin?
       divisions = Division.all
     else
@@ -93,7 +91,7 @@ class SpecializationsController < ApplicationController
 
   def destroy
     @specialization = Specialization.find(params[:id])
-    SpecializationSweeper.instance.before_controller_destroy(@specialization)
+    ExpireFragment.call "/specialties/#{@specialization}"
     @specialization.destroy
     redirect_to specializations_url, :notice => "Successfully deleted specialty."
   end

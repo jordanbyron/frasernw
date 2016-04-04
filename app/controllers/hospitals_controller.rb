@@ -4,8 +4,6 @@ class HospitalsController < ApplicationController
   before_filter :check_token, :only => :refresh_cache
   skip_authorization_check :only => :refresh_cache
 
-  cache_sweeper :hospital_sweeper, :only => [:create, :update, :destroy]
-
   def index
     @hospitals = Hospital.all
     render :layout => 'ajax' if request.headers['X-PJAX']
@@ -46,7 +44,7 @@ class HospitalsController < ApplicationController
 
   def update
     @hospital = Hospital.find(params[:id])
-    HospitalSweeper.instance.before_controller_update(@hospital)
+    ExpireFragment.call "/hospitals/#{@hospital}"
     if @hospital.update_attributes(params[:hospital])
       redirect_to @hospital, :notice  => "Successfully updated #{@hospital.name}."
     else
@@ -56,7 +54,7 @@ class HospitalsController < ApplicationController
 
   def destroy
     @hospital = Hospital.find(params[:id])
-    HospitalSweeper.instance.before_controller_destroy(@hospital)
+    ExpireFragment.call "/hospitals/#{@hospital}"
     name = @hospital.name
     @hospital.destroy
     redirect_to hospitals_url, :notice => "Successfully deleted #{@name}."

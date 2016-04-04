@@ -5,8 +5,6 @@ class ClinicsController < ApplicationController
   skip_authorization_check :only => :refresh_cache
   include ApplicationHelper
 
-  cache_sweeper :clinic_sweeper, :only => [:create, :update, :destroy, :accept]
-
   def index
     if params[:specialization_id].present?
       @specializations = [Specialization.find(params[:specialization_id])]
@@ -112,7 +110,7 @@ class ClinicsController < ApplicationController
   def update
     params[:clinic][:procedure_ids] ||= []
     @clinic = Clinic.find(params[:id])
-    ClinicSweeper.instance.before_controller_update(@clinic)
+    ExpireFragment.call "/clinics/#{@clinic}"
 
     parsed_params = ParamParser::Clinic.new(params).exec
     if @clinic.update_attributes(parsed_params[:clinic])
@@ -126,7 +124,7 @@ class ClinicsController < ApplicationController
 
   def destroy
     @clinic = Clinic.find(params[:id])
-    ClinicSweeper.instance.before_controller_destroy(@clinic)
+    ExpireFragment.call "/clinics/#{@clinic}"
     name = @clinic.name
     @clinic.destroy
     redirect_to clinics_url, :notice => "Successfully deleted #{name}."
@@ -212,7 +210,7 @@ class ClinicsController < ApplicationController
       review_item: review_item
     ).exec
 
-    ClinicSweeper.instance.before_controller_update(@clinic)
+    ExpireFragment.call "/clinics/#{@clinic}"
 
     parsed_params = ParamParser::Clinic.new(params).exec
     if @clinic.update_attributes(parsed_params[:clinic])

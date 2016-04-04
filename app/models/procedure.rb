@@ -181,7 +181,7 @@ class Procedure < ActiveRecord::Base
     if self.saved_token
       return self.saved_token
     else
-      update_column(:saved_token, SecureRandom.hex(16)) #avoid callbacks / validation as we don't want to trigger a sweeper for this
+      update_column(:saved_token, SecureRandom.hex(16))
       return self.saved_token
     end
   end

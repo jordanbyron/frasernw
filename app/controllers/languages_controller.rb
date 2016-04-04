@@ -4,8 +4,6 @@ class LanguagesController < ApplicationController
   before_filter :check_token, :only => :refresh_cache
   skip_authorization_check :only => :refresh_cache
 
-  cache_sweeper :language_sweeper, :only => [:create, :update, :destroy]
-
   def index
     @languages = Language.all
     render :layout => 'ajax' if request.headers['X-PJAX']
@@ -37,7 +35,7 @@ class LanguagesController < ApplicationController
 
   def update
     @language = Language.find(params[:id])
-    LanguageSweeper.instance.before_controller_update(@language)
+    ExpireFragment.call "/languages/#{@language}"
     if @language.update_attributes(params[:language])
       redirect_to @language, :notice  => "Successfully updated language."
       else
@@ -47,7 +45,7 @@ class LanguagesController < ApplicationController
 
   def destroy
     @language = Language.find(params[:id])
-    LanguageSweeper.instance.before_controller_destroy(@language)
+    ExpireFragment.call "/languages/#{@language}"
     @language.destroy
     redirect_to languages_url, :notice => "Successfully deleted language."
   end

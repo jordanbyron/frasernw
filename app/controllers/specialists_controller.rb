@@ -6,8 +6,6 @@ class SpecialistsController < ApplicationController
   skip_authorization_check :only => [:refresh_cache, :refresh_index_cache]
   include ApplicationHelper
 
-  cache_sweeper :specialist_sweeper, :only => [:create, :update, :update_photo, :accept, :destroy]
-
   def index
     if params[:specialization_id].present?
       @specializations = [Specialization.find(params[:specialization_id])]
@@ -94,7 +92,7 @@ class SpecialistsController < ApplicationController
 
   def update
     @specialist = Specialist.find(params[:id])
-    SpecialistSweeper.instance.before_controller_update(@specialist)
+    ExpireFragment.call "/specialist/#{@specialist}"
 
     parsed_params = ParamParser::Specialist.new(params).exec
     if @specialist.update_attributes(parsed_params[:specialist])
@@ -126,7 +124,7 @@ class SpecialistsController < ApplicationController
         review_item: review_item
       ).exec
 
-      SpecialistSweeper.instance.before_controller_update(@specialist)
+      ExpireFragment.call "/specialist/#{@specialist}"
 
       parsed_params = ParamParser::Specialist.new(params).exec
       if @specialist.update_attributes(parsed_params[:specialist])
@@ -158,7 +156,7 @@ class SpecialistsController < ApplicationController
 
   def destroy
     @specialist = Specialist.find(params[:id])
-    SpecialistSweeper.instance.before_controller_destroy(@specialist)
+    ExpireFragment.call "/specialist/#{@specialist}"
     name = @specialist.name;
     @specialist.destroy
     redirect_to root_url, :notice => "Successfully deleted #{name}."
@@ -239,7 +237,7 @@ class SpecialistsController < ApplicationController
 
   def update_photo
     @specialist = Specialist.find(params[:id])
-    SpecialistSweeper.instance.before_controller_update(@specialist)
+    ExpireFragment.call "/specialist/#{@specialist}"
     if @specialist.update_attributes(params[:specialist])
       redirect_to @specialist, :notice  => "Successfully updated #{@specialist.formal_name}'s photo."
     else

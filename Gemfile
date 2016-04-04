@@ -19,7 +19,6 @@ gem 'uglifier', '>= 1.3.0'
 
 # Rails 3.2 to 4 upgrade gems
 gem 'protected_attributes'
-gem 'rails-observers'
 
 gem 'activerecord-session_store'
 
