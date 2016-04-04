@@ -74,7 +74,7 @@ class ClinicsEditorController < ApplicationController
   def check_pending
     clinic = Clinic.find(params[:id])
     if clinic.review_item.present? && (!current_user || (clinic.review_item.editor != current_user))
-      redirect_to clinic_self_pending_path(clinic)
+      redirect_to clinic_self_pending_path(id: clinic.id, token: params[:token])
     end
   end
 
