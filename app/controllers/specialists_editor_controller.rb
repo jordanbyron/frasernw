@@ -73,7 +73,7 @@ class SpecialistsEditorController < ApplicationController
   def check_pending
     specialist = Specialist.find(params[:id])
     if specialist.review_item.present? && (!current_user || (specialist.review_item.editor != current_user))
-      redirect_to specialist_self_pending_path(specialist)
+      redirect_to specialist_self_pending_path(id: specialist.id, token: params[:token])
     end
   end
 

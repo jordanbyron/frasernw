@@ -15,7 +15,7 @@
     email address, and will not expose your email address to the patient. Also note that anyone else who has access to this patient's email will be able visit this link and see the content it contains.
 
   %form.form-horizontal{"accept-charset" => "UTF-8", "action" => "/mail_to_patients/create", "method" => "post", "novalidate" => "novalidate"}
-
+    = hidden_field_tag :authenticity_token, form_authenticity_token
     .control-group
       %labl.control-label{"for" => "patient_email"} Patient's Email Address
       .controls
