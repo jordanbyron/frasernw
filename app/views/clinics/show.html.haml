@@ -42,41 +42,42 @@
               - self_in_progress = @clinic.in_progress
               = @clinic.specializations.reject{ |s| !self_in_progress && s.fully_in_progress_for_divisions(@clinic.divisions) }.map{ |s| "<a href='#{specialization_path(s)}' class='#{ s.fully_in_progress_for_divisions(@clinic.divisions) ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
 
-            - if @clinic.not_responded?
+            %p.space.no_indent
+              %i{:class => @clinic.status_class}
+              - if @clinic.not_responded?
 
-              %p.space.no_indent This clinic has not yet provided Pathways their information.
+                %strong This clinic has not yet provided Pathways their information.
 
-            - elsif @clinic.closed?
+              - elsif @clinic.closed?
 
-              %p.space.no_indent This clinic has closed.
+                %strong This clinic has closed.
 
-            - elsif @clinic.purposely_not_yet_surveyed?
+              - elsif @clinic.purposely_not_yet_surveyed?
 
-              - show_areas_of_practice = true
+                - show_areas_of_practice = true
 
-              %p.space.no_indent This clinic has purposely not yet been surveyed by Pathways. It may be out of our current catchment area, or in a speciality we have yet to fully survey.
+                %strong This clinic has purposely not yet been surveyed by Pathways.
+                %p It may be out of our current catchment area, or in a speciality we have yet to fully survey.
 
-              - if @clinic.specialists.present?
-                %p.space.no_indent
-                  %strong Specialists that work in this clinic:
-                  != @clinic.specialists.map{ |specialist| "<a href='#{specialist_path(specialist)}' class='ajax')\">#{specialist.name}</a>" }.to_sentence
+                - if @clinic.specialists.present?
+                  %p.space.no_indent
+                    %strong Specialists that work in this clinic:
+                    != @clinic.specialists.map{ |specialist| "<a href='#{specialist_path(specialist)}' class='ajax')\">#{specialist.name}</a>" }.to_sentence
 
-            - else
+              - else
 
-              - show_details = true
-              - show_areas_of_practice = true
+                - show_details = true
+                - show_areas_of_practice = true
 
-              %p.space.no_indent
-                %i{:class => @clinic.status_class}
                 %strong.status= @clinic.status.end_with_period
-              - if @clinic.status_details.present?
-                %p.no_indent
-                  %strong Details:
-                  = @clinic.status_details.end_with_period.convert_newlines_to_br
-              - if @clinic.limitations.present?
-                %p.no_indent
-                  %strong Limitations:
-                  = @clinic.limitations.end_with_period.convert_newlines_to_br
+                - if @clinic.status_details.present?
+                  %p.no_indent
+                    %strong Details:
+                    = @clinic.status_details.end_with_period.convert_newlines_to_br
+                - if @clinic.limitations.present?
+                  %p.no_indent
+                    %strong Limitations:
+                    = @clinic.limitations.end_with_period.convert_newlines_to_br
 
           .headline-footer
 
