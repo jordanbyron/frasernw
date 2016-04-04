@@ -1,7 +1,6 @@
 class NewsItem < ActiveRecord::Base
   include PublicActivity::Model
   include ActionView::Helpers::TextHelper
-  include FragmentExpirer
   # not used as activity is created in controller
   # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user} #PublicActivity gem callback method
   has_many :activities, as: :trackable, class_name: 'SubscriptionActivity', dependent: :destroy

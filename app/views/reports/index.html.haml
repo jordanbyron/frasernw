@@ -110,7 +110,7 @@
           %td= report.time_frame_name
           %td.admin.btn-group
             = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_report_path(report), :class => "btn btn-mini ajax")
-            = link_to("<i class='icon-trash'></i>".html_safe + " Delete", report, :confirm => "Delete #{report.name}?", :method => :delete, :class => "btn btn-mini")
+            = link_to("<i class='icon-trash'></i>".html_safe + " Delete", report, :data => { :confirm => "Delete #{report.name}?" }, :method => :delete, :class => "btn btn-mini")
 
   - if current_user.as_super_admin?
     %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Report", new_report_path, :class => "btn ajax")

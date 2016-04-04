@@ -24,6 +24,6 @@
               %li= link_to city.name, city_path(city), :class => 'ajax'
         %td.admin.btn-group
           = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_division_path(division), :class => "btn btn-mini ajax")
-          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", division, :confirm => "Delete #{division.name}?", :method => :delete, :class => "btn btn-mini")
+          = delete_button(division_path(division), "Delete #{division.name}?", mini: true)
 
   %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New division", new_division_path, :class => "btn ajax")

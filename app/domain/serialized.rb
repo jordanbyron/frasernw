@@ -24,6 +24,16 @@ module Serialized
     )
   end
 
+  def self.prepare_markdown_content(markdown_content)
+    html = BlueCloth.
+      new(markdown_content).
+      to_html
+
+    html.safe_for_javascript!
+
+    html
+  end
+
   GENERATORS = {
     content_items: Module.new do
       def self.call
@@ -35,7 +45,7 @@ module Serialized
             categoryId: item.sc_category.id,
             categoryIds: [ item.sc_category, item.sc_category.ancestors ].flatten.map(&:id),
             procedureIds: item.procedure_specializations.map(&:subtree).flatten.uniq.map(&:procedure_id),
-            content: (item.markdown_content.present? ? BlueCloth.new(item.markdown_content).to_html : ""),
+            content: (item.markdown_content.present? ? Serialized.prepare_markdown_content(item.markdown_content) : ""),
             resolvedUrl: item.resolved_url,
             canEmail: item.can_email?,
             id: item.id,

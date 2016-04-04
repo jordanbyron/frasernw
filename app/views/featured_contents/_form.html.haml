@@ -1,6 +1,6 @@
 = simple_nested_form_for @division,
   :url => featured_contents_path,
-  :method => :put,
+  :method => :patch,
   :html => { :class => "ajax" } do |f|
   - if !f.error_messages.blank?
     .alert.alert-error= f.error_messages

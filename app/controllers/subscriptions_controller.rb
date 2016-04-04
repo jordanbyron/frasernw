@@ -7,7 +7,7 @@ class SubscriptionsController < ApplicationController
     # render :layout => 'ajax' if request.headers['X-PJAX']
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html
       format.json { render json: @subscriptions }
     end
   end
@@ -17,7 +17,7 @@ class SubscriptionsController < ApplicationController
   def show
     @subscription = current_user.subscriptions.find(params[:id])
     respond_to do |format|
-      format.html # show.html.erb
+      format.html
       format.json { render json: @subscription }
     end
   end
@@ -27,7 +27,7 @@ class SubscriptionsController < ApplicationController
   def new
     @subscription = current_user.subscriptions.new
     respond_to do |format|
-      format.html # new.html.erb
+      format.html
       format.json { render json: @subscription }
     end
   end

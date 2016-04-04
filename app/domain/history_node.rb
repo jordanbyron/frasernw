@@ -1,10 +1,6 @@
 # Wraps an event that has happened to the target in order to provide a consistent interface for presentation
 
 class HistoryNode
-  include CustomPathHelper
-  include Rails.application.routes.url_helpers
-  include ReviewItemsHelper
-
   # {
   #   user: current_user,
   #   verb: :annotated,
@@ -57,11 +53,12 @@ class HistoryNode
   end
 
   def show_new_version_path?
-    VersionsController::SUPPORTED_KLASSES_FOR_SHOW.include?(raw.target.class) && new_version_path.present?
+    VersionsController::SUPPORTED_KLASSES_FOR_SHOW.include?(raw.target.class) &&
+      new_version_path.present?
   end
 
   def new_version_path
-    duck_path(raw.new_version)
+    CustomPathHelper.duck_path(raw.new_version)
   end
 
   def target_is?(item)
@@ -77,7 +74,7 @@ class HistoryNode
   end
 
   def target_link
-    smart_duck_path(raw.target)
+    CustomPathHelper.smart_duck_path(raw.target)
   end
 
   def annotation

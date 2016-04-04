@@ -727,7 +727,7 @@
   {
     width: 128px;
     height: 30px;
-    background-image: url(/img/logo_small.png);
+    background-image: asset-url('logo_small.png');
     background-size: 100%;
     padding: 4px 0;
   }
@@ -897,7 +897,7 @@
       }
 
       background-color: $FNW_BLUE_GRAY;
-      background-image: url(/img/tab-background-half.gif), url(/img/tab-background-half.gif);
+      background-image: asset-url('tab-background-half.gif'), asset-url('tab-background-half.gif');
       background-position: left top, left bottom;
       background-repeat: repeat-x, repeat-x;
       height: auto;
@@ -1299,7 +1299,7 @@ only screen and (-o-min-device-pixel-ratio: 2/1) and (max-width: 767px),
 only screen and (-webkit-min-device-pixel-ratio: 2) and (max-width: 767px),
 only screen and (min-device-pixel-ratio: 2) and (max-width: 767px) {
   #logo {
-    background-image: url(/img/logo_small@2x.png);
+    background-image: asset-url('logo_small@2x.png');
   }
 }
 

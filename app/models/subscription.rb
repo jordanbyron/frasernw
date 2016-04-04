@@ -154,11 +154,9 @@ class Subscription < ActiveRecord::Base
 
     if news_update?
       scope.
-        includes(:trackable).
         by_news_item_type(news_type)
     elsif resource_update?
       scope = scope.
-        includes(:trackable).
         by_sc_item_format_type(sc_item_format_type).
         select do |activity|
           sc_categories.include?(activity.trackable.root_category)

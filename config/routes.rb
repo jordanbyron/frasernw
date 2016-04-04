@@ -2,13 +2,12 @@ Frasernw::Application.routes.draw do
 
   resources :evidences
 
+  match '/delayed_job' => DelayedJobWeb, anchor: false, via: [:get, :post]
 
-  match "/delayed_job" => DelayedJobWeb, :anchor => false, via: [:get, :post] # private delayed_job_web interface
+  post '/versions/:id/revert' => 'versions#revert', as: 'revert_version'
 
-  post '/versions/:id/revert' => 'versions#revert', :as => 'revert_version'
-
-  match '/versions'                 => 'versions#show_all', :as => 'all_versions'
-  match '/versions/:id'             => 'versions#show',     :as => 'version'
+  get '/versions' => 'versions#show_all', as: 'all_versions'
+  get '/versions/:id' => 'versions#show', as: 'version'
 
   resources :user_masks, only: [:new, :create, :update] do
     collection do
@@ -23,9 +22,9 @@ Frasernw::Application.routes.draw do
     end
   end
 
-  resources :specializations, :path => 'specialties' do
+  resources :specializations, path: 'specialties' do
     resources :specialists
-    resources :procedures, :path => 'areas_of_practice'
+    resources :procedures, path: 'areas_of_practice'
     resources :clinics
   end
 
@@ -33,7 +32,7 @@ Frasernw::Application.routes.draw do
 
   resources :latest_updates, only: [:index] do
     collection do
-      put :toggle_visibility
+      patch :toggle_visibility
     end
   end
 
@@ -42,20 +41,20 @@ Frasernw::Application.routes.draw do
       get :review
       get :rereview
       get :archive
-      put :accept, as: "accept_review"
-      get :print, as: "patient_information", action: "print_patient_information"
+      patch :accept, as: 'accept_review'
+      get :print, as: 'patient_information', action: 'print_patient_information'
     end
   end
 
-  scope "/clinics/:id/:token", controller: "clinics" do
+  scope '/clinics/:id/:token', controller: 'clinics' do
     get :refresh_cache
   end
 
-  scope "/clinics/:id/:token", controller: "clinics_editor" do
+  scope '/clinics/:id/:token', controller: 'clinics_editor' do
     # Secret edit or owner edit
-    get :edit,        as: "clinic_self_edit"
-    put :update,      as: "clinic_self_update"
-    get :pending,     as: "clinic_self_pending"
+    get :edit,    as: 'clinic_self_edit'
+    patch :update,  as: 'clinic_self_update'
+    get :pending, as: 'clinic_self_pending'
   end
 
   resources :specialists do
@@ -63,24 +62,24 @@ Frasernw::Application.routes.draw do
       get :review
       get :rereview
       get :archive
-      put :accept
+      patch :accept
       get :photo
-      put :update_photo
+      patch :update_photo
     end
   end
 
-  scope "/specialists/:id/:token", controller: "specialists" do
+  scope '/specialists/:id/:token', controller: 'specialists' do
     get :refresh_cache
   end
 
-  scope "/specialists/:id/:token", controller: "specialists_editor" do
+  scope '/specialists/:id/:token', controller: 'specialists_editor' do
     # Secret edit or owner edit
-    get :edit,        as: "specialist_self_edit"
-    put :update,      as: "specialist_self_update"
-    get :pending,     as: "specialist_self_pending"
+    get :edit,    as: 'specialist_self_edit'
+    patch :update,  as: 'specialist_self_update'
+    get :pending, as: 'specialist_self_pending'
   end
 
-  resources :procedures, :path => 'areas_of_practice'
+  resources :procedures, path: 'areas_of_practice'
   resources :hospitals
   resources :languages
   resources :cities do
@@ -93,49 +92,49 @@ Frasernw::Application.routes.draw do
     resources :users
     member do
       get :edit_permissions
-      put :update_permissions
+      patch :update_permissions
     end
   end
 
   resources :notes, only: [:create, :destroy]
-  get "/history" => "history#index"
+  get '/history' => 'history#index'
 
   # until this controller action is finished
   # get '/analytics/' => 'analytics#show'
 
-  match '/review_items/archived' => 'review_items#archived', :as => 'archived_review_items'
+  get '/review_items/archived' => 'review_items#archived', as: 'archived_review_items'
   resources :review_items
 
-  match '/feedback_items/archived' => 'feedback_items#archived', :as => 'archived_feedback_items'
+  get '/feedback_items/archived' => 'feedback_items#archived', as: 'archived_feedback_items'
   resources :feedback_items
 
-  resources :sc_categories, :path => 'content_categories'
-  match '/divisions/:id/content_items/' => 'sc_items#index', :as => 'division_content_items'
+  resources :sc_categories, path: 'content_categories'
+  get '/divisions/:id/content_items/' => 'sc_items#index', as: 'division_content_items'
 
   resources :demoable_content_items, only: [] do
     collection do
       get :edit
-      put :update
+      patch :update
     end
   end
 
-  resources :sc_items, :path => 'content_items' do
+  resources :sc_items, path: 'content_items' do
     collection do
       get :bulk_share
     end
     member do
-      put :share, to: "sc_items#share"
+      patch :share, to: 'sc_items#share'
 
       # since emails can't 'put'
       get :share
     end
   end
 
-  match '/divisions/:id/shared_content_items' => 'divisions#shared_sc_items', :as => 'shared_content_items'
-  put   '/divisions/:id/update_shared' => 'divisions#update_shared', :as => 'update_shared'
+  get '/divisions/:id/shared_content_items' => 'divisions#shared_sc_items', as: 'shared_content_items'
+  patch '/divisions/:id/update_shared' => 'divisions#update_shared', as: 'update_shared'
 
-  #match 'subscriptions' => 'subscriptions#show', :as => 'subscriptions', :via => :get
-  get "notifications/master" => 'notifications#master', :as => 'master'
+  #get 'subscriptions' => 'subscriptions#show', as: 'subscriptions', via: :get
+  get 'notifications/master' => 'notifications#master', as: 'master'
   resources :notifications do
   end
   resources :subscriptions
@@ -160,65 +159,72 @@ Frasernw::Application.routes.draw do
     # Polymorphic routes
     collection do
       get :edit
-      put :update
+      patch :update
     end
   end
 
-  match '/specialists/:id/print'        => 'specialists#print_patient_information',   :as => 'specialist_patient_information'
-  match '/specialists/:id/print/office/:office_id' => 'specialists#print_office_patient_information',   :as => 'specialist_patient_information_office'
-  match '/specialists/:id/print/clinic/:clinic_id' => 'specialists#print_clinic_patient_information',   :as => 'specialist_patient_information_clinic'
-  match '/clinics/:id/print/location/:location_id'  => 'clinics#print_location_patient_information',       :as => 'clinic_patient_information_location'
+  get '/specialists/:id/print' => 'specialists#print_patient_information',
+    as: 'specialist_patient_information'
+  get '/specialists/:id/print/office/:office_id' => 'specialists#print_office_patient_information',
+    as: 'specialist_patient_information_office'
+  get '/specialists/:id/print/clinic/:clinic_id' => 'specialists#print_clinic_patient_information',
+    as: 'specialist_patient_information_clinic'
+  get '/clinics/:id/print/location/:location_id' => 'clinics#print_location_patient_information',
+    as: 'clinic_patient_information_location'
 
-  get  '/hospitals/:id/:token/refresh_cache'       => 'hospitals#refresh_cache',       :as => 'hospital_refresh_cache'
-  get  '/languages/:id/:token/refresh_cache'       => 'languages#refresh_cache',       :as => 'language_refresh_cache'
+  get '/hospitals/:id/:token/refresh_cache' => 'hospitals#refresh_cache', as: 'hospital_refresh_cache'
+  get '/languages/:id/:token/refresh_cache' => 'languages#refresh_cache', as: 'language_refresh_cache'
 
-  get  '/specialties/:id/cities/:city_id' => 'specializations#city', :as => 'specialization_city'
+  get '/specialties/:id/cities/:city_id' => 'specializations#city', as: 'specialization_city'
 
   #Used to cache fragments of admin All Specialists page
-  get  '/specialties/:specialization_id/:token/specialists/refresh_index_cache/:division_id'     => 'specialists#refresh_index_cache', :as => 'specialist_refresh_index_cache'
+  get '/specialties/:specialization_id/:token/specialists/refresh_index_cache/:division_id' =>
+    'specialists#refresh_index_cache', as: 'specialist_refresh_index_cache'
 
   #need improve performance:
-  put  '/favorites/specialists/:id' => 'favorites#edit', :as => 'specialist_favorite', :model => 'specialists'
-  put  '/favorites/clinics/:id' => 'favorites#edit', :as => 'clinic_favorite', :model => 'clinics'
-  put  '/favorites/content_items/:id' => 'favorites#edit', :as => 'content_items_favorite', :model => 'sc_items'
+  patch '/favorites/specialists/:id' => 'favorites#edit', as: 'specialist_favorite', model: 'specialists'
+  patch '/favorites/clinics/:id' => 'favorites#edit', as: 'clinic_favorite', model: 'clinics'
+  patch '/favorites/content_items/:id' => 'favorites#edit', as: 'content_items_favorite', model: 'sc_items'
 
-  match '/content_items/:id/email'      => 'mail_to_patients#new',   :as => 'compose_mail_to_patients'
-  post  '/mail_to_patients/create'     => 'mail_to_patients#create', :as => 'send_mail_to_patients'
+  get '/content_items/:id/email' => 'mail_to_patients#new',   as: 'compose_mail_to_patients'
+  post '/mail_to_patients/create' => 'mail_to_patients#create', as: 'send_mail_to_patients'
 
-  match '/validate' => 'users#validate', :as => :validate
-  match '/setup' => 'users#setup', :as => :setup
-  get   '/change_local_referral_area' => 'users#change_local_referral_area', :as => :change_local_referral_area
-  put   '/update_local_referral_area' => 'users#update_local_referral_area', :as => :update_local_referral_area
-  get   '/change_password' => 'users#change_password', :as => :change_password
-  put   '/update_password' => 'users#update_password', :as => :update_password
-  get   '/change_email' => 'users#change_email', :as => :change_email
-  put   '/update_email' => 'users#update_email', :as => :update_email
-  get   '/change_name' => 'users#change_name', :as => :change_name
-  put   '/update_name' => 'users#update_name', :as => :update_name
-  resources :password_resets, :only => [ :new, :create, :edit, :update ]
+  patch '/validate' => 'users#validate', as: :validate
+  patch '/setup' => 'users#setup', as: :setup
+  get '/change_local_referral_area' => 'users#change_local_referral_area', as: :change_local_referral_area
+  patch '/update_local_referral_area' => 'users#update_local_referral_area', as: :update_local_referral_area
+  get '/change_password' => 'users#change_password', as: :change_password
+  patch '/update_password' => 'users#update_password', as: :update_password
+  get '/change_email' => 'users#change_email', as: :change_email
+  patch '/update_email' => 'users#update_email', as: :update_email
+  get '/change_name' => 'users#change_name', as: :change_name
+  patch '/update_name' => 'users#update_name', as: :update_name
+  resources :password_resets, only: [ :new, :create, :edit, :update ]
 
-  match '/logout' => 'user_sessions#destroy', :as => :logout
-  match '/login' => 'user_sessions#new', :as => :login
+  get '/logout' => 'user_sessions#destroy', as: :logout
+  get '/login' => 'user_sessions#new', as: :login
 
-  match '/livesearch_all_entries' => 'search#livesearch_all_entries', :as => :livesearch_all_entries
-  match '/refresh_livesearch_all_entries/:specialization_id' => 'search#refresh_livesearch_all_entries', :as => :refresh_livesearch_all_entries
+  get '/livesearch_all_entries' => 'search#livesearch_all_entries', as: :livesearch_all_entries
+  get '/refresh_livesearch_all_entries/:specialization_id' => 'search#refresh_livesearch_all_entries',
+    as: :refresh_livesearch_all_entries
 
   root :to => 'front#index'
 
   resources :featured_contents, only: [] do
     collection do
       get :edit
-      put :update
+      patch :update
     end
   end
 
   resources :terms_and_conditions, only: [:index]
 
-  match '/stats' => 'stats#index', :as => :stats
+  get '/stats' => 'stats#index', as: :stats
 
   get 'contact' => "messages#new"
   resources :messages, only: [:create]
 
+  resources :messages, only: [:new, :create]
   resources :user_sessions
 
   resources :users do
@@ -253,6 +259,6 @@ Frasernw::Application.routes.draw do
   end
 
   if ENV['RAILS_ENV'] == 'test'
-    get '/dangerously_import_db', to: "tests#dangerously_import_db"
+    get '/dangerously_import_db', to: 'tests#dangerously_import_db'
   end
 end

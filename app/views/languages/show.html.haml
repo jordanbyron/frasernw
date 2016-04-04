@@ -355,4 +355,4 @@
       - if can? :update, @language
         = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Language", edit_language_path(@language), :class => "btn ajax")
       - if can? :destroy, @language
-        = link_to("<i class='icon-trash'></i>".html_safe + " Delete Language", @language, :confirm => "Delete #{@language.name}?", :method => :delete, :class => "btn")
+        = link_to("<i class='icon-trash'></i>".html_safe + " Delete Language", @language, :data => { :confirm => "Delete #{@language.name}?" }, :method => :delete, :class => "btn")

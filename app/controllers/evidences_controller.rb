@@ -7,7 +7,7 @@ class EvidencesController < ApplicationController
     @evidences = Evidence.all
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html
       format.json { render json: @evidences }
     end
   end
@@ -18,7 +18,7 @@ class EvidencesController < ApplicationController
     @evidence = Evidence.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html
       format.json { render json: @evidence }
     end
   end
@@ -29,7 +29,7 @@ class EvidencesController < ApplicationController
     @evidence = Evidence.new
 
     respond_to do |format|
-      format.html # new.html.erb
+      format.html
       format.json { render json: @evidence }
     end
   end

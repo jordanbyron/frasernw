@@ -7,14 +7,14 @@
 
 .in-progress
 {
-  background-image: url(/img/orange-stripes.png) !important;
+  background-image: asset-url('orange-stripes.png') !important;
 }
 
 #logo
 {
   width: 162px;
   height: 38px;
-  background: transparent url(/img/logo.png) 50% 50% no-repeat;
+  background: transparent asset-url('logo.png') 50% 50% no-repeat;
   background-size: 100%;
   margin: 0;
   padding: 8px 0;
@@ -25,7 +25,7 @@ only screen and (-o-min-device-pixel-ratio: 2/1),
 only screen and (-webkit-min-device-pixel-ratio: 2),
 only screen and (min-device-pixel-ratio: 2) {
   #logo {
-    background-image: url(/img/logo@2x.png);
+    background-image: asset-url('logo@2x.png');
   }
 }
 
@@ -72,7 +72,7 @@ body #loading
     min-height: 32px;
     top: 48%;
     left: 48%;
-    background-image: url(/img/ajax-loader.gif);
+    background-image: asset-url('ajax-loader.gif');
     background-repeat: no-repeat;
   }
 }
@@ -109,7 +109,7 @@ body #loading2
     min-height: 32px;
     top: 48%;
     left: 48%;
-    background-image: url(/img/ajax-loader.gif);
+    background-image: asset-url('ajax-loader.gif');
     background-repeat: no-repeat;
   }
 }
@@ -212,7 +212,7 @@ body.loading #email
       min-height: 32px;
       top: 150px;
       left: 360px;
-      background-image: url(/img/ajax-loader.gif);
+      background-image: asset-url('ajax-loader.gif');
       background-repeat: no-repeat;
     }
   }
@@ -419,7 +419,7 @@ body.loading #email
   {
     font-family: Bitter;
     color: $FNW_RED;
-    background: transparent url(/img/double-border-10.png) 0% 100% repeat-x;
+    background: transparent asset-url('double-border-10.png') 0% 100% repeat-x;
     font-weight: normal;
     font-size: 14px;
     text-transform: none;
@@ -431,7 +431,7 @@ body.loading #email
   {
     width: 100%;
     height: 4px;
-    background: transparent url(/img/double-border-10.png) 0% 0 repeat-x;
+    background: transparent asset-url('double-border-10.png') 0% 0 repeat-x;
   }
 
   .headline
@@ -667,7 +667,7 @@ body.loading #email
     tr td
     {
       padding-top: 1px;
-      background: transparent url(/img/table-row-divider.png) 0% 0% repeat-x;
+      background: transparent asset-url('table-row-divider.png') 0% 0% repeat-x;
       border-top: none;
       vertical-align: middle;
       height: 31px;
@@ -1028,7 +1028,7 @@ body.loading #email
       text-align: left;
       padding: 24px 0 6px 10px;
       margin: 0 0 8px 0;
-      background: transparent url(/img/double-border-10.png) 0% 100% repeat-x;
+      background: transparent asset-url('double-border-10.png') 0% 100% repeat-x;
     }
 
     .filter-group-title
@@ -1055,7 +1055,7 @@ body.loading #email
       width: 46px;
       padding-top: 2px;
       text-align: center;
-      background: transparent url(/img/filtering-divider.png) 0% 50% repeat-y;
+      background: transparent asset-url('filtering-divider.png') 0% 50% repeat-y;
     }
 
     .filter-group-title.closed:after
@@ -1215,7 +1215,7 @@ body.loading #email
       text-align: left;
       padding: 0 0 6px 24px;
       margin: 0 -24px 8px -24px;
-      background: transparent url(/img/double-border-10.png) 0% 100% repeat-x;
+      background: transparent asset-url('double-border-10.png') 0% 100% repeat-x;
     }
 
     .list.indent
@@ -1260,7 +1260,7 @@ body.loading #email
 
   #login
   {
-    background-image: url(/img/compass.png);
+    background-image: asset-url('compass.png');
     background-position: 0% 0%;
     background-repeat: no-repeat;
   }
@@ -1315,7 +1315,7 @@ body.loading #email
       {
         text-align: center;
         margin: 0 -24px 12px -24px;
-        background: transparent url(/img/double-border-10.png) 0% 100% repeat-x;
+        background: transparent asset-url('double-border-10.png') 0% 100% repeat-x;
         padding: 0 24px 12px 24px;
         font-style: italic;
       }
@@ -1323,7 +1323,7 @@ body.loading #email
       .featured-content
       {
         margin: 12px -24px 0 -24px;
-        background: transparent url(/img/double-border-10.png) 0% 0% repeat-x;
+        background: transparent asset-url('double-border-10.png') 0% 0% repeat-x;
         padding: 12px 24px 0 24px;
       }
 
@@ -1785,7 +1785,7 @@ body.loading #email
   {
     margin-top: 12px;
     padding-top: 12px;
-    background: transparent url(/img/double-border-10.png) 0% 0 repeat-x;
+    background: transparent asset-url('double-border-10.png') 0% 0 repeat-x;
   }
 }
 

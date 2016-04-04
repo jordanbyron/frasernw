@@ -16,6 +16,16 @@ class String
     )
   end
 
+  def safe_for_javascript!
+    gsub!(/\u2028/, "\\u2028")
+    gsub!(/\u2029/, "\\u2029")
+  end
+
+  def safe_for_javascript
+    gsub(/\u2028/, "\\u2028").
+      gsub(/\u2029/, "\\u2029")
+  end
+
   # "ReviewItem" => "Review Item"
   def split_on_capitals
     scan(/[A-Z][^A-Z]*/).join(' ')

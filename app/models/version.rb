@@ -1,4 +1,4 @@
-class Version < ActiveRecord::Base
+class Version < PaperTrail::Version
   belongs_to :review_item
 
   attr_accessible :review_item_id

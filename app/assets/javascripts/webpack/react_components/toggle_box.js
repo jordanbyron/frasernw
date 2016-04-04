@@ -4,7 +4,7 @@ var merge = require("lodash/object/merge");
 
 module.exports = React.createClass({
   iconStyle: {
-    background: "transparent url(/img/filtering-divider.png) 0% 50% repeat-y",
+    background: "transparent url('/assets/filtering-divider.png') 0% 50% repeat-y",
     paddingLeft: "10px"
   },
   toggleIconClass: function() {

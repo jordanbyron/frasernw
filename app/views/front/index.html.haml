@@ -67,8 +67,9 @@
             = mail_to "administration@pathwaysbc.ca", "administration@pathwaysbc.ca"
 
         %h2 Latest Specialist and Clinic Updates
-        - LatestUpdates.for(:front, @as_divisions).each do |event|
-          %p= event[:markup]
+        - if ENV["HIDE_LATEST_UPDATES"] != "true"
+          - LatestUpdates.for(:front, @as_divisions).each do |event|
+            %p= event[:markup]
 
         %p
           = link_to "More...", @more_updates_url

@@ -1,4 +1,4 @@
-= simple_form_for(@faq, method: action == :new ? :post : :put) do |f|
+= simple_form_for(@faq, method: action == :new ? :post : :patch) do |f|
   - if action == :new
     = f.association :faq_category
   - else
