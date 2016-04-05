@@ -6,7 +6,7 @@ module.exports = React.createClass({
   updateServer: function() {
     return $.ajax({
       url: ('/favorites/' + this.props.collectionPath + '/' + this.props.record.id),
-      type: "PUT",
+      type: "PATCH",
       data: "",
       dataType: 'json'
     });
