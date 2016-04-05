@@ -44,7 +44,7 @@ class ProceduresController < ApplicationController
 
   def update
     @procedure = Procedure.find(params[:id])
-    ExpireFragment.call "/areas_of_practice/#{@procedure}"
+    ExpireFragment.call procedure_path(@procedure)
     params[:procedure][:all_procedure_specializations_attributes].each{ |so_key, so_value|
       so_value[:mapped] = 0 if so_value[:mapped].blank?
       so_value[:specialist_wait_time] = 0 if so_value[:specialist_wait_time].blank?
@@ -61,7 +61,7 @@ class ProceduresController < ApplicationController
 
   def destroy
     @procedure = Procedure.find(params[:id])
-    ExpireFragment.call "/areas_of_practice/#{@procedure}"
+    ExpireFragment.call procedure_path(@procedure)
     @procedure.destroy
     redirect_to procedures_url, :notice => "Successfully deleted area of practice."
   end

@@ -110,7 +110,7 @@ class ClinicsController < ApplicationController
   def update
     params[:clinic][:procedure_ids] ||= []
     @clinic = Clinic.find(params[:id])
-    ExpireFragment.call "/clinics/#{@clinic}"
+    ExpireFragment.call clinic_path(@clinic)
 
     parsed_params = ParamParser::Clinic.new(params).exec
     if @clinic.update_attributes(parsed_params[:clinic])
@@ -124,7 +124,7 @@ class ClinicsController < ApplicationController
 
   def destroy
     @clinic = Clinic.find(params[:id])
-    ExpireFragment.call "/clinics/#{@clinic}"
+    ExpireFragment.call clinic_path(@clinic)
     name = @clinic.name
     @clinic.destroy
     redirect_to clinics_url, :notice => "Successfully deleted #{name}."
@@ -210,7 +210,7 @@ class ClinicsController < ApplicationController
       review_item: review_item
     ).exec
 
-    ExpireFragment.call "/clinics/#{@clinic}"
+    ExpireFragment.call clinic_path(@clinic)
 
     parsed_params = ParamParser::Clinic.new(params).exec
     if @clinic.update_attributes(parsed_params[:clinic])

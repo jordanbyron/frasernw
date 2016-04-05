@@ -59,7 +59,7 @@ class SpecializationsController < ApplicationController
 
   def update
     @specialization = Specialization.find(params[:id])
-    ExpireFragment.call "/specialties/#{@specialization}"
+    ExpireFragment.call specialization_path(@specialization)
     if current_user.as_super_admin?
       divisions = Division.all
     else
@@ -91,7 +91,7 @@ class SpecializationsController < ApplicationController
 
   def destroy
     @specialization = Specialization.find(params[:id])
-    ExpireFragment.call "/specialties/#{@specialization}"
+    ExpireFragment.call specialization_path(@specialization)
     @specialization.destroy
     redirect_to specializations_url, :notice => "Successfully deleted specialty."
   end

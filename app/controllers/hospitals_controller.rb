@@ -44,7 +44,7 @@ class HospitalsController < ApplicationController
 
   def update
     @hospital = Hospital.find(params[:id])
-    ExpireFragment.call "/hospitals/#{@hospital}"
+    ExpireFragment.call hospital_path(@hospital)
     if @hospital.update_attributes(params[:hospital])
       redirect_to @hospital, :notice  => "Successfully updated #{@hospital.name}."
     else
@@ -54,7 +54,7 @@ class HospitalsController < ApplicationController
 
   def destroy
     @hospital = Hospital.find(params[:id])
-    ExpireFragment.call "/hospitals/#{@hospital}"
+    ExpireFragment.call hospital_path(@hospital)
     name = @hospital.name
     @hospital.destroy
     redirect_to hospitals_url, :notice => "Successfully deleted #{@name}."

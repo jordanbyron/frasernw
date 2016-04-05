@@ -35,7 +35,7 @@ class LanguagesController < ApplicationController
 
   def update
     @language = Language.find(params[:id])
-    ExpireFragment.call "/languages/#{@language}"
+    ExpireFragment.call language_path(@language)
     if @language.update_attributes(params[:language])
       redirect_to @language, :notice  => "Successfully updated language."
       else
@@ -45,7 +45,7 @@ class LanguagesController < ApplicationController
 
   def destroy
     @language = Language.find(params[:id])
-    ExpireFragment.call "/languages/#{@language}"
+    ExpireFragment.call language_path(@language)
     @language.destroy
     redirect_to languages_url, :notice => "Successfully deleted language."
   end

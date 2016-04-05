@@ -92,7 +92,7 @@ class SpecialistsController < ApplicationController
 
   def update
     @specialist = Specialist.find(params[:id])
-    ExpireFragment.call "/specialist/#{@specialist}"
+    ExpireFragment.call specialist_path(@specialist)
 
     parsed_params = ParamParser::Specialist.new(params).exec
     if @specialist.update_attributes(parsed_params[:specialist])
@@ -124,7 +124,7 @@ class SpecialistsController < ApplicationController
         review_item: review_item
       ).exec
 
-      ExpireFragment.call "/specialist/#{@specialist}"
+      ExpireFragment.call specialist_path(@specialist)
 
       parsed_params = ParamParser::Specialist.new(params).exec
       if @specialist.update_attributes(parsed_params[:specialist])
@@ -156,7 +156,7 @@ class SpecialistsController < ApplicationController
 
   def destroy
     @specialist = Specialist.find(params[:id])
-    ExpireFragment.call "/specialist/#{@specialist}"
+    ExpireFragment.call specialist_path(@specialist)
     name = @specialist.name;
     @specialist.destroy
     redirect_to root_url, :notice => "Successfully deleted #{name}."
@@ -237,7 +237,7 @@ class SpecialistsController < ApplicationController
 
   def update_photo
     @specialist = Specialist.find(params[:id])
-    ExpireFragment.call "/specialist/#{@specialist}"
+    ExpireFragment.call photo_specialist_path(@specialist)
     if @specialist.update_attributes(params[:specialist])
       redirect_to @specialist, :notice  => "Successfully updated #{@specialist.formal_name}'s photo."
     else
