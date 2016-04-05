@@ -9,21 +9,25 @@ namespace :pathways do
       puts "Beginning check"
       ScItem.all.reject{ |sc| !sc.link? }.each do |sc|
         begin
+          # uri = URI.parse(sc.url)
+          # http = Net::HTTP.new(uri.host, 80)
+          # request = Net::HTTP::Get.new(uri.request_uri, {'User-Agent' => 'Mozilla/5.0'})
+          # response = http.request(request)
           response = Net::HTTP.get_response(URI(sc.url))
           case response
           when Net::HTTPSuccess then
             puts "Link passed"
             next
           when Net::HTTPRedirection then
-            redirected_links.push([sc.title, sc.url, response['location']])
-            puts "Content item #{sc.title.slice(0,20).to_s.red} at #{sc.url.slice(0,30).to_s.red} redirected to #{response['location'].slice(0,30).to_s.red}"
+            redirected_links.push([sc.id, sc.title, sc.url, response['location']])
+            puts "Content item #{sc.id.to_s.red}: #{sc.title.slice(0,20).to_s.red} at #{sc.url.slice(0,30).to_s.red} redirected to #{response['location'].slice(0,30).to_s.red}"
           else
-            other_response_links.push([sc.title, sc.url, response.code])
-            puts "Content item #{sc.title.slice(0,20).to_s.red} at #{sc.url.slice(0,30).to_s.red} returned #{response.code.to_s.red}."
+            other_response_links.push([sc.id, sc.title, sc.url, response.code])
+            puts "Content item #{sc.id.to_s.red}: #{sc.title.slice(0,20).to_s.red} at #{sc.url.slice(0,30).to_s.red} returned #{response.code.to_s.red}."
           end
         rescue Exception => e
-          error_links.push([sc.title, sc.url, e.message])
-          puts "Error for #{sc.title.slice(0,20).to_s.red} at #{sc.url.slice(0,30).to_s.red}: #{e.message}"
+          error_links.push([sc.id, sc.title, sc.url, e.message])
+          puts "Error for #{sc.id.to_s.red}: #{sc.title.slice(0,20).to_s.red} at #{sc.url.slice(0,30).to_s.red}: #{e.message}"
         end
       end
       puts "Finished checking"
@@ -32,17 +36,17 @@ namespace :pathways do
         sheets: [
           {
             title: "Redirections",
-            header_row: ["Title","URL","Redirected to"],
+            header_row: ["ID","Title","URL","Redirected to", "Replace with", "Notes"],
             body_rows: redirected_links
           },
           {
             title: "Failed responses",
-            header_row: ["Title","URL","HTTP Response Code"],
+            header_row: ["ID","Title","URL","HTTP Response Code", "Replace with", "Notes"],
             body_rows: other_response_links
           },
           {
             title: "Request errors (no response)",
-            header_row: ["Title","URL","Error message"],
+            header_row: ["ID","Title","URL","Error message", "Replace with", "Notes"],
             body_rows: error_links
           }
         ]
