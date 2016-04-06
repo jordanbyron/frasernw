@@ -114,10 +114,6 @@ class ReviewItem < ActiveRecord::Base
   end
 
   class << self
-    def for_specialist(specialist)
-      where("item_type = ? AND item_id = ?", 'Specialist', specialist.id)
-    end
-
     def for_clinic(clinic)
       where("item_type = ? AND item_id = ?", 'Clinic', clinic.id)
     end

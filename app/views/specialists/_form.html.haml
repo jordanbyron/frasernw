@@ -45,7 +45,7 @@
   = f.input :lastname
   = f.input :goes_by_name, :hint => "A name which colleagues refer to the specialist with, if different from his or her formal first name. E.g. \"Bill\" when the first name is \"William\""
   = f.input :sex_mask, as: :select, collection: Specialist::SEX_LABELS, label_method: :last, value_method: :first, :include_blank => false
-  = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.billing_number_padded }
+  = f.input :billing_number, :as => :string, :input_html => { :value => @specialist.padded_billing_number }
   .no-print
     = f.input :categorization_mask,
       as: :select,
@@ -309,7 +309,7 @@
     -#= f.association :referral_clinic, as: :select, :prompt => "None", :include_blank => true
     = f.input :referral_other_details
     = f.input :referral_details
-    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does the office have a referral form?", :hint => @form_modifier.token_edit? ? "If you would like to add or correct any referral forms, please email them to #{ @specialist.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ') }".html_safe : ""
+    = f.input :referral_form_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_LABELS, label_method: :last, value_method: :first, :label => "Does the office have a referral form?", :hint => @form_modifier.token_edit? ? "If you would like to add or correct any referral forms, please email them to #{ @specialist.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ') }".html_safe : ""
 
     - if @form_modifier.token_edit? && @specialist.referral_form_mask == 1 && @specialist.referral_forms.reject{ |referral_form| referral_form.form.blank? }.present?
 
@@ -332,7 +332,7 @@
     = f.input :respond_by_mail, as: :boolean, wrapper: :bootstrap_tight
     = f.input :respond_to_patient, as: :boolean
 
-    = f.input :patient_can_book_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_HASH, label_method: :last, value_method: :first
+    = f.input :patient_can_book_mask, as: :radio_buttons, collection: Specialist::BOOLEAN_LABELS, label_method: :last, value_method: :first
     = f.input :red_flags, as: :text
 
     %label Optimal method of referral for urgent appointments:

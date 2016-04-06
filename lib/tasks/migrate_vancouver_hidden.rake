@@ -152,7 +152,7 @@ namespace :pathways do
 
     puts "--------------- Specialists ---------------"
 
-    Specialist.in_divisions([vancouverHiddenDivision]).each do |specialist|
+    Specialist.in_divisions(vancouverHiddenDivision).each do |specialist|
 
       puts specialist.name
 

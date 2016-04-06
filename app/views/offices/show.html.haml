@@ -28,7 +28,7 @@
             %i{:class => specialist.status_class}
             .status= specialist.status_class_hash
           %td= specialist.waittime
-          %td= specialist.city
+          %td= specialist.cities.first.try(:name)
 
   %p.admin.btn-group
     - if can? :update, @office

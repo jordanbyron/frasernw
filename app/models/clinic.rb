@@ -380,7 +380,7 @@ class Clinic < ActiveRecord::Base
     Clinic::LAGTIME_LABELS[lagtime_mask]
   end
 
-  BOOLEAN_HASH = {
+  BOOLEAN_LABELS = {
     1 => "Yes",
     2 => "No",
     3 => "Didn't answer",

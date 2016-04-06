@@ -11,10 +11,10 @@ module Metrics
 
       if @divisions.any? && (@divisions != Division.all)
         @division_label = @divisions.map{|d| d.name.gsub(/\s+/, "")}.join("_").gsub(/\W/, '-')
-        @specialists = Specialist.in_divisions(@divisions)
+        @specialists = Specialist.in_divisions(*@divisions)
         @clinics = Clinic.in_divisions(@divisions)
         @procedures = [@specialists + @clinics].flatten.inject([]){ |memo, s| memo.concat( s.procedures ) }.uniq
-        @specializations = Specialization.all.reject{ |s| [s.specialists.in_divisions(@divisions) + s.clinics.in_divisions(@divisions)].flatten.length == 0 }
+        @specializations = Specialization.all.reject{ |s| [s.specialists.in_divisions(*@divisions) + s.clinics.in_divisions(@divisions)].flatten.length == 0 }
         @hospitals = Hospital.in_divisions(@divisions)
       else
         @division_label = "All-Divisions"
@@ -80,9 +80,9 @@ module Metrics
         [
           "Specialists",
           @specialists.length,
-          @specialists.reject{|s| !s.responded?}.length,
-          @specialists.reject{|s| !s.not_responded?}.length,
-          @specialists.reject{|s| !s.purposely_not_yet_surveyed?}.length,
+          @specialists.select(&:responded_to_survey?).length,
+          @specialists.select(&:surveyed?).reject(&:responded_to_survey?).length,
+          @specialists.reject(&:surveyed?).length,
           @specialists.reject{|s| !s.hospital_or_clinic_only?}.length,
           @specialists.reject{|s| !s.moved_away?}.length,
           @specialists.reject{|s| !s.retired?}.length,
@@ -138,9 +138,9 @@ module Metrics
         memo  << [
           specialization.name,
           @specialization_specialists.length,
-          @specialization_specialists.reject{|s| !s.responded?}.length,
-          @specialization_specialists.reject{|s| !s.not_responded?}.length,
-          @specialization_specialists.reject{|s| !s.purposely_not_yet_surveyed?}.length,
+          @specialization_specialists.select(&:responded_to_survey?).length,
+          @specialization_specialists.select(&:surveyed?).reject(&:responded_to_survey?).length,
+          @specialization_specialists.reject(&:surveyed?).length,
           @specialization_specialists.reject{|s| !s.hospital_or_clinic_only?}.length,
           @specialization_specialists.reject{|s| !s.moved_away?}.length,
           @specialization_specialists.reject{|s| !s.retired?}.length,

@@ -10,7 +10,7 @@ namespace :pathways do
       division = Division.find(Integer(division_id))
       puts "#{division.name}"
 
-      specialist_users = Specialist.in_divisions([division]).reject{ |s| s.divisions.length != 1 }.map{ |s| s.controlling_users }.flatten
+      specialist_users = Specialist.in_divisions(division).reject{ |s| s.divisions.length != 1 }.map{ |s| s.controlling_users }.flatten
       clinic_users = Clinic.in_divisions([division]).reject{ |c| c.divisions.length != 1 }.map{ |c| c.controlling_users }.flatten
 
       users = (specialist_users + clinic_users).uniq

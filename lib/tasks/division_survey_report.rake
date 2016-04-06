@@ -44,7 +44,7 @@ namespace :pathways do
       ]
     end
 
-    division_specialists = Specialist.in_divisions([division])
+    division_specialists = Specialist.in_divisions(division)
     specialists_table_name = "#{division.name}_specialists_#{timestamp}"
     specialists_table = [
       [ specialists_table_name ],

@@ -25,6 +25,16 @@ class SpecialistsController < ApplicationController
     if @specialist.controlling_users.include?(current_user)
       current_user.viewed_controlled_specialist!(@specialist)
     end
+
+    @favorite_icon_class =
+      if @specialist.favorited_by?(current_user)
+        "icon-red"
+      else
+        "icon-text"
+      end
+
+    @header_specialization = specialist.complete_specializations.first ||
+      Specialization.complete_in(Division.all).first
   end
 
   def new

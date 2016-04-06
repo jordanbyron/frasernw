@@ -37,7 +37,7 @@
               %h3{:style => "font-family: bitter;"}
                 = division.present? ? division.name : "No Division"
                 Specialists
-                = "<small>(#{Specialist.in_divisions(division).count} total)</small>".html_safe
+                = "<small>(#{Specialist.in_divisions(*division).count} total)</small>".html_safe
             - else
               %h3{:style => "font-family: bitter;"}
                 = "#{@specializations.first.member_name.pluralize}"
@@ -46,7 +46,7 @@
                 = "<small>(#{@specializations.first.specialists.in_divisions(division).count} total)</small>".html_safe
             - @specializations.each do |specialization|
               - cache("specialists_index_#{specialization.cache_key}_#{specialization.specialists.cache_key}_#{division.cache_key}_#{can_edit}") do
-                - specialists = specialization.specialists.in_divisions([division]).sort{ |a,b| (a.lastname || "zzz") <=> (b.lastname || "zzz") }
+                - specialists = specialization.specialists.in_divisions(division).sort{ |a,b| (a.lastname || "zzz") <=> (b.lastname || "zzz") }
                 - next if specialists.blank?
                 %tr{ :class => specialization.fully_in_progress_for_divisions([division]) ? "in-progress" : "" }
                   %th{:style => "width:100%"}= "#{specialization.name} (#{specialists.count})"

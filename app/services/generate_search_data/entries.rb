@@ -64,34 +64,32 @@ module GenerateSearchData
           order_map[ category.name ] = ( order_map.length + 1 ).to_s
         end
 
-        specialists = Specialist.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
-        clinics = Clinic.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
+        if !specialization.in_progress_for_division?(division)
+          Specialist.in_local_referral_area(division, specialization).each do |specialist|
 
-        specialists.each do |specialist|
+            entry = {
+              "n" => specialist.padded_billing_number ? specialist.name + " - MSP #" + specialist.padded_billing_number: specialist.name,
+              "sp" => specialist.specialist_specializations.map { |ss| ss.specialization_id },
+              "c" => specialist.cities.map{ |city| city.id },
+              "st" => specialist.status_class_hash,
+              "id" => specialist.id,
+              "go" => order_map["Specialists"]
+            }
+            search_data << entry
+          end
 
-          entry = {
-            "n" => specialist.billing_number_padded ? specialist.name + " - MSP #" + specialist.billing_number_padded: specialist.name,
-            "sp" => specialist.specialist_specializations.map { |ss| ss.specialization_id },
-            "c" => specialist.cities_for_display.map{ |city| city.id },
-            "st" => specialist.status_class_hash,
-            "id" => specialist.id,
-            "go" => order_map["Specialists"]
-          }
-          search_data << entry
-        end
+          Clinic.in_local_referral_area(division, specialization).each do |clinic|
 
-        clinics.each do |clinic|
-
-          entry = {
-            "n" => clinic.name,
-            "sp" => clinic.clinic_specializations.map{ |cs| cs.specialization_id },
-            "c" => clinic.cities.map{ |city| city.id },
-            "st" => clinic.status_class_hash,
-            "id" => clinic.id,
-            "go" => order_map["Clinics"]
-          }
-          search_data << entry
-        end
+            entry = {
+              "n" => clinic.name,
+              "sp" => clinic.clinic_specializations.map{ |cs| cs.specialization_id },
+              "c" => clinic.cities.map{ |city| city.id },
+              "st" => clinic.status_class_hash,
+              "id" => clinic.id,
+              "go" => order_map["Clinics"]
+            }
+            search_data << entry
+          end
 
         search_data
       end

@@ -9,7 +9,7 @@ class ReferralFormsController < ApplicationController
     Specialization.all.each do |specialization|
       cities = current_user.as_divisions.map{ |d| d.local_referral_cities(specialization) }.flatten.uniq
 
-      specialists = specialization.specialists.in_cities(cities)
+      specialists = specialization.specialists.in_cities(*cities)
       clinics = specialization.clinics.in_cities(cities)
 
       # avoid n+1's wtih edge_rider gem

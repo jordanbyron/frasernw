@@ -11,7 +11,7 @@
   .referral_form_editor__radio_wrapper
     = f.input :referral_form_mask,
       as: :radio_buttons,
-      collection: Specialist::BOOLEAN_HASH,
+      collection: Specialist::BOOLEAN_LABELS,
       label_method: :last,
       value_method: :first,
       input_html: { class: "referral_form_editor__radio_button_label referral_form_mask" },

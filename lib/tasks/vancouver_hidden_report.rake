@@ -53,7 +53,7 @@ task vancouver_hidden_report: :environment do
   specialists = {
     title: "Specialists",
     header_row: ["Id", "Name"],
-    body_rows: Specialist.in_divisions([vancouver_hidden_division]).map do |specialist|
+    body_rows: Specialist.in_divisions(vancouver_hidden_division).map do |specialist|
       [
         specialist.id,
         specialist.name

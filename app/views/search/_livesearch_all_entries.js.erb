@@ -16,13 +16,25 @@
     order_map[ category.name ] = ( order_map.length + 1 ).to_s
   end
 
-  specialists = Specialist.includes(:specialist_specializations => :specialization, :specialist_offices => { :office => { :location => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}, {:location_in => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]}]}}).not_in_progress_for_specialization(specialization) #with includes: 194 ms vs without includes: 392ms
-  specialists.each do |specialist|
-
+  Specialist.includes(
+    :specialist_specializations => :specialization,
+    :specialist_offices => {
+      :office => {
+        :location => [
+          {:address => :city},
+          {:hospital_in => {:location => { :address => :city}}},
+          {:location_in => [
+            {:address => :city},
+            {:hospital_in => {:location => { :address => :city}}}
+          ]}
+        ]
+      }
+    }
+  ).complete_in(specialization).each do |specialist|
     entry = {
-      "n" => specialist.billing_number_padded ? specialist.name + " - MSP #" + specialist.billing_number_padded: specialist.name,
+      "n" => specialist.padded_billing_number ? specialist.name + " - MSP #" + specialist.padded_billing_number: specialist.name,
       "sp" => specialist.specialist_specializations.map { |ss| ss.specialization_id },
-      "c" => specialist.cities_for_display.map{ |city| city.id },
+      "c" => specialist.cities.map{ |city| city.id },
       "st" => specialist.status_class_hash,
       "id" => specialist.id,
       "go" => order_map["Specialists"]
@@ -31,9 +43,13 @@
   end
 
 
-  clinics = Clinic.includes(:clinic_specializations, :locations => [{:address => :city}, {:hospital_in => {:location => { :address => :city}}}]).not_in_progress_for_specialization(specialization) #twice as fast with includes
-  clinics.each do |clinic|
-
+  clinics = Clinic.includes(
+    :clinic_specializations,
+    :locations => [
+      {:address => :city},
+      {:hospital_in => {:location => { :address => :city}}}
+    ]
+  ).complete_in(specialization).each do |clinic|
     entry = {
       "n" => clinic.name,
       "sp" => clinic.clinic_specializations.map{ |cs| cs.specialization_id },

@@ -57,13 +57,25 @@ class Specialization < ActiveRecord::Base
   end
   # # # # # #
 
+  def self.complete_in(divisions)
+    joins("specialization_options ON specialization_options.id = specializations.id").
+      where(
+        "specialization_options.division_id IN (?) AND specialization_options.in_progress = '0'",
+        divisions.map(&:id)
+      )
+  end
+
   def self.has_family_practice?
     all.include?(Specialization.find_by_name("Family Practice"))
   end
 
   def self.in_progress_for_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    joins(:specialization_options).where('"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)', division_ids, true)
+    joins(:specialization_options).
+      where(
+        "specialization_options.division_id IN (?) AND specialization_options.in_progress = (?)",
+        divisions.map(&:id),
+        true
+      )
   end
 
   def self.not_in_progress_for_divisions(divisions)
@@ -86,6 +98,18 @@ class Specialization < ActiveRecord::Base
 
   def fully_in_progress_for_divisions(divisions)
     (specialization_options.for_divisions(divisions).length > 0) && (specialization_options.for_divisions(divisions).reject{ |so| so.in_progress }.length == 0)
+  end
+
+  def in_progress?(divisions = [])
+    scoped_options =
+      if divisions.any?
+        specialization_options.for_divisions(divisions)
+      else
+        specialization_options
+      end
+
+    scoped_options.any? &&
+      scoped_options.all?(&:in_progress?)
   end
 
   def new_for_divisions(divisions)
@@ -151,6 +175,20 @@ class Specialization < ActiveRecord::Base
   def filter_by_self(records)
     records.select do |record|
       record.specializations.include? self
+    end
+  end
+
+  def in_progress_for_division?(division)
+    specialization_options.where(division_id: division.id).in_progress?
+  end
+
+  def complete_cities(specialization)
+    Division.all.inject(City.all) do |memo, division|
+      if in_progress_for_division?(division)
+        memo - division.cities
+      else
+        memo
+      end
     end
   end
 end

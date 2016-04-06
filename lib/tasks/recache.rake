@@ -8,8 +8,7 @@ namespace :pathways do
           puts "Specialist #{specialist.id}"
 
           specialist.cities(force: true)
-          specialist.cities_for_display(force: true)
-          specialist.cities_for_front_page(force: true)
+          specialist.cities(force: true)
 
           ExpireFragment.call specialist_path(specialist)
           HttpGetter.exec("specialists/#{specialist.id}/#{specialist.token}/refresh_cache")

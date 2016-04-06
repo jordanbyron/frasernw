@@ -178,11 +178,10 @@ class LatestUpdates < ServiceObject
     -> (item, division) { !item.primary_specialization.present? },
     -> (item, division) { !item.primary_specialization_complete_in?([division]) },
     -> (item, division) {
-      item_cities = item.cities_for_front_page.flatten.uniq
       local_referral_cities = division.
         local_referral_cities(item.primary_specialization)
 
-      (item_cities & local_referral_cities).none?
+      (item.cities & local_referral_cities).none?
     }
   ]
 

@@ -239,8 +239,8 @@
                   - if attendance.is_specialist
                     %li
                       %a.ajax{"href" => specialist_path(attendance.specialist)}= attendance.specialist.name
-                      - if attendance.specialist.billing_number_padded.present?
-                        = "- MSP ##{attendance.specialist.billing_number_padded}"
+                      - if attendance.specialist.padded_billing_number.present?
+                        = "- MSP ##{attendance.specialist.padded_billing_number}"
                       = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
                   - else
                     %li

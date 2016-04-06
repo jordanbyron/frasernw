@@ -21,10 +21,10 @@ class SpecializationOption < ActiveRecord::Base
   belongs_to :open_to_sc_category, :class_name => "ScCategory"
 
   scope :complete, -> { where(in_progress: false) }
+  scope :in_progress, -> { where(in_progress: true) }
 
   def self.for_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    where("specialization_options.division_id IN (?)", division_ids)
+    where("specialization_options.division_id IN (?)", divisions.map(&:id))
   end
 
   def self.for_divisions_and_specializations(divisions, specializations)

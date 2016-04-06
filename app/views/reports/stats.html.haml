@@ -7,12 +7,12 @@
   %p.no_indent= "Generated on #{Time.now.strftime('%A %B %d')} at #{Time.now.strftime('%I:%M %p')}"
 
   - if (@divisional)
-    - specialists = Specialist.in_divisions(@divisions)
+    - specialists = Specialist.in_divisions(*@divisions)
     - clinics = Clinic.in_divisions(@divisions)
     - procedures = []
     - [specialists + clinics].flatten.each { |s| procedures.concat( s.procedures ) }
     - procedures.uniq!
-    - specializations = Specialization.all.reject{ |s| [s.specialists.in_divisions(@divisions) + s.clinics.in_divisions(@divisions)].flatten.length == 0 }
+    - specializations = Specialization.all.reject{ |s| [s.specialists.in_divisions(*@divisions) + s.clinics.in_divisions(@divisions)].flatten.length == 0 }
     - hospitals = Hospital.in_divisions(@divisions)
     - sc_categories = ScCategory.all_parents
     - sc_items = ScItem.all_in_divisions(@divisions)
@@ -70,9 +70,9 @@
     %tr
       %th Specialists
       %td= specialists.length
-      %td= specialists.reject{|s| !s.responded?}.length
-      %td= specialists.reject{|s| !s.not_responded?}.length
-      %td= specialists.reject{|s| !s.purposely_not_yet_surveyed?}.length
+      %td= specialists.select(&:responded_to_survey?).count
+      %td= specialists.select(&:surveyed?).reject(&:responded_to_survey?).count
+      %td= specialists.reject(&:surveyed?).length
       %td= specialists.reject{|s| !s.hospital_or_clinic_only?}.length
       %td= specialists.reject{|s| !s.moved_away?}.length
       %td= specialists.reject{|s| !s.retired?}.length
@@ -152,9 +152,9 @@
       %tr
         %th= specialization.name
         %td= @specialization_specialists.length
-        %td= @specialization_specialists.reject{|s| !s.responded?}.length
-        %td= @specialization_specialists.reject{|s| !s.not_responded?}.length
-        %td= @specialization_specialists.reject{|s| !s.purposely_not_yet_surveyed?}.length
+        %td= @specialization_specialists.select(&:responded_to_survey?).length
+        %td= @specialization_specialists.select(&:surveyed?).reject(&:responded_to_survey).length
+        %td= @specialization_specialists.reject(&:surveyed?).length
         %td= @specialization_specialists.reject{|s| !s.hospital_or_clinic_only?}.length
         %td= @specialization_specialists.reject{|s| !s.moved_away?}.length
         %td= @specialization_specialists.reject{|s| !s.retired?}.length
