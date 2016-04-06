@@ -1,6 +1,7 @@
 namespace :pathways do
   namespace :recache do
-    include Rails.application.routes.url_helpers
+
+    ROUTES = Rails.application.routes.url_helpers
 
     TASKS = {
       specialists: -> {
@@ -10,7 +11,7 @@ namespace :pathways do
           specialist.cities(force: true)
           specialist.cities(force: true)
 
-          ExpireFragment.call specialist_path(specialist)
+          ExpireFragment.call ROUTES.specialist_path(specialist)
           HttpGetter.exec("specialists/#{specialist.id}/#{specialist.token}/refresh_cache")
         end
       },
@@ -32,21 +33,21 @@ namespace :pathways do
       languages: -> {
         Language.all.sort{ |a,b| a.id <=> b.id }.each do |l|
           puts "Language #{l.id}"
-          ExpireFragment.call language_path(l)
+          ExpireFragment.call ROUTES.language_path(l)
           HttpGetter.exec("languages/#{l.id}/#{l.token}/refresh_cache")
         end
       },
       hospitals: -> {
         Hospital.all.sort{ |a,b| a.id <=> b.id }.each do |h|
           puts "Hospital #{h.id}"
-          ExpireFragment.call hospital_path(h)
+          ExpireFragment.call ROUTES.hospital_path(h)
           HttpGetter.exec("hospitals/#{h.id}/#{h.token}/refresh_cache")
         end
       },
       clinics: -> {
         Clinic.all.sort{ |a,b| a.id <=> b.id }.each do |c|
           puts "Clinic #{c.id}"
-          ExpireFragment.call clinic_path(c)
+          ExpireFragment.call ROUTES.clinic_path(c)
           HttpGetter.exec("clinics/#{c.id}/#{c.token}/refresh_cache")
         end
       },
@@ -79,7 +80,7 @@ namespace :pathways do
         ExpireFragment.call "livesearch_all_entries"
         Specialization.all.each do |s|
           puts "All entries specialization #{s.id}"
-          ExpireFragment.call "livesearch_all_entries_#{specialization_path(s)}"
+          ExpireFragment.call "livesearch_all_entries_#{ROUTES.specialization_path(s)}"
           HttpGetter.exec("refresh_livesearch_all_entries/#{s.id}.js")
         end
 

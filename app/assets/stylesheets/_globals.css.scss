@@ -27,36 +27,36 @@ $FNW_ICON_WIDTH: 20px;
 
 @font-face {
   font-family: 'Bitter';
-  src:  url('/fonts/Bitter-Regular-webfont.eot');
-  src:  url('/fonts/Bitter-Regular-webfont.eot?#iefix') format('eot'),
-        url('/fonts/Bitter-Regular-webfont.woff') format('woff'),
-        url('/fonts/Bitter-Regular-webfont.ttf') format('truetype'),
-        url('/fonts/Bitter-Regular-webfont.otf') format('opentype'),
-        url('/fonts/Bitter-Regular-webfont.svg#Bitter') format('svg');
+  src:  asset-url('Bitter-Regular-webfont.eot');
+  src:  asset-url('Bitter-Regular-webfont.eot?#iefix') format('eot'),
+        asset-url('Bitter-Regular-webfont.woff') format('woff'),
+        asset-url('Bitter-Regular-webfont.ttf') format('truetype'),
+        asset-url('Bitter-Regular-webfont.otf') format('opentype'),
+        asset-url('Bitter-Regular-webfont.svg#Bitter') format('svg');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Bitter';
-  src:  url('/fonts/Bitter-Bold-webfont.eot');
-  src:  url('/fonts/Bitter-Bold-webfont.eot?#iefix') format('eot'),
-        url('/fonts/Bitter-Bold-webfont.woff') format('woff'),
-        url('/fonts/Bitter-Bold-webfont.ttf') format('truetype'),
-        url('/fonts/Bitter-Bold-webfont.otf') format('opentype'),
-        url('/fonts/Bitter-Bold-webfont.svg#Bitter') format('svg');
+  src:  asset-url('Bitter-Bold-webfont.eot');
+  src:  asset-url('Bitter-Bold-webfont.eot?#iefix') format('eot'),
+        asset-url('Bitter-Bold-webfont.woff') format('woff'),
+        asset-url('Bitter-Bold-webfont.ttf') format('truetype'),
+        asset-url('Bitter-Bold-webfont.otf') format('opentype'),
+        asset-url('Bitter-Bold-webfont.svg#Bitter') format('svg');
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Bitter';
-  src:  url('/fonts/Bitter-Italic-webfont.eot');
-  src:  url('/fonts/Bitter-Italic-webfont.eot?#iefix') format('eot'),
-        url('/fonts/Bitter-Italic-webfont.woff') format('woff'),
-        url('/fonts/Bitter-Italic-webfont.ttf') format('truetype'),
-        url('/fonts/Bitter-Italic-webfont.otf') format('opentype'),
-        url('/fonts/Bitter-Italic-webfont.svg#Bitter') format('svg');
+  src:  asset-url('Bitter-Italic-webfont.eot');
+  src:  asset-url('Bitter-Italic-webfont.eot?#iefix') format('eot'),
+        asset-url('Bitter-Italic-webfont.woff') format('woff'),
+        asset-url('Bitter-Italic-webfont.ttf') format('truetype'),
+        asset-url('Bitter-Italic-webfont.otf') format('opentype'),
+        asset-url('Bitter-Italic-webfont.svg#Bitter') format('svg');
   font-weight: normal;
   font-style: italic;
 }

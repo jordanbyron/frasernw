@@ -27,7 +27,6 @@
     = render 'versions/info', instance_name: "specialist"
 
   - cache(specialist_path(@specialist)) do
-
     - show_details = false
     - show_clinic_details = false
     - show_areas_of_practice = false
@@ -215,7 +214,7 @@
 
       - if can? :destroy, @specialist
         = link_to specialist_path(@specialist),
-          confirm: "Delete #{@specialist.name}?",
+          { data: confirm: "Delete #{@specialist.name}?" },
           method: :delete,
           class: "btn" do
           %i.icon-trash
@@ -232,7 +231,7 @@
           accessibleId: #{@specialist.id},
           accessibleType: "Specialist",
           currentUserName: "#{@current_user.name}",
-          links: #{@specialist.valid_secret_edit_links(base_url, current_user).to_json},
+          links: #{@specialist.valid_secret_edit_links(current_user).to_json},
           canEdit: #{can?(:edit, @specialist)},
           modal: { isVisible: false }
         }

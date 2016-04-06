@@ -12,6 +12,6 @@ PublicActivity::Activity.class_eval do
   belongs_to :parent, polymorphic: true
 
   after_create do
-    SubscriptionWorker.mail_notifications_for_activity(self.id)
+    SubscriptionWorker.delay.mail_notifications_for_activity(self.id)
   end
 end

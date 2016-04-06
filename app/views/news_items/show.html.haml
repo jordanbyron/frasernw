@@ -32,7 +32,7 @@
     - if can? :update, @news_item
       = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_news_item_path(@news_item), :class => "btn ajax")
     - if can? :destroy, @news_item
-      = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @news_item, :confirm => "Delete #{@news_item.title}?", :method => :delete, :class => "btn")
+      = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @news_item, :data => { :confirm => "Delete #{@news_item.title}?" }, :method => :delete, :class => "btn")
     - if @news_item.copyable_to(current_user).any?
       %button{"class" => "btn dropdown-toggle", "data-toggle" => "dropdown"}
         %i.icon-copy

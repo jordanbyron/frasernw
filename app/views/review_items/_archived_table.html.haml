@@ -25,5 +25,5 @@
       %td= ReviewItem::STATUS_HASH[review_item.status]
       %td
         -if review_item.base_object.present?
-          = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", smart_duck_path(review_item), :class => "btn btn-mini stacked-button ajax")
+          = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", CustomPathHelper.smart_duck_path(review_item), :class => "btn btn-mini stacked-button ajax")
         = history_button(review_item)

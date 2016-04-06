@@ -3,8 +3,6 @@
 # @is_review == secret edit or automated_edit
 
 class FormModifier
-  include Rails.application.routes.url_helpers
-
   INTERACTION_TYPES = [
     :new,
     :edit,
@@ -38,7 +36,7 @@ class FormModifier
   def method
     case interaction_type
     when :new then :post
-    else :put
+    else :patch
     end
   end
 

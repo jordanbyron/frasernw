@@ -10,4 +10,4 @@
     .history__notes_field
       = render "notes/form", note: @new_note
 
-      = link_to "View record", smart_duck_path(@item)
+      = link_to "View record", CustomPathHelper.smart_duck_path(@item)

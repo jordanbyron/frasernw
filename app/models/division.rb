@@ -123,7 +123,8 @@ class Division < ActiveRecord::Base
         includes([:specialization, {division_referral_city: :city}]).
         where(specialization_id: key).map do |drcs|
           drcs.division_referral_city.city
-        end
+        end.
+        reject(&:nil?)
     end
     @local_referral_cities[specialization.id]
   end

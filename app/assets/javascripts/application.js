@@ -2,11 +2,10 @@
 // Add new JavaScript/Coffee code in separate files in this directory and they'll automatically
 // be included in the compiled file accessible from http://example.com/assets/application.js
 // It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
-// the compiled file.
+// compiled file.
 //
-//= require jquery-1.7.2.min
-//= require jquery-ui
-//= require jquery_ujs
+//= require jquery.1.8.3.min.js
+//= require jquery-ui.1.8.16.js
 //= require jquery.scrollto.min.js
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/2/jquery.dataTables.bootstrap
@@ -16,7 +15,6 @@
 //= require ajaxify-html5.js
 //= require jquery.serializejson
 //= require jquery.timeago
-//= require highcharts
 //= require webpack.bundle
 //= require jquery_components/checkbox_slidedown
 //= require global_data
@@ -157,7 +155,7 @@ if(typeof String.prototype.trim !== 'function') {
 function favorite(type, id, name) {
   $.ajax({
     url: '/favorites/' + type + '/' + id,
-    type: "PUT",
+    type: "PATCH",
     data: "",
     dataType: 'json',
     success: function(data)

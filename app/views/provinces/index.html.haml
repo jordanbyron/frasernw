@@ -18,6 +18,6 @@
         %td= province.symbol
         %td.admin.btn-group
           = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_province_path(province), :class => "btn btn-mini ajax")
-          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", province, :confirm => "Delete #{province.name}?", :method => :delete, :class => "btn btn-mini")
+          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", province, :data => { :confirm => "Delete #{province.name}?" }, :method => :delete, :class => "btn btn-mini")
 
   %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Province", new_province_path, :class => "btn ajax")

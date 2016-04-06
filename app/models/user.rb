@@ -24,7 +24,7 @@ class User < ActiveRecord::Base
   end
 
   validates_format_of :password,
-    with: /^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){8,}$/,
+    with: /(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){8,}/,
     if: :require_password?,
     message: "must include one number, one letter and be at least 8 characters long"
 

@@ -1,7 +1,6 @@
 namespace :pathways do
   namespace :visit_every_page do
     include Net
-    include Rails.application.routes.url_helpers
 
     task :specializations => :environment do
       puts "Visiting specializations..."

@@ -77,7 +77,7 @@ class SpecialistsController < ApplicationController
       end
 
       @specialist.save
-      redirect_to @specialist, :notice => "Successfully created #{@specialist.name}. #{undo_link}"
+      redirect_to @specialist, :notice => "Successfully created #{@specialist.name}."
     else
       render :action => 'new'
     end
@@ -111,7 +111,7 @@ class SpecialistsController < ApplicationController
       UpdateSpecialistCapacities.exec(@specialist, parsed_params)
 
       @specialist.save
-      redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
+      redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}."
     else
       load_form_variables
       render :edit
@@ -143,7 +143,7 @@ class SpecialistsController < ApplicationController
         UpdateSpecialistCapacities.exec(@specialist, parsed_params)
         @specialist.reload.versions.last.update_attributes(review_item_id: review_item.id)
         @specialist.save
-        redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}. #{undo_link}"
+        redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}."
       else
         load_form_variables
         render :edit
@@ -171,11 +171,7 @@ class SpecialistsController < ApplicationController
     SpecialistSweeper.instance.before_controller_destroy(@specialist)
     name = @specialist.name;
     @specialist.destroy
-    redirect_to root_url, :notice => "Successfully deleted #{name}. #{undo_link}"
-  end
-
-  def undo_link
-    #view_context.link_to("undo", revert_version_path(@specialist.versions.scoped.last), :method => :post).html_safe
+    redirect_to root_url, :notice => "Successfully deleted #{name}."
   end
 
   def review

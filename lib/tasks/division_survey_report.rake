@@ -1,6 +1,5 @@
 namespace :pathways do
   task :division_survey_report, [:division_id] => :environment do |t, args|
-    include Rails.application.routes.url_helpers
 
     args.with_defaults(
       division_id: 10

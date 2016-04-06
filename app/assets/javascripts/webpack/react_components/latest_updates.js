@@ -127,7 +127,7 @@ const toggleUpdateVisibility = (dispatch, update) => {
 
   $.ajax({
     url: `/latest_updates/toggle_visibility`,
-    type: "PUT",
+    type: "PATCH",
     data: {update: params }
   })
 };

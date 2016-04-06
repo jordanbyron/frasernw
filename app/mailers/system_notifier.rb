@@ -4,7 +4,7 @@ module SystemNotifier
 
   def self.info(subject)
     notify(
-      tag: :info,
+      tag: "Info",
       subject: subject,
       timestamp: DateTime.now.to_s(:long_ordinal),
       body: {}
@@ -13,7 +13,7 @@ module SystemNotifier
 
   def self.error(e, options = {})
     notify(
-      tag: :error,
+      tag: "Exception",
       subject: e.message,
       timestamp: DateTime.now.to_s(:long_ordinal),
       body: {

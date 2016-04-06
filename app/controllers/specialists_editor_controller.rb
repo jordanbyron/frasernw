@@ -47,7 +47,7 @@ class SpecialistsEditorController < ApplicationController
         params[:pre_edit_form_data]
       else
         params.delete(:pre_edit_form_data)
-        ActiveSupport::JSON::encode(params)
+        ReviewItem.encode(params)
       end
     end
     review_item.set_edit_source!(current_user, params[:secret_token_id])
@@ -73,7 +73,7 @@ class SpecialistsEditorController < ApplicationController
   def check_pending
     specialist = Specialist.find(params[:id])
     if specialist.review_item.present? && (!current_user || (specialist.review_item.editor != current_user))
-      redirect_to specialist_self_pending_path(specialist)
+      redirect_to specialist_self_pending_path(id: specialist.id, token: params[:token])
     end
   end
 

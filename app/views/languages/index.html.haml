@@ -14,6 +14,6 @@
         %td= link_to language.name, language, :class => 'ajax'
         %td.admin.btn-group
           = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_language_path(language), :class => "btn btn-mini ajax")
-          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", language, :confirm => "Delete #{language.name}?", :method => :delete, :class => "btn btn-mini")
+          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", language, :data => { :confirm => "Delete #{language.name}?" }, :method => :delete, :class => "btn btn-mini")
 
   %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Language", new_language_path, :class => "btn ajax")

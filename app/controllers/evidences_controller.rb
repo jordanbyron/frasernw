@@ -1,46 +1,37 @@
 class EvidencesController < ApplicationController
   load_and_authorize_resource
 
-  # GET /evidences
-  # GET /evidences.json
   def index
     @evidences = Evidence.all
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html
       format.json { render json: @evidences }
     end
   end
 
-  # GET /evidences/1
-  # GET /evidences/1.json
   def show
     @evidence = Evidence.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html
       format.json { render json: @evidence }
     end
   end
 
-  # GET /evidences/new
-  # GET /evidences/new.json
   def new
     @evidence = Evidence.new
 
     respond_to do |format|
-      format.html # new.html.erb
+      format.html
       format.json { render json: @evidence }
     end
   end
 
-  # GET /evidences/1/edit
   def edit
     @evidence = Evidence.find(params[:id])
   end
 
-  # POST /evidences
-  # POST /evidences.json
   def create
     @evidence = Evidence.new(params[:evidence])
 
@@ -55,8 +46,6 @@ class EvidencesController < ApplicationController
     end
   end
 
-  # PUT /evidences/1
-  # PUT /evidences/1.json
   def update
     @evidence = Evidence.find(params[:id])
 
@@ -71,8 +60,6 @@ class EvidencesController < ApplicationController
     end
   end
 
-  # DELETE /evidences/1
-  # DELETE /evidences/1.json
   def destroy
     @evidence = Evidence.find(params[:id])
     @evidence.destroy

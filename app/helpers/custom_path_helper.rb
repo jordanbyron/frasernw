@@ -1,10 +1,12 @@
 module CustomPathHelper
+  ROUTES = Rails.application.routes.url_helpers
+
   # just infers the standard rails show path helper
-  def duck_path(object)
+  def self.duck_path(object)
     if object.is_a? NilClass
       ""
     else
-      Rails.application.routes.url_helpers.send(
+      ROUTES.send(
         "#{object.class.name.underscore}_path",
         object
       )
@@ -12,28 +14,28 @@ module CustomPathHelper
   end
 
   # infers what we ACTUALLY problably want when we want to 'see' a given record
-  def smart_duck_path(object)
+  def self.smart_duck_path(object)
     if object.is_a?(ReviewItem)
       if object.active?
-        review_path(object)
+        ReviewItemsHelper.review_path(object)
       else
-        rereview_path(object)
+        ReviewItemsHelper.rereview_path(object)
       end
     elsif object.is_a?(FeedbackItem)
       if object.active?
-        feedback_items_path
+        ROUTES.feedback_items_path
       else
-        archived_feedback_items_path
+        ROUTES.archived_feedback_items_path
       end
     elsif object.is_a?(ReferralForm)
-      edit_referral_forms_path(
+      ROUTES.edit_referral_forms_path(
         parent_type: object.referrable_type,
         parent_id: object.referrable_id
       )
     elsif object.is_a?(SecretToken)
       ""
     else
-      duck_path(object)
+      self.duck_path(object)
     end
   end
 end

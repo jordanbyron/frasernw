@@ -72,4 +72,4 @@
     - if can? :update, @division
       = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_division_path(@division), :class => "btn ajax")
     - if can? :destroy, @division
-      = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @division, :confirm => "Delete #{@division.name}?", :method => :delete, :class => "btn")
+      = delete_button(division_path(@division), "Delete #{@division.name}?")

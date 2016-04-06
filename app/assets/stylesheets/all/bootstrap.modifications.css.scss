@@ -395,7 +395,7 @@
     {
       height: auto;
       background-color: $FNW_BLUE_GRAY;
-      background-image: url(/img/tab-background-half.gif), url(/img/tab-background-half.gif);
+      background-image: asset-url('tab-background-half.gif'), asset-url('tab-background-half.gif');
       background-position: left top, left bottom;
       background-repeat: repeat-x, repeat-x;
       margin: 0 0-$FNW_BODY_BREATHING 4px 0-$FNW_BODY_BREATHING ;
@@ -462,7 +462,7 @@
       li + li
       {
         padding-left: 2px;
-        background: transparent url(/img/tab_divider.png) 0% 50% no-repeat;
+        background: transparent asset-url('tab_divider.png') 0% 50% no-repeat;
       }
     }
   }

@@ -19,7 +19,7 @@ class SecretTokensController < ApplicationController
     ))
 
     render json: {
-      link: token.as_hash(base_url, current_user)
+      link: token.as_hash(current_user)
     }
   end
 

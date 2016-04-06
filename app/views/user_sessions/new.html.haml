@@ -29,7 +29,7 @@
             %a#password_reset_link{"href" => new_password_reset_path} Forgot your password?
             %p.space.no_indent= "By logging in you agree to the <a href='javascript:void(0)' data-toggle='collapse' data-target='#toc'>Terms of Use</a>".html_safe
 
-        = simple_form_for @user, :url => {:controller => "users", :action => "validate"}, :method => "put" do |f|
+        = simple_form_for @user, :url => {:controller => "users", :action => "validate"}, :method => :patch do |f|
           .new_user_block.hide
             = f.input :saved_token, :input_html => {"autocorrect" => "off", "autocapitalize" => "none", :class => "span2", "maxlength" => 8}, :hint => 'Please note that each access key is used only once to initially sign up for Pathways. If you have already set up your account, simply sign in as a returning user with your e-mail address and chosen password.'
             = f.input :email, :as => :hidden

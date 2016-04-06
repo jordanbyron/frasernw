@@ -1,7 +1,7 @@
 = simple_nested_form_for @entity,
   html: { :class => "form-horizontal", :multipart => true },
   url: referral_forms_path(parent_type: @entity.class, parent_id: @entity.id),
-  method: :put do |f|
+  method: :patch do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 

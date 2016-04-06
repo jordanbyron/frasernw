@@ -12,4 +12,4 @@
   - if can? :update, @province
     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_province_path(@province), :class => "btn ajax")
   - if can? :destroy, @province
-    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @province, :confirm => "Delete #{@province.name}?", :method => :delete, :class => "btn")
+    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @province, :data => { :confirm => "Delete #{@province.name}?" }, :method => :delete, :class => "btn")

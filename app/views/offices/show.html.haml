@@ -34,4 +34,4 @@
     - if can? :update, @office
       = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Office", edit_office_path(@office), :class => "btn ajax")
     - if can? :destroy, @office
-      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Office", @office, :confirm => "Delete Office?", :method => :delete, :class => "btn")
+      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Office", @office, :data => { :confirm => "Delete Office?" }, :method => :delete, :class => "btn")

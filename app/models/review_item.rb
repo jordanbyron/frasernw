@@ -32,11 +32,11 @@ class ReviewItem < ActiveRecord::Base
   end
 
   def self.encode(params)
-    ActiveSupport::JSON.encode params
+    ActiveSupport::JSON.encode(params).safe_for_javascript
   end
 
   def self.decode(params)
-    ActiveSupport::JSON.decode params
+    ActiveSupport::JSON.decode(params)
   end
 
   def encode(params)
