@@ -1,0 +1,35 @@
+.btn-group
+  - if @specialist.available? && @specialist.locations.any?
+    - # TODO: replace with Dan's work
+    - if specialist_offices.one?
+      %a.btn{"href" => specialist_patient_information_path(@specialist), "target" => "_blank"}
+        %i.icon-print.icon-text
+        Print Information for Patient
+    - else
+      %a.btn.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+        %i.icon-print.icon-text
+        Print Information for Patient
+        %span.caret
+      %ul.dropdown-menu
+        - specialist_offices.each do |specialist_office|
+          - next if specialist_office.office.blank?
+          %li
+            %a{"href" => specialist_patient_information_office_path(@specialist, specialist_office), "target" => "_blank"}
+              = specialist_office.office.short_address
+
+  - if !current_user.as_admin_or_super? && can?(:update, @specialist)
+    = link_to specialist_self_edit_path(@specialist, @specialist.token),
+      class: "btn btn-primary ajax" do
+      %i.icon-pencil.icon-white
+      %span= "Update #{@specialist.name}'s information"
+  - else
+    = link_to "javascript:void(0)",
+      class: "btn",
+      onClick: "$('#feedback').fadeIn(200)" do
+      %i.icon-bullhorn.icon-text
+      %span= "Incorrect Information? Let us know"
+  - if !current_user.as_admin_or_super? && can?(:update, @specialist)
+    %a.btn.ajax{href: photo_specialist_path(@specialist)}
+      %i.icon-picture.icon-white
+      %span
+        = "#{@specialist.photo.present? ? "Change" : "Add"} #{@specialist.name}'s photo"

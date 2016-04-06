@@ -1,0 +1,11 @@
+%h6 Associations
+
+- if hospitals.present?
+  %p
+    %strong Hospital privileges:
+    != hospitals.map{ |hospital| "<a href='#{hospital_path(hospital)}' class='ajax')\">#{hospital.name}</a>" }.to_sentence
+
+- if clinics.present?
+  %p
+    %strong Clinic associations:
+    != clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'}'>#{clinic.name}</a>" }.to_sentence

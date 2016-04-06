@@ -1,0 +1,66 @@
+#feedback
+  .inner
+    = simple_form_for @feedback,
+      html: { class: "ajax feedback_form" } do |f|
+      = f.input :feedback,
+        label: "Please provide us with any updates to #{@specialist.name}'s information"
+      = f.input :item_type,
+        as: :hidden,
+        value: "Specialist"
+      = f.input :item_id,
+        as: :hidden,
+        value: @specialist.id
+
+      .form-actions
+        = link_to "javascript:void(0)",
+          id: "sendFeedbackButton",
+          onClick: "send_feedback($('form.feedback_form'))",
+          class: "btn btn-primary" do
+          .before-click
+            Send Feedback
+          .after-click.hidden
+            Sending
+        = link_to "Cancel",
+          "javascript:void(0)",
+          onClick: "$('#feedback').fadeOut(200)"
+
+#feedback_thanks
+  .inner
+    %h2= "Thank you!"
+
+    %p.space.no_indent
+      = "Thank you for providing your feedback  on #{@specialist.name}." +              |
+        "Your contributions help make Pathways a valuable resource for the community."  |
+
+    %p.space.no_indent
+      = "We will review your feedback in the near future and take action as necessary."
+
+    %p.space.no_indent
+      = link_to "Close",
+        "javascript:void(0)",
+        onClick: "$('#feedback_thanks').fadeOut(200)"
+
+:javascript
+  $(document).ready(function() {
+    $('.tt').tooltip({trigger: 'manual'});
+    $('#user_favorite_specialists_#{@specialist.id}')
+      .addClass('#{@favorite_icon_class}');
+  });
+
+  function send_feedback(form) {
+    $("#sendFeedbackButton").addClass('disabled');
+    $('.before-click').addClass('hidden');
+    $('.after-click').removeClass('hidden');
+    $.ajax({
+        url: form.attr('action'),
+        data: form.serialize(),
+        type: 'POST'
+    }).success(function(json) {
+        $("#sendFeedbackButton").removeClass('disabled');
+        $('.after-click').addClass('hidden');
+        $('.before-click').removeClass('hidden');
+        $('#feedback').fadeOut(200);
+        $('#feedback_item_feedback').val('')
+        $('#feedback_thanks').fadeIn(200);
+    });
+  }

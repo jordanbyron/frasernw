@@ -226,13 +226,16 @@ class Specialist < ActiveRecord::Base
       ON hospital.city_id = privileges_at_hospital_cities.id
     SQL
 
+    # if they have offices use them
+    # or else use privileges + attendances
+
+    # TODO experiment with this
     city_ids = cities.map(&:id).sort
     scope.where(<<-SQL, city_ids, city_ids, city_ids)
-      (specialists.has_own_offices = '1' AND
-        specialist_office_cities.id IN (?)) OR
-      (specialists.has_own_offices = '0' AND
+      (specialist_office_cities.id IS NULL AND
         (attending_clinic_location_cities.id IN (?) OR
-          privileges_at_hospital_cities.id IN (?)))
+          privileges_at_hospital_cities.id IN (?))) OR
+      (specialist_office_cities.id IN (?))
     SQL
   end
 
@@ -290,9 +293,13 @@ class Specialist < ActiveRecord::Base
     @locations ||= specialist_offices + hospitals + clinic_locations
   end
 
+  def has_offices?
+    specialist_offices.select(&:has_data?).any?
+  end
+
   def cities(force: false)
     Rails.cache.fetch([self.class.name, self.id, "cities"], force: force) do
-      if has_own_offices?
+      if has_offices?
         specialist_offices.map(&:city).reject(&:blank?).uniq
       else
         (hospitals.map(&:city) + clinic_locations.map(&:city)).
@@ -393,12 +400,12 @@ class Specialist < ActiveRecord::Base
     end
   end
 
-  STATUS_CLASS_AVAILABLE    = "icon-ok icon-green"
-  STATUS_CLASS_LIMITATIONS  = "icon-ok icon-orange"
-  STATUS_CLASS_UNAVAILABLE  = "icon-remove icon-red"
-  STATUS_CLASS_WARNING      = "icon-warning-sign icon-orange"
-  STATUS_CLASS_UNKNOWN      = "icon-question-sign"
-  STATUS_CLASS_EXTERNAL     = "icon-signout icon-blue"
+  STATUS_CLASS_AVAILABLE    =
+  STATUS_CLASS_LIMITATIONS  =
+  STATUS_CLASS_UNAVAILABLE  =
+  STATUS_CLASS_WARNING      =
+  STATUS_CLASS_UNKNOWN      =
+  STATUS_CLASS_EXTERNAL     =
   STATUS_CLASS_BLANK        = ""
 
   #match clinic
@@ -416,41 +423,71 @@ class Specialist < ActiveRecord::Base
   STATUS_TOOLTIP_HASH = {
     STATUS_CLASS_AVAILABLE   => "Accepting new referrals",
     STATUS_CLASS_LIMITATIONS => "Accepting limited new referrals by geography or # of patients",
-    STATUS_CLASS_UNAVAILABLE => "Not accepting new referrals",
+    STATUS_CLASS_UNAVAILABLE => ,
     STATUS_CLASS_WARNING     => "Referral status will change soon",
     STATUS_CLASS_UNKNOWN     => "Referral status is unknown",
     STATUS_CLASS_EXTERNAL    => "Only works out of, and possibly accepts referrals through, clinics and/or hospitals",
     STATUS_CLASS_BLANK       => ""
   }
 
-  def status_class
-    #purposely handle categorization prior to status
-    if not_responded?
-      return STATUS_CLASS_UNKNOWN
-    elsif purposely_not_yet_surveyed?
-      return STATUS_CLASS_BLANK
-    elsif hospital_or_clinic_only? || hospital_or_clinic_referrals_only?
-      return STATUS_CLASS_EXTERNAL
-    elsif accepting_with_limitations?
-      return STATUS_CLASS_LIMITATIONS
-    elsif (accepting_new_patients? || ((status_mask == 6) && (unavailable_to < Date.current)))
-      #marked as available, or the "unavailable between" period has passed
-      return STATUS_CLASS_AVAILABLE
-    elsif (follow_up_only? || retired? || ((status_mask == 6) && (unavailable_from <= Date.current) && (unavailable_to >= Date.current)) || indefinitely_unavailable? || permanently_unavailable? || deceased? || moved_away?)
-      #only seeing old patients, retired, "retiring as of" date has passed", or in midst of inavailability, indefinitely unavailable, permanently unavailable, or moved away
-      return STATUS_CLASS_UNAVAILABLE
-    elsif (retiring? || ((status_mask == 6) && (unavailable_from > Date.current)))
-      return STATUS_CLASS_WARNING
-    elsif ((status_mask == 3) || (status_mask == 7) || status_mask.blank?)
-      return STATUS_CLASS_UNKNOWN
+  def referral_status_icon_classes
+    if not_responded? || availability_unknown?
+      "icon-question-sign"
+    elsif !surveyed?
+      ""
+    elsif available? && indirect_referrals_only?
+      "icon-signout icon-blue"
+    elsif available? && accepting_new_referrals? && referrals_limited?
+      "icon-ok icon-orange"
+    elsif available? && accepting_new_referral? && (temporarily_unavailable_soon? || retiring_soon?)
+      "icon-warning-sign icon-orange"
+    elsif available? && accepting_new_referrals?
+      "icon-ok icon-green"
+    elsif !available? || !accepting_new_referrals?
+      "icon-remove icon-red"
     else
-      #this shouldn't really happen
-      return STATUS_CLASS_BLANK
+      "catch this"
     end
   end
 
-  def status_class_hash
-    STATUS_CLASS_HASH[status_class]
+  def referral_status_label
+    if not_responded? || availability_unknown?
+      "Referral status is unknown"
+    elsif !surveyed?
+      ""
+    elsif available? && indirect_referrals_only? && accepting_new_referrals?
+      if attendances.any? && privileges.any?
+        "Only accepts referrals through clinics and hospitals."
+      elsif attendances.any?
+        "Only accepts referrals through clinics."
+      elsif privileges.any?
+        "Only accepts referrals through clinics hospitals."
+      else
+        ""
+      end
+    elsif available? && indirect_referrals_only? && accepting_new_referrals == nil
+      # Former "Only works out of hospitals and clinics" specialists
+      # Hopefully we can gather this information and delete this branch
+      if attendances.any? && privileges.any?
+        "Only works out of, and possibly accepts referrals through clinics and hospitals."
+      elsif attendances.any?
+        "Only works out of, and possibly accepts referrals through clinics."
+      elsif privileges.any?
+        "Only works out of, and possibly accepts referrals through hospitals."
+      else
+        ""
+      end
+    elsif available? && accepting_new_referrals? && referrals_limited?
+      "Accepting limited new referrals by geography or number of patients"
+    elsif available? && accepting_new_referrals? && (temporarily_unavailable_soon? || retiring_soon?)
+      "Referral status will change soon"
+    elsif available? && accepting_new_referrals?
+      "Accepting new referrals"
+    elsif !available? || !accepting_new_referrals?
+      "Not accepting new referrals"
+    else
+      "catch this"
+    end
   end
 
   def status_tooltip
@@ -466,32 +503,12 @@ class Specialist < ActiveRecord::Base
   end
 
   def follow_up_only?
+    # TODO
     status_mask == 2
-  end
-
-  def retired?
-    (status_mask == 4) || ((status_mask == 5) && (unavailable_from <= Date.current))
   end
 
   def retiring?
     (status_mask == 5) && (unavailable_from > Date.current)
-  end
-
-  def indefinitely_unavailable?
-    status_mask == 8
-  end
-
-  def permanently_unavailable?
-    status_mask == 9
-  end
-
-  def moved_away?
-    status_mask == 10
-  end
-
-  STATUS_MASK_DECEASED = 12
-  def deceased?
-    status_mask == STATUS_MASK_DECEASED
   end
 
   WAITTIME_LABELS = {
@@ -784,6 +801,11 @@ class Specialist < ActiveRecord::Base
     else
       false
     end
+  end
+
+  def family_practice_only?
+    specializations.one? &&
+      specializations.include?(Specialization.find_by(name: "Family Practice"))
   end
 
 private

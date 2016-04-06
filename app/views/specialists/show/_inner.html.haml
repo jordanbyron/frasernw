@@ -1,0 +1,41 @@
+= render "specialists/header"
+
+- if show_details
+
+  - if has_office || @specialist.languages.present? || @specialist.interpreter_available
+
+    = render "specialists/office_information"
+
+  - if !@specialist.hospital_or_clinic_referrals_only? && (@specialist.accepts_referrals_via.present? || @specialist.responds_via.present? || @specialist.referral_form_mask != 3 || @specialist.required_investigations.present? || @specialist.waittime.present? || @specialist.lagtime.present? || @specialist.patient_can_book_mask != 3)
+
+    = render "specialists/referrals"
+
+  - if @specialist.patient_instructions.present? || @specialist.cancellation_policy.present?
+
+    = render "specialists/patient_information"
+
+  - if @specialist.hospitals.any? || @specialist.clinics.reject(&:closed).any?
+
+    = render "specialists/associations"
+
+- elsif show_clinic_details
+
+    = render "specialists/clinic_details"
+
+- if show_details || show_areas_of_practice
+
+    = render "specialists/sidebar"
+
+- if current_user.as_admin_or_super? && @specialist.user_controls_specialists.any?
+
+  = render "specialists/user_controls"
+
+- if current_user.as_admin_or_super?
+
+  = render "specialists/review_queues"
+
+= render "specialists/user_buttons"
+
+- if current_user.as_admin_or_super?
+
+  = render "specialists/admin_buttons"

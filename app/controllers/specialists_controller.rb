@@ -33,8 +33,16 @@ class SpecialistsController < ApplicationController
         "icon-text"
       end
 
-    @header_specialization = specialist.complete_specializations.first ||
+    @dropdown_specialization = specialist.complete_specializations.first ||
       Specialization.complete_in(Division.all).first
+
+    @header_specializations = specializations.reject do |specialization|
+      specialization.name == "Family Practice" ||
+      (
+        !@specialist.in_progress &&
+        specialization.in_progress?(@specialist.divisions)
+      )
+    end
   end
 
   def new

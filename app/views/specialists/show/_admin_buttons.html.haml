@@ -1,0 +1,68 @@
+%p.admin.btn-group
+
+  - if @specialist.review_item.present?
+
+    = link_to review_specialist_path(@specialist),
+      class: "btn ajax" do
+      %i.icon-list-alt
+      %span= "Review Pending Changes"
+
+  - elsif can? :update, @specialist
+
+    = link_to edit_specialist_path(@specialist)
+      class: "btn ajax" do
+      %i.icon-pencil
+      %span= "Edit Specialist"
+
+    = link_to edit_referral_forms_path(parent_type: "Specialist", parent_id: @specialist.id),
+      class: "btn ajax" do
+      %i.icon-file
+      %span= "Referral Forms"
+
+    = link_to photo_specialist_path(@specialist),
+      class: "btn ajax" do
+      %i.icon-picture
+      %span= "Photo"
+
+    = link_to "javascript:void(0)",
+      "data-toggle" => "collapse",
+      "data-target" => "#share" do
+      %i.icon-share
+      %span= "Share"
+
+    = large_history_button(@specialist)
+
+    - if current_user.as_admin?
+      = link_to "javascript:void(0)",
+        "data-toggle" => "collapse",
+        "data-target" => "#delete-specialist-msg" do
+        %i.icon-trash
+        %span= "Delete Specialist"
+
+  - if can? :destroy, @specialist
+    = link_to specialist_path(@specialist),
+      { data: confirm: "Delete #{@specialist.name}?" },
+      method: :delete,
+      class: "btn" do
+      %i.icon-trash
+      %span= "Delete Specialist"
+
+#share.collapse
+
+:javascript
+  window.pathways.attachSecretEditLinks({
+    containerId: "share",
+    props: {
+      addLink: '#{secret_tokens_path}',
+      accessibleId: #{@specialist.id},
+      accessibleType: "Specialist",
+      currentUserName: "#{@current_user.name}",
+      links: #{@specialist.valid_secret_edit_links(current_user).to_json},
+      canEdit: #{can?(:edit, @specialist)},
+      modal: { isVisible: false }
+    }
+  })
+
+#delete-specialist-msg.collapse
+  .alert.alert-info{style: "margin-top: 10px"}
+    = "If you would like to have this specialist deleted, please contact a provincial administrator."
