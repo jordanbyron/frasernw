@@ -155,7 +155,7 @@ if(typeof String.prototype.trim !== 'function') {
 function favorite(type, id, name) {
   $.ajax({
     url: '/favorites/' + type + '/' + id,
-    type: "PUT",
+    type: "PATCH",
     data: "",
     dataType: 'json',
     success: function(data)
