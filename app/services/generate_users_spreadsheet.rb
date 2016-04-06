@@ -1,5 +1,12 @@
 module GenerateUsersSpreadsheet
   class << self
+
+    # Written for specific report requirements:
+    # - FNW users who are type: "GP Office," "Locum," "Resident," or "Other."
+    #   (This excludes "Specialist Office", "Clinic", "Hospitalist", "Nurse Practitioner", or "Unit Clerk.")
+    # - "Pending," "Inactive," and "Other" -status accounts, split into worksheets.
+    # - Columns: "id", "name", "email", "last_logged_in", "status", and "type."
+    # For cases other than the one serviced here, add a method and expand private methods.
     def fnw
 
       fnw_users = User.joins(:divisions).where(type_mask: [1,4,6,7], divisions: {id: 1})
