@@ -554,12 +554,12 @@ class Clinic < ActiveRecord::Base
   def specialists_with_offices_in
     clinic_locations.
       map(&:location).
-      map{|location| Location.where(location_in_id: location.id).first }.
-      reject(&:nil?).
+      map{|location| Location.where(location_in_id: location.id) }.
+      flatten.
       map(&:locatable).
       select{|locatable| locatable.is_a?(Office) }.
-      map{|office| SpecialistOffice.where(office_id: office.id).first }.
-      reject(&:nil?).
+      map{|office| SpecialistOffice.where(office_id: office.id) }.
+      flatten.
       map(&:specialist).
       uniq
   end

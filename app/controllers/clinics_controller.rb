@@ -124,10 +124,14 @@ class ClinicsController < ApplicationController
 
   def destroy
     @clinic = Clinic.find(params[:id])
-    ExpireFragment.call clinic_path(@clinic)
-    name = @clinic.name
-    @clinic.destroy
-    redirect_to clinics_url, :notice => "Successfully deleted #{name}."
+    if @clinic.specialists_with_offices_in.any?
+      render :attempted_delete
+    else
+      ExpireFragment.call clinic_path(@clinic)
+      name = @clinic.name
+      @clinic.destroy
+      redirect_to clinics_url, notice: "Successfully deleted #{name}."
+    end
   end
 
   def review
