@@ -8,7 +8,7 @@ namespace :pathways do
       error_links = []
       puts "Beginning check"
 
-      ScItem.first(20).reject{ |sc| !sc.link? }.each do |sc|
+      ScItem.all.reject{ |sc| !sc.link? }.each do |sc|
         begin
           uri = URI.parse(sc.url)
           http = Net::HTTP.new(uri.host, 80)
