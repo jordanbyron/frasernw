@@ -17,6 +17,7 @@ namespace :pathways do
             })
           response = http.request(request)
           sc_id_link = Spreadsheet::Link.new "pathwaysbc.ca/content_items/#{sc.id}", sc.id.to_s
+          sc_url_link = Spreadsheet::Link.new sc.url, sc.url
 
           case response
           when Net::HTTPSuccess then
@@ -26,20 +27,21 @@ namespace :pathways do
             if Net::HTTP.get_response(URI(sc.url)).code == "200"
               puts "Link passed"
             else
-              redirected_links.push([sc_id_link, sc.title, sc.url, response['location']])
+              redirection_link = Spreadsheet::Link.new response['location'], response['location']
+              redirected_links.push([sc_id_link, sc.title, sc_url_link, redirection_link])
               puts "Content item #{sc.id.to_s.red}: #{sc.title.slice(0,20).to_s.red} at #{sc.url.slice(0,30).to_s.red} redirected to #{response['location'].slice(0,30).to_s.red}"
             end
           else
             if Net::HTTP.get_response(URI(sc.url)).code == "200"
               puts "Link passed"
             else
-              other_response_links.push([sc_id_link, sc.title, sc.url, response.code])
+              other_response_links.push([sc_id_link, sc.title, sc_url_link, response.code])
               puts "Content item #{sc.id.to_s.red}: #{sc.title.slice(0,20).to_s.red} at #{sc.url.slice(0,30).to_s.red} returned #{response.code.to_s.red}."
             end
           end
 
         rescue Exception => e
-          error_links.push([sc_id_link, sc.title, sc.url, e.message])
+          error_links.push([sc.id, sc.title, sc.url, e.message])
           puts "Error for #{sc.id.to_s.red}: #{sc.title.slice(0,20).to_s.red} at #{sc.url.slice(0,30).to_s.red}: #{e.message}"
         end
       end
