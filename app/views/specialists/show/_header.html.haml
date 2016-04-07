@@ -30,101 +30,21 @@
   - elsif @specialist.padded_billing_number.present?
     %h5= "MSP ##{@specialist.padded_billing_number}"
 
-  - if @specialist.surveyed? && !@specialist.responded_to_survey?
+  %p.no_indent.space
+    %i{class: @specialist.referral_status(:icon)}
+    %strong.status= @specialist.referral_status(:show)
 
-    %p.space.no_indent
-      = "This specialist has not yet provided Pathways their information."
-
-  - elsif @specialist.moved_away?
-
-    %p.space.no_indent
-      = "This specialist has moved away."
-
-  - elsif @specialist.deceased?
-
-    %p.space.no_indent= "This specialist is deceased."
-    - if @specialist.status_details.present?
-      %p.no_indent
-        = @specialist.status_details.end_with_period.convert_newlines_to_br
-
-  - elsif @specialist.retired?
-
-    %p.space.no_indent
-      = "This specialist has retired."
-
-  - elsif @specialist.permanently_unavailable?
-
-    %p.space.no_indent
-      = "This specialist is no longer available."
-
-  - elsif !@specialist.surveyed?
-
-    %p.space.no_indent
-      = "This specialist has purposely not yet been surveyed by Pathways." + |
-        "They may be out of our current catchment area, " + |
-        "or in a speciality we have yet to fully survey." |
-
-  - elsif !@specialist.has_own_offices && @specialist.locations.any?
-
-    - hospital_count = @specialist.hospitals.length
-    - clinic_count = @specialist.clinics.reject{ |c| c.closed? }.length
-
-
-
-    - elsif @specialist.hospital_or_clinic_only?
+  - if specialist.indirect_referrals_only?
+    - if @specialist.offices.any?
       %p.space.no_indent
-        %i{class: @specialist.status_class}
-        - if hospital_count > 0 && clinic_count > 0
-          %strong Only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"} and #{ hospital_count > 1 ? "hospitals" : "a hospital"}, and in general all referrals should be made through these locations.
-        - elsif clinic_count > 0
-          %strong Only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
-        - elsif hospital_count > 0
-          %strong Only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
-        - else
-          %strong Only works out of hospitals and / or clinics, but we do not yet have data on which ones.
-
-      - if @specialist.hospital_clinic_details.present?
-        %p.space.no_indent
-          %strong Details:
-          = @specialist.hospital_clinic_details
-
-  - elsif @specialist.hospital_or_clinic_referrals_only?
-
-    - show_areas_of_practice = true
-    - show_details = true
-
-    - hospital_count = @specialist.hospitals.length
-    - clinic_count = @specialist.clinics.reject{ |c| c.closed? }.length
-
-    %p.space.no_indent
-      %i{:class => @specialist.status_class}
-      - if hospital_count > 0 && clinic_count > 0
-        %strong Only accepts referrals through #{ clinic_count > 1 ? "clinics" : "a clinic"} and #{ hospital_count > 1 ? "hospitals" : "a hospital"}, and in general all referrals should be made through these locations.
-      - elsif clinic_count > 0
-        %strong Only accepts referrals through #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
-      - elsif hospital_count > 0
-        %strong Only accepts referrals through #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
-      - else
-        %strong Only accepts referrals through hospitals and / or clinics, but we do not yet have data on which ones.
-
-      - if has_office
-        %p.space.no_indent
-          This physician also sees their own patients for ongoing care at their #{ specialist_offices.length > 1 ? "offices" : "office"} listed below.
-
-
+        = "This physician also sees their own patients for ongoing care at their " + |
+          "#{specialist_offices.many? ? "offices" : "office"} listed below."   |
     - if @specialist.hospital_clinic_details.present?
       %p.space.no_indent
         %strong Details:
         = @specialist.hospital_clinic_details
 
-  - else
-
-    - show_details = true
-    - show_areas_of_practice = true
-
-    %p.no_indent.space
-      %i{:class => @specialist.status_class}
-      %strong.status= @specialist.status.end_with_period
+  - elsif specialist.available? && specialist.accepting_new_referrals?
     - if @specialist.status_details.present?
       %p.no_indent
         %strong Details:

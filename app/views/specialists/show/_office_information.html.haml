@@ -1,6 +1,6 @@
 %h6 Office Information
 
-- specialist_offices.each do |specialist_office|
+- @specialist.offices.each do |office|
   %p.space
     %strong= specialist_office.phone_only if specialist_office.phone_only.present?
   %p= "Fax: #{specialist_office.fax}" if specialist_office.fax.present?

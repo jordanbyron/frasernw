@@ -38,14 +38,21 @@ class BreakupStatus < ActiveRecord::Migration
       }
     case 5 #retiring as of
       {
-        availability: 7, # unknown
+        availability: 13,
         retirement_date: specialist.unavailable_from
       }
     case 6 #unavailable between
-      {
-        availability: 7, #unknown
-        retirement_date: nil
-      }
+      if specialist.unavailable_from < Date.today && specialist.unavailable_to > Date.today
+        {
+          availability: 14, #unknown
+          retirement_date: nil
+        }
+      else
+        {
+          availability: 4, #unknown
+          retirement_date: nil
+        }
+      end
     case 7 #didn't answer
       {
         availability: 7, #unknown

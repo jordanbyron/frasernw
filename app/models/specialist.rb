@@ -381,114 +381,112 @@ class Specialist < ActiveRecord::Base
     end
   end
 
-  def status
-    if retired?
-      "Retired"
-    elsif retiring?
-      "Retiring as of #{unavailable_from.to_s(:long_ordinal)}"
-    elsif status_mask == 6
-      if (unavailable_to < Date.current)
-        #inavailability date has passed, available again
-        Specialist::STATUS_HASH[1]
-      else
-        "Unavailable from #{unavailable_from.to_s(:long_ordinal)} through #{unavailable_to.to_s(:long_ordinal)}"
-      end
-    elsif status_mask == 7 || status_mask.blank?
-      "It is unknown if this specialist is accepting new patients (the office didn't respond)"
+  def works_out_of_label
+    if clinics.none? && hospitals.none?
+      ""
+    elsif clinics.one? && hospitals.none?
+      "a clinic"
+    elsif hospital.one? && clinics.none?
+      "a hospital"
+    elsif hospitals.many? && clinics.none?
+      "hospitals"
+    elsif clinic.many? && hospitals.none?
+      "clinics"
     else
-      Specialist::STATUS_HASH[status_mask]
+      "hospitals and clinics"
     end
   end
 
-  STATUS_CLASS_AVAILABLE    =
-  STATUS_CLASS_LIMITATIONS  =
-  STATUS_CLASS_UNAVAILABLE  =
-  STATUS_CLASS_WARNING      =
-  STATUS_CLASS_UNKNOWN      =
-  STATUS_CLASS_EXTERNAL     =
-  STATUS_CLASS_BLANK        = ""
-
-  #match clinic
-  STATUS_CLASS_HASH = {
-    STATUS_CLASS_AVAILABLE => 1,
-    STATUS_CLASS_EXTERNAL => 2,
-    STATUS_CLASS_WARNING => 3,
-    STATUS_CLASS_UNAVAILABLE => 4,
-    STATUS_CLASS_UNKNOWN => 5,
-    STATUS_CLASS_BLANK => 6,
-    STATUS_CLASS_LIMITATIONS => 7,
-  }
-
-  #match tooltip to status_class
-  STATUS_TOOLTIP_HASH = {
-    STATUS_CLASS_AVAILABLE   => "Accepting new referrals",
-    STATUS_CLASS_LIMITATIONS => "Accepting limited new referrals by geography or # of patients",
-    STATUS_CLASS_UNAVAILABLE => ,
-    STATUS_CLASS_WARNING     => "Referral status will change soon",
-    STATUS_CLASS_UNKNOWN     => "Referral status is unknown",
-    STATUS_CLASS_EXTERNAL    => "Only works out of, and possibly accepts referrals through, clinics and/or hospitals",
-    STATUS_CLASS_BLANK       => ""
-  }
-
-  def referral_status_icon_classes
-    if not_responded? || availability_unknown?
-      "icon-question-sign"
-    elsif !surveyed?
-      ""
-    elsif available? && indirect_referrals_only?
-      "icon-signout icon-blue"
-    elsif available? && accepting_new_referrals? && referrals_limited?
-      "icon-ok icon-orange"
-    elsif available? && accepting_new_referral? && (temporarily_unavailable_soon? || retiring_soon?)
-      "icon-warning-sign icon-orange"
-    elsif available? && accepting_new_referrals?
-      "icon-ok icon-green"
-    elsif !available? || !accepting_new_referrals?
-      "icon-remove icon-red"
-    else
-      "catch this"
-    end
-  end
-
-  def referral_status_label
-    if not_responded? || availability_unknown?
-      "Referral status is unknown"
-    elsif !surveyed?
-      ""
+  def referral_status(context)
+    if !surveyed?
+      {
+        icon: "",
+        tooltip: "",
+        show: "This specialist has not yet been surveyed. They might be out of catchment, or in a specialty we have yet to fully survey."
+      }
+    elsif not_responded? || availability_unknown?
+      {
+        icon: "icon-question-sign",
+        tooltip: "Referral status unknown",
+        show: "It is unknown if this specialist is accepting new patients (the office didn't respond)."
+      }
     elsif available? && indirect_referrals_only? && accepting_new_referrals?
-      if attendances.any? && privileges.any?
-        "Only accepts referrals through clinics and hospitals."
-      elsif attendances.any?
-        "Only accepts referrals through clinics."
-      elsif privileges.any?
-        "Only accepts referrals through clinics hospitals."
-      else
-        ""
-      end
+      {
+        icon: "icon-signout icon-blue",
+        tooltip: "Only accepts referrals through #{works_out_of_label}.",
+        show: "This specialist only accepts referrals through #{works_out_of_label}."
+      }
     elsif available? && indirect_referrals_only? && accepting_new_referrals == nil
-      # Former "Only works out of hospitals and clinics" specialists
-      # Hopefully we can gather this information and delete this branch
-      if attendances.any? && privileges.any?
-        "Only works out of, and possibly accepts referrals through clinics and hospitals."
-      elsif attendances.any?
-        "Only works out of, and possibly accepts referrals through clinics."
-      elsif privileges.any?
-        "Only works out of, and possibly accepts referrals through hospitals."
-      else
-        ""
-      end
+      {
+        icon: "icon-signout icon-blue",
+        tooltip: "Only works out of, and possibly accepts referrals through #{works_out_of_label}.",
+        show: "This specialist only works out of, and possibly accepts referrals through #{works_out_of_label}."
+      }
     elsif available? && accepting_new_referrals? && referrals_limited?
-      "Accepting limited new referrals by geography or number of patients"
-    elsif available? && accepting_new_referrals? && (temporarily_unavailable_soon? || retiring_soon?)
-      "Referral status will change soon"
+      {
+        icon: "icon-ok icon-orange",
+        tooltip: "Accepting limited new referrals by geography or number of patients",
+        show: "This specialist is accepting limited new referrals by geography or number of patients"
+      }
+    elsif available? && temporarily_unavailable_soon?
+      {
+        icon: "icon-warning-sign icon-orange",
+        tooltip: "Unavailable soon.",
+        show: ("This specialist will be unavailable between " +
+          "#{unavailable_from.to_s(:long_ordinal)} and" +
+          " #{unavailable_to.to_s(:long_ordinal)}.")
+      }
+    elsif available? && retiring_soon?
+      {
+        icon: "icon-warning-sign icon-orange",
+        tooltip: "Unavailable soon.",
+        show: "This specialist will retire on #{retirement_date.to_s(:long_ordinal)}."
+      }
     elsif available? && accepting_new_referrals?
-      "Accepting new referrals"
+      {
+        icon: "icon-ok icon-green",
+        tooltip: "Accepting new referrals",
+        show: "This specialist is accepting new referrals"
+      }
+    elsif deceased?
+      {
+        icon: "icon-remove icon-red",
+        tooltip: "Not accepting new referrals",
+        show: "This specialist is deceased."
+      }
+    elsif retired?
+      {
+        icon: "icon-remove icon-red",
+        tooltip: "Not accepting new referrals",
+        show: "This specialist is retired."
+      }
+    elsif moved_away?
+      {
+        icon: "icon-remove icon-red",
+        tooltip: "Not accepting new referrals",
+        show: "This specialist has moved away."
+      }
     elsif !available? || !accepting_new_referrals?
-      "Not accepting new referrals"
+      {
+        icon: "icon-remove icon-red",
+        tooltip: "Not accepting new referrals",
+        show: "This specialist is not accepting new referrals"
+      }
     else
-      "catch this"
-    end
+      :err
+    end[context]
   end
+
+  AVAILABILITY = {
+    4 => :retired,
+    8 => :indefinitely_unavailable,
+    7 => :unknown,
+    9 => :permanently_unavailable,
+    10 => :moved_away,
+    12 => :deceased,
+    13 => :available,
+    14 => :temporarily_unavailable
+  }
 
   def status_tooltip
     STATUS_TOOLTIP_HASH[status_class]
@@ -645,14 +643,14 @@ class Specialist < ActiveRecord::Base
   def responds_to
     if respond_to_patient
       if !respond_by_phone && !respond_by_fax && !respond_by_mail
-        return "patient"
+        "patient"
       else
-        return "GP and patient"
+        "GP and patient"
       end
     elsif !respond_by_phone && !respond_by_fax && !respond_by_mail
-      return "GP or patient"
+      "GP or patient"
     else
-      return "GP"
+      "GP"
     end
   end
 
@@ -806,6 +804,10 @@ class Specialist < ActiveRecord::Base
   def family_practice_only?
     specializations.one? &&
       specializations.include?(Specialization.find_by(name: "Family Practice"))
+  end
+
+  def open_clinics
+    @open_clinics ||= clinics.reject(&:closed?)
   end
 
 private
