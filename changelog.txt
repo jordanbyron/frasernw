@@ -6,7 +6,10 @@ Local-only = Changes not reflected in Source Code
 Backend Maintenance = Change is not user facing
 
 ## [2016-04-09] [Since 2016-04-02 Integration]
-
+### Changed:
+- add option for admins to toggle 'last visit' format
+- change user controls specialist dropdown to use their MSP number instead of Pathways ID
+- update 'broken links' task
 
 ## [2016-04-02] [Since 2016-03-26 Integration]
 ### Changed:
