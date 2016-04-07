@@ -7,29 +7,43 @@ namespace :pathways do
       other_response_links = []
       error_links = []
       puts "Beginning check"
-      ScItem.all.reject{ |sc| !sc.link? }.each do |sc|
+
+      ScItem.first(20).reject{ |sc| !sc.link? }.each do |sc|
         begin
-          # uri = URI.parse(sc.url)
-          # http = Net::HTTP.new(uri.host, 80)
-          # request = Net::HTTP::Get.new(uri.request_uri, {'User-Agent' => 'Mozilla/5.0'})
-          # response = http.request(request)
-          response = Net::HTTP.get_response(URI(sc.url))
+          uri = URI.parse(sc.url)
+          http = Net::HTTP.new(uri.host, 80)
+          request = Net::HTTP::Get.new(uri.request_uri, {'User-Agent' =>
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/536.26.17 (KHTML, like Gecko) Version/6.0.2 Safari/536.26.17'
+            })
+          response = http.request(request)
+          sc_id_link = Spreadsheet::Link.new "pathwaysbc.ca/content_items/#{sc.id}", sc.id.to_s
+
           case response
           when Net::HTTPSuccess then
             puts "Link passed"
             next
           when Net::HTTPRedirection then
-            redirected_links.push([sc.id, sc.title, sc.url, response['location']])
-            puts "Content item #{sc.id.to_s.red}: #{sc.title.slice(0,20).to_s.red} at #{sc.url.slice(0,30).to_s.red} redirected to #{response['location'].slice(0,30).to_s.red}"
+            if Net::HTTP.get_response(URI(sc.url)).code == "200"
+              puts "Link passed"
+            else
+              redirected_links.push([sc_id_link, sc.title, sc.url, response['location']])
+              puts "Content item #{sc.id.to_s.red}: #{sc.title.slice(0,20).to_s.red} at #{sc.url.slice(0,30).to_s.red} redirected to #{response['location'].slice(0,30).to_s.red}"
+            end
           else
-            other_response_links.push([sc.id, sc.title, sc.url, response.code])
-            puts "Content item #{sc.id.to_s.red}: #{sc.title.slice(0,20).to_s.red} at #{sc.url.slice(0,30).to_s.red} returned #{response.code.to_s.red}."
+            if Net::HTTP.get_response(URI(sc.url)).code == "200"
+              puts "Link passed"
+            else
+              other_response_links.push([sc_id_link, sc.title, sc.url, response.code])
+              puts "Content item #{sc.id.to_s.red}: #{sc.title.slice(0,20).to_s.red} at #{sc.url.slice(0,30).to_s.red} returned #{response.code.to_s.red}."
+            end
           end
+
         rescue Exception => e
-          error_links.push([sc.id, sc.title, sc.url, e.message])
+          error_links.push([sc_id_link, sc.title, sc.url, e.message])
           puts "Error for #{sc.id.to_s.red}: #{sc.title.slice(0,20).to_s.red} at #{sc.url.slice(0,30).to_s.red}: #{e.message}"
         end
       end
+
       puts "Finished checking"
       QuickSpreadsheet.call(
         file_title: "pathways_broken_links",
