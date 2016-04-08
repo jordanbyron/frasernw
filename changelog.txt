@@ -11,6 +11,7 @@ Backend Maintenance = Change is not user facing
 - change user controls specialist dropdown to use their MSP number instead of Pathways ID
 - update 'broken links' task
 - don't allow deletion of clinic without also changing specialist offices at its locations
+- add faster JSON encoder, improving load times for pages that depend on that
 
 ## [2016-04-02] [Since 2016-03-26 Integration]
 ### Changed:
