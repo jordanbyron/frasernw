@@ -5,12 +5,12 @@ class City < ActiveRecord::Base
 
   belongs_to :province
   has_many :addresses
-  has_many :locations, :through => :addresses
+  has_many :locations, through: :addresses
 
-  has_many :division_cities, :dependent => :destroy
-  has_many :divisions, :through => :division_cities
+  has_many :division_cities, dependent: :destroy
+  has_many :divisions, through: :division_cities
 
-  has_many :division_referral_cities
+  has_many :division_referral_cities, dependent: :destroy
 
   default_scope order('cities.name')
 
