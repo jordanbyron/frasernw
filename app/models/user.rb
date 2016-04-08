@@ -115,7 +115,8 @@ class User < ActiveRecord::Base
     :email_confirmation,
     :agree_to_toc,
     :type_mask,
-    :persist_in_demo
+    :persist_in_demo,
+    :last_request_format_key
 
   ROLE_LABELS = {
     "user" => "User",
@@ -225,6 +226,15 @@ class User < ActiveRecord::Base
   def deliver_password_reset_instructions!
     reset_perishable_token!
     PasswordResetMailer.password_reset_instructions(self).deliver
+  end
+
+  LAST_REQUEST_FORMATS = {
+    1 => :relative,
+    2 => :absolute
+  }
+
+  def last_request_format
+    LAST_REQUEST_FORMATS[last_request_format_key]
   end
 
   def active?

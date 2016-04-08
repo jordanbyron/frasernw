@@ -41,4 +41,4 @@
     stateMapper: "CategoryPage",
     topLevelComponent: "CategoryPage",
     uiReducer: "CategoryPage"
-  }, #{@init_data.to_json})
+  }, #{Oj.dump(@init_data)})

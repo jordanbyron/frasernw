@@ -26,6 +26,13 @@
   #admin_pane
 
   #admin_and_super_admin_pane
+    = f.input :last_request_format_key,
+      as: :radio_buttons,
+      collection: User::LAST_REQUEST_FORMATS,
+      label_method: -> (pair) { pair.last.to_s.capitalize },
+      value_method: :first,
+      include_blank: false,
+      label: "'Last Visit' Format"
 
   #user_pane
     = f.input :type_mask, :as => :select, :collection => User::TYPES, :label_method => :last, :value_method => :first, :include_blank => false
@@ -39,7 +46,7 @@
               as: :select,
               label: false,
               collection: @formatted_specialists,
-              label_method: ->(specialist){ "#{specialist.name} (##{specialist.id})" },
+              label_method: ->(specialist){ "#{specialist.name} (MSP ##{specialist.billing_number})" },
               prompt: 'Select ...',
               wrapper: :no_wrapper
 

@@ -372,6 +372,7 @@ GEM
     oink (0.10.1)
       activerecord
       hodel_3000_compliant_logger
+    oj (2.15.0)
     os (0.9.6)
     paper_trail (4.1.0)
       activerecord (>= 3.0, < 6.0)
@@ -588,6 +589,7 @@ DEPENDENCIES
   nested_form!
   newrelic_rpm
   oink
+  oj
   paper_trail
   paperclip
   pg

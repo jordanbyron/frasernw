@@ -1,0 +1,23 @@
+- set_page_specific_title "Cannot Delete #{@clinic.name}"
+
+.content-wrapper
+
+  %h2= "Cannot Delete #{@clinic.name}"
+
+  %p
+    = "Specialists have offices at #{@clinic.name}. " + |
+      "Please delete or change the addresses of these offices before deleting the clinic." |
+
+  %ul
+    - @clinic.specialists_with_offices_in.each do |specialist|
+      %li
+        = link_to specialist.name,
+          specialist_path(specialist)
+
+  %br
+  %br
+  %br
+  %p
+    = link_to "Re-attempt Deletion",
+      clinic_path(@clinic),
+      method: :delete

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160325023021) do
+ActiveRecord::Schema.define(version: 20160407235747) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1053,15 +1053,16 @@ ActiveRecord::Schema.define(version: 20160325023021) do
     t.datetime "updated_at"
     t.string   "name"
     t.string   "role"
-    t.string   "perishable_token",   default: "",    null: false
+    t.string   "perishable_token",        default: "",    null: false
     t.string   "saved_token"
-    t.integer  "type_mask",          default: 1
+    t.integer  "type_mask",               default: 1
     t.datetime "last_request_at"
-    t.boolean  "agree_to_toc",       default: false
-    t.boolean  "active",             default: true
-    t.integer  "failed_login_count", default: 0
+    t.boolean  "agree_to_toc",            default: false
+    t.boolean  "active",                  default: true
+    t.integer  "failed_login_count",      default: 0
     t.date     "activated_at"
-    t.boolean  "persist_in_demo",    default: false
+    t.boolean  "persist_in_demo",         default: false
+    t.integer  "last_request_format_key", default: 1
   end
 
   create_table "versions", force: true do |t|

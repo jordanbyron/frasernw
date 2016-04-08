@@ -6,7 +6,12 @@ Local-only = Changes not reflected in Source Code
 Backend Maintenance = Change is not user facing
 
 ## [2016-04-09] [Since 2016-04-02 Integration]
-
+### Changed:
+- add option for admins to toggle 'last visit' format
+- change user controls specialist dropdown to use their MSP number instead of Pathways ID
+- update 'broken links' task
+- don't allow deletion of clinic without also changing specialist offices at its locations
+- add faster JSON encoder, improving load times for pages that depend on that
 
 ## [2016-04-02] [Since 2016-03-26 Integration]
 ### Changed:

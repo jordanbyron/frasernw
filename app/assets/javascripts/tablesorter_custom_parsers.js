@@ -76,7 +76,7 @@ $.tablesorter.addParser({
     return false;
   },
   format: function(s, table, cell, cellIndex) {
-    return $(cell).find("div").attr("data-last-request-at");
+    return $(cell).attr("data-last-request-at");
   },
   parsed: false,
   type: 'numeric'
