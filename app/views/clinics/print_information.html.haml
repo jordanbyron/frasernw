@@ -4,7 +4,7 @@
 
 %h5.specialty_links= @clinic.specializations.collect(){ |s| s.name }.to_sentence
 
-%h6 Your Appointment Information
+%h6 Appointment Information
 
 %p#specific_appointment_block.empty
   %input.specific_appointment#specific_appointment_check{"type" => "radio", "name" => "appointment"}
@@ -26,7 +26,9 @@
 
 %p.indent#future_appointment_followup_block.empty
   %input#future_appointment_followup_check{"type" => "checkbox"}
-  If you haven't had heard about your appointment date within
+  :preserve
+    If you haven't had heard about your appointment date within 
+
   %select.future_appointment_followup
     %option
     %option 1 week (by #{DateTime.now.since(1.week).to_date.strftime("%b %d, %Y")})
@@ -40,7 +42,7 @@
     %option 14 months (by #{DateTime.now.since(14.month).to_date.strftime("%b %d, %Y")})
     %option 18 months (by #{DateTime.now.since(18.month).to_date.strftime("%b %d, %Y")})
     %option 24 months (by #{DateTime.now.since(24.month).to_date.strftime("%b %d, %Y")})
-  please call
+  , please call
   %select.future_appointment_followup
     %option
     %option our office.
@@ -79,7 +81,7 @@
 
 %script{"type" => "text/javascript"}
   :plain
-    function print_patient_information()
+    function print_information()
     {
       copy_to_print_helper();
       window.print();
@@ -136,4 +138,4 @@
       set_future_followup_block_print_visibility();
     });
 
-%input.btn{"type" => "button", "value" => "Print", "onclick" => "print_patient_information()"}
+%input.btn{"type" => "button", "value" => "Print", "onclick" => "print_information()"}

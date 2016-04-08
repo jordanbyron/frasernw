@@ -532,33 +532,34 @@
         %li None
 
   .btn-group
-    - if true || show_details
-      - if specialist_offices.one? && !specialist_clinics.any?
-        %a.btn{"href" => specialist_patient_information_path(@specialist), "target" => "_blank"}
-          %i.icon-print.icon-text
-          Print Information for Patient
-      - elsif specialist_clinics.one? && !specialist_offices.any?
-        %a.btn{"href" => specialist_patient_information_clinic_path(@specialist, specialist_clinics.first), "target" => "_blank"}
-          %i.icon-print.icon-text
-          Print Information for Patient
-      - else
-        %a.btn.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-          %i.icon-print.icon-text
-          Print Information for Patient
-          %span.caret
-        %ul.dropdown-menu
+    - if specialist_offices.one? && !specialist_clinics.any?
+      %a.btn{"href" => specialist_office_information_path(@specialist, specialist_offices.first), "target" => "_blank"}
+        %i.icon-print.icon-text
+        Print Information for Patient
+    - elsif specialist_clinics.one? && specialist_clinics.first.clinic_locations.reject{ |cl| cl.empty? }.one? && !specialist_offices.any?
+      - clinic_location = specialist_clinics.first.clinic_locations.reject{ |cl| cl.empty? }.first
+      %a.btn{"href" => specialist_clinic_information_path(@specialist, specialist_clinics.first, clinic_location), "target" => "_blank"}
+        %i.icon-print.icon-text
+        Print Information for Patient
+    - else
+      %a.btn.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+        %i.icon-print.icon-text
+        Print Information for Patient
+        %span.caret
+      %ul.dropdown-menu.specialist-dropdown__menu
+        - if specialist_offices.any?
           - specialist_offices.each do |specialist_office|
             - next if specialist_office.office.blank?
             %li
-              %a{"href" => specialist_patient_information_office_path(@specialist, specialist_office), "target" => "_blank"}
-                = specialist_office.office.short_address
+              %a{"href" => specialist_office_information_path(@specialist, specialist_office), "target" => "_blank"}
+                #{@specialist.formal_name}'s office at #{specialist_office.office.short_address}
+        - if specialist_clinics.any?
           - specialist_clinics.each do |clinic|
-            - if @specialist.clinic_locations.where(clinic_id: clinic.id).present?
-              - clinic_location = @specialist.clinic_locations.where(clinic_id: clinic.id).first
-            - next unless clinic_location.present?
-            %li
-              %a{"href" => specialist_patient_information_clinic_path(@specialist, clinic), "target" => "_blank"}
-                = clinic_location.clinic.name
+            - clinic_locations = clinic.clinic_locations.reject{ |cl| cl.empty? }
+            - clinic_locations.each do |cl|
+              %li
+                %a{"href" => specialist_clinic_information_path(@specialist, clinic, cl), "target" => "_blank"}
+                  #{clinic.name}, at #{cl.resolved_address.address1}
 
     - if !current_user.as_admin_or_super? && (can? :update, @specialist)
       %a.btn.btn-primary.ajax{"href" => specialist_self_edit_path(@specialist, @specialist.token)}

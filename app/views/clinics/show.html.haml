@@ -375,21 +375,21 @@
         %li None
 
   .btn-group
-    - if true || show_details
-      - if clinic_locations.length == 1
-        %a.btn{"href" => patient_information_clinic_path(@clinic), "target" => "_blank"}
-          %i.icon-print.icon-text
-          Print Information for Patient
-      - else
-        %a.btn.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-          %i.icon-print.icon-text
-          Print Information for Patient
-          %span.caret
-        %ul.dropdown-menu
-          - clinic_locations.each do |clinic_location|
-            %li
-              %a{"href" => clinic_patient_information_location_path(@clinic, clinic_location), "target" => "_blank"}
-                = clinic_location.location.short_address
+    - if clinic_locations.length == 1
+      %a.btn{"href" => clinic_location_information_path(@clinic, clinic_locations.first), "target" => "_blank"}
+        %i.icon-print.icon-text
+        Print Information for Patient
+    - else
+      %a.btn.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+        %i.icon-print.icon-text
+        Print Information for Patient
+        %span.caret
+      %ul.dropdown-menu
+        - clinic_locations.each do |clinic_location|
+          %li
+            %a{"href" => clinic_location_information_path(@clinic, clinic_location), "target" => "_blank"}
+              = clinic_location.location.short_address
+
     - if !current_user.as_admin_or_super? && (can? :update, @clinic)
       %a.btn.btn-primary.ajax{"href" => clinic_self_edit_path(@clinic, @clinic.token)}
         %i.icon-pencil.icon-white

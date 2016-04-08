@@ -238,16 +238,10 @@ class ClinicsController < ApplicationController
     end
   end
 
-  def print_patient_information
-    @clinic = Clinic.find(params[:id])
-    @clinic_location = @clinic.clinic_locations.reject{ |cl| cl.empty? }.first
-    render :layout => 'print'
-  end
-
-  def print_location_patient_information
+  def print_location_information
     @clinic = Clinic.find(params[:id])
     @clinic_location = ClinicLocation.find(params[:location_id])
-    render :print_patient_information, :layout => 'print'
+    render :print_information, :layout => 'print'
   end
 
   def check_token

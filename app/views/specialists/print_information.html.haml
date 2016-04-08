@@ -125,7 +125,7 @@
 
 %script{"type" => "text/javascript"}
   :plain
-    function print_patient_information() {
+    function print_information() {
       copy_to_print_helper();
       replace_inputs_with_values();
       window.print();
@@ -201,4 +201,4 @@
         replaceWith('<span class="followup_call_selection">'+$('#followup_call_selection').val()+'</span>');
     }
 
-%input.btn{"type" => "button", "value" => "Print", "onclick" => "print_patient_information()"}
+%input.btn{"type" => "button", "value" => "Print", "onclick" => "print_information()"}

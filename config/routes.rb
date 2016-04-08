@@ -42,7 +42,6 @@ Frasernw::Application.routes.draw do
       get :rereview
       get :archive
       patch :accept, as: 'accept_review'
-      get :print, as: 'patient_information', action: 'print_patient_information'
     end
   end
 
@@ -163,14 +162,12 @@ Frasernw::Application.routes.draw do
     end
   end
 
-  get '/specialists/:id/print' => 'specialists#print_patient_information',
-    as: 'specialist_patient_information'
-  get '/specialists/:id/print/office/:office_id' => 'specialists#print_office_patient_information',
-    as: 'specialist_patient_information_office'
-  get '/specialists/:id/print/clinic/:clinic_id' => 'specialists#print_clinic_patient_information',
-    as: 'specialist_patient_information_clinic'
-  get '/clinics/:id/print/location/:location_id' => 'clinics#print_location_patient_information',
-    as: 'clinic_patient_information_location'
+  get '/specialists/:id/office/:office_id/print' => 'specialists#print_office_information',
+    as: 'specialist_office_information'
+  get '/specialists/:id/clinic/:clinic_id/location/:location_id/print' => 'specialists#print_clinic_information',
+    as: 'specialist_clinic_information'
+  get '/clinics/:id/location/:location_id/print' => 'clinics#print_location_information',
+    as: 'clinic_location_information'
 
   get '/hospitals/:id/:token/refresh_cache' => 'hospitals#refresh_cache', as: 'hospital_refresh_cache'
   get '/languages/:id/:token/refresh_cache' => 'languages#refresh_cache', as: 'language_refresh_cache'

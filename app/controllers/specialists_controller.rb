@@ -211,23 +211,17 @@ class SpecialistsController < ApplicationController
     end
   end
 
-  def print_patient_information
-    @specialist = Specialist.cached_find(params[:id])
-    @specialist_office = @specialist.specialist_offices.reject{ |so| so.empty? }.first
-    render :layout => 'print'
-  end
-
-  def print_office_patient_information
+  def print_office_information
     @specialist = Specialist.cached_find(params[:id])
     @specialist_office = SpecialistOffice.find(params[:office_id])
-    render :print_patient_information, :layout => 'print'
+    render :print_information, :layout => 'print'
   end
 
-  def print_clinic_patient_information
+  def print_clinic_information
     @specialist = Specialist.cached_find(params[:id])
-    @clinic = @specialist.clinics.find(params[:clinic_id])
-    @clinic_location = @specialist.clinic_locations.where(clinic_id: @clinic.id).first
-    render :print_patient_information, :layout => 'print'
+    @clinic = Clinic.find(params[:clinic_id])
+    @clinic_location = ClinicLocation.find(params[:location_id])
+    render :print_information, :layout => 'print'
   end
 
   def photo

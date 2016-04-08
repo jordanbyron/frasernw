@@ -72,7 +72,7 @@ Frasernw::Application.configure do
   config.assets.version = '1.0'
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w( ie.css print.css font-awesome-ie7.css patient_information.css jquery-1.7.2.min.js views/*.js)
+  config.assets.precompile += %w( ie.css print.css font-awesome-ie7.css print_information.css jquery-1.7.2.min.js views/*.js)
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
