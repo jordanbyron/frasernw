@@ -474,7 +474,7 @@ class Specialist < ActiveRecord::Base
       (
         accepting_new_patients? ||
         retiring? ||
-        accepting_with_limitations? || 
+        accepting_with_limitations? ||
         (
           status_mask == 6 &&
           (unavailable_to < Date.current || unavailable_from > Date.current)
@@ -888,6 +888,14 @@ class Specialist < ActiveRecord::Base
     @ordered_specialist_offices ||= specialist_offices.sort_by do |office|
       [ (office.has_data? ? 0 : 1), ( office.created_at || DateTime.now ) ]
     end
+  end
+
+  def print_clinic_info?
+    valid_clinic_locations.any? && (hospital_or_clinic_only? || hospital_or_clinic_referrals_only?)
+  end
+
+  def valid_clinic_locations
+    @valid_clinic_locations = clinic_locations.reject(&:empty?)
   end
 
 private
