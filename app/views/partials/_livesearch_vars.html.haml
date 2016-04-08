@@ -6,27 +6,27 @@
 
 - divisions.each do |division|
   :javascript
-    pathways_divisional_entries_search_data[#{division.id.to_s}] = #{division.search_data.entries.to_json};
-    pathways_divisional_content_search_data[#{division.id.to_s}] = #{division.search_data.content.to_json};
+    pathways_divisional_entries_search_data[#{division.id.to_s}] = #{Oj.dump(division.search_data.entries)};
+    pathways_divisional_content_search_data[#{division.id.to_s}] = #{Oj.dump(division.search_data.content)};
 
 :javascript
   //labels
 
   // bolded headings
-  var pathways_group_data = #{search_data_labels.groups.to_json}
+  var pathways_group_data = #{Oj.dump(search_data_labels.groups)}
 
   // collection name for url strings
-  var pathways_url_data = #{search_data_labels.urls.to_json}
+  var pathways_url_data = #{Oj.dump(search_data_labels.urls)}
 
-  var pathways_specialization_data = #{search_data_labels.specializations.to_json}
+  var pathways_specialization_data = #{Oj.dump(search_data_labels.specializations)}
 
-  var pathways_city_data = #{search_data_labels.cities.to_json}
+  var pathways_city_data = #{Oj.dump(search_data_labels.cities)}
 
   // status icons
-  var pathways_status_data = #{search_data_labels.statuses.to_json}
+  var pathways_status_data = #{Oj.dump(search_data_labels.statuses)}
 
   //Base search data that is used regardless of whether
   // User is searching divisionally or with the expanded area
 
 :javascript
-  var pathways_global_search_data = #{global_search_data.to_json}
+  var pathways_global_search_data = #{Oj.dump(global_search_data)}
