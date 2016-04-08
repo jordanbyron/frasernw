@@ -684,7 +684,11 @@ class Specialist < ActiveRecord::Base
   end
 
   def formal_name
-    "Dr. #{lastname}"
+    if specializations.none? || specializations.any?(&:members_are_physicians?)
+      "Dr. #{lastname}"
+    else
+      name
+    end
   end
 
   SEX_LABELS = {

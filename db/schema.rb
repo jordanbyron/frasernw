@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160407235747) do
+ActiveRecord::Schema.define(version: 20160408203305) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -920,6 +920,7 @@ ActiveRecord::Schema.define(version: 20160407235747) do
     t.string   "label_name",                    default: "Specialist"
     t.string   "suffix"
     t.boolean  "mask_filters_by_referral_area", default: false
+    t.boolean  "members_are_physicians",        default: true
   end
 
   create_table "subscription_divisions", force: true do |t|
