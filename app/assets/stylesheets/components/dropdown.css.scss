@@ -7,4 +7,15 @@
     min-width: 450px;
   }
 
+  .dropdown.dropdown--featured_content.open {
+    .dropdown-toggle {
+      // background-color: #0088D2;
+      background-color: initial;
+      i {
+        color: #0088D2 !important;
+      }
+      // border: 2px solid #0088D2;
+    }
+  }
+
 }

@@ -153,7 +153,7 @@
 
           %h2.center Featured Content
 
-          - cache("featured_content_#{@as_divisions.map{|d| d.id }.join('_')}") do
+          - cache(rand()) do
             - ScCategory.front_page_for_divisions(@as_divisions).each do |category|
               %h3
                 = link_to "#{category.name} <span class='all'> - Browse All <i class='icon-arrow-right icon-blue icon-small'></i></span>".html_safe,
@@ -169,8 +169,22 @@
                     - if featured_sc_item.shared_care?
                       %i.icon-blue.icon-star
                     = link_to(featured_sc_item.title, featured_sc_item.resolved_url, :class => featured_sc_item.markdown? && "ajax", :target => "_blank", "onclick" => "window.pathways.trackContentItem(_gaq, #{featured_sc_item.id})")
-                    %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{featured_sc_item.id},'#{escape_javascript(featured_sc_item.title)}')", "title" => "Favourite / un-favourite"}
-                      %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{featured_sc_item.id}"}
+                    -# %i.icon-chevron-down{style: "margin-left: 5px"}
+                    .dropdown.dropdown--featured_content{style: "display: inline-block;"}
+                      %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                        %span.icon-stack{style: "line-height: initial"}
+                          %i.icon-check-empty.icon-stack-base.icon-text{style: "color: #a3d9f5;"}
+                          %i.icon-caret-down.icon-text{style: "padding-top: 8px; color: #a3d9f5;"}
+                      %ul.dropdown-menu{style: " left: -140px; border-radius: 2px;"}
+                        %li{style: "padding-left: 10px; color: #424242;"}
+                          %i.icon-heart.icon-text
+                          %span{style: "margin-left: 10px"}= "Favorite"
+                        %li{style: "padding-left: 10px; color: #424242;"}
+                          %i.icon-envelope-alt.icon-blue
+                          %span{style: "margin-left: 10px"}= "Email"
+                        %li{style: "padding-left: 10px; color: #424242;"}
+                          %i.icon-bullhorn.icon-blue
+                          %span{style: "margin-left: 10px"}= "Send Feedback"
 
           .featured-content
             %i.icon-star.icon-blue
