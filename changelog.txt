@@ -13,6 +13,9 @@ Backend Maintenance = Change is not user facing
 - don't allow deletion of clinic without also changing specialist offices at its locations
 - add faster JSON encoder, improving load times for pages that depend on that
 
+### Fixed:
+- Can now print patient information for specialists who only work out of hospitals or clinics
+
 ## [2016-04-02] [Since 2016-03-26 Integration]
 ### Changed:
 - Closed clinics no longer show waittimes on specialty pages
