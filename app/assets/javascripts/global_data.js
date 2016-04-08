@@ -12,8 +12,10 @@
     $.get("/data_tables/global_data").done(function(data) {
       deferred.resolve(data);
 
-      window.localStorage.pathwaysGlobalData = vendor.lzString.compressToUTF16(JSON.stringify(data));
-      window.localStorage.pathwaysGlobalDataExpiration = expiryKey(cacheVersion);
+      setTimeout(function(){
+        window.localStorage.pathwaysGlobalData = vendor.lzString.compressToUTF16(JSON.stringify(data));
+        window.localStorage.pathwaysGlobalDataExpiration = expiryKey(cacheVersion);
+      }, 0);
     })
   };
 
