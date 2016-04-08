@@ -34,7 +34,7 @@
     topLevelComponent: "FilterTablePage",
     uiReducer: "FilterTablePage",
     mapperConfig: "hey"
-  }, #{@init_data.to_json})
+  }, #{Oj.dump(@init_data)})
 
 .content-wrapper
   %p.admin.btn-group

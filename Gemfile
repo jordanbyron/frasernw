@@ -17,6 +17,8 @@ gem 'redis'
 gem 'sass-rails',   '~> 4.0.0'
 gem 'uglifier', '>= 1.3.0'
 
+gem 'oj'
+
 # Rails 3.2 to 4 upgrade gems
 gem 'protected_attributes'
 

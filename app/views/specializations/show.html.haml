@@ -20,7 +20,7 @@
     stateMapper: "FilterTablePage",
     topLevelComponent: "FilterTablePage",
     uiReducer: "FilterTablePage"
-  }, #{@init_data.to_json})
+  }, #{Oj.dump(@init_data)})
 
 .content-wrapper
   %p.admin.btn-group
