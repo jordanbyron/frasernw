@@ -10,7 +10,13 @@
       .alert.alert-error= f.error_messages
 
     - if @specialist.photo.present?
-      = f.input :photo_delete, :as => :radio, :collection => [[0, 'Update photo'], [1, 'Remove photo']], label_method: :last, value_method: :first, :class => 'photo_change', :label => "Update photo or remove photo?"
+      = f.input :photo_delete,
+        as: :radio_buttons,
+        collection: [[0, 'Update photo'], [1, 'Remove photo']],
+        label_method: :last,
+        value_method: :first,
+        class: 'photo_change',
+        label: "Update photo or remove photo?"
       #change_photo
         = f.input :photo, :lable => "New photo"
 
