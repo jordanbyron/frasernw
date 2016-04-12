@@ -1,0 +1,37 @@
+%td.featured_contents__table_cell
+  .dropdown.featured_contents__dropdown
+    %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+      %span.icon-stack.featured_contents__arrow_icon_stack
+        %i.icon-check-empty.icon-stack-base.icon-text.featured_contents__arrow_icon_box
+        %i.icon-caret-down.icon-text.featured_contents__arrow_icon_caret
+    %ul.dropdown-menu.featured_contents__dropdown_menu
+      %li.featured_contents__dropdown_item
+        = link_to "javascript:void(0)",
+          onclick: favorite_featured_item(featured_sc_item),
+          title: "Favourite / un-favourite",
+          class: "featured_contents__dropdown_link" do
+          %i.icon-heart.icon-text{id: "user_favorite_content_items_#{featured_sc_item.id}"}
+          %span.featured_contents__dropdown_item_text
+            = "Favorite"
+      - if featured_sc_item.can_email?
+        %li.featured_contents__dropdown_item
+          = link_to compose_mail_to_patients_path(featured_sc_item),
+            title: "E-mail to Patient",
+            class: "featured_contents__dropdown_link",
+            target: "_blank" do
+            %i.icon-envelope-alt.icon-blue
+            %span.featured_contents__dropdown_item_text
+              = "Email"
+      %li.featured_contents__dropdown_item
+        = link_to "javascript:void(0)",
+          onClick: open_feedback_modal(featured_sc_item),
+          class: "featured_contents__dropdown_link" do
+          %i.icon-bullhorn.icon-blue
+          %span.featured_contents__dropdown_item_text
+            = "Send Feedback"
+%td.featured_contents__table_cell
+  = link_to featured_sc_item.title,
+    featured_sc_item.resolved_url,
+    class: featured_sc_item.markdown? && "ajax",
+    target: "_blank",
+    onclick: "window.pathways.trackContentItem(_gaq, #{featured_sc_item.id})"

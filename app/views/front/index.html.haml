@@ -153,56 +153,10 @@
 
           %h2.center Featured Content
 
-          - cache(rand()) do
+          - cache("featured_content_#{@as_divisions.map(&:id).sort.join('_')}") do
             - ScCategory.front_page_for_divisions(@as_divisions).each do |category|
-              %h3
-                = link_to sc_category_path(category),
-                  class: 'ajax' do
-                  %span= category.name
-                  %span.all
-                    %span= " - Browse All"
-                    %i.icon-arrow-right.icon-blue.icon-small
-
-              %table.featured_contents__table
-                %tbody
-                  - category.featured_for_divisions(@as_divisions).each do |featured_sc_item|
-                    %tr
-                      %td.featured_contents__table_cell
-                        .dropdown.featured_contents__dropdown
-                          %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-                            %span.icon-stack.featured_contents__arrow_icon_stack
-                              %i.icon-check-empty.icon-stack-base.icon-text.featured_contents__arrow_icon_box
-                              %i.icon-caret-down.icon-text.featured_contents__arrow_icon_caret
-                          %ul.dropdown-menu.featured_contents__dropdown_menu
-                            %li.featured_contents__dropdown_item
-                              = link_to "javascript:void(0)",
-                                onclick: "pathways.favoriteFeaturedItem(event, #{featured_sc_item.id},' #{escape_javascript(featured_sc_item.title)}')",
-                                title: "Favourite / un-favourite",
-                                class: "featured_contents__dropdown_link" do
-                                %i.icon-heart.icon-text{id: "user_favorite_content_items_#{featured_sc_item.id}"}
-                                %span.featured_contents__dropdown_item_text
-                                  = "Favorite"
-                            - if featured_sc_item.can_email?
-                              %li.featured_contents__dropdown_item
-                                = link_to compose_mail_to_patients_path(featured_sc_item),
-                                  title: "E-mail to Patient",
-                                  class: "featured_contents__dropdown_link" do
-                                  %i.icon-envelope-alt.icon-blue
-                                  %span.featured_contents__dropdown_item_text
-                                    = "Email"
-                            %li.featured_contents__dropdown_item
-                              = link_to "javascript:void(0)",
-                                onClick: "window.pathways.feedbackModal.setState({id: #{featured_sc_item.id}, itemType: 'ScItem', title: '#{featured_sc_item.title}', modalState: 'PRE_SUBMIT'})",
-                                class: "featured_contents__dropdown_link" do
-                                %i.icon-bullhorn.icon-blue
-                                %span.featured_contents__dropdown_item_text
-                                  = "Send Feedback"
-                      %td.featured_contents__table_cell
-                        = link_to featured_sc_item.title,
-                          featured_sc_item.resolved_url,
-                          class: featured_sc_item.markdown? && "ajax",
-                          target: "_blank",
-                          onclick: "window.pathways.trackContentItem(_gaq, #{featured_sc_item.id})"
+              = render "front/index/featured_content_category",
+                category: category
 
           .featured-content
             %i.icon-star.icon-blue
