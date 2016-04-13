@@ -35,3 +35,7 @@
     class: featured_sc_item.markdown? && "ajax",
     target: "_blank",
     onclick: "window.pathways.trackContentItem(_gaq, #{featured_sc_item.id})"
+  - if featured_sc_item.new?
+    %span.new new
+  - if featured_sc_item.shared_care?
+    %i.icon-blue.icon-star
