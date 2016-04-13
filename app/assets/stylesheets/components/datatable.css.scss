@@ -1,5 +1,69 @@
 #content {
   #container {
+    .datatable__row .datatable__referent_name {
+      .mini-profile {
+        position: absolute;
+        display: none;
+        padding: 5px;
+        left: 165px;
+        width: 520px;
+        padding-left: 10px;
+        top: -11px;
+        z-index: 1;
+      }
+
+      // taken from http://www.cssarrowplease.com/
+
+      .mini-profile {
+        background: #ffffff;
+        border: 1px solid #cccccc;
+      }
+
+      .mini-profile:after, .mini-profile:before {
+        right: 100%;
+        top: 50%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+      }
+
+      .mini-profile:after {
+        border-color: rgba(255, 255, 255, 0);
+        border-right-color: #ffffff;
+        border-width: 5px;
+        top: 11px;
+        // margin-top: -5px;
+      }
+      .mini-profile:before {
+        border-color: rgba(204, 204, 204, 0);
+        border-right-color: #cccccc;
+        border-width: 6px;
+        top: 10px;
+        // margin-top: -6px;
+      }
+
+      //
+
+      .mini-profile__title {
+        font-family: Bitter;
+        font-size: 20px;
+      }
+
+      .mini-profile__item {
+        color: #404040;
+        margin-top: 10px;
+      }
+    }
+
+    .datatable__referent_name:hover {
+      .mini-profile {
+        display: block;
+      }
+    }
+
     .datatable__row {
       &:hover {
         td.datatable__cell {

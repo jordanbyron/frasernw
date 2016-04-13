@@ -7,12 +7,96 @@ var Tags = require("../../react_components/tags");
 var reject = require("lodash/collection/reject");
 var trackContentItem = require("../../analytics_wrappers").trackContentItem;
 
-// name of specialist / clinic
-// E.g. John Smith || St. Paul's Clinic
-var labelReferentName = function(record) {
+
+const MostInterested = ({record}) => {
+  if (record.interest){
+    return(<MiniProfileItem heading={"Most interested in:"} value={record.interest}/>);
+  }
+  else {
+    return(<span></span>);
+  }
+}
+
+const NotPerformed = ({record}) => {
+  if (record.notPerformed){
+    return(<MiniProfileItem heading={"Does not see or do:"} value={record.notPerformed}/>);
+  }
+  else {
+    return(<span></span>);
+  }
+}
+
+const MSP = ({record}) => {
+  if (record.collectionName === "specialists" && record.billingNumber) {
+    return(<MiniProfileItem heading="Billing Number:" value={record.billingNumber}/>)
+  }
+  else {
+    return(<span></span>);
+  }
+}
+
+const MiniProfileItem = ({heading, value}) => {
+  return(
+    <div className="mini-profile__item">
+      <b>{`${heading} `}</b>
+      <span>{value}</span>
+    </div>
+  )
+}
+
+const SpecializesIn = ({record, app}) => {
+  return(
+    <MiniProfileItem
+      heading={"Specializes In:"}
+      value={record.specializationIds.map((id) => app.specializations[id].name ).join(", ")}
+    />
+  );
+}
+
+const MiniProfile = ({record, app, config}) => {
+  const tooltipKey = {
+    specialists: "statusClassKey",
+    clinics: "statusMask",
+  }[record.collectionName];
+
+
+  return(
+    <div className="mini-profile">
+      <h3 className="mini-profile__title">{record.name}</h3>
+      <p style={{color: "#040404", marginLeft: "0px", marginTop: "5px"}}>
+        <span style={{marginRight: "5px"}}>
+          { labelReferentStatus(record, app.referentStatusIcons, app.tooltips) }
+        </span>
+        <span>{ app.tooltips[record.collectionName][record[tooltipKey]] }</span>
+      </p>
+      <div className="headline-footer" style={{marginTop: "7px"}}/>
+      <MostInterested record={record}/>
+      <NotPerformed record={record}/>
+      <MSP record={record}/>
+      <MiniProfileItem
+        heading="Average Non-urgent Patient Waittime:"
+        value={labelWaittime(record, config.customWaittime.shouldUse, config.customWaittime.procedureId, app.waittimeHash)}
+      />
+      <MiniProfileItem
+        heading="Practices in:"
+        value={labelReferentCities(record, app)}
+      />
+      <SpecializesIn record={record} app={app}/>
+    </div>
+  )
+}
+
+var labelReferentName = function(record, app, config) {
   return (
     <span>
-      <a href={"/" + record.collectionName + "/" + record.id}>{ record.name }</a>
+      <a
+        className="datatable__referent_name"
+        href={"/" + record.collectionName + "/" + record.id}
+        style={{position: "relative"}}
+      >
+        <span>{ record.name }</span>
+        <MiniProfile record={record} app={app} config={config} onClick={function(e) { return false; }}/>
+      </a>
       <span  style={{marginLeft: "5px"}} className="suffix" key="suffix">{record.suffix}</span>
       <Tags record={record}/>
     </span>
@@ -108,7 +192,7 @@ module.exports = {
   referents: function(app, dispatch, config, record) {
     return {
       cells: reject([
-        labelReferentName(record),
+        labelReferentName(record, app, config),
         labelReferentSpecialties(record, app, config.includingOtherSpecialties),
         labelReferentStatus(record, app.referentStatusIcons, app.tooltips),
         labelWaittime(record, config.customWaittime.shouldUse, config.customWaittime.procedureId, app.waittimeHash),

@@ -88,7 +88,10 @@ module Serialized
             isInProgress: specialist.in_progress,
             createdAt: specialist.created_at.to_date.to_s,
             updatedAt: specialist.updated_at.to_date.to_s,
-            showInTable: specialist.show_in_table?
+            showInTable: specialist.show_in_table?,
+            interest: specialist.interest,
+            notPerformed: specialist.not_performed,
+            billingNumber: specialist.billing_number_padded
           })
         end
       end
@@ -146,7 +149,9 @@ module Serialized
             isInProgress: clinic.in_progress,
             createdAt: clinic.created_at.to_date.to_s,
             updatedAt: clinic.updated_at.to_date.to_s,
-            showInTable: clinic.show_in_table?
+            showInTable: clinic.show_in_table?,
+            interest: clinic.interest,
+            notPerformed: clinic.not_performed
           })
         end
       end
