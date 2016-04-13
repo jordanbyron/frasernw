@@ -1,4 +1,5 @@
-# Wraps an event that has happened to the target in order to provide a consistent interface for presentation
+# Wraps an event that has happened to the target in order to provide a consistent
+# interface for presentation
 
 class HistoryNode
   # {
@@ -12,7 +13,7 @@ class HistoryNode
   # add 'parent'?/ 'on'?
 
   attr_reader :raw
-  delegate :datetime, :changeset, :secret_editor, to: :raw
+  delegate :datetime, :secret_editor, to: :raw
 
   def initialize(attrs)
     @raw = OpenStruct.new(attrs)
@@ -70,7 +71,7 @@ class HistoryNode
   end
 
   def archiving?
-    changeset.present? && changeset.keys[0] == "archived"
+    raw.changeset.present? && raw.changeset.keys[0] == "archived"
   end
 
   def target_link
@@ -82,6 +83,96 @@ class HistoryNode
       " (No changes)"
     else
       ""
+    end
+  end
+
+  def changeset?
+    raw.changeset.present?
+  end
+
+  def changeset
+    Changeset.new(raw.changeset, target_klass)
+  end
+
+  class Changeset
+    def initialize(raw_changeset, target_klass)
+      @raw_changeset = raw_changeset
+      @target_klass = target_klass
+    end
+
+    def attributes
+      @attributes ||= @raw_changeset.map do |attribute, pair|
+        Attribute.new(attribute, pair, @target_klass)
+      end
+    end
+
+    class Attribute
+      def initialize(attribute, pair, target_klass)
+        @attribute = attribute
+        @pair = pair
+        @target_klass = target_klass
+      end
+
+      def name
+        @target_klass.human_attribute_name(@attribute)
+      end
+
+      def review_object?
+        @attribute == "review_object"
+      end
+
+      HANDLED_VALUES = {
+        "evidence_id" => Proc.new do |value|
+          Evidence.safe_find(value).try(:level)
+        end
+      }
+
+      def handled_value?
+        HANDLED_VALUES.keys.include?(@attribute)
+      end
+
+      def handled_value(value)
+        HANDLED_VALUES[@attribute].call(value)
+      end
+
+      def human_value(value)
+        return handled_value(value) if handled_value?
+        return 'Yes' if value == true
+        return 'No' if value == false
+
+        translation_key = [
+          "#{@target_klass.i18n_scope}",
+          "values",
+          @target_klass.model_name.i18n_key,
+          @attribute,
+          value
+        ].join(".")
+
+        begin
+          I18n.translate(
+            translation_key,
+            raise: I18n::MissingTranslationData
+          )
+        rescue I18n::MissingTranslationData
+          value
+        end
+      end
+
+      def from
+        human_value(@pair[0])
+      end
+
+      def to
+        human_value(@pair[1])
+      end
+
+      def from?
+        @pair[0].present?
+      end
+
+      def to?
+        @pair[1].present?
+      end
     end
   end
 end
