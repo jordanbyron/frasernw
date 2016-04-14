@@ -18,7 +18,7 @@ const FeedbackModal = React.createClass({
     zIndex: "999"
   },
   submitText: function() {
-    if (this.props.state === "SUBMITTING"){
+    if (this.props.modalState === "SUBMITTING"){
       return "Submitting";
     } else {
       return "Submit";
@@ -43,7 +43,10 @@ const FeedbackModal = React.createClass({
               ></textarea>
             </label>
             <div className="form-actions">
-              <input type="submit" className="btn btn-primary" value={ this.submitText() }/>
+              <input type="submit"
+                className="btn btn-primary"
+                value={ this.submitText() }
+              />
               <a className="btn btn-danger"
                 onClick={this.props.handleClose}
                 style={{marginLeft: "2px"}}
@@ -60,22 +63,33 @@ const FeedbackModal = React.createClass({
         <div className="inner">
           <h2>Thank you!</h2>
           <p className="space no_indent">
-            <span>Thank you for providing your feedback on </span>
-            <span>{ this.props.title }</span>
-            <span> .Your contributions help make Pathways a valuable resource for the community.</span>
+            {
+              `Thank you for providing feedback on ${this.props.title}.  ` +
+              "Your contributions help make Pathways a valuable resource " +
+              "for the community."
+            }
           </p>
-          <p className="space no_indent">We will review your feedback in the near future and take action as necessary</p>
+          <p className="space no_indent">
+            {
+              "We will review your feedback in the near future " +
+              "and take action as necessary"
+            }
+          </p>
           <a className="btn btn-primary"
             onClick={this.props.handleClose}
-            style={{marginTop: "10px"}}>Close</a>
+            style={{marginTop: "10px"}}
+          >Close</a>
         </div>
       </div>
     )
   },
   render: function(){
-    if(this.props.state === "PRE_SUBMIT" || this.props.state === "SUBMITTING"){
+    const showForm = this.props.modalState === "PRE_SUBMIT" ||
+      this.props.modalState === "SUBMITTING";
+
+    if(showForm){
       return this.form();
-    } else if (this.props.state === "POST_SUBMIT") {
+    } else if (this.props.modalState === "POST_SUBMIT") {
       return this.postSubmit();
     } else {
       return null;

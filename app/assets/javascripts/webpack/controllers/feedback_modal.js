@@ -46,7 +46,7 @@ const FeedbackModalController = React.createClass({
       <FeedbackModal
         handleSubmit={this.handleSubmit}
         handleClose={this.handleClose}
-        state={this.modalState()}
+        modalState={this.modalState()}
         title={this.title()}
         id={this.id()}
       />
