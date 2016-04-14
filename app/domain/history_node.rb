@@ -101,15 +101,15 @@ class HistoryNode
     end
 
     def attributes
-      @attributes ||= @raw_changeset.map do |attribute, pair|
-        Attribute.new(attribute, pair, @target_klass)
+      @attributes ||= @raw_changeset.map do |attribute, values|
+        Attribute.new(attribute, values, @target_klass)
       end
     end
 
     class Attribute
-      def initialize(attribute, pair, target_klass)
+      def initialize(attribute, values, target_klass)
         @attribute = attribute
-        @pair = pair
+        @values = values
         @target_klass = target_klass
       end
 
@@ -159,19 +159,19 @@ class HistoryNode
       end
 
       def from
-        human_value(@pair[0])
+        human_value(@values[0])
       end
 
       def to
-        human_value(@pair[1])
+        human_value(@values[1])
       end
 
       def from?
-        @pair[0].present?
+        @values[0].present?
       end
 
       def to?
-        @pair[1].present?
+        @values[1].present?
       end
     end
   end
