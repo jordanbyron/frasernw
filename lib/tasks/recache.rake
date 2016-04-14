@@ -135,8 +135,6 @@ namespace :pathways do
     end
 
     task :all => :environment do
-      SystemNotifier.info("Beginning recache")
-
       TASKS.each do |name, body|
         begin
           puts "Recaching #{name}..."
@@ -150,8 +148,6 @@ namespace :pathways do
       end
 
       puts "All pages recached."
-
-      SystemNotifier.info("Recache successful")
     end
   end
 end
