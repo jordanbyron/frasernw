@@ -72,7 +72,7 @@ const FeedbackModal = React.createClass({
           <p className="space no_indent">
             {
               "We will review your feedback in the near future " +
-              "and take action as necessary"
+              "and take action as necessary."
             }
           </p>
           <a className="btn btn-primary"
