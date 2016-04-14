@@ -354,7 +354,7 @@
 
     %table#teleservices-table
       %thead.row
-        %th.span2.teleservices-row__th Teleservices
+        %th.span2.teleservices-row__first-th Teleservices
         %th.span1.teleservices-row__th Telephone
         %th.span1.teleservices-row__th Video
         %th.span1.teleservices-row__th Email
@@ -365,7 +365,7 @@
           @specialist.teleservices.sort_by(&:service_type) do |ts|
           %tr.teleservices-row.row
             = ts.input :service_type, as: :hidden
-            %td.span2.teleservices-row__key-td
+            %td.span2.teleservices-row__first-td
               = ts.object.name
             %td.span1.teleservices-row__input-td
               = ts.input_field :telephone, 
