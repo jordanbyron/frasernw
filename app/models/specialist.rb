@@ -21,6 +21,7 @@ class Specialist < ActiveRecord::Base
     :practise_limitations,
     :interest,
     :procedure_ids,
+    :teleservices_attributes,
     :direct_phone_old,
     :direct_phone_extension_old,
     :red_flags,
@@ -85,6 +86,9 @@ class Specialist < ActiveRecord::Base
   has_many   :procedure_specializations, :through => :capacities
   has_many   :procedures, :through => :procedure_specializations
   accepts_nested_attributes_for :capacities, :reject_if => lambda { |c| c[:procedure_specialization_id].blank? }, :allow_destroy => true
+
+  has_many :teleservices, dependent: :destroy
+  accepts_nested_attributes_for :teleservices
 
   # specialists attend clinics
   has_many   :attendances, :dependent => :destroy

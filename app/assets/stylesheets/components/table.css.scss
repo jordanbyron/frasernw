@@ -1,0 +1,37 @@
+#content #container {
+  #teleservices-table {
+    width: 100%;
+    margin-top: 20px;
+
+    .teleservices-row__th {
+      min-width: 105px;
+      text-align: center;
+      margin-left: 0px;
+    }
+    .teleservices-row__final-th {
+      min-width: 105px;
+      text-align: left;
+      margin-left: 40px;
+    }
+    .teleservices-row__key-td {
+      height: 40px;
+      vertical-align: middle;
+      margin-left: 20px;
+    }
+    .teleservices-row__input-td {
+      min-width: 98px;
+      height: 40px;
+      vertical-align: middle;
+      text-align: center;
+      margin-left: 0px;
+    }
+    .teleservices-row__final-input-td {
+      min-width: 90px;
+      height: 40px;
+      vertical-align: middle;
+      text-align: center;
+      margin-left: 10px;
+      padding-left: 5px;
+    }
+  }
+}

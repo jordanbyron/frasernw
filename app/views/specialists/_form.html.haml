@@ -320,7 +320,7 @@
             - @specialist.referral_forms.each do |referral_form|
               - next if not referral_form.form.present?
               - type = referral_form.form_content_type.split('/').last
-              %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, :target => "_blank"
+              %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, target: "_blank"
 
     = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_LABELS, label_method: :last, value_method: :first
 
@@ -340,6 +340,48 @@
     = f.input :urgent_phone, as: :boolean, wrapper: :bootstrap_tight
     = f.input :urgent_other_details
     = f.input :urgent_details
+
+  #section_teleservices
+
+    %hr
+
+    %h3 Telehealth Services Offered
+
+    %p
+      = link_to "You may view the fee schedule for specialist telehealth services here.", 
+        "http://sscbc.ca/", 
+        target: "_blank"
+
+    %table#teleservices-table
+      %thead.row
+        %th.span2.teleservices-row__th Teleservices
+        %th.span1.teleservices-row__th Telephone
+        %th.span1.teleservices-row__th Video
+        %th.span1.teleservices-row__th Email
+        %th.span1.teleservices-row__th Store & Forward
+        %th.span6.teleservices-row__final-th Booking & Contact
+      %tbody
+        = f.simple_fields_for :teleservices, 
+          @specialist.teleservices.sort_by(&:service_type) do |ts|
+          %tr.teleservices-row.row
+            = ts.input :service_type, as: :hidden
+            %td.span2.teleservices-row__key-td
+              = ts.object.name
+            %td.span1.teleservices-row__input-td
+              = ts.input_field :telephone, 
+                class: "teleservices-row__input"
+            %td.span1.teleservices-row__input-td
+              = ts.input_field :video, 
+                class: "teleservices-row__input"
+            %td.span1.teleservices-row__input-td
+              = ts.input_field :email, 
+                class: "teleservices-row__input"
+            %td.span1.teleservices-row__input-td
+              = ts.input_field :store, 
+                class: "teleservices-row__input"
+            %td.span6.teleservices-row__final-input-td
+              = ts.input_field :contact_note, 
+                class: "teleservices-row__input"
 
   #section_for_patients
 
