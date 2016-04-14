@@ -6,6 +6,8 @@ Local-only = Changes not reflected in Source Code
 Backend Maintenance = Change is not user facing
 
 ## [2016-04-16] [Since 2016-04-09 Integration]
+### Changed:
+- you can now email and provide feedback on front page featured content items
 
 
 ## [2016-04-09] [Since 2016-04-02 Integration]
