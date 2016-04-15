@@ -244,18 +244,19 @@
               %p.space#teleservice_show
               - @specialist.teleservices.sort_by(&:service_type).each do |ts|
                 - if ts.telemodalities.values.any?
-                  %p
-                    %strong= ts.name
-                    = " telemodalities offered: "
-                    - modalities = []
-                    - ts.telemodalities.each do |k,v|
-                      - if v
-                        - modalities.push(k)
-                    - modalities.map! { |m| m == :store ? "Store & Forward" : m.to_s.capitalize }
-                    %strong= modalities.to_sentence(normal_weight_sentence_connectors).html_safe
-                    %span>= "."
-                    - if ts.contact_note.present?
-                      %p.teleservice_show__note= "Booking & Contact: #{ts.contact_note}"
+                  %ul
+                    %li
+                      %strong= ts.name
+                      = " telemodalities offered: "
+                      - modalities = []
+                      - ts.telemodalities.each do |k,v|
+                        - if v
+                          - modalities.push(k)
+                      - modalities.map! { |m| m == :store ? "Store & Forward" : m.to_s.capitalize }
+                      %strong= modalities.to_sentence(normal_weight_sentence_connectors).html_safe
+                      %span>= "."
+                      - if ts.contact_note.present?
+                        %p.teleservice_show__note= "Booking & Contact note: #{ts.contact_note}"
 
             - if !@specialist.hospital_or_clinic_referrals_only? && (@specialist.accepts_referrals_via.present? || @specialist.responds_via.present? || @specialist.referral_form_mask != 3 || @specialist.required_investigations.present? || @specialist.waittime.present? || @specialist.lagtime.present? || @specialist.patient_can_book_mask != 3)
 
