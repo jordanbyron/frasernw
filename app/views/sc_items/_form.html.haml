@@ -52,12 +52,11 @@
     = f.input :markdown_content
   #document_section
     = f.input :document, as: :file
+    = f.input :can_email_document
 
   - if current_user.as_super_admin?
     #evidence_section
       = f.input :evidence_id, as: :select, collection: Evidence.all, label_method: :level, value_method: :id
-
-    = f.input :can_email_document
 
   %h3
     = "History & Notes"
