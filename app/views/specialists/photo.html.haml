@@ -4,12 +4,18 @@
 
   %h2= "Add or Change #{@specialist.formal_name}'s Photo"
 
-  = simple_form_for @specialist, :url => {:action => :update_photo}, :html => { :class => "form-horizontal", :multipart => true } do |f|
+  = simple_form_for @specialist,
+    url: {action: :update_photo},
+    html: { class: "form-horizontal", multipart: true } do |f|
 
-    - if not f.error_messages.blank?
-      .alert.alert-error= f.error_messages
+    - if !f.error_messages.nil?
+      .alert.alert-error
+        = f.error_messages
 
     - if @specialist.photo.present?
+      = image_tag @specialist.photo.url,
+        class: "photo_editor__photo"
+
       = f.input :photo_delete,
         as: :radio_buttons,
         collection: [[0, 'Update photo'], [1, 'Remove photo']],
@@ -20,27 +26,26 @@
       #change_photo
         = f.input :photo, :lable => "New photo"
 
-      %script{"type" => "text/javascript"}
-        :plain
-          var photo_delete_changed = function()
+      :javascript
+        var photo_delete_changed = function()
+        {
+          if ($('#specialist_photo_delete_1').is(":checked"))
           {
-            if ($('#specialist_photo_delete_1').is(":checked"))
-            {
-              $('#change_photo').hide();
-            }
-            else
-            {
-              $('#change_photo').show();
-            }
+            $('#change_photo').hide();
           }
+          else
+          {
+            $('#change_photo').show();
+          }
+        }
 
-          $(".radio_buttons").live("change", photo_delete_changed);
-          $(".radio_buttons").each(photo_delete_changed);
+        $(".radio_buttons").live("change", photo_delete_changed);
+        $(".radio_buttons").each(photo_delete_changed);
 
     - else
       = f.input :photo
 
 
     .form-actions
-      = f.button :submit, :class => "btn btn-primary", :value => "Submit"
-      = link_to 'Cancel', url_for(@specialist), :class => "btn btn-danger ajax"
+      = f.button :submit, class: "btn btn-primary", value: "Submit"
+      = link_to 'Cancel', url_for(@specialist), class: "btn btn-danger ajax"
