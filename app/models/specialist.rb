@@ -906,6 +906,16 @@ class Specialist < ActiveRecord::Base
     @valid_clinic_locations = clinic_locations.reject(&:empty?)
   end
 
+  def offers_teleservices?
+    if teleservices.present?
+      teleservices.each do |teleservice|
+        if teleservice.telemodalities.values.any?
+          return true
+        end
+      end
+    end
+  end
+
 private
 
   def destroy_photo?

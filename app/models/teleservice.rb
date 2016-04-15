@@ -20,4 +20,8 @@ class Teleservice < ActiveRecord::Base
     Teleservice::SERVICE_TYPES[service_type]
   end
 
+  def telemodalities
+    { telephone: telephone, video: video, email: email, store: store }
+  end
+
 end
