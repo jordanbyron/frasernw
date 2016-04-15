@@ -153,29 +153,28 @@
 
           %h2.center Featured Content
 
-          - cache("featured_content_#{@as_divisions.map{|d| d.id }.join('_')}") do
+          - cache(rand()) do
             - ScCategory.front_page_for_divisions(@as_divisions).each do |category|
-              %h3
-                = link_to "#{category.name} <span class='all'> - Browse All <i class='icon-arrow-right icon-blue icon-small'></i></span>".html_safe,
-                  sc_category_path(category),
-                  :class => 'ajax'
-
-
-              %ul.space
-                - category.featured_for_divisions(@as_divisions).each do |featured_sc_item|
-                  %li{:style => "margin-left: 0"}
-                    - if featured_sc_item.new?
-                      %span.new new
-                    - if featured_sc_item.shared_care?
-                      %i.icon-blue.icon-star
-                    = link_to(featured_sc_item.title, featured_sc_item.resolved_url, :class => featured_sc_item.markdown? && "ajax", :target => "_blank", "onclick" => "window.pathways.trackContentItem(_gaq, #{featured_sc_item.id})")
-                    %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{featured_sc_item.id},'#{escape_javascript(featured_sc_item.title)}')", "title" => "Favourite / un-favourite"}
-                      %i.icon-text.icon-small.icon-heart{"id" => "user_favorite_content_items_#{featured_sc_item.id}"}
+              = render "front/index/featured_content_category",
+                category: category
 
           .featured-content
             %i.icon-star.icon-blue
-            Indicates content from our Shared Care initiative
+            %span= "Indicates content from our Shared Care initiative"
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
-            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Featured Content", edit_featured_contents_path(division_id: @as_divisions.first.id), :class => "btn btn-mini ajax")
+            = link_to edit_featured_contents_path(division_id: @as_divisions.first.id),
+              class: "btn btn-mini ajax" do
+              %i.icon-pencil
+              %span= "Edit Featured Content"
+
+#feedback_modal
+
+:javascript
+  window.pathways.favoriteFeaturedItem = function(event, id, title) {
+    event.stopPropagation();
+
+    favorite('content_items', id, title);
+  };
+  window.pathways.bootstrapFeedbackModal('feedback_modal', {});
