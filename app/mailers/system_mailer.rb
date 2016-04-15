@@ -9,7 +9,7 @@ class SystemMailer < ActionMailer::Base
       to: Rails.application.config.system_notification_recipients,
       from: "noreply@pathwaysbc.ca",
       subject: "#{ENV['APP_NAME']} [#{options[:tag]}] #{options[:subject]}",
-      delivery_method: :smtp
+      delivery_method: (Rails.env.development? ? :letter_opener : :smtp)
     )
   end
 end

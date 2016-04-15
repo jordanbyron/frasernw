@@ -233,7 +233,7 @@ class SpecialistsController < ApplicationController
 
   def update_photo
     @specialist = Specialist.find(params[:id])
-    ExpireFragment.call photo_specialist_path(@specialist)
+    ExpireFragment.call specialist_path(@specialist)
     if @specialist.update_attributes(params[:specialist])
       redirect_to @specialist, :notice  => "Successfully updated #{@specialist.formal_name}'s photo."
     else
