@@ -15,14 +15,14 @@
         target: "_blank",
         style: "display: block; color: #0088CC; padding-left: 5px; cursor: pointer; width: 317px;",
         onclick: "window.pathways.trackContentItem(_gaq, #{featured_sc_item.id})" do
-        %i.icon-caret-down{style: "display: inline-block; vertical-align: top; margin-left: 11px; margin-right: 14px"}
+        %i.icon-caret-down{style: "display: inline-block; vertical-align: top; margin-left: 11px; margin-right: 5px"}
         %span{style: "display: inline-block; width: 256px;"}= featured_sc_item.title
       %ul.dropdown-menu.featured_contents__dropdown_menu
         %li.featured_contents__dropdown_item
           = link_to "javascript:void(0)",
             class: "featured_contents__dropdown_link",
             style: "background-color: white;" do
-            %i.icon-caret-down.icon-blue{style: "margin-right: 4px; margin-left: 1px; display: inline-block; vertical-align:top;"}
+            %i.icon-caret-down.icon-blue{style: "margin-right: 2px; margin-left: 1px; display: inline-block; vertical-align:top;"}
             %span.featured_contents__dropdown_item_text{style: "display: inline-block; width: 265px; white-space: normal;"}
               = featured_sc_item.title
         %li.featured_contents__dropdown_item
