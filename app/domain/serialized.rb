@@ -47,7 +47,7 @@ module Serialized
             procedureIds: item.procedure_specializations.map(&:subtree).flatten.uniq.map(&:procedure_id),
             content: (item.markdown_content.present? ? Serialized.prepare_markdown_content(item.markdown_content) : ""),
             resolvedUrl: item.resolved_url,
-            canEmail: item.can_email?,
+            canEmail: item.can_email,
             id: item.id,
             isNew: item.new?,
             isInProgress: item.in_progress,

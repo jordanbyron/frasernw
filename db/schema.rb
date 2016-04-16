@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160408203305) do
+ActiveRecord::Schema.define(version: 20160415211551) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -687,12 +687,11 @@ ActiveRecord::Schema.define(version: 20160408203305) do
     t.string   "document_content_type"
     t.integer  "document_file_size"
     t.datetime "document_updated_at"
-    t.boolean  "can_email_document",    default: false
-    t.boolean  "can_email_link",        default: true
     t.integer  "division_id"
     t.boolean  "shareable",             default: true
     t.integer  "evidence_id"
     t.boolean  "demoable",              default: false
+    t.boolean  "can_email"
   end
 
   add_index "sc_items", ["division_id"], name: "index_sc_items_on_division_id", using: :btree
@@ -964,6 +963,20 @@ ActiveRecord::Schema.define(version: 20160408203305) do
   end
 
   add_index "subscriptions", ["user_id"], name: "index_subscriptions_on_user_id", using: :btree
+
+  create_table "teleservices", force: true do |t|
+    t.integer  "specialist_id"
+    t.integer  "service_type"
+    t.boolean  "telephone",     default: false
+    t.boolean  "video",         default: false
+    t.boolean  "email",         default: false
+    t.boolean  "store",         default: false
+    t.string   "contact_note"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "teleservices", ["specialist_id"], name: "index_teleservices_on_specialist_id", using: :btree
 
   create_table "user_cities", force: true do |t|
     t.integer  "user_id"

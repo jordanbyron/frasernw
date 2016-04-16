@@ -47,12 +47,12 @@
 
   #link_section
     = f.input :url, :input_html => { :class => "span5" }
-    = f.input :can_email_link
-  #mardown_section
+  #markdown_section
     = f.input :markdown_content
   #document_section
     = f.input :document, as: :file
-    = f.input :can_email_document
+  #can_email_section
+    = f.input :can_email, input_html: { id: "can-email-input" }
 
   - if current_user.as_super_admin?
     #evidence_section
@@ -100,20 +100,27 @@
         if ($(this).val() == 1)
         {
           $("#link_section").show();
-          $("#mardown_section").hide();
+          $("#markdown_section").hide();
           $("#document_section").hide();
+          $("#can_email_section").show();
+          if (window.location.pathname == "/content_items/new") {
+            $("#can-email-input").attr({"checked" : "checked"});
+          }
         }
         else if ($(this).val() == 2)
         {
           $("#link_section").hide();
-          $("#mardown_section").show();
+          $("#markdown_section").show();
           $("#document_section").hide();
+          $("#can_email_section").hide();
         }
         else if ($(this).val() == 3)
         {
           $("#link_section").hide();
-          $("#mardown_section").hide();
+          $("#markdown_section").hide();
           $("#document_section").show();
+          $("#can_email_section").show();
+          $("#can-email-input").removeAttr("checked");
         }
       }
 
