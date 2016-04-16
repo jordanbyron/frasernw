@@ -153,7 +153,7 @@
 
           %h2.center Featured Content
 
-          - cache("featured_content_#{@as_divisions.map{|d| d.id }.join('_')}") do
+          - cache(rand()) do
             - ScCategory.front_page_for_divisions(@as_divisions).each do |category|
               = render "front/index/featured_content_category",
                 category: category
