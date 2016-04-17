@@ -5,6 +5,11 @@ CR = Change Request item
 Local-only = Changes not reflected in Source Code
 Backend Maintenance = Change is not user facing
 
+## [2016-04-16] [Since 2016-04-09 Integration]
+### Added:
+- S3 buckets are now backed up
+
+
 ## [2016-04-09] [Since 2016-04-02 Integration]
 ### Changed:
 - add option for admins to toggle 'last visit' format

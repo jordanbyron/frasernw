@@ -1,20 +1,17 @@
 namespace :pathways do
   task :mirror_s3 => :environment do
-    if ENV['APP_NAME'] == "pathwaysbc"
-      raise "Can't mirror production against itself"
+    destination_app_name = ENV['APP_NAME']
+
+    if destination_app_name == "pathwaysbc"
+      raise "Can't mirror production against itself!"
     end
 
-    [
-      :content_item_documents,
-      :newsletters,
-      :referral_forms,
-      :specialist_photos,
-    ].each do |collection|
+    Pathways::S3::PERSISTENT_BUCKETS.each do |collection|
       puts "Mirroring #{collection}"
 
       Pathways::S3::CloneBucket.call(
         source_bucket_name: Pathways::S3.bucket_name(collection, "pathwaysbc"),
-        destination_bucket_name: Pathways::S3.bucket_name(collection, ENV['APP_NAME'])
+        destination_bucket_name: Pathways::S3.bucket_name(collection, destination_app_name)
       )
     end
   end
