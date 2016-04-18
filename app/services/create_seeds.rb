@@ -17,7 +17,9 @@ class CreateSeeds < ServiceObject
     "review_items",
     "secret_tokens",
     "demoable_news_items",
-    "division_display_news_items"
+    "division_display_news_items",
+    "user_controls_specialists",
+    "user_controls_clinics"
   ]
 
   IDENTIFYING_INFO_LOGFILE = Rails.root.join("tmp", "identifying_info.txt").to_s
