@@ -561,11 +561,11 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| "This is an answer to an FAQ question" }
       },
       "title" => {
-        :faker => Proc.new{ |klass| Faker::Lorem.sentence }
+        :faker => Proc.new{ |klass| Faker::Company.catch_phrase }
       },
       "description" => {
         :test => Proc.new{ |klass| klass == ReferralForm },
-        :faker => Proc.new{ |klass| Faker::Lorem.sentence }
+        :faker => Proc.new{ |klass| "Referral Form Title" }
       },
       "recipient" => {
         :faker => Proc.new{ |klass| Faker::Internet.email }
@@ -577,13 +577,17 @@ class CreateSeeds < ServiceObject
       "investigation" => {},
       "suite" => {},
       "body" => {
-        :faker => Proc.new{ |klass| Faker::Lorem.sentence }
+        :faker => Proc.new{ |klass| Faker::Company.bs }
       },
       "area_of_focus" => {},
-      "referral_criteria" => {},
-      "referral_process" => {},
+      "referral_criteria" => {
+        :faker => Proc.new{ |klass| "Laparascopic analysis" }
+        },
+      "referral_process" => {
+        :faker => Proc.new{ |klass| "Email preferred." }
+        },
       "content" => {
-        :faker => Proc.new{ |klass| Faker::Lorem.sentence }
+        :faker => Proc.new{ |klass| Faker::Company.bs }
       },
       "data" => {},
       "session_id" => {},
@@ -592,19 +596,41 @@ class CreateSeeds < ServiceObject
       "token" => {},
       "comment" => {},
       "note" => {},
-      "status" => {},
-      "patient_instructions" => {},
-      "details" => {},
-      "red_flags" => {},
-      "not_performed" => {},
-      "limitations" => {},
+      "status" => {
+        :faker => Proc.new{ |klass| "Accepting patients" }
+        },
+      "patient_instructions" => {
+        :faker => Proc.new{ |klass| "Take no food 12 hours prior to appiontment" }
+        },
+      "details" => {
+        :faker => Proc.new{ |klass| "Yoga Therapist" }
+        },
+      "red_flags" => {
+        :faker => Proc.new{ |klass| "Oncology" }
+        },
+      "not_performed" => {
+        :faker => Proc.new{ |klass| "Vaccinations" }
+        },
+      "limitations" => {
+        :faker => Proc.new{ |klass| "Not wheelchair accessible" }
+        },
       "location_opened_old" => {},
       "policy" => {},
-      "required_investigations" => {},
-      "interest" => {},
-      "all_procedure_info" => {},
-      "urgent_details" => {},
-      "cancellation_policy" => {}
+      "required_investigations" => {
+        :faker => Proc.new{ |klass| "Complete vaccination records" }
+        },
+      "interest" => {
+        :faker => Proc.new{ |klass| "Post-surgical Counselling" }
+        },
+      "all_procedure_info" => {
+        :faker => Proc.new{ |klass| "Ensure records are provided at least 2 days prior to appiontment" }
+        },
+      "urgent_details" => {
+        :faker => Proc.new{ |klass| "Telephone or Email." }
+        },
+      "cancellation_policy" => {
+        :faker => Proc.new{ |klass| "24 hour notice required." }
+      }
     }
 
     VANCOUVER_COMMON_SURNAMES = [
