@@ -574,12 +574,18 @@ class CreateSeeds < ServiceObject
         :test => Proc.new{ |klass| klass == Address },
         :faker => Proc.new{ |klass, hash| hash["city_id"].nil? ? nil : City.random_id }
       },
-      "investigation" => {},
-      "suite" => {},
+      "investigation" => {
+        :faker => Proc.new{ |klass| "Myeloma, low grade lymphoma, myelodysplastic syndromes, myeloproliferative neoplasm" }
+        },
+      "suite" => {
+        :faker => Proc.new{ |klass| Faker::Address.secondary_address }
+        },
       "body" => {
         :faker => Proc.new{ |klass| Faker::Company.bs }
       },
-      "area_of_focus" => {},
+      "area_of_focus" => {
+        :faker => Proc.new{ |klass| "Recuperative stretching" }
+        },
       "referral_criteria" => {
         :faker => Proc.new{ |klass| "Laparascopic analysis" }
         },
@@ -594,10 +600,14 @@ class CreateSeeds < ServiceObject
       "feedback" => {},
       "password" => {},
       "token" => {},
-      "comment" => {},
-      "note" => {},
+      "comment" => {
+        :faker => Proc.new{ |klass| Faker::Company.bs }
+        },
+      "note" => {
+        :faker => Proc.new{ |klass| Faker::Company.bs }
+        },
       "status" => {
-        :faker => Proc.new{ |klass| "Accepting patients" }
+        :faker => Proc.new{ |klass| "Accepting new referrals" }
         },
       "patient_instructions" => {
         :faker => Proc.new{ |klass| "Take no food 12 hours prior to appiontment" }
@@ -615,7 +625,9 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| "Not wheelchair accessible" }
         },
       "location_opened_old" => {},
-      "policy" => {},
+      "policy" => {
+        :faker => Proc.new{ |klass| Faker::Company.bs }
+        },
       "required_investigations" => {
         :faker => Proc.new{ |klass| "Complete vaccination records" }
         },
