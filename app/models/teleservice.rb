@@ -10,9 +10,9 @@ class Teleservice < ActiveRecord::Base
   belongs_to :specialist
 
   SERVICE_TYPES = {
-    1 => "Initial consultation with patient",
-    2 => "Follow-up with patient",
-    3 => "Advice to another health care provider",
+    1 => "Initial consultation with a patient",
+    2 => "Follow-up with a patient",
+    3 => "Advice to a health care provider",
     4 => "Case conferencing with a health care provider"
   }
 
