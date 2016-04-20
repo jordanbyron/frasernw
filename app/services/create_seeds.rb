@@ -581,7 +581,7 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| Faker::Address.secondary_address }
         },
       "body" => {
-        :faker => Proc.new{ |klass| Faker::Company.bs }
+        :faker => Proc.new{ |klass| "We seek to provide the best possible medical care to our patients." }
       },
       "area_of_focus" => {
         :faker => Proc.new{ |klass| "Recuperative stretching" }
@@ -593,7 +593,7 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| "Email preferred." }
         },
       "content" => {
-        :faker => Proc.new{ |klass| Faker::Company.bs }
+        :faker => Proc.new{ |klass| "We seek to provide the best possible medical care to our patients." }
       },
       "data" => {},
       "session_id" => {},
@@ -601,13 +601,10 @@ class CreateSeeds < ServiceObject
       "password" => {},
       "token" => {},
       "comment" => {
-        :faker => Proc.new{ |klass| Faker::Company.bs }
+        :faker => Proc.new{ |klass| "We seek to provide the best possible medical care to our patients." }
         },
       "note" => {
-        :faker => Proc.new{ |klass| Faker::Company.bs }
-        },
-      "status" => {
-        :faker => Proc.new{ |klass| "Accepting new referrals" }
+        :faker => Proc.new{ |klass| "We seek to provide the best possible medical care to our patients." }
         },
       "patient_instructions" => {
         :faker => Proc.new{ |klass| "Take no food 12 hours prior to appiontment" }
@@ -626,7 +623,7 @@ class CreateSeeds < ServiceObject
         },
       "location_opened_old" => {},
       "policy" => {
-        :faker => Proc.new{ |klass| Faker::Company.bs }
+        :faker => Proc.new{ |klass| "We seek to provide the best possible medical care to our patients." }
         },
       "required_investigations" => {
         :faker => Proc.new{ |klass| "Complete vaccination records" }
