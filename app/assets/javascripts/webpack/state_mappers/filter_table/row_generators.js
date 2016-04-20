@@ -62,44 +62,28 @@ const MiniProfile = ({record, app, config}) => {
 
   return(
     <div className="mini-profile">
-      <h3 className="mini-profile__title">{record.name}</h3>
-      <p style={{color: "#040404", marginLeft: "0px", marginTop: "5px"}}>
-        <span style={{marginRight: "5px"}}>
-          { labelReferentStatus(record, app.referentStatusIcons, app.tooltips) }
-        </span>
-        <span>{ app.tooltips[record.collectionName][record[tooltipKey]] }</span>
-      </p>
-      <div className="headline-footer" style={{marginTop: "7px"}}/>
       <MostInterested record={record}/>
       <NotPerformed record={record}/>
-      <MSP record={record}/>
-      <MiniProfileItem
-        heading="Average Non-urgent Patient Waittime:"
-        value={labelWaittime(record, config.customWaittime.shouldUse, config.customWaittime.procedureId, app.waittimeHash)}
-      />
-      <MiniProfileItem
-        heading="Practices in:"
-        value={labelReferentCities(record, app)}
-      />
-      <SpecializesIn record={record} app={app}/>
     </div>
   )
 }
 
 var labelReferentName = function(record, app, config) {
   return (
-    <span>
+    <div>
       <a
         className="datatable__referent_name"
         href={"/" + record.collectionName + "/" + record.id}
         style={{position: "relative"}}
       >
-        <span>{ record.name }</span>
-        <MiniProfile record={record} app={app} config={config} onClick={function(e) { return false; }}/>
+        { record.name }
       </a>
       <span  style={{marginLeft: "5px"}} className="suffix" key="suffix">{record.suffix}</span>
       <Tags record={record}/>
-    </span>
+      <div className="mini-profile__container" style={{position: "relative"}}>
+        <MiniProfile record={record} app={app} config={config} onClick={function(e) { return false; }}/>
+      </div>
+    </div>
   );
 }
 

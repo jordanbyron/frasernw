@@ -1,14 +1,17 @@
 #content {
   #container {
-    .datatable__row .datatable__referent_name {
+    .datatable__row {
+      .mini-profile__container {
+        display: none;
+      }
+
       .mini-profile {
         position: absolute;
-        display: none;
         padding: 5px;
-        left: 165px;
-        width: 520px;
+        left: 0px;
+        width: calc(100% - 20px);
         padding-left: 10px;
-        top: -11px;
+        top: 8px;
         z-index: 1;
       }
 
@@ -18,10 +21,9 @@
         background: #ffffff;
         border: 1px solid #cccccc;
       }
-
       .mini-profile:after, .mini-profile:before {
-        right: 100%;
-        top: 50%;
+        bottom: 100%;
+        left: 10px;
         border: solid transparent;
         content: " ";
         height: 0;
@@ -32,18 +34,47 @@
 
       .mini-profile:after {
         border-color: rgba(255, 255, 255, 0);
-        border-right-color: #ffffff;
+        border-bottom-color: #ffffff;
         border-width: 5px;
-        top: 11px;
-        // margin-top: -5px;
+        margin-left: -5px;
       }
       .mini-profile:before {
         border-color: rgba(204, 204, 204, 0);
-        border-right-color: #cccccc;
+        border-bottom-color: #cccccc;
         border-width: 6px;
-        top: 10px;
-        // margin-top: -6px;
+        margin-left: -6px;
       }
+
+      // .mini-profile {
+      //   background: #ffffff;
+      //   border: 1px solid #cccccc;
+      // }
+      //
+      // .mini-profile:after, .mini-profile:before {
+      //   right: 100%;
+      //   top: 50%;
+      //   border: solid transparent;
+      //   content: " ";
+      //   height: 0;
+      //   width: 0;
+      //   position: absolute;
+      //   pointer-events: none;
+      // }
+      //
+      // .mini-profile:after {
+      //   border-color: rgba(255, 255, 255, 0);
+      //   border-right-color: #ffffff;
+      //   border-width: 5px;
+      //   top: 11px;
+      //   // margin-top: -5px;
+      // }
+      // .mini-profile:before {
+      //   border-color: rgba(204, 204, 204, 0);
+      //   border-right-color: #cccccc;
+      //   border-width: 6px;
+      //   top: 10px;
+      //   // margin-top: -6px;
+      // }
 
       //
 
@@ -58,10 +89,8 @@
       }
     }
 
-    .datatable__referent_name:hover {
-      .mini-profile {
-        display: block;
-      }
+    .datatable__referent_name:hover ~ .mini-profile__container {
+      display: block;
     }
 
     .datatable__row {
