@@ -17,6 +17,21 @@ var filterExpansion = function(state, action) {
   }
 }
 
+var selectedRecordId = function(state, action) {
+  switch(action.type){
+  case "TOGGLE_SELECTED_RECORD":
+    if(action.record.id !== state) {
+      console.log(action.record.id);
+      return action.record.id;
+    }
+    else {
+      return undefined;
+    }
+  default:
+    return state;
+  }
+}
+
 module.exports = function(state = {}, action) {
   switch(action.type) {
   default:
@@ -28,7 +43,8 @@ module.exports = function(state = {}, action) {
         filterGroupVisibility: filterGroupVisibility(state.filterGroupVisibility, action),
         filterValues: filterValues(state.filterValues, action),
         filterExpansion: filterExpansion(state.filterExpansion, action),
-        reducedView: reducedView(state.reducedView, action)
+        reducedView: reducedView(state.reducedView, action),
+        selectedRecordId: selectedRecordId(state.selectedRecordId, action),
       }
     );
   }

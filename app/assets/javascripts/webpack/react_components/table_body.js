@@ -8,7 +8,7 @@ module.exports = React.createClass({
         {
           this.props.rows.map(function (row) {
             return (
-              <TableRow data={row.cells} key={row.reactKey} />
+               <TableRow data={row.cells} key={row.reactKey} onClick={row.onClick}/>
             );
           })
         }

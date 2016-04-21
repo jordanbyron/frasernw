@@ -6,6 +6,7 @@ var ReferentStatusIcon = require("../../react_components/icons/referent_status_i
 var Tags = require("../../react_components/tags");
 var reject = require("lodash/collection/reject");
 var trackContentItem = require("../../analytics_wrappers").trackContentItem;
+var _ = require("lodash");
 
 
 const MostInterested = ({record}) => {
@@ -80,12 +81,37 @@ var labelReferentName = function(record, app, config) {
       </a>
       <span  style={{marginLeft: "5px"}} className="suffix" key="suffix">{record.suffix}</span>
       <Tags record={record}/>
-      <div className="mini-profile__container" style={{position: "relative"}}>
-        <MiniProfile record={record} app={app} config={config} onClick={function(e) { return false; }}/>
-      </div>
+      <ExpandedInformation record={record} config={config}/>
     </div>
   );
 }
+
+const ExpandedInformation = ({record, config}) => {
+  // console.log(config);
+  if(config.selectedRecordId === record.id) {
+    if (record.interest && record.notPerformed){
+      return(
+        <ul>
+          <li><MostInterested record={record}/></li>
+          <li><NotPerformed record={record}/></li>
+        </ul>
+      );
+    } else {
+      return(
+        <div>
+          <i>
+            {
+              "This specialist hasn't provided us information about their " +
+              "interests or restrictions."
+            }
+          </i>
+        </div>
+      );
+    }
+  } else {
+    return <span></span>
+  }
+};
 
 // status icon
 // e.g. 'Accepting Referrals' checkmark
@@ -172,6 +198,16 @@ var labelWaittime = function(record, custom, procedureId, waittimeHash) {
   }
 };
 
+const onReferentClick = (record, selectedRecordId, panelKey, dispatch) => {
+  dispatch({
+    type: "TOGGLE_SELECTED_RECORD",
+    record: record,
+    selectedRecordId: selectedRecordId,
+    panelKey: panelKey,
+    reducer: "FilterTable"
+  })
+}
+
 module.exports = {
   referents: function(app, dispatch, config, record) {
     return {
@@ -183,7 +219,8 @@ module.exports = {
         labelReferentCities(record, app)
       ], (cell) => cell === null),
       reactKey: (record.collectionName + record.id),
-      record: record
+      record: record,
+      onClick: _.partial(onReferentClick, record, config.selectedRecordId, config.panelKey, dispatch)
     }
   },
   resources: function(app, dispatch, config, record) {

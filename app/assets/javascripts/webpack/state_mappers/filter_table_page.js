@@ -349,7 +349,9 @@ var PANEL_PROPS_GENERATORS = {
       rowGenerator: "referents",
       rowGeneratorConfig: {
         includingOtherSpecialties: shouldIncludeOtherSpecializations(filtered, filterValues, state.ui.pageType, _filterValueOverrides),
-        customWaittime: _customWaittimeConfig
+        customWaittime: _customWaittimeConfig,
+        selectedRecordId: _.get(state, ["ui", "panels", panelTypeKey, "selectedRecordId"]),
+        panelKey: panelTypeKey
       }
     };
 
@@ -590,6 +592,7 @@ var createAssumedList = function(nestedProcedures: Object, collectionName: strin
 
 
 var generateBodyRows = function(state: Object, filtered: Array, config: Object, dispatch: Function, sortConfig: Object): Array {
+  console.log(config);
   var unsorted = filtered.map((row) => {
     return RowGenerators[config.rowGenerator](state.app, dispatch, config.rowGeneratorConfig, row);
   });
