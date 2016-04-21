@@ -102,7 +102,7 @@ class CreateSeeds < ServiceObject
 
       demo_users_cmd = "\"puts('START_DUMP' + User.where(persist_in_demo: true).map(&:attributes).to_yaml)\""
       demo_users_cmd_result = `heroku run rails runner #{demo_users_cmd} --app pathwaysbcdev`
-      demo_users = YAML.load(demo_users_cmd_result[/(?<=START_DUMP).+/m])
+      demo_users = YAML.load(demo_users_cmd_result[/(?<=START_DUMP)[^\e]+/m])
 
       users = demo_users + prod_users
 
@@ -561,7 +561,7 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| "This is an answer to an FAQ question" }
       },
       "title" => {
-        :faker => Proc.new{ |klass| Faker::Company.catch_phrase }
+        :faker => Proc.new{ |klass| "This is a title" }
       },
       "description" => {
         :test => Proc.new{ |klass| klass == ReferralForm },
