@@ -36,7 +36,7 @@
       %li
         %a{"href" => "javascript:void(0)", "onclick" => "favorite('content_items',#{@sc_item.id},'#{escape_javascript(@sc_item.title)}')", "title" => "Favourite / un-favourite"}
           %i.icon-text.icon-heart{"id" => "user_favorite_content_items_#{@sc_item.id}"}
-        - if @sc_item.can_email
+        - if @sc_item.can_email?
           = link_to "<i class='icon-envelope-alt icon-blue'></i>".html_safe, compose_mail_to_patients_path(@sc_item), :class => 'ajax', :title => "E-mail to patient"
         - if can? :view_history, @sc_item
           = history_icon(@sc_item)

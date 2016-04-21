@@ -54,7 +54,7 @@
                   %td= sc_item.type
                   %td= sc_item.evidence.present? ? link_to(sc_item.evidence.level, sc_item.evidence) : ""
                   %td= sc_item.searchable? ? icon("icon-search", "Searchable") + content_tag(:span, "y", style: "opacity: 0;") : content_tag(:span, "n", style: "opacity: 0;")
-                  %td= sc_item.can_email ? icon("icon-envelope", "Can be emailed") + content_tag(:span, "y", style: "opacity: 0;") : content_tag(:span, "n", style: "opacity: 0;")
+                  %td= sc_item.can_email? ? icon("icon-envelope", "Can be emailed") + content_tag(:span, "y", style: "opacity: 0;") : content_tag(:span, "n", style: "opacity: 0;")
                   %td= sc_item.shareable? ? icon("icon-share-alt", "Shareable") + content_tag(:span, "y", style: "opacity: 0;") : content_tag(:span, "n", style: "opacity: 0;")
                   %td= sc_item.shared_care? ? icon("icon-star", "Shared Care") + content_tag(:span, "y", style: "opacity: 0;") : content_tag(:span, "n", style: "opacity: 0;")
                   %td.admin.btn-group{:style => "min-width: 110;"}
