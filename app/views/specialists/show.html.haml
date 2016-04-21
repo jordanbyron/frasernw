@@ -326,7 +326,7 @@
                   = @specialist.red_flags.end_with_period.convert_newlines_to_br
 
             - if @specialist.teleservices.any?(&:offered?)
-              = render "specialists/show/teleservices"
+              = render "teleservices/index", provider: @specialist
 
             - if @specialist.patient_instructions.present? || @specialist.cancellation_policy.present?
               %h6 Patient Information

@@ -1,5 +1,6 @@
 class Teleservice < ActiveRecord::Base
-  attr_accessible :specialist_id,
+  attr_accessible :teleservice_provider_id,
+    :teleservice_provider_type,
     :service_type,
     :telephone,
     :video,
@@ -7,7 +8,7 @@ class Teleservice < ActiveRecord::Base
     :store,
     :contact_note
 
-  belongs_to :specialist
+  belongs_to :teleservice_provider, polymorphic: true
 
   SERVICE_TYPES = {
     1 => "Initial consultation with a patient",

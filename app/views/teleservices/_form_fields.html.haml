@@ -1,0 +1,41 @@
+#section_teleservices
+
+  %hr
+
+  %h3 Telehealth Services Offered
+
+  %p
+    = link_to "You may view the fee schedule for specialist telehealth services here.",
+      "http://sscbc.ca/",
+      target: "_blank"
+
+  %table#teleservices-table
+    %thead.row
+      %th.span2.teleservices-row__first-th Teleservices
+      %th.span1.teleservices-row__th Telephone
+      %th.span1.teleservices-row__th Video
+      %th.span1.teleservices-row__th Email
+      %th.span1.teleservices-row__th Store & Forward
+      %th.span6.teleservices-row__final-th Booking & Contact
+    %tbody
+      = f.simple_fields_for :teleservices,
+        f.object.teleservices.sort_by(&:service_type) do |ts|
+        %tr.teleservices-row.row
+          = ts.input :service_type, as: :hidden
+          %td.span2.teleservices-row__first-td
+            = ts.object.name
+          %td.span1.teleservices-row__input-td
+            = ts.input_field :telephone,
+              class: "teleservices-row__input"
+          %td.span1.teleservices-row__input-td
+            = ts.input_field :video,
+              class: "teleservices-row__input"
+          %td.span1.teleservices-row__input-td
+            = ts.input_field :email,
+              class: "teleservices-row__input"
+          %td.span1.teleservices-row__input-td
+            = ts.input_field :store,
+              class: "teleservices-row__input"
+          %td.span6.teleservices-row__final-input-td
+            = ts.input_field :contact_note,
+              class: "teleservices-row__input"

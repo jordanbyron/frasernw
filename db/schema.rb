@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160413020847) do
+ActiveRecord::Schema.define(version: 20160411215402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -966,18 +966,19 @@ ActiveRecord::Schema.define(version: 20160413020847) do
   add_index "subscriptions", ["user_id"], name: "index_subscriptions_on_user_id", using: :btree
 
   create_table "teleservices", force: true do |t|
-    t.integer  "specialist_id"
+    t.integer  "teleservice_provider_id"
+    t.integer  "teleservice_provider_type"
     t.integer  "service_type"
-    t.boolean  "telephone",     default: false
-    t.boolean  "video",         default: false
-    t.boolean  "email",         default: false
-    t.boolean  "store",         default: false
+    t.boolean  "telephone",                 default: false
+    t.boolean  "video",                     default: false
+    t.boolean  "email",                     default: false
+    t.boolean  "store",                     default: false
     t.string   "contact_note"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "teleservices", ["specialist_id"], name: "index_teleservices_on_specialist_id", using: :btree
+  add_index "teleservices", ["teleservice_provider_id", "teleservice_provider_type"], name: "index_teleservices_on_provider", using: :btree
 
   create_table "user_cities", force: true do |t|
     t.integer  "user_id"
