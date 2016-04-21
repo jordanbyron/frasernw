@@ -325,30 +325,8 @@
                   that this office feels warrant urgent consultation:
                   = @specialist.red_flags.end_with_period.convert_newlines_to_br
 
-            - if @specialist.offers_teleservices?
-              %h6 Telehealth Services
-
-              %p.space#teleservice_show
-              - @specialist.teleservices.sort_by(&:service_type).each do |ts|
-                - if ts.telemodalities.values.any? || ts.contact_note.present?
-                  %ul
-                    %li
-                      - modalities = []
-                      - ts.telemodalities.each do |k,v|
-                        - if v
-                          - modalities.push(k)
-                      - if ts.contact_note.present? && modalities.empty?
-                        %strong= ts.name
-                        = " is not available as a teleservice."
-                        %p= " Note: #{ts.contact_note}"
-                      - else
-                        - modalities.map! { |m| m == :store ? "Store & Forward" : m.to_s.capitalize }
-                        %strong= modalities.to_sentence(normal_weight_sentence_connectors).html_safe
-                        = " available for "
-                        %strong= ts.name.downcase
-                        %span>= "."
-                        - if ts.contact_note.present?
-                          %p.teleservice_show__note= "Booking & Contact note: #{ts.contact_note}"
+            - if @specialist.teleservices.any?(&:offered?)
+              = render "specialists/show/teleservices"
 
             - if @specialist.patient_instructions.present? || @specialist.cancellation_policy.present?
               %h6 Patient Information

@@ -20,8 +20,52 @@ class Teleservice < ActiveRecord::Base
     Teleservice::SERVICE_TYPES[service_type]
   end
 
-  def telemodalities
-    { telephone: telephone, video: video, email: email, store: store }
+  def offered_modalities_list
+    telemodalities.
+      select(&:offered?).
+      map(&:label).
+      to_sentence(SentenceHelper.normal_weight_sentence_connectors).
+      html_safe
   end
 
+
+  def offered?
+    telemodalities.any?(&:offered?)
+  end
+
+  def telemodalities
+    @telemodalities ||= Modality.for_service(self)
+  end
+
+  class Modality
+    KEYS = [
+      :telephone,
+      :video,
+      :email,
+      :store
+    ]
+
+    def self.for_service(service)
+      KEYS.map do |key|
+        Modality.new(service, key)
+      end
+    end
+
+    def initialize(service, key)
+      @service = service
+      @key = key
+    end
+
+    def offered?
+      @service.send(@key)
+    end
+
+    def label
+      if @key == :store
+        "store & forward"
+      else
+        @key.to_s
+      end
+    end
+  end
 end

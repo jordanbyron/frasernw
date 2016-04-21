@@ -906,14 +906,8 @@ class Specialist < ActiveRecord::Base
     @valid_clinic_locations = clinic_locations.reject(&:empty?)
   end
 
-  def offers_teleservices?
-    if teleservices.present?
-      teleservices.each do |teleservice|
-        if teleservice.telemodalities.values.any? || teleservice.contact_note.present?
-          return true
-        end
-      end
-    end
+  def offered_teleservices
+    teleservices.sort_by(&:service_type).select(&:offered?)
   end
 
 private
