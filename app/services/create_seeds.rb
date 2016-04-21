@@ -474,6 +474,9 @@ class CreateSeeds < ServiceObject
           end
         end
       },
+      "phone_extension" => {
+        :faker => Proc.new{ |klass| Faker::PhoneNumber.extension }
+      },
       "phone" => {
         :faker => Proc.new{ |klass| Faker::PhoneNumber.phone_number }
       },
@@ -575,16 +578,16 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass, hash| hash["city_id"].nil? ? nil : City.random_id }
       },
       "investigation" => {
-        :faker => Proc.new{ |klass| "Myeloma, low grade lymphoma, myelodysplastic syndromes, myeloproliferative neoplasm" }
+        :faker => Proc.new{ |klass| "Complete medical history." }
         },
       "suite" => {
         :faker => Proc.new{ |klass| Faker::Address.secondary_address }
         },
       "body" => {
-        :faker => Proc.new{ |klass| "We seek to provide the best possible medical care to our patients." }
+        :faker => Proc.new{ |klass| "This is a news item." }
       },
       "area_of_focus" => {
-        :faker => Proc.new{ |klass| "Recuperative stretching" }
+        :faker => Proc.new{ |klass| "Post-surgical recuperation" }
         },
       "referral_criteria" => {
         :faker => Proc.new{ |klass| "Laparascopic analysis" }
@@ -600,9 +603,6 @@ class CreateSeeds < ServiceObject
       "feedback" => {},
       "password" => {},
       "token" => {},
-      "comment" => {
-        :faker => Proc.new{ |klass| "We seek to provide the best possible medical care to our patients." }
-        },
       "note" => {
         :faker => Proc.new{ |klass| "We seek to provide the best possible medical care to our patients." }
         },
@@ -610,7 +610,7 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| "Take no food 12 hours prior to appiontment" }
         },
       "details" => {
-        :faker => Proc.new{ |klass| "Yoga Therapist" }
+        :faker => Proc.new{ |klass| "Some details." }
         },
       "red_flags" => {
         :faker => Proc.new{ |klass| "Oncology" }
@@ -622,9 +622,6 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| "Not wheelchair accessible" }
         },
       "location_opened_old" => {},
-      "policy" => {
-        :faker => Proc.new{ |klass| "We seek to provide the best possible medical care to our patients." }
-        },
       "required_investigations" => {
         :faker => Proc.new{ |klass| "Complete vaccination records" }
         },
