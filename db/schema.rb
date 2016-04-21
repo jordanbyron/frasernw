@@ -964,20 +964,6 @@ ActiveRecord::Schema.define(version: 20160415211551) do
 
   add_index "subscriptions", ["user_id"], name: "index_subscriptions_on_user_id", using: :btree
 
-  create_table "teleservices", force: true do |t|
-    t.integer  "specialist_id"
-    t.integer  "service_type"
-    t.boolean  "telephone",     default: false
-    t.boolean  "video",         default: false
-    t.boolean  "email",         default: false
-    t.boolean  "store",         default: false
-    t.string   "contact_note"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "teleservices", ["specialist_id"], name: "index_teleservices_on_specialist_id", using: :btree
-
   create_table "user_cities", force: true do |t|
     t.integer  "user_id"
     t.integer  "city_id"
