@@ -27,6 +27,63 @@ module.exports = {
       ) || props.bodyRows.length === 0);
     }
   },
+  teleserviceRecipients: {
+    isActivated: function(filters) {
+      return _.some(_.values(filters.teleserviceRecipients)) &&
+        !_.some(_.values(filters.teleservicetypes));
+    },
+    predicate: function(record, filters) {
+      const performsPatient = _.some(_.values(_.pick(record.teleserviceFeeTypes, [1, 2])))
+      const performsProvider = _.some(_.values(_.pick(record.teleserviceFeeTypes, [3, 4])))
+
+      if (filters.teleserviceRecipients.patient && !performsPatient)
+        return false;
+      }
+      else if (filters.teleserviceRecipients.provider && !performsProvider)
+        return false;
+      }
+      else {
+        return true;
+      }
+    },
+    summary: function() {
+      if (filters.teleserviceRecipients.patient && filters.teleserviceRecipients.provider) {
+        return "performs telehealth patient and provider services";
+      }
+      else if (filters.teleserviceRecipients.patient) {
+        return "performs telehealth patient services";
+      }
+      else if (filters.teleserviceRecipients.provider) {
+        return "performs telehealth provider services";
+      }
+    },
+    summaryPlacement: "trailing"
+  },
+  teleserviceFeeTypes: {
+    isActivated: function(filters) {
+      return _.some(_.values(filters.teleserviceFeeTypes));
+    },
+    predicate: function(record, filters) {
+      return _.every(
+        _.keys(_.pick(teleserviceFeeTypes, _.identity)),
+        (feeTypeKey) => {
+          return _.includes(record.teleserviceFeeTypes, feeTypeKey);
+        }
+      );
+    },
+    summary: function() {
+      if (filters.teleserviceRecipients.patient && filters.teleserviceRecipients.provider) {
+        return "performs telehealth patient and provider services";
+      }
+      else if (filters.teleserviceRecipients.patient) {
+        return "performs telehealth patient services";
+      }
+      else if (filters.teleserviceRecipients.provider) {
+        return "performs telehealth provider services";
+      }
+    },
+    summaryPlacement: "trailing"
+  },
   procedures: {
     isActivated: function(filters) {
       return some((values(filters.procedures)), (value) => value);

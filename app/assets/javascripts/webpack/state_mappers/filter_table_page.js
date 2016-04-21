@@ -617,6 +617,8 @@ var PANEL_TYPE_OPAQUE_FILTERS = {
     "hospitalAssociations",
     "status",
     "showInTable",
+    "teleserviceRecipients",
+    "teleserviceFeeTypes"
   ],
   clinics: [
     "procedures",
@@ -628,6 +630,8 @@ var PANEL_TYPE_OPAQUE_FILTERS = {
     "careProviders",
     "status",
     "showInTable",
+    "teleserviceRecipients",
+    "teleserviceFeeTypes"
   ],
   contentCategories: [
     "subcategories"
