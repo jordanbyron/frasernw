@@ -100,8 +100,8 @@ class CreateSeeds < ServiceObject
     "users" => Proc.new{
       prod_users = User.admin.map(&:attributes)
 
-      demo_users_cmd = "\"puts('START_DUMP' + User.where(persist_in_demo: true).map(&:attributes).to_yaml)\""
-      demo_users_cmd_result = `heroku run rails runner #{demo_users_cmd} --app pathwaysbcdev`
+      demo_users_cmd_result =
+        `heroku run rails runner "CreateSeeds::Dump.users" --app pathwaysbcdev`
       demo_users = YAML.load(demo_users_cmd_result[/(?<=START_DUMP)[^\e]+/m])
 
       users = demo_users + prod_users
@@ -110,8 +110,48 @@ class CreateSeeds < ServiceObject
         Rails.root.join("seeds", "users.yaml"),
         users.to_yaml
       )
+    },
+    "user_divisions" => Proc.new{
+      prod_user_divisions = User.
+        admin.
+        map(&:user_divisions).
+        flatten.
+        map(&:attributes)
+
+      demo_users_cmd_result = %x{
+        heroku run rails runner
+        "CreateSeeds::Dump.user_divisions"
+        --app pathwaysbcdev
+      }
+      demo_user_divisions = YAML.load(
+        demo_users_cmd_result[/(?<=START_DUMP)[^\e]+/m]
+      )
+
+      user_divisions = demo_user_divisions + prod_user_divisions
+
+      File.write(
+        Rails.root.join("seeds", "user_divisions.yaml"),
+        user_divisions.to_yaml
+      )
     }
   }
+
+  module Dump
+    def self.users
+      demo_users = User.where(persist_in_demo: true)
+
+      puts('START_DUMP' + demo_users.map(&:attributes).to_yaml)
+    end
+
+    def self.user_divisions
+      demo_user_divisions = User.
+        where(persist_in_demo: true).
+        map(&:user_divisions).
+        flatten
+
+      puts('START_DUMP' + demo_user_divisions.map(&:attributes).to_yaml)
+    end
+  end
 
   class PostProcess < ServiceObject
     def call
