@@ -76,6 +76,7 @@ var labelReferentName = function(record, app, config) {
         className="datatable__referent_name"
         href={"/" + record.collectionName + "/" + record.id}
         style={{position: "relative"}}
+        onClick={function(e){ e.stopPropagation() }}
       >
         { record.name }
       </a>
@@ -98,10 +99,10 @@ const ExpandedInformation = ({record, config}) => {
       );
     } else {
       return(
-        <div>
+        <div style={{marginTop: "5px"}}>
           <i>
             {
-              "This specialist hasn't provided us information about their " +
+              `This ${record.collectionName} hasn't provided us information about their ` +
               "interests or restrictions."
             }
           </i>
@@ -220,7 +221,8 @@ module.exports = {
       ], (cell) => cell === null),
       reactKey: (record.collectionName + record.id),
       record: record,
-      onClick: _.partial(onReferentClick, record, config.selectedRecordId, config.panelKey, dispatch)
+      onClick: _.partial(onReferentClick, record, config.selectedRecordId, config.panelKey, dispatch),
+      isSelected: (config.selectedRecordId === record.id)
     }
   },
   resources: function(app, dispatch, config, record) {

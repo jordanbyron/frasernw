@@ -3,8 +3,19 @@ var buttonIsh = require("../stylesets").buttonIsh;
 
 module.exports = React.createClass({
   render: function() {
+    if (this.props.isSelected) {
+      var className = "datatable__row datatable__row--isSelected";
+    }
+    else {
+      var className = "datatable__row";
+    }
+
     return (
-      <tr className="datatable__row" style={buttonIsh} onClick={this.props.onClick}>
+      <tr
+        className={className}
+        style={buttonIsh}
+        onClick={this.props.onClick}
+      >
         {
           this.props.data.map(function(cell, i) {
             return (
