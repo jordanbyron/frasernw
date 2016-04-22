@@ -27,6 +27,7 @@ class ImportSeeds < ServiceObject
     end
 
     fixup_clinic_names!
+    import_demo_users!
 
     PublicActivity.enabled = false
 
@@ -35,6 +36,30 @@ class ImportSeeds < ServiceObject
     display_news_items!
 
     PublicActivity.enabled = true
+  end
+
+  def import_demo_users!
+    raw_dump =
+      `heroku run rails runner "ImportSeeds.dump_users!" --app pathwaysbcdev`
+
+    parsed_dump = YAML.load(
+      raw_dump[/(?<=START_DUMP)[^\e]+/m]
+    )
+
+    parsed_dump.each do |user_attributes|
+      User.new(user_attributes, without_protection: true).save
+    end
+  end
+
+  def self.dump_users!
+    demo_users = User.where(persist_in_demo: true).map do |user|
+      user.
+        attributes.
+        except("id").
+        merge("division_ids" => user.divisions.map(&:id))
+    end
+
+    puts('START_DUMP' + demo_users.to_yaml)
   end
 
   def fixup_clinic_names!
