@@ -4,10 +4,12 @@
 
   %h3 Telehealth Services Offered
 
-  %p
-    = link_to "You may view the fee schedule for specialist telehealth services here.",
+  %p{style: "margin-left: 0px;"}
+    %span= "You may view the fee schedule for specialist telehealth services "
+    = link_to "here.",
       "http://sscbc.ca/",
-      target: "_blank"
+      target: "_blank",
+      style: "display: inline-block;"
 
   %table#teleservices-table
     %thead.row

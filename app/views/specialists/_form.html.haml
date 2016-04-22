@@ -35,6 +35,10 @@
 - elsif @form_modifier.admin_rereview?
   = rereview_warning(@review_item)
 
+.alert.alert-info{style: "margin-top: 10px"}
+  = "Please note that a new section has been added to this survey.  " + |
+    "Scroll down to specify which telehealth services this specialist offers." |
+
 = simple_nested_form_for @specialist, :url => {:controller => params[:controller], :action => @form_modifier.form_action}, :method => @form_modifier.method, :html => { :class => "form-horizontal ajax specialist_form" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
