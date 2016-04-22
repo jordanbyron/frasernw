@@ -18,6 +18,7 @@ class Specialist < ActiveRecord::Base
     :billing_number,
     :is_gp,
     :is_internal_medicine,
+    :sees_only_children,
     :practise_limitations,
     :interest,
     :procedure_ids,
