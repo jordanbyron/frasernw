@@ -47,7 +47,7 @@ class ImportSeeds < ServiceObject
     )
 
     parsed_dump.each do |user_attributes|
-      User.new(user_attributes, without_protection: true).save
+      User.new(user_attributes, without_protection: true).save!(validate: false)
     end
   end
 
