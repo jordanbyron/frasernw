@@ -87,32 +87,47 @@ var labelReferentName = function(record, app, config) {
   );
 }
 
-const ExpandedInformation = ({record, config}) => {
-  // console.log(config);
-  if(config.selectedRecordId === record.id) {
-    if (record.interest && record.notPerformed){
+const ExpandedInformation = React.createClass({
+  isSelected: function() {
+    return this.props.config.selectedRecordId === this.props.record.id;
+  },
+  componentDidMount: function(){
+    if (this.isSelected()){
+      $(this.refs.content).show();
+    }
+  },
+  componentDidUpdate: function(prevProps) {
+    var selectedInCurrentProps = this.isSelected();
+    var selectedInPrevProps = prevProps.config.selectedRecordId === this.props.record.id;
+
+    if (selectedInPrevProps == false && selectedInCurrentProps == true) {
+      $(this.refs.content).slideDown("fast");
+    } else if (selectedInPrevProps == true && selectedInCurrentProps == false){
+      $(this.refs.content).slideUp("fast");
+    }
+  },
+  render: function(){
+    if (this.props.record.interest && this.props.record.notPerformed){
       return(
-        <ul>
-          <li><MostInterested record={record}/></li>
-          <li><NotPerformed record={record}/></li>
+        <ul ref="content" style={{display: "none"}}>
+          <li><MostInterested record={this.props.record}/></li>
+          <li><NotPerformed record={this.props.record}/></li>
         </ul>
       );
     } else {
       return(
-        <div style={{marginTop: "5px"}}>
+        <div style={{marginTop: "5px", display: "none"}} ref="content">
           <i>
             {
-              `This ${record.collectionName} hasn't provided us information about their ` +
+              `This ${this.props.record.collectionName} hasn't provided us information about their ` +
               "interests or restrictions."
             }
           </i>
         </div>
       );
     }
-  } else {
-    return <span></span>
   }
-};
+})
 
 // status icon
 // e.g. 'Accepting Referrals' checkmark
