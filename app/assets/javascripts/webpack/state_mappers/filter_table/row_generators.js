@@ -39,7 +39,7 @@ const MSP = ({record}) => {
 const MiniProfileItem = ({heading, value}) => {
   return(
     <div className="mini-profile__item">
-      <b>{`${heading} `}</b>
+      <i>{`${heading} `}</i>
       <span>{value}</span>
     </div>
   )

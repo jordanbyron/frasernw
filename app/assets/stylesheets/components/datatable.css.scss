@@ -105,14 +105,30 @@
       }
     }
 
+    .datatable__row--isSelected {
+      .datatable__referent_name {
+        font-weight: bold;
+      }
+    }
+
     .datatable__referent_name:hover ~ .mini-profile__container {
       display: block;
     }
+    .table {
+      .datatable__row {
+        &:hover {
+          td.datatable__cell {
+            background-color: #f3f8fc;
+          }
+        }
 
-    .datatable__row {
-      &:hover {
-        td.datatable__cell {
-          background-color: #f3f8fc;
+        ul {
+          list-style-type: disc;
+          list-style-position: outside;
+          padding-left: 20px;
+          li {
+            list-style-type: disc;
+          }
         }
       }
     }
