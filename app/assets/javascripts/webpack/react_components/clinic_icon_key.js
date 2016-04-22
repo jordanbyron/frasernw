@@ -24,7 +24,7 @@ module.exports = React.createClass({
           </li>
           <li>
             <i className="icon-link"/>
-            <span>Wait times collected specifically for this area of practice</span>
+            <span>Wait times provided are specific to this area of practice</span>
           </li>
         </ul>
       </div>
