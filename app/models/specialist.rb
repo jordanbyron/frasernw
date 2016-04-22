@@ -882,10 +882,15 @@ class Specialist < ActiveRecord::Base
   end
 
   def suffix
-    return "GP" if is_gp?
-    return "Int Med" if is_internal_medicine?
-    return "" if specializations.reject{|s| !s.suffix.present?}.none? # if no suffix exists then show nothing
-    return specializations.reject{|s| !s.suffix.present?}.first.suffix # otherwise default to the first specialization with suffix
+    if is_gp?
+      "GP"
+    elsif is_internal_medicine?
+      "Int Med"
+    elsif sees_only_children?
+      "Ped"
+    else
+      specializations.map(&:suffix).select(&:present).first || ""
+    end
   end
 
   def ordered_specialist_offices
