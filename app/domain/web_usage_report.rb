@@ -204,7 +204,7 @@ class WebUsageReport < ServiceObject
 
   def collection(collection_key)
     @collections ||= Hash.new do |h, key|
-      h[key] = Serialized.fetch(key)
+      h[key] = Denormalized.fetch(key)
     end
     @collections[collection_key]
   end

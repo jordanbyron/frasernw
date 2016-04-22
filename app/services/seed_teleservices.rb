@@ -15,7 +15,7 @@ class SeedTeleservices < ServiceObject
 
     provider.teleservices.each do |service|
       Teleservice::Modality::KEYS.each do |key|
-        service.send("#{key}=", (rand() < 0.15))
+        service.send("#{key}=", (rand() < 0.05))
       end
     end
 

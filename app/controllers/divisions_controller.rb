@@ -45,7 +45,7 @@ class DivisionsController < ApplicationController
 
       CreateSpecializationOptions.call(division: @division)
 
-      Serialized.delay.regenerate(:divisions)
+      Denormalized.delay.regenerate(:divisions)
 
       redirect_to @division, :notice => "Successfully created division."
     else
@@ -84,7 +84,7 @@ class DivisionsController < ApplicationController
           drcs.destroy
         end
       end
-      Serialized.delay.regenerate(:divisions)
+      Denormalized.delay.regenerate(:divisions)
 
       redirect_to @division, :notice  => "Successfully updated division."
     else

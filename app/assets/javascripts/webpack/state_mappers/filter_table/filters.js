@@ -1,10 +1,11 @@
 var keys = require("lodash/object/keys");
 var every = require("lodash/collection/every");
-var pick = require("lodash/object/pick");
 var values = require("lodash/object/values");
 var find = require("lodash/collection/find");
 var some = require("lodash/collection/some");
 var uniq = require("lodash/array/uniq");
+var utils = require("utils");
+var _ = require("lodash");
 
 module.exports = {
   cities: {
@@ -30,31 +31,37 @@ module.exports = {
   teleserviceRecipients: {
     isActivated: function(filters) {
       return _.some(_.values(filters.teleserviceRecipients)) &&
-        !_.some(_.values(filters.teleservicetypes));
+        !_.some(_.values(filters.teleserviceFeeTypes));
     },
     predicate: function(record, filters) {
-      const performsPatient = _.some(_.values(_.pick(record.teleserviceFeeTypes, [1, 2])))
-      const performsProvider = _.some(_.values(_.pick(record.teleserviceFeeTypes, [3, 4])))
+      const performsPatient = _.some(
+        record.teleserviceFeeTypes,
+        (type) => _.includes([1, 2], type)
+      )
+      const performsProvider = _.some(
+        record.teleserviceFeeTypes,
+        (type) => _.includes([3, 4], type)
+      )
 
-      if (filters.teleserviceRecipients.patient && !performsPatient)
+      if (filters.teleserviceRecipients.patient && !performsPatient) {
         return false;
       }
-      else if (filters.teleserviceRecipients.provider && !performsProvider)
+      else if (filters.teleserviceRecipients.provider && !performsProvider) {
         return false;
       }
       else {
         return true;
       }
     },
-    summary: function() {
-      if (filters.teleserviceRecipients.patient && filters.teleserviceRecipients.provider) {
-        return "performs telehealth patient and provider services";
+    summary: function(props) {
+      if (props.filterValues.teleserviceRecipients.patient && props.filterValues.teleserviceRecipients.provider) {
+        return "provide telehealth services to patients and other providers";
       }
-      else if (filters.teleserviceRecipients.patient) {
-        return "performs telehealth patient services";
+      else if (props.filterValues.teleserviceRecipients.patient) {
+        return "provide telehealth services to patients";
       }
-      else if (filters.teleserviceRecipients.provider) {
-        return "performs telehealth provider services";
+      else if (props.filterValues.teleserviceRecipients.provider) {
+        return "provide telehealth services to other providers";
       }
     },
     summaryPlacement: "trailing"
@@ -65,21 +72,31 @@ module.exports = {
     },
     predicate: function(record, filters) {
       return _.every(
-        _.keys(_.pick(teleserviceFeeTypes, _.identity)),
+        _.keys(_.pick(filters.teleserviceFeeTypes, _.identity)),
         (feeTypeKey) => {
-          return _.includes(record.teleserviceFeeTypes, feeTypeKey);
+          return _.includes(record.teleserviceFeeTypes, parseInt(feeTypeKey));
         }
       );
     },
-    summary: function() {
-      if (filters.teleserviceRecipients.patient && filters.teleserviceRecipients.provider) {
-        return "performs telehealth patient and provider services";
+    summary: function(props) {
+      const labels = {
+        1: "perform initial consultations with patients",
+        2: "perform follow-ups with patients",
+        3: "provide advice to healthcare providers",
+        4: "participate in case conferences with other health care providers"
       }
-      else if (filters.teleserviceRecipients.patient) {
-        return "performs telehealth patient services";
-      }
-      else if (filters.teleserviceRecipients.provider) {
-        return "performs telehealth provider services";
+
+      const activatedFeeTypes = _.keys(_.pick(
+        props.filterValues.teleserviceFeeTypes,
+        _.identity
+      )).map((type) => labels[type]);
+
+      const activatedList = utils.toSentence(activatedFeeTypes);
+
+      if (activatedFeeTypes.length === 1) {
+        return `${activatedList} as a telehealth service`;
+      } else {
+        return `${activatedList} as telehealth services`;
       }
     },
     summaryPlacement: "trailing"
@@ -188,7 +205,7 @@ module.exports = {
       return some(values(filters.scheduleDays), (value) => value);
     },
     predicate: function(record, filters) {
-      var activatedDays = pick(filters.scheduleDays, (val) => val)
+      var activatedDays = _.pick(filters.scheduleDays, (val) => val)
       var activatedDayIds = keys(activatedDays)
 
       return every(activatedDayIds, (id) => {

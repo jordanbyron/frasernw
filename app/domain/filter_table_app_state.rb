@@ -12,18 +12,18 @@ class FilterTableAppState
         },
         isAdmin: current_user.as_admin_or_super?
       },
-      specializations: Serialized.fetch(:specializations),
-      contentCategories: Serialized.fetch(:content_categories),
-      contentItems: Serialized.fetch(:content_items),
-      cities: Serialized.fetch(:cities),
-      hospitals: Serialized.fetch(:hospitals),
-      procedures: Serialized.fetch(:procedures),
-      respondsWithinOptions: Serialized.fetch(:respondsWithinOptions),
-      respondsWithinSummaryLabels: Serialized.fetch(:respondsWithinSummaryLabels),
+      specializations: Denormalized.fetch(:specializations),
+      contentCategories: Denormalized.fetch(:content_categories),
+      contentItems: Denormalized.fetch(:content_items),
+      cities: Denormalized.fetch(:cities),
+      hospitals: Denormalized.fetch(:hospitals),
+      procedures: Denormalized.fetch(:procedures),
+      respondsWithinOptions: Denormalized.fetch(:respondsWithinOptions),
+      respondsWithinSummaryLabels: Denormalized.fetch(:respondsWithinSummaryLabels),
       dayKeys: Schedule::DAY_HASH,
-      languages: Serialized.fetch(:languages),
-      careProviders: Serialized.fetch(:healthcare_providers),
-      divisions: Serialized.fetch(:divisions),
+      languages: Denormalized.fetch(:languages),
+      careProviders: Denormalized.fetch(:healthcare_providers),
+      divisions: Denormalized.fetch(:divisions),
       referentStatusIcons: Specialist::STATUS_CLASS_HASH.invert,
       tooltips: {
         specialists: Specialist::STATUS_TOOLTIP_HASH.inject({}) do |memo, (k, v)|
@@ -34,7 +34,10 @@ class FilterTableAppState
           3 => Clinic::UNKNOWN_STATUS
         })
       },
-      waittimeHash: Specialist::WAITTIME_LABELS
+      waittimeHash: Specialist::WAITTIME_LABELS,
+      teleserviceFeeTypes: Teleservice::SERVICE_TYPES.map do |key, value|
+        [ key, value.downcase ]
+      end.to_h
     }
   end
 end
