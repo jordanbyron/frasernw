@@ -320,7 +320,7 @@
             - @specialist.referral_forms.each do |referral_form|
               - next if not referral_form.form.present?
               - type = referral_form.form_content_type.split('/').last
-              %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, :target => "_blank"
+              %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, target: "_blank"
 
     = f.input :lagtime_mask, as: :select, collection: Specialist::LAGTIME_LABELS, label_method: :last, value_method: :first
 
@@ -340,6 +340,8 @@
     = f.input :urgent_phone, as: :boolean, wrapper: :bootstrap_tight
     = f.input :urgent_other_details
     = f.input :urgent_details
+
+  = render "teleservices/form_fields", f: f
 
   #section_for_patients
 

@@ -7,6 +7,7 @@ class Specialist < ActiveRecord::Base
   include ProcedureSpecializable
   include Referrable
   include TokenAccessible
+  include OffersTeleservices
 
   include ApplicationHelper
 

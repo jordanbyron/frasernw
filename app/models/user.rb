@@ -403,4 +403,10 @@ class User < ActiveRecord::Base
       where(user_id: self.id).
       update_all(last_visited: DateTime.current)
   end
+
+  def divisions_list
+    as_divisions.
+      to_sentence(SentenceHelper.normal_weight_sentence_connectors).
+      html_safe
+  end
 end

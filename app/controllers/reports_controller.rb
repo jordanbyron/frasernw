@@ -68,8 +68,8 @@ class ReportsController < ApplicationController
 
     @init_data = {
       app: {
-        specializations: Serialized.fetch(:specializations),
-        divisions: Serialized.fetch(:divisions)
+        specializations: Denormalized.fetch(:specializations),
+        divisions: Denormalized.fetch(:divisions)
       }
     }
   end
@@ -85,7 +85,7 @@ class ReportsController < ApplicationController
           divisionIds: current_user.as_divisions.map(&:id),
           isSuperAdmin: current_user.as_super_admin?
         },
-        divisions: Serialized.fetch(:divisions)
+        divisions: Denormalized.fetch(:divisions)
       }
     }
   end

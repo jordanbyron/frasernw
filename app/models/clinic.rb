@@ -8,6 +8,7 @@ class Clinic < ActiveRecord::Base
   include Referrable
   include ApplicationHelper
   include TokenAccessible
+  include OffersTeleservices
 
   attr_accessible :name,
     :deprecated_phone,

@@ -53,6 +53,7 @@ class ClinicsController < ApplicationController
       [s.name, s.id]
     end
     @specializations_focuses = GenerateClinicFocusInputs.exec(nil, [@specialization])
+    BuildTeleservices.call(provider: @clinic)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
@@ -104,6 +105,7 @@ class ClinicsController < ApplicationController
     end
     @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
     @specializations_focuses = GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
+    BuildTeleservices.call(provider: @clinic)
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 

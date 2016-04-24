@@ -33,6 +33,7 @@ class SpecialistsController < ApplicationController
     @specialist = Specialist.new
     @specialist.specialist_specializations.build( :specialization_id => @specialization.id )
 
+    BuildTeleservices.call(provider: @specialist)
     build_specialist_offices
 
     @specializations_clinics, @specializations_clinic_locations =
@@ -75,6 +76,7 @@ class SpecialistsController < ApplicationController
     load_form_variables
     @form_modifier = SpecialistFormModifier.new(:edit, current_user)
     @specialist = Specialist.find(params[:id])
+    BuildTeleservices.call(provider: @specialist)
     if @specialist.capacities.count == 0
       @specialist.capacities.build
     end

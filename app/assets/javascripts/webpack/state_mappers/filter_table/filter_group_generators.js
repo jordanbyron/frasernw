@@ -83,7 +83,7 @@ module.exports = {
         unfocusedProcedures: _procedureFilters.filter((filter) => !filter.focused)
       },
       title: title,
-      shouldDisplay: _.any(_procedureFilters),
+      shouldDisplay: _.some(_procedureFilters),
       isOpen: _.get(state, ["ui", "panels", panelKey, "filterGroupVisibility", "procedures"], true),
       isExpanded: _.get(state, ["ui", "panels", panelKey, "filterExpansion", "procedures"], false),
       componentKey: "procedures"
@@ -281,6 +281,25 @@ module.exports = {
       title: "Subcategories",
       isOpen: _.get(state, ["ui", "panels", panelKey, "filterGroupVisibility", "subcategories"], true),
       componentKey: "subcategories"
+    };
+  },
+  teleservices: function(panelKey, maskingSet, state){
+    return {
+      filters: {
+        teleserviceRecipients: FILTER_VALUE_GENERATORS["teleserviceRecipients"](
+          state,
+          maskingSet,
+          panelKey
+        ),
+        teleserviceFeeTypes: FILTER_VALUE_GENERATORS["teleserviceFeeTypes"](
+          state,
+          maskingSet,
+          panelKey
+        )
+      },
+      title: "Telehealth Services",
+      isOpen: _.get(state, ["ui", "panels", panelKey, "filterGroupVisibility", "teleservices"], false),
+      componentKey: "teleservices"
     };
   }
 }

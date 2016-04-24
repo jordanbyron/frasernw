@@ -166,7 +166,7 @@ var filterByPageType = function(records, state, panelTypeKey) {
 
       return records.filter((record) => {
         return (_.includes(record.procedureIds, state.ui.procedureId) ||
-          _.any(_.intersection(record.specializationIds, assumedSpecializationIds)));
+          _.some(_.intersection(record.specializationIds, assumedSpecializationIds)));
       });
     },
   }[state.ui.pageType]();
@@ -294,7 +294,7 @@ const createMaskingSet = (pageTypeFiltered, state) => {
   let _localReferralArea = referralCities(state);
   if (state.ui.pageType === "specialization" && state.app.specializations[state.ui.specializationId].maskFiltersByReferralArea) {
     return pageTypeFiltered.filter((record) => {
-      return _.any(_.intersection(record.cityIds, _localReferralArea));
+      return _.some(_.intersection(record.cityIds, _localReferralArea));
     });
   }
   else {
@@ -421,7 +421,7 @@ var PANEL_PROPS_GENERATORS = {
       },
       assumedMessage: (
         <MaybeContent
-          shouldDisplay={state.ui.pageType === "procedure" && _.any(pageAssumedSpecializations(state, panelTypeKey))}
+          shouldDisplay={state.ui.pageType === "procedure" && _.some(pageAssumedSpecializations(state, panelTypeKey))}
           contents={_.partial(React.createElement, AssumedMessage, {state: state, panelTypeKey: panelTypeKey})}
         />
       ),
@@ -620,6 +620,8 @@ var PANEL_TYPE_OPAQUE_FILTERS = {
     "hospitalAssociations",
     "status",
     "showInTable",
+    "teleserviceRecipients",
+    "teleserviceFeeTypes"
   ],
   clinics: [
     "procedures",
@@ -631,6 +633,8 @@ var PANEL_TYPE_OPAQUE_FILTERS = {
     "careProviders",
     "status",
     "showInTable",
+    "teleserviceRecipients",
+    "teleserviceFeeTypes"
   ],
   contentCategories: [
     "subcategories"
@@ -644,9 +648,28 @@ var PANEL_TYPE_FILTERS = {
 };
 var PANEL_TYPE_SUMMARY_FILTERS = PANEL_TYPE_FILTERS;
 var PANEL_TYPE_FILTER_GROUPS = {
-  specialists: ["procedures", "referrals", "sexes", "scheduleDays", "languages", "associations", "cities"],
-  clinics: ["procedures", "clinicDetails", "scheduleDays", "careProviders", "languages", "cities"],
-  contentCategories: ["subcategories"]
+  specialists: [
+    "procedures",
+    "referrals",
+    "sexes",
+    "scheduleDays",
+    "teleservices",
+    "languages",
+    "associations",
+    "cities"
+  ],
+  clinics: [
+    "procedures",
+    "clinicDetails",
+    "scheduleDays",
+    "teleservices",
+    "careProviders",
+    "languages",
+    "cities"
+  ],
+  contentCategories: [
+    "subcategories"
+  ]
 };
 
 var generateFilterValuesForPanel = function(state, maskingSet, config) {

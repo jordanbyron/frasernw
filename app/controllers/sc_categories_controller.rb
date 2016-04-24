@@ -19,10 +19,10 @@ class ScCategoriesController < ApplicationController
             contentItems: current_user.favorite_content_items.pluck(:id)
           }
         },
-        contentCategories: Serialized.fetch(:content_categories),
-        contentItems: Serialized.fetch(:content_items),
-        divisions: Serialized.fetch(:divisions),
-        specializations: Serialized.fetch(:specializations)
+        contentCategories: Denormalized.fetch(:content_categories),
+        contentItems: Denormalized.fetch(:content_items),
+        divisions: Denormalized.fetch(:divisions),
+        specializations: Denormalized.fetch(:specializations)
       },
       ui: {
         contentCategoryId: @sc_category.id,

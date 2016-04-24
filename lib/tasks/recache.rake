@@ -17,7 +17,7 @@ namespace :pathways do
         end
       },
       serialized_indices: -> {
-        Serialized.regenerate_all
+        Denormalized.regenerate_all
       },
       specialists_index: -> {
         Division.all.sort{ |a,b| a.id <=> b.id }.each do |d|

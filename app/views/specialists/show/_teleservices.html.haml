@@ -1,0 +1,13 @@
+%h6 Telehealth Services
+
+%p.space#teleservice_show
+- @specialist.offered_teleservices.each do |teleservice|
+  %ul
+    %li
+      %strong= teleservice.name
+      %span= " available via "
+      %span= teleservice.offered_modalities_list
+      %span>= "."
+      - if teleservice.contact_note.present?
+        %p.teleservice_show__note
+          = "Booking & Contact Note: #{teleservice.contact_note}"
