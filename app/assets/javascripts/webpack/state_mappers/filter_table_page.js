@@ -260,7 +260,10 @@ const CustomWaittimeMessage = (props) => (
   <Alert type="info">
     <i className="icon-link" style={{marginRight: "5px"}}/>
     <span>
-      You have chosen an area of practice in which clinics have optionally provided a specific wait time. The wait time column has been updated accordingly.
+      {
+        "You have chosen an area of practice with a specific wait time. " +
+        "The wait time column has been updated accordingly."
+      }
     </span>
   </Alert>
 );
