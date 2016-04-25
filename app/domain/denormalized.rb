@@ -1,4 +1,4 @@
-module Serialized
+module Denormalized
   def self.regenerate_all
     GENERATORS.keys.each{ |key| regenerate(key) }
   end
@@ -45,7 +45,7 @@ module Serialized
             categoryId: item.sc_category.id,
             categoryIds: [ item.sc_category, item.sc_category.ancestors ].flatten.map(&:id),
             procedureIds: item.procedure_specializations.map(&:subtree).flatten.uniq.map(&:procedure_id),
-            content: (item.markdown_content.present? ? Serialized.prepare_markdown_content(item.markdown_content) : ""),
+            content: (item.markdown_content.present? ? Denormalized.prepare_markdown_content(item.markdown_content) : ""),
             resolvedUrl: item.resolved_url,
             canEmail: item.can_email?,
             id: item.id,
@@ -88,7 +88,8 @@ module Serialized
             isInProgress: specialist.in_progress,
             createdAt: specialist.created_at.to_date.to_s,
             updatedAt: specialist.updated_at.to_date.to_s,
-            showInTable: specialist.show_in_table?
+            showInTable: specialist.show_in_table?,
+            teleserviceFeeTypes: specialist.teleservices.select(&:offered?).map(&:service_type)
           })
         end
       end
@@ -146,7 +147,8 @@ module Serialized
             isInProgress: clinic.in_progress,
             createdAt: clinic.created_at.to_date.to_s,
             updatedAt: clinic.updated_at.to_date.to_s,
-            showInTable: clinic.show_in_table?
+            showInTable: clinic.show_in_table?,
+            teleserviceFeeTypes: clinic.teleservices.select(&:offered?).map(&:service_type)
           })
         end
       end
@@ -198,7 +200,7 @@ module Serialized
             map{ |ps| ps.procedure.name.uncapitalize_first_letter },
           memberName: specialization.member_name,
           membersName: specialization.member_name.pluralize,
-          nestedProcedureIds: Serialized.transform_nested_procedure_specializations(
+          nestedProcedureIds: Denormalized.transform_nested_procedure_specializations(
             specialization.procedure_specializations.includes(:procedure).arrange
           ),
           maskFiltersByReferralArea: specialization.mask_filters_by_referral_area
