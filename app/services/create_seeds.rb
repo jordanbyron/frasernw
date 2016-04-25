@@ -113,7 +113,7 @@ class CreateSeeds < ServiceObject
         map(&:attributes)
 
       File.write(
-        Rails.root.join("seeds", "user_divisions.yaml"),
+        Rails.root.join("seeds", "division_users.yaml"),
         user_divisions.to_yaml
       )
     }
@@ -451,6 +451,15 @@ class CreateSeeds < ServiceObject
     RAND_BOOLEAN = Proc.new{ [true, false].sample }
     RAND_MSP = [50000...60000]
     MASKED_FRAGMENTS = {
+      "telephone" => {
+        :faker => Proc.new{ rand() < 0.03 }
+      },
+      "video" => {
+        :faker => Proc.new{ rand() < 0.03 }
+      },
+      "store" => {
+        :faker => Proc.new{ rand() < 0.03 }
+      },
       "goes_by_name" => {
         :faker => Proc.new{ |klass| "" }
       },
@@ -549,7 +558,13 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass, record| rand(record["updated_at"].to_date..Date.current) }
       },
       "email" => {
-        :faker => Proc.new{ |klass| Faker::Internet.email }
+        :faker => Proc.new do |klass|
+          if klass == Teleservice
+            rand() < 0.03
+          else
+            Faker::Internet.email
+          end
+        end
       },
       "billing_number" => {
         :faker => Proc.new{ |klass| RAND_MSP.sample }
@@ -610,36 +625,42 @@ class CreateSeeds < ServiceObject
       "password" => {},
       "token" => {},
       "note" => {
-        :faker => Proc.new{ |klass| "We seek to provide the best possible medical care to our patients." }
-        },
+        :faker => Proc.new do |klass|
+          if klass == Teleservice
+            rand() < 0.03 ? "Teleservice details" : ""
+          else
+            "We seek to provide the best possible medical care to our patients."
+          end
+        end
+      },
       "patient_instructions" => {
         :faker => Proc.new{ |klass| "Take no food 12 hours prior to appiontment" }
-        },
+      },
       "details" => {
         :faker => Proc.new{ |klass| "Some details." }
-        },
+      },
       "red_flags" => {
         :faker => Proc.new{ |klass| "Oncology" }
-        },
+      },
       "not_performed" => {
         :faker => Proc.new{ |klass| "Vaccinations" }
-        },
+      },
       "limitations" => {
         :faker => Proc.new{ |klass| "Not wheelchair accessible" }
-        },
+      },
       "location_opened_old" => {},
       "required_investigations" => {
         :faker => Proc.new{ |klass| "Complete vaccination records" }
-        },
+      },
       "interest" => {
         :faker => Proc.new{ |klass| "Post-surgical Counselling" }
-        },
+      },
       "all_procedure_info" => {
         :faker => Proc.new{ |klass| "Ensure records are provided at least 2 days prior to appiontment" }
-        },
+      },
       "urgent_details" => {
         :faker => Proc.new{ |klass| "Telephone or Email." }
-        },
+      },
       "cancellation_policy" => {
         :faker => Proc.new{ |klass| "24 hour notice required." }
       }
