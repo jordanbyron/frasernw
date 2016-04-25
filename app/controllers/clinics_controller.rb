@@ -164,7 +164,7 @@ class ClinicsController < ApplicationController
         @clinic.specializations
       )
       @secret_token_id = @clinic.review_item.decoded_review_object["clinic"]["secret_token_id"]
-
+      BuildTeleservices.call(provider: @clinic)
       render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
@@ -198,6 +198,7 @@ class ClinicsController < ApplicationController
         @clinic.specializations
       )
       @secret_token_id = @review_item.decoded_review_object["clinic"]["secret_token_id"]
+      BuildTeleservices.call(provider: @clinic)
       render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
@@ -225,6 +226,7 @@ class ClinicsController < ApplicationController
       @clinic.save
       redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
     else
+      BuildTeleservices.call(provider: @clinic)
       render :action => 'edit'
     end
   end
