@@ -135,6 +135,7 @@ class SpecialistsController < ApplicationController
         @specialist.save
         redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}."
       else
+        BuildTeleservices.call(provider: @specialist)
         load_form_variables
         render :edit
       end
@@ -172,8 +173,7 @@ class SpecialistsController < ApplicationController
 
     if @review_item.blank?
       redirect_to specialists_path, :notice => "There are no review items for this specialist"
-      else
-
+    else
       build_specialist_offices
 
       @specializations_clinics, @specializations_clinic_locations =
@@ -184,6 +184,7 @@ class SpecialistsController < ApplicationController
         @specialist,
         @specialist.specializations
       )
+      BuildTeleservices.call(provider: @specialist)
       render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
@@ -209,6 +210,8 @@ class SpecialistsController < ApplicationController
         @specialist,
         @specialist.specializations
       )
+
+      BuildTeleservices.call(provider: @specialist)
       render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
