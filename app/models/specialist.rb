@@ -891,7 +891,7 @@ class Specialist < ActiveRecord::Base
     elsif sees_only_children?
       "Ped"
     else
-      specializations.map(&:suffix).select(&:present).first || ""
+      specializations.map(&:suffix).select(&:present?).first || ""
     end
   end
 
