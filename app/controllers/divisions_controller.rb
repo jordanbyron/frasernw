@@ -149,7 +149,7 @@ class DivisionsController < ApplicationController
   private
 
   def authorize_division_for_user
-    if !(current_user.as_super_admin? || (current_user.as_divisions.include? Division.find(params[:id])))
+    if !current_user.as_super_admin? && !current_user.as_divisions.include?(Division.find(params[:id]))
       redirect_to root_url, :notice => "You are not allowed to access this page"
     end
   end

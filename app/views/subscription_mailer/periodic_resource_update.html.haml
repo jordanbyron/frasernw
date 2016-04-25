@@ -19,16 +19,16 @@
             = render_activity(activity, fallback: :default)
           %br
       - if division_activities[:share_with_divisions].any?
-        - division_activities[:share_with_divisions].each do |division, item_ids|
-          = link_to "Display eligible items from #{division_activities[:division].name} in #{division.name}",
-            bulk_share_sc_items_url(item_ids: item_ids, division_id: division_activities[:division].id)
+        - division_activities[:share_with_divisions].each do |share_with_division, item_ids|
+          = link_to "Display eligible items from #{division_activities[:division].name} in #{share_with_division.name}",
+            bulk_share_sc_items_url(item_ids: item_ids, division_id: share_with_division.id)
 
 
     - if @divisions_activities.count > 1 && @share_all_with_divisions.any?
       %hr
-      - @share_all_with_divisions.each do |division, item_ids|
-        = link_to "Display eligible items from the above list in #{division.name}",
-          bulk_share_sc_items_url(item_ids: item_ids, division_id: division.id)
+      - @share_all_with_divisions.each do |share_with_division, item_ids|
+        = link_to "Display eligible items from the above list in #{share_with_division.name}",
+          bulk_share_sc_items_url(item_ids: item_ids, division_id: share_with_division.id)
 
 
     = render partial: "subscription_mailer/automatic_email_message",
