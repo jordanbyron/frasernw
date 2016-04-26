@@ -107,6 +107,14 @@ const ExpandedInformation = React.createClass({
     }
   },
   render: function(){
+    if (this.props.record.collectionName == "specialists") {
+      var noInfoLabel =
+        "This specialist hasn't provided us information about their interests or restrictions.";
+    } else {
+      var noInfoLabel =
+        "This clinic hasn't provided us information about their restrictions.";
+    }
+
     if (this.props.record.interest && this.props.record.notPerformed){
       return(
         <ul ref="content" style={{display: "none"}}>
@@ -117,12 +125,7 @@ const ExpandedInformation = React.createClass({
     } else {
       return(
         <div style={{marginTop: "5px", display: "none"}} ref="content">
-          <i>
-            {
-              `This ${this.props.record.collectionName.slice(0, -1)} hasn't provided us information about their ` +
-              "interests or restrictions."
-            }
-          </i>
+          <i>{noInfoLabel}</i>
         </div>
       );
     }
