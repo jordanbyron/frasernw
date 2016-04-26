@@ -150,12 +150,9 @@ module Denormalized
             createdAt: clinic.created_at.to_date.to_s,
             updatedAt: clinic.updated_at.to_date.to_s,
             showInTable: clinic.show_in_table?,
-<<<<<<< HEAD:app/domain/serialized.rb
             interest: clinic.interest,
-            notPerformed: clinic.not_performed
-=======
+            notPerformed: clinic.not_performed,
             teleserviceFeeTypes: clinic.teleservices.select(&:offered?).map(&:service_type)
->>>>>>> master:app/domain/denormalized.rb
           })
         end
       end
