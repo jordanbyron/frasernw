@@ -1,10 +1,30 @@
 module Pathways
   module S3
+    # which buckets do we want to sync and backup?
+    PERSISTENT_BUCKETS = [
+      :content_item_documents,
+      :newsletters,
+      :referral_forms,
+      :specialist_photos,
+    ]
+
     def self.repo
       AWS::S3.new(
         :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
         :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
       )
+    end
+
+    def self.switchable_bucket_name(collection)
+      if ENV["USE_BACKUP_S3_BUCKETS"] == "true"
+        self.backup_bucket_name(collection)
+      else
+        self.bucket_name(collection)
+      end
+    end
+
+    def self.backup_bucket_name(collection, app_name = ENV['APP_NAME'])
+      "#{app_name}-backup-#{collection.to_s.dasherize}"
     end
 
     def self.bucket_name(collection, app_name = ENV['APP_NAME'])
@@ -36,7 +56,9 @@ module Pathways
       end
 
       def ensure_destination_exists!
-        s3.buckets.create(destination_bucket_name) unless s3.buckets[destination_bucket_name].exists?
+        if !s3.buckets[destination_bucket_name].exists?
+          s3.buckets.create(destination_bucket_name)
+        end
       end
 
       def s3

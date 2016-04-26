@@ -27,6 +27,7 @@ class ClinicsEditorController < ApplicationController
       l.build_address
     end
     @specializations_focuses = GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
+    BuildTeleservices.call(provider: @clinic)
     if request.headers['X-PJAX']
       render :template => 'clinics/edit', :layout => 'ajax'
     else

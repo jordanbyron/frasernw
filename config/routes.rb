@@ -132,10 +132,6 @@ Frasernw::Application.routes.draw do
   get '/divisions/:id/shared_content_items' => 'divisions#shared_sc_items', as: 'shared_content_items'
   patch '/divisions/:id/update_shared' => 'divisions#update_shared', as: 'update_shared'
 
-  #get 'subscriptions' => 'subscriptions#show', as: 'subscriptions', via: :get
-  get 'notifications/master' => 'notifications#master', as: 'master'
-  resources :notifications do
-  end
   resources :subscriptions
   resources :news_items do
     member do

@@ -14,7 +14,7 @@ class LatestUpdatesController < ApplicationController
 
     @init_data = {
       app: {
-        divisions: Serialized.fetch(:divisions)
+        divisions: Denormalized.fetch(:divisions)
       },
       ui: {
         divisionIds: @divisions.map(&:id),

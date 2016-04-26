@@ -17,7 +17,7 @@ namespace :pathways do
         end
       },
       serialized_indices: -> {
-        Serialized.regenerate_all
+        Denormalized.regenerate_all
       },
       specialists_index: -> {
         Division.all.sort{ |a,b| a.id <=> b.id }.each do |d|
@@ -135,8 +135,6 @@ namespace :pathways do
     end
 
     task :all => :environment do
-      SystemNotifier.info("Beginning recache")
-
       TASKS.each do |name, body|
         begin
           puts "Recaching #{name}..."
@@ -150,8 +148,6 @@ namespace :pathways do
       end
 
       puts "All pages recached."
-
-      SystemNotifier.info("Recache successful")
     end
   end
 end

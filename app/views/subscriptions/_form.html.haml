@@ -4,7 +4,9 @@
   -# .resource-updates = form options for resource_update classification
   -# f.input :all_ + method_name form fields are fake checkboxes used for Javascript selectors
 
-= simple_form_for(@subscription, :html => {:class => 'form-horizontal'}, :wrapper_mappings => { check_boxes: :horizontal_radio_and_checkboxes, boolean: :horizontal_boolean  }, label: :none) do |f|
+= simple_form_for @subscription,
+  html: {class: 'form-horizontal'},
+  label: :none do |f|
   = f.error_notification
 
   .form-inputs
@@ -125,4 +127,3 @@
     }
 
   });
-

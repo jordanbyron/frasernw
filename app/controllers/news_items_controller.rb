@@ -23,7 +23,7 @@ class NewsItemsController < ApplicationController
             name: division.name
           })
         end,
-        newsItems: Serialized.generate(:news_items)
+        newsItems: Denormalized.generate(:news_items)
       },
       ui: {
         divisionId: @division.id

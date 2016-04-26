@@ -33,7 +33,7 @@
       %span=" in the divisions of "
       %span.btn-group.user_mask_warning__dropdown
         .button--mask_warning{"data-toggle" => "dropdown", "href" => "#"}
-          %strong= current_user.as_divisions.to_sentence(normal_weight_sentence_connectors).html_safe
+          %strong= current_user.divisions_list
           %b.caret.user_mask_warning__caret
         %ul.dropdown-menu.user_mask_warning__dropdown_menu
           - current_user.can_assign_divisions.each do |division|

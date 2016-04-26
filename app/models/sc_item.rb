@@ -20,8 +20,7 @@ class ScItem < ActiveRecord::Base
     :url,
     :markdown_content,
     :document,
-    :can_email_document,
-    :can_email_link,
+    :can_email,
     :shareable,
     :division_id,
     :evidence_id,
@@ -45,7 +44,7 @@ class ScItem < ActiveRecord::Base
   has_attached_file :document,
     :storage => :s3,
     :s3_protocol => :https,
-    :bucket => Pathways::S3.bucket_name(:content_item_documents),
+    :bucket => Pathways::S3.switchable_bucket_name(:content_item_documents),
     :s3_credentials => {
     :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
     :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
@@ -242,10 +241,6 @@ class ScItem < ActiveRecord::Base
     TYPE_MARKDOWN => "Markdown",
     TYPE_DOCUMENT => "Document",
   }
-
-  def can_email?
-    ((type_mask == 1 && can_email_link?) || (type_mask == 3 && can_email_document?))
-  end
 
   def evidential?
     sc_category.evidential?

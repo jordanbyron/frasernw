@@ -33,6 +33,7 @@ class SpecialistsController < ApplicationController
     @specialist = Specialist.new
     @specialist.specialist_specializations.build( :specialization_id => @specialization.id )
 
+    BuildTeleservices.call(provider: @specialist)
     build_specialist_offices
 
     @specializations_clinics, @specializations_clinic_locations =
@@ -75,6 +76,7 @@ class SpecialistsController < ApplicationController
     load_form_variables
     @form_modifier = SpecialistFormModifier.new(:edit, current_user)
     @specialist = Specialist.find(params[:id])
+    BuildTeleservices.call(provider: @specialist)
     if @specialist.capacities.count == 0
       @specialist.capacities.build
     end
@@ -133,6 +135,7 @@ class SpecialistsController < ApplicationController
         @specialist.save
         redirect_to @specialist, :notice => "Successfully updated #{@specialist.name}."
       else
+        BuildTeleservices.call(provider: @specialist)
         load_form_variables
         render :edit
       end
@@ -170,8 +173,7 @@ class SpecialistsController < ApplicationController
 
     if @review_item.blank?
       redirect_to specialists_path, :notice => "There are no review items for this specialist"
-      else
-
+    else
       build_specialist_offices
 
       @specializations_clinics, @specializations_clinic_locations =
@@ -182,6 +184,7 @@ class SpecialistsController < ApplicationController
         @specialist,
         @specialist.specializations
       )
+      BuildTeleservices.call(provider: @specialist)
       render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
@@ -207,6 +210,8 @@ class SpecialistsController < ApplicationController
         @specialist,
         @specialist.specializations
       )
+
+      BuildTeleservices.call(provider: @specialist)
       render :template => 'specialists/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
     end
   end
@@ -231,7 +236,7 @@ class SpecialistsController < ApplicationController
 
   def update_photo
     @specialist = Specialist.find(params[:id])
-    ExpireFragment.call photo_specialist_path(@specialist)
+    ExpireFragment.call specialist_path(@specialist)
     if @specialist.update_attributes(params[:specialist])
       redirect_to @specialist, :notice  => "Successfully updated #{@specialist.formal_name}'s photo."
     else
