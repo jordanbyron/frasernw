@@ -1,4 +1,4 @@
-import Template from "controllers/template";
+import TemplateController from "controllers/template";
 import Provider from "provider";
 import createLogger from "redux-logger";
 import { createStore, applyMiddleware } from "redux";
@@ -13,12 +13,17 @@ middlewares.push(logger);
 const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 const store = createStoreWithMiddleware(rootReducer);
 
+
 const dryBootstrapReact = function() {
   $(document).ready(function() {
     ReactDOM.render(
-      <Provider childKlass={Template} store={store}/>,
+      <Provider childKlass={TemplateController} store={store}/>,
       document.getElementById("react_root--template")
     )
+
+    store.dispatch({
+      type: "INITIAL_RENDER_COMPLETED"
+    });
   })
 }
 
