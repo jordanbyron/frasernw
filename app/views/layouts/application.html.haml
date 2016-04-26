@@ -455,6 +455,8 @@
     = yield(:javascript_footer)
 
     :javascript
+      window.pathways.dryBootstrapReact()
+      
       $(window).load(function() {
         $("#heartbeat-loader-position").remove();
       });

@@ -46,6 +46,10 @@ class ReportsController < ApplicationController
     render :analytics_chart
   end
 
+  def pageviews_by_user
+    authorize! :view_report, :pageviews_by_user
+  end
+
   def user_ids
     authorize! :view_report, :sessions
 

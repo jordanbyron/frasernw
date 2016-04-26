@@ -146,6 +146,7 @@ Frasernw::Application.routes.draw do
       get :referents_by_specialty
       get :usage
       get :user_ids
+      get :pageviews_by_user
     end
   end
 
