@@ -119,7 +119,7 @@ const ExpandedInformation = React.createClass({
         <div style={{marginTop: "5px", display: "none"}} ref="content">
           <i>
             {
-              `This ${this.props.record.collectionName} hasn't provided us information about their ` +
+              `This ${this.props.record.collectionName.slice(0, -1)} hasn't provided us information about their ` +
               "interests or restrictions."
             }
           </i>
