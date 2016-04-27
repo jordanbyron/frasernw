@@ -59,13 +59,16 @@ const MiniProfile = ({record, app, config}) => {
     clinics: "statusMask",
   }[record.collectionName];
 
-
-  return(
-    <div className="mini-profile">
-      <MostInterested record={record}/>
-      <NotPerformed record={record}/>
-    </div>
-  )
+  if(record.interest || record.notPerformed) {
+    return(
+      <div className="mini-profile">
+        <MostInterested record={record}/>
+        <NotPerformed record={record}/>
+      </div>
+    )
+  } else {
+    return(<span></span>);
+  }
 }
 
 var labelReferentName = function(record, app, config) {
