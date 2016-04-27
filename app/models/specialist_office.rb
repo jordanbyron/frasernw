@@ -23,7 +23,7 @@ class SpecialistOffice < ActiveRecord::Base
   accepts_nested_attributes_for :office
 
   #offices have a phone schedule
-  has_one :phone_schedule, :as => :schedulable, :dependent => :destroy, :class_name => "Schedule"
+  has_one :phone_schedule, as: :schedulable, dependent: :destroy, class_name: "Schedule"
   accepts_nested_attributes_for :phone_schedule
 
   after_commit :flush_cache
@@ -31,69 +31,128 @@ class SpecialistOffice < ActiveRecord::Base
 
   include PaperTrailable
 
-  default_scope order('specialist_offices.id ASC')
+  default_scope { order('specialist_offices.id ASC') }
 
-  # # # # # # # # CACHING METHODS
   def self.all_formatted_for_user_form
-    includes([:specialist, :office => [:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]]]).all.reject{ |so| so.office.blank? || so.empty? || so.specialist.blank? }.sort{ |a,b| (a.specialist.lastname || "zzz") <=> (b.specialist.lastname || "zzz") }.map{ |so| ["#{so.specialist.name} - #{so.office.short_address}", so.id]}
+    includes( [
+      :specialist,
+      office: [ location: [
+        { address: :city },
+        { location_in: [
+          { address: :city },
+          { hospital_in: { location: { address: :city } } }
+        ] },
+        { hospital_in: { location: { address: :city } } }
+      ] ]
+    ] ).
+    all.
+    reject{ |so| so.office.blank? || so.empty? || so.specialist.blank? }.
+    sort{ |a,b| (a.specialist.lastname || "zzz") <=> (b.specialist.lastname || "zzz") }.
+    map{ |so| ["#{so.specialist.name} - #{so.office.short_address}", so.id] }
   end
 
   def self.refresh_cached_all_formatted_for_user_form
-    Rails.cache.write([name, "all_specialist_office_formatted_for_user_form"], self.all_formatted_for_user_form)
+    Rails.cache.
+      write(
+        [name, "all_specialist_office_formatted_for_user_form"],
+        self.all_formatted_for_user_form
+      )
   end
 
   def self.cached_all_formatted_for_user_form
-    Rails.cache.fetch([name, "all_specialist_office_formatted_for_user_form"], expires_in: 6.hours) {self.all_formatted_for_user_form}
+    Rails.cache.
+      fetch(
+        [name, "all_specialist_office_formatted_for_user_form"],
+        expires_in: 6.hours
+      ) { self.all_formatted_for_user_form }
   end
 
   def self.cached_find(id)
     Rails.cache.fetch([name, id]){find(id)}
   end
 
-  def flush_cache #called during after_commit or after_touch
-    Rails.cache.delete([self.class.name, "all_specialist_office_formatted_for_user_form"])
+  def flush_cache
+    Rails.cache.
+      delete([self.class.name, "all_specialist_office_formatted_for_user_form"])
     Rails.cache.delete([self.class.name, self.id])
   end
 
   def self.refresh_cache
-    Rails.cache.write([name, "all_specialist_office_formatted_for_user_form"], self.all_formatted_for_user_form)
+    Rails.cache.
+      write(
+        [name, "all_specialist_office_formatted_for_user_form"],
+        self.all_formatted_for_user_form
+      )
     SpecialistOffice.all.each do |office|
       Rails.cache.write([office.class.name, office.id], SpecialistOffice.find(office.id))
     end
   end
-  # # # # # # # #
 
   def self.all_formatted_for_user_form
-    includes([:specialist, :office => [:location => [ {:address => :city}, {:location_in => [{:address => :city}, {:hospital_in => {:location => {:address => :city}}}]}, {:hospital_in => {:location => {:address => :city}}} ]]]).all.reject{ |so| so.office.blank? || so.empty? || so.specialist.blank? }.sort{ |a,b| (a.specialist.lastname || "zzz") <=> (b.specialist.lastname || "zzz") }.map{ |so| ["#{so.specialist.name} - #{so.office.short_address}", so.id]}
+    includes( [
+      :specialist,
+      office: [location: [
+        { address: :city },
+        { location_in: [
+          { address: :city },
+          { hospital_in: { location: { address: :city } } }
+        ] },
+        { hospital_in: { location: { address: :city } } }
+      ] ]
+    ] ).
+    all.
+    reject{ |so| so.office.blank? || so.empty? || so.specialist.blank? }.
+    sort{ |a,b| (a.specialist.lastname || "zzz") <=> (b.specialist.lastname || "zzz") }.
+    map{ |so| ["#{so.specialist.name} - #{so.office.short_address}", so.id]}
   end
 
   def opened_recently?
-    (location_opened == Time.now.year.to_s) || (([1,2].include? Time.now.month) && (location_opened == (Time.now.year - 1).to_s))
+    (location_opened == Time.now.year.to_s) ||
+      (([1,2].include? Time.now.month) && (location_opened == (Time.now.year - 1).to_s))
   end
 
   def phone_and_fax
-    return "#{phone} ext. #{phone_extension}, Fax: #{fax}" if phone.present? && phone_extension.present? && fax.present?
-    return "#{phone} ext. #{phone_extension}" if phone.present? && phone_extension.present?
-    return "#{phone}, Fax: #{fax}" if phone.present? && fax.present?
-    return "ext. #{phone_extension}, Fax: #{fax}" if phone_extension.present? && fax.present?
-    return "#{phone}" if phone.present?
-    return "Fax: #{fax}" if fax.present?
-    return "ext. #{phone_extension}" if phone_extension.present?
-    return ""
+    if phone.present? && phone_extension.present? && fax.present?
+      "#{phone} ext. #{phone_extension}, Fax: #{fax}"
+    elsif phone.present? && phone_extension.present?
+      "#{phone} ext. #{phone_extension}"
+    elsif phone.present? && fax.present?
+      "#{phone}, Fax: #{fax}"
+    elsif phone_extension.present? && fax.present?
+      "ext. #{phone_extension}, Fax: #{fax}"
+    elsif phone.present?
+      "#{phone}"
+    elsif fax.present?
+      "Fax: #{fax}"
+    elsif phone_extension.present?
+      "ext. #{phone_extension}"
+    else
+      ""
+    end
   end
 
   def phone_only
-    return "#{phone} ext. #{phone_extension}" if phone.present? && phone_extension.present?
-    return "#{phone}" if phone.present?
-    return "ext. #{phone_extension}" if phone_extension.present?
-    return ""
+    if phone.present? && phone_extension.present?
+      "#{phone} ext. #{phone_extension}"
+    elsif phone.present?
+      "#{phone}"
+    elsif phone_extension.present?
+      "ext. #{phone_extension}"
+    else
+      ""
+    end
   end
 
   def direct_info
-    return "#{direct_phone} ext. #{direct_phone_extension}" if direct_phone.present? && direct_phone_extension.present?
-    return "#{direct_phone}" if direct_phone.present?
-    return "ext. #{direct_phone_extension}" if direct_phone_extension.present?
-    return ""
+    if direct_phone.present? && direct_phone_extension.present?
+      "#{direct_phone} ext. #{direct_phone_extension}"
+    elsif direct_phone.present?
+      "#{direct_phone}"
+    elsif direct_phone_extension.present?
+      "ext. #{direct_phone_extension}"
+    else
+      ""
+    end
   end
 
   def show_sector_info?
@@ -114,7 +173,12 @@ class SpecialistOffice < ActiveRecord::Base
   end
 
   def empty?
-    phone.blank? && phone_extension.blank? && fax.blank? && direct_phone.blank? && direct_phone_extension.blank? && (office.blank? || office.empty?)
+    phone.blank? &&
+    phone_extension.blank? &&
+    fax.blank? &&
+    direct_phone.blank? &&
+    direct_phone_extension.blank? &&
+    (office.blank? || office.empty?)
   end
 
   def location

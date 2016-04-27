@@ -17,8 +17,11 @@ class User < ActiveRecord::Base
   include PaperTrailable
 
   acts_as_authentic do |c|
-    c.merge_validates_length_of_password_field_options({:minimum => 8})
-    c.merge_validates_uniqueness_of_email_field_options({:message => "has already been used to set up another account. Pleast use a different email address to sign up, or sign into your existing account."})
+    c.merge_validates_length_of_password_field_options( { minimum: 8 } )
+    c.merge_validates_uniqueness_of_email_field_options( { message:
+      "has already been used to set up another account. Pleast use a different "\
+      "email address to sign up, or sign into your existing account."
+    } )
     c.logged_in_timeout = 1.week
     c.crypto_provider = Authlogic::CryptoProviders::Sha512
   end
@@ -101,7 +104,7 @@ class User < ActiveRecord::Base
   # after_commit :flush_cache
   after_touch :flush_cache
 
-  default_scope order('users.name')
+  default_scope { order('users.name') }
 
   attr_accessible :name,
     :role,
@@ -147,7 +150,10 @@ class User < ActiveRecord::Base
   end
 
   def self.active_user
-    where("users.role = 'user' AND users.active = (?) AND COALESCE(users.email,'') != ''", true)
+    where(
+      "users.role = 'user' AND users.active = (?) AND COALESCE(users.email,'') != ''",
+      true
+    )
   end
 
   def self.authorized_user
@@ -163,7 +169,10 @@ class User < ActiveRecord::Base
   end
 
   def self.active_admin_only
-    where("users.role = 'admin' AND users.active = (?) AND COALESCE(users.email,'') != ''", true)
+    where(
+      "users.role = 'admin' AND users.active = (?) AND COALESCE(users.email,'') != ''",
+      true
+    )
   end
 
   def self.admin
@@ -175,7 +184,10 @@ class User < ActiveRecord::Base
   end
 
   def self.active_super_admin
-    where("users.role = 'super' AND users.active = (?) AND COALESCE(users.email,'') != ''", true)
+    where(
+      "users.role = 'super' AND users.active = (?) AND COALESCE(users.email,'') != ''",
+      true
+    )
   end
 
   def self.active_pending
@@ -205,7 +217,10 @@ class User < ActiveRecord::Base
   end
 
   def self.all_user_division_groups_cached
-    Rails.cache.fetch("all_user_division_groups", expires_in: 6.hours){self.all_user_division_groups}
+    Rails.cache.
+      fetch("all_user_division_groups", expires_in: 6.hours) {
+        self.all_user_division_groups
+      }
   end
 
   def self.division_groups_for(*divisions)
@@ -250,7 +265,8 @@ class User < ActiveRecord::Base
   end
 
   def validate_signup
-    # we add validations for agree_to_toc here so that other parts of the user forms don't break from this field being validated
+    # we add validations for agree_to_toc here so that other parts of the user forms
+    # don't break from this field being validated
     valid?
     errors.add(:agree_to_toc, "must be agreed to") if agree_to_toc.blank?
   end
@@ -279,7 +295,8 @@ class User < ActiveRecord::Base
     if self.saved_token
       return self.saved_token
     else
-      saved_token = SecureRandom.hex(4) #length will be double this, giving us 16^8 or 4,294,967,296 different tokens
+      saved_token = SecureRandom.hex(4)
+      #length will be double this, giving us 16^8 or 4,294,967,296 different tokens
       while User.find_by_saved_token(saved_token).present?
         #ensure no saved_token collisions
         saved_token = SecureRandom.hex(4)
@@ -292,20 +309,27 @@ class User < ActiveRecord::Base
   def owns(specializations)
     does_own = false
     specializations.each do |specialization|
-      does_own |= SpecializationOption.find_by_specialization_id_and_owner_id(specialization.id, self.id).present?
+      does_own |=
+        SpecializationOption.
+          find_by_specialization_id_and_owner_id(specialization.id, self.id).
+          present?
     end
     does_own
   end
 
   def local_referral_cities(specialization)
-    return user_city_specializations.reject{ |ucs| ucs.specialization_id != specialization.id }.map{ |ucs| ucs.user_city.city }
+    return user_city_specializations.
+      reject{ |ucs| ucs.specialization_id != specialization.id }.
+      map{ |ucs| ucs.user_city.city }
   end
 
   def self.csv_import(file, divisions, type_mask, role)
     users = []
     CSV.foreach(file.path) do |row|
-      user = User.new(:name => row[0], :divisions => divisions, :type_mask => type_mask, :role => role)
-      if user.save :validate => false #so we can avoid setting up with emails or passwords
+      user = User.new(
+        name: row[0], divisions: divisions, type_mask: type_mask, role: role
+      )
+      if user.save validate: false #so we can avoid setting up with emails or passwords
         users << user
       else
         puts "ERROR SETTING UP #{row[0]}"

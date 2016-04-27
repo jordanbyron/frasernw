@@ -3,11 +3,11 @@ module Archivable
 
   module ClassMethods
     def active
-      includes(:item).where(:archived => false)
+      includes(:item).where(archived: false)
     end
 
     def archived
-      includes(:item).where(:archived => true)
+      includes(:item).where(archived: true)
     end
   end
 end

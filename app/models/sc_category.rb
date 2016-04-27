@@ -1,19 +1,25 @@
 class ScCategory < ActiveRecord::Base
 
-  attr_accessible :name, :show_on_front_page, :show_as_dropdown, :display_mask, :sort_order, :parent_id, :searchable, :evidential
-  validates_presence_of :name, :on => :create, :message => "can't be blank"
+  attr_accessible :name,
+    :show_on_front_page,
+    :show_as_dropdown,
+    :display_mask,
+    :sort_order,
+    :parent_id,
+    :searchable,
+    :evidential
+
+  validates_presence_of :name, on: :create, message: "can't be blank"
 
   has_many :sc_items
 
-  has_many :featured_contents, :dependent => :destroy
+  has_many :featured_contents, dependent: :destroy
 
   has_and_belongs_to_many :subscriptions, join_table: :subscription_sc_categories
-  # has_many :subscriptions, through: :subscription_sc_categories
-  # has_many :subscription_sc_categories, dependent: :destroy
 
   has_ancestry
 
-  default_scope order('sc_categories.sort_order, sc_categories.name')
+  default_scope { order('sc_categories.sort_order, sc_categories.name') }
 
   scope :front_page, -> { where(show_on_front_page: true) }
 
@@ -37,7 +43,7 @@ class ScCategory < ActiveRecord::Base
   end
 
   def self.all_for_subscription
-    all_parents.reject{|c| c.name.include?("Inactive") || c.name.include?("Inline")}
+    all_parents.reject{ |c| c.name.include?("Inactive") || c.name.include?("Inline") }
   end
 
   def self.with_items_borrowable_by_division(division)
@@ -107,7 +113,10 @@ class ScCategory < ActiveRecord::Base
   end
 
   def self.specialty
-    where("sc_categories.display_mask IN (?) AND sc_categories.ancestry is null", [1,3,4,5])
+    where(
+      "sc_categories.display_mask IN (?) AND sc_categories.ancestry is null",
+      [1,3,4,5]
+    )
   end
 
   def self.searchable
@@ -178,7 +187,8 @@ class ScCategory < ActiveRecord::Base
   def all_sc_items_for_specialization_in_divisions(specialization, divisions)
     items = sc_items.for_specialization_in_divisions(specialization, divisions)
     self.children.each do |child|
-      items += child.all_sc_items_for_specialization_in_divisions(specialization, divisions)
+      items += child.
+        all_sc_items_for_specialization_in_divisions(specialization, divisions)
     end
     items
   end

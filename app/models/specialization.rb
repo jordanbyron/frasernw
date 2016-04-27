@@ -16,7 +16,7 @@ class Specialization < ActiveRecord::Base
   has_many :clinics, through: :clinic_specializations
 
   has_many :procedure_specializations, -> { where "mapped": true }, dependent: :destroy
-  has_many :procedures, through: :procedure_specializations, order: 'name ASC'
+  has_many :procedures, -> { order 'name ASC' }, through: :procedure_specializations
 
   has_many :sc_item_specializations, dependent: :destroy
   has_many :sc_items, through: :sc_items_specializations
@@ -31,7 +31,7 @@ class Specialization < ActiveRecord::Base
   after_commit :flush_cache
   after_touch  :flush_cache
 
-  default_scope order('specializations.name')
+  default_scope { order('specializations.name') }
 
   def self.cache_key
     max_updated_at = maximum(:updated_at).try(:utc).try(:to_s, :number)
@@ -62,7 +62,7 @@ class Specialization < ActiveRecord::Base
     Rails.cache.delete([self.class.name, "all_specializations"])
     Rails.cache.delete([self.class.name, self.id])
   end
-  
+
   def self.has_family_practice?
     all.include?(Specialization.find_by_name("Family Practice"))
   end
@@ -70,7 +70,8 @@ class Specialization < ActiveRecord::Base
   def self.in_progress_for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     joins(:specialization_options).where(
-      '"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)',
+      '"specialization_options"."division_id" IN (?) '\
+      'AND "specialization_options"."in_progress" = (?)',
       division_ids,
       true
     )
@@ -79,7 +80,8 @@ class Specialization < ActiveRecord::Base
   def self.not_in_progress_for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     joins(:specialization_options).where(
-      '"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)',
+      '"specialization_options"."division_id" IN (?) '\
+      'AND "specialization_options"."in_progress" = (?)',
       division_ids,
       false
     )
@@ -88,7 +90,8 @@ class Specialization < ActiveRecord::Base
   def self.new_for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     joins(:specialization_options).where(
-      '"specialization_options"."division_id" IN (?) AND "specialization_options"."is_new" = (?)',
+      '"specialization_options"."division_id" IN (?) '\
+      'AND "specialization_options"."is_new" = (?)',
       division_ids,
       true
     )
