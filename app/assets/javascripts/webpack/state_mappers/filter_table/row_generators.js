@@ -38,10 +38,12 @@ const MSP = ({record}) => {
 
 const MiniProfileItem = ({heading, value}) => {
   return(
-    <div className="mini-profile__item">
-      <i>{`${heading} `}</i>
-      <span>{value}</span>
-    </div>
+    <li>
+      <div className="mini-profile__item">
+        <i>{`${heading} `}</i>
+        <span>{value}</span>
+      </div>
+    </li>
   )
 }
 
@@ -69,6 +71,14 @@ const MiniProfile = ({record, app, config}) => {
   )
 }
 
+const ExpandedInformationToggle = ({record}) => {
+  if (record.interest || record.notPerformed) {
+    return(<span className="well datatable_row__expand_toggle" title="Click for more info...">...</span>);
+  } else {
+    return(<span></span>);
+  }
+}
+
 var labelReferentName = function(record, app, config) {
   return (
     <div>
@@ -82,6 +92,7 @@ var labelReferentName = function(record, app, config) {
       </a>
       <span  style={{marginLeft: "5px"}} className="suffix" key="suffix">{record.suffix}</span>
       <Tags record={record}/>
+      <ExpandedInformationToggle record={record}/>
       <ExpandedInformation record={record} config={config}/>
     </div>
   );
@@ -115,11 +126,11 @@ const ExpandedInformation = React.createClass({
         "This clinic hasn't provided us information about their restrictions.";
     }
 
-    if (this.props.record.interest && this.props.record.notPerformed){
+    if (this.props.record.interest || this.props.record.notPerformed){
       return(
         <ul ref="content" style={{display: "none"}}>
-          <li><MostInterested record={this.props.record}/></li>
-          <li><NotPerformed record={this.props.record}/></li>
+          <MostInterested record={this.props.record}/>
+          <NotPerformed record={this.props.record}/>
         </ul>
       );
     } else {
