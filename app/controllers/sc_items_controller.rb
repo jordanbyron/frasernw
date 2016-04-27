@@ -124,7 +124,7 @@ class ScItemsController < ApplicationController
     authorize! :bulk_share, ScItem
     @division = Division.find(params[:division_id])
 
-    @sc_items.select do |sc_item|
+    successful_items = @sc_items.select do |sc_item|
       UpdateScItemSharing.call(
         division: @division,
         current_user: current_user,
@@ -133,8 +133,11 @@ class ScItemsController < ApplicationController
       )
     end
 
+    notice = "Now displaying #{successful_items.map(&:title).to_sentence} " +
+      "in #{@division.name}."
+
     redirect_to shared_content_items_path(@division),
-      notice: "Now displaying #{@sc_items.map(&:title).to_sentence} in #{@division.name}."
+      notice: notice
   end
 
   private

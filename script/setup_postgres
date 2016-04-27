@@ -1,0 +1,3 @@
+psql -c "CREATE ROLE rusl;" postgres
+psql -c "ALTER ROLE rusl WITH SUPERUSER;" postgres
+psql -c "ALTER ROLE rusl WITH LOGIN;" postgres

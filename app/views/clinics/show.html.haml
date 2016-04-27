@@ -210,6 +210,9 @@
                   that this clinic feels warrants urgent consultation:
                   = @clinic.red_flags.end_with_period.convert_newlines_to_br
 
+            - if @clinic.teleservices.any?(&:offered?)
+              = render "teleservices/index", provider: @clinic
+
             - if @clinic.patient_instructions.present? || @clinic.cancellation_policy.present?
               %h6 Patient Information
 

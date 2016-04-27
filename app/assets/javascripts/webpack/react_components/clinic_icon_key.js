@@ -22,6 +22,10 @@ module.exports = React.createClass({
             <i className="icon-question-sign icon-text"/>
             <span>Referral status is unknown</span>
           </li>
+          <li>
+            <i className="icon-link"/>
+            <span>Wait times provided are specific to this area of practice</span>
+          </li>
         </ul>
       </div>
     );

@@ -8,6 +8,7 @@ class Clinic < ActiveRecord::Base
   include Referrable
   include ApplicationHelper
   include TokenAccessible
+  include OffersTeleservices
 
   attr_accessible :name,
     :deprecated_phone,
@@ -280,7 +281,11 @@ class Clinic < ActiveRecord::Base
     if specializations.blank? || divisions.blank?
       return [default_owner]
     else
-      owners = SpecializationOption.for_divisions_and_specializations(divisions, specializations).map{ |so| so.owner }.uniq
+      owners = SpecializationOption.for_divisions_and_specializations(
+        divisions,
+        specializations
+      ).map(&:owner).compact.uniq
+      
       if owners.present?
         return owners
       else

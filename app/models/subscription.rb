@@ -1,4 +1,13 @@
 class Subscription < ActiveRecord::Base
+  attr_accessible :sc_category_ids,
+    :specialization_ids,
+    :news_type,
+    :division_ids,
+    :sc_item_format_type,
+    :classification,
+    :interval,
+    :user_id
+
   #attr_accessible :interval, :user_id, :classification, :content_item, :item_type
   serialize :news_type
   serialize :sc_item_format_type

@@ -1,10 +1,10 @@
-= simple_form_for @sc_item, :html => { :class => "form-horizontal", :multipart => true } do |f|
+= simple_form_for @sc_item, html: { :class => "form-horizontal", multipart: true } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
   %h3 Content Classification
 
-  = f.association :sc_category, as: :select, :collection => @hierarchy, :include_blank => false
+  = f.association :sc_category, as: :select, collection: @hierarchy, include_blank: false
 
   .control-group
     .control-label
@@ -12,27 +12,46 @@
     .controls
       - Specialization.all.each do |specialization|
         %label
-          = check_box_tag "specialization_#{specialization.id}", 1, @has_specializations.include?(specialization.id), :name => "specialization[#{specialization.id}", :class => "specialty_check"
+          = check_box_tag "specialization_#{specialization.id}",
+            1,
+            @has_specializations.include?(specialization.id),
+            :name => "specialization[#{specialization.id}",
+            :class => "specialty_check"
           = specialization.name
 
         .procedures_list{"id" => "specialization_#{specialization.id}_procedures"}
           - specialization.arranged_procedure_specializations(:non_assumed).each do |ps,children|
             %label
-              = check_box_tag "procedure_specialization_#{ps.id}", 1, @has_procedure_specializations.include?(ps.id), :name => "procedure_specialization[#{ps.id}", :class => "offsethalf"
+              = check_box_tag "procedure_specialization_#{ps.id}",
+                1,
+                @has_procedure_specializations.include?(ps.id),
+                :name => "procedure_specialization[#{ps.id}",
+                :class => "offsethalf"
               = ps.procedure.name
             - children.each do |child_ps, grandchildren|
               %label
-                = check_box_tag "procedure_specialization_#{child_ps.id}", 1, @has_procedure_specializations.include?(child_ps.id), :name => "procedure_specialization[#{child_ps.id}", :class => "offset1"
+                = check_box_tag "procedure_specialization_#{child_ps.id}",
+                  1,
+                  @has_procedure_specializations.include?(child_ps.id),
+                  :name => "procedure_specialization[#{child_ps.id}",
+                  :class => "offset1"
                 = child_ps.procedure.name
 
   %h3 Content Options
 
   - if current_user.as_super_admin?
-    = f.input :division_id, as: :select, :collection => Division.all, :include_blank => false
+    = f.input :division_id,
+      as: :select,
+      collection: Division.all,
+      include_blank: false
   - elsif current_user.as_divisions.length > 1
-    = f.input :division_id, as: :select, :collection => current_user.as_divisions
+    = f.input :division_id,
+      as: :select,
+      collection: current_user.as_divisions
   - else
-    = f.input :division_id, as: :hidden, :input_html => { :value => current_user.as_divisions.first.id }
+    = f.input :division_id,
+      as: :hidden,
+      input_html: { value: current_user.as_divisions.first.id }
 
   = f.input :searchable
   = f.input :shareable
@@ -43,28 +62,34 @@
   %h3 Content
 
   = f.input :title
-  = f.input :type_mask, as: :select, collection: ScItem::TYPE_HASH, label_method: :last, value_method: :first, :include_blank => false
+  = f.input :type_mask,
+    as: :select,
+    collection: ScItem::TYPE_HASH,
+    label_method: :last,
+    value_method: :first,
+    include_blank: false
 
   #link_section
-    = f.input :url, :input_html => { :class => "span5" }
-    = f.input :can_email_link
-  #mardown_section
+    = f.input :url, input_html: { :class => "span5" }
+  #markdown_section
     = f.input :markdown_content
   #document_section
     = f.input :document, as: :file
+  #can_email_section
+    = f.input :can_email, input_html: { id: "can-email-input" }
 
   - if current_user.as_super_admin?
     #evidence_section
-      = f.input :evidence_id, as: :select, collection: Evidence.all, label_method: :level, value_method: :id
-
-    = f.input :can_email_document
+      = f.input :evidence_id,
+        as: :select,
+        collection: Evidence.all,
+        label_method: :level,
+        value_method: :id
 
   %h3
     = "History & Notes"
   = render 'history/nodes', item: f.object, nodes: f.object.history
-  = render "notes/fields",
-    parent_fields: f,
-    user: current_user
+  = render "notes/fields", parent_fields: f, user: current_user
 
   .form-actions
     = f.button :submit, :class => "btn btn-primary"
@@ -101,20 +126,27 @@
         if ($(this).val() == 1)
         {
           $("#link_section").show();
-          $("#mardown_section").hide();
+          $("#markdown_section").hide();
           $("#document_section").hide();
+          $("#can_email_section").show();
+          if (window.location.pathname == "/content_items/new") {
+            $("#can-email-input").attr({"checked" : "checked"});
+          }
         }
         else if ($(this).val() == 2)
         {
           $("#link_section").hide();
-          $("#mardown_section").show();
+          $("#markdown_section").show();
           $("#document_section").hide();
+          $("#can_email_section").hide();
         }
         else if ($(this).val() == 3)
         {
           $("#link_section").hide();
-          $("#mardown_section").hide();
+          $("#markdown_section").hide();
           $("#document_section").show();
+          $("#can_email_section").show();
+          $("#can-email-input").removeAttr("checked");
         }
       }
 

@@ -15,6 +15,7 @@ class SpecialistsEditorController < ApplicationController
     end
 
     build_specialist_offices
+    BuildTeleservices.call(provider: @specialist)
     load_form_variables(:visible?)
 
     @specializations_clinics, @specializations_clinic_locations =

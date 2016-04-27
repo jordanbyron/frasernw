@@ -17,7 +17,9 @@ class CreateSeeds < ServiceObject
     "review_items",
     "secret_tokens",
     "demoable_news_items",
-    "division_display_news_items"
+    "division_display_news_items",
+    "user_controls_specialists",
+    "user_controls_clinics"
   ]
 
   IDENTIFYING_INFO_LOGFILE = Rails.root.join("tmp", "identifying_info.txt").to_s
@@ -96,17 +98,23 @@ class CreateSeeds < ServiceObject
       )
     },
     "users" => Proc.new{
-      prod_users = User.admin.map(&:attributes)
-
-      demo_users_cmd = "\"puts('START_DUMP' + User.where(persist_in_demo: true).map(&:attributes).to_yaml)\""
-      demo_users_cmd_result = `heroku run rails runner #{demo_users_cmd} --app pathwaysbcdev`
-      demo_users = YAML.load(demo_users_cmd_result[/(?<=START_DUMP).+/m])
-
-      users = demo_users + prod_users
+      users = User.admin.map(&:attributes)
 
       File.write(
         Rails.root.join("seeds", "users.yaml"),
         users.to_yaml
+      )
+    },
+    "division_users" => Proc.new{
+      user_divisions = User.
+        admin.
+        map(&:user_divisions).
+        flatten.
+        map(&:attributes)
+
+      File.write(
+        Rails.root.join("seeds", "user_divisions.yaml"),
+        user_divisions.to_yaml
       )
     }
   }
@@ -472,6 +480,9 @@ class CreateSeeds < ServiceObject
           end
         end
       },
+      "phone_extension" => {
+        :faker => Proc.new{ |klass| Faker::PhoneNumber.extension }
+      },
       "phone" => {
         :faker => Proc.new{ |klass| Faker::PhoneNumber.phone_number }
       },
@@ -559,11 +570,11 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| "This is an answer to an FAQ question" }
       },
       "title" => {
-        :faker => Proc.new{ |klass| Faker::Lorem.sentence }
+        :faker => Proc.new{ |klass| "This is a title" }
       },
       "description" => {
         :test => Proc.new{ |klass| klass == ReferralForm },
-        :faker => Proc.new{ |klass| Faker::Lorem.sentence }
+        :faker => Proc.new{ |klass| "Referral Form Title" }
       },
       "recipient" => {
         :faker => Proc.new{ |klass| Faker::Internet.email }
@@ -572,37 +583,66 @@ class CreateSeeds < ServiceObject
         :test => Proc.new{ |klass| klass == Address },
         :faker => Proc.new{ |klass, hash| hash["city_id"].nil? ? nil : City.random_id }
       },
-      "investigation" => {},
-      "suite" => {},
+      "investigation" => {
+        :faker => Proc.new{ |klass| "Complete medical history." }
+        },
+      "suite" => {
+        :faker => Proc.new{ |klass| Faker::Address.secondary_address }
+        },
       "body" => {
-        :faker => Proc.new{ |klass| Faker::Lorem.sentence }
+        :faker => Proc.new{ |klass| "This is a news item." }
       },
-      "area_of_focus" => {},
-      "referral_criteria" => {},
-      "referral_process" => {},
+      "area_of_focus" => {
+        :faker => Proc.new{ |klass| "Post-surgical recuperation" }
+        },
+      "referral_criteria" => {
+        :faker => Proc.new{ |klass| "Laparascopic analysis" }
+        },
+      "referral_process" => {
+        :faker => Proc.new{ |klass| "Email preferred." }
+        },
       "content" => {
-        :faker => Proc.new{ |klass| Faker::Lorem.sentence }
+        :faker => Proc.new{ |klass| "We seek to provide the best possible medical care to our patients." }
       },
       "data" => {},
       "session_id" => {},
       "feedback" => {},
       "password" => {},
       "token" => {},
-      "comment" => {},
-      "note" => {},
-      "status" => {},
-      "patient_instructions" => {},
-      "details" => {},
-      "red_flags" => {},
-      "not_performed" => {},
-      "limitations" => {},
+      "note" => {
+        :faker => Proc.new{ |klass| "We seek to provide the best possible medical care to our patients." }
+        },
+      "patient_instructions" => {
+        :faker => Proc.new{ |klass| "Take no food 12 hours prior to appiontment" }
+        },
+      "details" => {
+        :faker => Proc.new{ |klass| "Some details." }
+        },
+      "red_flags" => {
+        :faker => Proc.new{ |klass| "Oncology" }
+        },
+      "not_performed" => {
+        :faker => Proc.new{ |klass| "Vaccinations" }
+        },
+      "limitations" => {
+        :faker => Proc.new{ |klass| "Not wheelchair accessible" }
+        },
       "location_opened_old" => {},
-      "policy" => {},
-      "required_investigations" => {},
-      "interest" => {},
-      "all_procedure_info" => {},
-      "urgent_details" => {},
-      "cancellation_policy" => {}
+      "required_investigations" => {
+        :faker => Proc.new{ |klass| "Complete vaccination records" }
+        },
+      "interest" => {
+        :faker => Proc.new{ |klass| "Post-surgical Counselling" }
+        },
+      "all_procedure_info" => {
+        :faker => Proc.new{ |klass| "Ensure records are provided at least 2 days prior to appiontment" }
+        },
+      "urgent_details" => {
+        :faker => Proc.new{ |klass| "Telephone or Email." }
+        },
+      "cancellation_policy" => {
+        :faker => Proc.new{ |klass| "24 hour notice required." }
+      }
     }
 
     VANCOUVER_COMMON_SURNAMES = [
