@@ -1,22 +1,39 @@
 import React from "react";
 
+const TableRows = (model, dispatch) => {
+  return model.ui.recordsToDisplay.map((record) => {
+    return(
+      <tr key={record.id}>
+        <td><a href={`/users/${record.id}`}>{record.name}</a></td>
+        <td>{record.pageViews}</td>
+      </tr>
+    );
+  })
+}
+
+const isTableLoaded = (model) => {
+  return model.ui.recordsToDisplay;
+}
+
 const TableController = ({model, dispatch}) => {
-  return (
-    <table className="table">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Page Views</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Row 1</td>
-          <td>Column 1</td>
-        </tr>
-      </tbody>
-    </table>
-  );
+  if (isTableLoaded(model)){
+    return (
+      <table className="table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Page Views</th>
+          </tr>
+        </thead>
+        <tbody>
+        { TableRows(model, dispatch) }
+        </tbody>
+      </table>
+    );
+  }
+  else {
+    return(<span></span>);
+  }
 }
 
 export default TableController;

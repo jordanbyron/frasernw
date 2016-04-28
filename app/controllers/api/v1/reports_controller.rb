@@ -49,6 +49,20 @@ module Api
           force: false
         ))
       end
+
+      def pageviews_by_user
+        authorize! :view_reports, :pageviews_by_user
+
+        render json: {
+          recordsToDisplay: [
+            {
+              id: 3243,
+              name: "Brian Gracie",
+              pageViews: 12
+            }
+          ]
+        }
+      end
     end
   end
 end

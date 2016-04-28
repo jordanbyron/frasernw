@@ -6,13 +6,14 @@ import ReactDOM from "react-dom";
 import rootReducer from "dry_reducers/root_reducer";
 import React from "react";
 
+import { requestInitialData } from "action_creators";
+
 let middlewares = [];
 const logger = createLogger();
 middlewares.push(logger);
 
 const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 const store = createStoreWithMiddleware(rootReducer);
-
 
 const dryBootstrapReact = function() {
   $(document).ready(function() {
@@ -21,9 +22,7 @@ const dryBootstrapReact = function() {
       document.getElementById("react_root--template")
     )
 
-    store.dispatch({
-      type: "INITIAL_RENDER_COMPLETED"
-    });
+    requestInitialData(store.getState(), store.dispatch);
   })
 }
 
