@@ -9,44 +9,6 @@
   %p.no_indent= "Covering #{@report.time_frame_name.downcase}"
   %p.no_indent= "Generated on #{Time.now.strftime('%A %B %d')} at #{Time.now.strftime('%I:%M %p')}"
 
-  - if @h
-
-    = javascript_include_tag :highcharts
-    = high_chart("my_id", @h)
-
-  - if @report.by_user && @user_results.present?
-
-    %table#user_table.table.table-condensed
-
-    %script{"type" => "text/javascript"}
-      :plain
-        $('#user_table').dataTable( {
-        "aaData": #{@user_results.to_json.html_safe},
-        "aoColumns": [
-          { "sTitle": "Name", "sWidth": "50%" },
-          { "sTitle": "Visits" },
-          { "sTitle": "Visitors" },
-          { "sTitle": "Pageviews" }
-        ],
-        "asSorting": [[1,'desc']],
-        "sPaginationType": "bootstrap"
-      } );
-
-  - if @report.by_pageview
-
-    %table#pageviews_table.table.table-condensed
-
-    %script{"type" => "text/javascript"}
-      :plain
-        $('#pageviews_table').dataTable( {
-        "aaData": #{@by_page_pageviews.to_json.html_safe},
-        "aoColumns": [
-          { "sTitle": "Name", "sWidth": "75%" },
-          { "sTitle": "Pageviews" }
-        ],
-        "sPaginationType": "bootstrap"
-      } );
-
   - if @specialist_email_table.present?
 
     %table.table.table-condensed.table-striped
