@@ -92,7 +92,6 @@ var labelReferentName = function(record, app, config) {
       </a>
       <span  style={{marginLeft: "5px"}} className="suffix" key="suffix">{record.suffix}</span>
       <Tags record={record}/>
-      <ExpandedInformationToggle record={record}/>
       <ExpandedInformation record={record} config={config}/>
     </div>
   );
@@ -100,7 +99,7 @@ var labelReferentName = function(record, app, config) {
 
 const ExpandedInformation = React.createClass({
   isSelected: function() {
-    return this.props.config.selectedRecordId === this.props.record.id;
+    return true;
   },
   componentDidMount: function(){
     if (this.isSelected()){
@@ -135,9 +134,7 @@ const ExpandedInformation = React.createClass({
       );
     } else {
       return(
-        <div style={{marginTop: "5px", display: "none"}} ref="content">
-          <i>{noInfoLabel}</i>
-        </div>
+        <span></span>
       );
     }
   }
@@ -251,7 +248,7 @@ module.exports = {
       reactKey: (record.collectionName + record.id),
       record: record,
       onClick: _.partial(onReferentClick, record, config.selectedRecordId, config.panelKey, dispatch),
-      isSelected: (config.selectedRecordId === record.id)
+      isSelected: true
     }
   },
   resources: function(app, dispatch, config, record) {

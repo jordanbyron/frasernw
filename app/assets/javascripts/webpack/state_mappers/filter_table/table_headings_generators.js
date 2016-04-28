@@ -8,10 +8,10 @@ export default {
       { label: "", key: "PROVIDE_FEEDBACK", className: "filter_table__th--icon" }
     ];
   },
-  referents: function(labelName: string, includingOtherSpecializations: boolean): Array {
+  referents: function(labelName, includingOtherSpecializations, isExpanded) {
     if (includingOtherSpecializations) {
       return [
-        { label: labelName, key: "NAME", className: "specialization_table__th--name" },
+        { label: labelName, key: "NAME", className: "specialization_table__th--name", isExpanded: isExpanded},
         { label: "Specialties", key: "SPECIALTIES", className: "specialization_table__th--specialties" },
         { label: "Accepting New Referrals?", key: "REFERRALS", className: "specialization_table__th--referrals" },
         { label: "Average Non-urgent Patient Waittime", key: "WAITTIME", className: "specialization_table__th--waittime" },
