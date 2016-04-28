@@ -16,9 +16,9 @@ Deprecations to address before 4.1 upgrade:
       - [ ] `find_all_by_...` can be rewritten using `where(...)`.
       - [ ] `find_last_by_...` can be rewritten using `where(...).last`.
       - [ ] `scoped_by_...` can be rewritten using `where(...)`.
-      - [ ] `find_or_initialize_by_...` can be rewritten using `find_or_initialize_by(...)`.
-      - [ ] `find_or_create_by_...` can be rewritten using `find_or_create_by(...)`.
-      - [ ] `find_or_create_by_...!` can be rewritten using `find_or_create_by!(...)`.
+      - [x] `find_or_initialize_by_...` can be rewritten using `find_or_initialize_by(...)`.
+      - [x] `find_or_create_by_...` can be rewritten using `find_or_create_by(...)`.
+      - [x] `find_or_create_by_...!` can be rewritten using `find_or_create_by!(...)`.
       - [ ] **Note that `where(...)` returns a relation, not an array like the old finders. If you require an Array, use `where(...).to_a`.**
 - [x] ActionPack
    - [x] `ActionController::Base.page_cache_extension` option. Use `ActionController::Base.default_static_extension` instead.

@@ -17,7 +17,7 @@ class CreateSpecializationOptions < ServiceObject
     def call
       division.
         specialization_options.
-        find_or_initialize_by_specialization_id(specialization.id).
+        find_or_initialize_by(specialization_id: specialization.id).
         update_attributes(copied_attributes.merge(owner_attributes))
     end
 

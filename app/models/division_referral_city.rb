@@ -11,7 +11,7 @@ class DivisionReferralCity < ActiveRecord::Base
   def self.save_all_for_division(division, priorities = {})
     City.all.each do |city|
       division_referral_city = DivisionReferralCity.
-        find_or_initialize_by_division_id_and_city_id(division.id, city.id)
+        find_or_initialize_by(division_id: division.id, city_id: city.id)
 
       division_referral_city.priority = (priorities[city.id.to_s] || City::PRIORITY_SETTINGS).to_i
       division_referral_city.save

@@ -3,7 +3,7 @@ module ProcedureSpecializable
 
   def procedure_specialize_in!(procedure_specialization_id)
     procedure_specialization_links.
-      find_or_create_by_procedure_specialization_id(procedure_specialization_id)
+      find_or_create_by(procedure_specialization_id: procedure_specialization_id)
   end
 
   def has_ps_with_ancestry?(ancestry)

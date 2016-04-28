@@ -1,20 +1,24 @@
 class DivisionsController < ApplicationController
   load_and_authorize_resource
-  skip_authorize_resource :only => [:shared_sc_items, :update_shared]
-  skip_authorization_check :only => [:shared_sc_items, :update_shared]
-  before_filter :authorize_division_for_user, :only => [:shared_sc_items, :update_shared]
+  skip_authorize_resource only: [:shared_sc_items, :update_shared]
+  skip_authorization_check only: [:shared_sc_items, :update_shared]
+  before_filter :authorize_division_for_user, only: [:shared_sc_items, :update_shared]
 
   def index
     @divisions = Division.all
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def show
     @division = Division.find(params[:id])
     @local_referral_cities = generate_local_referral_cities(@division)
-    @division_referral_cities_by_priority = DivisionReferralCity.includes(:city).where(division_id: @division.id).order("priority asc")
+    @division_referral_cities_by_priority =
+      DivisionReferralCity.
+        includes(:city).
+        where(division_id: @division.id).
+        order("priority asc")
     @priority_rankings = @division_referral_cities_by_priority.map(&:priority).uniq
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def new
@@ -36,9 +40,14 @@ class DivisionsController < ApplicationController
       if params[:local_referral_cities].present?
         #add new specializations
         params[:local_referral_cities].each do |city_id, specializations|
-          division_referral_city = DivisionReferralCity.find_by_division_id_and_city_id( @division.id, city_id )
+          division_referral_city = DivisionReferralCity.find_by(
+            division_id: @division.id, city_id: city_id
+          )
           specializations.each do |specialization_id, checkbox_val|
-            DivisionReferralCitySpecialization.find_or_create_by_division_referral_city_id_and_specialization_id( division_referral_city.id, specialization_id )
+            DivisionReferralCitySpecialization.find_or_create_by(
+              division_referral_city_id: division_referral_city.id,
+              specialization_id: specialization_id
+            )
           end
         end
       end
@@ -47,9 +56,9 @@ class DivisionsController < ApplicationController
 
       Denormalized.delay.regenerate(:divisions)
 
-      redirect_to @division, :notice => "Successfully created division."
+      redirect_to @division, notice: "Successfully created division."
     else
-      render :action => 'new'
+      render action: 'new'
     end
   end
 
@@ -69,14 +78,21 @@ class DivisionsController < ApplicationController
       if params[:local_referral_cities].present?
         @division.division_referral_city_specializations.reject do |drcs|
           params[:local_referral_cities].keys.include?(drcs.city_id.to_s) &&
-            params[:local_referral_cities][drcs.city_id.to_s].keys.include?(drcs.specialization_id.to_s)
+            params[:local_referral_cities][drcs.city_id.to_s].
+              keys.
+              include?(drcs.specialization_id.to_s)
         end.each do |drcs|
           DivisionReferralCitySpecialization.destroy(drcs.id)
         end
         params[:local_referral_cities].each do |city_id, specialization_ids|
-          division_referral_city = DivisionReferralCity.find_by_division_id_and_city_id( @division.id, city_id )
+          division_referral_city = DivisionReferralCity.find_by(
+            division_id: @division.id, city_id: city_id
+          )
           specialization_ids.each do |specialization_id, checkbox_val|
-            DivisionReferralCitySpecialization.find_or_create_by_division_referral_city_id_and_specialization_id( division_referral_city.id, specialization_id )
+            DivisionReferralCitySpecialization.find_or_create_by(
+              division_referral_city_id: division_referral_city.id,
+              specialization_id: specialization_id
+            )
           end
         end
       else
@@ -86,31 +102,32 @@ class DivisionsController < ApplicationController
       end
       Denormalized.delay.regenerate(:divisions)
 
-      redirect_to @division, :notice  => "Successfully updated division."
+      redirect_to @division, notice: "Successfully updated division."
     else
-      render :action => 'edit'
+      render action: 'edit'
     end
   end
 
   def shared_sc_items
     @division = Division.find(params[:id])
     @categories = ScCategory.with_items_borrowable_by_division(@division)
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def update_shared
     @division = Division.find(params[:id])
     if @division.update_attributes(params[:division])
-      redirect_to shared_content_items_path(@division), :notice  => "Successfully updated shared content items."
+      redirect_to shared_content_items_path(@division),
+        notice: "Successfully updated shared content items."
     else
-      render :action => 'shared_sc_items'
+      render action: 'shared_sc_items'
     end
   end
 
   def destroy
     @division = Division.find(params[:id])
     @division.destroy
-    redirect_to divisions_path, :notice => "Successfully deleted division."
+    redirect_to divisions_path, notice: "Successfully deleted division."
   end
 
   def edit_permissions
@@ -149,8 +166,11 @@ class DivisionsController < ApplicationController
   private
 
   def authorize_division_for_user
-    if !current_user.as_super_admin? && !current_user.as_divisions.include?(Division.find(params[:id]))
-      redirect_to root_url, :notice => "You are not allowed to access this page"
+    if (
+      !current_user.as_super_admin? &&
+      !current_user.as_divisions.include?(Division.find(params[:id]))
+    )
+      redirect_to root_url, notice: "You are not allowed to access this page"
     end
   end
 
