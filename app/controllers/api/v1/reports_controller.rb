@@ -54,13 +54,11 @@ module Api
         authorize! :view_reports, :pageviews_by_user
 
         render json: {
-          recordsToDisplay: [
-            {
-              id: 3243,
-              name: "Brian Gracie",
-              pageViews: 12
-            }
-          ]
+          recordsToDisplay: PageviewsByUser.call(
+            start_month: Month.from_i(params[:data][:startMonth]),
+            end_month: Month.from_i(params[:data][:endMonth]),
+            division_id: params[:data][:divisionId]
+          )
         }
       end
     end

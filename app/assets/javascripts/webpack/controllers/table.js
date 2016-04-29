@@ -4,8 +4,8 @@ const TableRows = (model, dispatch) => {
   return model.ui.recordsToDisplay.map((record) => {
     return(
       <tr key={record.id}>
-        <td><a href={`/users/${record.id}`}>{record.name}</a></td>
-        <td>{record.pageViews}</td>
+        <td key="name"><a href={`/users/${record.id}`}>{record.name}</a></td>
+        <td key="views">{record.pageViews}</td>
       </tr>
     );
   })
@@ -26,7 +26,7 @@ const TableController = ({model, dispatch}) => {
           </tr>
         </thead>
         <tbody>
-        { TableRows(model, dispatch) }
+          { TableRows(model, dispatch) }
         </tbody>
       </table>
     );
