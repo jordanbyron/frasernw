@@ -80,7 +80,7 @@ class Procedure < ActiveRecord::Base
             results += ps.specialization.specialists.in_cities_cached(cities)
           end
         else
-          Capacity.find_all_by_procedure_specialization_id(child.id).each do |capacity|
+          Capacity.where(procedure_specialization_id: child.id).each do |capacity|
             if (
               capacity.specialist.present? &&
               (capacity.specialist.cities & cities).present?
@@ -109,7 +109,7 @@ class Procedure < ActiveRecord::Base
             results += ps.specialization.clinics.in_cities(cities)
           end
         else
-          Focus.find_all_by_procedure_specialization_id(child.id).each do |focus|
+          Focus.where(procedure_specialization_id: child.id).each do |focus|
             if focus.clinic.present? && (focus.clinic.cities & cities)
               results << focus.clinic
             end
@@ -130,7 +130,7 @@ class Procedure < ActiveRecord::Base
       results += ps.specialization.specialists.in_cities_cached(cities)
     else
       ps.subtree.each do |child|
-        Capacity.find_all_by_procedure_specialization_id(child.id).each do |capacity|
+        Capacity.where(procedure_specialization_id: child.id).each do |capacity|
           if (
             capacity.specialist.present? &&
             (capacity.specialist.cities & cities).present?
@@ -153,7 +153,7 @@ class Procedure < ActiveRecord::Base
       results += ps.specialization.clinics.in_cities(cities)
     else
       ps.subtree.each do |child|
-        Focus.find_all_by_procedure_specialization_id(child.id).each do |focus|
+        Focus.where(procedure_specialization_id: child.id).each do |focus|
           if focus.clinic.present? && (focus.clinic.cities & cities).present?
             results << focus.clinic
           end

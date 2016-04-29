@@ -7,19 +7,19 @@ Deprecations to address before 4.1 upgrade:
    - [x] Deprecates the compatibility method `Module#local_constant_names`
    - [x] `BufferedLogger` is deprecated.
    - [x] Deprecate `assert_present` and `assert_blank` in favor of `assert object.blank?` and `assert object.present?`
-- [ ] `ActiveRecord`
+- [x] `ActiveRecord`
    - [x] `ActiveRecord::Fixtures` in favor of `ActiveRecord::FixtureSet`.
    - [x] `ActiveRecord::TestCase` in favor of `ActiveSupport::TestCase`.
-   - [ ] Old-style hash based finder API. This means that methods which previously accepted "finder options" no longer do.
-   - [ ] All dynamic methods except for `find_by_...` and `find_by_...!` are deprecated [see 11.2](http://guides.rubyonrails.org/4_0_release_notes.html)
+   - [x] Old-style hash based finder API. This means that methods which previously accepted "finder options" no longer do.
+   - [x] All dynamic methods except for `find_by_...` and `find_by_...!` are deprecated [see 11.2](http://guides.rubyonrails.org/4_0_release_notes.html)
       - [x] To re-enable the old finders, you can use the `activerecord-deprecated_finders` gem. **nah**
-      - [ ] `find_all_by_...` can be rewritten using `where(...)`.
-      - [ ] `find_last_by_...` can be rewritten using `where(...).last`.
-      - [ ] `scoped_by_...` can be rewritten using `where(...)`.
+      - [x] `find_all_by_...` can be rewritten using `where(...)`.
+      - [x] `find_last_by_...` can be rewritten using `where(...).last`.
+      - [x] `scoped_by_...` can be rewritten using `where(...)`.
       - [x] `find_or_initialize_by_...` can be rewritten using `find_or_initialize_by(...)`.
       - [x] `find_or_create_by_...` can be rewritten using `find_or_create_by(...)`.
       - [x] `find_or_create_by_...!` can be rewritten using `find_or_create_by!(...)`.
-      - [ ] **Note that `where(...)` returns a relation, not an array like the old finders. If you require an Array, use `where(...).to_a`.**
+      - [x] **Note that `where(...)` returns a relation, not an array like the old finders. If you require an Array, use `where(...).to_a`.**
 - [x] ActionPack
    - [x] `ActionController::Base.page_cache_extension` option. Use `ActionController::Base.default_static_extension` instead.
    - [x] `dom_id` and `dom_class` methods in controllers (they are fine in views). You will need to include the `ActionView::RecordIdentifier` module in controllers requiring this feature
@@ -32,4 +32,3 @@ Deprecations to address before 4.1 upgrade:
    - [x] `ActionController::AbstractResponse` in favor of `ActionDispatch::Response`.
    - [x] `ActionController::Response` in favor of `ActionDispatch::Response`.
    - [x] `ActionController::Routing` in favor of `ActionDispatch::Routing`.
-- [ ] write all the tests :-/

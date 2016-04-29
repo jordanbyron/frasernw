@@ -199,7 +199,6 @@ class LatestUpdates < ServiceObject
       Clinic.
         includes_location_data.
         includes(:specializations).
-        all.
         inject([]) do |memo, clinic|
           memo + ClinicEvents.call(clinic: clinic, division: division)
         end
