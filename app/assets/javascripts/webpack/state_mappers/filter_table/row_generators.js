@@ -6,14 +6,63 @@ var ReferentStatusIcon = require("../../react_components/icons/referent_status_i
 var Tags = require("../../react_components/tags");
 var reject = require("lodash/collection/reject");
 var trackContentItem = require("../../analytics_wrappers").trackContentItem;
+var _ = require("lodash");
+
+
+const pediatricsId = (app) => {
+  return _.find(
+    app.specializations,
+    (specialization) => specialization.name === "Pediatrics"
+  ).id;
+}
+
+const isPediatrician = (record, app) => {
+  return _.includes(record.specializationIds, parseInt(pediatricsId(app)));
+}
+
+const showPedSuffix = (record, app, specializationId) => {
+  return record.seesOnlyChildren &&
+    record.specializationIds.length > 1 &&
+    isPediatrician(record, app) &&
+    specializationId !== parseInt(pediatricsId(app));
+}
+
+const suffix = (record, app, specializationId) => {
+  if (record.collectionName === "clinics") {
+    return "";
+  }
+  else if (record.isGP) {
+    return "GP";
+  }
+  else if (record.isInternalMedicine) {
+    return "Int Med";
+  }
+  else if (showPedSuffix(record, app, specializationId)) {
+    return "Ped";
+  }
+  else {
+    return _.find(
+      record.specializationIds.map((id) => app.specializations[id].suffix),
+      (suffix) => suffix && suffix.length > 0
+    );
+  }
+};
+
+const Suffix = ({record, app, specializationId}) => {
+  return(
+    <span style={{marginLeft: "5px"}} className="suffix" key="suffix">
+      {suffix(record, app, specializationId)}
+    </span>
+  )
+}
 
 // name of specialist / clinic
 // E.g. John Smith || St. Paul's Clinic
-var labelReferentName = function(record) {
+var labelReferentName = function(record, app, specializationId) {
   return (
     <span>
       <a href={"/" + record.collectionName + "/" + record.id}>{ record.name }</a>
-      <span  style={{marginLeft: "5px"}} className="suffix" key="suffix">{record.suffix}</span>
+      <Suffix record={record} app={app} specializationId={specializationId}/>
       <Tags record={record}/>
     </span>
   );
@@ -108,7 +157,7 @@ module.exports = {
   referents: function(app, dispatch, config, record) {
     return {
       cells: reject([
-        labelReferentName(record),
+        labelReferentName(record, app, config.specializationId),
         labelReferentSpecialties(record, app, config.includingOtherSpecialties),
         labelReferentStatus(record, app.referentStatusIcons, app.tooltips),
         labelWaittime(record, config.customWaittime.shouldUse, config.customWaittime.procedureId, app.waittimeHash),

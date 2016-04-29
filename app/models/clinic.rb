@@ -285,7 +285,7 @@ class Clinic < ActiveRecord::Base
         divisions,
         specializations
       ).map(&:owner).compact.uniq
-      
+
       if owners.present?
         return owners
       else
