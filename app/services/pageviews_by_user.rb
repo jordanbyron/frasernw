@@ -14,7 +14,7 @@ class PageviewsByUser < ServiceObject
   end
 
   def division
-    @division =
+    @division ||=
       if division_id == 0
         nil
       else
@@ -22,18 +22,8 @@ class PageviewsByUser < ServiceObject
       end
   end
 
-  def filtered_users
-    users.select do |user|
-      if !division.nil?
-        user.divisions.include?(division) && !user.admin_or_super?
-      else
-        !user.admin_or_super?
-      end
-    end
-  end
-
   def matched_users
-    filtered_users.map do |user|
+    users.map do |user|
       {
         user: user,
         page_views: matched_row(user)[:page_views]
@@ -55,8 +45,21 @@ class PageviewsByUser < ServiceObject
   end
 
   def users
-    @users ||= User.
-      includes(:divisions).
-      where(id: api_response.map{|row| row[:user_id] })
+    @users ||= fetch_users
+  end
+
+  def fetch_users
+    scope = User.
+      where(id: api_response.map{|row| row[:user_id] }).
+      where(role: "user")
+
+    if division_id == 0
+      scope
+    else
+      scope.
+        joins(:divisions).
+        where(divisions: {id: division_id}).
+        group("users.id")
+    end
   end
 end
