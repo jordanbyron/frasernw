@@ -18,23 +18,33 @@ class ClinicLocation < ActiveRecord::Base
     :location_is
 
   belongs_to :clinic
-  has_one :location, :as => :locatable, :dependent => :destroy
+  has_one :location, as: :locatable, dependent: :destroy
   accepts_nested_attributes_for :location
 
-  has_one :schedule, :as => :schedulable, :dependent => :destroy
+  has_one :schedule, as: :schedulable, dependent: :destroy
   accepts_nested_attributes_for :schedule
 
-  has_many :attendances, :dependent => :destroy
-  accepts_nested_attributes_for :attendances, :allow_destroy => true
+  has_many :attendances, dependent: :destroy
+  accepts_nested_attributes_for :attendances, allow_destroy: true
 
   include PaperTrailable
 
   def self.all_formatted_for_user_form
-    includes([:clinic, :location => [ {:address => :city}, {:hospital_in => {:location => {:address => :city}}} ]]).all.reject{ |cl| cl.location.blank? || cl.empty? || cl.clinic.blank? }.sort{ |a,b| a.clinic.name <=> b.clinic.name }.map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id]}
+    includes( [
+      :clinic,
+      location: [
+        { address: :city },
+        { hospital_in: { location: { address: :city } } }
+      ]
+    ] ).
+    reject{ |cl| cl.location.blank? || cl.empty? || cl.clinic.blank? }.
+    sort{ |a,b| a.clinic.name <=> b.clinic.name }.
+    map{ |cl| ["#{cl.clinic.name} - #{cl.location.short_address}", cl.id]}
   end
 
   def opened_recently?
-    (location_opened == Time.now.year.to_s) || (([1,2].include? Time.now.month) && (location_opened == (Time.now.year - 1).to_s))
+    (location_opened == Time.now.year.to_s) ||
+      (([1,2].include? Time.now.month) && (location_opened == (Time.now.year - 1).to_s))
   end
 
   def city
@@ -49,21 +59,35 @@ class ClinicLocation < ActiveRecord::Base
   end
 
   def phone_and_fax
-    return "#{phone} ext. #{phone_extension}, Fax: #{fax}" if phone.present? && phone_extension.present? && fax.present?
-    return "#{phone} ext. #{phone_extension}" if phone.present? && phone_extension.present?
-    return "#{phone}, Fax: #{fax}" if phone.present? && fax.present?
-    return "ext. #{phone_extension}, Fax: #{fax}" if phone_extension.present? && fax.present?
-    return "#{phone}" if phone.present?
-    return "Fax: #{fax}" if fax.present?
-    return "ext. #{phone_extension}" if phone_extension.present?
-    return ""
+    if phone.present? && phone_extension.present? && fax.present?
+      "#{phone} ext. #{phone_extension}, Fax: #{fax}"
+    elsif phone.present? && phone_extension.present?
+      "#{phone} ext. #{phone_extension}"
+    elsif phone.present? && fax.present?
+      "#{phone}, Fax: #{fax}"
+    elsif phone_extension.present? && fax.present?
+      "ext. #{phone_extension}, Fax: #{fax}"
+    elsif phone.present?
+      "#{phone}"
+    elsif fax.present?
+      "Fax: #{fax}"
+    elsif phone_extension.present?
+      "ext. #{phone_extension}"
+    else
+      ""
+    end
   end
 
   def phone_only
-    return "#{phone} ext. #{phone_extension}" if phone.present? && phone_extension.present?
-    return "#{phone}" if phone.present?
-    return "ext. #{phone_extension}" if phone_extension.present?
-    return ""
+    if phone.present? && phone_extension.present?
+      "#{phone} ext. #{phone_extension}"
+    elsif phone.present?
+      "#{phone}"
+    elsif phone_extension.present?
+      "ext. #{phone_extension}"
+    else
+      ""
+    end
   end
 
   def wheelchair_accessible?
@@ -75,7 +99,11 @@ class ClinicLocation < ActiveRecord::Base
   end
 
   def empty?
-    phone.blank? && phone_extension.blank? && fax.blank? && contact_details.blank? && (location.blank? || location.empty?)
+    phone.blank? &&
+    phone_extension.blank? &&
+    fax.blank? &&
+    contact_details.blank? &&
+    (location.blank? || location.empty?)
   end
 
   def has_data?

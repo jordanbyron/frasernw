@@ -49,9 +49,8 @@ class Hospital < ActiveRecord::Base
 
   def self.all_formatted_for_form(scope = :presence)
     includes_location_data.
-    all(
-      order: "name ASC"
-    ).select(&scope).
+    order("name ASC").
+    select(&scope).
     map{ |h| ["#{h.name} - #{h.short_address}", h.id] }
   end
 
@@ -89,7 +88,6 @@ class Hospital < ActiveRecord::Base
   def self.all_formatted_for_select(scope = :presence)
     self.
       includes_location_data.
-      all.
       select(&scope).
       map(&:formatted_for_select)
   end

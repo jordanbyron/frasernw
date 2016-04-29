@@ -68,42 +68,33 @@ class Clinic < ActiveRecord::Base
     :clinic_locations_attributes,
     :review_object
 
-  #clinics can have multiple specializations
   has_many :clinic_specializations, dependent: :destroy
   has_many :specializations, through: :clinic_specializations
 
-  #clinics have multiple locations
   MAX_LOCATIONS = 9
   has_many :clinic_locations, dependent: :destroy
   accepts_nested_attributes_for :clinic_locations
   has_many :locations, through: :clinic_locations
   has_many :addresses, through: :locations
 
-  #clinics speak many languages
-  has_many   :clinic_speaks, dependent: :destroy
-  has_many   :languages, through: :clinic_speaks
+  has_many :clinic_speaks, dependent: :destroy
+  has_many :languages, through: :clinic_speaks
 
-  #clinics focus on procedures
-  has_many   :focuses, dependent: :destroy
+  has_many :focuses, dependent: :destroy
 
-  # we want to be using this generic alias so we can duck type
-  # procedure specializables
-  has_many   :procedure_specialization_links, class_name: "Focus"
-  has_many   :procedure_specializations, through: :focuses
-  has_many   :procedures, through: :procedure_specializations
+  has_many :procedure_specialization_links, class_name: "Focus"
+  has_many :procedure_specializations, through: :focuses
+  has_many :procedures, through: :procedure_specializations
   accepts_nested_attributes_for :focuses,
     reject_if: lambda { |a| a[:procedure_specialization_id].blank? },
     allow_destroy: true
 
-  #clinics have attendance (of specialists and freeform physicians)
   has_many :attendances, through: :clinic_locations
   has_many :specialists, through: :attendances
 
-  #clinics have many healthcare providers
-  has_many   :clinic_healthcare_providers, dependent: :destroy
-  has_many   :healthcare_providers, through: :clinic_healthcare_providers
+  has_many :clinic_healthcare_providers, dependent: :destroy
+  has_many :healthcare_providers, through: :clinic_healthcare_providers
 
-  #clinics are controlled (e.g. can be edited) by users of the system
   has_many :controlling_users,
     through: :user_controls_clinics,
     source: :user,
@@ -133,7 +124,13 @@ class Clinic < ActiveRecord::Base
   def self.includes_location_schedules
     includes(
       clinic_locations: {schedule: [
-        :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday
+        :monday,
+        :tuesday,
+        :wednesday,
+        :thursday,
+        :friday,
+        :saturday,
+        :sunday
       ] }
     )
   end
@@ -173,9 +170,13 @@ class Clinic < ActiveRecord::Base
     self.in_cities_and_specialization(City.all - in_progress_cities, specialization)
   end
 
-  def self.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
+  def self.not_in_progress_for_division_local_referral_area_and_specialization(
+    division, specialization
+  )
     not_in_progress_cities = City.
-      not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
+      not_in_progress_for_division_local_referral_area_and_specialization(
+        division, specialization
+      )
     self.in_cities_and_specialization(not_in_progress_cities, specialization)
   end
 
