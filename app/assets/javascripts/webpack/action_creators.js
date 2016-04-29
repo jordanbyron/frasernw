@@ -15,3 +15,11 @@ export function requestInitialData(model, dispatch){
     })
   })
 }
+
+export function changeFilterValue(dispatch, filterKey, newValue) {
+  dispatch({
+    type: "CHANGE_FILTER_VALUE",
+    filterKey: filterKey,
+    newValue: newValue
+  });
+}
