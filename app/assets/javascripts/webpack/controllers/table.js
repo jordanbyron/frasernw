@@ -1,4 +1,5 @@
 import React from "react";
+import { sortByHeading } from "action_creators";
 
 const TableRows = (model, dispatch) => {
   return model.ui.recordsToDisplay.map((record) => {
@@ -21,8 +22,20 @@ const TableController = ({model, dispatch}) => {
       <table className="table">
         <thead>
           <tr>
-            <th>User</th>
-            <th>Page Views</th>
+            <TableHeadingController
+              model={model}
+              dispatch={dispatch}
+              label={"User"}
+              key={"USER"}
+              headingKey={"USER"}
+            />
+            <TableHeadingController
+              model={model}
+              dispatch={dispatch}
+              label={"Page Views"}
+              key={"PAGE_VIEWS"}
+              headingKey={"PAGE_VIEWS"}
+            />
           </tr>
         </thead>
         <tbody>
@@ -34,6 +47,39 @@ const TableController = ({model, dispatch}) => {
   else {
     return(<span></span>);
   }
+}
+
+const TableHeadingController = ({model, dispatch, label, headingKey}) => {
+  return(
+    <th onClick={_.partial(sortByHeading, dispatch, headingKey)}>
+      <span>{ label }</span>
+      <TableHeadingArrowController
+        model={model}
+        headingKey={headingKey}
+      />
+    </th>
+  )
+}
+
+const TableHeadingArrowController = ({model, headingKey}) => {
+  if (selectedTableHeadingKey(model) === headingKey) {
+    return(
+      <i className={`icon-arrow-${tableSortDirection(model).toLowerCase()}`}
+        style={{color: "#08c", marginLeft: "5px"}}
+      />
+    );
+  }
+  else {
+    return(<span></span>)
+  }
+}
+
+const selectedTableHeadingKey = (model) => {
+  return model.ui.selectedTableHeading.key || "PAGE_VIEWS";
+}
+
+const tableSortDirection = (model) => {
+  return model.ui.selectedTableHeading.direction || "DOWN";
 }
 
 export default TableController;

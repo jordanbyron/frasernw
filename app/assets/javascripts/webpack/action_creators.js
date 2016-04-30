@@ -32,3 +32,10 @@ export function parseRenderedData(dispatch) {
     data: window.pathways.dataForReact
   });
 };
+
+export function sortByHeading(dispatch, key) {
+  dispatch({
+    type: "SORT_BY_HEADING",
+    key: key
+  })
+}
