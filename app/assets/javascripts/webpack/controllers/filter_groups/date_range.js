@@ -2,6 +2,7 @@ import FilterGroup from "component_helpers/filter_group";
 import * as FilterValues from "controller_helpers/filter_values";
 import { padTwo } from "utils";
 import React from "react";
+import { changeFilterValue } from "action_creators";
 
 const DateRangeFilterController = ({model, dispatch}) => {
   return(

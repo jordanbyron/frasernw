@@ -1,8 +1,10 @@
-export function requestInitialData(model, dispatch){
+import * as FilterValues from "controller_helpers/filter_values";
+
+export function requestData(model, dispatch){
   const requestParams = {
-    divisionId: 5,
-    startMonth: 201603,
-    endMonth: 201603
+    divisionId: FilterValues.divisionScope(model),
+    startMonth: FilterValues.startMonth(model),
+    endMonth: FilterValues.endMonth(model)
   }
 
   $.get(

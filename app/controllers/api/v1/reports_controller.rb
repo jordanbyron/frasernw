@@ -55,9 +55,9 @@ module Api
 
         render json: {
           recordsToDisplay: PageviewsByUser.call(
-            start_month: Month.from_i(params[:data][:startMonth]),
-            end_month: Month.from_i(params[:data][:endMonth]),
-            division_id: params[:data][:divisionId]
+            start_month: Month.from_i(params[:data][:startMonth].to_i),
+            end_month: Month.from_i(params[:data][:endMonth].to_i),
+            division_id: params[:data][:divisionId].to_i
           )
         }
       end

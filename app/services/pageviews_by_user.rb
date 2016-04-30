@@ -4,12 +4,16 @@ class PageviewsByUser < ServiceObject
   attribute :division_id, Integer
 
   def call
-    matched_users.map do |row|
-      {
-        id: row[:user].id,
-        name: row[:user].name,
-        pageViews: row[:page_views]
-      }
+    if start_month.to_i > end_month.to_i
+      []
+    else
+      matched_users.map do |row|
+        {
+          id: row[:user].id,
+          name: row[:user].name,
+          pageViews: row[:page_views]
+        }
+      end
     end
   end
 

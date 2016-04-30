@@ -1,16 +1,18 @@
 import TemplateController from "controllers/template";
 import Provider from "provider";
 import createLogger from "redux-logger";
+import nextAction from "middlewares/next_action";
 import { createStore, applyMiddleware } from "redux";
 import ReactDOM from "react-dom";
 import rootReducer from "dry_reducers/root_reducer";
 import React from "react";
 
-import { requestInitialData, parseRenderedData } from "action_creators";
+import { requestData, parseRenderedData } from "action_creators";
 
 let middlewares = [];
 const logger = createLogger();
 middlewares.push(logger);
+middlewares.push(nextAction);
 
 const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 const store = createStoreWithMiddleware(rootReducer);
@@ -22,7 +24,7 @@ const dryBootstrapReact = function() {
       document.getElementById("react_root--template")
     )
 
-    requestInitialData(store.getState(), store.dispatch);
+    requestData(store.getState(), store.dispatch);
     parseRenderedData(store.dispatch);
   })
 }

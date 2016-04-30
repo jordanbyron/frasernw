@@ -25,6 +25,8 @@ const recordsToDisplay = (model, action) => {
   switch(action.type){
   case "DATA_RECEIVED":
     return action.recordsToDisplay;
+  case "CHANGE_FILTER_VALUE":
+    return undefined;
   default:
     return model;
   }
