@@ -23,3 +23,10 @@ export function changeFilterValue(dispatch, filterKey, newValue) {
     newValue: newValue
   });
 }
+
+export function parseRenderedData(dispatch) {
+  dispatch({
+    type: "PARSE_RENDERED_DATA",
+    data: window.pathways.dataForReact
+  });
+};

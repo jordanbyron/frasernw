@@ -1,4 +1,7 @@
 - set_page_specific_title "Page Views By User"
 
 #react_root--template
-  = "test"
+
+:javascript
+  window.pathways = window.pathways || {};
+  window.pathways.dataForReact = #{@init_data.to_json};

@@ -6,7 +6,7 @@ import ReactDOM from "react-dom";
 import rootReducer from "dry_reducers/root_reducer";
 import React from "react";
 
-import { requestInitialData } from "action_creators";
+import { requestInitialData, parseRenderedData } from "action_creators";
 
 let middlewares = [];
 const logger = createLogger();
@@ -23,6 +23,7 @@ const dryBootstrapReact = function() {
     )
 
     requestInitialData(store.getState(), store.dispatch);
+    parseRenderedData(store.dispatch);
   })
 }
 

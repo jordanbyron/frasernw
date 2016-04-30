@@ -1,6 +1,16 @@
 const rootReducer = (model = {}, action) => {
   return {
-    ui: ui(model.ui, action)
+    ui: ui(model.ui, action),
+    app: app(model.app, action)
+  }
+}
+
+const app = (model = {}, action) => {
+  if(action.type === "PARSE_RENDERED_DATA") {
+    return action.data;
+  }
+  else {
+    return model;
   }
 }
 
