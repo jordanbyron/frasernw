@@ -137,7 +137,6 @@ module Denormalized
           includes(:healthcare_providers).
           includes_location_data.
           includes_location_schedules.
-          all.
           inject({}) do |memo, clinic|
           memo.merge(clinic.id => {
             id: clinic.id,
