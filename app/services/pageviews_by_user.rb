@@ -30,7 +30,7 @@ class PageviewsByUser < ServiceObject
     users.map do |user|
       {
         user: user,
-        page_views: matched_row(user)[:page_views]
+        page_views: matched_row(user)[:page_views].to_i
       }
     end
   end

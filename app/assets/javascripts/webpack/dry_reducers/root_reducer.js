@@ -25,7 +25,7 @@ const ui = (model = {}, action) => {
 const selectedTableHeading = (model = {}, action) => {
   switch(action.type){
   case "SORT_BY_HEADING":
-    if(model.key === action.key) {
+    if(action.currentKey === action.key) {
       if (model.direction === "UP") {
         return {
           key: action.key,

@@ -33,9 +33,10 @@ export function parseRenderedData(dispatch) {
   });
 };
 
-export function sortByHeading(dispatch, key) {
+export function sortByHeading(dispatch, key, currentKey) {
   dispatch({
     type: "SORT_BY_HEADING",
+    currentKey: currentKey,
     key: key
   })
 }
