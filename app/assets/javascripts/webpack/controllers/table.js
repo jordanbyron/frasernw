@@ -32,17 +32,17 @@ const matchingSortOrder = (model) => {
 
 const sortedRecordsToDisplay = (model) => {
   if (selectedTableHeadingKey(model) === "PAGE_VIEWS"){
-    var sortByKey = "pageViews";
+    var iteratee = _.property("pageViews");
     var order = matchingSortOrder(model);
   }
   else {
-    var sortByKey = "name";
+    var iteratee = _.property("name").pipe(_.trimLeft);
     var order = reverseSortOrder(model);
   }
 
   return _.sortByOrder(
     model.ui.recordsToDisplay,
-    [ _.property(sortByKey) ],
+    [ iteratee ],
     [ order]
   );
 
