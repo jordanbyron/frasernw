@@ -18,7 +18,7 @@ class SubscriptionActivity < PublicActivity::Activity
   def self.by_specializations(specializations)
 
     if specializations.present?
-      where(trackable_type: "ScItem" || "ScCategory").all
+      where(trackable_type: "ScItem" || "ScCategory")
     else
       scoped
     end

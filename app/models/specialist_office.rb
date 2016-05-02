@@ -45,7 +45,6 @@ class SpecialistOffice < ActiveRecord::Base
         { hospital_in: { location: { address: :city } } }
       ] ]
     ] ).
-    all.
     reject{ |so| so.office.blank? || so.empty? || so.specialist.blank? }.
     sort{ |a,b| (a.specialist.lastname || "zzz") <=> (b.specialist.lastname || "zzz") }.
     map{ |so| ["#{so.specialist.name} - #{so.office.short_address}", so.id] }
@@ -100,7 +99,6 @@ class SpecialistOffice < ActiveRecord::Base
         { hospital_in: { location: { address: :city } } }
       ] ]
     ] ).
-    all.
     reject{ |so| so.office.blank? || so.empty? || so.specialist.blank? }.
     sort{ |a,b| (a.specialist.lastname || "zzz") <=> (b.specialist.lastname || "zzz") }.
     map{ |so| ["#{so.specialist.name} - #{so.office.short_address}", so.id]}

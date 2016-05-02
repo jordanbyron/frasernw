@@ -230,7 +230,7 @@ class Specialist < ActiveRecord::Base
         expires_in: 23.hours
       ) { self.in_cities(c).map(&:id) }
       # Not ideal as Cache key is dependent on value of 'self's array
-      where(id: specialist_ids_array).all
+      where(id: specialist_ids_array)
   end
 
   def self.in_divisions_cached(divisions)
@@ -874,15 +874,13 @@ class Specialist < ActiveRecord::Base
     SQL
   end
 
-  # # # Reporting Methods
   # on May 18 2015 there was 196 specialists in multiple specialties
   def self.in_multiple_specialties
     @specialists_with_multiple_specialties ||=
       self.
         joins(:specialist_specializations).
         group('specialists.id').
-        having('count(specialist_id) > 1').
-        all
+        having('count(specialist_id) > 1')
   end
 
   #on May 18 2015 there was 100 specialists in multiple divisions
@@ -893,7 +891,6 @@ class Specialist < ActiveRecord::Base
         includes_specialist_offices.
         select{ |specialist| specialist.divisions.count > 1 }
   end
-  # # #
 
   def self.filter(specialists, filter)
     specialists.select do |specialist|
@@ -932,7 +929,11 @@ class Specialist < ActiveRecord::Base
           hospitals.map(&:city) +
           clinics.map(&:cities)
         ).flatten.reject(&:blank?).uniq
-      elsif not_responded? || purposely_not_yet_surveyed? || hospital_or_clinic_referrals_only?
+      elsif (
+        not_responded? ||
+        purposely_not_yet_surveyed? ||
+        hospital_or_clinic_referrals_only?
+      )
         (
           offices.map(&:city) +
           hospitals.map(&:city) +
@@ -1121,13 +1122,13 @@ class Specialist < ActiveRecord::Base
   # match tooltip to status_class
   STATUS_TOOLTIP_HASH = {
     STATUS_CLASS_AVAILABLE   => "Accepting new referrals",
-    STATUS_CLASS_LIMITATIONS => "Accepting limited new referrals by geography or "\
-                                "# of patients",
+    STATUS_CLASS_LIMITATIONS => "Accepting limited new referrals by geography "\
+                                "or # of patients",
     STATUS_CLASS_UNAVAILABLE => "Not accepting new referrals",
     STATUS_CLASS_WARNING     => "Referral status will change soon",
     STATUS_CLASS_UNKNOWN     => "Referral status is unknown",
-    STATUS_CLASS_EXTERNAL    => "Only works out of, and possibly accepts referrals "\
-                                "through, clinics and/or hospitals",
+    STATUS_CLASS_EXTERNAL    => "Only works out of, and possibly accepts "\
+                                "referrals through, clinics and/or hospitals",
     STATUS_CLASS_BLANK       => ""
   }
 
