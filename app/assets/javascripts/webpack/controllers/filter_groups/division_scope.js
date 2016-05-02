@@ -24,7 +24,7 @@ const labelScopeOption = (option, model) => {
 const DivisionScopeFilterController = ({model, dispatch}) => {
   return(
     <FilterGroup title="Scope">
-      <label>
+      <label style={{marginTop: "10px"}}>
         <select
           value={FilterValues.divisionScope(model)}
           onChange={function(e) { changeFilterValue(dispatch, "divisionScope", e.target.value) } }

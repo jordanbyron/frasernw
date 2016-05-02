@@ -7,7 +7,7 @@ import { changeFilterValue } from "action_creators";
 const DateRangeFilterController = ({model, dispatch}) => {
   return(
     <FilterGroup title="Date Range">
-      <label>
+      <label style={{marginTop: "10px"}}>
         <div>Start Month:</div>
         <select
           value={FilterValues.startMonth(model)}
@@ -24,7 +24,7 @@ const DateRangeFilterController = ({model, dispatch}) => {
           }
         </select>
       </label>
-      <label>
+      <label style={{marginTop: "10px", marginBottom: "20px"}}>
         <div>End Month:</div>
         <select
           value={FilterValues.endMonth(model)}

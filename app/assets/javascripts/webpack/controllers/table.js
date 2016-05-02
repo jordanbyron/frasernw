@@ -94,7 +94,7 @@ const TableHeadingController = ({model, dispatch, label, headingKey}) => {
   );
 
   return(
-    <th onClick={onClick}>
+    <th onClick={onClick} className="datatable__heading">
       <span>{ label }</span>
       <TableHeadingArrowController
         model={model}
