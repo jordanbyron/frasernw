@@ -36,7 +36,7 @@ const sortedRecordsToDisplay = (model) => {
     var order = matchingSortOrder(model);
   }
   else {
-    var iteratee = _.property("name").pipe(_.trimLeft);
+    var iteratee = _.property("name").pwPipe(_.trimLeft);
     var order = reverseSortOrder(model);
   }
 

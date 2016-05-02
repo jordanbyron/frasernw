@@ -1,8 +1,8 @@
-Object.defineProperty(Object.prototype, 'pipe', {
+Object.defineProperty(Object.prototype, 'pwPipe', {
   value: function (transform) { return transform(this); }
 });
 
-Object.defineProperty(Function.prototype, 'pipe', {
+Object.defineProperty(Function.prototype, 'pwPipe', {
   value: function (transform) {
     var caller = this;
 
