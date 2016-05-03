@@ -19,7 +19,9 @@ module ReviewItemsHelper
 
     content_tag(
       :div,
-      "You are reviewing changes made by #{@review_item.editor.name} on #{@review_item.created_at.to_s(:date_ordinal)}.  All changes made by the user have been highlighted in orange.",
+      "You are reviewing changes made by #{@review_item.editor.name} on "\
+      "#{@review_item.created_at.to_s(:date_ordinal)}.  "\
+      "All changes made by the user have been highlighted in orange.",
       class: "alert alert-info"
     )
   end
@@ -29,7 +31,10 @@ module ReviewItemsHelper
 
     content_tag(
       :div,
-      "You are rereviewing changes made by #{@review_item.editor.name} on #{@review_item.created_at.to_s(:date_ordinal)}.  The base state of the form is as the user would have seen it before making the changes.  All changes made by the user have been highlighted in orange.",
+      "You are rereviewing changes made by #{@review_item.editor.name} on "\
+      "#{@review_item.created_at.to_s(:date_ordinal)}.  The base state of "\
+      "the form is as the user would have seen it before making the changes."\
+      "  All changes made by the user have been highlighted in orange.",
       class: "alert alert-info"
     )
   end

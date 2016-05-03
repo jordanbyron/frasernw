@@ -3,9 +3,12 @@ module SpecializationsHelper
     filtering_attributes = specialist_procedure_filtering_attributes(s)
     filtering_attributes << "swt_#{s.waittime_mask.present? ? s.waittime_mask : 0}"
     s.procedure_specializations.specialist_wait_time.each do |ps|
-      capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(s.id,ps.id)
+      capacity =
+        Capacity.find_by_specialist_id_and_procedure_specialization_id(s.id,ps.id)
       next if capacity.blank?
-      filtering_attributes << "swt#{ps.procedure_id}_#{capacity.waittime_mask}" if capacity.waittime_mask.present?
+      if capacity.waittime_mask.present?
+        filtering_attributes << "swt#{ps.procedure_id}_#{capacity.waittime_mask}"
+      end
       if capacity.lagtime_mask.present?
         (capacity.lagtime_mask..Specialist::LAGTIME_LABELS.length+1).each do |i|
           filtering_attributes << "slt#{ps.procedure_id}_sc#{i}_"
@@ -41,8 +44,15 @@ module SpecializationsHelper
       filtering_attributes << "sp#{ps.procedure_id}_"
       parent = ps.parent
       if parent.present?
-        filtering_attributes << "sp#{parent.procedure_id}_" if !filtering_attributes.include?("sp#{parent.procedure_id}_")
-        filtering_attributes << "sp#{parent.parent.procedure_id}_" if (parent.parent.present? && !filtering_attributes.include?("sp#{parent.parent.procedure_id}_"))
+        if !filtering_attributes.include?("sp#{parent.procedure_id}_")
+          filtering_attributes << "sp#{parent.procedure_id}_"
+        end
+        if (
+          parent.parent.present? &&
+          !filtering_attributes.include?("sp#{parent.parent.procedure_id}_")
+        )
+          filtering_attributes << "sp#{parent.parent.procedure_id}_"
+        end
       end
     end
     filtering_attributes
@@ -74,15 +84,25 @@ module SpecializationsHelper
       filtering_attributes << "op#{ps.procedure_id}_"
       parent = ps.parent
       if parent.present?
-        filtering_attributes << "op#{parent.procedure_id}_" if !filtering_attributes.include?("op#{parent.procedure_id}_")
-        filtering_attributes << "op#{parent.parent.procedure_id}_" if (parent.parent.present? && !filtering_attributes.include?("op#{parent.parent.procedure_id}_"))
+        if !filtering_attributes.include?("op#{parent.procedure_id}_")
+          filtering_attributes << "op#{parent.procedure_id}_"
+        end
+        if (
+          parent.parent.present? &&
+          !filtering_attributes.include?("op#{parent.parent.procedure_id}_")
+        )
+          filtering_attributes << "op#{parent.parent.procedure_id}_"
+        end
       end
     end
     filtering_attributes << "owt_#{s.waittime_mask.present? ? s.waittime_mask : 0}"
     s.procedure_specializations.specialist_wait_time.each do |ps|
-      capacity = Capacity.find_by_specialist_id_and_procedure_specialization_id(s.id,ps.id)
+      capacity =
+        Capacity.find_by_specialist_id_and_procedure_specialization_id(s.id,ps.id)
       next if capacity.blank?
-      filtering_attributes << "owt#{ps.procedure_id}_#{capacity.waittime_mask}" if capacity.waittime_mask.present?
+      if capacity.waittime_mask.present?
+        filtering_attributes << "owt#{ps.procedure_id}_#{capacity.waittime_mask}"
+      end
       if capacity.lagtime_mask.present?
         (capacity.lagtime_mask..Specialist::LAGTIME_LABELS.length+1).each do |i|
           filtering_attributes << "olt#{ps.procedure_id}_oc#{i}_"
@@ -126,7 +146,9 @@ module SpecializationsHelper
     c.procedure_specializations.clinic_wait_time.each do |ps|
       focus = Focus.find_by_clinic_id_and_procedure_specialization_id(c.id,ps.id)
       next if focus.blank?
-      filtering_attributes << "cwt#{ps.procedure_id}_#{focus.waittime_mask}" if focus.waittime_mask.present?
+      if focus.waittime_mask.present?
+        filtering_attributes << "cwt#{ps.procedure_id}_#{focus.waittime_mask}"
+      end
       if focus.lagtime_mask.present?
         (focus.lagtime_mask..Clinic::LAGTIME_LABELS.length+1).each do |i|
           filtering_attributes << "clt#{ps.procedure_id}_cc#{i}_"
@@ -172,8 +194,15 @@ module SpecializationsHelper
       filtering_attributes << "cp#{ps.procedure_id}_"
       parent = ps.parent
       if parent.present?
-        filtering_attributes << "cp#{parent.procedure_id}_" if !filtering_attributes.include?("cp#{parent.procedure_id}_")
-        filtering_attributes << "cp#{parent.parent.procedure_id}_" if (parent.parent.present? && !filtering_attributes.include?("cp#{parent.parent.procedure_id}_"))
+        if !filtering_attributes.include?("cp#{parent.procedure_id}_")
+          filtering_attributes << "cp#{parent.procedure_id}_"
+        end
+        if (
+          parent.parent.present? &&
+          !filtering_attributes.include?("cp#{parent.parent.procedure_id}_")
+        )
+          filtering_attributes << "cp#{parent.parent.procedure_id}_"
+        end
       end
     end
     filtering_attributes
@@ -207,7 +236,8 @@ module SpecializationsHelper
     end
     other_specialists = other_specialists.flatten.uniq
     #remove any specialists that are also in this specialization, sort
-    return (other_specialists - specialization.specialists.in_cities_cached(cities)).sort{ |a,b| "#{a.waittime_mask}" <=> "#{b.waittime_mask}" }
+    return (other_specialists - specialization.specialists.in_cities_cached(cities)).
+      sort{ |a,b| "#{a.waittime_mask}" <=> "#{b.waittime_mask}" }
   end
 
   def other_clinics_in_cities(specialization, cities)
@@ -221,7 +251,8 @@ module SpecializationsHelper
     end
     other_clinics = other_clinics.flatten.uniq
     #remove any specialists that are also in this specialization, sort
-    return (other_clinics - specialization.clinics.in_cities(cities)).sort{ |a,b| "#{a.waittime_mask}" <=> "#{b.waittime_mask}" }
+    return (other_clinics - specialization.clinics.in_cities(cities)).
+      sort{ |a,b| "#{a.waittime_mask}" <=> "#{b.waittime_mask}" }
   end
 
   def sc_item_filtering_attributes(item)
