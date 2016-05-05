@@ -3,11 +3,12 @@ import Provider from "provider";
 import createLogger from "redux-logger";
 import nextAction from "middlewares/next_action";
 import { createStore, applyMiddleware } from "redux";
+import createBrowserHistory from 'history/lib/createBrowserHistory'
+import { useQueries } from 'history';
 import ReactDOM from "react-dom";
 import rootReducer from "dry_reducers/root_reducer";
 import React from "react";
-
-import { requestData, parseRenderedData } from "action_creators";
+import { requestData, parseRenderedData, locationChanged, integrateLocalStorageData } from "action_creators";
 
 let middlewares = [];
 const logger = createLogger();
@@ -17,12 +18,25 @@ middlewares.push(nextAction);
 const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 const store = createStoreWithMiddleware(rootReducer);
 
+const browserHistory = useQueries(createBrowserHistory)();
+browserHistory.listen((location) => {
+  locationChanged(store.dispatch, location);
+});
+
 const dryBootstrapReact = function() {
   $(document).ready(function() {
-    ReactDOM.render(
-      <Provider childKlass={TemplateController} store={store}/>,
-      document.getElementById("react_root--template")
-    )
+    const renderTo = document.getElementById("react_root--template");
+
+    if (renderTo){
+      ReactDOM.render(
+        <Provider childKlass={TemplateController} store={store}/>,
+        renderTo
+      )
+    }
+
+    window.pathways.globalDataLoaded.done(function(data) {
+      integrateLocalStorageData(store.dispatch, data);
+    })
 
     requestData(store.getState(), store.dispatch);
     parseRenderedData(store.dispatch);

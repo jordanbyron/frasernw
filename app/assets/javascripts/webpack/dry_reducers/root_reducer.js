@@ -18,8 +18,18 @@ const ui = (model = {}, action) => {
   return {
     recordsToDisplay: recordsToDisplay(model.recordsToDisplay, action),
     filterValues: filterValues(model.filterValues, action),
-    selectedTableHeading: selectedTableHeading(model.selectedTableHeading, action)
+    selectedTableHeading: selectedTableHeading(model.selectedTableHeading, action),
+    location: location(model.location, action)
   };
+}
+
+const location = (model, action) => {
+  switch(action.type){
+  case "LOCATION_CHANGED":
+    return action.location;
+  default:
+    return model;
+  }
 }
 
 const selectedTableHeading = (model = {}, action) => {

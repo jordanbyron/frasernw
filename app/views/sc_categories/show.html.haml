@@ -11,8 +11,7 @@
 .content-wrapper
   %h2= @sc_category.full_name
 
-  #show_category
-
+  #react_root--template
 
   %hr
 
@@ -34,11 +33,6 @@
         = link_to "Content Categories", sc_categories_path
         to delete the content category of #{@sc_category.name} in its entirety.
 
-
 :javascript
-  window.pathways.bootstrapReact({
-    domElementSelector: "#show_category",
-    stateMapper: "CategoryPage",
-    topLevelComponent: "CategoryPage",
-    uiReducer: "CategoryPage"
-  }, #{Oj.dump(@init_data)})
+  window.pathways = window.pathways || {};
+  window.pathways.dataForReact = #{Oj.dump(@init_data)};

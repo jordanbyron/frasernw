@@ -1,11 +1,7 @@
 - set_page_specific_title "Entity Page Views"
 
-#react_container
+#react_root--template
 
 :javascript
-  window.pathways.bootstrapReact({
-    domElementSelector: "#react_container",
-    stateMapper: "UsageReport",
-    topLevelComponent: "UsageReport",
-    uiReducer: "UsageReport"
-  }, #{@init_data.to_json});
+  window.pathways = window.pathways || {};
+  window.pathways.dataForReact = #{Oj.dump(@init_data)};

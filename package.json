@@ -32,6 +32,7 @@
     "console-polyfill": "^0.2.2",
     "es5-shim": "^4.1.13",
     "highcharts": "^4.2.3",
+    "history": "^2.1.1",
     "jquery-ujs": "^1.2.0",
     "lodash": "^3.10.1",
     "lz-string": "^1.4.4",
@@ -42,6 +43,7 @@
     "react-redux": "^4.0.0",
     "redux": "^3.0.4",
     "redux-logger": "^2.6.1",
+    "url-pattern": "^1.0.1",
     "webpack": "^1.11"
   }
 }

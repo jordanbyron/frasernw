@@ -40,3 +40,17 @@ export function sortByHeading(dispatch, key, currentKey) {
     key: key
   })
 }
+
+export function locationChanged(dispatch, locationChanged) {
+  dispatch({
+    type: "LOCATION_CHANGED",
+    location: location
+  });
+}
+
+export function integrateLocalStorageData(dispatch, data) {
+  dispatch({
+    type: "INTEGRATE_LOCALSTORAGE_DATA",
+    data: data
+  });
+}

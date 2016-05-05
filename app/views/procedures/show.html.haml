@@ -25,16 +25,11 @@
 = render 'partials/specialization_dropdown_menu'
 
 .tabbable
-  #show_specialization
+  #react_root--template
 
 :javascript
-  window.pathways.bootstrapReact({
-    domElementSelector: "#show_specialization",
-    stateMapper: "FilterTablePage",
-    topLevelComponent: "FilterTablePage",
-    uiReducer: "FilterTablePage",
-    mapperConfig: "hey"
-  }, #{Oj.dump(@init_data)})
+  window.pathways = window.pathways || {};
+  window.pathways.dataForReact = #{Oj.dump(@init_data)};
 
 .content-wrapper
   %p.admin.btn-group
