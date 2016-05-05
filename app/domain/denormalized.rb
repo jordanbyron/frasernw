@@ -98,7 +98,8 @@ module Denormalized
             customLagtimes: custom_procedure_times(specialist, :lagtime_mask),
             customWaittimes: custom_procedure_times(specialist, :waittime_mask),
             isGp: specialist.is_gp,
-            suffix: specialist.suffix,
+            isInternalMedicine: specialist.is_internal_medicine?,
+            seesOnlyChildren: specialist.sees_only_children?,
             isNew: specialist.new?,
             isInProgress: specialist.in_progress,
             createdAt: specialist.created_at.to_date.to_s,
@@ -225,7 +226,8 @@ module Denormalized
             nestedProcedureIds: Denormalized.transform_nested_procedure_specializations(
               specialization.procedure_specializations.includes(:procedure).arrange
             ),
-            maskFiltersByReferralArea: specialization.mask_filters_by_referral_area
+            maskFiltersByReferralArea: specialization.mask_filters_by_referral_area,
+            suffix: specialization.suffix
           })
         end
     end,
