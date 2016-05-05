@@ -151,7 +151,6 @@ class Clinic < ActiveRecord::Base
   def flush_cached_find
     Rails.cache.delete([self.class.name, id])
   end
-  # # #
 
   def self.filter(clinics, filter)
     clinics.select do |clinic|
