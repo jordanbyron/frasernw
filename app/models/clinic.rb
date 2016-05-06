@@ -162,8 +162,10 @@ class Clinic < ActiveRecord::Base
     in_progress_cities = []
 
     Division.all.each do |division|
-      in_progress_cities |= City.
-        in_progress_for_division_and_specialization(division, specialization)
+      in_progress_cities |= City.in_progress_for_division_and_specialization(
+        division,
+        specialization
+      )
     end
 
     self.in_cities_and_specialization(City.all - in_progress_cities, specialization)
@@ -174,7 +176,8 @@ class Clinic < ActiveRecord::Base
   )
     not_in_progress_cities = City.
       not_in_progress_for_division_local_referral_area_and_specialization(
-        division, specialization
+        division,
+        specialization
       )
     self.in_cities_and_specialization(not_in_progress_cities, specialization)
   end
@@ -207,33 +210,33 @@ class Clinic < ActiveRecord::Base
     city_ids = cities.map{ |city| city.id }
     direct = joins(
       'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
-      'ON "clinics".id = "direct_clinic_location".clinic_id '\
-      'INNER JOIN "locations" AS "direct_location" '\
-      'ON "direct_clinic_location".id = "direct_location".locatable_id '\
-      'INNER JOIN "addresses" AS "direct_address" '\
-      'ON "direct_location".address_id = "direct_address".id'
+        'ON "clinics".id = "direct_clinic_location".clinic_id '\
+        'INNER JOIN "locations" AS "direct_location" '\
+        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
+        'INNER JOIN "addresses" AS "direct_address" '\
+        'ON "direct_location".address_id = "direct_address".id'
     ).where(
       '"direct_location".locatable_type = (?) '\
-      'AND "direct_address".city_id IN (?) '\
-      'AND "direct_location".hospital_in_id IS NULL',
+        'AND "direct_address".city_id IN (?) '\
+        'AND "direct_location".hospital_in_id IS NULL',
       "ClinicLocation",
       city_ids
     )
     in_hospital = joins(
       'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
-      'ON "clinics".id = "direct_clinic_location".clinic_id '\
-      'INNER JOIN "locations" AS "direct_location" '\
-      'ON "direct_clinic_location".id = "direct_location".locatable_id '\
-      'INNER JOIN "hospitals" '\
-      'ON "hospitals".id = "direct_location".hospital_in_id '\
-      'INNER JOIN "locations" AS "hospital_in_location" '\
-      'ON "hospitals".id = "hospital_in_location".locatable_id '\
-      'INNER JOIN "addresses" AS "hospital_address" '\
-      'ON "hospital_in_location".address_id = "hospital_address".id'
+        'ON "clinics".id = "direct_clinic_location".clinic_id '\
+        'INNER JOIN "locations" AS "direct_location" '\
+        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
+        'INNER JOIN "hospitals" '\
+        'ON "hospitals".id = "direct_location".hospital_in_id '\
+        'INNER JOIN "locations" AS "hospital_in_location" '\
+        'ON "hospitals".id = "hospital_in_location".locatable_id '\
+        'INNER JOIN "addresses" AS "hospital_address" '\
+        'ON "hospital_in_location".address_id = "hospital_address".id'
     ).where(
       '"direct_location".locatable_type = (?) '\
-      'AND "hospital_in_location".locatable_type = (?) '\
-      'AND "hospital_address".city_id IN (?)',
+        'AND "hospital_in_location".locatable_type = (?) '\
+        'AND "hospital_address".city_id IN (?)',
       "ClinicLocation",
       "Hospital",
       city_ids
@@ -245,40 +248,40 @@ class Clinic < ActiveRecord::Base
     city_ids = cities.map{ |city| city.id }
     direct = joins(
       'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
-      'ON "clinics".id = "direct_clinic_location".clinic_id '\
-      'INNER JOIN "locations" AS "direct_location" '\
-      'ON "direct_clinic_location".id = "direct_location".locatable_id '\
-      'INNER JOIN "addresses" AS "direct_address" '\
-      'ON "direct_location".address_id = "direct_address".id '\
-      'INNER JOIN "clinic_specializations" '\
-      'ON "clinic_specializations".clinic_id = "clinics".id'
+        'ON "clinics".id = "direct_clinic_location".clinic_id '\
+        'INNER JOIN "locations" AS "direct_location" '\
+        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
+        'INNER JOIN "addresses" AS "direct_address" '\
+        'ON "direct_location".address_id = "direct_address".id '\
+        'INNER JOIN "clinic_specializations" '\
+        'ON "clinic_specializations".clinic_id = "clinics".id'
     ).where(
       '"direct_location".locatable_type = (?) '\
-      'AND "direct_address".city_id IN (?) '\
-      'AND "direct_location".hospital_in_id IS NULL '\
-      'AND "clinic_specializations".specialization_id = (?)',
+        'AND "direct_address".city_id IN (?) '\
+        'AND "direct_location".hospital_in_id IS NULL '\
+        'AND "clinic_specializations".specialization_id = (?)',
       "ClinicLocation",
       city_ids,
       specialization.id
     )
     in_hospital = joins(
       'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
-      'ON "clinics".id = "direct_clinic_location".clinic_id '\
-      'INNER JOIN "locations" AS "direct_location" '\
-      'ON "direct_clinic_location".id = "direct_location".locatable_id '\
-      'INNER JOIN "hospitals" '\
-      'ON "hospitals".id = "direct_location".hospital_in_id '\
-      'INNER JOIN "locations" AS "hospital_in_location" '\
-      'ON "hospitals".id = "hospital_in_location".locatable_id '\
-      'INNER JOIN "addresses" AS "hospital_address" '\
-      'ON "hospital_in_location".address_id = "hospital_address".id '\
-      'INNER JOIN "clinic_specializations" '\
-      'ON "clinic_specializations".clinic_id = "clinics".id'
+        'ON "clinics".id = "direct_clinic_location".clinic_id '\
+        'INNER JOIN "locations" AS "direct_location" '\
+        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
+        'INNER JOIN "hospitals" '\
+        'ON "hospitals".id = "direct_location".hospital_in_id '\
+        'INNER JOIN "locations" AS "hospital_in_location" '\
+        'ON "hospitals".id = "hospital_in_location".locatable_id '\
+        'INNER JOIN "addresses" AS "hospital_address" '\
+        'ON "hospital_in_location".address_id = "hospital_address".id '\
+        'INNER JOIN "clinic_specializations" '\
+        'ON "clinic_specializations".clinic_id = "clinics".id'
     ).where(
       '"direct_location".locatable_type = (?) '\
-      'AND "hospital_in_location".locatable_type = (?) '\
-      'AND "hospital_address".city_id IN (?) '\
-      'AND "clinic_specializations".specialization_id = (?)',
+        'AND "hospital_in_location".locatable_type = (?) '\
+        'AND "hospital_address".city_id IN (?) '\
+        'AND "clinic_specializations".specialization_id = (?)',
       "ClinicLocation",
       "Hospital",
       city_ids,
@@ -292,48 +295,48 @@ class Clinic < ActiveRecord::Base
 
     direct = joins(
       'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
-      'ON "clinics".id = "direct_clinic_location".clinic_id '\
-      'INNER JOIN "locations" AS "direct_location" '\
-      'ON "direct_clinic_location".id = "direct_location".locatable_id '\
-      'INNER JOIN "addresses" AS "direct_address" '\
-      'ON "direct_location".address_id = "direct_address".id '\
-      'INNER JOIN "focuses" '\
-      'ON "focuses".clinic_id = "clinics".id '\
-      'INNER JOIN "procedure_specializations" AS "ps1" '\
-      'ON "ps1".id = "focuses".procedure_specialization_id '\
-      'INNER JOIN "procedure_specializations" AS "ps2" '\
-      'ON "ps2".procedure_id = "ps1".procedure_id'
+        'ON "clinics".id = "direct_clinic_location".clinic_id '\
+        'INNER JOIN "locations" AS "direct_location" '\
+        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
+        'INNER JOIN "addresses" AS "direct_address" '\
+        'ON "direct_location".address_id = "direct_address".id '\
+        'INNER JOIN "focuses" '\
+        'ON "focuses".clinic_id = "clinics".id '\
+        'INNER JOIN "procedure_specializations" AS "ps1" '\
+        'ON "ps1".id = "focuses".procedure_specialization_id '\
+        'INNER JOIN "procedure_specializations" AS "ps2" '\
+        'ON "ps2".procedure_id = "ps1".procedure_id'
     ).where(
       '"direct_location".locatable_type = (?) '\
-      'AND "direct_address".city_id IN (?) '\
-      'AND "direct_location".hospital_in_id IS NULL '\
-      'AND "ps2".specialization_id = (?)',
+        'AND "direct_address".city_id IN (?) '\
+        'AND "direct_location".hospital_in_id IS NULL '\
+        'AND "ps2".specialization_id = (?)',
       "ClinicLocation",
       city_ids,
       specialization.id
     )
     in_hospital = joins(
       'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
-      'ON "clinics".id = "direct_clinic_location".clinic_id '\
-      'INNER JOIN "locations" AS "direct_location" '\
-      'ON "direct_clinic_location".id = "direct_location".locatable_id '\
-      'INNER JOIN "hospitals" '\
-      'ON "hospitals".id = "direct_location".hospital_in_id '\
-      'INNER JOIN "locations" AS "hospital_in_location" '\
-      'ON "hospitals".id = "hospital_in_location".locatable_id '\
-      'INNER JOIN "addresses" AS "hospital_address" '\
-      'ON "hospital_in_location".address_id = "hospital_address".id '\
-      'INNER JOIN "focuses" '\
-      'ON "focuses".clinic_id = "clinics".id '\
-      'INNER JOIN "procedure_specializations" AS "ps1" '\
-      'ON "ps1".id = "focuses".procedure_specialization_id '\
-      'INNER JOIN "procedure_specializations" AS "ps2" '\
-      'ON "ps2".procedure_id = "ps1".procedure_id'
+        'ON "clinics".id = "direct_clinic_location".clinic_id '\
+        'INNER JOIN "locations" AS "direct_location" '\
+        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
+        'INNER JOIN "hospitals" '\
+        'ON "hospitals".id = "direct_location".hospital_in_id '\
+        'INNER JOIN "locations" AS "hospital_in_location" '\
+        'ON "hospitals".id = "hospital_in_location".locatable_id '\
+        'INNER JOIN "addresses" AS "hospital_address" '\
+        'ON "hospital_in_location".address_id = "hospital_address".id '\
+        'INNER JOIN "focuses" '\
+        'ON "focuses".clinic_id = "clinics".id '\
+        'INNER JOIN "procedure_specializations" AS "ps1" '\
+        'ON "ps1".id = "focuses".procedure_specialization_id '\
+        'INNER JOIN "procedure_specializations" AS "ps2" '\
+        'ON "ps2".procedure_id = "ps1".procedure_id'
     ).where(
       '"direct_location".locatable_type = (?) '\
-      'AND "hospital_in_location".locatable_type = (?) '\
-      'AND "hospital_address".city_id IN (?) '\
-      'AND "ps2".specialization_id = (?)',
+        'AND "hospital_in_location".locatable_type = (?) '\
+        'AND "hospital_address".city_id IN (?) '\
+        'AND "ps2".specialization_id = (?)',
       "ClinicLocation",
       "Hospital",
       city_ids,

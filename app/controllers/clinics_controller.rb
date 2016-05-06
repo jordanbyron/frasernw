@@ -31,8 +31,8 @@ class ClinicsController < ApplicationController
 
   def new
     @form_modifier = ClinicFormModifier.new(:new, current_user)
-    # specialization passed in to facilitate javascript "checking off" of starting
-    # speciality, since build below doesn't seem to work
+    # specialization passed in to facilitate javascript "checking off" of
+    # starting speciality, since build below doesn't seem to work
     @specialization = Specialization.find(params[:specialization_id])
     @clinic = Clinic.new
     @clinic.clinic_specializations.build(specialization_id: @specialization.id)
@@ -69,7 +69,8 @@ class ClinicsController < ApplicationController
           value == "1"
         end.each do |checkbox_key, value|
           focus = Focus.find_or_create_by(
-            clinic_id: @clinic.id, procedure_specialization_id: checkbox_key
+            clinic_id: @clinic.id,
+            procedure_specialization_id: checkbox_key
           )
           focus.investigation = params[:focuses_investigations][checkbox_key]
           if params[:focuses_waittime].present?
@@ -87,11 +88,10 @@ class ClinicsController < ApplicationController
             procedure.
             procedure_specializations.
             reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.
-            map{ |ps2|
-              Focus.find_or_create_by(
-                clinic_id: @clinic.id, procedure_specialization_id: ps2.id
-              )
-            }.
+            map{ |ps2| Focus.find_or_create_by(
+              clinic_id: @clinic.id,
+              procedure_specialization_id: ps2.id
+            ) }.
             map{ |f| f.save }
         end
       end

@@ -1,9 +1,9 @@
 module ProceduresHelper
 
   def procedure_ancestry_options_limited(items, skip_tree, &block)
-    return procedure_ancestry_options_limited(items, skip_tree){ |i|
+    return procedure_ancestry_options_limited(items, skip_tree) do |i|
       "#{'-' * i.depth} #{i.procedure.name}"
-    } unless block_given?
+    end unless block_given?
 
     result = []
     items.map do |item, sub_items|

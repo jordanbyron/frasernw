@@ -68,13 +68,13 @@ class City < ActiveRecord::Base
   def self.in_progress_for_division_and_specialization(division, specialization)
     joins(
       'INNER JOIN "division_cities" '\
-      'ON "cities".id = "division_cities".city_id '\
-      'INNER JOIN "specialization_options" '\
-      'ON "specialization_options".division_id = "division_cities".division_id'
+        'ON "cities".id = "division_cities".city_id '\
+        'INNER JOIN "specialization_options" '\
+        'ON "specialization_options".division_id = "division_cities".division_id'
     ).where(
       '"division_cities".division_id = (?) '\
-      'AND "specialization_options".specialization_id = (?) '\
-      'AND "specialization_options".in_progress = (?)',
+        'AND "specialization_options".specialization_id = (?) '\
+        'AND "specialization_options".in_progress = (?)',
       division.id,
       specialization.id,
       true
@@ -84,19 +84,19 @@ class City < ActiveRecord::Base
   def self.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
     joins(
       'INNER JOIN "division_referral_cities" '\
-      'ON "division_referral_cities".city_id = "cities".id '\
-      'INNER JOIN "division_referral_city_specializations" '\
-      'ON "division_referral_cities".id = "division_referral_city_specializations"'\
-      '.division_referral_city_id '\
-      'INNER JOIN "specialization_options" '\
-      'ON "specialization_options".'\
-      'division_id = "division_referral_cities".division_id '\
-      'AND "specialization_options".'\
-      'specialization_id = "division_referral_city_specializations".specialization_id'
+        'ON "division_referral_cities".city_id = "cities".id '\
+        'INNER JOIN "division_referral_city_specializations" '\
+        'ON "division_referral_cities".id = "division_referral_city_specializations"'\
+        '.division_referral_city_id '\
+        'INNER JOIN "specialization_options" '\
+        'ON "specialization_options".'\
+        'division_id = "division_referral_cities".division_id '\
+        'AND "specialization_options".'\
+        'specialization_id = "division_referral_city_specializations".specialization_id'
     ).where(
       '"division_referral_city_specializations".specialization_id = (?) '\
-      'AND "division_referral_cities".division_id = (?) '\
-      'AND "specialization_options".in_progress = (?)',
+        'AND "division_referral_cities".division_id = (?) '\
+        'AND "specialization_options".in_progress = (?)',
       specialization.id,
       division.id,
       false
@@ -107,12 +107,12 @@ class City < ActiveRecord::Base
     Rails.cache.fetch([user.cache_key, specialization.cache_key], expires_in: 7.days) do
       per_user = joins(
         'INNER JOIN "user_cities" '\
-        'ON "user_cities".city_id = "cities".id '\
-        'INNER JOIN "user_city_specializations" '\
-        'ON "user_cities".id = "user_city_specializations".user_city_id'
+          'ON "user_cities".city_id = "cities".id '\
+          'INNER JOIN "user_city_specializations" '\
+          'ON "user_cities".id = "user_city_specializations".user_city_id'
       ).where(
         '"user_city_specializations".specialization_id = (?) '\
-        'AND "user_cities".user_id = (?)',
+          'AND "user_cities".user_id = (?)',
         specialization.id,
         user.id
       )
@@ -120,15 +120,15 @@ class City < ActiveRecord::Base
 
       per_specialty = joins(
         'INNER JOIN "division_referral_cities" '\
-        'ON "division_referral_cities".city_id = "cities".id '\
-        'INNER JOIN "division_referral_city_specializations" '\
-        'ON "division_referral_cities".id = "division_referral_city_specializations".'\
-        'division_referral_city_id '\
-        'INNER JOIN "division_users" '\
-        'ON "division_users".division_id = "division_referral_cities".division_id'
+          'ON "division_referral_cities".city_id = "cities".id '\
+          'INNER JOIN "division_referral_city_specializations" '\
+          'ON "division_referral_cities".id = "division_referral_city_specializations".'\
+          'division_referral_city_id '\
+          'INNER JOIN "division_users" '\
+          'ON "division_users".division_id = "division_referral_cities".division_id'
       ).where(
         '"division_referral_city_specializations".specialization_id = (?) '\
-        'AND "division_users".user_id = (?)',
+          'AND "division_users".user_id = (?)',
         specialization.id,
         user.id
       )
@@ -138,9 +138,9 @@ class City < ActiveRecord::Base
 
       divisional = joins(
         'INNER JOIN "division_cities" '\
-        'ON "division_cities".city_id = "cities".id '\
-        'INNER JOIN "division_users" '\
-        'ON "division_users".division_id = "division_cities".division_id'
+          'ON "division_cities".city_id = "cities".id '\
+          'INNER JOIN "division_users" '\
+          'ON "division_users".division_id = "division_cities".division_id'
       ).where(
         '"division_users".user_id = (?)',
         user.id

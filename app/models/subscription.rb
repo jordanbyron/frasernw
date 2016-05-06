@@ -32,19 +32,19 @@ class Subscription < ActiveRecord::Base
   scope :resources, -> {where(classification: resource_update)}
   scope :news,      -> {where(classification: news_update)}
 
-  scope :in_divisions, lambda { |division|
+  scope :in_divisions, lambda do |division|
     joins(:divisions).
       where("subscription_divisions.division_id" => Array.wrap(division).
       map(&:id)).
       uniq
-  }
-  scope :in_sc_categories, lambda { |sc_category|
+  end
+  scope :in_sc_categories, lambda do |sc_category|
     joins(:subscription_sc_categories).
       where(subscription_sc_categories: {
         sc_category_id: Array.wrap(sc_category).map(&:id)
       } ).
       uniq
-  }
+  end
 
 
   accepts_nested_attributes_for :divisions

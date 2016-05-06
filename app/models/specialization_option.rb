@@ -32,7 +32,7 @@ class SpecializationOption < ActiveRecord::Base
     specialization_ids = specializations.map{ |s| s.id }
     where(
       "specialization_options.division_id IN (?) "\
-      "AND specialization_options.specialization_id IN (?)",
+        "AND specialization_options.specialization_id IN (?)",
       division_ids,
       specialization_ids
     )
@@ -43,8 +43,8 @@ class SpecializationOption < ActiveRecord::Base
     specialization_ids = specializations.map{ |s| s.id }
     where(
       "specialization_options.division_id IN (?) "\
-      "AND specialization_options.specialization_id IN (?) "\
-      "AND in_progress = (?)",
+        "AND specialization_options.specialization_id IN (?) "\
+        "AND in_progress = (?)",
       division_ids,
       specialization_ids,
       false

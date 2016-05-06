@@ -21,9 +21,9 @@ namespace :pathways do
     puts "--------------- Hospitals ---------------"
 
     Hospital.in_divisions([vancouverHiddenDivision]).each do |hospital|
-      other_hospitals = Hospital.where(name: hospital.name).reject{ |h|
+      other_hospitals = Hospital.where(name: hospital.name).reject do |h|
         !h.city || (h.city.id == vancouverHiddenCity.id)
-      }
+      end
       if other_hospitals.length >= 1
 
         if other_hospitals.length >= 2
@@ -37,15 +37,17 @@ namespace :pathways do
 
         hospital.locations_in.each do |location|
 
-          if (location.locatable.present? &&
-            (location.locatable_type == "ClinicLocation") &&
-            location.locatable.clinic.present? &&
-            (Clinic.where(name: location.locatable.clinic.name).reject{ |other_clinic|
-              (other_clinic.id == location.locatable.clinic.id) ||
-              (other_clinic.locations.reject{ |l|
-                l.blank? || l.city.blank? || (l.city.id == vancouverHiddenCity.id)
-              }.length == 0)
-            }.length >= 1))
+          if (
+            location.locatable.present? &&
+              (location.locatable_type == "ClinicLocation") &&
+              location.locatable.clinic.present? &&
+              (Clinic.where(name: location.locatable.clinic.name).reject do |other_clinic|
+                (other_clinic.id == location.locatable.clinic.id) ||
+                (other_clinic.locations.reject{ |l|
+                  l.blank? || l.city.blank? || (l.city.id == vancouverHiddenCity.id)
+                }.length == 0)
+              end.length >= 1)
+            )
 
             puts "- leaving duplicate clinic #{location.locatable.clinic.name} in "\
               "Vancouver (Hidden) to be merged later"
@@ -74,15 +76,17 @@ namespace :pathways do
         # if there are clinics attached that are duplicates, move them back into
         # Vancouver (Hidden) so they will merge with their non-duplicate below
         hospital.locations_in.each do |location|
-          if (location.locatable.present? &&
-            (location.locatable_type == "ClinicLocation") &&
-            location.locatable.clinic.present? &&
-            (Clinic.where(name: location.locatable.clinic.name).reject{ |other_clinic|
-              (other_clinic.id == location.locatable.clinic.id) ||
-              (other_clinic.locations.reject{ |l|
-                l.blank? || l.city.blank? || (l.city.id == vancouverHiddenCity.id)
-              }.length == 0)
-            }.length >= 1))
+          if (
+            location.locatable.present? &&
+              (location.locatable_type == "ClinicLocation") &&
+              location.locatable.clinic.present? &&
+              (Clinic.where(name: location.locatable.clinic.name).reject do |other_clinic|
+                (other_clinic.id == location.locatable.clinic.id) ||
+                (other_clinic.locations.reject{ |l|
+                  l.blank? || l.city.blank? || (l.city.id == vancouverHiddenCity.id)
+                }.length == 0)
+              end.length >= 1)
+          )
             puts "- migrating clinic #{clinic.name} back to Vancouver (Hidden) "\
               "to merge later"
             location.hospital_in = nil
@@ -97,20 +101,20 @@ namespace :pathways do
 
     Clinic.in_divisions([vancouverHiddenDivision]).each do |clinic|
 
-      if clinic.locations.reject{ |l|
+      if clinic.locations.reject do |l|
         l.blank? || l.city.blank? || (l.city.id == vancouverHiddenCity.id)
-      }.length > 0
+      end.length > 0
         puts "ERROR: clinic #{clinic.name} that we are migrating from has locations "\
-        "outside of Vancouver (Hidden)"
+          "outside of Vancouver (Hidden)"
       end
 
       # possible other clinics are those that have the same name but have locations
       # outside of Vancouver (Hidden)
-      other_clinics = Clinic.where(name: clinic.name).reject{ |other_clinic|
-        (other_clinic.id == clinic.id) || (other_clinic.locations.reject{ |l|
+      other_clinics = Clinic.where(name: clinic.name).reject do |other_clinic|
+        (other_clinic.id == clinic.id) || (other_clinic.locations.reject do |l|
           l.blank? || l.city.blank? || (l.city.id == vancouverHiddenCity.id)
-        }.length == 0)
-      }
+        end.length == 0)
+      end
 
       if other_clinics.length >= 1
 
@@ -124,19 +128,19 @@ namespace :pathways do
 
         puts "Found duplicate clinic #{other_clinic.name}"
 
-        if other_clinic.locations.reject{ |l|
+        if other_clinic.locations.reject do |l|
           l.blank? || l.city.blank? || (l.city.id == vancouverHiddenCity.id)
-        }.length == 0
+        end.length == 0
           puts "ERROR: clinic #{other_clinic.name} that we are migrating to has no "\
             "valid locations"
         end
 
-        other_vancouver_clinic_locations = other_clinic.clinic_locations.reject{ |cl|
+        other_vancouver_clinic_locations = other_clinic.clinic_locations.reject do |cl|
           cl.blank? ||
           cl.location.blank? ||
           cl.location.city.blank? ||
           (cl.location.city.id != vancouverCity.id)
-        }
+        end
 
         if other_vancouver_clinic_locations.length == 0
           puts "ERROR: clinic #{other_clinic.name} that we are migrating to has no "\
@@ -146,12 +150,12 @@ namespace :pathways do
 
         other_vancouver_clinic_location = other_vancouver_clinic_locations.first
 
-        clinic.clinic_locations.reject{ |cl|
+        clinic.clinic_locations.reject do |cl|
           cl.blank? ||
           cl.location.blank? ||
           cl.location.city.blank? ||
           (cl.location.city.id != vancouverHiddenCity.id)
-        }.each do |clinic_location|
+        end.each do |clinic_location|
 
           #move any specialists and offices in this clinic location to the duplicate
           clinic_location.location.locations_in.each do |location_in|
@@ -203,13 +207,13 @@ namespace :pathways do
 
       puts specialist.name
 
-      specialist.specialist_offices.reject{ |so|
+      specialist.specialist_offices.reject do |so|
         so.blank? ||
         so.office.blank? ||
         so.office.location.blank? ||
         so.office.location.city.blank? ||
         (so.office.location.city.id != vancouverHiddenCity.id)
-      }.each do |specialist_office|
+      end.each do |specialist_office|
 
         if specialist_office.office.location.in_hospital?
           puts "ERROR: specialist #{specialist.name} at "\

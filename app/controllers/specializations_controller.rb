@@ -30,7 +30,8 @@ class SpecializationsController < ApplicationController
       Division.all.each do |division|
         puts division.name
         so = SpecializationOption.find_or_create_by(
-          specialization_id: @specialization.id, division_id: division.id
+          specialization_id: @specialization.id,
+          division_id: division.id
         )
         so.owner =
           User.find_by_id(params[:owner]["#{division.id}"]) ||
@@ -75,11 +76,10 @@ class SpecializationsController < ApplicationController
 
   def edit
     @specialization = Specialization.find(params[:id])
-    Division.all.each { |division|
-      SpecializationOption.find_or_create_by(
-        specialization_id: params[:id], division_id: division.id
-      )
-    }
+    Division.all.each { |division| SpecializationOption.find_or_create_by(
+      specialization_id: params[:id],
+      division_id: division.id
+    ) }
     render layout: 'ajax' if request.headers['X-PJAX']
   end
 

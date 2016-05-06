@@ -197,7 +197,8 @@ class UsersController < ApplicationController
           #parent city was checked off
           specializations.each do |specializations_id, set|
             UserCitySpecialization.find_or_create_by(
-              user_city_id: user_city.id, specialization_id: specializations_id
+              user_city_id: user_city.id,
+              specialization_id: specializations_id
             )
           end
         end

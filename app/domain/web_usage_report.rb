@@ -83,7 +83,7 @@ class WebUsageReport < ServiceObject
       [
         "#{attached_referent.try(:name)} - #{row[:record][:filename]}",
         "/#{row[:record][:referrableType].pluralize.downcase}"\
-        "/#{row[:record][:referrableId]}"
+          "/#{row[:record][:referrableId]}"
       ]
     end,
     specializations: Proc.new do |row|

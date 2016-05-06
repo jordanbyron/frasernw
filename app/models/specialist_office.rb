@@ -51,19 +51,17 @@ class SpecialistOffice < ActiveRecord::Base
   end
 
   def self.refresh_cached_all_formatted_for_user_form
-    Rails.cache.
-      write(
-        [name, "all_specialist_office_formatted_for_user_form"],
-        self.all_formatted_for_user_form
-      )
+    Rails.cache.write(
+      [name, "all_specialist_office_formatted_for_user_form"],
+      self.all_formatted_for_user_form
+    )
   end
 
   def self.cached_all_formatted_for_user_form
-    Rails.cache.
-      fetch(
-        [name, "all_specialist_office_formatted_for_user_form"],
-        expires_in: 6.hours
-      ) { self.all_formatted_for_user_form }
+    Rails.cache.fetch(
+      [name, "all_specialist_office_formatted_for_user_form"],
+      expires_in: 6.hours
+    ) { self.all_formatted_for_user_form }
   end
 
   def self.cached_find(id)
@@ -71,17 +69,17 @@ class SpecialistOffice < ActiveRecord::Base
   end
 
   def flush_cache
-    Rails.cache.
-      delete([self.class.name, "all_specialist_office_formatted_for_user_form"])
+    Rails.cache.delete(
+      [self.class.name, "all_specialist_office_formatted_for_user_form"]
+    )
     Rails.cache.delete([self.class.name, self.id])
   end
 
   def self.refresh_cache
-    Rails.cache.
-      write(
-        [name, "all_specialist_office_formatted_for_user_form"],
-        self.all_formatted_for_user_form
-      )
+    Rails.cache.write(
+      [name, "all_specialist_office_formatted_for_user_form"],
+      self.all_formatted_for_user_form
+    )
     SpecialistOffice.all.each do |office|
       Rails.cache.write([office.class.name, office.id], SpecialistOffice.find(office.id))
     end

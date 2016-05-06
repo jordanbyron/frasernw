@@ -701,8 +701,8 @@ module VersionsHelper
     begin
       I18n.translate(
         "#{version.item_type.constantize.i18n_scope}.values."\
-        "#{version.item_type.constantize.model_name.i18n_key}."\
-        "#{attribute}.#{changeset}",
+          "#{version.item_type.constantize.model_name.i18n_key}."\
+          "#{attribute}.#{changeset}",
         raise: I18n::MissingTranslationData
       )
     rescue I18n::MissingTranslationData

@@ -33,12 +33,15 @@ class ScItemsController < ApplicationController
       params[:procedure_specialization].each do |ps_id, set|
         specialization = ProcedureSpecialization.find(ps_id).specialization
         sc_item_specialization = ScItemSpecialization.find_by(
-          sc_item_id: @sc_item.id, specialization_id: specialization.id
+          sc_item_id: @sc_item.id,
+          specialization_id: specialization.id
         )
-        ScItemSpecializationProcedureSpecialization.create(
-          sc_item_specialization_id: sc_item_specialization.id,
-          procedure_specialization_id: ps_id
-        ) if sc_item_specialization.present?
+        if sc_item_specialization.present?
+          ScItemSpecializationProcedureSpecialization.create(
+            sc_item_specialization_id: sc_item_specialization.id,
+            procedure_specialization_id: ps_id
+          )
+        end
       end
       create_sc_item_activity
       redirect_to sc_item_path(@sc_item), notice: "Successfully created content item."
@@ -68,7 +71,8 @@ class ScItemsController < ApplicationController
       params[:specialization].each do |specialization_id, set|
         #add new specializations
         ScItemSpecialization.find_or_create_by(
-          sc_item_id: @sc_item.id, specialization_id: specialization_id
+          sc_item_id: @sc_item.id,
+          specialization_id: specialization_id
         )
       end
       @sc_item.sc_item_specialization_procedure_specializations.each do |sisps|
@@ -82,7 +86,8 @@ class ScItemsController < ApplicationController
         #add new procedure specializations
         specialization = ProcedureSpecialization.find(ps_id).specialization
         sc_item_specialization = ScItemSpecialization.find_by(
-          sc_item_id: @sc_item.id, specialization_id: specialization.id
+          sc_item_id: @sc_item.id,
+          specialization_id: specialization.id
         )
         if sc_item_specialization.present?
           #parent specialization was checked off

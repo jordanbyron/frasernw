@@ -149,14 +149,14 @@ class AddConsultsToSpecialists < ActiveRecord::Migration
 	  h_id = item['h']
 
 	  ps_office =
-		ProcedureSpecialization.find_by(procedure_id: o_id, specialization_id: s_id)
+			ProcedureSpecialization.find_by(procedure_id: o_id, specialization_id: s_id)
 	  ps_hospital =
-		ProcedureSpecialization.find_by(procedure_id: h_id, specialization_id: s_id)
+			ProcedureSpecialization.find_by(procedure_id: h_id, specialization_id: s_id)
 	  s = Specialization.find(s_id)
 
 	  say(
 		  "Adding #{ps_office.procedure.name} and #{ps_hospital.procedure.name} to "\
-      "specialists in #{s.name}"
+      	"specialists in #{s.name}"
     )
 
 	  #make the office procedures focused in this specialization
@@ -171,7 +171,8 @@ class AddConsultsToSpecialists < ActiveRecord::Migration
 		#make specialists do office procedures if they have an office
       if sp.specialist_offices.reject{ |so| so.empty? }.length > 0
 		    Capacity.find_or_create_by(
-          specialist_id: sp.id, procedure_specialization_id: ps_office.id
+          specialist_id: sp.id,
+          procedure_specialization_id: ps_office.id
         )
       end
 		#make specialist do hospital procedures if they have hospital priviledges.

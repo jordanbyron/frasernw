@@ -25,7 +25,8 @@ class UpdateSpecialistCapacities
     params[:capacities_mapped].each do |checkbox_key, value|
       if value == "1"
         capacity = Capacity.find_or_create_by(
-          specialist_id: specialist.id, procedure_specialization_id: checkbox_key
+          specialist_id: specialist.id,
+          procedure_specialization_id: checkbox_key
         )
         capacity.investigation = params[:capacities_investigations][checkbox_key]
         if params[:capacities_waittime].present?
@@ -43,7 +44,8 @@ class UpdateSpecialistCapacities
           procedure.procedure_specializations.
           reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.
           map{ |ps2| Capacity.find_or_create_by(
-            specialist_id: specialist.id, procedure_specialization_id: ps2.id
+            specialist_id: specialist.id,
+            procedure_specialization_id: ps2.id
           ) }.
           map{ |c| c.save }
       end

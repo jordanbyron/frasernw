@@ -60,9 +60,9 @@ class Hospital < ActiveRecord::Base
 
   def self.all_real
   # used for reporting, remove if Vancouver (hidden) artifacts are removed
-    all.reject{ |hospital|
+    all.reject do |hospital|
       hospital.divisions.include?(Division.find_by_name("Vancouver (Hidden)"))
-    }
+    end
   end
 
   def self.includes_location_data
@@ -73,7 +73,7 @@ class Hospital < ActiveRecord::Base
     city_ids = cities.map{ |city| city.id }
     joins(
       'INNER JOIN "locations" ON "hospitals".id = "locations".locatable_id '\
-      'INNER JOIN "addresses" ON "locations".address_id = "addresses".id'
+        'INNER JOIN "addresses" ON "locations".address_id = "addresses".id'
     ).where(
       '"locations".locatable_type = (?) AND "addresses".city_id in (?)',
       "Hospital",

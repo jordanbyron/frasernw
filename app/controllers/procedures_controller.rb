@@ -23,11 +23,12 @@ class ProceduresController < ApplicationController
 
   def new
     @procedure = Procedure.new(params[:id])
-    Specialization.all.each { |specialization|
+    Specialization.all.each do |specialization|
       ProcedureSpecialization.find_or_create_by(
-        procedure_id: params[:id], specialization_id: specialization.id
+        procedure_id: params[:id],
+        specialization_id: specialization.id
       )
-    }
+    end
     @specializations = [Specialization.find(params[:specialization_id])]
     render layout: 'ajax' if request.headers['X-PJAX']
   end
@@ -44,11 +45,12 @@ class ProceduresController < ApplicationController
   def edit
     @procedure = Procedure.find(params[:id])
     @specializations = @procedure.specializations
-    Specialization.all.each { |specialization|
+    Specialization.all.each do |specialization|
       ProcedureSpecialization.find_or_create_by(
-        procedure_id: params[:id], specialization_id: specialization.id
+        procedure_id: params[:id],
+        specialization_id: specialization.id
       )
-    }
+    end
     render layout: 'ajax' if request.headers['X-PJAX']
   end
 
@@ -56,11 +58,11 @@ class ProceduresController < ApplicationController
     @procedure = Procedure.find(params[:id])
     ExpireFragment.call procedure_path(@procedure)
     params[:procedure][:all_procedure_specializations_attributes].
-      each{ |so_key, so_value|
+      each do |so_key, so_value|
         so_value[:mapped] = 0 if so_value[:mapped].blank?
         so_value[:specialist_wait_time] = 0 if so_value[:specialist_wait_time].blank?
         so_value[:clinic_wait_time] = 0 if so_value[:clinic_wait_time].blank?
-      }
+      end
 
     if @procedure.update_attributes(params[:procedure])
       Denormalized.delay.regenerate(:procedures)

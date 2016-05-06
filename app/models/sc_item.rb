@@ -106,14 +106,14 @@ class ScItem < ActiveRecord::Base
     division_ids = divisions.map{ |d| d.id }
     owned = joins(:sc_item_specializations).where(
       '"sc_item_specializations"."specialization_id" = (?) '\
-      'AND "sc_items"."division_id" IN (?)',
+        'AND "sc_items"."division_id" IN (?)',
       specialization.id,
       division_ids
     )
     shared = joins(:sc_item_specializations, :division_display_sc_items).where(
       '"sc_item_specializations"."specialization_id" = (?) '\
-      'AND "division_display_sc_items"."division_id" in (?) '\
-      'AND "sc_items"."shareable" = (?)',
+        'AND "division_display_sc_items"."division_id" in (?) '\
+        'AND "sc_items"."shareable" = (?)',
       specialization.id,
       division_ids,
       true
@@ -129,11 +129,11 @@ class ScItem < ActiveRecord::Base
       :procedure_specializations
     ] ).where(
       'sc_item_specializations.id = sc_item_specialization_procedure_specializations.'\
-      'sc_item_specialization_id '\
-      'AND sc_item_specialization_procedure_specializations.procedure_specialization_id'\
-      ' = procedure_specializations.id '\
-      'AND procedure_specializations.procedure_id = (?) '\
-      'AND "sc_items"."division_id" IN (?)',
+        'sc_item_specialization_id '\
+        'AND sc_item_specialization_procedure_specializations.procedure_specialization_id'\
+        ' = procedure_specializations.id '\
+        'AND procedure_specializations.procedure_id = (?) '\
+        'AND "sc_items"."division_id" IN (?)',
       procedure.id,
       division_ids
     )
@@ -144,12 +144,12 @@ class ScItem < ActiveRecord::Base
       :division_display_sc_items
     ] ).where(
       'sc_item_specializations.id = sc_item_specialization_procedure_specializations.'\
-      'sc_item_specialization_id '\
-      'AND sc_item_specialization_procedure_specializations.procedure_specialization_id'\
-      ' = procedure_specializations.id '\
-      'AND procedure_specializations.procedure_id = (?) '\
-      'AND "division_display_sc_items"."division_id" in (?) '\
-      'AND "sc_items"."shareable" = (?)',
+        'sc_item_specialization_id '\
+        'AND sc_item_specialization_procedure_specializations.procedure_specialization_id'\
+        ' = procedure_specializations.id '\
+        'AND procedure_specializations.procedure_id = (?) '\
+        'AND "division_display_sc_items"."division_id" in (?) '\
+        'AND "sc_items"."shareable" = (?)',
       procedure.id,
       division_ids,
       true
@@ -195,10 +195,10 @@ class ScItem < ActiveRecord::Base
     division_ids = divisions.map{ |d| d.id }
     joins(
       'INNER JOIN "division_display_sc_items" '\
-      'ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"'
+        'ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"'
     ).where(
       '"division_display_sc_items"."division_id" in (?) '\
-      'AND "sc_items"."shareable" = (?)',
+        'AND "sc_items"."shareable" = (?)',
       division_ids,
       true
     )

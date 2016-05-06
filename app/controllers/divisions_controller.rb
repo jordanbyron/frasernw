@@ -41,7 +41,8 @@ class DivisionsController < ApplicationController
         #add new specializations
         params[:local_referral_cities].each do |city_id, specializations|
           division_referral_city = DivisionReferralCity.find_by(
-            division_id: @division.id, city_id: city_id
+            division_id: @division.id,
+            city_id: city_id
           )
           specializations.each do |specialization_id, checkbox_val|
             DivisionReferralCitySpecialization.find_or_create_by(
@@ -86,7 +87,8 @@ class DivisionsController < ApplicationController
         end
         params[:local_referral_cities].each do |city_id, specialization_ids|
           division_referral_city = DivisionReferralCity.find_by(
-            division_id: @division.id, city_id: city_id
+            division_id: @division.id,
+            city_id: city_id
           )
           specialization_ids.each do |specialization_id, checkbox_val|
             DivisionReferralCitySpecialization.find_or_create_by(

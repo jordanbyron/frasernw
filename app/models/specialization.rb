@@ -71,7 +71,7 @@ class Specialization < ActiveRecord::Base
     division_ids = divisions.map{ |d| d.id }
     joins(:specialization_options).where(
       '"specialization_options"."division_id" IN (?) '\
-      'AND "specialization_options"."in_progress" = (?)',
+        'AND "specialization_options"."in_progress" = (?)',
       division_ids,
       true
     )
@@ -81,7 +81,7 @@ class Specialization < ActiveRecord::Base
     division_ids = divisions.map{ |d| d.id }
     joins(:specialization_options).where(
       '"specialization_options"."division_id" IN (?) '\
-      'AND "specialization_options"."in_progress" = (?)',
+        'AND "specialization_options"."in_progress" = (?)',
       division_ids,
       false
     )
@@ -91,7 +91,7 @@ class Specialization < ActiveRecord::Base
     division_ids = divisions.map{ |d| d.id }
     joins(:specialization_options).where(
       '"specialization_options"."division_id" IN (?) '\
-      'AND "specialization_options"."is_new" = (?)',
+        'AND "specialization_options"."is_new" = (?)',
       division_ids,
       true
     )

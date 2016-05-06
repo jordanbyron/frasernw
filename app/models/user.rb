@@ -214,10 +214,9 @@ class User < ActiveRecord::Base
   end
 
   def self.all_user_division_groups_cached
-    Rails.cache.
-      fetch("all_user_division_groups", expires_in: 6.hours) {
+    Rails.cache.fetch("all_user_division_groups", expires_in: 6.hours) do
         self.all_user_division_groups
-      }
+      end
   end
 
   def self.division_groups_for(*divisions)
@@ -305,10 +304,9 @@ class User < ActiveRecord::Base
   def owns(specializations)
     does_own = false
     specializations.each do |specialization|
-      does_own |=
-        SpecializationOption.
-          find_by(specialization_id: specialization.id, owner_id: self.id).
-          present?
+      does_own |= SpecializationOption.
+        find_by(specialization_id: specialization.id, owner_id: self.id).
+        present?
     end
     does_own
   end
@@ -323,7 +321,10 @@ class User < ActiveRecord::Base
     users = []
     CSV.foreach(file.path) do |row|
       user = User.new(
-        name: row[0], divisions: divisions, type_mask: type_mask, role: role
+        name: row[0],
+        divisions: divisions,
+        type_mask: type_mask,
+        role: role
       )
       if user.save validate: false #so we can avoid setting up with emails or passwords
         users << user

@@ -28,7 +28,7 @@ class Address < ActiveRecord::Base
   has_many :clinic_locations_in_hospitals,
     -> { where(
       '"clinic_locations_in_hospitals_offices_in_clinics_in_hospitals_join".'\
-      '"locatable_type" = ?',
+        '"locatable_type" = ?',
       "ClinicLocation"
     ) },
     through: :hospitals,

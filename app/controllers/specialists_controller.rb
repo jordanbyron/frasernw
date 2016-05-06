@@ -33,7 +33,7 @@ class SpecialistsController < ApplicationController
     # speciality, since build below doesn't seem to work
     @specialization = Specialization.find(params[:specialization_id])
     @specialist = Specialist.new
-    @specialist.specialist_specializations.build( specialization_id: @specialization.id )
+    @specialist.specialist_specializations.build(specialization_id: @specialization.id)
 
     BuildTeleservices.call(provider: @specialist)
     build_specialist_offices
@@ -75,11 +75,10 @@ class SpecialistsController < ApplicationController
             procedure_specialization.
             procedure.procedure_specializations.
             reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.
-            map{ |ps2|
-              Capacity.find_or_create_by(
-                specialist_id: @specialist.id, procedure_specialization_id: ps2.id
-              )
-            }.
+            map{ |ps2| Capacity.find_or_create_by(
+              specialist_id: @specialist.id,
+              procedure_specialization_id: ps2.id
+            ) }.
             map{ |c| c.save }
         end
       end
