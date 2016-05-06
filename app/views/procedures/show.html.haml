@@ -7,19 +7,19 @@
 
 %ul#specialties-menu
   %li.dropdown
-    %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
+    %a.specialties-dropdown-toggle{"href": "javascript:void(0)"}
       All Specialties
       %b.caret
   - if procedure_specializations.length > 2
     %li.subsequent.specialty
-      %a.tt#tt_more_specialties{"href" => "javascript:void(0)", "onclick" => "$('#tt_more_specialties').tooltip('toggle')", "title" => "<ul class='specialties'>#{procedure_specializations.map{|ps| "<li>#{link_to ps.specialization.name, ps.specialization, :class => ps.specialization.fully_in_progress_for_divisions(current_user.as_divisions) ? 'in-progress ajax' : 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{procedure_specializations.first(2).collect{ |ps| ps.specialization.name }.join(', ')}..."
+      %a.tt#tt_more_specialties{"href": "javascript:void(0)", "onclick": "$('#tt_more_specialties').tooltip('toggle')", "title": "<ul class='specialties'>#{procedure_specializations.map{|ps| "<li>#{link_to ps.specialization.name, ps.specialization, class: ps.specialization.fully_in_progress_for_divisions(current_user.as_divisions) ? 'in-progress ajax' : 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{procedure_specializations.first(2).collect{ |ps| ps.specialization.name }.join(', ')}..."
   - else
     %li.subsequent.specialty
-      = "#{procedure_specializations.collect{ |ps| "#{link_to ps.specialization.name, ps.specialization, :class => ps.specialization.fully_in_progress_for_divisions(current_user.as_divisions) ? 'in-progress ajax' : 'ajax'} #{"<span class='new'>new</span>".html_safe if ps.specialization.new_for_divisions(current_user.as_divisions)}" }.to_sentence}".html_safe
+      = "#{procedure_specializations.collect{ |ps| "#{link_to ps.specialization.name, ps.specialization, class: ps.specialization.fully_in_progress_for_divisions(current_user.as_divisions) ? 'in-progress ajax' : 'ajax'} #{"<span class='new'>new</span>".html_safe if ps.specialization.new_for_divisions(current_user.as_divisions)}" }.to_sentence}".html_safe
   - if procedure_specialization.parent.present? && procedure_specialization.parent.parent.present? && procedure_specialization.parent.parent.procedure.present?
-    %li.subsequent.grandparent= link_to procedure_specialization.parent.parent.procedure.name, procedure_specialization.parent.parent.procedure, :class => 'ajax'
+    %li.subsequent.grandparent= link_to procedure_specialization.parent.parent.procedure.name, procedure_specialization.parent.parent.procedure, class: 'ajax'
   - if procedure_specialization.parent.present? && procedure_specialization.parent.procedure.present?
-    %li.subsequent.parent= link_to procedure_specialization.parent.procedure.name, procedure_specialization.parent.procedure, :class => 'ajax'
+    %li.subsequent.parent= link_to procedure_specialization.parent.procedure.name, procedure_specialization.parent.procedure, class: 'ajax'
   %li.subsequent= @procedure.name
 
 = render 'partials/specialization_dropdown_menu'
@@ -39,6 +39,6 @@
 .content-wrapper
   %p.admin.btn-group
     - if can? :update, @procedure
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialty", edit_specialization_path(@procedure), :class => "btn ajax")
+      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Area of Practice", edit_procedure_path(@procedure), class: "btn ajax")
     - if can? :destroy, @procedure
-      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Specialty", @procedure, :data => { :confirm => "Delete #{@procedure.name}?" }, :method => :delete, :class => "btn")
+      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Area of Practice", @procedure, data: { confirm: "Delete #{@procedure.name}?" }, method: :delete, class: "btn")

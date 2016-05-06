@@ -59,6 +59,8 @@
     = f.input :is_internal_medicine,
       label: "Show 'Internal Medicine' Tag",
       hint: "Please only use this tag when linking an Internal Medicine specialist to another specialty in which they do not have a fellowship."
+    = f.input :sees_only_children,
+      label: "Does not see adult patients"
   .no-print
     = f.association :specializations,
       as: :check_boxes,
