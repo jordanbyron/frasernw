@@ -203,7 +203,17 @@ module Denormalized
           nestedProcedureIds: Denormalized.transform_nested_procedure_specializations(
             specialization.procedure_specializations.includes(:procedure).arrange
           ),
-          maskFiltersByReferralArea: specialization.mask_filters_by_referral_area
+          maskFiltersByReferralArea: specialization.mask_filters_by_referral_area,
+          newInDivisionIds: specialization.
+            specialization_options.
+            where(is_new: true).
+            map(&:division).
+            map(&:id),
+          inProgressInDivisionIds: specialization.
+            specialization_options.
+            where(in_progress: true).
+            map(&:division).
+            map(&:id)
         })
       end
     end,

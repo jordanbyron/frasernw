@@ -85,7 +85,8 @@ class Specialization < ActiveRecord::Base
   end
 
   def fully_in_progress_for_divisions(divisions)
-    (specialization_options.for_divisions(divisions).length > 0) && (specialization_options.for_divisions(divisions).reject{ |so| so.in_progress }.length == 0)
+    specialization_options.for_divisions(divisions).any? &&
+      specialization_options.for_divisions(divisions).all?(&:in_progress)
   end
 
   def new_for_divisions(divisions)

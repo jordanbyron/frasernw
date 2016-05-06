@@ -6,11 +6,15 @@ import { padTwo } from "utils";
 import DateRangeFilterController from "controllers/filter_groups/date_range";
 import DivisionScopeFilterController from "controllers/filter_groups/division_scope";
 import { matchedRoute } from "controller_helpers/routing";
+import BreadcrumbsController from "controllers/breadcrumbs";
+
+
 
 
 const TemplateController = ({model, dispatch}) => {
-  if (matchedRoute(model) === "/reports/pageviews_by_user") {
-    return(
+  return(
+    <div>
+      <BreadcrumbsController model={model} dispatch={dispatch}/>
       <div className="content-wrapper">
         <div className="content">
           <div className="row">
@@ -24,12 +28,10 @@ const TemplateController = ({model, dispatch}) => {
           </div>
         </div>
       </div>
-    );
-  }
-  else {
-    return <span>test</span>;
-  }
-}
+    </div>
+  );
+};
+
 
 const SidebarController = ({model, dispatch}) => {
   if(model.app.currentUser) {
