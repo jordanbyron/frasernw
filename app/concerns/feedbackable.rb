@@ -3,7 +3,7 @@ module Feedbackable
 
   included do
     has_many :active_feedback_items,
-      -> { where "archived": false },
+      -> { where "archived" => false },
       as: :item,
       class_name: "FeedbackItem",
       foreign_key: "item_id"

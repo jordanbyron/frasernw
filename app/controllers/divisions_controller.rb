@@ -152,9 +152,10 @@ class DivisionsController < ApplicationController
     raise unless ["owner", "content_owner"].include?(params[:permission_type])
 
     Specialization.all.each do |specialization|
-      specialization_option =
-        (specialization.specialization_options.where(division_id: @division.id).first ||
-          specialization.specialization_options.create(division_id: @division.id))
+      specialization_option = (
+        specialization.specialization_options.where(division_id: @division.id).first ||
+        specialization.specialization_options.create(division_id: @division.id)
+      )
 
 
       specialization_option.update_attributes(params[:permission_type] => @user)

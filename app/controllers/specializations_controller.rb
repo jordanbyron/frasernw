@@ -45,8 +45,7 @@ class SpecializationsController < ApplicationController
           params[:is_new].present? &&
           params[:is_new]["#{division.id}"].present?
         so.open_to_type = params[:open_to_type]["#{division.id}"]
-        so.open_to_sc_category =
-          (
+        so.open_to_sc_category = (
             params[:open_to_type]["#{division.id}"] == SpecializationOption::OPEN_TO_SC_CATEGORY.to_s
           ) ? ScCategory.find(params[:open_to_sc_category_id]["#{division.id}"]) : nil
         so.show_specialist_categorization_1 =
@@ -96,10 +95,10 @@ class SpecializationsController < ApplicationController
     if @specialization.update_attributes(params[:specialization])
       divisions.each do |division|
         puts division.name
-        so =
-          SpecializationOption.find_by(
-            specialization_id: @specialization.id, division_id: division.id
-          )
+        so = SpecializationOption.find_by(
+          specialization_id: @specialization.id,
+          division_id: division.id
+        )
         so.owner = User.find_by_id(params[:owner]["#{division.id}"])
         so.content_owner = User.find_by_id(params[:content_owner]["#{division.id}"])
         so.in_progress =
@@ -108,8 +107,7 @@ class SpecializationsController < ApplicationController
         so.is_new =
           params[:is_new].present? && params[:is_new]["#{division.id}"].present?
         so.open_to_type = params[:open_to_type]["#{division.id}"]
-        so.open_to_sc_category =
-          (
+        so.open_to_sc_category = (
             params[:open_to_type]["#{division.id}"] == SpecializationOption::OPEN_TO_SC_CATEGORY.to_s
           ) ? ScCategory.find(params[:open_to_sc_category]["#{division.id}"]) : nil
         so.show_specialist_categorization_1 =
@@ -129,7 +127,7 @@ class SpecializationsController < ApplicationController
           params[:show_specialist_categorization_5]["#{division.id}"].present?
         so.save
       end
-      redirect_to @specialization, :notice  => "Successfully updated specialty."
+      redirect_to @specialization, notice: "Successfully updated specialty."
     else
       render action: 'edit'
     end

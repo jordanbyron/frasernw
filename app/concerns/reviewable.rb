@@ -2,7 +2,7 @@ module Reviewable
   extend ActiveSupport::Concern
 
   included do
-    has_one :review_item, -> { where "archived": false }, as: :item
+    has_one :review_item, -> { where "archived" => false }, as: :item
     has_many :review_items, as: :item, foreign_key: "item_id", class_name: "ReviewItem"
   end
 

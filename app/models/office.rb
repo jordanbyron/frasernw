@@ -112,19 +112,18 @@ class Office < ActiveRecord::Base
         { hospital_in: { location: { address: :city } } }
       ] }
     ] ).
-      reject{|o| o.empty? }.
+      reject{ |o| o.empty? }.
       select(&scope).
-      sort{|a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"}.
-      collect{|o| ["#{o.short_address}, #{o.city}", o.id]}
+      sort{ |a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}" }.
+      collect{ |o| ["#{o.short_address}, #{o.city}", o.id] }
   end
 
   def self.cached_all_formatted_for_form(scope = :presence)
     # remember to add new scopes to flush_cache also
-    Rails.cache.
-      fetch(
-        [name, "all_offices_formatted_for_form:#{scope}"],
-        expires_in: 2.hours
-      ) do
+    Rails.cache.fetch(
+      [name, "all_offices_formatted_for_form:#{scope}"],
+      expires_in: 2.hours
+    ) do
       self.all_formatted_for_form(scope)
     end
   end

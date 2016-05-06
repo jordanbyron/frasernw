@@ -9,9 +9,9 @@ class Procedure < ActiveRecord::Base
   has_many :all_procedure_specializations,
     dependent: :destroy,
     class_name: "ProcedureSpecialization"
-  has_many :procedure_specializations, -> { where "mapped": true }, dependent: :destroy
+  has_many :procedure_specializations, -> { where "mapped" => true }, dependent: :destroy
   has_many :specializations,
-    -> { where(procedure_specializations: { "mapped": true }).order('name ASC') },
+    -> { where(procedure_specializations: { "mapped" => true }).order('name ASC') },
     through: :procedure_specializations
   accepts_nested_attributes_for :all_procedure_specializations, allow_destroy: true
 

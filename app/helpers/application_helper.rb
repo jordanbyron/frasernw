@@ -198,11 +198,15 @@ module ApplicationHelper
 
   def icon(icon_class, title=nil, placement="top")
     if title.present?
-      "<i class='#{icon_class}' data-toggle='tooltip' "\
-      "data-original-title='#{title}' data-placement='#{placement}'></i>".
-      html_safe
+      content_tag(
+        :i, 
+        "class" => icon_class,
+        "data-toggle" => "tooltip",
+        "data-original-title" => title,
+        "data-placement" => placement
+      )      
     else
-      "<i class='#{icon_class}'></i>".html_safe
+      content_tag(:i, "class" => icon_class)
     end
   end
 

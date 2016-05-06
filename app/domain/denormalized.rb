@@ -293,9 +293,7 @@ module Denormalized
             id: division.id,
             name: division.name,
             referralCities: Specialization.all.inject({}) do |memo, specialization|
-              memo.merge(
-                specialization.
-                id => division.
+              memo.merge(specialization.id => division.
                 local_referral_cities(specialization).
                 reject(&:hidden).
                 map(&:id)
@@ -304,9 +302,10 @@ module Denormalized
             openToSpecializationPanel: Specialization.
               all.
               inject({}) do |memo, specialization|
-                memo.merge(
-                  specialization.id => self.open_to_panel(specialization, division)
-                )
+                memo.merge(specialization.id => self.open_to_panel(
+                  specialization,
+                  division
+                ) )
               end
           })
         end
@@ -380,20 +379,18 @@ module Denormalized
 
   def self.transform_nested_procedure_specializations(procedure_specializations)
     procedure_specializations.inject({}) do |memo, (ps, children)|
-      memo.merge({
-        ps.procedure.id => {
-          focused: ps.focused?,
-          assumed: {
-            clinics: ps.assumed_clinic?,
-            specialists: ps.assumed_specialist?
-          },
-          customWaittime: {
-            specialists: ps.specialist_wait_time,
-            clinics: ps.clinic_wait_time
-          },
-          children: transform_nested_procedure_specializations(children)
-        }
-      })
+      memo.merge( { ps.procedure.id => {
+        focused: ps.focused?,
+        assumed: {
+          clinics: ps.assumed_clinic?,
+          specialists: ps.assumed_specialist?
+        },
+        customWaittime: {
+          specialists: ps.specialist_wait_time,
+          clinics: ps.clinic_wait_time
+        },
+        children: transform_nested_procedure_specializations(children)
+      } } )
     end
   end
 end

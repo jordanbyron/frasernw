@@ -16,20 +16,20 @@ module Metrics
         @clinics = Clinic.in_divisions(@divisions)
         @procedures =
           [@specialists + @clinics].
-          flatten.
-          inject([]){ |memo, s| memo.concat( s.procedures ) }.
-          uniq
+            flatten.
+            inject([]){ |memo, s| memo.concat( s.procedures ) }.
+            uniq
         @specializations =
           Specialization.
-          all.
-          reject{ |s|
-            [
-              s.specialists.in_divisions(@divisions) +
-              s.clinics.in_divisions(@divisions)
-            ].
-            flatten.
-            length == 0
-          }
+            all.
+            reject{ |s|
+              [
+                s.specialists.in_divisions(@divisions) +
+                s.clinics.in_divisions(@divisions)
+              ].
+              flatten.
+              length == 0
+            }
         @hospitals = Hospital.in_divisions(@divisions)
       else
         @division_label = "All-Divisions"

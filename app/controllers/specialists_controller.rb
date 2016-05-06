@@ -56,10 +56,10 @@ class SpecialistsController < ApplicationController
         specialist_specializations = @specialist.specializations
         params[:capacities_mapped].each do |checkbox_key, value|
           next unless value == "1"
-          capacity =
-            Capacity.find_or_create_by(
-              specialist_id: @specialist.id, procedure_specialization_id: checkbox_key
-            )
+          capacity = Capacity.find_or_create_by(
+            specialist_id: @specialist.id,
+            procedure_specialization_id: checkbox_key
+          )
           capacity.investigation = params[:capacities_investigations][checkbox_key]
           if params[:capacities_waittime].present?
             capacity.waittime_mask = params[:capacities_waittime][checkbox_key]

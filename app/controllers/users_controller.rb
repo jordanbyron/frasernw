@@ -7,11 +7,11 @@ class UsersController < ApplicationController
       @division = Division.find(params[:division_id])
       if current_user.as_super_admin?
         @super_admin_users = User.
-          includes(:divisions, [specialization_options: :specialization]).
+          includes(:divisions, { specialization_options: :specialization }).
           in_divisions([@division]).active_super_admin
       end
       @admin_users = User.
-        includes(:divisions, [specialization_options: :specialization]).
+        includes(:divisions, { specialization_options: :specialization }).
         in_divisions([@division]).
         active_admin_only
       @users = User.includes(:divisions).in_divisions([@division]).active_user
@@ -20,11 +20,11 @@ class UsersController < ApplicationController
     else
       if current_user.as_super_admin?
         @super_admin_users = User.
-          includes(:divisions, [specialization_options: :specialization]).
+          includes(:divisions, { specialization_options: :specialization }).
           active_super_admin
       end
       @admin_users = User.
-        includes(:divisions, [specialization_options: :specialization]).
+        includes(:divisions, { specialization_options: :specialization }).
         active_admin_only
       @users = User.includes(:divisions).active_user
       @pending_users = User.includes(:divisions).active_pending

@@ -126,8 +126,11 @@ class CreateSeeds < ServiceObject
   class PostProcess < ServiceObject
     def call
       new_specialist_specializations = new_specialization_links("specialist")
-      new_capacities =
-        new_procedure_links("capacities", "specialist", new_specialist_specializations)
+      new_capacities = new_procedure_links(
+        "capacities",
+        "specialist",
+        new_specialist_specializations
+      )
 
       new_clinic_specializations = new_specialization_links("clinic")
       new_focuses = new_procedure_links("focuses", "clinic", new_clinic_specializations)
