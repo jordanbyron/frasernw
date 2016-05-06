@@ -3,7 +3,6 @@ module GenerateClinicsAndSpecialistsSpreadsheet
 
     # Written for specific report requirements:
     # - Clinics and Specialists with status_mask "not_responded?".
-    # For cases other than the one serviced here, add a method and expand private methods.
     def did_not_answer
 
       clinics = Clinic.where(status_mask: [3,nil])
@@ -80,7 +79,9 @@ module GenerateClinicsAndSpecialistsSpreadsheet
         sheets.push(sheet)
       end
       spreadsheet = {
-        file_title: [caller[0][/`.*'/][1..-2].to_s, "_clinics_and_specialists"].join(""),
+        file_title: [caller[0][/`.*'/][1..-2].
+          to_s, "_clinics_and_specialists"].
+          join(""),
         sheets: sheets
       }
       QuickSpreadsheet.call(spreadsheet)

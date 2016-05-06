@@ -34,7 +34,10 @@ class CreateSpecializationOptions < ServiceObject
     def owner_attributes
       [ :owner, :content_owner ].map do |owner_type|
         value = begin
-          if template_option.send(owner_type) && template_option.send(owner_type).super_admin?
+          if (
+            template_option.send(owner_type) &&
+              template_option.send(owner_type).super_admin?
+          )
             template_option.send(owner_type)
           else
             User.super_admin.first
