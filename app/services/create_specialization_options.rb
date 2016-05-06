@@ -24,7 +24,7 @@ class CreateSpecializationOptions < ServiceObject
     def template_option
       @template_option ||= Division.find(1).
         specialization_options.
-        find_by_specialization_id(specialization.id)
+        find_by_id(specialization.id)
     end
 
     def copied_attributes

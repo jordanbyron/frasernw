@@ -4,7 +4,7 @@ module SpecializationsHelper
     filtering_attributes << "swt_#{s.waittime_mask.present? ? s.waittime_mask : 0}"
     s.procedure_specializations.specialist_wait_time.each do |ps|
       capacity =
-        Capacity.find_by_specialist_id_and_procedure_specialization_id(s.id,ps.id)
+        Capacity.find_by(specialist_id: s.id,procedure_specialization_id: ps.id)
       next if capacity.blank?
       if capacity.waittime_mask.present?
         filtering_attributes << "swt#{ps.procedure_id}_#{capacity.waittime_mask}"
@@ -98,7 +98,7 @@ module SpecializationsHelper
     filtering_attributes << "owt_#{s.waittime_mask.present? ? s.waittime_mask : 0}"
     s.procedure_specializations.specialist_wait_time.each do |ps|
       capacity =
-        Capacity.find_by_specialist_id_and_procedure_specialization_id(s.id,ps.id)
+        Capacity.find_by(specialist_id: s.id,procedure_specialization_id: ps.id)
       next if capacity.blank?
       if capacity.waittime_mask.present?
         filtering_attributes << "owt#{ps.procedure_id}_#{capacity.waittime_mask}"
@@ -144,7 +144,7 @@ module SpecializationsHelper
     filtering_attributes = clinic_procedure_filtering_attributes(c)
     filtering_attributes << "cwt_#{c.waittime_mask.present? ? c.waittime_mask : 0}"
     c.procedure_specializations.clinic_wait_time.each do |ps|
-      focus = Focus.find_by_clinic_id_and_procedure_specialization_id(c.id,ps.id)
+      focus = Focus.find_by(clinic_id: c.id, procedure_specialization_id: ps.id)
       next if focus.blank?
       if focus.waittime_mask.present?
         filtering_attributes << "cwt#{ps.procedure_id}_#{focus.waittime_mask}"

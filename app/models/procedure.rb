@@ -42,7 +42,7 @@ class Procedure < ActiveRecord::Base
 
     if ps_with_parents.count > 0
       "#{ps_with_parents.first.parent.procedure.full_name} "\
-      "#{name_relative_to_parents.uncapitalize_first_letter}"
+        "#{name_relative_to_parents.uncapitalize_first_letter}"
     else
       self.name
     end
@@ -125,7 +125,7 @@ class Procedure < ActiveRecord::Base
     # look at this procedure as well as its children to find any specialists
     results = []
     ps = ProcedureSpecialization.
-      find_by_specialization_id_and_procedure_id(specialization.id, self.id)
+      find_by(specialization_id: specialization.id, procedure_id: self.id)
     if ps.assumed_specialist?
       results += ps.specialization.specialists.in_cities_cached(cities)
     else
@@ -148,7 +148,7 @@ class Procedure < ActiveRecord::Base
     # look at this procedure as well as its children to find any clinics
     results = []
     ps = ProcedureSpecialization.
-      find_by_specialization_id_and_procedure_id(specialization.id, self.id)
+      find_by(specialization_id: specialization.id, procedure_id: self.id)
     if ps.assumed_clinic?
       results += ps.specialization.clinics.in_cities(cities)
     else
@@ -184,7 +184,7 @@ class Procedure < ActiveRecord::Base
     procedure_specializations.each do |ps|
       ps.children.each do |child|
         result << child.procedure
-        result << child.procedure.children if ps.procedure != self #recursive
+        result << child.procedure.children if ps.procedure != self
       end
     end
     return result.flatten.uniq
@@ -195,7 +195,7 @@ class Procedure < ActiveRecord::Base
     procedure_specializations.focused.each do |ps|
       ps.children.each do |child|
         result << child.procedure
-        result << child.procedure.focused_children if ps.procedure != self #recursive
+        result << child.procedure.focused_children if ps.procedure != self
       end
     end
     return result.flatten.uniq
@@ -206,7 +206,7 @@ class Procedure < ActiveRecord::Base
     procedure_specializations.non_focused.each do |ps|
       ps.children.each do |child|
         result << child.procedure
-        result << child.procedure.non_focused_children if ps.procedure != self #recursive
+        result << child.procedure.non_focused_children if ps.procedure != self
       end
     end
     return result.flatten.uniq

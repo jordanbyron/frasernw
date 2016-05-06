@@ -307,7 +307,7 @@ class User < ActiveRecord::Base
     specializations.each do |specialization|
       does_own |=
         SpecializationOption.
-          find_by_specialization_id_and_owner_id(specialization.id, self.id).
+          find_by(specialization_id: specialization.id, owner_id: self.id).
           present?
     end
     does_own

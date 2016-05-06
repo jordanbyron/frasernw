@@ -27,17 +27,17 @@ class ProcedureSpecialization < ActiveRecord::Base
   scope :assumed_specialist,
     -> { where(
     "classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST} "\
-    "OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}"
+      "OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}"
     ) }
   scope :assumed_clinic,
     -> { where(
     "classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC} "\
-    "OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}"
+      "OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}"
     ) }
   scope :non_assumed,
     -> { where(
     "classification = #{ProcedureSpecialization::CLASSIFICATION_FOCUSED} "\
-    "OR classification = #{ProcedureSpecialization::CLASSIFICATION_NONFOCUSED}"
+      "OR classification = #{ProcedureSpecialization::CLASSIFICATION_NONFOCUSED}"
     ) }
   scope :classification,
     -> (classification){ where(
@@ -140,12 +140,16 @@ class ProcedureSpecialization < ActiveRecord::Base
 
   def investigation(specialist_or_clinic)
     if specialist_or_clinic.instance_of? Clinic
-      f = Focus.
-        find_by_clinic_id_and_procedure_specialization_id(specialist_or_clinic.id, self.id)
+      f = Focus.find_by(
+        clinic_id: specialist_or_clinic.id,
+        procedure_specialization_id: self.id
+      )
       return f.investigation if f
     else
-      c = Capacity.
-        find_by_specialist_id_and_procedure_specialization_id(specialist_or_clinic.id, self.id)
+      c = Capacity.find_by(
+        specialist_id: specialist_or_clinic.id,
+        procedure_specialization_id: self.id
+      )
       return c.investigation if c
     end
     return ""

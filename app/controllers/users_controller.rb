@@ -94,14 +94,14 @@ class UsersController < ApplicationController
       elsif @user.email.present?
         redirect_to login_url,
           alert: "Your access key has already been used to set up an account. "\
-          "Please enter the e-mail address and password associated with your account, "\
-          "and press 'Log in'"
+            "Please enter the e-mail address and password associated with your account, "\
+            "and press 'Log in'"
       elsif @user.active == false
         redirect_to login_url,
           alert: "Sorry, your access key is no longer active. "\
-          "Please contact a Pathways administrator at "\
-          "<a href='mailto:administration@pathwaysbc.ca'>administration@pathwaysbc.ca"\
-          "</a> to have your account access key reactivated.".
+            "Please contact a Pathways administrator at "\
+            "<a href='mailto:administration@pathwaysbc.ca'>administration@pathwaysbc.ca"\
+            "</a> to have your account access key reactivated.".
           html_safe
       else
         @email = params[:user][:email]
@@ -123,7 +123,7 @@ class UsersController < ApplicationController
         user_from_saved_token.save
         redirect_to login_url,
           notice: "Your account has been set up; please log in using #{@user.email} "\
-          "and your newly created password. Welcome to Pathways!"
+            "and your newly created password. Welcome to Pathways!"
       else
         render action: 'signup', layout: "user_sessions"
       end
@@ -192,7 +192,7 @@ class UsersController < ApplicationController
     if params[:local_referral_cities].present?
       #add new specializations
       params[:local_referral_cities].each do |city_id, specializations|
-        user_city = UserCity.find_by_user_id_and_city_id( @user.id, city_id )
+        user_city = UserCity.find_by(user_id: @user.id, city_id: city_id)
         if user_city.present?
           #parent city was checked off
           specializations.each do |specializations_id, set|
@@ -219,7 +219,7 @@ class UsersController < ApplicationController
       redirect_to login_url,
         layout: 'user_sessions',
         notice: "Your e-mail address was successfully changed to #{@user.email}, "\
-        "please log in again with your new e-mail address."
+          "please log in again with your new e-mail address."
     else
       render action: :change_email, layout: 'user_sessions'
     end
@@ -236,7 +236,7 @@ class UsersController < ApplicationController
       redirect_to login_url,
         layout: 'user_sessions',
         notice: "Your password was successfully changed, "\
-        "please log in again with your new password."
+          "please log in again with your new password."
     else
       render action: :change_password, layout: 'user_sessions'
     end
