@@ -8,7 +8,7 @@ import { useQueries } from 'history';
 import ReactDOM from "react-dom";
 import rootReducer from "dry_reducers/root_reducer";
 import React from "react";
-import { requestData, parseRenderedData, locationChanged, integrateLocalStorageData } from "action_creators";
+import { requestDynamicData, parseRenderedData, locationChanged, integrateLocalStorageData } from "action_creators";
 
 let middlewares = [];
 const logger = createLogger();
@@ -38,7 +38,7 @@ const dryBootstrapReact = function() {
       integrateLocalStorageData(store.dispatch, data);
     })
 
-    requestData(store.getState(), store.dispatch);
+    requestDynamicData(store.getState(), store.dispatch);
     parseRenderedData(store.dispatch);
   })
 }

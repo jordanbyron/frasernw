@@ -5,7 +5,7 @@ const nextAction = store => next => action => {
 
   switch(action.type){
   case "CHANGE_FILTER_VALUE":
-    requestData(store.getState(), store.dispatch);
+    requestDynamicData(store.getState(), store.dispatch);
   }
 
   return result;
