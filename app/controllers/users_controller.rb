@@ -296,12 +296,10 @@ class UsersController < ApplicationController
     @user.user_controls_specialists.build
     @user.user_controls_clinics.build
     @formatted_clinics = Clinic.
-      all.
       select{|clinic| clinic.name.present? }.
       sort_by(&:name)
 
     @formatted_specialists = Specialist.
-      all.
       select{ |specialist| specialist.name.present? }.
       sort_by{ |specialist| [ specialist.lastname.capitalize, specialist.firstname ] }
   end
