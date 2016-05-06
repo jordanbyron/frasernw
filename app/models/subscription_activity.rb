@@ -33,7 +33,7 @@ class SubscriptionActivity < PublicActivity::Activity
   end
 
   def self.all_resource_activities
-    by_target_type(Subscription.resource_update).all
+    by_target_type(Subscription.resource_update)
   end
 
   def type_mask_description_formatted

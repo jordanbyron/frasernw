@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
     c.merge_validates_length_of_password_field_options( { minimum: 8 } )
     c.merge_validates_uniqueness_of_email_field_options( { message:
       "has already been used to set up another account. Pleast use a different "\
-      "email address to sign up, or sign into your existing account."
+        "email address to sign up, or sign into your existing account."
     } )
     c.logged_in_timeout = 1.week
     c.crypto_provider = Authlogic::CryptoProviders::Sha512
@@ -94,14 +94,12 @@ class User < ActiveRecord::Base
 
   has_many :subscriptions, dependent: :destroy
 
-  # times that the user (as admin) has contacted specialists
   has_many :contacts
 
   has_one :mask, dependent: :destroy, class_name: "UserMask"
 
   delegate :with_activity, to: :subscriptions, prefix: true
 
-  # after_commit :flush_cache
   after_touch :flush_cache
 
   default_scope { order('users.name') }
@@ -211,7 +209,6 @@ class User < ActiveRecord::Base
     joins(:user_divisions).where('"division_users"."division_id" IN (?)', division_ids)
   end
 
-  # # # CACHING methods
   def self.all_user_division_groups
     all.map{ |u| u.divisions.map{ |d| d.id } }.uniq
   end
@@ -236,7 +233,6 @@ class User < ActiveRecord::Base
   def flush_cache
     Rails.cache.delete("all_user_division_groups")
   end
-  # # #
 
   def deliver_password_reset_instructions!
     reset_perishable_token!

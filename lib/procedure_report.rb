@@ -4,7 +4,7 @@ class ProcedureReport
     folder_path = Rails.root.join("reports", "procedures")
     FileUtils.ensure_folder_exists folder_path
 
-    table = Procedure.all.select do |procedure|
+    table = Procedure.select do |procedure|
       procedure.name.match(/(cancer|oncology|tumour)/i)
     end.map do |procedure|
       [ procedure.id, procedure.name ]

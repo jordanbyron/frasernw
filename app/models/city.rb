@@ -40,7 +40,7 @@ class City < ActiveRecord::Base
   end
 
   def self.all_formatted_for_select(scope = :presence)
-    self.all.select(&scope).map(&:formatted_for_select)
+    self.select(&scope).map(&:formatted_for_select)
   end
 
   def flush_cached_find
