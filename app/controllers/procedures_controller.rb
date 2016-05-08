@@ -1,5 +1,6 @@
 class ProceduresController < ApplicationController
-  load_and_authorize_resource
+  load_and_authorize_resource except: [:create]
+  skip_authorization_check only: [:create]
 
   def index
     @specialization = Specialization.find(params[:specialization_id]) if params[:specialization_id].present?
@@ -27,6 +28,10 @@ class ProceduresController < ApplicationController
   end
 
   def create
+    params[:procedure]["all_procedure_specializations_attributes"].values.each do |hsh|
+      hsh["procedure_id"] = nil if hsh["procedure_id"] == ""
+    end
+    binding.pry
     @procedure = Procedure.new(params[:procedure])
     if @procedure.save
       redirect_to @procedure, :notice => "Successfully created area of practice."
