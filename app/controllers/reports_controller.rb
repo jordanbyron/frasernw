@@ -46,6 +46,18 @@ class ReportsController < ApplicationController
     render :analytics_chart
   end
 
+  def pageviews_by_user
+    @init_data = {
+      currentUser: {
+        role: current_user.as_role,
+        divisions: current_user.as_divisions
+      },
+      divisions: Denormalized.fetch(:divisions)
+    }
+
+    authorize! :view_report, :pageviews_by_user
+  end
+
   def user_ids
     authorize! :view_report, :sessions
 

@@ -69,5 +69,14 @@ module.exports = {
     }
 
     return sentence;
+  },
+  padTwo: function(num){
+    const unpadded = num.toString();
+    if (unpadded.length === 2) {
+      return unpadded;
+    }
+    else {
+      return `0${unpadded}`;
+    }
   }
 }

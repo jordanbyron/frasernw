@@ -7,23 +7,31 @@
     .headline
       .row-fluid
         .span3.offset1
-          = render partial: "reports/analytics_box", locals: {color: '#0B1E32', icon: 'icon-user', title: "Active Signed Up Users", count: User.authorized_user.count}
+          = render partial: "reports/analytics_box",
+            locals: {color: '#0B1E32', icon: 'icon-user', title: "Active Signed Up Users", count: User.authorized_user.count}
         .span3.offset1
-          = render partial: "reports/analytics_box", locals: {color: '#1B5D94', icon: 'icon-user-md', title: "Specialists", count: Specialist.all.count}
+          = render partial: "reports/analytics_box",
+            locals: {color: '#1B5D94', icon: 'icon-user-md', title: "Specialists", count: Specialist.all.count}
         .span3.offset1
-          = render partial: "reports/analytics_box", locals: {color: '#404040', icon: 'icon-home', title: "Clinics", count: Clinic.all.count}
+          = render partial: "reports/analytics_box",
+            locals: {color: '#404040', icon: 'icon-home', title: "Clinics", count: Clinic.all.count}
         .span3.offset1
-          = render partial: "reports/analytics_box", locals: {color: '#A42C37', icon: 'icon-hospital', title: "Hospitals", count: Hospital.all_real.count}
+          = render partial: "reports/analytics_box",
+            locals: {color: '#A42C37', icon: 'icon-hospital', title: "Hospitals", count: Hospital.all_real.count}
 
       .row-fluid
         .span3.offset1
-          = render partial: "reports/analytics_box", locals: {color: '#193048', icon: 'icon-book', title: "Resources", count: ScItem.all.count}
+          = render partial: "reports/analytics_box",
+            locals: {color: '#193048', icon: 'icon-book', title: "Resources", count: ScItem.all.count}
         .span3.offset1
-          = render partial: "reports/analytics_box", locals: {color: '#A14E06', icon: 'icon-edit', title: "Referral Forms", count: ReferralForm.all.count}
+          = render partial: "reports/analytics_box",
+            locals: {color: '#A14E06', icon: 'icon-edit', title: "Referral Forms", count: ReferralForm.all.count}
         .span3.offset1
-          = render partial: "reports/analytics_box", locals: {color: '#0088CC', icon: 'icon-bullhorn', title: "Feedback Items", count: FeedbackItem.all.count}
+          = render partial: "reports/analytics_box",
+            locals: {color: '#0088CC', icon: 'icon-bullhorn', title: "Feedback Items", count: FeedbackItem.all.count}
         .span3.offset1
-          = render partial: "reports/analytics_box", locals: {color: '#C44D58', icon: 'icon-heart', title: "Favorites", count: Favorite.all.count}
+          = render partial: "reports/analytics_box",
+            locals: {color: '#C44D58', icon: 'icon-heart', title: "Favorites", count: Favorite.all.count}
 
 
 
@@ -67,6 +75,15 @@
     - if can? :view_report, :user_ids
       %tr
         %td= link_to "User IDs", user_ids_reports_path
+        %td Analytics
+        %td System-wide
+        %td N/A
+        %td > April 2014
+        %td
+
+    - if can? :view_report, :pageviews_by_user
+      %tr
+        %td= link_to "Page Views By User", pageviews_by_user_reports_path
         %td Analytics
         %td System-wide
         %td N/A
