@@ -10,7 +10,9 @@ class Specialization < ActiveRecord::Base
   has_many :clinics, :through => :clinic_specializations
 
   has_many :procedure_specializations, :dependent => :destroy, :conditions => { "mapped" => true }
-  has_many :procedures, :through => :procedure_specializations, :order => 'name ASC'
+  has_many :procedures,
+    through: :procedure_specializations,
+    order: 'procedures.name ASC'
 
   has_many :sc_item_specializations, :dependent => :destroy
   has_many :sc_items, :through => :sc_items_specializations

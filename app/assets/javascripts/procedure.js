@@ -1,27 +1,26 @@
-var hideShowParents = function()
+var toggleProcedureMappings = function(target)
 {
-  var currentId = $(this).attr('id');
-  var select = "#" + currentId.replace("check","select");
-  var classification = "#" + currentId.replace("check","classification");
-  var swaittime = "#" + currentId.replace("check","swaittime");
-  var cwaittime = "#" + currentId.replace("check","cwaittime");
+  var row = $(target).parents(".procedure_specialization_row");
 
-  if ( $(this).is(":checked") )
+
+  var parentId = row.find(".input--parent_id");
+  var classification = row.find(".input--classification");
+  var clinicWaittime = row.find(".input--clinic_wait_time");
+  var specialistWaittime = row.find(".input--specialist_wait_time");
+
+  if ( $(target).is(":checked") )
   {
-    //we have indicated that this area of practice belongs to this specializatios, so let us pick a parent and type
-    $(select).show();
-    $(classification).show();
-    $(swaittime).show();
-    $(cwaittime).show();
+    parentId.show();
+    classification.show();
+    clinicWaittime.show();
+    specialistWaittime.show();
   }
   else
   {
     //we have indicated that this area of practice does not belong to this specialization, so hide parents and type
-    $(select).hide();
-    $(classification).hide();
-    $(swaittime).hide();
-    $(cwaittime).hide();
+    parentId.hide();
+    classification.hide();
+    clinicWaittime.hide();
+    specialistWaittime.hide();
   }
 }
-
-$(".aop_active").live("change", hideShowParents );

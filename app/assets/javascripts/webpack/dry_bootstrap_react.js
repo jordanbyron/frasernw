@@ -19,13 +19,17 @@ const store = createStoreWithMiddleware(rootReducer);
 
 const dryBootstrapReact = function() {
   $(document).ready(function() {
-    ReactDOM.render(
-      <Provider childKlass={TemplateController} store={store}/>,
-      document.getElementById("react_root--template")
-    )
+    var target = document.getElementById("react_root--template");
 
-    requestData(store.getState(), store.dispatch);
-    parseRenderedData(store.dispatch);
+
+    if (target) {
+      ReactDOM.render(
+        <Provider childKlass={TemplateController} store={store}/>,
+        target
+      )
+      requestData(store.getState(), store.dispatch);
+      parseRenderedData(store.dispatch);
+    }
   })
 }
 
