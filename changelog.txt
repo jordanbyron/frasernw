@@ -5,6 +5,11 @@ CR = Change Request item
 Local-only = Changes not reflected in Source Code
 Backend Maintenance = Change is not user facing
 
+## [2016-05-07] [Since 2016-04-30 Integration]
+- add Pageviews By User report
+- remove secret tokens from specialist contact report
+
+
 ## [2016-04-30] [Since 2016-04-23 Integration]
 - add "Ped" suffix
 - fix error in procedures#show
