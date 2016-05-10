@@ -32,7 +32,7 @@ module Api
         end
 
         render json: {
-          rows: WebUsageReport.call(
+          rows: EntityPageViewsReport.call(
             month_key: params[:month_key],
             division_id: params[:division_id],
             record_type: params[:record_type].underscore.to_sym
