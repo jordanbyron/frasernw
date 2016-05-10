@@ -1,10 +1,10 @@
 class ProceduresController < ApplicationController
-  load_and_authorize_resource except: [:create]
-  skip_authorization_check only: [:create]
+  load_and_authorize_resource
 
   def index
-    @specialization = Specialization.find(params[:specialization_id]) if params[:specialization_id].present?
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    @specialization = Specialization.find(
+      params[:specialization_id]
+    ) if params[:specialization_id].present?
   end
 
   def show
@@ -36,10 +36,11 @@ class ProceduresController < ApplicationController
     @procedure = Procedure.new(params[:procedure])
     if @procedure.save
       Denormalized.regenerate(:procedures)
-      
-      redirect_to @procedure, :notice => "Successfully created area of practice."
+
+      redirect_to @procedure,
+        notice: "Successfully created area of practice."
     else
-      render :action => 'new'
+      render action: :new
     end
   end
 
@@ -66,7 +67,7 @@ class ProceduresController < ApplicationController
     @procedure = Procedure.find(params[:id])
     ExpireFragment.call procedure_path(@procedure)
     @procedure.destroy
-    redirect_to procedures_url, :notice => "Successfully deleted area of practice."
+    redirect_to procedures_url, notice: "Successfully deleted area of practice."
   end
 
   private

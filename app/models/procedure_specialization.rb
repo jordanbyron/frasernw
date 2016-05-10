@@ -140,4 +140,8 @@ class ProcedureSpecialization < ActiveRecord::Base
     end
     return ""
   end
+
+  def specialization_name
+    specialization.name
+  end
 end
