@@ -2,10 +2,9 @@ class ProceduresController < ApplicationController
   load_and_authorize_resource
 
   def index
-    if params[:specialization_id].present?
-      @specialization = Specialization.find(params[:specialization_id])
-    end
-    render layout: 'ajax' if request.headers['X-PJAX']
+    @specialization = Specialization.find(
+      params[:specialization_id]
+    ) if params[:specialization_id].present?
   end
 
   def show
@@ -22,53 +21,45 @@ class ProceduresController < ApplicationController
   end
 
   def new
-    @procedure = Procedure.new(params[:id])
-    Specialization.all.each do |specialization|
-      ProcedureSpecialization.find_or_create_by(
-        procedure_id: params[:id],
-        specialization_id: specialization.id
-      )
-    end
-    @specializations = [Specialization.find(params[:specialization_id])]
-    render layout: 'ajax' if request.headers['X-PJAX']
+    @procedure = Procedure.new
+
+    build_procedure_specializations!(@procedure)
+
+    @procedure.
+      all_procedure_specializations.
+      find do |procedure_specialization|
+        procedure_specialization.specialization_id == params[:specialization_id].to_i
+      end.mapped = true
   end
 
   def create
     @procedure = Procedure.new(params[:procedure])
     if @procedure.save
-      redirect_to @procedure, notice: "Successfully created area of practice."
+      Denormalized.regenerate(:procedures)
+
+      redirect_to @procedure,
+        notice: "Successfully created area of practice."
     else
-      render action: 'new'
+      render action: :new
     end
   end
 
   def edit
     @procedure = Procedure.find(params[:id])
-    @specializations = @procedure.specializations
-    Specialization.all.each do |specialization|
-      ProcedureSpecialization.find_or_create_by(
-        procedure_id: params[:id],
-        specialization_id: specialization.id
-      )
-    end
-    render layout: 'ajax' if request.headers['X-PJAX']
+
+    build_procedure_specializations!(@procedure)
   end
 
   def update
     @procedure = Procedure.find(params[:id])
     ExpireFragment.call procedure_path(@procedure)
-    params[:procedure][:all_procedure_specializations_attributes].
-      each do |so_key, so_value|
-        so_value[:mapped] = 0 if so_value[:mapped].blank?
-        so_value[:specialist_wait_time] = 0 if so_value[:specialist_wait_time].blank?
-        so_value[:clinic_wait_time] = 0 if so_value[:clinic_wait_time].blank?
-      end
 
     if @procedure.update_attributes(params[:procedure])
-      Denormalized.delay.regenerate(:procedures)
-      redirect_to @procedure, notice: "Successfully updated area of practice."
+      Denormalized.regenerate(:procedures)
+
+      redirect_to(@procedure, notice: "Successfully updated area of practice.")
     else
-      render action: 'edit'
+      render :edit
     end
   end
 
@@ -77,5 +68,22 @@ class ProceduresController < ApplicationController
     ExpireFragment.call procedure_path(@procedure)
     @procedure.destroy
     redirect_to procedures_url, notice: "Successfully deleted area of practice."
+  end
+
+  private
+
+  def build_procedure_specializations!(procedure)
+    Specialization.all.each do |specialization|
+      existing_procedure_specialization = procedure.
+        all_procedure_specializations.where(
+          specialization_id: specialization.id
+        ).first
+
+      if existing_procedure_specialization.nil?
+        procedure.all_procedure_specializations.build(
+          specialization_id: specialization.id
+        )
+      end
+    end
   end
 end

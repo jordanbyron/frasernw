@@ -261,11 +261,13 @@ module Denormalized
       end
     end,
     procedures: Proc.new do
-      Procedure.all.inject({}) do |memo, procedure|
+      Procedure.includes(:procedure_specializations).
+        inject({}) do |memo, procedure|
+
         memo.merge(procedure.id => {
           nameRelativeToParents: procedure.try(:name_relative_to_parents),
           name: procedure.name,
-          specializationIds: procedure.specializations.map(&:id),
+          specializationIds: procedure.procedure_specializations(&:specialization_id),
           customWaittime: {
             specialists: procedure.specialist_wait_time,
             clinics: procedure.clinic_wait_time

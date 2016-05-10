@@ -32,7 +32,7 @@ module Api
         end
 
         render json: {
-          rows: WebUsageReport.call(
+          rows: EntityPageViewsReport.call(
             month_key: params[:month_key],
             division_id: params[:division_id],
             record_type: params[:record_type].underscore.to_sym
@@ -48,6 +48,18 @@ module Api
           divisions: current_user.reporting_divisions,
           force: false
         ))
+      end
+
+      def pageviews_by_user
+        authorize! :view_reports, :pageviews_by_user
+
+        render json: {
+          recordsToDisplay: PageviewsByUser.call(
+            start_month: Month.from_i(params[:data][:startMonth].to_i),
+            end_month: Month.from_i(params[:data][:endMonth].to_i),
+            division_id: params[:data][:divisionId].to_i
+          )
+        }
       end
     end
   end

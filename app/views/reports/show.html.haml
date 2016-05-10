@@ -15,12 +15,11 @@
       %tr
         %th Specialist
         %th Email(s)
-        %th{:style => "min-width:100px"} Last updated by anyone
-        %th{:style => "min-width:100px"} Last updated via review queue
-        %th Secret edit link
+        %th{style: "min-width:100px"} Last modified
+        %th{style: "min-width:100px"} Last updated via review queue
       - @specialist_email_table.each do |specialization_id, entries|
         %tr
-          %th{:colspan => 5}= Specialization.find(specialization_id).name
+          %th{colspan: 5}= Specialization.find(specialization_id).name
         - entries.each do |entry|
           %tr
             %td
@@ -43,11 +42,10 @@
                 account not activated
               - else
                 no user account linked to office
-            %td= link_to "http://www.pathwaysbc.ca#{specialist_self_edit_path(entry[:id], entry[:token], :only_path => true)}", "http://www.pathwaysbc.ca#{specialist_self_edit_path(entry[:id], entry[:token], :only_path => true)}"
 
 
   %p.admin.btn-group
     - if can? :update, @report
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Report", edit_report_path(@report), :class => "btn ajax")
+      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Report", edit_report_path(@report), class: "btn ajax")
     - if can? :destroy, @report
-      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Report", @report, :data => { :confirm => "Delete #{@report.name}?" }, :method => :delete, :class => "btn")
+      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Report", @report, data: { confirm: "Delete #{@report.name}?" }, method: :delete, class: "btn")

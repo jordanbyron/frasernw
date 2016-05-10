@@ -31,7 +31,7 @@ const suffix = (record, app, specializationId) => {
   if (record.collectionName === "clinics") {
     return "";
   }
-  else if (record.isGP) {
+  else if (record.isGp) {
     return "GP";
   }
   else if (record.isInternalMedicine) {

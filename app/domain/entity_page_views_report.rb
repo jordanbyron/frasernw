@@ -1,4 +1,4 @@
-class WebUsageReport < ServiceObject
+class EntityPageViewsReport < ServiceObject
   attribute :month_key
   attribute :division_id
   attribute :record_type
@@ -14,7 +14,8 @@ class WebUsageReport < ServiceObject
     :forms,
     :specialties,
     :red_flags,
-    :community_services
+    :community_services,
+    :pearls
   ]
 
   def self.regenerate_all
@@ -195,6 +196,11 @@ class WebUsageReport < ServiceObject
         row[:record][:typeMask] != ScItem::TYPE_MARKDOWN &&
         row[:record][:categoryIds].include?(4)
     end,
+    pearls: Proc.new do |row|
+      row[:serialized_collection] == :content_items &&
+      row[:record][:typeMask] != ScItem::TYPE_MARKDOWN &&
+      row[:record][:categoryIds].include?(3)
+    end,
     specialties: Proc.new{ |row| false }
   }
 
@@ -256,6 +262,9 @@ class WebUsageReport < ServiceObject
       row[:record][:typeMask] == ScItem::TYPE_MARKDOWN &&
       row[:record][:categoryIds].include?(38)
     end,
+    pearls: Proc.new do |row|
+      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(3)
+    end,
     specialties: Proc.new{ |row| true }
   }
 
@@ -268,7 +277,8 @@ class WebUsageReport < ServiceObject
       forms: "content_items",
       specialties: "specialties",
       community_services: "content_items",
-      red_flags: "content_items"
+      red_flags: "content_items",
+      pearls: "content_items"
     }[record_type]
 
     /(?<=\/#{Regexp.quote(collection_path)}\/)[[:digit:]]+(?=\/?\z)/.
@@ -286,6 +296,7 @@ class WebUsageReport < ServiceObject
     forms: :content_items,
     community_services: :content_items,
     red_flags: :content_items,
+    pearls: :content_items,
     specialties: :specializations
   }
 end
