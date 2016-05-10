@@ -19,8 +19,18 @@ const ui = (model = {}, action) => {
     recordsToDisplay: recordsToDisplay(model.recordsToDisplay, action),
     filterValues: filterValues(model.filterValues, action),
     selectedTableHeading: selectedTableHeading(model.selectedTableHeading, action),
-    location: location(model.location, action)
+    location: location(model.location, action),
+    openBreadcrumbDropdown: openBreadcrumbDropdown(model.openBreadcrumbDropdown, action)
   };
+}
+
+const openBreadcrumbDropdown = (model, action) => {
+  switch(action.type){
+  case "TOGGLE_BREADCRUMB_DROPDOWN":
+    return action.newState;
+  default:
+    return model;
+  }
 }
 
 const location = (model, action) => {

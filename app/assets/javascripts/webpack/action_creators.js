@@ -57,3 +57,10 @@ export function integrateLocalStorageData(dispatch, data) {
     data: data
   });
 }
+
+export function toggleBreadcrumbDropdown(dispatch, isCurrentlyOpen){
+  dispatch({
+    type: "TOGGLE_BREADCRUMB_DROPDOWN",
+    newState: !isCurrentlyOpen
+  })
+};

@@ -9,38 +9,23 @@ import { matchedRoute } from "controller_helpers/routing";
 import BreadcrumbsController from "controllers/breadcrumbs";
 
 
-
-
 const TemplateController = ({model, dispatch}) => {
-  return(
-    <div>
-      <BreadcrumbsController model={model} dispatch={dispatch}/>
-      <div className="content-wrapper">
-        <div className="content">
-          <div className="row">
-            <div className="span8half">
-              <h2 style={{marginBottom: "10px"}}>
-                { "Page Views by User" }
-              </h2>
-              <TableController model={model} dispatch={dispatch}/>
-            </div>
-            <SidebarController model={model} dispatch={dispatch}/>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-
-const SidebarController = ({model, dispatch}) => {
   if(model.app.currentUser) {
     return(
-      <div className="span3 offsethalf datatable-sidebar hide-when-reduced">
-        <div className="well filter">
-          <div className="title">{ "Configure Report" }</div>
-          <DateRangeFilterController model={model} dispatch={dispatch}/>
-          <DivisionScopeFilterController model={model} dispatch={dispatch}/>
+      <div>
+        <BreadcrumbsController model={model} dispatch={dispatch}/>
+        <div className="content-wrapper">
+          <div className="content">
+            <div className="row">
+              <div className="span8half">
+                <h2 style={{marginBottom: "10px"}}>
+                  { "Page Views by User" }
+                </h2>
+                <TableController model={model} dispatch={dispatch}/>
+              </div>
+              <SidebarController model={model} dispatch={dispatch}/>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -48,6 +33,19 @@ const SidebarController = ({model, dispatch}) => {
   else {
     return(<span></span>);
   }
+};
+
+
+const SidebarController = ({model, dispatch}) => {
+  return(
+    <div className="span3 offsethalf datatable-sidebar hide-when-reduced">
+      <div className="well filter">
+        <div className="title">{ "Configure Report" }</div>
+        <DateRangeFilterController model={model} dispatch={dispatch}/>
+        <DivisionScopeFilterController model={model} dispatch={dispatch}/>
+      </div>
+    </div>
+  );
 }
 
 export default TemplateController;

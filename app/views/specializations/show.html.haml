@@ -1,16 +1,5 @@
 - set_page_specific_title "#{@specialization.name}"
 
-%ul#specialties-menu
-  %li.dropdown
-    %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-      All Specialties
-      %b.caret
-  %li.subsequent{:class => @specialization.fully_in_progress_for_divisions(current_user.as_divisions) && "in-progress"}
-    = @specialization.name
-    = "<span class='new'>new</span>".html_safe if @specialization.new_for_divisions(current_user.as_divisions)
-
-= render 'partials/specialization_dropdown_menu'
-
 .tabbable
   #react_root--template
 

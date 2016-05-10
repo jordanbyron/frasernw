@@ -1,7 +1,7 @@
-class FilterTableAppState
-  include ServiceObjectModule.exec_with_args(:current_user)
+class FilterTableAppState < ServiceObject
+  attribute :current_user, User
 
-  def exec
+  def call
     {
       currentUser: {
         divisionIds: current_user.as_divisions.standard.map(&:id),
