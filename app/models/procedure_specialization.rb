@@ -1,5 +1,12 @@
 class ProcedureSpecialization < ActiveRecord::Base
 
+  attr_accessible :mapped,
+    :classification,
+    :parent_id,
+    :specialist_wait_time,
+    :clinic_wait_time,
+    :specialization_id
+
   CLASSIFICATION_FOCUSED              = 1
   CLASSIFICATION_NONFOCUSED           = 2
   CLASSIFICATION_ASSUMED_SPECIALIST   = 3
@@ -132,5 +139,9 @@ class ProcedureSpecialization < ActiveRecord::Base
       return c.investigation if c
     end
     return ""
+  end
+
+  def specialization_name
+    specialization.name
   end
 end
