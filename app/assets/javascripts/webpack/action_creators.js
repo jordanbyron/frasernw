@@ -64,3 +64,10 @@ export function toggleBreadcrumbDropdown(dispatch, isCurrentlyOpen){
     newState: !isCurrentlyOpen
   })
 };
+
+export function changeRoute(dispatch, route) {
+  dispatch({
+    type: "CHANGE_ROUTE",
+    route: route
+  })
+}

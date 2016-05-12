@@ -28,6 +28,8 @@ const openBreadcrumbDropdown = (model, action) => {
   switch(action.type){
   case "TOGGLE_BREADCRUMB_DROPDOWN":
     return action.newState;
+  case "LOCATION_CHANGED":
+    return false;
   default:
     return model;
   }

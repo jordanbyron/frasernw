@@ -1,13 +1,17 @@
 import React from "react";
 import recordShown from "controller_helpers/record_shown";
 import { matchedRoute } from "controller_helpers/routing";
-import { toggleBreadcrumbDropdown } from "action_creators";
+import { toggleBreadcrumbDropdown, changeRoute } from "action_creators";
 
 const Breadcrumbs = ({model, dispatch}) => {
   return(
     <div>
       <ul id="specialties-menu">
-        <li className="dropdown" onClick={_.partial(toggleBreadcrumbDropdown, dispatch, dropdownIsOpen(model))}>
+        <li className="dropdown" onClick={_.partial(
+          toggleBreadcrumbDropdown,
+          dispatch,
+          dropdownIsOpen(model))}
+        >
           <a className="specialties-dropdown-toggle" href="javascript:void(0)">
             <span>All Specialties</span>
             <b className="caret"/>
@@ -29,7 +33,8 @@ const BreadcrumbDropdown = ({model, dispatch}) => {
     const height = _.ceil(model.app.specializations.length / 4);
 
     return (
-      <div id="specialties-dropdown-menu" className="specialties_dropdown_menu--react">
+      <div id="specialties-dropdown-menu"
+        className="specialties_dropdown_menu--react">
         <div className="inner">
           {
             _.range(1, 5).map((columnNumber) => {
@@ -70,8 +75,14 @@ const BreadcrumbDropdownColumn = ({model, dispatch, columnNumber}) => {
         specializations.map((specialization) => {
           return(
             <li key={specialization.id}>
-              <a href={`/specialties/${specialization.id}`}
+              <a href="javascript:void(0)"
                 className={inProgressClass(model, specialization)}
+                onClick={_.partial(
+                    changeRoute,
+                    dispatch,
+                    `/specialties/${specialization.id}`
+                  )
+                }
               >
                 <span>{ specialization.name } </span>
                 <NewTag model={model}

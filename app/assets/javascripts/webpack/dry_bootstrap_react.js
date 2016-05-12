@@ -8,17 +8,23 @@ import { useQueries } from 'history';
 import ReactDOM from "react-dom";
 import rootReducer from "dry_reducers/root_reducer";
 import React from "react";
+import createChangeRoute from "middlewares/change_route";
 import { requestDynamicData, parseRenderedData, locationChanged, integrateLocalStorageData } from "action_creators";
 
 let middlewares = [];
+
 const logger = createLogger();
 middlewares.push(logger);
+
+const browserHistory = useQueries(createBrowserHistory)();
+const changeRoute = createChangeRoute(browserHistory);
+middlewares.push(changeRoute);
+
 middlewares.push(nextAction);
 
 const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 const store = createStoreWithMiddleware(rootReducer);
 
-const browserHistory = useQueries(createBrowserHistory)();
 browserHistory.listen((location) => {
   locationChanged(store.dispatch, location);
 });
