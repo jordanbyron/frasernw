@@ -52,7 +52,7 @@ const isTableLoaded = (model) => {
   return model.ui.recordsToDisplay;
 }
 
-const TableController = ({model, dispatch}) => {
+const Table = ({model, dispatch}) => {
   if (isTableLoaded(model)){
     return (
       <table className="table">
@@ -125,4 +125,4 @@ const tableSortDirection = (model) => {
   return _.get(model, ["ui", "selectedTableHeading", "direction"], "DOWN");
 }
 
-export default TableController;
+export default Table;

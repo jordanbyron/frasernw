@@ -21,7 +21,7 @@ const labelScopeOption = (option, model) => {
   }
 }
 
-const DivisionScopeFilterController = ({model, dispatch}) => {
+const DivisionScopeFilter = ({model, dispatch}) => {
   return(
     <FilterGroup title="Scope">
       <label style={{marginTop: "10px"}}>
@@ -44,4 +44,4 @@ const DivisionScopeFilterController = ({model, dispatch}) => {
   );
 }
 
-export default DivisionScopeFilterController;
+export default DivisionScopeFilter;

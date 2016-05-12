@@ -4,7 +4,7 @@ import { padTwo } from "utils";
 import React from "react";
 import { changeFilterValue } from "action_creators";
 
-const DateRangeFilterController = ({model, dispatch}) => {
+const DateRangeFilter = ({model, dispatch}) => {
   return(
     <FilterGroup title="Date Range">
       <label style={{marginTop: "10px"}}>
@@ -90,4 +90,4 @@ const monthOptions = () => {
   ).reverse();
 };
 
-export default DateRangeFilterController;
+export default DateRangeFilter;

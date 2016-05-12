@@ -3,7 +3,7 @@ import recordShown from "controller_helpers/record_shown";
 import { matchedRoute } from "controller_helpers/routing";
 import { toggleBreadcrumbDropdown } from "action_creators";
 
-const BreadcrumbsController = ({model, dispatch}) => {
+const Breadcrumbs = ({model, dispatch}) => {
   return(
     <div>
       <ul id="specialties-menu">
@@ -13,9 +13,9 @@ const BreadcrumbsController = ({model, dispatch}) => {
             <b className="caret"/>
           </a>
         </li>
-        <SecondBreadcrumbController model={model}/>
+        <SecondBreadcrumb model={model}/>
       </ul>
-      <BreadcrumbDropdownController model={model} dispatch={dispatch}/>
+      <BreadcrumbDropdown model={model} dispatch={dispatch}/>
     </div>
   );
 }
@@ -24,7 +24,7 @@ const dropdownIsOpen = (model) => {
   return _.get(model, [ "ui", "openBreadcrumbDropdown" ], false);
 }
 
-const BreadcrumbDropdownController = ({model, dispatch}) => {
+const BreadcrumbDropdown = ({model, dispatch}) => {
   if(dropdownIsOpen(model)) {
     const height = _.ceil(model.app.specializations.length / 4);
 
@@ -34,7 +34,7 @@ const BreadcrumbDropdownController = ({model, dispatch}) => {
           {
             _.range(1, 5).map((columnNumber) => {
               return(
-                <BreadcrumbDropdownColumnController
+                <BreadcrumbDropdownColumn
                   model={model}
                   dispatch={dispatch}
                   columnNumber={columnNumber}
@@ -56,7 +56,7 @@ const breadcrumbDropdownHeight = (model) => {
   return _.ceil(_.values(model.app.specializations).length / 4);
 }
 
-const BreadcrumbDropdownColumnController = ({model, dispatch, columnNumber}) => {
+const BreadcrumbDropdownColumn = ({model, dispatch, columnNumber}) => {
   const specializations = _.values(model.app.specializations)
     .pwPipe((specializations) => _.sortBy(specializations, "name") )
     .slice(
@@ -74,7 +74,7 @@ const BreadcrumbDropdownColumnController = ({model, dispatch, columnNumber}) => 
                 className={inProgressClass(model, specialization)}
               >
                 <span>{ specialization.name } </span>
-                <NewTagController model={model}
+                <NewTag model={model}
                   specialization={specialization}
                 />
               </a>
@@ -86,7 +86,7 @@ const BreadcrumbDropdownColumnController = ({model, dispatch, columnNumber}) => 
   );
 }
 
-const NewTagController = ({model, specialization}) => {
+const NewTag = ({model, specialization}) => {
   const showAsNew = _.some(model.app.currentUser.divisionIds, (id) => {
     return _.includes(specialization.newInDivisionIds, id);
   })
@@ -118,13 +118,13 @@ const inProgressClass = (model, specialization) => {
   }
 }
 
-const SecondBreadcrumbController = ({model}) => {
+const SecondBreadcrumb = ({model}) => {
   return(
     <li className={`subsequent ${inProgressClass(model, recordShown(model))}`}>
       <span>{ recordShown(model).name }</span>
-      <NewTagController model={model} specialization={recordShown(model)}/>
+      <NewTag model={model} specialization={recordShown(model)}/>
     </li>
   );
 };
 
-export default BreadcrumbsController;
+export default Breadcrumbs;

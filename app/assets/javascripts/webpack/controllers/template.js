@@ -1,19 +1,19 @@
 import React from "react";
-import TableController from "controllers/table";
+import Table from "controllers/table";
 import * as FilterValues from "controller_helpers/filter_values";
 import { changeFilterValue } from "action_creators";
 import { padTwo } from "utils";
-import DateRangeFilterController from "controllers/filter_groups/date_range";
-import DivisionScopeFilterController from "controllers/filter_groups/division_scope";
+import DateRangeFilter from "controllers/filter_groups/date_range";
+import DivisionScopeFilter from "controllers/filter_groups/division_scope";
 import { matchedRoute } from "controller_helpers/routing";
-import BreadcrumbsController from "controllers/breadcrumbs";
+import Breadcrumbs from "controllers/breadcrumbs";
 
 
 const TemplateController = ({model, dispatch}) => {
   if(model.app.currentUser) {
     return(
       <div>
-        <BreadcrumbsController model={model} dispatch={dispatch}/>
+        <Breadcrumbs model={model} dispatch={dispatch}/>
         <div className="content-wrapper">
           <div className="content">
             <div className="row">
@@ -21,9 +21,9 @@ const TemplateController = ({model, dispatch}) => {
                 <h2 style={{marginBottom: "10px"}}>
                   { "Page Views by User" }
                 </h2>
-                <TableController model={model} dispatch={dispatch}/>
+                <Table model={model} dispatch={dispatch}/>
               </div>
-              <SidebarController model={model} dispatch={dispatch}/>
+              <Sidebar model={model} dispatch={dispatch}/>
             </div>
           </div>
         </div>
@@ -36,13 +36,13 @@ const TemplateController = ({model, dispatch}) => {
 };
 
 
-const SidebarController = ({model, dispatch}) => {
+const Sidebar = ({model, dispatch}) => {
   return(
     <div className="span3 offsethalf datatable-sidebar hide-when-reduced">
       <div className="well filter">
         <div className="title">{ "Configure Report" }</div>
-        <DateRangeFilterController model={model} dispatch={dispatch}/>
-        <DivisionScopeFilterController model={model} dispatch={dispatch}/>
+        <DateRangeFilter model={model} dispatch={dispatch}/>
+        <DivisionScopeFilter model={model} dispatch={dispatch}/>
       </div>
     </div>
   );
