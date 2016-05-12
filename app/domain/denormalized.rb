@@ -260,7 +260,12 @@ module Denormalized
             specialists: procedure.procedure_specializations.select(&:assumed_specialist?).map(&:specialization).map(&:id),
             clinics: procedure.procedure_specializations.select(&:assumed_clinic?).map(&:specialization).map(&:id)
           },
-          childrenProcedureIds: procedure.children.map(&:id)
+          childrenProcedureIds: procedure.children.map(&:id),
+          ancestorIds: procedure.
+            procedure_specializations.
+            first.
+            ancestors.
+            map(&:procedure_id)
         })
       end
     end,

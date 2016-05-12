@@ -9,14 +9,7 @@ class ProceduresController < ApplicationController
   def show
     @layout_heartbeat_loader = false
     @procedure = Procedure.find(params[:id])
-    @init_data = {
-      app: FilterTableAppState.exec(current_user: current_user),
-      ui: {
-        pageType: "procedure",
-        procedureId: @procedure.id,
-        hasBeenInitialized: false
-      }
-    }
+    @init_data = FilterTableAppState.call(current_user: current_user)
   end
 
   def new
