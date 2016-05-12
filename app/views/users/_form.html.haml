@@ -98,12 +98,6 @@
 
   .form-actions
     = f.button :submit, class: "btn btn-primary"
-    = link_to 'Delete',
-      user_path,
-      data: { confirm: "Delete #{@user.name}?"},
-      method: :delete,
-      class: "btn btn-danger",
-      id: "button--delete"
     = link_to 'Cancel', users_path, class: "btn btn-danger ajax"
 
   %script{"type" => "text/javascript"}
