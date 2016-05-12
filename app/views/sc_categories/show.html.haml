@@ -1,17 +1,6 @@
 - set_page_specific_title "#{@sc_category.name}"
 
-%ul#specialties-menu
-  %li.dropdown.no-caret
-    %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-      All Specialties
-      %b.caret
-
-= render 'partials/specialization_dropdown_menu'
-
-.content-wrapper
-  %h2= @sc_category.full_name
-
-  #react_root--template
+#react_root--template
 
   %hr
 

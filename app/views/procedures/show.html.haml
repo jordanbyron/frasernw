@@ -1,29 +1,5 @@
 - set_page_specific_title "#{@procedure.name}"
 
-- procedure_specialization = @procedure.procedure_specializations.first || ProcedureSpecialization.first
-- procedure_specializations = @procedure.procedure_specializations.reject{ |ps| !current_user.as_admin_or_super? && ps.specialization.fully_in_progress_for_divisions(current_user.as_divisions) }
-- assumed_specialist_specialization_ids = procedure_specializations.reject{ |ps| !ps.assumed_specialist? }.map{ |ps| ps.specialization.id }
-- assumed_clinic_specialization_ids = procedure_specializations.reject{ |ps| !ps.assumed_clinic? }.map{ |ps| ps.specialization.id }
-
-%ul#specialties-menu
-  %li.dropdown
-    %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-      All Specialties
-      %b.caret
-  - if procedure_specializations.length > 2
-    %li.subsequent.specialty
-      %a.tt#tt_more_specialties{"href" => "javascript:void(0)", "onclick" => "$('#tt_more_specialties').tooltip('toggle')", "title" => "<ul class='specialties'>#{procedure_specializations.map{|ps| "<li>#{link_to ps.specialization.name, ps.specialization, :class => ps.specialization.fully_in_progress_for_divisions(current_user.as_divisions) ? 'in-progress ajax' : 'ajax'}</li>"}.join('').html_safe}</ul>" }= "#{procedure_specializations.first(2).collect{ |ps| ps.specialization.name }.join(', ')}..."
-  - else
-    %li.subsequent.specialty
-      = "#{procedure_specializations.collect{ |ps| "#{link_to ps.specialization.name, ps.specialization, :class => ps.specialization.fully_in_progress_for_divisions(current_user.as_divisions) ? 'in-progress ajax' : 'ajax'} #{"<span class='new'>new</span>".html_safe if ps.specialization.new_for_divisions(current_user.as_divisions)}" }.to_sentence}".html_safe
-  - if procedure_specialization.parent.present? && procedure_specialization.parent.parent.present? && procedure_specialization.parent.parent.procedure.present?
-    %li.subsequent.grandparent= link_to procedure_specialization.parent.parent.procedure.name, procedure_specialization.parent.parent.procedure, :class => 'ajax'
-  - if procedure_specialization.parent.present? && procedure_specialization.parent.procedure.present?
-    %li.subsequent.parent= link_to procedure_specialization.parent.procedure.name, procedure_specialization.parent.procedure, :class => 'ajax'
-  %li.subsequent= @procedure.name
-
-= render 'partials/specialization_dropdown_menu'
-
 .tabbable
   #react_root--template
 

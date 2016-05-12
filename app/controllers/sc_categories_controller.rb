@@ -10,26 +10,7 @@ class ScCategoriesController < ApplicationController
   def show
     @sc_category = ScCategory.find(params[:id])
     # @sc_items = @sc_category.all_sc_items_in_divisions( current_user.as_super_admin? ? Division.all : current_user.as_divisions )
-    @init_data = {
-      app: {
-        currentUser: {
-          isSuperAdmin: current_user.as_super_admin?,
-          divisionIds: current_user.as_divisions.map(&:id),
-          favorites: {
-            contentItems: current_user.favorite_content_items.pluck(:id)
-          }
-        },
-        contentCategories: Denormalized.fetch(:content_categories),
-        contentItems: Denormalized.fetch(:content_items),
-        divisions: Denormalized.fetch(:divisions),
-        specializations: Denormalized.fetch(:specializations)
-      },
-      ui: {
-        contentCategoryId: @sc_category.id,
-        hasBeenInitialized: false,
-        pageType: "contentCategory"
-      }
-    }
+    @init_data = FilterTableAppState.call(current_user: current_user)
   end
 
   def new
