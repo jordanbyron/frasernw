@@ -18,9 +18,7 @@ const TemplateController = ({model, dispatch}) => {
           <div className="content">
             <div className="row">
               <div className="span8half">
-                <h2 style={{marginBottom: "10px"}}>
-                  { "Page Views by User" }
-                </h2>
+                <PageTitle model={model} dispatch={dispatch}/>
                 <Table model={model} dispatch={dispatch}/>
               </div>
               <Sidebar model={model} dispatch={dispatch}/>
@@ -35,17 +33,34 @@ const TemplateController = ({model, dispatch}) => {
   }
 };
 
+const PageTitle = ({model, dispatch}) => {
+  if (matchedRoute(model) === "/reports/pageviews_by_user") {
+    return(
+      <h2 style={{marginBottom: "10px"}}>
+        { "Page Views by User" }
+      </h2>
+    );
+  }
+  else {
+    return <span></span>
+  }
+};
 
 const Sidebar = ({model, dispatch}) => {
-  return(
-    <div className="span3 offsethalf datatable-sidebar hide-when-reduced">
-      <div className="well filter">
-        <div className="title">{ "Configure Report" }</div>
-        <DateRangeFilter model={model} dispatch={dispatch}/>
-        <DivisionScopeFilter model={model} dispatch={dispatch}/>
+  if (matchedRoute(model) === "/reports/pageviews_by_user") {
+    return(
+      <div className="span3 offsethalf datatable-sidebar hide-when-reduced">
+        <div className="well filter">
+          <div className="title">{ "Configure Report" }</div>
+          <DateRangeFilter model={model} dispatch={dispatch}/>
+          <DivisionScopeFilter model={model} dispatch={dispatch}/>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+  else {
+    return(<span></span>);
+  }
+};
 
 export default TemplateController;

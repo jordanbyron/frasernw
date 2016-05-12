@@ -1,5 +1,6 @@
 import React from "react";
 import { sortByHeading } from "action_creators";
+import { matchedRoute } from "controller_helpers/routing";
 
 const TableRows = (model, dispatch) => {
   return sortedRecordsToDisplay(model).map((record) => {
@@ -53,7 +54,7 @@ const isTableLoaded = (model) => {
 }
 
 const Table = ({model, dispatch}) => {
-  if (isTableLoaded(model)){
+  if (matchedRoute(model) === "/reports/pageviews_by_user" && isTableLoaded(model)){
     return (
       <table className="table">
         <thead>
