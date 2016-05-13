@@ -7,6 +7,7 @@ import DateRangeFilter from "controllers/filter_groups/date_range";
 import DivisionScopeFilter from "controllers/filter_groups/division_scope";
 import { matchedRoute } from "controller_helpers/routing";
 import Breadcrumbs from "controllers/breadcrumbs";
+import NavTabs from "controllers/nav_tabs";
 
 
 const TemplateController = ({model, dispatch}) => {
@@ -14,6 +15,7 @@ const TemplateController = ({model, dispatch}) => {
     return(
       <div>
         <Breadcrumbs model={model} dispatch={dispatch}/>
+        <NavTabs model={model} dispatch={dispatch}/>
         <div className="content-wrapper">
           <div className="content">
             <div className="row">

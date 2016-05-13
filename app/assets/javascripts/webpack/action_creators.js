@@ -44,10 +44,10 @@ export function sortByHeading(dispatch, key, currentKey) {
   })
 }
 
-export function locationChanged(dispatch, locationChanged) {
+export function locationChanged(dispatch, newLocation) {
   dispatch({
     type: "LOCATION_CHANGED",
-    location: location
+    location: newLocation
   });
 }
 
@@ -70,4 +70,11 @@ export function changeRoute(dispatch, route) {
     type: "CHANGE_ROUTE",
     route: route
   })
+}
+
+export function tabClicked(dispatch, model, tabKey) {
+  changeRoute(
+    dispatch,
+    `${model.ui.location.pathname}?tabKey=${tabKey}`
+  );
 }
