@@ -1,14 +1,9 @@
 - # (user)
 %td.admin
   - if can? :update, user
-    = link_to "<i class='icon-pencil'></i>".html_safe + " Edit",
-      edit_user_path(user),
-      class: "btn btn-mini stacked-button"
-  - if can? :delete, user
-    = link_to "<i class='icon-trash'></i>".html_safe + " Delete",
-      user_path(user),
-      data: { confirm: "Delete #{user.name}?"},
-      method: :delete,
-      class: "btn btn-mini stacked-button"
+    = link_to edit_user_path(user),
+      class: "btn btn-mini stacked-button" do
+      %i.icon-pencil
+      %span= " Edit"
   - if can? :view_history, user
     = history_button(user)

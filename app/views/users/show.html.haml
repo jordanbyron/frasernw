@@ -67,14 +67,16 @@
 
   %p.admin.btn-group
     - if can? :update, @user
-      = link_to "<i class='icon-pencil'></i>".html_safe + " Edit",
-        edit_user_path(@user),
-        class: "btn"
-    - if can? :delete, @user
-      = link_to "<i class='icon-trash'></i>".html_safe + " Delete",
-        @user,
+      = link_to edit_user_path(@user),
+        class: "btn" do
+        %i.icon-pencil
+        %span= " Edit"
+    - if can? :destroy, @user
+      = link_to @user,
         data: { confirm: "Delete #{@user.name}?"},
         method: :delete,
-        class: "btn"
+        class: "btn" do
+        %i.icon-trash
+        %span= " Delete"
     - if can? :view_history, @user
       = large_history_button(@user)

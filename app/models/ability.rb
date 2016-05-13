@@ -84,9 +84,10 @@ class Ability
         end
 
         #can edit non-admin/super-admin users
-        can [:index, :new, :create, :show, :destroy], User
-        can [:edit, :update], User do |u|
-          !u.as_super_admin? && (u.divisions & user.as_divisions).present?
+        can [:index, :new, :create, :show], User
+        can [:edit, :update, :destroy], User do |target_user|
+          !target_user.super_admin? &&
+            (target_user.divisions & user.as_divisions).present?
         end
         #can [:change_name, :update_name], User
         can [:change_email, :update_email, :change_password, :update_password, :change_local_referral_area, :update_local_referral_area], User
