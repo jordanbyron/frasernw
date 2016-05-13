@@ -1,25 +1,27 @@
 - set_page_specific_title "@video.title"
 
-%h2= @video.title
+.content-wrapper
 
-%iframe{align: "center",
-  title: "YouTube Player",
-  src: "#{@video.link}",
-  height: "315px;",
-  width: "560px;",
-  frameborder: "0",
-  allowfullscreen: "true"}
+  %h2= @video.title
 
-%p.admin.btn-group
-  - if can? :update, @video
-    = link_to edit_video_path(@video),
-      class: "btn" do
-      %i.icon-pencil
-      %span= " Edit"
-  - if can? :destroy, @video
-    = link_to @video,
-      data: { confirm: "Delete #{@video.title}?" },
-      method: :delete,
-      class: "btn" do
-      %i.icon-trash
-      %span= " Delete"
+  %iframe{align: "center",
+    title: "YouTube Player",
+    src: "#{@video.link}",
+    height: "315px;",
+    width: "560px;",
+    frameborder: "0",
+    allowfullscreen: "true"}
+
+  %p.admin.btn-group
+    - if can? :update, @video
+      = link_to edit_video_path(@video),
+        class: "btn" do
+        %i.icon-pencil
+        %span= " Edit"
+    - if can? :destroy, @video
+      = link_to @video,
+        data: { confirm: "Delete #{@video.title}?" },
+        method: :delete,
+        class: "btn" do
+        %i.icon-trash
+        %span= " Delete"
