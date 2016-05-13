@@ -59,7 +59,7 @@ class ScCategoriesController < ApplicationController
   def update
     @sc_category = ScCategory.find(params[:id])
     if @sc_category.update_attributes(params[:sc_category])
-      redirect_to @sc_category, :notice: "Successfully updated content category."
+      redirect_to @sc_category, notice: "Successfully updated content category."
     else
       render action: 'edit'
     end
