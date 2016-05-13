@@ -1,6 +1,6 @@
 Frasernw::Application.routes.draw do
 
-  resources :videos, except: :show
+  resources :videos
 
   resources :evidences
 

@@ -14,6 +14,7 @@ class Ability
       can :get, :global_data
       can :index, Newsletter
       can :index, Video
+      can :show, Video
 
       can :index, :latest_updates
 
