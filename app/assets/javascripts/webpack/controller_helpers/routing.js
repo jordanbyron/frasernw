@@ -1,4 +1,5 @@
 import UrlPattern from 'url-pattern';
+import { memoize } from "utils";
 
 export const Routes = [
   "/specialties/:id",
@@ -10,15 +11,24 @@ export const Routes = [
   "/reports/pageviews_by_user"
 ]
 
-export function matchedRoute(model) {
-  return _.find(Routes, (route) => {
-    return !(routeParams(model.ui.location.pathname, route) === null);
-  });
-};
+const pathname = (model) => model.ui.location.pathname;
 
-export function matchedRouteParams(model) {
-  return routeParams(model.ui.location.pathname, matchedRoute(model));
-};
+export const matchedRoute = memoize(
+  pathname,
+  (pathname) => {
+    return _.find(Routes, (route) => {
+      return !(routeParams(pathname, route) === null);
+    });
+  }
+);
+
+export const matchedRouteParams = memoize(
+  pathname,
+  matchedRoute,
+  (pathname, matchedRoute) => {
+    return routeParams(pathname, matchedRoute);
+  }
+);
 
 const routeParams = (pathname, route) => {
   const pattern = new UrlPattern(route);
