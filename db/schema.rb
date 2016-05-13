@@ -1095,13 +1095,6 @@ ActiveRecord::Schema.define(version: 20160508212434) do
   add_index "versions", ["item_id"], name: "index_versions_on_item_id", using: :btree
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
-  create_table "videos", force: true do |t|
-    t.string   "link"
-    t.string   "title"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "views", force: true do |t|
     t.integer  "specialist_id"
     t.text     "notes"
