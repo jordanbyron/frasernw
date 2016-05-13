@@ -18,13 +18,7 @@ const TemplateController = ({model, dispatch}) => {
         <NavTabs model={model} dispatch={dispatch}/>
         <div className="content-wrapper">
           <div className="content">
-            <div className="row">
-              <div className="span8half">
-                <PageTitle model={model} dispatch={dispatch}/>
-                <Table model={model} dispatch={dispatch}/>
-              </div>
-              <Sidebar model={model} dispatch={dispatch}/>
-            </div>
+            <WhitePanelContents model={model} dispatch={dispatch}/>
           </div>
         </div>
       </div>
@@ -32,6 +26,34 @@ const TemplateController = ({model, dispatch}) => {
   }
   else {
     return(<span></span>);
+  }
+};
+
+
+const usesSidebarLayout = (model) => {
+  return matchedRoute(model) !== "/latest_updates" ||
+    model.app.currentUser.isAdmin
+}
+
+const WhitePanelContents = ({model, dispatch}) => {
+  if (usesSidebarLayout(model)){
+    return(
+      <div className="row">
+        <div className="span8half">
+          <PageTitle model={model} dispatch={dispatch}/>
+          <Table model={model} dispatch={dispatch}/>
+        </div>
+        <Sidebar model={model} dispatch={dispatch}/>
+      </div>
+    );
+  } else {
+    return(
+      <div className="row">
+        <div className="span12">
+          { "whatever" }
+        </div>
+      </div>
+    );
   }
 };
 

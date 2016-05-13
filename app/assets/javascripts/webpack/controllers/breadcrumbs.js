@@ -2,29 +2,41 @@ import React from "react";
 import recordShown from "controller_helpers/record_shown";
 import { matchedRoute } from "controller_helpers/routing";
 import { toggleBreadcrumbDropdown, changeRoute } from "action_creators";
+import _ from "lodash";
+
+const ROUTES_SHOWING = [
+  "/specialties/:id",
+  "/areas_of_practice/:id",
+  "/content_categories/:id"
+]
 
 const Breadcrumbs = ({model, dispatch}) => {
-  return(
-    <div>
-      <ul id="specialties-menu">
-        <li className="dropdown" onClick={_.partial(
-          toggleBreadcrumbDropdown,
-          dispatch,
-          dropdownIsOpen(model))}
-        >
-          <a className="specialties-dropdown-toggle" href="javascript:void(0)">
-            <span>All Specialties</span>
-            <b className="caret"/>
-          </a>
-        </li>
-        <ParentSpecialtyBreadcrumb model={model}/>
-        <ParentProcedureBreadcrumb model={model} level={-2}/>
-        <ParentProcedureBreadcrumb model={model} level={-1}/>
-        <RecordShownBreadcrumb model={model}/>
-      </ul>
-      <BreadcrumbDropdown model={model} dispatch={dispatch}/>
-    </div>
-  );
+  if (_.includes(ROUTES_SHOWING, matchedRoute(model))){
+    return(
+      <div>
+        <ul id="specialties-menu">
+          <li className="dropdown" onClick={_.partial(
+            toggleBreadcrumbDropdown,
+            dispatch,
+            dropdownIsOpen(model))}
+          >
+            <a className="specialties-dropdown-toggle" href="javascript:void(0)">
+              <span>All Specialties</span>
+              <b className="caret"/>
+            </a>
+          </li>
+          <ParentSpecialtyBreadcrumb model={model}/>
+          <ParentProcedureBreadcrumb model={model} level={-2}/>
+          <ParentProcedureBreadcrumb model={model} level={-1}/>
+          <RecordShownBreadcrumb model={model}/>
+        </ul>
+        <BreadcrumbDropdown model={model} dispatch={dispatch}/>
+      </div>
+    );
+  }
+  else {
+    return <span></span>;
+  }
 }
 
 const dropdownIsOpen = (model) => {
