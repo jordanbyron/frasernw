@@ -107,6 +107,7 @@ class User < ActiveRecord::Base
     :role,
     :active,
     :division_ids,
+    :divisions,
     :user_controls_specialists_attributes,
     :user_controls_clinics_attributes,
     :password,
