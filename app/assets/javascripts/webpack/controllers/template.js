@@ -8,7 +8,8 @@ import DivisionScopeFilter from "controllers/filter_groups/division_scope";
 import { matchedRoute } from "controller_helpers/routing";
 import Breadcrumbs from "controllers/breadcrumbs";
 import NavTabs from "controllers/nav_tabs";
-
+import ReducedViewSelector from "controllers/reduced_view_selector";
+import reducedView from "controller_helpers/reduced_view";
 
 const TemplateController = ({model, dispatch}) => {
   if(model.app.currentUser) {
@@ -16,11 +17,7 @@ const TemplateController = ({model, dispatch}) => {
       <div>
         <Breadcrumbs model={model} dispatch={dispatch}/>
         <NavTabs model={model} dispatch={dispatch}/>
-        <div className="content-wrapper">
-          <div className="content">
-            <WhitePanelContents model={model} dispatch={dispatch}/>
-          </div>
-        </div>
+        <WhitePanel model={model} dispatch={dispatch}/>
       </div>
     );
   }
@@ -35,27 +32,46 @@ const usesSidebarLayout = (model) => {
     model.app.currentUser.isAdmin
 }
 
-const WhitePanelContents = ({model, dispatch}) => {
+const WhitePanel = ({model, dispatch}) => {
   if (usesSidebarLayout(model)){
     return(
-      <div className="row">
-        <div className="span8half">
-          <PageTitle model={model} dispatch={dispatch}/>
-          <Table model={model} dispatch={dispatch}/>
+      <div className="content-wrapper">
+        <div className="content">
+          <ReducedViewSelector model={model} dispatch={dispatch}/>
+          <div className="row">
+            <div className={`span8half ${viewSelectorClass(model, "main")}`}>
+              <div>This is the main panel</div>
+              <PageTitle model={model} dispatch={dispatch}/>
+              <Table model={model} dispatch={dispatch}/>
+            </div>
+            <Sidebar model={model} dispatch={dispatch}/>
+          </div>
         </div>
-        <Sidebar model={model} dispatch={dispatch}/>
       </div>
     );
   } else {
     return(
-      <div className="row">
-        <div className="span12">
-          { "whatever" }
+      <div className="content-wrapper">
+        <div className="content">
+          <div className="row">
+            <div className="span12">
+              { "whatever" }
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 };
+
+const viewSelectorClass = (model, view) => {
+  if (reducedView(model) === view){
+    return "";
+  }
+  else {
+    return "hide-when-reduced";
+  }
+}
 
 const PageTitle = ({model, dispatch}) => {
   if (matchedRoute(model) === "/reports/pageviews_by_user") {
@@ -73,7 +89,9 @@ const PageTitle = ({model, dispatch}) => {
 const Sidebar = ({model, dispatch}) => {
   if (matchedRoute(model) === "/reports/pageviews_by_user") {
     return(
-      <div className="span3 offsethalf datatable-sidebar hide-when-reduced">
+      <div className={
+        `span3 offsethalf datatable-sidebar ${viewSelectorClass(model, "sidebar")}`
+      }>
         <div className="well filter">
           <div className="title">{ "Configure Report" }</div>
           <DateRangeFilter model={model} dispatch={dispatch}/>
@@ -83,7 +101,11 @@ const Sidebar = ({model, dispatch}) => {
     );
   }
   else {
-    return(<span></span>);
+    return(
+      <div className={
+        `span3 offsethalf datatable-sidebar ${viewSelectorClass(model, "sidebar")}`
+      }>This is the sidebar</div>
+    );
   }
 };
 

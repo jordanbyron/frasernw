@@ -20,8 +20,18 @@ const ui = (model = {}, action) => {
     filterValues: filterValues(model.filterValues, action),
     selectedTableHeading: selectedTableHeading(model.selectedTableHeading, action),
     location: location(model.location, action),
-    openBreadcrumbDropdown: openBreadcrumbDropdown(model.openBreadcrumbDropdown, action)
+    openBreadcrumbDropdown: openBreadcrumbDropdown(model.openBreadcrumbDropdown, action),
+    reducedView: reducedView(model.reducedView, action)
   };
+}
+
+const reducedView = (model, action) => {
+  switch(action.type){
+  case "SELECT_REDUCED_VIEW":
+    return action.newView;
+  default:
+    return model;
+  }
 }
 
 const openBreadcrumbDropdown = (model, action) => {

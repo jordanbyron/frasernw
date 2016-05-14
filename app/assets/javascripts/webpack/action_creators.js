@@ -78,3 +78,10 @@ export function tabClicked(dispatch, model, tabKey) {
     `${model.ui.location.pathname}?tabKey=${tabKey}`
   );
 }
+
+export function selectReducedView(dispatch, newView) {
+  dispatch({
+    type: "SELECT_REDUCED_VIEW",
+    newView: newView
+  })
+}
