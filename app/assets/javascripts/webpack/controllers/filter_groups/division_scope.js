@@ -2,6 +2,7 @@ import React from "react";
 import FilterGroup from "component_helpers/filter_group";
 import * as FilterValues from "controller_helpers/filter_values";
 import { changeFilterValue } from "action_creators";
+import { matchedRoute } from "controller_helpers/routing";
 
 const scopeOptions = (model) => {
   if (model.app.currentUser.role === "admin") {
@@ -22,26 +23,30 @@ const labelScopeOption = (option, model) => {
 }
 
 const DivisionScopeFilter = ({model, dispatch}) => {
-  return(
-    <FilterGroup title="Scope">
-      <label style={{marginTop: "10px"}}>
-        <select
-          value={FilterValues.divisionScope(model)}
-          onChange={function(e) { changeFilterValue(dispatch, "divisionScope", e.target.value) } }
-        >
-          {
-            scopeOptions(model).map((option) => {
-              return(
-                <option key={option} value={option}>
-                  { labelScopeOption(option, model) }
-                </option>
-              )
-            })
-          }
-        </select>
-      </label>
-    </FilterGroup>
-  );
+  if(matchedRoute(model) === "/reports/pageviews_by_user"){
+    return(
+      <FilterGroup title="Scope">
+        <label style={{marginTop: "10px"}}>
+          <select
+            value={FilterValues.divisionScope(model)}
+            onChange={function(e) { changeFilterValue(dispatch, "divisionScope", e.target.value) } }
+          >
+            {
+              scopeOptions(model).map((option) => {
+                return(
+                  <option key={option} value={option}>
+                    { labelScopeOption(option, model) }
+                  </option>
+                )
+              })
+            }
+          </select>
+        </label>
+      </FilterGroup>
+    );
+  } else {
+    return <span></span>
+  }
 }
 
 export default DivisionScopeFilter;

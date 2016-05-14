@@ -14,12 +14,18 @@ export function defaultPanel(model) {
   }[matchedRoute(model)]();
 };
 
-
-
 export function selectedPanelKey(model){
   return (model.ui.location.query.tabKey ||
     panelKey(defaultPanel(model).type, defaultPanel(model).id));
 };
+
+export function recordShownByPanel(model){
+  if(selectedPanelKey(model).includes("contentCategories")){
+    const id = _.replace(selectedPanelKey(model), "contentCategories", "")
+
+    return model.app.contentCategories[id];
+  }
+}
 
 export function panelKey(collection, id) {
   if (id) {

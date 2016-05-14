@@ -3,46 +3,52 @@ import * as FilterValues from "controller_helpers/filter_values";
 import { padTwo } from "utils";
 import React from "react";
 import { changeFilterValue } from "action_creators";
+import { matchedRoute } from "controller_helpers/routing";
 
 const DateRangeFilter = ({model, dispatch}) => {
-  return(
-    <FilterGroup title="Date Range">
-      <label style={{marginTop: "10px"}}>
-        <div>Start Month:</div>
-        <select
-          value={FilterValues.startMonth(model)}
-          onChange={function(e) { changeFilterValue(dispatch, "startMonth", e.target.value) } }
-        >
-          {
-            monthOptions().map((option) => {
-              return(
-                <option key={option} value={option}>
-                  { labelMonthOption(option) }
-                </option>
-              )
-            })
-          }
-        </select>
-      </label>
-      <label style={{marginTop: "10px", marginBottom: "20px"}}>
-        <div>End Month:</div>
-        <select
-          value={FilterValues.endMonth(model)}
-          onChange={function(e) { changeFilterValue(dispatch, "endMonth", e.target.value) } }
-        >
-          {
-            monthOptions().map((option) => {
-              return(
-                <option key={option} value={option}>
-                  { labelMonthOption(option) }
-                </option>
-              )
-            })
-          }
-        </select>
-      </label>
-    </FilterGroup>
-  );
+  if(matchedRoute(model) === "/reports/pageviews_by_user"){
+    return(
+      <FilterGroup title="Date Range">
+        <label style={{marginTop: "10px"}}>
+          <div>Start Month:</div>
+          <select
+            value={FilterValues.startMonth(model)}
+            onChange={function(e) { changeFilterValue(dispatch, "startMonth", e.target.value) } }
+          >
+            {
+              monthOptions().map((option) => {
+                return(
+                  <option key={option} value={option}>
+                    { labelMonthOption(option) }
+                  </option>
+                )
+              })
+            }
+          </select>
+        </label>
+        <label style={{marginTop: "10px", marginBottom: "20px"}}>
+          <div>End Month:</div>
+          <select
+            value={FilterValues.endMonth(model)}
+            onChange={function(e) { changeFilterValue(dispatch, "endMonth", e.target.value) } }
+          >
+            {
+              monthOptions().map((option) => {
+                return(
+                  <option key={option} value={option}>
+                    { labelMonthOption(option) }
+                  </option>
+                )
+              })
+            }
+          </select>
+        </label>
+      </FilterGroup>
+    );
+  }
+  else {
+    return <span></span>
+  }
 };
 
 

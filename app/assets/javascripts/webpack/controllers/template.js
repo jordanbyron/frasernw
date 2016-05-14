@@ -9,7 +9,8 @@ import { matchedRoute } from "controller_helpers/routing";
 import Breadcrumbs from "controllers/breadcrumbs";
 import NavTabs from "controllers/nav_tabs";
 import ReducedViewSelector from "controllers/reduced_view_selector";
-import reducedView from "controller_helpers/reduced_view";
+import { reducedView, viewSelectorClass } from "controller_helpers/reduced_view";
+import Sidebar from "controllers/sidebar";
 
 const TemplateController = ({model, dispatch}) => {
   if(model.app.currentUser) {
@@ -26,7 +27,6 @@ const TemplateController = ({model, dispatch}) => {
   }
 };
 
-
 const usesSidebarLayout = (model) => {
   return matchedRoute(model) !== "/latest_updates" ||
     model.app.currentUser.isAdmin
@@ -39,11 +39,7 @@ const WhitePanel = ({model, dispatch}) => {
         <div className="content">
           <ReducedViewSelector model={model} dispatch={dispatch}/>
           <div className="row">
-            <div className={`span8half ${viewSelectorClass(model, "main")}`}>
-              <div>This is the main panel</div>
-              <PageTitle model={model} dispatch={dispatch}/>
-              <Table model={model} dispatch={dispatch}/>
-            </div>
+            <MainPanel model={model} dispatch={dispatch}/>
             <Sidebar model={model} dispatch={dispatch}/>
           </div>
         </div>
@@ -64,15 +60,6 @@ const WhitePanel = ({model, dispatch}) => {
   }
 };
 
-const viewSelectorClass = (model, view) => {
-  if (reducedView(model) === view){
-    return "";
-  }
-  else {
-    return "hide-when-reduced";
-  }
-}
-
 const PageTitle = ({model, dispatch}) => {
   if (matchedRoute(model) === "/reports/pageviews_by_user") {
     return(
@@ -86,27 +73,14 @@ const PageTitle = ({model, dispatch}) => {
   }
 };
 
-const Sidebar = ({model, dispatch}) => {
-  if (matchedRoute(model) === "/reports/pageviews_by_user") {
-    return(
-      <div className={
-        `span3 offsethalf datatable-sidebar ${viewSelectorClass(model, "sidebar")}`
-      }>
-        <div className="well filter">
-          <div className="title">{ "Configure Report" }</div>
-          <DateRangeFilter model={model} dispatch={dispatch}/>
-          <DivisionScopeFilter model={model} dispatch={dispatch}/>
-        </div>
-      </div>
-    );
-  }
-  else {
-    return(
-      <div className={
-        `span3 offsethalf datatable-sidebar ${viewSelectorClass(model, "sidebar")}`
-      }>This is the sidebar</div>
-    );
-  }
-};
+const MainPanel = ({model, dispatch}) => {
+  return(
+    <div className={`span8half ${viewSelectorClass(model, "main")}`}>
+      <div>This is the main panel</div>
+      <PageTitle model={model} dispatch={dispatch}/>
+      <Table model={model} dispatch={dispatch}/>
+    </div>
+  );
+}
 
 export default TemplateController;

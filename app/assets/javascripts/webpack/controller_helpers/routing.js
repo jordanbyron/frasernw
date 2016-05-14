@@ -30,6 +30,21 @@ export const matchedRouteParams = memoize(
   }
 );
 
+export function recordShownByPage(model) {
+  if (matchedRoute(model) === "/specialties/:id"){
+    return model.app.specializations[matchedRouteParams(model).id];
+  }
+  else if (matchedRoute(model) === "/areas_of_practice/:id"){
+    return model.app.procedures[matchedRouteParams(model).id];
+  }
+  else if (matchedRoute(model) === "/content_categories/:id"){
+    return model.app.contentCategories[matchedRouteParams(model).id];
+  }
+  else {
+    return null;
+  }
+};
+
 const routeParams = (pathname, route) => {
   const pattern = new UrlPattern(route);
 

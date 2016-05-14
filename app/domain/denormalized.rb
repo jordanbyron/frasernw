@@ -295,7 +295,7 @@ module Denormalized
 
         if specialization_option.open_to_sc_category?
           {
-            type: "contentCategories",
+            type: "contentCategory",
             id: specialization_option.open_to
           }
         else

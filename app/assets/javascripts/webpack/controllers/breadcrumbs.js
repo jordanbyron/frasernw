@@ -1,6 +1,5 @@
 import React from "react";
-import recordShown from "controller_helpers/record_shown";
-import { matchedRoute } from "controller_helpers/routing";
+import { recordShownByPage, matchedRoute } from "controller_helpers/routing";
 import { toggleBreadcrumbDropdown, changeRoute } from "action_creators";
 import _ from "lodash";
 
@@ -146,11 +145,11 @@ const inProgressClass = (model, specialization) => {
 
 const ParentSpecialtyBreadcrumb = ({model}) => {
   if (matchedRoute(model) === "/areas_of_practice/:id"){
-    const names = recordShown(model).
+    const names = recordShownByPage(model).
       specializationIds.map((id) => model.app.specializations[id].name).
       slice(0, 2);
 
-    if (recordShown(model).specializationIds.length > 2) {
+    if (recordShownByPage(model).specializationIds.length > 2) {
       var label = `${names.join(", ")}...`;
     }
     else {
@@ -171,7 +170,7 @@ const ParentSpecialtyBreadcrumb = ({model}) => {
 
 const ParentProcedureBreadcrumb = ({model, level}) => {
   if (matchedRoute(model) === "/areas_of_practice/:id"){
-    const names = recordShown(model).
+    const names = recordShownByPage(model).
       specializationIds.map((id) => model.app.specializations[id].name).
       slice(0, 2);
 
@@ -182,8 +181,8 @@ const ParentProcedureBreadcrumb = ({model, level}) => {
       var className = "grandparent";
     }
 
-    const procedureIdIndex = recordShown(model).ancestorIds.length + level;
-    const procedureId = recordShown(model).ancestorIds[procedureIdIndex];
+    const procedureIdIndex = recordShownByPage(model).ancestorIds.length + level;
+    const procedureId = recordShownByPage(model).ancestorIds[procedureIdIndex];
 
     if (procedureId) {
       return(
@@ -206,16 +205,16 @@ const ParentProcedureBreadcrumb = ({model, level}) => {
 const RecordShownBreadcrumb = ({model}) => {
   if (matchedRoute(model) === "/specialties/:id"){
     return(
-      <li className={`subsequent ${inProgressClass(model, recordShown(model))}`}>
-        <span>{ recordShown(model).name }</span>
-        <NewTag model={model} specialization={recordShown(model)}/>
+      <li className={`subsequent ${inProgressClass(model, recordShownByPage(model))}`}>
+        <span>{ recordShownByPage(model).name }</span>
+        <NewTag model={model} specialization={recordShownByPage(model)}/>
       </li>
     );
   }
   else if (matchedRoute(model) === "/areas_of_practice/:id"){
     return(
       <li className="subsequent">
-        <span>{ recordShown(model).name }</span>
+        <span>{ recordShownByPage(model).name }</span>
       </li>
     );
   }

@@ -26,7 +26,7 @@ const contentCategoriesShowingTabs = (model) => {
 const contentCategoryTabs = (model, dispatch) => {
   return(
     _.values(contentCategoriesShowingTabs(model)).map((category) => {
-      const _key = panelKey("contentCategories", category.id)
+      const _key = panelKey("contentCategory", category.id)
       return(
         <NavTab
           label={category.name}
