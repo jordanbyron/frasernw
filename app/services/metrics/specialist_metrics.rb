@@ -36,7 +36,7 @@ module Metrics
             specialist_row[:specialty] =
               specialist.specializations.map{|s| s.name}.join(",")
           end
-          if ((options[:all] || options[:specialty_count] == true)
+          if ((options[:all] || options[:specialty_count]) == true)
             specialist_row[:specialty_count] =
               specialist.specialist_specializations.count
           end
