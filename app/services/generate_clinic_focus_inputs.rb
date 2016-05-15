@@ -17,7 +17,9 @@ class GenerateClinicFocusInputs
     procedures_covered = []
 
     specializations.inject({}) do |memo, specialization|
-      memo.merge(specialization.arranged_procedure_specializations(:non_assumed))
+      memo.merge(
+        specialization.arranged_procedure_specializations(:non_assumed)
+      )
     end.each do |ps, children|
       if !procedures_covered.include?(ps.procedure.id)
         focus_inputs << generate_focus(ps, 0)
@@ -40,7 +42,9 @@ class GenerateClinicFocusInputs
     specializations.map do |specialization|
       {
         specialization_name: specialization.name,
-        focuses: focus_inputs.select{|input| input[:specialization_id] == specialization.id}
+        focuses: focus_inputs.select{ |input|
+          input[:specialization_id] == specialization.id
+        }
       }
     end
   end

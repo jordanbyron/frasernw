@@ -2,14 +2,16 @@ class AddClinicLocation < ActiveRecord::Migration
   def change
 
     rename_column :clinics, :phone, :deprecated_phone
-    rename_column :clinics, :fax,   :deprecated_fax
+    rename_column :clinics, :fax, :deprecated_fax
     rename_column :clinics, :phone_extension, :deprecated_phone_extension
     rename_column :clinics, :sector_mask, :deprecated_sector_mask
     rename_column :clinics, :url, :deprecated_url
     rename_column :clinics, :email, :deprecated_email
     rename_column :clinics, :schedule_id, :deprecated_schedule_id
     rename_column :clinics, :contact_details, :deprecated_contact_details
-    rename_column :clinics, :wheelchair_accessible_mask, :deprecated_wheelchair_accessible_mask
+    rename_column :clinics,
+      :wheelchair_accessible_mask,
+      :deprecated_wheelchair_accessible_mask
 
     Clinic.reset_column_information
 
@@ -18,11 +20,11 @@ class AddClinicLocation < ActiveRecord::Migration
       t.string  :phone
       t.string  :fax
       t.string  :phone_extension
-      t.integer :sector_mask, :default => 1
+      t.integer :sector_mask, default: 1
       t.string  :url
       t.string  :email
       t.text    :contact_details
-      t.integer :wheelchair_accessible_mask, :default => 3
+      t.integer :wheelchair_accessible_mask, default: 3
 
       t.timestamps
     end
@@ -35,7 +37,7 @@ class AddClinicLocation < ActiveRecord::Migration
       clinic = l.locatable
       puts clinic.name
 
-      cl = ClinicLocation.create(:clinic_id => clinic.id)
+      cl = ClinicLocation.create(clinic_id: clinic.id)
       cl.phone = clinic.deprecated_phone
       cl.fax = clinic.deprecated_fax
       cl.phone_extension = clinic.deprecated_phone_extension
@@ -47,7 +49,7 @@ class AddClinicLocation < ActiveRecord::Migration
 
       cl.save
 
-      s = Schedule.find_by_schedulable_id_and_schedulable_type(clinic.id, 'Clinic')
+      s = Schedule.find_by(schedulable_id: clinic.id, schedulable_type: 'Clinic')
 
       if s.blank?
         s = cl.create_schedule

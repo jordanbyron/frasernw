@@ -7,8 +7,6 @@
 //= require jquery.1.8.3.min.js
 //= require jquery-ui.1.8.16.js
 //= require jquery.scrollto.min.js
-//= require dataTables/jquery.dataTables
-//= require dataTables/bootstrap/2/jquery.dataTables.bootstrap
 //= require json2.js
 //= require jquery.history.js
 //= require jquery_nested_form.js

@@ -1,49 +1,56 @@
 class Specialization < ActiveRecord::Base
-  attr_accessible :name, :member_name, :label_name, :suffix, :in_progress, :specialization_options_attributes, :open_to_clinic
+  attr_accessible :name,
+    :member_name,
+    :label_name,
+    :suffix,
+    :in_progress,
+    :specialization_options_attributes,
+    :open_to_clinic
 
   include PaperTrailable
 
-  has_many :specialist_specializations, :dependent => :destroy
-  has_many :specialists, :through => :specialist_specializations
+  has_many :specialist_specializations, dependent: :destroy
+  has_many :specialists, through: :specialist_specializations
 
-  has_many :clinic_specializations, :dependent => :destroy
-  has_many :clinics, :through => :clinic_specializations
+  has_many :clinic_specializations, dependent: :destroy
+  has_many :clinics, through: :clinic_specializations
 
-  has_many :procedure_specializations, :dependent => :destroy, :conditions => { "mapped" => true }
-  has_many :procedures,
-    through: :procedure_specializations,
-    order: 'procedures.name ASC'
+  has_many :procedure_specializations,
+    -> { where("procedure_specializations.mapped" => true) },
+    dependent: :destroy
+  has_many :procedures, -> { order 'procedures.name ASC' }, through: :procedure_specializations
 
-  has_many :sc_item_specializations, :dependent => :destroy
-  has_many :sc_items, :through => :sc_items_specializations
+  has_many :sc_item_specializations, dependent: :destroy
+  has_many :sc_items, through: :sc_items_specializations
 
-  has_many :specialization_options, :dependent => :destroy
+  has_many :specialization_options, dependent: :destroy
   accepts_nested_attributes_for :specialization_options
-  has_many :owners, :through => :specialization_options, :class_name => "User"
-  has_many :content_owners, :through => :specialization_options, :class_name => "User"
+  has_many :owners, through: :specialization_options, class_name: "User"
+  has_many :content_owners, through: :specialization_options, class_name: "User"
 
-  has_many :division_referral_city_specializations, :dependent => :destroy
+  has_many :division_referral_city_specializations, dependent: :destroy
 
   after_commit :flush_cache
   after_touch  :flush_cache
 
-  default_scope order('specializations.name')
-
-  # # # # # # CACHING METHODS
+  default_scope { order('specializations.name') }
 
   def self.cache_key
     max_updated_at = maximum(:updated_at).try(:utc).try(:to_s, :number)
-    sum_of_ids = limit(100).pluck(:id).try(:compact).inject{|sum, id| sum + id }
+    sum_of_ids = limit(100).pluck(:id).try(:compact).inject{ |sum, id| sum + id }
     "specializations/all-#{count}-#{max_updated_at}-#{sum_of_ids}"
-    # since cache_key can act on a subset of Specialization records; sum_of_ids was added to reduce the chance of an incorrect cache hit should two collections ever have matching count / max updated_at values
+    # since cache_key can act on a subset of Specialization records,
+    # sum_of_ids was added to reduce the chance of an incorrect cache hit
+    # should two collections ever have matching count / max updated_at values
   end
 
   def self.all_cached
-    @_all_specializations_cached ||= Rails.cache.fetch([name, "all_specializations"], expires_in: 6.hours) {self.all}
+    @_all_specializations_cached ||= Rails.cache.fetch([name, "all_specializations"],
+      expires_in: 6.hours) { self.all }
   end
 
   def self.cached_find(id)
-    Rails.cache.fetch([name, id]){find(id)}
+    Rails.cache.fetch([name, id]) { find(id) }
   end
 
   def self.refresh_cache
@@ -57,7 +64,6 @@ class Specialization < ActiveRecord::Base
     Rails.cache.delete([self.class.name, "all_specializations"])
     Rails.cache.delete([self.class.name, self.id])
   end
-  # # # # # #
 
   def self.has_family_practice?
     all.include?(Specialization.find_by_name("Family Practice"))
@@ -65,17 +71,32 @@ class Specialization < ActiveRecord::Base
 
   def self.in_progress_for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
-    joins(:specialization_options).where('"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)', division_ids, true)
+    joins(:specialization_options).where(
+      '"specialization_options"."division_id" IN (?) '\
+        'AND "specialization_options"."in_progress" = (?)',
+      division_ids,
+      true
+    )
   end
 
   def self.not_in_progress_for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
-    joins(:specialization_options).where('"specialization_options"."division_id" IN (?) AND "specialization_options"."in_progress" = (?)', division_ids, false)
+    joins(:specialization_options).where(
+      '"specialization_options"."division_id" IN (?) '\
+        'AND "specialization_options"."in_progress" = (?)',
+      division_ids,
+      false
+    )
   end
 
   def self.new_for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
-    joins(:specialization_options).where('"specialization_options"."division_id" IN (?) AND "specialization_options"."is_new" = (?)', division_ids, true)
+    joins(:specialization_options).where(
+      '"specialization_options"."division_id" IN (?) '\
+        'AND "specialization_options"."is_new" = (?)',
+      division_ids,
+      true
+    )
   end
 
   def not_fully_in_progress
@@ -87,7 +108,9 @@ class Specialization < ActiveRecord::Base
   end
 
   def fully_in_progress_for_divisions(divisions)
-    (specialization_options.for_divisions(divisions).length > 0) && (specialization_options.for_divisions(divisions).reject{ |so| so.in_progress }.length == 0)
+    (specialization_options.for_divisions(divisions).length > 0) &&
+    (specialization_options.for_divisions(divisions).
+      reject{ |so| so.in_progress }.length == 0)
   end
 
   def new_for_divisions(divisions)

@@ -1,5 +1,3 @@
-# use this module to add paper trail to a model
-
 module PaperTrailable
   extend ActiveSupport::Concern
 

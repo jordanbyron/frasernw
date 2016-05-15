@@ -15,6 +15,7 @@
         %th Parent
         %th Has Custom Specialist Wait Time
         %th Has Custom Clinic Wait Time
+
       = f.simple_fields_for :all_procedure_specializations,
         @procedure.all_procedure_specializations.sort_by(&:specialization_name) do |f|
         %tr.procedure_specialization_row

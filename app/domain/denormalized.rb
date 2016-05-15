@@ -37,29 +37,44 @@ module Denormalized
   GENERATORS = {
     content_items: Module.new do
       def self.call
-        ScItem.includes(:sc_category, :division, :divisions_sharing, :specializations).inject({}) do |memo, item|
-          memo.merge(item.id => {
-            availableToDivisionIds: item.available_to_divisions.map(&:id),
-            specializationIds: item.specializations.map(&:id),
-            title: item.title,
-            categoryId: item.sc_category.id,
-            categoryIds: [ item.sc_category, item.sc_category.ancestors ].flatten.map(&:id),
-            procedureIds: item.procedure_specializations.map(&:subtree).flatten.uniq.map(&:procedure_id),
-            content: (item.markdown_content.present? ? Denormalized.prepare_markdown_content(item.markdown_content) : ""),
-            resolvedUrl: item.resolved_url,
-            canEmail: item.can_email?,
-            id: item.id,
-            isNew: item.new?,
-            isInProgress: item.in_progress,
-            isSharedCare: item.shared_care?,
-            typeMask: item.type_mask
-          })
-        end
+        ScItem.
+          includes(:sc_category, :division, :divisions_sharing, :specializations).
+          inject({}) do |memo, item|
+            memo.merge(item.id => {
+              availableToDivisionIds: item.available_to_divisions.map(&:id),
+              specializationIds: item.specializations.map(&:id),
+              title: item.title,
+              categoryId: item.sc_category.id,
+              categoryIds: [item.sc_category, item.sc_category.ancestors].
+                flatten.
+                map(&:id),
+              procedureIds: item.
+                procedure_specializations.
+                map(&:subtree).
+                flatten.
+                uniq.
+                map(&:procedure_id),
+              content: (
+                if item.markdown_content.present?
+                  Denormalized.prepare_markdown_content(item.markdown_content)
+                else
+                  ""
+                end
+              ),
+              resolvedUrl: item.resolved_url,
+              canEmail: item.can_email?,
+              id: item.id,
+              isNew: item.new?,
+              isInProgress: item.in_progress,
+              isSharedCare: item.shared_care?,
+              typeMask: item.type_mask
+            })
+          end
       end
     end,
     specialists: Module.new do
       def self.call
-        Specialist.includes_specialization_page.all.inject({}) do |memo, specialist|
+        Specialist.includes_specialization_page.inject({}) do |memo, specialist|
           memo.merge(specialist.id => {
             id: specialist.id,
             name: specialist.name,
@@ -90,7 +105,10 @@ module Denormalized
             createdAt: specialist.created_at.to_date.to_s,
             updatedAt: specialist.updated_at.to_date.to_s,
             showInTable: specialist.show_in_table?,
-            teleserviceFeeTypes: specialist.teleservices.select(&:offered?).map(&:service_type)
+            teleserviceFeeTypes: specialist.
+              teleservices.
+              select(&:offered?).
+              map(&:service_type)
           })
         end
       end
@@ -120,7 +138,6 @@ module Denormalized
           includes(:healthcare_providers).
           includes_location_data.
           includes_location_schedules.
-          all.
           inject({}) do |memo, clinic|
           memo.merge(clinic.id => {
             id: clinic.id,
@@ -149,7 +166,10 @@ module Denormalized
             createdAt: clinic.created_at.to_date.to_s,
             updatedAt: clinic.updated_at.to_date.to_s,
             showInTable: clinic.show_in_table?,
-            teleserviceFeeTypes: clinic.teleservices.select(&:offered?).map(&:service_type)
+            teleserviceFeeTypes: clinic.
+              teleservices.
+              select(&:offered?).
+              map(&:service_type)
           })
         end
       end
@@ -191,23 +211,25 @@ module Denormalized
       end
     end,
     specializations: Proc.new do
-      Specialization.includes(:specialization_options).all.inject({}) do |memo, specialization|
-        memo.merge(specialization.id => {
-          id: specialization.id,
-          name: specialization.name,
-          assumedList: specialization.procedure_specializations.assumed_specialist.
-            reject{ |ps| ps.parent.present? }.
-            sort{ |a,b| a.procedure.name <=> b.procedure.name }.
-            map{ |ps| ps.procedure.name.uncapitalize_first_letter },
-          memberName: specialization.member_name,
-          membersName: specialization.member_name.pluralize,
-          nestedProcedureIds: Denormalized.transform_nested_procedure_specializations(
-            specialization.procedure_specializations.includes(:procedure).arrange
-          ),
-          maskFiltersByReferralArea: specialization.mask_filters_by_referral_area,
-          suffix: specialization.suffix
-        })
-      end
+      Specialization.
+        includes(:specialization_options).
+        inject({}) do |memo, specialization|
+          memo.merge(specialization.id => {
+            id: specialization.id,
+            name: specialization.name,
+            assumedList: specialization.procedure_specializations.assumed_specialist.
+              reject{ |ps| ps.parent.present? }.
+              sort{ |a,b| a.procedure.name <=> b.procedure.name }.
+              map{ |ps| ps.procedure.name.uncapitalize_first_letter },
+            memberName: specialization.member_name,
+            membersName: specialization.member_name.pluralize,
+            nestedProcedureIds: Denormalized.transform_nested_procedure_specializations(
+              specialization.procedure_specializations.includes(:procedure).arrange
+            ),
+            maskFiltersByReferralArea: specialization.mask_filters_by_referral_area,
+            suffix: specialization.suffix
+          })
+        end
     end,
     healthcare_providers: Proc.new do
       HealthcareProvider.all.inject({}) do |memo, provider|
@@ -251,8 +273,16 @@ module Denormalized
             clinics: procedure.clinic_wait_time
           },
           assumedSpecializationIds: {
-            specialists: procedure.procedure_specializations.select(&:assumed_specialist?).map(&:specialization).map(&:id),
-            clinics: procedure.procedure_specializations.select(&:assumed_clinic?).map(&:specialization).map(&:id)
+            specialists: procedure.
+              procedure_specializations.
+              select(&:assumed_specialist?).
+              map(&:specialization).
+              map(&:id),
+            clinics: procedure.
+              procedure_specializations.
+              select(&:assumed_clinic?).
+              map(&:specialization).
+              map(&:id)
           },
           childrenProcedureIds: procedure.children.map(&:id)
         })
@@ -260,16 +290,25 @@ module Denormalized
     end,
     divisions: Module.new do
       def self.call
-        Division.standard.all.inject({}) do |memo, division|
+        Division.standard.inject({}) do |memo, division|
           memo.merge(division.id => {
             id: division.id,
             name: division.name,
             referralCities: Specialization.all.inject({}) do |memo, specialization|
-              memo.merge(specialization.id => division.local_referral_cities(specialization).reject(&:hidden).map(&:id))
+              memo.merge(specialization.id => division.
+                local_referral_cities(specialization).
+                reject(&:hidden).
+                map(&:id)
+              )
             end,
-            openToSpecializationPanel: Specialization.all.inject({}) do |memo, specialization|
-              memo.merge(specialization.id => self.open_to_panel(specialization, division))
-            end
+            openToSpecializationPanel: Specialization.
+              all.
+              inject({}) do |memo, specialization|
+                memo.merge(specialization.id => self.open_to_panel(
+                  specialization,
+                  division
+                ) )
+              end
           })
         end
       end
@@ -325,7 +364,7 @@ module Denormalized
       end
     end,
     news_items: Proc.new do
-      NewsItem.includes(:divisions).all.inject({}) do |memo, item|
+      NewsItem.includes(:divisions).inject({}) do |memo, item|
         memo.merge(item.id => {
           id: item.id,
           title: item.label,
@@ -342,20 +381,18 @@ module Denormalized
 
   def self.transform_nested_procedure_specializations(procedure_specializations)
     procedure_specializations.inject({}) do |memo, (ps, children)|
-      memo.merge({
-        ps.procedure.id => {
-          focused: ps.focused?,
-          assumed: {
-            clinics: ps.assumed_clinic?,
-            specialists: ps.assumed_specialist?
-          },
-          customWaittime: {
-            specialists: ps.specialist_wait_time,
-            clinics: ps.clinic_wait_time
-          },
-          children: transform_nested_procedure_specializations(children)
-        }
-      })
+      memo.merge( { ps.procedure.id => {
+        focused: ps.focused?,
+        assumed: {
+          clinics: ps.assumed_clinic?,
+          specialists: ps.assumed_specialist?
+        },
+        customWaittime: {
+          specialists: ps.specialist_wait_time,
+          clinics: ps.clinic_wait_time
+        },
+        children: transform_nested_procedure_specializations(children)
+      } } )
     end
   end
 end

@@ -68,55 +68,43 @@ class Clinic < ActiveRecord::Base
     :clinic_locations_attributes,
     :review_object
 
-  #clinics can have multiple specializations
-  has_many :clinic_specializations, :dependent => :destroy
-  has_many :specializations, :through => :clinic_specializations
+  has_many :clinic_specializations, dependent: :destroy
+  has_many :specializations, through: :clinic_specializations
 
-  #clinics have multiple locations
   MAX_LOCATIONS = 9
-  has_many :clinic_locations, :dependent => :destroy
+  has_many :clinic_locations, dependent: :destroy
   accepts_nested_attributes_for :clinic_locations
-  has_many :locations, :through => :clinic_locations
-  has_many :addresses, :through => :locations
+  has_many :locations, through: :clinic_locations
+  has_many :addresses, through: :locations
 
-  #clinics speak many languages
-  has_many   :clinic_speaks, :dependent => :destroy
-  has_many   :languages, :through => :clinic_speaks
+  has_many :clinic_speaks, dependent: :destroy
+  has_many :languages, through: :clinic_speaks
 
-  #clinics focus on procedures
-  has_many   :focuses, :dependent => :destroy
+  has_many :focuses, dependent: :destroy
 
-  # we want to be using this generic alias so we can duck type
-  # procedure specializables
-  has_many   :procedure_specialization_links, class_name: "Focus"
-  has_many   :procedure_specializations, :through => :focuses
-  has_many   :procedures, :through => :procedure_specializations
-  accepts_nested_attributes_for :focuses, :reject_if => lambda { |a| a[:procedure_specialization_id].blank? }, :allow_destroy => true
+  has_many :procedure_specialization_links, class_name: "Focus"
+  has_many :procedure_specializations, through: :focuses
+  has_many :procedures, through: :procedure_specializations
+  accepts_nested_attributes_for :focuses,
+    reject_if: lambda { |a| a[:procedure_specialization_id].blank? },
+    allow_destroy: true
 
-  #clinics have attendance (of specialists and freeform physicians)
-  has_many :attendances, :through => :clinic_locations
-  has_many :specialists, :through => :attendances
+  has_many :attendances, through: :clinic_locations
+  has_many :specialists, through: :attendances
 
-  #clinics have many healthcare providers
-  has_many   :clinic_healthcare_providers, :dependent => :destroy
-  has_many   :healthcare_providers, :through => :clinic_healthcare_providers
+  has_many :clinic_healthcare_providers, dependent: :destroy
+  has_many :healthcare_providers, through: :clinic_healthcare_providers
 
-  #clinics are controlled (e.g. can be edited) by users of the system
   has_many :controlling_users,
-    :through => :user_controls_clinics,
-    :source => :user,
-    :class_name => "User"
+    through: :user_controls_clinics,
+    source: :user,
+    class_name: "User"
   has_many :user_controls_clinics, dependent: :destroy
   alias user_controls user_controls_clinics
 
-  default_scope order('clinics.name')
+  default_scope { order('clinics.name') }
 
-  # # # Cache actions
   after_commit :flush_cached_find
-
-  # def self.all_cached
-  #   Rails.cache.fetch('Clinic.all') { all }
-  # end
 
   def self.includes_location_data
     includes_clinic_locations.includes_locations
@@ -126,22 +114,32 @@ class Clinic < ActiveRecord::Base
     includes(
       clinic_locations: {
         location: [
-          {address: :city},
-          {hospital_in: {location: {address: :city}}},
+          { address: :city },
+          { hospital_in: { location: { address: :city } } },
         ]
       }
     )
   end
 
   def self.includes_location_schedules
-    includes(clinic_locations: {:schedule => [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday]})
+    includes(
+      clinic_locations: {schedule: [
+        :monday,
+        :tuesday,
+        :wednesday,
+        :thursday,
+        :friday,
+        :saturday,
+        :sunday
+      ] }
+    )
   end
 
   def self.includes_locations
     includes(
       locations: [
-        {address: :city},
-        {hospital_in: {location: {address: :city}}},
+        { address: :city },
+        { hospital_in: { location: { address: :city } } },
       ]
     )
   end
@@ -153,7 +151,6 @@ class Clinic < ActiveRecord::Base
   def flush_cached_find
     Rails.cache.delete([self.class.name, id])
   end
-  # # #
 
   def self.filter(clinics, filter)
     clinics.select do |clinic|
@@ -165,23 +162,42 @@ class Clinic < ActiveRecord::Base
     in_progress_cities = []
 
     Division.all.each do |division|
-      in_progress_cities |= City.in_progress_for_division_and_specialization(division, specialization)
+      in_progress_cities |= City.in_progress_for_division_and_specialization(
+        division,
+        specialization
+      )
     end
 
     self.in_cities_and_specialization(City.all - in_progress_cities, specialization)
   end
 
-  def self.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
-    not_in_progress_cities = City.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
+  def self.not_in_progress_for_division_local_referral_area_and_specialization(
+    division, specialization
+  )
+    not_in_progress_cities = City.
+      not_in_progress_for_division_local_referral_area_and_specialization(
+        division,
+        specialization
+      )
     self.in_cities_and_specialization(not_in_progress_cities, specialization)
   end
 
   def not_in_progress
-    (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length > 0) || (divisions.length == 0)
+    (
+      SpecializationOption.
+        not_in_progress_for_divisions_and_specializations(divisions, specializations).
+        length > 0
+    ) || (
+      divisions.length == 0
+    )
   end
 
   def in_progress
-    (divisions.length > 0) && (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length == 0)
+    (divisions.length > 0) && (
+      SpecializationOption.
+        not_in_progress_for_divisions_and_specializations(divisions, specializations).
+        length == 0
+    )
   end
 
   CATEGORIZATION_LABELS = {
@@ -192,23 +208,140 @@ class Clinic < ActiveRecord::Base
 
   def self.in_cities(cities)
     city_ids = cities.map{ |city| city.id }
-    direct = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL', "ClinicLocation", city_ids)
-    in_hospital = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id').where('"direct_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?)', "ClinicLocation", "Hospital", city_ids)
+    direct = joins(
+      'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
+        'ON "clinics".id = "direct_clinic_location".clinic_id '\
+        'INNER JOIN "locations" AS "direct_location" '\
+        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
+        'INNER JOIN "addresses" AS "direct_address" '\
+        'ON "direct_location".address_id = "direct_address".id'
+    ).where(
+      '"direct_location".locatable_type = (?) '\
+        'AND "direct_address".city_id IN (?) '\
+        'AND "direct_location".hospital_in_id IS NULL',
+      "ClinicLocation",
+      city_ids
+    )
+    in_hospital = joins(
+      'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
+        'ON "clinics".id = "direct_clinic_location".clinic_id '\
+        'INNER JOIN "locations" AS "direct_location" '\
+        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
+        'INNER JOIN "hospitals" '\
+        'ON "hospitals".id = "direct_location".hospital_in_id '\
+        'INNER JOIN "locations" AS "hospital_in_location" '\
+        'ON "hospitals".id = "hospital_in_location".locatable_id '\
+        'INNER JOIN "addresses" AS "hospital_address" '\
+        'ON "hospital_in_location".address_id = "hospital_address".id'
+    ).where(
+      '"direct_location".locatable_type = (?) '\
+        'AND "hospital_in_location".locatable_type = (?) '\
+        'AND "hospital_address".city_id IN (?)',
+      "ClinicLocation",
+      "Hospital",
+      city_ids
+    )
     (direct + in_hospital).uniq
   end
 
   def self.in_cities_and_specialization(cities, specialization)
     city_ids = cities.map{ |city| city.id }
-    direct = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id INNER JOIN "clinic_specializations" on "clinic_specializations".clinic_id = "clinics".id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL AND "clinic_specializations".specialization_id = (?)', "ClinicLocation", city_ids, specialization.id)
-    in_hospital = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id INNER JOIN "clinic_specializations" on "clinic_specializations".clinic_id = "clinics".id').where('"direct_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "clinic_specializations".specialization_id = (?)', "ClinicLocation", "Hospital", city_ids, specialization.id)
+    direct = joins(
+      'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
+        'ON "clinics".id = "direct_clinic_location".clinic_id '\
+        'INNER JOIN "locations" AS "direct_location" '\
+        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
+        'INNER JOIN "addresses" AS "direct_address" '\
+        'ON "direct_location".address_id = "direct_address".id '\
+        'INNER JOIN "clinic_specializations" '\
+        'ON "clinic_specializations".clinic_id = "clinics".id'
+    ).where(
+      '"direct_location".locatable_type = (?) '\
+        'AND "direct_address".city_id IN (?) '\
+        'AND "direct_location".hospital_in_id IS NULL '\
+        'AND "clinic_specializations".specialization_id = (?)',
+      "ClinicLocation",
+      city_ids,
+      specialization.id
+    )
+    in_hospital = joins(
+      'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
+        'ON "clinics".id = "direct_clinic_location".clinic_id '\
+        'INNER JOIN "locations" AS "direct_location" '\
+        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
+        'INNER JOIN "hospitals" '\
+        'ON "hospitals".id = "direct_location".hospital_in_id '\
+        'INNER JOIN "locations" AS "hospital_in_location" '\
+        'ON "hospitals".id = "hospital_in_location".locatable_id '\
+        'INNER JOIN "addresses" AS "hospital_address" '\
+        'ON "hospital_in_location".address_id = "hospital_address".id '\
+        'INNER JOIN "clinic_specializations" '\
+        'ON "clinic_specializations".clinic_id = "clinics".id'
+    ).where(
+      '"direct_location".locatable_type = (?) '\
+        'AND "hospital_in_location".locatable_type = (?) '\
+        'AND "hospital_address".city_id IN (?) '\
+        'AND "clinic_specializations".specialization_id = (?)',
+      "ClinicLocation",
+      "Hospital",
+      city_ids,
+      specialization.id
+    )
     (direct + in_hospital).uniq
   end
 
   def self.in_cities_and_performs_procedures_in_specialization(cities, specialization)
     city_ids = cities.map{ |city| city.id }
 
-    direct = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "addresses" AS "direct_address" ON "direct_location".address_id = "direct_address".id INNER JOIN "focuses" ON "focuses".clinic_id = "clinics".id INNER JOIN "procedure_specializations" AS "ps1" on "ps1".id = "focuses".procedure_specialization_id INNER JOIN "procedure_specializations" AS "ps2" ON "ps2".procedure_id = "ps1".procedure_id').where('"direct_location".locatable_type = (?) AND "direct_address".city_id in (?) AND "direct_location".hospital_in_id IS NULL AND "ps2".specialization_id = (?)', "ClinicLocation", city_ids, specialization.id)
-    in_hospital = joins('INNER JOIN "clinic_locations" as "direct_clinic_location" ON "clinics".id = "direct_clinic_location".clinic_id INNER JOIN "locations" AS "direct_location" ON "direct_clinic_location".id = "direct_location".locatable_id INNER JOIN "hospitals" ON "hospitals".id = "direct_location".hospital_in_id INNER JOIN "locations" AS "hospital_in_location" ON "hospitals".id = "hospital_in_location".locatable_id INNER JOIN "addresses" AS "hospital_address" ON "hospital_in_location".address_id = "hospital_address".id INNER JOIN "focuses" ON "focuses".clinic_id = "clinics".id INNER JOIN "procedure_specializations" AS "ps1" on "ps1".id = "focuses".procedure_specialization_id INNER JOIN "procedure_specializations" AS "ps2" ON "ps2".procedure_id = "ps1".procedure_id').where('"direct_location".locatable_type = (?) AND "hospital_in_location".locatable_type = (?) AND "hospital_address".city_id in (?) AND "ps2".specialization_id = (?)', "ClinicLocation", "Hospital", city_ids, specialization.id)
+    direct = joins(
+      'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
+        'ON "clinics".id = "direct_clinic_location".clinic_id '\
+        'INNER JOIN "locations" AS "direct_location" '\
+        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
+        'INNER JOIN "addresses" AS "direct_address" '\
+        'ON "direct_location".address_id = "direct_address".id '\
+        'INNER JOIN "focuses" '\
+        'ON "focuses".clinic_id = "clinics".id '\
+        'INNER JOIN "procedure_specializations" AS "ps1" '\
+        'ON "ps1".id = "focuses".procedure_specialization_id '\
+        'INNER JOIN "procedure_specializations" AS "ps2" '\
+        'ON "ps2".procedure_id = "ps1".procedure_id'
+    ).where(
+      '"direct_location".locatable_type = (?) '\
+        'AND "direct_address".city_id IN (?) '\
+        'AND "direct_location".hospital_in_id IS NULL '\
+        'AND "ps2".specialization_id = (?)',
+      "ClinicLocation",
+      city_ids,
+      specialization.id
+    )
+    in_hospital = joins(
+      'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
+        'ON "clinics".id = "direct_clinic_location".clinic_id '\
+        'INNER JOIN "locations" AS "direct_location" '\
+        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
+        'INNER JOIN "hospitals" '\
+        'ON "hospitals".id = "direct_location".hospital_in_id '\
+        'INNER JOIN "locations" AS "hospital_in_location" '\
+        'ON "hospitals".id = "hospital_in_location".locatable_id '\
+        'INNER JOIN "addresses" AS "hospital_address" '\
+        'ON "hospital_in_location".address_id = "hospital_address".id '\
+        'INNER JOIN "focuses" '\
+        'ON "focuses".clinic_id = "clinics".id '\
+        'INNER JOIN "procedure_specializations" AS "ps1" '\
+        'ON "ps1".id = "focuses".procedure_specialization_id '\
+        'INNER JOIN "procedure_specializations" AS "ps2" '\
+        'ON "ps2".procedure_id = "ps1".procedure_id'
+    ).where(
+      '"direct_location".locatable_type = (?) '\
+        'AND "hospital_in_location".locatable_type = (?) '\
+        'AND "hospital_address".city_id IN (?) '\
+        'AND "ps2".specialization_id = (?)',
+      "ClinicLocation",
+      "Hospital",
+      city_ids,
+      specialization.id
+    )
     (direct + in_hospital).uniq
   end
 
@@ -313,7 +446,8 @@ class Clinic < ActiveRecord::Base
     3 => "Didn't answer"
   }
 
-  UNKNOWN_STATUS = "It is unknown if this clinic is accepting new patients (this clinic didn't respond)"
+  UNKNOWN_STATUS =  "It is unknown if this clinic is accepting new patients "\
+                    "(this clinic didn't respond)"
 
   def status
     if (status_mask == 3) || status_mask.blank?
@@ -428,16 +562,27 @@ class Clinic < ActiveRecord::Base
     end
 
     if referral_details.present?
-      return "#{output.punctuate} #{referral_details.punctuate.convert_newlines_to_br}".html_safe
+      return "#{output.punctuate} #{referral_details.punctuate.convert_newlines_to_br}".
+        html_safe
     else
       return output.punctuate
     end
   end
 
   def responds_via
-    if (not respond_by_phone) && (not respond_by_fax) && (not respond_by_mail) && (not respond_to_patient)
+    if (
+      (not respond_by_phone) &&
+      (not respond_by_fax) &&
+      (not respond_by_mail) &&
+      (not respond_to_patient)
+    )
       return ""
-    elsif (not respond_by_phone) && (not respond_by_fax) && (not respond_by_mail) && respond_to_patient
+    elsif (
+      (not respond_by_phone) &&
+      (not respond_by_fax) &&
+      (not respond_by_mail) &&
+      respond_to_patient
+    )
       return "Directly contacting the patient."
     else
       if respond_by_phone && respond_by_fax && respond_by_mail
@@ -457,7 +602,8 @@ class Clinic < ActiveRecord::Base
       end
 
       if respond_to_patient
-        return output.capitalize_first_letter + ", and by directly contacting the patient."
+        return output.capitalize_first_letter +
+          ", and by directly contacting the patient."
       else
         return output.end_with_period
       end
@@ -490,7 +636,8 @@ class Clinic < ActiveRecord::Base
     end
 
     if urgent_details.present?
-      return "#{output.punctuate} #{urgent_details.punctuate.convert_newlines_to_br}".html_safe
+      return "#{output.punctuate} #{urgent_details.punctuate.convert_newlines_to_br}".
+        html_safe
     else
       return output.punctuate
     end
@@ -505,7 +652,10 @@ class Clinic < ActiveRecord::Base
   end
 
   def days
-    clinic_locations.reject{ |cl| !cl.scheduled? }.map{ |cl| cl.schedule.days }.flatten.uniq
+    clinic_locations.
+      reject{ |cl| !cl.scheduled? }.
+      map{ |cl| cl.schedule.days }.
+      flatten.uniq
   end
 
   def scheduled_day_ids

@@ -17,7 +17,7 @@ class ReviewItem < ActiveRecord::Base
   include PaperTrailable
   include Archivable
 
-  belongs_to :item, :polymorphic => true
+  belongs_to :item, polymorphic: true
 
   STATUS_UPDATES = 0
   STATUS_NO_UPDATES = 1

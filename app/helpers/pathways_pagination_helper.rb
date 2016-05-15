@@ -4,9 +4,9 @@ module PathwaysPaginationHelper
 
     def page_number(page)
       unless page == current_page
-        link(page, page, :rel => rel_value(page), :class => 'ajax')
+        link(page, page, rel: rel_value(page), class: 'ajax')
         else
-        link(page, "#", :class => 'active ajax')
+        link(page, "#", class: 'active ajax')
       end
     end
 
@@ -16,15 +16,17 @@ module PathwaysPaginationHelper
     end
 
     def next_page
-      num = @collection.current_page < @collection.total_pages && @collection.current_page + 1
+      num =
+        @collection.current_page < @collection.total_pages &&
+        @collection.current_page + 1
       previous_or_next_page(num, @options[:next_label], 'next')
     end
 
     def previous_or_next_page(page, text, classname)
       if page
-        link(text, page, :class => classname + ' ajax')
+        link(text, page, class: classname + ' ajax')
         else
-        link(text, "#", :class => classname + ' disabled ajax')
+        link(text, "#", class: classname + ' disabled ajax')
       end
     end
 
@@ -46,7 +48,7 @@ module PathwaysPaginationHelper
 
       classname = attributes[:class]
       attributes.delete(:classname)
-      tag(:li, tag(:a, text, attributes), :class => classname)
+      tag(:li, tag(:a, text, attributes), class: classname)
     end
   end
 end

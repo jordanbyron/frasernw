@@ -125,7 +125,6 @@ gem "safety_mailer" # prevent emails getting sent in staging
 # Google Analytics
 gem 'google-api-client', '0.8.6', require: "google/api_client"
 
-gem 'jquery-datatables-rails', '3.1.1'
 gem "rack-timeout"
 
 #for Heroku deployment

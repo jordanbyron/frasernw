@@ -2,12 +2,12 @@ class Location < ActiveRecord::Base
   belongs_to :address
   accepts_nested_attributes_for :address
 
-  belongs_to :locatable, :polymorphic => true
+  belongs_to :locatable, polymorphic: true
 
-  belongs_to :hospital_in, :class_name => "Hospital"
-  belongs_to :location_in, :class_name => "Location"
+  belongs_to :hospital_in, class_name: "Hospital"
+  belongs_to :location_in, class_name: "Location"
 
-  has_many :locations_in, :foreign_key => :location_in_id, :class_name => "Location"
+  has_many :locations_in, foreign_key: :location_in_id, class_name: "Location"
 
   include PaperTrailable
 
