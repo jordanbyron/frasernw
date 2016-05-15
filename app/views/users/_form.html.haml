@@ -1,22 +1,22 @@
-= simple_nested_form_for @user, :html => { :class => "form-horizontal ajax" } do |f|
+= simple_nested_form_for @user, html: { class: "form-horizontal ajax" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
-  = f.input :name, input_html: {:autocomplete => "off"}
+  = f.input :name, input_html: {autocomplete: "off"}
   = f.input :email if !@new_user
   = f.input :role,
-    :as => :select,
+    as: :select,
     collection: current_user.as_can_assign_roles,
     label_method: :last,
     value_method: :first,
-    :include_blank => false
+    include_blank: false
   = f.input :active
   = f.association :divisions,
     as: :check_boxes,
     collection: current_user.as_can_assign_divisions,
     checked: (user_edit_checkbox_value_for_division),
     hint: "<div id='user_form_divisions_hint'><i class='icon-warning-sign'></i> Please select a division for this user. </div>".html_safe,
-    input_html: {:class => "user-form-division-option"},
+    input_html: {class: "user-form-division-option"},
     label_method: :name,
     value_method: :id,
     presence: true,
@@ -35,7 +35,12 @@
       label: "'Last Visit' Format"
 
   #user_pane
-    = f.input :type_mask, :as => :select, :collection => User::TYPES, :label_method => :last, :value_method => :first, :include_blank => false
+    = f.input :type_mask,
+      as: :select,
+      collection: User::TYPES,
+      label_method: :last,
+      value_method: :first,
+      include_blank: false
 
     %h4 Specialist user can edit
     .content
@@ -92,8 +97,8 @@
             as: :hidden
 
   .form-actions
-    = f.button :submit, :class => "btn btn-primary"
-    = link_to 'Cancel', users_path, :class => "btn btn-danger ajax"
+    = f.button :submit, class: "btn btn-primary"
+    = link_to 'Cancel', users_path, class: "btn btn-danger ajax"
 
   %script{"type" => "text/javascript"}
     :plain
