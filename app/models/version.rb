@@ -9,7 +9,11 @@ class Version < PaperTrail::Version
 
   # nice past tense events for paper_trail
   def evented
-    self.event.gsub('update','updated').gsub('destroy','destroyed').gsub('create','created')
+    self.
+      event.
+      gsub('update','updated').
+      gsub('destroy','destroyed').
+      gsub('create','created')
   end
 
   def completely_masked?

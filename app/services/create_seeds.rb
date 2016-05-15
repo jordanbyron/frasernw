@@ -25,8 +25,8 @@ class CreateSeeds < ServiceObject
   IDENTIFYING_INFO_LOGFILE = Rails.root.join("tmp", "identifying_info.txt").to_s
   UNMASKED_COLUMNS_LOGFILE = Rails.root.join("tmp", "unmasked_columns.txt").to_s
 
-  # see if there are any string/text columns we've failed to explicitly whitelist or mask
-  # without actually going through all the data
+  # see if there are any string/text columns we've failed to explicitly
+  # whitelist or mask without actually going through all the data
   def self.check_text_columns!
     Rails.application.eager_load!
     table_klasses = ActiveRecord::Base.
@@ -70,7 +70,11 @@ class CreateSeeds < ServiceObject
   end
 
   def tables_handled_automatically
-    ActiveRecord::Base.connection.tables - IGNORED_TABLES - TABLES_HANDLED_INDIVIDUALLY.keys
+    (
+      ActiveRecord::Base.connection.tables -
+        IGNORED_TABLES -
+        TABLES_HANDLED_INDIVIDUALLY.keys
+    )
   end
 
   TABLES_HANDLED_INDIVIDUALLY = {
@@ -122,7 +126,11 @@ class CreateSeeds < ServiceObject
   class PostProcess < ServiceObject
     def call
       new_specialist_specializations = new_specialization_links("specialist")
-      new_capacities = new_procedure_links("capacities", "specialist", new_specialist_specializations)
+      new_capacities = new_procedure_links(
+        "capacities",
+        "specialist",
+        new_specialist_specializations
+      )
 
       new_clinic_specializations = new_specialization_links("clinic")
       new_focuses = new_procedure_links("focuses", "clinic", new_clinic_specializations)
@@ -254,29 +262,30 @@ class CreateSeeds < ServiceObject
       id = 0
 
       specializations.inject([]) do |memo, (specialization_id, associated)|
-        memo + associated[:procedure_specializations].inject([]) do |inner_memo, (procedure_specialization_id, count)|
-          referrables = associated[:referrables]
-          inner_memo + count.times.inject([]) do |ps_procedure_links|
-            if referrables.keys.any?
-              referrable_id = referrables.keys.sample
-              referrables[referrable_id] = referrables[referrable_id] - 1
-              referrables.delete(referrable_id) if referrables[referrable_id] == 0
-              created_at = rand(Date.civil(2012, 1, 26)..Date.current)
-              updated_at = rand(created_at..Date.current)
-              id += 1
+        memo + associated[:procedure_specializations].
+          inject([]) do |inner_memo, (procedure_specialization_id, count)|
+            referrables = associated[:referrables]
+            inner_memo + count.times.inject([]) do |ps_procedure_links|
+              if referrables.keys.any?
+                referrable_id = referrables.keys.sample
+                referrables[referrable_id] = referrables[referrable_id] - 1
+                referrables.delete(referrable_id) if referrables[referrable_id] == 0
+                created_at = rand(Date.civil(2012, 1, 26)..Date.current)
+                updated_at = rand(created_at..Date.current)
+                id += 1
 
-              ps_procedure_links << {
-                "id" => id,
-                "procedure_specialization_id" => procedure_specialization_id,
-                "#{referrable_type}_id" => referrable_id,
-                "created_at" => created_at,
-                "updated_at" => updated_at
-              }
-            else
-              ps_procedure_links
+                ps_procedure_links << {
+                  "id" => id,
+                  "procedure_specialization_id" => procedure_specialization_id,
+                  "#{referrable_type}_id" => referrable_id,
+                  "created_at" => created_at,
+                  "updated_at" => updated_at
+                }
+              else
+                ps_procedure_links
+              end
             end
           end
-        end
       end
     end
   end
@@ -507,13 +516,19 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| Clinic.random_id }
       },
       "unavailable_to" => {
-        :faker => Proc.new{ |klass| rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) }
+        :faker => Proc.new{ |klass|
+          rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1))
+        }
       },
       "unavailable_from" => {
-        :faker => Proc.new{ |klass| rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) }
+        :faker => Proc.new{ |klass|
+          rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1))
+        }
       },
       "created_at" => {
-        :faker => Proc.new{ |klass, record| rand(Date.civil(2012, 1, 26)..record["created_at"].to_date) }
+        :faker => Proc.new{ |klass, record|
+          rand(Date.civil(2012, 1, 26)..record["created_at"].to_date)
+        }
       },
       "referral_fax" => { :faker => RAND_BOOLEAN },
       "referral_phone" => { :faker => RAND_BOOLEAN },
@@ -524,7 +539,9 @@ class CreateSeeds < ServiceObject
       "urgent_fax" => { :faker => RAND_BOOLEAN },
       "urgent_phone" => { :faker => RAND_BOOLEAN },
       "sex_mask" => { :faker => Proc.new{ [1, 2, 3].sample } },
-      "waittime_mask" => { :faker => Proc.new{|klass| klass::WAITTIME_LABELS.keys.sample } },
+      "waittime_mask" => { :faker => Proc.new{|klass|
+        klass::WAITTIME_LABELS.keys.sample }
+      },
       "lagtime_mask" => {
         :faker => Proc.new{ |klass| klass::LAGTIME_LABELS.keys.sample }
       },
@@ -555,7 +572,9 @@ class CreateSeeds < ServiceObject
         end
       },
       "updated_at" => {
-        :faker => Proc.new{ |klass, record| rand(record["updated_at"].to_date..Date.current) }
+        :faker => Proc.new{ |klass, record|
+          rand(record["updated_at"].to_date..Date.current)
+        }
       },
       "email" => {
         :faker => Proc.new do |klass|
@@ -617,7 +636,9 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| "Email preferred." }
         },
       "content" => {
-        :faker => Proc.new{ |klass| "We seek to provide the best possible medical care to our patients." }
+        :faker => Proc.new{ |klass|
+          "We seek to provide the best possible medical care to our patients."
+        }
       },
       "data" => {},
       "session_id" => {},
@@ -656,7 +677,9 @@ class CreateSeeds < ServiceObject
         :faker => Proc.new{ |klass| "Post-surgical Counselling" }
       },
       "all_procedure_info" => {
-        :faker => Proc.new{ |klass| "Ensure records are provided at least 2 days prior to appiontment" }
+        :faker => Proc.new{ |klass|
+          "Ensure records are provided at least 2 days prior to appiontment"
+        }
       },
       "urgent_details" => {
         :faker => Proc.new{ |klass| "Telephone or Email." }

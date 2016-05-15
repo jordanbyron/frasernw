@@ -59,7 +59,9 @@ class EntityPageViewsReport < ServiceObject
 
   def transform_row_for_view(row)
     {
-      link: link_to(*LABEL_SERIALIZED_COLLECTIONS[row[:serialized_collection]].call(row)),
+      link: link_to(
+        *LABEL_SERIALIZED_COLLECTIONS[row[:serialized_collection]].call(row)
+      ),
       usage: row[:usage]
     }
   end
@@ -81,7 +83,8 @@ class EntityPageViewsReport < ServiceObject
 
       [
         "#{attached_referent.try(:name)} - #{row[:record][:filename]}",
-        "/#{row[:record][:referrableType].pluralize.downcase}/#{row[:record][:referrableId]}"
+        "/#{row[:record][:referrableType].pluralize.downcase}"\
+          "/#{row[:record][:referrableId]}"
       ]
     end,
     specializations: Proc.new do |row|
@@ -143,12 +146,16 @@ class EntityPageViewsReport < ServiceObject
       start_date: Month.from_i(month_key).start_date,
       end_date: Month.from_i(month_key).end_date,
       dimensions: [:event_category, :event_label],
-      filter_literal: filter_literals(division_filters(division_id).merge({ event_action: "clicked_link" }))
+      filter_literal: filter_literals(
+        division_filters(division_id).merge({ event_action: "clicked_link" })
+      )
     }).map do |row|
       {
         id: row[:event_label],
         usage: row[:total_events],
-        serialized_collection: EVENT_CATEGORY_SERIALIZED_COLLECTIONS[row[:event_category]]
+        serialized_collection: EVENT_CATEGORY_SERIALIZED_COLLECTIONS[
+          row[:event_category]
+        ]
       }
     end.select do |row|
       row[:serialized_collection].present?
@@ -236,19 +243,24 @@ class EntityPageViewsReport < ServiceObject
     clinics: Proc.new{ |row| true },
     specialists: Proc.new{ |row| true },
     patient_info: Proc.new do |row|
-      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(5)
+      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN &&
+      row[:record][:categoryIds].include?(5)
     end,
     physician_resources: Proc.new do |row|
-      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(11)
+      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN &&
+      row[:record][:categoryIds].include?(11)
     end,
     forms: Proc.new do |row|
-      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(9)
+      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN &&
+      row[:record][:categoryIds].include?(9)
     end,
     red_flags: Proc.new do |row|
-      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(4)
+      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN &&
+      row[:record][:categoryIds].include?(4)
     end,
     community_services: Proc.new do |row|
-      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(38)
+      row[:record][:typeMask] == ScItem::TYPE_MARKDOWN &&
+      row[:record][:categoryIds].include?(38)
     end,
     pearls: Proc.new do |row|
       row[:record][:typeMask] == ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(3)
@@ -269,7 +281,9 @@ class EntityPageViewsReport < ServiceObject
       pearls: "content_items"
     }[record_type]
 
-    /(?<=\/#{Regexp.quote(collection_path)}\/)[[:digit:]]+(?=\/?\z)/.match(path).to_s
+    /(?<=\/#{Regexp.quote(collection_path)}\/)[[:digit:]]+(?=\/?\z)/.
+      match(path).
+      to_s
   end
 
   # when we extract an ID from a path according to the tests above,

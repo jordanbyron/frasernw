@@ -3,7 +3,7 @@
 .content-wrapper
 
   %h2
-    %span{:class => !@user.active && "in-progress"}= @user.name
+    %span{class: !@user.active && "in-progress"}= @user.name
     - if !@user.active
       %h4 (INACTIVE)
 
@@ -39,8 +39,8 @@
     %p.no_indent.space
       %strong Belongs to divisions
       %ul
-        - @user.divisions.each do |d|
-          %li= link_to d.name, d, :class => 'ajax'
+        - @user.divisions.each do |division|
+          %li= link_to division.name, division
 
   - @user.divisions.each do |division|
     - specialization_options = @user.specialization_options.for_divisions([division]).reject{ |so| so.specialization.blank? }
@@ -49,7 +49,7 @@
         %strong Specializations owned in #{division.name}
         %ul
           - specialization_options.each do |so|
-            %li= link_to so.specialization.name, so.specialization, :class => 'ajax'
+            %li= link_to so.specialization.name, so.specialization
 
   - if !@user.admin_or_super?
     - if @user.controlled_specialists.length > 0
@@ -57,16 +57,26 @@
         %strong Can edit specialists
       %ul
         - @user.controlled_specialists.each do |specialist|
-          %li= link_to specialist.name, specialist, :class => 'ajax'
+          %li= link_to specialist.name, specialist
     - if @user.controlled_clinics.length > 0
       %p
         %strong Can edit clinics
       %ul
         - @user.controlled_clinics.each do |clinic|
-          %li= link_to clinic.name, clinic, :class => 'ajax'
+          %li= link_to clinic.name, clinic
 
   %p.admin.btn-group
     - if can? :update, @user
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_user_path(@user), :class => "btn ajax")
+      = link_to edit_user_path(@user),
+        class: "btn" do
+        %i.icon-pencil
+        %span= " Edit"
+    - if can? :destroy, @user
+      = link_to @user,
+        data: { confirm: "Delete #{@user.name}?"},
+        method: :delete,
+        class: "btn" do
+        %i.icon-trash
+        %span= " Delete"
     - if can? :view_history, @user
       = large_history_button(@user)

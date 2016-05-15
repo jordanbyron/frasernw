@@ -20,7 +20,10 @@ class GlobalSearchData
   def generate
     search_data = Array.new
 
-    Specialization.not_in_progress_for_divisions(Division.all).uniq.each do |specialization|
+    Specialization.
+      not_in_progress_for_divisions(Division.all).
+      uniq.
+      each do |specialization|
 
       entry = {
         "n" => specialization.name,
@@ -37,14 +40,20 @@ class GlobalSearchData
       search_data << entry
     end
 
-    Procedure.includes(:procedure_specializations => :specialization).each do |procedure|
-
-      #this handles those that only belong to specializations that are "in progress", as well as orphaned entities
-      next if procedure.procedure_specializations.reject{ |ps| ps.specialization.fully_in_progress }.length == 0
+    Procedure.includes(procedure_specializations: :specialization).each do |procedure|
+      # this handles those that only belong to specializations that are "in progress",
+      # as well as orphaned entities
+      next if procedure.
+        procedure_specializations.
+        reject{ |ps| ps.specialization.fully_in_progress }.
+        length == 0
 
       entry = {
         "n" => procedure.full_name,
-        "sp" => procedure.procedure_specializations.reject{ |ps| ps.specialization.fully_in_progress }.collect{ |ps| ps.specialization_id },
+        "sp" => procedure.
+          procedure_specializations.
+          reject{ |ps| ps.specialization.fully_in_progress }.
+          collect{ |ps| ps.specialization_id },
         "id" => procedure.id,
         "go" => order_map["Procedures"] }
       search_data << entry

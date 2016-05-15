@@ -23,25 +23,45 @@ class ProcedureSpecialization < ActiveRecord::Base
 
   belongs_to :procedure
   belongs_to :specialization
-  scope :focused, -> { where("classification = #{ProcedureSpecialization::CLASSIFICATION_FOCUSED}") }
-  scope :non_focused, -> { where("classification = #{ProcedureSpecialization::CLASSIFICATION_NONFOCUSED}") }
-  scope :assumed_specialist, -> { where("classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST} OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}") }
-  scope :assumed_clinic, -> { where("classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC} OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}") }
-  scope :non_assumed, -> { where("classification = #{ProcedureSpecialization::CLASSIFICATION_FOCUSED} OR classification = #{ProcedureSpecialization::CLASSIFICATION_NONFOCUSED}") }
-  scope :classification, -> (classification){ where("classification = (?)", classification) }
+  scope :focused,
+    -> { where(
+    "classification = #{ProcedureSpecialization::CLASSIFICATION_FOCUSED}"
+    ) }
+  scope :non_focused,
+    -> { where(
+    "classification = #{ProcedureSpecialization::CLASSIFICATION_NONFOCUSED}"
+    ) }
+  scope :assumed_specialist,
+    -> { where(
+    "classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST} "\
+      "OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}"
+    ) }
+  scope :assumed_clinic,
+    -> { where(
+    "classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC} "\
+      "OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}"
+    ) }
+  scope :non_assumed,
+    -> { where(
+    "classification = #{ProcedureSpecialization::CLASSIFICATION_FOCUSED} "\
+      "OR classification = #{ProcedureSpecialization::CLASSIFICATION_NONFOCUSED}"
+    ) }
+  scope :classification,
+    -> (classification){ where(
+    "classification = (?)", classification
+    ) }
   scope :mapped, -> { where(mapped: true) }
   scope :has_procedure, -> { joins(:procedure) }
 
-  has_many :capacities, :dependent => :destroy
-  has_many :specialists, :through => :capacities
+  has_many :capacities, dependent: :destroy
+  has_many :specialists, through: :capacities
 
-  has_many :focuses, :dependent => :destroy
-  has_many :clinics, :through => :focuses
+  has_many :focuses, dependent: :destroy
+  has_many :clinics, through: :focuses
 
   include PaperTrailable
   has_ancestry
 
-  # # # Cache actions
   after_commit :flush_cached_find
 
   def self.cached_find(id)
@@ -51,18 +71,11 @@ class ProcedureSpecialization < ActiveRecord::Base
   def flush_cached_find
     Rails.cache.delete([self.class.name, id])
   end
-  # # #
 
   def self.for_specialization(specialization)
     where('procedure_specializations.specialization_id = (?)', specialization.id)
   end
 
-  # takes:
-  # ["x", "y", "z"] OR
-  # "x > y > z"
-  # where x, y, and z are procedure names
-  # and z is the procedure name for self
-  # and checks if self's ancestry matches those procedure names
   def matches_ancestry?(ancestry)
     if ancestry.is_a? String
       ancestry = ancestry.split(" > ")
@@ -103,11 +116,13 @@ class ProcedureSpecialization < ActiveRecord::Base
   end
 
   def assumed_specialist?
-    classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST || classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH
+    classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST ||
+      classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH
   end
 
   def assumed_clinic?
-    classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC || classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH
+    classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC ||
+      classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH
   end
 
   def self.specialist_wait_time
@@ -132,10 +147,16 @@ class ProcedureSpecialization < ActiveRecord::Base
 
   def investigation(specialist_or_clinic)
     if specialist_or_clinic.instance_of? Clinic
-      f = Focus.find_by_clinic_id_and_procedure_specialization_id(specialist_or_clinic.id, self.id)
+      f = Focus.find_by(
+        clinic_id: specialist_or_clinic.id,
+        procedure_specialization_id: self.id
+      )
       return f.investigation if f
     else
-      c = Capacity.find_by_specialist_id_and_procedure_specialization_id(specialist_or_clinic.id, self.id)
+      c = Capacity.find_by(
+        specialist_id: specialist_or_clinic.id,
+        procedure_specialization_id: self.id
+      )
       return c.investigation if c
     end
     return ""

@@ -17,14 +17,14 @@ class CreateSpecializationOptions < ServiceObject
     def call
       division.
         specialization_options.
-        find_or_initialize_by_specialization_id(specialization.id).
+        find_or_initialize_by(specialization_id: specialization.id).
         update_attributes(copied_attributes.merge(owner_attributes))
     end
 
     def template_option
       @template_option ||= Division.find(1).
         specialization_options.
-        find_by_specialization_id(specialization.id)
+        find_by_id(specialization.id)
     end
 
     def copied_attributes
@@ -34,7 +34,10 @@ class CreateSpecializationOptions < ServiceObject
     def owner_attributes
       [ :owner, :content_owner ].map do |owner_type|
         value = begin
-          if template_option.send(owner_type) && template_option.send(owner_type).super_admin?
+          if (
+            template_option.send(owner_type) &&
+              template_option.send(owner_type).super_admin?
+          )
             template_option.send(owner_type)
           else
             User.super_admin.first

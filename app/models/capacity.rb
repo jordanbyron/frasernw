@@ -10,7 +10,8 @@ class Capacity < ActiveRecord::Base
   delegate :procedure, to: :procedure_specialization
 
   def self.specialist_wait_time
-    joins(:procedure_specialization).where('procedure_specializations.specialist_wait_time = (?)', true)
+    joins(:procedure_specialization).
+      where('procedure_specializations.specialist_wait_time = (?)', true)
   end
 
   def waittime

@@ -333,14 +333,6 @@ GEM
       activesupport
     inflecto (0.0.2)
     ipaddress (0.8.3)
-    jquery-datatables-rails (3.1.1)
-      actionpack (>= 3.1)
-      jquery-rails
-      railties (>= 3.1)
-      sass-rails
-    jquery-rails (3.1.4)
-      railties (>= 3.0, < 5.0)
-      thor (>= 0.14, < 2.0)
     json (1.8.3)
     jwt (1.5.4)
     kgio (2.10.0)
@@ -530,7 +522,7 @@ GEM
     thread_safe (0.3.5)
     tilt (1.4.1)
     trollop (2.1.2)
-    tzinfo (0.3.48)
+    tzinfo (0.3.49)
     uglifier (3.0.0)
       execjs (>= 0.3.0, < 3)
     unicorn (5.1.0)
@@ -583,7 +575,6 @@ DEPENDENCIES
   heroku_cloud_backup!
   hirb
   indefinite_article
-  jquery-datatables-rails (= 3.1.1)
   kgio
   letter_opener
   nested_form!

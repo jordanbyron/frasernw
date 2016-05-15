@@ -6,7 +6,6 @@ class SelectDemoableNewsItems < ServiceObject
       not_demoable.
       order("news_items.created_at DESC").
       select([:title, :body, :type_mask, "news_items.id"]).
-      all.
       each do |item|
         puts "---"
 

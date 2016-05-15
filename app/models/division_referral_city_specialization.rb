@@ -19,7 +19,8 @@ class DivisionReferralCitySpecialization < ActiveRecord::Base
 
   def self.create_by(args)
     create(
-      division_referral_city_id: DivisionReferralCity.find_or_create_by(args.slice(:division, :city)).id,
+      division_referral_city_id: DivisionReferralCity.
+        find_or_create_by(args.slice(:division, :city)).id,
       specialization_id: args[:specialization].id
     )
   end
