@@ -24,8 +24,8 @@ class UpdateClinicFocuses
       value == "1"
     end.each do |checkbox_key, value|
       focus = Focus.find_or_create_by(
-        procedure_specialization_id: clinic.id,
-        clinic_id: checkbox_key
+        clinic_id: clinic.id,
+        procedure_specialization_id: checkbox_key
       )
       focus.investigation = params[:focuses_investigations][checkbox_key]
       if params[:focuses_waittime].present?
