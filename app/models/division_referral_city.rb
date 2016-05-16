@@ -19,20 +19,6 @@ class DivisionReferralCity < ActiveRecord::Base
     end
   end
 
-  def self.find_by(args)
-    self.joins(:division, :city).where(
-      divisions: {id: args[:division].id },
-      cities: {id: args[:city].id }
-    ).first
-  end
-
-  def self.find_or_create_by(args)
-    find_by(args).presence || create(
-      division_id: args[:division].id,
-      city_id: args[:city].id
-    )
-  end
-
   def options_for_priority_select
     options_for_select(
       City.priority_setting_options,

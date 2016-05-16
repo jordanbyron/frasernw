@@ -153,12 +153,14 @@ class Division < ActiveRecord::Base
     @borrowed_sc_items ||= ScItem.shared_in_divisions([ self ])
   end
 
-  def refer_to_encompassed_cities(specialization)
+  def refer_to_encompassed_cities!(specialization)
     cities.each do |city|
       DivisionReferralCitySpecialization.find_or_create_by(
-        division: self,
         specialization: specialization,
-        city: city
+        division_referral_city: DivisionReferralCity.find_by(
+          city: city,
+          division: self
+        )
       )
     end
   end
