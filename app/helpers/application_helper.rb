@@ -199,14 +199,15 @@ module ApplicationHelper
   def icon(icon_class, title=nil, placement="top")
     if title.present?
       content_tag(
-        :i, 
+        :i,
+        nil,
         "class" => icon_class,
         "data-toggle" => "tooltip",
         "data-original-title" => title,
         "data-placement" => placement
-      )      
+      )
     else
-      content_tag(:i, "class" => icon_class)
+      content_tag(:i, nil, "class" => icon_class)
     end
   end
 
