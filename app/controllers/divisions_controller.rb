@@ -40,9 +40,7 @@ class DivisionsController < ApplicationController
       if params[:local_referral_cities].present?
         #add new specializations
         params[:local_referral_cities].each do |city_id, specializations|
-          division_referral_city = DivisionReferralCity.
-            joins(:division, :city).
-            find_by(
+          division_referral_city = DivisionReferralCity.find_by(
             division_id: @division.id,
             city_id: city_id
           )
