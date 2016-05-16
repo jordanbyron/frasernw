@@ -66,7 +66,7 @@ class SpecializationsController < ApplicationController
           params[:show_specialist_categorization_5]["#{division.id}"].present?
         so.save
 
-        division.refer_to_encompassed_cities(@specialization)
+        division.refer_to_encompassed_cities!(@specialization)
       end
       redirect_to @specialization, notice: "Successfully created specialty."
     else

@@ -12,7 +12,9 @@ class SpecializationOption < ActiveRecord::Base
     :show_specialist_categorization_2,
     :show_specialist_categorization_3,
     :show_specialist_categorization_4,
-    :show_specialist_categorization_5
+    :show_specialist_categorization_5,
+    :specialization_id,
+    :division_id
 
   belongs_to :specialization, touch: true
   belongs_to :owner, class_name: "User"
