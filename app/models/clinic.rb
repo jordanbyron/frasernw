@@ -169,7 +169,8 @@ class Clinic < ActiveRecord::Base
     end
 
     self.in_cities_and_specialization(
-      City.all - in_progress_cities, specialization
+      City.all - in_progress_cities,
+      specialization
     )
   end
 
@@ -392,7 +393,7 @@ class Clinic < ActiveRecord::Base
   end
 
   def self.no_division
-    Clinic.includes_location_data.reject do |clinic|
+    includes_location_data.reject do |clinic|
       clinic.cities.length > 0
     end.sort do |a,b|
       a.name <=> b.name

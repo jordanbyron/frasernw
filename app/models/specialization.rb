@@ -28,7 +28,8 @@ class Specialization < ActiveRecord::Base
   accepts_nested_attributes_for :specialization_options
   has_many :owners, through: :specialization_options, class_name: "User"
   has_many :content_owners,
-    through: :specialization_options, class_name: "User"
+    through: :specialization_options,
+    class_name: "User"
 
   has_many :division_referral_city_specializations, dependent: :destroy
 
