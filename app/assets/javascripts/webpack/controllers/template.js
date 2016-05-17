@@ -3,8 +3,8 @@ import Table from "controllers/table";
 import * as FilterValues from "controller_helpers/filter_values";
 import { changeFilterValue } from "action_creators";
 import { padTwo } from "utils";
-import DateRangeFilter from "controllers/filter_groups/date_range";
-import DivisionScopeFilter from "controllers/filter_groups/division_scope";
+import DateRangeFilters from "controllers/filter_groups/date_range";
+import DivisionScopeFilters from "controllers/filter_groups/division_scope";
 import { matchedRoute } from "controller_helpers/routing";
 import Breadcrumbs from "controllers/breadcrumbs";
 import NavTabs from "controllers/nav_tabs";
@@ -12,7 +12,7 @@ import ReducedViewSelector from "controllers/reduced_view_selector";
 import { reducedView, viewSelectorClass } from "controller_helpers/reduced_view";
 import Sidebar from "controllers/sidebar";
 
-const TemplateController = ({model, dispatch}) => {
+const Template = ({model, dispatch}) => {
   if(model.app.currentUser) {
     return(
       <div>
@@ -39,7 +39,7 @@ const WhitePanel = ({model, dispatch}) => {
         <div className="content">
           <ReducedViewSelector model={model} dispatch={dispatch}/>
           <div className="row">
-            <MainPanel model={model} dispatch={dispatch}/>
+            <Main model={model} dispatch={dispatch}/>
             <Sidebar model={model} dispatch={dispatch}/>
           </div>
         </div>
@@ -73,7 +73,7 @@ const PageTitle = ({model, dispatch}) => {
   }
 };
 
-const MainPanel = ({model, dispatch}) => {
+const Main = ({model, dispatch}) => {
   return(
     <div className={`span8half ${viewSelectorClass(model, "main")}`}>
       <div>This is the main panel</div>
@@ -83,4 +83,4 @@ const MainPanel = ({model, dispatch}) => {
   );
 }
 
-export default TemplateController;
+export default Template;

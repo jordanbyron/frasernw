@@ -2,8 +2,9 @@ import React from "react";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import { viewSelectorClass }  from "controller_helpers/reduced_view";
 import { recordShownByPanel, selectedPanelKey } from "controller_helpers/panel_keys";
-import DateRangeFilter from "controllers/filter_groups/date_range";
-import DivisionScopeFilter from "controllers/filter_groups/division_scope";
+import DateRangeFilters from "controllers/filter_groups/date_range";
+import DivisionScopeFilters from "controllers/filter_groups/division_scope";
+import ProcedureFilters from "controllers/filter_groups/procedure";
 
 const pageIsReport = (model) => {
   return matchedRoute(model).includes("/reports/");
@@ -61,8 +62,9 @@ const Sidebar = ({model, dispatch}) => {
     }>
       <div className="well filter">
         <div className="title">{ sidebarTitle(model) }</div>
-        <DateRangeFilter model={model} dispatch={dispatch}/>
-        <DivisionScopeFilter model={model} dispatch={dispatch}/>
+        <ProcedureFilters model={model} dispatch={dispatch}/>
+        <DateRangeFilters model={model} dispatch={dispatch}/>
+        <DivisionScopeFilters model={model} dispatch={dispatch}/>
       </div>
     </div>
   );

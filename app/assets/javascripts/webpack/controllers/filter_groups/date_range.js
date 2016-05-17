@@ -5,7 +5,7 @@ import React from "react";
 import { changeFilterValue } from "action_creators";
 import { matchedRoute } from "controller_helpers/routing";
 
-const DateRangeFilter = ({model, dispatch}) => {
+const DateRangeFilters = ({model, dispatch}) => {
   if(matchedRoute(model) === "/reports/pageviews_by_user"){
     return(
       <FilterGroup title="Date Range">
@@ -96,4 +96,4 @@ const monthOptions = () => {
   ).reverse();
 };
 
-export default DateRangeFilter;
+export default DateRangeFilters;

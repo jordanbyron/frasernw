@@ -20,10 +20,38 @@ const ui = (model = {}, action) => {
     filterValues: filterValues(model.filterValues, action),
     selectedTableHeading: selectedTableHeading(model.selectedTableHeading, action),
     location: location(model.location, action),
-    openBreadcrumbDropdown: openBreadcrumbDropdown(model.openBreadcrumbDropdown, action),
-    reducedView: reducedView(model.reducedView, action)
+    isBreadcrumbDropdownOpen: isBreadcrumbDropdownOpen(model.isBreadcrumbDropdownOpen, action),
+    reducedView: reducedView(model.reducedView, action),
+    panels: panels(model.panels, action)
   };
 }
+
+const panels = (model = {}, action) => {
+  return _.assign(
+    {},
+    model,
+    { [action.panelKey]: panel(model[action.panelKey], action) }
+  );
+};
+
+const panel = (model = {}, action) => {
+  return {
+    isFilterGroupExpanded: isFilterGroupExpanded(model, action)
+  };
+}
+
+const isFilterGroupExpanded = (model = {}, action) => {
+  switch(action.type){
+  case "TOGGLE_FILTER_GROUP_EXPANSION":
+    return _.assign(
+      {},
+      model,
+      { [action.filterGroupKey] : action.proposed }
+    );
+  default:
+    return model;
+  }
+};
 
 const reducedView = (model, action) => {
   switch(action.type){
@@ -34,7 +62,7 @@ const reducedView = (model, action) => {
   }
 }
 
-const openBreadcrumbDropdown = (model, action) => {
+const isBreadcrumbDropdownOpen = (model, action) => {
   switch(action.type){
   case "TOGGLE_BREADCRUMB_DROPDOWN":
     return action.newState;

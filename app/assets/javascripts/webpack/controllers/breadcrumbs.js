@@ -39,7 +39,7 @@ const Breadcrumbs = ({model, dispatch}) => {
 }
 
 const dropdownIsOpen = (model) => {
-  return _.get(model, [ "ui", "openBreadcrumbDropdown" ], false);
+  return _.get(model, [ "ui", "isBreadcrumbDropdownOpen" ], false);
 }
 
 const BreadcrumbDropdown = ({model, dispatch}) => {

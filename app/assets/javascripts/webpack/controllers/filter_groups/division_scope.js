@@ -22,7 +22,7 @@ const labelScopeOption = (option, model) => {
   }
 }
 
-const DivisionScopeFilter = ({model, dispatch}) => {
+const DivisionScopeFilters = ({model, dispatch}) => {
   if(matchedRoute(model) === "/reports/pageviews_by_user"){
     return(
       <FilterGroup title="Scope">
@@ -49,4 +49,4 @@ const DivisionScopeFilter = ({model, dispatch}) => {
   }
 }
 
-export default DivisionScopeFilter;
+export default DivisionScopeFilters;

@@ -1,4 +1,4 @@
-import TemplateController from "controllers/template";
+import Template from "controllers/template";
 import Provider from "provider";
 import createLogger from "redux-logger";
 import nextAction from "middlewares/next_action";
@@ -35,7 +35,7 @@ const dryBootstrapReact = function() {
 
     if (renderTo){
       ReactDOM.render(
-        <Provider childKlass={TemplateController} store={store}/>,
+        <Provider childKlass={Template} store={store}/>,
         renderTo
       )
     }

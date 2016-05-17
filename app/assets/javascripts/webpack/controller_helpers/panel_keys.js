@@ -1,17 +1,17 @@
 import { matchedRoute, matchedRouteParams } from "controller_helpers/routing";
 
 export function defaultPanel(model) {
-  return {
-    ["/specialties/:id"]: function() {
-      return model.
-        app.
-        divisions[model.app.currentUser.divisionIds[0]].
-        openToSpecializationPanel[matchedRouteParams(model).id];
-    },
-    ["/areas_of_practice/:id"]: function() {
-      return { type: "specialists" }
-    }
-  }[matchedRoute(model)]();
+  switch(matchedRoute(model)){
+  case "/specialties/:id":
+    return model.
+      app.
+      divisions[model.app.currentUser.divisionIds[0]].
+      openToSpecializationPanel[matchedRouteParams(model).id];
+  case "/areas_of_practice/:id":
+    return { type: "specialists" };
+  default:
+    return { type: "only" };
+  }
 };
 
 export function selectedPanelKey(model){

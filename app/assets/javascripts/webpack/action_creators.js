@@ -85,3 +85,12 @@ export function selectReducedView(dispatch, newView) {
     newView: newView
   })
 }
+
+export function toggleFilterGroupExpansion(dispatch, panelKey, filterGroupKey, proposed){
+  dispatch({
+    type: "TOGGLE_FILTER_GROUP_EXPANSION",
+    panelKey: panelKey,
+    filterGroupKey: filterGroupKey,
+    proposed: proposed
+  })
+}
