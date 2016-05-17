@@ -200,7 +200,7 @@ module Denormalized
             map{ |ps| ps.procedure.name.uncapitalize_first_letter },
           memberName: specialization.member_name,
           membersName: specialization.member_name.pluralize,
-          nestedProcedureIds: Denormalized.transform_nested_procedure_specializations(
+          nestedProcedures: Denormalized.transform_nested_procedure_specializations(
             specialization.procedure_specializations.includes(:procedure).arrange
           ),
           maskFiltersByReferralArea: specialization.mask_filters_by_referral_area,

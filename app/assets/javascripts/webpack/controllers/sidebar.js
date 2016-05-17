@@ -1,7 +1,7 @@
 import React from "react";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import { viewSelectorClass }  from "controller_helpers/reduced_view";
-import { recordShownByPanel, selectedPanelKey } from "controller_helpers/panel_keys";
+import { recordShownByPanel, selectedPanelKey, collectionShown } from "controller_helpers/panel_keys";
 import DateRangeFilters from "controllers/filter_groups/date_range";
 import DivisionScopeFilters from "controllers/filter_groups/division_scope";
 import ProcedureFilters from "controllers/filter_groups/procedure";
@@ -31,15 +31,6 @@ const collectionShownPluralLabel = (model) => {
     else {
       return recordShownByTab(model).name;
     }
-  }
-};
-
-const collectionShown = (model) => {
-  if(_.includes(["specialists", "clinics"], selectedPanelKey(model))){
-    return selectedPanelKey(model);
-  }
-  else if (selectedPanelKey(model).includes("contentCategory")){
-    return "contentItems";
   }
 };
 

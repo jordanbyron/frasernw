@@ -34,3 +34,12 @@ export function panelKey(collection, id) {
     return collection;
   }
 };
+
+export function collectionShown(model) => {
+  if(_.includes(["specialists", "clinics"], selectedPanelKey(model))){
+    return selectedPanelKey(model);
+  }
+  else if (selectedPanelKey(model).includes("contentCategory")){
+    return "contentItems";
+  }
+};
