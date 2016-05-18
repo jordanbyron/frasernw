@@ -6,6 +6,7 @@ import { collectionShownName } from "controller_helpers/collection_shown";
 import DateRangeFilters from "controllers/filter_groups/date_range";
 import DivisionScopeFilters from "controllers/filter_groups/division_scope";
 import ProcedureFilters from "controllers/filter_groups/procedure";
+import ReferralsFilters from "controllers/filter_groups/referrals";
 
 const pageIsReport = (model) => {
   return matchedRoute(model).includes("/reports/");
@@ -55,6 +56,7 @@ const Sidebar = ({model, dispatch}) => {
       <div className="well filter">
         <div className="title">{ sidebarTitle(model) }</div>
         <ProcedureFilters model={model} dispatch={dispatch}/>
+        <ReferralsFilters model={model} dispatch={dispatch}/>
         <DateRangeFilters model={model} dispatch={dispatch}/>
         <DivisionScopeFilters model={model} dispatch={dispatch}/>
       </div>

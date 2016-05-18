@@ -1,8 +1,8 @@
 import React from "react";
-import FilterGroup from "component_helpers/filter_group";
+import FilterGroup from "controllers/filter_group";
 import { recordShownByPage, matchedRoute } from "controller_helpers/routing";
 import { selectedTabKey } from "controller_helpers/tab_keys";
-import { toggleFilterGroupExpansion, toggleUnfocusedProcedureVisibility }
+import { toggleUnfocusedProcedureVisibility }
   from "action_creators";
 import ProcedureCheckbox from "component_helpers/procedure_checkbox";
 import _ from "lodash";
@@ -19,16 +19,10 @@ const ProcedureFilters = ({model, dispatch}) => {
       <FilterGroup
         title={title(model)}
         isExpandable={true}
-        isExpanded={isExpanded(model)}
-        toggleExpansion={
-          _.partial(
-            toggleFilterGroupExpansion,
-            dispatch,
-            selectedTabKey(model),
-            "procedures",
-            !isExpanded(model)
-          )
-        }
+        defaultIsExpanded={true}
+        expansionControlKey={"procedures"}
+        model={model}
+        dispatch={dispatch}
       >
         <Focused model={model} dispatch={dispatch}/>
         <Unfocused model={model} dispatch={dispatch}/>
@@ -210,14 +204,6 @@ const ROUTES = [
   "/specialties/:id",
   "/areas_of_practice/:id"
 ];
-
-const isExpanded = (model) => {
-  return _.get(
-    model,
-    ["ui", "tabs", selectedTabKey(model), "isFilterGroupExpanded", "procedures"],
-    true
-  );
-};
 
 const title = (model) => {
   if (matchedRoute(model) === "/specialties/:id"){
