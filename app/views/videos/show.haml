@@ -4,13 +4,14 @@
 
   %h2= @video.title
 
-  %iframe{align: "center",
-    title: "YouTube Player",
+  %video{align: "center",
+    title: "Video Player",
     src: "#{@video.link}",
     height: "315px;",
     width: "560px;",
     frameborder: "0",
-    allowfullscreen: "true"}
+    allowfullscreen: "true",
+    controls: "true"}
 
   %p.admin.btn-group
     - if can? :update, @video
