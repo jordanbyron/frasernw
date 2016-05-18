@@ -51,9 +51,22 @@ const tabs = (model = {}, action) => {
 const tab = (model = {}, action) => {
   return {
     isFilterGroupExpanded: isFilterGroupExpanded(model, action),
-    filterValues: filterValues(model.filterValues, action)
+    filterValues: filterValues(model.filterValues, action),
+    showUnfocusedProcedures: showUnfocusedProcedures(
+      model.showUnfocusedProcedures,
+      action
+    )
   };
 }
+
+const showUnfocusedProcedures = (model = {}, action) => {
+  switch(action.type){
+  case "TOGGLE_UNFOCUSED_PROCEDURE_VISIBILITY":
+    return action.proposed;
+  default:
+    return model;
+  }
+};
 
 const isFilterGroupExpanded = (model = {}, action) => {
   switch(action.type){

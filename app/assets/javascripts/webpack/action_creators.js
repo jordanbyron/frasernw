@@ -110,3 +110,11 @@ export function changeFilter(dispatch, tabKey, filterKey, filterSubKey, event) {
     proposed: proposedValue(event)
   })
 }
+
+export function toggleUnfocusedProcedureVisibility(dispatch, proposed, tabKey) {
+  dispatch({
+    type: "TOGGLE_UNFOCUSED_PROCEDURE_VISIBILITY",
+    tabKey: tabKey,
+    proposed: proposed
+  })
+}

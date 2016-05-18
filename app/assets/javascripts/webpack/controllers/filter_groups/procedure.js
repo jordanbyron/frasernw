@@ -2,7 +2,8 @@ import React from "react";
 import FilterGroup from "component_helpers/filter_group";
 import { recordShownByPage, matchedRoute } from "controller_helpers/routing";
 import { selectedTabKey } from "controller_helpers/tab_keys";
-import { toggleFilterGroupExpansion } from "action_creators";
+import { toggleFilterGroupExpansion, toggleUnfocusedProcedureVisibility }
+  from "action_creators";
 import ProcedureCheckbox from "component_helpers/procedure_checkbox";
 import _ from "lodash";
 import { collectionShownName, scopedByRouteAndTab }
@@ -10,6 +11,7 @@ import { collectionShownName, scopedByRouteAndTab }
 import recordsMaskingFilters from "controller_helpers/records_masking_filters";
 import { changeFilter } from "action_creators"
 import { procedure as procedureFilterValue } from "controller_helpers/filter_values";
+import ExpandBox from "component_helpers/expand_box";
 
 const ProcedureFilters = ({model, dispatch}) => {
   if (_.includes(ROUTES, matchedRoute(model)) && anyProcedureFilters(model)){
@@ -29,8 +31,63 @@ const ProcedureFilters = ({model, dispatch}) => {
         }
       >
         <Focused model={model} dispatch={dispatch}/>
+        <Unfocused model={model} dispatch={dispatch}/>
       </FilterGroup>
     );
+  }
+  else {
+    return <span></span>;
+  }
+}
+
+const isUnfocusedExpanded = (model) => {
+  return _.get(
+    model,
+    ["ui", "tabs", selectedTabKey(model), "showUnfocusedProcedures"],
+    false
+  )
+};
+
+const anyUnfocused = (model) => {
+  return recordShownByPage(model).
+    nestedProcedures.
+    pwPipe(_.values).
+    filter((procedure) => {
+      return !procedure.focused &&
+        !procedure.assumed[collectionShownName(model)] &&
+        _.includes(procedureIdsMaskingFilters(model), procedure.id);
+    }).pwPipe(_.any);
+};
+
+const Unfocused = ({model, dispatch}) => {
+  if (matchedRoute(model) === "/specialties/:id" && anyUnfocused(model)) {
+    return(
+      <ExpandBox expanded={isUnfocusedExpanded(model)}
+        handleToggle={
+          _.partial(
+            toggleUnfocusedProcedureVisibility,
+            dispatch,
+            !isUnfocusedExpanded(model),
+            selectedTabKey(model)
+          )
+        }
+      >
+        {
+          recordShownByPage(model).
+            nestedProcedures.
+            pwPipe(_.values).
+            filter((procedure) => !procedure.focused).
+            pwPipe((procedures) => {
+              return procedureCheckboxesFromNested(
+                procedures,
+                0,
+                model,
+                dispatch
+              );
+            })
+        }
+      </ExpandBox>
+    )
   }
   else {
     return <span></span>;
@@ -94,7 +151,12 @@ const Focused = ({model, dispatch}) => {
             pwPipe(_.values).
             filter(_.property("focused")).
             pwPipe((focusedProcedures) => {
-              return procedureCheckboxesFromNested(focusedProcedures, 0, model, dispatch);
+              return procedureCheckboxesFromNested(
+                focusedProcedures,
+                0,
+                model,
+                dispatch
+              );
             })
         }
       </div>
