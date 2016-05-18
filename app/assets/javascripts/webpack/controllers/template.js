@@ -13,7 +13,7 @@ import { reducedView, viewSelectorClass } from "controller_helpers/reduced_view"
 import Sidebar from "controllers/sidebar";
 
 const Template = ({model, dispatch}) => {
-  if(model.app.currentUser) {
+  if(isLoaded(model)) {
     return(
       <div>
         <Breadcrumbs model={model} dispatch={dispatch}/>
@@ -26,6 +26,10 @@ const Template = ({model, dispatch}) => {
     return(<span></span>);
   }
 };
+
+const isLoaded = (model) => {
+  return model.app.specialists && model.app.currentUser;
+}
 
 const usesSidebarLayout = (model) => {
   return matchedRoute(model) !== "/latest_updates" ||

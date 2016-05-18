@@ -1,7 +1,8 @@
 import React from "react";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import { viewSelectorClass }  from "controller_helpers/reduced_view";
-import { recordShownByPanel, selectedPanelKey, collectionShown } from "controller_helpers/panel_keys";
+import { recordShownByTab, selectedTabKey} from "controller_helpers/tab_keys";
+import { collectionShownName } from "controller_helpers/collection_shown";
 import DateRangeFilters from "controllers/filter_groups/date_range";
 import DivisionScopeFilters from "controllers/filter_groups/division_scope";
 import ProcedureFilters from "controllers/filter_groups/procedure";
@@ -11,7 +12,7 @@ const pageIsReport = (model) => {
 };
 
 const collectionShownPluralLabel = (model) => {
-  switch(collectionShown(model)){
+  switch(collectionShownName(model)){
   case "specialists":
     if (matchedRoute(model) === "/specialties/:id"){
       return recordShownByPage(model).membersName;

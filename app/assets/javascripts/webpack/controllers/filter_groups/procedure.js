@@ -1,12 +1,18 @@
 import React from "react";
 import FilterGroup from "component_helpers/filter_group";
-import { matchedRoute } from "controller_helpers/routing";
-import { selectedPanelKey } from "controller_helpers/panel_keys";
+import { recordShownByPage, matchedRoute } from "controller_helpers/routing";
+import { selectedTabKey } from "controller_helpers/tab_keys";
 import { toggleFilterGroupExpansion } from "action_creators";
+import ProcedureCheckbox from "component_helpers/procedure_checkbox";
 import _ from "lodash";
+import { collectionShownName, scopedByRouteAndTab }
+  from "controller_helpers/collection_shown";
+import recordsMaskingFilters from "controller_helpers/records_masking_filters";
+import { changeFilter } from "action_creators"
+import { procedure as procedureFilterValue } from "controller_helpers/filter_values";
 
 const ProcedureFilters = ({model, dispatch}) => {
-  if (_.includes(ROUTES, matchedRoute(model))){
+  if (_.includes(ROUTES, matchedRoute(model)) && anyProcedureFilters(model)){
     return(
       <FilterGroup
         title={title(model)}
@@ -16,7 +22,7 @@ const ProcedureFilters = ({model, dispatch}) => {
           _.partial(
             toggleFilterGroupExpansion,
             dispatch,
-            selectedPanelKey(model),
+            selectedTabKey(model),
             "procedures",
             !isExpanded(model)
           )
@@ -31,24 +37,49 @@ const ProcedureFilters = ({model, dispatch}) => {
   }
 }
 
+const anyProcedureFilters = (model) => {
+  if (matchedRoute(model) === "/specialties/:id"){
+    return recordShownByPage(model).
+        nestedProcedures.
+        pwPipe(_.values).
+        filter((procedure) => {
+          return !procedure.assumed[collectionShownName(model)] &&
+            _.includes(procedureIdsMaskingFilters(model), procedure.id)
+        }).pwPipe(_.any);
+  }
+  else if (matchedRoute(model) === "/areas_of_practice/:id"){
+    return _.any(recordShownByPage(model).childrenProcedureIds);
+  }
+}
+
 const Focused = ({model, dispatch}) => {
   if (matchedRoute(model) === "/areas_of_practice/:id"){
     return(
       <div>
         {
-          recordShown(model).
+          recordShownByPage(model).
             childrenProcedureIds.
             map((id) => {
+
               return(
                 <ProcedureCheckbox
-                  onClick={}
-                  label={label}
-                  checked={}
-                  level={}
+                  onChange={
+                    _.partial(
+                      changeFilter,
+                      dispatch,
+                      selectedTabKey(model),
+                      "procedures",
+                      id
+                    )
+                  }
+                  key={id}
+                  label={model.app.procedures[id].name}
+                  checked={procedureFilterValue(model, id)}
+                  level={0}
                 />
               )
-            }).pwPipe(checkboxes => {
-              return _.sortBy(checkBoxes, (box) => box.props.label)
+            }).pwPipe(checkBoxes => {
+              return _.sortBy(checkBoxes, _.property("props.label"));
             })
         }
       </div>
@@ -58,49 +89,53 @@ const Focused = ({model, dispatch}) => {
     return(
       <div>
         {
-          _.pick(
-            recordShown(model).nestedProcedures,
-            _.property("focused")
-          ).pwPipe(procedureCheckboxesFromNested)
+          recordShownByPage(model).
+            nestedProcedures.
+            pwPipe(_.values).
+            filter(_.property("focused")).
+            pwPipe((focusedProcedures) => {
+              return procedureCheckboxesFromNested(focusedProcedures, 0, model, dispatch);
+            })
         }
       </div>
     )
   }
 }
 
-const procedureCheckboxesFromNested = (nestedProcedures) => {
+const procedureCheckboxesFromNested = (nestedProcedures, level, model, dispatch) => {
   return _.values(nestedProcedures).
     filter((procedure) => {
-      return !procedure.assumed[collectionShown(model)] &&
-        _.includes(filterMaskingSetProcedureIds(model), procedure.id)
+      return !procedure.assumed[collectionShownName(model)] &&
+        _.includes(procedureIdsMaskingFilters(model), procedure.id);
     }).map((procedure) => {
       return(
         <ProcedureCheckbox
-          onClick={}
-          label={label}
-          checked={}
-          level={}
-        />
+          onChange={
+            _.partial(
+              changeFilter,
+              dispatch,
+              selectedTabKey(model),
+              "procedures",
+              procedure.id
+            )
+          }
+          key={procedure.id}
+          label={model.app.procedures[procedure.id].name}
+          checked={procedureFilterValue(model, procedure.id)}
+          level={level}
+        >
+          { procedureCheckboxesFromNested(procedure.children, (level + 1), model, dispatch) }
+        </ProcedureCheckbox>
       );
-    }).pwPipe((boxes) => _.sortBy(boxes, _.property("props.label")))
+    }).pwPipe((checkBoxes) => _.sortBy(checkBoxes, _.property("props.label")))
 };
 
-const filteringByProcedureIds = (
-
-const filterMaskingSet = (model) => {
-
-}
-
-const filterMaskingSetProcedureIds = (model) => {
-  return filterMaskingSet(model).
+const procedureIdsMaskingFilters = (model) => {
+  return recordsMaskingFilters(model).
     map(_.property("procedureIds")).
     pwPipe(_.flatten).
     pwPipe(_.uniq);
-}
-
-const ProcedureCheckbox = ({}) => {
-  return <div></div>;
-}
+};
 
 const ROUTES = [
   "/specialties/:id",
@@ -110,10 +145,10 @@ const ROUTES = [
 const isExpanded = (model) => {
   return _.get(
     model,
-    ["ui", "panels", selectedPanelKey(model), "isFilterGroupExpanded", "procedures"],
+    ["ui", "tabs", selectedTabKey(model), "isFilterGroupExpanded", "procedures"],
     true
   );
-}
+};
 
 const title = (model) => {
   if (matchedRoute(model) === "/specialties/:id"){
@@ -122,6 +157,6 @@ const title = (model) => {
   else if (matchedRoute(model) === "/areas_of_practice/:id") {
     return "Sub-Areas of Practice";
   }
-}
+};
 
 export default ProcedureFilters;

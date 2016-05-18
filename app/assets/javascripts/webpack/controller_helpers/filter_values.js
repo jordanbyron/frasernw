@@ -1,4 +1,5 @@
 import { padTwo } from "utils";
+import { selectedTabKey } from "controller_helpers/tab_keys";
 
 export function startMonth(model) {
   return _.get(
@@ -21,5 +22,13 @@ export function divisionScope(model) {
     model,
     ["ui", "filterValues", "divisionScope"],
     0
+  );
+}
+
+export function procedure(model, subkey) {
+  return _.get(
+    model,
+    [ "ui", "tabs", selectedTabKey(model), "filterValues", "procedures", subkey ],
+    false
   );
 }

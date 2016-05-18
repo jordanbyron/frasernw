@@ -355,6 +355,7 @@ module Denormalized
     procedure_specializations.inject({}) do |memo, (ps, children)|
       memo.merge({
         ps.procedure.id => {
+          id: ps.procedure.id,
           focused: ps.focused?,
           assumed: {
             clinics: ps.assumed_clinic?,

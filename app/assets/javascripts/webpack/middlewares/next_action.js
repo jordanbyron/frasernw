@@ -1,4 +1,4 @@
-import { requestData } from "action_creators";
+import { requestDynamicData } from "action_creators";
 
 const nextAction = store => next => action => {
   const result = next(action)

@@ -1,6 +1,6 @@
 import _ from "lodash";
 import contentCategoryItems from "controller_helpers/content_category_items";
-import { selectedPanelKey, panelKey } from "controller_helpers/panel_keys";
+import { selectedTabKey, tabKey } from "controller_helpers/tab_keys";
 import { NavTabs, NavTab } from "component_helpers/nav_tabs";
 import { tabClicked } from "action_creators";
 import { matchedRoute } from "controller_helpers/routing";
@@ -15,24 +15,23 @@ const contentCategoriesShowingTabs = (model) => {
         category.ancestry == null &&
         contentCategoryItems(
           category.id,
-          model,
-          model.app.currentUser.divisionIds
+          model
         ).pwPipe(_.keys).pwPipe(_.some)
       );
     }
   );
-}
+};
 
 const contentCategoryTabs = (model, dispatch) => {
   return(
     _.values(contentCategoriesShowingTabs(model)).map((category) => {
-      const _key = panelKey("contentCategory", category.id)
+      const _key = tabKey("contentCategory", category.id)
       return(
         <NavTab
           label={category.name}
           key={_key}
           onClick={_.partial(tabClicked, dispatch, model, _key)}
-          isSelected={_key === selectedPanelKey(model)}
+          isSelected={_key === selectedTabKey(model)}
         />
       );
     })
@@ -52,13 +51,13 @@ const NavTabsController = ({model, dispatch}) => {
           label="Specialists"
           key="specialists"
           onClick={_.partial(tabClicked, dispatch, model, "specialists")}
-          isSelected={"specialists" === selectedPanelKey(model)}
+          isSelected={"specialists" === selectedTabKey(model)}
         />
         <NavTab
           label="Clinics"
           key="clinics"
           onClick={_.partial(tabClicked, dispatch, model, "clinics")}
-          isSelected={"clinics" === selectedPanelKey(model)}
+          isSelected={"clinics" === selectedTabKey(model)}
         />
         {contentCategoryTabs(model, dispatch)}
       </NavTabs>

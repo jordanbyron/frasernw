@@ -6,10 +6,20 @@ const rootReducer = (model = {}, action) => {
 }
 
 const app = (model = {}, action) => {
-  if(action.type === "PARSE_RENDERED_DATA") {
-    return action.data;
-  }
-  else {
+  switch(action.type){
+  case "PARSE_RENDERED_DATA":
+    return _.assign(
+      {},
+      model,
+      action.data
+    );
+  case "INTEGRATE_LOCALSTORAGE_DATA":
+    return _.assign(
+      {},
+      model,
+      action.data
+    );
+  default:
     return model;
   }
 }
@@ -17,26 +27,31 @@ const app = (model = {}, action) => {
 const ui = (model = {}, action) => {
   return {
     recordsToDisplay: recordsToDisplay(model.recordsToDisplay, action),
-    filterValues: filterValues(model.filterValues, action),
     selectedTableHeading: selectedTableHeading(model.selectedTableHeading, action),
     location: location(model.location, action),
     isBreadcrumbDropdownOpen: isBreadcrumbDropdownOpen(model.isBreadcrumbDropdownOpen, action),
     reducedView: reducedView(model.reducedView, action),
-    panels: panels(model.panels, action)
+    tabs: tabs(model.tabs, action)
   };
 }
 
-const panels = (model = {}, action) => {
-  return _.assign(
-    {},
-    model,
-    { [action.panelKey]: panel(model[action.panelKey], action) }
-  );
+const tabs = (model = {}, action) => {
+  if (action.tabKey) {
+    return _.assign(
+      {},
+      model,
+      { [action.tabKey]: tab(model[action.tabKey], action) }
+    );
+  }
+  else {
+    return model;
+  }
 };
 
-const panel = (model = {}, action) => {
+const tab = (model = {}, action) => {
   return {
-    isFilterGroupExpanded: isFilterGroupExpanded(model, action)
+    isFilterGroupExpanded: isFilterGroupExpanded(model, action),
+    filterValues: filterValues(model.filterValues, action)
   };
 }
 
@@ -122,13 +137,24 @@ const recordsToDisplay = (model, action) => {
   }
 };
 
-const filterValues = (model, action) => {
+const filterValues = (model = {}, action) => {
   switch(action.type){
   case "CHANGE_FILTER_VALUE":
+    if(action.filterSubKey) {
+      var newValue = _.assign(
+        {},
+        model[action.filterKey],
+        { [action.filterSubKey] : action.proposed }
+      );
+    }
+    else {
+      var newValue = action.proposed;
+    }
+
     return _.assign(
       {},
       model,
-      { [action.filterKey]: action.newValue }
+      { [action.filterKey]: newValue }
     );
   default:
     return model;

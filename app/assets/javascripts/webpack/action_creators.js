@@ -86,11 +86,27 @@ export function selectReducedView(dispatch, newView) {
   })
 }
 
-export function toggleFilterGroupExpansion(dispatch, panelKey, filterGroupKey, proposed){
+export function toggleFilterGroupExpansion(dispatch, tabKey, filterGroupKey, proposed){
   dispatch({
     type: "TOGGLE_FILTER_GROUP_EXPANSION",
-    panelKey: panelKey,
+    tabKey: tabKey,
     filterGroupKey: filterGroupKey,
     proposed: proposed
+  })
+}
+
+const proposedValue = (event) => {
+  if (event.target.type === "checkbox"){
+    return event.target.checked;
+  }
+}
+
+export function changeFilter(dispatch, tabKey, filterKey, filterSubKey, event) {
+  dispatch({
+    type: "CHANGE_FILTER_VALUE",
+    tabKey: tabKey,
+    filterKey: filterKey,
+    filterSubKey: filterSubKey,
+    proposed: proposedValue(event)
   })
 }
