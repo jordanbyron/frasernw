@@ -1,18 +1,31 @@
 import _ from "lodash";
-import { matchedRoute, matchedRouteParams } from "controller_helpers/routing";
-import { matchesRoute, matchesTab } from "controller_helpers/collection_shown";
+import { matchedRoute, matchedRouteParams, recordShownByPage }
+  from "controller_helpers/routing";
+import { matchesTab, matchesRoute } from "controller_helpers/collection_shown";
+import { memoize } from "utils";
 
-export default function(categoryId, model){
-  return model.
-    app.
-    contentItems.
-    pwPipe(_.values).
+const samePerPage = memoize(
+  (model) => _.values(model.app.contentItems),
+  (model) => model.app.currentUser.divisionIds,
+  matchedRoute,
+  recordShownByPage,
+  (contentItems, divisionIds, matchedRoute, recordShownByPage) => {
+    return contentItems.filter((item) => {
+      return matchesRoute(matchedRoute, recordShownByPage, item) &&
+        _.intersection(
+          item.availableToDivisionIds,
+          divisionIds
+        ).pwPipe(_.any)
+    });
+  }
+);
+
+const contentCategoryItems = function(categoryId, model){
+  return samePerPage(model).
     filter((item) => {
-      return _.intersection(
-        item.availableToDivisionIds,
-        model.app.currentUser.divisionIds
-      ).pwPipe(_.any) &&
-        matchesRoute(item, model) &&
-        matchesTab(item, model, `contentCategory${categoryId}`);
+      return matchesTab(item, model, `contentCategory${categoryId}`);
     })
 };
+
+
+export default contentCategoryItems;

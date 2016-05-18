@@ -30,20 +30,21 @@ export const matchedRouteParams = memoize(
   }
 );
 
-export function recordShownByPage(model) {
-  if (matchedRoute(model) === "/specialties/:id"){
-    return model.app.specializations[matchedRouteParams(model).id];
+export const recordShownByPage = memoize(
+  matchedRoute,
+  matchedRouteParams,
+  (model) => model,
+  (matchedRoute, matchedRouteParams, model) => {
+    switch(matchedRoute){
+    case "/specialties/:id":
+      return model.app.specializations[matchedRouteParams.id];
+    case "/areas_of_practice/:id":
+      return model.app.procedures[matchedRouteParams.id];
+    case "/content_categories/:id":
+      return model.app.contentCategories[matchedRouteParams.id];
+    }
   }
-  else if (matchedRoute(model) === "/areas_of_practice/:id"){
-    return model.app.procedures[matchedRouteParams(model).id];
-  }
-  else if (matchedRoute(model) === "/content_categories/:id"){
-    return model.app.contentCategories[matchedRouteParams(model).id];
-  }
-  else {
-    return null;
-  }
-};
+)
 
 const routeParams = (pathname, route) => {
   const pattern = new UrlPattern(route);

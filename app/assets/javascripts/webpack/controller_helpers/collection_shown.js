@@ -1,26 +1,40 @@
-import { matchedRoute, matchedRouteParams } from "controller_helpers/routing";
+import { matchedRoute, matchedRouteParams, recordShownByPage }
+  from "controller_helpers/routing";
 import { selectedTabKey, recordShownByTab } from "controller_helpers/tab_keys";
+import { memoize } from "utils";
 
 export function unscopedCollectionShown(model){
   return model.app[collectionShownName(model)].pwPipe(_.values);
 };
 
-export function scopedByRouteAndTab(model, tabKey){
-  return unscopedCollectionShown(model).filter((record) => {
-    return matchesRoute(record, model) &&
-      matchesTab(record, model, tabKey);
-  });
-};
+export const scopedByRouteAndTab = memoize(
+  selectedTabKey,
+  model => model,
+  (selectedTabKey, model) => {
+    return unscopedCollectionShown(model).filter((record) => {
+      return matchesRoute(matchedRoute(model), recordShownByPage(model), record) &&
+        matchesTab(record, model, selectedTabKey);
+    });
+  }
+);
 
-export const matchesRoute = (record, model) => {
-  if (matchedRoute(model) === "/specialties/:id"){
-    return _.includes(record.specializationIds, parseInt(matchedRouteParams(model).id));
-  }
-  else if (matchedRoute(model) === "/procedures/:id"){
-    return _.includes(record.procedureIds, parseInt(matchedRouteParams(model).id))
-  }
-  else if (matchedRoute(model) === "/content_categories/:id"){
-    return _.includes(recordShown(model).subtreeIds, record.categoryId);
+export const matchesRoute = (matchedRoute, recordShownByPage, record) => {
+  switch(matchedRoute){
+  case "/specialties/:id":
+    return _.includes(
+      record.specializationIds,
+      recordShownByPage.id
+    );
+  case "/procedures/:id":
+    return _.includes(
+      record.procedureIds,
+      recordShownByPage.id
+    )
+  case "/content_categories/:id":
+    return _.includes(
+      recordShownByPage.subtreeIds,
+      record.categoryId
+    )
   }
 };
 
