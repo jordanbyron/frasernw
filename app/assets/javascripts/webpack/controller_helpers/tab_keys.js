@@ -19,18 +19,20 @@ export function selectedTabKey(model){
     tabKey(defaultTab(model).type, defaultTab(model).id));
 };
 
-export function recordShownByTab(model){
-  if(selectedTabKey(model).includes("contentCategories")){
-    const id = _.replace(selectedTabKey(model), "contentCategories", "")
+const extractId = (tabKey) => {
+  return parseInt(tabKey.match(/\d+/));
+}
 
-    return model.app.contentCategories[id];
+export function recordShownByTab(model){
+  if(selectedTabKey(model).includes("contentCategory")){
+    return model.app.contentCategories[extractId(selectedTabKey(model))];
   }
 }
 
-export function tabKey(collection, id) {
+export function tabKey(type, id) {
   if (id) {
-    return (collection + id);
+    return (type + id);
   } else {
-    return collection;
+    return type;
   }
 };

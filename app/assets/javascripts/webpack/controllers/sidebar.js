@@ -22,7 +22,7 @@ const collectionShownPluralLabel = (model) => {
     }
   case "clinics":
     if (matchedRoute(model) === "/specialties/:id"){
-      return `${recordShownByPage(model)} Clinics`;
+      return `${recordShownByPage(model).name} Clinics`;
     } else {
       return "Clinics"
     }

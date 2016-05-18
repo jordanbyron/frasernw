@@ -14,7 +14,7 @@ import { procedure as procedureFilterValue } from "controller_helpers/filter_val
 import ExpandBox from "component_helpers/expand_box";
 
 const ProcedureFilters = ({model, dispatch}) => {
-  if (_.includes(ROUTES, matchedRoute(model)) && anyProcedureFilters(model)){
+  if (shouldShow(model)){
     return(
       <FilterGroup
         title={title(model)}
@@ -33,6 +33,20 @@ const ProcedureFilters = ({model, dispatch}) => {
     return <span></span>;
   }
 }
+
+const shouldShow = (model) => {
+  return _.includes(ROUTES, matchedRoute(model)) &&
+    _.includes(COLLECTIONS, collectionShownName(model)) &&
+    anyProcedureFilters(model);
+}
+const ROUTES = [
+  "/specialties/:id",
+  "/areas_of_practice/:id"
+];
+const COLLECTIONS = [
+  "specialists",
+  "clinics"
+]
 
 const isUnfocusedExpanded = (model) => {
   return _.get(
@@ -199,11 +213,6 @@ const procedureIdsMaskingFilters = (model) => {
     pwPipe(_.flatten).
     pwPipe(_.uniq);
 };
-
-const ROUTES = [
-  "/specialties/:id",
-  "/areas_of_practice/:id"
-];
 
 const title = (model) => {
   if (matchedRoute(model) === "/specialties/:id"){
