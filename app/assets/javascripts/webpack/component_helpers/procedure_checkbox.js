@@ -15,7 +15,7 @@ const ProcedureCheckbox = React.createClass({
       selectedInCurrentProps == true &&
       this.props.children &&
       this.props.children.length > 0) {
-        
+
       $(this.refs.children).slideDown();
     } else if (selectedInPrevProps == true && selectedInCurrentProps == false){
       $(this.refs.children).slideUp();
@@ -25,7 +25,12 @@ const ProcedureCheckbox = React.createClass({
     return(
       <div>
         <CheckBox
-          label={this.props.label}
+          label={
+            <ProcedureCheckboxLabel
+              labelText={this.props.label}
+              customWaittime={this.props.customWaittime}
+            />
+          }
           checked={this.props.checked}
           onChange={this.props.onChange}
           style={{marginLeft: ((this.props.level * 20).toString() + "px")}}
@@ -37,5 +42,19 @@ const ProcedureCheckbox = React.createClass({
     );
   }
 });
+
+const ProcedureCheckboxLabel = ({labelText, customWaittime}) => {
+  if (customWaittime) {
+    return(
+      <span>
+        <span>{labelText}</span>
+        <i className="icon-link" style={{marginLeft: "5px"}}/>
+      </span>
+    );
+  }
+  else {
+    return (<span>{labelText}</span>)
+  }
+}
 
 export default ProcedureCheckbox;

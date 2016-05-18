@@ -133,6 +133,12 @@ const Focused = ({model, dispatch}) => {
                   label={model.app.procedures[id].name}
                   checked={procedureFilterValue(model, id)}
                   level={0}
+                  customWaittime={
+                    model.
+                      app.
+                      procedures[id].
+                      customWaittime[collectionShownName(model)]
+                  }
                 />
               )
             }).pwPipe(checkBoxes => {
@@ -185,6 +191,7 @@ const procedureCheckboxesFromNested = (nestedProcedures, level, model, dispatch)
           label={model.app.procedures[procedure.id].name}
           checked={procedureFilterValue(model, procedure.id)}
           level={level}
+          customWaittime={procedure.customWaittime[collectionShownName(model)]}
         >
           { procedureCheckboxesFromNested(procedure.children, (level + 1), model, dispatch) }
         </ProcedureCheckbox>
