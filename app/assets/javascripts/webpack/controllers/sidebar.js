@@ -8,6 +8,7 @@ import DivisionScopeFilters from "controllers/filter_groups/division_scope";
 import ProcedureFilters from "controllers/filter_groups/procedure";
 import ReferralsFilters from "controllers/filter_groups/referrals";
 import SexFilters from "controllers/filter_groups/sex";
+import ScheduleFilters from "controllers/filter_groups/schedule";
 
 const pageIsReport = (model) => {
   return matchedRoute(model).includes("/reports/");
@@ -61,6 +62,7 @@ const Sidebar = ({model, dispatch}) => {
         <DateRangeFilters model={model} dispatch={dispatch}/>
         <DivisionScopeFilters model={model} dispatch={dispatch}/>
         <SexFilters model={model} dispatch={dispatch}/>
+        <ScheduleFilters model={model} dispatch={dispatch}/>
       </div>
     </div>
   );

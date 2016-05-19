@@ -77,3 +77,9 @@ export const sex = factory({
   hasSubkey: true,
   defaultValue: false
 });
+
+export const scheduleDays = factory({
+  key: "scheduleDays",
+  hasSubkey: true,
+  defaultValue: false
+});
