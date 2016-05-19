@@ -1,12 +1,28 @@
 = simple_form_for video do |f|
-  = f.label :link, "Video embed link"
-  = f.input :link,
-    label: false,
-    placeholder: "https://www.youtube.com/embed/ID"
-
   = f.label :title, "Title"
   = f.input :title, label: false
+
+  = f.input :video_clip,
+    input_html: { hidden: true },
+    label: "Upload file"
+  .input-append
+    %input#file-display.input-large.uneditable-input{type: "text"}
+      %a#upload-btn.btn
+        %i.icon-upload-alt
+        Browse
 
   .form-actions
     = f.button :submit, class: "btn btn-primary"
     = link_to 'Cancel', video, class: "btn btn-danger"
+
+:javascript
+  $realInputField = $('#video_video_clip');
+
+  $realInputField.change(function() {
+    $('#file-display').val
+    / $(@).val().replace(/^.*[\\\/]/, '')
+  });
+
+  $('#upload-btn').click(function() {
+    $realInputField.click()
+  });
