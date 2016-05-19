@@ -21,7 +21,8 @@ class VideosController < ApplicationController
     if @video.save
       redirect_to @video, notice: "Successfully created video"
     else
-      render :new
+      redirect_to new_video_path,
+        notice: "Please complete all required fields before submitting"
     end
   end
 

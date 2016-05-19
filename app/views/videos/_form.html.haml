@@ -6,23 +6,27 @@
     input_html: { hidden: true },
     label: "Upload file"
   .input-append
-    %input#file-display.input-large.uneditable-input{type: "text"}
-      %a#upload-btn.btn
-        %i.icon-upload-alt
-        Browse
+    %input#file-display.input-large{type: "text"}
+      .form-control-static
+        %a#upload-btn.btn
+          %i.icon-upload-alt
+          Browse
 
   .form-actions
-    = f.button :submit, class: "btn btn-primary"
+    = f.button :submit,
+      class: "btn btn-primary",
+      disable_with: "Submitting video data"
     = link_to 'Cancel', video, class: "btn btn-danger"
 
-:javascript
-  $realInputField = $('#video_video_clip');
+  %p Please note that uploading a new video may take a few minutes
 
-  $realInputField.change(function() {
-    $('#file-display').val
-    / $(@).val().replace(/^.*[\\\/]/, '')
+:javascript
+  $inputSelector = $('#video_video_clip');
+
+  $inputSelector.change(function() {
+    $('#file-display').val;
   });
 
   $('#upload-btn').click(function() {
-    $realInputField.click()
+    $inputSelector.click()
   });
