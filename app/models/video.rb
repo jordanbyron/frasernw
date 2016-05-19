@@ -1,5 +1,5 @@
 class Video < ActiveRecord::Base
-  attr_accessible :title, :link
+  attr_accessible :title, :video_clip
 
   has_attached_file :video_clip,
     storage: :s3,
