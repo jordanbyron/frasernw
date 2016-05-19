@@ -17,8 +17,12 @@ class VideosController < ApplicationController
 
   def create
     authorize! :create, Video
-    @video = Video.create(params[:video])
-    render :show, notice: "Successfully created video"
+    @video = Video.new(params[:video])
+    if @video.save
+      redirect_to @video, notice: "Successfully created video"
+    else
+      render :new
+    end
   end
 
   def edit
@@ -30,12 +34,15 @@ class VideosController < ApplicationController
     authorize! :update, Video
     @video = Video.find(params[:id])
     @video.update_attributes(params[:video])
-    render :show, notice: "Successfully updated video"
+    redirect_to @video, notice: "Successfully updated video"
   end
 
   def destroy
     authorize! :destroy, Video
-    Video.find(params[:id]).destroy
+    @video = Video.find(params[:id])
+    @video.video_clip = nil
+    @video.save
+    @video.destroy
     redirect_to videos_path, notice: "Successfully deleted video"
   end
 end
