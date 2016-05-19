@@ -50,7 +50,7 @@ const tabs = (model = {}, action) => {
 
 const tab = (model = {}, action) => {
   return {
-    isFilterGroupExpanded: isFilterGroupExpanded(model, action),
+    isFilterGroupExpanded: isFilterGroupExpanded(model.isFilterGroupExpanded, action),
     filterValues: filterValues(model.filterValues, action),
     showUnfocusedProcedures: showUnfocusedProcedures(
       model.showUnfocusedProcedures,

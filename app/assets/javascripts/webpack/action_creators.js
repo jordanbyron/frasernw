@@ -99,7 +99,10 @@ const proposedValue = (event) => {
   if (event.target.type === "checkbox"){
     return event.target.checked;
   }
-}
+  else {
+    return event.target.value;
+  }
+};
 
 export function changeFilter(dispatch, tabKey, filterKey, filterSubKey, event) {
   dispatch({
