@@ -2,7 +2,7 @@ class CitiesController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @citys = City.all
+    @cities = City.all
     render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
