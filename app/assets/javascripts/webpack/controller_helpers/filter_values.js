@@ -71,3 +71,9 @@ export const respondsWithin = factory({
   hasSubkey: false,
   defaultValue: 0
 });
+
+export const sex = factory({
+  key: "sex",
+  hasSubkey: true,
+  defaultValue: false
+});

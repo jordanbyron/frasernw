@@ -5,11 +5,19 @@ import { changeFilter } from "action_creators";
 import CheckBox from "component_helpers/check_box";
 import { selectedTabKey } from "controller_helpers/tab_keys";
 
-const FilterCheckbox = ({model, dispatch, filterKey, label, filterSubkey}) => {
+const FilterCheckbox = ({
+  model,
+  dispatch,
+  filterKey,
+  label,
+  filterSubkey,
+  isHalfColumn
+}) => {
   return(
     <CheckBox
       label={label}
       checked={FilterValues[filterKey](model, filterSubkey)}
+      labelStyle={labelStyle(isHalfColumn)}
       onChange={
         _.partial(
           changeFilter,
@@ -21,6 +29,18 @@ const FilterCheckbox = ({model, dispatch, filterKey, label, filterSubkey}) => {
       }
     />
   );
+};
+
+const labelStyle = (isHalfColumn) => {
+  if (isHalfColumn){
+    return {
+      display: "inline-block",
+      width: "90px"
+    };
+  }
+  else {
+    return {};
+  }
 };
 
 export default FilterCheckbox;
