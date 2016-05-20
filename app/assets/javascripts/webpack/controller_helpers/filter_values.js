@@ -83,3 +83,9 @@ export const scheduleDays = factory({
   hasSubkey: true,
   defaultValue: false
 });
+
+export const careProviders = factory({
+  key: "careProviders",
+  hasSubkey: true,
+  defaultValue: false
+});
