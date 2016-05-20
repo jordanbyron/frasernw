@@ -8,10 +8,10 @@ import ProcedureCheckbox from "component_helpers/procedure_checkbox";
 import _ from "lodash";
 import { collectionShownName, scopedByRouteAndTab }
   from "controller_helpers/collection_shown";
-import recordsMaskingFilters from "controller_helpers/records_masking_filters";
 import { changeFilter } from "action_creators"
 import { procedure as procedureFilterValue } from "controller_helpers/filter_values";
 import ExpandBox from "component_helpers/expand_box";
+import { procedures as subkeys } from "controller_helpers/filter_subkeys";
 
 const ProcedureFilters = ({model, dispatch}) => {
   if (shouldShow(model)){
@@ -37,7 +37,7 @@ const ProcedureFilters = ({model, dispatch}) => {
 const shouldShow = (model) => {
   return _.includes(ROUTES, matchedRoute(model)) &&
     _.includes(COLLECTIONS, collectionShownName(model)) &&
-    anyProcedureFilters(model);
+    _.any(subkeys(model));
 }
 const ROUTES = [
   "/specialties/:id",
@@ -62,68 +62,16 @@ const anyUnfocused = (model) => {
     pwPipe(_.values).
     filter((procedure) => {
       return !procedure.focused &&
-        !procedure.assumed[collectionShownName(model)] &&
-        _.includes(procedureIdsMaskingFilters(model), procedure.id);
+        _.includes(subkeys(model), procedure.id)
     }).pwPipe(_.any);
 };
-
-const Unfocused = ({model, dispatch}) => {
-  if (matchedRoute(model) === "/specialties/:id" && anyUnfocused(model)) {
-    return(
-      <ExpandBox expanded={isUnfocusedExpanded(model)}
-        handleToggle={
-          _.partial(
-            toggleUnfocusedProcedureVisibility,
-            dispatch,
-            !isUnfocusedExpanded(model),
-            selectedTabKey(model)
-          )
-        }
-      >
-        {
-          recordShownByPage(model).
-            nestedProcedures.
-            pwPipe(_.values).
-            filter((procedure) => !procedure.focused).
-            pwPipe((procedures) => {
-              return procedureCheckboxesFromNested(
-                procedures,
-                0,
-                model,
-                dispatch
-              );
-            })
-        }
-      </ExpandBox>
-    )
-  }
-  else {
-    return <span></span>;
-  }
-}
-
-const anyProcedureFilters = (model) => {
-  if (matchedRoute(model) === "/specialties/:id"){
-    return recordShownByPage(model).
-        nestedProcedures.
-        pwPipe(_.values).
-        filter((procedure) => {
-          return !procedure.assumed[collectionShownName(model)] &&
-            _.includes(procedureIdsMaskingFilters(model), procedure.id)
-        }).pwPipe(_.any);
-  }
-  else if (matchedRoute(model) === "/areas_of_practice/:id"){
-    return _.any(recordShownByPage(model).childrenProcedureIds);
-  }
-}
 
 const Focused = ({model, dispatch}) => {
   if (matchedRoute(model) === "/areas_of_practice/:id"){
     return(
       <div>
         {
-          recordShownByPage(model).
-            childrenProcedureIds.
+          subkeys(model).
             map((id) => {
 
               return(
@@ -176,13 +124,47 @@ const Focused = ({model, dispatch}) => {
       </div>
     )
   }
+};
+
+const Unfocused = ({model, dispatch}) => {
+  if (matchedRoute(model) === "/specialties/:id" && anyUnfocused(model)) {
+    return(
+      <ExpandBox expanded={isUnfocusedExpanded(model)}
+        handleToggle={
+          _.partial(
+            toggleUnfocusedProcedureVisibility,
+            dispatch,
+            !isUnfocusedExpanded(model),
+            selectedTabKey(model)
+          )
+        }
+      >
+        {
+          recordShownByPage(model).
+            nestedProcedures.
+            pwPipe(_.values).
+            filter((procedure) => !procedure.focused).
+            pwPipe((procedures) => {
+              return procedureCheckboxesFromNested(
+                procedures,
+                0,
+                model,
+                dispatch
+              );
+            })
+        }
+      </ExpandBox>
+    )
+  }
+  else {
+    return <span></span>;
+  }
 }
 
 const procedureCheckboxesFromNested = (nestedProcedures, level, model, dispatch) => {
   return _.values(nestedProcedures).
     filter((procedure) => {
-      return !procedure.assumed[collectionShownName(model)] &&
-        _.includes(procedureIdsMaskingFilters(model), procedure.id);
+      return _.includes(subkeys(model), procedure.id);
     }).map((procedure) => {
       return(
         <ProcedureCheckbox
@@ -205,13 +187,6 @@ const procedureCheckboxesFromNested = (nestedProcedures, level, model, dispatch)
         </ProcedureCheckbox>
       );
     }).pwPipe((checkBoxes) => _.sortBy(checkBoxes, _.property("props.label")))
-};
-
-const procedureIdsMaskingFilters = (model) => {
-  return recordsMaskingFilters(model).
-    map(_.property("procedureIds")).
-    pwPipe(_.flatten).
-    pwPipe(_.uniq);
 };
 
 const title = (model) => {

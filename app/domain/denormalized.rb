@@ -249,6 +249,7 @@ module Denormalized
     procedures: Proc.new do
       Procedure.all.inject({}) do |memo, procedure|
         memo.merge(procedure.id => {
+          id: procedure.id,
           nameRelativeToParents: procedure.try(:name_relative_to_parents),
           name: procedure.name,
           specializationIds: procedure.specializations.map(&:id),
