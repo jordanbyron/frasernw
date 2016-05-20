@@ -15,6 +15,7 @@
   .form-actions
     = f.button :submit,
       class: "btn btn-primary",
+      id: "video-submit-button",
       disable_with: "Submitting video data"
     = link_to 'Cancel', video, class: "btn btn-danger"
 
@@ -29,4 +30,10 @@
 
   $('#upload-btn').click(function() {
     $inputSelector.click()
+  });
+
+  $('#video-submit-button').click(function() {
+    $('#file-display').change(function() {
+      $inputSelector.val;
+    });
   });

@@ -34,8 +34,12 @@ class VideosController < ApplicationController
   def update
     authorize! :update, Video
     @video = Video.find(params[:id])
-    @video.update_attributes(params[:video])
-    redirect_to @video, notice: "Successfully updated video"
+    if @video.update_attributes(params[:video])
+      redirect_to @video, notice: "Successfully updated video"
+    else
+      redirect_to @video,
+        notice: "Please complete all required fields before submitting"
+    end
   end
 
   def destroy
