@@ -64,6 +64,8 @@ class Teleservice < ActiveRecord::Base
     def label
       if @key == :store
         "store & forward"
+      elsif @key == :email
+        "email / text"
       else
         @key.to_s
       end
