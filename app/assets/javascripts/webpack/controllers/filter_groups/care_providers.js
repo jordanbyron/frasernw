@@ -26,9 +26,10 @@ const CareProvidersFilters = ({model, dispatch}) => {
                 key={key}
                 model={model}
                 dispatch={dispatch}
-                isHalfColumn={true}
               />
             )
+          }).pwPipe((checkBoxes) => {
+            return _.sortBy(checkBoxes, _.property("props.label"));
           })
         }
       </FilterGroup>
