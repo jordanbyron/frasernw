@@ -1,52 +1,60 @@
 import React from "react";
-import FilterGroup from "component_helpers/filter_group";
-import * as FilterValues from "controller_helpers/filter_values";
-import { changeFilterValue } from "action_creators";
+import FilterGroup from "controllers/filter_group";
+import FilterSelector from "controllers/filter_selector";
 import { matchedRoute } from "controller_helpers/routing";
 
-const scopeOptions = (model) => {
-  if (model.app.currentUser.role === "admin") {
-    return model.app.currentUser.divisionIds.concat(0);
-  }
-  else {
-    return _.map(model.app.divisions, _.property("id")).concat(0);
-  }
-}
-
-const labelScopeOption = (option, model) => {
-  if (option === 0) {
-    return "All Divisions";
-  }
-  else {
-    return model.app.divisions[option].name;
-  }
-}
 
 const DivisionScopeFilters = ({model, dispatch}) => {
   if(matchedRoute(model) === "/reports/pageviews_by_user"){
     return(
-      <FilterGroup title="Scope">
-        <label style={{marginTop: "10px"}}>
-          <select
-            value={FilterValues.divisionScope(model)}
-            onChange={function(e) { changeFilterValue(dispatch, "divisionScope", e.target.value) } }
-          >
-            {
-              scopeOptions(model).map((option) => {
-                return(
-                  <option key={option} value={option}>
-                    { labelScopeOption(option, model) }
-                  </option>
-                )
-              })
-            }
-          </select>
-        </label>
+      <FilterGroup title="Scope" isCollapsible={false}>
+        <FilterSelector
+          label={null}
+          filterKey="divisionScope"
+          model={model}
+          dispatch={dispatch}
+          options={scopeOptions(model)}
+        />
       </FilterGroup>
     );
   } else {
     return <span></span>
   }
 }
+
+const scopeOptions = (model) => {
+  if (model.app.currentUser.role === "admin") {
+    return model.
+      app.
+      currentUser.
+      divisionIds.concat(0).
+      pwPipe(_.partial(labelOptions, model)).
+      pwPipe(sortOptions)
+  }
+  else {
+    return _.map(model.app.divisions, _.property("id")).
+      concat(0).
+      pwPipe(_.partial(labelOptions, model)).
+      pwPipe(sortOptions)
+  }
+}
+
+const labelOptions = (model, options) => {
+  return options.map((option) => labelScopeOption(model, option));
+}
+
+const sortOptions = (options) => {
+  return _.sortBy(options, _.property("label"));
+}
+
+const labelScopeOption = (model, option) => {
+  if (option === 0) {
+    return { key: option, label: "All Divisions" };
+  }
+  else {
+    return { key: option, label: model.app.divisions[option].name };
+  }
+};
+
 
 export default DivisionScopeFilters;

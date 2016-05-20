@@ -36,13 +36,11 @@ export const endMonth = factory({
   defaultValue: `${(new Date).getUTCFullYear()}${padTwo((new Date).getMonth() + 1)}`
 });
 
-export function divisionScope(model) {
-  return _.get(
-    model,
-    ["ui", "filterValues", "divisionScope"],
-    0
-  );
-}
+export const divisionScope = factory({
+  key: "divisionScope",
+  hasSubkey: false,
+  defaultValue: 0
+});
 
 export const procedure = factory({
   key: "procedures",

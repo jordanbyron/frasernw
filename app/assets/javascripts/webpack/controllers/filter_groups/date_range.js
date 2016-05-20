@@ -1,5 +1,4 @@
 import FilterGroup from "controllers/filter_group";
-import * as FilterValues from "controller_helpers/filter_values";
 import FilterSelector from "controllers/filter_selector";
 import { padTwo } from "utils";
 import React from "react";
@@ -8,8 +7,7 @@ import { matchedRoute } from "controller_helpers/routing";
 const DateRangeFilters = ({model, dispatch}) => {
   if(matchedRoute(model) === "/reports/pageviews_by_user"){
     return(
-      <FilterGroup title="Date Range"
-        isCollapsible={false}>
+      <FilterGroup title="Date Range" isCollapsible={false}>
         <FilterSelector
           label="Start Month:"
           filterKey="startMonth"
