@@ -10,7 +10,7 @@ const ReferralsFilters = ({model, dispatch}) => {
     return(
       <FilterGroup
         title={"Referrals"}
-        isExpandable={true}
+        isCollapsible={true}
         expansionControlKey={"referrals"}
         defaultIsExpanded={true}
         model={model}

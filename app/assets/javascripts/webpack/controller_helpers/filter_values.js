@@ -24,21 +24,17 @@ const factory = (args) => {
   }
 };
 
-export function startMonth(model) {
-  return _.get(
-    model,
-    ["ui", "filterValues", "startMonth"],
-    `${(new Date).getUTCFullYear()}${padTwo((new Date).getMonth() + 1)}`
-  );
-}
+export const startMonth = factory({
+  key: "startMonth",
+  hasSubkey: false,
+  defaultValue: `${(new Date).getUTCFullYear()}${padTwo((new Date).getMonth() + 1)}`
+});
 
-export function endMonth(model) {
-  return _.get(
-    model,
-    ["ui", "filterValues", "endMonth"],
-    `${(new Date).getUTCFullYear()}${padTwo((new Date).getMonth() + 1)}`
-  );
-}
+export const endMonth = factory({
+  key: "endMonth",
+  hasSubkey: false,
+  defaultValue: `${(new Date).getUTCFullYear()}${padTwo((new Date).getMonth() + 1)}`
+});
 
 export function divisionScope(model) {
   return _.get(

@@ -1,48 +1,29 @@
-import FilterGroup from "component_helpers/filter_group";
+import FilterGroup from "controllers/filter_group";
 import * as FilterValues from "controller_helpers/filter_values";
+import FilterSelector from "controllers/filter_selector";
 import { padTwo } from "utils";
 import React from "react";
-import { changeFilterValue } from "action_creators";
 import { matchedRoute } from "controller_helpers/routing";
 
 const DateRangeFilters = ({model, dispatch}) => {
   if(matchedRoute(model) === "/reports/pageviews_by_user"){
     return(
-      <FilterGroup title="Date Range">
-        <label style={{marginTop: "10px"}}>
-          <div>Start Month:</div>
-          <select
-            value={FilterValues.startMonth(model)}
-            onChange={function(e) { changeFilterValue(dispatch, "startMonth", e.target.value) } }
-          >
-            {
-              monthOptions().map((option) => {
-                return(
-                  <option key={option} value={option}>
-                    { labelMonthOption(option) }
-                  </option>
-                )
-              })
-            }
-          </select>
-        </label>
-        <label style={{marginTop: "10px", marginBottom: "20px"}}>
-          <div>End Month:</div>
-          <select
-            value={FilterValues.endMonth(model)}
-            onChange={function(e) { changeFilterValue(dispatch, "endMonth", e.target.value) } }
-          >
-            {
-              monthOptions().map((option) => {
-                return(
-                  <option key={option} value={option}>
-                    { labelMonthOption(option) }
-                  </option>
-                )
-              })
-            }
-          </select>
-        </label>
+      <FilterGroup title="Date Range"
+        isCollapsible={false}>
+        <FilterSelector
+          label="Start Month:"
+          filterKey="startMonth"
+          model={model}
+          dispatch={dispatch}
+          options={monthOptions()}
+        />
+        <FilterSelector
+          label="End Month:"
+          filterKey="endMonth"
+          model={model}
+          dispatch={dispatch}
+          options={monthOptions()}
+        />
       </FilterGroup>
     );
   }
@@ -50,7 +31,6 @@ const DateRangeFilters = ({model, dispatch}) => {
     return <span></span>
   }
 };
-
 
 const AbbreviatedMonths = {
   1: "Jan",
@@ -93,7 +73,9 @@ const monthOptions = () => {
       }
     },
     []
-  ).reverse();
+  ).reverse().map((option) => {
+    return { key: option, label: labelMonthOption(option) };
+  });
 };
 
 export default DateRangeFilters;

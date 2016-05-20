@@ -18,7 +18,7 @@ const ProcedureFilters = ({model, dispatch}) => {
     return(
       <FilterGroup
         title={title(model)}
-        isExpandable={true}
+        isCollapsible={true}
         defaultIsExpanded={true}
         expansionControlKey={"procedures"}
         model={model}

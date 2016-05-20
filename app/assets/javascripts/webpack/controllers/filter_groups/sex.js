@@ -9,7 +9,7 @@ const SexFilters = ({model, dispatch}) => {
     return(
       <FilterGroup
         title={"Sex"}
-        isExpandable={true}
+        isCollapsible={true}
         expansionControlKey={"sex"}
         defaultIsExpanded={false}
         model={model}

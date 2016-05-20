@@ -10,7 +10,7 @@ const CareProvidersFilters = ({model, dispatch}) => {
     return(
       <FilterGroup
         title={"Care Providers"}
-        isExpandable={true}
+        isCollapsible={true}
         expansionControlKey={"careProviders"}
         defaultIsExpanded={false}
         model={model}

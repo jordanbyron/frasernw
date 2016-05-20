@@ -10,7 +10,7 @@ const ScheduleFilters = ({model, dispatch}) => {
     return(
       <FilterGroup
         title={"Schedule"}
-        isExpandable={true}
+        isCollapsible={true}
         expansionControlKey={"schedule"}
         defaultIsExpanded={false}
         model={model}
