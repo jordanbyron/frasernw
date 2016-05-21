@@ -163,3 +163,9 @@ export const subcategories = (model, subkey) => {
     );
   }
 }
+
+export const specializations = factory({
+  key: "specializations",
+  hasSubkeys: false,
+  defaultValue: 0
+})
