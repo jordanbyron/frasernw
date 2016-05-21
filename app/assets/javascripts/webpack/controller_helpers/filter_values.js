@@ -107,3 +107,15 @@ export const languages = factory({
   hasSubkeys: true,
   defaultValue: false
 })
+
+export const clinicAssociations = factory({
+  key: "clinicAssociations",
+  hasSubkeys: false,
+  defaultValue: 0
+})
+
+export const hospitalAssociations = factory({
+  key: "hospitalAssociations",
+  hasSubkeys: false,
+  defaultValue: 0
+})

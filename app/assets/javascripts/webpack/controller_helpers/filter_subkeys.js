@@ -1,8 +1,7 @@
+import recordsMaskingFilters from "controller_helpers/records_masking_filters";
 import { collectionShownName } from "controller_helpers/collection_shown";
-import { matchedRoute, recordShownByPage, matchedRouteParams }
+import { matchedRoute, recordShownByPage }
   from "controller_helpers/routing";
-import referralCityIds from "controller_helpers/referral_city_ids";
-import { scopedByRouteAndTab } from "controller_helpers/collection_shown";
 import { memoize } from "utils";
 
 export const scheduleDays = (model) => {
@@ -20,27 +19,6 @@ export const careProviders = (model) => {
     .pwPipe(_.flatten)
     .pwPipe(_.uniq);
 };
-
-const recordsMaskingFilters = memoize(
-  matchedRoute,
-  recordShownByPage,
-  scopedByRouteAndTab,
-  referralCityIds,
-  (matchedRoute, recordShownByPage, scopedByRouteAndTab, referralCityIds) => {
-    if (matchedRoute === "/specialties/:id" &&
-      recordShownByPage.maskFiltersByReferralArea){
-
-      return scopedByRouteAndTab.filter((record) => {
-        return _.intersection(record.cityIds, referralCityIds).
-          pwPipe(_.some);
-      })
-    }
-    else {
-      return scopedByRouteAndTab;
-    }
-  }
-);
-
 
 const maskingRecordsProcedureIds = memoize(
   recordsMaskingFilters,
