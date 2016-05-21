@@ -71,3 +71,13 @@ export const procedures = memoize(
     }
   }
 );
+
+export const languages = memoize(
+  recordsMaskingFilters,
+  (recordsMaskingFilters) => {
+    return recordsMaskingFilters.
+      map(_.property("languageIds")).
+      pwPipe(_.flatten).
+      pwPipe(_.uniq);
+  }
+);

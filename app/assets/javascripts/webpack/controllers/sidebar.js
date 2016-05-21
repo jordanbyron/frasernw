@@ -11,6 +11,7 @@ import SexFilters from "controllers/filter_groups/sex";
 import ScheduleFilters from "controllers/filter_groups/schedule";
 import CareProviderFilters from "controllers/filter_groups/care_providers";
 import TeleserviceFilters from "controllers/filter_groups/teleservices";
+import LanguagesFilters from "controllers/filter_groups/languages";
 
 const pageIsReport = (model) => {
   return matchedRoute(model).includes("/reports/");
@@ -65,8 +66,9 @@ const Sidebar = ({model, dispatch}) => {
         <DivisionScopeFilters model={model} dispatch={dispatch}/>
         <SexFilters model={model} dispatch={dispatch}/>
         <ScheduleFilters model={model} dispatch={dispatch}/>
-        <CareProviderFilters model={model} dispatch={dispatch}/>
         <TeleserviceFilters model={model} dispatch={dispatch}/>
+        <CareProviderFilters model={model} dispatch={dispatch}/>
+        <LanguagesFilters model={model} dispatch={dispatch}/>
       </div>
     </div>
   );

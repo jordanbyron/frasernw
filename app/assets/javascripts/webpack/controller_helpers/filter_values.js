@@ -95,3 +95,15 @@ export const teleserviceRecipients = factory({
   hasSubkeys: true,
   defaultValue: false
 })
+
+export const interpreterAvailable = factory({
+  key: "interpreterAvailable",
+  hasSubkeys: false,
+  defaultValue: false
+})
+
+export const languages = factory({
+  key: "languages",
+  hasSubkeys: true,
+  defaultValue: false
+})
