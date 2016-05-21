@@ -9,7 +9,6 @@ const NestedFilterCheckbox = ({
   filterKey,
   label,
   filterSubkey,
-  level,
   children
 }) => {
   return(
@@ -20,9 +19,10 @@ const NestedFilterCheckbox = ({
         filterKey={filterKey}
         label={label}
         filterSubkey={filterSubkey}
-        style={{marginLeft: ((level * 20).toString() + "px")}}
       />
-      <ExpandingContainer expanded={FilterValues[filterKey](model, filterSubkey)}>
+      <ExpandingContainer expanded={FilterValues[filterKey](model, filterSubkey)}
+        style={{marginLeft: "20px"}}
+      >
         { children }
       </ExpandingContainer>
     </div>

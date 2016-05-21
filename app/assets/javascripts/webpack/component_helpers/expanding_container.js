@@ -18,7 +18,8 @@ const ExpandingContainer = React.createClass({
   },
   render: function() {
     return(
-      <div ref="container" style={{display: "none"}}>
+      <div ref="container"
+        style={_.assign({display: "none"}, this.props.style || {})}>
         { this.props.children }
       </div>
     );

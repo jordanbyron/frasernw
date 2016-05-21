@@ -114,7 +114,6 @@ const Focused = ({model, dispatch}) => {
             pwPipe((focusedProcedures) => {
               return procedureCheckboxesFromNested(
                 focusedProcedures,
-                0,
                 model,
                 dispatch
               );
@@ -148,7 +147,6 @@ const Unfocused = ({model, dispatch}) => {
               pwPipe((procedures) => {
                 return procedureCheckboxesFromNested(
                   procedures,
-                  0,
                   model,
                   dispatch
                 );
@@ -171,7 +169,7 @@ const unfocusedToggleText = (isCurrentlyExpanded) => {
   }
 }
 
-const procedureCheckboxesFromNested = (nestedProcedures, level, model, dispatch) => {
+const procedureCheckboxesFromNested = (nestedProcedures, model, dispatch) => {
   return _.values(nestedProcedures).
     filter((procedure) => {
       return _.includes(subkeys(model), procedure.id);
@@ -189,9 +187,8 @@ const procedureCheckboxesFromNested = (nestedProcedures, level, model, dispatch)
             />
           }
           filterSubkey={procedure.id}
-          level={level}
         >
-          { procedureCheckboxesFromNested(procedure.children, (level + 1), model, dispatch) }
+          { procedureCheckboxesFromNested(procedure.children, model, dispatch) }
         </NestedFilterCheckbox>
       );
     }).pwPipe((checkBoxes) => {
