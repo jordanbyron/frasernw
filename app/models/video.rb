@@ -8,7 +8,8 @@ class Video < ActiveRecord::Base
     s3_credentials: {
       access_key_id: ENV['AWS_ACCESS_KEY_ID'],
       secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
-    }
+    },
+    s3_permissions: :private
   validates_attachment_presence :video_clip
   do_not_validate_attachment_file_type :video_clip
 

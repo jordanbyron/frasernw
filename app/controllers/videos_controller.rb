@@ -19,10 +19,10 @@ class VideosController < ApplicationController
     authorize! :create, Video
     @video = Video.new(params[:video])
     if @video.save
-      redirect_to @video, notice: "Successfully created video"
+      redirect_to @video, notice: "Successfully created video."
     else
       redirect_to new_video_path,
-        notice: "Please complete all required fields before submitting"
+        notice: "Please complete all required fields before submitting."
     end
   end
 
@@ -35,19 +35,20 @@ class VideosController < ApplicationController
     authorize! :update, Video
     @video = Video.find(params[:id])
     if @video.update_attributes(params[:video])
-      redirect_to @video, notice: "Successfully updated video"
+      redirect_to @video, notice: "Successfully updated video."
     else
       redirect_to @video,
-        notice: "Please complete all required fields before submitting"
+        notice: "Please complete all required fields before submitting."
     end
   end
 
   def destroy
     authorize! :destroy, Video
     @video = Video.find(params[:id])
-    @video.video_clip = nil
-    @video.save
-    @video.destroy
-    redirect_to videos_path, notice: "Successfully deleted video"
+    if @video.destroy
+      redirect_to videos_path, notice: "Successfully deleted video"
+    else
+      redirect_to @video, notice: "Something went wrong. Please try again."
+    end
   end
 end

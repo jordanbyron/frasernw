@@ -2,11 +2,12 @@
   = f.label :title, "Title"
   = f.input :title, label: false
 
+  = f.label :video_clip, "Upload file"
   = f.input :video_clip,
-    input_html: { hidden: true },
-    label: "Upload file"
+    label: false,
+    input_html: { hidden: true }
   .input-append
-    %input#file-display.input-large{type: "text"}
+    %input#file-display.uneditable-input.input-large{type: "text"}
       .form-control-static
         %a#upload-btn.btn
           %i.icon-upload-alt
@@ -24,16 +25,13 @@
 :javascript
   $inputSelector = $('#video_video_clip');
 
-  $inputSelector.change(function() {
-    $('#file-display').val;
-  });
-
   $('#upload-btn').click(function() {
     $inputSelector.click()
   });
 
-  $('#video-submit-button').click(function() {
-    $('#file-display').change(function() {
-      $inputSelector.val;
-    });
-  });
+  var file;
+  function captureFile(event) {
+    file = event.target.files;
+    $('#file-display').val(file[0].name);
+  }
+  $inputSelector.on('change', captureFile);
