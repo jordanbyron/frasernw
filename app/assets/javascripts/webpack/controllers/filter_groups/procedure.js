@@ -4,14 +4,14 @@ import { recordShownByPage, matchedRoute } from "controller_helpers/routing";
 import { selectedTabKey } from "controller_helpers/tab_keys";
 import { toggleUnfocusedProcedureVisibility }
   from "action_creators";
-import ProcedureCheckbox from "component_helpers/procedure_checkbox";
 import _ from "lodash";
 import { collectionShownName, scopedByRouteAndTab }
   from "controller_helpers/collection_shown";
-import { changeFilter } from "action_creators"
-import { procedure as procedureFilterValue } from "controller_helpers/filter_values";
-import ExpandBox from "component_helpers/expand_box";
+import ExpandingContainer from "component_helpers/expanding_container";
 import { procedures as subkeys } from "controller_helpers/filter_subkeys";
+import { buttonIsh } from "stylesets";
+import FilterCheckbox from "controllers/filter_checkbox";
+import NestedFilterCheckbox from "controllers/nested_filter_checkbox";
 
 const ProcedureFilters = ({model, dispatch}) => {
   if (shouldShow(model)){
@@ -73,32 +73,31 @@ const Focused = ({model, dispatch}) => {
         {
           subkeys(model).
             map((id) => {
-
               return(
-                <ProcedureCheckbox
-                  onChange={
-                    _.partial(
-                      changeFilter,
-                      dispatch,
-                      selectedTabKey(model),
-                      "procedures",
-                      id
-                    )
-                  }
+                <FilterCheckbox
+                  model={model}
+                  dispatch={dispatch}
+                  filterKey="procedures"
                   key={id}
-                  label={model.app.procedures[id].name}
-                  checked={procedureFilterValue(model, id)}
-                  level={0}
-                  customWaittime={
-                    model.
-                      app.
-                      procedures[id].
-                      customWaittime[collectionShownName(model)]
+                  label={
+                    <ProcedureCheckboxLabel
+                      labelText={model.app.procedures[id].name}
+                      customWaittime={
+                        model.
+                        app.
+                        procedures[id].
+                        customWaittime[collectionShownName(model)]
+                      }
+                    />
                   }
+                  filterSubkey={id}
                 />
-              )
+              );
             }).pwPipe(checkBoxes => {
-              return _.sortBy(checkBoxes, _.property("props.label"));
+              return _.sortBy(
+                checkBoxes,
+                _.property("props.label.props.labelText")
+              );
             })
         }
       </div>
@@ -129,35 +128,46 @@ const Focused = ({model, dispatch}) => {
 const Unfocused = ({model, dispatch}) => {
   if (matchedRoute(model) === "/specialties/:id" && anyUnfocused(model)) {
     return(
-      <ExpandBox expanded={isUnfocusedExpanded(model)}
-        handleToggle={
-          _.partial(
-            toggleUnfocusedProcedureVisibility,
-            dispatch,
-            !isUnfocusedExpanded(model),
-            selectedTabKey(model)
-          )
-        }
-      >
-        {
-          recordShownByPage(model).
-            nestedProcedures.
-            pwPipe(_.values).
-            filter((procedure) => !procedure.focused).
-            pwPipe((procedures) => {
-              return procedureCheckboxesFromNested(
-                procedures,
-                0,
-                model,
-                dispatch
-              );
-            })
-        }
-      </ExpandBox>
+      <div>
+        <a onClick={
+            _.partial(
+              toggleUnfocusedProcedureVisibility,
+              dispatch,
+              !isUnfocusedExpanded(model),
+              selectedTabKey(model)
+            )
+          }
+          style={buttonIsh}
+        >{ unfocusedToggleText(isUnfocusedExpanded(model)) }</a>
+        <ExpandingContainer expanded={isUnfocusedExpanded(model)}>
+          {
+            recordShownByPage(model).
+              nestedProcedures.
+              pwPipe(_.values).
+              filter((procedure) => !procedure.focused).
+              pwPipe((procedures) => {
+                return procedureCheckboxesFromNested(
+                  procedures,
+                  0,
+                  model,
+                  dispatch
+                );
+              })
+          }
+        </ExpandingContainer>
+      </div>
     )
   }
   else {
     return <span></span>;
+  }
+}
+
+const unfocusedToggleText = (isCurrentlyExpanded) => {
+  if (isCurrentlyExpanded) {
+    return "Less...";
+  } else {
+    return "More...";
   }
 }
 
@@ -167,27 +177,41 @@ const procedureCheckboxesFromNested = (nestedProcedures, level, model, dispatch)
       return _.includes(subkeys(model), procedure.id);
     }).map((procedure) => {
       return(
-        <ProcedureCheckbox
-          onChange={
-            _.partial(
-              changeFilter,
-              dispatch,
-              selectedTabKey(model),
-              "procedures",
-              procedure.id
-            )
-          }
+        <NestedFilterCheckbox
+          model={model}
+          dispatch={dispatch}
           key={procedure.id}
-          label={model.app.procedures[procedure.id].name}
-          checked={procedureFilterValue(model, procedure.id)}
+          filterKey="procedures"
+          label={
+            <ProcedureCheckboxLabel
+              labelText={model.app.procedures[procedure.id].name}
+              customWaittime={procedure.customWaittime[collectionShownName(model)]}
+            />
+          }
+          filterSubkey={procedure.id}
           level={level}
-          customWaittime={procedure.customWaittime[collectionShownName(model)]}
         >
           { procedureCheckboxesFromNested(procedure.children, (level + 1), model, dispatch) }
-        </ProcedureCheckbox>
+        </NestedFilterCheckbox>
       );
-    }).pwPipe((checkBoxes) => _.sortBy(checkBoxes, _.property("props.label")))
+    }).pwPipe((checkBoxes) => {
+      return _.sortBy(checkBoxes, _.property("props.label.props.labelText"))
+    })
 };
+
+const ProcedureCheckboxLabel = ({labelText, customWaittime}) => {
+  if (customWaittime) {
+    return(
+      <span>
+        <span>{labelText}</span>
+        <i className="icon-link" style={{marginLeft: "5px"}}/>
+      </span>
+    );
+  }
+  else {
+    return (<span>{labelText}</span>)
+  }
+}
 
 const title = (model) => {
   if (matchedRoute(model) === "/specialties/:id"){

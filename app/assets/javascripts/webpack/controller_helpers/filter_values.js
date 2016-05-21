@@ -42,12 +42,6 @@ export const divisionScope = factory({
   defaultValue: 0
 });
 
-export const procedure = factory({
-  key: "procedures",
-  hasSubkey: true,
-  defaultValue: false
-});
-
 export const acceptsReferralsViaPhone = factory({
   key: "acceptsReferralsViaPhone",
   hasSubkey: false,
@@ -83,3 +77,9 @@ export const careProviders = factory({
   hasSubkey: true,
   defaultValue: false
 });
+
+export const procedures = factory({
+  key: "procedures",
+  hasSubkey: true,
+  defaultValue: false
+})

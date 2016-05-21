@@ -11,13 +11,15 @@ const FilterCheckbox = ({
   filterKey,
   label,
   filterSubkey,
-  isHalfColumn
+  isHalfColumn,
+  style
 }) => {
   return(
     <CheckBox
       label={label}
       checked={FilterValues[filterKey](model, filterSubkey)}
       labelStyle={labelStyle(isHalfColumn)}
+      style={style || {}}
       onChange={
         _.partial(
           changeFilter,
