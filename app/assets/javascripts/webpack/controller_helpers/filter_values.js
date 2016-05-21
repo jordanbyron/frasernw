@@ -169,3 +169,9 @@ export const specializations = factory({
   hasSubkeys: false,
   defaultValue: 0
 })
+
+export const showHiddenUpdates = factory({
+  key: "showHiddenUpdates",
+  hasSubkeys: false,
+  defaultValue: false
+})

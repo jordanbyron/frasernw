@@ -17,6 +17,7 @@ import CityFilters from "controllers/filter_groups/cities";
 import ClinicDetailsFilters from "controllers/filter_groups/clinic_details";
 import SubcategoriesFilters from "controllers/filter_groups/subcategories";
 import SpecializationsFilters from "controllers/filter_groups/specializations";
+import HiddenUpdatesFilter from "controllers/filter_groups/hidden_updates";
 
 const pageIsReport = (model) => {
   return matchedRoute(model).includes("/reports/");
@@ -79,6 +80,7 @@ const Sidebar = ({model, dispatch}) => {
         <CityFilters model={model} dispatch={dispatch}/>
         <SubcategoriesFilters model={model} dispatch={dispatch}/>
         <SpecializationsFilters model={model} dispatch={dispatch}/>
+        <HiddenUpdatesFilter model={model} dispatch={dispatch}/>
       </div>
     </div>
   );
