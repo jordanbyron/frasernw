@@ -1,37 +1,35 @@
 import React from "react";
 import FilterGroup from "controllers/filter_group";
 import FilterCheckbox from "controllers/filter_checkbox";
-import FilterSelector from "controllers/filter_selector";
 import { matchedRoute } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 
-const ReferralsFilters = ({model, dispatch}) => {
+const ClinicDetailsFilters = ({model, dispatch}) => {
   if (shouldShow(model)){
     return(
       <FilterGroup
-        title={"Referrals"}
+        title={"Clinic Details"}
         isCollapsible={true}
-        expansionControlKey={"referrals"}
-        defaultIsExpanded={true}
+        expansionControlKey={"clinicDetails"}
+        defaultIsExpanded={false}
         model={model}
         dispatch={dispatch}
       >
         <FilterCheckbox
-          label={"Accepted Via Phone"}
-          filterKey="acceptsReferralsViaPhone"
-          model={model}
-          dispatch={dispatch}
-        />
-        <FilterSelector
-          label="Responded To Within"
-          filterKey="respondsWithin"
-          options={respondsWithinOptions(model)}
+          label={"Public"}
+          filterKey="isPublic"
           model={model}
           dispatch={dispatch}
         />
         <FilterCheckbox
-          label={"Patients can call to book after referral"}
-          filterKey="patientsCanCall"
+          label={"Private"}
+          filterKey="isPrivate"
+          model={model}
+          dispatch={dispatch}
+        />
+        <FilterCheckbox
+          label={"Wheelchair Accessible"}
+          filterKey="isWheelchairAccessible"
           model={model}
           dispatch={dispatch}
         />
@@ -43,15 +41,6 @@ const ReferralsFilters = ({model, dispatch}) => {
   }
 }
 
-const respondsWithinOptions = (model) => {
-  return _.map(model.app.respondsWithinOptions, (label, key) => {
-    return {
-      key: parseInt(key),
-      label: label
-    };
-  });
-}
-
 const shouldShow = (model) => {
   return _.includes(ROUTES, matchedRoute(model)) &&
     _.includes(COLLECTIONS, collectionShownName(model))
@@ -61,7 +50,7 @@ const ROUTES = [
   "/areas_of_practice/:id"
 ];
 const COLLECTIONS = [
-  "specialists"
+  "clinics"
 ]
 
-export default ReferralsFilters;
+export default ClinicDetailsFilters;

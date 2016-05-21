@@ -128,3 +128,21 @@ export const cities = (model, subKey) => {
     _.includes(referralCityIds(model), subKey)
   );
 }
+
+export const isPublic = factory({
+  key: "isPublic",
+  hasSubkeys: false,
+  defaultValue: false
+})
+
+export const isPrivate = factory({
+  key: "isPrivate",
+  hasSubkeys: false,
+  defaultValue: false
+})
+
+export const isWheelchairAccessible = factory({
+  key: "isWheelchairAccessible",
+  hasSubkeys: false,
+  defaultValue: false
+})

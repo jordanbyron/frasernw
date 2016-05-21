@@ -14,6 +14,7 @@ import TeleserviceFilters from "controllers/filter_groups/teleservices";
 import LanguagesFilters from "controllers/filter_groups/languages";
 import AssociationsFilters from "controllers/filter_groups/associations";
 import CityFilters from "controllers/filter_groups/cities";
+import ClinicDetailsFilters from "controllers/filter_groups/clinic_details";
 
 const pageIsReport = (model) => {
   return matchedRoute(model).includes("/reports/");
@@ -63,6 +64,7 @@ const Sidebar = ({model, dispatch}) => {
       <div className="well filter">
         <div className="title">{ sidebarTitle(model) }</div>
         <ProcedureFilters model={model} dispatch={dispatch}/>
+        <ClinicDetailsFilters model={model} dispatch={dispatch}/>
         <ReferralsFilters model={model} dispatch={dispatch}/>
         <DateRangeFilters model={model} dispatch={dispatch}/>
         <DivisionScopeFilters model={model} dispatch={dispatch}/>

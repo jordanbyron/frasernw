@@ -58,6 +58,15 @@ const CityFilters = ({model, dispatch}) => {
             No Cities
           </a>
         </div>
+        <hr
+          style={{
+            margin: "0px",
+            borderColor: "#CEC9C9",
+            marginBottom: "6px",
+            marginTop: "4px",
+            borderWidth: "1px"
+          }}
+        />
         {
           subkeys(model).map((key) => {
             return(
