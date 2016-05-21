@@ -1,5 +1,8 @@
 import * as FilterValues from "controller_helpers/filter_values";
 import { matchedRoute } from "controller_helpers/routing";
+import { selectedTabKey } from "controller_helpers/tab_keys";
+import { cities as cityFilterSubkeys } from "controller_helpers/filter_subkeys";
+import _ from "lodash";
 
 export function requestDynamicData(model, dispatch){
   if(matchedRoute(model) === "/reports/pageviews_by_user"){
@@ -120,4 +123,18 @@ export function toggleUnfocusedProcedureVisibility(dispatch, proposed, tabKey) {
     tabKey: tabKey,
     proposed: proposed
   })
+}
+
+const proposedCityFilterValues = (activatedIds, model) => {
+  return cityFilterSubkeys(model).map((id) => {
+    return [ id, _.includes(activatedIds, id) ];
+  }).pwPipe(_.zipObject)
+};
+
+export function updateCityFilters(dispatch, model, activatedIds) {
+  dispatch({
+    type: "UPDATE_CITY_FILTERS",
+    tabKey: selectedTabKey(model),
+    proposed: proposedCityFilterValues(activatedIds, model)
+  });
 }

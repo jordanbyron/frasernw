@@ -169,6 +169,12 @@ const filterValues = (model = {}, action) => {
       model,
       { [action.filterKey]: newValue }
     );
+  case "UPDATE_CITY_FILTERS":
+    return _.assign(
+      {},
+      model,
+      { cities: action.proposed }
+    );
   default:
     return model;
   }

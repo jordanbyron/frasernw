@@ -13,6 +13,7 @@ import CareProviderFilters from "controllers/filter_groups/care_providers";
 import TeleserviceFilters from "controllers/filter_groups/teleservices";
 import LanguagesFilters from "controllers/filter_groups/languages";
 import AssociationsFilters from "controllers/filter_groups/associations";
+import CityFilters from "controllers/filter_groups/cities";
 
 const pageIsReport = (model) => {
   return matchedRoute(model).includes("/reports/");
@@ -71,6 +72,7 @@ const Sidebar = ({model, dispatch}) => {
         <CareProviderFilters model={model} dispatch={dispatch}/>
         <LanguagesFilters model={model} dispatch={dispatch}/>
         <AssociationsFilters model={model} dispatch={dispatch}/>
+        <CityFilters model={model} dispatch={dispatch}/>
       </div>
     </div>
   );

@@ -59,3 +59,10 @@ export const languages = memoize(
       pwPipe(_.uniq);
   }
 );
+
+export const cities = memoize(
+  (model) => model.app.cities,
+  (cities) => {
+    return _.values(cities).map(_.property("id"));
+  }
+);

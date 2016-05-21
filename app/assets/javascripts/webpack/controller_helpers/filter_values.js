@@ -1,5 +1,6 @@
 import { padTwo } from "utils";
 import { selectedTabKey } from "controller_helpers/tab_keys";
+import referralCityIds from "controller_helpers/referral_city_ids";
 
 const factory = (args) => {
   let { hasSubkeys, defaultValue, key } = args;
@@ -119,3 +120,11 @@ export const hospitalAssociations = factory({
   hasSubkeys: false,
   defaultValue: 0
 })
+
+export const cities = (model, subKey) => {
+  return _.get(
+    model,
+    [ "ui", "tabs", selectedTabKey(model), "filterValues", "cities", subKey ],
+    _.includes(referralCityIds(model), subKey)
+  );
+}
