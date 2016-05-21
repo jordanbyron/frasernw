@@ -2,18 +2,24 @@ import { matchedRoute, matchedRouteParams, recordShownByPage }
   from "controller_helpers/routing";
 import { selectedTabKey, recordShownByTab } from "controller_helpers/tab_keys";
 import { memoize } from "utils";
+import { SHOWING_IN_ROUTES as tabsShownInRoutes } from "controllers/nav_tabs";
 
 export function unscopedCollectionShown(model){
   return model.app[collectionShownName(model)].pwPipe(_.values);
 };
 
+export const isTabbedPage = (model) => {
+  return _.includes(tabsShownInRoutes, matchedRoute(model));
+};
+
 export const scopedByRouteAndTab = memoize(
   selectedTabKey,
+  isTabbedPage,
   model => model,
-  (selectedTabKey, model) => {
+  (selectedTabKey, isTabbedPage, model) => {
     return unscopedCollectionShown(model).filter((record) => {
       return matchesRoute(matchedRoute(model), recordShownByPage(model), record) &&
-        matchesTab(record, model, selectedTabKey);
+        (!isTabbedPage || matchesTab(record, model, selectedTabKey));
     });
   }
 );
@@ -56,10 +62,15 @@ export const matchesTab = (record, model, tabKey) => {
 }
 
 export function collectionShownName(model){
-  if (_.includes(["specialists", "clinics"], selectedTabKey(model))){
-    return selectedTabKey(model);
+  if (isTabbedPage(model)){
+    if (_.includes(["specialists", "clinics"], selectedTabKey(model))){
+      return selectedTabKey(model);
+    }
+    else if (selectedTabKey(model).includes("contentCategory")){
+      return "contentItems";
+    }
   }
-  else if (selectedTabKey(model).includes("contentCategory")){
+  else if (matchedRoute(model) === "/content_categories/:id"){
     return "contentItems";
   }
 };

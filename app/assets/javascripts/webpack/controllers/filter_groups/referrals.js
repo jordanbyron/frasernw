@@ -62,6 +62,6 @@ const ROUTES = [
 ];
 const COLLECTIONS = [
   "specialists"
-]
+];
 
 export default ReferralsFilters;

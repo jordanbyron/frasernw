@@ -3,6 +3,7 @@ import { collectionShownName } from "controller_helpers/collection_shown";
 import { matchedRoute, recordShownByPage }
   from "controller_helpers/routing";
 import { memoize } from "utils";
+import { recordShownByTab } from "controller_helpers/tab_keys";
 
 export const scheduleDays = (model) => {
   switch(collectionShownName(model)){
@@ -66,3 +67,15 @@ export const cities = memoize(
     return _.values(cities).map(_.property("id"));
   }
 );
+
+export const subcategories = memoize(
+  recordsMaskingFilters,
+  recordShownByTab,
+  (recordsMaskingFilters, recordShownByTab) => {
+    return recordsMaskingFilters.
+      map(_.property("categoryId")).
+      pwPipe(_.flatten).
+      pwPipe(_.uniq).
+      pwPipe((ids) => _.pull(ids, recordShownByTab.id))
+  }
+)

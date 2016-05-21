@@ -146,3 +146,20 @@ export const isWheelchairAccessible = factory({
   hasSubkeys: false,
   defaultValue: false
 })
+
+export const subcategories = (model, subkey) => {
+  if (subkey) {
+    return _.get(
+      model,
+      [ "ui", "tabs", selectedTabKey(model), "filterValues", "subcategories", subkey ],
+      false
+    );
+  }
+  else {
+    return _.get(
+      model,
+      [ "ui", "tabs", selectedTabKey(model), "filterValues", "subcategories"],
+      0
+    );
+  }
+}

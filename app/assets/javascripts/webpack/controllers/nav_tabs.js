@@ -38,7 +38,7 @@ const contentCategoryTabs = (model, dispatch) => {
   );
 }
 
-const SHOWING_IN_ROUTES = [
+export const SHOWING_IN_ROUTES = [
   "/specialties/:id",
   "/areas_of_practice/:id"
 ];

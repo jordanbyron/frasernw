@@ -53,7 +53,8 @@ const shouldShow = (model) => {
 }
 const ROUTES = [
   "/specialties/:id",
-  "/areas_of_practice/:id"
+  "/areas_of_practice/:id",
+  "/content_categories/:id"
 ];
 const COLLECTIONS = [
   "specialists",

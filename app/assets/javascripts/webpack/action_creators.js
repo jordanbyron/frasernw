@@ -102,19 +102,24 @@ const proposedValue = (event) => {
   if (event.target.type === "checkbox"){
     return event.target.checked;
   }
+  else if (event.target.type === "radio") {
+    return parseInt(event.target.value);
+  }
   else {
     return event.target.value;
   }
 };
 
 export function changeFilter(dispatch, tabKey, filterKey, filterSubKey, event) {
-  dispatch({
-    type: "CHANGE_FILTER_VALUE",
-    tabKey: tabKey,
-    filterKey: filterKey,
-    filterSubKey: filterSubKey,
-    proposed: proposedValue(event)
-  })
+  if(event.target.type !== "radio" || event.target.checked) {
+    dispatch({
+      type: "CHANGE_FILTER_VALUE",
+      tabKey: tabKey,
+      filterKey: filterKey,
+      filterSubKey: filterSubKey,
+      proposed: proposedValue(event)
+    })
+  }
 }
 
 export function toggleUnfocusedProcedureVisibility(dispatch, proposed, tabKey) {
