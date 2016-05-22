@@ -168,11 +168,15 @@ class Clinic < ActiveRecord::Base
       )
     end
 
-    self.in_cities_and_specialization(City.all - in_progress_cities, specialization)
+    self.in_cities_and_specialization(
+      City.all - in_progress_cities,
+      specialization
+    )
   end
 
   def self.not_in_progress_for_division_local_referral_area_and_specialization(
-    division, specialization
+    division,
+    specialization
   )
     not_in_progress_cities = City.
       not_in_progress_for_division_local_referral_area_and_specialization(
@@ -185,8 +189,10 @@ class Clinic < ActiveRecord::Base
   def not_in_progress
     (
       SpecializationOption.
-        not_in_progress_for_divisions_and_specializations(divisions, specializations).
-        length > 0
+        not_in_progress_for_divisions_and_specializations(
+          divisions,
+          specializations
+        ).length > 0
     ) || (
       divisions.length == 0
     )
@@ -195,8 +201,10 @@ class Clinic < ActiveRecord::Base
   def in_progress
     (divisions.length > 0) && (
       SpecializationOption.
-        not_in_progress_for_divisions_and_specializations(divisions, specializations).
-        length == 0
+        not_in_progress_for_divisions_and_specializations(
+          divisions,
+          specializations
+        ).length == 0
     )
   end
 
@@ -290,7 +298,10 @@ class Clinic < ActiveRecord::Base
     (direct + in_hospital).uniq
   end
 
-  def self.in_cities_and_performs_procedures_in_specialization(cities, specialization)
+  def self.in_cities_and_performs_procedures_in_specialization(
+    cities,
+    specialization
+  )
     city_ids = cities.map{ |city| city.id }
 
     direct = joins(
@@ -363,8 +374,30 @@ class Clinic < ActiveRecord::Base
     self.in_cities(divisions.map{ |division| division.cities }.flatten.uniq)
   end
 
-  def self.in_local_referral_area_for_specializaton_and_division(specialization, division)
+  def self.in_local_referral_area_for_specializaton_and_division(
+    specialization,
+    division
+  )
     self.in_cities(division.local_referral_cities(specialization))
+  end
+
+  def self.no_specialization
+    @no_specialization ||=
+      includes(:specializations).
+        where('specializations.id IS NULL').
+        references(:specializations)
+  end
+
+  def self.no_division?
+    no_division.any?
+  end
+
+  def self.no_division
+    includes_location_data.reject do |clinic|
+      clinic.cities.length > 0
+    end.sort do |a,b|
+      a.name <=> b.name
+    end
   end
 
   def responded?
@@ -562,8 +595,9 @@ class Clinic < ActiveRecord::Base
     end
 
     if referral_details.present?
-      return "#{output.punctuate} #{referral_details.punctuate.convert_newlines_to_br}".
-        html_safe
+      return "#{output.punctuate} "\
+        "#{referral_details.punctuate.convert_newlines_to_br}".
+          html_safe
     else
       return output.punctuate
     end
@@ -636,8 +670,9 @@ class Clinic < ActiveRecord::Base
     end
 
     if urgent_details.present?
-      return "#{output.punctuate} #{urgent_details.punctuate.convert_newlines_to_br}".
-        html_safe
+      return "#{output.punctuate} "\
+        "#{urgent_details.punctuate.convert_newlines_to_br}".
+          html_safe
     else
       return output.punctuate
     end
