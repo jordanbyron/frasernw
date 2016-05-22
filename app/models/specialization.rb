@@ -18,7 +18,8 @@ class Specialization < ActiveRecord::Base
   has_many :procedure_specializations,
     -> { where("procedure_specializations.mapped" => true) },
     dependent: :destroy
-  has_many :procedures, -> { order 'procedures.name ASC' }, through: :procedure_specializations
+  has_many :procedures, -> { order 'procedures.name ASC' },
+    through: :procedure_specializations
 
   has_many :sc_item_specializations, dependent: :destroy
   has_many :sc_items, through: :sc_items_specializations
@@ -26,7 +27,9 @@ class Specialization < ActiveRecord::Base
   has_many :specialization_options, dependent: :destroy
   accepts_nested_attributes_for :specialization_options
   has_many :owners, through: :specialization_options, class_name: "User"
-  has_many :content_owners, through: :specialization_options, class_name: "User"
+  has_many :content_owners,
+    through: :specialization_options,
+    class_name: "User"
 
   has_many :division_referral_city_specializations, dependent: :destroy
 
@@ -37,7 +40,8 @@ class Specialization < ActiveRecord::Base
 
   def self.cache_key
     max_updated_at = maximum(:updated_at).try(:utc).try(:to_s, :number)
-    sum_of_ids = limit(100).pluck(:id).try(:compact).inject{ |sum, id| sum + id }
+    sum_of_ids =
+      limit(100).pluck(:id).try(:compact).inject{ |sum, id| sum + id }
     "specializations/all-#{count}-#{max_updated_at}-#{sum_of_ids}"
     # since cache_key can act on a subset of Specialization records,
     # sum_of_ids was added to reduce the chance of an incorrect cache hit
@@ -45,8 +49,11 @@ class Specialization < ActiveRecord::Base
   end
 
   def self.all_cached
-    @_all_specializations_cached ||= Rails.cache.fetch([name, "all_specializations"],
-      expires_in: 6.hours) { self.all }
+    @_all_specializations_cached ||= Rails.cache.
+      fetch(
+        [name, "all_specializations"],
+        expires_in: 6.hours
+      ) { self.all }
   end
 
   def self.cached_find(id)
@@ -56,7 +63,10 @@ class Specialization < ActiveRecord::Base
   def self.refresh_cache
     Rails.cache.write([name, "all_specializations"], self.all)
     SpecialistOffice.all.each do |office|
-      Rails.cache.write([office.class.name, office.id], SpecialistOffice.find(office.id))
+      Rails.cache.write(
+        [office.class.name, office.id],
+        SpecialistOffice.find(office.id)
+      )
     end
   end
 
@@ -147,18 +157,6 @@ class Specialization < ActiveRecord::Base
     else
       update_column(:saved_token, SecureRandom.hex(16))
       return self.saved_token
-    end
-  end
-
-  def no_division_clinics?
-    no_division_clinics.any?
-  end
-
-  def no_division_clinics
-    @no_division_clinics ||= clinics.includes_location_data.reject do |clinic|
-      clinic.cities.length > 0
-    end.sort do |a,b|
-      a.name <=> b.name
     end
   end
 
