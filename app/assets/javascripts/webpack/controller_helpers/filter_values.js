@@ -175,3 +175,9 @@ export const showHiddenUpdates = factory({
   hasSubkeys: false,
   defaultValue: false
 })
+
+export const entityType = factory({
+  key: "entityType",
+  hasSubkeys: false,
+  defaultValue: "specialists"
+});

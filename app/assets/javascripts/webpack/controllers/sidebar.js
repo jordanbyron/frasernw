@@ -18,6 +18,7 @@ import ClinicDetailsFilters from "controllers/filter_groups/clinic_details";
 import SubcategoriesFilters from "controllers/filter_groups/subcategories";
 import SpecializationsFilters from "controllers/filter_groups/specializations";
 import HiddenUpdatesFilter from "controllers/filter_groups/hidden_updates";
+import EntityTypeFilters from "controllers/filter_groups/entity_type";
 
 const pageIsReport = (model) => {
   return matchedRoute(model).includes("/reports/");
@@ -70,6 +71,7 @@ const Sidebar = ({model, dispatch}) => {
         <ClinicDetailsFilters model={model} dispatch={dispatch}/>
         <ReferralsFilters model={model} dispatch={dispatch}/>
         <DateRangeFilters model={model} dispatch={dispatch}/>
+        <EntityTypeFilters model={model} dispatch={dispatch}/>
         <DivisionScopeFilters model={model} dispatch={dispatch}/>
         <SexFilters model={model} dispatch={dispatch}/>
         <ScheduleFilters model={model} dispatch={dispatch}/>
