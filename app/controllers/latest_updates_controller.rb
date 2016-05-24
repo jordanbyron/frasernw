@@ -15,9 +15,9 @@ class LatestUpdatesController < ApplicationController
     @init_data = {
       app: {
         divisions: Denormalized.fetch(:divisions),
-        currentUser: {
-          isAdmin: current_user.as_admin?
-        }
+        currentUser: FilterTableAppState::CurrentUser.call(
+          current_user: current_user
+        )
       },
       ui: {
         divisionIds: @divisions.map(&:id),

@@ -62,7 +62,7 @@ const showInlineArticles = (model) => {
 
 const usesSidebarLayout = (model) => {
   return !((matchedRoute(model) === "/latest_updates" &&
-    model.app.currentUser.isAdmin) ||
+    model.app.currentUser.role === "admin") ||
     showInlineArticles(model))
 }
 

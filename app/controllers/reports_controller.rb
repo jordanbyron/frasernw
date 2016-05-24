@@ -49,10 +49,9 @@ class ReportsController < ApplicationController
   def pageviews_by_user
     @init_data = {
       app: {
-        currentUser: {
-          role: current_user.as_role,
-          divisions: current_user.as_divisions
-        },
+        currentUser: FilterTableAppState::CurrentUser.call(
+          current_user: current_user
+        ),
         divisions: Denormalized.fetch(:divisions)
       }
     }
@@ -82,10 +81,9 @@ class ReportsController < ApplicationController
 
     @init_data = {
       app: {
-        currentUser: {
-          role: current_user.as_role,
-          divisions: current_user.as_divisions
-        },
+        currentUser: FilterTableAppState::CurrentUser.call(
+          current_user: current_user
+        ),
         specializations: Denormalized.fetch(:specializations),
         divisions: Denormalized.fetch(:divisions)
       }
@@ -99,10 +97,9 @@ class ReportsController < ApplicationController
 
     @init_data = {
       app: {
-        currentUser: {
-          role: current_user.as_role,
-          divisions: current_user.as_divisions
-        },
+        currentUser: FilterTableAppState::CurrentUser.call(
+          current_user: current_user
+        ),
         divisions: Denormalized.fetch(:divisions)
       }
     }
