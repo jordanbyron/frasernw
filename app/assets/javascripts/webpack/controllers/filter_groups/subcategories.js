@@ -9,7 +9,8 @@ import FilterRadioButtons from "controllers/filter_radio_buttons";
 
 const SubcategoriesFilters = ({model, dispatch}) => {
   if (_.includes(CHECKBOX_ROUTES, matchedRoute(model)) &&
-    _.includes(COLLECTIONS, collectionShownName(model))){
+    _.includes(COLLECTIONS, collectionShownName(model)) &&
+    _.any(subkeys(model))){
       return(
         <FilterGroup
           title={"Subcategories"}

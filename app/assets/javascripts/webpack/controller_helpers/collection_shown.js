@@ -2,14 +2,10 @@ import { matchedRoute, matchedRouteParams, recordShownByPage }
   from "controller_helpers/routing";
 import { selectedTabKey, recordShownByTab } from "controller_helpers/tab_keys";
 import { memoize } from "utils";
-import { SHOWING_IN_ROUTES as tabsShownInRoutes } from "controllers/nav_tabs";
+import { isTabbedPage } from "controllers/nav_tabs";
 
 export function unscopedCollectionShown(model){
   return model.app[collectionShownName(model)].pwPipe(_.values);
-};
-
-export const isTabbedPage = (model) => {
-  return _.includes(tabsShownInRoutes, matchedRoute(model));
 };
 
 export const scopedByRouteAndTab = memoize(

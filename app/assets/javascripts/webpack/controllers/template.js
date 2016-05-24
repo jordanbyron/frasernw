@@ -11,6 +11,10 @@ import NavTabs from "controllers/nav_tabs";
 import ReducedViewSelector from "controllers/reduced_view_selector";
 import { reducedView, viewSelectorClass } from "controller_helpers/reduced_view";
 import Sidebar from "controllers/sidebar";
+import { recordShownByTab } from "controller_helpers/tab_keys";
+import { recordShownByPage } from "controller_helpers/routing";
+import { isTabbedPage } from "controllers/nav_tabs";
+import { collectionShownName } from "controller_helpers/collection_shown";
 
 const Template = ({model, dispatch}) => {
   if(isLoaded(model)) {
@@ -31,9 +35,18 @@ const isLoaded = (model) => {
   return model.app.specialists && model.app.currentUser;
 }
 
+const showInlineArticles = (model) => {
+  return collectionShownName(model) === "contentItems" &&
+    ((isTabbedPage(model) &&
+      recordShownByTab(model).componentType === "InlineArticles") ||
+    (!isTabbedPage(model) &&
+      recordShownBypage(model).componentType === "InlineArticles"))
+};
+
 const usesSidebarLayout = (model) => {
-  return matchedRoute(model) !== "/latest_updates" ||
-    model.app.currentUser.isAdmin
+  return !((matchedRoute(model) === "/latest_updates" &&
+    model.app.currentUser.isAdmin) ||
+    showInlineArticles(model))
 }
 
 const WhitePanel = ({model, dispatch}) => {

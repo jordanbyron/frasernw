@@ -38,13 +38,17 @@ const contentCategoryTabs = (model, dispatch) => {
   );
 }
 
-export const SHOWING_IN_ROUTES = [
+const SHOWING_IN_ROUTES = [
   "/specialties/:id",
   "/areas_of_practice/:id"
 ];
 
+export const isTabbedPage = (model) => {
+  return _.includes(SHOWING_IN_ROUTES, matchedRoute(model));
+}
+
 const NavTabsController = ({model, dispatch}) => {
-  if (_.includes(SHOWING_IN_ROUTES, matchedRoute(model))) {
+  if (isTabbedPage(model)) {
     return(
       <NavTabs>
         <NavTab
