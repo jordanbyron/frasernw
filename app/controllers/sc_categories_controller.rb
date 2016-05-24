@@ -10,7 +10,9 @@ class ScCategoriesController < ApplicationController
   def show
     @sc_category = ScCategory.find(params[:id])
     # @sc_items = @sc_category.all_sc_items_in_divisions( current_user.as_super_admin? ? Division.all : current_user.as_divisions )
-    @init_data = FilterTableAppState.call(current_user: current_user)
+    @init_data = {
+      app: FilterTableAppState.call(current_user: current_user)
+    }
   end
 
   def new

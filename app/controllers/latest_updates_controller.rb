@@ -14,7 +14,10 @@ class LatestUpdatesController < ApplicationController
 
     @init_data = {
       app: {
-        divisions: Denormalized.fetch(:divisions)
+        divisions: Denormalized.fetch(:divisions),
+        currentUser: {
+          isAdmin: current_user.as_admin?
+        }
       },
       ui: {
         divisionIds: @divisions.map(&:id),

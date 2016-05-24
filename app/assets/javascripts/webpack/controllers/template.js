@@ -32,7 +32,24 @@ const Template = ({model, dispatch}) => {
 };
 
 const isLoaded = (model) => {
-  return model.app.specialists && model.app.currentUser;
+  switch(matchedRoute(model)){
+    case "/specialties/:id":
+      return model.app.specialists && model.app.currentUser;
+    case "/areas_of_practice/:id":
+      return model.app.specialists && model.app.currentUser;
+    case "/content_categories/:id":
+      return model.app.specialists && model.app.currentUser;
+    case "/latest_updates":
+      return model.app.currentUser;
+    case "/reports/pageviews_by_user":
+      return model.app.currentUser;
+    case "/reports/referents_by_specialty":
+      return model.app.currentUser;
+    case "/reports/usage":
+      return model.app.currentUser;
+    default:
+      return true;
+  }
 }
 
 const showInlineArticles = (model) => {
@@ -40,7 +57,7 @@ const showInlineArticles = (model) => {
     ((isTabbedPage(model) &&
       recordShownByTab(model).componentType === "InlineArticles") ||
     (!isTabbedPage(model) &&
-      recordShownBypage(model).componentType === "InlineArticles"))
+      recordShownByPage(model).componentType === "InlineArticles"))
 };
 
 const usesSidebarLayout = (model) => {

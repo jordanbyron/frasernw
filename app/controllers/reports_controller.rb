@@ -48,11 +48,13 @@ class ReportsController < ApplicationController
 
   def pageviews_by_user
     @init_data = {
-      currentUser: {
-        role: current_user.as_role,
-        divisions: current_user.as_divisions
-      },
-      divisions: Denormalized.fetch(:divisions)
+      app: {
+        currentUser: {
+          role: current_user.as_role,
+          divisions: current_user.as_divisions
+        },
+        divisions: Denormalized.fetch(:divisions)
+      }
     }
 
     authorize! :view_report, :pageviews_by_user
@@ -80,6 +82,10 @@ class ReportsController < ApplicationController
 
     @init_data = {
       app: {
+        currentUser: {
+          role: current_user.as_role,
+          divisions: current_user.as_divisions
+        },
         specializations: Denormalized.fetch(:specializations),
         divisions: Denormalized.fetch(:divisions)
       }
@@ -94,8 +100,8 @@ class ReportsController < ApplicationController
     @init_data = {
       app: {
         currentUser: {
-          divisionIds: current_user.as_divisions.map(&:id),
-          isSuperAdmin: current_user.as_super_admin?
+          role: current_user.as_role,
+          divisions: current_user.as_divisions
         },
         divisions: Denormalized.fetch(:divisions)
       }

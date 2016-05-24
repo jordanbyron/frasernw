@@ -8,11 +8,16 @@ const rootReducer = (model = {}, action) => {
 const app = (model = {}, action) => {
   switch(action.type){
   case "PARSE_RENDERED_DATA":
-    return _.assign(
-      {},
-      model,
-      action.data
-    );
+    if(action.data.app){
+      return _.assign(
+        {},
+        model,
+        action.data.app
+      );
+    }
+    else {
+      return model;
+    }
   case "INTEGRATE_LOCALSTORAGE_DATA":
     return _.assign(
       {},
@@ -25,14 +30,28 @@ const app = (model = {}, action) => {
 }
 
 const ui = (model = {}, action) => {
-  return {
-    recordsToDisplay: recordsToDisplay(model.recordsToDisplay, action),
-    selectedTableHeading: selectedTableHeading(model.selectedTableHeading, action),
-    location: location(model.location, action),
-    isBreadcrumbDropdownOpen: isBreadcrumbDropdownOpen(model.isBreadcrumbDropdownOpen, action),
-    reducedView: reducedView(model.reducedView, action),
-    tabs: tabs(model.tabs, action)
-  };
+  switch(action.type){
+  case "PARSE_RENDERED_DATA":
+    if(action.data.ui){
+      return _.assign(
+        {},
+        model,
+        action.data.ui
+      );
+    }
+    else {
+      return model;
+    }
+  default:
+    return {
+      recordsToDisplay: recordsToDisplay(model.recordsToDisplay, action),
+      selectedTableHeading: selectedTableHeading(model.selectedTableHeading, action),
+      location: location(model.location, action),
+      isBreadcrumbDropdownOpen: isBreadcrumbDropdownOpen(model.isBreadcrumbDropdownOpen, action),
+      reducedView: reducedView(model.reducedView, action),
+      tabs: tabs(model.tabs, action)
+    };
+  }
 }
 
 const tabs = (model = {}, action) => {

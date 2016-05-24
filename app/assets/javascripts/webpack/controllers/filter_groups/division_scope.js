@@ -3,11 +3,10 @@ import FilterGroup from "controllers/filter_group";
 import FilterSelector from "controllers/filter_selector";
 import { matchedRoute } from "controller_helpers/routing";
 
-
 const DivisionScopeFilters = ({model, dispatch}) => {
-  if(matchedRoute(model) === "/reports/pageviews_by_user"){
+  if(shouldShow(model)){
     return(
-      <FilterGroup title="Scope" isCollapsible={false}>
+      <FilterGroup title="Division Affiliation" isCollapsible={false}>
         <FilterSelector
           label={null}
           filterKey="divisionScope"
@@ -20,7 +19,17 @@ const DivisionScopeFilters = ({model, dispatch}) => {
   } else {
     return <span></span>
   }
+};
+
+const shouldShow = (model) => {
+  return _.includes(ROUTES_IMPLEMENTING, matchedRoute(model));
 }
+
+const ROUTES_IMPLEMENTING = [
+  "/reports/pageviews_by_user",
+  "/reports/usage",
+  "/reports/referents_by_specialty"
+]
 
 const scopeOptions = (model) => {
   if (model.app.currentUser.role === "admin") {
