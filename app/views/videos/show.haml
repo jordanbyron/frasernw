@@ -4,7 +4,7 @@
 
   %h2= @video.title
 
-  %video{align: "center",
+  %video#video-window{align: "center",
     title: "Video Player",
     src: "#{@video.video_clip.expiring_url(1800)}",
     height: "315px;",
@@ -26,3 +26,13 @@
         class: "btn" do
         %i.icon-trash
         %span= " Delete"
+
+:javascript
+  function notifyExpired(){
+    $('#video-window').replaceWith(
+      '<span id="timeout-message">Please refresh the page to view the video.</span>'
+    );
+  };
+  $(document).ready(function() {
+    window.setTimeout(notifyExpired,1810000);
+  });
