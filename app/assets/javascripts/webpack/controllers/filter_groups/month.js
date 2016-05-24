@@ -5,22 +5,21 @@ import { matchedRoute } from "controller_helpers/routing";
 import monthOptions from "controller_helpers/month_options";
 
 const DateRangeFilters = ({model, dispatch}) => {
-  if(matchedRoute(model) === "/reports/pageviews_by_user"){
+  if(matchedRoute(model) === "/reports/usage"){
     return(
-      <FilterGroup title="Date Range" isCollapsible={false}>
+      <FilterGroup
+        title="Month"
+        isCollapsible={true}
+        expansionControlKey={"month"}
+        defaultIsExpanded={true}
+        model={model}
+        dispatch={dispatch}
+      >
         <FilterSelector
-          label="Start Month:"
           filterKey="startMonth"
           model={model}
           dispatch={dispatch}
-          options={monthOptions(2014, 1)}
-        />
-        <FilterSelector
-          label="End Month:"
-          filterKey="endMonth"
-          model={model}
-          dispatch={dispatch}
-          options={monthOptions(2014, 1)}
+          options={monthOptions(2014, 4)}
         />
       </FilterGroup>
     );
@@ -29,5 +28,6 @@ const DateRangeFilters = ({model, dispatch}) => {
     return <span></span>
   }
 };
+
 
 export default DateRangeFilters;

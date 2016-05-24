@@ -25,16 +25,20 @@ const factory = (args) => {
   }
 };
 
+const currentMonth = () => {
+  return `${(new Date).getUTCFullYear()}${padTwo((new Date).getMonth() + 1)}`;
+}
+
 export const startMonth = factory({
   key: "startMonth",
   hasSubkeys: false,
-  defaultValue: `${(new Date).getUTCFullYear()}${padTwo((new Date).getMonth() + 1)}`
+  defaultValue: currentMonth()
 });
 
 export const endMonth = factory({
   key: "endMonth",
   hasSubkeys: false,
-  defaultValue: `${(new Date).getUTCFullYear()}${padTwo((new Date).getMonth() + 1)}`
+  defaultValue: currentMonth()
 });
 
 export const divisionScope = factory({
@@ -180,4 +184,10 @@ export const entityType = factory({
   key: "entityType",
   hasSubkeys: false,
   defaultValue: "specialists"
+});
+
+export const month = factory({
+  key: "month",
+  hasSubkeys: false,
+  defaultValue: currentMonth()
 });
