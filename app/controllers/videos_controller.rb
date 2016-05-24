@@ -17,7 +17,7 @@ class VideosController < ApplicationController
 
   def create
     authorize! :create, Video
-    @video = Video.new(params[:video])
+    @video = Video.new(video_params)
     if @video.save
       redirect_to @video, notice: "Successfully created video."
     else
@@ -34,7 +34,7 @@ class VideosController < ApplicationController
   def update
     authorize! :update, Video
     @video = Video.find(params[:id])
-    if @video.update_attributes(params[:video])
+    if @video.update_attributes(video_params)
       redirect_to @video, notice: "Successfully updated video."
     else
       redirect_to @video,
@@ -50,5 +50,11 @@ class VideosController < ApplicationController
     else
       redirect_to @video, notice: "Something went wrong. Please try again."
     end
+  end
+
+  private
+
+  def video_params
+    params.require(:video).permit(:title, :video_clip)
   end
 end
