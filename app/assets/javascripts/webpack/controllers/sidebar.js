@@ -20,6 +20,7 @@ import SpecializationsFilters from "controllers/filter_groups/specializations";
 import HiddenUpdatesFilter from "controllers/filter_groups/hidden_updates";
 import EntityTypeFilters from "controllers/filter_groups/entity_type";
 import MonthFilter from "controllers/filter_groups/month";
+import ReportStyleFilter from "controllers/filter_groups/report_style";
 
 const pageIsReport = (model) => {
   return matchedRoute(model).includes("/reports/");
@@ -85,6 +86,7 @@ const Sidebar = ({model, dispatch}) => {
         <SpecializationsFilters model={model} dispatch={dispatch}/>
         <HiddenUpdatesFilter model={model} dispatch={dispatch}/>
         <MonthFilter model={model} dispatch={dispatch}/>
+        <ReportStyleFilter model={model} dispatch={dispatch}/>
       </div>
     </div>
   );

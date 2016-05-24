@@ -191,3 +191,9 @@ export const month = factory({
   hasSubkeys: false,
   defaultValue: currentMonth()
 });
+
+export const reportStyle = factory({
+  key: "reportStyle",
+  hasSubkeys: false,
+  defaultValue: "summary"
+});
