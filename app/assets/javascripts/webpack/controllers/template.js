@@ -16,6 +16,7 @@ import { recordShownByPage } from "controller_helpers/routing";
 import { isTabbedPage } from "controllers/nav_tabs";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import PageTitle from "controllers/page_title";
+import Subtitle from "controllers/subtitle";
 
 const Template = ({model, dispatch}) => {
   if(isLoaded(model)) {
@@ -100,8 +101,8 @@ const WhitePanel = ({model, dispatch}) => {
 const Main = ({model, dispatch}) => {
   return(
     <div>
-      <div>This is the main panel</div>
       <PageTitle model={model} dispatch={dispatch}/>
+      <Subtitle model={model} dispatch={dispatch}/>
       <Table model={model} dispatch={dispatch}/>
     </div>
   );

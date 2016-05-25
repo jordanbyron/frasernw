@@ -16,7 +16,7 @@ const AbbreviatedMonths = {
   12: "Dec"
 }
 
-const labelMonthOption = (monthKey) => {
+export const labelMonthOption = (monthKey) => {
   const month = AbbreviatedMonths[(parseInt(monthKey.slice(4, 6)))];
   const year = monthKey.slice(0, 4);
 
