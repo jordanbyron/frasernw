@@ -17,7 +17,7 @@ module LayoutHelper
       "Pathways"
     elsif ENV['APP_NAME'] == "pathwaysbctest"
       "PW Test"
-    elsif ENV['APP_NAME'] == "pathwaysbcdev"
+    elsif ENV['APP_NAME'] == "pathwaysbcdemo"
       "PW Dev"
     end
   end
