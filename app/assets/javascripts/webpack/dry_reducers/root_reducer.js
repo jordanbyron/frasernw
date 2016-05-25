@@ -122,7 +122,7 @@ const isBreadcrumbDropdownOpen = (model, action) => {
 
 const location = (model, action) => {
   switch(action.type){
-  case "LOCATION_CHANGED":
+  case "PARSE_LOCATION":
     return action.location;
   default:
     return model;

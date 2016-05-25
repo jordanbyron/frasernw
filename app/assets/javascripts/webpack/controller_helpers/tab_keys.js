@@ -20,7 +20,7 @@ export const defaultTab = memoize(
 )
 
 export const selectedTabKey = memoize(
-  (model) => model.ui.location.query.tabKey,
+  (model) => model.ui.location.hash.replace("#", ""),
   defaultTab,
   (userSelectedTab, defaultTab) => {
     return (userSelectedTab ||

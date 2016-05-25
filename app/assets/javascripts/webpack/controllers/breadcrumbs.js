@@ -1,6 +1,6 @@
 import React from "react";
 import { recordShownByPage, matchedRoute } from "controller_helpers/routing";
-import { toggleBreadcrumbDropdown, changeRoute } from "action_creators";
+import { toggleBreadcrumbDropdown } from "action_creators";
 import _ from "lodash";
 
 const ROUTES_SHOWING = [
@@ -89,14 +89,8 @@ const BreadcrumbDropdownColumn = ({model, dispatch, columnNumber}) => {
         specializations.map((specialization) => {
           return(
             <li key={specialization.id}>
-              <a href="javascript:void(0)"
+              <a href={`/specialties/${specialization.id}`}
                 className={inProgressClass(model, specialization)}
-                onClick={_.partial(
-                    changeRoute,
-                    dispatch,
-                    `/specialties/${specialization.id}`
-                  )
-                }
               >
                 <span>{ specialization.name } </span>
                 <NewTag model={model}

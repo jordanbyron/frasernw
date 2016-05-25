@@ -68,18 +68,11 @@ export function toggleBreadcrumbDropdown(dispatch, isCurrentlyOpen){
   })
 };
 
-export function changeRoute(dispatch, route) {
-  dispatch({
-    type: "CHANGE_ROUTE",
-    route: route
-  })
-}
-
 export function tabClicked(dispatch, model, tabKey) {
-  changeRoute(
-    dispatch,
-    `${model.ui.location.pathname}?tabKey=${tabKey}`
-  );
+  dispatch({
+    type: "TAB_CLICKED",
+    tabKey: tabKey
+  })
 }
 
 export function selectReducedView(dispatch, newView) {
@@ -142,4 +135,11 @@ export function updateCityFilters(dispatch, model, activatedIds) {
     tabKey: selectedTabKey(model),
     proposed: proposedCityFilterValues(activatedIds, model)
   });
+}
+
+export function parseLocation(dispatch){
+  dispatch({
+    type: "PARSE_LOCATION",
+    location: window.location
+  })
 }
