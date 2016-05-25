@@ -49,11 +49,11 @@ const dryBootstrapReact = function() {
       integrateLocalStorageData(store.dispatch, data);
     })
 
-    requestDynamicData(store.getState(), store.dispatch);
-
     if (window.pathways.dataForReact){
       parseRenderedData(store.dispatch);
     }
+
+    requestDynamicData(store.getState(), store.dispatch);
   })
 }
 

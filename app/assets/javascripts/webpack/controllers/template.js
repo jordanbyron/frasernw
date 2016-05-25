@@ -15,6 +15,7 @@ import { recordShownByTab } from "controller_helpers/tab_keys";
 import { recordShownByPage } from "controller_helpers/routing";
 import { isTabbedPage } from "controllers/nav_tabs";
 import { collectionShownName } from "controller_helpers/collection_shown";
+import PageTitle from "controllers/page_title";
 
 const Template = ({model, dispatch}) => {
   if(isLoaded(model)) {
@@ -73,7 +74,9 @@ const WhitePanel = ({model, dispatch}) => {
         <div className="content">
           <ReducedViewSelector model={model} dispatch={dispatch}/>
           <div className="row">
-            <Main model={model} dispatch={dispatch}/>
+            <div className={`span8half ${viewSelectorClass(model, "main")}`}>
+              <Main model={model} dispatch={dispatch}/>
+            </div>
             <Sidebar model={model} dispatch={dispatch}/>
           </div>
         </div>
@@ -85,7 +88,7 @@ const WhitePanel = ({model, dispatch}) => {
         <div className="content">
           <div className="row">
             <div className="span12">
-              { "whatever" }
+              <Main model={model} dispatch={dispatch}/>
             </div>
           </div>
         </div>
@@ -94,22 +97,9 @@ const WhitePanel = ({model, dispatch}) => {
   }
 };
 
-const PageTitle = ({model, dispatch}) => {
-  if (matchedRoute(model) === "/reports/pageviews_by_user") {
-    return(
-      <h2 style={{marginBottom: "10px"}}>
-        { "Page Views by User" }
-      </h2>
-    );
-  }
-  else {
-    return <span></span>
-  }
-};
-
 const Main = ({model, dispatch}) => {
   return(
-    <div className={`span8half ${viewSelectorClass(model, "main")}`}>
+    <div>
       <div>This is the main panel</div>
       <PageTitle model={model} dispatch={dispatch}/>
       <Table model={model} dispatch={dispatch}/>
