@@ -45,7 +45,7 @@ class ImportSeeds < ServiceObject
 
   def import_demo_users!
     raw_dump =
-      `heroku run rails runner "ImportSeeds.dump_users!" --app pathwaysbcdev`
+      `heroku run rails runner "ImportSeeds.dump_users!" --app pathwaysbcdemo`
 
     parsed_dump = YAML.load(
       raw_dump[/(?<=START_DUMP)[^\e]+/m]
