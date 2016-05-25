@@ -4,6 +4,7 @@ import { selectedTabKey, tabKey } from "controller_helpers/tab_keys";
 import { NavTabs, NavTab } from "component_helpers/nav_tabs";
 import { tabClicked } from "action_creators";
 import { matchedRoute } from "controller_helpers/routing";
+import { memoize } from "utils";
 import React from "react";
 
 const contentCategoriesShowingTabs = (model) => {
@@ -43,9 +44,12 @@ const SHOWING_IN_ROUTES = [
   "/areas_of_practice/:id"
 ];
 
-export const isTabbedPage = (model) => {
-  return _.includes(SHOWING_IN_ROUTES, matchedRoute(model));
-}
+export const isTabbedPage = memoize(
+  matchedRoute,
+  (matchedRoute) => {
+    return _.includes(SHOWING_IN_ROUTES, matchedRoute);
+  }
+);
 
 const NavTabsController = ({model, dispatch}) => {
   if (isTabbedPage(model)) {

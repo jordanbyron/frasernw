@@ -23,8 +23,12 @@ const samePerPage = memoize(
 const contentCategoryItems = function(categoryId, model){
   return samePerPage(model).
     filter((item) => {
-      return matchesTab(item, model, `contentCategory${categoryId}`);
-    })
+      return matchesTab(
+        item,
+        model.app.contentCategories,
+        `contentCategory${categoryId}`
+      );
+    });
 };
 
 
