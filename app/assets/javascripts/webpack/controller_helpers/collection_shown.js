@@ -8,13 +8,29 @@ export function unscopedCollectionShown(model){
   return model.app[collectionShownName(model)].pwPipe(_.values);
 };
 
+export const unscopedCollectionShown = memoize(
+  (model) => model.app,
+  collectionShownName,
+  (app, collectionShownName) => {
+    
+  }
+)
+
 export const scopedByRouteAndTab = memoize(
   selectedTabKey,
   isTabbedPage,
-  model => model,
-  (selectedTabKey, isTabbedPage, model) => {
-    return unscopedCollectionShown(model).filter((record) => {
-      return matchesRoute(matchedRoute(model), recordShownByPage(model), record) &&
+  matchedRoute,
+  recordShownByPage,
+  unscopedCollectionShown,
+  (
+    selectedTabKey,
+    isTabbedPage,
+    matchedRoute,
+    recordShownByPage,
+    unscopedCollectionShown
+  ) => {
+    return unscopedCollectionShown.filter((record) => {
+      return matchesRoute(matchedRoute, recordShownByPage, record) &&
         (!isTabbedPage || matchesTab(record, model, selectedTabKey));
     });
   }
