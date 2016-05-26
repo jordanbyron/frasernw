@@ -5,7 +5,6 @@ class ScItemsController < ApplicationController
 
   def index
     @division = Division.find(params[:id])
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def show
@@ -13,13 +12,11 @@ class ScItemsController < ApplicationController
     @division = current_user.as_divisions.first
     @feedback = @sc_item.active_feedback_items.build
     @share_url = share_sc_item_path(@sc_item)
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def new
     @sc_item = ScItem.new
     new_sc_item_preload
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def create

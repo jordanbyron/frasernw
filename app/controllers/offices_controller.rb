@@ -46,19 +46,16 @@ class OfficesController < ApplicationController
             "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}"
           }
     end
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def show
     @office = Office.find(params[:id])
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def new
     @office = Office.new
     @office.build_location
     @office.location.build_address
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def create
@@ -74,13 +71,12 @@ class OfficesController < ApplicationController
     @office = Office.find(params[:id])
     @office.build_location if @office.location.blank?
     @office.location.build_address if @office.location.address.blank?
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def update
     @office = Office.find(params[:id])
     if @office.update_attributes(params[:office])
-      redirect_to @office, :notice  => "Successfully updated office."
+      redirect_to @office, notice: "Successfully updated office."
       else
       render action: 'edit'
     end

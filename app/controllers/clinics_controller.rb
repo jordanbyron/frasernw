@@ -11,7 +11,6 @@ class ClinicsController < ApplicationController
     else
       @specializations = Specialization.all
     end
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def show
@@ -55,7 +54,6 @@ class ClinicsController < ApplicationController
     end
     @specializations_focuses = GenerateClinicFocusInputs.exec(nil, [@specialization])
     BuildTeleservices.call(provider: @clinic)
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def create
@@ -125,7 +123,6 @@ class ClinicsController < ApplicationController
     @specializations_focuses =
       GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
     BuildTeleservices.call(provider: @clinic)
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def update
@@ -158,7 +155,7 @@ class ClinicsController < ApplicationController
   def review
     @clinic = Clinic.includes_clinic_locations.find(params[:id])
     @form_modifier = ClinicFormModifier.new(:review, current_user)
-    @review_item = @clinic.review_item;
+    @review_item = @clinic.review_item
 
     if @review_item.blank?
       redirect_to clinics_path, notice: "There are no review items for this specialist"
@@ -185,7 +182,7 @@ class ClinicsController < ApplicationController
       @secret_token_id =
         @clinic.review_item.decoded_review_object["clinic"]["secret_token_id"]
       BuildTeleservices.call(provider: @clinic)
-      render template: 'clinics/edit', layout: request.headers['X-PJAX'] ? 'ajax' : true
+      render template: 'clinics/edit'
     end
   end
 
@@ -220,7 +217,7 @@ class ClinicsController < ApplicationController
       )
       @secret_token_id = @review_item.decoded_review_object["clinic"]["secret_token_id"]
       BuildTeleservices.call(provider: @clinic)
-      render template: 'clinics/edit', layout: request.headers['X-PJAX'] ? 'ajax' : true
+      render template: 'clinics/edit'
     end
   end
 
@@ -229,7 +226,7 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.find(params[:id])
 
     review_item = @clinic.review_item
-    review_item.archived = true;
+    review_item.archived = true
     review_item.save
 
     BuildReviewItemNote.new(
@@ -262,7 +259,7 @@ class ClinicsController < ApplicationController
       redirect_to clinic_path(@clinic),
         notice: "There are no review items for this clinic"
     else
-      review_item.archived = true;
+      review_item.archived = true
       review_item.save
       redirect_to review_items_path,
         notice: "Successfully archived review item for #{@clinic.name}."
@@ -282,6 +279,6 @@ class ClinicsController < ApplicationController
   def refresh_cache
     @clinic = Clinic.find(params[:id])
     @feedback = @clinic.active_feedback_items.build
-    render :show, layout: 'ajax'
+    render :show
   end
 end

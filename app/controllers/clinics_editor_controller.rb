@@ -2,7 +2,7 @@ class ClinicsEditorController < ApplicationController
   include ApplicationHelper
   skip_before_filter :require_authentication
   skip_authorization_check
-  before_filter :check_pending, :except => [:pending, :temp_edit, :temp_update]
+  before_filter :check_pending, except: [:pending, :temp_edit, :temp_update]
   before_filter :check_token
 
   def edit
@@ -26,13 +26,10 @@ class ClinicsEditorController < ApplicationController
       l = cl.build_location
       l.build_address
     end
-    @specializations_focuses = GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
+    @specializations_focuses =
+      GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
     BuildTeleservices.call(provider: @clinic)
-    if request.headers['X-PJAX']
-      render :template => 'clinics/edit', :layout => 'ajax'
-    else
-      render :template => 'clinics/edit'
-    end
+    render template: 'clinics/edit'
   end
 
   def update
@@ -53,7 +50,8 @@ class ClinicsEditorController < ApplicationController
       end
     end
     review_item.set_edit_source!(current_user, params[:secret_token_id])
-    review_item.status = params[:no_updates] ? ReviewItem::STATUS_NO_UPDATES: ReviewItem::STATUS_UPDATES
+    review_item.status =
+      params[:no_updates] ? ReviewItem::STATUS_NO_UPDATES: ReviewItem::STATUS_UPDATES
     review_item.save
 
     BuildReviewItemNote.new(
@@ -69,12 +67,13 @@ class ClinicsEditorController < ApplicationController
 
   def pending
     @clinic = Clinic.find(params[:id])
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def check_pending
     clinic = Clinic.find(params[:id])
-    if clinic.review_item.present? && (!current_user || (clinic.review_item.editor != current_user))
+    if clinic.review_item.present? && (
+      !current_user || (clinic.review_item.editor != current_user)
+    )
       redirect_to clinic_self_pending_path(id: clinic.id, token: params[:token])
     end
   end

@@ -4,7 +4,6 @@ class ScCategoriesController < ApplicationController
 
   def index
     @sc_categories = ScCategory.all
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def show
@@ -35,7 +34,6 @@ class ScCategoriesController < ApplicationController
     @sc_category = ScCategory.new
     @hierarchy =
       ancestry_options_limited(ScCategory.unscoped.arrange(order: 'name'), nil)
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def create
@@ -53,7 +51,6 @@ class ScCategoriesController < ApplicationController
       ScCategory.unscoped.arrange(order: 'name'),
       @sc_category.subtree
     )
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def update
