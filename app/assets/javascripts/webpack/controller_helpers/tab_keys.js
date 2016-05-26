@@ -19,6 +19,18 @@ export const defaultTab = memoize(
   }
 )
 
+const SHOWING_IN_ROUTES = [
+  "/specialties/:id",
+  "/areas_of_practice/:id"
+];
+
+export const isTabbedPage = memoize(
+  matchedRoute,
+  (matchedRoute) => {
+    return _.includes(SHOWING_IN_ROUTES, matchedRoute);
+  }
+);
+
 export const selectedTabKey = memoize(
   (model) => model.ui.location.hash.replace("#", ""),
   defaultTab,

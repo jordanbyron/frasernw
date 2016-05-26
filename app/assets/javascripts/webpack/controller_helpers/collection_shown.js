@@ -2,7 +2,7 @@ import { matchedRoute, matchedRouteParams, recordShownByPage }
   from "controller_helpers/routing";
 import { selectedTabKey, recordShownByTab } from "controller_helpers/tab_keys";
 import { memoize } from "utils";
-import { isTabbedPage } from "controllers/nav_tabs";
+import { isTabbedPage } from "controller_helpers/tab_keys";
 
 export const collectionShownName = memoize(
   isTabbedPage,

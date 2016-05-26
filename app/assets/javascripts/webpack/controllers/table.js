@@ -3,8 +3,7 @@ import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import TableRows from "controllers/table_rows";
 import TableHeading from "controllers/table_heading";
 import { reportStyle } from "controller_helpers/filter_values";
-import { isTabbedPage } from "controllers/nav_tabs";
-import { recordShownByTab } from "controller_helpers/tab_keys";
+import { recordShownByTab, isTabbedPage } from "controller_helpers/tab_keys";
 import { collectionShownName } from "controller_helpers/collection_shown";
 
 const Table = ({model, dispatch}) => {

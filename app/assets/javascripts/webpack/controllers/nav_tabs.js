@@ -1,6 +1,6 @@
 import _ from "lodash";
 import contentCategoryItems from "controller_helpers/content_category_items";
-import { selectedTabKey, tabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey, tabKey, isTabbedPage } from "controller_helpers/tab_keys";
 import { NavTabs, NavTab } from "component_helpers/nav_tabs";
 import { tabClicked } from "action_creators";
 import { matchedRoute } from "controller_helpers/routing";
@@ -38,18 +38,6 @@ const contentCategoryTabs = (model, dispatch) => {
     })
   );
 }
-
-const SHOWING_IN_ROUTES = [
-  "/specialties/:id",
-  "/areas_of_practice/:id"
-];
-
-export const isTabbedPage = memoize(
-  matchedRoute,
-  (matchedRoute) => {
-    return _.includes(SHOWING_IN_ROUTES, matchedRoute);
-  }
-);
 
 const NavTabsController = ({model, dispatch}) => {
   if (isTabbedPage(model)) {
