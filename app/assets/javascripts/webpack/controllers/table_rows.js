@@ -4,16 +4,19 @@ import { selectedTableHeadingKey, tableSortDirection }
   from "controller_helpers/sorting";
 
 const TableRows = (model, dispatch) => {
-  return sortedRecordsToDisplay(model).map((record) => {
-    return(
-      <TableRow
-        key={record.id}
-        model={model}
-        dispatch={dispatch}
-        record={record}
-      />
-    );
-  })
+  // TODO
+
+  return [];
+  // return sortedRecordsToDisplay(model).map((record) => {
+  //   return(
+  //     <TableRow
+  //       key={record.id}
+  //       model={model}
+  //       dispatch={dispatch}
+  //       record={record}
+  //     />
+  //   );
+  // })
 }
 
 const reverseSortOrder = (model) => {

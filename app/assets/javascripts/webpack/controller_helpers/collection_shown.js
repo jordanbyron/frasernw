@@ -21,7 +21,7 @@ export const collectionShownName = memoize(
       return "contentItems";
     }
   }
-)
+);
 
 export const unscopedCollectionShown = memoize(
   (model) => model.app,
@@ -85,5 +85,29 @@ export const matchesTab = (record, contentCategories, tabKey) => {
       contentCategory.subtreeIds,
       record.categoryId
     );
+  }
+};
+
+export const collectionShownPluralLabel = (model) => {
+  switch(collectionShownName(model)){
+  case "specialists":
+    if (matchedRoute(model) === "/specialties/:id"){
+      return recordShownByPage(model).membersName;
+    } else {
+      return "Specialists"
+    }
+  case "clinics":
+    if (matchedRoute(model) === "/specialties/:id"){
+      return `${recordShownByPage(model).name} Clinics`;
+    } else {
+      return "Clinics"
+    }
+  case "contentItems":
+    if (matchedRoute(model) === "/content_categories/:id") {
+      return recordShownByPage(model).name;
+    }
+    else {
+      return recordShownByTab(model).name;
+    }
   }
 };

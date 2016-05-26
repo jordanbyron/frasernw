@@ -2,7 +2,8 @@ import React from "react";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import { viewSelectorClass }  from "controller_helpers/reduced_view";
 import { recordShownByTab, selectedTabKey} from "controller_helpers/tab_keys";
-import { collectionShownName } from "controller_helpers/collection_shown";
+import { collectionShownName, collectionShownPluralLabel }
+  from "controller_helpers/collection_shown";
 import DateRangeFilters from "controllers/filter_groups/date_range";
 import DivisionScopeFilters from "controllers/filter_groups/division_scope";
 import ProcedureFilters from "controllers/filter_groups/procedures";
@@ -24,30 +25,6 @@ import ReportStyleFilter from "controllers/filter_groups/report_style";
 
 const pageIsReport = (model) => {
   return matchedRoute(model).includes("/reports/");
-};
-
-const collectionShownPluralLabel = (model) => {
-  switch(collectionShownName(model)){
-  case "specialists":
-    if (matchedRoute(model) === "/specialties/:id"){
-      return recordShownByPage(model).membersName;
-    } else {
-      return "Specialists"
-    }
-  case "clinics":
-    if (matchedRoute(model) === "/specialties/:id"){
-      return `${recordShownByPage(model).name} Clinics`;
-    } else {
-      return "Clinics"
-    }
-  case "contentItems":
-    if (matchedRoute(model) === "/content_categories/:id") {
-      return recordShownByPage(model).name;
-    }
-    else {
-      return recordShownByTab(model).name;
-    }
-  }
 };
 
 const sidebarTitle = (model) => {

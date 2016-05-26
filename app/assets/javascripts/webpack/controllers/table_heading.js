@@ -1,10 +1,107 @@
 import React from "react";
 import { selectedTableHeadingKey, tableSortDirection }
   from "controller_helpers/sorting";
-  import { sortByHeading } from "action_creators";
+import { sortByHeading } from "action_creators";
+import { matchedRoute } from "controller_helpers/routing";
+import { collectionShownName, collectionShownPluralLabel }
+  from "controller_helpers/collection_shown";
+import { entityType } from "controller_helpers/filter_values";
+import _ from "lodash";
 
+const TableHeading = ({model, dispatch}) => {
+  if(matchedRoute(model) === "/reports/usage"){
+    return <span></span>
+  }
+  else {
+    return(
+      <thead>
+        <tr>
+          { cells(model, dispatch) }
+        </tr>
+      </thead>
+    );
+  }
+};
 
-const TableHeadingCell = ({model, dispatch, label, headingKey}) => {
+const cells = (model, dispatch) => {
+  let _classnamePrefix = classnamePrefix(model);
+
+  return cellConfigs(model).map((config) => {
+    return(
+      <TableHeadingCell
+        model={model}
+        dispatch={dispatch}
+        label={config.label}
+        key={config.key}
+        headingKey={config.key}
+        classnamePrefix={_classnamePrefix}
+      />
+    );
+  })
+}
+
+const classnamePrefix = (model) => {
+  if (_.includes(["specialists", "clinics"], collectionShownName(model))){
+    return "referents";
+  }
+  else if (collectionShownName(model) === "contentItem") {
+    return "content-items";
+  }
+  else {
+    return "";
+  }
+}
+
+const cellConfigs = (model) => {
+  if (_.includes(["specialists", "clinics"], collectionShownName(model))){
+    if (showingSpecializationColumn(model)){
+      return [
+        { label: collectionShownPluralLabel(model), key: "NAME" },
+        { label: "Specialties", key: "SPECIALTIES" },
+        { label: "Accepting New Referrals?", key: "REFERRALS" },
+        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME"},
+        { label: "City", key: "CITY" }
+      ];
+    }
+    else {
+      return [
+        { label: collectionShownPluralLabel(model), key: "NAME" },
+        { label: "Accepting New Referrals?", key: "REFERRALS" },
+        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME"},
+        { label: "City", key: "CITY" }
+      ];
+    }
+  }
+  else if (collectionShownName(model) === "contentItems") {
+    return [
+      { label: "Title", key: "TITLE" },
+      { label: "Category", key: "SUBCATEGORY" },
+      { label: "", key: "FAVOURITE" },
+      { label: "", key: "EMAIL" },
+      { label: "", key: "FEEDBACK" }
+    ];
+  }
+  else if (matchedRoute(model) === "/reports/pageviews_by_user"){
+    return [
+      { label: "User", key: "USERS" },
+      { label: "Page Views", key: "PAGE_VIEWS" }
+    ];
+  }
+  else if (matchedRoute(model) === "/reports/referents_by_specialty"){
+    return [
+      { label: "Specialty", key: "SPECIALTY" },
+      { label: _.capitalize(entityType(model)), key: "ENTITY_TYPE" }
+    ];
+  }
+};
+
+const showingSpecializationColumn = (model) => {
+  // TODO
+
+  return false;
+}
+
+const TableHeadingCell = ({model, dispatch, label, headingKey, classnamePrefix}) => {
   const onClick = _.partial(
     sortByHeading,
     dispatch,
@@ -13,9 +110,15 @@ const TableHeadingCell = ({model, dispatch, label, headingKey}) => {
   );
 
   return(
-    <th onClick={onClick} className="datatable__heading">
+    <th onClick={onClick}
+      className={[
+        "datatable__th",
+        classnamePrefix,
+        headingKey.toLowerCase()
+      ].filter((elem) => elem !== "").join("--")}
+    >
       <span>{ label }</span>
-      <TableHeadingArrowController
+      <TableHeadingArrow
         model={model}
         headingKey={headingKey}
       />
@@ -23,7 +126,7 @@ const TableHeadingCell = ({model, dispatch, label, headingKey}) => {
   );
 }
 
-const TableHeadingArrowController = ({model, headingKey}) => {
+const TableHeadingArrow = ({model, headingKey}) => {
   if (selectedTableHeadingKey(model) === headingKey) {
     return(
       <i className={`icon-arrow-${tableSortDirection(model).toLowerCase()}`}
@@ -34,29 +137,6 @@ const TableHeadingArrowController = ({model, headingKey}) => {
   else {
     return(<span></span>)
   }
-}
-
-const TableHeading = ({model, dispatch}) => {
-  return(
-    <thead>
-      <tr>
-        <TableHeadingCell
-          model={model}
-          dispatch={dispatch}
-          label={"User"}
-          key={"USER"}
-          headingKey={"USER"}
-        />
-        <TableHeadingCell
-          model={model}
-          dispatch={dispatch}
-          label={"Page Views"}
-          key={"PAGE_VIEWS"}
-          headingKey={"PAGE_VIEWS"}
-        />
-      </tr>
-    </thead>
-  );
 }
 
 export default TableHeading;
