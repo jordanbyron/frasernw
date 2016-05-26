@@ -9,22 +9,25 @@ Backend Maintenance = Change is not user facing
 
 
 ## [2016-05-21] [Since 2016-05-14 Integration]
-
+- Fixed a bug preventing display of clinics without any specialty in clinics index
 
 ## [2016-05-14] [Since 2016-05-07 Integration]
-
+- Admins can now delete users
+- All admins and super admins now see the same list in hospitals index
+- Fixed a bug that prevented assigning divisions when bulk uploading users
 
 ## [2016-05-07] [Since 2016-04-30 Integration]
-- add Pageviews By User report
+- Add Pageviews By User report
 - remove secret tokens from specialist contact report
 
 
 ## [2016-04-30] [Since 2016-04-23 Integration]
-- add "Ped" suffix
-- fix error in procedures#show
+- Add "Ped" suffix
+- Fix error in procedures#show
 
 ## [2016-04-23] [Since 2016-04-16 Integration]
-
+- Add telehealth services
+- Combine 'emailable' settings on content items
 
 ## [2016-04-16] [Since 2016-04-09 Integration]
 ### Added:
@@ -33,11 +36,11 @@ Backend Maintenance = Change is not user facing
 
 ## [2016-04-09] [Since 2016-04-02 Integration]
 ### Changed:
-- add option for admins to toggle 'last visit' format
+- Add option for admins to toggle 'last visit' format
 - change user controls specialist dropdown to use their MSP number instead of Pathways ID
 - update 'broken links' task
 - don't allow deletion of clinic without also changing specialist offices at its locations
-- add faster JSON encoder, improving load times for pages that depend on that
+- Add faster JSON encoder, improving load times for pages that depend on that
 
 ### Fixed:
 - Can now print patient information for specialists who only work out of hospitals or clinics
