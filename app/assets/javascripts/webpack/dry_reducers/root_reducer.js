@@ -1,31 +1,9 @@
+import app from "dry_reducers/app";
+
 const rootReducer = (model = {}, action) => {
   return {
     ui: ui(model.ui, action),
     app: app(model.app, action)
-  }
-}
-
-const app = (model = {}, action) => {
-  switch(action.type){
-  case "PARSE_RENDERED_DATA":
-    if(action.data.app){
-      return _.assign(
-        {},
-        model,
-        action.data.app
-      );
-    }
-    else {
-      return model;
-    }
-  case "INTEGRATE_LOCALSTORAGE_DATA":
-    return _.assign(
-      {},
-      model,
-      action.data
-    );
-  default:
-    return model;
   }
 }
 

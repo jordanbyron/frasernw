@@ -25,6 +25,6 @@ const defaultHeadingKey = (model) => {
   }
 }
 
-export const tableSortDirection = (model) => {
+export const headingArrowDirection = (model) => {
   return _.get(model, ["ui", "selectedTableHeading", "direction"], "DOWN");
 }

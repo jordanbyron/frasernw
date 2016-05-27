@@ -1,11 +1,12 @@
 import React from "react";
-import { selectedTableHeadingKey, tableSortDirection }
-  from "controller_helpers/sorting";
+import { selectedTableHeadingKey, headingArrowDirection }
+  from "controller_helpers/table_headings";
 import { sortByHeading } from "action_creators";
 import { matchedRoute } from "controller_helpers/routing";
 import { collectionShownName, collectionShownPluralLabel }
   from "controller_helpers/collection_shown";
 import { entityType } from "controller_helpers/filter_values";
+import { showingSpecializationColumn } from "controller_helpers/table_modifiers";
 import _ from "lodash";
 
 const TableHeading = ({model, dispatch}) => {
@@ -95,12 +96,6 @@ const cellConfigs = (model) => {
   }
 };
 
-const showingSpecializationColumn = (model) => {
-  // TODO
-
-  return false;
-}
-
 const TableHeadingCell = ({model, dispatch, label, headingKey, classnamePrefix}) => {
   const onClick = _.partial(
     sortByHeading,
@@ -129,7 +124,7 @@ const TableHeadingCell = ({model, dispatch, label, headingKey, classnamePrefix})
 const TableHeadingArrow = ({model, headingKey}) => {
   if (selectedTableHeadingKey(model) === headingKey) {
     return(
-      <i className={`icon-arrow-${tableSortDirection(model).toLowerCase()}`}
+      <i className={`icon-arrow-${headingArrowDirection(model).toLowerCase()}`}
         style={{color: "#08c", marginLeft: "5px"}}
       />
     );

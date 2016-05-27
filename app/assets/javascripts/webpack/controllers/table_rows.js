@@ -1,57 +1,67 @@
 import React from "react";
 import TableRow from "controllers/table_row";
-import { selectedTableHeadingKey, tableSortDirection }
-  from "controller_helpers/sorting";
+import { matchedRoute } from "controller_helpers/routing";
+import { unscopedCollectionShown, collectionShownName }
+  from "controller_helpers/collection_shown";
+import sortOrders from "controller_helpers/sort_orders";
+import sortIteratees from "controller_helpers/sort_iteratees";
+import { showingSpecializationColumn } from "controller_helpers/table_modifiers";
 
 const TableRows = (model, dispatch) => {
-  // TODO
+  const _sortIteratees = sortIteratees(model)
+  const _sortOrders = sortOrders(model)
 
-  return [];
-  // return sortedRecordsToDisplay(model).map((record) => {
-  //   return(
-  //     <TableRow
-  //       key={record.id}
-  //       model={model}
-  //       dispatch={dispatch}
-  //       record={record}
-  //     />
-  //   );
-  // })
-}
+  return recordsToDisplay(model).
+    map((record) => decorate(record, model)).
+    pwPipe((decoratedRecords) => {
+      return _.sortByOrder(decoratedRecords, _sortIteratees, _sortOrders);
+    }).map((decoratedRecord) => {
+      return(
+        <TableRow key={decoratedRecord.reactKey}
+          decoratedRecord={decoratedRecord}
+          model={model}
+          dispatch={dispatch}
+        />
+      );
+    });
+};
 
-const reverseSortOrder = (model) => {
-  if (tableSortDirection(model) === "UP"){
-    return "desc";
-  }
-  else {
-    return "asc";
-  }
-}
+const recordsToDisplay = (model) => {
+  if(_.includes(["/specialties/:id", "/areas_of_practice/:id", "/content_categories/:id"],
+    matchedRoute(model))) {
 
-const matchingSortOrder = (model) => {
-  if (tableSortDirection(model) === "UP"){
-    return "asc";
-  }
-  else {
-    return "desc";
+    return unscopedCollectionShown(model);
+  } else {
+    return model.ui.recordsToDisplay;
   }
 }
 
-const sortedRecordsToDisplay = (model) => {
-  if (selectedTableHeadingKey(model) === "PAGE_VIEWS"){
-    var iteratee = _.property("pageViews");
-    var order = matchingSortOrder(model);
-  }
-  else {
-    var iteratee = _.property("name").pwPipe(_.trimLeft);
-    var order = reverseSortOrder(model);
+const decorate = (record, model) => {
+  let decorated = { raw: record };
+
+  if(_.includes(["/specialties/:id", "/areas_of_practice/:id", "/content_categories/:id"],
+    matchedRoute(model))) {
+
+    decorated.reactKey = `${record.collectionName}${record.id}`;
+
+    if(_.includes(["specialists", "clinics"], collectionShownName(model))) {
+      if(showingSpecializationColumn(model)) {
+        decorated.specializationNames = record.specializationIds.map((id) => {
+          return model.app.specializations[id].name;
+        }).sort().join(" and ");
+      }
+
+      decorated.cityNames = record.cityIds.map((id) => {
+        return model.app.cities[id].name;
+      }).sort().join(" and ");
+    }
+    else if (collectionShownName(model) === "contentItems") {
+      decorated.subcategoryName =
+        model.app.contentCategories[record.categoryId].name;
+    }
   }
 
-  return _.sortByOrder(
-    model.ui.recordsToDisplay,
-    [ iteratee ],
-    [ order]
-  );
-}
+  return decorated;
+};
 
 export default TableRows;
