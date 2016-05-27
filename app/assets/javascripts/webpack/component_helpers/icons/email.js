@@ -1,3 +1,5 @@
+import React from "react";
+
 const EmailIcon = ({record}) => {
   if (record.canEmail){
     return(
@@ -15,3 +17,5 @@ const EmailIcon = ({record}) => {
     return <noscript/>;
   }
 }
+
+export default EmailIcon;

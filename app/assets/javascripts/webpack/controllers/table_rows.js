@@ -5,7 +5,8 @@ import { unscopedCollectionShown, collectionShownName }
   from "controller_helpers/collection_shown";
 import sortOrders from "controller_helpers/sort_orders";
 import sortIteratees from "controller_helpers/sort_iteratees";
-import { showingSpecializationColumn } from "controller_helpers/table_modifiers";
+import { showingOtherSpecializations } from "controller_helpers/table_modifiers";
+import recordsToDisplay from "controller_helpers/records_to_display";
 
 const TableRows = (model, dispatch) => {
   const _sortIteratees = sortIteratees(model)
@@ -26,16 +27,6 @@ const TableRows = (model, dispatch) => {
     });
 };
 
-const recordsToDisplay = (model) => {
-  if(_.includes(["/specialties/:id", "/areas_of_practice/:id", "/content_categories/:id"],
-    matchedRoute(model))) {
-
-    return unscopedCollectionShown(model);
-  } else {
-    return model.ui.recordsToDisplay;
-  }
-}
-
 const decorate = (record, model) => {
   let decorated = { raw: record };
 
@@ -45,7 +36,7 @@ const decorate = (record, model) => {
     decorated.reactKey = `${record.collectionName}${record.id}`;
 
     if(_.includes(["specialists", "clinics"], collectionShownName(model))) {
-      if(showingSpecializationColumn(model)) {
+      if(showingOtherSpecializations(model)) {
         decorated.specializationNames = record.specializationIds.map((id) => {
           return model.app.specializations[id].name;
         }).sort().join(" and ");

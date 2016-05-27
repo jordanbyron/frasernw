@@ -6,7 +6,7 @@ import { matchedRoute } from "controller_helpers/routing";
 import { collectionShownName, collectionShownPluralLabel }
   from "controller_helpers/collection_shown";
 import { entityType } from "controller_helpers/filter_values";
-import { showingSpecializationColumn } from "controller_helpers/table_modifiers";
+import { showingOtherSpecializations } from "controller_helpers/table_modifiers";
 import _ from "lodash";
 
 const TableHeading = ({model, dispatch}) => {
@@ -55,7 +55,7 @@ const classnamePrefix = (model) => {
 
 const cellConfigs = (model) => {
   if (_.includes(["specialists", "clinics"], collectionShownName(model))){
-    if (showingSpecializationColumn(model)){
+    if (showingOtherSpecializations(model)){
       return [
         { label: collectionShownPluralLabel(model), key: "NAME" },
         { label: "Specialties", key: "SPECIALTIES" },

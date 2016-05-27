@@ -3,6 +3,7 @@ import FilterGroup from "controllers/filter_group";
 import FilterCheckbox from "controllers/filter_checkbox";
 import { matchedRoute } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
+import { sex as subkeys } from "controller_helpers/filter_subkeys";
 
 const SexFilters = ({model, dispatch}) => {
   if (shouldShow(model)){
@@ -15,22 +16,21 @@ const SexFilters = ({model, dispatch}) => {
         model={model}
         dispatch={dispatch}
       >
-        <FilterCheckbox
-          label="Male"
-          filterKey="sex"
-          filterSubkey="male"
-          model={model}
-          dispatch={dispatch}
-          isHalfColumn={true}
-        />
-        <FilterCheckbox
-          label="Female"
-          filterKey="sex"
-          filterSubkey="female"
-          model={model}
-          dispatch={dispatch}
-          isHalfColumn={true}
-        />
+        {
+          subkeys(model).map((key) => {
+            return(
+              <FilterCheckbox
+                label={_.capitalize(key)}
+                key={key}
+                filterKey="sex"
+                filterSubkey={key}
+                model={model}
+                dispatch={dispatch}
+                isHalfColumn={true}
+              />
+            )
+          })
+        }
       </FilterGroup>
     );
   }

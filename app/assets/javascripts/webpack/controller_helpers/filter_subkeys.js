@@ -78,3 +78,21 @@ export const subcategories = memoize(
       pwPipe((ids) => _.pull(ids, recordShownByTab.id))
   }
 )
+
+export const sex = () => {
+  return [
+    "male",
+    "female"
+  ];
+};
+
+export const teleserviceRecipients = () => {
+  return [
+    "provider",
+    "patient"
+  ];
+}
+
+export const teleserviceFeeTypes = () => {
+  return [1, 2, 3, 4];
+}

@@ -7,7 +7,7 @@ const FavoriteIcon = ({model, dispatch, record}) => {
     return(
       <i
         className="icon-heart icon-red"
-        onClick={handleUnFavorite(record, dispatch)}
+        onClick={_.partial(handleUnFavorite, record, dispatch)}
         style={buttonIsh}
         title="Unfavourite this item"
       />
@@ -16,7 +16,7 @@ const FavoriteIcon = ({model, dispatch, record}) => {
     return(
       <i
         className="icon-heart"
-        onClick={handleFavorite(record, dispatch)}
+        onClick={_.partial(handleFavorite, record, dispatch)}
         style={_.assign({}, buttonIsh, {color: "#424242"})}
         title="Favourite this item"
       />
@@ -26,14 +26,14 @@ const FavoriteIcon = ({model, dispatch, record}) => {
 
 const updateServer = (record) => {
   return $.ajax({
-    url: `/favorites/${_.snakeCase(record.collectionName)}/${this.props.record.id}`,
+    url: `/favorites/${_.snakeCase(record.collectionName)}/${record.id}`,
     type: "PATCH",
     data: "",
     dataType: 'json'
   });
 }
 
-const handleFavorite = (dispatch, record) => {
+const handleFavorite = (record, dispatch) => {
   updateServer(record).success(() => {
     dispatch({
       type: "FAVORITED_ITEM",
@@ -43,7 +43,7 @@ const handleFavorite = (dispatch, record) => {
   })
 };
 
-const handleUnFavorite = (dispatch, record) => {
+const handleUnFavorite = (record, dispatch) => {
   updateServer(record).success(() => {
     dispatch({
       type: "UNFAVORITED_ITEM",

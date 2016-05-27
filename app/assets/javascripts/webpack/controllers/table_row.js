@@ -3,17 +3,18 @@ import { matchedRoute } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import Tags from "component_helpers/tags";
 import ReferentStatusIcon from "controllers/referent_status_icon";
-import { showingSpecializationColumn } from "controller_helpers/table_modifiers";
+import { showingOtherSpecializations } from "controller_helpers/table_modifiers";
 import SharedCareIcon from "component_helpers/icons/shared_care";
 import FavoriteIcon from "controllers/icons/favorite";
 import EmailIcon from "component_helpers/icons/email";
+import FeedbackIcon from "controllers/icons/feedback";
 
 const TableRow = ({model, dispatch, decoratedRecord}) => {
   if(_.includes(["/specialties/:id", "/areas_of_practice/:id", "/content_categories/:id"],
     matchedRoute(model))) {
 
     if(_.includes(["specialists", "clinics"], collectionShownName(model))) {
-      if(showingSpecializationColumn(model)) {
+      if(showingOtherSpecializations(model)) {
         return(
           <tr>
             <ReferentName decoratedRecord={decoratedRecord}/>
@@ -48,7 +49,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
             />
           </td>
           <td><EmailIcon record={decoratedRecord.raw}/></td>
-          <FeedbackIcon record={record} itemType="ScItem" dispatch={dispatch}/>
+          <td><FeedbackIcon record={decoratedRecord.raw} dispatch={dispatch}/></td>
         </tr>
       );
     }

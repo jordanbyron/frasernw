@@ -105,3 +105,10 @@ export function memoize(...args){
     return cached;
   }
 };
+
+export function isSubset(checked, checkedAgainst){
+  return _.every(
+    checked,
+    (checkedElem) => _.includes(checkedAgainst, checkedElem)
+  );
+};

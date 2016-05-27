@@ -1,4 +1,4 @@
-export const showingSpecializationColumn = (model) => {
+export const showingOtherSpecializations = (model) => {
   // TODO
 
   return false;

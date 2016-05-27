@@ -61,6 +61,8 @@ export const matchesRoute = (matchedRoute, recordShownByPage, record) => {
       recordShownByPage.id
     );
   case "/procedures/:id":
+    // TODO: assumed
+
     return _.includes(
       record.procedureIds,
       recordShownByPage.id
