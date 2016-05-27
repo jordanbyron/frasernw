@@ -212,7 +212,7 @@ class SpecialistsController < ApplicationController
         @specialist.specializations
       )
       BuildTeleservices.call(provider: @specialist)
-      render template: 'specialists/edit',
+      render template: 'specialists/edit'
     end
   end
 
@@ -242,7 +242,7 @@ class SpecialistsController < ApplicationController
       )
 
       BuildTeleservices.call(provider: @specialist)
-      render template: 'specialists/edit',
+      render template: 'specialists/edit'
     end
   end
 

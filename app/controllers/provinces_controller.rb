@@ -29,7 +29,7 @@ class ProvincesController < ApplicationController
   def update
     @province = Province.find(params[:id])
     if @province.update_attributes(params[:province])
-      redirect_to @province, :notice: "Successfully updated province."
+      redirect_to @province, notice: "Successfully updated province."
     else
       render action: 'edit'
     end
