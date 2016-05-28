@@ -17,6 +17,7 @@ import { collectionShownName } from "controller_helpers/collection_shown";
 import PageTitle from "controllers/page_title";
 import Subtitle from "controllers/subtitle";
 import InlineArticles from "controllers/inline_articles";
+import CategoryLinkController from "controllers/category_link"
 
 const Template = ({model, dispatch}) => {
   if(isLoaded(model)) {
@@ -105,6 +106,7 @@ const Main = ({model, dispatch}) => {
       <Subtitle model={model} dispatch={dispatch}/>
       <Table model={model} dispatch={dispatch}/>
       <InlineArticles model={model} dispatch={dispatch}/>
+      <CategoryLinkController model={model} dispatcy={dispatch}/>
     </div>
   );
 }
