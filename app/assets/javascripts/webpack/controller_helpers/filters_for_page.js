@@ -3,6 +3,7 @@ import { matchedRoute } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import sidebarFilters from "controller_helpers/sidebar_filters";
 import * as preliminaryFilters from "controller_helpers/preliminary_filters";
+import { recordShownByTab } from "controller_helpers/tab_keys";
 
 
 export const sidebarFiltersForPage = (model) => {
@@ -38,13 +39,20 @@ export const sidebarFiltersForPage = (model) => {
         "cities"
       ].pwPipe(matchSidebarFilters);
     }
-    else if (collectionShownName(model) === "contentItems"){
+    else if (collectionShownName(model) === "contentItems" &&
+      recordShownByTab(model).componentType === "FilterTable"){
+
       return [
         "subcategories"
       ].pwPipe(matchSidebarFilters);
     }
+    else {
+      return [];
+    }
   }
-  else if (matchedRoute(model) === "/content_categories/:id"){
+  else if (matchedRoute(model) === "/content_categories/:id" &&
+    recordShownByPage(model).componentType === "FilterTable"){
+
     return [
       "subcategories",
       "specializations"

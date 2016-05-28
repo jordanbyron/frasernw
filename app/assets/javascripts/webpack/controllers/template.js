@@ -16,6 +16,7 @@ import { recordShownByPage } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import PageTitle from "controllers/page_title";
 import Subtitle from "controllers/subtitle";
+import InlineArticles from "controllers/inline_articles";
 
 const Template = ({model, dispatch}) => {
   if(isLoaded(model)) {
@@ -103,6 +104,7 @@ const Main = ({model, dispatch}) => {
       <PageTitle model={model} dispatch={dispatch}/>
       <Subtitle model={model} dispatch={dispatch}/>
       <Table model={model} dispatch={dispatch}/>
+      <InlineArticles model={model} dispatch={dispatch}/>
     </div>
   );
 }
