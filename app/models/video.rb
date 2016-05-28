@@ -8,7 +8,7 @@ class Video < ActiveRecord::Base
       secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
     },
     s3_permissions: :private
-  validates_attachment_presence :video_clip
+  # validates_attachment_presence :video_clip
   do_not_validate_attachment_file_type :video_clip
 
   def self.current

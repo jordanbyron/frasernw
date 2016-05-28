@@ -6,7 +6,7 @@
 
   %video#video-window{align: "center",
     title: "Video Player",
-    src: "#{@video.video_clip.expiring_url(1800)}",
+    src: "#{@expiring_s3_url}",
     height: "315px;",
     width: "560px;",
     frameborder: "0",

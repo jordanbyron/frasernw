@@ -8,15 +8,18 @@ class VideosController < ApplicationController
     authorize! :show, Video
     response.headers.delete "X-Frame-Options"
     @video = Video.find(params[:id])
+    expiring_s3_direct_get
   end
 
   def new
     authorize! :new, Video
+    set_s3_direct_post
     @video = Video.new
   end
 
   def create
     authorize! :create, Video
+    set_s3_direct_post
     @video = Video.new(video_params)
     if @video.save
       redirect_to @video, notice: "Successfully created video."
@@ -28,11 +31,13 @@ class VideosController < ApplicationController
 
   def edit
     authorize! :edit, Video
+    set_s3_direct_post
     @video = Video.find(params[:id])
   end
 
   def update
     authorize! :update, Video
+    set_s3_direct_post
     @video = Video.find(params[:id])
     if @video.update_attributes(video_params)
       redirect_to @video, notice: "Successfully updated video."
@@ -55,6 +60,28 @@ class VideosController < ApplicationController
   private
 
   def video_params
-    params.require(:video).permit(:title, :video_clip)
+    params.require(:video).permit(:title, :video_url, :video_clip)
+  end
+
+  def set_s3_direct_post
+    @s3_direct_post =
+      Pathways::S3.bucket(:videos).presigned_post(
+        key: "video_clips/#{SecureRandom.uuid}/${filename}",
+        success_action_status: "201",
+        acl: "public-read"
+      )
+    @encoded_url = URI.encode(@s3_direct_post.url.to_s)
+  end
+
+  def expiring_s3_direct_get
+    presigner = AWS::S3::PresignV4.new(Pathways::S3.bucket(:videos).objects[@video.video_url.to_s])
+    @expiring_s3_url = presigner.presign(
+      :get,
+      {
+        success_action_status: "201",
+        acl: "public-read",
+        response_expires: "1800"
+      }
+    )
   end
 end

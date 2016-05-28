@@ -6,6 +6,7 @@ module Pathways
       :newsletters,
       :referral_forms,
       :specialist_photos,
+      :videos
     ]
 
     def self.repo
@@ -13,6 +14,10 @@ module Pathways
         :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
         :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
       )
+    end
+
+    def self.bucket(collection)
+      repo.buckets[switchable_bucket_name(collection)]
     end
 
     def self.switchable_bucket_name(collection)
