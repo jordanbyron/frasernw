@@ -48,6 +48,9 @@ export function recordShownByTab(model){
   if(selectedTabKey(model).includes("contentCategory")){
     return model.app.contentCategories[extractId(selectedTabKey(model))];
   }
+  else {
+    return {};
+  }
 }
 
 export function tabKey(type, id) {

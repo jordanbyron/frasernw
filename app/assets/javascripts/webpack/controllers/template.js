@@ -18,6 +18,7 @@ import PageTitle from "controllers/page_title";
 import Subtitle from "controllers/subtitle";
 import InlineArticles from "controllers/inline_articles";
 import CategoryLinkController from "controllers/category_link"
+import ResultSummary from "controllers/result_summary";
 
 const Template = ({model, dispatch}) => {
   if(isLoaded(model)) {
@@ -104,9 +105,10 @@ const Main = ({model, dispatch}) => {
     <div>
       <PageTitle model={model} dispatch={dispatch}/>
       <Subtitle model={model} dispatch={dispatch}/>
+      <ResultSummary model={model} dispatch={dispatch}/>
       <Table model={model} dispatch={dispatch}/>
       <InlineArticles model={model} dispatch={dispatch}/>
-      <CategoryLinkController model={model} dispatcy={dispatch}/>
+      <CategoryLinkController model={model} dispatch={dispatch}/>
     </div>
   );
 }

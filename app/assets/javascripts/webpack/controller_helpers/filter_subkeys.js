@@ -10,6 +10,8 @@ export const scheduleDays = (model) => {
     return [6, 7];
   case "clinics":
     return [1, 2, 3, 4, 5, 6, 7];
+  default:
+    return [];
   }
 };
 

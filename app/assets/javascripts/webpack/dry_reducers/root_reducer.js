@@ -172,6 +172,8 @@ const filterValues = (model = {}, action) => {
       model,
       { cities: action.proposed }
     );
+  case "CLEAR_FILTERS":
+    return {};
   default:
     return model;
   }

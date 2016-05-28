@@ -2,8 +2,10 @@ import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import { matchesTab, matchesRoute, collectionShownName, unscopedCollectionShown }
   from "controller_helpers/collection_shown";
 import { selectedTabKey, isTabbedPage } from "controller_helpers/tab_keys";
-import { sidebarFiltersForPage, preliminaryFiltersForPage }
+import { sidebarFilterKeys, preliminaryFilterKeys }
   from "controller_helpers/filters_for_page";
+import sidebarFilters from "controller_helpers/sidebar_filters";
+import * as preliminaryFilters from "controller_helpers/preliminary_filters";
 
 const recordsToDisplay = (model) => {
   if(_.includes(["/specialties/:id", "/areas_of_practice/:id", "/content_categories/:id"],
@@ -40,15 +42,22 @@ const matchesSidebarFilters = (record, model) => {
 }
 
 const activatedSidebarFilters = (model) => {
-  return sidebarFiltersForPage(model).filter((filter) => {
-    return filter.isActivated(model)
-  });
+  return sidebarFilterKeys(model).
+    map((filterKey) => sidebarFilters[filterKey]).
+    filter((filter) => {
+      return filter.isActivated(model);
+    });
+}
+
+const boundPreliminaryFilters = (model) => {
+  return preliminaryFilterKeys(model).
+    map((filterKey) => preliminaryFilters[filterKey])
 }
 
 const matchesPreliminaryFilters = (record, model) => {
-  return preliminaryFiltersForPage(model).every((filter) => {
+  return boundPreliminaryFilters(model).every((filter) => {
     return filter(record);
   })
-}
+};
 
 export default recordsToDisplay;

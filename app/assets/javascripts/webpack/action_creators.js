@@ -154,3 +154,10 @@ export const openFeedbackModal = (dispatch, id, itemType, modalTitle) => {
     }
   });
 };
+
+export function clearFilters(dispatch, model) {
+  dispatch({
+    type: "CLEAR_FILTERS",
+    tabKey: selectedTabKey(model)
+  });
+}
