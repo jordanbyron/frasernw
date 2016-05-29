@@ -60,7 +60,7 @@ class VideosController < ApplicationController
   private
 
   def video_params
-    params.require(:video).permit(:title, :video_url, :video_clip)
+    params.require(:video).permit(:title, :video_url)
   end
 
   def set_s3_direct_post

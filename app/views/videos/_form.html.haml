@@ -3,15 +3,7 @@
   = f.input :title, label: false
 
   = f.label :video_url, "Upload file"
-  = f.file_field :video_url,
-    label: false,
-    input_html: { hidden: true }
-  .input-append
-    %input#file-display.uneditable-input.input-large{type: "text"}
-      .form-control-static
-        %a#upload-btn.btn
-          %i.icon-upload-alt
-          Browse
+  = f.file_field :video_url, label: false
 
   .form-actions
     = f.button :submit,
