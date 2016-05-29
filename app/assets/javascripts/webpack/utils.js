@@ -106,6 +106,19 @@ export function memoize(...args){
   }
 };
 
+export const memoizePerRender = (toMemoize) => {
+  var cachedModel = null;
+  var cachedResult = null;
+
+  return (model) => {
+    if (model !== cachedModel){
+      cachedModel = model;
+      cachedResult = toMemoize(cachedModel);
+    }
+    return cachedResult;
+  }
+}
+
 export function isSubset(checked, checkedAgainst){
   return _.every(
     checked,

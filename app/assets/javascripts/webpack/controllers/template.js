@@ -19,6 +19,7 @@ import Subtitle from "controllers/subtitle";
 import InlineArticles from "controllers/inline_articles";
 import CategoryLinkController from "controllers/category_link"
 import ResultSummary from "controllers/result_summary";
+import { memoizePerRender } from "utils"
 
 const Template = ({model, dispatch}) => {
   if(isLoaded(model)) {
@@ -64,11 +65,11 @@ const showInlineArticles = (model) => {
       recordShownByPage(model).componentType === "InlineArticles"))
 };
 
-const usesSidebarLayout = (model) => {
+const usesSidebarLayout = ((model) => {
   return !((matchedRoute(model) === "/latest_updates" &&
     model.app.currentUser.role === "admin") ||
     showInlineArticles(model))
-}
+}).pwPipe(memoizePerRender)
 
 const WhitePanel = ({model, dispatch}) => {
   if (usesSidebarLayout(model)){

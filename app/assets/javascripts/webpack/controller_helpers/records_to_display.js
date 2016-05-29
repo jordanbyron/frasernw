@@ -6,8 +6,9 @@ import { sidebarFilterKeys, preliminaryFilterKeys }
   from "controller_helpers/filters_for_page";
 import sidebarFilters from "controller_helpers/sidebar_filters";
 import * as preliminaryFilters from "controller_helpers/preliminary_filters";
+import { memoizePerRender } from "utils";
 
-const recordsToDisplay = (model) => {
+const recordsToDisplay = ((model) => {
   if(_.includes(["/specialties/:id", "/areas_of_practice/:id", "/content_categories/:id"],
     matchedRoute(model))) {
 
@@ -33,7 +34,7 @@ const recordsToDisplay = (model) => {
   } else {
     return model.ui.recordsToDisplay;
   }
-}
+}).pwPipe(memoizePerRender)
 
 const matchesSidebarFilters = (record, model) => {
   return activatedSidebarFilters(model).every((filter) => {
@@ -41,18 +42,18 @@ const matchesSidebarFilters = (record, model) => {
   });
 }
 
-const activatedSidebarFilters = (model) => {
+const activatedSidebarFilters = ((model) => {
   return sidebarFilterKeys(model).
     map((filterKey) => sidebarFilters[filterKey]).
     filter((filter) => {
       return filter.isActivated(model);
     });
-}
+}).pwPipe(memoizePerRender);
 
-const boundPreliminaryFilters = (model) => {
+const boundPreliminaryFilters = ((model) => {
   return preliminaryFilterKeys(model).
     map((filterKey) => preliminaryFilters[filterKey])
-}
+}).pwPipe(memoizePerRender)
 
 const matchesPreliminaryFilters = (record, model) => {
   return boundPreliminaryFilters(model).every((filter) => {
