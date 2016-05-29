@@ -7,7 +7,12 @@ class ReferralFormsController < ApplicationController
     @referral_forms = []
 
     Specialization.all.each do |specialization|
-      cities = current_user.as_divisions.map{ |d| d.local_referral_cities(specialization) }.flatten.uniq
+      cities =
+        current_user.
+          as_divisions.
+          map{ |d| d.local_referral_cities(specialization) }.
+          flatten.
+          uniq
 
       specialists = specialization.specialists.in_cities(cities)
       clinics = specialization.clinics.in_cities(cities)
@@ -21,8 +26,6 @@ class ReferralFormsController < ApplicationController
     end
 
     @referral_forms.uniq!
-
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def edit
@@ -34,10 +37,7 @@ class ReferralFormsController < ApplicationController
     @entity.referral_forms.build if @entity.referral_forms.length == 0
     @entity_type = @entity.class == Clinic ? "clinic" : "office"
 
-    render(
-      template: 'referral_forms/edit',
-      layout: request.headers['X-PJAX'] ? 'ajax' : true
-    )
+    render template: 'referral_forms/edit'
   end
 
   def update
@@ -58,6 +58,6 @@ class ReferralFormsController < ApplicationController
     end
     expire_fragment cache_path
 
-    redirect_to @entity, :notice  => "Successfully updated #{@entity.name}."
+    redirect_to @entity, notice: "Successfully updated #{@entity.name}."
   end
 end

@@ -3,17 +3,16 @@ class ReviewItemsController < ApplicationController
 
   def index
     @review_items = ReviewItem.active
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def archived
-    @review_items = ReviewItem.archived.order('id desc').paginate(:page => params[:page], :per_page => 30)
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    @review_items =
+      ReviewItem.archived.order('id desc').paginate(page: params[:page], per_page: 30)
   end
 
   def destroy
     @review_item = ReviewItem.find(params[:id])
     @review_item.destroy
-    redirect_to review_items_url, :notice => "Successfully discarded changes."
+    redirect_to review_items_url, notice: "Successfully discarded changes."
   end
 end

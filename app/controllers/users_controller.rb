@@ -30,14 +30,12 @@ class UsersController < ApplicationController
       @pending_users = User.includes(:divisions).active_pending
       @inactive_users = User.includes(:divisions).inactive
     end
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def new
     @user = User.new
     build_user_form!
     @new_user = true
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def create
@@ -64,12 +62,10 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     build_user_form!
     @new_user = false
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def show
     @user = User.find(params[:id])
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def update
@@ -134,14 +130,12 @@ class UsersController < ApplicationController
 
   def change_name
     @user = current_user
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def update_name
     @user = current_user
     if @user.update_attributes(params[:user])
       redirect_to root_url,
-      layout: 'ajax',
       notice: "Your name was successfully changed to #{@user.name}."
     else
       render action: :change_name, layout: 'user_sessions'
@@ -163,7 +157,6 @@ class UsersController < ApplicationController
         end
       end
     end
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def update_local_referral_area
@@ -205,13 +198,11 @@ class UsersController < ApplicationController
       end
     end
     redirect_to root_url,
-      layout: 'ajax',
       notice: "Your local referral area was successfully updated."
   end
 
   def change_email
     @user = current_user
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def update_email
@@ -228,7 +219,6 @@ class UsersController < ApplicationController
 
   def change_password
     @user = current_user
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def update_password
@@ -244,7 +234,6 @@ class UsersController < ApplicationController
   end
 
   def upload
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def import
@@ -255,11 +244,9 @@ class UsersController < ApplicationController
     end
     if divisions.blank?
       redirect_to upload_users_url,
-        layout: 'ajax',
         notice: "At least one division must be chosen."
     else
       @users = User.csv_import(params[:file], divisions, params[:type_mask], 'user')
-      render layout: 'ajax' if request.headers['X-PJAX']
     end
   end
 

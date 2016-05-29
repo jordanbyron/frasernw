@@ -3,7 +3,6 @@ class SpecializationsController < ApplicationController
 
   def index
     @specializations = Specialization.all
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def show
@@ -21,7 +20,6 @@ class SpecializationsController < ApplicationController
 
   def new
     @specialization = Specialization.new
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def create
@@ -80,7 +78,6 @@ class SpecializationsController < ApplicationController
       specialization_id: params[:id],
       division_id: division.id
     ) }
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def update

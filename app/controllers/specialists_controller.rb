@@ -212,8 +212,7 @@ class SpecialistsController < ApplicationController
         @specialist.specializations
       )
       BuildTeleservices.call(provider: @specialist)
-      render template: 'specialists/edit',
-        layout: request.headers['X-PJAX'] ? 'ajax' : true
+      render template: 'specialists/edit'
     end
   end
 
@@ -243,8 +242,7 @@ class SpecialistsController < ApplicationController
       )
 
       BuildTeleservices.call(provider: @specialist)
-      render template: 'specialists/edit',
-        layout: request.headers['X-PJAX'] ? 'ajax' : true
+      render template: 'specialists/edit'
     end
   end
 
@@ -263,7 +261,6 @@ class SpecialistsController < ApplicationController
 
   def photo
     @specialist = Specialist.cached_find(params[:id])
-    render layout: request.headers['X-PJAX'] ? 'ajax' : true
   end
 
   def update_photo
@@ -290,7 +287,7 @@ class SpecialistsController < ApplicationController
     @specialist.flush_cache_for_record
     @specialist = Specialist.cached_find(params[:id])
     @feedback = @specialist.active_feedback_items.build
-    render :show, layout: 'ajax'
+    render :show
   end
 
   #TO DO make this work to reload cache with pathways:recache:specialists_index
@@ -308,7 +305,7 @@ class SpecialistsController < ApplicationController
     end
     @all_divisions = Division.all
     @first_division = @user_divisions.first
-    render :index, layout: 'ajax'
+    render :index
   end
 
   private
@@ -319,7 +316,6 @@ class SpecialistsController < ApplicationController
   end
 
   def build_specialist_offices
-    # build office & phone schedule, build address only with a new entry.
     while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
       so = @specialist.specialist_offices.build
       s = so.build_phone_schedule

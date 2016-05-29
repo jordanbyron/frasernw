@@ -6,7 +6,6 @@ class DivisionsController < ApplicationController
 
   def index
     @divisions = Division.all
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def show
@@ -18,7 +17,6 @@ class DivisionsController < ApplicationController
         where(division_id: @division.id).
         order("priority asc")
     @priority_rankings = @division_referral_cities_by_priority.map(&:priority).uniq
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def new
@@ -113,7 +111,6 @@ class DivisionsController < ApplicationController
   def shared_sc_items
     @division = Division.find(params[:id])
     @categories = ScCategory.with_items_borrowable_by_division(@division)
-    render layout: 'ajax' if request.headers['X-PJAX']
   end
 
   def update_shared
