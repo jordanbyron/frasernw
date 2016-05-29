@@ -37,7 +37,7 @@ const ClearButton = ({model, dispatch}) => {
 }
 
 const anyFiltersActivated = (model) => {
-  return _.values(model.ui.tabs[selectedTabKey(model)].filterValues).
+  return _.values(_.get(model, ["ui", "tabs", selectedTabKey(model), "filterValues"], {})).
     pwPipe((overrides) => {
       return overrides.some((filterValue) => {
         return (_.isBoolean(filterValue) ||
@@ -83,14 +83,17 @@ const label = (model) => {
 }
 
 const activatedSummaries = (model) => {
-  return _.filter(filterSummaries, (summary, key) => {
-    if(summary.isActivated){
-      return summary.isActivated(model);
-    }
-    else {
-      return filters[key].isActivated(model);
-    }
-  })
+  return _.pick(filterSummaries, sidebarFilterKeys(model)).
+    pwPipe((filtersForPage) => {
+      return _.filter(filtersForPage, (summary, key) => {
+        if(summary.isActivated){
+          return summary.isActivated(model);
+        }
+        else {
+          return filters[key].isActivated(model);
+        }
+      })
+    })
 }
 
 const trailingFilterPredicates = (model) => {

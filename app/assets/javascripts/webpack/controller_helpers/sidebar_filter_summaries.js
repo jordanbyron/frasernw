@@ -1,6 +1,6 @@
 import referralCityIds from "controller_helpers/referral_city_ids"
 import activatedFilterSubkeys from "controller_helpers/activated_filter_subkeys";
-import filterValues from "controller_helpers/filter_values";
+import * as filterValues from "controller_helpers/filter_values";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import { matchedRoute } from "controller_helpers/routing";
 import recordsToDisplay from "controller_helpers/records_to_display";
@@ -172,7 +172,7 @@ const sidebarFilterSummaries = {
       }
       else {
         return "are subcategorized as " +
-          model.app.contentCategories[filterValues.subcategories(model)];
+          model.app.contentCategories[filterValues.subcategories(model)].name;
       }
     },
     placement: "trailing"

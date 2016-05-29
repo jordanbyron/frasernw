@@ -1,29 +1,53 @@
 import { padTwo } from "utils";
 import { selectedTabKey } from "controller_helpers/tab_keys";
 import referralCityIds from "controller_helpers/referral_city_ids";
+import { memoize } from "utils";
 
 const factory = (args) => {
   let { hasSubkeys, defaultValue, key } = args;
 
   if (hasSubkeys){
-    return (model, subKey) => {
-      return _.get(
-        model,
-        [ "ui", "tabs", selectedTabKey(model), "filterValues", key, subKey ],
-        defaultValue
-      );
-    };
+    return memoizeSubkeyedFn(
+      (model, subKey) => {
+        return _.get(
+          model,
+          [ "ui", "tabs", selectedTabKey(model), "filterValues", key, subKey ],
+          defaultValue
+        );
+      }
+    )
   }
   else {
-    return (model) => {
-      return _.get(
-        model,
-        [ "ui", "tabs", selectedTabKey(model), "filterValues", key ],
-        defaultValue
-      );
-    };
+    return memoize(
+      (model) => model,
+      (model) => {
+        return _.get(
+          model,
+          [ "ui", "tabs", selectedTabKey(model), "filterValues", key ],
+          defaultValue
+        );
+      }
+    );
   }
 };
+
+const memoizeSubkeyedFn = (toMemoize) => {
+  let cachedModel = null;
+  let cache = {};
+
+  return (model, subkey) => {
+    if (model !== cachedModel) {
+      cachedModel = model;
+      cache = {}
+    }
+
+    if (_.isUndefined(cache[subkey])){
+      cache[subkey] = toMemoize(model, subkey);
+    }
+
+    return cache[subkey];
+  }
+}
 
 const currentMonth = () => {
   return `${(new Date).getUTCFullYear()}${padTwo((new Date).getMonth() + 1)}`;
@@ -125,13 +149,15 @@ export const hospitalAssociations = factory({
   defaultValue: 0
 })
 
-export const cities = (model, subKey) => {
-  return _.get(
-    model,
-    [ "ui", "tabs", selectedTabKey(model), "filterValues", "cities", subKey ],
-    _.includes(referralCityIds(model), subKey)
-  );
-}
+export const cities = memoizeSubkeyedFn(
+  (model, subKey) => {
+    return _.get(
+      model,
+      [ "ui", "tabs", selectedTabKey(model), "filterValues", "cities", subKey ],
+      _.includes(referralCityIds(model), subKey)
+    );
+  }
+)
 
 export const isPublic = factory({
   key: "isPublic",
@@ -151,22 +177,24 @@ export const isWheelchairAccessible = factory({
   defaultValue: false
 })
 
-export const subcategories = (model, subkey) => {
-  if (subkey) {
-    return _.get(
-      model,
-      [ "ui", "tabs", selectedTabKey(model), "filterValues", "subcategories", subkey ],
-      false
-    );
+export const subcategories = memoizeSubkeyedFn(
+  (model, subkey) => {
+    if (subkey) {
+      return _.get(
+        model,
+        [ "ui", "tabs", selectedTabKey(model), "filterValues", "subcategories", subkey ],
+        false
+      );
+    }
+    else {
+      return _.get(
+        model,
+        [ "ui", "tabs", selectedTabKey(model), "filterValues", "subcategories"],
+        0
+      );
+    }
   }
-  else {
-    return _.get(
-      model,
-      [ "ui", "tabs", selectedTabKey(model), "filterValues", "subcategories"],
-      0
-    );
-  }
-}
+)
 
 export const specializations = factory({
   key: "specializations",
