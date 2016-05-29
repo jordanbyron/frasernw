@@ -1,4 +1,9 @@
-= simple_form_for video, html: { class: "directUpload", data: { 'form-data' => (@s3_direct_post.fields), 'url' => @encoded_url, 'host' => URI.parse(@encoded_url).host } } do |f|
+= simple_form_for video,
+  html: { class: "directUpload",
+  data: { 'form-data' => (@s3_direct_post.fields),
+  'url' => @encoded_url,
+  'host' => URI.parse(@encoded_url).host } } do |f|
+
   = f.label :title, "Title"
   = f.input :title, label: false
 

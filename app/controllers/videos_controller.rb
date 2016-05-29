@@ -74,14 +74,18 @@ class VideosController < ApplicationController
   end
 
   def expiring_s3_direct_get
-    presigner = AWS::S3::PresignV4.new(Pathways::S3.bucket(:videos).objects[@video.video_url.to_s])
+    # video_path hackiness compensates for aws-sdk buginess
+    video_path = URI(@video.video_url).path
+    video_path[0] = ""
+    presigner = AWS::S3::PresignV4.new(
+      Pathways::S3.bucket(:videos).objects[video_path]
+    )
     @expiring_s3_url = presigner.presign(
-      :get,
-      {
-        success_action_status: "201",
-        acl: "public-read",
-        response_expires: "1800"
-      }
+      :read,
+      expires: 30.minutes.from_now.to_i,
+      secure: true,
+      force_path_style: true,
+      acl: "public-read"
     )
   end
 end
