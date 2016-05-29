@@ -1,31 +1,25 @@
 import _ from "lodash";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
-import { memoize } from "utils";
+import { memoizePerRender } from "utils";
 
-const referralCityIds = memoize(
-  matchedRoute,
-  recordShownByPage,
-  (model) => model.app.currentUser.divisionIds,
-  (model) => model.app.divisions,
-  (matchedRoute, recordShownByPage, userDivisionIds, divisions) => {
-    if(_.includes(IMPLEMENTED_FOR, matchedRoute)){
-      if (matchedRoute === "/specialties/:id"){
-        var specializationIds = [ recordShownByPage.id ];
-      }
-      else if (matchedRoute === "/areas_of_practice/:id"){
-        var specializationIds = recordShownByPage.specializationIds;
-      }
-
-      return userDivisionIds.
-        map((divisionId) => {
-          return specializationIds.map((specializationId) => {
-            return divisions[divisionId].referralCities[specializationId];
-          }).pwPipe(_.flatten);
-        }).pwPipe(_.flatten).
-        pwPipe(_.uniq);
+const referralCityIds = ((model) => {
+  if(_.includes(IMPLEMENTED_FOR, matchedRoute(model))){
+    if (matchedRoute(model) === "/specialties/:id"){
+      var specializationIds = [ recordShownByPage(model).id ];
     }
+    else if (matchedRoute(model) === "/areas_of_practice/:id"){
+      var specializationIds = recordShownByPage(model).specializationIds;
+    }
+
+    return model.app.currentUser.divisionIds.
+      map((divisionId) => {
+        return specializationIds.map((specializationId) => {
+          return model.app.divisions[divisionId].referralCities[specializationId];
+        }).pwPipe(_.flatten);
+      }).pwPipe(_.flatten).
+      pwPipe(_.uniq);
   }
-)
+}).pwPipe(memoizePerRender)
 
 const IMPLEMENTED_FOR = [
   "/specialties/:id",

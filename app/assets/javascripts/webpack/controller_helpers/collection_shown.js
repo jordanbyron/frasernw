@@ -1,57 +1,34 @@
 import { matchedRoute, matchedRouteParams, recordShownByPage }
   from "controller_helpers/routing";
 import { selectedTabKey, recordShownByTab } from "controller_helpers/tab_keys";
-import { memoize } from "utils";
+import { memoizePerRender } from "utils";
 import { isTabbedPage } from "controller_helpers/tab_keys";
 
-export const collectionShownName = memoize(
-  isTabbedPage,
-  selectedTabKey,
-  matchedRoute,
-  (isTabbedPage, selectedTabKey, matchedRoute) => {
-    if (isTabbedPage){
-      if (_.includes(["specialists", "clinics"], selectedTabKey)){
-        return selectedTabKey;
-      }
-      else if (selectedTabKey.includes("contentCategory")){
-        return "contentItems";
-      }
+export const collectionShownName = ((model) => {
+  if (isTabbedPage(model)){
+    if (_.includes(["specialists", "clinics"], selectedTabKey(model))){
+      return selectedTabKey(model);
     }
-    else if (matchedRoute === "/content_categories/:id"){
+    else if (selectedTabKey(model).includes("contentCategory")){
       return "contentItems";
     }
   }
-);
-
-export const unscopedCollectionShown = memoize(
-  (model) => model.app,
-  collectionShownName,
-  (app, collectionShownName) => {
-    return app[collectionShownName].pwPipe(_.values);
+  else if (matchedRoute(model) === "/content_categories/:id"){
+    return "contentItems";
   }
-);
+}).pwPipe(memoizePerRender)
 
-export const scopedByRouteAndTab = memoize(
-  selectedTabKey,
-  isTabbedPage,
-  matchedRoute,
-  recordShownByPage,
-  unscopedCollectionShown,
-  (model) => (model.app.contentCategories),
-  (
-    selectedTabKey,
-    isTabbedPage,
-    matchedRoute,
-    recordShownByPage,
-    unscopedCollectionShown,
-    contentCategories
-  ) => {
-    return unscopedCollectionShown.filter((record) => {
-      return matchesRoute(matchedRoute, recordShownByPage, record) &&
-        (!isTabbedPage || matchesTab(record, contentCategories, selectedTabKey));
-    });
-  }
-);
+export const unscopedCollectionShown = ((model) => {
+  return model.app[collectionShownName(model)].pwPipe(_.values);
+}).pwPipe(memoizePerRender)
+
+export const scopedByRouteAndTab = ((model) => {
+  return unscopedCollectionShown(model).filter((record) => {
+    return matchesRoute(matchedRoute(model), recordShownByPage(model), record) &&
+      (!isTabbedPage(model) ||
+        matchesTab(record, model.app.contentCategories, selectedTabKey(model)));
+  });
+}).pwPipe(memoizePerRender)
 
 export const matchesRoute = (matchedRoute, recordShownByPage, record) => {
   switch(matchedRoute){
@@ -90,7 +67,7 @@ export const matchesTab = (record, contentCategories, tabKey) => {
   }
 };
 
-export const collectionShownPluralLabel = (model) => {
+export const collectionShownPluralLabel = ((model) => {
   switch(collectionShownName(model)){
   case "specialists":
     if (matchedRoute(model) === "/specialties/:id"){
@@ -112,4 +89,4 @@ export const collectionShownPluralLabel = (model) => {
       return recordShownByTab(model).name;
     }
   }
-};
+}).pwPipe(memoizePerRender);

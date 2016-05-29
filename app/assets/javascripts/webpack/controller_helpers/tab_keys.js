@@ -1,57 +1,44 @@
 import { matchedRoute, matchedRouteParams } from "controller_helpers/routing";
-import { memoize } from "utils";
+import { memoizePerRender } from "utils";
 
-export const defaultTab = memoize(
-  matchedRoute,
-  matchedRouteParams,
-  (model) => model.app.divisions,
-  (model) => model.app.currentUser.divisionIds,
-  (matchedRoute, matchedRouteParams, divisions, currentUserDivisionIds) => {
-    switch(matchedRoute){
-    case "/specialties/:id":
-      return divisions[currentUserDivisionIds[0]].
-        openToSpecializationPanel[matchedRouteParams.id];
-    case "/areas_of_practice/:id":
-      return { type: "specialists" };
-    default:
-      return { type: "only" };
-    }
+export const defaultTab = ((model) => {
+  switch(matchedRoute(model)){
+  case "/specialties/:id":
+    return model.app.divisions[model.app.currentUser.divisionIds[0]].
+      openToSpecializationPanel[matchedRouteParams(model).id];
+  case "/areas_of_practice/:id":
+    return { type: "specialists" };
+  default:
+    return { type: "only" };
   }
-)
+}).pwPipe(memoizePerRender)
 
 const SHOWING_IN_ROUTES = [
   "/specialties/:id",
   "/areas_of_practice/:id"
 ];
 
-export const isTabbedPage = memoize(
-  matchedRoute,
-  (matchedRoute) => {
-    return _.includes(SHOWING_IN_ROUTES, matchedRoute);
-  }
-);
+export const isTabbedPage = ((model) => {
+  return _.includes(SHOWING_IN_ROUTES, matchedRoute(model));
+}).pwPipe(memoizePerRender);
 
-export const selectedTabKey = memoize(
-  (model) => model.ui.location.hash.replace("#", ""),
-  defaultTab,
-  (userSelectedTab, defaultTab) => {
-    return (userSelectedTab ||
-      tabKey(defaultTab.type, defaultTab.id));
-  }
-);
+export const selectedTabKey = ((model) => {
+  return (model.ui.location.hash.replace("#", "") ||
+    tabKey(defaultTab(model).type, defaultTab(model).id));
+}).pwPipe(memoizePerRender);
 
 const extractId = (tabKey) => {
   return parseInt(tabKey.match(/\d+/));
 }
 
-export function recordShownByTab(model){
+export const recordShownByTab = ((model) => {
   if(selectedTabKey(model).includes("contentCategory")){
     return model.app.contentCategories[extractId(selectedTabKey(model))];
   }
   else {
     return {};
   }
-}
+}).pwPipe(memoizePerRender)
 
 export function tabKey(type, id) {
   if (id) {

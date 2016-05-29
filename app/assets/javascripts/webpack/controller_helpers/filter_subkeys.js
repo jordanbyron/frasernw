@@ -1,6 +1,6 @@
 import recordsMaskingFilters from "controller_helpers/records_masking_filters";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
-import { memoize } from "utils";
+import { memoize, memoizePerRender } from "utils";
 import { recordShownByTab } from "controller_helpers/tab_keys";
 import { collectionShownName } from "controller_helpers/collection_shown";
 
@@ -15,71 +15,55 @@ export const scheduleDays = (model) => {
   }
 };
 
-export const careProviders = (model) => {
+export const careProviders = ((model) => {
   return recordsMaskingFilters(model)
     .map(_.property("careProviderIds"))
     .pwPipe(_.flatten)
     .pwPipe(_.uniq);
-};
+}).pwPipe(memoizePerRender);
 
-const maskingRecordsProcedureIds = memoize(
-  recordsMaskingFilters,
-  (recordsMaskingFilters) => {
-    return recordsMaskingFilters.
-      map(_.property("procedureIds")).
-      pwPipe(_.flatten).
-      pwPipe(_.uniq);
-  }
-);
+const maskingRecordsProcedureIds = ((model) => {
+  return recordsMaskingFilters(model).
+    map(_.property("procedureIds")).
+    pwPipe(_.flatten).
+    pwPipe(_.uniq);
+}).pwPipe(memoizePerRender)
 
-export const procedures = memoize(
-  matchedRoute,
-  (model) => model.app.procedures,
-  recordShownByPage,
-  collectionShownName,
-  maskingRecordsProcedureIds,
-  (matchedRoute, procedures, recordShownByPage, collectionShownName, maskingRecordsProcedureIds) => {
-    if (matchedRoute === "/specialties/:id"){
-      return _.values(procedures).filter((procedure) => {
-        return _.includes(procedure.specializationIds, recordShownByPage.id) &&
-          !_.includes(procedure.assumedSpecializationIds[collectionShownName], recordShownByPage.id) &&
-          _.includes(maskingRecordsProcedureIds, procedure.id);
-      }).map(_.property("id"));
-    }
-    else if (matchedRoute === "/areas_of_practice/:id"){
-      return recordShownByPage.childrenProcedureIds;
-    }
-  }
-);
+export const procedures = ((model) => {
+  if (matchedRoute(model) === "/specialties/:id"){
+    return _.values(model.app.procedures).filter((procedure) => {
 
-export const languages = memoize(
-  recordsMaskingFilters,
-  (recordsMaskingFilters) => {
-    return recordsMaskingFilters.
-      map(_.property("languageIds")).
-      pwPipe(_.flatten).
-      pwPipe(_.uniq);
+      return _.includes(procedure.specializationIds, recordShownByPage(model).id) &&
+        !_.includes(
+          procedure.assumedSpecializationIds[collectionShownName(model)],
+          recordShownByPage(model).id
+        ) &&
+        _.includes(maskingRecordsProcedureIds(model), procedure.id);
+    }).map(_.property("id"));
   }
-);
+  else if (matchedRoute(model) === "/areas_of_practice/:id"){
+    return recordShownByPage(model).childrenProcedureIds;
+  }
+}).pwPipe(memoizePerRender)
 
-export const cities = memoize(
-  (model) => model.app.cities,
-  (cities) => {
-    return _.values(cities).map(_.property("id"));
-  }
-);
+export const languages = ((model) => {
+  return recordsMaskingFilters(model).
+    map(_.property("languageIds")).
+    pwPipe(_.flatten).
+    pwPipe(_.uniq);
+}).pwPipe(memoizePerRender);
 
-export const subcategories = memoize(
-  recordsMaskingFilters,
-  recordShownByTab,
-  (recordsMaskingFilters, recordShownByTab) => {
-    return recordsMaskingFilters.
-      map(_.property("categoryId")).
-      pwPipe(_.flatten).
-      pwPipe(_.uniq).
-      pwPipe((ids) => _.pull(ids, recordShownByTab.id))
-  }
-)
+export const cities = ((model) => {
+  return _.values(model.app.cities).map(_.property("id"));
+}).pwPipe(memoizePerRender);
+
+export const subcategories = ((model) => {
+  return recordsMaskingFilters(model).
+    map(_.property("categoryId")).
+    pwPipe(_.flatten).
+    pwPipe(_.uniq).
+    pwPipe((ids) => _.pull(ids, recordShownByTab(model).id))
+}).pwPipe(memoizePerRender)
 
 export const sex = () => {
   return [

@@ -2,23 +2,17 @@ import _ from "lodash";
 import { matchedRoute, matchedRouteParams, recordShownByPage }
   from "controller_helpers/routing";
 import { matchesTab, matchesRoute } from "controller_helpers/collection_shown";
-import { memoize } from "utils";
+import { memoizePerRender } from "utils";
 
-const samePerPage = memoize(
-  (model) => _.values(model.app.contentItems),
-  (model) => model.app.currentUser.divisionIds,
-  matchedRoute,
-  recordShownByPage,
-  (contentItems, divisionIds, matchedRoute, recordShownByPage) => {
-    return contentItems.filter((item) => {
-      return matchesRoute(matchedRoute, recordShownByPage, item) &&
-        _.intersection(
-          item.availableToDivisionIds,
-          divisionIds
-        ).pwPipe(_.any)
-    });
-  }
-);
+const samePerPage = ((model) => {
+  return _.values(model.app.contentItems).filter((item) => {
+    return matchesRoute(matchedRoute(model), recordShownByPage(model), item) &&
+      _.intersection(
+        item.availableToDivisionIds,
+        model.app.currentUser.divisionIds
+      ).pwPipe(_.any)
+  });
+}).pwPipe(memoizePerRender)
 
 const contentCategoryItems = function(categoryId, model){
   return samePerPage(model).

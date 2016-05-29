@@ -1,7 +1,7 @@
 import { padTwo } from "utils";
 import { selectedTabKey } from "controller_helpers/tab_keys";
 import referralCityIds from "controller_helpers/referral_city_ids";
-import { memoize } from "utils";
+import { memoizePerRender } from "utils";
 
 const factory = (args) => {
   let { hasSubkeys, defaultValue, key } = args;
@@ -18,16 +18,13 @@ const factory = (args) => {
     )
   }
   else {
-    return memoize(
-      (model) => model,
-      (model) => {
-        return _.get(
-          model,
-          [ "ui", "tabs", selectedTabKey(model), "filterValues", key ],
-          defaultValue
-        );
-      }
-    );
+    return ((model) => {
+      return _.get(
+        model,
+        [ "ui", "tabs", selectedTabKey(model), "filterValues", key ],
+        defaultValue
+      );
+    }).pwPipe(memoizePerRender)
   }
 };
 

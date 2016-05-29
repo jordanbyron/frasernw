@@ -2,26 +2,20 @@ import { matchedRoute, recordShownByPage }
   from "controller_helpers/routing";
 import referralCityIds from "controller_helpers/referral_city_ids";
 import { scopedByRouteAndTab } from "controller_helpers/collection_shown";
-import { memoize } from "utils";
+import { memoizePerRender } from "utils";
 
-const recordsMaskingFilters = memoize(
-  matchedRoute,
-  recordShownByPage,
-  scopedByRouteAndTab,
-  referralCityIds,
-  (matchedRoute, recordShownByPage, scopedByRouteAndTab, referralCityIds) => {
-    if (matchedRoute === "/specialties/:id" &&
-      recordShownByPage.maskFiltersByReferralArea){
+const recordsMaskingFilters = ((model) => {
+  if (matchedRoute === "/specialties/:id" &&
+    recordShownByPage(model).maskFiltersByReferralArea){
 
-      return scopedByRouteAndTab.filter((record) => {
-        return _.intersection(record.cityIds, referralCityIds).
-          pwPipe(_.some);
-      })
-    }
-    else {
-      return scopedByRouteAndTab;
-    }
+    return scopedByRouteAndTab(model).filter((record) => {
+      return _.intersection(record.cityIds, referralCityIds(model)).
+        pwPipe(_.some);
+    })
   }
-);
+  else {
+    return scopedByRouteAndTab(model);
+  }
+}).pwPipe(memoizePerRender);
 
 export default recordsMaskingFilters;
