@@ -1,10 +1,10 @@
 import recordsMaskingFilters from "controller_helpers/records_masking_filters";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
-import { memoize, memoizePerRender } from "utils";
+import { memoizePerRender } from "utils";
 import { recordShownByTab } from "controller_helpers/tab_keys";
 import { collectionShownName } from "controller_helpers/collection_shown";
 
-export const scheduleDays = (model) => {
+export const scheduleDays = ((model) => {
   switch(collectionShownName(model)){
   case "specialists":
     return [6, 7];
@@ -13,7 +13,7 @@ export const scheduleDays = (model) => {
   default:
     return [];
   }
-};
+}).pwPipe(memoizePerRender);
 
 export const careProviders = ((model) => {
   return recordsMaskingFilters(model)

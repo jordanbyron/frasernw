@@ -2,8 +2,9 @@ import _ from "lodash";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import { recordShownByTab } from "controller_helpers/tab_keys";
+import { memoizePerRender } from "utils";
 
-export const sidebarFilterKeys = (model) => {
+export const sidebarFilterKeys = ((model) => {
   if(_.includes(["/specialties/:id", "/areas_of_practice/:id"], matchedRoute(model))) {
     if(collectionShownName(model) === "specialists") {
       return [
@@ -58,9 +59,9 @@ export const sidebarFilterKeys = (model) => {
   else {
     return [];
   }
-};
+}).pwPipe(memoizePerRender);
 
-export const preliminaryFilterKeys = (model) => {
+export const preliminaryFilterKeys = ((model) => {
   if(_.includes(["/specialties/:id", "/areas_of_practice/:id"], matchedRoute(model))&&
     _.includes(["specialists", "clinics"], collectionShownName(model))){
 
@@ -72,4 +73,4 @@ export const preliminaryFilterKeys = (model) => {
   else {
     return [];
   }
-};
+}).pwPipe(memoizePerRender);
