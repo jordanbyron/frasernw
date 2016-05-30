@@ -52,11 +52,24 @@ const tab = (model = {}, action) => {
     showUnfocusedProcedures: showUnfocusedProcedures(
       model.showUnfocusedProcedures,
       action
+    ),
+    specializationFilterActivated: specializationFilterActivated(
+      model.specializationFilterActivated,
+      action
     )
   };
 }
 
-const showUnfocusedProcedures = (model = {}, action) => {
+const specializationFilterActivated = (model, action) => {
+  switch(action.type){
+  case "TOGGLE_SPECIALIZATION_FILTER":
+    return action.proposed;
+  default:
+    return model;
+  }
+}
+
+const showUnfocusedProcedures = (model, action) => {
   switch(action.type){
   case "TOGGLE_UNFOCUSED_PROCEDURE_VISIBILITY":
     return action.proposed;

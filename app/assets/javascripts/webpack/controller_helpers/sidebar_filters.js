@@ -3,6 +3,7 @@ import _ from "lodash";
 import activatedFilterSubkeys from "controller_helpers/activated_filter_subkeys";
 import { matchedRoute } from "controller_helpers/routing";
 import * as filterValues from "controller_helpers/filter_values";
+import { memoizePerRender } from "utils";
 
 const sidebarFilters = {
   cities: {

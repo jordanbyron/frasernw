@@ -161,3 +161,11 @@ export function clearFilters(dispatch, model) {
     tabKey: selectedTabKey(model)
   });
 }
+
+export function toggleSpecializationFilter(dispatch, model, proposed) {
+  dispatch({
+    type: "TOGGLE_SPECIALIZATION_FILTER",
+    tabKey: selectedTabKey(model),
+    proposed: proposed
+  });
+}

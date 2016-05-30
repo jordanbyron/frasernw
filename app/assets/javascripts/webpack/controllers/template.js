@@ -20,6 +20,7 @@ import InlineArticles from "controllers/inline_articles";
 import CategoryLinkController from "controllers/category_link"
 import ResultSummary from "controllers/result_summary";
 import { memoizePerRender } from "utils"
+import SpecializationFilterMessage from "controllers/specialization_filter_message";
 
 const Template = ({model, dispatch}) => {
   if(isLoaded(model)) {
@@ -107,6 +108,7 @@ const Main = ({model, dispatch}) => {
       <PageTitle model={model} dispatch={dispatch}/>
       <Subtitle model={model} dispatch={dispatch}/>
       <ResultSummary model={model} dispatch={dispatch}/>
+      <SpecializationFilterMessage model={model} dispatch={dispatch}/>
       <Table model={model} dispatch={dispatch}/>
       <InlineArticles model={model} dispatch={dispatch}/>
       <CategoryLinkController model={model} dispatch={dispatch}/>

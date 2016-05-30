@@ -83,7 +83,7 @@ const ContentItemTitle = ({decoratedRecord}) => {
 }
 
 const ReferentSpecializations = ({decoratedRecord}) => {
-  return(<td>{this.props.decoratedRecord.specializationNames}</td>);
+  return(<td>{decoratedRecord.specializationNames}</td>);
 }
 
 const ReferentName = ({decoratedRecord}) => {

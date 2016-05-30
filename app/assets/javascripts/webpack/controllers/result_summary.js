@@ -113,7 +113,7 @@ const leadingFilterPredicates = (model) => {
 }
 
 const verb = function(model) {
-  if (recordsToDisplay(model) > 0){
+  if (recordsToDisplay(model).length > 0){
     return "Showing all";
   } else {
     return "There are no";
