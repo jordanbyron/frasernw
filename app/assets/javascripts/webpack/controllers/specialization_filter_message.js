@@ -8,7 +8,7 @@ import {
   withAllFilters,
   withoutSpecializationFilter,
   showingOtherSpecializations
-} from "controller_helpers/table_modifiers";
+} from "controller_helpers/filter_messages";
 
 const SpecializationFilterMessage = ({model, dispatch}) => {
   if (showSpecializationFilterMessage(model)) {

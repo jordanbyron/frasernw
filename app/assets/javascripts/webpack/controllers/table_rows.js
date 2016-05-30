@@ -5,7 +5,7 @@ import { unscopedCollectionShown, collectionShownName }
   from "controller_helpers/collection_shown";
 import sortOrders from "controller_helpers/sort_orders";
 import sortIteratees from "controller_helpers/sort_iteratees";
-import { showingOtherSpecializations } from "controller_helpers/table_modifiers";
+import { showingOtherSpecializations } from "controller_helpers/filter_messages";
 import recordsToDisplay from "controller_helpers/records_to_display";
 
 const TableRows = (model, dispatch) => {

@@ -78,4 +78,19 @@ const matchesSidebarFilters = (record, model) => {
   });
 }
 
+const activatedSidebarFiltersExceptCities = ((model) => {
+  return sidebarFilterKeys(model).
+    pwPipe((keys) => _.without(keys, "cities")).
+    map((filterKey) => sidebarFilters[filterKey]).
+    filter((filter) => {
+      return filter.isActivated(model);
+    });
+}).pwPipe(memoizePerRender);
+
+export const matchesSidebarFiltersExceptCities = (record, model) => {
+  return activatedSidebarFiltersExceptCities(model).every((filter) => {
+    return filter.predicate(record, model);
+  });
+}
+
 export default matchesSidebarFilters;

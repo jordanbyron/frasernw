@@ -6,7 +6,7 @@ import { matchedRoute } from "controller_helpers/routing";
 import { collectionShownName, collectionShownPluralLabel }
   from "controller_helpers/collection_shown";
 import { entityType } from "controller_helpers/filter_values";
-import { showingOtherSpecializations } from "controller_helpers/table_modifiers";
+import { showingOtherSpecializations } from "controller_helpers/filter_messages";
 import _ from "lodash";
 
 const TableHeading = ({model, dispatch}) => {

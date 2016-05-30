@@ -115,6 +115,16 @@ export function changeFilter(dispatch, tabKey, filterKey, filterSubKey, event) {
   }
 }
 
+export function changeFilterToValue(dispatch, tabKey, filterKey, filterSubKey, proposed) {
+  dispatch({
+    type: "CHANGE_FILTER_VALUE",
+    tabKey: tabKey,
+    filterKey: filterKey,
+    filterSubKey: filterSubKey,
+    proposed: proposed
+  })
+};
+
 export function toggleUnfocusedProcedureVisibility(dispatch, proposed, tabKey) {
   dispatch({
     type: "TOGGLE_UNFOCUSED_PROCEDURE_VISIBILITY",

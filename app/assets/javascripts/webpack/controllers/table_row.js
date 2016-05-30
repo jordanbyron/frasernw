@@ -3,7 +3,7 @@ import { matchedRoute } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import Tags from "component_helpers/tags";
 import ReferentStatusIcon from "controllers/referent_status_icon";
-import { showingOtherSpecializations } from "controller_helpers/table_modifiers";
+import { showingOtherSpecializations } from "controller_helpers/filter_messages";
 import SharedCareIcon from "component_helpers/icons/shared_care";
 import FavoriteIcon from "controllers/icons/favorite";
 import EmailIcon from "component_helpers/icons/email";

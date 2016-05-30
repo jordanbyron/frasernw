@@ -21,6 +21,7 @@ import CategoryLinkController from "controllers/category_link"
 import ResultSummary from "controllers/result_summary";
 import { memoizePerRender } from "utils"
 import SpecializationFilterMessage from "controllers/specialization_filter_message";
+import CityFilterPills from "controllers/city_filter_pills";
 
 const Template = ({model, dispatch}) => {
   if(isLoaded(model)) {
@@ -109,6 +110,7 @@ const Main = ({model, dispatch}) => {
       <Subtitle model={model} dispatch={dispatch}/>
       <ResultSummary model={model} dispatch={dispatch}/>
       <SpecializationFilterMessage model={model} dispatch={dispatch}/>
+      <CityFilterPills model={model} dispatch={dispatch}/>
       <Table model={model} dispatch={dispatch}/>
       <InlineArticles model={model} dispatch={dispatch}/>
       <CategoryLinkController model={model} dispatch={dispatch}/>
