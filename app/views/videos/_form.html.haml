@@ -7,7 +7,7 @@
   = f.label :title, "Title"
   = f.input :title, label: false
 
-  = f.label :video_url, "Upload file"
+  = f.label :video_url, "Upload file - file name cannot contain spaces"
   = f.file_field :video_url, label: false
 
   .form-actions
@@ -31,6 +31,19 @@
       var barContainer = $("<div class='progress'></div>").append(progressBar);
       fileInput.after(barContainer);
       fileInput.fileupload({
+        add: function(e, data) {
+          var uploadErrors = [];
+          $.each(data.files, function (index, file) {
+            if(~file.name.indexOf(" ")) {
+              uploadErrors.push('File name cannot contain spaces');
+            }
+          });
+          if(uploadErrors.length > 0) {
+            alert(uploadErrors.join("\n"));
+          } else {
+            data.submit();
+          }
+        },
         fileInput:        fileInput,
         url:              form.data('url'),
         type:             'POST',
