@@ -3,7 +3,7 @@ import { selectedTableHeadingKey } from "controller_helpers/table_headings";
 
 const sortIteratees = (model) => {
   return unboundIteratees(model).map((iteratee) => _.partialRight(iteratee, model));
-};
+}
 
 const unboundIteratees = (model) => {
   switch(selectedTableHeadingKey(model)) {
@@ -42,6 +42,12 @@ const unboundIteratees = (model) => {
     return [ subcategory ];
   case "PAGE_VIEWS":
     return [ pageViews ];
+  case "SPECIALTY":
+    return [ name ];
+  case "ENTITY_TYPE":
+    return [ _.property("count") ];
+  default:
+    return [(decoratedRecord, model) => decoratedRecord.id];
   }
 }
 

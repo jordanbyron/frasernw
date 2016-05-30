@@ -3,6 +3,7 @@ import sidebarFilters from "controller_helpers/sidebar_filters";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import { recordShownByTab } from "controller_helpers/tab_keys";
+import * as filterValues from "controller_helpers/filter_values";
 import { memoizePerRender } from "utils";
 
 export const sidebarFilterKeys = ((model) => {
@@ -55,6 +56,13 @@ export const sidebarFilterKeys = ((model) => {
     return [
       "subcategories",
       "specializations"
+    ];
+  }
+  else if (matchedRoute(model) === "/reports/referents_by_specialty" &&
+    filterValues.reportStyle(model) === "expanded"){
+
+    return [
+      "divisionScope"
     ];
   }
   else {

@@ -7,15 +7,15 @@ import sortOrders from "controller_helpers/sort_orders";
 import sortIteratees from "controller_helpers/sort_iteratees";
 import { showingOtherSpecializations } from "controller_helpers/filter_messages";
 import recordsToDisplay from "controller_helpers/records_to_display";
+import * as filterValues from "controller_helpers/filter_values";
+import sidebarFilters from "controller_helpers/sidebar_filters";
+import _ from "lodash";
 
 const TableRows = (model, dispatch) => {
-  const _sortIteratees = sortIteratees(model)
-  const _sortOrders = sortOrders(model)
-
   return recordsToDisplay(model).
     map((record) => decorate(record, model)).
     pwPipe((decoratedRecords) => {
-      return _.sortByOrder(decoratedRecords, _sortIteratees, _sortOrders);
+      return _.sortByOrder(decoratedRecords, sortIteratees(model), sortOrders(model));
     }).map((decoratedRecord) => {
       return(
         <TableRow key={decoratedRecord.reactKey}
@@ -30,10 +30,10 @@ const TableRows = (model, dispatch) => {
 const decorate = (record, model) => {
   let decorated = { raw: record };
 
+  decorated.reactKey = `${record.collectionName}${record.id}`;
+
   if(_.includes(["/specialties/:id", "/areas_of_practice/:id", "/content_categories/:id"],
     matchedRoute(model))) {
-
-    decorated.reactKey = `${record.collectionName}${record.id}`;
 
     if(_.includes(["specialists", "clinics"], collectionShownName(model))) {
       if(showingOtherSpecializations(model)) {
@@ -50,6 +50,23 @@ const decorate = (record, model) => {
       decorated.subcategoryName =
         model.app.contentCategories[record.categoryId].name;
     }
+  }
+  else if (matchedRoute(model) === "/reports/referents_by_specialty" &&
+    filterValues.reportStyle(model) === "summary") {
+
+      decorated.count = model.app[filterValues.entityType(model)].
+        pwPipe(_.values).
+        filter((referent) => {
+          if(sidebarFilters.divisionScope.isActivated(model)){
+            return _.includes(
+              referent.divisionIds,
+              parseInt(filterValues.divisionScope(model))
+            ) && _.includes(referent.specializationIds, record.id)
+          }
+          else {
+            return _.includes(referent.specializationIds, record.id);
+          }
+        }).length
   }
 
   return decorated;

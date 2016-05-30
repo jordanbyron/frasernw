@@ -8,6 +8,8 @@ import SharedCareIcon from "component_helpers/icons/shared_care";
 import FavoriteIcon from "controllers/icons/favorite";
 import EmailIcon from "component_helpers/icons/email";
 import FeedbackIcon from "controllers/icons/feedback";
+import * as filterValues from "controller_helpers/filter_values";
+
 
 const TableRow = ({model, dispatch, decoratedRecord}) => {
   if(_.includes(["/specialties/:id", "/areas_of_practice/:id", "/content_categories/:id"],
@@ -54,6 +56,16 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       );
     }
   }
+  else if (matchedRoute(model) === "/reports/referents_by_specialty" &&
+    filterValues.reportStyle(model) === "summary") {
+
+    return(
+      <tr key={decoratedRecord.raw.id}>
+        <td key="name">{ decoratedRecord.raw.name } </td>
+        <td key="count">{ decoratedRecord.count }</td>
+      </tr>
+    );
+  }
   else if (matchedRoute(model) === "/reports/usage") {
     return(
       <tr>
@@ -65,6 +77,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
     );
   }
 };
+
 
 const ContentItemTitle = ({decoratedRecord}) => {
   return(

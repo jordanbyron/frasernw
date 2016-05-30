@@ -8,8 +8,12 @@ import matchesSidebarFilters from "controller_helpers/matches_sidebar_filters";
 import { memoizePerRender } from "utils";
 
 const recordsToDisplay = ((model) => {
-  if(_.includes(["/specialties/:id", "/areas_of_practice/:id", "/content_categories/:id"],
-    matchedRoute(model))) {
+  if(_.includes([
+      "/specialties/:id",
+      "/areas_of_practice/:id",
+      "/content_categories/:id",
+      "/reports/referents_by_specialty"
+    ], matchedRoute(model))) {
 
     if (matchedRoute(model) === "/specialties/:id" &&
       showingOtherSpecializations(model)){

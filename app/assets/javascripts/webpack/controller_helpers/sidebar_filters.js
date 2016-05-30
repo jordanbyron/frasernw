@@ -226,6 +226,17 @@ const sidebarFilters = {
         parseInt(filterValues.specializations(model))
       );
     }
+  },
+  divisionScope: {
+    isActivated: function(model) {
+      return (parseInt(filterValues.divisionScope(model)) !== 0);
+    },
+    predicate: function(record, model) {
+      return _.includes(
+        record.divisionIds,
+        parseInt(filterValues.divisionScope(model))
+      );
+    }
   }
 }
 

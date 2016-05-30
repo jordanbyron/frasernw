@@ -3,6 +3,7 @@ import { matchedRoute, matchedRouteParams, recordShownByPage }
 import { selectedTabKey, recordShownByTab } from "controller_helpers/tab_keys";
 import { memoizePerRender } from "utils";
 import { isTabbedPage } from "controller_helpers/tab_keys";
+import * as filterValues from "controller_helpers/filter_values";
 
 export const collectionShownName = ((model) => {
   if (isTabbedPage(model)){
@@ -15,6 +16,14 @@ export const collectionShownName = ((model) => {
   }
   else if (matchedRoute(model) === "/content_categories/:id"){
     return "contentItems";
+  }
+  else if (matchedRoute(model) === "/reports/referents_by_specialty"){
+    if(filterValues.reportStyle(model) === "summary"){
+      return "specializations";
+    }
+    else {
+      return filterValues.entityType(model);
+    }
   }
 }).pwPipe(memoizePerRender)
 
@@ -49,6 +58,8 @@ export const matchesRoute = (matchedRoute, recordShownByPage, record) => {
       recordShownByPage.subtreeIds,
       record.categoryId
     )
+  default:
+    return true;
   }
 };
 

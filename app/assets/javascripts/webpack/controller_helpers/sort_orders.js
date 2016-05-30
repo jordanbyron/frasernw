@@ -8,9 +8,15 @@ const sortOrders = (model) => {
     matchedRoute(model))) {
 
     return reversed(model);
-  } else {
-    return matching(model);
   }
+
+  if(matchedRoute(model) === "/reports/referents_by_specialty" &&
+    selectedTableHeadingKey(model) === "SPECIALTY") {
+
+    return reversed(model);
+  }
+
+  return matching(model);
 };
 
 const matching = (model) => {
