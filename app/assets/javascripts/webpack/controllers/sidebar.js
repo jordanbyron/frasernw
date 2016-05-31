@@ -47,8 +47,9 @@ const Sidebar = ({model, dispatch}) => {
       <div className="well filter">
         <div className="title">{ sidebarTitle(model) }</div>
         <ProcedureFilters model={model} dispatch={dispatch}/>
-        <ClinicDetailsFilters model={model} dispatch={dispatch}/>
+        <SpecializationsFilters model={model} dispatch={dispatch}/>
         <ReferralsFilters model={model} dispatch={dispatch}/>
+        <ClinicDetailsFilters model={model} dispatch={dispatch}/>
         <DateRangeFilters model={model} dispatch={dispatch}/>
         <EntityTypeFilters model={model} dispatch={dispatch}/>
         <DivisionScopeFilters model={model} dispatch={dispatch}/>
@@ -60,7 +61,6 @@ const Sidebar = ({model, dispatch}) => {
         <AssociationsFilters model={model} dispatch={dispatch}/>
         <CityFilters model={model} dispatch={dispatch}/>
         <SubcategoriesFilters model={model} dispatch={dispatch}/>
-        <SpecializationsFilters model={model} dispatch={dispatch}/>
         <HiddenUpdatesFilter model={model} dispatch={dispatch}/>
         <MonthFilter model={model} dispatch={dispatch}/>
         <ReportStyleFilter model={model} dispatch={dispatch}/>

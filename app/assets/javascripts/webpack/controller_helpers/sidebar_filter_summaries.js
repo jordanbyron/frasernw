@@ -179,8 +179,14 @@ const sidebarFilterSummaries = {
   },
   specializations: {
     label: function(model) {
-      return "pertain to " +
-        model.app.specializations[filterValues.specializations(model)].name;
+      if(_.includes(["specialists", "clinics"], collectionShownName(model))){
+        return "specialize in " +
+          model.app.specializations[filterValues.specializations(model)].name;
+      }
+      else {
+        return "pertain to " +
+          model.app.specializations[filterValues.specializations(model)].name;
+      }
     },
     placement: "trailing"
   }

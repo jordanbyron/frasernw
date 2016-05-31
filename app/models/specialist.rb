@@ -903,6 +903,29 @@ class Specialist < ActiveRecord::Base
     @valid_clinic_locations = clinic_locations.reject(&:empty?)
   end
 
+  def hospitals_with_offices_in
+    direct = specialist_offices.
+      select(&:has_data?).
+      map(&:location).
+      reject(&:nil?).
+      select(&:in_hospital?).
+      map(&:hospital_in).
+      reject(&:nil?)
+
+    through_clinic = specialist_offices.
+      select(&:has_data?).
+      map(&:location).
+      reject(&:nil?).
+      select(&:in_clinic?).
+      map(&:location_in).
+      reject(&:nil?).
+      select(&:in_hospital?).
+      map(&:hospital_in).
+      reject(&:nil?)
+
+    (direct + through_clinic).uniq
+  end
+
 private
 
   def destroy_photo?

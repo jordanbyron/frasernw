@@ -8,6 +8,8 @@ export const defaultTab = ((model) => {
       openToSpecializationPanel[matchedRouteParams(model).id];
   case "/areas_of_practice/:id":
     return { type: "specialists" };
+  case "/hospitals/:id":
+    return { type: "specialistsWithPrivileges" };
   default:
     return { type: "only" };
   }
@@ -15,7 +17,8 @@ export const defaultTab = ((model) => {
 
 const SHOWING_IN_ROUTES = [
   "/specialties/:id",
-  "/areas_of_practice/:id"
+  "/areas_of_practice/:id",
+  "/hospitals/:id"
 ];
 
 export const isTabbedPage = ((model) => {

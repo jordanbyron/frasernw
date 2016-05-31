@@ -90,7 +90,8 @@ module Denormalized
             createdAt: specialist.created_at.to_date.to_s,
             updatedAt: specialist.updated_at.to_date.to_s,
             showInTable: specialist.show_in_table?,
-            teleserviceFeeTypes: specialist.teleservices.select(&:offered?).map(&:service_type)
+            teleserviceFeeTypes: specialist.teleservices.select(&:offered?).map(&:service_type),
+            hospitalsWithOfficesInIds: specialist.hospitals_with_offices_in.map(&:id)
           })
         end
       end
@@ -149,7 +150,8 @@ module Denormalized
             createdAt: clinic.created_at.to_date.to_s,
             updatedAt: clinic.updated_at.to_date.to_s,
             showInTable: clinic.show_in_table?,
-            teleserviceFeeTypes: clinic.teleservices.select(&:offered?).map(&:service_type)
+            teleserviceFeeTypes: clinic.teleservices.select(&:offered?).map(&:service_type),
+            hospitalsInIds: clinic.hospitals_in.map(&:id)
           })
         end
       end
@@ -228,7 +230,11 @@ module Denormalized
     hospitals: Proc.new do
       Hospital.all.inject({}) do |memo, hospital|
         memo.merge(hospital.id => {
-          name: hospital.name
+          id: hospital.id,
+          name: hospital.name,
+          address: hospital.address.try(:address),
+          mapUrl: hospital.address.try(:map_url),
+          phoneAndFax: hospital.phone_and_fax
         })
       end
     end,

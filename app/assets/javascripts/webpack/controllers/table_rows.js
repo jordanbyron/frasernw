@@ -5,7 +5,8 @@ import { unscopedCollectionShown, collectionShownName }
   from "controller_helpers/collection_shown";
 import sortOrders from "controller_helpers/sort_orders";
 import sortIteratees from "controller_helpers/sort_iteratees";
-import { showingOtherSpecializations } from "controller_helpers/filter_messages";
+import showingMultipleSpecializations
+  from "controller_helpers/showing_multiple_specializations";
 import recordsToDisplay from "controller_helpers/records_to_display";
 import * as filterValues from "controller_helpers/filter_values";
 import sidebarFilters from "controller_helpers/sidebar_filters";
@@ -37,11 +38,15 @@ const decorate = (record, model) => {
     decorated.reactKey = `${record.collectionName}${record.id}`;
   }
 
-  if(_.includes(["/specialties/:id", "/areas_of_practice/:id", "/content_categories/:id"],
-    matchedRoute(model))) {
+  if(_.includes([
+    "/specialties/:id",
+    "/areas_of_practice/:id",
+    "/content_categories/:id",
+    "/hospitals/:id"
+  ], matchedRoute(model))) {
 
     if(_.includes(["specialists", "clinics"], collectionShownName(model))) {
-      if(showingOtherSpecializations(model)) {
+      if(showingMultipleSpecializations(model)) {
         decorated.specializationNames = record.specializationIds.map((id) => {
           return model.app.specializations[id].name;
         }).sort().join(" and ");

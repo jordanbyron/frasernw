@@ -58,6 +58,32 @@ export const sidebarFilterKeys = ((model) => {
       "specializations"
     ];
   }
+  else if (matchedRoute(model) === "/hospitals/:id") {
+    if(collectionShownName(model) === "specialists") {
+      return [
+        "acceptsReferralsViaPhone",
+        "patientsCanCall",
+        "respondsWithin",
+        "sex",
+        "scheduleDays",
+        "interpreterAvailable",
+        "languages",
+        "clinicAssociations",
+        "specializations"
+      ];
+    }
+    else if (collectionShownName(model) === "clinics"){
+      return [
+        "scheduleDays",
+        "languages",
+        "isPublic",
+        "isPrivate",
+        "isWheelchairAccessible",
+        "careProviders",
+        "specializations"
+      ];
+    }
+  }
   else if (matchedRoute(model) === "/reports/referents_by_specialty" &&
     filterValues.reportStyle(model) === "expanded"){
 

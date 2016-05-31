@@ -23,18 +23,29 @@ const AssociationsFilters = ({model, dispatch}) => {
           model={model}
           dispatch={dispatch}
         />
-        <FilterSelector
-          label="Hospital"
-          filterKey="hospitalAssociations"
-          options={hospitalOptions(model)}
-          model={model}
-          dispatch={dispatch}
-        />
+        <HospitalSelector model={model} dispatch={dispatch}/>
       </FilterGroup>
     );
   }
   else {
     return <span></span>;
+  }
+}
+
+const HospitalSelector = ({model, dispatch}) => {
+  if (matchedRoute(model) === "/hospitals/:id") {
+    return <noscript/>
+  }
+  else {
+    return(
+      <FilterSelector
+        label="Hospital"
+        filterKey="hospitalAssociations"
+        options={hospitalOptions(model)}
+        model={model}
+        dispatch={dispatch}
+      />
+    )
   }
 }
 
@@ -62,7 +73,8 @@ const shouldShow = (model) => {
 }
 const ROUTES = [
   "/specialties/:id",
-  "/areas_of_practice/:id"
+  "/areas_of_practice/:id",
+  "/hospitals/:id"
 ];
 const COLLECTIONS = [
   "specialists"

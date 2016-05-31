@@ -13,7 +13,8 @@ const recordsToDisplay = ((model) => {
       "/areas_of_practice/:id",
       "/content_categories/:id",
       "/reports/referents_by_specialty",
-      "/latest_updates"
+      "/latest_updates",
+      "/hospitals/:id"
     ], matchedRoute(model))) {
 
     if (matchedRoute(model) === "/specialties/:id" &&
@@ -29,8 +30,12 @@ const recordsToDisplay = ((model) => {
         return matchesPreliminaryFilters(record, model) &&
           matchesRoute(matchedRoute(model), recordShownByPage(model), record) &&
           (!isTabbedPage(model) ||
-            matchesTab(record, model.app.contentCategories, selectedTabKey(model))) &&
-          matchesSidebarFilters(record, model)
+          matchesTab(
+            record,
+            model.app.contentCategories,
+            selectedTabKey(model),
+            recordShownByPage(model)
+          )) && matchesSidebarFilters(record, model)
       })
     }
   } else {

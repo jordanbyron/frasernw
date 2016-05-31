@@ -7,8 +7,11 @@ import * as filterValues from "controller_helpers/filter_values";
 
 export const collectionShownName = ((model) => {
   if (isTabbedPage(model)){
-    if (_.includes(["specialists", "clinics"], selectedTabKey(model))){
-      return selectedTabKey(model);
+    if (selectedTabKey(model).includes("specialists")) {
+      return "specialists";
+    }
+    else if (selectedTabKey(model).includes("clinics")) {
+      return "clinics";
     }
     else if (selectedTabKey(model).includes("contentCategory")){
       return "contentItems";
@@ -40,7 +43,12 @@ export const scopedByRouteAndTab = ((model) => {
   return unscopedCollectionShown(model).filter((record) => {
     return matchesRoute(matchedRoute(model), recordShownByPage(model), record) &&
       (!isTabbedPage(model) ||
-        matchesTab(record, model.app.contentCategories, selectedTabKey(model)));
+        matchesTab(
+          record,
+          model.app.contentCategories,
+          selectedTabKey(model),
+          recordShownByPage(model)
+        ));
   });
 }).pwPipe(memoizePerRender)
 
@@ -68,8 +76,17 @@ export const matchesRoute = (matchedRoute, recordShownByPage, record) => {
   }
 };
 
-export const matchesTab = (record, contentCategories, tabKey) => {
-  if (_.includes(["specialists", "clinics"], tabKey)){
+export const matchesTab = (record, contentCategories, tabKey, recordShownByPage) => {
+  if (tabKey === "specialistsWithPrivileges"){
+    return _.includes(record.hospitalIds, recordShownByPage.id)
+  }
+  else if (tabKey === "clinicsIn"){
+    return _.includes(record.hospitalsInIds, recordShownByPage.id)
+  }
+  else if (tabKey === "specialistsWithOffices") {
+    return _.includes(record.hospitalsWithOfficesInIds, recordShownByPage.id);
+  }
+  else if (_.includes(["specialists", "clinics"], tabKey)){
     return true;
   }
   else if (tabKey.includes("contentCategory")){

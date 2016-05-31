@@ -6,10 +6,11 @@ import recordsMaskingFilters from "controller_helpers/records_masking_filters";
 import FilterRadioButtons from "controllers/filter_radio_buttons";
 
 const SpecializationsFilters = ({model, dispatch}) => {
-  if (matchedRoute(model) === "/content_categories/:id") {
+  if (matchedRoute(model) === "/content_categories/:id" ||
+    matchedRoute(model) === "/hospitals/:id") {
     return(
       <FilterGroup
-        title={"Specializations"}
+        title={"Specialties"}
         isCollapsible={true}
         expansionControlKey={"specializations"}
         defaultIsExpanded={true}

@@ -8,7 +8,8 @@ export const Routes = [
   "/reports/entity_page_views",
   "/reports/referents_by_specialty",
   "/latest_updates",
-  "/reports/pageviews_by_user"
+  "/reports/pageviews_by_user",
+  "/hospitals/:id"
 ];
 
 export const matchedRoute = ((model) => {
@@ -29,6 +30,8 @@ export const recordShownByPage = ((model) => {
     return model.app.procedures[matchedRouteParams(model).id];
   case "/content_categories/:id":
     return model.app.contentCategories[matchedRouteParams(model).id];
+  case "/hospitals/:id":
+    return model.app.hospitals[matchedRouteParams(model).id];
   }
 }).pwPipe(memoizePerRender)
 

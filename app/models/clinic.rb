@@ -285,7 +285,7 @@ class Clinic < ActiveRecord::Base
         divisions,
         specializations
       ).map(&:owner).compact.uniq
-      
+
       if owners.present?
         return owners
       else
@@ -566,6 +566,17 @@ class Clinic < ActiveRecord::Base
       map{|office| SpecialistOffice.where(office_id: office.id) }.
       flatten.
       map(&:specialist).
+      uniq
+  end
+
+  def hospitals_in
+    clinic_locations.
+      select(&:has_data?).
+      map(&:location).
+      reject(&:nil?).
+      select(&:in_hospital?).
+      map(&:hospital_in).
+      reject(&:nil?).
       uniq
   end
 end

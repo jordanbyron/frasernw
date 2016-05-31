@@ -3,7 +3,8 @@ import { matchedRoute } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import Tags from "component_helpers/tags";
 import ReferentStatusIcon from "controllers/referent_status_icon";
-import { showingOtherSpecializations } from "controller_helpers/filter_messages";
+import showingMultipleSpecializations
+  from "controller_helpers/showing_multiple_specializations";
 import SharedCareIcon from "component_helpers/icons/shared_care";
 import FavoriteIcon from "controllers/icons/favorite";
 import EmailIcon from "component_helpers/icons/email";
@@ -14,11 +15,14 @@ import * as filterValues from "controller_helpers/filter_values";
 
 
 const TableRow = ({model, dispatch, decoratedRecord}) => {
-  if(_.includes(["/specialties/:id", "/areas_of_practice/:id", "/content_categories/:id"],
-    matchedRoute(model))) {
-
+  if(_.includes([
+    "/specialties/:id",
+    "/areas_of_practice/:id",
+    "/content_categories/:id",
+    "/hospitals/:id"
+  ], matchedRoute(model))) {
     if(_.includes(["specialists", "clinics"], collectionShownName(model))) {
-      if(showingOtherSpecializations(model)) {
+      if(showingMultipleSpecializations(model)) {
         return(
           <tr>
             <ReferentName decoratedRecord={decoratedRecord}/>

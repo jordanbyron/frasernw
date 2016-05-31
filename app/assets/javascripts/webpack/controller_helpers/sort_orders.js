@@ -4,8 +4,12 @@ import { headingArrowDirection, selectedTableHeadingKey }
 import { matchedRoute } from "controller_helpers/routing";
 
 const sortOrders = (model) => {
-  if(_.includes(["/specialties/:id", "/areas_of_practice/:id", "/content_categories/:id"],
-    matchedRoute(model))) {
+  if(_.includes([
+    "/specialties/:id",
+    "/areas_of_practice/:id",
+    "/content_categories/:id",
+    "/hospitals/:id"
+  ], matchedRoute(model))) {
 
     return reversed(model);
   }

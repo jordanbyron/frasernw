@@ -14,7 +14,6 @@ import Sidebar from "controllers/sidebar";
 import { recordShownByTab, isTabbedPage } from "controller_helpers/tab_keys";
 import { recordShownByPage } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
-import PageTitle from "controllers/page_title";
 import Subtitle from "controllers/subtitle";
 import InlineArticles from "controllers/inline_articles";
 import CategoryLinkController from "controllers/category_link"
@@ -25,14 +24,18 @@ import CityFilterPills from "controllers/city_filter_pills";
 import Lists from "controllers/lists";
 import Disclaimer from "controllers/disclaimer";
 import GreyAnnotation from "controllers/grey_annotation";
+import PageTitle from "component_helpers/page_title";
+import pageTitleLabel from "controller_helpers/page_title_label";
+import ShowHospital from "controllers/show_hospital";
 
 const Template = ({model, dispatch}) => {
   if(isLoaded(model)) {
     return(
       <div>
         <Breadcrumbs model={model} dispatch={dispatch}/>
+        <UpperWhitePanel model={model}/>
         <NavTabs model={model} dispatch={dispatch}/>
-        <WhitePanel model={model} dispatch={dispatch}/>
+        <LowerWhitePanel model={model} dispatch={dispatch}/>
       </div>
     );
   }
@@ -57,6 +60,8 @@ const isLoaded = (model) => {
       return model.app.currentUser;
     case "/reports/entity_page_views":
       return model.app.currentUser;
+    case "/hospitals/:id":
+      return model.app.specialists && model.app.currentUser;
     default:
       return true;
   }
@@ -76,7 +81,7 @@ const usesSidebarLayout = ((model) => {
     showInlineArticles(model))
 }).pwPipe(memoizePerRender)
 
-const WhitePanel = ({model, dispatch}) => {
+const LowerWhitePanel = ({model, dispatch}) => {
   if (usesSidebarLayout(model)){
     return(
       <div className="content-wrapper">
@@ -109,7 +114,7 @@ const WhitePanel = ({model, dispatch}) => {
 const Main = ({model, dispatch}) => {
   return(
     <div>
-      <PageTitle model={model} dispatch={dispatch}/>
+      <LowerPanelTitle model={model}/>
       <Subtitle model={model} dispatch={dispatch}/>
       <ResultSummary model={model} dispatch={dispatch}/>
       <Disclaimer model={model}/>
@@ -122,6 +127,35 @@ const Main = ({model, dispatch}) => {
       <GreyAnnotation model={model} dispatch={dispatch}/>
     </div>
   );
+}
+
+const UpperWhitePanel = ({model}) => {
+  if(matchedRoute(model) === "/hospitals/:id"){
+    return(
+      <div className="content-wrapper">
+        <PageTitle label={pageTitleLabel(model)}/>
+        <ShowHospital model={model}/>
+      </div>
+    );
+  }
+  else {
+    return <noscript/>
+  }
+}
+
+
+const LowerPanelTitle = ({model}) => {
+  if(_.includes(["/reports/pageviews_by_user",
+    "/content_categories/:id",
+    "/reports/referents_by_specialty",
+    "/latest_updates",
+    "/reports/entity_page_views"
+  ], matchedRoute(model))) {
+    return <PageTitle label={pageTitleLabel(model)}/>;
+  }
+  else {
+    return <noscript/>
+  }
 }
 
 export default Template;

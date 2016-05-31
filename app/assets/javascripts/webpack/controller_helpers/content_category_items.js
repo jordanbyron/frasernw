@@ -20,7 +20,8 @@ const contentCategoryItems = function(categoryId, model){
       return matchesTab(
         item,
         model.app.contentCategories,
-        `contentCategory${categoryId}`
+        `contentCategory${categoryId}`,
+        recordShownByPage(model)
       );
     });
 };

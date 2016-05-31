@@ -1,6 +1,6 @@
 import React from "react";
 import recordsToDisplay from "controller_helpers/records_to_display";
-import { sidebarFilterKeys } from "controller_helpers/filters_for_page";
+import { sidebarFilterKeys } from "controller_helpers/matches_sidebar_filters";
 import filterSummaries from "controller_helpers/sidebar_filter_summaries";
 import filters from "controller_helpers/sidebar_filters";
 import { collectionShownPluralLabel, collectionShownName }

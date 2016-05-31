@@ -1,22 +1,8 @@
-import React from "react";
-import * as filterValues from "controller_helpers/filter_values";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import * as filterValues from "controller_helpers/filter_values";
 import { toSentence } from "utils";
 
-const PageTitle = ({model, dispatch}) => {
-  if (label(model)) {
-    return(
-      <h2 style={{marginBottom: "10px"}}>
-        { label(model) }
-      </h2>
-    );
-  }
-  else {
-    return <span></span>
-  }
-};
-
-const label = (model) => {
+const pageTitleLabel = (model) => {
   switch(matchedRoute(model)){
   case "/reports/pageviews_by_user":
     return "Page Views by User";
@@ -75,4 +61,4 @@ const label = (model) => {
   }
 }
 
-export default PageTitle;
+export default pageTitleLabel;

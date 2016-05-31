@@ -7,6 +7,85 @@ import { matchedRoute } from "controller_helpers/routing";
 import { memoize } from "utils";
 import React from "react";
 
+const NavTabsController = ({model, dispatch}) => {
+  if (isTabbedPage(model)) {
+    if(matchedRoute(model) === "/hospitals/:id") {
+      return(
+        <NavTabs>
+          <NavTabController
+            label="Specialists with Hospital Privileges"
+            tabKey="specialistsWithPrivileges"
+            model={model}
+            dispatch={dispatch}
+          />
+          <NavTabController
+            label="Clinics in Hospital"
+            tabKey="clinicsIn"
+            model={model}
+            dispatch={dispatch}
+          />
+          <NavTabController
+            label="Specialists with Offices in Hospital"
+            tabKey="specialistsWithOffices"
+            model={model}
+            dispatch={dispatch}
+          />
+        </NavTabs>
+      );
+    }
+    else {
+      return(
+        <NavTabs>
+          <NavTabController
+            label="Specialists"
+            tabKey="specialists"
+            model={model}
+            dispatch={dispatch}
+          />
+          <NavTabController
+            label="Clinics"
+            tabKey="clinics"
+            model={model}
+            dispatch={dispatch}
+          />
+          {contentCategoryTabs(model, dispatch)}
+        </NavTabs>
+      );
+    }
+  }
+  else {
+    return <span></span>;
+  }
+};
+
+const NavTabController = ({model, dispatch, tabKey, label}) => {
+  return(
+    <NavTab
+      label={label}
+      onClick={_.partial(tabClicked, dispatch, model, tabKey)}
+      isSelected={tabKey === selectedTabKey(model)}
+    />
+  );
+}
+
+
+const contentCategoryTabs = (model, dispatch) => {
+  return(
+    _.values(contentCategoriesShowingTabs(model)).map((category) => {
+      const _key = tabKey("contentCategory", category.id)
+      return(
+        <NavTabController
+          label={category.name}
+          tabKey={_key}
+          key={_key}
+          model={model}
+          dispatch={dispatch}
+        />
+      );
+    })
+  );
+}
+
 const contentCategoriesShowingTabs = (model) => {
   return _.filter(
     model.app.contentCategories,
@@ -21,47 +100,6 @@ const contentCategoriesShowingTabs = (model) => {
       );
     }
   );
-};
-
-const contentCategoryTabs = (model, dispatch) => {
-  return(
-    _.values(contentCategoriesShowingTabs(model)).map((category) => {
-      const _key = tabKey("contentCategory", category.id)
-      return(
-        <NavTab
-          label={category.name}
-          key={_key}
-          onClick={_.partial(tabClicked, dispatch, model, _key)}
-          isSelected={_key === selectedTabKey(model)}
-        />
-      );
-    })
-  );
-}
-
-const NavTabsController = ({model, dispatch}) => {
-  if (isTabbedPage(model)) {
-    return(
-      <NavTabs>
-        <NavTab
-          label="Specialists"
-          key="specialists"
-          onClick={_.partial(tabClicked, dispatch, model, "specialists")}
-          isSelected={"specialists" === selectedTabKey(model)}
-        />
-        <NavTab
-          label="Clinics"
-          key="clinics"
-          onClick={_.partial(tabClicked, dispatch, model, "clinics")}
-          isSelected={"clinics" === selectedTabKey(model)}
-        />
-        {contentCategoryTabs(model, dispatch)}
-      </NavTabs>
-    );
-  }
-  else {
-    return <span></span>;
-  }
 };
 
 export default NavTabsController;
