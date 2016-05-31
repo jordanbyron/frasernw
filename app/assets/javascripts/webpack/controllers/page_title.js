@@ -54,7 +54,7 @@ const label = (model) => {
     });
 
     return `Latest Specialist and Clinic Updates for ${toSentence(divisionNames)}`;
-  case "/reports/usage":
+  case "/reports/entity_page_views":
     if (parseInt(filterValues.divisionScope(model)) === 0) {
       var scopeLabel = "by Page Views";
     }

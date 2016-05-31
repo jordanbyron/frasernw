@@ -22,6 +22,23 @@ export function requestDynamicData(model, dispatch){
       })
     })
   }
+  else if (matchedRoute(model) === "/reports/entity_page_views") {
+    const requestParams = {
+      month_key: FilterValues.month(model),
+      division_id: FilterValues.divisionScope(model),
+      record_type: FilterValues.entityType(model)
+    }
+
+    $.get(
+      "/api/v1/reports/entity_page_views",
+      requestParams
+    ).done(function(data) {
+      dispatch({
+        type: "DATA_RECEIVED",
+        recordsToDisplay: data.recordsToDisplay
+      })
+    });
+  }
 }
 
 export function changeFilterValue(dispatch, filterKey, newValue) {

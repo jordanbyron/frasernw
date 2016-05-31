@@ -5,7 +5,7 @@ import { matchedRoute } from "controller_helpers/routing";
 import monthOptions from "controller_helpers/month_options";
 
 const DateRangeFilters = ({model, dispatch}) => {
-  if(matchedRoute(model) === "/reports/usage"){
+  if(matchedRoute(model) === "/reports/entity_page_views"){
     return(
       <FilterGroup
         title="Month"
@@ -16,7 +16,7 @@ const DateRangeFilters = ({model, dispatch}) => {
         dispatch={dispatch}
       >
         <FilterSelector
-          filterKey="startMonth"
+          filterKey="month"
           model={model}
           dispatch={dispatch}
           options={monthOptions(2014, 4)}

@@ -1,4 +1,4 @@
-class WebUsageReport < ServiceObject
+class EntityPageViews < ServiceObject
   attribute :month_key
   attribute :division_id
   attribute :record_type
@@ -59,7 +59,9 @@ class WebUsageReport < ServiceObject
   def transform_row_for_view(row)
     {
       link: link_to(*LABEL_SERIALIZED_COLLECTIONS[row[:serialized_collection]].call(row)),
-      usage: row[:usage]
+      usage: row[:usage],
+      collectionName: row[:serialized_collection],
+      id: row[:record][:id]
     }
   end
 

@@ -5,6 +5,7 @@ import TableHeading from "controllers/table_heading";
 import { reportStyle } from "controller_helpers/filter_values";
 import { recordShownByTab, isTabbedPage } from "controller_helpers/tab_keys";
 import { collectionShownName } from "controller_helpers/collection_shown";
+import isDataDubious from "controller_helpers/dubious_data";
 
 const Table = ({model, dispatch}) => {
   if (shouldShow(model)){
@@ -46,6 +47,13 @@ const shouldShow = (model) => {
     return false;
   }
 
+  if (matchedRoute(model) === "/reports/entity_page_views" &&
+    (!model.ui.recordsToDisplay ||
+      (isDataDubious(model) && model.app.currentUser.role !== "super"))) {
+
+    return false;
+  }
+
   return true;
 }
 
@@ -60,7 +68,7 @@ const ROUTES_IMPLEMENTING = [
   "/areas_of_practice/:id",
   "/content_categories/:id",
   "/reports/pageviews_by_user",
-  "/reports/usage",
+  "/reports/entity_page_views",
   "/reports/referents_by_specialty"
 ];
 

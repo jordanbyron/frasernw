@@ -34,7 +34,7 @@ const shouldShow = (model) => {
 }
 
 const ROUTES_IMPLEMENTING = [
-  "/reports/usage",
+  "/reports/entity_page_views",
   "/reports/referents_by_specialty"
 ]
 
@@ -51,7 +51,7 @@ const OPTION_LABELS = {
 }
 
 const radioOptionKeys = (model) => {
-  if(matchedRoute(model) === "/reports/usage"){
+  if(matchedRoute(model) === "/reports/entity_page_views"){
     return _.keys(OPTION_LABELS)
   }
   else if (matchedRoute(model) === "/reports/referents_by_specialty") {

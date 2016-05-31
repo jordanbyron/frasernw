@@ -27,7 +27,7 @@ const shouldShow = (model) => {
 
 const ROUTES_IMPLEMENTING = [
   "/reports/pageviews_by_user",
-  "/reports/usage",
+  "/reports/entity_page_views",
   "/reports/referents_by_specialty"
 ]
 

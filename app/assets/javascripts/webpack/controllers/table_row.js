@@ -66,7 +66,15 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       </tr>
     );
   }
-  else if (matchedRoute(model) === "/reports/usage") {
+  else if (matchedRoute(model) === "/reports/entity_page_views") {
+    return(
+      <tr key={decoratedRecord.reactKey}>
+        <td dangerouslySetInnerHTML={{__html: decoratedRecord.raw.link}}/>
+        <td key="count">{ decoratedRecord.raw.usage }</td>
+      </tr>
+    )
+  }
+  else if (matchedRoute(model) === "/reports/pageviews_by_user") {
     return(
       <tr>
         <td key="name">

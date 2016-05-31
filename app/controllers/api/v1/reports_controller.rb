@@ -21,8 +21,8 @@ module Api
         ))
       end
 
-      def usage
-        authorize! :view_report, :usage
+      def entity_page_views
+        authorize! :view_report, :entity_page_views
 
         if current_user.as_admin? &&
           params[:division_id] != "0" &&
@@ -32,7 +32,7 @@ module Api
         end
 
         render json: {
-          rows: WebUsageReport.call(
+          recordsToDisplay: EntityPageViews.call(
             month_key: params[:month_key],
             division_id: params[:division_id],
             record_type: params[:record_type].underscore.to_sym

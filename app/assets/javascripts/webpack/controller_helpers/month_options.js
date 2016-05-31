@@ -16,6 +16,13 @@ const AbbreviatedMonths = {
   12: "Dec"
 }
 
+export const toDate = (option) => {
+  return(new Date(
+    option.slice(0, 4),
+    (parseInt(option.slice(4, 6)) - 1)
+  ));
+}
+
 export const labelMonthOption = (monthKey) => {
   const month = AbbreviatedMonths[(parseInt(monthKey.slice(4, 6)))];
   const year = monthKey.slice(0, 4);
@@ -36,7 +43,7 @@ const monthOptions = (startYear, startMonth) => {
       var endMonthForYear = (new Date).getMonth() + 2;
     }
     else {
-      var endMonthForYear = 12;
+      var endMonthForYear = 13;
     }
 
     return _.range(

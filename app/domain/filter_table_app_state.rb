@@ -44,7 +44,7 @@ class FilterTableAppState < ServiceObject
         favorites: {
           contentItems: current_user.favorite_content_items.pluck(:id)
         },
-        role: current_user.role
+        role: current_user.as_role
       }
     end
   end

@@ -10,8 +10,8 @@ import { showingOtherSpecializations } from "controller_helpers/filter_messages"
 import _ from "lodash";
 
 const TableHeading = ({model, dispatch}) => {
-  if(matchedRoute(model) === "/reports/usage"){
-    return <span></span>
+  if(matchedRoute(model) === "/reports/entity_page_views"){
+    return <thead></thead>
   }
   else {
     return(

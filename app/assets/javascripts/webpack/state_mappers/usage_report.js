@@ -73,7 +73,7 @@ var generateQuery = function(state: Object, dispatch: Function): Function {
   return function(triggeringUpdate) {
     var _triggeringUpdate = triggeringUpdate || {};
 
-    $.get("/api/v1/reports/usage", _.assign(
+    $.get("/api/v1/reports/entity_page_views", _.assign(
       {},
       currentParams,
       triggeringUpdate

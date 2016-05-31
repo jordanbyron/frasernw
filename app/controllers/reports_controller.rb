@@ -4,7 +4,7 @@ class ReportsController < ApplicationController
     :sessions,
     :user_ids,
     :referents_by_specialty,
-    :usage
+    :entity_page_views
   ]
 
   def index
@@ -90,10 +90,10 @@ class ReportsController < ApplicationController
     }
   end
 
-  def usage
+  def entity_page_views
     @layout_heartbeat_loader = false
 
-    authorize! :view_report, :usage
+    authorize! :view_report, :entity_page_views
 
     @init_data = {
       app: {

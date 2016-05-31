@@ -154,7 +154,7 @@ export const cities = memoizeSubkeyedFn(
       _.includes(referralCityIds(model), subKey)
     );
   }
-)
+);
 
 export const isPublic = factory({
   key: "isPublic",

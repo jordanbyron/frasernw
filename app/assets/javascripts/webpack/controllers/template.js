@@ -23,6 +23,8 @@ import { memoizePerRender } from "utils"
 import SpecializationFilterMessage from "controllers/specialization_filter_message";
 import CityFilterPills from "controllers/city_filter_pills";
 import Lists from "controllers/lists";
+import Disclaimer from "controllers/disclaimer";
+import GreyAnnotation from "controllers/grey_annotation";
 
 const Template = ({model, dispatch}) => {
   if(isLoaded(model)) {
@@ -53,7 +55,7 @@ const isLoaded = (model) => {
       return model.app.currentUser;
     case "/reports/referents_by_specialty":
       return model.app.currentUser;
-    case "/reports/usage":
+    case "/reports/entity_page_views":
       return model.app.currentUser;
     default:
       return true;
@@ -110,12 +112,14 @@ const Main = ({model, dispatch}) => {
       <PageTitle model={model} dispatch={dispatch}/>
       <Subtitle model={model} dispatch={dispatch}/>
       <ResultSummary model={model} dispatch={dispatch}/>
+      <Disclaimer model={model}/>
       <SpecializationFilterMessage model={model} dispatch={dispatch}/>
       <CityFilterPills model={model} dispatch={dispatch}/>
       <Table model={model} dispatch={dispatch}/>
       <InlineArticles model={model} dispatch={dispatch}/>
-      <Lists model={model} dispatch={dispatch}/> 
+      <Lists model={model} dispatch={dispatch}/>
       <CategoryLinkController model={model} dispatch={dispatch}/>
+      <GreyAnnotation model={model} dispatch={dispatch}/>
     </div>
   );
 }

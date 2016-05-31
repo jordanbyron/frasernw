@@ -18,7 +18,7 @@ const Subtitle = ({model, dispatch}) => {
 
 const label = (model) => {
   switch(matchedRoute(model)){
-  case "/reports/usage":
+  case "/reports/entity_page_views":
     return labelMonthOption(monthValue(model));
   }
 }
