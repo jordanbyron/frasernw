@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  divisionScope as divisionScopeValue,
-  entityType as entityTypeValue
-} from "controller_helpers/filter_values";
+import * as filterValues from "controller_helpers/filter_values";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import { toSentence } from "utils";
 
@@ -34,13 +31,23 @@ const label = (model) => {
       return recordShownByPage.name;
     }
   case "/reports/referents_by_specialty":
-    if (parseInt(divisionScopeValue(model)) === 0) {
+    if (parseInt(filterValues.divisionScope(model)) === 0) {
       var scope = "Pathways";
+      var count = model.
+        app[filterValues.entityType(model)].
+        pwPipe(_.values).
+        length;
     } else {
-      var scope = model.app.divisions[divisionScopeValue(model)].name;
+      var scope = model.app.divisions[filterValues.divisionScope(model)].name;
+      var count = model.
+        app[filterValues.entityType(model)].
+        pwPipe(_.values).
+        filter((referent) => {
+          return _.includes(referent.divisionIds, parseInt(filterValues.divisionScope(model)));
+        }).length;
     }
 
-    return `${scope} ${_.capitalize(entityTypeValue(model))} (${"TODO"} total)`;
+    return `${scope} ${_.capitalize(filterValues.entityType(model))} (${count} total)`;
   case "/latest_updates":
     let divisionNames = model.ui.divisionIds.map((id) => {
       return model.app.divisions[id].name;
@@ -48,18 +55,18 @@ const label = (model) => {
 
     return `Latest Specialist and Clinic Updates for ${toSentence(divisionNames)}`;
   case "/reports/usage":
-    if (parseInt(divisionScopeValue(model)) === 0) {
+    if (parseInt(filterValues.divisionScope(model)) === 0) {
       var scopeLabel = "by Page Views";
     }
     else {
       var scopeLabel = "by " +
-        model.app.divisions[divisionScopeValue(model)].name +
+        model.app.divisions[filterValues.divisionScope(model)].name +
         " Users' Page Views"
     }
 
     return (
       "Top " +
-      _.startCase(entityTypeValue(model)) +
+      _.startCase(filterValues.entityType(model)) +
       " " +
       scopeLabel
     );
