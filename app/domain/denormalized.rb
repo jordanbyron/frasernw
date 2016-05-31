@@ -267,7 +267,7 @@ module Denormalized
         memo.merge(procedure.id => {
           nameRelativeToParents: procedure.try(:name_relative_to_parents),
           name: procedure.name,
-          specializationIds: procedure.procedure_specializations(&:specialization_id),
+          specializationIds: procedure.procedure_specializations.map(&:specialization_id),
           customWaittime: {
             specialists: procedure.specialist_wait_time,
             clinics: procedure.clinic_wait_time
