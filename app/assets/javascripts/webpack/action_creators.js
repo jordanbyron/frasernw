@@ -196,3 +196,24 @@ export function toggleSpecializationFilter(dispatch, model, proposed) {
     proposed: proposed
   });
 }
+
+export const toggleUpdateVisibility = (dispatch, update) => {
+  const updateIdentifiers = _.omit(update, "markup", "hidden", "manual");
+  const params = _.assign(
+    {},
+    updateIdentifiers,
+    { hide: !update.hidden }
+  );
+
+  dispatch({
+    type: "TOGGLE_UPDATE_VISIBILITY",
+    update: updateIdentifiers,
+    hide: !update.hidden
+  });
+
+  $.ajax({
+    url: `/latest_updates/toggle_visibility`,
+    type: "PATCH",
+    data: {update: params }
+  })
+};

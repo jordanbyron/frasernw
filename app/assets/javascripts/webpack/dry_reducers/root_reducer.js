@@ -27,8 +27,31 @@ const ui = (model = {}, action) => {
       location: location(model.location, action),
       isBreadcrumbDropdownOpen: isBreadcrumbDropdownOpen(model.isBreadcrumbDropdownOpen, action),
       reducedView: reducedView(model.reducedView, action),
-      tabs: tabs(model.tabs, action)
+      tabs: tabs(model.tabs, action),
+      latestUpdates: latestUpdates(model.latestUpdates, action),
+      persistentConfig: model.persistentConfig
     };
+  }
+}
+
+const latestUpdates = (model, action) => {
+  switch(action.type){
+  case "TOGGLE_UPDATE_VISIBILITY":
+    const toUpdate = _.find(model, _.matches(action.update))
+    const toUpdateIndex = _.findIndex(model, _.matches(action.update))
+    const updated = _.assign(
+      {},
+      toUpdate,
+      { hidden: action.hide }
+    );
+
+    const newUpdates = _.clone(model);
+
+    newUpdates[toUpdateIndex] = updated;
+
+    return newUpdates;
+  default:
+    return model;
   }
 }
 

@@ -28,7 +28,12 @@ export const collectionShownName = ((model) => {
 }).pwPipe(memoizePerRender)
 
 export const unscopedCollectionShown = ((model) => {
-  return model.app[collectionShownName(model)].pwPipe(_.values);
+  if (matchedRoute(model) === "/latest_updates") {
+    return model.ui.latestUpdates;
+  }
+  else {
+    return model.app[collectionShownName(model)].pwPipe(_.values);
+  }
 }).pwPipe(memoizePerRender)
 
 export const scopedByRouteAndTab = ((model) => {

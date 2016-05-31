@@ -20,10 +20,13 @@ class LatestUpdatesController < ApplicationController
         )
       },
       ui: {
-        divisionIds: @divisions.map(&:id),
-        canHide: ((current_user.as_admin? && current_user.as_divisions.include?(@divisions.first)) || current_user.as_super_admin?),
-        latestUpdates: LatestUpdates.for(:index, @divisions),
-        hasBeenInitialized: false
+        persistentConfig: {
+          divisionIds: @divisions.map(&:id),
+          canHide: ((current_user.as_admin? &&
+            current_user.as_divisions.include?(@divisions.first)) ||
+            current_user.as_super_admin?)
+        },
+        latestUpdates: LatestUpdates.for(:index, @divisions)
       }
     }
 

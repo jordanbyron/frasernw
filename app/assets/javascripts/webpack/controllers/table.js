@@ -69,7 +69,8 @@ const ROUTES_IMPLEMENTING = [
   "/content_categories/:id",
   "/reports/pageviews_by_user",
   "/reports/entity_page_views",
-  "/reports/referents_by_specialty"
+  "/reports/referents_by_specialty",
+  "/latest_updates"
 ];
 
 export default Table;

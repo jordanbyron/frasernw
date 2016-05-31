@@ -14,7 +14,7 @@ const GreyAnnotation = ({model}) => {
     );
   }
   else {
-
+    return <noscript/>
   }
 }
 

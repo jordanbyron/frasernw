@@ -30,7 +30,12 @@ const TableRows = (model, dispatch) => {
 const decorate = (record, model) => {
   let decorated = { raw: record };
 
-  decorated.reactKey = `${record.collectionName}${record.id}`;
+  if (matchedRoute(model) === "/latest_updates") {
+    decorated.reactKey = _.values(_.omit(record, "markup")).join(".")
+  }
+  else {
+    decorated.reactKey = `${record.collectionName}${record.id}`;
+  }
 
   if(_.includes(["/specialties/:id", "/areas_of_practice/:id", "/content_categories/:id"],
     matchedRoute(model))) {

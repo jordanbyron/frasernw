@@ -65,6 +65,11 @@ export const sidebarFilterKeys = ((model) => {
       "divisionScope"
     ];
   }
+  else if (matchedRoute(model) === "/latest_updates"){
+    return [
+      "showHiddenUpdates"
+    ];
+  }
   else {
     return [];
   }

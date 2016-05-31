@@ -237,6 +237,15 @@ const sidebarFilters = {
         parseInt(filterValues.divisionScope(model))
       );
     }
+  },
+  showHiddenUpdates: {
+    isActivated: function(model) {
+      return !filterValues.showHiddenUpdates(model)
+        || model.app.currentUser.role === "user";
+    },
+    predicate: function(record) {
+      return !record.hidden;
+    }
   }
 }
 

@@ -10,7 +10,7 @@ import { showingOtherSpecializations } from "controller_helpers/filter_messages"
 import _ from "lodash";
 
 const TableHeading = ({model, dispatch}) => {
-  if(matchedRoute(model) === "/reports/entity_page_views"){
+  if(_.includes(["/reports/entity_page_views", "/latest_updates"], matchedRoute(model))){
     return <thead></thead>
   }
   else {

@@ -28,7 +28,7 @@ const HiddenUpdatesFilter = ({model, dispatch}) => {
 
 const shouldShow = (model) => {
   return matchedRoute(model) === "/latest_updates" &&
-    model.ui.canHide
+    model.ui.persistentConfig.canHide
 }
 
 export default HiddenUpdatesFilter;

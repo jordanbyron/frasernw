@@ -8,6 +8,8 @@ import SharedCareIcon from "component_helpers/icons/shared_care";
 import FavoriteIcon from "controllers/icons/favorite";
 import EmailIcon from "component_helpers/icons/email";
 import FeedbackIcon from "controllers/icons/feedback";
+import HideToggle from "controllers/hide_toggle";
+import HiddenBadge from "component_helpers/hidden_badge";
 import * as filterValues from "controller_helpers/filter_values";
 
 
@@ -84,8 +86,27 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       </tr>
     );
   }
-};
+  else if (matchedRoute(model) === "/latest_updates"){
+    if (model.ui.persistentConfig.canHide){
+      var className = "latest_updates__update--editable";
+    }
+    else {
+      var className = "";
+    }
 
+    return(
+      <tr>
+        <td className={className}>
+          <div className="latest_updates__update_text">
+            <span dangerouslySetInnerHTML={{__html: decoratedRecord.raw.markup}}/>
+            <HiddenBadge isHidden={decoratedRecord.raw.hidden}/>
+          </div>
+          <HideToggle update={decoratedRecord.raw} model={model} dispatch={dispatch}/>
+        </td>
+      </tr>
+    )
+  }
+};
 
 const ContentItemTitle = ({decoratedRecord}) => {
   return(

@@ -49,7 +49,7 @@ const label = (model) => {
 
     return `${scope} ${_.capitalize(filterValues.entityType(model))} (${count} total)`;
   case "/latest_updates":
-    let divisionNames = model.ui.divisionIds.map((id) => {
+    let divisionNames = model.ui.persistentConfig.divisionIds.map((id) => {
       return model.app.divisions[id].name;
     });
 
