@@ -7,7 +7,9 @@ import FilterRadioButtons from "controllers/filter_radio_buttons";
 
 const SpecializationsFilters = ({model, dispatch}) => {
   if (matchedRoute(model) === "/content_categories/:id" ||
-    matchedRoute(model) === "/hospitals/:id") {
+    matchedRoute(model) === "/hospitals/:id" ||
+    matchedRoute(model) === "/languages/:id") {
+      
     return(
       <FilterGroup
         title={"Specialties"}

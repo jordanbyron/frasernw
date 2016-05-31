@@ -14,7 +14,8 @@ const recordsToDisplay = ((model) => {
       "/content_categories/:id",
       "/reports/referents_by_specialty",
       "/latest_updates",
-      "/hospitals/:id"
+      "/hospitals/:id",
+      "/languages/:id"
     ], matchedRoute(model))) {
 
     if (matchedRoute(model) === "/specialties/:id" &&

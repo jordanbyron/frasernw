@@ -249,6 +249,7 @@ module Denormalized
     languages: Proc.new do
       Language.all.inject({}) do |memo, language|
         memo.merge(language.id => {
+          id: language.id,
           name: language.name
         })
       end

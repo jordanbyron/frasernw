@@ -62,6 +62,8 @@ const isLoaded = (model) => {
       return model.app.currentUser;
     case "/hospitals/:id":
       return model.app.specialists && model.app.currentUser;
+    case "/languages/:id":
+      return model.app.specialists && model.app.currentUser;
     default:
       return true;
   }
@@ -130,7 +132,7 @@ const Main = ({model, dispatch}) => {
 }
 
 const UpperWhitePanel = ({model}) => {
-  if(matchedRoute(model) === "/hospitals/:id"){
+  if(_.includes(["/hospitals/:id", "/languages/:id"], matchedRoute(model))){
     return(
       <div className="content-wrapper">
         <PageTitle label={pageTitleLabel(model)}/>

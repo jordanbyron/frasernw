@@ -74,16 +74,19 @@ const sidebarFilterSummaries = {
   respondsWithin: {
     label: function(model) {
       return ("respond to referrals " +
-        model.app.respondsWithinLabels[filterValues.respondsWithin(model)]);
+        model.
+          app.
+          respondsWithinSummaryLabels[filterValues.respondsWithin(model)]
+      );
     },
     placement: "trailing"
   },
   sex: {
     label: function(model) {
-      if (filterValues.sexes(model, "male")) {
+      if (filterValues.sex(model, "male")) {
         return "male";
       }
-      else if (filterValues.sexes(model, "female")) {
+      else if (filterValues.sex(model, "female")) {
         return "female";
       }
     },

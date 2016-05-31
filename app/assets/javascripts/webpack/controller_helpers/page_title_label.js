@@ -18,6 +18,8 @@ const pageTitleLabel = (model) => {
     }
   case "/hospitals/:id":
     return recordShownByPage(model).name;
+  case "/languages/:id":
+    return recordShownByPage(model).name;
   case "/reports/referents_by_specialty":
     if (parseInt(filterValues.divisionScope(model)) === 0) {
       var scope = "Pathways";

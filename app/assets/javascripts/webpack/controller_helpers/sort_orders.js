@@ -8,7 +8,8 @@ const sortOrders = (model) => {
     "/specialties/:id",
     "/areas_of_practice/:id",
     "/content_categories/:id",
-    "/hospitals/:id"
+    "/hospitals/:id",
+    "/languages/:id"
   ], matchedRoute(model))) {
 
     return reversed(model);

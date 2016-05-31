@@ -11,7 +11,9 @@ class LanguagesController < ApplicationController
 
   def show
     @language = Language.find(params[:id])
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    @init_data = {
+      app: FilterTableAppState.call(current_user: current_user)
+    }
   end
 
   def new

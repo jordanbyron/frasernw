@@ -70,20 +70,25 @@ const NavTabController = ({model, dispatch, tabKey, label}) => {
 
 
 const contentCategoryTabs = (model, dispatch) => {
-  return(
-    _.values(contentCategoriesShowingTabs(model)).map((category) => {
-      const _key = tabKey("contentCategory", category.id)
-      return(
-        <NavTabController
-          label={category.name}
-          tabKey={_key}
-          key={_key}
-          model={model}
-          dispatch={dispatch}
-        />
-      );
-    })
-  );
+  if(matchedRoute(model) === "/languages/:id"){
+    return []
+  }
+  else {
+    return(
+      _.values(contentCategoriesShowingTabs(model)).map((category) => {
+        const _key = tabKey("contentCategory", category.id)
+        return(
+          <NavTabController
+            label={category.name}
+            tabKey={_key}
+            key={_key}
+            model={model}
+            dispatch={dispatch}
+          />
+        );
+      })
+    );
+  }
 }
 
 const contentCategoriesShowingTabs = (model) => {

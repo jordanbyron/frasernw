@@ -19,7 +19,8 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
     "/specialties/:id",
     "/areas_of_practice/:id",
     "/content_categories/:id",
-    "/hospitals/:id"
+    "/hospitals/:id",
+    "/languages/:id"
   ], matchedRoute(model))) {
     if(_.includes(["specialists", "clinics"], collectionShownName(model))) {
       if(showingMultipleSpecializations(model)) {

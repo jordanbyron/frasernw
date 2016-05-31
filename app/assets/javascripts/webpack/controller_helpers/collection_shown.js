@@ -71,6 +71,11 @@ export const matchesRoute = (matchedRoute, recordShownByPage, record) => {
       recordShownByPage.subtreeIds,
       record.categoryId
     )
+  case "/languages/:id":
+    return _.includes(
+      record.languageIds,
+      recordShownByPage.id
+    );
   default:
     return true;
   }
