@@ -27,6 +27,7 @@ import GreyAnnotation from "controllers/grey_annotation";
 import PageTitle from "component_helpers/page_title";
 import pageTitleLabel from "controller_helpers/page_title_label";
 import ShowHospital from "controllers/show_hospital";
+import Pagination from "controllers/pagination";
 
 const Template = ({model, dispatch}) => {
   if(isLoaded(model)) {
@@ -64,6 +65,8 @@ const isLoaded = (model) => {
       return model.app.specialists && model.app.currentUser;
     case "/languages/:id":
       return model.app.specialists && model.app.currentUser;
+    case "/news_items":
+      return model.app.newsItems;
     default:
       return true;
   }
@@ -80,6 +83,7 @@ const showInlineArticles = (model) => {
 const usesSidebarLayout = ((model) => {
   return !((matchedRoute(model) === "/latest_updates" &&
     model.app.currentUser.role === "admin") ||
+    matchedRoute(model) === "/news_items" ||
     showInlineArticles(model))
 }).pwPipe(memoizePerRender)
 
@@ -127,12 +131,13 @@ const Main = ({model, dispatch}) => {
       <Lists model={model} dispatch={dispatch}/>
       <CategoryLinkController model={model} dispatch={dispatch}/>
       <GreyAnnotation model={model} dispatch={dispatch}/>
+      <Pagination model={model} dispatch={dispatch}/>
     </div>
   );
 }
 
 const UpperWhitePanel = ({model}) => {
-  if(_.includes(["/hospitals/:id", "/languages/:id"], matchedRoute(model))){
+  if(_.includes(["/hospitals/:id", "/languages/:id", "/news_items"], matchedRoute(model))){
     return(
       <div className="content-wrapper">
         <PageTitle label={pageTitleLabel(model)}/>

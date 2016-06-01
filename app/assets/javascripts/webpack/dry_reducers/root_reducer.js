@@ -79,8 +79,18 @@ const tab = (model = {}, action) => {
     specializationFilterActivated: specializationFilterActivated(
       model.specializationFilterActivated,
       action
-    )
+    ),
+    currentPage: currentPage(model.currentPage, action)
   };
+}
+
+const currentPage = (model, action) => {
+  switch(action.type){
+  case "SET_PAGE":
+    return action.proposed;
+  default:
+    return model;
+  }
 }
 
 const specializationFilterActivated = (model, action) => {

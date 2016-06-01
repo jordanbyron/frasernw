@@ -10,6 +10,7 @@ import showingMultipleSpecializations
 import recordsToDisplay from "controller_helpers/records_to_display";
 import * as filterValues from "controller_helpers/filter_values";
 import sidebarFilters from "controller_helpers/sidebar_filters";
+import { paginate } from "controller_helpers/pagination";
 import _ from "lodash";
 
 const TableRows = (model, dispatch) => {
@@ -17,6 +18,13 @@ const TableRows = (model, dispatch) => {
     map((record) => decorate(record, model)).
     pwPipe((decoratedRecords) => {
       return _.sortByOrder(decoratedRecords, sortIteratees(model), sortOrders(model));
+    }).pwPipe((decoratedRecords) => {
+      if(matchedRoute(model) === "/news_items") {
+        return paginate(model, decoratedRecords)
+      }
+      else {
+        return decoratedRecords;
+      }
     }).map((decoratedRecord) => {
       return(
         <TableRow key={decoratedRecord.reactKey}
@@ -78,6 +86,9 @@ const decorate = (record, model) => {
             return _.includes(referent.specializationIds, record.id);
           }
         }).length
+  }
+  else if (matchedRoute(model) === "/news_items"){
+    decorated.ownerDivisionName = model.app.divisions[record.ownerDivisionId].name;
   }
 
   return decorated;

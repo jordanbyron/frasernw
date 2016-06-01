@@ -72,7 +72,8 @@ const ROUTES_IMPLEMENTING = [
   "/reports/referents_by_specialty",
   "/latest_updates",
   "/hospitals/:id",
-  "/languages/:id"
+  "/languages/:id",
+  "/news_items"
 ];
 
 export default Table;

@@ -16,6 +16,9 @@ export const collectionShownName = ((model) => {
     else if (selectedTabKey(model).includes("contentCategory")){
       return "contentItems";
     }
+    else if (matchedRoute(model) === "/news_items"){
+      return "newsItems";
+    }
   }
   else if (matchedRoute(model) === "/content_categories/:id"){
     return "contentItems";
@@ -102,6 +105,16 @@ export const matchesTab = (record, contentCategories, tabKey, recordShownByPage)
       contentCategory.subtreeIds,
       record.categoryId
     );
+  }
+  else if (tabKey === "ownedNewsItems"){
+    return recordShownByPage.id === record.ownerDivisionId;
+  }
+  else if (tabKey === "showingNewsItems"){
+    return record.isCurrent &&
+      _.includes(record.divisionDisplayIds, recordShownByPage.id)
+  }
+  else if (tabKey === "availableNewsItems"){
+    return recordShownByPage.id !== record.ownerDivisionId
   }
 };
 

@@ -33,6 +33,30 @@ const NavTabsController = ({model, dispatch}) => {
         </NavTabs>
       );
     }
+    else if (matchedRoute(model) === "/news_items"){
+      return(
+        <NavTabs>
+          <NavTabController
+            label="Owned (editable)"
+            tabKey="ownedNewsItems"
+            model={model}
+            dispatch={dispatch}
+          />
+          <NavTabController
+            label="Currently Showing"
+            tabKey="showingNewsItems"
+            model={model}
+            dispatch={dispatch}
+          />
+          <NavTabController
+            label="Available from Other Divisions"
+            tabKey="availableNewsItems"
+            model={model}
+            dispatch={dispatch}
+          />
+        </NavTabs>
+      );
+    }
     else {
       return(
         <NavTabs>

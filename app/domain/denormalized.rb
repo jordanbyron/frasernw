@@ -354,7 +354,8 @@ module Denormalized
           divisionDisplayIds: item.divisions.map(&:id),
           isCurrent: item.current?,
           startDate: item.start_date,
-          endDate: item.end_date
+          endDate: item.end_date,
+          collectionName: "newsItems"
         })
       end
     end

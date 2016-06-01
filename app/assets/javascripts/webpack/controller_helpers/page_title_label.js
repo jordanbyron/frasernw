@@ -60,6 +60,9 @@ const pageTitleLabel = (model) => {
       " " +
       scopeLabel
     );
+  case "/news_items":
+    return "News Items for " +
+      model.app.divisions[model.ui.persistentConfig.divisionId].name;
   }
 }
 

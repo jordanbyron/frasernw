@@ -83,6 +83,15 @@ const cellConfigs = (model) => {
       { label: "", key: "FEEDBACK" }
     ];
   }
+  else if (matchedRoute(model) === "/news_items"){
+    return [
+      { label: "Title", key: "TITLE" },
+      { label: "Division", key: "DIVISION"},
+      { label: "Type", key: "TYPE"},
+      { label: "Date", key: "DATE"},
+      { label: "", key: "ADMIN"}
+    ];
+  }
   else if (matchedRoute(model) === "/reports/pageviews_by_user"){
     return [
       { label: "User", key: "USERS" },

@@ -217,3 +217,11 @@ export const toggleUpdateVisibility = (dispatch, update) => {
     data: {update: params }
   })
 };
+
+export const setPage = (dispatch, proposed, model) => {
+  dispatch({
+    type: "SET_PAGE",
+    proposed: proposed,
+    tabKey: selectedTabKey(model)
+  })
+}

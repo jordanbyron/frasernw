@@ -46,6 +46,12 @@ const unboundIteratees = (model) => {
     return [ name ];
   case "ENTITY_TYPE":
     return [ _.property("count") ];
+  case "DATE":
+    return [ _.property("raw.startDate") ];
+  case "DIVISION":
+    return [ _.property("ownerDivisionName") ];
+  case "TYPE":
+    return [ _.property("raw.type") ];
   default:
     return [(decoratedRecord, model) => decoratedRecord.id];
   }

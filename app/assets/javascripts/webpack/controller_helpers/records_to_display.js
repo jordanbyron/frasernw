@@ -1,6 +1,11 @@
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
-import { matchesTab, matchesRoute, collectionShownName, unscopedCollectionShown }
-  from "controller_helpers/collection_shown";
+import {
+  matchesTab,
+  matchesRoute,
+  collectionShownName,
+  unscopedCollectionShown,
+  scopedByRouteAndTab
+} from "controller_helpers/collection_shown";
 import { showingOtherSpecializations } from "controller_helpers/filter_messages";
 import { selectedTabKey, isTabbedPage } from "controller_helpers/tab_keys";
 import matchesPreliminaryFilters from "controller_helpers/matches_preliminary_filters";
@@ -15,7 +20,8 @@ const recordsToDisplay = ((model) => {
       "/reports/referents_by_specialty",
       "/latest_updates",
       "/hospitals/:id",
-      "/languages/:id"
+      "/languages/:id",
+      "/news_items"
     ], matchedRoute(model))) {
 
     if (matchedRoute(model) === "/specialties/:id" &&
@@ -39,7 +45,8 @@ const recordsToDisplay = ((model) => {
           )) && matchesSidebarFilters(record, model)
       })
     }
-  } else {
+  }
+  else {
     return model.ui.recordsToDisplay;
   }
 }).pwPipe(memoizePerRender)

@@ -11,6 +11,7 @@ import EmailIcon from "component_helpers/icons/email";
 import FeedbackIcon from "controllers/icons/feedback";
 import HideToggle from "controllers/hide_toggle";
 import HiddenBadge from "component_helpers/hidden_badge";
+import NewsItemRow from "controllers/table_row/news_items";
 import * as filterValues from "controller_helpers/filter_values";
 
 
@@ -110,6 +111,15 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
         </td>
       </tr>
     )
+  }
+  else if (matchedRoute(model) === "/news_items") {
+    return(
+      <NewsItemRow
+        decoratedRecord={decoratedRecord}
+        model={model}
+        dispatch={dispatch}
+      />
+    );
   }
 };
 

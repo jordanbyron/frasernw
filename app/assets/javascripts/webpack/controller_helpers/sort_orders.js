@@ -21,6 +21,12 @@ const sortOrders = (model) => {
     return reversed(model);
   }
 
+  if(matchedRoute(model) === "/news_items" &&
+    _.includes(["TYPE", "DIVISION", "TITLE"], selectedTableHeadingKey(model))) {
+
+    return reversed(model);
+  }
+
   return matching(model);
 };
 

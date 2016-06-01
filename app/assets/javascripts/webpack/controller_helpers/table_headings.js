@@ -24,6 +24,9 @@ const defaultHeadingKey = ((model) => {
   else if (matchedRoute(model) === "/reports/referents_by_specialty"){
     return "SPECIALTY";
   }
+  else if (matchedRoute(model) === "/news_items"){
+    return "DATE";
+  }
 })
 
 export const headingArrowDirection = ((model) => {
