@@ -14,7 +14,6 @@ import HiddenBadge from "component_helpers/hidden_badge";
 import NewsItemRow from "controllers/table_row/news_items";
 import * as filterValues from "controller_helpers/filter_values";
 
-
 const TableRow = ({model, dispatch, decoratedRecord}) => {
   if(_.includes([
     "/specialties/:id",
@@ -30,7 +29,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
             <ReferentName decoratedRecord={decoratedRecord}/>
             <ReferentSpecializations decoratedRecord={decoratedRecord} model={model}/>
             <td><ReferentStatusIcon model={model} record={decoratedRecord.raw}/></td>
-            <td>{ labelReferentWaittime(decoratedRecord.raw, model) }</td>
+            <td>{ decoratedRecord.waittime }</td>
             <td>{ decoratedRecord.cityNames }</td>
           </tr>
         );
@@ -40,7 +39,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
           <tr>
             <ReferentName decoratedRecord={decoratedRecord}/>
             <td><ReferentStatusIcon model={model} record={decoratedRecord.raw}/></td>
-            <td>{ labelReferentWaittime(decoratedRecord.raw, model) }</td>
+            <td>{ decoratedRecord.waittime }</td>
             <td>{ decoratedRecord.cityNames }</td>
           </tr>
         );
@@ -158,27 +157,5 @@ const ReferentName = ({decoratedRecord}) => {
     </td>
   );
 }
-
-
-const customWaittimeProcedureId = (model) => {
-  // return activatedProcedures[0];
-
-  return 0;
-}
-
-const shouldUseCustomWaittime = (model) => {
-  // return (activatedProcedures.length === 1 &&
-  //   nestedProcedureIds[activatedProcedures[0]].customWaittime[panelTypeKey]),
-
-  return false;
-}
-
-const labelReferentWaittime = (record, model) => {
-  if(shouldUseCustomWaittime(model)){
-    return (model.waittimeHash[record.customWaittimes[customWaittimeProcedureId(model)]] || "");
-  } else {
-    return (record.waittime || "");
-  }
-};
 
 export default TableRow;

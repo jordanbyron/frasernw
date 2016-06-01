@@ -62,7 +62,7 @@ const referrals = (decoratedRecord, model) => {
 };
 
 const waittimes = (decoratedRecord, model) => {
-  return (WAITTIME_RANKINGS[decoratedRecord.raw.waittime] || 99);
+  return (WAITTIME_RANKINGS[decoratedRecord.waittime] || 99);
 };
 
 const cityPriority = (decoratedRecord, model) => {

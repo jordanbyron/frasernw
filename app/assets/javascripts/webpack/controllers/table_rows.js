@@ -11,6 +11,8 @@ import recordsToDisplay from "controller_helpers/records_to_display";
 import * as filterValues from "controller_helpers/filter_values";
 import sidebarFilters from "controller_helpers/sidebar_filters";
 import { paginate } from "controller_helpers/pagination";
+import { shouldUseCustomWaittime, customWaittimeProcedureId }
+  from "controller_helpers/custom_waittimes";
 import _ from "lodash";
 
 const TableRows = (model, dispatch) => {
@@ -64,6 +66,7 @@ const decorate = (record, model) => {
       decorated.cityNames = record.cityIds.map((id) => {
         return model.app.cities[id].name;
       }).sort().join(" and ");
+      decorated.waittime = labelReferentWaittime(record, model);
     }
     else if (collectionShownName(model) === "contentItems") {
       decorated.subcategoryName =
@@ -92,6 +95,16 @@ const decorate = (record, model) => {
   }
 
   return decorated;
+};
+
+const labelReferentWaittime = (record, model) => {
+  if(shouldUseCustomWaittime(model)){
+    return model.
+      app.
+      waittimeHash[record.customWaittimes[customWaittimeProcedureId(model)]];
+  } else {
+    return record.waittime;
+  }
 };
 
 export default TableRows;

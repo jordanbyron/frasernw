@@ -28,6 +28,7 @@ import PageTitle from "component_helpers/page_title";
 import pageTitleLabel from "controller_helpers/page_title_label";
 import ShowHospital from "controllers/show_hospital";
 import Pagination from "controllers/pagination";
+import CustomWaittimeMessage from "controllers/custom_waittime_message";
 
 const Template = ({model, dispatch}) => {
   if(isLoaded(model)) {
@@ -126,6 +127,7 @@ const Main = ({model, dispatch}) => {
       <Disclaimer model={model}/>
       <SpecializationFilterMessage model={model} dispatch={dispatch}/>
       <CityFilterPills model={model} dispatch={dispatch}/>
+      <CustomWaittimeMessage model={model} dispatch={dispatch}/>
       <Table model={model} dispatch={dispatch}/>
       <InlineArticles model={model} dispatch={dispatch}/>
       <Lists model={model} dispatch={dispatch}/>
