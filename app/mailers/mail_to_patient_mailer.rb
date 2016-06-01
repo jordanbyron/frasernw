@@ -4,6 +4,10 @@ class MailToPatientMailer < ActionMailer::Base
   def mail_to_patient(sc_item, user, patient_email)
     @sc_item = sc_item
     @user = user
+    @markdown_content =
+      if @sc_item.markdown_content.present?
+        BlueCloth.new(@sc_item.markdown_content).to_html.html_safe
+      end
     mail(
       to: patient_email,
       from: 'noreply@pathwaysbc.ca',
