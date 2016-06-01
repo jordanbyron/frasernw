@@ -29,8 +29,43 @@ const ui = (model = {}, action) => {
       reducedView: reducedView(model.reducedView, action),
       tabs: tabs(model.tabs, action),
       latestUpdates: latestUpdates(model.latestUpdates, action),
-      persistentConfig: model.persistentConfig
+      persistentConfig: model.persistentConfig,
+      feedbackModal: feedbackModal(model.feedbackModal, action)
     };
+  }
+}
+
+const feedbackModal = (model = {}, action) => {
+  return {
+    state: feedbackModalState(model.state, action),
+    item: feedbackModalItem(model.item, action)
+  }
+}
+
+const feedbackModalState = (model, action) => {
+  switch(action.type){
+  case "SET_FEEDBACK_MODAL_STATE":
+    return action.proposed;
+  case "OPEN_FEEDBACK_MODAL":
+    return "PRE_SUBMIT";
+  default:
+    return model;
+  }
+}
+
+const feedbackModalItem = (model, action) => {
+  switch(action.type){
+  case "SET_FEEDBACK_MODAL_STATE":
+    if(action.proposed === "CLOSED") {
+      return {};
+    }
+    else {
+      return model;
+    }
+  case "OPEN_FEEDBACK_MODAL":
+    return action.item;
+  default:
+    return model;
   }
 }
 

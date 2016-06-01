@@ -22,7 +22,7 @@ const FeedbackIcon = ({record, dispatch}) => {
 };
 
 const transformCollectionName = (collectionName) => {
-  if (collectionName === "contentItem"){
+  if (collectionName === "contentItems"){
     return "ScItem";
   }
 }

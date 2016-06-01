@@ -171,12 +171,12 @@ export function parseLocation(dispatch){
   })
 }
 
-export const openFeedbackModal = (dispatch, id, itemType, modalTitle) => {
+export const openFeedbackModal = (dispatch, id, type, modalTitle) => {
   dispatch({
     type: "OPEN_FEEDBACK_MODAL",
-    data: {
+    item: {
       id: id,
-      itemType: itemType,
+      type: type,
       title: modalTitle
     }
   });
@@ -223,5 +223,46 @@ export const setPage = (dispatch, proposed, model) => {
     type: "SET_PAGE",
     proposed: proposed,
     tabKey: selectedTabKey(model)
+  })
+}
+
+const submittingFeedback = (dispatch) => {
+  dispatch({
+    type: "SET_FEEDBACK_MODAL_STATE",
+    proposed: "SUBMITTING"
+  })
+}
+
+const doneSubmittingFeedback = (dispatch) => {
+  dispatch({
+    type: "SET_FEEDBACK_MODAL_STATE",
+    proposed: "POST_SUBMIT"
+  })
+}
+
+export const submitFeedback = (dispatch, model, comment) => {
+  console.log(model.ui.feedbackModal.item);
+
+  if(!comment){
+    return;
+  } else {
+    $.post("/feedback_items", {
+      feedback_item: {
+        item_id: model.ui.feedbackModal.item.id,
+        item_type: model.ui.feedbackModal.item.type,
+        feedback: comment
+      }
+    }).success(() => {
+      doneSubmittingFeedback(dispatch);
+    })
+
+    submittingFeedback(dispatch);
+  }
+}
+
+export const closeFeedbackModal = (dispatch) => {
+  dispatch({
+    type: "SET_FEEDBACK_MODAL_STATE",
+    proposed: "CLOSED"
   })
 }

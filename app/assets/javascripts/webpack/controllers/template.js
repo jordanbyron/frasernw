@@ -29,6 +29,7 @@ import pageTitleLabel from "controller_helpers/page_title_label";
 import ShowHospital from "controllers/show_hospital";
 import Pagination from "controllers/pagination";
 import CustomWaittimeMessage from "controllers/custom_waittime_message";
+import FeedbackModal from "controllers/feedback_modal";
 
 const Template = ({model, dispatch}) => {
   if(isLoaded(model)) {
@@ -38,6 +39,7 @@ const Template = ({model, dispatch}) => {
         <UpperWhitePanel model={model}/>
         <NavTabs model={model} dispatch={dispatch}/>
         <LowerWhitePanel model={model} dispatch={dispatch}/>
+        <FeedbackModal model={model} dispatch={dispatch}/>
       </div>
     );
   }
