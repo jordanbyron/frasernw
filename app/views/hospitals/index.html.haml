@@ -4,60 +4,48 @@
 
   %h2 Hospitals
 
-  - if current_user.as_super_admin?
-    - divisions = Division.all
-  - else
-    - divisions = current_user.as_divisions
+  - first_division = current_user.as_divisions.first
 
-  - if divisions.length > 1
+  .tabbable
+    %ul#content_tabs.nav.nav-tabs
+      - Division.all.each do |division|
+        %li
+          %a{"href" => "##{division.id}_tab",
+            "data-toggle" => "tab"}= division.name
 
-    - first_division = divisions.first
-    .tabbable
-      %ul#content_tabs.nav.nav-tabs
-        - divisions.each do |division|
-          %li
-            %a{"href" => "##{division.id}_tab", "data-toggle" => "tab"}= division.name
+    .tab-content
+      - Division.all.each do |division|
+        .tab-pane{id: "#{division.id}_tab"}
+          - hospitals = Hospital.in_divisions([division])
+          %table.table.table-condensed.table-striped
+            %tr
+              %th{style: "width:50%"} Hospital
+              %th{style: "width:50%"} City
+              %th.admin
 
-      .tab-content
-        - divisions.each do |division|
-          .tab-pane{:id => "#{division.id}_tab"}
-            - hospitals = Hospital.in_divisions([division])
-            %table.table.table-condensed.table-striped
+            - hospitals.each do |hospital|
               %tr
-                %th{:style => "width:50%"} Hospital
-                %th{:style => "width:50%"} City
-                %th.admin
+                %td= link_to hospital.name, hospital_path(hospital)
+                %td= hospital.city.present? ? hospital.city.name : ""
+                %td.admin.btn-group
+                  - if can? :update, hospital
+                    = link_to edit_hospital_path(hospital),
+                      class: "btn btn-mini" do
+                      %i.icon-pencil
+                      %span= " Edit"
+                  - if can? :destroy, hospital
+                    = link_to hospital,
+                      data: { confirm: "Delete #{hospital.name}?" },
+                      method: :delete,
+                      class: "btn btn-mini" do
+                      %i.icon-trash
+                      %span= " Delete"
 
-              - hospitals.each do |hospital|
-                %tr
-                  %td= link_to hospital.name, hospital_path(hospital), :class => 'ajax'
-                  %td= hospital.city.present? ? hospital.city.name : ""
-                  %td.admin.btn-group
-                    - if can? :update, hospital
-                      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_hospital_path(hospital), :class => "btn btn-mini ajax")
-                    - if can? :destroy, hospital
-                      = link_to("<i class='icon-trash'></i>".html_safe + " Delete", hospital, :data => { :confirm => "Delete #{hospital.name}?" }, :method => :delete, :class => "btn btn-mini")
-
-  - else
-
-    %table.table.table-condensed.table-striped
-      %tr
-        %th{:style => "width:50%"} Hospital
-        %th{:style => "width:50%"} City
-        %th.admin
-
-      - Hospital.all.each do |hospital|
-        %tr
-          %td= link_to hospital.name, hospital_path(hospital), :class => 'ajax'
-          %td= hospital.city.present? ? hospital.city.name : ""
-          %td.admin.btn-group
-            - if can? :update, hospital
-              = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_hospital_path(hospital), :class => "btn btn-mini ajax")
-            - if can? :destroy, hospital
-              = link_to("<i class='icon-trash'></i>".html_safe + " Delete", hospital, :data => { :confirm => "Delete #{hospital.name}?" }, :method => :delete, :class => "btn btn-mini")
-
-  %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Hospital", new_hospital_path, :class => "btn ajax")
-
+  %p.admin
+    = link_to new_hospital_path,
+      class: "btn" do
+      %i.icon-plus-sign
+      %span= " New Hospital"
 
 :javascript
   window.pathways.setupTabHistory();

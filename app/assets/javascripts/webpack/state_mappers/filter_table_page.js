@@ -352,7 +352,8 @@ var PANEL_PROPS_GENERATORS = {
       rowGenerator: "referents",
       rowGeneratorConfig: {
         includingOtherSpecialties: shouldIncludeOtherSpecializations(filtered, filterValues, state.ui.pageType, _filterValueOverrides),
-        customWaittime: _customWaittimeConfig
+        customWaittime: _customWaittimeConfig,
+        specializationId: state.ui.specializationId
       }
     };
 

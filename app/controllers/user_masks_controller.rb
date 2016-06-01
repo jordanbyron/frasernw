@@ -9,13 +9,7 @@ class UserMasksController < ApplicationController
       division_ids: current_user.divisions.map(&:id)
     )
 
-    @cancel_text = begin
-      if @user_mask.persisted?
-        "Return to Default View"
-      else
-        "Cancel"
-      end
-    end
+    @cancel_text = cancel_text(@user_mask)
   end
 
   def create
@@ -39,9 +33,12 @@ class UserMasksController < ApplicationController
       @user_mask.update_attributes(params_to_validate)
 
       redirect_to redirection_path,
-        notice: "Now viewing Pathways as #{current_user.as_role_label.indefinitize} in the following divisions: #{current_user.as_divisions.to_sentence}."
+        notice: "Now viewing Pathways as #{current_user.as_role_label.indefinitize} in "\
+          "the following divisions: #{current_user.as_divisions.to_sentence}."
     else
       flash[:notice] = "Invalid divisions or role."
+
+      @cancel_text = cancel_text(@user_mask)
 
       render :new
     end
@@ -53,13 +50,14 @@ class UserMasksController < ApplicationController
 
 
     user_mask = current_user.mask
-    params_to_validated = params.slice(:role, :division_ids)
+    params_to_validate = params.slice(:role, :division_ids)
 
-    if ValidateUserMask.call(existing_mask: user_mask, params: params_to_validated)
-      user_mask.update_attributes(params_to_validated)
+    if ValidateUserMask.call(existing_mask: user_mask, params: params_to_validate)
+      user_mask.update_attributes(params_to_validate)
 
       redirect_to request.referrer,
-        notice: "Now viewing Pathways as #{current_user.as_role_label.indefinitize} in the following divisions: #{current_user.as_divisions.to_sentence}."
+        notice: "Now viewing Pathways as #{current_user.as_role_label.indefinitize} in "\
+          "the following divisions: #{current_user.as_divisions.to_sentence}."
     else
       redirect_to new_user_mask_path,
         notice: "Invalid division or role"
@@ -79,4 +77,15 @@ class UserMasksController < ApplicationController
     redirect_to redirection_path,
       notice: "Now viewing Pathways with your default role and divisions."
   end
+
+  private
+
+  def cancel_text(user_mask)
+    if @user_mask.persisted?
+      "Return to Default View"
+    else
+      "Cancel"
+    end
+  end
+
 end

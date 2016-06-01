@@ -52,7 +52,7 @@
     class: "button--mask_warning"
 
   = link_to "Return to Default View",
-    user_masks_path,
+    user_masks_path(mask_request_origin: Base64.encode64(mask_request_origin) ),
     method: :delete,
     class: "button--mask_warning"
 

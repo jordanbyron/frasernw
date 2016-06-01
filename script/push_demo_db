@@ -1,0 +1,5 @@
+#!/bin/bash
+
+heroku pg:reset DATABASE --app pathwaysbcdemo --confirm pathwaysbcdemo
+heroku pg:push pathways_development DATABASE_URL --app pathwaysbcdemo
+heroku run rake reset_pkey_sequence --app pathwaysbcdemo

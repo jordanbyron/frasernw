@@ -14,7 +14,10 @@ class ValidateUserMask < ServiceObject
   end
 
   def role_valid?
-    new_attrs[:role].present? && existing_mask.user.can_assign_roles.include?(new_attrs[:role])
+    (
+      new_attrs[:role].present? &&
+        existing_mask.user.can_assign_roles.include?(new_attrs[:role])
+    )
   end
 
   def divisions_valid?

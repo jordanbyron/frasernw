@@ -43,7 +43,9 @@ class GenerateSpecialistCapacityInputs
     specializations.map do |specialization|
       {
         specialization_name: specialization.name,
-        capacities: capacity_inputs.select{|input| input[:specialization_id] == specialization.id}
+        capacities: capacity_inputs.select{ |input|
+          input[:specialization_id] == specialization.id
+        }
       }
     end
   end
@@ -64,15 +66,15 @@ class GenerateSpecialistCapacityInputs
     end
 
     {
-      :mapped => capacity.present?,
-      :name => procedure_specialization.procedure.name,
-      :specialization_id => procedure_specialization.specialization_id,
-      :id => procedure_specialization.id,
-      :investigations => capacity.present? ? capacity.investigation : "",
-      :custom_wait_time => procedure_specialization.specialist_wait_time?,
-      :waittime => capacity.present? ? capacity.waittime_mask : 0,
-      :lagtime => capacity.present? ? capacity.lagtime_mask : 0,
-      :offset => offset
+      mapped: capacity.present?,
+      name: procedure_specialization.procedure.name,
+      specialization_id: procedure_specialization.specialization_id,
+      id: procedure_specialization.id,
+      investigations: capacity.present? ? capacity.investigation : "",
+      custom_wait_time: procedure_specialization.specialist_wait_time?,
+      waittime: capacity.present? ? capacity.waittime_mask : 0,
+      lagtime: capacity.present? ? capacity.lagtime_mask : 0,
+      offset: offset
     }
   end
 end

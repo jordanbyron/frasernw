@@ -2,7 +2,7 @@ class SpecialistsEditorController < ApplicationController
   include ApplicationHelper
   skip_before_filter :require_authentication
   skip_authorization_check
-  before_filter :check_pending, :except => [:pending, :temp_edit, :temp_update]
+  before_filter :check_pending, except: [:pending, :temp_edit, :temp_update]
   before_filter :check_token
 
   def edit
@@ -25,13 +25,9 @@ class SpecialistsEditorController < ApplicationController
       @specialist,
       @specialist.specializations
     )
-    @view = @specialist.views.build(:notes => request.remote_ip)
+    @view = @specialist.views.build(notes: request.remote_ip)
     @view.save
-    if request.headers['X-PJAX']
-      render :template => 'specialists/edit', :layout => 'ajax'
-    else
-      render :template => 'specialists/edit'
-    end
+    render template: 'specialists/edit'
   end
 
   def update
@@ -52,7 +48,8 @@ class SpecialistsEditorController < ApplicationController
       end
     end
     review_item.set_edit_source!(current_user, params[:secret_token_id])
-    review_item.status = params[:no_updates] ? ReviewItem::STATUS_NO_UPDATES: ReviewItem::STATUS_UPDATES
+    review_item.status =
+      params[:no_updates] ? ReviewItem::STATUS_NO_UPDATES: ReviewItem::STATUS_UPDATES
     review_item.save
 
     BuildReviewItemNote.new(
@@ -68,12 +65,13 @@ class SpecialistsEditorController < ApplicationController
 
   def pending
     @specialist = Specialist.find(params[:id])
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def check_pending
     specialist = Specialist.find(params[:id])
-    if specialist.review_item.present? && (!current_user || (specialist.review_item.editor != current_user))
+    if specialist.review_item.present? && (
+      !current_user || (specialist.review_item.editor != current_user)
+    )
       redirect_to specialist_self_pending_path(id: specialist.id, token: params[:token])
     end
   end
@@ -90,7 +88,6 @@ class SpecialistsEditorController < ApplicationController
   end
 
   def build_specialist_offices
-    # build office & phone schedule.
     while @specialist.specialist_offices.length < Specialist::MAX_OFFICES
       so = @specialist.specialist_offices.build
       s = so.build_phone_schedule

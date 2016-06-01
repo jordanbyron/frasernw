@@ -3,15 +3,15 @@ class Language < ActiveRecord::Base
 
   include PaperTrailable
 
-  has_many :specialist_speaks, :dependent => :destroy
-  has_many :specialists, :through => :specialist_speaks
+  has_many :specialist_speaks, dependent: :destroy
+  has_many :specialists, through: :specialist_speaks
 
-  has_many :clinic_speaks, :dependent => :destroy
-  has_many :clinics, :through => :clinic_speaks
+  has_many :clinic_speaks, dependent: :destroy
+  has_many :clinics, through: :clinic_speaks
 
-  default_scope order('languages.name')
+  default_scope { order('languages.name') }
 
-  validates_presence_of :name, :on => :create, :message => "can't be blank"
+  validates_presence_of :name, on: :create, message: "can't be blank"
 
   def token
     if self.saved_token

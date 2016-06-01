@@ -80,7 +80,7 @@ class AddAssumedAreasofPractice < ActiveRecord::Migration
             ps.mapped = true
             ps.save
 
-          elsif !ProcedureSpecialization.find_by_procedure_id_and_specialization_id(p.id, s.id).assumed?
+          elsif !ProcedureSpecialization.find_by(procedure_id: p.id, specialization_id: s.id).assumed?
 
             #hmm....
             puts "#{procedure_name} already exists in #{specialization_name} but it isn't assumed"

@@ -14,7 +14,7 @@ class Division < ActiveRecord::Base
   has_many :division_referral_cities, dependent: :destroy
 
   # # returns all cities in division's local referral area
-  # e.g. returns true:  d.referral_cities === d.division_referral_cities.map{|drc| drc.city}
+  # e.g. d.referral_cities === d.division_referral_cities.map{|drc| drc.city}
   has_many :referral_cities, through: :division_referral_cities, source: :city
 
   has_many :division_referral_city_specializations,
@@ -41,24 +41,23 @@ class Division < ActiveRecord::Base
   has_many :primary_contacts,
     through: :division_primary_contacts,
     class_name: "User"
-  accepts_nested_attributes_for :division_primary_contacts, :allow_destroy => true
+  accepts_nested_attributes_for :division_primary_contacts, allow_destroy: true
 
   has_many :specialization_options, dependent: :destroy
 
   include PaperTrailable
 
-  default_scope order('divisions.name')
+  default_scope { order('divisions.name') }
 
-  validates_presence_of :name, :on => :create, :message => "can't be blank"
+  validates_presence_of :name, on: :create, message: "can't be blank"
 
-  # # # Cache actions
   after_commit :flush_cached_find
   after_commit :flush_cache
   after_touch  :flush_cached_find
   after_touch  :flush_cache
 
   def self.all_cached
-    Rails.cache.fetch([name, 'Division.all'], :expires_in => 8.hours) { all }
+    Rails.cache.fetch([name, 'Division.all'], expires_in: 8.hours) { all }
   end
 
   def self.standard
@@ -89,7 +88,7 @@ class Division < ActiveRecord::Base
     Rails.cache.delete([self.class.name, id])
   end
 
-  def flush_cache #called during after_commit or after_touch
+  def flush_cache
     Rails.cache.delete([self.class.name, "Division.all"])
     Division.all.each do |division|
       Rails.cache.delete([division.class.name, division.id])
@@ -99,8 +98,6 @@ class Division < ActiveRecord::Base
   def admins
     (users.admin + User.super_admin).uniq
   end
-
-  # # #
 
   def search_data
     @search_data ||= DivisionalSearchData.new(self)
@@ -112,7 +109,11 @@ class Division < ActiveRecord::Base
 
   def specializations_referred_to(city)
     Specialization.
-      joins({ division_referral_city_specializations: { division_referral_city: [:city, :division]}}).
+      joins({
+        division_referral_city_specializations: {
+          division_referral_city: [:city, :division]
+        }
+      }).
       where(cities: {id: city.id}).
       where(divisions: {id: self.id})
   end
@@ -152,12 +153,14 @@ class Division < ActiveRecord::Base
     @borrowed_sc_items ||= ScItem.shared_in_divisions([ self ])
   end
 
-  def refer_to_encompassed_cities(specialization)
+  def refer_to_encompassed_cities!(specialization)
     cities.each do |city|
       DivisionReferralCitySpecialization.find_or_create_by(
-        division: self,
         specialization: specialization,
-        city: city
+        division_referral_city: DivisionReferralCity.find_by(
+          city: city,
+          division: self
+        )
       )
     end
   end
@@ -182,7 +185,10 @@ class Division < ActiveRecord::Base
 
   def build_featured_contents!
     ScCategory.front_page.each do |category|
-      (FeaturedContent::MAX_FEATURED_ITEMS - featured_contents.in_category(category).count).times do
+      (
+        FeaturedContent::MAX_FEATURED_ITEMS -
+        featured_contents.in_category(category).count
+      ).times do
         featured_contents.build(sc_category_id: category.id)
       end
     end

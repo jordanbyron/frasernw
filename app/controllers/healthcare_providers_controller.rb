@@ -3,45 +3,44 @@ class HealthcareProvidersController < ApplicationController
 
   def index
     @healthcare_providers = HealthcareProvider.all
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def show
     @healthcare_provider = HealthcareProvider.find(params[:id])
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def new
     @healthcare_provider = HealthcareProvider.new
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def create
     @healthcare_provider = HealthcareProvider.new(params[:healthcare_provider])
     if @healthcare_provider.save
-      redirect_to @healthcare_provider, :notice => "Successfully created healthcare provider."
+      redirect_to @healthcare_provider,
+        notice: "Successfully created healthcare provider."
       else
-      render :action => 'new'
+      render action: 'new'
     end
   end
 
   def edit
     @healthcare_provider = HealthcareProvider.find(params[:id])
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def update
     @healthcare_provider = HealthcareProvider.find(params[:id])
     if @healthcare_provider.update_attributes(params[:healthcare_provider])
-      redirect_to @healthcare_provider, :notice  => "Successfully updated healthcare provider."
+      redirect_to @healthcare_provider,
+        notice: "Successfully updated healthcare provider."
       else
-      render :action => 'edit'
+      render action: 'edit'
     end
   end
 
   def destroy
     @healthcare_provider = HealthcareProvider.find(params[:id])
     @healthcare_provider.destroy
-    redirect_to healthcare_providers_url, :notice => "Successfully deleted healthcare provider."
+    redirect_to healthcare_providers_url,
+      notice: "Successfully deleted healthcare provider."
   end
 end

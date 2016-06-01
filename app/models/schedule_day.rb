@@ -4,11 +4,20 @@ class ScheduleDay < ActiveRecord::Base
   include PaperTrailable
 
   def time?
-    from.present? && to.present? && (from.hour != 0 || from.min != 0 || to.hour != 0 || to.min != 0)
+    from.present? &&
+    to.present? &&
+    (from.hour != 0 || from.min != 0 || to.hour != 0 || to.min != 0)
   end
 
   def break?
-    break_from.present? && break_to.present? && (break_from.hour != 0 || break_from.min != 0 || break_to.hour != 0 || break_to.min != 0)
+    break_from.present? &&
+    break_to.present? &&
+    (
+      break_from.hour != 0 ||
+      break_from.min != 0 ||
+      break_to.hour != 0 ||
+      break_to.min != 0
+    )
   end
 
   def time

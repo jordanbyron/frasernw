@@ -7,7 +7,11 @@ class FavoritesController < ApplicationController
     klass = params[:model].singularize.camelize.constantize
     item = klass.find params[:id]
 
-    f = Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type( current_user.id, params[:id], klass )
+    f = Favorite.find_by(
+      user_id: current_user.id,
+      favoritable_id: params[:id],
+      favoritable_type: klass
+    )
 
     if f.present?
       f.destroy
@@ -21,7 +25,7 @@ class FavoritesController < ApplicationController
     end
 
     respond_to do |format|
-      format.json { render :json => @favorited }
+      format.json { render json: @favorited }
     end
   end
 

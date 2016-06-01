@@ -35,15 +35,15 @@ class VersionsController < ApplicationController
     @is_version = true
 
     if SUPPORTED_KLASSES_FOR_SHOW.include?(klass)
-      render :template => "#{instance_name.pluralize}/show"
+      render template: "#{instance_name.pluralize}/show"
     else
       redirect_to root_url, notice: "Can't show this item"
     end
   end
 
   def show_all
-    @versions = Version.order('id desc').no_blacklist.paginate(:page => params[:page], :per_page => 300)
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    @versions =
+      Version.order('id desc').no_blacklist.paginate(page: params[:page], per_page: 300)
   end
 
   def revert
@@ -60,8 +60,12 @@ class VersionsController < ApplicationController
       end
     end
     link_name = params[:redo] == "true" ? "undo" : "redo"
-    link = view_context.link_to(link_name, revert_version_path(@version.next, :redo => !params[:redo]), :method => :post)
-    redirect_to :back, :notice => "Undid #{@version.event}. #{link}"
+    link = view_context.link_to(
+      link_name,
+      revert_version_path(@version.next, redo: !params[:redo]),
+      method: :post
+    )
+    redirect_to :back, notice: "Undid #{@version.event}. #{link}"
   end
 
 end

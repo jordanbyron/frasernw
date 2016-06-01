@@ -10,11 +10,26 @@ module Metrics
       @folder_path = folder_path
 
       if @divisions.any? && (@divisions != Division.all)
-        @division_label = @divisions.map{|d| d.name.gsub(/\s+/, "")}.join("_").gsub(/\W/, '-')
+        @division_label =
+          @divisions.map{|d| d.name.gsub(/\s+/, "")}.join("_").gsub(/\W/, '-')
         @specialists = Specialist.in_divisions(@divisions)
         @clinics = Clinic.in_divisions(@divisions)
-        @procedures = [@specialists + @clinics].flatten.inject([]){ |memo, s| memo.concat( s.procedures ) }.uniq
-        @specializations = Specialization.all.reject{ |s| [s.specialists.in_divisions(@divisions) + s.clinics.in_divisions(@divisions)].flatten.length == 0 }
+        @procedures =
+          [@specialists + @clinics].
+            flatten.
+            inject([]){ |memo, s| memo.concat( s.procedures ) }.
+            uniq
+        @specializations =
+          Specialization.
+            all.
+            reject{ |s|
+              [
+                s.specialists.in_divisions(@divisions) +
+                s.clinics.in_divisions(@divisions)
+              ].
+              flatten.
+              length == 0
+            }
         @hospitals = Hospital.in_divisions(@divisions)
       else
         @division_label = "All-Divisions"
@@ -58,10 +73,18 @@ module Metrics
         [
           "Areas of practice",
           @procedures.length,
-          @procedures.reject{|p| !p.procedure_specializations.first.focused?}.length,
-          @procedures.reject{|p| !p.procedure_specializations.first.nonfocused?}.length,
-          Procedure.all.reject{|p| !p.procedure_specializations.first.assumed_specialist?}.length,
-          Procedure.all.reject{|p| !p.procedure_specializations.first.assumed_clinic?}.length
+          @procedures.reject{ |p|
+            !p.procedure_specializations.first.focused?
+          }.length,
+          @procedures.reject{ |p|
+            !p.procedure_specializations.first.nonfocused?
+          }.length,
+          Procedure.all.reject{ |p|
+            !p.procedure_specializations.first.assumed_specialist?
+          }.length,
+          Procedure.all.reject{ |p|
+            !p.procedure_specializations.first.assumed_clinic?
+          }.length
         ],
         [
           ""
@@ -152,7 +175,11 @@ module Metrics
 
     def to_csv_file
       FileUtils.ensure_folder_exists("#{folder_path}/entitymetrics")
-      CSVReport::Service.new("#{folder_path}/entitymetrics/#{@division_label}_entity_metrics-#{DateTime.now.to_date.iso8601}.csv", (self.csv_stamp + self.data)).exec
+      CSVReport::Service.new(
+        "#{folder_path}/entitymetrics/#{@division_label}_entity_metrics-"\
+        "#{DateTime.now.to_date.iso8601}.csv",
+        (self.csv_stamp + self.data)
+      ).exec
     end
 
   end

@@ -4,7 +4,12 @@ class ImportSeeds < ServiceObject
 
     # get all our model classes
     Rails.application.eager_load!
-    table_klasses = Hash[ActiveRecord::Base.send(:descendants).collect{|c| [c.table_name, c.name]}]
+    table_klasses =
+      Hash[
+        ActiveRecord::Base.
+          send(:descendants).
+          collect{|c| [c.table_name, c.name]}
+      ]
 
     Dir[seeds_directory].each do |file_path|
       records = YAML.load_file(file_path)
@@ -40,7 +45,7 @@ class ImportSeeds < ServiceObject
 
   def import_demo_users!
     raw_dump =
-      `heroku run rails runner "ImportSeeds.dump_users!" --app pathwaysbcdev`
+      `heroku run rails runner "ImportSeeds.dump_users!" --app pathwaysbcdemo`
 
     parsed_dump = YAML.load(
       raw_dump[/(?<=START_DUMP)[^\e]+/m]
@@ -83,30 +88,36 @@ class ImportSeeds < ServiceObject
     latest_updates = []
 
     specialists = Specialist.
-      all.
-      select{|specialist| specialist.accepting_new_patients? }.
-      select{|specialist| specialist.cities.any? }.
+      select{ |specialist| specialist.accepting_new_patients? }.
+      select{ |specialist| specialist.cities.any? }.
       shuffle.
       first(1)
 
     specialists.each do |specialist|
-      office = "<a href='/specialists/#{specialist.id}'>#{specialist.name}'s office</a> (#{specialist.specializations.map(&:name).to_sentence})"
-      opened = "has recently opened in #{specialist.cities.map(&:name).to_sentence} and is accepting new referrals."
+      office =
+        "<a href='/specialists/#{specialist.id}'>#{specialist.name}'s office</a> "\
+        "(#{specialist.specializations.map(&:name).to_sentence})"
+      opened =
+        "has recently opened in #{specialist.cities.map(&:name).to_sentence} "\
+        "and is accepting new referrals."
 
       latest_updates << "#{office} #{opened}"
     end
 
     clinics = Clinic.
-      all.
-      select{|clinic| clinic.accepting_new_patients? }.
-      select{|clinic| clinic.cities.any? }.
+      select{ |clinic| clinic.accepting_new_patients? }.
+      select{ |clinic| clinic.cities.any? }.
       shuffle.
       first(1)
 
 
     clinics.each do |clinic|
-      clinic_location = "<a href='/clinics/#{clinic.id}'>#{clinic.name}</a> (#{clinic.specializations.map(&:name).to_sentence})"
-      opened = "has recently opened in #{clinic.cities.map(&:name).to_sentence} and is accepting new referrals."
+      clinic_location =
+        "<a href='/clinics/#{clinic.id}'>#{clinic.name}</a> "\
+        "(#{clinic.specializations.map(&:name).to_sentence})"
+      opened =
+        "has recently opened in #{clinic.cities.map(&:name).to_sentence} "\
+        "and is accepting new referrals."
 
       latest_updates << "#{clinic_location} #{opened}"
     end

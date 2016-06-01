@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160421004029) do
+ActiveRecord::Schema.define(version: 20160508212434) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -878,6 +878,7 @@ ActiveRecord::Schema.define(version: 20160421004029) do
     t.datetime "photo_updated_at"
     t.boolean  "is_gp",                      default: false
     t.boolean  "is_internal_medicine",       default: false
+    t.boolean  "sees_only_children",         default: false
   end
 
   add_index "specialists", ["referral_clinic_id"], name: "index_specialists_on_referral_clinic_id", using: :btree

@@ -9,7 +9,6 @@ class ReportsController < ApplicationController
 
   def index
     @reports = Report.all
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def page_views
@@ -152,43 +151,39 @@ class ReportsController < ApplicationController
     else
       @data = nil
     end
-
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def new
     @report = Report.new
     @ReportType = Report::ReportType
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def create
     @report = Report.new(params[:report])
     if @report.save
-      redirect_to @report, :notice => "Successfully created report."
+      redirect_to @report, notice: "Successfully created report."
       else
-      render :action => 'new'
+      render action: 'new'
     end
   end
 
   def edit
     @report = Report.find(params[:id])
     @ReportType = Report::ReportType
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def update
     @report = Report.find(params[:id])
     if @report.update_attributes(params[:report])
-      redirect_to @report, :notice  => "Successfully updated report."
+      redirect_to @report, notice: "Successfully updated report."
     else
-      render :action => 'edit'
+      render action: 'edit'
     end
   end
 
   def destroy
     @report = Report.find(params[:id])
     @report.destroy
-    redirect_to reports_url, :notice => "Successfully deleted report."
+    redirect_to reports_url, notice: "Successfully deleted report."
   end
 end

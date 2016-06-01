@@ -18,7 +18,7 @@ class SubscriptionActivity < PublicActivity::Activity
   def self.by_specializations(specializations)
 
     if specializations.present?
-      where(trackable_type: "ScItem" || "ScCategory").all
+      where(trackable_type: "ScItem" || "ScCategory")
     else
       scoped
     end
@@ -33,7 +33,7 @@ class SubscriptionActivity < PublicActivity::Activity
   end
 
   def self.all_resource_activities
-    by_target_type(Subscription.resource_update).all
+    by_target_type(Subscription.resource_update)
   end
 
   def type_mask_description_formatted
