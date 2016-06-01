@@ -11,6 +11,7 @@ import "core_extensions";
 import simpleBootstrapReact from "window_scripts/simple_bootstrap_react";
 import NewsItemsTable from "react_components/news_items_table";
 import attachSecretEditLinks from "window_scripts/secret_edit_links";
+import setupTabHistory from "window_scripts/setup_tab_history";
 import dryBootstrapReact from "dry_bootstrap_react";
 
 import Highcharts from "highcharts";
@@ -28,6 +29,7 @@ window.pathways.dryBootstrapReact = dryBootstrapReact;
 window.pathways.trackForm = require("./analytics_wrappers").trackForm;
 window.pathways.trackContentItem = require("./analytics_wrappers").trackContentItem;
 window.pathways.attachSecretEditLinks = attachSecretEditLinks;
+window.pathways.setupTabHistory = setupTabHistory;
 
 window.vendor = {}
 window.vendor._ = require("lodash");

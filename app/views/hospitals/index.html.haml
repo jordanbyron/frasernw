@@ -15,12 +15,12 @@
     .tabbable
       %ul#content_tabs.nav.nav-tabs
         - divisions.each do |division|
-          %li{:class => (division == first_division) && "active"}
+          %li
             %a{"href" => "##{division.id}_tab", "data-toggle" => "tab"}= division.name
 
       .tab-content
         - divisions.each do |division|
-          .tab-pane{:id => "#{division.id}_tab", :class => (division == first_division) && "active"}
+          .tab-pane{:id => "#{division.id}_tab"}
             - hospitals = Hospital.in_divisions([division])
             %table.table.table-condensed.table-striped
               %tr
@@ -57,3 +57,7 @@
               = link_to("<i class='icon-trash'></i>".html_safe + " Delete", hospital, :data => { :confirm => "Delete #{hospital.name}?" }, :method => :delete, :class => "btn btn-mini")
 
   %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Hospital", new_hospital_path, :class => "btn ajax")
+
+
+:javascript
+  window.pathways.setupTabHistory();

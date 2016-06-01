@@ -10,7 +10,7 @@
   .tabbable
     %ul#content_tabs.nav.nav-tabs
       - Division.all.each do |division|
-        %li{:class => (division == first_division) && "active"}
+        %li
           %a{"href" => "##{division.id}_tab", "data-toggle" => "tab"}= division.name
       %li
         %a{"href" => "#no_division_tab", "data-toggle" => "tab"} No Division
@@ -18,7 +18,7 @@
     .tab-content
       - Division.all.each do |division|
         - can_edit = user_divisions.include? division
-        .tab-pane{:id => "#{division.id}_tab", :class => (division == first_division) && "active"}
+        .tab-pane{:id => "#{division.id}_tab"}
           %table.table.table-condensed.table-striped
             - @specializations.each do |specialization|
               - clinics = specialization.clinics.in_divisions([division]).sort{ |a,b| a.name <=> b.name }
@@ -47,3 +47,7 @@
                 %td= link_to clinic.name, clinic_path(clinic), :class => 'ajax'
                 %td{style: "min-width: 60px"}
                   = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_clinic_path((clinic)), :class => "btn btn-mini ajax")
+
+
+:javascript
+  window.pathways.setupTabHistory();
