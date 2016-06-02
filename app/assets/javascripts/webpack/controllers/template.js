@@ -84,7 +84,7 @@ const showInlineArticles = (model) => {
 
 const usesSidebarLayout = ((model) => {
   return !((matchedRoute(model) === "/latest_updates" &&
-    model.app.currentUser.role === "admin") ||
+    model.app.currentUser.role === "user") ||
     matchedRoute(model) === "/news_items" ||
     showInlineArticles(model))
 }).pwPipe(memoizePerRender)
