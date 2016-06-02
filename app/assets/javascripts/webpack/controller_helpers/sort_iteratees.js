@@ -52,6 +52,8 @@ const unboundIteratees = (model) => {
     return [ _.property("ownerDivisionName") ];
   case "TYPE":
     return [ _.property("raw.type") ];
+  case "USERS":
+    return [ _.property("raw.name") ];
   default:
     return [(decoratedRecord, model) => decoratedRecord.id];
   }

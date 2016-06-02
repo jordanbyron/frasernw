@@ -54,13 +54,20 @@ const shouldShow = (model) => {
     return false;
   }
 
+  if (!isTableLoaded(model)) {
+    return false
+  }
+
   return true;
 }
 
 const isTableLoaded = (model) => {
-  // TODO
-
-  return true;
+  if(matchedRoute(model) === "/reports/pageviews_by_user"){
+    return model.ui.recordsToDisplay;
+  }
+  else {
+    return true
+  }
 }
 
 const ROUTES_IMPLEMENTING = [
