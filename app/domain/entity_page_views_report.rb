@@ -62,7 +62,9 @@ class EntityPageViewsReport < ServiceObject
       link: link_to(
         *LABEL_SERIALIZED_COLLECTIONS[row[:serialized_collection]].call(row)
       ),
-      usage: row[:usage]
+      usage: row[:usage],
+      collectionName: "pageViewData",
+      id: row[:record][:id]
     }
   end
 

@@ -9,14 +9,20 @@ import isDataDubious from "controller_helpers/dubious_data";
 
 const Table = ({model, dispatch}) => {
   if (shouldShow(model)){
-    return (
-      <table className="table">
-        <TableHeading model={model} dispatch={dispatch}/>
-        <tbody>
-          { TableRows(model, dispatch) }
-        </tbody>
-      </table>
-    );
+    if (isTableLoaded(model)){
+      return (
+        <table className="table">
+          <TableHeading model={model} dispatch={dispatch}/>
+          <tbody>
+            { TableRows(model, dispatch) }
+          </tbody>
+        </table>
+      );
+    }
+    else {
+      return <div style={{marginTop: "10px", marginBottom: "10px"}}>Loading...</div>;
+    }
+
   }
   else {
     return(<span></span>);
@@ -48,21 +54,17 @@ const shouldShow = (model) => {
   }
 
   if (matchedRoute(model) === "/reports/entity_page_views" &&
-    (!model.ui.recordsToDisplay ||
-      (isDataDubious(model) && model.app.currentUser.role !== "super"))) {
+      (isDataDubious(model) && model.app.currentUser.role !== "super")) {
 
     return false;
-  }
-
-  if (!isTableLoaded(model)) {
-    return false
   }
 
   return true;
 }
 
 const isTableLoaded = (model) => {
-  if(matchedRoute(model) === "/reports/pageviews_by_user"){
+  if(matchedRoute(model) === "/reports/pageviews_by_user" ||
+    matchedRoute(model) === "/reports/entity_page_views"){
     return model.ui.recordsToDisplay;
   }
   else {
