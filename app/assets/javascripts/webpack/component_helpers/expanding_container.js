@@ -10,7 +10,11 @@ const ExpandingContainer = React.createClass({
     var selectedInCurrentProps = this.props.expanded;
     var selectedInPrevProps = prevProps.expanded;
 
-    if (selectedInPrevProps == false && selectedInCurrentProps == true && this.props.children.length > 0) {
+    if (selectedInPrevProps == false &&
+        selectedInCurrentProps == true &&
+        this.props.children &&
+        this.props.children.length > 0) {
+          
       $(this.refs.container).slideDown();
     } else if (selectedInPrevProps == true && selectedInCurrentProps == false){
       $(this.refs.container).slideUp();

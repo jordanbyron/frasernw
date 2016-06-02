@@ -12,7 +12,7 @@ const unboundIteratees = (model) => {
   case "SPECIALTIES":
     return [ specializationNames ];
   case "REFERRALS":
-    if (model.app.currentUser.cityRankingCustomized) {
+    if (model.app.currentUser.cityRankingsCustomized) {
       return [
         referrals,
         cityPriority,

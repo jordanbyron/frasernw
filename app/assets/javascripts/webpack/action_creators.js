@@ -78,13 +78,6 @@ export function integrateLocalStorageData(dispatch, data) {
   });
 }
 
-export function toggleBreadcrumbDropdown(dispatch, isCurrentlyOpen){
-  dispatch({
-    type: "TOGGLE_BREADCRUMB_DROPDOWN",
-    newState: !isCurrentlyOpen
-  })
-};
-
 export function tabClicked(dispatch, model, tabKey) {
   dispatch({
     type: "TAB_CLICKED",
@@ -241,8 +234,6 @@ const doneSubmittingFeedback = (dispatch) => {
 }
 
 export const submitFeedback = (dispatch, model, comment) => {
-  console.log(model.ui.feedbackModal.item);
-
   if(!comment){
     return;
   } else {

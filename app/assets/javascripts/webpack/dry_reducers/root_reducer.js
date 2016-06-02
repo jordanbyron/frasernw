@@ -25,7 +25,10 @@ const ui = (model = {}, action) => {
       recordsToDisplay: recordsToDisplay(model.recordsToDisplay, action),
       selectedTableHeading: selectedTableHeading(model.selectedTableHeading, action),
       location: location(model.location, action),
-      isBreadcrumbDropdownOpen: isBreadcrumbDropdownOpen(model.isBreadcrumbDropdownOpen, action),
+      isBreadcrumbDropdownOpen: isBreadcrumbDropdownOpen(
+        model.isBreadcrumbDropdownOpen,
+        action
+      ),
       reducedView: reducedView(model.reducedView, action),
       tabs: tabs(model.tabs, action),
       latestUpdates: latestUpdates(model.latestUpdates, action),
@@ -172,10 +175,8 @@ const isBreadcrumbDropdownOpen = (model, action) => {
   switch(action.type){
   case "TOGGLE_BREADCRUMB_DROPDOWN":
     return action.newState;
-  case "LOCATION_CHANGED":
-    return false;
   default:
-    return model;
+    return false;
   }
 }
 

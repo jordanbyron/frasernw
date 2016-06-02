@@ -3,15 +3,12 @@ import React from "react";
 const EmailIcon = ({record}) => {
   if (record.canEmail){
     return(
-      <i
-        onClick={
-          function(){
-            window.location.href=`/content_items/${record.id}/email`
-          }
-        }
-        className="icon-envelope-alt icon-blue"
-        title="Email this item"
-      />
+      <a href={`/content_items/${record.id}/email`}>
+        <i
+          className="icon-envelope-alt icon-blue"
+          title="Email this item"
+        />
+      </a>
     );
   } else {
     return <noscript/>;

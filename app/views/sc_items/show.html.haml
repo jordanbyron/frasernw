@@ -22,7 +22,9 @@
 = render 'partials/specialization_dropdown_menu'
 
 - if specialization.present?
-  = render 'partials/specialization_nav', specialization: specialization, selected: "category_#{@sc_item.root_category.id}"
+  = render 'partials/specialization_nav',
+    specialization: specialization,
+    selected: "contentCategory#{@sc_item.root_category.id}"
 
 .content-wrapper.scm
 

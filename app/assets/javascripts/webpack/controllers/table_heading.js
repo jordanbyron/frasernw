@@ -8,6 +8,7 @@ import { collectionShownName, collectionShownPluralLabel }
 import { entityType } from "controller_helpers/filter_values";
 import showingMultipleSpecializations
   from "controller_helpers/showing_multiple_specializations";
+import { buttonIsh } from "stylesets";
 import _ from "lodash";
 
 const TableHeading = ({model, dispatch}) => {
@@ -17,7 +18,7 @@ const TableHeading = ({model, dispatch}) => {
   else {
     return(
       <thead>
-        <tr>
+        <tr style={buttonIsh}>
           { cells(model, dispatch) }
         </tr>
       </thead>

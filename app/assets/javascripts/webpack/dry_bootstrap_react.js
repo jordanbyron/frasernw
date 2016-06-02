@@ -15,7 +15,6 @@ import {
   parseLocation
 } from "action_creators";
 
-
 const dryBootstrapReact = function() {
   let middlewares = [];
 
@@ -55,6 +54,6 @@ const dryBootstrapReact = function() {
 
     requestDynamicData(store.getState(), store.dispatch);
   })
-}
+};
 
 export default dryBootstrapReact;

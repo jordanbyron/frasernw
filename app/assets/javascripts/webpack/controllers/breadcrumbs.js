@@ -1,6 +1,6 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import { recordShownByPage, matchedRoute } from "controller_helpers/routing";
-import { toggleBreadcrumbDropdown } from "action_creators";
 import _ from "lodash";
 
 const ROUTES_SHOWING = [
@@ -9,41 +9,57 @@ const ROUTES_SHOWING = [
   "/content_categories/:id"
 ]
 
-const Breadcrumbs = ({model, dispatch}) => {
-  if (_.includes(ROUTES_SHOWING, matchedRoute(model))){
-    return(
-      <div>
-        <ul id="specialties-menu">
-          <li className="dropdown" onClick={_.partial(
-            toggleBreadcrumbDropdown,
-            dispatch,
-            dropdownIsOpen(model))}
-          >
-            <a className="specialties-dropdown-toggle" href="javascript:void(0)">
-              <span>All Specialties</span>
-              <b className="caret"/>
-            </a>
-          </li>
-          <ParentSpecialtyBreadcrumb model={model}/>
-          <ParentProcedureBreadcrumb model={model} level={-2}/>
-          <ParentProcedureBreadcrumb model={model} level={-1}/>
-          <RecordShownBreadcrumb model={model}/>
-        </ul>
-        <BreadcrumbDropdown model={model} dispatch={dispatch}/>
-      </div>
-    );
+const Breadcrumbs = React.createClass({
+  getInitialState: function(){
+    return { dropdownIsOpen: false };
+  },
+  componentDidMount: function() {
+    $("body").click((e) => {
+      var domNode = ReactDOM.findDOMNode(this);
+      if(!domNode || !domNode.contains(e.target)){
+        this.setState({dropdownIsOpen: false})
+      }
+    })
+  },
+  toggle: function() {
+    this.setState({dropdownIsOpen: !this.state.dropdownIsOpen});
+  },
+  render: function() {
+    if (_.includes(ROUTES_SHOWING, matchedRoute(this.props.model))){
+      return(
+        <div>
+          <ul id="specialties-menu">
+            <li className="dropdown">
+              <a className="specialties-dropdown-toggle" href="javascript:void(0)" onClick={this.toggle}>
+                <span>All Specialties </span>
+                <b className="caret"/>
+              </a>
+            </li>
+            <ParentSpecialtyBreadcrumb model={this.props.model}/>
+            <ParentProcedureBreadcrumb model={this.props.model} level={-2}/>
+            <ParentProcedureBreadcrumb model={this.props.model} level={-1}/>
+            <RecordShownBreadcrumb model={this.props.model}/>
+          </ul>
+          <BreadcrumbDropdown
+            model={this.props.model}
+            dispatch={this.props.dispatch}
+            isOpen={this.state.dropdownIsOpen}
+          />
+        </div>
+      );
+    }
+    else {
+      return <span></span>;
+    }
   }
-  else {
-    return <span></span>;
-  }
-}
+})
 
 const dropdownIsOpen = (model) => {
   return _.get(model, [ "ui", "isBreadcrumbDropdownOpen" ], false);
 }
 
-const BreadcrumbDropdown = ({model, dispatch}) => {
-  if(dropdownIsOpen(model)) {
+const BreadcrumbDropdown = ({model, dispatch, isOpen}) => {
+  if(isOpen) {
     const height = _.ceil(model.app.specializations.length / 4);
 
     return (
@@ -200,7 +216,7 @@ const RecordShownBreadcrumb = ({model}) => {
   if (matchedRoute(model) === "/specialties/:id"){
     return(
       <li className={`subsequent ${inProgressClass(model, recordShownByPage(model))}`}>
-        <span>{ recordShownByPage(model).name }</span>
+        <span style={{marginLeft: "4px"}}>{ recordShownByPage(model).name }</span>
         <NewTag model={model} specialization={recordShownByPage(model)}/>
       </li>
     );

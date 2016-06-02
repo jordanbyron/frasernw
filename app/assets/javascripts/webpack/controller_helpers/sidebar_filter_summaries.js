@@ -39,13 +39,12 @@ const sidebarFilterSummaries = {
   teleserviceFeeTypes: {
     label: function(model) {
       const activatedList = activatedFilterSubkeys.teleserviceFeeTypes(model).
-        map((type) => model.app.teleserviceFeeTypes[type]).
-        pwPipe(utils.toSentence)
-
+        map((type) => model.app.teleserviceFeeTypes[type])
+        
       if (activatedList.length === 1) {
-        return `${activatedList} as a telehealth service`;
+        return `provide ${activatedList.pwPipe(utils.toSentence)} as a telehealth service`;
       } else {
-        return `${activatedList} as telehealth services`;
+        return `provide ${activatedList.pwPipe(utils.toSentence)} as telehealth services`;
       }
     },
     placement: "trailing"

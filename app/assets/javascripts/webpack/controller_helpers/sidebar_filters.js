@@ -19,8 +19,7 @@ const sidebarFilters = {
   },
   teleserviceRecipients: {
     isActivated: function(model) {
-      return activatedFilterSubkeys.teleserviceRecipients(model).pwPipe(_.some) &&
-        !activatedFilterSubkeys.teleserviceFeeTypes(model).pwPipe(_.some);
+      return activatedFilterSubkeys.teleserviceRecipients(model).pwPipe(_.some)
     },
     predicate: function(record, model) {
       const recordPerformsPatient = _.some(
