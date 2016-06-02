@@ -23,7 +23,6 @@ const ui = (model = {}, action) => {
   default:
     return {
       recordsToDisplay: recordsToDisplay(model.recordsToDisplay, action),
-      selectedTableHeading: selectedTableHeading(model.selectedTableHeading, action),
       location: location(model.location, action),
       isBreadcrumbDropdownOpen: isBreadcrumbDropdownOpen(
         model.isBreadcrumbDropdownOpen,
@@ -114,6 +113,7 @@ const tab = (model = {}, action) => {
       model.showUnfocusedProcedures,
       action
     ),
+    selectedTableHeading: selectedTableHeading(model.selectedTableHeading, action),
     specializationFilterActivated: specializationFilterActivated(
       model.specializationFilterActivated,
       action

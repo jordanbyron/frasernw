@@ -1,12 +1,13 @@
 import _ from "lodash";
 import { matchedRoute } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
+import { selectedTabKey } from "controller_helpers/tab_keys";
 import { memoizePerRender } from "utils";
 
 export const selectedTableHeadingKey = ((model) => {
   return _.get(
     model,
-    ["ui", "selectedTableHeading", "key"],
+    ["ui", "tabs", selectedTabKey(model), "selectedTableHeading", "key"],
     defaultHeadingKey(model)
   )
 })
@@ -30,5 +31,9 @@ const defaultHeadingKey = ((model) => {
 })
 
 export const headingArrowDirection = ((model) => {
-  return _.get(model, ["ui", "selectedTableHeading", "direction"], "DOWN");
+  return _.get(
+    model,
+    ["ui", "tabs", selectedTabKey(model), "selectedTableHeading", "direction"], 
+    "DOWN"
+  );
 })

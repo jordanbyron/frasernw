@@ -4,6 +4,7 @@ import { selectedTabKey, recordShownByTab } from "controller_helpers/tab_keys";
 import { memoizePerRender } from "utils";
 import { isTabbedPage } from "controller_helpers/tab_keys";
 import * as filterValues from "controller_helpers/filter_values";
+import _ from "lodash";
 
 export const collectionShownName = ((model) => {
   if (isTabbedPage(model)){
@@ -62,13 +63,14 @@ export const matchesRoute = (matchedRoute, recordShownByPage, record) => {
       record.specializationIds,
       recordShownByPage.id
     );
-  case "/procedures/:id":
-    // TODO: assumed
-
+  case "/areas_of_practice/:id":
     return _.includes(
       record.procedureIds,
       recordShownByPage.id
-    )
+    ) || _.intersection(
+      record.specializationIds,
+      recordShownByPage.assumedSpecializationId
+    ).pwPipe(_.any);
   case "/content_categories/:id":
     return _.includes(
       recordShownByPage.subtreeIds,

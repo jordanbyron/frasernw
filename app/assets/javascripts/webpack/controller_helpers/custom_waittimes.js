@@ -7,13 +7,15 @@ export const shouldUseCustomWaittime = ((model) => {
   switch(matchedRoute(model)){
   case "/specialties/:id":
     return activatedFilterSubkeys.procedures(model).length === 1 &&
-      (model.app.procedures[activatedFilterSubkeys.procedures(model)].
+      (model.app.procedures[activatedFilterSubkeys.procedures(model)[0]].
         customWaittime[collectionShownName(model)]);
   case "/areas_of_practice/:id":
     return ((recordShownByPage(model).customWaittime[collectionShownName(model)] &&
       activatedFilterSubkeys.procedures(model).length === 0) ||
       (!recordShownByPage(model).customWaittime[collectionShownName(model)] &&
-        activatedFilterSubkeys.procedures(model).length === 1));
+        activatedFilterSubkeys.procedures(model).length === 1 &&
+          (model.app.procedures[activatedFilterSubkeys.procedures(model)[0]].
+          customWaittime[collectionShownName(model)])));
   default:
     return false;
   }

@@ -112,7 +112,8 @@ const TableHeadingCell = ({model, dispatch, label, headingKey, classnamePrefix})
     sortByHeading,
     dispatch,
     headingKey,
-    selectedTableHeadingKey(model)
+    selectedTableHeadingKey(model),
+    model
   );
 
   return(

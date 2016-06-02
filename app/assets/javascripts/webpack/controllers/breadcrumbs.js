@@ -169,7 +169,7 @@ const ParentSpecialtyBreadcrumb = ({model}) => {
 
     return(
       <li className="subsequent specialty">
-        <span>{ label }</span>
+        <span style={{marginLeft: "4px"}}>{ label }</span>
       </li>
     );
   }
@@ -197,7 +197,7 @@ const ParentProcedureBreadcrumb = ({model, level}) => {
     if (procedureId) {
       return(
         <li className={`subsequent ${className}`}>
-          <span>
+          <span style={{marginLeft: "4px"}}>
             { model.app.procedures[procedureId].name }
           </span>
         </li>
@@ -224,7 +224,7 @@ const RecordShownBreadcrumb = ({model}) => {
   else if (matchedRoute(model) === "/areas_of_practice/:id"){
     return(
       <li className="subsequent">
-        <span>{ recordShownByPage(model).name }</span>
+        <span style={{marginLeft: "4px"}}>{ recordShownByPage(model).name }</span>
       </li>
     );
   }

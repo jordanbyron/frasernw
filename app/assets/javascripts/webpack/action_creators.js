@@ -56,9 +56,10 @@ export function parseRenderedData(dispatch) {
   });
 };
 
-export function sortByHeading(dispatch, key, currentKey) {
+export function sortByHeading(dispatch, key, currentKey, model) {
   dispatch({
     type: "SORT_BY_HEADING",
+    tabKey: selectedTabKey(model),
     currentKey: currentKey,
     key: key
   })
