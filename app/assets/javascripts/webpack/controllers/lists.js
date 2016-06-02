@@ -84,7 +84,16 @@ const List = ({specialization, model}) => {
 const referentsForSpecialization = (model, specialization) => {
   return recordsToDisplay(model).filter((record) => {
     return _.includes(record.specializationIds, specialization.id);
-  }).pwPipe((referents) => _.sortBy(referents, _.property("name")));
+  }).pwPipe((referents) => {
+    return _.sortBy(referents, (referent) => {
+      if(referent.collectionName === "specialists"){
+        return referent.lastName;
+      }
+      else {
+        return referent.name;
+      }
+    })
+  });
 };
 
 const shouldDisplay = (model) => {

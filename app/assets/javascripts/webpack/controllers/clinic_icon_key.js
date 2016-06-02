@@ -1,8 +1,9 @@
 import React from "react";
 import { collectionShownName } from "controller_helpers/collection_shown";
+import { matchedRoute } from "controller_helpers/routing";
 
 const ClinicIconKey = ({model}) => {
-  if(collectionShownName(model) === "clinics"){
+  if(shouldDisplay(model)){
     return(
       <div id="icon_key">
         <div className="title">Icon Key</div>
@@ -34,6 +35,18 @@ const ClinicIconKey = ({model}) => {
   else {
     return <noscript/>
   }
+}
+
+const ROUTES = [
+  "/specialties/:id",
+  "/areas_of_practice/:id",
+  "/hospitals/:id",
+  "/languages/:id"
+];
+
+const shouldDisplay = (model) => {
+  return _.includes(ROUTES, matchedRoute(model)) &&
+    collectionShownName(model) === "clinics"
 }
 
 export default ClinicIconKey;
