@@ -24,7 +24,6 @@ import CityFilterPills from "controllers/city_filter_pills";
 import Lists from "controllers/lists";
 import Disclaimer from "controllers/disclaimer";
 import GreyAnnotation from "controllers/grey_annotation";
-import PageTitle from "component_helpers/page_title";
 import pageTitleLabel from "controller_helpers/page_title_label";
 import ShowHospital from "controllers/show_hospital";
 import Pagination from "controllers/pagination";
@@ -144,7 +143,9 @@ const UpperWhitePanel = ({model}) => {
   if(_.includes(["/hospitals/:id", "/languages/:id", "/news_items"], matchedRoute(model))){
     return(
       <div className="content-wrapper">
-        <PageTitle label={pageTitleLabel(model)}/>
+        <h2>
+          { pageTitleLabel(model) }
+        </h2>
         <ShowHospital model={model}/>
       </div>
     );
@@ -162,7 +163,11 @@ const LowerPanelTitle = ({model}) => {
     "/latest_updates",
     "/reports/entity_page_views"
   ], matchedRoute(model))) {
-    return <PageTitle label={pageTitleLabel(model)}/>;
+    return(
+      <h2 style={{marginBottom: "10px"}}>
+        { pageTitleLabel(model) }
+      </h2>
+    )
   }
   else {
     return <noscript/>
