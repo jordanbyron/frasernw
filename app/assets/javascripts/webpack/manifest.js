@@ -8,11 +8,9 @@ import "es5-shim/es5-sham.js";
 import "console-polyfill";
 import "core_extensions";
 
-import simpleBootstrapReact from "window_scripts/simple_bootstrap_react";
-import NewsItemsTable from "react_components/news_items_table";
 import attachSecretEditLinks from "window_scripts/secret_edit_links";
 import setupTabHistory from "window_scripts/setup_tab_history";
-import dryBootstrapReact from "dry_bootstrap_react";
+import bootstrapReact from "bootstrap_react";
 
 import Highcharts from "highcharts";
 import "jquery-ujs";
@@ -22,9 +20,7 @@ import "jquery-ujs";
 
 window.pathways = window.pathways || {};
 
-window.pathways.bootstrapReact = require("./bootstrap_react");
-window.pathways.bootstrapNewsItems = simpleBootstrapReact(NewsItemsTable);
-window.pathways.dryBootstrapReact = dryBootstrapReact;
+window.pathways.bootstrapReact = bootstrapReact;
 
 window.pathways.trackForm = require("./analytics_wrappers").trackForm;
 window.pathways.trackContentItem = require("./analytics_wrappers").trackContentItem;

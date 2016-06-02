@@ -31,20 +31,6 @@ namespace :pathways do
           end
         end
       },
-      languages: -> {
-        Language.all.sort{ |a,b| a.id <=> b.id }.each do |l|
-          puts "Language #{l.id}"
-          ExpireFragment.call ROUTES.language_path(l)
-          HttpGetter.exec("languages/#{l.id}/#{l.token}/refresh_cache")
-        end
-      },
-      hospitals: -> {
-        Hospital.all.sort{ |a,b| a.id <=> b.id }.each do |h|
-          puts "Hospital #{h.id}"
-          ExpireFragment.call ROUTES.hospital_path(h)
-          HttpGetter.exec("hospitals/#{h.id}/#{h.token}/refresh_cache")
-        end
-      },
       clinics: -> {
         Clinic.all.sort{ |a,b| a.id <=> b.id }.each do |c|
           puts "Clinic #{c.id}"
