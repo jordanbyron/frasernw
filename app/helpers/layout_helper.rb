@@ -1,4 +1,3 @@
-# These helper methods can be called in your template to set variables to be used in the layout
 # This module should be included in all views globally,
 # to do so you may need to add this line to your ApplicationController
 #   helper :layout
@@ -18,7 +17,7 @@ module LayoutHelper
       "Pathways"
     elsif ENV['APP_NAME'] == "pathwaysbctest"
       "PW Test"
-    elsif ENV['APP_NAME'] == "pathwaysbcdev"
+    elsif ENV['APP_NAME'] == "pathwaysbcdemo"
       "PW Dev"
     end
   end

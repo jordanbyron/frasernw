@@ -1,9 +1,11 @@
 class NewsItem < ActiveRecord::Base
   include PublicActivity::Model
   include ActionView::Helpers::TextHelper
-  # not used as activity is created in controller
-  # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user} #PublicActivity gem callback method
-  has_many :activities, as: :trackable, class_name: 'SubscriptionActivity', dependent: :destroy
+
+  has_many :activities,
+    as: :trackable,
+    class_name: 'SubscriptionActivity',
+    dependent: :destroy
 
   validates :owner_division_id, presence: true
 
@@ -59,7 +61,9 @@ class NewsItem < ActiveRecord::Base
   end
 
   def copy_to(division, current_user)
-    return false unless current_user.as_super_admin? || current_user.as_divisions.include?(division)
+    return false unless (
+      current_user.as_super_admin? || current_user.as_divisions.include?(division)
+    )
 
     NewsItem.
       create(self.attributes.merge(owner_division_id: division.id)).
@@ -95,7 +99,11 @@ class NewsItem < ActiveRecord::Base
   end
 
   def date
-    if start_date_full.present? && end_date_full.present? && (start_date.to_s != end_date.to_s)
+    if (
+      start_date_full.present? &&
+      end_date_full.present? &&
+      (start_date.to_s != end_date.to_s)
+    )
       "#{start_date_full} - #{end_date_full}"
     elsif start_date_full.present?
       start_date_full
@@ -193,7 +201,7 @@ class NewsItem < ActiveRecord::Base
     TYPE_HASH.to_a.map {|k,v| [k.to_s, v.to_s.pluralize]}
   end
 
-  default_scope order('news_items.start_date DESC')
+  default_scope { order('news_items.start_date DESC') }
 
   def self.in_divisions(divisions)
     joins(:division_display_news_items).
@@ -221,9 +229,16 @@ class NewsItem < ActiveRecord::Base
   end
 
   def current?
-    (start_date.present? && end_date.present? && start_date <= Date.current && end_date >= Date.current) ||
-      (start_date.nil? && end_date.present? && end_date >= Date.current) ||
-      (end_date.nil? && start_date.present? && start_date >= Date.current)
+    (
+      start_date.present? &&
+      end_date.present? &&
+      start_date <= Date.current &&
+      end_date >= Date.current
+    ) || (
+      start_date.nil? && end_date.present? && end_date >= Date.current
+    ) || (
+      end_date.nil? && start_date.present? && start_date >= Date.current
+    )
   end
 
   def self.current

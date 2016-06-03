@@ -1,6 +1,17 @@
 class Report < ActiveRecord::Base
 
-  attr_accessible :name, :type_mask, :level_mask, :division_id, :city_id, :user_type_mask, :time_frame_mask, :start_date, :end_date, :by_user, :by_pageview, :only_shared_care
+  attr_accessible :name,
+    :type_mask,
+    :level_mask,
+    :division_id,
+    :city_id,
+    :user_type_mask,
+    :time_frame_mask,
+    :start_date,
+    :end_date,
+    :by_user,
+    :by_pageview,
+    :only_shared_care
 
   belongs_to :division
   belongs_to :city
@@ -34,7 +45,14 @@ class Report < ActiveRecord::Base
   USER_TYPE_HASH = {-1 => 'All Non-Admin Users', 0 => 'All Users' }.merge(User::TYPES)
 
   def user_type
-    if [ReportType::SPECIALIST_CONTACT_HISTORY, ReportType::SPECIALIST_WAIT_TIMES, ReportType::CLINIC_WAIT_TIMES, ReportType::ENTITY_STATS].include? type_mask
+    if (
+      [
+        ReportType::SPECIALIST_CONTACT_HISTORY,
+        ReportType::SPECIALIST_WAIT_TIMES,
+        ReportType::CLINIC_WAIT_TIMES,
+        ReportType::ENTITY_STATS
+      ].include? type_mask
+    )
       "N/A"
     else
       Report::USER_TYPE_HASH[user_type_mask]
@@ -90,7 +108,13 @@ class Report < ActiveRecord::Base
   end
 
   def time_frame_name
-    if [ReportType::SPECIALIST_WAIT_TIMES, ReportType::CLINIC_WAIT_TIMES, ReportType::ENTITY_STATS].include? type_mask
+    if (
+      [
+        ReportType::SPECIALIST_WAIT_TIMES,
+        ReportType::CLINIC_WAIT_TIMES,
+        ReportType::ENTITY_STATS
+      ].include? type_mask
+    )
       "N/A"
     elsif type_mask == ReportType::SPECIALIST_CONTACT_HISTORY
       TIME_FRAME_HASH[TimeFrame::ALL_TIME]

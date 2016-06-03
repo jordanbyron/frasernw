@@ -121,8 +121,7 @@ en:
         type_mask: "Content type"
         evidence_id: "Level of Evidence"
         url: "Content URL"
-        can_email_document: "Can email document to patient"
-        can_email_link: "Can email URL to patient"
+        can_email: "Can email content item to patient"
       specialist:
         firstname: "First name"
         lastname: "Last name"
@@ -139,6 +138,7 @@ en:
         hospital_clinic_details: "Additional details"
         is_gp: "Is a GP"
         is_internal_medicine: "Has a fellowship in General Internal Medicine and does not have an Internal Medicine Sub-Specialty fellowship"
+        sees_only_children: "Does not see adult patients"
         status_mask: "Current status"
         status_details: "Additional details (if any)"
         practise_limitations: "Other practice limitations (if any)"

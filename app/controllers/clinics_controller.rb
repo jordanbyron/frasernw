@@ -1,8 +1,8 @@
 class ClinicsController < ApplicationController
-  skip_before_filter :require_authentication, :only => :refresh_cache
-  load_and_authorize_resource :except => [:refresh_cache, :create]
-  before_filter :check_token, :only => :refresh_cache
-  skip_authorization_check :only => :refresh_cache
+  skip_before_filter :require_authentication, only: :refresh_cache
+  load_and_authorize_resource except: [:refresh_cache, :create]
+  before_filter :check_token, only: :refresh_cache
+  skip_authorization_check only: :refresh_cache
   include ApplicationHelper
 
   def index
@@ -11,7 +11,6 @@ class ClinicsController < ApplicationController
     else
       @specializations = Specialization.all
     end
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def show
@@ -31,10 +30,11 @@ class ClinicsController < ApplicationController
 
   def new
     @form_modifier = ClinicFormModifier.new(:new, current_user)
-    #specialization passed in to facilitate javascript "checking off" of starting speciality, since build below doesn't seem to work
+    # specialization passed in to facilitate javascript "checking off" of
+    # starting speciality, since build below doesn't seem to work
     @specialization = Specialization.find(params[:specialization_id])
     @clinic = Clinic.new
-    @clinic.clinic_specializations.build( :specialization_id => @specialization.id )
+    @clinic.clinic_specializations.build(specialization_id: @specialization.id)
     while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
       cl = @clinic.clinic_locations.build
       s = cl.build_schedule
@@ -53,7 +53,7 @@ class ClinicsController < ApplicationController
       [s.name, s.id]
     end
     @specializations_focuses = GenerateClinicFocusInputs.exec(nil, [@specialization])
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    BuildTeleservices.call(provider: @clinic)
   end
 
   def create
@@ -66,21 +66,38 @@ class ClinicsController < ApplicationController
         params[:focuses_mapped].select do |checkbox_key, value|
           value == "1"
         end.each do |checkbox_key, value|
-          focus = Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, checkbox_key)
+          focus = Focus.find_or_create_by(
+            clinic_id: @clinic.id,
+            procedure_specialization_id: checkbox_key
+          )
           focus.investigation = params[:focuses_investigations][checkbox_key]
-          focus.waittime_mask = params[:focuses_waittime][checkbox_key] if params[:focuses_waittime].present?
-          focus.lagtime_mask = params[:focuses_lagtime][checkbox_key] if params[:focuses_lagtime].present?
+          if params[:focuses_waittime].present?
+            focus.waittime_mask = params[:focuses_waittime][checkbox_key]
+          end
+          if params[:focuses_lagtime].present?
+            focus.lagtime_mask = params[:focuses_lagtime][checkbox_key]
+          end
           focus.save
 
-          #save any other focuses that have the same procedure and are in a specialization our clinic is in
-          focus.procedure_specialization.procedure.procedure_specializations.reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.map{ |ps2| Focus.find_or_create_by_clinic_id_and_procedure_specialization_id(@clinic.id, ps2.id) }.map{ |f| f.save }
+          # save any other focuses that have the same procedure and are in a
+          # specialization our clinic is in
+          focus.
+            procedure_specialization.
+            procedure.
+            procedure_specializations.
+            reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.
+            map{ |ps2| Focus.find_or_create_by(
+              clinic_id: @clinic.id,
+              procedure_specialization_id: ps2.id
+            ) }.
+            map{ |f| f.save }
         end
       end
 
       @clinic.save
-      redirect_to clinic_path(@clinic), :notice => "Successfully created #{@clinic.name}."
+      redirect_to clinic_path(@clinic), notice: "Successfully created #{@clinic.name}."
     else
-      render :action => 'new'
+      render action: 'new'
     end
   end
 
@@ -103,8 +120,9 @@ class ClinicsController < ApplicationController
       puts "locations #{@clinic.locations.length}"
     end
     @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
-    @specializations_focuses = GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
-    render :layout => 'ajax' if request.headers['X-PJAX']
+    @specializations_focuses =
+      GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
+    BuildTeleservices.call(provider: @clinic)
   end
 
   def update
@@ -116,9 +134,9 @@ class ClinicsController < ApplicationController
     if @clinic.update_attributes(parsed_params[:clinic])
       UpdateClinicFocuses.exec(@clinic, parsed_params)
       @clinic.save
-      redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
+      redirect_to @clinic, notice: "Successfully updated #{@clinic.name}."
     else
-      render :action => 'edit'
+      render action: 'edit'
     end
   end
 
@@ -137,10 +155,10 @@ class ClinicsController < ApplicationController
   def review
     @clinic = Clinic.includes_clinic_locations.find(params[:id])
     @form_modifier = ClinicFormModifier.new(:review, current_user)
-    @review_item = @clinic.review_item;
+    @review_item = @clinic.review_item
 
     if @review_item.blank?
-      redirect_to clinics_path, :notice => "There are no review items for this specialist"
+      redirect_to clinics_path, notice: "There are no review items for this specialist"
     else
       while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
         cl = @clinic.clinic_locations.build
@@ -161,9 +179,10 @@ class ClinicsController < ApplicationController
         @clinic,
         @clinic.specializations
       )
-      @secret_token_id = @clinic.review_item.decoded_review_object["clinic"]["secret_token_id"]
-
-      render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
+      @secret_token_id =
+        @clinic.review_item.decoded_review_object["clinic"]["secret_token_id"]
+      BuildTeleservices.call(provider: @clinic)
+      render template: 'clinics/edit'
     end
   end
 
@@ -173,9 +192,10 @@ class ClinicsController < ApplicationController
     @review_item = ReviewItem.find(params[:review_item_id])
 
     if @review_item.blank?
-      redirect_to clinics_path, :notice => "There are no review items for this clinic"
+      redirect_to clinics_path, notice: "There are no review items for this clinic"
     elsif @review_item.base_object.blank?
-      redirect_to specialists_path, :notice => "There is no base review item for this clinic to re-review from"
+      redirect_to specialists_path,
+        notice: "There is no base review item for this clinic to re-review from"
     else
       while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
         cl = @clinic.clinic_locations.build
@@ -196,7 +216,8 @@ class ClinicsController < ApplicationController
         @clinic.specializations
       )
       @secret_token_id = @review_item.decoded_review_object["clinic"]["secret_token_id"]
-      render :template => 'clinics/edit', :layout => request.headers['X-PJAX'] ? 'ajax' : true
+      BuildTeleservices.call(provider: @clinic)
+      render template: 'clinics/edit'
     end
   end
 
@@ -205,7 +226,7 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.find(params[:id])
 
     review_item = @clinic.review_item
-    review_item.archived = true;
+    review_item.archived = true
     review_item.save
 
     BuildReviewItemNote.new(
@@ -221,9 +242,10 @@ class ClinicsController < ApplicationController
       UpdateClinicFocuses.exec(@clinic, parsed_params)
       @clinic.reload.versions.last.update_attributes(review_item_id: review_item.id)
       @clinic.save
-      redirect_to @clinic, :notice  => "Successfully updated #{@clinic.name}."
+      redirect_to @clinic, notice: "Successfully updated #{@clinic.name}."
     else
-      render :action => 'edit'
+      BuildTeleservices.call(provider: @clinic)
+      render action: 'edit'
     end
   end
 
@@ -234,18 +256,20 @@ class ClinicsController < ApplicationController
     review_item = @clinic.review_item
 
     if review_item.blank?
-      redirect_to clinic_path(@clinic), :notice => "There are no review items for this clinic"
+      redirect_to clinic_path(@clinic),
+        notice: "There are no review items for this clinic"
     else
-      review_item.archived = true;
+      review_item.archived = true
       review_item.save
-      redirect_to review_items_path, :notice => "Successfully archived review item for #{@clinic.name}."
+      redirect_to review_items_path,
+        notice: "Successfully archived review item for #{@clinic.name}."
     end
   end
 
   def print_location_information
     @clinic = Clinic.find(params[:id])
     @clinic_location = ClinicLocation.find(params[:location_id])
-    render :print_information, :layout => 'print'
+    render :print_information, layout: 'print'
   end
 
   def check_token
@@ -255,6 +279,6 @@ class ClinicsController < ApplicationController
   def refresh_cache
     @clinic = Clinic.find(params[:id])
     @feedback = @clinic.active_feedback_items.build
-    render :show, :layout => 'ajax'
+    render :show
   end
 end

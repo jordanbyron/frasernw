@@ -3,16 +3,16 @@ class FeedbackItemsController < ApplicationController
 
   def index
     @feedback_items = FeedbackItem.active
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def archived
-    @divisions_scope = current_user.as_admin_or_super? ? Division.all : current_user.as_divisions
+    @divisions_scope =
+      current_user.as_admin_or_super? ? Division.all : current_user.as_divisions
     @feedback_items = FeedbackItem.
       archived.
       order('id desc').
       select{|item| item.for_divisions?(@divisions_scope) }.
-      paginate(:page => params[:page], :per_page => 30)
+      paginate(page: params[:page], per_page: 30)
 
     @categorized_feedback_items = {
       Specialist => @feedback_items.
@@ -22,13 +22,10 @@ class FeedbackItemsController < ApplicationController
       ScItem => @feedback_items.
         select{ |feedback_item| feedback_item.item.is_a?(ScItem) }
     }
-
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def show
     @feedback_item = FeedbackItem.find(params[:id])
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def create
@@ -49,6 +46,7 @@ class FeedbackItemsController < ApplicationController
     @feedback_item = FeedbackItem.find(params[:id])
     @feedback_item.archived = true
     @feedback_item.save
-    redirect_to feedback_items_url, :notice => "Successfully archived feedback item."
+    redirect_to feedback_items_url,
+      notice: "Successfully archived feedback item."
   end
 end

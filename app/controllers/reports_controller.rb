@@ -9,7 +9,6 @@ class ReportsController < ApplicationController
 
   def index
     @reports = Report.all
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def page_views
@@ -46,6 +45,18 @@ class ReportsController < ApplicationController
     render :analytics_chart
   end
 
+  def pageviews_by_user
+    @init_data = {
+      currentUser: {
+        role: current_user.as_role,
+        divisions: current_user.as_divisions
+      },
+      divisions: Denormalized.fetch(:divisions)
+    }
+
+    authorize! :view_report, :pageviews_by_user
+  end
+
   def user_ids
     authorize! :view_report, :sessions
 
@@ -68,8 +79,8 @@ class ReportsController < ApplicationController
 
     @init_data = {
       app: {
-        specializations: Serialized.fetch(:specializations),
-        divisions: Serialized.fetch(:divisions)
+        specializations: Denormalized.fetch(:specializations),
+        divisions: Denormalized.fetch(:divisions)
       }
     }
   end
@@ -85,7 +96,7 @@ class ReportsController < ApplicationController
           divisionIds: current_user.as_divisions.map(&:id),
           isSuperAdmin: current_user.as_super_admin?
         },
-        divisions: Serialized.fetch(:divisions)
+        divisions: Denormalized.fetch(:divisions)
       }
     }
   end
@@ -137,43 +148,39 @@ class ReportsController < ApplicationController
     else
       @data = nil
     end
-
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def new
     @report = Report.new
     @ReportType = Report::ReportType
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def create
     @report = Report.new(params[:report])
     if @report.save
-      redirect_to @report, :notice => "Successfully created report."
+      redirect_to @report, notice: "Successfully created report."
       else
-      render :action => 'new'
+      render action: 'new'
     end
   end
 
   def edit
     @report = Report.find(params[:id])
     @ReportType = Report::ReportType
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def update
     @report = Report.find(params[:id])
     if @report.update_attributes(params[:report])
-      redirect_to @report, :notice  => "Successfully updated report."
+      redirect_to @report, notice: "Successfully updated report."
     else
-      render :action => 'edit'
+      render action: 'edit'
     end
   end
 
   def destroy
     @report = Report.find(params[:id])
     @report.destroy
-    redirect_to reports_url, :notice => "Successfully deleted report."
+    redirect_to reports_url, notice: "Successfully deleted report."
   end
 end

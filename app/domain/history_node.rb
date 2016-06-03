@@ -1,17 +1,7 @@
-# Wraps an event that has happened to the target in order to provide a consistent
-# interface for presentation
+# Wraps an event that has happened to the target in order to provide a
+# consistent interface for presentation
 
 class HistoryNode
-  # {
-  #   user: current_user,
-  #   verb: :annotated,
-  #   target: ReviewItem.last,
-  #   datetime: DateTime.now,
-  #   content: "This is a note"
-  # }
-
-  # add 'parent'?/ 'on'?
-
   attr_reader :raw
   delegate :datetime, :secret_editor, to: :raw
 

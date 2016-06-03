@@ -7,9 +7,10 @@ class ScItem < ActiveRecord::Base
   include ApplicationHelper
   include PublicActivity::Model
 
-  # not used here since activity is created in controller:
-  # tracked only: [:create], owner: ->(controller, model){controller && controller.current_user}
-  has_many :activities, as: :trackable, class_name: 'SubscriptionActivity', dependent: :destroy
+  has_many :activities,
+    as: :trackable,
+    class_name: 'SubscriptionActivity',
+    dependent: :destroy
 
   attr_accessible :sc_category_id,
     :specialization_ids,
@@ -20,35 +21,39 @@ class ScItem < ActiveRecord::Base
     :url,
     :markdown_content,
     :document,
-    :can_email_document,
-    :can_email_link,
+    :can_email,
     :shareable,
     :division_id,
     :evidence_id,
     :demoable
 
-  belongs_to  :sc_category
+  belongs_to :sc_category
 
-  has_many    :sc_item_specializations, :dependent => :destroy
-  has_many    :specializations, :through => :sc_item_specializations
+  has_many :sc_item_specializations, dependent: :destroy
+  has_many :specializations, through: :sc_item_specializations
 
-  has_many    :sc_item_specialization_procedure_specializations, :through => :sc_item_specializations
-  has_many    :procedure_specializations, :through => :sc_item_specialization_procedure_specializations
+  has_many :sc_item_specialization_procedure_specializations,
+    through: :sc_item_specializations
+  has_many :procedure_specializations,
+    through: :sc_item_specialization_procedure_specializations
 
-  belongs_to  :division
+  belongs_to :division
 
-  has_many    :division_display_sc_items, :dependent => :destroy
-  has_many    :divisions_sharing, :through => :division_display_sc_items, :class_name => "Division", :source => :division
+  has_many :division_display_sc_items, dependent: :destroy
+  has_many :divisions_sharing,
+    through: :division_display_sc_items,
+    class_name: "Division",
+    source: :division
 
-  belongs_to  :evidence
+  belongs_to :evidence
 
   has_attached_file :document,
-    :storage => :s3,
-    :s3_protocol => :https,
-    :bucket => Pathways::S3.switchable_bucket_name(:content_item_documents),
-    :s3_credentials => {
-    :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
-    :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
+    storage: :s3,
+    s3_protocol: :https,
+    bucket: Pathways::S3.switchable_bucket_name(:content_item_documents),
+    s3_credentials: {
+    access_key_id: ENV['AWS_ACCESS_KEY_ID'],
+    secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
   }
   validates_attachment_content_type :document,
     content_type: [
@@ -58,10 +63,10 @@ class ScItem < ActiveRecord::Base
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ]
 
-  validates_presence_of :title, :on => :create, :message => "can't be blank"
-  validates :url, :url => true, :allow_blank => true
+  validates_presence_of :title, on: :create, message: "can't be blank"
+  validates :url, url: true, allow_blank: true
 
-  default_scope order('sc_items.title')
+  default_scope { order('sc_items.title') }
 
   def self.demoable
     where(demoable: true)
@@ -71,12 +76,7 @@ class ScItem < ActiveRecord::Base
     where(division_id: 13)
   end
 
-  # # # Cache actions
   after_commit :flush_cached_find
-
-  # def self.all_cached
-  #   Rails.cache.fetch('ScItem.all') { all }
-  # end
 
   def self.cached_find(id)
     Rails.cache.fetch([name, id]) { find(id) }
@@ -85,33 +85,84 @@ class ScItem < ActiveRecord::Base
   def flush_cached_find
     Rails.cache.delete([self.class.name, id])
   end
-  # # #
 
   def not_in_progress
-    division.blank? || (SpecializationOption.not_in_progress_for_divisions_and_specializations([division], specializations).length > 0)
+    division.blank? || (
+      SpecializationOption.
+        not_in_progress_for_divisions_and_specializations([division], specializations).
+        length > 0
+    )
   end
 
   def in_progress
-    division.present? && (SpecializationOption.not_in_progress_for_divisions_and_specializations(divisions, specializations).length == 0)
+    division.present? && (
+      SpecializationOption.
+        not_in_progress_for_divisions_and_specializations(divisions, specializations).
+        length == 0
+    )
   end
 
   def self.for_specialization_in_divisions(specialization, divisions)
     division_ids = divisions.map{ |d| d.id }
-    owned = joins(:sc_item_specializations).where('"sc_item_specializations"."specialization_id" = (?) AND "sc_items"."division_id" IN (?)', specialization.id, division_ids)
-    shared = joins(:sc_item_specializations, :division_display_sc_items).where('"sc_item_specializations"."specialization_id" = (?) AND "division_display_sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', specialization.id, division_ids, true)
+    owned = joins(:sc_item_specializations).where(
+      '"sc_item_specializations"."specialization_id" = (?) '\
+        'AND "sc_items"."division_id" IN (?)',
+      specialization.id,
+      division_ids
+    )
+    shared = joins(:sc_item_specializations, :division_display_sc_items).where(
+      '"sc_item_specializations"."specialization_id" = (?) '\
+        'AND "division_display_sc_items"."division_id" in (?) '\
+        'AND "sc_items"."shareable" = (?)',
+      specialization.id,
+      division_ids,
+      true
+    )
     (owned + shared).uniq
   end
 
   def self.for_procedure_in_divisions(procedure, divisions)
     division_ids = divisions.map{ |d| d.id }
-    owned = joins([:sc_item_specializations, :sc_item_specialization_procedure_specializations, :procedure_specializations]).where('sc_item_specializations.id = sc_item_specialization_procedure_specializations.sc_item_specialization_id AND sc_item_specialization_procedure_specializations.procedure_specialization_id = procedure_specializations.id AND procedure_specializations.procedure_id = (?) AND "sc_items"."division_id" IN (?)', procedure.id, division_ids)
-    shared = joins([:sc_item_specializations, :sc_item_specialization_procedure_specializations, :procedure_specializations, :division_display_sc_items]).where('sc_item_specializations.id = sc_item_specialization_procedure_specializations.sc_item_specialization_id AND sc_item_specialization_procedure_specializations.procedure_specialization_id = procedure_specializations.id AND procedure_specializations.procedure_id = (?) AND "division_display_sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', procedure.id, division_ids, true)
+    owned = joins( [
+      :sc_item_specializations,
+      :sc_item_specialization_procedure_specializations,
+      :procedure_specializations
+    ] ).where(
+      'sc_item_specializations.id = sc_item_specialization_procedure_specializations.'\
+        'sc_item_specialization_id '\
+        'AND sc_item_specialization_procedure_specializations.procedure_specialization_id'\
+        ' = procedure_specializations.id '\
+        'AND procedure_specializations.procedure_id = (?) '\
+        'AND "sc_items"."division_id" IN (?)',
+      procedure.id,
+      division_ids
+    )
+    shared = joins( [
+      :sc_item_specializations,
+      :sc_item_specialization_procedure_specializations,
+      :procedure_specializations,
+      :division_display_sc_items
+    ] ).where(
+      'sc_item_specializations.id = sc_item_specialization_procedure_specializations.'\
+        'sc_item_specialization_id '\
+        'AND sc_item_specialization_procedure_specializations.procedure_specialization_id'\
+        ' = procedure_specializations.id '\
+        'AND procedure_specializations.procedure_id = (?) '\
+        'AND "division_display_sc_items"."division_id" in (?) '\
+        'AND "sc_items"."shareable" = (?)',
+      procedure.id,
+      division_ids,
+      true
+    )
     (owned + shared).uniq
   end
 
   def self.shareable_by_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
-    where('"sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', division_ids, true)
+    where(
+      '"sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)',
+      division_ids, true
+    )
   end
 
   def self.shareable
@@ -119,11 +170,20 @@ class ScItem < ActiveRecord::Base
   end
 
   def self.inline
-    joins('INNER JOIN "sc_categories" ON "sc_items"."sc_category_id" = "sc_categories"."id"').where('"sc_categories"."display_mask" IN (?)', ScCategory::INLINE_MASKS)
+    joins(
+      'INNER JOIN "sc_categories" ON "sc_items"."sc_category_id" = "sc_categories"."id"'
+    ).where(
+      '"sc_categories"."display_mask" IN (?)',
+      ScCategory::INLINE_MASKS
+    )
   end
 
   def self.not_inline
-    joins('INNER JOIN "sc_categories" ON "sc_items"."sc_category_id" = "sc_categories"."id"').where('"sc_categories"."display_mask" NOT IN (?)', ScCategory::INLINE_MASKS)
+    joins(
+      'INNER JOIN "sc_categories" ON "sc_items"."sc_category_id" = "sc_categories"."id"'
+    ).where(
+      '"sc_categories"."display_mask" NOT IN (?)', ScCategory::INLINE_MASKS
+    )
   end
 
   def self.owned_in_divisions(divisions)
@@ -133,7 +193,15 @@ class ScItem < ActiveRecord::Base
 
   def self.shared_in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
-    joins('INNER JOIN "division_display_sc_items" ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"').where('"division_display_sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)', division_ids, true)
+    joins(
+      'INNER JOIN "division_display_sc_items" '\
+        'ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"'
+    ).where(
+      '"division_display_sc_items"."division_id" in (?) '\
+        'AND "sc_items"."shareable" = (?)',
+      division_ids,
+      true
+    )
   end
 
   def self.all_in_divisions(divisions)
@@ -174,7 +242,11 @@ class ScItem < ActiveRecord::Base
   end
 
   def available_to_divisions?(divisions)
-    ((divisions.include? division) || (shareable? && (divisions & divisions_sharing).present?)) && !in_progress
+    (
+      (divisions.include? division) || (
+        shareable? && (divisions & divisions_sharing).present?
+      )
+    ) && !in_progress
   end
 
   def borrowable_by_divisions
@@ -196,7 +268,8 @@ class ScItem < ActiveRecord::Base
       return default_content_owner
     end
 
-    #We only have one division for each conten item, so lets find that the first owner in one of the specializations
+    #We only have one division for each conten item, so lets find that the first owner
+    # in one of the specializations
     specializations.each do |specialization|
       specialization.specialization_options.for_divisions([division]).each do |so|
         return so.content_owner if so.content_owner.present?
@@ -242,10 +315,6 @@ class ScItem < ActiveRecord::Base
     TYPE_MARKDOWN => "Markdown",
     TYPE_DOCUMENT => "Document",
   }
-
-  def can_email?
-    ((type_mask == 1 && can_email_link?) || (type_mask == 3 && can_email_document?))
-  end
 
   def evidential?
     sc_category.evidential?
@@ -299,9 +368,9 @@ class ScItem < ActiveRecord::Base
   def format_type
     if link? || document?
       theurl = link? ? url : document.url
-      theurl = theurl.slice(theurl.rindex('.')+1..-1).downcase unless theurl.blank?   #take everything after the last period
-      theurl = theurl.slice(0...theurl.rindex('?')) if theurl.rindex('?')   #take off anything after a ?
-      theurl = theurl.slice(0...theurl.rindex('#')) if theurl.rindex('#')   #take off anything after a #
+      theurl = theurl.slice(theurl.rindex('.')+1..-1).downcase unless theurl.blank?
+      theurl = theurl.slice(0...theurl.rindex('?')) if theurl.rindex('?')
+      theurl = theurl.slice(0...theurl.rindex('#')) if theurl.rindex('#')
       ftype = FORMAT_HASH[theurl]
       ftype = FORMAT_HASH[domain] if ftype.blank?
       ftype = FORMAT_TYPE_HTML if ftype.blank? #external

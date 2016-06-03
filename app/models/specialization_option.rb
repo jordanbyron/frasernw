@@ -12,13 +12,15 @@ class SpecializationOption < ActiveRecord::Base
     :show_specialist_categorization_2,
     :show_specialist_categorization_3,
     :show_specialist_categorization_4,
-    :show_specialist_categorization_5
+    :show_specialist_categorization_5,
+    :specialization_id,
+    :division_id
 
   belongs_to :specialization, touch: true
-  belongs_to :owner, :class_name => "User"
-  belongs_to :content_owner, :class_name => "User"
+  belongs_to :owner, class_name: "User"
+  belongs_to :content_owner, class_name: "User"
   belongs_to :division
-  belongs_to :open_to_sc_category, :class_name => "ScCategory"
+  belongs_to :open_to_sc_category, class_name: "ScCategory"
 
   scope :complete, -> { where(in_progress: false) }
 
@@ -30,13 +32,25 @@ class SpecializationOption < ActiveRecord::Base
   def self.for_divisions_and_specializations(divisions, specializations)
     division_ids = divisions.map{ |d| d.id }
     specialization_ids = specializations.map{ |s| s.id }
-    where("specialization_options.division_id IN (?) AND specialization_options.specialization_id IN (?)", division_ids, specialization_ids)
+    where(
+      "specialization_options.division_id IN (?) "\
+        "AND specialization_options.specialization_id IN (?)",
+      division_ids,
+      specialization_ids
+    )
   end
 
   def self.not_in_progress_for_divisions_and_specializations(divisions, specializations)
     division_ids = divisions.map{ |d| d.id }
     specialization_ids = specializations.map{ |s| s.id }
-    where("specialization_options.division_id IN (?) AND specialization_options.specialization_id IN (?) and in_progress = (?)", division_ids, specialization_ids, false)
+    where(
+      "specialization_options.division_id IN (?) "\
+        "AND specialization_options.specialization_id IN (?) "\
+        "AND in_progress = (?)",
+      division_ids,
+      specialization_ids,
+      false
+    )
   end
 
   def self.is_new
@@ -45,7 +59,10 @@ class SpecializationOption < ActiveRecord::Base
 
   def open_to_sc_category?
     Rails.logger.info("1")
-    open_to_sc_category.present? && open_to_sc_category.all_sc_items_for_specialization_in_divisions(specialization, [division]).length > 0
+    open_to_sc_category.present? &&
+    open_to_sc_category.
+      all_sc_items_for_specialization_in_divisions(specialization, [division]).
+      length > 0
   end
 
   def open_to
@@ -62,11 +79,21 @@ class SpecializationOption < ActiveRecord::Base
 
   def specialist_categorization_hash
     categorization_hash = {}
-    categorization_hash[1] = Specialist::CATEGORIZATION_LABELS[1] if show_specialist_categorization_1?
-    categorization_hash[2] = Specialist::CATEGORIZATION_LABELS[2] if show_specialist_categorization_2?
-    categorization_hash[3] = Specialist::CATEGORIZATION_LABELS[3] if show_specialist_categorization_3?
-    categorization_hash[4] = Specialist::CATEGORIZATION_LABELS[4] if show_specialist_categorization_4?
-    categorization_hash[5] = Specialist::CATEGORIZATION_LABELS[5] if show_specialist_categorization_5?
+    if show_specialist_categorization_1?
+      categorization_hash[1] = Specialist::CATEGORIZATION_LABELS[1]
+    end
+    if show_specialist_categorization_2?
+      categorization_hash[2] = Specialist::CATEGORIZATION_LABELS[2]
+    end
+    if show_specialist_categorization_3?
+      categorization_hash[3] = Specialist::CATEGORIZATION_LABELS[3]
+    end
+    if show_specialist_categorization_4?
+      categorization_hash[4] = Specialist::CATEGORIZATION_LABELS[4]
+    end
+    if show_specialist_categorization_5?
+      categorization_hash[5] = Specialist::CATEGORIZATION_LABELS[5]
+    end
     categorization_hash
   end
 

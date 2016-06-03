@@ -41,7 +41,9 @@ class SubscriptionWorker
       where("subscriptions.interval = (?)", Subscription::INTERVAL_IMMEDIATELY)
 
     users.each do |user|
-      if user.subscriptions.immediate.any?{|subscription| subscription.activities.include?(activity) }
+      if user.subscriptions.immediate.any?{ |subscription|
+        subscription.activities.include?(activity)
+      }
         if activity.update_classification_type == Subscription.resource_update
           SubscriptionMailer.immediate_resource_update(activity.id, user.id).deliver
         elsif activity.update_classification_type == Subscription.news_update

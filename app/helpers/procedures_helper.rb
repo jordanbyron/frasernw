@@ -1,7 +1,9 @@
 module ProceduresHelper
 
   def procedure_ancestry_options_limited(items, skip_tree, &block)
-    return procedure_ancestry_options_limited(items, skip_tree){ |i| "#{'-' * i.depth} #{i.procedure.name}" } unless block_given?
+    return procedure_ancestry_options_limited(items, skip_tree) do |i|
+      "#{'-' * i.depth} #{i.procedure.name}"
+    end unless block_given?
 
     result = []
     items.map do |item, sub_items|
@@ -13,4 +15,37 @@ module ProceduresHelper
     result
   end
 
+
+  def procedure_classification_options(procedure_specialization)
+    [
+      [
+        ProcedureSpecialization::CLASSIFICATION_HASH[ProcedureSpecialization::CLASSIFICATION_FOCUSED],
+        ProcedureSpecialization::CLASSIFICATION_FOCUSED
+      ],
+      [
+        ProcedureSpecialization::CLASSIFICATION_HASH[ProcedureSpecialization::CLASSIFICATION_NONFOCUSED],
+        ProcedureSpecialization::CLASSIFICATION_NONFOCUSED
+      ],
+      [
+        ProcedureSpecialization::CLASSIFICATION_HASH[ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST],
+        ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST
+      ],
+      [
+        ProcedureSpecialization::CLASSIFICATION_HASH[ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC],
+        ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC
+      ],
+      [
+        ProcedureSpecialization::CLASSIFICATION_HASH[ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH],
+        ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH
+      ]
+    ]
+  end
+
+  def procedure_ancestry_options(procedure_specialization)
+    [["~ No parent ~", nil]] +
+      procedure_ancestry_options_limited(
+        procedure_specialization.specialization.arranged_procedure_specializations,
+        (procedure_specialization.new_record? ? [] : procedure_specialization.subtree)
+      )
+  end
 end

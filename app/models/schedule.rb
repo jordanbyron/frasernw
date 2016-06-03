@@ -1,35 +1,49 @@
 class Schedule < ActiveRecord::Base
-  belongs_to :schedulable, :polymorphic => true
+  belongs_to :schedulable, polymorphic: true
 
-  belongs_to :monday, :class_name => "ScheduleDay"
+  belongs_to :monday, class_name: "ScheduleDay"
   accepts_nested_attributes_for :monday
 
-  belongs_to :tuesday, :class_name => "ScheduleDay"
+  belongs_to :tuesday, class_name: "ScheduleDay"
   accepts_nested_attributes_for :tuesday
 
-  belongs_to :wednesday, :class_name => "ScheduleDay"
+  belongs_to :wednesday, class_name: "ScheduleDay"
   accepts_nested_attributes_for :wednesday
 
-  belongs_to :thursday, :class_name => "ScheduleDay"
+  belongs_to :thursday, class_name: "ScheduleDay"
   accepts_nested_attributes_for :thursday
 
-  belongs_to :friday, :class_name => "ScheduleDay"
+  belongs_to :friday, class_name: "ScheduleDay"
   accepts_nested_attributes_for :friday
 
-  belongs_to :saturday, :class_name => "ScheduleDay"
+  belongs_to :saturday, class_name: "ScheduleDay"
   accepts_nested_attributes_for :saturday
 
-  belongs_to :sunday, :class_name => "ScheduleDay"
+  belongs_to :sunday, class_name: "ScheduleDay"
   accepts_nested_attributes_for :sunday
 
   include PaperTrailable
 
   def self.includes_days
-    includes([:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday])
+    includes( [
+      :monday,
+      :tuesday,
+      :wednesday,
+      :thursday,
+      :friday,
+      :saturday,
+      :sunday
+    ] )
   end
 
   def scheduled?
-    monday.scheduled || tuesday.scheduled || wednesday.scheduled || thursday.scheduled || friday.scheduled || saturday.scheduled || sunday.scheduled
+    monday.scheduled ||
+    tuesday.scheduled ||
+    wednesday.scheduled ||
+    thursday.scheduled ||
+    friday.scheduled ||
+    saturday.scheduled ||
+    sunday.scheduled
   end
 
   def days
@@ -65,7 +79,15 @@ class Schedule < ActiveRecord::Base
   def days_and_hours
     output = []
 
-    [[monday, "Monday"], [tuesday, "Tuesday"], [wednesday, "Wednesday"], [thursday, "Thursday"], [friday, "Friday"], [saturday, "Saturday"], [sunday, "Sunday"]].each do |var|
+    [
+      [monday, "Monday"],
+      [tuesday, "Tuesday"],
+      [wednesday, "Wednesday"],
+      [thursday, "Thursday"],
+      [friday, "Friday"],
+      [saturday, "Saturday"],
+      [sunday, "Sunday"]
+    ].each do |var|
       day = var.first
       day_name = var.second
       if day.scheduled? && day.time?
@@ -92,7 +114,15 @@ class Schedule < ActiveRecord::Base
 
     collapsed = {}
 
-    [[monday, 1], [tuesday, 2], [wednesday, 3], [thursday, 4], [friday, 5], [saturday, 6], [sunday, 7]].each do |var|
+    [
+      [monday, 1],
+      [tuesday, 2],
+      [wednesday, 3],
+      [thursday, 4],
+      [friday, 5],
+      [saturday, 6],
+      [sunday, 7]
+    ].each do |var|
       day = var.first
       day_id = var.second
       next if !day.scheduled?
@@ -103,11 +133,15 @@ class Schedule < ActiveRecord::Base
     output = []
 
     collapsed.each do |hours, day_ids|
-      #difference between each day and the next. If it's all 1's (except the last element, where we wrapped) then we have consecutive days.
+      # difference between each day and the next. If it's all 1's (except the last
+      # element, where we wrapped) then we have consecutive days.
       consecutive = true
-      day_ids.zip(day_ids.rotate).map { |x, y| y - x }.take( day_ids.size - 1 ).map{ |diff| consecutive &= (diff == 1) }
+      day_ids.
+        zip(day_ids.rotate).
+        map { |x, y| y - x }.
+        take( day_ids.size - 1 ).
+        map{ |diff| consecutive &= (diff == 1) }
 
-      #map our days to a sentence
       days = day_ids.map{ |id| DAY_HASH[id] }.to_sentence
 
       if day_ids.length >= 3 && consecutive
@@ -128,20 +162,38 @@ class Schedule < ActiveRecord::Base
 
     collapsed = {}
 
-    [[monday, 1], [tuesday, 2], [wednesday, 3], [thursday, 4], [friday, 5], [saturday, 6], [sunday, 7]].each do |var|
+    [
+      [monday, 1],
+      [tuesday, 2],
+      [wednesday, 3],
+      [thursday, 4],
+      [friday, 5],
+      [saturday, 6],
+      [sunday, 7]
+    ].each do |var|
       day = var.first
       day_id = var.second
       next if !day.scheduled?
-      index = (day.time? && day.break?) ? "#{day.time} (closed for lunch from #{day.break})" : (day.time? ? day.time : -1)
+      index =
+        if (day.time? && day.break?)
+          "#{day.time} (closed for lunch from #{day.break})"
+        else
+          (day.time? ? day.time : -1)
+        end
       collapsed[index] = [collapsed[index], day_id].flatten.compact
     end
 
     output = []
 
     collapsed.each do |hours_and_breaks, day_ids|
-      #difference between each day and the next. If it's all 1's (except the last element, where we wrapped) then we have consecutive days.
+      # difference between each day and the next. If it's all 1's (except the last
+      # element, where we wrapped) then we have consecutive days.
       consecutive = true
-      day_ids.zip(day_ids.rotate).map { |x, y| y - x }.take( day_ids.size - 1 ).map{ |diff| consecutive &= (diff == 1) }
+      day_ids.
+        zip(day_ids.rotate).
+        map { |x, y| y - x }.
+        take( day_ids.size - 1 ).
+        map{ |diff| consecutive &= (diff == 1) }
 
       #map our days to a sentence
       days = day_ids.map{ |id| DAY_HASH[id] }.to_sentence

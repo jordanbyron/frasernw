@@ -4,7 +4,7 @@ class FeedbackItem < ActiveRecord::Base
   include PaperTrailable
   include Archivable
 
-  belongs_to :item, :polymorphic => true
+  belongs_to :item, polymorphic: true
 
   belongs_to :user
 
@@ -19,7 +19,7 @@ class FeedbackItem < ActiveRecord::Base
       versions.last.present? &&
       versions.last.changeset.has_key?('archived') &&
       versions.last.changeset['archived'][1] &&
-      (versions.last.safe_user.as_divisions & divisions).any?
+      (versions.last.safe_user.divisions & divisions).any?
   end
 
   def for_divisions?(divisions)

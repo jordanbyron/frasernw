@@ -2,15 +2,15 @@
 
 - specialization = (current_user.as_admin_or_super? ? @clinic.specializations : @clinic.specializations.not_in_progress_for_divisions(current_user.as_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
 
-- favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @clinic.id, "Clinic").present? ? "icon-red" : "icon-text") : "icon-text"
+- favorite_class = logged_in? ? (Favorite.find_by(user_id: current_user.id, favoritable_id: @clinic.id, favoritable_type: "Clinic").present? ? "icon-red" : "icon-text") : "icon-text"
 
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       All Specialties
       %b.caret
-  %li.subsequent{:class => specialization.fully_in_progress_for_divisions(current_user.as_divisions) && "in-progress"}
-    = link_to specialization.name, specialization_path(specialization), :class => 'ajax'
+  %li.subsequent{class: specialization.fully_in_progress_for_divisions(current_user.as_divisions) && "in-progress"}
+    = link_to specialization.name, specialization_path(specialization), class: 'ajax'
     = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user.as_divisions)
 
 = render 'partials/specialization_dropdown_menu'
@@ -43,7 +43,7 @@
               = @clinic.specializations.reject{ |s| !self_in_progress && s.fully_in_progress_for_divisions(@clinic.divisions) }.map{ |s| "<a href='#{specialization_path(s)}' class='#{ s.fully_in_progress_for_divisions(@clinic.divisions) ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
 
             %p.space.no_indent
-              %i{:class => @clinic.status_class}
+              %i{class: @clinic.status_class}
               - if @clinic.not_responded?
 
                 %strong This clinic has not yet provided Pathways their information.
@@ -93,20 +93,20 @@
                 %p.space
                   %strong= cl.phone_only if cl.phone_only.present?
                 %p= "Fax: #{cl.fax}" if cl.fax.present?
-                %p= "Public e-mail (okay for patient use): #{mail_to cl.public_email, cl.public_email, :target => '_blank'}".html_safe if cl.public_email.present?
-                %p= "Private e-mail (for physician office use only): #{mail_to cl.email, cl.email, :target => '_blank'}".html_safe if cl.email.present?
-                %p= "Website: #{link_to cl.url, cl.url, :target => '_blank'}".html_safe if cl.url.present?
+                %p= "Public e-mail (okay for patient use): #{mail_to cl.public_email, cl.public_email, target: '_blank'}".html_safe if cl.public_email.present?
+                %p= "Private e-mail (for physician office use only): #{mail_to cl.email, cl.email, target: '_blank'}".html_safe if cl.email.present?
+                %p= "Website: #{link_to cl.url, cl.url, target: '_blank'}".html_safe if cl.url.present?
                 %p= cl.contact_details.convert_newlines_to_br if cl.contact_details.present?
                 - if cl.location.present? && cl.location.in_hospital?
                   - hospital = cl.location.hospital_in
                   %p
-                    = "In #{link_to hospital.name, hospital_path(hospital), :class => 'ajax'}".html_safe
+                    = "In #{link_to hospital.name, hospital_path(hospital), class: 'ajax'}".html_safe
                     = "(#{cl.sector})" if cl.sector_info_available?
-                  %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
+                  %p= link_to address.address, address.map_url, target: "_blank" if address.present? && !address.empty?
                   %p= cl.location.in_details if cl.location.in_details.present?
                 - elsif address.present? && !address.empty?
                   %p= "(#{cl.sector})" if cl.sector_info_available?
-                  %p= link_to address.address, address.map_url, :target => "_blank"
+                  %p= link_to address.address, address.map_url, target: "_blank"
                 - if cl.location_opened.present?
                   %p
                     This clinic opened at this location
@@ -151,7 +151,7 @@
                     %li
                       = link_to "#{referral_form.description} (#{type})",
                         referral_form.form.url,
-                        :target => "_blank",
+                        target: "_blank",
                         "onClick" => "window.pathways.trackForm(_gaq, #{referral_form.id})"
               - elsif @clinic.referral_form_mask == 2
                 %p
@@ -209,6 +209,9 @@
                   %strong Red flags
                   that this clinic feels warrants urgent consultation:
                   = @clinic.red_flags.end_with_period.convert_newlines_to_br
+
+            - if @clinic.teleservices.any?(&:offered?)
+              = render "teleservices/index", provider: @clinic
 
             - if @clinic.patient_instructions.present? || @clinic.cancellation_policy.present?
               %h6 Patient Information
@@ -276,14 +279,14 @@
                     - if focused_count > 0
                       - if focused_has_investigations
                         %p (with any additional details)
-                      .list{:class => specializations_with_results_count > 1 && "indent"}
+                      .list{class: specializations_with_results_count > 1 && "indent"}
                         = focused_procedures.html_safe
                     - if nonfocused_count > 0
                       %p.space
                         %em Other areas of interest
                       - if nonfocused_has_investigations
                         %p (with any additional details)
-                      .list{:class => specializations_with_results_count > 1 && "indent"}
+                      .list{class: specializations_with_results_count > 1 && "indent"}
                         = nonfocused_procedures.html_safe
 
                 - if @clinic.not_performed.present?
@@ -293,14 +296,14 @@
 
     #feedback
       .inner
-        = simple_form_for @feedback, :html => { :class => "ajax feedback_form" } do |f|
+        = simple_form_for @feedback, html: { class: "ajax feedback_form" } do |f|
 
-          = f.input :feedback, :label => "Please provide us with any updates to #{@clinic.name}'s information"
-          = f.input :item_type, :as => :hidden, :value => "Clinic"
-          = f.input :item_id, :as => :hidden, :value => @clinic.name
+          = f.input :feedback, label: "Please provide us with any updates to #{@clinic.name}'s information"
+          = f.input :item_type, as: :hidden, value: "Clinic"
+          = f.input :item_id, as: :hidden, value: @clinic.name
 
           .form-actions
-            %a.btn.btn-primary{:id => "sendFeedbackButton", "href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" }
+            %a.btn.btn-primary{id: "sendFeedbackButton", "href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" }
               .before-click
                 Send Feedback
               .after-click.hidden
@@ -405,12 +408,12 @@
 
       - if @clinic.review_item.present?
 
-        = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", review_clinic_path(@clinic), :class => "btn ajax")
+        = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", review_clinic_path(@clinic), class: "btn ajax")
 
       - elsif can? :update, @clinic
 
-        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Clinic", edit_clinic_path(@clinic), :class => "btn ajax")
-        = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", edit_referral_forms_path(parent_type: "Clinic", parent_id: @clinic.id), :class => "btn ajax")
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Clinic", edit_clinic_path(@clinic), class: "btn ajax")
+        = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", edit_referral_forms_path(parent_type: "Clinic", parent_id: @clinic.id), class: "btn ajax")
         %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
           %i.icon-share
           Share

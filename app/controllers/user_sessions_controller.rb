@@ -13,7 +13,6 @@ class UserSessionsController < ApplicationController
   def new
     @user_session = UserSession.new
     @user = User.new
-    render :layout => 'ajax' if request.headers['X-PJAX']
   end
 
   def create
@@ -24,17 +23,17 @@ class UserSessionsController < ApplicationController
       redirect_to (return_to || root_url)
     else
       @user = User.new
-      render :action => 'new'
+      render action: 'new'
     end
   end
 
   def destroy
     @user_session = current_user_session
     if @user_session.nil?
-      redirect_to '/', :notice => "You are not logged in."
+      redirect_to '/', notice: "You are not logged in."
     else
       @user_session.destroy
-      redirect_to '/', :notice => "You have been logged out."
+      redirect_to '/', notice: "You have been logged out."
     end
   end
 end

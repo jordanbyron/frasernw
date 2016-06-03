@@ -18,11 +18,10 @@ module Metrics
 
     def row_from_feedback(feedback_item)
       row = Hash.new
-      row[:id]                    = feedback_item.id
-      row[:feedback]              = feedback_item.feedback
-      row[:item_type]             = feedback_item.item_type
-      # row[:item_id]               = feedback_item.item_id
-      row[:division_id_of_item]   = begin
+      row[:id]                  = feedback_item.id
+      row[:feedback]            = feedback_item.feedback
+      row[:item_type]           = feedback_item.item_type
+      row[:division_id_of_item] = begin
         if feedback_item.item.present? && feedback_item.item.divisions.present?
           feedback_item.item.divisions.map{|s| s.id}.join(",")
         else
@@ -36,9 +35,9 @@ module Metrics
           ""
         end
       end
-      row[:created_at]            = feedback_item.created_at
-      row[:updated_at]            = feedback_item.updated_at
-      row[:archived]              = feedback_item.archived
+      row[:created_at] = feedback_item.created_at
+      row[:updated_at] = feedback_item.updated_at
+      row[:archived]   = feedback_item.archived
 
       row
     end
@@ -49,7 +48,10 @@ module Metrics
     end
 
     def to_csv_file
-      CSVReport::Service.new("#{folder_path}/feedback_item_metrics-#{DateTime.now.to_date.iso8601}.csv", self.as_csv).exec
+      CSVReport::Service.new(
+        "#{folder_path}/feedback_item_metrics-#{DateTime.now.to_date.iso8601}.csv",
+        self.as_csv
+      ).exec
     end
   end
 end

@@ -1,5 +1,4 @@
 var objectAssign = require("object-assign");
-var pick = require("lodash/object/pick");
 var keys = require("lodash/object/keys");
 var union = require("lodash/array/union");
 var reduce = require("lodash/collection/reduce");
@@ -17,7 +16,7 @@ module.exports = {
     return obj;
   },
   keysAtTruthyVals: function(obj) {
-    return keys(pick(obj, (val) => val));
+    return keys(_.pick(obj, (val) => val));
   },
   safeMergeValues: function(...objects) {
     return reduce((union(...objects.map((object) => keys(object)))), (memo, key) => {
@@ -70,5 +69,14 @@ module.exports = {
     }
 
     return sentence;
+  },
+  padTwo: function(num){
+    const unpadded = num.toString();
+    if (unpadded.length === 2) {
+      return unpadded;
+    }
+    else {
+      return `0${unpadded}`;
+    }
   }
 }

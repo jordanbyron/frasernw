@@ -2,20 +2,20 @@
 
 - specialization = (current_user.as_admin_or_super? ? @specialist.specializations : @specialist.specializations.not_in_progress_for_divisions(current_user.as_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
 
-- favorite_class = logged_in? ? (Favorite.find_by_user_id_and_favoritable_id_and_favoritable_type(current_user.id, @specialist.id, "Specialist").present? ? "icon-red" : "icon-text") : "icon-text"
+- favorite_class = logged_in? ? (Favorite.find_by(user_id: current_user.id, favoritable_id: @specialist.id, favoritable_type: "Specialist").present? ? "icon-red" : "icon-text") : "icon-text"
 
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       All Specialties
       %b.caret
-  %li.subsequent{:class => specialization.fully_in_progress_for_divisions(current_user.as_divisions) && "in-progress"}
-    = link_to specialization.name, specialization_path(specialization), :class => 'ajax'
+  %li.subsequent{class: specialization.fully_in_progress_for_divisions(current_user.as_divisions) && "in-progress"}
+    = link_to specialization.name, specialization_path(specialization), class: 'ajax'
     = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user.as_divisions)
 
 = render 'partials/specialization_dropdown_menu'
 
-= render 'partials/specialization_nav', :specialization => specialization, :selected => 'specialists'
+= render 'partials/specialization_nav', specialization: specialization, selected: 'specialists'
 
 - specialist_offices = @specialist.specialist_offices.order(:created_at).reject{ |specialist_office| specialist_office.empty? }
 - has_office = specialist_offices.length > 0
@@ -38,7 +38,7 @@
           .headline-header
           .headline
             .specialist-image
-              .image{:class => !@specialist.photo.present? && "empty"}
+              .image{class: !@specialist.photo.present? && "empty"}
                 - if @specialist.photo.present?
                   %img{"src" => @specialist.photo.url(:thumb)}
             %h2
@@ -60,7 +60,7 @@
               %h5= "MSP ##{@specialist.billing_number_padded}"
 
             %p.space.no_indent
-              %i{:class => @specialist.status_class}
+              %i{class: @specialist.status_class}
 
               - if @specialist.not_responded?
 
@@ -170,9 +170,9 @@
                 %p.space
                   %strong= specialist_office.phone_only if specialist_office.phone_only.present?
                 %p= "Fax: #{specialist_office.fax}" if specialist_office.fax.present?
-                %p= "Public e-mail (okay for patient use): #{mail_to specialist_office.public_email, specialist_office.public_email, :target => '_blank'}".html_safe if specialist_office.public_email.present?
-                %p= "Private e-mail (for physician office use only): #{mail_to specialist_office.email, specialist_office.email, :target => '_blank'}".html_safe if specialist_office.email.present?
-                %p= "Website: #{link_to specialist_office.url, specialist_office.url, :target => '_blank'}".html_safe if specialist_office.url.present?
+                %p= "Public e-mail (okay for patient use): #{mail_to specialist_office.public_email, specialist_office.public_email, target: '_blank'}".html_safe if specialist_office.public_email.present?
+                %p= "Private e-mail (for physician office use only): #{mail_to specialist_office.email, specialist_office.email, target: '_blank'}".html_safe if specialist_office.email.present?
+                %p= "Website: #{link_to specialist_office.url, specialist_office.url, target: '_blank'}".html_safe if specialist_office.url.present?
                 - if specialist_office.office.present?
                   - num_specialists = specialist_office.office.specialists.reject{ |s| s.not_available? }.count
                   - location = specialist_office.office.location
@@ -181,37 +181,37 @@
                   - if location.in_hospital?
                     - located_in = location.hospital_in
                     %p
-                      = "In #{link_to located_in.name, url_for(located_in), :class => 'ajax'}".html_safe
+                      = "In #{link_to located_in.name, url_for(located_in), class: 'ajax'}".html_safe
                       - if located_in.location.present? && located_in.location.in_hospital?
                         - hopsital = located_in.location.hospital_in
-                        = "which is in #{link_to hopsital.name, hospital_path(hopsital), :class => 'ajax'}".html_safe
+                        = "which is in #{link_to hopsital.name, hospital_path(hopsital), class: 'ajax'}".html_safe
                       = "(#{specialist_office.sector})" if specialist_office.show_sector_info?
                       - if num_specialists > 1
                         with
-                        %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), :class => 'ajax'}</li>"}.join('').html_safe}</ul>" , :data => {:toggle => 'tooltip', 'original-title' => 'Can be emailed', 'placement' => 'top', 'template' => "#{template_for_blue_tooltip}".html_safe} }= "#{pluralize(num_specialists-1, 'other')}"
-                    %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
+                        %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), class: 'ajax'}</li>"}.join('').html_safe}</ul>" , data: {toggle: 'tooltip', 'original-title' => 'Can be emailed', 'placement' => 'top', 'template' => "#{template_for_blue_tooltip}".html_safe} }= "#{pluralize(num_specialists-1, 'other')}"
+                    %p= link_to address.address, address.map_url, target: "_blank" if address.present? && !address.empty?
                     %p= location.in_details if location.in_details.present?
                   - elsif location.in_clinic?
                     - located_in = location.location_in.locatable
                     - clinic = located_in.clinic
                     %p
-                      = "In #{link_to clinic.name, url_for(clinic), :class => 'ajax'}".html_safe
+                      = "In #{link_to clinic.name, url_for(clinic), class: 'ajax'}".html_safe
                       - if located_in.location.present? && located_in.location.in_hospital?
                         - hopsital = located_in.location.hospital_in
-                        = "which is in #{link_to hopsital.name, hospital_path(hopsital), :class => 'ajax'}".html_safe
+                        = "which is in #{link_to hopsital.name, hospital_path(hopsital), class: 'ajax'}".html_safe
                       = "(#{specialist_office.sector})" if specialist_office.show_sector_info?
                       - if num_specialists > 1
                         with
-                        %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), :class => 'ajax'}</li>"}.join('').html_safe}</ul>", :data => {:toggle => 'tooltip', 'original-title' => 'Can be emailed', 'placement' => 'top', 'template' => "#{template_for_blue_tooltip}".html_safe} }= "#{pluralize(num_specialists-1, 'other')}"
-                    %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
+                        %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), class: 'ajax'}</li>"}.join('').html_safe}</ul>", data: {toggle: 'tooltip', 'original-title' => 'Can be emailed', 'placement' => 'top', 'template' => "#{template_for_blue_tooltip}".html_safe} }= "#{pluralize(num_specialists-1, 'other')}"
+                    %p= link_to address.address, address.map_url, target: "_blank" if address.present? && !address.empty?
                     %p= location.in_details if location.in_details.present?
                   - elsif address.present?
                     %p
-                      = link_to address.address, address.map_url, :target => "_blank"
+                      = link_to address.address, address.map_url, target: "_blank"
                       = "(#{specialist_office.sector})" if specialist_office.show_sector_info?
                       - if num_specialists > 1
                         with
-                        %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), :class => 'ajax'}</li>"}.join('').html_safe}</ul>" , :data => {:toggle => 'tooltip', 'original-title' => 'Can be emailed', 'placement' => 'top', :template => "#{template_for_blue_tooltip}".html_safe} }= "#{pluralize(num_specialists-1, 'other')}"
+                        %a.tt{"id" => "tt#{specialist_office.office.id}", "href" => "javascript:void(0)", "onclick" => "$('#tt#{specialist_office.office.id}').tooltip('toggle')", "title" => "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || s.not_available?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}", specialist_path(s), class: 'ajax'}</li>"}.join('').html_safe}</ul>" , data: {toggle: 'tooltip', 'original-title' => 'Can be emailed', 'placement' => 'top', template: "#{template_for_blue_tooltip}".html_safe} }= "#{pluralize(num_specialists-1, 'other')}"
                 - if specialist_office.location_opened.present?
                   %p
                     This practice opened at this location
@@ -263,7 +263,7 @@
                     %li
                       = link_to "#{referral_form.description} (#{type})",
                         referral_form.form.url,
-                        :target => "_blank",
+                        target: "_blank",
                         "onClick" => "window.pathways.trackForm(_gaq, #{referral_form.id})"
               - elsif @specialist.referral_form_mask == 2
                 %p
@@ -325,6 +325,9 @@
                   that this office feels warrant urgent consultation:
                   = @specialist.red_flags.end_with_period.convert_newlines_to_br
 
+            - if @specialist.teleservices.any?(&:offered?)
+              = render "teleservices/index", provider: @specialist
+
             - if @specialist.patient_instructions.present? || @specialist.cancellation_policy.present?
               %h6 Patient Information
 
@@ -361,10 +364,10 @@
               %h6.clinic_header_link
                 = link_to "#{clinic.name}".html_safe,
                   clinic_path(clinic),
-                  :class => 'ajax'
+                  class: 'ajax'
 
               %p.space
-                %i{:class => clinic.status_class}
+                %i{class: clinic.status_class}
                 %strong.status= clinic.status.end_with_period
               - if clinic.status_details.present?
                 %p
@@ -382,15 +385,15 @@
                   %p= "Fax: #{cl.fax}" if cl.fax.present?
                 - if cl.location.present? && cl.location.in_hospital?
                   - hospital = cl.location.hospital_in
-                  %p= "In #{link_to hospital.name, hospital_path(hospital), :class => 'ajax'}".html_safe
-                  %p= link_to address.address, address.map_url, :target => "_blank" if address.present? && !address.empty?
+                  %p= "In #{link_to hospital.name, hospital_path(hospital), class: 'ajax'}".html_safe
+                  %p= link_to address.address, address.map_url, target: "_blank" if address.present? && !address.empty?
                   %p= cl.location.in_details if cl.location.in_details.present?
                 - elsif address.present? && !address.empty?
-                  %p= link_to address.address, address.map_url, :target => "_blank"
+                  %p= link_to address.address, address.map_url, target: "_blank"
 
               %p.space
                 %strong Referrals:
-                %span{:class => @specialist.status_class}
+                %span{class: @specialist.status_class}
                 = "<a href='#{clinic_path(clinic)}'>Full contact and referral details</a>".html_safe
 
             - hospitals = @specialist.hospitals
@@ -428,14 +431,14 @@
                     - if focused_count > 0
                       - if focused_has_investigations
                         %p (with any additional details)
-                      .list{:class => specializations_with_results_count > 1 && "indent"}
+                      .list{class: specializations_with_results_count > 1 && "indent"}
                         = focused_procedures.html_safe
                     - if nonfocused_count > 0
                       %p.space
                         %em Other areas of interest
                       - if nonfocused_has_investigations
                         %p (with any additional details)
-                      .list{:class => specializations_with_results_count > 1 && "indent"}
+                      .list{class: specializations_with_results_count > 1 && "indent"}
                         = nonfocused_procedures.html_safe
 
                 - if @specialist.interest.present?
@@ -450,14 +453,14 @@
 
     #feedback
       .inner
-        = simple_form_for @feedback, :html => { :class => "ajax feedback_form" } do |f|
+        = simple_form_for @feedback, html: { class: "ajax feedback_form" } do |f|
 
-          = f.input :feedback, :label => "Please provide us with any updates to #{@specialist.name}'s information"
-          = f.input :item_type, :as => :hidden, :value => "Specialist"
-          = f.input :item_id, :as => :hidden, :value => @specialist.id
+          = f.input :feedback, label: "Please provide us with any updates to #{@specialist.name}'s information"
+          = f.input :item_type, as: :hidden, value: "Specialist"
+          = f.input :item_id, as: :hidden, value: @specialist.id
 
           .form-actions
-            %a.btn.btn-primary{:id => "sendFeedbackButton", "href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" }
+            %a.btn.btn-primary{id: "sendFeedbackButton", "href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" }
               .before-click
                 Send Feedback
               .after-click.hidden
@@ -579,13 +582,13 @@
 
       - if @specialist.review_item.present?
 
-        = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", review_specialist_path(@specialist), :class => "btn ajax")
+        = link_to("<i class='icon-list-alt'></i>".html_safe + " Review Pending Changes", review_specialist_path(@specialist), class: "btn ajax")
 
       - elsif can? :update, @specialist
 
-        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialist", edit_specialist_path(@specialist), :class => "btn ajax")
-        = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", edit_referral_forms_path(parent_type: "Specialist", parent_id: @specialist.id), :class => "btn ajax")
-        = link_to("<i class='icon-picture'></i>".html_safe + " Photo", photo_specialist_path(@specialist), :class => "btn ajax")
+        = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialist", edit_specialist_path(@specialist), class: "btn ajax")
+        = link_to("<i class='icon-file'></i>".html_safe + " Referral Forms", edit_referral_forms_path(parent_type: "Specialist", parent_id: @specialist.id), class: "btn ajax")
+        = link_to("<i class='icon-picture'></i>".html_safe + " Photo", photo_specialist_path(@specialist), class: "btn ajax")
         %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#share"}
           %i.icon-share
           Share
@@ -597,7 +600,7 @@
 
       - if can? :destroy, @specialist
 
-        = link_to("<i class='icon-trash'></i>".html_safe + " Delete Specialist", @specialist, :data => { :confirm => "Delete #{@specialist.name}?" }, :method => :delete, :class => "btn")
+        = link_to("<i class='icon-trash'></i>".html_safe + " Delete Specialist", @specialist, data: { confirm: "Delete #{@specialist.name}?" }, method: :delete, class: "btn")
 
 
   - if current_user.as_admin_or_super?

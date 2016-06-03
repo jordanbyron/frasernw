@@ -1,6 +1,6 @@
-task :deploy_dev => ['deploy_dev:push', 'deploy_dev:restart']
+task :deploy_demo => ['deploy_demo:push', 'deploy_demo:restart']
 
-namespace :deploy_dev do
+namespace :deploy_demo do
   task :update_database => [:reset_database, :import_production_database, :restart]
   task :migrations => [:push, :off, :migrate, :restart, :on]
 
@@ -14,36 +14,31 @@ namespace :deploy_dev do
 
   task :restart do
     puts 'Restarting pathwaysbcDEV app servers ...'
-    puts `heroku restart -a pathwaysbcdev`
+    puts `heroku restart -a pathwaysbcdemo`
   end
 
   task :reset_database do
     puts 'Resetting pathwaysbcDEV database'
-    puts `heroku pg:reset DATABASE --app pathwaysbcdev --confirm pathwaysbcdev`
-  end
-
-  task :import_production_database do
-    puts 'Copying production database to pathwaysbcDEV database'
-    puts `heroku pg:copy pathwaysbc::DATABASE_URL PURPLE --app pathwaysbcdev --confirm pathwaysbcdev`
+    puts `heroku pg:reset DATABASE --app pathwaysbcdemo --confirm pathwaysbcdemo`
   end
 
   task :migrate do
     puts 'Running database migrations ...'
-    puts `heroku rake db:migrate -a pathwaysbcdev`
+    puts `heroku rake db:migrate -a pathwaysbcdemo`
   end
 
   task :off do
     puts 'Putting the app into maintenance mode ...'
-    puts `heroku maintenance:on -a pathwaysbcdev`
+    puts `heroku maintenance:on -a pathwaysbcdemo`
   end
 
   task :on do
     puts 'Taking the app out of maintenance mode ...'
-    puts `heroku maintenance:off -a pathwaysbcdev`
+    puts `heroku maintenance:off -a pathwaysbcdemo`
   end
 
   task :push_local_db do
-    puts `heroku pg:reset DATABASE --app pathwaysbcdev --confirm pathwaysbcdev`
-    puts `heroku pg:push pathways_development DATABASE --app pathwaysbcdev`
+    puts `heroku pg:reset DATABASE --app pathwaysbcdemo --confirm pathwaysbcdemo`
+    puts `heroku pg:push pathways_development DATABASE --app pathwaysbcdemo`
   end
 end

@@ -138,5 +138,33 @@ module.exports = {
   },
   specializationFilterActivated: function(state: Object, maskingSet: Array, panelKey: string): boolean {
     return _.get(state, ["ui", "panels", panelKey, "filterValues", "specializationFilterActivated"], false);
+  },
+  teleserviceFeeTypes: function(state, maskingSet, panelKey) {
+    return _.reduce(state.app.teleserviceFeeTypes, (accumulator, value, key) => {
+      const val = _.get(
+        state,
+        ["ui", "panels", panelKey, "filterValues", "teleserviceFeeTypes", key],
+        false
+      )
+
+      return _.merge(
+        accumulator,
+        { [key] : val }
+      )
+    }, {})
+  },
+  teleserviceRecipients: function(state, maskingSet, panelKey) {    
+    return _.zipObject([
+      "patient",
+      "provider"
+    ].map((key) => {
+      const val = _.get(
+        state,
+        ["ui", "panels", panelKey, "filterValues", "teleserviceRecipients", key],
+        false
+      )
+
+      return [ key, val ];
+    }));
   }
 }

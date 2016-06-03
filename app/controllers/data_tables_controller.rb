@@ -3,8 +3,8 @@ class DataTablesController < ApplicationController
     authorize! :get, :global_data
 
     json = Oj.dump({
-      specialists: Serialized.fetch(:specialists),
-      clinics: Serialized.fetch(:clinics)
+      specialists: Denormalized.fetch(:specialists),
+      clinics: Denormalized.fetch(:clinics)
     })
 
     render text: json, content_type: :json

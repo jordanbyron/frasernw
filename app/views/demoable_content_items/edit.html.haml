@@ -9,7 +9,7 @@
   = form_tag demoable_content_items_path,
     method: :patch,
     class: "form-horizontal" do
-    - ScCategory.includes(:sc_items).all.each do |category|
+    - ScCategory.includes(:sc_items).each do |category|
       .category
         %h3{style: "margin-top: 10px"}= category.name
         - category.sc_items.each do |item|

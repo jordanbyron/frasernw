@@ -1,14 +1,28 @@
 module HistoryHelper
   def history_icon(item)
-    link_to("<i class='icon-folder-open icon-black'></i>".html_safe, history_index(item), target: "_blank")
+    link_to(
+      "<i class='icon-folder-open icon-black'></i>".html_safe,
+      history_index(item),
+      target: "_blank"
+    )
   end
 
   def history_button(item)
-    link_to("<i class='icon-folder-open'></i>".html_safe + " History ", history_index(item), class: "btn btn-mini stacked-button", target: "_blank")
+    link_to(
+      "<i class='icon-folder-open'></i>".html_safe + " History ",
+      history_index(item),
+      class: "btn btn-mini stacked-button",
+      target: "_blank"
+    )
   end
 
   def large_history_button(item)
-    link_to("<i class='icon-folder-open'></i>".html_safe + " History", history_index(item), class: "btn", target: "_blank")
+    link_to(
+      "<i class='icon-folder-open'></i>".html_safe + " History",
+      history_index(item),
+      class: "btn",
+      target: "_blank"
+    )
   end
 
   def history_index(item)

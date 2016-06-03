@@ -8,17 +8,18 @@ class Subscription < ActiveRecord::Base
     :interval,
     :user_id
 
-  #attr_accessible :interval, :user_id, :classification, :content_item, :item_type
   serialize :news_type
   serialize :sc_item_format_type
 
-  #before_action save_subscription_news_item_types
   validates :classification, :interval, presence: true
 
   belongs_to :user
 
   has_many :subscription_divisions, dependent: :destroy
-  has_many :divisions, through: :subscription_divisions, source: :division, class_name: "Division"
+  has_many :divisions,
+    through: :subscription_divisions,
+    source: :division,
+    class_name: "Division"
 
   has_many :subscription_sc_categories, dependent: :destroy
   has_many :sc_categories, through: :subscription_sc_categories
@@ -31,8 +32,19 @@ class Subscription < ActiveRecord::Base
   scope :resources, -> {where(classification: resource_update)}
   scope :news,      -> {where(classification: news_update)}
 
-  scope :in_divisions,     lambda {|division|    joins(:divisions).where("subscription_divisions.division_id" => Array.wrap(division).map(&:id)).uniq }
-  scope :in_sc_categories, lambda {|sc_category| joins(:subscription_sc_categories).where(:subscription_sc_categories => {:sc_category_id => Array.wrap(sc_category).map(&:id)} ).uniq }
+  scope :in_divisions, ->(division){
+    joins(:divisions).
+      where("subscription_divisions.division_id" => Array.wrap(division).
+      map(&:id)).
+      uniq
+  }
+  scope :in_sc_categories, ->(sc_category){
+    joins(:subscription_sc_categories).
+      where(subscription_sc_categories: {
+        sc_category_id: Array.wrap(sc_category).map(&:id)
+      } ).
+      uniq
+  }
 
 
   accepts_nested_attributes_for :divisions
@@ -43,12 +55,11 @@ class Subscription < ActiveRecord::Base
 
   NEWS_ITEM_TYPE_HASH = NewsItem::TYPE_HASH
 
-  #Update Classifications
   NEWS_UPDATES     = 1
   RESOURCE_UPDATES = 2
 
   TARGET_TYPES = {
-    NEWS_UPDATES => "News Updates".freeze,
+    NEWS_UPDATES     => "News Updates".freeze,
     RESOURCE_UPDATES => "Resource Updates".freeze
   }
 
@@ -59,13 +70,13 @@ class Subscription < ActiveRecord::Base
 
   INTERVAL_LABELS = {
     INTERVAL_IMMEDIATELY => "Immediately".freeze,
-    INTERVAL_DAILY => "Daily".freeze,
-    INTERVAL_WEEKLY => "Weekly".freeze,
-    INTERVAL_MONTHLY => "Monthly".freeze
+    INTERVAL_DAILY       => "Daily".freeze,
+    INTERVAL_WEEKLY      => "Weekly".freeze,
+    INTERVAL_MONTHLY     => "Monthly".freeze
   }
 
   def self.classifications
-    TARGET_TYPES.map{|k, v|  v}
+    TARGET_TYPES.map{ |k, v|  v }
   end
 
   def news_type_masks
@@ -80,7 +91,7 @@ class Subscription < ActiveRecord::Base
 
   def news_type_strings
     return "" if news_type.blank?
-    news_type_masks.map{|nt| Subscription::NEWS_ITEM_TYPE_HASH[nt]}
+    news_type_masks.map{ |nt| Subscription::NEWS_ITEM_TYPE_HASH[nt] }
   end
 
   def news_type_present?
@@ -96,7 +107,7 @@ class Subscription < ActiveRecord::Base
     TARGET_TYPES[RESOURCE_UPDATES]
   end
 
-  def interval_start_datetime # returns equivalent datetime value
+  def interval_start_datetime
     case interval
     when ::Subscription::INTERVAL_IMMEDIATELY
       raise "No start time"
@@ -130,17 +141,22 @@ class Subscription < ActiveRecord::Base
     INTERVAL_LABELS[interval]
   end
 
-  #decorate data
   def specializations_comma_separated
     specializations.map(&:name).join(", ")
   end
 
   def news_item_type_hash_array
-    news_type.reject(&:blank?).map(&:to_i).map{|n| Subscription::NEWS_ITEM_TYPE_HASH[n]}
+    news_type.
+      reject(&:blank?).
+      map(&:to_i).
+      map{ |n| Subscription::NEWS_ITEM_TYPE_HASH[n] }
   end
 
   def sc_item_format_type_hash_array
-    sc_item_format_type.reject(&:blank?).map(&:to_i).map{|n| Subscription::SC_ITEM_FORMAT_TYPE_HASH[n]}
+    sc_item_format_type.
+      reject(&:blank?).
+      map(&:to_i).
+      map{ |n| Subscription::SC_ITEM_FORMAT_TYPE_HASH[n] }
   end
 
   def news_update?
