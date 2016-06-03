@@ -10,7 +10,7 @@
 
   .tabbable
     %ul.nav.nav-tabs
-      %li.active
+      %li
         %a{"href" => "#0_tab", "data-toggle" => "tab"}
           Specialist
       %li
@@ -24,7 +24,7 @@
 
       - [Specialist, Clinic, ScItem].each_with_index do |klass, index|
 
-        .tab-pane{"id" => "#{index}_tab", "class" => (index == 0) && "active"}
+        .tab-pane{"id" => "#{index}_tab"}
 
           %table.table.table-condensed.table-striped
             %tr
@@ -47,3 +47,6 @@
                 %td.admin= history_button(feedback_item)
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
+
+:javascript
+  window.pathways.setupTabHistory();

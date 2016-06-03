@@ -4,7 +4,7 @@ class ReportsController < ApplicationController
     :sessions,
     :user_ids,
     :referents_by_specialty,
-    :usage
+    :entity_page_views
   ]
 
   def index
@@ -47,11 +47,12 @@ class ReportsController < ApplicationController
 
   def pageviews_by_user
     @init_data = {
-      currentUser: {
-        role: current_user.as_role,
-        divisions: current_user.as_divisions
-      },
-      divisions: Denormalized.fetch(:divisions)
+      app: {
+        currentUser: FilterTableAppState::CurrentUser.call(
+          current_user: current_user
+        ),
+        divisions: Denormalized.fetch(:divisions)
+      }
     }
 
     authorize! :view_report, :pageviews_by_user
@@ -79,23 +80,25 @@ class ReportsController < ApplicationController
 
     @init_data = {
       app: {
+        currentUser: FilterTableAppState::CurrentUser.call(
+          current_user: current_user
+        ),
         specializations: Denormalized.fetch(:specializations),
         divisions: Denormalized.fetch(:divisions)
       }
     }
   end
 
-  def usage
+  def entity_page_views
     @layout_heartbeat_loader = false
 
-    authorize! :view_report, :usage
+    authorize! :view_report, :entity_page_views
 
     @init_data = {
       app: {
-        currentUser: {
-          divisionIds: current_user.as_divisions.map(&:id),
-          isSuperAdmin: current_user.as_super_admin?
-        },
+        currentUser: FilterTableAppState::CurrentUser.call(
+          current_user: current_user
+        ),
         divisions: Denormalized.fetch(:divisions)
       }
     }

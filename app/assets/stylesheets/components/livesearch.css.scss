@@ -71,6 +71,22 @@
       }
     }
   }
+
+  input#search::-webkit-input-placeholder {
+    font-family: "Helvetica Neue", "FontAwesome", Arial, sans-serif;
+  }
+
+  input#search::-moz-placeholder {
+    font-family: "Helvetica Neue", "FontAwesome", Helvetica, Arial, sans-serif;
+  }
+
+  input#search:-ms-input-placeholder {
+    font-family: "Helvetica Neue", "FontAwesome", Helvetica, Arial, sans-serif;
+  }
+
+  input#search:-moz-placeholder {
+    font-family: "Helvetica Neue", "FontAwesome", Helvetica, Arial, sans-serif;
+  }
 }
 
 // This is a hack to get I.E. 10 to re-render the body after we call

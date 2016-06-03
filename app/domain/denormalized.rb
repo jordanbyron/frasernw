@@ -67,7 +67,8 @@ module Denormalized
               isNew: item.new?,
               isInProgress: item.in_progress,
               isSharedCare: item.shared_care?,
-              typeMask: item.type_mask
+              typeMask: item.type_mask,
+              collectionName: "contentItems"
             })
           end
       end
@@ -88,7 +89,7 @@ module Denormalized
             procedureIds: specialist.procedure_ids_with_parents,
             respondsWithin: specialist.lagtime_mask,
             acceptsReferralsViaPhone: specialist.referral_phone,
-            patientsCanBook: specialist.patient_can_book?,
+            patientsCanCall: specialist.patient_can_book?,
             sex: specialist.sex.downcase,
             scheduledDayIds: specialist.day_ids,
             languageIds: specialist.languages.map(&:id),
@@ -105,6 +106,7 @@ module Denormalized
             createdAt: specialist.created_at.to_date.to_s,
             updatedAt: specialist.updated_at.to_date.to_s,
             showInTable: specialist.show_in_table?,
+            hospitalsWithOfficesInIds: specialist.hospitals_with_offices_in.map(&:id),
             teleserviceFeeTypes: specialist.
               teleservices.
               select(&:offered?).
@@ -166,6 +168,7 @@ module Denormalized
             createdAt: clinic.created_at.to_date.to_s,
             updatedAt: clinic.updated_at.to_date.to_s,
             showInTable: clinic.show_in_table?,
+            hospitalsInIds: clinic.hospitals_in.map(&:id),
             teleserviceFeeTypes: clinic.
               teleservices.
               select(&:offered?).
@@ -223,11 +226,21 @@ module Denormalized
               map{ |ps| ps.procedure.name.uncapitalize_first_letter },
             memberName: specialization.member_name,
             membersName: specialization.member_name.pluralize,
-            nestedProcedureIds: Denormalized.transform_nested_procedure_specializations(
+            nestedProcedures: Denormalized.transform_nested_procedure_specializations(
               specialization.procedure_specializations.includes(:procedure).arrange
             ),
             maskFiltersByReferralArea: specialization.mask_filters_by_referral_area,
-            suffix: specialization.suffix
+            suffix: specialization.suffix,
+            newInDivisionIds: specialization.
+              specialization_options.
+              where(is_new: true).
+              map(&:division).
+              map(&:id),
+            inProgressInDivisionIds: specialization.
+              specialization_options.
+              where(in_progress: true).
+              map(&:division).
+              map(&:id)
           })
         end
     end,
@@ -241,7 +254,11 @@ module Denormalized
     hospitals: Proc.new do
       Hospital.all.inject({}) do |memo, hospital|
         memo.merge(hospital.id => {
-          name: hospital.name
+          id: hospital.id,
+          name: hospital.name,
+          address: hospital.address.try(:address),
+          mapUrl: hospital.address.try(:map_url),
+          phoneAndFax: hospital.phone_and_fax
         })
       end
     end,
@@ -256,6 +273,7 @@ module Denormalized
     languages: Proc.new do
       Language.all.inject({}) do |memo, language|
         memo.merge(language.id => {
+          id: language.id,
           name: language.name
         })
       end
@@ -265,6 +283,7 @@ module Denormalized
         inject({}) do |memo, procedure|
 
         memo.merge(procedure.id => {
+          id: procedure.id,
           nameRelativeToParents: procedure.try(:name_relative_to_parents),
           name: procedure.name,
           specializationIds: procedure.procedure_specializations.map(&:specialization_id),
@@ -284,7 +303,12 @@ module Denormalized
               map(&:specialization).
               map(&:id)
           },
-          childrenProcedureIds: procedure.children.map(&:id)
+          childrenProcedureIds: procedure.children.map(&:id),
+          ancestorIds: procedure.
+            procedure_specializations.
+            first.
+            ancestors.
+            map(&:procedure_id)
         })
       end
     end,
@@ -323,7 +347,7 @@ module Denormalized
 
         if specialization_option.open_to_sc_category?
           {
-            type: "contentCategories",
+            type: "contentCategory",
             id: specialization_option.open_to
           }
         else
@@ -373,7 +397,8 @@ module Denormalized
           divisionDisplayIds: item.divisions.map(&:id),
           isCurrent: item.current?,
           startDate: item.start_date,
-          endDate: item.end_date
+          endDate: item.end_date,
+          collectionName: "newsItems"
         })
       end
     end
@@ -381,18 +406,21 @@ module Denormalized
 
   def self.transform_nested_procedure_specializations(procedure_specializations)
     procedure_specializations.inject({}) do |memo, (ps, children)|
-      memo.merge( { ps.procedure.id => {
-        focused: ps.focused?,
-        assumed: {
-          clinics: ps.assumed_clinic?,
-          specialists: ps.assumed_specialist?
-        },
-        customWaittime: {
-          specialists: ps.specialist_wait_time,
-          clinics: ps.clinic_wait_time
-        },
-        children: transform_nested_procedure_specializations(children)
-      } } )
+      memo.merge({
+        ps.procedure.id => {
+          id: ps.procedure.id,
+          focused: ps.focused?,
+          assumed: {
+            clinics: ps.assumed_clinic?,
+            specialists: ps.assumed_specialist?
+          },
+          customWaittime: {
+            specialists: ps.specialist_wait_time,
+            clinics: ps.clinic_wait_time
+          },
+          children: transform_nested_procedure_specializations(children)
+        }
+      })
     end
   end
 end

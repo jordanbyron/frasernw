@@ -9,12 +9,7 @@ class SpecializationsController < ApplicationController
     @layout_heartbeat_loader = false
     @specialization = Specialization.find(params[:id])
     @init_data = {
-      app: FilterTableAppState.exec(current_user: current_user),
-      ui: {
-        pageType: "specialization",
-        specializationId: @specialization.id,
-        hasBeenInitialized: false
-      }
+      app: FilterTableAppState.call(current_user: current_user)
     }
   end
 

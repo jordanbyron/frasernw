@@ -35,23 +35,23 @@
         margin-top: 0px;
       }
 
-      .specialization_table__table_head--name {
+      .datatable__th--referents--name {
         width: 60%;
       }
 
-      .specialization_table__th--referrals {
+      .datatable__th--referents--referrals {
         width: 10%;
       }
 
-      .specialization_table__th--specialties {
+      .datatable__th--referents--specialties {
         width: 10%;
       }
 
-      .specialization_table__th--waittime {
+      .datatable__th--referents--waittime {
         width: 10%;
       }
 
-      .specialization_table__th--city {
+      .datatable__th--referents--city {
         width: 10%;
       }
 
@@ -75,31 +75,39 @@
       }
     }
 
-    .specialization_table__table_head--name {
+    .datatable__th--referents--name {
       width: 30%;
     }
 
-    .specialization_table__th--referrals {
+    .datatable__th--referents--referrals {
       width: 15%;
     }
 
-    .specialization_table__th--specialties {
+    .datatable__th--referents--specialties {
       width: 15%;
     }
 
-    .specialization_table__th--waittime {
+    .datatable__th--referents--waittime {
       width: 15%;
     }
 
-    .specialization_table__th--city {
+    .datatable__th--referents--city {
       width: 20%;
     }
 
-    .filter_table__th--subcategory {
+    .datatable__th--content-items--subcategory {
       width: 90px;
     }
 
-    .filter_table__th--icon {
+    .datatable__th--content-items--favorite {
+      width: 15px;
+    }
+
+    .datatable__th--content-items--email {
+      width: 15px;
+    }
+
+    .datatable__th--content-items--feedback {
       width: 15px;
     }
   }

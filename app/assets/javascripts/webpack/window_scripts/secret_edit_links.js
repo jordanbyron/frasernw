@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom";
 import React from "react";
-import SecretEditLinks from "react_components/secret_edit_links";
+import SecretEditLinks from "controllers/secret_edit_links";
 
 export default function(config) {
   let container = document.getElementById(config.containerId);

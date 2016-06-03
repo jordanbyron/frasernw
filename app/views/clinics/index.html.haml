@@ -10,7 +10,7 @@
   .tabbable
     %ul#content_tabs.nav.nav-tabs
       - Division.all.each do |division|
-        %li{class: (division == first_division) && "active"}
+        %li
           %a{"href" => "##{division.id}_tab", "data-toggle" => "tab"}
             = division.name
       %li
@@ -19,8 +19,7 @@
     .tab-content
       - Division.all.each do |division|
         - can_edit = user_divisions.include? division
-        .tab-pane{ id: "#{division.id}_tab",
-          class: (division == first_division) && "active" }
+        .tab-pane{:id => "#{division.id}_tab"}
           %table.table.table-condensed.table-striped
             - @specializations.each do |specialization|
               - clinics = specialization.clinics.in_divisions([division]).sort do |a,b|
@@ -87,3 +86,6 @@
                       class: "btn btn-mini" do
                       %i.icon-pencil
                       %span= " Edit"
+
+:javascript
+  window.pathways.setupTabHistory();
