@@ -175,7 +175,7 @@ const ReferentNameLink = React.createClass({
 
     var timer = setTimeout(function() {
       selectRecord(model, dispatch, id);
-    }, 800)
+    }, 750)
 
     this.setState({timer: timer});
   },
