@@ -11,6 +11,8 @@ import simpleBootstrapReact from "window_scripts/simple_bootstrap_react";
 import NewsItemsTable from "react_components/news_items_table";
 import attachSecretEditLinks from "window_scripts/secret_edit_links";
 import dryBootstrapReact from "dry_bootstrap_react";
+import FeedbackModal from "controllers/feedback_modal";
+
 
 import Highcharts from "highcharts";
 import "jquery-ujs";
