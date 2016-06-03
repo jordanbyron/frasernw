@@ -191,7 +191,7 @@ const ReferentNameLink = React.createClass({
     var decoratedRecord = this.props.decoratedRecord;
 
     return(
-      <a className="datatable__referent_name" 
+      <a className="datatable__referent_name"
         href={`/${decoratedRecord.raw.collectionName}/${decoratedRecord.raw.id}`}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}

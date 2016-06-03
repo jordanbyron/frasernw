@@ -29,10 +29,9 @@ const ExpandedReferentInformation = React.createClass({
         "This clinic hasn't provided us information about their restrictions.";
     }
 
-    if (this.props.record.interest || this.props.record.notPerformed){
+    if (this.props.record.notPerformed){
       return(
         <ul ref="content" style={{display: "none"}}>
-          <MostInterested record={this.props.record}/>
           <NotPerformed record={this.props.record}/>
         </ul>
       );
