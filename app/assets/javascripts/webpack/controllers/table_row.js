@@ -187,6 +187,10 @@ const ReferentNameLink = React.createClass({
       deselectRecord(this.props.model, this.props.dispatch);
     }
   },
+  handleClick: function(){
+    clearTimeout(this.state.timer);
+    this.setState({timer: null});
+  },
   render: function() {
     var decoratedRecord = this.props.decoratedRecord;
 
@@ -195,6 +199,7 @@ const ReferentNameLink = React.createClass({
         href={`/${decoratedRecord.raw.collectionName}/${decoratedRecord.raw.id}`}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
+        onClick={this.handleClick}
       >
         { decoratedRecord.raw.name }
       </a>
