@@ -8,14 +8,56 @@
       cursor: pointer;
     }
 
-    .datatable__row {
-      &:hover {
+    .table {
+      tr {
         td.datatable__cell {
-          background-color: #f3f8fc;
+          padding-top: 8px;
+          padding-bottom: 8px;
+          vertical-align: top;
+          height: auto;
         }
       }
     }
 
+    .datatable__row.datatable__row--isSelected {
+      background-color: #F3F8FC;
+    }
+
+    .well.datatable_row__expand_toggle {
+      padding: 1px 5px;
+      shadow: none;
+      border: 1px solid hsla(0,0%,90%,1);
+    }
+
+    .datatable__referent_name:hover {
+      font-weight: bold;
+    }
+
+
+    .datatable__row--isSelected {
+      .datatable__referent_name {
+        font-weight: bold;
+      }
+    }
+
+    .table {
+      .datatable__row {
+        &:hover {
+          td.datatable__cell {
+            background-color: #f3f8fc;
+          }
+        }
+
+        ul {
+          list-style-type: disc;
+          list-style-position: outside;
+          padding-left: 20px;
+          li {
+            list-style-type: disc;
+          }
+        }
+      }
+    }
     .specialization_table__table_head--name {
       width: 30%;
     }

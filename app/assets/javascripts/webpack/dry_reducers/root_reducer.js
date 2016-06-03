@@ -118,8 +118,20 @@ const tab = (model = {}, action) => {
       model.specializationFilterActivated,
       action
     ),
-    currentPage: currentPage(model.currentPage, action)
+    currentPage: currentPage(model.currentPage, action),
+    selectedRecordId: selectedRecordId(model.selectedRecordId, action)
   };
+}
+
+const selectedRecordId = (model, action) => {
+  switch(action.type){
+  case "SELECT_RECORD":
+    return action.proposed;
+  case "DESELECT_RECORD":
+    return null;
+  default:
+    return model;
+  }
 }
 
 const currentPage = (model, action) => {

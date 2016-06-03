@@ -1,6 +1,6 @@
 import React from "react";
 import _ from "lodash";
-import Modal from "react_components/modal";
+import Modal from "component_helpers/modal";
 
 const ExpireButton = (props) => {
   if(props.link.canExpire) {

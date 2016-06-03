@@ -258,3 +258,18 @@ export const closeFeedbackModal = (dispatch) => {
     proposed: "CLOSED"
   })
 }
+
+export const selectRecord = (model, dispatch, proposed) => {
+  dispatch({
+    type: "SELECT_RECORD",
+    tabKey: selectedTabKey(model),
+    proposed: proposed
+  });
+}
+
+export const deselectRecord = (model, dispatch, proposed) => {
+  dispatch({
+    type: "DESELECT_RECORD",
+    tabKey: selectedTabKey(model)
+  });
+}

@@ -12,7 +12,10 @@ import FeedbackIcon from "controllers/icons/feedback";
 import HideToggle from "controllers/hide_toggle";
 import HiddenBadge from "component_helpers/hidden_badge";
 import NewsItemRow from "controllers/table_row/news_items";
+import ExpandedReferentInformation from "controllers/expanded_referent_information";
+import selectedRecordId from "controller_helpers/selected_record_id";
 import * as filterValues from "controller_helpers/filter_values";
+import { selectRecord, deselectRecord } from "action_creators";
 
 const TableRow = ({model, dispatch, decoratedRecord}) => {
   if(_.includes([
@@ -25,22 +28,26 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
     if(_.includes(["specialists", "clinics"], collectionShownName(model))) {
       if(showingMultipleSpecializations(model)) {
         return(
-          <tr>
-            <ReferentName decoratedRecord={decoratedRecord}/>
+          <tr className="datatable__row">
+            <ReferentName decoratedRecord={decoratedRecord} model={model} dispatch={dispatch}/>
             <ReferentSpecializations decoratedRecord={decoratedRecord} model={model}/>
-            <td><ReferentStatusIcon model={model} record={decoratedRecord.raw}/></td>
-            <td>{ decoratedRecord.waittime }</td>
-            <td>{ decoratedRecord.cityNames }</td>
+            <td className="datatable__cell">
+              <ReferentStatusIcon model={model} record={decoratedRecord.raw}/>
+            </td>
+            <td className="datatable__cell">{ decoratedRecord.waittime }</td>
+            <td classname="datatable__cell">{ decoratedRecord.cityNames }</td>
           </tr>
         );
       }
       else {
         return(
-          <tr>
-            <ReferentName decoratedRecord={decoratedRecord}/>
-            <td><ReferentStatusIcon model={model} record={decoratedRecord.raw}/></td>
-            <td>{ decoratedRecord.waittime }</td>
-            <td>{ decoratedRecord.cityNames }</td>
+          <tr className="datatable__row">
+            <ReferentName decoratedRecord={decoratedRecord} model={model} dispatch={dispatch}/>
+            <td className="datatable__cell">
+              <ReferentStatusIcon model={model} record={decoratedRecord.raw}/>
+            </td>
+            <td className="datatable__cell">{ decoratedRecord.waittime }</td>
+            <td className="datatable__cell">{ decoratedRecord.cityNames }</td>
           </tr>
         );
       }
@@ -142,20 +149,57 @@ const ReferentSpecializations = ({decoratedRecord}) => {
   return(<td>{decoratedRecord.specializationNames}</td>);
 }
 
-const ReferentName = ({decoratedRecord}) => {
+const ReferentName = ({decoratedRecord, model, dispatch}) => {
   return (
-    <td>
+    <td className="datatable__cell">
       <span>
-        <a href={"/" + decoratedRecord.raw.collectionName + "/" + decoratedRecord.raw.id}>
-          { decoratedRecord.raw.name }
-        </a>
+        <ReferentNameLink decoratedRecord={decoratedRecord} model={model} dispatch={dispatch}/>
         <span  style={{marginLeft: "5px"}} className="suffix" key="suffix">
           { decoratedRecord.raw.suffix }
         </span>
         <Tags record={decoratedRecord.raw}/>
+        <ExpandedReferentInformation record={decoratedRecord.raw} model={model}/>
       </span>
     </td>
   );
 }
+
+const ReferentNameLink = React.createClass({
+  getInitialState: function() {
+    return { timer: null };
+  },
+  handleMouseEnter: function() {
+    var model = this.props.model;
+    var id = this.props.decoratedRecord.raw.id;
+    var dispatch = this.props.dispatch;
+
+    var timer = setTimeout(function() {
+      selectRecord(model, dispatch, id);
+    }, 300)
+
+    this.setState({timer: timer});
+  },
+  handleMouseLeave: function() {
+    clearTimeout(this.state.timer);
+    this.setState({timer: null});
+
+    if(selectedRecordId(this.props.model) === this.props.decoratedRecord.raw.id){
+      deselectRecord(this.props.model, this.props.dispatch);
+    }
+  },
+  render: function() {
+    var decoratedRecord = this.props.decoratedRecord;
+
+    return(
+      <a className="datatable__referent_name" 
+        href={`/${decoratedRecord.raw.collectionName}/${decoratedRecord.raw.id}`}
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
+      >
+        { decoratedRecord.raw.name }
+      </a>
+    );
+  }
+})
 
 export default TableRow;

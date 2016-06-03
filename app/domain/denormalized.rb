@@ -110,7 +110,9 @@ module Denormalized
             teleserviceFeeTypes: specialist.
               teleservices.
               select(&:offered?).
-              map(&:service_type)
+              map(&:service_type),
+            interest: specialist.interest,
+            notPerformed: specialist.not_performed
           })
         end
       end
@@ -172,7 +174,9 @@ module Denormalized
             teleserviceFeeTypes: clinic.
               teleservices.
               select(&:offered?).
-              map(&:service_type)
+              map(&:service_type),
+            interest: clinic.interest,
+            notPerformed: clinic.not_performed
           })
         end
       end
