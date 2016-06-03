@@ -35,4 +35,5 @@
   };
   $(document).ready(function() {
     window.setTimeout(notifyExpired,1800100);
+    $(document).bind('contextmenu',function() { return false; });
   });
