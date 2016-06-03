@@ -18,8 +18,10 @@ import {
 const bootstrapReact = function() {
   let middlewares = [];
 
-  const logger = createLogger();
-  middlewares.push(logger);
+  if(window.pathwaysEnvironment !== "production"){
+    const logger = createLogger();
+    middlewares.push(logger);
+  }
 
   middlewares.push(changeTab);
 
