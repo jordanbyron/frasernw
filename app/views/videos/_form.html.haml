@@ -7,7 +7,7 @@
   = f.label :title, "Title"
   = f.input :title, label: false
 
-  = f.label :video_url, "Upload file - file name cannot contain spaces"
+  = f.label :video_url, "Upload file - file name cannot contain spaces", id: "video_label"
   = f.file_field :video_url, label: false
 
   .form-actions
@@ -70,13 +70,17 @@
           // extract key and generate URL from response
           var key   = $(data.jqXHR.responseXML).find("Key").text();
           var url   = '//' + form.data('host') + '/' + key;
-          // create hidden field
+          // create hidden field and replace file input with it
+          var uploaded_label = $("<label />", {
+            text: "File uploaded: " + form.find("input:file").val().slice(12)
+          });
+          $('#video_label').replaceWith(uploaded_label);
           var input = $("<input />", {
             type:'hidden',
             name: fileInput.attr('name'),
             value: url
-          })
-          form.append(input);
+          });
+          form.find("input:file").replaceWith(input);
         },
         fail: function(e, data) {
           submitButton.prop('disabled', false);

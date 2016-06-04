@@ -19,7 +19,6 @@ class VideosController < ApplicationController
 
   def create
     authorize! :create, Video
-    set_s3_direct_post
     @video = Video.new(video_params)
     if @video.save
       redirect_to @video, notice: "Successfully created video."
