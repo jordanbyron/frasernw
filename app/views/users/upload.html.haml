@@ -4,7 +4,7 @@
 
   %h2 Import Users
 
-  = form_tag import_users_path, multipart: true, :class => "form-horizontal ajax" do
+  = form_tag import_users_path, multipart: true, class: "form-horizontal" do
     %i= "The file MUST be a CSV (comma separated values) file.  " + |
       "That means that it cannot be a .xls file, nor a .xlsx file, nor a .pages file.  " + |
       "It MUST contain a list of USER NAMES in the FIRST COLUMN, with NO COLUMN HEADING." |
@@ -16,7 +16,8 @@
     .control-group
       %label.control-label Role
       .controls
-        = select_tag 'type_mask', options_from_collection_for_select(User::TYPES, :first, :last, nil)
+        = select_tag 'type_mask',
+          options_from_collection_for_select(User::TYPES, :first, :last, nil)
     .control-group
       %label.control-label Divisions
       .controls
@@ -26,4 +27,4 @@
             = division.name
       = hidden_field_tag 'division_ids[]'
     .form-actions
-      = submit_tag "Import", :class => 'btn btn-primary'
+      = submit_tag "Import", class: 'btn btn-primary'

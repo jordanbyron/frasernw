@@ -8,8 +8,14 @@
 
 %script{"type" => "text/javascript"}
   :plain
-    var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); $('#specialties-menu li.subsequent').toggleClass('border'); return false; });
-    $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
+    var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () {
+      $('#specialties-dropdown-menu').toggle();
+      $('#specialties-menu li.subsequent').toggleClass('border');
+      return false;
+    });
+    $('html').on('click.specialties-dropdown-toggle', function () {
+      $('#specialties-dropdown-menu').hide()
+    });
     $(document).ready(function() { update_favorites() });
 
 #specialties-dropdown-menu
@@ -24,7 +30,8 @@
       %ul
         - list.each do |specialization|
           %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user.as_divisions) ? "in-progress" : ""}
+            %a{"href" => specialization_path(specialization),
+              class: specialization.fully_in_progress_for_divisions(current_user.as_divisions) ? "in-progress" : ""}
               = specialization.name
               = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user.as_divisions)
 
