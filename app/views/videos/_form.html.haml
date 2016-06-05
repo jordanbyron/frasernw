@@ -1,0 +1,93 @@
+= simple_form_for video,
+  html: { class: "directUpload",
+  data: { 'form-data' => (@s3_direct_post.fields),
+  'url' => @encoded_url,
+  'host' => URI.parse(@encoded_url).host } } do |f|
+
+  = f.label :title, "Title"
+  = f.input :title, label: false
+
+  = f.label :video_url, "Upload file - file name cannot contain spaces", id: "video_label"
+  = f.file_field :video_url, label: false
+
+  .form-actions
+    = f.button :submit,
+      class: "btn btn-primary",
+      id: "video-submit-button",
+      disable_with: "Posting video"
+    = link_to 'Cancel', video, class: "btn btn-danger"
+
+  %p Please note that uploading a new video may take a few minutes
+
+:javascript
+  // Direct S3 upload
+  // https://devcenter.heroku.com/articles/direct-to-s3-image-uploads-in-rails
+  $(function() {
+    $('.directUpload').find("input:file").each(function(i, elem) {
+      var fileInput    = $(elem);
+      var form         = $(fileInput.parents('form:first'));
+      var submitButton = form.find('input[type="submit"]');
+      var progressBar  = $("<div class='progress-bar'></div>");
+      var barContainer = $("<div class='progress'></div>").append(progressBar);
+      fileInput.after(barContainer);
+      fileInput.fileupload({
+        add: function(e, data) {
+          var uploadErrors = [];
+          $.each(data.files, function (index, file) {
+            if(~file.name.indexOf(" ")) {
+              uploadErrors.push('File name cannot contain spaces');
+            }
+          });
+          if(uploadErrors.length > 0) {
+            alert(uploadErrors.join("\n"));
+          } else {
+            data.submit();
+          }
+        },
+        fileInput:        fileInput,
+        url:              form.data('url'),
+        type:             'POST',
+        autoUpload:       true,
+        formData:         form.data('form-data'),
+        paramName:        'file',
+        dataType:         'XML',
+        replaceFileInput: false,
+        progressall: function (e, data) {
+          var progress = parseInt(data.loaded / data.total * 100, 10);
+          progressBar.css('width', progress + '%')
+        },
+        start: function (e) {
+          submitButton.prop('disabled', true);
+          progressBar.
+            css('background', '#bde2f5').
+            css('display', 'block').
+            css('width', '0%').
+            text("Loading...");
+        },
+        done: function(e, data) {
+          submitButton.prop('disabled', false);
+          progressBar.text("Uploading done");
+          // extract key and generate URL from response
+          var key   = $(data.jqXHR.responseXML).find("Key").text();
+          var url   = '//' + form.data('host') + '/' + key;
+          // create hidden field and replace file input with it
+          var uploaded_label = $("<label />", {
+            text: "File uploaded: " + form.find("input:file").val().slice(12)
+          });
+          $('#video_label').replaceWith(uploaded_label);
+          var input = $("<input />", {
+            type:'hidden',
+            name: fileInput.attr('name'),
+            value: url
+          });
+          form.find("input:file").replaceWith(input);
+        },
+        fail: function(e, data) {
+          submitButton.prop('disabled', false);
+          progressBar.
+            css("background", "red").
+            text("Failed");
+        }
+      });
+    });
+  });

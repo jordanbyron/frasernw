@@ -13,6 +13,9 @@ class Ability
       can :index, :terms_and_conditions
       can :get, :global_data
       can :index, Newsletter
+      can :index, Video
+      can :show, Video
+
       can :index, :latest_updates
 
       if user.as_super_admin?

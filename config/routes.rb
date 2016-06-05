@@ -1,5 +1,7 @@
 Frasernw::Application.routes.draw do
 
+  resources :videos
+
   resources :evidences
 
   match '/delayed_job' => DelayedJobWeb, anchor: false, via: [:get, :post]
@@ -237,7 +239,7 @@ Frasernw::Application.routes.draw do
 
   resources :csv_usage_reports, only: [:new, :create, :show]
 
-  resources :newsletters, only: [:index, :create, :new, :edit, :update, :destroy]
+  resources :newsletters, except: :show
 
   namespace :api do
     namespace :v1 do
