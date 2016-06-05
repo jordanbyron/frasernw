@@ -1,11 +1,7 @@
 - set_page_specific_title "Specialists and Clinics by Specialty"
 
-#referents_by_specialty_react_component
+#react_root--template
 
 :javascript
-  window.pathways.bootstrapReact({
-    domElementSelector: "#referents_by_specialty_react_component",
-    stateMapper: "ReferentsBySpecialty",
-    topLevelComponent: "ReferentsBySpecialty",
-    uiReducer: "ReferentsBySpecialty"
-  }, #{@init_data.to_json})
+  window.pathways = window.pathways || {};
+  window.pathways.dataForReact = #{Oj.dump(@init_data)};

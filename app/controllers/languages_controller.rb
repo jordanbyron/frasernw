@@ -10,6 +10,9 @@ class LanguagesController < ApplicationController
 
   def show
     @language = Language.find(params[:id])
+    @init_data = {
+      app: FilterTableAppState.call(current_user: current_user)
+    }
   end
 
   def new

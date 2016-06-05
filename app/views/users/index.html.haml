@@ -10,9 +10,9 @@
   .tabbable
     %ul.nav.nav-tabs
       - if (current_user.as_super_admin?)
-        %li.active
+        %li
           %a{"href" => "#super_admin_tab", "data-toggle" => "tab"}= "Super Administrators"
-      %li{:class => !current_user.as_super_admin? && "active"}
+      %li
         %a{"href" => "#admin_tab", "data-toggle" => "tab"}= "Administrators"
       %li
         %a{"href" => "#user_tab", "data-toggle" => "tab"}= "Users"
@@ -23,7 +23,7 @@
 
     .tab-content
       - if (current_user.as_super_admin?)
-        #super_admin_tab.tab-pane.active
+        #super_admin_tab.tab-pane
 
           %table.table.table-condensed.table-striped.tablesorter
             %thead
@@ -65,7 +65,7 @@
             Super Administrators:
             = @super_admin_users.count
 
-      #admin_tab.tab-pane{:class => !current_user.as_super_admin? && "active"}
+      #admin_tab.tab-pane
         %table.table.table-condensed.table-striped.tablesorter
           %thead
             %tr.tableheader
@@ -261,3 +261,7 @@
           });
   %br
   %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New User", new_user_path, :class => "btn ajax")
+
+
+:javascript
+  window.pathways.setupTabHistory();

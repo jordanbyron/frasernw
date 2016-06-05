@@ -23,7 +23,7 @@
 
   .tabbable
     %ul.nav.nav-tabs
-      %li.active
+      %li
         %a{"href" => "#0_tab", "data-toggle" => "tab"}
           Specialist
           - if specialist_user_count > 0
@@ -51,7 +51,7 @@
 
       - classes.each_with_index do |feedback_type, index|
 
-        .tab-pane{"id" => "#{index}_tab", "class" => (index == 0) && "active"}
+        .tab-pane{"id" => "#{index}_tab"}
 
           %table.table.table-condensed.table-striped
             %tr
@@ -92,3 +92,6 @@
                   = history_button(feedback_item)
 
   .btn-group= link_to "View archived feedback items", archived_feedback_items_path, :class => 'btn ajax'
+
+:javascript
+  window.pathways.setupTabHistory();

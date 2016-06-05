@@ -165,18 +165,20 @@ class Division < ActiveRecord::Base
     end
   end
 
-  def city_rankings
-    city_ids = cities.pluck(:id)
+  def city_rankings(force: false)
+    Rails.cache.fetch("division_city_rankings_#{id}", force: force) do
+      city_ids = cities.pluck(:id)
 
-    if use_customized_city_priorities?
-      division_referral_cities.inject({}) do |memo, drc|
-        memo.merge(drc.city_id => drc.priority)
-      end
-    else
-      City.order("name DESC").each_with_index.inject({}) do |memo, (city, index)|
-        memo.merge(
-          city.id => index
-        )
+      if use_customized_city_priorities?
+        division_referral_cities.inject({}) do |memo, drc|
+          memo.merge(drc.city_id => drc.priority)
+        end
+      else
+        City.order("name DESC").each_with_index.inject({}) do |memo, (city, index)|
+          memo.merge(
+            city.id => index
+          )
+        end
       end
     end
   end

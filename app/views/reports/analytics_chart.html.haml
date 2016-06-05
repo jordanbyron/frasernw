@@ -61,17 +61,13 @@
   });
 
   $(document).ready(function() {
-    // enable back button
-    window.onpopstate = function(event) {
-      if (event.state) {
-        window.location.reload();
-      }
-    };
-    window.history.replaceState({print: false}, "", "#configure");
-
     $("a.print").click(function() {
       $("body").html($("#chart_container")).css("background-color", "white");
-      window.history.pushState({print: true}, "", "#print");
+      window.location.hash = "#print";
+      window.addEventListener("hashchange", function() {
+        window.location.href.split('#')[0];
+        window.location.reload();
+      })
     });
 
     updateDOM();

@@ -753,4 +753,15 @@ class Clinic < ActiveRecord::Base
       map(&:specialist).
       uniq
   end
+
+  def hospitals_in
+    clinic_locations.
+      select(&:has_data?).
+      map(&:location).
+      reject(&:nil?).
+      select(&:in_hospital?).
+      map(&:hospital_in).
+      reject(&:nil?).
+      uniq
+  end
 end

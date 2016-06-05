@@ -1,128 +1,88 @@
 import React from "react";
-import { sortByHeading } from "action_creators";
+import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import TableRows from "controllers/table_rows";
+import TableHeading from "controllers/table_heading";
+import { reportStyle } from "controller_helpers/filter_values";
+import { recordShownByTab, isTabbedPage } from "controller_helpers/tab_keys";
+import { collectionShownName } from "controller_helpers/collection_shown";
+import isDataDubious from "controller_helpers/dubious_data";
 
-const TableRows = (model, dispatch) => {
-  return sortedRecordsToDisplay(model).map((record) => {
-    return(
-      <tr key={record.id}>
-        <td key="name"><a href={`/users/${record.id}`}>{record.name}</a></td>
-        <td key="views">{record.pageViews}</td>
-      </tr>
-    );
-  })
-}
+const Table = ({model, dispatch}) => {
+  if (shouldShow(model)){
+    if (isTableLoaded(model)){
+      return (
+        <table className="table">
+          <TableHeading model={model} dispatch={dispatch}/>
+          <tbody>
+            { TableRows(model, dispatch) }
+          </tbody>
+        </table>
+      );
+    }
+    else {
+      return <div style={{marginTop: "10px", marginBottom: "10px"}}>Loading...</div>;
+    }
 
-const reverseSortOrder = (model) => {
-  if (tableSortDirection(model) === "UP"){
-    return "desc";
-  }
-  else {
-    return "asc";
-  }
-}
-
-const matchingSortOrder = (model) => {
-  if (tableSortDirection(model) === "UP"){
-    return "asc";
-  }
-  else {
-    return "desc";
-  }
-}
-
-const sortedRecordsToDisplay = (model) => {
-  if (selectedTableHeadingKey(model) === "PAGE_VIEWS"){
-    var iteratee = _.property("pageViews");
-    var order = matchingSortOrder(model);
-  }
-  else {
-    var iteratee = _.property("name").pwPipe(_.trimLeft);
-    var order = reverseSortOrder(model);
-  }
-
-  return _.sortByOrder(
-    model.ui.recordsToDisplay,
-    [ iteratee ],
-    [ order]
-  );
-
-}
-
-const isTableLoaded = (model) => {
-  return model.ui.recordsToDisplay;
-}
-
-const TableController = ({model, dispatch}) => {
-  if (isTableLoaded(model)){
-    return (
-      <table className="table">
-        <thead>
-          <tr>
-            <TableHeadingController
-              model={model}
-              dispatch={dispatch}
-              label={"User"}
-              key={"USER"}
-              headingKey={"USER"}
-            />
-            <TableHeadingController
-              model={model}
-              dispatch={dispatch}
-              label={"Page Views"}
-              key={"PAGE_VIEWS"}
-              headingKey={"PAGE_VIEWS"}
-            />
-          </tr>
-        </thead>
-        <tbody>
-          { TableRows(model, dispatch) }
-        </tbody>
-      </table>
-    );
   }
   else {
     return(<span></span>);
   }
 }
 
-const TableHeadingController = ({model, dispatch, label, headingKey}) => {
-  const onClick = _.partial(
-    sortByHeading,
-    dispatch,
-    headingKey,
-    selectedTableHeadingKey(model)
-  );
+const shouldShow = (model) => {
+  if (!_.includes(ROUTES_IMPLEMENTING, matchedRoute(model))){
+    return false;
+  }
 
-  return(
-    <th onClick={onClick} className="datatable__heading">
-      <span>{ label }</span>
-      <TableHeadingArrowController
-        model={model}
-        headingKey={headingKey}
-      />
-    </th>
-  );
+  if (isTabbedPage(model) &&
+    collectionShownName(model) === "contentItems" &&
+    !(recordShownByTab(model).componentType === "FilterTable")) {
+
+    return false;
+  }
+
+  if (matchedRoute(model) === "/content_categories/:id" &&
+    !(recordShownByPage(model).componentType === "FilterTable")) {
+
+    return false;
+  }
+
+  if (matchedRoute(model) === "/reports/referents_by_specialty" &&
+    (reportStyle(model) === "expanded")) {
+
+    return false;
+  }
+
+  if (matchedRoute(model) === "/reports/entity_page_views" &&
+      (isDataDubious(model) && model.app.currentUser.role !== "super")) {
+
+    return false;
+  }
+
+  return true;
 }
 
-const TableHeadingArrowController = ({model, headingKey}) => {
-  if (selectedTableHeadingKey(model) === headingKey) {
-    return(
-      <i className={`icon-arrow-${tableSortDirection(model).toLowerCase()}`}
-        style={{color: "#08c", marginLeft: "5px"}}
-      />
-    );
+const isTableLoaded = (model) => {
+  if(matchedRoute(model) === "/reports/pageviews_by_user" ||
+    matchedRoute(model) === "/reports/entity_page_views"){
+    return model.ui.recordsToDisplay;
   }
   else {
-    return(<span></span>)
+    return true
   }
 }
 
-const selectedTableHeadingKey = (model) => {
-  return _.get(model, ["ui", "selectedTableHeading", "key"], "PAGE_VIEWS")
-}
+const ROUTES_IMPLEMENTING = [
+  "/specialties/:id",
+  "/areas_of_practice/:id",
+  "/content_categories/:id",
+  "/reports/pageviews_by_user",
+  "/reports/entity_page_views",
+  "/reports/referents_by_specialty",
+  "/latest_updates",
+  "/hospitals/:id",
+  "/languages/:id",
+  "/news_items"
+];
 
-const tableSortDirection = (model) => {
-  return _.get(model, ["ui", "selectedTableHeading", "direction"], "DOWN");
-}
-
-export default TableController;
+export default Table;

@@ -144,7 +144,7 @@ Frasernw::Application.routes.draw do
       get :page_views
       get :sessions
       get :referents_by_specialty
-      get :usage
+      get :entity_page_views
       get :user_ids
       get :pageviews_by_user
     end
@@ -245,7 +245,7 @@ Frasernw::Application.routes.draw do
         collection do
           get :page_views
           get :sessions
-          get :usage
+          get :entity_page_views
           get :user_ids
           get :pageviews_by_user
         end

@@ -12,21 +12,18 @@ class NewsItemsController < ApplicationController
       end
     end
 
-    @props = {
+    @init_data = {
       app: {
-        currentUser: {
-          isSuperAdmin: current_user.as_super_admin?,
-          divisionIds: current_user.as_divisions.map(&:id)
-        },
-        divisions: Division.all.inject({}) do |memo, division|
-          memo.merge(division.id => {
-            name: division.name
-          })
-        end,
+        currentUser: FilterTableAppState::CurrentUser.call(
+          current_user: current_user
+        ),
+        divisions: Denormalized.fetch(:divisions),
         newsItems: Denormalized.generate(:news_items)
       },
       ui: {
-        divisionId: @division.id
+        persistentConfig: {
+          divisionId: @division.id
+        }
       }
     }
   end
