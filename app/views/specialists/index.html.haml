@@ -15,7 +15,7 @@
   .tabbable
     %ul#content_tabs.nav.nav-tabs
       - @all_divisions.each do |division|
-        %li{:class => (division == @first_division) && "active"}
+        %li
           - if @specializations.length > 1
             %a{"href" => "##{division.id}_tab", "data-toggle" => "tab"}= "#{division.name} (#{Specialist.in_divisions(division).count})"
           - else
@@ -31,7 +31,7 @@
     .tab-content
       - @all_divisions.each do |division|
         - can_edit = @user_divisions.include? division
-        .tab-pane{:id => "#{division.id}_tab", :class => (division == @first_division) && "active"}
+        .tab-pane{:id => "#{division.id}_tab"}
           %table.table.table-condensed.table-striped
             - if @specializations.length > 1
               %h3{:style => "font-family: bitter;"}
@@ -81,3 +81,7 @@
                   %td= link_to specialist.name, specialist_path(specialist), :class => 'ajax'
                   %td{style: "min-width: 60px"}
                     = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialist_path(specialist), :class => "btn btn-mini ajax")
+
+
+:javascript
+  window.pathways.setupTabHistory();

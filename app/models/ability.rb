@@ -27,7 +27,7 @@ class Ability
         can :view_report, :sessions
         can :view_report, :csv_usage
         can :view_report, :referents_by_specialty
-        can :view_report, :usage
+        can :view_report, :entity_page_views
         can :view_report, :user_ids
 
         can :index, Report

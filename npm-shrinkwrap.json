@@ -408,6 +408,11 @@
       "from": "debug@>=2.2.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/debug/-/debug-2.2.0.tgz"
     },
+    "deep-equal": {
+      "version": "1.0.1",
+      "from": "deep-equal@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/deep-equal/-/deep-equal-1.0.1.tgz"
+    },
     "detect-indent": {
       "version": "3.0.1",
       "from": "detect-indent@>=3.0.1 <4.0.0",
@@ -447,6 +452,11 @@
       "version": "4.2.3",
       "from": "highcharts@*",
       "resolved": "https://registry.npmjs.org/highcharts/-/highcharts-4.2.3.tgz"
+    },
+    "history": {
+      "version": "2.1.1",
+      "from": "history@latest",
+      "resolved": "https://registry.npmjs.org/history/-/history-2.1.1.tgz"
     },
     "home-or-tmp": {
       "version": "1.0.0",
@@ -584,6 +594,11 @@
       "version": "0.1.6",
       "from": "private@>=0.1.5 <0.2.0",
       "resolved": "https://registry.npmjs.org/private/-/private-0.1.6.tgz"
+    },
+    "query-string": {
+      "version": "3.0.3",
+      "from": "query-string@>=3.0.0 <4.0.0",
+      "resolved": "https://registry.npmjs.org/query-string/-/query-string-3.0.3.tgz"
     },
     "react": {
       "version": "0.14.2",
@@ -777,6 +792,11 @@
         }
       }
     },
+    "strict-uri-encode": {
+      "version": "1.1.0",
+      "from": "strict-uri-encode@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/strict-uri-encode/-/strict-uri-encode-1.1.0.tgz"
+    },
     "strip-ansi": {
       "version": "3.0.0",
       "from": "strip-ansi@>=3.0.0 <4.0.0",
@@ -797,10 +817,20 @@
       "from": "trim-right@>=1.0.1 <2.0.0",
       "resolved": "https://registry.npmjs.org/trim-right/-/trim-right-1.0.1.tgz"
     },
+    "url-pattern": {
+      "version": "1.0.1",
+      "from": "url-pattern@latest",
+      "resolved": "https://registry.npmjs.org/url-pattern/-/url-pattern-1.0.1.tgz"
+    },
     "user-home": {
       "version": "1.1.1",
       "from": "user-home@>=1.1.1 <2.0.0",
       "resolved": "https://registry.npmjs.org/user-home/-/user-home-1.1.1.tgz"
+    },
+    "warning": {
+      "version": "2.1.0",
+      "from": "warning@>=2.0.0 <3.0.0",
+      "resolved": "https://registry.npmjs.org/warning/-/warning-2.1.0.tgz"
     },
     "webpack": {
       "version": "1.11.0",

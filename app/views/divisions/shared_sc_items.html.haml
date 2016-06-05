@@ -10,17 +10,14 @@
 
     .tabbable
       %ul.nav.nav-tabs
-        - active = true
         - @categories.each do |category|
-          %li{:class => active && "active"}
+          %li
             %a{"href" => "##{category.name.remove_whitespace}_tab", "data-toggle" => "tab"}= category.name
-          - active = false
 
 
       .tab-content
-        - active = true
         - @categories.each do |category|
-          .tab-pane{"id" => "#{category.name.remove_whitespace}_tab", :class => active && "active"}
+          .tab-pane{"id" => "#{category.name.remove_whitespace}_tab"}
             %table.table.table-condensed.table-striped.tablesorter
               %thead
                 %tr.tableheader
@@ -55,7 +52,6 @@
                     %td= sc_item.evidence.present? ? link_to(sc_item.evidence.level, sc_item.evidence) : content_tag(:span, 'z', class: 'opacity-0')
                     %td= sc_item.searchable? ? icon('icon-search') + content_tag(:span, 'a', class: 'opacity-0') : content_tag(:span, 'z', class: 'opacity-0')
                     %td= sc_item.shared_care? ? icon('icon-star') + content_tag(:span, 'a', class: 'opacity-0') : content_tag(:span, 'z', class: 'opacity-0')
-          - active = false
 
     .form-actions
       = f.button :submit, "Update shared content items", :class => "btn btn-primary"
@@ -67,3 +63,7 @@
         $('.tablesorter').tablesorter({sortList: [[2,0]]})
         $('[data-toggle="tooltip"]').tooltip();
       });
+
+
+:javascript
+  window.pathways.setupTabHistory();

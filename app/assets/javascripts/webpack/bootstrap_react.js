@@ -1,81 +1,61 @@
-var React = require("react");
-var ReactDOM = require("react-dom");
-var Redux = require("redux");
-var Provider = require("react-redux").Provider;
-var connect = require("react-redux").connect;
-var _ = require("lodash");
-var mapStateToProps = function(state) { return state; };
-var mapDispatchToProps = function(dispatch) { return { dispatch: dispatch }; };
-var getTopLevelProps = function(store, mapStateToProps, mapDispatchToProps, mergeProps) {
-  return mergeProps(
-    mapStateToProps(store.getState()),
-    mapDispatchToProps(store.dispatch)
-  );
-};
+import Template from "controllers/template";
+import Provider from "provider";
+import createLogger from "redux-logger";
+import nextAction from "middlewares/next_action";
+import { createStore, applyMiddleware } from "redux";
+import { useQueries } from 'history';
+import ReactDOM from "react-dom";
+import rootReducer from "dry_reducers/root_reducer";
+import React from "react";
+import changeTab from "middlewares/change_tab";
+import {
+  requestDynamicData,
+  parseRenderedData,
+  integrateLocalStorageData,
+  parseLocation
+} from "action_creators";
 
-var generateReducer = require("./reducers/top_level");
+const bootstrapReact = function() {
+  let middlewares = [];
 
-const getAnchor = () => document.location.toString().split("#")[1];
+  if(window.pathwaysEnvironment !== "production"){
+    const logger = createLogger();
+    middlewares.push(logger);
+  }
 
-module.exports = function(config, initData) {
-  $("document").ready(function() {
+  middlewares.push(changeTab);
 
-    // connect the component to redux
-    var reducer = generateReducer(config.uiReducer);
-    var store = Redux.createStore(reducer);
-    var rootElement = $(config.domElementSelector)[0];
-    var Component = require(`./react_components/${_.snakeCase(config.topLevelComponent)}`);
-    var mergeProps = function(stateProps, dispatchProps) {
-      return require(`./state_mappers/${_.snakeCase(config.stateMapper)}`)(
-        stateProps,
-        dispatchProps.dispatch,
-        config.mapperConfig
-      );
+  middlewares.push(nextAction);
+
+  const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
+  const store = createStoreWithMiddleware(rootReducer);
+
+  parseLocation(store.dispatch);
+
+  window.addEventListener("hashchange", () => {
+    parseLocation(store.dispatch);
+  })
+
+  $(document).ready(function() {
+    const renderTo = document.getElementById("react_root--template");
+
+    if (renderTo){
+      ReactDOM.render(
+        <Provider childKlass={Template} store={store}/>,
+        renderTo
+      )
     }
 
-    var ConnectedComponent = connect(
-      mapStateToProps,
-      mapDispatchToProps,
-      mergeProps
-    )(Component);
-
-    // integrate data we render on the ruby partial
-    store.dispatch({
-      type: "INTEGRATE_PAGE_RENDERED_DATA",
-      initialState: initData
-    });
-
-    store.dispatch({
-      type: "READ_ANCHOR",
-      anchor: getAnchor()
-    });
-
-    // render the component
-    ReactDOM.render(
-      <Provider store={store}>
-        <ConnectedComponent />
-      </Provider>,
-      rootElement
-    );
-
-
-    // integrate data stashed in localStorage ( or AJAX requested if necessary )
-    // this is 'global' data that is used by many views
     window.pathways.globalDataLoaded.done(function(data) {
-      store.dispatch({
-        type: "INTEGRATE_LOCALSTORAGE_DATA",
-        data: data
-      });
-
-      $("#heartbeat-loader-position").remove();
-
-      // use our computed top level props to make the initial api query
-      var topLevelProps =
-        getTopLevelProps(store, mapStateToProps, mapDispatchToProps, mergeProps);
-
-      topLevelProps.query &&
-        topLevelProps.query() &&
-        store.dispatch({ type: "MAKE_INITIAL_API_QUERY" });
+      integrateLocalStorageData(store.dispatch, data);
     })
-  });
-}
+
+    if (window.pathways.dataForReact){
+      parseRenderedData(store.dispatch);
+    }
+
+    requestDynamicData(store.getState(), store.dispatch);
+  })
+};
+
+export default bootstrapReact;

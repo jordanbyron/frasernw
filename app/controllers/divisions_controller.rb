@@ -101,6 +101,7 @@ class DivisionsController < ApplicationController
         end
       end
       Denormalized.delay.regenerate(:divisions)
+      @division.city_rankings(force: true)
 
       redirect_to @division, notice: "Successfully updated division."
     else

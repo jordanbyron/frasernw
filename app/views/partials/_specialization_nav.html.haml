@@ -1,4 +1,4 @@
-- cache("specialization_#{specialization.id}_nav_#{current_user.as_divisions.map{|d| d.id}.join('_')}") do
+- cache("specialization_#{specialization.id}_nav_#{current_user.as_divisions.map(&:id).sort.join('_')}") do
 
   .tabbable
     %ul#content_tabs.nav.nav-tabs
@@ -11,7 +11,8 @@
       - ScCategory.specialty.each do |sc_category|
         - if sc_category.all_sc_items_for_specialization_in_divisions(specialization, current_user.as_divisions).present?
           %li{:class => "category_#{sc_category.id}"}
-            %a{"href" => "#{specialization_path(specialization)}##{sc_category.name.remove_whitespace}", "id" => sc_category.name.remove_whitespace}
+            %a{"href" => "#{specialization_path(specialization)}#contentCategory#{sc_category.id}",
+              "id" => sc_category.name.remove_whitespace }
               %span= sc_category.name
       -#long_query_warning:294ms+ ^^
 
@@ -20,4 +21,3 @@
     $(document).ready(function(){
       $('ul#content_tabs.nav.nav-tabs li.#{selected}').addClass('active');
     });
-
