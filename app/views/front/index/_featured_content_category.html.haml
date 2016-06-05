@@ -17,7 +17,10 @@
         %span.icon-stack.featured_contents__arrow_icon_stack
           %i.icon-check-empty.icon-stack-base.icon-text.featured_contents__arrow_icon_box
           %i.icon-caret-down.icon-text.featured_contents__arrow_icon_caret
-        %span.featured_contents__dropdown_trigger_text= featured_sc_item.title
+        %span.featured_contents__dropdown_trigger_text
+          = featured_sc_item.title
+          - if featured_sc_item.shared_care?
+            %i.icon-blue.icon-star
       %ul.dropdown-menu.featured_contents__dropdown_menu
         %li.featured_contents__dropdown_item
           = link_to "javascript:void(0)",
@@ -32,6 +35,8 @@
               class: "featured_contents__dropdown_item_text",
               style: "display: inline-block; white-space: normal;" do
               = featured_sc_item.title
+              - if featured_sc_item.shared_care?
+                %i.icon-blue.icon-star
         %li.featured_contents__dropdown_item
           = link_to featured_sc_item.resolved_url,
             class: "featured_contents__dropdown_link",
