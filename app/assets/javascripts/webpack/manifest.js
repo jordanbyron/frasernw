@@ -1,4 +1,3 @@
-
 // These libraries are required to support React.js in older browsers
 // (see http://facebook.github.io/react/docs/working-with-the-browser.html)
 //
@@ -9,7 +8,10 @@ import "console-polyfill";
 import "core_extensions";
 
 import attachSecretEditLinks from "window_scripts/secret_edit_links";
+import FeedbackModal from "standalone_components/feedback_modal";
+
 import setupTabHistory from "window_scripts/setup_tab_history";
+import simpleBootstrapReact from "window_scripts/simple_bootstrap_react";
 import bootstrapReact from "bootstrap_react";
 
 import Highcharts from "highcharts";
@@ -20,6 +22,7 @@ import "jquery-ujs";
 
 window.pathways = window.pathways || {};
 
+window.pathways.bootstrapFeedbackModal = simpleBootstrapReact(FeedbackModal);
 window.pathways.bootstrapReact = bootstrapReact;
 
 window.pathways.trackForm = require("./analytics_wrappers").trackForm;
