@@ -10,13 +10,9 @@ class HospitalsController < ApplicationController
 
   def show
     @hospital = Hospital.find(params[:id])
-    @specialists_with_offices_in =
-      @hospital.
-        offices_in.
-        map{ |o| o.specialists }.
-        flatten.
-        uniq.
-        reject{ |s| s.in_progress }
+    @init_data = {
+      app: FilterTableAppState.call(current_user: current_user)
+    }
   end
 
   def new

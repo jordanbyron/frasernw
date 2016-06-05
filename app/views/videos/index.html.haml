@@ -1,0 +1,18 @@
+- set_page_specific_title "Pathways Videos"
+
+.content-wrapper
+
+  %h2= "Pathways Videos"
+
+  %table.table
+    %tbody
+      - @videos.each do |video|
+        %tr
+          %td
+            = link_to video.title, video
+
+            - if can? :edit, Video
+              = link_to edit_video_path(video),
+                class: "btn btn-mini",
+                style: "float: right; margin-left: 10px;" do
+                %span= "Edit"

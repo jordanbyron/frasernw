@@ -1,13 +1,12 @@
 - set_page_specific_title "News Items"
 
+.tabbable
+  #react_root--template
+
+:javascript
+  window.pathways = window.pathways || {};
+  window.pathways.dataForReact = #{Oj.dump(@init_data)};
+
 .content-wrapper
-
-  %h2{style: "margin-bottom: 5px"}
-    = "News Items for #{@division.name}"
-
-  #newsitem-react-container
-
-  = link_to "Create News Item", new_news_item_path, class: "btn btn-default"
-
-  :javascript
-    window.pathways.bootstrapNewsItems("newsitem-react-container", #{@props.to_json})
+  %p.admin.btn-group
+    = link_to "Create News Item", new_news_item_path, class: "btn btn-default"

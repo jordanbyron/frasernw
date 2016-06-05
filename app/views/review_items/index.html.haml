@@ -17,7 +17,7 @@
 
   .tabbable
     %ul.nav.nav-tabs
-      %li.active
+      %li
         %a{"href" => "#specialists_tab", "data-toggle" => "tab"}
           Specialist Review Items
           - if user_specialist_reviews > 0
@@ -33,7 +33,7 @@
             %span.badge= clinic_count
 
     .tab-content
-      #specialists_tab.tab-pane.active
+      #specialists_tab.tab-pane
 
         %table.table.table-condensed.table-striped
           %tr
@@ -100,3 +100,7 @@
                 = history_button(review_item)
 
   .btn-group= link_to "View archived review queue items", archived_review_items_path, :class => 'btn ajax'
+
+
+:javascript
+  window.pathways.setupTabHistory();

@@ -13,7 +13,7 @@
 
   .tabbable
     %ul.nav.nav-tabs
-      %li.active
+      %li
         %a{"href" => "#specialists_tab", "data-toggle" => "tab"}
           Specialist Review Items
 
@@ -22,7 +22,7 @@
           Clinic Review Items
 
     .tab-content
-      #specialists_tab.tab-pane.active
+      #specialists_tab.tab-pane
         = render "review_items/archived_table",
           target_type: "Specialist",
           review_items: specialist_reviews
@@ -32,3 +32,7 @@
           review_items: clinic_reviews
 
   = will_paginate @feedback_items, :renderer => PathwaysPaginationHelper::LinkRenderer, :inner_window => 2, :outer_window => 2
+
+
+:javascript
+  window.pathways.setupTabHistory();

@@ -108,9 +108,9 @@
         %td > April 2014
         %td
 
-    - if can? :view_report, :usage
+    - if can? :view_report, :entity_page_views
       %tr
-        %td= link_to "Entity Page Views", usage_reports_path
+        %td= link_to "Entity Page Views", entity_page_views_reports_path
         %td Analytics
         %td System-wide
         %td N/A

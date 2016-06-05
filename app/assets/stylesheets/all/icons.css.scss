@@ -87,6 +87,7 @@
 .tac:before,
 .faq_link:before,
 .user_guide_link:before,
+.videos_link:before,
 .contact:before,
 .logout:before,
 .history:before,
@@ -166,6 +167,11 @@
 .user_guide_link:before
 {
   content: "\f109";
+}
+
+.videos_link:before
+{
+  content: "\f008";
 }
 
 .tac:before

@@ -1,12 +1,4 @@
 #content #container {
-
-  .latest_updates__update {
-    padding: 10px;
-    border-radius: 2px;
-    p {
-      margin: 0px;
-    }
-  }
   .latest_updates__update--editable {
     &:hover {
       background-color: #f3f8fc;

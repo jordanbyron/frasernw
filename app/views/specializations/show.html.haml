@@ -1,28 +1,16 @@
-- set_page_specific_title "#{@specialization.name}"
-
-%ul#specialties-menu
-  %li.dropdown
-    %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-      All Specialties
-      %b.caret
-  %li.subsequent{:class => @specialization.fully_in_progress_for_divisions(current_user.as_divisions) && "in-progress"}
-    = @specialization.name
-    = "<span class='new'>new</span>".html_safe if @specialization.new_for_divisions(current_user.as_divisions)
-
-= render 'partials/specialization_dropdown_menu'
+- set_page_specific_title @specialization.name
 
 .tabbable
-  #show_specialization
+  #react_root--template
 
 :javascript
-  window.pathways.bootstrapReact({
-    domElementSelector: "#show_specialization",
-    stateMapper: "FilterTablePage",
-    topLevelComponent: "FilterTablePage",
-    uiReducer: "FilterTablePage"
-  }, #{Oj.dump(@init_data)})
+  window.pathways = window.pathways || {};
+  window.pathways.dataForReact = #{Oj.dump(@init_data)};
 
 .content-wrapper
   %p.admin.btn-group
     - if can? :update, @specialization
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Specialty", edit_specialization_path(@specialization), :class => "btn ajax")
+      = link_to edit_specialization_path(@specialization),
+        class: "btn" do
+        %i.icon-pencil
+        %span= " Edit Specialty"
