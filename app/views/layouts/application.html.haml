@@ -403,7 +403,6 @@
                     %li.nav-header Help
                     - if user_guide.present? # this is the production Pathways User Guide content item
                       %li= link_to "User Guide", user_guide.resolved_url, class: 'user_guide_link'
-                    %li= link_to "Training Videos", videos_path, class: 'videos_link'
                     %li= link_to "Help FAQ", faq_category_path(FaqCategory.help), class: 'faq_link'
                     %li
                       = link_to "Contact Us",
