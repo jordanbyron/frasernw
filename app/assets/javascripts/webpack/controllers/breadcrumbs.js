@@ -100,9 +100,23 @@ const breadcrumbDropdownHeight = (model) => {
   return _.ceil(_.values(model.app.specializations).length / 4);
 }
 
+const filterHidden = (model, specializations) => {
+  if (model.app.currentUser.role === "user"){
+    return specializations.filter((specialization) => {
+      return model.app.currentUser.divisionIds.filter((id) => {
+        return !_.includes(specialization.inProgressInDivisionIds, id);
+      }).pwPipe(_.some);
+    })
+  }
+  else {
+    return specializations;
+  }
+}
+
 const BreadcrumbDropdownColumn = ({model, dispatch, columnNumber}) => {
   const specializations = _.values(model.app.specializations)
     .pwPipe((specializations) => _.sortBy(specializations, "name") )
+    .pwPipe(_.partial(filterHidden, model))
     .slice(
       (breadcrumbDropdownHeight(model) * (columnNumber - 1)),
       (breadcrumbDropdownHeight(model) * columnNumber)
@@ -136,7 +150,7 @@ const NewTag = ({model, specialization}) => {
   })
 
   if (showAsNew){
-    return <span className="new"/>
+    return <span className="new">NEW</span>
   } else {
     return <span/>
   }
