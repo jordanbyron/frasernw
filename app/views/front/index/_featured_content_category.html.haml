@@ -21,6 +21,8 @@
           = featured_sc_item.title
           - if featured_sc_item.shared_care?
             %i.icon-blue.icon-star
+          - if featured_sc_item.new?
+            %span.new NEW
       %ul.dropdown-menu.featured_contents__dropdown_menu
         %li.featured_contents__dropdown_item
           = link_to "javascript:void(0)",
@@ -37,6 +39,8 @@
               = featured_sc_item.title
               - if featured_sc_item.shared_care?
                 %i.icon-blue.icon-star
+              - if featured_sc_item.new?
+                %span.new NEW
         %li.featured_contents__dropdown_item
           = link_to featured_sc_item.resolved_url,
             class: "featured_contents__dropdown_link",
