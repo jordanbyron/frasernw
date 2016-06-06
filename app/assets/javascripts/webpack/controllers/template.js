@@ -70,6 +70,8 @@ const isLoaded = (model) => {
       return model.app.specialists && model.app.currentUser;
     case "/news_items":
       return model.app.newsItems;
+    case "/issues":
+      return model.app.currentUser;
     default:
       return true;
   }
@@ -87,6 +89,7 @@ const usesSidebarLayout = ((model) => {
   return !((matchedRoute(model) === "/latest_updates" &&
     model.app.currentUser.role === "user") ||
     matchedRoute(model) === "/news_items" ||
+    matchedRoute(model) === "/issues" ||
     showInlineArticles(model))
 }).pwPipe(memoizePerRender)
 

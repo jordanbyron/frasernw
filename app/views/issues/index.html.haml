@@ -1,0 +1,8 @@
+- set_page_specific_title "Issues"
+
+.tabbable
+  #react_root--template
+
+:javascript
+  window.pathways = window.pathways || {};
+  window.pathways.dataForReact = #{Oj.dump(@init_data)};

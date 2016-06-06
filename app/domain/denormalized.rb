@@ -401,6 +401,11 @@ module Denormalized
           collectionName: "newsItems"
         })
       end
+    end,
+    issues: Proc.new do
+      Issues.all.inject({}) do |memo, issue|
+        memo.merge(issue.id => issue.attributes)
+      end
     end
   }
 

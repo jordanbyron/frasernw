@@ -32,6 +32,9 @@ export const collectionShownName = ((model) => {
       return filterValues.entityType(model);
     }
   }
+  else if (matchedRoute(model) === "/issues") {
+    return "issues";
+  }
 }).pwPipe(memoizePerRender)
 
 export const unscopedCollectionShown = ((model) => {
@@ -141,5 +144,7 @@ export const collectionShownPluralLabel = ((model) => {
     else {
       return recordShownByTab(model).name;
     }
+  default:
+    return _.capitalize(collectionShownName(model));
   }
 }).pwPipe(memoizePerRender);

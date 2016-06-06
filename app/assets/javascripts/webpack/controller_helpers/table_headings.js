@@ -28,12 +28,15 @@ const defaultHeadingKey = ((model) => {
   else if (matchedRoute(model) === "/news_items"){
     return "DATE";
   }
+  else if (matchedRoute(model) === "/issues") {
+    return "ISSUE_ID";
+  }
 })
 
 export const headingArrowDirection = ((model) => {
   return _.get(
     model,
-    ["ui", "tabs", selectedTabKey(model), "selectedTableHeading", "direction"], 
+    ["ui", "tabs", selectedTabKey(model), "selectedTableHeading", "direction"],
     "DOWN"
   );
 })

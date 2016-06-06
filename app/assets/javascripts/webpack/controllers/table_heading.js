@@ -105,6 +105,16 @@ const cellConfigs = (model) => {
       { label: _.capitalize(entityType(model)), key: "ENTITY_TYPE" }
     ];
   }
+  else if (matchedRoute(model) === "/issues"){
+    return [
+      { label: "#", key: "ISSUE_ID" },
+      { label: "Description", key: "ISSUE_DESCRIPTION" },
+      { label: "Source", key: "ISSUE_SOURCE" },
+      { label: "Progress", key: "ISSUE_PROGRESS" },
+      { label: "Estimate", key: "ISSUE_ESTIMATE" },
+      { label: "", key: "ISSUE_ACTIONS" }
+    ];
+  }
 };
 
 const TableHeadingCell = ({model, dispatch, label, headingKey, classnamePrefix}) => {

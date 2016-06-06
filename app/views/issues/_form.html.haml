@@ -1,0 +1,18 @@
+
+= form_for @issue do |f|
+
+  = f.text_area :description
+
+  = f.select :source_key,
+    options_for_select(Issue::SOURCE_LABELS.to_a)
+
+  = f.select :estimate_key,
+    options_for_select(Issue::ESTIMATE_LABELS.to_a)
+
+  = f.select :progress_key,
+    options_for_select(Issue::PROGRESS_LABELS.to_a)
+
+  = f.input :manual_date_entered,
+    class: "datepicker"
+
+  = f.submit
