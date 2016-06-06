@@ -29,10 +29,10 @@ const setupTabHistory = (defaultTab) => {
 
 const setTabFromHash = (defaultTab) => {
   if(window.location.hash.length > 0){
-    $(`a[data-toggle='tab'][href='${window.location.hash}'`).tab("show");
+    $(`a[data-toggle='tab'][href='${window.location.hash}']`).tab("show");
   }
   else if (defaultTab){
-    $(`a[data-toggle='tab'][href='${defaultTab}'`).tab("show")
+    $(`a[data-toggle='tab'][href='${defaultTab}']`).tab("show")
   }
   else {
     $(`a[data-toggle='tab']`).first().tab("show");
