@@ -361,7 +361,7 @@
 
             - @specialist.clinics.reject{ |c| c.closed? }.each do |clinic|
 
-              - clinic_locations = clinic.clinic_locations.sort_by{|cl| cl.created_at }.reject{ |cl| cl.empty? }
+              - clinic_locations = clinic.clinic_locations.sort_by(&:created_at).reject(&:empty?).select{|cl| @specialist.clinic_locations.include?(cl)}
 
               %h6.clinic_header_link
                 = link_to "#{clinic.name}".html_safe,
