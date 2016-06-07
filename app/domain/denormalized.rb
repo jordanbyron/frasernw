@@ -99,6 +99,7 @@ module Denormalized
             customLagtimes: custom_procedure_times(specialist, :lagtime_mask),
             customWaittimes: custom_procedure_times(specialist, :waittime_mask),
             isGp: specialist.is_gp,
+            suffix: specialist.suffix,
             isInternalMedicine: specialist.is_internal_medicine?,
             seesOnlyChildren: specialist.sees_only_children?,
             isNew: specialist.new?,
