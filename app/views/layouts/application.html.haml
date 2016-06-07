@@ -49,11 +49,14 @@
 
           if ($(window).width() <= 480)
           {
-            $('meta[name=viewport]').attr('content','initial-scale=1.0, user-scalable=no');
+            $('meta[name=viewport]').attr(
+              'content','initial-scale=1.0, user-scalable=no'
+            );
           }
 
           $('body').data('GLOBAL_USER_ID', #{current_user.id});
-          $('body').data('GLOBAL_USER_TYPE', #{current_user.adjusted_type_mask});
+          $('body').data('GLOBAL_USER_TYPE',
+            #{current_user.adjusted_type_mask});
         });
 
 
@@ -71,7 +74,8 @@
       .navbar-inner
         .container
 
-          %a.btn.btn-navbar{"data-toggle" => "collapse", "data-target" => ".nav-collapse"}
+          %a.btn.btn-navbar{"data-toggle" => "collapse",
+            "data-target" => ".nav-collapse"}
             %span.icon-bar
             %span.icon-bar
             %span.icon-bar
@@ -80,7 +84,9 @@
 
           - if logged_in?
             %form.navbar-search.pull-right#livesearch
-              %input.span3.search-query#search.icon{"type" => "search", "autocomplete" =>"off", "placeholder" => "&#xf002; Search".html_safe}
+              %input.span3.search-query#search.icon{"type" => "search",
+                "autocomplete" =>"off",
+                "placeholder" => "&#xf002; Search".html_safe}
               #search_results{style: 'display:none'}
                 .livesearch__inner-results-container
                   #loading
@@ -96,9 +102,11 @@
                           %a= "Specialists"
                         %li.livesearch__search-category{"data-category" => "3"}
                           %a= "Clinics"
-                        %li.livesearch__search-category{"data-category" => "4", "data-root-id" => ScCategory.by_name("Physician Resources").id}
+                        %li.livesearch__search-category{"data-category" => "4",
+                          "data-root-id" => ScCategory.by_name("Physician Resources").id}
                           %a= "Physician Resources"
-                        %li.livesearch__search-category{"data-category" => "4", "data-root-id" => ScCategory.by_name("Patient Info").id }
+                        %li.livesearch__search-category{"data-category" => "4",
+                          "data-root-id" => ScCategory.by_name("Patient Info").id }
                           %a= "Patient Info"
                       %i.icon-remove.pull-right.livesearch__close-button
                     .livesearch__filter-group.livesearch__filter-group--scopes
@@ -122,7 +130,8 @@
                 - if current_user.as_admin_or_super?
 
                   %li.dropdown.admin
-                    %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                    %a.dropdown-toggle{"href" => "#",
+                      "data-toggle" => "dropdown"}
                       Admin
                       - review = ReviewItem.active.reject{ |ri| !(ri.item.present? && (ri.item.divisions & user_divisions).present?) }
                       - feedback = FeedbackItem.active.reject{ |fi| !(fi.item.present? && (fi.item.divisions & user_divisions).present?) }
@@ -137,44 +146,65 @@
 
                     %ul.dropdown-menu
                       - if current_user.as_super_admin?
-                        %li= link_to "Activity Feed", all_versions_path, class: "history"
+                        %li= link_to "Activity Feed",
+                          all_versions_path,
+                          class: "history"
                       %li
                         - if total_review_item_count > 0
-                          = link_to "Review Queue <span class=\"badge #{user_review_item_count > 0 ? "badge-warning" : ""}\">#{user_review_item_count}/#{total_review_item_count}</span>".html_safe, review_items_path, class: "review"
+                          = link_to "Review Queue <span class=\"badge #{user_review_item_count > 0 ? "badge-warning" : ""}\">#{user_review_item_count}/#{total_review_item_count}</span>".html_safe,
+                            review_items_path,
+                            class: "review"
                         - else
-                          = link_to "Review Queue", review_items_path, class: "review"
+                          = link_to "Review Queue",
+                            review_items_path,
+                            class: "review"
                       %li
                         - if total_feedback_item_count > 0
-                          = link_to "Feedback Queue <span class=\"badge #{user_feedback_item_count > 0 ? "badge-warning" : ""}\">#{user_feedback_item_count}/#{total_feedback_item_count}</span>".html_safe, feedback_items_path, class: "feedback"
+                          = link_to "Feedback Queue <span class=\"badge #{user_feedback_item_count > 0 ? "badge-warning" : ""}\">#{user_feedback_item_count}/#{total_feedback_item_count}</span>".html_safe,
+                            feedback_items_path,
+                            class: "feedback"
                         - else
-                          = link_to "Feedback Queue", feedback_items_path, class: "feedback"
+                          = link_to "Feedback Queue",
+                            feedback_items_path,
+                            class: "feedback"
                       - if current_user.as_super_admin? || current_user.as_admin_or_super?
-                        %li= link_to "Manage Notifications", subscriptions_path, class: "subscriptions"
+                        %li= link_to "Manage Notifications",
+                          subscriptions_path,
+                          class: "subscriptions"
                       - if current_user.as_super_admin? || current_user.as_admin_or_super?
                         %li= link_to "Reports", reports_path, class: "reports"
                       %li.divider
                       %li.nav-header Pathways
                       %li
-                        = link_to "New...", "#", class: "create arrow-right-after"
+                        = link_to "New...",
+                          "#",
+                          class: "create arrow-right-after"
                         %ul.dropdown-menu
                           - if can? :create, Procedure
                             %li
-                              = link_to "New Area of Practice in...", "#", class: "arrow-right-after"
+                              = link_to "New Area of Practice in...",
+                                "#",
+                                class: "arrow-right-after"
                               %ul.dropdown-menu.sub-menu
                                 - Specialization.all_cached.each do |specialization|
-                                  %li=link_to specialization.name, new_specialization_procedure_path(specialization)
+                                  %li=link_to specialization.name,
+                                    new_specialization_procedure_path(specialization)
                           - if can? :create, City
                             %li= link_to "New City", new_city_path
                           - if can? :create, Clinic
                             %li
-                              = link_to "New Clinic in...", "#", class: "arrow-right-after"
+                              = link_to "New Clinic in...",
+                                "#",
+                                class: "arrow-right-after"
                               %ul.dropdown-menu
                                 - Specialization.all_cached.each do |specialization|
-                                  %li=link_to specialization.name, new_specialization_clinic_path(specialization)
+                                  %li=link_to specialization.name,
+                                    new_specialization_clinic_path(specialization)
                           - if can? :create, Division
                             %li= link_to "New Division", new_division_path
                           - if can? :create, HealthcareProvider
-                            %li= link_to "New Healthcare Provider", new_healthcare_provider_path
+                            %li= link_to "New Healthcare Provider",
+                              new_healthcare_provider_path
                           - if can? :create, Hospital
                             %li= link_to "New Hospital", new_hospital_path
                           - if can? :create, Language
@@ -185,23 +215,31 @@
                             %li= link_to "New Office", new_office_path
                           - if can? :create, Specialist
                             %li
-                              = link_to "New Specialist in...", "#", class: "arrow-right-after"
+                              = link_to "New Specialist in...",
+                                "#",
+                                class: "arrow-right-after"
                               %ul.dropdown-menu
                                 - Specialization.all_cached.each do |specialization|
-                                  %li=link_to specialization.name, new_specialization_specialist_path(specialization)
+                                  %li=link_to specialization.name,
+                                    new_specialization_specialist_path(specialization)
                           - if can? :create, Specialization
-                            %li= link_to "New Specialty", new_specialization_path
+                            %li= link_to "New Specialty",
+                              new_specialization_path
                           - if can? :create, User
                             %li= link_to "New User", new_user_path
                             - if current_user.as_super_admin?
-                              %li= link_to "Bulk Create Users", upload_users_path
+                              %li= link_to "Bulk Create Users",
+                                upload_users_path
                       - if can? :index, Procedure
                         %li
-                          = link_to "Areas of Practice in...", "#", class: "arrow-right-after"
+                          = link_to "Areas of Practice in...",
+                            "#",
+                            class: "arrow-right-after"
                           %ul.dropdown-menu.sub-menu
                             %li= link_to "All Specialties", procedures_path
                             - Specialization.all_cached.each do |specialization|
-                              %li=link_to specialization.name, specialization_procedures_path(specialization)
+                              %li=link_to specialization.name,
+                                specialization_procedures_path(specialization)
                       - if can? :index, City
                         %li= link_to "Cities", cities_path
                       - if can? :index, Clinic
@@ -210,20 +248,25 @@
                           %ul.dropdown-menu
                             %li=link_to "All Clinics", clinics_path
                             - Specialization.all_cached.each do |specialization|
-                              %li=link_to "#{specialization.name} Clinics", specialization_clinics_path(specialization), class: 'division'
+                              %li=link_to "#{specialization.name} Clinics",
+                                specialization_clinics_path(specialization),
+                                class: 'division'
                       - if can? :index, Division
                         %li= link_to "Divisions", divisions_path
                       - elsif current_user.as_admin_or_super?
                         - if current_user.as_divisions.length == 1
-                          %li= link_to "Division", division_path(current_user.as_divisions.first)
+                          %li= link_to "Division",
+                            division_path(current_user.as_divisions.first)
                         - else
                           %li
                             = link_to "Divisions", "#", class: "arrow-right-after"
                             %ul.dropdown-menu.sub-menu
                               - current_user.as_divisions.each do |division|
-                                %li= link_to division.name, division_path(division)
+                                %li= link_to division.name,
+                                  division_path(division)
                       - if can? :index, HealthcareProvider
-                        %li= link_to "Healthcare Providers", healthcare_providers_path
+                        %li= link_to "Healthcare Providers",
+                          healthcare_providers_path
                       - if can? :index, Hospital
                         %li= link_to "Hospitals", hospitals_path
                       - if can? :index, Language
@@ -233,26 +276,36 @@
                         %li= link_to "News Items", news_items_path
                       - if can?(:index, NewsItem) && news_item_divisions.count > 1
                         %li
-                          = link_to "News Items", news_items_path(division_id: current_user.as_divisions.first.id), class: "arrow-right-after"
+                          = link_to "News Items",
+                            news_items_path(division_id: current_user.as_divisions.first.id),
+                            class: "arrow-right-after"
                           %ul.dropdown-menu
                             - news_item_divisions.reject(&:hidden?).each do |division|
-                              %li=link_to division.name, news_items_path(division_id: division.id), class: 'office'
+                              %li=link_to division.name,
+                                news_items_path(division_id: division.id),
+                                class: 'office'
                       - if can? :index, Office
                         %li
                           = link_to "Offices", "#", class: "arrow-right-after"
                           %ul.dropdown-menu
                             %li=link_to "All Offices", offices_path
                             - (current_user.as_super_admin? ? City.all : current_user.as_divisions.map(&:cities).flatten.uniq).each do |city|
-                              %li=link_to "#{city.name} Offices", city_offices_path(city), class: 'office'
+                              %li=link_to "#{city.name} Offices",
+                                city_offices_path(city),
+                                class: 'office'
                       - if can? :index, Province
                         %li= link_to "Provinces", provinces_path
                       - if can? :index, Specialist
                         %li
-                          = link_to "Specialists", "#", class: "arrow-right-after"
+                          = link_to "Specialists",
+                            "#",
+                            class: "arrow-right-after"
                           %ul.dropdown-menu
                             %li=link_to "All Specialists", specialists_path
                             - Specialization.all_cached.each do |specialization|
-                              %li=link_to specialization.member_name.pluralize, specialization_specialists_path(specialization), class: 'division'
+                              %li=link_to specialization.member_name.pluralize,
+                                specialization_specialists_path(specialization),
+                                class: 'division'
                       - if can? :index, Specialization
                         %li= link_to "Specialties", specializations_path
                       - if can? :index, User
@@ -261,14 +314,19 @@
                           %ul.dropdown-menu
                             %li=link_to "All Users", users_path
                             - @divisions.each do |division|
-                              %li=link_to "#{division.name} Users", division_users_path(division), class: 'division'
+                              %li=link_to "#{division.name} Users",
+                                division_users_path(division),
+                                class: 'division'
                       %li.divider
                       %li.nav-header Content Management
                       %li
-                        = link_to "New...", "#", class: "create arrow-right-after"
+                        = link_to "New...",
+                          "#",
+                          class: "create arrow-right-after"
                         %ul.dropdown-menu
                           - if can? :create, ScCategory
-                            %li= link_to "New Content Category", new_sc_category_path
+                            %li= link_to "New Content Category",
+                              new_sc_category_path
                           - if can? :create, ScItem
                             %li= link_to "New Content Item", new_sc_item_path
                           - if can? :create, Faq
@@ -278,7 +336,9 @@
                           - if can? :create, Video
                             %li= link_to "New Video", new_video_path
                       - if can? :read, ScCategory
-                        %li= link_to "Content Categories", sc_categories_path, class: "sc_category"
+                        %li= link_to "Content Categories",
+                          sc_categories_path,
+                          class: "sc_category"
                       - if can? :index, Evidence
                         %li= link_to "Levels Of Evidence", evidences_path
                       - if can? :index, Newsletter
@@ -288,32 +348,53 @@
                       - if can? :read, ScItem
                         - if current_user.as_super_admin? && @divisions.length > 1
                           %li
-                            = link_to "Owned Content Items For...", "#", class: "create arrow-right-after"
+                            = link_to "Owned Content Items For...",
+                              "#",
+                              class: "create arrow-right-after"
                             %ul.dropdown-menu
                               - @divisions.each do |division|
-                                %li= link_to "#{division.name}", division_content_items_path(division), class: "sc_item"
+                                %li= link_to "#{division.name}",
+                                  division_content_items_path(division),
+                                  class: "sc_item"
                           %li
-                            = link_to "Shared Content Items For...", "#", class: "create arrow-right-after"
+                            = link_to "Shared Content Items For...",
+                              "#",
+                              class: "create arrow-right-after"
                             %ul.dropdown-menu
                               - @divisions.each do |division|
-                                %li= link_to "#{division.name}", shared_content_items_path(division), class: "sc_item"
+                                %li= link_to "#{division.name}",
+                                  shared_content_items_path(division),
+                                  class: "sc_item"
                         - elsif user_divisions.length > 1
                           %li
-                            = link_to "Owned Content Items For...", "#", class: "create arrow-right-after"
+                            = link_to "Owned Content Items For...",
+                              "#",
+                              class: "create arrow-right-after"
                             %ul.dropdown-menu
                               - user_divisions.each do |division|
-                                %li= link_to "#{division.name}", division_content_items_path(division), class: "sc_item"
+                                %li= link_to "#{division.name}",
+                                  division_content_items_path(division),
+                                  class: "sc_item"
                           %li
-                            = link_to "Shared Content Items For...", "#", class: "create arrow-right-after"
+                            = link_to "Shared Content Items For...",
+                              "#",
+                              class: "create arrow-right-after"
                             %ul.dropdown-menu
                               - user_divisions.each do |division|
-                                %li= link_to "#{division.name}", shared_content_items_path(division), class: "sc_item"
+                                %li= link_to "#{division.name}",
+                                  shared_content_items_path(division),
+                                  class: "sc_item"
                         - else
-                          %li= link_to "Content Items", division_content_items_path(user_divisions.first), class: "sc_item"
+                          %li= link_to "Content Items",
+                            division_content_items_path(user_divisions.first),
+                            class: "sc_item"
                           - if @divisions.length > 1
-                            %li= link_to "Manage Shared Content Items", shared_content_items_path(user_divisions.first), class: "sc_item"
+                            %li= link_to "Manage Shared Content Items",
+                              shared_content_items_path(user_divisions.first),
+                              class: "sc_item"
                       - if can? :update_demoable, ScItem
-                        %li= link_to "Edit Demoable Content Items", edit_demoable_content_items_path
+                        %li= link_to "Edit Demoable Content Items",
+                          edit_demoable_content_items_path
                 - cache("resources_dropdown_categories_#{user_divisions.map{|d| d.id}.join('_')}") do
                   - dropdown_categories = ScCategory.global_resources_dropdown(user_divisions)
                   - if dropdown_categories.present?
@@ -350,15 +431,18 @@
 
                     %li#specialists_favorites.nav-header.specialist Specialists
                     - current_user.favorite_specialists.each do |s|
-                      %li.favorite{"id" => "specialists_#{s.id}"}= link_to s.name, specialist_path(s)
+                      %li.favorite{"id" => "specialists_#{s.id}"}= link_to s.name,
+                        specialist_path(s)
 
                     %li#clinics_favorites.nav-header.clinic Clinics
                     - current_user.favorite_clinics.each do |c|
-                      %li.favorite{"id" => "clinics_#{c.id}"}= link_to c.name, clinic_path(c)
+                      %li.favorite{"id" => "clinics_#{c.id}"}= link_to c.name,
+                        clinic_path(c)
 
                     %li#content_items_favorites.nav-header.clinic Content
                     - current_user.favorite_content_items.each do |c|
-                      %li.favorite{"id" => "content_items_#{c.id}"}= link_to c.title, "/content_items/#{c.id}"
+                      %li.favorite{"id" => "content_items_#{c.id}"}= link_to c.title,
+                        "/content_items/#{c.id}"
 
                     %li#add_favorites
                       %p
@@ -368,22 +452,31 @@
 
                     -if current_user.favorite_specialists.blank?
                       :javascript
-                        $(document).ready(function() { $('#specialists_favorites').hide(); });
+                        $(document).ready(function() {
+                          $('#specialists_favorites').hide();
+                        });
 
                     -if current_user.favorite_clinics.blank?
                       :javascript
-                        $(document).ready(function() { $('#clinics_favorites').hide(); });
+                        $(document).ready(function() {
+                          $('#clinics_favorites').hide();
+                        });
 
                     -if current_user.favorite_content_items.blank?
                       :javascript
-                        $(document).ready(function() { $('#content_items_favorites').hide(); });
+                        $(document).ready(function() {
+                          $('#content_items_favorites').hide();
+                        });
 
                     -if current_user.favorites.present?
                       :javascript
-                        $(document).ready(function() { $('#add_favorites').hide(); });
+                        $(document).ready(function() {
+                          $('#add_favorites').hide();
+                        });
 
                 %li.dropdown
-                  %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                  %a.dropdown-toggle{"href" => "#",
+                    "data-toggle" => "dropdown"}
                     %i.icon-user
                     You
                     %b.caret
@@ -402,16 +495,27 @@
 
                     %li.nav-header Help
                     - if user_guide.present? # this is the production Pathways User Guide content item
-                      %li= link_to "User Guide", user_guide.resolved_url, class: 'user_guide_link'
-                    %li= link_to "Help FAQ", faq_category_path(FaqCategory.help), class: 'faq_link'
+                      %li= link_to "User Guide",
+                        user_guide.resolved_url,
+                        class: 'user_guide_link'
+                    %li= link_to "Training Videos",
+                      videos_path,
+                      class: 'videos_link'
+                    %li= link_to "Help FAQ",
+                      faq_category_path(FaqCategory.help),
+                      class: 'faq_link'
                     %li
                       = link_to "Contact Us",
                         "javascript:void(0)",
                         onclick: "show_contact_modal();"
 
                     %li.nav-header Legal
-                    %li= link_to "Privacy FAQ", faq_category_path(FaqCategory.privacy), class: 'faq_link'
-                    %li= link_to "Terms of Use", terms_and_conditions_path, class: 'tac'
+                    %li= link_to "Privacy FAQ",
+                      faq_category_path(FaqCategory.privacy),
+                      class: 'faq_link'
+                    %li= link_to "Terms of Use",
+                      terms_and_conditions_path,
+                      class: 'tac'
 
                     %li.nav-header Settings
                     - if current_user.as_admin_or_super?
