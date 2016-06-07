@@ -926,7 +926,7 @@ class Specialist < ActiveRecord::Base
       elsif hospital_or_clinic_only?
         (
           hospitals.map(&:city) +
-          clinics.map(&:cities)
+          clinic_locations.map(&:city)
         ).flatten.reject(&:blank?).uniq
       elsif (
         not_responded? ||
@@ -936,7 +936,7 @@ class Specialist < ActiveRecord::Base
         (
           offices.map(&:city) +
           hospitals.map(&:city) +
-          clinics.map(&:cities)
+          clinic_locations.map(&:city)
         ).flatten.reject(&:blank?).uniq
       else
         []
@@ -965,13 +965,13 @@ class Specialist < ActiveRecord::Base
       elsif hospital_or_clinic_only?
         (
           hospitals.map(&:city) +
-          clinics.map(&:cities)
+          clinic_locations.map(&:city)
         ).flatten.reject{ |city| city.blank? || city.hidden?}.uniq
       elsif hospital_or_clinic_referrals_only?
         (
           offices.map(&:city) +
           hospitals.map(&:city) +
-          clinics.map(&:cities)
+          clinic_locations.map(&:city)
         ).flatten.reject{ |city| city.blank? || city.hidden? }.uniq
       else
         []
