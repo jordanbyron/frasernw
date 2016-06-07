@@ -1,5 +1,5 @@
 import React from "react";
-import { matchedRoute } from "controller_helpers/routing";
+import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import Tags from "component_helpers/tags";
 import ReferentStatusIcon from "controllers/referent_status_icon";
@@ -13,6 +13,7 @@ import HideToggle from "controllers/hide_toggle";
 import HiddenBadge from "component_helpers/hidden_badge";
 import NewsItemRow from "controllers/table_row/news_items";
 import * as filterValues from "controller_helpers/filter_values";
+import { memoizePerRender } from "utils";
 
 const TableRow = ({model, dispatch, decoratedRecord}) => {
   if(_.includes([
@@ -26,7 +27,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       if(showingMultipleSpecializations(model)) {
         return(
           <tr>
-            <ReferentName decoratedRecord={decoratedRecord}/>
+            <ReferentName decoratedRecord={decoratedRecord} model={model}/>
             <ReferentSpecializations decoratedRecord={decoratedRecord} model={model}/>
             <td><ReferentStatusIcon model={model} record={decoratedRecord.raw}/></td>
             <td>{ decoratedRecord.waittime }</td>
@@ -37,7 +38,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       else {
         return(
           <tr>
-            <ReferentName decoratedRecord={decoratedRecord}/>
+            <ReferentName decoratedRecord={decoratedRecord} model={model}/>
             <td><ReferentStatusIcon model={model} record={decoratedRecord.raw}/></td>
             <td>{ decoratedRecord.waittime }</td>
             <td>{ decoratedRecord.cityNames }</td>
@@ -142,20 +143,67 @@ const ReferentSpecializations = ({decoratedRecord}) => {
   return(<td>{decoratedRecord.specializationNames}</td>);
 }
 
-const ReferentName = ({decoratedRecord}) => {
+const ReferentName = ({decoratedRecord, model}) => {
   return (
     <td>
       <span>
         <a href={"/" + decoratedRecord.raw.collectionName + "/" + decoratedRecord.raw.id}>
           { decoratedRecord.raw.name }
         </a>
-        <span  style={{marginLeft: "5px"}} className="suffix" key="suffix">
-          { decoratedRecord.raw.suffix }
-        </span>
+        <Suffix record={decoratedRecord.raw} model={model}/>
         <Tags record={decoratedRecord.raw}/>
       </span>
     </td>
   );
+}
+
+const Suffix = ({record, model}) => {
+  return(
+    <span style={{marginLeft: "5px"}} className="suffix" key="suffix">
+      {suffix(record, model)}
+    </span>
+  )
+}
+
+const suffix = (record, model) => {
+  if (record.collectionName === "clinics") {
+    return "";
+  }
+  else if (record.isGp) {
+    return "GP";
+  }
+  else if (record.isInternalMedicine) {
+    return "Int Med";
+  }
+  else if (showPedSuffix(record, model)) {
+    return "Ped";
+  }
+  else {
+    return _.find(
+      record.specializationIds.map((id) => model.app.specializations[id].suffix),
+      (suffix) => suffix && suffix.length > 0
+    );
+  }
+};
+
+
+const showPedSuffix = (record, model) => {
+  return record.seesOnlyChildren &&
+    record.specializationIds.length > 1 &&
+    isPediatrician(record, model) &&
+    (matchedRoute(model) !== "/specialties/:id" ||
+      recordShownByPage(model).id !== parseInt(pediatricsId(model)));
+}
+
+const pediatricsId = ((model) => {
+  return _.find(
+    model.app.specializations,
+    (specialization) => specialization.name === "Pediatrics"
+  ).id;
+}).pwPipe(memoizePerRender)
+
+const isPediatrician = (record, model) => {
+  return _.includes(record.specializationIds, parseInt(pediatricsId(model)));
 }
 
 export default TableRow;
