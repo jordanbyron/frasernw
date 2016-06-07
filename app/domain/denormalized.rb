@@ -314,7 +314,7 @@ module Denormalized
     end,
     divisions: Module.new do
       def self.call
-        Division.standard.inject({}) do |memo, division|
+        Division.all.inject({}) do |memo, division|
           memo.merge(division.id => {
             id: division.id,
             name: division.name,
