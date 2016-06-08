@@ -8,7 +8,7 @@ class Video < ActiveRecord::Base
   end
 
   def self.ordered
-    order("created_at DESC")
+    order("created_at ASC")
   end
 
 end
