@@ -173,6 +173,9 @@
                           class: "subscriptions"
                       - if current_user.as_super_admin? || current_user.as_admin_or_super?
                         %li= link_to "Reports", reports_path, class: "reports"
+                      - if can? :index, Issue
+                        %li= link_to "Issues", issues_path, class: "issues_link"
+
                       %li.divider
                       %li.nav-header Pathways
                       %li
@@ -473,6 +476,7 @@
                         $(document).ready(function() {
                           $('#add_favorites').hide();
                         });
+
 
                 %li.dropdown
                   %a.dropdown-toggle{"href" => "#",

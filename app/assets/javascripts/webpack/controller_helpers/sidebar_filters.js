@@ -245,6 +245,22 @@ const sidebarFilters = {
     predicate: function(record) {
       return !record.hidden;
     }
+  },
+  completionDate: {
+    isActivated: function(model) {
+      return filterValues.completionDate(model) !== 0;
+    },
+    predicate: function(record, model) {
+      return filterValues.completionDate(model) === record.completionEstimateKey;
+    }
+  },
+  assignees: {
+    isActivated: function(model) {
+      return filterValues.assignees(model) !== "All";
+    },
+    predicate: function(record, model) {
+      return filterValues.assignees(model) === record.assigneesLabel;
+    }
   }
 }
 

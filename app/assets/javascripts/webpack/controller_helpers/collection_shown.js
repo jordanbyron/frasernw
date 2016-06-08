@@ -20,6 +20,12 @@ export const collectionShownName = ((model) => {
     else if (matchedRoute(model) === "/news_items"){
       return "newsItems";
     }
+    else if (matchedRoute(model) === "/issues") {
+      return "issues";
+    }
+    else if (matchedRoute(model) === "/change_requests") {
+      return "changeRequests";
+    }
   }
   else if (matchedRoute(model) === "/content_categories/:id"){
     return "contentItems";
@@ -126,6 +132,12 @@ export const matchesTab = (record, contentCategories, tabKey, recordShownByPage)
   else if (tabKey === "availableNewsItems"){
     return recordShownByPage.id !== record.ownerDivisionId
   }
+  else if (tabKey === "pendingIssues"){
+    return record.progressKey !== 4;
+  }
+  else if (tabKey === "completedIssues"){
+    return record.progressKey === 4;
+  }
 };
 
 export const collectionShownPluralLabel = ((model) => {
@@ -149,5 +161,7 @@ export const collectionShownPluralLabel = ((model) => {
     else {
       return recordShownByTab(model).name;
     }
+  default:
+    return _.capitalize(collectionShownName(model));
   }
 }).pwPipe(memoizePerRender);
