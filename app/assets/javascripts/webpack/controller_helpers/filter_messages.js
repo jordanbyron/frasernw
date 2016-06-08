@@ -31,7 +31,12 @@ export const showSpecializationFilterMessage = ((model) => {
 export const withAllFilters = ((model) => {
   return unscopedCollectionShown(model).filter((record) => {
     return matchesPreliminaryFilters(record, model) &&
-      matchesRoute(matchedRoute(model), recordShownByPage(model), record) &&
+      matchesRoute(
+        matchedRoute(model),
+        recordShownByPage(model),
+        model.app.currentUser,
+        record
+      ) &&
       matchesSidebarFilters(record, model)
   })
 }).pwPipe(memoizePerRender);
@@ -46,7 +51,12 @@ export const withoutSpecializationFilter = ((model) => {
 export const withoutCityFilters = ((model) => {
   return unscopedCollectionShown(model).filter((record) => {
     return matchesPreliminaryFilters(record, model) &&
-      matchesRoute(matchedRoute(model), recordShownByPage(model), record) &&
+      matchesRoute(
+        matchedRoute(model),
+        recordShownByPage(model),
+        model.app.currentUser,
+        record
+      ) &&
       matchesSidebarFiltersExceptCities(record, model)
   })
 }).pwPipe(memoizePerRender)

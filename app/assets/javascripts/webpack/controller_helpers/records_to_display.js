@@ -35,7 +35,12 @@ const recordsToDisplay = ((model) => {
     else {
       return unscopedCollectionShown(model).filter((record) => {
         return matchesPreliminaryFilters(record, model) &&
-          matchesRoute(matchedRoute(model), recordShownByPage(model), record) &&
+          matchesRoute(
+            matchedRoute(model),
+            recordShownByPage(model),
+            model.app.currentUser,
+            record
+          ) &&
           (!isTabbedPage(model) ||
           matchesTab(
             record,
