@@ -1,6 +1,7 @@
 import React from "react";
 import _ from "lodash";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import { selectedTabKey } from "controller_helpers/tab_keys";
 import { collectionShownPluralLabel } from "controller_helpers/collection_shown";
 import * as filterValues from "controller_helpers/filter_values";
 
@@ -21,6 +22,7 @@ const GreyAnnotation = ({model}) => {
 const shouldDisplay = (model) => {
   return matchedRoute(model) === "/reports/entity_page_views" ||
     ((matchedRoute(model) === "/specialties/:id") &&
+      _.includes(["specialists", "clinics"], selectedTabKey(model)) &&
       recordShownByPage(model).assumedList.length > 0)
 }
 
