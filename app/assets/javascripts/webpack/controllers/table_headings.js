@@ -13,7 +13,7 @@ import _ from "lodash";
 import { memoizePerRender } from "utils";
 import { selectedTabKey } from "controller_helpers/tab_keys";
 
-const TableHeading = ({model, dispatch}) => {
+const TableHeadings = ({model, dispatch}) => {
   if(_.includes(["/reports/entity_page_views", "/latest_updates"], matchedRoute(model))){
     return <thead></thead>
   }
@@ -132,15 +132,27 @@ const cellConfigs = (model) => {
   }
   else if (matchedRoute(model) === "/change_requests"){
     if (selectedTabKey(model) === "pendingIssues"){
-      return [
-        { label: "#", key: "ID" },
-        { label: "Title", key: "DESCRIPTION" },
-        { label: "Date Entered", key: "DATE_ENTERED"},
-        { label: "Priority", key: "PRIORITY" },
-        { label: "Effort", key: "EFFORT" },
-        { label: "Progress", key: "PROGRESS" },
-        { label: "Estimated Completion Date", key: "ESTIMATE" }
-      ];
+      if(model.ui.persistentConfig.showIssueEstimates){
+        return [
+          { label: "#", key: "ID" },
+          { label: "Title", key: "DESCRIPTION" },
+          { label: "Date Entered", key: "DATE_ENTERED"},
+          { label: "Priority", key: "PRIORITY" },
+          { label: "Effort", key: "EFFORT" },
+          { label: "Progress", key: "PROGRESS" },
+          { label: "Estimated Completion Date", key: "ESTIMATE" }
+        ];
+      }
+      else {
+        return [
+          { label: "#", key: "ID" },
+          { label: "Title", key: "DESCRIPTION" },
+          { label: "Date Entered", key: "DATE_ENTERED"},
+          { label: "Priority", key: "PRIORITY" },
+          { label: "Effort", key: "EFFORT" },
+          { label: "Progress", key: "PROGRESS" },
+        ];
+      }
     }
     else {
       return [
@@ -188,4 +200,4 @@ const TableHeadingArrow = ({model, headingKey}) => {
   }
 }
 
-export default TableHeading;
+export default TableHeadings;

@@ -25,7 +25,7 @@ class Issue < ActiveRecord::Base
   PROGRESS_LABELS = {
     1 => "Not started",
     2 => "In progress",
-    3 => "In progress/ delayed",
+    3 => "Design consultation",
     4 => "Complete",
     5 => "Re-examine need"
   }

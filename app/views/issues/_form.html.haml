@@ -48,7 +48,7 @@
 
     = f.simple_fields_for :issue_assignments do |fields|
       %div{style: "margin-bottom: 20px"}
-        = fields.input_field :assignee,
+        = fields.input_field :assignee_id,
           as: :select,
           label: false,
           collection: User.developer,

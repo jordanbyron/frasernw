@@ -175,11 +175,6 @@
                         %li= link_to "Reports", reports_path, class: "reports"
                       - if can? :index, Issue
                         %li= link_to "Issues", issues_path, class: "issues_link"
-                      - if can? :index, :change_reqeusts
-                        %li
-                          = link_to "Change Requests", 
-                            change_requests_path,
-                            class: "change_requests_link"
 
                       %li.divider
                       %li.nav-header Pathways

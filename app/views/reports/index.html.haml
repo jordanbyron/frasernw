@@ -54,6 +54,15 @@
       %th Time Period
       %th.admin
 
+    - if can? :index, :change_requests
+      %tr
+        %td= link_to "Change Requests", change_requests_path
+        %td Progress Report
+        %td N/A
+        %td N/A
+        %td > June 2016
+        %td
+
     - if can? :view_report, :page_views
       %tr
         %td= link_to "Page Views", page_views_reports_path

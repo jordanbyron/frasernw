@@ -30,6 +30,10 @@
     %p.space.no_indent
       %strong Date Completed:
       = @issue.date_completed
+  - if !@issue.completed? && @issue.assignees.any?
+    %p.space.no_indent
+      %strong Assignee(s):
+      = @issue.assignees_label
 
   .btn-group
     - if can? :update, @issue

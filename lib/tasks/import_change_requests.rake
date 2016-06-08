@@ -2,6 +2,15 @@ require 'csv'
 
 task import_change_requests: :environment do
 
+  def try_date(string)
+    begin
+      Date.parse(string.to_s)
+    rescue ArgumentError
+      nil
+    end
+  end
+
+
   pending_file =
     File.read("/Users/briangracie/Code/frasernw/tmp/pending_change_requests.csv")
 
@@ -29,8 +38,8 @@ task import_change_requests: :environment do
       description: row[1],
       source_key: 1,
       progress_key: 4,
-      manual_date_entered: (row[2].nil? || row[2] ? nil : Date.parse(row[2])),
-      manual_date_completed: (row[3].nil? || row[3] ? nil : Date.parse(row[3]))
+      manual_date_entered: try_date(row[2]),
+      manual_date_completed: try_date(row[3])
     )
   end
 
@@ -57,18 +66,18 @@ task import_change_requests: :environment do
       title: row[4],
       description: row[3],
       progress_key: Issue::PROGRESS_LABELS.key(row[7]),
-      manual_date_entered: (row[2].nil? || row[2] ? nil : Date.parse(row[2]))
+      manual_date_entered: try_date(row[2])
     )
 
     if row[8] == "Brian"
       IssueAssignment.create(
         issue_id: issue.id,
-        assignee_id: User.where(name: "Brian Gracie").id
+        assignee_id: User.find_by(name: "Brian Gracie").id
       )
     elsif row[8] == "Daniel"
       IssueAssignment.create(
         issue_id: issue.id,
-        assignee_id: User.where(name: "Daniel Musekamp").id
+        assignee_id: User.find_by(name: "Daniel Musekamp").id
       )
     end
   end

@@ -10,6 +10,11 @@ class ChangeRequestsController < ApplicationController
         changeRequests: Denormalized.generate(:change_requests),
         completionEstimateLabels: Issue::COMPLETION_ESTIMATE_LABELS,
         progressLabels: Issue::PROGRESS_LABELS
+      },
+      ui: {
+        persistentConfig: {
+          showIssueEstimates: ENV["SHOW_ISSUE_ESTIMATES"] == "true"
+        }
       }
     }
   end
