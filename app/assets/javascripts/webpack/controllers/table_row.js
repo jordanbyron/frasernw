@@ -121,6 +121,26 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       />
     );
   }
+  else if (matchedRoute(model) === "/issues"){
+    if (decoratedRecord.raw.title) {
+      var label = decoratedRecord.raw.title;
+    }
+    else {
+      var label = decoratedRecord.raw.description;
+    }
+
+    return(
+      <tr>
+        <td>{ decoratedRecord.raw.id }</td>
+        <td>
+          <a href={`/issues/${decoratedRecord.raw.id}`}>
+            { label }
+          </a>
+        </td>
+        <td>{ model.app.issueSources[decoratedRecord.raw.sourceKey] }</td>
+      </tr>
+    );
+  }
 };
 
 const ContentItemTitle = ({decoratedRecord}) => {

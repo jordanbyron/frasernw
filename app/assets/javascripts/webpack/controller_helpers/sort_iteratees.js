@@ -1,61 +1,67 @@
 import _ from "lodash";
-import { selectedTableHeadingKey } from "controller_helpers/table_headings";
+import { selectedTableHeadingKey, canSelectSort }
+  from "controller_helpers/table_headings";
 
 const sortIteratees = (model) => {
   return unboundIteratees(model).map((iteratee) => _.partialRight(iteratee, model));
 }
 
 const unboundIteratees = (model) => {
-  switch(selectedTableHeadingKey(model)) {
-  case "NAME":
-    return [ name ];
-  case "SPECIALTIES":
-    return [ specializationNames ];
-  case "REFERRALS":
-    if (model.app.currentUser.cityRankingsCustomized) {
+  if(canSelectSort(model)){
+    switch(selectedTableHeadingKey(model)) {
+    case "NAME":
+      return [ name ];
+    case "SPECIALTIES":
+      return [ specializationNames ];
+    case "REFERRALS":
+      if (model.app.currentUser.cityRankingsCustomized) {
+        return [
+          referrals,
+          cityPriority,
+          waittimes
+        ];
+      }
+      else {
+        return [
+          referrals,
+          waittimes
+        ];
+      }
+    case "WAITTIME":
       return [
-        referrals,
+        waittimes,
+        cityPriority
+      ];
+    case "CITY":
+      return [
         cityPriority,
-        waittimes
-      ];
-    }
-    else {
-      return [
         referrals,
         waittimes
       ];
+    case "TITLE":
+      return [ title ];
+    case "SUBCATEGORY":
+      return [ subcategory ];
+    case "PAGE_VIEWS":
+      return [ pageViews ];
+    case "SPECIALTY":
+      return [ name ];
+    case "ENTITY_TYPE":
+      return [ _.property("count") ];
+    case "DATE":
+      return [ _.property("raw.startDate") ];
+    case "DIVISION":
+      return [ _.property("ownerDivisionName") ];
+    case "TYPE":
+      return [ _.property("raw.type") ];
+    case "USERS":
+      return [ _.property("raw.name") ];
+    default:
+      return [(decoratedRecord, model) => decoratedRecord.id];
     }
-  case "WAITTIME":
-    return [
-      waittimes,
-      cityPriority
-    ];
-  case "CITY":
-    return [
-      cityPriority,
-      referrals,
-      waittimes
-    ];
-  case "TITLE":
-    return [ title ];
-  case "SUBCATEGORY":
-    return [ subcategory ];
-  case "PAGE_VIEWS":
-    return [ pageViews ];
-  case "SPECIALTY":
-    return [ name ];
-  case "ENTITY_TYPE":
-    return [ _.property("count") ];
-  case "DATE":
-    return [ _.property("raw.startDate") ];
-  case "DIVISION":
-    return [ _.property("ownerDivisionName") ];
-  case "TYPE":
-    return [ _.property("raw.type") ];
-  case "USERS":
-    return [ _.property("raw.name") ];
-  default:
-    return [(decoratedRecord, model) => decoratedRecord.id];
+  }
+  else {
+    return [ _.property("raw.id") ];
   }
 }
 

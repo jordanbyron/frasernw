@@ -121,6 +121,12 @@ export const sidebarFilterKeys = ((model) => {
       "showHiddenUpdates"
     ];
   }
+  else if (matchedRoute(model) === "/issues"){
+    return [
+      "completionDate",
+      "assignees"
+    ];
+  }
   else {
     return [];
   }

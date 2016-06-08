@@ -89,7 +89,6 @@ const usesSidebarLayout = ((model) => {
   return !((matchedRoute(model) === "/latest_updates" &&
     model.app.currentUser.role === "user") ||
     matchedRoute(model) === "/news_items" ||
-    matchedRoute(model) === "/issues" ||
     showInlineArticles(model))
 }).pwPipe(memoizePerRender)
 
@@ -144,7 +143,12 @@ const Main = ({model, dispatch}) => {
 }
 
 const UpperWhitePanel = ({model}) => {
-  if(_.includes(["/hospitals/:id", "/languages/:id", "/news_items"], matchedRoute(model))){
+  if(_.includes([
+    "/hospitals/:id",
+    "/languages/:id",
+    "/news_items",
+    "/issues"
+  ], matchedRoute(model))){
     return(
       <div className="content-wrapper">
         <h2>

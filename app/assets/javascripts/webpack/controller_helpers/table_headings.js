@@ -12,6 +12,10 @@ export const selectedTableHeadingKey = ((model) => {
   )
 })
 
+export const canSelectSort = ((model) => {
+  return matchedRoute(model) !== "/issues";
+})
+
 const defaultHeadingKey = ((model) => {
   if (_.includes(["specialists", "clinics"], collectionShownName(model))){
     return "REFERRALS";

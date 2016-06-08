@@ -24,6 +24,8 @@ import MonthFilter from "controllers/filter_groups/month";
 import ReportStyleFilter from "controllers/filter_groups/report_style";
 import SpecialistIconKey from "controllers/specialist_icon_key";
 import ClinicIconKey from "controllers/clinic_icon_key";
+import CompletionDateFilter from "controllers/filter_groups/completion_date";
+import AssigneesFilter from "controllers/filter_groups/assignees";
 
 const pageIsReport = (model) => {
   return matchedRoute(model).includes("/reports/");
@@ -66,6 +68,8 @@ const Sidebar = ({model, dispatch}) => {
         <HiddenUpdatesFilter model={model} dispatch={dispatch}/>
         <MonthFilter model={model} dispatch={dispatch}/>
         <ReportStyleFilter model={model} dispatch={dispatch}/>
+        <CompletionDateFilter model={model} dispatch={dispatch}/>
+        <AssigneesFilter model={model} dispatch={dispatch}/>
       </div>
       <SpecialistIconKey model={model}/>
       <ClinicIconKey model={model}/>

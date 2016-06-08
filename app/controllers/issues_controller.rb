@@ -7,7 +7,9 @@ class IssuesController < ApplicationController
         currentUser: FilterTableAppState::CurrentUser.call(
           current_user: current_user
         ),
-        issues: Denormalized.fetch(:issues)
+        issues: Denormalized.generate(:issues),
+        issueSources: Issue::BRIEF_SOURCE_LABELS,
+        completionEstimateLabels: Issue::COMPLETION_ESTIMATE_LABELS
       }
     }
   end

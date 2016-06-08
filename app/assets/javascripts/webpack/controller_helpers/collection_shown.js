@@ -20,6 +20,9 @@ export const collectionShownName = ((model) => {
     else if (matchedRoute(model) === "/news_items"){
       return "newsItems";
     }
+    else if (matchedRoute(model) === "/issues") {
+      return "issues";
+    }
   }
   else if (matchedRoute(model) === "/content_categories/:id"){
     return "contentItems";
@@ -31,9 +34,6 @@ export const collectionShownName = ((model) => {
     else {
       return filterValues.entityType(model);
     }
-  }
-  else if (matchedRoute(model) === "/issues") {
-    return "issues";
   }
 }).pwPipe(memoizePerRender)
 
@@ -128,6 +128,12 @@ export const matchesTab = (record, contentCategories, tabKey, recordShownByPage)
   }
   else if (tabKey === "availableNewsItems"){
     return recordShownByPage.id !== record.ownerDivisionId
+  }
+  else if (tabKey === "pendingIssues"){
+    return record.progressKey !== 4;
+  }
+  else if (tabKey === "completedIssues"){
+    return record.progressKey === 4;
   }
 };
 

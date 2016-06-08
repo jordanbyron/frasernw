@@ -36,8 +36,8 @@ class Issue < ActiveRecord::Base
   COMPLETION_ESTIMATE_LABELS = {
     1 => "This weekend",
     2 => "Next weekend",
-    3 => "Next U.G. meeting",
-    4 => "> Next U.G. meeting"
+    3 => "Next User Group meeting",
+    4 => "> Next User Group meeting"
   }
   def completion_estimate
     COMPLETION_ESTIMATE_LABELS[completion_estimate_key]
@@ -51,6 +51,13 @@ class Issue < ActiveRecord::Base
     3 => "Provincial Team Request",
     4 => "Developers",
     5 => "Bug Report"
+  }
+  BRIEF_SOURCE_LABELS = {
+    1 => "CR",
+    2 => "Agenda",
+    3 => "Req",
+    4 => "Dev",
+    5 => "Bug"
   }
   def source
     SOURCE_LABELS[source_key]
@@ -89,8 +96,9 @@ class Issue < ActiveRecord::Base
   end
 
   def to_hash
-    attributes.merge({
-      assigneesLabel: assignees_label
+    attributes.camelize_keys.merge({
+      assigneesLabel: assignees_label,
+      collectionName: "issues"
     })
   end
 end

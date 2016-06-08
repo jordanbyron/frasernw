@@ -1,5 +1,5 @@
 import React from "react";
-import { selectedTableHeadingKey, headingArrowDirection }
+import { selectedTableHeadingKey, headingArrowDirection, canSelectSort }
   from "controller_helpers/table_headings";
 import { sortByHeading } from "action_creators";
 import { matchedRoute } from "controller_helpers/routing";
@@ -10,6 +10,7 @@ import showingMultipleSpecializations
   from "controller_helpers/showing_multiple_specializations";
 import { buttonIsh } from "stylesets";
 import _ from "lodash";
+import { memoizePerRender } from "utils";
 
 const TableHeading = ({model, dispatch}) => {
   if(_.includes(["/reports/entity_page_views", "/latest_updates"], matchedRoute(model))){
@@ -27,23 +28,39 @@ const TableHeading = ({model, dispatch}) => {
 };
 
 const cells = (model, dispatch) => {
-  let _classnamePrefix = classnamePrefix(model);
-
-  return cellConfigs(model).map((config) => {
-    return(
-      <TableHeadingCell
-        model={model}
-        dispatch={dispatch}
-        label={config.label}
-        key={config.key}
-        headingKey={config.key}
-        classnamePrefix={_classnamePrefix}
-      />
-    );
-  })
+  if (canSelectSort(model)) {
+    return cellConfigs(model).map((config) => {
+      return(
+        <SortableTableHeadingCell
+          model={model}
+          dispatch={dispatch}
+          label={config.label}
+          key={config.key}
+          headingKey={config.key}
+        />
+      );
+    })
+  }
+  else {
+    return cellConfigs(model).map((config) => {
+      return(
+        <th className={classname(model, config.key)} key={config.key}>
+          { config.label }
+        </th>
+      );
+    });
+  }
 }
 
-const classnamePrefix = (model) => {
+const classname = (model, headingKey) => {
+  return [
+    "datatable__th",
+    classnamePrefix(model),
+    headingKey.toLowerCase()
+  ].filter((elem) => elem !== "").join("--");
+}
+
+const classnamePrefix = ((model) => {
   if (_.includes(["specialists", "clinics"], collectionShownName(model))){
     return "referents";
   }
@@ -53,7 +70,7 @@ const classnamePrefix = (model) => {
   else {
     return "";
   }
-}
+}).pwPipe(memoizePerRender)
 
 const cellConfigs = (model) => {
   if (_.includes(["specialists", "clinics"], collectionShownName(model))){
@@ -107,17 +124,14 @@ const cellConfigs = (model) => {
   }
   else if (matchedRoute(model) === "/issues"){
     return [
-      { label: "#", key: "ISSUE_ID" },
-      { label: "Description", key: "ISSUE_DESCRIPTION" },
-      { label: "Source", key: "ISSUE_SOURCE" },
-      { label: "Progress", key: "ISSUE_PROGRESS" },
-      { label: "Estimate", key: "ISSUE_ESTIMATE" },
-      { label: "", key: "ISSUE_ACTIONS" }
+      { label: "#", key: "ID" },
+      { label: "Description", key: "DESCRIPTION" },
+      { label: "Source", key: "SOURCE" }
     ];
   }
 };
 
-const TableHeadingCell = ({model, dispatch, label, headingKey, classnamePrefix}) => {
+const SortableTableHeadingCell = ({model, dispatch, label, headingKey}) => {
   const onClick = _.partial(
     sortByHeading,
     dispatch,
@@ -128,11 +142,7 @@ const TableHeadingCell = ({model, dispatch, label, headingKey, classnamePrefix})
 
   return(
     <th onClick={onClick}
-      className={[
-        "datatable__th",
-        classnamePrefix,
-        headingKey.toLowerCase()
-      ].filter((elem) => elem !== "").join("--")}
+      className={classname(model, headingKey)}
     >
       <span>{ label }</span>
       <TableHeadingArrow

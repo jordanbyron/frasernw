@@ -63,12 +63,12 @@ task import_change_requests: :environment do
     if row[8] == "Brian"
       IssueAssignment.create(
         issue_id: issue.id,
-        assignee_id: 3243
+        assignee_id: User.where(name: "Brian Gracie").id
       )
     elsif row[8] == "Daniel"
       IssueAssignment.create(
         issue_id: issue.id,
-        assignee_id: 4026
+        assignee_id: User.where(name: "Daniel Musekamp").id
       )
     end
   end

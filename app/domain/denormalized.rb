@@ -404,8 +404,8 @@ module Denormalized
       end
     end,
     issues: Proc.new do
-      Issues.all.inject({}) do |memo, issue|
-        memo.merge(issue.id => issue.attributes)
+      Issue.includes(:assignees).inject({}) do |memo, issue|
+        memo.merge(issue.id => issue.to_hash)
       end
     end
   }

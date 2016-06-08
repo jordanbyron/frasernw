@@ -14,6 +14,8 @@ export const defaultTab = ((model) => {
     return { type: "specialists" };
   case "/news_items":
     return { type: "ownedNewsItems" };
+  case "/issues":
+    return { type: "pendingIssues" };
   default:
     return { type: "only" };
   }
@@ -24,7 +26,8 @@ const SHOWING_IN_ROUTES = [
   "/areas_of_practice/:id",
   "/hospitals/:id",
   "/languages/:id",
-  "/news_items"
+  "/news_items",
+  "/issues"
 ];
 
 export const isTabbedPage = ((model) => {

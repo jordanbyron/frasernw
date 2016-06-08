@@ -27,6 +27,10 @@ const sortOrders = (model) => {
     return reversed(model);
   }
 
+  if (matchedRoute(model) === "/issues") {
+    return reversed(model);
+  }
+
   return matching(model);
 };
 
