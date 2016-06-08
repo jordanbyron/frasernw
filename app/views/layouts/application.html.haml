@@ -474,6 +474,19 @@
                           $('#add_favorites').hide();
                         });
 
+                - if can? :index, Issue
+
+                  %li.dropdown
+                    %a.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
+                      %span Issues
+                      %b.caret
+
+                    %ul.dropdown-menu
+                      %li
+                        = link_to "New Issue",
+                          new_issue_path
+
+
                 %li.dropdown
                   %a.dropdown-toggle{"href" => "#",
                     "data-toggle" => "dropdown"}

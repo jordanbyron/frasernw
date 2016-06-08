@@ -1,28 +1,52 @@
-class HospitalsController < ApplicationController
-
+class IssuesController < ApplicationController
   def index
+    authorize! :index, Issue
+
     @init_data = {
       app: {
         currentUser: FilterTableAppState::CurrentUser.call(
           current_user: current_user
         ),
         issues: Denormalized.fetch(:issues)
-      },
-      ui: {
-        persistentConfig: {
-          divisionId: @division.id
-        }
       }
     }
   end
 
+  def edit
+    @issue = Issue.find(params[:id])
+    authorize! :edit, @issue
+  end
+
   def new
-    @issue = Issues.new
+    authorize! :new, Issue
+    @issue = Issue.new
+  end
+
+  def show
+    @issue = Issue.find(params[:id])
+    authorize! :show, @issue
   end
 
   def create
-    Issue.create(params[:issue])
+    authorize! :create, Issue
+    @issue = Issue.create(params[:issue])
 
-    redirect_to issues_path
+    redirect_to issue_path(@issue)
+  end
+
+  def update
+    @issue = Issue.find(params[:id])
+    authorize! :update, @issue
+
+    @issue.update_attributes(params[:issue])
+
+    redirect_to issue_path(@issue)
+  end
+
+  def destroy
+    @issue = Issue.find(params[:id])
+    authorize! :update, @issue
+
+    redirect_to
   end
 end

@@ -1,0 +1,44 @@
+- set_page_specific_title @issue.label
+
+.content-wrapper
+
+  %h2= @issue.label
+  %p.space.no_indent
+    %strong Description:
+  %p
+    = @issue.description
+  %p.space.no_indent
+    %strong Source:
+    = @issue.source
+  %p.space.no_indent
+    %strong Completion Estimate:
+    = @issue.completion_estimate
+  %p.space.no_indent
+    %strong Progress:
+    = @issue.progress
+  %p.space.no_indent
+    %strong Effort Estimate:
+    = @issue.effort_estimate
+  - if @issue.change_request? && @issue.priority.present?
+    %p.space.no_indent
+      %strong Priority:
+      = @issue.priority
+  %p.space.no_indent
+    %strong Date Entered:
+    = @issue.date_entered
+  - if @issue.completed?
+    %p.space.no_indent
+      %strong Date Completed:
+      = @issue.date_completed
+
+  .btn-group
+    - if can? :update, @issue
+      = link_to edit_issue_path(@issue),
+        class: "btn" do
+        %i.icon-pencil
+        %span= " Edit"
+    - if can? :destroy, @issue
+      = link_to issue_path(@issue),
+        class: "btn" do
+        %i.icon-trash
+        %span= " Delete"

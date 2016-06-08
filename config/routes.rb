@@ -255,6 +255,8 @@ Frasernw::Application.routes.draw do
     end
   end
 
+  resources :issues
+
   if ENV['RAILS_ENV'] == 'test'
     get '/dangerously_import_db', to: 'tests#dangerously_import_db'
   end
