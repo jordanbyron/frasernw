@@ -57,7 +57,7 @@ const NavTabsController = ({model, dispatch}) => {
         </NavTabs>
       );
     }
-    else if (matchedRoute(model) === "/issues") {
+    else if (_.includes(["/change_requests", "/issues"], matchedRoute(model))) {
       return(
         <NavTabs>
           <NavTabController

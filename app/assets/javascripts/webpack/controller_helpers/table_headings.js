@@ -13,7 +13,7 @@ export const selectedTableHeadingKey = ((model) => {
 })
 
 export const canSelectSort = ((model) => {
-  return matchedRoute(model) !== "/issues";
+  return !_.includes(["/issues", "/change_requests"], matchedRoute(model));
 })
 
 const defaultHeadingKey = ((model) => {
@@ -31,9 +31,6 @@ const defaultHeadingKey = ((model) => {
   }
   else if (matchedRoute(model) === "/news_items"){
     return "DATE";
-  }
-  else if (matchedRoute(model) === "/issues") {
-    return "ISSUE_ID";
   }
 })
 

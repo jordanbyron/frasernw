@@ -407,6 +407,11 @@ module Denormalized
       Issue.includes(:assignees).inject({}) do |memo, issue|
         memo.merge(issue.id => issue.to_hash)
       end
+    end,
+    change_requests: Proc.new do
+      Issue.change_request.includes(:assignees).inject({}) do |memo, issue|
+        memo.merge(issue.id => issue.to_hash)
+      end
     end
   }
 

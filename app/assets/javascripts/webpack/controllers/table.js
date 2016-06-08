@@ -83,7 +83,8 @@ const ROUTES_IMPLEMENTING = [
   "/hospitals/:id",
   "/languages/:id",
   "/news_items",
-  "/issues"
+  "/issues",
+  "/change_requests"
 ];
 
 export default Table;

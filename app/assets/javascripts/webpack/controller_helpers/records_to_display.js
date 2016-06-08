@@ -22,7 +22,8 @@ const recordsToDisplay = ((model) => {
       "/hospitals/:id",
       "/languages/:id",
       "/news_items",
-      "/issues"
+      "/issues",
+      "/change_requests"
     ], matchedRoute(model))) {
 
     if (matchedRoute(model) === "/specialties/:id" &&

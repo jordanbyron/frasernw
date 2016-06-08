@@ -65,6 +65,8 @@ const pageTitleLabel = (model) => {
       model.app.divisions[model.ui.persistentConfig.divisionId].name;
   case "/issues":
     return "Issues";
+  case "/change_requests":
+    return "Change Requests";
   }
 }
 

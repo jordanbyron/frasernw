@@ -23,6 +23,9 @@ export const collectionShownName = ((model) => {
     else if (matchedRoute(model) === "/issues") {
       return "issues";
     }
+    else if (matchedRoute(model) === "/change_requests") {
+      return "changeRequests";
+    }
   }
   else if (matchedRoute(model) === "/content_categories/:id"){
     return "contentItems";

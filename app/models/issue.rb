@@ -18,10 +18,14 @@ class Issue < ActiveRecord::Base
   accepts_nested_attributes_for :issue_assignments,
     allow_destroy: true
 
+  def self.change_request
+    where(source_key: 1)
+  end
+
   PROGRESS_LABELS = {
     1 => "Not started",
     2 => "In progress",
-    3 => "In progress/delayed",
+    3 => "In progress/ delayed",
     4 => "Complete",
     5 => "Re-examine need"
   }
@@ -34,10 +38,10 @@ class Issue < ActiveRecord::Base
   end
 
   COMPLETION_ESTIMATE_LABELS = {
-    1 => "This weekend",
-    2 => "Next weekend",
-    3 => "Next User Group meeting",
-    4 => "> Next User Group meeting"
+    1 => "This Weekend",
+    2 => "Next Weekend",
+    3 => "Next User Group Meeting",
+    4 => "> Next User Group Meeting"
   }
   def completion_estimate
     COMPLETION_ESTIMATE_LABELS[completion_estimate_key]
@@ -96,9 +100,11 @@ class Issue < ActiveRecord::Base
   end
 
   def to_hash
-    attributes.camelize_keys.merge({
+    attributes.except(:date_entered, :date_completed).camelize_keys.merge({
       assigneesLabel: assignees_label,
-      collectionName: "issues"
+      collectionName: "issues",
+      dateEntered: date_entered.to_s,
+      dateCompleted: date_completed.try(:to_s)
     })
   end
 end

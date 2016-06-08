@@ -19,6 +19,14 @@
     .specialization_table__table_head--name {
       width: 30%;
     }
+
+    .datatable__th--date_entered {
+      width: 80px;
+    }
+
+    .datatable__th--date_completed {
+      width: 100px;
+    }
     @media (max-width: 767px) {
       .hide-when-reduced {
         display: none;

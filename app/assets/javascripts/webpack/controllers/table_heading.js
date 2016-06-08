@@ -11,6 +11,7 @@ import showingMultipleSpecializations
 import { buttonIsh } from "stylesets";
 import _ from "lodash";
 import { memoizePerRender } from "utils";
+import { selectedTabKey } from "controller_helpers/tab_keys";
 
 const TableHeading = ({model, dispatch}) => {
   if(_.includes(["/reports/entity_page_views", "/latest_updates"], matchedRoute(model))){
@@ -125,9 +126,30 @@ const cellConfigs = (model) => {
   else if (matchedRoute(model) === "/issues"){
     return [
       { label: "#", key: "ID" },
-      { label: "Description", key: "DESCRIPTION" },
+      { label: "Title", key: "DESCRIPTION" },
       { label: "Source", key: "SOURCE" }
     ];
+  }
+  else if (matchedRoute(model) === "/change_requests"){
+    if (selectedTabKey(model) === "pendingIssues"){
+      return [
+        { label: "#", key: "ID" },
+        { label: "Title", key: "DESCRIPTION" },
+        { label: "Date Entered", key: "DATE_ENTERED"},
+        { label: "Priority", key: "PRIORITY" },
+        { label: "Effort", key: "EFFORT" },
+        { label: "Progress", key: "PROGRESS" },
+        { label: "Estimated Completion Date", key: "ESTIMATE" }
+      ];
+    }
+    else {
+      return [
+        { label: "#", key: "ID" },
+        { label: "Title", key: "DESCRIPTION" },
+        { label: "Date Entered", key: "DATE_ENTERED"},
+        { label: "Date Completed", key: "DATE_COMPLETED" }
+      ];
+    }
   }
 };
 

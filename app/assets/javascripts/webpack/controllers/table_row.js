@@ -14,6 +14,7 @@ import HiddenBadge from "component_helpers/hidden_badge";
 import NewsItemRow from "controllers/table_row/news_items";
 import * as filterValues from "controller_helpers/filter_values";
 import { memoizePerRender } from "utils";
+import ChangeRequestRow from "controllers/table_row/change_request";
 
 const TableRow = ({model, dispatch, decoratedRecord}) => {
   if(_.includes([
@@ -140,6 +141,9 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
         <td>{ model.app.issueSources[decoratedRecord.raw.sourceKey] }</td>
       </tr>
     );
+  }
+  else if (matchedRoute(model) === "/change_requests"){
+    return(<ChangeRequestRow decoratedRecord={decoratedRecord} model={model}/>);
   }
 };
 
