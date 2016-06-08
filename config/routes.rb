@@ -255,12 +255,7 @@ Frasernw::Application.routes.draw do
     end
   end
 
-  resources :issues do
-    collection do
-      get :import_form
-      post :import
-    end
-  end
+  resources :issues
   resources :change_requests, only: [:index]
 
   if ENV['RAILS_ENV'] == 'test'

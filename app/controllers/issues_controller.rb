@@ -51,18 +51,4 @@ class IssuesController < ApplicationController
 
     redirect_to issues_path
   end
-
-  def import_form
-    authorize! :import_form, Issue
-  end
-
-  def import
-    authorize! :import, Issue
-
-    YAML.load(params[:issues_yaml]).each do |issue|
-      Issue.create(issue)
-    end
-
-    redirect_to issues_path
-  end
 end
