@@ -43,6 +43,10 @@ class User < ActiveRecord::Base
   has_many :divisions, through: :user_divisions
 
   has_many :favorites
+  has_many :issue_assignments, dependent: :destroy
+  has_many :assigned_issues,
+    through: :issue_assignments,
+    class_name: "Issue"
 
   has_many :favorite_specialists,
     through: :favorites,
@@ -146,6 +150,10 @@ class User < ActiveRecord::Base
 
   def self.user
     where("users.role = 'user'")
+  end
+
+  def self.developer
+    where(is_developer: true)
   end
 
   def self.active_user

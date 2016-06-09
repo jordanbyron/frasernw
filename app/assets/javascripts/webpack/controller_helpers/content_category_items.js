@@ -6,11 +6,12 @@ import { memoizePerRender } from "utils";
 
 const samePerPage = ((model) => {
   return _.values(model.app.contentItems).filter((item) => {
-    return matchesRoute(matchedRoute(model), recordShownByPage(model), item) &&
-      _.intersection(
-        item.availableToDivisionIds,
-        model.app.currentUser.divisionIds
-      ).pwPipe(_.any)
+    return matchesRoute(
+      matchedRoute(model),
+      recordShownByPage(model),
+      model.app.currentUser,
+      item
+    )
   });
 }).pwPipe(memoizePerRender)
 

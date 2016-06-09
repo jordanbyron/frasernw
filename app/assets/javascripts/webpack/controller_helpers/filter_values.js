@@ -222,3 +222,15 @@ export const reportStyle = factory({
   hasSubkeys: false,
   defaultValue: "summary"
 });
+
+export const completionDate = factory({
+  key: "completionDate",
+  hasSubkeys: false,
+  defaultValue: 0
+});
+
+export const assignees = factory({
+  key: "assignees",
+  hasSubkeys: false,
+  defaultValue: "All"
+});

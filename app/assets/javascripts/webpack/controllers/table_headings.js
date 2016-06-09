@@ -1,5 +1,5 @@
 import React from "react";
-import { selectedTableHeadingKey, headingArrowDirection }
+import { selectedTableHeadingKey, headingArrowDirection, canSelectSort }
   from "controller_helpers/table_headings";
 import { sortByHeading } from "action_creators";
 import { matchedRoute } from "controller_helpers/routing";
@@ -10,8 +10,10 @@ import showingMultipleSpecializations
   from "controller_helpers/showing_multiple_specializations";
 import { buttonIsh } from "stylesets";
 import _ from "lodash";
+import { memoizePerRender } from "utils";
+import { selectedTabKey } from "controller_helpers/tab_keys";
 
-const TableHeading = ({model, dispatch}) => {
+const TableHeadings = ({model, dispatch}) => {
   if(_.includes(["/reports/entity_page_views", "/latest_updates"], matchedRoute(model))){
     return <thead></thead>
   }
@@ -27,23 +29,39 @@ const TableHeading = ({model, dispatch}) => {
 };
 
 const cells = (model, dispatch) => {
-  let _classnamePrefix = classnamePrefix(model);
-
-  return cellConfigs(model).map((config) => {
-    return(
-      <TableHeadingCell
-        model={model}
-        dispatch={dispatch}
-        label={config.label}
-        key={config.key}
-        headingKey={config.key}
-        classnamePrefix={_classnamePrefix}
-      />
-    );
-  })
+  if (canSelectSort(model)) {
+    return cellConfigs(model).map((config) => {
+      return(
+        <SortableTableHeadingCell
+          model={model}
+          dispatch={dispatch}
+          label={config.label}
+          key={config.key}
+          headingKey={config.key}
+        />
+      );
+    })
+  }
+  else {
+    return cellConfigs(model).map((config) => {
+      return(
+        <th className={classname(model, config.key)} key={config.key}>
+          { config.label }
+        </th>
+      );
+    });
+  }
 }
 
-const classnamePrefix = (model) => {
+const classname = (model, headingKey) => {
+  return [
+    "datatable__th",
+    classnamePrefix(model),
+    headingKey.toLowerCase()
+  ].filter((elem) => elem !== "").join("--");
+}
+
+const classnamePrefix = ((model) => {
   if (_.includes(["specialists", "clinics"], collectionShownName(model))){
     return "referents";
   }
@@ -53,7 +71,7 @@ const classnamePrefix = (model) => {
   else {
     return "";
   }
-}
+}).pwPipe(memoizePerRender)
 
 const cellConfigs = (model) => {
   if (_.includes(["specialists", "clinics"], collectionShownName(model))){
@@ -105,9 +123,49 @@ const cellConfigs = (model) => {
       { label: _.capitalize(entityType(model)), key: "ENTITY_TYPE" }
     ];
   }
+  else if (matchedRoute(model) === "/issues"){
+    return [
+      { label: "#", key: "ID" },
+      { label: "Title", key: "DESCRIPTION" },
+      { label: "Source", key: "SOURCE" }
+    ];
+  }
+  else if (matchedRoute(model) === "/change_requests"){
+    if (selectedTabKey(model) === "pendingIssues"){
+      if(model.ui.persistentConfig.showIssueEstimates){
+        return [
+          { label: "#", key: "ID" },
+          { label: "Title", key: "DESCRIPTION" },
+          { label: "Date Entered", key: "DATE_ENTERED"},
+          { label: "Priority", key: "PRIORITY" },
+          { label: "Effort", key: "EFFORT" },
+          { label: "Progress", key: "PROGRESS" },
+          { label: "Estimated Completion Date", key: "ESTIMATE" }
+        ];
+      }
+      else {
+        return [
+          { label: "#", key: "ID" },
+          { label: "Title", key: "DESCRIPTION" },
+          { label: "Date Entered", key: "DATE_ENTERED"},
+          { label: "Priority", key: "PRIORITY" },
+          { label: "Effort", key: "EFFORT" },
+          { label: "Progress", key: "PROGRESS" },
+        ];
+      }
+    }
+    else {
+      return [
+        { label: "#", key: "ID" },
+        { label: "Title", key: "DESCRIPTION" },
+        { label: "Date Entered", key: "DATE_ENTERED"},
+        { label: "Date Completed", key: "DATE_COMPLETED" }
+      ];
+    }
+  }
 };
 
-const TableHeadingCell = ({model, dispatch, label, headingKey, classnamePrefix}) => {
+const SortableTableHeadingCell = ({model, dispatch, label, headingKey}) => {
   const onClick = _.partial(
     sortByHeading,
     dispatch,
@@ -118,11 +176,7 @@ const TableHeadingCell = ({model, dispatch, label, headingKey, classnamePrefix})
 
   return(
     <th onClick={onClick}
-      className={[
-        "datatable__th",
-        classnamePrefix,
-        headingKey.toLowerCase()
-      ].filter((elem) => elem !== "").join("--")}
+      className={classname(model, headingKey)}
     >
       <span>{ label }</span>
       <TableHeadingArrow
@@ -146,4 +200,4 @@ const TableHeadingArrow = ({model, headingKey}) => {
   }
 }
 
-export default TableHeading;
+export default TableHeadings;

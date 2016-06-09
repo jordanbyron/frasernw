@@ -1,0 +1,71 @@
+= simple_nested_form_for @issue,
+  html: { class: "form-horizontal" } do |f|
+
+  = f.input :title,
+    label: "Title (optional)"
+
+  = f.input :description,
+    as: :text,
+    input_html: { cols: 400, rows: 5, style: "width: 500px;" }
+
+  = f.input :source_key,
+    as: :radio_buttons,
+    label: "Source",
+    collection: Issue::SOURCE_LABELS.to_a,
+    value_method: :first,
+    label_method: :second
+
+  = f.input :completion_estimate_key,
+    as: :radio_buttons,
+    label: "Completion Estimate",
+    collection: Issue::COMPLETION_ESTIMATE_LABELS.to_a,
+    value_method: :first,
+    label_method: :second
+
+  = f.input :progress_key,
+    as: :radio_buttons,
+    label: "Progress",
+    collection: Issue::PROGRESS_LABELS.to_a,
+    value_method: :first,
+    label_method: :second
+
+  = f.input :effort_estimate,
+    as: :radio_buttons,
+    collection: Issue::EFFORT_ESTIMATES
+
+  = f.input :priority
+
+  = f.input :manual_date_entered,
+    as: :datepicker
+
+  = f.input :manual_date_completed,
+    as: :datepicker
+
+  %hr
+
+  .content
+    %h4 Assignees
+
+    = f.simple_fields_for :issue_assignments do |fields|
+      %div{style: "margin-bottom: 20px"}
+        = fields.input_field :assignee_id,
+          as: :select,
+          label: false,
+          collection: User.developer,
+          style: "margin-left: 240px; margin-right: 10px;"
+        = fields.hidden_field :_destroy
+        = fields.link_to_remove do
+          %i.icon-minus-sign
+
+
+    = f.link_to_add(:issue_assignments, class: "btn", style: "margin-left: 240px") do
+      %i.icon-plus-sign
+      %span= " Add Assignee"
+
+  .form-actions
+    = f.button :submit, class: "btn btn-primary"
+
+  :javascript
+    $(document).ready(function() {
+      $("input.datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
+    });

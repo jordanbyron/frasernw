@@ -1,7 +1,7 @@
 import React from "react";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import TableRows from "controllers/table_rows";
-import TableHeading from "controllers/table_heading";
+import TableHeadings from "controllers/table_headings";
 import { reportStyle } from "controller_helpers/filter_values";
 import { recordShownByTab, isTabbedPage } from "controller_helpers/tab_keys";
 import { collectionShownName } from "controller_helpers/collection_shown";
@@ -12,7 +12,7 @@ const Table = ({model, dispatch}) => {
     if (isTableLoaded(model)){
       return (
         <table className="table">
-          <TableHeading model={model} dispatch={dispatch}/>
+          <TableHeadings model={model} dispatch={dispatch}/>
           <tbody>
             { TableRows(model, dispatch) }
           </tbody>
@@ -82,7 +82,9 @@ const ROUTES_IMPLEMENTING = [
   "/latest_updates",
   "/hospitals/:id",
   "/languages/:id",
-  "/news_items"
+  "/news_items",
+  "/issues",
+  "/change_requests"
 ];
 
 export default Table;

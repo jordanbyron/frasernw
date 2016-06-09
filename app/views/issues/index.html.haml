@@ -1,0 +1,16 @@
+- set_page_specific_title "Issues"
+
+.tabbable
+  #react_root--template
+
+:javascript
+  window.pathways = window.pathways || {};
+  window.pathways.dataForReact = #{Oj.dump(@init_data)};
+
+.content-wrapper
+  %p.admin.btn-group
+    - if can? :create, Issue
+      = link_to new_issue_path,
+        class: "btn" do
+        %i.icon-plus
+        %span= " New Issue"

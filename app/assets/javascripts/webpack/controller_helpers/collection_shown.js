@@ -20,6 +20,12 @@ export const collectionShownName = ((model) => {
     else if (matchedRoute(model) === "/news_items"){
       return "newsItems";
     }
+    else if (matchedRoute(model) === "/issues") {
+      return "issues";
+    }
+    else if (matchedRoute(model) === "/change_requests") {
+      return "changeRequests";
+    }
   }
   else if (matchedRoute(model) === "/content_categories/:id"){
     return "contentItems";
@@ -45,7 +51,12 @@ export const unscopedCollectionShown = ((model) => {
 
 export const scopedByRouteAndTab = ((model) => {
   return unscopedCollectionShown(model).filter((record) => {
-    return matchesRoute(matchedRoute(model), recordShownByPage(model), record) &&
+    return matchesRoute(
+      matchedRoute(model),
+      recordShownByPage(model),
+      model.app.currentUser,
+      record
+    ) &&
       (!isTabbedPage(model) ||
         matchesTab(
           record,
@@ -56,7 +67,7 @@ export const scopedByRouteAndTab = ((model) => {
   });
 }).pwPipe(memoizePerRender)
 
-export const matchesRoute = (matchedRoute, recordShownByPage, record) => {
+export const matchesRoute = (matchedRoute, recordShownByPage, currentUser, record) => {
   switch(matchedRoute){
   case "/specialties/:id":
     return _.includes(
@@ -75,7 +86,10 @@ export const matchesRoute = (matchedRoute, recordShownByPage, record) => {
     return _.includes(
       recordShownByPage.subtreeIds,
       record.categoryId
-    )
+    ) && _.intersection(
+      record.availableToDivisionIds,
+      currentUser.divisionIds
+    ).pwPipe(_.any)
   case "/languages/:id":
     return _.includes(
       record.languageIds,
@@ -118,6 +132,12 @@ export const matchesTab = (record, contentCategories, tabKey, recordShownByPage)
   else if (tabKey === "availableNewsItems"){
     return recordShownByPage.id !== record.ownerDivisionId
   }
+  else if (tabKey === "pendingIssues"){
+    return record.progressKey !== 4;
+  }
+  else if (tabKey === "completedIssues"){
+    return record.progressKey === 4;
+  }
 };
 
 export const collectionShownPluralLabel = ((model) => {
@@ -141,5 +161,7 @@ export const collectionShownPluralLabel = ((model) => {
     else {
       return recordShownByTab(model).name;
     }
+  default:
+    return _.capitalize(collectionShownName(model));
   }
 }).pwPipe(memoizePerRender);

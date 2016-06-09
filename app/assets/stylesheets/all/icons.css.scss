@@ -92,6 +92,8 @@
 .logout:before,
 .history:before,
 .reports:before,
+.issues_link:before,
+.change_requests_link:before
 {
   font-family: FontAwesome;
   font-weight: normal;
@@ -197,6 +199,16 @@
 .reports:before
 {
   content: "\f080";
+}
+
+.issues_link:before
+{
+  content: "\f0ad";
+}
+
+.change_requests_link:before
+{
+  content: "\f061";
 }
 
 .arrow-left-after:after,

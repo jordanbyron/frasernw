@@ -11,7 +11,9 @@ export const Routes = [
   "/reports/pageviews_by_user",
   "/hospitals/:id",
   "/languages/:id",
-  "/news_items"
+  "/news_items",
+  "/issues",
+  "/change_requests"
 ];
 
 export const matchedRoute = ((model) => {
