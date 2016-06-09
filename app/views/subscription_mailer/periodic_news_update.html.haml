@@ -11,7 +11,7 @@
     - @activities.each do |activity|
       .activity
         %p
-          %span{:class=> "muted"}= "#{time_ago_in_words(activity.trackable.created_at)} ago"
+          %span{ class: "muted" }= "#{time_ago_in_words(activity.trackable.created_at)} ago"
 
           = render_activity(activity, fallback: :default)
         %br

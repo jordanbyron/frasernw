@@ -5,7 +5,7 @@
   %h2= "Add or Change #{@specialist.formal_name}'s Photo"
 
   = simple_form_for @specialist,
-    url: {action: :update_photo},
+    url: { action: :update_photo },
     html: { class: "form-horizontal", multipart: true } do |f|
 
     - if !f.error_messages.nil?
@@ -24,7 +24,7 @@
         class: 'photo_change',
         label: "Update photo or remove photo?"
       #change_photo
-        = f.input :photo, :lable => "New photo"
+        = f.input :photo, lable: "New photo"
 
       :javascript
         var photo_delete_changed = function()
@@ -48,4 +48,4 @@
 
     .form-actions
       = f.button :submit, class: "btn btn-primary", value: "Submit"
-      = link_to 'Cancel', url_for(@specialist), class: "btn btn-danger ajax"
+      = link_to 'Cancel', url_for(@specialist), class: "btn btn-danger"

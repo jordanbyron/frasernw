@@ -4,33 +4,40 @@
   = @specialist.formal_name
   = "(#{@specialist.sex})" if @specialist.sex?
 
-%h5.specialty_links= @specialist.specializations.collect(){ |s| s.name }.to_sentence
+%h5.specialty_links
+  = @specialist.specializations.collect(){ |s| s.name }.to_sentence
 
 %h6#name
   Appointment Information
   %span#for.empty for
-  %input.name.empty{"type" => "text", "placeholder" => "Patient Name"}
+  %input.name.empty{ type: "text", placeholder: "Patient Name" }
 
 %p#specific_appointment_block.empty
-  %input.specific_appointment#specific_appointment_check{"type" => "radio", "name" => "appointment"}
+  %input.specific_appointment#specific_appointment_check{ type: "radio",
+    name: "appointment" }
   Your appointment is on
-  %input.specific_appointment#specific_appointment_date{"type" => "text", "placeholder" => "Date"}
+  %input.specific_appointment#specific_appointment_date{ type: "text",
+    placeholder: "Date" }
   at
-  %input.specific_appointment#specific_appointment_time{"type" => "text", "placeholder" => "Time"}
+  %input.specific_appointment#specific_appointment_time{ type: "text",
+    placeholder: "Time" }
 
 %p#future_appointment_block
-  %input.future_appointment#future_appointment_check{"type" => "radio", "name" => "appointment", "checked" => "checked"}
+  %input.future_appointment#future_appointment_check{ type: "radio",
+    name: "appointment",
+    checked: "checked" }
   %select.future_appointment#future_appointment_call_selection
     - if @specialist.respond_to_patient?
       %option Our office
-      %option{"selected" => "selected"} #{@specialist.formal_name}'s office
+      %option{ selected: "selected" } #{@specialist.formal_name}'s office
     - else
-      %option{"selected" => "selected"} Our office
-      %option #{@specialist.formal_name}'s office
-  will call you once your appointment is booked.
+      %option{ selected: "selected" } Our office
+      %option
+        #{@specialist.formal_name}'s office will call you once your
+        appointment is booked.
 
 %p.indent#future_appointment_followup_block.empty
-  %input#future_appointment_followup_check{"type" => "checkbox"}
+  %input#future_appointment_followup_check{ type: "checkbox" }
   :preserve
     If you haven't had heard about your appointment date within 
 
@@ -58,7 +65,7 @@
   -if @specialist.patient_instructions.present?
     %p= @specialist.patient_instructions.end_with_period.convert_newlines_to_br
   
-  %textarea#custom_patient_instructions{:placeholder => "Additional patient instructions"}
+  %textarea#custom_patient_instructions{ placeholder: "Additional patient instructions" }
   #custom_patient_instructions_print
 
 - if @specialist.cancellation_policy.present?
@@ -81,27 +88,33 @@
       - if location.in_hospital?
         - located_in = location.hospital_in
         %p
-          = "In #{link_to located_in.name, url_for(located_in), :class => 'ajax'}".html_safe
+          = "In #{link_to located_in.name, url_for(located_in)}".html_safe
           - if located_in.location.present? && located_in.location.in_hospital?
             - hopsital = located_in.location.hospital_in
-            = "which is in #{link_to hopsital.name, hospital_path(hopsital), :class => 'ajax'}".html_safe
+            = "which is in #{link_to hopsital.name, hospital_path(hopsital)}".html_safe
         %p= address.address if address.present? && !address.empty?
         %p= location.in_details if location.in_details.present?
-        %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
+        %img{ src: address.map_image(640,240,15,2),
+          width: "640",
+          height: "240" }
       - elsif location.in_clinic?
         - located_in = location.location_in.locatable
         - clinic = located_in.clinic
         %p
-          = "In #{link_to clinic.name, url_for(clinic), :class => 'ajax'}".html_safe
+          = "In #{link_to clinic.name, url_for(clinic)}".html_safe
           - if located_in.location.present? && located_in.location.in_hospital?
             - hopsital = located_in.location.hospital_in
-            = "which is in #{link_to hopsital.name, hospital_path(hopsital), :class => 'ajax'}".html_safe
+            = "which is in #{link_to hopsital.name, hospital_path(hopsital)}".html_safe
         %p= address.address if address.present? && !address.empty?
         %p= location.in_details if location.in_details.present?
-        %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
+        %img{ src: address.map_image(640,240,15,2),
+          width: "640",
+          height: "240" }
       - elsif address.present?
         %p= address.address if address.present? && !address.empty?
-        %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
+        %img{ src: address.map_image(640,240,15,2),
+          width: "640",
+          height: "240" }
 
 - elsif @clinic_location.present?
   %h6 #{@clinic_location.clinic.name} Information
@@ -118,12 +131,16 @@
       - if address.present? && !address.empty?
         %p= address.address
         %p= @clinic_location.location.in_details if @clinic_location.location.in_details.present?
-        %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
+        %img{ src: address.map_image(640,240,15,2),
+          width: "640",
+          height: "240" }
     - elsif address.present? && !address.empty?
       %p= address.address
-      %img{"src" => address.map_image(640,240,15,2), "width" => "640", "height" => "240"}
+      %img{ src: address.map_image(640,240,15,2),
+        width: "640",
+        height: "240" }
 
-%script{"type" => "text/javascript"}
+%script{ type: "text/javascript" }
   :plain
     function print_information() {
       copy_to_print_helper();
@@ -201,4 +218,4 @@
         replaceWith('<span class="followup_call_selection">'+$('#followup_call_selection').val()+'</span>');
     }
 
-%input.btn{"type" => "button", "value" => "Print", "onclick" => "print_information()"}
+%input.btn{ type: "button", value: "Print", onclick: "print_information()" }

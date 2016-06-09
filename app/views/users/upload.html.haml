@@ -5,9 +5,10 @@
   %h2 Import Users
 
   = form_tag import_users_path, multipart: true, class: "form-horizontal" do
-    %i= "The file MUST be a CSV (comma separated values) file.  " + |
-      "That means that it cannot be a .xls file, nor a .xlsx file, nor a .pages file.  " + |
-      "It MUST contain a list of USER NAMES in the FIRST COLUMN, with NO COLUMN HEADING." |
+    %i= "The file MUST be a CSV (comma separated values) file. " + |
+      "That means that it cannot be a .xls file, nor a .xlsx file, nor a " + |
+      ".pages file. It MUST contain a list of USER NAMES in the FIRST " + |
+      "COLUMN, with NO COLUMN HEADING." |
 
     .control-group
       %label.control-label CSV User Names

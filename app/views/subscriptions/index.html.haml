@@ -13,10 +13,11 @@
           %th Options
         - @subscriptions.each do |subscription|
           %tr
-            %td{style: "white-space: nowrap"}= link_to "#{subscription.classification.singularize}",
-              edit_subscription_path(subscription)
-            %td{style: "white-space: nowrap"}= subscription.interval_to_words
-            %td{style: "white-space: nowrap container-fluid"}
+            %td{ style: "white-space: nowrap" }
+              = link_to "#{subscription.classification.singularize}",
+                edit_subscription_path(subscription)
+            %td{ style: "white-space: nowrap" }= subscription.interval_to_words
+            %td{ style: "white-space: nowrap container-fluid" }
               - if subscription.sc_categories.present?
                 %p
                   %strong Resources:
@@ -29,22 +30,29 @@
                 %p
                   %strong Specialities:
                   %br= subscription.specializations_comma_separated
-            %td{style: "white-space: nowrap container-fluid"}
+            %td{ style: "white-space: nowrap container-fluid" }
               = subscription.divisions.join(", ")
-            %td{style: "white-space: nowrap"}
-              = link_to("<i class='icon-pencil'></i>".html_safe + " Edit",
-                edit_subscription_path(subscription),
-                class: "btn btn-mini")
-              = link_to("<i class='icon-trash'></i>".html_safe + " Delete",
-                subscription,
+            %td{ style: "white-space: nowrap" }
+              = link_to edit_subscription_path(subscription),
+                class: "btn btn-mini" do
+                %i.icon-pencil
+                %span= " Edit"
+
+              = link_to subscription,
                 data: { confirm: "Delete Notification Setting #{subscription.id}?" },
                 method: :delete,
-                class: "btn btn-mini")
+                class: "btn btn-mini" do
+                %i.icon-trash
+                %span= " Delete"
 
   - else
     %br
-    %p.no_indent You currently do not have any subscription notifications created yet.  Click the button below to create your first one.
+    %p.no_indent
+      You currently do not have any subscription notifications created yet.
+      Click the button below to create your first one.
   %br
-  %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " Create New Update Notification",
-    new_subscription_path,
-    class: "btn btn btn-primary")
+  %p.admin
+    = link_to new_subscription_path,
+      class: "btn btn btn-primary" do
+      %i.icon-plus-sign
+      %span= " Create New Update Notification"
