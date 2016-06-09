@@ -4,7 +4,10 @@
 
   %h2 Change your e-mail address / log-in
 
-  %p.space.no_indent Please enter an updated e-mail address. Please note that since your e-mail address is used as your Pathways username, you will need to log in again after changing it.
+  %p.space.no_indent
+    Please enter an updated e-mail address. Please note that since your e-mail
+    address is used as your Pathways username, you will need to log in again
+    after changing it.
 
   = simple_form_for @user,
     url: {controller: "users", action: "update_email"},
@@ -21,4 +24,4 @@
 
     .form-actions
       = f.button :submit, "Change e-mail address", class: "btn btn-primary"
-      %a.btn.btn-danger{"href" => root_url} Cancel
+      %a.btn.btn-danger{ href: root_url} Cancel

@@ -57,11 +57,13 @@
 
           .spanhalf.offsethalf
             = fields.hidden_field :_destroy
-            = fields.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
+            = fields.link_to_remove do
+              %i.icon-minus-sign
     .row
-      = f.link_to_add "<i class='icon-plus-sign'></i>".html_safe + " Add another specialist",
-        :user_controls_specialists,
-        class: "btn offset3"
+      = f.link_to_add :user_controls_specialists,
+        class: "btn offset3" do
+        %i.icon-plus-sign
+        %span= " Add another specialist"
 
     %h4 Clinics user can edit
     .content
@@ -76,11 +78,13 @@
               wrapper: :no_wrapper
           .spanhalf.offsethalf
             = fields.hidden_field :_destroy
-            = fields.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
+            = fields.link_to_remove do
+              %i.icon-minus-sign
     .row
-      = f.link_to_add "<i class='icon-plus-sign'></i>".html_safe + " Add another clinic",
-        :user_controls_clinics,
-        class: "btn offset3"
+      = f.link_to_add :user_controls_clinics,
+        class: "btn offset3" do
+        %i.icon-plus-sign
+        %span= " Add another clinic"
 
     - if current_user.as_admin_or_super?
       %h4
@@ -100,7 +104,7 @@
     = f.button :submit, class: "btn btn-primary"
     = link_to 'Cancel', users_path, class: "btn btn-danger"
 
-  %script{"type" => "text/javascript"}
+  %script{ type: "text/javascript" }
     :plain
       var swapRole = function()
       {
