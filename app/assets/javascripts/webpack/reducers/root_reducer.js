@@ -1,4 +1,4 @@
-import app from "dry_reducers/app";
+import app from "reducers/app";
 
 const rootReducer = (model = {}, action) => {
   return {

@@ -255,7 +255,11 @@ Frasernw::Application.routes.draw do
     end
   end
 
-  resources :issues
+  resources :issues do
+    member do
+      get :toggle_subscription
+    end
+  end
   resources :change_requests, only: [:index]
 
   if ENV['RAILS_ENV'] == 'test'

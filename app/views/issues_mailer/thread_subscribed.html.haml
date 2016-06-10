@@ -1,0 +1,29 @@
+!!!
+%html
+  %body
+    %p
+      = "An issue has been created on Pathways in response to this email thread:"
+
+    %hr
+
+    %p
+      - if @issue.title
+        %b
+          = @issue.title
+    %p
+      = @issue.description
+
+    %p
+      = link_to "(View on Pathways)",
+        issue_url(@issue)
+
+    %hr
+
+    %p
+      = "You will be notified when it has been marked completed."
+
+    %p
+      = "Thank You,"
+
+    %p
+      = "The Pathways Team"

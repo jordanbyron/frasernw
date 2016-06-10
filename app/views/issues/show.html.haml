@@ -3,37 +3,63 @@
 .content-wrapper
 
   %h2= @issue.label
-  %p.space.no_indent
+  %p.space
     %strong Description:
   %p
     = @issue.description
-  %p.space.no_indent
+  %p.space
     %strong Source:
     = @issue.source
-  %p.space.no_indent
+  %p.space
     %strong Completion Estimate:
     = @issue.completion_estimate
-  %p.space.no_indent
+  %p.space
     %strong Progress:
     = @issue.progress
-  %p.space.no_indent
+  %p.space
     %strong Effort Estimate:
     = @issue.effort_estimate
   - if @issue.change_request? && @issue.priority.present?
-    %p.space.no_indent
+    %p.space
       %strong Priority:
       = @issue.priority
-  %p.space.no_indent
+  %p.space
     %strong Date Entered:
     = @issue.date_entered
   - if @issue.completed?
-    %p.space.no_indent
+    %p.space
       %strong Date Completed:
       = @issue.date_completed
   - if !@issue.completed? && @issue.assignees.any?
-    %p.space.no_indent
+    %p.space
       %strong Assignee(s):
       = @issue.assignees_label
+
+
+  - if current_user.as_super_admin?
+    %h6 Subscribed Users
+    - if @issue.subscribers.none?
+      %p= "(None)"
+    %ul
+      - @issue.subscribers.each do |subscriber|
+        %li= subscriber.name
+
+  %p
+    #react--issue_subscription_toggle{style: "margin-top: 20px;"}
+
+  - if current_user.as_super_admin? && @issue.subscribed_thread_participants.present?
+    %h6 Subscribed Email Thread
+    %p.space
+      %strong Subject:
+      = @issue.subscribed_thread_subject
+    %p.space
+      %strong Participants:
+    %ul
+      - @issue.subscribed_thread_participants.split(";").each do |participant|
+        %li
+          = participant
+
+  %hr
 
   .btn-group
     - if can? :update, @issue
@@ -46,3 +72,18 @@
         class: "btn" do
         %i.icon-trash
         %span= " Delete"
+
+  %hr
+
+  = link_to "< All Issues",
+    issues_path
+
+
+:javascript
+  window.pathways.bootstrapSubscriptionToggle(
+    "react--issue_subscription_toggle",
+    {
+      subscribed: #{@issue.subscribers.include?(current_user)},
+      issueId: #{@issue.id}
+    }
+  );

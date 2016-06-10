@@ -1,6 +1,7 @@
 import React from "react";
 import _ from "lodash"
 import { selectedTabKey } from "controller_helpers/tab_keys";
+import EditIssue from "controllers/icons/edit_issue";
 
 const ChangeRequestRow = ({model, decoratedRecord}) => {
   if (selectedTabKey(model) === "pendingIssues"){
@@ -8,7 +9,10 @@ const ChangeRequestRow = ({model, decoratedRecord}) => {
       return(
         <tr>
           <td>{ decoratedRecord.raw.id }</td>
-          <td><Link decoratedRecord={decoratedRecord}/></td>
+          <td>
+            <Link decoratedRecord={decoratedRecord}/>
+            <EditIssue issue={decoratedRecord.raw} model={model}/>
+          </td>
           <td>{ decoratedRecord.raw.dateEntered }</td>
           <td>{ decoratedRecord.raw.priority }</td>
           <td>{ decoratedRecord.raw.effortEstimate }</td>
@@ -29,7 +33,10 @@ const ChangeRequestRow = ({model, decoratedRecord}) => {
       return(
         <tr>
           <td>{ decoratedRecord.raw.id }</td>
-          <td><Link decoratedRecord={decoratedRecord}/></td>
+          <td>
+            <Link decoratedRecord={decoratedRecord}/>
+            <EditIssue issue={decoratedRecord.raw} model={model}/>
+          </td>
           <td>{ decoratedRecord.raw.dateEntered }</td>
           <td>{ decoratedRecord.raw.priority }</td>
           <td>{ decoratedRecord.raw.effortEstimate }</td>

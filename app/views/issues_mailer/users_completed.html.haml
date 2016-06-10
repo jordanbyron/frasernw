@@ -1,0 +1,28 @@
+!!!
+%html
+  %body
+    %p
+      = "#{@subscription.subscriber.name}, "
+    %p
+      = "The following issue has been marked 'Completed':"
+
+    %hr
+
+    %p
+      - if @subscription.issue.title
+        %b
+          = @subscription.issue.title
+    %p
+      = @subscription.issue.description
+
+    %p
+      = link_to "(View on Pathways)",
+        issue_url(@subscription.issue)
+
+    %hr
+
+    %p
+      = "Thank You,"
+
+    %p
+      = "The Pathways Team"

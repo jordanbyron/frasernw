@@ -47,6 +47,7 @@ class User < ActiveRecord::Base
   has_many :assigned_issues,
     through: :issue_assignments,
     class_name: "Issue"
+  has_many :issue_subscriptions, dependent: :destroy
 
   has_many :favorite_specialists,
     through: :favorites,

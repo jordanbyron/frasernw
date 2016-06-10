@@ -8,6 +8,18 @@
       cursor: pointer;
     }
 
+    td {
+      .issue_row__edit {
+        visibility: hidden;
+      }
+    }
+
+    td:hover {
+      .issue_row__edit {
+        visibility: visible;
+      }
+    }
+
     .datatable__row {
       &:hover {
         td.datatable__cell {

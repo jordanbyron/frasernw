@@ -1,0 +1,26 @@
+!!!
+%html
+  %body
+    %p
+      = "The following issue has been marked 'Completed':"
+
+    %hr
+
+    %p
+      - if @issue.title
+        %b
+          = @issue.title
+    %p
+      = @issue.description
+
+    %p
+      = link_to "(View on Pathways)",
+        issue_url(@issue)
+
+    %hr
+
+    %p
+      = "Thank You,"
+
+    %p
+      = "The Pathways Team"

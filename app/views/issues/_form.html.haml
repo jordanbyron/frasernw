@@ -62,6 +62,37 @@
       %i.icon-plus-sign
       %span= " Add Assignee"
 
+  - if @issue.new_record?
+    %hr
+
+    .content
+      %h4 Subscribed Email Thread
+
+      = f.input :subscribed_thread_subject
+      = f.input :subscribed_thread_participants,
+        as: :text
+
+  %hr
+
+  .content
+    %h4 Subscribed Users
+
+    = f.simple_fields_for :subscriptions do |fields|
+      %div{style: "margin-bottom: 20px"}
+        = fields.input_field :user_id,
+          as: :select,
+          label: false,
+          collection: User.super_admin,
+          style: "margin-left: 240px; margin-right: 10px;"
+        = fields.hidden_field :_destroy
+        = fields.link_to_remove do
+          %i.icon-minus-sign
+
+
+    = f.link_to_add(:subscriptions, class: "btn", style: "margin-left: 240px") do
+      %i.icon-plus-sign
+      %span= " Add Subscriber"
+
   .form-actions
     = f.button :submit, class: "btn btn-primary"
 

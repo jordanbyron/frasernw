@@ -15,6 +15,8 @@ import NewsItemRow from "controllers/table_row/news_items";
 import * as filterValues from "controller_helpers/filter_values";
 import { memoizePerRender } from "utils";
 import ChangeRequestRow from "controllers/table_row/change_request";
+import EditIssue from "controllers/icons/edit_issue";
+
 
 const TableRow = ({model, dispatch, decoratedRecord}) => {
   if(_.includes([
@@ -137,6 +139,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
           <a href={`/issues/${decoratedRecord.raw.id}`}>
             { label }
           </a>
+          <EditIssue issue={decoratedRecord.raw} model={model}/>
         </td>
         <td>{ model.app.issueSources[decoratedRecord.raw.sourceKey] }</td>
       </tr>

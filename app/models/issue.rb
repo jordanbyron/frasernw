@@ -10,12 +10,21 @@ class Issue < ActiveRecord::Base
     :manual_date_entered,
     :manual_date_completed,
     :issue_assignments_attributes,
-    :title
+    :title,
+    :subscriptions_attributes,
+    :subscribed_thread_subject,
+    :subscribed_thread_participants
 
   has_many :issue_assignments, dependent: :destroy
   has_many :assignees, through: :issue_assignments, class_name: "User"
 
+  has_many :subscriptions, dependent: :destroy, class_name: "IssueSubscription"
+  has_many :subscribers, through: :subscriptions, class_name: "User"
+
   accepts_nested_attributes_for :issue_assignments,
+    allow_destroy: true
+
+  accepts_nested_attributes_for :subscriptions,
     allow_destroy: true
 
   def self.change_request
