@@ -444,8 +444,11 @@
 
                     %li#content_items_favorites.nav-header.clinic Content
                     - current_user.favorite_content_items.each do |c|
-                      %li.favorite{"id" => "content_items_#{c.id}"}= link_to c.title,
-                        "/content_items/#{c.id}"
+                      %li.favorite{"id" => "content_items_#{c.id}"}
+                        = link_to c.title,
+                          "/content_items/#{c.id}",
+                          target: "_blank",
+                          onclick: "window.pathways.trackContentItem(_gaq, #{c.id})"
 
                     %li#add_favorites
                       %p

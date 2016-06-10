@@ -13,7 +13,41 @@ function pathways_grouper(a, b)
 
 function pathways_data_formatter(total_score, scores_matches, data_entry, term)
 {
-  var result = "<li class='search-result'><a class='ajax' id='search_result_" + data_entry.go + '_' + data_entry.id + "'  href='/" + pathways_url_data[data_entry.go] + '/' + data_entry.id + "' onclick=\"_gaq.push(['_trackEvent', 'search_result', '" + pathways_url_data[data_entry.go] + "', '" + data_entry.id + "']); _gaq.push(['_trackEvent', 'search_term', '" + term + "']); _gaq.push(['_trackEvent', 'search_user', '" + $('body').data('GLOBAL_USER_TYPE') + "', '" + $('body').data('GLOBAL_USER_ID') + "']); return true;\">";
+  if (pathways_url_data[data_entry.go] === "content_items") {
+    var resource_click_tracking = "window.pathways.trackContentItem(_gaq, " +
+      data_entry.id +
+      ");";
+    var target = "_blank";
+  }
+  else {
+    var resource_click_tracking = "";
+    var target = "_self";
+  }
+
+  var result = "<li class='search-result'><a class='ajax' id='search_result_" +
+    data_entry.go +
+    '_' +
+    data_entry.id +
+    "'  href='/" +
+    pathways_url_data[data_entry.go] +
+    '/' +
+    data_entry.id +
+    "'onclick=\"_gaq.push(['_trackEvent', 'search_result', '" +
+    pathways_url_data[data_entry.go] +
+    "', '" +
+    data_entry.id +
+    "']);" +
+    resource_click_tracking +
+    "_gaq.push(['_trackEvent', 'search_term', '" +
+    term +
+    "']); _gaq.push(['_trackEvent', 'search_user', '" +
+    $('body').data('GLOBAL_USER_TYPE') +
+    "', '" +
+    $('body').data('GLOBAL_USER_ID') +
+    "']); return true;\"" +
+    "target='" +
+    target +
+    "'>";
 
   result += "<div class='search_name'><i class='" + pathways_status_data[data_entry.st] + "'></i> " + data_entry.n + "</div>";
 
