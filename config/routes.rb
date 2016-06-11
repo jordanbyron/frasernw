@@ -260,7 +260,7 @@ Frasernw::Application.routes.draw do
       get :toggle_subscription
     end
   end
-  resources :change_requests, only: [:index]
+  resources :change_requests, only: [:index, :show]
 
   if ENV['RAILS_ENV'] == 'test'
     get '/dangerously_import_db', to: 'tests#dangerously_import_db'

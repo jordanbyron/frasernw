@@ -97,8 +97,12 @@ class Issue < ActiveRecord::Base
     end.last
   end
 
-  def label
-    "##{id} - #{title.present? ? title : description}"
+  def label(numbered: true)
+    if numbered
+      "##{id} - #{title.present? ? title : description}"
+    else
+      title.present? ? title : description
+    end
   end
 
   def assignees_label

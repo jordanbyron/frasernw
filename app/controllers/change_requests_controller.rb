@@ -1,4 +1,12 @@
 class ChangeRequestsController < ApplicationController
+  def show
+    issue = Issue.find_by(source_id: params[:id])
+
+    authorize! :show, issue
+
+    redirect_to issue_path(issue)
+  end
+
   def index
     authorize! :index, :change_requests
 

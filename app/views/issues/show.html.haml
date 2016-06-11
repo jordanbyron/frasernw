@@ -1,8 +1,7 @@
 - set_page_specific_title @issue.label
 
 .content-wrapper
-
-  %h2= @issue.label
+  %h2= @issue.label(numbered: current_user.as_super_admin?)
   %p.space
     %strong Description:
   %p
