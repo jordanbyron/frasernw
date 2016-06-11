@@ -30,6 +30,9 @@ class Ability
         can :view_report, :entity_page_views
         can :view_report, :user_ids
 
+        can [:show, :toggle_subscription], Issue
+        can [:index, :show], :change_requests
+
         can :index, Report
 
         can :manage, SecretToken

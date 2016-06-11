@@ -61,24 +61,26 @@
         %li
           = participant
 
-  %hr
+  - if current_user.as_super_admin?
 
-  .btn-group
-    - if can? :update, @issue
-      = link_to edit_issue_path(@issue),
-        class: "btn" do
-        %i.icon-pencil
-        %span= " Edit"
-    - if can? :destroy, @issue
-      = link_to issue_path(@issue),
-        class: "btn" do
-        %i.icon-trash
-        %span= " Delete"
+    %hr
 
-  %hr
+    .btn-group
+      - if can? :update, @issue
+        = link_to edit_issue_path(@issue),
+          class: "btn" do
+          %i.icon-pencil
+          %span= " Edit"
+      - if can? :destroy, @issue
+        = link_to issue_path(@issue),
+          class: "btn" do
+          %i.icon-trash
+          %span= " Delete"
 
-  = link_to "< All Issues",
-    issues_path
+    %hr
+
+    = link_to "< All Issues",
+      issues_path
 
 
 :javascript
