@@ -73,6 +73,7 @@
           %span= " Edit"
       - if can? :destroy, @issue
         = link_to issue_path(@issue),
+          method: :delete,
           class: "btn" do
           %i.icon-trash
           %span= " Delete"
