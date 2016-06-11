@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { selectedTableHeadingKey, canSelectSort }
   from "controller_helpers/table_headings";
+import { matchedRoute } from "controller_helpers/routing";
 
 const sortIteratees = (model) => {
   return unboundIteratees(model).map((iteratee) => _.partialRight(iteratee, model));
@@ -59,6 +60,9 @@ const unboundIteratees = (model) => {
     default:
       return [(decoratedRecord, model) => decoratedRecord.id];
     }
+  }
+  else if (matchedRoute(model) === "/change_requests"){
+    return [ (decoratedRecord) => decoratedRecord.raw.sourceId ];
   }
   else {
     return [ _.property("raw.id") ];

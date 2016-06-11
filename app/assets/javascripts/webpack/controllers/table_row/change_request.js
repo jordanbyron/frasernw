@@ -8,7 +8,7 @@ const ChangeRequestRow = ({model, decoratedRecord}) => {
     if(model.ui.persistentConfig.showIssueEstimates){
       return(
         <tr>
-          <td>{ decoratedRecord.raw.id }</td>
+          <td>{ decoratedRecord.raw.sourceId }</td>
           <td>
             <Link decoratedRecord={decoratedRecord}/>
             <EditIssue issue={decoratedRecord.raw} model={model}/>
@@ -32,7 +32,7 @@ const ChangeRequestRow = ({model, decoratedRecord}) => {
     else {
       return(
         <tr>
-          <td>{ decoratedRecord.raw.id }</td>
+          <td>{ decoratedRecord.raw.sourceId }</td>
           <td>
             <Link decoratedRecord={decoratedRecord}/>
             <EditIssue issue={decoratedRecord.raw} model={model}/>
@@ -50,7 +50,7 @@ const ChangeRequestRow = ({model, decoratedRecord}) => {
   else {
     return(
       <tr>
-        <td>{ decoratedRecord.raw.id }</td>
+        <td>{ decoratedRecord.raw.sourceId }</td>
         <td><Link decoratedRecord={decoratedRecord}/></td>
         <td>{ decoratedRecord.raw.dateEntered }</td>
         <td>{ decoratedRecord.raw.dateCompleted }</td>

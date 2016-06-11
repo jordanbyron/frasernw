@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160610215516) do
+ActiveRecord::Schema.define(version: 20160611001335) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -465,6 +465,7 @@ ActiveRecord::Schema.define(version: 20160610215516) do
     t.datetime "updated_at"
     t.string   "subscribed_thread_subject"
     t.string   "subscribed_thread_participants"
+    t.string   "source_id"
   end
 
   create_table "languages", force: true do |t|

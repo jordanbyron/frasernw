@@ -13,7 +13,8 @@ class Issue < ActiveRecord::Base
     :title,
     :subscriptions_attributes,
     :subscribed_thread_subject,
-    :subscribed_thread_participants
+    :subscribed_thread_participants,
+    :source_id
 
   has_many :issue_assignments, dependent: :destroy
   has_many :assignees, through: :issue_assignments, class_name: "User"

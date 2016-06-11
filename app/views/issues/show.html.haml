@@ -9,7 +9,10 @@
     = @issue.description
   %p.space
     %strong Source:
-    = @issue.source
+    %span
+      = @issue.source
+    - if @issue.change_request?
+      = "##{@issue.source_id}"
   %p.space
     %strong Completion Estimate:
     = @issue.completion_estimate
