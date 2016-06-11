@@ -62,7 +62,7 @@ const unboundIteratees = (model) => {
     }
   }
   else if (matchedRoute(model) === "/change_requests"){
-    return [ (decoratedRecord) => decoratedRecord.raw.sourceId ];
+    return [ (decoratedRecord) => (decoratedRecord.raw.sourceId || "") ];
   }
   else {
     return [ _.property("raw.id") ];
