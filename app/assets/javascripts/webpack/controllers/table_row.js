@@ -16,6 +16,7 @@ import * as filterValues from "controller_helpers/filter_values";
 import { memoizePerRender } from "utils";
 import ChangeRequestRow from "controllers/table_row/change_request";
 import EditIssue from "controllers/icons/edit_issue";
+import IssueRow from "controllers/table_row/issues";
 
 
 const TableRow = ({model, dispatch, decoratedRecord}) => {
@@ -125,25 +126,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
     );
   }
   else if (matchedRoute(model) === "/issues"){
-    if (decoratedRecord.raw.title) {
-      var label = decoratedRecord.raw.title;
-    }
-    else {
-      var label = decoratedRecord.raw.description;
-    }
-
-    return(
-      <tr>
-        <td>{ decoratedRecord.raw.id }</td>
-        <td>
-          <a href={`/issues/${decoratedRecord.raw.id}`}>
-            { label }
-          </a>
-          <EditIssue issue={decoratedRecord.raw} model={model}/>
-        </td>
-        <td>{ model.app.issueSources[decoratedRecord.raw.sourceKey] }</td>
-      </tr>
-    );
+    return(<IssueRow decoratedRecord={decoratedRecord} model={model}/>);
   }
   else if (matchedRoute(model) === "/change_requests"){
     return(<ChangeRequestRow decoratedRecord={decoratedRecord} model={model}/>);
