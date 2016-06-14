@@ -234,3 +234,9 @@ export const assignees = factory({
   hasSubkeys: false,
   defaultValue: "All"
 });
+
+export const issueSource = factory({
+  key: "issueSource",
+  hasSubkeys: false,
+  defaultValue: 0
+});

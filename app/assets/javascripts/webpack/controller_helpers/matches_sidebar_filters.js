@@ -124,7 +124,8 @@ export const sidebarFilterKeys = ((model) => {
   else if (matchedRoute(model) === "/issues"){
     return [
       "completionDate",
-      "assignees"
+      "assignees",
+      "issueSource"
     ];
   }
   else {

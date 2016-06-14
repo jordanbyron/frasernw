@@ -266,6 +266,14 @@ const sidebarFilters = {
     predicate: function(record, model) {
       return filterValues.assignees(model) === record.assigneesLabel;
     }
+  },
+  issueSource: {
+    isActivated: function(model) {
+      return filterValues.issueSource(model) !== 0;
+    },
+    predicate: function(record, model) {
+      return record.sourceKey === filterValues.issueSource(model);
+    }
   }
 }
 
