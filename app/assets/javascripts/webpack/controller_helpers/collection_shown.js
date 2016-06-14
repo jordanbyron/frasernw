@@ -86,10 +86,7 @@ export const matchesRoute = (matchedRoute, recordShownByPage, currentUser, recor
     return _.includes(
       recordShownByPage.subtreeIds,
       record.categoryId
-    ) && _.intersection(
-      record.availableToDivisionIds,
-      currentUser.divisionIds
-    ).pwPipe(_.any)
+    )
   case "/languages/:id":
     return _.includes(
       record.languageIds,
