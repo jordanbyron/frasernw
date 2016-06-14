@@ -48,9 +48,9 @@ class Issue < ActiveRecord::Base
   end
 
   COMPLETION_ESTIMATE_LABELS = {
-    1 => "This Weekend",
-    2 => "Next Weekend",
-    3 => "Next User Group Meeting",
+    1 => "<= This Weekend",
+    2 => "<= Next Weekend",
+    3 => "<= Next User Group Meeting",
     4 => "> Next User Group Meeting"
   }
   def completion_estimate

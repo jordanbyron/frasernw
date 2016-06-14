@@ -251,7 +251,12 @@ const sidebarFilters = {
       return filterValues.completionDate(model) !== 0;
     },
     predicate: function(record, model) {
-      return filterValues.completionDate(model) === record.completionEstimateKey;
+      if (filterValues.completionDate(model) === 4){
+        return record.completionEstimateKey === 4
+      }
+      else {
+        return record.completionEstimateKey <= filterValues.completionDate(model);
+      }
     }
   },
   assignees: {
