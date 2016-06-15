@@ -262,6 +262,14 @@ const sidebarFilters = {
       return record.completeNextMeeting;
     }
   },
+  notTargeted: {
+    isActivated: function(model) {
+      return filterValues.notTargeted(model);
+    },
+    predicate: function(record, model) {
+      return !record.completeNextMeeting && !record.completeThisWeekend;
+    }
+  },
   assignees: {
     isActivated: function(model) {
       return filterValues.assignees(model) !== "All";

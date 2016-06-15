@@ -125,6 +125,7 @@ export const sidebarFilterKeys = ((model) => {
     return [
       "completeThisWeekend",
       "completeNextMeeting",
+      "notTargeted",
       "assignees",
       "issueSource",
       "priority"

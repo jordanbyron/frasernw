@@ -235,6 +235,12 @@ export const completeNextMeeting = factory({
   defaultValue: false
 });
 
+export const notTargeted = factory({
+  key: "notTargeted",
+  hasSubkeys: false,
+  defaultValue: false
+});
+
 export const assignees = factory({
   key: "assignees",
   hasSubkeys: false,

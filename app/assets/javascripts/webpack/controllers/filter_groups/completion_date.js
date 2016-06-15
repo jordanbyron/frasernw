@@ -27,6 +27,12 @@ const CompletionDateFilter = ({model, dispatch}) => {
           model={model}
           dispatch={dispatch}
         />
+        <FilterCheckbox
+          label="Not Targeted"
+          filterKey="notTargeted"
+          model={model}
+          dispatch={dispatch}
+        />
       </FilterGroup>
     );
   }
