@@ -38,7 +38,8 @@ class Issue < ActiveRecord::Base
     2 => "In progress",
     3 => "Design consultation",
     4 => "Complete",
-    5 => "Re-examine need"
+    5 => "Re-examine need",
+    6 => "Ready to Test"
   }
   def progress
     PROGRESS_LABELS[progress_key]
