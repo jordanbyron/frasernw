@@ -117,7 +117,7 @@ class Issue < ActiveRecord::Base
 
   def to_hash
     attributes.except(:date_entered, :date_completed).camelize_keys.merge({
-      assigneesLabel: assignees_label,
+      assigneeIds: assignees.map(&:id).sort,
       collectionName: "issues",
       dateEntered: date_entered.to_s,
       dateCompleted: date_completed.try(:to_s)

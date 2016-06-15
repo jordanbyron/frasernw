@@ -275,7 +275,15 @@ const sidebarFilters = {
       return filterValues.assignees(model) !== "All";
     },
     predicate: function(record, model) {
-      return filterValues.assignees(model) === record.assigneesLabel;
+      if(filterValues.assignees(model) === "") {
+        return record.assigneeIds.length === 0;
+      }
+      else {
+        return utils.isSubset(
+          filterValues.assignees(model).split(",").map((id) => parseInt(id)),
+          record.assigneeIds
+        );
+      }
     }
   },
   issueSource: {

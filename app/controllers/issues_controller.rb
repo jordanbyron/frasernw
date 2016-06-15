@@ -8,7 +8,16 @@ class IssuesController < ApplicationController
           current_user: current_user
         ),
         issues: Denormalized.generate(:issues),
-        issueSources: Issue::BRIEF_SOURCE_LABELS
+        issueSources: Issue::BRIEF_SOURCE_LABELS,
+        assignees: User.developer.map do |user|
+          [
+            user.id,
+            {
+              id: user.id,
+              name: user.name
+            }
+          ]
+        end.to_h
       }
     }
   end

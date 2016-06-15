@@ -31,19 +31,39 @@ const AssigneesFilter = ({model, dispatch}) => {
 
 const radioOptions = (model) => {
   return recordsMaskingFilters(model).
-    map(_.property("assigneesLabel")).
-    pwPipe(_.flatten).
-    pwPipe(_.uniq).
-    filter((option) => option !== "").
-    map((label) => {
-      return { key: label, label: label };
-    }).pwPipe((options) => _.sortBy(options, _.property("label"))).
+    map(_.property("assigneeIds")).
+    filter((ids) => !_.isEqual(ids, [])).
+    pwPipe((ids) => {
+      return ids.reduce((accumulator, value) => {
+        const existingMember = _.find(
+          accumulator,
+          (accumulatorItem) => _.isEqual(accumulatorItem, value)
+        )
+
+        if (!existingMember){
+          return accumulator.concat([value]);
+        }
+        else {
+          return accumulator;
+        }
+      }, []);
+    }).map((ids) => {
+      return {
+        key: ids.join(","),
+        label: ids.map((id) => firstName(id, model)).join(" & ")
+      };
+    }).
+    pwPipe((options) => _.sortBy(options, _.property("label"))).
     pwPipe((options) => {
       return [
-        {key: "All", label: "All"},
-        {key: "", label: "None"}
+        { key: "All", label: "All" },
+        { key: "", label: "None" }
       ].concat(options)
     })
 };
+
+const firstName = (assigneeId, model) => {
+  return model.app.assignees[assigneeId].name.match(/[^\s]+/);
+}
 
 export default AssigneesFilter;
