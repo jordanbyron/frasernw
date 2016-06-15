@@ -9,7 +9,7 @@ const SpecializationsFilters = ({model, dispatch}) => {
   if (matchedRoute(model) === "/content_categories/:id" ||
     matchedRoute(model) === "/hospitals/:id" ||
     matchedRoute(model) === "/languages/:id") {
-      
+
     return(
       <FilterGroup
         title={"Specialties"}
@@ -39,9 +39,9 @@ const radioOptions = (model) => {
     pwPipe(_.flatten).
     pwPipe(_.uniq).
     map((id) => {
-      return { key: id, label: model.app.specializations[id].name };
+      return { key: id.toString(), label: model.app.specializations[id].name };
     }).pwPipe((options) => _.sortBy(options, _.property("label"))).
-    pwPipe((options) => [{key: 0, label: "All"}].concat(options))
+    pwPipe((options) => [{key: "0", label: "All"}].concat(options))
 }
 
 export default SpecializationsFilters;

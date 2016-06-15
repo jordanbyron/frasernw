@@ -27,6 +27,7 @@ import ClinicIconKey from "controllers/clinic_icon_key";
 import CompletionDateFilter from "controllers/filter_groups/completion_date";
 import AssigneesFilter from "controllers/filter_groups/assignees";
 import IssueSourceFilter from "controllers/filter_groups/issue_source";
+import PriorityFilter from "controllers/filter_groups/priority";
 
 const pageIsReport = (model) => {
   return matchedRoute(model).includes("/reports/");
@@ -72,6 +73,7 @@ const Sidebar = ({model, dispatch}) => {
         <CompletionDateFilter model={model} dispatch={dispatch}/>
         <AssigneesFilter model={model} dispatch={dispatch}/>
         <IssueSourceFilter model={model} dispatch={dispatch}/>
+        <PriorityFilter model={model} dispatch={dispatch}/>
       </div>
       <SpecialistIconKey model={model}/>
       <ClinicIconKey model={model}/>

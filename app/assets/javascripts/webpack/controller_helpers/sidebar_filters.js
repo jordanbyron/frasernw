@@ -201,7 +201,7 @@ const sidebarFilters = {
       if(_.includes(["/specialties/:id", "/areas_of_practice/:id"], matchedRoute(model))){
         return activatedFilterSubkeys.subcategories(model).pwPipe(_.some);
       } else {
-        return parseInt(filterValues.subcategories(model)) !== 0;
+        return filterValues.subcategories(model) !== "0";
       }
     },
     predicate: function(record, model) {
@@ -248,14 +248,15 @@ const sidebarFilters = {
   },
   completionDate: {
     isActivated: function(model) {
-      return filterValues.completionDate(model) !== 0;
+      return filterValues.completionDate(model) !== "0";
     },
     predicate: function(record, model) {
-      if (filterValues.completionDate(model) === 4){
+      if (filterValues.completionDate(model) === "4"){
         return record.completionEstimateKey === 4
       }
       else {
-        return record.completionEstimateKey <= filterValues.completionDate(model);
+        return parseInt(record.completionEstimateKey) <=
+          parseInt(filterValues.completionDate(model));
       }
     }
   },
@@ -269,10 +270,18 @@ const sidebarFilters = {
   },
   issueSource: {
     isActivated: function(model) {
-      return filterValues.issueSource(model) !== 0;
+      return filterValues.issueSource(model) !== "0";
     },
     predicate: function(record, model) {
-      return record.sourceKey === filterValues.issueSource(model);
+      return record.sourceKey === parseInt(filterValues.issueSource(model));
+    }
+  },
+  priority: {
+    isActivated: function(model) {
+      return filterValues.priority(model) !== "0";
+    },
+    predicate: function(record, model) {
+      return record.priority === filterValues.priority(model).toString();
     }
   }
 }

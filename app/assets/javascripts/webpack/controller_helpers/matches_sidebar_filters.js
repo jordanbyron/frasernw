@@ -125,7 +125,8 @@ export const sidebarFilterKeys = ((model) => {
     return [
       "completionDate",
       "assignees",
-      "issueSource"
+      "issueSource",
+      "priority"
     ];
   }
   else {

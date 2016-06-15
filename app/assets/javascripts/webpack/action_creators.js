@@ -106,9 +106,6 @@ const proposedValue = (event) => {
   if (event.target.type === "checkbox"){
     return event.target.checked;
   }
-  else if (event.target.type === "radio" && !isNaN(parseInt(event.target.value))) {
-    return parseInt(event.target.value);
-  }
   else {
     return event.target.value;
   }

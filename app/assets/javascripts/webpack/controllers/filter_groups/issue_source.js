@@ -35,9 +35,9 @@ const radioOptions = (model) => {
     pwPipe(_.flatten).
     pwPipe(_.uniq).
     map((key) => {
-      return { key: key, label: model.app.issueSources[key] };
+      return { key: key.toString(), label: model.app.issueSources[key] };
     }).pwPipe((options) => _.sortBy(options, _.property("key"))).
-    pwPipe((options) => [{key: 0, label: "All"}].concat(options))
+    pwPipe((options) => [{key: "0", label: "All"}].concat(options))
 };
 
 export default IssueSourceFilter;
