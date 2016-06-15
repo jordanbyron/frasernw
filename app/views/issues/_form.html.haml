@@ -15,12 +15,11 @@
     value_method: :first,
     label_method: :second
 
-  = f.input :completion_estimate_key,
-    as: :radio_buttons,
-    label: "Completion Estimate",
-    collection: Issue::COMPLETION_ESTIMATE_LABELS.to_a,
-    value_method: :first,
-    label_method: :second
+  = f.input :complete_this_weekend,
+    label: "Complete For This Weekend?"
+
+  = f.input :complete_next_meeting,
+    label: "Complete For Next U.G. Meeting?"
 
   = f.input :progress_key,
     as: :radio_buttons,

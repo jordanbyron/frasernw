@@ -4,7 +4,6 @@ class Issue < ActiveRecord::Base
   attr_accessible :description,
     :source_key,
     :effort_estimate,
-    :completion_estimate_key,
     :progress_key,
     :priority,
     :manual_date_entered,
@@ -14,7 +13,9 @@ class Issue < ActiveRecord::Base
     :subscriptions_attributes,
     :subscribed_thread_subject,
     :subscribed_thread_participants,
-    :source_id
+    :source_id,
+    :complete_this_weekend,
+    :complete_next_meeting
 
   has_many :issue_assignments, dependent: :destroy
   has_many :assignees, through: :issue_assignments, class_name: "User"
@@ -47,14 +48,14 @@ class Issue < ActiveRecord::Base
     progress_key == 4
   end
 
-  COMPLETION_ESTIMATE_LABELS = {
-    1 => "<= This Weekend",
-    2 => "<= Next Weekend",
-    3 => "<= Next User Group Meeting",
-    4 => "> Next User Group Meeting"
-  }
   def completion_estimate
-    COMPLETION_ESTIMATE_LABELS[completion_estimate_key]
+    if complete_this_weekend?
+      "<= This Weekend"
+    elsif complete_next_meeting?
+      "<= Next U.G. Meeting"
+    else
+      "> Next U.G. Meeting"
+    end
   end
 
   EFFORT_ESTIMATES = ["-", "L", "M", "H"]

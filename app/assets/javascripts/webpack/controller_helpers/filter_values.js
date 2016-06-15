@@ -223,10 +223,16 @@ export const reportStyle = factory({
   defaultValue: "summary"
 });
 
-export const completionDate = factory({
-  key: "completionDate",
+export const completeThisWeekend = factory({
+  key: "completeThisWeekend",
   hasSubkeys: false,
-  defaultValue: "0"
+  defaultValue: false
+});
+
+export const completeNextMeeting = factory({
+  key: "completeNextMeeting",
+  hasSubkeys: false,
+  defaultValue: false
 });
 
 export const assignees = factory({

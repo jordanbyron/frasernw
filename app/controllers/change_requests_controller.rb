@@ -16,7 +16,6 @@ class ChangeRequestsController < ApplicationController
           current_user: current_user
         ),
         changeRequests: Denormalized.generate(:change_requests),
-        completionEstimateLabels: Issue::COMPLETION_ESTIMATE_LABELS,
         progressLabels: Issue::PROGRESS_LABELS
       },
       ui: {

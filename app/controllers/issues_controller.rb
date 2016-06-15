@@ -8,8 +8,7 @@ class IssuesController < ApplicationController
           current_user: current_user
         ),
         issues: Denormalized.generate(:issues),
-        issueSources: Issue::BRIEF_SOURCE_LABELS,
-        completionEstimateLabels: Issue::COMPLETION_ESTIMATE_LABELS
+        issueSources: Issue::BRIEF_SOURCE_LABELS
       }
     }
   end

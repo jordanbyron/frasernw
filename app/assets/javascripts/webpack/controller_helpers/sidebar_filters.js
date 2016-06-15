@@ -246,18 +246,20 @@ const sidebarFilters = {
       return !record.hidden;
     }
   },
-  completionDate: {
+  completeThisWeekend: {
     isActivated: function(model) {
-      return filterValues.completionDate(model) !== "0";
+      return filterValues.completeThisWeekend(model);
     },
     predicate: function(record, model) {
-      if (filterValues.completionDate(model) === "4"){
-        return record.completionEstimateKey === 4
-      }
-      else {
-        return parseInt(record.completionEstimateKey) <=
-          parseInt(filterValues.completionDate(model));
-      }
+      return record.completeThisWeekend;
+    }
+  },
+  completeNextMeeting: {
+    isActivated: function(model) {
+      return filterValues.completeNextMeeting(model);
+    },
+    predicate: function(record, model) {
+      return record.completeNextMeeting;
     }
   },
   assignees: {

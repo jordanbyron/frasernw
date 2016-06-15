@@ -20,11 +20,7 @@ const ChangeRequestRow = ({model, decoratedRecord}) => {
             { model.app.progressLabels[decoratedRecord.raw.progressKey] }
           </td>
           <td>
-            {
-              model.
-                app.
-                completionEstimateLabels[decoratedRecord.raw.completionEstimateKey]
-            }
+            { completionEstimate(decoratedRecord.raw) }
           </td>
         </tr>
       );
@@ -57,6 +53,18 @@ const ChangeRequestRow = ({model, decoratedRecord}) => {
         <td>{ decoratedRecord.raw.effort }</td>
       </tr>
     );
+  }
+}
+
+const completionEstimate = (record) => {
+  if(record.completeThisWeekend){
+    return "<= This Weekend";
+  }
+  else if (record.completeNextMeeting){
+    return "<= Next U.G. Meeting";
+  }
+  else {
+    return "> Next U.G. Meeting";
   }
 }
 

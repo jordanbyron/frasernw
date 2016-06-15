@@ -2,22 +2,28 @@ import React from "react";
 import FilterGroup from "controllers/filter_group";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import recordsMaskingFilters from "controller_helpers/records_masking_filters";
-import FilterRadioButtons from "controllers/filter_radio_buttons";
+import FilterCheckbox from "controllers/filter_checkbox";
 
 const CompletionDateFilter = ({model, dispatch}) => {
   if (matchedRoute(model) === "/issues") {
     return(
       <FilterGroup
-        title={"Estimated Completion Date"}
+        title={"Targeted Completion Date"}
         isCollapsible={true}
         expansionControlKey={"completion"}
         defaultIsExpanded={true}
         model={model}
         dispatch={dispatch}
       >
-        <FilterRadioButtons
-          filterKey="completionDate"
-          options={radioOptions(model)}
+        <FilterCheckbox
+          label="This Weekend"
+          filterKey="completeThisWeekend"
+          model={model}
+          dispatch={dispatch}
+        />
+        <FilterCheckbox
+          label="Next User Group Meeting"
+          filterKey="completeNextMeeting"
           model={model}
           dispatch={dispatch}
         />
@@ -27,17 +33,6 @@ const CompletionDateFilter = ({model, dispatch}) => {
   else {
     return <span></span>;
   }
-};
-
-const radioOptions = (model) => {
-  return recordsMaskingFilters(model).
-    map(_.property("completionEstimateKey")).
-    pwPipe(_.flatten).
-    pwPipe(_.uniq).
-    map((key) => {
-      return { key: key.toString(), label: model.app.completionEstimateLabels[key] };
-    }).pwPipe((options) => _.sortBy(options, _.property("key"))).
-    pwPipe((options) => [{key: "0", label: "All"}].concat(options))
 };
 
 export default CompletionDateFilter;
