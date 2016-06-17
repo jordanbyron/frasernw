@@ -1,8 +1,8 @@
 module UsersHelper
 
   def user_edit_checkbox_value_for_division
-    if @user.as_divisions.present?
-      @user.as_divisions.map(&:id)
+    if @user.divisions.present?
+      @user.divisions.map(&:id)
     elsif current_user.as_super_admin?
       nil
     elsif current_user.as_divisions.count > 1
