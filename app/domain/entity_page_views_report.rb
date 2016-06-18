@@ -2,7 +2,6 @@ class EntityPageViewsReport < ServiceObject
   attribute :month_key
   attribute :division_id
   attribute :record_type
-  attribute :force, Axiom::Types::Boolean, default: false
 
   include ActionView::Helpers::UrlHelper
 
@@ -19,36 +18,7 @@ class EntityPageViewsReport < ServiceObject
     :content_categories
   ]
 
-  def self.regenerate_all
-    SUPPORTED_RECORD_TYPES.each do |type|
-      Division.standard.map(&:id).map(&:to_s).concat(["0"]).each do |id|
-        Month.for_interval(
-          Month.new(2014, 1),
-          Month.current
-        ).each do |month|
-          call(
-            month_key: month.to_i,
-            division_id: id,
-            record_type: type,
-            force: true
-          )
-        end
-      end
-    end
-  end
-
   def call
-    if month == Month.current
-      generate
-    else
-      Rails.cache.fetch(
-        "entity_page_views:#{month_key}:#{division_id}:#{record_type}",
-        force: force
-      ){ generate }
-    end
-  end
-
-  def generate
     get_usage.
       sort_by{ |row| row[:usage].to_i }.
       reverse().
