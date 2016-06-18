@@ -4,5 +4,5 @@ task :prepare_create_seeds do
 end
 
 task :create_seeds => [:prepare_create_seeds, :environment] do
-  CreateSeeds.call
+  NewCreateSeeds.call
 end

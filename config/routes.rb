@@ -187,8 +187,6 @@ Frasernw::Application.routes.draw do
 
   patch '/validate' => 'users#validate', as: :validate
   patch '/setup' => 'users#setup', as: :setup
-  get '/change_local_referral_area' => 'users#change_local_referral_area', as: :change_local_referral_area
-  patch '/update_local_referral_area' => 'users#update_local_referral_area', as: :update_local_referral_area
   get '/change_password' => 'users#change_password', as: :change_password
   patch '/update_password' => 'users#update_password', as: :update_password
   get '/change_email' => 'users#change_email', as: :change_email

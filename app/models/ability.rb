@@ -84,9 +84,7 @@ class Ability
           :change_email,
           :update_email,
           :change_password,
-          :update_password,
-          :change_local_referral_area,
-          :update_local_referral_area
+          :update_password
         ], User
 
         can [:index, :new, :create, :show, :copy], NewsItem
@@ -151,9 +149,7 @@ class Ability
           :change_email,
           :update_email,
           :change_password,
-          :update_password,
-          :change_local_referral_area,
-          :update_local_referral_area
+          :update_password
         ], User
 
         can [:create, :show], FeedbackItem
@@ -197,9 +193,7 @@ class Ability
           :change_email,
           :update_email,
           :change_password,
-          :update_password,
-          :change_local_referral_area,
-          :update_local_referral_area
+          :update_password
         ], User
 
         can [:create, :show], FeedbackItem

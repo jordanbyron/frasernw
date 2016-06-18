@@ -8,7 +8,6 @@ class CreateSeeds < ServiceObject
     "delayed_jobs",
     "sessions",
     "versions",
-    "schema_migrations",
     "subscriptions",
     "subscription_sc_categories",
     "subscription_divisions",
@@ -509,11 +508,11 @@ class CreateSeeds < ServiceObject
       },
       "hospital_id" => {
         :test => Proc.new{ |klass| klass == Privilege },
-        :faker => Proc.new{ |klass| Hospital.random_id }
+        :faker => Proc.new{ |klass| Object.const_get("Hospital").random_id }
       },
       "clinic_id" => {
         :test => Proc.new{ |klass| klass == Attendance },
-        :faker => Proc.new{ |klass| Clinic.random_id }
+        :faker => Proc.new{ |klass| Object.const_get("Clinic").random_id }
       },
       "unavailable_to" => {
         :faker => Proc.new{ |klass|

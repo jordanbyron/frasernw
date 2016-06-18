@@ -15,7 +15,8 @@ class EntityPageViewsReport < ServiceObject
     :specialties,
     :red_flags,
     :community_services,
-    :pearls
+    :pearls,
+    :content_categories
   ]
 
   def self.regenerate_all
@@ -91,6 +92,9 @@ class EntityPageViewsReport < ServiceObject
     end,
     specializations: Proc.new do |row|
       [ row[:record][:name], "/specialties/#{row[:record][:id]}" ]
+    end,
+    content_categories: Proc.new do |row|
+      [ row[:record][:name], "/content_categories/#{row[:record][:id]}" ]
     end
   }
 
@@ -203,7 +207,8 @@ class EntityPageViewsReport < ServiceObject
       row[:record][:typeMask] != ScItem::TYPE_MARKDOWN &&
       row[:record][:categoryIds].include?(3)
     end,
-    specialties: Proc.new{ |row| false }
+    specialties: Proc.new{ |row| false },
+    content_categories: Proc.new{ |row| false}
   }
 
   #  which event categories respond to which class of record
@@ -267,7 +272,8 @@ class EntityPageViewsReport < ServiceObject
     pearls: Proc.new do |row|
       row[:record][:typeMask] == ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(3)
     end,
-    specialties: Proc.new{ |row| true }
+    specialties: Proc.new{ |row| true },
+    content_categories: Proc.new{ |row| true }
   }
 
   def extract_id(record_type, path)
@@ -280,7 +286,8 @@ class EntityPageViewsReport < ServiceObject
       specialties: "specialties",
       community_services: "content_items",
       red_flags: "content_items",
-      pearls: "content_items"
+      pearls: "content_items",
+      content_categories: "content_categories"
     }[record_type]
 
     /(?<=\/#{Regexp.quote(collection_path)}\/)[[:digit:]]+(?=\/?\z)/.
@@ -299,6 +306,7 @@ class EntityPageViewsReport < ServiceObject
     community_services: :content_items,
     red_flags: :content_items,
     pearls: :content_items,
-    specialties: :specializations
+    specialties: :specializations,
+    content_categories: :content_categories
   }
 end

@@ -93,10 +93,6 @@ class User < ActiveRecord::Base
     class_name: "Specialization",
     source: :specialization
 
-  has_many :user_cities, dependent: :destroy
-
-  has_many :user_city_specializations, through: :user_cities
-
   has_many :subscriptions, dependent: :destroy
 
   has_many :contacts
@@ -319,12 +315,6 @@ class User < ActiveRecord::Base
         present?
     end
     does_own
-  end
-
-  def local_referral_cities(specialization)
-    return user_city_specializations.
-      reject{ |ucs| ucs.specialization_id != specialization.id }.
-      map{ |ucs| ucs.user_city.city }
   end
 
   def self.csv_import(file, divisions, type_mask, role)

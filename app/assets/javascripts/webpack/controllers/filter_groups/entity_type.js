@@ -47,7 +47,8 @@ const OPTION_LABELS = {
   forms: "Forms",
   redFlags: "Red Flags",
   communityServices: "Community Services",
-  pearls: "Pearls"
+  pearls: "Pearls",
+  contentCategories: "Content Categories"
 }
 
 const radioOptionKeys = (model) => {

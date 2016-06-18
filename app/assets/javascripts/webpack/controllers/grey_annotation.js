@@ -36,6 +36,8 @@ const label = (model) => {
       var dynamic = "'Page Views' are defined as views at '/specialties/<id>.'";
     case "clinics":
       var dynamic = "'Page Views' are defined as views at '/clinics/<id>.'";
+    case "contentCategories":
+      var dynamic = "'Page Views' are defined as views at '/content_categories/<id>.'";
     case "specialists":
       var dynamic = "'Page Views' are defined as views at '/specialists/<id>.'";
     default:

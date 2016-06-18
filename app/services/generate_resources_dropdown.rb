@@ -12,8 +12,10 @@ class GenerateResourcesDropdown
   end
 
   def exec
+    display_order = ([11,5,2,38,3,37,4]+ScCategory.all.pluck(:id)).uniq
     process_hsh(ScCategory.arrange).
-      select(&:show_in_global_resources_dropdown?)
+      select(&:show_in_global_resources_dropdown?).
+      sort_by{ |x| display_order.index x.id }
   end
 
   def process_hsh(hsh, ancestors = Set.new)
