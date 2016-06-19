@@ -22,7 +22,6 @@ class EntityPageViewsReport < ServiceObject
     get_usage.
       sort_by{ |row| row[:usage].to_i }.
       reverse().
-      first(20).
       map{ |row| transform_row_for_view(row) }
   end
 
@@ -34,7 +33,7 @@ class EntityPageViewsReport < ServiceObject
         *LABEL_SERIALIZED_COLLECTIONS[row[:serialized_collection]].call(row)
       ),
       usage: row[:usage],
-      collectionName: "pageViewData",
+      collectionName: "#{row[:serialized_collection]}pageViewData",
       id: row[:record][:id]
     }
   end

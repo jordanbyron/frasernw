@@ -22,12 +22,11 @@ import HiddenUpdatesFilter from "controllers/filter_groups/hidden_updates";
 import EntityTypeFilters from "controllers/filter_groups/entity_type";
 import MonthFilter from "controllers/filter_groups/month";
 import ReportStyleFilter from "controllers/filter_groups/report_style";
-import SpecialistIconKey from "controllers/specialist_icon_key";
-import ClinicIconKey from "controllers/clinic_icon_key";
 import CompletionDateFilter from "controllers/filter_groups/completion_date";
 import AssigneesFilter from "controllers/filter_groups/assignees";
 import IssueSourceFilter from "controllers/filter_groups/issue_source";
 import PriorityFilter from "controllers/filter_groups/priority";
+import SidebarAnnotation from "controllers/sidebar_annotation";
 
 const pageIsReport = (model) => {
   return matchedRoute(model).includes("/reports/");
@@ -75,8 +74,7 @@ const Sidebar = ({model, dispatch}) => {
         <IssueSourceFilter model={model} dispatch={dispatch}/>
         <PriorityFilter model={model} dispatch={dispatch}/>
       </div>
-      <SpecialistIconKey model={model}/>
-      <ClinicIconKey model={model}/>
+      <SidebarAnnotation model={model}/>
     </div>
   );
 };

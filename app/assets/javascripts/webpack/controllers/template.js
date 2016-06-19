@@ -23,7 +23,7 @@ import SpecializationFilterMessage from "controllers/specialization_filter_messa
 import CityFilterPills from "controllers/city_filter_pills";
 import Lists from "controllers/lists";
 import Disclaimer from "controllers/disclaimer";
-import GreyAnnotation from "controllers/grey_annotation";
+import MainPanelAnnotation from "controllers/main_panel_annotation";
 import pageTitleLabel from "controller_helpers/page_title_label";
 import ShowHospital from "controllers/show_hospital";
 import Pagination from "controllers/pagination";
@@ -139,7 +139,7 @@ const Main = ({model, dispatch}) => {
       <InlineArticles model={model} dispatch={dispatch}/>
       <Lists model={model} dispatch={dispatch}/>
       <CategoryLinkController model={model} dispatch={dispatch}/>
-      <GreyAnnotation model={model} dispatch={dispatch}/>
+      <MainPanelAnnotation model={model} dispatch={dispatch}/>
       <Pagination model={model} dispatch={dispatch}/>
     </div>
   );
