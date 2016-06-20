@@ -45,19 +45,6 @@ include Clockwork
     tz: 'UTC'
   ) { `bundle exec rake pathways:visit_every_page:specializations` }
 
-  # Used for testing:
-  # Clockwork.every(
-  #   1.day,
-  #   'Mail out TEST Monthly Subscriptions job',
-  #   at: 'Monday 00:45',
-  #   tz: 'UTC',
-  #   if: lambda { |t| t.day == 6 }
-  # ) do
-  #  SubscriptionWorker.
-  #   delay.
-  #   mail_notifications_for_interval(Subscription::INTERVAL_MONTHLY)
-  # end
-
   # Mails notifications DAILY at 2:30pm UTC (14:30), 6:30 am PST
   Clockwork.every(
     1.day,
