@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160616223758) do
+ActiveRecord::Schema.define(version: 20160620221610) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -433,19 +433,17 @@ ActiveRecord::Schema.define(version: 20160616223758) do
   create_table "issues", force: true do |t|
     t.string   "title"
     t.text     "description"
-    t.integer  "progress_key",                   default: 1
-    t.integer  "source_key",                     default: 4
-    t.string   "priority",                       default: ""
-    t.string   "effort_estimate",                default: "-"
+    t.integer  "progress_key",          default: 1
+    t.integer  "source_key",            default: 4
+    t.string   "priority",              default: ""
+    t.string   "effort_estimate",       default: "-"
     t.date     "manual_date_entered"
     t.date     "manual_date_completed"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "subscribed_thread_subject"
-    t.string   "subscribed_thread_participants"
     t.string   "source_id"
-    t.boolean  "complete_this_weekend",          default: false
-    t.boolean  "complete_next_meeting",          default: false
+    t.boolean  "complete_this_weekend", default: false
+    t.boolean  "complete_next_meeting", default: false
   end
 
   create_table "languages", force: true do |t|

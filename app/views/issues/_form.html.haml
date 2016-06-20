@@ -64,16 +64,6 @@
       %i.icon-plus-sign
       %span= " Add Assignee"
 
-  - if @issue.new_record?
-    %hr
-
-    .content
-      %h4 Subscribed Email Thread
-
-      = f.input :subscribed_thread_subject
-      = f.input :subscribed_thread_participants,
-        as: :text
-
   %hr
 
   .content

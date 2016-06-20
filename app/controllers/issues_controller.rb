@@ -24,20 +24,14 @@ class IssuesController < ApplicationController
 
   def new
     authorize! :new, Issue
-    @issue = Issue.new(
-      subscribed_thread_participants: params[:threadSubscribers],
-      subscribed_thread_subject: params[:threadSubject]
-    )
+    @issue = Issue.new
   end
 
   def create
     authorize! :create, Issue
     @issue = Issue.create(params[:issue])
     @issue.subscriptions.each do |subscription|
-      IssuesMailer.users_subscribed(subscription).deliver
-    end
-    if @issue.subscribed_thread_participants.present?
-      IssuesMailer.thread_subscribed(@issue).deliver
+      IssuesMailer.subscribed(subscription).deliver
     end
 
     redirect_to issue_path(@issue)
@@ -66,16 +60,12 @@ class IssuesController < ApplicationController
     @issue.subscriptions.reject do |subscription|
       old_subscriptions_ids.include?(subscription.id)
     end.each do |subscription|
-      IssuesMailer.users_subscribed(subscription).deliver
+      IssuesMailer.subscribed(subscription).deliver
     end
 
     if !old_is_complete && @issue.completed?
       @issue.subscriptions.each do |subscription|
-        IssuesMailer.users_completed(subscription).deliver
-      end
-
-      if @issue.subscribed_thread_participants.present?
-        IssuesMailer.thread_completed(@issue).deliver
+        IssuesMailer.completed(subscription).deliver
       end
     end
 

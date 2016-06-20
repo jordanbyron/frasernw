@@ -49,18 +49,6 @@
   %p
     #react--issue_subscription_toggle{style: "margin-top: 20px;"}
 
-  - if current_user.as_super_admin? && @issue.subscribed_thread_participants.present?
-    %h6 Subscribed Email Thread
-    %p.space
-      %strong Subject:
-      = @issue.subscribed_thread_subject
-    %p.space
-      %strong Participants:
-    %ul
-      - @issue.subscribed_thread_participants.split(";").each do |participant|
-        %li
-          = participant
-
   - if current_user.as_super_admin?
 
     %hr

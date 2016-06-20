@@ -1,7 +1,7 @@
 class IssuesMailer < ActionMailer::Base
   include ApplicationHelper
 
-  def users_subscribed(subscription)
+  def subscribed(subscription)
     @subscription = subscription
 
     mail(
@@ -11,27 +11,7 @@ class IssuesMailer < ActionMailer::Base
     )
   end
 
-  def thread_subscribed(issue)
-    @issue = issue
-
-    mail(
-      to: @issue.subscribed_thread_participants,
-      from: 'noreply@pathwaysbc.ca',
-      subject: @issue.subscribed_thread_subject
-    )
-  end
-
-  def thread_completed(issue)
-    @issue = issue
-
-    mail(
-      to: @issue.subscribed_thread_participants,
-      from: 'noreply@pathwaysbc.ca',
-      subject: @issue.subscribed_thread_subject
-    )
-  end
-
-  def users_completed(subscription)
+  def completed(subscription)
     @subscription = subscription
 
     mail(
