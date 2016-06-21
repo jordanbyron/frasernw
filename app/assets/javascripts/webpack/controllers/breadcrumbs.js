@@ -26,11 +26,12 @@ const Breadcrumbs = React.createClass({
   },
   render: function() {
     if (_.includes(ROUTES_SHOWING, matchedRoute(this.props.model))){
+
       return(
         <div>
           <ul id="specialties-menu">
             <li className={dropdownClassName(this.props.model)}>
-              <a className="specialties-dropdown-toggle" href="javascript:void(0)" onClick={this.toggle}>
+              <a className="specialties-dropdown-toggle" onClick={this.toggle}>
                 <span>All Specialties </span>
                 <b className="caret"/>
               </a>
