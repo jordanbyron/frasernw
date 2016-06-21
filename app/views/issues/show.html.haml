@@ -65,6 +65,8 @@
           class: "btn" do
           %i.icon-trash
           %span= " Delete"
+      - if can? :view_history, @issue
+        = large_history_button(@issue)
 
     %hr
 
