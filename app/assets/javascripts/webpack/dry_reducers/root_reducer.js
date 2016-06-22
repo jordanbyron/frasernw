@@ -119,16 +119,14 @@ const tab = (model = {}, action) => {
       action
     ),
     currentPage: currentPage(model.currentPage, action),
-    selectedRecordId: selectedRecordId(model.selectedRecordId, action)
+    areRowsExpanded: areRowsExpanded(model.areRowsExpanded, action)
   };
 }
 
-const selectedRecordId = (model, action) => {
+const areRowsExpanded = (model, action) => {
   switch(action.type){
-  case "SELECT_RECORD":
+  case "TOGGLE_ROW_EXPANSIONS":
     return action.proposed;
-  case "DESELECT_RECORD":
-    return null;
   default:
     return model;
   }

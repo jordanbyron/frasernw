@@ -259,17 +259,12 @@ export const closeFeedbackModal = (dispatch) => {
   })
 }
 
-export const selectRecord = (model, dispatch, proposed) => {
+export const toggleRowExpansion = (model, dispatch, proposed, e) => {
   dispatch({
-    type: "SELECT_RECORD",
+    type: "TOGGLE_ROW_EXPANSIONS",
     tabKey: selectedTabKey(model),
     proposed: proposed
   });
-}
 
-export const deselectRecord = (model, dispatch, proposed) => {
-  dispatch({
-    type: "DESELECT_RECORD",
-    tabKey: selectedTabKey(model)
-  });
-}
+  e.stopPropagation();
+};

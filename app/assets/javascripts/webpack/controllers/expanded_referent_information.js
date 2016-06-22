@@ -1,38 +1,13 @@
 import React from "react";
-import selectedRecordId from "controller_helpers/selected_record_id";
+import { areRowsExpanded } from "controller_helpers/table_row_expansion";
 
 const ExpandedReferentInformation = React.createClass({
-  isSelected: function() {
-    return selectedRecordId(this.props.model) === this.props.record.id;
-  },
-  componentDidMount: function(){
-    if (this.isSelected()){
-      $(this.refs.content).show();
-    }
-  },
-  componentDidUpdate: function(prevProps) {
-    var selectedInCurrentProps = this.isSelected();
-    var selectedInPrevProps = selectedRecordId(prevProps.model) === this.props.record.id;
-
-    if (selectedInPrevProps == false && selectedInCurrentProps == true) {
-      $(this.refs.content).slideDown("medium");
-    } else if (selectedInPrevProps == true && selectedInCurrentProps == false){
-      $(this.refs.content).slideUp("medium");
-    }
-  },
   render: function(){
-    if (this.props.record.collectionName == "specialists") {
-      var noInfoLabel =
-        "This specialist hasn't provided us information about their interests or restrictions.";
-    } else {
-      var noInfoLabel =
-        "This clinic hasn't provided us information about their restrictions.";
-    }
-
-    if (this.props.record.notPerformed){
+    if (areRowsExpanded(this.props.model)){
       return(
-        <ul ref="content" style={{display: "none"}}>
+        <ul ref="content">
           <NotPerformed record={this.props.record}/>
+          <MostInterested record={this.props.record}/>
         </ul>
       );
     } else {
@@ -48,7 +23,7 @@ const MostInterested = ({record}) => {
     return(<MiniProfileItem heading={"Most interested in:"} value={record.interest}/>);
   }
   else {
-    return(<span></span>);
+    return(<noscript/>);
   }
 }
 
@@ -57,7 +32,7 @@ const NotPerformed = ({record}) => {
     return(<MiniProfileItem heading={"Does not see or do:"} value={record.notPerformed}/>);
   }
   else {
-    return(<span></span>);
+    return(<noscript/>);
   }
 }
 

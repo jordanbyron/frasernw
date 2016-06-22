@@ -10,6 +10,7 @@ import showingMultipleSpecializations
   from "controller_helpers/showing_multiple_specializations";
 import { buttonIsh } from "stylesets";
 import _ from "lodash";
+import ExpandRowsToggle from "controllers/expand_rows_toggle";
 
 const TableHeading = ({model, dispatch}) => {
   if(_.includes(["/reports/entity_page_views", "/latest_updates"], matchedRoute(model))){
@@ -29,13 +30,14 @@ const TableHeading = ({model, dispatch}) => {
 const cells = (model, dispatch) => {
   let _classnamePrefix = classnamePrefix(model);
 
-  return cellConfigs(model).map((config) => {
+  return cellConfigs(model, dispatch).map((config) => {
     return(
       <TableHeadingCell
         model={model}
         dispatch={dispatch}
         label={config.label}
         key={config.key}
+        showExpansionToggle={config.showExpansionToggle}
         headingKey={config.key}
         classnamePrefix={_classnamePrefix}
       />
@@ -55,25 +57,20 @@ const classnamePrefix = (model) => {
   }
 }
 
-const cellConfigs = (model) => {
+const cellConfigs = (model, dispatch) => {
   if (_.includes(["specialists", "clinics"], collectionShownName(model))){
+    var configs = [
+      { label: collectionShownPluralLabel(model), key: "NAME", showExpansionToggle: true},
+      { label: "Accepting New Referrals?", key: "REFERRALS" },
+      { label: "Average Non-urgent Patient Waittime", key: "WAITTIME"},
+      { label: "City", key: "CITY" }
+    ];
+
     if (showingMultipleSpecializations(model)){
-      return [
-        { label: collectionShownPluralLabel(model), key: "NAME" },
-        { label: "Specialties", key: "SPECIALTIES" },
-        { label: "Accepting New Referrals?", key: "REFERRALS" },
-        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME"},
-        { label: "City", key: "CITY" }
-      ];
+      configs.splice(0, 1, { label: "Specialties", key: "SPECIALTIES" })
     }
-    else {
-      return [
-        { label: collectionShownPluralLabel(model), key: "NAME" },
-        { label: "Accepting New Referrals?", key: "REFERRALS" },
-        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME"},
-        { label: "City", key: "CITY" }
-      ];
-    }
+
+    return configs;
   }
   else if (collectionShownName(model) === "contentItems") {
     return [
@@ -107,7 +104,14 @@ const cellConfigs = (model) => {
   }
 };
 
-const TableHeadingCell = ({model, dispatch, label, headingKey, classnamePrefix}) => {
+const TableHeadingCell = ({
+  model,
+  dispatch,
+  label,
+  headingKey,
+  classnamePrefix,
+  showExpansionToggle
+}) => {
   const onClick = _.partial(
     sortByHeading,
     dispatch,
@@ -128,6 +132,11 @@ const TableHeadingCell = ({model, dispatch, label, headingKey, classnamePrefix})
       <TableHeadingArrow
         model={model}
         headingKey={headingKey}
+      />
+      <ExpandRowsToggle
+        model={model}
+        dispatch={dispatch}
+        shouldShow={showExpansionToggle}
       />
     </th>
   );
