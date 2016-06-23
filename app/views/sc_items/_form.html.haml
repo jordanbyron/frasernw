@@ -47,7 +47,8 @@
   - elsif current_user.as_divisions.length > 1
     = f.input :division_id,
       as: :select,
-      collection: current_user.as_divisions
+      collection: current_user.as_divisions,
+      include_blank: false
   - else
     = f.input :division_id,
       as: :hidden,
