@@ -20,7 +20,7 @@
   specialists.each do |specialist|
 
     entry = {
-      "n" => specialist.billing_number_padded ? specialist.name + " - MSP #" + specialist.billing_number_padded: specialist.name,
+      "n" => specialist.padded_billing_number ? specialist.name + " - MSP #" + specialist.padded_billing_number: specialist.name,
       "sp" => specialist.specialist_specializations.map { |ss| ss.specialization_id },
       "c" => specialist.cities_for_display.map{ |city| city.id },
       "st" => specialist.status_class_hash,

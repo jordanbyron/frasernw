@@ -25,8 +25,28 @@ const ui = (model = {}, action) => {
       tabs: tabs(model.tabs, action),
       latestUpdates: latestUpdates(model.latestUpdates, action),
       persistentConfig: model.persistentConfig,
-      feedbackModal: feedbackModal(model.feedbackModal, action)
+      feedbackModal: feedbackModal(model.feedbackModal, action),
+      searchIsFocused: searchIsFocused(model.searchIsFocused, action),
+      searchTerm: searchTerm(model.searchTerm, action)
     };
+  }
+};
+
+const searchTerm = (model, action) => {
+  switch(action.type){
+  case "TERM_SEARCHED":
+    return action.proposed;
+  default:
+    return model;
+  }
+}
+
+const searchIsFocused = (model, action) => {
+  switch(action.type){
+  case "SEARCH_FOCUSED":
+    return action.proposed;
+  default:
+    return model;
   }
 }
 

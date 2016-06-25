@@ -255,3 +255,17 @@ export const closeFeedbackModal = (dispatch) => {
     proposed: "CLOSED"
   })
 }
+
+export const searchFocused = (dispatch, isFocused) => {
+  dispatch({
+    type: "SEARCH_FOCUSED",
+    proposed: isFocused
+  });
+}
+
+export const termSearched = (dispatch, term) => {
+  dispatch({
+    type: "TERM_SEARCHED",
+    proposed: term
+  });
+}

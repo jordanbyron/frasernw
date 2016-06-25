@@ -1,4 +1,5 @@
 import Template from "controllers/template";
+import SearchResults from "controllers/search_results";
 import Provider from "provider";
 import createLogger from "redux-logger";
 import nextAction from "middlewares/next_action";
@@ -8,6 +9,7 @@ import ReactDOM from "react-dom";
 import rootReducer from "reducers/root_reducer";
 import React from "react";
 import changeTab from "middlewares/change_tab";
+import setSearchListeners from "set_search_listeners";
 import {
   requestDynamicData,
   parseRenderedData,
@@ -37,14 +39,21 @@ const bootstrapReact = function() {
   })
 
   $(document).ready(function() {
-    const renderTo = document.getElementById("react_root--template");
-
-    if (renderTo){
+    const renderTemplateTo = document.getElementById("react_root--template");
+    if (renderTemplateTo){
       ReactDOM.render(
         <Provider childKlass={Template} store={store}/>,
-        renderTo
+        renderTemplateTo
       )
     }
+
+    const renderSearchTo = document.getElementById("navbar_search--results");
+    ReactDOM.render(
+      <Provider childKlass={SearchResults} store={store}/>,
+      renderSearchTo
+    )
+
+    setSearchListeners(store.dispatch);
 
     window.pathways.globalDataLoaded.done(function(data) {
       integrateLocalStorageData(store.dispatch, data);

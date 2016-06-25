@@ -33,7 +33,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
           <tr>
             <ReferentName decoratedRecord={decoratedRecord} model={model}/>
             <ReferentSpecializations decoratedRecord={decoratedRecord} model={model}/>
-            <td><ReferentStatusIcon model={model} record={decoratedRecord.raw}/></td>
+            <td><ReferentStatusIcon model={model} record={decoratedRecord.raw} tooltip={true}/></td>
             <td>{ decoratedRecord.waittime }</td>
             <td>{ decoratedRecord.cityNames }</td>
           </tr>
@@ -43,7 +43,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
         return(
           <tr>
             <ReferentName decoratedRecord={decoratedRecord} model={model}/>
-            <td><ReferentStatusIcon model={model} record={decoratedRecord.raw}/></td>
+            <td><ReferentStatusIcon model={model} record={decoratedRecord.raw} tooltip={true}/></td>
             <td>{ decoratedRecord.waittime }</td>
             <td>{ decoratedRecord.cityNames }</td>
           </tr>

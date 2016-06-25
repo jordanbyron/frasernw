@@ -108,6 +108,7 @@ module Denormalized
             updatedAt: specialist.updated_at.to_date.to_s,
             showInTable: specialist.show_in_table?,
             hospitalsWithOfficesInIds: specialist.hospitals_with_offices_in.map(&:id),
+            billingNumber: specialist.padded_billing_number,
             teleserviceFeeTypes: specialist.
               teleservices.
               select(&:offered?).
@@ -202,10 +203,12 @@ module Denormalized
           memo.merge(category.id => {
             id: category.id,
             name: category.name,
+            fullName: category.full_name,
             displayMask: category.display_mask,
             subtreeIds: category.subtree.map(&:id),
             ancestry: category.ancestry,
-            componentType: component_type(category)
+            componentType: component_type(category),
+            collectionName: "contentCategories"
           })
         end
       end
@@ -230,6 +233,7 @@ module Denormalized
             nestedProcedures: Denormalized.transform_nested_procedure_specializations(
               specialization.procedure_specializations.includes(:procedure).arrange
             ),
+            collectionName: "specializations",
             maskFiltersByReferralArea: specialization.mask_filters_by_referral_area,
             suffix: specialization.suffix,
             newInDivisionIds: specialization.
@@ -275,7 +279,8 @@ module Denormalized
       Language.all.inject({}) do |memo, language|
         memo.merge(language.id => {
           id: language.id,
-          name: language.name
+          name: language.name,
+          collectionName: "languages"
         })
       end
     end,
@@ -305,11 +310,13 @@ module Denormalized
               map(&:id)
           },
           childrenProcedureIds: procedure.children.map(&:id),
+          fullName: procedure.full_name,
           ancestorIds: procedure.
             procedure_specializations.
             first.
             ancestors.
-            map(&:procedure_id)
+            map(&:procedure_id),
+          collectionName: "procedures"
         })
       end
     end,

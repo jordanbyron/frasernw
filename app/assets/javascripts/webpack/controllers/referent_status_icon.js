@@ -2,13 +2,15 @@ import React from "react";
 
 const ReferentStatusIcon = React.createClass({
   componentDidMount: function() {
-    $(this.refs.icon).tooltip({
-      placement: "right",
-      trigger: "hover",
-      animation: "true",
-      title: tooltipLabel(this.props.model, this.props.record),
-      container: elemId(this.props.record),
-    });
+    if(this.props.tooltip) {
+      $(this.refs.icon).tooltip({
+        placement: "right",
+        trigger: "hover",
+        animation: "true",
+        title: tooltipLabel(this.props.model, this.props.record),
+        container: elemId(this.props.record),
+      });
+    }
   },
   render: function() {
     return(

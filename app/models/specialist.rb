@@ -1309,7 +1309,7 @@ class Specialist < ActiveRecord::Base
     sex_mask != 3
   end
 
-  def billing_number_padded
+  def padded_billing_number
     if billing_number.present?
       "%05d" % billing_number
     else
