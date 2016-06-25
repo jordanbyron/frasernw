@@ -4,16 +4,9 @@ class FilterTableAppState < ServiceObject
   def call
     {
       currentUser: CurrentUser.call(current_user: current_user),
-      specializations: Denormalized.fetch(:specializations),
-      contentCategories: Denormalized.fetch(:content_categories),
-      contentItems: Denormalized.fetch(:content_items),
-      cities: Denormalized.fetch(:cities),
-      hospitals: Denormalized.fetch(:hospitals),
-      procedures: Denormalized.fetch(:procedures),
       respondsWithinOptions: Denormalized.fetch(:respondsWithinOptions),
       respondsWithinSummaryLabels: Denormalized.fetch(:respondsWithinSummaryLabels),
       dayKeys: Schedule::DAY_HASH,
-      languages: Denormalized.fetch(:languages),
       careProviders: Denormalized.fetch(:healthcare_providers),
       divisions: Denormalized.fetch(:divisions),
       referentStatusIcons: Specialist::STATUS_CLASS_HASH.invert,

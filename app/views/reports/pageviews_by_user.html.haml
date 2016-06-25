@@ -3,5 +3,4 @@
 #react_root--template
 
 :javascript
-  window.pathways = window.pathways || {};
-  window.pathways.dataForReact = #{@init_data.to_json};
+  window.pathways.dataForReact.push(#{@init_data.to_json});

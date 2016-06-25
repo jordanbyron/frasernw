@@ -18,7 +18,7 @@ import {
 const bootstrapReact = function() {
   let middlewares = [];
 
-  if(window.pathwaysEnvironment !== "production"){
+  if(window.pathways.environment !== "production"){
     const logger = createLogger();
     middlewares.push(logger);
   }
@@ -50,9 +50,7 @@ const bootstrapReact = function() {
       integrateLocalStorageData(store.dispatch, data);
     })
 
-    if (window.pathways.dataForReact){
-      parseRenderedData(store.dispatch);
-    }
+    parseRenderedData(window.pathways.dataForReact, store.dispatch);
 
     requestDynamicData(store.getState(), store.dispatch);
   })

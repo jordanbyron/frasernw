@@ -10,16 +10,9 @@ const rootReducer = (model = {}, action) => {
 const ui = (model = {}, action) => {
   switch(action.type){
   case "PARSE_RENDERED_DATA":
-    if(action.data.ui){
-      return _.assign(
-        {},
-        model,
-        action.data.ui
-      );
-    }
-    else {
-      return model;
-    }
+    var uiData = action.data.map(_.property("ui")).filter(_.identity)
+
+    return _.assign(...[{}, model].concat(uiData));
   default:
     return {
       recordsToDisplay: recordsToDisplay(model.recordsToDisplay, action),

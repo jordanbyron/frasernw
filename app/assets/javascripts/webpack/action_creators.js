@@ -49,10 +49,10 @@ export function changeFilterValue(dispatch, filterKey, newValue) {
   });
 }
 
-export function parseRenderedData(dispatch) {
+export function parseRenderedData(data, dispatch) {
   dispatch({
     type: "PARSE_RENDERED_DATA",
-    data: window.pathways.dataForReact
+    data: data
   });
 };
 
