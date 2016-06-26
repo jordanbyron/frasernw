@@ -269,3 +269,10 @@ export const termSearched = (dispatch, term) => {
     proposed: term
   });
 }
+
+export const selectCollectionFilter = (dispatch, label) => {
+  dispatch({
+    type: "SEARCH_COLLECTION_FILTER",
+    proposed: label
+  });
+}

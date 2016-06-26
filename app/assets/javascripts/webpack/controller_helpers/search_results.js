@@ -1,39 +1,132 @@
 import _ from "lodash";
+import { memoizePerRender } from "utils";
 
-const searchResults = (model) => {
+export const searchResults = (model) => {
   return toSearch(model).
     map((record) => decorateWithScore(record, model)).
-    filter((decoratedRecord) => decoratedRecord.score > 0.5).
-    pwPipe((decoratedRecords) => {
+    filter((decoratedRecord) => {
+      return _.every(filters(model), (filter) => filter(decoratedRecord, model));
+    }).pwPipe((decoratedRecords) => {
       return _.sortByOrder(decoratedRecords, _.property("score"), "desc")
     }).pwPipe((decoratedRecords) => _.take(decoratedRecords, 10)).
     pwPipe((decoratedRecords) => {
       return _.groupBy(decoratedRecords, _.property("raw.collectionName"));
     }).pwPipe((collections) => {
       return _.map(collections, (decoratedRecords, collectionName) => {
-        return {
-          collectionName: collectionName,
-          records: decoratedRecords.
-            pwPipe((records) => _.sortByOrder(records, _.property("score"), "desc")).
-            map(_.property("raw")),
-          highestScore: decoratedRecords.map(_.property("score")).pwPipe(_.max)
+        if(collectionName === "contentItems"){
+          return _.groupBy(decoratedRecords, _.property("raw.categoryId")).
+            pwPipe((categories) => {
+              return _.map(categories, (decoratedRecords, id) => {
+                return {
+                  label: model.app.contentCategories[id].fullName,
+                  records: decoratedRecords.
+                    pwPipe((records) => {
+                      return _.sortByOrder(records, _.property("score"), "desc");
+                    }).map(_.property("raw")),
+                  order: groupOrder["contentItems"]
+                };
+              })
+            });
+        }
+        else {
+          return {
+            label: groupLabels[collectionName],
+            records: decoratedRecords.
+              pwPipe((records) => _.sortByOrder(records, _.property("score"), "asc")).
+              map(_.property("raw")),
+            order: groupOrder[collectionName]
+          }
         }
       });
-    }).pwPipe((collections) => {
-      return _.sortByOrder(collections, _.property("highestScore"), "desc");
+    }).pwPipe(_.flatten).
+    pwPipe((groups) => {
+      return _.sortByOrder(groups, _.property("order"), "desc");
     });
 };
 
+const filters = (model) => {
+  let filters = []
+
+  filters.push((decoratedRecord) => decoratedRecord.score > 0.5)
+
+  if(selectedCollectionFilter(model) === "Physician Resources"){
+    filters.push((decoratedRecord) => {
+      return _.intersection(
+        decoratedRecord.raw.categoryIds,
+        [ pearlsId(model), redFlagsId(model), physicianResourcesId(model) ]
+      ).pwPipe(_.any)
+    })
+  }
+
+  if(selectedCollectionFilter(model) === "Patient Info"){
+    filters.push((decoratedRecord) => {
+      return _.includes(
+        decoratedRecord.raw.categoryIds,
+        patientInfoId(model)
+      )
+    })
+  }
+
+  return filters;
+}
+
+const categoryId = (categoryName, model) => {
+  return model.
+    app.
+    contentCategories.
+    pwPipe(_.values).
+    pwPipe((categories) => {
+      return _.find(categories, (category) => category.name === categoryName)
+    }).id
+}
+
+const pearlsId = _.partial(categoryId, "Pearls").
+  pwPipe(memoizePerRender)
+const redFlagsId = _.partial(categoryId, "Red Flags").
+  pwPipe(memoizePerRender)
+const physicianResourcesId = _.partial(categoryId, "Physician Resources").
+  pwPipe(memoizePerRender)
+const patientInfoId = _.partial(categoryId, "Patient Info").
+  pwPipe(memoizePerRender)
+
+const groupOrder = {
+  specializations: 1,
+  specialists: 2,
+  clinics: 3,
+  contentItems: 4,
+  procedures: 5,
+  hospitals: 6,
+  languages: 7
+}
+
+const groupLabels = {
+  specializations: "Specialties",
+  specialists: "Specialists",
+  clinics: "Clinics",
+  procedures: "Areas of Practice",
+  hospitals: "Hospitals",
+  languages: "Languages"
+}
+
 const toSearch = (model) => {
-  return [
-    model.app.specialists,
-    model.app.clinics,
-    model.app.procedures,
-    model.app.specializations,
-    model.app.hospitals,
-    model.app.languages,
-    model.app.contentItems
-  ].map(_.values).pwPipe(_.flatten);
+  switch(selectedCollectionFilter(model)){
+  case "Everything":
+    return [
+      model.app.specialists,
+      model.app.clinics,
+      model.app.procedures,
+      model.app.specializations,
+      model.app.hospitals,
+      model.app.languages,
+      model.app.contentItems
+    ].map(_.values).pwPipe(_.flatten);
+  case "Specialists":
+    return _.values(model.app.specialists);
+  case "Clinics":
+    return _.values(model.app.clinics);
+  default:
+    return _.values(model.app.contentItems);
+  }
 }
 
 const decorateWithScore = (record, model) => {
@@ -56,6 +149,14 @@ const searchString = (record) => {
   else {
     return record.name;
   }
+}
+
+export const selectedCollectionFilter = (model) => {
+  return _.get(
+    model,
+    ["ui", "searchCollectionFilter"],
+    "Everything"
+  )
 }
 
 const score = (string1, string2, fuzziness) => {
@@ -180,6 +281,3 @@ const score = (string1, string2, fuzziness) => {
 
   return overall_score;
 };
-
-
-export default searchResults;

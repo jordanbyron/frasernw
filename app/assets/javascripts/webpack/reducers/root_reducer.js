@@ -27,10 +27,20 @@ const ui = (model = {}, action) => {
       persistentConfig: model.persistentConfig,
       feedbackModal: feedbackModal(model.feedbackModal, action),
       searchIsFocused: searchIsFocused(model.searchIsFocused, action),
-      searchTerm: searchTerm(model.searchTerm, action)
+      searchTerm: searchTerm(model.searchTerm, action),
+      searchCollectionFilter: searchCollectionFilter(model.searchCollectionFilter, action)
     };
   }
 };
+
+const searchCollectionFilter = (model, action) => {
+  switch(action.type){
+  case "SEARCH_COLLECTION_FILTER":
+    return action.proposed;
+  default:
+    return model;
+  }
+}
 
 const searchTerm = (model, action) => {
   switch(action.type){

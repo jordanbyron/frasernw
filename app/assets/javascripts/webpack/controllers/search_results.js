@@ -1,11 +1,13 @@
 import React from "react";
-import searchResults from "controller_helpers/search_results";
+import { searchResults, selectedCollectionFilter } from "controller_helpers/search_results";
+import { selectCollectionFilter } from "action_creators";
 import _ from "lodash";
 
 const SearchResults = ({model, dispatch}) => {
   if(shouldDisplay(model)){
     return(
       <div id="search_results">
+        <Filters model={model} dispatch={dispatch}/>
         <ul className="search_results">
           {
             searchResults(model).
@@ -21,12 +23,67 @@ const SearchResults = ({model, dispatch}) => {
   }
 }
 
+const Filters = ({model, dispatch}) => {
+  return(
+    <div className="livesearch__customize-container">
+      <CollectionFilter model={model} dispatch={dispatch}/>
+    </div>
+  )
+}
+
+const CollectionFilter = ({model, dispatch}) => {
+  return(
+    <div className="livesearch__filter-group">
+      <span className="livesearch__prefix">
+        { "Show Me: "}
+      </span>
+      <ul className="nav nav-pills" id="livesearch__search-categories">
+        {
+          [
+            "Everything",
+            "Specialists",
+            "Clinics",
+            "Physician Resources",
+            "Patient Info"
+          ].map((label) => {
+            return(
+              <CollectionFilterTab
+                model={model}
+                dispatch={dispatch}
+                key={label}
+                label={label}
+              />
+            );
+          })
+        }
+      </ul>
+    </div>
+  );
+}
+
+const CollectionFilterTab = ({model, dispatch, label}) => {
+  if (selectedCollectionFilter(model) === label){
+    var selectedClassName = " livesearch__search-category--selected"
+  }
+  else {
+    var selectedClassName = "";
+  }
+
+  return(
+    <li className={`livesearch__search-category ${selectedClassName}`}
+      onClick={_.partial(selectCollectionFilter, dispatch, label)}
+    >
+      <a>{ label }</a>
+    </li>
+  );
+};
+
 const resultGroup = (model, group) => {
   return [
     <GroupHeading
       model={model}
-      collectionName={group.collectionName}
-      key={group.collectionName}
+      label={group.label}
+      key={group.label}
     />,
     resultGroupEntries(model, group.records)
   ].pwPipe(_.flatten)
@@ -48,9 +105,9 @@ const shouldDisplay = (model) => {
     model.ui.searchTerm.length > 0;
 };
 
-const GroupHeading = ({model, dispatch, collectionName}) => {
+const GroupHeading = ({model, dispatch, label}) => {
   return(
-    <li className="group">{ _.capitalize(collectionName) }</li>
+    <li className="group">{ label }</li>
   );
 }
 
