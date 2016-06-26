@@ -1,20 +1,26 @@
 import React from "react";
-import { searchResults, selectedCollectionFilter } from "controller_helpers/search_results";
-import { selectCollectionFilter } from "action_creators";
+import {
+  searchResults,
+  selectedCollectionFilter,
+  selectedGeographicFilter
+} from "controller_helpers/search_results";
+import { selectCollectionFilter, selectGeographicFilter } from "action_creators";
 import _ from "lodash";
 
 const SearchResults = ({model, dispatch}) => {
   if(shouldDisplay(model)){
     return(
       <div id="search_results">
-        <Filters model={model} dispatch={dispatch}/>
-        <ul className="search_results">
-          {
-            searchResults(model).
-              map((group) => resultGroup(model, group)).
-              pwPipe(_.flatten)
-          }
-        </ul>
+        <div className="livesearch__inner-results-container">
+          <Filters model={model} dispatch={dispatch}/>
+          <ul className="search_results">
+            {
+              searchResults(model).
+                map((group) => resultGroup(model, group)).
+                pwPipe(_.flatten)
+            }
+          </ul>
+        </div>
       </div>
     );
   }
@@ -27,9 +33,54 @@ const Filters = ({model, dispatch}) => {
   return(
     <div className="livesearch__customize-container">
       <CollectionFilter model={model} dispatch={dispatch}/>
+      <GeographicFilter model={model} dispatch={dispatch}/>
     </div>
-  )
+  );
 }
+
+const GeographicFilter = ({model, dispatch}) => {
+  return(
+    <div className="livesearch__filter-group livesearch__filter-group--scopes">
+      <span className="livesearch__prefix">
+        { "In: "}
+      </span>
+      <ul className="nav nav-pills" id="livesearch__search-categories">
+        {
+          [
+            "My Regional Divisions",
+            "All Divisions"
+          ].map((label) => {
+            return(
+              <GeographicFilterTab
+                model={model}
+                dispatch={dispatch}
+                key={label}
+                label={label}
+              />
+            );
+          })
+        }
+      </ul>
+    </div>
+  );
+};
+
+const GeographicFilterTab = ({model, dispatch, label}) => {
+  if (selectedGeographicFilter(model) === label){
+    var selectedClassName = " livesearch__search-scope--selected"
+  }
+  else {
+    var selectedClassName = "";
+  }
+
+  return(
+    <li className={`livesearch__search-scope ${selectedClassName}`}
+      onClick={_.partial(selectGeographicFilter, dispatch, label)}
+    >
+      <a>{ label }</a>
+    </li>
+  );
+};
 
 const CollectionFilter = ({model, dispatch}) => {
   return(
@@ -132,7 +183,7 @@ const InnerResult = ({record, model}) => {
               join(", ")
           }
         </div>
-        <div className="search_cities">
+        <div className="search_city">
           { record.cityIds.map((id) => model.app.cities[id].name).join(", ") }
         </div>
       </a>

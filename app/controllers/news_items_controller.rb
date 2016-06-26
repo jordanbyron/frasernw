@@ -17,7 +17,6 @@ class NewsItemsController < ApplicationController
         currentUser: FilterTableAppState::CurrentUser.call(
           current_user: current_user
         ),
-        divisions: Denormalized.fetch(:divisions),
         newsItems: Denormalized.generate(:news_items)
       },
       ui: {

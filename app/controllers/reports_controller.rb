@@ -51,7 +51,6 @@ class ReportsController < ApplicationController
         currentUser: FilterTableAppState::CurrentUser.call(
           current_user: current_user
         ),
-        divisions: Denormalized.fetch(:divisions)
       }
     }
 

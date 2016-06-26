@@ -68,7 +68,8 @@ module Denormalized
               isInProgress: item.in_progress,
               isSharedCare: item.shared_care?,
               typeMask: item.type_mask,
-              collectionName: "contentItems"
+              collectionName: "contentItems",
+              searchable: item.searchable
             })
           end
       end

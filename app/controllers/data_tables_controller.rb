@@ -11,7 +11,8 @@ class DataTablesController < ApplicationController
       languages: Denormalized.fetch(:languages),
       cities: Denormalized.fetch(:cities),
       specializations: Denormalized.fetch(:specializations),
-      contentItems: Denormalized.fetch(:content_items)
+      contentItems: Denormalized.fetch(:content_items),
+      divisions: Denormalized.fetch(:divisions)
     })
 
     render text: json, content_type: "application/json"

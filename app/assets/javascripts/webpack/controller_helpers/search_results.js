@@ -32,7 +32,7 @@ export const searchResults = (model) => {
           return {
             label: groupLabels[collectionName],
             records: decoratedRecords.
-              pwPipe((records) => _.sortByOrder(records, _.property("score"), "asc")).
+              pwPipe((records) => _.sortByOrder(records, _.property("score"), "desc")).
               map(_.property("raw")),
             order: groupOrder[collectionName]
           }
@@ -40,7 +40,7 @@ export const searchResults = (model) => {
       });
     }).pwPipe(_.flatten).
     pwPipe((groups) => {
-      return _.sortByOrder(groups, _.property("order"), "desc");
+      return _.sortByOrder(groups, _.property("order"), "asc");
     });
 };
 
@@ -49,7 +49,12 @@ const filters = (model) => {
 
   filters.push((decoratedRecord) => decoratedRecord.score > 0.5)
 
-  if(selectedCollectionFilter(model) === "Physician Resources"){
+  filters.push((decoratedRecord) => {
+    return decoratedRecord.raw.collectionName !== "contentItems" ||
+      decoratedRecord.raw.searchable;
+  })
+
+  if (selectedCollectionFilter(model) === "Physician Resources"){
     filters.push((decoratedRecord) => {
       return _.intersection(
         decoratedRecord.raw.categoryIds,
@@ -58,7 +63,7 @@ const filters = (model) => {
     })
   }
 
-  if(selectedCollectionFilter(model) === "Patient Info"){
+  if (selectedCollectionFilter(model) === "Patient Info"){
     filters.push((decoratedRecord) => {
       return _.includes(
         decoratedRecord.raw.categoryIds,
@@ -67,8 +72,76 @@ const filters = (model) => {
     })
   }
 
+  if (selectedGeographicFilter(model) === "My Regional Divisions"){
+    filters.push((decoratedRecord) => {
+      return !_.includes(
+        ["clinics", "specialists"],
+        decoratedRecord.raw.collectionName
+      ) || inLocalReferralArea(decoratedRecord, model)
+    })
+  }
+  else {
+    filters.push((decoratedRecord) => {
+      return !_.includes(
+        ["clinics", "specialists"],
+        decoratedRecord.raw.collectionName
+      ) || specializationsShownToUser(decoratedRecord, model).pwPipe(_.some)
+    })
+  }
+
+  filters.push((decoratedRecord) => {
+    return !_.includes(
+      ["clinics", "specialists"],
+      decoratedRecord.raw.collectionName
+    ) || notInProgress(decoratedRecord, model)
+  })
+
   return filters;
 }
+
+const notInProgress = (decoratedRecord, model) => {
+  return decoratedRecord.
+    raw.
+    specializationIds.
+    filter((specializationId) => {
+      return _.some(decoratedRecord.raw.divisionIds, (divisionId) => {
+        return model.
+          app.
+          specializations[specializationId].
+          inProgressInDivisionIds.
+          indexOf(divisionId) === -1;
+      })
+    }).pwPipe(_.some)
+};
+
+const specializationsShownToUser = (decoratedRecord, model) => {
+  return decoratedRecord.
+    raw.
+    specializationIds.
+    filter((specializationId) => {
+      return _.some(model.app.currentUser.divisionIds, (divisionId) => {
+        return model.
+          app.
+          specializations[specializationId].
+          inProgressInDivisionIds.
+          indexOf(divisionId) === -1;
+      })
+    })
+};
+
+const inLocalReferralArea = (decoratedRecord, model) => {
+  return _.some(model.app.currentUser.divisionIds, (divisionId) => {
+    return _.some(
+      specializationsShownToUser(decoratedRecord, model),
+      (specializationId) => {
+        return _.intersection(
+          model.app.divisions[divisionId].referralCities[specializationId],
+          decoratedRecord.raw.cityIds
+        ).pwPipe(_.any)
+      }
+    )
+  });
+};
 
 const categoryId = (categoryName, model) => {
   return model.
@@ -156,6 +229,14 @@ export const selectedCollectionFilter = (model) => {
     model,
     ["ui", "searchCollectionFilter"],
     "Everything"
+  )
+}
+
+export const selectedGeographicFilter = (model) => {
+  return _.get(
+    model,
+    ["ui", "searchGeographicFilter"],
+    "My Regional Divisions"
   )
 }
 

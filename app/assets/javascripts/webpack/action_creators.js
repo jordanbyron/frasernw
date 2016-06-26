@@ -276,3 +276,10 @@ export const selectCollectionFilter = (dispatch, label) => {
     proposed: label
   });
 }
+
+export const selectGeographicFilter = (dispatch, label) => {
+  dispatch({
+    type: "SEARCH_GEOGRAPHIC_FILTER",
+    proposed: label
+  });
+}

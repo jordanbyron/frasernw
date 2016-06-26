@@ -28,10 +28,20 @@ const ui = (model = {}, action) => {
       feedbackModal: feedbackModal(model.feedbackModal, action),
       searchIsFocused: searchIsFocused(model.searchIsFocused, action),
       searchTerm: searchTerm(model.searchTerm, action),
-      searchCollectionFilter: searchCollectionFilter(model.searchCollectionFilter, action)
+      searchCollectionFilter: searchCollectionFilter(model.searchCollectionFilter, action),
+      searchGeographicFilter: searchGeographicFilter(model.searchGeographicFilter, action)
     };
   }
 };
+
+const searchGeographicFilter = (model, action) => {
+  switch(action.type){
+  case "SEARCH_GEOGRAPHIC_FILTER":
+    return action.proposed;
+  default:
+    return model;
+  }
+}
 
 const searchCollectionFilter = (model, action) => {
   switch(action.type){
