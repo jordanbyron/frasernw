@@ -8,8 +8,6 @@ class FilterTableAppState < ServiceObject
       respondsWithinSummaryLabels: Denormalized.fetch(:respondsWithinSummaryLabels),
       dayKeys: Schedule::DAY_HASH,
       careProviders: Denormalized.fetch(:healthcare_providers),
-      divisions: Denormalized.fetch(:divisions),
-      referentStatusIcons: Specialist::STATUS_CLASS_HASH.invert,
       tooltips: {
         specialists: Specialist::STATUS_TOOLTIP_HASH.inject({}) do |memo, (k, v)|
           memo.merge(Specialist::STATUS_CLASS_HASH[k] => v)

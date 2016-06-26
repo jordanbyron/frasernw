@@ -12,7 +12,8 @@ class DataTablesController < ApplicationController
       cities: Denormalized.fetch(:cities),
       specializations: Denormalized.fetch(:specializations),
       contentItems: Denormalized.fetch(:content_items),
-      divisions: Denormalized.fetch(:divisions)
+      divisions: Denormalized.fetch(:divisions),
+      referentStatusIcons: Specialist::STATUS_CLASS_HASH.invert
     })
 
     render text: json, content_type: "application/json"

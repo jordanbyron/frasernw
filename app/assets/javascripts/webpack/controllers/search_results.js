@@ -5,6 +5,7 @@ import {
   selectedGeographicFilter
 } from "controller_helpers/search_results";
 import { selectCollectionFilter, selectGeographicFilter } from "action_creators";
+import ReferentStatusIcon from "controllers/referent_status_icon";
 import _ from "lodash";
 
 const SearchResults = ({model, dispatch}) => {
@@ -174,7 +175,10 @@ const InnerResult = ({record, model}) => {
   if (_.includes(["specialists", "clinics"], record.collectionName)){
     return(
       <a href={link(record)}>
-        <div className="search_name">{label(record)}</div>
+        <div className="search_name">
+          <ReferentStatusIcon record={record} model={model}/>
+          <span style={{marginLeft: "5px"}}>{label(record)}</span>
+        </div>
         <div className="search_specialties">
           {
             record.
