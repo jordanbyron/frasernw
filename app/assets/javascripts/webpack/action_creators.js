@@ -283,3 +283,9 @@ export const selectGeographicFilter = (dispatch, label) => {
     proposed: label
   });
 }
+
+export const closeSearch = (dispatch) => {
+  dispatch({
+    type: "CLOSE_SEARCH"
+  });
+}

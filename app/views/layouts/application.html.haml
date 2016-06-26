@@ -74,9 +74,10 @@
 
           - if logged_in?
             %form.navbar-search.pull-right#livesearch
-              %input.span3.search-query#search.icon#navbar_search--query{"type" => "search",
-                "autocomplete" =>"off",
-                "placeholder" => "&#xf002; Search".html_safe}
+              #react_root--search
+                %input.span3.search-query#search.icon#navbar_search--query{"type" => "search",
+                  "autocomplete" =>"off",
+                  "placeholder" => "&#xf002; Search".html_safe}
               #navbar_search--results
               #search_results{style: 'display:none'}
                 .livesearch__inner-results-container

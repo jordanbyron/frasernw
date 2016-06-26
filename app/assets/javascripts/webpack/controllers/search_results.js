@@ -4,7 +4,11 @@ import {
   selectedCollectionFilter,
   selectedGeographicFilter
 } from "controller_helpers/search_results";
-import { selectCollectionFilter, selectGeographicFilter } from "action_creators";
+import {
+  selectCollectionFilter,
+  selectGeographicFilter,
+  closeSearch
+} from "action_creators";
 import ReferentStatusIcon from "controllers/referent_status_icon";
 import _ from "lodash";
 
@@ -109,6 +113,9 @@ const CollectionFilter = ({model, dispatch}) => {
           })
         }
       </ul>
+      <i className="icon-remove pull-right livesearch__close-button"
+        onClick={_.partial(closeSearch, dispatch)}
+      />
     </div>
   );
 }

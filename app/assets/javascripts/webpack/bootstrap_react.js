@@ -1,5 +1,6 @@
 import Template from "controllers/template";
 import SearchResults from "controllers/search_results";
+import SearchBox from "controllers/search_box";
 import Provider from "provider";
 import createLogger from "redux-logger";
 import nextAction from "middlewares/next_action";
@@ -47,13 +48,18 @@ const bootstrapReact = function() {
       )
     }
 
-    const renderSearchTo = document.getElementById("navbar_search--results");
+    const renderSearchResultsTo = document.getElementById("navbar_search--results");
     ReactDOM.render(
       <Provider childKlass={SearchResults} store={store}/>,
-      renderSearchTo
+      renderSearchResultsTo
     )
 
-    setSearchListeners(store.dispatch);
+    const renderSearchBoxTo = document.getElementById("react_root--search");
+    ReactDOM.render(
+      <Provider childKlass={SearchBox} store={store}/>,
+      renderSearchBoxTo
+    )
+    // setSearchListeners(store.dispatch);
 
     window.pathways.globalDataLoaded.done(function(data) {
       integrateLocalStorageData(store.dispatch, data);

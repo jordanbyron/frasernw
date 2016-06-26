@@ -56,6 +56,8 @@ const searchTerm = (model, action) => {
   switch(action.type){
   case "TERM_SEARCHED":
     return action.proposed;
+  case "CLOSE_SEARCH":
+    return "";
   default:
     return model;
   }
