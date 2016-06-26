@@ -29,15 +29,18 @@ const ui = (model = {}, action) => {
       searchIsFocused: searchIsFocused(model.searchIsFocused, action),
       searchTerm: searchTerm(model.searchTerm, action),
       searchCollectionFilter: searchCollectionFilter(model.searchCollectionFilter, action),
-      searchGeographicFilter: searchGeographicFilter(model.searchGeographicFilter, action)
+      searchGeographicFilter: searchGeographicFilter(model.searchGeographicFilter, action),
+      selectedSearchREsult: selectedSearchREsult(model.selectedSearchREsult, action),
     };
   }
 };
 
-const searchGeographicFilter = (model, action) => {
+const selectedSearchResult = (model, action) => {
   switch(action.type){
-  case "SEARCH_GEOGRAPHIC_FILTER":
+  case "SELECT_SEARCH_RESULT":
     return action.proposed;
+  case "CLOSE_SEARCH":
+    return 0;
   default:
     return model;
   }

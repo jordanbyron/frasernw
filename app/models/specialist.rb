@@ -173,15 +173,6 @@ class Specialist < ActiveRecord::Base
     )
   end
 
-  def in_local_referral_area_for
-    Division.all.select do |division|
-      specializations.any? do |specialization|
-        division.specialization_complete?(specialization) &&
-          (division.local_referral_cities(specialization) & cities).any?
-      end
-    end.map(&:id)
-  end
-
   def in_progress
     (
       divisions.length > 0

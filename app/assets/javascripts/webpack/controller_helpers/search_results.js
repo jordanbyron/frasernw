@@ -99,6 +99,14 @@ const filters = (model) => {
   return filters;
 }
 
+export const selectedSearchResult = (model) => {
+  return _.get(
+    model,
+    ["ui", "selectedSearchResult"],
+    0
+  )
+}
+
 const notInProgress = (decoratedRecord, model) => {
   return decoratedRecord.
     raw.

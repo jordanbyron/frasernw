@@ -289,3 +289,10 @@ export const closeSearch = (dispatch) => {
     type: "CLOSE_SEARCH"
   });
 }
+
+export const searchResultsSelected = (dispatch, proposed) => {
+  dispatch({
+    type: "SEARCH_RESULT_SELECTED",
+    proposed: proposed
+  });
+}
