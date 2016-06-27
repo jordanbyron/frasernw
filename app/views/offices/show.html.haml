@@ -16,7 +16,6 @@
         %th{:class => "{sorter: 'blanks_to_bottom'}"} City
     %tbody
       - (@office.specialists).each do |specialist|
-        - next if not specialist.show_in_table?
         %tr
           %td
             %a.ajax{"href" => specialist_path(specialist)}= specialist.name
