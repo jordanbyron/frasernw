@@ -17,7 +17,7 @@
         %th Has Custom Clinic Wait Time
 
       = f.simple_fields_for :all_procedure_specializations,
-        @procedure.all_procedure_specializations.sort_by(&:specialization_name) do |f|
+        @procedure.form_procedure_specializations do |f|
         %tr.procedure_specialization_row
           %td{:style => "white-space: nowrap"}
             = f.hidden_field :specialization_id

@@ -163,6 +163,10 @@ class ProcedureSpecialization < ActiveRecord::Base
   end
 
   def specialization_name
-    specialization.try(:name)
+    specialization.name
+  end
+
+  def specialization_present?
+    specialization.present?
   end
 end
