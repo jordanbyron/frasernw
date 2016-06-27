@@ -13,21 +13,17 @@ import {
 } from "action_creators";
 import ReferentStatusIcon from "controllers/referent_status_icon";
 import _ from "lodash";
+import ExpandingContainer from "component_helpers/expanding_container";
 
 const SearchResultsDropdown = ({model, dispatch}) => {
-  if(shouldDisplay(model)){
-    return(
-      <div id="search_results">
-        <div className="livesearch__inner-results-container">
-          <Filters model={model} dispatch={dispatch}/>
-          <SearchResults model={model} dispatch={dispatch}/>
-        </div>
+  return(
+    <ExpandingContainer expanded={shouldDisplay(model)} containerId="search_results">
+      <div className="livesearch__inner-results-container">
+        <Filters model={model} dispatch={dispatch}/>
+        <SearchResults model={model} dispatch={dispatch}/>
       </div>
-    );
-  }
-  else {
-    return <noscript/>
-  }
+    </ExpandingContainer>
+  )
 }
 
 const SearchResults = ({model, dispatch}) => {
@@ -182,8 +178,7 @@ const key = (record) => {
 };
 
 const shouldDisplay = (model) => {
-  return true &&
-    model.ui.searchTerm &&
+  return !_.isUndefined(model.ui.searchTerm) &&
     model.ui.searchTerm.length > 0;
 };
 

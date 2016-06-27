@@ -223,7 +223,7 @@ const toSearch = (model) => {
 
 const decorateWithScore = (record, model) => {
   return {
-    score: score(model.ui.searchTerm, searchString(record), 0.5),
+    score: score((model.ui.searchTerm || ""), searchString(record), 0.5),
     raw: record
   };
 };
