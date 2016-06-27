@@ -15,16 +15,49 @@ import ReferentStatusIcon from "controllers/referent_status_icon";
 import _ from "lodash";
 import ExpandingContainer from "component_helpers/expanding_container";
 
-const SearchResultsDropdown = ({model, dispatch}) => {
-  return(
-    <ExpandingContainer expanded={shouldDisplay(model)} containerId="search_results">
-      <div className="livesearch__inner-results-container">
-        <Filters model={model} dispatch={dispatch}/>
-        <SearchResults model={model} dispatch={dispatch}/>
-      </div>
-    </ExpandingContainer>
-  )
+const SearchResultsDropdown = React.createClass({
+  componentDidUpdate: function() {
+    if(shouldDisplay(this.props.model)){
+      disablePageScroll()
+    }
+    else {
+      enablePageScroll()
+    }
+  },
+  render: function() {
+    return(
+      <ExpandingContainer expanded={shouldDisplay(this.props.model)}
+        containerId="search_results"
+        style={{maxHeight: maxHeight()}}
+      >
+        <div className="livesearch__inner-results-container">
+          <Filters model={this.props.model} dispatch={this.props.dispatch}/>
+          <SearchResults model={this.props.model} dispatch={this.props.dispatch}/>
+        </div>
+      </ExpandingContainer>
+    );
+  }
+})
+
+const maxHeight = () => {
+  return $(window).height() -
+    $("#main-nav").offset().top -
+    $("#main-nav").height();
 }
+
+const disablePageScroll = () => {
+  $("html").css("height", "100%");
+  $("body").css("height", "100%");
+  $("body").css("padding-bottom", "0px");
+  $("body").css("overflow", "hidden");
+}
+const enablePageScroll = () => {
+  $("html").css("height", "");
+  $("body").css("height", "");
+  $("body").css("padding-bottom", "");
+  $("body").css("overflow", "");
+}
+
 
 const SearchResults = ({model, dispatch}) => {
   if(searchResults(model).pwPipe(_.some)){

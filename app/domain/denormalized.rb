@@ -264,7 +264,8 @@ module Denormalized
           name: hospital.name,
           address: hospital.address.try(:address),
           mapUrl: hospital.address.try(:map_url),
-          phoneAndFax: hospital.phone_and_fax
+          phoneAndFax: hospital.phone_and_fax,
+          collectionName: "hospitals"
         })
       end
     end,
