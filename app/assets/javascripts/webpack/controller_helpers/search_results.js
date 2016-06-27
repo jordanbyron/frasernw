@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { memoizePerRender } from "utils";
 
-export const searchResults = (model) => {
+export const searchResults = ((model) => {
   return toSearch(model).
     map((record) => decorateWithScore(record, model)).
     filter((decoratedRecord) => {
@@ -53,7 +53,7 @@ export const searchResults = (model) => {
 
       return groups;
     });
-};
+}).pwPipe(memoizePerRender);
 
 const filters = (model) => {
   let filters = []

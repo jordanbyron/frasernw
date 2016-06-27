@@ -14,25 +14,40 @@ import {
 import ReferentStatusIcon from "controllers/referent_status_icon";
 import _ from "lodash";
 
-const SearchResults = ({model, dispatch}) => {
+const SearchResultsDropdown = ({model, dispatch}) => {
   if(shouldDisplay(model)){
     return(
       <div id="search_results">
         <div className="livesearch__inner-results-container">
           <Filters model={model} dispatch={dispatch}/>
-          <ul className="search_results">
-            {
-              searchResults(model).
-                map((group) => resultGroup(model, group)).
-                pwPipe(_.flatten)
-            }
-          </ul>
+          <SearchResults model={model} dispatch={dispatch}/>
         </div>
       </div>
     );
   }
   else {
     return <noscript/>
+  }
+}
+
+const SearchResults = ({model, dispatch}) => {
+  if(searchResults(model).pwPipe(_.some)){
+    return(
+      <ul className="search_results">
+        {
+          searchResults(model).
+            map((group) => resultGroup(model, group)).
+            pwPipe(_.flatten)
+        }
+      </ul>
+    )
+  }
+  else {
+    return(
+      <ul className="search_results">
+        <li className="empty">No Results</li>
+      </ul>
+    );
   }
 }
 
@@ -256,4 +271,4 @@ const label = (record) => {
   }
 }
 
-export default SearchResults;
+export default SearchResultsDropdown;
