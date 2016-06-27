@@ -19,10 +19,10 @@ export const searchResults = (model) => {
               return _.map(categories, (decoratedRecords, id) => {
                 return {
                   label: model.app.contentCategories[id].fullName,
-                  records: decoratedRecords.
+                  decoratedRecords: decoratedRecords.
                     pwPipe((records) => {
                       return _.sortByOrder(records, _.property("score"), "desc");
-                    }).map(_.property("raw")),
+                    }),
                   order: groupOrder["contentItems"]
                 };
               })
@@ -31,9 +31,8 @@ export const searchResults = (model) => {
         else {
           return {
             label: groupLabels[collectionName],
-            records: decoratedRecords.
-              pwPipe((records) => _.sortByOrder(records, _.property("score"), "desc")).
-              map(_.property("raw")),
+            decoratedRecords: decoratedRecords.
+              pwPipe((records) => _.sortByOrder(records, _.property("score"), "desc")),
             order: groupOrder[collectionName]
           }
         }
@@ -41,6 +40,18 @@ export const searchResults = (model) => {
     }).pwPipe(_.flatten).
     pwPipe((groups) => {
       return _.sortByOrder(groups, _.property("order"), "asc");
+    }).pwPipe((groups) => {
+      let index = 0;
+
+      groups.forEach((group) => {
+        group.decoratedRecords.forEach((decoratedRecord) => {
+          decoratedRecord.index = index;
+          index++
+          return decoratedRecord;
+        })
+      })
+
+      return groups;
     });
 };
 
@@ -246,6 +257,17 @@ export const selectedGeographicFilter = (model) => {
     ["ui", "searchGeographicFilter"],
     "My Regional Divisions"
   )
+}
+
+export const link = (record) => {
+  switch(record.collectionName){
+  case "procedures":
+    return `/areas_of_practice/${record.id}`;
+  case "specializations":
+    return `/specialties/${record.id}`;
+  default:
+    return `/${_.snakeCase(record.collectionName)}/${record.id}`;
+  }
 }
 
 const score = (string1, string2, fuzziness) => {

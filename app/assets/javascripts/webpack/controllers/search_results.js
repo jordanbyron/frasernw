@@ -2,7 +2,9 @@ import React from "react";
 import {
   searchResults,
   selectedCollectionFilter,
-  selectedGeographicFilter
+  selectedGeographicFilter,
+  selectedSearchResult,
+  link
 } from "controller_helpers/search_results";
 import {
   selectCollectionFilter,
@@ -144,13 +146,19 @@ const resultGroup = (model, group) => {
       label={group.label}
       key={group.label}
     />,
-    resultGroupEntries(model, group.records)
+    resultGroupEntries(model, group.decoratedRecords)
   ].pwPipe(_.flatten)
 };
 
-const resultGroupEntries = (model, records) => {
-  return records.map((record) => {
-    return <Result model={model} record={record} key={key(record)}/>
+const resultGroupEntries = (model, decoratedRecords) => {
+  return decoratedRecords.map((decoratedRecord) => {
+    return(
+      <Result
+        model={model}
+        decoratedRecord={decoratedRecord}
+        key={key(decoratedRecord.raw)}
+      />
+    );
   })
 }
 
@@ -170,12 +178,21 @@ const GroupHeading = ({model, dispatch, label}) => {
   );
 }
 
-const Result = ({model, dispatch, record}) => {
+const Result = ({model, dispatch, decoratedRecord}) => {
   return(
-    <li className="search-result">
-      <InnerResult record={record} model={model}/>
+    <li className={resultClassname(decoratedRecord, model)}>
+      <InnerResult record={decoratedRecord.raw} model={model}/>
     </li>
   );
+}
+
+const resultClassname = (decoratedRecord, model) => {
+  if(decoratedRecord.index === selectedSearchResult(model)){
+    return "search-result selected";
+  }
+  else {
+    return "search-result"
+  }
 }
 
 const InnerResult = ({record, model}) => {
@@ -222,10 +239,6 @@ const InnerResult = ({record, model}) => {
       </a>
     );
   }
-}
-
-const link = (record) => {
-  return `/${record.collectionName}/${record.id}`;
 }
 
 const label = (record) => {

@@ -290,7 +290,7 @@ export const closeSearch = (dispatch) => {
   });
 }
 
-export const searchResultsSelected = (dispatch, proposed) => {
+export const searchResultSelected = (dispatch, proposed) => {
   dispatch({
     type: "SEARCH_RESULT_SELECTED",
     proposed: proposed

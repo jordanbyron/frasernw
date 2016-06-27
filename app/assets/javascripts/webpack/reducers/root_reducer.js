@@ -30,17 +30,26 @@ const ui = (model = {}, action) => {
       searchTerm: searchTerm(model.searchTerm, action),
       searchCollectionFilter: searchCollectionFilter(model.searchCollectionFilter, action),
       searchGeographicFilter: searchGeographicFilter(model.searchGeographicFilter, action),
-      selectedSearchREsult: selectedSearchREsult(model.selectedSearchREsult, action),
+      selectedSearchResult: selectedSearchResult(model.selectedSearchResult, action),
     };
   }
 };
 
 const selectedSearchResult = (model, action) => {
   switch(action.type){
-  case "SELECT_SEARCH_RESULT":
+  case "SEARCH_RESULT_SELECTED":
     return action.proposed;
   case "CLOSE_SEARCH":
     return 0;
+  default:
+    return model;
+  }
+}
+
+const searchGeographicFilter = (model, action) => {
+  switch(action.type){
+  case "SEARCH_GEOGRAPHIC_FILTER":
+    return action.proposed;
   default:
     return model;
   }
