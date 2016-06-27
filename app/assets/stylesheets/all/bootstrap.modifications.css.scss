@@ -49,18 +49,18 @@
 
 
       input.icon::-webkit-input-placeholder {
-          font-family:'FontAwesome';
+          font-family:'FontAwesome', 'Helvetica Neue', sans-serif;
       }
       input.icon::-moz-placeholder {
-          font-family:'FontAwesome';
+          font-family:'FontAwesome', 'Helvetica Neue', sans-serif;
       }
       input.icon::-ms-input-placeholder {
-          font-family:'FontAwesome';
+          font-family:'FontAwesome', 'Helvetica Neue', sans-serif;
       }
 
       .search-query, .search-query:focus
       {
-        font-family: Bitter;
+        font-family: "Helvetica Neue", sans-serif;
         font-size: 12px;
         border-radius: 4px;
         border: none;
@@ -538,7 +538,7 @@
     padding: 8px;
     margin-bottom: 8px;
   }
-  
+
   /* BUTTONS */
 
   .btn-group
