@@ -5,6 +5,9 @@ CR = Change Request item
 Local-only = Changes not reflected in Source Code
 Backend Maintenance = Change is not user facing
 
+## [2016-07-02] [Since 2016-06-25 Integration]
+
+
 ## [2016-06-11] [Since 2016-06-04 Integration]
 
 
