@@ -255,7 +255,7 @@ const InnerResult = ({record, model}) => {
           }
         </div>
         <div className="search_city">
-          { record.cityIds.map((id) => model.app.cities[id].name).join(", ") }
+          { cities(record).map((id) => model.app.cities[id].name).join(", ") }
         </div>
       </a>
     );
@@ -281,6 +281,17 @@ const InnerResult = ({record, model}) => {
         <div className="search_name full_width">{label(record)}</div>
       </a>
     );
+  }
+}
+
+const cities = (record) => {
+  if (record.collectionName === "clinics" ||
+    (record.respondedToSurvey && record.isAvailable)){
+      
+    return record.cityIds;
+  }
+  else {
+    return [];
   }
 }
 

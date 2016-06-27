@@ -113,7 +113,10 @@ module Denormalized
             teleserviceFeeTypes: specialist.
               teleservices.
               select(&:offered?).
-              map(&:service_type)
+              map(&:service_type),
+            respondedToSurvey: !specialist.not_responded? &&
+              !specialist.purposely_not_yet_surveyed?,
+            isAvailable: !specialist.not_available?
           })
         end
       end
