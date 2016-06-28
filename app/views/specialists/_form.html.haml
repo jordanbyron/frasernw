@@ -49,6 +49,7 @@
   .no-print
     = f.input :categorization_mask,
       as: :select,
+      hint: @form_modifier.categorization_hint,
       collection: SpecialistCategorizationOptions.call(specialist: @specialist, default_divisions: @form_modifier.divisions, built_specialization: @specialization),
       label_method: :last,
       value_method: :first,

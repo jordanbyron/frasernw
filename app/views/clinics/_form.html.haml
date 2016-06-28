@@ -1,5 +1,5 @@
 - if @review_item.present?
-  %script{"type" => "text/javascript"}
+  %script{ type: "text/javascript" }
     :plain
       // pass variables to the review script
       window.pathways = window.pathways || {};
@@ -14,7 +14,7 @@
   = javascript_include_tag "views/form_review"
 
 - if @specialization
-  %script{"type" => "text/javascript"}
+  %script{ type: "text/javascript" }
     :plain
       $(document).ready(function()
       {
@@ -25,22 +25,41 @@
 - if @form_modifier.token_edit?
   .alert.alert-info
     %h3 You are editing #{@clinic.name}'s entry in Pathways.
-    %p.space.no_indent If you have any questions while editing, please contact #{ @clinic.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ').html_safe }.
-    %p.space.no_indent This database exists to make our practices and your clinic more efficient. By providing the information requested below you are making it easier for family doctors to find your clinic, ensuring that the scope of your clinic is fully understood, and guiding offices in providing you with the correct information when making referrals.
-    %p.space.no_indent Unless otherwise indicated, all provided information will be available to all users of Pathways.
+    %p.space.no_indent
+      If you have any questions while editing, please contact
+      #{ @clinic.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ').html_safe }.
+    %p.space.no_indent
+      This database exists to make our practices and your clinic more
+      efficient. By providing the information requested below you are making it
+      easier for family doctors to find your clinic, ensuring that the scope of
+      your clinic is fully understood, and guiding offices in providing you
+      with the correct information when making referrals.
+    %p.space.no_indent
+      Unless otherwise indicated, all provided information will be available to
+      all users of Pathways.
 - elsif @form_modifier.admin_review?
   = review_warning(@review_item)
 - elsif @form_modifier.admin_rereview?
   = rereview_warning(@review_item)
 
-= simple_nested_form_for @clinic, :url => {:controller => params[:controller], :action => @form_modifier.form_action}, :method => @form_modifier.method, :html => { :class => "form-horizontal ajax clinic_form" } do |f|
+= simple_nested_form_for @clinic,
+  url: { controller: params[:controller],
+  action: @form_modifier.form_action },
+  method: @form_modifier.method,
+  html: { class: "form-horizontal clinic_form" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
   %h3 General Information
   = f.input :name
   .no-print
-    = f.input :categorization_mask, as: :select, collection: Clinic::CATEGORIZATION_LABELS, label_method: :last, value_method: :first, :include_blank => false
+    = f.input :categorization_mask,
+      as: :select,
+      hint: @form_modifier.categorization_hint,
+      collection: Clinic::CATEGORIZATION_LABELS,
+      label_method: :last,
+      value_method: :first,
+      include_blank: false
   .no-print
     = f.association :specializations,
       as: :check_boxes,
@@ -50,7 +69,7 @@
     - if @form_modifier.show_comment_boxes?
       = f.input :specializations_comments,
         label: @form_modifier.specialization_comments_label,
-        input_html: {value: ""},
+        input_html: { value: "" },
         as: :text
 
   #section_contact
@@ -64,42 +83,55 @@
     .tabbable.location_tabs
       %ul.nav.nav-tabs
         - clocs.each_with_index do |cl, index|
-          = tablist_item active: index == 0, emphasized: cl.has_data?, class: ["clinic_location_#{index}"] do
-            %a{"href" => "#location_tab_#{index}", "data-toggle" => "tab"}
+          = tablist_item active: index == 0,
+            emphasized: cl.has_data?,
+            class: ["clinic_location_#{index}"] do
+            %a{ href: "#location_tab_#{index}", "data-toggle" => "tab"}
               %span
                 = "Location #{index+1}"
 
     .tab-content
       - index = 0
-      = f.simple_fields_for :clinic_locations, clocs, :nested_wrapper => false do |cl|
+      = f.simple_fields_for :clinic_locations,
+        clocs,
+        nested_wrapper: false do |cl|
         - cloc = clocs[index]
-        .tab-pane{:class => (index == 0) ? "active" : "", :id => "location_tab_#{index}"}
+        .tab-pane{ class: (index == 0) ? "active" : "",
+          id: "location_tab_#{index}" }
           %h4.print-only= "Location #{index+1}"
-          .control-group.no-print{style: (!cloc.empty? && @form_modifier.token_edit? ? "visibility: hidden; position: absolute;" : "")}
-            = cl.input :location_is, as: :radio_buttons, collection: ClinicLocation::LOCATION_IS_OPTIONS, label_method: :last, value_method: :first
-          %div{:class => "numbers_#{index}"}
+          .control-group.no-print{ style: (!cloc.empty? && @form_modifier.token_edit? ? "visibility: hidden; position: absolute;" : "") }
+            = cl.input :location_is,
+              as: :radio_buttons,
+              collection: ClinicLocation::LOCATION_IS_OPTIONS,
+              label_method: :last,
+              value_method: :first
+          %div{ class: "numbers_#{index}" }
             = cl.input :phone do
-              = cl.input_field :phone, :class => "span3"
+              = cl.input_field :phone, class: "span3"
               .span1
                 ext:
-              = cl.input_field :phone_extension, :class => "span1"
-            = cl.input :fax, :input_html => { :class => "span3" }
+              = cl.input_field :phone_extension, class: "span1"
+            = cl.input :fax, input_html: { class: "span3" }
             = cl.input :contact_details
-            = cl.input :email, :input_html => { :class => "span3" }, :hint => "For physician office use only"
-            = cl.input :public_email, :input_html => { :class => "span3" }, :hint => "Okay for patient use to contact your office"
+            = cl.input :email,
+              input_html: { class: "span3" },
+              hint: "For physician office use only"
+            = cl.input :public_email,
+              input_html: { class: "span3" },
+              hint: "Okay for patient use to contact your office"
             = cl.input :url,
-              :input_html => { :class => "span3" },
+              input_html: { class: "span3" },
               hint: "Remember 'http://'"
           .control-group.print-only
             %label.control-label Address
             .controls
               - text_address = cloc.location.resolved_address.address if cloc.location.present? && cloc.location.resolved_address.present?
-              %input{"type" => "text", "value" => "#{text_address}"}
-          = cl.simple_fields_for :location, :nested_wrapper => false do |l|
-            %div{:class => "address_#{index}"}
+              %input{ type: "text", value: "#{text_address}" }
+          = cl.simple_fields_for :location, nested_wrapper: false do |l|
+            %div{ class: "address_#{index}" }
               = l.simple_fields_for :address do |a|
                 = a.input :suite,
-                  input_html: { :class => "span1" },
+                  input_html: { class: "span1" },
                   disabled: @form_modifier.restrict_editing?
                 = a.input :address1,
                   disabled: @form_modifier.restrict_editing?
@@ -111,17 +143,17 @@
                   include_blank: true,
                   disabled: @form_modifier.restrict_editing?
                 = a.input :postalcode,
-                  :input_html => { :class => "span1" },
+                  input_html: { class: "span1" },
                   disabled: @form_modifier.restrict_editing?
-            %div{:class => "hospital_#{index}"}
+            %div{ class: "hospital_#{index}" }
               = l.association :hospital_in,
                 as: :select,
                 collection: Hospital.all_formatted_for_select(@form_modifier.scope),
                 include_blank: true,
                 disabled: @form_modifier.restrict_editing?
-            %div{:class => "details_#{index}"}
+            %div{ class: "details_#{index}" }
               = l.input :suite_in,
-                input_html: { :class => "span1" },
+                input_html: { class: "span1" },
                 disabled: @form_modifier.restrict_editing?
               = l.input :details_in,
                 disabled: @form_modifier.restrict_editing?
@@ -130,51 +162,72 @@
                 label: "If you have any updates to this location, or the location has closed, please provide details here.",
                 input_html: {value: ""},
                 as: :text
-          %div{:class => "universal_#{index}"}
-            = cl.input :location_opened, as: :select, collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a), prompt: "Select ..."
+          %div{ class: "universal_#{index}" }
+            = cl.input :location_opened,
+              as: :select,
+              collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a),
+              prompt: "Select ..."
 
             - Sectorable::SECTORS.each do |sector|
               - if sector == :public && cl.object.new_record?
                 = cl.input sector,
                   label: sector.to_s.capitalize,
                   as: :boolean,
-                  input_html: { class: "sector_type_input", checked: true}
+                  input_html: { class: "sector_type_input", checked: true }
               - else
                 = cl.input sector,
                   label: sector.to_s.capitalize,
                   as: :boolean,
                   input_html: { class: "sector_type_input" }
 
-            = cl.input :wheelchair_accessible_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
+            = cl.input :wheelchair_accessible_mask,
+              as: :radio_buttons,
+              collection: Clinic::BOOLEAN_HASH,
+              label_method: :last,
+              value_method: :first
 
             %h4 Location schedule
 
-            = cl.simple_fields_for :schedule, :nested_wrapper => false do |s|
-              - [:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday].each do |day|
-                = s.simple_fields_for day, :nested_wrapper => false do |d|
+            = cl.simple_fields_for :schedule, nested_wrapper: false do |s|
+              - [:monday,
+                :tuesday,
+                :wednesday,
+                :thursday,
+                :friday,
+                :saturday,
+                :sunday].each do |day|
+                = s.simple_fields_for day, nested_wrapper: false do |d|
                   .changed_wrapper
-                    = d.input :scheduled, :label => day.to_s.capitalize_first_letter, wrapper: :bootstrap_tight do
-                      = d.input_field :scheduled, :class => "scheduled span1"
+                    = d.input :scheduled,
+                      label: day.to_s.capitalize_first_letter,
+                      wrapper: :bootstrap_tight do
+                      = d.input_field :scheduled, class: "scheduled span1"
                       .hours.no-print
                         .changed_wrapper
                           .from from
-                          = d.input_field :from, :class => "auto no-print", :minute_step => 15, :include_blank => true
+                          = d.input_field :from,
+                            class: "auto no-print",
+                            minute_step: 15,
+                            include_blank: true
                         .changed_wrapper
                           .to to
-                          = d.input_field :to, :class => "auto no-print", :minute_step => 15, :include_blank => true
+                          = d.input_field :to,
+                            class: "auto no-print",
+                            minute_step: 15,
+                            include_blank: true
                       .print-only
                         from:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to:
 
-          %script{"type" => "text/javascript"}
+          %script{ type: "text/javascript" }
             :plain
               $(document).ready( clinic_address_location_changed(#{index}) );
           - index += 1
 
-    %script{"type" => "text/javascript"}
+    %script{ type: "text/javascript" }
       :plain
         $(".scheduled").each(scheduled_changed)
 
-    %script{"type" => "text/javascript"}
+    %script{ type: "text/javascript" }
       :plain
         $(document).ready( $(".chzn-select").chosen() );
 
@@ -186,28 +239,41 @@
 
       %h3 Senior Office Contact Information
       .alert.alert-info
-        %p.no_indent Please note: the following Senior office contact information is never shown on Pathways to users.
-        %p.space.no_indent It will only be used for contact by Pathways administrators related to keeping your office's information up-to-date.
+        %p.no_indent
+          Please note: the following Senior office contact information is never
+          shown on Pathways to users.
+        %p.space.no_indent
+          It will only be used for contact by Pathways administrators related
+          to keeping your office's information up-to-date.
       = f.input :contact_name
       = f.input :contact_email
       = f.input :contact_phone
       - if current_user.as_admin_or_super?
-        = f.input :contact_notes, hint: "Include contact's role (MOA, etc.) and anything else we should know."
+        = f.input :contact_notes,
+          hint: "Include contact's role (MOA, etc.) and anything else we should know."
 
   #section_status
 
     %hr
 
     %h3 Status
-    = f.input :status_mask, as: :select, collection: Clinic::STATUS_HASH, label_method: :last, value_method: :first
+    = f.input :status_mask,
+      as: :select,
+      collection: Clinic::STATUS_HASH,
+      label_method: :last,
+      value_method: :first
     #availability.no-print
-      = f.input :unavailable_from, label: false, wrapper: false, input_html: { class: "unavailable_from", style: "display:none" }
-      %script{"type" => "text/javascript"}
+      = f.input :unavailable_from,
+        label: false,
+        wrapper: false,
+        input_html: { class: "unavailable_from",
+        style: "display:none" }
+      %script{ type: "text/javascript" }
         :plain
           $("#specialist_status_mask").each( status_changed );
     = f.input :status_details
     = f.input :limitations
-    = f.association :languages, as: :check_boxes, :item_wrapper_class => 'inline'
+    = f.association :languages, as: :check_boxes, item_wrapper_class: 'inline'
     = f.input :interpreter_available
 
   #section_aop
@@ -215,9 +281,10 @@
     %hr
 
     %h3 Areas of Practice
-    = f.input :required_investigations, :hint => "eg. XRs, MRIs, scans, blood work, etc."
+    = f.input :required_investigations,
+      hint: "eg. XRs, MRIs, scans, blood work, etc."
 
-    %hr{ "style" => "visibility:hidden" }
+    %hr{ style: "visibility:hidden" }
 
     %h4 Pertinent Areas of Practice/Expertise
 
@@ -230,7 +297,9 @@
           .span4
             %strong Referrals accepted in the following areas of practice.
           .span4
-            %strong Additional information/investigations required for the specified area of practice.
+            %strong
+              Additional information/investigations required for the specified
+              area of practice.
           .span2
             %strong Lag Time
           .span2
@@ -238,20 +307,39 @@
 
         - specialization_focuses[:focuses].each do |f|
           .row.spaced
-            .span4.changed_wrapper{:class => "pad#{f[:offset]}"}
-              %label{"for" => "focuses_mapped_#{f[:id]}"}
-                -# send 0 as unchecked value
+            .span4.changed_wrapper{ class: "pad#{f[:offset]}" }
+              %label{ for: "focuses_mapped_#{f[:id]}" }
                 = hidden_field_tag "focuses_mapped[#{f[:id]}]",
                   0,
                   id: "focuses_mapped_#{f[:id]}_hidden"
-                = check_box_tag "focuses_mapped[#{f[:id]}]", 1, f[:mapped], :class => "focus"
+                = check_box_tag "focuses_mapped[#{f[:id]}]",
+                  1,
+                  f[:mapped],
+                  class: "focus"
                 = f[:name]
-            .span4.changed_wrapper= text_field_tag "focuses_investigations[#{f[:id]}]", f[:investigations], :class => "span4"
+            .span4.changed_wrapper
+              = text_field_tag "focuses_investigations[#{f[:id]}]",
+                f[:investigations],
+                class: "span4"
             - if f[:custom_wait_time]
-              .span2.changed_wrapper.lagtime= select_tag "focuses_lagtime[#{f[:id]}]", options_from_collection_for_select(Clinic::LAGTIME_LABELS, :first, :last, f[:lagtime]), :class => "span2", :include_blank => true
-              .span2.changed_wrapper.waittime= select_tag "focuses_waittime[#{f[:id]}]", options_from_collection_for_select(Clinic::WAITTIME_LABELS, :first, :last, f[:waittime]), :class => "span2", :include_blank => true
+              .span2.changed_wrapper.lagtime
+                = select_tag "focuses_lagtime[#{f[:id]}]",
+                  options_from_collection_for_select(Clinic::LAGTIME_LABELS, 
+                  first,
+                  :last,
+                  f[:lagtime]),
+                  class: "span2",
+                  include_blank: true
+              .span2.changed_wrapper.waittime
+                = select_tag "focuses_waittime[#{f[:id]}]",
+                  options_from_collection_for_select(Clinic::WAITTIME_LABELS,
+                  :first,
+                  :last,
+                  f[:waittime]),
+                  class: "span2",
+                  include_blank: true
 
-    %hr{ "style" => "visibility:hidden" }
+    %hr{ style: "visibility:hidden" }
 
     = f.input :not_performed, as: :text
 
@@ -265,7 +353,13 @@
     = f.input :referral_other_details
     = f.input :referral_details
 
-    = f.input :referral_form_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first, :label => "Does this clinic have a referral form?", :hint => @form_modifier.token_edit? ? "If you would like to add or correct any referral forms, please email them to #{ @clinic.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ') }".html_safe : ""
+    = f.input :referral_form_mask,
+      as: :radio_buttons,
+      collection: Clinic::BOOLEAN_HASH,
+      label_method: :last,
+      value_method: :first,
+      label: "Does this clinic have a referral form?",
+      hint: @form_modifier.token_edit? ? "If you would like to add or correct any referral forms, please email them to #{ @clinic.owners.map{ |owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ') }".html_safe : ""
 
     - if @form_modifier.token_edit? && @clinic.referral_form_mask == 1 && @clinic.referral_forms.reject{ |referral_form| referral_form.form.blank? }.present?
 
@@ -276,11 +370,22 @@
             - @clinic.referral_forms.each do |referral_form|
               - next if not referral_form.form.present?
               - type = referral_form.form_content_type.split('/').last
-              %li= link_to "#{referral_form.description} (#{type})", referral_form.form.url, :target => "_blank"
+              %li
+                = link_to "#{referral_form.description} (#{type})",
+                  referral_form.form.url,
+                  target: "_blank"
 
-    = f.input :lagtime_mask, as: :select, collection: Clinic::LAGTIME_LABELS, label_method: :last, value_method: :first
+    = f.input :lagtime_mask,
+      as: :select,
+      collection: Clinic::LAGTIME_LABELS,
+      label_method: :last,
+      value_method: :first
 
-    = f.input :waittime_mask, as: :select, collection: Clinic::WAITTIME_LABELS, label_method: :last, value_method: :first
+    = f.input :waittime_mask,
+      as: :select,
+      collection: Clinic::WAITTIME_LABELS,
+      label_method: :last,
+      value_method: :first
 
     %label Our clinic will respond to referral requests:
     = f.input :respond_by_fax, as: :boolean, wrapper: :bootstrap_tight
@@ -288,7 +393,11 @@
     = f.input :respond_by_mail, as: :boolean, wrapper: :bootstrap_tight
     = f.input :respond_to_patient, as: :boolean
 
-    = f.input :patient_can_book_mask, as: :radio_buttons, collection: Clinic::BOOLEAN_HASH, label_method: :last, value_method: :first
+    = f.input :patient_can_book_mask,
+      as: :radio_buttons,
+      collection: Clinic::BOOLEAN_HASH,
+      label_method: :last,
+      value_method: :first
 
     = f.input :red_flags, as: :text
 
@@ -307,9 +416,12 @@
     %h3 Information for Patients
 
     .alert.alert-info
-      %p.no_indent Please note: the following information will be made available to patients when the 'Print Information for Patients' button is used.
+      %p.no_indent
+        Please note: the following information will be made available to
+        patients when the 'Print Information for Patients' button is used.
 
-    = f.input :patient_instructions, hint: "e.g. call two days in advance to confirm, bring a list of medications."
+    = f.input :patient_instructions,
+      hint: "e.g. call two days in advance to confirm, bring a list of medications."
     = f.input :cancellation_policy
 
   #section_associations
@@ -330,30 +442,51 @@
           .row.spaced
             .span1.no-print Specialist?
             .span2 Name
-            .span5 Area of focus (if not the same for all physicians working in the clinic).
+            .span5
+              Area of focus (if not the same for all physicians working in the
+              clinic).
           = clf.simple_fields_for :attendances do |i|
             .row.spaced
               .span1.no-print
-                = i.input :is_specialist, label: false, wrapper: :no_wrapper, input_html: { class: "is_specialist span1 no-print" }
+                = i.input :is_specialist,
+                  label: false,
+                  wrapper: :no_wrapper,
+                  input_html: { class: "is_specialist span1 no-print" }
               .span2
-                = i.association :specialist, as: :select, label: false, collection: @clinic_specialists, prompt: 'Select ...', wrapper: :no_wrapper, input_html: { class: "specialist_list span2 no-print force-print" }
-                = i.input :freeform_firstname, label: false, wrapper: :no_wrapper, input_html: { class: "freeform span2", style: "display:none" }
+                = i.association :specialist,
+                  as: :select,
+                  label: false,
+                  collection: @clinic_specialists,
+                  prompt: 'Select ...',
+                  wrapper: :no_wrapper,
+                  input_html: { class: "specialist_list span2 no-print force-print" }
+                = i.input :freeform_firstname,
+                  label: false,
+                  wrapper: :no_wrapper,
+                  input_html: { class: "freeform span2",
+                  style: "display:none" }
               .span5
-                = i.input :area_of_focus, label: false, wrapper: :no_wrapper, input_html: { class: "span5" }
+                = i.input :area_of_focus,
+                  label: false,
+                  wrapper: :no_wrapper,
+                  input_html: { class: "span5" }
               .spanhalf.no-print
                 = i.hidden_field :_destroy
-                = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe, :class => "spanhalf"
+                = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe,
+                  class: "spanhalf"
 
           .row.no-print
-            = clf.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another physician", :attendances, class: "btn offset3")
+            = clf.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another physician",
+              :attendances,
+              class: "btn offset3")
 
-      %script{"type" => "text/javascript"}
+      %script{ type: "text/javascript" }
         :plain
           $(".is_specialist").each( hideShowPhysicians )
 
     #section_healthcare_providers
 
-      %hr{ "style" => "visibility:hidden" }
+      %hr{ style: "visibility:hidden" }
 
       = f.association :healthcare_providers,
         as: :check_boxes,
@@ -365,7 +498,12 @@
 
       %h3 Deprecated fields
       %h4
-        These are old form fields which may have information in them than now needs to be transferred to fields of the new form. These deprecated fields will not show up on the final site, and are here temporarily to avoid losing previously entered data. As you transfer this information to the other form fields, you might want to delete it from here to avoid confusion.
+        These are old form fields which may have information in them than now
+        needs to be transferred to fields of the new form. These deprecated
+        fields will not show up on the final site, and are here temporarily to
+        avoid losing previously entered data. As you transfer this information
+        to the other form fields, you might want to delete it from here to
+        avoid confusion.
       = f.input :status
       = f.input :responds_via
       = f.input :interest
@@ -384,20 +522,20 @@
     - if @form_modifier.token_edit?
       = f.button :submit,
         'Update Clinic with My Changes',
-        :class => "btn btn-primary submit-referents-form",
+        class: "btn btn-primary submit-referents-form",
         disabled: true
       = f.button :submit,
         'There are No Updates to this Clinic',
-        :class => "btn btn-success submit-referents-form",
+        class: "btn btn-success submit-referents-form",
         :name => 'no_updates',
         disabled: true
     - elsif @form_modifier.admin_rereview?
       = link_to "Back to record", clinic_path(@clinic), class: "btn btn-primary"
     - else
-      = f.button :submit, :class => "btn btn-primary"
-      = link_to 'Cancel', @form_modifier.cancel_path, :class => "btn btn-danger ajax"
+      = f.button :submit, class: "btn btn-primary"
+      = link_to 'Cancel', @form_modifier.cancel_path, class: "btn btn-danger"
 
-%script{"type" => "text/javascript"}
+%script{ type: "text/javascript"}
   :plain
     $(document).ready(function() {
       $("select").not('.no-print').each(function(i){
