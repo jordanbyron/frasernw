@@ -37,6 +37,12 @@
       %strong Assignee(s):
       = @issue.assignees_label
 
+  %br
+  .issues_show__history_notes
+    - if can? :view_history, @issue
+      = render 'history/notes',
+        item: @issue,
+        nodes: @issue.history
 
   - if current_user.as_super_admin?
     %h6 Subscribed Users
