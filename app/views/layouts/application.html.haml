@@ -32,22 +32,19 @@
     - if current_user.mask.present? && current_user.mask.persisted?
       = render "layouts/application/mask_warning"
     = yield(:head)
-    - if !Rails.env.development? || ENV["NAVBAR_SEARCH"].to_b
-      = render "partials/livesearch_vars", divisions: current_user.as_divisions
-      :javascript
-        $(document).ready(function(){
+    :javascript
+      $(document).ready(function(){
 
-          if ($(window).width() <= 480)
-          {
-            $('meta[name=viewport]').attr(
-              'content','initial-scale=1.0, user-scalable=no'
-            );
-          }
+        if ($(window).width() <= 480)
+        {
+          $('meta[name=viewport]').attr(
+            'content','initial-scale=1.0, user-scalable=no'
+          );
+        }
 
-          $('body').data('GLOBAL_USER_ID', #{current_user.id});
-          $('body').data('GLOBAL_USER_TYPE',
-            #{current_user.adjusted_type_mask});
-        });
+        $('body').data('GLOBAL_USER_TYPE',
+          #{current_user.adjusted_type_mask});
+      });
 
 
     :javascript

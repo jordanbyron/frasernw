@@ -5,7 +5,12 @@ import {
   searchResultSelected,
   closeSearch
 } from "action_creators";
-import { selectedSearchResult, searchResults, link } from "controller_helpers/search_results"
+import {
+  selectedSearchResult,
+  searchResults,
+  link,
+  recordAnalytics
+} from "controller_helpers/search_results"
 
 const SearchBox = ({model, dispatch}) => {
   return(
@@ -40,6 +45,7 @@ const handleKeyDown = (model, dispatch, event) => {
     )
   }
   else if (event.keyCode === ENTER_KEY_CODE){
+    recordAnalytics(selectedSearchResultRecord(model), model);
     window.location = link(selectedSearchResultRecord(model));
   }
   else if (event.keyCode === ESCAPE_KEY_CODE){

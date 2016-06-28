@@ -59,23 +59,6 @@ namespace :pathways do
           end
         end
       },
-      search: -> {
-        GlobalSearchData.new.regenerate_cache
-        SearchDataLabels.new.regenerate_cache
-
-        puts "All entries"
-        ExpireFragment.call "livesearch_all_entries"
-        Specialization.all.each do |s|
-          puts "All entries specialization #{s.id}"
-          ExpireFragment.call "livesearch_all_entries_#{ROUTES.specialization_path(s)}"
-          HttpGetter.exec("refresh_livesearch_all_entries/#{s.id}.js")
-        end
-
-        Division.all.each do |division|
-          puts "Search division #{division.id}"
-          division.search_data.regenerate_cache
-        end
-      },
       front: -> {
         User.all_user_division_groups_cached.each do |division_group|
           ExpireFragment.call "featured_content_#{division_group.join('_')}"

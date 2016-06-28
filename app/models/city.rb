@@ -65,44 +65,6 @@ class City < ActiveRecord::Base
       where('"division_cities".division_id IN (?)', division_ids).uniq
   end
 
-  def self.in_progress_for_division_and_specialization(division, specialization)
-    joins(
-      'INNER JOIN "division_cities" '\
-        'ON "cities".id = "division_cities".city_id '\
-        'INNER JOIN "specialization_options" '\
-        'ON "specialization_options".division_id = "division_cities".division_id'
-    ).where(
-      '"division_cities".division_id = (?) '\
-        'AND "specialization_options".specialization_id = (?) '\
-        'AND "specialization_options".in_progress = (?)',
-      division.id,
-      specialization.id,
-      true
-    )
-  end
-
-  def self.not_in_progress_for_division_local_referral_area_and_specialization(division, specialization)
-    joins(
-      'INNER JOIN "division_referral_cities" '\
-        'ON "division_referral_cities".city_id = "cities".id '\
-        'INNER JOIN "division_referral_city_specializations" '\
-        'ON "division_referral_cities".id = "division_referral_city_specializations"'\
-        '.division_referral_city_id '\
-        'INNER JOIN "specialization_options" '\
-        'ON "specialization_options".'\
-        'division_id = "division_referral_cities".division_id '\
-        'AND "specialization_options".'\
-        'specialization_id = "division_referral_city_specializations".specialization_id'
-    ).where(
-      '"division_referral_city_specializations".specialization_id = (?) '\
-        'AND "division_referral_cities".division_id = (?) '\
-        'AND "specialization_options".in_progress = (?)',
-      specialization.id,
-      division.id,
-      false
-    ).uniq
-  end
-
   def self.not_hidden
     where("cities.hidden = (?)", false)
   end

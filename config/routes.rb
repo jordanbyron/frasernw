@@ -198,10 +198,6 @@ Frasernw::Application.routes.draw do
   get '/logout' => 'user_sessions#destroy', as: :logout
   get '/login' => 'user_sessions#new', as: :login
 
-  get '/livesearch_all_entries' => 'search#livesearch_all_entries', as: :livesearch_all_entries
-  get '/refresh_livesearch_all_entries/:specialization_id' => 'search#refresh_livesearch_all_entries',
-    as: :refresh_livesearch_all_entries
-
   root :to => 'front#index'
 
   resources :featured_contents, only: [] do

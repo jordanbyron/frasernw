@@ -193,11 +193,11 @@ const groupOrder = {
   specializations: 1,
   specialists: 2,
   clinics: 3,
-  contentItems: 4,
   contentCategories: 4,
   procedures: 5,
   hospitals: 6,
-  languages: 7
+  languages: 7,
+  contentItems: 8
 }
 
 const groupLabels = {
@@ -271,14 +271,42 @@ export const selectedGeographicFilter = (model) => {
 }
 
 export const link = (record) => {
+  return `/${urlCollectionName(record)}/${record.id}`;
+}
+
+const urlCollectionName = (record) => {
   switch(record.collectionName){
   case "procedures":
-    return `/areas_of_practice/${record.id}`;
+    return "areas_of_practice"
   case "specializations":
-    return `/specialties/${record.id}`;
+    return "specialties";
   default:
-    return `/${_.snakeCase(record.collectionName)}/${record.id}`;
+    return _.snakeCase(record.collectionName);
   }
+}
+
+export const recordAnalytics = (record, model) => {
+  _gaq.push([
+    "_trackEvent",
+    "search_result",
+    urlCollectionName(record),
+    record.id
+  ]);
+
+  _gaq.push([
+    "_trackEvent",
+    "search_term",
+    (model.ui.searchTerm || ""),
+  ]);
+
+  _gaq.push([
+    "_trackEvent",
+    "search_user",
+    model.app.currentUser.adjustedTypeMask,
+    model.app.currentUser.id
+  ]);
+
+  return true;
 }
 
 const score = (string1, string2, fuzziness) => {

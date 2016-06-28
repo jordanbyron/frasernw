@@ -5,7 +5,8 @@ import {
   selectedGeographicFilter,
   selectedSearchResult,
   link,
-  specializationsShownToUser
+  specializationsShownToUser,
+  recordAnalytics
 } from "controller_helpers/search_results";
 import {
   selectCollectionFilter,
@@ -254,7 +255,7 @@ const resultClassname = (decoratedRecord, model) => {
 const InnerResult = ({record, model}) => {
   if (_.includes(["specialists", "clinics"], record.collectionName)){
     return(
-      <a href={link(record)}>
+      <a href={link(record)} onClick={_.partial(recordAnalytics, record, model)}>
         <div className="search_name">
           <ReferentStatusIcon record={record} model={model}/>
           <span style={{marginLeft: "5px"}}>{label(record)}</span>
@@ -274,7 +275,7 @@ const InnerResult = ({record, model}) => {
   }
   else if (record.collectionName === "procedures"){
     return(
-      <a href={link(record)}>
+      <a href={link(record)} onClick={_.partial(recordAnalytics, record, model)}>
         <div className="search_name">{label(record)}</div>
         <div className="search_specialties no_city">
           {
@@ -289,7 +290,7 @@ const InnerResult = ({record, model}) => {
   }
   else {
     return(
-      <a href={link(record)}>
+      <a href={link(record)} onClick={_.partial(recordAnalytics, record, model)}>
         <div className="search_name full_width">{label(record)}</div>
       </a>
     );
