@@ -319,7 +319,7 @@ body.loading #email
       }
     }
 
-    li a:hover, li.selected a
+    li.selected a
     {
       background: $FNW_HEADLINE_BACKGROUND;
       text-decoration: none;

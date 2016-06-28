@@ -4,12 +4,14 @@ import {
   selectedCollectionFilter,
   selectedGeographicFilter,
   selectedSearchResult,
-  link
+  link,
+  specializationsShownToUser
 } from "controller_helpers/search_results";
 import {
   selectCollectionFilter,
   selectGeographicFilter,
-  closeSearch
+  closeSearch,
+  searchResultSelected
 } from "action_creators";
 import ReferentStatusIcon from "controllers/referent_status_icon";
 import _ from "lodash";
@@ -65,7 +67,7 @@ const SearchResults = ({model, dispatch}) => {
       <ul className="search_results">
         {
           searchResults(model).
-            map((group) => resultGroup(model, group)).
+            map((group) => resultGroup(model, group, dispatch)).
             pwPipe(_.flatten)
         }
       </ul>
@@ -183,22 +185,23 @@ const CollectionFilterTab = ({model, dispatch, label}) => {
   );
 };
 
-const resultGroup = (model, group) => {
+const resultGroup = (model, group, dispatch) => {
   return [
     <GroupHeading
       model={model}
       label={group.label}
       key={group.label}
     />,
-    resultGroupEntries(model, group.decoratedRecords)
+    resultGroupEntries(model, group.decoratedRecords, dispatch)
   ].pwPipe(_.flatten)
 };
 
-const resultGroupEntries = (model, decoratedRecords) => {
+const resultGroupEntries = (model, decoratedRecords, dispatch) => {
   return decoratedRecords.map((decoratedRecord) => {
     return(
       <Result
         model={model}
+        dispatch={dispatch}
         decoratedRecord={decoratedRecord}
         key={key(decoratedRecord.raw)}
       />
@@ -223,7 +226,9 @@ const GroupHeading = ({model, dispatch, label}) => {
 
 const Result = ({model, dispatch, decoratedRecord}) => {
   return(
-    <li className={resultClassname(decoratedRecord, model)}>
+    <li className={resultClassname(decoratedRecord, model)}
+      onMouseEnter={_.partial(searchResultSelected, dispatch, decoratedRecord.index)}
+    >
       <InnerResult record={decoratedRecord.raw} model={model}/>
     </li>
   );
@@ -248,8 +253,7 @@ const InnerResult = ({record, model}) => {
         </div>
         <div className="search_specialties">
           {
-            record.
-              specializationIds.
+            specializationsShownToUser(record, model).
               map((id) => model.app.specializations[id].name).
               join(", ")
           }
@@ -287,7 +291,7 @@ const InnerResult = ({record, model}) => {
 const cities = (record) => {
   if (record.collectionName === "clinics" ||
     (record.respondedToSurvey && record.isAvailable)){
-      
+
     return record.cityIds;
   }
   else {

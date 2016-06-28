@@ -96,7 +96,7 @@ const filters = (model) => {
       return !_.includes(
         ["clinics", "specialists"],
         decoratedRecord.raw.collectionName
-      ) || specializationsShownToUser(decoratedRecord, model).pwPipe(_.some)
+      ) || specializationsShownToUser(decoratedRecord.raw, model).pwPipe(_.some)
     })
   }
 
@@ -133,9 +133,8 @@ const notInProgress = (decoratedRecord, model) => {
     }).pwPipe(_.some)
 };
 
-const specializationsShownToUser = (decoratedRecord, model) => {
-  return decoratedRecord.
-    raw.
+export const specializationsShownToUser = (record, model) => {
+  return record.
     specializationIds.
     filter((specializationId) => {
       return _.some(model.app.currentUser.divisionIds, (divisionId) => {
@@ -151,7 +150,7 @@ const specializationsShownToUser = (decoratedRecord, model) => {
 const inLocalReferralArea = (decoratedRecord, model) => {
   return _.some(model.app.currentUser.divisionIds, (divisionId) => {
     return _.some(
-      specializationsShownToUser(decoratedRecord, model),
+      specializationsShownToUser(decoratedRecord.raw, model),
       (specializationId) => {
         return _.intersection(
           model.app.divisions[divisionId].referralCities[specializationId],
