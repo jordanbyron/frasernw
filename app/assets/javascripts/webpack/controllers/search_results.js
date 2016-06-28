@@ -92,30 +92,38 @@ const Filters = ({model, dispatch}) => {
 }
 
 const GeographicFilter = ({model, dispatch}) => {
-  return(
-    <div className="livesearch__filter-group livesearch__filter-group--scopes">
-      <span className="livesearch__prefix">
-        { "In: "}
-      </span>
-      <ul className="nav nav-pills" id="livesearch__search-categories">
-        {
-          [
-            "My Regional Divisions",
-            "All Divisions"
-          ].map((label) => {
-            return(
-              <GeographicFilterTab
-                model={model}
-                dispatch={dispatch}
-                key={label}
-                label={label}
-              />
-            );
-          })
-        }
-      </ul>
-    </div>
-  );
+  if(_.includes(
+    ["Physician Resources", "Patient Info"],
+    selectedCollectionFilter(model))){
+
+    return <noscript/>;
+  }
+  else {
+    return(
+      <div className="livesearch__filter-group livesearch__filter-group--scopes">
+        <span className="livesearch__prefix">
+          { "In: "}
+        </span>
+        <ul className="nav nav-pills" id="livesearch__search-categories">
+          {
+            [
+              "My Regional Divisions",
+              "All Divisions"
+            ].map((label) => {
+              return(
+                <GeographicFilterTab
+                  model={model}
+                  dispatch={dispatch}
+                  key={label}
+                  label={label}
+                />
+              );
+            })
+          }
+        </ul>
+      </div>
+    );
+  }
 };
 
 const GeographicFilterTab = ({model, dispatch, label}) => {

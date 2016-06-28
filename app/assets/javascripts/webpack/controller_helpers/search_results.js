@@ -94,7 +94,7 @@ const filters = (model) => {
   else {
     filters.push((decoratedRecord) => {
       return !_.includes(
-        ["clinics", "specialists"],
+        ["clinics", "specialists", "contentItems"],
         decoratedRecord.raw.collectionName
       ) || specializationsShownToUser(decoratedRecord.raw, model).pwPipe(_.some)
     })
