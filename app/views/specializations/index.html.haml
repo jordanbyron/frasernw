@@ -18,22 +18,47 @@
       %th.admin
     - Specialization.all.each do |specialization|
       %tr
-        %td= link_to specialization.name, specialization, class: 'ajax'
+        %td= link_to specialization.name, specialization
         %td= specialization.member_name
         %td
           %ul
             - divisions.each do |division|
-              - specialization_option = SpecializationOption.find_by(specialization_id: specialization.id, division_id: division.id)
-              %li= "#{division.name}: #{specialization_option.present? && specialization_option.owner.present? ? (link_to specialization_option.owner.name, specialization_option.owner, class: 'ajax') : "none"}".html_safe
+              - specialization_option = SpecializationOption.find_by(specialization_id: specialization.id,
+                division_id: division.id)
+              %li
+                = division.name + ":"
+                - if specialization_option.present? && specialization_option.owner.present?
+                  = link_to specialization_option.owner.name,
+                    specialization_option.owner
+                - else
+                  none
         %td
           %ul
             - divisions.each do |division|
-              - specialization_option = SpecializationOption.find_by(specialization_id: specialization.id, division_id: division.id)
-              %li= "#{division.name}: #{specialization_option.present? && specialization_option.content_owner.present? ? (link_to specialization_option.content_owner.name, specialization_option.content_owner, class: 'ajax') : "none"}".html_safe
+              - specialization_option = SpecializationOption.find_by(specialization_id: specialization.id,
+                division_id: division.id)
+              %li
+                = division.name + ":"
+                - if specialization_option.present? && specialization_option.content_owner.present?
+                  = link_to specialization_option.content_owner.name,
+                    specialization_option.content_owner
+                - else
+                  none
         %td.admin.btn-group
-          = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_specialization_path(specialization), class: "btn btn-mini ajax")
+          = link_to edit_specialization_path(specialization),
+            class: "btn btn-mini" do
+            %i.icon-pencil
+            %span= " Edit"
           - if can? :destory, @specialization
-            = link_to("<i class='icon-trash'></i>".html_safe + " Delete", specialization, data: { confirm: "Delete #{specialization.name}?" }, method: :delete, class: "btn btn-mini")
+            = link_to specialization,
+              data: { confirm: "Delete #{specialization.name}?" },
+              method: :delete,
+              class: "btn btn-mini" do
+              %i.icon-trash
+              %span= " Delete"
 
   - if can? :create, Specialization
-    %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Specialty", new_specialization_path, class: "btn ajax")
+    %p.admin
+      = link_to new_specialization_path, class: "btn" do
+        %i.icon-plus-sign
+        %span= " New Specialty"

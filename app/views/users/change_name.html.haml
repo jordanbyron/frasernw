@@ -4,12 +4,17 @@
 
   %h2 Change your name
 
-  %p.space.no_indent Please enter an updated name to be associated with your account. Please remember that since your account may be shared within your office a personal name may not be recommended.
+  %p.space.no_indent
+    Please enter an updated name to be associated with your account. Please
+    remember that since your account may be shared within your office a
+    personal name may not be recommended.
 
-  = simple_form_for @user, :url => {:controller => "users", :action => "update_name"}, :html => { :class => "form-horizontal ajax" } do |f|
+  = simple_form_for @user,
+    url: { controller: "users", action: "update_name" },
+    html: { class: "form-horizontal" } do |f|
 
     = f.input :name
 
     .form-actions
-      = f.button :submit, "Change name", :class => "btn btn-primary"
-      %a.btn.btn-danger.ajax{"href" => root_url} Cancel
+      = f.button :submit, "Change name", class: "btn btn-primary"
+      %a.btn.btn-danger{ href: root_url } Cancel

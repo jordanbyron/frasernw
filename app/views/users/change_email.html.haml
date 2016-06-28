@@ -4,17 +4,24 @@
 
   %h2 Change your e-mail address / log-in
 
-  %p.space.no_indent Please enter an updated e-mail address. Please note that since your e-mail address is used as your Pathways username, you will need to log in again after changing it.
+  %p.space.no_indent
+    Please enter an updated e-mail address. Please note that since your e-mail
+    address is used as your Pathways username, you will need to log in again
+    after changing it.
 
-  = simple_form_for @user, :url => {:controller => "users", :action => "update_email"}, :html => { :class => "form-horizontal" } do |f|
+  = simple_form_for @user,
+    url: {controller: "users", action: "update_email"},
+    html: { class: "form-horizontal" } do |f|
 
     - if not f.error_messages.blank?
       .alert.alert-error= f.error_messages
 
-    = f.input :email, :label => "New e-mail address", :hint => "Your e-mail address will also be your Pathways username. We suggest using an office e-mail address if possible, as you may want to share your account within your office."
+    = f.input :email,
+      label: "New e-mail address",
+      hint: "Your e-mail address will also be your Pathways username. We suggest using an office e-mail address if possible, as you may want to share your account within your office."
 
-    = f.input :email_confirmation, :label => "Confirm new e-mail address"
+    = f.input :email_confirmation, label: "Confirm new e-mail address"
 
     .form-actions
-      = f.button :submit, "Change e-mail address", :class => "btn btn-primary"
-      %a.btn.btn-danger.ajax{"href" => root_url} Cancel
+      = f.button :submit, "Change e-mail address", class: "btn btn-primary"
+      %a.btn.btn-danger{ href: root_url} Cancel

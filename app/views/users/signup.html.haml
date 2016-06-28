@@ -4,26 +4,40 @@
 
   %h2= "Welcome to Pathways, #{@user.name}!"
 
-  %p.space.no_indent Please enter your e-mail address and then create and confirm a password, which will be what you use to log in to Pathways in the future. Note that once you complete this step and create your account, your access key will no longer be used: you will sign in only with your e-mail address and chosen password.
+  %p.space.no_indent
+    Please enter your e-mail address and then create and confirm a password,
+    which will be what you use to log in to Pathways in the future. Note that
+    once you complete this step and create your account, your access key will
+    no longer be used: you will sign in only with your e-mail address and
+    chosen password.
 
-  %p.space.no_indent We will only ever use your e-mail address to send you important Pathways-related messages, such as a way to reset your password if you forget it.
+  %p.space.no_indent
+    We will only ever use your e-mail address to send you important
+    Pathways-related messages, such as a way to reset your password if you
+    forget it.
 
-  = simple_form_for @user, :url => {:controller => "users", :action => "setup"}, :method => :patch, :html => { :class => "form-horizontal" } do |f|
-    - if @user.name.blank? # temporary measure to make sure that accounts with empty names are not prevented from creating accounts
+  = simple_form_for @user,
+    url: {controller: "users", action: "setup"},
+    method: :patch,
+    html: { class: "form-horizontal" } do |f|
+    - if @user.name.blank?
       = f.input :name
 
-    = f.input :email, input_html: {value: @email, type: "email"}
-    = f.input :email_confirmation, input_html: {type: "email"}
-    = f.input :password, :hint => "Your password must be at least <strong>8 characters long</strong>, and include at least <strong>one number</strong> and <strong>one letter</strong>. Again, since you may want to share an account within your office, we do not recommment choosing a password that is personal to you.".html_safe
+    = f.input :email, input_html: { value: @email, type: "email" }
+    = f.input :email_confirmation, input_html: { type: "email" }
+    = f.input :password,
+      hint: "Your password must be at least <strong>8 characters long</strong>, and include at least <strong>one number</strong> and <strong>one letter</strong>. Again, since you may want to share an account within your office, we do not recommment choosing a password that is personal to you.".html_safe
     = f.input :password_confirmation
 
-    = f.input :agree_to_toc, :input_html => {style: "float: inherit;"}, :label => "I agree to the <a href='javascript:void(0)' data-toggle='collapse' data-target='#toc'>Terms of Use</a>".html_safe
+    = f.input :agree_to_toc,
+      input_html: { style: "float: inherit;" },
+      label: "I agree to the <a href='javascript:void(0)' data-toggle='collapse' data-target='#toc'>Terms of Use</a>".html_safe
 
     #toc.collapse.offset3
 
       = render 'toc'
 
-    = f.input :saved_token, :as => :hidden, :value => @user.token
+    = f.input :saved_token, as: :hidden, value: @user.token
 
     .form-actions
-      =f.button :submit, "Set-up account", :class => "btn btn-primary"
+      =f.button :submit, "Set-up account", class: "btn btn-primary"
