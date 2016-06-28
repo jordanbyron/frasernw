@@ -61,8 +61,10 @@ const filters = (model) => {
   filters.push((decoratedRecord) => decoratedRecord.score > 0.5)
 
   filters.push((decoratedRecord) => {
-    return decoratedRecord.raw.collectionName !== "contentItems" ||
-      decoratedRecord.raw.searchable;
+    return !_.includes(
+      ["contentItems", "contentCategories"],
+      decoratedRecord.raw.collectionName
+    ) || decoratedRecord.raw.searchable;
   })
 
   if (selectedCollectionFilter(model) === "Physician Resources"){
@@ -94,11 +96,16 @@ const filters = (model) => {
   else {
     filters.push((decoratedRecord) => {
       return !_.includes(
-        ["clinics", "specialists", "contentItems"],
+        ["clinics", "specialists", "contentItems", "specializationIds"],
         decoratedRecord.raw.collectionName
       ) || specializationsShownToUser(decoratedRecord.raw, model).pwPipe(_.some)
     })
   }
+
+  filters.push((decoratedRecord) => {
+    return decoratedRecord.raw.collectionName !== "specializations" ||
+      specializationComplete(decoratedRecord.raw.id, model);
+  })
 
   filters.push((decoratedRecord) => {
     return !_.includes(
@@ -133,18 +140,20 @@ const notInProgress = (decoratedRecord, model) => {
     }).pwPipe(_.some)
 };
 
+const specializationComplete = (specializationId, model) => {
+  return _.some(model.app.currentUser.divisionIds, (divisionId) => {
+    return model.
+      app.
+      specializations[specializationId].
+      inProgressInDivisionIds.
+      indexOf(divisionId) === -1;
+  })
+}
+
 export const specializationsShownToUser = (record, model) => {
   return record.
     specializationIds.
-    filter((specializationId) => {
-      return _.some(model.app.currentUser.divisionIds, (divisionId) => {
-        return model.
-          app.
-          specializations[specializationId].
-          inProgressInDivisionIds.
-          indexOf(divisionId) === -1;
-      })
-    })
+    filter((specializationId) => specializationComplete(specializationId, model))
 };
 
 const inLocalReferralArea = (decoratedRecord, model) => {
@@ -185,6 +194,7 @@ const groupOrder = {
   specialists: 2,
   clinics: 3,
   contentItems: 4,
+  contentCategories: 4,
   procedures: 5,
   hospitals: 6,
   languages: 7
@@ -196,7 +206,8 @@ const groupLabels = {
   clinics: "Clinics",
   procedures: "Areas of Practice",
   hospitals: "Hospitals",
-  languages: "Languages"
+  languages: "Languages",
+  contentCategories: "Content"
 }
 
 const toSearch = (model) => {
@@ -209,7 +220,8 @@ const toSearch = (model) => {
       model.app.specializations,
       model.app.hospitals,
       model.app.languages,
-      model.app.contentItems
+      model.app.contentItems,
+      model.app.contentCategories
     ].map(_.values).pwPipe(_.flatten);
   case "Specialists":
     return _.values(model.app.specialists);

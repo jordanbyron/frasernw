@@ -212,7 +212,8 @@ module Denormalized
             subtreeIds: category.subtree.map(&:id),
             ancestry: category.ancestry,
             componentType: component_type(category),
-            collectionName: "contentCategories"
+            collectionName: "contentCategories",
+            searchable: category.searchable
           })
         end
       end
