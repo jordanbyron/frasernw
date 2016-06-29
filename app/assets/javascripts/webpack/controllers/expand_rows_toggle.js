@@ -7,9 +7,9 @@ const ExpandRowsToggle = ({model, dispatch, shouldShow}) => {
   if(shouldShow) {
     return(
       <div className="btn btn-default btn-small"
-        style={{marginLeft: "7px", padding: "2px 5px", verticalAlign: "bottom", fontSize: "12px"}}
+        style={{padding: "2px 5px", marginLeft: "7px", verticalAlign: "bottom", fontSize: "12px", marginBottom: "-1px"}}
         onClick={_.partial(toggleRowExpansion, model, dispatch, !areRowsExpanded(model))}>
-        { icon(model) }
+        { label(model) }
       </div>
     )
   }
@@ -18,12 +18,12 @@ const ExpandRowsToggle = ({model, dispatch, shouldShow}) => {
   }
 }
 
-const icon = (model) => {
+const label = (model) => {
   if (areRowsExpanded(model)){
-    return "-";
+    return "Collapse";
   }
   else {
-    return "+";
+    return "Expand";
   }
 }
 

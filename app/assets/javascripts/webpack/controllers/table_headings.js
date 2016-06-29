@@ -168,9 +168,9 @@ const TableHeadingCell = ({
         headingKey={headingKey}
       />
       <ExpandRowsToggle
-        model={model}
-        dispatch={dispatch}
-        shouldShow={showExpansionToggle}
+      model={model}
+      dispatch={dispatch}
+      shouldShow={showExpansionToggle}
       />
     </th>
   );
