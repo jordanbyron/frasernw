@@ -1,5 +1,5 @@
 import React from "react";
-import { matchedRoute } from "controller_helpers/routing";
+import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import Tags from "component_helpers/tags";
 import ReferentStatusIcon from "controllers/referent_status_icon";
@@ -16,6 +16,10 @@ import ExpandedReferentInformation from "controllers/expanded_referent_informati
 import selectedRecordId from "controller_helpers/selected_record_id";
 import * as filterValues from "controller_helpers/filter_values";
 import { selectRecord, deselectRecord } from "action_creators";
+import { memoizePerRender } from "utils";
+import ChangeRequestRow from "controllers/table_row/change_request";
+import EditIssue from "controllers/icons/edit_issue";
+import IssueRow from "controllers/table_row/issues";
 
 const TableRow = ({model, dispatch, decoratedRecord}) => {
   if(_.includes([
@@ -29,7 +33,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       if(showingMultipleSpecializations(model)) {
         return(
           <tr className="datatable__row">
-            <ReferentName decoratedRecord={decoratedRecord} model={model} dispatch={dispatch}/>
+            <ReferentName decoratedRecord={decoratedRecord} model={model}/>
             <ReferentSpecializations decoratedRecord={decoratedRecord} model={model}/>
             <td className="datatable__cell">
               <ReferentStatusIcon model={model} record={decoratedRecord.raw}/>
@@ -127,6 +131,12 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       />
     );
   }
+  else if (matchedRoute(model) === "/issues"){
+    return(<IssueRow decoratedRecord={decoratedRecord} model={model}/>);
+  }
+  else if (matchedRoute(model) === "/change_requests"){
+    return(<ChangeRequestRow decoratedRecord={decoratedRecord} model={model}/>);
+  }
 };
 
 const ContentItemTitle = ({decoratedRecord}) => {
@@ -154,9 +164,7 @@ const ReferentName = ({decoratedRecord, model, dispatch}) => {
     <td className="datatable__cell">
       <span>
         <ReferentNameLink decoratedRecord={decoratedRecord} model={model} dispatch={dispatch}/>
-        <span  style={{marginLeft: "5px"}} className="suffix" key="suffix">
-          { decoratedRecord.raw.suffix }
-        </span>
+        <Suffix record={decoratedRecord.raw} model={model}/>
         <Tags record={decoratedRecord.raw}/>
         <ExpandedReferentInformation record={decoratedRecord.raw} model={model}/>
       </span>
@@ -206,5 +214,53 @@ const ReferentNameLink = React.createClass({
     );
   }
 })
+const Suffix = ({record, model}) => {
+  return(
+    <span style={{marginLeft: "5px"}} className="suffix" key="suffix">
+      {suffix(record, model)}
+    </span>
+  )
+}
+
+const suffix = (record, model) => {
+  if (record.collectionName === "clinics") {
+    return "";
+  }
+  else if (record.isGp) {
+    return "GP";
+  }
+  else if (record.isInternalMedicine) {
+    return "Int Med";
+  }
+  else if (showPedSuffix(record, model)) {
+    return "Ped";
+  }
+  else {
+    return _.find(
+      record.specializationIds.map((id) => model.app.specializations[id].suffix),
+      (suffix) => suffix && suffix.length > 0
+    );
+  }
+};
+
+
+const showPedSuffix = (record, model) => {
+  return record.seesOnlyChildren &&
+    record.specializationIds.length > 1 &&
+    isPediatrician(record, model) &&
+    (matchedRoute(model) !== "/specialties/:id" ||
+      recordShownByPage(model).id !== parseInt(pediatricsId(model)));
+}
+
+const pediatricsId = ((model) => {
+  return _.find(
+    model.app.specializations,
+    (specialization) => specialization.name === "Pediatrics"
+  ).id;
+}).pwPipe(memoizePerRender)
+
+const isPediatrician = (record, model) => {
+  return _.includes(record.specializationIds, parseInt(pediatricsId(model)));
+}
 
 export default TableRow;

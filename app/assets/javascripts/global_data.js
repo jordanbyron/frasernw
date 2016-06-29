@@ -1,7 +1,6 @@
 // globals: vendor.lzString, $
 
 (function(pathways){
-
   var expiryKey = function(cacheVersion) {
     var date = new Date()
 

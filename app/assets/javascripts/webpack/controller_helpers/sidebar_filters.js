@@ -201,7 +201,7 @@ const sidebarFilters = {
       if(_.includes(["/specialties/:id", "/areas_of_practice/:id"], matchedRoute(model))){
         return activatedFilterSubkeys.subcategories(model).pwPipe(_.some);
       } else {
-        return parseInt(filterValues.subcategories(model)) !== 0;
+        return filterValues.subcategories(model) !== "0";
       }
     },
     predicate: function(record, model) {
@@ -244,6 +244,62 @@ const sidebarFilters = {
     },
     predicate: function(record) {
       return !record.hidden;
+    }
+  },
+  completeThisWeekend: {
+    isActivated: function(model) {
+      return filterValues.completeThisWeekend(model);
+    },
+    predicate: function(record, model) {
+      return record.completeThisWeekend;
+    }
+  },
+  completeNextMeeting: {
+    isActivated: function(model) {
+      return filterValues.completeNextMeeting(model);
+    },
+    predicate: function(record, model) {
+      return record.completeNextMeeting;
+    }
+  },
+  notTargeted: {
+    isActivated: function(model) {
+      return filterValues.notTargeted(model);
+    },
+    predicate: function(record, model) {
+      return !record.completeNextMeeting && !record.completeThisWeekend;
+    }
+  },
+  assignees: {
+    isActivated: function(model) {
+      return filterValues.assignees(model) !== "All";
+    },
+    predicate: function(record, model) {
+      if(filterValues.assignees(model) === "") {
+        return record.assigneeIds.length === 0;
+      }
+      else {
+        return utils.isSubset(
+          filterValues.assignees(model).split(",").map((id) => parseInt(id)),
+          record.assigneeIds
+        );
+      }
+    }
+  },
+  issueSource: {
+    isActivated: function(model) {
+      return filterValues.issueSource(model) !== "0";
+    },
+    predicate: function(record, model) {
+      return record.sourceKey === parseInt(filterValues.issueSource(model));
+    }
+  },
+  priority: {
+    isActivated: function(model) {
+      return filterValues.priority(model) !== "0";
+    },
+    predicate: function(record, model) {
+      return record.priority === filterValues.priority(model).toString();
     }
   }
 }

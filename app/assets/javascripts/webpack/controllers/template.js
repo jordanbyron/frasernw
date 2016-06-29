@@ -23,12 +23,13 @@ import SpecializationFilterMessage from "controllers/specialization_filter_messa
 import CityFilterPills from "controllers/city_filter_pills";
 import Lists from "controllers/lists";
 import Disclaimer from "controllers/disclaimer";
-import GreyAnnotation from "controllers/grey_annotation";
+import MainPanelAnnotation from "controllers/main_panel_annotation";
 import pageTitleLabel from "controller_helpers/page_title_label";
 import ShowHospital from "controllers/show_hospital";
 import Pagination from "controllers/pagination";
 import CustomWaittimeMessage from "controllers/custom_waittime_message";
 import FeedbackModal from "controllers/feedback_modal";
+import LoadingIndicator from "component_helpers/loading_indicator";
 
 const Template = ({model, dispatch}) => {
   if(isLoaded(model)) {
@@ -43,7 +44,7 @@ const Template = ({model, dispatch}) => {
     );
   }
   else {
-    return(<span></span>);
+    return(<LoadingIndicator minHeight="300px"/>);
   }
 };
 
@@ -69,6 +70,10 @@ const isLoaded = (model) => {
       return model.app.specialists && model.app.currentUser;
     case "/news_items":
       return model.app.newsItems;
+    case "/issues":
+      return model.app.currentUser;
+    case "/change_requests":
+      return model.app.currentUser;
     default:
       return true;
   }
@@ -86,6 +91,7 @@ const usesSidebarLayout = ((model) => {
   return !((matchedRoute(model) === "/latest_updates" &&
     model.app.currentUser.role === "user") ||
     matchedRoute(model) === "/news_items" ||
+    matchedRoute(model) === "/change_requests" ||
     showInlineArticles(model))
 }).pwPipe(memoizePerRender)
 
@@ -133,14 +139,20 @@ const Main = ({model, dispatch}) => {
       <InlineArticles model={model} dispatch={dispatch}/>
       <Lists model={model} dispatch={dispatch}/>
       <CategoryLinkController model={model} dispatch={dispatch}/>
-      <GreyAnnotation model={model} dispatch={dispatch}/>
+      <MainPanelAnnotation model={model} dispatch={dispatch}/>
       <Pagination model={model} dispatch={dispatch}/>
     </div>
   );
 }
 
 const UpperWhitePanel = ({model}) => {
-  if(_.includes(["/hospitals/:id", "/languages/:id", "/news_items"], matchedRoute(model))){
+  if(_.includes([
+    "/hospitals/:id",
+    "/languages/:id",
+    "/news_items",
+    "/issues",
+    "/change_requests"
+  ], matchedRoute(model))){
     return(
       <div className="content-wrapper">
         <h2>

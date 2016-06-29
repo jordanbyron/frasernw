@@ -1,24 +1,25 @@
-task :deploy_demo => ['deploy_demo:push', 'deploy_demo:restart']
+task deploy_demo: ['deploy_demo:push', 'deploy_demo:restart']
 
 namespace :deploy_demo do
-  task :update_database => [:reset_database, :import_production_database, :restart]
-  task :migrations => [:push, :off, :migrate, :restart, :on]
+  task update_database: [:reset_database, :import_production_database, :restart]
+  task migrations: [:push, :off, :migrate, :restart, :on]
 
   task :push do
     puts 'Finding current git branch ...'
-    current_branch = `git branch`.split("\n").select{|b| b[0..1] == '* '}.first.sub(/[*]/, '').strip
+    current_branch =
+      `git branch`.split("\n").select{|b| b[0..1] == '* '}.first.sub(/[*]/, '').strip
     puts "Deploying site to Heroku using git branch #{current_branch} ..."
 
-    puts `git push heroku_pathways_dev #{current_branch}:master`
+    puts `git push heroku_pathways_demo #{current_branch}:master`
   end
 
   task :restart do
-    puts 'Restarting pathwaysbcDEV app servers ...'
+    puts 'Restarting pathwaysbcdemo app servers ...'
     puts `heroku restart -a pathwaysbcdemo`
   end
 
   task :reset_database do
-    puts 'Resetting pathwaysbcDEV database'
+    puts 'Resetting pathwaysbcdemo database'
     puts `heroku pg:reset DATABASE --app pathwaysbcdemo --confirm pathwaysbcdemo`
   end
 

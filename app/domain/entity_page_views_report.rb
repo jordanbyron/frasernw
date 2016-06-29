@@ -2,7 +2,6 @@ class EntityPageViewsReport < ServiceObject
   attribute :month_key
   attribute :division_id
   attribute :record_type
-  attribute :force, Axiom::Types::Boolean, default: false
 
   include ActionView::Helpers::UrlHelper
 
@@ -15,43 +14,14 @@ class EntityPageViewsReport < ServiceObject
     :specialties,
     :red_flags,
     :community_services,
-    :pearls
+    :pearls,
+    :content_categories
   ]
 
-  def self.regenerate_all
-    SUPPORTED_RECORD_TYPES.each do |type|
-      Division.standard.map(&:id).map(&:to_s).concat(["0"]).each do |id|
-        Month.for_interval(
-          Month.new(2014, 1),
-          Month.current
-        ).each do |month|
-          call(
-            month_key: month.to_i,
-            division_id: id,
-            record_type: type,
-            force: true
-          )
-        end
-      end
-    end
-  end
-
   def call
-    if month == Month.current
-      generate
-    else
-      Rails.cache.fetch(
-        "entity_page_views:#{month_key}:#{division_id}:#{record_type}",
-        force: force
-      ){ generate }
-    end
-  end
-
-  def generate
     get_usage.
       sort_by{ |row| row[:usage].to_i }.
       reverse().
-      first(20).
       map{ |row| transform_row_for_view(row) }
   end
 
@@ -63,7 +33,7 @@ class EntityPageViewsReport < ServiceObject
         *LABEL_SERIALIZED_COLLECTIONS[row[:serialized_collection]].call(row)
       ),
       usage: row[:usage],
-      collectionName: "pageViewData",
+      collectionName: "#{row[:serialized_collection]}pageViewData",
       id: row[:record][:id]
     }
   end
@@ -91,6 +61,9 @@ class EntityPageViewsReport < ServiceObject
     end,
     specializations: Proc.new do |row|
       [ row[:record][:name], "/specialties/#{row[:record][:id]}" ]
+    end,
+    content_categories: Proc.new do |row|
+      [ row[:record][:name], "/content_categories/#{row[:record][:id]}" ]
     end
   }
 
@@ -203,7 +176,8 @@ class EntityPageViewsReport < ServiceObject
       row[:record][:typeMask] != ScItem::TYPE_MARKDOWN &&
       row[:record][:categoryIds].include?(3)
     end,
-    specialties: Proc.new{ |row| false }
+    specialties: Proc.new{ |row| false },
+    content_categories: Proc.new{ |row| false}
   }
 
   #  which event categories respond to which class of record
@@ -267,7 +241,8 @@ class EntityPageViewsReport < ServiceObject
     pearls: Proc.new do |row|
       row[:record][:typeMask] == ScItem::TYPE_MARKDOWN && row[:record][:categoryIds].include?(3)
     end,
-    specialties: Proc.new{ |row| true }
+    specialties: Proc.new{ |row| true },
+    content_categories: Proc.new{ |row| true }
   }
 
   def extract_id(record_type, path)
@@ -280,7 +255,8 @@ class EntityPageViewsReport < ServiceObject
       specialties: "specialties",
       community_services: "content_items",
       red_flags: "content_items",
-      pearls: "content_items"
+      pearls: "content_items",
+      content_categories: "content_categories"
     }[record_type]
 
     /(?<=\/#{Regexp.quote(collection_path)}\/)[[:digit:]]+(?=\/?\z)/.
@@ -299,6 +275,7 @@ class EntityPageViewsReport < ServiceObject
     community_services: :content_items,
     red_flags: :content_items,
     pearls: :content_items,
-    specialties: :specializations
+    specialties: :specializations,
+    content_categories: :content_categories
   }
 end

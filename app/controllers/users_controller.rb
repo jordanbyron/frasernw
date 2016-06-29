@@ -142,65 +142,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def change_local_referral_area
-    @user = current_user
-    @local_referral_cities = {}
-    City.all.each do |city|
-      @local_referral_cities[city.id] = []
-    end
-    Specialization.all.each do |specialization|
-      @user.divisions.each do |division|
-        cities = @user.local_referral_cities(specialization)
-        cities = division.local_referral_cities(specialization) if cities.blank?
-        cities.each do |city|
-          @local_referral_cities[city.id] << specialization.id
-        end
-      end
-    end
-  end
-
-  def update_local_referral_area
-    @user = current_user
-    @user.user_cities.each do |uc|
-      #remove existing cities that no longer exist
-      if (params[:city].blank? || !(params[:city].include? uc.city_id))
-        UserCity.destroy(uc.id)
-      end
-    end
-    if params[:city].present?
-      #add new cities
-      params[:city].each do |city_id, set|
-        UserCity.find_or_create_by(user_id: @user.id, city_id: city_id)
-      end
-    end
-    @user.user_city_specializations.each do |ucs|
-      #remove existing specializations that no longer exist
-      if (
-        !(params[:local_referral_cities].include? ucs.city_id) ||
-        !(params[:local_referral_cities][usc.city_id].include? usc.specialization_id)
-      )
-        UserCitySpecialization.destroy(ucs.id)
-      end
-    end
-    if params[:local_referral_cities].present?
-      #add new specializations
-      params[:local_referral_cities].each do |city_id, specializations|
-        user_city = UserCity.find_by(user_id: @user.id, city_id: city_id)
-        if user_city.present?
-          #parent city was checked off
-          specializations.each do |specializations_id, set|
-            UserCitySpecialization.find_or_create_by(
-              user_city_id: user_city.id,
-              specialization_id: specializations_id
-            )
-          end
-        end
-      end
-    end
-    redirect_to root_url,
-      notice: "Your local referral area was successfully updated."
-  end
-
   def change_email
     @user = current_user
   end

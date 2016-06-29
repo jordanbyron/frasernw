@@ -21,7 +21,9 @@ const recordsToDisplay = ((model) => {
       "/latest_updates",
       "/hospitals/:id",
       "/languages/:id",
-      "/news_items"
+      "/news_items",
+      "/issues",
+      "/change_requests"
     ], matchedRoute(model))) {
 
     if (matchedRoute(model) === "/specialties/:id" &&
@@ -35,7 +37,12 @@ const recordsToDisplay = ((model) => {
     else {
       return unscopedCollectionShown(model).filter((record) => {
         return matchesPreliminaryFilters(record, model) &&
-          matchesRoute(matchedRoute(model), recordShownByPage(model), record) &&
+          matchesRoute(
+            matchedRoute(model),
+            recordShownByPage(model),
+            model.app.currentUser,
+            record
+          ) &&
           (!isTabbedPage(model) ||
           matchesTab(
             record,

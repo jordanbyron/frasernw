@@ -68,9 +68,9 @@ const radioOptions = (model) => {
     pwPipe(_.uniq).
     pwPipe((ids) => _.pull(ids, recordShownByPage.id)).
     map((id) => {
-      return { key: id, label: model.app.contentCategories[id].name };
+      return { key: id.toString(), label: model.app.contentCategories[id].name };
     }).pwPipe((options) => _.sortBy(options, _.property("label"))).
-    pwPipe((options) => [{key: 0, label: "All"}].concat(options))
+    pwPipe((options) => [{key: "0", label: "All"}].concat(options))
 }
 
 const CHECKBOX_ROUTES = [

@@ -2,13 +2,12 @@ module GenerateSpreadsheet
   class << self
 
     def specialists_and_clinics_not_responded
-
       clinics = Clinic.where(status_mask: [3,nil])
       specialists = Specialist.where(status_mask: [7,nil])
 
       not_responded_clinics = []
       not_responded_specialists = []
-      
+
       clinics.each do |clinic|
         clinic_categorization = 
         clinic_row = [
@@ -36,7 +35,6 @@ module GenerateSpreadsheet
       }
       printing_header = ["ID","Name","Categorization","Status_mask"]
       print_spreadsheet(printing_body, printing_header)
-      
     end
 
     # Status "moved away", "permanently unavailable", or "indefinitely unavailable"
@@ -70,14 +68,12 @@ module GenerateSpreadsheet
       }
       printing_header = ["ID","Name"]
       print_spreadsheet(printing_body, printing_header)
-
     end
 
     # - FNW users who are type: "GP Office," "Locum," "Resident," or "Other."
     #   (Excludes "Specialist Office", "Clinic", "Hospitalist", "Nurse Practitioner",
     #     or "Unit Clerk.")
     # - "Pending," "Inactive," and "Other" -status accounts, split into worksheets.
-    # - Columns: "id", "name", "email", "last_logged_in", "status", and "type."
     def fnw_users
 
       fnw_users = User.
@@ -114,7 +110,39 @@ module GenerateSpreadsheet
       }
       printing_header = ["ID","Name","Email","Last Logged-In", "Status", "Type"]
       print_spreadsheet(printing_body, printing_header)
-      
+    end
+
+    def clinic_owners_without_specialists
+      users_to_review =
+        User.where(agree_to_toc: true, active: true).select do |user|
+          user.controlled_clinics.any?
+        end.reject do |user|
+          user.controlled_clinics.any? do |clinic|
+            (clinic.attendances.any? do |attendance|
+              attendance.specialist_id.present? ||
+                attendance.freeform_firstname.present?
+            end || clinic.specialists_with_offices_in.any?)
+          end || user.controlled_specialists.any?
+        end
+
+      users_rows = []
+      users_to_review.each do |user|
+        user_row = [
+          user.id,
+          user.name
+        ]
+        user.controlled_clinics.each do |clinic|
+          user_row.push(clinic.id)
+          user_row.push(clinic.name)
+        end
+        users_rows.push(user_row)
+      end
+
+      printing_body = {
+        users_owning_only_unattended_clinics: users_rows
+      }
+      printing_header = ["User ID","User name","Clinic ID","Clinic name"]
+      print_spreadsheet(printing_body, printing_header)
     end
 
     private
@@ -159,7 +187,7 @@ module GenerateSpreadsheet
         "Locum"
       when 7 then
         "Resident"
-      end    
+      end
     end
 
     def user_status(user)
@@ -169,7 +197,7 @@ module GenerateSpreadsheet
         "Inactive"
       else
         "Other"
-      end      
+      end
     end
 
     def last_logged_in(user)
@@ -192,6 +220,5 @@ module GenerateSpreadsheet
       }
       QuickSpreadsheet.call(spreadsheet)
     end
-
   end
 end

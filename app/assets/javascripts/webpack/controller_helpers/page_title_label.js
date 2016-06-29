@@ -1,6 +1,8 @@
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import * as filterValues from "controller_helpers/filter_values";
 import { toSentence } from "utils";
+import _ from "lodash";
+import entityPageViews from "controller_helpers/page_title_label/entity_page_views";
 
 const pageTitleLabel = (model) => {
   switch(matchedRoute(model)){
@@ -45,25 +47,16 @@ const pageTitleLabel = (model) => {
 
     return `Latest Specialist and Clinic Updates for ${toSentence(divisionNames)}`;
   case "/reports/entity_page_views":
-    if (parseInt(filterValues.divisionScope(model)) === 0) {
-      var scopeLabel = "by Page Views";
-    }
-    else {
-      var scopeLabel = "by " +
-        model.app.divisions[filterValues.divisionScope(model)].name +
-        " Users' Page Views"
-    }
-
-    return (
-      "Top " +
-      _.startCase(filterValues.entityType(model)) +
-      " " +
-      scopeLabel
-    );
+    return entityPageViews(model);
   case "/news_items":
     return "News Items for " +
       model.app.divisions[model.ui.persistentConfig.divisionId].name;
+  case "/issues":
+    return "Issues";
+  case "/change_requests":
+    return "Change Requests";
   }
 }
+
 
 export default pageTitleLabel;

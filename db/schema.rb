@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160508212434) do
+ActiveRecord::Schema.define(version: 20160620221610) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,16 +98,6 @@ ActiveRecord::Schema.define(version: 20160508212434) do
   end
 
   add_index "cities", ["province_id"], name: "index_cities_on_province_id", using: :btree
-
-  create_table "clinic_addresses", force: true do |t|
-    t.integer  "clinic_id"
-    t.integer  "address_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "clinic_addresses", ["address_id"], name: "index_clinic_addresses_on_address_id", using: :btree
-  add_index "clinic_addresses", ["clinic_id"], name: "index_clinic_addresses_on_clinic_id", using: :btree
 
   create_table "clinic_healthcare_providers", force: true do |t|
     t.integer  "clinic_id"
@@ -416,17 +406,6 @@ ActiveRecord::Schema.define(version: 20160508212434) do
     t.datetime "updated_at"
   end
 
-  create_table "hospital_addresses", force: true do |t|
-    t.integer  "hospital_id"
-    t.integer  "address_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "hospital_addresses", ["address_id"], name: "index_hospital_addresses_on_address_id", using: :btree
-  add_index "hospital_addresses", ["hospital_id", "address_id"], name: "index_hospital_addresses_on_hospital_id_and_address_id", using: :btree
-  add_index "hospital_addresses", ["hospital_id"], name: "index_hospital_addresses_on_hospital_id", using: :btree
-
   create_table "hospitals", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -435,6 +414,36 @@ ActiveRecord::Schema.define(version: 20160508212434) do
     t.string   "fax"
     t.string   "phone_extension"
     t.string   "saved_token"
+  end
+
+  create_table "issue_assignments", force: true do |t|
+    t.integer  "issue_id"
+    t.integer  "assignee_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "issue_subscriptions", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "issue_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "issues", force: true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.integer  "progress_key",          default: 1
+    t.integer  "source_key",            default: 4
+    t.string   "priority",              default: ""
+    t.string   "effort_estimate",       default: "-"
+    t.date     "manual_date_entered"
+    t.date     "manual_date_completed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "source_id"
+    t.boolean  "complete_this_weekend", default: false
+    t.boolean  "complete_next_meeting", default: false
   end
 
   create_table "languages", force: true do |t|
@@ -762,16 +771,6 @@ ActiveRecord::Schema.define(version: 20160508212434) do
 
   add_index "settings", ["identifier"], name: "settings_identifier", using: :btree
 
-  create_table "specialist_addresses", force: true do |t|
-    t.integer  "specialist_id"
-    t.integer  "address_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "specialist_addresses", ["address_id"], name: "index_specialist_addresses_on_address_id", using: :btree
-  add_index "specialist_addresses", ["specialist_id"], name: "index_specialist_addresses_on_specialist_id", using: :btree
-
   create_table "specialist_offices", force: true do |t|
     t.integer  "specialist_id"
     t.integer  "office_id"
@@ -979,39 +978,6 @@ ActiveRecord::Schema.define(version: 20160508212434) do
 
   add_index "teleservices", ["teleservice_provider_id", "teleservice_provider_type"], name: "index_teleservices_on_provider", using: :btree
 
-  create_table "user_cities", force: true do |t|
-    t.integer  "user_id"
-    t.integer  "city_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "user_cities", ["city_id"], name: "index_user_cities_on_city_id", using: :btree
-  add_index "user_cities", ["user_id", "city_id"], name: "index_user_cities_on_user_id_and_city_id", using: :btree
-  add_index "user_cities", ["user_id"], name: "index_user_cities_on_user_id", using: :btree
-
-  create_table "user_city_specializations", force: true do |t|
-    t.integer  "user_city_id"
-    t.integer  "specialization_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "user_city_specializations", ["specialization_id", "user_city_id"], name: "index_ucs_on_spec_id_and_ucity_id", using: :btree
-  add_index "user_city_specializations", ["specialization_id"], name: "index_user_city_specializations_on_specialization_id", using: :btree
-  add_index "user_city_specializations", ["user_city_id"], name: "index_user_city_specializations_on_user_city_id", using: :btree
-
-  create_table "user_controls_clinic_locations", force: true do |t|
-    t.integer  "user_id"
-    t.integer  "clinic_location_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "user_controls_clinic_locations", ["clinic_location_id", "user_id"], name: "index_uccl_clinic_l_id_on_user_id", using: :btree
-  add_index "user_controls_clinic_locations", ["clinic_location_id"], name: "index_user_controls_clinic_locations_on_clinic_location_id", using: :btree
-  add_index "user_controls_clinic_locations", ["user_id"], name: "index_user_controls_clinic_locations_on_user_id", using: :btree
-
   create_table "user_controls_clinics", force: true do |t|
     t.integer  "user_id"
     t.integer  "clinic_id"
@@ -1022,17 +988,6 @@ ActiveRecord::Schema.define(version: 20160508212434) do
 
   add_index "user_controls_clinics", ["clinic_id"], name: "index_user_controls_clinics_on_clinic_id", using: :btree
   add_index "user_controls_clinics", ["user_id"], name: "index_user_controls_clinics_on_user_id", using: :btree
-
-  create_table "user_controls_specialist_offices", force: true do |t|
-    t.integer  "user_id",              null: false
-    t.integer  "specialist_office_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "user_controls_specialist_offices", ["specialist_office_id", "user_id"], name: "index_ucso_soi_user_id", using: :btree
-  add_index "user_controls_specialist_offices", ["specialist_office_id"], name: "index_ucso_on_specialist_office_id", using: :btree
-  add_index "user_controls_specialist_offices", ["user_id"], name: "index_ucso_user_id", using: :btree
 
   create_table "user_controls_specialists", force: true do |t|
     t.integer  "user_id"
@@ -1078,6 +1033,7 @@ ActiveRecord::Schema.define(version: 20160508212434) do
     t.date     "activated_at"
     t.boolean  "persist_in_demo",         default: false
     t.integer  "last_request_format_key", default: 1
+    t.boolean  "is_developer",            default: false
   end
 
   create_table "versions", force: true do |t|
@@ -1094,6 +1050,13 @@ ActiveRecord::Schema.define(version: 20160508212434) do
   add_index "versions", ["created_at"], name: "index_versions_on_created_at", using: :btree
   add_index "versions", ["item_id"], name: "index_versions_on_item_id", using: :btree
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
+
+  create_table "videos", force: true do |t|
+    t.string   "title"
+    t.string   "video_url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "views", force: true do |t|
     t.integer  "specialist_id"

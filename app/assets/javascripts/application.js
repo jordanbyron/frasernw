@@ -12,6 +12,8 @@
 //= require jquery_nested_form.js
 //= require jquery.serializejson
 //= require jquery.timeago
+//= require jquery.ui.widget
+//= require z.jquery.fileupload
 //= require webpack.bundle
 //= require jquery_components/checkbox_slidedown
 //= require global_data

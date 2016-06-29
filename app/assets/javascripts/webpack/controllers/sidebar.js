@@ -22,8 +22,11 @@ import HiddenUpdatesFilter from "controllers/filter_groups/hidden_updates";
 import EntityTypeFilters from "controllers/filter_groups/entity_type";
 import MonthFilter from "controllers/filter_groups/month";
 import ReportStyleFilter from "controllers/filter_groups/report_style";
-import SpecialistIconKey from "controllers/specialist_icon_key";
-import ClinicIconKey from "controllers/clinic_icon_key";
+import CompletionDateFilter from "controllers/filter_groups/completion_date";
+import AssigneesFilter from "controllers/filter_groups/assignees";
+import IssueSourceFilter from "controllers/filter_groups/issue_source";
+import PriorityFilter from "controllers/filter_groups/priority";
+import SidebarAnnotation from "controllers/sidebar_annotation";
 
 const pageIsReport = (model) => {
   return matchedRoute(model).includes("/reports/");
@@ -48,6 +51,7 @@ const Sidebar = ({model, dispatch}) => {
     }>
       <div className="well filter">
         <div className="title">{ sidebarTitle(model) }</div>
+        <SubcategoriesFilters model={model} dispatch={dispatch}/>
         <ProcedureFilters model={model} dispatch={dispatch}/>
         <SpecializationsFilters model={model} dispatch={dispatch}/>
         <ReferralsFilters model={model} dispatch={dispatch}/>
@@ -62,13 +66,15 @@ const Sidebar = ({model, dispatch}) => {
         <LanguagesFilters model={model} dispatch={dispatch}/>
         <AssociationsFilters model={model} dispatch={dispatch}/>
         <CityFilters model={model} dispatch={dispatch}/>
-        <SubcategoriesFilters model={model} dispatch={dispatch}/>
         <HiddenUpdatesFilter model={model} dispatch={dispatch}/>
         <MonthFilter model={model} dispatch={dispatch}/>
         <ReportStyleFilter model={model} dispatch={dispatch}/>
+        <CompletionDateFilter model={model} dispatch={dispatch}/>
+        <AssigneesFilter model={model} dispatch={dispatch}/>
+        <IssueSourceFilter model={model} dispatch={dispatch}/>
+        <PriorityFilter model={model} dispatch={dispatch}/>
       </div>
-      <SpecialistIconKey model={model}/>
-      <ClinicIconKey model={model}/>
+      <SidebarAnnotation model={model}/>
     </div>
   );
 };

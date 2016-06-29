@@ -30,6 +30,13 @@ class Procedure < ActiveRecord::Base
     self.name
   end
 
+  def form_procedure_specializations
+    all_procedure_specializations.
+      includes(:specialization).
+      select(&:specialization_present?).
+      sort_by(&:specialization_name)
+  end
+
   def parents_name_array
     ps_with_parents = procedure_specializations.reject{ |ps| ps.parent.blank? }
     if ps_with_parents.count > 0

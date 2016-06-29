@@ -1,5 +1,7 @@
 Frasernw::Application.routes.draw do
 
+  resources :videos
+
   resources :evidences
 
   match '/delayed_job' => DelayedJobWeb, anchor: false, via: [:get, :post]
@@ -185,8 +187,6 @@ Frasernw::Application.routes.draw do
 
   patch '/validate' => 'users#validate', as: :validate
   patch '/setup' => 'users#setup', as: :setup
-  get '/change_local_referral_area' => 'users#change_local_referral_area', as: :change_local_referral_area
-  patch '/update_local_referral_area' => 'users#update_local_referral_area', as: :update_local_referral_area
   get '/change_password' => 'users#change_password', as: :change_password
   patch '/update_password' => 'users#update_password', as: :update_password
   get '/change_email' => 'users#change_email', as: :change_email
@@ -237,7 +237,7 @@ Frasernw::Application.routes.draw do
 
   resources :csv_usage_reports, only: [:new, :create, :show]
 
-  resources :newsletters, only: [:index, :create, :new, :edit, :update, :destroy]
+  resources :newsletters, except: :show
 
   namespace :api do
     namespace :v1 do
@@ -252,6 +252,13 @@ Frasernw::Application.routes.draw do
       end
     end
   end
+
+  resources :issues do
+    member do
+      get :toggle_subscription
+    end
+  end
+  resources :change_requests, only: [:index, :show]
 
   if ENV['RAILS_ENV'] == 'test'
     get '/dangerously_import_db', to: 'tests#dangerously_import_db'

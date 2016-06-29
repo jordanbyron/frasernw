@@ -187,7 +187,7 @@ export const subcategories = memoizeSubkeyedFn(
       return _.get(
         model,
         [ "ui", "tabs", selectedTabKey(model), "filterValues", "subcategories"],
-        0
+        "0"
       );
     }
   }
@@ -196,7 +196,7 @@ export const subcategories = memoizeSubkeyedFn(
 export const specializations = factory({
   key: "specializations",
   hasSubkeys: false,
-  defaultValue: 0
+  defaultValue: "0"
 })
 
 export const showHiddenUpdates = factory({
@@ -221,4 +221,40 @@ export const reportStyle = factory({
   key: "reportStyle",
   hasSubkeys: false,
   defaultValue: "summary"
+});
+
+export const completeThisWeekend = factory({
+  key: "completeThisWeekend",
+  hasSubkeys: false,
+  defaultValue: false
+});
+
+export const completeNextMeeting = factory({
+  key: "completeNextMeeting",
+  hasSubkeys: false,
+  defaultValue: false
+});
+
+export const notTargeted = factory({
+  key: "notTargeted",
+  hasSubkeys: false,
+  defaultValue: false
+});
+
+export const assignees = factory({
+  key: "assignees",
+  hasSubkeys: false,
+  defaultValue: "All"
+});
+
+export const issueSource = factory({
+  key: "issueSource",
+  hasSubkeys: false,
+  defaultValue: "0"
+});
+
+export const priority = factory({
+  key: "priority",
+  hasSubkeys: false,
+  defaultValue: "0"
 });

@@ -8,8 +8,20 @@
       cursor: pointer;
     }
 
+    td {
+      .issue_row__edit {
+        visibility: hidden;
+      }
+    }
+
+    td:hover {
+      .issue_row__edit {
+        visibility: visible;
+      }
+    }
+
     .table {
-      tr {
+      tr.datatable__row {
         td.datatable__cell {
           padding-top: 8px;
           padding-bottom: 8px;
@@ -55,6 +67,14 @@
     }
     .specialization_table__table_head--name {
       width: 30%;
+    }
+
+    .datatable__th--date_entered {
+      width: 80px;
+    }
+
+    .datatable__th--date_completed {
+      width: 100px;
     }
     @media (max-width: 767px) {
       .hide-when-reduced {

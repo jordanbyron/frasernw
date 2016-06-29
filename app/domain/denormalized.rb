@@ -99,6 +99,7 @@ module Denormalized
             customLagtimes: custom_procedure_times(specialist, :lagtime_mask),
             customWaittimes: custom_procedure_times(specialist, :waittime_mask),
             isGp: specialist.is_gp,
+            suffix: specialist.suffix,
             isInternalMedicine: specialist.is_internal_medicine?,
             seesOnlyChildren: specialist.sees_only_children?,
             isNew: specialist.new?,
@@ -318,7 +319,7 @@ module Denormalized
     end,
     divisions: Module.new do
       def self.call
-        Division.standard.inject({}) do |memo, division|
+        Division.all.inject({}) do |memo, division|
           memo.merge(division.id => {
             id: division.id,
             name: division.name,
@@ -404,6 +405,16 @@ module Denormalized
           endDate: item.end_date,
           collectionName: "newsItems"
         })
+      end
+    end,
+    issues: Proc.new do
+      Issue.includes(:assignees).inject({}) do |memo, issue|
+        memo.merge(issue.id => issue.to_hash)
+      end
+    end,
+    change_requests: Proc.new do
+      Issue.change_request.includes(:assignees).inject({}) do |memo, issue|
+        memo.merge(issue.id => issue.to_hash)
       end
     end
   }

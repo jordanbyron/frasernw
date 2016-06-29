@@ -5,7 +5,7 @@ import nextAction from "middlewares/next_action";
 import { createStore, applyMiddleware } from "redux";
 import { useQueries } from 'history';
 import ReactDOM from "react-dom";
-import rootReducer from "dry_reducers/root_reducer";
+import rootReducer from "reducers/root_reducer";
 import React from "react";
 import changeTab from "middlewares/change_tab";
 import {

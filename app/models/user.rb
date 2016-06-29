@@ -43,6 +43,11 @@ class User < ActiveRecord::Base
   has_many :divisions, through: :user_divisions
 
   has_many :favorites
+  has_many :issue_assignments, dependent: :destroy
+  has_many :assigned_issues,
+    through: :issue_assignments,
+    class_name: "Issue"
+  has_many :issue_subscriptions, dependent: :destroy
 
   has_many :favorite_specialists,
     through: :favorites,
@@ -87,10 +92,6 @@ class User < ActiveRecord::Base
     through: :specialization_options,
     class_name: "Specialization",
     source: :specialization
-
-  has_many :user_cities, dependent: :destroy
-
-  has_many :user_city_specializations, through: :user_cities
 
   has_many :subscriptions, dependent: :destroy
 
@@ -146,6 +147,10 @@ class User < ActiveRecord::Base
 
   def self.user
     where("users.role = 'user'")
+  end
+
+  def self.developer
+    where(is_developer: true)
   end
 
   def self.active_user
@@ -310,12 +315,6 @@ class User < ActiveRecord::Base
         present?
     end
     does_own
-  end
-
-  def local_referral_cities(specialization)
-    return user_city_specializations.
-      reject{ |ucs| ucs.specialization_id != specialization.id }.
-      map{ |ucs| ucs.user_city.city }
   end
 
   def self.csv_import(file, divisions, type_mask, role)

@@ -13,6 +13,9 @@ class Ability
       can :index, :terms_and_conditions
       can :get, :global_data
       can :index, Newsletter
+      can :index, Video
+      can :show, Video
+
       can :index, :latest_updates
 
       if user.as_super_admin?
@@ -26,6 +29,9 @@ class Ability
         can :view_report, :referents_by_specialty
         can :view_report, :entity_page_views
         can :view_report, :user_ids
+
+        can [:show, :toggle_subscription], Issue
+        can [:index, :show], :change_requests
 
         can :index, Report
 
@@ -78,9 +84,7 @@ class Ability
           :change_email,
           :update_email,
           :change_password,
-          :update_password,
-          :change_local_referral_area,
-          :update_local_referral_area
+          :update_password
         ], User
 
         can [:index, :new, :create, :show, :copy], NewsItem
@@ -145,9 +149,7 @@ class Ability
           :change_email,
           :update_email,
           :change_password,
-          :update_password,
-          :change_local_referral_area,
-          :update_local_referral_area
+          :update_password
         ], User
 
         can [:create, :show], FeedbackItem
@@ -191,9 +193,7 @@ class Ability
           :change_email,
           :update_email,
           :change_password,
-          :update_password,
-          :change_local_referral_area,
-          :update_local_referral_area
+          :update_password
         ], User
 
         can [:create, :show], FeedbackItem

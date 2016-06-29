@@ -165,4 +165,8 @@ class ProcedureSpecialization < ActiveRecord::Base
   def specialization_name
     specialization.name
   end
+
+  def specialization_present?
+    specialization.present?
+  end
 end

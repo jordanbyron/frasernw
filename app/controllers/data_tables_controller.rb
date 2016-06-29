@@ -7,6 +7,6 @@ class DataTablesController < ApplicationController
       clinics: Denormalized.fetch(:clinics)
     })
 
-    render text: json, content_type: :json
+    render text: json, content_type: "application/json"
   end
 end

@@ -56,6 +56,10 @@ class NewsItem < ActiveRecord::Base
     create_demoable_news_item
   end
 
+  def demoable?
+    demoable_news_item.present?
+  end
+
   def copyable_to(user)
     self.class.permitted_division_assignments(user) - [ owner_division ]
   end

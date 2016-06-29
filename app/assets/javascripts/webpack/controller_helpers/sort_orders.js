@@ -27,6 +27,10 @@ const sortOrders = (model) => {
     return reversed(model);
   }
 
+  if (_.includes(["/issues"], matchedRoute(model))) {
+    return reversed(model);
+  }
+
   return matching(model);
 };
 

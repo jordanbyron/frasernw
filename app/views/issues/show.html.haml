@@ -1,0 +1,82 @@
+- set_page_specific_title @issue.label
+
+.content-wrapper
+  %h2= @issue.label(numbered: current_user.as_super_admin?)
+  %p.space
+    %strong Description:
+  %p
+    = @issue.description
+  %p.space
+    %strong Source:
+    %span
+      = @issue.source
+    - if @issue.change_request?
+      = "##{@issue.source_id}"
+  %p.space
+    %strong Completion Estimate:
+    = @issue.completion_estimate
+  %p.space
+    %strong Progress:
+    = @issue.progress
+  %p.space
+    %strong Effort Estimate:
+    = @issue.effort_estimate
+  - if @issue.change_request? && @issue.priority.present?
+    %p.space
+      %strong Priority:
+      = @issue.priority
+  %p.space
+    %strong Date Entered:
+    = @issue.date_entered
+  - if @issue.completed?
+    %p.space
+      %strong Date Completed:
+      = @issue.date_completed
+  - if !@issue.completed? && @issue.assignees.any?
+    %p.space
+      %strong Assignee(s):
+      = @issue.assignees_label
+
+
+  - if current_user.as_super_admin?
+    %h6 Subscribed Users
+    - if @issue.subscribers.none?
+      %p= "(None)"
+    %ul
+      - @issue.subscribers.each do |subscriber|
+        %li= subscriber.name
+
+  %p
+    #react--issue_subscription_toggle{style: "margin-top: 20px;"}
+
+  - if current_user.as_super_admin?
+
+    %hr
+
+    .btn-group
+      - if can? :update, @issue
+        = link_to edit_issue_path(@issue),
+          class: "btn" do
+          %i.icon-pencil
+          %span= " Edit"
+      - if can? :destroy, @issue
+        = link_to issue_path(@issue),
+          method: :delete,
+          class: "btn" do
+          %i.icon-trash
+          %span= " Delete"
+
+    %hr
+
+    = link_to "< All Issues",
+      issues_path
+
+
+:javascript
+  window.pathways.bootstrapSubscriptionToggle(
+    "react--issue_subscription_toggle",
+    {
+      subscribed: #{@issue.subscribers.include?(current_user)},
+      issueId: #{@issue.id}
+    }
+  );

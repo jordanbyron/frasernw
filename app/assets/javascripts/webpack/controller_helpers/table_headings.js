@@ -12,6 +12,10 @@ export const selectedTableHeadingKey = ((model) => {
   )
 })
 
+export const canSelectSort = ((model) => {
+  return !_.includes(["/issues", "/change_requests"], matchedRoute(model));
+})
+
 const defaultHeadingKey = ((model) => {
   if (_.includes(["specialists", "clinics"], collectionShownName(model))){
     return "REFERRALS";
@@ -33,7 +37,7 @@ const defaultHeadingKey = ((model) => {
 export const headingArrowDirection = ((model) => {
   return _.get(
     model,
-    ["ui", "tabs", selectedTabKey(model), "selectedTableHeading", "direction"], 
+    ["ui", "tabs", selectedTabKey(model), "selectedTableHeading", "direction"],
     "DOWN"
   );
 })

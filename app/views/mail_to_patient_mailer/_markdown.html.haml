@@ -1,0 +1,13 @@
+%p
+  #{@user.name} has sent you a link to a medical resource, "#{@sc_item.title}".
+%p
+  The full resource is included below.
+  %a{ href: sc_item_url(@sc_item) }
+    You can also see the resource on Pathways (requires log-in).
+%br
+
+#markdown_content__container{ style: "padding: 5px; background-color: #bde2f5" }
+  #markdown_content__wrapper{ style: "margin: 10px; padding: 20px; background-color: white" }
+    %p{ style: "color: #c44d58; font-family: Bitter; font-size: 20px; line-height: 30px;" }
+      = @sc_item.title
+    = @markdown_content
