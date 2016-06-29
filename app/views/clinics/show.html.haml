@@ -1,6 +1,6 @@
 - set_page_specific_title "#{@clinic.name}"
 
-- specialization = (current_user.as_admin_or_super? ? @clinic.specializations : @clinic.specializations.not_in_progress_for_divisions(current_user.as_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
+- specialization = (current_user.as_admin_or_super? ? @clinic.specializations.for(user) || Specialization.shown_in(Division.all).first
 
 - favorite_class = logged_in? ? (Favorite.find_by(user_id: current_user.id, favoritable_id: @clinic.id, favoritable_type: "Clinic").present? ? "icon-red" : "icon-text") : "icon-text"
 
@@ -9,7 +9,7 @@
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
       All Specialties
       %b.caret
-  %li.subsequent{class: specialization.fully_in_progress_for_divisions(current_user.as_divisions) && "in-progress"}
+  %li.subsequent{class: specialization.hidden_in?(*current_user.as_divisions) && "in-progress"}
     = link_to specialization.name, specialization_path(specialization), class: 'ajax'
     = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user.as_divisions)
 
@@ -39,8 +39,8 @@
                 %i.icon-heart{"id" => "user_favorite_clinics_#{@clinic.id}"}
 
             %h3.specialty_links
-              - self_in_progress = @clinic.in_progress
-              = @clinic.specializations.reject{ |s| !self_in_progress && s.fully_in_progress_for_divisions(@clinic.divisions) }.map{ |s| "<a href='#{specialization_path(s)}' class='#{ s.fully_in_progress_for_divisions(@clinic.divisions) ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
+              - unless @clinic.in_progress
+                = @clinic.specializations.map{ |s| "<a href='#{specialization_path(s)}'>#{s.name}</a>" }.to_sentence.html_safe
 
             %p.space.no_indent
               %i{class: @clinic.status_class}

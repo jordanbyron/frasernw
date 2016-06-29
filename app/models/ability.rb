@@ -138,8 +138,6 @@ class Ability
           ScItem
         ]
 
-        can :city, Specialization
-
         can [:print_office_information, :print_clinic_information], Specialist
         can [:print_location_information], Clinic
 
@@ -166,12 +164,17 @@ class Ability
         can :view_history, Historical
 
       elsif user.as_user?
-        can :show, [Specialization, Procedure] do |entity|
-          !entity.fully_in_progress_for_divisions(Division.all)
+        can :show, Specialization do |entity|
+          entity.specialization_options.reject(&:hide_from_own_users).any?
         end
 
-        can :city, Specialization do |entity|
-          !entity.fully_in_progress_for_divisions(Division.all)
+        can :show, Procedure do |entity|
+          entity.
+            specializations.
+            map(&:specialization_options).
+            flatten.
+            reject(&:hide_from_own_users).
+            any?
         end
 
         can :show, [Specialist, Clinic] do |entity|

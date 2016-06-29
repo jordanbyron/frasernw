@@ -171,6 +171,11 @@ class Clinic < ActiveRecord::Base
   end
 
   def in_progress
+    divisions.length.any? &&
+      specializations.showns_entries_from(divisions).none?
+  end
+
+  def in_progress
     (divisions.length > 0) && (
       SpecializationOption.
         not_in_progress_for_divisions_and_specializations(

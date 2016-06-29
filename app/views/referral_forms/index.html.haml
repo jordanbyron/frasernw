@@ -8,15 +8,14 @@
       All Specialties
       %b.caret
 
-%script{"type" => "text/javascript"}
-  :plain
-    var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); return false; });
-    $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
-    $(document).ready(function() { update_favorites() });
+:javascript
+  var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); return false; });
+  $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
+  $(document).ready(function() { update_favorites() });
 
 #specialties-dropdown-menu
   .inner
-    - specializations = current_user.as_admin_or_super? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user.as_divisions).uniq
+    - specializations = Specialization.for(current_user)
     - first = specializations[0, (specializations.length / 4.0).ceil]
     - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
     - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
@@ -26,17 +25,17 @@
       %ul
         - list.each do |specialization|
           %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user.as_divisions) ? "in-progress" : ""}
+            %a{href: specialization_path(specialization), class: specialization.hidden_in?(*current_user.as_divisions) ? "in-progress" : ""}
               = specialization.name
-              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user.as_divisions)
+              - if specialization.new_for_divisions(current_user.as_divisions)
+                %span.new= "new"
 
 .content-wrapper
 
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready(function() {
-        $('.tablesorter').tablesorter({sortList: [[0,0],[1,0],[2,0]]});
-      });
+  :javascript
+    $(document).ready(function() {
+      $('.tablesorter').tablesorter({sortList: [[0,0],[1,0],[2,0]]});
+    });
 
 
   %h2 Referral Forms
@@ -110,20 +109,19 @@
                   %label
                     %input.fs{"type" => "radio", "name" => "fs", "id" => "fs#{s.id}_"}= s.name
 
-      %script{"type" => "text/javascript"}
-        :plain
-          $('table tbody tr').click( function() {
-            var link = $(this).find('td.title a');
-            if (link.hasClass('ajax'))
-            {
-              link.click();
-            }
-            else
-            {
-              window.open(link.attr('href'));
-            }
-          });
-          $('table tr a').click( function(e) { e.stopPropagation(); });
-          $(document).ready(function() {
-            $("input.ft, input.fs").click( update_referral_form_table );
-          });
+      :javascript
+        $('table tbody tr').click( function() {
+          var link = $(this).find('td.title a');
+          if (link.hasClass('ajax'))
+          {
+            link.click();
+          }
+          else
+          {
+            window.open(link.attr('href'));
+          }
+        });
+        $('table tr a').click( function(e) { e.stopPropagation(); });
+        $(document).ready(function() {
+          $("input.ft, input.fs").click( update_referral_form_table );
+        });

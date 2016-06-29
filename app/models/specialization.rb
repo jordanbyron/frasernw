@@ -38,6 +38,36 @@ class Specialization < ActiveRecord::Base
 
   default_scope { order('specializations.name') }
 
+  def self.for(user)
+    if user.as_admin_or_super?
+      all
+    else
+      shown_in(divisions)
+    end
+  end
+
+  def hidden_in?(*divisions)
+    specialization_options.for_divisions(divisions).all?(:hide_from_own_users?)
+  end
+
+  def self.shown_in(divisions)
+    joins(:specialization_options).where(
+      'specialization_options.division_id IN (?) '\
+        'AND specialization_options.hide_from_own_users = (?)',
+      divisions.map(&:id),
+      false
+    ).uniq
+  end
+
+  def self.shows_entries_from(divisions)
+    joins(:specialization_options).where(
+      'specialization_options.division_id IN (?) '\
+        'AND specialization_options.hide_own_entries = (?)',
+      divisions.map(&:id),
+      false
+    ).uniq
+  end
+
   def self.cache_key
     max_updated_at = maximum(:updated_at).try(:utc).try(:to_s, :number)
     sum_of_ids =
@@ -89,22 +119,20 @@ class Specialization < ActiveRecord::Base
     )
   end
 
-  def self.not_in_progress_for_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
+  def self.for_users_in(divisions)
     joins(:specialization_options).where(
       '"specialization_options"."division_id" IN (?) '\
-        'AND "specialization_options"."in_progress" = (?)',
-      division_ids,
+        'AND "specialization_options"."hide_from_own_users" = (?)',
+      divisions.map(&:id),
       false
-    )
+    ).uniq
   end
 
   def self.new_for_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
     joins(:specialization_options).where(
       '"specialization_options"."division_id" IN (?) '\
         'AND "specialization_options"."is_new" = (?)',
-      division_ids,
+      divisions.map(&:id),
       true
     )
   end
@@ -113,14 +141,17 @@ class Specialization < ActiveRecord::Base
     specialization_options.reject{ |so| so.in_progress }.length > 0
   end
 
+  def options_for(divisions)
+    specialization_options.for_divisions(divisions)
+  end
+
   def fully_in_progress
     specialization_options.reject{ |so| so.in_progress }.length == 0
   end
 
   def fully_in_progress_for_divisions(divisions)
-    (specialization_options.for_divisions(divisions).length > 0) &&
-    (specialization_options.for_divisions(divisions).
-      reject{ |so| so.in_progress }.length == 0)
+    specialization_options.for_divisions(divisions).any? &&
+      specialization_options.for_divisions(divisions).all?(&:in_progress)
   end
 
   def new_for_divisions(divisions)

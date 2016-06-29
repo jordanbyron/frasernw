@@ -25,7 +25,7 @@
               - clinics = specialization.clinics.in_divisions([division]).sort do |a,b|
                 - a.name <=> b.name
               - next if clinics.blank?
-              %tr{ class: specialization.fully_in_progress_for_divisions([division]) ? "in-progress" : "" }
+              %tr{ class: specialization.hidden_in?(division) && "in-progress"}
                 %th{ style: "width:100%" }= specialization.name
                 %th.admin
 

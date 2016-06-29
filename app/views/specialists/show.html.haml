@@ -4,6 +4,7 @@
 
 - favorite_class = logged_in? ? (Favorite.find_by(user_id: current_user.id, favoritable_id: @specialist.id, favoritable_type: "Specialist").present? ? "icon-red" : "icon-text") : "icon-text"
 
+
 %ul#specialties-menu
   %li.dropdown
     %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}

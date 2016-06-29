@@ -174,14 +174,6 @@ module ApplicationHelper
     ScItem.safe_find(953) # the Pathways User Guide pdf on production
   end
 
-  def global_search_data
-    GlobalSearchData.new.data
-  end
-
-  def search_data_labels
-    SearchDataLabels.new
-  end
-
   def localstorage_cache_version
     Setting.fetch(:localstorage_cache_version)
   end
