@@ -244,12 +244,17 @@ const Result = ({model, dispatch, decoratedRecord}) => {
 }
 
 const resultClassname = (decoratedRecord, model) => {
+  let classes = ["search-result"]
+
   if(decoratedRecord.index === selectedSearchResult(model)){
-    return "search-result selected";
+    classes.push("selected");
   }
-  else {
-    return "search-result"
+
+  if(decoratedRecord.raw.hidden) {
+    classes.push("in-progress");
   }
+
+  return classes.join(" ");
 }
 
 const InnerResult = ({record, model}) => {

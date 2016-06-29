@@ -116,7 +116,8 @@ module Denormalized
               map(&:service_type),
             respondedToSurvey: !specialist.not_responded? &&
               !specialist.purposely_not_yet_surveyed?,
-            isAvailable: !specialist.not_available?
+            isAvailable: !specialist.not_available?,
+            hidden: specialist.hidden?
           })
         end
       end
@@ -178,7 +179,8 @@ module Denormalized
             teleserviceFeeTypes: clinic.
               teleservices.
               select(&:offered?).
-              map(&:service_type)
+              map(&:service_type),
+            hidden: clinic.hidden?
           })
         end
       end

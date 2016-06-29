@@ -30,7 +30,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
     if(_.includes(["specialists", "clinics"], collectionShownName(model))) {
       if(showingMultipleSpecializations(model)) {
         return(
-          <tr>
+          <tr className={decoratedRecord.raw.hidden ? "in-progress" : ""}>
             <ReferentName decoratedRecord={decoratedRecord} model={model}/>
             <ReferentSpecializations decoratedRecord={decoratedRecord} model={model}/>
             <td><ReferentStatusIcon model={model} record={decoratedRecord.raw} tooltip={true}/></td>
@@ -41,7 +41,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       }
       else {
         return(
-          <tr>
+          <tr className={decoratedRecord.raw.hidden ? "in-progress" : ""}>
             <ReferentName decoratedRecord={decoratedRecord} model={model}/>
             <td><ReferentStatusIcon model={model} record={decoratedRecord.raw} tooltip={true}/></td>
             <td>{ decoratedRecord.waittime }</td>

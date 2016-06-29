@@ -41,6 +41,7 @@
   = f.input :name
   .no-print
     = f.input :categorization_mask, as: :select, collection: Clinic::CATEGORIZATION_LABELS, label_method: :last, value_method: :first, :include_blank => false
+    = f.input :hidden, label: "Hide from users"
   .no-print
     = f.association :specializations,
       as: :check_boxes,

@@ -2,6 +2,10 @@ import _ from "lodash";
 import { memoizePerRender } from "utils";
 
 export const searchResults = ((model) => {
+  if(!model.app.currentUser){
+    return [];
+  }
+
   return toSearch(model).
     map((record) => decorateWithScore(record, model)).
     filter((decoratedRecord) => {
@@ -113,6 +117,15 @@ const filters = (model) => {
       decoratedRecord.raw.collectionName
     ) || notInProgress(decoratedRecord, model)
   })
+
+  if (model.app.currentUser.role === "user"){
+    filters.push((decoratedRecord) => {
+      return !_.includes(
+        ["clinics", "specialists"],
+        decoratedRecord.raw.collectionName
+      ) || !decoratedRecord.raw.hidden
+    })
+  }
 
   return filters;
 }

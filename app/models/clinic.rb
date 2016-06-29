@@ -66,7 +66,8 @@ class Clinic < ActiveRecord::Base
     :admin_notes,
     :referral_forms_attributes,
     :clinic_locations_attributes,
-    :review_object
+    :review_object,
+    :hidden
 
   has_many :clinic_specializations, dependent: :destroy
   has_many :specializations, through: :clinic_specializations

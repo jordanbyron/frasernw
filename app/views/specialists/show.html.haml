@@ -43,10 +43,12 @@
               .image{class: !@specialist.photo.present? && "empty"}
                 - if @specialist.photo.present?
                   %img{"src" => @specialist.photo.url(:thumb)}
-            %h2
-              = @specialist.name
+            %h2.profile_header__title{class: (@specialist.hidden? ? "in-progress" : "")}
+              %span= @specialist.name
               %a{"href" => "javascript:void(0)", "onclick" => "favorite('specialists',#{@specialist.id},'#{escape_javascript(@specialist.name)}')", "title" => "Favourite / un-favourite"}
                 %i.icon-heart{"id" => "user_favorite_specialists_#{@specialist.id}"}
+            - if @specialist.hidden?
+              %h5= " (Hidden from users)"
             %h3.specialty_links
               - if @specialist.specializations.length <= 1 && @specialist.is_gp && @specialist.specializations.has_family_practice?
                 GP

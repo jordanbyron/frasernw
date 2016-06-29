@@ -72,7 +72,8 @@ class Specialist < ActiveRecord::Base
     :specialist_offices_attributes,
     :admin_notes,
     :referral_forms_attributes,
-    :review_object
+    :review_object,
+    :hidden
 
   # specialists can have multiple specializations
   has_many :specialist_specializations, dependent: :destroy

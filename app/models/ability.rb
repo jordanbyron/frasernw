@@ -130,11 +130,11 @@ class Ability
         can :show, [
           Specialization,
           Procedure,
-          Specialist,
-          Clinic,
           Hospital,
           Language,
           ScCategory,
+          Specialist,
+          Clinic,
           ScItem
         ]
 
@@ -175,7 +175,9 @@ class Ability
         end
 
         can :show, [Specialist, Clinic] do |entity|
-          !entity.in_progress
+          !entity.hidden? &&
+            !entity.in_progress &&
+            !entity.controlling_users.include?(user)
         end
 
         can :show, ScItem do |item|

@@ -138,3 +138,7 @@
     }
   }
 }
+
+#content #container .table tbody tr.in-progress:hover td {
+  background-color: transparent;
+}
