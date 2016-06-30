@@ -78,7 +78,7 @@ class Specialization < ActiveRecord::Base
   def hidden_in_divisions
     specialization_options.
       includes(:division).
-      where(hidden_for_division_users: true).
+      where(hide_from_division_users: true).
       map(&:division)
   end
 

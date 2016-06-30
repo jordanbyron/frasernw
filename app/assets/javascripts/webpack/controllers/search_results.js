@@ -5,13 +5,15 @@ import {
   selectedGeographicFilter,
   selectedSearchResult,
   link,
-  recordAnalytics
+  recordAnalytics,
+  highlightSelectedSearchResult
 } from "controller_helpers/search_results";
 import {
   selectCollectionFilter,
   selectGeographicFilter,
   closeSearch,
-  searchResultSelected
+  searchResultSelected,
+  hoverLeaveSearchResult
 } from "action_creators";
 import ReferentStatusIcon from "controllers/referent_status_icon";
 import _ from "lodash";
@@ -60,7 +62,6 @@ const enablePageScroll = () => {
   $("body").css("padding-bottom", "");
   $("body").css("overflow", "");
 }
-
 
 const SearchResults = ({model, dispatch}) => {
   if(searchResults(model).pwPipe(_.some)){
@@ -235,10 +236,14 @@ const GroupHeading = ({model, dispatch, label}) => {
 
 const Result = ({model, dispatch, decoratedRecord}) => {
   return(
-    <li className={resultClassname(decoratedRecord, model)}
-      onMouseEnter={_.partial(searchResultSelected, dispatch, decoratedRecord.index)}
-    >
-      <InnerResult record={decoratedRecord.raw} model={model}/>
+    <li className={resultClassname(decoratedRecord, model)}>
+      <a href={link(decoratedRecord.raw)}
+        onClick={_.partial(recordAnalytics, decoratedRecord.raw, model)}
+        onMouseEnter={_.partial(searchResultSelected, dispatch, decoratedRecord.index)}
+        onMouseLeave={_.partial(hoverLeaveSearchResult, dispatch)}
+      >
+        { InnerResult(decoratedRecord.raw, model) }
+      </a>
     </li>
   );
 }
@@ -246,7 +251,9 @@ const Result = ({model, dispatch, decoratedRecord}) => {
 const resultClassname = (decoratedRecord, model) => {
   let classes = ["search-result"]
 
-  if(decoratedRecord.index === selectedSearchResult(model)){
+  if(decoratedRecord.index === selectedSearchResult(model) &&
+    highlightSelectedSearchResult(model)){
+
     classes.push("selected");
   }
 
@@ -257,28 +264,34 @@ const resultClassname = (decoratedRecord, model) => {
   return classes.join(" ");
 }
 
-const InnerResult = ({record, model}) => {
+const InnerResult = (record, model) => {
   if (_.includes(["specialists", "clinics"], record.collectionName)){
     return(
-      <a href={link(record)} onClick={_.partial(recordAnalytics, record, model)}>
-        <div className="search_name">
+      [
+        <div className="search_name" key="name">
           <ReferentStatusIcon record={record} model={model}/>
           <span style={{marginLeft: "5px"}}>{label(record)}</span>
-        </div>
-        <div className="search_specialties">
-          { record.specializationIds.join(", ") }
-        </div>
-        <div className="search_city">
+        </div>,
+        <div className="search_specialties" key="specialties">
+          {
+            record.
+              specializationIds.
+              map(_.propertyOf(model.app.specializations)).
+              map(_.property("name")).
+              join(", ")
+          }
+        </div>,
+        <div className="search_city" key="city">
           { cities(record).map((id) => model.app.cities[id].name).join(", ") }
         </div>
-      </a>
+      ]
     );
   }
   else if (record.collectionName === "procedures"){
     return(
-      <a href={link(record)} onClick={_.partial(recordAnalytics, record, model)}>
-        <div className="search_name">{label(record)}</div>
-        <div className="search_specialties no_city">
+      [
+        <div className="search_name" key="name">{label(record)}</div>,
+        <div className="search_specialties no_city" key="specialties">
           {
             record.
               specializationIds.
@@ -286,14 +299,14 @@ const InnerResult = ({record, model}) => {
               join(", ")
           }
         </div>
-      </a>
+      ]
     );
   }
   else {
     return(
-      <a href={link(record)} onClick={_.partial(recordAnalytics, record, model)}>
-        <div className="search_name full_width">{label(record)}</div>
-      </a>
+      [
+        <div className="search_name full_width" key="name">{label(record)}</div>
+      ]
     );
   }
 }

@@ -31,9 +31,23 @@ const ui = (model = {}, action) => {
       searchCollectionFilter: searchCollectionFilter(model.searchCollectionFilter, action),
       searchGeographicFilter: searchGeographicFilter(model.searchGeographicFilter, action),
       selectedSearchResult: selectedSearchResult(model.selectedSearchResult, action),
+      highlightSelectedSearchResult: highlightSelectedSearchResult(
+        model.highlightSelectedSearchResult,
+        action
+      )
     };
   }
 };
+
+const highlightSelectedSearchResult = (model, action) => {
+  switch(action.type){
+  case "HOVER_LEAVE_SEARCH_RESULT":
+    return false;
+  default:
+    return true;
+  }
+}
+
 
 const selectedSearchResult = (model, action) => {
   switch(action.type){

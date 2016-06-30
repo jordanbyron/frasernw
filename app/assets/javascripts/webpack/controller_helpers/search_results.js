@@ -95,7 +95,7 @@ const filters = (model) => {
       return !_.includes(
         ["clinics", "specialists"],
         decoratedRecord.raw.collectionName
-      ) || inLocalReferralArea(decoratedRecord, model)
+      ) || shownInLocalReferralArea(decoratedRecord, model)
     })
   }
 
@@ -116,12 +116,23 @@ export const selectedSearchResult = (model) => {
   )
 }
 
-const inLocalReferralArea = (decoratedRecord, model) => {
+export const highlightSelectedSearchResult = (model) => {
+  return _.get(
+    model,
+    ["ui", "highlightSelectedSearchResult"],
+    true
+  );
+}
+
+const shownInLocalReferralArea = (decoratedRecord, model) => {
   return _.some(model.app.currentUser.divisionIds, (divisionId) => {
     return _.some(
       decoratedRecord.raw.specializationIds,
       (specializationId) => {
-        return _.intersection(
+        return !_.includes(
+          model.app.specializations[specializationId].hiddenInDivisionIds,
+          divisionId
+        ) && _.intersection(
           model.app.divisions[divisionId].referralCities[specializationId],
           decoratedRecord.raw.cityIds
         ).pwPipe(_.any)

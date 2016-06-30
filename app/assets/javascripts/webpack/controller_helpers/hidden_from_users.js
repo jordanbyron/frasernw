@@ -10,7 +10,7 @@ const hiddenFromUsers = (record, model) => {
   case "specializations":
     return _.includes(specializationsShownToUser(model), record.id);
   case "procedures":
-    return _.intersection(
+    return !_.intersection(
       specializationsShownToUser(model),
       record.specializationIds
     );

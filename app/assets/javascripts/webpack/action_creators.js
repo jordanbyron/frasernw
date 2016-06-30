@@ -296,3 +296,9 @@ export const searchResultSelected = (dispatch, proposed) => {
     proposed: proposed
   });
 }
+
+export const hoverLeaveSearchResult = (dispatch) => {
+  dispatch({
+    type: "HOVER_LEAVE_SEARCH_RESULT"
+  });
+}

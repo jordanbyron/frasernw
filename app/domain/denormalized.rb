@@ -344,7 +344,7 @@ module Denormalized
                   division
                 ) )
               end,
-            showingSpecializationIds: division.showing_specialization.map(&:id)
+            showingSpecializationIds: division.showing_specializations.map(&:id)
           })
         end
       end

@@ -1,6 +1,7 @@
 - set_page_specific_title "Home"
 
-= render "partials/all_specialties_dropdown"
+= render "partials/all_specialties_dropdown",
+  specialization: nil
 
 %script{"type" => "text/javascript"}
   $(document).ready(function() { update_favorites() });
