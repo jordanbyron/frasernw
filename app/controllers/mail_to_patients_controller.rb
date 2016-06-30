@@ -19,7 +19,8 @@ class MailToPatientsController < ApplicationController
       ScItemMailing.create(
         sc_item_id: @sc_item.id,
         user_id: current_user.id,
-        user_division_ids: current_user.divisions.map(&:id)
+        user_division_ids: current_user.divisions.map(&:id),
+        user_role: current_user.role
       )
       redirect_to @sc_item, alert: "Successfully sent e-mail to patient."
     end
