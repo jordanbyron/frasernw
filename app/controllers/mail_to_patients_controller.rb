@@ -16,6 +16,11 @@ class MailToPatientsController < ApplicationController
       @sc_item = ScItem.find(params[:sc_item_id])
       @patient_email = params[:patient_email]
       @sc_item.mail_to_patient(current_user, @patient_email)
+      ScItemMailing.create(
+        sc_item_id: @sc_item.id,
+        user_id: current_user.id,
+        user_division_ids: current_user.divisions.map(&:id)
+      )
       redirect_to @sc_item, alert: "Successfully sent e-mail to patient."
     end
   end
