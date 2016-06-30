@@ -258,7 +258,7 @@ export const closeFeedbackModal = (dispatch) => {
 
 export const searchFocused = (dispatch, isFocused) => {
   dispatch({
-    type: "SEARCH_FOCUSED",
+    type: "SEARCH_FOCUS_CHANGED",
     proposed: isFocused
   });
 }
@@ -270,14 +270,18 @@ export const termSearched = (dispatch, term) => {
   });
 }
 
-export const selectCollectionFilter = (dispatch, label) => {
+export const selectCollectionFilter = (dispatch, label, event) => {
+  event.preventDefault();
+
   dispatch({
     type: "SEARCH_COLLECTION_FILTER",
     proposed: label
   });
 }
 
-export const selectGeographicFilter = (dispatch, label) => {
+export const selectGeographicFilter = (dispatch, label, event) => {
+  event.preventDefault();
+
   dispatch({
     type: "SEARCH_GEOGRAPHIC_FILTER",
     proposed: label

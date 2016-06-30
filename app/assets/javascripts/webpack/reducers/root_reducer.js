@@ -84,6 +84,13 @@ const searchTerm = (model, action) => {
     return action.proposed;
   case "CLOSE_SEARCH":
     return "";
+  case "SEARCH_FOCUS_CHANGED":
+    if(action.proposed){
+      return model;
+    }
+    else {
+      return "";
+    }
   default:
     return model;
   }
@@ -91,7 +98,7 @@ const searchTerm = (model, action) => {
 
 const searchIsFocused = (model, action) => {
   switch(action.type){
-  case "SEARCH_FOCUSED":
+  case "SEARCH_FOCUS_CHANGED":
     return action.proposed;
   default:
     return model;

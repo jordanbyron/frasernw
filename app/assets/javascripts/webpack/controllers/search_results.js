@@ -138,7 +138,7 @@ const GeographicFilterTab = ({model, dispatch, label}) => {
 
   return(
     <li className={`livesearch__search-scope ${selectedClassName}`}
-      onClick={_.partial(selectGeographicFilter, dispatch, label)}
+      onMouseDown={_.partial(selectGeographicFilter, dispatch, label)}
     >
       <a>{ label }</a>
     </li>
@@ -188,7 +188,7 @@ const CollectionFilterTab = ({model, dispatch, label}) => {
 
   return(
     <li className={`livesearch__search-category ${selectedClassName}`}
-      onClick={_.partial(selectCollectionFilter, dispatch, label)}
+      onMouseDown={_.partial(selectCollectionFilter, dispatch, label)}
     >
       <a>{ label }</a>
     </li>
@@ -224,7 +224,8 @@ const key = (record) => {
 };
 
 const shouldDisplay = (model) => {
-  return !_.isUndefined(model.ui.searchTerm) &&
+  return (model.ui.searchIsFocused || false) &&
+    !_.isUndefined(model.ui.searchTerm) &&
     model.ui.searchTerm.length > 0;
 };
 
