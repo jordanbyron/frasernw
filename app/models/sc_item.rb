@@ -86,22 +86,6 @@ class ScItem < ActiveRecord::Base
     Rails.cache.delete([self.class.name, id])
   end
 
-  def not_in_progress
-    division.blank? || (
-      SpecializationOption.
-        not_in_progress_for_divisions_and_specializations([division], specializations).
-        length > 0
-    )
-  end
-
-  def in_progress
-    division.present? && (
-      SpecializationOption.
-        not_in_progress_for_divisions_and_specializations(divisions, specializations).
-        length == 0
-    )
-  end
-
   def self.for_specialization_in_divisions(specialization, divisions)
     division_ids = divisions.map{ |d| d.id }
     owned = joins(:sc_item_specializations).where(
@@ -232,8 +216,6 @@ class ScItem < ActiveRecord::Base
   end
 
   def available_to_divisions
-    return [] if in_progress
-
     if shareable
       [ division ] | divisions_sharing
     else
@@ -246,12 +228,12 @@ class ScItem < ActiveRecord::Base
       (divisions.include? division) || (
         shareable? && (divisions & divisions_sharing).present?
       )
-    ) && !in_progress
+    )
   end
 
   def borrowable_by_divisions
     @borrowable_by_divisions ||= begin
-      if in_progress || !shareable
+      if !shareable
         []
       else
         Division.not_hidden - available_to_divisions

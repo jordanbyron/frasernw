@@ -12,7 +12,7 @@
       %th.admin
 
     - @cities.each do |city|
-      %tr{:class => city.hidden? && "in-progress"}
+      %tr{:class => city.hidden? && "hidden-from-users"}
         %td= link_to city.name, city, :class => 'ajax'
         %td= city.province
         %td= city.divisions.map{ |d| d.name }.to_sentence

@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { memoizePerRender } from "utils";
+import hiddenFromUsers from "controller_helpers/hidden_from_users";
 
 export const searchResults = ((model) => {
   if(!model.app.currentUser){
@@ -97,33 +98,10 @@ const filters = (model) => {
       ) || inLocalReferralArea(decoratedRecord, model)
     })
   }
-  else {
-    filters.push((decoratedRecord) => {
-      return !_.includes(
-        ["clinics", "specialists", "contentItems", "specializationIds"],
-        decoratedRecord.raw.collectionName
-      ) || specializationsShownToUser(decoratedRecord.raw, model).pwPipe(_.some)
-    })
-  }
-
-  filters.push((decoratedRecord) => {
-    return decoratedRecord.raw.collectionName !== "specializations" ||
-      specializationComplete(decoratedRecord.raw.id, model);
-  })
-
-  filters.push((decoratedRecord) => {
-    return !_.includes(
-      ["clinics", "specialists"],
-      decoratedRecord.raw.collectionName
-    ) || notInProgress(decoratedRecord, model)
-  })
 
   if (model.app.currentUser.role === "user"){
     filters.push((decoratedRecord) => {
-      return !_.includes(
-        ["clinics", "specialists"],
-        decoratedRecord.raw.collectionName
-      ) || !decoratedRecord.raw.hidden
+      return !hiddenFromUsers(decoratedRecord.raw, model)
     })
   }
 
@@ -138,41 +116,10 @@ export const selectedSearchResult = (model) => {
   )
 }
 
-const notInProgress = (decoratedRecord, model) => {
-  return decoratedRecord.
-    raw.
-    specializationIds.
-    filter((specializationId) => {
-      return _.some(decoratedRecord.raw.divisionIds, (divisionId) => {
-        return model.
-          app.
-          specializations[specializationId].
-          inProgressInDivisionIds.
-          indexOf(divisionId) === -1;
-      })
-    }).pwPipe(_.some)
-};
-
-const specializationComplete = (specializationId, model) => {
-  return _.some(model.app.currentUser.divisionIds, (divisionId) => {
-    return model.
-      app.
-      specializations[specializationId].
-      inProgressInDivisionIds.
-      indexOf(divisionId) === -1;
-  })
-}
-
-export const specializationsShownToUser = (record, model) => {
-  return record.
-    specializationIds.
-    filter((specializationId) => specializationComplete(specializationId, model))
-};
-
 const inLocalReferralArea = (decoratedRecord, model) => {
   return _.some(model.app.currentUser.divisionIds, (divisionId) => {
     return _.some(
-      specializationsShownToUser(decoratedRecord.raw, model),
+      decoratedRecord.raw.specializationIds,
       (specializationId) => {
         return _.intersection(
           model.app.divisions[divisionId].referralCities[specializationId],

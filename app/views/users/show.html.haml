@@ -3,7 +3,7 @@
 .content-wrapper
 
   %h2
-    %span{class: !@user.active && "in-progress"}= @user.name
+    %span{class: !@user.active && "hidden-from-users"}= @user.name
     - if !@user.active
       %h4 (INACTIVE)
 

@@ -146,27 +146,6 @@ class Specialist < ActiveRecord::Base
 
   scope :deceased, -> { where(status_mask: STATUS_MASK_DECEASED) }
 
-  def not_in_progress
-    (
-      SpecializationOption.
-      not_in_progress_for_divisions_and_specializations(divisions, specializations).
-      length > 0
-    ) || (
-      divisions.length == 0
-    )
-  end
-
-  def in_progress
-    (
-      divisions.length > 0
-    ) && (
-      SpecializationOption.
-      not_in_progress_for_divisions_and_specializations(divisions, specializations).
-      length == 0
-    )
-  end
-
-
   def self.with_cities
     includes({
       hospitals: { location: {address: :city } },

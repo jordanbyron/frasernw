@@ -5,7 +5,6 @@ import {
   selectedGeographicFilter,
   selectedSearchResult,
   link,
-  specializationsShownToUser,
   recordAnalytics
 } from "controller_helpers/search_results";
 import {
@@ -17,6 +16,7 @@ import {
 import ReferentStatusIcon from "controllers/referent_status_icon";
 import _ from "lodash";
 import ExpandingContainer from "component_helpers/expanding_container";
+import hiddenFromUsers from "controller_helpers/hidden_from_users";
 
 const SearchResultsDropdown = React.createClass({
   componentDidUpdate: function() {
@@ -250,8 +250,8 @@ const resultClassname = (decoratedRecord, model) => {
     classes.push("selected");
   }
 
-  if(decoratedRecord.raw.hidden) {
-    classes.push("in-progress");
+  if(hiddenFromUsers(decoratedRecord.raw, model)) {
+    classes.push("hidden-from-users");
   }
 
   return classes.join(" ");
@@ -266,11 +266,7 @@ const InnerResult = ({record, model}) => {
           <span style={{marginLeft: "5px"}}>{label(record)}</span>
         </div>
         <div className="search_specialties">
-          {
-            specializationsShownToUser(record, model).
-              map((id) => model.app.specializations[id].name).
-              join(", ")
-          }
+          { record.specializationIds.join(", ") }
         </div>
         <div className="search_city">
           { cities(record).map((id) => model.app.cities[id].name).join(", ") }

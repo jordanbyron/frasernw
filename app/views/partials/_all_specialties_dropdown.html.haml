@@ -1,0 +1,13 @@
+#react_root--template
+  %ul#specialties-menu
+    %li.dropdown.no-caret
+      %a.specialties-dropdown-toggle{href: "javascript:void(0)"}
+        All Specialties
+        %b.caret
+
+:javascript
+  window.pathways.dataForReact.push({
+    ui: {
+      dropdownSpecializationId: #{specialization.try(:id) || "null"}
+    }
+  });

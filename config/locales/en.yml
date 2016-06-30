@@ -75,7 +75,6 @@ en:
         respond_by_mail: "By mail to referring office"
         respond_to_patient: "Directly to the patient"
         required_investigations: "Required information / investigations for ALL referrals."
-        specializations_including_in_progress: "Specialties"
         status_details: "Additional details (if any)"
         status_mask: "Current status"
         urgent_fax: "Fax"

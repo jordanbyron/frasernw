@@ -49,34 +49,7 @@ const Template = ({model, dispatch}) => {
 };
 
 const isLoaded = (model) => {
-  switch(matchedRoute(model)){
-    case "/specialties/:id":
-      return model.app.specialists && model.app.currentUser;
-    case "/areas_of_practice/:id":
-      return model.app.specialists && model.app.currentUser;
-    case "/content_categories/:id":
-      return model.app.specialists && model.app.currentUser;
-    case "/latest_updates":
-      return model.app.currentUser;
-    case "/reports/pageviews_by_user":
-      return model.app.currentUser;
-    case "/reports/referents_by_specialty":
-      return model.app.currentUser;
-    case "/reports/entity_page_views":
-      return model.app.currentUser;
-    case "/hospitals/:id":
-      return model.app.specialists && model.app.currentUser;
-    case "/languages/:id":
-      return model.app.specialists && model.app.currentUser;
-    case "/news_items":
-      return model.app.newsItems;
-    case "/issues":
-      return model.app.currentUser;
-    case "/change_requests":
-      return model.app.currentUser;
-    default:
-      return true;
-  }
+  return model.app.currentUser && model.app.specialists;
 }
 
 const showInlineArticles = (model) => {
@@ -96,7 +69,10 @@ const usesSidebarLayout = ((model) => {
 }).pwPipe(memoizePerRender)
 
 const LowerWhitePanel = ({model, dispatch}) => {
-  if (usesSidebarLayout(model)){
+  if (matchedRoute(model) === "/"){
+    return <noscript/>
+  }
+  else if (usesSidebarLayout(model)){
     return(
       <div className="content-wrapper">
         <div className="content">

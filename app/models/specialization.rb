@@ -3,7 +3,6 @@ class Specialization < ActiveRecord::Base
     :member_name,
     :label_name,
     :suffix,
-    :in_progress,
     :specialization_options_attributes,
     :open_to_clinic
 
@@ -70,6 +69,36 @@ class Specialization < ActiveRecord::Base
     end
   end
 
+  def hidden_in?(*divisions)
+    specialization_options.
+      where(hide_from_division_users: false).
+      for_divisions(divisions).none?
+  end
+
+  def hidden_in_divisions
+    specialization_options.
+      includes(:division).
+      where(hidden_for_division_users: true).
+      map(&:division)
+  end
+
+  def self.for_users_in(*divisions)
+    joins(:specialization_options).where(
+      '"specialization_options"."division_id" IN (?) '\
+        'AND "specialization_options"."hide_from_division_users" = (?)',
+      divisions.map(&:id),
+      false
+    ).uniq
+  end
+
+  def self.for(user)
+    if user.as_admin_or_super?
+      all
+    else
+      for_users_in(user.as_divisions)
+    end
+  end
+
   def flush_cache #called during after_commit or after_touch
     Rails.cache.delete([self.class.name, "all_specializations"])
     Rails.cache.delete([self.class.name, self.id])
@@ -77,26 +106,6 @@ class Specialization < ActiveRecord::Base
 
   def self.has_family_practice?
     all.include?(Specialization.find_by_name("Family Practice"))
-  end
-
-  def self.in_progress_for_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    joins(:specialization_options).where(
-      '"specialization_options"."division_id" IN (?) '\
-        'AND "specialization_options"."in_progress" = (?)',
-      division_ids,
-      true
-    )
-  end
-
-  def self.not_in_progress_for_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    joins(:specialization_options).where(
-      '"specialization_options"."division_id" IN (?) '\
-        'AND "specialization_options"."in_progress" = (?)',
-      division_ids,
-      false
-    )
   end
 
   def self.new_for_divisions(divisions)
@@ -107,20 +116,6 @@ class Specialization < ActiveRecord::Base
       division_ids,
       true
     )
-  end
-
-  def not_fully_in_progress
-    specialization_options.reject{ |so| so.in_progress }.length > 0
-  end
-
-  def fully_in_progress
-    specialization_options.reject{ |so| so.in_progress }.length == 0
-  end
-
-  def fully_in_progress_for_divisions(divisions)
-    (specialization_options.for_divisions(divisions).length > 0) &&
-    (specialization_options.for_divisions(divisions).
-      reject{ |so| so.in_progress }.length == 0)
   end
 
   def new_for_divisions(divisions)

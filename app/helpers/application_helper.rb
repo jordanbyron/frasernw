@@ -1,5 +1,10 @@
 module ApplicationHelper
 
+  def dropdown_specialization(entity, user)
+    entity.specializations.for_users_in(user.as_divisions) ||
+      entity.specializations.first
+  end
+
   def specialists_procedures(specialist)
     list = ""
     specialist.procedure_specializations.each do |ps|

@@ -159,28 +159,6 @@ class Clinic < ActiveRecord::Base
     end
   end
 
-  def not_in_progress
-    (
-      SpecializationOption.
-        not_in_progress_for_divisions_and_specializations(
-          divisions,
-          specializations
-        ).length > 0
-    ) || (
-      divisions.length == 0
-    )
-  end
-
-  def in_progress
-    (divisions.length > 0) && (
-      SpecializationOption.
-        not_in_progress_for_divisions_and_specializations(
-          divisions,
-          specializations
-        ).length == 0
-    )
-  end
-
   CATEGORIZATION_LABELS = {
     1 => "Responded to survey",
     2 => "Not responded to survey",

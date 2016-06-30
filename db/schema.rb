@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160629024121) do
+ActiveRecord::Schema.define(version: 20160630043242) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -890,7 +890,7 @@ ActiveRecord::Schema.define(version: 20160629024121) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "division_id"
-    t.boolean  "in_progress",                      default: false
+    t.boolean  "hide_from_division_users",         default: false
     t.boolean  "is_new",                           default: false
     t.integer  "content_owner_id"
     t.integer  "open_to_type",                     default: 1
@@ -913,7 +913,6 @@ ActiveRecord::Schema.define(version: 20160629024121) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "deprecated_in_progress",        default: false
     t.string   "saved_token"
     t.string   "member_name"
     t.boolean  "deprecated_open_to_clinic_tab", default: false

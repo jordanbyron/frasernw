@@ -1,13 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { recordShownByPage, matchedRoute } from "controller_helpers/routing";
+import hiddenFromUsers from "controller_helpers/hidden_from_users";
 import _ from "lodash";
 
 const ROUTES_SHOWING = [
   "/specialties/:id",
   "/areas_of_practice/:id",
-  "/content_categories/:id"
-]
+  "/content_categories/:id",
+  "/clinics/:id",
+  "/specialists/:id",
+  "/faq_categories/:id",
+  "/referral_forms/:id",
+  "/content_items/:id",
+  "/terms_and_conditions",
+  "/"
+];
 
 const Breadcrumbs = React.createClass({
   getInitialState: function(){
@@ -39,7 +47,7 @@ const Breadcrumbs = React.createClass({
             <ParentSpecialtyBreadcrumb model={this.props.model}/>
             <ParentProcedureBreadcrumb model={this.props.model} level={-2}/>
             <ParentProcedureBreadcrumb model={this.props.model} level={-1}/>
-            <RecordShownBreadcrumb model={this.props.model}/>
+            <ChildBreadcrumb model={this.props.model}/>
           </ul>
           <BreadcrumbDropdown
             model={this.props.model}
@@ -104,9 +112,7 @@ const breadcrumbDropdownHeight = (model) => {
 const filterHidden = (model, specializations) => {
   if (model.app.currentUser.role === "user"){
     return specializations.filter((specialization) => {
-      return model.app.currentUser.divisionIds.filter((id) => {
-        return !_.includes(specialization.inProgressInDivisionIds, id);
-      }).pwPipe(_.some);
+      return !hiddenFromUsers(specialization, model)
     })
   }
   else {
@@ -130,7 +136,7 @@ const BreadcrumbDropdownColumn = ({model, dispatch, columnNumber}) => {
           return(
             <li key={specialization.id}>
               <a href={`/specialties/${specialization.id}`}
-                className={inProgressClass(model, specialization)}
+                className={hiddenClass(model, specialization)}
               >
                 <span>{ specialization.name } </span>
                 <NewTag model={model}
@@ -157,20 +163,9 @@ const NewTag = ({model, specialization}) => {
   }
 }
 
-const inProgress = (model, specialization) => {
-  if (matchedRoute(model) !== "/specialties/:id"){
-    return false;
-  }
-  else {
-    return _.every(model.app.currentUser.divisionIds, (id) => {
-      return _.includes(specialization.inProgressInDivisionIds, id);
-    })
-  }
-};
-
-const inProgressClass = (model, specialization) => {
-  if (inProgress(model, specialization)) {
-    return "in-progress";
+const hiddenClass = (model, specialization) => {
+  if (hiddenFromUsers(specialization, model)) {
+    return "hidden-from-users";
   }
   else {
     return "";
@@ -236,10 +231,10 @@ const ParentProcedureBreadcrumb = ({model, level}) => {
   }
 }
 
-const RecordShownBreadcrumb = ({model}) => {
+const ChildBreadcrumb = ({model}) => {
   if (matchedRoute(model) === "/specialties/:id"){
     return(
-      <li className={`subsequent ${inProgressClass(model, recordShownByPage(model))}`}>
+      <li className={`subsequent ${hiddenClass(model, recordShownByPage(model))}`}>
         <span style={{marginLeft: "4px"}}>{ recordShownByPage(model).name }</span>
         <NewTag model={model} specialization={recordShownByPage(model)}/>
       </li>
@@ -249,6 +244,20 @@ const RecordShownBreadcrumb = ({model}) => {
     return(
       <li className="subsequent">
         <span style={{marginLeft: "4px"}}>{ recordShownByPage(model).name }</span>
+      </li>
+    );
+  }
+  else if (_.includes(
+    [ "/clinics/:id", "/specialists/:id", "/content_items/:id" ],
+    matchedRoute(model)
+  ) && model.ui.dropdownSpecializationId){
+    
+    let specialization = model.app.specializations[model.ui.dropdownSpecializationId]
+
+    return(
+      <li className={`subsequent ${hiddenClass(model, specialization)}`}>
+        <span style={{marginLeft: "4px"}}>{ specialization.name }</span>
+        <NewTag model={model} specialization={specialization}/>
       </li>
     );
   }

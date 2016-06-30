@@ -1,29 +1,13 @@
 - set_page_specific_title "#{@sc_item.title}"
 
-- specialization = (current_user.as_admin_or_super? ? @sc_item.specializations : @sc_item.specializations.not_in_progress_for_divisions(current_user.as_divisions)).first
-
 - favorite_class = logged_in? ? (Favorite.find_by(user_id: current_user.id, favoritable_id: @sc_item.id, favoritable_type: "ScItem").present? ? "icon-red" : "icon-text") : "icon-text"
 
-%ul#specialties-menu
-  - if specialization.blank?
-    %li.dropdown.no-caret
-      %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-        All Specialties
-        %b.caret
-  - else
-    %li.dropdown
-      %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-        All Specialties
-        %b.caret
-    %li.subsequent{class: specialization.fully_in_progress_for_divisions(current_user.as_divisions) && "in-progress"}
-      = link_to specialization.name, specialization_path(specialization), class: 'ajax'
-      = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user.as_divisions)
+= render "partials/all_specialties_dropdown",
+  specialization: dropdown_specialization(@sc_item, current_user)
 
-= render 'partials/specialization_dropdown_menu'
-
-- if specialization.present?
+- if @sc_item.specializations.any?
   = render 'partials/specialization_nav',
-    specialization: specialization,
+    specialization: dropdown_specialization(@sc_item, current_user),
     selected: "contentCategory#{@sc_item.root_category.id}"
 
 .content-wrapper.scm

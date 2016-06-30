@@ -49,7 +49,7 @@ class CreateSpecializationOptions < ServiceObject
     end
 
     COLUMNS_TO_COPY = [
-      :in_progress,
+      :hide_from_division_users,
       :open_to_type,
       :open_to_sc_category_id,
       :is_new,

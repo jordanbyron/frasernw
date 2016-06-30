@@ -45,7 +45,7 @@
     - owner_id = specialization_option.present? && specialization_option.owner.present? ? specialization_option.owner.id : nil
     - content_owner_id = specialization_option.present? && specialization_option.content_owner.present? ? specialization_option.content_owner.id : nil
     - is_new = specialization_option.present? && specialization_option.is_new
-    - in_progress = specialization_option.present? && specialization_option.in_progress
+    - hide_from_division_users = specialization_option.present? && specialization_option.hide_from_division_users
     - open_to_type = specialization_option.present? && specialization_option.open_to_type
     - open_to_sc_category_id = specialization_option.present? && specialization_option.open_to_sc_category_id
     - content_categories = ScCategory.specialty.map{ |category| [category.name, category.id] }
@@ -70,9 +70,12 @@
         = select_tag "content_owner[#{division.id}]", options_for_select(division_admins, content_owner_id), name: "content_owner[#{division.id}]", class: "select"
     .control-group
       %label.control-label
-        In Progress / Hidden
+        Hide from division users
       .controls
-        = check_box_tag "in_progress[#{division.id}]", "in_progress[#{division.id}]", in_progress, name: "in_progress[#{division.id}]"
+        = check_box_tag "hide_from_division_users[#{division.id}]",
+          "hide_from_division_users[#{division.id}]",
+          hide_from_division_users,
+          name: "hide_from_division_users[#{division.id}]"
     .control-group
       %label.control-label
         Mark as "new"

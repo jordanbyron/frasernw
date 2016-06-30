@@ -65,7 +65,6 @@ module Denormalized
               canEmail: item.can_email?,
               id: item.id,
               isNew: item.new?,
-              isInProgress: item.in_progress,
               isSharedCare: item.shared_care?,
               typeMask: item.type_mask,
               collectionName: "contentItems",
@@ -104,7 +103,6 @@ module Denormalized
             isInternalMedicine: specialist.is_internal_medicine?,
             seesOnlyChildren: specialist.sees_only_children?,
             isNew: specialist.new?,
-            isInProgress: specialist.in_progress,
             createdAt: specialist.created_at.to_date.to_s,
             updatedAt: specialist.updated_at.to_date.to_s,
             showInTable: specialist.show_in_table?,
@@ -171,7 +169,6 @@ module Denormalized
             isPublic: clinic.public?,
             careProviderIds: clinic.healthcare_providers.map(&:id),
             isNew: clinic.new?,
-            isInProgress: clinic.in_progress,
             createdAt: clinic.created_at.to_date.to_s,
             updatedAt: clinic.updated_at.to_date.to_s,
             showInTable: clinic.show_in_table?,
@@ -248,10 +245,8 @@ module Denormalized
               where(is_new: true).
               map(&:division).
               map(&:id),
-            inProgressInDivisionIds: specialization.
-              specialization_options.
-              where(in_progress: true).
-              map(&:division).
+            hiddenInDivisionIds: specialization.
+              hidden_in_divisions.
               map(&:id)
           })
         end
@@ -348,7 +343,8 @@ module Denormalized
                   specialization,
                   division
                 ) )
-              end
+              end,
+            showingSpecializationIds: division.showing_specialization.map(&:id)
           })
         end
       end
