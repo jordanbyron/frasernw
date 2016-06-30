@@ -1,20 +1,17 @@
 import React from "react";
 import { areRowsExpanded } from "controller_helpers/table_row_expansion";
+import ExpandingContainer from "component_helpers/expanding_container";
 
 const ExpandedReferentInformation = React.createClass({
   render: function(){
-    if (areRowsExpanded(this.props.model)){
-      return(
+    return(
+      <ExpandingContainer expanded={areRowsExpanded(this.props.model)}>
         <ul ref="content">
           <NotPerformed record={this.props.record}/>
           <MostInterested record={this.props.record}/>
         </ul>
-      );
-    } else {
-      return(
-        <noscript/>
-      );
-    }
+      </ExpandingContainer>
+    );
   }
 });
 
