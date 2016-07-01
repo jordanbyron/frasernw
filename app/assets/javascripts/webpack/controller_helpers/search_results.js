@@ -1,14 +1,30 @@
 import _ from "lodash";
-import { memoizePerRender } from "utils";
+import { memoizePerRender, memoize } from "utils";
 import hiddenFromUsers from "controller_helpers/hidden_from_users";
 import stringScore from "utils/string_score";
 import { urlCollectionName } from "controller_helpers/links";
+
+export const selectedCollectionFilter = (model) => {
+  return _.get(
+    model,
+    ["ui", "searchCollectionFilter"],
+    "Everything"
+  )
+}
+
+export const selectedGeographicFilter = (model) => {
+  return _.get(
+    model,
+    ["ui", "searchGeographicFilter"],
+    "My Regional Divisions"
+  )
+}
 
 export const searchResults = ((model) => {
   if(!model.app.currentUser){
     return [];
   }
-  
+
   return toSearch(model).
     map((record) => decorateWithScore(record, model)).
     filter((decoratedRecord) => {
@@ -60,9 +76,17 @@ export const searchResults = ((model) => {
 
       return groups;
     });
-}).pwPipe(memoizePerRender);
+}).pwPipe((generate) => {
+  return memoize(
+    (model) => model.app,
+    (model) => model.ui.searchTerm,
+    selectedCollectionFilter,
+    selectedGeographicFilter,
+    generate
+  );
+});
 
-const filters = (model) => {
+const filters = ((model) => {
   let filters = []
 
   filters.push((decoratedRecord) => decoratedRecord.score > 0.5)
@@ -108,7 +132,7 @@ const filters = (model) => {
   }
 
   return filters;
-}
+}).pwPipe(memoizePerRender);
 
 export const selectedSearchResult = (model) => {
   return _.get(
@@ -225,22 +249,6 @@ export const entryLabel = (record) => {
   else {
     return record.name;
   }
-}
-
-export const selectedCollectionFilter = (model) => {
-  return _.get(
-    model,
-    ["ui", "searchCollectionFilter"],
-    "Everything"
-  )
-}
-
-export const selectedGeographicFilter = (model) => {
-  return _.get(
-    model,
-    ["ui", "searchGeographicFilter"],
-    "My Regional Divisions"
-  )
 }
 
 export const recordAnalytics = (record, model) => {

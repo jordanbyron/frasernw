@@ -4,7 +4,6 @@ import { selectedTabKey, tabKey, isTabbedPage } from "controller_helpers/tab_key
 import { NavTabs, NavTab } from "component_helpers/nav_tabs";
 import { tabClicked } from "action_creators";
 import { matchedRoute } from "controller_helpers/routing";
-import { memoize } from "utils";
 import React from "react";
 
 const NavTabsController = ({model, dispatch}) => {
