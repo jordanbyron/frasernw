@@ -20,15 +20,26 @@ const SearchResultsDropdown = React.createClass({
         containerId="search_results"
         style={{maxHeight: maxHeight()}}
       >
-        <div className="livesearch__inner-results-container"
-          onMouseDown={(e) => e.preventDefault()}>
-          <SearchFilters model={this.props.model} dispatch={this.props.dispatch}/>
-          <SearchResults model={this.props.model} dispatch={this.props.dispatch}/>
-        </div>
+        <DropdownContents model={this.props.model} dispatch={this.props.dispatch}/>
       </ExpandingContainer>
     );
   }
 })
+
+const DropdownContents = ({model, dispatch}) => {
+  if(shouldDisplay(model)){
+    return(
+      <div className="livesearch__inner-results-container"
+        onMouseDown={(e) => e.preventDefault()}>
+        <SearchFilters model={model} dispatch={dispatch}/>
+        <SearchResults model={model} dispatch={dispatch}/>
+      </div>
+    );
+  }
+  else {
+    return <noscript/>
+  }
+}
 
 const maxHeight = () => {
   return $(window).height() -

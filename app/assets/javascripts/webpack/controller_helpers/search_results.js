@@ -8,7 +8,7 @@ export const searchResults = ((model) => {
   if(!model.app.currentUser){
     return [];
   }
-
+  
   return toSearch(model).
     map((record) => decorateWithScore(record, model)).
     filter((decoratedRecord) => {
