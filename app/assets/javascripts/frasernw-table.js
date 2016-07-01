@@ -89,7 +89,7 @@ function add_row( entity_type, entity_id, url, name, status_class, status_sort, 
     return;
   }
 
-  var row_class = other ? (in_progress ? "class='other in-progress'" : "class='other'") : (in_progress ? "class='in-progress'" : "");
+  var row_class = other ? (in_progress ? "class='other hidden-from-users'" : "class='other'") : (in_progress ? "class='hidden-from-users'" : "");
   var row_specialties = "<td class='s'>" + specialties + "</td>";
   var gp_tag = is_gp ? "<span class='gp'>GP</span> " : ""
   var new_tag = is_new ? "<span class='new'>new</span> " : ""

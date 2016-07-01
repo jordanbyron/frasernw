@@ -5,7 +5,7 @@
   /* display: none; */
 }
 
-.in-progress
+.hidden-from-users
 {
   background-image: asset-url('orange-stripes.png') !important;
 }
@@ -284,6 +284,9 @@ body.loading #email
           width: 355px;
           overflow: visible;
         }
+        div.full_width {
+          width: 100%;
+        }
 
         div.search_specialties
         {
@@ -316,7 +319,7 @@ body.loading #email
       }
     }
 
-    li a:hover, li.selected a
+    li.selected a
     {
       background: $FNW_HEADLINE_BACKGROUND;
       text-decoration: none;

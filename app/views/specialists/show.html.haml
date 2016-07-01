@@ -1,23 +1,14 @@
 - set_page_specific_title "#{@specialist.name}"
 
-- specialization = (current_user.as_admin_or_super? ? @specialist.specializations : @specialist.specializations.not_in_progress_for_divisions(current_user.as_divisions)).first || Specialization.not_in_progress_for_divisions(Division.all).first
-
 - favorite_class = logged_in? ? (Favorite.find_by(user_id: current_user.id, favoritable_id: @specialist.id, favoritable_type: "Specialist").present? ? "icon-red" : "icon-text") : "icon-text"
 
-%ul#specialties-menu
-  %li.dropdown
-    %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-      All Specialties
-      %b.caret
-  %li.subsequent{class: specialization.fully_in_progress_for_divisions(current_user.as_divisions) && "in-progress"}
-    = link_to specialization.name, specialization_path(specialization), class: 'ajax'
-    = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user.as_divisions)
+= render "partials/all_specialties_dropdown",
+  specialization: dropdown_specialization(@specialist, current_user)
 
-= render 'partials/specialization_dropdown_menu'
-
-= render 'partials/specialization_nav',
-  specialization: specialization,
-  selected: 'specialists'
+- if @specialist.specializations.any?
+  = render 'partials/specialization_nav',
+    specialization: dropdown_specialization(@specialist, current_user),
+    selected: 'specialists'
 
 - specialist_offices = @specialist.specialist_offices.order(:created_at).reject{ |specialist_office| specialist_office.empty? }
 - has_office = specialist_offices.length > 0
@@ -43,23 +34,25 @@
               .image{class: !@specialist.photo.present? && "empty"}
                 - if @specialist.photo.present?
                   %img{"src" => @specialist.photo.url(:thumb)}
-            %h2
-              = @specialist.name
+            %h2.profile_header__title{class: (@specialist.hidden? ? "hidden-from-users" : "")}
+              %span= @specialist.name
               %a{"href" => "javascript:void(0)", "onclick" => "favorite('specialists',#{@specialist.id},'#{escape_javascript(@specialist.name)}')", "title" => "Favourite / un-favourite"}
                 %i.icon-heart{"id" => "user_favorite_specialists_#{@specialist.id}"}
+            - if @specialist.hidden?
+              %h5= " (Hidden from users)"
             %h3.specialty_links
               - if @specialist.specializations.length <= 1 && @specialist.is_gp && @specialist.specializations.has_family_practice?
                 GP
               - elsif @specialist.is_gp
                 GP with a focus in
                 - # Remove Family Practice from list:
-              = @specialist.specializations.reject{|s| s.name == "Family Practice"}.reject{ |s| !@specialist.in_progress && s.fully_in_progress_for_divisions(@specialist.divisions)}.map{ |s| "<a href='#{specialization_path(s)}' class='#{ s.fully_in_progress_for_divisions(@specialist.divisions) ? "in-progress ajax" : "ajax" }'>#{s.name}</a>" }.to_sentence.html_safe
-            - if @specialist.sex? && @specialist.billing_number_padded.present?
-              %h5= " #{@specialist.sex}, MSP ##{@specialist.billing_number_padded}"
+              = @specialist.specializations.reject{|s| s.name == "Family Practice"}.map{ |s| "<a href='#{specialization_path(s)}'>#{s.name}</a>" }.to_sentence.html_safe
+            - if @specialist.sex? && @specialist.padded_billing_number.present?
+              %h5= " #{@specialist.sex}, MSP ##{@specialist.padded_billing_number}"
             - elsif @specialist.sex?
               %h5= @specialist.sex
-            - elsif @specialist.billing_number_padded.present?
-              %h5= "MSP ##{@specialist.billing_number_padded}"
+            - elsif @specialist.padded_billing_number.present?
+              %h5= "MSP ##{@specialist.padded_billing_number}"
 
             %p.space.no_indent
               %i{class: @specialist.status_class}
@@ -513,7 +506,7 @@
           %li
             = link_to control.user.name,
               control.user,
-              class: (!control.user.active && "in-progress")
+              class: (!control.user.active && "hidden-from-users")
             - if !control.last_visited.nil?
               %span= "(Last Visited #{control.last_visited.strftime("%B %-d, %Y")}.)"
             - if !control.user.active

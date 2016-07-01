@@ -66,7 +66,8 @@ class Clinic < ActiveRecord::Base
     :admin_notes,
     :referral_forms_attributes,
     :clinic_locations_attributes,
-    :review_object
+    :review_object,
+    :hidden
 
   has_many :clinic_specializations, dependent: :destroy
   has_many :specializations, through: :clinic_specializations
@@ -156,56 +157,6 @@ class Clinic < ActiveRecord::Base
     clinics.select do |clinic|
       clinic.divisions.include? filter[:division]
     end
-  end
-
-  def self.not_in_progress_for_specialization(specialization)
-    in_progress_cities = []
-
-    Division.all.each do |division|
-      in_progress_cities |= City.in_progress_for_division_and_specialization(
-        division,
-        specialization
-      )
-    end
-
-    self.in_cities_and_specialization(
-      City.all - in_progress_cities,
-      specialization
-    )
-  end
-
-  def self.not_in_progress_for_division_local_referral_area_and_specialization(
-    division,
-    specialization
-  )
-    not_in_progress_cities = City.
-      not_in_progress_for_division_local_referral_area_and_specialization(
-        division,
-        specialization
-      )
-    self.in_cities_and_specialization(not_in_progress_cities, specialization)
-  end
-
-  def not_in_progress
-    (
-      SpecializationOption.
-        not_in_progress_for_divisions_and_specializations(
-          divisions,
-          specializations
-        ).length > 0
-    ) || (
-      divisions.length == 0
-    )
-  end
-
-  def in_progress
-    (divisions.length > 0) && (
-      SpecializationOption.
-        not_in_progress_for_divisions_and_specializations(
-          divisions,
-          specializations
-        ).length == 0
-    )
   end
 
   CATEGORIZATION_LABELS = {
@@ -298,87 +249,8 @@ class Clinic < ActiveRecord::Base
     (direct + in_hospital).uniq
   end
 
-  def self.in_cities_and_performs_procedures_in_specialization(
-    cities,
-    specialization
-  )
-    city_ids = cities.map{ |city| city.id }
-
-    direct = joins(
-      'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
-        'ON "clinics".id = "direct_clinic_location".clinic_id '\
-        'INNER JOIN "locations" AS "direct_location" '\
-        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
-        'INNER JOIN "addresses" AS "direct_address" '\
-        'ON "direct_location".address_id = "direct_address".id '\
-        'INNER JOIN "focuses" '\
-        'ON "focuses".clinic_id = "clinics".id '\
-        'INNER JOIN "procedure_specializations" AS "ps1" '\
-        'ON "ps1".id = "focuses".procedure_specialization_id '\
-        'INNER JOIN "procedure_specializations" AS "ps2" '\
-        'ON "ps2".procedure_id = "ps1".procedure_id'
-    ).where(
-      '"direct_location".locatable_type = (?) '\
-        'AND "direct_address".city_id IN (?) '\
-        'AND "direct_location".hospital_in_id IS NULL '\
-        'AND "ps2".specialization_id = (?)',
-      "ClinicLocation",
-      city_ids,
-      specialization.id
-    )
-    in_hospital = joins(
-      'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
-        'ON "clinics".id = "direct_clinic_location".clinic_id '\
-        'INNER JOIN "locations" AS "direct_location" '\
-        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
-        'INNER JOIN "hospitals" '\
-        'ON "hospitals".id = "direct_location".hospital_in_id '\
-        'INNER JOIN "locations" AS "hospital_in_location" '\
-        'ON "hospitals".id = "hospital_in_location".locatable_id '\
-        'INNER JOIN "addresses" AS "hospital_address" '\
-        'ON "hospital_in_location".address_id = "hospital_address".id '\
-        'INNER JOIN "focuses" '\
-        'ON "focuses".clinic_id = "clinics".id '\
-        'INNER JOIN "procedure_specializations" AS "ps1" '\
-        'ON "ps1".id = "focuses".procedure_specialization_id '\
-        'INNER JOIN "procedure_specializations" AS "ps2" '\
-        'ON "ps2".procedure_id = "ps1".procedure_id'
-    ).where(
-      '"direct_location".locatable_type = (?) '\
-        'AND "hospital_in_location".locatable_type = (?) '\
-        'AND "hospital_address".city_id IN (?) '\
-        'AND "ps2".specialization_id = (?)',
-      "ClinicLocation",
-      "Hospital",
-      city_ids,
-      specialization.id
-    )
-    (direct + in_hospital).uniq
-  end
-
-
-  # performs procedures that are attached to the other specialization without
-  # performing them through that specialization
-  def self.performs_procedures_in(specialization)
-    joins(<<-SQL).where('"ps2".specialization_id = (?)', specialization.id)
-      INNER JOIN "focuses"
-      ON "focuses".clinic_id = "clinics".id
-      INNER JOIN "procedure_specializations" AS "ps1"
-      ON "ps1".id = "focuses".procedure_specialization_id
-      INNER JOIN "procedure_specializations" AS "ps2"
-      ON "ps2".procedure_id = "ps1".procedure_id
-    SQL
-  end
-
   def self.in_divisions(divisions)
     self.in_cities(divisions.map{ |division| division.cities }.flatten.uniq)
-  end
-
-  def self.in_local_referral_area_for_specializaton_and_division(
-    specialization,
-    division
-  )
-    self.in_cities(division.local_referral_cities(specialization))
   end
 
   def self.no_specialization

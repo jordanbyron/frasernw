@@ -4,7 +4,6 @@ module SeedCreators
       name: :pass_through,
       created_at: :pass_through,
       updated_at: :pass_through,
-      deprecated_in_progress: :pass_through,
       saved_token: Proc.new{ "demo_saved_token"},
       member_name: :pass_through,
       deprecated_open_to_clinic_tab: :pass_through,

@@ -30,10 +30,10 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
     if(_.includes(["specialists", "clinics"], collectionShownName(model))) {
       if(showingMultipleSpecializations(model)) {
         return(
-          <tr>
+          <tr className={decoratedRecord.raw.hidden ? "hidden-from-users" : ""}>
             <ReferentName decoratedRecord={decoratedRecord} model={model}/>
             <ReferentSpecializations decoratedRecord={decoratedRecord} model={model}/>
-            <td><ReferentStatusIcon model={model} record={decoratedRecord.raw}/></td>
+            <td><ReferentStatusIcon model={model} record={decoratedRecord.raw} tooltip={true}/></td>
             <td>{ decoratedRecord.waittime }</td>
             <td>{ decoratedRecord.cityNames }</td>
           </tr>
@@ -41,9 +41,9 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       }
       else {
         return(
-          <tr>
+          <tr className={decoratedRecord.raw.hidden ? "hidden-from-users" : ""}>
             <ReferentName decoratedRecord={decoratedRecord} model={model}/>
-            <td><ReferentStatusIcon model={model} record={decoratedRecord.raw}/></td>
+            <td><ReferentStatusIcon model={model} record={decoratedRecord.raw} tooltip={true}/></td>
             <td>{ decoratedRecord.waittime }</td>
             <td>{ decoratedRecord.cityNames }</td>
           </tr>

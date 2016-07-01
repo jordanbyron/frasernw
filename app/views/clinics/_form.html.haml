@@ -60,6 +60,7 @@
       label_method: :last,
       value_method: :first,
       include_blank: false
+    = f.input :hidden, label: "Hide from users"
   .no-print
     = f.association :specializations,
       as: :check_boxes,
@@ -324,7 +325,7 @@
             - if f[:custom_wait_time]
               .span2.changed_wrapper.lagtime
                 = select_tag "focuses_lagtime[#{f[:id]}]",
-                  options_from_collection_for_select(Clinic::LAGTIME_LABELS, 
+                  options_from_collection_for_select(Clinic::LAGTIME_LABELS,
                   first,
                   :last,
                   f[:lagtime]),

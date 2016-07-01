@@ -32,9 +32,9 @@ class SpecializationsController < ApplicationController
         so.content_owner =
           User.find_by_id(params[:content_owner]["#{division.id}"]) ||
           division.admins.first
-        so.in_progress =
-          params[:in_progress].present? &&
-          params[:in_progress]["#{division.id}"].present?
+        so.hide_from_division_users =
+          params[:hide_from_division_users].present? &&
+          params[:hide_from_division_users]["#{division.id}"].present?
         so.is_new =
           params[:is_new].present? &&
           params[:is_new]["#{division.id}"].present?
@@ -93,9 +93,9 @@ class SpecializationsController < ApplicationController
         )
         so.owner = User.find_by_id(params[:owner]["#{division.id}"])
         so.content_owner = User.find_by_id(params[:content_owner]["#{division.id}"])
-        so.in_progress =
-          params[:in_progress].present? &&
-          params[:in_progress]["#{division.id}"].present?
+        so.hide_from_division_users =
+          params[:hide_from_division_users].present? &&
+          params[:hide_from_division_users]["#{division.id}"].present?
         so.is_new =
           params[:is_new].present? && params[:is_new]["#{division.id}"].present?
         so.open_to_type = params[:open_to_type]["#{division.id}"]

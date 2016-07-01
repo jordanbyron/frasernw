@@ -2,33 +2,11 @@
 
 = stylesheet_link_tag "pages/referral_forms"
 
-%ul#specialties-menu
-  %li.dropdown.no-caret
-    %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-      All Specialties
-      %b.caret
+:javascript
+  $(document).ready(function() { update_favorites() });
 
-%script{"type" => "text/javascript"}
-  :plain
-    var $el = $('a.specialties-dropdown-toggle').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').toggle(); return false; });
-    $('html').on('click.specialties-dropdown-toggle', function () { $('#specialties-dropdown-menu').hide() });
-    $(document).ready(function() { update_favorites() });
-
-#specialties-dropdown-menu
-  .inner
-    - specializations = current_user.as_admin_or_super? ? Specialization.all : Specialization.not_in_progress_for_divisions(current_user.as_divisions).uniq
-    - first = specializations[0, (specializations.length / 4.0).ceil]
-    - second = (specializations - first)[0, ((specializations.length - first.length) / 3.0).ceil]
-    - third = (specializations - first - second)[0, ((specializations.length - first.length - second.length) / 2.0).ceil]
-    - fourth = specializations - first - second - third
-
-    - [first, second, third, fourth].each do |list|
-      %ul
-        - list.each do |specialization|
-          %li
-            %a.ajax{"href" => specialization_path(specialization), :class => specialization.fully_in_progress_for_divisions(current_user.as_divisions) ? "in-progress" : ""}
-              = specialization.name
-              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(current_user.as_divisions)
+= render "partials/all_specialties_dropdown",
+  specialization: nil
 
 .content-wrapper
 

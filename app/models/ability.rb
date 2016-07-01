@@ -66,8 +66,7 @@ class Ability
         can [:create, :bulk_share], ScItem
 
         can :share, ScItem do |item|
-          item.shareable &&
-            !item.in_progress
+          item.shareable
         end
 
         can :manage, DivisionDisplayScItem do |item|
@@ -130,11 +129,11 @@ class Ability
         can :show, [
           Specialization,
           Procedure,
-          Specialist,
-          Clinic,
           Hospital,
           Language,
           ScCategory,
+          Specialist,
+          Clinic,
           ScItem
         ]
 
@@ -166,16 +165,9 @@ class Ability
         can :view_history, Historical
 
       elsif user.as_user?
-        can :show, [Specialization, Procedure] do |entity|
-          !entity.fully_in_progress_for_divisions(Division.all)
-        end
-
-        can :city, Specialization do |entity|
-          !entity.fully_in_progress_for_divisions(Division.all)
-        end
-
         can :show, [Specialist, Clinic] do |entity|
-          !entity.in_progress
+          !entity.hidden? &&
+            !entity.controlling_users.include?(user)
         end
 
         can :show, ScItem do |item|

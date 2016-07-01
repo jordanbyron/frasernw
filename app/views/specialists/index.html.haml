@@ -48,9 +48,8 @@
               - cache("specialists_index_#{specialization.cache_key}_#{specialization.specialists.cache_key}_#{division.cache_key}_#{can_edit}") do
                 - specialists = specialization.specialists.in_divisions([division]).sort{ |a,b| (a.lastname || "zzz") <=> (b.lastname || "zzz") }
                 - next if specialists.blank?
-                %tr{ class: specialization.fully_in_progress_for_divisions([division]) ? "in-progress" : "" }
-                  %th{ style: "width:100%" }
-                    = "#{specialization.name} (#{specialists.count})"
+                %tr{ class: specialization.hidden_in?(division) ? "hidden-from-users" : "" }
+                  %th{:style => "width:100%"}= "#{specialization.name} (#{specialists.count})"
                   - if can_edit
                     %th.admin
 

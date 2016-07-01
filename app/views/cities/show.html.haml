@@ -2,7 +2,7 @@
 
 .content-wrapper
 
-  %h2{:class => @city.hidden? && "in-progress"}= @city.name
+  %h2{:class => @city.hidden? && "hidden-from-users"}= @city.name
   %p.no_indent
     %strong Province:
     = link_to @city.province, province_path(@city.province), :class => 'ajax'

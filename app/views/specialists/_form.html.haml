@@ -66,7 +66,7 @@
     include_blank: false
   = f.input :billing_number,
     as: :string,
-    input_html: { value: @specialist.billing_number_padded }
+    input_html: { value: @specialist.padded_billing_number }
   .no-print
     = f.input :categorization_mask,
       as: :select,
@@ -76,6 +76,7 @@
       value_method: :first,
       include_blank: false
   = f.input :is_gp
+  = f.input :hidden, label: "Hide from users"
 
   - if current_user.as_admin_or_super?
     = f.input :is_internal_medicine,

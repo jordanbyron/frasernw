@@ -3,16 +3,9 @@ import _ from "lodash";
 const app = (model = {}, action) => {
   switch(action.type){
   case "PARSE_RENDERED_DATA":
-    if(action.data.app){
-      return _.assign(
-        {},
-        model,
-        action.data.app
-      );
-    }
-    else {
-      return model;
-    }
+    var appData = action.data.map(_.property("app")).filter(_.identity)
+
+    return _.assign(...[{}, model].concat(appData));
   case "INTEGRATE_LOCALSTORAGE_DATA":
     return _.assign(
       {},

@@ -88,6 +88,10 @@ class Division < ActiveRecord::Base
     Rails.cache.delete([self.class.name, id])
   end
 
+  def showing_specializations
+    Specialization.for_users_in(self)
+  end
+
   def flush_cache
     Rails.cache.delete([self.class.name, "Division.all"])
     Division.all.each do |division|

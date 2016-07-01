@@ -66,16 +66,6 @@ class Procedure < ActiveRecord::Base
     reject{ |word| parents_names.include? word }.join(' ').capitalize_first_letter
   end
 
-  def fully_in_progress_for_divisions(divisions)
-    specializations.each do |s|
-      return false if (s.specialization_options.for_divisions(divisions).length == 0) || (
-        s.specialization_options.for_divisions(divisions).
-        reject{ |so| so.in_progress }.length != 0
-      )
-    end
-    return true
-  end
-
   def all_specialists_in_cities(cities)
     # look at this procedure as well as its children to find any specialists
     results = []

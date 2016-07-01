@@ -56,6 +56,7 @@ module SeedCreators
       deprecated_url: Proc.new{ "http://www.google.ca" },
       deprecated_email: Proc.new{ Faker::Internet.email },
       unavailable_from: Proc.new{ rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) },
+      hidden: :pass_through
     }
   end
 end

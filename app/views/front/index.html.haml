@@ -1,12 +1,7 @@
 - set_page_specific_title "Home"
 
-%ul#specialties-menu
-  %li.dropdown.no-caret
-    %a.specialties-dropdown-toggle{"href" => "javascript:void(0)"}
-      All Specialties
-      %b.caret
-
-= render 'partials/specialization_dropdown_menu'
+= render "partials/all_specialties_dropdown",
+  specialization: nil
 
 %script{"type" => "text/javascript"}
   $(document).ready(function() { update_favorites() });
@@ -42,8 +37,10 @@
         %ul.space
           - @specializations.each do |specialization|
             %li
-              = link_to specialization.name, specialization, :class => specialization.fully_in_progress_for_divisions(@as_divisions) ? "in-progress ajax" : "ajax hoverlabel"
-              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(@as_divisions)
+              = link_to specialization.name,
+                specialization,
+                class: specialization.hidden_in?(*@as_divisions) ? "hidden-from-users ajax" : "ajax hoverlabel"
+              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions?(@as_divisions)
 
       .span4half.front
 

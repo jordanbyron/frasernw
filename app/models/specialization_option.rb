@@ -4,7 +4,6 @@ class SpecializationOption < ActiveRecord::Base
     :owner,
     :content_owner,
     :division,
-    :in_progress,
     :is_new,
     :open_to_type,
     :open_to_sc_category,
@@ -14,15 +13,14 @@ class SpecializationOption < ActiveRecord::Base
     :show_specialist_categorization_4,
     :show_specialist_categorization_5,
     :specialization_id,
-    :division_id
+    :division_id,
+    :hide_from_division_users
 
   belongs_to :specialization, touch: true
   belongs_to :owner, class_name: "User"
   belongs_to :content_owner, class_name: "User"
   belongs_to :division
   belongs_to :open_to_sc_category, class_name: "ScCategory"
-
-  scope :complete, -> { where(in_progress: false) }
 
   def self.for_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
@@ -37,19 +35,6 @@ class SpecializationOption < ActiveRecord::Base
         "AND specialization_options.specialization_id IN (?)",
       division_ids,
       specialization_ids
-    )
-  end
-
-  def self.not_in_progress_for_divisions_and_specializations(divisions, specializations)
-    division_ids = divisions.map{ |d| d.id }
-    specialization_ids = specializations.map{ |s| s.id }
-    where(
-      "specialization_options.division_id IN (?) "\
-        "AND specialization_options.specialization_id IN (?) "\
-        "AND in_progress = (?)",
-      division_ids,
-      specialization_ids,
-      false
     )
   end
 
