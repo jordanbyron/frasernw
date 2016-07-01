@@ -1,4 +1,4 @@
-%script{"type" => "text/javascript"}
+%script{ type: "text/javascript" }
   :plain
     function setContentCategoryVisibility(select, division_id)
     {
@@ -12,20 +12,24 @@
       }
     }
 
-= simple_nested_form_for @specialization, html: { class: "form-horizontal ajax" } do |f|
+= simple_nested_form_for @specialization,
+  html: { class: "form-horizontal" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
   - if current_user.as_super_admin?
     = f.input :name
-    = f.input :member_name, hint: "e.g. 'Opthalmologist', 'Cardiothoracic surgeon', 'Nurse practitioner', 'Sports medicine specialist'"
-    = f.input :label_name, hint: "Defines how this Specialty is labeled on columns and tables; e.g. as a 'Specialist', 'Family Physician', 'Nurse Practitioner', etc."
-    = f.input :suffix, hint: "Use carefully, otherwise leave blank.  Globally adds bold shordhand abbreviation next to the name of people with this specialty in filter tables (e.g. <span>John Smith<span class='suffix'>GP</span></span> if 'GP') </br> </br> Suffix: <span>Jane Doe<span class='suffix' id='specialization_suffix_demo'>#{@specialization.suffix}</span></span>".html_safe
+    = f.input :member_name,
+      hint: "e.g. 'Opthalmologist', 'Cardiothoracic surgeon', 'Nurse practitioner', 'Sports medicine specialist'"
+    = f.input :label_name,
+      hint: "Defines how this Specialty is labeled on columns and tables; e.g. as a 'Specialist', 'Family Physician', 'Nurse Practitioner', etc."
+    = f.input :suffix,
+      hint: "Use carefully, otherwise leave blank. Globally adds bold shordhand abbreviation next to the name of people with this specialty in filter tables (e.g. <span>John Smith<span class='suffix'>GP</span></span> if 'GP') </br> </br> Suffix: <span>Jane Doe<span class='suffix' id='specialization_suffix_demo'>#{@specialization.suffix}</span></span>".html_safe
 
-    %script{"type" => "text/javascript"}
+    %script{ type: "text/javascript" }
       :plain
         $("#specialization_suffix").bind("keyup", autoFillSuffix);
-        function autoFillSuffix(){
+        function autoFillSuffix() {
           var str = "";
           $( "#specialization_suffix" ).each(function() {
             str += $( this ).val() + " ";
@@ -62,56 +66,96 @@
       %label.control-label
         Specialists and Clinics Owner
       .controls
-        = select_tag "owner[#{division.id}]", options_for_select(division_admins, owner_id), name: "owner[#{division.id}]", class: "select"
+        = select_tag "owner[#{division.id}]",
+          options_for_select(division_admins, owner_id),
+          name: "owner[#{division.id}]",
+          class: "select"
     .control-group
       %label.control-label
         Content Items Owner
       .controls
-        = select_tag "content_owner[#{division.id}]", options_for_select(division_admins, content_owner_id), name: "content_owner[#{division.id}]", class: "select"
+        = select_tag "content_owner[#{division.id}]",
+          options_for_select(division_admins, content_owner_id),
+          name: "content_owner[#{division.id}]",
+          class: "select"
     .control-group
       %label.control-label
         In Progress / Hidden
       .controls
-        = check_box_tag "in_progress[#{division.id}]", "in_progress[#{division.id}]", in_progress, name: "in_progress[#{division.id}]"
+        = check_box_tag "in_progress[#{division.id}]",
+          "in_progress[#{division.id}]",
+          in_progress,
+          name: "in_progress[#{division.id}]"
     .control-group
       %label.control-label
         Mark as "new"
       .controls
-        = check_box_tag "is_new[#{division.id}]", "is_new[#{division.id}]", is_new, name: "is_new[#{division.id}]"
+        = check_box_tag "is_new[#{division.id}]",
+          "is_new[#{division.id}]",
+          is_new,
+          name: "is_new[#{division.id}]"
     .control-group
       %label.control-label
         Open to
       .controls
-        = select_tag "open_to_type[#{division.id}]", options_from_collection_for_select(SpecializationOption::OPEN_TO_HASH, :first, :last, open_to_type), name: "open_to_type[#{division.id}]", class: "select"
-        = select_tag "open_to_sc_category[#{division.id}]", options_for_select(content_categories, content_categories_id), name: "open_to_sc_category[#{division.id}]", class: "select"
+        = select_tag "open_to_type[#{division.id}]",
+          options_from_collection_for_select(SpecializationOption::OPEN_TO_HASH,
+          :first,
+          :last,
+          open_to_type),
+          name: "open_to_type[#{division.id}]",
+          class: "select"
+        = select_tag "open_to_sc_category[#{division.id}]",
+          options_for_select(content_categories, content_categories_id),
+          name: "open_to_sc_category[#{division.id}]",
+          class: "select"
 
     .control-group
       %label.control-label
         Specialist Categorizations
       .controls
         %label.checkbox
-          = check_box_tag "show_specialist_categorization_1[#{division.id}]", "show_specialist_categorization_1[#{division.id}]", show_specialist_categorization_1, name: "show_specialist_categorization_1[#{division.id}]"
+          = check_box_tag "show_specialist_categorization_1[#{division.id}]",
+            "show_specialist_categorization_1[#{division.id}]",
+            show_specialist_categorization_1,
+            name: "show_specialist_categorization_1[#{division.id}]"
           = Specialist::CATEGORIZATION_LABELS[1]
         %label.checkbox
-          = check_box_tag "show_specialist_categorization_2[#{division.id}]", "show_specialist_categorization_2[#{division.id}]", show_specialist_categorization_2, name: "show_specialist_categorization_2[#{division.id}]"
+          = check_box_tag "show_specialist_categorization_2[#{division.id}]",
+            "show_specialist_categorization_2[#{division.id}]",
+            show_specialist_categorization_2,
+            name: "show_specialist_categorization_2[#{division.id}]"
           = Specialist::CATEGORIZATION_LABELS[2]
         %label.checkbox
-          = check_box_tag "show_specialist_categorization_3[#{division.id}]", "show_specialist_categorization_3[#{division.id}]", show_specialist_categorization_3, name: "show_specialist_categorization_3[#{division.id}]"
+          = check_box_tag "show_specialist_categorization_3[#{division.id}]",
+            "show_specialist_categorization_3[#{division.id}]",
+            show_specialist_categorization_3,
+            name: "show_specialist_categorization_3[#{division.id}]"
           = Specialist::CATEGORIZATION_LABELS[3]
         %label.checkbox
-          = check_box_tag "show_specialist_categorization_5[#{division.id}]", "show_specialist_categorization_5[#{division.id}]", show_specialist_categorization_5, name: "show_specialist_categorization_5[#{division.id}]"
+          = check_box_tag "show_specialist_categorization_5[#{division.id}]",
+            "show_specialist_categorization_5[#{division.id}]",
+            show_specialist_categorization_5,
+            name: "show_specialist_categorization_5[#{division.id}]"
           = Specialist::CATEGORIZATION_LABELS[5]
         %label.checkbox
-          = check_box_tag "show_specialist_categorization_4[#{division.id}]", "show_specialist_categorization_4[#{division.id}]", show_specialist_categorization_4, name: "show_specialist_categorization_4[#{division.id}]"
+          = check_box_tag "show_specialist_categorization_4[#{division.id}]",
+            "show_specialist_categorization_4[#{division.id}]",
+            show_specialist_categorization_4,
+            name: "show_specialist_categorization_4[#{division.id}]"
           = Specialist::CATEGORIZATION_LABELS[4]
 
-    %script{"type" => "text/javascript"}
+    %script{ type: "text/javascript" }
       :plain
         $(document).ready(function() {
-          $("#open_to_type_#{division.id}").each( function() { setContentCategoryVisibility(this, #{division.id}) });
-          $("#open_to_type_#{division.id}").live("change", function() { setContentCategoryVisibility(this, #{division.id}) });
+          $("#open_to_type_#{division.id}").each( function() {
+            setContentCategoryVisibility(this, #{division.id})
+          });
+          $("#open_to_type_#{division.id}").live("change", function() {
+            setContentCategoryVisibility(this, #{division.id})
+          });
         });
 
   .form-actions
     = f.button :submit, class: "btn btn-primary"
-    = link_to 'Cancel', specializations_path, class: "btn btn-danger ajax"
+    = link_to 'Cancel', specializations_path, class: "btn btn-danger"

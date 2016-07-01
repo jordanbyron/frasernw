@@ -13,6 +13,7 @@ function pathways_grouper(a, b)
 
 function pathways_data_formatter(total_score, scores_matches, data_entry, term)
 {
+
   var result = "<li class='search-result'><a class='ajax' id='search_result_" +
     data_entry.go +
     '_' +
