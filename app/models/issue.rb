@@ -1,5 +1,7 @@
 class Issue < ActiveRecord::Base
   include PaperTrailable
+  include Historical
+  include Noteable
 
   attr_accessible :description,
     :source_key,
