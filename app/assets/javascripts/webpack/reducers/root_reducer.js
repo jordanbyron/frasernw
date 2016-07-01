@@ -34,11 +34,11 @@ const ui = (model = {}, action) => {
       highlightSelectedSearchResult: highlightSelectedSearchResult(
         model.highlightSelectedSearchResult,
         action
-      )
+      ),
+      dropdownSpecializationId: model.dropdownSpecializationId
     };
   }
 };
-
 const highlightSelectedSearchResult = (model, action) => {
   switch(action.type){
   case "HOVER_LEAVE_SEARCH_RESULT":
@@ -242,7 +242,7 @@ const reducedView = (model, action) => {
 const isBreadcrumbDropdownOpen = (model, action) => {
   switch(action.type){
   case "TOGGLE_BREADCRUMB_DROPDOWN":
-    return action.newState;
+    return action.proposed;
   default:
     return false;
   }

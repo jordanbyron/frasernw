@@ -306,3 +306,10 @@ export const hoverLeaveSearchResult = (dispatch) => {
     type: "HOVER_LEAVE_SEARCH_RESULT"
   });
 }
+
+export const toggleBreadcrumbDropdown = (dispatch, proposed) => {
+  dispatch({
+    type: "TOGGLE_BREADCRUMB_DROPDOWN",
+    proposed: proposed
+  })
+}

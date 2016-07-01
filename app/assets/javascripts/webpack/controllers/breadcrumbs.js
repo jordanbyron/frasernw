@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import { recordShownByPage, matchedRoute } from "controller_helpers/routing";
 import hiddenFromUsers from "controller_helpers/hidden_from_users";
 import _ from "lodash";
+import { buttonIsh} from "stylesets";
+import { toggleBreadcrumbDropdown } from "action_creators";
 
 const ROUTES_SHOWING = [
   "/specialties/:id",
@@ -18,28 +20,28 @@ const ROUTES_SHOWING = [
 ];
 
 const Breadcrumbs = React.createClass({
-  getInitialState: function(){
-    return { dropdownIsOpen: false };
-  },
   componentDidMount: function() {
     $("body").click((e) => {
       var domNode = ReactDOM.findDOMNode(this);
       if(!domNode || !domNode.contains(e.target)){
-        this.setState({dropdownIsOpen: false})
+        toggleBreadcrumbDropdown(this.props.dispatch, false)
       }
     })
   },
-  toggle: function() {
-    this.setState({dropdownIsOpen: !this.state.dropdownIsOpen});
-  },
   render: function() {
     if (_.includes(ROUTES_SHOWING, matchedRoute(this.props.model))){
-
       return(
         <div>
           <ul id="specialties-menu">
             <li className={dropdownClassName(this.props.model)}>
-              <a className="specialties-dropdown-toggle" onClick={this.toggle}>
+              <a className="specialties-dropdown-toggle"
+                onClick={_.partial(
+                  toggleBreadcrumbDropdown,
+                  this.props.dispatch,
+                  !dropdownIsOpen(this.props.model)
+                )}
+                href="javascript:void(0)"
+                style={buttonIsh}>
                 <span>All Specialties </span>
                 <b className="caret"/>
               </a>
@@ -52,7 +54,6 @@ const Breadcrumbs = React.createClass({
           <BreadcrumbDropdown
             model={this.props.model}
             dispatch={this.props.dispatch}
-            isOpen={this.state.dropdownIsOpen}
           />
         </div>
       );
@@ -76,8 +77,8 @@ const dropdownIsOpen = (model) => {
   return _.get(model, [ "ui", "isBreadcrumbDropdownOpen" ], false);
 }
 
-const BreadcrumbDropdown = ({model, dispatch, isOpen}) => {
-  if(isOpen) {
+const BreadcrumbDropdown = ({model, dispatch}) => {
+  if(dropdownIsOpen(model)) {
     const height = _.ceil(model.app.specializations.length / 4);
 
     return (
@@ -137,6 +138,7 @@ const BreadcrumbDropdownColumn = ({model, dispatch, columnNumber}) => {
             <li key={specialization.id}>
               <a href={`/specialties/${specialization.id}`}
                 className={hiddenClass(model, specialization)}
+                onClick={_.partial(toggleBreadcrumbDropdown, dispatch, false)}
               >
                 <span>{ specialization.name } </span>
                 <NewTag model={model}
@@ -234,7 +236,7 @@ const ParentProcedureBreadcrumb = ({model, level}) => {
 const ChildBreadcrumb = ({model}) => {
   if (matchedRoute(model) === "/specialties/:id"){
     return(
-      <li className={`subsequent ${hiddenClass(model, recordShownByPage(model))}`}>
+      <li className={childClassName(model)}>
         <span style={{marginLeft: "4px"}}>{ recordShownByPage(model).name }</span>
         <NewTag model={model} specialization={recordShownByPage(model)}/>
       </li>
@@ -242,7 +244,7 @@ const ChildBreadcrumb = ({model}) => {
   }
   else if (matchedRoute(model) === "/areas_of_practice/:id"){
     return(
-      <li className="subsequent">
+      <li className={childClassName(model)}>
         <span style={{marginLeft: "4px"}}>{ recordShownByPage(model).name }</span>
       </li>
     );
@@ -251,11 +253,11 @@ const ChildBreadcrumb = ({model}) => {
     [ "/clinics/:id", "/specialists/:id", "/content_items/:id" ],
     matchedRoute(model)
   ) && model.ui.dropdownSpecializationId){
-    
-    let specialization = model.app.specializations[model.ui.dropdownSpecializationId]
+    let specialization =
+      model.app.specializations[model.ui.dropdownSpecializationId]
 
     return(
-      <li className={`subsequent ${hiddenClass(model, specialization)}`}>
+      <li className={childClassName(model)}>
         <span style={{marginLeft: "4px"}}>{ specialization.name }</span>
         <NewTag model={model} specialization={specialization}/>
       </li>
@@ -265,5 +267,27 @@ const ChildBreadcrumb = ({model}) => {
     return <span></span>;
   }
 };
+
+const childClassName = (model) => {
+  let classes = ["subsequent child"];
+
+  if (matchedRoute(model) !== "/areas_of_practice/:id"){
+    if (matchedRoute(model) === "/specialties/:id"){
+      var specialization = recordShownByPage(model);
+    }
+    else {
+      var specialization =
+        model.app.specializations[model.ui.dropdownSpecializationId];
+    }
+
+    classes.push(hiddenClass(model, specialization));
+  }
+
+  if (dropdownIsOpen(model)){
+    classes.push("is-open");
+  }
+
+  return classes.join(" ");
+}
 
 export default Breadcrumbs;

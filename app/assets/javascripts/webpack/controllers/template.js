@@ -69,7 +69,7 @@ const usesSidebarLayout = ((model) => {
 }).pwPipe(memoizePerRender)
 
 const LowerWhitePanel = ({model, dispatch}) => {
-  if (matchedRoute(model) === "/"){
+  if (_.includes(RoutesWithoutLowerPanel, matchedRoute(model))){
     return <noscript/>
   }
   else if (usesSidebarLayout(model)){
@@ -100,6 +100,16 @@ const LowerWhitePanel = ({model, dispatch}) => {
     );
   }
 };
+
+const RoutesWithoutLowerPanel = [
+  "/clinics/:id",
+  "/specialists/:id",
+  "/faq_categories/:id",
+  "/referral_forms/:id",
+  "/content_items/:id",
+  "/terms_and_conditions",
+  "/"
+];
 
 const Main = ({model, dispatch}) => {
   return(

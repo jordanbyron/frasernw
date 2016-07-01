@@ -207,12 +207,12 @@ const toSearch = (model) => {
 
 const decorateWithScore = (record, model) => {
   return {
-    score: stringScore((model.ui.searchTerm || ""), searchString(record), 0.5),
+    score: stringScore((model.ui.searchTerm || ""), entryLabel(record), 0.5),
     raw: record
   };
 };
 
-const searchString = (record) => {
+export const entryLabel = (record) => {
   if (record.collectionName === "specialists" && record.billingNumber){
     return `${record.name} - MSP #${record.billingNumber}`;
   }
