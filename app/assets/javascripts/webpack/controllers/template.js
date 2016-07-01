@@ -43,8 +43,11 @@ const Template = ({model, dispatch}) => {
       </div>
     );
   }
-  else {
+  else if (showsLowerPanel(model)) {
     return(<LoadingIndicator minHeight="300px"/>);
+  }
+  else {
+    return(<noscript/>);
   }
 };
 
@@ -69,7 +72,7 @@ const usesSidebarLayout = ((model) => {
 }).pwPipe(memoizePerRender)
 
 const LowerWhitePanel = ({model, dispatch}) => {
-  if (_.includes(RoutesWithoutLowerPanel, matchedRoute(model))){
+  if (!showsLowerPanel(model)){
     return <noscript/>
   }
   else if (usesSidebarLayout(model)){
@@ -100,6 +103,10 @@ const LowerWhitePanel = ({model, dispatch}) => {
     );
   }
 };
+
+const showsLowerPanel = (model) => {
+  return !_.includes(RoutesWithoutLowerPanel, matchedRoute(model));
+}
 
 const RoutesWithoutLowerPanel = [
   "/clinics/:id",
