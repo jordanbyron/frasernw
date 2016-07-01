@@ -8,14 +8,14 @@ const hiddenFromUsers = (record, model) => {
   case "clinics":
     return record.hidden;
   case "specializations":
-    return _.includes(specializationsShownToUser(model), record.id);
+    return !_.includes(specializationsShownToUser(model), record.id);
   case "procedures":
     return !_.intersection(
       specializationsShownToUser(model),
       record.specializationIds
-    );
+    ).pwPipe(_.some);
   default:
-    false
+    return false;
   }
 }
 
@@ -25,7 +25,7 @@ const specializationsShownToUser = ((model) => {
     currentUser.
     divisionIds.
     map((id) => model.app.divisions[id].showingSpecializationIds).
-    pwPipe(_.some)
+    pwPipe(_.flatten)
 }).pwPipe(memoizePerRender);
 
 export default hiddenFromUsers;
