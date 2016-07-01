@@ -13,7 +13,7 @@ const ROUTES_SHOWING = [
   "/clinics/:id",
   "/specialists/:id",
   "/faq_categories/:id",
-  "/referral_forms/:id",
+  "/referral_forms",
   "/content_items/:id",
   "/terms_and_conditions",
   "/"
@@ -21,17 +21,22 @@ const ROUTES_SHOWING = [
 
 const Breadcrumbs = React.createClass({
   componentDidMount: function() {
-    $("body").click((e) => {
+    document.addEventListener("click", (e) => {
       var domNode = ReactDOM.findDOMNode(this);
-      if(!domNode || !domNode.contains(e.target)){
+      var component = this;
+      if((!domNode || !domNode.contains(e.target)) &&
+        dropdownIsOpen(component.props.model)){
+
         toggleBreadcrumbDropdown(this.props.dispatch, false)
       }
+
+      return true;
     })
   },
   render: function() {
     if (_.includes(ROUTES_SHOWING, matchedRoute(this.props.model))){
       return(
-        <div>
+        <div style={{position: "relative"}}>
           <ul id="specialties-menu">
             <li className={dropdownClassName(this.props.model)}>
               <a className="specialties-dropdown-toggle"

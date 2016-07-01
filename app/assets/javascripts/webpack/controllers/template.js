@@ -105,7 +105,7 @@ const RoutesWithoutLowerPanel = [
   "/clinics/:id",
   "/specialists/:id",
   "/faq_categories/:id",
-  "/referral_forms/:id",
+  "/referral_forms",
   "/content_items/:id",
   "/terms_and_conditions",
   "/"

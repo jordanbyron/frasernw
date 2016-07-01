@@ -10,14 +10,13 @@
           %span Clinics
       - ScCategory.specialty.each do |sc_category|
         - if sc_category.all_sc_items_for_specialization_in_divisions(specialization, current_user.as_divisions).present?
-          %li{:class => "category_#{sc_category.id}"}
+          %li{:class => "contentCategory#{sc_category.id}"}
             %a{"href" => "#{specialization_path(specialization)}#contentCategory#{sc_category.id}",
               "id" => sc_category.name.remove_whitespace }
               %span= sc_category.name
       -#long_query_warning:294ms+ ^^
 
-%script{"type" => "text/javascript"}
-  :plain
-    $(document).ready(function(){
-      $('ul#content_tabs.nav.nav-tabs li.#{selected}').addClass('active');
-    });
+:javascript
+  $(document).ready(function(){
+    $('ul#content_tabs.nav.nav-tabs li.#{selected}').addClass('active');
+  });
