@@ -39,6 +39,17 @@ class SubscriptionMailer < ActionMailer::Base
     )
   end
 
+  def availability_update(user_id, specialist_id)
+    @user = User.find(user_id)
+    @specialist = Specialist.find(specialist_id)
+
+    mail(
+      to: @user.email,
+      from: 'noreply@pathwaysbc.ca',
+      subject: "Pathways: Peroid of unavailability ended [Availability Update]"
+    )
+  end
+
   def immediate_resource_update(activity_id, user_id)
     @user = User.find_by_id(user_id)
     @activity = SubscriptionActivity.find_by_id(activity_id)

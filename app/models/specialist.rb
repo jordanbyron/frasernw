@@ -1066,6 +1066,10 @@ class Specialist < ActiveRecord::Base
     )
   end
 
+  def again_available?
+    (status_mask == 6) && (unavailable_to < Date.current)
+  end
+
   STATUS_HASH = {
     1 => "Accepting new referrals",
     11 => "Accepting limited new referrals by geography or # of patients",
@@ -1086,8 +1090,7 @@ class Specialist < ActiveRecord::Base
     elsif retiring?
       "Retiring as of #{unavailable_from.to_s(:long_ordinal)}"
     elsif status_mask == 6
-      if (unavailable_to < Date.current)
-        # unavailability date has passed, available again
+      if again_available?
         Specialist::STATUS_HASH[1]
       else
         "Unavailable from #{unavailable_from.to_s(:long_ordinal)} through "\
@@ -1143,11 +1146,7 @@ class Specialist < ActiveRecord::Base
       return STATUS_CLASS_EXTERNAL
     elsif accepting_with_limitations?
       return STATUS_CLASS_LIMITATIONS
-    elsif (
-      accepting_new_patients? ||
-      ((status_mask == 6) && (unavailable_to < Date.current))
-    )
-      # marked as available, or the "unavailable between" period has passed
+    elsif accepting_new_patients? || again_available?
       return STATUS_CLASS_AVAILABLE
     elsif (
       follow_up_only? ||

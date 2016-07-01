@@ -54,4 +54,20 @@ class SubscriptionWorker
 
     true
   end
+
+  def self.mail_availability_notifications
+    Specialist.select do |specialist|
+      (specialist.status_mask == 6) &&
+        (specialist.unavailable_to == Date.current + 1.weeks)
+    end.each do |specialist|
+      User.select do |user|
+        user.admin? && user.divisions == specialist.divisions
+      end.each do |user|
+        SubscriptionMailer.availability_update(
+          user.id,
+          specialist.id
+        ).deliver
+      end
+    end
+  end
 end
