@@ -40,7 +40,7 @@
               = link_to specialization.name,
                 specialization,
                 class: specialization.hidden_in?(*@as_divisions) ? "hidden-from-users ajax" : "ajax hoverlabel"
-              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions(@as_divisions)
+              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions?(@as_divisions)
 
       .span4half.front
 

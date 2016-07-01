@@ -70,7 +70,14 @@ const Breadcrumbs = React.createClass({
 })
 
 const dropdownClassName = (model) => {
-  if(_.includes(["/specialties/:id", "/areas_of_practice/:id"], matchedRoute(model))){
+  if(_.includes([
+    "/specialties/:id",
+    "/areas_of_practice/:id",
+    "/content_items/:id",
+    "/specialists/:id",
+    "/clinics/:id"
+  ], matchedRoute(model))){
+
     return "dropdown";
   }
   else {
@@ -164,7 +171,7 @@ const NewTag = ({model, specialization}) => {
   })
 
   if (showAsNew){
-    return <span className="new">NEW</span>
+    return <span className="new" style={{marginLeft: "3px"}}>NEW</span>
   } else {
     return <span/>
   }

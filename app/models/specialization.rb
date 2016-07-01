@@ -118,7 +118,7 @@ class Specialization < ActiveRecord::Base
     )
   end
 
-  def new_for_divisions(divisions)
+  def new_for_divisions?(divisions)
     specialization_options.for_divisions(divisions).is_new.length > 0
   end
 
