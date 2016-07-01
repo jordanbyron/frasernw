@@ -1,24 +1,9 @@
 import React from "react";
-import {
-  searchResults,
-  selectedCollectionFilter,
-  selectedGeographicFilter,
-  selectedSearchResult,
-  link,
-  recordAnalytics,
-  highlightSelectedSearchResult
-} from "controller_helpers/search_results";
-import {
-  selectCollectionFilter,
-  selectGeographicFilter,
-  closeSearch,
-  searchResultSelected,
-  hoverLeaveSearchResult
-} from "action_creators";
-import ReferentStatusIcon from "controllers/referent_status_icon";
+import { searchResults } from "controller_helpers/search_results";
 import _ from "lodash";
 import ExpandingContainer from "component_helpers/expanding_container";
-import hiddenFromUsers from "controller_helpers/hidden_from_users";
+import SearchResult from "controllers/search_result";
+import SearchFilters from "controllers/search_filters";
 
 const SearchResultsDropdown = React.createClass({
   componentDidUpdate: function() {
@@ -35,8 +20,9 @@ const SearchResultsDropdown = React.createClass({
         containerId="search_results"
         style={{maxHeight: maxHeight()}}
       >
-        <div className="livesearch__inner-results-container">
-          <Filters model={this.props.model} dispatch={this.props.dispatch}/>
+        <div className="livesearch__inner-results-container"
+          onMouseDown={(e) => e.preventDefault()}>
+          <SearchFilters model={this.props.model} dispatch={this.props.dispatch}/>
           <SearchResults model={this.props.model} dispatch={this.props.dispatch}/>
         </div>
       </ExpandingContainer>
@@ -84,116 +70,6 @@ const SearchResults = ({model, dispatch}) => {
   }
 }
 
-const Filters = ({model, dispatch}) => {
-  return(
-    <div className="livesearch__customize-container">
-      <CollectionFilter model={model} dispatch={dispatch}/>
-      <GeographicFilter model={model} dispatch={dispatch}/>
-    </div>
-  );
-}
-
-const GeographicFilter = ({model, dispatch}) => {
-  if(_.includes(
-    ["Physician Resources", "Patient Info"],
-    selectedCollectionFilter(model))){
-
-    return <noscript/>;
-  }
-  else {
-    return(
-      <div className="livesearch__filter-group livesearch__filter-group--scopes">
-        <span className="livesearch__prefix">
-          { "In: "}
-        </span>
-        <ul className="nav nav-pills" id="livesearch__search-categories">
-          {
-            [
-              "My Regional Divisions",
-              "All Divisions"
-            ].map((label) => {
-              return(
-                <GeographicFilterTab
-                  model={model}
-                  dispatch={dispatch}
-                  key={label}
-                  label={label}
-                />
-              );
-            })
-          }
-        </ul>
-      </div>
-    );
-  }
-};
-
-const GeographicFilterTab = ({model, dispatch, label}) => {
-  if (selectedGeographicFilter(model) === label){
-    var selectedClassName = " livesearch__search-scope--selected"
-  }
-  else {
-    var selectedClassName = "";
-  }
-
-  return(
-    <li className={`livesearch__search-scope ${selectedClassName}`}
-      onMouseDown={_.partial(selectGeographicFilter, dispatch, label)}
-    >
-      <a>{ label }</a>
-    </li>
-  );
-};
-
-const CollectionFilter = ({model, dispatch}) => {
-  return(
-    <div className="livesearch__filter-group">
-      <span className="livesearch__prefix">
-        { "Show Me: "}
-      </span>
-      <ul className="nav nav-pills" id="livesearch__search-categories">
-        {
-          [
-            "Everything",
-            "Specialists",
-            "Clinics",
-            "Physician Resources",
-            "Patient Info"
-          ].map((label) => {
-            return(
-              <CollectionFilterTab
-                model={model}
-                dispatch={dispatch}
-                key={label}
-                label={label}
-              />
-            );
-          })
-        }
-      </ul>
-      <i className="icon-remove pull-right livesearch__close-button"
-        onClick={_.partial(closeSearch, dispatch)}
-      />
-    </div>
-  );
-}
-
-const CollectionFilterTab = ({model, dispatch, label}) => {
-  if (selectedCollectionFilter(model) === label){
-    var selectedClassName = " livesearch__search-category--selected"
-  }
-  else {
-    var selectedClassName = "";
-  }
-
-  return(
-    <li className={`livesearch__search-category ${selectedClassName}`}
-      onMouseDown={_.partial(selectCollectionFilter, dispatch, label)}
-    >
-      <a>{ label }</a>
-    </li>
-  );
-};
 
 const resultGroup = (model, group, dispatch) => {
   return [
@@ -209,7 +85,7 @@ const resultGroup = (model, group, dispatch) => {
 const resultGroupEntries = (model, decoratedRecords, dispatch) => {
   return decoratedRecords.map((decoratedRecord) => {
     return(
-      <Result
+      <SearchResult
         model={model}
         dispatch={dispatch}
         decoratedRecord={decoratedRecord}
@@ -234,108 +110,4 @@ const GroupHeading = ({model, dispatch, label}) => {
     <li className="group">{ label }</li>
   );
 }
-
-const Result = ({model, dispatch, decoratedRecord}) => {
-  return(
-    <li className={resultClassname(decoratedRecord, model)}>
-      <a href={link(decoratedRecord.raw)}
-        onClick={_.partial(recordAnalytics, decoratedRecord.raw, model)}
-        onMouseEnter={_.partial(searchResultSelected, dispatch, decoratedRecord.index)}
-        onMouseLeave={_.partial(hoverLeaveSearchResult, dispatch)}
-      >
-        { InnerResult(decoratedRecord.raw, model) }
-      </a>
-    </li>
-  );
-}
-
-const resultClassname = (decoratedRecord, model) => {
-  let classes = ["search-result"]
-
-  if(decoratedRecord.index === selectedSearchResult(model) &&
-    highlightSelectedSearchResult(model)){
-
-    classes.push("selected");
-  }
-
-  if(hiddenFromUsers(decoratedRecord.raw, model)) {
-    classes.push("hidden-from-users");
-  }
-
-  return classes.join(" ");
-}
-
-const InnerResult = (record, model) => {
-  if (_.includes(["specialists", "clinics"], record.collectionName)){
-    return(
-      [
-        <div className="search_name" key="name">
-          <ReferentStatusIcon record={record} model={model}/>
-          <span style={{marginLeft: "5px"}}>{label(record)}</span>
-        </div>,
-        <div className="search_specialties" key="specialties">
-          {
-            record.
-              specializationIds.
-              map(_.propertyOf(model.app.specializations)).
-              map(_.property("name")).
-              join(", ")
-          }
-        </div>,
-        <div className="search_city" key="city">
-          { cities(record).map((id) => model.app.cities[id].name).join(", ") }
-        </div>
-      ]
-    );
-  }
-  else if (record.collectionName === "procedures"){
-    return(
-      [
-        <div className="search_name" key="name">{label(record)}</div>,
-        <div className="search_specialties no_city" key="specialties">
-          {
-            record.
-              specializationIds.
-              map((id) => model.app.specializations[id].name) .
-              join(", ")
-          }
-        </div>
-      ]
-    );
-  }
-  else {
-    return(
-      [
-        <div className="search_name full_width" key="name">{label(record)}</div>
-      ]
-    );
-  }
-}
-
-const cities = (record) => {
-  if (record.collectionName === "clinics" ||
-    (record.respondedToSurvey && record.isAvailable)){
-
-    return record.cityIds;
-  }
-  else {
-    return [];
-  }
-}
-
-const label = (record) => {
-  if (record.collectionName === "specialists" && record.billingNumber){
-    return `${record.name} - MSP #${record.billingNumber}`;
-  }
-  else if (_.includes(["procedures", "contentCategories"], record.collectionName)){
-    return record.fullName;
-  }
-  else if (record.collectionName === "contentItems"){
-    return record.title;
-  }
-  else {
-    return record.name;
-  }
-}
-
 export default SearchResultsDropdown;
