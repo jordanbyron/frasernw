@@ -31,25 +31,39 @@ import CustomWaittimeMessage from "controllers/custom_waittime_message";
 import FeedbackModal from "controllers/feedback_modal";
 import LoadingIndicator from "component_helpers/loading_indicator";
 
-const Template = ({model, dispatch}) => {
-  if(isLoaded(model)) {
-    return(
-      <div>
-        <Breadcrumbs model={model} dispatch={dispatch}/>
-        <UpperWhitePanel model={model}/>
-        <NavTabs model={model} dispatch={dispatch}/>
-        <LowerWhitePanel model={model} dispatch={dispatch}/>
-        <FeedbackModal model={model} dispatch={dispatch}/>
-      </div>
-    );
+const Template = React.createClass({
+  shouldComponentUpdate: function(nextProps) {
+    let thisUi = this.props.model.ui;
+    let nextUi = nextProps.model.ui;
+
+    return nextUi.searchTerm === thisUi.searchTerm &&
+      nextUi.selectedSearchResult === thisUi.selectedSearchResult &&
+      nextUi.highlightSelectedSearchResult === thisUi.highlightSelectedSearchResult
+  },
+  render: function() {
+    let model = this.props.model;
+    let dispatch = this.props.dispatch;
+
+    if(isLoaded(model)) {
+      return(
+        <div>
+          <Breadcrumbs model={model} dispatch={dispatch}/>
+          <UpperWhitePanel model={model}/>
+          <NavTabs model={model} dispatch={dispatch}/>
+          <LowerWhitePanel model={model} dispatch={dispatch}/>
+          <FeedbackModal model={model} dispatch={dispatch}/>
+        </div>
+      );
+    }
+    else if (showsLowerPanel(model)) {
+      return(<LoadingIndicator minHeight="300px"/>);
+    }
+    else {
+      return(<noscript/>);
+    }
   }
-  else if (showsLowerPanel(model)) {
-    return(<LoadingIndicator minHeight="300px"/>);
-  }
-  else {
-    return(<noscript/>);
-  }
-};
+})
+
 
 const isLoaded = (model) => {
   return model.app.currentUser && model.app.specialists;
