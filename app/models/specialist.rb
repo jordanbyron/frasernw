@@ -206,13 +206,9 @@ class Specialist < ActiveRecord::Base
   end
 
   def flush_cache_for_record
-  # only flushes Specialist.cached_find(id), @specialist.city @specialist.cities
-  # @specialist.cities_for_display @specialist.cities_for_front_page
-    Rails.cache.delete([self.class.name, self.id, "city"])
-    Rails.cache.delete([self.class.name, self.id, "cities"])
-    Rails.cache.delete([self.class.name, self.id, "cities_for_display"])
-    Rails.cache.delete([self.class.name, self.id, "cities_for_front_page"])
     Rails.cache.delete([self.class.name, self.id])
+    cities(force: true)
+    cities_for_front_page(force: true)
   end
 
   def self.in_cities(c)
@@ -675,27 +671,6 @@ class Specialist < ActiveRecord::Base
         offices.map(&:city).reject(&:blank?).uniq
       else
         cities
-      end
-    end
-  end
-
-  def cities_for_display(force: false)
-    Rails.cache.fetch([self.class.name, self.id, "cities_for_display"], force: force) do
-      if responded? && !not_available?
-        offices.map(&:city).reject{ |city| city.blank? || city.hidden? }.uniq
-      elsif hospital_or_clinic_only?
-        (
-          hospitals.map(&:city) +
-          clinic_locations.map(&:city)
-        ).flatten.reject{ |city| city.blank? || city.hidden?}.uniq
-      elsif hospital_or_clinic_referrals_only?
-        (
-          offices.map(&:city) +
-          hospitals.map(&:city) +
-          clinic_locations.map(&:city)
-        ).flatten.reject{ |city| city.blank? || city.hidden? }.uniq
-      else
-        []
       end
     end
   end

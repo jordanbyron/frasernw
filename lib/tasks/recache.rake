@@ -4,60 +4,8 @@ namespace :pathways do
     ROUTES = Rails.application.routes.url_helpers
 
     TASKS = {
-      specialists: -> {
-        Specialist.all.sort{ |a,b| a.id <=> b.id }.each do |specialist|
-          puts "Specialist #{specialist.id}"
-
-          specialist.cities(force: true)
-          specialist.cities_for_display(force: true)
-          specialist.cities_for_front_page(force: true)
-
-          ExpireFragment.call ROUTES.specialist_path(specialist)
-          HttpGetter.exec("specialists/#{specialist.id}/#{specialist.token}/refresh_cache")
-        end
-      },
       serialized_indices: -> {
         Denormalized.regenerate_all
-      },
-      specialists_index: -> {
-        Division.all.sort{ |a,b| a.id <=> b.id }.each do |d|
-          Specialization.all.sort{ |a,b| a.id <=> b.id }.each do |s|
-            # true / false represent can_edit? variable in view
-            puts "Specialists Index Specialization #{s.id} Division #{d.id}"
-            ExpireFragment.call "specialists_index_#{s.cache_key}_#{s.specialists.cache_key}_#{d.cache_key}_#{true}"
-            ExpireFragment.call "specialists_index_#{s.cache_key}_#{s.specialists.cache_key}_#{d.cache_key}_#{false}"
-            ExpireFragment.call "specialists_index_no_division_tab_#{s.cache_key}_#{s.specialists.cache_key}"
-            HttpGetter.exec("specialties/#{s.id}/#{s.token}/specialists/refresh_index_cache/#{d.id}")
-          end
-        end
-      },
-      clinics: -> {
-        Clinic.all.sort{ |a,b| a.id <=> b.id }.each do |c|
-          puts "Clinic #{c.id}"
-          ExpireFragment.call ROUTES.clinic_path(c)
-          HttpGetter.exec("clinics/#{c.id}/#{c.token}/refresh_cache")
-        end
-      },
-      sc_categories: -> {
-        User.all_user_division_groups_cached.each do |division_group|
-          ScCategory.all.sort{ |a,b| a.id <=> b.id }.each do |cc|
-            puts "Expiring Content Category #{cc.id} SuperAdmin"
-            ExpireFragment.call "content_#{cc.id}_category_#{division_group.join('_')}_#{true}" #true/false represents @is_super_admin boolean
-            puts "Expiring Content Category #{cc.id} User"
-            ExpireFragment.call "content_#{cc.id}_category_#{division_group.join('_')}_#{false}"
-          end
-        end
-      },
-      menus: -> {
-        ExpireFragment.call 'specialization_dropdown_admin'
-
-        User.all_user_division_groups_cached.each do |division_group|
-          ExpireFragment.call "specialization_dropdown_#{division_group.join('_')}"
-
-          Specialization.all.each do |specialization|
-            ExpireFragment.call "specialization_#{specialization.id}_nav_#{division_group.join('_')}"
-          end
-        end
       },
       front: -> {
         User.all_user_division_groups_cached.each do |division_group|

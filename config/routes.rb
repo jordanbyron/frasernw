@@ -47,10 +47,6 @@ Frasernw::Application.routes.draw do
     end
   end
 
-  scope '/clinics/:id/:token', controller: 'clinics' do
-    get :refresh_cache
-  end
-
   scope '/clinics/:id/:token', controller: 'clinics_editor' do
     # Secret edit or owner edit
     get :edit,    as: 'clinic_self_edit'
@@ -67,10 +63,6 @@ Frasernw::Application.routes.draw do
       get :photo
       patch :update_photo
     end
-  end
-
-  scope '/specialists/:id/:token', controller: 'specialists' do
-    get :refresh_cache
   end
 
   scope '/specialists/:id/:token', controller: 'specialists_editor' do
@@ -168,14 +160,8 @@ Frasernw::Application.routes.draw do
   get '/clinics/:id/location/:location_id/print' => 'clinics#print_location_information',
     as: 'clinic_location_information'
 
-  get '/hospitals/:id/:token/refresh_cache' => 'hospitals#refresh_cache', as: 'hospital_refresh_cache'
-  get '/languages/:id/:token/refresh_cache' => 'languages#refresh_cache', as: 'language_refresh_cache'
-
   get '/specialties/:id/cities/:city_id' => 'specializations#city', as: 'specialization_city'
 
-  #Used to cache fragments of admin All Specialists page
-  get '/specialties/:specialization_id/:token/specialists/refresh_index_cache/:division_id' =>
-    'specialists#refresh_index_cache', as: 'specialist_refresh_index_cache'
 
   #need improve performance:
   patch '/favorites/specialists/:id' => 'favorites#edit', as: 'specialist_favorite', model: 'specialists'
