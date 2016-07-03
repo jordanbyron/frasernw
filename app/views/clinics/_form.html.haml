@@ -326,7 +326,7 @@
               .span2.changed_wrapper.lagtime
                 = select_tag "focuses_lagtime[#{f[:id]}]",
                   options_from_collection_for_select(Clinic::LAGTIME_LABELS,
-                  first,
+                  :first,
                   :last,
                   f[:lagtime]),
                   class: "span2",
