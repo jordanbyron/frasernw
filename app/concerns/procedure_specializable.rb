@@ -34,7 +34,7 @@ module ProcedureSpecializable
 
   def primary_specialization_shown_in?(divisions)
     divisions.any? do |division|
-      !primary_specialization.hidden_in?(divisions)
+      !primary_specialization.hidden_in?(*divisions)
     end
   end
 
