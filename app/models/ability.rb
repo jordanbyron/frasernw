@@ -170,6 +170,8 @@ class Ability
             entity.controlling_users.include?(user)
         end
 
+        can :show, [ Specialization, Procedure ]
+
         can :show, ScItem do |item|
           item.available_to_divisions?(user.as_divisions)
         end
