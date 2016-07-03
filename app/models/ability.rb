@@ -166,8 +166,8 @@ class Ability
 
       elsif user.as_user?
         can :show, [Specialist, Clinic] do |entity|
-          !entity.hidden? &&
-            !entity.controlling_users.include?(user)
+          !entity.hidden? ||
+            entity.controlling_users.include?(user)
         end
 
         can :show, ScItem do |item|
