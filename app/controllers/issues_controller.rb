@@ -85,6 +85,8 @@ class IssuesController < ApplicationController
     @issue = Issue.find(params[:id])
     authorize! :destroy, @issue
 
+    @issue.destroy
+
     redirect_to issues_path, notice: "Issue has been destroyed"
   end
 
