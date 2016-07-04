@@ -1,18 +1,18 @@
 import React from "react";
 import _ from "lodash"
 import EditIssue from "controllers/icons/edit_issue";
+import { link } from "controller_helpers/links";
 
 const IssueRow = ({model, decoratedRecord}) => {
   return(
     <tr>
-      <td>{ decoratedRecord.raw.id }</td>
+      <td>{ decoratedRecord.raw.code }</td>
       <td>
-        <a href={`/issues/${decoratedRecord.raw.id}`}>
+        <a href={link(decoratedRecord.raw)}>
           { label(decoratedRecord) }
         </a>
         <EditIssue issue={decoratedRecord.raw} model={model}/>
       </td>
-      <td>{ sourceLabel(decoratedRecord, model) }</td>
     </tr>
   );
 }

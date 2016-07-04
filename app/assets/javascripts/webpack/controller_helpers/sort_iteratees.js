@@ -62,7 +62,15 @@ const unboundIteratees = (model) => {
     }
   }
   else if (matchedRoute(model) === "/change_requests"){
-    return [ (decoratedRecord) => (decoratedRecord.raw.sourceId || "") ];
+    return [
+      (decoratedRecord) => (parseInt(decoratedRecord.raw.codeNumber) || 0)
+    ];
+  }
+  else if (matchedRoute(model) === "/issues"){
+    return [
+      (decoratedRecord) => (decoratedRecord.raw.sourceKey),
+      (decoratedRecord) => (parseInt(decoratedRecord.raw.codeNumber) || 0)
+    ];
   }
   else {
     return [ _.property("raw.id") ];
