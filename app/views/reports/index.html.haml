@@ -3,140 +3,119 @@
 .content-wrapper
   .content
 
-    %h2 Pathways Global Usage Reports and Statistics
+    %h2 Reports and Statistics
     .headline
       .row-fluid
         .span3.offset1
           = render partial: "reports/analytics_box",
-            locals: {color: '#0B1E32', icon: 'icon-user', title: "Active Signed Up Users", count: User.authorized_user.count}
+            locals: { color: '#0B1E32',
+            icon: 'icon-user',
+            title: "Active Signed Up Users",
+            count: User.authorized_user.count }
         .span3.offset1
           = render partial: "reports/analytics_box",
-            locals: {color: '#1B5D94', icon: 'icon-user-md', title: "Specialists", count: Specialist.all.count}
+            locals: { color: '#1B5D94',
+            icon: 'icon-user-m',
+            title: "Specialists",
+            count: Specialist.all.count }
         .span3.offset1
           = render partial: "reports/analytics_box",
-            locals: {color: '#404040', icon: 'icon-home', title: "Clinics", count: Clinic.all.count}
+            locals: { color: '#404040',
+            icon: 'icon-home',
+            title: "Clinics",
+            count: Clinic.all.count }
         .span3.offset1
           = render partial: "reports/analytics_box",
-            locals: {color: '#A42C37', icon: 'icon-hospital', title: "Hospitals", count: Hospital.all_real.count}
-
+            locals: { color: '#A42C37',
+            icon: 'icon-hospital',
+            title: "Hospitals",
+            count: Hospital.all_real.count }
       .row-fluid
         .span3.offset1
           = render partial: "reports/analytics_box",
-            locals: {color: '#193048', icon: 'icon-book', title: "Resources", count: ScItem.all.count}
+            locals: { color: '#193048',
+            icon: 'icon-book',
+            title: "Resources",
+            count: ScItem.all.count }
         .span3.offset1
           = render partial: "reports/analytics_box",
-            locals: {color: '#A14E06', icon: 'icon-edit', title: "Referral Forms", count: ReferralForm.all.count}
+            locals: { color: '#A14E06',
+            icon: 'icon-edit',
+            title: "Referral Forms",
+            count: ReferralForm.all.count }
         .span3.offset1
           = render partial: "reports/analytics_box",
-            locals: {color: '#0088CC', icon: 'icon-bullhorn', title: "Feedback Items", count: FeedbackItem.all.count}
+            locals: { color: '#0088CC',
+            icon: 'icon-bullhorn',
+            title: "Feedback Items",
+            count: FeedbackItem.all.count }
         .span3.offset1
           = render partial: "reports/analytics_box",
-            locals: {color: '#C44D58', icon: 'icon-heart', title: "Favorites", count: Favorite.all.count}
-
-
-
-  %h2 Detailed Reports
-  - @object = Specialist.last(20)
-
-  / %i.icon-folder-open
-
-  =# render partial: "reports/table_widget", collection: @object, as: :object, locals: {table_title: "Most visited pages", row_number_value: 14124, row_name: "/clinics/3"}
-
-
-
+            locals: { color: '#C44D58',
+            icon: 'icon-heart',
+            title: "Favorites",
+            count: Favorite.all.count }
 
   %table.table.table-condensed.table-striped
     %tr
-      %th Name
-      %th Type
-      %th Region
-      %th Users
-      %th Time Period
-      %th.admin
+      %th Report Type
+      %th
 
     - if can? :index, :change_requests
       %tr
         %td= link_to "Change Requests", change_requests_path
-        %td Progress Report
-        %td N/A
-        %td N/A
-        %td > June 2016
         %td
 
     - if can? :view_report, :page_views
       %tr
         %td= link_to "Page Views", page_views_reports_path
-        %td Analytics
-        %td System-wide
-        %td N/A
-        %td > April 2014
         %td
 
     - if can? :view_report, :sessions
       %tr
         %td= link_to "Sessions", sessions_reports_path
-        %td Analytics
-        %td System-wide
-        %td N/A
-        %td > April 2014
         %td
 
     - if can? :view_report, :user_ids
       %tr
         %td= link_to "User IDs", user_ids_reports_path
-        %td Analytics
-        %td System-wide
-        %td N/A
-        %td > April 2014
         %td
 
     - if can? :view_report, :pageviews_by_user
       %tr
         %td= link_to "Page Views By User", pageviews_by_user_reports_path
-        %td Analytics
-        %td System-wide
-        %td N/A
-        %td > April 2014
         %td
 
     - if can? :view_report, :referents_by_specialty
       %tr
-        %td= link_to "Specialists and Clinics by Specialty", referents_by_specialty_reports_path
-        %td Analytics
-        %td System-wide
-        %td N/A
-        %td All Time
+        %td= link_to "Specialists and Clinics by Specialty",
+          referents_by_specialty_reports_path
         %td
 
     - if can? :view_report, :csv_usage
       %tr
         %td= link_to "Usage (CSV Report)", new_csv_usage_report_path
-        %td Analytics
-        %td System-wide
-        %td N/A
-        %td > April 2014
         %td
 
     - if can? :view_report, :entity_page_views
       %tr
         %td= link_to "Entity Page Views", entity_page_views_reports_path
-        %td Analytics
-        %td System-wide
-        %td N/A
-        %td > April 2014
         %td
 
     - if current_user.as_super_admin?
-      - @reports.each do |report|
-        %tr
-          %td= link_to report.name, report, :class => 'ajax'
-          %td= report.type
-          %td= report.level_name
-          %td= report.user_type
-          %td= report.time_frame_name
-          %td.admin.btn-group
-            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_report_path(report), :class => "btn btn-mini ajax")
-            = link_to("<i class='icon-trash'></i>".html_safe + " Delete", report, :data => { :confirm => "Delete #{report.name}?" }, :method => :delete, :class => "btn btn-mini")
+      %tr
+        %td= link_to "Specialist Contact History",
+          specialist_contact_history_reports_path
+        %td= report_index_dropdown(:specialist_contact_history)
+      %tr
+        %td= link_to "Specialist Wait Times",
+          specialist_wait_times_reports_path
+        %td= report_index_dropdown(:specialist_wait_times)
+      %tr
+        %td= link_to "Clinic Wait Times", clinic_wait_times_reports_path
+        %td= report_index_dropdown(:clinic_wait_times)
+      %tr
+        %td= link_to "Entity Statistics", entity_statistics_reports_path
+        %td= report_index_dropdown(:entity_statistics)
 
-  - if current_user.as_super_admin?
-    %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Report", new_report_path, :class => "btn ajax")
+  %p.muted Click report types on left for system-wide reports
