@@ -19,6 +19,10 @@ import {
 } from "action_creators";
 
 const bootstrapReact = function() {
+  if (!window.pathways.isLoggedIn){
+    return false;
+  }
+
   let middlewares = [];
 
   if(window.pathways.environment !== "production"){

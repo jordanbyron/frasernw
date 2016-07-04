@@ -10,12 +10,16 @@
     :javascript
       window.pathways = window.pathways || {};
       window.pathways.environment = "#{Rails.env}";
-      window.pathways.dataForReact = []
-      window.pathways.dataForReact.push({
-        app: {
-          currentUser: #{FilterTableAppState::CurrentUser.call(current_user: current_user).to_json}
-        }
-      });
+      window.pathways.isLoggedIn = #{logged_in?};
+
+    - if logged_in?
+      :javascript
+        window.pathways.dataForReact = []
+        window.pathways.dataForReact.push({
+          app: {
+            currentUser: #{FilterTableAppState::CurrentUser.call(current_user: current_user).to_json}
+          }
+        });
 
     = stylesheet_link_tag "application", media: 'screen, print'
     /[if lte IE 7]
