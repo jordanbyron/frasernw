@@ -4,8 +4,8 @@
   %h2= @issue.code_with_label
   %p.space
     %strong Description:
-  %p
-    = @issue.description
+  %div
+    = BlueCloth.new(@issue.description).to_html.html_safe
   %p.space
     %strong Completion Estimate:
     = @issue.completion_estimate
