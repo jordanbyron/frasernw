@@ -1,6 +1,7 @@
 import React from "react";
 import _ from "lodash"
 import EditIssue from "controllers/icons/edit_issue";
+import { link } from "controller_helpers/links";
 
 const IssueRow = ({model, decoratedRecord}) => {
   return(
@@ -14,15 +15,6 @@ const IssueRow = ({model, decoratedRecord}) => {
       </td>
     </tr>
   );
-}
-
-const link = (record) => {
-  if(record.sourceKey === 1 && record.sourceId && record.sourceId !== ""){
-    return `/change_requests/${record.sourceId}`;
-  }
-  else {
-    return `/issues/${record.id}`;
-  }
 }
 
 const sourceLabel = (decoratedRecord, model) => {

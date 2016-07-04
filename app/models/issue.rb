@@ -49,7 +49,7 @@ class Issue < ActiveRecord::Base
     3 => "Design consultation",
     4 => "Complete",
     5 => "Re-examine need",
-    6 => "Ready to Test",
+    6 => "Ready to test",
     7 => "Cancelled"
   }
   def progress
@@ -135,7 +135,11 @@ class Issue < ActiveRecord::Base
   end
 
   def date_completed_label
-    date_completed.try(:to_s, :ordinal) || ""
+    if date_completed.nil?
+      ""
+    else
+      date_completed.to_date.to_s(:ordinal)
+    end
   end
 
   def to_hash

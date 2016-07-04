@@ -66,8 +66,8 @@ const NavTabsController = ({model, dispatch}) => {
             dispatch={dispatch}
           />
           <NavTabController
-            label="Completed"
-            tabKey="completedIssues"
+            label="Closed"
+            tabKey="closedIssues"
             model={model}
             dispatch={dispatch}
           />
