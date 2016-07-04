@@ -125,9 +125,8 @@ const cellConfigs = (model) => {
   }
   else if (matchedRoute(model) === "/issues"){
     return [
-      { label: "#", key: "ID" },
-      { label: "Title", key: "DESCRIPTION" },
-      { label: "Source", key: "SOURCE" }
+      { label: "Code", key: "ISSUE_CODE" },
+      { label: "Title", key: "DESCRIPTION" }
     ];
   }
   else if (matchedRoute(model) === "/change_requests"){

@@ -31,6 +31,14 @@ class Issue < ActiveRecord::Base
   accepts_nested_attributes_for :subscriptions,
     allow_destroy: true
 
+  validates :source_id,
+    uniqueness: true,
+    if: :change_request?
+
+  validates :source_id,
+    presence: true,
+    if: :change_request?
+
   def self.change_request
     where(source_key: 1)
   end
@@ -73,13 +81,21 @@ class Issue < ActiveRecord::Base
   }
   BRIEF_SOURCE_LABELS = {
     1 => "CR",
-    2 => "Agenda",
-    3 => "Req",
-    4 => "Dev",
-    5 => "Bug"
+    2 => "AGENDA",
+    3 => "REQ",
+    4 => "DEV",
+    5 => "BUG"
   }
   def source
     SOURCE_LABELS[source_key]
+  end
+
+  def code
+    "#{BRIEF_SOURCE_LABELS[source_key]}##{code_number}"
+  end
+
+  def code_number
+    change_request? ? source_id : id
   end
 
   def change_request?
@@ -96,18 +112,18 @@ class Issue < ActiveRecord::Base
 
   def version_marked_completed
     versions.select do |version|
-      version.changeset["progress"].present? &&
-        version.changeset["progress"][0] != 4 &&
-        version.changeset["progress"][1] == 4
+      version.changeset["progress_key"].present? &&
+        version.changeset["progress_key"][0] != 4 &&
+        version.changeset["progress_key"][1] == 4
     end.last
   end
 
-  def label(numbered: true)
-    if numbered
-      "##{id} - #{title.present? ? title : description}"
-    else
-      title.present? ? title : description
-    end
+  def label
+    title.present? ? title : description
+  end
+
+  def code_with_label
+    "#{code} - #{label}"
   end
 
   def assignees_label
@@ -118,12 +134,18 @@ class Issue < ActiveRecord::Base
       to_sentence
   end
 
+  def date_completed_label
+    date_completed.try(:to_s, :ordinal) || ""
+  end
+
   def to_hash
     attributes.except(:date_entered, :date_completed).camelize_keys.merge({
       assigneeIds: assignees.map(&:id).sort,
       collectionName: "issues",
       dateEntered: date_entered.to_s,
-      dateCompleted: date_completed.try(:to_s)
+      dateCompleted: date_completed_label,
+      code: code,
+      codeNumber: code_number
     })
   end
 end
