@@ -33,7 +33,7 @@
 
   - if current_user.as_super_admin?
     %h6 Notes
-    
+
     - if @issue.notes.any?
 
       - @issue.notes.reject(&:new_record?).sort_by(&:created_at).each do |note|
@@ -110,7 +110,7 @@
             = "Subscribe"
 
 
-    %hr
+  %hr
 
-    = link_to "< All Issues",
-      issues_path
+  = link_to "< All Issues",
+    issues_path
