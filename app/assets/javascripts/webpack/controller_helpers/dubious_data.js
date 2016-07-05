@@ -14,7 +14,7 @@ export const DubiousDateRanges = [
         toDate(filterValues.endMonth(model))
     },
     label: (model) => {
-      return "Error! End month can't be later than start month";
+      return "Start month can't be later than end month";
     }
   },
   {
@@ -26,9 +26,9 @@ export const DubiousDateRanges = [
     label: (model) => {
       if(model.app.currentUser.role === "super"){
         return(
-          "Please note that pre November 2015 data can only be relied on to count clicks " +
-          "on links to resources which are hosted ON PATHWAYS as inline content.  " +
-          "It's highly suggested that this data is not used for decisionmaking."
+          "Data from before November 2015 may underreport clicks on links to " +
+          "externally hosted content. " +
+          "Use of this data is discouraged."
         );
       }
       else {
