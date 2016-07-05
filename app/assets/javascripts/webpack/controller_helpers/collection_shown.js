@@ -130,10 +130,10 @@ export const matchesTab = (record, contentCategories, tabKey, recordShownByPage)
     return recordShownByPage.id !== record.ownerDivisionId
   }
   else if (tabKey === "pendingIssues"){
-    return record.progressKey !== 4;
+    return !_.includes([4, 7], record.progressKey);
   }
-  else if (tabKey === "completedIssues"){
-    return record.progressKey === 4;
+  else if (tabKey === "closedIssues"){
+    return _.includes([4, 7], record.progressKey);
   }
 };
 

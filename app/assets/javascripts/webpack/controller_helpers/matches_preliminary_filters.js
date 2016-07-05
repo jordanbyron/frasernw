@@ -9,7 +9,8 @@ export const preliminaryFilterKeys = ((collectionName) => {
 
     return [
       "status",
-      "showInTable"
+      "showInTable",
+      "notHidden"
     ];
   }
   else if (collectionName === "contentItems") {

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160620221610) do
+ActiveRecord::Schema.define(version: 20160630043242) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -202,6 +202,7 @@ ActiveRecord::Schema.define(version: 20160620221610) do
     t.string   "deprecated_url"
     t.string   "deprecated_email"
     t.date     "unavailable_from"
+    t.boolean  "hidden",                                default: false
   end
 
   create_table "contacts", force: true do |t|
@@ -660,6 +661,15 @@ ActiveRecord::Schema.define(version: 20160620221610) do
 
   add_index "sc_categories", ["ancestry"], name: "index_sc_categories_on_ancestry", using: :btree
 
+  create_table "sc_item_mailings", force: true do |t|
+    t.integer  "sc_item_id"
+    t.text     "user_division_ids", default: [], array: true
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "user_role"
+  end
+
   create_table "sc_item_specialization_procedure_specializations", force: true do |t|
     t.integer  "sc_item_specialization_id"
     t.integer  "procedure_specialization_id"
@@ -878,6 +888,7 @@ ActiveRecord::Schema.define(version: 20160620221610) do
     t.boolean  "is_gp",                      default: false
     t.boolean  "is_internal_medicine",       default: false
     t.boolean  "sees_only_children",         default: false
+    t.boolean  "hidden",                     default: false
   end
 
   add_index "specialists", ["referral_clinic_id"], name: "index_specialists_on_referral_clinic_id", using: :btree
@@ -888,7 +899,7 @@ ActiveRecord::Schema.define(version: 20160620221610) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "division_id"
-    t.boolean  "in_progress",                      default: false
+    t.boolean  "hide_from_division_users",         default: false
     t.boolean  "is_new",                           default: false
     t.integer  "content_owner_id"
     t.integer  "open_to_type",                     default: 1
@@ -911,7 +922,6 @@ ActiveRecord::Schema.define(version: 20160620221610) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "deprecated_in_progress",        default: false
     t.string   "saved_token"
     t.string   "member_name"
     t.boolean  "deprecated_open_to_clinic_tab", default: false

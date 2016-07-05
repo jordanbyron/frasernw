@@ -14,3 +14,8 @@ export const matchesUserDivisions = (record, model) => {
     model.app.currentUser.divisionIds
   ).pwPipe(_.any);
 }
+
+export const notHidden = (record, model) => {
+  return model.app.currentUser.role !== "user" ||
+    !record.hidden;
+}

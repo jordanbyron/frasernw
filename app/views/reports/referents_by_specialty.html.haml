@@ -3,5 +3,4 @@
 #react_root--template
 
 :javascript
-  window.pathways = window.pathways || {};
-  window.pathways.dataForReact = #{Oj.dump(@init_data)};
+  window.pathways.dataForReact.push(#{Oj.dump(@init_data)});

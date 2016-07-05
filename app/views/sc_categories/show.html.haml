@@ -24,5 +24,4 @@
         to delete the content category of #{@sc_category.name} in its entirety.
 
 :javascript
-  window.pathways = window.pathways || {};
-  window.pathways.dataForReact = #{Oj.dump(@init_data)};
+  window.pathways.dataForReact.push(#{Oj.dump(@init_data)});

@@ -32,9 +32,9 @@ module ProcedureSpecializable
     end.flatten
   end
 
-  def primary_specialization_complete_in?(divisions)
+  def primary_specialization_shown_in?(divisions)
     divisions.any? do |division|
-      division.specialization_complete?(primary_specialization)
+      !primary_specialization.hidden_in?(*divisions)
     end
   end
 

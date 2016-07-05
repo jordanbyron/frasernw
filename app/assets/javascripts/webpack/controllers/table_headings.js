@@ -74,7 +74,7 @@ const cellConfigs = (model, dispatch) => {
     ];
 
     if (showingMultipleSpecializations(model)){
-      configs.splice(0, 1, { label: "Specialties", key: "SPECIALTIES" })
+      configs.splice(1, 0, { label: "Specialties", key: "SPECIALTIES" })
     }
 
     return configs;
@@ -111,9 +111,8 @@ const cellConfigs = (model, dispatch) => {
   }
   else if (matchedRoute(model) === "/issues"){
     return [
-      { label: "#", key: "ID" },
-      { label: "Title", key: "DESCRIPTION" },
-      { label: "Source", key: "SOURCE" }
+      { label: "Code", key: "ISSUE_CODE" },
+      { label: "Title", key: "DESCRIPTION" }
     ];
   }
   else if (matchedRoute(model) === "/change_requests"){

@@ -10,16 +10,9 @@ const rootReducer = (model = {}, action) => {
 const ui = (model = {}, action) => {
   switch(action.type){
   case "PARSE_RENDERED_DATA":
-    if(action.data.ui){
-      return _.assign(
-        {},
-        model,
-        action.data.ui
-      );
-    }
-    else {
-      return model;
-    }
+    var uiData = action.data.map(_.property("ui")).filter(_.identity)
+
+    return _.assign(...[{}, model].concat(uiData));
   default:
     return {
       recordsToDisplay: recordsToDisplay(model.recordsToDisplay, action),
@@ -32,8 +25,83 @@ const ui = (model = {}, action) => {
       tabs: tabs(model.tabs, action),
       latestUpdates: latestUpdates(model.latestUpdates, action),
       persistentConfig: model.persistentConfig,
-      feedbackModal: feedbackModal(model.feedbackModal, action)
+      feedbackModal: feedbackModal(model.feedbackModal, action),
+      searchIsFocused: searchIsFocused(model.searchIsFocused, action),
+      searchTerm: searchTerm(model.searchTerm, action),
+      searchCollectionFilter: searchCollectionFilter(model.searchCollectionFilter, action),
+      searchGeographicFilter: searchGeographicFilter(model.searchGeographicFilter, action),
+      selectedSearchResult: selectedSearchResult(model.selectedSearchResult, action),
+      highlightSelectedSearchResult: highlightSelectedSearchResult(
+        model.highlightSelectedSearchResult,
+        action
+      ),
+      dropdownSpecializationId: model.dropdownSpecializationId
     };
+  }
+};
+const highlightSelectedSearchResult = (model, action) => {
+  switch(action.type){
+  case "HOVER_LEAVE_SEARCH_RESULT":
+    return false;
+  default:
+    return true;
+  }
+}
+
+
+const selectedSearchResult = (model, action) => {
+  switch(action.type){
+  case "SEARCH_RESULT_SELECTED":
+    return action.proposed;
+  case "CLOSE_SEARCH":
+    return 0;
+  default:
+    return model;
+  }
+}
+
+const searchGeographicFilter = (model, action) => {
+  switch(action.type){
+  case "SEARCH_GEOGRAPHIC_FILTER":
+    return action.proposed;
+  default:
+    return model;
+  }
+}
+
+const searchCollectionFilter = (model, action) => {
+  switch(action.type){
+  case "SEARCH_COLLECTION_FILTER":
+    return action.proposed;
+  default:
+    return model;
+  }
+}
+
+const searchTerm = (model, action) => {
+  switch(action.type){
+  case "TERM_SEARCHED":
+    return action.proposed;
+  case "CLOSE_SEARCH":
+    return "";
+  case "SEARCH_FOCUS_CHANGED":
+    if(action.proposed){
+      return model;
+    }
+    else {
+      return "";
+    }
+  default:
+    return model;
+  }
+}
+
+const searchIsFocused = (model, action) => {
+  switch(action.type){
+  case "SEARCH_FOCUS_CHANGED":
+    return action.proposed;
+  default:
+    return model;
   }
 }
 
@@ -184,7 +252,7 @@ const reducedView = (model, action) => {
 const isBreadcrumbDropdownOpen = (model, action) => {
   switch(action.type){
   case "TOGGLE_BREADCRUMB_DROPDOWN":
-    return action.newState;
+    return action.proposed;
   default:
     return false;
   }

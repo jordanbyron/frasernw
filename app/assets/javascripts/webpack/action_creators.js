@@ -49,10 +49,10 @@ export function changeFilterValue(dispatch, filterKey, newValue) {
   });
 }
 
-export function parseRenderedData(dispatch) {
+export function parseRenderedData(data, dispatch) {
   dispatch({
     type: "PARSE_RENDERED_DATA",
-    data: window.pathways.dataForReact
+    data: data
   });
 };
 
@@ -265,3 +265,60 @@ export const toggleRowExpansion = (model, dispatch, proposed, e) => {
 
   e.stopPropagation();
 };
+export const searchFocused = (dispatch, isFocused) => {
+  dispatch({
+    type: "SEARCH_FOCUS_CHANGED",
+    proposed: isFocused
+  });
+}
+
+export const termSearched = (dispatch, term) => {
+  dispatch({
+    type: "TERM_SEARCHED",
+    proposed: term
+  });
+}
+
+export const selectCollectionFilter = (dispatch, label, event) => {
+  event.preventDefault();
+
+  dispatch({
+    type: "SEARCH_COLLECTION_FILTER",
+    proposed: label
+  });
+}
+
+export const selectGeographicFilter = (dispatch, label, event) => {
+  event.preventDefault();
+
+  dispatch({
+    type: "SEARCH_GEOGRAPHIC_FILTER",
+    proposed: label
+  });
+}
+
+export const closeSearch = (dispatch) => {
+  dispatch({
+    type: "CLOSE_SEARCH"
+  });
+}
+
+export const searchResultSelected = (dispatch, proposed) => {
+  dispatch({
+    type: "SEARCH_RESULT_SELECTED",
+    proposed: proposed
+  });
+}
+
+export const hoverLeaveSearchResult = (dispatch) => {
+  dispatch({
+    type: "HOVER_LEAVE_SEARCH_RESULT"
+  });
+}
+
+export const toggleBreadcrumbDropdown = (dispatch, proposed) => {
+  dispatch({
+    type: "TOGGLE_BREADCRUMB_DROPDOWN",
+    proposed: proposed
+  })
+}

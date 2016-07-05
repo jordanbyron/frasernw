@@ -62,6 +62,7 @@ module SeedCreators
       is_gp: :pass_through,
       is_internal_medicine: :pass_through,
       sees_only_children: :pass_through,
+      hidden: :pass_through
     }
   end
 end

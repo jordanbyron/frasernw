@@ -54,30 +54,8 @@ namespace :pathways do
       end
     end
 
-    task :search => :environment do
-      puts "Visiting search..."
-
-      puts "Global"
-      HttpGetter.exec("refresh_livesearch_global.js" )
-
-      puts "All entries"
-      Specialization.all.each do |s|
-        puts "All entries specialization #{s.id}"
-        HttpGetter.exec("refresh_livesearch_all_entries/#{s.id}.js" )
-      end
-
-      Division.all.each do |d|
-        puts "Search division #{d.id}"
-        Specialization.all.each do |s|
-          puts "Search division #{d.id} specialization #{s.id}"
-          HttpGetter.exec("refresh_livesearch_division_entries/#{d.id}/#{s.id}.js" )
-        end
-        HttpGetter.exec("refresh_livesearch_division_content/#{d.id}.js" )
-      end
-    end
-
     #purposeful order from least important to most important, to keep cache 'hot'
-    task :all => [:languages, :hospitals, :clinics, :specialists, :specializations, :search] do
+    task :all => [:languages, :hospitals, :clinics, :specialists, :specializations] do
       puts "All pages visited."
     end
   end

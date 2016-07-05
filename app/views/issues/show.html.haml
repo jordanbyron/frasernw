@@ -1,17 +1,11 @@
-- set_page_specific_title @issue.label
+- set_page_specific_title @issue.code_with_label
 
 .content-wrapper
-  %h2= @issue.label(numbered: current_user.as_super_admin?)
+  %h2= @issue.code_with_label
   %p.space
     %strong Description:
-  %p
-    = @issue.description
-  %p.space
-    %strong Source:
-    %span
-      = @issue.source
-    - if @issue.change_request?
-      = "##{@issue.source_id}"
+  %div
+    = BlueCloth.new(@issue.description).to_html.html_safe
   %p.space
     %strong Completion Estimate:
     = @issue.completion_estimate
@@ -31,12 +25,18 @@
   - if @issue.completed?
     %p.space
       %strong Date Completed:
-      = @issue.date_completed
+      = @issue.date_completed_label
   - if !@issue.completed? && @issue.assignees.any?
     %p.space
       %strong Assignee(s):
       = @issue.assignees_label
 
+  %br
+  .issues_show__history_notes
+    - if can? :view_history, @issue
+      = render 'history/notes',
+        item: @issue,
+        nodes: @issue.history
 
   - if current_user.as_super_admin?
     %h6 Subscribed Users
@@ -65,6 +65,8 @@
           class: "btn" do
           %i.icon-trash
           %span= " Delete"
+      - if can? :view_history, @issue
+        = large_history_button(@issue)
 
     %hr
 

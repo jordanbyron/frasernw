@@ -1,5 +1,10 @@
 module ApplicationHelper
 
+  def dropdown_specialization(entity, user)
+    entity.specializations.for_users_in(*user.as_divisions).first ||
+      entity.specializations.first
+  end
+
   def specialists_procedures(specialist)
     list = ""
     specialist.procedure_specializations.each do |ps|
@@ -172,14 +177,6 @@ module ApplicationHelper
 
   def user_guide
     ScItem.safe_find(953) # the Pathways User Guide pdf on production
-  end
-
-  def global_search_data
-    GlobalSearchData.new.data
-  end
-
-  def search_data_labels
-    SearchDataLabels.new
   end
 
   def localstorage_cache_version

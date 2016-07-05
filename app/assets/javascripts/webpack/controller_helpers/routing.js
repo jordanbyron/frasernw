@@ -13,7 +13,14 @@ export const Routes = [
   "/languages/:id",
   "/news_items",
   "/issues",
-  "/change_requests"
+  "/change_requests",
+  "/clinics/:id",
+  "/specialists/:id",
+  "/faq_categories/:id",
+  "/referral_forms",
+  "/content_items/:id",
+  "/terms_and_conditions",
+  "/",
 ];
 
 export const matchedRoute = ((model) => {

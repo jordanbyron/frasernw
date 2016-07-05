@@ -15,8 +15,7 @@ class Attendance < ActiveRecord::Base
 
   def has_available_specialist?
     specialist.present? &&
-      !(specialist.not_available?) &&
-      !(specialist.in_progress)
+      !(specialist.not_available?)
   end
 
   def show?

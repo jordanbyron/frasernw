@@ -1,26 +1,31 @@
 .alert.alert-success
   - if (@version.event = "create") && !(@version.reify.present?)
     %h4 You are viewing the first version of this #{instance_name} record.
-    - if @version.previous.present?
-      This version was saved #{@version.previous.created_at.to_s(:date_ordinal)} by #{whodunnit_name(@version.previous)}.
-    = link_to "View live site version", url_for(@version.reify), :class => "ajax"
-
-
   - else
-    %h4 You are viewing a prior version of this #{instance_name} record
-    - if @version.previous.present?
-      This version was saved #{@version.previous.created_at.to_s(:date_ordinal)} by #{whodunnit_name(@version.previous)}.
-    = link_to "View live site version", url_for(@version.reify), :class => "ajax"
+    %h4 You are viewing a prior version of this #{instance_name} record.
+
+  - if @version.previous.present?
+    This version was saved 
+    = @version.previous.created_at.to_s(:date_ordinal)
+    by
+    = whodunnit_name(@version.previous) + "."
+  = link_to "View live site version.", url_for(@version.reify)
 
   %ul.pager
     - if @version.previous.present? && @version.previous.reify.present?
       %li
-        = link_to "<i class='icon-arrow-left icon-blue'></i>Older version".html_safe, version_path(@version.previous), :class => "ajax"
+        = link_to version_path(@version.previous) do
+          %i.icon-arrow-left.icon-blue
+          %span= "Older version"
     %li
-      = link_to "List all versions", url_for(@version.reify) + "/versions", :class => "ajax"
+      = link_to "List all versions", url_for(@version.reify) + "/versions"
     - if @version.next
       %li
-        = link_to "Newer version <i class='icon-arrow-right icon-blue'></i>".html_safe, version_path(@version.next), :class => "ajax"
+        = link_to version_path(@version.next) do
+          %span= "Newer version "
+          %i.icon-arrow-right.icon-blue
     - else
       %li
-        = link_to "View live site version <i class='icon-arrow-right icon-blue'></i>".html_safe, url_for(@version.reify), :class => "ajax"
+        = link_to url_for(@version.reify) do
+          %span= "View live site version "
+          %i.icon-arrow-right.icon-blue

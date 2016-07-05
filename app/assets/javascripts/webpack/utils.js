@@ -96,7 +96,7 @@ export function memoize(...args){
     newCacheKeys.forEach((key, index) => {
       if(key !== cacheKeys[index]){
         cacheKeys = newCacheKeys;
-        cached = memoized(...cacheKeys);
+        cached = memoized(model);
 
         return cached;
       }

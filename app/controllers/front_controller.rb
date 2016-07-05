@@ -19,7 +19,8 @@ class FrontController < ApplicationController
       @more_updates_url = latest_updates_path(division_id: @as_division.id)
     else
       @as_divisions = current_user.as_divisions
-      @specializations = Specialization.not_in_progress_for_divisions(current_user.as_divisions).uniq
+      @specializations =
+        Specialization.for_users_in(*current_user.as_divisions)
       @more_updates_url = latest_updates_path
     end
 

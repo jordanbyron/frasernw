@@ -1,25 +1,19 @@
 import React from "react";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
-import Tags from "component_helpers/tags";
-import ReferentStatusIcon from "controllers/referent_status_icon";
-import showingMultipleSpecializations
-  from "controller_helpers/showing_multiple_specializations";
 import SharedCareIcon from "component_helpers/icons/shared_care";
 import FavoriteIcon from "controllers/icons/favorite";
 import EmailIcon from "component_helpers/icons/email";
 import FeedbackIcon from "controllers/icons/feedback";
 import HideToggle from "controllers/hide_toggle";
 import HiddenBadge from "component_helpers/hidden_badge";
-import NewsItemRow from "controllers/table_row/news_items";
-import ExpandedReferentInformation from "controllers/expanded_referent_information";
-import selectedRecordId from "controller_helpers/selected_record_id";
+import NewsItemRow from "controllers/table_row/news_item";
 import * as filterValues from "controller_helpers/filter_values";
 import { selectRecord, deselectRecord } from "action_creators";
 import { memoizePerRender } from "utils";
 import ChangeRequestRow from "controllers/table_row/change_request";
-import EditIssue from "controllers/icons/edit_issue";
-import IssueRow from "controllers/table_row/issues";
+import IssueRow from "controllers/table_row/issue";
+import ReferentRow from "controllers/table_row/referent";
 
 const TableRow = ({model, dispatch, decoratedRecord}) => {
   if(_.includes([
@@ -30,31 +24,13 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
     "/languages/:id"
   ], matchedRoute(model))) {
     if(_.includes(["specialists", "clinics"], collectionShownName(model))) {
-      if(showingMultipleSpecializations(model)) {
-        return(
-          <tr className="datatable__row">
-            <ReferentName decoratedRecord={decoratedRecord} model={model}/>
-            <ReferentSpecializations decoratedRecord={decoratedRecord} model={model}/>
-            <td className="datatable__cell">
-              <ReferentStatusIcon model={model} record={decoratedRecord.raw}/>
-            </td>
-            <td className="datatable__cell">{ decoratedRecord.waittime }</td>
-            <td classname="datatable__cell">{ decoratedRecord.cityNames }</td>
-          </tr>
-        );
-      }
-      else {
-        return(
-          <tr className="datatable__row">
-            <ReferentName decoratedRecord={decoratedRecord} model={model} dispatch={dispatch}/>
-            <td className="datatable__cell">
-              <ReferentStatusIcon model={model} record={decoratedRecord.raw}/>
-            </td>
-            <td className="datatable__cell">{ decoratedRecord.waittime }</td>
-            <td className="datatable__cell">{ decoratedRecord.cityNames }</td>
-          </tr>
-        );
-      }
+      return(
+        <ReferentRow
+          model={model}
+          dispatch={dispatch}
+          decoratedRecord={decoratedRecord}
+        />
+      );
     }
     else if (collectionShownName(model) === "contentItems"){
       return(
@@ -154,113 +130,4 @@ const ContentItemTitle = ({decoratedRecord}) => {
     </td>
   )
 }
-
-const ReferentSpecializations = ({decoratedRecord}) => {
-  return(<td>{decoratedRecord.specializationNames}</td>);
-}
-
-const ReferentName = ({decoratedRecord, model, dispatch}) => {
-  return (
-    <td className="datatable__cell">
-      <span>
-        <ReferentNameLink decoratedRecord={decoratedRecord} model={model} dispatch={dispatch}/>
-        <Suffix record={decoratedRecord.raw} model={model}/>
-        <Tags record={decoratedRecord.raw}/>
-        <ExpandedReferentInformation record={decoratedRecord.raw} model={model}/>
-      </span>
-    </td>
-  );
-}
-
-const ReferentNameLink = React.createClass({
-  getInitialState: function() {
-    return { timer: null };
-  },
-  handleMouseEnter: function() {
-    var model = this.props.model;
-    var id = this.props.decoratedRecord.raw.id;
-    var dispatch = this.props.dispatch;
-
-    var timer = setTimeout(function() {
-      selectRecord(model, dispatch, id);
-    }, 750)
-
-    this.setState({timer: timer});
-  },
-  handleMouseLeave: function() {
-    clearTimeout(this.state.timer);
-    this.setState({timer: null});
-
-    if(selectedRecordId(this.props.model) === this.props.decoratedRecord.raw.id){
-      deselectRecord(this.props.model, this.props.dispatch);
-    }
-  },
-  handleClick: function(){
-    clearTimeout(this.state.timer);
-    this.setState({timer: null});
-  },
-  render: function() {
-    var decoratedRecord = this.props.decoratedRecord;
-
-    return(
-      <a className="datatable__referent_name"
-        href={`/${decoratedRecord.raw.collectionName}/${decoratedRecord.raw.id}`}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
-        onClick={this.handleClick}
-      >
-        { decoratedRecord.raw.name }
-      </a>
-    );
-  }
-})
-const Suffix = ({record, model}) => {
-  return(
-    <span style={{marginLeft: "5px"}} className="suffix" key="suffix">
-      {suffix(record, model)}
-    </span>
-  )
-}
-
-const suffix = (record, model) => {
-  if (record.collectionName === "clinics") {
-    return "";
-  }
-  else if (record.isGp) {
-    return "GP";
-  }
-  else if (record.isInternalMedicine) {
-    return "Int Med";
-  }
-  else if (showPedSuffix(record, model)) {
-    return "Ped";
-  }
-  else {
-    return _.find(
-      record.specializationIds.map((id) => model.app.specializations[id].suffix),
-      (suffix) => suffix && suffix.length > 0
-    );
-  }
-};
-
-
-const showPedSuffix = (record, model) => {
-  return record.seesOnlyChildren &&
-    record.specializationIds.length > 1 &&
-    isPediatrician(record, model) &&
-    (matchedRoute(model) !== "/specialties/:id" ||
-      recordShownByPage(model).id !== parseInt(pediatricsId(model)));
-}
-
-const pediatricsId = ((model) => {
-  return _.find(
-    model.app.specializations,
-    (specialization) => specialization.name === "Pediatrics"
-  ).id;
-}).pwPipe(memoizePerRender)
-
-const isPediatrician = (record, model) => {
-  return _.includes(record.specializationIds, parseInt(pediatricsId(model)));
-}
-
 export default TableRow;

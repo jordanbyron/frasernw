@@ -6,7 +6,7 @@ module SeedCreators
       created_at: :pass_through,
       updated_at: :pass_through,
       division_id: :pass_through,
-      in_progress: :pass_through,
+      hide_from_division_users: :pass_through,
       is_new: :pass_through,
       content_owner_id: :pass_through,
       open_to_type: :pass_through,
