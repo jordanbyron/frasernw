@@ -98,6 +98,10 @@ class Month
     [month, year].hash
   end
 
+  def >(other)
+    start_date > other.start_date
+  end
+
   def start_date
     Date.civil(year, month, 1)
   end

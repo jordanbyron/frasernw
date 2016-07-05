@@ -1,5 +1,6 @@
 class EntityPageViewsReport < ServiceObject
-  attribute :month_key
+  attribute :start_month_key
+  attribute :end_month_key
   attribute :division_id
   attribute :record_type
 
@@ -19,6 +20,8 @@ class EntityPageViewsReport < ServiceObject
   ]
 
   def call
+    return [] if start_month > end_month
+
     get_usage.
       sort_by{ |row| row[:usage].to_i }.
       reverse().
@@ -85,15 +88,19 @@ class EntityPageViewsReport < ServiceObject
       end
   end
 
-  def month
-    @month ||= Month.from_i(month_key)
+  def start_month
+    @start_month ||= Month.from_i(start_month_key)
+  end
+
+  def end_month
+    @end_month ||= Month.from_i(end_month_key)
   end
 
   def get_usage_from_page_views
     Analytics::ApiAdapter.get({
       metrics: [:page_views],
-      start_date: month.start_date,
-      end_date: month.end_date,
+      start_date: start_month.start_date,
+      end_date: end_month.end_date,
       dimensions: [ :page_path ],
       filter_literal: filter_literals(division_filters(division_id))
     }).map do |row|
@@ -118,8 +125,8 @@ class EntityPageViewsReport < ServiceObject
   def get_usage_from_events
     Analytics::ApiAdapter.get({
       metrics: [:total_events],
-      start_date: Month.from_i(month_key).start_date,
-      end_date: Month.from_i(month_key).end_date,
+      start_date: Month.from_i(start_month_key).start_date,
+      end_date: Month.from_i(end_month_key).end_date,
       dimensions: [:event_category, :event_label],
       filter_literal: filter_literals(
         division_filters(division_id).merge({ event_action: "clicked_link" })
