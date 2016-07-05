@@ -9,8 +9,8 @@ const IssueRow = ({model, decoratedRecord}) => {
       <td>{ decoratedRecord.raw.code }</td>
       <td>
         <a href={link(decoratedRecord.raw)}>
-          <span>{ label(decoratedRecord) }</span>
           <ReadyToTestIcon decoratedRecord={decoratedRecord}/>
+          <span>{ label(decoratedRecord) }</span>
         </a>
         <EditIssue issue={decoratedRecord.raw} model={model}/>
       </td>
@@ -20,7 +20,7 @@ const IssueRow = ({model, decoratedRecord}) => {
 
 const ReadyToTestIcon = ({decoratedRecord}) => {
   if(decoratedRecord.raw.progressKey === 6){
-    return <i className="icon icon-thumbs-up" style={{marginLeft: "5px"}}></i>;
+    return <i className="icon icon-thumbs-up" style={{marginRight: "5px"}}></i>;
   }
   else {
     return <noscript/>;
