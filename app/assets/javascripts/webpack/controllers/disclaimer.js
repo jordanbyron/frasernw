@@ -2,6 +2,7 @@ import React from "react";
 import isDataDubious from "controller_helpers/dubious_data";
 import * as filterValues from "controller_helpers/filter_values";
 import _ from "lodash";
+import { DubiousDateRanges } from "controller_helpers/dubious_data";
 
 const Disclaimer = ({model}) => {
   if(isDataDubious(model)) {
@@ -9,7 +10,14 @@ const Disclaimer = ({model}) => {
       <div
         className="alert alert-info"
         style={{marginTop: "10px"}}
-      > { label(model) }
+      >
+        <ul>
+          {
+            labels(model).map((label, index) => {
+              return <li key={index}>{label}</li>
+            })
+          }
+        </ul>
       </div>
     );
   }
@@ -18,20 +26,11 @@ const Disclaimer = ({model}) => {
   }
 };
 
-const label = (model) => {
-  if(model.app.currentUser.role === "super"){
-    return(
-      "Please note that this data (pre- November 2015) can only be relied on to count clicks " +
-      "on links to resources which are hosted ON PATHWAYS as inline content.  " +
-      "It's highly suggested that this data is not used for decisionmaking."
-    );
-  }
-  else {
-    return(
-      _.startCase(filterValues.entityType(model)) +
-      " page views are only available for November 2015 and later."
-    );
-  }
-}
+const labels = (model) => {
+  return DubiousDateRanges.
+    filter((range) => range.test(model)).
+    map(_.property("label")).
+    map((label) => label(model))
+};
 
 export default Disclaimer;

@@ -24,7 +24,8 @@ export function requestDynamicData(model, dispatch){
   }
   else if (matchedRoute(model) === "/reports/entity_page_views") {
     const requestParams = {
-      month_key: FilterValues.month(model),
+      start_month_key: FilterValues.startMonth(model),
+      end_month_key: FilterValues.endMonth(model),
       division_id: FilterValues.divisionScope(model),
       record_type: FilterValues.entityType(model)
     }

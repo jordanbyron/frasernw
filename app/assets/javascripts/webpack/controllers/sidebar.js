@@ -20,7 +20,6 @@ import SubcategoriesFilters from "controllers/filter_groups/subcategories";
 import SpecializationsFilters from "controllers/filter_groups/specializations";
 import HiddenUpdatesFilter from "controllers/filter_groups/hidden_updates";
 import EntityTypeFilters from "controllers/filter_groups/entity_type";
-import MonthFilter from "controllers/filter_groups/month";
 import ReportStyleFilter from "controllers/filter_groups/report_style";
 import CompletionDateFilter from "controllers/filter_groups/completion_date";
 import AssigneesFilter from "controllers/filter_groups/assignees";
@@ -67,7 +66,6 @@ const Sidebar = ({model, dispatch}) => {
         <AssociationsFilters model={model} dispatch={dispatch}/>
         <CityFilters model={model} dispatch={dispatch}/>
         <HiddenUpdatesFilter model={model} dispatch={dispatch}/>
-        <MonthFilter model={model} dispatch={dispatch}/>
         <ReportStyleFilter model={model} dispatch={dispatch}/>
         <CompletionDateFilter model={model} dispatch={dispatch}/>
         <AssigneesFilter model={model} dispatch={dispatch}/>

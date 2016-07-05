@@ -33,7 +33,8 @@ module Api
 
         render json: {
           recordsToDisplay: EntityPageViewsReport.call(
-            month_key: params[:month_key],
+            start_month_key: params[:start_month_key],
+            end_month_key: params[:end_month_key],
             division_id: params[:division_id],
             record_type: params[:record_type].underscore.to_sym
           )

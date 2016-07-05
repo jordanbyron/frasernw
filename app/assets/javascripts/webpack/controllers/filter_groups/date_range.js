@@ -5,7 +5,9 @@ import { matchedRoute } from "controller_helpers/routing";
 import monthOptions from "controller_helpers/month_options";
 
 const DateRangeFilters = ({model, dispatch}) => {
-  if(matchedRoute(model) === "/reports/pageviews_by_user"){
+  if(_.includes(["/reports/pageviews_by_user", "/reports/entity_page_views"],
+    matchedRoute(model)
+  )){
     return(
       <FilterGroup title="Date Range" isCollapsible={false}>
         <FilterSelector
