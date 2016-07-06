@@ -141,7 +141,7 @@ const ContentItemTitle = ({decoratedRecord}) => {
         <a
           href={decoratedRecord.raw.resolvedUrl}
           target="_blank"
-          onClick={function() { trackContentItem(_gaq, decoratedRecord.raw.id) }}
+          onClick={function() { window.pathways.trackContentItem(_gaq, decoratedRecord.raw.id) }}
         >{ decoratedRecord.raw.title }</a>
         <Tags record={decoratedRecord.raw}/>
       </span>
