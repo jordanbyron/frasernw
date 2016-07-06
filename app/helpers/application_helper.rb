@@ -217,4 +217,26 @@ module ApplicationHelper
   def primary_support_email
     Division.provincial.primary_contacts.map(&:email)
   end
+
+  def open_feedback_modal(target = nil)
+    label =
+      if target.nil?
+        ""
+      elsif target.is_a?(ScItem)
+        target.title
+      else
+        target.name
+      end
+
+    args = [
+      id: target.nil? ? nil : target.id,
+      klass: target.nil? ? nil : target.class,
+      label: label
+    ]
+
+    "window.pathways.openFeedbackModal(" +
+      "window.pathways.reactStore.dispatch," +
+      args.to_json +
+    ")"
+  end
 end

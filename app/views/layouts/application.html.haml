@@ -513,15 +513,16 @@
             - flash.each do |type, msg|
               .alert.alert-success= msg
             = yield
-            = render "messages/modals"
 
       .row
         #email.content-wrapper
           = link_to "Contact Us",
             "javascript:void(0)",
-            onclick: "show_contact_modal();"
+            onclick: open_feedback_modal
     #loading
       #loading-spinner
+
+    #react_root--feedback
 
     = yield(:javascript_footer)
 

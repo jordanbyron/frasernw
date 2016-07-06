@@ -163,14 +163,10 @@ export function parseLocation(dispatch){
   })
 }
 
-export const openFeedbackModal = (dispatch, id, type, modalTitle) => {
+export const openFeedbackModal = (dispatch, target) => {
   dispatch({
     type: "OPEN_FEEDBACK_MODAL",
-    item: {
-      id: id,
-      type: type,
-      title: modalTitle
-    }
+    target: target
   });
 };
 

@@ -446,58 +446,6 @@
                     %strong Does not see or do
                   %p= @specialist.not_performed.end_with_period.convert_newlines_to_br
 
-    #feedback
-      .inner
-        = simple_form_for @feedback, html: { class: "ajax feedback_form" } do |f|
-
-          = f.input :feedback, label: "Please provide us with any updates to #{@specialist.name}'s information"
-          = f.input :item_type, as: :hidden, value: "Specialist"
-          = f.input :item_id, as: :hidden, value: @specialist.id
-
-          .form-actions
-            %a.btn.btn-primary{id: "sendFeedbackButton", "href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" }
-              .before-click
-                Send Feedback
-              .after-click.hidden
-                Sending
-            %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
-
-    #feedback_thanks
-      .inner
-        %h2 Thank you!
-
-        %p.space.no_indent= "Thank you for providing your feedback  on #{@specialist.name}. Your contributions help make Pathways a valuable resource for the community."
-
-        %p.space.no_indent We will review your feedback in the near future and take action as necessary.
-
-        %p.space.no_indent
-          %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close
-
-    %script{"type" => "text/javascript"}
-      :plain
-        $(document).ready(function() {
-          $('.tt').tooltip({trigger: 'manual'});
-          $('#user_favorite_specialists_#{@specialist.id}').addClass('#{favorite_class}');
-        });
-
-        function send_feedback(form) {
-          $("#sendFeedbackButton").addClass('disabled');
-          $('.before-click').addClass('hidden');
-          $('.after-click').removeClass('hidden');
-          $.ajax({
-              url: form.attr('action'),
-              data: form.serialize(),
-              type: 'POST'
-          }).success(function(json) {
-              $("#sendFeedbackButton").removeClass('disabled');
-              $('.after-click').addClass('hidden');
-              $('.before-click').removeClass('hidden');
-              $('#feedback').fadeOut(200);
-              $('#feedback_item_feedback').val('')
-              $('#feedback_thanks').fadeIn(200);
-          });
-        }
-
   - if current_user.as_admin_or_super?
     - if @specialist.user_controls_specialists.any?
       %h6 Users that can edit this specialist
@@ -563,7 +511,7 @@
         %i.icon-pencil.icon-white
         Update #{@specialist.name}'s information
     - else
-      %a.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
+      %a.btn{href: "javascript:void(0)", onclick: open_feedback_modal(@specialist)}
         %i.icon-bullhorn.icon-text
         Incorrect Information? Let us know
     - if !current_user.as_admin_or_super? && (can? :update, @specialist)

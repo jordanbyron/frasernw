@@ -11,9 +11,11 @@ const FeedbackIcon = ({record, dispatch}) => {
         _.partial(
           openFeedbackModal,
           dispatch,
-          record.id,
-          transformCollectionName(record.collectionName),
-          record.title
+          {
+            id: record.id,
+            klass: transformCollectionName(record.collectionName),
+            label: record.title
+          }
         )
       }
       title="Provide feedback on this item"

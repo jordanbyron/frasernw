@@ -166,12 +166,9 @@
               %i.icon-pencil
               %span= "Edit Featured Content"
 
-#feedback_modal
-
 :javascript
   window.pathways.favoriteFeaturedItem = function(event, id, title) {
     event.stopPropagation();
 
     favorite('content_items', id, title);
   };
-  window.pathways.bootstrapFeedbackModal('feedback_modal', {});

@@ -43,7 +43,7 @@ const PreSubmitModal = React.createClass({
           <form onSubmit={this.handleSubmit}>
             <label style={{fontWeight: "bold"}}>
               <span>Please provide us with any comments about </span>
-              <span className="feedback_item_title">{ title(this.props.model) }</span>
+              <span className="feedback_item_title">{ targetLabel(this.props.model) }</span>
               <textarea
                 ref="feedback"
                 style={{width: "100%", height: "150px", marginTop: "10px"}}
@@ -80,11 +80,27 @@ const submitText = (model) => {
   }
 }
 
-const title = (model) => {
+const targetId = (model) => {
   return _.get(
     model,
-    ["ui", "feedbackModal", "item", "title" ],
-    "Nothing"
+    ["ui", "feedbackModal", "target", "id" ],
+    null
+  );
+}
+
+const targetKlass = (model) => {
+  return _.get(
+    model,
+    ["ui", "feedbackModal", "target", "klass" ],
+    null
+  );
+}
+
+const targetLabel = (model) => {
+  return _.get(
+    model,
+    ["ui", "feedbackModal", "target", "label" ],
+    null
   );
 }
 
@@ -107,7 +123,7 @@ const PostSubmitModal = ({model, dispatch}) => {
         <h2>Thank you!</h2>
         <p className="space no_indent">
           {
-            `Thank you for providing feedback on ${title(model)}.  ` +
+            `Thank you for providing feedback on ${targetLabel(model)}.  ` +
             "Your contributions help make Pathways a valuable resource " +
             "for the community."
           }

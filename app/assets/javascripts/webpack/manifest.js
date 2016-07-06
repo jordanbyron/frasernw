@@ -8,11 +8,11 @@ import "console-polyfill";
 import "core_extensions";
 
 import attachSecretEditLinks from "window_scripts/secret_edit_links";
-import FeedbackModal from "standalone_components/feedback_modal";
 
 import setupTabHistory from "window_scripts/setup_tab_history";
 import standaloneBootstrapReact from "window_scripts/standalone_bootstrap_react";
 import bootstrapReact from "bootstrap_react";
+import { openFeedbackModal } from "action_creators";
 
 import Highcharts from "highcharts";
 import "jquery-ujs";
@@ -22,13 +22,11 @@ import "jquery-ujs";
 
 window.pathways = window.pathways || {};
 
-window.pathways.bootstrapFeedbackModal = standaloneBootstrapReact(FeedbackModal);
-window.pathways.bootstrapReact = bootstrapReact;
-
 window.pathways.trackForm = require("./analytics_wrappers").trackForm;
 window.pathways.trackContentItem = require("./analytics_wrappers").trackContentItem;
 window.pathways.attachSecretEditLinks = attachSecretEditLinks;
 window.pathways.setupTabHistory = setupTabHistory;
+window.pathways.openFeedbackMOdal = openFeedbackModal;
 
 window.vendor = {}
 window.vendor._ = require("lodash");

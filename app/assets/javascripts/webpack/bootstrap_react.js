@@ -17,6 +17,7 @@ import {
   integrateLocalStorageData,
   parseLocation
 } from "action_creators";
+import FeedbackModal from "controllers/feedback_modal";
 
 const bootstrapReact = function() {
   if (!window.pathways.isLoggedIn){
@@ -36,6 +37,7 @@ const bootstrapReact = function() {
 
   const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
   const store = createStoreWithMiddleware(rootReducer);
+  window.pathways.reactStore = store;
 
   parseLocation(store.dispatch);
 
@@ -63,7 +65,12 @@ const bootstrapReact = function() {
       <Provider childKlass={SearchBox} store={store}/>,
       renderSearchBoxTo
     )
-    // setSearchListeners(store.dispatch);
+
+    const renderFeedbackModalTo = document.getElementById("react_root--feedback");
+    ReactDOM.render(
+      <Provider childKlass={FeedbackModal} store={store}/>,
+      renderFeedbackModalTo
+    )
 
     window.pathways.globalDataLoaded.done(function(data) {
       integrateLocalStorageData(store.dispatch, data);
