@@ -2,7 +2,7 @@
 
 %ol
   - nodes.each_with_index do |history_node, index|
-    %li.history__node
+    %li.history__node{style: "margin-bottom: 30px"}
       - if history_node.review?
         %p.history__line_item
           %span= history_node.user
@@ -11,7 +11,7 @@
           %span= "(#{history_node.date})"
       - elsif history_node.target_is?(item)
         %p.history__line_item
-          %span= history_verb(history_node, item)
+          %span= history_verb(history_node, item, capitalize: true)
           %span= " by "
           %span= history_node.user
           %span= "(#{history_node.date})"
@@ -29,8 +29,7 @@
           %span= history_node.annotation
           %span= "(#{history_node.date})"
       - if history_node.has_note?
-        %ul
-          %li
-            = history_node.note
+        .well{style: "width: 400px"}
+          = BlueCloth.new(history_node.note).to_html.html_safe
       - if history_node.changeset? && !history_node.archiving?
         = render "history/changeset", node: history_node

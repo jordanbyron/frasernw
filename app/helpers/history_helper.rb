@@ -30,12 +30,19 @@ module HistoryHelper
   end
 
   def history_verb(node, item, options= {})
+    case_adjusted_verb =
+      if options[:capitalize]
+        node.verb.capitalize
+      else
+        node.verb
+      end
+
     if node.show_new_version_path?
-      link_to node.verb, node.new_version_path, target: "_blank"
+      link_to case_adjusted_verb, node.new_version_path, target: "_blank"
     elsif options[:bold]
-      content_tag :strong, node.verb
+      content_tag :strong, case_adjusted_verb
     else
-      node.verb
+      case_adjusted_verb
     end
   end
 end
