@@ -30,6 +30,9 @@
           %span= "(#{history_node.date})"
       - if history_node.has_note?
         .well{style: "width: 400px"}
-          = BlueCloth.new(history_node.note).to_html.html_safe
+          - if history_node.raw.target.is_a?(Note)
+            = BlueCloth.new(history_node.note).to_html.html_safe
+          - else
+            = history_node.note
       - if history_node.changeset? && !history_node.archiving?
         = render "history/changeset", node: history_node
