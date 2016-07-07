@@ -22,7 +22,7 @@ class MailToPatientsController < ApplicationController
         user_division_ids: current_user.divisions.map(&:id),
         user_role: current_user.role
       )
-      redirect_to redirection_path(params[:print_request_origin]),
+      redirect_to origin_path(params[:print_request_origin]),
         alert: "Successfully sent e-mail to patient."
     end
   end

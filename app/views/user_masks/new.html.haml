@@ -2,7 +2,7 @@
 
 .content-wrapper
 
-  %h2= "View Pathways As"
+  %h2 View Pathways As
 
   = simple_form_for @user_mask,
     url: user_masks_path,
@@ -18,13 +18,13 @@
       as: :check_boxes,
       collection: current_user.can_assign_divisions,
       checked: @user_mask.division_ids,
-      input_html: {:class => "user-form-division-option"},
+      input_html: { class: "user-form-division-option" },
       label_method: :name,
       value_method: :id,
       presence: true,
       include_blank: false
 
-    = hidden_field_tag :mask_request_origin, params[:mask_request_origin].to_s
+    = hidden_field_tag :mask_request_origin, request.referer
 
     .form-actions
       = f.button :submit,
@@ -32,6 +32,6 @@
         class: "btn btn-primary",
         label: "Submit"
       = link_to @cancel_text,
-        user_masks_path(mask_request_origin: params[:mask_request_origin].to_s),
+        user_masks_path(mask_request_origin: request.referer),
         class: "btn btn-default",
         method: :delete

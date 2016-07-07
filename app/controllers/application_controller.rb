@@ -25,7 +25,15 @@ class ApplicationController < ActionController::Base
     @divisions = Division.all_cached
   end
 
-  def redirection_path(request_origin)
-    request_origin.present? ? request_origin : root_path
+  def origin_path(request_origin)
+    if request_origin.present?
+      if request_origin.start_with?("http://", "https://")
+        request_origin
+      else
+        Base64.decode64(request_origin.to_s)
+      end
+    else
+      root_path
+    end
   end
 end
