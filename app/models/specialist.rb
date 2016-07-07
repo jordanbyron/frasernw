@@ -141,8 +141,8 @@ class Specialist < ActiveRecord::Base
 
   before_save :destroy_photo?
 
-  after_commit :flush_cache_for_record
-  after_touch  :flush_cache_for_record
+  after_commit :expire_cache
+  after_touch  :expire_cache
 
   scope :deceased, -> { where(status_mask: STATUS_MASK_DECEASED) }
 
@@ -205,10 +205,13 @@ class Specialist < ActiveRecord::Base
     Rails.cache.fetch([name, id], expires_in: 4000.seconds) { find(id) }
   end
 
-  def flush_cache_for_record
+  def expire_cache
     Rails.cache.delete([self.class.name, self.id])
     cities(force: true)
     cities_for_front_page(force: true)
+    ExpireFragment.call(
+      Rails.application.routes.url_helpers.specialist_path(self)
+    )
   end
 
   def self.in_cities(c)

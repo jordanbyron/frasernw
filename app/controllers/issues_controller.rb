@@ -4,9 +4,6 @@ class IssuesController < ApplicationController
 
     @init_data = {
       app: {
-        currentUser: FilterTableAppState::CurrentUser.call(
-          current_user: current_user
-        ),
         issues: Denormalized.generate(:issues),
         issueSources: Issue::BRIEF_SOURCE_LABELS,
         assignees: User.developer.map do |user|

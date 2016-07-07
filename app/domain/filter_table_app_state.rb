@@ -1,9 +1,6 @@
 class FilterTableAppState < ServiceObject
-  attribute :current_user, User
-
   def call
     {
-      currentUser: CurrentUser.call(current_user: current_user),
       respondsWithinOptions: Denormalized.fetch(:respondsWithinOptions),
       respondsWithinSummaryLabels: Denormalized.fetch(:respondsWithinSummaryLabels),
       dayKeys: Schedule::DAY_HASH,
@@ -22,23 +19,5 @@ class FilterTableAppState < ServiceObject
         [ key, value.downcase ]
       end.to_h
     }
-  end
-
-  class CurrentUser < ServiceObject
-    attribute :current_user, User
-
-    def call
-      {
-        id: current_user.id,
-        divisionIds: current_user.as_divisions.standard.map(&:id),
-        cityRankings: current_user.city_rankings,
-        cityRankingsCustomized: current_user.customized_city_rankings?,
-        favorites: {
-          contentItems: current_user.favorite_content_items.pluck(:id)
-        },
-        role: current_user.as_role,
-        adjustedTypeMask: current_user.adjusted_type_mask
-      }
-    end
   end
 end
