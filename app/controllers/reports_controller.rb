@@ -46,14 +46,6 @@ class ReportsController < ApplicationController
   end
 
   def pageviews_by_user
-    @init_data = {
-      app: {
-        currentUser: FilterTableAppState::CurrentUser.call(
-          current_user: current_user
-        ),
-      }
-    }
-
     authorize! :view_report, :pageviews_by_user
   end
 
@@ -76,31 +68,12 @@ class ReportsController < ApplicationController
 
   def referents_by_specialty
     authorize! :view_report, :referents_by_specialty
-
-    @init_data = {
-      app: {
-        currentUser: FilterTableAppState::CurrentUser.call(
-          current_user: current_user
-        ),
-        specializations: Denormalized.fetch(:specializations),
-        divisions: Denormalized.fetch(:divisions)
-      }
-    }
   end
 
   def entity_page_views
     @layout_heartbeat_loader = false
 
     authorize! :view_report, :entity_page_views
-
-    @init_data = {
-      app: {
-        currentUser: FilterTableAppState::CurrentUser.call(
-          current_user: current_user
-        ),
-        divisions: Denormalized.fetch(:divisions)
-      }
-    }
   end
 
   def show

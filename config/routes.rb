@@ -242,6 +242,14 @@ Frasernw::Application.routes.draw do
   end
   resources :change_requests, only: [:index, :show]
 
+  scope '/clinics/:id/:token', controller: 'clinics' do
+    get :refresh_cache
+  end
+
+  scope '/specialists/:id/:token', controller: 'specialists' do
+    get :refresh_cache
+  end
+
   if ENV['RAILS_ENV'] == 'test'
     get '/dangerously_import_db', to: 'tests#dangerously_import_db'
   end

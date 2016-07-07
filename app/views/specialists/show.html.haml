@@ -446,6 +446,12 @@
                     %strong Does not see or do
                   %p= @specialist.not_performed.end_with_period.convert_newlines_to_br
 
+  :javascript
+    $(document).ready(function() {
+      $('.tt').tooltip({trigger: 'manual'});
+      $('#user_favorite_specialists_#{@specialist.id}').addClass('#{favorite_class}');
+    });
+
   - if current_user.as_admin_or_super?
     - if @specialist.user_controls_specialists.any?
       %h6 Users that can edit this specialist

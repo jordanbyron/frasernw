@@ -14,9 +14,6 @@ class NewsItemsController < ApplicationController
 
     @init_data = {
       app: {
-        currentUser: FilterTableAppState::CurrentUser.call(
-          current_user: current_user
-        ),
         newsItems: Denormalized.generate(:news_items)
       },
       ui: {

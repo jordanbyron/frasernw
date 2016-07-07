@@ -13,11 +13,6 @@ class LatestUpdatesController < ApplicationController
     end
 
     @init_data = {
-      app: {
-        currentUser: FilterTableAppState::CurrentUser.call(
-          current_user: current_user
-        )
-      },
       ui: {
         persistentConfig: {
           divisionIds: @divisions.map(&:id),

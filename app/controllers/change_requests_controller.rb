@@ -12,9 +12,6 @@ class ChangeRequestsController < ApplicationController
 
     @init_data = {
       app: {
-        currentUser: FilterTableAppState::CurrentUser.call(
-          current_user: current_user
-        ),
         changeRequests: Denormalized.generate(:change_requests),
         progressLabels: Issue::PROGRESS_LABELS
       },

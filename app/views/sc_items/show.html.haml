@@ -46,6 +46,13 @@
 
     %p= BlueCloth.new(@sc_item.markdown_content).to_html.html_safe
 
+  :javascript
+    $(document).ready(function() {
+      $('.tt').tooltip({trigger: 'manual'});
+      $('[data-toggle="tooltip"]').tooltip();
+      $('#user_favorite_content_items_#{@sc_item.id}').addClass('#{favorite_class}');
+    });
+
   - if (current_user.as_admin_or_super? || current_user.as_super_admin?) && @sc_item.shareable?
     - if @sc_item.divisions.any?
       %h6

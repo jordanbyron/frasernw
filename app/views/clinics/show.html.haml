@@ -288,6 +288,12 @@
                     %strong Does not see or do
                   %p= @clinic.not_performed.end_with_period.convert_newlines_to_br
 
+  :javascript
+    $(document).ready(function() {
+      $('.tt').tooltip({trigger: 'manual'});
+      $('#user_favorite_clinics_#{@clinic.id}').addClass('#{favorite_class}');
+    });
+
   - if current_user.as_admin_or_super?
     - if @clinic.user_controls_clinics.any?
       %h6 Users that can edit this clinic
