@@ -5,14 +5,13 @@
 
   %body{ style: "background-color: #f0ede8; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;" }
     .content-container{ style: "margin: 40px; margin-right: 10%; margin-left: 10%; padding: 20px; background-color: white" }
+
+      %p
+        #{@user.name} has sent you a link to a medical resource, "#{@sc_item.title}".
+
       = render @mail_body_partial
 
       %br
       %p
-        Regards,
-
-      %p
-        The Pathways team.
-      %p{ style: "background-color: #404040; padding: 3px; width: 142px" }
-        %a#logo{ href: root_url }
-          = image_tag attachments["logo_small.png"].url
+        Regards from
+        %a{ href: root_url }Pathways.
