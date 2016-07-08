@@ -36,7 +36,7 @@ class HistoryNode
   end
 
   def note
-    "\"#{raw.note}\""
+    raw.note
   end
 
   def has_note?

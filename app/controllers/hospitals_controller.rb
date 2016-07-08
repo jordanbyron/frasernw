@@ -11,7 +11,7 @@ class HospitalsController < ApplicationController
   def show
     @hospital = Hospital.find(params[:id])
     @init_data = {
-      app: FilterTableAppState.call(current_user: current_user)
+      app: FilterTableAppState.call
     }
   end
 

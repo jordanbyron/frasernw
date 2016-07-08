@@ -4,9 +4,6 @@ class IssuesController < ApplicationController
 
     @init_data = {
       app: {
-        currentUser: FilterTableAppState::CurrentUser.call(
-          current_user: current_user
-        ),
         issues: Denormalized.generate(:issues),
         issueSources: Issue::BRIEF_SOURCE_LABELS,
         assignees: User.developer.map do |user|
@@ -29,12 +26,18 @@ class IssuesController < ApplicationController
 
   def create
     authorize! :create, Issue
-    @issue = Issue.create(params[:issue])
-    @issue.subscriptions.each do |subscription|
-      IssuesMailer.subscribed(subscription).deliver
-    end
 
-    redirect_to issue_path(@issue)
+    @issue = Issue.new(params[:issue])
+
+    if @issue.save
+      @issue.subscriptions.each do |subscription|
+        IssuesMailer.subscribed(subscription).deliver
+      end
+
+      redirect_to public_path(@issue)
+    else
+      render :new
+    end
   end
 
   def edit
@@ -52,29 +55,34 @@ class IssuesController < ApplicationController
     @issue = Issue.find(params[:id])
     authorize! :update, @issue
 
-    old_subscriptions_ids = @issue.subscriptions.map(&:id)
-    old_is_complete = @issue.completed?
+    before_update_subscription_ids = @issue.subscriptions.map(&:id)
+    before_update_is_complete = @issue.completed?
 
-    @issue.update_attributes(params[:issue])
+    if @issue.update_attributes(params[:issue])
 
-    @issue.subscriptions.reject do |subscription|
-      old_subscriptions_ids.include?(subscription.id)
-    end.each do |subscription|
-      IssuesMailer.subscribed(subscription).deliver
-    end
-
-    if !old_is_complete && @issue.completed?
-      @issue.subscriptions.each do |subscription|
-        IssuesMailer.completed(subscription).deliver
+      @issue.subscriptions.reject do |subscription|
+        before_update_subscription_ids.include?(subscription.id)
+      end.each do |subscription|
+        IssuesMailer.subscribed(subscription).deliver
       end
-    end
 
-    redirect_to issue_path(@issue)
+      if !before_update_is_complete && @issue.completed?
+        @issue.subscriptions.each do |subscription|
+          IssuesMailer.completed(subscription).deliver
+        end
+      end
+
+      redirect_to public_path(@issue)
+    else
+      render :edit
+    end
   end
 
   def destroy
     @issue = Issue.find(params[:id])
     authorize! :destroy, @issue
+
+    @issue.destroy
 
     redirect_to issues_path, notice: "Issue has been destroyed"
   end
@@ -97,6 +105,16 @@ class IssuesController < ApplicationController
       notice = "Successfully unsubscribed from issue."
     end
 
-    redirect_to issue_path(@issue), notice: notice
+    redirect_to public_path(@issue), notice: notice
+  end
+
+  private
+
+  def public_path(issue)
+    if issue.change_request?
+      change_request_path(issue.source_id)
+    else
+      issue_path(issue)
+    end
   end
 end

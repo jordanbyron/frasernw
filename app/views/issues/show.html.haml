@@ -1,17 +1,11 @@
-- set_page_specific_title @issue.label
+- set_page_specific_title @issue.code_with_label
 
 .content-wrapper
-  %h2= @issue.label(numbered: current_user.as_super_admin?)
+  %h2= @issue.code_with_label
   %p.space
     %strong Description:
-  %p
-    = @issue.description
-  %p.space
-    %strong Source:
-    %span
-      = @issue.source
-    - if @issue.change_request?
-      = "##{@issue.source_id}"
+  %div
+    = BlueCloth.new(@issue.description).to_html.html_safe
   %p.space
     %strong Completion Estimate:
     = @issue.completion_estimate
@@ -31,31 +25,44 @@
   - if @issue.completed?
     %p.space
       %strong Date Completed:
-      = @issue.date_completed
+      = @issue.date_completed_label
   - if !@issue.completed? && @issue.assignees.any?
     %p.space
       %strong Assignee(s):
       = @issue.assignees_label
 
-  %br
-  .issues_show__history_notes
-    - if can? :view_history, @issue
-      = render 'history/notes',
-        item: @issue,
-        nodes: @issue.history
-
   - if current_user.as_super_admin?
+    %h6 Notes
+
+    - if @issue.notes.any?
+
+      - @issue.notes.reject(&:new_record?).sort_by(&:created_at).each do |note|
+        .well{style: "width: 400px"}
+          %div{style: "display: inline-block"}
+            %b
+              = note.author_name
+          .pull-right
+            %i
+              = note.created_at.to_s(:datetime_military)
+
+          %div{style: "clear: both; margin-top: 10px;"}
+            = BlueCloth.new(note.content).to_html.html_safe
+
+    = render "notes/form",
+      note: @issue.notes.build,
+      redirect: :target_show
+
     %h6 Subscribed Users
     - if @issue.subscribers.none?
       %p= "(None)"
     %ul
       - @issue.subscribers.each do |subscriber|
-        %li= subscriber.name
-
-  %p
-    #react--issue_subscription_toggle{style: "margin-top: 20px;"}
-
-  - if current_user.as_super_admin?
+        %li
+          - if subscriber == current_user
+            %i
+              = subscriber.name
+          - else
+            = subscriber.name
 
     %hr
 
@@ -73,18 +80,37 @@
           %span= " Delete"
       - if can? :view_history, @issue
         = large_history_button(@issue)
+      - if can? :toggle_subscription, @issue
+        = link_to toggle_subscription_issue_path(@issue),
+          class: "btn" do
+          %i.icon-rss
+          %span
+            - if @issue.subscribers.include?(current_user)
+              = "Unsubscribe"
+            - else
+              = "Subscribe"
+  - else
 
-    %hr
+    %p.space
+      %b= "Subscription:"
 
-    = link_to "< All Issues",
-      issues_path
+    - if @issue.subscribers.include?(current_user)
+      %p.space
+        %i
+          = "You are subscribed to email updates about this issue"
+
+    %p{style: "margin-top: 10px"}
+      = link_to toggle_subscription_issue_path(@issue),
+        class: "btn" do
+        %i.icon-rss
+        %span
+          - if @issue.subscribers.include?(current_user)
+            = "Unsubscribe"
+          - else
+            = "Subscribe"
 
 
-:javascript
-  window.pathways.bootstrapSubscriptionToggle(
-    "react--issue_subscription_toggle",
-    {
-      subscribed: #{@issue.subscribers.include?(current_user)},
-      issueId: #{@issue.id}
-    }
-  );
+  %hr
+
+  = link_to "< All Issues",
+    issues_path

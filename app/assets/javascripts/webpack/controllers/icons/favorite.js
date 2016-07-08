@@ -34,7 +34,14 @@ const updateServer = (record) => {
 }
 
 const handleFavorite = (record, dispatch) => {
-  updateServer(record).success(() => {
+  updateServer(record).success((data) => {
+    onChangeFavoriteSuccess(
+      data,
+      _.snakeCase(record.collectionName),
+      record.id,
+      recordLabel(record)
+    )
+
     dispatch({
       type: "FAVORITED_ITEM",
       id: record.id,
@@ -44,7 +51,14 @@ const handleFavorite = (record, dispatch) => {
 };
 
 const handleUnFavorite = (record, dispatch) => {
-  updateServer(record).success(() => {
+  updateServer(record).success((data) => {
+    onChangeFavoriteSuccess(
+      data,
+      _.snakeCase(record.collectionName),
+      record.id,
+      recordLabel(record)
+    )
+
     dispatch({
       type: "UNFAVORITED_ITEM",
       id: record.id,
@@ -52,6 +66,16 @@ const handleUnFavorite = (record, dispatch) => {
     });
   })
 };
+
+
+const recordLabel = (record) => {
+  if(record.collectionName === "contentItems"){
+    return record.title;
+  }
+  else {
+    return record.name;
+  }
+}
 
 const isFavorited = (model, record) => {
   return model.

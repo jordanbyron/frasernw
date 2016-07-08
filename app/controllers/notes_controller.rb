@@ -21,7 +21,12 @@ class NotesController < ApplicationController
       item_id: note_params[:noteable_id],
       item_type: note_params[:noteable_type]
     }
-    redirect_to history_path(redirect_params)
+
+    if params[:redirect] === "target_history"
+      redirect_to history_path(redirect_params)
+    else
+      redirect_to CustomPathHelper.duck_path(noteable)
+    end
   end
 
   def destroy

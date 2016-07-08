@@ -8,6 +8,6 @@
 
   - if @item.is_a? Noteable
     .history__notes_field
-      = render "notes/form", note: @new_note
+      = render "notes/form", note: @new_note, redirect: :target_history
 
       = link_to "View record", CustomPathHelper.smart_duck_path(@item)

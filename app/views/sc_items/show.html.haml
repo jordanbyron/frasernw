@@ -73,31 +73,30 @@
       %p.space.no_indent
         %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close
 
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready(function() {
-        $('.tt').tooltip({trigger: 'manual'});
-        $('[data-toggle="tooltip"]').tooltip();
-        $('#user_favorite_content_items_#{@sc_item.id}').addClass('#{favorite_class}');
-      });
+  :javascript
+    $(document).ready(function() {
+      $('.tt').tooltip({trigger: 'manual'});
+      $('[data-toggle="tooltip"]').tooltip();
+      $('#user_favorite_content_items_#{@sc_item.id}').addClass('#{favorite_class}');
+    });
 
-      function send_feedback(form) {
-        $("#sendFeedbackButton").addClass('disabled');
-        $('.before-click').addClass('hidden');
-        $('.after-click').removeClass('hidden');
-        $.ajax({
-            url: form.attr('action'),
-            data: form.serialize(),
-            type: 'POST'
-        }).success(function(json) {
-            $("#sendFeedbackButton").removeClass('disabled');
-            $('.after-click').addClass('hidden');
-            $('.before-click').removeClass('hidden');
-            $('#feedback').fadeOut(200);
-            $('#feedback_item_feedback').val('')
-            $('#feedback_thanks').fadeIn(200);
-        });
-      }
+    function send_feedback(form) {
+      $("#sendFeedbackButton").addClass('disabled');
+      $('.before-click').addClass('hidden');
+      $('.after-click').removeClass('hidden');
+      $.ajax({
+          url: form.attr('action'),
+          data: form.serialize(),
+          type: 'POST'
+      }).success(function(json) {
+          $("#sendFeedbackButton").removeClass('disabled');
+          $('.after-click').addClass('hidden');
+          $('.before-click').removeClass('hidden');
+          $('#feedback').fadeOut(200);
+          $('#feedback_item_feedback').val('')
+          $('#feedback_thanks').fadeIn(200);
+      });
+    }
 
   - if (current_user.as_admin_or_super? || current_user.as_super_admin?) && @sc_item.shareable?
     - if @sc_item.divisions.any?

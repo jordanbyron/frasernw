@@ -9,8 +9,6 @@ import "core_extensions";
 
 import attachSecretEditLinks from "window_scripts/secret_edit_links";
 import FeedbackModal from "standalone_components/feedback_modal";
-import IssueSubscriptionToggle from "standalone_components/issue_subscription_toggle";
-
 
 import setupTabHistory from "window_scripts/setup_tab_history";
 import standaloneBootstrapReact from "window_scripts/standalone_bootstrap_react";
@@ -25,8 +23,6 @@ import "jquery-ujs";
 window.pathways = window.pathways || {};
 
 window.pathways.bootstrapFeedbackModal = standaloneBootstrapReact(FeedbackModal);
-window.pathways.bootstrapSubscriptionToggle =
-  standaloneBootstrapReact(IssueSubscriptionToggle);
 window.pathways.bootstrapReact = bootstrapReact;
 
 window.pathways.trackForm = require("./analytics_wrappers").trackForm;

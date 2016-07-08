@@ -1,20 +1,30 @@
 import React from "react";
 import _ from "lodash"
 import EditIssue from "controllers/icons/edit_issue";
+import { link } from "controller_helpers/links";
 
 const IssueRow = ({model, decoratedRecord}) => {
   return(
     <tr>
-      <td>{ decoratedRecord.raw.id }</td>
+      <td>{ decoratedRecord.raw.code }</td>
       <td>
-        <a href={`/issues/${decoratedRecord.raw.id}`}>
-          { label(decoratedRecord) }
+        <a href={link(decoratedRecord.raw)}>
+          <ReadyToTestIcon decoratedRecord={decoratedRecord}/>
+          <span>{ label(decoratedRecord) }</span>
         </a>
         <EditIssue issue={decoratedRecord.raw} model={model}/>
       </td>
-      <td>{ sourceLabel(decoratedRecord, model) }</td>
     </tr>
   );
+}
+
+const ReadyToTestIcon = ({decoratedRecord}) => {
+  if(decoratedRecord.raw.progressKey === 6){
+    return <i className="icon icon-thumbs-up" style={{marginRight: "5px"}}></i>;
+  }
+  else {
+    return <noscript/>;
+  }
 }
 
 const sourceLabel = (decoratedRecord, model) => {

@@ -2,6 +2,8 @@ import React from "react";
 import _ from "lodash"
 import { selectedTabKey } from "controller_helpers/tab_keys";
 import EditIssue from "controllers/icons/edit_issue";
+import { link } from "controller_helpers/links";
+
 
 const ChangeRequestRow = ({model, decoratedRecord}) => {
   if (selectedTabKey(model) === "pendingIssues"){
@@ -70,7 +72,7 @@ const completionEstimate = (record) => {
 
 const Link = ({decoratedRecord}) => {
   return(
-    <a href={`/issues/${decoratedRecord.raw.id}`}>{label(decoratedRecord)}</a>
+    <a href={link(decoratedRecord.raw)}>{label(decoratedRecord)}</a>
   );
 }
 
