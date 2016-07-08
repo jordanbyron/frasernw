@@ -1,13 +1,12 @@
 - set_page_specific_title "Home"
 
-= render "partials/all_specialties_dropdown",
-  specialization: nil
+= render "partials/all_specialties_dropdown", specialization: nil
 
-%script{"type" => "text/javascript"}
+:javascript
   $(document).ready(function() { update_favorites() });
 
 .content-wrapper
-  .content#front{:style => current_user.as_admin_or_super? && 'margin-top: -15px'}
+  .content#front{ style: current_user.as_admin_or_super? && 'margin-top: -15px' }
 
     - if current_user.as_admin_or_super?
       .row
@@ -15,7 +14,7 @@
           Show front page for:
           %ul.nav.nav-pills
             - Division.all.each do |division|
-              %li{:class => (division == @as_division) && 'active'}
+              %li{ class: (division == @as_division) && 'active' }
                 = link_to division.name, root_path(division_id: division.id)
       %hr
 
@@ -25,7 +24,8 @@
           - @news_items.each do |news_item|
             .news_item.breaking
               .news_item_date= news_item.date if news_item.date.present?
-              %div{:class => news_item.date.present? ? "news_item_title" : "news_item_date"}= news_item.title if news_item.title.present?
+              %div{ class: news_item.date.present? ? "news_item_title" : "news_item_date" }
+                = news_item.title if news_item.title.present?
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
 
@@ -39,29 +39,47 @@
             %li
               = link_to specialization.name,
                 specialization,
-                class: specialization.hidden_in?(*@as_divisions) ? "hidden-from-users ajax" : "ajax hoverlabel"
-              = "<span class='new'>new</span>".html_safe if specialization.new_for_divisions?(@as_divisions)
+                class: specialization.hidden_in?(*@as_divisions) ? "hidden-from-users" : "hoverlabel"
+              - if specialization.new_for_divisions?(@as_divisions)
+                %span.new new
 
       .span4half.front
 
         %h2 What is Pathways?
 
         %p
-          Pathways is a web based resource to streamline and optimize patient referrals.
-          = "<a href='javascript:void(0)' data-toggle='collapse' data-target='#what_is'>Learn more.</a>".html_safe
+          Pathways is a web based resource to streamline and optimize patient
+          referrals.
+          %a{ href: 'javascript:void(0)',
+            data: { toggle: 'collapse',
+            target: '#what_is' } }
+            Learn more.
 
         #what_is.collapse
           %p
-            Originally a project of the Fraser NW Division of Family Practice, Pathways provides a comprehensive, searchable database of specialists, specialty clinics and services organized by specialty.
+            Originally a project of the Fraser NW Division of Family Practice,
+            and now being rolled out to Divisions of Family Practice across BC,
+            Pathways provides a comprehensive database of specialists,
+            specialty clinics, and services that are searchable and filterable.
 
           %p
-            Pathways contributes to improved patient outcomes by
-            %strong incorporating learnings from our Shared Care initiatives,
-            including decision tools, care pathways, pearls, red flags, and patient education materials.
+            Pathways contributes to improved patient outcomes by improving
+            timely access to specialists, and providing a central hub for
+            decision aids, guidelines, pearls, red flags, and patient education
+            materials.
 
           %p
-            If you have any comments or questions while using the site, please contact us at
-            = mail_to "administration@pathwaysbc.ca", "administration@pathwaysbc.ca"
+            To learn more about Pathways, please visit our
+            %a{ href: pathways_info_path, target: '_blank' }
+              Pathways Information page
+            or access the user guide and training videos located in the ‘You’
+            tab above.
+
+          %p
+            If you have any comments or questions while using the site, please
+            contact us at
+            = mail_to "administration@pathwaysbc.ca",
+              "administration@pathwaysbc.ca" + "."
 
         %h2 Latest Specialist and Clinic Updates
         - if ENV["HIDE_LATEST_UPDATES"] != "true"
@@ -73,25 +91,26 @@
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
-            = link_to "<i class='icon-pencil'></i> Edit Manual Specialist and Clinic Updates".html_safe,
-              news_items_path(division_id: @as_division.id),
-              :class => "btn btn-mini ajax"
+            = link_to news_items_path(division_id: @as_division.id),
+              class: "btn btn-mini" do
+              %i.icon-pencil= " Edit Manual Specialist and Clinic Updates"
 
         - if @current_newsletter.present?
-          %div{style: "margin-top: 18px;"}
+          %div{ style: "margin-top: 18px;" }
             %h2 Pathways Newsletter
 
-            %div{style: "margin-top: 10px;"}
-              = image_tag "pathways_newsletter.png", style: "height: 120px; border: 1px solid lightgray; padding: 2px; margin-right: 10px; float: left;"
-              %p{style: "margin-top: 0px;"}
+            %div{ style: "margin-top: 10px;" }
+              = image_tag "pathways_newsletter.png",
+                style: "height: 120px; border: 1px solid lightgray; padding: 2px; margin-right: 10px; float: left;"
+              %p{ style: "margin-top: 0px;" }
                 = "The current Pathways newsletter (#{@current_newsletter.month} Edition) is available #{link_to('here', @current_newsletter.url, target: '_blank')}.  It includes:".html_safe
-              %ul{style: "margin-bottom: 20px;"}
+              %ul{ style: "margin-bottom: 20px;" }
                 - @current_newsletter.description_items.each do |item|
-                  %li{style: "list-style-type: disc;"}
+                  %li{ style: "list-style-type: disc;" }
                     = item.description_item
               %p
                 = "You can also #{link_to('browse previous issues', newsletters_path)}.".html_safe
-              %div{style: "clear: both;"}
+              %div{ style: "clear: both;" }
 
         - if @divisional_updates.any?
 
@@ -101,13 +120,16 @@
 
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
-              %div{:class => news_item.date.present? ? "news_item_title" : "news_item_date"}= news_item.title if news_item.title.present?
+              %div{ class: news_item.date.present? ? "news_item_title" : "news_item_date" }
+                = news_item.title if news_item.title.present?
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
 
         - if @can_edit_division
           %p.admin.btn-group
-            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Division Updates", news_items_path(division_id: @as_division.id), :class => "btn btn-mini ajax")
+            = link_to news_items_path(division_id: @as_division.id),
+              class: "btn btn-mini" do
+              %i.icon-pencil= " Edit Division Updates"
 
         - if @attachment_updates.any?
 
@@ -117,13 +139,16 @@
 
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
-              %div{:class => news_item.date.present? ? "news_item_title" : "news_item_date"}= news_item.title if news_item.title.present?
+              %div{ class: news_item.date.present? ? "news_item_title" : "news_item_date" }
+                = news_item.title if news_item.title.present?
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
-            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Attachment Updates", news_items_path(division_id: @as_division.id), :class => "btn btn-mini ajax")
+            = link_to news_items_path(division_id: @as_division.id),
+              class: "btn btn-mini" do
+              %i.icon-pencil= " Edit Attachment Updates"
 
         - if @shared_care_updates.any?
 
@@ -135,13 +160,16 @@
 
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
-              %div{:class => news_item.date.present? ? "news_item_title" : "news_item_date"}= news_item.title if news_item.title.present?
+              %div{ class: news_item.date.present? ? "news_item_title" : "news_item_date" }
+                = news_item.title if news_item.title.present?
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
-            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Shared Care Updates", news_items_path(division_id: @as_division.id), :class => "btn btn-mini ajax")
+            = link_to news_items_path(division_id: @as_division.id),
+              class: "btn btn-mini" do
+              %i.icon-pencil= " Edit Shared Care Updates"
 
 
       .span4.offsethalf
@@ -162,7 +190,7 @@
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
             = link_to edit_featured_contents_path(division_id: @as_divisions.first.id),
-              class: "btn btn-mini ajax" do
+              class: "btn btn-mini" do
               %i.icon-pencil
               %span= "Edit Featured Content"
 

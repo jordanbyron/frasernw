@@ -10,7 +10,7 @@ class Ability
     else
       can [:index], :front
       can :show, FaqCategory
-      can :index, :terms_and_conditions
+      can :terms_and_conditions, :static_pages
       can :get, :global_data
       can :index, Newsletter
       can :index, Video

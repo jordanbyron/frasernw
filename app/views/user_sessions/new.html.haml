@@ -8,6 +8,11 @@
 
           %h2 Log in to Pathways
 
+          %h4
+            What is Pathways?
+            %a{ href: pathways_info_path }Click here for information!
+          %br
+
           - if f.error_messages.present?
             .alert.alert-error= f.error_messages
 
