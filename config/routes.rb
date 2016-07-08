@@ -48,9 +48,8 @@ Frasernw::Application.routes.draw do
   end
 
   scope '/clinics/:id/:token', controller: 'clinics_editor' do
-    # Secret edit or owner edit
-    get :edit,    as: 'clinic_self_edit'
-    patch :update,  as: 'clinic_self_update'
+    get :edit, as: 'clinic_self_edit'
+    patch :update, as: 'clinic_self_update'
     get :pending, as: 'clinic_self_pending'
   end
 
@@ -66,9 +65,8 @@ Frasernw::Application.routes.draw do
   end
 
   scope '/specialists/:id/:token', controller: 'specialists_editor' do
-    # Secret edit or owner edit
-    get :edit,    as: 'specialist_self_edit'
-    patch :update,  as: 'specialist_self_update'
+    get :edit, as: 'specialist_self_edit'
+    patch :update, as: 'specialist_self_update'
     get :pending, as: 'specialist_self_pending'
   end
 
@@ -92,17 +90,17 @@ Frasernw::Application.routes.draw do
   resources :notes, only: [:create, :destroy]
   get '/history' => 'history#index'
 
-  # until this controller action is finished
-  # get '/analytics/' => 'analytics#show'
-
-  get '/review_items/archived' => 'review_items#archived', as: 'archived_review_items'
+  get '/review_items/archived' => 'review_items#archived',
+    as: 'archived_review_items'
   resources :review_items
 
-  get '/feedback_items/archived' => 'feedback_items#archived', as: 'archived_feedback_items'
+  get '/feedback_items/archived' => 'feedback_items#archived',
+    as: 'archived_feedback_items'
   resources :feedback_items
 
   resources :sc_categories, path: 'content_categories'
-  get '/divisions/:id/content_items/' => 'sc_items#index', as: 'division_content_items'
+  get '/divisions/:id/content_items/' => 'sc_items#index',
+    as: 'division_content_items'
 
   resources :demoable_content_items, only: [] do
     collection do
@@ -117,14 +115,14 @@ Frasernw::Application.routes.draw do
     end
     member do
       patch :share, to: 'sc_items#share'
-
-      # since emails can't 'put'
       get :share
     end
   end
 
-  get '/divisions/:id/shared_content_items' => 'divisions#shared_sc_items', as: 'shared_content_items'
-  patch '/divisions/:id/update_shared' => 'divisions#update_shared', as: 'update_shared'
+  get '/divisions/:id/shared_content_items' => 'divisions#shared_sc_items',
+    as: 'shared_content_items'
+  patch '/divisions/:id/update_shared' => 'divisions#update_shared',
+    as: 'update_shared'
 
   resources :subscriptions
   resources :news_items do
@@ -133,7 +131,8 @@ Frasernw::Application.routes.draw do
       post :copy
     end
   end
-  resources :reports do
+
+  resources :reports, only: [:index] do
     collection do
       get :page_views
       get :sessions
@@ -141,12 +140,15 @@ Frasernw::Application.routes.draw do
       get :entity_page_views
       get :user_ids
       get :pageviews_by_user
+      get :specialist_contact_history
+      get :specialist_wait_times
+      get :clinic_wait_times
+      get :entity_statistics
     end
   end
 
 
   resources :referral_forms, only: [:index] do
-    # Polymorphic routes
     collection do
       get :edit
       patch :update
@@ -160,16 +162,23 @@ Frasernw::Application.routes.draw do
   get '/clinics/:id/location/:location_id/print' => 'clinics#print_location_information',
     as: 'clinic_location_information'
 
-  get '/specialties/:id/cities/:city_id' => 'specializations#city', as: 'specialization_city'
+  get '/specialties/:id/cities/:city_id' => 'specializations#city',
+    as: 'specialization_city'
 
+  patch '/favorites/specialists/:id' => 'favorites#edit',
+    as: 'specialist_favorite',
+    model: 'specialists'
+  patch '/favorites/clinics/:id' => 'favorites#edit',
+    as: 'clinic_favorite',
+    model: 'clinics'
+  patch '/favorites/content_items/:id' => 'favorites#edit',
+    as: 'content_items_favorite',
+    model: 'sc_items'
 
-  #need improve performance:
-  patch '/favorites/specialists/:id' => 'favorites#edit', as: 'specialist_favorite', model: 'specialists'
-  patch '/favorites/clinics/:id' => 'favorites#edit', as: 'clinic_favorite', model: 'clinics'
-  patch '/favorites/content_items/:id' => 'favorites#edit', as: 'content_items_favorite', model: 'sc_items'
-
-  get '/content_items/:id/email' => 'mail_to_patients#new',   as: 'compose_mail_to_patients'
-  post '/mail_to_patients/create' => 'mail_to_patients#create', as: 'send_mail_to_patients'
+  get '/content_items/:id/email' => 'mail_to_patients#new',
+    as: 'compose_mail_to_patients'
+  post '/mail_to_patients/create' => 'mail_to_patients#create',
+    as: 'send_mail_to_patients'
 
   patch '/validate' => 'users#validate', as: :validate
   patch '/setup' => 'users#setup', as: :setup
@@ -184,7 +193,7 @@ Frasernw::Application.routes.draw do
   get '/logout' => 'user_sessions#destroy', as: :logout
   get '/login' => 'user_sessions#new', as: :login
 
-  root :to => 'front#index'
+  root to: 'front#index'
 
   resources :featured_contents, only: [] do
     collection do

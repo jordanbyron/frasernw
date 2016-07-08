@@ -1,22 +1,24 @@
-- set_page_specific_title "#{@report.name}"
+- set_page_specific_title "Entity Statistics"
 
 .content-wrapper
 
-  %h2= @report.name
-  %h4= "#{@report.level_name} #{@report.type}"
-  %p.no_indent= "Generated on #{Time.now.strftime('%A %B %d')} at #{Time.now.strftime('%I:%M %p')}"
+  %h2 Entity Statistics
+  %p.no_indent= "Reporting for #{@report_scope}"
+  %p.no_indent
+    = "Generated on #{Time.now.strftime('%A %B %d')} at "
+    = Time.now.strftime('%I:%M %p')
 
-  - if (@divisional)
+  - if @divisions.length == 1
     - specialists = Specialist.in_divisions(@divisions)
     - clinics = Clinic.in_divisions(@divisions)
     - procedures = []
-    - [specialists + clinics].flatten.each { |s| procedures.concat( s.procedures ) }
+    - [specialists + clinics].flatten.each{ |s| procedures.concat( s.procedures ) }
     - procedures.uniq!
-    - specializations = Specialization.all.reject{ |s| [s.specialists.in_divisions(@divisions) + s.clinics.in_divisions(@divisions)].flatten.length == 0 }
+    - specializations = Specialization.all.reject do |s|
+      - [s.specialists.in_divisions(@divisions) + s.clinics.in_divisions(@divisions)].flatten.length == 0
     - hospitals = Hospital.in_divisions(@divisions)
     - sc_categories = ScCategory.all_parents
     - sc_items = ScItem.all_in_divisions(@divisions)
-    - # TODO: "owned_by_divisions?"
     - news_items = NewsItem.in_divisions(@divisions)
   - else
     - specialists = Specialist.all
@@ -36,7 +38,6 @@
     %tr
       %th Specialties
       %td= specializations.length
-
     %tr
       %th
 
@@ -50,11 +51,10 @@
     %tr
       %th Areas of practice
       %td= procedures.length
-      %td= procedures.reject{|p| !p.procedure_specializations.first.try(:focused?)}.length
-      %td= procedures.reject{|p| !p.procedure_specializations.first.try(:nonfocused?)}.length
-      %td= Procedure.all.reject{|p| !p.procedure_specializations.first.try(:assumed_specialist?)}.length
-      %td= Procedure.all.reject{|p| !p.procedure_specializations.first.try(:assumed_clinic?)}.length
-
+      %td= procedures.reject{ |p| !p.procedure_specializations.first.try(:focused?) }.length
+      %td= procedures.reject{ |p| !p.procedure_specializations.first.try(:nonfocused?) }.length
+      %td= Procedure.all.reject{ |p| !p.procedure_specializations.first.try(:assumed_specialist?) }.length
+      %td= Procedure.all.reject{ |p| !p.procedure_specializations.first.try(:assumed_clinic?) }.length
     %tr
       %th
 
@@ -70,13 +70,12 @@
     %tr
       %th Specialists
       %td= specialists.length
-      %td= specialists.reject{|s| !s.responded?}.length
-      %td= specialists.reject{|s| !s.not_responded?}.length
-      %td= specialists.reject{|s| !s.purposely_not_yet_surveyed?}.length
-      %td= specialists.reject{|s| !s.hospital_or_clinic_only?}.length
-      %td= specialists.reject{|s| !s.moved_away?}.length
-      %td= specialists.reject{|s| !s.retired?}.length
-
+      %td= specialists.reject{ |s| !s.responded? }.length
+      %td= specialists.reject{ |s| !s.not_responded? }.length
+      %td= specialists.reject{ |s| !s.purposely_not_yet_surveyed? }.length
+      %td= specialists.reject{ |s| !s.hospital_or_clinic_only? }.length
+      %td= specialists.reject{ |s| !s.moved_away? }.length
+      %td= specialists.reject{ |s| !s.retired? }.length
     %tr
       %th
 
@@ -89,10 +88,9 @@
     %tr
       %th Clinics
       %td= clinics.length
-      %td= clinics.reject{|s| !s.responded?}.length
-      %td= clinics.reject{|s| !s.not_responded?}.length
-      %td= clinics.reject{|s| !s.purposely_not_yet_surveyed?}.length
-
+      %td= clinics.reject{ |s| !s.responded? }.length
+      %td= clinics.reject{ |s| !s.not_responded? }.length
+      %td= clinics.reject{ |s| !s.purposely_not_yet_surveyed? }.length
     %tr
       %th
 
@@ -102,11 +100,8 @@
     %tr
       %th Hospitals
       %td= hospitals.length
-
     %tr
       %th
-
-
 
     %tr
       %th
@@ -114,10 +109,8 @@
     %tr
       %th Resources
       %td= sc_items.count
-
     %tr
       %th
-
 
     %tr
       %th
@@ -125,7 +118,6 @@
     %tr
       %th News Items
       %td= news_items.count
-
     %tr
       %th
 
@@ -134,8 +126,6 @@
         %h3
           = "Specialists by Specialty"
           %br
-          %small= "(#{@report.level_name})"
-
     %tr
       %th
     - specializations.each do |specialization|
@@ -152,47 +142,29 @@
       %tr
         %th= specialization.name
         %td= @specialization_specialists.length
-        %td= @specialization_specialists.reject{|s| !s.responded?}.length
-        %td= @specialization_specialists.reject{|s| !s.not_responded?}.length
-        %td= @specialization_specialists.reject{|s| !s.purposely_not_yet_surveyed?}.length
-        %td= @specialization_specialists.reject{|s| !s.hospital_or_clinic_only?}.length
-        %td= @specialization_specialists.reject{|s| !s.moved_away?}.length
-        %td= @specialization_specialists.reject{|s| !s.retired?}.length
-
-        %tr
+        %td= @specialization_specialists.reject{ |s| !s.responded? }.length
+        %td= @specialization_specialists.reject{ |s| !s.not_responded? }.length
+        %td= @specialization_specialists.reject{ |s| !s.purposely_not_yet_surveyed? }.length
+        %td= @specialization_specialists.reject{ |s| !s.hospital_or_clinic_only? }.length
+        %td= @specialization_specialists.reject{ |s| !s.moved_away? }.length
+        %td= @specialization_specialists.reject{ |s| !s.retired? }.length
       %th
-
-
-
     %tr
       %th
-
 
     %tr
       %th
         %h3
           = "Resources / Content Items"
           %br
-          %small= "(#{@report.level_name})"
-
     - sc_categories.each do |sc_category|
       %tr
         %th
         %th Total
       %tr
         %th= sc_category.name
-        -# For getting the total count of sc_items for the system or division in each parent category, we take the sc_items of parent categories and the sc_items of children categories, then compare those items against the total sc_items for the system or division
-        %td= ((sc_category.sc_items & sc_items).count + sc_category.children.inject(0) {|result, sc_category_child| result + (sc_category_child.sc_items & sc_items).count})
+        %td
+          = (sc_category.sc_items & sc_items).count + sc_category.children.inject(0) do |result, sc_category_child|
+            - result + (sc_category_child.sc_items & sc_items).count
         %tr
       %th
-
-
-
-
-
-
-  %p.admin.btn-group
-    - if can? :update, @report
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Report", edit_report_path(@report), :class => "btn ajax")
-    - if can? :destroy, @report
-      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Report", @report, :data => { :confirm => "Delete #{@report.name}?" }, :method => :delete, :class => "btn")

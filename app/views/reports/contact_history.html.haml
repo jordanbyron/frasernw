@@ -1,13 +1,12 @@
-- set_page_specific_title "#{@report.name}"
+- set_page_specific_title "Specialist Contact History"
 
 .content-wrapper
 
-  %h2= @report.name
-  %h4= "#{@report.level_name} #{@report.type}"
-  - if @report.type_mask != Report::ReportType::SPECIALIST_CONTACT_HISTORY
-    %p.no_indent= "Reporting on #{@report.user_type.pluralize.downcase}"
-  %p.no_indent= "Covering #{@report.time_frame_name.downcase}"
-  %p.no_indent= "Generated on #{Time.now.strftime('%A %B %d')} at #{Time.now.strftime('%I:%M %p')}"
+  %h2 Specialist Contact History
+  %p.no_indent= "Reporting for #{@report_scope}"
+  %p.no_indent
+    = "Generated on #{Time.now.strftime('%A %B %d')} at "
+    = Time.now.strftime('%I:%M %p')
 
   - if @specialist_email_table.present?
 
@@ -15,15 +14,15 @@
       %tr
         %th Specialist
         %th Email(s)
-        %th{style: "min-width:100px"} Last modified
-        %th{style: "min-width:100px"} Last updated via review queue
+        %th{ style: "min-width:100px" } Last modified
+        %th{ style: "min-width:100px" } Last updated via review queue
       - @specialist_email_table.each do |specialization_id, entries|
         %tr
-          %th{colspan: 5}= Specialization.find(specialization_id).name
+          %th{ colspan: 5 }= Specialization.find(specialization_id).name
         - entries.each do |entry|
           %tr
             %td
-              %a.ajax{:href => "/specialists/#{entry[:id]}"}= entry[:name]
+              %a.ajax{ href: "/specialists/#{entry[:id]}" }= entry[:name]
             %td
               %ul
                 - entry[:user_email].uniq.map{ |e| mail_to e }.each do |e|
@@ -42,10 +41,3 @@
                 account not activated
               - else
                 no user account linked to office
-
-
-  %p.admin.btn-group
-    - if can? :update, @report
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Report", edit_report_path(@report), class: "btn ajax")
-    - if can? :destroy, @report
-      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Report", @report, data: { confirm: "Delete #{@report.name}?" }, method: :delete, class: "btn")

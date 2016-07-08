@@ -29,6 +29,10 @@ class Ability
         can :view_report, :referents_by_specialty
         can :view_report, :entity_page_views
         can :view_report, :user_ids
+        can :view_report, :specialist_contact_history
+        can :view_report, :specialist_wait_times
+        can :view_report, :clinic_wait_times
+        can :view_report, :entity_statistics
 
         can [:show, :toggle_subscription], Issue
         can [:index, :show], :change_requests
