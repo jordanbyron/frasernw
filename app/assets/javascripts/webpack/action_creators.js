@@ -228,14 +228,23 @@ const doneSubmittingFeedback = (dispatch) => {
   })
 }
 
-export const submitFeedback = (dispatch, model, comment) => {
-  if(!comment){
+export const submitFeedback = (dispatch, model, name, email, comment) => {
+  if (!comment){
+
     return;
-  } else {
+  }
+  else if (model.app.currentUser.role === "unauthenticated" &&
+    (!name || !email)){
+
+    return;
+  }
+  else {
     $.post("/feedback_items", {
       feedback_item: {
-        item_id: model.ui.feedbackModal.item.id,
-        item_type: model.ui.feedbackModal.item.type,
+        target_id: model.ui.feedbackModal.target.id,
+        target_type: model.ui.feedbackModal.target.type,
+        freeform_name: name,
+        freeform_email: email,
         feedback: comment
       }
     }).success(() => {

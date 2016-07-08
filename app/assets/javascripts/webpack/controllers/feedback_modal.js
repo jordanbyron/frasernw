@@ -30,9 +30,15 @@ const PreSubmitModal = React.createClass({
   handleSubmit: function(e) {
     e.preventDefault();
 
+    if(this.props.model.currentUser.role === "unauthenticated"){
+      var name = this.refs.
+    }
+
     submitFeedback(
       this.props.dispatch,
       this.props.model,
+      this.refs.name.value.trim(),
+      this.refs.email.value.trim(),
       this.refs.feedback.value.trim()
     );
   },
@@ -42,8 +48,10 @@ const PreSubmitModal = React.createClass({
         <div className="inner">
           <form onSubmit={this.handleSubmit}>
             <label style={{fontWeight: "bold"}}>
-              <span>Please provide us with any comments about </span>
-              <span className="feedback_item_title">{ targetLabel(this.props.model) }</span>
+              <Invitation model={model}/>
+              <FreeFormInputs model={model}/>
+              <input type={freeformInputType(model)} ref="name" placeholder="Name"/>
+              <input type={freeformInputType(model)} ref="email" placeholder="Email"/>
               <textarea
                 ref="feedback"
                 style={{width: "100%", height: "150px", marginTop: "10px"}}
@@ -65,6 +73,31 @@ const PreSubmitModal = React.createClass({
     );
   }
 });
+
+const freeformInputType = (model) => {
+  if(model.ui.currentUser.role === "unauthenticated"){
+    return "text";
+  }
+  else {
+    return "hidden";
+  }
+}
+
+const Invitation = ({model}) => {
+  if(targetKlass(model)){
+    return(
+      <span>
+        <span>Please provide us with any comments about </span>
+        <span className="feedback_item_title">{ targetLabel(model) }</span>
+      </span>
+    )
+  }
+  else {
+    return(
+      <span>How can we help?</span>
+    );
+  }
+}
 
 const handleClose = (dispatch, e) => {
   e.preventDefault();
@@ -123,14 +156,14 @@ const PostSubmitModal = ({model, dispatch}) => {
         <h2>Thank you!</h2>
         <p className="space no_indent">
           {
-            `Thank you for providing feedback on ${targetLabel(model)}.  ` +
+            `Thank you for providing ${wasProvided(model)}.  ` +
             "Your contributions help make Pathways a valuable resource " +
             "for the community."
           }
         </p>
         <p className="space no_indent">
           {
-            "We will review your feedback in the near future " +
+            "We will review your comment in the near future " +
             "and take action as necessary."
           }
         </p>
@@ -142,5 +175,14 @@ const PostSubmitModal = ({model, dispatch}) => {
     </div>
   )
 };
+
+const wasProvided = (model) => {
+  if(targetKlass(model)){
+    return `feedback on ${targetLabel(model)}`;
+  }
+  else {
+    return "your comment";
+  }
+}
 
 export default FeedbackModal;

@@ -167,12 +167,12 @@ module ApplicationHelper
     result
   end
 
-  def default_owner
-    return User.safe_find(10)
+  def default_specialist_clinic_owner
+    Division.provincial.general_feedback_owner
   end
 
   def default_content_owner
-    return User.safe_find(3) #Ron
+    User.safe_find(3) #Ron
   end
 
   def user_guide

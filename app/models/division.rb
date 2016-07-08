@@ -88,6 +88,10 @@ class Division < ActiveRecord::Base
     Rails.cache.delete([self.class.name, id])
   end
 
+  def general_feedback_owner
+    # TODO
+  end
+
   def showing_specializations
     Specialization.for_users_in(self)
   end

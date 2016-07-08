@@ -1,9 +1,50 @@
-- set_page_specific_title "Thank you for your feedback"
+- set_page_specific_title "Feedback Item ##{@feedback_item.id}"
 
 .content-wrapper
+  %h2= "Feedback Item ##{@feedback_item.id}"
 
-  %h2 Thank you!
+  %p.space
+    - if feedback_item.general?
+      %strong= "Submitted via 'Contact Us'"
+    - else
+      %strong= "Feedback On:"
+      %span
+        - if feedback_item.target?
+          = link_to feedback_item.target_label,
+            feedback_item.target
+        - else
+          = feedback_item.target_label
 
-  %p.space.no_indent= "Thank you for providing your feedback  on #{@feedback_item.item.class == ScItem ? @feedback_item.item.title : @feedback_item.item.name}. Your contributions help make Pathways a valuable resource for the community."
+  - unless feedback_item.archived?
+    %p.space
+      %b= "Assigned To:"
+    %ul
+      - feedback_item.owners.each do |owner|
+        %li= owner.name
 
-  %p.space.no_indent We will review your feedback in the near future and take action as necessary.
+  %p.space
+    %b= "Provided By:"
+    %span= feedback_item.submitter_name
+
+  %p.space
+    %b= "Provided When:"
+    %span= "#{time_ago_in_words(feedback_item.created_at)} ago"
+
+
+  %p.space
+    %b= "Feedback:"
+  %div= feedback_item.feedback
+
+  .btn-group
+    = respond_link(feedback_item)
+    = link_to feedback_item,
+      method: :delete,
+      class: "btn" do
+      %i.icon-folder-open
+      %span= " Archive"
+    = large_history_button(feedback_item)
+
+  %hr
+
+  = link_to "< All Active Feedback Items",
+    feedback_items_path

@@ -250,24 +250,28 @@ class ScItem < ActiveRecord::Base
       return default_content_owner
     end
 
-    #We only have one division for each conten item, so lets find that the first owner
-    # in one of the specializations
+    derived_owner = SpecializationOption.
+      for_divisions_and_specializations([ division ], specializations).
+      map(&:content_owner).
+      select(&:present?).
+      uniq.
+      first
+
     specializations.each do |specialization|
       specialization.specialization_options.for_divisions([division]).each do |so|
         return so.content_owner if so.content_owner.present?
       end
     end
 
-    #There is no owner for the any of the specializations this content item is in...
-    return default_content_owner
+    default_content_owner
   end
 
   def owners
-    [owner]
+    [ owner ]
   end
 
   def divisions
-    [division]
+    [ division ]
   end
 
   def root_category

@@ -691,18 +691,16 @@ class Specialist < ActiveRecord::Base
   end
 
   def owners
-    if specializations.blank? || divisions.blank?
-      return [default_owner]
+    derived_owners = SpecializationOption.
+      for_divisions_and_specializations(divisions, specializations).
+      map(&:owner).
+      select(&:present?).
+      uniq
+
+    if derived_owners.any?
+      return derived_owners
     else
-      owners = SpecializationOption.
-        for_divisions_and_specializations(divisions, specializations).
-        map{ |so| so.owner }.
-        uniq
-      if owners.present?
-        return owners
-      else
-        return [default_owner]
-      end
+      return [ default_specialist_clinic_owner ]
     end
   end
 

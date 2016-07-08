@@ -4,58 +4,28 @@
 
   %h2 Feedback Queue
 
-  - cuser = current_user
-  - divisions = current_user.as_admin_or_super? ? Division.all : current_user.as_divisions
-
-  - specialist_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Specialist }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
-  - clinic_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != Clinic }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
-  - sc_item_feedback = @feedback_items.reject{ |feedback_item| feedback_item.item.class != ScItem }.reject{ |feedback_item| (feedback_item.item.divisions & divisions).blank? }
-
-  - specialist_count  = specialist_feedback.length
-  - clinic_count      = clinic_feedback.length
-  - sc_item_count     = sc_item_feedback.length
-
-  - specialist_user_count  = specialist_feedback.reject{|feedback_item| !feedback_item.item.owners.include? cuser }.length
-  - clinic_user_count      = clinic_feedback.reject{|feedback_item| !feedback_item.item.owners.include? cuser }.length
-  - sc_item_user_count     = sc_item_feedback.reject{|feedback_item| !feedback_item.item.owners.include? cuser }.length
-
-  - feedback = [specialist_feedback, clinic_feedback, sc_item_feedback]
-
   .tabbable
     %ul.nav.nav-tabs
-      %li
-        %a{"href" => "#0_tab", "data-toggle" => "tab"}
-          Specialist
-          - if specialist_user_count > 0
-            %span.badge.badge-warning #{specialist_user_count}/#{specialist_count}
-          - else
-            %span.badge= specialist_count
-      %li
-        %a{"href" => "#1_tab", "data-toggle" => "tab"}
-          Clinic
-          - if clinic_user_count > 0
-            %span.badge.badge-warning #{clinic_user_count}/#{clinic_count}
-          - else
-            %span.badge= clinic_count
-      %li
-        %a{"href" => "#2_tab", "data-toggle" => "tab"}
-          Content
-          - if sc_item_user_count > 0
-            %span.badge.badge-warning #{sc_item_user_count}/#{sc_item_count}
-          - else
-            %span.badge= sc_item_count
+      - @feedback_items_types.each do |type, items|
+        %li
+          %a{"href" => "##{type}", "data-toggle" => "tab"}
+            = type.to_s.humanize
+            - if @owned_counts[type] > 0
+              %span.badge.badge-warning
+                = "#{@owned_counts[type]}/#{@feedback_items_types[type].count}"
+            - else
+              %span.badge= @feedback_items_types[type].count
 
     .tab-content
 
-      - classes = ["Specialist", "Clinic", "ScItem"]
+      - @feedback_items_types.each do |type, items|
 
-      - classes.each_with_index do |feedback_type, index|
-
-        .tab-pane{"id" => "#{index}_tab"}
+        .tab-pane{id: type.to_s}
 
           %table.table.table-condensed.table-striped
             %tr
-              %th Feedback on
+              - if type != :general
+                %th Feedback on
               %th Assigned To
               %th Provided by
               %th Provided when
@@ -63,38 +33,40 @@
               %th Reply
               %th.admin
 
-            - feedback[index].each do |feedback_item|
-              - owned = feedback_item.item.respond_to?('owners') ? (feedback_item.item.owners.include? cuser) : (feedback_item.item.owner == cuser)
-              %tr{:class => owned && "owned"}
-                %td
-                  = link_to (feedback_item.item.respond_to?('name') ? feedback_item.item.name : feedback_item.item.title), feedback_item.item, :class => 'ajax'
-                  %br
-                  - if feedback_item.item.respond_to?('cities')
-                    #{feedback_item.item.specializations.map{ |s| s.name }.to_sentence} - #{feedback_item.item.cities.map{ |c| c.name }.to_sentence}
-                  - else
-                    #{feedback_item.item.specializations.map{ |s| s.name }.to_sentence}
-                %td
-                  - if feedback_item.item.respond_to?('owners')
-                    - if feedback_item.item.owners.present?
-                      %ul
-                        - feedback_item.item.owners.each do |owner|
-                          %li= owner.name
+            - items.each do |feedback_item|
+              %tr{class: feedback_item.owners.include?(current_user) ? "owned" : ""}
+                - if type != :general
+                  %td
+                    - if feedback_item.target?
+                      = link_to feedback_item.target_label,
+                        feedback_item.target
+                      %br
+                        = feedback_item.target.specializations.map(&:name).to_sentence
+                        - if feedback_item.target.respond_to?(:cities)
+                          = " - #{feedback_item.item.cities.map(&:name).to_sentence}"
                     - else
-                      No owner
-                  - else
-                    = feedback_item.item.owner.name
-                %td= feedback_item.user.blank? ? "unavailable" : feedback_item.user.name
+                      = feedback_item.target_label
+
+                %td
+                  %ul
+                    - feedback_item.owners.each do |owner|
+                      %li= owner.name
+                %td= feedback_item.submitter_name
                 %td= "#{time_ago_in_words(feedback_item.created_at)} ago"
-                %td{"style" => "width: 30%"}= feedback_item.feedback
-                %td= feedback_item.user.blank? ? "unavailable" : (mail_to feedback_item.user.email, feedback_item.user.email, :subject => "Your Pathways Feedback", :body => "#{feedback_item.feedback} \n\n Pathways: http://www.pathwaysbc.ca")
+                %td{style: "width: 30%"}= feedback_item.feedback
+                %td= respond_link(feedback_item)
                 %td.admin
-                  = link_to("<i class='icon-folder-open'></i>".html_safe + " Archive", feedback_item, :method => :delete, :class => "btn btn-mini ajax stacked-button")
+                  = link_to feedback_item,
+                    method: :delete,
+                    class: "btn btn-mini stacked-button" do
+                    %i.icon-folder-open
+                    %span= " Archive"
                   = history_button(feedback_item)
 
   .btn-group
     = link_to "View archived feedback items",
       archived_feedback_items_path,
-      class: 'btn ajax'
+      class: 'btn'
 
 :javascript
   window.pathways.setupTabHistory();

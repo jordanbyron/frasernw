@@ -26,7 +26,8 @@ window.pathways.trackForm = require("./analytics_wrappers").trackForm;
 window.pathways.trackContentItem = require("./analytics_wrappers").trackContentItem;
 window.pathways.attachSecretEditLinks = attachSecretEditLinks;
 window.pathways.setupTabHistory = setupTabHistory;
-window.pathways.openFeedbackMOdal = openFeedbackModal;
+window.pathways.openFeedbackModal = openFeedbackModal;
+window.pathways.bootstrapReact = bootstrapReact;
 
 window.vendor = {}
 window.vendor._ = require("lodash");

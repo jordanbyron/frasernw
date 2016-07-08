@@ -1,7 +1,0 @@
-!!!
-%html
-  %body
-    %p= "#{@feedback_item.item.title} has had the following feedback left on it by #{@feedback_item.user.name} (#{@feedback_item.user.email})."
-    %p= @feedback_item.feedback
-    %p
-      %a{:href => "http://www.pathwaysbc.ca/feedback_items"} View Feedback
