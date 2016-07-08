@@ -93,7 +93,8 @@
           %p.admin.btn-group
             = link_to news_items_path(division_id: @as_division.id),
               class: "btn btn-mini" do
-              %i.icon-pencil= " Edit Manual Specialist and Clinic Updates"
+              %i.icon-pencil
+              %span= " Edit Manual Specialist and Clinic Updates"
 
         - if @current_newsletter.present?
           %div{ style: "margin-top: 18px;" }
@@ -129,7 +130,8 @@
           %p.admin.btn-group
             = link_to news_items_path(division_id: @as_division.id),
               class: "btn btn-mini" do
-              %i.icon-pencil= " Edit Division Updates"
+              %i.icon-pencil
+              %span= " Edit Division Updates"
 
         - if @attachment_updates.any?
 
@@ -148,7 +150,8 @@
           %p.admin.btn-group
             = link_to news_items_path(division_id: @as_division.id),
               class: "btn btn-mini" do
-              %i.icon-pencil= " Edit Attachment Updates"
+              %i.icon-pencil
+              %span= " Edit Attachment Updates"
 
         - if @shared_care_updates.any?
 
@@ -169,7 +172,8 @@
           %p.admin.btn-group
             = link_to news_items_path(division_id: @as_division.id),
               class: "btn btn-mini" do
-              %i.icon-pencil= " Edit Shared Care Updates"
+              %i.icon-pencil
+              %span= " Edit Shared Care Updates"
 
 
       .span4.offsethalf
