@@ -8,11 +8,6 @@
 
           %h2 Log in to Pathways
 
-          %h4
-            What is Pathways?
-            %a{ href: pathways_info_path }Click here for information!
-          %br
-
           - if f.error_messages.present?
             .alert.alert-error= f.error_messages
 
@@ -56,29 +51,34 @@
               "Sign up for Pathways",
               class: "btn btn-primary space"
 
-        %script{ type: "text/javascript" }
-          :plain
-            var new_user_changed = function() {
-              if ($('#new_user_yes').is(':checked')) {
-                $(".returning_user_block").fadeOut(150, function() {
-                  $(".new_user_block").fadeIn(150);
-                });
-              } else {
-                $(".new_user_block").fadeOut(150, function() {
-                  $(".returning_user_block").fadeIn(150);
-                });
-              }
+        :javascript
+          var new_user_changed = function() {
+            if ($('#new_user_yes').is(':checked')) {
+              $(".returning_user_block").fadeOut(150, function() {
+                $(".new_user_block").fadeIn(150);
+              });
+            } else {
+              $(".new_user_block").fadeOut(150, function() {
+                $(".returning_user_block").fadeIn(150);
+              });
             }
+          }
 
-            var email_changed = function() {
-              $('#user_email').val($(this).val());
-              $('#password_reset_link').attr("href", "/password_resets/new?email=" + $(this).val());
-            }
+          var email_changed = function() {
+            $('#user_email').val($(this).val());
+            $('#password_reset_link').attr("href", "/password_resets/new?email=" + $(this).val());
+          }
 
-            $(document).ready(function(){
-              $(".new_user").live("change", new_user_changed);
-              $("#user_session_email").change(email_changed)
-            });
+          $(document).ready(function(){
+            $(".new_user").live("change", new_user_changed);
+            $("#user_session_email").change(email_changed)
+          });
+
+        %br
+        %h4
+          What is Pathways?
+          %a{ href: pathways_info_path } Learn More
+        %br
 
     .row
 
