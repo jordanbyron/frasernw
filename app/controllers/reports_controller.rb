@@ -37,7 +37,7 @@ class ReportsController < ApplicationController
     render :analytics_chart
   end
 
-  def pageviews_by_user
+  def page_views_by_user
     @init_data = {
       app: {
         currentUser: FilterTableAppState::CurrentUser.call(
@@ -46,7 +46,7 @@ class ReportsController < ApplicationController
       }
     }
 
-    authorize! :view_report, :pageviews_by_user
+    authorize! :view_report, :page_views_by_user
   end
 
   def user_ids
@@ -152,6 +152,18 @@ class ReportsController < ApplicationController
     set_divisions_from_params!
     authorize! :view_report, :entity_statistics
     render :stats
+  end
+
+  def change_requests
+    authorize! :view_report, :change_requests
+
+    redirect_to change_requests_path
+  end
+
+  def csv_usage
+    authorize! :view_report, :csv_usage
+
+    redirect_to new_csv_usage_report_path
   end
 
   private

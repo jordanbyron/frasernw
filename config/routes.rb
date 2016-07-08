@@ -139,11 +139,13 @@ Frasernw::Application.routes.draw do
       get :referents_by_specialty
       get :entity_page_views
       get :user_ids
-      get :pageviews_by_user
+      get :page_views_by_user
       get :specialist_contact_history
       get :specialist_wait_times
       get :clinic_wait_times
       get :entity_statistics
+      get :change_requests
+      get :csv_usage
     end
   end
 
@@ -238,7 +240,7 @@ Frasernw::Application.routes.draw do
           get :sessions
           get :entity_page_views
           get :user_ids
-          get :pageviews_by_user
+          get :page_views_by_user
         end
       end
     end
