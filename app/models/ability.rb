@@ -33,6 +33,7 @@ class Ability
         can :view_report, :specialist_wait_times
         can :view_report, :clinic_wait_times
         can :view_report, :entity_statistics
+        can :view_report, :archived_feedback_items
 
         can [:show, :toggle_subscription], Issue
         can [:index, :show], :change_requests

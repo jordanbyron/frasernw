@@ -6,19 +6,19 @@
 
   .tabbable
     %ul.nav.nav-tabs
-      - @feedback_items_types.each do |type, items|
+      - @feedback_item_types.each do |type, items|
         %li
           %a{"href" => "##{type}", "data-toggle" => "tab"}
             = type.to_s.humanize
             - if @owned_counts[type] > 0
               %span.badge.badge-warning
-                = "#{@owned_counts[type]}/#{@feedback_items_types[type].count}"
+                = "#{@owned_counts[type]}/#{@feedback_item_types[type].count}"
             - else
-              %span.badge= @feedback_items_types[type].count
+              %span.badge= @feedback_item_types[type].count
 
     .tab-content
 
-      - @feedback_items_types.each do |type, items|
+      - @feedback_item_types.each do |type, items|
 
         .tab-pane{id: type.to_s}
 
@@ -37,13 +37,13 @@
               %tr{class: feedback_item.owners.include?(current_user) ? "owned" : ""}
                 - if type != :general
                   %td
-                    - if feedback_item.target?
+                    - if feedback_item.target
                       = link_to feedback_item.target_label,
                         feedback_item.target
                       %br
                         = feedback_item.target.specializations.map(&:name).to_sentence
                         - if feedback_item.target.respond_to?(:cities)
-                          = " - #{feedback_item.item.cities.map(&:name).to_sentence}"
+                          = " - #{feedback_item.target.cities.map(&:name).to_sentence}"
                     - else
                       = feedback_item.target_label
 
@@ -65,7 +65,7 @@
 
   .btn-group
     = link_to "View archived feedback items",
-      archived_feedback_items_path,
+      archived_feedback_items_reports_path,
       class: 'btn'
 
 :javascript

@@ -13,5 +13,11 @@ class AddDivisionIdsToFeedbackItem < ActiveRecord::Migration
       default: []
 
     add_column :divisions, :general_feedback_owner_id, :integer
+
+    Division.all.each do |division|
+      division.update_attributes(
+        general_feedback_owner_id: division.specialization_options.first(&:owner).id
+      )
+    end
   end
 end

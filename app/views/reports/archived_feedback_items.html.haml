@@ -2,7 +2,10 @@
 
 .content-wrapper
 
-  %h2 Feedback Queue Archive
+  - if params[:division_id].present?
+    %h2= "Feedback Items Archived By #{@division.name} Admins"
+  - else
+    %h2= "Feedback Queue Archive"
 
   .tabbable
     %ul.nav.nav-tabs
@@ -23,7 +26,7 @@
           outer_window: 2
 
         %table.table.table-condensed.table-striped
-          %tr
+
             - if type != :general
               %th Feedback on
               %th Specialties

@@ -30,10 +30,6 @@ const PreSubmitModal = React.createClass({
   handleSubmit: function(e) {
     e.preventDefault();
 
-    if(this.props.model.currentUser.role === "unauthenticated"){
-      var name = this.refs.
-    }
-
     submitFeedback(
       this.props.dispatch,
       this.props.model,

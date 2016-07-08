@@ -18,28 +18,6 @@ class FeedbackItemsController < ApplicationController
     end
   end
 
-  def archived
-    @divisions_scope =
-      current_user.as_admin_or_super? ? Division.all : current_user.as_divisions
-
-    scope = FeedbackItem.
-      archived.
-      order('id desc')
-
-    @feedback_item_types = {}
-
-    [
-      :specialist,
-      :clinic,
-      :content,
-      :general
-    ].each do |type|
-      @feedback_item_types[type] = scope.
-        send(type).
-        paginate(page: params[:page], per_page: 10)
-    end
-  end
-
   def show
     @feedback_item = FeedbackItem.find(params[:id])
   end
@@ -66,13 +44,5 @@ class FeedbackItemsController < ApplicationController
     )
     redirect_to feedback_items_url,
       notice: "Successfully archived feedback item."
-  end
-
-  private
-
-  def owned_by_user(feedback_items)
-    feedback_items.select do |item|
-      item.owners.include?(current_user)
-    end
   end
 end

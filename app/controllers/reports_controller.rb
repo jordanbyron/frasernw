@@ -127,6 +127,33 @@ class ReportsController < ApplicationController
     render :stats
   end
 
+  def archived_feedback_items
+    scope = FeedbackItem.
+      archived.
+      order('id desc')
+
+    if param[:division_id].present?
+      @division = Division.find(params[:division_id])
+      scope = scope.where(
+        "ANY(archiving_division_ids) = (?)",
+        params[:division_id]
+      )
+    end
+
+    @feedback_item_types = {}
+
+    [
+      :specialist,
+      :clinic,
+      :content,
+      :general
+    ].each do |type|
+      @feedback_item_types[type] = scope.
+        send(type).
+        paginate(page: params[:page], per_page: 10)
+    end
+  end
+
   private
 
   def set_divisions_from_params!

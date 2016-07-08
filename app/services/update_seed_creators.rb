@@ -1,6 +1,6 @@
 class UpdateSeedCreators < ServiceObject
 
-  def call    
+  def call
     discrepancies = VerifySeedCreators.call
 
     handle_unhandled_tables(discrepancies[:unhandled_tables])
@@ -55,15 +55,12 @@ class UpdateSeedCreators < ServiceObject
       ) do |file|
         contents = file.read
 
-        column_type = schema[column[:table]][column[:column]]
+        column_type = schema[column[:table]][column[:name]]
         index = contents.match(/\n\s\s\s\s}/).offset(0)[0]
-
-        puts column[:column]
-        puts column_type
 
         contents.insert(
           index,
-          "\n      #{column[:column]}: #{column_type}"
+          "\n      #{column[:name]}: #{column_type}"
         )
 
         file.truncate(0)

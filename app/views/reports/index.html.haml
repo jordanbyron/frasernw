@@ -104,12 +104,14 @@
 
     - if current_user.as_super_admin?
       %tr
-        %td= link_to "Specialist Contact History",
-          specialist_contact_history_reports_path
+        %td
+          = link_to "Specialist Contact History",
+            specialist_contact_history_reports_path
         %td= report_index_dropdown(:specialist_contact_history)
       %tr
-        %td= link_to "Specialist Wait Times",
-          specialist_wait_times_reports_path
+        %td
+          = link_to "Specialist Wait Times",
+            specialist_wait_times_reports_path
         %td= report_index_dropdown(:specialist_wait_times)
       %tr
         %td= link_to "Clinic Wait Times", clinic_wait_times_reports_path
@@ -117,5 +119,12 @@
       %tr
         %td= link_to "Entity Statistics", entity_statistics_reports_path
         %td= report_index_dropdown(:entity_statistics)
+
+    - if can? :view_report :archived_feedback_items
+      %tr
+        %td
+          = link_to "Archived Feedback Items",
+            archived_feedback_items_reports_path
+        %td= report_index_dropdown(:archived_feedback_items)
 
   %p.muted Click report types on left for system-wide reports

@@ -2,7 +2,6 @@ class FeedbackItem < ActiveRecord::Base
   include Noteable
   include Historical
   include PaperTrailable
-  include Archivable
 
   belongs_to :target, polymorphic: true
 
@@ -34,8 +33,12 @@ class FeedbackItem < ActiveRecord::Base
     where("target_type = '' OR target_type IS NULL")
   end
 
-  def in_divisions?(divisions)
-    item.present? && (item.divisions & divisions).any?
+  def self.active
+    includes(:target).where(archived: false)
+  end
+
+  def self.archived
+    includes(:target).where(archived: true)
   end
 
   def target_label
@@ -67,8 +70,22 @@ class FeedbackItem < ActiveRecord::Base
       Division.provincial.general_feedback_owner
     elsif general?
       user.divisions.map(&:general_feedback_owner)
+    elsif target.nil?
+      [ Division.provincial ]
     else
       target.owners
+    end
+  end
+
+  def owner_divisions
+    if general? && user.nil?
+      [ Division.provincial ]
+    elsif general?
+      user.divisions
+    elsif target.nil? || target.divisions.none?
+      [ Division.provincial ]
+    else
+      target.divisions
     end
   end
 
@@ -89,7 +106,7 @@ class FeedbackItem < ActiveRecord::Base
   end
 
   def label
-    "#{item.name} (Feedback Item)"
+    "#{target.name} (Feedback Item)"
   end
 
   def creator

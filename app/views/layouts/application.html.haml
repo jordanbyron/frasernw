@@ -91,16 +91,17 @@
                   %li.dropdown.admin
                     %a.dropdown-toggle{"href" => "#",
                       "data-toggle" => "dropdown"}
-                      Admin
+                      = "Admin"
                       - review = ReviewItem.active.reject{ |ri| !(ri.item.present? && (ri.item.divisions & user_divisions).present?) }
-                      - feedback = FeedbackItem.active.reject{ |fi| !(fi.item.present? && (fi.item.divisions & user_divisions).present?) }
                       - user_review_item_count = review.reject{ |ri| !ri.item.owners.include? current_user }.count
-                      - user_feedback_item_count = feedback.reject{ |fi| !fi.item.owners.include? current_user }.count
                       - total_review_item_count = review.count
-                      - total_feedback_item_count = feedback.count
-                      -  if total_review_item_count + total_feedback_item_count > 0
-                        %span.badge{ class: ((user_review_item_count + user_feedback_item_count) > 0) && "badge-warning"}
-                          #{user_review_item_count + user_feedback_item_count}/#{total_review_item_count + total_feedback_item_count}
+
+                      - user_divisions_feedback = FeedbackItem.active.select{ |item| (item.owner_divisions & current_user.as_divisions).any? }
+                      - owned_feedback_count = FeedbackItem.active.to_a.count{ |item| item.owners.include?(current_user) }
+
+                      - if total_review_item_count + user_divisions_feedback.count > 0
+                        %span.badge{ class: ((user_review_item_count + owned_feedback_count) > 0) && "badge-warning"}
+                          #{user_review_item_count + owned_feedback_count}/#{total_review_item_count + user_divisions_feedback.count}
                       %b.caret
 
                     %ul.dropdown-menu
@@ -118,10 +119,12 @@
                             review_items_path,
                             class: "review"
                       %li
-                        - if total_feedback_item_count > 0
-                          = link_to "Feedback Queue <span class=\"badge #{user_feedback_item_count > 0 ? "badge-warning" : ""}\">#{user_feedback_item_count}/#{total_feedback_item_count}</span>".html_safe,
-                            feedback_items_path,
-                            class: "feedback"
+                        - if user_divisions_feedback.count > 0
+                          = link_to feedback_items_path,
+                            class: "feedback" do
+                            %span= "Feedback Queue "
+                            %span.badge{class: owned_feedback_count > 0 ? "badge-warning" : ""}
+                              = "#{owned_feedback_count}/#{user_divisions_feedback.count}"
                         - else
                           = link_to "Feedback Queue",
                             feedback_items_path,

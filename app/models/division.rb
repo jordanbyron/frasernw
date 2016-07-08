@@ -6,7 +6,8 @@ class Division < ActiveRecord::Base
     :primary_contact_id,
     :division_primary_contacts_attributes,
     :use_customized_city_priorities,
-    :featured_contents_attributes
+    :featured_contents_attributes,
+    :general_feedback_owner_id
 
   has_many :division_cities, dependent: :destroy
 
@@ -44,6 +45,8 @@ class Division < ActiveRecord::Base
   accepts_nested_attributes_for :division_primary_contacts, allow_destroy: true
 
   has_many :specialization_options, dependent: :destroy
+
+  belongs_to :general_feedback_owner, class_name: "User"
 
   include PaperTrailable
 
