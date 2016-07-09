@@ -62,7 +62,7 @@ class Clinic < ActiveRecord::Base
     :deprecated_schedule_attributes,
     :language_ids,
     :clinic_specialists_attributes,
-    :focuses_attributes,
+    :clinic_areas_of_practice_attributes,
     :healthcare_provider_ids,
     :admin_notes,
     :referral_forms_attributes,
@@ -82,12 +82,12 @@ class Clinic < ActiveRecord::Base
   has_many :clinic_speaks, dependent: :destroy
   has_many :languages, through: :clinic_speaks
 
-  has_many :focuses, dependent: :destroy
+  has_many :clinic_areas_of_practice, dependent: :destroy
 
-  has_many :procedure_specialization_links, class_name: "Focus"
-  has_many :procedure_specializations, through: :focuses
+  has_many :procedure_specialization_links, class_name: "ClinicAreaOfPractice"
+  has_many :procedure_specializations, through: :clinic_areas_of_practice
   has_many :procedures, through: :procedure_specializations
-  accepts_nested_attributes_for :focuses,
+  accepts_nested_attributes_for :clinic_areas_of_practice,
     reject_if: lambda { |a| a[:procedure_specialization_id].blank? },
     allow_destroy: true
 

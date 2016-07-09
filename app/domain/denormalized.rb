@@ -191,9 +191,9 @@ module Denormalized
       end
 
       def self.custom_procedure_times(clinic, method)
-        clinic.focuses.inject({}) do |memo, focus|
-          if focus.send(method)
-            memo.merge(focus.procedure.id => focus.send(method))
+        clinic.clinic_areas_of_practice.inject({}) do |memo, clinic_area_of_practice|
+          if clinic_area_of_practice.send(method)
+            memo.merge(clinic_area_of_practice.procedure.id => clinic_area_of_practice.send(method))
           else
             memo
           end

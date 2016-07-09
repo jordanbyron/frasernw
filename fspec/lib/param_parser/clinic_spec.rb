@@ -1405,7 +1405,7 @@ RSpec.describe ParamParser::Clinic do
    "clinic_location_9"=>"Not used",
    "clinic_location_10"=>"Not used",
    "clinic_location_11"=>"Not used",
-   "focuses_investigations"=>
+   "clinic_areas_of_practice_investigations"=>
     {"4994"=>"",
      "5057"=>"",
      "4995"=>"",
@@ -1463,7 +1463,7 @@ RSpec.describe ParamParser::Clinic do
      "7524"=>"",
      "7748"=>"",
      "7531"=>""},
-   "focuses_mapped"=>{"7554"=>"1"},
+   "clinic_areas_of_practice_mapped"=>{"7554"=>"1"},
    "commit"=>"Update Clinic",
    "action"=>"accept",
    "controller"=>"clinics",

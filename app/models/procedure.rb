@@ -21,8 +21,8 @@ class Procedure < ActiveRecord::Base
   has_many :capacities, through: :procedure_specializations
   has_many :specialists, through: :capacities
 
-  has_many :focuses, through: :procedure_specializations
-  has_many :clinics, through: :focuses
+  has_many :clinic_areas_of_practice, through: :procedure_specializations
+  has_many :clinics, through: :clinic_areas_of_practice
 
   validates_presence_of :name, on: :save, message: "can't be blank"
 
@@ -109,9 +109,9 @@ class Procedure < ActiveRecord::Base
             results += ps.specialization.clinics.in_cities(cities)
           end
         else
-          Focus.where(procedure_specialization_id: child.id).each do |focus|
-            if focus.clinic.present? && (focus.clinic.cities & cities)
-              results << focus.clinic
+          ClinicAreaOfPractice.where(procedure_specialization_id: child.id).each do |clinic_area_of_practice|
+            if clinic_area_of_practice.clinic.present? && (clinic_area_of_practice.clinic.cities & cities)
+              results << clinic_area_of_practice.clinic
             end
           end
         end
@@ -153,9 +153,9 @@ class Procedure < ActiveRecord::Base
       results += ps.specialization.clinics.in_cities(cities)
     else
       ps.subtree.each do |child|
-        Focus.where(procedure_specialization_id: child.id).each do |focus|
-          if focus.clinic.present? && (focus.clinic.cities & cities).present?
-            results << focus.clinic
+        ClinicAreaOfPractice.where(procedure_specialization_id: child.id).each do |clinic_area_of_practice|
+          if clinic_area_of_practice.clinic.present? && (clinic_area_of_practice.clinic.cities & cities).present?
+            results << clinic_area_of_practice.clinic
           end
         end
       end

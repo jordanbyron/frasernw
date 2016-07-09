@@ -1,5 +1,5 @@
 module SeedCreators
-  class Focus < SeedCreator::HandledTable
+  class ClinicAreaOfPractice < SeedCreator::HandledTable
     Handlers = {
       clinic_id: :pass_through,
       created_at: :pass_through,

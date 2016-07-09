@@ -11,4 +11,6 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   # inflect.irregular 'focuses', 'focus'
   # inflect.irregular 'person', 'people'
   # inflect.uncountable %w( fish sheep )
+  inflect.irregular 'area_of_practice', 'areas_of_practice'
+  inflect.irregular 'AreaOfPractice', 'AreasOfPractice'
 end

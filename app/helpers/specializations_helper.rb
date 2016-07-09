@@ -144,13 +144,13 @@ module SpecializationsHelper
     filtering_attributes = clinic_procedure_filtering_attributes(c)
     filtering_attributes << "cwt_#{c.waittime_mask.present? ? c.waittime_mask : 0}"
     c.procedure_specializations.clinic_wait_time.each do |ps|
-      focus = Focus.find_by(clinic_id: c.id, procedure_specialization_id: ps.id)
-      next if focus.blank?
-      if focus.waittime_mask.present?
-        filtering_attributes << "cwt#{ps.procedure_id}_#{focus.waittime_mask}"
+      clinic_area_of_practice = ClinicAreaOfPractice.find_by(clinic_id: c.id, procedure_specialization_id: ps.id)
+      next if clinic_area_of_practice.blank?
+      if clinic_area_of_practice.waittime_mask.present?
+        filtering_attributes << "cwt#{ps.procedure_id}_#{clinic_area_of_practice.waittime_mask}"
       end
-      if focus.lagtime_mask.present?
-        (focus.lagtime_mask..Clinic::LAGTIME_LABELS.length+1).each do |i|
+      if clinic_area_of_practice.lagtime_mask.present?
+        (clinic_area_of_practice.lagtime_mask..Clinic::LAGTIME_LABELS.length+1).each do |i|
           filtering_attributes << "clt#{ps.procedure_id}_cc#{i}_"
         end
       end

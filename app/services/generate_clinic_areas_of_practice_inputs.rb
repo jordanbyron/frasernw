@@ -1,4 +1,4 @@
-class GenerateClinicFocusInputs
+class GenerateClinicAreaOfPracticeInputs
   attr_reader :clinic, :specializations
 
   def self.exec(clinic, specializations)
@@ -11,7 +11,7 @@ class GenerateClinicFocusInputs
   end
 
   def exec
-    focus_inputs = []
+    clinic_area_of_practice_inputs = []
 
     # So we don't duplicate procedures
     procedures_covered = []
@@ -22,17 +22,17 @@ class GenerateClinicFocusInputs
       )
     end.each do |ps, children|
       if !procedures_covered.include?(ps.procedure.id)
-        focus_inputs << generate_focus(ps, 0)
+        clinic_area_of_practice_inputs << generate_clinic_area_of_practice(ps, 0)
         procedures_covered << ps.procedure.id
       end
       children.each do |child_ps, grandchildren|
         if !procedures_covered.include?(child_ps.procedure.id)
-          focus_inputs << generate_focus(child_ps, 1)
+          clinic_area_of_practice_inputs << generate_clinic_area_of_practice(child_ps, 1)
           procedures_covered << child_ps.procedure.id
         end
         grandchildren.each do |grandchild_ps, greatgrandchildren|
           if !procedures_covered.include?(grandchild_ps.procedure.id)
-            focus_inputs << generate_focus(grandchild_ps, 2)
+            clinic_area_of_practice_inputs << generate_clinic_area_of_practice(grandchild_ps, 2)
             procedures_covered << grandchild_ps.procedure.id
           end
         end
@@ -42,37 +42,37 @@ class GenerateClinicFocusInputs
     specializations.map do |specialization|
       {
         specialization_name: specialization.name,
-        focuses: focus_inputs.select{ |input|
+        clinic_areas_of_practice: clinic_area_of_practice_inputs.select{ |input|
           input[:specialization_id] == specialization.id
         }
       }
     end
   end
 
-  def clinic_focuses
-    @clinic_focuses ||= begin
+  def clinic_aops
+    @clinic_aops ||= begin
       if clinic.present?
-        clinic.focuses
+        clinic.clinic_areas_of_practice
       else
         []
       end
     end
   end
 
-  def generate_focus(procedure_specialization, offset)
-    focus = clinic_focuses.find do |focus|
-      focus.procedure_specialization_id == procedure_specialization.id
+  def generate_clinic_area_of_practice(procedure_specialization, offset)
+    clinic_area_of_practice = clinic_aops.find do |clinic_area_of_practice|
+      clinic_area_of_practice.procedure_specialization_id == procedure_specialization.id
     end
 
     {
-      :mapped => focus.present?,
+      :mapped => clinic_area_of_practice.present?,
       :name => procedure_specialization.procedure.name,
       :id => procedure_specialization.id,
       :specialization_id => procedure_specialization.specialization_id,
-      :investigations => focus.present? ? focus.investigation : "",
+      :investigations => clinic_area_of_practice.present? ? clinic_area_of_practice.investigation : "",
       :custom_wait_time => procedure_specialization.clinic_wait_time?,
-      :waittime => focus.present? ? focus.waittime_mask : 0,
-      :lagtime => focus.present? ? focus.lagtime_mask : 0,
+      :waittime => clinic_area_of_practice.present? ? clinic_area_of_practice.waittime_mask : 0,
+      :lagtime => clinic_area_of_practice.present? ? clinic_area_of_practice.lagtime_mask : 0,
       :offset => offset
     }
   end

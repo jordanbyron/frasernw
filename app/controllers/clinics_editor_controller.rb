@@ -10,8 +10,8 @@ class ClinicsEditorController < ApplicationController
     @form_modifier = ClinicFormModifier.new(:edit, current_user, token: true)
     @clinic = Clinic.includes_clinic_locations.find(params[:id])
     @review_item = @clinic.review_item
-    if @clinic.focuses.count == 0
-      @clinic.focuses.build
+    if @clinic.clinic_areas_of_practice.count == 0
+      @clinic.clinic_areas_of_practice.build
     end
     while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
       cl = @clinic.clinic_locations.build
@@ -26,8 +26,8 @@ class ClinicsEditorController < ApplicationController
       l = cl.build_location
       l.build_address
     end
-    @specializations_focuses =
-      GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
+    @specializations_clinic_areas_of_practice =
+      GenerateClinicAreaOfPracticeInputs.exec(@clinic, @clinic.specializations)
     BuildTeleservices.call(provider: @clinic)
     render template: 'clinics/edit'
   end

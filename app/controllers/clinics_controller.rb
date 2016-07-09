@@ -50,7 +50,7 @@ class ClinicsController < ApplicationController
     @clinic_specialists = @specialization.specialists.collect do |s|
       [s.name, s.id]
     end
-    @specializations_focuses = GenerateClinicFocusInputs.exec(nil, [@specialization])
+    @specializations_clinic_areas_of_practice = GenerateClinicAreaOfPracticeInputs.exec(nil, [@specialization])
     BuildTeleservices.call(provider: @clinic)
   end
 
@@ -59,32 +59,32 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.new(parsed_params[:clinic])
     authorize! :create, @clinic
     if @clinic.save
-      if params[:focuses_mapped].present?
+      if params[:clinic_areas_of_practice_mapped].present?
         clinic_specializations = @clinic.specializations
-        params[:focuses_mapped].select do |checkbox_key, value|
+        params[:clinic_areas_of_practice_mapped].select do |checkbox_key, value|
           value == "1"
         end.each do |checkbox_key, value|
-          focus = Focus.find_or_create_by(
+          clinic_area_of_practice = ClinicAreaOfPractice.find_or_create_by(
             clinic_id: @clinic.id,
             procedure_specialization_id: checkbox_key
           )
-          focus.investigation = params[:focuses_investigations][checkbox_key]
-          if params[:focuses_waittime].present?
-            focus.waittime_mask = params[:focuses_waittime][checkbox_key]
+          clinic_area_of_practice.investigation = params[:clinic_areas_of_practice_investigations][checkbox_key]
+          if params[:clinic_areas_of_practice_waittime].present?
+            clinic_area_of_practice.waittime_mask = params[:clinic_areas_of_practice_waittime][checkbox_key]
           end
-          if params[:focuses_lagtime].present?
-            focus.lagtime_mask = params[:focuses_lagtime][checkbox_key]
+          if params[:clinic_areas_of_practice_lagtime].present?
+            clinic_area_of_practice.lagtime_mask = params[:clinic_areas_of_practice_lagtime][checkbox_key]
           end
-          focus.save
+          clinic_area_of_practice.save
 
-          # save any other focuses that have the same procedure and are in a
+          # save any other clinic_areas_of_practice that have the same procedure and are in a
           # specialization our clinic is in
-          focus.
+          clinic_area_of_practice.
             procedure_specialization.
             procedure.
             procedure_specializations.
             reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.
-            map{ |ps2| Focus.find_or_create_by(
+            map{ |ps2| ClinicAreaOfPractice.find_or_create_by(
               clinic_id: @clinic.id,
               procedure_specialization_id: ps2.id
             ) }.
@@ -118,8 +118,8 @@ class ClinicsController < ApplicationController
       puts "locations #{@clinic.locations.length}"
     end
     @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
-    @specializations_focuses =
-      GenerateClinicFocusInputs.exec(@clinic, @clinic.specializations)
+    @specializations_clinic_areas_of_practice =
+      GenerateClinicAreaOfPracticeInputs.exec(@clinic, @clinic.specializations)
     BuildTeleservices.call(provider: @clinic)
   end
 
@@ -130,7 +130,7 @@ class ClinicsController < ApplicationController
 
     parsed_params = ParamParser::Clinic.new(params).exec
     if @clinic.update_attributes(parsed_params[:clinic])
-      UpdateClinicFocuses.exec(@clinic, parsed_params)
+      UpdateClinicAreasOfPractice.exec(@clinic, parsed_params)
       @clinic.save
       redirect_to @clinic, notice: "Successfully updated #{@clinic.name}."
     else
@@ -173,7 +173,7 @@ class ClinicsController < ApplicationController
       end
 
       @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
-      @specializations_focuses = GenerateClinicFocusInputs.exec(
+      @specializations_clinic_areas_of_practice = GenerateClinicAreaOfPracticeInputs.exec(
         @clinic,
         @clinic.specializations
       )
@@ -209,7 +209,7 @@ class ClinicsController < ApplicationController
         l.build_address
       end
       @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
-      @specializations_focuses = GenerateClinicFocusInputs.exec(
+      @specializations_clinic_areas_of_practice = GenerateClinicAreaOfPracticeInputs.exec(
         @clinic,
         @clinic.specializations
       )
@@ -237,7 +237,7 @@ class ClinicsController < ApplicationController
 
     parsed_params = ParamParser::Clinic.new(params).exec
     if @clinic.update_attributes(parsed_params[:clinic])
-      UpdateClinicFocuses.exec(@clinic, parsed_params)
+      UpdateClinicAreasOfPractice.exec(@clinic, parsed_params)
       @clinic.reload.versions.last.update_attributes(review_item_id: review_item.id)
       @clinic.save
       redirect_to @clinic, notice: "Successfully updated #{@clinic.name}."

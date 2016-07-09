@@ -186,7 +186,7 @@ RSpec.describe FormDataMatcher::Clinic do
   "clinic_location_6"=>"Not used",
   "clinic_location_7"=>"Not used",
   "clinic_location_8"=>"In a hospital",
-  "focuses_investigations"=>
+  "clinic_areas_of_practice_investigations"=>
    {"1230"=>"",
     "1005"=>"",
     "969"=>"",
@@ -215,7 +215,7 @@ RSpec.describe FormDataMatcher::Clinic do
     "1059"=>"",
     "26977"=>"",
     "14866"=>""},
-  "focuses_mapped"=>{"2146"=>"1", "951"=>"1", "2125"=>"1"},
+  "clinic_areas_of_practice_mapped"=>{"2146"=>"1", "951"=>"1", "2125"=>"1"},
   "commit"=>"Update Clinic",
   "action"=>"update",
   "controller"=>"clinics",

@@ -330,7 +330,7 @@ module VersionsHelper
               specialization_path(version.reify.specialization)
             )
         end
-      when "Focus"
+      when "ClinicAreaOfPractice"
         if version.event == "create"
           link_to(version.item.clinic.name, clinic_path(version.item.clinic)) +
             " now performs " +

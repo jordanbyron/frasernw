@@ -168,21 +168,21 @@
                     Average length of time to notify GP of a booking date:
                     %strong= @clinic.lagtime
 
-                - @clinic.focuses.clinic_wait_time.each do |focus|
+                - @clinic.clinic_areas_of_practice.clinic_wait_time.each do |clinic_area_of_practice|
 
-                  - if focus.waittime.present? || focus.lagtime.present?
+                  - if clinic_area_of_practice.waittime.present? || clinic_area_of_practice.lagtime.present?
                     %p.space
-                      %strong= "#{focus.procedure_specialization.procedure.full_name}:"
+                      %strong= "#{clinic_area_of_practice.procedure_specialization.procedure.full_name}:"
 
-                    -if focus.waittime.present?
+                    -if clinic_area_of_practice.waittime.present?
                       %p
                         Average non-urgent patient wait time from referral to appointment:
-                        %strong= focus.waittime
+                        %strong= clinic_area_of_practice.waittime
 
-                    -if focus.lagtime.present?
+                    -if clinic_area_of_practice.lagtime.present?
                       %p
                         Average length of time to notify GP of a booking date:
-                        %strong= focus.lagtime
+                        %strong= clinic_area_of_practice.lagtime
 
               - if @clinic.patient_can_book_mask == 1
                 %p.space This office accepts direct calls from patients after referral to book their own appointments.

@@ -103,14 +103,14 @@ namespace :pathways do
 
         puts "#{Clinic.find(clinic_id).name}"
 
-        focus = Focus.new(
+        clinic_area_of_practice = ClinicAreaOfPractice.new(
           clinic_id: clinic_id,
           waittime_mask: wait_time,
           lagtime_mask: lag_time,
           investigation: investigation
         )
 
-        procedure_specialization.focuses << focus
+        procedure_specialization.clinic_areas_of_practice << clinic_area_of_practice
 
       end
 

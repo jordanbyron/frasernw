@@ -56,8 +56,8 @@ class ProcedureSpecialization < ActiveRecord::Base
   has_many :capacities, dependent: :destroy
   has_many :specialists, through: :capacities
 
-  has_many :focuses, dependent: :destroy
-  has_many :clinics, through: :focuses
+  has_many :clinic_areas_of_practice, dependent: :destroy
+  has_many :clinics, through: :clinic_areas_of_practice
 
   include PaperTrailable
   has_ancestry
@@ -147,7 +147,7 @@ class ProcedureSpecialization < ActiveRecord::Base
 
   def investigation(specialist_or_clinic)
     if specialist_or_clinic.instance_of? Clinic
-      f = Focus.find_by(
+      f = ClinicAreaOfPractice.find_by(
         clinic_id: specialist_or_clinic.id,
         procedure_specialization_id: self.id
       )

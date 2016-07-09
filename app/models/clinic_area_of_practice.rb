@@ -1,4 +1,4 @@
-class Focus < ActiveRecord::Base
+class ClinicAreaOfPractice < ActiveRecord::Base
   belongs_to :clinic
   belongs_to :procedure_specialization
 

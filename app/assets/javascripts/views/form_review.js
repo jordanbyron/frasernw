@@ -188,17 +188,17 @@
   }
 
   // only for clinics
-  function overlayFocusesFormData(review_item, options)
+  function overlayClinicAreasOfPracticeFormData(review_item, options)
   {
-    var focuses_mapped = review_item["focuses_mapped"] || {};
+    var clinic_areas_of_practice_mapped = review_item["clinic_areas_of_practice_mapped"] || {};
 
-    $("input.focus").each( function() {
+    $("input.clinic_area_of_practice").each( function() {
       var $this = $(this);
       if ($this.prop('checked'))
       {
-        var checkbox_id = $this.attr('id').substring("focuses_mapped_".length);
+        var checkbox_id = $this.attr('id').substring("clinic_areas_of_practice_mapped_".length);
         //console.log(checkbox_id);
-        if (!focuses_mapped[checkbox_id])
+        if (!clinic_areas_of_practice_mapped[checkbox_id])
         {
           $this.prop('checked', false);
           if (options.highlightChanges) { show_old_value($this, "checked"); }
@@ -206,28 +206,28 @@
       }
     });
     overlayFormData(
-      ["focuses_mapped"],
-      focuses_mapped,
+      ["clinic_areas_of_practice_mapped"],
+      clinic_areas_of_practice_mapped,
       { highlightChanges: options.highlightChanges }
     );
     overlayFormData(
-      ["focuses_investigations"],
-      review_item["focuses_investigations"],
+      ["clinic_areas_of_practice_investigations"],
+      review_item["clinic_areas_of_practice_investigations"],
       { highlightChanges: options.highlightChanges }
     );
-    if (review_item["focuses_waittime"])
+    if (review_item["clinic_areas_of_practice_waittime"])
     {
       overlayFormData(
-        ["focuses_waittime"],
-        review_item["focuses_waittime"],
+        ["clinic_areas_of_practice_waittime"],
+        review_item["clinic_areas_of_practice_waittime"],
         { highlightChanges: options.highlightChanges }
       );
     }
-    if (review_item["focuses_lagtime"])
+    if (review_item["clinic_areas_of_practice_lagtime"])
     {
       overlayFormData(
-        ["focuses_lagtime"],
-        review_item["focuses_lagtime"],
+        ["clinic_areas_of_practice_lagtime"],
+        review_item["clinic_areas_of_practice_lagtime"],
         { highlightChanges: options.highlightChanges }
       );
     }
@@ -302,7 +302,7 @@
       { highlightChanges: false }
     );
     if (formData.recordKey === "clinic"){
-      overlayFocusesFormData(
+      overlayClinicAreasOfPracticeFormData(
         formData.baseReviewItem,
         { highlightChanges: false }
       );
@@ -321,7 +321,7 @@
       { highlightChanges: true }
     );
     if (formData.recordKey === "clinic") {
-      overlayFocusesFormData(
+      overlayClinicAreasOfPracticeFormData(
         formData.reviewItem,
         { highlightChanges: true }
       );
