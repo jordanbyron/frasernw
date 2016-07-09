@@ -56,7 +56,7 @@
                 - if @clinic.specialists.present?
                   %p.space.no_indent
                     %strong Specialists that work in this clinic:
-                    != @clinic.specialists.map{ |specialist| "<a href='#{specialist_path(specialist)}' class='ajax')\">#{specialist.name}</a>" }.to_sentence
+                    != specialists_who_work_in(@clinic)
 
               - else
 
@@ -235,11 +235,7 @@
               %ul
                 - @clinic.visible_attendances.each do |attendance|
                   - if attendance.is_specialist
-                    %li
-                      %a.ajax{"href" => specialist_path(attendance.specialist)}= attendance.specialist.name
-                      - if attendance.specialist.padded_billing_number.present?
-                        = "- MSP ##{attendance.specialist.padded_billing_number}"
-                      = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
+                    = physician_attending(attendance)
                   - else
                     %li
                       = attendance.freeform_name
