@@ -59,12 +59,12 @@ namespace :pathways do
 
         end
 
-        hospital.privileges.each do |privilege|
-          next if privilege.specialist.blank?
-          puts "- migrating #{privilege.specialist.name} to "\
+        hospital.hospital_specialists.each do |hospital_specialist|
+          next if hospital_specialist.specialist.blank?
+          puts "- migrating #{hospital_specialist.specialist.name} to "\
             "#{other_hospital.short_address}"
-          privilege.hospital = other_hospital
-          privilege.save
+          hospital_specialist.hospital = other_hospital
+          hospital_specialist.save
         end
 
       else

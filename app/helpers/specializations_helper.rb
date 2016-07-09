@@ -63,7 +63,7 @@ module SpecializationsHelper
     s.clinics.each do |c|
       filtering_attributes << "sac#{c.id}_"
     end
-    s.privileges.each do |p|
+    s.hospital_specialists.each do |p|
       filtering_attributes << "sah#{p.hospital_id}_"
     end
     filtering_attributes

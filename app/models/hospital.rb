@@ -8,8 +8,8 @@ class Hospital < ActiveRecord::Base
 
   validates_presence_of :name, on: :create, message: "can't be blank"
 
-  has_many :privileges, dependent: :destroy
-  has_many :specialists, through: :privileges
+  has_many :hospital_specialists, dependent: :destroy
+  has_many :specialists, through: :hospital_specialists
 
   has_many :locations_in, foreign_key: :hospital_in_id, class_name: "Location"
 

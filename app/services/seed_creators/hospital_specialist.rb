@@ -1,5 +1,5 @@
 module SeedCreators
-  class Privilege < SeedCreator::HandledTable
+  class HospitalSpecialist < SeedCreator::HandledTable
     Handlers = {
       specialist_id: :pass_through,
       hospital_id: Proc.new{ model("Hospital").random_id },

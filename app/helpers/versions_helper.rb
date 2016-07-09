@@ -217,7 +217,7 @@ module VersionsHelper
               language_path(version.item.language)
             )
         end
-      when "Privilege"
+      when "HospitalSpecialist"
         if version.event == "create"
           link_to(
             version.item.specialist.name,

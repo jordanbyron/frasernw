@@ -97,8 +97,8 @@ class Specialist < ActiveRecord::Base
   has_many :clinics, through: :clinic_locations
 
   # specialists have "priviliges" at hospitals
-  has_many :privileges, dependent: :destroy
-  has_many :hospitals, through: :privileges
+  has_many :hospital_specialists, dependent: :destroy
+  has_many :hospitals, through: :hospital_specialists
 
   # specialists "speak" many languages
   has_many :specialist_speaks, dependent: :destroy
@@ -321,10 +321,10 @@ class Specialist < ActiveRecord::Base
     # hoc_* location searches exclude specialists with CATEGORIZATION_1:
     # "Responded to survey"
     hoc_hospital = joins(
-      'INNER JOIN "privileges" '\
-        'ON "specialists"."id" = "privileges"."specialist_id" '\
+      'INNER JOIN "hospital_specialists" '\
+        'ON "specialists"."id" = "hospital_specialists"."specialist_id" '\
         'INNER JOIN "hospitals" '\
-        'ON "privileges".hospital_id = "hospitals".id '\
+        'ON "hospital_specialists".hospital_id = "hospitals".id '\
         'INNER JOIN "locations" AS "hospital_in_location" '\
         'ON "hospitals".id = "hospital_in_location".locatable_id '\
         'INNER JOIN "addresses" AS "hospital_address" '\
@@ -507,10 +507,10 @@ class Specialist < ActiveRecord::Base
     )
 
     hoc_hospital = joins(
-      'INNER JOIN "privileges" '\
-        'ON "specialists"."id" = "privileges"."specialist_id" '\
+      'INNER JOIN "hospital_specialists" '\
+        'ON "specialists"."id" = "hospital_specialists"."specialist_id" '\
         'INNER JOIN "hospitals" '\
-        'ON "privileges".hospital_id = "hospitals".id '\
+        'ON "hospital_specialists".hospital_id = "hospitals".id '\
         'INNER JOIN "locations" AS "hospital_in_location" '\
         'ON "hospitals".id = "hospital_in_location".locatable_id '\
         'INNER JOIN "addresses" AS "hospital_address" '\
