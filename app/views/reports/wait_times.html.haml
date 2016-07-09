@@ -14,10 +14,10 @@
 
       - if @divisions.length == 1
         - entities = s.send(@entity).in_divisions(@divisions).reject do |e|
-          - !e.show_in_table? || !e.show_wait_time_in_table?
+          - !e.show_in_table? || !e.show_waittime?
       - else
         - entities = s.send(@entity).reject do |e|
-          - !e.show_in_table? || !e.show_wait_time_in_table?
+          - !e.show_in_table? || !e.show_waittime?
       - next if entities.blank?
 
       %tr
