@@ -88,7 +88,7 @@
 
                   %li.dropdown.admin
                     %a.dropdown-toggle{ href: "#",
-                      "data-toggle" => "dropdown"}
+                      "data-toggle" => "dropdown" }
                       Admin
                       - review = ReviewItem.active.reject{ |ri| !(ri.item.present? && (ri.item.divisions & user_divisions).present?) }
                       - feedback = FeedbackItem.active.reject{ |fi| !(fi.item.present? && (fi.item.divisions & user_divisions).present?) }
@@ -281,9 +281,10 @@
                                 class: 'division'
                       %li.divider
                       %li.nav-header Content Management
-                      %li= link_to "New...",
-                        "#",
-                        class: "create arrow-right-after"
+                      %li
+                        = link_to "New...",
+                          "#",
+                          class: "create arrow-right-after"
                         %ul.dropdown-menu
                           - if can? :create, ScCategory
                             %li= link_to "New Content Category",
@@ -308,34 +309,38 @@
                         %li= link_to "Videos", videos_path
                       - if can? :read, ScItem
                         - if current_user.as_super_admin? && @divisions.length > 1
-                          %li= link_to "Owned Content Items For...",
-                            "#",
-                            class: "create arrow-right-after"
+                          %li
+                            = link_to "Owned Content Items For...",
+                              "#",
+                              class: "create arrow-right-after"
                             %ul.dropdown-menu
                               - @divisions.each do |division|
                                 %li= link_to "#{division.name}",
                                   division_content_items_path(division),
                                   class: "sc_item"
-                          %li= link_to "Shared Content Items For...",
-                            "#",
-                            class: "create arrow-right-after"
+                          %li
+                            = link_to "Shared Content Items For...",
+                              "#",
+                              class: "create arrow-right-after"
                             %ul.dropdown-menu
                               - @divisions.each do |division|
                                 %li= link_to "#{division.name}",
                                   shared_content_items_path(division),
                                   class: "sc_item"
                         - elsif user_divisions.length > 1
-                          %li= link_to "Owned Content Items For...",
-                            "#",
-                            class: "create arrow-right-after"
+                          %li
+                            = link_to "Owned Content Items For...",
+                              "#",
+                              class: "create arrow-right-after"
                             %ul.dropdown-menu
                               - user_divisions.each do |division|
                                 %li= link_to "#{division.name}",
                                   division_content_items_path(division),
                                   class: "sc_item"
-                          %li= link_to "Shared Content Items For...",
-                            "#",
-                            class: "create arrow-right-after"
+                          %li
+                            = link_to "Shared Content Items For...",
+                              "#",
+                              class: "create arrow-right-after"
                             %ul.dropdown-menu
                               - user_divisions.each do |division|
                                 %li= link_to "#{division.name}",
