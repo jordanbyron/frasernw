@@ -13,7 +13,7 @@ class ClinicLocation < ActiveRecord::Base
     :wheelchair_accessible_mask,
     :schedule_attributes,
     :location_attributes,
-    :attendances_attributes,
+    :clinic_specialists_attributes,
     :location_opened,
     :location_is
 
@@ -24,8 +24,8 @@ class ClinicLocation < ActiveRecord::Base
   has_one :schedule, as: :schedulable, dependent: :destroy
   accepts_nested_attributes_for :schedule
 
-  has_many :attendances, dependent: :destroy
-  accepts_nested_attributes_for :attendances, allow_destroy: true
+  has_many :clinic_specialists, dependent: :destroy
+  accepts_nested_attributes_for :clinic_specialists, allow_destroy: true
 
   include PaperTrailable
 

@@ -17,7 +17,7 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.
       includes_location_data.
       includes(:specialists).
-      includes(attendances: :specialist).
+      includes(clinic_specialists: :specialist).
       includes(:review_item).
       find(params[:id])
 
@@ -46,7 +46,7 @@ class ClinicsController < ApplicationController
       l = cl.build_location
       l.build_address
     end
-    @clinic.attendances.build
+    @clinic.clinic_specialists.build
     @clinic_specialists = @specialization.specialists.collect do |s|
       [s.name, s.id]
     end

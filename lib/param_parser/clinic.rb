@@ -17,13 +17,13 @@ module ParamParser
       remove_address_comments!
       remove_statuses!
       cloned_params.delete("secret_token_id")
-      parse_attendances!
+      parse_clinic_specialists!
 
       cloned_params
     end
 
-    def parse_attendances!
-      attendances_attributes.each do |attrs|
+    def parse_clinic_specialists!
+      clinic_specialists_attributes.each do |attrs|
         attrs.each do |k, v|
           if v["is_specialist"] == "0"
             v["specialist_id"] = nil
@@ -31,7 +31,7 @@ module ParamParser
         end
       end
 
-      attendances_attributes.each do |attrs|
+      clinic_specialists_attributes.each do |attrs|
         existing_specialists = []
 
         attrs.each do |k, v|
@@ -48,9 +48,9 @@ module ParamParser
       end
     end
 
-    def attendances_attributes
+    def clinic_specialists_attributes
       clinic_locations_attributes.map do |attrs|
-        attrs["attendances_attributes"]
+        attrs["clinic_specialists_attributes"]
       end.select(&:present?)
     end
 

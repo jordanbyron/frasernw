@@ -1,4 +1,4 @@
-class Attendance < ActiveRecord::Base
+class ClinicSpecialist < ActiveRecord::Base
   belongs_to :specialist
   belongs_to :clinic_location
 
@@ -6,7 +6,6 @@ class Attendance < ActiveRecord::Base
 
   def freeform_name
     freeform_firstname or ""
-    #(freeform_firstname or "") + " " + (freeform_lastname or "")
   end
 
   def has_clinic_location?

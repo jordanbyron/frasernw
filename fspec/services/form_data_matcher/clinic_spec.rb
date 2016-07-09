@@ -137,7 +137,7 @@ RSpec.describe FormDataMatcher::Clinic do
         "schedule_attributes"=>"",
         "id"=>"4690"},
       "9"=>
-       {"attendances_attributes"=>
+       {"clinic_specialists_attributes"=>
          {"1427317181821"=>
            {"is_specialist"=>"0", "specialist_id"=>"", "freeform_firstname"=>"asdgasgdsagasdg", "area_of_focus"=>"asdgasgasgd", "_destroy"=>"false"}},
         "id"=>"4690"}},

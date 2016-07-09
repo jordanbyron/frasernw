@@ -61,7 +61,7 @@ class Clinic < ActiveRecord::Base
     :specialization_ids,
     :deprecated_schedule_attributes,
     :language_ids,
-    :attendances_attributes,
+    :clinic_specialists_attributes,
     :focuses_attributes,
     :healthcare_provider_ids,
     :admin_notes,
@@ -91,8 +91,8 @@ class Clinic < ActiveRecord::Base
     reject_if: lambda { |a| a[:procedure_specialization_id].blank? },
     allow_destroy: true
 
-  has_many :attendances, through: :clinic_locations
-  has_many :specialists, through: :attendances
+  has_many :clinic_specialists, through: :clinic_locations
+  has_many :specialists, through: :clinic_specialists
 
   has_many :clinic_healthcare_providers, dependent: :destroy
   has_many :healthcare_providers, through: :clinic_healthcare_providers
@@ -316,11 +316,11 @@ class Clinic < ActiveRecord::Base
     return cities.map{ |city| city.divisions }.flatten.uniq
   end
 
-  def attendances?
-    attendances.each do |attendance|
-      if attendance.is_specialist && attendance.specialist
+  def clinic_specialists?
+    clinic_specialists.each do |clinic_specialist|
+      if clinic_specialist.is_specialist && clinic_specialist.specialist
         return true
-      elsif !attendance.is_specialist && !attendance.freeform_name.blank?
+      elsif !clinic_specialist.is_specialist && !clinic_specialist.freeform_name.blank?
         return true
       end
     end
@@ -589,9 +589,9 @@ class Clinic < ActiveRecord::Base
     name
   end
 
-  def visible_attendances
-    @visible_attendances ||= attendances.select do |attendance|
-      attendance.show?
+  def visible_clinic_specialists
+    @visible_clinic_specialists ||= clinic_specialists.select do |clinic_specialist|
+      clinic_specialist.show?
     end
   end
 

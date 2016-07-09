@@ -92,8 +92,8 @@ class Specialist < ActiveRecord::Base
     allow_destroy: true
 
   # specialists attend clinics
-  has_many :attendances, dependent: :destroy
-  has_many :clinic_locations, through: :attendances
+  has_many :clinic_specialists, dependent: :destroy
+  has_many :clinic_locations, through: :clinic_specialists
   has_many :clinics, through: :clinic_locations
 
   # specialists have "priviliges" at hospitals
@@ -339,10 +339,10 @@ class Specialist < ActiveRecord::Base
     )
 
     hoc_clinic = joins(
-      'INNER JOIN "attendances" '\
-        'ON "specialists"."id" = "attendances"."specialist_id" '\
+      'INNER JOIN "clinic_specialists" '\
+        'ON "specialists"."id" = "clinic_specialists"."specialist_id" '\
         'INNER JOIN "clinic_locations" AS "clinic_in_clinic_location" '\
-        'ON "clinic_in_clinic_location".id = "attendances".clinic_location_id '\
+        'ON "clinic_in_clinic_location".id = "clinic_specialists".clinic_location_id '\
         'INNER JOIN "locations" AS "clinic_in_location" '\
         'ON "clinic_in_location".locatable_id = "clinic_in_clinic_location".id '\
         'INNER JOIN "addresses" AS "clinic_address" '\
@@ -358,10 +358,10 @@ class Specialist < ActiveRecord::Base
     )
 
     hoc_clinic_in_hospital = joins(
-      'INNER JOIN "attendances" '\
-        'ON "specialists"."id" = "attendances"."specialist_id" '\
+      'INNER JOIN "clinic_specialists" '\
+        'ON "specialists"."id" = "clinic_specialists"."specialist_id" '\
         'INNER JOIN "clinic_locations" AS "clinic_in_clinic_location" '\
-        'ON "attendances".clinic_location_id = "clinic_in_clinic_location".id '\
+        'ON "clinic_specialists".clinic_location_id = "clinic_in_clinic_location".id '\
         'INNER JOIN "locations" AS "clinic_location" '\
         'ON "clinic_location".locatable_id = "clinic_in_clinic_location".id '\
         'INNER JOIN "hospitals" '\
@@ -528,10 +528,10 @@ class Specialist < ActiveRecord::Base
     )
 
     hoc_clinic = joins(
-      'INNER JOIN "attendances" '\
-        'ON "specialists"."id" = "attendances"."specialist_id" '\
+      'INNER JOIN "clinic_specialists" '\
+        'ON "specialists"."id" = "clinic_specialists"."specialist_id" '\
         'INNER JOIN "clinic_locations" AS "clinic_in_clinic_location" '\
-        'ON "clinic_in_clinic_location".id = "attendances".clinic_location_id '\
+        'ON "clinic_in_clinic_location".id = "clinic_specialists".clinic_location_id '\
         'INNER JOIN "locations" AS "clinic_in_location" '\
         'ON "clinic_in_location".locatable_id = "clinic_in_clinic_location".id '\
         'INNER JOIN "addresses" AS "clinic_address" '\
@@ -550,10 +550,10 @@ class Specialist < ActiveRecord::Base
     )
 
     hoc_clinic_in_hospital = joins(
-      'INNER JOIN "attendances" '\
-        'ON "specialists"."id" = "attendances"."specialist_id" '\
+      'INNER JOIN "clinic_specialists" '\
+        'ON "specialists"."id" = "clinic_specialists"."specialist_id" '\
         'INNER JOIN "clinic_locations" AS "clinic_in_clinic_location" '\
-        'ON "attendances".clinic_location_id = "clinic_in_clinic_location".id '\
+        'ON "clinic_specialists".clinic_location_id = "clinic_in_clinic_location".id '\
         'INNER JOIN "locations" AS "clinic_location" '\
         'ON "clinic_location".locatable_id = "clinic_in_clinic_location".id '\
         'INNER JOIN "hospitals" '\

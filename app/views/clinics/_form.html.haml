@@ -446,7 +446,7 @@
             .span5
               Area of focus (if not the same for all physicians working in the
               clinic).
-          = clf.simple_fields_for :attendances do |i|
+          = clf.simple_fields_for :clinic_specialists do |i|
             .row.spaced
               .span1.no-print
                 = i.input :is_specialist,
@@ -478,7 +478,7 @@
 
           .row.no-print
             = clf.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another physician",
-              :attendances,
+              :clinic_specialists,
               class: "btn offset3")
 
       %script{ type: "text/javascript" }

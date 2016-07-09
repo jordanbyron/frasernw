@@ -166,12 +166,12 @@ namespace :pathways do
           end
 
           #move any 'associated' specialists in this location to the duplicate
-          clinic_location.attendances.each do |attendance|
-            next if attendance.specialist.blank?
-            puts "- moving specialist #{attendance.specialist.name} to "\
+          clinic_location.clinic_specialists.each do |clinic_specialist|
+            next if clinic_specialist.specialist.blank?
+            puts "- moving specialist #{clinic_specialist.specialist.name} to "\
               "#{other_vancouver_clinic_location.location.short_address}"
-            attendance.clinic_location = other_vancouver_clinic_location
-            attendance.save
+            clinic_specialist.clinic_location = other_vancouver_clinic_location
+            clinic_specialist.save
           end
         end
 

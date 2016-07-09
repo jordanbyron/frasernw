@@ -118,9 +118,9 @@ module GenerateSpreadsheet
           user.controlled_clinics.any?
         end.reject do |user|
           user.controlled_clinics.any? do |clinic|
-            (clinic.attendances.any? do |attendance|
-              attendance.specialist_id.present? ||
-                attendance.freeform_firstname.present?
+            (clinic.clinic_specialists.any? do |clinic_specialist|
+              clinic_specialist.specialist_id.present? ||
+                clinic_specialist.freeform_firstname.present?
             end || clinic.specialists_with_offices_in.any?)
           end || user.controlled_specialists.any?
         end

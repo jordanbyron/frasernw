@@ -1,5 +1,5 @@
 module SeedCreators
-  class Attendance < SeedCreator::HandledTable
+  class ClinicSpecialist < SeedCreator::HandledTable
     Handlers = {
       specialist_id: :pass_through,
       clinic_location_id: :pass_through,

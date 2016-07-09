@@ -154,7 +154,7 @@ module VersionsHelper
               procedure_path(version.reify.procedure_specialization.procedure)
             )
         end
-      when "Attendance"
+      when "ClinicSpecialist"
         if version.event == "create"
           link_to(
             version.item.specialist.name,

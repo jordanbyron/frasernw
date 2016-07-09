@@ -9,22 +9,22 @@ module ClinicsHelper
     end.to_sentence
   end
 
-  def physician_attending(attendance)
+  def physician_attending(clinic_specialist)
     content_tag :li do
-      if attendance.specialist.hidden?
-        attendance.specialist.name
+      if clinic_specialist.specialist.hidden?
+        clinic_specialist.specialist.name
       else
         content = link_to(
-          attendance.specialist.name,
-          specialist_path(attendance.specialist)
+          clinic_specialist.specialist.name,
+          specialist_path(clinic_specialist.specialist)
         )
 
-        if attendance.specialist.padded_billing_number.present?
-          content += " - MSP ##{attendance.specialist.padded_billing_number}"
+        if clinic_specialist.specialist.padded_billing_number.present?
+          content += " - MSP ##{clinic_specialist.specialist.padded_billing_number}"
         end
 
-        if attendance.area_of_focus.present?
-          content += " - #{attendance.area_of_focus}"
+        if clinic_specialist.area_of_focus.present?
+          content += " - #{clinic_specialist.area_of_focus}"
         end
 
         content

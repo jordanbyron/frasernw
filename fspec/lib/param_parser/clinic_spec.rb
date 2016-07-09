@@ -1347,7 +1347,7 @@ RSpec.describe ParamParser::Clinic do
            "id"=>"11920"},
          "id"=>"4120"},
        "12"=>
-        {"attendances_attributes"=>
+        {"clinic_specialists_attributes"=>
           {"0"=>{"is_specialist"=>"1", "specialist_id"=>"629", "freeform_firstname"=>"", "area_of_focus"=>"", "_destroy"=>"false", "id"=>"260"},
            "1"=>{"is_specialist"=>"0", "specialist_id"=>"", "freeform_firstname"=>"asdgasgdsagdasgd", "area_of_focus"=>"", "_destroy"=>"false", "id"=>"158"},
            "2"=>{"is_specialist"=>"0", "specialist_id"=>"", "freeform_firstname"=>"asdgdasgsgasgd", "area_of_focus"=>"", "_destroy"=>"false", "id"=>"888"},
