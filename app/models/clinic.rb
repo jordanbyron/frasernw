@@ -288,7 +288,7 @@ class Clinic < ActiveRecord::Base
     (responded? && !unavailable_for_a_while?) || not_responded?
   end
 
-  def show_waittime?
+  def show_waittimes?
     !closed? && responded? && accepting_new_patients?
   end
 
