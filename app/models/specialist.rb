@@ -741,7 +741,7 @@ class Specialist < ActiveRecord::Base
     (responded? && !unavailable_for_a_while?)
   end
 
-  def show_waittime?
+  def show_waittimes?
     responded? &&
       (
         accepting_new_patients? ||

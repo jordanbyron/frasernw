@@ -157,7 +157,7 @@
                   %strong Required information / investigations
                   for all referrals:
                   = @clinic.required_investigations.end_with_period.convert_newlines_to_br
-              - if @clinic.show_waittime?
+              - if @clinic.show_waittimes?
                 -if @clinic.waittime.present?
                   %p.space
                     Average non-urgent patient wait time from referral to appointment:

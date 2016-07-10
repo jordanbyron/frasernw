@@ -271,7 +271,7 @@
                   for all referrals:
                   = @specialist.required_investigations.end_with_period.convert_newlines_to_br
 
-              - if @specialist.show_waittime?
+              - if @specialist.show_waittimes?
                 -if @specialist.waittime.present?
                   %p.space
                     Average non-urgent patient wait time from referral to appointment:
