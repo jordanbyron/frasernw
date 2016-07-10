@@ -11,9 +11,9 @@
     - Specialization.all.each do |s|
 
       - if (@divisional)
-        - entities = s.send(@entity).in_divisions(@divisions).reject{ |e| !e.show_in_table? || !e.show_wait_time_in_table? }
+        - entities = s.send(@entity).in_divisions(@divisions).reject{ |e| !e.show_in_table? || !e.show_waittimes? }
       - else
-        - entities = s.send(@entity).reject{ |e| !e.show_in_table? || !e.show_wait_time_in_table? }
+        - entities = s.send(@entity).reject{ |e| !e.show_in_table? || !e.show_waittimes? }
 
       - next if entities.blank?
 

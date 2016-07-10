@@ -121,7 +121,7 @@ module Denormalized
       end
 
       def self.masked_waittime(specialist)
-        if specialist.show_wait_time_in_table?
+        if specialist.show_waittimes?
           specialist.waittime
         else
           nil
@@ -183,7 +183,7 @@ module Denormalized
       end
 
       def self.masked_waittime(clinic)
-        if clinic.show_wait_time_in_table?
+        if clinic.show_waittimes?
           clinic.waittime
         else
           nil
