@@ -10,18 +10,31 @@
     to.
 
   %p.space.no_indent
-    Please note that the patient's email address is not stored by Pathways, nor will it be used again for any other purpose. The email will be sent to the patient from a
+    Please note that the patient's email address is not stored by Pathways, nor
+    will it be used again for any other purpose. The email will be sent to the
+    patient from a
     %strong noreply@pathwaysbc.ca
-    email address, and will not expose your email address to the patient. Also note that anyone else who has access to this patient's email will be able visit this link and see the content it contains.
+    email address, and will not expose your email address to the patient. Also
+    note that anyone else who has access to this patient's email will be able
+    visit this link and see the content it contains.
 
-  %form.form-horizontal{"accept-charset" => "UTF-8", "action" => "/mail_to_patients/create", "method" => "post", "novalidate" => "novalidate"}
+  %form.form-horizontal{ "accept-charset" => "UTF-8",
+    action: "/mail_to_patients/create",
+    method: "post",
+    novalidate: "novalidate" }
     = hidden_field_tag :authenticity_token, form_authenticity_token
+    = hidden_field_tag :print_request_origin, request.referer
     .control-group
-      %labl.control-label{"for" => "patient_email"} Patient's Email Address
+      %labl.control-label{ for: "patient_email" } Patient's Email Address
       .controls
-        %input#patient_email{:type => "email", :name => "patient_email", "autocorrect" => "off", "autocapitalize" => "none"}
-    %input{:type => "hidden", :name => "sc_item_id", :value => @sc_item.id}
+        %input#patient_email{ type: "email",
+          name: "patient_email",
+          autocorrect: "off",
+          autocapitalize: "none" }
+    %input{ type: "hidden", name: "sc_item_id", value: @sc_item.id }
 
     .form-actions
-      %input{:type => "submit", "name" => "E-mail to patient", :class => "btn btn-primary"}
-      %a.btn.btn-danger.ajax{"href" => sc_item_path(@sc_item) } Cancel
+      %input{ type: "submit",
+        name: "E-mail to patient",
+        class: "btn btn-primary" }
+      %a.btn.btn-danger{ href: request.referer } Cancel

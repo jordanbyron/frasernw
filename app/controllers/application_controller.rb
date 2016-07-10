@@ -13,7 +13,8 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActionController::InvalidAuthenticityToken do |exception|
     redirect_to new_user_session_path,
-      alert: "To protect your account's security, Pathways requires you to re-attempt login."
+      alert: "To protect your account's security, Pathways requires you to "\
+        "re-attempt login."
   end
 
   def set_heartbeat_loader
@@ -22,5 +23,17 @@ class ApplicationController < ActionController::Base
 
   def load_application_layout_data
     @divisions = Division.all_cached
+  end
+
+  def origin_path(request_origin)
+    if request_origin.present?
+      if request_origin.start_with?("http://", "https://")
+        request_origin
+      else
+        Base64.decode64(request_origin.to_s)
+      end
+    else
+      root_path
+    end
   end
 end

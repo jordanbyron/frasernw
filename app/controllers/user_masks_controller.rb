@@ -19,22 +19,22 @@ class UserMasksController < ApplicationController
 
     params_to_validate = {
       role: params[:user_mask][:role],
-      division_ids: params[:user_mask][:division_ids].select(&:present?).map(&:to_i)
+      division_ids: params[:user_mask][:division_ids].
+                      select(&:present?).
+                      map(&:to_i)
     }
 
-    redirection_path =
-      if params[:mask_request_origin].present?
-        Base64.decode64(params[:mask_request_origin].to_s)
-      else
-        root_path
-      end
-
-    if ValidateUserMask.call(existing_mask: @user_mask, new_params: params_to_validate)
+    if ValidateUserMask.call(
+      existing_mask: @user_mask,
+      new_params: params_to_validate
+    )
       @user_mask.update_attributes(params_to_validate)
 
-      redirect_to redirection_path,
-        notice: "Now viewing Pathways as #{current_user.as_role_label.indefinitize} in "\
-          "the following divisions: #{current_user.as_divisions.to_sentence}."
+      redirect_to origin_path(params[:mask_request_origin]),
+        notice: "Now viewing Pathways as "\
+          "#{current_user.as_role_label.indefinitize}"\
+          " in the following divisions: "\
+          "#{current_user.as_divisions.to_sentence}."
     else
       flash[:notice] = "Invalid divisions or role."
 
@@ -52,12 +52,17 @@ class UserMasksController < ApplicationController
     user_mask = current_user.mask
     params_to_validate = params.slice(:role, :division_ids)
 
-    if ValidateUserMask.call(existing_mask: user_mask, params: params_to_validate)
+    if ValidateUserMask.call(
+      existing_mask: user_mask,
+      params: params_to_validate
+    )
       user_mask.update_attributes(params_to_validate)
 
-      redirect_to request.referrer,
-        notice: "Now viewing Pathways as #{current_user.as_role_label.indefinitize} in "\
-          "the following divisions: #{current_user.as_divisions.to_sentence}."
+      redirect_to origin_path(params[:mask_request_origin]),
+        notice: "Now viewing Pathways as "\
+          "#{current_user.as_role_label.indefinitize}"\
+          " in the following divisions: "\
+          "#{current_user.as_divisions.to_sentence}."
     else
       redirect_to new_user_mask_path,
         notice: "Invalid division or role"
@@ -65,17 +70,12 @@ class UserMasksController < ApplicationController
   end
 
   def destroy
-    current_user.mask.try(:destroy)
-
-    redirection_path =
-      if params[:mask_request_origin].present?
-        Base64.decode64(params[:mask_request_origin].to_s)
-      else
-        root_path
-      end
-
-    redirect_to redirection_path,
-      notice: "Now viewing Pathways with your default role and divisions."
+    if current_user.mask.try(:destroy)
+      redirect_to origin_path(params[:mask_request_origin]),
+        notice: "Now viewing Pathways with your default role and divisions."
+    else
+      redirect_to origin_path(params[:mask_request_origin])
+    end
   end
 
   private
