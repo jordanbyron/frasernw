@@ -193,9 +193,8 @@ Frasernw::Application.routes.draw do
     end
   end
 
-  resources :terms_and_conditions, only: [:index]
-
-  get '/stats' => 'stats#index', as: :stats
+  get :terms_and_conditions, controller: 'static_pages'
+  get :info, to: 'static_pages#pathways_info', as: :pathways_info
 
   get 'contact' => "messages#new"
   resources :messages, only: [:create]
