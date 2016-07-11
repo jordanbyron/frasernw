@@ -1,60 +1,68 @@
+- mask_request_origin = Base64.encode64("#{request.protocol}#{request.host_with_port}#{request.fullpath}")
+
 .alert.alert-banner.mask_warning
-  %i.icon-eye-open{style: "margin-right: 5px"}
-  %div{style: "display: inline-block;"}
-    %span= "You are currently viewing this site as #{current_user.as_role_label.indefinite_article} "
+  %i.icon-eye-open{ style: "margin-right: 5px" }
+  %div{ style: "display: inline-block;" }
+    %span
+      You are currently viewing this site as
+      = current_user.as_role_label.indefinite_article
     %span.btn-group.user_mask_warning__dropdown
-      .button--mask_warning{"data-toggle" => "dropdown", "href" => "#"}
+      .button--mask_warning{ "data-toggle" => "dropdown", href: "#" }
         %strong= current_user.as_role_label
         %b.caret.user_mask_warning__caret
       %ul.dropdown-menu.user_mask_warning__dropdown_menu
         - current_user.can_assign_roles.each do |role, label|
           %li
             = link_to label,
-              user_mask_path(current_user.mask, role: role),
+              user_mask_path(current_user.mask,
+              role: role,
+              mask_request_origin: mask_request_origin),
               method: :patch,
               style: "color: #C09853;",
               class: "user_mask_warning__item"
 
     - if current_user.as_divisions.one?
-      %span= "in the division of "
+      %span in the division of
       %span.btn-group.user_mask_warning__dropdown
-        .button--mask_warning{"data-toggle" => "dropdown", "href" => "#"}
+        .button--mask_warning{ "data-toggle" => "dropdown", href: "#" }
           %strong= current_user.as_divisions.first.name
           %b.caret.user_mask_warning__caret
         %ul.dropdown-menu.user_mask_warning__dropdown_menu
           - current_user.can_assign_divisions.each do |division|
             %li
               = link_to division.name,
-                user_mask_path(current_user.mask, division_ids: [ division.id ]),
+                user_mask_path(current_user.mask,
+                division_ids: [ division.id ],
+                mask_request_origin: mask_request_origin),
                 method: :patch,
                 style: "color: #C09853;",
                 class: "user_mask_warning__item"
     - else
-      %span=" in the divisions of "
+      %span in the divisions of
       %span.btn-group.user_mask_warning__dropdown
-        .button--mask_warning{"data-toggle" => "dropdown", "href" => "#"}
+        .button--mask_warning{ "data-toggle" => "dropdown", href: "#" }
           %strong= current_user.divisions_list
           %b.caret.user_mask_warning__caret
         %ul.dropdown-menu.user_mask_warning__dropdown_menu
           - current_user.can_assign_divisions.each do |division|
             %li
               = link_to division.name,
-                user_mask_path(current_user.mask, division_ids: [ division.id ]),
+                user_mask_path(current_user.mask,
+                division_ids: [ division.id ]),
                 method: :patch,
                 style: "color: #C09853;",
                 class: "user_mask_warning__item"
     %span= "."
 
-  - mask_request_origin = "#{request.protocol}#{request.host_with_port}#{request.fullpath}"
   = link_to "Configure View as..",
-    new_user_mask_path(mask_request_origin: Base64.encode64(mask_request_origin) ),
+    new_user_mask_path,
     style: "color: #C09853",
     class: "button--mask_warning"
 
   = link_to "Return to Default View",
-    user_masks_path(mask_request_origin: Base64.encode64(mask_request_origin) ),
+    user_masks_path(mask_request_origin: mask_request_origin),
     method: :delete,
     class: "button--mask_warning"
 
-  %a.close{"data-dismiss" => "alert", "href" => "#"}
+  %a.close{ "data-dismiss" => "alert", href: "#" }
     = "&times;".html_safe

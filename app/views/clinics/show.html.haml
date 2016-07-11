@@ -56,7 +56,7 @@
                 - if @clinic.specialists.present?
                   %p.space.no_indent
                     %strong Specialists that work in this clinic:
-                    != @clinic.specialists.map{ |specialist| "<a href='#{specialist_path(specialist)}' class='ajax')\">#{specialist.name}</a>" }.to_sentence
+                    != specialists_who_work_in(@clinic)
 
               - else
 
@@ -157,32 +157,32 @@
                   %strong Required information / investigations
                   for all referrals:
                   = @clinic.required_investigations.end_with_period.convert_newlines_to_br
-
-              -if @clinic.waittime.present?
-                %p.space
-                  Average non-urgent patient wait time from referral to appointment:
-                  %strong= @clinic.waittime
-
-              -if @clinic.lagtime.present?
-                %p
-                  Average length of time to notify GP of a booking date:
-                  %strong= @clinic.lagtime
-
-              - @clinic.focuses.clinic_wait_time.each do |focus|
-
-                - if focus.waittime.present? || focus.lagtime.present?
+              - if @clinic.show_waittimes?
+                -if @clinic.waittime.present?
                   %p.space
-                    %strong= "#{focus.procedure_specialization.procedure.full_name}:"
+                    Average non-urgent patient wait time from referral to appointment:
+                    %strong= @clinic.waittime
 
-                  -if focus.waittime.present?
-                    %p
-                      Average non-urgent patient wait time from referral to appointment:
-                      %strong= focus.waittime
+                -if @clinic.lagtime.present?
+                  %p
+                    Average length of time to notify GP of a booking date:
+                    %strong= @clinic.lagtime
 
-                  -if focus.lagtime.present?
-                    %p
-                      Average length of time to notify GP of a booking date:
-                      %strong= focus.lagtime
+                - @clinic.focuses.clinic_wait_time.each do |focus|
+
+                  - if focus.waittime.present? || focus.lagtime.present?
+                    %p.space
+                      %strong= "#{focus.procedure_specialization.procedure.full_name}:"
+
+                    -if focus.waittime.present?
+                      %p
+                        Average non-urgent patient wait time from referral to appointment:
+                        %strong= focus.waittime
+
+                    -if focus.lagtime.present?
+                      %p
+                        Average length of time to notify GP of a booking date:
+                        %strong= focus.lagtime
 
               - if @clinic.patient_can_book_mask == 1
                 %p.space This office accepts direct calls from patients after referral to book their own appointments.
@@ -235,11 +235,7 @@
               %ul
                 - @clinic.visible_attendances.each do |attendance|
                   - if attendance.is_specialist
-                    %li
-                      %a.ajax{"href" => specialist_path(attendance.specialist)}= attendance.specialist.name
-                      - if attendance.specialist.padded_billing_number.present?
-                        = "- MSP ##{attendance.specialist.padded_billing_number}"
-                      = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
+                    = physician_attending(attendance)
                   - else
                     %li
                       = attendance.freeform_name

@@ -10,7 +10,7 @@ class Ability
     else
       can [:index], :front
       can :show, FaqCategory
-      can :index, :terms_and_conditions
+      can :terms_and_conditions, :static_pages
       can :get, :global_data
       can :index, Newsletter
       can :index, Video
@@ -23,22 +23,20 @@ class Ability
         can :show, :analytics
 
       elsif user.as_admin?
-        can :view_report, :page_views
-        can :view_report, :sessions
-        can :view_report, :csv_usage
-        can :view_report, :referents_by_specialty
-        can :view_report, :entity_page_views
-        can :view_report, :user_ids
-        can :view_report, :specialist_contact_history
-        can :view_report, :specialist_wait_times
-        can :view_report, :clinic_wait_times
-        can :view_report, :entity_statistics
-        can :view_report, :archived_feedback_items
+        can :view_report, [
+          :page_views,
+          :sessions,
+          :csv_usage,
+          :referents_by_specialty,
+          :entity_page_views,
+          :user_ids,
+          :archived_feedback_items
+        ]
 
         can [:show, :toggle_subscription], Issue
         can [:index, :show], :change_requests
 
-        can :index, Report
+        can :index, :reports
 
         can :manage, SecretToken
 

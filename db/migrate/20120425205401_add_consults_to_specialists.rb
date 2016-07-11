@@ -155,27 +155,27 @@ class AddConsultsToSpecialists < ActiveRecord::Migration
 	  s = Specialization.find(s_id)
 
 	  say(
-		  "Adding #{ps_office.procedure.name} and #{ps_hospital.procedure.name} to "\
-      	"specialists in #{s.name}"
+		  "Adding #{ps_office.procedure.name} and #{ps_hospital.procedure.name}"\
+      	" to specialists in #{s.name}"
     )
 
-	  #make the office procedures focused in this specialization
+	  # make the office procedures focused in this specialization
 	  ps_office.classification = ProcedureSpecialization::CLASSIFICATION_FOCUSED
 	  ps_office.save
 
-	  #make the hospital procedures focused in this specialization
+	  # make the hospital procedures focused in this specialization
 	  ps_hospital.classification = ProcedureSpecialization::CLASSIFICATION_FOCUSED
 	  ps_hospital.save
 
 	  s.specialists.each do |sp|
-		#make specialists do office procedures if they have an office
+		# make specialists do office procedures if they have an office
       if sp.specialist_offices.reject{ |so| so.empty? }.length > 0
 		    Capacity.find_or_create_by(
           specialist_id: sp.id,
           procedure_specialization_id: ps_office.id
         )
       end
-		#make specialist do hospital procedures if they have hospital priviledges.
+		# make specialist do hospital procedures if they have hospital privileges.
     # Decided this was a bad assumption.
 		end
 	end

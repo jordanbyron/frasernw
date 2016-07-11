@@ -139,11 +139,13 @@ Frasernw::Application.routes.draw do
       get :referents_by_specialty
       get :entity_page_views
       get :user_ids
-      get :pageviews_by_user
+      get :page_views_by_user
       get :specialist_contact_history
       get :specialist_wait_times
       get :clinic_wait_times
       get :entity_statistics
+      get :change_requests
+      get :csv_usage
     end
   end
 
@@ -202,9 +204,8 @@ Frasernw::Application.routes.draw do
     end
   end
 
-  resources :terms_and_conditions, only: [:index]
-
-  get '/stats' => 'stats#index', as: :stats
+  get :terms_and_conditions, controller: 'static_pages'
+  get :info, to: 'static_pages#pathways_info', as: :pathways_info
 
   get 'contact' => "messages#new"
   resources :messages, only: [:create]
@@ -238,7 +239,7 @@ Frasernw::Application.routes.draw do
           get :sessions
           get :entity_page_views
           get :user_ids
-          get :pageviews_by_user
+          get :page_views_by_user
         end
       end
     end

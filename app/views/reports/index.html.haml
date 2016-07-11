@@ -58,73 +58,24 @@
 
   %table.table.table-condensed.table-striped
     %tr
-      %th Report Type
-      %th
+      %th{style: "width: 430px"}
+        = "Report Type"
+      %th= "Scope"
 
-    - if can? :index, :change_requests
-      %tr
-        %td= link_to "Change Requests", change_requests_path
-        %td
+    = report_row :change_requests
+    = report_row :page_views
+    = report_row :sessions
+    = report_row :user_ids
+    = report_row :page_views_by_user
+    = report_row :referents_by_specialty,
+      manual_label: "Specialists and Clinics by Specialty"
+    = report_row :csv_usage,
+      manual_label: "Usage (CSV Report)"
+    = report_row :entity_page_views
+    = report_row :specialist_contact_history, divisional: true
+    = report_row :specialist_wait_times, divisional: true
+    = report_row :clinic_wait_times, divisional: true
+    = report_row :entity_statistics, divisional: true
 
-    - if can? :view_report, :page_views
-      %tr
-        %td= link_to "Page Views", page_views_reports_path
-        %td
-
-    - if can? :view_report, :sessions
-      %tr
-        %td= link_to "Sessions", sessions_reports_path
-        %td
-
-    - if can? :view_report, :user_ids
-      %tr
-        %td= link_to "User IDs", user_ids_reports_path
-        %td
-
-    - if can? :view_report, :pageviews_by_user
-      %tr
-        %td= link_to "Page Views By User", pageviews_by_user_reports_path
-        %td
-
-    - if can? :view_report, :referents_by_specialty
-      %tr
-        %td= link_to "Specialists and Clinics by Specialty",
-          referents_by_specialty_reports_path
-        %td
-
-    - if can? :view_report, :csv_usage
-      %tr
-        %td= link_to "Usage (CSV Report)", new_csv_usage_report_path
-        %td
-
-    - if can? :view_report, :entity_page_views
-      %tr
-        %td= link_to "Entity Page Views", entity_page_views_reports_path
-        %td
-
-    - if current_user.as_super_admin?
-      %tr
-        %td
-          = link_to "Specialist Contact History",
-            specialist_contact_history_reports_path
-        %td= report_index_dropdown(:specialist_contact_history)
-      %tr
-        %td
-          = link_to "Specialist Wait Times",
-            specialist_wait_times_reports_path
-        %td= report_index_dropdown(:specialist_wait_times)
-      %tr
-        %td= link_to "Clinic Wait Times", clinic_wait_times_reports_path
-        %td= report_index_dropdown(:clinic_wait_times)
-      %tr
-        %td= link_to "Entity Statistics", entity_statistics_reports_path
-        %td= report_index_dropdown(:entity_statistics)
-
-    - if can? :view_report :archived_feedback_items
-      %tr
-        %td
-          = link_to "Archived Feedback Items",
-            archived_feedback_items_reports_path
-        %td= report_index_dropdown(:archived_feedback_items)
-
-  %p.muted Click report types on left for system-wide reports
+:javascript
+  $("select").val("")

@@ -37,8 +37,16 @@ class ReportsController < ApplicationController
     render :analytics_chart
   end
 
-  def pageviews_by_user
-    authorize! :view_report, :pageviews_by_user
+  def page_views_by_user
+    authorize! :view_report, :page_views_by_user
+
+    @init_data = {
+      app: {
+        currentUser: FilterTableAppState::CurrentUser.call(
+          current_user: current_user
+        ),
+      }
+    }
   end
 
   def user_ids
@@ -152,6 +160,18 @@ class ReportsController < ApplicationController
         send(type).
         paginate(page: params[:page], per_page: 10)
     end
+  end
+
+  def change_requests
+    authorize! :view_report, :change_requests
+
+    redirect_to change_requests_path
+  end
+
+  def csv_usage
+    authorize! :view_report, :csv_usage
+
+    redirect_to new_csv_usage_report_path
   end
 
   private

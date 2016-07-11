@@ -223,7 +223,7 @@ module VersionsHelper
             version.item.specialist.name,
             specialist_path(version.item.specialist)
           ) +
-            " now has hospital priviledge at " +
+            " now has hospital privileges at " +
             link_to(
               version.item.hospital.name,
               hospital_path(version.item.hospital)
@@ -233,7 +233,7 @@ module VersionsHelper
             version.item.specialist.name,
             specialist_path(version.item.specialist)
           ) +
-            "'s hospital priviledges at " +
+            "'s hospital privileges at " +
             link_to(
               version.item.hospital.name,
               hospital_path(version.item.hospital)
@@ -244,7 +244,7 @@ module VersionsHelper
             version.reify.specialist.name,
             specialist_path(version.reify.specialist)
           ) +
-            " no longer has hospital priviledge at " +
+            " no longer has hospital privileges at " +
             link_to(
               version.reify.hospital.name,
               hospital_path(version.reify.hospital)
