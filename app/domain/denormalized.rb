@@ -129,9 +129,9 @@ module Denormalized
       end
 
       def self.custom_procedure_times(specialist, method)
-        specialist.capacities.inject({}) do |memo, capacity|
-          if capacity.send(method)
-            memo.merge(capacity.procedure.id => capacity.send(method))
+        specialist.specialist_areas_of_practice.inject({}) do |memo, specialist_area_of_practice|
+          if specialist_area_of_practice.send(method)
+            memo.merge(specialist_area_of_practice.procedure.id => specialist_area_of_practice.send(method))
           else
             memo
           end

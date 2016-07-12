@@ -107,7 +107,7 @@ form_data = {"utf8"=>"✓",
  "location_0"=>"Not used",
  "location_1"=>"In an office",
  "location_2"=>"Not used",
- "capacities_investigations"=>
+ "specialist_areas_of_practice_investigations"=>
   {"13793"=>"",
    "13853"=>"",
    "13823"=>"",
@@ -167,7 +167,7 @@ form_data = {"utf8"=>"✓",
    "6379"=>"",
    "147"=>"",
    "148"=>""},
- "capacities_mapped"=>
+ "specialist_areas_of_practice_mapped"=>
   {"135"=>"1",
    "8306"=>"1",
    "70"=>"1",

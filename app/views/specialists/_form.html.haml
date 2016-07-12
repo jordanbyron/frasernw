@@ -345,10 +345,10 @@
     %h4 Accepts Referrals For
 
     .content
-      - @specializations_capacities.each do |specialization_capacities|
+      - @specializations_specialist_areas_of_practice.each do |specialization_specialist_areas_of_practice|
         .row
           .span12
-            %h5= specialization_capacities[:specialization_name]
+            %h5= specialization_specialist_areas_of_practice[:specialization_name]
         .row
           .span4
             %strong Referrals accepted in the following areas of practice.
@@ -361,25 +361,25 @@
           .span2
             %strong Wait Time
 
-        - specialization_capacities[:capacities].each do |c|
+        - specialization_specialist_areas_of_practice[:specialist_areas_of_practice].each do |c|
           .row.spaced
             .span4.changed_wrapper{ class: "pad#{c[:offset]}" }
-              %label{ for: "capacities_mapped_#{c[:id]}" }
-                = hidden_field_tag "capacities_mapped[#{c[:id]}]",
+              %label{ for: "specialist_areas_of_practice_mapped_#{c[:id]}" }
+                = hidden_field_tag "specialist_areas_of_practice_mapped[#{c[:id]}]",
                   0,
-                  id: "capacities_mapped_#{c[:id]}_hidden"
-                = check_box_tag "capacities_mapped[#{c[:id]}]",
+                  id: "specialist_areas_of_practice_mapped_#{c[:id]}_hidden"
+                = check_box_tag "specialist_areas_of_practice_mapped[#{c[:id]}]",
                   1,
                   c[:mapped],
-                  class: "capacity"
+                  class: "specialist_area_of_practice"
                 = c[:name]
             .span4.changed_wrapper
-              = text_field_tag "capacities_investigations[#{c[:id]}]",
+              = text_field_tag "specialist_areas_of_practice_investigations[#{c[:id]}]",
                 c[:investigations],
                 class: "span4"
             - if c[:custom_wait_time]
               .span2.changed_wrapper.lagtime
-                = select_tag "capacities_lagtime[#{c[:id]}]",
+                = select_tag "specialist_areas_of_practice_lagtime[#{c[:id]}]",
                   options_from_collection_for_select(Specialist::LAGTIME_LABELS,
                   :first,
                   :last,
@@ -387,7 +387,7 @@
                   class: "span2",
                   include_blank: true
               .span2.changed_wrapper.waittime
-                = select_tag "capacities_waittime[#{c[:id]}]",
+                = select_tag "specialist_areas_of_practice_waittime[#{c[:id]}]",
                   options_from_collection_for_select(Specialist::WAITTIME_LABELS,
                   :first,
                   :last,

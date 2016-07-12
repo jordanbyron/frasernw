@@ -93,7 +93,7 @@ class CreateSeeds < ServiceObject
   def mask_procedure_links
     [
       [ ClinicAreaOfPractice, "clinic_id", Clinic, :clinics],
-      [ Capacity, "specialist_id", Specialist, :specialists]
+      [ SpecialistAreaOfPractice, "specialist_id", Specialist, :specialists]
     ].each do |config|
       referrable_distribution = config[0].
         all.

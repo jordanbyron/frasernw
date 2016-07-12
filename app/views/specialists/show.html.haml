@@ -284,23 +284,23 @@
                     of a booking date:
                     %strong= @specialist.lagtime
 
-                - @specialist.capacities.specialist_wait_time.each do |capacity|
+                - @specialist.specialist_areas_of_practice.specialist_wait_time.each do |specialist_area_of_practice|
 
-                  - if capacity.waittime.present? || capacity.lagtime.present?
+                  - if specialist_area_of_practice.waittime.present? || specialist_area_of_practice.lagtime.present?
                     %p.space
-                      %strong= "#{capacity.procedure_specialization.procedure.full_name}:"
+                      %strong= "#{specialist_area_of_practice.procedure_specialization.procedure.full_name}:"
 
-                    -if capacity.waittime.present?
+                    -if specialist_area_of_practice.waittime.present?
                       %p
                         Average non-urgent patient wait time from referral to appointment:
-                        %strong= capacity.waittime
+                        %strong= specialist_area_of_practice.waittime
 
-                    -if capacity.lagtime.present?
+                    -if specialist_area_of_practice.lagtime.present?
                       %p
                         Average length of time to notify
                         = @specialist.responds_to
                         of a booking date:
-                        %strong= capacity.lagtime
+                        %strong= specialist_area_of_practice.lagtime
 
               - if @specialist.patient_can_book_mask == 1
                 %p.space This office accepts direct calls from patients after referral to book their own appointments.

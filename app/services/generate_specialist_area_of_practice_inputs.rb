@@ -1,4 +1,4 @@
-class GenerateSpecialistCapacityInputs
+class GenerateSpecialistAreaOfPracticeInputs
   attr_reader :specialist, :specializations
 
   def self.exec(specialist, specializations)
@@ -11,7 +11,7 @@ class GenerateSpecialistCapacityInputs
   end
 
   def exec
-    capacity_inputs = []
+    specialist_area_of_practice_inputs = []
 
     # so we don't duplicate procedures
     procedures_covered = []
@@ -22,17 +22,17 @@ class GenerateSpecialistCapacityInputs
       )
     end.each do |ps, children|
       if !procedures_covered.include?(ps.procedure.id)
-        capacity_inputs << generate_capacity(specialist, ps, 0)
+        specialist_area_of_practice_inputs << generate_specialist_area_of_practice(specialist, ps, 0)
         procedures_covered << ps.procedure.id
       end
       children.each do |child_ps, grandchildren|
         if !procedures_covered.include?(child_ps.procedure.id)
-          capacity_inputs << generate_capacity(specialist, child_ps, 1)
+          specialist_area_of_practice_inputs << generate_specialist_area_of_practice(specialist, child_ps, 1)
           procedures_covered << child_ps.procedure.id
         end
         grandchildren.each do |grandchild_ps, greatgrandchildren|
           if !procedures_covered.include?(grandchild_ps.procedure.id)
-            capacity_inputs << generate_capacity(specialist, grandchild_ps, 2)
+            specialist_area_of_practice_inputs << generate_specialist_area_of_practice(specialist, grandchild_ps, 2)
             procedures_covered << grandchild_ps.procedure.id
           end
         end
@@ -43,37 +43,37 @@ class GenerateSpecialistCapacityInputs
     specializations.map do |specialization|
       {
         specialization_name: specialization.name,
-        capacities: capacity_inputs.select{ |input|
+        specialist_areas_of_practice: specialist_area_of_practice_inputs.select{ |input|
           input[:specialization_id] == specialization.id
         }
       }
     end
   end
 
-  def specialist_capacities
-    @specialist_capacities ||= begin
+  def specialist_areas_of_practice
+    @specialist_areas_of_practice ||= begin
       if specialist.present?
-        specialist.capacities
+        specialist.specialist_areas_of_practice
       else
         []
       end
     end
   end
 
-  def generate_capacity(specialist, procedure_specialization, offset)
-    capacity = specialist_capacities.find do |capacity|
-      capacity.procedure_specialization_id == procedure_specialization.id
+  def generate_specialist_area_of_practice(specialist, procedure_specialization, offset)
+    specialist_area_of_practice = specialist_areas_of_practice.find do |specialist_area_of_practice|
+      specialist_area_of_practice.procedure_specialization_id == procedure_specialization.id
     end
 
     {
-      mapped: capacity.present?,
+      mapped: specialist_area_of_practice.present?,
       name: procedure_specialization.procedure.name,
       specialization_id: procedure_specialization.specialization_id,
       id: procedure_specialization.id,
-      investigations: capacity.present? ? capacity.investigation : "",
+      investigations: specialist_area_of_practice.present? ? specialist_area_of_practice.investigation : "",
       custom_wait_time: procedure_specialization.specialist_wait_time?,
-      waittime: capacity.present? ? capacity.waittime_mask : 0,
-      lagtime: capacity.present? ? capacity.lagtime_mask : 0,
+      waittime: specialist_area_of_practice.present? ? specialist_area_of_practice.waittime_mask : 0,
+      lagtime: specialist_area_of_practice.present? ? specialist_area_of_practice.lagtime_mask : 0,
       offset: offset
     }
   end

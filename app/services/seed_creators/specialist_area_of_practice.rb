@@ -1,5 +1,5 @@
 module SeedCreators
-  class Capacity < SeedCreator::HandledTable
+  class SpecialistAreaOfPractice < SeedCreator::HandledTable
     Handlers = {
       specialist_id: :pass_through,
       created_at: :pass_through,

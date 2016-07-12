@@ -40,7 +40,7 @@ class SpecialistsController < ApplicationController
     @specializations_clinics, @specializations_clinic_locations =
       GenerateClinicLocationInputs.exec([ @specialization ])
 
-    @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
+    @specializations_specialist_areas_of_practice = GenerateSpecialistAreaOfPracticeInputs.exec(
       nil,
       [ @specialization ]
     )
@@ -51,30 +51,30 @@ class SpecialistsController < ApplicationController
     @specialist = Specialist.new(parsed_params[:specialist])
     authorize! :create, @specialist
     if @specialist.save!
-      if params[:capacities_mapped].present?
+      if params[:specialist_areas_of_practice_mapped].present?
         specialist_specializations = @specialist.specializations
-        params[:capacities_mapped].each do |checkbox_key, value|
+        params[:specialist_areas_of_practice_mapped].each do |checkbox_key, value|
           next unless value == "1"
-          capacity = Capacity.find_or_create_by(
+          specialist_area_of_practice = SpecialistAreaOfPractice.find_or_create_by(
             specialist_id: @specialist.id,
             procedure_specialization_id: checkbox_key
           )
-          capacity.investigation = params[:capacities_investigations][checkbox_key]
-          if params[:capacities_waittime].present?
-            capacity.waittime_mask = params[:capacities_waittime][checkbox_key]
+          specialist_area_of_practice.investigation = params[:specialist_areas_of_practice_investigations][checkbox_key]
+          if params[:specialist_areas_of_practice_waittime].present?
+            specialist_area_of_practice.waittime_mask = params[:specialist_areas_of_practice_waittime][checkbox_key]
           end
-          if params[:capacities_lagtime].present?
-            capacity.lagtime_mask = params[:capacities_lagtime][checkbox_key]
+          if params[:specialist_areas_of_practice_lagtime].present?
+            specialist_area_of_practice.lagtime_mask = params[:specialist_areas_of_practice_lagtime][checkbox_key]
           end
-          capacity.save
+          specialist_area_of_practice.save
 
-          # save any other capacities that have the same procedure and are in a
+          # save any other specialist_areas_of_practice that have the same procedure and are in a
           # specialization our specialist is in
-          capacity.
+          specialist_area_of_practice.
             procedure_specialization.
             procedure.procedure_specializations.
             reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.
-            map{ |ps2| Capacity.find_or_create_by(
+            map{ |ps2| SpecialistAreaOfPractice.find_or_create_by(
               specialist_id: @specialist.id,
               procedure_specialization_id: ps2.id
             ) }.
@@ -94,8 +94,8 @@ class SpecialistsController < ApplicationController
     @form_modifier = SpecialistFormModifier.new(:edit, current_user)
     @specialist = Specialist.find(params[:id])
     BuildTeleservices.call(provider: @specialist)
-    if @specialist.capacities.count == 0
-      @specialist.capacities.build
+    if @specialist.specialist_areas_of_practice.count == 0
+      @specialist.specialist_areas_of_practice.build
     end
 
     build_specialist_offices
@@ -103,7 +103,7 @@ class SpecialistsController < ApplicationController
     @specializations_clinics, @specializations_clinic_locations =
       GenerateClinicLocationInputs.exec(@specialist.specializations)
 
-    @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
+    @specializations_specialist_areas_of_practice = GenerateSpecialistAreaOfPracticeInputs.exec(
       @specialist,
       @specialist.specializations
     )
@@ -115,7 +115,7 @@ class SpecialistsController < ApplicationController
 
     parsed_params = ParamParser::Specialist.new(params).exec
     if @specialist.update_attributes(parsed_params[:specialist])
-      UpdateSpecialistCapacities.exec(@specialist, parsed_params)
+      UpdateSpecialistAreasOfPractice.exec(@specialist, parsed_params)
 
       @specialist.save
       redirect_to @specialist, notice: "Successfully updated #{@specialist.name}."
@@ -148,7 +148,7 @@ class SpecialistsController < ApplicationController
 
       parsed_params = ParamParser::Specialist.new(params).exec
       if @specialist.update_attributes(parsed_params[:specialist])
-        UpdateSpecialistCapacities.exec(@specialist, parsed_params)
+        UpdateSpecialistAreasOfPractice.exec(@specialist, parsed_params)
         @specialist.
           reload.
           versions.
@@ -206,7 +206,7 @@ class SpecialistsController < ApplicationController
 
       @secret_token_id =
         @specialist.review_item.decoded_review_object["specialist"]["secret_token_id"]
-      @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
+      @specializations_specialist_areas_of_practice = GenerateSpecialistAreaOfPracticeInputs.exec(
         @specialist,
         @specialist.specializations
       )
@@ -235,7 +235,7 @@ class SpecialistsController < ApplicationController
         GenerateClinicLocationInputs.exec(@specialist.specializations)
       @secret_token_id =
         @review_item.decoded_review_object["specialist"]["secret_token_id"]
-      @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
+      @specializations_specialist_areas_of_practice = GenerateSpecialistAreaOfPracticeInputs.exec(
         @specialist,
         @specialist.specializations
       )

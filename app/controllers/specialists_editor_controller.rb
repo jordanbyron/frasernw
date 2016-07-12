@@ -10,8 +10,8 @@ class SpecialistsEditorController < ApplicationController
     @form_modifier = SpecialistFormModifier.new(:edit, current_user, token: true)
     @specialist = Specialist.find(params[:id])
     @review_item = @specialist.review_item
-    if @specialist.capacities.count == 0
-      @specialist.capacities.build
+    if @specialist.specialist_areas_of_practice.count == 0
+      @specialist.specialist_areas_of_practice.build
     end
 
     build_specialist_offices
@@ -21,7 +21,7 @@ class SpecialistsEditorController < ApplicationController
     @specializations_clinics, @specializations_clinic_locations =
       GenerateClinicLocationInputs.exec(@specialist.specializations, :visible?)
 
-    @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
+    @specializations_specialist_areas_of_practice = GenerateSpecialistAreaOfPracticeInputs.exec(
       @specialist,
       @specialist.specializations
     )

@@ -18,8 +18,8 @@ class Procedure < ActiveRecord::Base
     through: :procedure_specializations
   accepts_nested_attributes_for :all_procedure_specializations, allow_destroy: true
 
-  has_many :capacities, through: :procedure_specializations
-  has_many :specialists, through: :capacities
+  has_many :specialist_areas_of_practice, through: :procedure_specializations
+  has_many :specialists, through: :specialist_areas_of_practice
 
   has_many :clinic_areas_of_practice, through: :procedure_specializations
   has_many :clinics, through: :clinic_areas_of_practice
@@ -80,12 +80,12 @@ class Procedure < ActiveRecord::Base
             results += ps.specialization.specialists.in_cities_cached(cities)
           end
         else
-          Capacity.where(procedure_specialization_id: child.id).each do |capacity|
+          SpecialistAreaOfPractice.where(procedure_specialization_id: child.id).each do |specialist_area_of_practice|
             if (
-              capacity.specialist.present? &&
-              (capacity.specialist.cities & cities).present?
+              specialist_area_of_practice.specialist.present? &&
+              (specialist_area_of_practice.specialist.cities & cities).present?
             )
-              results << capacity.specialist
+              results << specialist_area_of_practice.specialist
             end
           end
         end
@@ -130,12 +130,12 @@ class Procedure < ActiveRecord::Base
       results += ps.specialization.specialists.in_cities_cached(cities)
     else
       ps.subtree.each do |child|
-        Capacity.where(procedure_specialization_id: child.id).each do |capacity|
+        SpecialistAreaOfPractice.where(procedure_specialization_id: child.id).each do |specialist_area_of_practice|
           if (
-            capacity.specialist.present? &&
-            (capacity.specialist.cities & cities).present?
+            specialist_area_of_practice.specialist.present? &&
+            (specialist_area_of_practice.specialist.cities & cities).present?
           )
-            results << capacity.specialist
+            results << specialist_area_of_practice.specialist
           end
         end
       end

@@ -67,7 +67,7 @@ class Specialist < ActiveRecord::Base
     :photo_delete,
     :hospital_ids,
     :specialization_ids,
-    :capacities_attributes,
+    :specialist_areas_of_practice_attributes,
     :language_ids,
     :specialist_offices_attributes,
     :admin_notes,
@@ -80,14 +80,14 @@ class Specialist < ActiveRecord::Base
   has_many :specializations, through: :specialist_specializations
 
   # specialists have the capacity to perform procedures
-  has_many :capacities, dependent: :destroy
+  has_many :specialist_areas_of_practice, dependent: :destroy
 
   # we want to be using this generic alias so we can duck type
   # procedure specializables
-  has_many :procedure_specialization_links, class_name: "Capacity"
-  has_many :procedure_specializations, through: :capacities
+  has_many :procedure_specialization_links, class_name: "SpecialistAreaOfPractice"
+  has_many :procedure_specializations, through: :specialist_areas_of_practice
   has_many :procedures, through: :procedure_specializations
-  accepts_nested_attributes_for :capacities,
+  accepts_nested_attributes_for :specialist_areas_of_practice,
     reject_if: lambda { |c| c[:procedure_specialization_id].blank? },
     allow_destroy: true
 
@@ -169,7 +169,7 @@ class Specialist < ActiveRecord::Base
       :procedures,
       :specializations,
       :languages,
-      { capacities: { procedure_specialization: :procedure } }
+      { specialist_areas_of_practice: { procedure_specialization: :procedure } }
     ]).with_cities
   end
 

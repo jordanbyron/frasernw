@@ -121,7 +121,7 @@ module VersionsHelper
         end
       when "SpecialistAddress"
         ""
-      when "Capacity"
+      when "SpecialistAreaOfPractice"
         if version.event == "create"
           link_to(
             version.item.specialist.name,

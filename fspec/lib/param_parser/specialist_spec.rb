@@ -602,8 +602,8 @@ RSpec.describe ParamParser::Clinic do
  "location_0"=>"In an office",
  "location_1"=>"Not used",
  "location_2"=>"Not used",
- "capacities_mapped"=>{"22796"=>"1", "2830"=>"1", "2854"=>"1", "5112"=>"1", "11599"=>"1", "28268"=>"1", "8886"=>"1"},
- "capacities_investigations"=>
+ "specialist_areas_of_practice_mapped"=>{"22796"=>"1", "2830"=>"1", "2854"=>"1", "5112"=>"1", "11599"=>"1", "28268"=>"1", "8886"=>"1"},
+ "specialist_areas_of_practice_investigations"=>
   {"22796"=>"", "2876"=>"", "3085"=>"", "2830"=>"", "2854"=>"", "3108"=>"", "5112"=>"8 years and over", "11639"=>"", "11599"=>"", "28268"=>"", "11479"=>"", "8886"=>""},
  "commit"=>"Update Specialist",
  "action"=>"accept",

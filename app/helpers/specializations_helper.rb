@@ -3,14 +3,14 @@ module SpecializationsHelper
     filtering_attributes = specialist_procedure_filtering_attributes(s)
     filtering_attributes << "swt_#{s.waittime_mask.present? ? s.waittime_mask : 0}"
     s.procedure_specializations.specialist_wait_time.each do |ps|
-      capacity =
-        Capacity.find_by(specialist_id: s.id,procedure_specialization_id: ps.id)
-      next if capacity.blank?
-      if capacity.waittime_mask.present?
-        filtering_attributes << "swt#{ps.procedure_id}_#{capacity.waittime_mask}"
+      specialist_area_of_practice =
+        SpecialistAreaOfPractice.find_by(specialist_id: s.id,procedure_specialization_id: ps.id)
+      next if specialist_area_of_practice.blank?
+      if specialist_area_of_practice.waittime_mask.present?
+        filtering_attributes << "swt#{ps.procedure_id}_#{specialist_area_of_practice.waittime_mask}"
       end
-      if capacity.lagtime_mask.present?
-        (capacity.lagtime_mask..Specialist::LAGTIME_LABELS.length+1).each do |i|
+      if specialist_area_of_practice.lagtime_mask.present?
+        (specialist_area_of_practice.lagtime_mask..Specialist::LAGTIME_LABELS.length+1).each do |i|
           filtering_attributes << "slt#{ps.procedure_id}_sc#{i}_"
         end
       end
@@ -97,14 +97,14 @@ module SpecializationsHelper
     end
     filtering_attributes << "owt_#{s.waittime_mask.present? ? s.waittime_mask : 0}"
     s.procedure_specializations.specialist_wait_time.each do |ps|
-      capacity =
-        Capacity.find_by(specialist_id: s.id,procedure_specialization_id: ps.id)
-      next if capacity.blank?
-      if capacity.waittime_mask.present?
-        filtering_attributes << "owt#{ps.procedure_id}_#{capacity.waittime_mask}"
+      specialist_area_of_practice =
+        SpecialistAreaOfPractice.find_by(specialist_id: s.id,procedure_specialization_id: ps.id)
+      next if specialist_area_of_practice.blank?
+      if specialist_area_of_practice.waittime_mask.present?
+        filtering_attributes << "owt#{ps.procedure_id}_#{specialist_area_of_practice.waittime_mask}"
       end
-      if capacity.lagtime_mask.present?
-        (capacity.lagtime_mask..Specialist::LAGTIME_LABELS.length+1).each do |i|
+      if specialist_area_of_practice.lagtime_mask.present?
+        (specialist_area_of_practice.lagtime_mask..Specialist::LAGTIME_LABELS.length+1).each do |i|
           filtering_attributes << "olt#{ps.procedure_id}_oc#{i}_"
         end
       end

@@ -1,4 +1,4 @@
-class Capacity < ActiveRecord::Base
+class SpecialistAreaOfPractice < ActiveRecord::Base
   belongs_to :specialist
   belongs_to :procedure_specialization
 

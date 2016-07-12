@@ -53,8 +53,8 @@ class ProcedureSpecialization < ActiveRecord::Base
   scope :mapped, -> { where(mapped: true) }
   scope :has_procedure, -> { joins(:procedure) }
 
-  has_many :capacities, dependent: :destroy
-  has_many :specialists, through: :capacities
+  has_many :specialist_areas_of_practice, dependent: :destroy
+  has_many :specialists, through: :specialist_areas_of_practice
 
   has_many :clinic_areas_of_practice, dependent: :destroy
   has_many :clinics, through: :clinic_areas_of_practice
@@ -153,7 +153,7 @@ class ProcedureSpecialization < ActiveRecord::Base
       )
       return f.investigation if f
     else
-      c = Capacity.find_by(
+      c = SpecialistAreaOfPractice.find_by(
         specialist_id: specialist_or_clinic.id,
         procedure_specialization_id: self.id
       )

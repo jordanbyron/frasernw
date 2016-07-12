@@ -234,17 +234,17 @@
   }
 
   // only for specialists
-  function overlayCapacitiesFormData(review_item, options)
+  function overlaySpecialistAreasOfPracticeFormData(review_item, options)
   {
-    var capacities_mapped = review_item["capacities_mapped"] || {};
+    var specialist_areas_of_practice_mapped = review_item["specialist_areas_of_practice_mapped"] || {};
 
-    $("input.capacity").each( function() {
+    $("input.specialist_area_of_practice").each( function() {
       var $this = $(this);
       if ($this.prop('checked'))
       {
-        var checkbox_id = $this.attr('id').substring("capacities_mapped_".length);
+        var checkbox_id = $this.attr('id').substring("specialist_areas_of_practice_mapped_".length);
         //console.log(checkbox_id);
-        if (!capacities_mapped[checkbox_id])
+        if (!specialist_areas_of_practice_mapped[checkbox_id])
         {
           $this.prop('checked', false);
           if (options.highlightChanges) { show_old_value($this, "checked"); }
@@ -252,29 +252,29 @@
       }
     });
     overlayFormData(
-      ["capacities_mapped"],
-      capacities_mapped,
+      ["specialist_areas_of_practice_mapped"],
+      specialist_areas_of_practice_mapped,
       { highlightChanges: options.highlightChanges }
     );
     overlayFormData(
-      ["capacities_investigations"],
-      review_item["capacities_investigations"],
+      ["specialist_areas_of_practice_investigations"],
+      review_item["specialist_areas_of_practice_investigations"],
       { highlightChanges: options.highlightChanges }
     );
 
-    if (review_item["capacities_waittime"])
+    if (review_item["specialist_areas_of_practice_waittime"])
     {
       overlayFormData(
-        ["capacities_waittime"],
-        review_item["capacities_waittime"],
+        ["specialist_areas_of_practice_waittime"],
+        review_item["specialist_areas_of_practice_waittime"],
         { highlightChanges: options.highlightChanges }
       );
     }
-    if (review_item["capacities_lagtime"])
+    if (review_item["specialist_areas_of_practice_lagtime"])
     {
       overlayFormData(
-        ["capacities_lagtime"],
-        review_item["capacities_lagtime"],
+        ["specialist_areas_of_practice_lagtime"],
+        review_item["specialist_areas_of_practice_lagtime"],
         { highlightChanges: options.highlightChanges }
       );
     }
@@ -307,7 +307,7 @@
         { highlightChanges: false }
       );
     } else if (formData.recordKey === "specialist") {
-      overlayCapacitiesFormData(
+      overlaySpecialistAreasOfPracticeFormData(
         formData.reviewItem,
         { highlightChanges: false }
       );
@@ -326,7 +326,7 @@
         { highlightChanges: true }
       );
     } else if (formData.recordKey === "specialist") {
-      overlayCapacitiesFormData(
+      overlaySpecialistAreasOfPracticeFormData(
         formData.reviewItem,
         { highlightChanges: true }
       );

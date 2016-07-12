@@ -48,7 +48,7 @@ en:
         city: "City"
         province: "Province"
         postalcode: "Postal code"
-      capacity:
+      specialist_area_of_practice:
         procedure: "Area of practice"
         investigation: "Required investigations"
       clinic:
