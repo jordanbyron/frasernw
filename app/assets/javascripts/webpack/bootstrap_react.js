@@ -20,10 +20,6 @@ import {
 import FeedbackModal from "controllers/feedback_modal";
 
 const bootstrapReact = function() {
-  if (!window.pathways.isLoggedIn){
-    return false;
-  }
-
   let middlewares = [];
 
   if(window.pathways.environment !== "production"){
@@ -55,16 +51,20 @@ const bootstrapReact = function() {
     }
 
     const renderSearchResultsTo = document.getElementById("navbar_search--results");
-    ReactDOM.render(
-      <Provider childKlass={SearchResults} store={store}/>,
-      renderSearchResultsTo
-    )
+    if (renderSearchResultsTo){
+      ReactDOM.render(
+        <Provider childKlass={SearchResults} store={store}/>,
+        renderSearchResultsTo
+      )
+    }
 
     const renderSearchBoxTo = document.getElementById("react_root--search");
-    ReactDOM.render(
-      <Provider childKlass={SearchBox} store={store}/>,
-      renderSearchBoxTo
-    )
+    if (renderSearchBoxTo) {
+      ReactDOM.render(
+        <Provider childKlass={SearchBox} store={store}/>,
+        renderSearchBoxTo
+      )
+    }
 
     const renderFeedbackModalTo = document.getElementById("react_root--feedback");
     ReactDOM.render(
@@ -72,9 +72,11 @@ const bootstrapReact = function() {
       renderFeedbackModalTo
     )
 
-    window.pathways.globalDataLoaded.done(function(data) {
-      integrateLocalStorageData(store.dispatch, data);
-    })
+    if(window.pathways.globalDataLoaded){
+      window.pathways.globalDataLoaded.done(function(data) {
+        integrateLocalStorageData(store.dispatch, data);
+      })
+    }
 
     parseRenderedData(window.pathways.dataForReact, store.dispatch);
 

@@ -3,6 +3,7 @@ class ScItem < ActiveRecord::Base
   include Historical
   include Feedbackable
   include PaperTrailable
+  include DivisionAdministered
 
   include ApplicationHelper
   include PublicActivity::Model
@@ -243,31 +244,6 @@ class ScItem < ActiveRecord::Base
 
   def mail_to_patient(current_user, patient_email)
     MailToPatientMailer.mail_to_patient(self, current_user, patient_email).deliver
-  end
-
-  def owner
-    if specializations.blank? || division.blank?
-      return default_content_owner
-    end
-
-    derived_owner = SpecializationOption.
-      for_divisions_and_specializations([ division ], specializations).
-      map(&:content_owner).
-      select(&:present?).
-      uniq.
-      first
-
-    specializations.each do |specialization|
-      specialization.specialization_options.for_divisions([division]).each do |so|
-        return so.content_owner if so.content_owner.present?
-      end
-    end
-
-    default_content_owner
-  end
-
-  def owners
-    [ owner ]
   end
 
   def divisions

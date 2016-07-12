@@ -163,14 +163,6 @@ module ApplicationHelper
     result
   end
 
-  def default_specialist_clinic_owner
-    Division.provincial.general_feedback_owner
-  end
-
-  def default_content_owner
-    User.safe_find(3) #Ron
-  end
-
   def user_guide
     ScItem.safe_find(953) # User Guide pdf on production
   end
@@ -224,15 +216,13 @@ module ApplicationHelper
         target.name
       end
 
-    args = [
-      id: target.nil? ? nil : target.id,
-      klass: target.nil? ? nil : target.class,
+    args = {
+      id: (target.nil? ? nil : target.id),
+      klass: (target.nil? ? nil : target.class.name),
       label: label
-    ]
+    }
 
-    "window.pathways.openFeedbackModal(" +
-      "window.pathways.reactStore.dispatch," +
-      args.to_json +
-    ")"
+    ("window.pathways.openFeedbackModal(" +
+      "window.pathways.reactStore.dispatch,#{args.to_json})")
   end
 end

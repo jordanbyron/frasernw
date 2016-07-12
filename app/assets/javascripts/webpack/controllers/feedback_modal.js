@@ -44,10 +44,18 @@ const PreSubmitModal = React.createClass({
         <div className="inner">
           <form onSubmit={this.handleSubmit}>
             <label style={{fontWeight: "bold"}}>
-              <Invitation model={model}/>
-              <FreeFormInputs model={model}/>
-              <input type={freeformInputType(model)} ref="name" placeholder="Name"/>
-              <input type={freeformInputType(model)} ref="email" placeholder="Email"/>
+              <Invitation model={this.props.model}/>
+              <input
+                type={freeformInputType(this.props.model)}
+                ref="name"
+                placeholder="Name"
+                style={{marginTop: "10px"}}
+              />
+              <input
+                type={freeformInputType(this.props.model)}
+                ref="email"
+                placeholder="Email"
+              />
               <textarea
                 ref="feedback"
                 style={{width: "100%", height: "150px", marginTop: "10px"}}
@@ -71,7 +79,7 @@ const PreSubmitModal = React.createClass({
 });
 
 const freeformInputType = (model) => {
-  if(model.ui.currentUser.role === "unauthenticated"){
+  if(model.app.currentUser.role === "unauthenticated"){
     return "text";
   }
   else {

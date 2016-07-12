@@ -8,7 +8,7 @@ class Specialist < ActiveRecord::Base
   include Referrable
   include TokenAccessible
   include OffersTeleservices
-
+  include DivisionAdministered
   include ApplicationHelper
 
   attr_accessible :firstname,
@@ -688,20 +688,6 @@ class Specialist < ActiveRecord::Base
         version.changeset["status_mask"][1] == STATUS_MASK_DECEASED &&
         version.changeset["status_mask"][0] != STATUS_MASK_DECEASED
     end.last
-  end
-
-  def owners
-    derived_owners = SpecializationOption.
-      for_divisions_and_specializations(divisions, specializations).
-      map(&:owner).
-      select(&:present?).
-      uniq
-
-    if derived_owners.any?
-      return derived_owners
-    else
-      return [ default_specialist_clinic_owner ]
-    end
   end
 
   CATEGORIZATION_LABELS = {

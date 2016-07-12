@@ -9,6 +9,7 @@ class Clinic < ActiveRecord::Base
   include ApplicationHelper
   include TokenAccessible
   include OffersTeleservices
+  include DivisionAdministered
 
   attr_accessible :name,
     :deprecated_phone,
@@ -313,20 +314,6 @@ class Clinic < ActiveRecord::Base
 
   def divisions
     return cities.map{ |city| city.divisions }.flatten.uniq
-  end
-
-  def owners
-    derived_owners = SpecializationOption.
-      for_divisions_and_specializations(divisions, specializations).
-      map(&:owner).
-      select(&:present?).
-      uniq
-
-    if derived_owners.any?
-      return derived_owners
-    else
-      return [ default_specialist_clinic_owner ]
-    end
   end
 
   def attendances?

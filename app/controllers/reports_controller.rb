@@ -136,14 +136,16 @@ class ReportsController < ApplicationController
   end
 
   def archived_feedback_items
+    authorize! :view_report, :archived_feedback_items
+
     scope = FeedbackItem.
       archived.
       order('id desc')
 
-    if param[:division_id].present?
+    if params[:division_id].present?
       @division = Division.find(params[:division_id])
       scope = scope.where(
-        "ANY(archiving_division_ids) = (?)",
+        "(?) = ANY(archiving_division_ids)",
         params[:division_id]
       )
     end

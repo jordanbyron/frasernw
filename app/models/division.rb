@@ -3,11 +3,9 @@ class Division < ActiveRecord::Base
   attr_accessible :name,
     :city_ids,
     :shared_sc_item_ids,
-    :primary_contact_id,
     :division_primary_contacts_attributes,
     :use_customized_city_priorities,
-    :featured_contents_attributes,
-    :general_feedback_owner_id
+    :featured_contents_attributes
 
   has_many :division_cities, dependent: :destroy
 
@@ -45,8 +43,6 @@ class Division < ActiveRecord::Base
   accepts_nested_attributes_for :division_primary_contacts, allow_destroy: true
 
   has_many :specialization_options, dependent: :destroy
-
-  belongs_to :general_feedback_owner, class_name: "User"
 
   include PaperTrailable
 
@@ -89,10 +85,6 @@ class Division < ActiveRecord::Base
 
   def flush_cached_find
     Rails.cache.delete([self.class.name, id])
-  end
-
-  def general_feedback_owner
-    # TODO
   end
 
   def showing_specializations
@@ -202,6 +194,24 @@ class Division < ActiveRecord::Base
       ).times do
         featured_contents.build(sc_category_id: category.id)
       end
+    end
+  end
+
+  def owners_for(item)
+    if item.respond_to?(:specializations)
+      from_specialization_options =
+        if item.specializations.any?
+          specialization_options.
+            where("specialization_id IN (?)", item.specializations.map(&:id))
+        else
+          specialization_options
+        end
+
+      owner_type = item.is_a?(ScItem) ? :content_owner : :owner
+
+      from_specialization_options.map(&owner_type).uniq
+    else
+      primary_contacts
     end
   end
 end

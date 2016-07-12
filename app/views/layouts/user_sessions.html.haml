@@ -6,6 +6,16 @@
     %meta{"name"=>"viewport", :content=>"initial-scale=1.0"}
     %meta{name: "newrelic-uptime", content: "ok"}
 
+    :javascript
+      window.pathways = window.pathways || {};
+      window.pathways.environment = "#{Rails.env}";
+      window.pathways.dataForReact = []
+      window.pathways.dataForReact.push({
+        app: {
+          currentUser: #{Denormalized::CurrentUser.call(current_user: current_user).to_json}
+        }
+      });
+
     = stylesheet_link_tag "application"
     /[if lte IE 7]
       = stylesheet_link_tag "ie.css", :media => 'screen'
@@ -36,5 +46,7 @@
 
       .row
         #email.content-wrapper
-          = link_to "Contact Us",
-            contact_path
+          %a{onclick: open_feedback_modal}= "Contact Us"
+
+    :javascript
+      window.pathways.bootstrapReact()

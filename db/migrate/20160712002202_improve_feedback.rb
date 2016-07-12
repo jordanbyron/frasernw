@@ -1,4 +1,4 @@
-class AddDivisionIdsToFeedbackItem < ActiveRecord::Migration
+class ImproveFeedback < ActiveRecord::Migration
   def change
     rename_column :feedback_items, :item_id, :target_id
     rename_column :feedback_items, :item_type, :target_type
@@ -6,18 +6,18 @@ class AddDivisionIdsToFeedbackItem < ActiveRecord::Migration
     add_column :feedback_items, :freeform_email, :string
     add_column :feedback_items, :freeform_name, :string
 
+    remove_column :divisions, :primary_contact_id
+
     add_column :feedback_items,
       :archiving_division_ids,
       :text,
       array: true,
       default: []
 
-    add_column :divisions, :general_feedback_owner_id, :integer
-
-    Division.all.each do |division|
-      division.update_attributes(
-        general_feedback_owner_id: division.specialization_options.first(&:owner).id
-      )
+    FeedbackItem.all.each do |item|
+      if item.targeted? && item.target.nil? && !item.archived?
+        item.update_attribute(:archived, true)
+      end
     end
   end
 end

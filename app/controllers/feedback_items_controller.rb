@@ -1,5 +1,6 @@
 class FeedbackItemsController < ApplicationController
   load_and_authorize_resource
+  skip_before_filter :require_authentication, only: [:create]
 
   def index
     @feedback_item_types = {}
@@ -12,7 +13,7 @@ class FeedbackItemsController < ApplicationController
       :general
     ].each do |type|
       @feedback_item_types[type] = FeedbackItem.active.send(type)
-      @owned_counts[type] = @feedback_item_types[type].count do |item|
+      @owned_counts[type] = @feedback_item_types[type].to_a.count do |item|
         item.owners.include?(current_user)
       end
     end
@@ -23,24 +24,36 @@ class FeedbackItemsController < ApplicationController
   end
 
   def create
-    @feedback_item = FeedbackItem.create(params[:feedback_item].merge(
-      user: current_user
-    ))
-
-    if @feedback_item.general?
-      FeedbackMailer.general(@feedback_item).deliver
+    if current_user.authenticated?
+      @feedback_item = FeedbackItem.new(params[:feedback_item].merge(
+        user: current_user
+      ))
     else
-      FeedbackMailer.targeted(@feedback_item).deliver
+      @feedback_item = FeedbackItem.new(params[:feedback_item])
     end
 
-    render nothing: true, status: 200
+    if ((@feedback_item.general? && @feedback_item.user.nil?) ||
+      current_user.authenticated?)
+
+      @feedback_item.save
+
+      if @feedback_item.general?
+        FeedbackMailer.general(@feedback_item).deliver
+      else
+        FeedbackMailer.targeted(@feedback_item).deliver
+      end
+
+      render nothing: true, status: 200
+    else
+      render nothing: true, status: 500
+    end
   end
 
   def destroy
     @feedback_item = FeedbackItem.find(params[:id])
     @feedback_item.update_attributes(
       archived: true,
-      archiving_division_ids: current_user.divisions
+      archiving_division_ids: current_user.divisions.map(&:id)
     )
     redirect_to feedback_items_url,
       notice: "Successfully archived feedback item."

@@ -65,44 +65,30 @@ class FeedbackItem < ActiveRecord::Base
     end
   end
 
-  def owners
-    if general? && user.nil?
-      Division.provincial.general_feedback_owner
-    elsif general?
-      user.divisions.map(&:general_feedback_owner)
-    elsif target.nil?
-      [ Division.provincial ]
+  def ownership_source
+    if !target.nil?
+      target
+    elsif !user.nil?
+      user
     else
-      target.owners
+      UnauthenticatedUser.new
     end
+  end
+
+  def owners
+    ownership_source.owners
   end
 
   def owner_divisions
-    if general? && user.nil?
-      [ Division.provincial ]
-    elsif general?
-      user.divisions
-    elsif target.nil? || target.divisions.none?
-      [ Division.provincial ]
-    else
-      target.divisions
-    end
+    ownership_source.owner_divisions
   end
 
   def general?
-    target_type.nil?
+    !target_type.present?
   end
 
-  def archived_by_divisions?(divisions)
-    archived &&
-      versions.last.present? &&
-      versions.last.changeset.has_key?('archived') &&
-      versions.last.changeset['archived'][1] &&
-      (versions.last.safe_user.divisions & divisions).any?
-  end
-
-  def for_divisions?(divisions)
-    in_divisions?(divisions) || archived_by_divisions?(divisions)
+  def targeted?
+    target_type.present?
   end
 
   def label

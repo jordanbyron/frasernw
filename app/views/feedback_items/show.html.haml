@@ -4,45 +4,49 @@
   %h2= "Feedback Item ##{@feedback_item.id}"
 
   %p.space
-    - if feedback_item.general?
-      %strong= "Submitted via 'Contact Us'"
+    - if @feedback_item.general?
+      %strong= "Submitted via: "
+      %span= "'Contact Us'"
     - else
       %strong= "Feedback On:"
       %span
-        - if feedback_item.target?
-          = link_to feedback_item.target_label,
-            feedback_item.target
+        - if @feedback_item.target
+          = link_to @feedback_item.target_label,
+            @feedback_item.target
         - else
-          = feedback_item.target_label
+          = @feedback_item.target_label
 
-  - unless feedback_item.archived?
+  - unless @feedback_item.archived?
     %p.space
       %b= "Assigned To:"
     %ul
-      - feedback_item.owners.each do |owner|
+      - @feedback_item.owners.each do |owner|
         %li= owner.name
 
   %p.space
     %b= "Provided By:"
-    %span= feedback_item.submitter_name
+    %span= @feedback_item.submitter_name
 
   %p.space
     %b= "Provided When:"
-    %span= "#{time_ago_in_words(feedback_item.created_at)} ago"
+    %span= "#{time_ago_in_words(@feedback_item.created_at)} ago"
 
 
   %p.space
     %b= "Feedback:"
-  %div= feedback_item.feedback
+  %p.space= @feedback_item.feedback
+
+  %p.space
+    %b= "Respond To: "
+    %span= respond_link(@feedback_item)
 
   .btn-group
-    = respond_link(feedback_item)
-    = link_to feedback_item,
+    = link_to @feedback_item,
       method: :delete,
       class: "btn" do
       %i.icon-folder-open
       %span= " Archive"
-    = large_history_button(feedback_item)
+    = large_history_button(@feedback_item)
 
   %hr
 

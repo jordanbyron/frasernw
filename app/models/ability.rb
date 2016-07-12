@@ -7,6 +7,8 @@ class Ability
     if !user.authenticated?
       can [:validate, :signup, :setup], User
 
+      can [:create], FeedbackItem
+
     else
       can [:index], :front
       can :show, FaqCategory
@@ -99,18 +101,7 @@ class Ability
         end
 
         can :manage, FeedbackItem do |feedback_item|
-          feedback_item.item.present? && (
-            (
-              feedback_item.item.instance_of?(Specialist) &&
-              (feedback_item.item.divisions & user.as_divisions).present?
-            ) || (
-              feedback_item.item.instance_of?(Clinic) &&
-              (feedback_item.item.divisions & user.as_divisions).present?
-            ) || (
-              feedback_item.item.instance_of?(ScItem) &&
-              ([feedback_item.item.division] & user.as_divisions).present?
-            )
-          )
+          (feedback_item.owner_divisions & user.as_divisions).any?
         end
 
         can :manage, ReviewItem do |review_item|

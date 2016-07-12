@@ -242,7 +242,7 @@ export const submitFeedback = (dispatch, model, name, email, comment) => {
     $.post("/feedback_items", {
       feedback_item: {
         target_id: model.ui.feedbackModal.target.id,
-        target_type: model.ui.feedbackModal.target.type,
+        target_type: model.ui.feedbackModal.target.klass,
         freeform_name: name,
         freeform_email: email,
         feedback: comment

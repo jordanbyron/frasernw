@@ -8,7 +8,7 @@
     %ul.nav.nav-tabs
       - @feedback_item_types.each do |type, items|
         %li
-          %a{"href" => "##{type}", "data-toggle" => "tab"}
+          %a{"href" => "##{type}_tab", "data-toggle" => "tab"}
             = type.to_s.humanize
             - if @owned_counts[type] > 0
               %span.badge.badge-warning
@@ -20,7 +20,7 @@
 
       - @feedback_item_types.each do |type, items|
 
-        .tab-pane{id: type.to_s}
+        .tab-pane{id: "#{type.to_s}_tab"}
 
           %table.table.table-condensed.table-striped
             %tr
