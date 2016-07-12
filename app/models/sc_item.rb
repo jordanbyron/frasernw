@@ -33,10 +33,10 @@ class ScItem < ActiveRecord::Base
   has_many :sc_item_specializations, dependent: :destroy
   has_many :specializations, through: :sc_item_specializations
 
-  has_many :sc_item_specialization_procedure_specializations,
+  has_many :content_item_specialty_area_of_practice_specialties,
     through: :sc_item_specializations
   has_many :procedure_specializations,
-    through: :sc_item_specialization_procedure_specializations
+    through: :content_item_specialty_area_of_practice_specialties
 
   belongs_to :division
 
@@ -110,12 +110,12 @@ class ScItem < ActiveRecord::Base
     division_ids = divisions.map{ |d| d.id }
     owned = joins( [
       :sc_item_specializations,
-      :sc_item_specialization_procedure_specializations,
+      :content_item_specialty_area_of_practice_specialties,
       :procedure_specializations
     ] ).where(
-      'sc_item_specializations.id = sc_item_specialization_procedure_specializations.'\
+      'sc_item_specializations.id = content_item_specialty_area_of_practice_specialties.'\
         'sc_item_specialization_id '\
-        'AND sc_item_specialization_procedure_specializations.procedure_specialization_id'\
+        'AND content_item_specialty_area_of_practice_specialties.procedure_specialization_id'\
         ' = procedure_specializations.id '\
         'AND procedure_specializations.procedure_id = (?) '\
         'AND "sc_items"."division_id" IN (?)',
@@ -124,13 +124,13 @@ class ScItem < ActiveRecord::Base
     )
     shared = joins( [
       :sc_item_specializations,
-      :sc_item_specialization_procedure_specializations,
+      :content_item_specialty_area_of_practice_specialties,
       :procedure_specializations,
       :division_display_sc_items
     ] ).where(
-      'sc_item_specializations.id = sc_item_specialization_procedure_specializations.'\
+      'sc_item_specializations.id = content_item_specialty_area_of_practice_specialties.'\
         'sc_item_specialization_id '\
-        'AND sc_item_specialization_procedure_specializations.procedure_specialization_id'\
+        'AND content_item_specialty_area_of_practice_specialties.procedure_specialization_id'\
         ' = procedure_specializations.id '\
         'AND procedure_specializations.procedure_id = (?) '\
         'AND "division_display_sc_items"."division_id" in (?) '\

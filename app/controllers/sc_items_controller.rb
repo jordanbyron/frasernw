@@ -33,7 +33,7 @@ class ScItemsController < ApplicationController
           specialization_id: specialization.id
         )
         if sc_item_specialization.present?
-          ScItemSpecializationProcedureSpecialization.create(
+          ContentItemSpecialtyAreaOfPracticeSpecialty.create(
             sc_item_specialization_id: sc_item_specialization.id,
             procedure_specialization_id: ps_id
           )
@@ -71,10 +71,10 @@ class ScItemsController < ApplicationController
           specialization_id: specialization_id
         )
       end
-      @sc_item.sc_item_specialization_procedure_specializations.each do |sisps|
+      @sc_item.content_item_specialty_area_of_practice_specialties.each do |sisps|
         #remove existing procedure specializations that no longer exist
         if !params[:procedure_specialization].include? sisps.procedure_specialization_id
-          ScItemSpecializationProcedureSpecialization.destroy(sisps.id)
+          ContentItemSpecialtyAreaOfPracticeSpecialty.destroy(sisps.id)
         end
       end
       #DevNote: ^^potentially dangerous use of destroy
@@ -87,7 +87,7 @@ class ScItemsController < ApplicationController
         )
         if sc_item_specialization.present?
           #parent specialization was checked off
-          ScItemSpecializationProcedureSpecialization.find_or_create_by(
+          ContentItemSpecialtyAreaOfPracticeSpecialty.find_or_create_by(
             sc_item_specialization_id: sc_item_specialization.id,
             procedure_specialization_id: ps_id
           )

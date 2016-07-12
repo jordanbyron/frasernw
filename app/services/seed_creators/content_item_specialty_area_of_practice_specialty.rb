@@ -1,5 +1,5 @@
 module SeedCreators
-  class ScItemSpecializationProcedureSpecialization < SeedCreator::HandledTable
+  class ContentItemSpecialtyAreaOfPracticeSpecialty < SeedCreator::HandledTable
     Handlers = {
       sc_item_specialization_id: :pass_through,
       procedure_specialization_id: :pass_through,
