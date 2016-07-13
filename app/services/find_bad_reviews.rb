@@ -16,8 +16,11 @@ class FindBadReviews < ServiceObject
 
   def comprimised_review_items
     ReviewItem.
-      where("created_at > (?)", Date.new(2016, 1, 19)).
-      to_a.
+      where(
+        "created_at >= (?) AND created_at < (?)",
+        Date.new(2016, 1, 19),
+        Date.new(2016, 7, 13)
+      ).to_a.
       reject do |item|
         @base_object = item.decoded_base_object
         @review_object = item.decoded_review_object
