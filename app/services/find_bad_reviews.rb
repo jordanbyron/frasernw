@@ -1,6 +1,17 @@
 class FindBadReviews < ServiceObject
   def call
-    comprimised_review_items.count
+    comprimised_review_items.group_by do |item|
+      item.item.divisions.last.name
+    end.map do |division, items|
+      [
+        division,
+        items.map{|item| rereview_path(item) }
+      ]
+    end
+  end
+
+  def rereview_path(item)
+    "https://pathwaysbc.ca/#{item.item_type.tableize}/#{item.item_id}/rereview?review_item_id=#{item.id}"
   end
 
   def comprimised_review_items
