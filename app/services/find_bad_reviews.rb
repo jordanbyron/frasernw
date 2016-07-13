@@ -1,19 +1,23 @@
 class FindBadReviews < ServiceObject
   def call
-    comprimised_review_items.group_by do |item|
+    sheets = comprimised_review_items.group_by do |item|
       item.item.divisions.last.name
     end.map do |division, items|
-      [
-        division,
-        items.map{|item| rereview_path(item) }
-      ]
+      {
+        title: division,
+        header_row: ["Profile Link", "Name"],
+        body_rows: items.map do |item|
+          [
+            "https://pathwaysbc.ca#{CustomPathHelper.duck_path(item.item)}",
+            item.item.label
+          ]
+        end
+      }
     end
-  end
 
-  def rereview_path(item)
-    "https://pathwaysbc.ca/#{item.item_type.tableize}/#{item.item_id}/rereview?review_item_id=#{item.id}"
+    QuickSpreadsheet.call(file_title: "changes_to_rereview", sheets: sheets)
   end
-
+  
   def comprimised_review_items
     ReviewItem.
       where(
