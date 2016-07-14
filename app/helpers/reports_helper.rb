@@ -81,7 +81,7 @@ module ReportsHelper
           current_user.as_divisions
         end
 
-      content_tag(:option, "") +
+      report_index_dropdown_option(report_type) +
         permitted_divisions.map do |division|
           report_index_dropdown_option(
             report_type,
