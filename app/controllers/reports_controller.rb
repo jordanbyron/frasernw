@@ -42,7 +42,7 @@ class ReportsController < ApplicationController
 
     @init_data = {
       app: {
-        currentUser: FilterTableAppState::CurrentUser.call(
+        currentUser: Denormalized::CurrentUser.call(
           current_user: current_user
         ),
       }
