@@ -15,7 +15,7 @@ class FeedbackMailer < ActionMailer::Base
     mail(
       to: feedback_item.owners.map(&:email),
       from: 'noreply@pathwaysbc.ca',
-      subject: "Pathways: New general feedback submitted"
+      subject: "Pathways: New 'Contact Us' feedback submitted"
     )
   end
 end

@@ -29,7 +29,7 @@ class FeedbackItem < ActiveRecord::Base
     where(target_type: "ScItem")
   end
 
-  def self.general
+  def self.contact_us
     where("target_type = '' OR target_type IS NULL")
   end
 
@@ -83,7 +83,7 @@ class FeedbackItem < ActiveRecord::Base
     ownership_source.owner_divisions
   end
 
-  def general?
+  def contact_us?
     !target_type.present?
   end
 
@@ -92,7 +92,11 @@ class FeedbackItem < ActiveRecord::Base
   end
 
   def label
-    "#{target.name} (Feedback Item)"
+    if contact_us?
+      "'Contact Us' Feedback Item (##{id})"
+    else
+      "Feedback on '#{target_label}' (##{id})"
+    end
   end
 
   def creator

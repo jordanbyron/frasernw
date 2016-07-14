@@ -184,7 +184,7 @@ class Ability
           :update_password
         ], User
 
-        can [:create, :show], FeedbackItem
+        can [:create], FeedbackItem
 
         can [:update, :photo, :update_photo], Specialist do |specialist|
           specialist.controlling_users.include? user

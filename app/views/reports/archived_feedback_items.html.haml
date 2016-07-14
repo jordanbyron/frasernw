@@ -27,7 +27,7 @@
 
           %table.table.table-condensed.table-striped
 
-            - if type != :general
+            - if type != :contact_us
               %th Feedback on
               %th Specialties
             %th Provided by
@@ -38,7 +38,7 @@
 
             - @feedback_item_types[type].each do |feedback_item|
               %tr
-                - if type != :general
+                - if type != :contact_us
                   %td
                     - if feedback_item.target
                       = link_to feedback_item.target_label,

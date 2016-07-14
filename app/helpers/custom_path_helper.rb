@@ -21,12 +21,6 @@ module CustomPathHelper
       else
         ReviewItemsHelper.rereview_path(object)
       end
-    elsif object.is_a?(FeedbackItem)
-      if object.active?
-        ROUTES.feedback_items_path
-      else
-        ROUTES.archived_feedback_items_path
-      end
     elsif object.is_a?(ReferralForm)
       ROUTES.edit_referral_forms_path(
         parent_type: object.referrable_type,

@@ -24,7 +24,7 @@
 
           %table.table.table-condensed.table-striped
             %tr
-              - if type != :general
+              - if type != :contact_us
                 %th Feedback on
               %th Assigned To
               %th Provided by
@@ -35,7 +35,7 @@
 
             - items.each do |feedback_item|
               %tr{class: feedback_item.owners.include?(current_user) ? "owned" : ""}
-                - if type != :general
+                - if type != :contact_us
                   %td
                     - if feedback_item.target
                       = link_to feedback_item.target_label,

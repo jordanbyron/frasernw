@@ -10,7 +10,7 @@ class FeedbackItemsController < ApplicationController
       :specialist,
       :clinic,
       :content,
-      :general
+      :contact_us
     ].each do |type|
       @feedback_item_types[type] = FeedbackItem.active.send(type)
       @owned_counts[type] = @feedback_item_types[type].to_a.count do |item|
@@ -32,12 +32,12 @@ class FeedbackItemsController < ApplicationController
       @feedback_item = FeedbackItem.new(params[:feedback_item])
     end
 
-    if ((@feedback_item.general? && @feedback_item.user.nil?) ||
+    if ((@feedback_item.contact_us? && @feedback_item.user.nil?) ||
       current_user.authenticated?)
 
       @feedback_item.save
 
-      if @feedback_item.general?
+      if @feedback_item.contact_us?
         FeedbackMailer.general(@feedback_item).deliver
       else
         FeedbackMailer.targeted(@feedback_item).deliver

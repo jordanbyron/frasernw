@@ -1,10 +1,10 @@
-- set_page_specific_title "Feedback Item ##{@feedback_item.id}"
+- set_page_specific_title @feedback_item.label
 
 .content-wrapper
-  %h2= "Feedback Item ##{@feedback_item.id}"
+  %h2= @feedback_item.label
 
   %p.space
-    - if @feedback_item.general?
+    - if @feedback_item.contact_us?
       %strong= "Submitted via: "
       %span= "'Contact Us'"
     - else

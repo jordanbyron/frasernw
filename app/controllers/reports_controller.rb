@@ -156,7 +156,7 @@ class ReportsController < ApplicationController
       :specialist,
       :clinic,
       :content,
-      :general
+      :contact_us
     ].each do |type|
       @feedback_item_types[type] = scope.
         send(type).
