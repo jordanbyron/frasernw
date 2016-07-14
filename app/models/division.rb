@@ -202,7 +202,10 @@ class Division < ActiveRecord::Base
       from_specialization_options =
         if item.specializations.any?
           specialization_options.
-            where("specialization_id IN (?)", item.specializations.map(&:id))
+            where(
+              "specialization_options.specialization_id IN (?)",
+              item.specializations.map(&:id)
+            )
         else
           specialization_options
         end
