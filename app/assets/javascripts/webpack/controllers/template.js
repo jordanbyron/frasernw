@@ -28,7 +28,6 @@ import pageTitleLabel from "controller_helpers/page_title_label";
 import ShowHospital from "controllers/show_hospital";
 import Pagination from "controllers/pagination";
 import CustomWaittimeMessage from "controllers/custom_waittime_message";
-import FeedbackModal from "controllers/feedback_modal";
 import LoadingIndicator from "component_helpers/loading_indicator";
 
 const Template = React.createClass({
@@ -51,7 +50,6 @@ const Template = React.createClass({
           <UpperWhitePanel model={model}/>
           <NavTabs model={model} dispatch={dispatch}/>
           <LowerWhitePanel model={model} dispatch={dispatch}/>
-          <FeedbackModal model={model} dispatch={dispatch}/>
         </div>
       );
     }

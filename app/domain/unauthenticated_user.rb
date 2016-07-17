@@ -1,4 +1,5 @@
 class UnauthenticatedUser
+  include DivisionAdministered
 
   def authenticated?
     false

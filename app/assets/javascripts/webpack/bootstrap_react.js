@@ -17,12 +17,9 @@ import {
   integrateLocalStorageData,
   parseLocation
 } from "action_creators";
+import FeedbackModal from "controllers/feedback_modal";
 
 const bootstrapReact = function() {
-  if (!window.pathways.isLoggedIn){
-    return false;
-  }
-
   let middlewares = [];
 
   if(window.pathways.environment !== "production"){
@@ -36,6 +33,7 @@ const bootstrapReact = function() {
 
   const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
   const store = createStoreWithMiddleware(rootReducer);
+  window.pathways.reactStore = store;
 
   parseLocation(store.dispatch);
 
@@ -53,21 +51,32 @@ const bootstrapReact = function() {
     }
 
     const renderSearchResultsTo = document.getElementById("navbar_search--results");
-    ReactDOM.render(
-      <Provider childKlass={SearchResults} store={store}/>,
-      renderSearchResultsTo
-    )
+    if (renderSearchResultsTo){
+      ReactDOM.render(
+        <Provider childKlass={SearchResults} store={store}/>,
+        renderSearchResultsTo
+      )
+    }
 
     const renderSearchBoxTo = document.getElementById("react_root--search");
-    ReactDOM.render(
-      <Provider childKlass={SearchBox} store={store}/>,
-      renderSearchBoxTo
-    )
-    // setSearchListeners(store.dispatch);
+    if (renderSearchBoxTo) {
+      ReactDOM.render(
+        <Provider childKlass={SearchBox} store={store}/>,
+        renderSearchBoxTo
+      )
+    }
 
-    window.pathways.globalDataLoaded.done(function(data) {
-      integrateLocalStorageData(store.dispatch, data);
-    })
+    const renderFeedbackModalTo = document.getElementById("react_root--feedback");
+    ReactDOM.render(
+      <Provider childKlass={FeedbackModal} store={store}/>,
+      renderFeedbackModalTo
+    )
+
+    if(window.pathways.globalDataLoaded){
+      window.pathways.globalDataLoaded.done(function(data) {
+        integrateLocalStorageData(store.dispatch, data);
+      })
+    }
 
     parseRenderedData(window.pathways.dataForReact, store.dispatch);
 

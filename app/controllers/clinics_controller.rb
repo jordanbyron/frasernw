@@ -21,8 +21,6 @@ class ClinicsController < ApplicationController
       includes(:review_item).
       find(params[:id])
 
-    @feedback = @clinic.active_feedback_items.build
-
     if @clinic.controlling_users.include?(current_user)
       current_user.viewed_controlled_clinic!(@clinic)
     end
@@ -278,7 +276,6 @@ class ClinicsController < ApplicationController
 
   def refresh_cache
     @clinic = Clinic.find(params[:id])
-    @feedback = @clinic.active_feedback_items.build
     render :show
   end
 end

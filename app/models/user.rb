@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
   include Historical
   include Noteable
   include HasRole
+  include DivisionAdministered
 
   PAPER_TRAIL_IGNORED_ATTRIBUTES = [
     :persistence_token,
@@ -429,5 +430,13 @@ class User < ActiveRecord::Base
     as_divisions.
       to_sentence(SentenceHelper.normal_weight_sentence_connectors).
       html_safe
+  end
+
+  def owners
+    if divisions.any?
+      divisions.map(&:primary_contacts).flatten
+    else
+      Division.provincial.primary_contacts
+    end
   end
 end

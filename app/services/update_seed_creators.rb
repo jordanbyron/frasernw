@@ -1,6 +1,6 @@
 class UpdateSeedCreators < ServiceObject
 
-  def call    
+  def call
     discrepancies = VerifySeedCreators.call
 
     handle_unhandled_tables(discrepancies[:unhandled_tables])
@@ -44,32 +44,23 @@ class UpdateSeedCreators < ServiceObject
 
   def handle_unhandled_columns(unhandled_columns)
     unhandled_columns.each do |column|
-      File.open(
-        Rails.root.join(
-          "app",
-          "services",
-          "seed_creators",
-          "#{column[:table].to_s.singularize}.rb"
-        ),
-        "r+"
-      ) do |file|
-        contents = file.read
+      filepath = Rails.root.join(
+        "app",
+        "services",
+        "seed_creators",
+        "#{column[:table].to_s.singularize}.rb"
+      )
 
-        column_type = schema[column[:table]][column[:column]]
-        index = contents.match(/\n\s\s\s\s}/).offset(0)[0]
+      contents = File.read(filepath)
 
-        puts column[:column]
-        puts column_type
+      column_type = schema[column[:table]][column[:name]]
+      index = contents.match(/\n\s\s\s\s}/).offset(0)[0]
+      contents.insert(
+        index,
+        "\n      #{column[:name]}: #{column_type}"
+      )
 
-        contents.insert(
-          index,
-          "\n      #{column[:column]}: #{column_type}"
-        )
-
-        file.truncate(0)
-
-        file.write(contents)
-      end
+      File.write(filepath, contents)
     end
   end
 
@@ -83,23 +74,19 @@ class UpdateSeedCreators < ServiceObject
 
   def remove_nonexistent_columns(nonexistent_columns)
     nonexistent_columns.each do |column|
-      File.open(
-        Rails.root.join(
-          "app",
-          "services",
-          "seed_creators",
-          "#{column[:table].to_s.singularize}.rb"
-        ),
-        "r+"
-      ) do |file|
-        contents = file.read
+      filepath = Rails.root.join(
+        "app",
+        "services",
+        "seed_creators",
+        "#{column[:table].to_s.singularize}.rb"
+      )
 
-        contents.gsub!(/\n.+#{Regexp.quote(column[:name])}.+/, "")
+      contents = File.read(filepath)
 
-        file.truncate(0)
-
-        file.write(contents)
-      end
+      File.write(
+        filepath,
+        contents.gsub(/\n.+#{Regexp.quote(column[:name])}.+/, "")
+      )
     end
   end
 end

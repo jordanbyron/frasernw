@@ -1,27 +1,22 @@
 class FeedbackItemsController < ApplicationController
   load_and_authorize_resource
+  skip_before_filter :require_authentication, only: [:create]
 
   def index
-    @feedback_items = FeedbackItem.active
-  end
+    @feedback_item_types = {}
+    @owned_counts = {}
 
-  def archived
-    @divisions_scope =
-      current_user.as_admin_or_super? ? Division.all : current_user.as_divisions
-    @feedback_items = FeedbackItem.
-      archived.
-      order('id desc').
-      select{|item| item.for_divisions?(@divisions_scope) }.
-      paginate(page: params[:page], per_page: 30)
-
-    @categorized_feedback_items = {
-      Specialist => @feedback_items.
-        select{ |feedback_item| feedback_item.item.is_a?(Specialist) },
-      Clinic => @feedback_items.
-        select{ |feedback_item| feedback_item.item.is_a?(Clinic) },
-      ScItem => @feedback_items.
-        select{ |feedback_item| feedback_item.item.is_a?(ScItem) }
-    }
+    [
+      :specialist,
+      :clinic,
+      :content,
+      :contact_us
+    ].each do |type|
+      @feedback_item_types[type] = FeedbackItem.active.send(type)
+      @owned_counts[type] = @feedback_item_types[type].to_a.count do |item|
+        item.owners.include?(current_user)
+      end
+    end
   end
 
   def show
@@ -29,23 +24,37 @@ class FeedbackItemsController < ApplicationController
   end
 
   def create
-    @feedback_item = FeedbackItem.new(params[:feedback_item])
-    @feedback_item.user = current_user
-    @feedback_item.save
-    if @feedback_item.item.is_a? ScItem
-      EventMailer.mail_content_item_feedback(@feedback_item).deliver
+    if current_user.authenticated?
+      @feedback_item = FeedbackItem.new(params[:feedback_item].merge(
+        user: current_user
+      ))
     else
-      EventMailer.mail_specialist_clinic_feedback(@feedback_item).deliver
+      @feedback_item = FeedbackItem.new(params[:feedback_item])
     end
 
-    render nothing: true, status: 200
+    if ((@feedback_item.contact_us? && @feedback_item.user.nil?) ||
+      current_user.authenticated?)
+
+      @feedback_item.save
+
+      if @feedback_item.contact_us?
+        FeedbackMailer.general(@feedback_item).deliver
+      else
+        FeedbackMailer.targeted(@feedback_item).deliver
+      end
+
+      render nothing: true, status: 200
+    else
+      render nothing: true, status: 500
+    end
   end
 
   def destroy
-    #we actually archive
     @feedback_item = FeedbackItem.find(params[:id])
-    @feedback_item.archived = true
-    @feedback_item.save
+    @feedback_item.update_attributes(
+      archived: true,
+      archiving_division_ids: current_user.divisions.map(&:id)
+    )
     redirect_to feedback_items_url,
       notice: "Successfully archived feedback item."
   end

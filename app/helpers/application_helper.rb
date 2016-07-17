@@ -163,14 +163,6 @@ module ApplicationHelper
     result
   end
 
-  def default_owner
-    return User.safe_find(10)
-  end
-
-  def default_content_owner
-    return User.safe_find(3) # Ron
-  end
-
   def user_guide
     ScItem.safe_find(953) # User Guide pdf on production
   end
@@ -212,5 +204,25 @@ module ApplicationHelper
 
   def primary_support_email
     Division.provincial.primary_contacts.map(&:email)
+  end
+
+  def open_feedback_modal(target = nil)
+    label =
+      if target.nil?
+        ""
+      elsif target.is_a?(ScItem)
+        target.title
+      else
+        target.name
+      end
+
+    args = {
+      id: (target.nil? ? nil : target.id),
+      klass: (target.nil? ? nil : target.class.name),
+      label: label
+    }
+
+    ("window.pathways.openFeedbackModal(" +
+      "window.pathways.reactStore.dispatch,#{args.to_json})")
   end
 end

@@ -69,7 +69,8 @@
         = select_tag "owner[#{division.id}]",
           options_for_select(division_admins, owner_id),
           name: "owner[#{division.id}]",
-          class: "select"
+          class: "select",
+          include_blank: false
     .control-group
       %label.control-label
         Content Items Owner
@@ -77,7 +78,8 @@
         = select_tag "content_owner[#{division.id}]",
           options_for_select(division_admins, content_owner_id),
           name: "content_owner[#{division.id}]",
-          class: "select"
+          class: "select",
+          include_blank: false
     .control-group
       %label.control-label
         Hide from division users

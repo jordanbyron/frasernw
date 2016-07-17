@@ -4,12 +4,12 @@ module Feedbackable
   included do
     has_many :active_feedback_items,
       -> { where "archived" => false },
-      as: :item,
+      as: :target,
       class_name: "FeedbackItem",
-      foreign_key: "item_id"
+      foreign_key: "target_id"
     has_many :feedback_items,
-      as: :item,
-      foreign_key: "item_id",
+      as: :target,
+      foreign_key: "target_id",
       class_name: "FeedbackItem"
   end
 end

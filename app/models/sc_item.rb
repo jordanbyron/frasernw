@@ -3,6 +3,7 @@ class ScItem < ActiveRecord::Base
   include Historical
   include Feedbackable
   include PaperTrailable
+  include DivisionAdministered
 
   include ApplicationHelper
   include PublicActivity::Model
@@ -245,29 +246,8 @@ class ScItem < ActiveRecord::Base
     MailToPatientMailer.mail_to_patient(self, current_user, patient_email).deliver
   end
 
-  def owner
-    if specializations.blank? || division.blank?
-      return default_content_owner
-    end
-
-    #We only have one division for each conten item, so lets find that the first owner
-    # in one of the specializations
-    specializations.each do |specialization|
-      specialization.specialization_options.for_divisions([division]).each do |so|
-        return so.content_owner if so.content_owner.present?
-      end
-    end
-
-    #There is no owner for the any of the specializations this content item is in...
-    return default_content_owner
-  end
-
-  def owners
-    [owner]
-  end
-
   def divisions
-    [division]
+    [ division ]
   end
 
   def root_category
