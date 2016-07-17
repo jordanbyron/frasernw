@@ -10,7 +10,6 @@ class ScItemsController < ApplicationController
   def show
     @sc_item = ScItem.find(params[:id])
     @division = current_user.as_divisions.first
-    @feedback = @sc_item.active_feedback_items.build
     @share_url = share_sc_item_path(@sc_item)
   end
 

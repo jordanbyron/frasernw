@@ -94,8 +94,6 @@ Frasernw::Application.routes.draw do
     as: 'archived_review_items'
   resources :review_items
 
-  get '/feedback_items/archived' => 'feedback_items#archived',
-    as: 'archived_feedback_items'
   resources :feedback_items
 
   resources :sc_categories, path: 'content_categories'
@@ -146,6 +144,7 @@ Frasernw::Application.routes.draw do
       get :entity_statistics
       get :change_requests
       get :csv_usage
+      get :archived_feedback_items
     end
   end
 

@@ -1,0 +1,8 @@
+!!!
+%html
+  %body
+    %p= "#{@feedback_item.target_label} has had the following feedback left " +  |
+        "on it by #{@feedback_item.user.name} (#{@feedback_item.user.email})."   |
+    %p= @feedback_item.feedback
+    %p
+      %a{href: feedback_item_url(@feedback_item)} View Feedback

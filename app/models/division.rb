@@ -3,7 +3,6 @@ class Division < ActiveRecord::Base
   attr_accessible :name,
     :city_ids,
     :shared_sc_item_ids,
-    :primary_contact_id,
     :division_primary_contacts_attributes,
     :use_customized_city_priorities,
     :featured_contents_attributes
@@ -195,6 +194,27 @@ class Division < ActiveRecord::Base
       ).times do
         featured_contents.build(sc_category_id: category.id)
       end
+    end
+  end
+
+  def owners_for(item)
+    if item.respond_to?(:specializations)
+      from_specialization_options =
+        if item.specializations.any?
+          specialization_options.
+            where(
+              "specialization_options.specialization_id IN (?)",
+              item.specializations.map(&:id)
+            )
+        else
+          specialization_options
+        end
+
+      owner_type = item.is_a?(ScItem) ? :content_owner : :owner
+
+      from_specialization_options.map(&owner_type).uniq
+    else
+      primary_contacts
     end
   end
 end
