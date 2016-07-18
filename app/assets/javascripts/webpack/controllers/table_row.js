@@ -14,6 +14,7 @@ import { memoizePerRender } from "utils";
 import ChangeRequestRow from "controllers/table_row/change_request";
 import IssueRow from "controllers/table_row/issue";
 import ReferentRow from "controllers/table_row/referent";
+import Tags from "component_helpers/tags";
 
 const TableRow = ({model, dispatch, decoratedRecord}) => {
   if(_.includes([
