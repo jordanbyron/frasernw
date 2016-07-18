@@ -271,35 +271,36 @@
                   for all referrals:
                   = @specialist.required_investigations.end_with_period.convert_newlines_to_br
 
-              -if @specialist.waittime.present?
-                %p.space
-                  Average non-urgent patient wait time from referral to appointment:
-                  %strong= @specialist.waittime
-
-              -if @specialist.lagtime.present?
-                %p
-                  Average length of time to notify
-                  = @specialist.responds_to
-                  of a booking date:
-                  %strong= @specialist.lagtime
-
-              - @specialist.capacities.specialist_wait_time.each do |capacity|
-
-                - if capacity.waittime.present? || capacity.lagtime.present?
+              - if @specialist.show_waittimes?
+                -if @specialist.waittime.present?
                   %p.space
-                    %strong= "#{capacity.procedure_specialization.procedure.full_name}:"
+                    Average non-urgent patient wait time from referral to appointment:
+                    %strong= @specialist.waittime
 
-                  -if capacity.waittime.present?
-                    %p
-                      Average non-urgent patient wait time from referral to appointment:
-                      %strong= capacity.waittime
+                -if @specialist.lagtime.present?
+                  %p
+                    Average length of time to notify
+                    = @specialist.responds_to
+                    of a booking date:
+                    %strong= @specialist.lagtime
 
-                  -if capacity.lagtime.present?
-                    %p
-                      Average length of time to notify
-                      = @specialist.responds_to
-                      of a booking date:
-                      %strong= capacity.lagtime
+                - @specialist.capacities.specialist_wait_time.each do |capacity|
+
+                  - if capacity.waittime.present? || capacity.lagtime.present?
+                    %p.space
+                      %strong= "#{capacity.procedure_specialization.procedure.full_name}:"
+
+                    -if capacity.waittime.present?
+                      %p
+                        Average non-urgent patient wait time from referral to appointment:
+                        %strong= capacity.waittime
+
+                    -if capacity.lagtime.present?
+                      %p
+                        Average length of time to notify
+                        = @specialist.responds_to
+                        of a booking date:
+                        %strong= capacity.lagtime
 
               - if @specialist.patient_can_book_mask == 1
                 %p.space This office accepts direct calls from patients after referral to book their own appointments.
@@ -348,48 +349,54 @@
               - if clinics.present?
                 %p
                   %strong Clinic associations:
-                  != clinics.map{ |clinic| "<a href='#{clinic_path(clinic)}' class='ajax'}'>#{clinic.name}</a>" }.to_sentence
+                  != clinic_associations(clinics)
 
           - elsif show_clinic_details
 
-            - @specialist.clinics.reject{ |c| c.closed? }.each do |clinic|
+            - @specialist.clinics.reject(&:closed?).each do |clinic|
 
               - clinic_locations = clinic.clinic_locations.sort_by(&:created_at).reject(&:empty?).select{|cl| @specialist.clinic_locations.include?(cl)}
 
               %h6.clinic_header_link
-                = link_to "#{clinic.name}".html_safe,
-                  clinic_path(clinic),
-                  class: 'ajax'
+                - if clinic.hidden?
+                  = clinic.name
+                - else
+                  = link_to clinic.name,
+                    clinic_path(clinic)
 
-              %p.space
-                %i{class: clinic.status_class}
-                %strong.status= clinic.status.end_with_period
-              - if clinic.status_details.present?
-                %p
-                  %strong Details:
-                  = clinic.status_details.end_with_period.convert_newlines_to_br
-              - if clinic.limitations.present?
-                %p
-                  %strong Limitations:
-                  = clinic.limitations.end_with_period.convert_newlines_to_br
-
-              - clinic_locations.each do |cl|
-                - address = cl.resolved_address
+              - if clinic.hidden?
                 %p.space
-                  %strong= cl.phone_only if cl.phone_only.present?
-                  %p= "Fax: #{cl.fax}" if cl.fax.present?
-                - if cl.location.present? && cl.location.in_hospital?
-                  - hospital = cl.location.hospital_in
-                  %p= "In #{link_to hospital.name, hospital_path(hospital), class: 'ajax'}".html_safe
-                  %p= link_to address.address, address.map_url, target: "_blank" if address.present? && !address.empty?
-                  %p= cl.location.in_details if cl.location.in_details.present?
-                - elsif address.present? && !address.empty?
-                  %p= link_to address.address, address.map_url, target: "_blank"
+                  %i (No details available)
+              - else
+                %p.space
+                  %i{class: clinic.status_class}
+                  %strong.status= clinic.status.end_with_period
+                - if clinic.status_details.present?
+                  %p
+                    %strong Details:
+                    = clinic.status_details.end_with_period.convert_newlines_to_br
+                - if clinic.limitations.present?
+                  %p
+                    %strong Limitations:
+                    = clinic.limitations.end_with_period.convert_newlines_to_br
 
-              %p.space
-                %strong Referrals:
-                %span{class: @specialist.status_class}
-                = "<a href='#{clinic_path(clinic)}'>Full contact and referral details</a>".html_safe
+                - clinic_locations.each do |cl|
+                  - address = cl.resolved_address
+                  %p.space
+                    %strong= cl.phone_only if cl.phone_only.present?
+                    %p= "Fax: #{cl.fax}" if cl.fax.present?
+                  - if cl.location.present? && cl.location.in_hospital?
+                    - hospital = cl.location.hospital_in
+                    %p= "In #{link_to hospital.name, hospital_path(hospital), class: 'ajax'}".html_safe
+                    %p= link_to address.address, address.map_url, target: "_blank" if address.present? && !address.empty?
+                    %p= cl.location.in_details if cl.location.in_details.present?
+                  - elsif address.present? && !address.empty?
+                    %p= link_to address.address, address.map_url, target: "_blank"
+
+                %p.space
+                  %strong Referrals:
+                  %span{class: @specialist.status_class}
+                  = "<a href='#{clinic_path(clinic)}'>Full contact and referral details</a>".html_safe
 
             - hospitals = @specialist.hospitals
             - if hospitals.present?
@@ -446,57 +453,11 @@
                     %strong Does not see or do
                   %p= @specialist.not_performed.end_with_period.convert_newlines_to_br
 
-    #feedback
-      .inner
-        = simple_form_for @feedback, html: { class: "ajax feedback_form" } do |f|
-
-          = f.input :feedback, label: "Please provide us with any updates to #{@specialist.name}'s information"
-          = f.input :item_type, as: :hidden, value: "Specialist"
-          = f.input :item_id, as: :hidden, value: @specialist.id
-
-          .form-actions
-            %a.btn.btn-primary{id: "sendFeedbackButton", "href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" }
-              .before-click
-                Send Feedback
-              .after-click.hidden
-                Sending
-            %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
-
-    #feedback_thanks
-      .inner
-        %h2 Thank you!
-
-        %p.space.no_indent= "Thank you for providing your feedback  on #{@specialist.name}. Your contributions help make Pathways a valuable resource for the community."
-
-        %p.space.no_indent We will review your feedback in the near future and take action as necessary.
-
-        %p.space.no_indent
-          %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close
-
-    %script{"type" => "text/javascript"}
-      :plain
-        $(document).ready(function() {
-          $('.tt').tooltip({trigger: 'manual'});
-          $('#user_favorite_specialists_#{@specialist.id}').addClass('#{favorite_class}');
-        });
-
-        function send_feedback(form) {
-          $("#sendFeedbackButton").addClass('disabled');
-          $('.before-click').addClass('hidden');
-          $('.after-click').removeClass('hidden');
-          $.ajax({
-              url: form.attr('action'),
-              data: form.serialize(),
-              type: 'POST'
-          }).success(function(json) {
-              $("#sendFeedbackButton").removeClass('disabled');
-              $('.after-click').addClass('hidden');
-              $('.before-click').removeClass('hidden');
-              $('#feedback').fadeOut(200);
-              $('#feedback_item_feedback').val('')
-              $('#feedback_thanks').fadeIn(200);
-          });
-        }
+  :javascript
+    $(document).ready(function() {
+      $('.tt').tooltip({trigger: 'manual'});
+      $('#user_favorite_specialists_#{@specialist.id}').addClass('#{favorite_class}');
+    });
 
   - if current_user.as_admin_or_super?
     - if @specialist.user_controls_specialists.any?
@@ -563,7 +524,7 @@
         %i.icon-pencil.icon-white
         Update #{@specialist.name}'s information
     - else
-      %a.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
+      %a.btn{href: "javascript:void(0)", onclick: open_feedback_modal(@specialist)}
         %i.icon-bullhorn.icon-text
         Incorrect Information? Let us know
     - if !current_user.as_admin_or_super? && (can? :update, @specialist)
@@ -572,6 +533,7 @@
         #{@specialist.photo.present? ? "Change" : "Add"} #{@specialist.name}'s photo
 
   - if current_user.as_admin_or_super?
+
 
     %p.admin.btn-group
 

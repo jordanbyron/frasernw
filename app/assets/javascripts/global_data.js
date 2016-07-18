@@ -23,7 +23,7 @@
       window.localStorage.pathwaysGlobalData != undefined);
   };
 
-  pathways.localstorage_cache_version = function(cacheVersion){
+  pathways.loadGlobalData = function(cacheVersion){
     pathways.globalDataLoaded = function(){
       var deferred = $.Deferred();
 

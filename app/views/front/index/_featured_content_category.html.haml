@@ -1,6 +1,5 @@
 %h3
-  = link_to sc_category_path(category),
-    class: 'ajax' do
+  = link_to sc_category_path(category) do
     %span= category.name
     %span.all
       %span= " - Browse All"
@@ -46,15 +45,14 @@
             class: "featured_contents__dropdown_link",
             target: "_blank" do
             %i.icon-file.icon-blue
-            %span.featured_contents__dropdown_item_text= "View"
+            %span.featured_contents__dropdown_item_text View
         %li.featured_contents__dropdown_item
           = link_to "javascript:void(0)",
             onclick: favorite_featured_item(featured_sc_item),
             title: "Favourite / un-favourite",
             class: "featured_contents__dropdown_link" do
-            %i.icon-heart.icon-text{id: "user_favorite_content_items_#{featured_sc_item.id}"}
-            %span.featured_contents__dropdown_item_text
-              = "Favorite"
+            %i.icon-heart.icon-text{ id: "user_favorite_content_items_#{featured_sc_item.id}" }
+            %span.featured_contents__dropdown_item_text Favorite
         - if featured_sc_item.can_email?
           %li.featured_contents__dropdown_item
             = link_to compose_mail_to_patients_path(featured_sc_item),
@@ -62,12 +60,10 @@
               class: "featured_contents__dropdown_link",
               target: "_blank" do
               %i.icon-envelope-alt.icon-blue
-              %span.featured_contents__dropdown_item_text
-                = "Email"
+              %span.featured_contents__dropdown_item_text Email
         %li.featured_contents__dropdown_item
           = link_to "javascript:void(0)",
             onClick: open_feedback_modal(featured_sc_item),
             class: "featured_contents__dropdown_link" do
             %i.icon-bullhorn.icon-blue
-            %span.featured_contents__dropdown_item_text
-              = "Send Feedback"
+            %span.featured_contents__dropdown_item_text Send Feedback

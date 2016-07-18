@@ -7,10 +7,12 @@ class Ability
     if !user.authenticated?
       can [:validate, :signup, :setup], User
 
+      can [:create], FeedbackItem
+
     else
       can [:index], :front
       can :show, FaqCategory
-      can :index, :terms_and_conditions
+      can :terms_and_conditions, :static_pages
       can :get, :global_data
       can :index, Newsletter
       can :index, Video
@@ -23,17 +25,20 @@ class Ability
         can :show, :analytics
 
       elsif user.as_admin?
-        can :view_report, :page_views
-        can :view_report, :sessions
-        can :view_report, :csv_usage
-        can :view_report, :referents_by_specialty
-        can :view_report, :entity_page_views
-        can :view_report, :user_ids
+        can :view_report, [
+          :page_views,
+          :sessions,
+          :csv_usage,
+          :referents_by_specialty,
+          :entity_page_views,
+          :user_ids,
+          :archived_feedback_items
+        ]
 
         can [:show, :toggle_subscription], Issue
         can [:index, :show], :change_requests
 
-        can :index, Report
+        can :index, :reports
 
         can :manage, SecretToken
 
@@ -96,18 +101,7 @@ class Ability
         end
 
         can :manage, FeedbackItem do |feedback_item|
-          feedback_item.item.present? && (
-            (
-              feedback_item.item.instance_of?(Specialist) &&
-              (feedback_item.item.divisions & user.as_divisions).present?
-            ) || (
-              feedback_item.item.instance_of?(Clinic) &&
-              (feedback_item.item.divisions & user.as_divisions).present?
-            ) || (
-              feedback_item.item.instance_of?(ScItem) &&
-              ([feedback_item.item.division] & user.as_divisions).present?
-            )
-          )
+          (feedback_item.owner_divisions & user.as_divisions).any?
         end
 
         can :manage, ReviewItem do |review_item|
@@ -190,7 +184,7 @@ class Ability
           :update_password
         ], User
 
-        can [:create, :show], FeedbackItem
+        can [:create], FeedbackItem
 
         can [:update, :photo, :update_photo], Specialist do |specialist|
           specialist.controlling_users.include? user

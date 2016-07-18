@@ -9,12 +9,22 @@ const IssueRow = ({model, decoratedRecord}) => {
       <td>{ decoratedRecord.raw.code }</td>
       <td>
         <a href={link(decoratedRecord.raw)}>
-          { label(decoratedRecord) }
+          <ReadyToTestIcon decoratedRecord={decoratedRecord}/>
+          <span>{ label(decoratedRecord) }</span>
         </a>
         <EditIssue issue={decoratedRecord.raw} model={model}/>
       </td>
     </tr>
   );
+}
+
+const ReadyToTestIcon = ({decoratedRecord}) => {
+  if(decoratedRecord.raw.progressKey === 6){
+    return <i className="icon icon-thumbs-up" style={{marginRight: "5px"}}></i>;
+  }
+  else {
+    return <noscript/>;
+  }
 }
 
 const sourceLabel = (decoratedRecord, model) => {

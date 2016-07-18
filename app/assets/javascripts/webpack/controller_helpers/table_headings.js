@@ -23,7 +23,7 @@ const defaultHeadingKey = ((model) => {
   else if (collectionShownName(model) === "contentItems") {
     return "TITLE";
   }
-  else if (matchedRoute(model) === "/reports/pageviews_by_user"){
+  else if (matchedRoute(model) === "/reports/page_views_by_user"){
     return "PAGE_VIEWS";
   }
   else if (matchedRoute(model) === "/reports/referents_by_specialty"){

@@ -6,7 +6,7 @@ import entityPageViews from "controller_helpers/page_title_label/entity_page_vie
 
 const pageTitleLabel = (model) => {
   switch(matchedRoute(model)){
-  case "/reports/pageviews_by_user":
+  case "/reports/page_views_by_user":
     return "Page Views by User";
   case "/content_categories/:id":
     let parentContentCategory =

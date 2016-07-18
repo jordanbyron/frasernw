@@ -68,6 +68,7 @@ const unboundIteratees = (model) => {
   }
   else if (matchedRoute(model) === "/issues"){
     return [
+      (decoratedRecord) => (decoratedRecord.raw.progressKey === 6 ? 1 : 0),
       (decoratedRecord) => (decoratedRecord.raw.sourceKey),
       (decoratedRecord) => (parseInt(decoratedRecord.raw.codeNumber) || 0)
     ];

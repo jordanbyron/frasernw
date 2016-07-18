@@ -8,7 +8,7 @@ class Specialist < ActiveRecord::Base
   include Referrable
   include TokenAccessible
   include OffersTeleservices
-
+  include DivisionAdministered
   include ApplicationHelper
 
   attr_accessible :firstname,
@@ -141,8 +141,8 @@ class Specialist < ActiveRecord::Base
 
   before_save :destroy_photo?
 
-  after_commit :flush_cache_for_record
-  after_touch  :flush_cache_for_record
+  after_commit :expire_cache
+  after_touch  :expire_cache
 
   scope :deceased, -> { where(status_mask: STATUS_MASK_DECEASED) }
 
@@ -205,10 +205,13 @@ class Specialist < ActiveRecord::Base
     Rails.cache.fetch([name, id], expires_in: 4000.seconds) { find(id) }
   end
 
-  def flush_cache_for_record
+  def expire_cache
     Rails.cache.delete([self.class.name, self.id])
     cities(force: true)
     cities_for_front_page(force: true)
+    ExpireFragment.call(
+      Rails.application.routes.url_helpers.specialist_path(self)
+    )
   end
 
   def self.in_cities(c)
@@ -687,22 +690,6 @@ class Specialist < ActiveRecord::Base
     end.last
   end
 
-  def owners
-    if specializations.blank? || divisions.blank?
-      return [default_owner]
-    else
-      owners = SpecializationOption.
-        for_divisions_and_specializations(divisions, specializations).
-        map{ |so| so.owner }.
-        uniq
-      if owners.present?
-        return owners
-      else
-        return [default_owner]
-      end
-    end
-  end
-
   CATEGORIZATION_LABELS = {
     1 => "Responded to survey",
     2 => "Not responded to survey",
@@ -738,7 +725,7 @@ class Specialist < ActiveRecord::Base
     (responded? && !unavailable_for_a_while?)
   end
 
-  def show_wait_time_in_table?
+  def show_waittimes?
     responded? &&
       (
         accepting_new_patients? ||

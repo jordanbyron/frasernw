@@ -4,6 +4,24 @@ namespace :pathways do
     ROUTES = Rails.application.routes.url_helpers
 
     TASKS = {
+      specialists: -> {
+        Specialist.all.sort_by(&:id).each do |specialist|
+          puts "Specialist #{specialist.id}"
+
+          specialist.expire_cache
+          HttpGetter.exec(
+            "specialists/#{specialist.id}/#{specialist.token}/refresh_cache"
+          )
+        end
+      },
+      clinics: -> {
+        Clinic.all.sort_by(&:id).each do |c|
+          puts "Clinic #{c.id}"
+
+          ExpireFragment.call ROUTES.clinic_path(c)
+          HttpGetter.exec("clinics/#{c.id}/#{c.token}/refresh_cache")
+        end
+      },
       serialized_indices: -> {
         Denormalized.regenerate_all
       },

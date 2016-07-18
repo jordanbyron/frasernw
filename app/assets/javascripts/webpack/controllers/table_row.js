@@ -68,7 +68,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       </tr>
     )
   }
-  else if (matchedRoute(model) === "/reports/pageviews_by_user") {
+  else if (matchedRoute(model) === "/reports/page_views_by_user") {
     return(
       <tr>
         <td key="name">
@@ -123,7 +123,7 @@ const ContentItemTitle = ({decoratedRecord}) => {
         <a
           href={decoratedRecord.raw.resolvedUrl}
           target="_blank"
-          onClick={function() { trackContentItem(_gaq, decoratedRecord.raw.id) }}
+          onClick={function() { window.pathways.trackContentItem(_gaq, decoratedRecord.raw.id) }}
         >{ decoratedRecord.raw.title }</a>
         <Tags record={decoratedRecord.raw}/>
       </span>

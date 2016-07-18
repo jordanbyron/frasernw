@@ -108,7 +108,7 @@ const searchIsFocused = (model, action) => {
 const feedbackModal = (model = {}, action) => {
   return {
     state: feedbackModalState(model.state, action),
-    item: feedbackModalItem(model.item, action)
+    target: feedbackModalTarget(model.target, action)
   }
 }
 
@@ -123,7 +123,7 @@ const feedbackModalState = (model, action) => {
   }
 }
 
-const feedbackModalItem = (model, action) => {
+const feedbackModalTarget = (model, action) => {
   switch(action.type){
   case "SET_FEEDBACK_MODAL_STATE":
     if(action.proposed === "CLOSED") {
@@ -133,7 +133,7 @@ const feedbackModalItem = (model, action) => {
       return model;
     }
   case "OPEN_FEEDBACK_MODAL":
-    return action.item;
+    return action.target;
   default:
     return model;
   }

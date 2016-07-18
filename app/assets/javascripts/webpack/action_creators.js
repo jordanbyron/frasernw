@@ -5,7 +5,7 @@ import { cities as cityFilterSubkeys } from "controller_helpers/filter_subkeys";
 import _ from "lodash";
 
 export function requestDynamicData(model, dispatch){
-  if(matchedRoute(model) === "/reports/pageviews_by_user"){
+  if(matchedRoute(model) === "/reports/page_views_by_user"){
     const requestParams = {
       divisionId: FilterValues.divisionScope(model),
       startMonth: FilterValues.startMonth(model),
@@ -13,7 +13,7 @@ export function requestDynamicData(model, dispatch){
     }
 
     $.get(
-      "/api/v1/reports/pageviews_by_user",
+      "/api/v1/reports/page_views_by_user",
       { data: requestParams }
     ).done(function(data) {
       dispatch({
@@ -24,7 +24,8 @@ export function requestDynamicData(model, dispatch){
   }
   else if (matchedRoute(model) === "/reports/entity_page_views") {
     const requestParams = {
-      month_key: FilterValues.month(model),
+      start_month_key: FilterValues.startMonth(model),
+      end_month_key: FilterValues.endMonth(model),
       division_id: FilterValues.divisionScope(model),
       record_type: FilterValues.entityType(model)
     }
@@ -162,14 +163,10 @@ export function parseLocation(dispatch){
   })
 }
 
-export const openFeedbackModal = (dispatch, id, type, modalTitle) => {
+export const openFeedbackModal = (dispatch, target) => {
   dispatch({
     type: "OPEN_FEEDBACK_MODAL",
-    item: {
-      id: id,
-      type: type,
-      title: modalTitle
-    }
+    target: target
   });
 };
 
@@ -231,14 +228,23 @@ const doneSubmittingFeedback = (dispatch) => {
   })
 }
 
-export const submitFeedback = (dispatch, model, comment) => {
-  if(!comment){
+export const submitFeedback = (dispatch, model, name, email, comment) => {
+  if (!comment){
+
     return;
-  } else {
+  }
+  else if (model.app.currentUser.role === "unauthenticated" &&
+    (!name || !email)){
+
+    return;
+  }
+  else {
     $.post("/feedback_items", {
       feedback_item: {
-        item_id: model.ui.feedbackModal.item.id,
-        item_type: model.ui.feedbackModal.item.type,
+        target_id: model.ui.feedbackModal.target.id,
+        target_type: model.ui.feedbackModal.target.klass,
+        freeform_name: name,
+        freeform_email: email,
         feedback: comment
       }
     }).success(() => {

@@ -1,0 +1,8 @@
+!!!
+%html
+  %body
+    %p= "New 'Contact Us' feedback submitted by #{@feedback_item.submitter_name}" + |
+        " (#{@feedback_item.submitter_email})."                                     |
+    %p= @feedback_item.feedback
+    %p
+      %a{href: feedback_item_url(@feedback_item)} View Feedback

@@ -3,6 +3,7 @@ import { memoizePerRender, memoize } from "utils";
 import hiddenFromUsers from "controller_helpers/hidden_from_users";
 import stringScore from "utils/string_score";
 import { urlCollectionName } from "controller_helpers/links";
+import { matchesUserDivisions } from "controller_helpers/preliminary_filters";
 
 export const selectedCollectionFilter = (model) => {
   return _.get(
@@ -90,6 +91,11 @@ const filters = ((model) => {
   let filters = []
 
   filters.push((decoratedRecord) => decoratedRecord.score > 0.5)
+
+  filters.push((decoratedRecord) => {
+    return decoratedRecord.raw.collectionName !== "contentItems" ||
+      matchesUserDivisions(decoratedRecord.raw, model)
+  })
 
   filters.push((decoratedRecord) => {
     return !_.includes(

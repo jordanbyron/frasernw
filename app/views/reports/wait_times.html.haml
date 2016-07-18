@@ -1,20 +1,23 @@
-- set_page_specific_title "#{@report.name}"
+- set_page_specific_title "Wait Times"
 
 .content-wrapper
 
-  %h2= @report.name
-  %h4= "#{@report.level_name} #{@report.type}"
-  %p.no_indent= "Generated on #{Time.now.strftime('%A %B %d')} at #{Time.now.strftime('%I:%M %p')}"
+  %h2 Wait Times
+  %p.no_indent= "Reporting for #{@report_scope}"
+  %p.no_indent
+    = "Generated on #{Time.now.strftime('%A %B %d')} at "
+    = Time.now.strftime('%I:%M %p')
 
   %table#stats.table
 
     - Specialization.all.each do |s|
 
-      - if (@divisional)
-        - entities = s.send(@entity).in_divisions(@divisions).reject{ |e| !e.show_in_table? || !e.show_wait_time_in_table? }
+      - if @divisions.length == 1
+        - entities = s.send(@entity).in_divisions(@divisions).reject do |e|
+          - !e.show_in_table? || !e.show_waittimes?
       - else
-        - entities = s.send(@entity).reject{ |e| !e.show_in_table? || !e.show_wait_time_in_table? }
-
+        - entities = s.send(@entity).reject do |e|
+          - !e.show_in_table? || !e.show_waittimes?
       - next if entities.blank?
 
       %tr
@@ -23,14 +26,7 @@
         %th Wait Time
 
       - entities.each do |entity|
-
         %tr
           %td= link_to entity.name, entity
           %td= entity.lagtime
           %td= entity.waittime
-
-  %p.admin.btn-group
-    - if can? :update, @report
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Report", edit_report_path(@report), :class => "btn ajax")
-    - if can? :destroy, @report
-      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Report", @report, :data => { :confirm => "Delete #{@report.name}?" }, :method => :delete, :class => "btn")

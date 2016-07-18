@@ -20,7 +20,6 @@ class SpecialistsController < ApplicationController
 
   def show
     @specialist = Specialist.cached_find(params[:id])
-    @feedback = @specialist.active_feedback_items.build
     if @specialist.controlling_users.include?(current_user)
       current_user.viewed_controlled_specialist!(@specialist)
     end
@@ -284,9 +283,8 @@ class SpecialistsController < ApplicationController
 
   def refresh_cache
     @specialist = Specialist.find(params[:id])
-    @specialist.flush_cache_for_record
+    @specialist.expire_cache
     @specialist = Specialist.cached_find(params[:id])
-    @feedback = @specialist.active_feedback_items.build
     render :show
   end
 

@@ -28,10 +28,6 @@ class VersionsController < ApplicationController
 
     instance_variable_set("@#{instance_name}", item)
 
-    if item.respond_to?(:active_feedback_items)
-      @feedback = item.active_feedback_items.build
-    end
-
     @is_version = true
 
     if SUPPORTED_KLASSES_FOR_SHOW.include?(klass)

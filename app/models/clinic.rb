@@ -9,6 +9,7 @@ class Clinic < ActiveRecord::Base
   include ApplicationHelper
   include TokenAccessible
   include OffersTeleservices
+  include DivisionAdministered
 
   attr_accessible :name,
     :deprecated_phone,
@@ -288,7 +289,7 @@ class Clinic < ActiveRecord::Base
     (responded? && !unavailable_for_a_while?) || not_responded?
   end
 
-  def show_wait_time_in_table?
+  def show_waittimes?
     !closed? && responded? && accepting_new_patients?
   end
 
@@ -313,23 +314,6 @@ class Clinic < ActiveRecord::Base
 
   def divisions
     return cities.map{ |city| city.divisions }.flatten.uniq
-  end
-
-  def owners
-    if specializations.blank? || divisions.blank?
-      return [default_owner]
-    else
-      owners = SpecializationOption.for_divisions_and_specializations(
-        divisions,
-        specializations
-      ).map(&:owner).compact.uniq
-
-      if owners.present?
-        return owners
-      else
-        return [default_owner]
-      end
-    end
   end
 
   def attendances?

@@ -33,7 +33,8 @@ module Api
 
         render json: {
           recordsToDisplay: EntityPageViewsReport.call(
-            month_key: params[:month_key],
+            start_month_key: params[:start_month_key],
+            end_month_key: params[:end_month_key],
             division_id: params[:division_id],
             record_type: params[:record_type].underscore.to_sym
           )
@@ -50,8 +51,8 @@ module Api
         ))
       end
 
-      def pageviews_by_user
-        authorize! :view_reports, :pageviews_by_user
+      def page_views_by_user
+        authorize! :view_reports, :page_views_by_user
 
         render json: {
           recordsToDisplay: PageviewsByUser.call(

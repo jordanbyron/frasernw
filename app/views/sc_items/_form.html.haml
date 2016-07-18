@@ -1,10 +1,14 @@
-= simple_form_for @sc_item, html: { :class => "form-horizontal", multipart: true } do |f|
+= simple_form_for @sc_item, html: { class: "form-horizontal",
+  multipart: true } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
   %h3 Content Classification
 
-  = f.association :sc_category, as: :select, collection: @hierarchy, include_blank: false
+  = f.association :sc_category,
+    as: :select,
+    collection: @hierarchy,
+    include_blank: false
 
   .control-group
     .control-label
@@ -15,26 +19,26 @@
           = check_box_tag "specialization_#{specialization.id}",
             1,
             @has_specializations.include?(specialization.id),
-            :name => "specialization[#{specialization.id}",
-            :class => "specialty_check"
+            name: "specialization[#{specialization.id}",
+            class: "specialty_check"
           = specialization.name
 
-        .procedures_list{"id" => "specialization_#{specialization.id}_procedures"}
+        .procedures_list{ id: "specialization_#{specialization.id}_procedures" }
           - specialization.arranged_procedure_specializations(:non_assumed).each do |ps,children|
             %label
               = check_box_tag "procedure_specialization_#{ps.id}",
                 1,
                 @has_procedure_specializations.include?(ps.id),
-                :name => "procedure_specialization[#{ps.id}",
-                :class => "offsethalf"
+                name: "procedure_specialization[#{ps.id}",
+                class: "offsethalf"
               = ps.procedure.name
             - children.each do |child_ps, grandchildren|
               %label
                 = check_box_tag "procedure_specialization_#{child_ps.id}",
                   1,
                   @has_procedure_specializations.include?(child_ps.id),
-                  :name => "procedure_specialization[#{child_ps.id}",
-                  :class => "offset1"
+                  name: "procedure_specialization[#{child_ps.id}",
+                  class: "offset1"
                 = child_ps.procedure.name
 
   %h3 Content Options
@@ -71,7 +75,7 @@
     include_blank: false
 
   #link_section
-    = f.input :url, input_html: { :class => "span5" }
+    = f.input :url, input_html: { class: "span5" }
   #markdown_section
     = f.input :markdown_content
   #document_section
@@ -93,12 +97,10 @@
   = render "notes/fields", parent_fields: f, user: current_user
 
   .form-actions
-    = f.button :submit, :class => "btn btn-primary"
-    = link_to 'Cancel', root_url, :class => "btn btn-danger ajax"
+    = f.button :submit, class: "btn btn-primary"
+    = link_to 'Cancel', root_url, class: "btn btn-danger"
 
-
-
-  %script{"type" => "text/javascript"}
+  %script{ type: "text/javascript" }
     :plain
       function hide_show_procedures( checkbox )
       {
@@ -129,7 +131,6 @@
           $("#link_section").show();
           $("#markdown_section").hide();
           $("#document_section").hide();
-          $("#can_email_section").show();
           if (window.location.pathname == "/content_items/new") {
             $("#can-email-input").attr({"checked" : "checked"});
           }
@@ -139,15 +140,12 @@
           $("#link_section").hide();
           $("#markdown_section").show();
           $("#document_section").hide();
-          $("#can_email_section").hide();
         }
         else if ($(this).val() == 3)
         {
           $("#link_section").hide();
           $("#markdown_section").hide();
           $("#document_section").show();
-          $("#can_email_section").show();
-          $("#can-email-input").removeAttr("checked");
         }
       }
 

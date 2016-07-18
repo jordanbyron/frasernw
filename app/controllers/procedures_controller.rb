@@ -11,7 +11,7 @@ class ProceduresController < ApplicationController
     @layout_heartbeat_loader = false
     @procedure = Procedure.find(params[:id])
     @init_data = {
-      app: FilterTableAppState.call(current_user: current_user)
+      app: FilterTableAppState.call
     }
   end
 

@@ -59,9 +59,8 @@ module ApplicationHelper
     items.each do |item|
       count += 1
       result += "<li>"
-      result += "<strong><a class='ajax' "\
-                "href='#{procedure_path(item[:parent])}'>"\
-                "#{item[:parent].name}</a></strong>"
+      result += "<strong><a href='#{procedure_path(item[:parent])}'>"\
+                  "#{item[:parent].name}</a></strong>"
       investigation =
         item[:parent].
           procedure_specializations.
@@ -91,13 +90,11 @@ module ApplicationHelper
 
           if child_investigation && child_investigation.strip.length != 0
             has_investigation = true
-            child_results << "<a class='ajax' "\
-              "href='#{procedure_path(child[:parent])}'>"\
+            child_results << "<a href='#{procedure_path(child[:parent])}'>"\
               "#{child[:parent].name_relative_to_parents}</a> "\
               "(#{child_investigation})"
           else
-            child_results << "<a class='ajax' "\
-              "href='#{procedure_path(child[:parent])}'>"\
+            child_results << "<a href='#{procedure_path(child[:parent])}'>"\
               "#{child[:parent].name_relative_to_parents}</a>"
           end
 
@@ -116,16 +113,16 @@ module ApplicationHelper
               end
               if grandchild_investigation && grandchild_investigation.strip.length != 0
                 has_investigation = true
-                child_results << "<a class='ajax' "\
-                  "href='#{procedure_path(grandchild[:parent])}'>"\
-                  "#{child[:parent].name_relative_to_parents} "\
-                  "#{grandchild[:parent].name_relative_to_parents}</a> "\
-                  "(#{grandchild_investigation})"
+                child_results <<
+                  "<a href='#{procedure_path(grandchild[:parent])}'>"\
+                    "#{child[:parent].name_relative_to_parents} "\
+                    "#{grandchild[:parent].name_relative_to_parents}</a> "\
+                    "(#{grandchild_investigation})"
               else
-                child_results << "<a class='ajax' "\
-                  "href='#{procedure_path(grandchild[:parent])}'>"\
-                  "#{child[:parent].name_relative_to_parents} "\
-                  "#{grandchild[:parent].name_relative_to_parents}</a>"
+                child_results <<
+                  "<a href='#{procedure_path(grandchild[:parent])}'>"\
+                    "#{child[:parent].name_relative_to_parents} "\
+                    "#{grandchild[:parent].name_relative_to_parents}</a>"
               end
             end
           end
@@ -161,22 +158,13 @@ module ApplicationHelper
       item_text =
         parent.empty? ? "#{item.procedure.name}" : "#{parent} #{item.procedure.name}"
       result << [ item_text, item.id]
-      #this is a recursive call:
       result += ancestry_options(sub_items, item_text)
     end
     result
   end
 
-  def default_owner
-    return User.safe_find(10)
-  end
-
-  def default_content_owner
-    return User.safe_find(3) #Ron
-  end
-
   def user_guide
-    ScItem.safe_find(953) # the Pathways User Guide pdf on production
+    ScItem.safe_find(953) # User Guide pdf on production
   end
 
   def localstorage_cache_version
@@ -198,13 +186,13 @@ module ApplicationHelper
       content_tag(
         :i,
         nil,
-        "class" => icon_class,
+        class: icon_class,
         "data-toggle" => "tooltip",
         "data-original-title" => title,
         "data-placement" => placement
       )
     else
-      content_tag(:i, nil, "class" => icon_class)
+      content_tag(:i, nil, class: icon_class)
     end
   end
 
@@ -216,5 +204,25 @@ module ApplicationHelper
 
   def primary_support_email
     Division.provincial.primary_contacts.map(&:email)
+  end
+
+  def open_feedback_modal(target = nil)
+    label =
+      if target.nil?
+        ""
+      elsif target.is_a?(ScItem)
+        target.title
+      else
+        target.name
+      end
+
+    args = {
+      id: (target.nil? ? nil : target.id),
+      klass: (target.nil? ? nil : target.class.name),
+      label: label
+    }
+
+    ("window.pathways.openFeedbackModal(" +
+      "window.pathways.reactStore.dispatch,#{args.to_json})")
   end
 end

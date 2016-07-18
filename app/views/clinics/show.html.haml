@@ -56,7 +56,7 @@
                 - if @clinic.specialists.present?
                   %p.space.no_indent
                     %strong Specialists that work in this clinic:
-                    != @clinic.specialists.map{ |specialist| "<a href='#{specialist_path(specialist)}' class='ajax')\">#{specialist.name}</a>" }.to_sentence
+                    != specialists_who_work_in(@clinic)
 
               - else
 
@@ -157,32 +157,32 @@
                   %strong Required information / investigations
                   for all referrals:
                   = @clinic.required_investigations.end_with_period.convert_newlines_to_br
-
-              -if @clinic.waittime.present?
-                %p.space
-                  Average non-urgent patient wait time from referral to appointment:
-                  %strong= @clinic.waittime
-
-              -if @clinic.lagtime.present?
-                %p
-                  Average length of time to notify GP of a booking date:
-                  %strong= @clinic.lagtime
-
-              - @clinic.focuses.clinic_wait_time.each do |focus|
-
-                - if focus.waittime.present? || focus.lagtime.present?
+              - if @clinic.show_waittimes?
+                -if @clinic.waittime.present?
                   %p.space
-                    %strong= "#{focus.procedure_specialization.procedure.full_name}:"
+                    Average non-urgent patient wait time from referral to appointment:
+                    %strong= @clinic.waittime
 
-                  -if focus.waittime.present?
-                    %p
-                      Average non-urgent patient wait time from referral to appointment:
-                      %strong= focus.waittime
+                -if @clinic.lagtime.present?
+                  %p
+                    Average length of time to notify GP of a booking date:
+                    %strong= @clinic.lagtime
 
-                  -if focus.lagtime.present?
-                    %p
-                      Average length of time to notify GP of a booking date:
-                      %strong= focus.lagtime
+                - @clinic.focuses.clinic_wait_time.each do |focus|
+
+                  - if focus.waittime.present? || focus.lagtime.present?
+                    %p.space
+                      %strong= "#{focus.procedure_specialization.procedure.full_name}:"
+
+                    -if focus.waittime.present?
+                      %p
+                        Average non-urgent patient wait time from referral to appointment:
+                        %strong= focus.waittime
+
+                    -if focus.lagtime.present?
+                      %p
+                        Average length of time to notify GP of a booking date:
+                        %strong= focus.lagtime
 
               - if @clinic.patient_can_book_mask == 1
                 %p.space This office accepts direct calls from patients after referral to book their own appointments.
@@ -235,11 +235,7 @@
               %ul
                 - @clinic.visible_attendances.each do |attendance|
                   - if attendance.is_specialist
-                    %li
-                      %a.ajax{"href" => specialist_path(attendance.specialist)}= attendance.specialist.name
-                      - if attendance.specialist.padded_billing_number.present?
-                        = "- MSP ##{attendance.specialist.padded_billing_number}"
-                      = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
+                    = physician_attending(attendance)
                   - else
                     %li
                       = attendance.freeform_name
@@ -288,57 +284,11 @@
                     %strong Does not see or do
                   %p= @clinic.not_performed.end_with_period.convert_newlines_to_br
 
-    #feedback
-      .inner
-        = simple_form_for @feedback, html: { class: "ajax feedback_form" } do |f|
-
-          = f.input :feedback, label: "Please provide us with any updates to #{@clinic.name}'s information"
-          = f.input :item_type, as: :hidden, value: "Clinic"
-          = f.input :item_id, as: :hidden, value: @clinic.name
-
-          .form-actions
-            %a.btn.btn-primary{id: "sendFeedbackButton", "href" => "javascript:void(0)", "onclick" => "send_feedback($('form.feedback_form'))" }
-              .before-click
-                Send Feedback
-              .after-click.hidden
-                Sending
-            %a.btn.btn-danger{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeOut(200)"} Cancel
-
-    #feedback_thanks
-      .inner
-        %h2 Thank you!
-
-        %p.space.no_indent= "Thank you for providing your feedback  on #{@clinic.name}. Your contributions help make Pathways a valuable resource for the community."
-
-        %p.space.no_indent We will review your feedback in the near future and take action as necessary.
-
-        %p.space.no_indent
-          %a.btn.btn-primary{"href" => "javascript:void(0)", "onclick" => "$('#feedback_thanks').fadeOut(200)" } Close
-
-    %script{"type" => "text/javascript"}
-      :plain
-        $(document).ready(function() {
-          $('.tt').tooltip({trigger: 'manual'});
-          $('#user_favorite_clinics_#{@clinic.id}').addClass('#{favorite_class}');
-        });
-
-        function send_feedback(form) {
-          $("#sendFeedbackButton").addClass('disabled');
-          $('.before-click').addClass('hidden');
-          $('.after-click').removeClass('hidden');
-          $.ajax({
-              url: form.attr('action'),
-              data: form.serialize(),
-              type: 'POST'
-          }).success(function(json) {
-              $("#sendFeedbackButton").removeClass('disabled');
-              $('.after-click').addClass('hidden');
-              $('.before-click').removeClass('hidden');
-              $('#feedback').fadeOut(200);
-              $('#feedback_item_feedback').val('')
-              $('#feedback_thanks').fadeIn(200);
-          });
-        }
+  :javascript
+    $(document).ready(function() {
+      $('.tt').tooltip({trigger: 'manual'});
+      $('#user_favorite_clinics_#{@clinic.id}').addClass('#{favorite_class}');
+    });
 
   - if current_user.as_admin_or_super?
     - if @clinic.user_controls_clinics.any?
@@ -392,7 +342,7 @@
         %i.icon-pencil.icon-white
         Update #{@clinic.name}'s information
     - else
-      %a.btn{"href" => "javascript:void(0)", "onclick" => "$('#feedback').fadeIn(200)"}
+      %a.btn{href: "javascript:void(0)", onclick: open_feedback_modal(@clinic)}
         %i.icon-bullhorn.icon-text
         Incorrect Information? Let us know
 

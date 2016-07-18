@@ -1,14 +1,6 @@
 class ReportsController < ApplicationController
-  load_and_authorize_resource except: [
-    :page_views,
-    :sessions,
-    :user_ids,
-    :referents_by_specialty,
-    :entity_page_views
-  ]
-
   def index
-    @reports = Report.all
+    authorize! :index, :reports
   end
 
   def page_views
@@ -45,16 +37,16 @@ class ReportsController < ApplicationController
     render :analytics_chart
   end
 
-  def pageviews_by_user
+  def page_views_by_user
+    authorize! :view_report, :page_views_by_user
+
     @init_data = {
       app: {
-        currentUser: FilterTableAppState::CurrentUser.call(
+        currentUser: Denormalized::CurrentUser.call(
           current_user: current_user
         ),
       }
     }
-
-    authorize! :view_report, :pageviews_by_user
   end
 
   def user_ids
@@ -76,112 +68,128 @@ class ReportsController < ApplicationController
 
   def referents_by_specialty
     authorize! :view_report, :referents_by_specialty
-
-    @init_data = {
-      app: {
-        currentUser: FilterTableAppState::CurrentUser.call(
-          current_user: current_user
-        ),
-        specializations: Denormalized.fetch(:specializations),
-        divisions: Denormalized.fetch(:divisions)
-      }
-    }
   end
 
   def entity_page_views
     @layout_heartbeat_loader = false
 
     authorize! :view_report, :entity_page_views
-
-    @init_data = {
-      app: {
-        currentUser: FilterTableAppState::CurrentUser.call(
-          current_user: current_user
-        ),
-        divisions: Denormalized.fetch(:divisions)
-      }
-    }
   end
 
-  def show
-    @report = Report.find(params[:id])
-
-    case @report.type_mask
-    when Report::ReportType::SPECIALIST_CONTACT_HISTORY
-
-      @specialist_email_table = {}
-      @divisions = @report.divisional? ? [@report.division] : Division.all
-      Specialization.all.each do |s|
-        specialization = []
-        specialists = @report.divisional? ? s.specialists.in_divisions(@divisions) : s.specialists
-        specialists.sort_by{ |sp| sp.locations.first.present? ? sp.locations.first.short_address : ""}.each do |sp|
-          next if !sp.responded? || sp.not_available?
-          active_controlling_users = sp.controlling_users.reject{ |u| u.pending? || !u.active? }
-          entry = {}
-          entry[:id] = sp.id
-          entry[:name] = sp.name
-          entry[:user_email] = active_controlling_users.map{ |u| u.email }.map{ |e| e.split }.flatten.reject{ |e| !(e.include? '@') }
-          entry[:moa_email] = sp.contact_email.split.flatten.reject{ |e| !(e.include? '@') }
-          entry[:token] = sp.token
-          entry[:updated_at] = sp.updated_at
-          review_item = sp.review_items.sort_by{ |x| x.id }.last
-          entry[:reviewed_at] = review_item.present? ? review_item.updated_at : nil
-          entry[:linked_active_account_count] = active_controlling_users.count
-          entry[:linked_pending_account_count] = sp.controlling_users.reject{ |u| !u.pending? }.count
-          specialization << entry
-        end
-        @specialist_email_table[s.id] = specialization
+  def specialist_contact_history
+    set_divisions_from_params!
+    authorize! :view_report, :specialist_contact_history
+    @specialist_email_table = {}
+    Specialization.all.each do |s|
+      specialization = []
+      specialists = s.specialists.in_divisions(@divisions)
+      specialists.sort_by do |sp|
+        sp.locations.first.present? ? sp.locations.first.short_address : ""
+      end.each do |sp|
+        next if !sp.responded? || sp.not_available?
+        active_controlling_users =
+          sp.controlling_users.reject{ |u| u.pending? || !u.active? }
+        entry = {}
+        entry[:id] = sp.id
+        entry[:name] = sp.name
+        entry[:user_email] =
+          active_controlling_users.
+            map{ |u| u.email }.
+            map{ |e| e.split }.
+            flatten.
+            reject{ |e| !(e.include? '@') }
+        entry[:moa_email] =
+          sp.contact_email.split.flatten.reject{ |e| !(e.include? '@') }
+        entry[:token] = sp.token
+        entry[:updated_at] = sp.updated_at
+        review_item = sp.review_items.sort_by{ |x| x.id }.last
+        entry[:reviewed_at] =
+          review_item.present? ? review_item.updated_at : nil
+        entry[:linked_active_account_count] = active_controlling_users.count
+        entry[:linked_pending_account_count] =
+          sp.controlling_users.reject{ |u| !u.pending? }.count
+        specialization << entry
       end
-    when Report::ReportType::ENTITY_STATS
-      @divisional = @report.divisional?
-      @divisions = @report.divisional? ? [@report.division] : Division.all
-      render :stats
-    when Report::ReportType::SPECIALIST_WAIT_TIMES
-      @divisional = @report.divisional?
-      @divisions = @report.divisional? ? [@report.division] : Division.all
-      @entity = "specialists"
-      render :wait_times
-    when Report::ReportType::CLINIC_WAIT_TIMES
-      @divisional = @report.divisional?
-      @divisions = @report.divisional? ? [@report.division] : Division.all
-      @entity = "clinics"
-      render :wait_times
-    else
-      @data = nil
+      @specialist_email_table[s.id] = specialization
+    end
+    render :contact_history
+  end
+
+  def specialist_wait_times
+    set_divisions_from_params!
+    authorize! :view_report, :specialist_wait_times
+    @entity = "specialists"
+    render :wait_times
+  end
+
+  def clinic_wait_times
+    set_divisions_from_params!
+    authorize! :view_report, :clinic_wait_times
+    @entity = "clinics"
+    render :wait_times
+  end
+
+  def entity_statistics
+    set_divisions_from_params!
+    authorize! :view_report, :entity_statistics
+    render :stats
+  end
+
+  def archived_feedback_items
+    authorize! :view_report, :archived_feedback_items
+
+    scope = FeedbackItem.
+      archived.
+      order('id desc')
+
+    if params[:division_id].present?
+      @division = Division.find(params[:division_id])
+      scope = scope.where(
+        "(?) = ANY(archiving_division_ids)",
+        params[:division_id]
+      )
+    end
+
+    @feedback_item_types = {}
+
+    [
+      :specialist,
+      :clinic,
+      :content,
+      :contact_us
+    ].each do |type|
+      @feedback_item_types[type] = scope.
+        send(type).
+        paginate(page: params[:page], per_page: 10)
     end
   end
 
-  def new
-    @report = Report.new
-    @ReportType = Report::ReportType
+  def change_requests
+    authorize! :view_report, :change_requests
+
+    redirect_to change_requests_path
   end
 
-  def create
-    @report = Report.new(params[:report])
-    if @report.save
-      redirect_to @report, notice: "Successfully created report."
+  def csv_usage
+    authorize! :view_report, :csv_usage
+
+    redirect_to new_csv_usage_report_path
+  end
+
+  private
+
+  def set_divisions_from_params!
+    @divisions =
+      if params[:division_id].present?
+        [Division.find(params[:division_id])]
       else
-      render action: 'new'
-    end
-  end
-
-  def edit
-    @report = Report.find(params[:id])
-    @ReportType = Report::ReportType
-  end
-
-  def update
-    @report = Report.find(params[:id])
-    if @report.update_attributes(params[:report])
-      redirect_to @report, notice: "Successfully updated report."
-    else
-      render action: 'edit'
-    end
-  end
-
-  def destroy
-    @report = Report.find(params[:id])
-    @report.destroy
-    redirect_to reports_url, notice: "Successfully deleted report."
+        Division.all
+      end
+    @report_scope =
+      if @divisions.length > 1
+        "all divisions"
+      else
+        @divisions.first.name
+      end
   end
 end
