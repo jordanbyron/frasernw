@@ -5,7 +5,7 @@ import { matchedRoute } from "controller_helpers/routing";
 import monthOptions from "controller_helpers/month_options";
 
 const DateRangeFilters = ({model, dispatch}) => {
-  if(_.includes(["/reports/pageviews_by_user", "/reports/entity_page_views"],
+  if(_.includes(["/reports/page_views_by_user", "/reports/entity_page_views"],
     matchedRoute(model)
   )){
     return(

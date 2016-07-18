@@ -51,7 +51,7 @@ module Api
         ))
       end
 
-      def pageviews_by_user
+      def page_views_by_user
         authorize! :view_reports, :page_views_by_user
 
         render json: {

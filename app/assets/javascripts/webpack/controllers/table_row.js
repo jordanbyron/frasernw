@@ -86,7 +86,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       </tr>
     )
   }
-  else if (matchedRoute(model) === "/reports/pageviews_by_user") {
+  else if (matchedRoute(model) === "/reports/page_views_by_user") {
     return(
       <tr>
         <td key="name">

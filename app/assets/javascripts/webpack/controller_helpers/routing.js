@@ -8,7 +8,7 @@ export const Routes = [
   "/reports/entity_page_views",
   "/reports/referents_by_specialty",
   "/latest_updates",
-  "/reports/pageviews_by_user",
+  "/reports/page_views_by_user",
   "/hospitals/:id",
   "/languages/:id",
   "/news_items",

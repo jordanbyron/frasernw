@@ -5,7 +5,7 @@ import { cities as cityFilterSubkeys } from "controller_helpers/filter_subkeys";
 import _ from "lodash";
 
 export function requestDynamicData(model, dispatch){
-  if(matchedRoute(model) === "/reports/pageviews_by_user"){
+  if(matchedRoute(model) === "/reports/page_views_by_user"){
     const requestParams = {
       divisionId: FilterValues.divisionScope(model),
       startMonth: FilterValues.startMonth(model),
@@ -13,7 +13,7 @@ export function requestDynamicData(model, dispatch){
     }
 
     $.get(
-      "/api/v1/reports/pageviews_by_user",
+      "/api/v1/reports/page_views_by_user",
       { data: requestParams }
     ).done(function(data) {
       dispatch({

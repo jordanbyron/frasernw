@@ -174,7 +174,7 @@ const UpperWhitePanel = ({model}) => {
 
 
 const LowerPanelTitle = ({model}) => {
-  if(_.includes(["/reports/pageviews_by_user",
+  if(_.includes(["/reports/page_views_by_user",
     "/content_categories/:id",
     "/reports/referents_by_specialty",
     "/latest_updates",

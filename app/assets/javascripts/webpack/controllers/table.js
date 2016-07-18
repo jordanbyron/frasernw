@@ -63,7 +63,7 @@ const shouldShow = (model) => {
 }
 
 const isTableLoaded = (model) => {
-  if(matchedRoute(model) === "/reports/pageviews_by_user" ||
+  if(matchedRoute(model) === "/reports/page_views_by_user" ||
     matchedRoute(model) === "/reports/entity_page_views"){
     return model.ui.recordsToDisplay;
   }
@@ -76,7 +76,7 @@ const ROUTES_IMPLEMENTING = [
   "/specialties/:id",
   "/areas_of_practice/:id",
   "/content_categories/:id",
-  "/reports/pageviews_by_user",
+  "/reports/page_views_by_user",
   "/reports/entity_page_views",
   "/reports/referents_by_specialty",
   "/latest_updates",

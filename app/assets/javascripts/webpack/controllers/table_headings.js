@@ -111,7 +111,7 @@ const cellConfigs = (model) => {
       { label: "", key: "ADMIN"}
     ];
   }
-  else if (matchedRoute(model) === "/reports/pageviews_by_user"){
+  else if (matchedRoute(model) === "/reports/page_views_by_user"){
     return [
       { label: "User", key: "USERS" },
       { label: "Page Views", key: "PAGE_VIEWS" }
