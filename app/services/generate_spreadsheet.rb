@@ -37,7 +37,8 @@ module GenerateSpreadsheet
       print_spreadsheet(printing_body, printing_header)
     end
 
-    # Status "moved away", "permanently unavailable", or "indefinitely unavailable"
+    # Status "moved away", "permanently unavailable", or
+    # "indefinitely unavailable"
     def specialists_moved_away_or_unavailable
       specialists = Specialist.where(status_mask: [8,9,10])
 
@@ -71,9 +72,9 @@ module GenerateSpreadsheet
     end
 
     # - FNW users who are type: "GP Office," "Locum," "Resident," or "Other."
-    #   (Excludes "Specialist Office", "Clinic", "Hospitalist", "Nurse Practitioner",
-    #     or "Unit Clerk.")
-    # - "Pending," "Inactive," and "Other" -status accounts, split into worksheets.
+    #   (Excludes "Specialist Office", "Clinic", "Hospitalist",
+    #   "Nurse Practitioner", or "Unit Clerk.")
+    # - "Pending," "Inactive," and "Other" -status accounts split by worksheet.
     def fnw_users
 
       fnw_users = User.
@@ -108,7 +109,7 @@ module GenerateSpreadsheet
         inactive_users: inactive_users,
         other_users: other_users
       }
-      printing_header = ["ID","Name","Email","Last Logged-In", "Status", "Type"]
+      printing_header = ["ID","Name","Email","Last Logged-In","Status","Type"]
       print_spreadsheet(printing_body, printing_header)
     end
 
@@ -128,6 +129,7 @@ module GenerateSpreadsheet
       users_rows = []
       users_to_review.each do |user|
         user_row = [
+          user.divisions.first.name,
           user.id,
           user.name
         ]
@@ -141,7 +143,13 @@ module GenerateSpreadsheet
       printing_body = {
         users_owning_only_unattended_clinics: users_rows
       }
-      printing_header = ["User ID","User name","Clinic ID","Clinic name"]
+      printing_header = [
+        "User Divisions",
+        "User ID",
+        "User name",
+        "Clinic ID",
+        "Clinic name"
+      ]
       print_spreadsheet(printing_body, printing_header)
     end
 
