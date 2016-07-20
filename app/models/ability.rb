@@ -32,7 +32,8 @@ class Ability
           :referents_by_specialty,
           :entity_page_views,
           :user_ids,
-          :archived_feedback_items
+          :archived_feedback_items,
+          :change_requests
         ]
 
         can [:show, :toggle_subscription], Issue
