@@ -100,7 +100,7 @@ class FeedbackItem < ActiveRecord::Base
   end
 
   def creator
-    user
+    user || OpenStruct.new(name: freeform_name)
   end
 
   def active?
