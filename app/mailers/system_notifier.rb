@@ -1,7 +1,4 @@
 module SystemNotifier
-  # convenience wrappers for #notify
-
-
   def self.info(subject)
     notify(
       tag: "Info",
@@ -23,8 +20,25 @@ module SystemNotifier
     )
   end
 
-  # #notify wraps whatever system notification system(s) we want to be using
+  def self.javascript_error(e, options = {})
+    notify(
+      tag: "Exception - Client-side",
+      subject: e[:message],
+      timestamp: DateTime.now.to_s(:long_ordinal),
+      body: {
+        name: e[:name],
+        message: e[:message],
+        file: e[:file],
+        line: e[:line],
+        column: e[:column],
+        url: e[:url],
+        errorStack: e[:errorStack]
+      }
+    )
+  end
+
   # TODO: all system notifications, including errors, should come through here
+
   # takes {tag: <:sym>, subject: <"str">, body: <{}>}
   def self.notify(options)
     SystemMailer.notification(options).deliver

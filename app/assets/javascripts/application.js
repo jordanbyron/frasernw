@@ -17,6 +17,7 @@
 //= require webpack.bundle
 //= require jquery_components/checkbox_slidedown
 //= require global_data
+//= require_tree ./error_catching
 //= require_directory .
 
 function current_user_is_admin()
@@ -27,7 +28,6 @@ function current_user_is_admin()
 Array.prototype.to_sentence = function() {
   return this.join(", ").replace(/,\s([^,]+)$/, ' and $1')
 }
-
 Array.prototype.unique = function() {
   var a = this.concat();
   for(var i=0; i<a.length; ++i) {
@@ -38,7 +38,6 @@ Array.prototype.unique = function() {
   }
   return a;
 };
-
 Array.prototype.intersect = function(a2)
 {
   var a1 = this;
@@ -97,7 +96,6 @@ if (!Array.prototype.map) {
     return A;
   };
 }
-
 //see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
 if (!Array.prototype.filter) {
   Array.prototype.filter = function(fun/*, thisArg*/) {
@@ -133,7 +131,6 @@ if (!Array.prototype.filter) {
     return res;
   };
 }
-
 if(!Array.indexOf) {
   Array.prototype.indexOf = function(obj) {
     for (var i=0; i < this.length; i++) {
@@ -144,7 +141,6 @@ if(!Array.indexOf) {
     return -1;
   }
 }
-
 if(typeof String.prototype.trim !== 'function') {
   String.prototype.trim = function() {
     return this.replace(/^\s+|\s+$/g, '');
@@ -162,7 +158,6 @@ function favorite(type, id, name) {
     }
   });
 }
-
 function onChangeFavoriteSuccess(data, type, id, name){
   var favorite_heart = $('#user_favorite_' + type + '_' + id);
   if (data)

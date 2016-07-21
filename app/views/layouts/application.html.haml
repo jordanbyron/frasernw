@@ -7,7 +7,9 @@
     %meta{ "http-equiv" => "Content-Type",
       content: "text/html; charset=utf-8" }
     %meta{ name: "viewport", content: "initial-scale=1.0" }
+    = javascript_include_tag "error_catching"
     :javascript
+      window.startErrorLog();
       window.pathways = window.pathways || {};
       window.pathways.environment = "#{Rails.env}";
       window.pathways.dataForReact = []
@@ -34,15 +36,18 @@
     = yield(:head)
 
     :javascript
-      $(document).ready(function(){
-        if ($(window).width() <= 480)
-        {
-          $('meta[name=viewport]').attr(
-            'content','initial-scale=1.0, user-scalable=no'
+      $(document).ready(function() {
+        $(wrapErrors(function () {
+          if ($(window).width() <= 480)
+          {
+            $('meta[name=viewport]').attr(
+              'content','initial-scale=1.0, user-scalable=no'
+            );
+          }
+          $('body').data('GLOBAL_USER_TYPE',
+            #{current_user.adjusted_type_mask}
           );
-        }
-        $('body').data('GLOBAL_USER_TYPE',
-          #{current_user.adjusted_type_mask});
+        }));
       });
 
     :javascript
