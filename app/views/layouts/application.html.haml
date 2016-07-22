@@ -37,17 +37,15 @@
 
     :javascript
       $(document).ready(function() {
-        $(wrapErrors(function () {
-          if ($(window).width() <= 480)
-          {
-            $('meta[name=viewport]').attr(
-              'content','initial-scale=1.0, user-scalable=no'
-            );
-          }
-          $('body').data('GLOBAL_USER_TYPE',
-            #{current_user.adjusted_type_mask}
+        if ($(window).width() <= 480)
+        {
+          $('meta[name=viewport]').attr(
+            'content','initial-scale=1.0, user-scalable=no'
           );
-        }));
+        }
+        $('body').data('GLOBAL_USER_TYPE',
+          #{current_user.adjusted_type_mask}
+        );
       });
 
     :javascript

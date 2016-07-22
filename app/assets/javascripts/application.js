@@ -17,7 +17,6 @@
 //= require webpack.bundle
 //= require jquery_components/checkbox_slidedown
 //= require global_data
-//= require_tree ./error_catching
 //= require_directory .
 
 function current_user_is_admin()

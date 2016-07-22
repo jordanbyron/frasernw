@@ -36,7 +36,6 @@ module Frasernw
     config.autoload_paths << "#{config.root}/app/concerns"
 
     config.assets.precompile += ["error_catching.js"]
-    config.assets.paths << "#{Rails.root}/app/assets/javascripts/error_catching"
     config.assets.paths << "#{Rails.root}/app/assets/fonts"
     config.assets.paths << "#{Rails.root}/vendor/assets/javascripts"
     # Defaults to '/assets'
