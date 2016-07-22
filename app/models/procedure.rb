@@ -58,6 +58,17 @@ class Procedure < ActiveRecord::Base
     end
   end
 
+  def ancestor_ids
+    if procedure_specializations.any?
+      procedure_specializations.
+        first.
+        ancestors.
+        map(&:procedure_id)
+    else
+      []
+    end
+  end
+
   def name_relative_to_parents
     # remove any words that also appear in the parents' names
     parents_names = parents_name_array

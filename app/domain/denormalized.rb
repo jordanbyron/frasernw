@@ -314,11 +314,7 @@ module Denormalized
           },
           childrenProcedureIds: procedure.children.map(&:id),
           fullName: procedure.full_name,
-          ancestorIds: procedure.
-            procedure_specializations.
-            first.
-            ancestors.
-            map(&:procedure_id),
+          ancestorIds: procedure.ancestor_ids,
           collectionName: "procedures"
         })
       end
