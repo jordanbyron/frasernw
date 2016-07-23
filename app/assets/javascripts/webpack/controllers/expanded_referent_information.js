@@ -6,14 +6,25 @@ const ExpandedReferentInformation = React.createClass({
   render: function(){
     return(
       <ExpandingContainer expanded={areRowsExpanded(this.props.model)}>
-        <ul ref="content">
-          <NotPerformed record={this.props.record}/>
-          <MostInterested record={this.props.record}/>
-        </ul>
+        <InnerContent model={this.props.model} record={this.props.record}/>
       </ExpandingContainer>
     );
   }
 });
+
+const InnerContent = ({model, record}) => {
+  if (record.statusClassKey === 4){
+    return <noscript/>;
+  }
+  else {
+    return(
+      <ul>
+        <NotPerformed record={record}/>
+        <MostInterested record={record}/>
+      </ul>
+    );
+  }
+}
 
 const MostInterested = ({record}) => {
   if (record.interest){

@@ -5,9 +5,7 @@ import { memoizePerRender } from "utils";
 import ReferentStatusIcon from "controllers/referent_status_icon";
 import Tags from "component_helpers/tags";
 import ExpandedReferentInformation from "controllers/expanded_referent_information";
-import selectedRecordId from "controller_helpers/selected_record_id";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
-
 
 const ReferentRow = ({decoratedRecord, model, dispatch}) => {
   return(
@@ -60,7 +58,7 @@ const ReferentName = ({decoratedRecord, model, dispatch}) => {
   return (
     <td className="datatable__cell">
       <span>
-        <ReferentNameLink decoratedRecord={decoratedRecord} model={model} dispatch={dispatch}/>
+        <ReferentNameLink decoratedRecord={decoratedRecord}/>
         <Suffix record={decoratedRecord.raw} model={model}/>
         <Tags record={decoratedRecord.raw}/>
         <ExpandedReferentInformation record={decoratedRecord.raw} model={model}/>
@@ -69,49 +67,15 @@ const ReferentName = ({decoratedRecord, model, dispatch}) => {
   );
 }
 
-const ReferentNameLink = React.createClass({
-  getInitialState: function() {
-    return { timer: null };
-  },
-  handleMouseEnter: function() {
-    var model = this.props.model;
-    var id = this.props.decoratedRecord.raw.id;
-    var dispatch = this.props.dispatch;
-
-    var timer = setTimeout(function() {
-      selectRecord(model, dispatch, id);
-    }, 750)
-
-    this.setState({timer: timer});
-  },
-  handleMouseLeave: function() {
-    clearTimeout(this.state.timer);
-    this.setState({timer: null});
-
-    if(selectedRecordId(this.props.model) === this.props.decoratedRecord.raw.id){
-      deselectRecord(this.props.model, this.props.dispatch);
-    }
-  },
-  handleClick: function(){
-    clearTimeout(this.state.timer);
-    this.setState({timer: null});
-  },
-  render: function() {
-    var decoratedRecord = this.props.decoratedRecord;
-
-    return(
-      <a className="datatable__referent_name"
-        href={`/${decoratedRecord.raw.collectionName}/${decoratedRecord.raw.id}`}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
-        onClick={this.handleClick}
-      >
-        { decoratedRecord.raw.name }
-      </a>
-    );
-  }
-})
-
+const ReferentNameLink = ({decoratedRecord}) => {
+  return(
+    <a className="datatable__referent_name"
+      href={`/${decoratedRecord.raw.collectionName}/${decoratedRecord.raw.id}`}
+    >
+      { decoratedRecord.raw.name }
+    </a>
+  );
+}
 
 const Suffix = ({record, model}) => {
   return(
