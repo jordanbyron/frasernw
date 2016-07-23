@@ -49,7 +49,7 @@ const MiniProfileItem = ({heading, value}) => {
     <li>
       <div className="mini-profile__item">
         <i>{`${heading} `}</i>
-        <span>{value}</span>
+        <span dangerouslySetInnerHTML={{__html: value}}></span>
       </div>
     </li>
   )
