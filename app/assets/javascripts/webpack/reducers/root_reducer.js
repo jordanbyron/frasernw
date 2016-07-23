@@ -186,8 +186,18 @@ const tab = (model = {}, action) => {
       model.specializationFilterActivated,
       action
     ),
-    currentPage: currentPage(model.currentPage, action)
+    currentPage: currentPage(model.currentPage, action),
+    areRowsExpanded: areRowsExpanded(model.areRowsExpanded, action)
   };
+}
+
+const areRowsExpanded = (model, action) => {
+  switch(action.type){
+  case "TOGGLE_ROW_EXPANSIONS":
+    return action.proposed;
+  default:
+    return model;
+  }
 }
 
 const currentPage = (model, action) => {

@@ -10,6 +10,7 @@ import showingMultipleSpecializations
   from "controller_helpers/showing_multiple_specializations";
 import { buttonIsh } from "stylesets";
 import _ from "lodash";
+import ExpandRowsToggle from "controllers/expand_rows_toggle";
 import { memoizePerRender } from "utils";
 import { selectedTabKey } from "controller_helpers/tab_keys";
 
@@ -29,28 +30,18 @@ const TableHeadings = ({model, dispatch}) => {
 };
 
 const cells = (model, dispatch) => {
-  if (canSelectSort(model)) {
-    return cellConfigs(model).map((config) => {
-      return(
-        <SortableTableHeadingCell
-          model={model}
-          dispatch={dispatch}
-          label={config.label}
-          key={config.key}
-          headingKey={config.key}
-        />
-      );
-    })
-  }
-  else {
-    return cellConfigs(model).map((config) => {
-      return(
-        <th className={classname(model, config.key)} key={config.key}>
-          { config.label }
-        </th>
-      );
-    });
-  }
+  return cellConfigs(model, dispatch).map((config) => {
+    return(
+      <TableHeadingCell
+        model={model}
+        dispatch={dispatch}
+        label={config.label}
+        key={config.key}
+        showExpansionToggle={config.showExpansionToggle}
+        headingKey={config.key}
+      />
+    );
+  })
 }
 
 const classname = (model, headingKey) => {
@@ -73,25 +64,20 @@ const classnamePrefix = ((model) => {
   }
 }).pwPipe(memoizePerRender)
 
-const cellConfigs = (model) => {
+const cellConfigs = (model, dispatch) => {
   if (_.includes(["specialists", "clinics"], collectionShownName(model))){
+    var configs = [
+      { label: collectionShownPluralLabel(model), key: "NAME", showExpansionToggle: true},
+      { label: "Accepting New Referrals?", key: "REFERRALS" },
+      { label: "Average Non-urgent Patient Waittime", key: "WAITTIME"},
+      { label: "City", key: "CITY" }
+    ];
+
     if (showingMultipleSpecializations(model)){
-      return [
-        { label: collectionShownPluralLabel(model), key: "NAME" },
-        { label: "Specialties", key: "SPECIALTIES" },
-        { label: "Accepting New Referrals?", key: "REFERRALS" },
-        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME"},
-        { label: "City", key: "CITY" }
-      ];
+      configs.splice(1, 0, { label: "Specialties", key: "SPECIALTIES" })
     }
-    else {
-      return [
-        { label: collectionShownPluralLabel(model), key: "NAME" },
-        { label: "Accepting New Referrals?", key: "REFERRALS" },
-        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME"},
-        { label: "City", key: "CITY" }
-      ];
-    }
+
+    return configs;
   }
   else if (collectionShownName(model) === "contentItems") {
     return [
@@ -164,17 +150,15 @@ const cellConfigs = (model) => {
   }
 };
 
-const SortableTableHeadingCell = ({model, dispatch, label, headingKey}) => {
-  const onClick = _.partial(
-    sortByHeading,
-    dispatch,
-    headingKey,
-    selectedTableHeadingKey(model),
-    model
-  );
-
+const TableHeadingCell = ({
+  model,
+  dispatch,
+  label,
+  headingKey,
+  showExpansionToggle
+}) => {
   return(
-    <th onClick={onClick}
+    <th onClick={onTableHeadingClick(model, dispatch, headingKey)}
       className={classname(model, headingKey)}
     >
       <span>{ label }</span>
@@ -182,12 +166,32 @@ const SortableTableHeadingCell = ({model, dispatch, label, headingKey}) => {
         model={model}
         headingKey={headingKey}
       />
+      <ExpandRowsToggle
+      model={model}
+      dispatch={dispatch}
+      shouldShow={showExpansionToggle}
+      />
     </th>
   );
 }
 
+const onTableHeadingClick = (model, dispatch, headingKey) => {
+  if(canSelectSort(model)){
+    return _.partial(
+      sortByHeading,
+      dispatch,
+      headingKey,
+      selectedTableHeadingKey(model),
+      model
+    );
+  }
+  else {
+    return _.noop
+  }
+}
+
 const TableHeadingArrow = ({model, headingKey}) => {
-  if (selectedTableHeadingKey(model) === headingKey) {
+  if (canSelectSort(model) && selectedTableHeadingKey(model) === headingKey) {
     return(
       <i className={`icon-arrow-${headingArrowDirection(model).toLowerCase()}`}
         style={{color: "#08c", marginLeft: "5px"}}

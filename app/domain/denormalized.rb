@@ -112,6 +112,8 @@ module Denormalized
               teleservices.
               select(&:offered?).
               map(&:service_type),
+            interest: Denormalized.sanitize(specialist.interest),
+            notPerformed: Denormalized.sanitize(specialist.not_performed),
             respondedToSurvey: !specialist.not_responded? &&
               !specialist.purposely_not_yet_surveyed?,
             isAvailable: !specialist.not_available?,
@@ -177,6 +179,8 @@ module Denormalized
               teleservices.
               select(&:offered?).
               map(&:service_type),
+            interest: Denormalized.sanitize(clinic.interest),
+            notPerformed: Denormalized.sanitize(clinic.not_performed),
             hidden: clinic.hidden?
           })
         end
@@ -444,5 +448,9 @@ module Denormalized
         }
       })
     end
+  end
+
+  def self.sanitize(input)
+    ActionController::Base.helpers.sanitize(input)
   end
 end
