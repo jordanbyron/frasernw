@@ -1,23 +1,20 @@
 import React from "react";
 import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
-import Tags from "component_helpers/tags";
-import ReferentStatusIcon from "controllers/referent_status_icon";
-import showingMultipleSpecializations
-  from "controller_helpers/showing_multiple_specializations";
 import SharedCareIcon from "component_helpers/icons/shared_care";
 import FavoriteIcon from "controllers/icons/favorite";
 import EmailIcon from "component_helpers/icons/email";
 import FeedbackIcon from "controllers/icons/feedback";
 import HideToggle from "controllers/hide_toggle";
 import HiddenBadge from "component_helpers/hidden_badge";
-import NewsItemRow from "controllers/table_row/news_items";
+import NewsItemRow from "controllers/table_row/news_item";
 import * as filterValues from "controller_helpers/filter_values";
+import { selectRecord, deselectRecord } from "action_creators";
 import { memoizePerRender } from "utils";
 import ChangeRequestRow from "controllers/table_row/change_request";
-import EditIssue from "controllers/icons/edit_issue";
-import IssueRow from "controllers/table_row/issues";
-
+import IssueRow from "controllers/table_row/issue";
+import ReferentRow from "controllers/table_row/referent";
+import Tags from "component_helpers/tags";
 
 const TableRow = ({model, dispatch, decoratedRecord}) => {
   if(_.includes([
@@ -28,27 +25,13 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
     "/languages/:id"
   ], matchedRoute(model))) {
     if(_.includes(["specialists", "clinics"], collectionShownName(model))) {
-      if(showingMultipleSpecializations(model)) {
-        return(
-          <tr className={decoratedRecord.raw.hidden ? "hidden-from-users" : ""}>
-            <ReferentName decoratedRecord={decoratedRecord} model={model}/>
-            <ReferentSpecializations decoratedRecord={decoratedRecord} model={model}/>
-            <td><ReferentStatusIcon model={model} record={decoratedRecord.raw} tooltip={true}/></td>
-            <td>{ decoratedRecord.waittime }</td>
-            <td>{ decoratedRecord.cityNames }</td>
-          </tr>
-        );
-      }
-      else {
-        return(
-          <tr className={decoratedRecord.raw.hidden ? "hidden-from-users" : ""}>
-            <ReferentName decoratedRecord={decoratedRecord} model={model}/>
-            <td><ReferentStatusIcon model={model} record={decoratedRecord.raw} tooltip={true}/></td>
-            <td>{ decoratedRecord.waittime }</td>
-            <td>{ decoratedRecord.cityNames }</td>
-          </tr>
-        );
-      }
+      return(
+        <ReferentRow
+          model={model}
+          dispatch={dispatch}
+          decoratedRecord={decoratedRecord}
+        />
+      );
     }
     else if (collectionShownName(model) === "contentItems"){
       return(
@@ -148,72 +131,4 @@ const ContentItemTitle = ({decoratedRecord}) => {
     </td>
   )
 }
-
-const ReferentSpecializations = ({decoratedRecord}) => {
-  return(<td>{decoratedRecord.specializationNames}</td>);
-}
-
-const ReferentName = ({decoratedRecord, model}) => {
-  return (
-    <td>
-      <span>
-        <a href={"/" + decoratedRecord.raw.collectionName + "/" + decoratedRecord.raw.id}>
-          { decoratedRecord.raw.name }
-        </a>
-        <Suffix record={decoratedRecord.raw} model={model}/>
-        <Tags record={decoratedRecord.raw}/>
-      </span>
-    </td>
-  );
-}
-
-const Suffix = ({record, model}) => {
-  return(
-    <span style={{marginLeft: "5px"}} className="suffix" key="suffix">
-      {suffix(record, model)}
-    </span>
-  )
-}
-
-const suffix = (record, model) => {
-  if (record.collectionName === "clinics") {
-    return "";
-  }
-  else if (record.isGp) {
-    return "GP";
-  }
-  else if (record.isInternalMedicine) {
-    return "Int Med";
-  }
-  else if (showPedSuffix(record, model)) {
-    return "Ped";
-  }
-  else {
-    return _.find(
-      record.specializationIds.map((id) => model.app.specializations[id].suffix),
-      (suffix) => suffix && suffix.length > 0
-    );
-  }
-};
-
-
-const showPedSuffix = (record, model) => {
-  return record.seesOnlyChildren &&
-    record.specializationIds.length > 1 &&
-    isPediatrician(record, model) &&
-    (matchedRoute(model) !== "/specialties/:id" ||
-      recordShownByPage(model).id !== parseInt(pediatricsId(model)));
-}
-
-const pediatricsId = ((model) => {
-  return _.find(
-    model.app.specializations,
-    (specialization) => specialization.name === "Pediatrics"
-  ).id;
-}).pwPipe(memoizePerRender)
-
-const isPediatrician = (record, model) => {
-  return _.includes(record.specializationIds, parseInt(pediatricsId(model)));
-}
-
 export default TableRow;

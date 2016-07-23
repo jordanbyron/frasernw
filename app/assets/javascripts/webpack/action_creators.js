@@ -262,6 +262,15 @@ export const closeFeedbackModal = (dispatch) => {
   })
 }
 
+export const toggleRowExpansion = (model, dispatch, proposed, e) => {
+  dispatch({
+    type: "TOGGLE_ROW_EXPANSIONS",
+    tabKey: selectedTabKey(model),
+    proposed: proposed
+  });
+
+  e.stopPropagation();
+};
 export const searchFocused = (dispatch, isFocused) => {
   dispatch({
     type: "SEARCH_FOCUS_CHANGED",
