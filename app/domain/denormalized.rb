@@ -112,8 +112,12 @@ module Denormalized
               teleservices.
               select(&:offered?).
               map(&:service_type),
-            interest: Denormalized.sanitize(specialist.interest),
-            notPerformed: Denormalized.sanitize(specialist.not_performed),
+            interest: Denormalized.
+              sanitize(specialist.interest).
+              try(:convert_newlines_to_br),
+            notPerformed: Denormalized.
+              sanitize(specialist.not_performed).
+              try(:convert_newlines_to_br),
             respondedToSurvey: !specialist.not_responded? &&
               !specialist.purposely_not_yet_surveyed?,
             isAvailable: !specialist.not_available?,
@@ -179,8 +183,12 @@ module Denormalized
               teleservices.
               select(&:offered?).
               map(&:service_type),
-            interest: Denormalized.sanitize(clinic.interest),
-            notPerformed: Denormalized.sanitize(clinic.not_performed),
+            interest: Denormalized.
+              sanitize(clinic.interest).
+              try(:convert_newlines_to_br),
+            notPerformed: Denormalized.
+              sanitize(clinic.not_performed).
+              try(:convert_newlines_to_br),
             hidden: clinic.hidden?
           })
         end
