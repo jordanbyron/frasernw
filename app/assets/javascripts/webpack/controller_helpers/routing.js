@@ -25,12 +25,12 @@ export const Routes = [
 
 export const matchedRoute = ((model) => {
   return _.find(Routes, (route) => {
-    return !(routeParams(model.ui.location.pathname, route) === null);
+    return !(routeParams(model.ui.pathname, route) === null);
   });
 }).pwPipe(memoizePerRender);
 
 export const matchedRouteParams = ((model) => {
-  return routeParams(model.ui.location.pathname, matchedRoute(model));
+  return routeParams(model.ui.pathname, matchedRoute(model));
 }).pwPipe(memoizePerRender);
 
 export const recordShownByPage = ((model) => {

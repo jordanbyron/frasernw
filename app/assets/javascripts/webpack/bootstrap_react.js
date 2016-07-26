@@ -9,7 +9,7 @@ import { useQueries } from 'history';
 import ReactDOM from "react-dom";
 import rootReducer from "reducers/root_reducer";
 import React from "react";
-import changeTab from "middlewares/change_tab";
+import updateUrlHash from "middlewares/update_url_hash";
 import setSearchListeners from "set_search_listeners";
 import {
   requestDynamicData,
@@ -27,7 +27,7 @@ const bootstrapReact = function() {
     middlewares.push(logger);
   }
 
-  middlewares.push(changeTab);
+  middlewares.push(updateUrlHash);
 
   middlewares.push(nextAction);
 
@@ -36,9 +36,12 @@ const bootstrapReact = function() {
   window.pathways.reactStore = store;
 
   parseLocation(store.dispatch);
+  window.pathways.urlHashFlushed = true;
 
   window.addEventListener("hashchange", () => {
-    parseLocation(store.dispatch);
+    if (window.pathways.urlHashFlushed) {
+      parseLocation(store.dispatch);
+    }
   })
 
   $(document).ready(function() {

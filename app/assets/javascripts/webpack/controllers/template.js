@@ -1,7 +1,6 @@
 import React from "react";
 import Table from "controllers/table";
 import * as FilterValues from "controller_helpers/filter_values";
-import { changeFilterValue } from "action_creators";
 import { padTwo } from "utils";
 import DateRangeFilters from "controllers/filter_groups/date_range";
 import DivisionScopeFilters from "controllers/filter_groups/division_scope";

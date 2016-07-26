@@ -42,14 +42,6 @@ export function requestDynamicData(model, dispatch){
   }
 }
 
-export function changeFilterValue(dispatch, filterKey, newValue) {
-  dispatch({
-    type: "CHANGE_FILTER_VALUE",
-    filterKey: filterKey,
-    newValue: newValue
-  });
-}
-
 export function parseRenderedData(data, dispatch) {
   dispatch({
     type: "PARSE_RENDERED_DATA",
@@ -83,7 +75,7 @@ export function integrateLocalStorageData(dispatch, data) {
 export function tabClicked(dispatch, model, tabKey) {
   dispatch({
     type: "TAB_CLICKED",
-    tabKey: tabKey
+    proposed: tabKey
   })
 }
 
@@ -103,24 +95,23 @@ export function toggleFilterGroupExpansion(dispatch, tabKey, filterGroupKey, pro
   })
 }
 
-const proposedValue = (event) => {
-  if (event.target.type === "checkbox"){
-    return event.target.checked;
-  }
-  else {
-    return event.target.value;
-  }
-};
 
 export function changeFilter(dispatch, tabKey, filterKey, filterSubKey, event) {
   if(event.target.type !== "radio" || event.target.checked) {
-    dispatch({
-      type: "CHANGE_FILTER_VALUE",
-      tabKey: tabKey,
-      filterKey: filterKey,
-      filterSubKey: filterSubKey,
-      proposed: proposedValue(event)
-    })
+    if (event.target.type === "checkbox"){
+      var proposedValue = event.target.checked;
+    }
+    else {
+      var proposedValue = event.target.value;
+    }
+
+    changeFilterToValue(
+      dispatch,
+      tabKey,
+      filterKey,
+      filterSubKey,
+      proposedValue
+    )
   }
 }
 
@@ -158,8 +149,7 @@ export function updateCityFilters(dispatch, model, activatedIds) {
 
 export function parseLocation(dispatch){
   dispatch({
-    type: "PARSE_LOCATION",
-    location: window.location
+    type: "PARSE_LOCATION"
   })
 }
 
