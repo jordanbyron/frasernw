@@ -32,7 +32,6 @@ class Procedure < ActiveRecord::Base
 
   def form_procedure_specializations
     all_procedure_specializations.
-      includes(:specialization).
       select(&:specialization_present?).
       sort_by(&:specialization_name)
   end
