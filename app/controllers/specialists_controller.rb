@@ -309,7 +309,7 @@ class SpecialistsController < ApplicationController
   private
 
   def load_form_variables
-    @offices = Office.cached_all_formatted_for_form
+    @offices = Office.all_formatted_for_form
     @hospitals = Hospital.all_formatted_for_form
   end
 
