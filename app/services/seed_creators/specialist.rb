@@ -56,7 +56,7 @@ module SeedCreators
       hospital_clinic_details: Proc.new{ "Some details." },
       interpreter_available: :pass_through,
       photo_file_name: Proc.new{ "demo_photo" },
-      photo_content_type: Proc.new{ "demo_photo_content_type" },
+      photo_content_type: Proc.new{ nil },
       photo_file_size: :pass_through,
       photo_updated_at: :pass_through,
       is_gp: :pass_through,
