@@ -19,6 +19,10 @@
       %li
         %a{ href: "#user_tab",
           data: { toggle: "tab" } }= "Users"
+      - if @introspective_users.any?
+        %li
+          %a{ href: "#limited_access_user_tab",
+            data: { toggle: "tab" } }= "Limited-Access Users"
       %li
         %a{ href: "#pending_user_tab",
           data: { toggle: "tab" } }= "Pending Accounts"
@@ -188,6 +192,69 @@
           = render partial: "division_label"
           Users:
           = @users.count
+
+      - if @introspective_users.any?
+        #limited_access_user_tab.tab-pane
+          %table.table.table-condensed.table-striped.tablesorter
+            %thead
+              %tr.tableheader
+                %th{ class: "{sorter: 'text'}",
+                  style: "width:20%" } Name
+                %th{ class: "{sorter: 'text'}",
+                  style: "width:20%" } Division(s)
+                %th{ class: "{sorter: 'lastRequestAt'}",
+                  style: "width:20%" } Last Visit
+                %th{ class: "{sorter: 'text'}",
+                  style: "width:20%" } Signed Up
+                %th{ class: "{sorter: 'text'}",
+                  style: "width:20%" } Type
+                %th{ class: "{sorter: 'text'}",
+                  style: "width:20%" } Email
+                %th.admin
+
+            %tbody
+              - @introspective_users.each do |user|
+                %tr
+                  %td= link_to user.name, user
+                  %td= user.divisions.map{ |s| s.name }.to_sentence
+                  %td{ data: { "last-request-at" => user.last_request_at.try(:to_datetime).to_i } }
+                    - if user.last_request_at.present?
+                      - if current_user.last_request_format == :relative
+                        = content_tag :small,
+                          title: user.last_request_at.strftime("%b %e, %Y @ %l:%M %p"),
+                          data: { toggle: "tooltip", placement: "left" } do
+                          = "#{time_ago_in_words(user.last_request_at.to_datetime)} ago"
+                      - else
+                        = content_tag :small,
+                          data: { toggle: "tooltip", placement: "left" },
+                          title: user.last_request_at.strftime("%b %e, %Y @ %l:%M %p") do
+                          = user.last_request_at.strftime("%Y-%m-%d @ %l:%M %p")
+                    - else
+                      = content_tag :small,
+                        title: "This user has no recorded logins.",
+                        data: { toggle: "tooltip", placement: "left" } do
+                        %p= "-      "
+
+                  %td
+                    - # Sadly Rails partials load too slow for Signed Up to be refactored into partial
+                    - if user.activated_at.present? # Signed Up uses activated_at or created_at
+                      %small{ title: "#{user.activated_at.strftime("%b %e, %Y")}</br> <i>( #{time_ago_in_words(user.activated_at.to_datetime)} ago )</i>".html_safe,
+                        data: { toggle: "tooltip",
+                        placement: "right" } }= user.activated_at.strftime("%Y-%m-%d")
+                    - elsif user.created_at.present?
+                      %small{ title: "#{user.created_at.strftime("%b %e, %Y")}</br> <i>( #{time_ago_in_words(user.created_at)} ago )</i>".html_safe,
+                        data: { toggle: "tooltip",
+                        placement: "right" } }= user.created_at.strftime("%Y-%m-%d")
+                    - else
+                      %small
+                  %td= user.type
+                  %td= user.email
+                  = render "users/admin_column", user: user
+          %h4
+            Total
+            = render partial: "division_label"
+            Limited-Access Users:
+            = @introspective_users.count
 
       #pending_user_tab.tab-pane
         %table.table.table-condensed.table-striped.tablesorter
