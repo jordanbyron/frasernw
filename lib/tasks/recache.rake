@@ -51,7 +51,6 @@ namespace :pathways do
       application_layout: -> {
         ExpireFragment.call("ie_compatibility_warning")
         User.all_user_division_groups_cached.each do |division_group|
-          ExpireFragment.call("sc_category_global_navbar_#{division_group.join('_')}")
           ExpireFragment.call("resources_dropdown_categories_#{division_group.join('_')}")
         end
       },

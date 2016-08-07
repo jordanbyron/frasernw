@@ -156,18 +156,19 @@ class ScItem < ActiveRecord::Base
 
   def self.inline
     joins(
-      'INNER JOIN "sc_categories" ON "sc_items"."sc_category_id" = "sc_categories"."id"'
+      "INNER JOIN 'sc_categories' "/
+        "ON 'sc_items.sc_category_id' = 'sc_categories.id'"
     ).where(
-      '"sc_categories"."display_mask" IN (?)',
-      ScCategory::INLINE_MASKS
+      "sc_categories.index_display_format = '1'"
     )
   end
 
   def self.not_inline
     joins(
-      'INNER JOIN "sc_categories" ON "sc_items"."sc_category_id" = "sc_categories"."id"'
+      "INNER JOIN 'sc_categories' "/
+        "ON 'sc_items.sc_category_id' = 'sc_categories.id'"
     ).where(
-      '"sc_categories"."display_mask" NOT IN (?)', ScCategory::INLINE_MASKS
+      "sc_categories.index_display_format = '0'"
     )
   end
 

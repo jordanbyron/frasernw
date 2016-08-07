@@ -83,6 +83,20 @@ const usesSidebarLayout = ((model) => {
     showInlineArticles(model))
 }).pwPipe(memoizePerRender)
 
+const showInlineArticlesWithoutFilter = (model) => {
+  return collectionShownName(model) === "contentItems" &&
+    ((isTabbedPage(model) && !recordShownByTab(model).filterable) ||
+      (!isTabbedPage(model) && !recordShownByPage(model).filterable))
+};
+
+const usesSimpleSidebarLayout = ((model) => {
+  return !((matchedRoute(model) === "/latest_updates" &&
+    model.app.currentUser.role === "user") ||
+    matchedRoute(model) === "/news_items" ||
+    matchedRoute(model) === "/change_requests" ||
+    showInlineArticlesWithoutFilter(model))
+}).pwPipe(memoizePerRender)
+
 const LowerWhitePanel = ({model, dispatch}) => {
   if (!showsLowerPanel(model)){
     return <noscript/>
@@ -94,6 +108,20 @@ const LowerWhitePanel = ({model, dispatch}) => {
           <ReducedViewSelector model={model} dispatch={dispatch}/>
           <div className="row">
             <div className={`span8half ${viewSelectorClass(model, "main")}`}>
+              <Main model={model} dispatch={dispatch}/>
+            </div>
+            <Sidebar model={model} dispatch={dispatch}/>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  else if (usesSimpleSidebarLayout(model)){
+    return(
+      <div className="content-wrapper">
+        <div className="content">
+          <div className="row">
+            <div className="span8half">
               <Main model={model} dispatch={dispatch}/>
             </div>
             <Sidebar model={model} dispatch={dispatch}/>
