@@ -137,7 +137,6 @@ const contentCategoriesShowingTabs = (model) => {
     model.app.contentCategories,
     (category) => {
       return (
-        [1, 3, 4, 5].indexOf(category.displayMask) > -1 &&
         category.ancestry == null &&
         contentCategoryItems(
           category.id,
