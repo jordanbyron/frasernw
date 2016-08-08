@@ -76,9 +76,9 @@
       value_method: :first,
       include_blank: false
   = f.input :is_gp
-  = f.input :hidden, label: "Hide from users"
 
   - if current_user.as_admin_or_super?
+    = f.input :hidden, label: "Hide from users"
     = f.input :is_internal_medicine,
       label: "Show 'Internal Medicine' Tag",
       hint: "Please only use this tag when linking an Internal Medicine specialist to another specialty in which they do not have a fellowship."

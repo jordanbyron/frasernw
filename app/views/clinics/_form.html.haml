@@ -60,7 +60,8 @@
       label_method: :last,
       value_method: :first,
       include_blank: false
-    = f.input :hidden, label: "Hide from users"
+    - if current_user.as_admin_or_super?
+      = f.input :hidden, label: "Hide from users"
   .no-print
     = f.association :specializations,
       as: :check_boxes,
