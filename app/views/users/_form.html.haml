@@ -51,7 +51,7 @@
               as: :select,
               label: false,
               collection: @formatted_specialists,
-              label_method: ->(specialist){ "#{specialist.name} (MSP ##{specialist.billing_number})" },
+              label_method: ->(specialist){ "#{specialist.lastname}, #{specialist.firstname} (MSP ##{specialist.billing_number})" },
               prompt: 'Select ...',
               wrapper: :no_wrapper
 
