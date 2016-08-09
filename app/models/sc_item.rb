@@ -154,24 +154,6 @@ class ScItem < ActiveRecord::Base
     where('"sc_items"."shareable" = (?)', true)
   end
 
-  def self.inline
-    joins(
-      "INNER JOIN 'sc_categories' "/
-        "ON 'sc_items.sc_category_id' = 'sc_categories.id'"
-    ).where(
-      "sc_categories.index_display_format = '1'"
-    )
-  end
-
-  def self.not_inline
-    joins(
-      "INNER JOIN 'sc_categories' "/
-        "ON 'sc_items.sc_category_id' = 'sc_categories.id'"
-    ).where(
-      "sc_categories.index_display_format = '0'"
-    )
-  end
-
   def self.owned_in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     where('"sc_items"."division_id" IN (?)', division_ids)

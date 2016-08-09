@@ -76,25 +76,17 @@ const showInlineArticles = (model) => {
 };
 
 const usesSidebarLayout = ((model) => {
-  return !((matchedRoute(model) === "/latest_updates" &&
-    model.app.currentUser.role === "user") ||
-    matchedRoute(model) === "/news_items" ||
-    matchedRoute(model) === "/change_requests" ||
-    showInlineArticles(model))
-}).pwPipe(memoizePerRender)
-
-const showInlineArticlesWithoutFilter = (model) => {
-  return collectionShownName(model) === "contentItems" &&
-    ((isTabbedPage(model) && !recordShownByTab(model).filterable) ||
-      (!isTabbedPage(model) && !recordShownByPage(model).filterable))
-};
-
-const usesSimpleSidebarLayout = ((model) => {
-  return !((matchedRoute(model) === "/latest_updates" &&
-    model.app.currentUser.role === "user") ||
-    matchedRoute(model) === "/news_items" ||
-    matchedRoute(model) === "/change_requests" ||
-    showInlineArticlesWithoutFilter(model))
+  return (matchedRoute(model) === "/latest_updates" &&
+    model.app.currentUser.role !== "user") ||
+    (collectionShownName(model) === "contentItems" &&
+      ((isTabbedPage(model) && recordShownByTab(model).filterable) ||
+      (!isTabbedPage(model) && recordShownByPage(model).filterable))) ||
+    collectionShownName(model) === "specialists" ||
+    collectionShownName(model) === "clinics" ||
+    _.includes(["/reports/entity_page_views",
+    "/reports/referents_by_specialty",
+    "/reports/page_views_by_user",
+    "/issues"], matchedRoute(model))
 }).pwPipe(memoizePerRender)
 
 const LowerWhitePanel = ({model, dispatch}) => {
@@ -116,20 +108,7 @@ const LowerWhitePanel = ({model, dispatch}) => {
       </div>
     );
   }
-  else if (usesSimpleSidebarLayout(model)){
-    return(
-      <div className="content-wrapper">
-        <div className="content">
-          <div className="row">
-            <div className="span8half">
-              <Main model={model} dispatch={dispatch}/>
-            </div>
-            <Sidebar model={model} dispatch={dispatch}/>
-          </div>
-        </div>
-      </div>
-    );
-  } else {
+  else {
     return(
       <div className="content-wrapper">
         <div className="content">

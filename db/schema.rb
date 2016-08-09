@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160712002202) do
+ActiveRecord::Schema.define(version: 20160807194518) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -632,13 +632,14 @@ ActiveRecord::Schema.define(version: 20160712002202) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "show_on_front_page", default: true
-    t.integer  "sort_order",         default: 10
-    t.integer  "display_mask",       default: 1
-    t.boolean  "show_as_dropdown",   default: false
+    t.boolean  "show_on_front_page",   default: true
+    t.integer  "sort_order",           default: 10
     t.string   "ancestry"
-    t.boolean  "searchable",         default: true
-    t.boolean  "evidential",         default: false
+    t.boolean  "searchable",           default: true
+    t.boolean  "evidential",           default: false
+    t.integer  "index_display_format", default: 0
+    t.boolean  "in_global_navigation", default: false
+    t.boolean  "filterable",           default: false
   end
 
   add_index "sc_categories", ["ancestry"], name: "index_sc_categories_on_ancestry", using: :btree
