@@ -1,8 +1,8 @@
 class NotificationsController < ApplicationController
-  skip_authorization_check
-  skip_before_filter :verify_authenticity_token, only: :notify
+  skip_before_filter :require_authentication, only: [:notify]
 
   def notify
+    authorize! :notify, :notifications
     SystemNotifier.javascript_error(params)
     render json: nil, status: :ok
   end

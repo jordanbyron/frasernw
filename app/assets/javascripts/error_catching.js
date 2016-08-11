@@ -10,6 +10,9 @@ var startErrorLog = function() {
         trace = trace.caller;
       }
     }
+    var token = (
+      document.getElementsByName("csrf-token")[0].getAttribute("content")
+    );
     var errorData = {
       message: message,
       file: file,
@@ -18,13 +21,14 @@ var startErrorLog = function() {
       url: document.location.href,
       errorStack: stack.toString()
     };
-    notifyError(errorData);
+    notifyError(errorData, token);
     return false;
   }
 }
-var notifyError = function(errorData) {
+var notifyError = function(errorData, token) {
   var xhttp = new XMLHttpRequest();
   xhttp.open("POST", '/notifications', true);
   xhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+  xhttp.setRequestHeader("X-CSRF-Token", token);
   xhttp.send(JSON.stringify(errorData));
 }

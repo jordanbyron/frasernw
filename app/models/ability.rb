@@ -3,6 +3,7 @@ class Ability
 
   def initialize(user)
     can [:new, :create], Message
+    can :notify, :notifications
 
     if !user.authenticated?
       can [:validate, :signup, :setup], User

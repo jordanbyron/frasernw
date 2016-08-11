@@ -3,11 +3,11 @@
 !!!
 %html
   %head
-    %title= page_title
-    %meta{ "http-equiv" => "Content-Type",
-      content: "text/html; charset=utf-8" }
-    %meta{ name: "viewport", content: "initial-scale=1.0" }
+    = csrf_meta_tag
     = javascript_include_tag "error_catching"
+    %title= page_title
+    %meta{ "http-equiv" => "Content-Type", content: "text/html; charset=utf-8" }
+    %meta{ name: "viewport", content: "initial-scale=1.0" }
     :javascript
       window.startErrorLog();
       window.pathways = window.pathways || {};
@@ -26,7 +26,6 @@
       = stylesheet_link_tag "font-awesome-ie7.css", media: 'screen, print'
     = stylesheet_link_tag "print", media: 'print'
     = javascript_include_tag "application"
-    = csrf_meta_tag
     - cache("ie_compatibility_warning") do
       = render "layouts/ie_compatibility_warning"
     - if (Rails.env.development? || (ENV['APP_NAME'] != 'pathwaysbc')) && ENV["DEMO_SITE"] != "true"
