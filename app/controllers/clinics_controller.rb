@@ -236,9 +236,13 @@ class ClinicsController < ApplicationController
     ExpireFragment.call clinic_path(@clinic)
 
     parsed_params = ParamParser::Clinic.new(params).exec
+
+    # used instead of the documented way of passing controller metadata
+    # bc you need to set that at the start of the request
+    ::PaperTrail.controller_info = { review_item_id: review_item.id }
+
     if @clinic.update_attributes(parsed_params[:clinic])
       UpdateClinicFocuses.exec(@clinic, parsed_params)
-      @clinic.reload.versions.last.update_attributes(review_item_id: review_item.id)
       @clinic.save
       redirect_to @clinic, notice: "Successfully updated #{@clinic.name}."
     else

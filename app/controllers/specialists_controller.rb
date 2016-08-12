@@ -147,13 +147,13 @@ class SpecialistsController < ApplicationController
       ExpireFragment.call specialist_path(@specialist)
 
       parsed_params = ParamParser::Specialist.new(params).exec
+
+      # used instead of the documented way of passing controller metadata
+      # bc you need to set that at the start of the request
+      ::PaperTrail.controller_info = { review_item_id: review_item.id }
+
       if @specialist.update_attributes(parsed_params[:specialist])
         UpdateSpecialistCapacities.exec(@specialist, parsed_params)
-        @specialist.
-          reload.
-          versions.
-          last.
-          update_attributes(review_item_id: review_item.id)
         @specialist.save
         redirect_to @specialist, notice: "Successfully updated #{@specialist.name}."
       else
