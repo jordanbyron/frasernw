@@ -2,8 +2,9 @@ class ScCategory < ActiveRecord::Base
 
   attr_accessible :name,
     :show_on_front_page,
-    :show_as_dropdown,
-    :display_mask,
+    :index_display_format,
+    :in_global_navigation,
+    :filterable,
     :sort_order,
     :parent_id,
     :searchable,
@@ -15,7 +16,8 @@ class ScCategory < ActiveRecord::Base
 
   has_many :featured_contents, dependent: :destroy
 
-  has_and_belongs_to_many :subscriptions, join_table: :subscription_sc_categories
+  has_and_belongs_to_many :subscriptions,
+    join_table: :subscription_sc_categories
 
   has_ancestry
 
@@ -31,19 +33,18 @@ class ScCategory < ActiveRecord::Base
   end
 
   DISPLAY_HASH = {
-    2 => "In global navigation",
-    4 => "In global navigation and filterable on specialty pages",
-    5 => "In global navigation and inline on specialty pages",
-    1 => "Filterable on specialty pages",
-    3 => "Inline on specialty pages"
+    0 => "Tabular rows on specialty pages",
+    1 => "Inline articles on specialty pages"
   }
 
   def self.all_parents
-    all.reject{|c| c.parent.present?}
+    all.reject{ |category| category.parent.present? }
   end
 
   def self.all_for_subscription
-    all_parents.reject{ |c| c.name.include?("Inactive") || c.name.include?("Inline") }
+    all_parents.reject do |category|
+      category.name.include?("Inactive") || category.name.include?("Inline")
+    end
   end
 
   def self.with_items_borrowable_by_division(division)
@@ -57,14 +58,6 @@ class ScCategory < ActiveRecord::Base
     ScCategory.where(name: name).first
   end
 
-  def filterable_on_specialty_pages?
-    [4, 1].include?(display_mask)
-  end
-
-  def inline_on_specialty_pages?
-    [5, 3].include?(display_mask)
-  end
-
   def featured_for_divisions(divisions)
     featured_contents.
       in_divisions(divisions).
@@ -72,10 +65,6 @@ class ScCategory < ActiveRecord::Base
       includes(:sc_item).
       map(&:sc_item).
       reject(&:blank?)
-  end
-
-  def display
-    ScCategory::DISPLAY_HASH[display_mask]
   end
 
   def self.global_resources_dropdown(user_divisions)
@@ -98,35 +87,19 @@ class ScCategory < ActiveRecord::Base
     SQL
   end
 
-  def show_in_global_resources_dropdown?
-    [2, 4, 5].include?(display_mask) && show_as_dropdown?
-  end
-
-  def self.global_navbar(user_divisions)
-    where(
-      "sc_categories.display_mask IN (?) AND sc_categories.show_as_dropdown = (?)",
-      [2,4,5],
-      false
-    ).reject do |category|
-      category.all_sc_items_in_divisions(user_divisions).blank?
-    end
-  end
-
   def self.specialty
     where(
-      "sc_categories.display_mask IN (?) AND sc_categories.ancestry is null",
-      [1,3,4,5]
+      "sc_categories.index_display_format = '1' OR sc_categories.filterable "\
+        "AND sc_categories.ancestry IS NULL"
     )
   end
 
   def self.searchable
-    where("sc_categories.searchable = (?)", true)
+    where(searchable: true)
   end
 
-  INLINE_MASKS = [3,5]
-
   def inline?
-    ScCategory::INLINE_MASKS.include? display_mask
+    index_display_format == 1
   end
 
   def full_name
@@ -135,14 +108,6 @@ class ScCategory < ActiveRecord::Base
     else
       name
     end
-  end
-
-  def show_as_dropdown?
-    show_as_dropdown
-  end
-
-  def show_on_front_page?
-    show_on_front_page
   end
 
   def all_borrowable_sc_items
@@ -196,7 +161,8 @@ class ScCategory < ActiveRecord::Base
   def all_sc_items_for_procedure_in_divisions(procedure, divisions)
     items = sc_items.for_procedure_in_divisions(procedure, divisions)
     self.children.each do |child|
-      items += child.all_sc_items_for_procedure_in_divisions(procedure, divisions)
+      items +=
+        child.all_sc_items_for_procedure_in_divisions(procedure, divisions)
     end
     items.flatten.uniq
   end

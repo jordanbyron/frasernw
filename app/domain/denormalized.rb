@@ -219,18 +219,20 @@ module Denormalized
             id: category.id,
             name: category.name,
             fullName: category.full_name,
-            displayMask: category.display_mask,
+            indexDisplayFormat: category.index_display_format,
+            inGlobalNavigation: category.in_global_navigation?,
+            filterable: category.filterable?,
             subtreeIds: category.subtree.map(&:id),
             ancestry: category.ancestry,
             componentType: component_type(category),
             collectionName: "contentCategories",
-            searchable: category.searchable
+            searchable: category.searchable?
           })
         end
       end
 
       def self.component_type(category)
-        (category.filterable_on_specialty_pages? ? "FilterTable" : "InlineArticles")
+        (category.index_display_format == 0 ? "FilterTable" : "InlineArticles")
       end
     end,
     specializations: Proc.new do
