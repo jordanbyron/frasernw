@@ -5,12 +5,12 @@ class FixVersionReviewItems < ActiveRecord::Migration
     # the link is incorrect
 
     Version.
-      all.
+      joins(:review_item).
       to_a.
       select do |version|
-        version.review_item && version.review_item.created_at > version.created_at
+        version.review_item.created_at > version.created_at
       end.
-      each{ |version| version.update_attribute(:review_item_id, nil) }
+      each{ |version| version.update_column(:review_item_id, nil) }
   end
 
   def down
