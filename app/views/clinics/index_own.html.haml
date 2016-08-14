@@ -1,0 +1,11 @@
+- set_page_specific_title "Your Clinics"
+
+.content-wrapper
+
+  %h2 Your Clinics
+
+  %table.table.table-condensed.table-striped
+    - @clinics.all.each do |controlled_clinic|
+      - clinic = controlled_clinic.clinic
+      %tr
+        %td= link_to clinic.name, clinic_path(clinic)
