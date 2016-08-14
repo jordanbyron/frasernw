@@ -23,7 +23,13 @@ class SplitScCategoriesFieldDisplayMask < ActiveRecord::Migration
           )
       end
     end
-    ScCategory.where(name: "Pearls").first.update!(filterable: true)
+    ScCategory.where(name: "Pearls").first.update_attributes!(
+      index_display_format: 0, filterable: true
+    )
+    ScCategory.
+      where(name: "Choosing Wisely").
+      first.
+      update_attribute(:in_global_navigation, true)
 
     remove_column :sc_categories, :display_mask
     remove_column :sc_categories, :show_as_dropdown
