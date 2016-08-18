@@ -54,7 +54,12 @@ const fromUrlHash = () => {
     return {};
   }
   else {
-    return JSON.parse(window.location.hash.replace("#", ""));
+    // double quotes are encoded as %22 in ff
+    // see https://bugzilla.mozilla.org/show_bug.cgi?id=1213870
+
+    return JSON.parse(
+      window.location.hash.replace("#", "").replace("%22", '"')
+    );
   }
 }
 
