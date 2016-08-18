@@ -147,9 +147,9 @@ export function updateCityFilters(dispatch, model, activatedIds) {
   });
 }
 
-export function parseLocation(dispatch){
+export function parseUrl(dispatch){
   dispatch({
-    type: "PARSE_LOCATION"
+    type: "PARSE_URL_HASH"
   })
 }
 

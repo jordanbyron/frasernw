@@ -1,6 +1,6 @@
 import app from "reducers/app";
-import urlHash from "reducers/url_hash";
 import _ from "lodash";
+import { uiKeysMirroredToUrlHash } from "url_hash_mirroring";
 
 const rootReducer = (model = {}, action) => {
   return {
@@ -15,8 +15,15 @@ const ui = (model = {}, action) => {
     var uiData = action.data.map(_.property("ui")).filter(_.identity)
 
     return _.assign(...[{}, model].concat(uiData));
+  case "PARSE_URL_HASH":
+    return _.assign(
+      {},
+      model,
+      _.zipObject(uiKeysMirroredToUrlHash, []),
+      fromUrlHash()
+    )
   default:
-    let fromStore = {
+    return {
       recordsToDisplay: recordsToDisplay(model.recordsToDisplay, action),
       isBreadcrumbDropdownOpen: isBreadcrumbDropdownOpen(
         model.isBreadcrumbDropdownOpen,
@@ -34,28 +41,22 @@ const ui = (model = {}, action) => {
         model.highlightSelectedSearchResult,
         action
       ),
-      dropdownSpecializationId: model.dropdownSpecializationId
+      dropdownSpecializationId: model.dropdownSpecializationId,
+      reducedView: reducedView(model.reducedView, action),
+      tabs: tabs(model.tabs, action),
+      selectedTabKey: selectedTabKey(model.selectedTabKey, action)
     };
-
-    return _.assign(
-      {},
-      fromStore,
-      fromUrlHash(model, action),
-      { pathname: window.location.pathname }
-    );
   }
 };
 
-const fromUrlHash = (model, action) => {
+const fromUrlHash = () => {
   if (window.location.hash.length === 0){
     return {};
   }
   else {
-    window.pathways.urlHashFlushed = true;
     return JSON.parse(window.location.hash.replace("#", ""));
   }
 }
-
 
 const highlightSelectedSearchResult = (model, action) => {
   switch(action.type){
@@ -194,6 +195,167 @@ const recordsToDisplay = (model, action) => {
     return action.recordsToDisplay;
   case "CHANGE_FILTER_VALUE":
     return undefined;
+  default:
+    return model;
+  }
+};
+
+const selectedTabKey = (model, action) => {
+  switch(action.type){
+  case "TAB_CLICKED":
+    return action.proposed;
+  default:
+    return model;
+  }
+}
+
+const tabs = (model = {}, action) => {
+  if (action.tabKey) {
+    return _.assign(
+      {},
+      model,
+      { [action.tabKey]: tab(model[action.tabKey], action) }
+    );
+  }
+  else {
+    return model;
+  }
+};
+
+const tab = (model = {}, action) => {
+  return {
+    isFilterGroupExpanded: isFilterGroupExpanded(model.isFilterGroupExpanded, action),
+    filterValues: filterValues(model.filterValues, action),
+    showUnfocusedProcedures: showUnfocusedProcedures(
+      model.showUnfocusedProcedures,
+      action
+    ),
+    selectedTableHeading: selectedTableHeading(model.selectedTableHeading, action),
+    specializationFilterActivated: specializationFilterActivated(
+      model.specializationFilterActivated,
+      action
+    ),
+    currentPage: currentPage(model.currentPage, action),
+    areRowsExpanded: areRowsExpanded(model.areRowsExpanded, action)
+  };
+}
+
+
+
+const areRowsExpanded = (model, action) => {
+  switch(action.type){
+  case "TOGGLE_ROW_EXPANSIONS":
+    return action.proposed;
+  default:
+    return model;
+  }
+}
+
+const currentPage = (model, action) => {
+  switch(action.type){
+  case "SET_PAGE":
+    return action.proposed;
+  default:
+    return model;
+  }
+}
+
+const specializationFilterActivated = (model, action) => {
+  switch(action.type){
+  case "TOGGLE_SPECIALIZATION_FILTER":
+    return action.proposed;
+  default:
+    return model;
+  }
+}
+
+const showUnfocusedProcedures = (model, action) => {
+  switch(action.type){
+  case "TOGGLE_UNFOCUSED_PROCEDURE_VISIBILITY":
+    return action.proposed;
+  default:
+    return model;
+  }
+};
+
+const isFilterGroupExpanded = (model = {}, action) => {
+  switch(action.type){
+  case "TOGGLE_FILTER_GROUP_EXPANSION":
+    return _.assign(
+      {},
+      model,
+      { [action.filterGroupKey] : action.proposed }
+    );
+  default:
+    return model;
+  }
+};
+
+const reducedView = (model, action) => {
+  switch(action.type){
+  case "SELECT_REDUCED_VIEW":
+    return action.newView;
+  default:
+    return model;
+  }
+}
+
+const selectedTableHeading = (model = {}, action) => {
+  switch(action.type){
+  case "SORT_BY_HEADING":
+    if(action.currentKey === action.key) {
+      if (model.direction === "UP") {
+        return {
+          key: action.key,
+          direction: "DOWN"
+        };
+      }
+      else {
+        return {
+          key: action.key,
+          direction: "UP"
+        };
+      }
+    }
+    else {
+      return {
+        key: action.key,
+        direction: "DOWN"
+      }
+    }
+  default:
+    return model;
+  }
+
+}
+
+const filterValues = (model = {}, action) => {
+  switch(action.type){
+  case "CHANGE_FILTER_VALUE":
+    if(action.filterSubKey) {
+      var newValue = _.assign(
+        {},
+        model[action.filterKey],
+        { [action.filterSubKey] : action.proposed }
+      );
+    }
+    else {
+      var newValue = action.proposed;
+    }
+
+    return _.assign(
+      {},
+      model,
+      { [action.filterKey]: newValue }
+    );
+  case "UPDATE_CITY_FILTERS":
+    return _.assign(
+      {},
+      model,
+      { cities: action.proposed }
+    );
+  case "CLEAR_FILTERS":
+    return {};
   default:
     return model;
   }

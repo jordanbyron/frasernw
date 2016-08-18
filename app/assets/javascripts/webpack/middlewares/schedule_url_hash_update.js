@@ -1,12 +1,8 @@
 import _ from "lodash";
-import newUrlHash from "reducers/url_hash";
 
-const updateUrlHash = store => next => action => {
+const scheduleUrlHashUpdate = store => next => action => {
   if (_.includes(TRIGGERING_ACTION_TYPES, action.type)) {
-    window.location.hash = JSON.stringify(
-      newUrlHash(store.getState().ui, action)
-    );
-    window.pathways.urlHashFlushed = false;
+    window.pathways.modelIsFlushedToUrlHash = false;
   }
 
   return next(action);
@@ -26,6 +22,4 @@ const TRIGGERING_ACTION_TYPES = [
   "TAB_CLICKED"
 ];
 
-
-
-export default updateUrlHash;
+export default scheduleUrlHashUpdate;

@@ -283,7 +283,7 @@ const ChildBreadcrumb = ({model}) => {
 const ChildBreadcrumbWrapper = ({model, children}) => {
   return(
     <li className={childClassName(model)}>
-      <a href={model.ui.pathname} style={{color: "#666666"}}>
+      <a href={window.location.pathname} style={{color: "#666666"}}>
         { children }
       </a>
     </li>
