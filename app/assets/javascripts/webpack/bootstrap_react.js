@@ -39,12 +39,8 @@ const bootstrapReact = function() {
   parseUrl(store.dispatch);
   window.pathways.modelIsFlushedToUrlHash = true;
 
-  console.log(uiKeysMirroredToUrlHash);
-
   store.subscribe(() => {
     if (!window.pathways.modelIsFlushedToUrlHash) {
-      console.log(_.pick(store.getState().ui, uiKeysMirroredToUrlHash));
-
       window.location.hash = JSON.stringify(
         _.pick(store.getState().ui, uiKeysMirroredToUrlHash)
       );
