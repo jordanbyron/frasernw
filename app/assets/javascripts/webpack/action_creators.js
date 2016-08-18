@@ -6,6 +6,8 @@ import _ from "lodash";
 
 export function requestDynamicData(model, dispatch){
   if(matchedRoute(model) === "/reports/page_views_by_user"){
+    requestingData(dispatch)
+
     const requestParams = {
       divisionId: FilterValues.divisionScope(model),
       startMonth: FilterValues.startMonth(model),
@@ -23,6 +25,8 @@ export function requestDynamicData(model, dispatch){
     })
   }
   else if (matchedRoute(model) === "/reports/entity_page_views") {
+    requestingData(dispatch)
+
     const requestParams = {
       start_month_key: FilterValues.startMonth(model),
       end_month_key: FilterValues.endMonth(model),
@@ -40,6 +44,12 @@ export function requestDynamicData(model, dispatch){
       })
     });
   }
+}
+
+export function requestingData(dispatch) {
+  dispatch({
+    type: "REQUESTING_DATA"
+  })
 }
 
 export function parseRenderedData(data, dispatch) {

@@ -9,11 +9,9 @@ import { useQueries } from 'history';
 import ReactDOM from "react-dom";
 import rootReducer from "reducers/root_reducer";
 import React from "react";
-import scheduleUrlHashUpdate from "middlewares/schedule_url_hash_update";
+import updateUrlHash from "middlewares/update_url_hash";
 import setSearchListeners from "set_search_listeners";
-import { uiKeysMirroredToUrlHash } from "url_hash_mirroring";
 import {
-  requestDynamicData,
   parseRenderedData,
   integrateLocalStorageData,
   parseUrl
@@ -28,7 +26,7 @@ const bootstrapReact = function() {
     middlewares.push(logger);
   }
 
-  middlewares.push(scheduleUrlHashUpdate);
+  middlewares.push(updateUrlHash);
 
   middlewares.push(nextAction);
 
@@ -37,19 +35,10 @@ const bootstrapReact = function() {
   window.pathways.reactStore = store;
 
   parseUrl(store.dispatch);
-  window.pathways.modelIsFlushedToUrlHash = true;
 
-  store.subscribe(() => {
-    if (!window.pathways.modelIsFlushedToUrlHash) {
-      window.location.hash = JSON.stringify(
-        _.pick(store.getState().ui, uiKeysMirroredToUrlHash)
-      );
-      window.pathways.modelIsFlushedToUrlHash = true;
-    }
-  });
-
+  window.pathways.parseUrlOnHashChange = true;
   window.addEventListener("hashchange", () => {
-    if (window.pathways.modelIsFlushedToUrlHash) {
+    if (window.pathways.parseUrlOnHashChange) {
       parseUrl(store.dispatch);
     }
   })
@@ -92,8 +81,6 @@ const bootstrapReact = function() {
     }
 
     parseRenderedData(window.pathways.dataForReact, store.dispatch);
-
-    requestDynamicData(store.getState(), store.dispatch);
   })
 };
 
