@@ -58,7 +58,7 @@ const fromUrlHash = () => {
     // see https://bugzilla.mozilla.org/show_bug.cgi?id=1213870
 
     return JSON.parse(
-      window.location.hash.replace("#", "").replace("%22", '"')
+      window.location.hash.replace("#", "").replace(/%22/g, '"')
     );
   }
 }
