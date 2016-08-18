@@ -8,7 +8,12 @@ class ApplicationController < ActionController::Base
   check_authorization
 
   rescue_from CanCan::AccessDenied do |exception|
-    redirect_to root_url, alert: "You are not allowed to access this page"
+    if current_user.as_introspective?
+      redirect_to index_own_clinics_path,
+        alert: "Your account has restricted access"
+    else
+      redirect_to root_url, alert: "You are not allowed to access this page"
+    end
   end
 
   rescue_from ActionController::InvalidAuthenticityToken do |exception|
@@ -36,4 +41,13 @@ class ApplicationController < ActionController::Base
       root_path
     end
   end
+
+  def home_path
+    if current_user.as_introspective?
+      index_own_clinics_path
+    else
+      root_path
+    end
+  end
+
 end

@@ -1,8 +1,5 @@
 - set_page_specific_title "FAQ"
 
-= render "partials/all_specialties_dropdown",
-  specialization: nil
-
 .content-wrapper
   .content#faq
     .row
@@ -14,14 +11,16 @@
             = @category.description
           %br
 
-        .faqs{"data-update-url" => update_ordering_faq_category_path(@category)}
+        .faqs{ "data-update-url" => update_ordering_faq_category_path(@category) }
           - @category.sorted_by_index.each do |faq|
             = content_tag_for :div, faq do
               %h2
                 %span= faq.question
                 - if can? :update, Faq
                   %span
-                    = link_to edit_faq_path(faq), target: "_blank", class: "faqs__admin_link" do
+                    = link_to edit_faq_path(faq),
+                      target: "_blank",
+                      class: "faqs__admin_link" do
                       %i.icon-pencil.faqs__admin_icon
                 - if can? :update_ordering, FaqCategory
                   %i.icon-resize-vertical.faqs__admin_icon.faqs__admin_icon--handle

@@ -1,6 +1,6 @@
 class ClinicsController < ApplicationController
   skip_before_filter :require_authentication, only: :refresh_cache
-  load_and_authorize_resource except: [:refresh_cache, :create]
+  load_and_authorize_resource except: [:refresh_cache, :create, :index_own]
   before_filter :check_token, only: :refresh_cache
   skip_authorization_check only: :refresh_cache
   include ApplicationHelper
@@ -11,6 +11,11 @@ class ClinicsController < ApplicationController
     else
       @specializations = Specialization.all
     end
+  end
+
+  def index_own
+    authorize! :index_own, Clinic
+    @clinics = current_user.user_controls_clinics
   end
 
   def show
@@ -50,7 +55,8 @@ class ClinicsController < ApplicationController
     @clinic_specialists = @specialization.specialists.collect do |s|
       [s.name, s.id]
     end
-    @specializations_focuses = GenerateClinicFocusInputs.exec(nil, [@specialization])
+    @specializations_focuses =
+      GenerateClinicFocusInputs.exec(nil, [@specialization])
     BuildTeleservices.call(provider: @clinic)
   end
 
@@ -93,7 +99,8 @@ class ClinicsController < ApplicationController
       end
 
       @clinic.save
-      redirect_to clinic_path(@clinic), notice: "Successfully created #{@clinic.name}."
+      redirect_to clinic_path(@clinic),
+        notice: "Successfully created #{@clinic.name}."
     else
       render action: 'new'
     end
@@ -156,7 +163,8 @@ class ClinicsController < ApplicationController
     @review_item = @clinic.review_item
 
     if @review_item.blank?
-      redirect_to clinics_path, notice: "There are no review items for this specialist"
+      redirect_to clinics_path,
+        notice: "There are no review items for this specialist"
     else
       while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
         cl = @clinic.clinic_locations.build
@@ -190,7 +198,8 @@ class ClinicsController < ApplicationController
     @review_item = ReviewItem.find(params[:review_item_id])
 
     if @review_item.blank?
-      redirect_to clinics_path, notice: "There are no review items for this clinic"
+      redirect_to clinics_path,
+        notice: "There are no review items for this clinic"
     elsif @review_item.base_object.blank?
       redirect_to specialists_path,
         notice: "There is no base review item for this clinic to re-review from"
@@ -213,7 +222,8 @@ class ClinicsController < ApplicationController
         @clinic,
         @clinic.specializations
       )
-      @secret_token_id = @review_item.decoded_review_object["clinic"]["secret_token_id"]
+      @secret_token_id =
+        @review_item.decoded_review_object["clinic"]["secret_token_id"]
       BuildTeleservices.call(provider: @clinic)
       render template: 'clinics/edit'
     end
@@ -236,9 +246,13 @@ class ClinicsController < ApplicationController
     ExpireFragment.call clinic_path(@clinic)
 
     parsed_params = ParamParser::Clinic.new(params).exec
+
+    # used instead of the documented way of passing controller metadata
+    # bc you need to set that at the start of the request
+    ::PaperTrail.controller_info = { review_item_id: review_item.id }
+
     if @clinic.update_attributes(parsed_params[:clinic])
       UpdateClinicFocuses.exec(@clinic, parsed_params)
-      @clinic.reload.versions.last.update_attributes(review_item_id: review_item.id)
       @clinic.save
       redirect_to @clinic, notice: "Successfully updated #{@clinic.name}."
     else

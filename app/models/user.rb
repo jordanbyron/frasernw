@@ -20,8 +20,9 @@ class User < ActiveRecord::Base
   acts_as_authentic do |c|
     c.merge_validates_length_of_password_field_options( { minimum: 8 } )
     c.merge_validates_uniqueness_of_email_field_options( { message:
-      "has already been used to set up another account. Pleast use a different "\
-        "email address to sign up, or sign into your existing account."
+      "has already been used to set up another account. Pleast use a "\
+        "different email address to sign up, or sign into your existing "\
+        "account."
     } )
     c.logged_in_timeout = 1.week
     c.crypto_provider = Authlogic::CryptoProviders::Sha512
@@ -30,7 +31,8 @@ class User < ActiveRecord::Base
   validates_format_of :password,
     with: /(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){8,}/,
     if: :require_password?,
-    message: "must include one number, one letter and be at least 8 characters long"
+    message: "must include one number, one letter and be at least 8 "\
+      "characters long"
 
   validates :email, confirmation: true
 
@@ -44,7 +46,7 @@ class User < ActiveRecord::Base
   has_many :divisions, through: :user_divisions
 
   has_many :favorites
-  has_many :issue_assignments, dependent: :destroy
+  has_many :issue_assignments, dependent: :destroy, foreign_key: :assignee_id
   has_many :assigned_issues,
     through: :issue_assignments,
     class_name: "Issue"
@@ -125,7 +127,8 @@ class User < ActiveRecord::Base
   ROLE_LABELS = {
     "user" => "User",
     "admin" => "Administrator",
-    "super" => "Super Administrator"
+    "super" => "Super Administrator",
+    "introspective" => "Limited-Access User"
   }
 
   def self.seed(args)
@@ -156,7 +159,18 @@ class User < ActiveRecord::Base
 
   def self.active_user
     where(
-      "users.role = 'user' AND users.active = (?) AND COALESCE(users.email,'') != ''",
+      "users.role = (?) AND users.active = (?) "\
+        "AND COALESCE(users.email,'') != ''",
+      "user",
+      true
+    )
+  end
+
+  def self.active_introspective
+    where(
+      "users.role = (?) AND users.active = (?) "\
+        "AND COALESCE(users.email,'') != ''",
+      "introspective",
       true
     )
   end
@@ -213,7 +227,8 @@ class User < ActiveRecord::Base
 
   def self.in_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
-    joins(:user_divisions).where('"division_users"."division_id" IN (?)', division_ids)
+    joins(:user_divisions).
+      where('"division_users"."division_id" IN (?)', division_ids)
   end
 
   def self.all_user_division_groups
@@ -267,8 +282,8 @@ class User < ActiveRecord::Base
   end
 
   def validate_signup
-    # we add validations for agree_to_toc here so that other parts of the user forms
-    # don't break from this field being validated
+    # we add validations for agree_to_toc here so that other parts of the user
+    # forms don't break from this field being validated
     valid?
     errors.add(:agree_to_toc, "must be agreed to") if agree_to_toc.blank?
   end
@@ -298,7 +313,6 @@ class User < ActiveRecord::Base
       return self.saved_token
     else
       saved_token = SecureRandom.hex(4)
-      #length will be double this, giving us 16^8 or 4,294,967,296 different tokens
       while User.find_by_saved_token(saved_token).present?
         #ensure no saved_token collisions
         saved_token = SecureRandom.hex(4)
@@ -327,7 +341,8 @@ class User < ActiveRecord::Base
         type_mask: type_mask,
         role: role
       )
-      if user.save validate: false #so we can avoid setting up with emails or passwords
+      # so we can avoid setting up with emails or passwords
+      if user.save validate: false
         users << user
       else
         puts "ERROR SETTING UP #{row[0]}"
@@ -380,6 +395,7 @@ class User < ActiveRecord::Base
     :admin?,
     :admin_or_super?,
     :user?,
+    :introspective?,
     :role_label,
     :role
   ].each do |method_name|

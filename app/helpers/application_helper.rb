@@ -60,7 +60,7 @@ module ApplicationHelper
       count += 1
       result += "<li>"
       result += "<strong><a href='#{procedure_path(item[:parent])}'>"\
-                  "#{item[:parent].name}</a></strong>"
+                    "#{item[:parent].name}</a></strong>"
       investigation =
         item[:parent].
           procedure_specializations.
@@ -224,5 +224,13 @@ module ApplicationHelper
 
     ("window.pathways.openFeedbackModal(" +
       "window.pathways.reactStore.dispatch,#{args.to_json})")
+  end
+
+  def home_path
+    if current_user.as_introspective?
+      index_own_clinics_path
+    else
+      root_path
+    end
   end
 end

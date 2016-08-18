@@ -1,12 +1,14 @@
 !!!
 %html
   %head
+    = csrf_meta_tag
+    = javascript_include_tag "error_catching"
     %title= page_title
-    %meta{"http-equiv"=>"Content-Type", :content=>"text/html; charset=utf-8"}
-    %meta{"name"=>"viewport", :content=>"initial-scale=1.0"}
-    %meta{name: "newrelic-uptime", content: "ok"}
-
+    %meta{ "http-equiv" => "Content-Type", content: "text/html; charset=utf-8" }
+    %meta{ name: "viewport", content: "initial-scale=1.0" }
+    %meta{ name: "newrelic-uptime", content: "ok" }
     :javascript
+      window.startErrorLog();
       window.pathways = window.pathways || {};
       window.pathways.environment = "#{Rails.env}";
       window.pathways.dataForReact = []
@@ -18,23 +20,22 @@
 
     = stylesheet_link_tag "application"
     /[if lte IE 7]
-      = stylesheet_link_tag "ie.css", :media => 'screen'
+      = stylesheet_link_tag "ie.css", media: 'screen'
     /[if IE 7]
-      = stylesheet_link_tag "font-awesome-ie7.css", :media => 'screen, print'
+      = stylesheet_link_tag "font-awesome-ie7.css", media: 'screen, print'
     = javascript_include_tag "application"
-    = csrf_meta_tag
     = render "layouts/ie_compatibility_warning"
 
     = yield(:head)
 
     = render "partials/analytics_setup"
 
-  %body{:id => "#{params[:controller]}_page"}
+  %body{ id: "#{params[:controller]}_page" }
     #react_root--feedback
     #main-nav.navbar
       .navbar-inner
         .container
-          %a#logo.brand.ajax{"href" => root_url}
+          %a#logo.brand{ href: root_url }
 
     #body.container
       .row
@@ -46,7 +47,7 @@
 
       .row
         #email.content-wrapper
-          %a{onclick: open_feedback_modal}= "Contact Us"
+          %a{ onclick: open_feedback_modal }= "Contact Us"
 
     :javascript
       window.pathways.bootstrapReact()

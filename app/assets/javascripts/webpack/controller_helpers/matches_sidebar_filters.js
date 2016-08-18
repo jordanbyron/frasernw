@@ -40,7 +40,7 @@ export const sidebarFilterKeys = ((model) => {
       ];
     }
     else if (collectionShownName(model) === "contentItems" &&
-      recordShownByTab(model).componentType === "FilterTable"){
+      recordShownByTab(model).filterable){
 
       return [
         "subcategories"
@@ -51,7 +51,7 @@ export const sidebarFilterKeys = ((model) => {
     }
   }
   else if (matchedRoute(model) === "/content_categories/:id" &&
-    recordShownByPage(model).componentType === "FilterTable"){
+    recordShownByPage(model).filterable){
 
     return [
       "subcategories",

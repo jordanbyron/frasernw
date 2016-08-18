@@ -3,9 +3,36 @@ class Ability
 
   def initialize(user)
     can [:new, :create], Message
+    can :notify, :notifications
 
     if !user.authenticated?
       can [:validate, :signup, :setup], User
+
+      can [:create], FeedbackItem
+
+    elsif user.as_introspective?
+      can [
+        :index_own,
+        :show,
+        :edit,
+        :update,
+        :print_location_information
+      ], Clinic do |clinic|
+        !clinic.hidden? && clinic.controlling_users.include?(user)
+      end
+
+      can :index, ReferralForm
+
+      can :show, FaqCategory
+      can :terms_and_conditions, :static_pages
+      can [:index, :show], Video
+
+      can [
+        :change_email,
+        :update_email,
+        :change_password,
+        :update_password
+      ], User
 
       can [:create], FeedbackItem
 
@@ -15,8 +42,7 @@ class Ability
       can :terms_and_conditions, :static_pages
       can :get, :global_data
       can :index, Newsletter
-      can :index, Video
-      can :show, Video
+      can [:index, :show], Video
 
       can :index, :latest_updates
 
@@ -48,7 +74,8 @@ class Ability
         can :manage, [Subscription, Notification]
 
         can :manage, [Specialist, Clinic, Hospital, Office] do |entity|
-          entity.divisions.blank? || (entity.divisions & user.as_divisions).present?
+          entity.divisions.blank? ||
+            (entity.divisions & user.as_divisions).present?
         end
         cannot :destroy, [Specialist, Clinic, Evidence]
         can :create, [Specialist, Clinic, Hospital, Office]
@@ -199,7 +226,8 @@ class Ability
 
       # No one can update items that need review unless they made the review.
       cannot :update, Specialist do |specialist|
-        specialist.review_item.present? && specialist.review_item.editor != user
+        specialist.review_item.present? &&
+          specialist.review_item.editor != user
       end
 
       cannot :update, Clinic do |clinic|

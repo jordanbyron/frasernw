@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   load_and_authorize_resource
-  skip_before_filter :require_authentication, only: [:validate, :signup, :setup]
+  skip_before_filter :require_authentication,
+    only: [:validate, :signup, :setup]
 
   def index
     if params[:division_id].present?
@@ -15,8 +16,12 @@ class UsersController < ApplicationController
         in_divisions([@division]).
         active_admin_only
       @users = User.includes(:divisions).in_divisions([@division]).active_user
-      @pending_users = User.includes(:divisions).in_divisions([@division]).active_pending
-      @inactive_users = User.includes(:divisions).in_divisions([@division]).inactive
+      @introspective_users =
+        User.includes(:divisions).in_divisions([@division]).active_introspective
+      @pending_users =
+        User.includes(:divisions).in_divisions([@division]).active_pending
+      @inactive_users =
+        User.includes(:divisions).in_divisions([@division]).inactive
     else
       if current_user.as_super_admin?
         @super_admin_users = User.
@@ -27,6 +32,7 @@ class UsersController < ApplicationController
         includes(:divisions, { specialization_options: :specialization }).
         active_admin_only
       @users = User.includes(:divisions).active_user
+      @introspective_users = User.includes(:divisions).active_introspective
       @pending_users = User.includes(:divisions).active_pending
       @inactive_users = User.includes(:divisions).inactive
     end
@@ -51,7 +57,8 @@ class UsersController < ApplicationController
     redirect_to new_user_url,
       notice: "User create failed: User is missing a Division" and
       return if @user.divisions.blank?
-    if @user.save validate: false #so we can avoid setting up with emails or passwords
+    # so we can avoid setting up with emails or passwords
+    if @user.save validate: false
       redirect_to @user, notice: "User #{@user.name} successfully created."
     else
       render action: 'new', notice: "User Create Failed"
@@ -71,7 +78,7 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
     @user.attributes = params[:user]
-    if @user.save validate: false #so we can edit a pending account
+    if @user.save validate: false # so we can edit a pending account
       redirect_to @user, notice: "Successfully updated user."
     else
       @new_user = false
@@ -89,9 +96,9 @@ class UsersController < ApplicationController
           alert: "Sorry, your access key was not recognized."
       elsif @user.email.present?
         redirect_to login_url,
-          alert: "Your access key has already been used to set up an account. "\
-            "Please enter the e-mail address and password associated with your account, "\
-            "and press 'Log in'"
+          alert: "Your access key has already been used to set up an account."\
+            " Please enter the e-mail address and password associated with "\
+            "your account, and press 'Log in'"
       elsif @user.active == false
         redirect_to login_url,
           alert: "Sorry, your access key is no longer active. "\
@@ -118,13 +125,15 @@ class UsersController < ApplicationController
         user_from_saved_token.activated_at = Date.current
         user_from_saved_token.save
         redirect_to login_url,
-          notice: "Your account has been set up; please log in using #{@user.email} "\
-            "and your newly created password. Welcome to Pathways!"
+          notice: "Your account has been set up; please log in using "\
+            "#{@user.email} and your newly created password. "\
+            "Welcome to Pathways!"
       else
         render action: 'signup', layout: "user_sessions"
       end
     else
-      redirect_to login_url, alert: "Sorry, your access key was not recognized."
+      redirect_to login_url,
+        alert: "Sorry, your access key was not recognized."
     end
   end
 
@@ -151,8 +160,8 @@ class UsersController < ApplicationController
     if @user.update_attributes(params[:user])
       redirect_to login_url,
         layout: 'user_sessions',
-        notice: "Your e-mail address was successfully changed to #{@user.email}, "\
-          "please log in again with your new e-mail address."
+        notice: "Your e-mail address was successfully changed to "\
+          "#{@user.email}, please log in again with your new e-mail address."
     else
       render action: :change_email, layout: 'user_sessions'
     end
@@ -187,7 +196,8 @@ class UsersController < ApplicationController
       redirect_to upload_users_url,
         notice: "At least one division must be chosen."
     else
-      @users = User.csv_import(params[:file], divisions, params[:type_mask], 'user')
+      @users =
+        User.csv_import(params[:file], divisions, params[:type_mask], 'user')
     end
   end
 

@@ -15,6 +15,10 @@ module HasRole
     role == 'super'
   end
 
+  def introspective?
+    role == 'introspective'
+  end
+
   def role_label
     User::ROLE_LABELS[role]
   end
