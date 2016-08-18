@@ -166,9 +166,11 @@ const UpperWhitePanel = ({model}) => {
   ], matchedRoute(model))){
     return(
       <div className="content-wrapper">
-        <h2>
-          { pageTitleLabel(model) }
-        </h2>
+        <a href={window.location} style={{textDecoration: "none"}}>
+          <h2 style={{marginBottom: "10px"}}>
+            { pageTitleLabel(model) }
+          </h2>
+        </a>
         <ShowHospital model={model}/>
       </div>
     );
@@ -187,9 +189,11 @@ const LowerPanelTitle = ({model}) => {
     "/reports/entity_page_views"
   ], matchedRoute(model))) {
     return(
-      <h2 style={{marginBottom: "10px"}}>
-        { pageTitleLabel(model) }
-      </h2>
+      <a href={window.location} style={{textDecoration: "none"}}>
+        <h2 style={{marginBottom: "10px"}}>
+          { pageTitleLabel(model) }
+        </h2>
+      </a>
     )
   }
   else {
