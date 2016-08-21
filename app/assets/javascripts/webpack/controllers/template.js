@@ -1,7 +1,6 @@
 import React from "react";
 import Table from "controllers/table";
 import * as FilterValues from "controller_helpers/filter_values";
-import { changeFilterValue } from "action_creators";
 import { padTwo } from "utils";
 import DateRangeFilters from "controllers/filter_groups/date_range";
 import DivisionScopeFilters from "controllers/filter_groups/division_scope";
@@ -167,9 +166,11 @@ const UpperWhitePanel = ({model}) => {
   ], matchedRoute(model))){
     return(
       <div className="content-wrapper">
-        <h2>
-          { pageTitleLabel(model) }
-        </h2>
+        <a href={window.location} style={{textDecoration: "none"}}>
+          <h2 style={{marginBottom: "10px"}}>
+            { pageTitleLabel(model) }
+          </h2>
+        </a>
         <ShowHospital model={model}/>
       </div>
     );
@@ -188,9 +189,11 @@ const LowerPanelTitle = ({model}) => {
     "/reports/entity_page_views"
   ], matchedRoute(model))) {
     return(
-      <h2 style={{marginBottom: "10px"}}>
-        { pageTitleLabel(model) }
-      </h2>
+      <a href={window.location} style={{textDecoration: "none"}}>
+        <h2 style={{marginBottom: "10px"}}>
+          { pageTitleLabel(model) }
+        </h2>
+      </a>
     )
   }
   else {

@@ -1,4 +1,6 @@
 import app from "reducers/app";
+import _ from "lodash";
+import { uiKeysMirroredToUrlHash } from "url_hash_mirroring";
 
 const rootReducer = (model = {}, action) => {
   return {
@@ -13,16 +15,20 @@ const ui = (model = {}, action) => {
     var uiData = action.data.map(_.property("ui")).filter(_.identity)
 
     return _.assign(...[{}, model].concat(uiData));
+  case "PARSE_URL_HASH":
+    return _.assign(
+      {},
+      model,
+      _.zipObject(uiKeysMirroredToUrlHash, []),
+      fromUrlHash()
+    )
   default:
     return {
       recordsToDisplay: recordsToDisplay(model.recordsToDisplay, action),
-      location: location(model.location, action),
       isBreadcrumbDropdownOpen: isBreadcrumbDropdownOpen(
         model.isBreadcrumbDropdownOpen,
         action
       ),
-      reducedView: reducedView(model.reducedView, action),
-      tabs: tabs(model.tabs, action),
       latestUpdates: latestUpdates(model.latestUpdates, action),
       persistentConfig: model.persistentConfig,
       feedbackModal: feedbackModal(model.feedbackModal, action),
@@ -35,10 +41,28 @@ const ui = (model = {}, action) => {
         model.highlightSelectedSearchResult,
         action
       ),
-      dropdownSpecializationId: model.dropdownSpecializationId
+      dropdownSpecializationId: model.dropdownSpecializationId,
+      reducedView: reducedView(model.reducedView, action),
+      tabs: tabs(model.tabs, action),
+      selectedTabKey: selectedTabKey(model.selectedTabKey, action)
     };
   }
 };
+
+const fromUrlHash = () => {
+  if (window.location.hash.length === 0){
+    return {};
+  }
+  else {
+    // double quotes are encoded as %22 in ff
+    // see https://bugzilla.mozilla.org/show_bug.cgi?id=1213870
+
+    return JSON.parse(
+      window.location.hash.replace("#", "").replace(/%22/g, '"')
+    );
+  }
+}
+
 const highlightSelectedSearchResult = (model, action) => {
   switch(action.type){
   case "HOVER_LEAVE_SEARCH_RESULT":
@@ -160,6 +184,36 @@ const latestUpdates = (model, action) => {
   }
 }
 
+const isBreadcrumbDropdownOpen = (model, action) => {
+  switch(action.type){
+  case "TOGGLE_BREADCRUMB_DROPDOWN":
+    return action.proposed;
+  default:
+    return false;
+  }
+}
+
+
+const recordsToDisplay = (model, action) => {
+  switch(action.type){
+  case "DATA_RECEIVED":
+    return action.recordsToDisplay;
+  case "REQUESTING_DATA":
+    return undefined;
+  default:
+    return model;
+  }
+};
+
+const selectedTabKey = (model, action) => {
+  switch(action.type){
+  case "TAB_CLICKED":
+    return action.proposed;
+  default:
+    return model;
+  }
+}
+
 const tabs = (model = {}, action) => {
   if (action.tabKey) {
     return _.assign(
@@ -190,6 +244,8 @@ const tab = (model = {}, action) => {
     areRowsExpanded: areRowsExpanded(model.areRowsExpanded, action)
   };
 }
+
+
 
 const areRowsExpanded = (model, action) => {
   switch(action.type){
@@ -249,24 +305,6 @@ const reducedView = (model, action) => {
   }
 }
 
-const isBreadcrumbDropdownOpen = (model, action) => {
-  switch(action.type){
-  case "TOGGLE_BREADCRUMB_DROPDOWN":
-    return action.proposed;
-  default:
-    return false;
-  }
-}
-
-const location = (model, action) => {
-  switch(action.type){
-  case "PARSE_LOCATION":
-    return action.location;
-  default:
-    return model;
-  }
-}
-
 const selectedTableHeading = (model = {}, action) => {
   switch(action.type){
   case "SORT_BY_HEADING":
@@ -295,17 +333,6 @@ const selectedTableHeading = (model = {}, action) => {
   }
 
 }
-
-const recordsToDisplay = (model, action) => {
-  switch(action.type){
-  case "DATA_RECEIVED":
-    return action.recordsToDisplay;
-  case "CHANGE_FILTER_VALUE":
-    return undefined;
-  default:
-    return model;
-  }
-};
 
 const filterValues = (model = {}, action) => {
   switch(action.type){
@@ -338,5 +365,6 @@ const filterValues = (model = {}, action) => {
     return model;
   }
 };
+
 
 export default rootReducer;

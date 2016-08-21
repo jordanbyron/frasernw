@@ -266,4 +266,8 @@ module SpecializationsHelper
     end
     return filtering_attributes
   end
+
+  def react_url_hash(tab_key)
+    { selectedTabKey: tab_key }.to_json
+  end
 end
