@@ -248,17 +248,17 @@ const ParentProcedureBreadcrumb = ({model, level}) => {
 const ChildBreadcrumb = ({model}) => {
   if (matchedRoute(model) === "/specialties/:id"){
     return(
-      <ChildBreadcrumbWrapper model={model}>
+      <li className={childClassName(model)}>
         <span style={{marginLeft: "4px"}}>{ recordShownByPage(model).name }</span>
         <NewTag model={model} specialization={recordShownByPage(model)}/>
-      </ChildBreadcrumbWrapper>
+      </li>
     );
   }
   else if (matchedRoute(model) === "/areas_of_practice/:id"){
     return(
-      <ChildBreadcrumbWrapper model={model}>
+      <li className={childClassName(model)}>
         <span style={{marginLeft: "4px"}}>{ recordShownByPage(model).name }</span>
-      </ChildBreadcrumbWrapper>
+      </li>
     );
   }
   else if (_.includes(
@@ -269,26 +269,16 @@ const ChildBreadcrumb = ({model}) => {
       model.app.specializations[model.ui.dropdownSpecializationId]
 
     return(
-      <ChildBreadcrumbWrapper model={model}>
+      <li className={childClassName(model)}>
         <span style={{marginLeft: "4px"}}>{ specialization.name }</span>
         <NewTag model={model} specialization={specialization}/>
-      </ChildBreadcrumbWrapper>
+      </li>
     );
   }
   else {
     return <span></span>;
   }
 };
-
-const ChildBreadcrumbWrapper = ({model, children}) => {
-  return(
-    <li className={childClassName(model)}>
-      <a href={window.location.pathname} style={{color: "#666666"}}>
-        { children }
-      </a>
-    </li>
-  )
-}
 
 const childClassName = (model) => {
   let classes = ["subsequent child"];

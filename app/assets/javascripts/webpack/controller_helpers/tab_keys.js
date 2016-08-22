@@ -38,7 +38,7 @@ export const isTabbedPage = ((model) => {
 }).pwPipe(memoizePerRender);
 
 export const selectedTabKey = ((model) => {
-  return (model.ui.selectedTabKey ||
+  return (model.ui.location.hash.replace("#", "") ||
     tabKey(defaultTab(model).type, defaultTab(model).id));
 }).pwPipe(memoizePerRender);
 

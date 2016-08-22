@@ -3,7 +3,8 @@ import { requestDynamicData } from "action_creators";
 const nextAction = store => next => action => {
   const result = next(action)
 
-  if (_.includes([ "CHANGE_FILTER_VALUE", "PARSE_URL_HASH"], action.type)){
+  switch(action.type){
+  case "CHANGE_FILTER_VALUE":
     requestDynamicData(store.getState(), store.dispatch);
   }
 

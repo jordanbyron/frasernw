@@ -3,19 +3,18 @@
   .tabbable
     %ul#content_tabs.nav.nav-tabs
       %li.specialists
-        = link_to "#{specialization_path(specialization)}##{react_url_hash('specialists')}",
-          id: "specialists" do
-          %span= "Specialists"
+        %a#specialists{"href" => "#{specialization_path(specialization)}#specialists"}
+          %span Specialists
       %li.clinics
-        = link_to "#{specialization_path(specialization)}##{react_url_hash('clinics')}",
-          id: "clinics" do
-          %span= "Clinics"
+        %a#clinics{"href" => "#{specialization_path(specialization)}#clinics"}
+          %span Clinics
       - ScCategory.specialty.each do |sc_category|
         - if sc_category.all_sc_items_for_specialization_in_divisions(specialization, current_user.as_divisions).present?
-          %li{class: "contentCategory#{sc_category.id}" }
-            = link_to "#{specialization_path(specialization)}##{react_url_hash('contentCategory' + sc_category.id.to_s)}",
-              id: "sc_category.name.remove_whitespace" do
+          %li{:class => "contentCategory#{sc_category.id}"}
+            %a{"href" => "#{specialization_path(specialization)}#contentCategory#{sc_category.id}",
+              "id" => sc_category.name.remove_whitespace }
               %span= sc_category.name
+      -#long_query_warning:294ms+ ^^
 
 :javascript
   $(document).ready(function(){

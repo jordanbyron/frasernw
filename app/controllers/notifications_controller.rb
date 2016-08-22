@@ -3,11 +3,7 @@ class NotificationsController < ApplicationController
 
   def notify
     authorize! :notify, :notifications
-
-    if ENV["APP_NAME"] != "pathwaysbcdevelopment"
-      SystemNotifier.javascript_error(params)
-    end
-
+    SystemNotifier.javascript_error(params)
     render json: nil, status: :ok
   end
 end
