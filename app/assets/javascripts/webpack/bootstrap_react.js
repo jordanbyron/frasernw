@@ -9,13 +9,12 @@ import { useQueries } from 'history';
 import ReactDOM from "react-dom";
 import rootReducer from "reducers/root_reducer";
 import React from "react";
-import changeTab from "middlewares/change_tab";
+import updateUrlHash from "middlewares/update_url_hash";
 import setSearchListeners from "set_search_listeners";
 import {
-  requestDynamicData,
   parseRenderedData,
   integrateLocalStorageData,
-  parseLocation
+  parseUrl
 } from "action_creators";
 import FeedbackModal from "controllers/feedback_modal";
 
@@ -27,7 +26,7 @@ const bootstrapReact = function() {
     middlewares.push(logger);
   }
 
-  middlewares.push(changeTab);
+  middlewares.push(updateUrlHash);
 
   middlewares.push(nextAction);
 
@@ -35,10 +34,13 @@ const bootstrapReact = function() {
   const store = createStoreWithMiddleware(rootReducer);
   window.pathways.reactStore = store;
 
-  parseLocation(store.dispatch);
+  parseUrl(store.dispatch);
 
+  window.pathways.parseUrlOnHashChange = true;
   window.addEventListener("hashchange", () => {
-    parseLocation(store.dispatch);
+    if (window.pathways.parseUrlOnHashChange) {
+      parseUrl(store.dispatch);
+    }
   })
 
   $(document).ready(function() {
@@ -79,8 +81,6 @@ const bootstrapReact = function() {
     }
 
     parseRenderedData(window.pathways.dataForReact, store.dispatch);
-
-    requestDynamicData(store.getState(), store.dispatch);
   })
 };
 

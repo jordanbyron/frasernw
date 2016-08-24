@@ -6,6 +6,8 @@ import _ from "lodash";
 
 export function requestDynamicData(model, dispatch){
   if(matchedRoute(model) === "/reports/page_views_by_user"){
+    requestingData(dispatch)
+
     const requestParams = {
       divisionId: FilterValues.divisionScope(model),
       startMonth: FilterValues.startMonth(model),
@@ -23,6 +25,8 @@ export function requestDynamicData(model, dispatch){
     })
   }
   else if (matchedRoute(model) === "/reports/entity_page_views") {
+    requestingData(dispatch)
+
     const requestParams = {
       start_month_key: FilterValues.startMonth(model),
       end_month_key: FilterValues.endMonth(model),
@@ -42,12 +46,10 @@ export function requestDynamicData(model, dispatch){
   }
 }
 
-export function changeFilterValue(dispatch, filterKey, newValue) {
+export function requestingData(dispatch) {
   dispatch({
-    type: "CHANGE_FILTER_VALUE",
-    filterKey: filterKey,
-    newValue: newValue
-  });
+    type: "REQUESTING_DATA"
+  })
 }
 
 export function parseRenderedData(data, dispatch) {
@@ -83,7 +85,7 @@ export function integrateLocalStorageData(dispatch, data) {
 export function tabClicked(dispatch, model, tabKey) {
   dispatch({
     type: "TAB_CLICKED",
-    tabKey: tabKey
+    proposed: tabKey
   })
 }
 
@@ -103,24 +105,23 @@ export function toggleFilterGroupExpansion(dispatch, tabKey, filterGroupKey, pro
   })
 }
 
-const proposedValue = (event) => {
-  if (event.target.type === "checkbox"){
-    return event.target.checked;
-  }
-  else {
-    return event.target.value;
-  }
-};
 
 export function changeFilter(dispatch, tabKey, filterKey, filterSubKey, event) {
   if(event.target.type !== "radio" || event.target.checked) {
-    dispatch({
-      type: "CHANGE_FILTER_VALUE",
-      tabKey: tabKey,
-      filterKey: filterKey,
-      filterSubKey: filterSubKey,
-      proposed: proposedValue(event)
-    })
+    if (event.target.type === "checkbox"){
+      var proposedValue = event.target.checked;
+    }
+    else {
+      var proposedValue = event.target.value;
+    }
+
+    changeFilterToValue(
+      dispatch,
+      tabKey,
+      filterKey,
+      filterSubKey,
+      proposedValue
+    )
   }
 }
 
@@ -156,10 +157,9 @@ export function updateCityFilters(dispatch, model, activatedIds) {
   });
 }
 
-export function parseLocation(dispatch){
+export function parseUrl(dispatch){
   dispatch({
-    type: "PARSE_LOCATION",
-    location: window.location
+    type: "PARSE_URL_HASH"
   })
 }
 
