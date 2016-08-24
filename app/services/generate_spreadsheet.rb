@@ -9,7 +9,7 @@ module GenerateSpreadsheet
       not_responded_specialists = []
 
       clinics.each do |clinic|
-        clinic_categorization = 
+        clinic_categorization =
         clinic_row = [
           clinic.id,
           clinic.name,
@@ -34,6 +34,48 @@ module GenerateSpreadsheet
         not_responded_specialists: not_responded_specialists
       }
       printing_header = ["ID","Name","Categorization","Status_mask"]
+      print_spreadsheet(printing_body, printing_header)
+    end
+
+    def low_info_specialists_and_clinics
+      clinics = Clinic.select do |clinic|
+        ([3,nil].include? clinic.status_mask) ||
+          ([2, 3, nil].include? clinic.categorization_mask)
+      end
+      specialists = Specialist.select do |specialist|
+        ([7,nil].include? specialist.status_mask) ||
+          ([2, 4, nil].include? specialist.categorization_mask)
+      end
+
+      low_info_clinics = []
+      low_info_specialists = []
+
+      clinics.each do |clinic|
+        clinic_categorization =
+        clinic_row = [
+          clinic.id,
+          clinic.name,
+          clinic_categorization(clinic),
+          Clinic::STATUS_HASH[clinic.status_mask]
+        ]
+        low_info_clinics.push(clinic_row)
+      end
+
+      specialists.each do |specialist|
+        specialist_row = [
+          specialist.id,
+          specialist.name,
+          specialist_categorization(specialist),
+          Specialist::STATUS_HASH[specialist.status_mask]
+        ]
+        low_info_specialists.push(specialist_row)
+      end
+
+      printing_body = {
+        low_info_clinics: low_info_clinics,
+        low_info_specialists: low_info_specialists
+      }
+      printing_header = ["ID","Name","Categorization","Status"]
       print_spreadsheet(printing_body, printing_header)
     end
 
