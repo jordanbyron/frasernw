@@ -1,0 +1,19 @@
+.tabbable
+  #react_root--template
+    %ul#specialties-menu
+      %li.dropdown{class: specialization.nil? ? "no-caret" : ""}
+        %a.specialties-dropdown-toggle{href: "javascript:void(0)"}
+          All Specialties
+          %b.caret
+      - if !specialization.nil?
+        %li.subsequent
+          = specialization.name
+          - if specialization.new_for_divisions?(current_user.as_divisions)
+            %span.new= "NEW"
+
+:javascript
+  window.pathways.dataForReact.push({
+    ui: {
+      dropdownSpecializationId: #{specialization.try(:id) || "null"}
+    }
+  });

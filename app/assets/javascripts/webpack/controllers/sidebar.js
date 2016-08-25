@@ -1,5 +1,5 @@
 import React from "react";
-import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
 import { viewSelectorClass }  from "controller_helpers/reduced_view";
 import { recordShownByTab, selectedTabKey} from "controller_helpers/tab_keys";
 import { collectionShownName, collectionShownPluralLabel }

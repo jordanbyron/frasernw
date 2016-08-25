@@ -158,15 +158,6 @@ class ScCategory < ActiveRecord::Base
     items
   end
 
-  def all_sc_items_for_procedure_in_divisions(procedure, divisions)
-    items = sc_items.for_procedure_in_divisions(procedure, divisions)
-    self.children.each do |child|
-      items +=
-        child.all_sc_items_for_procedure_in_divisions(procedure, divisions)
-    end
-    items.flatten.uniq
-  end
-
   def items_borrowable_by_division(division)
     all_borrowable_sc_items - division.shareable_sc_items
   end

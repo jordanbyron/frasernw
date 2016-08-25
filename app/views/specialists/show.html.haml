@@ -4,13 +4,8 @@
   favoritable_id: @specialist.id,
   favoritable_type: "Specialist").present? ? "icon-red" : "icon-text") : "icon-text"
 
-= render "partials/all_specialties_dropdown",
+= render "partials/body_panel_nav",
   specialization: dropdown_specialization(@specialist, current_user)
-
-- if @specialist.specializations.any?
-  = render 'partials/specialization_nav',
-    specialization: dropdown_specialization(@specialist, current_user),
-    selected: 'specialists'
 
 - specialist_offices = @specialist.specialist_offices.order(:created_at).reject{ |specialist_office| specialist_office.empty? }
 - has_office = specialist_offices.length > 0

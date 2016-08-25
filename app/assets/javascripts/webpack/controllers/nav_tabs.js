@@ -5,6 +5,7 @@ import { NavTabs, NavTab } from "component_helpers/nav_tabs";
 import { tabClicked } from "action_creators";
 import { matchedRoute } from "controller_helpers/routing";
 import React from "react";
+import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
 
 const NavTabsController = ({model, dispatch}) => {
   if (isTabbedPage(model)) {
@@ -100,13 +101,32 @@ const NavTabsController = ({model, dispatch}) => {
 };
 
 const NavTabController = ({model, dispatch, tabKey, label}) => {
-  return(
-    <NavTab
-      label={label}
-      onClick={_.partial(tabClicked, dispatch, model, tabKey)}
-      isSelected={tabKey === selectedTabKey(model)}
-    />
-  );
+  if (_.includes(["/specialists/:id", "/clinics/:id", "/content_items/:id"],
+    matchedRoute(model))){
+    return(
+      <NavTab
+        label={label}
+        doesPageNav={true}
+        href={pageNavHref(model, tabKey)}
+        isSelected={tabKey === selectedTabKey(model)}
+      />
+    )
+  }
+  else {
+    return(
+      <NavTab
+        label={label}
+        doesPageNav={false}
+        onClick={_.partial(tabClicked, dispatch, model, tabKey)}
+        isSelected={tabKey === selectedTabKey(model)}
+      />
+    );
+  }
+}
+
+const pageNavHref = (model, tabKey) => {
+  return (`/specialties/${recordShownByBreadcrumb(model).id}#` +
+    JSON.stringify({selectedTabKey: tabKey}))
 }
 
 

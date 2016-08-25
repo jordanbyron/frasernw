@@ -1,5 +1,5 @@
 import React from "react";
-import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
 import TableRows from "controllers/table_rows";
 import TableHeadings from "controllers/table_headings";
 import { reportStyle } from "controller_helpers/filter_values";
@@ -42,7 +42,7 @@ const shouldShow = (model) => {
   }
 
   if (matchedRoute(model) === "/content_categories/:id" &&
-    !(recordShownByPage(model).componentType === "FilterTable")) {
+    !(recordShownByRoute(model).componentType === "FilterTable")) {
 
     return false;
   }

@@ -43,7 +43,6 @@ class SpecializationOption < ActiveRecord::Base
   end
 
   def open_to_sc_category?
-    Rails.logger.info("1")
     open_to_sc_category.present? &&
     open_to_sc_category.
       all_sc_items_for_specialization_in_divisions(specialization, [division]).

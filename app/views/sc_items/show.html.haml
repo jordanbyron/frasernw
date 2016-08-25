@@ -4,13 +4,8 @@
   favoritable_id: @sc_item.id,
   favoritable_type: "ScItem").present? ? "icon-red" : "icon-text") : "icon-text"
 
-= render "partials/all_specialties_dropdown",
+= render "partials/body_panel_nav",
   specialization: dropdown_specialization(@sc_item, current_user)
-
-- if @sc_item.specializations.any?
-  = render 'partials/specialization_nav',
-    specialization: dropdown_specialization(@sc_item, current_user),
-    selected: "contentCategory#{@sc_item.root_category.id}"
 
 .content-wrapper.scm
 

@@ -33,7 +33,7 @@ export const matchedRouteParams = ((model) => {
   return routeParams(window.location.pathname, matchedRoute(model));
 }).pwPipe(memoizePerRender);
 
-export const recordShownByPage = ((model) => {
+export const recordShownByRoute = ((model) => {
   switch(matchedRoute(model)){
   case "/specialties/:id":
     return model.app.specializations[matchedRouteParams(model).id];
@@ -45,6 +45,12 @@ export const recordShownByPage = ((model) => {
     return model.app.hospitals[matchedRouteParams(model).id];
   case "/languages/:id":
     return model.app.languages[matchedRouteParams(model).id];
+  case "/specialists/:id":
+    return model.app.specialists[matchedRouteParams(model).id];
+  case "/clinics/:id":
+    return model.app.clinics[matchedRouteParams(model).id];
+  case "/content_items/:id":
+    return model.app.contentItems[matchedRouteParams(model).id];
   case "/news_items":
     return model.app.divisions[model.ui.persistentConfig.divisionId];
   }

@@ -11,7 +11,7 @@ import ReducedViewSelector from "controllers/reduced_view_selector";
 import { reducedView, viewSelectorClass } from "controller_helpers/reduced_view";
 import Sidebar from "controllers/sidebar";
 import { recordShownByTab, isTabbedPage } from "controller_helpers/tab_keys";
-import { recordShownByPage } from "controller_helpers/routing";
+import { recordShownByRoute } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import Subtitle from "controllers/subtitle";
 import InlineArticles from "controllers/inline_articles";
@@ -71,7 +71,7 @@ const showInlineArticles = (model) => {
     ((isTabbedPage(model) &&
       recordShownByTab(model).componentType === "InlineArticles") ||
     (!isTabbedPage(model) &&
-      recordShownByPage(model).componentType === "InlineArticles"))
+      recordShownByRoute(model).componentType === "InlineArticles"))
 };
 
 const usesSidebarLayout = ((model) => {
@@ -79,7 +79,7 @@ const usesSidebarLayout = ((model) => {
     model.app.currentUser.role !== "user") ||
     (collectionShownName(model) === "contentItems" &&
       ((isTabbedPage(model) && recordShownByTab(model).filterable) ||
-      (!isTabbedPage(model) && recordShownByPage(model).filterable))) ||
+      (!isTabbedPage(model) && recordShownByRoute(model).filterable))) ||
     collectionShownName(model) === "specialists" ||
     collectionShownName(model) === "clinics" ||
     _.includes(["/reports/entity_page_views",

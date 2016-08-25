@@ -234,13 +234,12 @@ class ScItem < ActiveRecord::Base
   end
 
   def root_category
-    @root_category ||= begin
+    @root_category ||=
       if sc_category.parent.present?
         sc_category.parent
       else
         sc_category
       end
-    end
   end
 
   def full_title

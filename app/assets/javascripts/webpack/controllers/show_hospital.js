@@ -1,12 +1,12 @@
 import React from "react";
-import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
 
 const ShowHospital = ({model}) => {
   if(matchedRoute(model) === "/hospitals/:id"){
     return(
       <div>
         <AddressLink model={model}/>
-        <p className="no_indent">{ recordShownByPage(model).phoneAndFax }</p>
+        <p className="no_indent">{ recordShownByRoute(model).phoneAndFax }</p>
       </div>
     )
   }
@@ -16,12 +16,12 @@ const ShowHospital = ({model}) => {
 }
 
 const AddressLink = ({model}) => {
-  if(recordShownByPage(model).address && recordShownByPage(model).mapUrl){
+  if(recordShownByRoute(model).address && recordShownByRoute(model).mapUrl){
     return(
       <p className="no_indent">
-        <a href={recordShownByPage(model).mapUrl}
+        <a href={recordShownByRoute(model).mapUrl}
           target="_blank"
-        >{ recordShownByPage(model).address }</a>
+        >{ recordShownByRoute(model).address }</a>
       </p>
     )
   }

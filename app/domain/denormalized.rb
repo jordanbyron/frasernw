@@ -45,6 +45,7 @@ module Denormalized
               specializationIds: item.specializations.map(&:id),
               title: item.title,
               categoryId: item.sc_category.id,
+              rootCategoryId: item.root_category.id,
               categoryIds: [item.sc_category, item.sc_category.ancestors].
                 flatten.
                 map(&:id),

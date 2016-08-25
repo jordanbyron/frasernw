@@ -1,6 +1,6 @@
 import _ from "lodash";
 import sidebarFilters from "controller_helpers/sidebar_filters";
-import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import { recordShownByTab } from "controller_helpers/tab_keys";
 import * as filterValues from "controller_helpers/filter_values";
@@ -51,7 +51,7 @@ export const sidebarFilterKeys = ((model) => {
     }
   }
   else if (matchedRoute(model) === "/content_categories/:id" &&
-    recordShownByPage(model).filterable){
+    recordShownByRoute(model).filterable){
 
     return [
       "subcategories",

@@ -1,4 +1,4 @@
-import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
 import * as filterValues from "controller_helpers/filter_values";
 import { toSentence } from "utils";
 import _ from "lodash";
@@ -10,18 +10,18 @@ const pageTitleLabel = (model) => {
     return "Page Views by User";
   case "/content_categories/:id":
     let parentContentCategory =
-      model.app.contentCategories[recordShownByPage(model).ancestry];
+      model.app.contentCategories[recordShownByRoute(model).ancestry];
 
     if (parentContentCategory){
-      return `${parentContentCategory.name}: ${recordShownByPage(model).name}`;
+      return `${parentContentCategory.name}: ${recordShownByRoute(model).name}`;
     }
     else {
-      return recordShownByPage(model).name;
+      return recordShownByRoute(model).name;
     }
   case "/hospitals/:id":
-    return recordShownByPage(model).name;
+    return recordShownByRoute(model).name;
   case "/languages/:id":
-    return recordShownByPage(model).name;
+    return recordShownByRoute(model).name;
   case "/reports/referents_by_specialty":
     if (parseInt(filterValues.divisionScope(model)) === 0) {
       var scope = "Pathways";

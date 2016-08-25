@@ -8,14 +8,23 @@ export function NavTabs({children}){
   )
 };
 
-export function NavTab({label, onClick, isSelected}){
+export function NavTab({label, onClick, isSelected, doesPageNav, href}){
   const className = isSelected ? "active" : ""
 
-  return(
-    <li onClick={onClick}
-      className={className}
-    >
-      <a>{ label }</a>
-    </li>
-  );
+  if(doesPageNav){
+    return(
+      <li className={className}>
+        <a href={href}>{ label }</a>
+      </li>
+    )
+  }
+  else {
+    return(
+      <li onClick={onClick}
+        className={className}
+      >
+        <a>{ label }</a>
+      </li>
+    );
+  }
 };

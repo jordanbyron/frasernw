@@ -1,7 +1,7 @@
 import React from "react";
 import FilterCheckbox from "controllers/filter_checkbox";
 import FilterGroup from "controllers/filter_group";
-import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
 import recordsMaskingFilters from "controller_helpers/records_masking_filters";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import { subcategories as subkeys } from "controller_helpers/filter_subkeys";
@@ -66,7 +66,7 @@ const radioOptions = (model) => {
     map(_.property("categoryId")).
     pwPipe(_.flatten).
     pwPipe(_.uniq).
-    pwPipe((ids) => _.pull(ids, recordShownByPage.id)).
+    pwPipe((ids) => _.pull(ids, recordShownByRoute.id)).
     map((id) => {
       return { key: id.toString(), label: model.app.contentCategories[id].name };
     }).pwPipe((options) => _.sortBy(options, _.property("label"))).

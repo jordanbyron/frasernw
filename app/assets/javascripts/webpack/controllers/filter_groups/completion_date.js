@@ -1,6 +1,6 @@
 import React from "react";
 import FilterGroup from "controllers/filter_group";
-import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
 import recordsMaskingFilters from "controller_helpers/records_masking_filters";
 import FilterCheckbox from "controllers/filter_checkbox";
 

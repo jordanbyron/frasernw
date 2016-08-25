@@ -1,7 +1,8 @@
 import _ from "lodash";
-import { matchedRoute, matchedRouteParams, recordShownByPage }
+import { matchedRoute, matchedRouteParams, recordShownByRoute }
   from "controller_helpers/routing";
-import { matchesTab, matchesRoute } from "controller_helpers/collection_shown";
+import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
+import { matchesTab, matchesPage } from "controller_helpers/collection_shown";
 import { memoizePerRender } from "utils";
 import { preliminaryFilterKeys } from "controller_helpers/matches_preliminary_filters";
 import * as preliminaryFilters from "controller_helpers/preliminary_filters";
@@ -11,24 +12,15 @@ const samePerPage = ((model) => {
     map((filterKey) => preliminaryFilters[filterKey])
 
   return _.values(model.app.contentItems).filter((item) => {
-    return matchesRoute(
-      matchedRoute(model),
-      recordShownByPage(model),
-      model.app.currentUser,
-      item
-    ) && _preliminaryFilters.every((filter) => filter(item, model))
+    return matchesPage(item, model) &&
+      _preliminaryFilters.every((filter) => filter(item, model))
   });
 }).pwPipe(memoizePerRender)
 
 const contentCategoryItems = function(categoryId, model){
   return samePerPage(model).
     filter((item) => {
-      return matchesTab(
-        item,
-        model.app.contentCategories,
-        `contentCategory${categoryId}`,
-        recordShownByPage(model)
-      );
+      return matchesTab(item, model, `contentCategory${categoryId}`);
     });
 };
 

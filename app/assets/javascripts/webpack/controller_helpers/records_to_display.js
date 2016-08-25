@@ -1,11 +1,12 @@
-import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
 import {
   matchesTab,
-  matchesRoute,
+  matchesPage,
   collectionShownName,
   unscopedCollectionShown,
   scopedByRouteAndTab
 } from "controller_helpers/collection_shown";
+import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
 import { showingOtherSpecializations } from "controller_helpers/filter_messages";
 import { selectedTabKey, isTabbedPage } from "controller_helpers/tab_keys";
 import matchesPreliminaryFilters from "controller_helpers/matches_preliminary_filters";
@@ -37,19 +38,10 @@ const recordsToDisplay = ((model) => {
     else {
       return unscopedCollectionShown(model).filter((record) => {
         return matchesPreliminaryFilters(record, model) &&
-          matchesRoute(
-            matchedRoute(model),
-            recordShownByPage(model),
-            model.app.currentUser,
-            record
-          ) &&
+          matchesPage(record, model) &&
           (!isTabbedPage(model) ||
-          matchesTab(
-            record,
-            model.app.contentCategories,
-            selectedTabKey(model),
-            recordShownByPage(model)
-          )) && matchesSidebarFilters(record, model)
+            matchesTab(record, model, selectedTabKey(model))) &&
+          matchesSidebarFilters(record, model)
       })
     }
   }

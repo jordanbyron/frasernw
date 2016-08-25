@@ -5,13 +5,8 @@
     favoritable_id: @clinic.id,
     favoritable_type: "Clinic").present? ? "icon-red" : "icon-text") : "icon-text"
 
-  = render "partials/all_specialties_dropdown",
+  = render "partials/body_panel_nav",
     specialization: dropdown_specialization(@clinic, current_user)
-
-  - if @clinic.specializations.any?
-    = render 'partials/specialization_nav',
-      specialization: dropdown_specialization(@clinic, current_user),
-      selected: 'clinics'
 
 - show_details = false
 - show_areas_of_practice = false

@@ -5,7 +5,7 @@ import { memoizePerRender } from "utils";
 import ReferentStatusIcon from "controllers/referent_status_icon";
 import Tags from "component_helpers/tags";
 import ExpandedReferentInformation from "controllers/expanded_referent_information";
-import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
 
 const ReferentRow = ({decoratedRecord, model, dispatch}) => {
   return(
@@ -111,7 +111,7 @@ const showPedSuffix = (record, model) => {
     record.specializationIds.length > 1 &&
     isPediatrician(record, model) &&
     (matchedRoute(model) !== "/specialties/:id" ||
-      recordShownByPage(model).id !== parseInt(pediatricsId(model)));
+      recordShownByRoute(model).id !== parseInt(pediatricsId(model)));
 }
 
 const pediatricsId = ((model) => {
