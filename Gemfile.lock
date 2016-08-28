@@ -9,8 +9,7 @@ GIT
 
 GIT
   remote: https://github.com/pathwaysmedical/heroku_cloud_backup.git
-  revision: 2ec11be36208ba3a6f1224d352c4147563eff8d6
-  branch: deprecation-refactor
+  revision: 352958edc5c3b37e9f305a12ba59dc1f33c24acd
   specs:
     heroku_cloud_backup (0.2.0)
       fog (>= 1.6.0)
@@ -270,9 +269,9 @@ GEM
     fog-voxel (0.1.0)
       fog-core
       fog-xml
-    fog-vsphere (1.0.0)
+    fog-vsphere (1.0.1)
       fog-core
-      rbvmomi (~> 1.8)
+      rbvmomi (~> 1.8.0)
     fog-xenserver (0.2.3)
       fog-core
       fog-xml
