@@ -8,8 +8,7 @@ gem 'pg'
 
 group :production do
   gem 'heroku_cloud_backup',
-    git: "https://github.com/pathwaysmedical/heroku_cloud_backup.git",
-    branch: "deprecation-refactor"
+    git: "https://github.com/pathwaysmedical/heroku_cloud_backup.git"
 end
 
 gem 'redis'
