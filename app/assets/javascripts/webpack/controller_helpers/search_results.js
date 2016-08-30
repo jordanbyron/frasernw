@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { memoizePerRender, memoize } from "utils";
 import hiddenFromUsers from "controller_helpers/hidden_from_users";
-import stringScore from "utils/string_score";
+import scoreStrings from "utils/score_strings";
 import { urlCollectionName } from "controller_helpers/links";
 import { matchesUserDivisions } from "controller_helpers/preliminary_filters";
 
@@ -237,7 +237,7 @@ const toSearch = (model) => {
 
 const decorateWithScore = (record, model) => {
   return {
-    score: stringScore((model.ui.searchTerm || ""), entryLabel(record), 0.5),
+    score: scoreStrings((model.ui.searchTerm || ""), entryLabel(record)),
     raw: record
   };
 };
