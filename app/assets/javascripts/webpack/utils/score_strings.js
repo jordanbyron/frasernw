@@ -10,12 +10,17 @@ const scoreStrings = (string1, string2) => {
 
     var string1WordScores = string1Words.map((string1Word, string1WordIndex) => {
       var scoresAgainstString2Words = string2Words.map((string2Word, string2WordIndex) => {
-        return scoreWords({
-          word1: string1Word,
-          word2: string2Word,
-          word1Index: string1WordIndex,
-          word2Index: string2WordIndex,
-        })
+        if (string1Word === string2Word) {
+          return 1.0;
+        }
+        else {
+          return fuzzilyScoreWords({
+            word1: string1Word,
+            word2: string2Word,
+            word1Index: string1WordIndex,
+            word2Index: string2WordIndex,
+          })
+        }
       })
 
       return Math.max(...scoresAgainstString2Words);
@@ -25,7 +30,7 @@ const scoreStrings = (string1, string2) => {
   }
 }
 
-const scoreWords = ({
+const fuzzilyScoreWords = ({
   word1,
   word2,
   word1Index,
@@ -69,7 +74,7 @@ const scoreWords = ({
     }
 
     if (matchedFragmentLength > 0){
-      return scoreWords({
+      return fuzzilyScoreWords({
         word1: word1,
         word2: word2,
         word1Index: word1Index,
@@ -84,7 +89,7 @@ const scoreWords = ({
       })
     }
     else {
-      return scoreWords({
+      return fuzzilyScoreWords({
         word1: word1,
         word2: word2,
         word1Index: word1Index,
@@ -100,8 +105,6 @@ const scoreWords = ({
     }
   }
 }
-
-window.scoreWords = scoreWords;
 
 const FUZZINESS = 0.5;
 
