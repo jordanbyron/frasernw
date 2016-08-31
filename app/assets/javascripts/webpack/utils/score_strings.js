@@ -97,6 +97,7 @@ const fuzzilyScoreWords = ({
         searchTermWordFragmentStartIndex: (searchTermWordFragmentStartIndex +
           matchedFragmentLength),
         resultLabelWordFragmentStartIndex: (resultLabelWordFragmentStartIndex +
+          resultLabelWordFragmentMatchIndex +
           matchedFragmentLength),
         matchesCount: (matchesCount + 1),
         startOfWordMatchesCount: (resultLabelWordFragmentMatchIndex === 0 ?
