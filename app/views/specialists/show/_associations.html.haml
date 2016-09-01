@@ -1,0 +1,14 @@
+- clinics = @specialist.clinics.reject{ |c| c.closed? }
+- hospitals = @specialist.hospitals
+- if hospitals.present? || clinics.present?
+  %h6 Associations
+
+  - if hospitals.present?
+    %p
+      %strong Hospital privileges:
+      != hospitals.map{ |hospital| "<a href='#{hospital_path(hospital)}')\">#{hospital.name}</a>" }.to_sentence
+
+  - if clinics.present?
+    %p
+      %strong Clinic associations:
+      != clinic_associations(clinics)

@@ -1,0 +1,17 @@
+%h6 Urgent Referrals
+
+- if @specialist.urgent_referrals_via.present?
+  %p
+    %strong Accepted by:
+    = @specialist.urgent_referrals_via
+
+- if @specialist.red_flags.present?
+  %p
+    %strong Red flags
+    that this office feels warrant urgent consultation:
+    = @specialist.red_flags.end_with_period.convert_newlines_to_br
+
+- if @specialist.teleservices.any?(&:offered?)
+= render "teleservices/index", provider: @specialist
+
+- if @specialist.patient_instructions.present? || @specialist.cancellation_policy.present?

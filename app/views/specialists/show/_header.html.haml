@@ -1,0 +1,137 @@
+.headline-header
+.headline
+  .specialist-image
+    .image{ class: !@specialist.photo.present? && "empty" }
+      - if @specialist.photo.present?
+        %img{ src: @specialist.photo.url(:thumb) }
+  %h2.profile_header__title{ class: (@specialist.hidden? ? "hidden-from-users" : "") }
+    %span= @specialist.name
+    %a{ href: "javascript:void(0)",
+      onclick: "favorite('specialists',#{@specialist.id},'#{escape_javascript(@specialist.name)}')",
+      title: "Favourite / un-favourite" }
+      %i.icon-heart{ id: "user_favorite_specialists_#{@specialist.id}" }
+  - if @specialist.hidden?
+    %h5= " (Hidden from users)"
+  %h3.specialty_links
+    - if @specialist.specializations.length <= 1 && @specialist.is_gp && @specialist.specializations.has_family_practice?
+      GP
+    - elsif @specialist.is_gp
+      GP with a focus in
+    = @specialist.specializations.reject{|s| s.name == "Family Practice"}.map{ |s| "<a href='#{specialization_path(s)}'>#{s.name}</a>" }.to_sentence.html_safe
+  - if @specialist.sex? && @specialist.padded_billing_number.present?
+    %h5= " #{@specialist.sex}, MSP ##{@specialist.padded_billing_number}"
+  - elsif @specialist.sex?
+    %h5= @specialist.sex
+  - elsif @specialist.padded_billing_number.present?
+    %h5= "MSP ##{@specialist.padded_billing_number}"
+
+  %p.space.no_indent
+    %i{ class: @specialist.status_class }
+
+    - if !@specialist.responded_to_survey?
+
+      %strong
+        This specialist has not yet provided Pathways their
+        information.
+
+    - elsif @specialist.moved_away?
+
+      %strong This specialist has moved away.
+
+    - elsif @specialist.deceased?
+
+      %strong This specialist is deceased.
+      - if @specialist.status_details.present?
+        %p.no_indent
+          = @specialist.status_details.end_with_period.convert_newlines_to_br
+
+    - elsif @specialist.retired?
+
+      %strong This specialist has retired.
+
+    - elsif @specialist.permanently_unavailable?
+
+      %strong This specialist is no longer available.
+
+    - elsif @specialist.purposely_not_yet_surveyed? || @specialist.hospital_or_clinic_only?
+
+      - show_areas_of_practice = true
+
+      - hospital_count = @specialist.hospitals.length
+      - clinic_count = @specialist.clinics.reject{ |c| c.closed? }.length
+
+      - if @specialist.purposely_not_yet_surveyed?
+
+        %strong
+          This specialist has purposely not yet been surveyed by
+          Pathways.
+        %p
+          They may be out of our current catchment area, or in a
+          speciality we have yet to fully survey.
+
+      - elsif @specialist.hospital_or_clinic_only?
+
+        - show_areas_of_practice = true
+        - show_clinic_details = true
+
+        - if hospital_count > 0 && clinic_count > 0
+          %strong Only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"} and #{ hospital_count > 1 ? "hospitals" : "a hospital"}, and in general all referrals should be made through these locations.
+        - elsif clinic_count > 0
+          %strong Only works out of #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
+        - elsif hospital_count > 0
+          %strong Only works out of #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
+        - else
+          %strong
+            Only works out of hospitals and / or clinics, but we do
+            not yet have data on which ones.
+
+        - if @specialist.hospital_clinic_details.present?
+          %p.space.no_indent
+            %strong Details:
+            = @specialist.hospital_clinic_details
+
+    - elsif @specialist.hospital_or_clinic_referrals_only?
+
+      - show_areas_of_practice = true
+      - show_details = true
+
+      - hospital_count = @specialist.hospitals.length
+      - clinic_count = @specialist.clinics.reject{ |c| c.closed? }.length
+
+      - if hospital_count > 0 && clinic_count > 0
+        %strong Only accepts referrals through #{ clinic_count > 1 ? "clinics" : "a clinic"} and #{ hospital_count > 1 ? "hospitals" : "a hospital"}, and in general all referrals should be made through these locations.
+      - elsif clinic_count > 0
+        %strong Only accepts referrals through #{ clinic_count > 1 ? "clinics" : "a clinic"}, and in general all referrals should be made through #{ clinic_count > 1 ? "these clinics" : "this clinic"}.
+      - elsif hospital_count > 0
+        %strong Only accepts referrals through #{ hospital_count > 1 ? "hospitals" : "a hospital"}.
+      - else
+        %strong
+          Only accepts referrals through hospitals and / or clinics,
+          but we do not yet have data on which ones.
+
+      - if has_office
+        %p.space.no_indent
+          This physician also sees their own patients for ongoing care at their #{ specialist_offices.length > 1 ? "offices" : "office"} listed below.
+
+
+      - if @specialist.hospital_clinic_details.present?
+        %p.space.no_indent
+          %strong Details:
+          = @specialist.hospital_clinic_details
+
+    - else
+
+      - show_details = true
+      - show_areas_of_practice = true
+
+      %strong.status= @specialist.status.end_with_period
+      - if @specialist.status_details.present?
+        %p.no_indent
+          %strong Details:
+          = @specialist.status_details.end_with_period.convert_newlines_to_br
+      - if @specialist.practise_limitations.present?
+        %p.no_indent
+          %strong Limitations:
+          = @specialist.practise_limitations.end_with_period.convert_newlines_to_br
+
+.headline-footer
