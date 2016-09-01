@@ -290,7 +290,7 @@ class Clinic < ActiveRecord::Base
   end
 
   def show_waittimes?
-    !closed? && responded? && accepting_new_patients?
+    !closed? && responded? && accepting_new_referrals?
   end
 
   def not_available?
@@ -352,7 +352,7 @@ class Clinic < ActiveRecord::Base
       return Specialist::STATUS_CLASS_UNKNOWN
     elsif purposely_not_yet_surveyed?
       return Specialist::STATUS_CLASS_BLANK
-    elsif accepting_new_patients?
+    elsif accepting_new_referrals?
       return Specialist::STATUS_CLASS_AVAILABLE
     elsif accepting_limited_referrals?
       return Specialist::STATUS_CLASS_LIMITATIONS
@@ -370,7 +370,7 @@ class Clinic < ActiveRecord::Base
     Specialist::STATUS_CLASS_HASH[status_class]
   end
 
-  def accepting_new_patients?
+  def accepting_new_referrals?
     status_mask == 1
   end
 
@@ -594,8 +594,6 @@ class Clinic < ActiveRecord::Base
       attendance.show?
     end
   end
-
-  alias_method :cities_for_front_page, :cities
 
   def specialists_with_offices_in
     clinic_locations.

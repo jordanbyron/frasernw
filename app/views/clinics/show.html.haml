@@ -41,7 +41,7 @@
 
             %p.space.no_indent
               %i{ class: @clinic.status_class }
-              - if @clinic.not_responded?
+              - if !@clinic.responded_to_survey?
 
                 %strong
                   This clinic has not yet provided Pathways their information.

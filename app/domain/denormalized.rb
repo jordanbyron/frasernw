@@ -119,9 +119,8 @@ module Denormalized
             notPerformed: Denormalized.
               sanitize(specialist.not_performed).
               try(:convert_newlines_to_br),
-            respondedToSurvey: !specialist.not_responded? &&
-              !specialist.purposely_not_yet_surveyed?,
-            isAvailable: !specialist.not_available?,
+            respondedToSurvey: specialist.responded_to_survey?,
+            isAvailable: specialist.available?,
             hidden: specialist.hidden?
           })
         end

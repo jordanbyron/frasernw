@@ -86,7 +86,7 @@ class ReportsController < ApplicationController
       specialists.sort_by do |sp|
         sp.locations.first.present? ? sp.locations.first.short_address : ""
       end.each do |sp|
-        next if !sp.responded? || sp.not_available?
+        next if !sp.surveyed? || !sp.responded_to_survey? || !sp.available?
         active_controlling_users =
           sp.controlling_users.reject{ |u| u.pending? || !u.active? }
         entry = {}

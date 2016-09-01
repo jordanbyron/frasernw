@@ -7,6 +7,7 @@ class BreakupStatus < ActiveRecord::Migration
     add_column :specialist, :surveyed, :boolean
     add_column :specialist, :responded_to_survey, :boolean
     add_column :specialist, :availability, :integer
+    add_column :specialist, :retirement_date, :date
 
     Specialist.all.each do |specialist|
       specialist.without_versioning do

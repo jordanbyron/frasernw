@@ -196,7 +196,7 @@ class LatestUpdates < ServiceObject
     -> (item, division) { !item.primary_specialization.present? },
     -> (item, division) { !item.primary_specialization_shown_in?([division]) },
     -> (item, division) {
-      item_cities = item.cities_for_front_page.flatten.uniq
+      item_cities = item.cities.flatten.uniq
       local_referral_cities = division.
         local_referral_cities(item.primary_specialization)
 
@@ -235,7 +235,7 @@ class LatestUpdates < ServiceObject
       end
 
       def clinic_location_events
-        return [] unless clinic.accepting_new_patients?
+        return [] unless clinic.accepting_new_referrals?
 
         clinic.clinic_locations.inject([]) do |memo, clinic_location|
           if clinic_location.opened_recently?
@@ -347,7 +347,7 @@ class LatestUpdates < ServiceObject
       end
 
       def specialist_office_events
-        return [] unless specialist.accepting_new_patients?
+        return [] unless specialist.accepting_new_referrals?
 
         specialist.specialist_offices.inject([]) do |memo, specialist_office|
           if specialist_office.opened_recently?

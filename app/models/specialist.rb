@@ -208,7 +208,6 @@ class Specialist < ActiveRecord::Base
   def expire_cache
     Rails.cache.delete([self.class.name, self.id])
     cities(force: true)
-    cities_for_front_page(force: true)
     ExpireFragment.call(
       Rails.application.routes.url_helpers.specialist_path(self)
     )
@@ -638,49 +637,15 @@ class Specialist < ActiveRecord::Base
   #clinic that referrals are done through
   belongs_to :referral_clinic, class_name: "Clinic"
 
-  def city
-    if responded? || hospital_or_clinic_only? || hospital_or_clinic_referrals_only?
-      cities.first
-    else
-      nil
-    end
-  end
-
   def cities(force: false)
     Rails.cache.fetch([self.class.name, self.id, "cities"], force: force) do
-      if responded?
+      if has_own_offices?
         offices.map(&:city).reject(&:blank?).uniq
-      elsif hospital_or_clinic_only?
+      else
         (
           hospitals.map(&:city) +
           clinic_locations.map(&:city)
         ).flatten.reject(&:blank?).uniq
-      elsif (
-        not_responded? ||
-        purposely_not_yet_surveyed? ||
-        hospital_or_clinic_referrals_only?
-      )
-        (
-          offices.map(&:city) +
-          hospitals.map(&:city) +
-          clinic_locations.map(&:city)
-        ).flatten.reject(&:blank?).uniq
-      else
-        []
-      end
-    end
-  end
-
-  #we need to know their 'old' cities if they moved away
-  def cities_for_front_page(force: false)
-    Rails.cache.fetch(
-      [self.class.name, self.id, "cities_for_front_page"],
-      force: force
-    ) do
-      if moved_away?
-        offices.map(&:city).reject(&:blank?).uniq
-      else
-        cities
       end
     end
   end
@@ -697,22 +662,25 @@ class Specialist < ActiveRecord::Base
     end.last
   end
 
-  CATEGORIZATION_LABELS = {
-    1 => "Responded to survey",
-    2 => "Not responded to survey",
-    3 => "Only works out of hospitals or clinics",
-    4 => "Purposely not yet surveyed",
-    5 => "Only accepts referrals through hospitals or clinics"
+  AVAILABILITY = {
+    4 => :retired,
+    8 => :indefinitely_unavailable,
+    7 => :unknown,
+    9 => :permanently_unavailable,
+    10 => :moved_away,
+    12 => :deceased,
+    13 => :available,
+    14 => :temporarily_unavailable
   }
 
-  def referral_summary(context)
+  def availability_summary(context)
     if !surveyed?
       {
         icon: "",
         tooltip: "",
         show: "This specialist has not yet been surveyed. They might be out of catchment, or in a specialty we have yet to fully survey."
       }
-    elsif not_responded? || availability_unknown?
+    elsif !responded_to_survey? || availability_unknown?
       {
         icon: "icon-question-sign",
         tooltip: "Referral status unknown",
@@ -791,219 +759,26 @@ class Specialist < ActiveRecord::Base
     end
   end
 
-  def responded?
-    categorization_mask == 1
-  end
-
-  def not_responded?
-    categorization_mask == 2
-  end
-
-  def hospital_or_clinic_only?
-    categorization_mask == 3
-  end
-
-  def purposely_not_yet_surveyed?
-    categorization_mask == 4
-  end
-
-  def hospital_or_clinic_referrals_only?
-    categorization_mask == 5
+  def availability_unknown?
+    availability == 7
   end
 
   def show_in_table?
-    not_responded? ||
-    hospital_or_clinic_only? ||
-    hospital_or_clinic_referrals_only? ||
-    (responded? && !unavailable_for_a_while?)
+    !unvailable_for_a_while?
   end
 
   def show_waittimes?
-    responded? &&
-      (
-        accepting_new_patients? ||
-        retiring? ||
-        accepting_with_limitations? ||
-        (
-          status_mask == 6 &&
-          (unavailable_to < Date.current || unavailable_from > Date.current)
-        )
-      )
+    has_own_offices? && accepting_new_referrals?
   end
 
-  def not_available?
-    retired? || permanently_unavailable? || moved_away?
-  end
-
+  ## TODO after form
   def unavailable_for_a_while?
-    (
-      retired? || moved_away? || permanently_unavailable?) &&
-      (unavailable_from <= (Date.current - 2.years)
-    )
-  end
-
-  def again_available?
-    (status_mask == 6) && (unavailable_to < Date.current)
-  end
-
-  STATUS_HASH = {
-    1 => "Accepting new referrals",
-    11 => "Accepting limited new referrals by geography or # of patients",
-    2 => "Only doing follow up on previous patients",
-    4 => "Retired as of",
-    5 => "Retiring as of",
-    6 => "Unavailable between",
-    8 => "Indefinitely unavailable",
-    9 => "Permanently unavailable",
-    12 => "Deceased",
-    10 => "Moved away",
-    7 => "Didn't answer"
-  }
-
-  def status
-    if retired?
-      "Retired"
-    elsif retiring?
-      "Retiring as of #{unavailable_from.to_s(:long_ordinal)}"
-    elsif status_mask == 6
-      if again_available?
-        Specialist::STATUS_HASH[1]
-      else
-        "Unavailable from #{unavailable_from.to_s(:long_ordinal)} through "\
-          "#{unavailable_to.to_s(:long_ordinal)}"
-      end
-    elsif status_mask == 7 || status_mask.blank?
-      "It is unknown if this specialist is accepting new patients "\
-        "(the office didn't respond)"
-    else
-      Specialist::STATUS_HASH[status_mask]
-    end
-  end
-
-  STATUS_CLASS_AVAILABLE    = "icon-ok icon-green"
-  STATUS_CLASS_LIMITATIONS  = "icon-ok icon-orange"
-  STATUS_CLASS_UNAVAILABLE  = "icon-remove icon-red"
-  STATUS_CLASS_WARNING      = "icon-warning-sign icon-orange"
-  STATUS_CLASS_UNKNOWN      = "icon-question-sign"
-  STATUS_CLASS_EXTERNAL     = "icon-signout icon-blue"
-  STATUS_CLASS_BLANK        = ""
-
-  # match clinic
-  STATUS_CLASS_HASH = {
-    STATUS_CLASS_AVAILABLE => 1,
-    STATUS_CLASS_EXTERNAL => 2,
-    STATUS_CLASS_WARNING => 3,
-    STATUS_CLASS_UNAVAILABLE => 4,
-    STATUS_CLASS_UNKNOWN => 5,
-    STATUS_CLASS_BLANK => 6,
-    STATUS_CLASS_LIMITATIONS => 7,
-  }
-
-  # match tooltip to status_class
-  STATUS_TOOLTIP_HASH = {
-    STATUS_CLASS_AVAILABLE   => "Accepting new referrals",
-    STATUS_CLASS_LIMITATIONS => "Accepting limited new referrals by geography "\
-                                "or # of patients",
-    STATUS_CLASS_UNAVAILABLE => "Not accepting new referrals",
-    STATUS_CLASS_WARNING     => "Referral status will change soon",
-    STATUS_CLASS_UNKNOWN     => "Referral status is unknown",
-    STATUS_CLASS_EXTERNAL    => "Only works out of, and possibly accepts "\
-                                "referrals through, clinics and/or hospitals",
-    STATUS_CLASS_BLANK       => ""
-  }
-
-  AVAILABILITY_LABELS = {
-    4 => :retired,
-    8 => :indefinitely_unavailable,
-    7 => :unknown,
-    9 => :permanently_unavailable,
-    10 => :moved_away,
-    12 => :deceased,
-    13 => :available,
-    14 => :temporarily_unavailable
-  }
-
-  def status_class
-    # purposely handle categorization prior to status
-    if not_responded?
-      return STATUS_CLASS_UNKNOWN
-    elsif purposely_not_yet_surveyed?
-      return STATUS_CLASS_BLANK
-    elsif hospital_or_clinic_only? || hospital_or_clinic_referrals_only?
-      return STATUS_CLASS_EXTERNAL
-    elsif accepting_with_limitations?
-      return STATUS_CLASS_LIMITATIONS
-    elsif accepting_new_patients? || again_available?
-      return STATUS_CLASS_AVAILABLE
-    elsif (
-      follow_up_only? ||
-      retired? ||
-      (
-        (status_mask == 6) && (unavailable_from <= Date.current) &&
-        (unavailable_to >= Date.current)
-      ) ||
-      indefinitely_unavailable? ||
-      permanently_unavailable? ||
-      deceased? ||
-      moved_away?
-    )
-      # only seeing old patients, retired, "retiring as of" date has passed",
-      # or in midst of unavailability, indefinitely unavailable, permanently
-      # unavailable, or moved away
-      return STATUS_CLASS_UNAVAILABLE
-    elsif (retiring? || ((status_mask == 6) && (unavailable_from > Date.current)))
-      return STATUS_CLASS_WARNING
-    elsif ((status_mask == 3) || (status_mask == 7) || status_mask.blank?)
-      return STATUS_CLASS_UNKNOWN
-    else
-      #this shouldn't really happen
-      return STATUS_CLASS_BLANK
-    end
-  end
-
-  def status_class_hash
-    STATUS_CLASS_HASH[status_class]
-  end
-
-  def status_tooltip
-    STATUS_TOOLTIP_HASH[status_class]
-  end
-
-  def accepting_new_patients?
-    status_mask == 1
-  end
-
-  def accepting_with_limitations?
-    status_mask == 11
-  end
-
-  def follow_up_only?
-    status_mask == 2
-  end
-
-  def retired?
-    (status_mask == 4) || ((status_mask == 5) && (unavailable_from <= Date.current))
+    (retired? || moved_away? || permanently_unavailable?) &&
+      (unavailable_from <= (Date.current - 2.years))
   end
 
   def retiring?
-    (status_mask == 5) && (unavailable_from > Date.current)
-  end
-
-  def indefinitely_unavailable?
-    status_mask == 8
-  end
-
-  def permanently_unavailable?
-    status_mask == 9
-  end
-
-  def moved_away?
-    status_mask == 10
-  end
-
-  STATUS_MASK_DECEASED = 12
-  def deceased?
-    status_mask == STATUS_MASK_DECEASED
+    available? && retirement_date && retirement_date > Date.current
   end
 
   WAITTIME_LABELS = {
@@ -1299,7 +1074,7 @@ class Specialist < ActiveRecord::Base
 
   def print_clinic_info?
     valid_clinic_locations.any? &&
-    (hospital_or_clinic_only? || hospital_or_clinic_referrals_only?)
+      (!has_own_offices? || indirect_referrals_only?)
   end
 
   def valid_clinic_locations

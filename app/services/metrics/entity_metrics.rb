@@ -103,10 +103,10 @@ module Metrics
         [
           "Specialists",
           @specialists.length,
-          @specialists.reject{|s| !s.responded?}.length,
-          @specialists.reject{|s| !s.not_responded?}.length,
-          @specialists.reject{|s| !s.purposely_not_yet_surveyed?}.length,
-          @specialists.reject{|s| !s.hospital_or_clinic_only?}.length,
+          @specialists.select{|s| s.responded_to_survey?}.length,
+          @specialists.select{|s| s.surveyed && !s.responded_to_survey?}.length,
+          @specialists.reject{|s| s.surveyed? }.length,
+          @specialists.select{|s| s.available? && !s.has_own_offices? }.length,
           @specialists.reject{|s| !s.moved_away?}.length,
           @specialists.reject{|s| !s.retired?}.length,
           @specialists.reject{|s| !s.deceased?}.length
@@ -124,9 +124,9 @@ module Metrics
         [
           "Clinics",
           @clinics.length ,
-          @clinics.reject{|s| !s.responded?}.length,
-          @clinics.reject{|s| !s.not_responded?}.length,
-          @clinics.reject{|s| !s.purposely_not_yet_surveyed?}.length
+          @clinics.select{|s| s.responded_to_survey?}.length,
+          @clinics.select{|s| s.surveyed && !s.responded_to_survey?}.length,
+          @clinics.reject{|s| s.surveyed? }.length
         ],
         [
           ""
@@ -161,10 +161,10 @@ module Metrics
         memo  << [
           specialization.name,
           @specialization_specialists.length,
-          @specialization_specialists.reject{|s| !s.responded?}.length,
-          @specialization_specialists.reject{|s| !s.not_responded?}.length,
-          @specialization_specialists.reject{|s| !s.purposely_not_yet_surveyed?}.length,
-          @specialization_specialists.reject{|s| !s.hospital_or_clinic_only?}.length,
+          @specialization_specialists.select{|s| s.responded_to_survey?}.length,
+          @specialization_specialists.select{|s| s.surveyed && !s.responded_to_survey?}.length,
+          @specialization_specialists.reject{|s| s.surveyed? }.length,
+          @specialization_specialists.select{|s| s.available? && !s.has_own_offices? }.length,
           @specialization_specialists.reject{|s| !s.moved_away?}.length,
           @specialization_specialists.reject{|s| !s.retired?}.length,
           @specialization_specialists.reject{|s| !s.deceased?}.length
