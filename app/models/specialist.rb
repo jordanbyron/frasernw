@@ -221,7 +221,7 @@ class Specialist < ActiveRecord::Base
 
     # responded_* location searches exclude specialist with CATEGORIZATION_3:
     # "Only works out of hospitals or clinics"
-    responded_direct = joins(
+    from_own_office = joins(
       'INNER JOIN "specialist_offices" '\
         'ON "specialists"."id" = "specialist_offices"."specialist_id" '\
         'INNER JOIN "offices" '\
@@ -235,13 +235,13 @@ class Specialist < ActiveRecord::Base
         'AND "direct_address".city_id IN (?) '\
         'AND "direct_location".hospital_in_id IS NULL '\
         'AND "direct_location".location_in_id IS NULL '\
-        'AND "specialists".categorization_mask IN (?)',
+        'AND "specialists".has_own_offices = (?)',
       "Office",
       city_ids,
-      [1, 2, 4, 5]
+      true
     )
 
-    responded_in_hospital = joins(
+    from_own_office_in_hospital = joins(
       'INNER JOIN "specialist_offices" '\
         'ON "specialists"."id" = "specialist_offices"."specialist_id" '\
         'INNER JOIN "offices" '\
@@ -258,14 +258,14 @@ class Specialist < ActiveRecord::Base
       '"direct_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".categorization_mask IN (?)',
+        'AND "specialists".has_own_offices = (?)',
       "Office",
       "Hospital",
       city_ids,
-      [1, 2, 4, 5]
+      true
     )
 
-    responded_in_clinic = joins(
+    from_own_office_in_clinic = joins(
       'INNER JOIN "specialist_offices" '\
         'ON "specialists"."id" = "specialist_offices"."specialist_id" '\
         'INNER JOIN "offices" '\
@@ -282,14 +282,14 @@ class Specialist < ActiveRecord::Base
         'AND "clinic_location".locatable_type = (?) '\
         'AND "clinic_location".hospital_in_id IS NULL '\
         'AND "clinic_address".city_id IN (?) '\
-        'AND "specialists".categorization_mask IN (?)',
+        'AND "specialists".has_own_offices = (?)',
       "Office",
       "ClinicLocation",
       city_ids,
-      [1, 2, 4, 5]
+      true
     )
 
-    responded_in_clinic_in_hospital = joins(
+    from_own_office_in_clinic_in_hospital = joins(
       'INNER JOIN "specialist_offices" '\
         'ON "specialists"."id" = "specialist_offices"."specialist_id" '\
         'INNER JOIN "offices" '\
@@ -310,17 +310,17 @@ class Specialist < ActiveRecord::Base
         'AND "clinic_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".categorization_mask IN (?)',
+        'AND "specialists".has_own_offices = (?)',
       "Office",
       "ClinicLocation",
       "Hospital",
       city_ids,
-      [1, 2, 4, 5]
+      true
     )
 
     # hoc_* location searches exclude specialists with CATEGORIZATION_1:
     # "Responded to survey"
-    hoc_hospital = joins(
+    from_hospital = joins(
       'INNER JOIN "privileges" '\
         'ON "specialists"."id" = "privileges"."specialist_id" '\
         'INNER JOIN "hospitals" '\
@@ -332,13 +332,13 @@ class Specialist < ActiveRecord::Base
     ).where(
       '"hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".categorization_mask IN (?)',
+        'AND "specialists".has_own_offices = (?)',
       "Hospital",
       city_ids,
-      [2, 3, 4, 5]
+      false
     )
 
-    hoc_clinic = joins(
+    from_clinic = joins(
       'INNER JOIN "attendances" '\
         'ON "specialists"."id" = "attendances"."specialist_id" '\
         'INNER JOIN "clinic_locations" AS "clinic_in_clinic_location" '\
@@ -351,13 +351,13 @@ class Specialist < ActiveRecord::Base
       '"clinic_in_location".locatable_type = (?) '\
         'AND "clinic_address".city_id IN (?) '\
         'AND "clinic_in_location".hospital_in_id IS NULL '\
-        'AND "specialists".categorization_mask IN (?)',
+        'AND "specialists".has_own_offices = (?)',
       "ClinicLocation",
       city_ids,
-      [2, 3, 4, 5]
+      false
     )
 
-    hoc_clinic_in_hospital = joins(
+    from_clinic_in_hospital = joins(
       'INNER JOIN "attendances" '\
         'ON "specialists"."id" = "attendances"."specialist_id" '\
         'INNER JOIN "clinic_locations" AS "clinic_in_clinic_location" '\
@@ -374,21 +374,21 @@ class Specialist < ActiveRecord::Base
       '"clinic_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".categorization_mask IN (?)',
+        'AND "specialists".has_own_offices = (?)',
       "ClinicLocation",
       "Hospital",
       city_ids,
-      [2, 3, 4, 5]
+      false
     )
 
     (
-      responded_direct +
-      responded_in_hospital +
-      responded_in_clinic +
-      responded_in_clinic_in_hospital +
-      hoc_hospital +
-      hoc_clinic +
-      hoc_clinic_in_hospital
+      from_own_office +
+      from_own_office_in_hospital +
+      from_own_office_in_clinic +
+      from_own_office_in_clinic_in_hospital +
+      from_hospital +
+      from_clinic +
+      from_clinic_in_hospital
     ).uniq
   end
 
@@ -397,7 +397,7 @@ class Specialist < ActiveRecord::Base
   # for specialists that haven't responded or are purosely not yet surveyed we just
   # try to grab any city that makes sense
     city_ids = Array.wrap(c).map{ |city| city.id }.sort
-    responded_direct = joins(
+    from_own_office = joins(
       'INNER JOIN "specialist_offices" '\
         'ON "specialists"."id" = "specialist_offices"."specialist_id" '\
         'INNER JOIN "offices" '\
@@ -413,14 +413,15 @@ class Specialist < ActiveRecord::Base
         'AND "direct_address".city_id IN (?) '\
         'AND "direct_location".hospital_in_id IS NULL '\
         'AND "direct_location".location_in_id IS NULL '\
-        'AND "specialists".categorization_mask IN (?) '\
+        'AND "specialists".has_own_offices = (?) '\
         'AND "specialist_specializations".specialization_id = (?)',
       "Office",
       city_ids,
-      [1, 2, 4, 5], specialization.id
+      true,
+      specialization.id
     )
 
-    responded_in_hospital = joins(
+    from_own_office_in_hospital = joins(
       'INNER JOIN "specialist_offices" '\
         'ON "specialists"."id" = "specialist_offices"."specialist_id" '\
         'INNER JOIN "offices" '\
@@ -439,15 +440,16 @@ class Specialist < ActiveRecord::Base
       '"direct_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".categorization_mask IN (?) '\
+        'AND "specialists".has_own_offices = (?) '\
         'AND "specialist_specializations".specialization_id = (?)',
       "Office",
       "Hospital",
       city_ids,
-      [1, 2, 4, 5], specialization.id
+      true,
+      specialization.id
     )
 
-    responded_in_clinic = joins(
+    from_own_office_in_clinic = joins(
       'INNER JOIN "specialist_offices" '\
         'ON "specialists"."id" = "specialist_offices"."specialist_id" '\
         'INNER JOIN "offices" '\
@@ -466,15 +468,16 @@ class Specialist < ActiveRecord::Base
         'AND "clinic_location".locatable_type = (?) '\
         'AND "clinic_location".hospital_in_id IS NULL '\
         'AND "clinic_address".city_id IN (?) '\
-        'AND "specialists".categorization_mask IN (?) '\
+        'AND "specialists".has_own_offices = (?) '\
         'AND "specialist_specializations".specialization_id = (?)',
       "Office",
       "ClinicLocation",
       city_ids,
-      [1, 2, 4, 5], specialization.id
+      true,
+      specialization.id
     )
 
-    responded_in_clinic_in_hospital = joins(
+    from_own_office_in_clinic_in_hospital = joins(
       'INNER JOIN "specialist_offices" '\
         'ON "specialists"."id" = "specialist_offices"."specialist_id" '\
         'INNER JOIN "offices" '\
@@ -497,16 +500,17 @@ class Specialist < ActiveRecord::Base
         'AND "clinic_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".categorization_mask IN (?) '\
+        'AND "specialists".has_own_offices = (?) '\
         'AND "specialist_specializations".specialization_id = (?)',
       "Office",
       "ClinicLocation",
       "Hospital",
       city_ids,
-      [1, 2, 4, 5], specialization.id
+      true,
+      specialization.id
     )
 
-    hoc_hospital = joins(
+    from_hospital = joins(
       'INNER JOIN "privileges" '\
         'ON "specialists"."id" = "privileges"."specialist_id" '\
         'INNER JOIN "hospitals" '\
@@ -520,14 +524,15 @@ class Specialist < ActiveRecord::Base
     ).where(
       '"hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".categorization_mask IN (?) '\
+        'AND "specialists".has_own_offices = (?) '\
         'AND "specialist_specializations".specialization_id = (?)',
       "Hospital",
       city_ids,
-      [2, 3, 4, 5], specialization.id
+      false,
+      specialization.id
     )
 
-    hoc_clinic = joins(
+    from_clinic = joins(
       'INNER JOIN "attendances" '\
         'ON "specialists"."id" = "attendances"."specialist_id" '\
         'INNER JOIN "clinic_locations" AS "clinic_in_clinic_location" '\
@@ -542,14 +547,15 @@ class Specialist < ActiveRecord::Base
       '"clinic_in_location".locatable_type = (?) '\
         'AND "clinic_address".city_id IN (?) '\
         'AND "clinic_in_location".hospital_in_id IS NULL '\
-        'AND "specialists".categorization_mask IN (?) '\
+        'AND "specialists".has_own_offices = (?) '\
         'AND "specialist_specializations".specialization_id = (?)',
       "ClinicLocation",
       city_ids,
-      [2, 3, 4, 5], specialization.id
+      false,
+      specialization.id
     )
 
-    hoc_clinic_in_hospital = joins(
+    from_clinic_in_hospital = joins(
       'INNER JOIN "attendances" '\
         'ON "specialists"."id" = "attendances"."specialist_id" '\
         'INNER JOIN "clinic_locations" AS "clinic_in_clinic_location" '\
@@ -568,22 +574,23 @@ class Specialist < ActiveRecord::Base
       '"clinic_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".categorization_mask IN (?) '\
+        'AND "specialists".has_own_offices = (?) '\
         'AND "specialist_specializations".specialization_id = (?)',
       "ClinicLocation",
       "Hospital",
       city_ids,
-      [2, 3, 4, 5], specialization.id
+      false,
+      specialization.id
     )
 
     (
-      responded_direct +
-      responded_in_hospital +
-      responded_in_clinic +
-      responded_in_clinic_in_hospital +
-      hoc_hospital +
-      hoc_clinic +
-      hoc_clinic_in_hospital
+      from_own_office +
+      from_own_office_in_hospital +
+      from_own_office_in_clinic +
+      from_own_office_in_clinic_in_hospital +
+      from_hospital +
+      from_clinic +
+      from_clinic_in_hospital
     ).uniq
   end
 
@@ -697,6 +704,92 @@ class Specialist < ActiveRecord::Base
     4 => "Purposely not yet surveyed",
     5 => "Only accepts referrals through hospitals or clinics"
   }
+
+  def referral_summary(context)
+    if !surveyed?
+      {
+        icon: "",
+        tooltip: "",
+        show: "This specialist has not yet been surveyed. They might be out of catchment, or in a specialty we have yet to fully survey."
+      }
+    elsif not_responded? || availability_unknown?
+      {
+        icon: "icon-question-sign",
+        tooltip: "Referral status unknown",
+        show: "It is unknown if this specialist is accepting new patients (the office didn't respond)."
+      }
+    elsif available? && indirect_referrals_only? && accepting_new_referrals?
+      {
+        icon: "icon-signout icon-blue",
+        tooltip: "Only accepts referrals through #{works_out_of_label}.",
+        show: "This specialist only accepts referrals through #{works_out_of_label}."
+      }
+    elsif available? && indirect_referrals_only? && accepting_new_referrals == nil
+      {
+        icon: "icon-signout icon-blue",
+        tooltip: "Only works out of, and possibly accepts referrals through #{works_out_of_label}.",
+        show: "This specialist only works out of, and possibly accepts referrals through #{works_out_of_label}."
+      }
+    elsif available? && accepting_new_referrals? && referrals_limited?
+      {
+        icon: "icon-ok icon-orange",
+        tooltip: "Accepting limited new referrals by geography or number of patients",
+        show: "This specialist is accepting limited new referrals by geography or number of patients"
+      }
+    elsif available? && temporarily_unavailable_soon?
+      {
+        icon: "icon-warning-sign icon-orange",
+        tooltip: "Unavailable soon.",
+        show: ("This specialist will be unavailable between " +
+          "#{unavailable_from.to_s(:long_ordinal)} and" +
+          " #{unavailable_to.to_s(:long_ordinal)}.")
+      }
+    elsif available? && retiring_soon?
+      {
+        icon: "icon-warning-sign icon-orange",
+        tooltip: "Unavailable soon.",
+        show: "This specialist will retire on #{retirement_date.to_s(:long_ordinal)}."
+      }
+    elsif available? && accepting_new_referrals?
+      {
+        icon: "icon-ok icon-green",
+        tooltip: "Accepting new referrals",
+        show: "This specialist is accepting new referrals"
+      }
+    elsif deceased?
+      {
+        icon: "icon-remove icon-red",
+        tooltip: "Not accepting new referrals",
+        show: "This specialist is deceased."
+      }
+    elsif retired?
+      {
+        icon: "icon-remove icon-red",
+        tooltip: "Not accepting new referrals",
+        show: "This specialist is retired."
+      }
+    elsif moved_away?
+      {
+        icon: "icon-remove icon-red",
+        tooltip: "Not accepting new referrals",
+        show: "This specialist has moved away."
+      }
+    elsif !available? || !accepting_new_referrals?
+      {
+        icon: "icon-remove icon-red",
+        tooltip: "Not accepting new referrals",
+        show: "This specialist is not accepting new referrals"
+      }
+    else
+      :err
+    end[context]
+  end
+
+  AVAILABILITY.values.except(:unknown).each do |value|
+    define_method "#{value}?" do
+      availability == AVAILABILITY.key(value)
+    end
+  end
 
   def responded?
     categorization_mask == 1
@@ -817,6 +910,17 @@ class Specialist < ActiveRecord::Base
     STATUS_CLASS_EXTERNAL    => "Only works out of, and possibly accepts "\
                                 "referrals through, clinics and/or hospitals",
     STATUS_CLASS_BLANK       => ""
+  }
+
+  AVAILABILITY_LABELS = {
+    4 => :retired,
+    8 => :indefinitely_unavailable,
+    7 => :unknown,
+    9 => :permanently_unavailable,
+    10 => :moved_away,
+    12 => :deceased,
+    13 => :available,
+    14 => :temporarily_unavailable
   }
 
   def status_class
