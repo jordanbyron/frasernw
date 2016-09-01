@@ -1,4 +1,4 @@
-= simple_nested_form_for @office, html: { class: "form-horizontal ajax" } do |f|
+= simple_nested_form_for @office, html: { class: "form-horizontal" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
@@ -11,26 +11,41 @@
         - is_in_hospital = location.in_hospital?
         - is_in_clinic = !is_in_hospital && location.in_clinic?
         - is_stand_alone = !is_in_clinic && !is_in_hospital
-        - [['Standalone', is_stand_alone], ['In a clinic', is_in_clinic], ['In a hospital', is_in_hospital]].each do |option|
-          = label_tag "#{location_class}_#{option.first}", "#{radio_button_tag(location_class, option.first, option.second, class: location_class)} #{option.first}".html_safe
+        - [['Standalone', is_stand_alone],
+          ['In a clinic', is_in_clinic],
+          ['In a hospital', is_in_hospital]].each do |option|
+          = label_tag "#{location_class}_#{option.first}",
+            "#{radio_button_tag(location_class,
+            option.first,
+            option.second,
+            class: location_class)} #{option.first}".html_safe
     .address
       = l.simple_fields_for :address do |a|
         = a.input :suite, input_html: { class: "span1" }
         = a.input :address1
         = a.input :address2
-        = a.association :city, as: :select, collection: (current_user.as_super_admin? ? City.all : City.in_divisions(current_user.as_divisions)).map { |c| ["#{c.name}, #{c.province.symbol}", c.id] }, include_blank: true
+        = a.association :city,
+          as: :select,
+          collection: accessible_cities,
+          include_blank: true
         = a.input :postalcode, input_html: { class: "span1" }
     .hospital
-      = l.association :hospital_in, as: :select, collection: (current_user.as_super_admin? ? Hospital.all : Hospital.in_divisions(current_user.as_divisions)).reject{ |h| h.location.blank? }.map{ |h| ["#{h.name}, #{h.location.short_address}", h.id] }, include_blank: true
+      = l.association :hospital_in,
+        as: :select,
+        collection: accessible_hospitals,
+        include_blank: true
     .clinic
-      = l.association :location_in, as: :select, collection: Clinic.includes_location_data.map{ |c| c.locations }.flatten.reject{ |l| l.empty? }.map{ |l| ["#{l.locatable.clinic.name} #{l.short_address}", l.id] }, include_blank: true
+      = l.association :location_in,
+        as: :select,
+        collection: accessible_clinics,
+        include_blank: true
     .details
       = l.input :suite_in, input_html: { class: "span1" }
       = l.input :details_in
-    %script{"type" => "text/javascript"}
-      :plain
-        $(document).ready( office_address_location_changed );
+
+    :javascript
+      $(document).ready( office_address_location_changed );
 
   .form-actions
     = f.button :submit, class: "btn btn-primary"
-    = link_to 'Cancel', offices_path, class: "btn btn-danger ajax"
+    = link_to 'Cancel', offices_path, class: "btn btn-danger"
