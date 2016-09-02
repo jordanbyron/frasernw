@@ -28,21 +28,14 @@
           = render "specialists/show/referrals"
           = render "specialists/show/urgent_referrals"
 
-          = render "specialists/show/associations"
+          - if @specialist.available? && @specialist.teleservices.any?(&:offered?)
+            = render "teleservices/index", provider: @specialist
 
-          = render "specialists/show/clinics"
+          = render "specialists/show/basic_associations"
 
-          = render "specialists/show/hospital_privileges"
+          = render "specialists/show/expanded_associations"
 
         = render "specialists/show/sidebar"
-
-
-  :javascript
-    $(document).ready(function() {
-      $('.tt').tooltip({trigger: 'manual'});
-      $('#user_favorite_specialists_#{@specialist.id}').addClass('#{favorite_class}');
-    });
-
 
   = render "specialists/show/user_editors"
 
@@ -51,3 +44,9 @@
   = render "specialists/show/user_buttons"
 
   = render "specialists/show/admin_controls"
+
+  :javascript
+    $(document).ready(function() {
+      $('.tt').tooltip({trigger: 'manual'});
+      $('#user_favorite_specialists_#{@specialist.id}').addClass('#{favorite_class}');
+    });

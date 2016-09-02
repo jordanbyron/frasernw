@@ -790,7 +790,7 @@ class Specialist < ActiveRecord::Base
       "hospitals and clinics"
     end
   end
-  
+
   AVAILABILITY.values.except(:unknown).each do |value|
     define_method "#{value}?" do
       availability == AVAILABILITY.key(value)
@@ -1110,6 +1110,10 @@ class Specialist < ActiveRecord::Base
     end
   end
 
+  def non_empty_offices
+    @non_empty_offices ||= specialist_offices.reject(&:empty?)
+  end
+
   def print_clinic_info?
     valid_clinic_locations.any? &&
       (!has_own_offices? || indirect_referrals_only?)
@@ -1143,7 +1147,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def open_clinics
-    @open_clinics = clinics.reject(&:closed?)
+    @open_clinics ||= clinics.reject(&:closed?)
   end
 
 private

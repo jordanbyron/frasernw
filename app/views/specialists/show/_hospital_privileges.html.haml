@@ -1,5 +1,0 @@
-- hospitals = @specialist.hospitals
-- if hospitals.present?
-  %h6 Hospital privileges
-  %p
-    != hospitals.map{ |hospital| "<a href='#{hospital_path(hospital)}')\">#{hospital.name}</a>" }.to_sentence
