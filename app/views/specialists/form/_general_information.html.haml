@@ -1,0 +1,45 @@
+%h3 General Information
+
+= f.input :firstname
+= f.input :lastname
+= f.input :goes_by_name,
+  hint: "A name which colleagues refer to the specialist with, if different from his or her formal first name. E.g. \"Bill\" when the first name is \"William\""
+= f.input :sex_mask,
+  as: :select,
+  collection: Specialist::SEX_LABELS,
+  label_method: :last,
+  value_method: :first,
+  include_blank: false
+= f.input :billing_number,
+  as: :string,
+  input_html: { value: @specialist.padded_billing_number }
+.no-print
+  = f.input :categorization_mask,
+    as: :select,
+    hint: @form_modifier.categorization_hint,
+    collection: SpecialistCategorizationOptions.call(specialist: @specialist,
+    default_divisions: @form_modifier.divisions,
+    built_specialization: @specialization),
+    label_method: :last,
+    value_method: :first,
+    include_blank: false
+= f.input :is_gp
+
+- if current_user.as_admin_or_super?
+  = f.input :hidden, label: "Hide from users"
+  = f.input :is_internal_medicine,
+    label: "Show 'Internal Medicine' Tag",
+    hint: "Please only use this tag when linking an Internal Medicine specialist to another specialty in which they do not have a fellowship."
+  = f.input :sees_only_children,
+    label: "Does not see adult patients"
+.no-print
+  = f.association :specializations,
+    as: :check_boxes,
+    hint: @form_modifier.specializations_hint,
+    disabled: @form_modifier.restrict_editing?,
+    label: @form_modifier.specializations_label_text
+  - if @form_modifier.show_comment_boxes?
+    = f.input :specializations_comments,
+      label: @form_modifier.specialization_comments_label,
+      input_html: { value: "" },
+      as: :text

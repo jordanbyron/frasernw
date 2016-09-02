@@ -1,0 +1,11 @@
+#section_associations
+
+  %hr
+
+  %h3 Associations
+
+  = f.association :hospitals, as: :check_boxes, collection: @hospitals
+
+  = f.association :clinic_locations,
+    as: :check_boxes,
+    collection: @specializations_clinic_locations
