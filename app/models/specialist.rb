@@ -678,31 +678,37 @@ class Specialist < ActiveRecord::Base
       {
         icon: "",
         tooltip: "",
-        show: "This specialist has not yet been surveyed. They might be out of catchment, or in a specialty we have yet to fully survey."
+        show: ("This specialist has not yet been surveyed. They might be out of our " +
+          "current catchment area, or in a specialty we have yet to fully survey.")
       }
     elsif !responded_to_survey? || availability_unknown?
       {
         icon: "icon-question-sign",
         tooltip: "Referral status unknown",
-        show: "It is unknown if this specialist is accepting new patients (the office didn't respond)."
+        show: ("It is unknown if this specialist is accepting new patients " +
+          "(the office didn't respond).")
       }
     elsif available? && indirect_referrals_only? && accepting_new_referrals?
       {
         icon: "icon-signout icon-blue",
         tooltip: "Only accepts referrals through #{works_out_of_label}.",
-        show: "This specialist only accepts referrals through #{works_out_of_label}."
+        show: ("This specialist only accepts referrals through " +
+          "#{works_out_of_label}, and in general all referrals should be made " +
+          "through #{referrals_through_label}.")
       }
     elsif available? && indirect_referrals_only? && accepting_new_referrals == nil
       {
         icon: "icon-signout icon-blue",
-        tooltip: "Only works out of, and possibly accepts referrals through #{works_out_of_label}.",
-        show: "This specialist only works out of, and possibly accepts referrals through #{works_out_of_label}."
+        tooltip: "Only works out of #{works_out_of_label}.",
+        show: ("This specialist only works out of #{works_out_of_label}, and in " +
+          "general all referrals should be made through #{referrals_through_label}.")
       }
     elsif available? && accepting_new_referrals? && referrals_limited?
       {
         icon: "icon-ok icon-orange",
         tooltip: "Accepting limited new referrals by geography or number of patients",
-        show: "This specialist is accepting limited new referrals by geography or number of patients"
+        show: ("This specialist is accepting limited new referrals by geography " +
+          "or number of patients.")
       }
     elsif available? && temporarily_unavailable_soon?
       {
@@ -753,6 +759,38 @@ class Specialist < ActiveRecord::Base
     end[context]
   end
 
+  def referrals_through_label
+    if open_clinics.none? && hospitals.none?
+      "but we do not yet have data on which ones"
+    elsif open_clinics.one? && hospitals.none?
+      "and in general all referrals should be made through this clinic"
+    elsif hospital.one? && open_clinics.none?
+      "and in general all referrals should be made through this hospital"
+    elsif hospitals.many? && open_clinics.none?
+      "and in general all referrals should be made through these hospitals"
+    elsif open_clinics.many? && hospitals.none?
+      "and in general all referrals should be made through these clinics"
+    else
+      "and in general all referrals should be made through these hospitals and clinics"
+    end
+  end
+
+  def works_out_of_label
+    if open_clinics.none? && hospitals.none?
+      ""
+    elsif open_clinics.one? && hospitals.none?
+      "a clinic"
+    elsif hospital.one? && open_clinics.none?
+      "a hospital"
+    elsif hospitals.many? && open_clinics.none?
+      "hospitals"
+    elsif open_clinics.many? && hospitals.none?
+      "clinics"
+    else
+      "hospitals and clinics"
+    end
+  end
+  
   AVAILABILITY.values.except(:unknown).each do |value|
     define_method "#{value}?" do
       availability == AVAILABILITY.key(value)
@@ -1102,6 +1140,10 @@ class Specialist < ActiveRecord::Base
       reject(&:nil?)
 
     (direct + through_clinic).uniq
+  end
+
+  def open_clinics
+    @open_clinics = clinics.reject(&:closed?)
   end
 
 private
