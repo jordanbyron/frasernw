@@ -1,6 +1,7 @@
 import app from "reducers/app";
 import _ from "lodash";
 import { uiKeysMirroredToUrlHash } from "url_hash_mirroring";
+import { decode } from "utils/url_hash_encoding";
 
 const rootReducer = (model = {}, action) => {
   return {
@@ -57,8 +58,8 @@ const fromUrlHash = () => {
     // double quotes are encoded as %22 in ff
     // see https://bugzilla.mozilla.org/show_bug.cgi?id=1213870
 
-    return JSON.parse(
-      window.location.hash.replace("#", "").replace(/%22/g, '"')
+    return decode(
+      window.location.hash.slice(1, window.location.hash.length)
     );
   }
 }
