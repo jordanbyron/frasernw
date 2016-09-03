@@ -34,4 +34,8 @@ class Newsletter < ActiveRecord::Base
   def url
     document.url
   end
+
+  def new?
+    created_at > (Date.current - 1.week)
+  end
 end
