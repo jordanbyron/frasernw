@@ -447,48 +447,36 @@ module VersionsHelper
         end
       when "ProcedureSpecialization"
         if version.event == "create"
-          if version.item.mapped
+          link_to(
+            version.item.procedure.name,
+            procedure_path(version.item.procedure)
+          ) +
+            " is now performed by " +
             link_to(
-              version.item.procedure.name,
-              procedure_path(version.item.procedure)
-            ) +
-              " is now performed by " +
-              link_to(
-                version.item.specialization.name,
-                specialization_path(version.item.specialization)
-              )
-          else
-            return ""
-          end
+              version.item.specialization.name,
+              specialization_path(version.item.specialization)
+            )
         elsif version.event == "update"
-          if version.reify.mapped
+          link_to(
+            version.item.procedure.name,
+            procedure_path(version.item.procedure)
+          ) +
+            " specialty in " +
             link_to(
-              version.item.procedure.name,
-              procedure_path(version.item.procedure)
+              version.item.specialization.name,
+              specialization_path(version.item.specialization)
             ) +
-              " specialty in " +
-              link_to(
-                version.item.specialization.name,
-                specialization_path(version.item.specialization)
-              ) +
-              " was updated"
-          else
-            return ""
-          end
+            " was updated"
         else
-          if version.reify.mapped
+          link_to(
+            version.reify.procedure.name,
+            procedure_path(version.reify.procedure)
+          ) +
+            " is no longer performed by " +
             link_to(
-              version.reify.procedure.name,
-              procedure_path(version.reify.procedure)
-            ) +
-              " is no longer performed by " +
-              link_to(
-                version.reify.specialization.name,
-                specialization_path(version.reify.specialization)
-              )
-          else
-            return ""
-          end
+              version.reify.specialization.name,
+              specialization_path(version.reify.specialization)
+            )
         end
       when "Language"
         if version.event == "create"
