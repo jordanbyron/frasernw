@@ -1,132 +1,85 @@
 class BreakupStatus < ActiveRecord::Migration
   def up
-    add_column :specialist, :accepting_new_referrals, :boolean
-    add_column :specialist, :referrals_limited, :boolean
-    add_column :specialist, :indirect_referrals_only, :boolean
-    add_column :specialist, :has_own_offices, :boolean
-    add_column :specialist, :surveyed, :boolean
-    add_column :specialist, :responded_to_survey, :boolean
-    add_column :specialist, :availability, :integer
-    add_column :specialist, :retirement_date, :date
+    add_column :specialists, :surveyed, :boolean
+    add_column :specialists, :responded_to_survey, :boolean
+
+    add_column :specialists, :has_own_offices
+    add_column :specialists, :accepting_new_direct_referrals, :boolean
+    add_column :specialists, :direct_referrals_limited, :boolean
+
+    add_column :specialists, :availability, :integer
+    add_column :specialists, :retirement_date, :date
 
     Specialist.all.each do |specialist|
       specialist.without_versioning do
         specialist.update_attributes(
-          specialist_status_attributes(specialist).
-            merge(specialist_categorization_attributes(specialist))
+          NEW_SPECIALIST_ATTRIBUTES.map{ |k, v| [ k, v.call(specialist) ] }.to_h
         )
       end
     end
   end
 
-  def specialist_categorization_attributes(specialist)
-    case specialist.categorization_mask
-    when 1 # responded to survey
-      {
-        accepting_new_referrals: [1, 11].include?(specialist.status_mask),
-        referrals_limited: (specialist.status_mask == 11),
-        indirect_referrals_only: false
-        has_own_offices: true,
-        surveyed: true,
-        responded_to_survey: true
-      }
-    when 2 # not responded to survey
-      {
-        accepting_new_referrals: [1, 11].include?(specialist.status_mask),
-        referrals_limited: (specialist.status_mask == 11),
-        indirect_referrals_only: false,
-        has_own_offices: specialist.specialist_offices.any?(&:has_data?),
-        surveyed: true,
-        responded_to_survey: false
-      }
-    when 3 # only works out of hospitals or clinics
-      {
-        accepting_new_referrals: nil,
-        referrals_limited: nil,
-        indirect_referrals_only: true,
-        has_own_offices: false,
-        surveyed: true,
-        responded_to_survey: true
-      }
-    when 4 # purposely not surveyed
-      {
-        accepting_new_referrals: nil,
-        referrals_limited: nil,
-        indirect_referrals_only: nil,
-        has_own_offices: false,
-        surveyed: false,
-        responded_to_survey: false
-      }
-    when 5 # only accepts referrals through hospitals or clinics
-      {
-        accepting_new_referrals: nil,
-        referrals_limited: nil,
-        indirect_referrals_only: true,
-        has_own_offices: specialist.specialist_offices.any?(&:has_data?),
-        surveyed: true,
-        responded_to_survey: true
-      }
-    else
-      raise "This should never happen"
-    end
-  end
-
-  def specialist_status_attributes(specialist)
-    case specialist.status_mask
-    case 1 # accepting new referrals
-      {
-        availability: Specialist::AVAILABILITY_LABELS.key(:available),
-      }
-    case 2 # only doing follow up
-      {
-        availability: Specialist::AVAILABILITY_LABELS.key(:available),
-      }
-    case 4 #retired as of
-      {
-        availability: Specialist::AVAILABILITY_LABELS.key(:retired),
-      }
-    case 5 #retiring as of
-      {
-        availability: Specialist::AVAILABILITY_LABELS.key(:available),
-      }
-    case 6 #unavailable between
-      if specialist.unavailable_from < Date.today && specialist.unavailable_to > Date.today
-        {
-          availability: Specialist::AVAILABILITY_LABELS.key(:temporarily_unavailable),
-        }
+  NEW_SPECIALIST_ATTRIBUTES = {
+    surveyed: -> (specialist) {
+      specialist.categorization_mask != 4 #purposely not surveyed
+    },
+    responded_to_survey: ->(specialist) {
+      #purposely not surveyed, not responded to survey
+      ![4, 2].include?(specialist.categorization_mask)
+    },
+    accepting_new_direct_referrals: ->(specialist){
+      specialist.categorization_mask == 1 && #responded to survey
+        specialist.specialist_offices.select(&:has_data?).any? &&
+        specialist.status_mask == 1 #accepting new referrals
+    },
+    direct_referrals_limited: ->(specialist){
+      specialist.categorization_mask == 1 && #responded to survey
+        specialist.specialist_offices.select(&:has_data?).any? &&
+        specialist.status_mask == 11 #accepting limited new referrals
+    },
+    has_own_offices: -> (specialist){
+       #responded to survey, only accepts referrals through hospitals, clinics
+      [1, 5].include?(specialist.categorization_mask) &&
+        specialist.specialist_offices.select(&:has_data?).any?
+    },
+    availability: -> (specialist){
+      case specialist.status_mask
+      when 1 # accepting new referrals
+        Specialist::AVAILABILITY_LABELS.key(:available),
+      when 2 # only doing follow up
+        Specialist::AVAILABILITY_LABELS.key(:available),
+      case 4 #retired as of
+        Specialist::AVAILABILITY_LABELS.key(:retired),
+      case 5 #retiring as of
+        Specialist::AVAILABILITY_LABELS.key(:available),
+      case 6 #unavailable between
+        if specialist.unavailable_from < Date.today && specialist.unavailable_to > Date.today
+          Specialist::AVAILABILITY_LABELS.key(:temporarily_unavailable),
+        else
+          Specialist::AVAILABILITY_LABELS.key(:available),
+        end
+      case 7 #didn't answer
+        Specialist::AVAILABILITY_LABELS.key(:unknown),
+      case 8 #indefinitely unavailable
+        Specialist::AVAILABILITY_LABELS.key(:indefinitely_unavailable),
+      case 9 #permanently unavailable
+        Specialist::AVAILABILITY_LABELS.key(:permanently_unavailable),
+      case 10 #moved away
+        Specialist::AVAILABILITY_LABELS.key(:moved_away),
+      case 11 #limited referrals
+        Specialist::AVAILABILITY_LABELS.key(:available),
+      case 12 #deceased
+        Specialist::AVAILABILITY_LABELS.key(:deceased),
       else
-        {
-          availability: Specialist::AVAILABILITY_LABELS.key(:available),
-        }
+        Specialist::AVAILABILITY_LABELS.key(:available)
       end
-    case 7 #didn't answer
-      {
-        availability: Specialist::AVAILABILITY_LABELS.key(:unknown),
-      }
-    case 8 #indefinitely unavailable
-      {
-        availability: Specialist::AVAILABILITY_LABELS.key(:indefinitely_unavailable),
-      }
-    case 9 #permanently unavailable
-      {
-        availability: Specialist::AVAILABILITY_LABELS.key(:permanently_unavailable),
-      }
-    case 10 #moved away
-      {
-        availability: Specialist::AVAILABILITY_LABELS.key(:moved_away),
-      }
-    case 11 #limited referrals
-      {
-        availability: Specialist::AVAILABILITY_LABELS.key(:available),
-      }
-    case 12 #deceased
-      {
-        availability: Specialist::AVAILABILITY_LABELS.key(:deceased),
-      }
-    else
-      {
-        availability: Specialist::AVAILABILITY_LABELS.key(:available), #available
-      }
-    end
-  end
+    },
+    retirement_date: ->(specialist){
+      if [4, 5].include?(specialist.status_mask) #retiring as of, retired as of
+        specialist.unavailable_from
+      else
+        nil
+      end
+    }
+  }
 end
