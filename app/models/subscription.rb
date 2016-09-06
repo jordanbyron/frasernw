@@ -107,19 +107,6 @@ class Subscription < ActiveRecord::Base
     TARGET_TYPES[RESOURCE_UPDATES]
   end
 
-  def interval_start_datetime
-    case interval
-    when ::Subscription::INTERVAL_IMMEDIATELY
-      raise "No start time"
-    when ::Subscription::INTERVAL_DAILY
-      return 1.days.ago
-    when ::Subscription::INTERVAL_WEEKLY
-      return 1.weeks.ago
-    when ::Subscription::INTERVAL_MONTHLY
-      return 1.months.ago
-    end
-  end
-
   def self.interval_period(interval_key)
     case interval_key
     when ::Subscription::INTERVAL_IMMEDIATELY
@@ -167,33 +154,56 @@ class Subscription < ActiveRecord::Base
     classification == TARGET_TYPES[RESOURCE_UPDATES]
   end
 
-  def activities
-    scope = SubscriptionActivity.
-      by_target_type(classification).
-      by_divisions(divisions).
-      order("activities.created_at DESC")
+  def interval_period
+    case interval
+    when ::Subscription::INTERVAL_IMMEDIATELY
+      raise "No period"
+    when ::Subscription::INTERVAL_DAILY
+      return 1.days
+    when ::Subscription::INTERVAL_WEEKLY
+      return 1.weeks
+    when ::Subscription::INTERVAL_MONTHLY
+      return 1.month
+    end
+  end
 
-    if interval != INTERVAL_IMMEDIATELY
-      scope = scope.where("activities.created_at > (?)", interval_start_datetime)
+  def items_captured(end_datetime = DateTime.current)
+    if news_update?
+      scope = NewsItem.
+        where(type_mask: news_type)
+
+      table_name = "news_items"
+    elsif resource_update?
+      scope = ScItem.
+        where(type_mask: sc_item_format_type).
+        select do |sc_item|
+          sc_categories.include?(sc_item.root_category)
+        end
+
+      table_name = "content_items"
     end
 
-    if news_update?
-      scope.
-        by_news_item_type(news_type)
-    elsif resource_update?
+    if interval != INTERVAL_IMMEDIATELY
+      scope = scope.where(
+        "#{table_name}.created_at > (?) AND #{table_name}.created_at < (?)",
+        (end_datetime - interval_period),
+        end_datetime
+      )
+    end
+
+    if resource_update?
       scope = scope.
-        by_sc_item_format_type(sc_item_format_type).
-        select do |activity|
-          sc_categories.include?(activity.trackable.root_category)
+        select do |sc_item|
+          sc_categories.include?(sc_item.root_category)
         end
 
       if specializations.any?
-        scope.select do |activity|
-          (activity.trackable.specializations & specializations).any?
+        scope = scope.select do |sc_item|
+          (sc_item.specializations & specializations).any?
         end
-      else
-        scope
       end
     end
+
+    scope
   end
 end
