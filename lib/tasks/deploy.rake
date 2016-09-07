@@ -1,8 +1,26 @@
-task :deploy => ['deploy:backup', 'deploy:show_backups', 'deploy:push', 'deploy:restart', 'deploy:tag']
+task deploy: [
+  'deploy:backup',
+  'deploy:show_backups',
+  'deploy:push',
+  'deploy:restart',
+  'deploy:tag',
+  'deploy:check_pending_migrations'
+]
 
 namespace :deploy do
-  task :migrations => [:backup, :show_backups, :push, :off, :migrate, :restart, :on, :tag]
-  task :rollback => [:off, :push_previous, :restart, :on]
+  task migrations: [
+    :backup,
+    :show_backups,
+    :push,
+    :off,
+    :migrate,
+    :restart,
+    :on,
+    :tag,
+    :check_pending_migrations
+  ]
+
+  task rollback: [:off, :push_previous, :restart, :on]
 
   task :backup do
     puts 'Backing up existing database'
@@ -15,12 +33,8 @@ namespace :deploy do
   end
 
   task :push do
-    # puts 'Finding current git branch ...'
-    # current_branch = `git branch`.split("\n").select{|b| b[0..1] == '* '}.first.sub(/[*]/, '').strip
-    # puts "Deploying site to Heroku using git branch #{current_branch} ..."
-    puts "Deploy site to Production"
-
-    puts `git push heroku_pathways master:master`
+    puts "Deploying site to Production"
+    puts `git push https://git.heroku.com/pathwaysbc.git master:master`
   end
 
   task :restart do
@@ -35,12 +49,11 @@ namespace :deploy do
     puts `git tag -a #{release_name} -m 'Tagged release'`
 
     puts `git push origin #{release_name}`
-    # puts `git push --tags heroku`
   end
 
   task :migrate do
     puts 'Running database migrations ...'
-    puts `heroku rake db:migrate -a pathwaysbc`
+    puts `heroku run rake db:migrate -a pathwaysbc`
   end
 
   task :off do
@@ -53,6 +66,11 @@ namespace :deploy do
     puts `heroku maintenance:off -a pathwaysbc`
   end
 
+  task check_pending_migrations: :environment do
+    puts "Checking for pending migrations ..."
+    puts `heroku run rake check_migrations --app pathwaysbc`
+  end
+
   task :push_previous do
     releases = `git tag`.split("\n").select { |t| t[0..7] == 'release-' }.sort
     current_release = releases.last
@@ -60,24 +78,30 @@ namespace :deploy do
     if previous_release
       puts "Rolling back to '#{previous_release}' ..."
 
-      puts "Checking out '#{previous_release}' in a new branch on local git repo ..."
+      puts "Checking out '#{previous_release}' in a new branch on local git "\
+        "repo ..."
       puts `git checkout #{previous_release}`
       puts `git checkout -b #{previous_release}`
 
-      puts "Removing tagged version '#{previous_release}' (now transformed in branch) ..."
+      puts "Removing tagged version '#{previous_release}' (now transformed in "\
+        "branch) ..."
       puts `git tag -d #{previous_release}`
-      puts `git push heroku_pathways :refs/tags/#{previous_release}`
+      puts `#{"git push https://git.heroku.com/pathwaysbc.git "\
+        ":refs/tags/#{previous_release}"}"`
 
       puts "Pushing '#{previous_release}' to Heroku master ..."
-      puts `git push heroku_pathways +#{previous_release}:master --force`
+      puts `#{"git push https://git.heroku.com/pathwaysbc.git "\
+        "#{previous_release}:master --force"}`
 
       puts "Deleting rollbacked release '#{current_release}' ..."
       puts `git tag -d #{current_release}`
-      puts `git push heroku_pathways :refs/tags/#{current_release}`
+      puts `#{"git push https://git.heroku.com/pathwaysbc.git "\
+        ":refs/tags/#{current_release}"}"`
 
-      puts "Retagging release '#{previous_release}' in case to repeat this process (other rollbacks)..."
+      puts "Retagging release '#{previous_release}' in case of need to repeat "\
+        "this process (other rollbacks)..."
       puts `git tag -a #{previous_release} -m 'Tagged release'`
-      puts `git push --tags heroku_pathways`
+      puts `git push --tags https://git.heroku.com/pathwaysbc.git`
 
       puts "Turning local repo checked out on master ..."
       puts `git checkout master`
