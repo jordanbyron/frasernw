@@ -50,13 +50,12 @@ class SubscriptionMailer < ActionMailer::Base
     )
   end
 
-  def immediate_resource_update(activity_id, user_id)
+  def immediate_resource_update(sc_item_id, user_id)
     @user = User.find_by_id(user_id)
     @activity = SubscriptionActivity.find_by_id(activity_id)
     @interval = Subscription::INTERVAL_LABELS[Subscription::INTERVAL_IMMEDIATELY]
-    @trackable = @activity.trackable
-    @trackable_full_title = @trackable.full_title
-    @type_mask_description_formatted = @activity.type_mask_description_formatted
+    @resource = ScItem.find(sc_item_id)
+    @full_resource_title = @resource.full_title
     @update_classification_type = @activity.update_classification_type
     @parent_type = @activity.parent_type
     @division = Division.find_by_id(@activity.owner_id) if @activity.owner_type == "Division"

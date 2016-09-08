@@ -69,6 +69,10 @@ class ScItem < ActiveRecord::Base
 
   default_scope { order('sc_items.title') }
 
+  after_create do
+    SubscriptionWorker.delay.mail_notifications_for_activity("ScItem", self.id)
+  end
+
   def self.demoable
     where(demoable: true)
   end
@@ -270,6 +274,14 @@ class ScItem < ActiveRecord::Base
 
   def tool?
     tool
+  end
+
+  def type_label
+    if type_mask == TYPE_MARKDOWN
+      "Markdown content"
+    else
+      type
+    end
   end
 
   FORMAT_TYPE_INTERNAL = 0

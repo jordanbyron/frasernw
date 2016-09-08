@@ -33,21 +33,21 @@ class SubscriptionWorker
     end
   end
 
-  def self.mail_notifications_for_activity(activity_id)
-    activity = SubscriptionActivity.find(activity_id)
+  def self.mail_notifications_for_item(klass_name, id)
+    item = klass_name.constantize.find(id)
 
     users = User.
       with_subscriptions.
       where("subscriptions.interval = (?)", Subscription::INTERVAL_IMMEDIATELY)
 
     users.each do |user|
-      if user.subscriptions.immediate.any?{ |subscription|
-        subscription.activities.include?(activity)
-      }
+      if user.subscriptions.immediate.any? do |subscription|
+        subscription.items_captured.include?(item)
+      end
         if activity.update_classification_type == Subscription.resource_update
-          SubscriptionMailer.immediate_resource_update(activity.id, user.id).deliver
+          SubscriptionMailer.immediate_resource_update(item.id, user.id).deliver
         elsif activity.update_classification_type == Subscription.news_update
-          SubscriptionMailer.immediate_news_update(activity.id, user.id).deliver
+          SubscriptionMailer.immediate_news_update(item.id, user.id).deliver
         end
       end
     end

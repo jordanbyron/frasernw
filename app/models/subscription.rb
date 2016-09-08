@@ -175,10 +175,7 @@ class Subscription < ActiveRecord::Base
       table_name = "news_items"
     elsif resource_update?
       scope = ScItem.
-        where(type_mask: sc_item_format_type).
-        select do |sc_item|
-          sc_categories.include?(sc_item.root_category)
-        end
+        where(type_mask: sc_item_format_type)
 
       table_name = "content_items"
     end
