@@ -35,6 +35,8 @@
 
     = render "specialists/form/details", f: f
 
+    = render "specialists/form/office_contact_information", f: f
+
     = render "specialists/form/senior_office_contact_information", f: f
 
     = render "specialists/form/languages", f: f
@@ -91,7 +93,6 @@
       });
     });
   });
-  $(document).ready( $("#specialist_categorization_mask").each(specialist_categorization_changed) );
   $(window).load(function() {
     document.getElementById("hiding-container").classList.remove("hidden");
   });

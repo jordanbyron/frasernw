@@ -159,46 +159,106 @@ var scheduled_changed = function()
 
 $(".scheduled").live("change", scheduled_changed)
 
-var specialist_categorization_changed = function()
-{
-  //these map to specialist CATEGORIZATION_LABELS
-  if ($(this).val() == 1 || $(this).val() == 2 || $(this).val() == 5)
-  {
-    //surveyed (may or may not have fully responded)
-    $("#section_contact").show();
-    $("#section_moa").show();
-    if ($(this).val() == 5)
-    {
-      //if we are "only take referrals through hospital or clinic" then our status should be determined by that
-      $("#section_status").hide();
-      $("#section_hospital_clinic_details").show();
-      $("#section_referrals").hide();
-    }
-    else
-    {
-      $("#section_status").show();
-      $("#section_hospital_clinic_details").hide();
-      $("#section_referrals").show();
-    }
-    $("#section_aop").show();
-    $("#section_for_patients").show();
-    $("#section_associations").show();
-    $("#section_admin").show();
+
+var setConditionsToShowSection = function(parentFields, effected){
+  var parentInputSelector = parentFields.map(function(field){
+    return "#specialist_" + field[0];
+  }).join(", ");
+
+  $(parentInputSelector).change(function(e){
+    doSideEffects(parentFields, effected);
+  });
+  doSideEffects(parentFields, effected)
+}
+
+var doSideEffects = function(parentFields, effected){
+  if(parentFields.every(function(field) {
+    return typeAdjustedInputValue(field[0]) == field[1]
+  })){
+    showEffected(effected);
   }
-  else
-  {
-    //only works in clinics or hospitals, or purposely not surveyed
-    //in this case we will show their associations but nothing else, as all the rest is personal to them
-    $("#section_contact").hide();
-    $("#section_moa").hide();
-    $("#section_status").hide();
-    $("#section_aop").show();
-    $("#section_referrals").hide();
-    $("#section_for_patients").hide();
-    $("#section_hospital_clinic_details").show();
-    $("#section_associations").show();
-    $("#section_admin").show();
+  else {
+    hideEffected(effected);
   }
 }
 
-$("#specialist_categorization_mask").live("change", specialist_categorization_changed)
+var showEffected = function(effected){
+  if(effected.indexOf("section") !== -1){
+    $("#" + effected).show();
+  }
+  else{
+    $(".specialist_" + effected).show()
+  }
+}
+
+var hideEffected = function(effected){
+  if(effected.indexOf("section") !== -1){
+    $("#" + effected).hide();
+  }
+  else{
+    $(".specialist_" + effected).
+      hide()
+
+    var childCheckbox = $("#specialist_" + effected)[0]
+    if (childCheckbox){
+      $(childCheckbox).attr("checked", false)
+    }
+  }
+}
+
+var typeAdjustedInputValue = function(fieldname){
+  field = $("#specialist_" + fieldname)
+
+  if (field.attr("type") === "checkbox"){
+    return field.prop("checked");
+  }
+  else {
+    return field.val();
+  }
+}
+
+$(document).ready(function(){
+  setConditionsToShowSection(
+    [[ "surveyed", true]],
+    "responded_to_survey"
+  );
+  setConditionsToShowSection(
+    [[ "availability", "13"], ["has_own_offices", true]],
+    "accepting_new_direct_referrals"
+  );
+  setConditionsToShowSection(
+    [
+      [ "availability", "13"],
+      ["has_own_offices", true],
+      ["accepting_new_direct_referrals", true]
+    ],
+    "direct_referrals_limited"
+  );
+  setConditionsToShowSection([["retirement_scheduled", true]], "retirement_date");
+  setConditionsToShowSection([["leave_scheduled", true]], "unavailable_from");
+  setConditionsToShowSection([["leave_scheduled", true]], "unavailable_to");
+  setConditionsToShowSection([["has_own_offices", true]], "section_contact");
+  setConditionsToShowSection([["has_own_offices", true]], "section_moa");
+  setConditionsToShowSection([["has_own_offices", true]], "section_languages");
+  // review
+  setConditionsToShowSection(
+    [
+      ["has_own_offices", false],
+      ["accepting_new_direct_referrals", false],
+    ],
+    "section_hospital_clinic_details"
+  );
+  setConditionsToShowSection(
+    [
+      ["has_own_offices", true],
+      ["accepting_new_direct_referrals", true],
+    ],
+    "section_referrals"
+  );
+  setConditionsToShowSection(
+    [
+      ["has_own_offices", true]
+    ],
+    "section_for_patients"
+  );
+})

@@ -32,22 +32,25 @@
   label: "Direct referrals limited by geography or number of patients?"
 = f.input :retirement_scheduled,
   label: "Retirement scheduled?"
-= f.input :retirement_date,
-  wrapper: false,
-  label: false,
-  input_html: {style: "width: auto; float: left; margin: 0px 6px 12px 0px"}
+.specialist_retirement_date
+  = f.input :retirement_date,
+    wrapper: false,
+    label: false,
+    input_html: {style: "width: auto; float: left; margin: 0px 6px 12px 0px"}
 = f.input :leave_scheduled,
   label: "Leave scheduled?"
 #availability
-  = f.input :unavailable_from,
-    label: false,
-    wrapper: false,
-    input_html: { class: "unavailable_from"}
-  %span{style: "margin-left: 5px"}= "to"
-  = f.input :unavailable_to,
-    label: false,
-    wrapper: false,
-    input_html: { class: "unavailable_to"}
+  .specialist_unavailable_from
+    = f.input :unavailable_from,
+      label: false,
+      wrapper: false,
+      input_html: { class: "unavailable_from"}
+    %span{style: "margin-left: 5px"}= "to"
+  .specialist_unavailable_to
+    = f.input :unavailable_to,
+      label: false,
+      wrapper: false,
+      input_html: { class: "unavailable_to"}
 
 = f.input :status_details
 = f.input :practise_limitations
