@@ -31,23 +31,23 @@
       .alert.alert-error= f.error_messages
 
 
-    = render "specialists/form/general_information"
+    = render "specialists/form/general_information", f: f
 
-    = render "specialists/form/details"
+    = render "specialists/form/details", f: f
 
-    = render "specialists/form/senior_office_contact_information"
+    = render "specialists/form/senior_office_contact_information", f: f
 
-    = render "specialists/form/status"
+    = render "specialists/form/languages", f: f
 
-    = render "specialists/form/areas_of_practice"
+    = render "specialists/form/areas_of_practice", f: f
 
-    = render "specialists/form/referral_details"
+    = render "specialists/form/referral_details", f: f
 
     = render "teleservices/form_fields", f: f
 
-    = render "specialists/form/information_for_patients"
+    = render "specialists/form/information_for_patients", f: f
 
-    = render "specialists/form/associations"
+    = render "specialists/form/associations", f:f
 
     = hidden_field_tag :pre_edit_form_data
     = hidden_field_tag :secret_token_id, @secret_token_id

@@ -73,7 +73,16 @@ class Specialist < ActiveRecord::Base
     :admin_notes,
     :referral_forms_attributes,
     :review_object,
-    :hidden
+    :hidden,
+    :surveyed,
+    :responded_to_survey,
+    :has_own_offices,
+    :accepting_new_direct_referrals,
+    :direct_referrals_limited,
+    :availability,
+    :retirement_date,
+    :retirement_scheduled,
+    :leave_scheduled
 
   # specialists can have multiple specializations
   has_many :specialist_specializations, dependent: :destroy
@@ -662,7 +671,7 @@ class Specialist < ActiveRecord::Base
     end.last
   end
 
-  AVAILABILITY = {
+  AVAILABILITY_LABELS = {
     4 => :retired,
     8 => :indefinitely_unavailable,
     7 => :unknown,
@@ -678,8 +687,7 @@ class Specialist < ActiveRecord::Base
       {
         icon: "",
         tooltip: "",
-        show: ("This specialist has not yet been surveyed. They might be out of our " +
-          "current catchment area, or in a specialty we have yet to fully survey.")
+        show: ("This specialist has not yet been surveyed.")
       }
     elsif !responded_to_survey? || availability_unknown?
       {
@@ -791,9 +799,9 @@ class Specialist < ActiveRecord::Base
     end
   end
 
-  AVAILABILITY.values.except(:unknown).each do |value|
+  AVAILABILITY_LABELS.values.except(:unknown).each do |value|
     define_method "#{value}?" do
-      availability == AVAILABILITY.key(value)
+      availability == AVAILABILITY_LABELS.key(value)
     end
   end
 

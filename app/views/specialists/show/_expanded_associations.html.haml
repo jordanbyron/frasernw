@@ -1,4 +1,4 @@
-- if show_specialist_secion?(@specialist, :expanded_associations)
+- if show_specialist_section?(@specialist, :expanded_associations)
   - @specialist.open_clinics.each do |clinic|
 
     - clinic_locations = clinic.clinic_locations.sort_by(&:created_at).reject(&:empty?).select{ |cl| @specialist.clinic_locations.include?(cl) }

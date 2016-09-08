@@ -27,7 +27,7 @@ module SpecialistsHelper
       )
     end
 
-    listing
+    listing.html_safe
   end
 
   def show_specialist_section?(specialist, section_key)

@@ -3,12 +3,16 @@ class BreakupStatus < ActiveRecord::Migration
     add_column :specialists, :surveyed, :boolean
     add_column :specialists, :responded_to_survey, :boolean
 
-    add_column :specialists, :has_own_offices
+    add_column :specialists, :has_own_offices, :boolean
     add_column :specialists, :accepting_new_direct_referrals, :boolean
     add_column :specialists, :direct_referrals_limited, :boolean
 
     add_column :specialists, :availability, :integer
+
+    add_column :specialists, :retirement_scheduled, :boolean
     add_column :specialists, :retirement_date, :date
+
+    add_column :specialists, :leave_scheduled, :boolean
 
     Specialist.all.each do |specialist|
       specialist.without_versioning do
@@ -45,31 +49,31 @@ class BreakupStatus < ActiveRecord::Migration
     availability: -> (specialist){
       case specialist.status_mask
       when 1 # accepting new referrals
-        Specialist::AVAILABILITY_LABELS.key(:available),
+        Specialist::AVAILABILITY_LABELS.key(:available)
       when 2 # only doing follow up
-        Specialist::AVAILABILITY_LABELS.key(:available),
-      case 4 #retired as of
-        Specialist::AVAILABILITY_LABELS.key(:retired),
-      case 5 #retiring as of
-        Specialist::AVAILABILITY_LABELS.key(:available),
-      case 6 #unavailable between
+        Specialist::AVAILABILITY_LABELS.key(:available)
+      when 4 #retired as of
+        Specialist::AVAILABILITY_LABELS.key(:retired)
+      when 5 #retiring as of
+        Specialist::AVAILABILITY_LABELS.key(:available)
+      when 6 #unavailable between
         if specialist.unavailable_from < Date.today && specialist.unavailable_to > Date.today
-          Specialist::AVAILABILITY_LABELS.key(:temporarily_unavailable),
+          Specialist::AVAILABILITY_LABELS.key(:temporarily_unavailable)
         else
-          Specialist::AVAILABILITY_LABELS.key(:available),
+          Specialist::AVAILABILITY_LABELS.key(:available)
         end
-      case 7 #didn't answer
-        Specialist::AVAILABILITY_LABELS.key(:unknown),
-      case 8 #indefinitely unavailable
-        Specialist::AVAILABILITY_LABELS.key(:indefinitely_unavailable),
-      case 9 #permanently unavailable
-        Specialist::AVAILABILITY_LABELS.key(:permanently_unavailable),
-      case 10 #moved away
-        Specialist::AVAILABILITY_LABELS.key(:moved_away),
-      case 11 #limited referrals
-        Specialist::AVAILABILITY_LABELS.key(:available),
-      case 12 #deceased
-        Specialist::AVAILABILITY_LABELS.key(:deceased),
+      when 7 #didn't answer
+        Specialist::AVAILABILITY_LABELS.key(:unknown)
+      when 8 #indefinitely unavailable
+        Specialist::AVAILABILITY_LABELS.key(:indefinitely_unavailable)
+      when 9 #permanently unavailable
+        Specialist::AVAILABILITY_LABELS.key(:permanently_unavailable)
+      when 10 #moved away
+        Specialist::AVAILABILITY_LABELS.key(:moved_away)
+      when 11 #limited referrals
+        Specialist::AVAILABILITY_LABELS.key(:available)
+      when 12 #deceased
+        Specialist::AVAILABILITY_LABELS.key(:deceased)
       else
         Specialist::AVAILABILITY_LABELS.key(:available)
       end
@@ -80,6 +84,12 @@ class BreakupStatus < ActiveRecord::Migration
       else
         nil
       end
+    },
+    retirement_scheduled: ->(specialist){
+      [4, 5].include?(specialist.status_mask) #retiring as of, retired as of
+    },
+    leave_scheduled: ->(specialist){
+      specialist.status_mask == 6 #unavailable between
     }
   }
 end

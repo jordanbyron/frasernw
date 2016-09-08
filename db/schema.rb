@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160819102603) do
+ActiveRecord::Schema.define(version: 20160901014844) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -829,7 +829,7 @@ ActiveRecord::Schema.define(version: 20160819102603) do
     t.text     "not_interested"
     t.text     "all_procedure_info"
     t.string   "referral_other_details"
-    t.boolean  "patient_can_book_old",       default: false
+    t.boolean  "patient_can_book_old",           default: false
     t.string   "urgent_other_details"
     t.text     "required_investigations"
     t.text     "not_performed"
@@ -848,30 +848,39 @@ ActiveRecord::Schema.define(version: 20160819102603) do
     t.integer  "waittime_mask"
     t.integer  "lagtime_mask"
     t.integer  "billing_number"
-    t.integer  "referral_form_mask",         default: 3
-    t.integer  "patient_can_book_mask",      default: 3
+    t.integer  "referral_form_mask",             default: 3
+    t.integer  "patient_can_book_mask",          default: 3
     t.date     "unavailable_from"
     t.date     "unavailable_to"
     t.text     "urgent_details"
     t.string   "goes_by_name"
     t.string   "direct_phone_extension_old"
-    t.integer  "sex_mask",                   default: 3
+    t.integer  "sex_mask",                       default: 3
     t.text     "referral_details"
     t.text     "admin_notes"
-    t.integer  "categorization_mask",        default: 1
+    t.integer  "categorization_mask",            default: 1
     t.text     "patient_instructions"
     t.text     "cancellation_policy"
     t.integer  "referral_clinic_id"
     t.text     "hospital_clinic_details"
-    t.boolean  "interpreter_available",      default: false
+    t.boolean  "interpreter_available",          default: false
     t.string   "photo_file_name"
     t.string   "photo_content_type"
     t.integer  "photo_file_size"
     t.datetime "photo_updated_at"
-    t.boolean  "is_gp",                      default: false
-    t.boolean  "is_internal_medicine",       default: false
-    t.boolean  "sees_only_children",         default: false
-    t.boolean  "hidden",                     default: false
+    t.boolean  "is_gp",                          default: false
+    t.boolean  "is_internal_medicine",           default: false
+    t.boolean  "sees_only_children",             default: false
+    t.boolean  "hidden",                         default: false
+    t.boolean  "surveyed"
+    t.boolean  "responded_to_survey"
+    t.boolean  "has_own_offices"
+    t.boolean  "accepting_new_direct_referrals"
+    t.boolean  "direct_referrals_limited"
+    t.integer  "availability"
+    t.boolean  "retirement_scheduled"
+    t.date     "retirement_date"
+    t.boolean  "leave_scheduled"
   end
 
   add_index "specialists", ["referral_clinic_id"], name: "index_specialists_on_referral_clinic_id", using: :btree

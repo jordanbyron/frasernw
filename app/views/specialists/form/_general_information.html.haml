@@ -13,16 +13,45 @@
 = f.input :billing_number,
   as: :string,
   input_html: { value: @specialist.padded_billing_number }
-.no-print
-  = f.input :categorization_mask,
-    as: :select,
-    hint: @form_modifier.categorization_hint,
-    collection: SpecialistCategorizationOptions.call(specialist: @specialist,
-    default_divisions: @form_modifier.divisions,
-    built_specialization: @specialization),
-    label_method: :last,
-    value_method: :first,
-    include_blank: false
+= f.input :surveyed,
+  label: "Surveyed?"
+= f.input :responded_to_survey,
+  label: "Responded to survey?"
+= f.input :availability,
+  label: "Available for work?",
+  as: :select,
+  collection: Specialist::AVAILABILITY_LABELS,
+  value_method: :first,
+  label_method: ->(pair){ pair.last.to_s.humanize },
+  include_blank: false
+= f.input :has_own_offices,
+  label: "Has own offices?"
+= f.input :accepting_new_direct_referrals,
+  label: "Accepting direct referrals (to own offices)?"
+= f.input :direct_referrals_limited,
+  label: "Direct referrals limited by geography or number of patients?"
+= f.input :retirement_scheduled,
+  label: "Retirement scheduled?"
+= f.input :retirement_date,
+  wrapper: false,
+  label: false,
+  input_html: {style: "width: auto; float: left; margin: 0px 6px 12px 0px"}
+= f.input :leave_scheduled,
+  label: "Leave scheduled?"
+#availability
+  = f.input :unavailable_from,
+    label: false,
+    wrapper: false,
+    input_html: { class: "unavailable_from"}
+  %span{style: "margin-left: 5px"}= "to"
+  = f.input :unavailable_to,
+    label: false,
+    wrapper: false,
+    input_html: { class: "unavailable_to"}
+
+= f.input :status_details
+= f.input :practise_limitations
+
 = f.input :is_gp
 
 - if current_user.as_admin_or_super?

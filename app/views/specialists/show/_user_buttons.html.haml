@@ -1,3 +1,5 @@
+- specialist_offices = @specialist.non_empty_offices
+
 .btn-group
   - if specialist_offices.one? && !@specialist.print_clinic_info?
     %a.btn{ href: specialist_office_information_path(@specialist,

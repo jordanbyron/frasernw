@@ -13,7 +13,7 @@
   - if @specialist.hidden?
     %h5= " (Hidden from users)"
   %h3.specialty_links
-    = specialist_specializations_listing(specialist)
+    = specialist_specializations_listing(@specialist)
   - if @specialist.sex? && @specialist.padded_billing_number.present?
     %h5= " #{@specialist.sex}, MSP ##{@specialist.padded_billing_number}"
   - elsif @specialist.sex?
@@ -24,19 +24,18 @@
   %p.space.no_indent
     %i{ class: @specialist.availability_summary(:icon) }
 
-    = @specialist.availability_summary(:show)
+    %strong= @specialist.availability_summary(:show)
 
     - if @specialist.deceased? && @specialist.status_details.present?
-        %p.no_indent
-          = @specialist.status_details.end_with_period.convert_newlines_to_br
+      %p.no_indent
+        = @specialist.status_details.end_with_period.convert_newlines_to_br
 
     - elsif !@specialist.surveyed?
-      %p
+      %p.space.no_indent
         = "They may be out of our current catchment area, or in a speciality we " + |
           "have yet to fully survey." |
 
-    - elsif !@specialist.has_own_offices? || @specialist.indirect_referrals_only? && |
-      @specialist.hospital_clinic_details.present? |
+    - elsif !@specialist.has_own_offices? || @specialist.indirect_referrals_only? && @specialist.hospital_clinic_details.present?
 
       %p.space.no_indent
         %strong Details:
