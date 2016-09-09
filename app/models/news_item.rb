@@ -25,7 +25,7 @@ class NewsItem < ActiveRecord::Base
   has_one :demoable_news_item
 
   after_create do
-    SubscriptionWorker.delay.mail_notifications_for_activity("NewsItem", self.id)
+    SubscriptionWorker.delay.mail_notifications_for_item("NewsItem", self.id)
   end
 
   def self.not_demoable

@@ -6,7 +6,7 @@
     %p
       = "Hi #{@user.name},"
     %p
-      = "Here is your #{@interval} Pathways Resources Update for #{DateTime.now.strftime("%B, %d, %Y")}:"
+      = "Here is your #{@interval} Pathways Content Items Update for #{DateTime.now.strftime("%B, %d, %Y")}:"
     %br
     - @divisions_sc_items.each do |division_sc_items|
       %hr
@@ -29,7 +29,7 @@
               = division_sc_items[:division].name + " in "
               = share_with_division.name
       - else
-        Listed resources available to share are already visible in
+        Listed Content Items available to share are already visible in
         - if @user.divisions.count > 1
           your divisions.
         - else

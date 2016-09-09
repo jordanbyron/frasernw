@@ -4,14 +4,14 @@ class Subscription < ActiveRecord::Base
     :news_type,
     :division_ids,
     :sc_item_format_type,
-    :classification,
+    :target_class,
     :interval,
     :user_id
 
   serialize :news_type
   serialize :sc_item_format_type
 
-  validates :classification, :interval, presence: true
+  validates :target_class, :interval, presence: true
 
   belongs_to :user
 
@@ -29,8 +29,8 @@ class Subscription < ActiveRecord::Base
 
   scope :immediate, -> {where(interval: INTERVAL_IMMEDIATELY)}
 
-  scope :resources, -> {where(classification: resource_update)}
-  scope :news,      -> {where(classification: news_update)}
+  scope :resources, -> {where(target_class: "ScItem")}
+  scope :news,      -> {where(target_class: "NewsItem")}
 
   scope :in_divisions, ->(division){
     joins(:divisions).
@@ -55,14 +55,6 @@ class Subscription < ActiveRecord::Base
 
   NEWS_ITEM_TYPE_HASH = NewsItem::TYPE_HASH
 
-  NEWS_UPDATES     = 1
-  RESOURCE_UPDATES = 2
-
-  TARGET_TYPES = {
-    NEWS_UPDATES     => "News Updates".freeze,
-    RESOURCE_UPDATES => "Resource Updates".freeze
-  }
-
   INTERVAL_IMMEDIATELY = 1
   INTERVAL_DAILY       = 2
   INTERVAL_WEEKLY      = 3
@@ -75,8 +67,17 @@ class Subscription < ActiveRecord::Base
     INTERVAL_MONTHLY     => "Monthly".freeze
   }
 
-  def self.classifications
-    TARGET_TYPES.map{ |k, v|  v }
+  TARGET_CLASSES = [
+    "ScItem",
+    "NewsItem"
+  ]
+
+  TARGET_CLASSES.each do |klassname|
+    scope klassname.tableize, -> {where(target_class: klassname)}
+
+    define_method "#{klass_name.tableize}?" do
+      target_class == klassname
+    end
   end
 
   def news_type_masks
@@ -97,14 +98,6 @@ class Subscription < ActiveRecord::Base
   def news_type_present?
     return false if news_type.blank?
     news_type.reject(&:blank?).present?
-  end
-
-  def self.news_update
-    TARGET_TYPES[NEWS_UPDATES]
-  end
-
-  def self.resource_update
-    TARGET_TYPES[RESOURCE_UPDATES]
   end
 
   def self.interval_period(interval_key)
@@ -146,14 +139,6 @@ class Subscription < ActiveRecord::Base
       map{ |n| Subscription::SC_ITEM_FORMAT_TYPE_HASH[n] }
   end
 
-  def news_update?
-    classification == TARGET_TYPES[NEWS_UPDATES]
-  end
-
-  def resource_update?
-    classification == TARGET_TYPES[RESOURCE_UPDATES]
-  end
-
   def interval_period
     case interval
     when ::Subscription::INTERVAL_IMMEDIATELY
@@ -167,22 +152,15 @@ class Subscription < ActiveRecord::Base
     end
   end
 
+  def target_table_name
+    target_class.tableize
+  end
+
   def items_captured(end_datetime = DateTime.current)
-    if news_update?
-      scope = NewsItem.
-        where(type_mask: news_type)
-
-      table_name = "news_items"
-    elsif resource_update?
-      scope = ScItem.
-        where(type_mask: sc_item_format_type)
-
-      table_name = "content_items"
-    end
-
+    scope = target_class.constantize
     if interval != INTERVAL_IMMEDIATELY
       scope = scope.where(
-        "#{table_name}.created_at > (?) AND #{table_name}.created_at < (?)",
+        "#{target_table_name}.created_at > (?) AND #{target_table_name}.created_at < (?)",
         (end_datetime - interval_period),
         end_datetime
       )
@@ -190,6 +168,7 @@ class Subscription < ActiveRecord::Base
 
     if resource_update?
       scope = scope.
+        where(type_mask: sc_item_format_type).
         select do |sc_item|
           sc_categories.include?(sc_item.root_category)
         end
@@ -199,8 +178,11 @@ class Subscription < ActiveRecord::Base
           (sc_item.specializations & specializations).any?
         end
       end
-    end
 
-    scope
+      scope
+    elsif news_update?
+      scope.
+        where(type_mask: news_type)
+    end
   end
 end

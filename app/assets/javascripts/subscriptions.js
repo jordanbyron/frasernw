@@ -17,14 +17,14 @@ $(document).ready(function(){
     $('.all-updates').show(); // show form options applying to both categories again
     if ($("#subscription_classification_news_updates").is(":checked"))
     {
-      $(".resource-updates").hide();
+      $(".content-item-updates").hide();
       $(".news-updates").fadeIn(300).show();
 
     }
     else if ($("#subscription_classification_resource_updates").is(":checked"))
     {
       $(".news-updates").hide();
-      $(".resource-updates").fadeIn(300).show();
+      $(".content-item-updates").fadeIn(300).show();
     }
 
   }

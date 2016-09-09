@@ -1,7 +1,7 @@
 class SubscriptionMailer < ActionMailer::Base
   default from: "noreply@pathwaysbc.ca"
 
-  def periodic_resource_update(sc_items, user_id, interval_key)
+  def periodic_sc_item_notification(sc_items, user_id, interval_key)
     @user = User.find(user_id)
     @interval = Subscription::INTERVAL_LABELS[interval_key]
     @interval_period = Subscription.interval_period(interval_key)
@@ -25,7 +25,7 @@ class SubscriptionMailer < ActionMailer::Base
     )
   end
 
-  def periodic_news_update(news_items, user_id, interval_key)
+  def periodic_news_item_notification(news_items, user_id, interval_key)
     @user = User.find(user_id)
     @interval = Subscription::INTERVAL_LABELS[interval_key]
     @interval_period = Subscription.interval_period(interval_key)
@@ -49,7 +49,7 @@ class SubscriptionMailer < ActionMailer::Base
     )
   end
 
-  def immediate_resource_update(sc_item_id, user_id)
+  def immediate_sc_item_notification(sc_item_id, user_id)
     @user = User.find_by_id(user_id)
     @interval = Subscription::INTERVAL_LABELS[Subscription::INTERVAL_IMMEDIATELY]
     @resource = ScItem.find(sc_item_id)
@@ -63,7 +63,7 @@ class SubscriptionMailer < ActionMailer::Base
     )
   end
 
-  def immediate_news_update(news_item_id, user_id)
+  def immediate_news_item_notification(news_item_id, user_id)
     @user = User.find_by_id(user_id)
     @news_item = NewsItem.find_by_id(news_item_id)
     @interval = Subscription::INTERVAL_LABELS[Subscription::INTERVAL_IMMEDIATELY]

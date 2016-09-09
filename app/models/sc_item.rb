@@ -70,7 +70,7 @@ class ScItem < ActiveRecord::Base
   default_scope { order('sc_items.title') }
 
   after_create do
-    SubscriptionWorker.delay.mail_notifications_for_activity("ScItem", self.id)
+    SubscriptionWorker.delay.mail_notifications_for_item("ScItem", self.id)
   end
 
   def self.demoable
