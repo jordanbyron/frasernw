@@ -1,7 +1,7 @@
 class Address < ActiveRecord::Base
   include PaperTrailable
   belongs_to :city
-  has_many :locations, touch: true
+  has_many :locations
 
   has_many :direct_offices,
     through: :locations,
@@ -120,6 +120,10 @@ class Address < ActiveRecord::Base
     search += "#{postalcode}, " if postalcode.present?
     return "https://maps.googleapis.com/maps/api/staticmap?size=#{width}x#{height}&"\
       "zoom=#{zoom}&scale=#{scale}&sensor=false&markers=#{search} Canada"
+  end
+
+  def divisions
+    city.present? ? city.divisions : []
   end
 
   def to_s

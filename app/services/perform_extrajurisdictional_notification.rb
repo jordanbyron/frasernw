@@ -2,17 +2,16 @@ class PerformExtrajurisdictionalNotification < ServiceObject
   attribute :version, Version
 
   def call
-    return if !(version.item_type == "Address") ||
-      !["create", "update"].include?(version.event) ||
+    return if !["create", "update"].include?(version.event) ||
+      !relevant_fields_changed? ||
       !editor.known? ||
-      address_divisions.none? ||
-      address.locations.none? ||
-      !version.changeset.has_key?("city_id") ||
+      !location.present? ||
+      location.divisions.none? ||
       !locatable.present? ||
       !(locatable.is_a?(ClinicLocation) || locatable.is_a?(Office))
 
-    if (editor.divisions & address_divisions).none? && !editor.super_admin?
-      address_divisions.map(&:admins).uniq.flatten.each do |owner|
+    if (editor.as_divisions & location_divisions).none? && !editor.as_super_admin?
+      location_divisions.map(&:admins).uniq.flatten.each do |owner|
         CourtesyMailer.extrajurisdictional_edit_update(
           owner.id,
           (owner.divisions & divisions).first.id,
@@ -26,6 +25,24 @@ class PerformExtrajurisdictionalNotification < ServiceObject
 
   private
 
+  def relevant_fields_changed?
+    (version.item_type == "Address" &&
+      version.changeset.has_key?("city_id")) ||
+      (version.item_type == "Location" &&
+        (version.changeset.has_key?("hospital_in_id") &&
+          version.changeset["hospital_in_id"][1].present?) ||
+        (version.changeset.has_key?("location_in_id") &&
+          version.changeset["location_in_id"][1].present?))
+  end
+
+  def location
+    if version.item_type == "Address"
+      version.item.locations.first
+    else
+      version.item
+    end
+  end
+
   def linked_entity
     if locatable.is_a?(Office)
       locatable
@@ -35,15 +52,7 @@ class PerformExtrajurisdictionalNotification < ServiceObject
   end
 
   def locatable
-    address.locations.first.locatable
-  end
-
-  def address_divisions
-    address.city.present? : address.city.divisions : []
-  end
-
-  def address
-    version.item
+    location.locatable
   end
 
   def editor
