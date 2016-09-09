@@ -99,7 +99,7 @@ namespace :pathways do
     end
 
     def viewable_division_combinations
-      (User.all_user_division_groups_cached + Division.ids.each_slice(1).to_a).
+      (User.all_user_division_groups_cached + Division.ids.map{ |id| [id ] }).
         uniq
     end
 
