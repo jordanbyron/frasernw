@@ -10,13 +10,13 @@ class PerformExtrajurisdictionalNotification < ServiceObject
       !locatable.present? ||
       !(locatable.is_a?(ClinicLocation) || locatable.is_a?(Office))
 
-    if (editor.as_divisions & location_divisions).none? && !editor.as_super_admin?
-      location_divisions.map(&:admins).uniq.flatten.each do |owner|
+    if (editor.as_divisions & location.divisions).none? && !editor.as_super_admin?
+      location.divisions.map(&:admins).uniq.flatten.each do |owner|
         CourtesyMailer.extrajurisdictional_edit_update(
           owner.id,
-          (owner.divisions & divisions).first.id,
+          (owner.divisions & location.divisions).first.id,
           editor.id,
-          linked_entity.klass.to_s,
+          linked_entity.class.to_s,
           linked_entity.id
         ).deliver
       end
@@ -56,6 +56,6 @@ class PerformExtrajurisdictionalNotification < ServiceObject
   end
 
   def editor
-    version.safe_editor
+    version.safe_user
   end
 end

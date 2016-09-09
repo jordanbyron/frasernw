@@ -15,7 +15,6 @@ class CourtesyMailer < ActionMailer::Base
   def extrajurisdictional_edit_update(
     owner_id,
     owner_division_id,
-    user_id,
     editor_id,
     linked_entity_klassname,
     linked_entity_id
@@ -26,7 +25,7 @@ class CourtesyMailer < ActionMailer::Base
     @linked_entity = @linked_entity_klass.find(linked_entity_id)
     @editor = User.find(editor_id)
     @linked_entity_path = send(
-      "#{@linked_entity_klass.downcase.singularize}_url",
+      "#{linked_entity_klassname.downcase.singularize}_url",
       @linked_entity
     )
 

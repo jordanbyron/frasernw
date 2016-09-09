@@ -51,7 +51,7 @@ class Version < PaperTrail::Version
     )
   end
 
-  after_create do
-    PerformExtrajurisdictionalNotification(version: self)
+  after_commit do
+    PerformExtrajurisdictionalNotification.call(version: self)
   end
 end
