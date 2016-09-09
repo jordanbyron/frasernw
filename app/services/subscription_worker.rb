@@ -63,7 +63,7 @@ class SubscriptionWorker
       User.select do |user|
         user.admin? && user.divisions == specialist.divisions
       end.each do |user|
-        SubscriptionMailer.availability_update(
+        CourtesyMailer.availability_update(
           user.id,
           specialist.id
         ).deliver

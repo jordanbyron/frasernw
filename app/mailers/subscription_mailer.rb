@@ -86,38 +86,6 @@ class SubscriptionMailer < ActionMailer::Base
     )
   end
 
-  def availability_update(user_id, specialist_id)
-    @user = User.find(user_id)
-    @specialist = Specialist.find(specialist_id)
-
-    mail(
-      to: @user.email,
-      from: 'noreply@pathwaysbc.ca',
-      subject: "Pathways: Peroid of unavailability ended [Availability Update]"
-    )
-  end
-
-  def extrajurisdictional_edit_update(
-    target_division_id,
-    user_id,
-    editor_id,
-    klass,
-    source_id
-  )
-    @target_division = Division.find(target_division_id)
-    @user = User.find(user_id)
-    @source_klass = klass.constantize
-    @source = @source_klass.find(source_id)
-    @editor = User.find(editor_id)
-
-    mail(
-      to: @user.email,
-      from: 'noreply@pathwaysbc.ca',
-      subject: "Pathways: Someone from outside #{@target_division.name} "\
-        "created a record in your division [New Record Update]"
-    )
-  end
-
   private
 
   def share_with_divisions(activities, user)

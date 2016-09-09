@@ -50,4 +50,8 @@ class Version < PaperTrail::Version
       UnknownUser
     )
   end
+
+  after_create do
+    PerformExtrajurisdictionalNotification(version: self)
+  end
 end

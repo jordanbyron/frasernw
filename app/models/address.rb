@@ -1,7 +1,7 @@
 class Address < ActiveRecord::Base
   include PaperTrailable
   belongs_to :city
-  has_many :locations
+  has_many :locations, touch: true
 
   has_many :direct_offices,
     through: :locations,
