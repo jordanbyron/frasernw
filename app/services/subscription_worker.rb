@@ -6,19 +6,19 @@ class SubscriptionWorker
           subscriptions = user.
             subscriptions_by_interval_and_target(date_interval, type)
 
-          activities = subscriptions.map(&:activities).flatten.uniq
+          items_captured = subscriptions.map(&:items_captured).flatten.uniq
 
-          if activities.any?
+          if items_captured.any?
             if key == Subscription::RESOURCE_UPDATES
               SubscriptionMailer.periodic_resource_update(
-                activities,
+                items_captured,
                 user.id,
                 date_interval
               ).deliver
 
             elsif key == Subscription::NEWS_UPDATES
               SubscriptionMailer.periodic_news_update(
-                activities,
+                items_captured,
                 user.id,
                 date_interval
               ).deliver

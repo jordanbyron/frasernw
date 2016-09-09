@@ -8,12 +8,12 @@
     %p
       = "Here is your #{@interval} Pathways News Update for #{DateTime.now.strftime("%B, %d, %Y")}:"
     %br
-    - @activities.each do |activity|
+    - @news_items.each do |news_item|
       .activity
         %p
-          %span{ class: "muted" }= "#{time_ago_in_words(activity.trackable.created_at)} ago"
+          %span{ class: "muted" }= "#{time_ago_in_words(news_item.trackable.created_at)} ago"
 
-          = render_activity(activity, fallback: :default)
+          = render "news_items/created", news_item: news_item
         %br
     = render partial: "subscription_mailer/automatic_email_message",
       locals: { interval: @interval }

@@ -1,23 +1,22 @@
 class SubscriptionMailer < ActionMailer::Base
   default from: "noreply@pathwaysbc.ca"
 
-  def periodic_resource_update(activities, user_id, interval_key)
+  def periodic_resource_update(sc_items, user_id, interval_key)
     @user = User.find(user_id)
     @interval = Subscription::INTERVAL_LABELS[interval_key]
     @interval_period = Subscription.interval_period(interval_key)
-    @activities = activities
 
-    @divisions_activities = @activities.
-      group_by{|activity| activity.trackable.division }.
-      map do |division, activities|
+    @divisions_sc_items = @sc_items.
+      group_by{|sc_item| sc_item.division }.
+      map do |division, sc_items|
         {
           division: division,
-          activities: activities,
-          share_with_divisions: share_with_divisions(activities, @user)
+          sc_items: sc_items,
+          share_with_divisions: share_with_divisions(sc_items, @user)
         }
       end
 
-    @share_all_with_divisions = share_with_divisions(@activities, @user)
+    @share_all_with_divisions = share_with_divisions(sc_items, @user)
 
     mail(
       to: @user.email,
@@ -26,11 +25,11 @@ class SubscriptionMailer < ActionMailer::Base
     )
   end
 
-  def periodic_news_update(activities, user_id, interval_key)
+  def periodic_news_update(news_items, user_id, interval_key)
     @user = User.find(user_id)
     @interval = Subscription::INTERVAL_LABELS[interval_key]
     @interval_period = Subscription.interval_period(interval_key)
-    @activities = activities
+    @news_items = news_items
 
     mail(
       to: @user.email,
@@ -52,45 +51,37 @@ class SubscriptionMailer < ActionMailer::Base
 
   def immediate_resource_update(sc_item_id, user_id)
     @user = User.find_by_id(user_id)
-    @activity = SubscriptionActivity.find_by_id(activity_id)
     @interval = Subscription::INTERVAL_LABELS[Subscription::INTERVAL_IMMEDIATELY]
     @resource = ScItem.find(sc_item_id)
-    @full_resource_title = @resource.full_title
-    @update_classification_type = @activity.update_classification_type
-    @parent_type = @activity.parent_type
-    @division = Division.find_by_id(@activity.owner_id) if @activity.owner_type == "Division"
-    @specializations = @activity.trackable.specializations if @activity.trackable.specializations.present?
 
     mail(
       to: @user.email,
       from: 'Pathways <noreply@pathwaysbc.ca>',
-      subject: "Pathways: #{@division} just added #{@type_mask_description_formatted} to #{@parent_type} [#{@update_classification_type.singularize}] "
+      subject: ("Pathways: #{@resource.division} just added " +
+        "#{@resource.type_label} to #{@resource.root_category.name} "
+        "[Resource Update] ")
     )
   end
 
-  def immediate_news_update(activity_id, user_id)
+  def immediate_news_update(news_item_id, user_id)
     @user = User.find_by_id(user_id)
-    @activity = SubscriptionActivity.find_by_id(activity_id)
+    @news_item = NewsItem.find_by_id(news_item_id)
     @interval = Subscription::INTERVAL_LABELS[Subscription::INTERVAL_IMMEDIATELY]
-    @trackable = @activity.trackable
-    @division = Division.find(@activity.owner_id) if @activity.owner_type == "Division"
-    @type_mask_description_formatted = @activity.type_mask_description_formatted
-    @update_classification_type = @activity.update_classification_type
 
     mail(
       to: @user.email,
       from: 'Pathways <noreply@pathwaysbc.ca>',
-      subject: "Pathways: #{@type_mask_description_formatted} was just added to #{@division} [#{@update_classification_type.singularize}]"
+      subject: ("Pathways: #{@news_item.type} was just added to " +
+        "#{@news_item.owner_division} [News Update]")
     )
   end
 
   private
 
-  def share_with_divisions(activities, user)
+  def share_with_divisions(sc_items, user)
     user.divisions.inject({}) do |memo, division|
-      eligible_resources = activities.
-        map(&:trackable).
-        select{ |resource| resource.borrowable_by_divisions.include?(division) }
+      eligible_resources = sc_items.
+        select{ |sc_item| sc_item.borrowable_by_divisions.include?(division) }
 
       memo.merge({
         division => eligible_resources.map(&:id)

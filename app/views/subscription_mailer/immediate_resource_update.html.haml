@@ -2,7 +2,7 @@
 %html
   %head
     %title
-      = "#{@user.name} -- Pathways: #{@division} just added "
+      = "#{@user.name} -- Pathways: #{@resource.division} just added "
       = @resource.type_label.downcase
       = "to #{@resource.root_category.name} [Resource Updates]"
   %body
@@ -11,14 +11,14 @@
       = "#{@resource.type_label.downcase} was just added "
       - if @parent_type.present?
         = "to #{@parent_type}"
-      - if @division.present?
-        = "by #{@division}: "
+      - if @resource.division.present?
+        = "by #{@resource.division}: "
     %br
     .activity
       %p
-        = link_to "#{@full_resource_title} [#{@resource.format.downcase}]",
+        = link_to "#{@resource.full_title} [#{@resource.format.downcase}]",
           sc_item_url(@resource)
-        - if @specializations.present?
+        - if @resource.specializations.any?
           = "(#{@resource.specializations.uniq.map(&:name).to_sentence})"
       - if (@user.as_divisions & @resource.borrowable_by_divisions).any?
         - (@user.as_divisions & @resource.borrowable_by_divisions).each do |division|

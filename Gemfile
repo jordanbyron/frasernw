@@ -47,7 +47,6 @@ gem 'rack-attack'
 #Avoid known issue w/ paperclip
 #http://stackoverflow.com/questions/28374401/nameerror-uninitialized-constant-paperclipstorages3aws
 gem "aws-sdk", "< 2.0"
-gem 'public_activity'
 
 # Use unicorn as the web server
 gem 'unicorn'
