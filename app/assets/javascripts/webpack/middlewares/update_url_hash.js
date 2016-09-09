@@ -1,14 +1,14 @@
 import _ from "lodash";
 import { uiKeysMirroredToUrlHash } from "url_hash_mirroring";
+import { encode } from "utils/url_hash_encoding";
 
 const updateUrlHash = store => next => action => {
   const result = next(action)
 
   if (_.includes(TRIGGERING_ACTION_TYPES, action.type)){
     window.pathways.parseUrlOnHashChange = false;
-    window.location.hash = JSON.stringify(
-      _.pick(store.getState().ui, uiKeysMirroredToUrlHash)
-    );
+    window.location.hash = _.pick(store.getState().ui, uiKeysMirroredToUrlHash).
+      pwPipe(encode)
 
     // we need to allow a beat for our "onhashchange" event to fire
     // and find the flag is still false
