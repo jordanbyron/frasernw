@@ -28,6 +28,12 @@ class CourtesyMailer < ActionMailer::Base
       "#{linked_entity_klassname.downcase.singularize}_url",
       @linked_entity
     )
+    @created_entity_name =
+      if linked_entity_klassname == "Office"
+        "Office"
+      else
+        "Clinic Location"
+      end
 
     mail(
       to: @owner.email,

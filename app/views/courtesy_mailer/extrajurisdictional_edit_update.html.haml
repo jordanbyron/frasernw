@@ -10,21 +10,12 @@
       = @editor.name
       from
       = @editor.divisions.first.name
-      has created a new location in
-      = @owner_division.name
-      for the
-      = @linked_entity_klass
-      with ID
-      = @linked_entity.id
-      - if @linked_entity.respond_to?("name") && @linked_entity.name.present?
-        = "(#{@linked_entity.name})"
-      from
-      = @linked_entity.divisions.map(&:name).to_sentence + "."
-    %p
-      You can view the record
-      %a{ href: @linked_entity_path,
-        target: "blank" }
-        by clicking here.
+      has created a new
+      = link_to @created_entity_name.to_s,
+        @linked_entity_path,
+        target: "_blank"
+      in
+      = "#{@owner_division.name}."
     %br
     %p
       You are receiving this message as a service to Pathways administrators.
