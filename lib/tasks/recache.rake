@@ -34,24 +34,30 @@ namespace :pathways do
         Denormalized.regenerate_all
       },
       front: -> {
-        User.all_user_division_groups_cached.each do |division_group|
+        viewable_division_combinations.each do |division_group|
           ExpireFragment.call "featured_content_#{division_group.join('_')}"
-          ExpireFragment.call "front_#{Specialization.cache_key}_#{division_group.join('_')}"
+          ExpireFragment.call(
+            "front_#{Specialization.cache_key}_#{division_group.join('_')}"
+          )
           Specialization.all.each do |specialization|
-            ExpireFragment.call "front_#{specialization.cache_key}_#{division_group.join('_')}"
+            ExpireFragment.call(
+              "front_#{specialization.cache_key}_#{division_group.join('_')}"
+            )
           end
         end
       },
       latest_updates: -> {
         LatestUpdates.recache_for_groups(
-          User.all_user_division_groups_cached,
+          viewable_division_combinations,
           force_automatic: true
         )
       },
       application_layout: -> {
         ExpireFragment.call("ie_compatibility_warning")
-        User.all_user_division_groups_cached.each do |division_group|
-          ExpireFragment.call("resources_dropdown_categories_#{division_group.join('_')}")
+        viewable_division_combinations.each do |division_group|
+          ExpireFragment.call(
+            "resources_dropdown_categories_#{division_group.join('_')}"
+          )
         end
       },
       notifications: -> {
@@ -76,7 +82,7 @@ namespace :pathways do
       end
     end
 
-    task :all => :environment do
+    task all: :environment do
       TASKS.each do |name, body|
         begin
           puts "Recaching #{name}..."
@@ -91,5 +97,11 @@ namespace :pathways do
 
       puts "All pages recached."
     end
+
+    def viewable_division_combinations
+      (User.all_user_division_groups_cached + Division.ids.map{ |id| [id ] }).
+        uniq
+    end
+
   end
 end
