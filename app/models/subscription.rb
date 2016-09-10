@@ -168,10 +168,10 @@ class Subscription < ActiveRecord::Base
 
     if sc_items?
       scope = scope.
-        where(type_mask: sc_item_format_type).
         where(division_id: divisions.map(&:id)).
         select do |sc_item|
-          sc_categories.include?(sc_item.root_category)
+          sc_categories.include?(sc_item.root_category) &&
+            sc_item_format_type.include?(sc_item.format_type.to_s)
         end
 
       if specializations.any?
