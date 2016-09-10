@@ -67,15 +67,15 @@ class Subscription < ActiveRecord::Base
     INTERVAL_MONTHLY     => "Monthly".freeze
   }
 
-  TARGET_CLASSES = [
-    "ScItem",
-    "NewsItem"
-  ]
+  TARGET_CLASSES = {
+    "ScItem" => "Content Items",
+    "NewsItem" => "News Items"
+  }
 
-  TARGET_CLASSES.each do |klassname|
+  TARGET_CLASSES.keys.each do |klassname|
     scope klassname.tableize, -> {where(target_class: klassname)}
 
-    define_method "#{klass_name.tableize}?" do
+    define_method "#{klassname.tableize}?" do
       target_class == klassname
     end
   end
@@ -184,5 +184,9 @@ class Subscription < ActiveRecord::Base
       scope.
         where(type_mask: news_type)
     end
+  end
+
+  def target_label
+    TARGET_CLASSES[target_class]
   end
 end

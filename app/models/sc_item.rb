@@ -6,7 +6,6 @@ class ScItem < ActiveRecord::Base
   include DivisionAdministered
 
   include ApplicationHelper
-  include PublicActivity::Model
 
   has_many :activities,
     as: :trackable,

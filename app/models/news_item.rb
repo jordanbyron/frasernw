@@ -1,5 +1,4 @@
 class NewsItem < ActiveRecord::Base
-  include PublicActivity::Model
   include ActionView::Helpers::TextHelper
 
   has_many :activities,

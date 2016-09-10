@@ -15,8 +15,8 @@
     = f.input :target_class,
       as: :radio_buttons,
       collection: Subscription::TARGET_CLASSES,
-      label_method: ->(klass){ klass.humanize },
-      value_method: ->(klass) {klass },
+      label_method: :last,
+      value_method: :first,
       include_blank: false,
       label: "Pick an notification type:"
 
@@ -127,13 +127,13 @@
 
 :javascript
   $(document).ready(function() {
-    if ($("#subscription_classification_news_updates").is(":checked"))
+    if ($("#subscription_target_class_newsitem").is(":checked"))
     {
       $(".content-item-updates").hide();
       $(".news-updates").fadeIn(300).show();
 
     }
-    else if ($("#subscription_classification_resource_updates").is(":checked"))
+    else if ($("#subscription_target_class_scitem").is(":checked"))
     {
       $(".news-updates").hide();
       $(".content-item-updates").fadeIn(300).show();
