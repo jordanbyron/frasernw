@@ -26,7 +26,7 @@ class City < ActiveRecord::Base
   end
 
   def self.options_for_priority_select(division)
-    not_hidden.map do |city|
+    all.map do |city|
       {
         city_name: city.name,
         city_id: city.id,
@@ -63,10 +63,6 @@ class City < ActiveRecord::Base
     division_ids = divisions.map{ |division| division.id }
     joins('INNER JOIN "division_cities" ON "cities".id = "division_cities".city_id').
       where('"division_cities".division_id IN (?)', division_ids).uniq
-  end
-
-  def self.not_hidden
-    where("cities.hidden = (?)", false)
   end
 
   def options_for_priority_select(division)
