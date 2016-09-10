@@ -166,9 +166,10 @@ class Subscription < ActiveRecord::Base
       )
     end
 
-    if resource_update?
+    if sc_items?
       scope = scope.
         where(type_mask: sc_item_format_type).
+        where(division_id: divisions.map(&:id)).
         select do |sc_item|
           sc_categories.include?(sc_item.root_category)
         end
@@ -180,9 +181,10 @@ class Subscription < ActiveRecord::Base
       end
 
       scope
-    elsif news_update?
+    elsif news_items?
       scope.
-        where(type_mask: news_type)
+        where(type_mask: news_type).
+        where(owner_division_id: divisions.map(&:id))
     end
   end
 

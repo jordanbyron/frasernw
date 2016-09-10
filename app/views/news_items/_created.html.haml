@@ -1,23 +1,7 @@
-- if news_item.present?
-  - if news_item.owner_division.present?
-    = link_to news_item.owner_division.name, division_url(news_item.owner_division)
-  - else
-    - "An unknown division "
-  - if news_item.type.present?
-    = "added "
-    - if !news_item.title.present?
-      - if news_item.type == NewsItem::TYPE_HASH[NewsItem::TYPE_BREAKING]
-        = link_to("a new untitled #{news_item.type} item.", news_item_url(news_item) )# "a new Breaking News item."
-      - else
-        = link_to("a new #{news_item.type}.", news_item_url(news_item) ) # "a new Attachment Update."
-    - else
-      - if news_item.type == NewsItem::TYPE_HASH[NewsItem::TYPE_BREAKING]
-        = link_to("a new #{news_item.type} item: ", news_item_url(news_item))# "a new Breaking News item: "
-      - else
-        = link_to("a new #{news_item.type}: ", news_item_url(news_item) ) # "a new Attachment Update: "
-      %strong
-        = link_to " #{news_item.title}", news_item_url(news_item) # " Title of Item"
-  - else
-    = link_to("click here to view it", news_item_url(news_item))
+- if news_item.owner_division.present?
+  = link_to news_item.owner_division.name, division_url(news_item.owner_division)
 - else
-  A news item was created which has since been removed.
+  - "An unknown division "
+= "added a new #{news_item.type}: "
+= link_to news_item.label,
+  news_item_url(news_item)

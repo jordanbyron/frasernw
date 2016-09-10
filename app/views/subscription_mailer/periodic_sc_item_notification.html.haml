@@ -6,7 +6,7 @@
     %p
       = "Hi #{@user.name},"
     %p
-      = "Here is your #{@interval} Pathways Content Items Update for #{DateTime.now.strftime("%B, %d, %Y")}:"
+      = "Here is your #{@interval} Pathways Content Items Update for #{@end_datetime.strftime("%B, %d, %Y")}:"
     %br
     - @divisions_sc_items.each do |division_sc_items|
       %hr
@@ -15,7 +15,7 @@
         .sc_item
           %p
             %span{ class: "muted" }
-              = "#{time_ago_in_words(sc_item.trackable.created_at)} ago"
+              = "#{time_ago_in_words(sc_item.created_at)} ago"
 
             = render "sc_items/created", sc_item: sc_item
           %br

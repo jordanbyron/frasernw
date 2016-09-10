@@ -1,20 +1,27 @@
+# TODO remove: end_date = DateTime.civil(2016, 8, 29, 7, 0, 0, "-7")
+
 class SubscriptionWorker
-  def self.mail_notifications_for_interval(date_interval)
+  def self.mail_notifications_for_interval(date_interval, end_datetime = DateTime.current)
     User.with_subscriptions.each do |user|
-      Subscription::TARGET_CLASSES.map do |klassname|
+      Subscription::TARGET_CLASSES.map do |klassname, label|
         begin
           subscriptions = user.
             subscriptions_by_interval_and_target(date_interval, klassname)
 
-          items_captured = subscriptions.map(&:items_captured).flatten.uniq
+          items_captured = subscriptions.map do |subscription|
+              subscription.items_captured(end_datetime)
+            end.
+            flatten.
+            uniq
 
           if items_captured.any?
             SubscriptionMailer.send(
-              "periodic_#{klassname.tablize}_notification",
+              "periodic_#{klassname.tableize.singularize}_notification",
               items_captured,
               user.id,
               date_interval,
-            )
+              end_datetime
+            ).deliver
           end
         rescue => e
           SystemNotifier.error(e)
@@ -38,7 +45,7 @@ class SubscriptionWorker
       end
 
         SubscriptionMailer.send(
-          "immediate_#{klass_name.tableize}_notification",
+          "immediate_#{klass_name.tableize.singularize}_notification",
           item.id,
           user.id
         )

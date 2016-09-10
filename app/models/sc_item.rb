@@ -277,7 +277,7 @@ class ScItem < ActiveRecord::Base
 
   def type_label
     if type_mask == TYPE_MARKDOWN
-      "Markdown content"
+      "Markdown Item"
     else
       type
     end
