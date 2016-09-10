@@ -94,6 +94,8 @@ const filters = ((model) => {
 
   filters.push((decoratedRecord) => {
     return decoratedRecord.raw.collectionName !== "contentItems" ||
+      (_.includes(["super", "admin"], model.app.currentUser.role) &&
+        selectedGeographicFilter(model) === "All Divisions") ||
       matchesUserDivisions(decoratedRecord.raw, model)
   })
 
