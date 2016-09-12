@@ -19,12 +19,6 @@ class ProceduresController < ApplicationController
     @procedure = Procedure.new
 
     build_procedure_specializations!(@procedure)
-
-    @procedure.
-      all_procedure_specializations.
-      find do |procedure_specialization|
-        procedure_specialization.specialization_id == params[:specialization_id].to_i
-      end.mapped = true
   end
 
   def create
@@ -69,16 +63,9 @@ class ProceduresController < ApplicationController
 
   def build_procedure_specializations!(procedure)
     Specialization.all.each do |specialization|
-      existing_procedure_specialization = procedure.
-        all_procedure_specializations.where(
-          specialization_id: specialization.id
-        ).first
-
-      if existing_procedure_specialization.nil?
-        procedure.all_procedure_specializations.build(
-          specialization_id: specialization.id
-        )
-      end
+      procedure.procedure_specializations.find_or_initialize_by(
+        specialization_id: specialization.id
+      )
     end
   end
 end

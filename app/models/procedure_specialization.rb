@@ -1,7 +1,6 @@
 class ProcedureSpecialization < ActiveRecord::Base
 
-  attr_accessible :mapped,
-    :classification,
+  attr_accessible :classification,
     :parent_id,
     :specialist_wait_time,
     :clinic_wait_time,
@@ -50,7 +49,6 @@ class ProcedureSpecialization < ActiveRecord::Base
     -> (classification){ where(
     "classification = (?)", classification
     ) }
-  scope :mapped, -> { where(mapped: true) }
   scope :has_procedure, -> { joins(:procedure) }
 
   has_many :capacities, dependent: :destroy

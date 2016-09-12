@@ -15,7 +15,6 @@ class Specialization < ActiveRecord::Base
   has_many :clinics, through: :clinic_specializations
 
   has_many :procedure_specializations,
-    -> { where("procedure_specializations.mapped" => true) },
     dependent: :destroy
   has_many :procedures, -> { order 'procedures.name ASC' },
     through: :procedure_specializations
@@ -144,7 +143,6 @@ class Specialization < ActiveRecord::Base
     end
 
     scope.
-      mapped.
       has_procedure.
       includes(:procedure).
       arrange(order: 'procedures.name')

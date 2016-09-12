@@ -6,6 +6,8 @@ import { tabClicked } from "action_creators";
 import { matchedRoute } from "controller_helpers/routing";
 import React from "react";
 import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
+import { encode } from "utils/url_hash_encoding";
+
 
 const NavTabsController = ({model, dispatch}) => {
   if (isTabbedPage(model)) {
@@ -126,7 +128,7 @@ const NavTabController = ({model, dispatch, tabKey, label}) => {
 
 const pageNavHref = (model, tabKey) => {
   return (`/specialties/${recordShownByBreadcrumb(model).id}#` +
-    JSON.stringify({selectedTabKey: tabKey}))
+    encode({selectedTabKey: tabKey}))
 }
 
 

@@ -2,7 +2,7 @@ class Procedure < ActiveRecord::Base
   attr_accessible :name,
     :parent_id,
     :specialization_ids,
-    :all_procedure_specializations_attributes
+    :procedure_specializations_attributes
 
   include PaperTrailable
 
@@ -10,13 +10,11 @@ class Procedure < ActiveRecord::Base
     dependent: :destroy,
     class_name: "ProcedureSpecialization"
   has_many :procedure_specializations,
-    -> { where "procedure_specializations.mapped" => true },
     dependent: :destroy
   has_many :specializations,
-    -> { where(procedure_specializations: { "mapped" => true }).
-      order('specializations.name ASC') },
+    -> { order('specializations.name ASC') },
     through: :procedure_specializations
-  accepts_nested_attributes_for :all_procedure_specializations, allow_destroy: true
+  accepts_nested_attributes_for :procedure_specializations, allow_destroy: true
 
   has_many :capacities, through: :procedure_specializations
   has_many :specialists, through: :capacities

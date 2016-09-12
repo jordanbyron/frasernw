@@ -201,7 +201,8 @@ class LatestUpdates < ServiceObject
         local_referral_cities(item.primary_specialization)
 
       (item_cities & local_referral_cities).none?
-    }
+    },
+    -> (item, division) { item.hidden? }
   ]
 
   def self.event_date(item, event_method)
