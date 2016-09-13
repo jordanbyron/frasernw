@@ -83,7 +83,8 @@ const CollectionFilter = ({model, dispatch}) => {
             "Specialists",
             "Clinics",
             "Physician Resources",
-            "Patient Info"
+            "Patient Info",
+            "Areas of Practice"
           ].map((label) => {
             return(
               <CollectionFilterTab
