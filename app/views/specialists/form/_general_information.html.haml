@@ -16,7 +16,8 @@
 = f.input :surveyed,
   label: "Surveyed?"
 = f.input :responded_to_survey,
-  label: "Responded to survey?"
+  label: "Responded to survey?",
+  wrapper_html: { class: "form__wrapper--indented" }
 = f.input :availability,
   label: "Available for work?",
   as: :select,
@@ -27,12 +28,14 @@
 = f.input :has_own_offices,
   label: "Has own offices?"
 = f.input :accepting_new_direct_referrals,
-  label: "Accepting direct referrals (to own offices)?"
+  label: "Accepting direct referrals (to own offices)?",
+  wrapper_html: { class: "form__wrapper--indented" }
 = f.input :direct_referrals_limited,
-  label: "Direct referrals limited by geography or number of patients?"
+  label: "Direct referrals limited by geography or number of patients?",
+  wrapper_html: { class: "form__wrapper--double-indented" }
 = f.input :retirement_scheduled,
   label: "Retirement scheduled?"
-.specialist_retirement_date
+.specialist_retirement_date.form__wrapper--indented
   = f.input :retirement_date,
     wrapper: false,
     label: false,
@@ -40,13 +43,13 @@
 = f.input :leave_scheduled,
   label: "Leave scheduled?"
 #availability
-  .specialist_unavailable_from
+  .specialist_unavailable_from.form__wrapper--indented
     = f.input :unavailable_from,
       label: false,
       wrapper: false,
       input_html: { class: "unavailable_from"}
     %span{style: "margin-left: 5px"}= "to"
-  .specialist_unavailable_to
+  .specialist_unavailable_to.form__wrapper--indented
     = f.input :unavailable_to,
       label: false,
       wrapper: false,
