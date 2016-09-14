@@ -103,6 +103,18 @@ class FeedbackItem < ActiveRecord::Base
     user || OpenStruct.new(name: freeform_name)
   end
 
+  def version_archived
+    @version_archived ||= versions.select do |version|
+      version.changeset["archived"].present? &&
+        version.changeset["archived"][0] == false &&
+        version.changeset["archived"][1] == true
+    end.last
+  end
+
+  def archived_by
+    version_archived.present? ? version_archived.safe_user : UnknownUser.new
+  end
+
   def active?
     !archived?
   end
