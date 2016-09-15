@@ -1,11 +1,11 @@
 import React from "react";
 import FilterGroup from "controllers/filter_group";
-import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import recordsMaskingFilters from "controller_helpers/records_masking_filters";
 import FilterCheckbox from "controllers/filter_checkbox";
 
 const CompletionDateFilter = ({model, dispatch}) => {
-  if (matchedRoute(model) === "/issues") {
+  if (route === "/issues") {
     return(
       <FilterGroup
         title={"Targeted Completion Date"}

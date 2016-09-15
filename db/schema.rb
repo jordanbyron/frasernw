@@ -545,7 +545,6 @@ ActiveRecord::Schema.define(version: 20160909235746) do
     t.integer  "procedure_id"
     t.integer  "specialization_id"
     t.string   "ancestry"
-    t.boolean  "mapped",               default: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "classification"

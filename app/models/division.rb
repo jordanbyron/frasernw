@@ -59,16 +59,8 @@ class Division < ActiveRecord::Base
     Rails.cache.fetch([name, 'Division.all'], expires_in: 8.hours) { all }
   end
 
-  def self.standard
-    not_hidden.not_provincial
-  end
-
-  def self.not_provincial
+  def self.except_provincial
     where('"divisions".name != (?)', "Provincial")
-  end
-
-  def self.not_hidden
-    where('"divisions".name != (?)', "Vancouver (Hidden)")
   end
 
   def self.cached_find(id)

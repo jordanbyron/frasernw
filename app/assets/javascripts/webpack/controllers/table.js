@@ -1,5 +1,5 @@
 import React from "react";
-import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import TableRows from "controllers/table_rows";
 import TableHeadings from "controllers/table_headings";
 import { reportStyle } from "controller_helpers/filter_values";
@@ -30,7 +30,7 @@ const Table = ({model, dispatch}) => {
 }
 
 const shouldShow = (model) => {
-  if (!_.includes(ROUTES_IMPLEMENTING, matchedRoute(model))){
+  if (!_.includes(ROUTES_IMPLEMENTING, route)){
     return false;
   }
 
@@ -41,19 +41,19 @@ const shouldShow = (model) => {
     return false;
   }
 
-  if (matchedRoute(model) === "/content_categories/:id" &&
+  if (route === "/content_categories/:id" &&
     !(recordShownByRoute(model).componentType === "FilterTable")) {
 
     return false;
   }
 
-  if (matchedRoute(model) === "/reports/referents_by_specialty" &&
+  if (route === "/reports/referents_by_specialty" &&
     (reportStyle(model) === "expanded")) {
 
     return false;
   }
 
-  if (matchedRoute(model) === "/reports/entity_page_views" &&
+  if (route === "/reports/entity_page_views" &&
       (isDataDubious(model) && model.app.currentUser.role !== "super")) {
 
     return false;
@@ -63,8 +63,8 @@ const shouldShow = (model) => {
 }
 
 const isTableLoaded = (model) => {
-  if(matchedRoute(model) === "/reports/page_views_by_user" ||
-    matchedRoute(model) === "/reports/entity_page_views"){
+  if(route === "/reports/page_views_by_user" ||
+    route === "/reports/entity_page_views"){
     return model.ui.recordsToDisplay;
   }
   else {

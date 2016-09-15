@@ -1,11 +1,11 @@
 import * as FilterValues from "controller_helpers/filter_values";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import { selectedTabKey } from "controller_helpers/tab_keys";
 import { cities as cityFilterSubkeys } from "controller_helpers/filter_subkeys";
 import _ from "lodash";
 
 export function requestDynamicData(model, dispatch){
-  if(matchedRoute(model) === "/reports/page_views_by_user"){
+  if(route === "/reports/page_views_by_user"){
     requestingData(dispatch)
 
     const requestParams = {
@@ -24,7 +24,7 @@ export function requestDynamicData(model, dispatch){
       })
     })
   }
-  else if (matchedRoute(model) === "/reports/entity_page_views") {
+  else if (route === "/reports/entity_page_views") {
     requestingData(dispatch)
 
     const requestParams = {

@@ -1,12 +1,12 @@
 import FilterGroup from "controllers/filter_group";
 import FilterSelector from "controllers/filter_selector";
 import React from "react";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import monthOptions from "controller_helpers/month_options";
 
 const DateRangeFilters = ({model, dispatch}) => {
   if(_.includes(["/reports/page_views_by_user", "/reports/entity_page_views"],
-    matchedRoute(model)
+    route
   )){
     return(
       <FilterGroup title="Date Range" isCollapsible={false}>

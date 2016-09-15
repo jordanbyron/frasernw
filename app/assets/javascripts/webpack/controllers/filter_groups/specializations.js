@@ -1,14 +1,14 @@
 import React from "react";
 import FilterCheckbox from "controllers/filter_checkbox";
 import FilterGroup from "controllers/filter_group";
-import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import recordsMaskingFilters from "controller_helpers/records_masking_filters";
 import FilterRadioButtons from "controllers/filter_radio_buttons";
 
 const SpecializationsFilters = ({model, dispatch}) => {
-  if (matchedRoute(model) === "/content_categories/:id" ||
-    matchedRoute(model) === "/hospitals/:id" ||
-    matchedRoute(model) === "/languages/:id") {
+  if (route === "/content_categories/:id" ||
+    route === "/hospitals/:id" ||
+    route === "/languages/:id") {
 
     return(
       <FilterGroup

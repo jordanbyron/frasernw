@@ -7,7 +7,7 @@ module Denormalized
       if current_user.authenticated?
         {
           id: current_user.id,
-          divisionIds: current_user.as_divisions.standard.map(&:id),
+          divisionIds: current_user.as_divisions.map(&:id),
           cityRankings: current_user.city_rankings,
           cityRankingsCustomized: current_user.customized_city_rankings?,
           favorites: {

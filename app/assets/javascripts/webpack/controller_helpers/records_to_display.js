@@ -1,4 +1,4 @@
-import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import {
   matchesTab,
   matchesPage,
@@ -25,9 +25,9 @@ const recordsToDisplay = ((model) => {
       "/news_items",
       "/issues",
       "/change_requests"
-    ], matchedRoute(model))) {
+    ], route)) {
 
-    if (matchedRoute(model) === "/specialties/:id" &&
+    if (route === "/specialties/:id" &&
       showingOtherSpecializations(model)){
 
       return unscopedCollectionShown(model).filter((record) => {

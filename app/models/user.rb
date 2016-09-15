@@ -379,9 +379,9 @@ class User < ActiveRecord::Base
 
   def reporting_divisions
     if as_super_admin?
-      Division.standard
+      Division.except_provincial
     else
-      as_divisions.not_hidden
+      as_divisions.except_provincial
     end
   end
 
@@ -417,11 +417,11 @@ class User < ActiveRecord::Base
   end
 
   def can_assign_divisions
-    super_admin? ? Division.not_hidden : divisions
+    super_admin? ? Division.all: divisions
   end
 
   def as_can_assign_divisions
-    as_super_admin? ? Division.not_hidden : as_divisions
+    as_super_admin? ? Division.all: as_divisions
   end
 
   def division_id

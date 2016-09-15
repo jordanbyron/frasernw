@@ -1,11 +1,11 @@
-import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import * as filterValues from "controller_helpers/filter_values";
 import { toSentence } from "utils";
 import _ from "lodash";
 import entityPageViews from "controller_helpers/page_title_label/entity_page_views";
 
 const pageTitleLabel = (model) => {
-  switch(matchedRoute(model)){
+  switch(route){
   case "/reports/page_views_by_user":
     return "Page Views by User";
   case "/content_categories/:id":

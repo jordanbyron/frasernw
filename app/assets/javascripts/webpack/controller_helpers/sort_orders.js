@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { headingArrowDirection, selectedTableHeadingKey }
   from "controller_helpers/table_headings";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 
 const sortOrders = (model) => {
   if(_.includes([
@@ -10,24 +10,24 @@ const sortOrders = (model) => {
     "/content_categories/:id",
     "/hospitals/:id",
     "/languages/:id"
-  ], matchedRoute(model))) {
+  ], route)) {
 
     return reversed(model);
   }
 
-  if(matchedRoute(model) === "/reports/referents_by_specialty" &&
+  if(route === "/reports/referents_by_specialty" &&
     selectedTableHeadingKey(model) === "SPECIALTY") {
 
     return reversed(model);
   }
 
-  if(matchedRoute(model) === "/news_items" &&
+  if(route === "/news_items" &&
     _.includes(["TYPE", "DIVISION", "TITLE"], selectedTableHeadingKey(model))) {
 
     return reversed(model);
   }
 
-  if (_.includes(["/issues"], matchedRoute(model))) {
+  if (_.includes(["/issues"], route)) {
     return reversed(model);
   }
 
