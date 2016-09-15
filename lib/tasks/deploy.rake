@@ -30,6 +30,19 @@ namespace :deploy do
       puts "Copying production s3 to test"
       print_exec "APP_NAME=pathwaysbctest rake pathways:mirror_s3"
     end
+
+    task :clean_branch do
+      puts "Creating a clean 'deploy-test' branch"
+
+      print_exec "git checkout master"
+
+      print_exec "git push origin deploy-test --delete"
+      print_exec "git branch -D deploy-test"
+
+      print_exec "git pull"
+      print_exec "git checkout -b deploy-test"
+      print_exec "git push origin deploy-test:deploy-test --set-upstream"
+    end
   end
 
   namespace :demo do
