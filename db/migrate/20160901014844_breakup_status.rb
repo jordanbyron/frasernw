@@ -20,6 +20,7 @@ class BreakupStatus < ActiveRecord::Migration
           NEW_SPECIALIST_ATTRIBUTES.map{ |k, v| [ k, v.call(specialist) ] }.to_h
         )
       end
+
     end
   end
 
@@ -34,7 +35,7 @@ class BreakupStatus < ActiveRecord::Migration
     accepting_new_direct_referrals: ->(specialist){
       specialist.categorization_mask == 1 && #responded to survey
         specialist.specialist_offices.select(&:has_data?).any? &&
-        specialist.status_mask == 1 #accepting new referrals
+        [1, 11].include?(specialist.status_mask) #accepting new referrals, referrals limited
     },
     direct_referrals_limited: ->(specialist){
       specialist.categorization_mask == 1 && #responded to survey
