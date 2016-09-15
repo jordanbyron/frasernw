@@ -2,7 +2,7 @@ import React from "react";
 import { selectedTableHeadingKey, headingArrowDirection, canSelectSort }
   from "controller_helpers/table_headings";
 import { sortByHeading } from "action_creators";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import { collectionShownName, collectionShownPluralLabel }
   from "controller_helpers/collection_shown";
 import { entityType } from "controller_helpers/filter_values";
@@ -15,7 +15,7 @@ import { memoizePerRender } from "utils";
 import { selectedTabKey } from "controller_helpers/tab_keys";
 
 const TableHeadings = ({model, dispatch}) => {
-  if(_.includes(["/reports/entity_page_views", "/latest_updates"], matchedRoute(model))){
+  if(_.includes(["/reports/entity_page_views", "/latest_updates"], route)){
     return <thead></thead>
   }
   else {
@@ -88,7 +88,7 @@ const cellConfigs = (model, dispatch) => {
       { label: "", key: "FEEDBACK" }
     ];
   }
-  else if (matchedRoute(model) === "/news_items"){
+  else if (route === "/news_items"){
     return [
       { label: "Title", key: "TITLE" },
       { label: "Division", key: "DIVISION"},
@@ -97,25 +97,25 @@ const cellConfigs = (model, dispatch) => {
       { label: "", key: "ADMIN"}
     ];
   }
-  else if (matchedRoute(model) === "/reports/page_views_by_user"){
+  else if (route === "/reports/page_views_by_user"){
     return [
       { label: "User", key: "USERS" },
       { label: "Page Views", key: "PAGE_VIEWS" }
     ];
   }
-  else if (matchedRoute(model) === "/reports/referents_by_specialty"){
+  else if (route === "/reports/referents_by_specialty"){
     return [
       { label: "Specialty", key: "SPECIALTY" },
       { label: _.capitalize(entityType(model)), key: "ENTITY_TYPE" }
     ];
   }
-  else if (matchedRoute(model) === "/issues"){
+  else if (route === "/issues"){
     return [
       { label: "Code", key: "ISSUE_CODE" },
       { label: "Title", key: "DESCRIPTION" }
     ];
   }
-  else if (matchedRoute(model) === "/change_requests"){
+  else if (route === "/change_requests"){
     if (selectedTabKey(model) === "pendingIssues"){
       if(model.ui.persistentConfig.showIssueEstimates){
         return [

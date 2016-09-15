@@ -1,5 +1,5 @@
 import React from "react";
-import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import SharedCareIcon from "component_helpers/icons/shared_care";
 import FavoriteIcon from "controllers/icons/favorite";
@@ -23,7 +23,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
     "/content_categories/:id",
     "/hospitals/:id",
     "/languages/:id"
-  ], matchedRoute(model))) {
+  ], route)) {
     if(_.includes(["specialists", "clinics"], collectionShownName(model))) {
       return(
         <ReferentRow
@@ -51,7 +51,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       );
     }
   }
-  else if (matchedRoute(model) === "/reports/referents_by_specialty" &&
+  else if (route === "/reports/referents_by_specialty" &&
     filterValues.reportStyle(model) === "summary") {
 
     return(
@@ -61,7 +61,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       </tr>
     );
   }
-  else if (matchedRoute(model) === "/reports/entity_page_views") {
+  else if (route === "/reports/entity_page_views") {
     return(
       <tr key={decoratedRecord.reactKey}>
         <td dangerouslySetInnerHTML={{__html: decoratedRecord.raw.link}}/>
@@ -69,7 +69,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       </tr>
     )
   }
-  else if (matchedRoute(model) === "/reports/page_views_by_user") {
+  else if (route === "/reports/page_views_by_user") {
     return(
       <tr>
         <td key="name">
@@ -79,7 +79,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       </tr>
     );
   }
-  else if (matchedRoute(model) === "/latest_updates"){
+  else if (route === "/latest_updates"){
     if (model.ui.persistentConfig.canHide){
       var className = "latest_updates__update--editable";
     }
@@ -99,7 +99,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       </tr>
     )
   }
-  else if (matchedRoute(model) === "/news_items") {
+  else if (route === "/news_items") {
     return(
       <NewsItemRow
         decoratedRecord={decoratedRecord}
@@ -108,10 +108,10 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       />
     );
   }
-  else if (matchedRoute(model) === "/issues"){
+  else if (route === "/issues"){
     return(<IssueRow decoratedRecord={decoratedRecord} model={model}/>);
   }
-  else if (matchedRoute(model) === "/change_requests"){
+  else if (route === "/change_requests"){
     return(<ChangeRequestRow decoratedRecord={decoratedRecord} model={model}/>);
   }
 };

@@ -4,10 +4,10 @@ import { buttonIsh } from "stylesets";
 import { scopedByRouteAndTab } from "controller_helpers/collection_shown";
 import { setPage } from "action_creators"
 import { currentPage, ROWS_PER_PAGE } from "controller_helpers/pagination";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 
 const Pagination = ({model, dispatch}) => {
-  if(matchedRoute(model) !== "/news_items" || totalPages(model) === 0) {
+  if(route !== "/news_items" || totalPages(model) === 0) {
     return <noscript/>;
   } else {
     return (

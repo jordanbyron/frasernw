@@ -1,5 +1,5 @@
 import React from "react";
-import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import { viewSelectorClass }  from "controller_helpers/reduced_view";
 import { recordShownByTab, selectedTabKey} from "controller_helpers/tab_keys";
 import { collectionShownName, collectionShownPluralLabel }
@@ -28,14 +28,14 @@ import PriorityFilter from "controllers/filter_groups/priority";
 import SidebarAnnotation from "controllers/sidebar_annotation";
 
 const pageIsReport = (model) => {
-  return matchedRoute(model).includes("/reports/");
+  return route.includes("/reports/");
 };
 
 const sidebarTitle = (model) => {
   if (pageIsReport(model)) {
     return "Configure Report";
   }
-  else if (matchedRoute(model) === "/latest_updates"){
+  else if (route === "/latest_updates"){
     return "Admin-Only Options";
   }
   else {

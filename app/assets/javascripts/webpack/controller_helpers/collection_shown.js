@@ -1,4 +1,4 @@
-import { matchedRoute, matchedRouteParams, recordShownByRoute }
+import { route, routeParams, recordShownByRoute }
   from "controller_helpers/routing";
 import { selectedTabKey, recordShownByTab } from "controller_helpers/tab_keys";
 import { memoizePerRender } from "utils";
@@ -18,20 +18,20 @@ export const collectionShownName = ((model) => {
     else if (selectedTabKey(model).includes("contentCategory")){
       return "contentItems";
     }
-    else if (matchedRoute(model) === "/news_items"){
+    else if (route === "/news_items"){
       return "newsItems";
     }
-    else if (matchedRoute(model) === "/issues") {
+    else if (route === "/issues") {
       return "issues";
     }
-    else if (matchedRoute(model) === "/change_requests") {
+    else if (route === "/change_requests") {
       return "changeRequests";
     }
   }
-  else if (matchedRoute(model) === "/content_categories/:id"){
+  else if (route === "/content_categories/:id"){
     return "contentItems";
   }
-  else if (matchedRoute(model) === "/reports/referents_by_specialty"){
+  else if (route === "/reports/referents_by_specialty"){
     if(filterValues.reportStyle(model) === "summary"){
       return "specializations";
     }
@@ -42,7 +42,7 @@ export const collectionShownName = ((model) => {
 }).pwPipe(memoizePerRender)
 
 export const unscopedCollectionShown = ((model) => {
-  if (matchedRoute(model) === "/latest_updates") {
+  if (route === "/latest_updates") {
     return model.ui.latestUpdates;
   }
   else {
@@ -58,7 +58,7 @@ export const scopedByRouteAndTab = ((model) => {
 }).pwPipe(memoizePerRender)
 
 export const matchesPage = (record, model) => {
-  switch(matchedRoute(model)){
+  switch(route){
   case "/specialties/:id":
     return _.includes(
       record.specializationIds,
@@ -149,19 +149,19 @@ const staticDivisionalScope = (model) => {
 export const collectionShownPluralLabel = ((model) => {
   switch(collectionShownName(model)){
   case "specialists":
-    if (matchedRoute(model) === "/specialties/:id"){
+    if (route === "/specialties/:id"){
       return recordShownByRoute(model).membersName;
     } else {
       return "Specialists"
     }
   case "clinics":
-    if (matchedRoute(model) === "/specialties/:id"){
+    if (route === "/specialties/:id"){
       return `${recordShownByRoute(model).name} Clinics`;
     } else {
       return "Clinics"
     }
   case "contentItems":
-    if (matchedRoute(model) === "/content_categories/:id") {
+    if (route === "/content_categories/:id") {
       return recordShownByRoute(model).name;
     }
     else {

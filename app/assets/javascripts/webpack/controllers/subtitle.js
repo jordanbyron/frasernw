@@ -1,6 +1,6 @@
 import React from "react";
 import * as filterValues from "controller_helpers/filter_values";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import { labelMonthOption } from "controller_helpers/month_options";
 
 const Subtitle = ({model, dispatch}) => {
@@ -17,7 +17,7 @@ const Subtitle = ({model, dispatch}) => {
 };
 
 const label = (model) => {
-  switch(matchedRoute(model)){
+  switch(route){
   case "/reports/entity_page_views":
     if(filterValues.startMonth(model) === filterValues.endMonth(model)){
       return labelMonthOption(filterValues.startMonth(model))

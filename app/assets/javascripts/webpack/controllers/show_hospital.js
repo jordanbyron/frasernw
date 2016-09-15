@@ -1,8 +1,8 @@
 import React from "react";
-import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 
 const ShowHospital = ({model}) => {
-  if(matchedRoute(model) === "/hospitals/:id"){
+  if(route === "/hospitals/:id"){
     return(
       <div>
         <AddressLink model={model}/>

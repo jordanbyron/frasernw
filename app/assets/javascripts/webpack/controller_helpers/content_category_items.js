@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { matchedRoute, matchedRouteParams, recordShownByRoute }
+import { route, routeParams, recordShownByRoute }
   from "controller_helpers/routing";
 import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
 import { matchesTab, matchesPage } from "controller_helpers/collection_shown";
