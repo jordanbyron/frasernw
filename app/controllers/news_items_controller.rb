@@ -108,19 +108,4 @@ class NewsItemsController < ApplicationController
       [ news_item.owner_division ]
     end
   end
-
-  def create_news_item_activity
-    # TODO: #division
-    @news_item.create_activity(
-      action: :create,
-      update_classification_type: Subscription.news_update,
-      type_mask: @news_item.type_mask,
-      type_mask_description: @news_item.type,
-      format_type: 0,
-      format_type_description: "Internal",
-      parent_id: @news_item.owner_division.id,
-      parent_type: "Division",
-      owner: @news_item.owner_division
-    )
-  end
 end

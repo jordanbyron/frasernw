@@ -6,7 +6,6 @@ class ScItem < ActiveRecord::Base
   include DivisionAdministered
 
   include ApplicationHelper
-  include PublicActivity::Model
 
   has_many :activities,
     as: :trackable,
@@ -68,6 +67,10 @@ class ScItem < ActiveRecord::Base
   validates :url, url: true, allow_blank: true
 
   default_scope { order('sc_items.title') }
+
+  after_create do
+    SubscriptionWorker.delay.mail_notifications_for_item("ScItem", self.id)
+  end
 
   def self.demoable
     where(demoable: true)
@@ -272,8 +275,14 @@ class ScItem < ActiveRecord::Base
     tool
   end
 
-  FORMAT_TYPE_INTERNAL = 0
-  FORMAT_TYPE_EXTERNAL = 1
+  def type_label
+    if type_mask == TYPE_MARKDOWN
+      "Markdown Item"
+    else
+      type
+    end
+  end
+
   FORMAT_TYPE_HTML = 2
   FORMAT_TYPE_IMAGE = 3
   FORMAT_TYPE_PDF = 4
@@ -335,10 +344,6 @@ class ScItem < ActiveRecord::Base
 
   def format
     case format_type
-      when FORMAT_TYPE_INTERNAL
-        "Pathways"
-      when FORMAT_TYPE_EXTERNAL
-        "Website"
       when FORMAT_TYPE_HTML
         "Website"
       when FORMAT_TYPE_IMAGE

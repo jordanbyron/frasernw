@@ -288,8 +288,8 @@ class User < ActiveRecord::Base
     errors.add(:agree_to_toc, "must be agreed to") if agree_to_toc.blank?
   end
 
-  def subscriptions_by_interval_and_target(interval, target_type)
-    subscriptions.where(interval: interval, classification: target_type)
+  def subscriptions_by_interval_and_target(interval, target_klass)
+    subscriptions.where(interval: interval, target_class: target_klass)
   end
 
   TYPES = {
