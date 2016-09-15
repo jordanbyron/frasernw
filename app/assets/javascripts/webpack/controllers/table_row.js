@@ -65,6 +65,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
     return(
       <tr key={decoratedRecord.reactKey}>
         <td dangerouslySetInnerHTML={{__html: decoratedRecord.raw.link}}/>
+        <EntityDivisions model={model} decoratedRecord={decoratedRecord}/>
         <td key="count">{ decoratedRecord.raw.usage }</td>
       </tr>
     )
@@ -131,4 +132,46 @@ const ContentItemTitle = ({decoratedRecord}) => {
     </td>
   )
 }
+
+const EntityDivisions = ({model, decoratedRecord}) => {
+  if (["clinics","specialists"].includes(filterValues.entityType(model))) {
+    if (filterValues.entityType(model) === "clinics") {
+      return(
+        <td>
+          <span>
+            { EntityDivisionNames(
+              model,
+              model.app.clinics[decoratedRecord.raw.id].divisionIds
+            ).to_sentence() }
+          </span>
+        </td>
+      )
+    }
+    else {
+      return(
+        <td>
+          <span>
+            { EntityDivisionNames(
+              model,
+              model.app.specialists[decoratedRecord.raw.id].divisionIds
+            ).to_sentence() }
+          </span>
+        </td>
+      )
+    }
+  }
+  else {
+    return(
+      <td></td>
+    )
+  }
+}
+
+const EntityDivisionNames = (model, divisionIds) => {
+  return divisionIds.reduce((accumulator, divisionId) => {
+    accumulator.push(model.app.divisions[divisionId].name);
+    return accumulator;
+  }, [])
+}
+
 export default TableRow;
