@@ -39,9 +39,9 @@ class NewsItem < ActiveRecord::Base
 
   def self.permitted_division_assignments(user)
     if user.as_super_admin?
-      Division.not_hidden
+      Division.all
     else
-      user.as_divisions.not_hidden
+      user.as_divisions
     end
   end
 

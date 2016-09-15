@@ -524,7 +524,7 @@
               control.user,
               class: (!control.user.active && "hidden-from-users")
             - if !control.last_visited.nil?
-              %span= "(Last Visited #{control.last_visited.strftime("%B %-d, %Y")}.)"
+              %span= "(Last visited this page on #{control.formatted_last_visited}.)"
             - if !control.user.active
               %span= "(inactive)"
 

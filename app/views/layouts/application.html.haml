@@ -236,7 +236,7 @@
                         %li= link_to "Hospitals", hospitals_path
                       - if can? :index, Language
                         %li= link_to "Languages", languages_path
-                      - news_item_divisions = current_user.as_super_admin? ? Division.not_hidden : current_user.as_divisions.reject(&:hidden?)
+                      - news_item_divisions = current_user.as_super_admin? ? Division.all: current_user.as_divisions.reject(&:hidden?)
                       - if can?(:index, NewsItem) && news_item_divisions.count == 1
                         %li= link_to "News Items", news_items_path
                       - if can?(:index, NewsItem) && news_item_divisions.count > 1

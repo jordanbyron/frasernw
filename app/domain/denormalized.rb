@@ -286,7 +286,7 @@ module Denormalized
       end
     end,
     cities: Proc.new do
-      City.not_hidden.inject({}) do |memo, city|
+      City.all.inject({}) do |memo, city|
         memo.merge(city.id => {
           id: city.id,
           name: city.name

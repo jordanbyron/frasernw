@@ -30,6 +30,7 @@
             - if type != :contact_us
               %th Feedback on
               %th Specialties
+            %th Archived By
             %th Provided by
             %th Provided when
             %th Feedback
@@ -48,6 +49,7 @@
                   %td
                     - if feedback_item.target
                       = feedback_item.target.specializations.map(&:name).to_sentence
+                %td= feedback_item.archived_by.name
                 %td= feedback_item.submitter_name
                 %td= "#{time_ago_in_words(feedback_item.created_at)} ago"
                 %td{style: "width: 30%;"}= feedback_item.feedback
@@ -61,6 +63,6 @@
 
   - if params[:division_id].present?
     %i= "Beginning August 2016"
-    
+
 :javascript
   window.pathways.setupTabHistory();

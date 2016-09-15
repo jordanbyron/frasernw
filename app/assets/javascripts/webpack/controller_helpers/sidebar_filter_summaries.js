@@ -2,7 +2,7 @@ import referralCityIds from "controller_helpers/referral_city_ids"
 import activatedFilterSubkeys from "controller_helpers/activated_filter_subkeys";
 import * as filterValues from "controller_helpers/filter_values";
 import { collectionShownName } from "controller_helpers/collection_shown";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import recordsToDisplay from "controller_helpers/records_to_display";
 import _ from "lodash"
 import * as utils from "utils";
@@ -165,7 +165,7 @@ const sidebarFilterSummaries = {
   },
   subcategories: {
     label: function(model) {
-      if(_.includes(["/specialties/:id", "/areas_of_practice/:id"], matchedRoute(model))){
+      if(_.includes(["/specialties/:id", "/areas_of_practice/:id"], route)){
         return "are in one of the following subcategories: " +
           activatedFilterSubkeys.
           subcategories(model).

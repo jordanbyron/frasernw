@@ -19,7 +19,7 @@ class AnalyticsChart
       start_date: Month.new(2014, 1).start_date,
       end_date: Date.current,
       metric: metric,
-      divisions: Division.standard,
+      divisions: Division.except_provincial,
       force: true
     )
   end

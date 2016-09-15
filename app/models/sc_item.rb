@@ -220,7 +220,7 @@ class ScItem < ActiveRecord::Base
       if !shareable
         []
       else
-        Division.not_hidden - available_to_divisions
+        Division.all - available_to_divisions
       end
     end
   end

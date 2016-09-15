@@ -48,4 +48,9 @@ module ProceduresHelper
         (procedure_specialization.new_record? ? [] : procedure_specialization.subtree)
       )
   end
+
+  def procedure_specialization_checked(params, procedure_specialization)
+    procedure_specialization.specialization.id.to_s == params[:specialization_id] ||
+      !procedure_specialization.new_record?
+  end
 end

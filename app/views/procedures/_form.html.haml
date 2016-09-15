@@ -16,8 +16,9 @@
         %th Has Custom Specialist Wait Time
         %th Has Custom Clinic Wait Time
 
-      = f.simple_fields_for :all_procedure_specializations,
-        @procedure.form_procedure_specializations do |f|
+
+      = f.simple_fields_for :procedure_specializations,
+        @procedure.procedure_specializations.sort_by(&:specialization_name) do |f|
         %tr.procedure_specialization_row
           %td{:style => "white-space: nowrap"}
             = f.hidden_field :specialization_id
@@ -25,8 +26,11 @@
               f.object.specialization.name,
               class: "span3",
               style: "text-align:right"
-            = f.input_field :mapped,
-              class: "check input--mapped span1"
+            = f.check_box :_destroy,
+              { checked: procedure_specialization_checked(params, f.object),
+              class: "check input--mapped span1" },
+              "0",
+              "1"
           %td
             = f.input_field :classification,
               as: :select,

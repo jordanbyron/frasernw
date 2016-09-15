@@ -1,7 +1,7 @@
 import * as utils from "utils";
 import _ from "lodash";
 import activatedFilterSubkeys from "controller_helpers/activated_filter_subkeys";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import * as filterValues from "controller_helpers/filter_values";
 import { memoizePerRender } from "utils";
 
@@ -198,14 +198,14 @@ const sidebarFilters = {
   },
   subcategories: {
     isActivated: function(model) {
-      if(_.includes(["/specialties/:id", "/areas_of_practice/:id"], matchedRoute(model))){
+      if(_.includes(["/specialties/:id", "/areas_of_practice/:id"], route)){
         return activatedFilterSubkeys.subcategories(model).pwPipe(_.some);
       } else {
         return filterValues.subcategories(model) !== "0";
       }
     },
     predicate: function(record, model) {
-      if(_.includes(["/specialties/:id", "/areas_of_practice/:id"], matchedRoute(model))){
+      if(_.includes(["/specialties/:id", "/areas_of_practice/:id"], route)){
         return _.includes(
           activatedFilterSubkeys.subcategories(model),
           record.categoryId

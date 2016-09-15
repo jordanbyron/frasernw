@@ -1,5 +1,5 @@
 import recordsMaskingFilters from "controller_helpers/records_masking_filters";
-import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import { memoizePerRender } from "utils";
 import { recordShownByTab } from "controller_helpers/tab_keys";
 import { collectionShownName } from "controller_helpers/collection_shown";
@@ -30,7 +30,7 @@ const maskingRecordsProcedureIds = ((model) => {
 }).pwPipe(memoizePerRender)
 
 export const procedures = ((model) => {
-  if (matchedRoute(model) === "/specialties/:id"){
+  if (route === "/specialties/:id"){
     return _.values(model.app.procedures).filter((procedure) => {
 
       return _.includes(procedure.specializationIds, recordShownByRoute(model).id) &&
@@ -41,7 +41,7 @@ export const procedures = ((model) => {
         _.includes(maskingRecordsProcedureIds(model), procedure.id);
     }).map(_.property("id"));
   }
-  else if (matchedRoute(model) === "/areas_of_practice/:id"){
+  else if (route === "/areas_of_practice/:id"){
     return recordShownByRoute(model).childrenProcedureIds;
   }
 }).pwPipe(memoizePerRender)

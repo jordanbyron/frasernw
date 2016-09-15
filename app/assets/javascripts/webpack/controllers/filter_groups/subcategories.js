@@ -1,14 +1,14 @@
 import React from "react";
 import FilterCheckbox from "controllers/filter_checkbox";
 import FilterGroup from "controllers/filter_group";
-import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import recordsMaskingFilters from "controller_helpers/records_masking_filters";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import { subcategories as subkeys } from "controller_helpers/filter_subkeys";
 import FilterRadioButtons from "controllers/filter_radio_buttons";
 
 const SubcategoriesFilters = ({model, dispatch}) => {
-  if (_.includes(CHECKBOX_ROUTES, matchedRoute(model)) &&
+  if (_.includes(CHECKBOX_ROUTES, route) &&
     _.includes(COLLECTIONS, collectionShownName(model)) &&
     _.any(subkeys(model))){
       return(
@@ -37,7 +37,7 @@ const SubcategoriesFilters = ({model, dispatch}) => {
         </FilterGroup>
       );
   }
-  else if (matchedRoute(model) === "/content_categories/:id") {
+  else if (route === "/content_categories/:id") {
     return(
       <FilterGroup
         title={"Subcategories"}
