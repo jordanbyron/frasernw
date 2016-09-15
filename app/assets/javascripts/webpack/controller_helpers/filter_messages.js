@@ -1,4 +1,4 @@
-import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import { unscopedCollectionShown, collectionShownName, matchesPage }
   from "controller_helpers/collection_shown";
 import matchesPreliminaryFilters from "controller_helpers/matches_preliminary_filters";
@@ -15,7 +15,7 @@ export const showingOtherSpecializations = ((model) => {
 }).pwPipe(memoizePerRender);
 
 export const showSpecializationFilterMessage = ((model) => {
-  return (matchedRoute(model) === "/specialties/:id" &&
+  return (route === "/specialties/:id" &&
     _.includes(["specialists", "clinics"], collectionShownName(model)) &&
     ((
       withAllFilters(model).length > 0 &&

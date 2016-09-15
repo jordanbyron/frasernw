@@ -1,5 +1,5 @@
 import React from "react";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import * as filterValues from "controller_helpers/filter_values";
 import recordsToDisplay from "controller_helpers/records_to_display";
 import _ from "lodash";
@@ -97,7 +97,7 @@ const referentsForSpecialization = (model, specialization) => {
 };
 
 const shouldDisplay = (model) => {
-  return matchedRoute(model) === "/reports/referents_by_specialty" &&
+  return route === "/reports/referents_by_specialty" &&
     filterValues.reportStyle(model) === "expanded"
 }
 

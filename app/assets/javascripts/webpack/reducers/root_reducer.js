@@ -2,6 +2,8 @@ import app from "reducers/app";
 import _ from "lodash";
 import { uiKeysMirroredToUrlHash } from "url_hash_mirroring";
 import { decode } from "utils/url_hash_encoding";
+import { route } from "controller_helpers/routing";
+
 
 const rootReducer = (model = {}, action) => {
   return {
@@ -21,7 +23,7 @@ const ui = (model = {}, action) => {
       {},
       model,
       _.zipObject(uiKeysMirroredToUrlHash, []),
-      fromUrlHash()
+      fromUrlHash(model)
     )
   default:
     return {
@@ -50,14 +52,13 @@ const ui = (model = {}, action) => {
   }
 };
 
-const fromUrlHash = () => {
-  if (window.location.hash.length === 0){
+const fromUrlHash = (model) => {
+  console.log(route);
+
+  if (window.location.hash.length === 0 || _.isUndefined(route)){
     return {};
   }
   else {
-    // double quotes are encoded as %22 in ff
-    // see https://bugzilla.mozilla.org/show_bug.cgi?id=1213870
-
     return decode(
       window.location.hash.slice(1, window.location.hash.length)
     );

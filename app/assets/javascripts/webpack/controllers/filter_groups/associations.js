@@ -1,7 +1,7 @@
 import React from "react";
 import FilterGroup from "controllers/filter_group";
 import FilterSelector from "controllers/filter_selector";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import recordsMaskingFilters from "controller_helpers/records_masking_filters";
 
@@ -33,7 +33,7 @@ const AssociationsFilters = ({model, dispatch}) => {
 }
 
 const HospitalSelector = ({model, dispatch}) => {
-  if (matchedRoute(model) === "/hospitals/:id") {
+  if (route === "/hospitals/:id") {
     return <noscript/>
   }
   else {
@@ -68,7 +68,7 @@ const clinicOptions = _.partial(options, "clinic")
 const hospitalOptions = _.partial(options, "hospital")
 
 const shouldShow = (model) => {
-  return _.includes(ROUTES, matchedRoute(model)) &&
+  return _.includes(ROUTES, route) &&
     _.includes(COLLECTIONS, collectionShownName(model))
 }
 const ROUTES = [

@@ -1,13 +1,13 @@
 import _ from "lodash";
-import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import { memoizePerRender } from "utils";
 
 const referralCityIds = ((model) => {
-  if(_.includes(IMPLEMENTED_FOR, matchedRoute(model))){
-    if (matchedRoute(model) === "/specialties/:id"){
+  if(_.includes(IMPLEMENTED_FOR, route)){
+    if (route === "/specialties/:id"){
       var specializationIds = [ recordShownByRoute(model).id ];
     }
-    else if (matchedRoute(model) === "/areas_of_practice/:id"){
+    else if (route === "/areas_of_practice/:id"){
       var specializationIds = recordShownByRoute(model).specializationIds;
     }
 

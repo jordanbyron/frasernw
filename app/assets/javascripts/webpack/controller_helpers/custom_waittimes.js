@@ -1,10 +1,10 @@
-import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import activatedFilterSubkeys from "controller_helpers/activated_filter_subkeys";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import { memoizePerRender } from "utils";
 
 export const shouldUseCustomWaittime = ((model) => {
-  switch(matchedRoute(model)){
+  switch(route){
   case "/specialties/:id":
     return activatedFilterSubkeys.procedures(model).length === 1 &&
       (model.app.procedures[activatedFilterSubkeys.procedures(model)[0]].
@@ -22,7 +22,7 @@ export const shouldUseCustomWaittime = ((model) => {
 }).pwPipe(memoizePerRender)
 
 export const customWaittimeProcedureId = ((model) => {
-  switch(matchedRoute(model)){
+  switch(route){
   case "/specialties/:id":
     return activatedFilterSubkeys.procedures(model)[0];
   case "/areas_of_practice/:id":

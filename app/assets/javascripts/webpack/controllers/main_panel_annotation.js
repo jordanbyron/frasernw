@@ -1,6 +1,6 @@
 import React from "react";
 import _ from "lodash";
-import { matchedRoute, recordShownByRoute } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import { selectedTabKey } from "controller_helpers/tab_keys";
 import { collectionShownPluralLabel } from "controller_helpers/collection_shown";
 
@@ -30,7 +30,7 @@ const MainPanelAnnotation = ({model}) => {
 };
 
 const shouldDisplay = (model) => {
-  return ((matchedRoute(model) === "/specialties/:id") &&
+  return ((route === "/specialties/:id") &&
       _.includes(["specialists", "clinics"], selectedTabKey(model)) &&
       recordShownByRoute(model).assumedList.length > 0);
 }

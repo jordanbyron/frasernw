@@ -4,7 +4,7 @@ import * as FilterValues from "controller_helpers/filter_values";
 import { padTwo } from "utils";
 import DateRangeFilters from "controllers/filter_groups/date_range";
 import DivisionScopeFilters from "controllers/filter_groups/division_scope";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import Breadcrumbs from "controllers/breadcrumbs";
 import NavTabs from "controllers/nav_tabs";
 import ReducedViewSelector from "controllers/reduced_view_selector";
@@ -75,7 +75,7 @@ const showInlineArticles = (model) => {
 };
 
 const usesSidebarLayout = ((model) => {
-  return (matchedRoute(model) === "/latest_updates" &&
+  return (route === "/latest_updates" &&
     model.app.currentUser.role !== "user") ||
     (collectionShownName(model) === "contentItems" &&
       ((isTabbedPage(model) && recordShownByTab(model).filterable) ||
@@ -85,7 +85,7 @@ const usesSidebarLayout = ((model) => {
     _.includes(["/reports/entity_page_views",
     "/reports/referents_by_specialty",
     "/reports/page_views_by_user",
-    "/issues"], matchedRoute(model))
+    "/issues"], route)
 }).pwPipe(memoizePerRender)
 
 const LowerWhitePanel = ({model, dispatch}) => {
@@ -123,7 +123,7 @@ const LowerWhitePanel = ({model, dispatch}) => {
 };
 
 const showsLowerPanel = (model) => {
-  return !_.includes(RoutesWithoutLowerPanel, matchedRoute(model));
+  return !_.includes(RoutesWithoutLowerPanel, route);
 }
 
 const RoutesWithoutLowerPanel = [
@@ -163,7 +163,7 @@ const UpperWhitePanel = ({model}) => {
     "/news_items",
     "/issues",
     "/change_requests"
-  ], matchedRoute(model))){
+  ], route)){
     return(
       <div className="content-wrapper">
         <a href={window.location} style={{textDecoration: "none"}}>
@@ -187,7 +187,7 @@ const LowerPanelTitle = ({model}) => {
     "/reports/referents_by_specialty",
     "/latest_updates",
     "/reports/entity_page_views"
-  ], matchedRoute(model))) {
+  ], route)) {
     return(
       <a href={window.location} style={{textDecoration: "none"}}>
         <h2 style={{marginBottom: "10px"}}>
