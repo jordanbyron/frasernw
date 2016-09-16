@@ -6,7 +6,8 @@
   %body
     %p
       = "#{@user.name}, "
-      = "#{@type_mask_description_formatted.downcase} was just added to #{@news_item.owner_division} on #{DateTime.now.strftime("%B, %d, %Y")}:"
+    %p
+      = "A #{@news_item.type.downcase} was just added to #{@news_item.owner_division} on #{DateTime.now.strftime("%B, %d, %Y")}:"
     %br
     .activity
       %p
