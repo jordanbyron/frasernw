@@ -70,7 +70,7 @@ export const matchesPage = (record, model) => {
       recordShownByRoute(model).id
     ) || _.intersection(
       record.specializationIds,
-      recordShownByRoute(model).assumedSpecializationId
+      recordShownByRoute(model).assumedSpecializationIds[selectedTabKey(model)]
     ).pwPipe(_.any);
   case "/content_categories/:id":
     return _.includes(
