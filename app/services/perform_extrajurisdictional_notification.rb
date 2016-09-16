@@ -1,5 +1,5 @@
 class PerformExtrajurisdictionalNotification < ServiceObject
-  attribute :version, Version
+  attribute :version_id, Integer
 
   def call
     return if !["create", "update"].include?(version.event) ||
@@ -57,5 +57,9 @@ class PerformExtrajurisdictionalNotification < ServiceObject
 
   def editor
     version.safe_user
+  end
+
+  def version
+    @version ||= Version.find(version_id)
   end
 end

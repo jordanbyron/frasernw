@@ -52,6 +52,6 @@ class Version < PaperTrail::Version
   end
 
   after_commit do
-    PerformExtrajurisdictionalNotification.call(version: self)
+    PerformExtrajurisdictionalNotification.delay.call(version_id: self.id)
   end
 end
