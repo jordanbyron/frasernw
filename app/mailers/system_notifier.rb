@@ -37,6 +37,14 @@ module SystemNotifier
     )
   end
 
+  def self.catch_error(error_klass, &block)
+    begin
+      block.call
+    rescue error_klass => e
+      SystemNotifier.error(e)
+    end
+  end
+
   # TODO: all system notifications, including errors, should come through here
 
   # takes {tag: <:sym>, subject: <"str">, body: <{}>}
