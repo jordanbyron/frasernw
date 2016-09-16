@@ -59,8 +59,6 @@ module SystemNotifier
 
   private
 
-  # TODO: all system notifications, including errors, should come through here
-
   # takes {tag: <:sym>, subject: <"str">, body: <{}>}
   def self.notify(options)
     SystemMailer.notification(options).deliver
