@@ -1,7 +1,7 @@
 import React from "react";
 import { isTabbedPage, recordShownByTab } from "controller_helpers/tab_keys";
 import { collectionShownName } from "controller_helpers/collection_shown";
-import { recordShownByPage } from "controller_helpers/routing";
+import { recordShownByRoute } from "controller_helpers/routing";
 import SharedCareIcon from "component_helpers/icons/shared_care";
 import FavoriteIcon from "controllers/icons/favorite";
 import FeedbackIcon from "controllers/icons/feedback";
@@ -53,7 +53,7 @@ const CategoryLink = ({record, model}) => {
 const shouldShow = (model) => {
   return collectionShownName(model) === "contentItems" &&
     ((isTabbedPage(model) && recordShownByTab(model).componentType === "InlineArticles") ||
-    (!isTabbedPage(model) && recordShownByPage(model).componentType === "InlineArticles"))
+    (!isTabbedPage(model) && recordShownByRoute(model).componentType === "InlineArticles"))
 }
 
 export default InlineArticles;

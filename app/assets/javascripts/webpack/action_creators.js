@@ -1,11 +1,13 @@
 import * as FilterValues from "controller_helpers/filter_values";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import { selectedTabKey } from "controller_helpers/tab_keys";
 import { cities as cityFilterSubkeys } from "controller_helpers/filter_subkeys";
 import _ from "lodash";
 
 export function requestDynamicData(model, dispatch){
-  if(matchedRoute(model) === "/reports/pageviews_by_user"){
+  if(route === "/reports/page_views_by_user"){
+    requestingData(dispatch)
+
     const requestParams = {
       divisionId: FilterValues.divisionScope(model),
       startMonth: FilterValues.startMonth(model),
@@ -13,7 +15,7 @@ export function requestDynamicData(model, dispatch){
     }
 
     $.get(
-      "/api/v1/reports/pageviews_by_user",
+      "/api/v1/reports/page_views_by_user",
       { data: requestParams }
     ).done(function(data) {
       dispatch({
@@ -22,7 +24,9 @@ export function requestDynamicData(model, dispatch){
       })
     })
   }
-  else if (matchedRoute(model) === "/reports/entity_page_views") {
+  else if (route === "/reports/entity_page_views") {
+    requestingData(dispatch)
+
     const requestParams = {
       start_month_key: FilterValues.startMonth(model),
       end_month_key: FilterValues.endMonth(model),
@@ -42,12 +46,10 @@ export function requestDynamicData(model, dispatch){
   }
 }
 
-export function changeFilterValue(dispatch, filterKey, newValue) {
+export function requestingData(dispatch) {
   dispatch({
-    type: "CHANGE_FILTER_VALUE",
-    filterKey: filterKey,
-    newValue: newValue
-  });
+    type: "REQUESTING_DATA"
+  })
 }
 
 export function parseRenderedData(data, dispatch) {
@@ -83,7 +85,7 @@ export function integrateLocalStorageData(dispatch, data) {
 export function tabClicked(dispatch, model, tabKey) {
   dispatch({
     type: "TAB_CLICKED",
-    tabKey: tabKey
+    proposed: tabKey
   })
 }
 
@@ -103,24 +105,23 @@ export function toggleFilterGroupExpansion(dispatch, tabKey, filterGroupKey, pro
   })
 }
 
-const proposedValue = (event) => {
-  if (event.target.type === "checkbox"){
-    return event.target.checked;
-  }
-  else {
-    return event.target.value;
-  }
-};
 
 export function changeFilter(dispatch, tabKey, filterKey, filterSubKey, event) {
   if(event.target.type !== "radio" || event.target.checked) {
-    dispatch({
-      type: "CHANGE_FILTER_VALUE",
-      tabKey: tabKey,
-      filterKey: filterKey,
-      filterSubKey: filterSubKey,
-      proposed: proposedValue(event)
-    })
+    if (event.target.type === "checkbox"){
+      var proposedValue = event.target.checked;
+    }
+    else {
+      var proposedValue = event.target.value;
+    }
+
+    changeFilterToValue(
+      dispatch,
+      tabKey,
+      filterKey,
+      filterSubKey,
+      proposedValue
+    )
   }
 }
 
@@ -156,21 +157,16 @@ export function updateCityFilters(dispatch, model, activatedIds) {
   });
 }
 
-export function parseLocation(dispatch){
+export function parseUrl(dispatch){
   dispatch({
-    type: "PARSE_LOCATION",
-    location: window.location
+    type: "PARSE_URL_HASH"
   })
 }
 
-export const openFeedbackModal = (dispatch, id, type, modalTitle) => {
+export const openFeedbackModal = (dispatch, target) => {
   dispatch({
     type: "OPEN_FEEDBACK_MODAL",
-    item: {
-      id: id,
-      type: type,
-      title: modalTitle
-    }
+    target: target
   });
 };
 
@@ -232,14 +228,23 @@ const doneSubmittingFeedback = (dispatch) => {
   })
 }
 
-export const submitFeedback = (dispatch, model, comment) => {
-  if(!comment){
+export const submitFeedback = (dispatch, model, name, email, comment) => {
+  if (!comment){
+
     return;
-  } else {
+  }
+  else if (model.app.currentUser.role === "unauthenticated" &&
+    (!name || !email)){
+
+    return;
+  }
+  else {
     $.post("/feedback_items", {
       feedback_item: {
-        item_id: model.ui.feedbackModal.item.id,
-        item_type: model.ui.feedbackModal.item.type,
+        target_id: model.ui.feedbackModal.target.id,
+        target_type: model.ui.feedbackModal.target.klass,
+        freeform_name: name,
+        freeform_email: email,
         feedback: comment
       }
     }).success(() => {
@@ -257,6 +262,15 @@ export const closeFeedbackModal = (dispatch) => {
   })
 }
 
+export const toggleRowExpansion = (model, dispatch, proposed, e) => {
+  dispatch({
+    type: "TOGGLE_ROW_EXPANSIONS",
+    tabKey: selectedTabKey(model),
+    proposed: proposed
+  });
+
+  e.stopPropagation();
+};
 export const searchFocused = (dispatch, isFocused) => {
   dispatch({
     type: "SEARCH_FOCUS_CHANGED",

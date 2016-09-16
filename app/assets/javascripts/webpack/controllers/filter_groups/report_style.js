@@ -1,10 +1,10 @@
 import React from "react";
 import FilterGroup from "controllers/filter_group";
-import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import FilterRadioButtons from "controllers/filter_radio_buttons";
 
 const ReportStyleFilters = ({model, dispatch}) => {
-  if (matchedRoute(model) === "/reports/referents_by_specialty") {
+  if (route === "/reports/referents_by_specialty") {
     return(
       <FilterGroup
         title={"Report Style"}

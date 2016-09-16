@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160630043242) do
+ActiveRecord::Schema.define(version: 20160906030056) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -313,7 +313,6 @@ ActiveRecord::Schema.define(version: 20160630043242) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "primary_contact_id"
     t.boolean  "use_customized_city_priorities", default: false
   end
 
@@ -376,16 +375,19 @@ ActiveRecord::Schema.define(version: 20160630043242) do
   add_index "featured_contents", ["sc_item_id"], name: "index_featured_contents_on_sc_item_id", using: :btree
 
   create_table "feedback_items", force: true do |t|
-    t.string   "item_type"
-    t.integer  "item_id"
+    t.string   "target_type"
+    t.integer  "target_id"
     t.integer  "user_id"
     t.text     "feedback"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "archived",   default: false
+    t.boolean  "archived",               default: false
+    t.string   "freeform_email"
+    t.string   "freeform_name"
+    t.text     "archiving_division_ids", default: [],    array: true
   end
 
-  add_index "feedback_items", ["item_id", "item_type"], name: "index_feedback_items_on_item_id_and_item_type", using: :btree
+  add_index "feedback_items", ["target_id", "target_type"], name: "index_feedback_items_on_target_id_and_target_type", using: :btree
   add_index "feedback_items", ["user_id"], name: "index_feedback_items_on_user_id", using: :btree
 
   create_table "focuses", force: true do |t|
@@ -569,7 +571,6 @@ ActiveRecord::Schema.define(version: 20160630043242) do
     t.integer  "procedure_id"
     t.integer  "specialization_id"
     t.string   "ancestry"
-    t.boolean  "mapped",               default: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "classification"
@@ -611,26 +612,6 @@ ActiveRecord::Schema.define(version: 20160630043242) do
 
   add_index "referral_forms", ["referrable_id", "referrable_type"], name: "index_referral_forms_on_referrable_id_and_referrable_type", using: :btree
 
-  create_table "reports", force: true do |t|
-    t.string   "name"
-    t.integer  "type_mask"
-    t.integer  "level_mask"
-    t.integer  "division_id"
-    t.integer  "city_id"
-    t.integer  "user_type_mask"
-    t.integer  "time_frame_mask"
-    t.date     "start_date"
-    t.date     "end_date"
-    t.boolean  "by_user",          default: false
-    t.boolean  "by_pageview",      default: false
-    t.boolean  "only_shared_care", default: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "reports", ["city_id"], name: "index_reports_on_city_id", using: :btree
-  add_index "reports", ["division_id"], name: "index_reports_on_division_id", using: :btree
-
   create_table "review_items", force: true do |t|
     t.string   "item_type"
     t.integer  "item_id"
@@ -650,13 +631,14 @@ ActiveRecord::Schema.define(version: 20160630043242) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "show_on_front_page", default: true
-    t.integer  "sort_order",         default: 10
-    t.integer  "display_mask",       default: 1
-    t.boolean  "show_as_dropdown",   default: false
+    t.boolean  "show_on_front_page",   default: true
+    t.integer  "sort_order",           default: 10
     t.string   "ancestry"
-    t.boolean  "searchable",         default: true
-    t.boolean  "evidential",         default: false
+    t.boolean  "searchable",           default: true
+    t.boolean  "evidential",           default: false
+    t.integer  "index_display_format", default: 0
+    t.boolean  "in_global_navigation", default: false
+    t.boolean  "filterable",           default: false
   end
 
   add_index "sc_categories", ["ancestry"], name: "index_sc_categories_on_ancestry", using: :btree

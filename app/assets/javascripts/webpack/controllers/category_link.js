@@ -1,7 +1,7 @@
 import React from "react";
 import CategoryLink from "component_helpers/category_link";
 import { collectionShownName } from "controller_helpers/collection_shown";
-import { recordShownByPage, matchedRoute } from "controller_helpers/routing";
+import { recordShownByRoute, route } from "controller_helpers/routing";
 import { recordShownByTab } from "controller_helpers/tab_keys";
 
 const CategoryLinkController = ({model, dispatch}) => {
@@ -10,8 +10,8 @@ const CategoryLinkController = ({model, dispatch}) => {
     return <noscript/>
   }
 
-  if (matchedRoute(model) === "/content_categories/:id"){
-    let _category = recordShownByPage(model);
+  if (route === "/content_categories/:id"){
+    let _category = recordShownByRoute(model);
 
     if(_category.ancestry) {
       return(

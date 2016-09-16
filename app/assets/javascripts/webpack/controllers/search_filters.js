@@ -21,7 +21,7 @@ const SearchFilters = ({model, dispatch}) => {
 const GeographicFilter = ({model, dispatch}) => {
   if(_.includes(
     ["Physician Resources", "Patient Info"],
-    selectedCollectionFilter(model))){
+    selectedCollectionFilter(model)) && model.app.currentUser.role === "user"){
 
     return <noscript/>;
   }

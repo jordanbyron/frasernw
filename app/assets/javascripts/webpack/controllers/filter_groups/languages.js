@@ -1,7 +1,7 @@
 import React from "react";
 import FilterCheckbox from "controllers/filter_checkbox";
 import FilterGroup from "controllers/filter_group";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import { languages as subkeys } from "controller_helpers/filter_subkeys";
 
@@ -48,7 +48,7 @@ const LanguagesFilters = ({model, dispatch}) => {
 };
 
 const shouldShow = (model) => {
-  return _.includes(ROUTES, matchedRoute(model)) &&
+  return _.includes(ROUTES, route) &&
     _.includes(COLLECTIONS, collectionShownName(model))
 }
 const ROUTES = [

@@ -83,7 +83,7 @@ class SpecialistsEditorController < ApplicationController
   private
 
   def load_form_variables(scope = :presence)
-    @offices = Office.cached_all_formatted_for_form(scope)
+    @offices = Office.all_formatted_for_form(scope: scope)
     @hospitals = Hospital.all_formatted_for_form(scope)
   end
 

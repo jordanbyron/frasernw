@@ -2,7 +2,8 @@ class HealthcareProvidersController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @healthcare_providers = HealthcareProvider.all
+    @healthcare_providers =
+      HealthcareProvider.all.sort{ |a,b| a.name <=> b.name }
   end
 
   def show

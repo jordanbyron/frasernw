@@ -20,7 +20,6 @@ class SpecialistsController < ApplicationController
 
   def show
     @specialist = Specialist.cached_find(params[:id])
-    @feedback = @specialist.active_feedback_items.build
     if @specialist.controlling_users.include?(current_user)
       current_user.viewed_controlled_specialist!(@specialist)
     end
@@ -148,13 +147,13 @@ class SpecialistsController < ApplicationController
       ExpireFragment.call specialist_path(@specialist)
 
       parsed_params = ParamParser::Specialist.new(params).exec
+
+      # used instead of the documented way of passing controller metadata
+      # bc you need to set that at the start of the request
+      ::PaperTrail.controller_info = { review_item_id: review_item.id }
+
       if @specialist.update_attributes(parsed_params[:specialist])
         UpdateSpecialistCapacities.exec(@specialist, parsed_params)
-        @specialist.
-          reload.
-          versions.
-          last.
-          update_attributes(review_item_id: review_item.id)
         @specialist.save
         redirect_to @specialist, notice: "Successfully updated #{@specialist.name}."
       else
@@ -286,7 +285,6 @@ class SpecialistsController < ApplicationController
     @specialist = Specialist.find(params[:id])
     @specialist.expire_cache
     @specialist = Specialist.cached_find(params[:id])
-    @feedback = @specialist.active_feedback_items.build
     render :show
   end
 
@@ -311,7 +309,7 @@ class SpecialistsController < ApplicationController
   private
 
   def load_form_variables
-    @offices = Office.cached_all_formatted_for_form
+    @offices = Office.all_formatted_for_form
     @hospitals = Hospital.all_formatted_for_form
   end
 

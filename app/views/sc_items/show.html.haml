@@ -4,13 +4,8 @@
   favoritable_id: @sc_item.id,
   favoritable_type: "ScItem").present? ? "icon-red" : "icon-text") : "icon-text"
 
-= render "partials/all_specialties_dropdown",
+= render "partials/body_panel_nav",
   specialization: dropdown_specialization(@sc_item, current_user)
-
-- if @sc_item.specializations.any?
-  = render 'partials/specialization_nav',
-    specialization: dropdown_specialization(@sc_item, current_user),
-    selected: "contentCategory#{@sc_item.root_category.id}"
 
 .content-wrapper.scm
 
@@ -63,68 +58,12 @@
 
     %p= BlueCloth.new(@sc_item.markdown_content).to_html.html_safe
 
-  #feedback
-    .inner
-      = simple_form_for @feedback, html: { class: "feedback_form" } do |f|
-
-        = f.input :feedback,
-          label: "Please provide us with any comments about #{@sc_item.title}"
-        = f.input :item_type, as: :hidden, value: "ScItem"
-        = f.input :item_id, as: :hidden, value: @sc_item.id
-
-        .form-actions
-          %a.btn.btn-primary{ id: "sendFeedbackButton",
-            href: "javascript:void(0)",
-            onclick: "send_feedback($('form.feedback_form'))" }
-            .before-click
-              Send Feedback
-            .after-click.hidden
-              Sending
-          %a.btn.btn-danger{ href: "javascript:void(0)",
-            onclick: "$('#feedback').fadeOut(200)"} Cancel
-
-  #feedback_thanks
-    .inner
-      %h2 Thank you!
-
-      %p.space.no_indent
-        Thank you for providing your feedback on
-        = @sc_item.title + "."
-        Your contributions help make Pathways a valuable resource for the
-        community.
-
-      %p.space.no_indent
-        We will review your feedback in the near future and take action as
-        necessary.
-
-      %p.space.no_indent
-        %a.btn.btn-primary{ href: "javascript:void(0)",
-          onclick: "$('#feedback_thanks').fadeOut(200)" } Close
-
   :javascript
     $(document).ready(function() {
       $('.tt').tooltip({trigger: 'manual'});
       $('[data-toggle="tooltip"]').tooltip();
       $('#user_favorite_content_items_#{@sc_item.id}').addClass('#{favorite_class}');
     });
-
-    function send_feedback(form) {
-      $("#sendFeedbackButton").addClass('disabled');
-      $('.before-click').addClass('hidden');
-      $('.after-click').removeClass('hidden');
-      $.ajax({
-        url: form.attr('action'),
-        data: form.serialize(),
-        type: 'POST'
-      }).success(function(json) {
-        $("#sendFeedbackButton").removeClass('disabled');
-        $('.after-click').addClass('hidden');
-        $('.before-click').removeClass('hidden');
-        $('#feedback').fadeOut(200);
-        $('#feedback_item_feedback').val('')
-        $('#feedback_thanks').fadeIn(200);
-      });
-    }
 
   - if (current_user.as_admin_or_super? || current_user.as_super_admin?) && @sc_item.shareable?
     - if @sc_item.divisions.any?
@@ -156,7 +95,7 @@
               method: :patch
 
   %p.admin.btn-group
-    %a.btn{ href: "javascript:void(0)", onclick: "$('#feedback').fadeIn(200)" }
+    %a.btn{href: "javascript:void(0)", onclick: open_feedback_modal(@sc_item)}
       %i.icon-bullhorn.icon-text
       Incorrect Information? Let us know
 

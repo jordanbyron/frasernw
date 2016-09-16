@@ -1,9 +1,9 @@
 import React from "react";
 import * as filterValues from "controller_helpers/filter_values";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 
 const EntityPageViewsKey = ({model, dispatch}) => {
-  if (matchedRoute(model) === "/reports/entity_page_views"){
+  if (route === "/reports/entity_page_views"){
     return(
       <div style={{color: "#999", marginTop: "10px"}}>
         { `${dynamic(model)} Views by admins are excluded.` }

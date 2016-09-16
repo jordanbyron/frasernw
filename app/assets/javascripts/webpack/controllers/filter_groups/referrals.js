@@ -2,7 +2,7 @@ import React from "react";
 import FilterGroup from "controllers/filter_group";
 import FilterCheckbox from "controllers/filter_checkbox";
 import FilterSelector from "controllers/filter_selector";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 
 const ReferralsFilters = ({model, dispatch}) => {
@@ -53,7 +53,7 @@ const respondsWithinOptions = (model) => {
 }
 
 const shouldShow = (model) => {
-  return _.includes(ROUTES, matchedRoute(model)) &&
+  return _.includes(ROUTES, route) &&
     _.includes(COLLECTIONS, collectionShownName(model))
 }
 const ROUTES = [

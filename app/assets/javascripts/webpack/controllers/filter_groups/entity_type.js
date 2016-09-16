@@ -1,6 +1,6 @@
 import React from "react";
 import FilterGroup from "controllers/filter_group";
-import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import recordsMaskingFilters from "controller_helpers/records_masking_filters";
 import FilterRadioButtons from "controllers/filter_radio_buttons";
 
@@ -30,7 +30,7 @@ const EntityTypeFilters = ({model, dispatch}) => {
 };
 
 const shouldShow = (model) => {
-  return _.includes(ROUTES_IMPLEMENTING, matchedRoute(model));
+  return _.includes(ROUTES_IMPLEMENTING, route);
 }
 
 const ROUTES_IMPLEMENTING = [
@@ -52,10 +52,10 @@ const OPTION_LABELS = {
 }
 
 const radioOptionKeys = (model) => {
-  if(matchedRoute(model) === "/reports/entity_page_views"){
+  if(route === "/reports/entity_page_views"){
     return _.keys(OPTION_LABELS)
   }
-  else if (matchedRoute(model) === "/reports/referents_by_specialty") {
+  else if (route === "/reports/referents_by_specialty") {
     return [
       "specialists",
       "clinics"

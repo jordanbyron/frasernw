@@ -1,6 +1,6 @@
 import React from "react";
 import TableRow from "controllers/table_row";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import { unscopedCollectionShown, collectionShownName }
   from "controller_helpers/collection_shown";
 import sortOrders from "controller_helpers/sort_orders";
@@ -21,7 +21,7 @@ const TableRows = (model, dispatch) => {
     pwPipe((decoratedRecords) => {
       return _.sortByOrder(decoratedRecords, sortIteratees(model), sortOrders(model));
     }).pwPipe((decoratedRecords) => {
-      if(matchedRoute(model) === "/news_items") {
+      if(route === "/news_items") {
         return paginate(model, decoratedRecords)
       }
       else {
@@ -41,7 +41,7 @@ const TableRows = (model, dispatch) => {
 const decorate = (record, model) => {
   let decorated = { raw: record };
 
-  if (matchedRoute(model) === "/latest_updates") {
+  if (route === "/latest_updates") {
     decorated.reactKey = _.values(_.omit(record, "markup")).join(".")
   }
   else {
@@ -54,7 +54,7 @@ const decorate = (record, model) => {
     "/content_categories/:id",
     "/hospitals/:id",
     "/languages/:id"
-  ], matchedRoute(model))) {
+  ], route)) {
 
     if(_.includes(["specialists", "clinics"], collectionShownName(model))) {
       if(showingMultipleSpecializations(model)) {
@@ -73,7 +73,7 @@ const decorate = (record, model) => {
         model.app.contentCategories[record.categoryId].name;
     }
   }
-  else if (matchedRoute(model) === "/reports/referents_by_specialty" &&
+  else if (route === "/reports/referents_by_specialty" &&
     filterValues.reportStyle(model) === "summary") {
 
       decorated.count = model.app[filterValues.entityType(model)].
@@ -90,7 +90,7 @@ const decorate = (record, model) => {
           }
         }).length
   }
-  else if (matchedRoute(model) === "/news_items"){
+  else if (route === "/news_items"){
     decorated.ownerDivisionName = model.app.divisions[record.ownerDivisionId].name;
   }
 

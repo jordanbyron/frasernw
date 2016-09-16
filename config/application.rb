@@ -35,6 +35,7 @@ module Frasernw
     # they inherit from ActiveSupport::Concern or not
     config.autoload_paths << "#{config.root}/app/concerns"
 
+    config.assets.precompile += ["error_catching.js"]
     config.assets.paths << "#{Rails.root}/app/assets/fonts"
     config.assets.paths << "#{Rails.root}/vendor/assets/javascripts"
     # Defaults to '/assets'
@@ -74,6 +75,9 @@ module Frasernw
     if ENV['RACK_ATTACK'].to_b
       config.middleware.use Rack::Attack
     end
+
+    # Explicitly set the primary key, since AR seems to be unable to find it
+    ActiveRecord::SessionStore::Session.primary_key = 'id'
 
   end
 end

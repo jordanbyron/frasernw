@@ -45,6 +45,7 @@ module Denormalized
               specializationIds: item.specializations.map(&:id),
               title: item.title,
               categoryId: item.sc_category.id,
+              rootCategoryId: item.root_category.id,
               categoryIds: [item.sc_category, item.sc_category.ancestors].
                 flatten.
                 map(&:id),
@@ -112,6 +113,12 @@ module Denormalized
               teleservices.
               select(&:offered?).
               map(&:service_type),
+            interest: Denormalized.
+              sanitize(specialist.interest).
+              try(:convert_newlines_to_br),
+            notPerformed: Denormalized.
+              sanitize(specialist.not_performed).
+              try(:convert_newlines_to_br),
             respondedToSurvey: !specialist.not_responded? &&
               !specialist.purposely_not_yet_surveyed?,
             isAvailable: !specialist.not_available?,
@@ -177,6 +184,12 @@ module Denormalized
               teleservices.
               select(&:offered?).
               map(&:service_type),
+            interest: Denormalized.
+              sanitize(clinic.interest).
+              try(:convert_newlines_to_br),
+            notPerformed: Denormalized.
+              sanitize(clinic.not_performed).
+              try(:convert_newlines_to_br),
             hidden: clinic.hidden?
           })
         end
@@ -207,18 +220,20 @@ module Denormalized
             id: category.id,
             name: category.name,
             fullName: category.full_name,
-            displayMask: category.display_mask,
+            indexDisplayFormat: category.index_display_format,
+            inGlobalNavigation: category.in_global_navigation?,
+            filterable: category.filterable?,
             subtreeIds: category.subtree.map(&:id),
             ancestry: category.ancestry,
             componentType: component_type(category),
             collectionName: "contentCategories",
-            searchable: category.searchable
+            searchable: category.searchable?
           })
         end
       end
 
       def self.component_type(category)
-        (category.filterable_on_specialty_pages? ? "FilterTable" : "InlineArticles")
+        (category.index_display_format == 0 ? "FilterTable" : "InlineArticles")
       end
     end,
     specializations: Proc.new do
@@ -271,7 +286,7 @@ module Denormalized
       end
     end,
     cities: Proc.new do
-      City.not_hidden.inject({}) do |memo, city|
+      City.all.inject({}) do |memo, city|
         memo.merge(city.id => {
           id: city.id,
           name: city.name
@@ -314,11 +329,7 @@ module Denormalized
           },
           childrenProcedureIds: procedure.children.map(&:id),
           fullName: procedure.full_name,
-          ancestorIds: procedure.
-            procedure_specializations.
-            first.
-            ancestors.
-            map(&:procedure_id),
+          ancestorIds: procedure.ancestor_ids,
           collectionName: "procedures"
         })
       end
@@ -444,5 +455,9 @@ module Denormalized
         }
       })
     end
+  end
+
+  def self.sanitize(input)
+    ActionController::Base.helpers.sanitize(input)
   end
 end

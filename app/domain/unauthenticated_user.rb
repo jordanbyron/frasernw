@@ -1,4 +1,5 @@
 class UnauthenticatedUser
+  include DivisionAdministered
 
   def authenticated?
     false
@@ -32,7 +33,8 @@ class UnauthenticatedUser
     :super_admin?,
     :admin?,
     :admin_or_super?,
-    :user?
+    :user?,
+    :introspective?
   ].each do |mname|
     define_method mname do
       false

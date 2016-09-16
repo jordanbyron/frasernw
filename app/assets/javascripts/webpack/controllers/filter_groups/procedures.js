@@ -1,6 +1,6 @@
 import React from "react";
 import FilterGroup from "controllers/filter_group";
-import { recordShownByPage, matchedRoute } from "controller_helpers/routing";
+import { recordShownByRoute, route } from "controller_helpers/routing";
 import { selectedTabKey } from "controller_helpers/tab_keys";
 import { toggleUnfocusedProcedureVisibility }
   from "action_creators";
@@ -35,7 +35,7 @@ const ProcedureFilters = ({model, dispatch}) => {
 }
 
 const shouldShow = (model) => {
-  return _.includes(ROUTES, matchedRoute(model)) &&
+  return _.includes(ROUTES, route) &&
     _.includes(COLLECTIONS, collectionShownName(model)) &&
     _.any(subkeys(model));
 }
@@ -57,7 +57,7 @@ const isUnfocusedExpanded = (model) => {
 };
 
 const anyUnfocused = (model) => {
-  return recordShownByPage(model).
+  return recordShownByRoute(model).
     nestedProcedures.
     pwPipe(_.values).
     filter((procedure) => {
@@ -67,7 +67,7 @@ const anyUnfocused = (model) => {
 };
 
 const Focused = ({model, dispatch}) => {
-  if (matchedRoute(model) === "/areas_of_practice/:id"){
+  if (route === "/areas_of_practice/:id"){
     return(
       <div>
         {
@@ -103,11 +103,11 @@ const Focused = ({model, dispatch}) => {
       </div>
     );
   }
-  else if (matchedRoute(model) === "/specialties/:id"){
+  else if (route === "/specialties/:id"){
     return(
       <div>
         {
-          recordShownByPage(model).
+          recordShownByRoute(model).
             nestedProcedures.
             pwPipe(_.values).
             filter(_.property("focused")).
@@ -125,7 +125,7 @@ const Focused = ({model, dispatch}) => {
 };
 
 const Unfocused = ({model, dispatch}) => {
-  if (matchedRoute(model) === "/specialties/:id" && anyUnfocused(model)) {
+  if (route === "/specialties/:id" && anyUnfocused(model)) {
     return(
       <div>
         <a onClick={
@@ -140,7 +140,7 @@ const Unfocused = ({model, dispatch}) => {
         >{ unfocusedToggleText(isUnfocusedExpanded(model)) }</a>
         <ExpandingContainer expanded={isUnfocusedExpanded(model)}>
           {
-            recordShownByPage(model).
+            recordShownByRoute(model).
               nestedProcedures.
               pwPipe(_.values).
               filter((procedure) => !procedure.focused).
@@ -211,10 +211,10 @@ const ProcedureCheckboxLabel = ({labelText, customWaittime}) => {
 }
 
 const title = (model) => {
-  if (matchedRoute(model) === "/specialties/:id"){
+  if (route === "/specialties/:id"){
     return "Accepts referrals for";
   }
-  else if (matchedRoute(model) === "/areas_of_practice/:id") {
+  else if (route === "/areas_of_practice/:id") {
     return "Sub-Areas of Practice";
   }
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import FilterGroup from "controllers/filter_group";
 import FilterCheckbox from "controllers/filter_checkbox";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 
 const HiddenUpdatesFilter = ({model, dispatch}) => {
@@ -27,7 +27,7 @@ const HiddenUpdatesFilter = ({model, dispatch}) => {
 
 
 const shouldShow = (model) => {
-  return matchedRoute(model) === "/latest_updates" &&
+  return route === "/latest_updates" &&
     model.ui.persistentConfig.canHide
 }
 

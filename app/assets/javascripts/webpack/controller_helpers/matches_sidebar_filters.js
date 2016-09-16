@@ -1,13 +1,13 @@
 import _ from "lodash";
 import sidebarFilters from "controller_helpers/sidebar_filters";
-import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import { recordShownByTab } from "controller_helpers/tab_keys";
 import * as filterValues from "controller_helpers/filter_values";
 import { memoizePerRender } from "utils";
 
 export const sidebarFilterKeys = ((model) => {
-  if(_.includes(["/specialties/:id", "/areas_of_practice/:id"], matchedRoute(model))) {
+  if(_.includes(["/specialties/:id", "/areas_of_practice/:id"], route)) {
     if(collectionShownName(model) === "specialists") {
       return [
         "procedures",
@@ -40,7 +40,7 @@ export const sidebarFilterKeys = ((model) => {
       ];
     }
     else if (collectionShownName(model) === "contentItems" &&
-      recordShownByTab(model).componentType === "FilterTable"){
+      recordShownByTab(model).filterable){
 
       return [
         "subcategories"
@@ -50,15 +50,15 @@ export const sidebarFilterKeys = ((model) => {
       return [];
     }
   }
-  else if (matchedRoute(model) === "/content_categories/:id" &&
-    recordShownByPage(model).componentType === "FilterTable"){
+  else if (route === "/content_categories/:id" &&
+    recordShownByRoute(model).filterable){
 
     return [
       "subcategories",
       "specializations"
     ];
   }
-  else if (matchedRoute(model) === "/hospitals/:id") {
+  else if (route === "/hospitals/:id") {
     if(collectionShownName(model) === "specialists") {
       return [
         "acceptsReferralsViaPhone",
@@ -84,7 +84,7 @@ export const sidebarFilterKeys = ((model) => {
       ];
     }
   }
-  else if (matchedRoute(model) === "/languages/:id") {
+  else if (route === "/languages/:id") {
     if(collectionShownName(model) === "specialists") {
       return [
         "acceptsReferralsViaPhone",
@@ -109,19 +109,19 @@ export const sidebarFilterKeys = ((model) => {
       ];
     }
   }
-  else if (matchedRoute(model) === "/reports/referents_by_specialty" &&
+  else if (route === "/reports/referents_by_specialty" &&
     filterValues.reportStyle(model) === "expanded"){
 
     return [
       "divisionScope"
     ];
   }
-  else if (matchedRoute(model) === "/latest_updates"){
+  else if (route === "/latest_updates"){
     return [
       "showHiddenUpdates"
     ];
   }
-  else if (matchedRoute(model) === "/issues"){
+  else if (route === "/issues"){
     return [
       "completeThisWeekend",
       "completeNextMeeting",

@@ -74,8 +74,15 @@ module ReportsHelper
       onChange: "window.location = event.target.value",
       style: "margin-top: 4px; margin-bottom: 4px;"
     ) do
+      permitted_divisions =
+        if current_user.as_super_admin?
+          Division.all
+        else
+          current_user.as_divisions
+        end
+
       report_index_dropdown_option(report_type) +
-        divisions_shown.map do |division|
+        permitted_divisions.map do |division|
           report_index_dropdown_option(
             report_type,
             division

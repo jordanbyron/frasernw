@@ -1,11 +1,16 @@
-import { matchedRoute, matchedRouteParams } from "controller_helpers/routing";
+import {
+  route,
+  routeParams,
+  recordShownByRoute
+} from "controller_helpers/routing";
 import { memoizePerRender } from "utils";
+import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
 
 export const defaultTab = ((model) => {
-  switch(matchedRoute(model)){
+  switch(route){
   case "/specialties/:id":
     return model.app.divisions[model.app.currentUser.divisionIds[0]].
-      openToSpecializationPanel[matchedRouteParams(model).id];
+      openToSpecializationPanel[routeParams.id];
   case "/areas_of_practice/:id":
     return { type: "specialists" };
   case "/hospitals/:id":
@@ -23,7 +28,7 @@ export const defaultTab = ((model) => {
   }
 }).pwPipe(memoizePerRender)
 
-const SHOWING_IN_ROUTES = [
+const ALWAYS_IN_ROUTES = [
   "/specialties/:id",
   "/areas_of_practice/:id",
   "/hospitals/:id",
@@ -34,12 +39,27 @@ const SHOWING_IN_ROUTES = [
 ];
 
 export const isTabbedPage = ((model) => {
-  return _.includes(SHOWING_IN_ROUTES, matchedRoute(model));
+  return _.includes(ALWAYS_IN_ROUTES, route) ||
+    (_.includes(
+      ["/specialists/:id", "/clinics/:id", "/content_items/:id"],
+      route
+    ) && recordShownByBreadcrumb(model));
 }).pwPipe(memoizePerRender);
 
 export const selectedTabKey = ((model) => {
-  return (model.ui.location.hash.replace("#", "") ||
-    tabKey(defaultTab(model).type, defaultTab(model).id));
+  if (route === "/specialists/:id"){
+    return "specialists";
+  }
+  else if (route === "/clinics/:id"){
+    return "clinics";
+  }
+  else if (route === "/content_items/:id"){
+    return tabKey("contentCategory", recordShownByRoute(model).rootCategoryId);
+  }
+  else {
+    return (model.ui.selectedTabKey ||
+      tabKey(defaultTab(model).type, defaultTab(model).id));
+  }
 }).pwPipe(memoizePerRender);
 
 const extractId = (tabKey) => {

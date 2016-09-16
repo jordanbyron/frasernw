@@ -1,6 +1,6 @@
 - set_page_specific_title "Home"
 
-= render "partials/all_specialties_dropdown", specialization: nil
+= render "partials/body_panel_nav", specialization: nil
 
 :javascript
   $(document).ready(function() { update_favorites() });
@@ -98,7 +98,8 @@
 
         - if @current_newsletter.present?
           %div{ style: "margin-top: 18px;" }
-            %h2 Pathways Newsletter
+            %h2
+              = newsletter_section_heading(@current_newsletter)
 
             %div{ style: "margin-top: 10px;" }
               = image_tag "pathways_newsletter.png",
@@ -198,12 +199,9 @@
               %i.icon-pencil
               %span= "Edit Featured Content"
 
-#feedback_modal
-
 :javascript
   window.pathways.favoriteFeaturedItem = function(event, id, title) {
     event.stopPropagation();
 
     favorite('content_items', id, title);
   };
-  window.pathways.bootstrapFeedbackModal('feedback_modal', {});

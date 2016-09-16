@@ -13,14 +13,11 @@ module FrontHelper
     "pathways.favoriteFeaturedItem(event, #{id}, '#{title}')"
   end
 
-  def open_feedback_modal(sc_item)
-    args = [
-      "id: #{sc_item.id}",
-      "itemType: 'ScItem'",
-      "title: '#{sc_item.title}'",
-      "modalState: 'PRE_SUBMIT'"
-    ]
-
-    "window.pathways.feedbackModal.setState({#{args.join(', ')}})"
+  def newsletter_section_heading(current_newsletter)
+    if current_newsletter.new?
+      "New Pathways Newsletter"
+    else
+      "Pathways Newsletter"
+    end
   end
 end

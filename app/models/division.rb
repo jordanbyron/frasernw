@@ -3,7 +3,6 @@ class Division < ActiveRecord::Base
   attr_accessible :name,
     :city_ids,
     :shared_sc_item_ids,
-    :primary_contact_id,
     :division_primary_contacts_attributes,
     :use_customized_city_priorities,
     :featured_contents_attributes
@@ -60,16 +59,8 @@ class Division < ActiveRecord::Base
     Rails.cache.fetch([name, 'Division.all'], expires_in: 8.hours) { all }
   end
 
-  def self.standard
-    not_hidden.not_provincial
-  end
-
-  def self.not_provincial
+  def self.except_provincial
     where('"divisions".name != (?)', "Provincial")
-  end
-
-  def self.not_hidden
-    where('"divisions".name != (?)', "Vancouver (Hidden)")
   end
 
   def self.cached_find(id)
@@ -195,6 +186,27 @@ class Division < ActiveRecord::Base
       ).times do
         featured_contents.build(sc_category_id: category.id)
       end
+    end
+  end
+
+  def owners_for(item)
+    if item.respond_to?(:specializations)
+      from_specialization_options =
+        if item.specializations.any?
+          specialization_options.
+            where(
+              "specialization_options.specialization_id IN (?)",
+              item.specializations.map(&:id)
+            )
+        else
+          specialization_options
+        end
+
+      owner_type = item.is_a?(ScItem) ? :content_owner : :owner
+
+      from_specialization_options.map(&owner_type).uniq
+    else
+      primary_contacts
     end
   end
 end

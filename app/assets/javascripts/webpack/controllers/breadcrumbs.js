@@ -1,10 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { recordShownByPage, matchedRoute } from "controller_helpers/routing";
+import { recordShownByRoute, route } from "controller_helpers/routing";
 import hiddenFromUsers from "controller_helpers/hidden_from_users";
 import _ from "lodash";
 import { buttonIsh} from "stylesets";
 import { toggleBreadcrumbDropdown } from "action_creators";
+import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
 
 const ROUTES_SHOWING = [
   "/specialties/:id",
@@ -34,7 +35,7 @@ const Breadcrumbs = React.createClass({
     })
   },
   render: function() {
-    if (_.includes(ROUTES_SHOWING, matchedRoute(this.props.model))){
+    if (_.includes(ROUTES_SHOWING, route)){
       return(
         <div style={{position: "relative"}}>
           <ul id="specialties-menu">
@@ -76,7 +77,7 @@ const dropdownClassName = (model) => {
     "/content_items/:id",
     "/specialists/:id",
     "/clinics/:id"
-  ], matchedRoute(model))){
+  ], route)){
 
     return "dropdown";
   }
@@ -187,12 +188,12 @@ const hiddenClass = (model, specialization) => {
 }
 
 const ParentSpecialtyBreadcrumb = ({model}) => {
-  if (matchedRoute(model) === "/areas_of_practice/:id"){
-    const names = recordShownByPage(model).
+  if (route === "/areas_of_practice/:id"){
+    const names = recordShownByRoute(model).
       specializationIds.map((id) => model.app.specializations[id].name).
       slice(0, 2);
 
-    if (recordShownByPage(model).specializationIds.length > 2) {
+    if (recordShownByRoute(model).specializationIds.length > 2) {
       var label = `${names.join(", ")}...`;
     }
     else {
@@ -212,8 +213,8 @@ const ParentSpecialtyBreadcrumb = ({model}) => {
 };
 
 const ParentProcedureBreadcrumb = ({model, level}) => {
-  if (matchedRoute(model) === "/areas_of_practice/:id"){
-    const names = recordShownByPage(model).
+  if (route === "/areas_of_practice/:id"){
+    const names = recordShownByRoute(model).
       specializationIds.map((id) => model.app.specializations[id].name).
       slice(0, 2);
 
@@ -224,8 +225,8 @@ const ParentProcedureBreadcrumb = ({model, level}) => {
       var className = "grandparent";
     }
 
-    const procedureIdIndex = recordShownByPage(model).ancestorIds.length + level;
-    const procedureId = recordShownByPage(model).ancestorIds[procedureIdIndex];
+    const procedureIdIndex = recordShownByRoute(model).ancestorIds.length + level;
+    const procedureId = recordShownByRoute(model).ancestorIds[procedureIdIndex];
 
     if (procedureId) {
       return(
@@ -246,33 +247,30 @@ const ParentProcedureBreadcrumb = ({model, level}) => {
 }
 
 const ChildBreadcrumb = ({model}) => {
-  if (matchedRoute(model) === "/specialties/:id"){
+  if (route === "/specialties/:id"){
     return(
-      <li className={childClassName(model)}>
-        <span style={{marginLeft: "4px"}}>{ recordShownByPage(model).name }</span>
-        <NewTag model={model} specialization={recordShownByPage(model)}/>
-      </li>
+      <ChildBreadcrumbWrapper model={model}>
+        <span style={{marginLeft: "4px"}}>{ recordShownByBreadcrumb(model).name }</span>
+        <NewTag model={model} specialization={recordShownByBreadcrumb(model)}/>
+      </ChildBreadcrumbWrapper>
     );
   }
-  else if (matchedRoute(model) === "/areas_of_practice/:id"){
+  else if (route === "/areas_of_practice/:id"){
     return(
-      <li className={childClassName(model)}>
-        <span style={{marginLeft: "4px"}}>{ recordShownByPage(model).name }</span>
-      </li>
+      <ChildBreadcrumbWrapper model={model}>
+        <span style={{marginLeft: "4px"}}>{ recordShownByBreadcrumb(model).name }</span>
+      </ChildBreadcrumbWrapper>
     );
   }
   else if (_.includes(
     [ "/clinics/:id", "/specialists/:id", "/content_items/:id" ],
-    matchedRoute(model)
-  ) && model.ui.dropdownSpecializationId){
-    let specialization =
-      model.app.specializations[model.ui.dropdownSpecializationId]
-
+    route
+  ) && recordShownByBreadcrumb(model)){
     return(
-      <li className={childClassName(model)}>
-        <span style={{marginLeft: "4px"}}>{ specialization.name }</span>
-        <NewTag model={model} specialization={specialization}/>
-      </li>
+      <ChildBreadcrumbWrapper model={model}>
+        <span style={{marginLeft: "4px"}}>{ recordShownByBreadcrumb(model).name }</span>
+        <NewTag model={model} specialization={recordShownByBreadcrumb(model)}/>
+      </ChildBreadcrumbWrapper>
     );
   }
   else {
@@ -280,12 +278,22 @@ const ChildBreadcrumb = ({model}) => {
   }
 };
 
+const ChildBreadcrumbWrapper = ({model, children}) => {
+  return(
+    <li className={childClassName(model)}>
+      <a href={window.location.pathname} style={{color: "#666666"}}>
+        { children }
+      </a>
+    </li>
+  )
+}
+
 const childClassName = (model) => {
   let classes = ["subsequent child"];
 
-  if (matchedRoute(model) !== "/areas_of_practice/:id"){
-    if (matchedRoute(model) === "/specialties/:id"){
-      var specialization = recordShownByPage(model);
+  if (route !== "/areas_of_practice/:id"){
+    if (route === "/specialties/:id"){
+      var specialization = recordShownByRoute(model);
     }
     else {
       var specialization =

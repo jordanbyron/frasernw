@@ -1,18 +1,17 @@
 import React from "react";
 import Table from "controllers/table";
 import * as FilterValues from "controller_helpers/filter_values";
-import { changeFilterValue } from "action_creators";
 import { padTwo } from "utils";
 import DateRangeFilters from "controllers/filter_groups/date_range";
 import DivisionScopeFilters from "controllers/filter_groups/division_scope";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import Breadcrumbs from "controllers/breadcrumbs";
 import NavTabs from "controllers/nav_tabs";
 import ReducedViewSelector from "controllers/reduced_view_selector";
 import { reducedView, viewSelectorClass } from "controller_helpers/reduced_view";
 import Sidebar from "controllers/sidebar";
 import { recordShownByTab, isTabbedPage } from "controller_helpers/tab_keys";
-import { recordShownByPage } from "controller_helpers/routing";
+import { recordShownByRoute } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import Subtitle from "controllers/subtitle";
 import InlineArticles from "controllers/inline_articles";
@@ -28,7 +27,6 @@ import pageTitleLabel from "controller_helpers/page_title_label";
 import ShowHospital from "controllers/show_hospital";
 import Pagination from "controllers/pagination";
 import CustomWaittimeMessage from "controllers/custom_waittime_message";
-import FeedbackModal from "controllers/feedback_modal";
 import LoadingIndicator from "component_helpers/loading_indicator";
 
 const Template = React.createClass({
@@ -51,7 +49,6 @@ const Template = React.createClass({
           <UpperWhitePanel model={model}/>
           <NavTabs model={model} dispatch={dispatch}/>
           <LowerWhitePanel model={model} dispatch={dispatch}/>
-          <FeedbackModal model={model} dispatch={dispatch}/>
         </div>
       );
     }
@@ -74,15 +71,21 @@ const showInlineArticles = (model) => {
     ((isTabbedPage(model) &&
       recordShownByTab(model).componentType === "InlineArticles") ||
     (!isTabbedPage(model) &&
-      recordShownByPage(model).componentType === "InlineArticles"))
+      recordShownByRoute(model).componentType === "InlineArticles"))
 };
 
 const usesSidebarLayout = ((model) => {
-  return !((matchedRoute(model) === "/latest_updates" &&
-    model.app.currentUser.role === "user") ||
-    matchedRoute(model) === "/news_items" ||
-    matchedRoute(model) === "/change_requests" ||
-    showInlineArticles(model))
+  return (route === "/latest_updates" &&
+    model.app.currentUser.role !== "user") ||
+    (collectionShownName(model) === "contentItems" &&
+      ((isTabbedPage(model) && recordShownByTab(model).filterable) ||
+      (!isTabbedPage(model) && recordShownByRoute(model).filterable))) ||
+    collectionShownName(model) === "specialists" ||
+    collectionShownName(model) === "clinics" ||
+    _.includes(["/reports/entity_page_views",
+    "/reports/referents_by_specialty",
+    "/reports/page_views_by_user",
+    "/issues"], route)
 }).pwPipe(memoizePerRender)
 
 const LowerWhitePanel = ({model, dispatch}) => {
@@ -103,7 +106,8 @@ const LowerWhitePanel = ({model, dispatch}) => {
         </div>
       </div>
     );
-  } else {
+  }
+  else {
     return(
       <div className="content-wrapper">
         <div className="content">
@@ -119,7 +123,7 @@ const LowerWhitePanel = ({model, dispatch}) => {
 };
 
 const showsLowerPanel = (model) => {
-  return !_.includes(RoutesWithoutLowerPanel, matchedRoute(model));
+  return !_.includes(RoutesWithoutLowerPanel, route);
 }
 
 const RoutesWithoutLowerPanel = [
@@ -159,12 +163,14 @@ const UpperWhitePanel = ({model}) => {
     "/news_items",
     "/issues",
     "/change_requests"
-  ], matchedRoute(model))){
+  ], route)){
     return(
       <div className="content-wrapper">
-        <h2>
-          { pageTitleLabel(model) }
-        </h2>
+        <a href={window.location} style={{textDecoration: "none"}}>
+          <h2 style={{marginBottom: "10px"}}>
+            { pageTitleLabel(model) }
+          </h2>
+        </a>
         <ShowHospital model={model}/>
       </div>
     );
@@ -176,16 +182,18 @@ const UpperWhitePanel = ({model}) => {
 
 
 const LowerPanelTitle = ({model}) => {
-  if(_.includes(["/reports/pageviews_by_user",
+  if(_.includes(["/reports/page_views_by_user",
     "/content_categories/:id",
     "/reports/referents_by_specialty",
     "/latest_updates",
     "/reports/entity_page_views"
-  ], matchedRoute(model))) {
+  ], route)) {
     return(
-      <h2 style={{marginBottom: "10px"}}>
-        { pageTitleLabel(model) }
-      </h2>
+      <a href={window.location} style={{textDecoration: "none"}}>
+        <h2 style={{marginBottom: "10px"}}>
+          { pageTitleLabel(model) }
+        </h2>
+      </a>
     )
   }
   else {

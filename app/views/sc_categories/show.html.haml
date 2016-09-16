@@ -7,15 +7,20 @@
 
   %i.icon-envelope-alt
   Send us suggestions for #{@sc_category.name.downcase} content for Pathways:
-  = mail_to "submissions@pathwaysbc.ca", "submissions@pathwaysbc.ca", :subject => "#{@sc_category.name} content suggestion for Pathways"
+  = mail_to "submissions@pathwaysbc.ca",
+    "submissions@pathwaysbc.ca",
+    subject: "#{@sc_category.name} content suggestion for Pathways"
 
   %p.admin.btn-group
   - if can? :update, @sc_category
-    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit #{@sc_category.name}", edit_sc_category_path(@sc_category), :class => "btn ajax")
+    = link_to edit_sc_category_path(@sc_category), class: "btn" do
+      %i.icon-pencil
+      Edit #{@sc_category.name}
   - if can? :destroy, @sc_category
-    %a.btn{"href" => "javascript:void(0)", "data-toggle" => "collapse", "data-target" => "#delete-sc_category-msg"}
+    %a.btn{ href: "javascript:void(0)",
+      data: { toggle: "collapse", target: "#delete-sc_category-msg" } }
       %i.icon-trash
-        = " Delete #{@sc_category.name}"
+      Delete #{@sc_category.name}
   #delete-sc_category-msg.collapse
     .alert.alert-info{style: "margin-top: 10px"}
       %span

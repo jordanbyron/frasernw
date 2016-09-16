@@ -1,6 +1,6 @@
 import * as preliminaryFilters from "controller_helpers/preliminary_filters";
 import _ from "lodash";
-import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import { memoizePerRender } from "utils"
 

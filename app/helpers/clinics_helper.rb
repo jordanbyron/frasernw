@@ -14,6 +14,7 @@ module ClinicsHelper
       if attendance.specialist.hidden?
         attendance.specialist.name
       else
+
         content = link_to(
           attendance.specialist.name,
           specialist_path(attendance.specialist)

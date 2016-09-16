@@ -2,7 +2,7 @@ class CsvUsageReportsController < ApplicationController
   def new
     authorize! :view_report, :csv_usage
 
-    @submit_path = csv_usage_reports_path
+    @submit_path = "/csv_usage_reports"
     @months = AnalyticsChartMonths.exec
     @scopes = current_user.reporting_divisions.map do |division|
       [ division.name, division.id ]

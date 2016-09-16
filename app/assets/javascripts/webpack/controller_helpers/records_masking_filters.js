@@ -1,4 +1,4 @@
-import { matchedRoute, recordShownByPage }
+import { route, recordShownByRoute }
   from "controller_helpers/routing";
 import referralCityIds from "controller_helpers/referral_city_ids";
 import { scopedByRouteAndTab } from "controller_helpers/collection_shown";
@@ -6,8 +6,8 @@ import { memoizePerRender } from "utils";
 import matchesPreliminaryFilters from "controller_helpers/matches_preliminary_filters";
 
 const recordsMaskingFilters = ((model) => {
-  if (matchedRoute === "/specialties/:id" &&
-    recordShownByPage(model).maskFiltersByReferralArea){
+  if (route === "/specialties/:id" &&
+    recordShownByRoute(model).maskFiltersByReferralArea){
 
     return scopedByRouteAndTab(model).
       filter((record) => {

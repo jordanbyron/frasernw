@@ -3,12 +3,15 @@ import contentCategoryItems from "controller_helpers/content_category_items";
 import { selectedTabKey, tabKey, isTabbedPage } from "controller_helpers/tab_keys";
 import { NavTabs, NavTab } from "component_helpers/nav_tabs";
 import { tabClicked } from "action_creators";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import React from "react";
+import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
+import { encode } from "utils/url_hash_encoding";
+
 
 const NavTabsController = ({model, dispatch}) => {
   if (isTabbedPage(model)) {
-    if(matchedRoute(model) === "/hospitals/:id") {
+    if(route === "/hospitals/:id") {
       return(
         <NavTabs>
           <NavTabController
@@ -32,7 +35,7 @@ const NavTabsController = ({model, dispatch}) => {
         </NavTabs>
       );
     }
-    else if (matchedRoute(model) === "/news_items"){
+    else if (route === "/news_items"){
       return(
         <NavTabs>
           <NavTabController
@@ -56,7 +59,7 @@ const NavTabsController = ({model, dispatch}) => {
         </NavTabs>
       );
     }
-    else if (_.includes(["/change_requests", "/issues"], matchedRoute(model))) {
+    else if (_.includes(["/change_requests", "/issues"], route)) {
       return(
         <NavTabs>
           <NavTabController
@@ -100,18 +103,37 @@ const NavTabsController = ({model, dispatch}) => {
 };
 
 const NavTabController = ({model, dispatch, tabKey, label}) => {
-  return(
-    <NavTab
-      label={label}
-      onClick={_.partial(tabClicked, dispatch, model, tabKey)}
-      isSelected={tabKey === selectedTabKey(model)}
-    />
-  );
+  if (_.includes(["/specialists/:id", "/clinics/:id", "/content_items/:id"],
+    route)){
+    return(
+      <NavTab
+        label={label}
+        doesPageNav={true}
+        href={pageNavHref(model, tabKey)}
+        isSelected={tabKey === selectedTabKey(model)}
+      />
+    )
+  }
+  else {
+    return(
+      <NavTab
+        label={label}
+        doesPageNav={false}
+        onClick={_.partial(tabClicked, dispatch, model, tabKey)}
+        isSelected={tabKey === selectedTabKey(model)}
+      />
+    );
+  }
+}
+
+const pageNavHref = (model, tabKey) => {
+  return (`/specialties/${recordShownByBreadcrumb(model).id}#` +
+    encode({selectedTabKey: tabKey}))
 }
 
 
 const contentCategoryTabs = (model, dispatch) => {
-  if(matchedRoute(model) === "/languages/:id"){
+  if(route === "/languages/:id"){
     return []
   }
   else {
@@ -137,7 +159,6 @@ const contentCategoriesShowingTabs = (model) => {
     model.app.contentCategories,
     (category) => {
       return (
-        [1, 3, 4, 5].indexOf(category.displayMask) > -1 &&
         category.ancestry == null &&
         contentCategoryItems(
           category.id,

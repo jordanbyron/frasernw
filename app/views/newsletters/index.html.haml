@@ -11,6 +11,9 @@
           %td
             = link_to newsletter.month, newsletter.url, target: "_blank"
 
+            - if newsletter.new?
+              %span.new= "NEW"
+
             - if can? :edit, Newsletter
               = link_to "Edit",
                 edit_newsletter_path(newsletter),

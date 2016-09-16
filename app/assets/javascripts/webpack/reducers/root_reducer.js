@@ -1,4 +1,9 @@
 import app from "reducers/app";
+import _ from "lodash";
+import { uiKeysMirroredToUrlHash } from "url_hash_mirroring";
+import { decode } from "utils/url_hash_encoding";
+import { route } from "controller_helpers/routing";
+
 
 const rootReducer = (model = {}, action) => {
   return {
@@ -13,16 +18,20 @@ const ui = (model = {}, action) => {
     var uiData = action.data.map(_.property("ui")).filter(_.identity)
 
     return _.assign(...[{}, model].concat(uiData));
+  case "PARSE_URL_HASH":
+    return _.assign(
+      {},
+      model,
+      _.zipObject(uiKeysMirroredToUrlHash, []),
+      fromUrlHash(model)
+    )
   default:
     return {
       recordsToDisplay: recordsToDisplay(model.recordsToDisplay, action),
-      location: location(model.location, action),
       isBreadcrumbDropdownOpen: isBreadcrumbDropdownOpen(
         model.isBreadcrumbDropdownOpen,
         action
       ),
-      reducedView: reducedView(model.reducedView, action),
-      tabs: tabs(model.tabs, action),
       latestUpdates: latestUpdates(model.latestUpdates, action),
       persistentConfig: model.persistentConfig,
       feedbackModal: feedbackModal(model.feedbackModal, action),
@@ -35,10 +44,27 @@ const ui = (model = {}, action) => {
         model.highlightSelectedSearchResult,
         action
       ),
-      dropdownSpecializationId: model.dropdownSpecializationId
+      dropdownSpecializationId: model.dropdownSpecializationId,
+      reducedView: reducedView(model.reducedView, action),
+      tabs: tabs(model.tabs, action),
+      selectedTabKey: selectedTabKey(model.selectedTabKey, action)
     };
   }
 };
+
+const fromUrlHash = (model) => {
+  console.log(route);
+
+  if (window.location.hash.length === 0 || _.isUndefined(route)){
+    return {};
+  }
+  else {
+    return decode(
+      window.location.hash.slice(1, window.location.hash.length)
+    );
+  }
+}
+
 const highlightSelectedSearchResult = (model, action) => {
   switch(action.type){
   case "HOVER_LEAVE_SEARCH_RESULT":
@@ -108,7 +134,7 @@ const searchIsFocused = (model, action) => {
 const feedbackModal = (model = {}, action) => {
   return {
     state: feedbackModalState(model.state, action),
-    item: feedbackModalItem(model.item, action)
+    target: feedbackModalTarget(model.target, action)
   }
 }
 
@@ -123,7 +149,7 @@ const feedbackModalState = (model, action) => {
   }
 }
 
-const feedbackModalItem = (model, action) => {
+const feedbackModalTarget = (model, action) => {
   switch(action.type){
   case "SET_FEEDBACK_MODAL_STATE":
     if(action.proposed === "CLOSED") {
@@ -133,7 +159,7 @@ const feedbackModalItem = (model, action) => {
       return model;
     }
   case "OPEN_FEEDBACK_MODAL":
-    return action.item;
+    return action.target;
   default:
     return model;
   }
@@ -155,6 +181,36 @@ const latestUpdates = (model, action) => {
     newUpdates[toUpdateIndex] = updated;
 
     return newUpdates;
+  default:
+    return model;
+  }
+}
+
+const isBreadcrumbDropdownOpen = (model, action) => {
+  switch(action.type){
+  case "TOGGLE_BREADCRUMB_DROPDOWN":
+    return action.proposed;
+  default:
+    return false;
+  }
+}
+
+
+const recordsToDisplay = (model, action) => {
+  switch(action.type){
+  case "DATA_RECEIVED":
+    return action.recordsToDisplay;
+  case "REQUESTING_DATA":
+    return undefined;
+  default:
+    return model;
+  }
+};
+
+const selectedTabKey = (model, action) => {
+  switch(action.type){
+  case "TAB_CLICKED":
+    return action.proposed;
   default:
     return model;
   }
@@ -186,8 +242,20 @@ const tab = (model = {}, action) => {
       model.specializationFilterActivated,
       action
     ),
-    currentPage: currentPage(model.currentPage, action)
+    currentPage: currentPage(model.currentPage, action),
+    areRowsExpanded: areRowsExpanded(model.areRowsExpanded, action)
   };
+}
+
+
+
+const areRowsExpanded = (model, action) => {
+  switch(action.type){
+  case "TOGGLE_ROW_EXPANSIONS":
+    return action.proposed;
+  default:
+    return model;
+  }
 }
 
 const currentPage = (model, action) => {
@@ -239,24 +307,6 @@ const reducedView = (model, action) => {
   }
 }
 
-const isBreadcrumbDropdownOpen = (model, action) => {
-  switch(action.type){
-  case "TOGGLE_BREADCRUMB_DROPDOWN":
-    return action.proposed;
-  default:
-    return false;
-  }
-}
-
-const location = (model, action) => {
-  switch(action.type){
-  case "PARSE_LOCATION":
-    return action.location;
-  default:
-    return model;
-  }
-}
-
 const selectedTableHeading = (model = {}, action) => {
   switch(action.type){
   case "SORT_BY_HEADING":
@@ -285,17 +335,6 @@ const selectedTableHeading = (model = {}, action) => {
   }
 
 }
-
-const recordsToDisplay = (model, action) => {
-  switch(action.type){
-  case "DATA_RECEIVED":
-    return action.recordsToDisplay;
-  case "CHANGE_FILTER_VALUE":
-    return undefined;
-  default:
-    return model;
-  }
-};
 
 const filterValues = (model = {}, action) => {
   switch(action.type){
@@ -328,5 +367,6 @@ const filterValues = (model = {}, action) => {
     return model;
   }
 };
+
 
 export default rootReducer;

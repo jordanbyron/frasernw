@@ -2,7 +2,7 @@ import React from "react";
 import { selectedTableHeadingKey, headingArrowDirection, canSelectSort }
   from "controller_helpers/table_headings";
 import { sortByHeading } from "action_creators";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import { collectionShownName, collectionShownPluralLabel }
   from "controller_helpers/collection_shown";
 import { entityType } from "controller_helpers/filter_values";
@@ -10,11 +10,12 @@ import showingMultipleSpecializations
   from "controller_helpers/showing_multiple_specializations";
 import { buttonIsh } from "stylesets";
 import _ from "lodash";
+import ExpandRowsToggle from "controllers/expand_rows_toggle";
 import { memoizePerRender } from "utils";
 import { selectedTabKey } from "controller_helpers/tab_keys";
 
 const TableHeadings = ({model, dispatch}) => {
-  if(_.includes(["/reports/entity_page_views", "/latest_updates"], matchedRoute(model))){
+  if(_.includes(["/reports/entity_page_views", "/latest_updates"], route)){
     return <thead></thead>
   }
   else {
@@ -29,28 +30,18 @@ const TableHeadings = ({model, dispatch}) => {
 };
 
 const cells = (model, dispatch) => {
-  if (canSelectSort(model)) {
-    return cellConfigs(model).map((config) => {
-      return(
-        <SortableTableHeadingCell
-          model={model}
-          dispatch={dispatch}
-          label={config.label}
-          key={config.key}
-          headingKey={config.key}
-        />
-      );
-    })
-  }
-  else {
-    return cellConfigs(model).map((config) => {
-      return(
-        <th className={classname(model, config.key)} key={config.key}>
-          { config.label }
-        </th>
-      );
-    });
-  }
+  return cellConfigs(model, dispatch).map((config) => {
+    return(
+      <TableHeadingCell
+        model={model}
+        dispatch={dispatch}
+        label={config.label}
+        key={config.key}
+        showExpansionToggle={config.showExpansionToggle}
+        headingKey={config.key}
+      />
+    );
+  })
 }
 
 const classname = (model, headingKey) => {
@@ -73,25 +64,20 @@ const classnamePrefix = ((model) => {
   }
 }).pwPipe(memoizePerRender)
 
-const cellConfigs = (model) => {
+const cellConfigs = (model, dispatch) => {
   if (_.includes(["specialists", "clinics"], collectionShownName(model))){
+    var configs = [
+      { label: collectionShownPluralLabel(model), key: "NAME", showExpansionToggle: true},
+      { label: "Accepting New Referrals?", key: "REFERRALS" },
+      { label: "Average Non-urgent Patient Waittime", key: "WAITTIME"},
+      { label: "City", key: "CITY" }
+    ];
+
     if (showingMultipleSpecializations(model)){
-      return [
-        { label: collectionShownPluralLabel(model), key: "NAME" },
-        { label: "Specialties", key: "SPECIALTIES" },
-        { label: "Accepting New Referrals?", key: "REFERRALS" },
-        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME"},
-        { label: "City", key: "CITY" }
-      ];
+      configs.splice(1, 0, { label: "Specialties", key: "SPECIALTIES" })
     }
-    else {
-      return [
-        { label: collectionShownPluralLabel(model), key: "NAME" },
-        { label: "Accepting New Referrals?", key: "REFERRALS" },
-        { label: "Average Non-urgent Patient Waittime", key: "WAITTIME"},
-        { label: "City", key: "CITY" }
-      ];
-    }
+
+    return configs;
   }
   else if (collectionShownName(model) === "contentItems") {
     return [
@@ -102,7 +88,7 @@ const cellConfigs = (model) => {
       { label: "", key: "FEEDBACK" }
     ];
   }
-  else if (matchedRoute(model) === "/news_items"){
+  else if (route === "/news_items"){
     return [
       { label: "Title", key: "TITLE" },
       { label: "Division", key: "DIVISION"},
@@ -111,25 +97,25 @@ const cellConfigs = (model) => {
       { label: "", key: "ADMIN"}
     ];
   }
-  else if (matchedRoute(model) === "/reports/pageviews_by_user"){
+  else if (route === "/reports/page_views_by_user"){
     return [
       { label: "User", key: "USERS" },
       { label: "Page Views", key: "PAGE_VIEWS" }
     ];
   }
-  else if (matchedRoute(model) === "/reports/referents_by_specialty"){
+  else if (route === "/reports/referents_by_specialty"){
     return [
       { label: "Specialty", key: "SPECIALTY" },
       { label: _.capitalize(entityType(model)), key: "ENTITY_TYPE" }
     ];
   }
-  else if (matchedRoute(model) === "/issues"){
+  else if (route === "/issues"){
     return [
       { label: "Code", key: "ISSUE_CODE" },
       { label: "Title", key: "DESCRIPTION" }
     ];
   }
-  else if (matchedRoute(model) === "/change_requests"){
+  else if (route === "/change_requests"){
     if (selectedTabKey(model) === "pendingIssues"){
       if(model.ui.persistentConfig.showIssueEstimates){
         return [
@@ -164,17 +150,15 @@ const cellConfigs = (model) => {
   }
 };
 
-const SortableTableHeadingCell = ({model, dispatch, label, headingKey}) => {
-  const onClick = _.partial(
-    sortByHeading,
-    dispatch,
-    headingKey,
-    selectedTableHeadingKey(model),
-    model
-  );
-
+const TableHeadingCell = ({
+  model,
+  dispatch,
+  label,
+  headingKey,
+  showExpansionToggle
+}) => {
   return(
-    <th onClick={onClick}
+    <th onClick={onTableHeadingClick(model, dispatch, headingKey)}
       className={classname(model, headingKey)}
     >
       <span>{ label }</span>
@@ -182,12 +166,32 @@ const SortableTableHeadingCell = ({model, dispatch, label, headingKey}) => {
         model={model}
         headingKey={headingKey}
       />
+      <ExpandRowsToggle
+      model={model}
+      dispatch={dispatch}
+      shouldShow={showExpansionToggle}
+      />
     </th>
   );
 }
 
+const onTableHeadingClick = (model, dispatch, headingKey) => {
+  if(canSelectSort(model)){
+    return _.partial(
+      sortByHeading,
+      dispatch,
+      headingKey,
+      selectedTableHeadingKey(model),
+      model
+    );
+  }
+  else {
+    return _.noop
+  }
+}
+
 const TableHeadingArrow = ({model, headingKey}) => {
-  if (selectedTableHeadingKey(model) === headingKey) {
+  if (canSelectSort(model) && selectedTableHeadingKey(model) === headingKey) {
     return(
       <i className={`icon-arrow-${headingArrowDirection(model).toLowerCase()}`}
         style={{color: "#08c", marginLeft: "5px"}}

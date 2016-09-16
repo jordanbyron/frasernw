@@ -19,6 +19,8 @@ module LayoutHelper
       "PW Test"
     elsif ENV['APP_NAME'] == "pathwaysbcdemo"
       "PW Demo"
+    elsif ENV['APP_NAME'] == "cs-connector-pathways"
+      "PW CSConnector"
     end
   end
 

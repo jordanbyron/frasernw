@@ -1,5 +1,5 @@
-import { matchedRoute, recordShownByPage } from "controller_helpers/routing";
-import { unscopedCollectionShown, collectionShownName, matchesRoute }
+import { route, recordShownByRoute } from "controller_helpers/routing";
+import { unscopedCollectionShown, collectionShownName, matchesPage }
   from "controller_helpers/collection_shown";
 import matchesPreliminaryFilters from "controller_helpers/matches_preliminary_filters";
 import matchesSidebarFilters from "controller_helpers/matches_sidebar_filters";
@@ -7,6 +7,7 @@ import { matchesSidebarFiltersExceptCities } from "controller_helpers/matches_si
 import activatedFilterSubkeys from "controller_helpers/activated_filter_subkeys";
 import { selectedTabKey } from "controller_helpers/tab_keys";
 import { memoizePerRender } from "utils";
+import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
 
 export const showingOtherSpecializations = ((model) => {
   return showSpecializationFilterMessage(model) &&
@@ -14,7 +15,7 @@ export const showingOtherSpecializations = ((model) => {
 }).pwPipe(memoizePerRender);
 
 export const showSpecializationFilterMessage = ((model) => {
-  return (matchedRoute(model) === "/specialties/:id" &&
+  return (route === "/specialties/:id" &&
     _.includes(["specialists", "clinics"], collectionShownName(model)) &&
     ((
       withAllFilters(model).length > 0 &&
@@ -31,12 +32,7 @@ export const showSpecializationFilterMessage = ((model) => {
 export const withAllFilters = ((model) => {
   return unscopedCollectionShown(model).filter((record) => {
     return matchesPreliminaryFilters(record, model) &&
-      matchesRoute(
-        matchedRoute(model),
-        recordShownByPage(model),
-        model.app.currentUser,
-        record
-      ) &&
+      matchesPage(record, model) &&
       matchesSidebarFilters(record, model)
   })
 }).pwPipe(memoizePerRender);
@@ -51,12 +47,7 @@ export const withoutSpecializationFilter = ((model) => {
 export const withoutCityFilters = ((model) => {
   return unscopedCollectionShown(model).filter((record) => {
     return matchesPreliminaryFilters(record, model) &&
-      matchesRoute(
-        matchedRoute(model),
-        recordShownByPage(model),
-        model.app.currentUser,
-        record
-      ) &&
+      matchesPage(record, model) &&
       matchesSidebarFiltersExceptCities(record, model)
   })
 }).pwPipe(memoizePerRender)

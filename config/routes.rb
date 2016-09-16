@@ -46,6 +46,7 @@ Frasernw::Application.routes.draw do
       patch :accept, as: 'accept_review'
     end
   end
+  get '/your_clinics' => 'clinics#index_own', as: 'index_own_clinics'
 
   scope '/clinics/:id/:token', controller: 'clinics_editor' do
     get :edit, as: 'clinic_self_edit'
@@ -94,8 +95,6 @@ Frasernw::Application.routes.draw do
     as: 'archived_review_items'
   resources :review_items
 
-  get '/feedback_items/archived' => 'feedback_items#archived',
-    as: 'archived_feedback_items'
   resources :feedback_items
 
   resources :sc_categories, path: 'content_categories'
@@ -146,6 +145,7 @@ Frasernw::Application.routes.draw do
       get :entity_statistics
       get :change_requests
       get :csv_usage
+      get :archived_feedback_items
     end
   end
 
@@ -211,7 +211,7 @@ Frasernw::Application.routes.draw do
   resources :messages, only: [:create]
 
   resources :messages, only: [:new, :create]
-  resources :user_sessions
+  resources :user_sessions, only: [:new, :create, :destroy]
 
   resources :users do
     collection do
@@ -259,6 +259,8 @@ Frasernw::Application.routes.draw do
   scope '/specialists/:id/:token', controller: 'specialists' do
     get :refresh_cache
   end
+
+  post '/notifications' => 'notifications#notify'
 
   if ENV['RAILS_ENV'] == 'test'
     get '/dangerously_import_db', to: 'tests#dangerously_import_db'

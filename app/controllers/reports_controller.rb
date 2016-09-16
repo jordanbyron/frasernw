@@ -42,7 +42,7 @@ class ReportsController < ApplicationController
 
     @init_data = {
       app: {
-        currentUser: FilterTableAppState::CurrentUser.call(
+        currentUser: Denormalized::CurrentUser.call(
           current_user: current_user
         ),
       }
@@ -133,6 +133,35 @@ class ReportsController < ApplicationController
     set_divisions_from_params!
     authorize! :view_report, :entity_statistics
     render :stats
+  end
+
+  def archived_feedback_items
+    authorize! :view_report, :archived_feedback_items
+
+    scope = FeedbackItem.
+      archived.
+      order('id desc')
+
+    if params[:division_id].present?
+      @division = Division.find(params[:division_id])
+      scope = scope.where(
+        "(?) = ANY(archiving_division_ids)",
+        params[:division_id]
+      )
+    end
+
+    @feedback_item_types = {}
+
+    [
+      :specialist,
+      :clinic,
+      :content,
+      :contact_us
+    ].each do |type|
+      @feedback_item_types[type] = scope.
+        send(type).
+        paginate(page: params[:page], per_page: 10)
+    end
   end
 
   def change_requests

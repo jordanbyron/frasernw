@@ -1,7 +1,7 @@
 import React from "react";
 import FilterGroup from "controllers/filter_group";
 import FilterSelector from "controllers/filter_selector";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 
 const DivisionScopeFilters = ({model, dispatch}) => {
   if(shouldShow(model)){
@@ -22,11 +22,11 @@ const DivisionScopeFilters = ({model, dispatch}) => {
 };
 
 const shouldShow = (model) => {
-  return _.includes(ROUTES_IMPLEMENTING, matchedRoute(model));
+  return _.includes(ROUTES_IMPLEMENTING, route);
 }
 
 const ROUTES_IMPLEMENTING = [
-  "/reports/pageviews_by_user",
+  "/reports/page_views_by_user",
   "/reports/entity_page_views",
   "/reports/referents_by_specialty"
 ]

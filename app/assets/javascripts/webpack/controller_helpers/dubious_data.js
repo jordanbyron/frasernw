@@ -1,9 +1,9 @@
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 import { toDate } from "controller_helpers/month_options";
 import * as filterValues from "controller_helpers/filter_values";
 
 const isDataDubious = (model) => {
-  return matchedRoute(model) === "/reports/entity_page_views" &&
+  return route === "/reports/entity_page_views" &&
     _.some(DubiousDateRanges, (range) => range.test(model))
 }
 

@@ -8,7 +8,7 @@ export const Routes = [
   "/reports/entity_page_views",
   "/reports/referents_by_specialty",
   "/latest_updates",
-  "/reports/pageviews_by_user",
+  "/reports/page_views_by_user",
   "/hospitals/:id",
   "/languages/:id",
   "/news_items",
@@ -23,35 +23,39 @@ export const Routes = [
   "/",
 ];
 
-export const matchedRoute = ((model) => {
-  return _.find(Routes, (route) => {
-    return !(routeParams(model.ui.location.pathname, route) === null);
-  });
-}).pwPipe(memoizePerRender);
+const pathnameRouteParams = (pathname, _route) => {
+  if(_route) {
+    return (new UrlPattern(_route)).match(pathname)
+  }
+  else {
+    return undefined;
+  }
+}
 
-export const matchedRouteParams = ((model) => {
-  return routeParams(model.ui.location.pathname, matchedRoute(model));
-}).pwPipe(memoizePerRender);
+export const route = _.find(Routes, (_route) => {
+  return pathnameRouteParams(window.location.pathname, _route) !== null;
+});
+export const routeParams = pathnameRouteParams(window.location.pathname, route)
 
-export const recordShownByPage = ((model) => {
-  switch(matchedRoute(model)){
+export const recordShownByRoute = ((model) => {
+  switch(route){
   case "/specialties/:id":
-    return model.app.specializations[matchedRouteParams(model).id];
+    return model.app.specializations[routeParams.id];
   case "/areas_of_practice/:id":
-    return model.app.procedures[matchedRouteParams(model).id];
+    return model.app.procedures[routeParams.id];
   case "/content_categories/:id":
-    return model.app.contentCategories[matchedRouteParams(model).id];
+    return model.app.contentCategories[routeParams.id];
   case "/hospitals/:id":
-    return model.app.hospitals[matchedRouteParams(model).id];
+    return model.app.hospitals[routeParams.id];
   case "/languages/:id":
-    return model.app.languages[matchedRouteParams(model).id];
+    return model.app.languages[routeParams.id];
+  case "/specialists/:id":
+    return model.app.specialists[routeParams.id];
+  case "/clinics/:id":
+    return model.app.clinics[routeParams.id];
+  case "/content_items/:id":
+    return model.app.contentItems[routeParams.id];
   case "/news_items":
     return model.app.divisions[model.ui.persistentConfig.divisionId];
   }
 }).pwPipe(memoizePerRender)
-
-const routeParams = (pathname, route) => {
-  const pattern = new UrlPattern(route);
-
-  return pattern.match(pathname);
-};

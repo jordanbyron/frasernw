@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { selectedTableHeadingKey, canSelectSort }
   from "controller_helpers/table_headings";
-import { matchedRoute } from "controller_helpers/routing";
+import { route } from "controller_helpers/routing";
 
 const sortIteratees = (model) => {
   return unboundIteratees(model).map((iteratee) => _.partialRight(iteratee, model));
@@ -61,12 +61,12 @@ const unboundIteratees = (model) => {
       return [(decoratedRecord, model) => decoratedRecord.id];
     }
   }
-  else if (matchedRoute(model) === "/change_requests"){
+  else if (route === "/change_requests"){
     return [
       (decoratedRecord) => (parseInt(decoratedRecord.raw.codeNumber) || 0)
     ];
   }
-  else if (matchedRoute(model) === "/issues"){
+  else if (route === "/issues"){
     return [
       (decoratedRecord) => (decoratedRecord.raw.progressKey === 6 ? 1 : 0),
       (decoratedRecord) => (decoratedRecord.raw.sourceKey),
