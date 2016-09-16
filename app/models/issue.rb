@@ -76,15 +76,13 @@ class Issue < ActiveRecord::Base
     1 => "Change Request",
     2 => "User Group Agenda Item",
     3 => "Provincial Team Request",
-    4 => "Developers",
-    5 => "Bug Report"
+    4 => "Developers"
   }
   BRIEF_SOURCE_LABELS = {
     1 => "CR",
     2 => "AGENDA",
     3 => "REQ",
-    4 => "DEV",
-    5 => "BUG"
+    4 => "DEV"
   }
   def source
     SOURCE_LABELS[source_key]
