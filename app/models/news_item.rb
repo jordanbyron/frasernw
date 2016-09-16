@@ -23,10 +23,6 @@ class NewsItem < ActiveRecord::Base
   has_many :division_display_news_items, dependent: :destroy
   has_one :demoable_news_item
 
-  after_create do
-    SubscriptionWorker.delay.mail_notifications_for_item("NewsItem", self.id)
-  end
-
   def self.not_demoable
     joins(<<-SQL)
       FULL OUTER JOIN demoable_news_items

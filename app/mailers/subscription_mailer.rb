@@ -51,7 +51,7 @@ class SubscriptionMailer < ActionMailer::Base
       to: @user.email,
       from: 'Pathways <noreply@pathwaysbc.ca>',
       subject: ("Pathways: #{@sc_item.division} just added " +
-        "a #{@sc_item.type_label} to #{@sc_item.root_category.name} "
+        "a #{@sc_item.type_label} to #{@sc_item.root_category.name} " +
         "[Content Item Update] ")
     )
   end

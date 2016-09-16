@@ -48,7 +48,7 @@ class SubscriptionWorker
           "immediate_#{klass_name.tableize.singularize}_notification",
           item.id,
           user.id
-        )
+        ).deliver
       end
     end
 
