@@ -1,3 +1,5 @@
+require 'uri'
+
 class ScItem < ActiveRecord::Base
   include Noteable
   include Historical
@@ -335,8 +337,7 @@ class ScItem < ActiveRecord::Base
 
   def domain
     if link?
-      require 'uri'
-      URI.parse(url).host
+      SystemNotifier.catch_error(URI::InvalidURIError){ URI.parse(url).host }
     else
       return "Pathways"
     end
