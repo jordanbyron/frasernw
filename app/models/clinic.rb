@@ -84,11 +84,10 @@ class Clinic < ActiveRecord::Base
 
   has_many :focuses, dependent: :destroy
 
-  has_many :procedure_specialization_links, class_name: "Focus"
-  has_many :procedure_specializations, through: :focuses
-  has_many :procedures, through: :procedure_specializations
+  has_many :procedure_links, class_name: "Focus"
+  has_many :procedures, through: :focuses
   accepts_nested_attributes_for :focuses,
-    reject_if: lambda { |a| a[:procedure_specialization_id].blank? },
+    reject_if: lambda { |a| a[:procedure_id].blank? },
     allow_destroy: true
 
   has_many :attendances, through: :clinic_locations

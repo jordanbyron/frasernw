@@ -2,8 +2,6 @@ class ProcedureSpecialization < ActiveRecord::Base
 
   attr_accessible :classification,
     :parent_id,
-    :specialist_wait_time,
-    :clinic_wait_time,
     :specialization_id
 
   CLASSIFICATION_FOCUSED              = 1
@@ -50,12 +48,6 @@ class ProcedureSpecialization < ActiveRecord::Base
     "classification = (?)", classification
     ) }
   scope :has_procedure, -> { joins(:procedure) }
-
-  has_many :capacities, dependent: :destroy
-  has_many :specialists, through: :capacities
-
-  has_many :focuses, dependent: :destroy
-  has_many :clinics, through: :focuses
 
   include PaperTrailable
   has_ancestry
@@ -123,14 +115,6 @@ class ProcedureSpecialization < ActiveRecord::Base
       classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH
   end
 
-  def self.specialist_wait_time
-    where('procedure_specializations.specialist_wait_time = (?)', true)
-  end
-
-  def self.clinic_wait_time
-    where('procedure_specializations.clinic_wait_time = (?)', true)
-  end
-
   def to_s
     procedure.to_s
   end
@@ -147,13 +131,13 @@ class ProcedureSpecialization < ActiveRecord::Base
     if specialist_or_clinic.instance_of? Clinic
       f = Focus.find_by(
         clinic_id: specialist_or_clinic.id,
-        procedure_specialization_id: self.id
+        procedure_id: self.procedure_id
       )
       return f.investigation if f
     else
       c = Capacity.find_by(
         specialist_id: specialist_or_clinic.id,
-        procedure_specialization_id: self.id
+        procedure_id: self.procedure_id
       )
       return c.investigation if c
     end

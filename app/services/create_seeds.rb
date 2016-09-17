@@ -106,14 +106,19 @@ class CreateSeeds < ServiceObject
           memo.merge(specialization.id => specialization.send(config[3]).map(&:id))
         end
 
-      config[0].includes(:procedure_specialization).all.each do |link|
-        if link.procedure_specialization.nil?
+      config[0].includes(procedure: :specializations).all.each do |link|
+        if link.procedure.nil?
           link.destroy
           next
         end
 
-        eligible_referrables =
-          specialization_referrables[link.procedure_specialization.specialization_id]
+        eligible_referrables = link.
+          procedure.
+          specializations.
+          map(&config[4]).
+          flatten.
+          uniq.
+          map(&:id)
 
         referrable_id = (referrable_distribution.keys & eligible_referrables).sample
 

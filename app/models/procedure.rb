@@ -2,7 +2,9 @@ class Procedure < ActiveRecord::Base
   attr_accessible :name,
     :parent_id,
     :specialization_ids,
-    :procedure_specializations_attributes
+    :procedure_specializations_attributes,
+    :specialist_has_wait_time,
+    :clinic_has_wait_time
 
   include PaperTrailable
 
@@ -16,10 +18,10 @@ class Procedure < ActiveRecord::Base
     through: :procedure_specializations
   accepts_nested_attributes_for :procedure_specializations, allow_destroy: true
 
-  has_many :capacities, through: :procedure_specializations
+  has_many :capacities, dependent: :destroy
   has_many :specialists, through: :capacities
 
-  has_many :focuses, through: :procedure_specializations
+  has_many :focuses, dependent: :destroy
   has_many :clinics, through: :focuses
 
   validates_presence_of :name, on: :save, message: "can't be blank"
@@ -88,7 +90,7 @@ class Procedure < ActiveRecord::Base
             results += ps.specialization.specialists.in_cities_cached(cities)
           end
         else
-          Capacity.where(procedure_specialization_id: child.id).each do |capacity|
+          Capacity.where(procedure_id: child.procedure_id).each do |capacity|
             if (
               capacity.specialist.present? &&
               (capacity.specialist.cities & cities).present?
@@ -117,7 +119,7 @@ class Procedure < ActiveRecord::Base
             results += ps.specialization.clinics.in_cities(cities)
           end
         else
-          Focus.where(procedure_specialization_id: child.id).each do |focus|
+          Focus.where(procedure_id: child.procedure_id).each do |focus|
             if focus.clinic.present? && (focus.clinic.cities & cities)
               results << focus.clinic
             end
@@ -138,7 +140,7 @@ class Procedure < ActiveRecord::Base
       results += ps.specialization.specialists.in_cities_cached(cities)
     else
       ps.subtree.each do |child|
-        Capacity.where(procedure_specialization_id: child.id).each do |capacity|
+        Capacity.where(procedure_id: child.procedure_id).each do |capacity|
           if (
             capacity.specialist.present? &&
             (capacity.specialist.cities & cities).present?
@@ -161,7 +163,7 @@ class Procedure < ActiveRecord::Base
       results += ps.specialization.clinics.in_cities(cities)
     else
       ps.subtree.each do |child|
-        Focus.where(procedure_specialization_id: child.id).each do |focus|
+        Focus.where(procedure_id: child.procedure_id).each do |focus|
           if focus.clinic.present? && (focus.clinic.cities & cities).present?
             results << focus.clinic
           end
@@ -227,13 +229,5 @@ class Procedure < ActiveRecord::Base
       update_column(:saved_token, SecureRandom.hex(16))
       return self.saved_token
     end
-  end
-
-  def specialist_wait_time
-    procedure_specializations.first.try(:specialist_wait_time) || false
-  end
-
-  def clinic_wait_time
-    procedure_specializations.first.try(:clinic_wait_time) || false
   end
 end

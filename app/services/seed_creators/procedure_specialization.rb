@@ -6,9 +6,7 @@ module SeedCreators
       ancestry: :pass_through,
       created_at: :pass_through,
       updated_at: :pass_through,
-      classification: :pass_through,
-      specialist_wait_time: :pass_through,
-      clinic_wait_time: :pass_through,
+      classification: :pass_through
     }
   end
 end

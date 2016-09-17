@@ -25,7 +25,7 @@ class UpdateClinicFocuses
     end.each do |checkbox_key, value|
       focus = Focus.find_or_create_by(
         clinic_id: clinic.id,
-        procedure_specialization_id: checkbox_key
+        procedure_id: ProcedureSpecialization.find(checkbox_key).procedure_id
       )
       focus.investigation = params[:focuses_investigations][checkbox_key]
       if params[:focuses_waittime].present?
@@ -39,14 +39,17 @@ class UpdateClinicFocuses
       # save any other focuses that have the same procedure and are in a
       # specialization our clinic is in
       focus.
-        procedure_specialization.
-        procedure.procedure_specializations.
-        reject{ |ps2| !clinic_specializations.include?(ps2.specialization) }.
-        map{ |ps2| Focus.find_or_create_by(
-          clinic_id: clinic.id,
-          procedure_specialization_id: ps2.id
-        ) }.
-        map{ |f| f.save }
+        procedure.
+        procedure_specializations.
+        select do |procedure_specialization|
+          clinic_specializations.
+            include?(procedure_specialization.specialization)
+        end.map do |procedure_specialization|
+          Focus.find_or_create_by(
+            clinic_id: clinic.id,
+            procedure_id: procedure_specialization.procedure_id
+          )
+        end.map{ |focus| focus.save }
     end
   end
 

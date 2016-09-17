@@ -84,11 +84,10 @@ class Specialist < ActiveRecord::Base
 
   # we want to be using this generic alias so we can duck type
   # procedure specializables
-  has_many :procedure_specialization_links, class_name: "Capacity"
-  has_many :procedure_specializations, through: :capacities
-  has_many :procedures, through: :procedure_specializations
+  has_many :procedure_links, class_name: "Capacity"
+  has_many :procedures, through: :capacities
   accepts_nested_attributes_for :capacities,
-    reject_if: lambda { |c| c[:procedure_specialization_id].blank? },
+    reject_if: lambda { |c| c[:procedure_id].blank? },
     allow_destroy: true
 
   # specialists attend clinics
@@ -169,7 +168,7 @@ class Specialist < ActiveRecord::Base
       :procedures,
       :specializations,
       :languages,
-      { capacities: { procedure_specialization: :procedure } }
+      capacities: :procedure
     ]).with_cities
   end
 

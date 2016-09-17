@@ -1,12 +1,6 @@
 module ProcedureSpecializable
   extend ActiveSupport::Concern
 
-  def procedure_specialize_in!(procedure_specialization_id)
-    procedure_specialization_links.find_or_create_by(
-      procedure_specialization_id: procedure_specialization_id
-    )
-  end
-
   def has_ps_with_ancestry?(ancestry)
     procedure_specialization_from_ancestry(ancestry).present?
   end
@@ -28,7 +22,7 @@ module ProcedureSpecializable
   # We assume that they also do parent procedures
   def procedure_ids_with_parents
     procedure_specializations.includes(:procedure).map do |ps|
-      [ ps.procedure.id, ps.ancestor_procedure_ids ]
+      [ ps.procedure_id, ps.ancestor_procedure_ids ]
     end.flatten
   end
 

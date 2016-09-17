@@ -33,10 +33,7 @@ class ScItem < ActiveRecord::Base
   has_many :sc_item_specializations, dependent: :destroy
   has_many :specializations, through: :sc_item_specializations
 
-  has_many :sc_item_specialization_procedure_specializations,
-    through: :sc_item_specializations
-  has_many :procedure_specializations,
-    through: :sc_item_specialization_procedure_specializations
+  has_many :procedures, through: :sc_item_specialization_procedures
 
   belongs_to :division
 
@@ -110,29 +107,27 @@ class ScItem < ActiveRecord::Base
     division_ids = divisions.map{ |d| d.id }
     owned = joins( [
       :sc_item_specializations,
-      :sc_item_specialization_procedure_specializations,
-      :procedure_specializations
+      :sc_item_specialization_procedures,
+      :procedures
     ] ).where(
-      'sc_item_specializations.id = sc_item_specialization_procedure_specializations.'\
+      'sc_item_specializations.id = sc_item_specialization_procedures.'\
         'sc_item_specialization_id '\
-        'AND sc_item_specialization_procedure_specializations.procedure_specialization_id'\
-        ' = procedure_specializations.id '\
-        'AND procedure_specializations.procedure_id = (?) '\
+        'AND sc_item_specialization_procedures.procedure_id = procedures.id '\
+        'AND procedures.id = (?) '\
         'AND "sc_items"."division_id" IN (?)',
       procedure.id,
       division_ids
     )
     shared = joins( [
       :sc_item_specializations,
-      :sc_item_specialization_procedure_specializations,
-      :procedure_specializations,
+      :sc_item_specialization_procedures,
+      :procedures,
       :division_display_sc_items
     ] ).where(
-      'sc_item_specializations.id = sc_item_specialization_procedure_specializations.'\
+      'sc_item_specializations.id = sc_item_specialization_procedures.'\
         'sc_item_specialization_id '\
-        'AND sc_item_specialization_procedure_specializations.procedure_specialization_id'\
-        ' = procedure_specializations.id '\
-        'AND procedure_specializations.procedure_id = (?) '\
+        'AND sc_item_specialization_procedures.procedure_id = procedures.id '\
+        'AND procedures.id = (?) '\
         'AND "division_display_sc_items"."division_id" in (?) '\
         'AND "sc_items"."shareable" = (?)',
       procedure.id,
@@ -226,7 +221,9 @@ class ScItem < ActiveRecord::Base
   end
 
   def mail_to_patient(current_user, patient_email)
-    MailToPatientMailer.mail_to_patient(self, current_user, patient_email).deliver
+    MailToPatientMailer.
+      mail_to_patient(self, current_user, patient_email).
+      deliver
   end
 
   def divisions
@@ -312,7 +309,8 @@ class ScItem < ActiveRecord::Base
   def format_type
     if link? || document?
       theurl = link? ? url : document.url
-      theurl = theurl.slice(theurl.rindex('.')+1..-1).downcase unless theurl.blank?
+      theurl =
+        theurl.slice(theurl.rindex('.')+1..-1).downcase unless theurl.blank?
       theurl = theurl.slice(0...theurl.rindex('?')) if theurl.rindex('?')
       theurl = theurl.slice(0...theurl.rindex('#')) if theurl.rindex('#')
       ftype = FORMAT_HASH[theurl]

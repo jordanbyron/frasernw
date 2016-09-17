@@ -50,7 +50,7 @@ module Denormalized
                 flatten.
                 map(&:id),
               procedureIds: item.
-                procedure_specializations.
+                procedures.
                 map(&:subtree).
                 flatten.
                 uniq.
@@ -138,7 +138,7 @@ module Denormalized
       def self.custom_procedure_times(specialist, method)
         specialist.capacities.inject({}) do |memo, capacity|
           if capacity.send(method)
-            memo.merge(capacity.procedure.id => capacity.send(method))
+            memo.merge(capacity.procedure_id => capacity.send(method))
           else
             memo
           end
@@ -206,7 +206,7 @@ module Denormalized
       def self.custom_procedure_times(clinic, method)
         clinic.focuses.inject({}) do |memo, focus|
           if focus.send(method)
-            memo.merge(focus.procedure.id => focus.send(method))
+            memo.merge(focus.procedure_id => focus.send(method))
           else
             memo
           end
@@ -312,8 +312,8 @@ module Denormalized
           name: procedure.name,
           specializationIds: procedure.procedure_specializations.map(&:specialization_id),
           customWaittime: {
-            specialists: procedure.specialist_wait_time,
-            clinics: procedure.clinic_wait_time
+            specialists: procedure.specialist_has_wait_time,
+            clinics: procedure.clinic_has_wait_time
           },
           assumedSpecializationIds: {
             specialists: procedure.
@@ -440,16 +440,16 @@ module Denormalized
   def self.transform_nested_procedure_specializations(procedure_specializations)
     procedure_specializations.inject({}) do |memo, (ps, children)|
       memo.merge({
-        ps.procedure.id => {
-          id: ps.procedure.id,
+        ps.procedure_id => {
+          id: ps.procedure_id,
           focused: ps.focused?,
           assumed: {
             clinics: ps.assumed_clinic?,
             specialists: ps.assumed_specialist?
           },
           customWaittime: {
-            specialists: ps.specialist_wait_time,
-            clinics: ps.clinic_wait_time
+            specialists: ps.procedure.specialist_has_wait_time,
+            clinics: ps.procedure.clinic_has_wait_time
           },
           children: transform_nested_procedure_specializations(children)
         }

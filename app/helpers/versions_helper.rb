@@ -129,8 +129,8 @@ module VersionsHelper
           ) +
             " now performs " +
             link_to(
-              version.item.procedure_specialization.procedure.name,
-              procedure_path(version.item.procedure_specialization.procedure)
+              version.item.procedure.name,
+              procedure_path(version.item.procedure)
             )
         elsif version.event == "update"
           link_to(
@@ -139,8 +139,8 @@ module VersionsHelper
           ) +
             "'s area of practice " +
             link_to(
-              version.item.procedure_specialization.procedure.name,
-              procedure_path(version.item.procedure_specialization.procedure)
+              version.item.procedure.name,
+              procedure_path(version.item.procedure)
             ) +
             " was updated"
         else
@@ -150,8 +150,8 @@ module VersionsHelper
           ) +
             " no longer performs " +
             link_to(
-              version.reify.procedure_specialization.procedure.name,
-              procedure_path(version.reify.procedure_specialization.procedure)
+              version.reify.procedure.name,
+              procedure_path(version.reify.procedure)
             )
         end
       when "Attendance"
@@ -335,15 +335,15 @@ module VersionsHelper
           link_to(version.item.clinic.name, clinic_path(version.item.clinic)) +
             " now performs " +
             link_to(
-              version.item.procedure_specialization.procedure.name,
-              procedure_path(version.item.procedure_specialization.procedure)
+              version.item.procedure.name,
+              procedure_path(version.item.procedure)
             )
         elsif version.event == "update"
           link_to(version.item.clinic.name, clinic_path(version.item.clinic)) +
             " area of practice " +
             link_to(
-              version.item.procedure_specialization.procedure.name,
-              procedure_path(version.item.procedure_specialization.procedure)
+              version.item.procedure.name,
+              procedure_path(version.item.procedure)
             ) +
             " was updated"
         else
@@ -353,8 +353,8 @@ module VersionsHelper
           ) +
             " no longer performs " +
             link_to(
-              version.reify.procedure_specialization.procedure.name,
-              procedure_path(version.reify.procedure_specialization.procedure)
+              version.reify.procedure.name,
+              procedure_path(version.reify.procedure)
             )
         end
       when "ClinicSpeak"

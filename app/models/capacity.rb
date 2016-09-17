@@ -1,17 +1,14 @@
 class Capacity < ActiveRecord::Base
   belongs_to :specialist
-  belongs_to :procedure_specialization
+  belongs_to :procedure
 
   WAITTIME_LABELS = Specialist::WAITTIME_LABELS
   LAGTIME_LABELS = Specialist::LAGTIME_LABELS
 
   include PaperTrailable
 
-  delegate :procedure, to: :procedure_specialization
-
-  def self.specialist_wait_time
-    joins(:procedure_specialization).
-      where('procedure_specializations.specialist_wait_time = (?)', true)
+  def self.specialist_has_wait_time
+    joins(:procedure).where(specialist_has_wait_time: true)
   end
 
   def waittime

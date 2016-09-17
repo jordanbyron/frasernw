@@ -7,9 +7,9 @@ module ApplicationHelper
 
   def specialists_procedures(specialist)
     list = ""
-    specialist.procedure_specializations.each do |ps|
-      list += ps.procedure.name +
-        (specialist.procedure_specializations.last == ps ? '' : ", ")
+    specialist.procedures.each do |procedure|
+      list += procedure.procedure.name +
+        (specialist.procedures.last == procedure ? '' : ", ")
     end
     list
   end
@@ -44,7 +44,11 @@ module ApplicationHelper
       call(nested_procedure_specializations)
   end
 
-  def compressed_procedures_indented(specialist_or_clinic, classification, specialty)
+  def compressed_procedures_indented(
+    specialist_or_clinic,
+    classification,
+    specialty
+  )
     compressed_procedures_indented_output(
       procedure_ancestry(specialist_or_clinic, classification, specialty),
       specialist_or_clinic
@@ -111,7 +115,10 @@ module ApplicationHelper
               if grandchild_investigation.present?
                 grandchild_investigation = grandchild_investigation.strip_period
               end
-              if grandchild_investigation && grandchild_investigation.strip.length != 0
+              if (
+                grandchild_investigation &&
+                  grandchild_investigation.strip.length != 0
+              )
                 has_investigation = true
                 child_results <<
                   "<a href='#{procedure_path(grandchild[:parent])}'>"\
@@ -156,7 +163,11 @@ module ApplicationHelper
     result = []
     items.map do |item, sub_items|
       item_text =
-        parent.empty? ? "#{item.procedure.name}" : "#{parent} #{item.procedure.name}"
+        if parent.empty?
+          "#{item.procedure.name}"
+        else
+          "#{parent} #{item.procedure.name}"
+        end
       result << [ item_text, item.id]
       result += ancestry_options(sub_items, item_text)
     end

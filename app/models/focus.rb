@@ -1,17 +1,14 @@
 class Focus < ActiveRecord::Base
   belongs_to :clinic
-  belongs_to :procedure_specialization
+  belongs_to :procedure
 
   WAITTIME_LABELS = Clinic::WAITTIME_LABELS
   LAGTIME_LABELS = Clinic::LAGTIME_LABELS
 
   include PaperTrailable
 
-  delegate :procedure, to: :procedure_specialization
-
-  def self.clinic_wait_time
-    joins(:procedure_specialization).
-      where('procedure_specializations.clinic_wait_time = (?)', true)
+  def self.clinic_has_wait_time
+    joins(:procedure).where(clinic_has_wait_time: true)
   end
 
   def waittime
