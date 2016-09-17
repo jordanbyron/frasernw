@@ -19,9 +19,11 @@ const SearchFilters = ({model, dispatch}) => {
 }
 
 const GeographicFilter = ({model, dispatch}) => {
-  if(_.includes(
+  if((_.includes(
     ["Physician Resources", "Patient Info"],
-    selectedCollectionFilter(model)) && model.app.currentUser.role === "user"){
+    selectedCollectionFilter(model)) && model.app.currentUser.role === "user") ||
+    selectedCollectionFilter(model) === "Areas of Practice"
+  ){
 
     return <noscript/>;
   }
@@ -83,7 +85,8 @@ const CollectionFilter = ({model, dispatch}) => {
             "Specialists",
             "Clinics",
             "Physician Resources",
-            "Patient Info"
+            "Patient Info",
+            "Areas of Practice"
           ].map((label) => {
             return(
               <CollectionFilterTab

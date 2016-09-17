@@ -1,0 +1,39 @@
+!!!
+%html
+  %head
+    %title
+      = "#{@user.name} -- Pathways: #{@sc_item.division} just added "
+      = @sc_item.type_label.downcase
+      = "to #{@sc_item.root_category.name} [Content Item Updates]"
+  %body
+    %p
+      = "#{@user.name}, "
+    %p
+      = "A #{@sc_item.type_label.downcase} was just added "
+      - if @parent_type.present?
+        = "to #{@parent_type}"
+      - if @sc_item.division.present?
+        = "by #{@sc_item.division}: "
+    %br
+    .activity
+      %p
+        = link_to "#{@sc_item.full_title} [#{@sc_item.format.downcase}]",
+          sc_item_url(@sc_item)
+        - if @sc_item.specializations.any?
+          = "(#{@sc_item.specializations.uniq.map(&:name).to_sentence})"
+      - if (@user.as_divisions & @sc_item.borrowable_by_divisions).any?
+        - (@user.as_divisions & @sc_item.borrowable_by_divisions).each do |division|
+          %br
+          = link_to "Click here to display this item to #{division.name} Division users",
+            share_sc_item_url(@sc_item, is_shared: true, division_id: division.id)
+      - else
+        %br
+        This resource is either unavailable to share or is already visible in
+        - if @user.divisions.count > 1
+          your divisions.
+        - else
+          = @user.divisions.first.name + "."
+
+      %br
+    = render partial: "subscription_mailer/automatic_email_message",
+      locals: { interval: @interval }

@@ -36,7 +36,7 @@ class NewsItemsController < ApplicationController
   def create
     @news_item = NewsItem.new(params[:news_item])
     if @news_item.save && @news_item.display_in_divisions!(divisions_to_assign(params, @news_item), current_user)
-      create_news_item_activity
+      SubscriptionWorker.delay.mail_notifications_for_item("NewsItem", @news_item.id)
 
       redirect_to root_path(division_id: @news_item.owner_division.id),
         :notice  => "Successfully created news item.  Please allow a couple minutes for the front page to show your changes."
@@ -107,20 +107,5 @@ class NewsItemsController < ApplicationController
     else
       [ news_item.owner_division ]
     end
-  end
-
-  def create_news_item_activity
-    # TODO: #division
-    @news_item.create_activity(
-      action: :create,
-      update_classification_type: Subscription.news_update,
-      type_mask: @news_item.type_mask,
-      type_mask_description: @news_item.type,
-      format_type: 0,
-      format_type_description: "Internal",
-      parent_id: @news_item.owner_division.id,
-      parent_type: "Division",
-      owner: @news_item.owner_division
-    )
   end
 end

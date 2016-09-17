@@ -1,5 +1,4 @@
 class NewsItem < ActiveRecord::Base
-  include PublicActivity::Model
   include ActionView::Helpers::TextHelper
 
   has_many :activities,
@@ -97,7 +96,7 @@ class NewsItem < ActiveRecord::Base
       ActionView::Base.full_sanitizer.sanitize(
         BlueCloth.new(body).to_html
       ),
-      :length => 40,
+      :length => 60,
       :separator => ' '
     )
   end
@@ -157,7 +156,7 @@ class NewsItem < ActiveRecord::Base
   TYPE_HASH = {
     TYPE_DIVISIONAL               => "Divisional Update",
     TYPE_SHARED_CARE              => "Shared Care Update",
-    TYPE_BREAKING                 => "Breaking News",
+    TYPE_BREAKING                 => "Breaking News Item",
     TYPE_SPECIALIST_CLINIC_UPDATE => "Specialist / Clinic Update",
     TYPE_ATTACHMENT_UPDATE        => "Attachment Update"
   }

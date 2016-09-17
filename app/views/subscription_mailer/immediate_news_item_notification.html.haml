@@ -1,0 +1,17 @@
+!!!
+%html
+  %head
+    %title
+      = "#{@user.name} -- Pathways: #{@news_item.type} has been added to #{@news_item.owner_division} [News Updates]"
+  %body
+    %p
+      = "#{@user.name}, "
+    %p
+      = "A #{@news_item.type.downcase} was just added to #{@news_item.owner_division} on #{DateTime.now.strftime("%B, %d, %Y")}:"
+    %br
+    .activity
+      %p
+        = link_to "Click here to see it.", news_item_url(@news_item)
+      %br
+    = render partial: "subscription_mailer/automatic_email_message",
+      locals: { interval: @interval }
