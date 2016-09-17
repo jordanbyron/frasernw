@@ -26,6 +26,8 @@ module SystemNotifier
       subject: e[:message],
       timestamp: DateTime.now.to_s(:long_ordinal),
       body: {
+        user_id: e[:user_id],
+        user_mask: e[:user_mask],
         name: e[:name],
         message: e[:message],
         file: e[:file],
