@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160916225708) do
+ActiveRecord::Schema.define(version: 20160917001734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -314,6 +314,8 @@ ActiveRecord::Schema.define(version: 20160916225708) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "use_customized_city_priorities", default: false
+    t.boolean  "use_other_homepage"
+    t.integer  "custom_homepage_as_id"
   end
 
   create_table "edits", force: true do |t|

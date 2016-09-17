@@ -19,6 +19,19 @@
   .row
     = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another primary contact", :division_primary_contacts, class: "btn offset3")
 
+
+  %h4{style: "margin-top: 10px"} Use Other Division's Homepage
+
+  = f.input :use_other_homepage,
+    label: "Use another division's homepage?"
+  = f.input :custom_homepage_as_id,
+    as: :select,
+    collection: Division.all.reject{|division| division == @division},
+    label_method: :name,
+    value_method: :id,
+    include_blank: false,
+    label: "Use homepage from:"
+
   %br
   %h4 Local Referral Area
   .row
@@ -129,6 +142,19 @@
   $('.city_specialization').click(function() {
     city_specialization_checked(this);
   });
+
+  var updateHomepage = function() {
+    if($("#division_use_other_homepage").attr("checked") === "checked"){
+      $(".division_custom_homepage_as_id").show()
+    }
+    else {
+      $(".division_custom_homepage_as_id").hide()
+    }
+  }
+
+  $(document).ready(updateHomepage)
+  $("#division_use_other_homepage").change(updateHomepage)
+
 
 - City.all.each do |city|
   :javascript

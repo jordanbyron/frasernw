@@ -9,7 +9,7 @@ class FrontController < ApplicationController
         if params[:division_id].present?
           Division.find(params[:division_id])
         else
-          current_user.as_divisions.first
+          current_user.as_divisions.map(&:homepage_as).first
         end
       end
       @can_edit_division = current_user.as_super_admin? || current_user.as_divisions.include?(@as_division)
@@ -18,7 +18,7 @@ class FrontController < ApplicationController
       @specializations = Specialization.all
       @more_updates_url = latest_updates_path(division_id: @as_division.id)
     else
-      @as_divisions = current_user.as_divisions
+      @as_divisions = current_user.as_divisions.map(&:homepage_as)
       @specializations =
         Specialization.for_users_in(*current_user.as_divisions)
       @more_updates_url = latest_updates_path

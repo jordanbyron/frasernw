@@ -5,7 +5,9 @@ class Division < ActiveRecord::Base
     :shared_sc_item_ids,
     :division_primary_contacts_attributes,
     :use_customized_city_priorities,
-    :featured_contents_attributes
+    :featured_contents_attributes,
+    :use_other_homepage,
+    :custom_homepage_as_id
 
   has_many :division_cities, dependent: :destroy
 
@@ -29,6 +31,8 @@ class Division < ActiveRecord::Base
     class_name: "ScItem"
 
   has_many :sc_items
+
+  belongs_to :custom_homepage_as, class_name: "Division"
 
   has_many :subscription_divisions, dependent: :destroy
   has_many :subscriptions, through: :subscription_divisions
@@ -100,6 +104,14 @@ class Division < ActiveRecord::Base
 
   def to_s
     self.name
+  end
+
+  def homepage_as
+    if use_other_homepage?
+      custom_homepage_as
+    else
+      self
+    end
   end
 
   def specializations_referred_to(city)
