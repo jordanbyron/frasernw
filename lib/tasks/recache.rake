@@ -60,11 +60,6 @@ namespace :pathways do
           )
         end
       },
-      notifications: -> {
-        PublicActivity::Activity.pluck(:id).each do |id|
-          Rails.cache.delete("views/latest_notifications_for_#{id}")
-        end
-      },
       analytics_charts: -> {
         AnalyticsChart.regenerate_all
       }
