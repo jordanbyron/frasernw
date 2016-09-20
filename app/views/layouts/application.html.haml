@@ -1,4 +1,4 @@
-- user_divisions = current_user.as_divisions
+- user_divisions = current_user.as_super_admin? ? Division.all : current_user.as_divisions
 
 !!!
 %html
