@@ -20,26 +20,29 @@ module SystemNotifier
     )
   end
 
-  def self.javascript_error(e, options = {})
+  def self.javascript_error(error_data, options = {})
     notify(
       tag: "Exception - Client-side",
-      subject: e[:message],
+      subject: error_data[:message],
       timestamp: DateTime.now.to_s(:long_ordinal),
       body: {
-        user_id: e[:user_id],
-        user_mask: e[:user_mask],
-        name: e[:name],
-        message: e[:message],
-        file: e[:file],
-        line: e[:line],
-        column: e[:column],
-        url: e[:url],
-        errorStack: e[:errorStack]
+        userId: error_data[:userId],
+        userMask: error_data[:userMask],
+        browserName: error_data[:browserName],
+        fullVersion: error_data[:fullVersion],
+        majorVersion: error_data[:majorVersion],
+        appName: error_data[:appName],
+        userAgent: error_data[:userAgent],
+        name: error_data[:name],
+        message: error_data[:message],
+        file: error_data[:file],
+        line: error_data[:line],
+        column: error_data[:column],
+        url: error_data[:url],
+        errorStack: error_data[:errorStack]
       }
     )
   end
-
-  # TODO: all system notifications, including errors, should come through here
 
   # takes {tag: <:sym>, subject: <"str">, body: <{}>}
   def self.notify(options)

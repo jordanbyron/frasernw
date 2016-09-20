@@ -4,9 +4,10 @@ class NotificationsController < ApplicationController
   def notify
     authorize! :notify, :notifications
 
-    if ENV["APP_NAME"] != "pathwaysbclocal"
+    # if ENV["APP_NAME"] != "pathwaysbclocal"
+    binding.pry
       SystemNotifier.javascript_error(params += user_info)
-    end
+    # end
 
     render json: nil, status: :ok
   end
@@ -14,7 +15,7 @@ class NotificationsController < ApplicationController
   private
 
   def user_info
-    [user_id: current_user.id, user_mask: current_user.user_mask.role]
+    [userId: current_user.id, userMask: current_user.role]
   end
 
 end
