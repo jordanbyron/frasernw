@@ -83,11 +83,16 @@ const InnerResult = (decoratedRecord, model) => {
     );
   }
   else if (record.collectionName === "procedures"){
-    return(
-      [
-        <div className="search_name" key="name">
-          <HighlightedEntryLabel decoratedRecord={decoratedRecord}/>
-        </div>,
+    let returning = []
+
+    returning.push(
+      <div className="search_name" key="name">
+        <HighlightedEntryLabel decoratedRecord={decoratedRecord}/>
+      </div>
+    )
+
+    if(!_.includes(["Specialists", "Clinics"], selectedCollectionFilter(model))){
+      returning.push(
         <div className="search_specialties no_city" key="specialties">
           {
             record.
@@ -96,8 +101,10 @@ const InnerResult = (decoratedRecord, model) => {
               join(", ")
           }
         </div>
-      ]
-    );
+      )
+    }
+
+    return returning;
   }
   else {
     return(
