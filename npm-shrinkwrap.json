@@ -41,7 +41,8 @@
       "dependencies": {
         "lodash": {
           "version": "3.10.1",
-          "from": "lodash@>=3.10.1 <4.0.0"
+          "from": "lodash@3.10.1",
+          "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz"
         }
       }
     },
@@ -315,7 +316,8 @@
         },
         "lodash": {
           "version": "3.10.1",
-          "from": "lodash@>=3.10.0 <4.0.0"
+          "from": "lodash@3.10.1",
+          "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz"
         }
       }
     },
@@ -343,7 +345,8 @@
       "dependencies": {
         "lodash": {
           "version": "3.10.1",
-          "from": "lodash@>=3.10.1 <4.0.0"
+          "from": "lodash@3.10.1",
+          "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz"
         }
       }
     },
@@ -354,7 +357,8 @@
       "dependencies": {
         "lodash": {
           "version": "3.10.1",
-          "from": "lodash@>=3.10.1 <4.0.0"
+          "from": "lodash@3.10.1",
+          "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz"
         }
       }
     },
@@ -437,6 +441,11 @@
       "version": "2.0.2",
       "from": "esutils@>=2.0.2 <3.0.0",
       "resolved": "https://registry.npmjs.org/esutils/-/esutils-2.0.2.tgz"
+    },
+    "fuse.js": {
+      "version": "2.5.0",
+      "from": "fuse.js@latest",
+      "resolved": "https://registry.npmjs.org/fuse.js/-/fuse.js-2.5.0.tgz"
     },
     "get-stdin": {
       "version": "4.0.1",

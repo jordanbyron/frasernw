@@ -100,7 +100,7 @@ const resultGroupEntries = (model, decoratedRecords, dispatch) => {
         model={model}
         dispatch={dispatch}
         decoratedRecord={decoratedRecord}
-        key={key(decoratedRecord.raw)}
+        key={key(decoratedRecord.item)}
       />
     );
   })

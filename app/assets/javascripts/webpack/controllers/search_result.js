@@ -18,13 +18,13 @@ import hiddenFromUsers from "controller_helpers/hidden_from_users";
 const SearchResult = ({model, dispatch, decoratedRecord}) => {
   return(
     <li className={resultClassname(decoratedRecord, model)}>
-      <a href={link(decoratedRecord.raw)}
-        onClick={_.partial(onClick, model, dispatch, decoratedRecord.raw)}
+      <a href={link(decoratedRecord.item)}
+        onClick={_.partial(onClick, model, dispatch, decoratedRecord.item)}
         onMouseEnter={_.partial(searchResultSelected, dispatch, decoratedRecord.index)}
         onMouseLeave={_.partial(hoverLeaveSearchResult, dispatch)}
         style={{width: "calc(100% - 20px)"}}
       >
-        { InnerResult(decoratedRecord.raw, model) }
+        { InnerResult(decoratedRecord, model) }
       </a>
     </li>
   );
@@ -46,20 +46,24 @@ const resultClassname = (decoratedRecord, model) => {
     classes.push("selected");
   }
 
-  if(hiddenFromUsers(decoratedRecord.raw, model)) {
+  if(hiddenFromUsers(decoratedRecord.item, model)) {
     classes.push("hidden-from-users");
   }
 
   return classes.join(" ");
 }
 
-const InnerResult = (record, model) => {
+const InnerResult = (decoratedRecord, model) => {
+  var record = decoratedRecord.item;
+
   if (_.includes(["specialists", "clinics"], record.collectionName)){
     return(
       [
         <div className="search_name" key="name">
           <ReferentStatusIcon record={record} model={model}/>
-          <span style={{marginLeft: "5px"}}>{entryLabel(record)}</span>
+          <span style={{marginLeft: "5px"}}>
+            <HighlightedEntryLabel decoratedRecord={decoratedRecord}/>
+          </span>
         </div>,
         <div className="search_specialties" key="specialties">
           {
@@ -79,7 +83,9 @@ const InnerResult = (record, model) => {
   else if (record.collectionName === "procedures"){
     return(
       [
-        <div className="search_name" key="name">{entryLabel(record)}</div>,
+        <div className="search_name" key="name">
+          <HighlightedEntryLabel decoratedRecord={decoratedRecord}/>
+        </div>,
         <div className="search_specialties no_city" key="specialties">
           {
             record.
@@ -94,10 +100,54 @@ const InnerResult = (record, model) => {
   else {
     return(
       [
-        <div className="search_name full_width" key="name">{entryLabel(record)}</div>
+        <div className="search_name full_width" key="name">
+          <HighlightedEntryLabel decoratedRecord={decoratedRecord}/>
+        </div>
       ]
     );
   }
+}
+
+const HighlightedEntryLabel = ({decoratedRecord}) => {
+  var _fragments = [];
+  var _fragmentedUntil = 0;
+  const _entryLabel = entryLabel(decoratedRecord.item);
+  console.log(_entryLabel)
+  console.log(decoratedRecord.matches);
+
+  // console.log(decoratedRecord.matches.length)
+  decoratedRecord.matches[0].indices.forEach((index) => {
+
+    if (index[0] !== _fragmentedUntil){
+      _fragments.push(
+        <span key={_fragmentedUntil}>
+          {_entryLabel.slice(_fragmentedUntil, index[0])}
+        </span>
+      );
+    }
+
+    _fragments.push(
+      <span key={index[0]} className="highlight">
+        {_entryLabel.slice(index[0], (index[1] + 1))}
+      </span>
+    );
+
+    _fragmentedUntil = index[1] + 1;
+  })
+
+  if (_fragmentedUntil !== _entryLabel.length) {
+    _fragments.push(
+      <span key={_fragmentedUntil}>
+        {_entryLabel.slice(_fragmentedUntil, _entryLabel.length)}
+      </span>
+    )
+  }
+
+  return(
+    <span>
+      {_fragments}
+    </span>
+  )
 }
 
 const cities = (record) => {
