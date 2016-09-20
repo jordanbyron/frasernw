@@ -682,89 +682,49 @@ class Specialist < ActiveRecord::Base
     14 => :temporarily_unavailable
   }
 
-  def availability_summary(context)
-    if !surveyed?
-      {
-        icon: "",
-        tooltip: "",
-        show: ("This specialist has not yet been surveyed.")
-      }
-    elsif !responded_to_survey? || availability_unknown?
-      {
-        icon: "icon-question-sign",
-        tooltip: "Referral status unknown",
-        show: ("It is unknown if this specialist is accepting new patients " +
-          "(the office didn't respond).")
-      }
-    elsif available? && indirect_referrals_only? && accepting_new_referrals?
-      {
-        icon: "icon-signout icon-blue",
-        tooltip: "Only accepts referrals through #{works_out_of_label}.",
-        show: ("This specialist only accepts referrals through " +
-          "#{works_out_of_label}, and in general all referrals should be made " +
-          "through #{referrals_through_label}.")
-      }
-    elsif available? && indirect_referrals_only? && accepting_new_referrals == nil
-      {
-        icon: "icon-signout icon-blue",
-        tooltip: "Only works out of #{works_out_of_label}.",
-        show: ("This specialist only works out of #{works_out_of_label}, and in " +
-          "general all referrals should be made through #{referrals_through_label}.")
-      }
+  def referral_icon_key
+    if !returned_completed_survey? || !availability_known?
+      :question_mark
+    elsif available? && indirect_referrals_only?
+      :blue_arrow
     elsif available? && accepting_new_referrals? && referrals_limited?
-      {
-        icon: "icon-ok icon-orange",
-        tooltip: "Accepting limited new referrals by geography or number of patients",
-        show: ("This specialist is accepting limited new referrals by geography " +
-          "or number of patients.")
-      }
-    elsif available? && temporarily_unavailable_soon?
-      {
-        icon: "icon-warning-sign icon-orange",
-        tooltip: "Unavailable soon.",
-        show: ("This specialist will be unavailable between " +
-          "#{unavailable_from.to_s(:long_ordinal)} and" +
-          " #{unavailable_to.to_s(:long_ordinal)}.")
-      }
-    elsif available? && retiring_soon?
-      {
-        icon: "icon-warning-sign icon-orange",
-        tooltip: "Unavailable soon.",
-        show: "This specialist will retire on #{retirement_date.to_s(:long_ordinal)}."
-      }
+      :orange_check
+    elsif available? && (temporarily_unavailable_soon? || retiring_soon?)
+      :orange_warning
     elsif available? && accepting_new_referrals?
-      {
-        icon: "icon-ok icon-green",
-        tooltip: "Accepting new referrals",
-        show: "This specialist is accepting new referrals"
-      }
-    elsif deceased?
-      {
-        icon: "icon-remove icon-red",
-        tooltip: "Not accepting new referrals",
-        show: "This specialist is deceased."
-      }
-    elsif retired?
-      {
-        icon: "icon-remove icon-red",
-        tooltip: "Not accepting new referrals",
-        show: "This specialist is retired."
-      }
-    elsif moved_away?
-      {
-        icon: "icon-remove icon-red",
-        tooltip: "Not accepting new referrals",
-        show: "This specialist has moved away."
-      }
-    elsif !available? || !accepting_new_referrals?
-      {
-        icon: "icon-remove icon-red",
-        tooltip: "Not accepting new referrals",
-        show: "This specialist is not accepting new referrals"
-      }
+      :green_check
     else
-      :err
-    end[context]
+      :red_x
+    end
+  end
+
+  def referral_summary
+    if !returned_completed_survey? || !availability_known?
+      "Referral status unknown."
+    elsif available? && indirect_referrals_only? && accepting_new_referrals?
+      ("This specialist only accepts referrals through " +
+        "#{works_out_of_label}, and in general all referrals should be made " +
+        "through #{referrals_through_label}.")
+    elsif available? && accepting_new_referrals? && referrals_limited?
+      ("This specialist is accepting limited new referrals by geography " +
+          "or number of patients.")
+    elsif available? && temporarily_unavailable_soon?
+      ("This specialist will be unavailable between " +
+        "#{unavailable_from.to_s(:long_ordinal)} and" +
+        " #{unavailable_to.to_s(:long_ordinal)}.")
+    elsif available? && retiring_soon?
+      "This specialist will retire on #{retirement_date.to_s(:long_ordinal)}."
+    elsif available? && accepting_new_referrals?
+      "This specialist is accepting new referrals"
+    elsif deceased?
+      "This specialist is deceased."
+    elsif retired?
+      "This specialist is retired."
+    elsif moved_away?
+      "This specialist has moved away."
+    else
+      "This specialist is not accepting new referrals"
+    end
   end
 
   def referrals_through_label
@@ -805,20 +765,15 @@ class Specialist < ActiveRecord::Base
     end
   end
 
-  def availability_unknown?
-    availability == 7
-  end
-
-  def show_in_table?
-    !unvailable_for_a_while?
+  def availability_known?
+    availability != 7
   end
 
   def show_waittimes?
     has_own_offices? && accepting_new_referrals?
   end
 
-  ## TODO after form
-  def unavailable_for_a_while?
+  def unavailable_for_awhile?
     (retired? || moved_away? || permanently_unavailable?) &&
       (unavailable_from <= (Date.current - 2.years))
   end

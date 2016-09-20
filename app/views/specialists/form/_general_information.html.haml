@@ -13,11 +13,8 @@
 = f.input :billing_number,
   as: :string,
   input_html: { value: @specialist.padded_billing_number }
-= f.input :surveyed,
-  label: "Surveyed?"
-= f.input :responded_to_survey,
-  label: "Responded to survey?",
-  wrapper_html: { class: "form__wrapper--indented" }
+= f.input :returned_completed_survey,
+  label: "Responded to survey?"
 = f.input :availability,
   label: "Available for work?",
   as: :select,

@@ -1,7 +1,7 @@
 import _ from "lodash";
 
-export const status = (record) => {
-  return record.statusClassKey !== 6;
+export const availabilityKnown = (record) => {
+  return record.availabilityKnown;
 }
 
 export const showInTable = (record) => {

@@ -285,10 +285,6 @@ class Clinic < ActiveRecord::Base
     categorization_mask == 3
   end
 
-  def show_in_table?
-    (responded? && !unavailable_for_a_while?) || not_responded?
-  end
-
   def show_waittimes?
     !closed? && responded? && accepting_new_referrals?
   end
@@ -346,23 +342,15 @@ class Clinic < ActiveRecord::Base
     end
   end
 
-  def status_class
-    #purposely handle categorization prior to status
-    if not_responded?
-      return Specialist::STATUS_CLASS_UNKNOWN
-    elsif purposely_not_yet_surveyed?
-      return Specialist::STATUS_CLASS_BLANK
-    elsif accepting_new_referrals?
-      return Specialist::STATUS_CLASS_AVAILABLE
-    elsif accepting_limited_referrals?
-      return Specialist::STATUS_CLASS_LIMITATIONS
-    elsif only_doing_follow_up? || closed?
-      return Specialist::STATUS_CLASS_UNAVAILABLE
-    elsif did_not_answer?
-      return Specialist::STATUS_CLASS_UNKNOWN
+  def referral_icon_key
+    if !returned_completed_survey?
+      :question_mark
+    if open? && accepting_new_referrals?
+      :green_check
+    elsif open? && accepting_limited_referrals?
+      :orange_check
     else
-      #this shouldn't really happen
-      return Specialist::STATUS_CLASS_BLANK
+      :red_x
     end
   end
 
@@ -572,7 +560,7 @@ class Clinic < ActiveRecord::Base
     (created_at > 3.week.ago.utc) && opened_recently?
   end
 
-  def unavailable_for_a_while?
+  def unavailable_for_awhile?
     closed? && (unavailable_from <= (Date.current - 2.years))
   end
 

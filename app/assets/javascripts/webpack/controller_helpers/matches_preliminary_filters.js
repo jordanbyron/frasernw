@@ -8,7 +8,7 @@ export const preliminaryFilterKeys = ((collectionName) => {
   if(_.includes(["specialists", "clinics"], collectionName)){
 
     return [
-      "status",
+      "availabilityKnown",
       "showInTable",
       "notHidden"
     ];

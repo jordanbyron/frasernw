@@ -219,10 +219,6 @@ var typeAdjustedInputValue = function(fieldname){
 
 $(document).ready(function(){
   setConditionsToShowSection(
-    [[ "surveyed", true]],
-    "responded_to_survey"
-  );
-  setConditionsToShowSection(
     [[ "availability", "13"], ["has_own_offices", true]],
     "accepting_new_direct_referrals"
   );

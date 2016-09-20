@@ -13,7 +13,7 @@ const ExpandedReferentInformation = React.createClass({
 });
 
 const InnerContent = ({model, record}) => {
-  if (record.statusClassKey === 4){
+  if (!record.isAvailable){
     return <noscript/>;
   }
   else {

@@ -102,7 +102,7 @@ const InnerResult = (record, model) => {
 
 const cities = (record) => {
   if (record.collectionName === "clinics" ||
-    (record.respondedToSurvey && record.isAvailable)){
+    (record.isAvailable)){
 
     return record.cityIds;
   }
