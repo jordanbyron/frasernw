@@ -1,0 +1,19 @@
+!!!
+%html
+  %head
+    %title #{@user.name} -- Pathways: Your #{@interval} update
+  %body
+    %p
+      = "Hi #{@user.name},"
+    %p
+      = "Here is your #{@interval} Pathways News Update for #{@end_datetime.strftime("%B, %d, %Y")}:"
+    %br
+    - @news_items.each do |news_item|
+      .activity
+        %p
+          %span{ class: "muted" }= "#{time_ago_in_words(news_item.created_at)} ago"
+
+          = render "news_items/created", news_item: news_item
+        %br
+    = render partial: "subscription_mailer/automatic_email_message",
+      locals: { interval: @interval }

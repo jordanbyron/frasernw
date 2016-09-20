@@ -2,11 +2,11 @@
 // All this logic will automatically be available in application.js.
 $(document).ready(function(){
 
-  $("#subscription_classification_news_updates").change(function (){
+  $("#subscription_target_class_newsitem").change(function (){
     update_for_classification_change();
   });
 
-  $("#subscription_classification_resource_updates").change(function (){
+  $("#subscription_target_class_scitem").change(function (){
     update_for_classification_change();
   });
 
@@ -15,16 +15,16 @@ $(document).ready(function(){
   var update_for_classification_change = function ()
   {
     $('.all-updates').show(); // show form options applying to both categories again
-    if ($("#subscription_classification_news_updates").is(":checked"))
+    if ($("#subscription_target_class_newsitem").is(":checked"))
     {
-      $(".resource-updates").hide();
+      $(".content-item-updates").hide();
       $(".news-updates").fadeIn(300).show();
 
     }
-    else if ($("#subscription_classification_resource_updates").is(":checked"))
+    else if ($("#subscription_target_class_scitem").is(":checked"))
     {
       $(".news-updates").hide();
-      $(".resource-updates").fadeIn(300).show();
+      $(".content-item-updates").fadeIn(300).show();
     }
 
   }
@@ -108,4 +108,3 @@ $(document).ready(function(){
        $('.division-option').prop('checked', $(e.target).prop('checked'));
    });
 });
-

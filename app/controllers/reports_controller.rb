@@ -79,38 +79,42 @@ class ReportsController < ApplicationController
   def specialist_contact_history
     set_divisions_from_params!
     authorize! :view_report, :specialist_contact_history
-    @specialist_email_table = {}
-    Specialization.all.each do |s|
-      specialization = []
-      specialists = s.specialists.in_divisions(@divisions)
-      specialists.sort_by do |sp|
-        sp.locations.first.present? ? sp.locations.first.short_address : ""
-      end.each do |sp|
-        next if !sp.responded? || sp.not_available?
-        active_controlling_users =
-          sp.controlling_users.reject{ |u| u.pending? || !u.active? }
-        entry = {}
-        entry[:id] = sp.id
-        entry[:name] = sp.name
-        entry[:user_email] =
-          active_controlling_users.
-            map{ |u| u.email }.
-            map{ |e| e.split }.
+
+    @specialists = Specialist.in_divisions(@divisions)
+    Specialist.preload_associations(@specialists, :specializations)
+    Specialist.preload_associations(@specialists, :controlling_users)
+    Specialist.preload_associations(@specialists, :review_items)
+
+    @specialization_specialists = Specialization.all.inject({}) do |memo, specialization|
+      specialization_entries = @specialists.select do |specialist|
+        specialist.specializations.to_a.include?(specialization)
+      end.map do |specialist|
+        last_review_item = specialist.review_items.sort_by(&:created_at).last
+        active_controlling_users = specialist.
+          controlling_users.
+          reject{ |user| user.pending? || !user.active? }
+
+        {
+          id: specialist.id,
+          name: specialist.name,
+          user_email: active_controlling_users.
+            map(&:email).
+            map(&:split).
             flatten.
-            reject{ |e| !(e.include? '@') }
-        entry[:moa_email] =
-          sp.contact_email.split.flatten.reject{ |e| !(e.include? '@') }
-        entry[:token] = sp.token
-        entry[:updated_at] = sp.updated_at
-        review_item = sp.review_items.sort_by{ |x| x.id }.last
-        entry[:reviewed_at] =
-          review_item.present? ? review_item.updated_at : nil
-        entry[:linked_active_account_count] = active_controlling_users.count
-        entry[:linked_pending_account_count] =
-          sp.controlling_users.reject{ |u| !u.pending? }.count
-        specialization << entry
+            select{ |email| email.include?('@') },
+          moa_email: specialist.
+            contact_email.
+            split.
+            flatten.
+            select{ |email| email.include?('@') },
+          updated_at: specialist.updated_at,
+          reviewed_at: (last_review_item.present? ? last_review_item.updated_at : nil),
+          linked_active_account_count: active_controlling_users.count,
+          linked_pending_account_count: specialist.controlling_users.select(&:pending?).count
+        }
       end
-      @specialist_email_table[s.id] = specialization
+
+      memo.merge(specialization.name => specialization_entries)
     end
     render :contact_history
   end

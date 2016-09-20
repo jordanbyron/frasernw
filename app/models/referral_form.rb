@@ -5,7 +5,7 @@ class ReferralForm < ActiveRecord::Base
 
   include ActionView::Helpers::TextHelper
 
-  belongs_to :referrable, :polymorphic => true
+  belongs_to :referrable, polymorphic: true
 
   attr_accessible :description, :form
 
@@ -30,6 +30,18 @@ class ReferralForm < ActiveRecord::Base
 
   def in_divisions(divisions)
     referrable.present? && (referrable.divisions & divisions).present?
+  end
+
+  def file_format
+    case form_content_type
+    when "application/pdf"
+      "PDF"
+    when "application/vnd.openxmlformats-officedocument.wordprocessingml."\
+        "document"
+      "DOCX"
+    else
+      "image"
+    end
   end
 
 end

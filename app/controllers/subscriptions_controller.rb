@@ -117,10 +117,10 @@ class SubscriptionsController < ApplicationController
     if params[:subscription][:sc_item_format_type].present?
       params[:subscription][:sc_item_format_type].reject!(&:blank?)
     end
-    if params[:subscription][:classification] == Subscription.resource_update
+    if params[:subscription][:target_class] == "ScItem"
       params[:subscription].delete(:news_type)
       params[:subscription][:news_type] = ""
-    else params[:subscription][:classification] == Subscription.news_update
+    else params[:subscription][:target_class] == "NewsItem"
       params[:subscription].delete(:sc_category_ids)
       params[:subscription].delete(:specialization_ids)
       params[:subscription].delete(:sc_item_format_type)

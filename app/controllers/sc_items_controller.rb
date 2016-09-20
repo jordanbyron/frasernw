@@ -39,7 +39,7 @@ class ScItemsController < ApplicationController
           )
         end
       end
-      create_sc_item_activity
+      SubscriptionWorker.delay.mail_notifications_for_item("ScItem", @sc_item.id)
       redirect_to sc_item_path(@sc_item), notice: "Successfully created content item."
     else
       new_sc_item_preload
@@ -186,16 +186,4 @@ class ScItemsController < ApplicationController
     )
   end
 
-  def create_sc_item_activity
-    @sc_item.create_activity action: :create,
-      parameters: {},
-      update_classification_type: Subscription.resource_update,
-      type_mask: @sc_item.type_mask,
-      type_mask_description: @sc_item.type,
-      format_type: @sc_item.format_type,
-      format_type_description: @sc_item.format,
-      parent_id: @sc_item.sc_category.root.id,
-      parent_type: @sc_item.sc_category.root.name,
-      owner: @sc_item.division
-  end
 end

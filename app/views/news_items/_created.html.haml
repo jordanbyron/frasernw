@@ -1,0 +1,7 @@
+- if news_item.owner_division.present?
+  = link_to news_item.owner_division.name, division_url(news_item.owner_division)
+- else
+  - "An unknown division "
+= "added a new #{news_item.type}: "
+= link_to news_item.label,
+  news_item_url(news_item)
