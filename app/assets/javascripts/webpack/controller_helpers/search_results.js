@@ -4,6 +4,8 @@ import hiddenFromUsers from "controller_helpers/hidden_from_users";
 import { urlCollectionName } from "controller_helpers/links";
 import { matchesUserDivisions } from "controller_helpers/preliminary_filters";
 import scoreString from "utils/score_string";
+import { link } from "controller_helpers/links";
+import { encode as encodeUrlHash } from "utils/url_hash_encoding";
 
 export const selectedCollectionFilter = (model) => {
   return _.get(
@@ -59,7 +61,14 @@ export const searchResults = ((model) => {
     filter((decoratedRecord) => {
       return _.every(filters(model), (filter) => filter(decoratedRecord, model));
     }).pwPipe((decoratedRecords) => {
-      return _.sortByOrder(decoratedRecords, _.property("score"), "desc")
+      return _.sortByOrder(
+        decoratedRecords,
+        [
+          (decoratedRecord) => groupOrder[decoratedRecord.raw.collectionName],
+          _.property("score"),
+        ],
+        ["asc", "desc"]
+      );
     }).pwPipe((decoratedRecords) => _.take(decoratedRecords, 10)).
     pwPipe((decoratedRecords) => {
       return _.groupBy(decoratedRecords, _.property("raw.collectionName"));
@@ -82,7 +91,7 @@ export const searchResults = ((model) => {
         }
         else {
           return {
-            label: groupLabels[collectionName],
+            label: labelGroup(model, collectionName),
             decoratedRecords: decoratedRecords.
               pwPipe((records) => _.sortByOrder(records, _.property("score"), "desc")),
             order: groupOrder[collectionName]
@@ -114,6 +123,24 @@ export const searchResults = ((model) => {
     generate
   );
 });
+
+const labelGroup = (model, collectionName) => {
+  switch(collectionName){
+  case "specializations":
+    return "Specialties";
+  case "contentCategories":
+    return "Content";
+  case "procedures":
+    if (_.includes(["Specialists", "Clinics"], selectedCollectionFilter(model))){
+      return `${selectedCollectionFilter(model)} accepting referrals for:`;
+    }
+    else {
+      return "Areas of Practice";
+    }
+  default:
+    return _.capitalize(collectionName);
+  }
+}
 
 const filters = ((model) => {
   let filters = []
@@ -233,16 +260,6 @@ const groupOrder = {
   contentItems: 8
 }
 
-const groupLabels = {
-  specializations: "Specialties",
-  specialists: "Specialists",
-  clinics: "Clinics",
-  procedures: "Areas of Practice",
-  hospitals: "Hospitals",
-  languages: "Languages",
-  contentCategories: "Content"
-}
-
 const toSearch = (model) => {
   switch(selectedCollectionFilter(model)){
   case "Everything":
@@ -257,9 +274,9 @@ const toSearch = (model) => {
       model.app.contentCategories
     ].map(_.values).pwPipe(_.flatten);
   case "Specialists":
-    return _.values(model.app.specialists);
+    return _.values(model.app.specialists).concat(..._.values(model.app.procedures));
   case "Clinics":
-    return _.values(model.app.clinics);
+    return _.values(model.app.clinics).concat(..._.values(model.app.procedures));
   case "Areas of Practice":
     return _.values(model.app.procedures);
   default:
@@ -289,4 +306,17 @@ export const recordAnalytics = (record, model) => {
   ]);
 
   return true;
+}
+
+export const adjustedLink = (model, record) => {
+  if (record.collectionName === "procedures" &&
+    _.includes(["Specialists", "Clinics"], selectedCollectionFilter(model))){
+
+    return (link(record) +
+      "#" +
+      encodeUrlHash({selectedTabKey: selectedCollectionFilter(model).toLowerCase()}));
+  }
+  else {
+    return link(record);
+  }
 }

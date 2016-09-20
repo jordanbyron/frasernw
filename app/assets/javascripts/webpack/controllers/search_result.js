@@ -4,9 +4,10 @@ import {
   selectedSearchResult,
   recordAnalytics,
   highlightSelectedSearchResult,
-  entryLabel
+  entryLabel,
+  selectedCollectionFilter,
+  adjustedLink
 } from "controller_helpers/search_results";
-import { link } from "controller_helpers/links";
 import {
   searchResultSelected,
   hoverLeaveSearchResult,
@@ -19,7 +20,7 @@ import * as FuzzAldrin from "fuzzaldrin"
 const SearchResult = ({model, dispatch, decoratedRecord}) => {
   return(
     <li className={resultClassname(decoratedRecord, model)}>
-      <a href={link(decoratedRecord.raw)}
+      <a href={adjustedLink(model, decoratedRecord.raw)}
         onClick={_.partial(onClick, model, dispatch, decoratedRecord.raw)}
         onMouseEnter={_.partial(searchResultSelected, dispatch, decoratedRecord.index)}
         onMouseLeave={_.partial(hoverLeaveSearchResult, dispatch)}

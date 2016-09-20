@@ -9,7 +9,8 @@ import {
 import {
   selectedSearchResult,
   searchResults,
-  recordAnalytics
+  recordAnalytics,
+  adjustedLink
 } from "controller_helpers/search_results"
 import { link } from "controller_helpers/links";
 import { selectedCollectionFilter } from "controller_helpers/search_results";
@@ -49,8 +50,8 @@ const handleKeyDown = (model, dispatch, event) => {
     )
   }
   else if (event.keyCode === ENTER_KEY_CODE){
-    recordAnalytics(selectedSearchResultRecord(model), model);
-    window.location = link(selectedSearchResultRecord(model));
+    recordAnalytics(selectedSearchResultRecord(model), model);    
+    window.location = adjustedLink(model, selectedSearchResultRecord(model));
     closeSearch(dispatch);
   }
   else if (event.keyCode === ESCAPE_KEY_CODE){
