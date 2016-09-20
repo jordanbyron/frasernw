@@ -14,13 +14,13 @@ import {
 } from "action_creators";
 import ReferentStatusIcon from "controllers/referent_status_icon";
 import hiddenFromUsers from "controller_helpers/hidden_from_users";
-import { match } from "fuzzaldrin";
+import * as FuzzAldrin from "fuzzaldrin"
 
 const SearchResult = ({model, dispatch, decoratedRecord}) => {
   return(
     <li className={resultClassname(decoratedRecord, model)}>
-      <a href={link(decoratedRecord.item)}
-        onClick={_.partial(onClick, model, dispatch, decoratedRecord.item)}
+      <a href={link(decoratedRecord.raw)}
+        onClick={_.partial(onClick, model, dispatch, decoratedRecord.raw)}
         onMouseEnter={_.partial(searchResultSelected, dispatch, decoratedRecord.index)}
         onMouseLeave={_.partial(hoverLeaveSearchResult, dispatch)}
         style={{width: "calc(100% - 20px)"}}
@@ -47,7 +47,7 @@ const resultClassname = (decoratedRecord, model) => {
     classes.push("selected");
   }
 
-  if(hiddenFromUsers(decoratedRecord.item, model)) {
+  if(hiddenFromUsers(decoratedRecord.raw, model)) {
     classes.push("hidden-from-users");
   }
 
@@ -55,7 +55,7 @@ const resultClassname = (decoratedRecord, model) => {
 }
 
 const InnerResult = (decoratedRecord, model) => {
-  var record = decoratedRecord.item;
+  var record = decoratedRecord.raw;
 
   if (_.includes(["specialists", "clinics"], record.collectionName)){
     return(
@@ -110,53 +110,53 @@ const InnerResult = (decoratedRecord, model) => {
 }
 
 const HighlightedEntryLabel = ({decoratedRecord}) => {
-  var highlightedTokens = decoratedRecord.
-    tokensWithMatchedQueries.
-    map((tokenWithQuery, index) => {
+  const _highlightedTokens = decoratedRecord.
+    queriedTokensWithMatchedQueryTokens.
+    reduce((accumulatingTokens, queriedTokenWithMatches, tokenIndex, iteratingOver) => {
 
-    var _matches = tokenWithQuery[1].map((queryToken) => {
-      return match(tokenWithQuery[0], queryToken);
+    const _matchIndices = queriedTokenWithMatches[1].map((queryToken) => {
+      return FuzzAldrin.match(queriedTokenWithMatches[0], queryToken);
     }).pwPipe(_.flatten).pwPipe(_.uniq).sort();
 
-    var _fragments = [];
-    var _currentFragment = [];
+    let _currentFragment = [];
+    const _queriedTokenFragments = queriedTokenWithMatches[0].
+      split("").
+      reduce((accumulatingFragments, char, indexWithinToken, iteratingOver) => {
 
-    tokenWithQuery[0].split("").forEach((char, index, array) => {
       _currentFragment.push(char);
 
-      var _highlightingThisChar = _.includes(
-        _matches,
-        index
+      const _highlightingThisChar = _.includes(
+        _matchIndices,
+        indexWithinToken
       )
-      var _highlightingNextChar = _.includes(
-        _matches,
-        (index + 1)
+      const _highlightingNextChar = _.includes(
+        _matchIndices,
+        (indexWithinToken + 1)
       )
 
-      if (_highlightingThisChar !== _highlightingNextChar || (index + 1 === array.length)){
-        _fragments.push(
-          <span key={index} className={(_highlightingThisChar ? "highlight" : "")}>
+      if (_highlightingThisChar !== _highlightingNextChar ||
+          (indexWithinToken + 1 === iteratingOver.length)){
+
+        accumulatingFragments.push(
+          <span key={indexWithinToken} className={(_highlightingThisChar ? "highlight" : "")}>
             { _currentFragment.join("") }
           </span>
-        )
+        );
 
         _currentFragment = [];
       }
-    })
 
-    return(
-      <span key={index}>{ _fragments }</span>
-    )
-  })
+      return accumulatingFragments;
+    }, [])
+
+    accumulatingTokens.push(<span key={tokenIndex}>{ _queriedTokenFragments }</span>);
+    accumulatingTokens.push(<span key={`space${tokenIndex}`}>{" "}</span>);
+
+    return accumulatingTokens;
+  }, [])
 
   return(
-    <span>
-      {
-        highlightedTokens.map((token, index) => {
-          return [token, <span key={`space${index}`}>{" "}</span>]
-        }).pwPipe(_.flatten)
-      }
-    </span>
+    <span>{ _highlightedTokens }</span>
   )
 }
 

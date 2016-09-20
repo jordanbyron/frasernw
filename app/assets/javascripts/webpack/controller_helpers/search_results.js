@@ -1,10 +1,9 @@
 import _ from "lodash";
 import { memoizePerRender, memoize } from "utils";
 import hiddenFromUsers from "controller_helpers/hidden_from_users";
-import stringScore from "utils/string_score";
 import { urlCollectionName } from "controller_helpers/links";
 import { matchesUserDivisions } from "controller_helpers/preliminary_filters";
-import { score, match } from "fuzzaldrin"
+import scoreString from "utils/score_string";
 
 export const selectedCollectionFilter = (model) => {
   return _.get(
@@ -37,50 +36,6 @@ export const entryLabel = (record) => {
   }
 }
 
-const MinScore = 0.1;
-
-const pwScore = (query, string) => {
-  var _queryTokens = query.split(/\s+/g)
-  var _stringTokens = string.split(/\s+/g)
-
-  var _stringTokensWithMatchedQueryTokens = _stringTokens.map((stringToken) => {
-    return [ stringToken , []];
-  });
-  var _queryTokensScores = _queryTokens.map((queryToken) => {
-    var _queryTokenScores = _stringTokens.map((stringToken) => {
-      return [ stringToken, score(stringToken, queryToken) ];
-    })
-
-    var _maxScoreIndex = findIndexOfGreatest(_queryTokenScores.map((score) => score[1]));
-    var _maxTokenScore = _queryTokenScores[_maxScoreIndex][1];
-
-    if(_maxTokenScore >= MinScore) {
-      _stringTokensWithMatchedQueryTokens[_maxScoreIndex][1].push(queryToken);
-
-      return _maxTokenScore;
-    }
-    else {
-      return 0;
-    }
-  })
-
-  return {
-    tokensWithMatchedQueries: _stringTokensWithMatchedQueryTokens,
-    score: (_.sum(_queryTokensScores)/_queryTokensScores.length),
-  };
-}
-
-var findIndexOfGreatest = (array) => {
-  var greatest;
-  var indexOfGreatest;
-  for (var i = 0; i < array.length; i++) {
-    if (!greatest || array[i] > greatest) {
-      greatest = array[i];
-      indexOfGreatest = i;
-    }
-  }
-  return indexOfGreatest;
-}
 
 export const searchResults = ((model) => {
   if(!model.app.currentUser){
@@ -89,16 +44,15 @@ export const searchResults = ((model) => {
 
   return toSearch(model).
     pwPipe((records) => {
-
       return records.map((record) => {
         var _entryLabel = entryLabel(record);
 
         return _.assign(
           {
-            item: record,
+            raw: record,
             entryLabel: _entryLabel
           },
-          pwScore((model.ui.searchTerm || ""), _entryLabel)
+          scoreString((model.ui.searchTerm || ""), _entryLabel)
         )
       })
     }).
@@ -108,11 +62,11 @@ export const searchResults = ((model) => {
       return _.sortByOrder(decoratedRecords, _.property("score"), "desc")
     }).pwPipe((decoratedRecords) => _.take(decoratedRecords, 10)).
     pwPipe((decoratedRecords) => {
-      return _.groupBy(decoratedRecords, _.property("item.collectionName"));
+      return _.groupBy(decoratedRecords, _.property("raw.collectionName"));
     }).pwPipe((collections) => {
       return _.map(collections, (decoratedRecords, collectionName) => {
         if(collectionName === "contentItems"){
-          return _.groupBy(decoratedRecords, _.property("item.categoryId")).
+          return _.groupBy(decoratedRecords, _.property("raw.categoryId")).
             pwPipe((categories) => {
               return _.map(categories, (decoratedRecords, id) => {
                 return {
@@ -164,26 +118,26 @@ export const searchResults = ((model) => {
 const filters = ((model) => {
   let filters = []
 
-  filters.push((decoratedRecord) => decoratedRecord.score > MinScore);
+  filters.push((decoratedRecord) => decoratedRecord.score > 0);
 
   filters.push((decoratedRecord) => {
-    return decoratedRecord.item.collectionName !== "contentItems" ||
+    return decoratedRecord.raw.collectionName !== "contentItems" ||
       (_.includes(["super", "admin"], model.app.currentUser.role) &&
         selectedGeographicFilter(model) === "All Divisions") ||
-      matchesUserDivisions(decoratedRecord.item, model)
+      matchesUserDivisions(decoratedRecord.raw, model)
   })
 
   filters.push((decoratedRecord) => {
     return !_.includes(
       ["contentItems", "contentCategories"],
-      decoratedRecord.item.collectionName
-    ) || decoratedRecord.item.searchable;
+      decoratedRecord.raw.collectionName
+    ) || decoratedRecord.raw.searchable;
   })
 
   if (selectedCollectionFilter(model) === "Physician Resources"){
     filters.push((decoratedRecord) => {
       return _.intersection(
-        decoratedRecord.item.categoryIds,
+        decoratedRecord.raw.categoryIds,
         [ pearlsId(model), redFlagsId(model), physicianResourcesId(model) ]
       ).pwPipe(_.any)
     })
@@ -192,7 +146,7 @@ const filters = ((model) => {
   if (selectedCollectionFilter(model) === "Patient Info"){
     filters.push((decoratedRecord) => {
       return _.includes(
-        decoratedRecord.item.categoryIds,
+        decoratedRecord.raw.categoryIds,
         patientInfoId(model)
       )
     })
@@ -202,14 +156,14 @@ const filters = ((model) => {
     filters.push((decoratedRecord) => {
       return !_.includes(
         ["clinics", "specialists"],
-        decoratedRecord.item.collectionName
+        decoratedRecord.raw.collectionName
       ) || shownInLocalReferralArea(decoratedRecord, model)
     })
   }
 
   if (model.app.currentUser.role === "user"){
     filters.push((decoratedRecord) => {
-      return !hiddenFromUsers(decoratedRecord.item, model)
+      return !hiddenFromUsers(decoratedRecord.raw, model)
     })
   }
 
@@ -235,14 +189,14 @@ export const highlightSelectedSearchResult = (model) => {
 const shownInLocalReferralArea = (decoratedRecord, model) => {
   return _.some(model.app.currentUser.divisionIds, (divisionId) => {
     return _.some(
-      decoratedRecord.item.specializationIds,
+      decoratedRecord.raw.specializationIds,
       (specializationId) => {
         return !_.includes(
           model.app.specializations[specializationId].hiddenInDivisionIds,
           divisionId
         ) && _.intersection(
           model.app.divisions[divisionId].referralCities[specializationId],
-          decoratedRecord.item.cityIds
+          decoratedRecord.raw.cityIds
         ).pwPipe(_.any)
       }
     )
