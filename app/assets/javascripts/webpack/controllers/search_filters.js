@@ -8,6 +8,10 @@ import {
   selectGeographicFilter,
   closeSearch
 } from "action_creators";
+import {
+  CollectionFilterValues,
+  GeographicFilterValues
+} from "controller_helpers/search_filter_values";
 
 const SearchFilters = ({model, dispatch}) => {
   return(
@@ -35,10 +39,7 @@ const GeographicFilter = ({model, dispatch}) => {
         </span>
         <ul className="nav nav-pills" id="livesearch__search-categories">
           {
-            [
-              "My Regional Divisions",
-              "All Divisions"
-            ].map((label) => {
+            GeographicFilterValues.map((label) => {
               return(
                 <GeographicFilterTab
                   model={model}
@@ -80,14 +81,7 @@ const CollectionFilter = ({model, dispatch}) => {
       </span>
       <ul className="nav nav-pills" id="livesearch__search-categories">
         {
-          [
-            "Everything",
-            "Specialists",
-            "Clinics",
-            "Physician Resources",
-            "Patient Info",
-            "Areas of Practice"
-          ].map((label) => {
+          CollectionFilterValues.map((label) => {
             return(
               <CollectionFilterTab
                 model={model}

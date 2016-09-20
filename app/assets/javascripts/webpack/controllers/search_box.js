@@ -1,6 +1,7 @@
 import React from "react";
 import {
   searchFocused,
+  selectCollectionFilter,
   termSearched,
   searchResultSelected,
   closeSearch
@@ -11,6 +12,8 @@ import {
   recordAnalytics
 } from "controller_helpers/search_results"
 import { link } from "controller_helpers/links";
+import { selectedCollectionFilter } from "controller_helpers/search_results";
+import { CollectionFilterValues } from "controller_helpers/search_filter_values";
 
 const SearchBox = ({model, dispatch}) => {
   return(
@@ -30,6 +33,7 @@ const UP_KEY_CODE = 38;
 const DOWN_KEY_CODE = 40;
 const ENTER_KEY_CODE = 13;
 const ESCAPE_KEY_CODE = 27;
+const TAB_KEY_CODE = 9;
 
 const handleKeyDown = (model, dispatch, event) => {
   if(event.keyCode === UP_KEY_CODE && selectedSearchResult(model) > 0){
@@ -51,6 +55,24 @@ const handleKeyDown = (model, dispatch, event) => {
   }
   else if (event.keyCode === ESCAPE_KEY_CODE){
     closeSearch(dispatch);
+  }
+  else if (event.keyCode === TAB_KEY_CODE){
+    var currentIndex = _.findIndex(
+      CollectionFilterValues,
+      (label) => selectedCollectionFilter(model) === label
+    );
+    if (currentIndex + 1 === CollectionFilterValues.length){
+      var nextIndex = 0;
+    }
+    else{
+      var nextIndex = currentIndex + 1;
+    }
+
+    selectCollectionFilter(
+      dispatch,
+      CollectionFilterValues[nextIndex],
+      event
+    )
   }
 }
 
