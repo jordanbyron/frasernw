@@ -14,6 +14,7 @@ import {
 } from "action_creators";
 import ReferentStatusIcon from "controllers/referent_status_icon";
 import hiddenFromUsers from "controller_helpers/hidden_from_users";
+import { match } from "fuzzaldrin";
 
 const SearchResult = ({model, dispatch, decoratedRecord}) => {
   return(
@@ -109,43 +110,52 @@ const InnerResult = (decoratedRecord, model) => {
 }
 
 const HighlightedEntryLabel = ({decoratedRecord}) => {
-  var _fragments = [];
-  var _fragmentedUntil = 0;
-  const _entryLabel = entryLabel(decoratedRecord.item);
-  console.log(_entryLabel)
-  console.log(decoratedRecord.matches);
+  var highlightedTokens = decoratedRecord.
+    tokensWithMatchedQueries.
+    map((tokenWithQuery, index) => {
 
-  // console.log(decoratedRecord.matches.length)
-  decoratedRecord.matches[0].indices.forEach((index) => {
+    var _matches = tokenWithQuery[1].map((queryToken) => {
+      return match(tokenWithQuery[0], queryToken);
+    }).pwPipe(_.flatten).pwPipe(_.uniq).sort();
 
-    if (index[0] !== _fragmentedUntil){
-      _fragments.push(
-        <span key={_fragmentedUntil}>
-          {_entryLabel.slice(_fragmentedUntil, index[0])}
-        </span>
-      );
-    }
+    var _fragments = [];
+    var _currentFragment = [];
 
-    _fragments.push(
-      <span key={index[0]} className="highlight">
-        {_entryLabel.slice(index[0], (index[1] + 1))}
-      </span>
-    );
+    tokenWithQuery[0].split("").forEach((char, index, array) => {
+      _currentFragment.push(char);
 
-    _fragmentedUntil = index[1] + 1;
-  })
+      var _highlightingThisChar = _.includes(
+        _matches,
+        index
+      )
+      var _highlightingNextChar = _.includes(
+        _matches,
+        (index + 1)
+      )
 
-  if (_fragmentedUntil !== _entryLabel.length) {
-    _fragments.push(
-      <span key={_fragmentedUntil}>
-        {_entryLabel.slice(_fragmentedUntil, _entryLabel.length)}
-      </span>
+      if (_highlightingThisChar !== _highlightingNextChar || (index + 1 === array.length)){
+        _fragments.push(
+          <span key={index} className={(_highlightingThisChar ? "highlight" : "")}>
+            { _currentFragment.join("") }
+          </span>
+        )
+
+        _currentFragment = [];
+      }
+    })
+
+    return(
+      <span key={index}>{ _fragments }</span>
     )
-  }
+  })
 
   return(
     <span>
-      {_fragments}
+      {
+        highlightedTokens.map((token, index) => {
+          return [token, <span key={`space${index}`}>{" "}</span>]
+        }).pwPipe(_.flatten)
+      }
     </span>
   )
 }

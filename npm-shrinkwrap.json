@@ -442,10 +442,10 @@
       "from": "esutils@>=2.0.2 <3.0.0",
       "resolved": "https://registry.npmjs.org/esutils/-/esutils-2.0.2.tgz"
     },
-    "fuse.js": {
-      "version": "2.5.0",
-      "from": "fuse.js@latest",
-      "resolved": "https://registry.npmjs.org/fuse.js/-/fuse.js-2.5.0.tgz"
+    "fuzzaldrin": {
+      "version": "2.1.0",
+      "from": "fuzzaldrin@latest",
+      "resolved": "https://registry.npmjs.org/fuzzaldrin/-/fuzzaldrin-2.1.0.tgz"
     },
     "get-stdin": {
       "version": "4.0.1",

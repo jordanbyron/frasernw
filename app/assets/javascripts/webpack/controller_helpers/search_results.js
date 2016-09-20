@@ -4,7 +4,7 @@ import hiddenFromUsers from "controller_helpers/hidden_from_users";
 import stringScore from "utils/string_score";
 import { urlCollectionName } from "controller_helpers/links";
 import { matchesUserDivisions } from "controller_helpers/preliminary_filters";
-import Fuse from "fuse.js";
+import { score, match } from "fuzzaldrin"
 
 export const selectedCollectionFilter = (model) => {
   return _.get(
@@ -37,13 +37,49 @@ export const entryLabel = (record) => {
   }
 }
 
-const fuseOptions = {
-  include: [ "score", "matches"],
-  keys: ["entryLabel"],
-  getFn: entryLabel,
-  tokenize: true,
-  threshold: 0.2,
-  distance: 10
+const MinScore = 0.1;
+
+const pwScore = (query, string) => {
+  var _queryTokens = query.split(/\s+/g)
+  var _stringTokens = string.split(/\s+/g)
+
+  var _stringTokensWithMatchedQueryTokens = _stringTokens.map((stringToken) => {
+    return [ stringToken , []];
+  });
+  var _queryTokensScores = _queryTokens.map((queryToken) => {
+    var _queryTokenScores = _stringTokens.map((stringToken) => {
+      return [ stringToken, score(stringToken, queryToken) ];
+    })
+
+    var _maxScoreIndex = findIndexOfGreatest(_queryTokenScores.map((score) => score[1]));
+    var _maxTokenScore = _queryTokenScores[_maxScoreIndex][1];
+
+    if(_maxTokenScore >= MinScore) {
+      _stringTokensWithMatchedQueryTokens[_maxScoreIndex][1].push(queryToken);
+
+      return _maxTokenScore;
+    }
+    else {
+      return 0;
+    }
+  })
+
+  return {
+    tokensWithMatchedQueries: _stringTokensWithMatchedQueryTokens,
+    score: (_.sum(_queryTokensScores)/_queryTokensScores.length),
+  };
+}
+
+var findIndexOfGreatest = (array) => {
+  var greatest;
+  var indexOfGreatest;
+  for (var i = 0; i < array.length; i++) {
+    if (!greatest || array[i] > greatest) {
+      greatest = array[i];
+      indexOfGreatest = i;
+    }
+  }
+  return indexOfGreatest;
 }
 
 export const searchResults = ((model) => {
@@ -53,9 +89,18 @@ export const searchResults = ((model) => {
 
   return toSearch(model).
     pwPipe((records) => {
-      let fuse = new Fuse(records, fuseOptions)
 
-      return fuse.search((model.ui.searchTerm || ""))
+      return records.map((record) => {
+        var _entryLabel = entryLabel(record);
+
+        return _.assign(
+          {
+            item: record,
+            entryLabel: _entryLabel
+          },
+          pwScore((model.ui.searchTerm || ""), _entryLabel)
+        )
+      })
     }).
     filter((decoratedRecord) => {
       return _.every(filters(model), (filter) => filter(decoratedRecord, model));
@@ -118,6 +163,8 @@ export const searchResults = ((model) => {
 
 const filters = ((model) => {
   let filters = []
+
+  filters.push((decoratedRecord) => decoratedRecord.score > MinScore);
 
   filters.push((decoratedRecord) => {
     return decoratedRecord.item.collectionName !== "contentItems" ||
