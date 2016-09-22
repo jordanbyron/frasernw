@@ -61,7 +61,14 @@ const enablePageScroll = () => {
 }
 
 const SearchResults = ({model, dispatch}) => {
-  if(searchResults(model).pwPipe(_.some)){
+  if (_.isNumber(model.ui.searchTimerId)){
+    return(
+      <ul className="search_results">
+        <li className="empty">Searching...</li>
+      </ul>
+    );
+  }
+  else if(searchResults(model).pwPipe(_.some)){
     return(
       <ul className="search_results">
         {

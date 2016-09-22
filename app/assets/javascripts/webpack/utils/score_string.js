@@ -25,7 +25,7 @@ const scoreString = (queryTokensSearchers, queried) => {
         filter((match) => match.queriedTokenIndex === index).
         map(_.property("matchIndices")).
         pwPipe(_.flatten).
-        map((indices) => _.range(indices[0], (indices[0] + indices[1] + 1))).
+        map((indices) => _.range(indices[0], indices[1] + 1)).
         pwPipe(_.flatten).
         pwPipe(_.uniq).
         sort()

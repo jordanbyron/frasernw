@@ -10,7 +10,6 @@ import ReactDOM from "react-dom";
 import rootReducer from "reducers/root_reducer";
 import React from "react";
 import updateUrlHash from "middlewares/update_url_hash";
-import setSearchListeners from "set_search_listeners";
 import { route } from "controller_helpers/routing";
 import {
   parseRenderedData,

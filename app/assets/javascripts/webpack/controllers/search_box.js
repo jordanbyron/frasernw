@@ -21,7 +21,7 @@ const SearchBox = ({model, dispatch}) => {
     <input className="span3 search-query icon" id="search navbar_search--query"
       onFocus={_.partial(searchFocused, dispatch, true)}
       onBlur={_.partial(searchFocused, dispatch, false)}
-      onChange={(e) => termSearched(dispatch, e.target.value)}
+      onChange={(e) => termSearched(model, dispatch, e.target.value)}
       onKeyDown={_.partial(handleKeyDown, model, dispatch)}
       value={model.ui.searchTerm}
       autoComplete="off"
@@ -50,7 +50,7 @@ const handleKeyDown = (model, dispatch, event) => {
     )
   }
   else if (event.keyCode === ENTER_KEY_CODE){
-    recordAnalytics(selectedSearchResultRecord(model), model);    
+    recordAnalytics(selectedSearchResultRecord(model), model);
     window.location = adjustedLink(model, selectedSearchResultRecord(model));
     closeSearch(dispatch);
   }
