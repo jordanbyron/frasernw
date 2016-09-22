@@ -83,8 +83,7 @@ export const searchResults = ((model) => {
         ],
         ["desc", "asc", "desc"]
       );
-    }).pwPipe((decoratedRecords) => _.take(decoratedRecords, 10)).
-    pwPipe((decoratedRecords) => {
+    }).pwPipe((decoratedRecords) => {
       return _.groupBy(decoratedRecords, _.property("raw.collectionName"));
     }).pwPipe((collections) => {
       return _.map(collections, (decoratedRecords, collectionName) => {
