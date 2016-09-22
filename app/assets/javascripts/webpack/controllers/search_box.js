@@ -16,19 +16,27 @@ import { link } from "controller_helpers/links";
 import { selectedCollectionFilter } from "controller_helpers/search_results";
 import { CollectionFilterValues } from "controller_helpers/search_filter_values";
 
-const SearchBox = ({model, dispatch}) => {
-  return(
-    <input className="span3 search-query icon" id="search navbar_search--query"
-      onFocus={_.partial(searchFocused, dispatch, true)}
-      onBlur={_.partial(searchFocused, dispatch, false)}
-      onChange={(e) => termSearched(model, dispatch, e.target.value)}
-      onKeyDown={_.partial(handleKeyDown, model, dispatch)}
-      value={model.ui.searchTerm}
-      autoComplete="off"
-      placeholder="&#xf002; Search"
-    />
-  );
-};
+const SearchBox = React.createClass({
+  componentDidMount: function() {
+    this.refs.query.focus();
+  },
+  render: function(){
+    var model, dispatch;
+    ({ model, dispatch } = this.props);
+
+    return(
+      <input className="span3 search-query icon" id="search" ref="query"
+        onFocus={_.partial(searchFocused, dispatch, true)}
+        onBlur={_.partial(searchFocused, dispatch, false)}
+        onChange={(e) => termSearched(model, dispatch, e.target.value)}
+        onKeyDown={_.partial(handleKeyDown, model, dispatch)}
+        value={model.ui.searchTerm}
+        autoComplete="off"
+        placeholder="&#xf002; Search"
+      />
+    );
+  }
+});
 
 const UP_KEY_CODE = 38;
 const DOWN_KEY_CODE = 40;
