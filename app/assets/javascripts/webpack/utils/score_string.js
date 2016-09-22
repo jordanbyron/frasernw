@@ -1,14 +1,6 @@
 const scoreString = (queryTokensSearchers, queried) => {
   const _queriedTokens = queried.split(/\s+/g)
 
-  // we need to know which terms in 'queried' we matched for calculating the bonus score
-  let _matchedQueriedTokenIndices = [];
-  // we also need to know which 'query' tokens matched which 'queried' tokens, so we
-  // can highlight 'queried' later
-  let _queriedTokensWithMatchedQueryTokens = _queriedTokens.map((queriedToken) => {
-    return [ queriedToken , []];
-  });
-
   const _queryTokensMatches = queryTokensSearchers.map((searcher) => {
     return _queriedTokens.
       reduce((bestMatch, queriedToken, queriedTokenIndex) => {

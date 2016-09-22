@@ -9,8 +9,9 @@ import { encode as encodeUrlHash } from "utils/url_hash_encoding";
 import BitapSearcher from "utils/bitap_searcher";
 
 const BitapOptions = {
-  threshold: 0.25,
-  distance: 5
+  threshold: 0.3,
+  distance: 5,
+  maxPatternLength: 20
 };
 
 export const selectedCollectionFilter = (model) => {
