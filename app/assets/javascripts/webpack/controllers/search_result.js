@@ -15,7 +15,6 @@ import {
 } from "action_creators";
 import ReferentStatusIcon from "controllers/referent_status_icon";
 import hiddenFromUsers from "controller_helpers/hidden_from_users";
-import * as FuzzAldrin from "fuzzaldrin"
 
 const SearchResult = ({model, dispatch, decoratedRecord}) => {
   return(
@@ -119,15 +118,13 @@ const InnerResult = (decoratedRecord, model) => {
 
 const HighlightedEntryLabel = ({decoratedRecord}) => {
   const _highlightedTokens = decoratedRecord.
-    queriedTokensWithMatchedQueryTokens.
-    reduce((accumulatingTokens, queriedTokenWithMatches, tokenIndex, iteratingOver) => {
+    queriedTokensWithMatchIndices.
+    reduce((accumulatingTokens, queriedTokenWithMatchIndices, tokenIndex, iteratingOver) => {
 
-    const _matchIndices = queriedTokenWithMatches[1].map((queryToken) => {
-      return FuzzAldrin.match(queriedTokenWithMatches[0], queryToken);
-    }).pwPipe(_.flatten).pwPipe(_.uniq).sort();
+    const _matchIndices = queriedTokenWithMatchIndices[1];
 
     let _currentFragment = [];
-    const _queriedTokenFragments = queriedTokenWithMatches[0].
+    const _queriedTokenFragments = queriedTokenWithMatchIndices[0].
       split("").
       reduce((accumulatingFragments, char, indexWithinToken, iteratingOver) => {
 

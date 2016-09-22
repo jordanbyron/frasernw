@@ -1,6 +1,9 @@
-import * as FuzzAldrin from "fuzzaldrin";
+import BitapSearcher from "utils/bitap_searcher";
 
-const MinQueryTokenScore = 0.1;
+const BitapOptions = {
+  threshold: 0.25,
+  distance: 5
+};
 
 const scoreString = (query, queried) => {
   const _queryTokens = query.split(/\s+/g)
@@ -14,42 +17,48 @@ const scoreString = (query, queried) => {
     return [ queriedToken , []];
   });
 
-  const _queryTokensScores = _queryTokens.map((queryToken) => {
-    const _maxQueryTokenScore = _queriedTokens.
-      reduce((currentMax, queriedToken, queriedTokenIndex) => {
+  const _queryTokensMatches = _queryTokens.map((queryToken) => {
+    return _queriedTokens.
+      reduce((bestMatch, queriedToken, queriedTokenIndex) => {
 
-      const _score = FuzzAldrin.score(queriedToken, queryToken)
+      const _searchResult= new BitapSearcher(queryToken, BitapOptions).search(queriedToken)
+      const _score = (1 - _searchResult.score);
 
-      if (_score > currentMax.val){
-        currentMax.val = _score;
-        currentMax.queriedIndex = queriedTokenIndex;
+      if (_searchResult.isMatch && _score > bestMatch.score){
+        bestMatch.score = _score;
+        bestMatch.queriedTokenIndex = queriedTokenIndex;
+        bestMatch.matchIndices = _searchResult.matchedIndices;
       }
 
-      return currentMax;
-    }, { val: 0, queriedIndex: null })
+      return bestMatch;
+    }, { score: 0, queriedTokenIndex: null, matchIndices: [] })
+  });
 
-    if (_maxQueryTokenScore.val >= MinQueryTokenScore) {
+  // if(_.every(_queryTokensMatches, (match) => match.score > 0)){
+  //   console.log(_queryTokensMatches);
+  // }
 
-      _queriedTokensWithMatchedQueryTokens[_maxQueryTokenScore.queriedIndex][1].
-        push(queryToken);
-      _matchedQueriedTokenIndices.push(_maxQueryTokenScore.queriedIndex);
-
-      return _maxQueryTokenScore;
-    }
-    else {
-
-      // 'query' token didn't match
-      return 0;
-    }
-  })
+  const _queriedTokensWithMatchIndices = _queriedTokens.map((queriedToken, index) => {
+    return [
+      queriedToken ,
+      _queryTokensMatches.
+        filter((match) => match.queriedTokenIndex === index).
+        map(_.property("matchIndices")).
+        pwPipe(_.flatten).
+        map((indices) => _.range(indices[0], (indices[0] + indices[1] + 1))).
+        pwPipe(_.flatten).
+        pwPipe(_.uniq).
+        sort()
+    ];
+  });
 
   return {
-    queriedTokensWithMatchedQueryTokens: _queriedTokensWithMatchedQueryTokens,
     score: overallScore(
-      _queryTokensScores,
-      _.uniq(_matchedQueriedTokenIndices).length,
+      _queryTokensMatches.map(_.property("score")),
+      _queryTokensMatches.map(_.property("queriedTokenIndex")).pwPipe(_.uniq).length,
       _queriedTokens.length
-    )
+    ),
+    queriedTokensWithMatchIndices: _queriedTokensWithMatchIndices
   };
 }
 
@@ -67,7 +76,7 @@ const overallScore = (queryTokensScores, matchedQueriedTokensCount, queriedToken
     // Specifically thinking of areas of practice here:
     // If we search 'knee', we want 'knee' to be first, not 'knee arthroscopy',
     // for instance.
-    const _queriedTokensBonus = 0.01 * (matchedQueriedTokensCount / queriedTokensCount);
+    const _queriedTokensBonus = 0.0001 * (matchedQueriedTokensCount / queriedTokensCount);
 
     return _averageQueryTokenScore + _queriedTokensBonus;
   }

@@ -64,10 +64,9 @@ export const searchResults = ((model) => {
       return _.sortByOrder(
         decoratedRecords,
         [
-          (decoratedRecord) => groupOrder[decoratedRecord.raw.collectionName],
           _.property("score"),
         ],
-        ["asc", "desc"]
+        ["desc"]
       );
     }).pwPipe((decoratedRecords) => _.take(decoratedRecords, 10)).
     pwPipe((decoratedRecords) => {
