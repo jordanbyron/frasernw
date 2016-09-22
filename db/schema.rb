@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160916225708) do
+ActiveRecord::Schema.define(version: 20160922143318) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -461,24 +461,6 @@ ActiveRecord::Schema.define(version: 20160916225708) do
   add_index "locations", ["locatable_id", "locatable_type"], name: "index_locations_on_locatable_id_and_locatable_type", using: :btree
   add_index "locations", ["locatable_id", "location_in_id"], name: "index_locations_on_locatable_id_and_location_in_id", using: :btree
   add_index "locations", ["location_in_id"], name: "index_locations_on_location_in_id", using: :btree
-
-  create_table "metrics", force: true do |t|
-    t.integer  "month_stamp",                    null: false
-    t.integer  "division_id"
-    t.string   "page_path"
-    t.integer  "user_type_key"
-    t.integer  "sessions"
-    t.integer  "page_views"
-    t.integer  "visitor_accounts_min5sessions"
-    t.integer  "visitor_accounts_min10sessions"
-    t.integer  "visitor_accounts"
-    t.integer  "average_session_duration"
-    t.integer  "average_page_view_duration"
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
-  end
-
-  add_index "metrics", ["user_type_key", "division_id", "page_path"], name: "metrics_dimensions", using: :btree
 
   create_table "news_items", force: true do |t|
     t.date     "start_date"
