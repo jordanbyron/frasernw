@@ -1,7 +1,7 @@
 / Form Notes:
 /   .all-updates = form options relevant to all subscription types
 /   .news-updates = form options for news_update classifiation
-/   .resource-updates = form options for resource_update classification
+/   .content-item-updates = form options for resource_update classification
 /   f.input :all_ + method_name form fields are fake checkboxes used for Javascript selectors
 
 = simple_form_for @subscription,
@@ -12,13 +12,13 @@
   .form-inputs
     %h2
       This Custom Notification is for:
-    = f.input :classification,
+    = f.input :target_class,
       as: :radio_buttons,
-      collection: classification_options,
+      collection: Subscription::TARGET_CLASSES,
       label_method: :last,
-      value_method: :last,
+      value_method: :first,
       include_blank: false,
-      label: "Pick an update type:"
+      label: "Pick an notification type:"
 
     = f.input :user_id, as: :hidden
     .news-updates
@@ -39,7 +39,7 @@
         label: "Only for:",
         input_html: {class: "news_type-option"}
 
-    .resource-updates
+    .content-item-updates
       %hr
       %h2
         Notify me of changes to these Content Categories:
@@ -57,11 +57,11 @@
         label: "Only for:",
         input_html: {class: "sc_category-option"}
 
-    .resource-updates
+    .content-item-updates
       %hr
       #container
         %h2
-          Notify me when Resources for these Specialties change:
+          Notify me when Content Items for these Specialties change:
 
         = f.input :all_specializations,
           label: "All Specialties",
@@ -77,7 +77,7 @@
           label: "Only for:",
           input_html: { class: "specialization-option"}
 
-    .resource-updates
+    .content-item-updates
       %hr
       %h2
         When in these formats:
@@ -127,16 +127,16 @@
 
 :javascript
   $(document).ready(function() {
-    if ($("#subscription_classification_news_updates").is(":checked"))
+    if ($("#subscription_target_class_newsitem").is(":checked"))
     {
-      $(".resource-updates").hide();
+      $(".content-item-updates").hide();
       $(".news-updates").fadeIn(300).show();
 
     }
-    else if ($("#subscription_classification_resource_updates").is(":checked"))
+    else if ($("#subscription_target_class_scitem").is(":checked"))
     {
       $(".news-updates").hide();
-      $(".resource-updates").fadeIn(300).show();
+      $(".content-item-updates").fadeIn(300).show();
     }
 
        // On page load, make sure "Check All" style checkbox is pre-checked if every choice was already checked

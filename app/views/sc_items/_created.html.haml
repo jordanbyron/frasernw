@@ -1,0 +1,8 @@
+- if !sc_item.division.nil?
+  = link_to sc_item.division.name, division_url(sc_item.division)
+= "added a new #{sc_item.type_label} to #{sc_item.sc_category.name}: "
+= link_to "#{sc_item.title} ",
+  sc_item_url(sc_item)
+%span= "[#{sc_item.format.downcase}]"
+- if sc_item.specializations.present?
+  = "(#{sc_item.specializations.uniq.map(&:name).to_sentence})"

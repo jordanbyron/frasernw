@@ -1,3 +1,6 @@
+# V3 API reference:
+# https://developers.google.com/analytics/devguides/reporting/core/v3/reference
+
 # Handles construction of request params from simple query api and parsing of responses
 module Analytics
   class ApiAdapter
@@ -95,7 +98,9 @@ module Analytics
       page_path: "ga:pagePath",
       event_category: "ga:eventCategory",
       event_label: "ga:eventLabel",
-      event_action: "ga:eventAction"
+      event_action: "ga:eventAction",
+      browser: "ga:browser",
+      browser_version: "ga:browserVersion"
     }
     def self.format_dimensions(dimensions)
       dimensions.map do |elem|

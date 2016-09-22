@@ -232,6 +232,8 @@ const toSearch = (model) => {
     return _.values(model.app.specialists);
   case "Clinics":
     return _.values(model.app.clinics);
+  case "Areas of Practice":
+    return _.values(model.app.procedures);
   default:
     return _.values(model.app.contentItems);
   }

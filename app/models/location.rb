@@ -67,4 +67,8 @@ class Location < ActiveRecord::Base
   def visible?
     city && !city.hidden?
   end
+
+  def divisions
+    resolved_address.try(:divisions) || []
+  end
 end

@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   include ControllerAuthentication
-  include PublicActivity::StoreController
   before_filter :require_authentication
   before_filter :set_heartbeat_loader
   before_filter :load_application_layout_data

@@ -8,36 +8,31 @@
     = "Generated on #{Time.now.strftime('%A %B %d')} at "
     = Time.now.strftime('%I:%M %p')
 
-  - if @specialist_email_table.present?
-
-    %table.table.table-condensed.table-striped
+  %table.table.table-condensed.table-striped
+    %tr
+      %th Specialist
+      %th Controlling User Email(s)
+      %th MOA Contact Email(s)
+      %th{ style: "min-width:100px" } Last modified
+      %th{ style: "min-width:100px" } Last updated via review queue
+    - @specialization_specialists.each do |specialization_name, entries|
       %tr
-        %th Specialist
-        %th Email(s)
-        %th{ style: "min-width:100px" } Last modified
-        %th{ style: "min-width:100px" } Last updated via review queue
-      - @specialist_email_table.each do |specialization_id, entries|
+        %th{ colspan: 5 }= specialization_name
+      - entries.each do |entry|
         %tr
-          %th{ colspan: 5 }= Specialization.find(specialization_id).name
-        - entries.each do |entry|
-          %tr
-            %td
-              %a.ajax{ href: "/specialists/#{entry[:id]}" }= entry[:name]
-            %td
-              %ul
-                - entry[:user_email].uniq.map{ |e| mail_to e }.each do |e|
-                  %li
-                    %b= e.html_safe
-                - (entry[:moa_email] - entry[:user_email]).uniq.map{ |e| mail_to e }.each do |e|
-                  %li= e.html_safe
-            %td= entry[:updated_at].strftime("%Y-%m-%d")
-            %td
-              - if entry[:linked_active_account_count] > 0
-                - if entry[:reviewed_at].present?
-                  = entry[:reviewed_at].strftime("%Y-%m-%d")
-                - else
-                  review queue not used
-              - elsif entry[:linked_pending_account_count] > 0
-                account not activated
-              - else
-                no user account linked to office
+          %td
+            %a{ href: "/specialists/#{entry[:id]}" }= entry[:name]
+          %td
+            %ul
+              - entry[:user_email].uniq.map{ |email| mail_to(email) }.each do |link|
+                %li= link.html_safe
+          %td
+            %ul
+              - entry[:moa_email].map{ |email| mail_to(email) }.each do |link|
+                %li= link.html_safe
+          %td= entry[:updated_at].strftime("%Y-%m-%d")
+          %td
+            - if entry[:reviewed_at].present?
+              = entry[:reviewed_at].strftime("%Y-%m-%d")
+            - else
+              review queue not used

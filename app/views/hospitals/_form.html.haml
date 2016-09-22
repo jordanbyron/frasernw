@@ -1,4 +1,4 @@
-= simple_form_for @hospital, :html => { :class => "form-horizontal ajax" } do |f|
+= simple_form_for @hospital, html: { class: "form-horizontal" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
@@ -9,23 +9,23 @@
   %h3 Hospital Contact Information
 
   = f.input :phone do
-    = f.input_field :phone, :class => "span3"
+    = f.input_field :phone, class: "span3"
     .span1
       ext:
-    = f.input_field :phone_extension, :class => "span1"
-  = f.input :fax, :input_html => { :class => "span3" }
+    = f.input_field :phone_extension, class: "span1"
+  = f.input :fax, input_html: { class: "span3" }
 
   = f.simple_fields_for :location do |l|
     = l.simple_fields_for :address do |a|
-      = a.input :suite, :input_html => { :class => "span1" }
+      = a.input :suite, input_html: { class: "span1" }
       = a.input :address1
       = a.input :address2
       = a.association :city,
         as: :select,
-        collection: City.all_formatted_for_select,
+        collection: City.divisional_choices(current_user),
         include_blank: true
-      = a.input :postalcode, :input_html => { :class => "span1" }
+      = a.input :postalcode, input_html: { class: "span1" }
 
     .form-actions
-      = f.button :submit, :class => "btn btn-primary"
-      = link_to 'Cancel', hospitals_path, :class => "btn btn-danger ajax"
+      = f.button :submit, class: "btn btn-primary"
+      = link_to 'Cancel', hospitals_path, class: "btn btn-danger"

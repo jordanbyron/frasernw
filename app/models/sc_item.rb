@@ -1,3 +1,5 @@
+require 'uri'
+
 class ScItem < ActiveRecord::Base
   include Noteable
   include Historical
@@ -6,12 +8,6 @@ class ScItem < ActiveRecord::Base
   include DivisionAdministered
 
   include ApplicationHelper
-  include PublicActivity::Model
-
-  has_many :activities,
-    as: :trackable,
-    class_name: 'SubscriptionActivity',
-    dependent: :destroy
 
   attr_accessible :sc_category_id,
     :specialization_ids,
@@ -272,8 +268,14 @@ class ScItem < ActiveRecord::Base
     tool
   end
 
-  FORMAT_TYPE_INTERNAL = 0
-  FORMAT_TYPE_EXTERNAL = 1
+  def type_label
+    if type_mask == TYPE_MARKDOWN
+      "Markdown Item"
+    else
+      type
+    end
+  end
+
   FORMAT_TYPE_HTML = 2
   FORMAT_TYPE_IMAGE = 3
   FORMAT_TYPE_PDF = 4
@@ -326,8 +328,7 @@ class ScItem < ActiveRecord::Base
 
   def domain
     if link?
-      require 'uri'
-      URI.parse(url).host
+      SystemNotifier.catch_error(URI::InvalidURIError){ URI.parse(url).host }
     else
       return "Pathways"
     end
@@ -335,10 +336,6 @@ class ScItem < ActiveRecord::Base
 
   def format
     case format_type
-      when FORMAT_TYPE_INTERNAL
-        "Pathways"
-      when FORMAT_TYPE_EXTERNAL
-        "Website"
       when FORMAT_TYPE_HTML
         "Website"
       when FORMAT_TYPE_IMAGE
