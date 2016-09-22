@@ -1,6 +1,5 @@
 import React from "react";
 import * as filterValues from "controller_helpers/filter_values";
-import { link } from "controller_helpers/links";
 
 const EntityPageViewRow = ({decoratedRecord, model}) => {
   return(
@@ -16,7 +15,7 @@ const EntityDivisions = ({decoratedRecord, model}) => {
   if (["clinics","specialists"].includes(filterValues.entityType(model))) {
     return(
       <td>
-        <span>{ EntityDivisionNames(decoratedRecord, model) }</span>
+        <span>{ entityDivisionNames(decoratedRecord, model) }</span>
       </td>
     )
   }
@@ -27,7 +26,7 @@ const EntityDivisions = ({decoratedRecord, model}) => {
   }
 }
 
-const EntityDivisionNames = (decoratedRecord, model) => {
+const entityDivisionNames = (decoratedRecord, model) => {
   return (
     model.app[filterValues.entityType(model)][decoratedRecord.raw.id].
       divisionIds.map((id) => model.app.divisions[id].name).
