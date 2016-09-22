@@ -1,12 +1,4 @@
-import BitapSearcher from "utils/bitap_searcher";
-
-const BitapOptions = {
-  threshold: 0.25,
-  distance: 5
-};
-
-const scoreString = (query, queried) => {
-  const _queryTokens = query.split(/\s+/g)
+const scoreString = (queryTokensSearchers, queried) => {
   const _queriedTokens = queried.split(/\s+/g)
 
   // we need to know which terms in 'queried' we matched for calculating the bonus score
@@ -17,11 +9,11 @@ const scoreString = (query, queried) => {
     return [ queriedToken , []];
   });
 
-  const _queryTokensMatches = _queryTokens.map((queryToken) => {
+  const _queryTokensMatches = queryTokensSearchers.map((searcher) => {
     return _queriedTokens.
       reduce((bestMatch, queriedToken, queriedTokenIndex) => {
 
-      const _searchResult= new BitapSearcher(queryToken, BitapOptions).search(queriedToken)
+      const _searchResult = searcher.search(queriedToken)
       const _score = (1 - _searchResult.score);
 
       if (_searchResult.isMatch && _score > bestMatch.score){
@@ -33,10 +25,6 @@ const scoreString = (query, queried) => {
       return bestMatch;
     }, { score: 0, queriedTokenIndex: null, matchIndices: [] })
   });
-
-  // if(_.every(_queryTokensMatches, (match) => match.score > 0)){
-  //   console.log(_queryTokensMatches);
-  // }
 
   const _queriedTokensWithMatchIndices = _queriedTokens.map((queriedToken, index) => {
     return [

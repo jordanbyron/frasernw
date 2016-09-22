@@ -6,6 +6,12 @@ import { matchesUserDivisions } from "controller_helpers/preliminary_filters";
 import scoreString from "utils/score_string";
 import { link } from "controller_helpers/links";
 import { encode as encodeUrlHash } from "utils/url_hash_encoding";
+import BitapSearcher from "utils/bitap_searcher";
+
+const BitapOptions = {
+  threshold: 0.25,
+  distance: 5
+};
 
 export const selectedCollectionFilter = (model) => {
   return _.get(
@@ -47,14 +53,18 @@ export const searchResults = ((model) => {
   return toSearch(model).
     pwPipe((records) => {
       return records.map((record) => {
-        var _entryLabel = entryLabel(record);
+        const _entryLabel = entryLabel(record);
+        const _queryTokens = (model.ui.searchTerm || "").split(/\s+/g);
+        const _queryTokensSearchers = _queryTokens.map((token) => {
+          return new BitapSearcher(token, BitapOptions)
+        })
 
         return _.assign(
           {
             raw: record,
             entryLabel: _entryLabel
           },
-          scoreString((model.ui.searchTerm || ""), _entryLabel)
+          scoreString(_queryTokensSearchers, _entryLabel)
         )
       })
     }).
