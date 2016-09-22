@@ -52,6 +52,9 @@ export const searchResults = ((model) => {
   }
 
   return toSearch(model).
+    filter((record) => {
+      return _.every(filters(model), (filter) => filter(record, model));
+    }).
     pwPipe((records) => {
       return records.map((record) => {
         const _entryLabel = entryLabel(record);
@@ -69,9 +72,8 @@ export const searchResults = ((model) => {
         )
       })
     }).
-    filter((decoratedRecord) => {
-      return _.every(filters(model), (filter) => filter(decoratedRecord, model));
-    }).pwPipe((decoratedRecords) => {
+    filter((decoratedRecord) => decoratedRecord.queryScore > 0 ).
+    pwPipe((decoratedRecords) => {
       return _.sortByOrder(
         decoratedRecords,
         [
@@ -157,52 +159,50 @@ const labelGroup = (model, collectionName) => {
 const filters = ((model) => {
   let filters = []
 
-  filters.push((decoratedRecord) => decoratedRecord.queryScore > 0);
-
-  filters.push((decoratedRecord) => {
-    return decoratedRecord.raw.collectionName !== "contentItems" ||
+  filters.push((record) => {
+    return record.collectionName !== "contentItems" ||
       (_.includes(["super", "admin"], model.app.currentUser.role) &&
         selectedGeographicFilter(model) === "All Divisions") ||
-      matchesUserDivisions(decoratedRecord.raw, model)
+      matchesUserDivisions(record, model)
   })
 
-  filters.push((decoratedRecord) => {
+  filters.push((record) => {
     return !_.includes(
       ["contentItems", "contentCategories"],
-      decoratedRecord.raw.collectionName
-    ) || decoratedRecord.raw.searchable;
+      record.collectionName
+    ) || record.searchable;
   })
 
   if (selectedCollectionFilter(model) === "Physician Resources"){
-    filters.push((decoratedRecord) => {
+    filters.push((record) => {
       return _.intersection(
-        decoratedRecord.raw.categoryIds,
+        record.categoryIds,
         [ pearlsId(model), redFlagsId(model), physicianResourcesId(model) ]
       ).pwPipe(_.any)
     })
   }
 
   if (selectedCollectionFilter(model) === "Patient Info"){
-    filters.push((decoratedRecord) => {
+    filters.push((record) => {
       return _.includes(
-        decoratedRecord.raw.categoryIds,
+        record.categoryIds,
         patientInfoId(model)
       )
     })
   }
 
   if (selectedGeographicFilter(model) === "My Regional Divisions"){
-    filters.push((decoratedRecord) => {
+    filters.push((record) => {
       return !_.includes(
         ["clinics", "specialists"],
-        decoratedRecord.raw.collectionName
-      ) || shownInLocalReferralArea(decoratedRecord, model)
+        record.collectionName
+      ) || shownInLocalReferralArea(record, model)
     })
   }
 
   if (model.app.currentUser.role === "user"){
-    filters.push((decoratedRecord) => {
-      return !hiddenFromUsers(decoratedRecord.raw, model)
+    filters.push((record) => {
+      return !hiddenFromUsers(record, model)
     })
   }
 
@@ -225,17 +225,17 @@ export const highlightSelectedSearchResult = (model) => {
   );
 }
 
-const shownInLocalReferralArea = (decoratedRecord, model) => {
+const shownInLocalReferralArea = (record, model) => {
   return _.some(model.app.currentUser.divisionIds, (divisionId) => {
     return _.some(
-      decoratedRecord.raw.specializationIds,
+      record.specializationIds,
       (specializationId) => {
         return !_.includes(
           model.app.specializations[specializationId].hiddenInDivisionIds,
           divisionId
         ) && _.intersection(
           model.app.divisions[divisionId].referralCities[specializationId],
-          decoratedRecord.raw.cityIds
+          record.cityIds
         ).pwPipe(_.any)
       }
     )
