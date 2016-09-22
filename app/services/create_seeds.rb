@@ -2,7 +2,6 @@ class CreateSeeds < ServiceObject
   def call
     raise "Can't run that here" if ENV["APP_NAME"] === "pathwaysbc"
 
-    PublicActivity.enabled = false
     PaperTrail.enabled = false
 
     [
@@ -20,7 +19,6 @@ class CreateSeeds < ServiceObject
       send(method)
     end
 
-    PublicActivity.enabled = true
     PaperTrail.enabled = true
   end
 

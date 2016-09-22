@@ -1,11 +1,6 @@
 class NewsItem < ActiveRecord::Base
   include ActionView::Helpers::TextHelper
 
-  has_many :activities,
-    as: :trackable,
-    class_name: 'SubscriptionActivity',
-    dependent: :destroy
-
   validates :owner_division_id, presence: true
 
   attr_accessible :owner_division_id,

@@ -9,11 +9,6 @@ class ScItem < ActiveRecord::Base
 
   include ApplicationHelper
 
-  has_many :activities,
-    as: :trackable,
-    class_name: 'SubscriptionActivity',
-    dependent: :destroy
-
   attr_accessible :sc_category_id,
     :specialization_ids,
     :type_mask,
