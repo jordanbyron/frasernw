@@ -64,9 +64,11 @@ export const searchResults = ((model) => {
       return _.sortByOrder(
         decoratedRecords,
         [
-          _.property("score"),
+          _.property("queryScore"),
+          (decoratedRecord) => groupOrder[decoratedRecord.raw.collectionName],
+          _.property("queriedScore")
         ],
-        ["desc"]
+        ["desc", "asc", "desc"]
       );
     }).pwPipe((decoratedRecords) => _.take(decoratedRecords, 10)).
     pwPipe((decoratedRecords) => {
@@ -81,7 +83,7 @@ export const searchResults = ((model) => {
                   label: model.app.contentCategories[id].fullName,
                   decoratedRecords: decoratedRecords.
                     pwPipe((records) => {
-                      return _.sortByOrder(records, _.property("score"), "desc");
+                      return _.sortByOrder(records, _.property("queryScore"), "desc");
                     }),
                   order: groupOrder["contentItems"]
                 };
@@ -92,7 +94,7 @@ export const searchResults = ((model) => {
           return {
             label: labelGroup(model, collectionName),
             decoratedRecords: decoratedRecords.
-              pwPipe((records) => _.sortByOrder(records, _.property("score"), "desc")),
+              pwPipe((records) => _.sortByOrder(records, _.property("queryScore"), "desc")),
             order: groupOrder[collectionName]
           }
         }
@@ -144,7 +146,7 @@ const labelGroup = (model, collectionName) => {
 const filters = ((model) => {
   let filters = []
 
-  filters.push((decoratedRecord) => decoratedRecord.score > 0);
+  filters.push((decoratedRecord) => decoratedRecord.queryScore > 0);
 
   filters.push((decoratedRecord) => {
     return decoratedRecord.raw.collectionName !== "contentItems" ||

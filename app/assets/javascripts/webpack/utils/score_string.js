@@ -53,8 +53,12 @@ const scoreString = (query, queried) => {
   });
 
   return {
-    score: overallScore(
+    queryScore: queryScore(
       _queryTokensMatches.map(_.property("score")),
+      _queryTokensMatches.map(_.property("queriedTokenIndex")).pwPipe(_.uniq).length,
+      _queriedTokens.length
+    ),
+    queriedScore: queriedScore(
       _queryTokensMatches.map(_.property("queriedTokenIndex")).pwPipe(_.uniq).length,
       _queriedTokens.length
     ),
@@ -62,23 +66,18 @@ const scoreString = (query, queried) => {
   };
 }
 
-const overallScore = (queryTokensScores, matchedQueriedTokensCount, queriedTokensCount) => {
+const queriedScore = (matchedQueriedTokensCount, queriedTokensCount) => {
+  return matchedQueriedTokensCount / queriedTokensCount;
+}
+
+const queryScore = (queryTokensScores, matchedQueriedTokensCount, queriedTokensCount) => {
   if (queryTokensScores.some((val) => val === 0)){
 
     // All 'query' tokens must match, or else 'queried' isn't a match
     return 0;
   }
   else {
-    const _averageQueryTokenScore = (_.sum(queryTokensScores)/queryTokensScores.length)
-
-    // Bonus based on the proportion of 'queried' matched should act as a tiebreaker
-    // in case the same matches crop up in multiple 'queried's.
-    // Specifically thinking of areas of practice here:
-    // If we search 'knee', we want 'knee' to be first, not 'knee arthroscopy',
-    // for instance.
-    const _queriedTokensBonus = 0.0001 * (matchedQueriedTokensCount / queriedTokensCount);
-
-    return _averageQueryTokenScore + _queriedTokensBonus;
+    return (_.sum(queryTokensScores)/queryTokensScores.length);
   }
 };
 
