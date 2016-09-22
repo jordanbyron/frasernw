@@ -30,6 +30,7 @@ const entityDivisionNames = (decoratedRecord, model) => {
   return (
     model.app[filterValues.entityType(model)][decoratedRecord.raw.id].
       divisionIds.map((id) => model.app.divisions[id].name).
+      sort().
       to_sentence()
   )
 }
