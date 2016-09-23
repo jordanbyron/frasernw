@@ -105,29 +105,41 @@ export const groupedSearchResults = ((model) => {
           return _.groupBy(decoratedRecords, _.property("raw.categoryId")).
             pwPipe((categories) => {
               return _.map(categories, (decoratedRecords, id) => {
+                const _scores = decoratedRecords.map(_.property("queryScore"));
+
                 return {
                   label: model.app.contentCategories[id].fullName,
                   decoratedRecords: decoratedRecords.
                     pwPipe((records) => {
                       return _.sortByOrder(records, _.property("queryScore"), "desc");
                     }),
-                  order: groupOrder["contentItems"]
+                  groupOrder: groupOrder["contentItems"],
+                  maxScore: _.max(_scores),
+                  meanScore: _scores / _scores.length
                 };
               })
             });
         }
         else {
+          const _scores = decoratedRecords.map(_.property("queryScore"));
+
           return {
             label: labelGroup(model, collectionName),
             decoratedRecords: decoratedRecords.
               pwPipe((records) => _.sortByOrder(records, _.property("queryScore"), "desc")),
-            order: groupOrder[collectionName]
+            groupOrder: groupOrder[collectionName],
+            maxScore: _.max(_scores),
+            meanScore: _scores / _scores.length
           }
         }
       });
     }).pwPipe(_.flatten).
     pwPipe((groups) => {
-      return _.sortByOrder(groups, _.property("order"), "asc");
+      return _.sortByOrder(
+        groups,
+        [_.property("maxScore"), _.property("meanScore"), _.property("groupOrder")],
+        ["desc", "desc", "asc"]
+      );
     }).pwPipe((groups) => {
       let index = 0;
 
