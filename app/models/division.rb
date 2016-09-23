@@ -7,7 +7,7 @@ class Division < ActiveRecord::Base
     :use_customized_city_priorities,
     :featured_contents_attributes,
     :use_other_homepage,
-    :custom_homepage_as_id
+    :other_homepage_as_id
 
   has_many :division_cities, dependent: :destroy
 
@@ -32,7 +32,7 @@ class Division < ActiveRecord::Base
 
   has_many :sc_items
 
-  belongs_to :custom_homepage_as, class_name: "Division"
+  belongs_to :other_homepage_as, class_name: "Division"
 
   has_many :subscription_divisions, dependent: :destroy
   has_many :subscriptions, through: :subscription_divisions
@@ -108,7 +108,7 @@ class Division < ActiveRecord::Base
 
   def homepage_as
     if use_other_homepage?
-      custom_homepage_as
+      other_homepage_as
     else
       self
     end

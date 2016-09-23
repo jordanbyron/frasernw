@@ -6,7 +6,7 @@ module SeedCreators
       updated_at: :pass_through,
       use_customized_city_priorities: :pass_through,
       use_other_homepage: :pass_through,
-      custom_homepage_as_id: :pass_through
+      other_homepage_as_id: :pass_through
     }
   end
 end

@@ -24,7 +24,7 @@
 
   = f.input :use_other_homepage,
     label: "Use another division's homepage?"
-  = f.input :custom_homepage_as_id,
+  = f.input :other_homepage_as_id,
     as: :select,
     collection: Division.all.reject{|division| division == @division},
     label_method: :name,
@@ -145,10 +145,10 @@
 
   var updateHomepage = function() {
     if($("#division_use_other_homepage").attr("checked") === "checked"){
-      $(".division_custom_homepage_as_id").show()
+      $(".division_other_homepage_as_id").show()
     }
     else {
-      $(".division_custom_homepage_as_id").hide()
+      $(".division_other_homepage_as_id").hide()
     }
   }
 

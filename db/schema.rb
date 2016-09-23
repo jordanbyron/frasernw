@@ -17,32 +17,6 @@ ActiveRecord::Schema.define(version: 20160917001734) do
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
 
-  create_table "activities", force: true do |t|
-    t.integer  "trackable_id"
-    t.string   "trackable_type"
-    t.integer  "owner_id"
-    t.string   "owner_type"
-    t.string   "key"
-    t.text     "parameters"
-    t.integer  "recipient_id"
-    t.string   "recipient_type"
-    t.string   "update_classification_type"
-    t.integer  "type_mask"
-    t.text     "type_mask_description"
-    t.integer  "format_type"
-    t.text     "format_type_description"
-    t.integer  "parent_id"
-    t.string   "parent_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "activities", ["owner_id", "owner_type"], name: "index_activities_on_owner_id_and_owner_type", using: :btree
-  add_index "activities", ["parent_id", "parent_type"], name: "index_activities_on_parent_id_and_parent_type", using: :btree
-  add_index "activities", ["recipient_id", "recipient_type"], name: "index_activities_on_recipient_id_and_recipient_type", using: :btree
-  add_index "activities", ["trackable_id", "trackable_type"], name: "index_activities_on_trackable_id_and_trackable_type", using: :btree
-  add_index "activities", ["type_mask", "type_mask_description"], name: "index_activities_on_type_mask_and_type_mask_description", using: :btree
-
   create_table "addresses", force: true do |t|
     t.string   "address1"
     t.string   "suite"
@@ -315,7 +289,7 @@ ActiveRecord::Schema.define(version: 20160917001734) do
     t.datetime "updated_at"
     t.boolean  "use_customized_city_priorities", default: false
     t.boolean  "use_other_homepage"
-    t.integer  "custom_homepage_as_id"
+    t.integer  "other_homepage_as_id"
   end
 
   create_table "edits", force: true do |t|
@@ -947,7 +921,7 @@ ActiveRecord::Schema.define(version: 20160917001734) do
 
   create_table "subscriptions", force: true do |t|
     t.integer  "user_id"
-    t.string   "classification"
+    t.string   "target_class"
     t.string   "news_type"
     t.datetime "created_at"
     t.datetime "updated_at"
