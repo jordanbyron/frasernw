@@ -51,7 +51,7 @@ const handleKeyDown = (model, dispatch, event) => {
       (selectedSearchResult(model) - 1)
     )
   }
-  else if (event.keyCode === DOWN_KEY_CODE && selectedSearchResult(model) < 10) {
+  else if (event.keyCode === DOWN_KEY_CODE) {
     searchResultSelected(
       dispatch,
       (selectedSearchResult(model) + 1)
