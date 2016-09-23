@@ -3,16 +3,13 @@
   method: :patch do |f|
   - if !f.error_messages.blank?
     .alert.alert-error= f.error_messages
-
   = f.input :id, as: :hidden
 
   - ScCategory.front_page.each do |category|
     %h4= category.name
-
     - contents = @division.featured_contents.select do |content|
       - content.sc_category_id == category.id
-    - items = category.all_sc_items_in_divisions([@division]).sort do |a,b|
-      - a.name <=> b.name
+    - items = category.all_sc_items_in_divisions([@division]).sort_by(&:name)
     = f.simple_fields_for :featured_contents, contents do |fields|
       = fields.association :sc_item,
         collection: items,
