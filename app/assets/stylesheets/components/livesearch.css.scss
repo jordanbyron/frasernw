@@ -87,6 +87,10 @@
   input#search:-moz-placeholder {
     font-family: "Helvetica Neue", "FontAwesome", Helvetica, Arial, sans-serif;
   }
+
+  span.highlight {
+    background-color: #ffd1b3;
+  }
 }
 
 // This is a hack to get I.E. 10 to re-render the body after we call

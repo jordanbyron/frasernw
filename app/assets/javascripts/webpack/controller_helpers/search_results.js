@@ -1,9 +1,18 @@
 import _ from "lodash";
 import { memoizePerRender, memoize } from "utils";
 import hiddenFromUsers from "controller_helpers/hidden_from_users";
-import stringScore from "utils/string_score";
 import { urlCollectionName } from "controller_helpers/links";
 import { matchesUserDivisions } from "controller_helpers/preliminary_filters";
+import scoreString from "utils/score_string";
+import { link } from "controller_helpers/links";
+import { encode as encodeUrlHash } from "utils/url_hash_encoding";
+import BitapSearcher from "utils/bitap_searcher";
+
+const BitapOptions = {
+  threshold: 0.3,
+  distance: 5,
+  maxPatternLength: 20
+};
 
 export const selectedCollectionFilter = (model) => {
   return _.get(
@@ -21,19 +30,60 @@ export const selectedGeographicFilter = (model) => {
   )
 }
 
+export const entryLabel = (record) => {
+  if (record.collectionName === "specialists" && record.billingNumber){
+    return `${record.name} - MSP #${record.billingNumber}`;
+  }
+  else if (_.includes(["procedures", "contentCategories"], record.collectionName)){
+    return record.fullName;
+  }
+  else if (record.collectionName === "contentItems"){
+    return record.title;
+  }
+  else {
+    return record.name;
+  }
+}
+
+
 export const searchResults = ((model) => {
   if(!model.app.currentUser){
     return [];
   }
 
   return toSearch(model).
-    map((record) => decorateWithScore(record, model)).
-    filter((decoratedRecord) => {
-      return _.every(filters(model), (filter) => filter(decoratedRecord, model));
-    }).pwPipe((decoratedRecords) => {
-      return _.sortByOrder(decoratedRecords, _.property("score"), "desc")
-    }).pwPipe((decoratedRecords) => _.take(decoratedRecords, 10)).
+    filter((record) => {
+      return _.every(filters(model), (filter) => filter(record, model));
+    }).
+    pwPipe((records) => {
+      return records.map((record) => {
+        const _entryLabel = entryLabel(record);
+        const _queryTokens = (model.ui.searchTerm || "").split(/\s+/g);
+        const _queryTokensSearchers = _queryTokens.map((token) => {
+          return new BitapSearcher(token, BitapOptions)
+        })
+
+        return _.assign(
+          {
+            raw: record,
+            entryLabel: _entryLabel
+          },
+          scoreString(_queryTokensSearchers, _entryLabel)
+        )
+      })
+    }).
+    filter((decoratedRecord) => decoratedRecord.queryScore > 0 ).
     pwPipe((decoratedRecords) => {
+      return _.sortByOrder(
+        decoratedRecords,
+        [
+          _.property("queryScore"),
+          (decoratedRecord) => groupOrder[decoratedRecord.raw.collectionName],
+          _.property("queriedScore")
+        ],
+        ["desc", "asc", "desc"]
+      );
+    }).pwPipe((decoratedRecords) => {
       return _.groupBy(decoratedRecords, _.property("raw.collectionName"));
     }).pwPipe((collections) => {
       return _.map(collections, (decoratedRecords, collectionName) => {
@@ -45,7 +95,7 @@ export const searchResults = ((model) => {
                   label: model.app.contentCategories[id].fullName,
                   decoratedRecords: decoratedRecords.
                     pwPipe((records) => {
-                      return _.sortByOrder(records, _.property("score"), "desc");
+                      return _.sortByOrder(records, _.property("queryScore"), "desc");
                     }),
                   order: groupOrder["contentItems"]
                 };
@@ -54,9 +104,9 @@ export const searchResults = ((model) => {
         }
         else {
           return {
-            label: groupLabels[collectionName],
+            label: labelGroup(model, collectionName),
             decoratedRecords: decoratedRecords.
-              pwPipe((records) => _.sortByOrder(records, _.property("score"), "desc")),
+              pwPipe((records) => _.sortByOrder(records, _.property("queryScore"), "desc")),
             order: groupOrder[collectionName]
           }
         }
@@ -87,55 +137,71 @@ export const searchResults = ((model) => {
   );
 });
 
+const labelGroup = (model, collectionName) => {
+  switch(collectionName){
+  case "specializations":
+    return "Specialties";
+  case "contentCategories":
+    return "Content";
+  case "procedures":
+    if (_.includes(["Specialists", "Clinics"], selectedCollectionFilter(model))){
+      return `${selectedCollectionFilter(model)} accepting referrals for:`;
+    }
+    else {
+      return "Areas of Practice";
+    }
+  default:
+    return _.capitalize(collectionName);
+  }
+}
+
 const filters = ((model) => {
   let filters = []
 
-  filters.push((decoratedRecord) => decoratedRecord.score > 0.5)
-
-  filters.push((decoratedRecord) => {
-    return decoratedRecord.raw.collectionName !== "contentItems" ||
+  filters.push((record) => {
+    return record.collectionName !== "contentItems" ||
       (_.includes(["super", "admin"], model.app.currentUser.role) &&
         selectedGeographicFilter(model) === "All Divisions") ||
-      matchesUserDivisions(decoratedRecord.raw, model)
+      matchesUserDivisions(record, model)
   })
 
-  filters.push((decoratedRecord) => {
+  filters.push((record) => {
     return !_.includes(
       ["contentItems", "contentCategories"],
-      decoratedRecord.raw.collectionName
-    ) || decoratedRecord.raw.searchable;
+      record.collectionName
+    ) || record.searchable;
   })
 
   if (selectedCollectionFilter(model) === "Physician Resources"){
-    filters.push((decoratedRecord) => {
+    filters.push((record) => {
       return _.intersection(
-        decoratedRecord.raw.categoryIds,
+        record.categoryIds,
         [ pearlsId(model), redFlagsId(model), physicianResourcesId(model) ]
       ).pwPipe(_.any)
     })
   }
 
   if (selectedCollectionFilter(model) === "Patient Info"){
-    filters.push((decoratedRecord) => {
+    filters.push((record) => {
       return _.includes(
-        decoratedRecord.raw.categoryIds,
+        record.categoryIds,
         patientInfoId(model)
       )
     })
   }
 
   if (selectedGeographicFilter(model) === "My Regional Divisions"){
-    filters.push((decoratedRecord) => {
+    filters.push((record) => {
       return !_.includes(
         ["clinics", "specialists"],
-        decoratedRecord.raw.collectionName
-      ) || shownInLocalReferralArea(decoratedRecord, model)
+        record.collectionName
+      ) || shownInLocalReferralArea(record, model)
     })
   }
 
   if (model.app.currentUser.role === "user"){
-    filters.push((decoratedRecord) => {
-      return !hiddenFromUsers(decoratedRecord.raw, model)
+    filters.push((record) => {
+      return !hiddenFromUsers(record, model)
     })
   }
 
@@ -158,17 +224,17 @@ export const highlightSelectedSearchResult = (model) => {
   );
 }
 
-const shownInLocalReferralArea = (decoratedRecord, model) => {
+const shownInLocalReferralArea = (record, model) => {
   return _.some(model.app.currentUser.divisionIds, (divisionId) => {
     return _.some(
-      decoratedRecord.raw.specializationIds,
+      record.specializationIds,
       (specializationId) => {
         return !_.includes(
           model.app.specializations[specializationId].hiddenInDivisionIds,
           divisionId
         ) && _.intersection(
           model.app.divisions[divisionId].referralCities[specializationId],
-          decoratedRecord.raw.cityIds
+          record.cityIds
         ).pwPipe(_.any)
       }
     )
@@ -205,16 +271,6 @@ const groupOrder = {
   contentItems: 8
 }
 
-const groupLabels = {
-  specializations: "Specialties",
-  specialists: "Specialists",
-  clinics: "Clinics",
-  procedures: "Areas of Practice",
-  hospitals: "Hospitals",
-  languages: "Languages",
-  contentCategories: "Content"
-}
-
 const toSearch = (model) => {
   switch(selectedCollectionFilter(model)){
   case "Everything":
@@ -229,35 +285,13 @@ const toSearch = (model) => {
       model.app.contentCategories
     ].map(_.values).pwPipe(_.flatten);
   case "Specialists":
-    return _.values(model.app.specialists);
+    return _.values(model.app.specialists).concat(..._.values(model.app.procedures));
   case "Clinics":
-    return _.values(model.app.clinics);
+    return _.values(model.app.clinics).concat(..._.values(model.app.procedures));
   case "Areas of Practice":
     return _.values(model.app.procedures);
   default:
     return _.values(model.app.contentItems);
-  }
-}
-
-const decorateWithScore = (record, model) => {
-  return {
-    score: stringScore((model.ui.searchTerm || ""), entryLabel(record), 0.5),
-    raw: record
-  };
-};
-
-export const entryLabel = (record) => {
-  if (record.collectionName === "specialists" && record.billingNumber){
-    return `${record.name} - MSP #${record.billingNumber}`;
-  }
-  else if (_.includes(["procedures", "contentCategories"], record.collectionName)){
-    return record.fullName;
-  }
-  else if (record.collectionName === "contentItems"){
-    return record.title;
-  }
-  else {
-    return record.name;
   }
 }
 
@@ -283,4 +317,17 @@ export const recordAnalytics = (record, model) => {
   ]);
 
   return true;
+}
+
+export const adjustedLink = (model, record) => {
+  if (record.collectionName === "procedures" &&
+    _.includes(["Specialists", "Clinics"], selectedCollectionFilter(model))){
+
+    return (link(record) +
+      "#" +
+      encodeUrlHash({selectedTabKey: selectedCollectionFilter(model).toLowerCase()}));
+  }
+  else {
+    return link(record);
+  }
 }

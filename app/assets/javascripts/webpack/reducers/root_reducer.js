@@ -39,6 +39,7 @@ const ui = (model = {}, action) => {
       searchTerm: searchTerm(model.searchTerm, action),
       searchCollectionFilter: searchCollectionFilter(model.searchCollectionFilter, action),
       searchGeographicFilter: searchGeographicFilter(model.searchGeographicFilter, action),
+      searchTimerId: searchTimerId(model.searchTimerId, action),
       selectedSearchResult: selectedSearchResult(model.selectedSearchResult, action),
       highlightSelectedSearchResult: highlightSelectedSearchResult(
         model.highlightSelectedSearchResult,
@@ -52,9 +53,18 @@ const ui = (model = {}, action) => {
   }
 };
 
-const fromUrlHash = (model) => {
-  console.log(route);
+const searchTimerId = (model, action) => {
+  switch(action.type){
+  case "TERM_SEARCHED":
+    return action.timerId;
+  case "SEARCH_TIMEOUT_ENDED":
+    return undefined;
+  default:
+    return model;
+  }
+}
 
+const fromUrlHash = (model) => {
   if (window.location.hash.length === 0 || _.isUndefined(route)){
     return {};
   }
@@ -107,7 +117,7 @@ const searchCollectionFilter = (model, action) => {
 const searchTerm = (model, action) => {
   switch(action.type){
   case "TERM_SEARCHED":
-    return action.proposed;
+    return action.proposedTerm;
   case "CLOSE_SEARCH":
     return "";
   case "SEARCH_FOCUS_CHANGED":

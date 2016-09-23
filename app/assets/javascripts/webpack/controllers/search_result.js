@@ -4,9 +4,10 @@ import {
   selectedSearchResult,
   recordAnalytics,
   highlightSelectedSearchResult,
-  entryLabel
+  entryLabel,
+  selectedCollectionFilter,
+  adjustedLink
 } from "controller_helpers/search_results";
-import { link } from "controller_helpers/links";
 import {
   searchResultSelected,
   hoverLeaveSearchResult,
@@ -18,13 +19,13 @@ import hiddenFromUsers from "controller_helpers/hidden_from_users";
 const SearchResult = ({model, dispatch, decoratedRecord}) => {
   return(
     <li className={resultClassname(decoratedRecord, model)}>
-      <a href={link(decoratedRecord.raw)}
+      <a href={adjustedLink(model, decoratedRecord.raw)}
         onClick={_.partial(onClick, model, dispatch, decoratedRecord.raw)}
         onMouseEnter={_.partial(searchResultSelected, dispatch, decoratedRecord.index)}
         onMouseLeave={_.partial(hoverLeaveSearchResult, dispatch)}
         style={{width: "calc(100% - 20px)"}}
       >
-        { InnerResult(decoratedRecord.raw, model) }
+        { InnerResult(decoratedRecord, model) }
       </a>
     </li>
   );
@@ -53,13 +54,17 @@ const resultClassname = (decoratedRecord, model) => {
   return classes.join(" ");
 }
 
-const InnerResult = (record, model) => {
+const InnerResult = (decoratedRecord, model) => {
+  var record = decoratedRecord.raw;
+
   if (_.includes(["specialists", "clinics"], record.collectionName)){
     return(
       [
         <div className="search_name" key="name">
           <ReferentStatusIcon record={record} model={model}/>
-          <span style={{marginLeft: "5px"}}>{entryLabel(record)}</span>
+          <span style={{marginLeft: "5px"}}>
+            <HighlightedEntryLabel decoratedRecord={decoratedRecord}/>
+          </span>
         </div>,
         <div className="search_specialties" key="specialties">
           {
@@ -77,9 +82,16 @@ const InnerResult = (record, model) => {
     );
   }
   else if (record.collectionName === "procedures"){
-    return(
-      [
-        <div className="search_name" key="name">{entryLabel(record)}</div>,
+    let returning = []
+
+    returning.push(
+      <div className="search_name" key="name">
+        <HighlightedEntryLabel decoratedRecord={decoratedRecord}/>
+      </div>
+    )
+
+    if(!_.includes(["Specialists", "Clinics"], selectedCollectionFilter(model))){
+      returning.push(
         <div className="search_specialties no_city" key="specialties">
           {
             record.
@@ -88,16 +100,69 @@ const InnerResult = (record, model) => {
               join(", ")
           }
         </div>
-      ]
-    );
+      )
+    }
+
+    return returning;
   }
   else {
     return(
       [
-        <div className="search_name full_width" key="name">{entryLabel(record)}</div>
+        <div className="search_name full_width" key="name">
+          <HighlightedEntryLabel decoratedRecord={decoratedRecord}/>
+        </div>
       ]
     );
   }
+}
+
+const HighlightedEntryLabel = ({decoratedRecord}) => {
+  const _highlightedTokens = decoratedRecord.
+    queriedTokensWithMatchIndices.
+    reduce((accumulatingTokens, queriedTokenWithMatchIndices, tokenIndex, iteratingOver) => {
+
+    const _matchIndices = queriedTokenWithMatchIndices[1];
+
+    let _currentFragment = [];
+    const _queriedTokenFragments = queriedTokenWithMatchIndices[0].
+      split("").
+      reduce((accumulatingFragments, char, indexWithinToken, iteratingOver) => {
+
+      _currentFragment.push(char);
+
+      const _highlightingThisChar = _.includes(
+        _matchIndices,
+        indexWithinToken
+      )
+      const _highlightingNextChar = _.includes(
+        _matchIndices,
+        (indexWithinToken + 1)
+      )
+
+      if (_highlightingThisChar !== _highlightingNextChar ||
+          (indexWithinToken + 1 === iteratingOver.length)){
+
+        accumulatingFragments.push(
+          <span key={indexWithinToken} className={(_highlightingThisChar ? "highlight" : "")}>
+            { _currentFragment.join("") }
+          </span>
+        );
+
+        _currentFragment = [];
+      }
+
+      return accumulatingFragments;
+    }, [])
+
+    accumulatingTokens.push(<span key={tokenIndex}>{ _queriedTokenFragments }</span>);
+    accumulatingTokens.push(<span key={`space${tokenIndex}`}>{" "}</span>);
+
+    return accumulatingTokens;
+  }, [])
+
+  return(
+    <span>{ _highlightedTokens }</span>
+  )
 }
 
 const cities = (record) => {
