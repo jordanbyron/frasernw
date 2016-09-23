@@ -46,6 +46,8 @@ class ScItem < ActiveRecord::Base
     class_name: "Division",
     source: :division
 
+  has_many :divisions_featuring, through: :featured_contents
+
   belongs_to :evidence
 
   has_attached_file :document,
@@ -199,30 +201,31 @@ class ScItem < ActiveRecord::Base
     ])
   end
 
-  def available_to_divisions
+  def showing_in_divisions
     if shareable
-      [ division ] | divisions_sharing
+      [ division ] |
+        divisions_sharing |
+        divisions_mimicking_feature
     else
       [ division ]
     end
   end
 
-  def available_to_divisions?(divisions)
-    (
-      (divisions.include? division) || (
-        shareable? && (divisions & divisions_sharing).present?
-      )
-    )
+  def divisions_mimicking_feature
+    divisions_featuring.map(&:divisions_mimicking_homepage).flatten
+  end
+
+  def showing_in_divisions?(divisions)
+    (available_divisions & divisions).any?
   end
 
   def borrowable_by_divisions
-    @borrowable_by_divisions ||= begin
+    @borrowable_by_divisions ||=
       if !shareable
         []
       else
-        Division.all - available_to_divisions
+        Division.all - [ division ] - divisions_sharing
       end
-    end
   end
 
   def mail_to_patient(current_user, patient_email)

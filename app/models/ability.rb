@@ -195,7 +195,7 @@ class Ability
         can :show, [ Specialization, Procedure ]
 
         can :show, ScItem do |item|
-          item.available_to_divisions?(user.as_divisions)
+          item.showing_in_divisions?(user.as_divisions)
         end
 
         can :show, [Hospital, Language, ScCategory]

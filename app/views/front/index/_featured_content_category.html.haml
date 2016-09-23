@@ -7,63 +7,64 @@
 
 %ul
   - category.featured_for_divisions(@as_divisions).each do |featured_sc_item|
-    %li.dropdown.featured_contents__dropdown
-      = content_tag :div,
-        class: "dropdown-toggle",
-        "data-toggle" => "dropdown",
-        target: "_blank",
-        onclick: "window.pathways.trackContentItem(_gaq, #{featured_sc_item.id})" do
-        %span.icon-stack.featured_contents__arrow_icon_stack
-          %i.icon-check-empty.icon-stack-base.icon-text.featured_contents__arrow_icon_box
-          %i.icon-caret-down.icon-text.featured_contents__arrow_icon_caret
-        %span.featured_contents__dropdown_trigger_text
-          = featured_sc_item.title
-          - if featured_sc_item.shared_care?
-            %i.icon-blue.icon-star
-          - if featured_sc_item.new?
-            %span.new NEW
-      %ul.dropdown-menu.featured_contents__dropdown_menu
-        %li.featured_contents__dropdown_item
-          = link_to "javascript:void(0)",
-            class: "featured_contents__dropdown_link",
-            style: "background-color: white;" do
-            = content_tag :span,
-              class: "icon-stack featured_contents__arrow_icon_stack",
-              style: "margin-left: -10px;margin-right: 0.5px;" do
-              %i.icon-check-empty.icon-stack-base.icon-text.featured_contents__arrow_icon_box
-              %i.icon-caret-down.icon-text.featured_contents__arrow_icon_caret
-            = content_tag :span,
-              class: "featured_contents__dropdown_item_text",
-              style: "display: inline-block; white-space: normal;" do
-              = featured_sc_item.title
-              - if featured_sc_item.shared_care?
-                %i.icon-blue.icon-star
-              - if featured_sc_item.new?
-                %span.new NEW
-        %li.featured_contents__dropdown_item
-          = link_to featured_sc_item.resolved_url,
-            class: "featured_contents__dropdown_link",
-            target: "_blank" do
-            %i.icon-file.icon-blue
-            %span.featured_contents__dropdown_item_text View
-        %li.featured_contents__dropdown_item
-          = link_to "javascript:void(0)",
-            onclick: favorite_featured_item(featured_sc_item),
-            title: "Favourite / un-favourite",
-            class: "featured_contents__dropdown_link" do
-            %i.icon-heart.icon-text{ id: "user_favorite_content_items_#{featured_sc_item.id}" }
-            %span.featured_contents__dropdown_item_text Favorite
-        - if featured_sc_item.can_email?
+    - if can? :show, featured_sc_item
+      %li.dropdown.featured_contents__dropdown
+        = content_tag :div,
+          class: "dropdown-toggle",
+          "data-toggle" => "dropdown",
+          target: "_blank",
+          onclick: "window.pathways.trackContentItem(_gaq, #{featured_sc_item.id})" do
+          %span.icon-stack.featured_contents__arrow_icon_stack
+            %i.icon-check-empty.icon-stack-base.icon-text.featured_contents__arrow_icon_box
+            %i.icon-caret-down.icon-text.featured_contents__arrow_icon_caret
+          %span.featured_contents__dropdown_trigger_text
+            = featured_sc_item.title
+            - if featured_sc_item.shared_care?
+              %i.icon-blue.icon-star
+            - if featured_sc_item.new?
+              %span.new NEW
+        %ul.dropdown-menu.featured_contents__dropdown_menu
           %li.featured_contents__dropdown_item
-            = link_to compose_mail_to_patients_path(featured_sc_item),
-              title: "E-mail to Patient",
+            = link_to "javascript:void(0)",
+              class: "featured_contents__dropdown_link",
+              style: "background-color: white;" do
+              = content_tag :span,
+                class: "icon-stack featured_contents__arrow_icon_stack",
+                style: "margin-left: -10px;margin-right: 0.5px;" do
+                %i.icon-check-empty.icon-stack-base.icon-text.featured_contents__arrow_icon_box
+                %i.icon-caret-down.icon-text.featured_contents__arrow_icon_caret
+              = content_tag :span,
+                class: "featured_contents__dropdown_item_text",
+                style: "display: inline-block; white-space: normal;" do
+                = featured_sc_item.title
+                - if featured_sc_item.shared_care?
+                  %i.icon-blue.icon-star
+                - if featured_sc_item.new?
+                  %span.new NEW
+          %li.featured_contents__dropdown_item
+            = link_to featured_sc_item.resolved_url,
               class: "featured_contents__dropdown_link",
               target: "_blank" do
-              %i.icon-envelope-alt.icon-blue
-              %span.featured_contents__dropdown_item_text Email
-        %li.featured_contents__dropdown_item
-          = link_to "javascript:void(0)",
-            onClick: open_feedback_modal(featured_sc_item),
-            class: "featured_contents__dropdown_link" do
-            %i.icon-bullhorn.icon-blue
-            %span.featured_contents__dropdown_item_text Send Feedback
+              %i.icon-file.icon-blue
+              %span.featured_contents__dropdown_item_text View
+          %li.featured_contents__dropdown_item
+            = link_to "javascript:void(0)",
+              onclick: favorite_featured_item(featured_sc_item),
+              title: "Favourite / un-favourite",
+              class: "featured_contents__dropdown_link" do
+              %i.icon-heart.icon-text{ id: "user_favorite_content_items_#{featured_sc_item.id}" }
+              %span.featured_contents__dropdown_item_text Favorite
+          - if featured_sc_item.can_email?
+            %li.featured_contents__dropdown_item
+              = link_to compose_mail_to_patients_path(featured_sc_item),
+                title: "E-mail to Patient",
+                class: "featured_contents__dropdown_link",
+                target: "_blank" do
+                %i.icon-envelope-alt.icon-blue
+                %span.featured_contents__dropdown_item_text Email
+          %li.featured_contents__dropdown_item
+            = link_to "javascript:void(0)",
+              onClick: open_feedback_modal(featured_sc_item),
+              class: "featured_contents__dropdown_link" do
+              %i.icon-bullhorn.icon-blue
+              %span.featured_contents__dropdown_item_text Send Feedback

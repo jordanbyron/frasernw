@@ -40,6 +40,12 @@ class Division < ActiveRecord::Base
   has_many :featured_contents, dependent: :destroy
   accepts_nested_attributes_for :featured_contents
 
+  has_many :featured_sc_items, through: :featured_contents
+
+  has_many :divisions_mimicking_homepage,
+    foreign_key: :other_homepage_as_id,
+    class_name: "Division"
+
   has_many :division_primary_contacts, dependent: :destroy
   has_many :primary_contacts,
     through: :division_primary_contacts,

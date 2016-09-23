@@ -41,7 +41,7 @@ module Denormalized
           includes(:sc_category, :division, :divisions_sharing, :specializations).
           inject({}) do |memo, item|
             memo.merge(item.id => {
-              availableToDivisionIds: item.available_to_divisions.map(&:id),
+              availableToDivisionIds: item.showing_in_divisions.map(&:id),
               specializationIds: item.specializations.map(&:id),
               title: item.title,
               categoryId: item.sc_category.id,
