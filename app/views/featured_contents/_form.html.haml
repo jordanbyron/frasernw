@@ -1,24 +1,24 @@
 = simple_nested_form_for @division,
-  :url => featured_contents_path,
-  :method => :patch,
-  :html => { :class => "ajax" } do |f|
+  url: featured_contents_path,
+  method: :patch do |f|
   - if !f.error_messages.blank?
     .alert.alert-error= f.error_messages
-
-  = f.input :id, :as => :hidden
+  = f.input :id, as: :hidden
 
   - ScCategory.front_page.each do |category|
     %h4= category.name
-
-    - contents = @division.featured_contents.select{|content| content.sc_category_id == category.id }
+    - contents = @division.featured_contents.select do |content|
+      - content.sc_category_id == category.id
+    - items = category.all_sc_items_in_divisions([@division]).sort_by(&:name)
     = f.simple_fields_for :featured_contents, contents do |fields|
       = fields.association :sc_item,
-        :collection => category.all_sc_items_in_divisions([@division]),
-        :label => false,
-        input_html: { :class => "span12" }
+        collection: items,
+        label: false,
+        label_method: :decorated_title,
+        input_html: { class: "span12" }
       = fields.input :sc_category_id, as: :hidden
       = fields.input :division_id, as: :hidden
 
   .form-actions
-    = f.button :submit, :class => "btn btn-primary"
-    = link_to 'Cancel', root_url, :class => "btn btn-danger ajax"
+    = f.button :submit, class: "btn btn-primary"
+    = link_to 'Cancel', root_url, class: "btn btn-danger"
