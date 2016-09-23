@@ -46,18 +46,24 @@ const ESCAPE_KEY_CODE = 27;
 const TAB_KEY_CODE = 9;
 
 const handleKeyDown = (model, dispatch, event) => {
-  if(event.keyCode === UP_KEY_CODE && selectedSearchResult(model) > 0){
-    searchResultSelected(
-      dispatch,
-      (selectedSearchResult(model) - 1)
-    )
+  if(event.keyCode === UP_KEY_CODE){
+    event.preventDefault();
+    if (selectedSearchResult(model) > 0){
+      searchResultSelected(
+        dispatch,
+        (selectedSearchResult(model) - 1)
+      )
+    }
   }
-  else if (event.keyCode === DOWN_KEY_CODE &&
-    ((selectedSearchResult(model) + 1) < searchResults(model).length)) {
-    searchResultSelected(
-      dispatch,
-      (selectedSearchResult(model) + 1)
-    )
+  else if (event.keyCode === DOWN_KEY_CODE){
+    event.preventDefault();
+
+    if((selectedSearchResult(model) + 1) < searchResults(model).length) {
+      searchResultSelected(
+        dispatch,
+        (selectedSearchResult(model) + 1)
+      )
+    }
   }
   else if (event.keyCode === ENTER_KEY_CODE){
     recordAnalytics(selectedSearchResultRecord(model), model);
