@@ -89,15 +89,14 @@
                     %a.dropdown-toggle{ href: "#",
                        data: { toggle: "dropdown" } }
                       = "Admin"
-                      - review = ReviewItem.active.reject{ |ri| !(ri.item.present? && (ri.item.divisions & as_administering).present?) }
-                      - user_review_item_count = review.reject{ |ri| !ri.item.owners.include? current_user }.count
-                      - total_review_item_count = review.count
-                      - user_divisions_feedback = FeedbackItem.active.select{ |item| (item.owner_divisions & current_user.as_divisions).any? }
-                      - owned_feedback_count = FeedbackItem.active.to_a.count{ |item| item.owners.include?(current_user) }
+                      - pending_reviews = ReviewItem.active.select{ |review| (review.item.present? && (review.item.divisions & as_administering).present?) }
+                      - pending_user_review_count = pending_reviews.select{ |review| review.item.owners.include? current_user }.count
+                      - pending_feedback = FeedbackItem.active.select{ |item| (item.owner_divisions & as_administering).any? }
+                      - pending_user_feedback_count = pending_feedback.select{ |item| item.owners.include?(current_user) }.count
 
-                      - if total_review_item_count + user_divisions_feedback.count > 0
-                        %span.badge{ class: ((user_review_item_count + owned_feedback_count) > 0) && "badge-warning"}
-                          #{user_review_item_count + owned_feedback_count}/#{total_review_item_count + user_divisions_feedback.count}
+                      - if pending_reviews.count + pending_feedback.count > 0
+                        %span.badge{ class: ((pending_user_review_count + pending_user_feedback_count) > 0) && "badge-warning" }
+                          #{pending_user_review_count + pending_user_feedback_count}/#{pending_reviews.count + pending_feedback.count}
                       %b.caret
 
                     %ul.dropdown-menu
@@ -106,21 +105,23 @@
                           all_versions_path,
                           class: "history"
                       %li
-                        - if total_review_item_count > 0
-                          = link_to "Review Queue <span class=\"badge #{user_review_item_count > 0 ? "badge-warning" : ""}\">#{user_review_item_count}/#{total_review_item_count}</span>".html_safe,
-                            review_items_path,
-                            class: "review"
+                        - if pending_reviews.count > 0
+                          = link_to review_items_path,
+                            class: "review" do
+                            Review Queue
+                            %span.badge{ class: pending_user_review_count > 0 ? "badge-warning" : "" }
+                              = "#{pending_user_review_count}/#{pending_reviews.count}".html_safe
                         - else
                           = link_to "Review Queue",
                             review_items_path,
                             class: "review"
                       %li
-                        - if user_divisions_feedback.count > 0
+                        - if pending_feedback.count > 0
                           = link_to feedback_items_path,
                             class: "feedback" do
-                            %span= "Feedback Queue "
-                            %span.badge{class: owned_feedback_count > 0 ? "badge-warning" : ""}
-                              = "#{owned_feedback_count}/#{user_divisions_feedback.count}"
+                            Feedback Queue
+                            %span.badge{ class: pending_user_feedback_count > 0 ? "badge-warning" : "" }
+                              = "#{pending_user_feedback_count}/#{pending_feedback.count}"
                         - else
                           = link_to "Feedback Queue",
                             feedback_items_path,
