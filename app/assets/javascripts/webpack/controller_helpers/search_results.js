@@ -45,9 +45,8 @@ export const entryLabel = (record) => {
   }
 }
 
-
 export const searchResults = ((model) => {
-  if(!model.app.currentUser){
+  if(!model.app.currentUser || !model.ui.searchTerm || model.ui.searchTerm.length < 3){
     return [];
   }
 
@@ -58,7 +57,7 @@ export const searchResults = ((model) => {
     pwPipe((records) => {
       return records.map((record) => {
         const _entryLabel = entryLabel(record);
-        const _queryTokens = (model.ui.searchTerm || "").split(/\s+/g);
+        const _queryTokens = model.ui.searchTerm.split(/\s+/g);
         const _queryTokensSearchers = _queryTokens.map((token) => {
           return new BitapSearcher(token, BitapOptions)
         })
