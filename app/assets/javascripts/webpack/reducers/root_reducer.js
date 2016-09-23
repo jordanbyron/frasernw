@@ -84,11 +84,12 @@ const highlightSelectedSearchResult = (model, action) => {
   }
 }
 
-
 const selectedSearchResult = (model, action) => {
   switch(action.type){
   case "SEARCH_RESULT_SELECTED":
     return action.proposed;
+  case "TERM_SEARCHED":
+    return 0;
   case "CLOSE_SEARCH":
     return 0;
   default:

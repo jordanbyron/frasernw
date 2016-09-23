@@ -45,6 +45,16 @@ export const entryLabel = (record) => {
   }
 }
 
+const memoizeSearchFn = (fn) => {
+  return memoize(
+    (model) => model.app,
+    (model) => model.ui.searchTerm,
+    selectedCollectionFilter,
+    selectedGeographicFilter,
+    fn
+  );
+}
+
 export const searchResults = ((model) => {
   if(!model.app.currentUser || !model.ui.searchTerm || model.ui.searchTerm.length < 3){
     return [];
@@ -82,7 +92,12 @@ export const searchResults = ((model) => {
         ],
         ["desc", "asc", "desc"]
       );
-    }).pwPipe((decoratedRecords) => {
+    })
+}).pwPipe(memoizeSearchFn)
+
+export const groupedSearchResults = ((model) => {
+  return searchResults(model).
+    pwPipe((decoratedRecords) => {
       return _.groupBy(decoratedRecords, _.property("raw.collectionName"));
     }).pwPipe((collections) => {
       return _.map(collections, (decoratedRecords, collectionName) => {
@@ -126,15 +141,7 @@ export const searchResults = ((model) => {
 
       return groups;
     });
-}).pwPipe((generate) => {
-  return memoize(
-    (model) => model.app,
-    (model) => model.ui.searchTerm,
-    selectedCollectionFilter,
-    selectedGeographicFilter,
-    generate
-  );
-});
+}).pwPipe(memoizeSearchFn);
 
 const labelGroup = (model, collectionName) => {
   switch(collectionName){

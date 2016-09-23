@@ -1,5 +1,5 @@
 import React from "react";
-import { searchResults } from "controller_helpers/search_results";
+import { groupedSearchResults } from "controller_helpers/search_results";
 import _ from "lodash";
 import ExpandingContainer from "component_helpers/expanding_container";
 import SearchResult from "controllers/search_result";
@@ -68,11 +68,11 @@ const SearchResults = ({model, dispatch}) => {
       </ul>
     );
   }
-  else if(searchResults(model).pwPipe(_.some)){
+  else if(groupedSearchResults(model).pwPipe(_.some)){
     return(
       <ul className="search_results">
         {
-          searchResults(model).
+          groupedSearchResults(model).
             map((group) => resultGroup(model, group, dispatch)).
             pwPipe(_.flatten)
         }

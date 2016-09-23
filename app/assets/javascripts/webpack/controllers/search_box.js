@@ -4,13 +4,14 @@ import {
   selectCollectionFilter,
   termSearched,
   searchResultSelected,
-  closeSearch
+  closeSearch,
 } from "action_creators";
 import {
   selectedSearchResult,
   searchResults,
   recordAnalytics,
-  adjustedLink
+  adjustedLink,
+  groupedSearchResults
 } from "controller_helpers/search_results"
 import { link } from "controller_helpers/links";
 import { selectedCollectionFilter } from "controller_helpers/search_results";
@@ -51,7 +52,8 @@ const handleKeyDown = (model, dispatch, event) => {
       (selectedSearchResult(model) - 1)
     )
   }
-  else if (event.keyCode === DOWN_KEY_CODE) {
+  else if (event.keyCode === DOWN_KEY_CODE &&
+    ((selectedSearchResult(model) + 1) < searchResults(model).length)) {
     searchResultSelected(
       dispatch,
       (selectedSearchResult(model) + 1)
@@ -86,7 +88,7 @@ const handleKeyDown = (model, dispatch, event) => {
 }
 
 const selectedSearchResultRecord = (model) => {
-  return searchResults(model).
+  return groupedSearchResults(model).
     map(_.property("decoratedRecords")).
     pwPipe(_.flatten).
     find((decoratedRecord) => decoratedRecord.index === selectedSearchResult(model)).
