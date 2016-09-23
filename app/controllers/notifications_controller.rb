@@ -12,7 +12,11 @@ class NotificationsController < ApplicationController
   private
 
   def user_info
-    { userId: current_user.id, userMask: current_user.role }
+    {
+      userId: current_user.id,
+      userMask: current_user.role,
+      userName: current_user.name
+    }
   end
 
 end

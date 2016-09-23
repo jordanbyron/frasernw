@@ -30,18 +30,19 @@ module SystemNotifier
       body: {
         userId: error_data[:userId],
         userMask: error_data[:userMask],
+        userName: error_data[:userName],
         browserName: error_data[:browserName],
-        fullVersion: error_data[:fullVersion],
         majorVersion: error_data[:majorVersion],
-        appName: error_data[:appName],
-        userAgent: error_data[:userAgent],
-        name: error_data[:name],
+        errorName: error_data[:name],
         message: error_data[:message],
         file: error_data[:file],
         line: error_data[:line],
         column: error_data[:column],
         url: error_data[:url],
-        errorStack: error_data[:errorStack]
+        errorStack: error_data[:errorStack],
+        appName: error_data[:appName],
+        userAgent: error_data[:userAgent],
+        fullVersion: error_data[:fullVersion]
       }
     )
   end
