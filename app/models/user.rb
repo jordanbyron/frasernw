@@ -397,7 +397,8 @@ class User < ActiveRecord::Base
     :user?,
     :introspective?,
     :role_label,
-    :role
+    :role,
+    :administering
   ].each do |method_name|
     define_method "as_#{method_name}" do
       if mask.present? && mask.persisted?

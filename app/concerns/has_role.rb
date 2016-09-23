@@ -22,4 +22,14 @@ module HasRole
   def role_label
     User::ROLE_LABELS[role]
   end
+
+  def administering
+    if super_admin?
+      Division.all
+    elsif admin?
+      divisions
+    else
+      []
+    end
+  end
 end
