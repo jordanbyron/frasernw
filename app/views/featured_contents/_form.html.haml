@@ -5,11 +5,14 @@
     .alert.alert-error= f.error_messages
   = f.input :id, as: :hidden
 
-  - ScCategory.front_page.each do |category|
+  - @featured_content_categories.each do |category, contents|
     %h4= category.name
     = f.simple_fields_for :featured_contents,
-      @division.featured_contents.where(sc_category_id: category.id) do |fields|
+      contents do |fields|
       = fields.association :sc_item,
+        as: :grouped_select,
+        group_label_method: :first,
+        group_method: :last,
         collection: featured_contents_options(category, @division),
         label: false,
         label_method: ->(item){ item.new? ? item.title + " (NEW)" : item.title },

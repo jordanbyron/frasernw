@@ -16,6 +16,12 @@ class FeaturedContentsController < ApplicationController
     end
 
     @division.build_featured_contents!
+    @featured_content_categories = @division.
+      featured_contents.
+      group_by(&:sc_category).
+      to_a.
+      sort_by{|pair| [pair[0].sort_order, pair[0].name ]}.
+      to_h
   end
 
   def update
