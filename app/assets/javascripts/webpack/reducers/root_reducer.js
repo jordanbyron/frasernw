@@ -53,8 +53,6 @@ const ui = (model = {}, action) => {
 };
 
 const fromUrlHash = (model) => {
-  console.log(route);
-
   if (window.location.hash.length === 0 || _.isUndefined(route)){
     return {};
   }
